@@ -1,0 +1,156 @@
+{
+  "schema": "loom.isolated_bootstrap_profile_test/1",
+  "mode": "fresh runtime_profile19 object linked before exact161 archive; unchanged Config/FS dependencies; no Runtime construction; not full current build or CTest",
+  "baseline_commit": "161cc22dfb84fe863389d6b90323bd44516a68dc",
+  "libraries": [
+    {
+      "path": "/workspace/scratch/72fc60ad1cc5/baseline-build/libloom_core.a",
+      "bytes": 788160792,
+      "sha256": "7f8c73caf1f8a8bdb393d10299ce638479d9f2673663e4ca4e9a135039faed2b"
+    },
+    {
+      "path": "/workspace/scratch/72fc60ad1cc5/baseline-build/libloom_miniz.a",
+      "bytes": 360332,
+      "sha256": "c53facc475d2e7d96a065e3d6c000a90c52f558ec945d93f7a9f433deac96cee"
+    },
+    {
+      "path": "/workspace/scratch/72fc60ad1cc5/baseline-build/libloom_sqlite3_amalgamation.a",
+      "bytes": 3509494,
+      "sha256": "5f3e1fbf1f6c38cbca909fc1bb2f7f54cc9c4a5cf24e32668f2acd6264ab245f"
+    }
+  ],
+  "object": {
+    "path": "/workspace/scratch/72fc60ad1cc5/runtime-profile-bootstrap19.o",
+    "bytes": 2309616,
+    "sha256": "11b16ac4909a287c95079ed50de92f478da9b99365f733f72c6853552d322c1f"
+  },
+  "source": {
+    "path": "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/src/model/runtime_profile.cpp",
+    "bytes": 17467,
+    "sha256": "ec3aef039df11407a9383c4ee7cd600d5e0e0917d9eb45283c53459f6916e7cf"
+  },
+  "embedding": {
+    "path": "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/src/model/runtime_profiles_embedded.inc",
+    "bytes": 194895,
+    "sha256": "595a3111d56ba1a802c350029216367486b5600c6441306af075ce15e5742bae"
+  },
+  "test_sources": [
+    {
+      "path": "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/main.cpp",
+      "bytes": 538,
+      "sha256": "f3ec52fb13e6028ab6cb10a25ecdce0db57486809b09a7f65d1661bc6e1ca4d0"
+    },
+    {
+      "path": "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_runtime_profile.cpp",
+      "bytes": 8905,
+      "sha256": "e63290ffe0f2bc74a94cda6710c9e352c5529892bca275c8337f73e1a3fa272e"
+    },
+    {
+      "path": "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_runtime_bootstrap_profiles.cpp",
+      "bytes": 9661,
+      "sha256": "19d7814c118e0b5df9ea095f0e6dd261a983a592480334e99c4f34f532ccaa6a"
+    }
+  ],
+  "compile_command": [
+    "/usr/bin/c++",
+    "-DCPPHTTPLIB_OPENSSL_SUPPORT=1",
+    "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+    "-DLOOM_BUILDING=1",
+    "-DLOOM_HAVE_OPENSSL=1",
+    "-DLOOM_VENDORED_SQLITE=1",
+    "-DLOOM_VERSION_STRING=\"0.1.0\"",
+    "-I/workspace/scratch/72fc60ad1cc5/chatadhd/loom/include",
+    "-I/workspace/scratch/72fc60ad1cc5/chatadhd/loom/src",
+    "-isystem",
+    "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/third_party/nlohmann",
+    "-isystem",
+    "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/third_party/cpp-httplib",
+    "-isystem",
+    "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/third_party/sqlite",
+    "-isystem",
+    "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/third_party/miniz",
+    "-g0",
+    "-std=c++20",
+    "-fPIC",
+    "-fvisibility=hidden",
+    "-fvisibility-inlines-hidden",
+    "-Wall",
+    "-Wextra",
+    "-Wpedantic",
+    "-Wshadow",
+    "-Wnon-virtual-dtor",
+    "-Wold-style-cast",
+    "-Wcast-align",
+    "-Woverloaded-virtual",
+    "-Wnull-dereference",
+    "-Wimplicit-fallthrough",
+    "-Wno-unused-parameter",
+    "-Werror",
+    "-o",
+    "/workspace/scratch/72fc60ad1cc5/runtime-profile-bootstrap19.o",
+    "-c",
+    "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/src/model/runtime_profile.cpp"
+  ],
+  "link_command": [
+    "/usr/bin/c++",
+    "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+    "-DLOOM_TEST_FIXTURES=\"/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/fixtures\"",
+    "-DLOOM_VENDORED_SQLITE=1",
+    "-DLOOM_VERSION_STRING=\"0.1.0\"",
+    "-I/workspace/scratch/72fc60ad1cc5/chatadhd/loom/src",
+    "-I/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests",
+    "-I/workspace/scratch/72fc60ad1cc5/chatadhd/loom/include",
+    "-isystem",
+    "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/third_party/doctest",
+    "-isystem",
+    "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/third_party/nlohmann",
+    "-isystem",
+    "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/third_party/sqlite",
+    "-g0",
+    "-std=c++20",
+    "-fPIE",
+    "-fvisibility=hidden",
+    "-fvisibility-inlines-hidden",
+    "-Wall",
+    "-Wextra",
+    "-Wpedantic",
+    "-Wshadow",
+    "-Wnon-virtual-dtor",
+    "-Wold-style-cast",
+    "-Wcast-align",
+    "-Woverloaded-virtual",
+    "-Wnull-dereference",
+    "-Wimplicit-fallthrough",
+    "-Wno-unused-parameter",
+    "-Werror",
+    "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/main.cpp",
+    "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_runtime_profile.cpp",
+    "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_runtime_bootstrap_profiles.cpp",
+    "/workspace/scratch/72fc60ad1cc5/runtime-profile-bootstrap19.o",
+    "/workspace/scratch/72fc60ad1cc5/baseline-build/libloom_core.a",
+    "/workspace/scratch/72fc60ad1cc5/baseline-build/libloom_miniz.a",
+    "/workspace/scratch/72fc60ad1cc5/baseline-build/libloom_sqlite3_amalgamation.a",
+    "-pthread",
+    "-ldl",
+    "-lm",
+    "-lssl",
+    "-lcrypto",
+    "-o",
+    "/workspace/scratch/72fc60ad1cc5/bootstrap19-focused-tests"
+  ],
+  "compile_cwd": "/workspace/scratch/72fc60ad1cc5/chatadhd",
+  "compile_exit": 0,
+  "link_exit": 0,
+  "run_command": [
+    "/workspace/scratch/72fc60ad1cc5/bootstrap19-focused-tests"
+  ],
+  "run_cwd": "/workspace/scratch/72fc60ad1cc5/bootstrap19-focused-work",
+  "run_exit": 0,
+  "raw_output": {
+    "path": "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/runtime-bootstrap/focused.log",
+    "bytes": 299,
+    "sha256": "0e75ec9e66c3c167ce5360c2dca67aeea5fae4247abebd4107324e6f5b1de1a5"
+  },
+  "canonical_domains": 19,
+  "config_dependency_diff_to161": ""
+}
