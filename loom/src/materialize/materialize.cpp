@@ -603,6 +603,7 @@ Result<Json> run_stage(knowledge::StageContext& ctx) {
     begin = end;
   }
   Json artifacts = Json::array();
+  Json omitted_products = Json::array();
   std::vector<model::Product> products;
 
   auto store_artifact = [&](const Rendered& r, std::string_view file_name) -> Status {
@@ -643,7 +644,13 @@ Result<Json> run_stage(knowledge::StageContext& ctx) {
   for (const auto& planned : plan) {
     auto rendered = planned.operation.renderer->execute(planned.instance);
     if (!rendered) {
-      if (planned.operation.omit_error) continue;
+      if (planned.operation.omit_error) {
+        omitted_products.push_back(Json{{"renderer", planned.operation.name},
+                                        {"key", planned.instance.empty() ? ctx.run : planned.instance},
+                                        {"error", Json{{"code", errc_name(rendered.error().code)},
+                                                       {"message", rendered.error().message}}}});
+        continue;
+      }
       return rendered.error();
     }
     LOOM_TRY(store_artifact(*rendered, planned.file_name));
@@ -660,11 +667,15 @@ Result<Json> run_stage(knowledge::StageContext& ctx) {
   std::sort(hashes.begin(), hashes.end());
   std::string joined;
   for (auto& h : hashes) joined += h + "|";
+  if (!omitted_products.empty()) joined += omitted_products.dump();
   statistics["products"] = products.size();
 
-  return Json{{"output", Sha256::hex(joined)},
-              {"artifacts", artifacts},
-              {"stats", statistics}};
+  Json result{{"output", Sha256::hex(joined)}, {"artifacts", artifacts}, {"stats", statistics}};
+  if (!omitted_products.empty()) {
+    result["complete"] = false;
+    result["omitted_products"] = std::move(omitted_products);
+  }
+  return result;
 }
 
 }  // namespace loom::materialize

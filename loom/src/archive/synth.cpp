@@ -626,27 +626,42 @@ SynthesisOutput synthesize(const SynthesisInput& in) {
     std::set<std::string> known = ix.uris;
     for (const auto& d : c.docs) known.insert(d.uri);
     std::map<std::string, std::string> missing_files;  // path -> first doc key
+    const auto& locator = policy.value("/synthesis_rendering/source_references");
+    const auto& extra_chars = locator.at("lexical_extra_characters").get_ref<const std::string&>();
+    const auto& trim_chars = locator.at("trim_suffix_characters").get_ref<const std::string&>();
+    const auto& suffix_boundaries = locator.at("known_suffix_boundary_characters").get_ref<const std::string&>();
+    auto matches_any = [&](std::string_view field, std::string_view candidate, bool prefix) {
+      for (const auto& entry : locator.at(std::string(field))) {
+        const auto& value = entry.get_ref<const std::string&>();
+        if (prefix ? candidate.starts_with(value) : candidate.find(value) != std::string_view::npos) return true;
+      }
+      return false;
+    };
     for (const auto& d : c.docs) {
       if (!is_spec_doc(d, policy) && d.kind != "chat") continue;
       const std::string& t = d.text;
       std::size_t i = 0;
       while (i < t.size()) {
         std::size_t b = i;
-        while (i < t.size() && (std::isalnum(static_cast<unsigned char>(t[i])) || t[i] == '/' || t[i] == '_' ||
-                                t[i] == '.' || t[i] == '-')) {
+        while (i < t.size() && (std::isalnum(static_cast<unsigned char>(t[i])) ||
+                                extra_chars.find(t[i]) != std::string::npos)) {
           ++i;
         }
         if (i > b) {
           std::string tok = t.substr(b, i - b);
-          while (!tok.empty() && (tok.back() == '.' || tok.back() == '/')) tok.pop_back();
+          while (!tok.empty() && trim_chars.find(tok.back()) != std::string::npos) tok.pop_back();
           std::string ext = tok.find('.') != std::string::npos ? tok.substr(tok.rfind('.')) : "";
 
-          if (tok.find('/') != std::string::npos && policy.contains("/synthesis/source_extensions", ext) && tok.find("//") == std::string::npos &&
-              tok.find("..") == std::string::npos && tok[0] != '/' && tok.find("http") != 0) {
+          if (!tok.empty() &&
+              (!locator.at("require_path_marker").get<bool>() || matches_any("path_markers", tok, false)) &&
+              policy.contains("/synthesis/source_extensions", ext) &&
+              !matches_any("forbidden_sequences", tok, false) && !matches_any("forbidden_prefixes", tok, true) &&
+              !matches_any("excluded_absolute_prefixes", tok, true)) {
             bool found = false;
             for (const auto& k : known) {
-              if (k == tok || (k.size() > tok.size() && k.compare(k.size() - tok.size(), tok.size(), tok) == 0 &&
-                               k[k.size() - tok.size() - 1] == '/')) {
+              if (k == tok || (locator.at("known_suffix_match").get<bool>() && k.size() > tok.size() &&
+                               k.compare(k.size() - tok.size(), tok.size(), tok) == 0 &&
+                               suffix_boundaries.find(k[k.size() - tok.size() - 1]) != std::string::npos)) {
                 found = true;
                 break;
               }

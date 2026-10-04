@@ -78,5 +78,7 @@
   "snapshot_source_sha256": "6398fd6a43407b7dfa25079f7d6f611a41003726168ccf43bc269210ba81b829",
   "current_source_sha256": "2bef091e054b4ef0dbee9621f6d8642a5a34a0adef2e63493650924680bb82ee",
   "test_source_sha256": "cbebd9b6adf333cda2eed559fd00cb0a166b3cb6402071ed658bc0c18ac2cccc",
-  "metadata_correction": "Profile fragment corrects167 x-setting editor hints after test; defaultvalues/schema constraints/source unchanged. Parent merges corrected schema before final full build."
+  "metadata_correction": "Profile fragment corrects167 x-setting editor hints after test; defaultvalues/schema constraints/source unchanged. Parent merges corrected schema before final full build.",
+  "replay_verified": true,
+  "replay_fresh_embedding": "19 runtime profiles, including model creation defaults and normalized schema hints"
 }
