@@ -4,7 +4,7 @@
 `161cc22dfb84fe863389d6b90323bd44516a68dc`. The section between the markers is
 intended for the repository root: its links are root-relative. Install it only
 after the INTERFACE work is incorporated and reconcile it with the accepted
-results of threads 1–8. The dated measurements below remain attached to their
+results of threads 1–11. The dated measurements below remain attached to their
 original source; they are not a receipt for later integration.
 
 <!-- BEGIN PROPOSED ROOT README -->
@@ -151,6 +151,10 @@ under the user's preferences. This remains a research and engineering programme.
 - Connect provider-backed vectors and model-assisted goal typing to production
   selection, then measure context cost and quality against matched baselines.
 - Extend native GraphPacket transformations/history and graph-form model replies.
+- Represent analysis methods, versioned prompts and recipes, parameters, presets
+  and user combinations as graph entities. Results link to the exact method
+  version and parameters that produced them; experiment assessments are dated,
+  evidence-backed claims about those methods. Default definitions belong in packs.
 - Validate large real archives, semantic selection, extraction and generated
   hypotheses with independent data and controlled evidence classes.
 - Extend media/artifact views, branch navigation, durable workflow recovery and
@@ -181,7 +185,7 @@ components retain their own licenses and terms.
 
 <!-- END PROPOSED ROOT README -->
 
-## Integration notes (exclude from the root README)
+## Do wątku 9 — integration notes (exclude from the root README)
 
 - Scope compliance: this report is the only file edited. Existing root/docs/web
   READMEs, STATE, profile contracts, client code and sealed evaluation material
@@ -199,9 +203,10 @@ components retain their own licenses and terms.
   parity gaps, native receipts versus browser-local view state, and the actual
   latest-run side effect of saving a profile. Avoid a blanket claim of original
   app reproduction or cross-device recovery.
-- The owner's current instruction forbids paid calls without agreement. Older
+- The owner's current instruction confines paid calls to thread 7's separate
+  EUR 5 budget. Older
   AGENTS language about an already authorized USD 2 research programme does not
-  authorize new paid calls in this lane. The draft describes recorded work and
+  authorize paid calls in this lane. The draft describes recorded work and
   a prepared study only.
 - Threads 2–5 can change roadmap items. Accept their code and verification
   before updating capability claims; preserve the same source/evidence boundary
@@ -209,3 +214,6 @@ components retain their own licenses and terms.
 - Build commands and local link targets are taken from the current root/native
   guides and checked for existence/preset consistency. This draft does not claim
   an additional build run; the parent hygiene lane owns fresh validation.
+- The graph-method paragraph is an owner requirement renewed on 2026-10-04,
+  not an implemented-capability claim. Threads 3 and 4 must agree the shared
+  method/version/run format before thread 9 accepts either integration.
