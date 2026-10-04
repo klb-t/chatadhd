@@ -244,7 +244,7 @@ def test_graph_packets(base: str, data_dir: str) -> None:
     receipt = result["receipt"]
     assert receipt["packet"] == packet and not result["replayed"], result
     assert receipt["acceptance_establishes_content_truth"] is False
-    assert "not_performed" in receipt["reversible_history_validation"]
+    assert receipt["reversible_history_validation"] == "native_codec_backwards_and_forwards_history_replay"
     readback = post({"operation": "read", "receipt_id": receipt["id"]})
     assert readback["receipt"] == receipt and readback["row_drift"]["matches"], readback
     assert post({"operation": "replay", "receipt_id": receipt["id"]})["receipt"] == receipt

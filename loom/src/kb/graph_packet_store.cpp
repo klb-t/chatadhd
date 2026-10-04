@@ -6,6 +6,7 @@
 
 #include "loom/sqlite.h"
 #include "loom/util/sha256.h"
+#include "packet/packet.h"
 
 namespace loom::kb {
 namespace {
@@ -348,6 +349,14 @@ Result<Json> GraphPacketStore::execute(const Json& request) {
   LOOM_TRY_ASSIGN(auto index, index_packet(request["packet"]));
   LOOM_TRY_ASSIGN(auto selected, select_rows(request, index));
   LOOM_TRY_ASSIGN(auto rows, validate_rows(selected));
+  // Preserve the selected-row adapter's lossless projection diagnostics, then
+  // check the entire packet and reversible history before any database writes.
+  // Old immutable receipts are returned unchanged by read/replay and retries.
+  try {
+    packet::validate(request["packet"]);
+  } catch (const std::exception& e) {
+    return invalid(std::string("graph store: native packet validation: ") + e.what());
+  }
   Json input = request;
   input.erase("operation");
   const std::string request_hash = hash(input);
@@ -386,11 +395,11 @@ Result<Json> GraphPacketStore::execute(const Json& request) {
       {"expected_rows", request["expected_rows"]}, {"stored_row_sha256", Json::object()},
       {"row_snapshots", Json::object()}, {"explicitly_accepted", true},
       {"acceptance_establishes_content_truth", false},
-      {"native_validation_scope", "packet_head_and_provenance_hashes_selected_native_rows_entity_claim_observation_reference_closure_source_hashes_quotes_utf8_subspans"},
+      {"native_validation_scope", "full_packet_backwards_and_forwards_history_replay_and_selected_native_rows_entity_claim_observation_reference_closure_source_hashes_quotes_utf8_subspans"},
       {"opaque_native_references", opaque_references(rows)},
       {"opaque_native_reference_validation", "principle_prediction_and_pack_check_ids_preserved_but_not_resolved_by_this_adapter"},
       {"judgement_replay", judgement_report.to_json()},
-      {"reversible_history_validation", "not_performed_by_native_adapter_use_graph_packet_codec"},
+      {"reversible_history_validation", "native_codec_backwards_and_forwards_history_replay"},
       {"source_authenticity", "not_established_by_internal_content_hashes"}};
   for (const char* name : kCollections) {
     receipt["row_snapshots"][name] = Json::object();
