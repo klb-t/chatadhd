@@ -1,0 +1,11 @@
+{
+  "README.md": "3a31719f6eaf3b3ce086de0fbf834c4fbb1329a778e91b9c9dd938b20e5f8c73",
+  "after-final.json": "b51df421f8f7dee343ee63bf9eee7c40240033461e97cabad7916d0d5275473c",
+  "archive_cost_before.py": "aa67b075661eb810785f7fc9d95d9acb7c7fa6df407e159db6037e30a27db5e3",
+  "baseline-final.json": "bb25ac333c99f1ad4af2495a501f8e8409448248b9564901fd14e0c5bbc533c1",
+  "benchmark.py": "e585acbc4ef952717c29d84a7bee11fb39b82530af160a0adf3818fb4da54398",
+  "existing-tests.txt": "4021d6ecfd2b1f1b6922a1491445402205b448853fef6ea35ee31b30a4a58803",
+  "extra-tests.txt": "fbdaab108f7a537c0d58c1e3bb57aaf716a990e9190d2b6e3b9f47d88bd81306",
+  "portable-tests.txt": "c4e673b12abc68c22b9a1146286de165ab8bf748a84338b3d136c7fdba42d741",
+  "test_archive_cost.py": "1c8f95ecfcb7cd10099a2afabf74fc2be8b8d4be7bbe7eebaec2352c5ba9eba0"
+}
