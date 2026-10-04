@@ -1,6 +1,17 @@
-...........
+test_db_opened_read_only (test_archive_cost.ArchiveCostTest.test_db_opened_read_only) ... ok
+test_estimate_arithmetic (test_archive_cost.ArchiveCostTest.test_estimate_arithmetic) ... ok
+test_even_conversation_median_uses_both_middle_sizes (test_archive_cost.ArchiveCostTest.test_even_conversation_median_uses_both_middle_sizes) ... ok
+test_fraction_and_versions (test_archive_cost.ArchiveCostTest.test_fraction_and_versions) ... ok
+test_invalid_counts_and_prices_rejected (test_archive_cost.ArchiveCostTest.test_invalid_counts_and_prices_rejected) ... ok
+test_invalid_parameters_rejected_before_cost (test_archive_cost.ArchiveCostTest.test_invalid_parameters_rejected_before_cost) ... ok
+test_large_finite_budget_supported_overflow_rejected (test_archive_cost.ArchiveCostTest.test_large_finite_budget_supported_overflow_rejected) ... ok
+test_missing_database_is_not_created (test_archive_cost.ArchiveCostTest.test_missing_database_is_not_created) ... ok
+test_reserved_uri_characters_open_exact_file_without_creating_sibling (test_archive_cost.ArchiveCostTest.test_reserved_uri_characters_open_exact_file_without_creating_sibling) ... ok
+test_stats_split_by_status (test_archive_cost.ArchiveCostTest.test_stats_split_by_status) ... ok
+test_unknown_status_counted_explicitly_and_configurable (test_archive_cost.ArchiveCostTest.test_unknown_status_counted_explicitly_and_configurable) ... ok
+
 ----------------------------------------------------------------------
-Ran 11 tests in 0.064s
+Ran 11 tests in 0.157s
 
 OK
 {
@@ -154,7 +165,9 @@ OK
   },
   "estimate": {
     "schema": "loom.archive_cost_projection/1",
-    "local_import_cost_usd": 0,
+    "model_calls": 0,
+    "local_import_model_cost_usd": 0,
+    "local_compute_cost_usd": null,
     "projected": {
       "scope": {
         "status_classes": [

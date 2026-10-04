@@ -9,9 +9,15 @@ The frozen `archive_cost_before.py` is byte-identical to
 `aa67b075661eb810785f7fc9d95d9acb7c7fa6df407e159db6037e30a27db5e3`.
 It is included solely to reproduce `archive_stats`; its historical default
 pricing path is irrelevant to this benchmark and is not a current-price source.
-The current implementation is read from `loom/tools/eval/archive_cost.py`;
-its SHA-256 at this evidence checkpoint is
+The benchmark implementation is read from `loom/tools/eval/archive_cost.py`;
+its measured source is retained at commit
+`f306eb0d7730531d094c6e291073449bc7720fdb`, SHA-256
 `544af971164e0d4a25b5a64f0fc7cd8f220a62a26f45eadc12356b57a872c870`.
+The later estimate-output clarification replaces `local_import_cost_usd` with
+`model_calls: 0`, `local_import_model_cost_usd: 0` and
+`local_compute_cost_usd: null`. It changes no `archive_stats` operation or
+benchmark measurement. The saved numeric receipts remain the original runs;
+test logs were rerun for the clarified labels.
 
 ## Measured result
 

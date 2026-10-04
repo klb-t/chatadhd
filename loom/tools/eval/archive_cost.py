@@ -228,7 +228,8 @@ def estimate(stats: dict, pricing: dict | None = None, *, fraction: float = 1.0,
         projected_prefix = _number(n_conv * prefix_tokens, "estimated_prefix_tokens")
     except OverflowError:
         raise ValueError("estimated_prefix_tokens exceeds numeric representation") from None
-    out = {"schema": "loom.archive_cost_projection/1", "local_import_cost_usd": 0,
+    out = {"schema": "loom.archive_cost_projection/1", "model_calls": 0,
+           "local_import_model_cost_usd": 0, "local_compute_cost_usd": None,
            "projected": projected,
            "assumptions": {"fraction": fraction, "fraction_method": "proportional projection; not a measured sample",
                            "output_ratio": output_ratio, "prefix_tokens": prefix_tokens,
@@ -331,7 +332,7 @@ def main(argv=None) -> int:
     print(f"Projection: {projected['conversations']:,} conversations, {projected['messages']:,} messages, {projected['chars']:,} characters; scope {projected['scope']}")
     print(f"Estimated text input tokens (fraction {a.fraction}): {est['tokens']['low']:,} - {est['tokens']['high']:,}; prefix tokens {est['prefix_tokens']:,.0f}")
     if est["models"] is None:
-        print("Model USD estimate unavailable: supply input/output prices or an explicit pricing file. Local import provider cost: $0.")
+        print("Model USD estimate unavailable: supply input/output prices or an explicit pricing file. Local import model-call cost: $0; local compute cost unmeasured.")
     else:
         print(f"USD per reading pass (low - high; hypothetical batch in brackets), supplied prices as of {pricing.get('as_of')}:")
         for model, r in est["models"].items():
