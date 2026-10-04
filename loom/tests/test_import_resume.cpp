@@ -32,6 +32,22 @@ Json resume_conversation(int index) {
       Json{{"uuid", "child"}, {"parent_message_uuid", "parent"}, {"sender", "assistant"}, {"text", "Child \\\" {} [] ż"}},
       Json{{"uuid", "parent"}, {"parent_message_uuid", nullptr}, {"sender", "human"}, {"text", "Parent"}}})}};
 }
+Json resume_openai_conversation() {
+  return Json{{"conversation_id", "openai-conversation"}, {"title", "Synthetic OpenAI conversation"},
+    {"current_node", "message-node"}, {"mapping", Json{{"message-node", Json{{"id", "message-node"},
+      {"parent", nullptr}, {"children", Json::array()}, {"message", Json{{"id", "message-id"},
+        {"author", Json{{"role", "user"}}}, {"content", Json{{"content_type", "text"},
+          {"parts", Json::array({"Synthetic OpenAI message"})}}}}}}}}}};
+}
+std::map<std::string, std::string> resume_openai_members() {
+  return {{"conversations.json", Json::array({resume_openai_conversation()}).dump()},
+    {"message_feedback.json", Json::array({Json{{"id", "feedback"}, {"conversation_id", "openai-conversation"},
+      {"message_id", "message-id"}, {"rating", "good"}, {"content", "Synthetic feedback"}}}).dump()},
+    {"shared_conversations.json", Json::array({Json{{"conversation_id", "openai-conversation"},
+      {"title", "Synthetic shared link"}}}).dump()},
+    {"textdocs/artifact.json", Json{{"conversation_id", "openai-conversation"}, {"name", "Synthetic artifact"},
+      {"content", "Synthetic artifact content"}}.dump()}};
+}
 struct ResumeFixture {
   fsutil::TempDir temporary;
   std::unique_ptr<Database> db = open_db(temporary.path() / "source.db");
@@ -190,29 +206,48 @@ TEST_SUITE("import_resume") {
     CHECK(fixture.count("nodes") == 5); CHECK(fixture.count("links") == 2);
   }
 
-  TEST_CASE("legacy raw journal cannot hide missing project records behind a completed source cache") {
+  TEST_CASE("legacy journal repair preserves source-owned project memory IDs behind a completed cache") {
     ResumeFixture fixture;
     const auto archive = fixture.temporary.path() / "legacy-projects.zip";
     const Json project{{"uuid", "project"}, {"name", "A project"}, {"docs", Json::array({
       Json{{"uuid", "document"}, {"filename", "Synthetic.txt"}, {"content", "Synthetic document"}}})}};
     resume_zip(archive, {{"conversations.json", Json::array({resume_conversation(0)}).dump()},
+                        {"memories.json", Json{{"project_memories", Json{{"project", "Synthetic memory"}}}}.dump()},
                         {"projects.json", Json::array({project}).dump()}});
     LOOM_REQUIRE_OK(fixture.db->conn().exec("CREATE TRIGGER fail_project_link BEFORE INSERT ON links "
       "WHEN NEW.link_type='part_of' BEGIN SELECT RAISE(FAIL,'injected project link failure'); END;"));
     const auto failed = unwrap(fixture.importer.import_file(archive, fixture.options));
     REQUIRE(failed.conversations.size() == 1); CHECK(failed.export_report["partial"] == true);
-    const auto raw_id = unwrap(fixture.db->conn().query_text("SELECT id FROM nodes WHERE kind='export:member'"));
+    const auto raw_id = unwrap(fixture.db->conn().query_text(
+      "SELECT id FROM nodes WHERE kind='export:member' AND label='projects.json'"));
     REQUIRE(raw_id);
     // Reproduce the original writer's shared-phase marker and false completed
     // cache using its real raw node/report, without changing source identities.
     LOOM_REQUIRE_OK(fixture.db->conn().exec("DROP TRIGGER fail_project_link; "
       "UPDATE loom_import_checkpoints SET source_index=-1,metadata=json_set(metadata,'$.kind','member') "
       "WHERE member='projects.json' AND source_index=-2;"));
+    auto memory_checkpoint = unwrap(fixture.db->conn().query_text(
+      "SELECT metadata FROM loom_import_checkpoints WHERE member='memories.json' AND source_index=-2"));
+    REQUIRE(memory_checkpoint);
+    auto memory_metadata = unwrap(json::parse(*memory_checkpoint));
+    memory_metadata["kind"] = "member";
+    memory_metadata["report"]["unknown_members"] = Json::array();
+    memory_metadata["report"]["counts"]["memory"] = 1;
+    LOOM_REQUIRE_OK(fixture.db->conn().run("UPDATE loom_import_checkpoints SET source_index=-1,metadata=? "
+      "WHERE member='memories.json' AND source_index=-2", json::py_dumps(memory_metadata)));
+    LOOM_REQUIRE_OK(fixture.db->conn().exec("DELETE FROM nodes WHERE kind='export:member' AND label='memories.json'"));
+    NodeOptions memory_options;
+    memory_options.content = "Synthetic memory";
+    memory_options.metadata = Json{{"export", Json{{"provider", "anthropic"}, {"member", "memories.json"},
+      {"source_id", failed.source_id},
+      {"record", Json{{"scope", "project"}, {"project_uuid", "project"}, {"container_fields", Json::object()}}}}}};
+    const auto memory_id = unwrap(fixture.db->create_node("project memory project", "export:memory", memory_options));
     auto source = unwrap(fixture.provenance.get_source(failed.source_id));
     REQUIRE(source);
     source->metadata["import_status"] = "complete";
     source->metadata["export_report"]["partial"] = false;
     source->metadata["export_report"]["errors"] = Json::array();
+    source->metadata["export_report"]["counts"]["memory"] = 1;
     LOOM_REQUIRE_OK(fixture.db->conn().run("UPDATE loom_sources SET metadata=? WHERE id=?",
                                          json::py_dumps(source->metadata), source->id));
 
@@ -229,8 +264,12 @@ TEST_SUITE("import_resume") {
     CHECK(repaired.export_report["partial"] == false);
     CHECK(repaired.export_report["counts"]["project"] == 1);
     CHECK(repaired.export_report["counts"]["project_doc"] == 1);
-    CHECK(fixture.count("nodes") == 3); CHECK(fixture.count("links") == 1);
+    CHECK(repaired.export_report["counts"]["memory"] == 1);
+    CHECK(fixture.count("nodes") == 4); CHECK(fixture.count("links") == 2);
     CHECK(unwrap(reopened->conn().query_text("SELECT id FROM nodes WHERE kind='export:member'")) == raw_id);
+    CHECK(unwrap(reopened->conn().query_text("SELECT id FROM nodes WHERE kind='export:memory'")) == memory_id);
+    CHECK(unwrap(reopened->conn().query_int("SELECT COUNT(*) FROM links l JOIN nodes p ON p.id=l.dst "
+      "WHERE l.src=? AND l.link_type='part_of' AND p.kind='export:project'", memory_id)).value_or(-1) == 1);
     CHECK(unwrap(reopened->conn().query_int("SELECT COUNT(*) FROM loom_import_checkpoints "
       "WHERE member='projects.json' AND source_index=-2 AND json_extract(metadata,'$.kind')='raw_member'"))
       .value_or(-1) == 1);
@@ -242,25 +281,34 @@ TEST_SUITE("import_resume") {
     const auto cached = unwrap(importer.import_file(archive, fixture.options));
     CHECK(cached.already_imported); CHECK(cached.export_report["partial"] == false);
     CHECK(cached.conversations[0].id == failed.conversations[0].id);
-    CHECK(fixture.count("nodes") == 3); CHECK(fixture.count("links") == 1);
+    CHECK(fixture.count("nodes") == 4); CHECK(fixture.count("links") == 2);
   }
 
   TEST_CASE("malformed known provider member remains partial across raw-retention replay") {
     ResumeFixture fixture;
-    const auto archive = fixture.temporary.path() / "malformed-projects.zip";
+    bool nested = false;
+    SUBCASE("direct provider archive") {}
+    SUBCASE("provider archive inside a container") { nested = true; }
+    auto archive = fixture.temporary.path() / "malformed-projects.zip";
     resume_zip(archive, {{"conversations.json", Json::array({resume_conversation(0)}).dump()},
                         {"projects.json", "[{\"uuid\":\"unfinished\""}});
+    if (nested) {
+      const auto container = fixture.temporary.path() / "malformed-container.zip";
+      resume_zip(container, {{"nested.zip", unwrap(fsutil::read_file(archive))}});
+      archive = container;
+    }
     std::string source_id, conversation_id;
     for (int attempt = 0; attempt < 3; ++attempt) {
       const auto result = unwrap(fixture.importer.import_file(archive, fixture.options));
+      const auto& provider_report = nested ? result.export_report["parts"][0]["report"] : result.export_report;
       REQUIRE(result.conversations.size() == 1);
       CHECK_FALSE(result.already_imported); CHECK(result.export_report["partial"] == true);
-      CHECK_FALSE(result.export_report["errors"].empty());
+      CHECK_FALSE(provider_report["errors"].empty());
       if (attempt == 0) { source_id = result.source_id; conversation_id = result.conversations[0].id; }
       else {
         CHECK(result.resumed); CHECK(result.source_id == source_id);
         CHECK(result.conversations[0].id == conversation_id);
-        CHECK(result.export_report["resumed_members"] == 1);
+        CHECK(provider_report["resumed_members"] == 1);
       }
       const auto source = unwrap(fixture.provenance.get_source(result.source_id));
       REQUIRE(source); CHECK(source->metadata["import_status"] == "partial");
@@ -268,6 +316,116 @@ TEST_SUITE("import_resume") {
       CHECK(fixture.count("conversations") == 1); CHECK(fixture.count("loom_import_checkpoints") == 2);
       CHECK(unwrap(fixture.db->conn().query_int("SELECT COUNT(*) FROM loom_import_checkpoints "
         "WHERE member='projects.json' AND source_index=-1")).value_or(-1) == 0);
+    }
+  }
+
+  TEST_CASE("OpenAI auxiliary bindings remain pending after a transient conversation failure") {
+    ResumeFixture fixture;
+    const auto archive = fixture.temporary.path() / "openai-pending.zip";
+    resume_zip(archive, resume_openai_members());
+    LOOM_REQUIRE_OK(fixture.db->conn().exec("CREATE TRIGGER fail_imported_message BEFORE INSERT ON messages "
+      "BEGIN SELECT RAISE(FAIL,'injected conversation message failure'); END;"));
+    const auto failed = unwrap(fixture.importer.import_file(archive, fixture.options));
+    CHECK(failed.export_report["partial"] == true); CHECK(failed.conversations.empty());
+    CHECK(fixture.count("conversations") == 0); CHECK(fixture.count("messages") == 0);
+    CHECK(fixture.count("nodes") == 3); CHECK(fixture.count("links") == 0);
+    CHECK(unwrap(fixture.db->conn().query_int("SELECT COUNT(*) FROM loom_import_checkpoints WHERE source_index=-1"))
+      .value_or(-1) == 0);
+    LOOM_REQUIRE_OK(fixture.db->conn().exec("DROP TRIGGER fail_imported_message"));
+    const auto repaired = unwrap(fixture.importer.import_file(archive, fixture.options));
+    CHECK(repaired.resumed); CHECK(repaired.source_id == failed.source_id);
+    REQUIRE(repaired.conversations.size() == 1); CHECK(repaired.messages == 1);
+    CHECK(repaired.export_report["partial"] == false);
+    CHECK(repaired.export_report["counts"]["feedback"] == 1);
+    CHECK(repaired.export_report["counts"]["shared_link"] == 1);
+    CHECK(repaired.export_report["counts"]["artifact"] == 1);
+    CHECK(fixture.count("nodes") == 6); CHECK(fixture.count("links") == 3);
+    const auto cached = unwrap(fixture.importer.import_file(archive, fixture.options));
+    CHECK(cached.already_imported); CHECK(cached.conversations[0].id == repaired.conversations[0].id);
+    CHECK(fixture.count("nodes") == 6); CHECK(fixture.count("links") == 3);
+  }
+
+  TEST_CASE("legacy OpenAI journals repair source-owned references while preserving node IDs") {
+    ResumeFixture fixture;
+    bool nested = false;
+    SUBCASE("direct provider archive") {}
+    SUBCASE("provider archive inside a completed container") { nested = true; }
+    auto archive = fixture.temporary.path() / "openai-legacy-bindings.zip";
+    auto members = resume_openai_members();
+    auto feedback = unwrap(json::parse(members["message_feedback.json"]));
+    feedback.push_back(Json{{"id", "external-message"}, {"conversation_id", "openai-conversation"},
+      {"message_id", "message-outside-export"}, {"content", "External message reference"}});
+    feedback.push_back(Json{{"id", "external-conversation"}, {"conversation_id", "conversation-outside-export"},
+      {"message_id", "external"}, {"content", "External conversation reference"}});
+    members["message_feedback.json"] = feedback.dump();
+    resume_zip(archive, members);
+    if (nested) {
+      const auto container = fixture.temporary.path() / "container.zip";
+      resume_zip(container, {{"nested.zip", unwrap(fsutil::read_file(archive))}});
+      archive = container;
+    }
+    const auto original = unwrap(fixture.importer.import_file(archive, fixture.options));
+    REQUIRE(original.conversations.size() == 1); CHECK(fixture.count("nodes") == 5); CHECK(fixture.count("links") == 3);
+    const auto& original_report = nested ? original.export_report["parts"][0]["report"] : original.export_report;
+    CHECK(original_report["warnings"].size() == 2);
+    std::map<std::string, std::string> node_ids;
+    for (const auto* kind : {"export:feedback", "export:shared_link", "export:artifact"}) {
+      const auto id = unwrap(fixture.db->conn().query_text("SELECT id FROM nodes WHERE kind=?", kind));
+      REQUIRE(id); node_ids[kind] = *id;
+    }
+    LOOM_REQUIRE_OK(fixture.db->conn().exec("DELETE FROM links; "
+      "UPDATE loom_import_checkpoints SET metadata=json_remove(metadata,'$.binding_version') WHERE source_index=-1;"));
+    auto reopened = open_db(fixture.temporary.path() / "source.db");
+    EventBus bus; BlobStore blobs{fixture.temporary.path() / "blobs", *reopened};
+    ProvenanceStore provenance{*reopened}; ConversationImporter importer{*reopened, bus, &blobs, &provenance};
+    const auto repaired = unwrap(importer.import_file(archive, fixture.options));
+    CHECK_FALSE(repaired.already_imported); CHECK(repaired.resumed);
+    CHECK(repaired.source_id == original.source_id);
+    REQUIRE(repaired.conversations.size() == 1); CHECK(repaired.conversations[0].id == original.conversations[0].id);
+    CHECK(repaired.export_report["partial"] == false);
+    const auto& repaired_report = nested ? repaired.export_report["parts"][0]["report"] : repaired.export_report;
+    CHECK(repaired_report["warnings"].size() == 2);
+    CHECK(fixture.count("nodes") == 5); CHECK(fixture.count("links") == 3);
+    for (const auto& [kind, id] : node_ids)
+      CHECK(unwrap(reopened->conn().query_text("SELECT id FROM nodes WHERE kind=?", kind)) == id);
+    CHECK(unwrap(reopened->conn().query_int("SELECT COUNT(*) FROM loom_import_checkpoints "
+      "WHERE source_index=-1 AND json_extract(metadata,'$.binding_version')=1")).value_or(-1) == 3);
+    const auto cached = unwrap(importer.import_file(archive, fixture.options));
+    CHECK(cached.already_imported); CHECK(cached.conversations[0].id == original.conversations[0].id);
+    CHECK(fixture.count("nodes") == 5); CHECK(fixture.count("links") == 3);
+  }
+
+  TEST_CASE("uncertified OpenAI journal cannot retarget an unowned or foreign-source lookalike") {
+    ResumeFixture fixture;
+    bool foreign = false;
+    SUBCASE("historical node has no source ownership") {}
+    SUBCASE("identical node belongs to another imported source") { foreign = true; }
+    const auto archive = fixture.temporary.path() / "ownership.zip";
+    resume_zip(archive, resume_openai_members());
+    const auto original = unwrap(fixture.importer.import_file(archive, fixture.options));
+    const auto retained = unwrap(fixture.db->conn().query_text("SELECT id FROM nodes WHERE kind='export:feedback'"));
+    REQUIRE(retained);
+    if (foreign) {
+      const auto other = unwrap(fixture.importer.import_file(
+        fixture.write(Json::array({resume_conversation(9)}).dump(), "other-source.json"), fixture.options));
+      REQUIRE(other.source_id != original.source_id);
+      LOOM_REQUIRE_OK(fixture.db->conn().run("UPDATE nodes SET metadata=json_set(metadata,'$.export.source_id',?) "
+        "WHERE id=?", other.source_id, *retained));
+    } else {
+      LOOM_REQUIRE_OK(fixture.db->conn().run("UPDATE nodes SET metadata=json_remove(metadata,'$.export.source_id') "
+        "WHERE id=?", *retained));
+    }
+    LOOM_REQUIRE_OK(fixture.db->conn().exec("DELETE FROM links; "
+      "UPDATE loom_import_checkpoints SET metadata=json_remove(metadata,'$.binding_version') WHERE source_index=-1;"));
+    for (int attempt = 0; attempt < 2; ++attempt) {
+      const auto pending = unwrap(fixture.importer.import_file(archive, fixture.options));
+      CHECK_FALSE(pending.already_imported); CHECK(pending.resumed);
+      CHECK(pending.export_report["partial"] == true); CHECK_FALSE(pending.export_report["errors"].empty());
+      CHECK(unwrap(fixture.db->conn().query_int("SELECT COUNT(*) FROM links WHERE src=?", *retained)).value_or(-1) == 0);
+      CHECK(unwrap(fixture.db->conn().query_text("SELECT id FROM nodes WHERE kind='export:feedback'")) == retained);
+      const auto source = unwrap(fixture.provenance.get_source(original.source_id));
+      REQUIRE(source); CHECK(source->metadata["import_status"] == "partial");
+      CHECK(fixture.count("nodes") == 4); // preserved three records and one raw fallback, never replacements
     }
   }
 
