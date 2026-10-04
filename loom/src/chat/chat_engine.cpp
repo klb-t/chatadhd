@@ -22,6 +22,8 @@
 #include "stub.h"
 #include "active_task_spec.h"
 #include "active_task_acceptance.h"
+#include "context/context_execution.h"
+#include "context/unified_context.h"
 
 namespace loom {
 
@@ -96,6 +98,20 @@ Result<context::ContextRequest> chat_context_request(const Json& value) {
     if (!valid) return Error(Errc::InvalidArgument, "invalid knowledge_context option: " + k);
   }
   return context::ContextRequest::from_json(value);
+}
+
+Result<std::size_t> active_memory_cap(const Json& execution) {
+  const auto* unified = json::find(execution, "unified");
+  if (!unified || !unified->value("enabled", false)) return std::size_t(16000);
+  const auto* value = json::find(*unified, "memory_max_chars");
+  if (!value) return std::size_t(16000);
+  if (!value->is_number_integer() || (!value->is_number_unsigned() && value->get<std::int64_t>() < 0))
+    return Error(Errc::InvalidArgument, "unified memory_max_chars must be a nonnegative supported integer");
+  const auto number = value->get<std::uint64_t>();
+  if (number > std::numeric_limits<std::size_t>::max())
+    return Error(Errc::InvalidArgument, "unified memory_max_chars must be a nonnegative supported integer");
+  const auto cap = static_cast<std::size_t>(number);
+  return cap == 0 ? std::numeric_limits<std::size_t>::max() : cap;
 }
 
 Json native_history_row(const Message& message) {
@@ -482,7 +498,19 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
   std::string sys_prompt = opts.system_prompt ? *opts.system_prompt : cfg_string(cfg_, "system_prompt");
   if (!sys_prompt.empty()) messages.push_back(Json{{"role", "system"}, {"content", sys_prompt}});
 
-  if (memory_ && opts.include_memory) {
+  // The configured modern recipe is explicit; historical callers retain their
+  // compatible message order. Preview compilation never creates an execution
+  // scope, so configured provider credentials cannot turn it into a paid call.
+  const Json execution = context::current_context_execution_scope()
+      ? context::current_context_execution_scope()->options() : cfg_.get("context_execution", Json::object());
+  LOOM_TRY(context::validate_context_execution_options(execution));
+  const Json unified_options = execution.value("unified", Json::object());
+  if (!unified_options.is_object() || (unified_options.contains("enabled") && !unified_options["enabled"].is_boolean()))
+    return Error(Errc::InvalidArgument, "context_execution.unified must be an object with boolean enabled");
+  const bool unified = unified_options.value("enabled", false);
+  Json unified_context;
+
+  if (!unified && memory_ && opts.include_memory) {
     std::string mem_ctx = memory_->get_active_context();
     if (!mem_ctx.empty()) {
       messages.push_back(Json{{"role", "system"}, {"content", "User's memory/context:\n" + mem_ctx}});
@@ -490,7 +518,7 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
   }
 
   bool graph_disabled = opts.context_depth.has_value() && *opts.context_depth == 0;
-  if (graph_memory_ && opts.include_graph_memory && !graph_disabled) {
+  if (!unified && graph_memory_ && opts.include_graph_memory && !graph_disabled) {
     try {
       GraphSelectOptions gopts;
       if (opts.context_depth && *opts.context_depth > 0) gopts.depth = *opts.context_depth;
@@ -502,8 +530,14 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
     }
   }
 
-  if (opts.knowledge_context) {
-    auto request = *opts.knowledge_context;
+  if (opts.knowledge_context || unified) {
+    context::ContextRequest request;
+    if (opts.knowledge_context) request = *opts.knowledge_context;
+    else if (const auto* configured = json::find(execution, "request")) {
+      auto parsed = chat_context_request(*configured);
+      if (!parsed) return parsed.error();
+      request = *parsed;
+    }
     if (request.budget_tokens <= 0) return Error(Errc::InvalidArgument, "knowledge_context budget_tokens must be positive");
     if (request.text.empty()) request.text = current_text;
     KnowledgeContextBuilder builder;
@@ -511,17 +545,42 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
       std::lock_guard lk(mu_);
       builder = knowledge_context_builder_;
     }
-    if (!builder) return Error(Errc::NotImplemented, "knowledge context is unavailable on this ChatEngine");
-    auto compiled = builder(request);
-    if (!compiled) return compiled.error();
-    if (!compiled->is_object() || !compiled->contains("prompt") || !(*compiled)["prompt"].is_string() ||
-        !compiled->contains("context_set") || !(*compiled)["context_set"].is_object()) {
-      return Error(Errc::Internal, "knowledge context builder returned an invalid result");
+    const bool include_knowledge = !unified || unified_options.value("include_knowledge", true);
+    if (include_knowledge) {
+      if (!builder && (!unified || opts.knowledge_context))
+        return Error(Errc::NotImplemented, "knowledge context is unavailable on this ChatEngine");
+      if (builder) {
+        auto compiled = builder(request);
+        if (!compiled) {
+          // A modern legacy-only recipe can run before its first KB snapshot.
+          // Explicit run/goal requests still fail rather than hiding a typo.
+          if (!unified || opts.knowledge_context || !request.run.empty() ||
+              (request.goal_type && !request.goal_type->empty()) || compiled.error().code != Errc::NotFound)
+            return compiled.error();
+        } else {
+          if (!compiled->is_object() || !compiled->contains("prompt") || !(*compiled)["prompt"].is_string() ||
+              !compiled->contains("context_set") || !(*compiled)["context_set"].is_object()) {
+            return Error(Errc::Internal, "knowledge context builder returned an invalid result");
+          }
+          compiled_context = *compiled;
+        }
+      }
     }
-    compiled_context = *compiled;
-    resolved_context_request = compiled->value("request", request.to_json());
-    const auto prompt = (*compiled)["prompt"].get<std::string>();
-    if (!prompt.empty()) messages.push_back(Json{{"role", "system"}, {"content", prompt}});
+    resolved_context_request = compiled_context.is_object() ? compiled_context.value("request", request.to_json()) : request.to_json();
+    if (unified) {
+      Json settings = unified_options;
+      if (opts.context_depth) settings["legacy_relation_hops"] = *opts.context_depth;
+      else if (!settings.contains("legacy_relation_hops")) settings["legacy_relation_hops"] = cfg_.get("graph_memory_depth", 2);
+      auto selected = context::compile_unified_context(db_, cfg_, graph_memory_, memory_, request,
+          compiled_context, conv_id, opts.include_memory, opts.include_graph_memory && !graph_disabled, settings);
+      if (!selected) return selected.error();
+      unified_context = *selected;
+      const auto prompt = json::get_string(unified_context, "prompt");
+      if (!prompt.empty()) messages.push_back(Json{{"role", "system"}, {"content", prompt}});
+    } else {
+      const auto prompt = json::get_string(compiled_context, "prompt");
+      if (!prompt.empty()) messages.push_back(Json{{"role", "system"}, {"content", prompt}});
+    }
   }
 
   if (!conv_id.empty() && opts.include_history) {
@@ -562,6 +621,7 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
                                         {"context_depth", opts.context_depth ? Json(*opts.context_depth) : Json(nullptr)}}},
                          {"knowledge_context_request", resolved_context_request},
                          {"knowledge_context", compiled_context}};
+    if (unified) (*context_trace)["unified_context"] = unified_context;
     if (opts.active_task_spec) {
       (*context_trace)["active_task"] = *active_task;
       (*context_trace)["replaced_history_message_ids"] = replaced_ids;
@@ -606,6 +666,10 @@ std::optional<std::string> ChatEngine::last_reasoning() const {
 
 Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& opts, const ChatCallbacks& cb,
                                     const CancelToken* cancel) {
+  const Json execution = cfg_.get("context_execution", Json::object());
+  LOOM_TRY(context::validate_context_execution_options(execution));
+  LOOM_TRY_ASSIGN(auto memory_cap, active_memory_cap(execution));
+  context::ContextExecutionScope context_execution(execution);
   // 1. Resolve the conversation. Keep one lock order (database -> mu_)
   // shared with task compilation, and serialize implicit first-conversation
   // creation so concurrent sends do not unexpectedly create separate chats.
@@ -640,7 +704,10 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
   // retained provenance; callbacks cannot change it between those operations.
   const bool record_context = opts.trace_context.value_or(opts.active_task_spec.has_value() ||
       opts.knowledge_context.has_value() || !opts.include_memory ||
-      !opts.include_graph_memory || !opts.include_history);
+      !opts.include_graph_memory || !opts.include_history ||
+      execution.value("unified", Json::object()).value("enabled", false) ||
+      execution.value("goal_typing", Json::object()).value("enabled", false) ||
+      execution.value("embedding", Json::object()).value("enabled", false));
   Json context_trace;
   Json task_messages;
   Json accepted_active_task;
@@ -667,7 +734,7 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
     auto before = native_request_inputs(db_, conv.id);
     if (!before) return before.error();
     const auto prepared_system = opts.system_prompt.value_or(cfg_string(cfg_, "system_prompt"));
-    const auto prepared_memory = memory_ && opts.include_memory ? memory_->get_active_context() : std::string{};
+    const auto prepared_memory = memory_ && opts.include_memory ? memory_->get_active_context(memory_cap) : std::string{};
     // Arbitrary context builders run outside SQL transactions. Their returned
     // graph/knowledge/file context is frozen derived content, not a promise
     // that independent stores or external files remain globally current.
@@ -679,6 +746,12 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
       return Error(Errc::Internal, "active_task: actual native history was not captured");
     Json prepared_native_history = std::move(*captured);
     context_trace.erase("_native_history_snapshot"); // internal validation, not a public trace field
+    if (memory_ && opts.include_memory && execution.value("unified", Json::object()).value("enabled", false)) {
+      const auto& consumed = context_trace["unified_context"];
+      if (consumed.value("memory_input_sha256", "") != Sha256::hex(prepared_memory) ||
+          !consumed.value("memory_input_mapping_verified", false))
+        return Error(Errc::InvalidArgument, "active_task: memory consumed during context preparation changed or could not be verified");
+    }
     if (db_.conn().in_transaction()) {
       return Error(Errc::InvalidArgument,
         "active_task: context preparation left an externally owned transaction open");
@@ -698,7 +771,7 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
     if (*before != *after || *current_history != prepared_native_history ||
         *rechecked != context_trace["active_task"] ||
         prepared_system != opts.system_prompt.value_or(cfg_string(cfg_, "system_prompt")) ||
-        prepared_memory != (memory_ && opts.include_memory ? memory_->get_active_context() : std::string{})) {
+        prepared_memory != (memory_ && opts.include_memory ? memory_->get_active_context(memory_cap) : std::string{})) {
       return Error(Errc::InvalidArgument,
         "active_task: request inputs changed during context preparation; request was not accepted");
     }
