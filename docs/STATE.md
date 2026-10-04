@@ -198,7 +198,9 @@ W6 sam wstrzymał checkpoint po nieprzejściu jakości; negatyw jest w archive.
 W8 dev/ASan receipts są kompletne, vendored Clang wymaga poprawki w10.
 
 Osobny build/web/fullCTest czystej linii161cc22 z tymi dokumentami:
-**w trakcie weryfikacji; nie jest to jeszcze przyjęty checkpoint main**.
+**zielony:108/108 CTest,659 native/24465 assertions,1276 Python/0 skips;
+web85 modułów**. [Oryginalne dowody](reports/integrator-main-verification-2026-10-04/README.md)
+obejmują pełny przebieg351.36s oraz1276 rzeczywiście wykonanych przypadków Python.
 [Raport9](reports/integrator-2026-10-04.md) rozdziela wyniki różnych źródeł.
 Kolejność kodu pozostaje2→3/4/5→reszta. README czeka na odbiór zmian;
 szkic8 nie jest dowodem ukończenia aplikacji.

@@ -27,7 +27,7 @@ README ani profili aplikacji. [INDEX](INDEX.md) zawiera sprawdzone commity11 wą
 | Osobny końcowy pełny kandydat2 | 108/108;339.14s;659 native/24465 assertions,1276 Python,0 skips |
 | Kontrakty kernel2 poza CTest | 19/19; fake HTTP sentinels0 |
 | Build web kandydata2 | 85 modułów; zakończony powodzeniem |
-| Czysta linia161cc22 + dokumenty9 | Build/web/fullCTest w trakcie; nie przypisywać jej pomiaru2 |
+| Czysta linia161cc22 + dokumenty9 | Build/web zielony;108/108 w351.36s;659 native/24465 assertions,1276 Python/0 skips; osobny pomiar |
 | Płatne wywołania integratora | 0 |
 
 Guard potwierdził107 wykonanych outer entries kandydata2; istniejący opt-in
@@ -36,8 +36,10 @@ rzeczywistych przypadków. Żadnych testów, progów ani timeoutów nie zmienion
 Powtórka to nowy pełny przebieg, nie suma wybranych retry. Obciążenie hosta
 wpływało na czas: structure po spadku obciążenia29.15s, contracts36.27s.
 Wcześniejsze disk-full/OOM/timeout są zachowane jako oddzielne wyniki.
-Nowe23 grupy preview2 z03b0c4e nie są objęte naszym wykonaniem19/19.
+Nowe24 grupy2 z648a4e9 nie są objęte naszym wykonaniem19/19.
 
+Oryginalne dowody czystego main z dokumentami9:
+[pełny gate351.36s](integrator-main-verification-2026-10-04/README.md).
 Pełne źródło/pokwitowania nieprzyjętego kandydata2:
 [archive przed migracją danych](https://github.com/klb-t/chatadhd/blob/archive/2026-10-04/integrator-usage-policy-before-data/docs/reports/integrator-usage-review-2026-10-04/README.md).
 Pierwsza nieudana baza:
@@ -59,7 +61,7 @@ oraz własne bramki; nowe zadania promptów/metod pozostają otwarte.
 
 ## Do wątku N
 
-- **2:** preset z danych/profilu, jeden rzeczywisty loader i nakładka; nowy receipt23 grup.
+- **2:** preset z danych/profilu, jeden rzeczywisty loader i nakładka; nowy receipt24 grup.
 - **3/4:** wspólny kontrakt method/version/run/result w grafie, pack defaults,
   krawędzie pochodzenia i regresja obu API przed odbiorem.
 - **4/5:** naprawić przypięte reprodukcje i dodać regresje rzeczywistego wykonania/recovery.
