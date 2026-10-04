@@ -146,6 +146,17 @@ On current main, an explicit usage estimate fails `unavailable` until thread 2
 is integrated, rather than bypassing the requested policy.
 
 
+## Method/version/run graph data
+
+[METHOD_GRAPH.md](METHOD_GRAPH.md) defines `loom.method_graph/1` and
+`loom.method_run_trace/1` as versioned caller data patterns. Existing packet
+operations preserve method/version/prompt/recipe/preset/combination/run records
+and real result-to-version/run/compiler Claims. No algorithm-name dispatch or
+closed domain taxonomy is added. The synthetic native C ABI/store regression
+covers exact captured bytes, hashes, effective user settings, full history and
+separate dated, unmeasured model assessments. Thread 3 must adopt this pattern
+in its actual method registry; that cross-lane execution adapter is still open.
+
 ## Offline checks
 
 The standard build discovers `tests/test_packet.cpp` and
