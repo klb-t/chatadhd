@@ -1,7 +1,7 @@
 # Thread 4 — native GraphPacket, 2026-10-04
 
-Branch: `gpt/native-graph-packet-2026-10-04`. Base: `161cc22`
-(current public main, includes PR9). No changes to main, STATE, profiles, UI, selector or core/KB database schema.
+Branch: `gpt/native-graph-packet-2026-10-04`. Initial base: `161cc22`
+(includes PR9). Final main refresh: `5893b1f`, documentation-only integrator commits. No changes to main, STATE, profiles, UI, selector or core/KB database schema.
 This continuation includes the newly assigned `kb/` scope and strengthens
 PR9 GraphPacket acceptance without replacing its store or historical receipts.
 
@@ -46,8 +46,8 @@ second confirmation engine.
 
 ## Continuation under the 11-thread assignment
 
-Fresh fetch: main remains `161cc22`; this branch descends from that current
-base. Reviewed W2 `648a4e9`, W3 `36ec2a8`, W9 `125a043`, W10 `2f25145`
+At the continuation fetch, main was `161cc22`. Final fetch found `5893b1f`;
+the branch is rebased on it, preserving the integrator documents. Reviewed W2 `648a4e9`, W3 `36ec2a8`, W9 `125a043`, W10 `2f25145`
 and W11 `b88154c` (the inventory is pinned to `9590625`). W2's new settings-preview API leaves its lifecycle unchanged;
 its policy kernel is byte-identical to the previous pinned `34cc920`.
 Only packet/KB implementation, the packet C ABI/HTTP route, affected tests and
@@ -110,7 +110,7 @@ repository archive rule or preset was changed.
 Verification for this continuation is recorded separately from the initial
 receipt in `loom/src/packet/tests/evidence/2026-10-04-followup/`.
 
-| Follow-up check | Previous increment | Final continuation |
+| Follow-up check | Previous increment | Continuation on `161cc22` |
 |---|---|---|
 | Full CTest | 110/110, 117.71 s (parallel; retained receipt) | **110/110**, **395.91 s**, serial, unchanged gates |
 | Native packet | 4 cases / 24 assertions | **4/4 cases**, **24/24 assertions** |
@@ -131,6 +131,20 @@ separate native groups. The corrected case-sensitive packet filter passed 4/4
 cases and 24/24 assertions. The first method test incorrectly expected the
 raw packet JSON helper to raise on an error envelope; it was corrected to check
 the returned error and unchanged base. Its final store suite passed 23/23.
+
+## Final main refresh
+
+Main advanced to `5893b1f` through two integrator documentation commits.
+The six native packet commits were rebased linearly and republished; the
+original complete line/receipts remain under
+`archive/2026-10-04/native-graph-packet-before-main-refresh` at `b8f29bf`.
+Both lines have identical complete `loom/` tree
+`d9d9effcb9f5c4f921d69c233f7806d83721513d` before adding the refreshed receipt.
+No code, test, data or build-input change required recompilation. A separate
+full CTest run passed **110/110 in 323.03 s** on the new main base, with unchanged
+timeouts/assertions. Its log and pinned code/data hashes are in
+`loom/src/packet/tests/evidence/2026-10-04-main-refresh/`; earlier receipts remain
+intact. No provider calls or Actions runs were introduced.
 
 ## Do wątku 2
 

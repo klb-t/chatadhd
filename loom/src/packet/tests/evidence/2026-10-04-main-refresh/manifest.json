@@ -1,0 +1,66 @@
+{
+  "schema": "loom.packet_verification_main_refresh/1",
+  "base_main": "5893b1f14aa1db92cb32bb5e75358da786df3b29",
+  "verified_rebased_commit": "daa6d428ded19ef33072ce8ab1699346789a8aa5",
+  "verified_rebased_tree": "84d15ae9052cc836d1e79e648df8077df0267ca2",
+  "previous_complete_line": "b8f29bf79293a3ea0418c447b69b21c0c76bd49f",
+  "preserved_archive": "archive/2026-10-04/native-graph-packet-before-main-refresh",
+  "unchanged_loom_tree_sha": "d9d9effcb9f5c4f921d69c233f7806d83721513d",
+  "main_delta_paths": [
+    "docs/STATE.md",
+    "docs/reports/INDEX.md",
+    "docs/reports/integrator-2026-10-04.md",
+    "docs/reports/integrator-main-verification-2026-10-04/README.md",
+    "docs/reports/integrator-main-verification-2026-10-04/evidence.zip"
+  ],
+  "note": "New main changed only integrator documentation. Existing identical native code/data/test and compiled binary bytes were retained; full CTest rerun for fresh base. Report updates are documentary.",
+  "recorded_utc": "2026-10-04T16:17:32.811962+00:00",
+  "paid_calls": 0,
+  "github_actions_runs": 0,
+  "ctest": {
+    "command": "ctest --preset dev -j 1 --output-on-failure",
+    "passed": 110,
+    "discovered": 110,
+    "elapsed_seconds": 323.03,
+    "timeouts_assertions_thresholds_unchanged": true
+  },
+  "source_sha256": {
+    "loom/include/loom/loom.h": "da65dbfdd3a460037ba841eb37c8c1897f8a3a484d1d6477cbb5a9ff77a05934",
+    "loom/src/capi/capi_packet.cpp": "b11a970e8bcbdbcba910c3e1dc49d69c4ff843e0afbbb838f40c281bf9c4a00b",
+    "loom/src/kb/graph_packet_store.cpp": "904cb420a6264962a7d77805d8a69e2ca0193474bcfbee3550ed284a475bd466",
+    "loom/src/packet/packet.h": "c1ffb4580ac99feb98bbc81006731b0bc8763ddb13c618e832aa675f30dc4bc7",
+    "loom/src/packet/packet.cpp": "f95574debd94ff675596807b7de7eff8a65b5aafc3360b9be2d513a335bfaf59",
+    "loom/src/packet/reply.cpp": "4575f44b4614888fa25166b6b3a2e58c59966b49021cb25b07c06aaf74fc091c",
+    "loom/src/packet/README.md": "7d8e774d2c3953ddaefe53ee8fc714e63f537f4310d61b75c81d268e961600cf",
+    "loom/src/packet/METHOD_GRAPH.md": "58cfc13f867c6373c4a3962319b2caf5bd26101cb7f10ef06965e4132bd96751",
+    "loom/src/packet/method-graph.schema.json": "ed41b3d9888d7ccb242dc67a25e8fc49625c3a60ba9b435fccf79295d667c7b3",
+    "loom/src/packet/tests/reply-fixtures.json": "4d810c09ca39d74c70e32ee4c78a9b55b27b894362e05a15cd482086ef0902c3",
+    "loom/src/packet/tests/method-graph-fixture.json": "9821c22efb54e1e8a1165a8a61de64fc8848baa26568dc42975421fc412a8975",
+    "loom/src/packet/tests/check_method_graph.py": "2e56ae5644f8846daa78403e6dbefe95dd7e2eb5f58020a13ab14472c32d5e7c",
+    "loom/src/packet/tests/test_http.py": "eeb11a2c7dd5fe393b2b6f877b820624235190218e485447fdcd6ba490c1c632",
+    "loom/src/packet/tests/audit_regressions.py": "b514da4282d344474405a78e46caf29f0459810e344fe89d35798ee87aec70b0",
+    "loom/src/packet/tests/reproduce_policy.py": "e3ebd45de0bf2bba9f66c9bb8e872e4b69b3137be135b75fc47ad240e186b541",
+    "loom/src/packet/tests/policy_integration.cc": "927f43615e74e7dfcba0651a0339ed7123cb1ba98b2fedf23e02314fab204138",
+    "loom/tests/test_packet.cpp": "71b9770c984e9ef88a28249e14439d96aeacccadbdcb91f7a6057ecfe5be16c6",
+    "loom/tests/compat/test_packet.py": "32000a0bd86cf6c5d6a27138e040a91169c4613bb17a7a52cbcb3f1f779d3f7d",
+    "loom/tests/compat/test_graph_packet_store.py": "2b1b8e3d8c7e694accf5fc511ef3405039753c05338e26ce9e9cbf481140c345",
+    "loom/server/src/app.cpp": "4dccba1284b22ba9c2ae59a43dea51a506acce1c36a6c4b1d373629fc9ea4806",
+    "loom/server/tests/test_server_smoke.py": "8ebbbedfdf58d15d282ef33b9135fae9137f3d56a76709ae28e7b05274c4c9a7",
+    "docs/reports/native-graph-packet-2026-10-04.md": "bd429b9840aa3b12e97aca2daac0b8df8f4157a56f7f244c9c8df912949f0b12"
+  },
+  "binary_sha256": {
+    "loom/build/dev/libloom.so.0.1.0": "42032e790fb5698f1059a6a0eb4b48c740ae9d15655a91debfbe888142e7542b",
+    "loom/build/dev/loom_tests": "29751c05f2271a511703b40918d09f0a52fdb03e6d09237cb477777815d624e4",
+    "loom/build/dev/loom_compat_tool": "77850ddab9fe449eb52e245266b009dfa539b61ec9d159233a39a2cac14b7658",
+    "loom/build/dev/server/loom-server": "2796b44b486f1455ef9be9f572960432e7b178d1ceea2fc5fd93aad488340f57",
+    "loom/build/dev/cli/loom": "6718f482e1163c7600aa370ce926bd468a873acdc6498a9d8088c774431ec996"
+  },
+  "ctest_sha256": "63dac42ea3f514dec37d05604a0e186f1062a39d7f898e72776e13629bb08b20",
+  "previous_receipts": "../2026-10-04-followup/manifest.json",
+  "open_dependencies": [
+    "W3 must adopt actual method registry/trace adapter and add joint execution regression.",
+    "W2 confirmation shared export/HTTP integration belongs to client/integrator owners.",
+    "Legacy allowed-but-empty-actual dispatch evidence and cancellation-versus-claim remain explicit boundaries.",
+    "Inherited KB normalization/pack/query data inventory was not migrated in this GraphPacket increment."
+  ]
+}
