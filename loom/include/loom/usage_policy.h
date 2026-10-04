@@ -20,6 +20,13 @@ const Json& usage_policy_defaults();
 Status validate_usage_policy_options(const Json& options);
 Result<Json> effective_usage_policy_options(const Config& config);
 
+// One configuration snapshot: preset, stored override, effective options and
+// SHA-256 of their canonical JSON (not original file bytes). An optional
+// proposed override adds a read-only preview; it never saves settings or opens
+// a ledger. Top-level fields replace preset fields, including whole objects.
+Result<Json> usage_policy_settings(const Config& config,
+                                  const Json* proposed_override = nullptr);
+
 // Durable local ledger, independent of core/knowledge schema migrations.
 // All admission/lifecycle writes serialize through a SQLite transaction;
 // reservations survive restart and must be explicitly completed/cancelled.
@@ -71,7 +78,8 @@ extern "C" {
 // this lane deliberately leaves the existing shared export set unchanged.
 // Returns malloc-owned JSON (loom_free_string), including normal
 // requires_confirmation receipts; errors use the existing C ABI envelope.
-// Actions: settings, preview, request, confirm, complete, cancel, inspect.
+// Actions: settings, preview_settings, preview, request, confirm, complete,
+// cancel, inspect. preview_settings takes an "override" object.
 const char* loom_usage_policy_json(LoomContext* ctx, const char* command_json);
 
 #ifdef __cplusplus

@@ -21,13 +21,19 @@ use it.
 ```json
 {
   "schema": "loom.usage_policy/1",
-  "growth_factor": 10,
+  "growth_factor": 10.0,
   "baseline_window": 32,
   "ledger_busy_timeout_ms": 30000,
   "include_reservations": true,
   "initial_baselines": {}
 }
 ```
+
+The current preset remains in `core/config_usage_policy.cpp`; settings report
+`preset_source: "legacy_code_pending_pack_migration"`. This is an explicit
+remaining data migration, not a claim that the preset already comes from the
+pack. Thread 2 owns config/policy code but does not own the pack loader,
+manifest or embedded data in `kb/`.
 
 The growth factor, window, reservation comparison and initial baselines are
 settings. They are not maximum spending, context, corpus or model limits. There
@@ -83,6 +89,10 @@ delete instruction. Settings clients should read the effective policy, edit it
 and submit the complete intended policy object. Other configuration keys remain
 open and their existing semantics are retained. Reading the fallback does not
 write it into `config.json` or replace an owner's configured model.
+Submitting `{"loom_usage_policy": {}}` restores the active preset's values;
+the empty override is still stored, so `source` remains `configured`. There is
+no override-deletion command in this API, and submitting `null` as the whole
+policy is invalid.
 
 Each `UsagePolicy::open()` captures an options snapshot. Updating configuration
 does not mutate an already-open C++ instance. Open a new instance for the new
@@ -90,6 +100,72 @@ options; recorded requests and confirmations remain bound to their own
 snapshots. The C command API opens a policy with the current effective settings
 for each execution/inspection command; settings capabilities report this as
 `preset_application: "next_policy_open"`.
+
+## Settings snapshot and advisory preview
+
+The C++ helper
+`usage_policy_settings(const Config&, const Json* proposed_override = nullptr)`
+returns a validated settings snapshot without changing configuration or opening
+the ledger. Its JSON fields are:
+
+| Field | Meaning |
+|---|---|
+| `preset` | Current complete preset. |
+| `stored_override` | Policy object in the current Config, or `null` when no override is stored. |
+| `effective` | Preset with stored top-level policy fields replaced. |
+| `source` | `preset` or `configured`, according to whether an override is stored. |
+| `preset_source` | Currently `legacy_code_pending_pack_migration`. |
+| `override_semantics` | `replace_top_level_fields`; nested objects are replaced as whole values. |
+| `hashes` | SHA-256 of each snapshot's canonical JSON; fields `algorithm`, `representation`, `preset`, `stored_override`, `effective`. |
+
+`hashes.algorithm` is `sha256`, and `hashes.representation` is
+`loom.canonical_json`. The three snapshot hashes are hexadecimal strings;
+`hashes.stored_override` is `null` when no override is stored. These identify
+the parsed JSON snapshots, not original configuration-file bytes. They are
+inspection metadata and do not authorize an operation or replace its receipt.
+
+Supplying `proposed_override` validates a replacement policy object and adds a
+`preview` object. It contains `override`, its resulting `effective`,
+`hashes: {"override": "...", "effective": "..."}`, `effective_changed` and
+`persisted: false`. Preview hashes use the same algorithm and representation as
+the enclosing snapshot. The top-level fields still describe the currently
+stored settings; only `preview` describes the proposal.
+
+The JSON C command `{"action":"preview_settings","override":{...}}` exposes
+this helper. Both `settings` and `preview_settings` return `ledger_path` and
+`capabilities` and leave configuration and the ledger untouched. An invalid
+proposal returns the normal error envelope. The preview is advisory: it is not
+a compare-and-set write, and another caller may change settings before saving.
+Save the intended override through the existing `loom_set_config_json()` and
+read `settings` again to inspect the active result.
+
+The snapshot reads the in-memory Config; it does not independently verify the
+on-disk file. The existing generic config API can retain an in-memory change
+after a save error. A settings hash identifies that active snapshot, not proof
+that a failed save persisted it.
+
+### Pack migration for thread 4
+
+Use the existing pack infrastructure for the pending migration:
+
+1. Add `loom/data/policy/usage_policy.json` with the identical six-field preset
+   above and declare schema `loom.usage_policy/1` in `loom/data/pack.json`.
+2. Make pack validation delegate that schema to
+   `validate_usage_policy_options()`, with the complete preset fields present.
+3. Regenerate `loom/src/kb/pack_embedded.inc` through `gen_kb_pack.py` and retain
+   the existing pack directory/embedded equality gate.
+4. Coordinate the config adapter with thread 2 so it consumes the built-in pack,
+   the existing `<data-root>/kb/` user overlay and then the stored
+   `loom_usage_policy` override, in that order. Expose the actual pack source and
+   hash instead of retaining the current legacy-source label.
+
+Keep `growth_factor` as the floating-point JSON value `10.0`, matching the
+current preset's canonical representation and hash as well as its behavior.
+
+Adding an unlisted JSON file alone fails the existing pack gate; new schemas
+also need loader support. No separate usage-data loader or generated duplicate
+pack is introduced here. The migration must compare effective defaults before
+and after and preserve the current top-level override semantics.
 
 ## Comparable cohorts and measurements
 
@@ -155,8 +231,8 @@ known actual usage or explicitly cancelling an operation; opening the ledger
 does not assume that interrupted work cost nothing.
 
 Opening a new ledger creates its database/schema metadata. The C API uses
-`<data-root>/usage-policy.sqlite`; `settings` reports that path without opening
-the ledger. A first `preview` can therefore initialize the empty database, but
+`<data-root>/usage-policy.sqlite`; `settings` and `preview_settings` report that
+path without opening the ledger. A first `preview` can therefore initialize the empty database, but
 the preview itself records no request, decision, reservation or measurement.
 
 An adapter must request admission before executing, stop for a
@@ -207,7 +283,8 @@ The command discriminator is `action`:
 
 | Action | Fields besides `action` |
 |---|---|
-| `settings` | None. Returns `preset`, `stored_override`, `effective`, `source`, `ledger_path` and `capabilities`. |
+| `settings` | None. Returns the settings snapshot, source metadata, hashes, `ledger_path` and `capabilities`. |
+| `preview_settings` | `override`, a proposed replacement policy object. Returns the same snapshot plus advisory `preview`; saves nothing and does not open the ledger. |
 | `preview` | `estimate` with operation ID, cohort and resource amounts. |
 | `request` | `estimate`, in the same shape as preview. |
 | `confirm` | `operation_id`, `receipt_id`, `approved`, `confirmation_ref`. |
@@ -219,6 +296,10 @@ Example commands (completion and cancellation are alternative paths):
 
 ```json
 {"action":"settings"}
+```
+
+```json
+{"action":"preview_settings","override":{"baseline_window":null,"include_reservations":true}}
 ```
 
 ```json
@@ -261,15 +342,34 @@ Example commands (completion and cancellation are alternative paths):
 {"action":"inspect","baseline_key":"archive-import/local/bytes-v1"}
 ```
 
-## Future settings and confirmation screen
+## Settings and confirmation screen — thread 10
 
 Use `settings` to show preset, stored override and effective values separately,
-with their source and ledger location. Explain whether comparison includes
+with their source, canonical hashes and ledger location. Show the current
+legacy preset-source label honestly until pack migration is delivered. Use
+`preview_settings` to inspect and validate an edited override before saving;
+display its effective result and whether it changes the active policy. Restore
+preset values by saving an empty override, with the stored-source distinction
+described above. Explain whether comparison includes
 reservations, which cohort/units were selected, how much measured history is
 available and which dimensions have an unknown baseline or estimate. Display
 each triggering resource, its baseline and projected usage alongside the exact
 receipt. Record approval or rejection through `confirm`, using an explicit
 owner-decision reference.
+
+On a confirmation conflict, present a fresh receipt obtained by repeating the
+same pending request and obtain the owner's decision against that receipt.
+Never reuse the old receipt for a changed projection. A terminal replay or an
+unresolved reservation is recovery state, not permission to dispatch the
+operation again. The execution adapter must own dispatch recovery and reopen
+its C++ policy when it needs changed configuration.
+
+The existing server links `loom_core`, so thread 10 can expose authenticated
+HTTP adapters that call `loom_usage_policy_json()` through
+`loom/usage_policy.h`, release strings with `loom_free_string()` and preserve
+the normal error/decision envelopes. Those routes and the screen are not
+implemented by thread 2. A client using the shared library or JNI still needs
+the separate public ABI registration described above.
 
 Changing settings is not itself an execution approval. A receipt is not an
 authorization for another operation. Expose unresolved reservations for recovery
