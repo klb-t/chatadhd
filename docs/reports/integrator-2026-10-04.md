@@ -59,6 +59,27 @@ cases improve 3/15→15/15. These are branch measurements on its frozen 9d15d2d
 corpus, not new integrator measurements or general semantic-accuracy evidence.
 Its rejected local-only variant remains on its original archive branch.
 
-Current owner rules govern this batch: paid execution needs consent; no current
+The expanded owner mandate is tracked in [INDEX.md](INDEX.md), including
+report routing from lane11 and the method-graph contract gate for3/4.
+Lane10's source-view increment is in progress and explicitly not ready for
+integration; its new branch does not replace the already merged INTERFEJS work.
+
+Current owner rules govern this batch: paid execution belongs only to lane7's
+new separate EUR5 budget/key; this integrator makes no paid calls. No current
 balance or newly spendable funds are inferred from the historical $1.10 gap.
 The sealed answer key and the blind catalog corpus are not integration inputs.
+
+## Do wątku N
+
+- **3/4:** jointly publish the versioned method/recipe/prompt/run graph format,
+  including result-to-method provenance edges and a cross-lane regression,
+  before either completed combination is admitted. Keep model provenance explicit.
+- **4:** repair the archived unresolved-replay accounting defect above.
+- **7:** repair orphan-response discovery even when a verified ledger exists;
+  publish the final research/billing report and recipes for1.
+- **1/2:** first increments do not end the expanded task. Take new prompt/graph
+  and UI/settings handoffs, then the lane11 inventory when published.
+- **5/6/8/10:** publish final readiness reports and full receipts; scope-specific
+  pending work and dependencies are tracked in INDEX.
+- **11:** publish the per-lane inventory and aggregate JSON before editing;
+  integrator9 will route it and record renewed assignments for completed lanes.
