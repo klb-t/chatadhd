@@ -1,0 +1,104 @@
+{
+  "schema": "loom.usage_policy_verification/1",
+  "date": "2026-10-04",
+  "base_commit": "161cc22dfb84fe863389d6b90323bd44516a68dc",
+  "implementation_commit": "682af21732f6ccf6e0e9df3df98890b83d4d8488",
+  "build": "dev; server/CLI/shared enabled; WERROR; vendored SQLite",
+  "ctest_before": {
+    "passed": 108,
+    "total": 108
+  },
+  "ctest_after": {
+    "passed": 108,
+    "total": 108
+  },
+  "focused_contract_groups": {
+    "passed": 19,
+    "total": 19
+  },
+  "shared_exports": {
+    "declared": 109,
+    "actual": 109,
+    "new_static_command_exported": false
+  },
+  "paid_calls": 0,
+  "github_actions_executed": 0,
+  "sources": {
+    "loom/include/loom/usage_policy.h": {
+      "bytes": 3485,
+      "sha256": "89dfad23470928a45900ff00c2cb6197fa183f9c2a7ab96f89bb832cb99273ca"
+    },
+    "loom/src/core/config.cpp": {
+      "bytes": 9287,
+      "sha256": "42bbe385964814a555b6cd9399e019ed5df6f70bf92ea935dcf5ad74e753d4b7"
+    },
+    "loom/src/core/config_usage_policy.cpp": {
+      "bytes": 3360,
+      "sha256": "ddc7fdb8e9215aa3e29b90af9c04eab42f421267ee1f9b493b6ad55a425456f4"
+    },
+    "loom/src/capi/capi_core.cpp": {
+      "bytes": 21248,
+      "sha256": "3ff90b721f9d10d9f158a1a9acb4cecdede9130b944ed665c3143aabbeaaa31f"
+    },
+    "loom/src/capi/capi_config.cpp": {
+      "bytes": 3318,
+      "sha256": "fd402d1b029500c93dcb22a241456df8f4f020eae9b8d83b82e6a75592c293ad"
+    },
+    "loom/src/policy/usage_policy.cpp": {
+      "bytes": 22755,
+      "sha256": "790bca06403a46ee59894801e251e4fad6afe9e39d57d5f3b3a679f7486158b9"
+    },
+    "loom/src/policy/tests/test_usage_policy.cc": {
+      "bytes": 37099,
+      "sha256": "38c3f7fae9ecc666c14fbf52c542ad7c0ea82143b520e0b9a58669407730cf6a"
+    }
+  },
+  "binaries": {
+    "loom/build/dev/libloom.so.0.1.0": {
+      "bytes": 174626016,
+      "sha256": "9b00c2edddfd1b8c0e86b92a0e205fb3e48966d50a413aec37b1bb09ddb3620c"
+    },
+    "loom/build/dev/libloom_core.a": {
+      "bytes": 805199624,
+      "sha256": "8e3768e12b695a9970d0034644e1c642c52f3e869f3966e78322a8d76f7f4baf"
+    },
+    "/tmp/usage-policy-linked-tests": {
+      "bytes": 158454024,
+      "sha256": "ef7d91612acbf377918f280558decd7a49987b3852e7ca5e61fbd1fc33dac9c5"
+    }
+  },
+  "logs": {
+    "ctest-before.txt": {
+      "bytes": 15042,
+      "sha256": "df3937af98cb553e0e5e9e08b04cec16a5df707ee0cc4582344a5b5067a043bc"
+    },
+    "ctest-after.txt": {
+      "bytes": 15033,
+      "sha256": "97ae2e3299eeaa6b5adc633aa459a7d413596deb5882c37109765acf36f80f3b"
+    },
+    "policy-contracts.txt": {
+      "bytes": 3142,
+      "sha256": "445f5048a03d5ef6c0c12466d6f1e4c045db544761eb2fd76863add0bde7f782"
+    },
+    "baseline-retry-build.txt": {
+      "bytes": 164,
+      "sha256": "2d7816d27ee6a37d8c9ff7fbbf9151c374606dbfb44bb9b4da3057898ed77ff2"
+    },
+    "final-build.txt": {
+      "bytes": 839,
+      "sha256": "2455779709f30df6599f980f43c572d5f8761d984490b9214900b1b2d0477578"
+    },
+    "baseline-first-build.json": {
+      "bytes": 21093,
+      "sha256": "71c0deb9131ad436448ed9d3f20a3831b4b2ac217b377fd5d21353079046e76e",
+      "format": "json_text",
+      "source_sha256": "2223d00916fdfaa2fd92db4a2b3b35458a9dd4d6325065dc6daaafda7335cd44"
+    }
+  },
+  "notes": [
+    "No externally supplied PYTHONPATH or TMPDIR.",
+    "Timings are not a matched performance benchmark.",
+    "The first baseline build empty-object failure and passing rebuild are retained.",
+    "The new tests are standalone groups; the existing CTest entry count remains 108."
+  ]
+}
