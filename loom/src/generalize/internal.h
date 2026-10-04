@@ -33,6 +33,7 @@ struct Index {
   std::map<std::string, std::vector<const model::Claim*>, std::less<>> by_subject;   // sorted by id
   std::map<std::string, std::vector<const model::Observation*>, std::less<>> unit_obs;  // by ordinal, id
   std::map<std::string, std::set<std::string>, std::less<>> subject_units;          // entity -> unit ids
+  std::map<std::string, std::set<std::string>, std::less<>> subject_obs;            // entity -> usable source-supported observation ids
   std::map<std::string, const model::Decision*, std::less<>> decision;
   std::string corpus_end;  // max observation / decision date (day)
 
@@ -83,6 +84,10 @@ class PreparedCues {
   PreparedCues() = default;
   PreparedCues(const kb::Normalizer& norm, const Json& cls);
   double score(const FoldedText& t) const;
+  // Distinct phrase indexes let callers count cue diversity across observations
+  // without promoting repetitions of the same ambiguous term into evidence.
+  void hit_phrases(const FoldedText& t, std::set<std::size_t>& seen) const;
+  double weight_of(std::size_t phrase) const { return phrases_[phrase].w; }
   bool empty() const noexcept { return phrases_.empty(); }
 
  private:
@@ -93,6 +98,7 @@ class PreparedCues {
     bool symbolic = false;           // no word character: substring match
     double w = 1.0;
   };
+  bool hits(const Phrase& p, const FoldedText& t) const;
   std::vector<Phrase> phrases_;
 };
 
