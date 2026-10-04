@@ -1,0 +1,158 @@
+{
+  "schema": "loom.application_profile/1",
+  "id": "claude-inspired",
+  "profile_revision": 1,
+  "label": "Claude-inspired",
+  "target": {
+    "application_id": "claude",
+    "version": null,
+    "platform": "web"
+  },
+  "evidence": {
+    "status": "inspired",
+    "sources": [
+      {
+        "url": "https://github.com/LibreChat-AI/LibreChat",
+        "revision": "e8f3be08623663d4ad7f7241e693c94469b63bb0",
+        "note": "Reference for multi-provider chat, not verified Claude UI/version evidence."
+      }
+    ],
+    "gaps": [
+      "No verified original application version/build: this is an inspired example, not an exact historical replica.",
+      "Original service backend, hidden prompts and request compilation are not reproduced.",
+      "Artifact editing, original project workflows, web browsing, voice and descendant-branch navigation need additional adapters.",
+      "Composer shortcut is an editable demonstration choice, not measured Claude behavior."
+    ]
+  },
+  "presentation": {
+    "renderer": "chat",
+    "tokens": {
+      "background": "#252321",
+      "surface": "#302e2b",
+      "text": "#eee8de",
+      "muted": "#b8aea1",
+      "accent": "#d5a481",
+      "border": "#49433d"
+    },
+    "sidebar": {
+      "side": "left",
+      "width": 280
+    },
+    "content_width": 780,
+    "message_style": "plain"
+  },
+  "composer": {
+    "submit": "mod-enter",
+    "placeholder": "Message in Claude-inspired view\u2026"
+  },
+  "actions": [
+    {
+      "id": "create",
+      "label": "New conversation",
+      "operation": "chat.create",
+      "capability": "chat.create",
+      "required": true
+    },
+    {
+      "id": "select",
+      "label": "Return to conversation",
+      "operation": "chat.select",
+      "capability": "chat.select",
+      "required": true
+    },
+    {
+      "id": "send",
+      "label": "Send",
+      "operation": "chat.send",
+      "capability": "chat.send",
+      "required": true
+    },
+    {
+      "id": "cancel",
+      "label": "Stop",
+      "operation": "chat.cancel",
+      "capability": "chat.cancel",
+      "required": true
+    },
+    {
+      "id": "edit",
+      "label": "Edit message",
+      "operation": "message.edit",
+      "capability": "message.edit",
+      "required": true
+    },
+    {
+      "id": "restore",
+      "label": "Restore version",
+      "operation": "message.restore",
+      "capability": "message.restore",
+      "required": true
+    },
+    {
+      "id": "exclude",
+      "label": "Exclude message",
+      "operation": "message.exclude",
+      "capability": "message.exclude",
+      "required": true
+    },
+    {
+      "id": "knowledge",
+      "label": "Inspect knowledge",
+      "operation": "knowledge.open",
+      "capability": "knowledge.open",
+      "required": false
+    },
+    {
+      "id": "memory",
+      "label": "Memory",
+      "operation": "memory.open",
+      "capability": "memory.open",
+      "required": false
+    },
+    {
+      "id": "import",
+      "label": "Import",
+      "operation": "import.open",
+      "capability": "import.open",
+      "required": false
+    },
+    {
+      "id": "settings",
+      "label": "Settings",
+      "operation": "settings.open",
+      "capability": "settings.open",
+      "required": false
+    }
+  ],
+  "workflows": [
+    {
+      "id": "conversation-review",
+      "initial": "ready",
+      "states": [
+        "ready",
+        "chat",
+        "review"
+      ],
+      "transitions": [
+        {
+          "from": "ready",
+          "event": "create",
+          "action": "create",
+          "to": "chat"
+        },
+        {
+          "from": "chat",
+          "event": "inspect",
+          "action": "knowledge",
+          "to": "review"
+        },
+        {
+          "from": "review",
+          "event": "return",
+          "action": "select",
+          "to": "chat"
+        }
+      ]
+    }
+  ]
+}

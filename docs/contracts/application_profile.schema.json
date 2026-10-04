@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chatadhd.local/contracts/application_profile.schema.json",
+  "title": "Loom application interface and workflow profile v1",
+  "description": "Declarative interface/workflow data. Target app versions are independent from profile revisions; null explicitly means unknown. Runtime validates renderer and operation registries, finite-state references and matching operation/capability adapters. This schema installs no code, model settings, permissions, hidden provider instructions or request reconstruction.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "id", "profile_revision", "label", "target", "evidence", "presentation", "composer", "actions", "workflows"],
+  "properties": {
+    "schema": { "const": "loom.application_profile/1" },
+    "id": { "$ref": "#/$defs/nonempty" },
+    "profile_revision": { "type": "integer", "minimum": 1, "maximum": 9007199254740991, "description": "A safe integer representation invariant, independent from the target application's release." },
+    "label": { "$ref": "#/$defs/nonempty" },
+    "target": {
+      "type": "object", "additionalProperties": false,
+      "required": ["application_id", "version", "platform"],
+      "properties": {
+        "application_id": { "$ref": "#/$defs/nonempty", "description": "Open identifier vocabulary; no provider-specific branches." },
+        "version": { "anyOf": [{ "$ref": "#/$defs/nonempty" }, { "type": "null" }], "description": "Original app release identifier or null when unverified/unknown. Never inferred from profile_revision." },
+        "platform": { "$ref": "#/$defs/nonempty" }
+      }
+    },
+    "evidence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["status", "sources", "gaps"],
+      "properties": {
+        "status": { "enum": ["inspired", "partial", "verified"], "description": "Self-declared mapping evidence status, not a claim of hidden engine parity or measured provider request fidelity." },
+        "sources": { "type": "array", "items": {
+          "type": "object", "additionalProperties": false, "required": ["url"],
+          "properties": {
+            "url": { "type": "string", "pattern": "^https?://[^\\s]+$", "not": { "pattern": "\\s" }, "description": "Absolute HTTP(S) provenance URL without whitespace. Runtime URL parsing and rejection of credentials are normative; this contract requires no optional URI format checker." },
+            "revision": { "$ref": "#/$defs/nonempty", "description": "Pinned source commit/release when known; optional does not imply a pin exists." },
+            "note": { "type": "string" }
+          }
+        } },
+        "gaps": { "type": "array", "items": { "$ref": "#/$defs/nonempty" }, "description": "Explicit visual/workflow/evidence omissions. Missing runtime capabilities are reported separately from actual adapter registrations." }
+      }
+    },
+    "presentation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["renderer", "tokens", "sidebar", "content_width", "message_style"],
+      "properties": {
+        "renderer": { "$ref": "#/$defs/nonempty", "description": "Must name a renderer registered by trusted code. Unknown renderers fail visibly." },
+        "tokens": {
+          "type": "object", "additionalProperties": false,
+          "required": ["background", "surface", "text", "muted", "accent", "border"],
+          "properties": {
+            "background": { "$ref": "#/$defs/hexColour" }, "surface": { "$ref": "#/$defs/hexColour" },
+            "text": { "$ref": "#/$defs/hexColour" }, "muted": { "$ref": "#/$defs/hexColour" },
+            "accent": { "$ref": "#/$defs/hexColour" }, "border": { "$ref": "#/$defs/hexColour" }
+          }
+        },
+        "sidebar": {
+          "type": "object", "additionalProperties": false, "required": ["side", "width"],
+          "properties": { "side": { "enum": ["left", "right"] }, "width": { "$ref": "#/$defs/pixels" } }
+        },
+        "content_width": { "$ref": "#/$defs/pixels" },
+        "message_style": { "enum": ["plain", "bubble"] }
+      }
+    },
+    "composer": {
+      "type": "object", "additionalProperties": false, "required": ["submit", "placeholder"],
+      "properties": { "submit": { "enum": ["enter", "mod-enter"] }, "placeholder": { "type": "string" } }
+    },
+    "actions": { "type": "array", "items": { "$ref": "#/$defs/action" }, "description": "Unique action IDs. Required actions block activation without their matching adapters; optional actions expose explicit gaps and reject execution." },
+    "workflows": { "type": "array", "items": { "$ref": "#/$defs/workflow" }, "description": "Unique workflow IDs. State changes occur only after adapter success; runtime validates references, deterministic events, guards and restoration traces." }
+  },
+  "allOf": [{
+    "if": { "properties": { "evidence": { "properties": { "status": { "const": "verified" } } } } },
+    "then": { "properties": {
+      "target": { "properties": { "version": { "$ref": "#/$defs/nonempty" } } },
+      "evidence": { "properties": { "sources": { "minItems": 1 }, "gaps": { "maxItems": 0 } } }
+    } }
+  }],
+  "$defs": {
+    "nonempty": { "type": "string", "pattern": "\\S" },
+    "hexColour": { "type": "string", "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$", "not": { "pattern": "\\s" }, "description": "Bounded CSS colour syntax, without executable or arbitrary CSS values." },
+    "pixels": { "type": "number", "exclusiveMinimum": 0, "description": "Positive finite width in CSS pixels. No product-policy ceiling; responsive CSS can fit the viewport." },
+    "action": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "label", "operation", "capability", "required"],
+      "properties": {
+        "id": { "$ref": "#/$defs/nonempty" }, "label": { "$ref": "#/$defs/nonempty" },
+        "operation": { "$ref": "#/$defs/nonempty", "description": "Canonical or explicitly extended operation identifier. Runtime rejects unknown operations." },
+        "capability": { "$ref": "#/$defs/nonempty", "description": "Satisfied only by an actual adapter registered for BOTH this capability and this operation." },
+        "required": { "type": "boolean" }
+      }
+    },
+    "session": {
+      "type": "object", "additionalProperties": false,
+      "description": "Persistence contract exposed as a reusable definition. Runtime replays history against the exact registered profile; a local trace is not a server authorization record. Adapter failures cannot advance this state, though external adapter side effects are not rollbackable by this UI runtime.",
+      "required": ["schema", "profile", "workflows", "sequence", "history"],
+      "properties": {
+        "schema": { "const": "loom.application_profile_session/1" },
+        "profile": {
+          "type": "object", "additionalProperties": false, "required": ["id", "profile_revision", "target", "definition"],
+          "properties": {
+            "id": { "$ref": "#/$defs/nonempty" },
+            "profile_revision": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+            "target": { "$ref": "#/properties/target" },
+            "definition": { "type": "string", "description": "Exact canonical JSON content identity (object keys sorted by code point, array order preserved). It is a content copy, not a cryptographic hash; must match the registered definition on reload, even when revision and target labels match." }
+          }
+        },
+        "workflows": { "type": "object", "additionalProperties": { "$ref": "#/$defs/nonempty" } },
+        "sequence": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+        "history": { "type": "array", "items": {
+          "type": "object", "additionalProperties": false, "required": ["sequence", "action", "operation"],
+          "properties": {
+            "sequence": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+            "action": { "$ref": "#/$defs/nonempty" }, "operation": { "$ref": "#/$defs/nonempty" },
+            "workflow": {
+              "type": "object", "additionalProperties": false, "required": ["id", "event", "from", "to"],
+              "properties": { "id": { "$ref": "#/$defs/nonempty" }, "event": { "$ref": "#/$defs/nonempty" },
+                "from": { "$ref": "#/$defs/nonempty" }, "to": { "$ref": "#/$defs/nonempty" } }
+            }
+          }
+        } }
+      }
+    },
+    "workflow": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "initial", "states", "transitions"],
+      "properties": {
+        "id": { "$ref": "#/$defs/nonempty" }, "initial": { "$ref": "#/$defs/nonempty" },
+        "states": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/nonempty" } },
+        "transitions": { "type": "array", "items": {
+          "type": "object", "additionalProperties": false, "required": ["from", "event", "action", "to"],
+          "properties": {
+            "from": { "$ref": "#/$defs/nonempty" }, "event": { "$ref": "#/$defs/nonempty" },
+            "action": { "$ref": "#/$defs/nonempty" }, "to": { "$ref": "#/$defs/nonempty" },
+            "requires": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/nonempty" }, "description": "Declarative guard: all named capabilities must have actual registered adapters." }
+          }
+        } }
+      }
+    }
+  }
+}
