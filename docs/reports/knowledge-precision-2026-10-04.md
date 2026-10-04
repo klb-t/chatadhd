@@ -1,11 +1,15 @@
 # W1 — Knowledge precision — 2026-10-04
 
 Branch: `gpt/knowledge-precision-2026-10-04`. Frozen baseline:
-`9d15d2dd0733274356f768816e207e26e13845e4`; integration base:
-`161cc22dfb84fe863389d6b90323bd44516a68dc` (INTERFEJS retained).
-Implementation tip: `ee5c74a80ec067cc770334d1a24cece5d398cdf4` (two small commits).
-Acceptance: **108/108 CTest**, 172.90 s, after rebase; thresholds unchanged.
+`9d15d2dd0733274356f768816e207e26e13845e4`; latest integration base:
+`7282437b1c88933977f64b3468b9f42f7b400494` (INTERFEJS and integrator
+metadata retained; native source unchanged from the tested `161cc22` base).
+Precision implementation tip: `ee5c74a80ec067cc770334d1a24cece5d398cdf4` (two small commits).
+Precision acceptance: **108/108 CTest**, 172.90 s, after rebase; thresholds unchanged.
 Research suites executed **859 structure and 209 contracts cases**, not zero.
+The later prompt-data extension and its separate final gate are recorded after
+the reproducibility appendix below. Legacy consumer wiring remains assigned to
+its owning threads; registering its recipe does not claim that wiring is done.
 
 ## Changes and measured coverage
 
@@ -932,3 +936,161 @@ Total Test time (real) = 172.90 sec
 ```
 
 </details>
+
+
+## Prompt-data extension on the same branch
+
+The extraction runtime now loads `semantic.relation` and
+`semantic.occurrence_graph` from editable JSON-content `.prompt` contracts.
+`semantic.analysis` is the exact legacy recipe prepared for its owners; the
+existing legacy callers outside W1 remain unchanged. Builtins are generated
+independently of the strict KB Pack and work without a source checkout.
+Instructions, output schemas, decoding parameters, native validation caps and
+former upper-limit presets are data. Owner overlays are explicit; changing
+policy changes its canonical hash.
+
+The existing knowledge API accepts `stage_params.extract.semantic` with
+`prompt_id`, `prompt_patch`, `prompt_snapshot`, `preview`, `request_patch`,
+`validation_mode` and `call_overrides` keyed by preview chunk ID. Durable
+settings are `analysis_prompt_dir` and `analysis_prompt_overrides`.
+Source-private `prompts::prepare_request()` previews the actual method, URL,
+public headers, exact body bytes, transport and hashes without sending it.
+Snapshots preserve the reviewed contract; one-call overrides affect only their
+named chunk. These are current native APIs, not new exported C ABI or UI routes.
+See [the full API and precedence description](../../loom/data/prompts/README.md).
+
+Validation is explicitly `strict`, `lenient` or `off`. Schema diagnostics do not
+rewrite unknown fields. Native source grounding is a separate check; invalid
+native candidates remain unvalidated, pending and unpromoted. First HTTP
+responses, including failures, are captured before decoding/accounting; capped
+captures explicitly report truncation. Contract/schema/request/response hashes,
+actual wire model/provider, mode and `model` origin remain inspectable in
+provenance, cache and resume checks. No model-accuracy gain is claimed here.
+
+| Extension control | Before | After |
+|---|---|---|
+| Relation/graph runtime recipe | C++ literals and fixed presets | Data contracts with owner and one-call overlays |
+| Default request bodies | Three historical builders | 3/3 exact body matches; legacy public transport also checked |
+| Registry offline proof | — | 43/43, including headers, Unicode, snapshots, validation and limits |
+| Native scripted integration | — | 16/16 cases, 244/244 assertions |
+| Actual latest W2 conditional ledger integration | — | 6/6, including absent-config defaults; zero paid calls |
+| Final full CTest | Precision gate above | 108/108, 180.66 s; research 859 + 209 real cases |
+| Synthetic before/after prompt migration | Precision scorecard | All metrics/stats unchanged; 65 deterministic products |
+| Selfhost on the same pinned source | 12,863 claims / 1,006 products | 12,863 / 1,006, unchanged |
+
+The before/after prompt-migration comparison also checks every stored row:
+all **37,249 observations and 12,863 claims are byte-identical**, excluding only
+their separate run-ID column. Five stage output hashes are unchanged. Stage input hashes include the run
+ID; the materialize output hashes the products including `SELF.md` with that
+ID. 1,005/1,006 products are exact
+byte matches, and `SELF.md` differs only in its generated run-ID sentence.
+Normalizing just that sentence gives 1,006/1,006 equal products. The comparison
+and complete post-migration synthetic card are saved in the evidence directory.
+No source/claim content is normalized away. Metadata-dependent hashes are not
+claimed byte-identical.
+
+Published prompt-module commits: `f407a7c` (registry/data), `aed85b8` (native
+wiring, full gate and five-case conditional), `c66562c` (latest six-case W2).
+Rejected wire-order and ordered-JSON-oracle replays are fully preserved at
+`3a4f8b6aa4ac467e9508f388b62b349066d889a8` on the negative archive named
+below: exact historical 0/3 wire, 3/3 content/semantics and 15/16, 240/242 oracle
+failure reproduced. No archive-only files are in the accepted branch.
+
+Proofs and standalone offline replay sources live in
+`loom/src/extract/tests/`; evidence JSON pins source and linked archive hashes.
+These new fixtures are outside CTest until its owner registers them; they do
+not replace the complete existing CTest gate. The W2 test links exact public
+`bbc95f73672f3c9c4f2cd8153108da1513a80dc3` header/policy/config objects before
+our core archive. The new case checks the actual effective-options/settings
+path with no stored config override. It is not the merged W2 `Config::get`
+fallback/C-ABI build or concurrent dispatch locking proof. The previous 5/5
+proof remains at `aed85b8d5b90db9c3055918e4864f8273bd3d411`.
+
+W2 is used when its header/objects are present. Missing policy is reported as
+unavailable; an explicitly required policy blocks execution. Token and monetary
+forecasts remain unknown unless supplied, rather than treating an output cap as
+predicted use. The fixture verifies confirmation before HTTP, same-run owner
+confirmation plus one dispatch/cache resume, reported actual usage and unknown
+usage retention. W2's null-estimate-to-known-actual `overrun` diagnostic is not
+reported as an expected tenfold increase.
+
+W7 supplied no new measured compatible winner on the audited `68f7531` tip.
+The optional `jev_active_refute_v2.recipe` preserves its historical typed
+`state/questions` request, payload/version hashes and 45/48 DEV supplied-candidate
+score; truth accuracy is unknown. It needs a Decisions adapter and is not an
+executable chat contract or a replacement extraction default. The 432 study
+remains prepared, not executed. Historical 6/60 versus 38/60 belongs to a
+saved-response decoder ablation, not a new prompt/model result.
+
+W7's current source-regex reader still works through a generated, runtime-disabled
+`#if 0` export. Its 4,208 bytes have exact SHA
+`7527ac8c051e53bc5d6cbd51ca92ac9ead6334381d03e4e6924582797df43a1a`.
+The generator checks this export and `prompt_contract_data.inc`; canonical
+policy remains in `.prompt` data. This temporary compatibility representation
+must be removed after W7 migrates its reader.
+
+No paid calls, credentials, private archives, blind corpus or sealed answer key
+were used. The remaining W11 inventory is not declared closed: calibration,
+other extraction windows, resolver/generalization policy and candidate-graph
+presets need their own measured increments. Existing `C++`/`Ż` misses and the
+old precision limitations above remain. Full negative replay and infrastructure
+history are kept on `archive/2026-10-04/knowledge-precision-prompt-negatives`, outside the accepted tree.
+
+## Do wątku 2
+
+Integrate the actual header, objects, Config defaults and C ABI before claiming
+the guard is available in a normal build. Check the conditional proof against
+the merged build. Null forecasts and configurable output caps are distinct;
+`overrun=true` when unknown becomes known is preserved as W2's diagnostic.
+
+## Do wątku 3
+
+Use the shared composer/snapshot and per-call patches for the legacy
+`chat/batch_api.cpp` consumer; preserve its provider wrappers. Jev needs its
+separate typed Decisions adapter. A caller retains dispatch/retry state.
+
+## Do wątku 4
+
+Define shared graph identities for method/version/run and edges linking results
+to method versions with W3/W6. W1's provenance JSON does not yet create those
+shared method nodes. Do not invent a competing packet format in W1. Coordinate
+KB Pack schema/manifest integration if prompt contracts become pack entries.
+The current packet algebra and store are the shared basis. Persist method,
+version and run as entities: the store does not persist packet `definitions`.
+`compile_reply.host.recipe_sha256` can already carry `Contract.hash`, but its
+current shape rejects additional method-version/run fields; agree those fields
+before wiring the graph projection.
+
+## Do wątku 7
+
+Migrate `live_pilot.native_prompt()` from the source regex to prompt data or the
+registry, then remove the generated disabled export. Send measured recipes with
+input/output adapter identities and original denominators; prepared arms do not
+become quality winners by selection alone. No paid work was run by W1.
+
+## Do wątku 9
+
+Integrate W2 before the W1 optional usage adapter; retain INTERFEJS and run the
+full merged CTest/web build. Register the new standalone fixtures through the
+CMake owner without weakening existing gates. Update INDEX from this report.
+The broader W11 inventory and graph-method wiring remain explicit follow-ups.
+
+## Do wątku 10
+
+Expose effective definitions/hashes, full prepared queries, chunk IDs, one-call
+patches, snapshots, validation diagnostics and usage capability. Existing
+knowledge-stage JSON supports the native flow; add catalog/editor routes in
+its owning scope. Distinguish `.prompt` contracts from W11 `.pack` profiles;
+`profile list/inspect` currently does not discover the prompt registry.
+
+## Do wątku 11
+
+Wire `semantic_llm.cpp` and `worker/semantic_worker.cpp` to the prepared legacy
+contract; W3 owns the batch caller. Preserve exact default prompt/body/public
+headers and provider-specific wrappers. Move the remaining input minimum 20,
+failure latch 5, merge factor 0.8 and array-repair policy into configurable data;
+reset the latch on effective-recipe change and reject stale completions.
+Use W11's actual `create_from_data_dir`, `create_with_profile`,
+`to_unified_profile` and `profile_hash` interfaces for regex fallback/merge.
+`Runtime::open` and the old static conversion are not yet wired to those owner
+profiles; never attach an overlay hash to results from the old instance.

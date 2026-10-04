@@ -1,0 +1,214 @@
+{
+  "schema": "loom.offline_prompt_migration_comparison/1",
+  "completed_utc": "2026-10-04T16:14:47.137966+00:00",
+  "paid_calls": 0,
+  "source_commit": "9d15d2dd0733274356f768816e207e26e13845e4",
+  "comparison_from_W1_precision_commit": "a042ab7b45d9cc908154cf0252fbae4bca451d3c",
+  "comparison_to_W1_native_commit": "aed85b8d5b90db9c3055918e4864f8273bd3d411",
+  "synthetic": {
+    "exit_code": 0,
+    "all_metrics_and_stats_equal": true,
+    "excluded_ephemeral_fields": [
+      "work_dir",
+      "stages.catalog.import.conversations"
+    ],
+    "determinism": {
+      "stage_hashes_identical": true,
+      "differing_stages": [],
+      "products_byte_identical": true,
+      "run_ids_identical": true,
+      "products": 65
+    },
+    "before_card_sha256": "d8a963b1f2678d8ec96f392d0acd0f1a08be780a2cd1ef4b351f0ff9d77347bf",
+    "after_card_sha256": "9a17ed8e5c878355ea40c65e9764c08fa0a3764b5093fa2b7c540547841bf49d"
+  },
+  "selfhost": {
+    "exit_code": 0,
+    "before_status": "done",
+    "after_status": "done",
+    "pack_hash": "2f17ffae1288eccfa223cc9d9460723bf9ea595859b23999ac5e5057d7182e99",
+    "stages": [
+      {
+        "stage": "catalog",
+        "before": {
+          "selected": 1413
+        },
+        "after": {
+          "selected": 1413
+        },
+        "input_hash_equal": false,
+        "output_hash_equal": true
+      },
+      {
+        "stage": "extract",
+        "before": {
+          "from": "catalog",
+          "units": 1413,
+          "failed": 0,
+          "names": 247,
+          "observations": 37249,
+          "entities": 3004,
+          "claims": 8010,
+          "areas": 1,
+          "principles": 824,
+          "decisions": 52,
+          "forks": 0,
+          "statuses": 138
+        },
+        "after": {
+          "from": "catalog",
+          "units": 1413,
+          "failed": 0,
+          "names": 247,
+          "observations": 37249,
+          "entities": 3004,
+          "claims": 8010,
+          "areas": 1,
+          "principles": 824,
+          "decisions": 52,
+          "forks": 0,
+          "statuses": 138
+        },
+        "input_hash_equal": false,
+        "output_hash_equal": true
+      },
+      {
+        "stage": "resolve",
+        "before": {
+          "entities": 2510,
+          "mentions": 3004,
+          "merges": 494,
+          "blocked": 3218,
+          "claims": 9352
+        },
+        "after": {
+          "entities": 2510,
+          "mentions": 3004,
+          "merges": 494,
+          "blocked": 3218,
+          "claims": 9352
+        },
+        "input_hash_equal": false,
+        "output_hash_equal": true
+      },
+      {
+        "stage": "assess",
+        "before": {
+          "claims": 9352,
+          "contested": 49,
+          "conflicts": 7,
+          "reversals": 0,
+          "replayed": 0
+        },
+        "after": {
+          "claims": 9352,
+          "contested": 49,
+          "conflicts": 7,
+          "reversals": 0,
+          "replayed": 0
+        },
+        "input_hash_equal": false,
+        "output_hash_equal": true
+      },
+      {
+        "stage": "generalize",
+        "before": {
+          "instances": 502,
+          "absent": 3307,
+          "analogies": 60,
+          "inferred": 38,
+          "extrapolated": 106,
+          "transferred": 0,
+          "principles": 828,
+          "operators": 5,
+          "models": 3,
+          "predictions": 11,
+          "predictions_holds": 0,
+          "predictions_violated": 0
+        },
+        "after": {
+          "instances": 502,
+          "absent": 3307,
+          "analogies": 60,
+          "inferred": 38,
+          "extrapolated": 106,
+          "transferred": 0,
+          "principles": 828,
+          "operators": 5,
+          "models": 3,
+          "predictions": 11,
+          "predictions_holds": 0,
+          "predictions_violated": 0
+        },
+        "input_hash_equal": false,
+        "output_hash_equal": true
+      },
+      {
+        "stage": "materialize",
+        "before": {
+          "dossiers": 502,
+          "extrapolated_specs": 502,
+          "products": 1006
+        },
+        "after": {
+          "dossiers": 502,
+          "extrapolated_specs": 502,
+          "products": 1006
+        },
+        "input_hash_equal": false,
+        "output_hash_equal": false
+      }
+    ],
+    "table_comparison": {
+      "loom_kb_observations": {
+        "counts": [
+          37249,
+          37249
+        ],
+        "sha256": [
+          "9ef405422ed48de37cfd822b9e52c74f2a18a34e47f4cc1cc92862e00c7b2ea0",
+          "9ef405422ed48de37cfd822b9e52c74f2a18a34e47f4cc1cc92862e00c7b2ea0"
+        ],
+        "equal": true,
+        "excluded_columns": [
+          "run_id"
+        ],
+        "ordered_by": "id"
+      },
+      "loom_kb_claims": {
+        "counts": [
+          12863,
+          12863
+        ],
+        "sha256": [
+          "8199b5994dca0c02546d1655d2f71c910549e90443081bae24bf3e0cd8feb024",
+          "8199b5994dca0c02546d1655d2f71c910549e90443081bae24bf3e0cd8feb024"
+        ],
+        "equal": true,
+        "excluded_columns": [
+          "run_id"
+        ],
+        "ordered_by": "id"
+      }
+    },
+    "products": {
+      "total": 1006,
+      "byte_identical": 1005,
+      "difference_files": [
+        "SELF.md"
+      ],
+      "normalization": "Only the exact generated run-ID sentence in SELF.md; no source or claim fields removed.",
+      "normalized_manifest_sha256": [
+        "d5e1674742dba5fb40ca481a4f3e5438596ae95c547bafa96ef2346962f392c5",
+        "d5e1674742dba5fb40ca481a4f3e5438596ae95c547bafa96ef2346962f392c5"
+      ],
+      "normalized_equal": true,
+      "materialize_hash_note": "Stage input hashes include the run ID. Materialize output hashes product blobs, including the generated SELF.md run-ID sentence. No byte-equality claim for these metadata-dependent hashes."
+    }
+  },
+  "replay_commands": [
+    "python3 loom/tools/eval/knowledge_eval.py synthetic --loom loom/build/dev/cli/loom --work <new-work> --out <new-card>",
+    "git worktree add --detach <source-tree> 9d15d2dd0733274356f768816e207e26e13845e4",
+    "python3 loom/tools/eval/knowledge_eval.py selfhost --loom loom/build/dev/cli/loom --repo <source-tree> --work <new-work> --out <new-products>"
+  ]
+}
