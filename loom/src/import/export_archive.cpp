@@ -220,7 +220,7 @@ struct Run {
       if (!id.empty() && json::get_string(saved_projects, uuid) != id) bindings_changed = true;
     if (!bindings_changed) return {};
     LoadStats stats;
-    auto document = load_json_doc(member.abs, stats);
+    auto document = load_json_doc(member.abs, stats, env.opts.json_max_depth);
     if (!document) return Error(Errc::Parse, "cannot replay project memory bindings: " + stats.message);
     const Json* memories = json::find(*document, "project_memories");
     if (!memories || !memories->is_object()) return {};
@@ -675,7 +675,7 @@ Result<std::vector<Conversation>> ConversationImporter::export_zip_body(const fs
         std::string fmt = detect_format(m->abs);
         if (fmt != "json" || (opts.generic_inference_max_bytes && m->size > opts.generic_inference_max_bytes)) continue;
         LoadStats st;
-        auto doc = load_json_doc(m->abs, st);
+        auto doc = load_json_doc(m->abs, st, opts.json_max_depth);
         if (doc && !legacy_recognizable(*doc) && generic_structure(*doc)) inference_members.insert(m->rel);
       }
       const bool inference_archive = !inference_members.empty();
@@ -689,7 +689,7 @@ Result<std::vector<Conversation>> ConversationImporter::export_zip_body(const fs
         }
         if (inference_members.count(m->rel)) {
           LoadStats st;
-          auto doc = load_json_doc(m->abs, st);
+          auto doc = load_json_doc(m->abs, st, opts.json_max_depth);
           InferOutcome io;
           if (doc) infer_generic(run.env, *doc, m->rel, file_members, io, rep);
           if (!io.conversations.empty()) {

@@ -466,7 +466,7 @@ bool import_anthropic_member(Env& env, AnthropicCtx& cx, const std::string& rel,
   if (base != "projects.json" && base != "users.json" && base != "memories.json") return false;
 
   LoadStats st;
-  auto doc = load_json_doc(abs, st);
+  auto doc = load_json_doc(abs, st, env.opts.json_max_depth);
   if (!doc) {
     rep.errors.push_back(Json{{"member", rel}, {"code", st.empty ? "empty" : "invalid_json"}, {"message", st.message}});
     rep.partial = true;

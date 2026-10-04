@@ -52,7 +52,15 @@ To gotowość tego przyrostu, nie zakończenie 52 migracji danych/profili.
    evidence do `loom/tools/eval/test_archive_cost.py`; stare11 bez osłabiania.
    Zwykły discovery i adapter istniejącego CTest globu wykonały **19/19**.
    `compat.test_archive_cost` ładuje tę samą suite, bez kopii testów ani zmian
-   centralnego CMake. Pełny CTest z tą rejestracją jeszcze trwa/przed nami.
+   centralnego CMake. Kod **521ba0c**; pełny CTest jeszcze przed nami.
+4. **Głębokość auxiliary/repair (finding INDEX):** prywatny `load_json_doc`
+   wymaga jawnego `max_depth`; wszystkie6 ścieżek przekazują
+   `ImportOptions.json_max_depth`. Usunięto ukryty default512 z
+   `parse_tolerant`. Nowe regresje obejmują preset8, zero/unlimited, payload
+   o głębokości550, wznowienie oraz naprawę powiązania z zachowaniem ID.
+   WERROR syntax zielony; native execution czeka na pełny build.
+   Legacy JSON/JSONL i heurystyka generic finder nadal mają osobne mechanizmy;
+   nie jest to claim kompletnej migracji wszystkich 52 grup.
 
 ## Wdrożone
 

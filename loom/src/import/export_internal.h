@@ -164,7 +164,7 @@ struct Loader {
 };
 LoadStats load_json_file(const fs::path& path, Loader& loader);
 // Whole-document convenience (small files): parsed value or nullopt (see stats).
-std::optional<Json> load_json_doc(const fs::path& path, LoadStats& stats);
+std::optional<Json> load_json_doc(const fs::path& path, LoadStats& stats, std::size_t max_depth);
 Json stats_to_json(const LoadStats& s);
 
 // Durable per-conversation/ZIP-record journal. source_index=-1 denotes a

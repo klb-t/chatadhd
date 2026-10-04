@@ -779,7 +779,7 @@ bool import_openai_member(Env& env, OpenAiCtx& cx, const std::string& rel, const
     return false;
 
   LoadStats st;
-  auto doc = load_json_doc(abs, st);
+  auto doc = load_json_doc(abs, st, env.opts.json_max_depth);
   if (!doc) {
     rep.errors.push_back(Json{{"member", rel}, {"code", st.empty ? "empty" : "invalid_json"}, {"message", st.message}});
     rep.partial = true;
@@ -872,7 +872,7 @@ Status reconcile_openai_member_checkpoint(Env& env, OpenAiCtx& cx, const std::st
     return Error(Errc::Conflict, "member " + rel + ": checkpoint source identity is missing");
 
   LoadStats stats;
-  auto doc = load_json_doc(abs, stats);
+  auto doc = load_json_doc(abs, stats, env.opts.json_max_depth);
   if (!doc) return Error(Errc::Parse, "cannot reconcile member " + rel + ": " + stats.message);
   auto lock = env.db.lock();
   sql::Txn transaction(env.db.conn());

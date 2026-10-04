@@ -262,7 +262,7 @@ bool too_deep(std::string_view s, std::size_t max_depth) {
   return false;
 }
 
-bool parse_tolerant(std::string_view raw, LoadStats& st, Json& out, std::string& why, std::size_t max_depth = 512) {
+bool parse_tolerant(std::string_view raw, LoadStats& st, Json& out, std::string& why, std::size_t max_depth) {
   std::string fixed;
   std::string_view text = raw;
   if (!utf8::is_valid(raw)) {
@@ -291,7 +291,7 @@ bool parse_tolerant(std::string_view raw, LoadStats& st, Json& out, std::string&
 
 }  // namespace
 
-std::optional<Json> load_json_doc(const fs::path& path, LoadStats& st) {
+std::optional<Json> load_json_doc(const fs::path& path, LoadStats& st, std::size_t max_depth) {
   auto raw = fsutil::read_file(path);
   if (!raw) {
     st.invalid = true;
@@ -305,7 +305,7 @@ std::optional<Json> load_json_doc(const fs::path& path, LoadStats& st) {
   }
   Json out;
   std::string why;
-  if (!parse_tolerant(*raw, st, out, why)) {
+  if (!parse_tolerant(*raw, st, out, why, max_depth)) {
     st.invalid = true;
     st.message = why;
     return std::nullopt;
