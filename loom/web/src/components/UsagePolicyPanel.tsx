@@ -50,6 +50,8 @@ export default function UsagePolicyPanel({ transport = api, onConfigSaved }: {
   const [settings, setSettings] = useState<JsonObject | null>(null);
   const [policyDraft, setPolicyDraft] = useState("");
   const [policyDirty, setPolicyDirty] = useState(false);
+  const [policyPreview, setPolicyPreview] = useState<JsonObject | null>(null);
+  const [previewedPolicyDraft, setPreviewedPolicyDraft] = useState("");
   const [estimateDraft, setEstimateDraft] = useState('{\n  "operation_id": "",\n  "baseline_key": "",\n  "resources": {}\n}');
   const [preview, setPreview] = useState<JsonObject | null>(null);
   const [receipt, setReceipt] = useState<JsonObject | null>(null);
@@ -98,6 +100,12 @@ export default function UsagePolicyPanel({ transport = api, onConfigSaved }: {
     setNotice("Policy saved. It applies on the next policy open; this is not an execution approval.");
     await readSettings();
   });
+  const previewPolicy = () => run(async () => {
+    const override = parseObject(policyDraft, "Policy override");
+    const result = await command({ action: "preview_settings", override });
+    setPolicyPreview(result); setPreviewedPolicyDraft(policyDraft);
+    setNotice("Policy override previewed without saving configuration or opening the ledger. This advisory snapshot is not an execution approval.");
+  });
   const estimateOperation = (action: "preview" | "request") => run(async () => {
     const estimate = parseObject(estimateDraft, "Estimate");
     const result = await command({ action, estimate });
@@ -139,6 +147,7 @@ export default function UsagePolicyPanel({ transport = api, onConfigSaved }: {
     <button onClick={refreshSettings} disabled={busy || !transport.usagePolicy} data-testid="usage-settings-refresh">Refresh policy settings</button>
     {settings && <>
       <p>Source: <strong>{describe(settings.source)}</strong>. Ledger: <code>{describe(settings.ledger_path)}</code>. Preset application: <code>{describe(object(settings.capabilities).preset_application)}</code>.</p>
+      {(settings.hashes || settings.preset_source || settings.override_semantics) && <details><summary>Policy snapshot source and hashes</summary><pre data-testid="usage-settings-metadata">{pretty({ preset_source: settings.preset_source, override_semantics: settings.override_semantics, hashes: settings.hashes })}</pre></details>}
       <div className="usage-settings-values">
         <details><summary>Preset</summary><pre data-testid="usage-preset">{pretty(settings.preset)}</pre></details>
         <details><summary>Stored owner override</summary><pre data-testid="usage-override">{pretty(settings.stored_override)}</pre></details>
@@ -147,8 +156,17 @@ export default function UsagePolicyPanel({ transport = api, onConfigSaved }: {
       <div className="form-row"><label htmlFor="usage-policy-json">Complete policy object (including arbitrary cohorts, resource names and extensions)</label>
         <textarea id="usage-policy-json" className="usage-json-editor" rows={12} value={policyDraft} onChange={event => { setPolicyDraft(event.target.value); setPolicyDirty(true); }} data-testid="usage-policy-json" />
       </div>
-      <p>Saving replaces the complete top-level <code>loom_usage_policy</code> value. Nested objects are not merge-patched; null is a stored value. Outstanding receipts keep their own snapshots.</p>
-      <button onClick={savePolicy} disabled={busy} data-testid="usage-policy-save">Save complete policy</button>
+      <p>Saving replaces the complete top-level <code>loom_usage_policy</code> value. Nested objects are not merge-patched; null is a stored value. An empty override restores preset values and remains a stored override. Outstanding receipts keep their own snapshots.</p>
+      <div className="usage-actions">
+        <button onClick={previewPolicy} disabled={busy || !transport.usagePolicy} data-testid="usage-policy-preview">Preview policy override</button>
+        <button onClick={savePolicy} disabled={busy} data-testid="usage-policy-save">Save complete policy</button>
+      </div>
+      {policyPreview && <details open data-testid="usage-policy-preview-result"><summary>Advisory policy override preview — no settings saved</summary>
+        <p>Effective policy changed: <strong>{describe(object(policyPreview.preview).effective_changed)}</strong>. Persisted: <strong>{describe(object(policyPreview.preview).persisted)}</strong>.</p>
+        <p>The snapshot hashes identify parsed JSON. Previewing is not a compare-and-set write; settings may change before saving.</p>
+        {policyDraft !== previewedPolicyDraft && <p role="status">The draft changed after this preview. The response below describes the captured override.</p>}
+        <pre data-testid="usage-policy-preview-json">{pretty(policyPreview)}</pre>
+      </details>}
       <details><summary>Host capabilities</summary><pre>{pretty(settings.capabilities)}</pre></details>
     </>}
     <div className="section-title">Estimate and admission ledger</div>

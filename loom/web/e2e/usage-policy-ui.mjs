@@ -1,5 +1,6 @@
 // Real React, fake HTTP ledger: no models, paid requests or production dispatch.
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { createServer } from "node:http";
 import { fileURLToPath } from "node:url";
 import { build } from "esbuild";
@@ -10,6 +11,8 @@ const preset = { schema: "loom.usage_policy/1", growth_factor: 10, baseline_wind
 let storedOverride = null, config = { temperature: 0.7, default_model: "offline", api_key: "fixture-credential-never-show" };
 let requestSequence = 0, failConfirm = true;
 const commands = [], configWrites = [], receipts = new Map();
+// Fixture hashes test response rendering, not the native canonicalizer itself.
+const hash = value => createHash("sha256").update(JSON.stringify(value)).digest("hex");
 const bundle = await build({
   stdin: { contents: `
     import React from "react";
@@ -59,6 +62,17 @@ const server = createServer(async (request, response) => {
     }
     commands.push(body);
     if (body.action === "settings") { json(response, { preset, stored_override: storedOverride, effective: storedOverride ?? preset, source: storedOverride ? "stored_override" : "preset", ledger_path: "fixture/usage-policy.sqlite", capabilities: { preset_application: "next_policy_open" } }); return; }
+    if (body.action === "preview_settings") {
+      if (body.override.growth_factor !== undefined && body.override.growth_factor <= 0) {
+        json(response, { error: { message: "growth_factor must be positive" } }, 400); return;
+      }
+      const effective = { ...preset, ...(storedOverride ?? {}) }, proposed = { ...preset, ...body.override };
+      json(response, { preset, stored_override: storedOverride, effective, source: storedOverride ? "configured" : "preset",
+        preset_source: "legacy_code_pending_pack_migration", override_semantics: "replace_top_level_fields",
+        hashes: { algorithm: "sha256", representation: "loom.canonical_json", preset: hash(preset), stored_override: storedOverride === null ? null : hash(storedOverride), effective: hash(effective) },
+        preview: { override: body.override, effective: proposed, hashes: { override: hash(body.override), effective: hash(proposed) }, effective_changed: JSON.stringify(effective) !== JSON.stringify(proposed), persisted: false },
+        ledger_path: "fixture/usage-policy.sqlite", capabilities: { preset_application: "next_policy_open" } }); return;
+    }
     if (body.action === "preview") { json(response, decision(body.estimate, "preview-only")); return; }
     if (body.action === "request") { const result = decision(body.estimate, `receipt-${++requestSequence}`); receipts.set(result.operation_id, result); json(response, result); return; }
     if (body.action === "confirm") {
@@ -87,6 +101,37 @@ try {
   assert.equal(await page.locator('[data-testid="expert-config-current"]').textContent().then(text => text.includes("fixture-credential-never-show")), false);
   assert.deepEqual(JSON.parse(await page.locator('[data-testid="usage-policy-json"]').inputValue()), preset);
   const policy = { ...preset, growth_factor: 12.5, baseline_window: null, initial_baselines: { "custom/cohort/unit-v2": { custom_units: null } }, extensions: { owner_variant: "anything" } };
+  await page.locator('[data-testid="usage-policy-json"]').fill(JSON.stringify(policy));
+  const configWritesBeforePolicyPreview = configWrites.length;
+  await page.locator('[data-testid="usage-policy-preview"]').click();
+  await page.locator('[data-testid="usage-policy-preview-result"]').waitFor();
+  assert.deepEqual(commands.at(-1), { action: "preview_settings", override: policy });
+  const previewSettings = JSON.parse(await page.locator('[data-testid="usage-policy-preview-json"]').textContent());
+  assert.deepEqual(previewSettings.effective, preset, "preview leaves current settings snapshot unchanged");
+  assert.deepEqual(previewSettings.preview.effective, policy);
+  assert.equal(previewSettings.preview.persisted, false);
+  assert.equal(previewSettings.preview.effective_changed, true);
+  assert.equal(previewSettings.hashes.effective, hash(preset));
+  assert.equal(previewSettings.preview.hashes.override, hash(policy));
+  assert.equal(previewSettings.preview.hashes.effective, hash(policy));
+  assert.equal(configWrites.length, configWritesBeforePolicyPreview);
+  assert.equal(storedOverride, null);
+  assert.equal(requestSequence, 0, "policy settings preview records no ledger admission");
+  assert.equal(commands.some(command => ["preview", "request", "confirm", "complete", "cancel", "inspect"].includes(command.action)), false);
+  assert.deepEqual(JSON.parse(await page.locator('[data-testid="usage-policy-json"]').inputValue()), policy);
+  const invalidPolicy = '{"growth_factor":0}';
+  await page.locator('[data-testid="usage-policy-json"]').fill(invalidPolicy);
+  await page.locator('[data-testid="usage-policy-preview"]').click();
+  await page.waitForFunction(() => document.querySelector('[data-testid="usage-policy-error"]')?.textContent.includes("growth_factor must be positive"));
+  assert.equal(await page.locator('[data-testid="usage-policy-json"]').inputValue(), invalidPolicy);
+  assert.equal(configWrites.length, configWritesBeforePolicyPreview);
+  const commandsBeforeInvalidJson = commands.length;
+  await page.locator('[data-testid="usage-policy-json"]').fill("{invalid");
+  await page.locator('[data-testid="usage-policy-preview"]').click();
+  await page.waitForFunction(() => document.querySelector('[data-testid="usage-policy-error"]')?.textContent.includes("JSON"));
+  assert.equal(await page.locator('[data-testid="usage-policy-json"]').inputValue(), "{invalid");
+  assert.equal(commands.length, commandsBeforeInvalidJson, "malformed draft never reaches the host");
+  assert.equal(configWrites.length, configWritesBeforePolicyPreview);
   await page.locator('[data-testid="usage-policy-json"]').fill(JSON.stringify(policy));
   await page.evaluate(() => { window.__failSave = true; });
   await page.locator('[data-testid="usage-policy-save"]').click();
@@ -169,5 +214,5 @@ try {
   assert.match(await page.locator('[data-testid="usage-policy-error"]').innerText(), /unavailable in this host/);
   assert.equal(await page.locator('[data-testid="usage-preview"]').isDisabled(), true);
   assert.deepEqual(errors, []);
-  console.log("[usage-policy-ui] 1/1 group passed: preset/override/effective, whole-object policy, failed draft preservation, preview vs request, exact approval/rejection, stale lockout/manual refresh, unknown reservations, config/secret separation, unavailable host");
+  console.log("[usage-policy-ui] 1/1 group passed: preset/override/effective, read-only override preview + hashes + invalid draft preservation, whole-object policy, failed draft preservation, preview vs request, exact approval/rejection, stale lockout/manual refresh, unknown reservations, config/secret separation, unavailable host");
 } finally { await browser?.close(); await new Promise(resolve => server.close(resolve)); }

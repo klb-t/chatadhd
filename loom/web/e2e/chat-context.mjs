@@ -259,8 +259,12 @@ try {
   if (!(await page.getByTestId("sidebar").getAttribute("class")).includes("collapsed")) await page.getByTestId("toggle-sidebar").click();
   await page.getByTestId("chat-context-controls").locator(":scope > summary").click();
   await page.getByTestId("use-knowledge-context").check();
-  assert.equal(await page.getByTestId("use-context-plan").isChecked(), false, "workspace restore does not silently enable a plan after reload");
-  await page.getByTestId("use-context-plan").check();
+  assert.equal(await page.getByTestId("use-context-plan").isChecked(), true, "the explicitly selected context plan survives reload independently of workspace restore");
+  assert.equal(await page.getByTestId("record-context").inputValue(), "on", "the explicit recording choice survives reload");
+  await page.getByTestId("use-context-plan").uncheck();
+  await page.reload();
+  if (!(await page.getByTestId("chat-context-controls").evaluate(element => element.open))) await page.getByTestId("chat-context-controls").locator(":scope > summary").click();
+  assert.equal(await page.getByTestId("use-context-plan").isChecked(), false, "an explicitly disabled plan is not enabled by workspace or reload");
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, "mobile controls do not overflow page");
   assert.equal(captures.length, 5, "inspection/options/reload make no provider calls");
   savedMessages = await api("GET", `/api/conversations/${convId}/messages`);
