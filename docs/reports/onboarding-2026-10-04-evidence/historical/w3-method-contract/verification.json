@@ -1,0 +1,28 @@
+{
+  "status": "passed",
+  "method_registry_load": true,
+  "absent_host_method_visible": true,
+  "absent_host_available": false,
+  "advertised_host_available": true,
+  "parameter_precedence": [
+    "preset",
+    "recipe",
+    "method",
+    "parameter_set",
+    "selection",
+    "user"
+  ],
+  "native_entities": 5,
+  "native_claims": 5,
+  "native_sources": 5,
+  "tampered_source_rejected": true,
+  "provider_calls": 0,
+  "actual_method_executions": 0,
+  "scope": "W12 declaration -> actual W3 load/resolve; execution not tested",
+  "w3_source_commit": "03c670caa6ee3d8ac2c478186548114f8e83927f",
+  "w3_source_sha256": {
+    "method_registry.h": "894b99c3db59aafa1df152f29f982ec4e8675ba976d673561bfdb50b227559cc",
+    "method_registry.cpp": "445e67cc02381392e23e348dda5b3d37f3dac47b4312d71c3b5ceab529c54188"
+  },
+  "exported_w12_method_profile_sha256": "032b5678487a89779661aa01c9403789f0d255f1095cd3d7d25dcd38a6f4d0fe"
+}

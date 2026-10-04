@@ -1,0 +1,794 @@
+{
+  "vocabulary": {
+    "kinds": {
+      "profile": "profile",
+      "field": "field",
+      "privacy_rule": "privacy_rule",
+      "default": "default",
+      "layer": "layer",
+      "exclusion": "exclusion",
+      "pack_document": "pack_document",
+      "type": "type",
+      "method": "method",
+      "method_version": "method_version",
+      "prompt_version": "prompt_version",
+      "recipe_version": "recipe_version",
+      "parameter_set_version": "parameter_set_version",
+      "preset_version": "preset_version",
+      "run": "run"
+    },
+    "predicates": {
+      "has_field": "has_field",
+      "has_rule": "has_rule",
+      "has_default": "has_default",
+      "excluded": "excluded",
+      "version_of": "version_of",
+      "uses_prompt": "uses_prompt",
+      "uses_recipe": "uses_recipe",
+      "uses_parameter_set": "uses_parameter_set",
+      "uses_preset": "uses_preset",
+      "declares_type": "declares_type",
+      "has_state": "has_state",
+      "has_value": "has_value",
+      "from_layer": "from_layer",
+      "part_of": "part_of",
+      "has_profile": "has_profile",
+      "has_method": "has_method",
+      "uses_method_version": "uses_method_version",
+      "requests_method_version": "requests_method_version",
+      "produced_in_run": "produced_in_run",
+      "produced_by_method_version": "produced_by_method_version"
+    }
+  },
+  "entities": [
+    {
+      "id": "e_3bd9c99cd1c34578",
+      "kind": "parameter_set_version",
+      "canonical_key": "onboarding\u001fparameter_set_version\u001fonboarding.interview\u001ffdb679794d034001d244725923387705c2bb6a341c50972243ce3e0ff2d93d21",
+      "label": "onboarding.interview parameters",
+      "labels": {},
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "observed",
+      "origin": "repo",
+      "confidence": 1.0,
+      "status": "active",
+      "attrs": {
+        "definition": {
+          "effective_parameters": {},
+          "user_overrides": {}
+        },
+        "definition_sha256": "fdb679794d034001d244725923387705c2bb6a341c50972243ce3e0ff2d93d21"
+      }
+    },
+    {
+      "id": "e_40ae692ee0482808",
+      "kind": "method_version",
+      "canonical_key": "onboarding\u001fmethod_version\u001fonboarding.interview\u001fd1661d91a167800c2c455c465bc24d5352f2d07272683683b80aeca2dc18ad08",
+      "label": "onboarding.interview version",
+      "labels": {},
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "observed",
+      "origin": "repo",
+      "confidence": 1.0,
+      "status": "active",
+      "attrs": {
+        "definition": {
+          "execution_capability": "onboarding_interview",
+          "parameters": {},
+          "user_overrides": {},
+          "prompt_sha256": "9bd06de30a14b52a22a17caff6ff08dacf8f5c31e156bb469dd945aa84ea796b",
+          "recipe_sha256": "23494aee69cc5342ec79f3aebc13836b1b8bde847d7b2d0b58dc28cd74617acf",
+          "parameter_set_sha256": "fdb679794d034001d244725923387705c2bb6a341c50972243ce3e0ff2d93d21",
+          "revision": 1
+        },
+        "definition_sha256": "d1661d91a167800c2c455c465bc24d5352f2d07272683683b80aeca2dc18ad08",
+        "revision": 1
+      }
+    },
+    {
+      "id": "e_58d8a150ee161457",
+      "kind": "prompt_version",
+      "canonical_key": "onboarding\u001fprompt_version\u001fonboarding.interview\u001f9bd06de30a14b52a22a17caff6ff08dacf8f5c31e156bb469dd945aa84ea796b",
+      "label": "onboarding.interview prompt",
+      "labels": {},
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "observed",
+      "origin": "repo",
+      "confidence": 1.0,
+      "status": "active",
+      "attrs": {
+        "text": "Interview the user using only supplied allowed questions and context. Ask actively and adapt follow-up questions to the user’s answers. Treat unknown as unknown; never ask declined fields; never ask or infer never fields. Do not invent personal facts. After each section, summarize what you understood and ask the user to confirm or correct it. A missing answer may be skipped, paused, resumed or repeated. Return only JSON matching reply_schema. Candidates are proposed interpretations, not committed facts. Use caller-supplied IDs, timestamps and source references. Infer only where the supplied privacy policy permits it; explicit statements stay separately identified.",
+        "text_sha256": "9bd06de30a14b52a22a17caff6ff08dacf8f5c31e156bb469dd945aa84ea796b"
+      }
+    },
+    {
+      "id": "e_5f2e3ea988d6f9c1",
+      "kind": "method",
+      "canonical_key": "onboarding\u001fmethod\u001fonboarding.interview",
+      "label": "onboarding.interview",
+      "labels": {},
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "observed",
+      "origin": "repo",
+      "confidence": 1.0,
+      "status": "active",
+      "attrs": {
+        "definition_id": "onboarding.interview"
+      }
+    },
+    {
+      "id": "e_5f40e04ae8e18b31",
+      "kind": "recipe_version",
+      "canonical_key": "onboarding\u001frecipe_version\u001fonboarding.interview\u001f23494aee69cc5342ec79f3aebc13836b1b8bde847d7b2d0b58dc28cd74617acf",
+      "label": "onboarding.interview recipe",
+      "labels": {},
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "observed",
+      "origin": "repo",
+      "confidence": 1.0,
+      "status": "active",
+      "attrs": {
+        "definition": {
+          "sections": [
+            {
+              "id": "identity",
+              "title": "Identity and work",
+              "questions": [
+                {
+                  "field": "identity.description",
+                  "text": "Who are you, and what would you like the application to know about you?"
+                },
+                {
+                  "field": "work.projects",
+                  "text": "What are you working on and what do you want help with?"
+                }
+              ]
+            },
+            {
+              "id": "communication",
+              "title": "Communication",
+              "questions": [
+                {
+                  "field": "communication.style",
+                  "text": "How should the application speak to you?"
+                },
+                {
+                  "field": "communication.length",
+                  "text": "How much detail do you prefer?"
+                },
+                {
+                  "field": "communication.language",
+                  "text": "Which language or languages do you want to use?"
+                },
+                {
+                  "field": "communication.attention",
+                  "text": "Are there attention, organization or ADHD-related needs you want accommodated? You can leave this unanswered."
+                }
+              ]
+            },
+            {
+              "id": "knowledge",
+              "title": "What to remember",
+              "questions": [
+                {
+                  "field": "knowledge.remember",
+                  "text": "Give examples of things you want the application to remember."
+                },
+                {
+                  "field": "knowledge.avoid",
+                  "text": "Give examples of things the application should not know, ask about or infer."
+                }
+              ]
+            },
+            {
+              "id": "privacy",
+              "title": "Privacy",
+              "questions": [
+                {
+                  "field": "privacy.preferences",
+                  "text": "Which categories may be stored, at what detail and sensitivity, sent to which providers, inferred or kept only when stated explicitly? What retention do you choose?"
+                }
+              ]
+            }
+          ],
+          "reply_schema": {
+            "type": "object",
+            "required": [
+              "section",
+              "summary",
+              "questions",
+              "candidates"
+            ],
+            "properties": {
+              "section": {
+                "type": "string"
+              },
+              "summary": {
+                "type": "string"
+              },
+              "questions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "field",
+                    "text"
+                  ]
+                }
+              },
+              "candidates": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "field",
+                    "value",
+                    "time",
+                    "source_refs"
+                  ]
+                }
+              }
+            }
+          },
+          "prompt_sha256": "9bd06de30a14b52a22a17caff6ff08dacf8f5c31e156bb469dd945aa84ea796b",
+          "parameters": {}
+        },
+        "definition_sha256": "23494aee69cc5342ec79f3aebc13836b1b8bde847d7b2d0b58dc28cd74617acf"
+      }
+    }
+  ],
+  "claims": [
+    {
+      "id": "cl_52423b6e16439539",
+      "subject": "e_5f40e04ae8e18b31",
+      "predicate": "uses_prompt",
+      "object": "e_58d8a150ee161457",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "ob_742b7c134ec2523f",
+              "locator": {
+                "source": "sha256:23494aee69cc5342ec79f3aebc13836b1b8bde847d7b2d0b58dc28cd74617acf",
+                "member": "method/recipe",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 1728,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"parameters\":{},\"prompt_sha256\":\"9bd06de30a14b52a22a17caff6ff08dacf8f5c31e156bb469dd945aa84ea796b\",\"reply_schema\":{\"properties\":{\"candidates\":{\"items\":{\"required\":[\"id\",\"field\",\"value\",\"time\",\"source_refs\"],\"type\":\"object\"},\"type\":\"array\"},\"questions\":{\"items\":{\"required\":[\"field\",\"text\"],\"type\":\"object\"},\"type\":\"array\"},\"section\":{\"type\":\"string\"},\"summary\":{\"type\":\"string\"}},\"required\":[\"section\",\"summary\",\"questions\",\"candidates\"],\"type\":\"object\"},\"sections\":[{\"id\":\"identity\",\"questions\":[{\"field\":\"identity.description\",\"text\":\"Who are you, and what would you like the application to know about you?\"},{\"field\":\"work.projects\",\"text\":\"What are you working on and what do you want help with?\"}],\"title\":\"Identity and work\"},{\"id\":\"communication\",\"questions\":[{\"field\":\"communication.style\",\"text\":\"How should the application speak to you?\"},{\"field\":\"communication.length\",\"text\":\"How much detail do you prefer?\"},{\"field\":\"communication.language\",\"text\":\"Which language or languages do you want to use?\"},{\"field\":\"communication.attention\",\"text\":\"Are there attention, organization or ADHD-related needs you want accommodated? You can leave this unanswered.\"}],\"title\":\"Communication\"},{\"id\":\"knowledge\",\"questions\":[{\"field\":\"knowledge.remember\",\"text\":\"Give examples of things you want the application to remember.\"},{\"field\":\"knowledge.avoid\",\"text\":\"Give examples of things the application should not know, ask about or infer.\"}],\"title\":\"What to remember\"},{\"id\":\"privacy\",\"questions\":[{\"field\":\"privacy.preferences\",\"text\":\"Which categories may be stored, at what detail and sensitivity, sent to which providers, inferred or kept only when stated explicitly? What retention do you choose?\"}],\"title\":\"Privacy\"}]}",
+              "extractor": "onboarding.project_graph@1",
+              "quality": 1.0
+            }
+          ],
+          "derivation": {
+            "operator": "onboarding.project_graph",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "cl_635164a0c18daaca",
+      "subject": "e_40ae692ee0482808",
+      "predicate": "uses_parameter_set",
+      "object": "e_3bd9c99cd1c34578",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "ob_054d81d1ce46bb16",
+              "locator": {
+                "source": "sha256:fdb679794d034001d244725923387705c2bb6a341c50972243ce3e0ff2d93d21",
+                "member": "method/parameters",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 47,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"effective_parameters\":{},\"user_overrides\":{}}",
+              "extractor": "onboarding.project_graph@1",
+              "quality": 1.0
+            }
+          ],
+          "derivation": {
+            "operator": "onboarding.project_graph",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "cl_912fc3848173cf65",
+      "subject": "e_40ae692ee0482808",
+      "predicate": "uses_prompt",
+      "object": "e_58d8a150ee161457",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "ob_997efa3c32f81388",
+              "locator": {
+                "source": "sha256:9bd06de30a14b52a22a17caff6ff08dacf8f5c31e156bb469dd945aa84ea796b",
+                "member": "method/prompt",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 674,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "Interview the user using only supplied allowed questions and context. Ask actively and adapt follow-up questions to the user’s answers. Treat unknown as unknown; never ask declined fields; never ask or infer never fields. Do not invent personal facts. After each section, summarize what you understood and ask the user to confirm or correct it. A missing answer may be skipped, paused, resumed or repeated. Return only JSON matching reply_schema. Candidates are proposed interpretations, not committed facts. Use caller-supplied IDs, timestamps and source references. Infer only where the supplied privacy policy permits it; explicit statements stay separately identified.",
+              "extractor": "onboarding.project_graph@1",
+              "quality": 1.0
+            }
+          ],
+          "derivation": {
+            "operator": "onboarding.project_graph",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "cl_94661010524cbf55",
+      "subject": "e_40ae692ee0482808",
+      "predicate": "version_of",
+      "object": "e_5f2e3ea988d6f9c1",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "ob_17980bf89d63eaa5",
+              "locator": {
+                "source": "sha256:6042f6fbfa14dda6358e171ee8aeba60224d68004eb21fbbea845625fc23fbdc",
+                "member": "method/identity",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 29,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"id\":\"onboarding.interview\"}",
+              "extractor": "onboarding.project_graph@1",
+              "quality": 1.0
+            }
+          ],
+          "derivation": {
+            "operator": "onboarding.project_graph",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "cl_977d2a1711935940",
+      "subject": "e_40ae692ee0482808",
+      "predicate": "uses_recipe",
+      "object": "e_5f40e04ae8e18b31",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "ob_f9186345349eed35",
+              "locator": {
+                "source": "sha256:d1661d91a167800c2c455c465bc24d5352f2d07272683683b80aeca2dc18ad08",
+                "member": "method/definition",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 352,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"execution_capability\":\"onboarding_interview\",\"parameter_set_sha256\":\"fdb679794d034001d244725923387705c2bb6a341c50972243ce3e0ff2d93d21\",\"parameters\":{},\"prompt_sha256\":\"9bd06de30a14b52a22a17caff6ff08dacf8f5c31e156bb469dd945aa84ea796b\",\"recipe_sha256\":\"23494aee69cc5342ec79f3aebc13836b1b8bde847d7b2d0b58dc28cd74617acf\",\"revision\":1,\"user_overrides\":{}}",
+              "extractor": "onboarding.project_graph@1",
+              "quality": 1.0
+            }
+          ],
+          "derivation": {
+            "operator": "onboarding.project_graph",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    }
+  ],
+  "sources": [
+    {
+      "observation": {
+        "id": "ob_054d81d1ce46bb16",
+        "unit": "un_f1e3cc607865615c",
+        "kind": "field",
+        "text": "{\"effective_parameters\":{},\"user_overrides\":{}}",
+        "locator": {
+          "source": "sha256:fdb679794d034001d244725923387705c2bb6a341c50972243ce3e0ff2d93d21",
+          "member": "method/parameters",
+          "json_pointer": "",
+          "byte_start": 0,
+          "byte_len": 47,
+          "time_start": null,
+          "time_end": null,
+          "line": null
+        },
+        "lang": "",
+        "date": "",
+        "ordinal": 0,
+        "artifact_type": "",
+        "speaker": "",
+        "attrs": {
+          "capture_scope": "record_bytes_only",
+          "provenance": "builtin_definition"
+        }
+      },
+      "known_at": null,
+      "text_sha256": "fdb679794d034001d244725923387705c2bb6a341c50972243ce3e0ff2d93d21"
+    },
+    {
+      "observation": {
+        "id": "ob_17980bf89d63eaa5",
+        "unit": "un_ced89277463c01d0",
+        "kind": "field",
+        "text": "{\"id\":\"onboarding.interview\"}",
+        "locator": {
+          "source": "sha256:6042f6fbfa14dda6358e171ee8aeba60224d68004eb21fbbea845625fc23fbdc",
+          "member": "method/identity",
+          "json_pointer": "",
+          "byte_start": 0,
+          "byte_len": 29,
+          "time_start": null,
+          "time_end": null,
+          "line": null
+        },
+        "lang": "",
+        "date": "",
+        "ordinal": 0,
+        "artifact_type": "",
+        "speaker": "",
+        "attrs": {
+          "capture_scope": "record_bytes_only",
+          "provenance": "builtin_definition"
+        }
+      },
+      "known_at": null,
+      "text_sha256": "6042f6fbfa14dda6358e171ee8aeba60224d68004eb21fbbea845625fc23fbdc"
+    },
+    {
+      "observation": {
+        "id": "ob_742b7c134ec2523f",
+        "unit": "un_1d717fb9ba80eb77",
+        "kind": "field",
+        "text": "{\"parameters\":{},\"prompt_sha256\":\"9bd06de30a14b52a22a17caff6ff08dacf8f5c31e156bb469dd945aa84ea796b\",\"reply_schema\":{\"properties\":{\"candidates\":{\"items\":{\"required\":[\"id\",\"field\",\"value\",\"time\",\"source_refs\"],\"type\":\"object\"},\"type\":\"array\"},\"questions\":{\"items\":{\"required\":[\"field\",\"text\"],\"type\":\"object\"},\"type\":\"array\"},\"section\":{\"type\":\"string\"},\"summary\":{\"type\":\"string\"}},\"required\":[\"section\",\"summary\",\"questions\",\"candidates\"],\"type\":\"object\"},\"sections\":[{\"id\":\"identity\",\"questions\":[{\"field\":\"identity.description\",\"text\":\"Who are you, and what would you like the application to know about you?\"},{\"field\":\"work.projects\",\"text\":\"What are you working on and what do you want help with?\"}],\"title\":\"Identity and work\"},{\"id\":\"communication\",\"questions\":[{\"field\":\"communication.style\",\"text\":\"How should the application speak to you?\"},{\"field\":\"communication.length\",\"text\":\"How much detail do you prefer?\"},{\"field\":\"communication.language\",\"text\":\"Which language or languages do you want to use?\"},{\"field\":\"communication.attention\",\"text\":\"Are there attention, organization or ADHD-related needs you want accommodated? You can leave this unanswered.\"}],\"title\":\"Communication\"},{\"id\":\"knowledge\",\"questions\":[{\"field\":\"knowledge.remember\",\"text\":\"Give examples of things you want the application to remember.\"},{\"field\":\"knowledge.avoid\",\"text\":\"Give examples of things the application should not know, ask about or infer.\"}],\"title\":\"What to remember\"},{\"id\":\"privacy\",\"questions\":[{\"field\":\"privacy.preferences\",\"text\":\"Which categories may be stored, at what detail and sensitivity, sent to which providers, inferred or kept only when stated explicitly? What retention do you choose?\"}],\"title\":\"Privacy\"}]}",
+        "locator": {
+          "source": "sha256:23494aee69cc5342ec79f3aebc13836b1b8bde847d7b2d0b58dc28cd74617acf",
+          "member": "method/recipe",
+          "json_pointer": "",
+          "byte_start": 0,
+          "byte_len": 1728,
+          "time_start": null,
+          "time_end": null,
+          "line": null
+        },
+        "lang": "",
+        "date": "",
+        "ordinal": 0,
+        "artifact_type": "",
+        "speaker": "",
+        "attrs": {
+          "capture_scope": "record_bytes_only",
+          "provenance": "builtin_definition"
+        }
+      },
+      "known_at": null,
+      "text_sha256": "23494aee69cc5342ec79f3aebc13836b1b8bde847d7b2d0b58dc28cd74617acf"
+    },
+    {
+      "observation": {
+        "id": "ob_997efa3c32f81388",
+        "unit": "un_182c95fffee7396b",
+        "kind": "field",
+        "text": "Interview the user using only supplied allowed questions and context. Ask actively and adapt follow-up questions to the user’s answers. Treat unknown as unknown; never ask declined fields; never ask or infer never fields. Do not invent personal facts. After each section, summarize what you understood and ask the user to confirm or correct it. A missing answer may be skipped, paused, resumed or repeated. Return only JSON matching reply_schema. Candidates are proposed interpretations, not committed facts. Use caller-supplied IDs, timestamps and source references. Infer only where the supplied privacy policy permits it; explicit statements stay separately identified.",
+        "locator": {
+          "source": "sha256:9bd06de30a14b52a22a17caff6ff08dacf8f5c31e156bb469dd945aa84ea796b",
+          "member": "method/prompt",
+          "json_pointer": "",
+          "byte_start": 0,
+          "byte_len": 674,
+          "time_start": null,
+          "time_end": null,
+          "line": null
+        },
+        "lang": "",
+        "date": "",
+        "ordinal": 0,
+        "artifact_type": "",
+        "speaker": "",
+        "attrs": {
+          "capture_scope": "record_bytes_only",
+          "provenance": "builtin_definition"
+        }
+      },
+      "known_at": null,
+      "text_sha256": "9bd06de30a14b52a22a17caff6ff08dacf8f5c31e156bb469dd945aa84ea796b"
+    },
+    {
+      "observation": {
+        "id": "ob_f9186345349eed35",
+        "unit": "un_d4770a908807cead",
+        "kind": "field",
+        "text": "{\"execution_capability\":\"onboarding_interview\",\"parameter_set_sha256\":\"fdb679794d034001d244725923387705c2bb6a341c50972243ce3e0ff2d93d21\",\"parameters\":{},\"prompt_sha256\":\"9bd06de30a14b52a22a17caff6ff08dacf8f5c31e156bb469dd945aa84ea796b\",\"recipe_sha256\":\"23494aee69cc5342ec79f3aebc13836b1b8bde847d7b2d0b58dc28cd74617acf\",\"revision\":1,\"user_overrides\":{}}",
+        "locator": {
+          "source": "sha256:d1661d91a167800c2c455c465bc24d5352f2d07272683683b80aeca2dc18ad08",
+          "member": "method/definition",
+          "json_pointer": "",
+          "byte_start": 0,
+          "byte_len": 352,
+          "time_start": null,
+          "time_end": null,
+          "line": null
+        },
+        "lang": "",
+        "date": "",
+        "ordinal": 0,
+        "artifact_type": "",
+        "speaker": "",
+        "attrs": {
+          "capture_scope": "record_bytes_only",
+          "provenance": "builtin_definition"
+        }
+      },
+      "known_at": null,
+      "text_sha256": "d1661d91a167800c2c455c465bc24d5352f2d07272683683b80aeca2dc18ad08"
+    }
+  ],
+  "selection": {
+    "parameter_layers": [
+      "preset",
+      "recipe",
+      "method",
+      "parameter_set",
+      "selection",
+      "user"
+    ],
+    "parameters": {},
+    "user_overrides": {},
+    "members": [
+      {
+        "method_version_id": "e_40ae692ee0482808"
+      }
+    ]
+  },
+  "bindings": [
+    {
+      "method_id": "e_5f2e3ea988d6f9c1",
+      "method_version_id": "e_40ae692ee0482808",
+      "prompt_version_id": "e_58d8a150ee161457",
+      "recipe_version_id": "e_5f40e04ae8e18b31",
+      "parameter_set_version_id": "e_3bd9c99cd1c34578",
+      "definition_sha256": "d1661d91a167800c2c455c465bc24d5352f2d07272683683b80aeca2dc18ad08",
+      "recipe_sha256": "23494aee69cc5342ec79f3aebc13836b1b8bde847d7b2d0b58dc28cd74617acf",
+      "prompt_sha256": "9bd06de30a14b52a22a17caff6ff08dacf8f5c31e156bb469dd945aa84ea796b"
+    }
+  ]
+}

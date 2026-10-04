@@ -1,0 +1,41 @@
+{
+  "status": "passed",
+  "method_registry_load": true,
+  "absent_host_method_visible": true,
+  "absent_host_available": false,
+  "advertised_host_available": true,
+  "parameter_precedence": [
+    "preset",
+    "recipe",
+    "method",
+    "parameter_set",
+    "selection",
+    "user"
+  ],
+  "native_entities": 5,
+  "native_claims": 5,
+  "native_sources": 5,
+  "tampered_source_rejected": true,
+  "same_method_multiversion_load_resolve": true,
+  "same_method_multiversion_count": 2,
+  "native_saved_receipt_fixture_projected": true,
+  "native_saved_receipt_result_edges": 2,
+  "provider_calls": 0,
+  "actual_method_executions": 0,
+  "scope": "W12 declaration -> actual W3 load/resolve; execution not tested",
+  "w3_source_commit": "03c670caa6ee3d8ac2c478186548114f8e83927f",
+  "w3_source_sha256": {
+    "method_registry.h": "894b99c3db59aafa1df152f29f982ec4e8675ba976d673561bfdb50b227559cc",
+    "method_registry.cpp": "445e67cc02381392e23e348dda5b3d37f3dac47b4312d71c3b5ceab529c54188"
+  },
+  "w12_head_commit": "40907ad28f3244bfe508da647273d2e1d3bcf1b3",
+  "w12_source_sha256": {
+    "loom/src/onboarding/graph.cpp": "e7e7d95473eda71a35ab6cf66eb106ff262ad03be134493150937c1948fcc6cf",
+    "loom/src/onboarding/store.cpp": "a96588808ad54f2918f751adcc74f2fbfa0c5922cc0399117811ccdf5f51f32d",
+    "loom/data/profiles/user.pack": "957cb6e7842ce4bfa6bd13b7c5440b5e9217a2bbb1a3f97f4953f1ca8c091b56",
+    "loom/data/onboarding/scenario.pack": "61c6ce43ccbbe728b08b01ac0c7126c40fbe12b5cafa959162b12e50754a631b"
+  },
+  "exported_w12_method_profile_sha256": "ca52e1e79068b83cabf0ea06d1823f69eb9a7a28c9084a95a27df3f9a5d51c6a",
+  "multiversion_method_profile_sha256": "790ee6d40823522a9099e4f3ead67dd85f19c8a23071c6b56a9d955e2171a1bf",
+  "linked_native_core_sha256": "458c69441f36559c23acd9fda4618e52ef66b823b89c2ffa1504922d50038ceb"
+}

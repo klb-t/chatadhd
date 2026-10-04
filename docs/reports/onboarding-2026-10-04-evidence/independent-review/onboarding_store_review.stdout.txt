@@ -1,0 +1,5 @@
+invalid effective settings rejected=1 revision unchanged=1
+old exact rule removed=1 historical raw secret remains=0 reviewed candidate value remains=0
+effective privacy policy active after disable=false
+multiple method versions preserve intended interview=1
+legacy style effective overlay preserved=1

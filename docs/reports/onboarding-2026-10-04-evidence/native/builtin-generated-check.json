@@ -1,0 +1,10 @@
+{
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "loom/src/onboarding/gen_onboarding_pack.py",
+    "--check"
+  ],
+  "cwd": "/workspace/scratch/4db3ee41b13b/chatadhd",
+  "completed_utc": "2026-10-04T19:38:23.936196+00:00",
+  "exit_code": 0
+}

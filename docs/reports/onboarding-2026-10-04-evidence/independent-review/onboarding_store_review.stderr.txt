@@ -1,0 +1,3 @@
+03:36:16 [INFO ] loom.db: Schema upgraded: v0 -> v4
+03:36:16 [INFO ] loom.db: Database opened: :memory:
+03:36:21 [INFO ] loom.db: Database closed

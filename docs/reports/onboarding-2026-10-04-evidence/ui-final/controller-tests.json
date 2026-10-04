@@ -1,0 +1,11 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "loom/web/src/onboarding/controller.test.mjs"
+  ],
+  "cwd": "/workspace/scratch/4db3ee41b13b/chatadhd",
+  "exit_code": 0,
+  "seconds": 0.422,
+  "log": "/tmp/onboarding-verification-2026-10-04/ui-final/controller-tests.log"
+}

@@ -1,0 +1,25 @@
+✔ recorded conversational interview stages user-stated and inferred candidates, then confirms a section (3.400445ms)
+✔ form and conversational answers use the same native candidate/review path (0.424691ms)
+✔ declined and never fields are not interview questions; only prepared native request reaches transport (3.062772ms)
+✔ a policy change invalidates an in-flight model result even when transport ignores abort (0.729015ms)
+✔ closing the view suppresses a late prepared request and any provider call (0.363966ms)
+✔ concurrent snapshot loads and edits are serialized and retain the newest native state (5.560875ms)
+✔ native errors are visible and do not poison later writes (0.605295ms)
+✔ pause, resume and repeat delegate to persistent native state (0.382599ms)
+✔ missing model/layer/scenario integration stays explicit, without a synthetic fallback (0.722698ms)
+✔ generic field parsing preserves types and accepts empty text as explicit input (0.650123ms)
+✔ host request binding stays local and overrides any provider-generated token or provider ID (0.457459ms)
+✔ actual pack scenario and native snapshot projection preserve question order, privacy fields, layer keys and summaries (14.3455ms)
+✔ native review envelope keeps candidate identity separate and native layer envelopes use keys (0.412302ms)
+✔ history-disabled users can inspect an ephemeral validated summary without changing the redacted native snapshot (0.33858ms)
+✔ pausing aborts the model immediately while its provider transport is pending (0.292049ms)
+✔ known inferred values keep their independent declined/never question disposition (0.073357ms)
+✔ a mutation queued during native reply ingestion cannot resurrect an ephemeral summary (0.273056ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 265.038911

@@ -1,0 +1,70 @@
+{
+  "loom/web/src/onboarding/OnboardingPanel.tsx": {
+    "sha256": "40a9d3b4d8d98b1d927a7d7bdbbcd51916573834fff739195b8f37a1590d2bf4",
+    "bytes": 17818
+  },
+  "loom/web/src/onboarding/README.md": {
+    "sha256": "85292c8036e82f1008c9029be230c4daae2434b15475cfd52057ac470dc06c56",
+    "bytes": 6616
+  },
+  "loom/web/src/onboarding/WhatAppKnows.tsx": {
+    "sha256": "7cc5f977fd63bd55c27819ad03fa88412f22c11c0693156d818b328b74bd2f7d",
+    "bytes": 7619
+  },
+  "loom/web/src/onboarding/controller.test.mjs": {
+    "sha256": "4117abcbb7acbe4d1b32a2c2a05b520558cf6d459ab6f1bce036fb22bda1039a",
+    "bytes": 19315
+  },
+  "loom/web/src/onboarding/controller.ts": {
+    "sha256": "7aa3fe958897a61d090909fbc5d2e25bf9b00ba36a62c9eadffe05a984c77616",
+    "bytes": 7728
+  },
+  "loom/web/src/onboarding/index.ts": {
+    "sha256": "8629366b7b708ffc553e2cb5e7206e1d48d2b3a7728257204be3f0ccbcc460e5",
+    "bytes": 488
+  },
+  "loom/web/src/onboarding/native-snapshot.ts": {
+    "sha256": "24e8494279a6ed92d7d2c26842f35dbd2567430a0eef4893ec9072c0ca25ef08",
+    "bytes": 6915
+  },
+  "loom/web/src/onboarding/onboarding.css": {
+    "sha256": "5525cb26f6389e7db85fb775cf5f1997189f4c73ba5233aaa1fed860d1536323",
+    "bytes": 1290
+  },
+  "loom/web/src/onboarding/recorded-interview.json": {
+    "sha256": "39c27a54876df2568e52d2016126f751b41c9e47509424bcd208b4a03ea57ccb",
+    "bytes": 404
+  },
+  "loom/web/src/onboarding/types.ts": {
+    "sha256": "1e24746ed00a1cd7119272dff48231644f3674dc1b29297d8276fa8ce855b13e",
+    "bytes": 5467
+  },
+  "loom/data/onboarding/scenario.pack": {
+    "sha256": "61c6ce43ccbbe728b08b01ac0c7126c40fbe12b5cafa959162b12e50754a631b",
+    "bytes": 9035
+  },
+  "loom/data/profiles/user.pack": {
+    "sha256": "957cb6e7842ce4bfa6bd13b7c5440b5e9217a2bbb1a3f97f4953f1ca8c091b56",
+    "bytes": 7435
+  },
+  "loom/web/package.json": {
+    "sha256": "f1479604ef79c37dd4b7d16b2eb86f6f02211cf70aec9d8eb2578e1cdf7e3331",
+    "bytes": 1455
+  },
+  "loom/web/package-lock.json": {
+    "sha256": "0b798e47b48182c528f6bc50db7b275d8d90a873e21ebab2147fd42e83387e53",
+    "bytes": 62076
+  },
+  "loom/web/tsconfig.json": {
+    "sha256": "63949ee09f1ac9e5d208a65e72e11a5310e72e1200be464d9a15ebf57daebd6b",
+    "bytes": 522
+  },
+  "loom/web/tsconfig.node.json": {
+    "sha256": "bb9fd8592a9e364641441219f10d84daae9ba2ca5cc85db798efad6913bb8257",
+    "bytes": 233
+  },
+  "loom/web/vite.config.ts": {
+    "sha256": "508d1333070187f5ed9f65a59ff0e5474a983cb91f4c2b9d7bcdbea4a6965766",
+    "bytes": 523
+  }
+}
