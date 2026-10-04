@@ -14,7 +14,10 @@
     "test:context-plan": "node e2e/retrieval-plan-state.mjs",
     "test:chat-context": "node e2e/chat-context.mjs",
     "test:application-profiles": "node e2e/application-profile-state.mjs && node e2e/application-profile-adapter.mjs",
-    "test:application-profiles-browser": "node e2e/application-profiles.mjs"
+    "test:application-profiles-browser": "node e2e/application-profiles.mjs",
+    "test:imported-message-content-state": "node e2e/imported-message-content-state.mjs",
+    "test:imported-message-content-browser": "node e2e/imported-message-content-browser.mjs",
+    "test:imported-message-content-native": "node e2e/imported-message-content-native.mjs"
   },
   "dependencies": {
     "dompurify": "^3.2.4",

@@ -7,6 +7,8 @@ import "./chat-context.css";
 import ContextPlanEditor from "./ContextPlanEditor";
 import { buildRetrievalPlan, newPlan } from "../context/retrieval-plan";
 import { shouldSubmit, type ApplicationProfile } from "../profiles/runtime";
+import ImportedMessageContent from "./ImportedMessageContent";
+import { projectImportedMessage } from "../content/imported-message";
 
 marked.setOptions({ breaks: true });
 
@@ -73,6 +75,9 @@ function ContextTrace({ trace }: { trace: ChatContextTrace }) {
 
 export default function ChatView({ convId, onConversationCreated, profile, runProfileOperation, availableOperations, refreshKey, onMessagesChanged }: Props) {
   const [messages, setMessages] = useState<Message[]>([]);
+  const [showAllMessages, setShowAllMessages] = useState(false);
+  const allMessagesRef = useRef(showAllMessages);
+  allMessagesRef.current = showAllMessages;
   const [input, setInput] = useState("");
   const [models, setModels] = useState<ModelInfo[]>([]);
   const [model, setModel] = useState<string>("");
@@ -131,7 +136,7 @@ export default function ChatView({ convId, onConversationCreated, profile, runPr
     if (!mountedRef.current || selectedConvRef.current !== id) return;
     const epoch = ++fetchEpochRef.current;
     try {
-      const list = await api.getMessages(id, false);
+      const list = await api.getMessages(id, allMessagesRef.current);
       if (mountedRef.current && selectedConvRef.current === id && epoch === fetchEpochRef.current) setMessages(list);
     } catch (err) {
       if (mountedRef.current && selectedConvRef.current === id && epoch === fetchEpochRef.current) {
@@ -151,7 +156,7 @@ export default function ChatView({ convId, onConversationCreated, profile, runPr
   useEffect(() => {
     if (convId) refreshMessages(convId);
     else setMessages([]);
-  }, [convId, refreshMessages, refreshKey]);
+  }, [convId, refreshMessages, refreshKey, showAllMessages]);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
@@ -357,6 +362,7 @@ export default function ChatView({ convId, onConversationCreated, profile, runPr
 
   return (
     <div className="chat-view" data-testid="chat-view">
+      <label className="profile-workspace-controls"><input type="checkbox" checked={showAllMessages} onChange={e => setShowAllMessages(e.target.checked)} data-testid="show-all-messages" />Show excluded messages and saved versions</label>
       <div className="chat-scroll" ref={scrollRef}>
         {visibleMessages.length === 0 && !displayedPending && !displayedStream && (
           <div className="empty-state">Say something to start the conversation.</div>
@@ -369,7 +375,7 @@ export default function ChatView({ convId, onConversationCreated, profile, runPr
               <div className="meta">
                 <span>{m.role}</span>
                 {m.model && <span>· {m.model}</span>}
-                {m.status === "excluded" && <span style={{ color: "var(--warn)" }}>excluded</span>}
+                {m.status !== "active" && <span style={{ color: "var(--warn)" }}>{m.status}</span>}
                 {m.version_group_id && (
                   <span className="version-switcher">
                     <button onClick={() => loadVersions(m)} data-testid="load-versions">
@@ -402,6 +408,8 @@ export default function ChatView({ convId, onConversationCreated, profile, runPr
                     <button onClick={() => setEditingId(null)}>Cancel</button>
                   </div>
                 </div>
+              ) : projectImportedMessage(m) ? (
+                <ImportedMessageContent message={m} />
               ) : (
                 <div className="body" dangerouslySetInnerHTML={renderMarkdown(m.text)} />
               )}
@@ -411,7 +419,7 @@ export default function ChatView({ convId, onConversationCreated, profile, runPr
                     Edit
                   </button>
                 )}
-                <button onClick={() => toggleExclude(m)} data-testid="toggle-exclude" disabled={!supports("message.exclude")}>
+                <button onClick={() => toggleExclude(m)} data-testid="toggle-exclude" disabled={!supports("message.exclude") || m.status === "version" || m.status === "deleted"}>
                   {m.status === "excluded" ? "Restore" : "Exclude"}
                 </button>
               </div>
@@ -514,7 +522,7 @@ export default function ChatView({ convId, onConversationCreated, profile, runPr
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => {
             if (supports("chat.send") && shouldSubmit(profile?.composer.submit ?? "enter", { key: e.key, shiftKey: e.shiftKey,
-              ctrlKey: e.ctrlKey, metaKey: e.metaKey, isComposing: e.nativeEvent.isComposing })) {
+              ctrlKey: e.ctrlKey, metaKey: e.metaKey, altKey: e.altKey, isComposing: e.nativeEvent.isComposing })) {
               e.preventDefault();
               send();
             }

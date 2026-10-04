@@ -1,0 +1,1515 @@
+{
+  "schema": "loom.public_native_import_message_fixture/1",
+  "sources": [
+    {
+      "member": "loom/tests/fixtures/exports/openai_2026_sharded.zip",
+      "import": "loom-server POST /api/import, then GET /api/conversations/:id/messages?all=1"
+    },
+    {
+      "member": "loom/tests/fixtures/exports/anthropic_2026_full.zip",
+      "import": "loom-server POST /api/import, then GET /api/conversations/:id/messages?all=1"
+    }
+  ],
+  "messages": {
+    "openai": [
+      {
+        "text": "print(len(tables))",
+        "role": "assistant",
+        "status": "excluded",
+        "metadata": {
+          "export": {
+            "role_raw": "assistant",
+            "author_name": null,
+            "recipient": "python",
+            "channel": null,
+            "content_type": "code",
+            "blocks": [
+              {
+                "kind": "code",
+                "type": "code",
+                "chars": 18
+              }
+            ],
+            "attachments": [],
+            "pointers": [],
+            "citations": [],
+            "citation_groups": [],
+            "custom_instruction": 0,
+            "memory": false,
+            "artifact": null,
+            "provider": "openai",
+            "kind": "message",
+            "key": "c1-a2",
+            "message_id": "c1-a2",
+            "node": {
+              "id": "c1-a2",
+              "parent": "c1-u2",
+              "children": [
+                "c1-t1"
+              ]
+            },
+            "node_index": 8,
+            "raw": {
+              "id": "c1-a2",
+              "author": {
+                "role": "assistant",
+                "name": null,
+                "metadata": {}
+              },
+              "create_time": 1760000012.0,
+              "update_time": null,
+              "content": {
+                "content_type": "code",
+                "language": "python",
+                "text": "print(len(tables))",
+                "response_format_name": null
+              },
+              "status": "finished_successfully",
+              "end_turn": null,
+              "weight": 1.0,
+              "metadata": {},
+              "recipient": "python",
+              "channel": null
+            },
+            "hidden": true,
+            "hidden_reasons": [
+              "recipient:python",
+              "content_type:code"
+            ],
+            "on_current_path": true,
+            "on_active_path": true,
+            "reachable": true,
+            "leaf": false,
+            "fork": false,
+            "sibling_index": 0,
+            "sibling_count": 1,
+            "created_inferred": false,
+            "member": "conversations-000.json",
+            "source_conversation_index": 0,
+            "source_key": "c1-a2",
+            "traversal_index": 6,
+            "json_pointer": "/conversations/0/mapping/c1-a2/message"
+          }
+        }
+      },
+      {
+        "text": "{\"name\":\"plan-migracji\",\"type\":\"document\",\"content\":\"# Plan\\n1. Schemat\\n2. Dane\\n3. Weryfikacja\"}",
+        "role": "assistant",
+        "status": "excluded",
+        "metadata": {
+          "export": {
+            "role_raw": "assistant",
+            "author_name": null,
+            "recipient": "canmore.create_textdoc",
+            "channel": null,
+            "content_type": "code",
+            "blocks": [
+              {
+                "kind": "code",
+                "type": "code",
+                "chars": 98
+              }
+            ],
+            "attachments": [],
+            "pointers": [],
+            "citations": [],
+            "citation_groups": [],
+            "custom_instruction": 0,
+            "memory": false,
+            "artifact": {
+              "tool": "canmore.create_textdoc",
+              "parsed": true,
+              "name": "plan-migracji",
+              "type": "document"
+            },
+            "provider": "openai",
+            "kind": "message",
+            "key": "c1-a4",
+            "message_id": "c1-a4",
+            "node": {
+              "id": "c1-a4",
+              "parent": "c1-a3",
+              "children": []
+            },
+            "node_index": 11,
+            "raw": {
+              "id": "c1-a4",
+              "author": {
+                "role": "assistant",
+                "name": null,
+                "metadata": {}
+              },
+              "create_time": 1760000015.0,
+              "update_time": null,
+              "content": {
+                "content_type": "code",
+                "language": "json",
+                "text": "{\"name\":\"plan-migracji\",\"type\":\"document\",\"content\":\"# Plan\\n1. Schemat\\n2. Dane\\n3. Weryfikacja\"}"
+              },
+              "status": "finished_successfully",
+              "end_turn": null,
+              "weight": 1.0,
+              "metadata": {},
+              "recipient": "canmore.create_textdoc",
+              "channel": null
+            },
+            "hidden": true,
+            "hidden_reasons": [
+              "recipient:canmore.create_textdoc",
+              "content_type:code"
+            ],
+            "on_current_path": true,
+            "on_active_path": true,
+            "reachable": true,
+            "leaf": true,
+            "fork": false,
+            "sibling_index": 0,
+            "sibling_count": 1,
+            "created_inferred": false,
+            "member": "conversations-000.json",
+            "source_conversation_index": 0,
+            "source_key": "c1-a4",
+            "traversal_index": 9,
+            "json_pointer": "/conversations/0/mapping/c1-a4/message"
+          }
+        }
+      },
+      {
+        "text": "Thought for 12s",
+        "role": "assistant",
+        "status": "excluded",
+        "metadata": {
+          "export": {
+            "role_raw": "assistant",
+            "author_name": null,
+            "recipient": "all",
+            "channel": null,
+            "content_type": "reasoning_recap",
+            "blocks": [
+              {
+                "kind": "reasoning",
+                "type": "reasoning_recap",
+                "chars": 15
+              }
+            ],
+            "attachments": [],
+            "pointers": [],
+            "citations": [],
+            "citation_groups": [],
+            "custom_instruction": 0,
+            "memory": false,
+            "artifact": null,
+            "provider": "openai",
+            "kind": "message",
+            "key": "c1-rr1",
+            "message_id": "c1-rr1",
+            "node": {
+              "id": "c1-rr1",
+              "parent": "c1-th1",
+              "children": [
+                "c1-a1"
+              ]
+            },
+            "node_index": 4,
+            "raw": {
+              "id": "c1-rr1",
+              "author": {
+                "role": "assistant",
+                "name": null,
+                "metadata": {}
+              },
+              "create_time": 1760000003.0,
+              "update_time": null,
+              "content": {
+                "content_type": "reasoning_recap",
+                "content": "Thought for 12s"
+              },
+              "status": "finished_successfully",
+              "end_turn": null,
+              "weight": 1.0,
+              "metadata": {
+                "finished_duration_sec": 12,
+                "reasoning_title": "Plan migracji"
+              },
+              "recipient": "all",
+              "channel": null
+            },
+            "hidden": true,
+            "hidden_reasons": [
+              "content_type:reasoning_recap"
+            ],
+            "on_current_path": true,
+            "on_active_path": true,
+            "reachable": true,
+            "leaf": false,
+            "fork": false,
+            "sibling_index": 0,
+            "sibling_count": 1,
+            "created_inferred": false,
+            "member": "conversations-000.json",
+            "source_conversation_index": 0,
+            "source_key": "c1-rr1",
+            "traversal_index": 3,
+            "json_pointer": "/conversations/0/mapping/c1-rr1/message"
+          }
+        }
+      },
+      {
+        "text": "",
+        "role": "system",
+        "status": "excluded",
+        "metadata": {
+          "export": {
+            "role_raw": "system",
+            "author_name": null,
+            "recipient": "all",
+            "channel": null,
+            "content_type": "text",
+            "blocks": [
+              {
+                "kind": "text",
+                "type": "text",
+                "part": 0
+              }
+            ],
+            "attachments": [],
+            "pointers": [],
+            "citations": [],
+            "citation_groups": [],
+            "custom_instruction": 0,
+            "memory": false,
+            "artifact": null,
+            "provider": "openai",
+            "kind": "message",
+            "key": "c1-sys",
+            "message_id": "c1-sys",
+            "node": {
+              "id": "c1-sys",
+              "parent": "c1-root",
+              "children": [
+                "c1-u1"
+              ]
+            },
+            "node_index": 1,
+            "raw": {
+              "id": "c1-sys",
+              "author": {
+                "role": "system",
+                "name": null,
+                "metadata": {}
+              },
+              "create_time": null,
+              "update_time": null,
+              "content": {
+                "content_type": "text",
+                "parts": [
+                  ""
+                ]
+              },
+              "status": "finished_successfully",
+              "end_turn": null,
+              "weight": 0.0,
+              "metadata": {
+                "is_visually_hidden_from_conversation": true
+              },
+              "recipient": "all",
+              "channel": null
+            },
+            "hidden": true,
+            "hidden_reasons": [
+              "visually_hidden",
+              "system",
+              "weight_zero"
+            ],
+            "on_current_path": true,
+            "on_active_path": true,
+            "reachable": true,
+            "leaf": false,
+            "fork": false,
+            "sibling_index": 0,
+            "sibling_count": 1,
+            "created_inferred": true,
+            "member": "conversations-000.json",
+            "source_conversation_index": 0,
+            "source_key": "c1-sys",
+            "traversal_index": 0,
+            "json_pointer": "/conversations/0/mapping/c1-sys/message"
+          }
+        }
+      },
+      {
+        "text": "42\n",
+        "role": "tool",
+        "status": "excluded",
+        "metadata": {
+          "export": {
+            "role_raw": "tool",
+            "author_name": "python",
+            "recipient": "all",
+            "channel": null,
+            "content_type": "execution_output",
+            "blocks": [
+              {
+                "kind": "tool_result",
+                "type": "execution_output",
+                "chars": 3
+              }
+            ],
+            "attachments": [
+              {
+                "source": "aggregate_result.messages",
+                "path": "/metadata/aggregate_result/messages/0",
+                "key": "file-Plot0001",
+                "resolved": false,
+                "message_type": "image"
+              }
+            ],
+            "pointers": [],
+            "citations": [],
+            "citation_groups": [],
+            "custom_instruction": 0,
+            "memory": false,
+            "artifact": null,
+            "provider": "openai",
+            "kind": "message",
+            "key": "c1-t1",
+            "message_id": "c1-t1",
+            "node": {
+              "id": "c1-t1",
+              "parent": "c1-a2",
+              "children": [
+                "c1-a3"
+              ]
+            },
+            "node_index": 9,
+            "raw": {
+              "id": "c1-t1",
+              "author": {
+                "role": "tool",
+                "name": "python",
+                "metadata": {}
+              },
+              "create_time": 1760000013.0,
+              "update_time": null,
+              "content": {
+                "content_type": "execution_output",
+                "text": "42\n"
+              },
+              "status": "finished_successfully",
+              "end_turn": null,
+              "weight": 1.0,
+              "metadata": {
+                "aggregate_result": {
+                  "status": "success",
+                  "run_id": "run-1",
+                  "start_time": 1760000012.1,
+                  "update_time": 1760000012.9,
+                  "end_time": 1760000013.0,
+                  "code": "print(len(tables))",
+                  "final_expression_output": "42",
+                  "jupyter_messages": [
+                    {
+                      "msg_type": "status",
+                      "parent_header": {}
+                    }
+                  ],
+                  "messages": [
+                    {
+                      "message_type": "image",
+                      "time": 1760000012.8,
+                      "sender": "server",
+                      "image_url": "file-service://file-Plot0001",
+                      "width": 640,
+                      "height": 480
+                    }
+                  ]
+                },
+                "is_complete": true
+              },
+              "recipient": "all",
+              "channel": null
+            },
+            "hidden": true,
+            "hidden_reasons": [
+              "tool_output",
+              "content_type:execution_output"
+            ],
+            "on_current_path": true,
+            "on_active_path": true,
+            "reachable": true,
+            "leaf": false,
+            "fork": false,
+            "sibling_index": 0,
+            "sibling_count": 1,
+            "created_inferred": false,
+            "member": "conversations-000.json",
+            "source_conversation_index": 0,
+            "source_key": "c1-t1",
+            "traversal_index": 7,
+            "json_pointer": "/conversations/0/mapping/c1-t1/message"
+          }
+        }
+      },
+      {
+        "text": "Najpierw schemat, potem dane.\npgloader albo własny skrypt.",
+        "role": "assistant",
+        "status": "excluded",
+        "metadata": {
+          "export": {
+            "role_raw": "assistant",
+            "author_name": null,
+            "recipient": "all",
+            "channel": "analysis",
+            "content_type": "thoughts",
+            "blocks": [
+              {
+                "kind": "reasoning",
+                "type": "thoughts",
+                "chars": 29
+              },
+              {
+                "kind": "reasoning",
+                "type": "thoughts",
+                "chars": 28
+              }
+            ],
+            "attachments": [],
+            "pointers": [],
+            "citations": [],
+            "citation_groups": [],
+            "custom_instruction": 0,
+            "memory": false,
+            "artifact": null,
+            "provider": "openai",
+            "kind": "message",
+            "key": "c1-th1",
+            "message_id": "c1-th1",
+            "node": {
+              "id": "c1-th1",
+              "parent": "c1-u1",
+              "children": [
+                "c1-rr1"
+              ]
+            },
+            "node_index": 3,
+            "raw": {
+              "id": "c1-th1",
+              "author": {
+                "role": "assistant",
+                "name": null,
+                "metadata": {}
+              },
+              "create_time": 1760000002.0,
+              "update_time": null,
+              "content": {
+                "content_type": "thoughts",
+                "thoughts": [
+                  {
+                    "summary": "Porównuję ryzyka migracji",
+                    "content": "Najpierw schemat, potem dane.",
+                    "chunks": [
+                      "Najpierw schemat,",
+                      " potem dane."
+                    ],
+                    "finished": true
+                  },
+                  {
+                    "summary": "Wybieram narzędzia",
+                    "content": "pgloader albo własny skrypt.",
+                    "chunks": [],
+                    "finished": true
+                  }
+                ]
+              },
+              "status": "finished_successfully",
+              "end_turn": null,
+              "weight": 1.0,
+              "metadata": {
+                "is_thinking_preamble_message": false,
+                "model_slug": "gpt-5-t-mini"
+              },
+              "recipient": "all",
+              "channel": "analysis"
+            },
+            "hidden": true,
+            "hidden_reasons": [
+              "content_type:thoughts"
+            ],
+            "on_current_path": true,
+            "on_active_path": true,
+            "reachable": true,
+            "leaf": false,
+            "fork": false,
+            "sibling_index": 0,
+            "sibling_count": 1,
+            "created_inferred": false,
+            "member": "conversations-000.json",
+            "source_conversation_index": 0,
+            "source_key": "c1-th1",
+            "traversal_index": 2,
+            "json_pointer": "/conversations/0/mapping/c1-th1/message"
+          }
+        }
+      },
+      {
+        "text": "Oto wersja nowsza:",
+        "role": "assistant",
+        "status": "active",
+        "metadata": {
+          "export": {
+            "role_raw": "assistant",
+            "author_name": null,
+            "recipient": "all",
+            "channel": null,
+            "content_type": "multimodal_text",
+            "blocks": [
+              {
+                "kind": "text",
+                "type": "text",
+                "part": 0,
+                "chars": 18
+              },
+              {
+                "kind": "media",
+                "type": "image_asset_pointer",
+                "part": 1
+              },
+              {
+                "kind": "media",
+                "type": "image_asset_pointer",
+                "part": 2
+              },
+              {
+                "kind": "media",
+                "type": "image_asset_pointer",
+                "part": 3
+              }
+            ],
+            "attachments": [],
+            "pointers": [
+              {
+                "source": "content.parts",
+                "path": "/content/parts/1/asset_pointer",
+                "type": "image_asset_pointer",
+                "key": "file_00000000c0ffee01",
+                "resolved": true,
+                "member": "user-FAKEUSER0001/file_00000000c0ffee01-66666666-7777-4888-9999-000000000000.png",
+                "method": "id_prefix",
+                "blob_hash": "e626e4175e77e79b9e99983d88b88d06eb25c468b03a8958368de5501e0abb6a"
+              },
+              {
+                "source": "content.parts",
+                "path": "/content/parts/2/asset_pointer",
+                "type": "image_asset_pointer",
+                "key": "file_00000000feed0002",
+                "resolved": true,
+                "member": "file_00000000feed0002-sanitized.png",
+                "method": "id_prefix",
+                "blob_hash": "672cdfa8f3ad1636fd33e096cabda4eb4a003ae6182f38f916bd0ea227120854"
+              },
+              {
+                "source": "content.parts",
+                "path": "/content/parts/3/asset_pointer",
+                "type": "image_asset_pointer",
+                "key": "file_00000000dead0000",
+                "resolved": false
+              }
+            ],
+            "citations": [],
+            "citation_groups": [],
+            "custom_instruction": 0,
+            "memory": false,
+            "artifact": null,
+            "provider": "openai",
+            "kind": "message",
+            "key": "c3-a3",
+            "message_id": "c3-a3",
+            "node": {
+              "id": "c3-a3",
+              "parent": "c3-t1",
+              "children": [
+                "c3-u3"
+              ]
+            },
+            "node_index": 6,
+            "raw": {
+              "id": "c3-a3",
+              "author": {
+                "role": "assistant",
+                "name": null,
+                "metadata": {}
+              },
+              "create_time": 1760009006.0,
+              "update_time": null,
+              "content": {
+                "content_type": "multimodal_text",
+                "parts": [
+                  "Oto wersja nowsza:",
+                  {
+                    "content_type": "image_asset_pointer",
+                    "asset_pointer": "sediment://file_00000000c0ffee01",
+                    "size_bytes": 57,
+                    "width": 1,
+                    "height": 1,
+                    "fovea": null,
+                    "metadata": {
+                      "generation": {
+                        "gen_id": "gen-0002"
+                      }
+                    }
+                  },
+                  {
+                    "content_type": "image_asset_pointer",
+                    "asset_pointer": "sediment://file_00000000feed0002",
+                    "size_bytes": 57,
+                    "width": 1,
+                    "height": 1,
+                    "fovea": null,
+                    "metadata": {}
+                  },
+                  {
+                    "content_type": "image_asset_pointer",
+                    "asset_pointer": "sediment://file_00000000dead0000",
+                    "size_bytes": 10,
+                    "width": 1,
+                    "height": 1,
+                    "fovea": null,
+                    "metadata": {}
+                  }
+                ]
+              },
+              "status": "finished_successfully",
+              "end_turn": true,
+              "weight": 1.0,
+              "metadata": {},
+              "recipient": "all",
+              "channel": null
+            },
+            "hidden": false,
+            "hidden_reasons": [],
+            "on_current_path": true,
+            "on_active_path": true,
+            "reachable": true,
+            "leaf": false,
+            "fork": false,
+            "sibling_index": 0,
+            "sibling_count": 1,
+            "created_inferred": false,
+            "member": "conversations-000.json",
+            "source_conversation_index": 2,
+            "source_key": "c3-a3",
+            "traversal_index": 5,
+            "json_pointer": "/conversations/2/mapping/c3-a3/message"
+          }
+        }
+      },
+      {
+        "text": "Cześć, słychać mnie?",
+        "role": "user",
+        "status": "active",
+        "metadata": {
+          "export": {
+            "role_raw": "user",
+            "author_name": null,
+            "recipient": "all",
+            "channel": null,
+            "content_type": "multimodal_text",
+            "blocks": [
+              {
+                "kind": "media",
+                "type": "real_time_user_audio_video_asset_pointer",
+                "part": 0
+              },
+              {
+                "kind": "transcript",
+                "type": "audio_transcription",
+                "part": 1,
+                "chars": 20
+              }
+            ],
+            "attachments": [],
+            "pointers": [
+              {
+                "source": "content.parts",
+                "path": "/content/parts/0/audio_asset_pointer/asset_pointer",
+                "type": "real_time_user_audio_video_asset_pointer",
+                "key": "file_00000000a0d10001",
+                "resolved": true,
+                "member": "file_00000000a0d10001-voice.wav",
+                "method": "id_prefix",
+                "blob_hash": "efe300ddee6b8dc40f9b23a76526e87fe2f9723624490c78ec00537c612224f7"
+              }
+            ],
+            "citations": [],
+            "citation_groups": [],
+            "custom_instruction": 0,
+            "memory": false,
+            "artifact": null,
+            "provider": "openai",
+            "kind": "message",
+            "key": "c3-u3",
+            "message_id": "c3-u3",
+            "node": {
+              "id": "c3-u3",
+              "parent": "c3-a3",
+              "children": [
+                "c3-a4"
+              ]
+            },
+            "node_index": 7,
+            "raw": {
+              "id": "c3-u3",
+              "author": {
+                "role": "user",
+                "name": null,
+                "metadata": {}
+              },
+              "create_time": 1760009007.0,
+              "update_time": null,
+              "content": {
+                "content_type": "multimodal_text",
+                "parts": [
+                  {
+                    "content_type": "real_time_user_audio_video_asset_pointer",
+                    "expiry_datetime": "2026-01-01T00:00:00Z",
+                    "frames_asset_pointers": [],
+                    "video_container_asset_pointer": null,
+                    "audio_asset_pointer": {
+                      "expiry_datetime": "2026-01-01T00:00:00Z",
+                      "content_type": "audio_asset_pointer",
+                      "asset_pointer": "sediment://file_00000000a0d10001",
+                      "size_bytes": 36,
+                      "format": "wav",
+                      "metadata": {
+                        "start_timestamp": null,
+                        "end_timestamp": null,
+                        "pretokenized_vq": null,
+                        "interruptions": null,
+                        "original_audio_source": null,
+                        "transcription": null,
+                        "word_transcription": null,
+                        "start": 0.0,
+                        "end": 1.5
+                      }
+                    },
+                    "audio_start_timestamp": 0.5
+                  },
+                  {
+                    "content_type": "audio_transcription",
+                    "decoding_id": null,
+                    "direction": "in",
+                    "text": "Cześć, słychać mnie?"
+                  }
+                ]
+              },
+              "status": "finished_successfully",
+              "end_turn": null,
+              "weight": 1.0,
+              "metadata": {},
+              "recipient": "all",
+              "channel": null
+            },
+            "hidden": false,
+            "hidden_reasons": [],
+            "on_current_path": true,
+            "on_active_path": true,
+            "reachable": true,
+            "leaf": false,
+            "fork": false,
+            "sibling_index": 0,
+            "sibling_count": 1,
+            "created_inferred": false,
+            "member": "conversations-000.json",
+            "source_conversation_index": 2,
+            "source_key": "c3-u3",
+            "traversal_index": 6,
+            "json_pointer": "/conversations/2/mapping/c3-u3/message"
+          }
+        }
+      },
+      {
+        "text": "",
+        "role": "assistant",
+        "status": "active",
+        "metadata": {
+          "export": {
+            "role_raw": "assistant",
+            "author_name": null,
+            "recipient": "all",
+            "channel": null,
+            "content_type": "future_widget",
+            "blocks": [
+              {
+                "kind": "unknown",
+                "type": "future_widget"
+              }
+            ],
+            "attachments": [],
+            "pointers": [],
+            "citations": [],
+            "citation_groups": [],
+            "custom_instruction": 0,
+            "memory": false,
+            "artifact": null,
+            "provider": "openai",
+            "kind": "message",
+            "key": "c4-a3",
+            "message_id": "c4-a3",
+            "node": {
+              "id": "c4-a3",
+              "parent": "c4-a2",
+              "children": []
+            },
+            "node_index": 7,
+            "raw": {
+              "id": "c4-a3",
+              "author": {
+                "role": "assistant",
+                "name": null,
+                "metadata": {}
+              },
+              "create_time": 1760014005.0,
+              "update_time": null,
+              "content": {
+                "content_type": "future_widget",
+                "widget": {
+                  "kind": "chart",
+                  "series": [
+                    1,
+                    2,
+                    3
+                  ]
+                },
+                "caption": "Nowy typ treści"
+              },
+              "status": "finished_successfully",
+              "end_turn": null,
+              "weight": 1.0,
+              "metadata": {
+                "future_metadata_key": {
+                  "a": [
+                    1,
+                    2,
+                    {
+                      "b": null
+                    }
+                  ]
+                },
+                "message_type": "next"
+              },
+              "recipient": "all",
+              "channel": null
+            },
+            "hidden": false,
+            "hidden_reasons": [],
+            "on_current_path": true,
+            "on_active_path": true,
+            "reachable": true,
+            "leaf": true,
+            "fork": false,
+            "sibling_index": 0,
+            "sibling_count": 1,
+            "created_inferred": false,
+            "member": "conversations-001.json",
+            "source_conversation_index": 0,
+            "source_key": "c4-a3",
+            "traversal_index": 6,
+            "json_pointer": "/0/mapping/c4-a3/message"
+          }
+        }
+      },
+      {
+        "text": "Lubię krótkie odpowiedzi. Mieszkam w Krakowie (fikcyjnie).\nOdpowiadaj po polsku.",
+        "role": "system",
+        "status": "excluded",
+        "metadata": {
+          "export": {
+            "role_raw": "system",
+            "author_name": null,
+            "recipient": "all",
+            "channel": null,
+            "content_type": "user_editable_context",
+            "blocks": [
+              {
+                "kind": "context",
+                "type": "user_editable_context",
+                "chars": 58
+              },
+              {
+                "kind": "context",
+                "type": "user_editable_context",
+                "chars": 21
+              }
+            ],
+            "attachments": [],
+            "pointers": [],
+            "citations": [],
+            "citation_groups": [],
+            "custom_instruction": 2,
+            "memory": false,
+            "artifact": null,
+            "provider": "openai",
+            "kind": "message",
+            "key": "c4-ci",
+            "message_id": "c4-ci",
+            "node": {
+              "id": "c4-ci",
+              "parent": "c4-root",
+              "children": [
+                "c4-mem"
+              ]
+            },
+            "node_index": 1,
+            "raw": {
+              "id": "c4-ci",
+              "author": {
+                "role": "system",
+                "name": null,
+                "metadata": {}
+              },
+              "create_time": null,
+              "update_time": null,
+              "content": {
+                "content_type": "user_editable_context",
+                "user_profile": "Lubię krótkie odpowiedzi. Mieszkam w Krakowie (fikcyjnie).",
+                "user_instructions": "Odpowiadaj po polsku."
+              },
+              "status": "finished_successfully",
+              "end_turn": null,
+              "weight": 1.0,
+              "metadata": {
+                "is_user_system_message": true,
+                "is_visually_hidden_from_conversation": true,
+                "user_context_message_data": {
+                  "about_user_message": "Lubię krótkie odpowiedzi.",
+                  "about_model_message": "Odpowiadaj po polsku."
+                }
+              },
+              "recipient": "all",
+              "channel": null
+            },
+            "hidden": true,
+            "hidden_reasons": [
+              "visually_hidden",
+              "custom_instructions",
+              "content_type:user_editable_context"
+            ],
+            "on_current_path": true,
+            "on_active_path": true,
+            "reachable": true,
+            "leaf": false,
+            "fork": false,
+            "sibling_index": 0,
+            "sibling_count": 1,
+            "created_inferred": true,
+            "member": "conversations-001.json",
+            "source_conversation_index": 0,
+            "source_key": "c4-ci",
+            "traversal_index": 0,
+            "json_pointer": "/0/mapping/c4-ci/message"
+          }
+        }
+      },
+      {
+        "text": "1. [2025-09-01]. Użytkownik pracuje nad projektem Zenit.",
+        "role": "system",
+        "status": "excluded",
+        "metadata": {
+          "export": {
+            "role_raw": "system",
+            "author_name": null,
+            "recipient": "all",
+            "channel": null,
+            "content_type": "model_editable_context",
+            "blocks": [
+              {
+                "kind": "context",
+                "type": "model_editable_context",
+                "chars": 56
+              }
+            ],
+            "attachments": [],
+            "pointers": [],
+            "citations": [],
+            "citation_groups": [],
+            "custom_instruction": 0,
+            "memory": true,
+            "artifact": null,
+            "provider": "openai",
+            "kind": "message",
+            "key": "c4-mem",
+            "message_id": "c4-mem",
+            "node": {
+              "id": "c4-mem",
+              "parent": "c4-ci",
+              "children": [
+                "c4-u1"
+              ]
+            },
+            "node_index": 2,
+            "raw": {
+              "id": "c4-mem",
+              "author": {
+                "role": "system",
+                "name": null,
+                "metadata": {}
+              },
+              "create_time": null,
+              "update_time": null,
+              "content": {
+                "content_type": "model_editable_context",
+                "model_set_context": "1. [2025-09-01]. Użytkownik pracuje nad projektem Zenit."
+              },
+              "status": "finished_successfully",
+              "end_turn": null,
+              "weight": 1.0,
+              "metadata": {
+                "is_visually_hidden_from_conversation": true
+              },
+              "recipient": "all",
+              "channel": null
+            },
+            "hidden": true,
+            "hidden_reasons": [
+              "visually_hidden",
+              "system",
+              "content_type:model_editable_context"
+            ],
+            "on_current_path": true,
+            "on_active_path": true,
+            "reachable": true,
+            "leaf": false,
+            "fork": false,
+            "sibling_index": 0,
+            "sibling_count": 1,
+            "created_inferred": true,
+            "member": "conversations-001.json",
+            "source_conversation_index": 0,
+            "source_key": "c4-mem",
+            "traversal_index": 1,
+            "json_pointer": "/0/mapping/c4-mem/message"
+          }
+        }
+      }
+    ],
+    "anthropic": [
+      {
+        "text": "Zacznę od myślenia i narzędzi.\nTo jest transkrypcja notatki głosowej.",
+        "role": "assistant",
+        "status": "active",
+        "metadata": {
+          "export": {
+            "provider": "anthropic",
+            "kind": "message",
+            "key": "m-a1",
+            "source_index": 1,
+            "traversal_index": 1,
+            "raw": {
+              "uuid": "m-a1",
+              "text": "Zacznę od myślenia i narzędzi.",
+              "content": [
+                {
+                  "start_timestamp": "2025-11-02T10:00:02.000000Z",
+                  "stop_timestamp": "2025-11-02T10:00:03.000000Z",
+                  "type": "thinking",
+                  "thinking": "Użytkownik chce widok listy; artefakt HTML.",
+                  "summaries": [
+                    {
+                      "summary": "Plan widoku"
+                    },
+                    {
+                      "summary": "Wybór artefaktu"
+                    }
+                  ],
+                  "cut_off": false
+                },
+                {
+                  "start_timestamp": "2025-11-02T10:00:03.000000Z",
+                  "stop_timestamp": "2025-11-02T10:00:03.500000Z",
+                  "type": "text",
+                  "text": "Zacznę od myślenia i narzędzi.",
+                  "citations": [
+                    {
+                      "uuid": "cit-1",
+                      "start_index": 0,
+                      "end_index": 6,
+                      "details": {
+                        "type": "web_search_citation",
+                        "url": "https://example.invalid/list"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "start_timestamp": "2025-11-02T10:00:03.600000Z",
+                  "stop_timestamp": "2025-11-02T10:00:03.700000Z",
+                  "type": "tool_use",
+                  "name": "web_search",
+                  "input": {
+                    "query": "list view UX"
+                  },
+                  "message": "Searching",
+                  "integration_name": null,
+                  "integration_icon_url": null,
+                  "context": null,
+                  "display_content": null,
+                  "approval_options": null,
+                  "approval_key": null
+                },
+                {
+                  "start_timestamp": "2025-11-02T10:00:03.800000Z",
+                  "stop_timestamp": "2025-11-02T10:00:03.900000Z",
+                  "type": "tool_result",
+                  "name": "web_search",
+                  "content": [
+                    {
+                      "type": "knowledge",
+                      "title": "List UX",
+                      "url": "https://example.invalid/list",
+                      "text": "Lists are ...",
+                      "uuid": "k-1",
+                      "metadata": {
+                        "site_domain": "example.invalid"
+                      }
+                    },
+                    {
+                      "type": "rag_reference",
+                      "doc_uuid": "d-1",
+                      "extras": {
+                        "page": 3
+                      }
+                    },
+                    {
+                      "type": "text",
+                      "text": "Found 2 results.",
+                      "uuid": "t-1"
+                    }
+                  ],
+                  "is_error": false,
+                  "message": null,
+                  "integration_name": null,
+                  "integration_icon_url": null,
+                  "display_content": null
+                },
+                {
+                  "start_timestamp": "2025-11-02T10:00:04.000000Z",
+                  "stop_timestamp": "2025-11-02T10:00:04.100000Z",
+                  "type": "tool_use",
+                  "name": "artifacts",
+                  "input": {
+                    "id": "list-view",
+                    "type": "text/html",
+                    "title": "Widok listy",
+                    "command": "create",
+                    "content": "<ul><li>Zażółć</li></ul>",
+                    "language": null,
+                    "version_uuid": "ver-1"
+                  },
+                  "message": null,
+                  "integration_name": null,
+                  "integration_icon_url": null,
+                  "context": null,
+                  "display_content": null,
+                  "approval_options": null,
+                  "approval_key": null
+                },
+                {
+                  "start_timestamp": "2025-11-02T10:00:04.200000Z",
+                  "stop_timestamp": "2025-11-02T10:00:04.300000Z",
+                  "type": "tool_result",
+                  "name": "artifacts",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "OK",
+                      "uuid": "t-2"
+                    }
+                  ],
+                  "is_error": false,
+                  "message": null,
+                  "integration_name": null,
+                  "integration_icon_url": null,
+                  "display_content": null
+                },
+                {
+                  "start_timestamp": "2025-11-02T10:00:04.400000Z",
+                  "stop_timestamp": "2025-11-02T10:00:04.500000Z",
+                  "type": "voice_note",
+                  "title": "Notatka głosowa",
+                  "text": "To jest transkrypcja notatki głosowej."
+                },
+                {
+                  "type": "image",
+                  "source": {
+                    "type": "base64",
+                    "media_type": "image/png",
+                    "data": "iVBORw0KGgo="
+                  }
+                },
+                {
+                  "type": "document",
+                  "title": "Specyfikacja",
+                  "source": {
+                    "type": "text",
+                    "media_type": "text/plain",
+                    "data": "Spec."
+                  }
+                },
+                {
+                  "type": "web_widget",
+                  "payload": {
+                    "x": [
+                      1,
+                      2
+                    ]
+                  }
+                }
+              ],
+              "sender": "assistant",
+              "created_at": "2025-11-02T10:00:05.000000Z",
+              "updated_at": "2025-11-02T10:00:05.000000Z",
+              "attachments": [],
+              "files": [],
+              "parent_message_uuid": "m-u1",
+              "index": 1,
+              "truncated": false
+            },
+            "role_raw": "assistant",
+            "blocks": [
+              {
+                "kind": "reasoning",
+                "type": "thinking",
+                "index": 0
+              },
+              {
+                "kind": "text",
+                "type": "text",
+                "index": 1,
+                "chars": 30
+              },
+              {
+                "kind": "tool_call",
+                "type": "tool_use",
+                "index": 2
+              },
+              {
+                "kind": "tool_result",
+                "type": "tool_result",
+                "index": 3
+              },
+              {
+                "kind": "tool_call",
+                "type": "tool_use",
+                "index": 4
+              },
+              {
+                "kind": "tool_result",
+                "type": "tool_result",
+                "index": 5
+              },
+              {
+                "kind": "transcript",
+                "type": "voice_note",
+                "index": 6,
+                "chars": 38
+              },
+              {
+                "kind": "media",
+                "type": "image",
+                "index": 7
+              },
+              {
+                "kind": "document",
+                "type": "document",
+                "index": 8
+              },
+              {
+                "kind": "unknown",
+                "type": "web_widget",
+                "index": 9
+              }
+            ],
+            "attachments": [],
+            "pointers": [],
+            "citations": [
+              {
+                "kind": "citation",
+                "path": "/content/1/citations/0",
+                "url": "https://example.invalid/list"
+              }
+            ],
+            "citation_groups": [],
+            "artifacts": [
+              {
+                "path": "/content/4/input",
+                "id": "list-view",
+                "title": "Widok listy",
+                "type": "text/html",
+                "command": "create",
+                "version_uuid": "ver-1"
+              }
+            ],
+            "artifact_tags": [],
+            "custom_instruction": 0,
+            "memory": false,
+            "hidden": false,
+            "hidden_reasons": [],
+            "parent_key": "m-u1",
+            "parent_inferred": false,
+            "on_current_path": true,
+            "on_active_path": true,
+            "reachable": true,
+            "leaf": false,
+            "fork": true,
+            "sibling_index": 0,
+            "sibling_count": 1,
+            "created_inferred": false,
+            "model_inferred": true,
+            "member": "conversations.json",
+            "source_conversation_index": 0,
+            "json_pointer": "/0/chat_messages/1"
+          }
+        }
+      },
+      {
+        "text": "Zaprojektuj widok listy z artefaktem.",
+        "role": "user",
+        "status": "active",
+        "metadata": {
+          "export": {
+            "provider": "anthropic",
+            "kind": "message",
+            "key": "m-u1",
+            "source_index": 0,
+            "traversal_index": 0,
+            "raw": {
+              "uuid": "m-u1",
+              "text": "Zaprojektuj widok listy z artefaktem.",
+              "content": [
+                {
+                  "start_timestamp": "2025-11-02T10:00:01.000000Z",
+                  "stop_timestamp": "2025-11-02T10:00:01.000000Z",
+                  "type": "text",
+                  "text": "Zaprojektuj widok listy z artefaktem.",
+                  "citations": []
+                }
+              ],
+              "sender": "human",
+              "created_at": "2025-11-02T10:00:01.000000Z",
+              "updated_at": "2025-11-02T10:00:01.000000Z",
+              "attachments": [
+                {
+                  "id": "att-1",
+                  "file_name": "notatki.txt",
+                  "file_size": 22,
+                  "file_type": "text/plain",
+                  "extracted_content": "Notatki: lista, filtr.",
+                  "created_at": "2025-11-02T10:00:00.500000Z"
+                }
+              ],
+              "files": [
+                {
+                  "file_kind": "image",
+                  "file_uuid": "f-uuid-1",
+                  "file_name": "makieta.png",
+                  "created_at": "2025-11-02T10:00:00.400000Z",
+                  "thumbnail_url": "/api/f-uuid-1/thumbnail",
+                  "preview_url": "/api/f-uuid-1/preview",
+                  "thumbnail_asset": {
+                    "url": "/t.png",
+                    "file_variant": "thumbnail",
+                    "primary_color": "ffffff",
+                    "image_width": 10,
+                    "image_height": 10
+                  },
+                  "preview_asset": {
+                    "url": "/p.png",
+                    "file_variant": "preview",
+                    "primary_color": "ffffff",
+                    "image_width": 100,
+                    "image_height": 100
+                  }
+                }
+              ],
+              "parent_message_uuid": "00000000-0000-4000-8000-000000000000",
+              "index": 0,
+              "truncated": false,
+              "files_v2": [
+                {
+                  "file_kind": "image",
+                  "file_uuid": "f-uuid-1",
+                  "file_name": "makieta.png",
+                  "created_at": "2025-11-02T10:00:00.400000Z"
+                }
+              ],
+              "sync_sources": []
+            },
+            "role_raw": "human",
+            "blocks": [
+              {
+                "kind": "text",
+                "type": "text",
+                "index": 0,
+                "chars": 37
+              }
+            ],
+            "attachments": [
+              {
+                "source": "attachments",
+                "path": "/attachments/0",
+                "id": "att-1",
+                "name": "notatki.txt",
+                "mime": "text/plain",
+                "size": 22,
+                "has_extracted_content": true,
+                "resolved": false
+              },
+              {
+                "source": "files",
+                "path": "/files/0",
+                "id": "f-uuid-1",
+                "name": "makieta.png",
+                "mime": "image",
+                "has_extracted_content": false,
+                "resolved": false
+              },
+              {
+                "source": "files_v2",
+                "path": "/files_v2/0",
+                "id": "f-uuid-1",
+                "name": "makieta.png",
+                "mime": "image",
+                "has_extracted_content": false,
+                "resolved": false
+              }
+            ],
+            "pointers": [],
+            "citations": [],
+            "citation_groups": [],
+            "artifacts": [],
+            "artifact_tags": [],
+            "custom_instruction": 0,
+            "memory": false,
+            "hidden": false,
+            "hidden_reasons": [],
+            "parent_key": null,
+            "parent_inferred": false,
+            "on_current_path": true,
+            "on_active_path": true,
+            "reachable": true,
+            "leaf": false,
+            "fork": false,
+            "sibling_index": 0,
+            "sibling_count": 1,
+            "created_inferred": false,
+            "model_inferred": false,
+            "member": "conversations.json",
+            "source_conversation_index": 0,
+            "json_pointer": "/0/chat_messages/0"
+          }
+        }
+      }
+    ]
+  },
+  "projection": "Native response projection: text, role, status, metadata only; generated IDs and temporary native attachment paths omitted. metadata.export is unchanged."
+}

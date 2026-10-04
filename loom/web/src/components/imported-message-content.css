@@ -1,0 +1,7 @@
+.imported-source-details { padding: 8px 0; font-size: 12px; color: var(--dim); }
+.imported-source-details > summary, .imported-source-json > summary { cursor: pointer; }
+.imported-source-block, .imported-source-reference { padding: 8px 0; border-top: 1px solid var(--border); }
+.imported-source-block h4, .imported-source-reference h4 { margin: 4px 0; color: var(--text); }
+.imported-source-text, .imported-source-json pre { white-space: pre-wrap; overflow-wrap: anywhere; color: var(--text); padding: 8px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 4px; }
+.imported-source-path { overflow-wrap: anywhere; margin: 4px 0; }
+.imported-source-json { margin: 5px 0; }
