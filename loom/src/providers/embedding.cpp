@@ -91,7 +91,7 @@ Result<EmbeddingReply> provider_embed(const ProviderRegistry& registry,
     const auto identity = identity_for(manifest, key, request);
     if (!request.expected_identity.empty() && request.expected_identity != identity)
       return Error(Errc::Conflict, "embedding provider identity changed before request");
-    if (texts.empty()) return EmbeddingReply{{}, Json::object(), identity};
+    if (texts.empty()) return EmbeddingReply{{}, Json::object(), identity, Json::object()};
     if (!request.calls_authorized) return Error(Errc::Unavailable, "embedding calls require explicit authorization");
     Json body = request.request_options;
     body["model"] = request.model;
@@ -112,7 +112,40 @@ Result<EmbeddingReply> provider_embed(const ProviderRegistry& registry,
     else if (manifest.auth_scheme == "x-api-key") http_request.headers.emplace_back("x-api-key", key);
     else if (manifest.auth_scheme == "query:key") http_request.url = net::with_query(http_request.url, {{"key", key}});
     if (request_attempted) *request_attempted = true;
-    auto response = http.send(http_request);
+    std::string received_body;
+    bool received_headers = false;
+    int received_status = 0;
+    net::StreamSink sink;
+    sink.on_headers = [&](int status, const net::Headers&) {
+      received_headers = true;
+      received_status = status;
+      return true;
+    };
+    sink.on_data = [&](std::string_view chunk) {
+      received_body.append(chunk);
+      return true;
+    };
+    Result<net::HttpResponse> response = Error(Errc::Network, "embedding transport failed");
+    try { response = http.send(http_request, request.record_response ? &sink : nullptr); }
+    catch (...) { response = Error(Errc::Network, "embedding transport failed"); }
+    if (response) {
+      received_status = response->status;
+      // Honor buffered native transports too; the HTTP contract says compliant
+      // streaming transports leave response.body empty when delivering chunks.
+      if (received_body.empty()) received_body = response->body;
+      response->body = received_body;
+    }
+    Json source = Json::object();
+    if (request.record_response && (received_headers || response || !received_body.empty())) {
+      Json input_hashes = Json::array();
+      for (const auto& text : texts) input_hashes.push_back(Sha256::hex(text));
+      auto recorded = request.record_response(received_body, Json{{"provider_id", request.provider_id},
+          {"model", request.model}, {"status", received_status}, {"complete", static_cast<bool>(response)},
+          {"identity", identity}, {"input_hashes", input_hashes}, {"request_sha256", Sha256::hex(http_request.body)},
+          {"transport_error", response ? Json(nullptr) : Json(std::string(errc_name(response.error().code)))}});
+      if (!recorded) return Error(recorded.error().code, "embedding first-response storage failed");
+      source = *recorded;
+    }
     if (!response) return Error(response.error().code, "embedding transport failed");
     if (!response->ok()) return Error(Errc::Http, "embedding HTTP request failed with status " + std::to_string(response->status));
     auto parsed = response->json();
@@ -122,6 +155,7 @@ Result<EmbeddingReply> provider_embed(const ProviderRegistry& registry,
       return Error(Errc::Parse, "embedding response count mismatch");
     EmbeddingReply reply;
     reply.identity = identity;
+    reply.response_source = std::move(source);
     reply.vectors.resize(texts.size());
     std::set<std::size_t> seen;
     std::optional<std::size_t> dimensions;
@@ -139,7 +173,8 @@ Result<EmbeddingReply> provider_embed(const ProviderRegistry& registry,
       for (const auto& value : *vector) {
         if (!value.is_number()) return Error(Errc::Parse, "embedding vector contains nonnumber");
         const double number = value.get<double>();
-        if (!std::isfinite(number) || std::abs(number) > std::numeric_limits<float>::max())
+        if (!std::isfinite(number) || std::abs(number) > std::numeric_limits<float>::max() ||
+            (number != 0 && static_cast<float>(number) == 0))
           return Error(Errc::Parse, "embedding vector contains unrepresentable number");
         reply.vectors[position].push_back(static_cast<float>(number));
       }
