@@ -1,0 +1,81 @@
+===============================================================================
+/workspace/scratch/f98faad71b9c/chatadhd/loom/src/chat/chat_graph_integration.verify.cc:315:
+TEST CASE:  chat graph wiring: all generating modes retain original text on actual compiler schema errors
+
+/workspace/scratch/f98faad71b9c/chatadhd/loom/src/chat/chat_graph_integration.verify.cc:315: FATAL ERROR: test case CRASHED: SIGABRT - Abort (abnormal termination) signal
+
+===============================================================================
+[doctest] test cases:  6 |  5 passed | 1 failed | 110 skipped
+[doctest] assertions: 77 | 77 passed | 0 failed |
+[doctest] Status: FAILURE!
+00:51:47 [INFO ] loom.config: config.json not found - using defaults
+00:51:47 [INFO ] loom.config: secrets.json not found - using defaults
+00:51:47 [INFO ] loom.db: Schema upgraded: v0 -> v4
+00:51:47 [INFO ] loom.db: Database opened: /tmp/loom_e863ead84002/chatadhd.db
+00:51:47 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+00:51:47 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_e863ead84002)
+00:51:47 [INFO ] loom.config: config.json not found - using defaults
+00:51:47 [INFO ] loom.config: secrets.json not found - using defaults
+00:51:47 [INFO ] loom.db: Schema upgraded: v0 -> v4
+00:51:47 [INFO ] loom.db: Database opened: /tmp/loom_70aabec4882c/chatadhd.db
+00:51:47 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+00:51:47 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_70aabec4882c)
+00:51:47 [INFO ] loom.db: Database closed
+00:51:47 [INFO ] loom.runtime: Loom runtime shut down
+00:51:47 [INFO ] loom.db: Database closed
+00:51:47 [INFO ] loom.runtime: Loom runtime shut down
+00:51:47 [INFO ] loom.config: config.json not found - using defaults
+00:51:47 [INFO ] loom.config: secrets.json not found - using defaults
+00:51:47 [INFO ] loom.db: Schema upgraded: v0 -> v4
+00:51:47 [INFO ] loom.db: Database opened: /tmp/loom_82cfe7ecfe54/chatadhd.db
+00:51:47 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+00:51:47 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_82cfe7ecfe54)
+00:51:47 [INFO ] loom.db: Database closed
+00:51:47 [INFO ] loom.runtime: Loom runtime shut down
+00:51:47 [INFO ] loom.config: config.json not found - using defaults
+00:51:47 [INFO ] loom.config: secrets.json not found - using defaults
+00:51:47 [INFO ] loom.db: Schema upgraded: v0 -> v4
+00:51:47 [INFO ] loom.db: Database opened: /tmp/loom_a76e4646dc5e/chatadhd.db
+00:51:47 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+00:51:47 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_a76e4646dc5e)
+00:51:47 [INFO ] loom.db: Database closed
+00:51:47 [INFO ] loom.runtime: Loom runtime shut down
+00:51:47 [INFO ] loom.config: config.json not found - using defaults
+00:51:47 [INFO ] loom.config: secrets.json not found - using defaults
+00:51:47 [INFO ] loom.db: Schema upgraded: v0 -> v4
+00:51:47 [INFO ] loom.db: Database opened: /tmp/loom_48b1fe7b78cb/chatadhd.db
+00:51:47 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+00:51:47 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_48b1fe7b78cb)
+00:51:47 [INFO ] loom.db: Database closed
+00:51:47 [INFO ] loom.runtime: Loom runtime shut down
+00:51:47 [INFO ] loom.config: config.json not found - using defaults
+00:51:47 [INFO ] loom.config: secrets.json not found - using defaults
+00:51:47 [INFO ] loom.db: Schema upgraded: v0 -> v4
+00:51:47 [INFO ] loom.db: Database opened: /tmp/loom_8dc05bd9493b/chatadhd.db
+00:51:47 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+00:51:47 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_8dc05bd9493b)
+00:51:48 [INFO ] loom.db: Database closed
+00:51:48 [INFO ] loom.runtime: Loom runtime shut down
+00:51:48 [INFO ] loom.config: config.json not found - using defaults
+00:51:48 [INFO ] loom.config: secrets.json not found - using defaults
+00:51:48 [INFO ] loom.db: Schema upgraded: v0 -> v4
+00:51:48 [INFO ] loom.db: Database opened: /tmp/loom_096a448854b6/chatadhd.db
+00:51:48 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+00:51:48 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_096a448854b6)
+00:51:48 [INFO ] loom.db: Database closed
+00:51:48 [INFO ] loom.runtime: Loom runtime shut down
+00:51:48 [INFO ] loom.config: config.json not found - using defaults
+00:51:48 [INFO ] loom.config: secrets.json not found - using defaults
+00:51:48 [INFO ] loom.db: Schema upgraded: v0 -> v4
+00:51:48 [INFO ] loom.db: Database opened: /tmp/loom_76f1c5b49457/chatadhd.db
+00:51:48 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+00:51:48 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_76f1c5b49457)
+00:51:48 [INFO ] loom.db: Database closed
+00:51:48 [INFO ] loom.runtime: Loom runtime shut down
+00:51:48 [INFO ] loom.config: config.json not found - using defaults
+00:51:48 [INFO ] loom.config: secrets.json not found - using defaults
+00:51:48 [INFO ] loom.db: Schema upgraded: v0 -> v4
+00:51:48 [INFO ] loom.db: Database opened: /tmp/loom_36f928a24030/chatadhd.db
+00:51:48 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+00:51:48 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_36f928a24030)
+w3_selector_verification: /workspace/scratch/f98faad71b9c/chatadhd/loom/third_party/nlohmann/nlohmann/json.hpp:21449: const nlohmann::json_abi_v3_11_3::basic_json<ObjectType, ArrayType, StringType, BooleanType, NumberIntegerType, NumberUnsignedType, NumberFloatType, AllocatorType, JSONSerializer, BinaryType, CustomBaseClass>::value_type& nlohmann::json_abi_v3_11_3::basic_json<ObjectType, ArrayType, StringType, BooleanType, NumberIntegerType, NumberUnsignedType, NumberFloatType, AllocatorType, JSONSerializer, BinaryType, CustomBaseClass>::operator[](const typename object_t::key_type&) const [with ObjectType = nlohmann::json_abi_v3_11_3::ordered_map; ArrayType = std::vector; StringType = std::__cxx11::basic_string<char>; BooleanType = bool; NumberIntegerType = long int; NumberUnsignedType = long unsigned int; NumberFloatType = double; AllocatorType = std::allocator; JSONSerializer = nlohmann::json_abi_v3_11_3::adl_serializer; BinaryType = std::vector<unsigned char>; CustomBaseClass = void; const_reference = const nlohmann::json_abi_v3_11_3::basic_json<nlohmann::json_abi_v3_11_3::ordered_map>&; typename object_t::key_type = std::__cxx11::basic_string<char>; object_t = nlohmann::json_abi_v3_11_3::ordered_map<std::__cxx11::basic_string<char>, nlohmann::json_abi_v3_11_3::basic_json<nlohmann::json_abi_v3_11_3::ordered_map>, std::less<void>, std::allocator<std::pair<const std::__cxx11::basic_string<char>, nlohmann::json_abi_v3_11_3::basic_json<nlohmann::json_abi_v3_11_3::ordered_map> > > >]: Assertion `it != m_data.m_value.object->end()' failed.

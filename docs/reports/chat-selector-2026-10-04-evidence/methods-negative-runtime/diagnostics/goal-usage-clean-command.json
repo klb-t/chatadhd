@@ -1,0 +1,9 @@
+{
+  "command": [
+    "/tmp/chatadhd-w3-final-build/w3_combined_overlay/a5eb618eb950485d87b45a2fccae470d/w3_selector_verification",
+    "--test-case=goal execution*",
+    "--no-intro=true"
+  ],
+  "exit_code": 0,
+  "existing_build_manifest": "/tmp/chatadhd-w3-final-build/w3_combined_overlay/a5eb618eb950485d87b45a2fccae470d/manifest.json"
+}

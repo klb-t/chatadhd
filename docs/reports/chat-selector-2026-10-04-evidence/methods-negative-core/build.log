@@ -1,0 +1,13 @@
+[0/2] Re-checking globbed directories...
+[1/11] Building CXX object CMakeFiles/loom_core.dir/src/chat/chat_engine.cpp.o
+FAILED: [code=1] CMakeFiles/loom_core.dir/src/chat/chat_engine.cpp.o 
+/usr/bin/c++ -DCPPHTTPLIB_OPENSSL_SUPPORT=1 -DJSON_USE_IMPLICIT_CONVERSIONS=1 -DLOOM_BUILDING=1 -DLOOM_HAVE_OPENSSL=1 -DLOOM_VENDORED_SQLITE=1 -DLOOM_VERSION_STRING=\"0.1.0\" -I/workspace/scratch/f98faad71b9c/chatadhd/loom/include -I/workspace/scratch/f98faad71b9c/chatadhd/loom/src -isystem /workspace/scratch/f98faad71b9c/chatadhd/loom/third_party/nlohmann -isystem /workspace/scratch/f98faad71b9c/chatadhd/loom/third_party/cpp-httplib -isystem /workspace/scratch/f98faad71b9c/chatadhd/loom/third_party/sqlite -isystem /workspace/scratch/f98faad71b9c/chatadhd/loom/third_party/miniz -g0 -std=c++20 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -Wall -Wextra -Wpedantic -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Woverloaded-virtual -Wnull-dereference -Wimplicit-fallthrough -Wno-unused-parameter -Werror -MD -MT CMakeFiles/loom_core.dir/src/chat/chat_engine.cpp.o -MF CMakeFiles/loom_core.dir/src/chat/chat_engine.cpp.o.d -o CMakeFiles/loom_core.dir/src/chat/chat_engine.cpp.o -c /workspace/scratch/f98faad71b9c/chatadhd/loom/src/chat/chat_engine.cpp
+/workspace/scratch/f98faad71b9c/chatadhd/loom/src/chat/chat_engine.cpp: In member function ‘loom::Result<loom::ChatResult> loom::ChatEngine::send(std::string_view, const loom::ChatOptions&, const loom::ChatCallbacks&, const loom::CancelToken*)’:
+/workspace/scratch/f98faad71b9c/chatadhd/loom/src/chat/chat_engine.cpp:1367:22: error: declaration of ‘key’ shadows a previous local [-Werror=shadow]
+ 1367 |     for (const auto* key : {"usage_settlement", "usage_settlement_error", "execution_usage"})
+      |                      ^~~
+/workspace/scratch/f98faad71b9c/chatadhd/loom/src/chat/chat_engine.cpp:1096:15: note: shadowed declaration is here
+ 1096 |   std::string key = secrets_.get_string("api_key");
+      |               ^~~
+cc1plus: all warnings being treated as errors
+ninja: build stopped: subcommand failed.

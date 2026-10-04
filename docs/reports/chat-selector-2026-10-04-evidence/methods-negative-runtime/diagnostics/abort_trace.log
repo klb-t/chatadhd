@@ -1,0 +1,48 @@
+00:53:39 [INFO ] loom.config: config.json not found - using defaults
+00:53:39 [INFO ] loom.config: secrets.json not found - using defaults
+00:53:39 [INFO ] loom.db: Schema upgraded: v0 -> v4
+00:53:39 [INFO ] loom.db: Database opened: /tmp/loom_8685874302a0/chatadhd.db
+00:53:39 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+00:53:39 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_8685874302a0)
+00:53:39 [INFO ] loom.db: Database closed
+00:53:39 [INFO ] loom.runtime: Loom runtime shut down
+00:53:39 [INFO ] loom.config: config.json not found - using defaults
+00:53:39 [INFO ] loom.config: secrets.json not found - using defaults
+00:53:39 [INFO ] loom.db: Schema upgraded: v0 -> v4
+00:53:39 [INFO ] loom.db: Database opened: /tmp/loom_4518385aa670/chatadhd.db
+00:53:39 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+00:53:39 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_4518385aa670)
+00:53:39 [INFO ] loom.db: Database closed
+00:53:39 [INFO ] loom.runtime: Loom runtime shut down
+00:53:39 [INFO ] loom.config: config.json not found - using defaults
+00:53:39 [INFO ] loom.config: secrets.json not found - using defaults
+00:53:39 [INFO ] loom.db: Schema upgraded: v0 -> v4
+00:53:39 [INFO ] loom.db: Database opened: /tmp/loom_01c91ff2aa9b/chatadhd.db
+00:53:39 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+00:53:39 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_01c91ff2aa9b)
+w3_selector_verification: /workspace/scratch/f98faad71b9c/chatadhd/loom/third_party/nlohmann/nlohmann/json.hpp:21449: const nlohmann::json_abi_v3_11_3::basic_json<ObjectType, ArrayType, StringType, BooleanType, NumberIntegerType, NumberUnsignedType, NumberFloatType, AllocatorType, JSONSerializer, BinaryType, CustomBaseClass>::value_type& nlohmann::json_abi_v3_11_3::basic_json<ObjectType, ArrayType, StringType, BooleanType, NumberIntegerType, NumberUnsignedType, NumberFloatType, AllocatorType, JSONSerializer, BinaryType, CustomBaseClass>::operator[](const typename object_t::key_type&) const [with ObjectType = nlohmann::json_abi_v3_11_3::ordered_map; ArrayType = std::vector; StringType = std::__cxx11::basic_string<char>; BooleanType = bool; NumberIntegerType = long int; NumberUnsignedType = long unsigned int; NumberFloatType = double; AllocatorType = std::allocator; JSONSerializer = nlohmann::json_abi_v3_11_3::adl_serializer; BinaryType = std::vector<unsigned char>; CustomBaseClass = void; const_reference = const nlohmann::json_abi_v3_11_3::basic_json<nlohmann::json_abi_v3_11_3::ordered_map>&; typename object_t::key_type = std::__cxx11::basic_string<char>; object_t = nlohmann::json_abi_v3_11_3::ordered_map<std::__cxx11::basic_string<char>, nlohmann::json_abi_v3_11_3::basic_json<nlohmann::json_abi_v3_11_3::ordered_map>, std::less<void>, std::allocator<std::pair<const std::__cxx11::basic_string<char>, nlohmann::json_abi_v3_11_3::basic_json<nlohmann::json_abi_v3_11_3::ordered_map> > > >]: Assertion `it != m_data.m_value.object->end()' failed.
+===============================================================================
+/workspace/scratch/f98faad71b9c/chatadhd/loom/src/chat/chat_graph_integration.verify.cc:315:
+TEST CASE:  chat graph wiring: all generating modes retain original text on actual compiler schema errors
+
+/workspace/scratch/f98faad71b9c/chatadhd/loom/src/chat/chat_graph_integration.verify.cc:315: FATAL ERROR: test case CRASHED: SIGABRT - Abort (abnormal termination) signal
+
+===============================================================================
+[doctest] test cases:  1 |  0 passed | 1 failed | 115 skipped
+[doctest] assertions: 23 | 23 passed | 0 failed |
+[doctest] Status: FAILURE!
+/tmp/chatadhd-w3-graph-crash-audit/abort_trace.so(+0x11d1)[0x7f3d08dce1d1]
+/lib/x86_64-linux-gnu/libc.so.6(+0x45330)[0x7f3d082a3330]
+/lib/x86_64-linux-gnu/libc.so.6(pthread_kill+0x11c)[0x7f3d082fcb2c]
+/lib/x86_64-linux-gnu/libc.so.6(gsignal+0x1e)[0x7f3d082a327e]
+/lib/x86_64-linux-gnu/libc.so.6(abort+0xdf)[0x7f3d082868ff]
+/lib/x86_64-linux-gnu/libc.so.6(+0x2881b)[0x7f3d0828681b]
+/lib/x86_64-linux-gnu/libc.so.6(+0x3b517)[0x7f3d08299517]
+/tmp/chatadhd-w3-final-build/w3_combined_overlay/a5eb618eb950485d87b45a2fccae470d/w3_selector_verification(+0x628f2)[0x55fc6e7668f2]
+/tmp/chatadhd-w3-final-build/w3_combined_overlay/a5eb618eb950485d87b45a2fccae470d/w3_selector_verification(+0x5635c)[0x55fc6e75a35c]
+/tmp/chatadhd-w3-final-build/w3_combined_overlay/a5eb618eb950485d87b45a2fccae470d/w3_selector_verification(+0x42706)[0x55fc6e746706]
+/tmp/chatadhd-w3-final-build/w3_combined_overlay/a5eb618eb950485d87b45a2fccae470d/w3_selector_verification(+0xe9539)[0x55fc6e7ed539]
+/tmp/chatadhd-w3-final-build/w3_combined_overlay/a5eb618eb950485d87b45a2fccae470d/w3_selector_verification(+0xe9ff5)[0x55fc6e7edff5]
+/lib/x86_64-linux-gnu/libc.so.6(+0x2a1ca)[0x7f3d082881ca]
+/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x8b)[0x7f3d0828828b]
+/tmp/chatadhd-w3-final-build/w3_combined_overlay/a5eb618eb950485d87b45a2fccae470d/w3_selector_verification(+0x29bd5)[0x55fc6e72dbd5]

@@ -1,0 +1,12 @@
+/workspace/scratch/f98faad71b9c/chatadhd/loom/src/chat/chat_graph_integration.verify.cc: In function ‘void DOCTEST_ANON_FUNC_10()’:
+/workspace/scratch/f98faad71b9c/chatadhd/loom/src/chat/chat_graph_integration.verify.cc:260:29: error: no matching function for call to ‘unwrap(std::optional<loom::Conversation>)’
+  260 |   auto conversation = unwrap(fixture.runtime->chat().current_conv());
+      |                       ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /workspace/scratch/f98faad71b9c/chatadhd/loom/src/chat/chat_graph_integration.verify.cc:13:
+/workspace/scratch/f98faad71b9c/chatadhd/loom/tests/test_helpers.h:25:3: note: candidate: ‘template<class T> T loom::test::unwrap(loom::Result<E>&&)’
+   25 | T unwrap(Result<T>&& r) {
+      |   ^~~~~~
+/workspace/scratch/f98faad71b9c/chatadhd/loom/tests/test_helpers.h:25:3: note:   template argument deduction/substitution failed:
+/workspace/scratch/f98faad71b9c/chatadhd/loom/src/chat/chat_graph_integration.verify.cc:260:29: note:   ‘std::optional<loom::Conversation>’ is not derived from ‘loom::Result<E>’
+  260 |   auto conversation = unwrap(fixture.runtime->chat().current_conv());
+      |                       ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

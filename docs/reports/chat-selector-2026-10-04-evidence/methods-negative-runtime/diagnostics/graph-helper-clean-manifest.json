@@ -1,0 +1,11 @@
+{
+  "command": [
+    "/tmp/chatadhd-w3-final-build/w3_combined_overlay/a5eb618eb950485d87b45a2fccae470d/w3_selector_verification",
+    "--test-case=graph reply*",
+    "--no-intro=true"
+  ],
+  "exit_code": 0,
+  "binary_sha256": "f14130ebe58ed4422a7bc1eaaf539bba1d4efcfe90cec24b8f3dba45de940aa0",
+  "existing_build_manifest": "/tmp/chatadhd-w3-final-build/w3_combined_overlay/a5eb618eb950485d87b45a2fccae470d/manifest.json",
+  "preload_used": false
+}
