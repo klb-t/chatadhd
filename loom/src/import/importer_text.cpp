@@ -87,7 +87,11 @@ Result<std::vector<Conversation>> ConversationImporter::markdown_body(const fs::
   LOOM_TRY_ASSIGN(std::string content, fsutil::read_file(path));
   Json messages = parse_markdown(content);
   std::optional<std::string> title = opts.title;
-  if (!title || title->empty()) title = path.stem().string();
+  if (!title || title->empty()) {
+    const fs::path identity = current_source_ && !current_source_->source_filename.empty()
+        ? fs::path(current_source_->source_filename) : path;
+    title = identity.stem().string();
+  }
   LOOM_TRY_ASSIGN(Conversation conv, import_message_list(messages, title));
   return std::vector<Conversation>{std::move(conv)};
 }
@@ -175,7 +179,11 @@ Result<std::vector<Conversation>> ConversationImporter::text_body(const fs::path
   std::string content = utf8::repair(raw);  // Python: open(..., errors='replace')
   Json messages = parse_plain_text(content);
   std::optional<std::string> title = opts.title;
-  if (!title || title->empty()) title = path.stem().string();
+  if (!title || title->empty()) {
+    const fs::path identity = current_source_ && !current_source_->source_filename.empty()
+        ? fs::path(current_source_->source_filename) : path;
+    title = identity.stem().string();
+  }
   LOOM_TRY_ASSIGN(Conversation conv, import_message_list(messages, title));
   return std::vector<Conversation>{std::move(conv)};
 }

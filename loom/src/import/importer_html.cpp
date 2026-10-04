@@ -310,7 +310,9 @@ Result<std::optional<Conversation>> ConversationImporter::parse_html_conversatio
 Result<std::vector<Conversation>> ConversationImporter::html_body(const fs::path& path, const ImportOptions& opts) {
   LOOM_TRY_ASSIGN(std::string raw, fsutil::read_file(path));
   std::string html = utf8::repair(raw);  // Python: open(..., errors='replace')
-  LOOM_TRY_ASSIGN(auto conv, parse_html_conversation(html, opts.title, path));
+  const fs::path identity = current_source_ && !current_source_->source_filename.empty()
+      ? fs::path(current_source_->source_filename) : path;
+  LOOM_TRY_ASSIGN(auto conv, parse_html_conversation(html, opts.title, identity));
   std::vector<Conversation> out;
   if (conv) out.push_back(std::move(*conv));
   return out;
@@ -366,7 +368,9 @@ Result<std::vector<Conversation>> ConversationImporter::mht_body(const fs::path&
 
   std::vector<Conversation> out;
   if (html) {
-    LOOM_TRY_ASSIGN(auto conv, parse_html_conversation(*html, opts.title, path));
+    const fs::path identity = current_source_ && !current_source_->source_filename.empty()
+        ? fs::path(current_source_->source_filename) : path;
+    LOOM_TRY_ASSIGN(auto conv, parse_html_conversation(*html, opts.title, identity));
     if (conv) out.push_back(std::move(*conv));
   }
   return out;
