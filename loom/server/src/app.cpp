@@ -949,7 +949,15 @@ void App::route_knowledge() {
   });
   // Keep exact embedded reply bytes; strict parser rejects duplicate keys.
   svr_.Post("/api/packet", [this](const httplib::Request& req, httplib::Response& res) {
+    // Literal NUL is invalid JSON and would truncate the C-string ABI input.
+    if (req.body.find('\0') != std::string::npos) {
+      send_error(res, "parse", "packet request contains literal NUL");
+      return;
+    }
     send_loom(res, loom_packet(ctx_, req.body.c_str()));
+    const auto value = json::parse(res.body, nullptr, false);
+    if (value.is_object() && value.contains("error") && value["error"].is_object())
+      res.status = status_for_error_code(value["error"].value("code", std::string("internal")));
   });
   post_json("/api/knowledge/judge", loom_kb_judge);
   post_json("/api/knowledge/materialize", loom_materialize);

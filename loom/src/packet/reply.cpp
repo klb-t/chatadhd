@@ -301,7 +301,7 @@ Json compile_reply(const Json& p, std::string_view raw, const Json& input_host, 
               digest(Json{{"namespace", ns}, {"subject", subject}, {"predicate", pred}, {"object", obj}});
     d["claims"]["add"].push_back(claim(id, subject, pred, obj, h["request_id"], display, response));
   }
-  preview(p, d);
+  preview(p, d, limits);
   Json result = {{"schema", "loom.graph_reply_compilation/1"},
                  {"base_packet_sha256", p["packet_id"]},
                  {"raw_capture", cap},
@@ -314,6 +314,48 @@ Json compile_reply(const Json& p, std::string_view raw, const Json& input_host, 
                  {"canonical_store_written", false},
                  {"acceptance_establishes_content_truth", false}};
   result["compilation_sha256"] = digest(result);
+  resources(result, limits);
   return result;
+}
+
+Json reply_fragment(const Json& c, const Json& address) {
+  // The command adapter recompiles captured bytes before calling this lookup.
+  // Model supplied ranges or edited entity attributes never become addresses.
+  if (!address.is_object() || address.size() != 1 ||
+      (!address.contains("local_id") && !address.contains("node_id")))
+    fail("graph_reply_fragment_address_invalid");
+  const auto key = str(address.begin().value());
+  std::string local;
+  if (address.contains("local_id")) {
+    if (c["node_ids"].contains(key)) local = key;
+  } else {
+    for (auto it = c["node_ids"].begin(); it != c["node_ids"].end(); ++it)
+      if (it.value() == key) local = it.key();
+  }
+  if (local.empty()) fail("graph_reply_fragment_unknown_address");
+  const auto& node_id = c["node_ids"][local];
+  for (const auto& e : c["diff"]["entities"]["add"]) {
+    if (e["id"] != node_id) continue;
+    const auto& a = e["attrs"];
+    const auto& span = c["spans"][local];
+    for (const auto& s : c["diff"]["sources"]["add"]) {
+      if (s["observation"]["id"] != a["source_observation_id"]) continue;
+      Json locator = s["observation"]["locator"];
+      locator["byte_start"] =
+          locator["byte_start"].get<std::uint64_t>() + span["byte_start"].get<std::uint64_t>();
+      locator["byte_len"] = span["byte_len"];
+      return Json{{"schema", "loom.graph_reply_fragment/1"},
+                  {"local_id", local},
+                  {"node_id", node_id},
+                  {"turn_entity_id", c["turn_entity_id"]},
+                  {"text", a["text"]},
+                  {"span", span},
+                  {"source_observation_id", a["source_observation_id"]},
+                  {"source_locator", locator},
+                  {"model_origin", a["model_origin"]},
+                  {"compilation_sha256", c["compilation_sha256"]}};
+    }
+  }
+  fail("graph_reply_fragment_missing_source");
 }
 }  // namespace loom::packet

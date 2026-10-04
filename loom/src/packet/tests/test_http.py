@@ -32,8 +32,28 @@ with tempfile.TemporaryDirectory(prefix='loom-packet-http-') as tmp:
         response=requests.post(base+'/api/packet',data=json.dumps(fixture['request'],ensure_ascii=False).encode(),headers=h,timeout=20)
         assert response.status_code==200,response.text
         assert response.json()==fixture['expected']
+        compilation=response.json()
+        local_id=next(iter(compilation['node_ids']))
+        fragment_request={'operation':'reply_fragment','packet':fixture['request']['packet'],
+                          'compilation':compilation,'address':{'local_id':local_id}}
+        response=requests.post(base+'/api/packet',json=fragment_request,headers=h,timeout=20)
+        assert response.status_code==200,response.text
+        assert response.json()['node_id']==compilation['node_ids'][local_id]
+        assert response.json()['model_origin']['kind']=='model'
+        response=requests.post(base+'/api/packet',json={**fragment_request,'address':{'node_id':'unknown'}},headers=h,timeout=20)
+        assert response.status_code==400,response.text
+        response=requests.post(base+'/api/packet',json={**fixture['request'],'resource_limits':{'max_string_bytes':300}},headers=h,timeout=20)
+        assert response.status_code==400,response.text
+        assert response.json()['error']['message']=='graph_packet_configured_resource_limit'
+        assert response.json()['error']['raw_capture']==compilation['raw_capture']
         response=requests.post(base+'/api/packet',data='{"operation":"capture","raw":"a","raw":"b"}',headers=h,timeout=5)
         assert response.status_code==400,response.text
+        response=requests.post(base+'/api/packet',data=b'{"operation":"capture","raw":"a"}\x00ignored',headers=h,timeout=5)
+        assert response.status_code==400,response.text
+        assert response.json()['error']['code']=='parse'
+        response=requests.post(base+'/api/packet',json={'operation':'capture','raw':'a\x00b'},headers=h,timeout=5)
+        assert response.status_code==200,response.text
+        assert response.json()['byte_len']==3 and response.json()['raw_base64']=='YQBi'
         response=requests.post(base+'/api/packet',json={'operation':'validate','packet':{'invalid':True}},headers=h,timeout=5)
         assert response.status_code==400,response.text
         response=requests.post(base+'/api/packet',json={'operation':'compile_reply','packet':fixture['request']['packet'],'raw':'first invalid response','host':fixture['request']['host']},headers=h,timeout=5)
@@ -41,7 +61,7 @@ with tempfile.TemporaryDirectory(prefix='loom-packet-http-') as tmp:
         assert response.json()['error']['raw_capture']['byte_len']==len('first invalid response')
         after=requests.get(base+'/api/knowledge/runs',headers=h,timeout=5).json()
         assert before==after,(before,after)
-        print('packet HTTP: 6/6 scenarios passed (auth, compilation, duplicate JSON, invalid packet, first capture, no knowledge writes)')
+        print('packet HTTP: 11/11 scenarios passed (auth, compilation, fragment, unknown fragment, configured output limit, duplicate JSON, literal NUL, escaped NUL capture, invalid packet, first capture, no knowledge writes)')
     finally:
         proc.terminate()
         try:proc.wait(timeout=5)
