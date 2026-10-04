@@ -313,10 +313,13 @@ Result<std::vector<Conversation>> ConversationImporter::with_source(
     const fs::path& path, std::string_view fmt, const ImportOptions& opts, std::string_view kind,
     const std::function<Result<std::vector<Conversation>>(const fs::path&)>& body) {
   SourceCtx ctx;
+  ctx.source_filename = path.filename().string();
   LOOM_TRY_ASSIGN(auto dup, prepare_source(path, fmt, opts, kind, ctx));
   if (dup) return std::move(*dup);
   SourceCtxGuard guard(*this, &ctx);
-  return body(blobs_ && !ctx.blob_hash.empty() ? blobs_->path_for(ctx.blob_hash) : path);
+  // A copied SQLite main file omits live WAL sidecars. Preserve the original
+  // database connection path until a consistent backup source is available.
+  return body(fmt != "sqlite" && blobs_ && !ctx.blob_hash.empty() ? blobs_->path_for(ctx.blob_hash) : path);
 }
 
 Status ConversationImporter::record_provenance(const Conversation& conv, std::string_view handler) {
@@ -403,6 +406,9 @@ Result<ImportResult> ConversationImporter::import_file_as(const fs::path& path, 
   ImportResult result;
   result.format = fmt;
   result.include_result_metadata = opts.include_result_metadata;
+  if (fmt == "sqlite") result.warnings.push_back(
+      "SQLite reads the original database, including WAL. A captured main-file blob excludes WAL bytes "
+      "and does not bind the live query rows.");
   if (fmt == "unknown") return Error(Errc::Unsupported, "Unknown format: " + path.string());
 
   // Provider-export path: every ZIP (unless ExportMode::Off), and bare .json
@@ -443,9 +449,11 @@ Result<ImportResult> ConversationImporter::import_file_as(const fs::path& path, 
   }
 
   SourceCtxGuard guard(*this, &ctx);
-  // Parse the immutable bytes that established this source identity. A caller
-  // may replace the original path while hashing/import callbacks run.
-  const fs::path input_path = blobs_ && !ctx.blob_hash.empty() ? blobs_->path_for(ctx.blob_hash) : path;
+  // Ordinary files parse the immutable bytes that established their source
+  // identity. SQLite retains its live original path so committed WAL rows
+  // remain visible; the main-file blob alone is not a database snapshot.
+  const fs::path input_path = fmt != "sqlite" && blobs_ && !ctx.blob_hash.empty()
+      ? blobs_->path_for(ctx.blob_hash) : path;
   Json export_report = nullptr;
   Result<std::vector<Conversation>> convs = [&]() -> Result<std::vector<Conversation>> {
     if (use_export && fmt == "zip") return export_zip_body(input_path, opts, export_report);
