@@ -1,0 +1,14 @@
+Test project /workspace/scratch/b38bedd7d166/chatadhd/loom/build/dev
+    Start  99: research.structure
+1/2 Test  #99: research.structure ...............***Timeout  60.01 sec
+
+    Start 103: research.contracts
+2/2 Test #103: research.contracts ...............   Passed   55.70 sec
+
+50% tests passed, 1 tests failed out of 2
+
+Total Test time (real) = 115.72 sec
+
+The following tests FAILED:
+	 99 - research.structure (Timeout)
+Errors while running CTest

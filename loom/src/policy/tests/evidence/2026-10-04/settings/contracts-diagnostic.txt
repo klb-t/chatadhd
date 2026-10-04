@@ -1,0 +1,1821 @@
+import time: self [us] | cumulative | imported package
+import time:       662 |        662 |   _io
+import time:        59 |         59 |   marshal
+import time:       726 |        726 |   posix
+import time:     29194 |      30639 | _frozen_importlib_external
+import time:       185 |        185 |   time
+import time:       197 |        382 | zipimport
+import time:        77 |         77 |     _codecs
+import time:       530 |        607 |   codecs
+import time:       711 |        711 |   encodings.aliases
+import time:      1625 |       2942 | encodings
+import time:      7486 |       7486 | encodings.utf_8
+import time:       279 |        279 | _signal
+import time:       210 |        210 |     _abc
+import time:       185 |        395 |   abc
+import time:       268 |        662 | io
+import time:       154 |        154 |       _stat
+import time:        94 |        247 |     stat
+import time:      9368 |       9368 |     _collections_abc
+import time:        96 |         96 |       genericpath
+import time:       134 |        230 |     posixpath
+import time:       531 |      10374 |   os
+import time:       131 |        131 |   _sitebuiltins
+import time:       489 |        489 |   encodings.utf_8_sig
+import time:      1134 |       1134 |   _distutils_hack
+import time:       211 |        211 |   sitecustomize
+import time:        91 |         91 |   usercustomize
+import time:      1552 |      13978 | site
+import time:      5017 |       5017 |       warnings
+import time:       319 |       5335 |     importlib
+import time:       114 |       5448 |   importlib.machinery
+import time:       259 |        259 |     importlib._abc
+import time:       415 |        415 |     types
+import time:       199 |        873 |   importlib.util
+import time:       187 |       6507 | runpy
+import time:       457 |        457 |           itertools
+import time:       296 |        296 |           keyword
+import time:       173 |        173 |             _operator
+import time:       429 |        602 |           operator
+import time:       271 |        271 |           reprlib
+import time:        94 |         94 |           _collections
+import time:      5543 |       7261 |         collections
+import time:       243 |       7503 |       collections.abc
+import time:      8233 |       8233 |           _functools
+import time:       900 |       9132 |         functools
+import time:      2070 |       2070 |             enum
+import time:       189 |        189 |               _sre
+import time:       635 |        635 |                 re._constants
+import time:       794 |       1429 |               re._parser
+import time:       181 |        181 |               re._casefix
+import time:      3269 |       5067 |             re._compiler
+import time:       794 |        794 |             copyreg
+import time:      1176 |       9105 |           re
+import time:       471 |        471 |           token
+import time:        65 |         65 |           _tokenize
+import time:      1540 |      11180 |         tokenize
+import time:       632 |      20943 |       linecache
+import time:      5612 |       5612 |       textwrap
+import time:      1031 |       1031 |       contextlib
+import time:      1040 |      36127 |     traceback
+import time:       472 |        472 |     unittest.util
+import time:       665 |      37263 |   unittest.result
+import time:       210 |        210 |         _heapq
+import time:       417 |        626 |       heapq
+import time:       945 |       1571 |     difflib
+import time:       279 |        279 |             _weakrefset
+import time:       570 |        849 |           weakref
+import time:      4503 |       5351 |         copy
+import time:      5754 |       5754 |             _ast
+import time:      2010 |       7764 |           ast
+import time:       112 |        112 |               _opcode
+import time:       595 |        706 |             opcode
+import time:      5399 |       6105 |           dis
+import time:      3401 |      17269 |         inspect
+import time:      1186 |      23805 |       dataclasses
+import time:       458 |      24263 |     pprint
+import time:      6501 |      32334 |   unittest.case
+import time:      4625 |       4625 |   unittest.suite
+import time:       201 |        201 |     fnmatch
+import time:      1002 |       1203 |   unittest.loader
+import time:      1052 |       1052 |       gettext
+import time:      6411 |       7463 |     argparse
+import time:       894 |        894 |         signal
+import time:       296 |       1190 |       unittest.signals
+import time:       727 |       1917 |     unittest.runner
+import time:       428 |       9807 |   unittest.main
+import time:       327 |      85557 | unittest
+import time:       130 |        130 |   _locale
+import time:      1247 |       1376 | locale
+import time:       181 |        181 | errno
+import time:       249 |        249 |   zlib
+import time:       496 |        496 |     _compression
+import time:      4237 |       4237 |     _bz2
+import time:       379 |       5111 |   bz2
+import time:       148 |        148 |     _lzma
+import time:       522 |        670 |   lzma
+import time:      1084 |       7112 | shutil
+import time:       145 |        145 |       _winapi
+import time:        96 |         96 |       nt
+import time:        77 |         77 |       nt
+import time:        73 |         73 |       nt
+import time:        73 |         73 |       nt
+import time:        71 |         71 |       nt
+import time:        70 |         70 |       nt
+import time:       188 |        790 |     ntpath
+import time:       380 |        380 |       urllib
+import time:       220 |        220 |       math
+import time:      1891 |       1891 |       ipaddress
+import time:      6351 |       8841 |     urllib.parse
+import time:      1480 |      11110 |   pathlib
+import time:       135 |        135 |         _bisect
+import time:       185 |        320 |       bisect
+import time:       156 |        156 |       _random
+import time:       101 |        101 |       _sha2
+import time:       655 |       1231 |     random
+import time:      6688 |       7919 |   tempfile
+import time:       988 |        988 |   threading
+import time:      4471 |       4471 |     __future__
+import time:       473 |        473 |         numbers
+import time:      1447 |       1920 |       _decimal
+import time:       222 |       2141 |     decimal
+import time:       172 |        172 |     fcntl
+import time:     21592 |      21592 |       _hashlib
+import time:       560 |        560 |       _blake2
+import time:       690 |      22842 |     hashlib
+import time:       422 |        422 |           _json
+import time:      4850 |       5272 |         json.scanner
+import time:       886 |       6157 |       json.decoder
+import time:      1874 |       1874 |       json.encoder
+import time:      1016 |       9046 |     json
+import time:        77 |         77 |       _typing
+import time:      8891 |       8968 |     typing
+import time:       293 |        293 |           _datetime
+import time:       663 |        955 |         datetime
+import time:       599 |        599 |             _wmi
+import time:      1132 |       1730 |           platform
+import time:       155 |        155 |           _uuid
+import time:      5157 |       7041 |         uuid
+import time:       529 |        529 |                 attr._compat
+import time:       329 |        329 |                   unicodedata
+import time:       161 |        161 |                   attr._config
+import time:       448 |        448 |                     attr.exceptions
+import time:      4410 |       4857 |                   attr.setters
+import time:     10019 |      15364 |                 attr._make
+import time:       246 |      16138 |               attr.converters
+import time:       193 |        193 |               attr.filters
+import time:     26602 |      26602 |               attr.validators
+import time:       259 |        259 |               attr._cmp
+import time:       209 |        209 |               attr._funcs
+import time:       205 |        205 |               attr._next_gen
+import time:      1245 |       1245 |               attr._version_info
+import time:       671 |      45518 |             attr
+import time:       204 |        204 |             attrs.converters
+import time:       111 |        111 |             attrs.exceptions
+import time:       135 |        135 |             attrs.filters
+import time:       108 |        108 |             attrs.setters
+import time:        94 |         94 |             attrs.validators
+import time:       612 |      46779 |           attrs
+import time:      1655 |       1655 |                   rpds.rpds
+import time:       276 |       1931 |                 rpds
+import time:       515 |        515 |                   _socket
+import time:      8570 |       9084 |                 typing_extensions
+import time:       178 |        178 |                   referencing._attrs
+import time:     13432 |      13610 |                 referencing.exceptions
+import time:       533 |        533 |                 referencing.typing
+import time:     16540 |      41695 |               referencing._core
+import time:       213 |      41908 |             referencing
+import time:        18 |      41925 |           referencing.exceptions
+import time:       364 |        364 |           jsonschema._utils
+import time:      1259 |      90326 |         jsonschema.exceptions
+import time:       197 |        197 |         fqdn
+import time:       392 |        392 |             idna.idnadata
+import time:       171 |        171 |             idna.intranges
+import time:     14507 |      15069 |           idna.core
+import time:       296 |        296 |           idna.package_data
+import time:       279 |      15642 |         idna
+import time:       130 |        130 |         rfc3987
+import time:        89 |         89 |         rfc3986_validator
+import time:        91 |         91 |         rfc3987_syntax
+import time:      1441 |       1441 |           calendar
+import time:       255 |        255 |               _struct
+import time:       288 |        543 |             struct
+import time:      1701 |       2244 |           six
+import time:      1092 |       4776 |         rfc3339_validator
+import time:       184 |        184 |         webcolors
+import time:        95 |         95 |         jsonpointer
+import time:        88 |         88 |         uri_template
+import time:        79 |         79 |         isoduration
+import time:      1147 |     120835 |       jsonschema._format
+import time:      1983 |       1983 |       jsonschema._types
+import time:      2231 |       2231 |           referencing.jsonschema
+import time:       681 |        681 |                 importlib.resources.abc
+import time:     20594 |      20594 |                 importlib.resources._adapters
+import time:       773 |      22047 |               importlib.resources._common
+import time:       342 |        342 |               importlib.resources._legacy
+import time:       238 |      22625 |             importlib.resources
+import time:       397 |      23022 |           jsonschema_specifications._core
+import time:       123 |        123 |                 binascii
+import time:       196 |        196 |                   zipfile._path.glob
+import time:       839 |       1034 |                 zipfile._path
+import time:      7064 |       8219 |               zipfile
+import time:       208 |        208 |               importlib.resources._itertools
+import time:       474 |       8901 |             importlib.resources.readers
+import time:       584 |       9484 |           importlib.readers
+import time:     14848 |      49584 |         jsonschema_specifications
+import time:      6555 |       6555 |           fractions
+import time:       544 |       7098 |         jsonschema._keywords
+import time:       428 |        428 |         jsonschema._legacy_keywords
+import time:       231 |        231 |           jsonschema.protocols
+import time:       190 |        421 |         jsonschema._typing
+import time:     10630 |      68159 |       jsonschema.validators
+import time:      4423 |     195398 |     jsonschema
+import time:     29510 |      29510 |     validate
+import time:     50594 |     323136 |   analysis_plan_ref
+import time:     50311 |     393462 | test_analysis_plan_ref
+import time:       333 |        333 |           concurrent
+import time:        74 |         74 |                 _string
+import time:      5167 |       5240 |               string
+import time:        76 |         76 |               atexit
+import time:      9461 |      14776 |             logging
+import time:      1022 |      15798 |           concurrent.futures._base
+import time:       274 |      16404 |         concurrent.futures
+import time:       214 |        214 |             select
+import time:      1042 |       1255 |           selectors
+import time:       340 |        340 |           array
+import time:      4051 |       5645 |         socket
+import time:       409 |        409 |           msvcrt
+import time:        77 |         77 |           _posixsubprocess
+import time:      5478 |       5962 |         subprocess
+import time:      1342 |       1342 |           _ssl
+import time:       666 |        666 |           base64
+import time:      7478 |       9485 |         ssl
+import time:       333 |        333 |         asyncio.constants
+import time:       176 |        176 |         asyncio.coroutines
+import time:        52 |         52 |             _contextvars
+import time:       218 |        270 |           contextvars
+import time:       172 |        172 |           asyncio.format_helpers
+import time:       205 |        205 |             asyncio.base_futures
+import time:      4428 |       4428 |             asyncio.exceptions
+import time:       216 |        216 |             asyncio.base_tasks
+import time:       495 |       5343 |           _asyncio
+import time:       665 |       6448 |         asyncio.events
+import time:       312 |        312 |         asyncio.futures
+import time:       235 |        235 |         asyncio.protocols
+import time:       343 |        343 |           asyncio.transports
+import time:       137 |        137 |           asyncio.log
+import time:      1006 |       1485 |         asyncio.sslproto
+import time:       191 |        191 |             asyncio.mixins
+import time:       571 |        761 |           asyncio.locks
+import time:       688 |        688 |             asyncio.timeouts
+import time:      4661 |       5349 |           asyncio.tasks
+import time:       254 |       6364 |         asyncio.staggered
+import time:       268 |        268 |         asyncio.trsock
+import time:     27997 |      81107 |       asyncio.base_events
+import time:       513 |        513 |       asyncio.runners
+import time:       338 |        338 |       asyncio.queues
+import time:       547 |        547 |       asyncio.streams
+import time:       372 |        372 |       asyncio.subprocess
+import time:       280 |        280 |       asyncio.taskgroups
+import time:       142 |        142 |       asyncio.threads
+import time:       449 |        449 |         asyncio.base_subprocess
+import time:       796 |        796 |         asyncio.selector_events
+import time:      1398 |       2642 |       asyncio.unix_events
+import time:       489 |      86427 |     asyncio
+import time:       977 |        977 |     pkgutil
+import time:      2757 |      90160 |   unittest.mock
+import time:      8300 |      98459 | test_application_profiles
+import time:     20853 |      20853 | test_contracts
+import time:       563 |        563 | test_format_dependencies
+import time:     11861 |      11861 |       multiprocessing.process
+import time:       591 |        591 |           _compat_pickle
+import time:      4332 |       4332 |           _pickle
+import time:      2740 |       7661 |         pickle
+import time:      6638 |      14299 |       multiprocessing.reduction
+import time:     14639 |      40797 |     multiprocessing.context
+import time:      1186 |      41983 |   multiprocessing
+import time:     35773 |      77755 | test_resource_peak_history
+import time:     15549 |      15549 |   workspace_ref
+import time:     46411 |      61959 | test_workspace_ref
+test_actual_overrun_blocks_further_admission_without_hiding_measurement (test_analysis_plan_ref.AnalysisPlanChecks.test_actual_overrun_blocks_further_admission_without_hiding_measurement) ... ok
+test_billion_and_larger_symbolic_spaces_do_not_allocate_workers (test_analysis_plan_ref.AnalysisPlanChecks.test_billion_and_larger_symbolic_spaces_do_not_allocate_workers) ... ok
+test_bound_snapshot_replay_is_explicit_and_revision_change_dispatches_again (test_analysis_plan_ref.AnalysisPlanChecks.test_bound_snapshot_replay_is_explicit_and_revision_change_dispatches_again) ... ok
+test_callback_proposals_never_apply_or_mutate_original_packet (test_analysis_plan_ref.AnalysisPlanChecks.test_callback_proposals_never_apply_or_mutate_original_packet) ... ok
+test_caller_accounting_policy_does_not_promote_estimate_to_observation (test_analysis_plan_ref.AnalysisPlanChecks.test_caller_accounting_policy_does_not_promote_estimate_to_observation) ... ok
+test_completed_callback_is_replayed_without_extra_call (test_analysis_plan_ref.AnalysisPlanChecks.test_completed_callback_is_replayed_without_extra_call) ... ok
+test_completion_measurements_or_provenance_cannot_drift_from_returned_result (test_analysis_plan_ref.AnalysisPlanChecks.test_completion_measurements_or_provenance_cannot_drift_from_returned_result) ... ok
+test_concurrent_same_attempt_invokes_callback_only_once (test_analysis_plan_ref.AnalysisPlanChecks.test_concurrent_same_attempt_invokes_callback_only_once) ... ok
+test_corrupt_first_result_cannot_be_accepted_as_completed (test_analysis_plan_ref.AnalysisPlanChecks.test_corrupt_first_result_cannot_be_accepted_as_completed) ... ok
+test_cycle_missing_dependency_bad_axis_and_reference_fail (test_analysis_plan_ref.AnalysisPlanChecks.test_cycle_missing_dependency_bad_axis_and_reference_fail) ... ok
+test_dependency_variant_changes_child_identity_even_without_own_axis (test_analysis_plan_ref.AnalysisPlanChecks.test_dependency_variant_changes_child_identity_even_without_own_axis) ... ok
+test_direct_execution_respects_explicit_selection_before_dispatch (test_analysis_plan_ref.AnalysisPlanChecks.test_direct_execution_respects_explicit_selection_before_dispatch) ... ok
+test_estimated_unknown_and_declared_zero_stay_held_by_explicit_policy (test_analysis_plan_ref.AnalysisPlanChecks.test_estimated_unknown_and_declared_zero_stay_held_by_explicit_policy) ... ok
+test_explicit_limits_do_not_come_from_presets (test_analysis_plan_ref.AnalysisPlanChecks.test_explicit_limits_do_not_come_from_presets) ... ok
+test_generic_graph_packet_api_is_supplied_lazily (test_analysis_plan_ref.AnalysisPlanChecks.test_generic_graph_packet_api_is_supplied_lazily) ... import time:       285 |        285 |       loom
+import time:       174 |        458 |     loom.tools
+import time:       140 |        597 |   loom.tools.structure
+import time:       913 |       1510 | loom.tools.structure.agentic_graph_v1
+import time:       202 |        202 |       urllib.response
+import time:       372 |        574 |     urllib.error
+import time:       261 |        261 |       email
+import time:      1595 |       1595 |         http
+import time:       551 |        551 |             email.errors
+import time:       393 |        393 |                 email.quoprimime
+import time:      1111 |       1111 |                 email.base64mime
+import time:       209 |        209 |                     quopri
+import time:       131 |        339 |                   email.encoders
+import time:       293 |        632 |                 email.charset
+import time:       935 |       3070 |               email.header
+import time:       343 |        343 |                 email._parseaddr
+import time:       580 |        922 |               email.utils
+import time:       377 |       4368 |             email._policybase
+import time:       599 |       5517 |           email.feedparser
+import time:       325 |       5842 |         email.parser
+import time:       656 |        656 |           email._encoded_words
+import time:       179 |        179 |           email.iterators
+import time:       841 |       1674 |         email.message
+import time:      1242 |      10351 |       http.client
+import time:      1701 |      12313 |     urllib.request
+import time:     11475 |      24360 |   loom.tools.structure.openrouter_runner
+import time:     11584 |      35943 | loom.tools.structure.agentic_graph_v1.packet
+ok
+test_imported_known_and_unknown_usage_cannot_reset_on_reopen (test_analysis_plan_ref.AnalysisPlanChecks.test_imported_known_and_unknown_usage_cannot_reset_on_reopen) ... ok
+test_incomplete_reservation_directory_fails_closed (test_analysis_plan_ref.AnalysisPlanChecks.test_incomplete_reservation_directory_fails_closed) ... ok
+test_invalid_metadata_preserves_first_finite_candidate_but_not_completion (test_analysis_plan_ref.AnalysisPlanChecks.test_invalid_metadata_preserves_first_finite_candidate_but_not_completion) ... ok
+test_large_resource_amount_cannot_round_away_small_budget_increment (test_analysis_plan_ref.AnalysisPlanChecks.test_large_resource_amount_cannot_round_away_small_budget_increment) ... ok
+test_larger_estimate_increases_held_admission_quantity_without_becoming_measured (test_analysis_plan_ref.AnalysisPlanChecks.test_larger_estimate_increases_held_admission_quantity_without_becoming_measured) ... ok
+test_loaded_packet_snapshot_is_preserved_without_claiming_source_verification (test_analysis_plan_ref.AnalysisPlanChecks.test_loaded_packet_snapshot_is_preserved_without_claiming_source_verification) ... ok
+test_local_schema_registry_loads_without_global_kind_registration (test_analysis_plan_ref.AnalysisPlanChecks.test_local_schema_registry_loads_without_global_kind_registration) ... ok
+test_method_presentation_permutation_keeps_attempt_identity (test_analysis_plan_ref.AnalysisPlanChecks.test_method_presentation_permutation_keeps_attempt_identity) ... ok
+test_missing_capability_does_not_veto_independent_methods (test_analysis_plan_ref.AnalysisPlanChecks.test_missing_capability_does_not_veto_independent_methods) ... ok
+test_missing_measurement_retains_only_unknown_dimension (test_analysis_plan_ref.AnalysisPlanChecks.test_missing_measurement_retains_only_unknown_dimension) ... ok
+test_nonzero_opening_known_usage_requires_typed_reported_origin (test_analysis_plan_ref.AnalysisPlanChecks.test_nonzero_opening_known_usage_requires_typed_reported_origin) ... ok
+test_null_or_empty_provenance_cannot_release_reservation (test_analysis_plan_ref.AnalysisPlanChecks.test_null_or_empty_provenance_cannot_release_reservation) ... ok
+test_one_budget_shared_across_distinct_plan_branches (test_analysis_plan_ref.AnalysisPlanChecks.test_one_budget_shared_across_distinct_plan_branches) ... ok
+test_peak_budget_reuses_capacity_after_completed_measurement (test_analysis_plan_ref.AnalysisPlanChecks.test_peak_budget_reuses_capacity_after_completed_measurement) ... ok
+test_reservation_is_durable_before_packet_loader_and_callback (test_analysis_plan_ref.AnalysisPlanChecks.test_reservation_is_durable_before_packet_loader_and_callback) ... ok
+test_unbound_source_does_not_dispatch_or_replay_as_fresh (test_analysis_plan_ref.AnalysisPlanChecks.test_unbound_source_does_not_dispatch_or_replay_as_fresh) ... ok
+test_unknown_exception_retains_reservation_and_never_retries (test_analysis_plan_ref.AnalysisPlanChecks.test_unknown_exception_retains_reservation_and_never_retries) ... ok
+test_declarative_payload_and_selected_saves_are_additive (test_application_profiles.ApplicationProfiles.test_declarative_payload_and_selected_saves_are_additive) ... ok
+test_execution_settings_or_scripts_cannot_be_profile_data (test_application_profiles.ApplicationProfiles.test_execution_settings_or_scripts_cannot_be_profile_data) ... ok
+test_existing_validator_does_not_gain_optional_uri_dependency (test_application_profiles.ApplicationProfiles.test_existing_validator_does_not_gain_optional_uri_dependency) ... ok
+test_expression_scopes_pointers_and_modes_reject_scripts (test_application_profiles.ApplicationProfiles.test_expression_scopes_pointers_and_modes_reject_scripts) ... ok
+test_schema_and_all_actual_builtins_are_valid (test_application_profiles.ApplicationProfiles.test_schema_and_all_actual_builtins_are_valid) ... ok
+test_selected_variable_persistence_is_optional_json_only (test_application_profiles.ApplicationProfiles.test_selected_variable_persistence_is_optional_json_only) ... ok
+test_session_definition_validates_checked_persistence_shape (test_application_profiles.ApplicationProfiles.test_session_definition_validates_checked_persistence_shape) ... ok
+test_target_and_revision_axes_are_independent_open_data (test_application_profiles.ApplicationProfiles.test_target_and_revision_axes_are_independent_open_data) ... ok
+test_url_syntax_is_explicit_without_optional_format (test_application_profiles.ApplicationProfiles.test_url_syntax_is_explicit_without_optional_format) ... ok
+test_user_bubble_and_unmodified_enter_are_supported_data (test_application_profiles.ApplicationProfiles.test_user_bubble_and_unmodified_enter_are_supported_data) ... ok
+test_verified_status_requires_known_target_sources_and_no_gaps (test_application_profiles.ApplicationProfiles.test_verified_status_requires_known_target_sources_and_no_gaps) ... ok
+test_widths_have_representation_validation_and_no_product_ceiling (test_application_profiles.ApplicationProfiles.test_widths_have_representation_validation_and_no_product_ceiling) ... ok
+test_allow_is_structural_not_remote_execution (test_contracts.Contracts.test_allow_is_structural_not_remote_execution) ... ok
+test_body_hash_changes_with_payload (test_contracts.Contracts.test_body_hash_changes_with_payload) ... ok
+test_canonical_digest_orders_keys (test_contracts.Contracts.test_canonical_digest_orders_keys) ... ok
+test_cli_exit_codes (test_contracts.Contracts.test_cli_exit_codes) ... ok
+test_complete_tool_call_result_pair (test_contracts.Contracts.test_complete_tool_call_result_pair) ... ok
+test_complete_tool_pair_guard (test_contracts.Contracts.test_complete_tool_pair_guard) ... ok
+test_duplicate_candidate (test_contracts.Contracts.test_duplicate_candidate) ... ok
+test_duplicate_json_keys_rejected (test_contracts.Contracts.test_duplicate_json_keys_rejected) ... ok
+test_duplicate_questions (test_contracts.Contracts.test_duplicate_questions) ... ok
+test_event_order (test_contracts.Contracts.test_event_order) ... ok
+test_example_invalid_invalid_date (test_contracts.Contracts.test_example_invalid_invalid_date) ... ok
+test_example_invalid_invalid_pointer (test_contracts.Contracts.test_example_invalid_invalid_pointer) ... ok
+test_example_invalid_inverted_time_range (test_contracts.Contracts.test_example_invalid_inverted_time_range) ... ok
+test_example_invalid_leap_second_unsupported (test_contracts.Contracts.test_example_invalid_leap_second_unsupported) ... ok
+test_example_invalid_missing_byte_pair (test_contracts.Contracts.test_example_invalid_missing_byte_pair) ... ok
+test_example_invalid_packet_data_not_instructions (test_contracts.Contracts.test_example_invalid_packet_data_not_instructions) ... ok
+test_example_invalid_packet_exclusive_wrong (test_contracts.Contracts.test_example_invalid_packet_exclusive_wrong) ... ok
+test_example_invalid_packet_future (test_contracts.Contracts.test_example_invalid_packet_future) ... ok
+test_example_invalid_packet_future_candidate (test_contracts.Contracts.test_example_invalid_packet_future_candidate) ... ok
+test_example_invalid_packet_missing_target (test_contracts.Contracts.test_example_invalid_packet_missing_target) ... ok
+test_example_invalid_packet_outside_branch (test_contracts.Contracts.test_example_invalid_packet_outside_branch) ... ok
+test_example_invalid_packet_unknown_candidate (test_contracts.Contracts.test_example_invalid_packet_unknown_candidate) ... ok
+test_example_invalid_packet_wrong_branch (test_contracts.Contracts.test_example_invalid_packet_wrong_branch) ... ok
+test_example_invalid_reconstruction_method_required (test_contracts.Contracts.test_example_invalid_reconstruction_method_required) ... ok
+test_example_invalid_recorded_capture_required (test_contracts.Contracts.test_example_invalid_recorded_capture_required) ... ok
+test_example_invalid_recorded_source_required (test_contracts.Contracts.test_example_invalid_recorded_source_required) ... ok
+test_example_invalid_request_bad_hash (test_contracts.Contracts.test_example_invalid_request_bad_hash) ... ok
+test_example_invalid_spec_duplicate (test_contracts.Contracts.test_example_invalid_spec_duplicate) ... ok
+test_example_invalid_spec_future_source (test_contracts.Contracts.test_example_invalid_spec_future_source) ... ok
+test_example_invalid_spec_map_missing (test_contracts.Contracts.test_example_invalid_spec_map_missing) ... ok
+test_example_invalid_spec_not_product (test_contracts.Contracts.test_example_invalid_spec_not_product) ... ok
+test_example_invalid_spec_span_outside (test_contracts.Contracts.test_example_invalid_spec_span_outside) ... ok
+test_example_invalid_spec_stale (test_contracts.Contracts.test_example_invalid_spec_stale) ... ok
+test_example_invalid_spec_ungrounded (test_contracts.Contracts.test_example_invalid_spec_ungrounded) ... ok
+test_example_invalid_unknown_cannot_have_body (test_contracts.Contracts.test_example_invalid_unknown_cannot_have_body) ... ok
+test_example_invalid_unknown_event_kind (test_contracts.Contracts.test_example_invalid_unknown_event_kind) ... ok
+test_example_invalid_unknown_schema (test_contracts.Contracts.test_example_invalid_unknown_schema) ... ok
+test_example_invalid_wrong_edit_payload (test_contracts.Contracts.test_example_invalid_wrong_edit_payload) ... ok
+test_example_valid_active_spec (test_contracts.Contracts.test_example_valid_active_spec) ... ok
+test_example_valid_attachment (test_contracts.Contracts.test_example_valid_attachment) ... ok
+test_example_valid_branch (test_contracts.Contracts.test_example_valid_branch) ... ok
+test_example_valid_edit (test_contracts.Contracts.test_example_valid_edit) ... ok
+test_example_valid_extension (test_contracts.Contracts.test_example_valid_extension) ... ok
+test_example_valid_message (test_contracts.Contracts.test_example_valid_message) ... ok
+test_example_valid_metadata (test_contracts.Contracts.test_example_valid_metadata) ... ok
+test_example_valid_multilabel_packet (test_contracts.Contracts.test_example_valid_multilabel_packet) ... ok
+test_example_valid_reconstructed_request (test_contracts.Contracts.test_example_valid_reconstructed_request) ... ok
+test_example_valid_recorded_request (test_contracts.Contracts.test_example_valid_recorded_request) ... ok
+test_example_valid_tool_call (test_contracts.Contracts.test_example_valid_tool_call) ... ok
+test_example_valid_tool_result (test_contracts.Contracts.test_example_valid_tool_result) ... ok
+test_example_valid_unknown_request (test_contracts.Contracts.test_example_valid_unknown_request) ... ok
+test_future_candidate_source (test_contracts.Contracts.test_future_candidate_source) ... ok
+test_lowercase_rfc3339 (test_contracts.Contracts.test_lowercase_rfc3339) ... ok
+test_multimodal_requires_explicit_text_for_span (test_contracts.Contracts.test_multimodal_requires_explicit_text_for_span) ... ok
+test_multiple_subgraphs_not_one_exclusive_winner (test_contracts.Contracts.test_multiple_subgraphs_not_one_exclusive_winner) ... ok
+test_no_mutation_of_source_or_metadata (test_contracts.Contracts.test_no_mutation_of_source_or_metadata) ... ok
+test_no_network_for_local_refs (test_contracts.Contracts.test_no_network_for_local_refs) ... ok
+test_nonfinite_json_rejected (test_contracts.Contracts.test_nonfinite_json_rejected) ... ok
+test_nonfinite_python_value (test_contracts.Contracts.test_nonfinite_python_value) ... ok
+test_partial_history_does_not_invent_missing_tool_call (test_contracts.Contracts.test_partial_history_does_not_invent_missing_tool_call) ... ok
+test_reconstructed_is_not_captured (test_contracts.Contracts.test_reconstructed_is_not_captured) ... ok
+test_redacted_snapshot_is_explicit (test_contracts.Contracts.test_redacted_snapshot_is_explicit) ... ok
+test_redaction_pointer_must_resolve (test_contracts.Contracts.test_redaction_pointer_must_resolve) ... ok
+test_remote_ref_rejected_without_io (test_contracts.Contracts.test_remote_ref_rejected_without_io) ... ok
+test_secret_guard_not_fooled_by_hash (test_contracts.Contracts.test_secret_guard_not_fooled_by_hash) ... ok
+test_self_product_version (test_contracts.Contracts.test_self_product_version) ... ok
+test_snapshot_scope_matches_target (test_contracts.Contracts.test_snapshot_scope_matches_target) ... ok
+test_spec_scope_matches_target (test_contracts.Contracts.test_spec_scope_matches_target) ... ok
+test_split_utf8_span (test_contracts.Contracts.test_split_utf8_span) ... ok
+test_submission_requires_allow (test_contracts.Contracts.test_submission_requires_allow) ... ok
+test_supersession_cycle (test_contracts.Contracts.test_supersession_cycle) ... ok
+test_unhashable_schema_tag (test_contracts.Contracts.test_unhashable_schema_tag) ... ok
+test_unknown_provider_event_is_retained_not_executed (test_contracts.Contracts.test_unknown_provider_event_is_retained_not_executed) ... ok
+test_valid_utf8_span (test_contracts.Contracts.test_valid_utf8_span) ... ok
+test_missing_rfc3339_checker_refuses_validation_environment (test_format_dependencies.DependencyGuards.test_missing_rfc3339_checker_refuses_validation_environment) ... ok
+test_required_formats_remain_active (test_format_dependencies.DependencyGuards.test_required_formats_remain_active) ... ok
+test_capacity_reuse_does_not_erase_peak_and_rejected_limit_adds_no_observation (test_resource_peak_history.ResourcePeakHistoryChecks.test_capacity_reuse_does_not_erase_peak_and_rejected_limit_adds_no_observation) ... ok
+test_kill_after_completion_replays_without_losing_previous_overlap (test_resource_peak_history.ResourcePeakHistoryChecks.test_kill_after_completion_replays_without_losing_previous_overlap) ... import time:       176 |        176 |   _multiprocessing
+import time:      4931 |       4931 |   multiprocessing.util
+import time:       392 |        392 |   _winapi
+import time:     15546 |      21044 | multiprocessing.connection
+import time:      1134 |       1134 |   multiprocessing.popen_fork
+import time:      2392 |       2392 |   multiprocessing.spawn
+import time:      1286 |       4811 | multiprocessing.popen_spawn_posix
+import time:        82 |         82 |   _posixshmem
+import time:      3229 |       3310 | multiprocessing.resource_tracker
+import time: self [us] | cumulative | imported package
+import time:       393 |        393 |   _io
+import time:        45 |         45 |   marshal
+import time:       454 |        454 |   posix
+import time:       914 |       1805 | _frozen_importlib_external
+import time:       218 |        218 |   time
+import time:       129 |        346 | zipimport
+import time:        56 |         56 |     _codecs
+import time:       464 |        520 |   codecs
+import time:       576 |        576 |   encodings.aliases
+import time:       916 |       2011 | encodings
+import time:       378 |        378 | encodings.utf_8
+import time:       156 |        156 | _signal
+import time:        39 |         39 |     _abc
+import time:       140 |        179 |   abc
+import time:       273 |        451 | io
+import time:        74 |         74 |       _stat
+import time:       158 |        232 |     stat
+import time:      1012 |       1012 |     _collections_abc
+import time:        66 |         66 |       genericpath
+import time:        93 |        159 |     posixpath
+import time:       610 |       2012 |   os
+import time:       107 |        107 |   _sitebuiltins
+import time:       539 |        539 |   encodings.utf_8_sig
+import time:       777 |        777 |   _distutils_hack
+import time:       107 |        107 |   sitecustomize
+import time:        72 |         72 |   usercustomize
+import time:       960 |       4570 | site
+import time: self [us] | cumulative | imported package
+import time:       553 |        553 |   _io
+import time:        71 |         71 |   marshal
+import time:       440 |        440 |   posix
+import time:       170 |        170 |             itertools
+import time:      4601 |       5664 | _frozen_importlib_external
+import time:       235 |        235 |             keyword
+import time:       134 |        134 |   time
+import time:       126 |        260 | zipimport
+import time:        89 |         89 |               _operator
+import time:       488 |        577 |             operator
+import time:       225 |        225 |             reprlib
+import time:       130 |        130 |             _collections
+import time:       932 |       2267 |           collections
+import time:        60 |         60 |     _codecs
+import time:       507 |        567 |   codecs
+import time:       440 |        440 |           types
+import time:        81 |         81 |           _functools
+import time:      1020 |       3807 |         functools
+import time:       586 |        586 |   encodings.aliases
+import time:       929 |       2081 | encodings
+import time:       330 |        330 |         _weakrefset
+import time:      1026 |       5161 |       threading
+import time:     12398 |      12398 | encodings.utf_8
+import time:       188 |        188 | _signal
+import time:        43 |         43 |     _abc
+import time:       151 |        193 |   abc
+import time:       184 |        376 | io
+import time:        69 |         69 |       _stat
+import time:        65 |        133 |     stat
+import time:      1033 |       1033 |     _collections_abc
+import time:        72 |         72 |       genericpath
+import time:       135 |        206 |     posixpath
+import time:       395 |       1766 |   os
+import time:        93 |         93 |   _sitebuiltins
+import time:      1835 |       1835 |           enum
+import time:       861 |       2696 |         signal
+import time:     12534 |      15229 |       multiprocessing.process
+import time:       465 |        465 |   encodings.utf_8_sig
+import time:       944 |        944 |   _distutils_hack
+import time:       150 |        150 |   sitecustomize
+import time:        76 |         76 |   usercustomize
+import time:      1040 |       4530 | site
+import time:       360 |        360 |         copyreg
+import time:       125 |        125 |             _struct
+import time:       190 |        315 |           struct
+import time:       190 |        190 |               _sre
+import time:      2076 |       2076 |                 re._constants
+import time:       449 |       2525 |               re._parser
+import time:       185 |        185 |               re._casefix
+import time:       546 |       3444 |             re._compiler
+import time:       751 |       4195 |           re
+import time:       412 |        412 |           _compat_pickle
+import time:       167 |        167 |           _pickle
+import time:      1089 |       6176 |         pickle
+import time:       289 |        289 |           _socket
+import time:       278 |        278 |             collections.abc
+import time:       114 |        114 |             math
+import time:        87 |         87 |             select
+import time:       870 |       1348 |           selectors
+import time:        85 |         85 |           errno
+import time:       160 |        160 |           array
+import time:      2574 |       4454 |         socket
+import time:      2984 |      13973 |       multiprocessing.reduction
+import time:      4872 |      39233 |     multiprocessing.context
+import time:      2027 |      41260 |   multiprocessing
+import time:       422 |        422 |   warnings
+import time:       419 |        419 |         importlib
+import time:        73 |        492 |       importlib.machinery
+import time:       200 |        200 |         importlib._abc
+import time:       139 |        339 |       importlib.util
+import time:       185 |       1015 |     runpy
+import time:       192 |        192 |             itertools
+import time:       203 |        203 |             keyword
+import time:       101 |        101 |               _operator
+import time:       571 |        672 |             operator
+import time:       262 |        262 |             reprlib
+import time:        92 |         92 |             _collections
+import time:      1183 |       2601 |           collections
+import time:       452 |        452 |           types
+import time:        83 |         83 |           _functools
+import time:       875 |       4010 |         functools
+import time:       413 |        413 |         _weakrefset
+import time:       888 |       5311 |       threading
+import time:       565 |        565 |       weakref
+import time:        57 |         57 |       atexit
+import time:       108 |        108 |           _locale
+import time:      1106 |       1213 |         locale
+import time:      2637 |       2637 |         contextlib
+import time:       217 |        217 |         fcntl
+import time:       129 |        129 |         msvcrt
+import time:       213 |        213 |         _posixsubprocess
+import time:      1010 |       5417 |       subprocess
+import time:      4448 |      10485 |     multiprocessing.util
+import time:      2562 |      14062 |   multiprocessing.spawn
+import time:       214 |        214 |   _multiprocessing
+import time:        50 |         50 |   _posixshmem
+import time:      2900 |      58905 | multiprocessing.resource_tracker
+import time:      2016 |       2016 |           enum
+import time:      9376 |      11392 |         signal
+import time:      7645 |      19036 |       multiprocessing.process
+import time:       377 |        377 |         copyreg
+import time:       132 |        132 |             _struct
+import time:       206 |        338 |           struct
+import time:       101 |        101 |               _sre
+import time:      2182 |       2182 |                 re._constants
+import time:       496 |       2677 |               re._parser
+import time:       309 |        309 |               re._casefix
+import time:       443 |       3527 |             re._compiler
+import time:       639 |       4166 |           re
+import time:       451 |        451 |           _compat_pickle
+import time:       167 |        167 |           _pickle
+import time:      1374 |       6494 |         pickle
+import time:       622 |        622 |           _socket
+import time:       213 |        213 |             collections.abc
+import time:       150 |        150 |             math
+import time:        90 |         90 |             select
+import time:       752 |       1203 |           selectors
+import time:        85 |         85 |           errno
+import time:       135 |        135 |           array
+import time:      6440 |       8483 |         socket
+import time:     12143 |      27495 |       multiprocessing.reduction
+import time:     16821 |      68661 |     multiprocessing.context
+import time:      2003 |      70664 |   multiprocessing
+import time:       394 |        394 |         warnings
+import time:       258 |        652 |       importlib
+import time:        70 |        721 |     importlib.machinery
+import time:       255 |        255 |       importlib._abc
+import time:       125 |        380 |     importlib.util
+import time:       135 |       1235 |   runpy
+import time:       653 |        653 |     weakref
+import time:        64 |         64 |     atexit
+import time:       118 |        118 |         _locale
+import time:      1203 |       1320 |       locale
+import time:       978 |        978 |       contextlib
+import time:       121 |        121 |       fcntl
+import time:       144 |        144 |       msvcrt
+import time:        55 |         55 |       _posixsubprocess
+import time:      4937 |       7552 |     subprocess
+import time:     16416 |      24683 |   multiprocessing.util
+import time:      9157 |     105738 | multiprocessing.spawn
+import time:       110 |        110 |   _multiprocessing
+import time:        43 |         43 |   _posixshmem
+import time:      6501 |       6653 | multiprocessing.resource_tracker
+import time:       395 |        395 |   copy
+import time:       695 |        695 |     fnmatch
+import time:       124 |        124 |       _winapi
+import time:       211 |        211 |       nt
+import time:       125 |        125 |       nt
+import time:        93 |         93 |       nt
+import time:        87 |         87 |       nt
+import time:        86 |         86 |       nt
+import time:        85 |         85 |       nt
+import time:       118 |        926 |     ntpath
+import time:       306 |        306 |       urllib
+import time:      6333 |       6333 |       ipaddress
+import time:      1505 |       8143 |     urllib.parse
+import time:       951 |      10713 |   pathlib
+import time:       181 |        181 |       zlib
+import time:       355 |        355 |         _compression
+import time:        81 |         81 |         _bz2
+import time:       961 |       1396 |       bz2
+import time:        93 |         93 |         _lzma
+import time:       328 |        421 |       lzma
+import time:      1029 |       3025 |     shutil
+import time:        66 |         66 |         _bisect
+import time:       210 |        275 |       bisect
+import time:      4108 |       4108 |       _random
+import time:       115 |        115 |       _sha2
+import time:       607 |       5103 |     random
+import time:      5099 |      13226 |   tempfile
+import time:       325 |        325 |             token
+import time:        59 |         59 |             _tokenize
+import time:      1292 |       1676 |           tokenize
+import time:       235 |       1910 |         linecache
+import time:      5196 |       5196 |         textwrap
+import time:       806 |       7911 |       traceback
+import time:       292 |        292 |       unittest.util
+import time:       411 |       8613 |     unittest.result
+import time:        68 |         68 |           _heapq
+import time:       217 |        285 |         heapq
+import time:       826 |       1111 |       difflib
+import time:       143 |        143 |               _ast
+import time:     18095 |      18237 |             ast
+import time:        58 |         58 |                 _opcode
+import time:       663 |        720 |               opcode
+import time:      1309 |       2028 |             dis
+import time:     14499 |      34763 |           inspect
+import time:       778 |      35541 |         dataclasses
+import time:       366 |      35906 |       pprint
+import time:       967 |      37983 |     unittest.case
+import time:      4588 |       4588 |     unittest.suite
+import time:       784 |        784 |     unittest.loader
+import time:      1071 |       1071 |         gettext
+import time:      1594 |       2665 |       argparse
+import time:       803 |        803 |         unittest.signals
+import time:      4795 |       5598 |       unittest.runner
+import time:       322 |       8584 |     unittest.main
+import time:       420 |      60969 |   unittest
+import time:      2381 |       2381 |     __future__
+import time:       475 |        475 |         numbers
+import time:       797 |       1272 |       _decimal
+import time:       266 |       1537 |     decimal
+import time:      1853 |       1853 |       _hashlib
+import time:        77 |         77 |       _blake2
+import time:       544 |       2473 |     hashlib
+import time:       574 |        574 |           _json
+import time:       464 |       1037 |         json.scanner
+import time:      8703 |       9740 |       json.decoder
+import time:       531 |        531 |       json.encoder
+import time:       317 |      10586 |     json
+import time:        80 |         80 |       _typing
+import time:      7687 |       7767 |     typing
+import time:       218 |        218 |           _datetime
+import time:       186 |        403 |         datetime
+import time:       150 |        150 |             _wmi
+import time:       772 |        921 |           platform
+import time:        71 |         71 |           _uuid
+import time:       780 |       1772 |         uuid
+import time:       535 |        535 |                 attr._compat
+import time:       270 |        270 |                   unicodedata
+import time:       149 |        149 |                   attr._config
+import time:       261 |        261 |                     attr.exceptions
+import time:       121 |        382 |                   attr.setters
+import time:     15060 |      15860 |                 attr._make
+import time:       232 |      16625 |               attr.converters
+import time:       184 |        184 |               attr.filters
+import time:     14776 |      14776 |               attr.validators
+import time:       424 |        424 |               attr._cmp
+import time:       200 |        200 |               attr._funcs
+import time:       386 |        386 |               attr._next_gen
+import time:      1296 |       1296 |               attr._version_info
+import time:     12931 |      46820 |             attr
+import time:       207 |        207 |             attrs.converters
+import time:       101 |        101 |             attrs.exceptions
+import time:        88 |         88 |             attrs.filters
+import time:        76 |         76 |             attrs.setters
+import time:        81 |         81 |             attrs.validators
+import time:       402 |      47771 |           attrs
+import time:      1063 |       1063 |                   rpds.rpds
+import time:       293 |       1356 |                 rpds
+import time:      7788 |       7788 |                 typing_extensions
+import time:       158 |        158 |                   referencing._attrs
+import time:      9453 |       9611 |                 referencing.exceptions
+import time:       445 |        445 |                 referencing.typing
+import time:     18956 |      38153 |               referencing._core
+import time:       237 |      38389 |             referencing
+import time:        22 |      38410 |           referencing.exceptions
+import time:       409 |        409 |           jsonschema._utils
+import time:      1241 |      87830 |         jsonschema.exceptions
+import time:       165 |        165 |         fqdn
+import time:       284 |        284 |             idna.idnadata
+import time:       200 |        200 |             idna.intranges
+import time:      5927 |       6410 |           idna.core
+import time:       202 |        202 |           idna.package_data
+import time:       267 |       6878 |         idna
+import time:       134 |        134 |         rfc3987
+import time:       102 |        102 |         rfc3986_validator
+import time:        90 |         90 |         rfc3987_syntax
+import time:     17687 |      17687 |           calendar
+import time:      1608 |       1608 |           six
+import time:       733 |      20026 |         rfc3339_validator
+import time:       162 |        162 |         webcolors
+import time:       105 |        105 |         jsonpointer
+import time:        96 |         96 |         uri_template
+import time:       134 |        134 |         isoduration
+import time:       759 |     118649 |       jsonschema._format
+import time:      5014 |       5014 |       jsonschema._types
+import time:      1965 |       1965 |           referencing.jsonschema
+import time:      4788 |       4788 |                 importlib.resources.abc
+import time:       841 |        841 |                 importlib.resources._adapters
+import time:       558 |       6185 |               importlib.resources._common
+import time:       343 |        343 |               importlib.resources._legacy
+import time:       227 |       6755 |             importlib.resources
+import time:       278 |       7032 |           jsonschema_specifications._core
+import time:       887 |        887 |                 binascii
+import time:       298 |        298 |                   zipfile._path.glob
+import time:       643 |        941 |                 zipfile._path
+import time:      8900 |      10727 |               zipfile
+import time:       330 |        330 |               importlib.resources._itertools
+import time:       465 |      11521 |             importlib.resources.readers
+import time:       280 |      11800 |           importlib.readers
+import time:     24356 |      45152 |         jsonschema_specifications
+import time:      6365 |       6365 |           fractions
+import time:       734 |       7098 |         jsonschema._keywords
+import time:       324 |        324 |         jsonschema._legacy_keywords
+import time:       239 |        239 |           jsonschema.protocols
+import time:       195 |        434 |         jsonschema._typing
+import time:     16807 |      69814 |       jsonschema.validators
+import time:       354 |     193829 |     jsonschema
+import time:     28682 |      28682 |     validate
+import time:     34437 |     281689 |   analysis_plan_ref
+import time:     22375 |      22375 |   test_analysis_plan_ref
+import time:     22010 |     411375 | test_resource_peak_history
+import time:       196 |        196 |   _winapi
+import time:     23151 |      23346 | multiprocessing.connection
+import time:      5416 |       5416 |   multiprocessing.popen_fork
+import time:      1919 |       7334 | multiprocessing.popen_spawn_posix
+ok
+test_kill_after_reservation_retains_overlap_before_callback (test_resource_peak_history.ResourcePeakHistoryChecks.test_kill_after_reservation_retains_overlap_before_callback) ... import time: self [us] | cumulative | imported package
+import time:       352 |        352 |   _io
+import time:        46 |         46 |   marshal
+import time:       894 |        894 |   posix
+import time:       442 |       1733 | _frozen_importlib_external
+import time:       181 |        181 |   time
+import time:       131 |        311 | zipimport
+import time:        58 |         58 |     _codecs
+import time:       360 |        417 |   codecs
+import time:       542 |        542 |   encodings.aliases
+import time:      1084 |       2042 | encodings
+import time:       241 |        241 | encodings.utf_8
+import time:       122 |        122 | _signal
+import time:        97 |         97 |     _abc
+import time:       255 |        352 |   abc
+import time:       187 |        538 | io
+import time:        69 |         69 |       _stat
+import time:        61 |        129 |     stat
+import time:      1036 |       1036 |     _collections_abc
+import time:        60 |         60 |       genericpath
+import time:        81 |        140 |     posixpath
+import time:       414 |       1718 |   os
+import time:        91 |         91 |   _sitebuiltins
+import time:       798 |        798 |   encodings.utf_8_sig
+import time:       726 |        726 |   _distutils_hack
+import time:       106 |        106 |   sitecustomize
+import time:       119 |        119 |   usercustomize
+import time:       997 |       4552 | site
+import time:       175 |        175 |             itertools
+import time:       214 |        214 |             keyword
+import time:       159 |        159 |               _operator
+import time:       501 |        659 |             operator
+import time:       253 |        253 |             reprlib
+import time:        92 |         92 |             _collections
+import time:       976 |       2367 |           collections
+import time:       346 |        346 |           types
+import time:        77 |         77 |           _functools
+import time:      1064 |       3852 |         functools
+import time:       276 |        276 |         _weakrefset
+import time:      1248 |       5375 |       threading
+import time:      1957 |       1957 |           enum
+import time:       931 |       2888 |         signal
+import time:      4210 |       7097 |       multiprocessing.process
+import time:       370 |        370 |         copyreg
+import time:       157 |        157 |             _struct
+import time:       388 |        545 |           struct
+import time:        96 |         96 |               _sre
+import time:      1655 |       1655 |                 re._constants
+import time:       453 |       2108 |               re._parser
+import time:       224 |        224 |               re._casefix
+import time:       358 |       2785 |             re._compiler
+import time:       760 |       3545 |           re
+import time:       392 |        392 |           _compat_pickle
+import time:       163 |        163 |           _pickle
+import time:      1097 |       5739 |         pickle
+import time:       647 |        647 |           _socket
+import time:       176 |        176 |             collections.abc
+import time:       100 |        100 |             math
+import time:        81 |         81 |             select
+import time:       854 |       1208 |           selectors
+import time:        96 |         96 |           errno
+import time:       133 |        133 |           array
+import time:      2144 |       4225 |         socket
+import time:      3389 |      13722 |       multiprocessing.reduction
+import time:      3855 |      30047 |     multiprocessing.context
+import time:      2165 |      32212 |   multiprocessing
+import time:       433 |        433 |         warnings
+import time:       278 |        710 |       importlib
+import time:        79 |        788 |     importlib.machinery
+import time:       261 |        261 |       importlib._abc
+import time:       128 |        389 |     importlib.util
+import time:       489 |       1666 |   runpy
+import time:       772 |        772 |     weakref
+import time:        55 |         55 |     atexit
+import time:       108 |        108 |         _locale
+import time:      1079 |       1187 |       locale
+import time:      1196 |       1196 |       contextlib
+import time:       143 |        143 |       fcntl
+import time:       119 |        119 |       msvcrt
+import time:        40 |         40 |       _posixsubprocess
+import time:       873 |       3556 |     subprocess
+import time:      5155 |       9536 |   multiprocessing.util
+import time:      2907 |      46320 | multiprocessing.spawn
+import time:       101 |        101 |   _multiprocessing
+import time:        41 |         41 |   _posixshmem
+import time:      2884 |       3025 | multiprocessing.resource_tracker
+import time:       329 |        329 |   copy
+import time:      8317 |       8317 |     fnmatch
+import time:       143 |        143 |       _winapi
+import time:       137 |        137 |       nt
+import time:        98 |         98 |       nt
+import time:        92 |         92 |       nt
+import time:        89 |         89 |       nt
+import time:        89 |         89 |       nt
+import time:        88 |         88 |       nt
+import time:       114 |        847 |     ntpath
+import time:       216 |        216 |       urllib
+import time:      2004 |       2004 |       ipaddress
+import time:      1689 |       3908 |     urllib.parse
+import time:       917 |      13988 |   pathlib
+import time:       157 |        157 |       zlib
+import time:       435 |        435 |         _compression
+import time:        76 |         76 |         _bz2
+import time:       447 |        956 |       bz2
+import time:       136 |        136 |         _lzma
+import time:       319 |        454 |       lzma
+import time:       991 |       2557 |     shutil
+import time:        65 |         65 |         _bisect
+import time:       196 |        261 |       bisect
+import time:        46 |         46 |       _random
+import time:        65 |         65 |       _sha2
+import time:       545 |        915 |     random
+import time:       884 |       4354 |   tempfile
+import time:       284 |        284 |             token
+import time:        56 |         56 |             _tokenize
+import time:      1322 |       1662 |           tokenize
+import time:       214 |       1875 |         linecache
+import time:      1276 |       1276 |         textwrap
+import time:       776 |       3925 |       traceback
+import time:       357 |        357 |       unittest.util
+import time:       355 |       4636 |     unittest.result
+import time:        95 |         95 |           _heapq
+import time:       706 |        800 |         heapq
+import time:      1115 |       1915 |       difflib
+import time:       118 |        118 |               _ast
+import time:      1839 |       1957 |             ast
+import time:        93 |         93 |                 _opcode
+import time:       551 |        643 |               opcode
+import time:      1072 |       1715 |             dis
+import time:      4233 |       7904 |           inspect
+import time:       845 |       8748 |         dataclasses
+import time:       992 |       9740 |       pprint
+import time:      1130 |      12783 |     unittest.case
+import time:       408 |        408 |     unittest.suite
+import time:       874 |        874 |     unittest.loader
+import time:       992 |        992 |         gettext
+import time:      1542 |       2534 |       argparse
+import time:       167 |        167 |         unittest.signals
+import time:       451 |        618 |       unittest.runner
+import time:       343 |       3494 |     unittest.main
+import time:       322 |      22515 |   unittest
+import time:       321 |        321 |     __future__
+import time:       535 |        535 |         numbers
+import time:       645 |       1179 |       _decimal
+import time:       194 |       1372 |     decimal
+import time:      2161 |       2161 |       _hashlib
+import time:       123 |        123 |       _blake2
+import time:       328 |       2611 |     hashlib
+import time:       225 |        225 |           _json
+import time:       414 |        639 |         json.scanner
+import time:       684 |       1322 |       json.decoder
+import time:       653 |        653 |       json.encoder
+import time:       302 |       2276 |     json
+import time:        67 |         67 |       _typing
+import time:      3314 |       3381 |     typing
+import time:       165 |        165 |           _datetime
+import time:       178 |        343 |         datetime
+import time:       572 |        572 |             _wmi
+import time:       666 |       1238 |           platform
+import time:        75 |         75 |           _uuid
+import time:       724 |       2036 |         uuid
+import time:       574 |        574 |                 attr._compat
+import time:       295 |        295 |                   unicodedata
+import time:       189 |        189 |                   attr._config
+import time:       325 |        325 |                     attr.exceptions
+import time:       130 |        454 |                   attr.setters
+import time:      7469 |       8405 |                 attr._make
+import time:       203 |       9181 |               attr.converters
+import time:       227 |        227 |               attr.filters
+import time:      5931 |       5931 |               attr.validators
+import time:       205 |        205 |               attr._cmp
+import time:       182 |        182 |               attr._funcs
+import time:       179 |        179 |               attr._next_gen
+import time:       923 |        923 |               attr._version_info
+import time:       449 |      17273 |             attr
+import time:       188 |        188 |             attrs.converters
+import time:       157 |        157 |             attrs.exceptions
+import time:        98 |         98 |             attrs.filters
+import time:        84 |         84 |             attrs.setters
+import time:        85 |         85 |             attrs.validators
+import time:       388 |      18269 |           attrs
+import time:      1125 |       1125 |                   rpds.rpds
+import time:       416 |       1540 |                 rpds
+import time:      3898 |       3898 |                 typing_extensions
+import time:       146 |        146 |                   referencing._attrs
+import time:      4795 |       4941 |                 referencing.exceptions
+import time:       374 |        374 |                 referencing.typing
+import time:     19015 |      29766 |               referencing._core
+import time:       244 |      30009 |             referencing
+import time:        20 |      30029 |           referencing.exceptions
+import time:       426 |        426 |           jsonschema._utils
+import time:      1506 |      50228 |         jsonschema.exceptions
+import time:       156 |        156 |         fqdn
+import time:       262 |        262 |             idna.idnadata
+import time:       130 |        130 |             idna.intranges
+import time:      1486 |       1878 |           idna.core
+import time:       147 |        147 |           idna.package_data
+import time:       342 |       2366 |         idna
+import time:       125 |        125 |         rfc3987
+import time:       146 |        146 |         rfc3986_validator
+import time:        99 |         99 |         rfc3987_syntax
+import time:      1238 |       1238 |           calendar
+import time:      1471 |       1471 |           six
+import time:       748 |       3456 |         rfc3339_validator
+import time:       150 |        150 |         webcolors
+import time:       103 |        103 |         jsonpointer
+import time:       133 |        133 |         uri_template
+import time:        94 |         94 |         isoduration
+import time:       732 |      60160 |       jsonschema._format
+import time:       827 |        827 |       jsonschema._types
+import time:      1854 |       1854 |           referencing.jsonschema
+import time:       471 |        471 |                 importlib.resources.abc
+import time:       443 |        443 |                 importlib.resources._adapters
+import time:       480 |       1393 |               importlib.resources._common
+import time:       270 |        270 |               importlib.resources._legacy
+import time:       206 |       1867 |             importlib.resources
+import time:       219 |       2086 |           jsonschema_specifications._core
+import time:       114 |        114 |                 binascii
+import time:       201 |        201 |                   zipfile._path.glob
+import time:       474 |        675 |                 zipfile._path
+import time:      1304 |       2092 |               zipfile
+import time:       132 |        132 |               importlib.resources._itertools
+import time:       338 |       2561 |             importlib.resources.readers
+import time:       119 |       2680 |           importlib.readers
+import time:      5385 |      12003 |         jsonschema_specifications
+import time:      1740 |       1740 |           fractions
+import time:       345 |       2084 |         jsonschema._keywords
+import time:       306 |        306 |         jsonschema._legacy_keywords
+import time:       248 |        248 |           jsonschema.protocols
+import time:       329 |        576 |         jsonschema._typing
+import time:      8958 |      23925 |       jsonschema.validators
+import time:       396 |      85306 |     jsonschema
+import time:     10523 |      10523 |     validate
+import time:     12435 |     118223 |   analysis_plan_ref
+import time:     14578 |      14578 |   test_analysis_plan_ref
+import time:     13965 |     187949 | test_resource_peak_history
+import time:       183 |        183 |   _winapi
+import time:     10900 |      11083 | multiprocessing.connection
+import time:      1167 |       1167 |   multiprocessing.popen_fork
+import time:       970 |       2136 | multiprocessing.popen_spawn_posix
+ok
+test_kill_before_reservation_write_has_no_callback_and_fails_closed (test_resource_peak_history.ResourcePeakHistoryChecks.test_kill_before_reservation_write_has_no_callback_and_fails_closed) ... import time: self [us] | cumulative | imported package
+import time:       365 |        365 |   _io
+import time:        48 |         48 |   marshal
+import time:       470 |        470 |   posix
+import time:       508 |       1389 | _frozen_importlib_external
+import time:       149 |        149 |   time
+import time:       164 |        312 | zipimport
+import time:        98 |         98 |     _codecs
+import time:       406 |        504 |   codecs
+import time:       562 |        562 |   encodings.aliases
+import time:      1267 |       2332 | encodings
+import time:       242 |        242 | encodings.utf_8
+import time:       151 |        151 | _signal
+import time:        43 |         43 |     _abc
+import time:       198 |        240 |   abc
+import time:       181 |        421 | io
+import time:        67 |         67 |       _stat
+import time:       164 |        231 |     stat
+import time:      1266 |       1266 |     _collections_abc
+import time:        66 |         66 |       genericpath
+import time:        92 |        158 |     posixpath
+import time:       428 |       2081 |   os
+import time:        95 |         95 |   _sitebuiltins
+import time:       429 |        429 |   encodings.utf_8_sig
+import time:       898 |        898 |   _distutils_hack
+import time:       264 |        264 |   sitecustomize
+import time:        84 |         84 |   usercustomize
+import time:       934 |       4782 | site
+import time:       370 |        370 |             itertools
+import time:       226 |        226 |             keyword
+import time:       148 |        148 |               _operator
+import time:       800 |        947 |             operator
+import time:       273 |        273 |             reprlib
+import time:        88 |         88 |             _collections
+import time:      1061 |       2963 |           collections
+import time:       404 |        404 |           types
+import time:        79 |         79 |           _functools
+import time:      1004 |       4449 |         functools
+import time:       258 |        258 |         _weakrefset
+import time:      1647 |       6353 |       threading
+import time:      2002 |       2002 |           enum
+import time:      2581 |       4583 |         signal
+import time:      6112 |      10695 |       multiprocessing.process
+import time:       617 |        617 |         copyreg
+import time:       698 |        698 |             _struct
+import time:       192 |        889 |           struct
+import time:       101 |        101 |               _sre
+import time:      1871 |       1871 |                 re._constants
+import time:       669 |       2539 |               re._parser
+import time:       245 |        245 |               re._casefix
+import time:       586 |       3469 |             re._compiler
+import time:       728 |       4197 |           re
+import time:       359 |        359 |           _compat_pickle
+import time:       195 |        195 |           _pickle
+import time:      1394 |       7032 |         pickle
+import time:       342 |        342 |           _socket
+import time:       223 |        223 |             collections.abc
+import time:        99 |         99 |             math
+import time:       125 |        125 |             select
+import time:       673 |       1119 |           selectors
+import time:        82 |         82 |           errno
+import time:       212 |        212 |           array
+import time:      2242 |       3995 |         socket
+import time:      4397 |      16039 |       multiprocessing.reduction
+import time:      4414 |      37499 |     multiprocessing.context
+import time:      3261 |      40760 |   multiprocessing
+import time:       350 |        350 |         warnings
+import time:       295 |        644 |       importlib
+import time:        67 |        711 |     importlib.machinery
+import time:       232 |        232 |       importlib._abc
+import time:       122 |        354 |     importlib.util
+import time:       125 |       1189 |   runpy
+import time:       547 |        547 |     weakref
+import time:        55 |         55 |     atexit
+import time:       152 |        152 |         _locale
+import time:      1027 |       1178 |       locale
+import time:      1010 |       1010 |       contextlib
+import time:       140 |        140 |       fcntl
+import time:       123 |        123 |       msvcrt
+import time:        41 |         41 |       _posixsubprocess
+import time:       827 |       3316 |     subprocess
+import time:     18424 |      22341 |   multiprocessing.util
+import time:      2997 |      67284 | multiprocessing.spawn
+import time:       110 |        110 |   _multiprocessing
+import time:        47 |         47 |   _posixshmem
+import time:      2821 |       2976 | multiprocessing.resource_tracker
+import time:       380 |        380 |   copy
+import time:       234 |        234 |     fnmatch
+import time:       119 |        119 |       _winapi
+import time:       101 |        101 |       nt
+import time:        94 |         94 |       nt
+import time:       126 |        126 |       nt
+import time:       114 |        114 |       nt
+import time:        90 |         90 |       nt
+import time:        87 |         87 |       nt
+import time:        98 |        826 |     ntpath
+import time:       200 |        200 |       urllib
+import time:      1706 |       1706 |       ipaddress
+import time:      1321 |       3225 |     urllib.parse
+import time:       928 |       5211 |   pathlib
+import time:       179 |        179 |       zlib
+import time:       292 |        292 |         _compression
+import time:        69 |         69 |         _bz2
+import time:       446 |        805 |       bz2
+import time:        89 |         89 |         _lzma
+import time:       355 |        443 |       lzma
+import time:       818 |       2243 |     shutil
+import time:       198 |        198 |         _bisect
+import time:       204 |        401 |       bisect
+import time:        54 |         54 |       _random
+import time:        70 |         70 |       _sha2
+import time:       551 |       1075 |     random
+import time:       802 |       4118 |   tempfile
+import time:       548 |        548 |             token
+import time:        61 |         61 |             _tokenize
+import time:      1277 |       1885 |           tokenize
+import time:       221 |       2105 |         linecache
+import time:      1223 |       1223 |         textwrap
+import time:       755 |       4083 |       traceback
+import time:       365 |        365 |       unittest.util
+import time:       392 |       4839 |     unittest.result
+import time:        81 |         81 |           _heapq
+import time:       284 |        365 |         heapq
+import time:      1775 |       2139 |       difflib
+import time:       125 |        125 |               _ast
+import time:      2126 |       2251 |             ast
+import time:       215 |        215 |                 _opcode
+import time:       777 |        992 |               opcode
+import time:      1159 |       2150 |             dis
+import time:      4269 |       8668 |           inspect
+import time:      1234 |       9902 |         dataclasses
+import time:       542 |      10443 |       pprint
+import time:      1035 |      13616 |     unittest.case
+import time:       402 |        402 |     unittest.suite
+import time:      1039 |       1039 |     unittest.loader
+import time:      1317 |       1317 |         gettext
+import time:      1547 |       2863 |       argparse
+import time:       166 |        166 |         unittest.signals
+import time:       483 |        649 |       unittest.runner
+import time:       330 |       3840 |     unittest.main
+import time:       335 |      24069 |   unittest
+import time:       281 |        281 |     __future__
+import time:       748 |        748 |         numbers
+import time:       582 |       1330 |       _decimal
+import time:       182 |       1511 |     decimal
+import time:      2157 |       2157 |       _hashlib
+import time:       101 |        101 |       _blake2
+import time:       403 |       2659 |     hashlib
+import time:       206 |        206 |           _json
+import time:       835 |       1040 |         json.scanner
+import time:       775 |       1815 |       json.decoder
+import time:       533 |        533 |       json.encoder
+import time:       296 |       2642 |     json
+import time:        67 |         67 |       _typing
+import time:      3304 |       3370 |     typing
+import time:       148 |        148 |           _datetime
+import time:       219 |        367 |         datetime
+import time:       134 |        134 |             _wmi
+import time:       717 |        851 |           platform
+import time:        75 |         75 |           _uuid
+import time:       721 |       1646 |         uuid
+import time:       465 |        465 |                 attr._compat
+import time:       267 |        267 |                   unicodedata
+import time:       139 |        139 |                   attr._config
+import time:       258 |        258 |                     attr.exceptions
+import time:       176 |        434 |                   attr.setters
+import time:      6810 |       7648 |                 attr._make
+import time:       205 |       8317 |               attr.converters
+import time:       180 |        180 |               attr.filters
+import time:     17823 |      17823 |               attr.validators
+import time:       208 |        208 |               attr._cmp
+import time:       240 |        240 |               attr._funcs
+import time:       188 |        188 |               attr._next_gen
+import time:      1473 |       1473 |               attr._version_info
+import time:       634 |      29061 |             attr
+import time:       278 |        278 |             attrs.converters
+import time:        99 |         99 |             attrs.exceptions
+import time:       101 |        101 |             attrs.filters
+import time:        94 |         94 |             attrs.setters
+import time:       109 |        109 |             attrs.validators
+import time:       426 |      30167 |           attrs
+import time:      2109 |       2109 |                   rpds.rpds
+import time:       215 |       2324 |                 rpds
+import time:      5705 |       5705 |                 typing_extensions
+import time:       155 |        155 |                   referencing._attrs
+import time:      5793 |       5948 |                 referencing.exceptions
+import time:       377 |        377 |                 referencing.typing
+import time:      6837 |      21189 |               referencing._core
+import time:       214 |      21403 |             referencing
+import time:        20 |      21422 |           referencing.exceptions
+import time:       340 |        340 |           jsonschema._utils
+import time:      1238 |      53166 |         jsonschema.exceptions
+import time:       157 |        157 |         fqdn
+import time:       294 |        294 |             idna.idnadata
+import time:       117 |        117 |             idna.intranges
+import time:      1290 |       1699 |           idna.core
+import time:       119 |        119 |           idna.package_data
+import time:       315 |       2133 |         idna
+import time:       173 |        173 |         rfc3987
+import time:       105 |        105 |         rfc3986_validator
+import time:        95 |         95 |         rfc3987_syntax
+import time:      1157 |       1157 |           calendar
+import time:      2159 |       2159 |           six
+import time:       754 |       4069 |         rfc3339_validator
+import time:       155 |        155 |         webcolors
+import time:       254 |        254 |         jsonpointer
+import time:       134 |        134 |         uri_template
+import time:        99 |         99 |         isoduration
+import time:       746 |      63292 |       jsonschema._format
+import time:       859 |        859 |       jsonschema._types
+import time:      2499 |       2499 |           referencing.jsonschema
+import time:       973 |        973 |                 importlib.resources.abc
+import time:       493 |        493 |                 importlib.resources._adapters
+import time:       773 |       2238 |               importlib.resources._common
+import time:       275 |        275 |               importlib.resources._legacy
+import time:       313 |       2825 |             importlib.resources
+import time:       276 |       3101 |           jsonschema_specifications._core
+import time:       146 |        146 |                 binascii
+import time:       206 |        206 |                   zipfile._path.glob
+import time:       521 |        726 |                 zipfile._path
+import time:      1594 |       2464 |               zipfile
+import time:       127 |        127 |               importlib.resources._itertools
+import time:       682 |       3273 |             importlib.resources.readers
+import time:       173 |       3445 |           importlib.readers
+import time:      7124 |      16168 |         jsonschema_specifications
+import time:      2027 |       2027 |           fractions
+import time:       757 |       2783 |         jsonschema._keywords
+import time:       322 |        322 |         jsonschema._legacy_keywords
+import time:       320 |        320 |           jsonschema.protocols
+import time:       191 |        511 |         jsonschema._typing
+import time:     10266 |      30048 |       jsonschema.validators
+import time:       320 |      94517 |     jsonschema
+import time:     11154 |      11154 |     validate
+import time:     11330 |     127463 |   analysis_plan_ref
+import time:     24981 |      24981 |   test_analysis_plan_ref
+import time:      8904 |     195123 | test_resource_peak_history
+import time:       185 |        185 |   _winapi
+import time:     14014 |      14199 | multiprocessing.connection
+import time:      1588 |       1588 |   multiprocessing.popen_fork
+import time:       971 |       2558 | multiprocessing.popen_spawn_posix
+ok
+test_large_estimate_increases_admission_but_not_original_reservation_history (test_resource_peak_history.ResourcePeakHistoryChecks.test_large_estimate_increases_admission_but_not_original_reservation_history) ... ok
+test_legacy_held_load_is_visible_only_at_new_observation_boundary (test_resource_peak_history.ResourcePeakHistoryChecks.test_legacy_held_load_is_visible_only_at_new_observation_boundary) ... ok
+test_observation_binding_dimensions_and_arithmetic_fail_closed (test_resource_peak_history.ResourcePeakHistoryChecks.test_observation_binding_dimensions_and_arithmetic_fail_closed) ... ok
+test_old_completed_attempts_have_no_invented_peak_and_are_never_rewritten (test_resource_peak_history.ResourcePeakHistoryChecks.test_old_completed_attempts_have_no_invented_peak_and_are_never_rewritten) ... ok
+test_opening_balances_are_not_reconstructed_history (test_resource_peak_history.ResourcePeakHistoryChecks.test_opening_balances_are_not_reconstructed_history) ... ok
+test_reservation_history_preserves_exact_decimal_sums (test_resource_peak_history.ResourcePeakHistoryChecks.test_reservation_history_preserves_exact_decimal_sums) ... ok
+test_two_ledger_objects_threads_overlap_then_reopen_and_replay (test_resource_peak_history.ResourcePeakHistoryChecks.test_two_ledger_objects_threads_overlap_then_reopen_and_replay) ... ok
+test_two_spawned_processes_overlap_and_survive_reopen (test_resource_peak_history.ResourcePeakHistoryChecks.test_two_spawned_processes_overlap_and_survive_reopen) ... import time:     12716 |      12716 | multiprocessing.synchronize
+import time: self [us] | cumulative | imported package
+import time:      1082 |       1082 |   _io
+import time:        62 |         62 |   marshal
+import time:       748 |        748 |   posix
+import time:       506 |       2396 | _frozen_importlib_external
+import time:       146 |        146 |   time
+import time:       132 |        277 | zipimport
+import time:        61 |         61 |     _codecs
+import time:       450 |        510 |   codecs
+import time:       847 |        847 |   encodings.aliases
+import time:      1112 |       2468 | encodings
+import time:       290 |        290 | encodings.utf_8
+import time:       137 |        137 | _signal
+import time:        45 |         45 |     _abc
+import time:       154 |        198 |   abc
+import time:       553 |        751 | io
+import time:        83 |         83 |       _stat
+import time:       128 |        210 |     stat
+import time:      1596 |       1596 |     _collections_abc
+import time:       101 |        101 |       genericpath
+import time:       311 |        412 |     posixpath
+import time:       906 |       3123 |   os
+import time:        89 |         89 |   _sitebuiltins
+import time:       411 |        411 |   encodings.utf_8_sig
+import time:       683 |        683 |   _distutils_hack
+import time:        77 |         77 |   sitecustomize
+import time:        94 |         94 |   usercustomize
+import time:      1116 |       5590 | site
+import time:       146 |        146 |             itertools
+import time:       126 |        126 |             keyword
+import time:        89 |         89 |               _operator
+import time:       515 |        603 |             operator
+import time:       198 |        198 |             reprlib
+import time:       101 |        101 |             _collections
+import time:       779 |       1951 |           collections
+import time:       638 |        638 |           types
+import time:        88 |         88 |           _functools
+import time:       780 |       3455 |         functools
+import time:       297 |        297 |         _weakrefset
+import time:       699 |       4450 |       threading
+import time:      2983 |       2983 |           enum
+import time:      1000 |       3983 |         signal
+import time:      4286 |       8269 |       multiprocessing.process
+import time:       390 |        390 |         copyreg
+import time:       126 |        126 |             _struct
+import time:       191 |        316 |           struct
+import time:       104 |        104 |               _sre
+import time:      1809 |       1809 |                 re._constants
+import time:       551 |       2359 |               re._parser
+import time:       186 |        186 |               re._casefix
+import time:       416 |       3063 |             re._compiler
+import time:       674 |       3737 |           re
+import time:      5119 |       5119 |           _compat_pickle
+import time:       221 |        221 |           _pickle
+import time:      1513 |      10904 |         pickle
+import time:       387 |        387 |           _socket
+import time:       205 |        205 |             collections.abc
+import time:       104 |        104 |             math
+import time:        91 |         91 |             select
+import time:       918 |       1317 |           selectors
+import time:       135 |        135 |           errno
+import time:       130 |        130 |           array
+import time:      2348 |       4315 |         socket
+import time:      3187 |      18794 |       multiprocessing.reduction
+import time:      3791 |      35302 |     multiprocessing.context
+import time:      1698 |      37000 |   multiprocessing
+import time:       435 |        435 |         warnings
+import time:       379 |        814 |       importlib
+import time:        77 |        890 |     importlib.machinery
+import time:       220 |        220 |       importlib._abc
+import time:       132 |        351 |     importlib.util
+import time:       133 |       1373 |   runpy
+import time:       633 |        633 |     weakref
+import time:        59 |         59 |     atexit
+import time:       112 |        112 |         _locale
+import time:      1359 |       1470 |       locale
+import time:      1180 |       1180 |       contextlib
+import time:       120 |        120 |       fcntl
+import time:       145 |        145 |       msvcrt
+import time:        56 |         56 |       _posixsubprocess
+import time:      1208 |       4177 |     subprocess
+import time:     14381 |      19248 |   multiprocessing.util
+import time:      4989 |      62609 | multiprocessing.spawn
+import time:       106 |        106 |   _multiprocessing
+import time:        50 |         50 |   _posixshmem
+import time:      2580 |       2735 | multiprocessing.resource_tracker
+import time:       335 |        335 |   copy
+import time:       316 |        316 |     fnmatch
+import time:       173 |        173 |       _winapi
+import time:       114 |        114 |       nt
+import time:       104 |        104 |       nt
+import time:        98 |         98 |       nt
+import time:       201 |        201 |       nt
+import time:       101 |        101 |       nt
+import time:        95 |         95 |       nt
+import time:       111 |        994 |     ntpath
+import time:       189 |        189 |       urllib
+import time:      2411 |       2411 |       ipaddress
+import time:      2778 |       5377 |     urllib.parse
+import time: self [us] | cumulative | imported package
+import time:       553 |        553 |   _io
+import time:        60 |         60 |   marshal
+import time:      2243 |       8928 |   pathlib
+import time:      1030 |       1030 |   posix
+import time:       178 |        178 |       zlib
+import time:       451 |        451 |         _compression
+import time:        81 |         81 |         _bz2
+import time:       653 |       1184 |       bz2
+import time:        99 |         99 |         _lzma
+import time:       466 |        565 |       lzma
+import time:      1055 |       2981 |     shutil
+import time:      3945 |       5586 | _frozen_importlib_external
+import time:        69 |         69 |         _bisect
+import time:       216 |        285 |       bisect
+import time:        83 |         83 |       _random
+import time:        75 |         75 |       _sha2
+import time:       584 |       1025 |     random
+import time:       176 |        176 |   time
+import time:       390 |        565 | zipimport
+import time:      1082 |       5087 |   tempfile
+import time:        73 |         73 |     _codecs
+import time:      1391 |       1464 |   codecs
+import time:       690 |        690 |             token
+import time:        67 |         67 |             _tokenize
+import time:      2950 |       3706 |           tokenize
+import time:       436 |       4142 |         linecache
+import time:       991 |        991 |   encodings.aliases
+import time:      5846 |       8299 | encodings
+import time:      2688 |       2688 |         textwrap
+import time:       417 |        417 | encodings.utf_8
+import time:       181 |        181 | _signal
+import time:      1318 |       8147 |       traceback
+import time:        52 |         52 |     _abc
+import time:       227 |        279 |   abc
+import time:       943 |        943 |       unittest.util
+import time:       760 |       9848 |     unittest.result
+import time:        82 |         82 |           _heapq
+import time:       314 |        395 |         heapq
+import time:      1271 |       1666 |       difflib
+import time:       159 |        159 |               _ast
+import time:      1983 |       2141 |             ast
+import time:        65 |         65 |                 _opcode
+import time:       849 |        913 |               opcode
+import time:     14022 |      14301 | io
+import time:       109 |        109 |       _stat
+import time:        64 |        173 |     stat
+import time:      1668 |       2581 |             dis
+import time:      1206 |       1206 |     _collections_abc
+import time:        64 |         64 |       genericpath
+import time:       100 |        164 |     posixpath
+import time:       582 |       2124 |   os
+import time:       125 |        125 |   _sitebuiltins
+import time:       433 |        433 |   encodings.utf_8_sig
+import time:      4852 |       9574 |           inspect
+import time:      1452 |      11025 |         dataclasses
+import time:      3638 |      14662 |       pprint
+import time:       820 |        820 |   _distutils_hack
+import time:       107 |        107 |   sitecustomize
+import time:        64 |         64 |   usercustomize
+import time:       870 |       4540 | site
+import time:      1705 |      18033 |     unittest.case
+import time:       604 |        604 |     unittest.suite
+import time:      1023 |       1023 |     unittest.loader
+import time:      1453 |       1453 |         gettext
+import time:      1786 |       3239 |       argparse
+import time:       187 |        187 |         unittest.signals
+import time:       472 |        658 |       unittest.runner
+import time:       363 |       4260 |     unittest.main
+import time:       475 |      34241 |   unittest
+import time:       230 |        230 |             itertools
+import time:       356 |        356 |             keyword
+import time:       118 |        118 |               _operator
+import time:       526 |        644 |             operator
+import time:       278 |        278 |             reprlib
+import time:       154 |        154 |             _collections
+import time:       287 |        287 |     __future__
+import time:       977 |        977 |         numbers
+import time:       999 |       1976 |       _decimal
+import time:       457 |       2433 |     decimal
+import time:     15531 |      17191 |           collections
+import time:       424 |        424 |           types
+import time:       500 |        500 |           _functools
+import time:      1903 |       1903 |       _hashlib
+import time:        91 |         91 |       _blake2
+import time:       427 |       2420 |     hashlib
+import time:       938 |      19052 |         functools
+import time:       291 |        291 |         _weakrefset
+import time:       996 |      20338 |       threading
+import time:       212 |        212 |           _json
+import time:       576 |        787 |         json.scanner
+import time:       733 |       1519 |       json.decoder
+import time:       707 |        707 |       json.encoder
+import time:       301 |       2526 |     json
+import time:        66 |         66 |       _typing
+import time:      3817 |       3883 |     typing
+import time:       125 |        125 |           _datetime
+import time:       135 |        259 |         datetime
+import time:       111 |        111 |             _wmi
+import time:       967 |       1078 |           platform
+import time:        65 |         65 |           _uuid
+import time:       893 |       2035 |         uuid
+import time:     12048 |      12048 |                 attr._compat
+import time:       264 |        264 |                   unicodedata
+import time:       151 |        151 |                   attr._config
+import time:       349 |        349 |                     attr.exceptions
+import time:       141 |        489 |                   attr.setters
+import time:      1969 |       1969 |           enum
+import time:     10577 |      11480 |                 attr._make
+import time:       155 |      23682 |               attr.converters
+import time:       221 |        221 |               attr.filters
+import time:      8975 |      10944 |         signal
+import time:     23034 |      33978 |       multiprocessing.process
+import time:       443 |        443 |         copyreg
+import time:       128 |        128 |             _struct
+import time:       171 |        299 |           struct
+import time:       101 |        101 |               _sre
+import time:      8312 |       8312 |               attr.validators
+import time:       278 |        278 |               attr._cmp
+import time:       198 |        198 |               attr._funcs
+import time:       237 |        237 |               attr._next_gen
+import time:       947 |        947 |               attr._version_info
+import time:       391 |      34261 |             attr
+import time:       199 |        199 |             attrs.converters
+import time:       108 |        108 |             attrs.exceptions
+import time:       293 |        293 |             attrs.filters
+import time:       134 |        134 |             attrs.setters
+import time:        98 |         98 |             attrs.validators
+import time:       337 |      35427 |           attrs
+import time:      1193 |       1193 |                   rpds.rpds
+import time:       310 |       1502 |                 rpds
+import time:      9989 |       9989 |                 re._constants
+import time:       875 |      10864 |               re._parser
+import time:       192 |        192 |               re._casefix
+import time:       418 |      11573 |             re._compiler
+import time:      4560 |       4560 |                 typing_extensions
+import time:       594 |      12167 |           re
+import time:       163 |        163 |                   referencing._attrs
+import time:       532 |        532 |           _compat_pickle
+import time:       164 |        164 |           _pickle
+import time:      1169 |      14328 |         pickle
+import time:       312 |        312 |           _socket
+import time:       213 |        213 |             collections.abc
+import time:       103 |        103 |             math
+import time:        80 |         80 |             select
+import time:       694 |       1087 |           selectors
+import time:        82 |         82 |           errno
+import time:       135 |        135 |           array
+import time:      2762 |       4377 |         socket
+import time:      3395 |      22541 |       multiprocessing.reduction
+import time:      3696 |      80552 |     multiprocessing.context
+import time:      1906 |      82457 |   multiprocessing
+import time:      7891 |       8053 |                 referencing.exceptions
+import time:       397 |        397 |                 referencing.typing
+import time:      6355 |      20865 |               referencing._core
+import time:       209 |      21074 |             referencing
+import time:        21 |      21094 |           referencing.exceptions
+import time:       407 |        407 |           jsonschema._utils
+import time:      1406 |      58333 |         jsonschema.exceptions
+import time:       162 |        162 |         fqdn
+import time:       233 |        233 |             idna.idnadata
+import time:       373 |        373 |         warnings
+import time:       281 |        654 |       importlib
+import time:       126 |        126 |             idna.intranges
+import time:        71 |        725 |     importlib.machinery
+import time:       201 |        201 |       importlib._abc
+import time:       122 |        322 |     importlib.util
+import time:       235 |       1281 |   runpy
+import time:      1611 |       1969 |           idna.core
+import time:       320 |        320 |           idna.package_data
+import time:       342 |       2629 |         idna
+import time:       290 |        290 |         rfc3987
+import time:       152 |        152 |         rfc3986_validator
+import time:       106 |        106 |         rfc3987_syntax
+import time:      1307 |       1307 |           calendar
+import time:      1526 |       1526 |           six
+import time:      1009 |       3842 |         rfc3339_validator
+import time:       153 |        153 |         webcolors
+import time:       113 |        113 |         jsonpointer
+import time:       104 |        104 |         uri_template
+import time:       100 |        100 |         isoduration
+import time:       743 |      69015 |       jsonschema._format
+import time:       810 |        810 |       jsonschema._types
+import time:      2042 |       2042 |           referencing.jsonschema
+import time:       540 |        540 |                 importlib.resources.abc
+import time:       359 |        359 |                 importlib.resources._adapters
+import time:       469 |       1366 |               importlib.resources._common
+import time:       248 |        248 |               importlib.resources._legacy
+import time:       176 |       1789 |             importlib.resources
+import time:       237 |       2026 |           jsonschema_specifications._core
+import time:      4637 |       4637 |     weakref
+import time:        63 |         63 |     atexit
+import time:       117 |        117 |                 binascii
+import time:       146 |        146 |         _locale
+import time:       157 |        157 |                   zipfile._path.glob
+import time:       498 |        654 |                 zipfile._path
+import time:      1475 |       2245 |               zipfile
+import time:       124 |        124 |               importlib.resources._itertools
+import time:      1344 |       1489 |       locale
+import time:       349 |       2717 |             importlib.resources.readers
+import time:       134 |       2850 |           importlib.readers
+import time:      1151 |       1151 |       contextlib
+import time:       110 |        110 |       fcntl
+import time:       115 |        115 |       msvcrt
+import time:        37 |         37 |       _posixsubprocess
+import time:       787 |       3686 |     subprocess
+import time:      6160 |      13076 |         jsonschema_specifications
+import time:     12461 |      20846 |   multiprocessing.util
+import time:     10952 |     115535 | multiprocessing.spawn
+import time:      1974 |       1974 |           fractions
+import time:       402 |       2375 |         jsonschema._keywords
+import time:       333 |        333 |         jsonschema._legacy_keywords
+import time:       508 |        508 |           jsonschema.protocols
+import time:       235 |        742 |         jsonschema._typing
+import time:       112 |        112 |   _multiprocessing
+import time:        43 |         43 |   _posixshmem
+import time:      9744 |       9898 | multiprocessing.resource_tracker
+import time:     23747 |      40270 |       jsonschema.validators
+import time:       265 |     110359 |     jsonschema
+import time:       342 |        342 |   copy
+import time:       325 |        325 |     fnmatch
+import time:       124 |        124 |       _winapi
+import time:        98 |         98 |       nt
+import time:        88 |         88 |       nt
+import time:        89 |         89 |       nt
+import time:        86 |         86 |       nt
+import time:        87 |         87 |       nt
+import time:        83 |         83 |       nt
+import time:       104 |        755 |     ntpath
+import time:     10822 |      10822 |     validate
+import time:       203 |        203 |       urllib
+import time:     13269 |     145995 |   analysis_plan_ref
+import time:      1628 |       1628 |       ipaddress
+import time:      5598 |       7428 |     urllib.parse
+import time:      5324 |      13830 |   pathlib
+import time:       140 |        140 |       zlib
+import time:       288 |        288 |         _compression
+import time:        77 |         77 |         _bz2
+import time:       418 |        782 |       bz2
+import time:       117 |        117 |         _lzma
+import time:      4926 |       5043 |       lzma
+import time:     14940 |      14940 |   test_analysis_plan_ref
+import time:      8974 |     218497 | test_resource_peak_history
+import time:       890 |       6854 |     shutil
+import time:       107 |        107 |         _bisect
+import time:       218 |        325 |       bisect
+import time:        50 |         50 |       _random
+import time:        67 |         67 |       _sha2
+import time:       675 |       1114 |     random
+import time:       933 |       8900 |   tempfile
+import time:       264 |        264 |             token
+import time:        52 |         52 |             _tokenize
+import time:      5517 |       5832 |           tokenize
+import time:       187 |       6019 |         linecache
+import time:      1512 |       1512 |         textwrap
+import time:       949 |       8478 |       traceback
+import time:       435 |        435 |       unittest.util
+import time:       717 |       9630 |     unittest.result
+import time:       131 |        131 |           _heapq
+import time:       270 |        400 |         heapq
+import time:      1136 |       1536 |       difflib
+import time:       289 |        289 |   _winapi
+import time:     23870 |      24158 | multiprocessing.connection
+import time:      1512 |       1512 |   multiprocessing.popen_fork
+import time:      1087 |       2598 | multiprocessing.popen_spawn_posix
+import time:      8208 |       8208 |               _ast
+import time:      1943 |      10150 |             ast
+import time:        55 |         55 |                 _opcode
+import time:       619 |        673 |               opcode
+import time:      1326 |       1999 |             dis
+import time:      8483 |       8483 | multiprocessing.synchronize
+import time:      8291 |      20439 |           inspect
+import time:       908 |      21347 |         dataclasses
+import time:       508 |      21855 |       pprint
+import time:      2907 |      26297 |     unittest.case
+import time:       635 |        635 |     unittest.suite
+import time:       757 |        757 |     unittest.loader
+import time:      1310 |       1310 |         gettext
+import time:      5425 |       6734 |       argparse
+import time:       168 |        168 |         unittest.signals
+import time:       411 |        579 |       unittest.runner
+import time:       296 |       7608 |     unittest.main
+import time:       279 |      45203 |   unittest
+import time:       345 |        345 |     __future__
+import time:      4751 |       4751 |         numbers
+import time:       621 |       5372 |       _decimal
+import time:       189 |       5560 |     decimal
+import time:      1842 |       1842 |       _hashlib
+import time:        86 |         86 |       _blake2
+import time:       344 |       2271 |     hashlib
+import time:       192 |        192 |           _json
+import time:       492 |        683 |         json.scanner
+import time:       535 |       1217 |       json.decoder
+import time:       439 |        439 |       json.encoder
+import time:       312 |       1968 |     json
+import time:        72 |         72 |       _typing
+import time:      7281 |       7352 |     typing
+import time:       191 |        191 |           _datetime
+import time:       178 |        369 |         datetime
+import time:       148 |        148 |             _wmi
+import time:       607 |        754 |           platform
+import time:        64 |         64 |           _uuid
+import time:       631 |       1448 |         uuid
+import time:      4671 |       4671 |                 attr._compat
+import time:       214 |        214 |                   unicodedata
+import time:       128 |        128 |                   attr._config
+import time:       256 |        256 |                     attr.exceptions
+import time:       112 |        367 |                   attr.setters
+import time:     15222 |      15930 |                 attr._make
+import time:       191 |      20790 |               attr.converters
+import time:       175 |        175 |               attr.filters
+import time:     10256 |      10256 |               attr.validators
+import time:       212 |        212 |               attr._cmp
+import time:       262 |        262 |               attr._funcs
+import time:       207 |        207 |               attr._next_gen
+import time:      5087 |       5087 |               attr._version_info
+import time:       447 |      37433 |             attr
+import time:       210 |        210 |             attrs.converters
+import time:       108 |        108 |             attrs.exceptions
+import time:       116 |        116 |             attrs.filters
+import time:        89 |         89 |             attrs.setters
+import time:       217 |        217 |             attrs.validators
+import time:       439 |      38609 |           attrs
+import time:      1050 |       1050 |                   rpds.rpds
+import time:       240 |       1289 |                 rpds
+import time:     12184 |      12184 |                 typing_extensions
+import time:       178 |        178 |                   referencing._attrs
+import time:      9424 |       9602 |                 referencing.exceptions
+import time:       891 |        891 |                 referencing.typing
+import time:     54716 |      78680 |               referencing._core
+import time:       239 |      78918 |             referencing
+import time:        23 |      78941 |           referencing.exceptions
+import time:       391 |        391 |           jsonschema._utils
+import time:      1156 |     119095 |         jsonschema.exceptions
+import time:       178 |        178 |         fqdn
+import time:       378 |        378 |             idna.idnadata
+import time:       195 |        195 |             idna.intranges
+import time:      5660 |       6232 |           idna.core
+import time:       144 |        144 |           idna.package_data
+import time:       260 |       6635 |         idna
+import time:       181 |        181 |         rfc3987
+import time:       104 |        104 |         rfc3986_validator
+import time:        94 |         94 |         rfc3987_syntax
+import time:      1375 |       1375 |           calendar
+import time:      5518 |       5518 |           six
+import time:       666 |       7557 |         rfc3339_validator
+import time:       196 |        196 |         webcolors
+import time:       104 |        104 |         jsonpointer
+import time:        94 |         94 |         uri_template
+import time:        89 |         89 |         isoduration
+import time:       996 |     137132 |       jsonschema._format
+import time:       841 |        841 |       jsonschema._types
+import time:      6191 |       6191 |           referencing.jsonschema
+import time:       896 |        896 |                 importlib.resources.abc
+import time:       380 |        380 |                 importlib.resources._adapters
+import time:      8711 |       9986 |               importlib.resources._common
+import time:       491 |        491 |               importlib.resources._legacy
+import time:       177 |      10653 |             importlib.resources
+import time:       234 |      10887 |           jsonschema_specifications._core
+import time:       365 |        365 |                 binascii
+import time:       158 |        158 |                   zipfile._path.glob
+import time:       522 |        679 |                 zipfile._path
+import time:      1466 |       2509 |               zipfile
+import time:       113 |        113 |               importlib.resources._itertools
+import time:      4385 |       7006 |             importlib.resources.readers
+import time:       145 |       7150 |           importlib.readers
+import time:     19565 |      43792 |         jsonschema_specifications
+import time:      1792 |       1792 |           fractions
+import time:       538 |       2329 |         jsonschema._keywords
+import time:       268 |        268 |         jsonschema._legacy_keywords
+import time:       217 |        217 |           jsonschema.protocols
+import time:       220 |        437 |         jsonschema._typing
+import time:     16201 |      63025 |       jsonschema.validators
+import time:       292 |     201289 |     jsonschema
+import time:     23166 |      23166 |     validate
+import time:     28512 |     270460 |   analysis_plan_ref
+import time:     17538 |      17538 |   test_analysis_plan_ref
+import time:     20520 |     376789 | test_resource_peak_history
+import time:       196 |        196 |   _winapi
+import time:     22854 |      23049 | multiprocessing.connection
+import time:     13104 |      13104 |   multiprocessing.popen_fork
+import time:      1626 |      14729 | multiprocessing.popen_spawn_posix
+import time:      7792 |       7792 | multiprocessing.synchronize
+ok
+test_affine (test_workspace_ref.WorkspaceTests.test_affine) ... ok
+test_ambiguous_lookup (test_workspace_ref.WorkspaceTests.test_ambiguous_lookup) ... ok
+test_arbitrary_container_kind_preserved (test_workspace_ref.WorkspaceTests.test_arbitrary_container_kind_preserved) ... ok
+test_bad_capability_name (test_workspace_ref.WorkspaceTests.test_bad_capability_name) ... ok
+test_bad_event_scope (test_workspace_ref.WorkspaceTests.test_bad_event_scope) ... ok
+test_bad_event_shape (test_workspace_ref.WorkspaceTests.test_bad_event_shape) ... ok
+test_bad_revision_type (test_workspace_ref.WorkspaceTests.test_bad_revision_type) ... ok
+test_boolean_not_integer (test_workspace_ref.WorkspaceTests.test_boolean_not_integer) ... ok
+test_bounds_error (test_workspace_ref.WorkspaceTests.test_bounds_error) ... ok
+test_cli_demo_and_duplicate_key_rejection (test_workspace_ref.WorkspaceTests.test_cli_demo_and_duplicate_key_rejection) ... ok
+test_concurrent_revision_guard (test_workspace_ref.WorkspaceTests.test_concurrent_revision_guard) ... import time:       233 |        233 |     _queue
+import time:       649 |        881 |   queue
+import time:      5776 |       6657 | concurrent.futures.thread
+ok
+test_conflicting_seeds (test_workspace_ref.WorkspaceTests.test_conflicting_seeds) ... ok
+test_custom_transform_receives_copies (test_workspace_ref.WorkspaceTests.test_custom_transform_receives_copies) ... ok
+test_custom_trusted_transform (test_workspace_ref.WorkspaceTests.test_custom_trusted_transform) ... ok
+test_depth_only_changes_bound_views (test_workspace_ref.WorkspaceTests.test_depth_only_changes_bound_views) ... ok
+test_detach_then_reconnect_is_explicit (test_workspace_ref.WorkspaceTests.test_detach_then_reconnect_is_explicit) ... ok
+test_detail_remains_local (test_workspace_ref.WorkspaceTests.test_detail_remains_local) ... ok
+test_diamond_disagree_does_not_pick_last (test_workspace_ref.WorkspaceTests.test_diamond_disagree_does_not_pick_last) ... ok
+test_diamond_equal_coalesces (test_workspace_ref.WorkspaceTests.test_diamond_equal_coalesces) ... ok
+test_direct_reference_write_fails_atomically (test_workspace_ref.WorkspaceTests.test_direct_reference_write_fails_atomically) ... ok
+test_document_roundtrip_preserves_values_detach_and_freeze (test_workspace_ref.WorkspaceTests.test_document_roundtrip_preserves_values_detach_and_freeze) ... ok
+test_duplicate_binding (test_workspace_ref.WorkspaceTests.test_duplicate_binding) ... ok
+test_duplicate_node (test_workspace_ref.WorkspaceTests.test_duplicate_node) ... ok
+test_enum_error (test_workspace_ref.WorkspaceTests.test_enum_error) ... ok
+test_equal_seeds (test_workspace_ref.WorkspaceTests.test_equal_seeds) ... ok
+test_event_id_collision (test_workspace_ref.WorkspaceTests.test_event_id_collision) ... ok
+test_failed_event_can_be_corrected (test_workspace_ref.WorkspaceTests.test_failed_event_can_be_corrected) ... ok
+test_five_graphs_plus_table_and_cards (test_workspace_ref.WorkspaceTests.test_five_graphs_plus_table_and_cards) ... ok
+test_freeze_invalid (test_workspace_ref.WorkspaceTests.test_freeze_invalid) ... ok
+test_freeze_workspace (test_workspace_ref.WorkspaceTests.test_freeze_workspace) ... ok
+test_frozen_container_blocks_descendants (test_workspace_ref.WorkspaceTests.test_frozen_container_blocks_descendants) ... ok
+test_frozen_target_cannot_relay (test_workspace_ref.WorkspaceTests.test_frozen_target_cannot_relay) ... ok
+test_identity_cycle_converges (test_workspace_ref.WorkspaceTests.test_identity_cycle_converges) ... ok
+test_inconsistent_cycle_rejected_atomically (test_workspace_ref.WorkspaceTests.test_inconsistent_cycle_rejected_atomically) ... ok
+test_input_event_is_not_mutated (test_workspace_ref.WorkspaceTests.test_input_event_is_not_mutated) ... ok
+test_interface_preset_keeps_all_other_profiles_and_parameters (test_workspace_ref.WorkspaceTests.test_interface_preset_keeps_all_other_profiles_and_parameters) ... ok
+test_invalid_identity_args (test_workspace_ref.WorkspaceTests.test_invalid_identity_args) ... ok
+test_invalid_preset_is_atomic (test_workspace_ref.WorkspaceTests.test_invalid_preset_is_atomic) ... ok
+test_key_order_does_not_matter (test_workspace_ref.WorkspaceTests.test_key_order_does_not_matter) ... ok
+test_lookup (test_workspace_ref.WorkspaceTests.test_lookup) ... ok
+test_malformed_capability_declaration_is_unavailable (test_workspace_ref.WorkspaceTests.test_malformed_capability_declaration_is_unavailable) ... ok
+test_missing_active_tab (test_workspace_ref.WorkspaceTests.test_missing_active_tab) ... ok
+test_missing_endpoint (test_workspace_ref.WorkspaceTests.test_missing_endpoint) ... ok
+test_missing_frozen (test_workspace_ref.WorkspaceTests.test_missing_frozen) ... ok
+test_missing_lookup_no_invented_mapping (test_workspace_ref.WorkspaceTests.test_missing_lookup_no_invented_mapping) ... ok
+test_missing_scope (test_workspace_ref.WorkspaceTests.test_missing_scope) ... ok
+test_missing_tools_do_not_pretend_to_work (test_workspace_ref.WorkspaceTests.test_missing_tools_do_not_pretend_to_work) ... ok
+test_multiple_explicit_profile_components (test_workspace_ref.WorkspaceTests.test_multiple_explicit_profile_components) ... ok
+test_non_json_object (test_workspace_ref.WorkspaceTests.test_non_json_object) ... ok
+test_nonfinite (test_workspace_ref.WorkspaceTests.test_nonfinite) ... ok
+test_noop_propagates_but_does_not_increment_revision (test_workspace_ref.WorkspaceTests.test_noop_propagates_but_does_not_increment_revision) ... ok
+test_numeric_encoding_is_explicit (test_workspace_ref.WorkspaceTests.test_numeric_encoding_is_explicit) ... ok
+test_offline_execution (test_workspace_ref.WorkspaceTests.test_offline_execution) ... ok
+test_order_of_binding_array_is_irrelevant (test_workspace_ref.WorkspaceTests.test_order_of_binding_array_is_irrelevant) ... ok
+test_other_scope_does_not_change_selection (test_workspace_ref.WorkspaceTests.test_other_scope_does_not_change_selection) ... ok
+test_overflow_rejected (test_workspace_ref.WorkspaceTests.test_overflow_rejected) ... ok
+test_preset_selection_must_be_explicit (test_workspace_ref.WorkspaceTests.test_preset_selection_must_be_explicit) ... ok
+test_preset_unknown_component (test_workspace_ref.WorkspaceTests.test_preset_unknown_component) ... ok
+test_profiles_detached_copy (test_workspace_ref.WorkspaceTests.test_profiles_detached_copy) ... ok
+test_random_identity_graphs_are_order_invariant (test_workspace_ref.WorkspaceTests.test_random_identity_graphs_are_order_invariant) ... ok
+test_replayed_event_has_no_effect (test_workspace_ref.WorkspaceTests.test_replayed_event_has_no_effect) ... ok
+test_resource_bound_rolls_back (test_workspace_ref.WorkspaceTests.test_resource_bound_rolls_back) ... ok
+test_scope_star_reserved (test_workspace_ref.WorkspaceTests.test_scope_star_reserved) ... ok
+test_shared_selection_and_frozen_reference (test_workspace_ref.WorkspaceTests.test_shared_selection_and_frozen_reference) ... ok
+test_stale_revision (test_workspace_ref.WorkspaceTests.test_stale_revision) ... ok
+test_thaw_does_not_implicitly_catch_up (test_workspace_ref.WorkspaceTests.test_thaw_does_not_implicitly_catch_up) ... ok
+test_toggle_invalid (test_workspace_ref.WorkspaceTests.test_toggle_invalid) ... ok
+test_transform_cannot_replace_builtin (test_workspace_ref.WorkspaceTests.test_transform_cannot_replace_builtin) ... ok
+test_transform_failure_omits_payload (test_workspace_ref.WorkspaceTests.test_transform_failure_omits_payload) ... ok
+test_transform_target_bounds_rolls_back (test_workspace_ref.WorkspaceTests.test_transform_target_bounds_rolls_back) ... ok
+test_type_error_rolls_back_all_writes (test_workspace_ref.WorkspaceTests.test_type_error_rolls_back_all_writes) ... ok
+test_unknown_parameter (test_workspace_ref.WorkspaceTests.test_unknown_parameter) ... ok
+test_unknown_schema_field (test_workspace_ref.WorkspaceTests.test_unknown_schema_field) ... ok
+test_unknown_transform_no_eval (test_workspace_ref.WorkspaceTests.test_unknown_transform_no_eval) ... ok
+test_value_and_export_are_detached_copies (test_workspace_ref.WorkspaceTests.test_value_and_export_are_detached_copies) ... ok
+test_views_queries_and_original_are_not_mutated (test_workspace_ref.WorkspaceTests.test_views_queries_and_original_are_not_mutated) ... ok
+test_wildcard_time_follows_review_scope (test_workspace_ref.WorkspaceTests.test_wildcard_time_follows_review_scope) ... ok
+
+----------------------------------------------------------------------
+Ran 209 tests in 65.811s
+
+OK

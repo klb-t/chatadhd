@@ -187,6 +187,17 @@ before claiming that shared config reads respect overlays. Coordinate that
 config-only edit with the assigned CAPI owner; do not silently change unrelated
 core commands.
 
+W11's newer `b88154c` semantic-consumer handoff also needs Config origin
+information for `default_max_nodes`/`default_depth` precedence. `Config::all()`
+and `contains()` include seeded historical defaults; their presence does not
+prove an explicit user choice. Track preset values, persisted presence and
+explicit choices separately when adding the assigned header/storage API.
+Legacy files may have serialized defaults without retaining user intent;
+report that origin as unknown instead of inferring intent from equality or
+presence. Usage-policy snapshots already distinguish their unseeded stored
+override from the fallback, but this is not a general origin API for the
+twelve materialized historical settings.
+
 ## Verification before admission
 
 - Compare builtin usage values against the historical six-field golden object,

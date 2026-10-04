@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="(empty)"
+	tests="2"
+	failures="1"
+	disabled="0"
+	skipped="0"
+	hostname=""
+	time="115"
+	timestamp="2026-10-04T23:41:19"
+	>
+	<testcase name="research.structure" classname="research.structure" time="60.0059" status="fail">
+		<failure message="Timeout"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="research.contracts" classname="research.contracts" time="55.7037" status="run">
+		<properties/>
+		<system-out>.................................................................................................................................................................................................................
+----------------------------------------------------------------------
+Ran 209 tests in 54.970s
+
+OK
+</system-out>
+	</testcase>
+</testsuite>
