@@ -1,10 +1,20 @@
 # Wątek 5 — import archiwów i adnotacje, 2026-10-04
 
-Gałąź: `gpt/archive-import-2026-10-04`; po rebase na main **7282437**.
-Końcowy kod: **1474b260582a80f006f99953baaad1b3253ca6e1**.
+Gałąź: `gpt/archive-import-2026-10-04`; świeży rebase na main **30ad7d3**
+(przyjęty W2 z danych i wymagania R39–R41), opublikowany jako **a343a8c**.
+Historyczny zmierzony kod: **1474b260582a80f006f99953baaad1b3253ca6e1**.
 Zakres 5, dane syntetyczne/publiczne, offline: **zero płatnych wywołań**.
 
-**Gotowy do odbioru przyrost W5: import/wznowienie/audyt/adnotacje.**
+**Wstrzymany po nowym niezależnym blokerze OCR (szturchnięcie 21:06).**
+Integrator wykazał MIME **1/3**: oba importy z provenance czytają niezmienne
+bajty, ale tracą rozszerzenie obrazu. Poprawka zachowa deklarowany format
+osobno od blobu; media API ma już `ocr_bytes`, więc nie trzeba zmian w W11.
+Równolegle naprawiamy kontrolę wersji migracji wewnątrz `BEGIN IMMEDIATE`
+i włączamy 8 regresji audytu do istniejącego CTest discovery bez zmian CMake.
+Pełna dawna linia zachowana pod
+`archive/2026-10-04/archive-import-before-mixed-w2` (**03cd52e**).
+Dotychczasowe bramki poniżej dotyczą starego źródła; nowych jeszcze nie wykonano.
+
 Po szturchnięciu właściciela 18:51: świeży fetch, rebase (`up to date`), pełny
 build/CTest **112/112 w 307,19 s**, **696/25 341** natywnych przypadków/asercji,
 **1276 Python/0 skips**, nowe grupy **37/37 i 876/876**. Niezależny replay
@@ -112,10 +122,10 @@ sam JSON diagnostyczny W5 tego nie realizuje. Wspólna regresja3/4 nadal wymagan
 
 ## Do wątku 9
 
-**W5 gotowy do odbioru wskazanego przyrostu.** INDEX na main nadal opisuje
-abade80 i 2GiB jako samo generowanie; uaktualnić do bieżącego raportu,
-307,19s/full112, niezależnego replay 2/31 i web 85. Rzeczywisty pomiar2,15GB
-jest już zachowany. Main 7282437 ponownie pobrany; rebase bieżący.
+**Odebrano aktualny INDEX/main30ad7d3 i nowy negatyw OCR6e4bf03.**
+Gotowość starego przyrostu cofnięta do poprawienia OCR/migracji i nowych
+bramek na przyjętym W2. Rebase37 commitów czysty, każdy opublikowany;
+oryginalny03cd52e zachowany w archiwum. INDEX/main/STATE pozostają własnością9.
 
 Nowe próby odtwarzają oba oryginalne reproduktory bez osłabiania kontroli
 (jedyna adaptacja: jawny `resume=true` po zachowaniu starego presetu C++).
