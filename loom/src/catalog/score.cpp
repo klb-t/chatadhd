@@ -27,6 +27,7 @@
 #include <unordered_map>
 
 #include "catalog_internal.h"
+#include "relevance_recipe.h"
 #include "semantic_candidates.h"
 #include "loom/db.h"
 #include "loom/runtime.h"
@@ -209,35 +210,21 @@ Result<Json> Catalog::score(const ScoreConfig& cfg, const ProgressFn& progress, 
   }
 
   const Json& relevance = pack_->policy("relevance");
-  double bias = json::get_number(relevance, "bias", 0.0);
-  std::map<std::string, double> weights;
-  if (const Json* w = json::find(relevance, "weights"); w && w->is_object()) {
-    for (auto it = w->begin(); it != w->end(); ++it) weights[it.key()] = it.value().get<double>();
-  }
+  LOOM_TRY_ASSIGN(auto recipe, load_relevance_recipe(relevance));
+  const double bias = recipe.bias;
+  const auto& weights = recipe.weights;
   // Evidence channels (R25/R27): every feature belongs to exactly one channel.
   // The lexical and semantic channels are also scored on their own (shadow
   // scores) so each can audit the other; the final score fuses all of them
   // additively in log-odds space, so no channel can veto another.
-  std::map<std::string, std::string> channel_of;
-  if (const Json* ch = json::find(relevance, "channels"); ch && ch->is_object()) {
-    for (auto it = ch->begin(); it != ch->end(); ++it) {
-      if (!it.value().is_array()) continue;
-      for (const auto& f : it.value()) {
-        if (f.is_string()) channel_of[f.get<std::string>()] = it.key();
-      }
-    }
-  }
-  std::map<std::string, double> class_weights;
-  if (const Json* cw = json::find(relevance, "term_class_weights"); cw && cw->is_object()) {
-    for (auto it = cw->begin(); it != cw->end(); ++it) class_weights[it.key()] = it.value().get<double>();
-  }
-  double bm25_k1 = 1.2, bm25_b = 0.75;
-  double normalise_pct = 99.0;
-  if (const Json* bm = json::find(relevance, "bm25"); bm && bm->is_object()) {
-    bm25_k1 = json::get_number(*bm, "k1", bm25_k1);
-    bm25_b = json::get_number(*bm, "b", bm25_b);
-    normalise_pct = json::get_number(*bm, "normalise_percentile", normalise_pct);
-  }
+  const auto& channel_of = recipe.channel_of;
+  const auto& class_weights = recipe.class_weights;
+  const double bm25_k1 = recipe.bm25_k1;
+  const double bm25_b = recipe.bm25_b;
+  const double normalise_pct = recipe.bm25_normalise_percentile;
+  const auto expansion = class_weights.find("expansion");
+  if (expansion == class_weights.end())
+    return Error(Errc::InvalidArgument, "catalog relevance recipe: /term_class_weights/expansion is required");
 
   const Json& thresholds = pack_->policy("thresholds");
   double tau_relevant = 0.7, tau_candidate = 0.35;
@@ -399,11 +386,7 @@ Result<Json> Catalog::score(const ScoreConfig& cfg, const ProgressFn& progress, 
   std::vector<QueryTerm> phil_terms = terms_of_class(profile, class_weights, /*principle_class=*/true, norm);
   std::set<std::string> known_self_terms;
   for (auto& t : self_terms) known_self_terms.insert(t.term);
-  double expansion_weight = 0.8;
-  {
-    auto it = class_weights.find("expansion");
-    if (it != class_weights.end()) expansion_weight = it->second;
-  }
+  const double expansion_weight = expansion->second;
 
   Json expanded_terms_log = Json::array();
   auto recompute_bm25 = [&] {
@@ -426,11 +409,11 @@ Result<Json> Catalog::score(const ScoreConfig& cfg, const ProgressFn& progress, 
 
   auto round4 = [](double x) { return std::round(x * 1e4) / 1e4; };
   auto compute_linear_and_label = [&](Row& row) {
-    // Independent-evidence agreement (R27): 1 when the lexical, the semantic
+  // Channel agreement diagnostic (R27): 1 when the lexical, the semantic
     // and the structural (link) channel each carry substantive evidence of
-    // their own for this unit. Each channel alone stays below the relevant
-    // band for these units; three independent channels agreeing is more
-    // than any one of them, and units with a channel missing get nothing.
+    // their own for this unit. Word/character TF-IDF share source features;
+    // their agreement is not proof of independent semantic observations.
+    // Units with a channel missing get no agreement contribution.
     {
       double lex_e = std::max(json::get_number(row.features, "bm25_self", 0.0), json::get_number(row.features, "bm25_phil", 0.0));
       double sem_e = std::max(json::get_number(row.features, "sem_word", 0.0), json::get_number(row.features, "sem_ngram", 0.0));
@@ -846,6 +829,11 @@ Result<Json> Catalog::score(const ScoreConfig& cfg, const ProgressFn& progress, 
 
   return Json{{"run_id", run_id},
               {"profile", Json{{"id", profile.id}, {"input_hash", profile.input_hash}}},
+              {"relevance_recipe", Json{{"parameters", recipe.snapshot},
+                                          {"sha256", Sha256::hex(json::canonical(recipe.snapshot))},
+                                          {"document", "policy/relevance.json"}, {"pack_hash", pack_->hash()},
+                                          {"resolution", "already resolved pack including file overlays"},
+                                          {"graph_persistence", false}}},
               {"scoring_evidence_version", 3},
               {"legacy_combined_features", Json::array({"id_hits", "class_diversity", "code_evidence"})},
               {"identity_unavailable", n_identity_unavailable},
