@@ -1,0 +1,7 @@
+{
+  "schema": "loom.verification_runner_controls/1",
+  "checks": 8,
+  "passed": 8,
+  "runner_sha256": "4b9df5a68e38432c2c05bd5a98f63e2aa43c1c16cb6e75423882f3a80dd0bf82",
+  "caveat": "Parser/control checks;not a fresh execution of the full build-and-test runner"
+}
