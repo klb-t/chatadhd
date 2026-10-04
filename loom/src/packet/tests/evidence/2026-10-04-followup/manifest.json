@@ -1,0 +1,149 @@
+{
+  "schema": "loom.packet_verification/1",
+  "implementation_commit": "935c569886e7c37cdd79eb80b13b455b549b3714",
+  "implementation_tree": "0dd82ef4798946d53973a9e5471977076a1a651a",
+  "followup_commits": [
+    "265a5991cbdcb8bb3a3a89db425926cbca8c8235",
+    "fb859f5b7cb44f9d29972dae26cbfb25461c1a04",
+    "935c569886e7c37cdd79eb80b13b455b549b3714"
+  ],
+  "previous_receipt_commit": "3caa6b4dcfb6412294bf816c1105bcf99afacdbc",
+  "main_base": "161cc22dfb84fe863389d6b90323bd44516a68dc",
+  "recorded_utc": "2026-10-04T16:04:20.086494+00:00",
+  "policy_reference": "03b0c4ed954e53cb72ec7947fe6e5d9ad28d495f",
+  "mode": "offline synthetic",
+  "paid_calls": 0,
+  "github_actions_runs": 0,
+  "configure": "cmake --preset dev -DLOOM_BUILD_SERVER=ON -DLOOM_USE_SYSTEM_SQLITE=OFF -DCMAKE_EXE_LINKER_FLAGS=-Wl,--no-keep-memory -DCMAKE_SHARED_LINKER_FLAGS=-Wl,--no-keep-memory",
+  "build": "cmake --build --preset dev -j 1",
+  "local_archive_note": "After successful build, unchanged 129 compiled core objects were placed in GNU thin archive to release shared disk space; thin-archive.json records all member hashes. Tested shared/server binaries were unchanged.",
+  "ctest": {
+    "command": "ctest --preset dev -j 1 --output-on-failure",
+    "passed": 110,
+    "discovered": 110,
+    "elapsed_seconds": 395.91,
+    "timeouts_and_assertions_unchanged": true
+  },
+  "packet_native": {
+    "command": "loom/build/dev/loom_tests --case-sensitive=true --test-case='Packet *'",
+    "test_cases": 4,
+    "assertions": 24
+  },
+  "packet_ffi": {
+    "test_cases": 16
+  },
+  "native_store": {
+    "test_cases": 23,
+    "compiled_reply_fixtures": 5,
+    "method_graph": {
+      "entities": 13,
+      "claims": 19,
+      "sources": 5,
+      "result_binding_edges": 9
+    }
+  },
+  "packet_http": {
+    "scenarios": 11
+  },
+  "usage_integration": {
+    "scenarios": 14,
+    "warnings_as_errors": true,
+    "mode": "isolated actual W2 static linkage with explicit Config preset; not merged production evidence"
+  },
+  "method_schema": {
+    "checks": 14,
+    "mode": "standalone, outside CTest"
+  },
+  "codec_audit": {
+    "rejected_cases": 9,
+    "before_evidence": "saved pre-fix transcript; final suite was not rerun against the older binary"
+  },
+  "reply_parity": {
+    "unchanged_pinned_compilations": 5
+  },
+  "research_diagnostics": {
+    "structure_test_cases": 859,
+    "structure_run_seconds": 58.536,
+    "structure_total_seconds": 62.28383346499686,
+    "contracts_test_cases": 209,
+    "contracts_run_seconds": 41.383,
+    "contracts_total_seconds": 41.90727883400177,
+    "diagnostics_do_not_replace_ctest_gate": true
+  },
+  "retained_failures": [
+    "Linker OOM and later shared disk exhaustion; no quality gate changed.",
+    "Initial CTest stale HTTP receipt marker was corrected to require the exact stronger validation marker.",
+    "Subsequent research timeouts retained; final full unchanged CTest passed.",
+    "Method test first expected raw JSON helper to raise; corrected to assert returned error envelope and unchanged base.",
+    "Supplemental unfiltered doctest run: 662/663 passed, import absolute RSS failed with inherited VmHWM187292kB and delta0; official isolated unit.test_import_stream passed unchanged36.26s."
+  ],
+  "integration_open": [
+    "W3 must adopt actual method registry/trace adapter and add joint execution regression.",
+    "W2 confirmation shared export/HTTP integration belongs to client/integrator owners.",
+    "Legacy allowed-but-empty-actual dispatch evidence and cancellation-versus-claim remain explicit boundaries.",
+    "Inherited KB normalization/pack/query data inventory was not migrated in this GraphPacket increment."
+  ],
+  "source_sha256": {
+    "loom/include/loom/loom.h": "da65dbfdd3a460037ba841eb37c8c1897f8a3a484d1d6477cbb5a9ff77a05934",
+    "loom/src/capi/capi_packet.cpp": "b11a970e8bcbdbcba910c3e1dc49d69c4ff843e0afbbb838f40c281bf9c4a00b",
+    "loom/src/kb/graph_packet_store.cpp": "904cb420a6264962a7d77805d8a69e2ca0193474bcfbee3550ed284a475bd466",
+    "loom/src/packet/packet.h": "c1ffb4580ac99feb98bbc81006731b0bc8763ddb13c618e832aa675f30dc4bc7",
+    "loom/src/packet/packet.cpp": "f95574debd94ff675596807b7de7eff8a65b5aafc3360b9be2d513a335bfaf59",
+    "loom/src/packet/reply.cpp": "4575f44b4614888fa25166b6b3a2e58c59966b49021cb25b07c06aaf74fc091c",
+    "loom/src/packet/README.md": "7d8e774d2c3953ddaefe53ee8fc714e63f537f4310d61b75c81d268e961600cf",
+    "loom/src/packet/METHOD_GRAPH.md": "58cfc13f867c6373c4a3962319b2caf5bd26101cb7f10ef06965e4132bd96751",
+    "loom/src/packet/method-graph.schema.json": "ed41b3d9888d7ccb242dc67a25e8fc49625c3a60ba9b435fccf79295d667c7b3",
+    "loom/src/packet/tests/reply-fixtures.json": "4d810c09ca39d74c70e32ee4c78a9b55b27b894362e05a15cd482086ef0902c3",
+    "loom/src/packet/tests/method-graph-fixture.json": "9821c22efb54e1e8a1165a8a61de64fc8848baa26568dc42975421fc412a8975",
+    "loom/src/packet/tests/check_method_graph.py": "2e56ae5644f8846daa78403e6dbefe95dd7e2eb5f58020a13ab14472c32d5e7c",
+    "loom/src/packet/tests/test_http.py": "eeb11a2c7dd5fe393b2b6f877b820624235190218e485447fdcd6ba490c1c632",
+    "loom/src/packet/tests/audit_regressions.py": "b514da4282d344474405a78e46caf29f0459810e344fe89d35798ee87aec70b0",
+    "loom/src/packet/tests/reproduce_policy.py": "e3ebd45de0bf2bba9f66c9bb8e872e4b69b3137be135b75fc47ad240e186b541",
+    "loom/src/packet/tests/policy_integration.cc": "927f43615e74e7dfcba0651a0339ed7123cb1ba98b2fedf23e02314fab204138",
+    "loom/tests/test_packet.cpp": "71b9770c984e9ef88a28249e14439d96aeacccadbdcb91f7a6057ecfe5be16c6",
+    "loom/tests/compat/test_packet.py": "32000a0bd86cf6c5d6a27138e040a91169c4613bb17a7a52cbcb3f1f779d3f7d",
+    "loom/tests/compat/test_graph_packet_store.py": "2b1b8e3d8c7e694accf5fc511ef3405039753c05338e26ce9e9cbf481140c345",
+    "loom/server/src/app.cpp": "4dccba1284b22ba9c2ae59a43dea51a506acce1c36a6c4b1d373629fc9ea4806",
+    "loom/server/tests/test_server_smoke.py": "8ebbbedfdf58d15d282ef33b9135fae9137f3d56a76709ae28e7b05274c4c9a7",
+    "docs/reports/native-graph-packet-2026-10-04.md": "7ffa54fcca07ede6edcdfe350d51edd5a688b9545020bbcf069b3ef922e8baec"
+  },
+  "binary_sha256": {
+    "loom/build/dev/libloom.so.0.1.0": "42032e790fb5698f1059a6a0eb4b48c740ae9d15655a91debfbe888142e7542b",
+    "loom/build/dev/loom_tests": "29751c05f2271a511703b40918d09f0a52fdb03e6d09237cb477777815d624e4",
+    "loom/build/dev/loom_compat_tool": "77850ddab9fe449eb52e245266b009dfa539b61ec9d159233a39a2cac14b7658",
+    "loom/build/dev/server/loom-server": "2796b44b486f1455ef9be9f572960432e7b178d1ceea2fc5fd93aad488340f57",
+    "loom/build/dev/cli/loom": "6718f482e1163c7600aa370ce926bd468a873acdc6498a9d8088c774431ec996"
+  },
+  "file_sha256": {
+    "audit-after.json": "b93fbe4a11b5f4f29106753e1a95f9081c29b1c89b25d6c8bd7149e0384eba6b",
+    "audit-before-transcript.json": "a8df356bb16a810c16357ad21777652e4b90b379ac166313fa4fbf7b0f815fed",
+    "build-disk-failure.txt": "722ea6726c9eb6441e7fd33d44b6709099d6f6e5a0505b30626ede7e49a1379c",
+    "build-memory-failure.txt": "7a7fc602de84f2a3bf0a2a612e573d3732ea4d4824e7c9fe3f965b04ccfdb825",
+    "build.txt": "c011da541d9805baef82341834127ad229f3b158b37424a1664a74efa119932f",
+    "configure.txt": "491ac0356cfa44687e39dc14cfef7ef5df876dbc84e2b931ca5624b3609779ab",
+    "ctest-first-failure.txt": "5ddd1ee368b8a3c3646773f6d881da0e7697cf7657f3442749ca95e76a51b7ad",
+    "ctest-repeat-timeout.txt": "51d553feaa753d1c6055e1b7a1c0be6163a0183366fd86f3135d7bdfa3c9d4c0",
+    "ctest-serial-timeout.txt": "52ee474f2ebf7d374231eddb000bf2fedc10a0335a93ba177475cf42a997075a",
+    "ctest.txt": "9e4899ca4a217360e9d88b8c71a8632a9076d4b54f777f5cda04cd71140c4799",
+    "ffi.txt": "560ad39f4619ceefea0d8e49101ee3409b0674b8ed3b2add8770f5f2fa2c5cf2",
+    "http-literal-nul-before-failure.txt": "9970cc31f2e91eb955fdffbae773be9225e29f4352720b333d572b1c4c00d4db",
+    "http.txt": "ef9a869e9ac1177917c9380a538963174731e954d33c55d95b73cb2e830ab932",
+    "method-schema.txt": "137f47ac29b979741279f60b6bd79b0b084f5ec43334602cdd33413b336c23b3",
+    "method-test-harness-first-failure.txt": "5f574deefc9d86e5596f77a749128cb4f41273fe55faef25eefd8844845ef7be",
+    "native-packet.txt": "93fa8fc960e0621088612dfc8b780a4d51442faf76ee24f4064f1a029befbf43",
+    "policy-03b0c4e.txt": "ffe52d668b3bae89458c5f9dfd7483b79c6d698538882214544c9d24e46017c8",
+    "policy-disk-failure-03b0c4e.txt": "7d1e89e087dc25eb13b59e84e02b4741decfa1ffdfae957e38976c3c46b47352",
+    "policy-werror-34cc920.txt": "061daa68427de2a3d73f86c4db58bc4c44a3e9dd416f88f2d5c10e929587b8db",
+    "research-contracts-diagnostic.txt": "d5eca67dff30ed5a43b5b27dd9151a31469274a9ce2359488e2513a531ffcfbc",
+    "research-isolated-timeout.txt": "d2e4f674d12940d8697277cd1e3c897174579a0253fe8708952aeb3514d886a1",
+    "research-structure-diagnostic.txt": "291ca2f0d52b1654d0a12ace2b9fd7de51ccdba88542dc91da7b9b0410239a3a",
+    "store.txt": "47f09cafe453eb30763a8dd6c0cf34c0c773a57efd8eac5ec6d057aa6c2cd18d",
+    "supplemental-unfiltered-native-failure.txt": "9ae5734ee888403890a6ea077b5c0403f4aa8ed313a1f5eb0a68bb765e921949",
+    "thin-archive.json": "6f3a478d211f6cd2bc19443e58d5392698183c6af45446cac152393f47fd511d",
+    "unresolved-replay-before/build-and-run.log": "bf997fdd647089765080f4b80740fec310eb91943379ad206b445ad306fd514a",
+    "unresolved-replay-before/harness.cc": "c619e56aad29223ac0ff6de202dc422ae6733762b15e961926a509734cb30894",
+    "unresolved-replay-before/result.json": "3fe55238e5c41e32bcadcf5dfeed3958481b73cdecbebfc69ecbabbe679ae77d",
+    "unresolved-replay-before/run.py": "a1f47d9f9bbfff458955b950f3d0d4cb0bbcc64a3e92a52ad8fa1909b5feab01",
+    "README.md": "d2061a3100d17cfab71e99a794494ace4ab78a9530a7ad430b2cb9846ba61609"
+  }
+}

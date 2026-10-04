@@ -1,0 +1,55 @@
+{
+  "schema": "loom.packet_audit_observations/1",
+  "mode": "offline synthetic",
+  "cases": [
+    {
+      "case": "inverse.accepted",
+      "status": "rejected",
+      "error": "graph_packet_application_replay_mismatch"
+    },
+    {
+      "case": "inverse.candidate_packet_sha256",
+      "status": "rejected",
+      "error": "graph_packet_application_replay_mismatch"
+    },
+    {
+      "case": "inverse.canonical_store_written",
+      "status": "rejected",
+      "error": "graph_packet_application_replay_mismatch"
+    },
+    {
+      "case": "inverse.acceptance_establishes_content_truth",
+      "status": "rejected",
+      "error": "graph_packet_application_replay_mismatch"
+    },
+    {
+      "case": "compile.max_string_bytes.300",
+      "status": "rejected",
+      "error": "graph_packet_configured_resource_limit",
+      "generated_string_bytes": null
+    },
+    {
+      "case": "compile.max_string_bytes.500",
+      "status": "rejected",
+      "error": "graph_packet_configured_resource_limit",
+      "generated_string_bytes": null
+    },
+    {
+      "case": "compile.max_string_bytes.1000",
+      "status": "rejected",
+      "error": "graph_packet_configured_resource_limit",
+      "generated_string_bytes": null
+    },
+    {
+      "case": "compile.max_string_bytes.2000",
+      "status": "rejected",
+      "error": "graph_packet_configured_resource_limit",
+      "generated_string_bytes": null
+    },
+    {
+      "case": "make.dangling_counter_observation",
+      "status": "rejected",
+      "error": "graph_packet_missing_counter_observation"
+    }
+  ]
+}
