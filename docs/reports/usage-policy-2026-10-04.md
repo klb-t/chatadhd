@@ -80,6 +80,11 @@ as current code. W9 archived the same-baseline research timeouts separately.
 No holdout/blind data was read. The starting [limits audit](../LIMITS_AND_WIRING_2026-10-01.md)
 is historical `33fb30a`, not proof another lane's latest limits remain unchanged.
 
+Post-evidence fetch: main stayed unchanged; W3 advanced to `ed9fe75` (embedding
+and goal-typing receipts), W4 to `fb859f5` (durable dispatch/settlement recovery),
+W9 to `125a043`. Their new implementation commits were inspected as dependencies,
+not relabelled as W2 integration-test results. Final rebase was up to date.
+
 ## Do wątku 1
 
 Own extraction lower-only budgets, checkpoints and candidate-graph maxima as
@@ -97,8 +102,9 @@ caller-defined; changing versions may change comparability.
 ## Do wątku 4
 
 Keep the shared ledger, packet request hashes and graph-method/run references.
-Fix the integrator's unresolved replay: unresolved may retain authorization for
-a held reservation, but its recovery status cannot permit another dispatch.
+Verify `fb859f5` against the integrator's archived unresolved-replay regression:
+unresolved may retain authorization for a held reservation, but its recovery
+status cannot permit another dispatch. W2 has not certified the new dispatcher.
 Own KB query/page presets and the shared graph-method provenance format. Usage
 data now proposes W11 RuntimeProfile, replacing the earlier usage-specific KB
 schema proposal.
