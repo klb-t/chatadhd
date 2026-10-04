@@ -1,0 +1,33 @@
+{
+  "w2_branch": "origin/gpt/usage-policy-2026-10-04",
+  "w2_commit": "34cc920dd3cdb0c0fca0a514569b19111429583f",
+  "repository": "/workspace/scratch/943af489e102/chatadhd",
+  "files": [
+    {
+      "git_path": "loom/include/loom/usage_policy.h",
+      "local_path": "/dev/shm/chatadhd-thread5/w2-integration/overlay/include/loom/usage_policy.h",
+      "sha256": "89dfad23470928a45900ff00c2cb6197fa183f9c2a7ab96f89bb832cb99273ca",
+      "bytes": 3485
+    },
+    {
+      "git_path": "loom/src/policy/usage_policy.cpp",
+      "local_path": "/dev/shm/chatadhd-thread5/w2-integration/overlay/usage_policy.cpp",
+      "sha256": "790bca06403a46ee59894801e251e4fad6afe9e39d57d5f3b3a679f7486158b9",
+      "bytes": 22755
+    },
+    {
+      "git_path": "loom/src/core/config_usage_policy.cpp",
+      "local_path": "/dev/shm/chatadhd-thread5/w2-integration/overlay/config_usage_policy.cpp",
+      "sha256": "ddc7fdb8e9215aa3e29b90af9c04eab42f421267ee1f9b493b6ad55a425456f4",
+      "bytes": 3360
+    },
+    {
+      "git_path": "loom/src/core/config.cpp",
+      "local_path": "/dev/shm/chatadhd-thread5/w2-integration/overlay/config.cpp",
+      "sha256": "42bbe385964814a555b6cd9399e019ed5df6f70bf92ea935dcf5ad74e753d4b7",
+      "bytes": 9287
+    }
+  ],
+  "config_header_matches_thread5": true,
+  "config_header_sha256": "6b8a8cc22bec961e989d30e047b22efea3271f1b9803cd304d005737eaf3ae28"
+}

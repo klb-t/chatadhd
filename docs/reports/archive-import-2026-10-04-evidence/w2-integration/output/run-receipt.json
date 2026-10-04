@@ -1,0 +1,349 @@
+{
+  "w2_commit": "34cc920dd3cdb0c0fca0a514569b19111429583f",
+  "root_commit_at_run": "f50d01653c0331eac283fc0d983775df3397052a",
+  "core_build_dir": "/dev/shm/chatadhd-thread5/baseline-build",
+  "core_sha256": "b018d5173bdd74d00caf79c2353f845a175a117835e662d79016653932fc03ee",
+  "provider_calls": 0,
+  "sources": [
+    {
+      "path": "/workspace/scratch/943af489e102/chatadhd/loom/tests/main.cpp",
+      "sha256": "f3ec52fb13e6028ab6cb10a25ecdce0db57486809b09a7f65d1661bc6e1ca4d0"
+    },
+    {
+      "path": "/workspace/scratch/943af489e102/chatadhd/loom/tests/test_import_usage.cpp",
+      "sha256": "ad1e14b5c3ff8b1d0a8dc2b4edbdab6703a35a531a0d834b0661e320095cac63"
+    },
+    {
+      "path": "/workspace/scratch/943af489e102/chatadhd/loom/src/import/import_usage.cpp",
+      "sha256": "04fa104bf988d53d285dc30b12f212d79de9419a82714ad09ece198e5c29a471"
+    },
+    {
+      "path": "/dev/shm/chatadhd-thread5/w2-integration/overlay/usage_policy.cpp",
+      "sha256": "790bca06403a46ee59894801e251e4fad6afe9e39d57d5f3b3a679f7486158b9"
+    },
+    {
+      "path": "/dev/shm/chatadhd-thread5/w2-integration/overlay/config_usage_policy.cpp",
+      "sha256": "ddc7fdb8e9215aa3e29b90af9c04eab42f421267ee1f9b493b6ad55a425456f4"
+    },
+    {
+      "path": "/dev/shm/chatadhd-thread5/w2-integration/overlay/config.cpp",
+      "sha256": "42bbe385964814a555b6cd9399e019ed5df6f70bf92ea935dcf5ad74e753d4b7"
+    },
+    {
+      "path": "/dev/shm/chatadhd-thread5/w2-integration/test_receipt_evidence.cpp",
+      "sha256": "fcfe951914098606b93178ba88f357c75617db51938da25ec0e3a23a4990897a"
+    }
+  ],
+  "headers": [
+    {
+      "path": "/workspace/scratch/943af489e102/chatadhd/loom/include/loom/config.h",
+      "sha256": "6b8a8cc22bec961e989d30e047b22efea3271f1b9803cd304d005737eaf3ae28"
+    },
+    {
+      "path": "/workspace/scratch/943af489e102/chatadhd/loom/include/loom/importer.h",
+      "sha256": "baf229d5d0fa31aceb42807b9ebc9efb7bc4b0d2e8a16c876c7e32a3166b2fca"
+    },
+    {
+      "path": "/workspace/scratch/943af489e102/chatadhd/loom/include/loom/runtime.h",
+      "sha256": "c92ac45952d8adbc5daebb267eae00746a9c00f36c5e9368418ff71d2ba8f9c7"
+    },
+    {
+      "path": "/workspace/scratch/943af489e102/chatadhd/loom/src/import/import_usage.h",
+      "sha256": "b45f4d92e14e0b2f3aba0a052dec9f4df2b870248f6a382386b85680ca014144"
+    },
+    {
+      "path": "/workspace/scratch/943af489e102/chatadhd/loom/tests/test_helpers.h",
+      "sha256": "2b2e5d3f7bb7ae0837db901680f8aafb7595221c57c40b00bcdf8760b4e98a89"
+    }
+  ],
+  "commands": [
+    {
+      "argv": [
+        "/usr/bin/c++",
+        "-std=c++20",
+        "-O0",
+        "-g0",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+        "-Wshadow",
+        "-Werror",
+        "-Wno-unused-parameter",
+        "-pthread",
+        "-DNDEBUG",
+        "-DLOOM_VENDORED_SQLITE=1",
+        "-DLOOM_HAVE_OPENSSL=1",
+        "-DCPPHTTPLIB_OPENSSL_SUPPORT=1",
+        "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+        "-DLOOM_VERSION_STRING=\"0.1.0\"",
+        "-I/dev/shm/chatadhd-thread5/w2-integration/overlay/include",
+        "-I/workspace/scratch/943af489e102/chatadhd/loom/include",
+        "-I/workspace/scratch/943af489e102/chatadhd/loom/src",
+        "-I/workspace/scratch/943af489e102/chatadhd/loom/tests",
+        "-isystem",
+        "/workspace/scratch/943af489e102/chatadhd/loom/third_party/nlohmann",
+        "-isystem",
+        "/workspace/scratch/943af489e102/chatadhd/loom/third_party/doctest",
+        "-c",
+        "/workspace/scratch/943af489e102/chatadhd/loom/tests/main.cpp",
+        "-o",
+        "/dev/shm/chatadhd-thread5/w2-integration/output/0-main.o"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 6.385059813997941
+    },
+    {
+      "argv": [
+        "/usr/bin/c++",
+        "-std=c++20",
+        "-O0",
+        "-g0",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+        "-Wshadow",
+        "-Werror",
+        "-Wno-unused-parameter",
+        "-pthread",
+        "-DNDEBUG",
+        "-DLOOM_VENDORED_SQLITE=1",
+        "-DLOOM_HAVE_OPENSSL=1",
+        "-DCPPHTTPLIB_OPENSSL_SUPPORT=1",
+        "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+        "-DLOOM_VERSION_STRING=\"0.1.0\"",
+        "-I/dev/shm/chatadhd-thread5/w2-integration/overlay/include",
+        "-I/workspace/scratch/943af489e102/chatadhd/loom/include",
+        "-I/workspace/scratch/943af489e102/chatadhd/loom/src",
+        "-I/workspace/scratch/943af489e102/chatadhd/loom/tests",
+        "-isystem",
+        "/workspace/scratch/943af489e102/chatadhd/loom/third_party/nlohmann",
+        "-isystem",
+        "/workspace/scratch/943af489e102/chatadhd/loom/third_party/doctest",
+        "-c",
+        "/workspace/scratch/943af489e102/chatadhd/loom/tests/test_import_usage.cpp",
+        "-o",
+        "/dev/shm/chatadhd-thread5/w2-integration/output/1-test_import_usage.o"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 8.165386605000094
+    },
+    {
+      "argv": [
+        "/usr/bin/c++",
+        "-std=c++20",
+        "-O0",
+        "-g0",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+        "-Wshadow",
+        "-Werror",
+        "-Wno-unused-parameter",
+        "-pthread",
+        "-DNDEBUG",
+        "-DLOOM_VENDORED_SQLITE=1",
+        "-DLOOM_HAVE_OPENSSL=1",
+        "-DCPPHTTPLIB_OPENSSL_SUPPORT=1",
+        "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+        "-DLOOM_VERSION_STRING=\"0.1.0\"",
+        "-I/dev/shm/chatadhd-thread5/w2-integration/overlay/include",
+        "-I/workspace/scratch/943af489e102/chatadhd/loom/include",
+        "-I/workspace/scratch/943af489e102/chatadhd/loom/src",
+        "-I/workspace/scratch/943af489e102/chatadhd/loom/tests",
+        "-isystem",
+        "/workspace/scratch/943af489e102/chatadhd/loom/third_party/nlohmann",
+        "-isystem",
+        "/workspace/scratch/943af489e102/chatadhd/loom/third_party/doctest",
+        "-c",
+        "/workspace/scratch/943af489e102/chatadhd/loom/src/import/import_usage.cpp",
+        "-o",
+        "/dev/shm/chatadhd-thread5/w2-integration/output/2-import_usage.o"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 11.965638762001618
+    },
+    {
+      "argv": [
+        "/usr/bin/c++",
+        "-std=c++20",
+        "-O0",
+        "-g0",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+        "-Wshadow",
+        "-Werror",
+        "-Wno-unused-parameter",
+        "-pthread",
+        "-DNDEBUG",
+        "-DLOOM_VENDORED_SQLITE=1",
+        "-DLOOM_HAVE_OPENSSL=1",
+        "-DCPPHTTPLIB_OPENSSL_SUPPORT=1",
+        "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+        "-DLOOM_VERSION_STRING=\"0.1.0\"",
+        "-I/dev/shm/chatadhd-thread5/w2-integration/overlay/include",
+        "-I/workspace/scratch/943af489e102/chatadhd/loom/include",
+        "-I/workspace/scratch/943af489e102/chatadhd/loom/src",
+        "-I/workspace/scratch/943af489e102/chatadhd/loom/tests",
+        "-isystem",
+        "/workspace/scratch/943af489e102/chatadhd/loom/third_party/nlohmann",
+        "-isystem",
+        "/workspace/scratch/943af489e102/chatadhd/loom/third_party/doctest",
+        "-c",
+        "/dev/shm/chatadhd-thread5/w2-integration/overlay/usage_policy.cpp",
+        "-o",
+        "/dev/shm/chatadhd-thread5/w2-integration/output/3-usage_policy.o"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 12.674524881000252
+    },
+    {
+      "argv": [
+        "/usr/bin/c++",
+        "-std=c++20",
+        "-O0",
+        "-g0",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+        "-Wshadow",
+        "-Werror",
+        "-Wno-unused-parameter",
+        "-pthread",
+        "-DNDEBUG",
+        "-DLOOM_VENDORED_SQLITE=1",
+        "-DLOOM_HAVE_OPENSSL=1",
+        "-DCPPHTTPLIB_OPENSSL_SUPPORT=1",
+        "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+        "-DLOOM_VERSION_STRING=\"0.1.0\"",
+        "-I/dev/shm/chatadhd-thread5/w2-integration/overlay/include",
+        "-I/workspace/scratch/943af489e102/chatadhd/loom/include",
+        "-I/workspace/scratch/943af489e102/chatadhd/loom/src",
+        "-I/workspace/scratch/943af489e102/chatadhd/loom/tests",
+        "-isystem",
+        "/workspace/scratch/943af489e102/chatadhd/loom/third_party/nlohmann",
+        "-isystem",
+        "/workspace/scratch/943af489e102/chatadhd/loom/third_party/doctest",
+        "-c",
+        "/dev/shm/chatadhd-thread5/w2-integration/overlay/config_usage_policy.cpp",
+        "-o",
+        "/dev/shm/chatadhd-thread5/w2-integration/output/4-config_usage_policy.o"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 14.846691786002339
+    },
+    {
+      "argv": [
+        "/usr/bin/c++",
+        "-std=c++20",
+        "-O0",
+        "-g0",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+        "-Wshadow",
+        "-Werror",
+        "-Wno-unused-parameter",
+        "-pthread",
+        "-DNDEBUG",
+        "-DLOOM_VENDORED_SQLITE=1",
+        "-DLOOM_HAVE_OPENSSL=1",
+        "-DCPPHTTPLIB_OPENSSL_SUPPORT=1",
+        "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+        "-DLOOM_VERSION_STRING=\"0.1.0\"",
+        "-I/dev/shm/chatadhd-thread5/w2-integration/overlay/include",
+        "-I/workspace/scratch/943af489e102/chatadhd/loom/include",
+        "-I/workspace/scratch/943af489e102/chatadhd/loom/src",
+        "-I/workspace/scratch/943af489e102/chatadhd/loom/tests",
+        "-isystem",
+        "/workspace/scratch/943af489e102/chatadhd/loom/third_party/nlohmann",
+        "-isystem",
+        "/workspace/scratch/943af489e102/chatadhd/loom/third_party/doctest",
+        "-c",
+        "/dev/shm/chatadhd-thread5/w2-integration/overlay/config.cpp",
+        "-o",
+        "/dev/shm/chatadhd-thread5/w2-integration/output/5-config.o"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 14.023266208001587
+    },
+    {
+      "argv": [
+        "/usr/bin/c++",
+        "-std=c++20",
+        "-O0",
+        "-g0",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+        "-Wshadow",
+        "-Werror",
+        "-Wno-unused-parameter",
+        "-pthread",
+        "-DNDEBUG",
+        "-DLOOM_VENDORED_SQLITE=1",
+        "-DLOOM_HAVE_OPENSSL=1",
+        "-DCPPHTTPLIB_OPENSSL_SUPPORT=1",
+        "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+        "-DLOOM_VERSION_STRING=\"0.1.0\"",
+        "-I/dev/shm/chatadhd-thread5/w2-integration/overlay/include",
+        "-I/workspace/scratch/943af489e102/chatadhd/loom/include",
+        "-I/workspace/scratch/943af489e102/chatadhd/loom/src",
+        "-I/workspace/scratch/943af489e102/chatadhd/loom/tests",
+        "-isystem",
+        "/workspace/scratch/943af489e102/chatadhd/loom/third_party/nlohmann",
+        "-isystem",
+        "/workspace/scratch/943af489e102/chatadhd/loom/third_party/doctest",
+        "-c",
+        "/dev/shm/chatadhd-thread5/w2-integration/test_receipt_evidence.cpp",
+        "-o",
+        "/dev/shm/chatadhd-thread5/w2-integration/output/6-test_receipt_evidence.o"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 17.221776663998753
+    },
+    {
+      "argv": [
+        "/usr/bin/c++",
+        "-pthread",
+        "/dev/shm/chatadhd-thread5/w2-integration/output/0-main.o",
+        "/dev/shm/chatadhd-thread5/w2-integration/output/1-test_import_usage.o",
+        "/dev/shm/chatadhd-thread5/w2-integration/output/2-import_usage.o",
+        "/dev/shm/chatadhd-thread5/w2-integration/output/3-usage_policy.o",
+        "/dev/shm/chatadhd-thread5/w2-integration/output/4-config_usage_policy.o",
+        "/dev/shm/chatadhd-thread5/w2-integration/output/5-config.o",
+        "/dev/shm/chatadhd-thread5/w2-integration/output/6-test_receipt_evidence.o",
+        "-Wl,-Map,/dev/shm/chatadhd-thread5/w2-integration/output/link.map",
+        "/dev/shm/chatadhd-thread5/baseline-build/libloom_core.a",
+        "/dev/shm/chatadhd-thread5/baseline-build/libloom_sqlite3_amalgamation.a",
+        "-ldl",
+        "-lm",
+        "/dev/shm/chatadhd-thread5/baseline-build/libloom_miniz.a",
+        "/usr/lib/x86_64-linux-gnu/libssl.so",
+        "/usr/lib/x86_64-linux-gnu/libcrypto.so",
+        "-o",
+        "/dev/shm/chatadhd-thread5/w2-integration/output/w2-import-usage-tests"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 16.26097133499934
+    },
+    {
+      "argv": [
+        "/dev/shm/chatadhd-thread5/w2-integration/output/w2-import-usage-tests",
+        "--test-suite=import.usage*",
+        "--no-intro=true",
+        "--success=true"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.1712727089980035
+    }
+  ],
+  "excluded_base_archive_members": [
+    "config.cpp.o",
+    "import_usage.cpp.o"
+  ],
+  "binary_sha256": "4bda53799851a950fb2513c014b7dcd3211aaf525cce46cad33a50b028b203a3",
+  "link_map_sha256": "921bec631bef1d30173b29bdc69fbe801638f8c7776565520e6582b0924760c4",
+  "result": "passed",
+  "confirmation_evidence_sha256": "9114adb13bd88bd460a571d9ad157d904ac08d817378b4ea334984d1fef530c6"
+}

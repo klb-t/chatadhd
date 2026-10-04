@@ -1,0 +1,176 @@
+External pinned W2 + exact thread-5 import admission integration
+$ /usr/bin/c++ -std=c++20 -O0 -g0 -Wall -Wextra -Wpedantic -Wshadow -Werror -Wno-unused-parameter -pthread -DNDEBUG -DLOOM_VENDORED_SQLITE=1 -DLOOM_HAVE_OPENSSL=1 -DCPPHTTPLIB_OPENSSL_SUPPORT=1 -DJSON_USE_IMPLICIT_CONVERSIONS=1 '-DLOOM_VERSION_STRING="0.1.0"' -I/dev/shm/chatadhd-thread5/w2-integration/overlay/include -I/workspace/scratch/943af489e102/chatadhd/loom/include -I/workspace/scratch/943af489e102/chatadhd/loom/src -I/workspace/scratch/943af489e102/chatadhd/loom/tests -isystem /workspace/scratch/943af489e102/chatadhd/loom/third_party/nlohmann -isystem /workspace/scratch/943af489e102/chatadhd/loom/third_party/doctest -c /workspace/scratch/943af489e102/chatadhd/loom/tests/main.cpp -o /dev/shm/chatadhd-thread5/w2-integration/output/0-main.o
+$ /usr/bin/c++ -std=c++20 -O0 -g0 -Wall -Wextra -Wpedantic -Wshadow -Werror -Wno-unused-parameter -pthread -DNDEBUG -DLOOM_VENDORED_SQLITE=1 -DLOOM_HAVE_OPENSSL=1 -DCPPHTTPLIB_OPENSSL_SUPPORT=1 -DJSON_USE_IMPLICIT_CONVERSIONS=1 '-DLOOM_VERSION_STRING="0.1.0"' -I/dev/shm/chatadhd-thread5/w2-integration/overlay/include -I/workspace/scratch/943af489e102/chatadhd/loom/include -I/workspace/scratch/943af489e102/chatadhd/loom/src -I/workspace/scratch/943af489e102/chatadhd/loom/tests -isystem /workspace/scratch/943af489e102/chatadhd/loom/third_party/nlohmann -isystem /workspace/scratch/943af489e102/chatadhd/loom/third_party/doctest -c /workspace/scratch/943af489e102/chatadhd/loom/tests/test_import_usage.cpp -o /dev/shm/chatadhd-thread5/w2-integration/output/1-test_import_usage.o
+$ /usr/bin/c++ -std=c++20 -O0 -g0 -Wall -Wextra -Wpedantic -Wshadow -Werror -Wno-unused-parameter -pthread -DNDEBUG -DLOOM_VENDORED_SQLITE=1 -DLOOM_HAVE_OPENSSL=1 -DCPPHTTPLIB_OPENSSL_SUPPORT=1 -DJSON_USE_IMPLICIT_CONVERSIONS=1 '-DLOOM_VERSION_STRING="0.1.0"' -I/dev/shm/chatadhd-thread5/w2-integration/overlay/include -I/workspace/scratch/943af489e102/chatadhd/loom/include -I/workspace/scratch/943af489e102/chatadhd/loom/src -I/workspace/scratch/943af489e102/chatadhd/loom/tests -isystem /workspace/scratch/943af489e102/chatadhd/loom/third_party/nlohmann -isystem /workspace/scratch/943af489e102/chatadhd/loom/third_party/doctest -c /workspace/scratch/943af489e102/chatadhd/loom/src/import/import_usage.cpp -o /dev/shm/chatadhd-thread5/w2-integration/output/2-import_usage.o
+$ /usr/bin/c++ -std=c++20 -O0 -g0 -Wall -Wextra -Wpedantic -Wshadow -Werror -Wno-unused-parameter -pthread -DNDEBUG -DLOOM_VENDORED_SQLITE=1 -DLOOM_HAVE_OPENSSL=1 -DCPPHTTPLIB_OPENSSL_SUPPORT=1 -DJSON_USE_IMPLICIT_CONVERSIONS=1 '-DLOOM_VERSION_STRING="0.1.0"' -I/dev/shm/chatadhd-thread5/w2-integration/overlay/include -I/workspace/scratch/943af489e102/chatadhd/loom/include -I/workspace/scratch/943af489e102/chatadhd/loom/src -I/workspace/scratch/943af489e102/chatadhd/loom/tests -isystem /workspace/scratch/943af489e102/chatadhd/loom/third_party/nlohmann -isystem /workspace/scratch/943af489e102/chatadhd/loom/third_party/doctest -c /dev/shm/chatadhd-thread5/w2-integration/overlay/usage_policy.cpp -o /dev/shm/chatadhd-thread5/w2-integration/output/3-usage_policy.o
+$ /usr/bin/c++ -std=c++20 -O0 -g0 -Wall -Wextra -Wpedantic -Wshadow -Werror -Wno-unused-parameter -pthread -DNDEBUG -DLOOM_VENDORED_SQLITE=1 -DLOOM_HAVE_OPENSSL=1 -DCPPHTTPLIB_OPENSSL_SUPPORT=1 -DJSON_USE_IMPLICIT_CONVERSIONS=1 '-DLOOM_VERSION_STRING="0.1.0"' -I/dev/shm/chatadhd-thread5/w2-integration/overlay/include -I/workspace/scratch/943af489e102/chatadhd/loom/include -I/workspace/scratch/943af489e102/chatadhd/loom/src -I/workspace/scratch/943af489e102/chatadhd/loom/tests -isystem /workspace/scratch/943af489e102/chatadhd/loom/third_party/nlohmann -isystem /workspace/scratch/943af489e102/chatadhd/loom/third_party/doctest -c /dev/shm/chatadhd-thread5/w2-integration/overlay/config_usage_policy.cpp -o /dev/shm/chatadhd-thread5/w2-integration/output/4-config_usage_policy.o
+$ /usr/bin/c++ -std=c++20 -O0 -g0 -Wall -Wextra -Wpedantic -Wshadow -Werror -Wno-unused-parameter -pthread -DNDEBUG -DLOOM_VENDORED_SQLITE=1 -DLOOM_HAVE_OPENSSL=1 -DCPPHTTPLIB_OPENSSL_SUPPORT=1 -DJSON_USE_IMPLICIT_CONVERSIONS=1 '-DLOOM_VERSION_STRING="0.1.0"' -I/dev/shm/chatadhd-thread5/w2-integration/overlay/include -I/workspace/scratch/943af489e102/chatadhd/loom/include -I/workspace/scratch/943af489e102/chatadhd/loom/src -I/workspace/scratch/943af489e102/chatadhd/loom/tests -isystem /workspace/scratch/943af489e102/chatadhd/loom/third_party/nlohmann -isystem /workspace/scratch/943af489e102/chatadhd/loom/third_party/doctest -c /dev/shm/chatadhd-thread5/w2-integration/overlay/config.cpp -o /dev/shm/chatadhd-thread5/w2-integration/output/5-config.o
+$ /usr/bin/c++ -std=c++20 -O0 -g0 -Wall -Wextra -Wpedantic -Wshadow -Werror -Wno-unused-parameter -pthread -DNDEBUG -DLOOM_VENDORED_SQLITE=1 -DLOOM_HAVE_OPENSSL=1 -DCPPHTTPLIB_OPENSSL_SUPPORT=1 -DJSON_USE_IMPLICIT_CONVERSIONS=1 '-DLOOM_VERSION_STRING="0.1.0"' -I/dev/shm/chatadhd-thread5/w2-integration/overlay/include -I/workspace/scratch/943af489e102/chatadhd/loom/include -I/workspace/scratch/943af489e102/chatadhd/loom/src -I/workspace/scratch/943af489e102/chatadhd/loom/tests -isystem /workspace/scratch/943af489e102/chatadhd/loom/third_party/nlohmann -isystem /workspace/scratch/943af489e102/chatadhd/loom/third_party/doctest -c /dev/shm/chatadhd-thread5/w2-integration/test_receipt_evidence.cpp -o /dev/shm/chatadhd-thread5/w2-integration/output/6-test_receipt_evidence.o
+$ /usr/bin/c++ -pthread /dev/shm/chatadhd-thread5/w2-integration/output/0-main.o /dev/shm/chatadhd-thread5/w2-integration/output/1-test_import_usage.o /dev/shm/chatadhd-thread5/w2-integration/output/2-import_usage.o /dev/shm/chatadhd-thread5/w2-integration/output/3-usage_policy.o /dev/shm/chatadhd-thread5/w2-integration/output/4-config_usage_policy.o /dev/shm/chatadhd-thread5/w2-integration/output/5-config.o /dev/shm/chatadhd-thread5/w2-integration/output/6-test_receipt_evidence.o -Wl,-Map,/dev/shm/chatadhd-thread5/w2-integration/output/link.map /dev/shm/chatadhd-thread5/baseline-build/libloom_core.a /dev/shm/chatadhd-thread5/baseline-build/libloom_sqlite3_amalgamation.a -ldl -lm /dev/shm/chatadhd-thread5/baseline-build/libloom_miniz.a /usr/lib/x86_64-linux-gnu/libssl.so /usr/lib/x86_64-linux-gnu/libcrypto.so -o /dev/shm/chatadhd-thread5/w2-integration/output/w2-import-usage-tests
+$ /dev/shm/chatadhd-thread5/w2-integration/output/w2-import-usage-tests '--test-suite=import.usage*' --no-intro=true --success=true
+===============================================================================
+/dev/shm/chatadhd-thread5/w2-integration/test_receipt_evidence.cpp:15:
+TEST SUITE: import.usage.integration
+TEST CASE:  pinned W2 persists the exact confirmation and measured baseline after import
+
+/dev/shm/chatadhd-thread5/w2-integration/test_receipt_evidence.cpp:22: SUCCESS: REQUIRE( runtime->config().get("loom_usage_policy") == usage_policy_defaults() ) is correct!
+  values: REQUIRE( {"schema":"loom.usage_policy/1","growth_factor":10.0,"baseline_window":32,"ledger_busy_timeout_ms":30000,"include_reservations":true,"initial_baselines":{}} == {"schema":"loom.usage_policy/1","growth_factor":10.0,"baseline_window":32,"ledger_busy_timeout_ms":30000,"include_reservations":true,"initial_baselines":{}} )
+
+/dev/shm/chatadhd-thread5/w2-integration/test_receipt_evidence.cpp:28: SUCCESS: REQUIRE( static_cast<bool>(loom_t_r_) ) is correct!
+  values: REQUIRE( true )
+  logged: ok
+
+/dev/shm/chatadhd-thread5/w2-integration/test_receipt_evidence.cpp:32: SUCCESS: REQUIRE( static_cast<bool>(loom_t_r_) ) is correct!
+  values: REQUIRE( true )
+  logged: ok
+
+/dev/shm/chatadhd-thread5/w2-integration/test_receipt_evidence.cpp:39: SUCCESS: REQUIRE( static_cast<bool>(loom_t_r_) ) is correct!
+  values: REQUIRE( true )
+  logged: ok
+
+/dev/shm/chatadhd-thread5/w2-integration/test_receipt_evidence.cpp:42: SUCCESS: REQUIRE( static_cast<bool>(loom_t_r_) ) is correct!
+  values: REQUIRE( true )
+  logged: ok
+
+/dev/shm/chatadhd-thread5/w2-integration/test_receipt_evidence.cpp:45: SUCCESS: REQUIRE_FALSE( paused ) is correct!
+  values: REQUIRE_FALSE( {?} )
+
+/dev/shm/chatadhd-thread5/w2-integration/test_receipt_evidence.cpp:46: SUCCESS: REQUIRE( second->requires_confirmation() ) is correct!
+  values: REQUIRE( true )
+
+/dev/shm/chatadhd-thread5/w2-integration/test_receipt_evidence.cpp:47: SUCCESS: REQUIRE( second->receipt()["status"] == "requires_confirmation" ) is correct!
+  values: REQUIRE( "requires_confirmation" == requires_confirmation )
+
+/dev/shm/chatadhd-thread5/w2-integration/test_receipt_evidence.cpp:48: SUCCESS: REQUIRE( second->receipt()["authorized"] == false ) is correct!
+  values: REQUIRE( false == false )
+
+/dev/shm/chatadhd-thread5/w2-integration/test_receipt_evidence.cpp:49: SUCCESS: REQUIRE( second->receipt()["resources"]["source_bytes"]["ratio"].get<double>() >= 10.0 ) is correct!
+  values: REQUIRE( 124.395 >= 10 )
+
+/dev/shm/chatadhd-thread5/w2-integration/test_receipt_evidence.cpp:50: SUCCESS: REQUIRE( unwrap(runtime->db().conn().query_int("SELECT COUNT(*) FROM conversations")).value() == 1 ) is correct!
+  values: REQUIRE( 1 == 1 )
+
+/dev/shm/chatadhd-thread5/w2-integration/test_receipt_evidence.cpp:55: SUCCESS: REQUIRE_FALSE( mismatched ) is correct!
+  values: REQUIRE_FALSE( {?} )
+
+/dev/shm/chatadhd-thread5/w2-integration/test_receipt_evidence.cpp:56: SUCCESS: CHECK( mismatched.error().code == Errc::Conflict ) is correct!
+  values: CHECK( 15 == 15 )
+
+/dev/shm/chatadhd-thread5/w2-integration/test_receipt_evidence.cpp:57: SUCCESS: CHECK( unwrap(runtime->db().conn().query_int("SELECT COUNT(*) FROM conversations")).value() == 1 ) is correct!
+  values: CHECK( 1 == 1 )
+
+/dev/shm/chatadhd-thread5/w2-integration/test_receipt_evidence.cpp:58: SUCCESS: REQUIRE( static_cast<bool>(loom_t_r_) ) is correct!
+  values: REQUIRE( true )
+  logged: ok
+
+/dev/shm/chatadhd-thread5/w2-integration/test_receipt_evidence.cpp:61: SUCCESS: REQUIRE( confirmed["receipt_id"] == receipt_id ) is correct!
+  values: REQUIRE( "usage_1fb4e59b0e8f92cc0eb531b950282eac08f6d66a6e44b98b76352e16eb6b7e98" == usage_1fb4e59b0e8f92cc0eb531b950282eac08f6d66a6e44b98b76352e16eb6b7e98 )
+
+/dev/shm/chatadhd-thread5/w2-integration/test_receipt_evidence.cpp:62: SUCCESS: REQUIRE( confirmed["estimate"] == pause_receipt["estimate"] ) is correct!
+  values: REQUIRE( {"operation_id":"growth","baseline_key":"external-integration/import/source-bytes","resources":{"source_bytes":10076},"source_hash":"4648119ff5a1f4e3d8373fdd4b33c717c0473cba7d41b93c63e2ebba57b06d26","parser_version":"export-3","import_options":{"export_mode":"on","force":false,"resume":true}} == {"operation_id":"growth","baseline_key":"external-integration/import/source-bytes","resources":{"source_bytes":10076},"source_hash":"4648119ff5a1f4e3d8373fdd4b33c717c0473cba7d41b93c63e2ebba57b06d26","parser_version":"export-3","import_options":{"export_mode":"on","force":false,"resume":true}} )
+
+/dev/shm/chatadhd-thread5/w2-integration/test_receipt_evidence.cpp:63: SUCCESS: REQUIRE( confirmed["resources"] == pause_receipt["resources"] ) is correct!
+  values: REQUIRE( {"source_bytes":{"estimate":10076,"baseline":81.0,"baseline_source":"measured","baseline_samples":1,"reserved":0.0,"projected":10076.0,"ratio":124.39506172839506,"reserved_lower_bound":0.0,"projected_lower_bound":10076.0,"projection_status":"estimated","baseline_status":"available","requires_confirmation":true}} == {"source_bytes":{"estimate":10076,"baseline":81.0,"baseline_source":"measured","baseline_samples":1,"reserved":0.0,"projected":10076.0,"ratio":124.39506172839506,"reserved_lower_bound":0.0,"projected_lower_bound":10076.0,"projection_status":"estimated","baseline_status":"available","requires_confirmation":true}} )
+
+/dev/shm/chatadhd-thread5/w2-integration/test_receipt_evidence.cpp:64: SUCCESS: REQUIRE( confirmed["confirmation"] == Json{{"approved", true}, {"ref", "synthetic-owner-confirmation"}} ) is correct!
+  values: REQUIRE( {"approved":true,"ref":"synthetic-owner-confirmation"} == {"approved":true,"ref":"synthetic-owner-confirmation"} )
+
+/dev/shm/chatadhd-thread5/w2-integration/test_receipt_evidence.cpp:65: SUCCESS: REQUIRE( confirmed["authorized"] == true ) is correct!
+  values: REQUIRE( true == true )
+
+/dev/shm/chatadhd-thread5/w2-integration/test_receipt_evidence.cpp:67: SUCCESS: REQUIRE( static_cast<bool>(loom_t_r_) ) is correct!
+  values: REQUIRE( true )
+  logged: ok
+
+/dev/shm/chatadhd-thread5/w2-integration/test_receipt_evidence.cpp:68: SUCCESS: REQUIRE( second->receipt()["status"] == "completed" ) is correct!
+  values: REQUIRE( "completed" == completed )
+
+/dev/shm/chatadhd-thread5/w2-integration/test_receipt_evidence.cpp:69: SUCCESS: REQUIRE( unwrap(runtime->db().conn().query_int("SELECT COUNT(*) FROM conversations")).value() == 2 ) is correct!
+  values: REQUIRE( 2 == 2 )
+
+/dev/shm/chatadhd-thread5/w2-integration/test_receipt_evidence.cpp:72: SUCCESS: REQUIRE( inspected["baseline"]["source_bytes"]["samples"] == 2 ) is correct!
+  values: REQUIRE( 2 == 2 )
+
+/dev/shm/chatadhd-thread5/w2-integration/test_receipt_evidence.cpp:77: SUCCESS: CHECK( event["payload"] == confirmed["confirmation"] ) is correct!
+  values: CHECK( {"approved":true,"ref":"synthetic-owner-confirmation"} == {"approved":true,"ref":"synthetic-owner-confirmation"} )
+
+/dev/shm/chatadhd-thread5/w2-integration/test_receipt_evidence.cpp:80: SUCCESS: REQUIRE( found_confirmation ) is correct!
+  values: REQUIRE( true )
+
+/dev/shm/chatadhd-thread5/w2-integration/test_receipt_evidence.cpp:82: SUCCESS: REQUIRE( destination != nullptr ) is correct!
+  values: REQUIRE( 0x7ffff14a4f67 != nullptr )
+
+/dev/shm/chatadhd-thread5/w2-integration/test_receipt_evidence.cpp:83: SUCCESS: REQUIRE( static_cast<bool>(loom_t_r_) ) is correct!
+  values: REQUIRE( true )
+  logged: ok
+
+===============================================================================
+/workspace/scratch/943af489e102/chatadhd/loom/tests/test_import_usage.cpp:12:
+TEST SUITE: import.usage
+TEST CASE:  shared admission reports its real build capability
+
+/workspace/scratch/943af489e102/chatadhd/loom/tests/test_import_usage.cpp:20: SUCCESS: REQUIRE( static_cast<bool>(loom_t_r_) ) is correct!
+  values: REQUIRE( true )
+  logged: ok
+
+/workspace/scratch/943af489e102/chatadhd/loom/tests/test_import_usage.cpp:21: SUCCESS: REQUIRE( static_cast<bool>(loom_t_r_) ) is correct!
+  values: REQUIRE( true )
+  logged: ok
+
+/workspace/scratch/943af489e102/chatadhd/loom/tests/test_import_usage.cpp:23: SUCCESS: CHECK( usage->receipt()["status"] == "allowed" ) is correct!
+  values: CHECK( "allowed" == allowed )
+
+/workspace/scratch/943af489e102/chatadhd/loom/tests/test_import_usage.cpp:24: SUCCESS: CHECK( usage->receipt()["resources"]["source_bytes"]["baseline_status"] == "unavailable" ) is correct!
+  values: CHECK( "unavailable" == unavailable )
+
+===============================================================================
+/workspace/scratch/943af489e102/chatadhd/loom/tests/test_import_usage.cpp:32:
+TEST SUITE: import.usage
+TEST CASE:  import volume growth pauses before rows and binds explicit owner confirmation
+
+/workspace/scratch/943af489e102/chatadhd/loom/tests/test_import_usage.cpp:40: SUCCESS: REQUIRE( static_cast<bool>(loom_t_r_) ) is correct!
+  values: REQUIRE( true )
+  logged: ok
+
+/workspace/scratch/943af489e102/chatadhd/loom/tests/test_import_usage.cpp:43: SUCCESS: REQUIRE( static_cast<bool>(loom_t_r_) ) is correct!
+  values: REQUIRE( true )
+  logged: ok
+
+/workspace/scratch/943af489e102/chatadhd/loom/tests/test_import_usage.cpp:50: SUCCESS: REQUIRE( static_cast<bool>(loom_t_r_) ) is correct!
+  values: REQUIRE( true )
+  logged: ok
+
+/workspace/scratch/943af489e102/chatadhd/loom/tests/test_import_usage.cpp:53: SUCCESS: REQUIRE( static_cast<bool>(loom_t_r_) ) is correct!
+  values: REQUIRE( true )
+  logged: ok
+
+/workspace/scratch/943af489e102/chatadhd/loom/tests/test_import_usage.cpp:54: SUCCESS: CHECK( first->receipt()["status"] == "completed" ) is correct!
+  values: CHECK( "completed" == completed )
+
+/workspace/scratch/943af489e102/chatadhd/loom/tests/test_import_usage.cpp:56: SUCCESS: CHECK_FALSE( second->request(large, options, "second", cohort) ) is correct!
+  values: CHECK_FALSE( {?} )
+
+/workspace/scratch/943af489e102/chatadhd/loom/tests/test_import_usage.cpp:57: SUCCESS: CHECK( second->requires_confirmation() ) is correct!
+  values: CHECK( true )
+
+/workspace/scratch/943af489e102/chatadhd/loom/tests/test_import_usage.cpp:58: SUCCESS: CHECK( unwrap(runtime->db().conn().query_int("SELECT COUNT(*) FROM conversations")).value() == 1 ) is correct!
+  values: CHECK( 1 == 1 )
+
+/workspace/scratch/943af489e102/chatadhd/loom/tests/test_import_usage.cpp:60: SUCCESS: REQUIRE( static_cast<bool>(loom_t_r_) ) is correct!
+  values: REQUIRE( true )
+  logged: ok
+
+/workspace/scratch/943af489e102/chatadhd/loom/tests/test_import_usage.cpp:63: SUCCESS: REQUIRE( static_cast<bool>(loom_t_r_) ) is correct!
+  values: REQUIRE( true )
+  logged: ok
+
+/workspace/scratch/943af489e102/chatadhd/loom/tests/test_import_usage.cpp:64: SUCCESS: CHECK( second->receipt()["status"] == "completed" ) is correct!
+  values: CHECK( "completed" == completed )
+
+/workspace/scratch/943af489e102/chatadhd/loom/tests/test_import_usage.cpp:65: SUCCESS: CHECK( unwrap(runtime->db().conn().query_int("SELECT COUNT(*) FROM conversations")).value() == 2 ) is correct!
+  values: CHECK( 2 == 2 )
+
+===============================================================================
+[doctest] test cases:  3 |  3 passed | 0 failed | 0 skipped
+[doctest] assertions: 44 | 44 passed | 0 failed |
+[doctest] Status: SUCCESS!
