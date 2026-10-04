@@ -7275,6 +7275,69 @@ const char* const kPackChunks8[] = {
     }
    ]
   }
+ },
+ "name_rules": {
+  "description": "Configurable syntax presets for newly mined names and prose claims. Profile/gazetteer and structurally declared provider project names retain their authority. False syntax matches leave all source observations intact. No minimum name length is imposed; Unicode scripts, C++, C#, and short identifiers remain valid. Case and stopword heuristics apply only to weak project-name cues, with explicit artifact exceptions. Disable this group or a rule to retain every candidate.",
+  "enabled": true,
+  "all": {
+   "reject_substrings": [
+    "::",
+    "->",
+    "=>",
+  )LOOMKB",
+    R"LOOMKB(  "://"
+   ],
+   "reject_regex": [
+    "[{}=;]",
+    "^(?:const|static|void|int|auto|struct|class|enum|def|return|unsigned|constexpr|inline|virtual|template|typename|namespace|using|import|from|self|this|bool|size_t|nullptr)\\b[\\s:&*]+",
+    "^\\w+\\s*:\\s*(?:str|int|float|bool|dict|list|set|tuple|Json|std::\\w+)\\b",
+    "^[\\w:.]+\\(",
+    "(?i)\\.(?:h|hpp|cpp|c|py|js|ts|tsx|json|md|txt|cmake|sh|yml|yaml|inc|html|css)$"
+   ]
+  },
+  "by_kind": {
+   "project": {
+    "require_upper": true,
+    "reject_stopword_edges": true,
+    "lenient_types": [
+     "conversation",
+     "email",
+     "recording_transcript",
+     "brainstorm"
+    ],
+    "stopword_min_tokens": 2
+   }
+  },
+  "prose": {
+   "description": "Recognise complete syntax lines, not ordinary prose mentioning code. Arrows, comments, semicolon punctuation and technical names alone do not disqualify prose.",
+   "reject_prefixes": [
+    "#include",
+    "#define",
+    "#pragma",
+    "#if",
+    "#endif"
+   ],
+   "reject_regex": [
+    "^(?:import\\s+[\\w.]+(?:\\s+as\\s+\\w+)?|from\\s+[\\w.]+\\s+import\\s+.+)$",
+    "^(?:def|class|struct|enum|namespace)\\s+\\w+[^\\n]*[:{]\\s*$",
+    "^[\\w.]+\\s*(?:=|\\+=|-=)\\s*(?:[\"'\\d\\[({]|(?:true|false|null|None)\\b)",
+    "^\\w+\\s*:\\s*(?:str|int|float|bool|dict|list|set|tuple|Json|std::\\w+)\\b",
+    "^(?:const|static|constexpr|inline|virtual|void|int|unsigned|bool|auto|std::\\w+|Json|double|float|size_t)\\b[^\\n]*[;{]\\s*$",
+    "^[\\w.:>\\-]+\\([^\\n]*\\);\\s*$"
+   ]
+  }
+ },
+ "anchor_policy": {
+  "paradigm.music": {
+   "min_weight": 3,
+   "window": 1,
+   "dominant_context": false
+  },
+  "paradigm.research": {
+   "min_weight": 3.5,
+   "window": 1,
+   "dominant_context": false
+  }
  }
 }
 )LOOMKB",
@@ -7282,26 +7345,116 @@ const char* const kPackChunks8[] = {
 const char* const kPackChunks9[] = {
     R"LOOMKB({
   "schema": "loom.kb.version_patterns/1",
-  "description": "Version recognition. A candidate is kept only when anchored: an alias of a known project within window_tokens, an anchor word, a declaration pattern, or an attachment/file name. Normalisation (code): strip 'v', drop leading zeros per component ('0.07.09' == '0.7.9'), pad nothing; comparison is numeric per component, missing components compare as 0.",
+  "description": "Version recognition. A candidate is kept only when anchored: an alias of a known project within window_tokens, an anchor word, a declaration pattern, or an attachment/file name. Normalisation (code): strip 'v', drop leading zeros per component ('0.07.09' == '0.7.9'), pad nothing; comparison is numeric per component, missing components compare as 0. entity_binding binds to the nearest preceding typed mention across only a configured separator gap; dependency versions stay on that entity. reject_suffix_regex matches only the immediate numeric suffix (measurements and continued dotted numbers). Both are editable presets; omitted binding preserves the older anchor behavior.",
   "regex": "\\b[vV]?(\\d{1,2}\\.\\d{1,2}(?:\\.\\d{1,3})?)\\b",
   "window_tokens": 12,
   "anchors": {
-    "en": ["version", "release", "build", "tag", "changelog"],
-    "pl": ["wersja", "wersji", "wersję", "wersją", "wydanie", "wydania", "release"]
+    "en": [
+      "version",
+      "release",
+      "build",
+      "tag",
+      "changelog"
+    ],
+    "pl": [
+      "wersja",
+      "wersji",
+      "wersję",
+      "wersją",
+      "wydanie",
+      "wydania",
+      "release"
+    ]
   },
   "declarations": [
-    {"id": "py_dunder", "regex": "__version__\\s*=\\s*[\"']([0-9][0-9.]*)[\"']", "confidence": 0.95},
-    {"id": "cmake_project", "regex": "project\\([^)]*VERSION\\s+([0-9][0-9.]*)", "confidence": 0.9},
-    {"id": "header_version", "regex": "\\(v([0-9][0-9.]*)\\)", "confidence": 0.8},
-    {"id": "commit_subject", "regex": "^(?:[Vv]ersion|[Rr]elease|[Ww]ersja)\\s+v?([0-9][0-9.]*)", "confidence": 0.9},
-    {"id": "file_name", "regex": "(?:^|[_-])v?([0-9]{1,2}\\.[0-9]{1,2}(?:\\.[0-9]{1,3})?)(?:[_.-]|$)", "confidence": 0.85},
-    {"id": "changelog_line", "regex": "^\\s*v?([0-9]{1,2}\\.[0-9]{1,2}(?:\\.[0-9]{1,3})?)\\s*:", "confidence": 0.85}
+    {
+      "id": "py_dunder",
+      "regex": "__version__\\s*=\\s*[\"']([0-9][0-9.]*)[\"']",
+      "confidence": 0.95
+    },
+    {
+      "id": "cmake_project",
+      "regex": "project\\([^)]*VERSION\\s+([0-9][0-9.]*)",
+      "confidence": 0.9
+    },
+    {
+      "id": "header_version",
+      "regex": "\\(v([0-9][0-9.]*)\\)",
+      "confidence": 0.8
+    },
+    {
+      "id": "commit_subject",
+      "regex": "^(?:[Vv]ersion|[Rr]elease|[Ww]ersja)\\s+v?([0-9][0-9.]*)",
+      "confidence": 0.9
+    },
+    {
+      "id": "file_name",
+      "regex": "(?:^|[_-])v?([0-9]{1,2}\\.[0-9]{1,2}(?:\\.[0-9]{1,3})?)(?:[_.-]|$)",
+      "confidence": 0.85
+    },
+    {
+      "id": "changelog_line",
+      "regex": "^\\s*v?([0-9]{1,2}\\.[0-9]{1,2}(?:\\.[0-9]{1,3})?)\\s*:",
+      "confidence": 0.85
+    }
   ],
-  "exclude_contexts": ["python 3.", "api v1", "api/v1", "http/1.", "http/2", "c++20", "c++17", "sqlite 3.", "iso 8601", "utf-8", "temperature", "temp", "%", "gb", "mb", "zł", "$"],
+  "exclude_contexts": [
+    "python 3.",
+    "api v1",
+    "api/v1",
+    "http/1.",
+    "http/2",
+    "c++20",
+    "c++17",
+    "sqlite 3.",
+    "iso 8601",
+    "utf-8",
+    "temperature",
+    "temp",
+    "%",
+    "gb",
+    "mb",
+    "zł",
+    "$"
+  ],
   "status_phrases": {
-    "current": ["current version", "latest version", "aktualna wersja", "najnowsza wersja", "obecna wersja"],
-    "archive_only_hint": ["tylko w archiwum", "only in the archive", "not pushed", "niepushnięt*", "lokalnie"]
-  }
+    "current": [
+      "current version",
+      "latest version",
+      "aktualna wersja",
+      "najnowsza wersja",
+      "obecna wersja"
+    ],
+    "archive_only_hint": [
+      "tylko w archiwum",
+      "only in the archive",
+      "not pushed",
+      "niepushnięt*",
+      "lokalnie"
+    ]
+  },
+  "entity_binding": {
+    "kinds": [
+      "project",
+      "platform",
+      "language",
+      "ui_framework",
+      "storage",
+      "protocol",
+      "format",
+      "tool",
+      "sync"
+    ],
+    "max_gap_chars": 32,
+    "gap_regex": "^\\s*(?:[v.@=<>~^:\\-\\(\\[\\{\\\"\\x27`*]\\s*|(?:version|wersja|wersji|wersje|release)\\s*)*$"
+  },
+  "reject_suffix_regex": "^(?:\\.[A-Za-z0-9]|%|\\s*(?:ms|sec|seconds|kb|kib|mb|mib|gb|gib|bytes|fps|hz|px)\\b)",
+  "extra_observation_kinds": [
+    "code_block"
+  ],
+  "declaration_only_kinds": [
+    "code_block"
+  ]
 }
 )LOOMKB",
     nullptr};

@@ -2313,5 +2313,67 @@
     }
    ]
   }
+ },
+ "name_rules": {
+  "description": "Configurable syntax presets for newly mined names and prose claims. Profile/gazetteer and structurally declared provider project names retain their authority. False syntax matches leave all source observations intact. No minimum name length is imposed; Unicode scripts, C++, C#, and short identifiers remain valid. Case and stopword heuristics apply only to weak project-name cues, with explicit artifact exceptions. Disable this group or a rule to retain every candidate.",
+  "enabled": true,
+  "all": {
+   "reject_substrings": [
+    "::",
+    "->",
+    "=>",
+    "://"
+   ],
+   "reject_regex": [
+    "[{}=;]",
+    "^(?:const|static|void|int|auto|struct|class|enum|def|return|unsigned|constexpr|inline|virtual|template|typename|namespace|using|import|from|self|this|bool|size_t|nullptr)\\b[\\s:&*]+",
+    "^\\w+\\s*:\\s*(?:str|int|float|bool|dict|list|set|tuple|Json|std::\\w+)\\b",
+    "^[\\w:.]+\\(",
+    "(?i)\\.(?:h|hpp|cpp|c|py|js|ts|tsx|json|md|txt|cmake|sh|yml|yaml|inc|html|css)$"
+   ]
+  },
+  "by_kind": {
+   "project": {
+    "require_upper": true,
+    "reject_stopword_edges": true,
+    "lenient_types": [
+     "conversation",
+     "email",
+     "recording_transcript",
+     "brainstorm"
+    ],
+    "stopword_min_tokens": 2
+   }
+  },
+  "prose": {
+   "description": "Recognise complete syntax lines, not ordinary prose mentioning code. Arrows, comments, semicolon punctuation and technical names alone do not disqualify prose.",
+   "reject_prefixes": [
+    "#include",
+    "#define",
+    "#pragma",
+    "#if",
+    "#endif"
+   ],
+   "reject_regex": [
+    "^(?:import\\s+[\\w.]+(?:\\s+as\\s+\\w+)?|from\\s+[\\w.]+\\s+import\\s+.+)$",
+    "^(?:def|class|struct|enum|namespace)\\s+\\w+[^\\n]*[:{]\\s*$",
+    "^[\\w.]+\\s*(?:=|\\+=|-=)\\s*(?:[\"'\\d\\[({]|(?:true|false|null|None)\\b)",
+    "^\\w+\\s*:\\s*(?:str|int|float|bool|dict|list|set|tuple|Json|std::\\w+)\\b",
+    "^(?:const|static|constexpr|inline|virtual|void|int|unsigned|bool|auto|std::\\w+|Json|double|float|size_t)\\b[^\\n]*[;{]\\s*$",
+    "^[\\w.:>\\-]+\\([^\\n]*\\);\\s*$"
+   ]
+  }
+ },
+ "anchor_policy": {
+  "paradigm.music": {
+   "min_weight": 3,
+   "window": 1,
+   "dominant_context": false
+  },
+  "paradigm.research": {
+   "min_weight": 3.5,
+   "window": 1,
+   "dominant_context": false
+  }
  }
 }
