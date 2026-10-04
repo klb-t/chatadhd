@@ -1,0 +1,13 @@
+test_bad_estimator_cache (__main__.Extra.test_bad_estimator_cache) ... ok
+test_complete (__main__.Extra.test_complete) ... ok
+test_empty (__main__.Extra.test_empty) ... ok
+test_exact_projection_conversations (__main__.Extra.test_exact_projection_conversations) ... ok
+test_file_identical (__main__.Extra.test_file_identical) ... ok
+test_no_rates (__main__.Extra.test_no_rates) ... ok
+test_nul_unicode (__main__.Extra.test_nul_unicode) ... ok
+test_rates_and_estimator (__main__.Extra.test_rates_and_estimator) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.031s
+
+OK
