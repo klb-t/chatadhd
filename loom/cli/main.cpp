@@ -13,6 +13,7 @@
 #include <atomic>
 #include <csignal>
 #include <cstdio>
+#include <cmath>
 #include <fstream>
 #include <iostream>
 #include <map>
@@ -43,6 +44,8 @@
 #include "loom/util/fs.h"
 #include "loom/util/json.h"
 #include "loom/util/utf8.h"
+#include "import/import_audit.h"
+#include "import/import_usage.h"
 
 using namespace loom;
 
@@ -75,6 +78,15 @@ Commands:
   import PATH [--title T] [--force] [--export-mode auto|off|on] [--audit]
                                         universal importer (ChatGPT/Claude/HTML/MD/...); ChatGPT/Claude
                                         export ZIPs are imported losslessly (on: bare .json too)
+         [--resume | --no-resume] [--json-read-chunk-bytes N] [--json-max-depth N]
+         [--json-inline-threshold-bytes N] [--generic-inference-max-bytes N]
+         [--full-result]                include complete conversation metadata in the receipt too
+         [--audit-scope all|active] [--audit-chars-per-token-low N] [--audit-chars-per-token-high N]
+         [--audit-input-price USD_PER_MILLION --audit-output-price USD_PER_MILLION]
+         [--audit-output-ratio N]          offline text/token/cost estimates; no model call
+         [--usage-operation-id ID] [--usage-baseline-key KEY]
+         [--usage-confirm-receipt RECEIPT --usage-confirmation-ref OWNER_REF]
+                                        shared usage policy activates after thread 2 integration
   export CONV_ID [--format json|markdown|text|html] [--out FILE]
   graph nodes [--kind K] [--limit N]
   graph edges [--node ID] [--type T]
@@ -131,7 +143,8 @@ Archive example (the self-hosting run):
 const std::set<std::string>& flag_names() {
   static const std::set<std::string> k = {"json",   "quiet",  "force",   "audit",   "all",     "refresh", "no-git",
                                           "no-code", "include-db", "web", "help",    "deep",    "mobile",
-                                          "dry-run", "knowledge", "include-project-siblings", "no-priors"};
+                                          "dry-run", "knowledge", "include-project-siblings", "no-priors",
+                                          "resume", "no-resume", "full-result"};
   return k;
 }
 
@@ -420,6 +433,46 @@ void print_export_audit(const Json& rep) {
 
 int cmd_import(Runtime& rt, const Args& a) {
   ImportOptions o;
+  ImportAuditOptions audit;
+  auto number = [&](const std::string& key, double fallback) {
+    if (!a.has(key)) return fallback;
+    const auto s = a.get(key);
+    std::size_t consumed = 0;
+    double value;
+    try { value = std::stod(s, &consumed); }
+    catch (...) { throw UsageError{"--" + key + " must be a finite number"}; }
+    if (consumed != s.size() || !std::isfinite(value)) throw UsageError{"--" + key + " must be a finite number"};
+    return value;
+  };
+  auto nonnegative_integer = [&](const std::string& key, std::int64_t fallback) {
+    if (!a.has(key)) return fallback;
+    const auto s = a.get(key);
+    std::size_t consumed = 0;
+    std::int64_t value;
+    try { value = std::stoll(s, &consumed); }
+    catch (...) { throw UsageError{"--" + key + " must be a nonnegative int64"}; }
+    if (consumed != s.size() || value < 0) throw UsageError{"--" + key + " must be a nonnegative int64"};
+    return value;
+  };
+  if (a.has("resume") && a.has("no-resume")) throw UsageError{"choose --resume or --no-resume"};
+  o.resume = !a.has("no-resume");
+  o.include_result_metadata = a.has("full-result");  // full source remains in DB/blob storage
+  o.json_read_chunk_bytes = nonnegative_integer("json-read-chunk-bytes", o.json_read_chunk_bytes);
+  o.json_max_depth = nonnegative_integer("json-max-depth", o.json_max_depth);
+  o.json_inline_threshold_bytes = nonnegative_integer("json-inline-threshold-bytes", o.json_inline_threshold_bytes);
+  o.generic_inference_max_bytes = nonnegative_integer("generic-inference-max-bytes", o.generic_inference_max_bytes);
+  if (o.json_read_chunk_bytes == 0) throw UsageError{"--json-read-chunk-bytes must be positive"};
+  if (a.has("audit-scope")) {
+    const auto scope = a.get("audit-scope");
+    if (scope != "all" && scope != "active") throw UsageError{"--audit-scope must be all or active"};
+    audit.active_only = scope == "active";
+  }
+  audit.chars_per_token_low = number("audit-chars-per-token-low", audit.chars_per_token_low);
+  audit.chars_per_token_high = number("audit-chars-per-token-high", audit.chars_per_token_high);
+  audit.output_ratio = number("audit-output-ratio", audit.output_ratio);
+  if (a.has("audit-input-price")) audit.input_price = number("audit-input-price", 0);
+  if (a.has("audit-output-price")) audit.output_price = number("audit-output-price", 0);
+  must(validate_import_audit_options(audit));  // invalid planning options never import data first
   if (a.has("title")) o.title = a.get("title");
   o.force = a.has("force");
   if (a.has("export-mode")) {
@@ -429,19 +482,53 @@ int cmd_import(Runtime& rt, const Args& a) {
     else if (m != "auto") throw UsageError{"--export-mode must be auto, off or on"};
   }
   o.progress = [](std::int64_t c, std::int64_t t, std::string_view s) { progress_line("import", c, t, s); };
-  auto r = must(rt.importer().import_file(need(a, 0, "path"), o));
+  o.cancel = &g_cancel;
+  auto usage = must(ImportUsageSession::open(rt.config(), rt.paths().root));
+  o.preflight = [&](const std::filesystem::path& source) {
+    auto admission = usage->request(source, o, a.get("usage-operation-id"),
+        a.get("usage-baseline-key", "archive-import/local/source-bytes-v1"),
+        a.get("usage-confirm-receipt"), a.get("usage-confirmation-ref"));
+    if (admission && usage->receipt().value("authorized", false)) {
+      o.expected_source_hash = usage->receipt()["estimate"]["source_hash"].get<std::string>();
+      o.expected_source_bytes = usage->receipt()["estimate"]["resources"]["source_bytes"].get<std::uintmax_t>();
+    }
+    return admission;
+  };
+  o.completed = [&](const ImportResult& result) { must(usage->complete(result)); };
+  auto imported = rt.importer().import_file(need(a, 0, "path"), o);
+  if (!imported && usage->requires_confirmation()) {
+    print_json(Json{{"import_started", false}, {"usage_policy", usage->receipt()}});
+    return 3;
+  }
+  auto r = must(std::move(imported));
+  Json audited = a.has("audit") ? must(audit_import(rt.db(), r.conversations, audit)) : Json(nullptr);
   if (!g_quiet) std::cerr << "\n";
   if (g_json) {
-    print_json(r.to_json());
+    auto report = r.to_json();
+    report["usage_policy"] = usage->receipt();
+    if (a.has("audit")) report["audit"] = audited;
+    print_json(report);
   } else {
     std::cout << "format " << r.format << ": " << r.conversations.size() << " conversations, " << r.messages
               << " messages" << (r.already_imported ? " (already imported; --force re-imports)" : "") << "\n";
     for (const auto& c : r.conversations) print_conv_line(c);
     for (const auto& w : r.warnings) std::cerr << "warning: " << w << "\n";
+    if (usage->receipt().value("status", "") == "unavailable")
+      std::cout << "usage policy: unavailable (thread 2 integration required)\n";
     if (a.has("audit") && r.export_report.is_object()) print_export_audit(r.export_report);
-    else if (a.has("audit")) std::cout << "audit: not an OpenAI/Anthropic export (no export report)\n";
+    if (a.has("audit")) {
+      std::cout << "offline audit (" << audited["projected"]["scope"] << "): " << audited["projected"]["messages"]
+                << " messages, " << audited["projected"]["characters"] << " Unicode characters\n";
+      for (const auto& [band, estimate] : audited["estimates"].items()) {
+        std::cout << "  " << band << ": " << estimate["input_tokens_estimate"] << " estimated input tokens, "
+                  << estimate["output_tokens_estimate"] << " estimated output tokens; USD "
+                  << estimate["model_cost_usd_estimate"] << " per hypothetical reading pass\n";
+      }
+      std::cout << "  Local import uses no model. Prices are caller-supplied; null cost means rates unavailable.\n"
+                   "  Text estimates exclude source JSON, attachments, OCR, prompt framing and provider overhead.\n";
+    }
   }
-  return 0;
+  return r.cancelled ? 130 : 0;
 }
 
 int cmd_export(Runtime& rt, const Args& a) {
