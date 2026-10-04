@@ -188,9 +188,13 @@ Result<std::optional<std::vector<Conversation>>> ConversationImporter::prepare_s
         // fallback retention. Its own unknown-member delta identifies that
         // legacy phase unambiguously; it cannot prove interpretation complete.
         const std::string related_sources =
-            "WITH RECURSIVE import_sources(id) AS (SELECT ? UNION "
-            "SELECT child.id FROM loom_sources child JOIN import_sources parent "
-            "ON json_extract(child.metadata,'$.parent_source_id')=parent.id) ";
+            "WITH RECURSIVE import_edges(parent_id,child_id) AS ("
+            "SELECT json_extract(metadata,'$.parent_source_id'),id FROM loom_sources UNION "
+            "SELECT parent.id,json_extract(part.value,'$.source_id') FROM loom_sources parent "
+            "JOIN json_each(parent.metadata,'$.export_report.parts') part "
+            "WHERE json_type(part.value,'$.source_id')='text'), "
+            "import_sources(id) AS (SELECT ? UNION SELECT edge.child_id FROM import_edges edge "
+            "JOIN import_sources parent ON edge.parent_id=parent.id) ";
         LOOM_TRY_ASSIGN(auto legacy_raw, db_.conn().query_int(related_sources +
             "SELECT COUNT(*) FROM loom_import_checkpoints c JOIN import_sources s ON s.id=c.source_id "
             "WHERE c.source_index=-1 "
@@ -205,11 +209,17 @@ Result<std::optional<std::vector<Conversation>>> ConversationImporter::prepare_s
             "OR c.member='shared_conversations.json' OR c.member LIKE '%/shared_conversations.json' "
             "OR (instr('/'||c.member,'/textdocs/')>0 AND substr(c.member,-5)='.json'))", s.id));
         const std::int64_t uncertified_bindings = uncertified.value_or(0);
-        if (legacy_raw.value_or(0) != 0 || uncertified_bindings != 0) {
+        LOOM_TRY_ASSIGN(auto missing_child_ids, db_.conn().query_int(related_sources +
+            "SELECT COUNT(*) FROM import_sources r JOIN loom_sources source ON source.id=r.id "
+            "JOIN json_each(source.metadata,'$.export_report.parts') part "
+            "WHERE json_type(part.value,'$.source_id') IS NOT 'text' "
+            "OR json_extract(part.value,'$.source_id')=''", s.id));
+        if (legacy_raw.value_or(0) != 0 || uncertified_bindings != 0 || missing_child_ids.value_or(0) != 0) {
           Json metadata = s.metadata;
           metadata["import_status"] = "partial";
           metadata["member_checkpoint_repair"] = legacy_raw.value_or(0) != 0
-              ? "separate_raw_retention" : "verify_auxiliary_bindings";
+              ? "separate_raw_retention" : uncertified_bindings != 0
+              ? "verify_auxiliary_bindings" : "record_nested_source_dependencies";
           LOOM_TRY(db_.conn().run("UPDATE loom_sources SET metadata=? WHERE id=?", json::py_dumps(metadata), s.id));
           continue;
         }

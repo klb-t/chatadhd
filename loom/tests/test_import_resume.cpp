@@ -348,8 +348,14 @@ TEST_SUITE("import_resume") {
   TEST_CASE("legacy OpenAI journals repair source-owned references while preserving node IDs") {
     ResumeFixture fixture;
     bool nested = false;
+    bool shared_child = false;
+    bool missing_legacy_child_id = false;
     SUBCASE("direct provider archive") {}
     SUBCASE("provider archive inside a completed container") { nested = true; }
+    SUBCASE("standalone provider reused by a completed container") { nested = true; shared_child = true; }
+    SUBCASE("standalone provider reused by a legacy container without child IDs") {
+      nested = true; shared_child = true; missing_legacy_child_id = true;
+    }
     auto archive = fixture.temporary.path() / "openai-legacy-bindings.zip";
     auto members = resume_openai_members();
     auto feedback = unwrap(json::parse(members["message_feedback.json"]));
@@ -359,6 +365,13 @@ TEST_SUITE("import_resume") {
       {"message_id", "external"}, {"content", "External conversation reference"}});
     members["message_feedback.json"] = feedback.dump();
     resume_zip(archive, members);
+    std::string child_source_id;
+    if (shared_child) {
+      const auto standalone = unwrap(fixture.importer.import_file(archive, fixture.options));
+      child_source_id = standalone.source_id;
+      const auto source = unwrap(fixture.provenance.get_source(child_source_id));
+      REQUIRE(source); CHECK_FALSE(source->metadata.contains("parent_source_id"));
+    }
     if (nested) {
       const auto container = fixture.temporary.path() / "container.zip";
       resume_zip(container, {{"nested.zip", unwrap(fsutil::read_file(archive))}});
@@ -368,6 +381,11 @@ TEST_SUITE("import_resume") {
     REQUIRE(original.conversations.size() == 1); CHECK(fixture.count("nodes") == 5); CHECK(fixture.count("links") == 3);
     const auto& original_report = nested ? original.export_report["parts"][0]["report"] : original.export_report;
     CHECK(original_report["warnings"].size() == 2);
+    if (nested) {
+      const auto actual_child = original.export_report["parts"][0]["source_id"].get<std::string>();
+      if (shared_child) CHECK(actual_child == child_source_id);
+      else child_source_id = actual_child;
+    }
     std::map<std::string, std::string> node_ids;
     for (const auto* kind : {"export:feedback", "export:shared_link", "export:artifact"}) {
       const auto id = unwrap(fixture.db->conn().query_text("SELECT id FROM nodes WHERE kind=?", kind));
@@ -375,6 +393,9 @@ TEST_SUITE("import_resume") {
     }
     LOOM_REQUIRE_OK(fixture.db->conn().exec("DELETE FROM links; "
       "UPDATE loom_import_checkpoints SET metadata=json_remove(metadata,'$.binding_version') WHERE source_index=-1;"));
+    if (missing_legacy_child_id)
+      LOOM_REQUIRE_OK(fixture.db->conn().run("UPDATE loom_sources SET metadata=json_remove(metadata,"
+        "'$.export_report.parts[0].source_id') WHERE id=?", original.source_id));
     auto reopened = open_db(fixture.temporary.path() / "source.db");
     EventBus bus; BlobStore blobs{fixture.temporary.path() / "blobs", *reopened};
     ProvenanceStore provenance{*reopened}; ConversationImporter importer{*reopened, bus, &blobs, &provenance};
@@ -385,6 +406,7 @@ TEST_SUITE("import_resume") {
     CHECK(repaired.export_report["partial"] == false);
     const auto& repaired_report = nested ? repaired.export_report["parts"][0]["report"] : repaired.export_report;
     CHECK(repaired_report["warnings"].size() == 2);
+    if (nested) CHECK(repaired.export_report["parts"][0]["source_id"] == child_source_id);
     CHECK(fixture.count("nodes") == 5); CHECK(fixture.count("links") == 3);
     for (const auto& [kind, id] : node_ids)
       CHECK(unwrap(reopened->conn().query_text("SELECT id FROM nodes WHERE kind=?", kind)) == id);
