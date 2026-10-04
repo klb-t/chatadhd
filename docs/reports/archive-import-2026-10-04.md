@@ -7,7 +7,7 @@ Zakres 5, dane syntetyczne/publiczne, offline: **zero płatnych wywołań**.
 
 **Wstrzymany po nowym niezależnym blokerze OCR (szturchnięcie 21:06).**
 Integrator wykazał MIME **1/3**: oba importy z provenance czytają niezmienne
-bajty, ale tracą rozszerzenie obrazu. Poprawka zachowa deklarowany format
+bajty, ale tracą rozszerzenie obrazu. Poprawka zachowuje deklarowany format
 osobno od blobu; media API ma już `ocr_bytes`, więc nie trzeba zmian w W11.
 Równolegle naprawiamy kontrolę wersji migracji wewnątrz `BEGIN IMMEDIATE`
 i włączamy 8 regresji audytu do istniejącego CTest discovery bez zmian CMake.
@@ -24,6 +24,21 @@ i [niezależny replay](archive-import-2026-10-04-evidence/native/probes/owner-nu
 Kod/header bytes 4314976 nadal odpowiadają zmierzonemu 1474b260; nowy pełny
 build potwierdził brak pracy, a źródła/binaria mają niezmienione hashe.
 To gotowość tego przyrostu, nie zakończenie 52 migracji danych/profili.
+
+## Poprawki po szturchnięciu 21:06
+
+1. **OCR:** `import_file` i bezpośredni `import_screenshot` przekazują do
+   istniejącego `ocr_bytes` bajty niezmiennego snapshotu i osobno deklarowane
+   rozszerzenie źródła. SourceRecord zachowuje `mime` i
+   `metadata.declared_image_format`; hash-only blob nadal zawiera identyczne
+   bajty. Nie otwieramy ponownie oryginału. Format jest deklarowany nazwą,
+   nie potwierdzony dekoderem/sygnaturą; dawne `jpg` wire semantics zachowane.
+   Strict mock sprawdza pełne żądanie, MIME/base64, NUL/high bytes, cztery
+   obsługiwane formaty i mixed-case, oba API, provenance, nadpisanie/usunięcie
+   oryginału po snapshotcie oraz konflikt admission przed dispatch.
+   Ukierunkowana próba z historycznym archive i zmienionymi obiektami:
+   **przed 2/6; po 6/6 i 872/872 asercji**, bez live calls.
+   To próba pomocnicza, nie pełny build po przyjęciu W2.
 
 ## Wdrożone
 

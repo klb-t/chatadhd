@@ -163,7 +163,16 @@ Result<std::optional<std::vector<Conversation>>> ConversationImporter::prepare_s
     return std::optional<std::vector<Conversation>>{};
   }
 
-  LOOM_TRY_ASSIGN(BlobRef blob, blobs_->put_file(path, idt::mime_for_format(fmt)));
+  // A declared image format accompanies the captured bytes, independently of
+  // the hash-only blob filename. This preserves existing OCR extension rules.
+  std::string image_format;
+  if (fmt == "screenshot") {
+    image_format = path.extension().string();
+    if (!image_format.empty() && image_format.front() == '.') image_format.erase(0, 1);
+    for (auto& c : image_format) c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+  }
+  const std::string mime = image_format.empty() ? idt::mime_for_format(fmt) : "image/" + image_format;
+  LOOM_TRY_ASSIGN(BlobRef blob, blobs_->put_file(path, mime));
   if (outer_binding && opts.expected_source_hash && blob.hash != *opts.expected_source_hash)
     return Error(Errc::Conflict, "source snapshot hash differs from admission");
   if (outer_binding && opts.expected_source_bytes && blob.size != *opts.expected_source_bytes)
@@ -278,6 +287,10 @@ Result<std::optional<std::vector<Conversation>>> ConversationImporter::prepare_s
   rec.blob_hash = blob.hash;
   rec.size = blob.size;
   rec.format = std::string(fmt);
+  if (fmt == "screenshot") {
+    rec.mime = mime;
+    rec.metadata["declared_image_format"] = image_format;
+  }
   rec.parser = "loom.importer." + std::string(fmt) + std::string(parser_suffix);
   rec.parser_version = std::string(parser_version);
   if (opts.title) rec.title = *opts.title;

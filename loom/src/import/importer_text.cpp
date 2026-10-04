@@ -338,7 +338,16 @@ Result<std::vector<Conversation>> ConversationImporter::screenshot_body(const fs
   if (!media_) {
     return Error(Errc::Unavailable, "No OCR provider configured (MediaProviders unavailable)");
   }
-  auto ocr = media_->ocr(path);
+  // Source blobs are named by hash, without the original extension. Keep the
+  // declared format from the import context while reading only captured bytes.
+  const fs::path declared_path = current_source_ && !current_source_->source_filename.empty()
+      ? fs::path(current_source_->source_filename) : path;
+  std::string format = declared_path.extension().string();
+  if (!format.empty() && format.front() == '.') format.erase(0, 1);
+  std::transform(format.begin(), format.end(), format.begin(),
+                 [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+  LOOM_TRY_ASSIGN(auto image, fsutil::read_file(path));
+  auto ocr = media_->ocr_bytes(image, format);
   if (!ocr) return ocr.error();
   if (ocr->text.empty() || utf8::length(std::string(utf8::strip(ocr->text))) < 10) {
     return Error(Errc::InvalidArgument, "Could not extract text from image. Try a clearer screenshot.");
