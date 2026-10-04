@@ -86,7 +86,8 @@ Result<Json> audit_import(Database& db, const std::vector<Conversation>& convers
     }
     bands[name] = Json{{"input_tokens_estimate", input}, {"output_tokens_estimate", output}, {"model_cost_usd_estimate", usd}};
   }
-  return Json{{"schema", "loom.import_audit/1"}, {"local_import_cost_usd", 0},
+  return Json{{"schema", "loom.import_audit/1"}, {"model_calls", 0},
+              {"local_import_model_cost_usd", 0}, {"local_compute_cost_usd", nullptr},
               {"raw", {{"conversations", seen.size()}, {"messages", messages}, {"characters", chars}}},
               {"projected", {{"scope", o.active_only ? "active" : "all"}, {"conversations", projected_conversations},
                               {"messages", projected_messages}, {"characters", projected_chars}}},
