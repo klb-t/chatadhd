@@ -168,3 +168,41 @@ later replacements do not recover those originals. Full transcripts of all
 [recovery inventory](CONVERSATION_RECOVERY_2026-10-01.md).
 The additional bounded search of 68 recent saved files on 2026-10-03 found no
 missing originals or complete child-agent transcripts.
+
+## Integrator9 — równoległy cykl1–11 (2026-10-04)
+
+Baza źródła: `161cc22dfb84fe863389d6b90323bd44516a68dc`, z całym INTERFEJS/PR9.
+Ten checkpoint dodaje wyłącznie stan i raporty integratora; **0 gałęzi kodu
+przyjętych**. Wstrzymane implementacje nie są przodkami tego przyrostu.
+Dotychczasowe wpisy i pliki profili pozostają zachowane.
+
+Aktualny [indeks11 wątków](reports/INDEX.md) przypina sprawdzone commity,
+raporty, konkretne błędy oraz przekazania „Do wątku N”. Inwentarz11:
+695 grup w559 plikach,39496 kandydatów mechanicznych; to zakres migracji,
+nie liczba wdrożonych zmian. Ponownie przydzielono1 prompty/metody w grafie,
+a2 presety config/startup. Odbiór zadań przez autorów nie jest potwierdzony.
+
+Najnowsze polecenie właściciela obowiązuje w tym cyklu: metody, wersje,
+przepisy/prompty z hashem, parametry, presety i kombinacje są bytami w grafie;
+wyniki mają krawędź do konkretnej wersji metody, a oceny są datowanymi
+twierdzeniami z dowodami. **Wspólny kontrakt3/4 i regresja między ich API są
+warunkiem odbioru przed scaleniem**. Domyślne metody/polityka pochodzą z danych
+packa/profilu, z nakładką użytkownika; nie z ręcznych presetów C++.
+
+W2 ma zielone niezależne bramki poprzedniego przyrostu (19/19 kontraktów,
+108/108 CTest,659 native/1276 Python, web85 modułów), ale nadal nie spełnia
+wymogu presetu jako danych. W4 powtarza unresolved dispatch przy jednym
+rozliczeniu; W5 może cache'ować nieudaną interpretację jako zakończony import.
+W7 naprawił wykazany orphan-response błąd, lecz nie ukończył całego zakresu.
+W6 sam wstrzymał checkpoint po nieprzejściu jakości; negatyw jest w archive.
+W8 dev/ASan receipts są kompletne, vendored Clang wymaga poprawki w10.
+
+Osobny build/web/fullCTest czystej linii161cc22 z tymi dokumentami:
+**w trakcie weryfikacji; nie jest to jeszcze przyjęty checkpoint main**.
+[Raport9](reports/integrator-2026-10-04.md) rozdziela wyniki różnych źródeł.
+Kolejność kodu pozostaje2→3/4/5→reszta. README czeka na odbiór zmian;
+szkic8 nie jest dowodem ukończenia aplikacji.
+
+Płatne badania tylko w7 w osobnym budżecie5€ i na kluczu z limitem5€;
+integrator wykonał0 płatnych wywołań. Nie czytał ślepego korpusu ani
+`eval/real-holdout-key`; starsze zapisy badań powyżej pozostają historią.
