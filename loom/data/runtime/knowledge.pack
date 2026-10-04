@@ -4,62 +4,167 @@
   "revision": 1,
   "description": "Knowledge orchestration defaults. File filters apply to directory-discovered source fingerprint files; explicitly supplied files remain inputs. Catalogue directory traversal keeps its shared protected-source contract. Query limits affect task discovery; completed stage IDs still reconstruct complete recorded runs. Retry presets never modify explicit stage parameters. Nonbuiltin effective profiles enter run and stage fingerprints.",
   "defaults": {
-    "config_defaults": {"priors": true, "llm": "off"},
-    "query": {"latest_runs": 1, "stage_tasks": 100},
-    "attempts": {"run": 1, "stage_default": 2, "stage_by_mode": {"auto": {"extract": 1}}},
+    "config_defaults": {
+      "priors": true,
+      "llm": "off"
+    },
+    "query": {
+      "latest_runs": 1,
+      "stage_tasks": 100
+    },
+    "attempts": {
+      "run": 1,
+      "stage_default": 2,
+      "stage_by_mode": {
+        "auto": {
+          "extract": 1
+        }
+      }
+    },
     "poll_interval_ms": 20,
-    "source_filters": {"skip_empty_names": true, "excluded_prefixes": ["."], "excluded_names": ["__MACOSX"]}
+    "source_filters": {
+      "skip_empty_names": true,
+      "excluded_prefixes": [
+        "."
+      ],
+      "excluded_names": [
+        "__MACOSX"
+      ]
+    }
   },
   "value_schema": {
     "type": "object",
-    "required": ["config_defaults", "query", "attempts", "poll_interval_ms", "source_filters"],
+    "required": [
+      "config_defaults",
+      "query",
+      "attempts",
+      "poll_interval_ms",
+      "source_filters"
+    ],
     "additionalProperties": false,
     "properties": {
       "config_defaults": {
         "type": "object",
-        "required": ["priors", "llm"],
+        "required": [
+          "priors",
+          "llm"
+        ],
         "additionalProperties": false,
         "properties": {
-          "priors": {"type": "boolean", "x-setting": "config_defaults.priors", "x-consumer": "omitted KnowledgeConfig priors"},
-          "llm": {"type": "string", "enum": ["off", "auto"], "x-setting": "config_defaults.llm", "x-consumer": "omitted KnowledgeConfig llm; enum describes implemented pipeline capabilities"}
+          "priors": {
+            "type": "boolean",
+            "x-setting": "/config_defaults/priors",
+            "x-consumer": "omitted KnowledgeConfig priors"
+          },
+          "llm": {
+            "type": "string",
+            "enum": [
+              "off",
+              "auto"
+            ],
+            "x-setting": "/config_defaults/llm",
+            "x-consumer": "omitted KnowledgeConfig llm; enum describes implemented pipeline capabilities"
+          }
         }
       },
       "query": {
         "type": "object",
-        "required": ["latest_runs", "stage_tasks"],
+        "required": [
+          "latest_runs",
+          "stage_tasks"
+        ],
         "additionalProperties": false,
         "properties": {
-          "latest_runs": {"type": "integer", "minimum": 0, "maximum": 2147483647, "x-setting": "query.latest_runs", "x-consumer": "knowledge status"},
-          "stage_tasks": {"type": "integer", "minimum": 0, "maximum": 2147483647, "x-setting": "query.stage_tasks", "x-consumer": "knowledge status"}
+          "latest_runs": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483647,
+            "x-setting": "/query/latest_runs",
+            "x-consumer": "knowledge status"
+          },
+          "stage_tasks": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483647,
+            "x-setting": "/query/stage_tasks",
+            "x-consumer": "knowledge status"
+          }
         }
       },
       "attempts": {
         "type": "object",
-        "required": ["run", "stage_default", "stage_by_mode"],
+        "required": [
+          "run",
+          "stage_default",
+          "stage_by_mode"
+        ],
         "additionalProperties": false,
         "properties": {
-          "run": {"type": "integer", "minimum": 1, "maximum": 2147483647, "x-setting": "attempts.run", "x-consumer": "knowledge.run"},
-          "stage_default": {"type": "integer", "minimum": 1, "maximum": 2147483647, "x-setting": "attempts.stage_default", "x-consumer": "knowledge stage task"},
+          "run": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647,
+            "x-setting": "/attempts/run",
+            "x-consumer": "knowledge.run"
+          },
+          "stage_default": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647,
+            "x-setting": "/attempts/stage_default",
+            "x-consumer": "knowledge stage task"
+          },
           "stage_by_mode": {
             "type": "object",
             "additionalProperties": {
               "type": "object",
-              "additionalProperties": {"type": "integer", "minimum": 1, "maximum": 2147483647}
+              "additionalProperties": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 2147483647
+              }
             },
-            "x-setting": "attempts.stage_by_mode.<mode>.<stage>",
+            "x-setting": "/attempts/stage_by_mode",
             "x-consumer": "knowledge stage task"
           }
         }
       },
-      "poll_interval_ms": {"type": "integer", "minimum": 0, "maximum": 9223372036854775807, "x-unit": "milliseconds", "x-setting": "poll_interval_ms", "x-consumer": "knowledge task polling"},
+      "poll_interval_ms": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 9223372036854775807,
+        "x-unit": "milliseconds",
+        "x-setting": "/poll_interval_ms",
+        "x-consumer": "knowledge task polling"
+      },
       "source_filters": {
         "type": "object",
-        "required": ["skip_empty_names", "excluded_prefixes", "excluded_names"],
+        "required": [
+          "skip_empty_names",
+          "excluded_prefixes",
+          "excluded_names"
+        ],
         "additionalProperties": false,
         "properties": {
-          "skip_empty_names": {"type": "boolean", "x-setting": "source_filters.skip_empty_names"},
-          "excluded_prefixes": {"type": "array", "items": {"type": "string", "minLength": 1}, "x-setting": "source_filters.excluded_prefixes"},
-          "excluded_names": {"type": "array", "items": {"type": "string"}, "x-setting": "source_filters.excluded_names"}
+          "skip_empty_names": {
+            "type": "boolean",
+            "x-setting": "/source_filters/skip_empty_names"
+          },
+          "excluded_prefixes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "x-setting": "/source_filters/excluded_prefixes"
+          },
+          "excluded_names": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-setting": "/source_filters/excluded_names"
+          }
         }
       }
     }

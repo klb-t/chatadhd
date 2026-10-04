@@ -148,7 +148,7 @@
           "zero_as_default": {
             "type": "boolean",
             "description": "True retains legacy explicit nonpositive max_tokens fallback. False permits explicit0 as unlimited and rejects negative values.",
-            "x-setting": "context.zero_as_default",
+            "x-setting": "/context/zero_as_default",
             "x-consumer": "ContextSelector"
           },
           "failure_policy": {
@@ -185,7 +185,7 @@
               }
             },
             "additionalProperties": false,
-            "x-setting": "context.failure_policy.<channel>",
+            "x-setting": "/context/failure_policy",
             "x-consumer": "ContextSelector"
           }
         },

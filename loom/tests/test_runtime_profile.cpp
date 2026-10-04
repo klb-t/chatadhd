@@ -50,6 +50,9 @@ TEST_SUITE("runtime_profile") {
     auto base = unwrap(RuntimeProfile::from_definition(definition()));
     CHECK_FALSE(base.with_overrides(Json{{"count", -1}}));
     CHECK_FALSE(base.with_overrides(Json{{"count", 4.5}}));
+    auto floating_count = base.values();
+    floating_count["count"] = 5000.0;
+    CHECK_FALSE(base.with_values(floating_count));
     CHECK_FALSE(base.with_overrides(Json{{"nested", Json{{"enabled", "yes"}}}}));
     CHECK_FALSE(base.with_overrides(Json{{"silent_typo", 7}}));
     CHECK_FALSE(base.with_overrides(Json::array()));

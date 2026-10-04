@@ -1,0 +1,17 @@
+[
+  "c++",
+  "/workspace/scratch/72fc60ad1cc5/knowledge-net-model-check/runner.o",
+  "/workspace/scratch/72fc60ad1cc5/model-creation-check/test.o",
+  "/workspace/scratch/72fc60ad1cc5/model-creation-check/model_pack.o",
+  "/workspace/scratch/72fc60ad1cc5/model-creation-check/framework.o",
+  "/workspace/scratch/72fc60ad1cc5/current-build/libloom_core.a",
+  "/workspace/scratch/72fc60ad1cc5/current-build/libloom_sqlite3_amalgamation.a",
+  "/workspace/scratch/72fc60ad1cc5/current-build/libloom_miniz.a",
+  "-pthread",
+  "-ldl",
+  "-lm",
+  "-lssl",
+  "-lcrypto",
+  "-o",
+  "/workspace/scratch/72fc60ad1cc5/model-creation-check/tests"
+]

@@ -293,7 +293,6 @@ Result<RuntimeProfile> RuntimeProfile::with_overrides(const Json& overrides) con
 }
 
 Result<RuntimeProfile> RuntimeProfile::with_values(const Json& values) const {
-  if (exact_equal(values, values_)) return *this;
   LOOM_TRY(validate_value(values, value_schema(), "/values"));
   RuntimeProfile out = *this;
   out.values_ = values;
