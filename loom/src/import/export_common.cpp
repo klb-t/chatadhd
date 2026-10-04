@@ -325,6 +325,9 @@ class JsonReader {
   }
   bool open() const { return file_.is_open(); }
   int peek() {
+    // Cancellation is an observed stop, even when a caller poll returns true
+    // only once. Subsequent lookahead must never resume filling the buffer.
+    if (stats_.cancelled) return EOF;
     if (index_ == used_) {
       if (loader_.cancelled && loader_.cancelled()) { stats_.cancelled = true; return EOF; }
       file_.read(buffer_.data(), static_cast<std::streamsize>(buffer_.size()));
@@ -339,7 +342,13 @@ class JsonReader {
   void seek(std::int64_t position) {
     file_.clear(); file_.seekg(position); index_ = used_ = 0; offset_ = position;
   }
-  void spaces() { while (peek() == ' ' || peek() == '\t' || peek() == '\r' || peek() == '\n') get(); }
+  void spaces() {
+    for (;;) {
+      const int c = peek();
+      if (c != ' ' && c != '\t' && c != '\r' && c != '\n') return;
+      get();
+    }
+  }
   bool value(std::string* captured) {
     spaces();
     if (peek() == EOF) return false;
@@ -426,7 +435,7 @@ LoadStats load_json_file(const fs::path& path, Loader& loader) {
   reader.spaces();
   if (reader.peek() == 0xEF) {
     if (reader.get() != 0xEF || reader.get() != 0xBB || reader.get() != 0xBF) {
-      stats.invalid = true; stats.message = "invalid UTF-8 BOM"; return stats;
+      stats.invalid = true; stats.invalid_utf8 = true; stats.message = "invalid UTF-8 BOM"; return stats;
     }
     reader.spaces();
   }
