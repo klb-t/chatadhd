@@ -29,12 +29,42 @@ use it.
 }
 ```
 
-The current preset remains in `core/config_usage_policy.cpp`; settings report
-`preset_source: "legacy_code_pending_pack_migration"`. This is an explicit
-remaining data migration, not a claim that the preset already comes from the
-pack. Thread 2 owns config/policy code but does not own the pack loader,
-manifest or embedded data in `kb/`. The newer reusable runtime-profile engine
-on thread 11's branch provides the proposed migration path described below.
+The authoritative document is
+[`loom/data/policy/usage_policy.pack`](../../data/policy/usage_policy.pack).
+It contains UTF-8 JSON; `.pack` keeps it separate from the KB loader's recursive
+`.json` schema validation. The six preset values are no longer initialized in
+C++. The owner-authorized migration is self-contained on W2's branch, based on
+current main; it does not require thread 11's runtime-profile engine or changes
+to the KB manifest/loader.
+
+Regenerate the committed embedding after changing the source document, and
+check that it matches before building:
+
+```bash
+python3 loom/src/policy/gen_usage_policy.py
+python3 loom/src/policy/gen_usage_policy.py --check
+```
+
+The generator emits byte-exact, independently chunked C++ literals in
+`usage_policy_preset.inc`. Octal byte escapes preserve UTF-8, BOM and CRLF bytes
+regardless of compiler character encoding; chunks impose no total-data ceiling.
+`--check` fails on a missing or stale embedding. The kernel reads the compiled
+document, so editing the repository source requires regeneration and rebuilding.
+Deployed kernels do not need the repository file at runtime.
+
+`usage_policy_preset()` parses and validates the complete embedded object,
+including all six required fields. Config's absent-key fallback,
+`effective_usage_policy_options()`, settings and default ledger opening share
+that checked decoder. Default `UsagePolicy::open(path)` supplies an empty
+override and loads the preset inside its `Result` path. A malformed compiled
+preset returns an error; the legacy reference-returning
+`usage_policy_defaults()` and absent-key Config interface throw rather than
+substituting C++ values. An explicit stored Config value keeps its historical
+raw-value semantics; use the effective helper for validated complete options.
+
+The implemented user overlay is `config.json`'s `loom_usage_policy` object,
+with whole top-level policy fields replacing preset fields. RuntimeProfile's
+per-root profile-file overlay is future integration work described below.
 
 The growth factor, window, reservation comparison and initial baselines are
 settings. They are not maximum spending, context, corpus or model limits. There
@@ -115,7 +145,8 @@ the ledger. Its JSON fields are:
 | `stored_override` | Policy object in the current Config, or `null` when no override is stored. |
 | `effective` | Preset with stored top-level policy fields replaced. |
 | `source` | `preset` or `configured`, according to whether an override is stored. |
-| `preset_source` | Currently `legacy_code_pending_pack_migration`. |
+| `preset_source` | `embedded_data`: the checked compiled canonical data document. |
+| `preset_document` | Canonical `path`, `schema`, `encoding: "utf8_json"` and `source_sha256` of the complete original document bytes. |
 | `override_semantics` | `replace_top_level_fields`; nested objects are replaced as whole values. |
 | `hashes` | SHA-256 of each snapshot's canonical JSON; fields `algorithm`, `representation`, `preset`, `stored_override`, `effective`. |
 
@@ -124,6 +155,8 @@ the ledger. Its JSON fields are:
 `hashes.stored_override` is `null` when no override is stored. These identify
 the parsed JSON snapshots, not original configuration-file bytes. They are
 inspection metadata and do not authorize an operation or replace its receipt.
+`preset_document.source_sha256` is separately an original-byte hash, including
+formatting, UTF-8 BOM or CRLF if present; it is not the canonical options hash.
 
 Supplying `proposed_override` validates a replacement policy object and adds a
 `preview` object. It contains `override`, its resulting `effective`,
@@ -145,28 +178,25 @@ on-disk file. The existing generic config API can retain an in-memory change
 after a save error. A settings hash identifies that active snapshot, not proof
 that a failed save persisted it.
 
-### Authoritative profile dependency
+### Future runtime-profile unification
 
-Thread 11's `096028e` branch supplies a reusable `RuntimeProfile` loader and
-generator for `loom/data/runtime/*.pack`, with per-root user overlays in
-`<data-root>/profiles/`. This foundation and a usage descriptor are absent
-from current main. The concrete [profile handoff](PROFILE_HANDOFF.md) proposes
-`usage_policy.pack`, preserves the exact six values including `10.0`, and
-specifies the adapter and edited-data verification before admission.
+The earlier [profile handoff](PROFILE_HANDOFF.md) was prepared against W2
+`03b0c4e` and W11 `096028e`, when usage defaults still lived in C++. That
+dependency no longer blocks the implemented usage-preset migration. The handoff
+now distinguishes the current self-contained embedding from future integration
+with thread 11's generic `RuntimeProfile` engine and per-root profile overlays.
 
-Coordinate that dependency through threads 11 and 9, then implement the
-root-aware config adapter in thread 2. All default consumers must share the
-authoritative descriptor. Apply stored policy fields with their existing
-top-level replacement semantics after loading the profile; the profile
-engine's recursive overlay merge is a different operation. Settings must then
-report actual profile provenance and hashes. Until the dependency and adapter
-are verified, the current legacy-source label and migration blocker remain.
+Future unification must consume the same authoritative source, rather than
+introducing a second independently maintained set of usage defaults. Keep
+native complete-policy validation and stored top-level replacement semantics;
+the profile engine's recursive overlay merge is a different operation. Report
+actual profile provenance only after that adapter exists and is verified.
 
-The same handoff records the exact startup/path and historical config presets
-from thread 11's DIC-0325–0329 inventory, including header/bootstrap ownership
-needed for their migration. Runtime `.pack` documents use thread 11's existing
-loader; the KB manifest and schema remain separate. This replaces the earlier
-proposal to add a usage-specific KB schema.
+The handoff also retains the startup/path and historical config presets from
+DIC-0325–0329, and the Config-origin, header/bootstrap and public-ABI ownership
+work needed for their migration. Those follow-ups remain open. The current
+usage document is not registered in the KB manifest or loaded as a
+RuntimeProfile descriptor.
 
 ## Comparable cohorts and measurements
 
@@ -366,8 +396,8 @@ Example commands (completion and cancellation are alternative paths):
 ## Settings and confirmation screen — thread 10
 
 Use `settings` to show preset, stored override and effective values separately,
-with their source, canonical hashes and ledger location. Show the current
-legacy preset-source label honestly until pack migration is delivered. Use
+with their source, canonical hashes and ledger location. Show `embedded_data`
+and the canonical document's path and source-byte hash. Use
 `preview_settings` to inspect and validate an edited override before saving;
 display its effective result and whether it changes the active policy. Restore
 preset values by saving an empty override, with the stored-source distinction
@@ -404,6 +434,7 @@ From the repository root, with the normal development CMake build already
 configured in `loom/build/dev`:
 
 ```bash
+python3 loom/src/policy/gen_usage_policy.py --check
 cmake --build loom/build/dev --target loom_core
 c++ -std=c++20 -pthread \
   -Iloom/include -Iloom/third_party/nlohmann \
