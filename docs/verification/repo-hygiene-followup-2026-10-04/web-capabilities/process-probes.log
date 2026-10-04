@@ -1,0 +1,15 @@
+actual_npm_offline_fixture
+START: npm script '--literal ; $(no-shell) script'; argv=npm run -- '--literal ; $(no-shell) script'; cwd=/tmp/w8-npm-argv-3wm_uxx5
+
+> w8-offline-process-fixture@1.0.0 --literal ; $(no-shell) script
+> node fixture.cjs
+
+ACTUAL_NPM_LOCAL_FIXTURE_EXECUTED
+PROCESS_RESULT: npm script '--literal ; $(no-shell) script'; exit=0
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+returncode=0
+
+checked_out_package_capabilities
+CAPABILITY_UNAVAILABLE: npm script 'test:interface-2' is not declared in /workspace/scratch/2a6e71927cf3/chatadhd/loom/web/package.json; no command executed for this capability.
+CAPABILITY_UNAVAILABLE: npm script 'test:interface-2-native' is not declared in /workspace/scratch/2a6e71927cf3/chatadhd/loom/web/package.json; no command executed for this capability.
+returncode=0
