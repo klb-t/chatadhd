@@ -1,0 +1,852 @@
+﻿2026-10-04T14:46:49.3890385Z Current runner version: '2.337.0'
+2026-10-04T14:46:49.3915738Z ##[group]Runner Image Provisioner
+2026-10-04T14:46:49.3916800Z Hosted Compute Agent
+2026-10-04T14:46:49.3917398Z Version: 20260901.588
+2026-10-04T14:46:49.3918316Z Commit: f88ec8081b781fac6c440065ac7ff9e710ce3d0b
+2026-10-04T14:46:49.3919099Z Build Date: 2026-09-01T19:56:44Z
+2026-10-04T14:46:49.3919819Z Worker ID: {52a99b4f-162b-4ba3-9879-1aec51155689}
+2026-10-04T14:46:49.3920629Z Azure Region: westus
+2026-10-04T14:46:49.3921196Z ##[endgroup]
+2026-10-04T14:46:49.3922741Z ##[group]Operating System
+2026-10-04T14:46:49.3923425Z Ubuntu
+2026-10-04T14:46:49.3923991Z 24.04.5
+2026-10-04T14:46:49.3924617Z LTS
+2026-10-04T14:46:49.3925134Z ##[endgroup]
+2026-10-04T14:46:49.3925722Z ##[group]Runner Image
+2026-10-04T14:46:49.3926352Z Image: ubuntu-24.04
+2026-10-04T14:46:49.3926956Z Version: 20260927.320.1
+2026-10-04T14:46:49.3928740Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260927.320/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-04T14:46:49.3930469Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260927.320
+2026-10-04T14:46:49.3931487Z ##[endgroup]
+2026-10-04T14:46:49.3932693Z ##[group]GITHUB_TOKEN Permissions
+2026-10-04T14:46:49.3934580Z Contents: read
+2026-10-04T14:46:49.3935204Z Metadata: read
+2026-10-04T14:46:49.3935907Z ##[endgroup]
+2026-10-04T14:46:49.3938535Z Secret source: Actions
+2026-10-04T14:46:49.3939602Z Cache mode: write
+2026-10-04T14:46:49.3940322Z Prepare workflow directory
+2026-10-04T14:46:49.4472122Z Prepare all required actions
+2026-10-04T14:46:49.4521556Z Getting action download info
+2026-10-04T14:46:49.8386267Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-04T14:46:49.9323264Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+2026-10-04T14:46:50.0135461Z Download action repository 'actions/cache@v4' (SHA:0057852bfaa89a56745cba8c7296529d2fc39830)
+2026-10-04T14:46:50.1573644Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-10-04T14:46:50.2626058Z Download action repository 'actions/setup-java@v4' (SHA:cf277c60eb25467037889841efdb72551f06f6c3)
+2026-10-04T14:46:50.7929869Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+2026-10-04T14:46:51.0284361Z Complete job name: vendored (clang++)
+2026-10-04T14:46:51.1265989Z ##[group]Run actions/checkout@v4
+2026-10-04T14:46:51.1267308Z with:
+2026-10-04T14:46:51.1268314Z   persist-credentials: false
+2026-10-04T14:46:51.1269243Z   fetch-depth: 0
+2026-10-04T14:46:51.1270036Z   repository: klb-t/chatadhd
+2026-10-04T14:46:51.1277739Z   token: ***
+2026-10-04T14:46:51.1278723Z   ssh-strict: true
+2026-10-04T14:46:51.1279515Z   ssh-user: git
+2026-10-04T14:46:51.1280278Z   clean: true
+2026-10-04T14:46:51.1281105Z   sparse-checkout-cone-mode: true
+2026-10-04T14:46:51.1282077Z   fetch-tags: false
+2026-10-04T14:46:51.1282892Z   show-progress: true
+2026-10-04T14:46:51.1283727Z   lfs: false
+2026-10-04T14:46:51.1284483Z   submodules: false
+2026-10-04T14:46:51.1285304Z   set-safe-directory: true
+2026-10-04T14:46:51.1286231Z   allow-unsafe-pr-checkout: false
+2026-10-04T14:46:51.1287470Z env:
+2026-10-04T14:46:51.1288386Z   CC: clang
+2026-10-04T14:46:51.1289161Z   CXX: clang++
+2026-10-04T14:46:51.1289905Z ##[endgroup]
+2026-10-04T14:46:51.2359551Z Syncing repository: klb-t/chatadhd
+2026-10-04T14:46:51.2363254Z ##[group]Getting Git version info
+2026-10-04T14:46:51.2365263Z Working directory is '/home/runner/work/chatadhd/chatadhd'
+2026-10-04T14:46:51.2368635Z [command]/usr/bin/git version
+2026-10-04T14:46:51.2470726Z git version 2.55.0
+2026-10-04T14:46:51.2496234Z ##[endgroup]
+2026-10-04T14:46:51.2517008Z Temporarily overriding HOME='/home/runner/work/_temp/4151a499-bb7e-4ff7-a42f-be61081dbe9b' before making global git config changes
+2026-10-04T14:46:51.2520393Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-04T14:46:51.2523586Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/chatadhd/chatadhd
+2026-10-04T14:46:51.2579101Z Deleting the contents of '/home/runner/work/chatadhd/chatadhd'
+2026-10-04T14:46:51.2585836Z ##[group]Initializing the repository
+2026-10-04T14:46:51.2589985Z [command]/usr/bin/git init /home/runner/work/chatadhd/chatadhd
+2026-10-04T14:46:51.2713083Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-04T14:46:51.2715901Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-04T14:46:51.2718678Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-04T14:46:51.2720618Z hint: call:
+2026-10-04T14:46:51.2721413Z hint:
+2026-10-04T14:46:51.2722415Z hint: 	git config --global init.defaultBranch <name>
+2026-10-04T14:46:51.2723833Z hint:
+2026-10-04T14:46:51.2724976Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-04T14:46:51.2726768Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-04T14:46:51.2728625Z hint:
+2026-10-04T14:46:51.2729435Z hint: 	git branch -m <name>
+2026-10-04T14:46:51.2730459Z hint:
+2026-10-04T14:46:51.2731689Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-04T14:46:51.2738685Z Initialized empty Git repository in /home/runner/work/chatadhd/chatadhd/.git/
+2026-10-04T14:46:51.2751943Z [command]/usr/bin/git remote add origin https://github.com/klb-t/chatadhd
+2026-10-04T14:46:51.2807544Z ##[endgroup]
+2026-10-04T14:46:51.2809876Z ##[group]Disabling automatic garbage collection
+2026-10-04T14:46:51.2811918Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-04T14:46:51.2845645Z ##[endgroup]
+2026-10-04T14:46:51.2847631Z ##[group]Setting up auth
+2026-10-04T14:46:51.2853825Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-04T14:46:51.2892576Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-04T14:46:51.3282091Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-04T14:46:51.3323953Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-04T14:46:51.3551820Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-04T14:46:51.3596288Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-04T14:46:51.3829134Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-04T14:46:51.3869535Z ##[endgroup]
+2026-10-04T14:46:51.3871037Z ##[group]Fetching the repository
+2026-10-04T14:46:51.3881298Z [command]/usr/bin/git -c protocol.version=2 fetch --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/* +295de864dc42507ce4f54a0bbd7adf42fd1bc9fa:refs/remotes/pull/11/merge
+2026-10-04T14:46:53.1047730Z From https://github.com/klb-t/chatadhd
+2026-10-04T14:46:53.1050184Z  * [new branch]      archive/2026-10-01/handoff-source        -> origin/archive/2026-10-01/handoff-source
+2026-10-04T14:46:53.1051833Z  * [new branch]      archive/2026-10-02/handoff-complete      -> origin/archive/2026-10-02/handoff-complete
+2026-10-04T14:46:53.1053597Z  * [new branch]      archive/2026-10-03/chore/repo-hygiene-2026-09 -> origin/archive/2026-10-03/chore/repo-hygiene-2026-09
+2026-10-04T14:46:53.1055333Z  * [new branch]      archive/2026-10-03/claude/chataddhd-cpp-loom-core-IRGRN -> origin/archive/2026-10-03/claude/chataddhd-cpp-loom-core-IRGRN
+2026-10-04T14:46:53.1057533Z  * [new branch]      archive/2026-10-03/claude/restore-lost-features-adK74 -> origin/archive/2026-10-03/claude/restore-lost-features-adK74
+2026-10-04T14:46:53.1060435Z  * [new branch]      archive/2026-10-03/codex/handoff-recovery-2026-10-02 -> origin/archive/2026-10-03/codex/handoff-recovery-2026-10-02
+2026-10-04T14:46:53.1062155Z  * [new branch]      archive/2026-10-03/codex/loom-handoff-2026-09-28 -> origin/archive/2026-10-03/codex/loom-handoff-2026-09-28
+2026-10-04T14:46:53.1063871Z  * [new branch]      archive/2026-10-03/gpt/continuity-audit-2026-09-30 -> origin/archive/2026-10-03/gpt/continuity-audit-2026-09-30
+2026-10-04T14:46:53.1065515Z  * [new branch]      archive/2026-10-03/gpt/integration-w1-w6-2026-10-01 -> origin/archive/2026-10-03/gpt/integration-w1-w6-2026-10-01
+2026-10-04T14:46:53.1067167Z  * [new branch]      archive/2026-10-03/gpt/night2-resources-2026-10-01 -> origin/archive/2026-10-03/gpt/night2-resources-2026-10-01
+2026-10-04T14:46:53.1069444Z  * [new branch]      archive/2026-10-03/gpt/offline-2026-09-29 -> origin/archive/2026-10-03/gpt/offline-2026-09-29
+2026-10-04T14:46:53.1071438Z  * [new branch]      archive/2026-10-03/gpt/research-2026-09-30 -> origin/archive/2026-10-03/gpt/research-2026-09-30
+2026-10-04T14:46:53.1072645Z  * [new branch]      archive/2026-10-03/gpt/w1-active-task-2026-09-30 -> origin/archive/2026-10-03/gpt/w1-active-task-2026-09-30
+2026-10-04T14:46:53.1073941Z  * [new branch]      archive/2026-10-03/gpt/w2-retrieval-2026-09-30 -> origin/archive/2026-10-03/gpt/w2-retrieval-2026-09-30
+2026-10-04T14:46:53.1075294Z  * [new branch]      archive/2026-10-03/gpt/w3-model-recipes-2026-09-30 -> origin/archive/2026-10-03/gpt/w3-model-recipes-2026-09-30
+2026-10-04T14:46:53.1076415Z  * [new branch]      archive/2026-10-03/gpt/w4-graph-runtime-2026-09-30 -> origin/archive/2026-10-03/gpt/w4-graph-runtime-2026-09-30
+2026-10-04T14:46:53.1077425Z  * [new branch]      archive/2026-10-03/gpt/w5-workspace-2026-09-30 -> origin/archive/2026-10-03/gpt/w5-workspace-2026-09-30
+2026-10-04T14:46:53.1079385Z  * [new branch]      archive/2026-10-03/gpt/w6-evidence-2026-09-30 -> origin/archive/2026-10-03/gpt/w6-evidence-2026-09-30
+2026-10-04T14:46:53.1080878Z  * [new branch]      archive/2026-10-03/wip/catalog-finish    -> origin/archive/2026-10-03/wip/catalog-finish
+2026-10-04T14:46:53.1082127Z  * [new branch]      archive/2026-10-03/wip/catalog-r3        -> origin/archive/2026-10-03/wip/catalog-r3
+2026-10-04T14:46:53.1083924Z  * [new branch]      archive/2026-10-03/wip/continuation-2026-09-30 -> origin/archive/2026-10-03/wip/continuation-2026-09-30
+2026-10-04T14:46:53.1084967Z  * [new branch]      archive/2026-10-03/wip/determinism-fix   -> origin/archive/2026-10-03/wip/determinism-fix
+2026-10-04T14:46:53.1085814Z  * [new branch]      archive/2026-10-03/wip/export-finish     -> origin/archive/2026-10-03/wip/export-finish
+2026-10-04T14:46:53.1086754Z  * [new branch]      archive/2026-10-03/wip/precision         -> origin/archive/2026-10-03/wip/precision
+2026-10-04T14:46:53.1087575Z  * [new branch]      archive/2026-10-03/wip/resolve-finish    -> origin/archive/2026-10-03/wip/resolve-finish
+2026-10-04T14:46:53.1088839Z  * [new branch]      archive/2026-10-03/wip/worktree-agent-a06d7260ba8b658cc -> origin/archive/2026-10-03/wip/worktree-agent-a06d7260ba8b658cc
+2026-10-04T14:46:53.1089970Z  * [new branch]      archive/2026-10-03/wip/worktree-agent-a382d0e063192b5ed -> origin/archive/2026-10-03/wip/worktree-agent-a382d0e063192b5ed
+2026-10-04T14:46:53.1091015Z  * [new branch]      archive/2026-10-03/wip/worktree-agent-a436abbcd1b794a18 -> origin/archive/2026-10-03/wip/worktree-agent-a436abbcd1b794a18
+2026-10-04T14:46:53.1092152Z  * [new branch]      archive/2026-10-03/wip/worktree-agent-a56d696101c89a58c -> origin/archive/2026-10-03/wip/worktree-agent-a56d696101c89a58c
+2026-10-04T14:46:53.1093316Z  * [new branch]      archive/2026-10-03/wip/worktree-agent-a822af86e44b82241 -> origin/archive/2026-10-03/wip/worktree-agent-a822af86e44b82241
+2026-10-04T14:46:53.1094333Z  * [new branch]      archive/2026-10-03/wip/worktree-agent-a8df74a3ca608a703 -> origin/archive/2026-10-03/wip/worktree-agent-a8df74a3ca608a703
+2026-10-04T14:46:53.1095548Z  * [new branch]      archive/2026-10-03/wip/worktree-agent-a90a2e07c062c7efc -> origin/archive/2026-10-03/wip/worktree-agent-a90a2e07c062c7efc
+2026-10-04T14:46:53.1096556Z  * [new branch]      archive/2026-10-03/wip/worktree-agent-ab76c2dece93103a1 -> origin/archive/2026-10-03/wip/worktree-agent-ab76c2dece93103a1
+2026-10-04T14:46:53.1097572Z  * [new branch]      archive/2026-10-03/wip/worktree-agent-ac45c7e794faf4cb0 -> origin/archive/2026-10-03/wip/worktree-agent-ac45c7e794faf4cb0
+2026-10-04T14:46:53.1098861Z  * [new branch]      archive/2026-10-03/wip/worktree-agent-ace3dd50eb645ccb0 -> origin/archive/2026-10-03/wip/worktree-agent-ace3dd50eb645ccb0
+2026-10-04T14:46:53.1099898Z  * [new branch]      archive/2026-10-04/integrator-packet-unresolved-replay -> origin/archive/2026-10-04/integrator-packet-unresolved-replay
+2026-10-04T14:46:53.1100973Z  * [new branch]      archive/2026-10-04/knowledge-precision-local-only-negative -> origin/archive/2026-10-04/knowledge-precision-local-only-negative
+2026-10-04T14:46:53.1102004Z  * [new branch]      archive/gpt/model-research-prefreeze-2026-10-04 -> origin/archive/gpt/model-research-prefreeze-2026-10-04
+2026-10-04T14:46:53.1102971Z  * [new branch]      eval/real-holdout-key                    -> origin/eval/real-holdout-key
+2026-10-04T14:46:53.1103875Z  * [new branch]      gpt/application-profiles-2026-10-04      -> origin/gpt/application-profiles-2026-10-04
+2026-10-04T14:46:53.1104671Z  * [new branch]      gpt/archive-import-2026-10-04            -> origin/gpt/archive-import-2026-10-04
+2026-10-04T14:46:53.1105396Z  * [new branch]      gpt/catalog-selection-2026-10-04         -> origin/gpt/catalog-selection-2026-10-04
+2026-10-04T14:46:53.1106101Z  * [new branch]      gpt/chat-selector-2026-10-04             -> origin/gpt/chat-selector-2026-10-04
+2026-10-04T14:46:53.1106858Z  * [new branch]      gpt/ecosystem-agent-research-2026-10-01  -> origin/gpt/ecosystem-agent-research-2026-10-01
+2026-10-04T14:46:53.1107623Z  * [new branch]      gpt/graph-replies-2026-10-02             -> origin/gpt/graph-replies-2026-10-02
+2026-10-04T14:46:53.1108665Z  * [new branch]      gpt/knowledge-precision-2026-10-04       -> origin/gpt/knowledge-precision-2026-10-04
+2026-10-04T14:46:53.1109409Z  * [new branch]      gpt/model-research-2026-10-04            -> origin/gpt/model-research-2026-10-04
+2026-10-04T14:46:53.1110533Z  * [new branch]      gpt/native-graph-packet-2026-10-04       -> origin/gpt/native-graph-packet-2026-10-04
+2026-10-04T14:46:53.1111313Z  * [new branch]      gpt/night-development-2026-10-01         -> origin/gpt/night-development-2026-10-01
+2026-10-04T14:46:53.1112014Z  * [new branch]      gpt/repo-hygiene-2026-10-04              -> origin/gpt/repo-hygiene-2026-10-04
+2026-10-04T14:46:53.1112689Z  * [new branch]      gpt/usage-policy-2026-10-04              -> origin/gpt/usage-policy-2026-10-04
+2026-10-04T14:46:53.1113277Z  * [new branch]      main                                     -> origin/main
+2026-10-04T14:46:53.1114039Z  * [new branch]      wip/worktree-agent-a342fccb481c4116c     -> origin/wip/worktree-agent-a342fccb481c4116c
+2026-10-04T14:46:53.1114729Z  * [new ref]         295de864dc42507ce4f54a0bbd7adf42fd1bc9fa -> pull/11/merge
+2026-10-04T14:46:53.1116223Z ##[endgroup]
+2026-10-04T14:46:53.1116665Z ##[group]Determining the checkout info
+2026-10-04T14:46:53.1117139Z ##[endgroup]
+2026-10-04T14:46:53.1117446Z [command]/usr/bin/git sparse-checkout disable
+2026-10-04T14:46:53.1137751Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-04T14:46:53.1173064Z ##[group]Checking out the ref
+2026-10-04T14:46:53.1176814Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/11/merge
+2026-10-04T14:46:53.4058918Z Note: switching to 'refs/remotes/pull/11/merge'.
+2026-10-04T14:46:53.4059768Z 
+2026-10-04T14:46:53.4060288Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-04T14:46:53.4061246Z changes and commit them, and you can discard any commits you make in this
+2026-10-04T14:46:53.4062189Z state without impacting any branches by switching back to a branch.
+2026-10-04T14:46:53.4063040Z 
+2026-10-04T14:46:53.4063440Z If you want to create a new branch to retain commits you create, you may
+2026-10-04T14:46:53.4064324Z do so (now or later) by using -c with the switch command. Example:
+2026-10-04T14:46:53.4064820Z 
+2026-10-04T14:46:53.4065071Z   git switch -c <new-branch-name>
+2026-10-04T14:46:53.4065407Z 
+2026-10-04T14:46:53.4065666Z Or undo this operation with:
+2026-10-04T14:46:53.4065980Z 
+2026-10-04T14:46:53.4066181Z   git switch -
+2026-10-04T14:46:53.4066428Z 
+2026-10-04T14:46:53.4066915Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-04T14:46:53.4067480Z 
+2026-10-04T14:46:53.4068731Z HEAD is now at 295de86 Merge ee97311d6545ca19e19266d2f37514f2663f0aa9 into 161cc22dfb84fe863389d6b90323bd44516a68dc
+2026-10-04T14:46:53.4094761Z ##[endgroup]
+2026-10-04T14:46:53.4145659Z [command]/usr/bin/git log -1 --format=%H
+2026-10-04T14:46:53.4176557Z 295de864dc42507ce4f54a0bbd7adf42fd1bc9fa
+2026-10-04T14:46:53.4189848Z ##[group]Removing auth
+2026-10-04T14:46:53.4195021Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-04T14:46:53.4232939Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-04T14:46:53.4482782Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-04T14:46:53.4512373Z http.https://github.com/.extraheader
+2026-10-04T14:46:53.4519633Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-04T14:46:53.4556245Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-04T14:46:53.4801947Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-04T14:46:53.4840030Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-04T14:46:53.5063701Z ##[endgroup]
+2026-10-04T14:46:53.5280660Z ##[group]Run sudo apt-get update
+2026-10-04T14:46:53.5281005Z [36;1msudo apt-get update[0m
+2026-10-04T14:46:53.5281515Z [36;1msudo apt-get install -y --no-install-recommends ninja-build ccache libsqlite3-dev libssl-dev clang[0m
+2026-10-04T14:46:53.5557464Z shell: /usr/bin/bash -e {0}
+2026-10-04T14:46:53.5557850Z env:
+2026-10-04T14:46:53.5558497Z   CC: clang
+2026-10-04T14:46:53.5558830Z   CXX: clang++
+2026-10-04T14:46:53.5559172Z ##[endgroup]
+2026-10-04T14:46:53.6456287Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-10-04T14:46:53.6776586Z Hit:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+2026-10-04T14:46:53.6778736Z Get:6 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease [3600 B]
+2026-10-04T14:46:53.6786916Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+2026-10-04T14:46:53.6834858Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+2026-10-04T14:46:53.6848219Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+2026-10-04T14:46:53.8215207Z Get:7 https://packages.microsoft.com/ubuntu/24.04/prod noble/main amd64 Packages [511 kB]
+2026-10-04T14:46:53.9309951Z Get:8 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1364 kB]
+2026-10-04T14:46:53.9346930Z Get:17 https://packages.microsoft.com/ubuntu/24.04/prod noble/main arm64 Packages [458 kB]
+2026-10-04T14:46:53.9354273Z Get:9 http://azure.archive.ubuntu.com/ubuntu noble-updates/main Translation-en [304 kB]
+2026-10-04T14:46:53.9379967Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Components [181 kB]
+2026-10-04T14:46:53.9397829Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [1699 kB]
+2026-10-04T14:46:53.9452778Z Get:18 https://packages.microsoft.com/ubuntu/24.04/prod noble/main armhf Packages [12.6 kB]
+2026-10-04T14:46:53.9506497Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe Translation-en [341 kB]
+2026-10-04T14:46:53.9518391Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Components [388 kB]
+2026-10-04T14:46:53.9559057Z Get:14 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [1720 kB]
+2026-10-04T14:46:53.9670328Z Get:15 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted Translation-en [394 kB]
+2026-10-04T14:46:53.9698925Z Get:16 http://azure.archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Components [940 B]
+2026-10-04T14:46:54.0020005Z Get:19 http://azure.archive.ubuntu.com/ubuntu noble-backports/main amd64 Components [5776 B]
+2026-10-04T14:46:54.0466719Z Get:20 http://azure.archive.ubuntu.com/ubuntu noble-backports/universe amd64 Components [12.6 kB]
+2026-10-04T14:46:54.0692938Z Get:21 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Packages [1069 kB]
+2026-10-04T14:46:54.0753411Z Get:22 http://azure.archive.ubuntu.com/ubuntu noble-security/main Translation-en [221 kB]
+2026-10-04T14:46:54.0768694Z Get:23 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Components [46.4 kB]
+2026-10-04T14:46:54.0780795Z Get:24 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1216 kB]
+2026-10-04T14:46:54.0835241Z Get:25 http://azure.archive.ubuntu.com/ubuntu noble-security/universe Translation-en [244 kB]
+2026-10-04T14:46:54.0852087Z Get:26 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Components [76.4 kB]
+2026-10-04T14:46:54.0862716Z Get:27 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [1566 kB]
+2026-10-04T14:46:54.0932666Z Get:28 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted Translation-en [361 kB]
+2026-10-04T14:46:58.3767290Z Fetched 12.6 MB in 1s (8634 kB/s)
+2026-10-04T14:46:59.2649171Z Reading package lists...
+2026-10-04T14:46:59.5696283Z Reading package lists...
+2026-10-04T14:46:59.7601645Z Building dependency tree...
+2026-10-04T14:46:59.7610046Z Reading state information...
+2026-10-04T14:46:59.9009374Z libsqlite3-dev is already the newest version (3.45.1-1ubuntu2.8).
+2026-10-04T14:46:59.9010038Z The following additional packages will be installed:
+2026-10-04T14:46:59.9012920Z   libhiredis1.1.0 libssl3t64 openssl
+2026-10-04T14:46:59.9018001Z Suggested packages:
+2026-10-04T14:46:59.9018383Z   distcc | icecc libssl-doc
+2026-10-04T14:47:00.1170924Z The following NEW packages will be installed:
+2026-10-04T14:47:00.1179833Z   ccache clang libhiredis1.1.0 ninja-build
+2026-10-04T14:47:00.1187657Z The following packages will be upgraded:
+2026-10-04T14:47:00.1190527Z   libssl-dev libssl3t64 openssl
+2026-10-04T14:47:00.1728196Z 3 upgraded, 4 newly installed, 0 to remove and 22 not upgraded.
+2026-10-04T14:47:00.1729093Z Need to get 6125 kB of archives.
+2026-10-04T14:47:00.1729600Z After this operation, 2143 kB of additional disk space will be used.
+2026-10-04T14:47:00.1730054Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-10-04T14:47:00.4735007Z Get:2 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libssl-dev amd64 3.0.13-0ubuntu3.16 [2409 kB]
+2026-10-04T14:47:01.0918501Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libssl3t64 amd64 3.0.13-0ubuntu3.16 [1945 kB]
+2026-10-04T14:47:01.1999496Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 openssl amd64 3.0.13-0ubuntu3.16 [1004 kB]
+2026-10-04T14:47:01.2872136Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 libhiredis1.1.0 amd64 1.2.0-6ubuntu3 [41.4 kB]
+2026-10-04T14:47:01.3585945Z Get:6 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 ccache amd64 4.9.1-1 [592 kB]
+2026-10-04T14:47:01.4357856Z Get:7 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 clang amd64 1:18.0-59~exp2 [5846 B]
+2026-10-04T14:47:01.5047111Z Get:8 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 ninja-build amd64 1.11.1-2 [129 kB]
+2026-10-04T14:47:01.7606535Z Fetched 6125 kB in 1s (4558 kB/s)
+2026-10-04T14:47:01.8191507Z (Reading database ... 
+2026-10-04T14:47:01.8192327Z (Reading database ... 5%
+2026-10-04T14:47:01.8193029Z (Reading database ... 10%
+2026-10-04T14:47:01.8193471Z (Reading database ... 15%
+2026-10-04T14:47:01.8193859Z (Reading database ... 20%
+2026-10-04T14:47:01.8194238Z (Reading database ... 25%
+2026-10-04T14:47:01.8194650Z (Reading database ... 30%
+2026-10-04T14:47:01.8195059Z (Reading database ... 35%
+2026-10-04T14:47:01.8195445Z (Reading database ... 40%
+2026-10-04T14:47:01.8195780Z (Reading database ... 45%
+2026-10-04T14:47:01.8196017Z (Reading database ... 50%
+2026-10-04T14:47:01.8242761Z (Reading database ... 55%
+2026-10-04T14:47:01.9774892Z (Reading database ... 60%
+2026-10-04T14:47:02.1681344Z (Reading database ... 65%
+2026-10-04T14:47:02.3713184Z (Reading database ... 70%
+2026-10-04T14:47:02.5205925Z (Reading database ... 75%
+2026-10-04T14:47:02.7148393Z (Reading database ... 80%
+2026-10-04T14:47:02.9199935Z (Reading database ... 85%
+2026-10-04T14:47:03.0743804Z (Reading database ... 90%
+2026-10-04T14:47:03.2801063Z (Reading database ... 95%
+2026-10-04T14:47:03.2801700Z (Reading database ... 100%
+2026-10-04T14:47:03.2802453Z (Reading database ... 202296 files and directories currently installed.)
+2026-10-04T14:47:03.2845833Z Preparing to unpack .../libssl-dev_3.0.13-0ubuntu3.16_amd64.deb ...
+2026-10-04T14:47:03.2892516Z Unpacking libssl-dev:amd64 (3.0.13-0ubuntu3.16) over (3.0.13-0ubuntu3.15) ...
+2026-10-04T14:47:03.4621287Z Preparing to unpack .../libssl3t64_3.0.13-0ubuntu3.16_amd64.deb ...
+2026-10-04T14:47:03.4656697Z Unpacking libssl3t64:amd64 (3.0.13-0ubuntu3.16) over (3.0.13-0ubuntu3.15) ...
+2026-10-04T14:47:03.5293106Z Setting up libssl3t64:amd64 (3.0.13-0ubuntu3.16) ...
+2026-10-04T14:47:03.5603403Z (Reading database ... 
+2026-10-04T14:47:03.5603833Z (Reading database ... 5%
+2026-10-04T14:47:03.5604167Z (Reading database ... 10%
+2026-10-04T14:47:03.5604589Z (Reading database ... 15%
+2026-10-04T14:47:03.5605140Z (Reading database ... 20%
+2026-10-04T14:47:03.5605494Z (Reading database ... 25%
+2026-10-04T14:47:03.5605926Z (Reading database ... 30%
+2026-10-04T14:47:03.5606557Z (Reading database ... 35%
+2026-10-04T14:47:03.5606979Z (Reading database ... 40%
+2026-10-04T14:47:03.5607315Z (Reading database ... 45%
+2026-10-04T14:47:03.5607720Z (Reading database ... 50%
+2026-10-04T14:47:03.5622781Z (Reading database ... 55%
+2026-10-04T14:47:03.5734013Z (Reading database ... 60%
+2026-10-04T14:47:03.5761859Z (Reading database ... 65%
+2026-10-04T14:47:03.5783782Z (Reading database ... 70%
+2026-10-04T14:47:03.5820166Z (Reading database ... 75%
+2026-10-04T14:47:03.5850354Z (Reading database ... 80%
+2026-10-04T14:47:03.5876393Z (Reading database ... 85%
+2026-10-04T14:47:03.6025596Z (Reading database ... 90%
+2026-10-04T14:47:03.6269817Z (Reading database ... 95%
+2026-10-04T14:47:03.6270221Z (Reading database ... 100%
+2026-10-04T14:47:03.6270693Z (Reading database ... 202296 files and directories currently installed.)
+2026-10-04T14:47:03.6308590Z Preparing to unpack .../openssl_3.0.13-0ubuntu3.16_amd64.deb ...
+2026-10-04T14:47:03.6340271Z Unpacking openssl (3.0.13-0ubuntu3.16) over (3.0.13-0ubuntu3.15) ...
+2026-10-04T14:47:03.7290572Z Selecting previously unselected package libhiredis1.1.0:amd64.
+2026-10-04T14:47:03.7417057Z Preparing to unpack .../libhiredis1.1.0_1.2.0-6ubuntu3_amd64.deb ...
+2026-10-04T14:47:03.7424731Z Unpacking libhiredis1.1.0:amd64 (1.2.0-6ubuntu3) ...
+2026-10-04T14:47:03.7631262Z Selecting previously unselected package ccache.
+2026-10-04T14:47:03.7756569Z Preparing to unpack .../ccache_4.9.1-1_amd64.deb ...
+2026-10-04T14:47:03.7765891Z Unpacking ccache (4.9.1-1) ...
+2026-10-04T14:47:03.8059481Z Selecting previously unselected package clang.
+2026-10-04T14:47:03.8183424Z Preparing to unpack .../clang_1%3a18.0-59~exp2_amd64.deb ...
+2026-10-04T14:47:03.8192260Z Unpacking clang (1:18.0-59~exp2) ...
+2026-10-04T14:47:03.8381211Z Selecting previously unselected package ninja-build.
+2026-10-04T14:47:03.8504952Z Preparing to unpack .../ninja-build_1.11.1-2_amd64.deb ...
+2026-10-04T14:47:03.8512243Z Unpacking ninja-build (1.11.1-2) ...
+2026-10-04T14:47:03.9030638Z Setting up ninja-build (1.11.1-2) ...
+2026-10-04T14:47:03.9055273Z Setting up clang (1:18.0-59~exp2) ...
+2026-10-04T14:47:03.9264527Z Setting up libssl-dev:amd64 (3.0.13-0ubuntu3.16) ...
+2026-10-04T14:47:03.9285104Z Setting up openssl (3.0.13-0ubuntu3.16) ...
+2026-10-04T14:47:03.9326322Z Setting up libhiredis1.1.0:amd64 (1.2.0-6ubuntu3) ...
+2026-10-04T14:47:03.9351781Z Setting up ccache (4.9.1-1) ...
+2026-10-04T14:47:03.9375599Z Updating symlinks in /usr/lib/ccache ...
+2026-10-04T14:47:03.9475332Z Processing triggers for libc-bin (2.39-0ubuntu8.9) ...
+2026-10-04T14:47:03.9858693Z Processing triggers for man-db (2.12.0-4build2) ...
+2026-10-04T14:47:03.9880252Z Not building database; man-db/auto-update is not 'true'.
+2026-10-04T14:47:04.5309912Z 
+2026-10-04T14:47:04.5310481Z Running kernel seems to be up-to-date.
+2026-10-04T14:47:04.5310943Z 
+2026-10-04T14:47:04.5311094Z Restarting services...
+2026-10-04T14:47:04.5755991Z  /etc/needrestart/restart.d/systemd-manager
+2026-10-04T14:47:04.9090603Z  systemctl restart packagekit.service php8.3-fpm.service systemd-journald.service systemd-networkd.service systemd-resolved.service systemd-udevd.service udisks2.service
+2026-10-04T14:47:05.1412731Z 
+2026-10-04T14:47:05.1413478Z Service restarts being deferred:
+2026-10-04T14:47:05.1414127Z  systemctl restart hosted-compute-agent.service
+2026-10-04T14:47:05.1414837Z  systemctl restart systemd-logind.service
+2026-10-04T14:47:05.1415504Z  systemctl restart walinuxagent.service
+2026-10-04T14:47:05.1415891Z 
+2026-10-04T14:47:05.1416067Z No containers need to be restarted.
+2026-10-04T14:47:05.1416358Z 
+2026-10-04T14:47:05.1416535Z User sessions running outdated binaries:
+2026-10-04T14:47:05.1417044Z  runner @ user manager service: systemd[1174]
+2026-10-04T14:47:05.1518455Z 
+2026-10-04T14:47:05.1519274Z No VM guests are running outdated hypervisor (qemu) binaries on this host.
+2026-10-04T14:47:06.0525919Z ##[group]Run actions/setup-python@v5
+2026-10-04T14:47:06.0526206Z with:
+2026-10-04T14:47:06.0526396Z   python-version: 3.11
+2026-10-04T14:47:06.0526621Z   check-latest: false
+2026-10-04T14:47:06.0529113Z   token: ***
+2026-10-04T14:47:06.0529331Z   update-environment: true
+2026-10-04T14:47:06.0529574Z   allow-prereleases: false
+2026-10-04T14:47:06.0529797Z   freethreaded: false
+2026-10-04T14:47:06.0530002Z env:
+2026-10-04T14:47:06.0530171Z   CC: clang
+2026-10-04T14:47:06.0530346Z   CXX: clang++
+2026-10-04T14:47:06.0530532Z ##[endgroup]
+2026-10-04T14:47:06.1874899Z ##[group]Installed versions
+2026-10-04T14:47:06.1962280Z (node:3017) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-04T14:47:06.1963559Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-04T14:47:06.1964568Z Successfully set up CPython (3.11.16)
+2026-10-04T14:47:06.1965622Z ##[endgroup]
+2026-10-04T14:47:06.2145248Z ##[group]Run python -m pip install requests cryptography -r loom/tools/contracts/requirements.txt
+2026-10-04T14:47:06.2146388Z [36;1mpython -m pip install requests cryptography -r loom/tools/contracts/requirements.txt[0m
+2026-10-04T14:47:06.2242442Z shell: /usr/bin/bash -e {0}
+2026-10-04T14:47:06.2242839Z env:
+2026-10-04T14:47:06.2243126Z   CC: clang
+2026-10-04T14:47:06.2243411Z   CXX: clang++
+2026-10-04T14:47:06.2243825Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-04T14:47:06.2244562Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+2026-10-04T14:47:06.2245255Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-04T14:47:06.2245864Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-04T14:47:06.2246474Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-04T14:47:06.2247096Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+2026-10-04T14:47:06.2247845Z ##[endgroup]
+2026-10-04T14:47:07.3857279Z Collecting requests
+2026-10-04T14:47:07.4334765Z   Downloading requests-2.34.2-py3-none-any.whl.metadata (4.8 kB)
+2026-10-04T14:47:07.6232410Z Collecting cryptography
+2026-10-04T14:47:07.6264770Z   Downloading cryptography-50.0.2-cp311-abi3-manylinux_2_34_x86_64.whl.metadata (4.4 kB)
+2026-10-04T14:47:07.6454529Z Collecting jsonschema<5,>=4.18 (from -r loom/tools/contracts/requirements.txt (line 3))
+2026-10-04T14:47:07.6483333Z   Downloading jsonschema-4.26.0-py3-none-any.whl.metadata (7.6 kB)
+2026-10-04T14:47:07.6671765Z Collecting referencing<1,>=0.30 (from -r loom/tools/contracts/requirements.txt (line 4))
+2026-10-04T14:47:07.6702280Z   Downloading referencing-0.37.0-py3-none-any.whl.metadata (2.8 kB)
+2026-10-04T14:47:07.6785427Z Collecting rfc3339-validator>=0.1.4 (from -r loom/tools/contracts/requirements.txt (line 5))
+2026-10-04T14:47:07.6813109Z   Downloading rfc3339_validator-0.1.4-py2.py3-none-any.whl.metadata (1.5 kB)
+2026-10-04T14:47:07.6934107Z Collecting attrs>=22.2.0 (from jsonschema<5,>=4.18->-r loom/tools/contracts/requirements.txt (line 3))
+2026-10-04T14:47:07.6963763Z   Downloading attrs-26.1.0-py3-none-any.whl.metadata (8.8 kB)
+2026-10-04T14:47:07.7070227Z Collecting jsonschema-specifications>=2023.03.6 (from jsonschema<5,>=4.18->-r loom/tools/contracts/requirements.txt (line 3))
+2026-10-04T14:47:07.7096719Z   Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl.metadata (2.9 kB)
+2026-10-04T14:47:07.9584432Z Collecting rpds-py>=0.25.0 (from jsonschema<5,>=4.18->-r loom/tools/contracts/requirements.txt (line 3))
+2026-10-04T14:47:07.9617302Z   Downloading rpds_py-2026.6.3-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.1 kB)
+2026-10-04T14:47:07.9781644Z Collecting typing-extensions>=4.4.0 (from referencing<1,>=0.30->-r loom/tools/contracts/requirements.txt (line 4))
+2026-10-04T14:47:07.9809163Z   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+2026-10-04T14:47:08.0919519Z Collecting charset_normalizer<4,>=2 (from requests)
+2026-10-04T14:47:08.0956291Z   Downloading charset_normalizer-3.5.2-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (46 kB)
+2026-10-04T14:47:08.1120523Z Collecting idna<4,>=2.5 (from requests)
+2026-10-04T14:47:08.1150989Z   Downloading idna-3.20-py3-none-any.whl.metadata (7.2 kB)
+2026-10-04T14:47:08.1333804Z Collecting urllib3<3,>=1.26 (from requests)
+2026-10-04T14:47:08.1365875Z   Downloading urllib3-2.8.0-py3-none-any.whl.metadata (7.4 kB)
+2026-10-04T14:47:08.1520802Z Collecting certifi>=2023.5.7 (from requests)
+2026-10-04T14:47:08.1549011Z   Downloading certifi-2026.7.22-py3-none-any.whl.metadata (2.5 kB)
+2026-10-04T14:47:08.2479465Z Collecting cffi>=2.0.0 (from cryptography)
+2026-10-04T14:47:08.2511078Z   Downloading cffi-2.1.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.5 kB)
+2026-10-04T14:47:08.2639627Z Collecting six (from rfc3339-validator>=0.1.4->-r loom/tools/contracts/requirements.txt (line 5))
+2026-10-04T14:47:08.2670437Z   Downloading six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+2026-10-04T14:47:08.2765616Z Collecting pycparser (from cffi>=2.0.0->cryptography)
+2026-10-04T14:47:08.2796284Z   Downloading pycparser-3.0-py3-none-any.whl.metadata (8.2 kB)
+2026-10-04T14:47:08.2886268Z Downloading jsonschema-4.26.0-py3-none-any.whl (90 kB)
+2026-10-04T14:47:08.2938981Z Downloading referencing-0.37.0-py3-none-any.whl (26 kB)
+2026-10-04T14:47:08.2986821Z Downloading requests-2.34.2-py3-none-any.whl (73 kB)
+2026-10-04T14:47:08.3038531Z Downloading charset_normalizer-3.5.2-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (269 kB)
+2026-10-04T14:47:08.3106715Z Downloading idna-3.20-py3-none-any.whl (69 kB)
+2026-10-04T14:47:08.3153824Z Downloading urllib3-2.8.0-py3-none-any.whl (135 kB)
+2026-10-04T14:47:08.3206358Z Downloading cryptography-50.0.2-cp311-abi3-manylinux_2_34_x86_64.whl (4.8 MB)
+2026-10-04T14:47:08.3399415Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.8/4.8 MB 271.0 MB/s  0:00:00
+2026-10-04T14:47:08.3434666Z Downloading rfc3339_validator-0.1.4-py2.py3-none-any.whl (3.5 kB)
+2026-10-04T14:47:08.3478827Z Downloading attrs-26.1.0-py3-none-any.whl (67 kB)
+2026-10-04T14:47:08.3529394Z Downloading certifi-2026.7.22-py3-none-any.whl (136 kB)
+2026-10-04T14:47:08.3578589Z Downloading cffi-2.1.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (217 kB)
+2026-10-04T14:47:08.3628496Z Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl (18 kB)
+2026-10-04T14:47:08.3720853Z Downloading rpds_py-2026.6.3-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (371 kB)
+2026-10-04T14:47:08.3783950Z Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+2026-10-04T14:47:08.3830669Z Downloading pycparser-3.0-py3-none-any.whl (48 kB)
+2026-10-04T14:47:08.3878454Z Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+2026-10-04T14:47:08.4746730Z Installing collected packages: urllib3, typing-extensions, six, rpds-py, pycparser, idna, charset_normalizer, certifi, attrs, rfc3339-validator, requests, referencing, cffi, jsonschema-specifications, cryptography, jsonschema
+2026-10-04T14:47:09.0901128Z 
+2026-10-04T14:47:09.0915520Z Successfully installed attrs-26.1.0 certifi-2026.7.22 cffi-2.1.1 charset_normalizer-3.5.2 cryptography-50.0.2 idna-3.20 jsonschema-4.26.0 jsonschema-specifications-2025.9.1 pycparser-3.0 referencing-0.37.0 requests-2.34.2 rfc3339-validator-0.1.4 rpds-py-2026.6.3 six-1.17.0 typing-extensions-4.16.0 urllib3-2.8.0
+2026-10-04T14:47:09.1599645Z ##[group]Run python -m unittest discover -s .github/scripts -p 'test_*.py' -v
+2026-10-04T14:47:09.1600223Z [36;1mpython -m unittest discover -s .github/scripts -p 'test_*.py' -v[0m
+2026-10-04T14:47:09.1663463Z shell: /usr/bin/bash -e {0}
+2026-10-04T14:47:09.1663723Z env:
+2026-10-04T14:47:09.1663922Z   CC: clang
+2026-10-04T14:47:09.1664125Z   CXX: clang++
+2026-10-04T14:47:09.1664434Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-04T14:47:09.1664931Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+2026-10-04T14:47:09.1665438Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-04T14:47:09.1665887Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-04T14:47:09.1666330Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-04T14:47:09.1666776Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+2026-10-04T14:47:09.1667151Z ##[endgroup]
+2026-10-04T14:47:09.2817257Z test_aggregated_outer_skip_and_invalid_xml_root_fail (test_verify_ctest.EvidenceGateTests.test_aggregated_outer_skip_and_invalid_xml_root_fail) ... ok
+2026-10-04T14:47:09.2820148Z test_asan_exception_does_not_allow_partial_or_other_skips (test_verify_ctest.EvidenceGateTests.test_asan_exception_does_not_allow_partial_or_other_skips) ... ok
+2026-10-04T14:47:09.2823293Z test_asan_existing_shared_library_unavailability_is_explicit (test_verify_ctest.EvidenceGateTests.test_asan_existing_shared_library_unavailability_is_explicit) ... ok
+2026-10-04T14:47:09.2825669Z test_asan_named_exception_requires_documented_unavailability (test_verify_ctest.EvidenceGateTests.test_asan_named_exception_requires_documented_unavailability) ... ok
+2026-10-04T14:47:09.2843186Z test_cli_writes_reviewable_evidence_and_nonzero_exit (test_verify_ctest.EvidenceGateTests.test_cli_writes_reviewable_evidence_and_nonzero_exit) ... ok
+2026-10-04T14:47:09.2845481Z test_empty_manifest_and_outer_failure_or_skip_fail (test_verify_ctest.EvidenceGateTests.test_empty_manifest_and_outer_failure_or_skip_fail) ... ok
+2026-10-04T14:47:09.2847572Z test_enabled_scale_must_have_real_assertions (test_verify_ctest.EvidenceGateTests.test_enabled_scale_must_have_real_assertions) ... ok
+2026-10-04T14:47:09.2849531Z test_historical_zero_success_is_rejected (test_verify_ctest.EvidenceGateTests.test_historical_zero_success_is_rejected) ... ok
+2026-10-04T14:47:09.2853023Z test_manifest_duplicate_missing_and_extra_entries_fail (test_verify_ctest.EvidenceGateTests.test_manifest_duplicate_missing_and_extra_entries_fail) ... ok
+2026-10-04T14:47:09.2855461Z test_missing_truncated_and_duplicate_summaries_fail (test_verify_ctest.EvidenceGateTests.test_missing_truncated_and_duplicate_summaries_fail) ... ok
+2026-10-04T14:47:09.2857579Z test_outer_suite_failure_counts_fail_even_without_child (test_verify_ctest.EvidenceGateTests.test_outer_suite_failure_counts_fail_even_without_child) ... ok
+2026-10-04T14:47:09.2859813Z test_positive_cases_with_no_assertions_do_not_establish_verification (test_verify_ctest.EvidenceGateTests.test_positive_cases_with_no_assertions_do_not_establish_verification) ... ok
+2026-10-04T14:47:09.2861258Z test_positive_inner_cases_are_counted_separately_from_entries (test_verify_ctest.EvidenceGateTests.test_positive_inner_cases_are_counted_separately_from_entries) ... ok
+2026-10-04T14:47:09.2863902Z test_python_zero_missing_and_unexpected_skips_fail (test_verify_ctest.EvidenceGateTests.test_python_zero_missing_and_unexpected_skips_fail) ... ok
+2026-10-04T14:47:09.2865215Z test_scale_opt_in_is_classified_unexecuted (test_verify_ctest.EvidenceGateTests.test_scale_opt_in_is_classified_unexecuted) ... ok
+2026-10-04T14:47:09.2866643Z test_smoke_explicit_skip_is_not_success (test_verify_ctest.EvidenceGateTests.test_smoke_explicit_skip_is_not_success) ... ok
+2026-10-04T14:47:09.2867524Z 
+2026-10-04T14:47:09.2867686Z ----------------------------------------------------------------------
+2026-10-04T14:47:09.2868414Z Ran 16 tests in 0.005s
+2026-10-04T14:47:09.2898468Z 
+2026-10-04T14:47:09.2899057Z OK
+2026-10-04T14:47:09.3043070Z ##[group]Run actions/cache@v4
+2026-10-04T14:47:09.3043332Z with:
+2026-10-04T14:47:09.3043521Z   path: ~/.cache/ccache
+2026-10-04T14:47:09.3043857Z   key: ccache-vendored-clang++-295de864dc42507ce4f54a0bbd7adf42fd1bc9fa
+2026-10-04T14:47:09.3044269Z   restore-keys: ccache-vendored-clang++-
+2026-10-04T14:47:09.3044552Z   enableCrossOsArchive: false
+2026-10-04T14:47:09.3044791Z   fail-on-cache-miss: false
+2026-10-04T14:47:09.3045015Z   lookup-only: false
+2026-10-04T14:47:09.3045221Z   save-always: false
+2026-10-04T14:47:09.3045421Z env:
+2026-10-04T14:47:09.3045590Z   CC: clang
+2026-10-04T14:47:09.3045765Z   CXX: clang++
+2026-10-04T14:47:09.3046024Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-04T14:47:09.3046444Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+2026-10-04T14:47:09.3046858Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-04T14:47:09.3047222Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-04T14:47:09.3047627Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-04T14:47:09.3048279Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+2026-10-04T14:47:09.3048603Z ##[endgroup]
+2026-10-04T14:47:09.4110498Z (node:3053) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-04T14:47:09.4111503Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-04T14:47:09.6634337Z Cache not found for input keys: ccache-vendored-clang++-295de864dc42507ce4f54a0bbd7adf42fd1bc9fa, ccache-vendored-clang++-
+2026-10-04T14:47:09.6744386Z ##[group]Run cmake --preset vendored -DLOOM_BUILD_SERVER=ON -DLOOM_SHARED=ON -DPython3_EXECUTABLE="$(which python)"
+2026-10-04T14:47:09.6745199Z [36;1mcmake --preset vendored -DLOOM_BUILD_SERVER=ON -DLOOM_SHARED=ON -DPython3_EXECUTABLE="$(which python)"[0m
+2026-10-04T14:47:09.6809652Z shell: /usr/bin/bash -e {0}
+2026-10-04T14:47:09.6809945Z env:
+2026-10-04T14:47:09.6810158Z   CC: clang
+2026-10-04T14:47:09.6810377Z   CXX: clang++
+2026-10-04T14:47:09.6810695Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-04T14:47:09.6811217Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+2026-10-04T14:47:09.6811724Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-04T14:47:09.6812179Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-04T14:47:09.6812632Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-04T14:47:09.6813266Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+2026-10-04T14:47:09.6813683Z ##[endgroup]
+2026-10-04T14:47:19.9934725Z Preset CMake variables:
+2026-10-04T14:47:19.9935137Z 
+2026-10-04T14:47:19.9935386Z   CMAKE_BUILD_TYPE="Debug"
+2026-10-04T14:47:19.9935959Z   LOOM_BUILD_CLI="ON"
+2026-10-04T14:47:19.9936488Z   LOOM_BUILD_TESTS="ON"
+2026-10-04T14:47:19.9937048Z   LOOM_USE_SYSTEM_SQLITE="OFF"
+2026-10-04T14:47:19.9937652Z   LOOM_WERROR="ON"
+2026-10-04T14:47:19.9938162Z 
+2026-10-04T14:47:19.9938448Z -- The C compiler identification is Clang 18.1.3
+2026-10-04T14:47:20.3891786Z -- The CXX compiler identification is Clang 18.1.3
+2026-10-04T14:47:20.6087317Z -- Detecting C compiler ABI info
+2026-10-04T14:47:20.9277699Z -- Detecting C compiler ABI info - done
+2026-10-04T14:47:20.9408239Z -- Check for working C compiler: /usr/bin/clang - skipped
+2026-10-04T14:47:20.9549388Z -- Detecting C compile features
+2026-10-04T14:47:20.9603833Z -- Detecting C compile features - done
+2026-10-04T14:47:20.9921979Z -- Detecting CXX compiler ABI info
+2026-10-04T14:47:21.1061556Z -- Detecting CXX compiler ABI info - done
+2026-10-04T14:47:21.1199956Z -- Check for working CXX compiler: /usr/bin/clang++ - skipped
+2026-10-04T14:47:21.1203629Z -- Detecting CXX compile features
+2026-10-04T14:47:21.1218596Z -- Detecting CXX compile features - done
+2026-10-04T14:47:21.1337649Z -- loom: using ccache (/usr/bin/ccache)
+2026-10-04T14:47:21.2634975Z -- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+2026-10-04T14:47:21.5661419Z -- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+2026-10-04T14:47:21.5672238Z -- Found Threads: TRUE
+2026-10-04T14:47:21.5676469Z -- loom: SQLite = vendored amalgamation 3.47.2
+2026-10-04T14:47:21.6104175Z -- loom: OpenSSL = ON
+2026-10-04T14:47:21.7506148Z -- Found Python3: /opt/hostedtoolcache/Python/3.11.16/x64/bin/python (found version "3.11.16") found components: Interpreter
+2026-10-04T14:47:21.9331856Z -- Configuring done (10.8s)
+2026-10-04T14:47:22.0087682Z -- Generating done (0.1s)
+2026-10-04T14:47:22.0092215Z -- Build files have been written to: /home/runner/work/chatadhd/chatadhd/loom/build/vendored
+2026-10-04T14:47:22.0233926Z ##[group]Run cmake --build --preset vendored --parallel 2
+2026-10-04T14:47:22.0234361Z [36;1mcmake --build --preset vendored --parallel 2[0m
+2026-10-04T14:47:22.0297669Z shell: /usr/bin/bash -e {0}
+2026-10-04T14:47:22.0298250Z env:
+2026-10-04T14:47:22.0298489Z   CC: clang
+2026-10-04T14:47:22.0298708Z   CXX: clang++
+2026-10-04T14:47:22.0299026Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-04T14:47:22.0299534Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+2026-10-04T14:47:22.0300051Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-04T14:47:22.0300500Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-04T14:47:22.0300948Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-04T14:47:22.0301400Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+2026-10-04T14:47:22.0301800Z ##[endgroup]
+2026-10-04T14:47:22.0450742Z [0/2] Re-checking globbed directories...
+2026-10-04T14:47:23.0050705Z [1/237] Building C object CMakeFiles/loom_miniz.dir/third_party/miniz/miniz.c.o
+2026-10-04T14:47:25.7943282Z [2/237] Building C object CMakeFiles/loom_sqlite3_amalgamation.dir/third_party/sqlite/sqlite3.c.o
+2026-10-04T14:47:35.9426314Z [3/237] Linking C static library libloom_miniz.a
+2026-10-04T14:47:35.9473988Z [4/237] Linking C static library libloom_sqlite3_amalgamation.a
+2026-10-04T14:47:39.7538216Z [5/237] Building CXX object CMakeFiles/loom_core.dir/src/archive/cluster.cpp.o
+2026-10-04T14:47:43.6611249Z [6/237] Building CXX object CMakeFiles/loom_core.dir/src/archive/ingest.cpp.o
+2026-10-04T14:47:44.0376699Z [7/237] Building CXX object CMakeFiles/loom_core.dir/src/archive/ingest_parse.cpp.o
+2026-10-04T14:47:47.7081791Z [8/237] Building CXX object CMakeFiles/loom_core.dir/src/archive/items.cpp.o
+2026-10-04T14:47:53.1557572Z [9/237] Building CXX object CMakeFiles/loom_core.dir/src/archive/pipeline.cpp.o
+2026-10-04T14:47:53.4971590Z [10/237] Building CXX object CMakeFiles/loom_core.dir/src/archive/synth.cpp.o
+2026-10-04T14:47:55.8948968Z [11/237] Building CXX object CMakeFiles/loom_core.dir/src/archive/text.cpp.o
+2026-10-04T14:47:57.4049597Z [12/237] Building CXX object CMakeFiles/loom_core.dir/src/archive/vocab.cpp.o
+2026-10-04T14:48:00.3722351Z [13/237] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_archive.cpp.o
+2026-10-04T14:48:01.9087746Z [14/237] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_catalog.cpp.o
+2026-10-04T14:48:05.6455035Z [15/237] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_chat.cpp.o
+2026-10-04T14:48:06.3619983Z [16/237] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_context.cpp.o
+2026-10-04T14:48:10.9016174Z [17/237] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_extract.cpp.o
+2026-10-04T14:48:11.2047843Z [18/237] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_core.cpp.o
+2026-10-04T14:48:15.6864378Z [19/237] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_graph.cpp.o
+2026-10-04T14:48:16.0986000Z [20/237] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_generalize.cpp.o
+2026-10-04T14:48:19.8353479Z [21/237] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_graph_packet_store.cpp.o
+2026-10-04T14:48:19.9218800Z [22/237] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_http.cpp.o
+2026-10-04T14:48:23.9687503Z [23/237] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_import.cpp.o
+2026-10-04T14:48:25.6342098Z [24/237] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_knowledge.cpp.o
+2026-10-04T14:48:28.4132153Z [25/237] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_media.cpp.o
+2026-10-04T14:48:29.2188696Z [26/237] Building CXX object CMakeFiles/loom_core.dir/src/catalog/alias.cpp.o
+2026-10-04T14:48:31.9866577Z [27/237] Building CXX object CMakeFiles/loom_core.dir/src/catalog/extract_text.cpp.o
+2026-10-04T14:48:33.7369720Z [28/237] Building CXX object CMakeFiles/loom_core.dir/src/catalog/catalog.cpp.o
+2026-10-04T14:48:37.1575571Z [29/237] Building CXX object CMakeFiles/loom_core.dir/src/catalog/import.cpp.o
+2026-10-04T14:48:37.7757623Z [30/237] Building CXX object CMakeFiles/loom_core.dir/src/catalog/links.cpp.o
+2026-10-04T14:48:41.8727335Z [31/237] Building CXX object CMakeFiles/loom_core.dir/src/catalog/profile.cpp.o
+2026-10-04T14:48:43.0910786Z [32/237] Building CXX object CMakeFiles/loom_core.dir/src/catalog/query.cpp.o
+2026-10-04T14:48:45.8870633Z [33/237] Building CXX object CMakeFiles/loom_core.dir/src/catalog/schema.cpp.o
+2026-10-04T14:48:47.1038297Z [34/237] Building CXX object CMakeFiles/loom_core.dir/src/catalog/scan.cpp.o
+2026-10-04T14:48:52.2843555Z [35/237] Building CXX object CMakeFiles/loom_core.dir/src/catalog/score.cpp.o
+2026-10-04T14:48:52.8560297Z [36/237] Building CXX object CMakeFiles/loom_core.dir/src/catalog/select.cpp.o
+2026-10-04T14:48:55.3333193Z [37/237] Building CXX object CMakeFiles/loom_core.dir/src/catalog/semantic.cpp.o
+2026-10-04T14:48:56.7293078Z [38/237] Building CXX object CMakeFiles/loom_core.dir/src/catalog/sketch.cpp.o
+2026-10-04T14:48:57.9908864Z [39/237] Building CXX object CMakeFiles/loom_core.dir/src/catalog/stream.cpp.o
+2026-10-04T14:49:02.6890786Z [40/237] Building CXX object CMakeFiles/loom_core.dir/src/chat/active_task_spec.cpp.o
+2026-10-04T14:49:02.8157880Z [41/237] Building CXX object CMakeFiles/loom_core.dir/src/chat/active_task_acceptance.cpp.o
+2026-10-04T14:49:08.0491028Z [42/237] Building CXX object CMakeFiles/loom_core.dir/src/chat/batch_api.cpp.o
+2026-10-04T14:49:11.3637650Z [43/237] Building CXX object CMakeFiles/loom_core.dir/src/chat/chat_engine.cpp.o
+2026-10-04T14:49:12.6299090Z [44/237] Building CXX object CMakeFiles/loom_core.dir/src/context/context_candidates.cpp.o
+2026-10-04T14:49:14.0143375Z [45/237] Building CXX object CMakeFiles/loom_core.dir/src/context/context_diagnostics.cpp.o
+2026-10-04T14:49:18.5711730Z [46/237] Building CXX object CMakeFiles/loom_core.dir/src/context/context_evidence.cpp.o
+2026-10-04T14:49:20.8949490Z [47/237] Building CXX object CMakeFiles/loom_core.dir/src/context/context_engine.cpp.o
+2026-10-04T14:49:24.2682609Z [48/237] Building CXX object CMakeFiles/loom_core.dir/src/context/context_plan.cpp.o
+2026-10-04T14:49:25.1036971Z [49/237] Building CXX object CMakeFiles/loom_core.dir/src/context/context_request_ext.cpp.o
+2026-10-04T14:49:27.2714944Z [50/237] Building CXX object CMakeFiles/loom_core.dir/src/context/ctx_common.cpp.o
+2026-10-04T14:49:29.4379155Z [51/237] Building CXX object CMakeFiles/loom_core.dir/src/context/retrieval.cpp.o
+2026-10-04T14:49:31.8687150Z [52/237] Building CXX object CMakeFiles/loom_core.dir/src/core/config.cpp.o
+2026-10-04T14:49:33.2612449Z [53/237] Building CXX object CMakeFiles/loom_core.dir/src/core/event_bus.cpp.o
+2026-10-04T14:49:36.9630237Z [54/237] Building CXX object CMakeFiles/loom_core.dir/src/core/provenance.cpp.o
+2026-10-04T14:49:37.6030024Z [55/237] Building CXX object CMakeFiles/loom_core.dir/src/core/relations.cpp.o
+2026-10-04T14:49:41.9069828Z [56/237] Building CXX object CMakeFiles/loom_core.dir/src/crypto/crypto.cpp.o
+2026-10-04T14:49:42.3225437Z [57/237] Building CXX object CMakeFiles/loom_core.dir/src/core/tasks.cpp.o
+2026-10-04T14:49:46.4760904Z [58/237] Building CXX object CMakeFiles/loom_core.dir/src/db/fts.cpp.o
+2026-10-04T14:49:47.8196186Z [59/237] Building CXX object CMakeFiles/loom_core.dir/src/db/sqlite.cpp.o
+2026-10-04T14:49:48.2299392Z [60/237] Building CXX object CMakeFiles/loom_core.dir/src/db/db.cpp.o
+2026-10-04T14:49:53.3563483Z [61/237] Building CXX object CMakeFiles/loom_core.dir/src/extract/extract.cpp.o
+2026-10-04T14:49:53.7867440Z [62/237] Building CXX object CMakeFiles/loom_core.dir/src/extract/candidate_graph.cpp.o
+2026-10-04T14:49:57.5803861Z [63/237] Building CXX object CMakeFiles/loom_core.dir/src/extract/lexicon.cpp.o
+2026-10-04T14:50:00.8972368Z [64/237] Building CXX object CMakeFiles/loom_core.dir/src/extract/extractors.cpp.o
+2026-10-04T14:50:04.6372990Z [65/237] Building CXX object CMakeFiles/loom_core.dir/src/extract/sources.cpp.o
+2026-10-04T14:50:04.9969725Z [66/237] Building CXX object CMakeFiles/loom_core.dir/src/extract/semantic.cpp.o
+2026-10-04T14:50:11.0725417Z [67/237] Building CXX object CMakeFiles/loom_core.dir/src/extract/stage.cpp.o
+2026-10-04T14:50:12.1579632Z [68/237] Building CXX object CMakeFiles/loom_core.dir/src/generalize/common.cpp.o
+2026-10-04T14:50:15.3181454Z [69/237] Building CXX object CMakeFiles/loom_core.dir/src/generalize/evidence.cpp.o
+2026-10-04T14:50:17.9057816Z [70/237] Building CXX object CMakeFiles/loom_core.dir/src/generalize/infer.cpp.o
+2026-10-04T14:50:22.0190905Z [71/237] Building CXX object CMakeFiles/loom_core.dir/src/generalize/match.cpp.o
+2026-10-04T14:50:22.6900199Z [72/237] Building CXX object CMakeFiles/loom_core.dir/src/generalize/operators.cpp.o
+2026-10-04T14:50:27.6386404Z [73/237] Building CXX object CMakeFiles/loom_core.dir/src/generalize/principles.cpp.o
+2026-10-04T14:50:28.7646051Z [74/237] Building CXX object CMakeFiles/loom_core.dir/src/generalize/stage.cpp.o
+2026-10-04T14:50:33.3334957Z [75/237] Building CXX object CMakeFiles/loom_core.dir/src/graph/graph_engine.cpp.o
+2026-10-04T14:50:33.8534918Z [76/237] Building CXX object CMakeFiles/loom_core.dir/src/github/github_sync.cpp.o
+2026-10-04T14:50:37.4882518Z [77/237] Building CXX object CMakeFiles/loom_core.dir/src/graph/graph_memory.cpp.o
+2026-10-04T14:50:39.2616276Z [78/237] Building CXX object CMakeFiles/loom_core.dir/src/import/export_anthropic.cpp.o
+2026-10-04T14:50:43.4229983Z [79/237] Building CXX object CMakeFiles/loom_core.dir/src/import/export_archive.cpp.o
+2026-10-04T14:50:44.6862406Z [80/237] Building CXX object CMakeFiles/loom_core.dir/src/import/export_common.cpp.o
+2026-10-04T14:50:49.0985714Z [81/237] Building CXX object CMakeFiles/loom_core.dir/src/import/export_openai.cpp.o
+2026-10-04T14:50:49.2222908Z [82/237] Building CXX object CMakeFiles/loom_core.dir/src/import/export_unknown.cpp.o
+2026-10-04T14:50:52.4455501Z [83/237] Building CXX object CMakeFiles/loom_core.dir/src/import/importer_common.cpp.o
+2026-10-04T14:50:52.4733742Z [84/237] Building CXX object CMakeFiles/loom_core.dir/src/import/exporter.cpp.o
+2026-10-04T14:50:56.0951241Z [85/237] Building CXX object CMakeFiles/loom_core.dir/src/import/importer_html.cpp.o
+2026-10-04T14:50:57.9527923Z [86/237] Building CXX object CMakeFiles/loom_core.dir/src/import/importer_core.cpp.o
+2026-10-04T14:51:00.9141733Z [87/237] Building CXX object CMakeFiles/loom_core.dir/src/import/importer_json.cpp.o
+2026-10-04T14:51:02.2905186Z [88/237] Building CXX object CMakeFiles/loom_core.dir/src/import/importer_sqlite.cpp.o
+2026-10-04T14:51:05.5457590Z [89/237] Building CXX object CMakeFiles/loom_core.dir/src/import/importer_text.cpp.o
+2026-10-04T14:51:06.0022763Z [90/237] Building CXX object CMakeFiles/loom_core.dir/src/import/importer_zip.cpp.o
+2026-10-04T14:51:09.2284615Z [91/237] Building CXX object CMakeFiles/loom_core.dir/src/kb/evidence.cpp.o
+2026-10-04T14:51:09.2952637Z [92/237] Building CXX object CMakeFiles/loom_core.dir/src/kb/candidates.cpp.o
+2026-10-04T14:51:12.2956399Z [93/237] Building CXX object CMakeFiles/loom_core.dir/src/kb/normalize.cpp.o
+2026-10-04T14:51:15.0432970Z [94/237] Building CXX object CMakeFiles/loom_core.dir/src/kb/graph_packet_store.cpp.o
+2026-10-04T14:51:17.9156787Z [95/237] Building CXX object CMakeFiles/loom_core.dir/src/kb/schema.cpp.o
+2026-10-04T14:51:18.4985164Z [96/237] Building CXX object CMakeFiles/loom_core.dir/src/kb/pack.cpp.o
+2026-10-04T14:51:24.9177860Z [97/237] Building CXX object CMakeFiles/loom_core.dir/src/knowledge/engine.cpp.o
+2026-10-04T14:51:26.7840604Z [98/237] Building CXX object CMakeFiles/loom_core.dir/src/kb/store.cpp.o
+2026-10-04T14:51:30.7190672Z [99/237] Building CXX object CMakeFiles/loom_core.dir/src/materialize/materialize.cpp.o
+2026-10-04T14:51:31.9956043Z [100/237] Building CXX object CMakeFiles/loom_core.dir/src/media/media_providers.cpp.o
+2026-10-04T14:51:35.7736547Z [101/237] Building CXX object CMakeFiles/loom_core.dir/src/memory/memory_engine.cpp.o
+2026-10-04T14:51:37.9463567Z [102/237] Building CXX object CMakeFiles/loom_core.dir/src/model/model_action.cpp.o
+2026-10-04T14:51:41.2803428Z [103/237] Building CXX object CMakeFiles/loom_core.dir/src/model/model_core.cpp.o
+2026-10-04T14:51:43.9784341Z [104/237] Building CXX object CMakeFiles/loom_core.dir/src/model/model_general.cpp.o
+2026-10-04T14:51:45.2839680Z [105/237] Building CXX object CMakeFiles/loom_core.dir/src/model/model_pack.cpp.o
+2026-10-04T14:51:47.7577180Z [106/237] Building CXX object CMakeFiles/loom_core.dir/src/net/http_common.cpp.o
+2026-10-04T14:51:48.4251729Z [107/237] Building CXX object CMakeFiles/loom_core.dir/src/net/sse.cpp.o
+2026-10-04T14:51:53.5040544Z [108/237] Building CXX object CMakeFiles/loom_core.dir/src/providers/providers.cpp.o
+2026-10-04T14:51:53.6932753Z [109/237] Building CXX object CMakeFiles/loom_core.dir/src/net/http_default.cpp.o
+2026-10-04T14:51:55.1324466Z [110/237] Building CXX object CMakeFiles/loom_core.dir/src/re/regex.cpp.o
+2026-10-04T14:51:57.6519455Z [111/237] Building CXX object CMakeFiles/loom_core.dir/src/resolve/assess.cpp.o
+2026-10-04T14:52:01.0248426Z [112/237] Building CXX object CMakeFiles/loom_core.dir/src/resolve/attribution.cpp.o
+2026-10-04T14:52:02.2304438Z [113/237] Building CXX object CMakeFiles/loom_core.dir/src/resolve/lineage.cpp.o
+2026-10-04T14:52:06.5377694Z [114/237] Building CXX object CMakeFiles/loom_core.dir/src/resolve/resolver.cpp.o
+2026-10-04T14:52:07.9550009Z [115/237] Building CXX object CMakeFiles/loom_core.dir/src/resolve/stage.cpp.o
+2026-10-04T14:52:10.3714161Z [116/237] Building CXX object CMakeFiles/loom_core.dir/src/resolve/vectors.cpp.o
+2026-10-04T14:52:14.2056599Z [117/237] Building CXX object CMakeFiles/loom_core.dir/src/search/selector.cpp.o
+2026-10-04T14:52:14.4289783Z [118/237] Building CXX object CMakeFiles/loom_core.dir/src/runtime.cpp.o
+2026-10-04T14:52:19.1701964Z [119/237] Building CXX object CMakeFiles/loom_core.dir/src/semantic/semantic_llm.cpp.o
+2026-10-04T14:52:19.2225640Z [120/237] Building CXX object CMakeFiles/loom_core.dir/src/semantic/analyzer.cpp.o
+2026-10-04T14:52:19.7246458Z [121/237] Building CXX object CMakeFiles/loom_core.dir/src/util/base64.cpp.o
+2026-10-04T14:52:21.2014231Z [122/237] Building CXX object CMakeFiles/loom_core.dir/src/util/fs.cpp.o
+2026-10-04T14:52:23.2675750Z [123/237] Building CXX object CMakeFiles/loom_core.dir/src/util/log.cpp.o
+2026-10-04T14:52:23.3806156Z [124/237] Building CXX object CMakeFiles/loom_core.dir/src/util/json.cpp.o
+2026-10-04T14:52:23.9296237Z [125/237] Building CXX object CMakeFiles/loom_core.dir/src/util/result.cpp.o
+2026-10-04T14:52:25.0125637Z [126/237] Building CXX object CMakeFiles/loom_core.dir/src/util/random_ids_time.cpp.o
+2026-10-04T14:52:25.0138381Z [127/237] Building CXX object CMakeFiles/loom_core.dir/src/util/sha256.cpp.o
+2026-10-04T14:52:25.5161499Z [128/237] Building CXX object CMakeFiles/loom_core.dir/src/util/utf8.cpp.o
+2026-10-04T14:52:25.6551536Z [129/237] Building CXX object CMakeFiles/loom_core.dir/src/util/unicode.cpp.o
+2026-10-04T14:52:25.7002971Z [130/237] Building C object CMakeFiles/loom.dir/src/capi/shared_anchor.c.o
+2026-10-04T14:52:28.7189485Z [131/237] Building CXX object CMakeFiles/loom_tests.dir/tests/main.cpp.o
+2026-10-04T14:52:30.7421491Z [132/237] Building CXX object CMakeFiles/loom_core.dir/src/worker/semantic_worker.cpp.o
+2026-10-04T14:52:34.0074413Z [133/237] Linking CXX static library libloom_core.a
+2026-10-04T14:52:36.2921704Z [134/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_archive.cpp.o
+2026-10-04T14:52:37.0352627Z [135/237] Linking CXX shared library libloom.so.0.1.0
+2026-10-04T14:52:42.2723662Z [136/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_batch_api.cpp.o
+2026-10-04T14:52:43.1909421Z [137/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_capi.cpp.o
+2026-10-04T14:52:47.1263026Z [138/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_capi_knowledge.cpp.o
+2026-10-04T14:52:48.0605064Z [139/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_capi_knowledge_latest_run.cpp.o
+2026-10-04T14:52:53.4722495Z [140/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_catalog.cpp.o
+2026-10-04T14:52:53.9976835Z [141/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_catalog_context.cpp.o
+2026-10-04T14:52:58.0806912Z [142/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_catalog_links.cpp.o
+2026-10-04T14:52:58.2562760Z [143/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_catalog_eval.cpp.o
+2026-10-04T14:53:01.7913721Z [144/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_catalog_scale.cpp.o
+2026-10-04T14:53:02.3376993Z [145/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_catalog_retention.cpp.o
+2026-10-04T14:53:08.8304599Z [146/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_active_task_acceptance_audit.cpp.o
+2026-10-04T14:53:09.4978420Z [147/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_active_task.cpp.o
+2026-10-04T14:53:14.0457423Z [148/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_active_task_acceptance_scale.cpp.o
+2026-10-04T14:53:16.4948501Z [149/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_active_task_acceptance_validation.cpp.o
+2026-10-04T14:53:22.1767233Z [150/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_active_task_concurrency.cpp.o
+2026-10-04T14:53:24.0364503Z [151/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_active_task_durability.cpp.o
+2026-10-04T14:53:28.8045510Z [152/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_active_task_durable_audit.cpp.o
+2026-10-04T14:53:30.0479393Z [153/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_active_task_exceptional.cpp.o
+2026-10-04T14:53:35.1822545Z [154/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_active_task_history_aba.cpp.o
+2026-10-04T14:53:35.4310342Z [155/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_active_task_reference.cpp.o
+2026-10-04T14:53:42.5169672Z [156/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_active_task_retention.cpp.o
+2026-10-04T14:53:42.5723365Z [157/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_active_task_revisions.cpp.o
+2026-10-04T14:53:48.0915350Z [158/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_engine.cpp.o
+2026-10-04T14:53:48.7687942Z [159/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_active_task_scope_identity.cpp.o
+2026-10-04T14:53:55.1188786Z [160/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_knowledge_context.cpp.o
+2026-10-04T14:53:56.7052047Z [161/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_retrieval_plan.cpp.o
+2026-10-04T14:53:59.7633330Z [162/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_config.cpp.o
+2026-10-04T14:54:02.5135885Z [163/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_context_channel_integration.cpp.o
+2026-10-04T14:54:05.8199601Z [164/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_context_controls.cpp.o
+2026-10-04T14:54:08.0199922Z [165/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_context_counter.cpp.o
+2026-10-04T14:54:12.1303860Z [166/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_context_diagnostics.cpp.o
+2026-10-04T14:54:15.3891775Z [167/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_context_engine.cpp.o
+2026-10-04T14:54:17.4797043Z [168/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_context_eval.cpp.o
+2026-10-04T14:54:22.3701112Z [169/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_context_native_consumer.cpp.o
+2026-10-04T14:54:24.4185979Z [170/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_context_plan.cpp.o
+2026-10-04T14:54:27.3918965Z [171/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_context_retrieval.cpp.o
+2026-10-04T14:54:30.7771980Z [172/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_context_retrieval_dev.cpp.o
+2026-10-04T14:54:34.8690314Z [173/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_context_tfidf_reuse.cpp.o
+2026-10-04T14:54:36.7131294Z [174/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_crypto.cpp.o
+2026-10-04T14:54:41.3386874Z [175/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_event_bus.cpp.o
+2026-10-04T14:54:41.3759410Z [176/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_db.cpp.o
+2026-10-04T14:54:46.1121958Z [177/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_extract_eval.cpp.o
+2026-10-04T14:54:48.4659542Z [178/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_extract.cpp.o
+2026-10-04T14:54:49.7496458Z [179/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_fts.cpp.o
+2026-10-04T14:54:55.2456414Z [180/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_generalize_eval.cpp.o
+2026-10-04T14:54:56.1558434Z [181/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_generalize.cpp.o
+2026-10-04T14:55:00.3465292Z [182/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_graph.cpp.o
+2026-10-04T14:55:00.9381727Z [183/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_github.cpp.o
+2026-10-04T14:55:05.3599876Z [184/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_import.cpp.o
+2026-10-04T14:55:07.2051694Z [185/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_import_export_fidelity.cpp.o
+2026-10-04T14:55:12.6463030Z [186/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_import_exports.cpp.o
+2026-10-04T14:55:14.1646499Z [187/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_import_source_materialization.cpp.o
+2026-10-04T14:55:15.7540653Z [188/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_import_stream.cpp.o
+2026-10-04T14:55:20.1107749Z [189/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_kb_pack.cpp.o
+2026-10-04T14:55:22.6819753Z [190/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_knowledge.cpp.o
+2026-10-04T14:55:26.3166587Z [191/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_knowledge_candidate_graph.cpp.o
+2026-10-04T14:55:27.2654709Z [192/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_knowledge_candidates.cpp.o
+2026-10-04T14:55:32.9734649Z [193/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_knowledge_flow.cpp.o
+2026-10-04T14:55:34.9383959Z [194/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_knowledge_semantic.cpp.o
+2026-10-04T14:55:40.7518751Z [195/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_knowledge_semantic_graph.cpp.o
+2026-10-04T14:55:41.8394372Z [196/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_knowledge_store.cpp.o
+2026-10-04T14:55:46.9905681Z [197/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_materialize.cpp.o
+2026-10-04T14:55:47.3453484Z [198/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_media.cpp.o
+2026-10-04T14:55:51.2241278Z [199/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_memory.cpp.o
+2026-10-04T14:55:52.1417755Z [200/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_net_sse.cpp.o
+2026-10-04T14:55:54.0938861Z [201/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_model.cpp.o
+2026-10-04T14:55:56.8028791Z [202/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_pack_model.cpp.o
+2026-10-04T14:55:58.9123121Z [203/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_provenance.cpp.o
+2026-10-04T14:56:00.1072549Z [204/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_regex.cpp.o
+2026-10-04T14:56:01.8133721Z [205/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_providers.cpp.o
+2026-10-04T14:56:03.6387885Z [206/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_relations.cpp.o
+2026-10-04T14:56:06.9754537Z [207/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_resolve.cpp.o
+2026-10-04T14:56:09.1175149Z [208/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_resolve_attribution.cpp.o
+2026-10-04T14:56:11.2875931Z [209/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_resolve_lineage.cpp.o
+2026-10-04T14:56:13.7363887Z [210/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_selector.cpp.o
+2026-10-04T14:56:14.9210417Z [211/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_runtime.cpp.o
+2026-10-04T14:56:20.0642137Z [212/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_semantic_llm.cpp.o
+2026-10-04T14:56:20.5535292Z [213/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_semantic_worker.cpp.o
+2026-10-04T14:56:25.5572215Z [214/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_tasks.cpp.o
+2026-10-04T14:56:27.6341107Z [215/237] Building CXX object CMakeFiles/loom_tests.dir/tests/test_util.cpp.o
+2026-10-04T14:56:28.5642401Z [216/237] Building CXX object CMakeFiles/loom_compat_tool.dir/tests/compat/main.cpp.o
+2026-10-04T14:56:30.7328779Z [217/237] Building CXX object CMakeFiles/loom_compat_tool.dir/tests/compat/tool_active_task.cpp.o
+2026-10-04T14:56:32.4641148Z [218/237] Building CXX object CMakeFiles/loom_compat_tool.dir/tests/compat/tool_chat.cpp.o
+2026-10-04T14:56:35.1623079Z [219/237] Building CXX object CMakeFiles/loom_compat_tool.dir/tests/compat/tool_core.cpp.o
+2026-10-04T14:56:35.6813439Z [220/237] Building CXX object CMakeFiles/loom_compat_tool.dir/tests/compat/tool_crypto.cpp.o
+2026-10-04T14:56:39.6548949Z [221/237] Building CXX object CMakeFiles/loom_compat_tool.dir/tests/compat/tool_graph.cpp.o
+2026-10-04T14:56:39.7625337Z [222/237] Building CXX object CMakeFiles/loom_compat_tool.dir/tests/compat/tool_db.cpp.o
+2026-10-04T14:56:43.0436268Z [223/237] Building CXX object CMakeFiles/loom_compat_tool.dir/tests/compat/tool_memory.cpp.o
+2026-10-04T14:56:43.1231425Z [224/237] Building CXX object CMakeFiles/loom_compat_tool.dir/tests/compat/tool_import.cpp.o
+2026-10-04T14:56:45.9930147Z [225/237] Building CXX object CMakeFiles/loom_compat_tool.dir/tests/compat/tool_selector.cpp.o
+2026-10-04T14:56:46.7651568Z [226/237] Building CXX object CMakeFiles/loom_compat_tool.dir/tests/compat/tool_semantic.cpp.o
+2026-10-04T14:56:48.8767314Z [227/237] Building CXX object CMakeFiles/loom_candidate_graph_native_tool.dir/tests/compat/candidate_graph_native_tool.cpp.o
+2026-10-04T14:56:53.9949926Z [228/237] Building CXX object cli/CMakeFiles/loom_cli.dir/main.cpp.o
+2026-10-04T14:56:54.0311954Z [229/237] Building CXX object server/CMakeFiles/loom-server.dir/src/main.cpp.o
+2026-10-04T14:56:54.0336863Z [230/237] Creating library symlink libloom.so.0 libloom.so
+2026-10-04T14:56:58.6437815Z [231/237] Linking CXX executable loom_tests
+2026-10-04T14:57:00.3275667Z [232/237] Building CXX object server/CMakeFiles/loom-server.dir/src/app.cpp.o
+2026-10-04T14:57:00.3277502Z FAILED: [code=1] server/CMakeFiles/loom-server.dir/src/app.cpp.o 
+2026-10-04T14:57:00.3283478Z /usr/bin/ccache /usr/bin/clang++ -DCPPHTTPLIB_OPENSSL_SUPPORT=1 -DJSON_USE_IMPLICIT_CONVERSIONS=1 -DLOOM_VERSION_STRING=\"0.1.0\" -I/home/runner/work/chatadhd/chatadhd/loom/include -I/home/runner/work/chatadhd/chatadhd/loom/server/src -isystem /home/runner/work/chatadhd/chatadhd/loom/third_party/cpp-httplib -isystem /home/runner/work/chatadhd/chatadhd/loom/third_party/nlohmann -g -std=c++20 -fPIE -fvisibility=hidden -fvisibility-inlines-hidden -Wall -Wextra -Wpedantic -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Woverloaded-virtual -Wnull-dereference -Wimplicit-fallthrough -Wno-unused-parameter -Wno-unused-private-field -Werror -MD -MT server/CMakeFiles/loom-server.dir/src/app.cpp.o -MF server/CMakeFiles/loom-server.dir/src/app.cpp.o.d -o server/CMakeFiles/loom-server.dir/src/app.cpp.o -c /home/runner/work/chatadhd/chatadhd/loom/server/src/app.cpp
+2026-10-04T14:57:00.3287529Z /home/runner/work/chatadhd/chatadhd/loom/server/src/app.cpp:768:26: error: lambda capture 'this' is not used [-Werror,-Wunused-lambda-capture]
+2026-10-04T14:57:00.3288913Z   768 |   svr_.Get("/api/logs", [this](const httplib::Request& req, httplib::Response& res) {
+2026-10-04T14:57:00.3289407Z       |                          ^~~~
+2026-10-04T14:57:00.3290227Z /home/runner/work/chatadhd/chatadhd/loom/server/src/app.cpp:772:29: error: lambda capture 'this' is not used [-Werror,-Wunused-lambda-capture]
+2026-10-04T14:57:00.3290997Z   772 |   svr_.Get("/api/version", [this](const httplib::Request&, httplib::Response& res) {
+2026-10-04T14:57:00.3291411Z       |                             ^~~~
+2026-10-04T14:57:00.3291660Z 2 errors generated.
+2026-10-04T14:57:01.4135777Z [233/237] Linking CXX executable loom_compat_tool
+2026-10-04T14:57:01.4136415Z ninja: build stopped: subcommand failed.
+2026-10-04T14:57:01.4163788Z ##[error]Process completed with exit code 1.
+2026-10-04T14:57:01.4219190Z ##[group]Run python .github/scripts/verify_ctest.py \
+2026-10-04T14:57:01.4219593Z [36;1mpython .github/scripts/verify_ctest.py \[0m
+2026-10-04T14:57:01.4220004Z [36;1m  --manifest loom/build/vendored/verification/ctest-manifest.json \[0m
+2026-10-04T14:57:01.4220452Z [36;1m  --junit loom/build/vendored/verification/ctest.xml \[0m
+2026-10-04T14:57:01.4220786Z [36;1m  --preset vendored \[0m
+2026-10-04T14:57:01.4221133Z [36;1m  --output loom/build/vendored/verification/executed-cases.json[0m
+2026-10-04T14:57:01.4284411Z shell: /usr/bin/bash -e {0}
+2026-10-04T14:57:01.4284689Z env:
+2026-10-04T14:57:01.4284897Z   CC: clang
+2026-10-04T14:57:01.4285109Z   CXX: clang++
+2026-10-04T14:57:01.4285414Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-04T14:57:01.4285921Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+2026-10-04T14:57:01.4286434Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-04T14:57:01.4286912Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-04T14:57:01.4287366Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-04T14:57:01.4287813Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+2026-10-04T14:57:01.4288565Z ##[endgroup]
+2026-10-04T14:57:01.4711099Z cannot validate input: [Errno 2] No such file or directory: 'loom/build/vendored/verification/ctest-manifest.json'
+2026-10-04T14:57:01.4770587Z ##[error]Process completed with exit code 1.
+2026-10-04T14:57:01.4821028Z ##[group]Run actions/upload-artifact@v4
+2026-10-04T14:57:01.4821320Z with:
+2026-10-04T14:57:01.4821524Z   name: ctest-vendored-clang++
+2026-10-04T14:57:01.4821949Z   path: loom/build/vendored/verification/
+loom/build/vendored/Testing/Temporary/LastTest.log
+
+2026-10-04T14:57:01.4822410Z   if-no-files-found: warn
+2026-10-04T14:57:01.4822638Z   compression-level: 6
+2026-10-04T14:57:01.4822852Z   overwrite: false
+2026-10-04T14:57:01.4823059Z   include-hidden-files: false
+2026-10-04T14:57:01.4823277Z env:
+2026-10-04T14:57:01.4823447Z   CC: clang
+2026-10-04T14:57:01.4823622Z   CXX: clang++
+2026-10-04T14:57:01.4823878Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-04T14:57:01.4824297Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+2026-10-04T14:57:01.4824702Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-04T14:57:01.4825081Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-04T14:57:01.4825487Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-04T14:57:01.4825861Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+2026-10-04T14:57:01.4826174Z ##[endgroup]
+2026-10-04T14:57:01.6521064Z (node:4248) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-04T14:57:01.6522295Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-04T14:57:01.6642449Z Multiple search paths detected. Calculating the least common ancestor of all paths
+2026-10-04T14:57:01.6699400Z The least common ancestor is /home/runner/work/chatadhd/chatadhd/loom/build/vendored. This will be the root directory of the artifact
+2026-10-04T14:57:01.6700731Z With the provided path, there will be 1 file uploaded
+2026-10-04T14:57:01.6701739Z Artifact name is valid!
+2026-10-04T14:57:01.6702263Z Root directory input is valid!
+2026-10-04T14:57:02.0320932Z Beginning upload of artifact content to blob storage
+2026-10-04T14:57:02.0520151Z (node:4248) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-04T14:57:02.3043649Z Uploaded bytes 343
+2026-10-04T14:57:02.3753896Z Finished uploading artifact content to blob storage!
+2026-10-04T14:57:02.3755770Z SHA256 digest of uploaded artifact zip is e7e70c1ca365449666182a21e25f16089ac4cfd23fbc7698b442cc3e1f79bc53
+2026-10-04T14:57:02.3757313Z Finalizing artifact upload
+2026-10-04T14:57:02.6699375Z Artifact ctest-vendored-clang++.zip successfully finalized. Artifact ID 11306882117
+2026-10-04T14:57:02.6701018Z Artifact ctest-vendored-clang++ has been successfully uploaded! Final size is 343 bytes. Artifact ID is 11306882117
+2026-10-04T14:57:02.6703162Z Artifact download URL: https://github.com/klb-t/chatadhd/actions/runs/37210513736/artifacts/11306882117
+2026-10-04T14:57:02.6909526Z Post job cleanup.
+2026-10-04T14:57:02.7760825Z [command]/usr/bin/git version
+2026-10-04T14:57:02.7806719Z git version 2.55.0
+2026-10-04T14:57:02.7852589Z Temporarily overriding HOME='/home/runner/work/_temp/f7e8bdff-95a6-405a-ad5f-bc08be1575f6' before making global git config changes
+2026-10-04T14:57:02.7853615Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-04T14:57:02.7859655Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/chatadhd/chatadhd
+2026-10-04T14:57:02.7903061Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-04T14:57:02.7941225Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-04T14:57:02.8201279Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-04T14:57:02.8245876Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-04T14:57:02.8512790Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-04T14:57:02.8565722Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-04T14:57:02.8966855Z Cleaning up orphan processes
+2026-10-04T14:57:02.9414024Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/cache@v4, actions/checkout@v4, actions/setup-python@v5, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

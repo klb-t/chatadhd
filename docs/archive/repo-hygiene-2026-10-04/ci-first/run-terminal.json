@@ -1,0 +1,457 @@
+{
+  "schema": "loom.github_run_evidence/1",
+  "repository": "klb-t/chatadhd",
+  "head_sha": "ee97311d6545ca19e19266d2f37514f2663f0aa9",
+  "run_id": 37210513736,
+  "jobs": [
+    {
+      "id": 111460573649,
+      "name": "asan (g++)",
+      "status": "completed",
+      "conclusion": "failure",
+      "run_id": 37210513736,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Checkout",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Install toolchain",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Set up Python",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Install Python engine dependencies",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Check the CTest evidence guard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "ccache",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Configure",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Build",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        },
+        {
+          "name": "Test",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10
+        },
+        {
+          "name": "Require actual case execution and account for opt-in scenarios",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 11
+        },
+        {
+          "name": "Retain complete CTest evidence",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Set up Java for the real JNI bridge smoke test",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 13
+        },
+        {
+          "name": "Verify JNI against libloom",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 14
+        },
+        {
+          "name": "Set up Node for the workbench",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 15
+        },
+        {
+          "name": "Build and test web workbench",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 16
+        },
+        {
+          "name": "Post ccache",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 30
+        },
+        {
+          "name": "Post Set up Python",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 31
+        },
+        {
+          "name": "Post Checkout",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 32
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 33
+        }
+      ]
+    },
+    {
+      "id": 111460573878,
+      "name": "dev (g++)",
+      "status": "completed",
+      "conclusion": "failure",
+      "run_id": 37210513736,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Checkout",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Install toolchain",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Set up Python",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Install Python engine dependencies",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Check the CTest evidence guard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "ccache",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Configure",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Build",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        },
+        {
+          "name": "Test",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10
+        },
+        {
+          "name": "Require actual case execution and account for opt-in scenarios",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 11
+        },
+        {
+          "name": "Retain complete CTest evidence",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Set up Java for the real JNI bridge smoke test",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 13
+        },
+        {
+          "name": "Verify JNI against libloom",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 14
+        },
+        {
+          "name": "Set up Node for the workbench",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 15
+        },
+        {
+          "name": "Build and test web workbench",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 16
+        },
+        {
+          "name": "Post ccache",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 30
+        },
+        {
+          "name": "Post Set up Python",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 31
+        },
+        {
+          "name": "Post Checkout",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 32
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 33
+        }
+      ]
+    },
+    {
+      "id": 111460573887,
+      "name": "vendored (clang++)",
+      "status": "completed",
+      "conclusion": "failure",
+      "run_id": 37210513736,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Checkout",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Install toolchain",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Set up Python",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Install Python engine dependencies",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Check the CTest evidence guard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "ccache",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Configure",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Build",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 9
+        },
+        {
+          "name": "Test",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 10
+        },
+        {
+          "name": "Require actual case execution and account for opt-in scenarios",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 11
+        },
+        {
+          "name": "Retain complete CTest evidence",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Set up Java for the real JNI bridge smoke test",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 13
+        },
+        {
+          "name": "Verify JNI against libloom",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 14
+        },
+        {
+          "name": "Set up Node for the workbench",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 15
+        },
+        {
+          "name": "Build and test web workbench",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 16
+        },
+        {
+          "name": "Post ccache",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 30
+        },
+        {
+          "name": "Post Set up Python",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 31
+        },
+        {
+          "name": "Post Checkout",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 32
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 33
+        }
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "id": 11306882117,
+      "name": "ctest-vendored-clang++",
+      "size_in_bytes": 343,
+      "url": "https://api.github.com/repos/klb-t/chatadhd/actions/artifacts/11306882117",
+      "archive_download_url": "https://api.github.com/repos/klb-t/chatadhd/actions/artifacts/11306882117/zip",
+      "expired": false,
+      "created_at": "2026-10-04T14:57:02Z",
+      "expires_at": "2027-01-02T14:46:44Z",
+      "updated_at": "2026-10-04T14:57:02Z",
+      "digest": "sha256:e7e70c1ca365449666182a21e25f16089ac4cfd23fbc7698b442cc3e1f79bc53",
+      "workflow_run": {
+        "id": 37210513736,
+        "repository_id": 1154704879,
+        "head_repository_id": 1154704879,
+        "head_branch": "gpt/repo-hygiene-2026-10-04",
+        "head_sha": "ee97311d6545ca19e19266d2f37514f2663f0aa9"
+      }
+    },
+    {
+      "id": 11306782958,
+      "name": "ctest-asan-g++",
+      "size_in_bytes": 22198,
+      "url": "https://api.github.com/repos/klb-t/chatadhd/actions/artifacts/11306782958",
+      "archive_download_url": "https://api.github.com/repos/klb-t/chatadhd/actions/artifacts/11306782958/zip",
+      "expired": false,
+      "created_at": "2026-10-04T15:03:53Z",
+      "expires_at": "2027-01-02T14:46:44Z",
+      "updated_at": "2026-10-04T15:03:53Z",
+      "digest": "sha256:bb9d03e2281ddcb0c349bdb258f9ddbfa20d4e154ae5a3ad62a7f03ce6a35c60",
+      "workflow_run": {
+        "id": 37210513736,
+        "repository_id": 1154704879,
+        "head_repository_id": 1154704879,
+        "head_branch": "gpt/repo-hygiene-2026-10-04",
+        "head_sha": "ee97311d6545ca19e19266d2f37514f2663f0aa9"
+      }
+    },
+    {
+      "id": 11306138717,
+      "name": "ctest-dev-g++",
+      "size_in_bytes": 23045,
+      "url": "https://api.github.com/repos/klb-t/chatadhd/actions/artifacts/11306138717",
+      "archive_download_url": "https://api.github.com/repos/klb-t/chatadhd/actions/artifacts/11306138717/zip",
+      "expired": false,
+      "created_at": "2026-10-04T14:57:44Z",
+      "expires_at": "2027-01-02T14:46:44Z",
+      "updated_at": "2026-10-04T14:57:44Z",
+      "digest": "sha256:f8902cc17a7a3fac703a65ad4a266566cc7caa849597089e1e82aa5222ebf503",
+      "workflow_run": {
+        "id": 37210513736,
+        "repository_id": 1154704879,
+        "head_repository_id": 1154704879,
+        "head_branch": "gpt/repo-hygiene-2026-10-04",
+        "head_sha": "ee97311d6545ca19e19266d2f37514f2663f0aa9"
+      }
+    }
+  ]
+}
