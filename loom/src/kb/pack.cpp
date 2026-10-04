@@ -5,6 +5,7 @@
 #include <cmath>
 #include <filesystem>
 #include <functional>
+#include <limits>
 
 #include "loom/kb.h"
 #include "loom/knowledge_candidate_graph.h"
@@ -482,7 +483,21 @@ void v_cues(V& v, const Json& d) {
 
 void v_version_patterns(V& v, const Json& d) {
   v.regex(d, "", "regex");
-  v.integer(d, "", "window_tokens", 1, 200);
+  // extract::Lexicon stores this data-backed setting as int. Keep the
+  // nonnegative window domain, but impose no preset-sized ceiling. Zero is
+  // an empty local anchor-word window in the existing extraction operation.
+  // Check JSON's full integer width before narrowing (also on 32-bit long).
+  if (const Json* window = v.member(d, "", "window_tokens")) {
+    bool valid = false;
+    if (window->is_number_unsigned()) {
+      const auto value = window->get<std::uint64_t>();
+      valid = value <= static_cast<std::uint64_t>(std::numeric_limits<int>::max());
+    } else if (window->is_number_integer()) {
+      const auto value = window->get<std::int64_t>();
+      valid = value >= 0 && value <= std::numeric_limits<int>::max();
+    }
+    if (!valid) v.err("/window_tokens", "expected a nonnegative integer representable as int");
+  }
   if (const Json* a = v.object(d, "", "anchors")) {
     v.strings(*a, "/anchors", "en", true, true);
     v.strings(*a, "/anchors", "pl", true, true);
