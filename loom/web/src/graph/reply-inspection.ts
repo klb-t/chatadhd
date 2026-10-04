@@ -34,8 +34,8 @@ export function packetFailure(value: Record<string, unknown>): string | null {
 export function packetResult(value: Record<string, unknown>): Record<string, unknown> {
   const failure = packetFailure(value);
   if (failure) throw new Error(failure);
-  if (value.executed === false) throw new Error("Operation was held by the usage policy.");
-  const result = value.executed === true ? record(value.result) : value;
+  if (value.executed === false && value.replayed !== true) throw new Error("Operation was held by the usage policy or awaits dispatch recovery.");
+  const result = value.executed === true || value.replayed === true ? record(value.result) : value;
   const nestedFailure = packetFailure(result);
   if (nestedFailure) throw new Error(nestedFailure);
   return result;

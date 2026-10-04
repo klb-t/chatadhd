@@ -45,8 +45,15 @@ export default function GraphReplyWorkbench(props: GraphReplyWorkbenchProps) {
     setResponseEnvelope(response);
     const failure = packetFailure(response);
     if (failure) throw new Error(failure);
-    if (response.executed === false) {
-      const decision = record(response.usage_decision);
+    if (response.executed === false && response.replayed !== true) {
+      if (response.dispatch_status === "pending_or_interrupted" || response.dispatch_status === "legacy_unresolved_indeterminate") {
+        setPending(null);
+        setError(response.dispatch_status === "pending_or_interrupted"
+          ? "Packet dispatch pending_or_interrupted: an earlier execution may still be running or have been interrupted. Its outcome is unknown; this request did not dispatch another operation."
+          : "Packet dispatch legacy_unresolved_indeterminate: earlier execution cannot be determined from the retained accounting. The reservation remains unresolved; this response does not authorize another execution.");
+        return;
+      }
+      const decision = record(response.usage_current_decision ?? response.usage_decision);
       if (decision.status === "requires_confirmation" && typeof decision.receipt_id === "string" && typeof decision.operation_id === "string") {
         setPending({ command, decision, operation }); setStatus("Usage increased by the policy threshold. Review the exact receipt before confirming.");
       } else { setPending(null); setError(`Operation was not executed: ${typeof decision.status === "string" ? decision.status : "usage decision unavailable"}.`); }
@@ -101,7 +108,7 @@ export default function GraphReplyWorkbench(props: GraphReplyWorkbenchProps) {
       const response = packetResult(await usagePolicy({ action: "confirm", operation_id: held.decision.operation_id, receipt_id: held.decision.receipt_id, approved, confirmation_ref: "graph-reply-workbench:explicit-user-action" }));
       if (!mounted.current || epoch.current !== currentEpoch) return;
       if (!approved) { setPending(null); setStatus("Usage increase declined. The operation was not executed."); return; }
-      if (response.authorized !== true) throw new Error("Confirmation did not authorize the held operation.");
+      if (response.authorized !== true || response.status !== "allowed") throw new Error(`Confirmation did not authorize the held operation${typeof response.status === "string" ? ` (${response.status})` : ""}. No retry was dispatched.`);
       await dispatch(held.operation, held.command);
     } catch (failure) { if (mounted.current && epoch.current === currentEpoch) setError(errorText(failure)); }
     finally { if (mounted.current && epoch.current === currentEpoch) setBusy(false); }
@@ -129,6 +136,7 @@ export default function GraphReplyWorkbench(props: GraphReplyWorkbenchProps) {
       <button disabled={!packet || !compiled || busy || !!result} onClick={() => void dispatch("apply_compiled_reply")}>Apply compiled reply</button></div>
     {status && <p role="status" data-testid="gr-status">{status}</p>}
     {error && <p role="alert" data-testid="gr-error">{error}</p>}
+    {responseEnvelope?.executed === false && responseEnvelope.replayed === true && <p role="status" data-testid="gr-replay-status">Saved response replayed. This request did not execute again. Original admission: {String(record(responseEnvelope.usage_decision).status ?? "unknown")}. Current accounting: {String(record(responseEnvelope.usage_current_decision ?? responseEnvelope.usage_settlement ?? responseEnvelope.usage_decision).status ?? "unknown")}.</p>}
     {pending && <section className="gr-confirm" aria-label="Usage confirmation"><h4>Confirm usage increase</h4><pre data-testid="gr-usage-receipt">{json(pending.decision)}</pre>
       {!usagePolicy && <p role="alert">Usage confirmation API is unavailable. This operation remains held.</p>}
       <button disabled={busy || !usagePolicy} onClick={() => void confirm(true)}>Confirm increase and retry exact operation</button><button disabled={busy || !usagePolicy} onClick={() => void confirm(false)}>Decline increase</button></section>}

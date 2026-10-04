@@ -147,7 +147,7 @@ export default function UsagePolicyPanel({ transport = api, onConfigSaved }: {
     <button onClick={refreshSettings} disabled={busy || !transport.usagePolicy} data-testid="usage-settings-refresh">Refresh policy settings</button>
     {settings && <>
       <p>Source: <strong>{describe(settings.source)}</strong>. Ledger: <code>{describe(settings.ledger_path)}</code>. Preset application: <code>{describe(object(settings.capabilities).preset_application)}</code>.</p>
-      {(settings.hashes || settings.preset_source || settings.override_semantics) && <details><summary>Policy snapshot source and hashes</summary><pre data-testid="usage-settings-metadata">{pretty({ preset_source: settings.preset_source, override_semantics: settings.override_semantics, hashes: settings.hashes })}</pre></details>}
+      {(settings.hashes || settings.preset_source || settings.override_semantics) && <details><summary>Policy snapshot source and hashes</summary><pre data-testid="usage-settings-metadata">{pretty({ preset_source: settings.preset_source, preset_document: settings.preset_document, override_semantics: settings.override_semantics, hashes: settings.hashes })}</pre></details>}
       <div className="usage-settings-values">
         <details><summary>Preset</summary><pre data-testid="usage-preset">{pretty(settings.preset)}</pre></details>
         <details><summary>Stored owner override</summary><pre data-testid="usage-override">{pretty(settings.stored_override)}</pre></details>
