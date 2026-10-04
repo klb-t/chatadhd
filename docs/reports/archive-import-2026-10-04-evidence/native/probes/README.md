@@ -75,3 +75,21 @@ Both scenarios preserved source and conversation IDs and passed database
 integrity checks. [Final hashes and retained inputs/results/logs](final/SHA256.json)
 bind this execution. The two scenarios do not replace the separate full CTest
 gate or its actual case/assertion counts.
+
+## Independent owner-requested repeat, 18:51 UTC
+
+A fresh [owner-requested repeat](owner-nudge-1851/receipt.json) passed **2/2
+scenarios and 31/31 controls**: 17 malformed-member checks and 14 valid-link
+recovery checks. Its observed source/header bytes match
+`4314976396e78ae7ca04ad62a0ef9ec64cef16e6`, whose Loom implementation is unchanged
+from final code `1474b260`; its main base remains `7282437`. The actual libraries
+and observed source manifests are hashed before and after execution and remained
+stable. Newly compiled probe binaries are separately hashed in the receipt.
+
+The malformed member retained partial/errors on every attempt without a cache
+hit. The valid project/document/link were restored after the trigger was removed,
+and the third import used the completed-source cache. Source/conversation IDs
+and database integrity remained valid. [Independent byte manifest](owner-nudge-1851/SHA256.json)
+retains all logs, source snapshots, results and synthetic inputs separately from
+both earlier successful runs and the original negative archive. This repeat
+does not substitute for the simultaneous full CTest/web gates.

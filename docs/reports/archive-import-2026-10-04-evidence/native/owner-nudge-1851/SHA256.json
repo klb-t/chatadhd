@@ -1,0 +1,38 @@
+{
+  "compressed-SHA256.json": {
+    "sha256": "73c7cc006e524c35987ff2cd20777e0a3bf3055caee9bcdd99b56a3a5624ee4d",
+    "bytes": 748
+  },
+  "ctest-full.txt.gz": {
+    "sha256": "3edf6eabeada67718b000ea9833499feabed2ed124ef031da183035f132bff48",
+    "bytes": 21852
+  },
+  "native-build.txt": {
+    "sha256": "c2ed93ffd93c840755c0e91392ae593b1b52de9b7aaf6c208123feaceb1dde2e",
+    "bytes": 63
+  },
+  "receipt.json": {
+    "sha256": "be86e9ce74d8c23206169aea86265671c3c9b41aea7e83af105fe0d5c49b6108",
+    "bytes": 3793
+  },
+  "source-expanded-after.json.gz": {
+    "sha256": "14da6c6f603dc918e4c968c09886e27a5670e8a075a78c8bb3ad819c80e15ae5",
+    "bytes": 57704
+  },
+  "source-expanded-during.json.gz": {
+    "sha256": "14da6c6f603dc918e4c968c09886e27a5670e8a075a78c8bb3ad819c80e15ae5",
+    "bytes": 57704
+  },
+  "web-build.txt": {
+    "sha256": "71a84f3cf69f9854849e6979e3f313f9710e6de1da58c51a963d56e38734025c",
+    "bytes": 500
+  },
+  "web-install.txt": {
+    "sha256": "343d2aa23216255e97367aad0178d2052d4b543b95e9c5b2d2d579eb47f67296",
+    "bytes": 124
+  },
+  "web-receipt.json": {
+    "sha256": "b1325b973af9ca3218fbf0ffd3c9cec4240e70b7d3cdf854d66e96e75e87409e",
+    "bytes": 10309
+  }
+}
