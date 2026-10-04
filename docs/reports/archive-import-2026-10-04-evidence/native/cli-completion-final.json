@@ -1,0 +1,35 @@
+{
+  "schema": "loom.cli_completion_verification.v1",
+  "cases": [
+    {
+      "case": "complete",
+      "exit_code": 0,
+      "partial": false,
+      "conversations": 1,
+      "messages": 1
+    },
+    {
+      "case": "complete-audit",
+      "exit_code": 0,
+      "partial": false,
+      "conversations": 1,
+      "messages": 1
+    },
+    {
+      "case": "partial",
+      "exit_code": 4,
+      "partial": true,
+      "conversations": 1,
+      "messages": 1
+    },
+    {
+      "case": "partial-audit",
+      "exit_code": 4,
+      "partial": true,
+      "conversations": 1,
+      "messages": 1
+    }
+  ],
+  "passed": 4,
+  "model_calls": 0
+}

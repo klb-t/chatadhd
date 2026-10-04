@@ -1,0 +1,34 @@
+{
+  "test_db_annotations": {
+    "cases": 10,
+    "passed": 10,
+    "failed": 0,
+    "assertions": 147,
+    "exit_code": 0,
+    "log_sha256": "15275ffb12155d8c12cbf5b9df81697c646ce381798c3b9e34b4d0b803ca910e"
+  },
+  "test_import_resume": {
+    "cases": 23,
+    "passed": 23,
+    "failed": 0,
+    "assertions": 696,
+    "exit_code": 0,
+    "log_sha256": "9df3b6d3c1067d92c72acecae58a823e94f8c2e59bbb5228077c92939361e827"
+  },
+  "test_import_audit": {
+    "cases": 3,
+    "passed": 3,
+    "failed": 0,
+    "assertions": 28,
+    "exit_code": 0,
+    "log_sha256": "5582cfae229abdd3cbcdb0c4e7831ce8ea79737f2160215210a41c4f607d8db7"
+  },
+  "test_import_usage": {
+    "cases": 1,
+    "passed": 1,
+    "failed": 0,
+    "assertions": 5,
+    "exit_code": 0,
+    "log_sha256": "372bd13885ddff1d3ae772425b3de37fb4205eaf88c83650b157212301babf97"
+  }
+}
