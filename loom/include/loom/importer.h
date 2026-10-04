@@ -109,7 +109,9 @@ struct ImportOptions {
   // Resume provider-export conversations and interpreted ZIP records from
   // durable per-item checkpoints. Requires the source/provenance stores;
   // force starts a fresh source identity even when resume is enabled.
-  bool resume = true;
+  // Library callers opt in to preserve the historical retry/new-source
+  // behavior; the import CLI enables resume in its caller preset.
+  bool resume = false;
   // Result projection only: complete metadata remains durably stored. Disable
   // for large-archive summary callers to avoid retaining every graph/unknown
   // metadata value in the returned vector. IDs/title/source remain available.
