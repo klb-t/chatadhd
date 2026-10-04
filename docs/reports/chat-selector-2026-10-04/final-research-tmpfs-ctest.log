@@ -1,0 +1,12 @@
+Test project /tmp/chatadhd-w3-final-build
+    Start 99: research.structure
+1/1 Test #99: research.structure ...............***Timeout  60.04 sec
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =  60.07 sec
+
+The following tests FAILED:
+	 99 - research.structure (Timeout)
+Errors while running CTest

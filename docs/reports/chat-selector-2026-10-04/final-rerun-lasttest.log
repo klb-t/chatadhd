@@ -1,0 +1,38 @@
+Start testing: Oct 04 23:23 CST
+----------------------------------------------------------
+99/108 Testing: research.structure
+99/108 Test: research.structure
+Command: "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12" "-m" "unittest" "discover" "-s" "/workspace/scratch/f98faad71b9c/chatadhd/loom/tools/structure" "-p" "test_*.py"
+Directory: /tmp/chatadhd-w3-final-build
+"research.structure" start time: Oct 04 23:23 CST
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =  60.18 sec
+----------------------------------------------------------
+Test Failed.
+"research.structure" end time: Oct 04 23:24 CST
+"research.structure" time elapsed: 00:01:00
+----------------------------------------------------------
+
+103/108 Testing: research.contracts
+103/108 Test: research.contracts
+Command: "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12" "-m" "unittest" "discover" "-s" "/workspace/scratch/f98faad71b9c/chatadhd/loom/tools/contracts" "-p" "test_*.py"
+Directory: /tmp/chatadhd-w3-final-build
+"research.contracts" start time: Oct 04 23:24 CST
+Output:
+----------------------------------------------------------
+.................................................................................................................................................................................................................
+----------------------------------------------------------------------
+Ran 209 tests in 59.213s
+
+OK
+<end of output>
+Test time =  59.70 sec
+----------------------------------------------------------
+Test Passed.
+"research.contracts" end time: Oct 04 23:25 CST
+"research.contracts" time elapsed: 00:00:59
+----------------------------------------------------------
+
+End testing: Oct 04 23:25 CST

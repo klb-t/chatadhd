@@ -1,0 +1,9 @@
+Test project /workspace/scratch/f98faad71b9c/build-baseline
+    Start  99: research.structure
+1/2 Test  #99: research.structure ...............   Passed   48.90 sec
+    Start 103: research.contracts
+2/2 Test #103: research.contracts ...............   Passed   34.91 sec
+
+100% tests passed out of 2
+
+Total Test time (real) =  83.82 sec
