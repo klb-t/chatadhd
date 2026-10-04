@@ -187,14 +187,29 @@ Result<std::optional<std::vector<Conversation>>> ConversationImporter::prepare_s
         // The first member journal reused interpretation's -1 key for raw
         // fallback retention. Its own unknown-member delta identifies that
         // legacy phase unambiguously; it cannot prove interpretation complete.
-        LOOM_TRY_ASSIGN(auto legacy_raw, db_.conn().query_int(
-            "SELECT COUNT(*) FROM loom_import_checkpoints c WHERE c.source_id=? AND c.source_index=-1 "
+        const std::string related_sources =
+            "WITH RECURSIVE import_sources(id) AS (SELECT ? UNION "
+            "SELECT child.id FROM loom_sources child JOIN import_sources parent "
+            "ON json_extract(child.metadata,'$.parent_source_id')=parent.id) ";
+        LOOM_TRY_ASSIGN(auto legacy_raw, db_.conn().query_int(related_sources +
+            "SELECT COUNT(*) FROM loom_import_checkpoints c JOIN import_sources s ON s.id=c.source_id "
+            "WHERE c.source_index=-1 "
             "AND EXISTS(SELECT 1 FROM json_each(c.metadata,'$.report.unknown_members') u WHERE u.value=c.member)",
             s.id));
-        if (legacy_raw.value_or(0) != 0) {
+        LOOM_TRY_ASSIGN(auto uncertified, db_.conn().query_int(related_sources +
+            "SELECT COUNT(*) FROM loom_import_checkpoints c JOIN import_sources r ON r.id=c.source_id "
+            "JOIN loom_sources source ON source.id=c.source_id WHERE c.source_index=-1 "
+            "AND json_extract(source.metadata,'$.export_report.provider')='openai' "
+            "AND COALESCE(json_extract(c.metadata,'$.binding_version'),0)<1 AND "
+            "(c.member='message_feedback.json' OR c.member LIKE '%/message_feedback.json' "
+            "OR c.member='shared_conversations.json' OR c.member LIKE '%/shared_conversations.json' "
+            "OR (instr('/'||c.member,'/textdocs/')>0 AND substr(c.member,-5)='.json'))", s.id));
+        const std::int64_t uncertified_bindings = uncertified.value_or(0);
+        if (legacy_raw.value_or(0) != 0 || uncertified_bindings != 0) {
           Json metadata = s.metadata;
           metadata["import_status"] = "partial";
-          metadata["member_checkpoint_repair"] = "separate_raw_retention";
+          metadata["member_checkpoint_repair"] = legacy_raw.value_or(0) != 0
+              ? "separate_raw_retention" : "verify_auxiliary_bindings";
           LOOM_TRY(db_.conn().run("UPDATE loom_sources SET metadata=? WHERE id=?", json::py_dumps(metadata), s.id));
           continue;
         }

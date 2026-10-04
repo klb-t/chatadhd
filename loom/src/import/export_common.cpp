@@ -590,6 +590,7 @@ Result<Conversation> write_conversation(Env& env, ConvModel& cm, std::map<std::s
 
 Result<std::string> write_entity(Env& env, std::string_view kind, std::string_view label, std::string_view content,
                                  Json metadata) {
+  if (!env.checkpoint_source_id.empty()) metadata["export"]["source_id"] = env.checkpoint_source_id;
   NodeOptions no;
   no.content = std::string(content);
   no.metadata = std::move(metadata);
