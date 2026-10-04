@@ -1,0 +1,86 @@
+{
+  "artifacts": [
+    {
+      "artifact_id": 11306503134,
+      "files": [
+        {
+          "bytes": 1015,
+          "path": "docs/verification/repo-hygiene-2026-10-04/ci-corrected/dev/verification/build-receipt.json",
+          "sha256": "0f951be48652a0cce6c48123198ac422c923a8ee625ddea67615122281d252be"
+        },
+        {
+          "bytes": 76864,
+          "path": "docs/verification/repo-hygiene-2026-10-04/ci-corrected/dev/verification/ctest-manifest.json",
+          "sha256": "a3eff44602f14d911a85ceb7f78408e60e748cb7e2f919b65675e282d4a5fd24"
+        },
+        {
+          "bytes": 173117,
+          "path": "docs/verification/repo-hygiene-2026-10-04/ci-corrected/dev/verification/ctest.xml",
+          "sha256": "088fa968b95e00b6c88961d0efab344b9e7d19eb5b1606da3c16078fe0a6d700"
+        },
+        {
+          "bytes": 15895,
+          "path": "docs/verification/repo-hygiene-2026-10-04/ci-corrected/dev/verification/executed-cases.json",
+          "sha256": "7107a401653c9091216d2baa30780a1aaf4b05ba9287b8c78de8613c81050aef"
+        },
+        {
+          "bytes": 228338,
+          "path": "docs/verification/repo-hygiene-2026-10-04/ci-corrected/dev/Testing/Temporary/LastTest.log",
+          "sha256": "f3436856c4fa2bb53e7789e2f40d1829f96c19a25a668d1893ab84a8656c5609"
+        }
+      ],
+      "preset": "dev",
+      "zip_bytes": 41718,
+      "zip_sha256": "6a908d5addb111bad06adb955924c5f7fbaa312892e36fabb5d0d12b5b571932"
+    },
+    {
+      "artifact_id": 11306949252,
+      "files": [
+        {
+          "bytes": 912,
+          "path": "docs/verification/repo-hygiene-2026-10-04/ci-corrected/asan/verification/build-receipt.json",
+          "sha256": "a4340bb2a4ff84a7d2dbea9d3824a0c1dd76f69edc045e0486e95da6ef380805"
+        },
+        {
+          "bytes": 75458,
+          "path": "docs/verification/repo-hygiene-2026-10-04/ci-corrected/asan/verification/ctest-manifest.json",
+          "sha256": "0410d4768e8265b5040d77736591dc10de3ffff775b81bc99504b2b164edc2d6"
+        },
+        {
+          "bytes": 160993,
+          "path": "docs/verification/repo-hygiene-2026-10-04/ci-corrected/asan/verification/ctest.xml",
+          "sha256": "4f0f3784658c6742558599b4d7bf17c47a13806da34e39abc9be6c92040a9b2c"
+        },
+        {
+          "bytes": 16188,
+          "path": "docs/verification/repo-hygiene-2026-10-04/ci-corrected/asan/verification/executed-cases.json",
+          "sha256": "b452e3897eec6e9923be769bd6caa4768305e79e902605f20a52a091ff55fefc"
+        },
+        {
+          "bytes": 216501,
+          "path": "docs/verification/repo-hygiene-2026-10-04/ci-corrected/asan/Testing/Temporary/LastTest.log",
+          "sha256": "04efbbadb06e41576f71169b764a954a9f62839c0472f427bb8c3489a7bd0cdf"
+        }
+      ],
+      "preset": "asan",
+      "zip_bytes": 40071,
+      "zip_sha256": "77bea8e8998c14f4558ae9276e7e932ed68190737e7ac3532ff2cda329528e88"
+    },
+    {
+      "artifact_id": 11306569509,
+      "files": [
+        {
+          "bytes": 222,
+          "path": "docs/archive/repo-hygiene-2026-10-04/ci-corrected-vendored/vendored/verification/executed-cases.json",
+          "sha256": "c195902a2375e2501a97b018bffbd7fbbd902356a19b00d47ed6aeea3ab32a50"
+        }
+      ],
+      "preset": "vendored",
+      "zip_bytes": 343,
+      "zip_sha256": "00e6b8c940d8eaf0531cb3187c6579a7752854e891f4130d40deb66451aa5ab1"
+    }
+  ],
+  "run_id": 37211656572,
+  "schema": "loom.github_artifact_evidence/1",
+  "tested_branch_head": "6523c1b1a3870f2a6c7bba66554ad082cd9ea832"
+}
