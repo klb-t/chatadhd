@@ -947,6 +947,10 @@ void App::route_knowledge() {
     if (!object_body(req, res, body)) return;
     send_loom(res, loom_graph_packet_store(ctx_, req.body.c_str()));
   });
+  // Keep exact embedded reply bytes; strict parser rejects duplicate keys.
+  svr_.Post("/api/packet", [this](const httplib::Request& req, httplib::Response& res) {
+    send_loom(res, loom_packet(ctx_, req.body.c_str()));
+  });
   post_json("/api/knowledge/judge", loom_kb_judge);
   post_json("/api/knowledge/materialize", loom_materialize);
   post_json("/api/knowledge/predict", loom_generalize_predict);
