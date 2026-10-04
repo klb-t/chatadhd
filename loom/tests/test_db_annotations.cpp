@@ -1,4 +1,5 @@
 #include <doctest/doctest.h>
+#include <sqlite3.h>
 
 #include <atomic>
 #include <set>
@@ -13,6 +14,57 @@ using loom::test::open_db;
 using loom::test::unwrap;
 
 namespace {
+struct ExtensionMigrationRace {
+  sql::Connection& writer;
+  std::string key;
+  bool saw_preflight = false;
+  bool injected = false;
+  bool writer_committed = false;
+  std::string error;
+
+  static int trace(unsigned, void* context, void* statement, void*) {
+    auto& race = *static_cast<ExtensionMigrationRace*>(context);
+    auto* stmt = static_cast<sqlite3_stmt*>(statement);
+    const char* text = sqlite3_sql(stmt);
+    if (!text || race.injected) return 0;
+    if (std::string_view(text) == "SELECT value FROM _meta WHERE key = ?") {
+      char* expanded = sqlite3_expanded_sql(stmt);
+      if (expanded && std::string_view(expanded).find("'loom_import_checkpoint_schema_version'") !=
+                          std::string_view::npos)
+        race.saw_preflight = true;
+      sqlite3_free(expanded);
+    } else if (race.saw_preflight && std::string_view(text) == "BEGIN IMMEDIATE") {
+      // STMT fires before BEGIN acquires its lock. Both preflight reads have
+      // finished, so this other connection can commit a deterministic upgrade.
+      race.injected = true;
+      auto changed = race.writer.run("UPDATE _meta SET value='2' WHERE key=?", race.key);
+      if (changed) race.writer_committed = true;
+      else race.error = changed.error().to_string();
+    }
+    return 0;
+  }
+};
+
+thread_local ExtensionMigrationRace* pending_extension_race = nullptr;
+
+int install_extension_race(sqlite3* connection, char**, const sqlite3_api_routines*) {
+  if (!pending_extension_race) return SQLITE_OK;
+  return sqlite3_trace_v2(connection, SQLITE_TRACE_STMT, ExtensionMigrationRace::trace, pending_extension_race);
+}
+
+struct ExtensionRaceGuard {
+  int installed;
+  explicit ExtensionRaceGuard(ExtensionMigrationRace& race)
+      : installed(sqlite3_auto_extension(reinterpret_cast<void (*)()>(install_extension_race))) {
+    pending_extension_race = &race;
+  }
+  ~ExtensionRaceGuard() {
+    pending_extension_race = nullptr;
+    // Remove only this test's registration, leaving any other extensions alone.
+    sqlite3_cancel_auto_extension(reinterpret_cast<void (*)()>(install_extension_race));
+  }
+};
+
 struct AnnotationFixture {
   fsutil::TempDir temporary;
   std::unique_ptr<Database> db = open_db(temporary.path() / "annotations.db");
@@ -72,15 +124,52 @@ TEST_SUITE("db.annotations") {
     CHECK(unwrap(fixture.db->get_message_annotation(annotation.id))->excerpt == "ż😀");
     CHECK(fixture.snapshots() == 1);
 
-    LOOM_REQUIRE_OK(fixture.db->set_meta("loom_message_annotation_schema_version", "2"));
+    std::string key;
+    SUBCASE("newer annotation schema") { key = "loom_message_annotation_schema_version"; }
+    SUBCASE("newer import checkpoint schema") { key = "loom_import_checkpoint_schema_version"; }
+    LOOM_REQUIRE_OK(fixture.db->set_meta(key, "2"));
     fixture.db.reset();
     auto newer = Database::open(path);
     REQUIRE_FALSE(newer);
     CHECK(newer.error().code == Errc::Unsupported);
     auto raw = unwrap(sql::Connection::open(path));
-    CHECK(unwrap(raw.query_text("SELECT value FROM _meta WHERE key='loom_message_annotation_schema_version'")) ==
+    CHECK(unwrap(raw.query_text("SELECT value FROM _meta WHERE key=?", key)) ==
           std::optional<std::string>("2"));
     CHECK(*unwrap(raw.query_int("SELECT COUNT(*) FROM loom_message_annotations")) == 1);
+  }
+
+  TEST_CASE("extension migration rechecks concurrent upgrades under its write lock") {
+    std::string key;
+    SUBCASE("annotation upgrade after preflight") { key = "loom_message_annotation_schema_version"; }
+    SUBCASE("checkpoint upgrade after preflight") { key = "loom_import_checkpoint_schema_version"; }
+    AnnotationFixture fixture;
+    const auto path = fixture.db->path();
+    const Json message = unwrap(fixture.db->get_msg(fixture.message))->to_json();
+    const auto annotation = unwrap(fixture.db->create_message_annotation(fixture.annotation()));
+    LOOM_REQUIRE_OK(fixture.db->conn().exec("DROP INDEX idx_loom_annotations_node"));
+    fixture.db.reset();
+    auto writer = unwrap(sql::Connection::open(path));
+    ExtensionMigrationRace race{writer, key, false, false, false, {}};
+    ExtensionRaceGuard guard(race);
+    REQUIRE(guard.installed == SQLITE_OK);
+    auto newer = Database::open(path);
+    INFO(race.error);
+    REQUIRE(race.saw_preflight);
+    REQUIRE(race.injected);
+    REQUIRE(race.writer_committed);
+    CHECK_FALSE(newer);
+    if (!newer) CHECK(newer.error().code == Errc::Unsupported);
+    CHECK(unwrap(writer.query_text("SELECT value FROM _meta WHERE key=?", key)) == std::optional<std::string>("2"));
+    const std::string other_key = key == "loom_message_annotation_schema_version"
+        ? "loom_import_checkpoint_schema_version" : "loom_message_annotation_schema_version";
+    CHECK(unwrap(writer.query_text("SELECT value FROM _meta WHERE key=?", other_key)) == std::optional<std::string>("1"));
+    CHECK(*unwrap(writer.query_int("SELECT COUNT(*) FROM sqlite_master WHERE type='index' AND name='idx_loom_annotations_node'")) == 0);
+    CHECK(*unwrap(writer.query_int("SELECT COUNT(*) FROM loom_message_annotations WHERE id=?", annotation.id)) == 1);
+    CHECK(*unwrap(writer.query_int("SELECT COUNT(*) FROM loom_message_annotation_sources")) == 1);
+    // The retained connection is only for verification; opening with a newer
+    // version must still fail instead of making any annotation migration writes.
+    CHECK(unwrap(writer.query_text("SELECT text FROM messages WHERE id=?", fixture.message)) ==
+          std::optional<std::string>(message["text"].get<std::string>()));
   }
 
   TEST_CASE("Unicode codepoint ranges retain exact bytes and complete source payload") {

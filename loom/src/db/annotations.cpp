@@ -118,19 +118,26 @@ Json MessageAnnotation::to_json() const {
 Status Database::migrate_message_extensions() {
   // Independent additive schema versions keep core v4 and existing Loom v1
   // stable. Never overwrite a newer version written by another implementation.
-  for (const auto& entry : {std::pair{"loom_message_annotation_schema_version", kMessageAnnotationSchemaVersion},
-                            std::pair{"loom_import_checkpoint_schema_version", kImportCheckpointSchemaVersion}}) {
-    LOOM_TRY_ASSIGN(auto version, get_meta(entry.first));
-    if (!version) continue;
-    int parsed = 0;
-    auto [end, error] = std::from_chars(version->data(), version->data() + version->size(), parsed);
-    if (error != std::errc{} || end != version->data() + version->size() || parsed < 0)
-      return Error(Errc::Database, "invalid message extension schema version");
-    if (parsed > entry.second)
-      return Error(Errc::Unsupported, "message extension schema is newer than this implementation");
-  }
+  auto check_versions = [&]() -> Status {
+    for (const auto& entry : {std::pair{"loom_message_annotation_schema_version", kMessageAnnotationSchemaVersion},
+                              std::pair{"loom_import_checkpoint_schema_version", kImportCheckpointSchemaVersion}}) {
+      LOOM_TRY_ASSIGN(auto version, get_meta(entry.first));
+      if (!version) continue;
+      int parsed = 0;
+      auto [end, error] = std::from_chars(version->data(), version->data() + version->size(), parsed);
+      if (error != std::errc{} || end != version->data() + version->size() || parsed < 0)
+        return Error(Errc::Database, "invalid message extension schema version");
+      if (parsed > entry.second)
+        return Error(Errc::Unsupported, "message extension schema is newer than this implementation");
+    }
+    return {};
+  };
+  LOOM_TRY(check_versions());
   sql::Txn txn(conn_);
   LOOM_TRY(txn.begin_status());
+  // A newer writer may have committed after preflight or while BEGIN waited.
+  // Only the versions read under the write transaction authorize migration.
+  LOOM_TRY(check_versions());
   LOOM_TRY(conn_.exec(R"SQL(
 CREATE TABLE IF NOT EXISTS loom_message_annotation_sources (
     id TEXT PRIMARY KEY,

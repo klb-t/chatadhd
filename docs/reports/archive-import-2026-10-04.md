@@ -38,7 +38,15 @@ To gotowość tego przyrostu, nie zakończenie 52 migracji danych/profili.
    oryginału po snapshotcie oraz konflikt admission przed dispatch.
    Ukierunkowana próba z historycznym archive i zmienionymi obiektami:
    **przed 2/6; po 6/6 i 872/872 asercji**, bez live calls.
-   To próba pomocnicza, nie pełny build po przyjęciu W2.
+   To próba pomocnicza, nie pełny build po przyjęciu W2. Kod **bf8b620**.
+2. **Migracja:** oba klucze wersji ponownie sprawdzane wewnątrz
+   `BEGIN IMMEDIATE`, przed jakimkolwiek DDL lub zapisem wersji.
+   Deterministyczny writer zapisuje2 po preflight, przed uzyskaniem blokady:
+   stary kod miał **6 błędów** (otwarcie/downgrade/DDL, oba klucze), poprawka
+   zwraca `Unsupported` i zachowuje2, drugi klucz oraz rekordy.
+   Ukierunkowana próba z nowym obiektem i historycznym archive:
+   **11/11 przypadków, 189/189 asercji**; niezależny review bez uwag.
+   Rdzeńv4 i oba additive schema1 bez zmiany; nie obniżamy nowszych wersji.
 
 ## Wdrożone
 
