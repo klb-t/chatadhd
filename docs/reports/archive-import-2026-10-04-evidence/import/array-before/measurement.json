@@ -1,0 +1,84 @@
+{
+  "schema": "loom.offline_import_measurement/1",
+  "command": [
+    "/dev/shm/chatadhd-thread5/baseline-loom",
+    "--data-dir",
+    "/dev/shm/chatadhd-thread5/measure-array-before/data",
+    "--json",
+    "--quiet",
+    "import",
+    "/dev/shm/chatadhd-thread5/fixture-array.json",
+    "--export-mode",
+    "on",
+    "--audit"
+  ],
+  "baseline": true,
+  "binary": {
+    "path": "/dev/shm/chatadhd-thread5/baseline-loom",
+    "sha256": "7ea6f01631cd81e0a853d5dd43a523713a49511a87148c29b5bda4d20eddf71e",
+    "bytes": 29942600,
+    "source_commit": "161cc22",
+    "build_description": "Release preset; -O0 -DNDEBUG; WERROR; pure baseline tree"
+  },
+  "fixture": {
+    "schema": "loom.synthetic_import_benchmark/1",
+    "source": "offline synthetic generated fixture",
+    "shape": "array",
+    "conversations": 64,
+    "messages": 128,
+    "normalized_text_characters": 7404,
+    "payload_site": "metadata",
+    "payload_bytes_per_message": 524288,
+    "whitespace_bytes_per_conversation": 0,
+    "source_bytes": 67161093,
+    "sha256": "64801ef63d61e3261698c474121b7b3e730402ec0c64490c12b0b8e3e22fa983",
+    "generator_elapsed_seconds": 1.052426022997679,
+    "caveat": "Memory remains proportional to the largest conversation and result summaries, not mathematically constant."
+  },
+  "measurements": [
+    {
+      "run_index": 0,
+      "exit_code": 0,
+      "elapsed_seconds": 69.62629863800248,
+      "collector": "os.wait4; kernel ru_maxrss",
+      "peak_rss_kib": 24328,
+      "user_seconds": 38.773814,
+      "system_seconds": 2.3902,
+      "stdout_bytes": 85950
+    }
+  ],
+  "database": {
+    "path": "/dev/shm/chatadhd-thread5/measure-array-before/data/chatadhd.db",
+    "file_bytes": 67731456,
+    "counts": {
+      "conversations": 64,
+      "messages": 128,
+      "normalized_text_characters": 7404,
+      "foreign_key_check_rows": 0,
+      "integrity_check": "ok",
+      "conversation_source_indices": 64,
+      "message_pointer_count": 128,
+      "sources": [
+        {
+          "id": "src_eb5b39b78376",
+          "blob_hash": "64801ef63d61e3261698c474121b7b3e730402ec0c64490c12b0b8e3e22fa983",
+          "source_bytes": 67161093,
+          "status": "complete"
+        }
+      ],
+      "source_blob_verified": true,
+      "raw_message_payloads_verified": 128
+    },
+    "checks": {
+      "conversations": true,
+      "messages": true,
+      "normalized_text_characters": true,
+      "integrity": true,
+      "source_blob": true,
+      "raw_message_payloads": true
+    },
+    "correct": true
+  },
+  "verification_elapsed_seconds": 2.0015902939994703,
+  "caveat": "Peak RSS is the CLI process including source snapshotting, interpretation, audit, and JSON report output; file-system page cache is excluded."
+}

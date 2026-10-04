@@ -1,0 +1,3453 @@
+{
+  "conversations": [
+    {
+      "id": "c_5ec20379e60a",
+      "title": "Synthetic benchmark 0",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 0,
+          "key": "synthetic-conversation-0",
+          "title_original": "Synthetic benchmark 0",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-0",
+            "title": "Synthetic benchmark 0",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 0,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/0",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_990edff7880b",
+      "title": "Synthetic benchmark 1",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 1,
+          "key": "synthetic-conversation-1",
+          "title_original": "Synthetic benchmark 1",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-1",
+            "title": "Synthetic benchmark 1",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 1,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/1",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_7180f1f95919",
+      "title": "Synthetic benchmark 2",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 2,
+          "key": "synthetic-conversation-2",
+          "title_original": "Synthetic benchmark 2",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-2",
+            "title": "Synthetic benchmark 2",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 2,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/2",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_fa6c4225445c",
+      "title": "Synthetic benchmark 3",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 3,
+          "key": "synthetic-conversation-3",
+          "title_original": "Synthetic benchmark 3",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-3",
+            "title": "Synthetic benchmark 3",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 3,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/3",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_a8da69f37977",
+      "title": "Synthetic benchmark 4",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 4,
+          "key": "synthetic-conversation-4",
+          "title_original": "Synthetic benchmark 4",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-4",
+            "title": "Synthetic benchmark 4",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 4,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/4",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_2da3a27cc40b",
+      "title": "Synthetic benchmark 5",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 5,
+          "key": "synthetic-conversation-5",
+          "title_original": "Synthetic benchmark 5",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-5",
+            "title": "Synthetic benchmark 5",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 5,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/5",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_0848e599ac38",
+      "title": "Synthetic benchmark 6",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 6,
+          "key": "synthetic-conversation-6",
+          "title_original": "Synthetic benchmark 6",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-6",
+            "title": "Synthetic benchmark 6",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 6,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/6",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_e2193aadb4d2",
+      "title": "Synthetic benchmark 7",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 7,
+          "key": "synthetic-conversation-7",
+          "title_original": "Synthetic benchmark 7",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-7",
+            "title": "Synthetic benchmark 7",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 7,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/7",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_62566f0d99ac",
+      "title": "Synthetic benchmark 8",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 8,
+          "key": "synthetic-conversation-8",
+          "title_original": "Synthetic benchmark 8",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-8",
+            "title": "Synthetic benchmark 8",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 8,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/8",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_ac22e8d366a5",
+      "title": "Synthetic benchmark 9",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 9,
+          "key": "synthetic-conversation-9",
+          "title_original": "Synthetic benchmark 9",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-9",
+            "title": "Synthetic benchmark 9",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 9,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/9",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_491c8515851a",
+      "title": "Synthetic benchmark 10",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 10,
+          "key": "synthetic-conversation-10",
+          "title_original": "Synthetic benchmark 10",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-10",
+            "title": "Synthetic benchmark 10",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 10,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/10",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_840fbed7f0bd",
+      "title": "Synthetic benchmark 11",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 11,
+          "key": "synthetic-conversation-11",
+          "title_original": "Synthetic benchmark 11",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-11",
+            "title": "Synthetic benchmark 11",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 11,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/11",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_eb605cf9c889",
+      "title": "Synthetic benchmark 12",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 12,
+          "key": "synthetic-conversation-12",
+          "title_original": "Synthetic benchmark 12",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-12",
+            "title": "Synthetic benchmark 12",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 12,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/12",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_60e4d4f68644",
+      "title": "Synthetic benchmark 13",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 13,
+          "key": "synthetic-conversation-13",
+          "title_original": "Synthetic benchmark 13",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-13",
+            "title": "Synthetic benchmark 13",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 13,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/13",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_e35b0bc6acb2",
+      "title": "Synthetic benchmark 14",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 14,
+          "key": "synthetic-conversation-14",
+          "title_original": "Synthetic benchmark 14",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-14",
+            "title": "Synthetic benchmark 14",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 14,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/14",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_06558f7fddee",
+      "title": "Synthetic benchmark 15",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 15,
+          "key": "synthetic-conversation-15",
+          "title_original": "Synthetic benchmark 15",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-15",
+            "title": "Synthetic benchmark 15",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 15,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/15",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_e0e8939bbd3a",
+      "title": "Synthetic benchmark 16",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 16,
+          "key": "synthetic-conversation-16",
+          "title_original": "Synthetic benchmark 16",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-16",
+            "title": "Synthetic benchmark 16",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 16,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/16",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_5191544b2f51",
+      "title": "Synthetic benchmark 17",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 17,
+          "key": "synthetic-conversation-17",
+          "title_original": "Synthetic benchmark 17",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-17",
+            "title": "Synthetic benchmark 17",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 17,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/17",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_a5df2e4b5015",
+      "title": "Synthetic benchmark 18",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 18,
+          "key": "synthetic-conversation-18",
+          "title_original": "Synthetic benchmark 18",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-18",
+            "title": "Synthetic benchmark 18",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 18,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/18",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_5211576cad58",
+      "title": "Synthetic benchmark 19",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 19,
+          "key": "synthetic-conversation-19",
+          "title_original": "Synthetic benchmark 19",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-19",
+            "title": "Synthetic benchmark 19",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 19,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/19",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_1169fa3bb078",
+      "title": "Synthetic benchmark 20",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 20,
+          "key": "synthetic-conversation-20",
+          "title_original": "Synthetic benchmark 20",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-20",
+            "title": "Synthetic benchmark 20",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 20,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/20",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_c2e9715e0c48",
+      "title": "Synthetic benchmark 21",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 21,
+          "key": "synthetic-conversation-21",
+          "title_original": "Synthetic benchmark 21",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-21",
+            "title": "Synthetic benchmark 21",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 21,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/21",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_3fb865f25364",
+      "title": "Synthetic benchmark 22",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 22,
+          "key": "synthetic-conversation-22",
+          "title_original": "Synthetic benchmark 22",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-22",
+            "title": "Synthetic benchmark 22",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 22,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/22",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_cde48a48859d",
+      "title": "Synthetic benchmark 23",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 23,
+          "key": "synthetic-conversation-23",
+          "title_original": "Synthetic benchmark 23",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-23",
+            "title": "Synthetic benchmark 23",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 23,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/23",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_b68504d28a1c",
+      "title": "Synthetic benchmark 24",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 24,
+          "key": "synthetic-conversation-24",
+          "title_original": "Synthetic benchmark 24",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-24",
+            "title": "Synthetic benchmark 24",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 24,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/24",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_0c18e8cac578",
+      "title": "Synthetic benchmark 25",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 25,
+          "key": "synthetic-conversation-25",
+          "title_original": "Synthetic benchmark 25",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-25",
+            "title": "Synthetic benchmark 25",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 25,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/25",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_ad63cfe90378",
+      "title": "Synthetic benchmark 26",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 26,
+          "key": "synthetic-conversation-26",
+          "title_original": "Synthetic benchmark 26",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-26",
+            "title": "Synthetic benchmark 26",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 26,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/26",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_d1f0d4d54cdb",
+      "title": "Synthetic benchmark 27",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 27,
+          "key": "synthetic-conversation-27",
+          "title_original": "Synthetic benchmark 27",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-27",
+            "title": "Synthetic benchmark 27",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 27,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/27",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_6c13aa6ac45b",
+      "title": "Synthetic benchmark 28",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 28,
+          "key": "synthetic-conversation-28",
+          "title_original": "Synthetic benchmark 28",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-28",
+            "title": "Synthetic benchmark 28",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 28,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/28",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_daaa71b06ff7",
+      "title": "Synthetic benchmark 29",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 29,
+          "key": "synthetic-conversation-29",
+          "title_original": "Synthetic benchmark 29",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-29",
+            "title": "Synthetic benchmark 29",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 29,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/29",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_80031015d4e8",
+      "title": "Synthetic benchmark 30",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 30,
+          "key": "synthetic-conversation-30",
+          "title_original": "Synthetic benchmark 30",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-30",
+            "title": "Synthetic benchmark 30",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 30,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/30",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_9d0b7318608c",
+      "title": "Synthetic benchmark 31",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 31,
+          "key": "synthetic-conversation-31",
+          "title_original": "Synthetic benchmark 31",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-31",
+            "title": "Synthetic benchmark 31",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 31,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/31",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_20abc3f28751",
+      "title": "Synthetic benchmark 32",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 32,
+          "key": "synthetic-conversation-32",
+          "title_original": "Synthetic benchmark 32",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-32",
+            "title": "Synthetic benchmark 32",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 32,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/32",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_d7dadb81b300",
+      "title": "Synthetic benchmark 33",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 33,
+          "key": "synthetic-conversation-33",
+          "title_original": "Synthetic benchmark 33",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-33",
+            "title": "Synthetic benchmark 33",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 33,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/33",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_af41770d0314",
+      "title": "Synthetic benchmark 34",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 34,
+          "key": "synthetic-conversation-34",
+          "title_original": "Synthetic benchmark 34",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-34",
+            "title": "Synthetic benchmark 34",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 34,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/34",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_b3eaf527b465",
+      "title": "Synthetic benchmark 35",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 35,
+          "key": "synthetic-conversation-35",
+          "title_original": "Synthetic benchmark 35",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-35",
+            "title": "Synthetic benchmark 35",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 35,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/35",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_ef5eb47570e0",
+      "title": "Synthetic benchmark 36",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 36,
+          "key": "synthetic-conversation-36",
+          "title_original": "Synthetic benchmark 36",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-36",
+            "title": "Synthetic benchmark 36",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 36,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/36",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_f499a6ff9081",
+      "title": "Synthetic benchmark 37",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 37,
+          "key": "synthetic-conversation-37",
+          "title_original": "Synthetic benchmark 37",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-37",
+            "title": "Synthetic benchmark 37",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 37,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/37",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_a37588f0eb5c",
+      "title": "Synthetic benchmark 38",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 38,
+          "key": "synthetic-conversation-38",
+          "title_original": "Synthetic benchmark 38",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-38",
+            "title": "Synthetic benchmark 38",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 38,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/38",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_56bc5aeef813",
+      "title": "Synthetic benchmark 39",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 39,
+          "key": "synthetic-conversation-39",
+          "title_original": "Synthetic benchmark 39",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-39",
+            "title": "Synthetic benchmark 39",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 39,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/39",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_269175e3f919",
+      "title": "Synthetic benchmark 40",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 40,
+          "key": "synthetic-conversation-40",
+          "title_original": "Synthetic benchmark 40",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-40",
+            "title": "Synthetic benchmark 40",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 40,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/40",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_3e0955287db3",
+      "title": "Synthetic benchmark 41",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 41,
+          "key": "synthetic-conversation-41",
+          "title_original": "Synthetic benchmark 41",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-41",
+            "title": "Synthetic benchmark 41",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 41,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/41",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_df0d9221c960",
+      "title": "Synthetic benchmark 42",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 42,
+          "key": "synthetic-conversation-42",
+          "title_original": "Synthetic benchmark 42",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-42",
+            "title": "Synthetic benchmark 42",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 42,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/42",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_5ba42be5041b",
+      "title": "Synthetic benchmark 43",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 43,
+          "key": "synthetic-conversation-43",
+          "title_original": "Synthetic benchmark 43",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-43",
+            "title": "Synthetic benchmark 43",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 43,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/43",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_fb7643e06887",
+      "title": "Synthetic benchmark 44",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 44,
+          "key": "synthetic-conversation-44",
+          "title_original": "Synthetic benchmark 44",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-44",
+            "title": "Synthetic benchmark 44",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 44,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/44",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_795cc30ba8c5",
+      "title": "Synthetic benchmark 45",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 45,
+          "key": "synthetic-conversation-45",
+          "title_original": "Synthetic benchmark 45",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-45",
+            "title": "Synthetic benchmark 45",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 45,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/45",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_6ef270bdb5bb",
+      "title": "Synthetic benchmark 46",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 46,
+          "key": "synthetic-conversation-46",
+          "title_original": "Synthetic benchmark 46",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-46",
+            "title": "Synthetic benchmark 46",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 46,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/46",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_68630e47cbde",
+      "title": "Synthetic benchmark 47",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 47,
+          "key": "synthetic-conversation-47",
+          "title_original": "Synthetic benchmark 47",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-47",
+            "title": "Synthetic benchmark 47",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 47,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/47",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_b2ddc53bf158",
+      "title": "Synthetic benchmark 48",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 48,
+          "key": "synthetic-conversation-48",
+          "title_original": "Synthetic benchmark 48",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-48",
+            "title": "Synthetic benchmark 48",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 48,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/48",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_f4082718b0b8",
+      "title": "Synthetic benchmark 49",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 49,
+          "key": "synthetic-conversation-49",
+          "title_original": "Synthetic benchmark 49",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-49",
+            "title": "Synthetic benchmark 49",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 49,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/49",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_ab0d96387f86",
+      "title": "Synthetic benchmark 50",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 50,
+          "key": "synthetic-conversation-50",
+          "title_original": "Synthetic benchmark 50",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-50",
+            "title": "Synthetic benchmark 50",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 50,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/50",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_d1a760d5e1e9",
+      "title": "Synthetic benchmark 51",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 51,
+          "key": "synthetic-conversation-51",
+          "title_original": "Synthetic benchmark 51",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-51",
+            "title": "Synthetic benchmark 51",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 51,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/51",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_d4f6da5f8c2d",
+      "title": "Synthetic benchmark 52",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 52,
+          "key": "synthetic-conversation-52",
+          "title_original": "Synthetic benchmark 52",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-52",
+            "title": "Synthetic benchmark 52",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 52,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/52",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_c50e7d0d8ab0",
+      "title": "Synthetic benchmark 53",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 53,
+          "key": "synthetic-conversation-53",
+          "title_original": "Synthetic benchmark 53",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-53",
+            "title": "Synthetic benchmark 53",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 53,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/53",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_a321c222ec3c",
+      "title": "Synthetic benchmark 54",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 54,
+          "key": "synthetic-conversation-54",
+          "title_original": "Synthetic benchmark 54",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-54",
+            "title": "Synthetic benchmark 54",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 54,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/54",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_47567fb2791e",
+      "title": "Synthetic benchmark 55",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 55,
+          "key": "synthetic-conversation-55",
+          "title_original": "Synthetic benchmark 55",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-55",
+            "title": "Synthetic benchmark 55",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 55,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/55",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_adcc6ab21b49",
+      "title": "Synthetic benchmark 56",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 56,
+          "key": "synthetic-conversation-56",
+          "title_original": "Synthetic benchmark 56",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-56",
+            "title": "Synthetic benchmark 56",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 56,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/56",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_100a5feb1376",
+      "title": "Synthetic benchmark 57",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 57,
+          "key": "synthetic-conversation-57",
+          "title_original": "Synthetic benchmark 57",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-57",
+            "title": "Synthetic benchmark 57",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 57,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/57",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_a13eadf81564",
+      "title": "Synthetic benchmark 58",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 58,
+          "key": "synthetic-conversation-58",
+          "title_original": "Synthetic benchmark 58",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-58",
+            "title": "Synthetic benchmark 58",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 58,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/58",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_a7b5314293b7",
+      "title": "Synthetic benchmark 59",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 59,
+          "key": "synthetic-conversation-59",
+          "title_original": "Synthetic benchmark 59",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-59",
+            "title": "Synthetic benchmark 59",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 59,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/59",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_7b911f7ee2db",
+      "title": "Synthetic benchmark 60",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 60,
+          "key": "synthetic-conversation-60",
+          "title_original": "Synthetic benchmark 60",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-60",
+            "title": "Synthetic benchmark 60",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 60,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/60",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_48c6a48bf679",
+      "title": "Synthetic benchmark 61",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 61,
+          "key": "synthetic-conversation-61",
+          "title_original": "Synthetic benchmark 61",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-61",
+            "title": "Synthetic benchmark 61",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 61,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/61",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_23493deb45ae",
+      "title": "Synthetic benchmark 62",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 62,
+          "key": "synthetic-conversation-62",
+          "title_original": "Synthetic benchmark 62",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-62",
+            "title": "Synthetic benchmark 62",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 62,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/62",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "c_034465954323",
+      "title": "Synthetic benchmark 63",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {
+        "export": {
+          "provider": "openai",
+          "schema": "loom.export.v1",
+          "member": "fixture-wrapper.json",
+          "index": 63,
+          "key": "synthetic-conversation-63",
+          "title_original": "Synthetic benchmark 63",
+          "title_source": "export",
+          "current_node": "node-1",
+          "current_node_resolved": true,
+          "current_path_inferred": false,
+          "has_mapping": true,
+          "fields": {
+            "id": "synthetic-conversation-63",
+            "title": "Synthetic benchmark 63",
+            "create_time": 1700000000,
+            "update_time": 1700000002,
+            "current_node": "node-1"
+          },
+          "null_nodes": [],
+          "graph": {
+            "nodes": 2,
+            "messages": 2,
+            "fork_points": 0,
+            "leaves": 1,
+            "roots": 1,
+            "current_path_messages": 2,
+            "unreachable_nodes": 0,
+            "version_groups": 0
+          },
+          "source_index": 63,
+          "source_container": "conversations_wrapper",
+          "json_pointer": "/conversations/63",
+          "wrapper_fields": {
+            "synthetic": true,
+            "before": {
+              "marker": "prefix"
+            },
+            "after": {
+              "marker": "suffix",
+              "synthetic": true
+            }
+          }
+        }
+      }
+    }
+  ],
+  "format": "json",
+  "source_id": "src_8c57b298140e",
+  "blob_hash": "f5819bf76e8586f7239456b157eb94edba9e79406a48239f5b644147538bdfb9",
+  "messages": 128,
+  "cancelled": false,
+  "already_imported": false,
+  "warnings": [],
+  "export_report": {
+    "schema": "loom.export_report.v1",
+    "provider": "openai",
+    "counts": {
+      "account": 0,
+      "artifact": 0,
+      "attachment": 0,
+      "block": 128,
+      "block_kind": {
+        "text": 128
+      },
+      "branch": 64,
+      "citation": 0,
+      "citation_group": 0,
+      "conversation": 64,
+      "current_path_messages": 128,
+      "custom_instruction": 0,
+      "feedback": 0,
+      "fork_points": 0,
+      "memory": 0,
+      "message": 128,
+      "project": 0,
+      "project_doc": 0,
+      "record": 0,
+      "shared_link": 0
+    },
+    "members": [
+      {
+        "wrapper": true,
+        "name": "fixture-wrapper.json",
+        "size": 0,
+        "disposition": "conversations"
+      }
+    ],
+    "member_count": 1,
+    "errors": [],
+    "warnings": [],
+    "partial": false,
+    "inferred": false,
+    "repairs": {},
+    "json_leaves": 1728,
+    "leaves_preserved": 1728,
+    "asset_members": [],
+    "unreferenced_members": [],
+    "unresolved_keys": [],
+    "pointer_links": {},
+    "duplicate_groups": [],
+    "unknown_members": [],
+    "parts": []
+  }
+}

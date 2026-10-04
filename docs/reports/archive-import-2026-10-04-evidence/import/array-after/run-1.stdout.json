@@ -1,0 +1,646 @@
+{
+  "conversations": [
+    {
+      "id": "c_a0afdb3d5667",
+      "title": "Synthetic benchmark 0",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_f347148aae3e",
+      "title": "Synthetic benchmark 1",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_113be94f9a43",
+      "title": "Synthetic benchmark 2",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_1c84440f2ea2",
+      "title": "Synthetic benchmark 3",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_7c0e2dec2dbd",
+      "title": "Synthetic benchmark 4",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_674642ba8192",
+      "title": "Synthetic benchmark 5",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_8feba80adfa5",
+      "title": "Synthetic benchmark 6",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_1956769f631c",
+      "title": "Synthetic benchmark 7",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_36f9b99fea05",
+      "title": "Synthetic benchmark 8",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_6a4e36a2f831",
+      "title": "Synthetic benchmark 9",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_885a050038ea",
+      "title": "Synthetic benchmark 10",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_b689858d0e16",
+      "title": "Synthetic benchmark 11",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_08be08b71944",
+      "title": "Synthetic benchmark 12",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_761fd3958f3f",
+      "title": "Synthetic benchmark 13",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_c96167a55a38",
+      "title": "Synthetic benchmark 14",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_0d3bf470655c",
+      "title": "Synthetic benchmark 15",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_b5b2c748d128",
+      "title": "Synthetic benchmark 16",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_9e74e5e12a90",
+      "title": "Synthetic benchmark 17",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_5fc39ea5c48a",
+      "title": "Synthetic benchmark 18",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_d1084dab430f",
+      "title": "Synthetic benchmark 19",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_8d432edece12",
+      "title": "Synthetic benchmark 20",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_0d1111d13dcd",
+      "title": "Synthetic benchmark 21",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_1d6c55ec22c6",
+      "title": "Synthetic benchmark 22",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_fcbe4f980b4f",
+      "title": "Synthetic benchmark 23",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_5da017ff77fa",
+      "title": "Synthetic benchmark 24",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_2834ca8343d9",
+      "title": "Synthetic benchmark 25",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_47b39536ba4a",
+      "title": "Synthetic benchmark 26",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_42834137b5c0",
+      "title": "Synthetic benchmark 27",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_ed68221b9cb1",
+      "title": "Synthetic benchmark 28",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_3643fe76932a",
+      "title": "Synthetic benchmark 29",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_3f628ee30f69",
+      "title": "Synthetic benchmark 30",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_03872e5e7326",
+      "title": "Synthetic benchmark 31",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_6819d7bbb3f1",
+      "title": "Synthetic benchmark 32",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_ccce5431843c",
+      "title": "Synthetic benchmark 33",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_94e4357aaedd",
+      "title": "Synthetic benchmark 34",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_d7d6db0f0bbb",
+      "title": "Synthetic benchmark 35",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_82c302e7860e",
+      "title": "Synthetic benchmark 36",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_5252b17fbe5b",
+      "title": "Synthetic benchmark 37",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_a7cc5072c2b9",
+      "title": "Synthetic benchmark 38",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_85620d5bef29",
+      "title": "Synthetic benchmark 39",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_539159423acd",
+      "title": "Synthetic benchmark 40",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_462fcfb5703f",
+      "title": "Synthetic benchmark 41",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_240764b67fb6",
+      "title": "Synthetic benchmark 42",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_290bbe10a391",
+      "title": "Synthetic benchmark 43",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_2ae3ea25e4d9",
+      "title": "Synthetic benchmark 44",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_cc7da9e3efa3",
+      "title": "Synthetic benchmark 45",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_40325fdb1683",
+      "title": "Synthetic benchmark 46",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_ae5d093bc079",
+      "title": "Synthetic benchmark 47",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_4eafb84ed9c8",
+      "title": "Synthetic benchmark 48",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_2dd041181dd3",
+      "title": "Synthetic benchmark 49",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_1d3f995dab17",
+      "title": "Synthetic benchmark 50",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_29a5a1ee3e46",
+      "title": "Synthetic benchmark 51",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_d93a2b0c8c96",
+      "title": "Synthetic benchmark 52",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_ac98fd068f65",
+      "title": "Synthetic benchmark 53",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_ebafa331e27a",
+      "title": "Synthetic benchmark 54",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_8dabac9cb8ef",
+      "title": "Synthetic benchmark 55",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_369355c052de",
+      "title": "Synthetic benchmark 56",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_0dd1138c0ca1",
+      "title": "Synthetic benchmark 57",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_44e178d920d1",
+      "title": "Synthetic benchmark 58",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_e29af6314e52",
+      "title": "Synthetic benchmark 59",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_65efc02ca3b3",
+      "title": "Synthetic benchmark 60",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_1c1c94ea1c02",
+      "title": "Synthetic benchmark 61",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_e5255a7f15f5",
+      "title": "Synthetic benchmark 62",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    },
+    {
+      "id": "c_d1e4e87f530f",
+      "title": "Synthetic benchmark 63",
+      "created": "2023-11-14T22:13:20Z",
+      "updated": "2023-11-14T22:13:22Z",
+      "source": "import:openai",
+      "metadata": {}
+    }
+  ],
+  "format": "json",
+  "source_id": "src_a11c24ed28fb",
+  "blob_hash": "64801ef63d61e3261698c474121b7b3e730402ec0c64490c12b0b8e3e22fa983",
+  "messages": 128,
+  "cancelled": false,
+  "already_imported": true,
+  "resumed": false,
+  "include_result_metadata": false,
+  "warnings": [
+    "already imported (source src_a11c24ed28fb)"
+  ],
+  "retained_conversation_count": 64,
+  "export_report": {
+    "schema": "loom.export_report.v1",
+    "provider": "openai",
+    "counts": {
+      "account": 0,
+      "artifact": 0,
+      "attachment": 0,
+      "block": 128,
+      "block_kind": {
+        "text": 128
+      },
+      "branch": 64,
+      "citation": 0,
+      "citation_group": 0,
+      "conversation": 64,
+      "current_path_messages": 128,
+      "custom_instruction": 0,
+      "feedback": 0,
+      "fork_points": 0,
+      "memory": 0,
+      "message": 128,
+      "project": 0,
+      "project_doc": 0,
+      "record": 0,
+      "shared_link": 0
+    },
+    "members": [
+      {
+        "wrapper": false,
+        "name": "fixture-array.json",
+        "size": 0,
+        "disposition": "conversations"
+      }
+    ],
+    "member_count": 1,
+    "errors": [],
+    "warnings": [],
+    "partial": false,
+    "include_result_metadata": false,
+    "inferred": false,
+    "resumed_conversations": 0,
+    "resumed_members": 0,
+    "largest_json_value_bytes": 1049392,
+    "scanner_buffer_bytes": 65536,
+    "repairs": {},
+    "json_leaves": 1728,
+    "leaves_preserved": 1728,
+    "asset_members": [],
+    "unreferenced_members": [],
+    "unresolved_keys": [],
+    "pointer_links": {},
+    "duplicate_groups": [],
+    "unknown_members": [],
+    "parts": []
+  },
+  "usage_policy": {
+    "status": "unavailable",
+    "capability": "loom.usage_policy/1",
+    "reason": "integrate thread 2 to enable shared usage admission"
+  },
+  "audit": {
+    "schema": "loom.import_audit/1",
+    "model_calls": 0,
+    "local_import_model_cost_usd": 0,
+    "local_compute_cost_usd": null,
+    "raw": {
+      "conversations": 64,
+      "messages": 128,
+      "characters": 7404
+    },
+    "projected": {
+      "scope": "all",
+      "conversations": 64,
+      "messages": 128,
+      "characters": 7404
+    },
+    "by_status": {
+      "active": {
+        "messages": 128,
+        "characters": 7404
+      }
+    },
+    "by_role": {
+      "user": {
+        "messages": 64,
+        "characters": 3702
+      },
+      "assistant": {
+        "messages": 64,
+        "characters": 3702
+      }
+    },
+    "estimates": {
+      "low": {
+        "input_tokens_estimate": 1851.0,
+        "output_tokens_estimate": 740.4000000000001,
+        "model_cost_usd_estimate": 0.00048126000000000006
+      },
+      "high": {
+        "input_tokens_estimate": 2468.0,
+        "output_tokens_estimate": 987.2,
+        "model_cost_usd_estimate": 0.0006416800000000002
+      }
+    },
+    "assumptions": {
+      "character_unit": "Unicode codepoints",
+      "chars_per_token_low": 4.0,
+      "chars_per_token_high": 3.0,
+      "output_ratio": 0.4,
+      "input_price_usd_per_million": 0.1,
+      "output_price_usd_per_million": 0.4,
+      "reading_passes": 1,
+      "prefix_tokens": 0,
+      "prices_verified_current": false,
+      "content": "normalized message text only; excludes source JSON, attachments and OCR",
+      "token_count": "estimate; tokenizer/provider not called"
+    }
+  }
+}
