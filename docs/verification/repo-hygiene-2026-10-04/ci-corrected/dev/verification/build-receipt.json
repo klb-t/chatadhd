@@ -1,0 +1,35 @@
+{
+  "architecture": "x86_64",
+  "binaries": [
+    {
+      "bytes": 268434712,
+      "path": "build/dev/loom_tests",
+      "present": true,
+      "sha256": "cf9a7c40704a3113a1d50afdc7ffe035ccda4ec83a5887d3e6838e313af10c12"
+    },
+    {
+      "bytes": 153794272,
+      "path": "build/dev/cli/loom",
+      "present": true,
+      "sha256": "82cc1dd5ea9d89761b2ee3c63fea92d0c3e91bee2b2e70ae042af109626abf1f"
+    },
+    {
+      "bytes": 170823576,
+      "path": "build/dev/server/loom-server",
+      "present": true,
+      "sha256": "f130cb75970bf97169775c1efb031765d7a7b8b5a0840ef0abde8e266252d8d8"
+    },
+    {
+      "bytes": 169570744,
+      "path": "build/dev/libloom.so",
+      "present": true,
+      "sha256": "86a36893f24308544444e05a6eede1a1aa9ce9c89ac197ea37b6c19722b7439e"
+    }
+  ],
+  "platform": "Linux",
+  "preset": "dev",
+  "python": "3.11.16",
+  "schema": "loom.build_evidence/1",
+  "source_commit": "93420bbb82124ba5493e5fc9c3dea793703bfb74",
+  "source_tree": "237d9618ca61780a4011896a03719e8b4184daf9"
+}
