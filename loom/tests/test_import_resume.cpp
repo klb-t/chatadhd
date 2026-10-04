@@ -40,7 +40,7 @@ struct ResumeFixture {
   ProvenanceStore provenance{*db};
   ConversationImporter importer{*db, bus, &blobs, &provenance};
   ImportOptions options;
-  ResumeFixture() { options.export_mode = ExportMode::On; }
+  ResumeFixture() { options.export_mode = ExportMode::On; options.resume = true; }
   std::filesystem::path write(const std::string& bytes, const std::string& name = "source.json") {
     auto path = temporary.path() / name;
     LOOM_REQUIRE_OK(fsutil::write_file(path, bytes)); return path;
@@ -404,14 +404,14 @@ TEST_SUITE("import_resume") {
       auto db = open_db(temporary.path() / "restart.db"); EventBus bus;
       BlobStore blobs(temporary.path() / "blobs", *db); ProvenanceStore provenance(*db);
       ConversationImporter importer(*db, bus, &blobs, &provenance);
-      ImportOptions options; options.export_mode = ExportMode::On;
+      ImportOptions options; options.export_mode = ExportMode::On; options.resume = true;
       options.progress = [](auto, auto, std::string_view status) { if (status == "export") _exit(71); };
       (void)importer.import_file(source, options); _exit(72);
     }
     int status = 0; REQUIRE(waitpid(child, &status, 0) == child); REQUIRE(WIFEXITED(status)); CHECK(WEXITSTATUS(status) == 71);
     auto db = open_db(temporary.path() / "restart.db"); EventBus bus;
     BlobStore blobs(temporary.path() / "blobs", *db); ProvenanceStore provenance(*db);
-    ConversationImporter importer(*db, bus, &blobs, &provenance); ImportOptions options; options.export_mode = ExportMode::On;
+    ConversationImporter importer(*db, bus, &blobs, &provenance); ImportOptions options; options.export_mode = ExportMode::On; options.resume = true;
     auto resumed = unwrap(importer.import_file(source, options));
     CHECK(resumed.resumed); CHECK(resumed.conversations.size() == 2); CHECK(resumed.messages == 4);
     CHECK(unwrap(db->conn().query_int("SELECT COUNT(*) FROM conversations")).value_or(0) == 2);
