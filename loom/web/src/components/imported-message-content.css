@@ -5,3 +5,19 @@
 .imported-source-text, .imported-source-json pre { white-space: pre-wrap; overflow-wrap: anywhere; color: var(--text); padding: 8px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 4px; }
 .imported-source-path { overflow-wrap: anywhere; margin: 4px 0; }
 .imported-source-json { margin: 5px 0; }
+.imported-source-controls { display: flex; flex-wrap: wrap; gap: 10px; padding: 8px 0; }
+.imported-source-controls label { display: inline-flex; align-items: center; gap: 5px; }
+.imported-source-code { white-space: pre; overflow: auto; color: var(--text); padding: 8px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 4px; }
+.imported-source-code.wrap { white-space: pre-wrap; overflow-wrap: anywhere; }
+.imported-artifact { border: 1px solid var(--border); border-radius: 5px; padding: 10px; margin: 8px 0; }
+.imported-artifact h4 { margin: 0 0 8px; color: var(--text); }
+.imported-artifact > pre { overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; }
+.imported-artifact select { margin-left: 6px; }
+.imported-artifact-preview { padding: 10px; color: var(--text); background: var(--input-bg); overflow-wrap: anywhere; overflow: auto; }
+.imported-artifact-preview pre { white-space: pre-wrap; }
+.imported-artifact-preview table { border-collapse: collapse; }
+.imported-artifact-preview th, .imported-artifact-preview td { padding: 5px; border: 1px solid var(--border); }
+.imported-preview-note { margin: 6px 0; }
+.imported-media { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+.imported-media img, .imported-media video { max-width: 100%; max-height: 60vh; object-fit: contain; }
+.imported-media audio { max-width: 100%; }
