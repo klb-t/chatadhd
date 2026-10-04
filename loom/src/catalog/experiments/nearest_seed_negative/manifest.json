@@ -1,0 +1,35 @@
+{
+  "schema": "loom.catalog_negative_archive_manifest/1",
+  "destination": "archive_branch_only/loom/src/catalog/experiments/nearest_seed_negative",
+  "files": {
+    "README.md": {
+      "sha256": "6682a497ba1419341b14ba30975b3d642d06671b3e56f929c1a0680404339aa1",
+      "bytes": 3659
+    },
+    "evidence/corrected-first.json": {
+      "sha256": "4792a2aa9c757797fe3a9c5854539b0be008bbf2a9c4c5f0a21c517445e09825",
+      "bytes": 465364
+    },
+    "evidence/corrected-replay.json": {
+      "sha256": "21002c161dbe26d4ea5ff9fbd3f0ce300d6fa7b718ffaac798b5f15fbe9baaea",
+      "bytes": 475444
+    },
+    "evidence/initial-invalid-ref50.json": {
+      "sha256": "725e99086e6b9f2330e91a0da528732f849139f397397f60eab032e9de1f97f9",
+      "bytes": 470227
+    },
+    "inputs/baseline.json": {
+      "sha256": "3140396c63e0a1b94d42426def24bcffdb20094b0c22d93a244e747133df0eae",
+      "bytes": 560176
+    },
+    "replay.py": {
+      "sha256": "c5b9b8d8633c57e66515e8461366937e48209dc5e67eabbbe13cf28343d18f64",
+      "bytes": 8517
+    },
+    "source/original_prototype.py": {
+      "sha256": "16b2a8505520c09ebd9060432826945488bf5ec14d0c7783a875f027633d4adf",
+      "bytes": 2982
+    }
+  },
+  "accepted_to_main": false
+}
