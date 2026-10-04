@@ -632,8 +632,20 @@ void settings_default_identity_and_canonical_hashes() {
   check(settings.at("effective") == historical_preset &&
             settings.at("stored_override").is_null() && settings.at("source") == "preset",
         "fresh C++ settings have no synthetic persistent override");
-  check(settings.at("preset_source") == "legacy_code_pending_pack_migration",
-        "preset source identifies pending data-pack migration");
+  check(settings.at("preset_source") == "embedded_data",
+        "preset source identifies embedded policy data");
+  const auto& document = settings.at("preset_document");
+  check(document.at("path") == "loom/data/policy/usage_policy.pack" &&
+            document.at("schema") == "loom.usage_policy/1" &&
+            document.at("encoding") == "utf8_json",
+        "preset document identifies canonical source, schema and encoding");
+  const auto source_path = std::filesystem::path(__FILE__).parent_path() /
+                           "../../../data/policy/usage_policy.pack";
+  const auto source_bytes = take(loom::fsutil::read_file(source_path), "read canonical preset document");
+  check(document.at("source_sha256") == loom::Sha256::hex(source_bytes),
+        "preset provenance independently hashes complete raw source bytes");
+  check(take(loom::json::parse(source_bytes), "parse canonical preset document") == historical_preset,
+        "canonical source data preserves the exact historical six-value preset");
   check(settings.at("override_semantics") == "replace_top_level_fields",
         "settings state replacement semantics");
   const auto& hashes = settings.at("hashes");
@@ -781,6 +793,62 @@ void c_api_settings_preview_matches_save_and_restart() {
   check(!consumed.contains("error") && consumed.at("options") == preview.at("preview").at("effective"),
         "fresh policy consumes exactly the previewed and saved effective options");
   check(f.http_calls == 0, "preview, save, restart and local consumption remain entirely offline");
+}
+
+void preset_data_paths_and_stored_overlay_agree() {
+  TemporaryDirectory directory;
+  loom::Config config(directory.path / "config.json");
+  check(!std::filesystem::exists(config.path()), "fresh Config constructor does not create a config file");
+  auto preset = take(loom::usage_policy_preset(), "checked embedded preset");
+  auto settings = take(loom::usage_policy_settings(config), "fresh data-backed settings");
+  auto effective = take(loom::effective_usage_policy_options(config), "fresh data-backed effective options");
+  auto policy = take(UsagePolicy::open(directory.path / "default-policy.sqlite"), "default data-backed policy open");
+  check(config.get("loom_usage_policy") == preset &&
+            loom::loom_config_defaults().at("loom_usage_policy") == preset &&
+            loom::usage_policy_defaults() == preset && effective == preset &&
+            settings.at("preset") == preset && settings.at("effective") == preset &&
+            take(policy->inspect("data-path-contract"), "inspect default data-backed policy").at("options") == preset,
+        "config fallback, defaults, checked preset, effective, settings and default open agree");
+  check(!config.contains("loom_usage_policy"), "data-backed config fallback is not a stored override");
+  check(!std::filesystem::exists(config.path()),
+        "reading data-backed defaults does not create or persist a config file");
+  check(static_cast<bool>(config.save()), "explicitly save initial config fixture");
+  const auto initial_bytes = take(loom::fsutil::read_file(config.path()), "read initial data-backed config");
+  check(!take(loom::json::parse(initial_bytes), "parse initial data-backed config").contains("loom_usage_policy"),
+        "reading data-backed defaults never automatically writes the preset into config");
+
+  Json stored{{"growth_factor", 17.0}, {"baseline_window", 4},
+              {"initial_baselines", {{"data-path-contract", {{"caller:units", 12.0}}}}},
+              {"caller_extension", {{"retained", "data-path-contract"}}}};
+  check(static_cast<bool>(loom::validate_usage_policy_options(stored)), "partial stored overlay validates");
+  config.set("loom_usage_policy", stored);
+  check(static_cast<bool>(config.save()), "save partial data-backed overlay");
+  const auto stored_bytes = take(loom::fsutil::read_file(config.path()), "read partial saved overlay");
+  {
+    loom::Config restarted(config.path());
+    auto restarted_effective = take(loom::effective_usage_policy_options(restarted), "restart effective overlay");
+    auto restarted_settings = take(loom::usage_policy_settings(restarted), "restart settings overlay");
+    Json expected = preset;
+    for (auto field = stored.begin(); field != stored.end(); ++field) expected[field.key()] = field.value();
+    check(restarted.get("loom_usage_policy") == stored &&
+              restarted_settings.at("stored_override") == stored &&
+              restarted_effective == expected && restarted_settings.at("effective") == expected,
+          "restart preserves the exact partial override and shallow preset-field replacement");
+    check(restarted_effective.at("initial_baselines") == stored.at("initial_baselines"),
+          "stored initial baselines replace the complete preset top-level field");
+    auto overridden_policy = take(UsagePolicy::open(directory.path / "overridden-policy.sqlite", restarted_effective),
+                                  "open policy with effective overlay");
+    check(take(overridden_policy->inspect("data-path-contract"), "inspect overridden policy").at("options") == expected,
+          "explicit policy open consumes exactly the restarted effective overlay");
+    check(take(loom::fsutil::read_file(config.path()), "read unchanged restarted overlay") == stored_bytes &&
+              take(loom::json::parse(stored_bytes), "parse saved partial overlay").at("loom_usage_policy") == stored,
+          "restart and all read paths leave config bytes and partial stored overlay unchanged");
+    restarted.set("loom_usage_policy", Json{{"baseline_window", 0}});
+    error(loom::effective_usage_policy_options(restarted), Errc::InvalidArgument, "invalid stored overlay effective read");
+    error(loom::usage_policy_settings(restarted), Errc::InvalidArgument, "invalid stored overlay settings read");
+    check(take(loom::fsutil::read_file(config.path()), "read file after invalid in-memory overlay") == stored_bytes,
+          "validating an invalid in-memory overlay does not write it to config");
+  }
 }
 
 void opaque_graph_provenance_is_bound_and_retained() {
@@ -940,6 +1008,7 @@ int main() {
       {"C API settings reset and shallow replacement preview", c_api_settings_preview_reset_and_shallow_replacement},
       {"C API invalid settings preview is read-only", c_api_invalid_settings_preview_is_read_only},
       {"C API settings preview matches save and restart", c_api_settings_preview_matches_save_and_restart},
+      {"preset data paths and stored overlay agree", preset_data_paths_and_stored_overlay_agree},
       {"opaque graph provenance binds receipts and survives restart", opaque_graph_provenance_is_bound_and_retained},
       {"C API receipt lifecycle dispatcher", c_api_receipt_lifecycle_dispatcher},
       {"corrupt record returns Result error", corrupt_record_returns_result_error_without_exception},
