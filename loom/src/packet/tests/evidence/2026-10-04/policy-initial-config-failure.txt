@@ -1,0 +1,11 @@
+22:04:14 [INFO ] loom.config: config.json not found - using defaults
+22:04:14 [INFO ] loom.config: secrets.json not found - using defaults
+22:04:14 [INFO ] loom.db: Schema upgraded: v0 -> v4
+22:04:14 [INFO ] loom.db: Database opened: /tmp/packet-policy-integration-debug-data/chatadhd.db
+22:04:14 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+22:04:14 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/packet-policy-integration-debug-data)
+{"error":{"code":"invalid_argument","message":"usage policy must be an object"}}
+22:04:14 [INFO ] loom.db: Database closed
+22:04:14 [INFO ] loom.runtime: Loom runtime shut down
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  initial execution missing

@@ -1,0 +1,1 @@
+packet HTTP: 6/6 scenarios passed (auth, compilation, duplicate JSON, invalid packet, first capture, no knowledge writes)

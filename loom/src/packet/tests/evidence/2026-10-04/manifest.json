@@ -1,0 +1,62 @@
+{
+  "implementation_commit": "4e4ceba4c99099e3ecc3a747052afcb7b6c06079",
+  "main_base": "161cc22dfb84fe863389d6b90323bd44516a68dc",
+  "policy_reference": "34cc920dd3cdb0c0fca0a514569b19111429583f",
+  "mode": "offline synthetic",
+  "paid_calls": 0,
+  "github_actions_runs": 0,
+  "configure": "cmake --preset dev -DLOOM_BUILD_SERVER=ON -DLOOM_USE_SYSTEM_SQLITE=OFF",
+  "build": "cmake --build --preset dev -j 4",
+  "test": "ctest --preset dev",
+  "ctest": {
+    "passed": 110,
+    "discovered": 110
+  },
+  "packet_native": {
+    "test_cases": 4,
+    "assertions": 24
+  },
+  "packet_ffi": {
+    "test_cases": 11
+  },
+  "reply_parity": {
+    "pinned_compilations": 5
+  },
+  "packet_http": {
+    "scenarios": 6
+  },
+  "usage_integration": {
+    "scenarios": 6,
+    "mode": "isolated linkage of pinned policy sources; explicit Config preset"
+  },
+  "source_sha256": {
+    "loom/include/loom/loom.h": "da65dbfdd3a460037ba841eb37c8c1897f8a3a484d1d6477cbb5a9ff77a05934",
+    "loom/server/src/app.cpp": "2a7c4250e2d759b548b6b47198ea85ba87176f8849094d548c7958f4474cabca",
+    "loom/src/capi/capi_packet.cpp": "1cc62020f1552aa83b49e691765f4e23ea776fcc8a6fe9aa522439da03338e2a",
+    "loom/src/packet/README.md": "17151cc45a129c8f7e68af6b59eeabc6b64b5ff11315068f3fe4da17d66f552e",
+    "loom/src/packet/packet.cpp": "16cdac0fb222d7b8d447073985ce4a0cca1973ce0e649d913ffaa0be5a7c4d8f",
+    "loom/src/packet/packet.h": "d82162f0380f4e8164b056dcf2649412083ecbfd80232b918937832882229c5d",
+    "loom/src/packet/reply.cpp": "5c8f80bd3d3ce4531d78a98ca0bca75cabc99c4c01a5832daae527dfed46c4d2",
+    "loom/src/packet/tests/policy_integration.cc": "88c9bae5b33dac99c3f8143fad22073861a97296f27112c5f52220d8327cb13b",
+    "loom/src/packet/tests/reply-fixtures.json": "4d810c09ca39d74c70e32ee4c78a9b55b27b894362e05a15cd482086ef0902c3",
+    "loom/src/packet/tests/reproduce_policy.py": "32ad23323047346e4c047ded17bc363c47a49ea0f63aee29a519d732de6682aa",
+    "loom/src/packet/tests/test_http.py": "f8b0ea8412a16404bc34f82daad9140fc5a686558a8d4ec88605c4dc5279754c",
+    "loom/tests/compat/test_packet.py": "d3206e47cfad6d1472cd0bd70725c6d8f0472267cf41894d2fd27d98d578f377",
+    "loom/tests/test_packet.cpp": "71b9770c984e9ef88a28249e14439d96aeacccadbdcb91f7a6057ecfe5be16c6"
+  },
+  "binary_sha256": {
+    "loom/build/dev/libloom.so.0.1.0": "44ad3c4eb27aa84d895e07a2683d48f874af8efa3a5e51344d86f013ce807696",
+    "loom/build/dev/loom_tests": "52381bec20c26348c07ed144747fe24bccf3e4b2c697ec34678c117059087baf",
+    "loom/build/dev/server/loom-server": "ad04b8ab9a3dbf66b7c745eee81bb2ad451d023481a8718120d2bd11e17fa04c"
+  },
+  "logs_sha256": {
+    "final-build.txt": "80b5ac3057db2fcdbcfd3568a30acabf90f6623d79f7687f2958bf0985d3e5e1",
+    "full-ctest.txt": "517b11245161f8a7889b0cb5d882afe31d92f35cb4e4c008a30c7ef8a68a7f42",
+    "packet-ffi.txt": "12947ecbb094503ac09b1d1f5fe02fc862bc59a0cf1b3edcfc3f0379b84a51dc",
+    "packet-unit.txt": "8e557826df329f13297074b54aa62cea373bc4361f34235583d6abda6a7d365b",
+    "packet-http.txt": "df1e042ebbcd6462b42562a754b767855af406618bb0f4767ab1eacd0f8a7966",
+    "policy-integration.txt": "5e6d686856d73af54037193da41cee0d85f85142ff38154b3fd7cf808837b2c7",
+    "policy-initial-config-failure.txt": "18911c880254dfb75f38b27c1b8c515b0ded2a4225b1c5c7e4dde345e09b5aa8"
+  },
+  "validated_tree_sha": "15a23998af177b7e7299c9685388c7734919212d"
+}
