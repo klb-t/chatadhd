@@ -1,0 +1,65 @@
+{
+  "schema": "loom.kb.relevance/1",
+  "description": "Catalog relevance model: score = sigmoid(bias + sum(weight_i * feature_i)). Features are computed in code (catalog.h); weights are data. Fitted offline on the dev corpus by logistic regression over loom_cat_decisions feature vectors -> candidate file -> promoted only without regression on holdout.",
+  "bias": -2.9,
+  "weights": {
+    "id_hits": 2.2,
+    "bm25_self": 1.4,
+    "bm25_phil": 1.0,
+    "class_diversity": 0.6,
+    "code_evidence": 1.2,
+    "version_mention": 0.8,
+    "project_member": 1.0,
+    "date_prior": 0.3,
+    "neg_context": -2.5,
+    "link": 1.0,
+    "consensus": 1.0,
+    "title": 0.2,
+    "sem_word": 1.5,
+    "sem_ngram": 2.0
+  },
+  "channels": {
+    "lexical": [
+      "id_hits",
+      "class_diversity",
+      "code_evidence",
+      "version_mention",
+      "title",
+      "neg_context",
+      "bm25_self",
+      "bm25_phil"
+    ],
+    "semantic": [
+      "sem_word",
+      "sem_ngram",
+      "sem_phil",
+      "sem_embed",
+      "llm"
+    ],
+    "structure": [
+      "project_member",
+      "link",
+      "consensus",
+      "date_prior"
+    ]
+  },
+  "term_class_weights": {
+    "alias": 3.0,
+    "identifier": 2.0,
+    "path": 2.0,
+    "config_key": 1.5,
+    "table": 1.5,
+    "concept": 1.0,
+    "principle": 1.5,
+    "version": 1.0,
+    "expansion": 0.8,
+    "archive": 0.8
+  },
+  "archive_only_version_boost": 2.0,
+  "code_block_multiplier": 1.5,
+  "bm25": {
+    "k1": 1.2,
+    "b": 0.75,
+    "normalise_percentile": 99
+  }
+}
