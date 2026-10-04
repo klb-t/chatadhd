@@ -81,7 +81,8 @@ constexpr std::string_view kBuiltinManifestsJson = R"JSON(
       {"resource": "llm", "name": "chat.stream"},
       {"resource": "llm", "name": "models.list"},
       {"resource": "llm", "name": "web_search"},
-      {"resource": "llm", "name": "reasoning"}
+      {"resource": "llm", "name": "reasoning"},
+      {"resource": "embedding", "name": "embed", "constraints": {"modalities": ["text"]}}
     ]
   },
   {
