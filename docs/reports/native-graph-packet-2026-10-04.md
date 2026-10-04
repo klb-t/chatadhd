@@ -1,7 +1,7 @@
 # Thread 4 — native GraphPacket, 2026-10-04
 
 Branch: `gpt/native-graph-packet-2026-10-04`. Initial base: `161cc22`
-(includes PR9). Final main refresh: `5893b1f`, documentation-only integrator commits. No changes to main, STATE, profiles, UI, selector or core/KB database schema.
+(includes PR9). Final main base: `7282437`, documentation-only integrator commits. No changes to main, STATE, profiles, UI, selector or core/KB database schema.
 This continuation includes the newly assigned `kb/` scope and strengthens
 PR9 GraphPacket acceptance without replacing its store or historical receipts.
 
@@ -145,6 +145,15 @@ full CTest run passed **110/110 in 323.03 s** on the new main base, with unchang
 timeouts/assertions. Its log and pinned code/data hashes are in
 `loom/src/packet/tests/evidence/2026-10-04-main-refresh/`; earlier receipts remain
 intact. No provider calls or Actions runs were introduced.
+
+The integrator then published `7282437`, updating only STATE/INDEX/its report
+with the received W4 fix and joint-method gate. The branch was rebased again.
+Its full `loom/` tree remains byte-identical to the freshly tested `f450b89`
+line: `88720391db69200bae861c0d850cfbda98d7cc4a`. That verification line is retained
+under `archive/2026-10-04/native-graph-packet-main-5893b1f`. The unchanged code,
+test/data and binary hashes carry the green 110/110 result; no extra repeat or
+rebuild is claimed for this documentation-only advance. `latest-base.json`
+records the exact equivalence.
 
 ## Do wątku 2
 
