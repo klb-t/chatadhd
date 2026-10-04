@@ -1,0 +1,21 @@
+{
+  "schema": "loom.usage_policy/1",
+  "growth_factor": 12.5,
+  "baseline_window": 7,
+  "ledger_busy_timeout_ms": 123,
+  "include_reservations": false,
+  "initial_baselines": {
+    "synthetic/source-edit-v1": {
+      "bytes": 12345,
+      "tokens": null
+    }
+  },
+  "source_edit_extension": {
+    "kind": "synthetic",
+    "items": [
+      1,
+      null,
+      "opaque"
+    ]
+  }
+}

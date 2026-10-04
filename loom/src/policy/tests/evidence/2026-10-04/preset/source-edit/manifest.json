@@ -1,0 +1,879 @@
+{
+  "schema": "loom.usage_preset_source_edit_proof/1",
+  "passed": true,
+  "cases": {
+    "canonical": {
+      "passed": true,
+      "isolated_consumer_object": false,
+      "variant_object_precedes_actual_kernel": false,
+      "source_sha256": "6a576acf69ccc3be7af2b8ccde641977bdb76b8b52e2c76e77895609d76e20df",
+      "generated_sha256": "c903963a1ea37c555ddf533739faded0ab3e279214176d2ccc910c1caaeafabf",
+      "consumer_sha256": "70422d10d9a133326e99593b2c46b7d02cc97af3a1fc928c1be77c920210078d",
+      "probe_source_sha256": "7e2992fa145de4d0eecfc7fdde12a83775989b09c1c2c67ac1ba2a6161bea742",
+      "probe_binary_sha256": "533fba739a6cc5547c8ff72f9367a88350a3f2a4492df5327b415884e7a44111",
+      "result": "canonical/result.json"
+    },
+    "source-edited": {
+      "passed": true,
+      "isolated_consumer_object": true,
+      "variant_object_precedes_actual_kernel": true,
+      "source_sha256": "1874e4d582c744da4ee8882da90a9a7f781d3cd61df68894e685fd79bf84dcd0",
+      "generated_sha256": "a79eee2615ed6d8118f067712e76cfdd9bb0fbc51a1abd24069d5407e6cf8b86",
+      "consumer_sha256": "70422d10d9a133326e99593b2c46b7d02cc97af3a1fc928c1be77c920210078d",
+      "probe_source_sha256": "7e2992fa145de4d0eecfc7fdde12a83775989b09c1c2c67ac1ba2a6161bea742",
+      "probe_binary_sha256": "9b5fac9d23efccb67ab95133d09696d08a06b966d6f3d75ec019428cb87d48c2",
+      "result": "source-edited/result.json"
+    },
+    "invalid-missing-field": {
+      "passed": true,
+      "isolated_consumer_object": true,
+      "variant_object_precedes_actual_kernel": true,
+      "source_sha256": "2432c544115cfde718a3a6a4771fd9b87bd227526d63b6ae4b214b3584cf3fd4",
+      "generated_sha256": "4a863c20217a8450a019c2e35f2c03ec6c2db6045b23e741539668150a00d45c",
+      "consumer_sha256": "70422d10d9a133326e99593b2c46b7d02cc97af3a1fc928c1be77c920210078d",
+      "probe_source_sha256": "eff6cc5abd488dca809d9df9e8b107064afc07ddab9356ee05a5dcdf6affbd75",
+      "probe_binary_sha256": "37286b7fac63c826b39e27a1ae2574d27036a860f3d7e234852f709fea6c21cb",
+      "result": "invalid-missing-field/result.json"
+    },
+    "invalid-growth-factor": {
+      "passed": true,
+      "isolated_consumer_object": true,
+      "variant_object_precedes_actual_kernel": true,
+      "source_sha256": "8c46c3d7d14ab56e14488889d20538a5e24db8d581443cdbd6a66e2b4ced93a7",
+      "generated_sha256": "c709f560d11cc07fdf8d21976d91d3d95416f6045df6dd9c7d94b9201cd9df49",
+      "consumer_sha256": "70422d10d9a133326e99593b2c46b7d02cc97af3a1fc928c1be77c920210078d",
+      "probe_source_sha256": "eff6cc5abd488dca809d9df9e8b107064afc07ddab9356ee05a5dcdf6affbd75",
+      "probe_binary_sha256": "7efbf7429bd3fd9b22146fa72e3e2a2b6c0195afbde224d7cd5981d683da479c",
+      "result": "invalid-growth-factor/result.json"
+    }
+  },
+  "inputs": {
+    "loom/src/core/config_usage_policy.cpp": "70422d10d9a133326e99593b2c46b7d02cc97af3a1fc928c1be77c920210078d",
+    "loom/src/policy/gen_usage_policy.py": "26042dbe35495454a68e0dc828128d7701f5469d55470d8f6e0dada6bba856ef",
+    "loom/src/policy/tests/preset_paths_probe.cc": "7e2992fa145de4d0eecfc7fdde12a83775989b09c1c2c67ac1ba2a6161bea742",
+    "loom/src/policy/tests/negative_preset_probe.cc": "eff6cc5abd488dca809d9df9e8b107064afc07ddab9356ee05a5dcdf6affbd75",
+    "loom/data/policy/usage_policy.pack": "6a576acf69ccc3be7af2b8ccde641977bdb76b8b52e2c76e77895609d76e20df",
+    "loom/src/policy/usage_policy_preset.inc": "c903963a1ea37c555ddf533739faded0ab3e279214176d2ccc910c1caaeafabf",
+    "loom/include/loom/usage_policy.h": "9ab715b2b45cafcaf36b3cf7cee10e4300c99acd2731743ebd010c9954ed4a62",
+    "loom/build/dev/libloom_core.a": "f4bd09369b415411d5f0ca26436475e920f9207da9cab01747e7a281f878a2f4",
+    "loom/build/dev/libloom_sqlite3_amalgamation.a": "fa49de1205ad8353e9ad9299027730e91bf94149b449b010a243457f23da634b",
+    "loom/build/dev/libloom_miniz.a": "460ab70758d029e869942b533c56fb3e5222e3aa06ce95a5014bed2d084ff0b0"
+  },
+  "compile_command_entry": {
+    "directory": "/workspace/scratch/b38bedd7d166/chatadhd/loom/build/dev",
+    "command": "/usr/bin/c++ -DCPPHTTPLIB_OPENSSL_SUPPORT=1 -DJSON_USE_IMPLICIT_CONVERSIONS=1 -DLOOM_BUILDING=1 -DLOOM_HAVE_OPENSSL=1 -DLOOM_VENDORED_SQLITE=1 -DLOOM_VERSION_STRING=\\\"0.1.0\\\" -I/workspace/scratch/b38bedd7d166/chatadhd/loom/include -I/workspace/scratch/b38bedd7d166/chatadhd/loom/src -isystem /workspace/scratch/b38bedd7d166/chatadhd/loom/third_party/nlohmann -isystem /workspace/scratch/b38bedd7d166/chatadhd/loom/third_party/cpp-httplib -isystem /workspace/scratch/b38bedd7d166/chatadhd/loom/third_party/sqlite -isystem /workspace/scratch/b38bedd7d166/chatadhd/loom/third_party/miniz -O0 -g0 -std=c++20 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -Wall -Wextra -Wpedantic -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Woverloaded-virtual -Wnull-dereference -Wimplicit-fallthrough -Wno-unused-parameter -Werror -o CMakeFiles/loom_core.dir/src/core/config_usage_policy.cpp.o -c /workspace/scratch/b38bedd7d166/chatadhd/loom/src/core/config_usage_policy.cpp",
+    "file": "/workspace/scratch/b38bedd7d166/chatadhd/loom/src/core/config_usage_policy.cpp",
+    "output": "/workspace/scratch/b38bedd7d166/chatadhd/loom/build/dev/CMakeFiles/loom_core.dir/src/core/config_usage_policy.cpp.o"
+  },
+  "commands": [
+    {
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/src/policy/gen_usage_policy.py",
+        "--source",
+        "/dev/shm/usage-preset-isolated-proof/canonical/usage_policy.pack",
+        "--output",
+        "/dev/shm/usage-preset-isolated-proof/canonical/src/policy/usage_policy_preset.inc"
+      ],
+      "cwd": "/workspace/scratch/b38bedd7d166/chatadhd",
+      "exit_code": 0,
+      "stdout": "canonical/generate.stdout.txt",
+      "stderr": "canonical/generate.stderr.txt"
+    },
+    {
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/src/policy/gen_usage_policy.py",
+        "--source",
+        "/dev/shm/usage-preset-isolated-proof/canonical/usage_policy.pack",
+        "--output",
+        "/dev/shm/usage-preset-isolated-proof/canonical/src/policy/usage_policy_preset.inc",
+        "--check"
+      ],
+      "cwd": "/workspace/scratch/b38bedd7d166/chatadhd",
+      "exit_code": 0,
+      "stdout": "canonical/generated-check.stdout.txt",
+      "stderr": "canonical/generated-check.stderr.txt"
+    },
+    {
+      "argv": [
+        "/usr/bin/c++",
+        "-DCPPHTTPLIB_OPENSSL_SUPPORT=1",
+        "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+        "-DLOOM_BUILDING=1",
+        "-DLOOM_HAVE_OPENSSL=1",
+        "-DLOOM_VENDORED_SQLITE=1",
+        "-DLOOM_VERSION_STRING=\"0.1.0\"",
+        "-I/workspace/scratch/b38bedd7d166/chatadhd/loom/include",
+        "-I/workspace/scratch/b38bedd7d166/chatadhd/loom/src",
+        "-isystem",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/third_party/nlohmann",
+        "-isystem",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/third_party/cpp-httplib",
+        "-isystem",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/third_party/sqlite",
+        "-isystem",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/third_party/miniz",
+        "-O0",
+        "-g0",
+        "-std=c++20",
+        "-fPIC",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+        "-Wshadow",
+        "-Wnon-virtual-dtor",
+        "-Wold-style-cast",
+        "-Wcast-align",
+        "-Woverloaded-virtual",
+        "-Wnull-dereference",
+        "-Wimplicit-fallthrough",
+        "-Wno-unused-parameter",
+        "-Werror",
+        "-pthread",
+        "/dev/shm/usage-preset-isolated-proof/canonical/probe.cc",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/build/dev/libloom_core.a",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/build/dev/libloom_sqlite3_amalgamation.a",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/build/dev/libloom_miniz.a",
+        "-lssl",
+        "-lcrypto",
+        "-ldl",
+        "-lm",
+        "-o",
+        "/dev/shm/usage-preset-isolated-proof/canonical/probe"
+      ],
+      "cwd": "/workspace/scratch/b38bedd7d166/chatadhd/loom/build/dev",
+      "exit_code": 0,
+      "stdout": "canonical/link-native-probe.stdout.txt",
+      "stderr": "canonical/link-native-probe.stderr.txt"
+    },
+    {
+      "argv": [
+        "/dev/shm/usage-preset-isolated-proof/canonical/probe",
+        "/dev/shm/usage-preset-isolated-proof/canonical/data"
+      ],
+      "cwd": "/workspace/scratch/b38bedd7d166/chatadhd",
+      "exit_code": 0,
+      "stdout": "canonical/run-native-probe.stdout.txt",
+      "stderr": "canonical/run-native-probe.stderr.txt"
+    },
+    {
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/src/policy/gen_usage_policy.py",
+        "--source",
+        "/dev/shm/usage-preset-isolated-proof/source-edited/usage_policy.pack",
+        "--output",
+        "/dev/shm/usage-preset-isolated-proof/source-edited/src/policy/usage_policy_preset.inc"
+      ],
+      "cwd": "/workspace/scratch/b38bedd7d166/chatadhd",
+      "exit_code": 0,
+      "stdout": "source-edited/generate.stdout.txt",
+      "stderr": "source-edited/generate.stderr.txt"
+    },
+    {
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/src/policy/gen_usage_policy.py",
+        "--source",
+        "/dev/shm/usage-preset-isolated-proof/source-edited/usage_policy.pack",
+        "--output",
+        "/dev/shm/usage-preset-isolated-proof/source-edited/src/policy/usage_policy_preset.inc",
+        "--check"
+      ],
+      "cwd": "/workspace/scratch/b38bedd7d166/chatadhd",
+      "exit_code": 0,
+      "stdout": "source-edited/generated-check.stdout.txt",
+      "stderr": "source-edited/generated-check.stderr.txt"
+    },
+    {
+      "argv": [
+        "/usr/bin/c++",
+        "-DCPPHTTPLIB_OPENSSL_SUPPORT=1",
+        "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+        "-DLOOM_BUILDING=1",
+        "-DLOOM_HAVE_OPENSSL=1",
+        "-DLOOM_VENDORED_SQLITE=1",
+        "-DLOOM_VERSION_STRING=\"0.1.0\"",
+        "-I/workspace/scratch/b38bedd7d166/chatadhd/loom/include",
+        "-I/workspace/scratch/b38bedd7d166/chatadhd/loom/src",
+        "-isystem",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/third_party/nlohmann",
+        "-isystem",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/third_party/cpp-httplib",
+        "-isystem",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/third_party/sqlite",
+        "-isystem",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/third_party/miniz",
+        "-O0",
+        "-g0",
+        "-std=c++20",
+        "-fPIC",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+        "-Wshadow",
+        "-Wnon-virtual-dtor",
+        "-Wold-style-cast",
+        "-Wcast-align",
+        "-Woverloaded-virtual",
+        "-Wnull-dereference",
+        "-Wimplicit-fallthrough",
+        "-Wno-unused-parameter",
+        "-Werror",
+        "-c",
+        "/dev/shm/usage-preset-isolated-proof/source-edited/src/core/config_usage_policy.cpp",
+        "-o",
+        "/dev/shm/usage-preset-isolated-proof/source-edited/config_usage_policy.o"
+      ],
+      "cwd": "/workspace/scratch/b38bedd7d166/chatadhd/loom/build/dev",
+      "exit_code": 0,
+      "stdout": "source-edited/compile-consumer.stdout.txt",
+      "stderr": "source-edited/compile-consumer.stderr.txt"
+    },
+    {
+      "argv": [
+        "/usr/bin/c++",
+        "-DCPPHTTPLIB_OPENSSL_SUPPORT=1",
+        "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+        "-DLOOM_BUILDING=1",
+        "-DLOOM_HAVE_OPENSSL=1",
+        "-DLOOM_VENDORED_SQLITE=1",
+        "-DLOOM_VERSION_STRING=\"0.1.0\"",
+        "-I/workspace/scratch/b38bedd7d166/chatadhd/loom/include",
+        "-I/workspace/scratch/b38bedd7d166/chatadhd/loom/src",
+        "-isystem",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/third_party/nlohmann",
+        "-isystem",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/third_party/cpp-httplib",
+        "-isystem",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/third_party/sqlite",
+        "-isystem",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/third_party/miniz",
+        "-O0",
+        "-g0",
+        "-std=c++20",
+        "-fPIC",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+        "-Wshadow",
+        "-Wnon-virtual-dtor",
+        "-Wold-style-cast",
+        "-Wcast-align",
+        "-Woverloaded-virtual",
+        "-Wnull-dereference",
+        "-Wimplicit-fallthrough",
+        "-Wno-unused-parameter",
+        "-Werror",
+        "-pthread",
+        "/dev/shm/usage-preset-isolated-proof/source-edited/probe.cc",
+        "/dev/shm/usage-preset-isolated-proof/source-edited/config_usage_policy.o",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/build/dev/libloom_core.a",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/build/dev/libloom_sqlite3_amalgamation.a",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/build/dev/libloom_miniz.a",
+        "-lssl",
+        "-lcrypto",
+        "-ldl",
+        "-lm",
+        "-o",
+        "/dev/shm/usage-preset-isolated-proof/source-edited/probe"
+      ],
+      "cwd": "/workspace/scratch/b38bedd7d166/chatadhd/loom/build/dev",
+      "exit_code": 0,
+      "stdout": "source-edited/link-native-probe.stdout.txt",
+      "stderr": "source-edited/link-native-probe.stderr.txt"
+    },
+    {
+      "argv": [
+        "/dev/shm/usage-preset-isolated-proof/source-edited/probe",
+        "/dev/shm/usage-preset-isolated-proof/source-edited/data"
+      ],
+      "cwd": "/workspace/scratch/b38bedd7d166/chatadhd",
+      "exit_code": 0,
+      "stdout": "source-edited/run-native-probe.stdout.txt",
+      "stderr": "source-edited/run-native-probe.stderr.txt"
+    },
+    {
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/src/policy/gen_usage_policy.py",
+        "--source",
+        "/dev/shm/usage-preset-isolated-proof/invalid-missing-field/usage_policy.pack",
+        "--output",
+        "/dev/shm/usage-preset-isolated-proof/invalid-missing-field/src/policy/usage_policy_preset.inc"
+      ],
+      "cwd": "/workspace/scratch/b38bedd7d166/chatadhd",
+      "exit_code": 0,
+      "stdout": "invalid-missing-field/generate.stdout.txt",
+      "stderr": "invalid-missing-field/generate.stderr.txt"
+    },
+    {
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/src/policy/gen_usage_policy.py",
+        "--source",
+        "/dev/shm/usage-preset-isolated-proof/invalid-missing-field/usage_policy.pack",
+        "--output",
+        "/dev/shm/usage-preset-isolated-proof/invalid-missing-field/src/policy/usage_policy_preset.inc",
+        "--check"
+      ],
+      "cwd": "/workspace/scratch/b38bedd7d166/chatadhd",
+      "exit_code": 0,
+      "stdout": "invalid-missing-field/generated-check.stdout.txt",
+      "stderr": "invalid-missing-field/generated-check.stderr.txt"
+    },
+    {
+      "argv": [
+        "/usr/bin/c++",
+        "-DCPPHTTPLIB_OPENSSL_SUPPORT=1",
+        "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+        "-DLOOM_BUILDING=1",
+        "-DLOOM_HAVE_OPENSSL=1",
+        "-DLOOM_VENDORED_SQLITE=1",
+        "-DLOOM_VERSION_STRING=\"0.1.0\"",
+        "-I/workspace/scratch/b38bedd7d166/chatadhd/loom/include",
+        "-I/workspace/scratch/b38bedd7d166/chatadhd/loom/src",
+        "-isystem",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/third_party/nlohmann",
+        "-isystem",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/third_party/cpp-httplib",
+        "-isystem",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/third_party/sqlite",
+        "-isystem",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/third_party/miniz",
+        "-O0",
+        "-g0",
+        "-std=c++20",
+        "-fPIC",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+        "-Wshadow",
+        "-Wnon-virtual-dtor",
+        "-Wold-style-cast",
+        "-Wcast-align",
+        "-Woverloaded-virtual",
+        "-Wnull-dereference",
+        "-Wimplicit-fallthrough",
+        "-Wno-unused-parameter",
+        "-Werror",
+        "-c",
+        "/dev/shm/usage-preset-isolated-proof/invalid-missing-field/src/core/config_usage_policy.cpp",
+        "-o",
+        "/dev/shm/usage-preset-isolated-proof/invalid-missing-field/config_usage_policy.o"
+      ],
+      "cwd": "/workspace/scratch/b38bedd7d166/chatadhd/loom/build/dev",
+      "exit_code": 0,
+      "stdout": "invalid-missing-field/compile-consumer.stdout.txt",
+      "stderr": "invalid-missing-field/compile-consumer.stderr.txt"
+    },
+    {
+      "argv": [
+        "/usr/bin/c++",
+        "-DCPPHTTPLIB_OPENSSL_SUPPORT=1",
+        "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+        "-DLOOM_BUILDING=1",
+        "-DLOOM_HAVE_OPENSSL=1",
+        "-DLOOM_VENDORED_SQLITE=1",
+        "-DLOOM_VERSION_STRING=\"0.1.0\"",
+        "-I/workspace/scratch/b38bedd7d166/chatadhd/loom/include",
+        "-I/workspace/scratch/b38bedd7d166/chatadhd/loom/src",
+        "-isystem",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/third_party/nlohmann",
+        "-isystem",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/third_party/cpp-httplib",
+        "-isystem",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/third_party/sqlite",
+        "-isystem",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/third_party/miniz",
+        "-O0",
+        "-g0",
+        "-std=c++20",
+        "-fPIC",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+        "-Wshadow",
+        "-Wnon-virtual-dtor",
+        "-Wold-style-cast",
+        "-Wcast-align",
+        "-Woverloaded-virtual",
+        "-Wnull-dereference",
+        "-Wimplicit-fallthrough",
+        "-Wno-unused-parameter",
+        "-Werror",
+        "-pthread",
+        "/dev/shm/usage-preset-isolated-proof/invalid-missing-field/probe.cc",
+        "/dev/shm/usage-preset-isolated-proof/invalid-missing-field/config_usage_policy.o",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/build/dev/libloom_core.a",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/build/dev/libloom_sqlite3_amalgamation.a",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/build/dev/libloom_miniz.a",
+        "-lssl",
+        "-lcrypto",
+        "-ldl",
+        "-lm",
+        "-o",
+        "/dev/shm/usage-preset-isolated-proof/invalid-missing-field/probe"
+      ],
+      "cwd": "/workspace/scratch/b38bedd7d166/chatadhd/loom/build/dev",
+      "exit_code": 0,
+      "stdout": "invalid-missing-field/link-native-probe.stdout.txt",
+      "stderr": "invalid-missing-field/link-native-probe.stderr.txt"
+    },
+    {
+      "argv": [
+        "/dev/shm/usage-preset-isolated-proof/invalid-missing-field/probe",
+        "/dev/shm/usage-preset-isolated-proof/invalid-missing-field/data"
+      ],
+      "cwd": "/workspace/scratch/b38bedd7d166/chatadhd",
+      "exit_code": 0,
+      "stdout": "invalid-missing-field/run-native-probe.stdout.txt",
+      "stderr": "invalid-missing-field/run-native-probe.stderr.txt"
+    },
+    {
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/src/policy/gen_usage_policy.py",
+        "--source",
+        "/dev/shm/usage-preset-isolated-proof/invalid-growth-factor/usage_policy.pack",
+        "--output",
+        "/dev/shm/usage-preset-isolated-proof/invalid-growth-factor/src/policy/usage_policy_preset.inc"
+      ],
+      "cwd": "/workspace/scratch/b38bedd7d166/chatadhd",
+      "exit_code": 0,
+      "stdout": "invalid-growth-factor/generate.stdout.txt",
+      "stderr": "invalid-growth-factor/generate.stderr.txt"
+    },
+    {
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/src/policy/gen_usage_policy.py",
+        "--source",
+        "/dev/shm/usage-preset-isolated-proof/invalid-growth-factor/usage_policy.pack",
+        "--output",
+        "/dev/shm/usage-preset-isolated-proof/invalid-growth-factor/src/policy/usage_policy_preset.inc",
+        "--check"
+      ],
+      "cwd": "/workspace/scratch/b38bedd7d166/chatadhd",
+      "exit_code": 0,
+      "stdout": "invalid-growth-factor/generated-check.stdout.txt",
+      "stderr": "invalid-growth-factor/generated-check.stderr.txt"
+    },
+    {
+      "argv": [
+        "/usr/bin/c++",
+        "-DCPPHTTPLIB_OPENSSL_SUPPORT=1",
+        "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+        "-DLOOM_BUILDING=1",
+        "-DLOOM_HAVE_OPENSSL=1",
+        "-DLOOM_VENDORED_SQLITE=1",
+        "-DLOOM_VERSION_STRING=\"0.1.0\"",
+        "-I/workspace/scratch/b38bedd7d166/chatadhd/loom/include",
+        "-I/workspace/scratch/b38bedd7d166/chatadhd/loom/src",
+        "-isystem",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/third_party/nlohmann",
+        "-isystem",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/third_party/cpp-httplib",
+        "-isystem",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/third_party/sqlite",
+        "-isystem",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/third_party/miniz",
+        "-O0",
+        "-g0",
+        "-std=c++20",
+        "-fPIC",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+        "-Wshadow",
+        "-Wnon-virtual-dtor",
+        "-Wold-style-cast",
+        "-Wcast-align",
+        "-Woverloaded-virtual",
+        "-Wnull-dereference",
+        "-Wimplicit-fallthrough",
+        "-Wno-unused-parameter",
+        "-Werror",
+        "-c",
+        "/dev/shm/usage-preset-isolated-proof/invalid-growth-factor/src/core/config_usage_policy.cpp",
+        "-o",
+        "/dev/shm/usage-preset-isolated-proof/invalid-growth-factor/config_usage_policy.o"
+      ],
+      "cwd": "/workspace/scratch/b38bedd7d166/chatadhd/loom/build/dev",
+      "exit_code": 0,
+      "stdout": "invalid-growth-factor/compile-consumer.stdout.txt",
+      "stderr": "invalid-growth-factor/compile-consumer.stderr.txt"
+    },
+    {
+      "argv": [
+        "/usr/bin/c++",
+        "-DCPPHTTPLIB_OPENSSL_SUPPORT=1",
+        "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+        "-DLOOM_BUILDING=1",
+        "-DLOOM_HAVE_OPENSSL=1",
+        "-DLOOM_VENDORED_SQLITE=1",
+        "-DLOOM_VERSION_STRING=\"0.1.0\"",
+        "-I/workspace/scratch/b38bedd7d166/chatadhd/loom/include",
+        "-I/workspace/scratch/b38bedd7d166/chatadhd/loom/src",
+        "-isystem",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/third_party/nlohmann",
+        "-isystem",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/third_party/cpp-httplib",
+        "-isystem",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/third_party/sqlite",
+        "-isystem",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/third_party/miniz",
+        "-O0",
+        "-g0",
+        "-std=c++20",
+        "-fPIC",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+        "-Wshadow",
+        "-Wnon-virtual-dtor",
+        "-Wold-style-cast",
+        "-Wcast-align",
+        "-Woverloaded-virtual",
+        "-Wnull-dereference",
+        "-Wimplicit-fallthrough",
+        "-Wno-unused-parameter",
+        "-Werror",
+        "-pthread",
+        "/dev/shm/usage-preset-isolated-proof/invalid-growth-factor/probe.cc",
+        "/dev/shm/usage-preset-isolated-proof/invalid-growth-factor/config_usage_policy.o",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/build/dev/libloom_core.a",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/build/dev/libloom_sqlite3_amalgamation.a",
+        "/workspace/scratch/b38bedd7d166/chatadhd/loom/build/dev/libloom_miniz.a",
+        "-lssl",
+        "-lcrypto",
+        "-ldl",
+        "-lm",
+        "-o",
+        "/dev/shm/usage-preset-isolated-proof/invalid-growth-factor/probe"
+      ],
+      "cwd": "/workspace/scratch/b38bedd7d166/chatadhd/loom/build/dev",
+      "exit_code": 0,
+      "stdout": "invalid-growth-factor/link-native-probe.stdout.txt",
+      "stderr": "invalid-growth-factor/link-native-probe.stderr.txt"
+    },
+    {
+      "argv": [
+        "/dev/shm/usage-preset-isolated-proof/invalid-growth-factor/probe",
+        "/dev/shm/usage-preset-isolated-proof/invalid-growth-factor/data"
+      ],
+      "cwd": "/workspace/scratch/b38bedd7d166/chatadhd",
+      "exit_code": 0,
+      "stdout": "invalid-growth-factor/run-native-probe.stdout.txt",
+      "stderr": "invalid-growth-factor/run-native-probe.stderr.txt"
+    }
+  ],
+  "artifacts": {
+    "canonical/data/config.json": {
+      "sha256": "7e185b0422a0858bd8849e9ce9849b8472f898031b94655c4a2d4ee5757138f6",
+      "bytes": 645
+    },
+    "canonical/data/probe-overlay-policy.sqlite": {
+      "sha256": "8f81e729b87c765079c193fc964e63f77525694e5c6bace66d966fd75b480f50",
+      "bytes": 36864
+    },
+    "canonical/data/probe-policy.sqlite": {
+      "sha256": "8f81e729b87c765079c193fc964e63f77525694e5c6bace66d966fd75b480f50",
+      "bytes": 36864
+    },
+    "canonical/generate.stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "canonical/generate.stdout.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "canonical/generated-check.stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "canonical/generated-check.stdout.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "canonical/link-native-probe.stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "canonical/link-native-probe.stdout.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "canonical/probe": {
+      "sha256": "533fba739a6cc5547c8ff72f9367a88350a3f2a4492df5327b415884e7a44111",
+      "bytes": 4101560
+    },
+    "canonical/probe.cc": {
+      "sha256": "7e2992fa145de4d0eecfc7fdde12a83775989b09c1c2c67ac1ba2a6161bea742",
+      "bytes": 7100
+    },
+    "canonical/result.json": {
+      "sha256": "895e24214f955469d01001c5d9f59b551dcb98392774328845f4b5fd04853aa6",
+      "bytes": 4758
+    },
+    "canonical/run-native-probe.stderr.txt": {
+      "sha256": "5df7ca895e826dd63b218300f9cee41daf9b15c23bd305d59ab55031e3790e53",
+      "bytes": 128
+    },
+    "canonical/run-native-probe.stdout.txt": {
+      "sha256": "895e24214f955469d01001c5d9f59b551dcb98392774328845f4b5fd04853aa6",
+      "bytes": 4758
+    },
+    "canonical/src/core/config_usage_policy.cpp": {
+      "sha256": "70422d10d9a133326e99593b2c46b7d02cc97af3a1fc928c1be77c920210078d",
+      "bytes": 6180
+    },
+    "canonical/src/policy/usage_policy_preset.inc": {
+      "sha256": "c903963a1ea37c555ddf533739faded0ab3e279214176d2ccc910c1caaeafabf",
+      "bytes": 1087
+    },
+    "canonical/usage_policy.pack": {
+      "sha256": "6a576acf69ccc3be7af2b8ccde641977bdb76b8b52e2c76e77895609d76e20df",
+      "bytes": 182
+    },
+    "commands.json": {
+      "sha256": "e01c8b996fc8a2fdbcc0d9f7322a63be0afcaa510ac12f79be10a92f39272a5b",
+      "bytes": 18945
+    },
+    "invalid-growth-factor/compile-consumer.stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "invalid-growth-factor/compile-consumer.stdout.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "invalid-growth-factor/config_usage_policy.o": {
+      "sha256": "fc085ce7cf44027c2b538b8e0d6890a9c22a5b12fc0a022f39e6280961c4155f",
+      "bytes": 1653128
+    },
+    "invalid-growth-factor/generate.stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "invalid-growth-factor/generate.stdout.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "invalid-growth-factor/generated-check.stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "invalid-growth-factor/generated-check.stdout.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "invalid-growth-factor/link-native-probe.stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "invalid-growth-factor/link-native-probe.stdout.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "invalid-growth-factor/probe": {
+      "sha256": "7efbf7429bd3fd9b22146fa72e3e2a2b6c0195afbde224d7cd5981d683da479c",
+      "bytes": 4014184
+    },
+    "invalid-growth-factor/probe.cc": {
+      "sha256": "eff6cc5abd488dca809d9df9e8b107064afc07ddab9356ee05a5dcdf6affbd75",
+      "bytes": 3302
+    },
+    "invalid-growth-factor/result.json": {
+      "sha256": "3af7a1c9e944bbbb2679f83483b8a963d193ff6ad64a01dc62c78bbfde3e2be4",
+      "bytes": 1215
+    },
+    "invalid-growth-factor/run-native-probe.stderr.txt": {
+      "sha256": "1ee2cf7855499c835024933fc352ecd9d194e1967cd944e93b138906e3a13642",
+      "bytes": 69
+    },
+    "invalid-growth-factor/run-native-probe.stdout.txt": {
+      "sha256": "3af7a1c9e944bbbb2679f83483b8a963d193ff6ad64a01dc62c78bbfde3e2be4",
+      "bytes": 1215
+    },
+    "invalid-growth-factor/src/core/config_usage_policy.cpp": {
+      "sha256": "70422d10d9a133326e99593b2c46b7d02cc97af3a1fc928c1be77c920210078d",
+      "bytes": 6180
+    },
+    "invalid-growth-factor/src/policy/usage_policy_preset.inc": {
+      "sha256": "c709f560d11cc07fdf8d21976d91d3d95416f6045df6dd9c7d94b9201cd9df49",
+      "bytes": 1883
+    },
+    "invalid-growth-factor/usage_policy.pack": {
+      "sha256": "8c46c3d7d14ab56e14488889d20538a5e24db8d581443cdbd6a66e2b4ced93a7",
+      "bytes": 381
+    },
+    "invalid-missing-field/compile-consumer.stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "invalid-missing-field/compile-consumer.stdout.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "invalid-missing-field/config_usage_policy.o": {
+      "sha256": "04e5a731dce8d294d098d09f521ed40623fdd849049af4669edacc307cdd3038",
+      "bytes": 1653096
+    },
+    "invalid-missing-field/generate.stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "invalid-missing-field/generate.stdout.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "invalid-missing-field/generated-check.stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "invalid-missing-field/generated-check.stdout.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "invalid-missing-field/link-native-probe.stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "invalid-missing-field/link-native-probe.stdout.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "invalid-missing-field/probe": {
+      "sha256": "37286b7fac63c826b39e27a1ae2574d27036a860f3d7e234852f709fea6c21cb",
+      "bytes": 4014184
+    },
+    "invalid-missing-field/probe.cc": {
+      "sha256": "eff6cc5abd488dca809d9df9e8b107064afc07ddab9356ee05a5dcdf6affbd75",
+      "bytes": 3302
+    },
+    "invalid-missing-field/result.json": {
+      "sha256": "886d2a5dcc21177ff5d15140da8bef4f89ad677dc9949c85b25ea61cc9e1a0ae",
+      "bytes": 1208
+    },
+    "invalid-missing-field/run-native-probe.stderr.txt": {
+      "sha256": "79a66ea3d738a7d1f9d3614a746953d816be5894b484cacbeeda64fda8316bad",
+      "bytes": 69
+    },
+    "invalid-missing-field/run-native-probe.stdout.txt": {
+      "sha256": "886d2a5dcc21177ff5d15140da8bef4f89ad677dc9949c85b25ea61cc9e1a0ae",
+      "bytes": 1208
+    },
+    "invalid-missing-field/src/core/config_usage_policy.cpp": {
+      "sha256": "70422d10d9a133326e99593b2c46b7d02cc97af3a1fc928c1be77c920210078d",
+      "bytes": 6180
+    },
+    "invalid-missing-field/src/policy/usage_policy_preset.inc": {
+      "sha256": "4a863c20217a8450a019c2e35f2c03ec6c2db6045b23e741539668150a00d45c",
+      "bytes": 1755
+    },
+    "invalid-missing-field/usage_policy.pack": {
+      "sha256": "2432c544115cfde718a3a6a4771fd9b87bd227526d63b6ae4b214b3584cf3fd4",
+      "bytes": 349
+    },
+    "source-edited/compile-consumer.stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "source-edited/compile-consumer.stdout.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "source-edited/config_usage_policy.o": {
+      "sha256": "d45f173074d5ac4d91cedf026db3a59042972a2759b5d1de4bceaf66a5b00bc8",
+      "bytes": 1653128
+    },
+    "source-edited/data/config.json": {
+      "sha256": "fbbc0f0610d5408dfb25cba6282ff4804df90569df0a44947c0f9c9ee4ff157e",
+      "bytes": 645
+    },
+    "source-edited/data/probe-overlay-policy.sqlite": {
+      "sha256": "8f81e729b87c765079c193fc964e63f77525694e5c6bace66d966fd75b480f50",
+      "bytes": 36864
+    },
+    "source-edited/data/probe-policy.sqlite": {
+      "sha256": "8f81e729b87c765079c193fc964e63f77525694e5c6bace66d966fd75b480f50",
+      "bytes": 36864
+    },
+    "source-edited/generate.stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "source-edited/generate.stdout.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "source-edited/generated-check.stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "source-edited/generated-check.stdout.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "source-edited/link-native-probe.stderr.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "source-edited/link-native-probe.stdout.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "source-edited/probe": {
+      "sha256": "9b5fac9d23efccb67ab95133d09696d08a06b966d6f3d75ec019428cb87d48c2",
+      "bytes": 4101560
+    },
+    "source-edited/probe.cc": {
+      "sha256": "7e2992fa145de4d0eecfc7fdde12a83775989b09c1c2c67ac1ba2a6161bea742",
+      "bytes": 7100
+    },
+    "source-edited/result.json": {
+      "sha256": "044977b6b6b562d982a2901123b492a3b6648549dd9b70358518d469bc4207a8",
+      "bytes": 7054
+    },
+    "source-edited/run-native-probe.stderr.txt": {
+      "sha256": "7ef9de50d844ffca85af0efdbc28f29fce32e7d8abb5840c14585553e3bfc6b8",
+      "bytes": 128
+    },
+    "source-edited/run-native-probe.stdout.txt": {
+      "sha256": "044977b6b6b562d982a2901123b492a3b6648549dd9b70358518d469bc4207a8",
+      "bytes": 7054
+    },
+    "source-edited/src/core/config_usage_policy.cpp": {
+      "sha256": "70422d10d9a133326e99593b2c46b7d02cc97af3a1fc928c1be77c920210078d",
+      "bytes": 6180
+    },
+    "source-edited/src/policy/usage_policy_preset.inc": {
+      "sha256": "a79eee2615ed6d8118f067712e76cfdd9bb0fbc51a1abd24069d5407e6cf8b86",
+      "bytes": 1887
+    },
+    "source-edited/usage_policy.pack": {
+      "sha256": "1874e4d582c744da4ee8882da90a9a7f781d3cd61df68894e685fd79bf84dcd0",
+      "bytes": 382
+    }
+  },
+  "repository_inputs_unchanged": true,
+  "paid_provider_calls": 0,
+  "scope": "actual native consumer objects and actual static kernel; synthetic inputs only"
+}

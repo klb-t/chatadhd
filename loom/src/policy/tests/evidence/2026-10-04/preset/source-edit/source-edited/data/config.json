@@ -1,0 +1,25 @@
+{
+  "base_url": "https://openrouter.ai/api/v1",
+  "default_model": "anthropic/claude-sonnet-4-20250514",
+  "semantic_model": "",
+  "temperature": 0.7,
+  "max_tokens": 4096,
+  "theme": "dark",
+  "system_prompt": "You are a helpful assistant with access to the user's hierarchical memory.",
+  "auto_title": true,
+  "stream": true,
+  "semantic_analysis": true,
+  "graph_memory_depth": 2,
+  "graph_memory_max_nodes": 20,
+  "loom_usage_policy": {
+    "growth_factor": 13.5,
+    "initial_baselines": {
+      "probe-overlay": {
+        "probe:units": 12.5
+      }
+    },
+    "probe_extension": {
+      "caller": "isolated-source-edit-proof"
+    }
+  }
+}
