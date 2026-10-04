@@ -346,6 +346,9 @@ LOOM_API const char* loom_kb_query(LoomContext* ctx, const char* query_json);
 /* Explicit GraphPacket selection / immutable receipt read / checked replay.
  * JSON operations: accept (target,packet,selection,expected_rows,
  * explicitly_accepted=true), read/replay (receipt_id). Caller frees result. */
+// Stateless GraphPacket algebra and graph_reply/1,/2 compilation. No store writes.
+LOOM_API const char* loom_packet(LoomContext* ctx, const char* request_json);
+
 LOOM_API const char* loom_graph_packet_store(LoomContext* ctx, const char* request_json);
 /* Appends an owner judgement (append-only, replayed last on every rebuild):
  * {"target_kind","target","verdict":"confirm|reject|edit|merge|split","payload"?,"reason"?}
