@@ -1,0 +1,106 @@
+{
+  "schema": "loom.application_profile/1",
+  "id": "librechat-0.8.8",
+  "profile_revision": 1,
+  "label": "LibreChat 0.8.8 (partial)",
+  "target": {
+    "application_id": "librechat",
+    "version": "0.8.8",
+    "platform": "web"
+  },
+  "evidence": {
+    "status": "partial",
+    "sources": [
+      {
+        "url": "https://github.com/LibreChat-AI/LibreChat/commit/e8f3be08623663d4ad7f7241e693c94469b63bb0",
+        "revision": "e8f3be08623663d4ad7f7241e693c94469b63bb0",
+        "note": "LibreChat v0.8.8 source revision. The target is LibreChat itself, not a historical ChatGPT build."
+      },
+      {
+        "url": "https://github.com/LibreChat-AI/LibreChat/blob/e8f3be08623663d4ad7f7241e693c94469b63bb0/client/src/store/settings.ts",
+        "revision": "e8f3be08623663d4ad7f7241e693c94469b63bb0",
+        "note": "enterToSend defaults to true. Custom shortcut overrides and during-run behavior are additional source features."
+      },
+      {
+        "url": "https://github.com/LibreChat-AI/LibreChat/blob/e8f3be08623663d4ad7f7241e693c94469b63bb0/client/src/utils/shortcuts.ts",
+        "revision": "e8f3be08623663d4ad7f7241e693c94469b63bb0",
+        "note": "Source composer submission, composition guards and during-run modifier handling."
+      },
+      {
+        "url": "https://github.com/LibreChat-AI/LibreChat/blob/e8f3be08623663d4ad7f7241e693c94469b63bb0/client/src/components/Chat/Messages/ui/MessageRow.tsx",
+        "revision": "e8f3be08623663d4ad7f7241e693c94469b63bb0",
+        "note": "Right-aligned user bubble and plain assistant body; desktop content column uses responsive max-width classes."
+      },
+      {
+        "url": "https://github.com/LibreChat-AI/LibreChat/blob/e8f3be08623663d4ad7f7241e693c94469b63bb0/client/src/style.css",
+        "revision": "e8f3be08623663d4ad7f7241e693c94469b63bb0",
+        "note": "Dark-theme color projection; six Loom tokens cannot preserve every source component surface."
+      },
+      {
+        "url": "https://github.com/LibreChat-AI/LibreChat/blob/e8f3be08623663d4ad7f7241e693c94469b63bb0/client/src/components/UnifiedSidebar/constants.ts",
+        "revision": "e8f3be08623663d4ad7f7241e693c94469b63bb0",
+        "note": "Expanded sidebar minimum is 360 pixels. UnifiedSidebar uses this width when no saved width exists."
+      },
+      {
+        "url": "https://github.com/LibreChat-AI/LibreChat/blob/e8f3be08623663d4ad7f7241e693c94469b63bb0/client/src/components/Chat/Messages/Content/EditMessage.tsx",
+        "revision": "e8f3be08623663d4ad7f7241e693c94469b63bb0",
+        "note": "Source distinguishes saving an edit from rerunning a turn; this profile exposes only the Loom edit equivalent."
+      }
+    ],
+    "gaps": [
+      "This maps selected LibreChat 0.8.8 source behavior; it does not reproduce ChatGPT or any other vendor application's version.",
+      "No pixel comparison was run against a deployed LibreChat instance. Fonts, icons, typed message blocks, parallel responses, responsive breakpoints, sidebar resizing and collapsed/mobile navigation remain partial.",
+      "The source has more theme surfaces than the six profile tokens. The 896-pixel desktop column is a fixed projection of the source's responsive XL column, not its complete layout.",
+      "Custom shortcut overrides, Ctrl/Meta+Shift+Enter, during-run steering, queueing, interrupt-and-send and answer-mode composer routing are not reproduced.",
+      "Loom edits preserve prior versions. LibreChat save-only, update-and-rerun, answer rerun and complete branch navigation are distinct operations not reproduced by message.edit alone.",
+      "Agents, MCP, Skills, attachments, artifacts, provider-specific request assembly, service memory, resumable streams and multi-user authorization need additional adapters; the selected Loom provider and context remain independent.",
+      "conversation-review and Inspect Loom knowledge are explicit Loom additions, not claims about LibreChat's native workflow."
+    ]
+  },
+  "presentation": {
+    "renderer": "chat",
+    "tokens": {
+      "background": "#0d0d0d",
+      "surface": "#2f2f2f",
+      "text": "#ececec",
+      "muted": "#cdcdcd",
+      "accent": "#ab68ff",
+      "border": "#2f2f2f"
+    },
+    "sidebar": { "side": "left", "width": 360 },
+    "content_width": 896,
+    "message_style": "user-bubble"
+  },
+  "composer": { "submit": "enter", "placeholder": "Message…" },
+  "actions": [
+    { "id": "create", "label": "New chat", "operation": "chat.create", "capability": "chat.create", "required": true },
+    { "id": "select", "label": "Return to conversation", "operation": "chat.select", "capability": "chat.select", "required": true },
+    { "id": "send", "label": "Send", "operation": "chat.send", "capability": "chat.send", "required": true },
+    { "id": "cancel", "label": "Stop", "operation": "chat.cancel", "capability": "chat.cancel", "required": true },
+    { "id": "rename", "label": "Rename chat", "operation": "chat.rename", "capability": "chat.rename", "required": true },
+    { "id": "edit", "label": "Edit message", "operation": "message.edit", "capability": "message.edit", "required": true },
+    { "id": "knowledge", "label": "Inspect Loom knowledge", "operation": "knowledge.open", "capability": "knowledge.open", "required": false }
+  ],
+  "workflows": [
+    {
+      "id": "conversation-review",
+      "initial": "ready",
+      "states": ["ready", "chat", "review"],
+      "transitions": [
+        {
+          "from": "ready", "event": "create", "action": "create", "to": "chat",
+          "payload": { "object": { "title": { "literal": "LibreChat profile conversation" } } },
+          "save": { "conversation_id": { "from": "result", "pointer": "/id" } }
+        },
+        {
+          "from": "chat", "event": "inspect", "action": "knowledge", "to": "review",
+          "payload": { "object": {} }
+        },
+        {
+          "from": "review", "event": "return", "action": "select", "to": "chat",
+          "payload": { "object": { "id": { "from": "vars", "pointer": "/conversation_id" } } }
+        }
+      ]
+    }
+  ]
+}

@@ -1,5 +1,9 @@
 .application-views { flex: 1; min-height: 0; display: flex; flex-direction: column; }
-.profile-workspace-controls { display: flex; align-items: center; gap: 10px; padding: 6px 12px; font-size: 12px; color: var(--dim); flex-shrink: 0; }
+.profile-workspace-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 6px 12px; font-size: 12px; color: var(--dim); flex-shrink: 0; }
+.profile-native-storage { max-width: 100%; }
+.profile-native-storage > div { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 6px 0; }
+.profile-native-storage input, .profile-native-storage select { max-width: 100%; min-width: 0; }
+.profile-native-storage summary { cursor: pointer; }
 .application-view-grid { display: flex; flex: 1; min-height: 0; gap: 8px; overflow-x: auto; }
 .application-profile-view { display: flex; flex-direction: column; flex: 1 0 360px; min-width: 0; background: var(--bg); color: var(--text); border: 1px solid var(--border); }
 .application-profile-view:only-child { flex-basis: 0; }
@@ -16,6 +20,10 @@
 .profile-error { color: var(--err); padding: 4px 12px; margin: 0; font-size: 12px; }
 .application-profile-view .chat-scroll { width: 100%; max-width: var(--profile-content-width); align-self: center; }
 .profile-messages-plain .msg { background: transparent; align-self: stretch; max-width: 100%; border-bottom: 1px solid var(--border); border-radius: 0; }
+.profile-messages-user-bubble .msg.assistant, .profile-messages-user-bubble .msg.system { background: transparent; align-self: stretch; max-width: 100%; border-radius: 0; }
+.profile-messages-user-bubble .msg.user { align-self: flex-end; border-radius: 16px; }
+.profile-details textarea { display: block; width: 100%; min-height: 50px; font-family: monospace; }
+.profile-details pre { overflow: auto; max-height: 240px; white-space: pre-wrap; overflow-wrap: anywhere; }
 .app-root .sidebar { width: var(--profile-sidebar-width, 280px); min-width: var(--profile-sidebar-width, 280px); }
 .app-root .sidebar.collapsed { margin-left: calc(-1 * var(--profile-sidebar-width, 280px)); }
 .app-root[data-sidebar-side="right"] > .app-layout > .sidebar { order: 2; border-left: 1px solid var(--border); border-right: none; }

@@ -31,7 +31,7 @@ const captures = [], chatRequests = [], nativeMutations = [], groups = [];
 const pageErrors = [], externalRequests = [];
 const heldReplies = new Map(), heldWaiters = new Map();
 const heldMessages = new Set(["PROFILE_DELAYED_A_1873", "PROFILE_STOP_2391", "PROFILE_NEW_AFTER_STOP_8723"]);
-let cancelGate;
+let cancelGate, profileReceiptGate;
 let serverLog = "", browser, page, baselineConfig, finalConfig, savedViews, savedWorkflow;
 let server;
 const provider = createServer(async (req, res) => {
@@ -93,7 +93,7 @@ async function check(name, fn) {
 const view = index => page.getByTestId("application-profile-view").nth(index);
 const userMessage = (index, text) => view(index).locator('[data-testid="message"][data-role="user"]')
   .filter({ has: page.locator(".body").filter({ hasText: text }) });
-const profileKey = id => JSON.stringify([id, 1]);
+const profileKey = id => JSON.stringify([id, ["loom-default", "chatgpt-inspired", "claude-inspired", "gemini-inspired"].includes(id) ? 2 : 1]);
 async function choose(index, id) { await view(index).getByLabel("Application view profile", { exact: true }).selectOption(profileKey(id)); }
 async function openContext(index) {
   const details = view(index).getByTestId("chat-context-controls");
@@ -108,9 +108,9 @@ async function send(index, text, expectedCalls, shortcut = false) {
   assert.equal(await view(index).getByTestId("chat-error").count(), 0);
   await view(index).getByTestId("streaming-message").waitFor({ state: "detached" });
 }
-async function importProfile(index, document) {
+async function importProfile(index, document, text = JSON.stringify(document)) {
   await view(index).getByLabel("Import application profile", { exact: true }).setInputFiles({
-    name: `${document.id}.json`, mimeType: "application/json", buffer: Buffer.from(JSON.stringify(document)),
+    name: `${document.id}.json`, mimeType: "application/json", buffer: Buffer.from(text),
   });
 }
 async function unchangedConfig() { assert.deepEqual(await api("GET", "/api/config"), baselineConfig); }
@@ -156,6 +156,11 @@ try {
     if (url.origin !== base) { externalRequests.push(request.url()); await route.abort(); return; }
     if (request.method() === "POST" && url.pathname === "/api/chat") chatRequests.push(request.postDataJSON());
     if (!["GET", "HEAD"].includes(request.method())) nativeMutations.push({ method: request.method(), path: url.pathname, body: request.postDataJSON() });
+    if (url.pathname === "/api/graph/packets/store" && profileReceiptGate && request.postDataJSON()?.operation === "read") {
+      const gate = profileReceiptGate; profileReceiptGate = undefined;
+      const response = await route.fetch(); gate.observed(); await gate.releasePromise;
+      await route.fulfill({ response }); gate.finished(); return;
+    }
     if (url.pathname === "/api/chat/cancel" && cancelGate) {
       const gate = cancelGate; cancelGate = undefined;
       // Exercise the real native cancellation first. Delay a synthetic error
@@ -214,6 +219,22 @@ try {
     assert.equal(captures.length, 0); await unchangedConfig();
   });
 
+  await check("pinned clone versions expose source-mapped layout and composer behavior", async () => {
+    await choose(1, "librechat-0.8.8");
+    assert.match(await view(1).getAttribute("class"), /profile-messages-user-bubble/);
+    assert.equal(await view(1).getByTestId("model-picker").inputValue(), "mock/view-two");
+    await choose(1, "nextchat-2.16.1");
+    await view(1).getByTestId("chat-input").fill("PINNED_COMPOSER_DRAFT");
+    for (const chord of ["Control+Enter", "Alt+Enter", "Shift+Enter"]) {
+      await view(1).getByTestId("chat-input").press(chord);
+      await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+      assert.equal(chatRequests.length, 0);
+    }
+    assert.match(await view(1).getByTestId("chat-input").inputValue(), /PINNED_COMPOSER_DRAFT/);
+    await view(1).getByTestId("chat-input").fill(""); await choose(1, "gemini-inspired");
+    await unchangedConfig();
+  });
+
   await check("profile Send reaches native completion and both views show the same saved conversation", async () => {
     await send(0, "PROFILE_SHARED_ORIGINAL_4517", 1);
     await view(1).locator('[data-testid="message"][data-role="assistant"]').filter({ hasText: "Local profile reply 1:" }).waitFor();
@@ -250,14 +271,19 @@ try {
     assert.equal(captures.length, 1);
   });
 
-  const custom = JSON.parse(readFileSync(path.join(webRoot, "src/profiles/data/loom-default.json"), "utf8"));
+  const custom = JSON.parse(readFileSync(path.join(webRoot, "src/profiles/data/loom-default-r2.json"), "utf8"));
+  custom.profile_revision = 1;
   custom.id = "synthetic-arbitrary-app-3.7"; custom.label = "Synthetic arbitrary app 3.7";
   custom.target = { application_id: "synthetic-any-application", version: "ui-release-3.7", platform: "web" };
   custom.evidence = { status: "partial", sources: [], gaps: ["Synthetic editable profile; no external application fidelity claim."] };
   custom.presentation.sidebar = { side: "right", width: 240 }; custom.presentation.content_width = 610;
   custom.composer = { submit: "mod-enter", placeholder: "Custom application composer" };
-  await check("arbitrary versioned profile imports as data with right sidebar and explicit shortcut", async () => {
-    await importProfile(0, custom);
+  // Multiple actions may map one operation; direct controls choose an actually
+  // supported mapping rather than the unavailable source-service entry first.
+  custom.actions.unshift({ id: "original-send-gap", label: "Original service Send unavailable", operation: "chat.send", capability: "original.chat.send", required: false });
+  const customSource = "\ufeff" + JSON.stringify(custom, null, 2) + "\n";
+  await check("arbitrary versioned profile imports exact UTF-8 bytes with right sidebar and explicit shortcut", async () => {
+    await importProfile(0, custom, customSource);
     await page.waitForFunction(id => document.querySelector('[data-testid="application-profile-view"]')?.getAttribute("data-profile-id") === id, custom.id);
     assert.equal(await view(0).getAttribute("data-profile-revision"), "1");
     assert.equal(await view(0).getByTestId("model-picker").inputValue(), "mock/view-one");
@@ -282,9 +308,18 @@ try {
     await unchangedConfig();
   });
 
+  await check("invalid UTF-8 profile bytes cannot be silently repaired into accepted source", async () => {
+    await view(0).getByLabel("Import application profile", { exact: true }).setInputFiles({
+      name: "invalid-utf8.json", mimeType: "application/json", buffer: Buffer.concat([Buffer.from('{"label":"'), Buffer.from([255]), Buffer.from('"}')]),
+    });
+    await page.getByRole("alert").filter({ hasText: /encoded data|encoding/i }).waitFor();
+    assert.equal(await view(0).getAttribute("data-profile-id"), custom.id);
+    assert.equal(captures.length, 3);
+  });
+
   await check("a declared required capability without a real adapter cannot activate", async () => {
     const unsupported = structuredClone(custom); unsupported.id = "synthetic-unsupported-required"; unsupported.label = "Unsupported required workflow";
-    unsupported.actions.find(action => action.operation === "chat.send").capability = "vendor-unimplemented-send";
+    unsupported.actions.find(action => action.operation === "chat.send" && action.required).capability = "vendor-unimplemented-send";
     await importProfile(0, unsupported);
     await page.getByRole("alert").filter({ hasText: "Profile retained but cannot run" }).waitFor();
     assert.equal(await view(0).getAttribute("data-profile-id"), custom.id);
@@ -305,6 +340,8 @@ try {
     await flow.getByRole("button", { name: "Inspect knowledge", exact: true }).click();
     await page.getByTestId("knowledge-workbench").waitFor();
     assert.match(await flow.innerText(), /conversation-review: review/);
+    await page.getByTestId("new-conversation").click();
+    await page.waitForFunction(() => document.querySelector('[data-testid="conv-item"].active .title')?.textContent === "New Chat");
     await flow.getByRole("button", { name: "Return to conversation", exact: true }).click();
     await page.waitForFunction(() => document.querySelector('[data-testid="profile-workflow"]')?.textContent.includes("conversation-review: chat"));
     const active = await page.locator('[data-testid="conv-item"].active').innerText(); assert.match(active, /Profile conversation/);
@@ -314,8 +351,56 @@ try {
       return JSON.parse(localStorage.getItem(key));
     });
     assert.equal(savedWorkflow.workflows["conversation-review"], "chat");
+    assert.equal(savedWorkflow.variables["conversation-review"].conversation_id, fresh.id);
+    assert.equal(savedWorkflow.history[0].variables.conversation_id, fresh.id);
     assert.deepEqual(savedWorkflow.history.map(receipt => receipt.operation), ["chat.create", "knowledge.open", "chat.select"]);
     assert.equal(captures.length, 3);
+  });
+
+  await check("exact profile source reaches canonical native graph and reloads from an immutable receipt", async () => {
+    await view(0).getByTestId("save-profile-graph").click();
+    await view(0).getByTestId("profile-graph-receipt").waitFor();
+    const receiptId = await view(0).getByTestId("profile-graph-receipt").locator("code").first().innerText();
+    const stored = await api("POST", "/api/graph/packets/store", { operation: "read", receipt_id: receiptId });
+    assert.equal(stored.row_drift.matches, true);
+    assert.equal(stored.receipt.acceptance_establishes_content_truth, false);
+    const entity = stored.receipt.packet.entities[0];
+    assert.equal(entity.kind, "application_profile");
+    assert.equal(entity.attrs.raw_source, customSource);
+    assert.equal(stored.receipt.packet.sources[0].observation.text, customSource);
+    assert.deepEqual(JSON.parse(entity.attrs.raw_source.replace(/^\ufeff/, "")), custom);
+    assert.deepEqual(stored.receipt.packet.history, []);
+    const materialized = await api("POST", "/api/knowledge/query", { what: "entities", run: stored.receipt.run_id, limit: 1000 });
+    assert.ok(materialized.items.some(row => row.id === entity.id && row.attrs.raw_source === customSource));
+    await view(0).getByTestId("save-profile-graph").click();
+    await page.waitForFunction(() => !document.querySelector('[data-testid="save-profile-graph"]').disabled);
+    await choose(0, "loom-default");
+    await page.getByText("Saved profiles", { exact: true }).click();
+    await page.getByTestId("find-native-profiles").click();
+    await page.getByLabel("Recent native profile receipts", { exact: true }).waitFor();
+    await page.getByLabel("Recent native profile receipts", { exact: true }).selectOption(receiptId);
+    let observed, release, finished;
+    const observedPromise = new Promise(resolve => { observed = resolve; });
+    const releasePromise = new Promise(resolve => { release = resolve; });
+    const finishedPromise = new Promise(resolve => { finished = resolve; });
+    profileReceiptGate = { observed, releasePromise, finished };
+    await page.getByTestId("load-profile-receipt").click();
+    await within(observedPromise, "Delayed native profile read");
+    await page.getByTestId("add-profile-view").click();
+    await choose(0, "chatgpt-inspired");
+    release(); await within(finishedPromise, "Delayed profile read response");
+    await page.getByTestId("load-profile-receipt").waitFor({ state: "visible" });
+    await page.waitForFunction(() => !document.querySelector('[data-testid="load-profile-receipt"]').disabled);
+    assert.equal(await page.getByTestId("application-profile-view").count(), 3);
+    assert.equal(await view(0).getAttribute("data-profile-id"), "chatgpt-inspired", "late receipt cannot overwrite newer profile choice");
+    await view(2).getByRole("button", { name: "Close view", exact: true }).click();
+    await page.getByTestId("load-profile-receipt").click();
+    await page.waitForFunction(id => document.querySelector('[data-testid="application-profile-view"]')?.getAttribute("data-profile-id") === id, custom.id);
+    assert.equal(await view(0).getByTestId("model-picker").inputValue(), "mock/view-one");
+    assert.equal(await view(0).getByTestId("context-run").inputValue(), run.run);
+    const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("loom.application.views.v1")));
+    assert.ok(saved.sources.some(source => source.profile === JSON.stringify([custom.id, 1]) && source.text === customSource));
+    assert.equal(captures.length, 3); await unchangedConfig();
   });
 
   await check("two exact profile revisions and workflow state reload without provider/config mutation", async () => {
@@ -390,7 +475,7 @@ try {
     for (const mode of ["missing", "absent"]) {
       const noSend = structuredClone(custom); noSend.id = `synthetic-no-send-${mode}`; noSend.label = `Synthetic no Send ${mode}`;
       if (mode === "missing") {
-        const action = noSend.actions.find(action => action.operation === "chat.send"); action.required = false; action.capability = "missing-send-adapter";
+        const action = noSend.actions.find(action => action.operation === "chat.send" && action.required); action.required = false; action.capability = "missing-send-adapter";
       } else noSend.actions = noSend.actions.filter(action => action.operation !== "chat.send");
       await importProfile(0, noSend);
       await page.waitForFunction(id => document.querySelector('[data-testid="application-profile-view"]')?.getAttribute("data-profile-id") === id, noSend.id);

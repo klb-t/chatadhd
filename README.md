@@ -46,8 +46,12 @@ Full GraphPacket history validation remains in Python.
 [Application interface profiles](docs/APPLICATION_PROFILES.md) add versioned
 JSON views and declared workflows over registered Loom operations. Multiple
 views can share a conversation while keeping model/context controls independent.
-Bundled ChatGPT/Claude/Gemini examples are inspired prototypes with unverified
-original versions; they do not reproduce the services' private backends.
+Bundled ChatGPT/Claude/Gemini examples retain unverified original versions;
+pinned LibreChat 0.8.8 and NextChat 2.16.1 data separately map those clones.
+Workflows bind explicit inputs and selected result variables. Profiles can be
+saved to native GraphPacket receipts, and imported source/tool/media blocks
+are inspectable alongside current text. Source-service backend parity remains
+an explicit capability/evidence gap.
 
 ## Build and open a synthetic demo
 
