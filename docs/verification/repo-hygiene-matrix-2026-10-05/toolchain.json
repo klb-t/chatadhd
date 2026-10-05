@@ -1,0 +1,61 @@
+{
+  "packages": [
+    {
+      "name": "clang-18_1%3a18.1.3-1ubuntu1_amd64.deb",
+      "bytes": 80040,
+      "sha256": "628b16701014ef7ad648380b20ea74b90dd543857f933b3e34d2fc042783de25"
+    },
+    {
+      "name": "libclang-common-18-dev_1%3a18.1.3-1ubuntu1_amd64.deb",
+      "bytes": 735998,
+      "sha256": "d41631bb752815a8196261d1030c096591c59678c8adfbf2e6a740a691b49e80"
+    },
+    {
+      "name": "libclang-cpp18_1%3a18.1.3-1ubuntu1_amd64.deb",
+      "bytes": 13492572,
+      "sha256": "e91eda104813ee0468d145d010a4a4e142401f3f17f9a65596c66d416298d018"
+    },
+    {
+      "name": "libclang1-18_1%3a18.1.3-1ubuntu1_amd64.deb",
+      "bytes": 7803214,
+      "sha256": "1ed67106d743ab4f12db2726c5fc11c436c5e1fba613e9f1006bf3fa05cc69bd"
+    },
+    {
+      "name": "libllvm18_1%3a18.1.3-1ubuntu1_amd64.deb",
+      "bytes": 27518500,
+      "sha256": "af6197096ce3b89aab86de59f01c1b5feb008b2ae1514a03906c0664edb8b0b1"
+    },
+    {
+      "name": "libobjc-13-dev_13.3.0-6ubuntu2~24.04.1_amd64.deb",
+      "bytes": 193650,
+      "sha256": "6757dc7e223f69c6c41f9aba133f0b54fe4babc8f38a9e1a51d9b03a9a28e8a6"
+    },
+    {
+      "name": "libobjc4_14.2.0-4ubuntu2~24.04.1_amd64.deb",
+      "bytes": 47052,
+      "sha256": "0c24f15d962c751bcca42450c418c33337b65f5f56c1bf46f69d9bf8d3a31cbe"
+    },
+    {
+      "name": "libsqlite3-0_3.45.1-1ubuntu2.7_amd64.deb",
+      "bytes": 701442,
+      "sha256": "488511119cad001a00f7e00e597112cf743ccfbd3f7a03c82d66237e1bfd82c8"
+    },
+    {
+      "name": "libsqlite3-dev_3.45.1-1ubuntu2.7_amd64.deb",
+      "bytes": 910690,
+      "sha256": "6b8dfabce91ae021ff957f81dc4a4377c1bfa6eb9332cbf6d38e3e66b5198abb"
+    }
+  ],
+  "versions": {
+    "gcc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0",
+    "g++": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0",
+    "cmake": "cmake version 4.4.4",
+    "python": "Python 3.12.14"
+  },
+  "clang": "Ubuntu clang 18.1.3 (1ubuntu1)",
+  "system_sqlite": "Ubuntu package3.45.1-1ubuntu2.7 extracted into local toolchain prefix",
+  "vendored_sqlite": "3.47.2 repository amalgamation",
+  "package_repository": "https://snapshot.ubuntu.com/ubuntu/20260828T000000Z",
+  "sanitizer_debug_information": "-g1",
+  "paid_calls": 0
+}

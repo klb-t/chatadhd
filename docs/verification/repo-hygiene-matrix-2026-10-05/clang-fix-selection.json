@@ -1,0 +1,15 @@
+{
+  "source_fix_commit": "23c6e74c50b87c2157ffc317d45fca79aade27fa",
+  "selected_file": "loom/server/src/app.cpp",
+  "selected_original_hunk_sha256": "d6beb66f20dc992164768cb0b2e4c55fca7ed412282a42756ee8e91c2af318ba",
+  "patch_sha256": "9abd106f9db9bbbb95189695bfca7d9eddf46d4598256866e200a0c87125687f",
+  "base_commit": "fedaf6b26d54a2d84f2a42e0c18fed6d8fa9828f",
+  "validation_tree": "661079afb8703fb8010425f7d1aa2f7d5c6cee6e",
+  "selected_change_lines": [
+    "-  svr_.Get(\"/api/logs\", [this](const httplib::Request& req, httplib::Response& res) {",
+    "+  svr_.Get(\"/api/logs\", [](const httplib::Request& req, httplib::Response& res) {",
+    "-  svr_.Get(\"/api/version\", [this](const httplib::Request&, httplib::Response& res) {",
+    "+  svr_.Get(\"/api/version\", [](const httplib::Request&, httplib::Response& res) {"
+  ],
+  "discarded_source_hunk": "conditional usage-policy route absent from main; not applied"
+}
