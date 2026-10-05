@@ -1,0 +1,213 @@
+{
+  "schema": "loom.import_layers_spec/1",
+  "target": {
+    "schema": "loom.default_layers_pack/1",
+    "pack_id": "loom.defaults.archive-import",
+    "revision": 1,
+    "policy": {
+      "excluded_area_new_defaults": "proposal"
+    }
+  },
+  "entries": [
+    {
+      "id": "loom.default.import.stream_threshold_bytes",
+      "key": "import.stream_threshold_bytes",
+      "area": "import.execution",
+      "revision": 1,
+      "resource": "import",
+      "field": "stream_threshold_bytes"
+    },
+    {
+      "id": "loom.default.import.json_read_chunk_bytes",
+      "key": "import.json_read_chunk_bytes",
+      "area": "import.execution",
+      "revision": 1,
+      "resource": "import",
+      "field": "json_read_chunk_bytes"
+    },
+    {
+      "id": "loom.default.import.json_max_depth",
+      "key": "import.json_max_depth",
+      "area": "import.execution",
+      "revision": 1,
+      "resource": "import",
+      "field": "json_max_depth"
+    },
+    {
+      "id": "loom.default.import.json_inline_threshold_bytes",
+      "key": "import.json_inline_threshold_bytes",
+      "area": "import.execution",
+      "revision": 1,
+      "resource": "import",
+      "field": "json_inline_threshold_bytes"
+    },
+    {
+      "id": "loom.default.import.generic_inference_max_bytes",
+      "key": "import.generic_inference_max_bytes",
+      "area": "import.execution",
+      "revision": 1,
+      "resource": "import",
+      "field": "generic_inference_max_bytes"
+    },
+    {
+      "id": "loom.default.import.audit.chars_per_token_low",
+      "key": "import.audit.chars_per_token_low",
+      "area": "import.audit",
+      "revision": 1,
+      "resource": "import_audit",
+      "field": "chars_per_token_low"
+    },
+    {
+      "id": "loom.default.import.audit.chars_per_token_high",
+      "key": "import.audit.chars_per_token_high",
+      "area": "import.audit",
+      "revision": 1,
+      "resource": "import_audit",
+      "field": "chars_per_token_high"
+    },
+    {
+      "id": "loom.default.import.audit.output_ratio",
+      "key": "import.audit.output_ratio",
+      "area": "import.audit",
+      "revision": 1,
+      "resource": "import_audit",
+      "field": "output_ratio"
+    },
+    {
+      "id": "loom.default.import.audit.native_active_only",
+      "key": "import.audit.native_active_only",
+      "area": "import.audit",
+      "revision": 1,
+      "resource": "import_audit",
+      "field": "native_active_only"
+    },
+    {
+      "id": "loom.default.import.audit.sqlite_cache_kib",
+      "key": "import.audit.sqlite_cache_kib",
+      "area": "import.audit",
+      "revision": 1,
+      "resource": "import_audit",
+      "field": "sqlite_cache_kib"
+    },
+    {
+      "id": "loom.default.import.audit.fraction",
+      "key": "import.audit.fraction",
+      "area": "import.audit",
+      "revision": 1,
+      "resource": "import_audit",
+      "field": "fraction"
+    },
+    {
+      "id": "loom.default.import.audit.api_prefix_tokens",
+      "key": "import.audit.api_prefix_tokens",
+      "area": "import.audit",
+      "revision": 1,
+      "resource": "import_audit",
+      "field": "api_prefix_tokens"
+    },
+    {
+      "id": "loom.default.import.audit.cli_prefix_tokens",
+      "key": "import.audit.cli_prefix_tokens",
+      "area": "import.audit",
+      "revision": 1,
+      "resource": "import_audit",
+      "field": "cli_prefix_tokens"
+    },
+    {
+      "id": "loom.default.import.audit.api_include_active",
+      "key": "import.audit.api_include_active",
+      "area": "import.audit",
+      "revision": 1,
+      "resource": "import_audit",
+      "field": "api_include_active"
+    },
+    {
+      "id": "loom.default.import.audit.api_include_versions",
+      "key": "import.audit.api_include_versions",
+      "area": "import.audit",
+      "revision": 1,
+      "resource": "import_audit",
+      "field": "api_include_versions"
+    },
+    {
+      "id": "loom.default.import.audit.api_include_unknown_status",
+      "key": "import.audit.api_include_unknown_status",
+      "area": "import.audit",
+      "revision": 1,
+      "resource": "import_audit",
+      "field": "api_include_unknown_status"
+    },
+    {
+      "id": "loom.default.import.audit.api_include_excluded",
+      "key": "import.audit.api_include_excluded",
+      "area": "import.audit",
+      "revision": 1,
+      "resource": "import_audit",
+      "field": "api_include_excluded"
+    },
+    {
+      "id": "loom.default.import.audit.api_include_deleted",
+      "key": "import.audit.api_include_deleted",
+      "area": "import.audit",
+      "revision": 1,
+      "resource": "import_audit",
+      "field": "api_include_deleted"
+    },
+    {
+      "id": "loom.default.import.audit.api_include_tools",
+      "key": "import.audit.api_include_tools",
+      "area": "import.audit",
+      "revision": 1,
+      "resource": "import_audit",
+      "field": "api_include_tools"
+    },
+    {
+      "id": "loom.default.import.audit.cli_scope",
+      "key": "import.audit.cli_scope",
+      "area": "import.audit",
+      "revision": 1,
+      "resource": "import_audit",
+      "field": "cli_scope"
+    },
+    {
+      "id": "loom.default.import.audit.cli_include_versions",
+      "key": "import.audit.cli_include_versions",
+      "area": "import.audit",
+      "revision": 1,
+      "resource": "import_audit",
+      "field": "cli_include_versions"
+    },
+    {
+      "id": "loom.default.import.audit.cli_include_unknown_status",
+      "key": "import.audit.cli_include_unknown_status",
+      "area": "import.audit",
+      "revision": 1,
+      "resource": "import_audit",
+      "field": "cli_include_unknown_status"
+    },
+    {
+      "id": "loom.default.import.audit.cli_include_tools",
+      "key": "import.audit.cli_include_tools",
+      "area": "import.audit",
+      "revision": 1,
+      "resource": "import_audit",
+      "field": "cli_include_tools"
+    },
+    {
+      "id": "loom.default.import.audit.historical_pricing",
+      "key": "import.audit.historical_pricing",
+      "area": "import.audit",
+      "revision": 1,
+      "resource": "import_audit",
+      "field": "historical_pricing"
+    },
+    {
+      "id": "loom.default.import.audit.pricing_batch_discount",
+      "key": "import.audit.pricing_batch_discount",
+      "area": "import.audit",
+      "revision": 1,
+      "resource": "import_audit",
+      "field": "pricing_batch_discount"
+    }
+  ]
+}

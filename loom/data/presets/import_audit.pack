@@ -1,0 +1,27 @@
+{
+  "schema": "loom.import_audit_preset/1",
+  "id": "loom.preset.import-audit.default",
+  "version": 1,
+  "values": {
+    "chars_per_token_low": 4.0,
+    "chars_per_token_high": 3.0,
+    "output_ratio": 0.4,
+    "native_active_only": false,
+    "sqlite_cache_kib": 4096,
+    "fraction": 1.0,
+    "api_prefix_tokens": 8000,
+    "cli_prefix_tokens": 0,
+    "api_include_active": true,
+    "api_include_versions": true,
+    "api_include_unknown_status": true,
+    "api_include_excluded": false,
+    "api_include_deleted": false,
+    "api_include_tools": true,
+    "cli_scope": "all",
+    "cli_include_versions": true,
+    "cli_include_unknown_status": true,
+    "cli_include_tools": true,
+    "historical_pricing": "loom/tools/eval/pricing_2026-09-25.json",
+    "pricing_batch_discount": 1.0
+  }
+}
