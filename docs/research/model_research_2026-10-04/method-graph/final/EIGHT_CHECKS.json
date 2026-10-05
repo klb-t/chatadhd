@@ -1,0 +1,32 @@
+{
+  "checks": {
+    "native_graphpacket": true,
+    "exact_shared_modelprofile_fields": true,
+    "all_claim_dates_exact_support_spans_and_evidence": true,
+    "all_method_evaluations_produced_by_exact_version_and_parameters": true,
+    "all_36_old_and_24_new_events_exactly_bound_without_real_model_attribution": true,
+    "scripted_quality_null_all_denominators_and_no_calls_or_writes": true,
+    "only_two_unchanged_existing_actual_modelprofiles": true,
+    "deterministic_replay_and_all_declared_sources_hash_checked": true
+  },
+  "passed": 8,
+  "total": 8,
+  "packet_id": "4ffa721e2526617503d6e3f45109a1bdddf16e529a8b42a6468b904233fe7a50",
+  "packet_sha256": "62fe32c0ac26fa13df69d79545b83a7555d58d50c889e8b8722cf3426964956a",
+  "entity_kinds": {
+    "research_method": 27,
+    "research_method_version": 41,
+    "parameter_preset": 45,
+    "configured_research_method": 55,
+    "research_run": 36,
+    "research_evaluation": 44,
+    "research_event": 60,
+    "model_profile": 2
+  },
+  "claims": 487,
+  "shared_metric_claims": 60,
+  "scripted_events": 60,
+  "source_observations": 23,
+  "new_provider_calls": 0,
+  "canonical_store_written": false
+}

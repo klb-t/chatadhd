@@ -1,0 +1,26 @@
+{
+  "entity_kinds": {
+    "method": "research_method",
+    "method_version": "research_method_version",
+    "parameter_preset": "parameter_preset",
+    "configured_method": "configured_research_method",
+    "run": "research_run",
+    "evaluation": "research_evaluation",
+    "event": "research_event",
+    "model_profile": "model_profile"
+  },
+  "predicates": {
+    "version_of": "version_of",
+    "uses_version": "uses_version",
+    "uses_preset": "uses_preset",
+    "produced_by": "produced_by",
+    "intended_configuration": "intended_configuration",
+    "evaluates_run": "evaluates_run",
+    "event_of": "event_of",
+    "evaluation": "method_evaluation"
+  },
+  "status": "research_consumer_vocabulary_proposal_pending_threads_3_4",
+  "schema_reused": "loom.graph_packet/1",
+  "evaluation_payload_reused": "docs/contracts/model_profile.schema.json#/$defs/profile/properties/metrics",
+  "automatic_promotion": false
+}

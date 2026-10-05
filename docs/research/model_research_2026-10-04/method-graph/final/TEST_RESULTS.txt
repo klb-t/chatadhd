@@ -1,0 +1,19 @@
+test_arm_counts_keep_failures_and_refuse_shortened_or_duplicate_rows (loom.tools.structure.test_method_graph_export_v1.MethodGraphExport.test_arm_counts_keep_failures_and_refuse_shortened_or_duplicate_rows) ... ok
+test_arm_label_list_cannot_masquerade_as_planned_identity_denominator (loom.tools.structure.test_method_graph_export_v1.MethodGraphExport.test_arm_label_list_cannot_masquerade_as_planned_identity_denominator) ... ok
+test_dates_evidence_and_unknown_semantic_result_are_explicit (loom.tools.structure.test_method_graph_export_v1.MethodGraphExport.test_dates_evidence_and_unknown_semantic_result_are_explicit) ... ok
+test_declared_missing_record_identity_stays_in_denominator (loom.tools.structure.test_method_graph_export_v1.MethodGraphExport.test_declared_missing_record_identity_stays_in_denominator) ... ok
+test_event_identity_and_exact_request_response_bindings_cannot_be_swapped (loom.tools.structure.test_method_graph_export_v1.MethodGraphExport.test_event_identity_and_exact_request_response_bindings_cannot_be_swapped) ... ok
+test_every_evaluation_has_actual_producer_edge_and_separate_intended_configuration (loom.tools.structure.test_method_graph_export_v1.MethodGraphExport.test_every_evaluation_has_actual_producer_edge_and_separate_intended_configuration) ... ok
+test_existing_model_profiles_preserved_exactly_without_fake_method_model (loom.tools.structure.test_method_graph_export_v1.MethodGraphExport.test_existing_model_profiles_preserved_exactly_without_fake_method_model) ... ok
+test_export_is_deterministic_and_does_not_modify_receipts_or_configuration (loom.tools.structure.test_method_graph_export_v1.MethodGraphExport.test_export_is_deterministic_and_does_not_modify_receipts_or_configuration) ... ok
+test_json_value_support_keeps_exact_utf8_span_and_pointer (loom.tools.structure.test_method_graph_export_v1.MethodGraphExport.test_json_value_support_keeps_exact_utf8_span_and_pointer) ... ok
+test_metric_source_pointer_and_counts_are_checked (loom.tools.structure.test_method_graph_export_v1.MethodGraphExport.test_metric_source_pointer_and_counts_are_checked) ... ok
+test_native_graphpacket_and_exact_shared_metric_shape (loom.tools.structure.test_method_graph_export_v1.MethodGraphExport.test_native_graphpacket_and_exact_shared_metric_shape) ... ok
+test_produced_by_resolves_exact_version_and_unrestricted_parameters (loom.tools.structure.test_method_graph_export_v1.MethodGraphExport.test_produced_by_resolves_exact_version_and_unrestricted_parameters) ... ok
+test_receipt_bytes_recipe_material_and_declaration_drift_fail (loom.tools.structure.test_method_graph_export_v1.MethodGraphExport.test_receipt_bytes_recipe_material_and_declaration_drift_fail) ... ok
+test_scripted_or_planning_scores_cannot_become_model_quality (loom.tools.structure.test_method_graph_export_v1.MethodGraphExport.test_scripted_or_planning_scores_cannot_become_model_quality) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.622s
+
+OK
