@@ -23,6 +23,14 @@ W8 nie kopiuje starego W10 `app.cpp`, gdyż utraciłby nową trasę `/api/packet
 Wyniki na własnej gałęzi oraz kombinowanym źródle walidacyjnym będą rozdzielone.
 Gotowość jeszcze niezgłoszona: pełne bramki są w toku.
 
+Pierwsze dwie kompilacje ASan (`-g`, równolegle2 i potem1) zakończyły się
+`Killed signal terminated program cc1plus`; cgroup ma limit8GiB i raportuje
+OOM kills. Oryginalne logi zachowano w `docs/archive/repo-hygiene-matrix-2026-10-05/`.
+Nowa próba oraz preset CI używają minimalnych informacji Debug `-g1`: pozostają
+linie stosu, asercje, ostrzeżenia i wszystkie flagi ASan/UBSan. Nie zmieniono
+optymalizacji ani progów. Kompilacja Clanga została kontrolowanie wstrzymana,
+żeby zwolnić pamięć dla pozostałych konfiguracji; jej log również zachowano.
+
 ## Do wątku 4
 
 `unit.test_packet` wykonuje cztery przypadki rdzenia pod ASan. Obecne testy

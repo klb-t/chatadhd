@@ -16,6 +16,9 @@ ordinary GCC shared-library companion from the same commit/tree. Its absolute
 `LOOM_LIBRARY` reaches ctypes tests, including the mandatory Packet suite.
 The separate companion receipt records its binary hash and ordinary flags:
 this is FFI execution without sanitizer coverage, alongside native ASan/UBSan.
+The CI matrix uses GCC's minimal `-g1` debug information for ASan: stack source
+locations remain, while local-variable debug data is omitted to reduce compiler
+memory. Assertions, optimization, warnings and sanitizer flags are unchanged.
 The sanitizer options and execution guard remain unchanged. A local full GCC
 build of the same source can supply this ordinary companion too, with its own
 receipt. `dev` and `vendored` builds require all shared-library cases to execute.
