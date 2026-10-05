@@ -1,0 +1,66 @@
+{
+  "billing_evidence_kind": "unique provider-reported explicit credit generation receipts plus final cumulative key reconciliation; not invoice reconciliation",
+  "created_at": "2026-10-05T12:00:55.419253+00:00",
+  "fresh_key_observation_scope": "dispatcher attestment of final stage4 reconciliation; raw key metadata/account identifiers remain private",
+  "fx_invoice_settlement": false,
+  "fx_rate_date": "2026-10-02",
+  "fx_reference_usd_per_eur": "1.1225",
+  "known_actual_usd": "0.696463100",
+  "observed_fresh_key_usage_usd": "0.6964631",
+  "operator_cap_usd": "5",
+  "operator_limit_raised": false,
+  "original_stops_and_attempts_preserved": true,
+  "owner_authorized_budget_eur": "5",
+  "paid_post_retries": 0,
+  "quality_scope": "accounting only; native validity and source-relative semantic assessments remain separate",
+  "remaining_operator_cap_usd": "4.303536900",
+  "schema": "loom.research_programme_public_accounting_summary/1",
+  "stages": [
+    {
+      "actual_cost_usd": "0.052296100",
+      "completed_first_attempts": 432,
+      "new_calls_by_projection": 0,
+      "normalization_sha256": "5bf76c634da05a287730c6bdbe35b7cf3654c40b8078ad8c6cbc8b4094eb0875",
+      "planned_operations": 432,
+      "public_projection": "docs/research/model_research_2026-10-04/programme-actual/stage1-final-20261005-v2/NORMALIZED.json",
+      "source_manifest_sha256": "02db057b3bd6a9f5d81d5f4e415070a1cd128fa77ae8a30d465de0d2b81ecf56",
+      "stage_id": "stage1-cheap-jev-432",
+      "verified_credit_generations": 432
+    },
+    {
+      "actual_cost_usd": "0.1639080",
+      "completed_first_attempts": 60,
+      "new_calls_by_projection": 0,
+      "normalization_sha256": "216baddb110faf148705542b476927738ff9adee7c97aa9ad74425f8d5a9f7dd",
+      "planned_operations": 60,
+      "public_projection": "docs/research/model_research_2026-10-04/programme-actual/stage2-final-20261005-v1/NORMALIZED.json",
+      "source_manifest_sha256": "a993c58afed2bd752ab3cd8aedbbbdaeb76a732e065f05d47c1a8a0d0eae4fb2",
+      "stage_id": "stage2-native-semantic-dev-60",
+      "verified_credit_generations": 60
+    },
+    {
+      "actual_cost_usd": "0.3170690",
+      "completed_first_attempts": 12,
+      "new_calls_by_projection": 0,
+      "normalization_sha256": "c94bacb07f791f404fcc09830e7cfd84c6f882cf8eca87c29c352ff228a09a42",
+      "planned_operations": 12,
+      "public_projection": "docs/research/model_research_2026-10-04/programme-actual/stage3-final-20261005-v1/NORMALIZED.json",
+      "source_manifest_sha256": "38bf5f28c4fe563a3d7407cd1e3695d1d834e90bd5c5081fca38a4e70f3d4a8b",
+      "stage_id": "stage3-frontier",
+      "verified_credit_generations": 12
+    },
+    {
+      "actual_cost_usd": "0.163190",
+      "completed_first_attempts": 12,
+      "new_calls_by_projection": 0,
+      "normalization_sha256": "9a349e923c61726cfd8c3d68969688705ef07bb27319ae156845c4718e9eec77",
+      "planned_operations": 12,
+      "public_projection": "docs/research/model_research_2026-10-04/programme-actual/stage4-final-20261005-v1/NORMALIZED.json",
+      "source_manifest_sha256": "a3267398e1c53e3ca055e8cd351ed6146df8c4764cdb68a1476a163b4c201c25",
+      "stage_id": "stage4-reply",
+      "verified_credit_generations": 12
+    }
+  ],
+  "unique_first_attempts": 516,
+  "unknown_billing_operations": 0
+}
