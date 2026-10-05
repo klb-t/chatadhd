@@ -1,0 +1,91 @@
+{
+  "schema": "loom.jev_authored_corpus_audit/1",
+  "observed_on": "2026-10-05",
+  "produced_by": {
+    "method": "local.frozen_corpus_counts",
+    "version": "1",
+    "script_sha256": "b48ffe783a264490f66c512f7a3579467acb364d4f886ae4901422d30dd65fc9",
+    "parameters": {
+      "position": "one_based_judgment_order",
+      "mode_tie_break": "lexicographic"
+    }
+  },
+  "input_sha256": {
+    "gold": "2f6e041024658543ffacc20f123ee9ef047ac32858638b8eecb49ff3c9d4c6e2",
+    "inputs": "8cfd43c19f2603b6cc6adcf0187115fe17f4e4cb2c157eb23308a99ad11e290d"
+  },
+  "families": 24,
+  "queries": 96,
+  "labels": {
+    "refuted": 27,
+    "supported": 34,
+    "unknown": 35
+  },
+  "labels_by_language": {
+    "en": {
+      "supported": 17,
+      "refuted": 14,
+      "unknown": 17
+    },
+    "pl": {
+      "refuted": 13,
+      "supported": 17,
+      "unknown": 18
+    }
+  },
+  "labels_by_question_position": {
+    "1": {
+      "refuted": 4,
+      "unknown": 7,
+      "supported": 13
+    },
+    "2": {
+      "refuted": 18,
+      "unknown": 4,
+      "supported": 2
+    },
+    "3": {
+      "supported": 13,
+      "refuted": 4,
+      "unknown": 7
+    },
+    "4": {
+      "unknown": 17,
+      "supported": 6,
+      "refuted": 1
+    }
+  },
+  "relations": {
+    "implies": 20,
+    "requires": 24,
+    "causes": 23,
+    "prevents": 12,
+    "supports": 17
+  },
+  "source_turn_count_distribution": {
+    "5": 21,
+    "6": 3
+  },
+  "majority_label_descriptive_fit": {
+    "label": "unknown",
+    "correct": 35,
+    "denominator": 96
+  },
+  "position_only_descriptive_fit": {
+    "labels_by_position": {
+      "1": "supported",
+      "2": "refuted",
+      "3": "supported",
+      "4": "unknown"
+    },
+    "correct": 61,
+    "denominator": 96,
+    "fitted_to_this_gold": true,
+    "held_out_prediction": false,
+    "not_a_measured_competing_method": true
+  },
+  "corpus_or_scoring_changed": false,
+  "actual_model_results_read": false,
+  "model_calls": 0,
+  "interpretation": "Position-label association is a construction artifact. It does not show that either recipe uses position, and does not invalidate matched recipe comparison. It limits claims of broad source understanding."
+}

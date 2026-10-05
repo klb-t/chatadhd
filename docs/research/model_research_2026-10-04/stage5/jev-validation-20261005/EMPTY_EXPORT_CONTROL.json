@@ -1,0 +1,15 @@
+{
+  "schema": "loom.jev_empty_export_control/1",
+  "fake_only": true,
+  "model_calls": 0,
+  "first_rows": 0,
+  "planned_operations": 192,
+  "all_arms_quality_null": true,
+  "all_missing_slots_retained": true,
+  "packet_id": "4ab409687024354bc82940de71a0dd8c35ac316ffa02e7acbe7fdd79dddcf1a0",
+  "packet_sha256": "2a0189647e4836d1267b7d6a7463c2c12a2de5469885204732c5a2bc994dbf68",
+  "entities": 31,
+  "claims": 76,
+  "produced_by_present": true,
+  "result": "pass"
+}

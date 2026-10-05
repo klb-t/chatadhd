@@ -1,0 +1,28 @@
+{
+  "body_hash_field": "paid manifest operation.request_sha256; independent of source-prepared whole-row digest",
+  "byte_exact_replay": "PASS",
+  "case_count": 96,
+  "case_method_order": "case then method",
+  "config_sha256": "371d3fec32095f703fd28ddd5f40c93cf4f20acac12c0b222d6bdee4eefc7855",
+  "current_price_forecast_usd": null,
+  "group": "label",
+  "manifest_sha256": "14cbb6bb88f0397554815c06ac63d0e19121bd662ceb985f301a2a4770d092b2",
+  "manifest_validation": "PASS",
+  "method_ids": [
+    "j_active",
+    "j_directed"
+  ],
+  "minimum_reservation_floor_sum_usd": "0.192",
+  "paid_calls": 0,
+  "planned_operations": 192,
+  "preparation_receipt_sha256": "e818209ee26676080c30affa03a6a9712f359e5c16f5cf02b40eca8341a5ec4c",
+  "prepared_row_digest_field": null,
+  "prior_or_new_replies_read": false,
+  "producer_sha256": "aca5238d9748cd078ae868a8790956d0c171bee010bf365d2d04247fa7edf447",
+  "request_file_count": 192,
+  "schema": "loom.context_preparation.validation/1",
+  "source_prepared_history_shape": "loom.new_source_label_preparation/1",
+  "source_prepared_sha256": "42368e89b1ad465485256bfed5e2762d7b50ac604f1682806b1ccb7270fa1ff0",
+  "status": "offline_prepared_pending_root_freeze_and_current_pair_quote_fx_budget_gate",
+  "syntax_pair_and_unique_inventory_bindings": "PASS"
+}

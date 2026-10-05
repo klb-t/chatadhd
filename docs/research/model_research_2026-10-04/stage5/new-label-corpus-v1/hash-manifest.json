@@ -1,0 +1,42 @@
+{
+  "schema": "loom.new_label_corpus.hash_manifest/1",
+  "corpus_id": "new-label-corpus-v1",
+  "manifest_created_at_utc": "2026-10-05T13:01:38.310974Z",
+  "selection_freeze_commit": "7aed09b9df6b8d2fc0afc3a399f12016795ca687",
+  "author_readiness": "complete",
+  "data_freeze_state": "root_peer_review_and_data_freeze_pending_before_collection",
+  "author_visible_gold": true,
+  "blind_sealed_holdout": false,
+  "files": {
+    "RUBRIC.md": "2cf8f3b2d6d2bdb11eba9cf780635bd6a2f1a65ede49dc1f11d7cd90bbefbe15",
+    "authorship-exposure-log.json": "882fe88756283e608a0a672f3e130575710e755c22ab372cdd81cacaebca0447",
+    "corpus-design.json": "7857bb55f5e3e8221c29613d8bde8dec4902473d1ee5795442171ff535da33d4",
+    "family-index.json": "8ce9b6663cc238eaa83672324b455cd697f22fdf8c8a43cbe8cfa6c048452f5f",
+    "gold.json": "2f6e041024658543ffacc20f123ee9ef047ac32858638b8eecb49ff3c9d4c6e2",
+    "inputs.json": "8cfd43c19f2603b6cc6adcf0187115fe17f4e4cb2c157eb23308a99ad11e290d",
+    "pre-freeze-correction-014.json": "9daf2758f64698f085a607e983e0eb3eb0a0ccb173d6236539de9ee220b33bca",
+    "prepared/j_active_inputs.json": "9595e1bcc54bbb7cd1e2eb7057030a67065e84c725f3dbaf249e0ee8794e870f",
+    "prepared/j_directed_inputs.json": "3ba529c148349cf8ffefc601b156020f9e2ae9b3504b1f300a28ab49ee1db527",
+    "prepared/offline-replay.json": "80c4a3593d5cbc94de16d82eab5faa522f9b5e39c3072bbf6e4f7aecd1cc3eb6",
+    "replay_producer.py": "9f079a013f68ece8e14ddaaaad2b18ab681bded77f2acedfc7876c30595f8fb1",
+    "validation.json": "604698a52393adcc5569353b4413c34475d4aa22284a361365eb92afa91f0b41"
+  },
+  "file_bytes": {
+    "RUBRIC.md": 6504,
+    "authorship-exposure-log.json": 8640,
+    "corpus-design.json": 1123,
+    "family-index.json": 5028,
+    "gold.json": 124015,
+    "inputs.json": 71246,
+    "pre-freeze-correction-014.json": 3679,
+    "prepared/j_active_inputs.json": 252120,
+    "prepared/j_directed_inputs.json": 302328,
+    "prepared/offline-replay.json": 887,
+    "replay_producer.py": 5297,
+    "validation.json": 2092
+  },
+  "paid_calls": 0,
+  "network_calls": 0,
+  "model_responses_read": false,
+  "pre_freeze_peer_correction_proof": "pre-freeze-correction-014.json"
+}

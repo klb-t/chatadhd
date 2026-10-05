@@ -1,0 +1,31 @@
+{
+  "schema": "loom.new_label_corpus.authored_design/1",
+  "corpus_id": "new-label-corpus-v1",
+  "selection_freeze_commit": "7aed09b9df6b8d2fc0afc3a399f12016795ca687",
+  "authored_inventory": {
+    "families": 24,
+    "queries_per_family": 4,
+    "queries_total": 96,
+    "language_families": {"pl": 12, "en": 12}
+  },
+  "author_discretionary_design": {
+    "multiple_temporal_views_per_family": true,
+    "multiple_requested_speakers_per_family": true,
+    "both_ordered_query_directions_per_family": true,
+    "these_are_engine_requirements": false,
+    "these_are_universal_limits": false
+  },
+  "recipe_variants": [
+    {"arm": "active_refute_v2", "method_id": "j_active"},
+    {"arm": "directed_refute_v3", "method_id": "j_directed"}
+  ],
+  "recipe_comparison": {
+    "base_method": "j_active",
+    "candidate_method": "j_directed",
+    "operation": "append_frozen_recipe_value_at_frozen_recipe_changed_field"
+  },
+  "source_scope": "explicit_source",
+  "branches_used": false,
+  "target": "latest_active_explicit_source_commitment_for_exact_directed_relation_and_attribution_as_of",
+  "blind_sealed_holdout": false
+}

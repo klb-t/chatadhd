@@ -1,0 +1,173 @@
+{
+  "schema": "loom.new_label_corpus.family_index/1",
+  "families": [
+    {
+      "id": "new_label_001",
+      "domain": "Próba fikcyjnego teatru światła",
+      "language": "pl",
+      "authored_as_new_family": true,
+      "translated_from_another_family": false
+    },
+    {
+      "id": "new_label_002",
+      "domain": "Fikcyjny katalog eksponatów kartograficznych",
+      "language": "pl",
+      "authored_as_new_family": true,
+      "translated_from_another_family": false
+    },
+    {
+      "id": "new_label_003",
+      "domain": "Gra planszowa o ruchomych mostach",
+      "language": "pl",
+      "authored_as_new_family": true,
+      "translated_from_another_family": false
+    },
+    {
+      "id": "new_label_004",
+      "domain": "Pokaz fikcyjnego modelu fontanny",
+      "language": "pl",
+      "authored_as_new_family": true,
+      "translated_from_another_family": false
+    },
+    {
+      "id": "new_label_005",
+      "domain": "Publiczny fikcyjny warsztat pieczątek",
+      "language": "pl",
+      "authored_as_new_family": true,
+      "translated_from_another_family": false
+    },
+    {
+      "id": "new_label_006",
+      "domain": "Model ogrodu z tabliczkami kolorów",
+      "language": "pl",
+      "authored_as_new_family": true,
+      "translated_from_another_family": false
+    },
+    {
+      "id": "new_label_007",
+      "domain": "Fikcyjna linia miniaturowych tramwajów",
+      "language": "pl",
+      "authored_as_new_family": true,
+      "translated_from_another_family": false
+    },
+    {
+      "id": "new_label_008",
+      "domain": "Kolejność druku fikcyjnych plakatów",
+      "language": "pl",
+      "authored_as_new_family": true,
+      "translated_from_another_family": false
+    },
+    {
+      "id": "new_label_009",
+      "domain": "Warsztat kompozycji krótkiego utworu",
+      "language": "pl",
+      "authored_as_new_family": true,
+      "translated_from_another_family": false
+    },
+    {
+      "id": "new_label_010",
+      "domain": "Pokaz robota układającego klocki",
+      "language": "pl",
+      "authored_as_new_family": true,
+      "translated_from_another_family": false
+    },
+    {
+      "id": "new_label_011",
+      "domain": "Fikcyjny punkt informacji o żaglowych dekoracjach",
+      "language": "pl",
+      "authored_as_new_family": true,
+      "translated_from_another_family": false
+    },
+    {
+      "id": "new_label_012",
+      "domain": "Pokazowy piec do ceramicznych miniaturek",
+      "language": "pl",
+      "authored_as_new_family": true,
+      "translated_from_another_family": false
+    },
+    {
+      "id": "new_label_013",
+      "domain": "Fictional radio relay exercise",
+      "language": "en",
+      "authored_as_new_family": true,
+      "translated_from_another_family": false
+    },
+    {
+      "id": "new_label_014",
+      "domain": "Tournament of a made-up tile game",
+      "language": "en",
+      "authored_as_new_family": true,
+      "translated_from_another_family": false
+    },
+    {
+      "id": "new_label_015",
+      "domain": "Telescope classroom simulator",
+      "language": "en",
+      "authored_as_new_family": true,
+      "translated_from_another_family": false
+    },
+    {
+      "id": "new_label_016",
+      "domain": "Demonstration of a sorting conveyor",
+      "language": "en",
+      "authored_as_new_family": true,
+      "translated_from_another_family": false
+    },
+    {
+      "id": "new_label_017",
+      "domain": "Fictional software release flag discussion",
+      "language": "en",
+      "authored_as_new_family": true,
+      "translated_from_another_family": false
+    },
+    {
+      "id": "new_label_018",
+      "domain": "Reading club for an invented story",
+      "language": "en",
+      "authored_as_new_family": true,
+      "translated_from_another_family": false
+    },
+    {
+      "id": "new_label_019",
+      "domain": "Watermill model at a fictional fair",
+      "language": "en",
+      "authored_as_new_family": true,
+      "translated_from_another_family": false
+    },
+    {
+      "id": "new_label_020",
+      "domain": "Invented map exhibition admission tokens",
+      "language": "en",
+      "authored_as_new_family": true,
+      "translated_from_another_family": false
+    },
+    {
+      "id": "new_label_021",
+      "domain": "Pixel art contest rules in a made-up town",
+      "language": "en",
+      "authored_as_new_family": true,
+      "translated_from_another_family": false
+    },
+    {
+      "id": "new_label_022",
+      "domain": "Fictional marble race scoreboard",
+      "language": "en",
+      "authored_as_new_family": true,
+      "translated_from_another_family": false
+    },
+    {
+      "id": "new_label_023",
+      "domain": "Model railway workshop signal sequence",
+      "language": "en",
+      "authored_as_new_family": true,
+      "translated_from_another_family": false
+    },
+    {
+      "id": "new_label_024",
+      "domain": "Clockwork sculpture rehearsal",
+      "language": "en",
+      "authored_as_new_family": true,
+      "translated_from_another_family": false
+    }
+  ]
+}

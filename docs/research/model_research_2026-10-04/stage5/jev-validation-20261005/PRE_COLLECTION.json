@@ -1,0 +1,24 @@
+{
+  "schema": "loom.jev_validation.pre_collection/1",
+  "observed_on": "2026-10-05",
+  "source_commit": "66cd016",
+  "helper_sha256": "51a68636c569362e6777865467e6eace09ff9d79c7f7613a53a3132d7a782d13",
+  "config_sha256": "ebc02a4cef3a5c02189815d69ab09217a73d2d240a638f3dd127ca920004bd41",
+  "gold_sha256": "2f6e041024658543ffacc20f123ee9ef047ac32858638b8eecb49ff3c9d4c6e2",
+  "original_manifest_sha256": "14cbb6bb88f0397554815c06ac63d0e19121bd662ceb985f301a2a4770d092b2",
+  "fake_control_receipt_sha256": "df213759b6bf671dda8bceee34330b831d43f88bd5780929af9567a1abee6e19",
+  "fake_control_count": 8,
+  "preparation_exact_replay": true,
+  "planned_operations": 192,
+  "families": 24,
+  "languages": {
+    "pl": 12,
+    "en": 12
+  },
+  "planned_per_arm": 96,
+  "new_model_calls_by_7c": 0,
+  "actual_new_population_results_read": false,
+  "dispatch_owner": "7A",
+  "planned_reservation_usd": "0.192",
+  "actual_cost_usd": null
+}

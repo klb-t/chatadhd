@@ -1,0 +1,199 @@
+{
+  "schema": "loom.new_label_corpus.authorship_exposure/1",
+  "corpus_id": "new-label-corpus-v1",
+  "authorship_started_at_utc": "2026-10-05T12:39:40Z",
+  "first_complete_data_written_at_utc": "2026-10-05T12:43:33.312808Z",
+  "selection_freeze_commit": "7aed09b9df6b8d2fc0afc3a399f12016795ca687",
+  "selection_freeze_commit_time_utc": "2026-10-05T12:36:53Z",
+  "author_role": "independent child author after root global selection/preset freeze",
+  "author_sees_gold": true,
+  "root_reviews_gold_after_selection": true,
+  "blind_sealed_holdout": false,
+  "world_truth_target": false,
+  "author_claims_prior_conversation_access": false,
+  "prior_conversation_family_data_or_labels_read": false,
+  "model_responses_read": false,
+  "sealed_holdout_read": false,
+  "old_fixtures_loaded": false,
+  "network_calls": 0,
+  "paid_calls": 0,
+  "allowed_contract_exposure": [
+    "graph_panel_live.query_payload",
+    "graph_panel_live.jev_judgment_inputs",
+    "source_view_roles_v1.role_representation",
+    "source_view_experiment.specs",
+    "source_view_experiment.ACTIVE_REFUTE",
+    "w3_directed_commitment_v1.experiment.specs",
+    "w3_directed_commitment_v1.recipe.json"
+  ],
+  "additional_code_exposure": [
+    "Module headers/imports and constants from named contract files",
+    "graph_panel_live.EXTRACT_SYSTEM/JUDGE_SYSTEM, extraction_payload, chat_body and request builders",
+    "Definitions of graph_panel_live.load_dev_inputs/load_dev_gold, source_view_experiment.load_fixture/prepare_specs and source_view_roles_v1.prepare_plan were inadvertently included in source range display. None was called; no referenced fixture, control, old gold or result file was opened.",
+    "w3 recipe() and provider() validation helpers"
+  ],
+  "instruction_document_exposure": [
+    {
+      "path": "AGENTS.md",
+      "read": "all"
+    },
+    {
+      "path": "docs/STATE.md",
+      "read": "lines 1–45 and 142–171; existing request/integration metadata visible, research/results sections skipped"
+    },
+    {
+      "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+      "read": "owner requirements; output of initial combined read was truncated"
+    },
+    {
+      "path": "docs/research/OWNER_CLARIFICATION_2026-09-30.md",
+      "read": "lines 1–30; accounting section skipped"
+    },
+    {
+      "path": "docs/HANDOFF_2026-10-02_TO_CLAUDE.md",
+      "read": "lines 54–104; existing aggregate CTest counts/budget metadata were visible, no source-relative model accuracy metrics"
+    },
+    {
+      "path": "docs/LIMITS_AND_WIRING_2026-10-01.md",
+      "read": "lines 1–77 and 100–256; historical research runner section skipped"
+    },
+    {
+      "path": "docs/APPLICATION_PROFILES.md",
+      "read": "application contract and owner-authorised boundaries"
+    },
+    {
+      "path": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+      "read": "normative concepts; combined output truncated"
+    },
+    {
+      "path": "CLAUDE.md",
+      "read": "overview, conventions, Loom compatibility, security"
+    },
+    {
+      "path": "loom/README.md",
+      "read": "overview, build, ABI conventions, decisions, ownership and data extension"
+    },
+    {
+      "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+      "read": "separate remaining late requirements lines241–496 after combined output truncation"
+    },
+    {
+      "path": "docs/LIMITS_AND_WIRING_2026-10-01.md",
+      "read": "separate lines119–214 after combined output truncation"
+    },
+    {
+      "path": "docs/architecture/LOOM_CONCEPTUAL_MODEL.md",
+      "read": "separate lines1–136 after combined output truncation; concepts137–337 and invariants366–396 were displayed in later output"
+    },
+    {
+      "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+      "read": "all required owner requirements exposure; earlier first block and later remaining requirements as recorded above"
+    }
+  ],
+  "metadata_only_exposure": [
+    "git status filenames for current shared workspace; untracked result/response paths were listed without opening contents",
+    "git rev-parse HEAD and git show selection freeze commit metadata"
+  ],
+  "limitations": [
+    "No proof of statistical independence from model pretraining; provenance supports new authorship in this run only.",
+    "Gold was authored together with source; this is author-visible synthetic evaluation, not an independently blind sealed holdout."
+  ],
+  "collection_started": false,
+  "status": "author_ready_for_root_peer_review_before_data_freeze",
+  "author_checks_completed_at_utc": "2026-10-05T13:01:38.310974Z",
+  "model_calls_before_author_readiness": 0,
+  "pre_freeze_authored_data_revisions": [
+    {
+      "reason": "Self-review tightened event wording in family004 without changing labels.",
+      "query_ids": [
+        "new_label_004_q01",
+        "new_label_004_q02",
+        "new_label_004_q03",
+        "new_label_004_q04"
+      ]
+    },
+    {
+      "reason": "Self-review ensured all 24 families have both query directions. q04 in five families changed to the distinct reverse direction before any root data freeze or collection.",
+      "query_ids": [
+        "new_label_005_q04",
+        "new_label_006_q04",
+        "new_label_012_q04",
+        "new_label_017_q04",
+        "new_label_024_q04"
+      ],
+      "prior_draft_inputs_sha256": "5de8122d203cd329576d0782651d426fe51fa60a639bfbba87f549daf6a9b6d2",
+      "prior_draft_prepared_j_active_sha256": "65681350fd90f615a9f6e6fd4e924c5b9fc779c9bdd6ae5191202e06f9eb6359",
+      "prior_draft_prepared_j_directed_sha256": "09d93fdcbf477f5fe1f05b3b9b5edc7d76300f4817afe9f778e95ee3b051fd5f"
+    },
+    {
+      "reason": "Structural self-review found only one requested speaker in family001. q01 now asks about Maks’s own explicit denial so all 24 families also have multiple requested attributions. Source turns unchanged.",
+      "query_ids": [
+        "new_label_001_q01"
+      ],
+      "prior_draft_inputs_sha256": "3be10939ec360fe7a4dc6f3a27b1c27bf515fb1b843e54d77b7f6a3b6b137450"
+    },
+    {
+      "reason": "Align the inventory proposition with actual entry stated in the source, avoiding the permission/eligibility reading of may enter.",
+      "case_id": "new_label_014",
+      "json_pointer": "/cases/13/node_inventory/1/text",
+      "before": "The tile may enter the final round.",
+      "after": "The tile enters the final round.",
+      "labels_changed": false,
+      "criteria_changed": false,
+      "previous_exact_draft_directory": "/workspace/scratch/407fe6f6ff42/chatadhd/docs/research/model_research_2026-10-04/stage5/new-label-corpus-v1-drafts/pre-peer-014-correction-20261005T130057Z",
+      "proof": "pre-freeze-correction-014.json",
+      "before_collection": true
+    }
+  ],
+  "offline_replay_attempts": [
+    {
+      "outcome": "local_import_guard_failure_before_specs",
+      "reason": "Response-named-file guard also rejected stdlib urllib.response.pyc; narrowed to DATA suffixes only, keeping model response DATA prohibited.",
+      "old_response_data_read": false
+    },
+    {
+      "outcome": "pass_on_initial_complete_source",
+      "queries_each_recipe": 96
+    },
+    {
+      "outcome": "pass_on_direction_complete_source",
+      "queries_each_recipe": 96
+    },
+    {
+      "outcome": "pass_on_direction_and_attribution_complete_source",
+      "queries_each_recipe": 96
+    },
+    {
+      "outcome": "pass_after_universal_producer_refinement",
+      "queries_each_recipe": 96,
+      "source_and_gold_bytes_unchanged": true,
+      "all_variant_names_and_authored_inventory_in_data": true,
+      "numeric_execution_ceilings_added": false
+    },
+    {
+      "outcome": "pass_after_peer014_actual_entry_wording_correction",
+      "queries_each_recipe": 96,
+      "gold_bytes_unchanged": true,
+      "question_criteria_bytes_unchanged": true,
+      "paid_calls": 0
+    }
+  ],
+  "structural_validation_attempts": [
+    {
+      "outcome": "failed_at_family001_multiple_speaker_inventory_check",
+      "pre_collection": true,
+      "correction": "q01 requested attribution changed from Iga to Maks; gold changed to Maks’s explicit denial, with no source turn change."
+    },
+    {
+      "outcome": "pass",
+      "exact_evidence_spans_checked": 163
+    }
+  ],
+  "old_source_commitment_accuracy_metrics_read": false,
+  "normative_document_aggregate_verification_and_budget_metadata_visible": true,
+  "old_research_metric_source_files_read": false,
+  "producer_preserved_source_and_gold_sha256": {
+    "inputs.json": "8cfd43c19f2603b6cc6adcf0187115fe17f4e4cb2c157eb23308a99ad11e290d",
+    "gold.json": "2f6e041024658543ffacc20f123ee9ef047ac32858638b8eecb49ff3c9d4c6e2"
+  }
+}
