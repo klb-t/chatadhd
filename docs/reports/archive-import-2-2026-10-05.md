@@ -15,7 +15,7 @@ R42 sprawdzono w autoryzowanej gałęzi właściciela `claude/chataddhd-cpp-loom
 ## Weryfikacja i liczby
 
 Przed:5 domyślnych wartości importu i audyt rozproszone w C++/Python. Po:2 kanoniczne pliki danych,5+20 pól; domyślne zachowanie pozostaje wymaganiem bramki.
-Python:13 pełnych wyników API/CLI identycznych bajt po bajcie z bazą;19 starych testów zachowane,12 nowych przypadków, zwykły suite31/31 PASS. Niezależny przegląd ponownie wykonał31/31,0skip. Generator:9/9 PASS, kontrola dokładnych bajtów i25 wpisów warstw; nowa natywna regresja15 przypadków (preset/audyt/cache/pokwitowania) czeka na rzeczywisty build. Niezależny rzeczywisty konsument W12 + decoder W5:55/55 sprawdzeń PASS,25/25 wpisów; sprawdza wykluczenia/aktualizacje wersji, bez produkcyjnego OnboardingStore. Build web PASS (85 modułów,5,13s). Natywna zgodność i pełny CTest: jeszcze w toku; nie zgłaszam gotowości przed zakończeniem.
+Python:13 pełnych wyników API/CLI identycznych bajt po bajcie z bazą;19 starych testów zachowane,13 nowych przypadków, zwykły suite32/32 PASS. Root niezależnie ponownie wykonał32/32,0skip; wcześniejszy przegląd31 przypadków wykrył także potrzebę usunięcia ograniczenia rewizji danych do1, co jest poprawione i objęte32. testem. Generator:9/9 PASS, kontrola dokładnych bajtów i25 wpisów warstw; nowa natywna regresja15 przypadków (preset/audyt/cache/pokwitowania) czeka na rzeczywisty build. Niezależny rzeczywisty konsument W12 + decoder W5:55/55 sprawdzeń PASS,25/25 wpisów; sprawdza wykluczenia/aktualizacje wersji, bez produkcyjnego OnboardingStore. Build web PASS (85 modułów,5,13s). Natywna zgodność i pełny CTest: jeszcze w toku; nie zgłaszam gotowości przed zakończeniem.
 
 ## API i uruchomienie u właściciela
 
@@ -37,6 +37,8 @@ loom import export.zip --audit --import-preset /path/import.pack --audit-preset 
 ```
 
 Prywatne API konsumenta: `import_preset_from_values`, `apply_import_preset_values`, `inspect_import_preset` oraz odpowiedniki `import_audit_*`. Zastosowanie jest atomowe, nie zmienia callbacków/proweniencji/cen wywołującego. Zachowane zera parsera mają poprzednią semantykę, np. głębokość0 oznacza brak limitu; rozmiar chunk musi być dodatni i reprezentowalny, bez wymyślonego maksimum.
+
+Format `schema` ma numer kontraktu `/1`, a `version` jest dowolną dodatnią całkowitą rewizją danych; nie blokujemy kolejnych rewizji.
 
 Regeneracja danych:
 

@@ -420,7 +420,9 @@ class ArchiveAuditPresetTest(unittest.TestCase):
                 connect.assert_not_called()
 
     def test_invalid_schema_version_types_and_flags(self):
-        for change in ({"schema": "old"}, {"version": 0}, {"version": 2}, {"version": True},
+        for change in ({"schema": "old"}, {"schema": "loom.import_audit_preset/2"},
+                       {"version": 0}, {"version": -1}, {"version": None},
+                       {"version": 1.0}, {"version": True},
                        {"id": None}, {"id": ""}):
             with self.subTest(change=change), self.assertRaises(ValueError):
                 archive_cost.load_audit_preset(self.write_pack({**self.pack, **change}))
@@ -432,6 +434,20 @@ class ArchiveAuditPresetTest(unittest.TestCase):
             values = {**self.pack["values"], name: value}
             with self.subTest(name=name, value=value), self.assertRaises(ValueError):
                 archive_cost.load_audit_preset(values)
+
+    def test_positive_data_revision_two_changes_estimate_and_inspection(self):
+        self.pack["version"] = 2
+        self.pack["values"].update(output_ratio=3.0, chars_per_token_low=6.0, chars_per_token_high=2.0)
+        path = self.write_pack()
+        info = archive_cost.inspect_audit_preset(path)
+        self.assertEqual(info["version"], 2)
+        self.assertEqual(info["schema"], "loom.import_audit_preset/1")
+        self.assertEqual(info["sha256"], hashlib.sha256(path.read_bytes()).hexdigest())
+        self.assertEqual(archive_cost.load_audit_preset(path), self.pack["values"])
+        stats = archive_cost.archive_stats(self.db, audit_preset=path)
+        estimate = archive_cost.estimate(stats, audit_preset=path)
+        self.assertEqual(estimate["tokens"], {"low": 900, "high": 2700})
+        self.assertEqual(estimate["output_tokens"], {"low": 2700.0, "high": 8100.0})
 
     def test_source_edits_change_defaults_and_source_hash_without_cache(self):
         path = self.write_pack()

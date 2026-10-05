@@ -261,10 +261,11 @@ def inspect_audit_preset(audit_preset=_UNSET) -> dict:
         raise ValueError("audit preset must contain schema, id, version and complete values")
     if pack["schema"] != "loom.import_audit_preset/1" or type(pack["id"]) is not str or not pack["id"]:
         raise ValueError("invalid audit preset schema/id")
-    if type(pack["version"]) is not int or pack["version"] != 1:
-        raise ValueError("unsupported audit preset version")
+    if type(pack["version"]) is not int or pack["version"] <= 0:
+        raise ValueError("audit preset version must be a positive integer data revision")
     values = _validated_preset_values(pack["values"])
-    return {"source": str(path), "sha256": hashlib.sha256(raw).hexdigest(),
+    return {"source": str(path), "schema": pack["schema"], "id": pack["id"], "version": pack["version"],
+            "sha256": hashlib.sha256(raw).hexdigest(),
             "hash_scope": "exact pack source bytes", "values": values}
 
 
