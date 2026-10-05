@@ -1,0 +1,79 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "chat_reasoning",
+  "revision": 1,
+  "description": "Exact legacy reasoning request recipe, including its provider-independent substring matching. Lists, effort labels and budgets are editable data; native code only executes matching and lookup operations.",
+  "defaults": {
+    "thinking_indicators": [
+      "opus",
+      "sonnet",
+      "o1",
+      "o3",
+      "r1",
+      "thinking",
+      "deepseek"
+    ],
+    "budget_model_markers": [
+      "4.6",
+      "4-6",
+      "4.5",
+      "4-5"
+    ],
+    "budget_by_effort": {
+      "low": 5000,
+      "medium": 15000,
+      "high": 30000
+    },
+    "unknown_effort_budget": 15000,
+    "adaptive_effort": "adaptive",
+    "verbosity_effort": "max",
+    "verbosity_value": "max"
+  },
+  "value_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "thinking_indicators",
+      "budget_model_markers",
+      "budget_by_effort",
+      "unknown_effort_budget",
+      "adaptive_effort",
+      "verbosity_effort",
+      "verbosity_value"
+    ],
+    "properties": {
+      "thinking_indicators": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "budget_model_markers": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "budget_by_effort": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "unknown_effort_budget": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "adaptive_effort": {
+        "type": "string"
+      },
+      "verbosity_effort": {
+        "type": "string"
+      },
+      "verbosity_value": {
+        "type": "string"
+      }
+    }
+  }
+}
