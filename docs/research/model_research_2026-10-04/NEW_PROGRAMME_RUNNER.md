@@ -79,7 +79,9 @@ and latency remain private; aggregate stage/cumulative cost receipts are safe
 to report. Completed receipts are reconstructed from their original raw
 response and generation bytes when the ledger reopens.
 
-Any ambiguous, unknown-cost or mismatched attempt stops continuation. A durable
+Reserved, ambiguous or mismatched attempts stop continuation. Unknown costs
+retain their full reservations; continuation requires the explicit bound-pending
+stage policy below. A durable
 stop record survives another invocation. Orphan evidence blocks with and
 without a ledger; it is never adopted into a replacement ledger, and a request
 is never retried automatically. Existing completed operations are not sent
@@ -98,10 +100,49 @@ every cumulative attempt is completed with replayed unique generation identity,
 matching actual cost and explicit credit billing. All other strict gate checks
 must pass. The raw observed usage is preserved, and the strict equality check
 remains false in the readiness witness. Admission separately uses the minimum
-of provider-reported remaining credit and the configured cap minus verified
-actual costs and unresolved reservations. Higher usage, unknown cost, identity
-contradictions or incomplete attempts continue to stop spending. The public
+of provider-reported remaining credit, configured cap minus verified actual
+costs/reservations, and live provider limit minus those same amounts. The public
 preset and original standalone admission gate retain strict equality.
+
+`billing_verification_timing` defaults to `per_operation`, which obtains the
+generation credit proof before continuing. An operator may select `stage_end`
+together with `unknown_cost_policy: "reserve"`. Explicit `stop` remains effective
+and blocks continuation after a deferred receipt. The data preset
+`require_credit_proof_per_pair: true` obtains a real generation credit proof for
+the first selected model/provider/route/API tuple. Replayed completed credit
+receipts from this cumulative ledger provide that bootstrap witness; later
+requests for that pair may defer generation verification. Disabling this preset
+is a separate caller-owned data choice.
+
+A deferred request requires a complete HTTP 200 first response with a unique
+string generation ID, matching selected model/provider/API binding and finite
+reported cost no greater than its reservation. Its original SQLite/result state
+is `pending_billing`, with `actual_cost_usd: null` and `billing_verified: false`.
+Reported credit/BYOK fields remain reported evidence. The full reservation stays
+held, independent of the smaller reported cost. Each first response and every
+subsequent key reading remain private and immutable.
+
+Every stage-end paid admission requires observed provider usage within
+`[verified actual, verified actual + all pending full reservations]`, including
+the singleton interval when bootstrap leaves no pending row. The optional lower
+usage policy cannot admit another POST outside this interval. Remaining planned
+reservations must fit the configured cap, live provider limit and reported
+remaining credit after all held reservations. BYOK usage must remain zero; key
+limit/reset/management/BYOK-limit fields are bound through the editable
+`pending_key_metadata_binding_fields`. Raw usage and strict blocked checks stay
+visible in a saved bounded-pending witness; reported costs never become actuals
+to manufacture equality.
+
+Pause/resume can skip this bound pending prefix only under the same immutable
+stage manifest. A new stage cannot spend while any prior billing is pending.
+At stage end, GET-only checks must certify every unique generation's exact
+identity, cost and credit billing before the stage completes. The final
+all-verified, no-dispatch boundary may use the separately selected lower-usage
+policy while preserving its strict blocked witness. Exhausted pending reads
+produce a STOP with reservations held; `reconcile-captured` can obtain later
+proofs through GET requests. A nonpending contradiction is durably blocked.
+Successful HTTP 200 metadata cannot be reclassified as pending by a status
+preset. Default timing, strict usage and historical runners remain unchanged.
 
 After a clean stop involving only completed verified attempts, `reconcile` uses
 GET requests, exact-key binding, fresh caps/FX/quotes and full receipt replay. A
@@ -122,9 +163,10 @@ python3 -B loom/tools/structure/research_programme_runner.py reconcile \
   --key-file /private/credential.key
 ```
 
-The separate `reconcile-captured` command can resolve an uncertain attempt only
-when its original request, complete HTTP 200 first response, generation ID and
+The separate `reconcile-captured` command can resolve an uncertain attempt when
+its original request, complete HTTP 200 first response, generation ID and
 configured pending generation-read statuses are already durably captured. It
+also certifies the planned `pending_billing` rows described above. It
 fetches its own GET-only proof; it accepts no replacement response or imported
 generation record. Exact generation identity, model/provider/API type, cost,
 credit billing and the original reservation must agree. Reserved attempts,
@@ -141,15 +183,22 @@ python3 -B loom/tools/structure/research_programme_runner.py reconcile-captured 
 
 Late proof appends an immutable `attempt-resolution.json` record and private
 generation-read bytes. The original uncertain SQLite attempt, result receipt
-and all pending-read bytes remain unchanged. Reopening rebuilds a verified
+or planned pending attempt and all pending-read bytes remain unchanged. Reopening rebuilds a verified
 completed projection from those bound originals and the late proof. Fresh
 key/cap/FX/quote checks must still clear the active STOP before continuation; a
 valid late proof with a failed budget check retains the STOP. Resume uses the
 completed projection to skip the original operation without another POST.
+Every late GET capture has an immutable audit binding its original attempt,
+status/error, raw hash and outcome. Reopening validates the raw/audit inventory;
+retained contradictory or orphaned reads block even if a failure projection was
+deleted. Private invocation receipts anchor original attempt IDs/hashes, with
+historical counts checked for older receipts. A surviving receipt cannot be
+silently discarded when a partial restore loses a paid row and its records.
 
 Cooperative pause uses `pause.request_filename`, configured signals or a
 caller-selected operation limit. A request received during POST finishes the
-first response, generation proof and key/budget reconciliation before returning
+first response, the selected timing's generation/pending accounting boundary
+and key/budget reconciliation before returning
 `paused`. It creates no durable STOP. Clear the owner-only request file or
 invocation limit before resuming the same manifest and ledger. Signal handlers
 are restored when the invocation ends. This applies to processes started with
@@ -180,12 +229,33 @@ cost exceeding its reservation stops further spending while retaining the
 actual receipt. Scoring and stage selection remain with the existing research
 tools.
 
-Verification: 103 focused offline regressions plus the existing 8 gate checks
+The optional `endpoint_pricing` object embeds the caller-owned
+[endpoint policy](billing/endpoint-pricing-policy.json). Its public default is
+null, preserving the existing 432-request quote path. When selected, current
+endpoint bytes produce a source-bound upper envelope over every admitted
+endpoint and conditional pricing schedule. Tags bind provider/tier routing;
+display names alone do not select a price. Every operation revalidates its
+routing against the cached quote and its quantities against the policy. A later
+same-pair tier change cannot reuse a standard-only quote. Every zero media/search
+quantity needs the exact text-only, single-response, no-paid-tools body witness.
+Both output maximum fields are checked; streaming or multiple responses require
+an explicitly different caller policy and supported receipt format. The quote
+retains its pricing policy hash and original schedules in private forecasts.
+
+Final-operation and fully completed STOP accounting still validate the original
+request and its real quantity bounds. Their GET-only accounting projection then
+uses zero additional quantities/reservation because it sends no paid request.
+This projection does not bypass original-request validation or cumulative cap
+checks. Historical captured-generation proofs remain unchanged and replayable.
+
+Verification: 135 focused programme regressions, 27 endpoint-policy regressions
+and the existing 8 gate checks
 pass. These use fabricated keys, rates, prices, receipts and transport; they
 cover all 432 frozen requests, prepared later-stage formats, crashes, orphan
 files, billing replay corruption, pricing/FX, exact key identity, BYOK, guard
 baselines, durable stops, pooling, cooperative pause/resume, GET-only STOP
-resolution and late-generation proof replay. Independent reviews also exercised
-21 fabricated late-proof cases, including rejection, budget and evidence
-tampering paths. No real credential was read or provider call made
+resolution, late-generation proof replay, pair credit bootstrap, bounded pending
+reservations and surviving-history deletion. Independent reviews also exercised
+26 fabricated stage-end cases and separate deletion/lag probes, including
+rejection, budget and evidence tampering paths. No real credential was read or provider call made
 by this implementation lane.
