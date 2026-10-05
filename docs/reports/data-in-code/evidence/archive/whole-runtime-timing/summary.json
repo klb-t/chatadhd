@@ -1,0 +1,64 @@
+{
+  "schema": "archive.whole_timing_summary/1",
+  "base_commit": "161cc22dfb84fe863389d6b90323bd44516a68dc",
+  "repeats": 3,
+  "baseline_receipts": [
+    "baseline-1-timing-receipt.json",
+    "baseline-2-timing-receipt.json",
+    "baseline-3-timing-receipt.json"
+  ],
+  "baseline_archive_run_ns": [
+    236629979,
+    149568657,
+    143220183
+  ],
+  "baseline_native_runtime_ns": [
+    251352247,
+    163434798,
+    153187968
+  ],
+  "baseline_archive_run_median_ns": 149568657,
+  "baseline_native_runtime_median_ns": 163434798,
+  "exact_baseline_repeats": true,
+  "candidate_receipts": [
+    "candidate-1-timing-receipt.json",
+    "candidate-2-timing-receipt.json",
+    "candidate-3-timing-receipt.json"
+  ],
+  "candidate_status": "PASS all3 exact archive parity comparisons after final build/rebase",
+  "fixture_count": 8,
+  "artifact_count": 8,
+  "artifact_bytes": 47383,
+  "docs": 26,
+  "notes": [
+    "ELF load, CAPI initialization, archive operation and shutdown measured separately.",
+    "First execution shows filesystem/cache variation; do not treat it as algorithm-only.",
+    "Final candidate calls must use identical fixture and materialized path and exact parity comparator.",
+    "Wall clock timings do not establish model usage, storage growth or x10 authorization thresholds.",
+    "Candidate measurements ran while full ctest and C++ proof probes were active; wallclock variation is present.",
+    "Runtime init measures all activated profile consumers; this fixture does not attribute all init overhead specifically to archive.",
+    "Measured ratios are2.832664 archive operation and5.519968 complete native init/run/shutdown on this fixture. They are not an expectation or guarantee for arbitrary workloads or usage guard decisions."
+  ],
+  "commands": {
+    "baseline": "python docs/reports/data-in-code/evidence/archive/whole-runtime-timing/archive_whole_timing.py loom/tests/archive_artifact_parity.py BASELINE_ELF OUTPUT --compare BASELINE_CAPTURE --fixtures loom/tests/fixtures/archive --materialized-dir COMMON_OUTPUT",
+    "candidate": "Same command replacing only BASELINE_ELF and new OUTPUT, after complete candidate build; never overwrite baseline captures."
+  },
+  "candidate_archive_run_ns": [
+    423677807,
+    548536423,
+    388825872
+  ],
+  "candidate_native_runtime_ns": [
+    828171099,
+    1090380230,
+    902154801
+  ],
+  "candidate_archive_run_median_ns": 423677807,
+  "candidate_native_runtime_median_ns": 902154801,
+  "candidate_source_commit": "3cbc4b6",
+  "candidate_library_sha256": "9ff144fb7455937100a8dd4ce35c8ed61159fb869bd7b97b90c3016e404f149c",
+  "exact_candidate_repeats": true,
+  "candidate_artifacts_evidence": "../archive-parity-final-after/",
+  "archive_run_median_ratio": 2.8326643796768196,
+  "native_runtime_median_ratio": 5.519967669308711
+}

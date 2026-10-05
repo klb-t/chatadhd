@@ -1,0 +1,23 @@
+{
+  "schema": "loom.zero_object_copy_replay/1",
+  "classification": "Synthetic deterministic copy-only replay; not original failed server object",
+  "input_path": "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/build-recovery/input-object.bin",
+  "input_bytes": 356888,
+  "input_sha256": "dc496983d518fe6ee013fd0465b9ca21251da9cccf6261d702df39463c63de4d",
+  "input_unchanged": true,
+  "copied_object_bytes": 0,
+  "copied_object_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "copied_object_is_elf": false,
+  "expected_diagnostic_class": "empty object cannot supply App symbols or be a valid archive member",
+  "assertions": 4,
+  "compiler_executed": false,
+  "linker_executed": false,
+  "original_build_directory_mutated": false,
+  "operations": [
+    "read+hash ELF input",
+    "copy into isolated temporary directory",
+    "truncate copy to zero",
+    "validate size/header and source bytes unchanged",
+    "remove temporary copies"
+  ]
+}

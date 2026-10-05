@@ -1,0 +1,128 @@
+{
+  "schema": "archive.whole_timing/1",
+  "library": "/workspace/scratch/72fc60ad1cc5/baseline-build/libloom.so.0.1.0",
+  "library_sha256": "4902cecd7cf9142408853fccc7a9170adc1b709ea715fe1a8da7288221ffb5a9",
+  "harness_sha256": "eecb5970e87fb4b61f45dccc83ebeae1a8ca8355ee9985375bbd13c80a23f025",
+  "timing_wrapper_sha256": "61769f2257450748fc35dbb406ae84dbcdc56e67ecb606347b42a85b12038bab",
+  "elapsed_ns": {
+    "library_load": [
+      146003548
+    ],
+    "loom_init_ex": [
+      13535742
+    ],
+    "loom_archive_run": [
+      236629979
+    ],
+    "loom_shutdown": [
+      1186526
+    ]
+  },
+  "native_runtime_ns": 251352247,
+  "harness_elapsed_ns": 1037515507,
+  "exact_parity": true,
+  "comparison": "/workspace/scratch/72fc60ad1cc5/archive-parity-161-ready-before",
+  "artifact_count": 8,
+  "artifact_bytes": 47383,
+  "summary": {
+    "project": "fixture",
+    "docs": 26,
+    "sources": 8,
+    "hits": 26,
+    "vocabulary": 4,
+    "passes": [
+      {
+        "pass": 1,
+        "terms": 4,
+        "hits": 26,
+        "new_hits": 26,
+        "added": []
+      }
+    ],
+    "themes": [
+      {
+        "id": "T1",
+        "label": "knowledge \u00b7 sqlite \u00b7 local",
+        "size": 13
+      },
+      {
+        "id": "T2",
+        "label": "importer \u00b7 conversation \u00b7 bytes",
+        "size": 8
+      },
+      {
+        "id": "T3",
+        "label": "kivy \u00b7 mobile \u00b7 android",
+        "size": 3
+      },
+      {
+        "id": "T4",
+        "label": "other",
+        "size": 2
+      }
+    ],
+    "items": {
+      "edges": 2,
+      "by_type": {
+        "resolves": 1,
+        "supersedes": 1
+      }
+    },
+    "gap": {
+      "components_implemented": 0,
+      "components_partial": 1,
+      "components_missing": 2,
+      "features_total": 5,
+      "features_with_evidence": 2,
+      "features_partial": 0,
+      "features_missing": 3,
+      "todos": 2
+    },
+    "discovered_terms": [],
+    "artifacts": [
+      {
+        "id": "a_90ab1db41de9",
+        "name": "MASTER.md",
+        "hash": "bc62aff6209eb66d5ee1aa8547f246e464d37142667d6176924aa052724382bb"
+      },
+      {
+        "id": "a_eee28d276b5b",
+        "name": "gap_report.md",
+        "hash": "72411320d5c290537acf0cb996f29de6f128202a36e8302d2220b283a58a9966"
+      },
+      {
+        "id": "a_03240316d2a2",
+        "name": "graph.json",
+        "hash": "dc6b33137f31cb70fcdd93e80870b7b6c53aeb891e2c3ef98f3f68ddf7d486b9"
+      },
+      {
+        "id": "a_62517f785b86",
+        "name": "items.jsonl",
+        "hash": "370dcca519d6e00598900fdadf749e7aa716607714fc2c6657b885210b2e81f7"
+      },
+      {
+        "id": "a_44d71fe16161",
+        "name": "project_manifest.json",
+        "hash": "a8fbf95e291cdd8e8c2df6e12d1d4ed0fd8b8c787b0a6a629cceea997c1bdedc"
+      },
+      {
+        "id": "a_d6305f7ea659",
+        "name": "source_map.csv",
+        "hash": "6ad7945f24435e8c0cf5e101547bb5044174229ad175c2b96a66fb51cb1a1a25"
+      },
+      {
+        "id": "a_da13ac800b00",
+        "name": "timeline.json",
+        "hash": "edacbca11c7d4eacf1b4798cbef4ccf3e9f095ae8ee51dd45a03a3944f6bf57f"
+      },
+      {
+        "id": "a_da133e83f2a8",
+        "name": "task_log.jsonl",
+        "hash": "2d643ee6a1046858b87d2d5e8d3c00f4ee5246328b0ccc22a655bfd240ab40bf"
+      }
+    ],
+    "out_dir": "/workspace/scratch/72fc60ad1cc5/archive-parity-materialized",
+    "warnings": []
+  },
+  "method": "perf_counter_ns around unmodified native calls; harness elapsed separately includes ELF SHA256 and artifact/DB proof capture; workers disabled; offline public fixture; no Runtime profile overlay"
+}

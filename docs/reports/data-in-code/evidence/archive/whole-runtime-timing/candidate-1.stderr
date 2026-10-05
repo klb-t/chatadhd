@@ -1,0 +1,17 @@
+00:54:14 [INFO ] loom.config: config.json not found - using defaults
+00:54:14 [INFO ] loom.config: secrets.json not found - using defaults
+00:54:14 [INFO ] loom.db: Schema upgraded: v0 -> v4
+00:54:14 [INFO ] loom.db: Database opened: /tmp/archive-parity-v1qiaku4/data/chatadhd.db
+00:54:14 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+00:54:14 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/archive-parity-v1qiaku4/data)
+00:54:15 [INFO ] loom.db: Batch inserted 1 messages into c_c780ff29fd7d
+00:54:15 [INFO ] loom.db: Batch inserted 3 messages into c_fa907cb15a82
+00:54:15 [INFO ] loom.db: Batch inserted 6 messages into c_a5942ee2120d
+00:54:15 [INFO ] loom.db: Batch inserted 2 messages into c_b995c11d63ec
+00:54:15 [INFO ] loom.db: Batch inserted 7 messages into c_bfbe541d526b
+00:54:15 [INFO ] loom.db: Batch inserted 2 messages into c_caf645f4928e
+00:54:15 [INFO ] loom.db: Batch inserted 3 messages into c_e11704dfc1bf
+00:54:15 [INFO ] loom.db: Batch inserted 1 messages into c_146ef25f7b82
+00:54:15 [INFO ] loom.db: Batch inserted 1 messages into c_7e2d37d731d8
+00:54:15 [INFO ] loom.db: Database closed
+00:54:15 [INFO ] loom.runtime: Loom runtime shut down

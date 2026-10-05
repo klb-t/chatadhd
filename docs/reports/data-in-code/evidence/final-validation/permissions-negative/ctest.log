@@ -1,0 +1,632 @@
+Test project /workspace/scratch/72fc60ad1cc5/current-build
+        Start   1: unit.test_archive
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+  1/122 Test   #1: unit.test_archive ..................................***Not Run   0.00 sec
+        Start   2: unit.test_archive_profiles
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+  2/122 Test   #2: unit.test_archive_profiles .........................***Not Run   0.00 sec
+        Start   3: unit.test_archive_runtime_policy
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+  3/122 Test   #3: unit.test_archive_runtime_policy ...................***Not Run   0.00 sec
+        Start   4: unit.test_archive_synthesis_policy
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+  4/122 Test   #4: unit.test_archive_synthesis_policy .................***Not Run   0.00 sec
+        Start   5: unit.test_archive_text_policy
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+  5/122 Test   #5: unit.test_archive_text_policy ......................***Not Run   0.00 sec
+        Start   6: unit.test_batch_api
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+  6/122 Test   #6: unit.test_batch_api ................................***Not Run   0.00 sec
+        Start   7: unit.test_capi
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+  7/122 Test   #7: unit.test_capi .....................................***Not Run   0.00 sec
+        Start   8: unit.test_capi_knowledge
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+  8/122 Test   #8: unit.test_capi_knowledge ...........................***Not Run   0.00 sec
+        Start   9: unit.test_capi_knowledge_latest_run
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+  9/122 Test   #9: unit.test_capi_knowledge_latest_run ................***Not Run   0.00 sec
+        Start  10: unit.test_catalog
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 10/122 Test  #10: unit.test_catalog ..................................***Not Run   0.00 sec
+        Start  11: unit.test_catalog_context
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 11/122 Test  #11: unit.test_catalog_context ..........................***Not Run   0.00 sec
+        Start  12: unit.test_catalog_eval
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 12/122 Test  #12: unit.test_catalog_eval .............................***Not Run   0.00 sec
+        Start  13: unit.test_catalog_links
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 13/122 Test  #13: unit.test_catalog_links ............................***Not Run   0.00 sec
+        Start  14: unit.test_catalog_retention
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 14/122 Test  #14: unit.test_catalog_retention ........................***Not Run   0.00 sec
+        Start  15: unit.test_catalog_scale
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 15/122 Test  #15: unit.test_catalog_scale ............................***Not Run   0.00 sec
+        Start  16: unit.test_chat_active_task
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 16/122 Test  #16: unit.test_chat_active_task .........................***Not Run   0.00 sec
+        Start  17: unit.test_chat_active_task_acceptance_audit
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 17/122 Test  #17: unit.test_chat_active_task_acceptance_audit ........***Not Run   0.00 sec
+        Start  18: unit.test_chat_active_task_acceptance_scale
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 18/122 Test  #18: unit.test_chat_active_task_acceptance_scale ........***Not Run   0.00 sec
+        Start  19: unit.test_chat_active_task_acceptance_validation
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 19/122 Test  #19: unit.test_chat_active_task_acceptance_validation ...***Not Run   0.00 sec
+        Start  20: unit.test_chat_active_task_concurrency
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 20/122 Test  #20: unit.test_chat_active_task_concurrency .............***Not Run   0.00 sec
+        Start  21: unit.test_chat_active_task_durability
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 21/122 Test  #21: unit.test_chat_active_task_durability ..............***Not Run   0.00 sec
+        Start  22: unit.test_chat_active_task_durable_audit
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 22/122 Test  #22: unit.test_chat_active_task_durable_audit ...........***Not Run   0.00 sec
+        Start  23: unit.test_chat_active_task_exceptional
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 23/122 Test  #23: unit.test_chat_active_task_exceptional .............***Not Run   0.00 sec
+        Start  24: unit.test_chat_active_task_history_aba
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 24/122 Test  #24: unit.test_chat_active_task_history_aba .............***Not Run   0.00 sec
+        Start  25: unit.test_chat_active_task_reference
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 25/122 Test  #25: unit.test_chat_active_task_reference ...............***Not Run   0.00 sec
+        Start  26: unit.test_chat_active_task_retention
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 26/122 Test  #26: unit.test_chat_active_task_retention ...............***Not Run   0.00 sec
+        Start  27: unit.test_chat_active_task_revisions
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 27/122 Test  #27: unit.test_chat_active_task_revisions ...............***Not Run   0.00 sec
+        Start  28: unit.test_chat_active_task_scope_identity
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 28/122 Test  #28: unit.test_chat_active_task_scope_identity ..........***Not Run   0.00 sec
+        Start  29: unit.test_chat_engine
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 29/122 Test  #29: unit.test_chat_engine ..............................***Not Run   0.00 sec
+        Start  30: unit.test_chat_knowledge_context
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 30/122 Test  #30: unit.test_chat_knowledge_context ...................***Not Run   0.00 sec
+        Start  31: unit.test_chat_retrieval_plan
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 31/122 Test  #31: unit.test_chat_retrieval_plan ......................***Not Run   0.00 sec
+        Start  32: unit.test_config
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 32/122 Test  #32: unit.test_config ...................................***Not Run   0.00 sec
+        Start  33: unit.test_context_channel_integration
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 33/122 Test  #33: unit.test_context_channel_integration ..............***Not Run   0.00 sec
+        Start  34: unit.test_context_controls
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 34/122 Test  #34: unit.test_context_controls .........................***Not Run   0.00 sec
+        Start  35: unit.test_context_counter
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 35/122 Test  #35: unit.test_context_counter ..........................***Not Run   0.00 sec
+        Start  36: unit.test_context_diagnostics
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 36/122 Test  #36: unit.test_context_diagnostics ......................***Not Run   0.00 sec
+        Start  37: unit.test_context_engine
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 37/122 Test  #37: unit.test_context_engine ...........................***Not Run   0.00 sec
+        Start  38: unit.test_context_eval
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 38/122 Test  #38: unit.test_context_eval .............................***Not Run   0.00 sec
+        Start  39: unit.test_context_native_consumer
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 39/122 Test  #39: unit.test_context_native_consumer ..................***Not Run   0.00 sec
+        Start  40: unit.test_context_plan
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 40/122 Test  #40: unit.test_context_plan .............................***Not Run   0.00 sec
+        Start  41: unit.test_context_retrieval
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 41/122 Test  #41: unit.test_context_retrieval ........................***Not Run   0.00 sec
+        Start  42: unit.test_context_retrieval_dev
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 42/122 Test  #42: unit.test_context_retrieval_dev ....................***Not Run   0.00 sec
+        Start  43: unit.test_context_tfidf_reuse
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 43/122 Test  #43: unit.test_context_tfidf_reuse ......................***Not Run   0.00 sec
+        Start  44: unit.test_crypto
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 44/122 Test  #44: unit.test_crypto ...................................***Not Run   0.00 sec
+        Start  45: unit.test_db
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 45/122 Test  #45: unit.test_db .......................................***Not Run   0.00 sec
+        Start  46: unit.test_event_bus
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 46/122 Test  #46: unit.test_event_bus ................................***Not Run   0.00 sec
+        Start  47: unit.test_extract
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 47/122 Test  #47: unit.test_extract ..................................***Not Run   0.00 sec
+        Start  48: unit.test_extract_eval
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 48/122 Test  #48: unit.test_extract_eval .............................***Not Run   0.00 sec
+        Start  49: unit.test_fts
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 49/122 Test  #49: unit.test_fts ......................................***Not Run   0.00 sec
+        Start  50: unit.test_generalize
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 50/122 Test  #50: unit.test_generalize ...............................***Not Run   0.00 sec
+        Start  51: unit.test_generalize_eval
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 51/122 Test  #51: unit.test_generalize_eval ..........................***Not Run   0.00 sec
+        Start  52: unit.test_github
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 52/122 Test  #52: unit.test_github ...................................***Not Run   0.00 sec
+        Start  53: unit.test_graph
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 53/122 Test  #53: unit.test_graph ....................................***Not Run   0.00 sec
+        Start  54: unit.test_import
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 54/122 Test  #54: unit.test_import ...................................***Not Run   0.00 sec
+        Start  55: unit.test_import_export_fidelity
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 55/122 Test  #55: unit.test_import_export_fidelity ...................***Not Run   0.00 sec
+        Start  56: unit.test_import_exports
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 56/122 Test  #56: unit.test_import_exports ...........................***Not Run   0.00 sec
+        Start  57: unit.test_import_source_materialization
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 57/122 Test  #57: unit.test_import_source_materialization ............***Not Run   0.00 sec
+        Start  58: unit.test_import_stream
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 58/122 Test  #58: unit.test_import_stream ............................***Not Run   0.00 sec
+        Start  59: unit.test_kb_pack
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 59/122 Test  #59: unit.test_kb_pack ..................................***Not Run   0.00 sec
+        Start  60: unit.test_knowledge
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 60/122 Test  #60: unit.test_knowledge ................................***Not Run   0.00 sec
+        Start  61: unit.test_knowledge_candidate_graph
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 61/122 Test  #61: unit.test_knowledge_candidate_graph ................***Not Run   0.00 sec
+        Start  62: unit.test_knowledge_candidates
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 62/122 Test  #62: unit.test_knowledge_candidates .....................***Not Run   0.00 sec
+        Start  63: unit.test_knowledge_flow
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 63/122 Test  #63: unit.test_knowledge_flow ...........................***Not Run   0.00 sec
+        Start  64: unit.test_knowledge_profile
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 64/122 Test  #64: unit.test_knowledge_profile ........................***Not Run   0.00 sec
+        Start  65: unit.test_knowledge_semantic
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 65/122 Test  #65: unit.test_knowledge_semantic .......................***Not Run   0.00 sec
+        Start  66: unit.test_knowledge_semantic_graph
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 66/122 Test  #66: unit.test_knowledge_semantic_graph .................***Not Run   0.00 sec
+        Start  67: unit.test_knowledge_store
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 67/122 Test  #67: unit.test_knowledge_store ..........................***Not Run   0.00 sec
+        Start  68: unit.test_materialize
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 68/122 Test  #68: unit.test_materialize ..............................***Not Run   0.00 sec
+        Start  69: unit.test_media
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 69/122 Test  #69: unit.test_media ....................................***Not Run   0.00 sec
+        Start  70: unit.test_memory
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 70/122 Test  #70: unit.test_memory ...................................***Not Run   0.00 sec
+        Start  71: unit.test_memory_sort_profiles
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 71/122 Test  #71: unit.test_memory_sort_profiles .....................***Not Run   0.00 sec
+        Start  72: unit.test_memory_visibility_profiles
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 72/122 Test  #72: unit.test_memory_visibility_profiles ...............***Not Run   0.00 sec
+        Start  73: unit.test_model
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 73/122 Test  #73: unit.test_model ....................................***Not Run   0.00 sec
+        Start  74: unit.test_model_creation_profile
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 74/122 Test  #74: unit.test_model_creation_profile ...................***Not Run   0.00 sec
+        Start  75: unit.test_model_profile
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 75/122 Test  #75: unit.test_model_profile ............................***Not Run   0.00 sec
+        Start  76: unit.test_net_profile
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 76/122 Test  #76: unit.test_net_profile ..............................***Not Run   0.00 sec
+        Start  77: unit.test_net_sse
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 77/122 Test  #77: unit.test_net_sse ..................................***Not Run   0.00 sec
+        Start  78: unit.test_pack_model
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 78/122 Test  #78: unit.test_pack_model ...............................***Not Run   0.00 sec
+        Start  79: unit.test_provenance
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 79/122 Test  #79: unit.test_provenance ...............................***Not Run   0.00 sec
+        Start  80: unit.test_providers
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 80/122 Test  #80: unit.test_providers ................................***Not Run   0.00 sec
+        Start  81: unit.test_regex
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 81/122 Test  #81: unit.test_regex ....................................***Not Run   0.00 sec
+        Start  82: unit.test_relations
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 82/122 Test  #82: unit.test_relations ................................***Not Run   0.00 sec
+        Start  83: unit.test_resolve
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 83/122 Test  #83: unit.test_resolve ..................................***Not Run   0.00 sec
+        Start  84: unit.test_resolve_attribution
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 84/122 Test  #84: unit.test_resolve_attribution ......................***Not Run   0.00 sec
+        Start  85: unit.test_resolve_lineage
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 85/122 Test  #85: unit.test_resolve_lineage ..........................***Not Run   0.00 sec
+        Start  86: unit.test_runtime
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 86/122 Test  #86: unit.test_runtime ..................................***Not Run   0.00 sec
+        Start  87: unit.test_runtime_bootstrap_profiles
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 87/122 Test  #87: unit.test_runtime_bootstrap_profiles ...............***Not Run   0.00 sec
+        Start  88: unit.test_runtime_profile
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 88/122 Test  #88: unit.test_runtime_profile ..........................***Not Run   0.00 sec
+        Start  89: unit.test_runtime_recipe_consumers
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 89/122 Test  #89: unit.test_runtime_recipe_consumers .................***Not Run   0.00 sec
+        Start  90: unit.test_selector
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 90/122 Test  #90: unit.test_selector .................................***Not Run   0.00 sec
+        Start  91: unit.test_semantic_llm
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 91/122 Test  #91: unit.test_semantic_llm .............................***Not Run   0.00 sec
+        Start  92: unit.test_semantic_worker
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 92/122 Test  #92: unit.test_semantic_worker ..........................***Not Run   0.00 sec
+        Start  93: unit.test_tasks
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 93/122 Test  #93: unit.test_tasks ....................................***Not Run   0.00 sec
+        Start  94: unit.test_util
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 94/122 Test  #94: unit.test_util .....................................***Not Run   0.00 sec
+        Start  95: unit.test_util_profiles
+Process not started
+ /workspace/scratch/72fc60ad1cc5/current-build/loom_tests
+[permission denied]
+ 95/122 Test  #95: unit.test_util_profiles ............................***Not Run   0.00 sec
+        Start  96: compat.test_abi_compat
+ 96/122 Test  #96: compat.test_abi_compat .............................   Passed    0.87 sec
+        Start  97: compat.test_active_task_compiler_compat
+ 97/122 Test  #97: compat.test_active_task_compiler_compat ............   Passed    7.79 sec
+        Start  98: compat.test_candidate_graph_native
+ 98/122 Test  #98: compat.test_candidate_graph_native .................   Passed    0.98 sec
+        Start  99: compat.test_chat_active_task_http
+ 99/122 Test  #99: compat.test_chat_active_task_http ..................   Passed    4.80 sec
+        Start 100: compat.test_chat_compat
+100/122 Test #100: compat.test_chat_compat ............................   Passed    4.80 sec
+        Start 101: compat.test_config_compat
+101/122 Test #101: compat.test_config_compat ..........................   Passed    1.77 sec
+        Start 102: compat.test_crypto_compat
+102/122 Test #102: compat.test_crypto_compat ..........................   Passed   18.06 sec
+        Start 103: compat.test_db_compat
+103/122 Test #103: compat.test_db_compat ..............................   Passed    6.11 sec
+        Start 104: compat.test_github_sync_defaults
+104/122 Test #104: compat.test_github_sync_defaults ...................   Passed    0.19 sec
+        Start 105: compat.test_graph_compat
+105/122 Test #105: compat.test_graph_compat ...........................   Passed    4.60 sec
+        Start 106: compat.test_graph_packet_store
+106/122 Test #106: compat.test_graph_packet_store .....................   Passed    9.64 sec
+        Start 107: compat.test_import_compat
+107/122 Test #107: compat.test_import_compat ..........................   Passed    7.79 sec
+        Start 108: compat.test_memory_compat
+108/122 Test #108: compat.test_memory_compat ..........................   Passed    4.23 sec
+        Start 109: compat.test_selector_compat
+109/122 Test #109: compat.test_selector_compat ........................   Passed    0.92 sec
+        Start 110: compat.test_semantic_compat
+110/122 Test #110: compat.test_semantic_compat ........................   Passed   13.14 sec
+        Start 111: compat.test_semantic_recovery
+111/122 Test #111: compat.test_semantic_recovery ......................   Passed    3.20 sec
+        Start 112: compat.test_util_compat
+112/122 Test #112: compat.test_util_compat ............................   Passed    7.66 sec
+        Start 113: research.structure
+113/122 Test #113: research.structure .................................   Passed   38.48 sec
+        Start 114: research.independent_protocol
+114/122 Test #114: research.independent_protocol ......................   Passed    0.13 sec
+        Start 115: research.graph_native_protocol
+115/122 Test #115: research.graph_native_protocol .....................   Passed    0.46 sec
+        Start 116: research.candidate_graph_protocol
+116/122 Test #116: research.candidate_graph_protocol ..................   Passed    0.55 sec
+        Start 117: research.contracts
+117/122 Test #117: research.contracts .................................   Passed   32.03 sec
+        Start 118: research.seeding
+118/122 Test #118: research.seeding ...................................   Passed    6.63 sec
+        Start 119: server.smoke
+119/122 Test #119: server.smoke .......................................   Passed    3.76 sec
+        Start 120: server.chat_active_task
+120/122 Test #120: server.chat_active_task ............................   Passed    2.19 sec
+        Start 121: cli.smoke
+121/122 Test #121: cli.smoke ..........................................   Passed   37.60 sec
+        Start 122: eval.harness
+122/122 Test #122: eval.harness .......................................   Passed    0.80 sec
+
+22% tests passed, 95 tests failed out of 122
+
+Total Test time (real) = 219.28 sec
+
+The following tests FAILED:
+	  1 - unit.test_archive (BAD_COMMAND)
+	  2 - unit.test_archive_profiles (BAD_COMMAND)
+	  3 - unit.test_archive_runtime_policy (BAD_COMMAND)
+	  4 - unit.test_archive_synthesis_policy (BAD_COMMAND)
+	  5 - unit.test_archive_text_policy (BAD_COMMAND)
+	  6 - unit.test_batch_api (BAD_COMMAND)
+	  7 - unit.test_capi (BAD_COMMAND)
+	  8 - unit.test_capi_knowledge (BAD_COMMAND)
+	  9 - unit.test_capi_knowledge_latest_run (BAD_COMMAND)
+	 10 - unit.test_catalog (BAD_COMMAND)
+	 11 - unit.test_catalog_context (BAD_COMMAND)
+	 12 - unit.test_catalog_eval (BAD_COMMAND)
+	 13 - unit.test_catalog_links (BAD_COMMAND)
+	 14 - unit.test_catalog_retention (BAD_COMMAND)
+	 15 - unit.test_catalog_scale (BAD_COMMAND)
+	 16 - unit.test_chat_active_task (BAD_COMMAND)
+	 17 - unit.test_chat_active_task_acceptance_audit (BAD_COMMAND)
+	 18 - unit.test_chat_active_task_acceptance_scale (BAD_COMMAND)
+	 19 - unit.test_chat_active_task_acceptance_validation (BAD_COMMAND)
+	 20 - unit.test_chat_active_task_concurrency (BAD_COMMAND)
+	 21 - unit.test_chat_active_task_durability (BAD_COMMAND)
+	 22 - unit.test_chat_active_task_durable_audit (BAD_COMMAND)
+	 23 - unit.test_chat_active_task_exceptional (BAD_COMMAND)
+	 24 - unit.test_chat_active_task_history_aba (BAD_COMMAND)
+	 25 - unit.test_chat_active_task_reference (BAD_COMMAND)
+	 26 - unit.test_chat_active_task_retention (BAD_COMMAND)
+	 27 - unit.test_chat_active_task_revisions (BAD_COMMAND)
+	 28 - unit.test_chat_active_task_scope_identity (BAD_COMMAND)
+	 29 - unit.test_chat_engine (BAD_COMMAND)
+	 30 - unit.test_chat_knowledge_context (BAD_COMMAND)
+	 31 - unit.test_chat_retrieval_plan (BAD_COMMAND)
+	 32 - unit.test_config (BAD_COMMAND)
+	 33 - unit.test_context_channel_integration (BAD_COMMAND)
+	 34 - unit.test_context_controls (BAD_COMMAND)
+	 35 - unit.test_context_counter (BAD_COMMAND)
+	 36 - unit.test_context_diagnostics (BAD_COMMAND)
+	 37 - unit.test_context_engine (BAD_COMMAND)
+	 38 - unit.test_context_eval (BAD_COMMAND)
+	 39 - unit.test_context_native_consumer (BAD_COMMAND)
+	 40 - unit.test_context_plan (BAD_COMMAND)
+	 41 - unit.test_context_retrieval (BAD_COMMAND)
+	 42 - unit.test_context_retrieval_dev (BAD_COMMAND)
+	 43 - unit.test_context_tfidf_reuse (BAD_COMMAND)
+	 44 - unit.test_crypto (BAD_COMMAND)
+	 45 - unit.test_db (BAD_COMMAND)
+	 46 - unit.test_event_bus (BAD_COMMAND)
+	 47 - unit.test_extract (BAD_COMMAND)
+	 48 - unit.test_extract_eval (BAD_COMMAND)
+	 49 - unit.test_fts (BAD_COMMAND)
+	 50 - unit.test_generalize (BAD_COMMAND)
+	 51 - unit.test_generalize_eval (BAD_COMMAND)
+	 52 - unit.test_github (BAD_COMMAND)
+	 53 - unit.test_graph (BAD_COMMAND)
+	 54 - unit.test_import (BAD_COMMAND)
+	 55 - unit.test_import_export_fidelity (BAD_COMMAND)
+	 56 - unit.test_import_exports (BAD_COMMAND)
+	 57 - unit.test_import_source_materialization (BAD_COMMAND)
+	 58 - unit.test_import_stream (BAD_COMMAND)
+	 59 - unit.test_kb_pack (BAD_COMMAND)
+	 60 - unit.test_knowledge (BAD_COMMAND)
+	 61 - unit.test_knowledge_candidate_graph (BAD_COMMAND)
+	 62 - unit.test_knowledge_candidates (BAD_COMMAND)
+	 63 - unit.test_knowledge_flow (BAD_COMMAND)
+	 64 - unit.test_knowledge_profile (BAD_COMMAND)
+	 65 - unit.test_knowledge_semantic (BAD_COMMAND)
+	 66 - unit.test_knowledge_semantic_graph (BAD_COMMAND)
+	 67 - unit.test_knowledge_store (BAD_COMMAND)
+	 68 - unit.test_materialize (BAD_COMMAND)
+	 69 - unit.test_media (BAD_COMMAND)
+	 70 - unit.test_memory (BAD_COMMAND)
+	 71 - unit.test_memory_sort_profiles (BAD_COMMAND)
+	 72 - unit.test_memory_visibility_profiles (BAD_COMMAND)
+	 73 - unit.test_model (BAD_COMMAND)
+	 74 - unit.test_model_creation_profile (BAD_COMMAND)
+	 75 - unit.test_model_profile (BAD_COMMAND)
+	 76 - unit.test_net_profile (BAD_COMMAND)
+	 77 - unit.test_net_sse (BAD_COMMAND)
+	 78 - unit.test_pack_model (BAD_COMMAND)
+	 79 - unit.test_provenance (BAD_COMMAND)
+	 80 - unit.test_providers (BAD_COMMAND)
+	 81 - unit.test_regex (BAD_COMMAND)
+	 82 - unit.test_relations (BAD_COMMAND)
+	 83 - unit.test_resolve (BAD_COMMAND)
+	 84 - unit.test_resolve_attribution (BAD_COMMAND)
+	 85 - unit.test_resolve_lineage (BAD_COMMAND)
+	 86 - unit.test_runtime (BAD_COMMAND)
+	 87 - unit.test_runtime_bootstrap_profiles (BAD_COMMAND)
+	 88 - unit.test_runtime_profile (BAD_COMMAND)
+	 89 - unit.test_runtime_recipe_consumers (BAD_COMMAND)
+	 90 - unit.test_selector (BAD_COMMAND)
+	 91 - unit.test_semantic_llm (BAD_COMMAND)
+	 92 - unit.test_semantic_worker (BAD_COMMAND)
+	 93 - unit.test_tasks (BAD_COMMAND)
+	 94 - unit.test_util (BAD_COMMAND)
+	 95 - unit.test_util_profiles (BAD_COMMAND)
+Errors while running CTest

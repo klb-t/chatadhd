@@ -349,10 +349,12 @@
     "DIC-0500": {
       "status": "migrated",
       "destination": "loom/data/runtime/cli.pack#/defaults/help",
-      "notes": "kUsage removed; full legacy help/examples/format labels now data blob rendered from selected CLI profile. Other per-operation English diagnostics are not claimed migrated by this finding. Current evidence: loom/cli/main.cpp:1091, loom/cli/main.cpp:1110.",
+      "notes": "kUsage removed; full legacy help/examples/format labels now data blob rendered from selected CLI profile. Other per-operation English diagnostics are not claimed migrated by this finding. Current evidence: loom/cli/main.cpp:1149, loom/cli/main.cpp:1168, loom/cli/main.cpp:1183, loom/data/runtime/cli.pack:6.",
       "current_evidence": [
-        "loom/cli/main.cpp:1091",
-        "loom/cli/main.cpp:1110"
+        "loom/cli/main.cpp:1149",
+        "loom/cli/main.cpp:1168",
+        "loom/cli/main.cpp:1183",
+        "loom/data/runtime/cli.pack:6"
       ],
       "review_fragment": "migration-status-worker-media-github-cli.json",
       "inventory_source": "loom/cli/main.cpp:51",
@@ -361,11 +363,13 @@
     "DIC-0501": {
       "status": "migrated",
       "destination": "loom/data/runtime/cli.pack#/defaults/flags",
-      "notes": "Parser arity for booleans comes from profile flags collection; value-taking options follow generic parser. Current evidence: loom/cli/main.cpp:99, loom/cli/main.cpp:1116, loom/cli/main.cpp:1117.",
+      "notes": "Parser arity for booleans comes from profile flags collection; value-taking options follow generic parser. Current evidence: loom/cli/main.cpp:147, loom/cli/main.cpp:160, loom/cli/main.cpp:1174, loom/cli/main.cpp:1175, loom/data/runtime/cli.pack:7.",
       "current_evidence": [
-        "loom/cli/main.cpp:99",
-        "loom/cli/main.cpp:1116",
-        "loom/cli/main.cpp:1117"
+        "loom/cli/main.cpp:147",
+        "loom/cli/main.cpp:160",
+        "loom/cli/main.cpp:1174",
+        "loom/cli/main.cpp:1175",
+        "loom/data/runtime/cli.pack:7"
       ],
       "review_fragment": "migration-status-worker-media-github-cli.json",
       "inventory_source": "loom/cli/main.cpp:131",
@@ -374,13 +378,15 @@
     "DIC-0502": {
       "status": "migrated",
       "destination": "loom/data/runtime/cli.pack#/defaults/presentation",
-      "notes": "Widths, timestamp prefix lengths, hash_chars, ellipsis and decimal scale now profile data; UTF8 prefix and round are universal operations. Current evidence: loom/cli/main.cpp:56, loom/cli/main.cpp:59, loom/cli/main.cpp:142, loom/cli/main.cpp:496, loom/cli/main.cpp:691.",
+      "notes": "Widths, timestamp prefix lengths, hash_chars, ellipsis and decimal scale now profile data; UTF8 prefix and round are universal operations. Current evidence: loom/cli/main.cpp:60, loom/cli/main.cpp:63, loom/cli/main.cpp:190, loom/cli/main.cpp:544, loom/cli/main.cpp:739, loom/cli/main.cpp:87, loom/data/runtime/cli.pack:695.",
       "current_evidence": [
-        "loom/cli/main.cpp:56",
-        "loom/cli/main.cpp:59",
-        "loom/cli/main.cpp:142",
-        "loom/cli/main.cpp:496",
-        "loom/cli/main.cpp:691"
+        "loom/cli/main.cpp:60",
+        "loom/cli/main.cpp:63",
+        "loom/cli/main.cpp:190",
+        "loom/cli/main.cpp:544",
+        "loom/cli/main.cpp:739",
+        "loom/cli/main.cpp:87",
+        "loom/data/runtime/cli.pack:695"
       ],
       "review_fragment": "migration-status-worker-media-github-cli.json",
       "inventory_source": "loom/cli/main.cpp:203",
@@ -389,13 +395,16 @@
     "DIC-0503": {
       "status": "migrated",
       "destination": "loom/data/runtime/cli.pack#/defaults/limits",
-      "notes": "All enumerated listing/search limits resolve CLI profile and explicit --limit wins. Data limits remain independent transport presets, not fixed C++ maxima. Current evidence: loom/cli/main.cpp:210, loom/cli/main.cpp:231, loom/cli/main.cpp:416, loom/cli/main.cpp:631, loom/cli/main.cpp:965.",
+      "notes": "All enumerated listing/search limits resolve CLI profile and explicit --limit wins. Data limits remain independent transport presets, not fixed C++ maxima. Current evidence: loom/cli/main.cpp:258, loom/cli/main.cpp:279, loom/cli/main.cpp:464, loom/cli/main.cpp:535, loom/cli/main.cpp:679, loom/cli/main.cpp:732, loom/cli/main.cpp:750, loom/cli/main.cpp:1014.",
       "current_evidence": [
-        "loom/cli/main.cpp:210",
-        "loom/cli/main.cpp:231",
-        "loom/cli/main.cpp:416",
-        "loom/cli/main.cpp:631",
-        "loom/cli/main.cpp:965"
+        "loom/cli/main.cpp:258",
+        "loom/cli/main.cpp:279",
+        "loom/cli/main.cpp:464",
+        "loom/cli/main.cpp:535",
+        "loom/cli/main.cpp:679",
+        "loom/cli/main.cpp:732",
+        "loom/cli/main.cpp:750",
+        "loom/cli/main.cpp:1014"
       ],
       "review_fragment": "migration-status-worker-media-github-cli.json",
       "inventory_source": "loom/cli/main.cpp:282",
@@ -404,9 +413,9 @@
     "DIC-0504": {
       "status": "migrated",
       "destination": "loom/data/runtime/cli.pack#/defaults/creation/conversation_title",
-      "notes": "Fallback title is profile value; supplied title bytes passed verbatim. Current evidence: loom/cli/main.cpp:240.",
+      "notes": "Fallback title is profile value; supplied title bytes passed verbatim. Current evidence: loom/cli/main.cpp:288.",
       "current_evidence": [
-        "loom/cli/main.cpp:240"
+        "loom/cli/main.cpp:288"
       ],
       "review_fragment": "migration-status-worker-media-github-cli.json",
       "inventory_source": "loom/cli/main.cpp:291",
@@ -415,9 +424,9 @@
     "DIC-0505": {
       "status": "migrated",
       "destination": "loom/data/runtime/cli.pack#/defaults/creation/export_format",
-      "notes": "CLI export default now data with explicit --format override. HTTP/exporter format capabilities owned elsewhere unchanged. Current evidence: loom/cli/main.cpp:398.",
+      "notes": "CLI export default now data with explicit --format override. HTTP/exporter format capabilities owned elsewhere unchanged. Current evidence: loom/cli/main.cpp:446.",
       "current_evidence": [
-        "loom/cli/main.cpp:398"
+        "loom/cli/main.cpp:446"
       ],
       "review_fragment": "migration-status-worker-media-github-cli.json",
       "inventory_source": "loom/cli/main.cpp:449",
@@ -426,12 +435,12 @@
     "DIC-0506": {
       "status": "migrated",
       "destination": "loom/data/runtime/cli.pack#/defaults/limits/{graph_expansion_depth,chat_depth,context_depth,context_tokens}; thread3 shared request presets",
-      "notes": "CLI profile owns the graph/context/chat depth and budget preset precedence; explicitly omitted chat fields let shared APIs choose their own defaults. Graph/context CLI defaults are intentional independent presets, configurable in cli.pack rather than inherited implicitly from selector data. Root confirmed this intended contract. Current evidence: loom/cli/main.cpp:315, loom/cli/main.cpp:438, loom/cli/main.cpp:474, loom/cli/main.cpp:475.",
+      "notes": "CLI profile owns the graph/context/chat depth and budget preset precedence; explicitly omitted chat fields let shared APIs choose their own defaults. Graph/context CLI defaults are intentional independent presets, configurable in cli.pack rather than inherited implicitly from selector data. Root confirmed this intended contract. Current evidence: loom/cli/main.cpp:363, loom/cli/main.cpp:486, loom/cli/main.cpp:522, loom/cli/main.cpp:523.",
       "current_evidence": [
-        "loom/cli/main.cpp:315",
-        "loom/cli/main.cpp:438",
-        "loom/cli/main.cpp:474",
-        "loom/cli/main.cpp:475"
+        "loom/cli/main.cpp:363",
+        "loom/cli/main.cpp:486",
+        "loom/cli/main.cpp:522",
+        "loom/cli/main.cpp:523"
       ],
       "review_fragment": "migration-status-worker-media-github-cli.json",
       "inventory_source": "loom/cli/main.cpp:489",
@@ -440,9 +449,9 @@
     "DIC-0507": {
       "status": "migrated",
       "destination": "loom/data/runtime/cli.pack#/defaults/creation/memory_node_type; loom/data/runtime/memory.pack default_node_type integration",
-      "notes": "CLI memory creation type is configurable in cli.pack creation.memory_node_type and overridden by --type. This is an intentional independent CLI preset with explicit API precedence, not implicit inheritance from memory.pack. Root confirmed this intended contract. Current evidence: loom/cli/main.cpp:544.",
+      "notes": "CLI memory creation type is configurable in cli.pack creation.memory_node_type and overridden by --type. This is an intentional independent CLI preset with explicit API precedence, not implicit inheritance from memory.pack. Root confirmed this intended contract. Current evidence: loom/cli/main.cpp:592.",
       "current_evidence": [
-        "loom/cli/main.cpp:544"
+        "loom/cli/main.cpp:592"
       ],
       "review_fragment": "migration-status-worker-media-github-cli.json",
       "inventory_source": "loom/cli/main.cpp:589",
@@ -451,9 +460,9 @@
     "DIC-0508": {
       "status": "migrated",
       "destination": "loom/data/runtime/cli.pack#/defaults/limits/task_resume_scan",
-      "notes": "Old1000 resume scan is configurable profile preset and --limit. One scan remains, not complete pagination; this finding permits explicit exposed total instead of all-task traversal. Current evidence: loom/cli/main.cpp:654.",
+      "notes": "Old1000 resume scan is configurable profile preset and --limit. One scan remains, not complete pagination; this finding permits explicit exposed total instead of all-task traversal. Current evidence: loom/cli/main.cpp:702.",
       "current_evidence": [
-        "loom/cli/main.cpp:654"
+        "loom/cli/main.cpp:702"
       ],
       "review_fragment": "migration-status-worker-media-github-cli.json",
       "inventory_source": "loom/cli/main.cpp:699",
@@ -462,11 +471,11 @@
     "DIC-0509": {
       "status": "migrated",
       "destination": "loom/data/runtime/cli.pack#/defaults/graph_stats",
-      "notes": "Selected stats IDs come from data and execute trusted prepared-SQL registry; unsupported ID explicit Unavailable. SQL tables are structural capabilities. Current evidence: loom/cli/main.cpp:446, loom/cli/main.cpp:449, loom/cli/main.cpp:452.",
+      "notes": "Selected stats IDs come from data and execute trusted prepared-SQL registry; unsupported ID explicit Unavailable. SQL tables are structural capabilities. Current evidence: loom/cli/main.cpp:494, loom/cli/main.cpp:497, loom/cli/main.cpp:500.",
       "current_evidence": [
-        "loom/cli/main.cpp:446",
-        "loom/cli/main.cpp:449",
-        "loom/cli/main.cpp:452"
+        "loom/cli/main.cpp:494",
+        "loom/cli/main.cpp:497",
+        "loom/cli/main.cpp:500"
       ],
       "review_fragment": "migration-status-worker-media-github-cli.json",
       "inventory_source": "loom/cli/main.cpp:497",
@@ -475,11 +484,11 @@
     "DIC-0510": {
       "status": "migrated",
       "destination": "loom/data/runtime/cli.pack#/defaults/limits/catalog_eval_scan",
-      "notes": "Old1M query limit moved to preset and explicit --limit. Eval remains one query and does not report queried/total catalog coverage; truth denominator is reported. Adjustable cap resolved, coverage reporting remains separate quality follow-up. Current evidence: loom/cli/main.cpp:882, loom/cli/main.cpp:884, loom/cli/main.cpp:921.",
+      "notes": "Old1M query limit moved to preset and explicit --limit. Eval remains one query and does not report queried/total catalog coverage; truth denominator is reported. Adjustable cap resolved, coverage reporting remains separate quality follow-up. Current evidence: loom/cli/main.cpp:931, loom/cli/main.cpp:933, loom/cli/main.cpp:970.",
       "current_evidence": [
-        "loom/cli/main.cpp:882",
-        "loom/cli/main.cpp:884",
-        "loom/cli/main.cpp:921"
+        "loom/cli/main.cpp:931",
+        "loom/cli/main.cpp:933",
+        "loom/cli/main.cpp:970"
       ],
       "review_fragment": "migration-status-worker-media-github-cli.json",
       "inventory_source": "loom/cli/main.cpp:925",
@@ -488,14 +497,14 @@
     "DIC-0511": {
       "status": "migrated",
       "destination": "loom/data/runtime/cli.pack#/defaults/evaluation",
-      "notes": "Truth cohort paths and external-ID key come from recipe; confusion calculations operate on selected cohorts. Current evidence: loom/cli/main.cpp:877, loom/cli/main.cpp:878, loom/cli/main.cpp:904, loom/cli/main.cpp:909, loom/cli/main.cpp:911, loom/cli/main.cpp:913.",
+      "notes": "Truth cohort paths and external-ID key come from recipe; confusion calculations operate on selected cohorts. Current evidence: loom/cli/main.cpp:926, loom/cli/main.cpp:927, loom/cli/main.cpp:953, loom/cli/main.cpp:958, loom/cli/main.cpp:960, loom/cli/main.cpp:962.",
       "current_evidence": [
-        "loom/cli/main.cpp:877",
-        "loom/cli/main.cpp:878",
-        "loom/cli/main.cpp:904",
-        "loom/cli/main.cpp:909",
-        "loom/cli/main.cpp:911",
-        "loom/cli/main.cpp:913"
+        "loom/cli/main.cpp:926",
+        "loom/cli/main.cpp:927",
+        "loom/cli/main.cpp:953",
+        "loom/cli/main.cpp:958",
+        "loom/cli/main.cpp:960",
+        "loom/cli/main.cpp:962"
       ],
       "review_fragment": "migration-status-worker-media-github-cli.json",
       "inventory_source": "loom/cli/main.cpp:952",
@@ -504,14 +513,15 @@
     "DIC-0512": {
       "status": "migrated",
       "destination": "loom/data/runtime/cli.pack#/defaults/{limits/catalog_watch_seconds,watch/sleep_slice_ms}",
-      "notes": "Both interval300sec and cancellation sleep1000ms are data presets; --interval overrides the period, slice is truncated to remaining time. The positive integer-seconds and duration requirements are API/arithmetic validity, not a product budget ceiling. Unit conversion constants remain representation operations. Current evidence: loom/cli/main.cpp:1012, loom/cli/main.cpp:1013, loom/cli/main.cpp:1027, loom/cli/main.cpp:1029, loom/data/runtime/cli.pack:195, loom/data/runtime/cli.pack:1432.",
+      "notes": "Both interval300sec and cancellation sleep1000ms are data presets; --interval overrides the period, slice is truncated to remaining time. The positive integer-seconds and duration requirements are API/arithmetic validity, not a product budget ceiling. Unit conversion constants remain representation operations. Current evidence: loom/cli/main.cpp:1058, loom/cli/main.cpp:1059, loom/cli/main.cpp:1073, loom/cli/main.cpp:1075, loom/cli/main.cpp:1078, loom/data/runtime/cli.pack:196, loom/data/runtime/cli.pack:1444.",
       "current_evidence": [
-        "loom/cli/main.cpp:1012",
-        "loom/cli/main.cpp:1013",
-        "loom/cli/main.cpp:1027",
-        "loom/cli/main.cpp:1029",
-        "loom/data/runtime/cli.pack:195",
-        "loom/data/runtime/cli.pack:1432"
+        "loom/cli/main.cpp:1058",
+        "loom/cli/main.cpp:1059",
+        "loom/cli/main.cpp:1073",
+        "loom/cli/main.cpp:1075",
+        "loom/cli/main.cpp:1078",
+        "loom/data/runtime/cli.pack:196",
+        "loom/data/runtime/cli.pack:1444"
       ],
       "review_fragment": "migration-status-worker-media-github-cli.json",
       "inventory_source": "loom/cli/main.cpp:1052",
@@ -520,12 +530,12 @@
     "DIC-0513": {
       "status": "migrated",
       "destination": "loom/data/runtime/cli.pack#/defaults/logging",
-      "notes": "Default severity, alias vocabulary and fallback are data; fallback must be registered. Unknown-name fallback behavior remains configurable for exact legacy defaults. Current evidence: loom/cli/main.cpp:1135, loom/cli/main.cpp:1136, loom/cli/main.cpp:1138, loom/cli/main.cpp:1140.",
+      "notes": "Default severity, alias vocabulary and fallback are data; fallback must be registered. Unknown-name fallback behavior remains configurable for exact legacy defaults. Current evidence: loom/cli/main.cpp:1193, loom/cli/main.cpp:1194, loom/cli/main.cpp:1196, loom/cli/main.cpp:1198.",
       "current_evidence": [
-        "loom/cli/main.cpp:1135",
-        "loom/cli/main.cpp:1136",
-        "loom/cli/main.cpp:1138",
-        "loom/cli/main.cpp:1140"
+        "loom/cli/main.cpp:1193",
+        "loom/cli/main.cpp:1194",
+        "loom/cli/main.cpp:1196",
+        "loom/cli/main.cpp:1198"
       ],
       "review_fragment": "migration-status-worker-media-github-cli.json",
       "inventory_source": "loom/cli/main.cpp:1101",
@@ -534,12 +544,13 @@
     "DIC-0514": {
       "status": "migrated",
       "destination": "loom/data/runtime/cli.pack#/defaults/{commands,subcommands}; trusted CLI handler registry",
-      "notes": "Top-level name aliases and subcommand aliases resolve from profile; dispatch now handler registry for top-level methods. Canonical subcommand branches remain trusted capability IDs, not user-editable policy or invented support. Current evidence: loom/cli/main.cpp:1113, loom/cli/main.cpp:1160, loom/cli/main.cpp:1164, loom/cli/main.cpp:1186.",
+      "notes": "Top-level name aliases and subcommand aliases resolve from profile; dispatch now handler registry for top-level methods. Canonical subcommand branches remain trusted capability IDs, not user-editable policy or invented support. Current evidence: loom/cli/main.cpp:1171, loom/cli/main.cpp:1209, loom/cli/main.cpp:1212, loom/cli/main.cpp:1221, loom/cli/main.cpp:1244.",
       "current_evidence": [
-        "loom/cli/main.cpp:1113",
-        "loom/cli/main.cpp:1160",
-        "loom/cli/main.cpp:1164",
-        "loom/cli/main.cpp:1186"
+        "loom/cli/main.cpp:1171",
+        "loom/cli/main.cpp:1209",
+        "loom/cli/main.cpp:1212",
+        "loom/cli/main.cpp:1221",
+        "loom/cli/main.cpp:1244"
       ],
       "review_fragment": "migration-status-worker-media-github-cli.json",
       "inventory_source": "loom/cli/main.cpp:1168",
