@@ -1,0 +1,8 @@
+{
+   "extensions": {
+      "overlay": [
+         "a/b~",
+         null
+      ]
+   }
+}

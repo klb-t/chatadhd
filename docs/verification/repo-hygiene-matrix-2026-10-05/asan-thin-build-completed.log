@@ -1,0 +1,4 @@
+[0/2] Re-checking globbed directories...
+[1/4] Linking CXX executable loom_tests
+[2/4] Linking CXX executable cli/loom
+[3/4] Linking CXX executable server/loom-server

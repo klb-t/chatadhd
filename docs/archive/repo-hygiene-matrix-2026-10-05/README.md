@@ -38,3 +38,8 @@ controlled compiler pauses, ASan regular-archive disk exhaustion and
 then linking `cli/loom` failed with ENOSPC. Local thin archives change archive
 storage only; sanitizer/compiler flags remain unchanged. Retry outputs are
 separate, so a later pass never overwrites a failed attempt.
+
+`seeding-verifier-pre-freeze-failure.log` retains a 69-case attempt while the
+verifier tests were still being edited: NameError in relocated old CLI coverage.
+It is not final source or positive coverage. The test is retained and corrected
+before the next whole-suite execution.

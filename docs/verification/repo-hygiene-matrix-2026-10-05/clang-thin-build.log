@@ -1,0 +1,17 @@
+[0/2] Re-checking globbed directories...
+[1/17] Linking C static library libloom_sqlite3_amalgamation.a
+[2/17] Linking C static library libloom_miniz.a
+[3/17] Linking CXX static library libloom_core.a
+[4/17] Linking CXX shared library libloom.so.0.1.0
+[5/17] Building CXX object CMakeFiles/loom_compat_tool.dir/tests/compat/tool_selector.cpp.o
+[6/17] Building CXX object CMakeFiles/loom_compat_tool.dir/tests/compat/tool_semantic.cpp.o
+[7/17] Building CXX object CMakeFiles/loom_candidate_graph_native_tool.dir/tests/compat/candidate_graph_native_tool.cpp.o
+[8/17] Building CXX object cli/CMakeFiles/loom_cli.dir/main.cpp.o
+[9/17] Building CXX object server/CMakeFiles/loom-server.dir/src/main.cpp.o
+[10/17] Building CXX object server/CMakeFiles/loom-server.dir/src/app.cpp.o
+[11/17] Creating library symlink libloom.so.0 libloom.so
+[12/17] Linking CXX executable loom_tests
+[13/17] Linking CXX executable loom_compat_tool
+[14/17] Linking CXX executable loom_candidate_graph_native_tool
+[15/17] Linking CXX executable cli/loom
+[16/17] Linking CXX executable server/loom-server

@@ -1,0 +1,29 @@
+{
+  "schema": "loom.verification.unittest_receipt/1",
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "loom/tools/seeding",
+    "-p",
+    "test_*.py",
+    "-v"
+  ],
+  "started_at": "2026-10-05T15:04:58.379436+00:00",
+  "exit_code": 0,
+  "wall_seconds": 13.035352496000996,
+  "test_count": 69,
+  "unittest_seconds": 10.568,
+  "log_sha256": "6b1a8b9e68c0462ba98b88a5f3b4f2762ed9173b38c84781b3026fb7bcba0715",
+  "runtime_files_sha256_before": {
+    "loom/tools/seeding/verify_method_graph.py": "a7907b2de4e4dc9f98819ffc7ee4afca77dd390c6b5132e2d865869e80ddbe5f",
+    "loom/tools/seeding/test_method_graph.py": "20dbd4c910b349635a81cb1d89d3aad64d239fcde72d108051ee706ef273c91a"
+  },
+  "runtime_files_sha256_after": {
+    "loom/tools/seeding/verify_method_graph.py": "a7907b2de4e4dc9f98819ffc7ee4afca77dd390c6b5132e2d865869e80ddbe5f",
+    "loom/tools/seeding/test_method_graph.py": "20dbd4c910b349635a81cb1d89d3aad64d239fcde72d108051ee706ef273c91a"
+  },
+  "scope": "Fresh entire mandatory pure Python seeding suite after verifier guard/current UTC/simulation Packet disclosure and restored original CLI overwrite coverage. No native/provider calls and no full V4 operation."
+}

@@ -168,3 +168,49 @@ and verify situation predicates (not just shared principles), generate new
 target-specific templates rather than copying donor names, and test on a fresh
 independent corpus. Keep the unfiltered and eligibility-matched frequency
 baselines as active alternatives; weighted ranking has not earned preference.
+
+
+The agreed method graph contract has an opt-in captured-run exporter:
+
+```sh
+python -m loom.tools.seeding.method_graph --run <frozen-run-directory>
+python -m loom.tools.seeding.method_graph --run <frozen-run-directory> --output <new-artifact.json.gz>
+```
+
+The first command prints a dry-run estimate using the actual source bytes and
+records. Export does not run predictions, change a captured run or write the
+canonical graph. New runs retain their complete profile/runtime bundle; old runs
+with no captured projection profile explicitly retain `profile_status=unrecorded`.
+`profiles/method_graph.json` defines vocabulary, input bindings, JSON traversal,
+record/bulk presets, output encoding and the configurable usage confirmation
+ratio. `--projection`, `--mode`, `--format` and `--input ROLE=PATH` override the
+caller settings. The default gzip record projection captures each ranking and
+metric as a separate result; data-marked evaluations additionally link the
+method version to the metric result through `has_evaluation_record`. Every result
+has real `produced_in_run` and
+`produced_by_method_version` edges. Bulk mode binds only complete file snapshots.
+Sources retain exact bytes once, including the original gzip headers; result
+literal Claims reference decoded JSON Pointers and canonical record hashes.
+Those structural claims describe captured outputs; candidates remain unverified
+with their original evidence/provenance fields when decoded. The complete
+experiment is one method; this is not a registry dispatch for individual rankers.
+
+For native conformance, decompress an exported artifact and use the shared offline
+consumer with an explicit library (no automatic build, no provider calls):
+
+```sh
+gzip -dc <artifact.json.gz> > <artifact.json>
+PYTHONDONTWRITEBYTECODE=1 python loom/src/packet/tests/verify_method_graph_artifact.py \
+  --library <libloom.so> --artifact <artifact.json> --evidence-dir <new-evidence-directory>
+```
+
+That consumer checks native validation, declared bindings and actual
+accept/restart/read/replay/retry. Its receipt does not establish output truth or
+verify original producer execution. `recover_files()` recovers exact captured
+source bytes, and `recover_results()` verifies every pointer/hash/literal Claim.
+The pure Python regression tests require no native library. Keep native proof
+separate and supply the library path explicitly.
+
+Projected Sources and Entities are first observed at the export time; original
+producer times remain in the exact raw capture and trace, without backdating a
+score to the shared prediction manifest timestamp.

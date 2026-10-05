@@ -1,0 +1,69 @@
+{
+  "schema": "loom.verification.seeding_method_bridge/1",
+  "passed": true,
+  "evaluation_class": "inspected_synthetic_development_regression",
+  "provider_calls": 0,
+  "records_exact": 2783,
+  "record_counts": {
+    "result_records": 2783,
+    "adapter_provider_calls": 0,
+    "producer_cpu_seconds": null,
+    "producer_cost_usd": null,
+    "records/ranking": 2135,
+    "records/metric": 72,
+    "records/metric-repetition": 576
+  },
+  "before_matrix_sha256": "f7e4e2236a6168e55198a985671a06c526466146d336f3b54c5ce9e1d4768381",
+  "after_matrix_sha256": "f7e4e2236a6168e55198a985671a06c526466146d336f3b54c5ce9e1d4768381",
+  "source_files_exact": {
+    "predictions": {
+      "bytes": 3173334,
+      "sha256": "e0fd191946708430af6f3d886f86bb48dafa49c53829c09c559bb9fd202590b9"
+    },
+    "results": {
+      "bytes": 128755,
+      "sha256": "021514174b3bb794c8f2f4650fc63236ade9cca0d1720512679077d6312c1260"
+    },
+    "policy": {
+      "bytes": 549,
+      "sha256": "df02c8387ffc2660b449848ab47c1ccc42d22fcc8eff2f2433cdf7744f734375"
+    },
+    "protocol": {
+      "bytes": 3142,
+      "sha256": "b75ee6dab25113f94f9a9ea059c5d02ebff55d7a0d2a48ffae73b3346d241e26"
+    },
+    "program": {
+      "bytes": 19230,
+      "sha256": "5cede60257ff883ce83be8434cd8d7180c22cda7b0f020b2c5f03e1401474cc1"
+    },
+    "fixture": {
+      "bytes": 129649,
+      "sha256": "2b8bcfc156662ca05e04e8103990fc72cc7398a9fac4b4ec651806b2e7574e0c"
+    }
+  },
+  "packet_id": "7038270baf0795ecc37bb4c5f884e6a3d3a1b81f8518341a7cac05d9ff5e91c5",
+  "artifact_sha256": "d99a021079b51f95db741a3f1ab6e451f9811e74fbb131e0319fb7b104e8324e",
+  "artifact_json_bytes": 26839192,
+  "artifact_gzip_bytes": 5497581,
+  "baseline_gzip_bytes": 3302089,
+  "total_output_ratio": 2.664879717051842,
+  "adapter_cpu_seconds": 5.282935004,
+  "adapter_wall_seconds": 5.289878272000351,
+  "producer_cpu_seconds": null,
+  "native_verification": "not_requested",
+  "quality_gain_claimed": false,
+  "frozen_producer_replay": {
+    "passed": true,
+    "cpu_seconds": 5.467289704000001,
+    "wall_seconds": 5.474521565996838,
+    "scope": "fixed-time actual archived V4 experiment, complete output bytes",
+    "exact_files_sha256": {
+      "predictions.json.gz": "e0fd191946708430af6f3d886f86bb48dafa49c53829c09c559bb9fd202590b9",
+      "results.json.gz": "021514174b3bb794c8f2f4650fc63236ade9cca0d1720512679077d6312c1260",
+      "prototype_frozen.py": "5cede60257ff883ce83be8434cd8d7180c22cda7b0f020b2c5f03e1401474cc1",
+      "policy_frozen.json": "df02c8387ffc2660b449848ab47c1ccc42d22fcc8eff2f2433cdf7744f734375",
+      "protocol_frozen.md": "b75ee6dab25113f94f9a9ea059c5d02ebff55d7a0d2a48ffae73b3346d241e26"
+    }
+  },
+  "adapter_to_current_frozen_replay_cpu_ratio": 0.9662804222967877
+}
