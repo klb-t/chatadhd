@@ -1,7 +1,7 @@
 {
   "schema": "loom.default_layers_pack/1",
   "pack_id": "loom.onboarding.defaults",
-  "revision": 1,
+  "revision": 2,
   "policy": {
     "excluded_area_new_defaults": "proposal"
   },
@@ -121,6 +121,15 @@
         "source": "scenario",
         "pointer": "/prompt"
       }
+    },
+    {
+      "id": "onboarding.presentation/v1",
+      "key": "presentation.onboarding",
+      "area": "onboarding/presentation",
+      "revision": 1,
+      "value": {
+        "$include": "onboarding/ui.pack"
+      }
     }
   ],
   "vocabulary": {
@@ -169,48 +178,7 @@
     "domain": "onboarding",
     "revision": 1,
     "defaults": {
-      "settings": {
-        "preference_mode": "ask"
-      },
-      "privacy": {
-        "rules": [
-          {
-            "id": "local-explicit-preset",
-            "category": "*",
-            "store": true,
-            "infer": false,
-            "explicit_only": true,
-            "providers": [],
-            "max_detail": null,
-            "max_sensitivity": null,
-            "retention": {
-              "history": "full",
-              "max_events": null,
-              "metadata_keys": [
-                "id",
-                "op",
-                "field",
-                "category",
-                "time",
-                "provenance",
-                "review",
-                "review_time",
-                "presentation",
-                "detail",
-                "sensitivity",
-                "candidate",
-                "decision",
-                "status",
-                "source_refs",
-                "method_version_id",
-                "method_run_id"
-              ]
-            },
-            "provenance": "builtin_preset",
-            "consent_event": null
-          }
-        ]
-      }
+      "$layer_bindings": "runtime_bindings"
     },
     "value_schema": {
       "type": "object",
@@ -282,5 +250,6 @@
     "/graph_method/recipe/sections": "/sections",
     "/graph_method/recipe/reply_schema": "/reply_schema",
     "/graph_method/recipe/fields": "/fields"
-  }
+  },
+  "presentation_key": "presentation.onboarding"
 }

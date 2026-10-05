@@ -20,6 +20,9 @@ class DefaultLayers {
   // Returns effective/disabled/excluded/proposal/missing plus source explanation.
   // Suppressed defaults never have an effective `value` in this result.
   Result<Json> resolve(std::string_view key) const;
+  // Explanation language comes from the effective presentation catalog unless
+  // the caller supplies a locale. Suppressed presentation yields explicit null.
+  Result<Json> resolve(std::string_view key, std::string_view locale) const;
   // Returns a replacement persistent state; the original instance is unchanged.
   // Ops: override, clear_override, disable, exclude, reenable, accept_proposal,
   // set_area_mode. An override of an excluded id requires explicit reenable first.
@@ -27,8 +30,10 @@ class DefaultLayers {
   Result<Json> update_pack(const Json& pack) const;
 
  private:
+  Result<Json> resolve_raw(std::string_view key) const;
   Json pack_;
   Json state_;
+  Json presentation_;
 };
 
 // Adapt effective graph layers to the W11 RuntimeProfile descriptor. `bindings`
