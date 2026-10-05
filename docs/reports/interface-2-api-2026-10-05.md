@@ -23,6 +23,14 @@ Onboarding HTTP:8/8 real native grup,0 provider completions. Pierwszy negatyw mi
 
 Świeży fetch: integrator `0a81480` dokłada wyłącznie receipt5 do66da570d; main nadal e4109df. Przypięte API pozostaje bez zmian.
 
+## Checkpoint 3 — dokładne zapytania analizy
+
+Ekspercki panel W1/3/4: pełne body provider request jako exact bytes, read-only prepare bez HTTP i bez wpisu wykonania, osobny autoryzowany dispatch przez istniejący strażnik zużycia. Nowe wersje promptów i presetów trafiają do MethodRegistry/GraphPacket; nie nadpisują starszych wersji. Pierwsza odpowiedź zachowana przed parsowaniem, także błędna/binarna; pochodzenie modelowe tylko dla rzeczywistej treści modelu. Ścisłe JSON wejście odrzuca duplicate keys.5/5 grup (4 browser +1 C++ native fixture) PASS. Prepared handle jest process-local; nie jest trwałym TaskEngine resume.
+
+84/84 niezmienionych wcześniejszych fixtures PASS po poprawce lazy-read ustawień grafowych: montowanie/przywrócenie widoku nie wykonuje dodatkowego żądania. Natychmiastowe otwarcie szczegółów wykonuje prawdziwy GET. Grafowe tryby czatu14/14 real native PASS na binarce b97ac7cc, ze zgodnymi hashami źródeł przed/po;4 żądania lokalnego fake providera,0 zdalnych. Końcowa wspólna bramka nadal w toku.
+
+Wykryto dodatkowy rzeczywisty negatyw granicy HTTP config: zwykły JSON serwera sortował klucze native DTO. PUT/PATCH są poprawiane w zakresie W10; testy obu ścieżek zachowują oryginalny golden i wymagają dokładnego readback. Pełne negatywne receipts pozostają zachowane.
+
 ## W trakcie
 
 Most HTTP korzysta z tego samego statycznego Runtime i rzeczywistej deklaracji opaque context w `src/capi/context.h`. Nie odtwarza layoutu, nie tworzy drugiej DB/silnika i nie dodaje C ABI. To jawna zależność źródłowa serwera; stare JNI pozostaje bez nowej zdolności.
