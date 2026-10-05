@@ -1,0 +1,52 @@
+{
+  "schema": "loom.new_programme_readiness/1",
+  "programme_id": "thread7-new-key-2026-10-04-eur5",
+  "status": "blocked",
+  "preparation_only": true,
+  "network_calls": 0,
+  "paid_calls": 0,
+  "blockers": [
+    "new_private_key_binding",
+    "fresh_bound_key_metadata",
+    "fresh_documented_fx",
+    "documented_usd_cap_within_eur_authority",
+    "separate_nonresetting_provider_cap",
+    "byok_usage_accounted",
+    "provider_usage_reconciles_with_cumulative_actuals",
+    "frozen_stage_manifest",
+    "fresh_endpoint_price_evidence_for_every_stage_pair",
+    "stage_reservation_covers_price_projection",
+    "stage_fits_cumulative_budget"
+  ],
+  "checks": {
+    "owner_authorization_record": true,
+    "provider_currency_usd": true,
+    "new_private_key_binding": false,
+    "fresh_bound_key_metadata": false,
+    "fresh_documented_fx": false,
+    "documented_usd_cap_within_eur_authority": false,
+    "separate_nonresetting_provider_cap": false,
+    "byok_usage_accounted": false,
+    "separate_programme_ledger": true,
+    "cumulative_attempt_receipts_valid": true,
+    "unknown_cost_continuation_policy": true,
+    "provider_usage_reconciles_with_cumulative_actuals": false,
+    "frozen_stage_manifest": false,
+    "fresh_endpoint_price_evidence_for_every_stage_pair": false,
+    "stage_reservation_covers_price_projection": false,
+    "stage_fits_cumulative_budget": false
+  },
+  "accounting": {
+    "authorized_eur": "5",
+    "configured_usd_cap": null,
+    "cumulative_actual_usd": "0",
+    "unresolved_reservations_usd": "0",
+    "unknown_cost_attempts": 0,
+    "declared_price_projection_usd": null,
+    "next_stage_reservation_usd": null
+  },
+  "boundary": "Supplied private binding/pricing/FX records are checked, not remotely authenticated. A live transport must bind this exact key, durably reserve before dispatch, retain first responses, and rerun after every paid operation and before every stage. Reference FX does not certify a card settlement rate.",
+  "input_sha256": {
+    "policy": "375d7b6de1c70039bf89d80a7c28c2bb1573d5ad61a397e98c933970bb1af654"
+  }
+}
