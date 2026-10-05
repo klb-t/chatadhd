@@ -5,7 +5,8 @@ Canonical inputs:
 - `loom/data/runtime/context_goal_cues.pack`: DIC-0336 and DIC-0337.
 - `loom/data/runtime/chat_reasoning.pack`: DIC-0368, DIC-0369 and DIC-0370.
 - `loom/data/context/runtime_preset_layers.pack`: stable graph default identities,
-  areas and RFC6901 bindings. It contains no copy of preset values.
+  areas, RFC6901 bindings and historical identity hashes. It contains no copy of
+  preset values.
 
 Both runtime descriptors use W11's `loom.runtime_profile/1`. Regenerate the
 source-private embedded copy with `python3 loom/src/context/gen_runtime_presets.py`;
@@ -44,7 +45,12 @@ frozen before execution; callbacks cannot substitute another reasoning recipe.
 may replace its options through `goal_typing.goal_cues`. Forced goal types do
 not run the unused cue recipe. Explicit settings retain inspection in
 `goal.params.goal_cues`; their hash participates in the goal/context identity.
-Default options preserve existing goal JSON and IDs.
+The historical hash in `legacy_identity_hashes` preserves existing goal JSON
+and IDs for the current unconfigured preset. A different built-in descriptor
+revision or value also retains inspection and changes identity. Keep the
+historical anchor unchanged when upgrading presets; regenerating it from new
+values would conceal that upgrade. The anchor is compatibility metadata, not
+an effective value or an exemption from layer exclusions.
 
 `ChatEngine::send` reads Config `chat_reasoning` once, before conversation or
 transport mutation. It retains explicit inspection in both request-message and
@@ -53,8 +59,8 @@ assistant metadata, including request retention before a transport failure.
 signature and uses the generated built-in recipe. No new public ABI is added.
 
 Empty marker lists disable matching. Token budgets have no preset-derived
-ceiling. Case folding of thinking markers and case-sensitive matching of budget
-markers preserve the previous behavior, including incidental matches against
+ceiling. Case folding of the model name for thinking-marker lookup and case-sensitive
+matching of budget markers preserve the previous behavior, including incidental matches against
 other provider names. Changing that classification is a separate quality task.
 
 ## Integration boundaries
