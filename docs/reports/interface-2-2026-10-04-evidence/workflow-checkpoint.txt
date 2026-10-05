@@ -1,0 +1,10 @@
+[workflow-checkpoint] PASS quota failure preserves the complete prior checkpoint and its recovery state
+[workflow-checkpoint] PASS invalid checkpoints preserve original bytes instead of creating a ready session
+[workflow-checkpoint] PASS failed multi-view restore rolls back prior writes including previously absent checkpoint keys
+[workflow-checkpoint] PASS missing bound input fails before native dispatch without creating an unknown-operation lock
+[workflow-checkpoint] PASS snapshot restore is blocked during delayed workflow dispatch and succeeds after completion
+[workflow-checkpoint] PASS snapshot restore invalidates a delayed file import while retaining its source definition
+[workflow-checkpoint] PASS closed-view completion preserves its pending checkpoint and cannot redirect restored selection
+[workflow-checkpoint] PASS global sidebar creation blocks restore until its native operation and selection complete
+[workflow-checkpoint] PASS closing a view with delayed sidebar creation preserves the restore lock and suppresses its old selection callback
+[workflow-checkpoint] 9/9 passed; authored local HTTP fixtures; zero remote calls.

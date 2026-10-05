@@ -512,11 +512,16 @@ void App::route_models_providers() {
 
 void App::route_config_secrets() {
   // Static-kernel command adapter. No parallel HTTP ledger or approval engine.
-  svr_.Post("/api/usage-policy", [this](const httplib::Request& req, httplib::Response& res) {
+  // Capture the context only in builds that contain the native policy adapter.
+#ifdef LOOM_SERVER_HAS_USAGE_POLICY
+  svr_.Post("/api/usage-policy", [ctx = ctx_](const httplib::Request& req, httplib::Response& res) {
+#else
+  svr_.Post("/api/usage-policy", [](const httplib::Request& req, httplib::Response& res) {
+#endif
     json body;
     if (!object_body(req, res, body)) return;
 #ifdef LOOM_SERVER_HAS_USAGE_POLICY
-    send_loom(res, loom_usage_policy_json(ctx_, req.body.c_str()));
+    send_loom(res, loom_usage_policy_json(ctx, req.body.c_str()));
 #else
     send_error(res, "unavailable", "Native usage policy is not installed in this build");
 #endif
@@ -832,11 +837,11 @@ void App::route_provenance_events_tasks() {
 // ── Logs & misc ────────────────────────────────────────────────────────
 
 void App::route_logs_misc() {
-  svr_.Get("/api/logs", [this](const httplib::Request& req, httplib::Response& res) {
+  svr_.Get("/api/logs", [](const httplib::Request& req, httplib::Response& res) {
     int max_lines = req.has_param("max_lines") ? std::atoi(req.get_param_value("max_lines").c_str()) : 200;
     send_loom(res, loom_get_logs(max_lines));
   });
-  svr_.Get("/api/version", [this](const httplib::Request&, httplib::Response& res) {
+  svr_.Get("/api/version", [](const httplib::Request&, httplib::Response& res) {
     send_loom(res, loom_version());
   });
   svr_.Get("/api/info", [this](const httplib::Request&, httplib::Response& res) {

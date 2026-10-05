@@ -1,0 +1,20 @@
+PASS arbitrary application and original versions are data, distinct from profile revisions
+PASS missing optional capabilities are explicit and required capabilities block activation
+PASS capability labels cannot stand in for a matching operation adapter
+PASS unknown schema, operation, renderer and executable fields fail visibly
+PASS extensions are installed by code while new targets and versions remain declarative
+PASS workflow order is enforced and state advances only after adapter success
+PASS rejected adapters leave workflow and history intact and can be retried
+PASS capability guards run before native side effects
+PASS invalid finite-state declarations are rejected at registration
+PASS profile revision cannot silently mutate target identity or same-revision data
+PASS restoration replays workflow order and rejects revision, target, history or state mismatch
+PASS null version and uncertain evidence cannot claim verified original parity
+PASS changing profile views preserves canonical data, context and model configuration
+PASS submit shortcuts preserve multiline input and IME composition
+PASS declarative payloads bind inputs/context and selected result variables across workflow steps
+PASS missing and unsafe bindings fail before adapter effects and payload overrides are explicit errors
+PASS selected unsafe outputs reject state advancement after native success; unrelated unsafe outputs stay unpersisted
+PASS selected variable receipts replay exactly; forged extras or cross-workflow values are rejected
+PASS payload and non-result saved inputs are captured before asynchronous effects
+[application-profile-state] 19/19 groups passed; offline, zero model calls

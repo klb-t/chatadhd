@@ -1,0 +1,61 @@
+[0/2] Re-checking globbed directories...
+[1/237] Building C object CMakeFiles/loom_miniz.dir/third_party/miniz/miniz.c.o
+/workspace/scratch/308e2340bae7/chatadhd/loom/third_party/miniz/miniz.c:3185:9: note: ‘#pragma message: Using fopen, ftello, fseeko, stat() etc. path for file I/O - this path may not support large files.’
+ 3185 | #pragma message("Using fopen, ftello, fseeko, stat() etc. path for file I/O - this path may not support large files.")
+      |         ^~~~~~~
+[2/237] Linking C static library libloom_miniz.a
+[3/237] Building CXX object CMakeFiles/loom_core.dir/src/archive/cluster.cpp.o
+[4/237] Building C object CMakeFiles/loom_sqlite3_amalgamation.dir/third_party/sqlite/sqlite3.c.o
+[5/237] Linking C static library libloom_sqlite3_amalgamation.a
+[6/237] Building CXX object CMakeFiles/loom_core.dir/src/archive/ingest.cpp.o
+[7/237] Building CXX object CMakeFiles/loom_core.dir/src/archive/ingest_parse.cpp.o
+[8/237] Building CXX object CMakeFiles/loom_core.dir/src/archive/items.cpp.o
+[9/237] Building CXX object CMakeFiles/loom_core.dir/src/archive/text.cpp.o
+[10/237] Building CXX object CMakeFiles/loom_core.dir/src/archive/synth.cpp.o
+[11/237] Building CXX object CMakeFiles/loom_core.dir/src/archive/pipeline.cpp.o
+[12/237] Building CXX object CMakeFiles/loom_core.dir/src/archive/vocab.cpp.o
+[13/237] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_archive.cpp.o
+[14/237] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_catalog.cpp.o
+[15/237] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_context.cpp.o
+[16/237] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_chat.cpp.o
+[17/237] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_extract.cpp.o
+[18/237] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_generalize.cpp.o
+[19/237] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_core.cpp.o
+[20/237] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_graph_packet_store.cpp.o
+[21/237] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_graph.cpp.o
+[22/237] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_import.cpp.o
+[23/237] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_http.cpp.o
+[24/237] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_media.cpp.o
+[25/237] Building CXX object CMakeFiles/loom_core.dir/src/catalog/alias.cpp.o
+[26/237] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_knowledge.cpp.o
+[27/237] Building CXX object CMakeFiles/loom_core.dir/src/catalog/extract_text.cpp.o
+[28/237] Building CXX object CMakeFiles/loom_core.dir/src/catalog/links.cpp.o
+[29/237] Building CXX object CMakeFiles/loom_core.dir/src/catalog/import.cpp.o
+[30/237] Building CXX object CMakeFiles/loom_core.dir/src/catalog/catalog.cpp.o
+[31/237] Building CXX object CMakeFiles/loom_core.dir/src/catalog/profile.cpp.o
+[32/237] Building CXX object CMakeFiles/loom_core.dir/src/catalog/scan.cpp.o
+[33/237] Building CXX object CMakeFiles/loom_core.dir/src/catalog/query.cpp.o
+[34/237] Building CXX object CMakeFiles/loom_core.dir/src/catalog/schema.cpp.o
+[35/237] Building CXX object CMakeFiles/loom_core.dir/src/catalog/semantic.cpp.o
+[36/237] Building CXX object CMakeFiles/loom_core.dir/src/catalog/score.cpp.o
+FAILED: [code=1] CMakeFiles/loom_core.dir/src/catalog/score.cpp.o 
+/usr/bin/c++ -DCPPHTTPLIB_OPENSSL_SUPPORT=1 -DJSON_USE_IMPLICIT_CONVERSIONS=1 -DLOOM_BUILDING=1 -DLOOM_HAVE_OPENSSL=1 -DLOOM_VENDORED_SQLITE=1 -DLOOM_VERSION_STRING=\"0.1.0\" -I/workspace/scratch/308e2340bae7/chatadhd/loom/include -I/workspace/scratch/308e2340bae7/chatadhd/loom/src -isystem /workspace/scratch/308e2340bae7/chatadhd/loom/third_party/nlohmann -isystem /workspace/scratch/308e2340bae7/chatadhd/loom/third_party/cpp-httplib -isystem /workspace/scratch/308e2340bae7/chatadhd/loom/third_party/sqlite -isystem /workspace/scratch/308e2340bae7/chatadhd/loom/third_party/miniz -g -std=c++20 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -Wall -Wextra -Wpedantic -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Woverloaded-virtual -Wnull-dereference -Wimplicit-fallthrough -Wno-unused-parameter -Werror -MD -MT CMakeFiles/loom_core.dir/src/catalog/score.cpp.o -MF CMakeFiles/loom_core.dir/src/catalog/score.cpp.o.d -o CMakeFiles/loom_core.dir/src/catalog/score.cpp.o -c /workspace/scratch/308e2340bae7/chatadhd/loom/src/catalog/score.cpp
+/workspace/scratch/308e2340bae7/chatadhd/loom/src/catalog/score.cpp:784:1: fatal error: error writing to /tmp/ccalTBkV.s: No space left on device
+  784 | }  // namespace loom::catalog
+      | ^
+compilation terminated.
+[37/237] Building CXX object CMakeFiles/loom_core.dir/src/catalog/select.cpp.o
+FAILED: [code=1] CMakeFiles/loom_core.dir/src/catalog/select.cpp.o 
+/usr/bin/c++ -DCPPHTTPLIB_OPENSSL_SUPPORT=1 -DJSON_USE_IMPLICIT_CONVERSIONS=1 -DLOOM_BUILDING=1 -DLOOM_HAVE_OPENSSL=1 -DLOOM_VENDORED_SQLITE=1 -DLOOM_VERSION_STRING=\"0.1.0\" -I/workspace/scratch/308e2340bae7/chatadhd/loom/include -I/workspace/scratch/308e2340bae7/chatadhd/loom/src -isystem /workspace/scratch/308e2340bae7/chatadhd/loom/third_party/nlohmann -isystem /workspace/scratch/308e2340bae7/chatadhd/loom/third_party/cpp-httplib -isystem /workspace/scratch/308e2340bae7/chatadhd/loom/third_party/sqlite -isystem /workspace/scratch/308e2340bae7/chatadhd/loom/third_party/miniz -g -std=c++20 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -Wall -Wextra -Wpedantic -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Woverloaded-virtual -Wnull-dereference -Wimplicit-fallthrough -Wno-unused-parameter -Werror -MD -MT CMakeFiles/loom_core.dir/src/catalog/select.cpp.o -MF CMakeFiles/loom_core.dir/src/catalog/select.cpp.o.d -o CMakeFiles/loom_core.dir/src/catalog/select.cpp.o -c /workspace/scratch/308e2340bae7/chatadhd/loom/src/catalog/select.cpp
+/workspace/scratch/308e2340bae7/chatadhd/loom/src/catalog/select.cpp:163:1: fatal error: error writing to /tmp/ccS5jhQj.s: No space left on device
+  163 | }  // namespace loom::catalog
+      | ^
+compilation terminated.
+[38/237] Building CXX object CMakeFiles/loom_core.dir/src/catalog/sketch.cpp.o
+FAILED: [code=1] CMakeFiles/loom_core.dir/src/catalog/sketch.cpp.o 
+/usr/bin/c++ -DCPPHTTPLIB_OPENSSL_SUPPORT=1 -DJSON_USE_IMPLICIT_CONVERSIONS=1 -DLOOM_BUILDING=1 -DLOOM_HAVE_OPENSSL=1 -DLOOM_VENDORED_SQLITE=1 -DLOOM_VERSION_STRING=\"0.1.0\" -I/workspace/scratch/308e2340bae7/chatadhd/loom/include -I/workspace/scratch/308e2340bae7/chatadhd/loom/src -isystem /workspace/scratch/308e2340bae7/chatadhd/loom/third_party/nlohmann -isystem /workspace/scratch/308e2340bae7/chatadhd/loom/third_party/cpp-httplib -isystem /workspace/scratch/308e2340bae7/chatadhd/loom/third_party/sqlite -isystem /workspace/scratch/308e2340bae7/chatadhd/loom/third_party/miniz -g -std=c++20 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -Wall -Wextra -Wpedantic -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Woverloaded-virtual -Wnull-dereference -Wimplicit-fallthrough -Wno-unused-parameter -Werror -MD -MT CMakeFiles/loom_core.dir/src/catalog/sketch.cpp.o -MF CMakeFiles/loom_core.dir/src/catalog/sketch.cpp.o.d -o CMakeFiles/loom_core.dir/src/catalog/sketch.cpp.o -c /workspace/scratch/308e2340bae7/chatadhd/loom/src/catalog/sketch.cpp
+/workspace/scratch/308e2340bae7/chatadhd/loom/src/catalog/sketch.cpp:268:1: fatal error: error writing to /tmp/ccnmvLbU.s: No space left on device
+  268 | }  // namespace loom::catalog::internal
+      | ^
+compilation terminated.
+ninja: build stopped: subcommand failed.

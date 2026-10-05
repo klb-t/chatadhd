@@ -1,0 +1,5 @@
+[imported-message-content-native] PASS native Claude import renders all ten typed blocks through ChatView without running tools or media
+[imported-message-content-native] PASS editing imported native message preserves source and displays the current version without fetching Markdown media
+[imported-message-content-native] PASS excluded native OpenAI thoughts, tool output and code are inspectable through the per-view display control
+[imported-message-content-native] PASS native OpenAI image references remain inspectable without automatic downloads
+[imported-message-content-native] 4/4 groups passed; zero remote media or inference requests

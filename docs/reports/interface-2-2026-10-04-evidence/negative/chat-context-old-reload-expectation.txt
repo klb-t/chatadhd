@@ -1,0 +1,37 @@
+Negative reproduction: historical assertion versus deliberately persisted explicit context setting
+Source: git show 5314828:loom/web/e2e/chat-context.mjs (unmodified)
+Source SHA-256: 13e924d407687e5be7cf47adc26ea0e7e4abb81c84a445425772f4f5036c7a33
+Current native server: /workspace/scratch/308e2340bae7/chatadhd/loom/build/dev/server/loom-server
+Current dist/index.html SHA-256: c986e7705113ac4c145009e2639fe945fb998771397974587361a3ced4604f19
+Started UTC: 2026-10-04T15:37:53.885457+00:00
+Isolated test selects ephemeral provider/server ports and fresh temporary state; authored synthetic fixture only.
+
+23:37:54 [INFO ] loom.config: config.json not found - using defaults
+23:37:54 [INFO ] loom.config: secrets.json not found - using defaults
+23:37:54 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:37:54 [INFO ] loom.db: Database opened: /tmp/loom-chat-context-QC7mFK/chatadhd.db
+23:37:54 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:37:54 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom-chat-context-QC7mFK)
+loom-server: listening on 127.0.0.1:45189 (static: /workspace/scratch/308e2340bae7/chatadhd/loom/web/dist)
+23:37:57 [INFO ] loom.semantic_worker: Semantic: 3 done (regex, 300.0/s, 0 left)
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: workspace restore does not silently enable a plan after reload
+
+true !== false
+
+    at file:///workspace/scratch/308e2340bae7/chatadhd/loom/web/e2e/negative-chat-context-5314828-5nawu7ph.mjs:262:10 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: true,
+  expected: false,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.19.0
+
+Process exit code: 1

@@ -1,0 +1,9 @@
+PASS native artifact descriptors project exact retained fields without modifying source
+PASS media requires passive MIME, retained base64 and explicit activation
+PASS artifact projection preserves structure while scripts, styles and remote resources remain inert
+PASS retained media decodes only on click, then closes without remote requests
+PASS source view filters never discard unknown JSON or original edited/source distinction
+PASS branch navigation follows complete descendants without restoring messages
+PASS missing parents and cycles are reported with every retained row accessible
+PASS deep topology remains iterative and does not truncate descendants
+[source-views] 8/8 groups passed; zero model calls, zero remote fetches

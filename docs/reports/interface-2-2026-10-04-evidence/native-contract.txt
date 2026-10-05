@@ -1,0 +1,1 @@
+[native-contract] error envelopes, tri-state results, named arguments and background completion passed
