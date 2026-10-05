@@ -28,6 +28,10 @@ class MockTransport:
         self.after_post_crash = False
         self.generation_pending = 0
         self.key_lagging = 0
+        self.key_usage_override = None
+        self.distinct_generations = False
+        self.post_count = 0
+        self.on_post = None
 
     def __call__(self, method, route, body=None, params=None):
         self.calls.append((method, route, body, params))
@@ -37,6 +41,8 @@ class MockTransport:
             if self.usage and self.key_lagging:
                 self.key_lagging -= 1
                 usage = Decimal(0)
+            if self.key_usage_override is not None:
+                usage = self.key_usage_override
             result["raw"] = wire({"data": {"usage": str(usage), "limit": "5", "limit_remaining": str(5-usage),
                 "byok_usage": "0", "include_byok_in_limit": False, "is_management_key": False, "limit_reset": None}})
         elif route == "model_endpoints":
@@ -50,14 +56,18 @@ class MockTransport:
             self.test.assertTrue(list((self.test.private / "records").glob("*.started.json")))
             self.test.assertEqual(body, self.test.body)
             self.usage += self.cost
-            result["raw"] = wire({"id": "gen-fake", "model": "fake/model", "provider": "Fake",
+            self.post_count += 1
+            generation_id = "gen-fake-" + str(self.post_count) if self.distinct_generations else "gen-fake"
+            result["raw"] = wire({"id": generation_id, "model": "fake/model", "provider": "Fake",
                 "usage": {"cost": str(self.cost), "is_byok": False, "prompt_tokens": 1, "completion_tokens": 1}})
             if self.response_override is not None:
                 result.update(self.response_override)
+            if self.on_post is not None:
+                self.on_post()
         elif route == "generation":
             if self.after_post_crash:
                 raise SystemExit("simulated process death")
-            result["raw"] = wire({"data": {"id": "gen-fake", "model": "fake/model", "provider_name": "Fake",
+            result["raw"] = wire({"data": {"id": params["id"], "model": "fake/model", "provider_name": "Fake",
                 "api_type": "completions", "total_cost": str(self.cost), "is_byok": False}})
             if self.generation_override is not None:
                 result.update(self.generation_override)
@@ -110,6 +120,17 @@ class ProgrammeRunnerTests(unittest.TestCase):
 
     def run_stage(self):
         return runner.run_stage(self.policy, self.manifest, self.evidence, self.private, self.keyfile, self.repo, transport_fn=self.send)
+
+    def two_operations(self):
+        manifest = json.loads(self.manifest.read_bytes())
+        second = dict(manifest["operations"][0])
+        second["operation_id"] = "two"
+        manifest["operations"].append(second)
+        self.manifest.write_bytes(wire(manifest))
+        self.send.distinct_generations = True
+
+    def reconcile(self):
+        return runner.reconcile_stop(self.policy, self.manifest, self.evidence, self.private, self.keyfile, self.repo, transport_fn=self.send)
 
     def test_exact_bytes_durable_reserve_receipts_and_usage(self):
         result = self.run_stage()
@@ -324,6 +345,120 @@ class ProgrammeRunnerTests(unittest.TestCase):
         self.send.calls.clear()
         with self.assertRaisesRegex(runner.ProgrammeError, "stage_identity_already_bound"):
             self.run_stage()
+        self.assertFalse(self.send.calls)
+
+    def test_cooperative_pause_finishes_accounting_and_resumes_without_duplicate(self):
+        self.two_operations()
+        def pause_during_post():
+            runner.request_pause(self.policy, self.private, self.repo)
+        self.send.on_post = pause_during_post
+        result = self.run_stage()
+        self.assertEqual(result["status"], "paused")
+        self.assertEqual(result["completed_operations"], 1)
+        self.assertEqual(self.send.calls[-1][1], "key")
+        with sqlite3.connect(self.private / "ledger.sqlite3") as db:
+            self.assertFalse(db.execute("SELECT * FROM programme_state WHERE name='stop_reason'").fetchall())
+        (self.private / self.policy["pause"]["request_filename"]).unlink()
+        self.send.on_post = None
+        resumed = self.run_stage()
+        self.assertEqual(resumed["status"], "completed")
+        self.assertEqual(resumed["completed_operations"], 2)
+        self.assertEqual(len(self.send.posts()), 2)
+        self.assertEqual(resumed["cumulative_actual_usd"], "0.02")
+
+    def test_cooperative_signal_request_only_sets_boundary_flag(self):
+        import signal
+        self.two_operations()
+        original = signal.getsignal(signal.SIGUSR1)
+        self.send.on_post = lambda: signal.raise_signal(signal.SIGUSR1)
+        result = self.run_stage()
+        self.assertEqual(result["status"], "paused")
+        self.assertEqual(self.send.calls[-1][1], "key")
+        self.assertEqual(signal.getsignal(signal.SIGUSR1), original)
+        self.assertEqual(len(self.send.posts()), 1)
+
+    def test_configured_invocation_limit_is_cooperative_and_default_disabled_limit(self):
+        self.two_operations()
+        self.policy["pause"]["maximum_operations_per_invocation"] = 1
+        result = self.run_stage()
+        self.assertEqual(result["status"], "paused")
+        self.assertEqual(result["completed_operations"], 1)
+        self.assertEqual(self.send.calls[-1][1], "key")
+        self.policy["pause"]["maximum_operations_per_invocation"] = None
+        self.assertEqual(self.run_stage()["status"], "completed")
+        self.assertEqual(len(self.send.posts()), 2)
+
+    def test_pause_before_first_operation_does_not_access_provider(self):
+        self.private.mkdir(mode=0o700)
+        runner.request_pause(self.policy, self.private, self.repo)
+        result = self.run_stage()
+        self.assertEqual(result["status"], "paused")
+        self.assertEqual(result["attempted_operations"], 0)
+        self.assertFalse(self.send.calls)
+
+    def test_explicit_verified_lag_never_fakes_observed_usage(self):
+        self.policy["provider_usage_lag"] = {"mode": "allow_verified_lower_usage", "authority_ref": "invented-owner-authority"}
+        self.send.key_usage_override = Decimal(0)
+        result = self.run_stage()
+        self.assertEqual(result["status"], "completed")
+        reconciliation = result["provider_usage_reconciliation"]
+        self.assertEqual(reconciliation["observed_provider_usage_usd"], "0")
+        self.assertEqual(reconciliation["verified_cumulative_actual_usd"], "0.01")
+        self.assertEqual(reconciliation["effective_available_usd"], "4.99")
+        self.assertEqual(reconciliation["strict_gate_status"], "blocked")
+        self.assertEqual(reconciliation["strict_gate_blockers"], ["provider_usage_reconciles_with_cumulative_actuals"])
+
+    def test_read_only_stop_resolution_preserves_originals_then_resumes(self):
+        self.two_operations()
+        self.send.key_usage_override = Decimal(0)
+        stopped = self.run_stage()
+        self.assertEqual(stopped["status"], "stopped")
+        old_receipts = {path: path.read_bytes() for path in self.private.glob("*.actual.json")}
+        with sqlite3.connect(self.private / "ledger.sqlite3") as db:
+            old_attempt = db.execute("SELECT payload FROM attempts").fetchone()[0]
+        self.policy["provider_usage_lag"] = {"mode": "allow_verified_lower_usage", "authority_ref": "invented-owner-authority"}
+        self.send.calls.clear()
+        result = self.reconcile()
+        self.assertEqual(result["status"], "stop_resolved_read_only")
+        self.assertEqual(result["paid_calls"], 0)
+        self.assertFalse(self.send.posts())
+        self.assertTrue(all(method == "GET" for method, *_ in self.send.calls))
+        self.assertTrue(all(path.read_bytes() == raw for path, raw in old_receipts.items()))
+        with sqlite3.connect(self.private / "ledger.sqlite3") as db:
+            self.assertEqual(db.execute("SELECT payload FROM attempts").fetchone()[0], old_attempt)
+            self.assertEqual(db.execute("SELECT COUNT(*) FROM resolutions").fetchone()[0], 1)
+            self.assertFalse(db.execute("SELECT * FROM programme_state WHERE name='stop_reason'").fetchall())
+        resolution = json.loads(next(self.private.glob("*.resolution.json")).read_bytes())
+        self.assertEqual(resolution["previous_active_stop_projection"]["reason"], stopped["reason"])
+        self.assertTrue(resolution["original_stop_receipts"])
+        self.send.calls.clear()
+        resumed = self.run_stage()
+        self.assertEqual(resumed["status"], "completed")
+        self.assertEqual(len(self.send.posts()), 1)
+        self.assertEqual(resumed["cumulative_actual_usd"], "0.02")
+
+    def test_stop_resolution_default_strict_or_higher_usage_keeps_stop(self):
+        self.send.key_usage_override = Decimal(0)
+        self.assertEqual(self.run_stage()["status"], "stopped")
+        with self.assertRaisesRegex(runner.ProgrammeError, "budget_evidence_gate_blocked"):
+            self.reconcile()
+        self.policy["provider_usage_lag"] = {"mode": "allow_verified_lower_usage", "authority_ref": "invented-owner-authority"}
+        self.send.key_usage_override = Decimal("0.02")
+        self.send.calls.clear()
+        with self.assertRaisesRegex(runner.ProgrammeError, "budget_evidence_gate_blocked"):
+            self.reconcile()
+        self.assertFalse(self.send.posts())
+        with sqlite3.connect(self.private / "ledger.sqlite3") as db:
+            self.assertTrue(db.execute("SELECT * FROM programme_state WHERE name='stop_reason'").fetchall())
+            self.assertEqual(db.execute("SELECT COUNT(*) FROM resolutions").fetchone()[0], 0)
+
+    def test_uncertain_attempt_is_never_adopted_by_read_only_resolution(self):
+        self.send.response_override = {"http_status": 400, "raw": b'{"error":"invented"}'}
+        self.assertEqual(self.run_stage()["status"], "stopped")
+        self.policy["provider_usage_lag"] = {"mode": "allow_verified_lower_usage", "authority_ref": "invented-owner-authority"}
+        self.send.calls.clear()
+        with self.assertRaisesRegex(runner.ProgrammeError, "unresolved_attempt"):
+            self.reconcile()
         self.assertFalse(self.send.calls)
 
 
