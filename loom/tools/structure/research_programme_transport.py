@@ -17,6 +17,7 @@ from __future__ import annotations
 from datetime import datetime
 from decimal import Decimal, InvalidOperation
 import hashlib
+import importlib
 import json
 import math
 import os
@@ -98,10 +99,86 @@ class _NoRedirect(urllib.request.HTTPRedirectHandler):
         return None
 
 
-class OpenRouterTransport:
-    """One native urllib request per invocation; no automatic retry.
+class _PreserveBearerAuth:
+    """Explicit auth prevents Requests' environment netrc override."""
 
-    Config: {base_url, timeout_seconds, proxy_mode, routes: {route_id: {method, path}}}.
+    def __call__(self, request):
+        return request
+
+
+def _no_session_redirects(*args, **kwargs):
+    # Requests normally consumes/decompresses a redirect body to build .next
+    # even when allow_redirects=False. Preserve the original byte stream.
+    return iter(())
+
+
+def _requests_module():
+    try:
+        return importlib.import_module("requests")
+    except Exception:
+        raise TransportError("requests_backend_unavailable") from None
+
+
+def _partial_response_bytes(error, raw):
+    """Recover a bytes partial from urllib3/http.client exception wrappers."""
+    original = getattr(raw, "_original_response", None)
+    if (getattr(original, "chunked", False) is True
+            and getattr(original, "chunk_left", None) == 0):
+        # A read1 error between chunks can contain truncated framing CRLF.
+        # Those bytes are not part of the response body.
+        return b""
+    pending = [error]
+    seen = set()
+    while pending:
+        current = pending.pop()
+        if id(current) in seen:
+            continue
+        seen.add(id(current))
+        partial = getattr(current, "partial", None)
+        if isinstance(partial, bytes):
+            return partial
+        for nested in (current.__cause__, current.__context__, *current.args):
+            if isinstance(nested, BaseException):
+                pending.append(nested)
+    return b""
+
+
+def _method_headers(config):
+    configured = config.get("headers_by_method", {})
+    if not isinstance(configured, dict):
+        raise TransportError("invalid_transport_headers")
+    protected = {"authorization", "host", "content-length", "content-type", "accept-encoding"}
+    result = {}
+    for method, headers in configured.items():
+        if (not isinstance(method, str) or not re.fullmatch(r"[A-Z]+", method)
+                or not isinstance(headers, dict)):
+            raise TransportError("invalid_transport_headers")
+        copied = {}
+        names = set()
+        for name, value in headers.items():
+            if (not isinstance(name, str)
+                    or not re.fullmatch(r"[!#$%&'*+\-.^_`|~0-9A-Za-z]+", name)
+                    or name.lower() in protected or name.lower() in names
+                    or not isinstance(value, str)
+                    or any(ord(char) < 32 and char != "\t" or ord(char) == 127
+                           or ord(char) > 255 for char in value)
+                    or value.startswith((" ", "\t"))):
+                raise TransportError("invalid_transport_headers")
+            names.add(name.lower())
+            copied[name] = value
+        result[method] = copied
+    return result
+
+
+class OpenRouterTransport:
+    """One request per invocation; urllib by default, no automatic retry.
+
+    Config: {base_url, timeout_seconds, backend, proxy_mode,
+             routes: {route_id: {method, path}}}.
+    backend may be urllib (default) or requests_session. The pooled backend
+    requires explicit pool_connections, pool_maxsize and pool_block values.
+    Optional headers_by_method maps HTTP method names to additional headers;
+    credential, origin, body length/type and identity encoding stay protected.
     proxy_mode defaults to disabled; environment explicitly enables the native
     environment proxy needed by some execution environments. Proxy values are
     never logged or included in returned metadata.
@@ -113,20 +190,69 @@ class OpenRouterTransport:
             raise TransportError("invalid_openrouter_origin")
         routes = config.get("routes")
         timeout = config.get("timeout_seconds")
+        backend = config.get("backend", "urllib")
         proxy_mode = config.get("proxy_mode", "disabled")
+        if backend not in ("urllib", "requests_session"):
+            raise TransportError("invalid_transport_backend")
         if proxy_mode not in ("disabled", "environment"):
             raise TransportError("invalid_transport_proxy_mode")
         if not isinstance(routes, dict) or not routes:
             raise TransportError("invalid_transport_routes")
         if type(timeout) not in (int, float) or not math.isfinite(timeout) or timeout <= 0:
             raise TransportError("invalid_transport_timeout")
+        self._headers_by_method = _method_headers(config)
         self._routes = json.loads(json.dumps(routes))
         self._timeout = timeout
         self._key = _key_bytes(key).decode("ascii")
         self.key_fingerprint = key_fingerprint(key)
+        self._backend = backend
+        self._session = None
+        if backend == "requests_session":
+            for name in ("pool_connections", "pool_maxsize"):
+                if type(config.get(name)) is not int or config[name] <= 0:
+                    raise TransportError("invalid_transport_" + name)
+            if type(config.get("pool_block")) is not bool:
+                raise TransportError("invalid_transport_pool_block")
+            requests = _requests_module()
+            try:
+                read1 = requests.packages.urllib3.response.HTTPResponse.read1
+            except Exception:
+                raise TransportError("requests_raw_read1_unavailable") from None
+            if not callable(read1):
+                raise TransportError("requests_raw_read1_unavailable")
+            try:
+                self._session = requests.Session()
+                self._session.trust_env = proxy_mode == "environment"
+                self._session.resolve_redirects = _no_session_redirects
+                self._session.mount("https://", requests.adapters.HTTPAdapter(
+                    pool_connections=config["pool_connections"],
+                    pool_maxsize=config["pool_maxsize"],
+                    pool_block=config["pool_block"], max_retries=0))
+                self._session.mount("http://", requests.adapters.HTTPAdapter(
+                    pool_connections=config["pool_connections"],
+                    pool_maxsize=config["pool_maxsize"],
+                    pool_block=config["pool_block"], max_retries=0))
+            except Exception:
+                self.close()
+                raise TransportError("requests_backend_initialization_failed") from None
+            return
         proxy_handler = (urllib.request.ProxyHandler() if proxy_mode == "environment"
                          else urllib.request.ProxyHandler({}))
         self._opener = urllib.request.build_opener(proxy_handler, _NoRedirect())
+
+    def close(self):
+        """Release pooled connections; the urllib backend has no session."""
+        if self._session is not None:
+            try:
+                self._session.close()
+            except Exception:
+                pass
+
+    def _headers(self, method):
+        headers = {"Authorization": "Bearer " + self._key,
+                   "Content-Type": "application/json", "Accept-Encoding": "identity"}
+        headers.update(self._headers_by_method.get(method, {}))
+        return headers
 
     def _url(self, method, route_id, params):
         try:
@@ -178,13 +304,14 @@ class OpenRouterTransport:
         if body is not None and not isinstance(body, bytes):
             raise TransportError("request_body_must_be_bytes")
         url = self._url(method, route_id, params)
+        if self._backend == "requests_session":
+            return self._request_session(method, url, body)
         started = time.monotonic()
         response = None
         chunks = []
         try:
             request = urllib.request.Request(url, data=body, method=method,
-                headers={"Authorization": "Bearer " + self._key,
-                         "Content-Type": "application/json", "Accept-Encoding": "identity"})
+                headers=self._headers(method))
             try:
                 response = self._opener.open(request, timeout=self._timeout)
             except urllib.error.HTTPError as error:
@@ -205,6 +332,41 @@ class OpenRouterTransport:
                 partial = getattr(error, "partial", None)
                 if isinstance(partial, bytes):
                     chunks.append(partial)
+                result["transport_error"] = "response_read_failed"
+            result.update(raw=b"".join(chunks), latency_seconds=time.monotonic() - started)
+            return result
+        except Exception:
+            raise TransportError("transport_failed") from None
+        finally:
+            if response is not None:
+                try:
+                    response.close()
+                except Exception:
+                    pass
+
+    def _request_session(self, method, url, body):
+        started = time.monotonic()
+        response = None
+        chunks = []
+        try:
+            response = self._session.request(method, url, data=body,
+                headers=self._headers(method),
+                auth=_PreserveBearerAuth(), timeout=self._timeout,
+                allow_redirects=False, verify=True, stream=True)
+            status = response.status_code
+            if type(status) is not int:
+                raise TransportError("invalid_http_status")
+            result = {"http_status": status}
+            try:
+                while True:
+                    chunk = response.raw.read1(64 * 1024, decode_content=False)
+                    if not chunk:
+                        break
+                    if not isinstance(chunk, bytes):
+                        raise TransportError("invalid_response_bytes")
+                    chunks.append(chunk)
+            except Exception as error:
+                chunks.append(_partial_response_bytes(error, response.raw))
                 result["transport_error"] = "response_read_failed"
             result.update(raw=b"".join(chunks), latency_seconds=time.monotonic() - started)
             return result
