@@ -1,0 +1,32 @@
+{
+  "schema": "loom.programme_repetition_independent_review/1",
+  "verdict": "pass_after_concrete_fake_fixes",
+  "adapter_sha256": "4eb320b01d4dc4e12c4451d3bd81714e830a52f2de11defceadb2306a2dc6561",
+  "tests_sha256": "82aeb0a78b15202901c4bbd5e06e99a23294dcc650fe5f72111a50ad9a83e23d",
+  "policy_sha256": "2a66aa4d509c4a0a82bc6fb941d965355b7ac9ab5a8f309c87d3f2824f4fcab7",
+  "focused_cases_passed": 43,
+  "focused_skip_events": 0,
+  "two_independent_scoped_reviews_passed": true,
+  "exact_negative_sources": {
+    "malformed_equal_digests": "ccbf01bfeb60dccd1b4cff852a1bf7d0cedfc7e496387f47936d8c3b213b59a1",
+    "reused_physical_capture_hashes": "40afc388a39e1878690b4d4dd278c8921cd702da543071591d73130612ddecc3",
+    "pending_label_and_explicit_billing_contradictions": "213e7f1897d1f001414bc8f2302c80198ce9bfedea1ff783287e35474d637b28"
+  },
+  "findings": [
+    "Equal empty/nonhex/null receipt digests previously established a label or verified credit binding; canonical digest guards now reject.",
+    "Reusing successful HTTP/proven-GEN capture hashes while projecting distinct generation IDs previously counted two scientific first captures; unique physical capture guards now reject.",
+    "Bound successful pending-billing first answers previously disappeared from quality denominators; authorized caller DATA label states preserve valid label with cost NULL, and intentionally change derived planned IDs.",
+    "Explicit supplied billing-mode/BYOK contradictions previously claimed verified credit; financial attestation disagreement now rejects."
+  ],
+  "proofs": "final-hash-and-pending-replay.json; complementary complete witnesses in archive",
+  "scope": [
+    "Exact original request bytes, units, floors and prompt digests retained; explicit arm/query/repetition order and source/selection identities.",
+    "Unchanged pure Jev judgment compiler/panel scoring; per-repetition and pooled qualified IDs preserve all planned/missing/conflicting outcomes.",
+    "Optional family-cluster bootstrap keeps repetitions correlated; no independent-holdout or automatic promotion claim.",
+    "Supplied normalized receipt/projection attestation is lower evidence; private HTTP/GEN bytes and API type are not independently replayed here."
+  ],
+  "actual_repeat_outputs_read": false,
+  "private_ledger_credentials_or_payer_read": false,
+  "provider_calls": 0,
+  "functional_source_edited_by_reviewer": false
+}

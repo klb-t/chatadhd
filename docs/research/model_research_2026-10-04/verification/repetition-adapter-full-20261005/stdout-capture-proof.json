@@ -1,0 +1,8 @@
+{
+  "bytes": 15015,
+  "sha256": "e09fb255f5706c4d3ab49b188409a3d828ee069507dfd24535d823a500118765",
+  "method": "Captured complete subprocess stdout/stderr stream; every line flushed+fsynced; final bytes equality verified",
+  "ctest_exit_code": 0,
+  "starts": "Test project /workspace/scratch/407fe6f6ff42/build\n        Start  99: research.structure\n        Sta",
+  "final_summary": " Passed    0.01 sec\n108/108 Test  #67: unit.test_net_sse ..................................   Passed    0.01 sec\n\n100% tests passed out of 108\n\nTotal Test time (real) = 135.36 sec\n"
+}
