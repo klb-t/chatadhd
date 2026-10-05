@@ -13,6 +13,7 @@ from datetime import datetime, timezone
 import hashlib
 import gzip
 import json
+import math
 from pathlib import Path
 import random
 from typing import Any
@@ -27,6 +28,39 @@ else:
 
 
 ROOT = Path(__file__).resolve().parents[3]
+
+
+def float_sum(values) -> float | int:
+    """Built-in sum() with CPython 3.12+ float semantics on every Python version.
+
+    CPython 3.12 made sum() of floats compensated (Neumaier); 3.11 adds plainly.
+    Captured rankings replay bit-identically only with one definition, so this
+    mirrors 3.12: exact integer prefix, plain add of the first float, then
+    compensated float terms, and the compensation added once at the end.
+    """
+    total: float | int = 0
+    compensation = 0.0
+    floating = False
+    for value in values:
+        if not floating:
+            if type(value) is float:
+                total = total + value
+                floating = True
+            else:
+                total += value
+            continue
+        if type(value) is not float:
+            total += float(value)
+            continue
+        step = total + value
+        if abs(total) >= abs(value):
+            compensation += (total - step) + value
+        else:
+            compensation += (value - step) + total
+        total = step
+    if floating and compensation and math.isfinite(compensation):
+        total += compensation
+    return total
 FIXTURE = ROOT / "loom/tests/fixtures/eval/synthetic_dev/ground_truth.json"
 PROTOCOL = ROOT / "docs/research/SEEDING_PROTOCOL_2026-09-29.md"
 POLICY = Path(__file__).with_name("policy.json")
@@ -67,8 +101,8 @@ def mapping(target: Graph, donor: Graph, policy: dict[str, Any]) -> dict[str, An
                   "relation": relation, "label": label}
                  for relation in sorted(policy["relation_weights"])
                  for label in sorted(target.edges.get(relation, set()) & donor.edges.get(relation, set()))]
-    numerator = sum(policy["relation_weights"][e["relation"]] for e in preserved)
-    denominator = sum(weight * len(target.edges.get(relation, set()) | donor.edges.get(relation, set()))
+    numerator = float_sum(policy["relation_weights"][e["relation"]] for e in preserved)
+    denominator = float_sum(weight * len(target.edges.get(relation, set()) | donor.edges.get(relation, set()))
                       for relation, weight in policy["relation_weights"].items())
     return {"preserved_relations": preserved,
             "score": numerator / denominator if denominator else 0.0,
@@ -135,7 +169,7 @@ def predict(training: list[Graph], target: Graph, task: str, method: str,
                 "applicable_application_witnesses": applicable_applications})
     labels = sorted(candidates)
     if method == "partial_mapping":
-        labels.sort(key=lambda label: (-sum(s["mapping"]["score"] for s in candidates[label]),
+        labels.sort(key=lambda label: (-float_sum(s["mapping"]["score"] for s in candidates[label]),
                                        -len(candidates[label]), label))
     elif method in ("most_frequent", "premise_filtered_frequency"):
         labels.sort(key=lambda label: (-len(candidates[label]), label))
@@ -158,7 +192,7 @@ def predict(training: list[Graph], target: Graph, task: str, method: str,
             "expected_properties": list(unique_expected.values()),
             "premises_and_provenance": witnesses,
             "assessment": {"score_kind": "similarity_sum" if method == "partial_mapping" else "donor_count",
-                "score": sum(w["mapping"]["score"] for w in witnesses) if method == "partial_mapping" else len(witnesses),
+                "score": float_sum(w["mapping"]["score"] for w in witnesses) if method == "partial_mapping" else len(witnesses),
                 "calibrated_probability": None, "supporting_donor_projects": len(witnesses)},
             "unverified_properties": ["target-specific applicability", "implementation status", "causal relation", "truth"],
             "counter_evidence": {"status": "not_evaluated", "items": []}})

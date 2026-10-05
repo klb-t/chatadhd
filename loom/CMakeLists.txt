@@ -232,8 +232,14 @@ if(LOOM_BUILD_TESTS)
     add_test(NAME research.seeding
       COMMAND ${Python3_EXECUTABLE} -m unittest discover
         -s ${LOOM_ROOT}/tools/seeding -p "test_*.py")
-    set_tests_properties(research.structure research.independent_protocol research.graph_native_protocol research.candidate_graph_protocol research.contracts research.seeding PROPERTIES
+    set_tests_properties(research.independent_protocol research.graph_native_protocol research.candidate_graph_protocol research.contracts research.seeding PROPERTIES
       ENVIRONMENT "${_loom_python_env}" TIMEOUT 60)
+    # The structure suite also runs the research programme's native-execution
+    # cases (otherwise skipped) and has grown to ~1300 cases (~70 s alone), so
+    # its hang timeout is wider; no case, threshold or assertion changes.
+    set_tests_properties(research.structure PROPERTIES
+      ENVIRONMENT "${_loom_python_env};LOOM_CANDIDATE_GRAPH_NATIVE_TOOL=$<TARGET_FILE:loom_candidate_graph_native_tool>"
+      TIMEOUT 300)
   else()
     message(WARNING "loom: Python3 not found - compat tests disabled")
   endif()
