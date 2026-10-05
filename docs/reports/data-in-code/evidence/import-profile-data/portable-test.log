@@ -1,0 +1,16 @@
+test_data_does_not_claim_engine_activation (import_profile_data_test.ImportProfileData.test_data_does_not_claim_engine_activation) ... ok
+test_estimator_scope_and_prices_stay_explicit (import_profile_data_test.ImportProfileData.test_estimator_scope_and_prices_stay_explicit) ... ok
+test_existing_audit_semantic_validator_is_still_required (import_profile_data_test.ImportProfileData.test_existing_audit_semantic_validator_is_still_required) ... ok
+test_frozen_python_estimator_default_output_parity (import_profile_data_test.ImportProfileData.test_frozen_python_estimator_default_output_parity) ... ok
+test_frozen_source_and_default_bindings (import_profile_data_test.ImportProfileData.test_frozen_source_and_default_bindings) ... ok
+test_legacy_role_asymmetry_and_ocr_byte_format (import_profile_data_test.ImportProfileData.test_legacy_role_asymmetry_and_ocr_byte_format) ... ok
+test_malformed_typed_settings_are_rejected (import_profile_data_test.ImportProfileData.test_malformed_typed_settings_are_rejected) ... ok
+test_native_and_cli_are_separate_layers (import_profile_data_test.ImportProfileData.test_native_and_cli_are_separate_layers) ... ok
+test_open_aliases_and_large_or_unbounded_presets (import_profile_data_test.ImportProfileData.test_open_aliases_and_large_or_unbounded_presets) ... ok
+test_source_drift_is_explicit (import_profile_data_test.ImportProfileData.test_source_drift_is_explicit) ... ok
+test_supported_schema_and_roundtrip (import_profile_data_test.ImportProfileData.test_supported_schema_and_roundtrip) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 1.042s
+
+OK

@@ -1,0 +1,52 @@
+{
+  "schema": "loom.archive_cost_projection/1",
+  "model_calls": 0,
+  "local_import_model_cost_usd": 0,
+  "local_compute_cost_usd": null,
+  "projected": {
+    "scope": {
+      "status_classes": [
+        "active",
+        "version",
+        "unknown"
+      ],
+      "include_tools": true,
+      "tool_roles": [
+        "tool",
+        "function"
+      ],
+      "coverage": "stored message text only"
+    },
+    "conversations": 2,
+    "messages": 3,
+    "chars": 44
+  },
+  "assumptions": {
+    "fraction": 1.0,
+    "fraction_method": "proportional projection; not a measured sample",
+    "output_ratio": 0.4,
+    "prefix_tokens": 0,
+    "include_versions": true,
+    "include_unknown_status": true,
+    "chars_per_token": {
+      "low": 4.0,
+      "high": 3.0
+    },
+    "token_measurement": "character-based estimate; not tokenizer/billed usage",
+    "prefix_cache": "all prefixes priced at cache-read; first-write and cache eligibility unverified",
+    "batch": "uniform table discount; provider/model eligibility unverified",
+    "pricing_as_of": null,
+    "pricing_source": "not supplied; no model USD estimate"
+  },
+  "tokens": {
+    "low": 11,
+    "high": 15
+  },
+  "output_tokens": {
+    "low": 4.4,
+    "high": 5.866666666666667
+  },
+  "prefix_tokens": 0.0,
+  "models": null,
+  "models_unrounded": null
+}
