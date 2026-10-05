@@ -133,10 +133,23 @@ class Lexicons {
   std::vector<std::string> version_anchors;  // folded
   std::vector<VersionDecl> version_decls;
   std::vector<std::string> version_excludes;  // folded
+  std::set<std::string, std::less<>> version_entity_kinds;
+  std::set<std::string, std::less<>> version_extra_observation_kinds;
+  std::set<std::string, std::less<>> version_declaration_only_kinds;
+  std::optional<re::Regex> version_binding_gap_re;
+  std::optional<re::Regex> version_reject_suffix_re;
+  std::size_t version_binding_max_gap = 0;
   int version_window = 12;
 
   // ── relation patterns ───────────────────────────────────────────
   std::vector<RelPattern> patterns;
+
+  // ── mined name / prose syntax (cues.json name_rules) ──────────────
+  // Strong structural name cues may skip the configured case/stopword
+  // heuristics. Known profile/gazetteer names are not filtered.
+  bool name_ok(std::string_view kind, std::string_view label, std::string_view artifact_type = {},
+               bool strict = true) const;
+  bool prose_ok(std::string_view text) const;
 
   // ── thresholds (policy/thresholds.json) ─────────────────────────
   int context_window = 30;
@@ -144,6 +157,9 @@ class Lexicons {
   Json thresholds = Json::object();
 
  private:
+  Json name_rules_ = Json::object();
+  std::map<std::string, std::vector<re::Regex>, std::less<>> name_reject_;
+  std::vector<re::Regex> prose_reject_;
   std::map<std::string, std::vector<Phrase>> cues_;
   std::vector<Phrase> empty_;
   std::vector<Phrase> neg_particles_;
