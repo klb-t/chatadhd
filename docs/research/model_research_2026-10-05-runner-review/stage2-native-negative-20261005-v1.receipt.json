@@ -1,0 +1,183 @@
+{
+  "archive": {
+    "bytes": 6241755,
+    "compression": "ZIP DEFLATE level9; fixed1980-01-01 metadata; sorted repo-shaped paths; no directories/pycache/unlisted files",
+    "filename": "stage2-native-negative-20261005-v1.zip",
+    "members": 419,
+    "payload_bytes": 24892895,
+    "sha256": "8b99e25ee349b8d9b09576a82e30ce06a85cf9dcca0ad28e8a16aed39bc92d4d"
+  },
+  "closure_negative_boundary": "Initial source-closure run had30 passes/2 missing public raw synthetic fixture ZIP errors. Negative log retained; exact frozen fixtures copied without source/test/output repair; final32 passes. This closure failure is not another model attempt.",
+  "diagnostic_graph": {
+    "actual_method_version_configuration_identities_preserved": 4,
+    "claims": 172,
+    "entities": 90,
+    "events": 60,
+    "files": 9,
+    "gzip_sha256": "e1e5e72af107f9c6923d00e39090e9f2b8c010a5d7f79f1a819ebeb5c1d07cc5",
+    "metric_scope": "Per method mechanism native validity0/15, diagnostic48 unresolved source slots, semantic unavailable/null; no native adoption or CABI/store execution",
+    "raw_sha256": "cfaed00084c9ad6010867cc1b5af0c1e6c00571786f4701151ccabd7b4dd13df",
+    "sources": 17,
+    "typed_evaluations": 12
+  },
+  "internal_manifest": {
+    "bytes": 67869,
+    "sha256": "1064d0db33af5a54dfaf504d498ce00c18f9ec76592f045a8f050e3ab9cfddd9"
+  },
+  "member_role_counts": {
+    "DATA_native_diagnostic_graph_artifact": 9,
+    "archive_binary_and_source_provenance": 1,
+    "archive_reproduction_check_receipt": 1,
+    "archive_scope_and_replay_instructions": 1,
+    "diagnostic_graph_transitive_dependency": 4,
+    "exact_pre_flat_import_frozen_test_source_and_recovery_provenance": 2,
+    "exact_public_synthetic_DEV_source_archive": 2,
+    "frozen_research_source_or_shared_contract": 31,
+    "native_CXX_build_source_from_main": 330,
+    "offline_archive_source_closure_final_capture": 1,
+    "offline_archive_source_closure_negative_replay_capture": 1,
+    "original_public_stage2_snapshot": 12,
+    "research_policy_or_replay_documentation": 4,
+    "stage2_source_reference_preparation_or_review": 18
+  },
+  "original_public_files": {
+    "docs/research/model_research_2026-10-04/programme-actual/stage2-final-20261005-v1/METHODS.json": {
+      "bytes": 53979,
+      "sha256": "a4733c57c820c483e37f529d06ea5beb24f7f2b5200a5266659a45e698e7f2eb"
+    },
+    "docs/research/model_research_2026-10-04/programme-actual/stage2-final-20261005-v1/NATIVE_RECEIPTS.json": {
+      "bytes": 1480879,
+      "sha256": "6f737bf1e5e9ea28e06605ec9ec2efd31ab287ba74df5e503a2462b62bc972e2"
+    },
+    "docs/research/model_research_2026-10-04/programme-actual/stage2-final-20261005-v1/NORMALIZED.json": {
+      "bytes": 1083150,
+      "sha256": "216baddb110faf148705542b476927738ff9adee7c97aa9ad74425f8d5a9f7dd"
+    },
+    "docs/research/model_research_2026-10-04/programme-actual/stage2-final-20261005-v1/REQUESTS.json": {
+      "bytes": 568579,
+      "sha256": "6539aaccd331590588354a9f7e876ba82dcc3a7eb3ab3ea8a3784ed5e076c40b"
+    },
+    "docs/research/model_research_2026-10-04/programme-actual/stage2-final-20261005-v1/RESPONSES.json": {
+      "bytes": 377143,
+      "sha256": "99b7739e7dfb3966240f87dcf7c9571bf6b6bc74a3cf06344c670266c6a0da23"
+    },
+    "docs/research/model_research_2026-10-04/programme-actual/stage2-final-20261005-v1/VERIFICATION.json": {
+      "bytes": 3129,
+      "sha256": "a2141b5aa124d84b0bdd554e520bc19ced8ac5c131281294a546bd0a21850e03"
+    },
+    "docs/research/model_research_2026-10-04/programme-actual/stage2-final-20261005-v1/configuration.json": {
+      "bytes": 261150,
+      "sha256": "2bb29e4a6795edb9001a478f2d7276b27ed0fa1dbc74d062de85094e5453a8fa"
+    },
+    "docs/research/model_research_2026-10-04/programme-actual/stage2-final-20261005-v1/group-3821f6563d08c8b2e685b09cf19dc6f157c38f815bd275de2b8c837a12192fcc.json": {
+      "bytes": 68958,
+      "sha256": "fbc9e48eb13e6e8bd2bf61f993a82540c0695e8d6b08a9aefe66b3d29a16bc48"
+    },
+    "docs/research/model_research_2026-10-04/programme-actual/stage2-final-20261005-v1/group-53c9505a50c6c240ada14d5603c002d9bf98190dd8c74df131165fd8d4903f5a.json": {
+      "bytes": 68948,
+      "sha256": "93d7f52f583faec270866a53d4d8d7d54e5eea8716754673f0f09ec08fa59c67"
+    },
+    "docs/research/model_research_2026-10-04/programme-actual/stage2-final-20261005-v1/group-8731ca180a3e9df97264a0928d9acb1a30e3c97d1b8d3f7cbb47ce565974894a.json": {
+      "bytes": 68934,
+      "sha256": "90f84f075965f7d93ebff7ebb9fe4a2c5314f39179b7ceadc65b89343bab1a52"
+    },
+    "docs/research/model_research_2026-10-04/programme-actual/stage2-final-20261005-v1/group-b43c881f78328fd67e427df7540a82b82e38be126fd3fd98cc318048bafae805.json": {
+      "bytes": 68962,
+      "sha256": "d23b588727ea4f96d543d0fe32f396a55532788b6cbe981764fc0eb557517afd"
+    },
+    "docs/research/model_research_2026-10-04/programme-actual/stage2-final-20261005-v1/packet.json.gz": {
+      "bytes": 504116,
+      "sha256": "f69b45166b749154479e58d02ccd624494eae8c40a5542403698284f096fee9b"
+    }
+  },
+  "publication": "Prepared for archive/gpt/model-research-runner-review-2026-10-05; parent root owns commits/push; originals untouched.",
+  "readme": {
+    "bytes": 7430,
+    "sha256": "6d75b84abd72ba52c7912fca7ad9378e15011f978eb883613bb50d6d332e3edf"
+  },
+  "schema": "loom.stage2_native_negative_archive_receipt/1",
+  "scope_boundary": "Public selected-field, first-content, source/native/scorer/graph reproduction only. Complete root-owned append-only private generation/account/raw proof chain is not copied or independently authenticated. Source commitments do not prove generation-to-request identity, account usage, or absence of unreported operations. No key/account/fingerprint/holdout/Stage5 corpus read or inclusion; no binaries, new model calls, CABI/store execution, adoption, best native recipe, semantic-zero claim or Stage5 winner.",
+  "six_recorded_platform_binaries": {
+    "cli/loom": {
+      "mode": "0o755",
+      "sha256": "6d7277b8384041ef7bdc8d3f03c95c03fd81cc59a9533d9da094e6e6bc04c872",
+      "size": 32182400
+    },
+    "libloom.so.0.1.0": {
+      "mode": "0o755",
+      "sha256": "2024c211bf38b8b74dd12273e3826a39894059b8deda2bf15bdcb86de3b994e9",
+      "size": 34451376
+    },
+    "loom_candidate_graph_native_tool": {
+      "mode": "0o755",
+      "sha256": "d3e8411f099698bca28d6f7f089eb8f5ba5920637826eb447796db6d86c79def",
+      "size": 2008704
+    },
+    "loom_compat_tool": {
+      "mode": "0o755",
+      "sha256": "01a490a8f0ad169a20c1eeeda5079de9fe3851c70231d055b753e871e8189464",
+      "size": 32373152
+    },
+    "loom_tests": {
+      "mode": "0o755",
+      "sha256": "0050047a7a4b1c6313d9d5938f1d0012ce69ce6a7961c044c1ea26da4c3ba05b",
+      "size": 49449584
+    },
+    "server/loom-server": {
+      "mode": "0o755",
+      "sha256": "14e9f958078e87b668a14130d3a7127400499d96e751e0a84789533b0aee8707",
+      "size": 34738016
+    }
+  },
+  "source_bindings": {
+    "native_adapter_sha256": "f92da5c47bc5478d401a3afb1631d31a1f77be100279dddb794458915a75f8f2",
+    "native_adapter_test_sha256": "6eb24bdee15f77d34a316f3d8c2b15dd121aa48f8719c06fbc09353e089bfcce",
+    "native_copied_source_files": 330,
+    "native_current_checkout_drift": [],
+    "native_main_commit": "30ad7d37337d6641cb7714b03e9feff0e6e25d25",
+    "research_source_commit": "1259d47596455e041662409c69ec96fdc79f3210",
+    "semantic_corrected_test_sha256": "ea971ae8b6d1232cfadc22c42f99285aeb4c86ee47cb5bedc3c36ab45ec4fb9e",
+    "semantic_historical_test_sha256": "31544304e0efbe567078e7cff0c6fed778cda35ecbba5335439ec0355b8eafea",
+    "semantic_scorer_sha256": "86e46aa1c306d4b0d676035fa81e64cfa6f881b07a48dccbec52d093c71dbc44",
+    "test_drift_scope": "Import only; before-flat-import exact source recovered from immutable published native negative archive; reference/scorer/criteria/thresholds unchanged"
+  },
+  "source_manifest": {
+    "bytes": 126171,
+    "sha256": "ba07aec8f54c2c54f2177e8f9de883ad34beefb5eab8da3b9cd0c91cf4fb5286"
+  },
+  "verification": {
+    "all_12_original_public_snapshot_files_unchanged": true,
+    "clean_tree_diagnostic_graph_raw_replay": "exact",
+    "clean_tree_native_receipt_replay": "exact except fresh wrapper_latency_ms",
+    "clean_tree_original_generic_graph_raw_replay": "exact",
+    "clean_tree_semantic_score_replay": "entire parsed output exact",
+    "finish_length_exact1600": 32,
+    "first_native_error_counts": {
+      "quote_mismatch": 16,
+      "shape": 2,
+      "span_bounds": 1
+    },
+    "focused_copied_source_test_skips": 0,
+    "focused_copied_source_tests_passed": 32,
+    "frozen_criteria": 48,
+    "input_tokens": 120590,
+    "invalid_response": 41,
+    "native_accepted": 0,
+    "native_decoded_alternatives": 19,
+    "native_mechanically_rejected": 19,
+    "new_paid_calls": 0,
+    "output_tokens": 82663,
+    "planned_requests": 60,
+    "planned_source_criterion_slots": 192,
+    "public_cost_usd": "0.1639080",
+    "retained_first_responses": 60,
+    "semantic_accuracy": null,
+    "source_cases": 15,
+    "source_criterion_slots_unresolved": 192,
+    "source_or_test_edits_in_repository": false,
+    "unique_generation_ids": 60,
+    "zip_all_payload_sha256_and_sizes_pass": true,
+    "zip_bytes_equal_copied_sources_pass": true,
+    "zip_crc_all_members_pass": true
+  }
+}
