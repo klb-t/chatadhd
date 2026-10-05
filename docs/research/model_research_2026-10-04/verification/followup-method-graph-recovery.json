@@ -1,0 +1,188 @@
+{
+  "schema": "loom.followup_method_graph_recovery/1",
+  "verified_on": "2026-10-05",
+  "archive": {
+    "commit": "f14a4035eaad896a9905439fc3a60e46c6b0f1ba",
+    "path": "docs/research/model_research_2026-10-04/negative-research-review-20261004-v3.zip",
+    "sha256": "ec7020cbdd32a69a2ab7c41e1874375882837541f534add8c6c3f7c67764639d",
+    "v3_manifest_verified_files": 40,
+    "v2_manifest_verified_files": 61,
+    "original_manifest_verified_files": 89,
+    "v2_zip_sha256": "27d54f67e786046548b42834833f7ede4f88c8bae94d5bb621d7712c1be798e8",
+    "original_zip_sha256": "4eaa334a8612104fab59c3d182545e1fd2cf938b7dc07997682534a42c744048",
+    "archived_sources_or_failed_proofs_copied_to_active_tree": false
+  },
+  "accepted_checkpoints": {
+    "followup_source_sha256": "32e94b41da69660cbfcd7950dac5cfc07b7278f900e5ab5193c1ddfed07f777d",
+    "exporter_source_sha256": "537589147b8548a86c68de1a9726b6fb423e52aee02ce2a185232ad83a9943b6",
+    "packet_sha256": "62fe32c0ac26fa13df69d79545b83a7555d58d50c889e8b8722cf3426964956a",
+    "packet_bytes": 9313697,
+    "packet_gzip_sha256": "ec8cd76e703639bc5f8d7e880227c73c500decdbd3143c383b6b30e776b9ff38",
+    "packet_gzip_bytes": 541399
+  },
+  "source_sha256": {
+    "loom/tools/structure/frontier_reply_followup_v1.py": "32e94b41da69660cbfcd7950dac5cfc07b7278f900e5ab5193c1ddfed07f777d",
+    "loom/tools/structure/test_frontier_reply_followup_v1.py": "bb966e6b0f632c9fa6bf4604799fc7f52eafbd377ca942895531541c6cea5e3e",
+    "loom/tools/structure/method_graph_export_v1.py": "537589147b8548a86c68de1a9726b6fb423e52aee02ce2a185232ad83a9943b6",
+    "loom/tools/structure/method_graph_build_v1.py": "681bfe27106f75ec81d516f34b966c9d7090a95d46f51e45e8764e754e1fa392",
+    "loom/tools/structure/method_graph_vocabulary_v1.json": "75363d3767d9161ba274945a210df8d5144f91f3d2c547494f3d64e508eb60a0",
+    "loom/tools/structure/test_method_graph_export_v1.py": "4d2c229fd93537f1989fc3842ca42cdaf02db154d720c52a44b596870537e9ca",
+    "loom/tools/structure/agentic_graph_v1/packet.py": "1b949dad8319f21713b984367cba162d1330f188d26557b21b264ef10910bbc4",
+    "loom/tools/structure/agentic_graph_v1/graph_packet.schema.json": "7a5e58b68b2f4d6de90c6f7d25072a9634de594a83a05491c89dfddffa404431",
+    "loom/tools/structure/frontier_comparison_v1.py": "ef88ef613637579d47af7b5ec2ca4a07d94f0447e2b823e2907b7312ad1b892f",
+    "loom/tools/structure/openrouter_runner.py": "2cd14424ca190f3d5fed47faf1e328993668a620b8202cfb7b196b363f971635",
+    "loom/tools/eval/model_profiles.py": "2521ca315a34f8a173d3d756ddcc6b31a5556cd8490581bfda62bec1b4726bf3",
+    "docs/contracts/model_profile.schema.json": "ffc875582ddd6f1a18c97a598a8835caaa4131f22fe7c8bbaaf7496fc3bbcdba"
+  },
+  "checks": {
+    "focused_tests": {
+      "passed": 27,
+      "followup": 13,
+      "method_graph_export": 14,
+      "command": "PYTHONPATH=loom/tools/structure:. python -m unittest test_frontier_reply_followup_v1 test_method_graph_export_v1 -v",
+      "log": "docs/research/model_research_2026-10-04/verification/followup-method-graph-tests.txt"
+    },
+    "accepted_followup_outputs_regenerated_exactly": 11,
+    "accepted_exporter_packet_regenerated_exactly": true,
+    "builder_configuration_methods_events_gzip_regenerated_exactly": true,
+    "builder_storage_roundtrip_verified": true,
+    "all_seven_archived_negative_controls_reproduced_offline": true,
+    "shared_source_closure_matches_archived_accepted_bytes": true,
+    "stage5_files_changed": false,
+    "archive_zip_added_to_active_branch": false
+  },
+  "builder_change": {
+    "scope": "storage_only",
+    "gzip_mtime": 0,
+    "gzip_filename": "",
+    "decompressed_packet_unchanged": true,
+    "verification_receipt_semantics_unchanged_except_packet_storage": true
+  },
+  "counts": {
+    "methods": 55,
+    "declared_runs": 34,
+    "native_dto_runs": 36,
+    "entities": 310,
+    "claims": 487,
+    "source_observations": 23,
+    "research_evaluations": 44,
+    "legacy_profile_metric_claims": 16,
+    "scripted_events": 60,
+    "old_frontier_events": 36,
+    "stage3_events": 12,
+    "stage4_events": 12,
+    "unchanged_existing_jev_profiles": 2
+  },
+  "execution": {
+    "new_provider_calls": 0,
+    "paid_calls": 0,
+    "canonical_store_written": false,
+    "model_semantic_quality": null,
+    "native_cabi_validation_rerun": false,
+    "validation_scope": "existing native DTO JSON schema and Python packet codec plus exact-byte offline reproduction"
+  },
+  "production_contract": {
+    "commit": "b302df25e1a65f20c395eadc5ad5ef065d26e33d",
+    "path": "loom/src/packet/METHOD_GRAPH.md",
+    "w3_report_commit": "03c670c",
+    "w3_report_path": "docs/reports/chat-selector-2026-10-04.md",
+    "research_vocabulary_consumer_agreement": "open",
+    "production_format_blocker": "W4 latest report states none; producer/native joint integration proof remains separate"
+  },
+  "artifacts": {
+    "docs/research/model_research_2026-10-04/followup-frontier-reply/config.json": {
+      "bytes": 10936,
+      "sha256": "7501ccb26f98cec6e905b6afe1b804a2afcc5a9f32d78ac3bf60d6874edab991"
+    },
+    "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/config.json": {
+      "bytes": 10936,
+      "sha256": "7501ccb26f98cec6e905b6afe1b804a2afcc5a9f32d78ac3bf60d6874edab991"
+    },
+    "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/method_graph_descriptors.json": {
+      "bytes": 118819,
+      "sha256": "bb84efce8ffb8638140b7e3cce0c43cc2ec74b64f5b4f22178fa5df1733b1049"
+    },
+    "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/source_receipt.json": {
+      "bytes": 1417,
+      "sha256": "f3679cf74ff455e202e09673090933cf40321cdbae307e0bbfbc3e369a3c3822"
+    },
+    "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage3/manifest.json": {
+      "bytes": 485542,
+      "sha256": "0f401778783fa46ffff29a7f4458617733a348995e63e313018bc60b0b3908d8"
+    },
+    "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage3/references.json": {
+      "bytes": 7062,
+      "sha256": "042d48a1574abb6ac800a0a58b083fcbca99a96a6d8d1030153d4aa6e84169ac"
+    },
+    "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage3/responses.json": {
+      "bytes": 18893,
+      "sha256": "7fb7679b98cca336c0ab3206c59a28871f30832ef4d99cf6ed50b58fb0666c7c"
+    },
+    "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage3/results.json": {
+      "bytes": 12413,
+      "sha256": "18aa9ded5d9bb99cdc318417ea15f102f7921ae7b7a51ca79587c2a055eaa7d7"
+    },
+    "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage4/manifest.json": {
+      "bytes": 279173,
+      "sha256": "89e035f4b664121688634fc7b751d6cbab8e9e8539309581fcd84b659fea142b"
+    },
+    "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage4/responses.json": {
+      "bytes": 30050,
+      "sha256": "195a5f71d5bdc77d628362c39ad811c4933d688a03055375efd597aa3e41dc46"
+    },
+    "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage4/results.json": {
+      "bytes": 21061,
+      "sha256": "07867899cca3c3a1b43a63ab06a753be6641b50c284cb0a517df3375892b7d24"
+    },
+    "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/summary.json": {
+      "bytes": 655,
+      "sha256": "8bdcf6641c26ecb7e970761a3556645240f3ba75fd5f93a8f754ca529cc057eb"
+    },
+    "docs/research/model_research_2026-10-04/method-graph/final/EIGHT_CHECKS.json": {
+      "bytes": 1154,
+      "sha256": "94f3c2651638cd35eeaacd2f0e62257a24856d9c009f4f61e097bb45aa09dbf7"
+    },
+    "docs/research/model_research_2026-10-04/method-graph/final/EVENT_MAPPING.json": {
+      "bytes": 25002,
+      "sha256": "dbb73cb917f694310398ed22df445e432f8b62da72e57d07d6434d176f5bbe3d"
+    },
+    "docs/research/model_research_2026-10-04/method-graph/final/METHODS.json": {
+      "bytes": 293185,
+      "sha256": "3a3c060615540bbac0e7ba876aaeafbb9eebb5c4231bef3419e06792db142366"
+    },
+    "docs/research/model_research_2026-10-04/method-graph/final/TEST_RESULTS.txt": {
+      "bytes": 2997,
+      "sha256": "8db12ebe3da72df0cd369d6422d7fc7080ad6d526b4d50be527cd26b633d2803"
+    },
+    "docs/research/model_research_2026-10-04/method-graph/final/VERIFICATION.json": {
+      "bytes": 1279,
+      "sha256": "6817240622354513dfce46303866fd0ed0ecc4baa2043d6afc65c383caaad3ca"
+    },
+    "docs/research/model_research_2026-10-04/method-graph/final/configuration.json": {
+      "bytes": 481397,
+      "sha256": "a66a9130fd2a6222a31c9258281ffa3da981392aaaca768b1dc9cbe822d9fe67"
+    },
+    "docs/research/model_research_2026-10-04/method-graph/final/packet.json.gz": {
+      "bytes": 541399,
+      "sha256": "ec8cd76e703639bc5f8d7e880227c73c500decdbd3143c383b6b30e776b9ff38"
+    }
+  },
+  "independent_artifact_audit": {
+    "passed": true,
+    "scope": "read-only stored-artifact verification; existing native DTO JSON schema and Python codec",
+    "native_cabi_or_store_acceptance_claimed": false,
+    "source_bytes_hashes_and_observations": 23,
+    "claim_dates_evidence_support_spans": 487,
+    "shared_metric_claims": 60,
+    "configured_method_version_parameter_preset_bindings": 55,
+    "declared_run_bindings": 34,
+    "independently_recomputed_research_evaluations": 44,
+    "unique_event_request_result_response_bindings": 60,
+    "actual_scripted_and_separate_intended_producer_groups": 18,
+    "unchanged_existing_model_profiles": 2,
+    "unchanged_legacy_profile_metrics": 16,
+    "pinned_git_source_bindings": 5,
+    "followup_current_dependency_bindings": 4,
+    "historical_presets_and_endpoint_file_bindings": 4
+  }
+}

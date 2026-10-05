@@ -1,0 +1,34 @@
+{
+  "schema_reused": "loom.graph_packet/1",
+  "packet_id": "4ffa721e2526617503d6e3f45109a1bdddf16e529a8b42a6468b904233fe7a50",
+  "methods": 55,
+  "runs": 34,
+  "entities": 310,
+  "claims": 487,
+  "sources": 23,
+  "new_provider_calls": 0,
+  "canonical_store_written": false,
+  "scripted_event_count": 60,
+  "old_frontier_events": 36,
+  "new_stage3_events": 12,
+  "new_stage4_events": 12,
+  "scripted_configuration_groups": 18,
+  "consumer_contract_status": "proposal_pending_threads_3_4",
+  "packet_storage": {
+    "path": "packet.json.gz",
+    "format": "gzip",
+    "mtime": 0,
+    "filename": "",
+    "compressed_bytes": 541399,
+    "compressed_sha256": "ec8cd76e703639bc5f8d7e880227c73c500decdbd3143c383b6b30e776b9ff38",
+    "decompressed_bytes": 9313697,
+    "decompressed_sha256": "62fe32c0ac26fa13df69d79545b83a7555d58d50c889e8b8722cf3426964956a",
+    "semantic_change": false
+  },
+  "output_sha256": {
+    "EVENT_MAPPING.json": "dbb73cb917f694310398ed22df445e432f8b62da72e57d07d6434d176f5bbe3d",
+    "METHODS.json": "3a3c060615540bbac0e7ba876aaeafbb9eebb5c4231bef3419e06792db142366",
+    "configuration.json": "a66a9130fd2a6222a31c9258281ffa3da981392aaaca768b1dc9cbe822d9fe67",
+    "packet.json.gz": "ec8cd76e703639bc5f8d7e880227c73c500decdbd3143c383b6b30e776b9ff38"
+  }
+}
