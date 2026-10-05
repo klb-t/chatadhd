@@ -1,0 +1,11 @@
+{
+  "schema": "loom.evidence_archive/1",
+  "archive": "evidence.zip",
+  "sha256": "44c0478ebdeb84f5ab9ea5b1b049a995c228cb493404e0d122d4b14998f20db7",
+  "bytes": 530391,
+  "raw_member_count": 60,
+  "zip_member_count": 61,
+  "raw_bytes": 3336765,
+  "manifest": "MANIFEST.json",
+  "member_verification": "PASS"
+}
