@@ -1,0 +1,180 @@
+{
+  "schema": "loom.runtime_bootstrap_data_handoff/1",
+  "authoritative_w2_branch": "origin/gpt/usage-policy-2026-10-04",
+  "authoritative_w2_commit": "910a1d6b3764f82c78e39c5b0adca796ba1168e5",
+  "authoritative_w2_path": "loom/src/policy/PROFILE_HANDOFF.md",
+  "authoritative_w2_sha256": "44ab07513bc721b5429661322d61d6c1b419841630bf703b97c2d172068cabc9",
+  "historical_main": "161cc22dfb84fe863389d6b90323bd44516a68dc",
+  "profiles": [
+    {
+      "domain": "usage_policy",
+      "source": "loom/data/runtime/usage_policy.pack",
+      "bytes": 2656,
+      "sha256": "85bea77d6f935c098ef3cb6de7ffc9fc9a07282e065bd9c10834f04b7d957335",
+      "defaults": {
+        "schema": "loom.usage_policy/1",
+        "growth_factor": 10.0,
+        "baseline_window": 32,
+        "ledger_busy_timeout_ms": 30000,
+        "include_reservations": true,
+        "initial_baselines": {}
+      }
+    },
+    {
+      "domain": "config",
+      "source": "loom/data/runtime/config.pack",
+      "bytes": 5395,
+      "sha256": "6f7c11c5ad857e3e3936df7667fcc0c673ddf2e2f652ae5aef8c3d3f4d1c20cd",
+      "defaults": {
+        "legacy_defaults": {
+          "base_url": "https://openrouter.ai/api/v1",
+          "default_model": "anthropic/claude-sonnet-4-20250514",
+          "semantic_model": "",
+          "temperature": 0.7,
+          "max_tokens": 4096,
+          "theme": "dark",
+          "system_prompt": "You are a helpful assistant with access to the user's hierarchical memory.",
+          "auto_title": true,
+          "stream": true,
+          "semantic_analysis": true,
+          "graph_memory_depth": 2,
+          "graph_memory_max_nodes": 20
+        },
+        "legacy_key_order": [
+          "base_url",
+          "default_model",
+          "semantic_model",
+          "temperature",
+          "max_tokens",
+          "theme",
+          "system_prompt",
+          "auto_title",
+          "stream",
+          "semantic_analysis",
+          "graph_memory_depth",
+          "graph_memory_max_nodes"
+        ],
+        "loom_defaults": {
+          "loom_event_log_types": [
+            "conv:created",
+            "import:done",
+            "graph:changed"
+          ],
+          "loom_task_workers": 1
+        }
+      }
+    },
+    {
+      "domain": "runtime_paths",
+      "source": "loom/data/runtime/runtime_paths.pack",
+      "bytes": 8148,
+      "sha256": "b796635d5661d960212045a8981c16b66e5e74e6c688e0eb5cdbc90faf2f3f22",
+      "defaults": {
+        "process_inputs": {
+          "chatadhd_data": "CHATADHD_DATA",
+          "xdg_data_home": "XDG_DATA_HOME",
+          "home": "HOME"
+        },
+        "missing_home": "/",
+        "candidate_rules": [
+          {
+            "when": {
+              "is_android": true
+            },
+            "path_segments": [
+              [
+                "/storage/emulated/0",
+                "Documents",
+                "ChatADHD"
+              ],
+              [
+                "/storage/emulated/0",
+                "Download",
+                "chatadhd_data"
+              ]
+            ]
+          },
+          {
+            "when": {
+              "is_android": false,
+              "has_xdg_data_home": true
+            },
+            "path_segments": [
+              [
+                "{{xdg_data_home}}",
+                "chatadhd"
+              ],
+              [
+                "{{home}}",
+                ".chatadhd"
+              ]
+            ]
+          },
+          {
+            "when": {
+              "is_android": false,
+              "has_xdg_data_home": false
+            },
+            "path_segments": [
+              [
+                "{{home}}",
+                ".chatadhd"
+              ]
+            ]
+          }
+        ],
+        "resolution_precedence": [
+          "explicit_override",
+          "nonempty_data_environment",
+          "first_sentinel_candidate",
+          "first_candidate"
+        ],
+        "sentinel": {
+          "filename": ".chatadhd_data",
+          "content": "ChatADHD data directory\n"
+        },
+        "initialize_subdirs": [
+          "attachments",
+          "exports",
+          "logs"
+        ],
+        "data_path_suffixes": {
+          "db": "chatadhd.db",
+          "fts_index": "chatadhd.fts.db",
+          "config": "config.json",
+          "secrets": "secrets.json",
+          "memory": "memory.json",
+          "models": "models.json",
+          "github_sync": "github_sync.json",
+          "attachments": "attachments",
+          "exports": "exports",
+          "logs": "logs",
+          "blobs": "blobs"
+        }
+      }
+    }
+  ],
+  "total_canonical_domains": 19,
+  "test": {
+    "path": "loom/tests/test_runtime_bootstrap_profiles.cpp",
+    "sha256": "19d7814c118e0b5df9ea095f0e6dd261a983a592480334e99c4f34f532ccaa6a",
+    "cases": 6,
+    "status": "isolated6bootstrap+8framework passed; fresh current19-profile object plus unchanged exact161 dependencies, not full current core or CTest",
+    "combined_cases": 14,
+    "combined_assertions": 168,
+    "combined_skipped": 0
+  },
+  "changed_consumers": false,
+  "usage_native_validation_required": true,
+  "startup_overlay_boundary": "builtin or explicit startup profile before root discovery; per-root overlay only after root is known",
+  "config_override_contract": "shallow top-level stored override after root-aware profile, preserve deletions/unknown extensions; RuntimeProfile file overlays retain recursive merge + JSON patch",
+  "authoritative_w2_usage_source": {
+    "path": "loom/src/core/config_usage_policy.cpp",
+    "sha256": "8e401b1a6504ed73ca10bfafe72bb664a5fd1cb8bda2da05e6696571855ecd04",
+    "preset_lines": [
+      20,
+      27
+    ],
+    "identity_note": "Existing literal six-field W2 branch preset matches descriptor/golden values; this consumer is absent from baseline161 main."
+  }
+}
