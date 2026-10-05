@@ -1,0 +1,14 @@
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_runtime_recipe_consumers.cpp:42:
+TEST SUITE: runtime_recipe_consumers
+TEST CASE:  semantic rules overlay replaces dictionaries and calibrates matched entities
+
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_runtime_recipe_consumers.cpp:57: ERROR: CHECK( unwrap(SemanticAnalyzer::create())->extract_entities("admin@example.com").size() == 1 ) is NOT correct!
+  values: CHECK( 2 == 1 )
+
+===============================================================================
+[doctest] test cases:  6 |  5 passed | 1 failed | 0 skipped
+[doctest] assertions: 36 | 35 passed | 1 failed |
+[doctest] Status: FAILURE!

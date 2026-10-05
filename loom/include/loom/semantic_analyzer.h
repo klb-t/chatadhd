@@ -24,7 +24,9 @@
 #pragma once
 
 #include <cstddef>
+#include <filesystem>
 #include <memory>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -34,6 +36,8 @@
 #include "loom/util/json.h"
 
 namespace loom {
+
+class RuntimeProfile;
 
 namespace entity_type {  // core/semantic.py EntityType values
 inline constexpr std::string_view kEmail = "email";
@@ -93,6 +97,7 @@ struct EntityPattern {
   std::string entity_type;
   std::string pattern;
   unsigned flags = 0;
+  std::optional<double> confidence;
 };
 struct RelationPattern {
   std::string predicate;
@@ -104,10 +109,14 @@ struct AnalyzerRules {
   std::vector<EntityPattern> entity_patterns;                             // in evaluation order
   std::vector<std::pair<std::string, std::vector<std::string>>> topics;  // in evaluation order
   std::vector<RelationPattern> relation_patterns;                        // in evaluation order
+  // Resolved profile parameters are separate from the legacy rules JSON.
+  Json profile_parameters = Json::object();
+  std::string profile_hash;
 
   // Exact copy of _PATTERNS, _TOPIC_KEYWORDS and the two relation patterns.
   static const AnalyzerRules& builtin();
   static Result<AnalyzerRules> from_json(const Json& j);
+  static Result<AnalyzerRules> from_profile(const RuntimeProfile& profile);
   Json to_json() const;
 };
 
@@ -115,13 +124,17 @@ class SemanticAnalyzer {
  public:
   // Compiles every pattern; Errc::Parse if one does not compile.
   static Result<std::unique_ptr<SemanticAnalyzer>> create(const AnalyzerRules& rules = AnalyzerRules::builtin());
+  static Result<std::unique_ptr<SemanticAnalyzer>> create_with_profile(const RuntimeProfile& profile);
+  static Result<std::unique_ptr<SemanticAnalyzer>> create_from_data_dir(const std::filesystem::path& data_dir,
+                                                                      const Json& overrides = Json::object());
   ~SemanticAnalyzer();
   SemanticAnalyzer(const SemanticAnalyzer&) = delete;
   SemanticAnalyzer& operator=(const SemanticAnalyzer&) = delete;
 
   // All methods are const and thread-safe.
   std::vector<ExtractedEntity> extract_entities(std::string_view text) const;
-  std::vector<std::string> extract_topics(std::string_view text, int threshold = 2) const;
+  std::vector<std::string> extract_topics(std::string_view text) const;
+  std::vector<std::string> extract_topics(std::string_view text, int threshold) const;
   std::vector<ExtractedRelation> extract_relations(std::string_view text) const;
   Analysis analyse(std::string_view text) const;
 
@@ -131,6 +144,8 @@ class SemanticAnalyzer {
   //    "relations":[{"subject","predicate","object"}], "summary":"",
   //    "sentiment":"neutral", "source":"regex"}
   static Json to_unified(const Analysis& a);
+  Json to_unified_profile(const Analysis& a) const;
+  const std::string& profile_hash() const noexcept;
 
   const AnalyzerRules& rules() const noexcept;
 

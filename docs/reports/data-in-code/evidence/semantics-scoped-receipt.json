@@ -1,0 +1,54 @@
+{
+  "recorded_on": "2026-10-04",
+  "base_requested": "161cc22dfb84fe863389d6b90323bd44516a68dc",
+  "secondary_library": "9d15d2dd0733274356f768816e207e26e13845e4",
+  "secondary_owned_file_diff": "empty",
+  "compile_flags": [
+    "-std=c++20",
+    "-O0",
+    "-g0",
+    "-DLOOM_PARITY_CORE_ONLY"
+  ],
+  "objects": [
+    "semantics-objects/analyzer.o",
+    "semantics-objects/graph_engine.o",
+    "semantics-objects/graph_memory.o",
+    "semantics-objects/runtime_profile.o",
+    "memory-profile.o"
+  ],
+  "static_libraries": [
+    "libloom_core.a",
+    "libloom_sqlite3_amalgamation.a",
+    "libloom_miniz.a"
+  ],
+  "link_flags": [
+    "-lssl",
+    "-lcrypto",
+    "-lpthread",
+    "-ldl"
+  ],
+  "core_only": true,
+  "full_matched_161cc22_comparison": "pending parent full build",
+  "focused_cases": 6,
+  "focused_assertions": 36,
+  "focused_failures": 0,
+  "output_bytes": 9990,
+  "output_sha256": "cf3c0ad78fe3660e49e6e5b7fa41c7465cf6ac16b6ec6ac5bd44a56ddd9688e3",
+  "source_sha256": {
+    "loom/src/semantic/analyzer.cpp": "aeda7ed011e0af9364d90c80fa7017de0fa08c6f50436e3c11ef2a1f228026b2",
+    "loom/src/graph/graph_engine.cpp": "157e5e92c3d8fec46202be447d5e91d9d263a07b9a0341b3077b6fd8a8d27223",
+    "loom/src/graph/graph_memory.cpp": "772cfb74a2e9cd9c8a50fa89b50390d7c515a2a17e02213d3549780562910a88",
+    "loom/src/materialize/materialize.cpp": "5b2c86354cf85487990f39b20e4b6e3c8cb94cbd755c0de3462b10f7832dc5f8",
+    "loom/include/loom/semantic_analyzer.h": "dcd6ca7172af246f50f95f72a88fdda86c747d6e4bacff6e0119352c5d33650d",
+    "loom/include/loom/graph_engine.h": "392998720d72b34fb48a079c642515b10d4c54c93e0ce921bd32f4fc9dbcec45",
+    "loom/include/loom/graph_memory.h": "106299419dc3807307918128a894fa04d4cb3fb41b907cfcee80e920b5396dbc",
+    "loom/include/loom/materialize.h": "51768bbc6158709bda323e4b1a3cdb919deb5f0b87a7733c1f39f369121e5224",
+    "loom/data/runtime/semantic_analyzer.pack": "e1855a8646b51903d1b33da6a138773c233f163a5da8b501273f0aa003b08fcb",
+    "loom/data/runtime/graph_ingest.pack": "3860f807fb21dc150a09660d0d6ad452d0cd066e970462b2f4530a1a3c60e987",
+    "loom/data/runtime/graph_memory.pack": "aa2e50ff4c535b1c20adaa5b53a88990dd3b25b5c0f7c070214afdf396e54f5a",
+    "loom/data/runtime/materialize.pack": "37f17f84233374a61466bb7938c87cc90a88c604af64affde3d1d231492a56d8",
+    "loom/tests/test_runtime_recipe_consumers.cpp": "599ef19ba88c6db883d54ad486a33573bc1286587367992d3d3db303afcbd7a6",
+    "loom/tests/compat/profile_semantics_graph_materialize_parity.cc": "1804a33aff2e8ecdb93ac7cf90ff04f68389db857247572c60b1dd7965bf77f6"
+  },
+  "validation_api": "builtin descriptor.with_values(profile.values()), exact replacement"
+}
