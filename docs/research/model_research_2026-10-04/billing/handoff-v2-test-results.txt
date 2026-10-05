@@ -1,0 +1,13 @@
+test_aes_ciphertext_and_wrapped_key_tampering_rejected_without_secret_output (test_credential_handoff_v2.HybridHandoffTests.test_aes_ciphertext_and_wrapped_key_tampering_rejected_without_secret_output) ... ok
+test_cli_error_does_not_print_credential_or_private_material (test_credential_handoff_v2.HybridHandoffTests.test_cli_error_does_not_print_credential_or_private_material) ... ok
+test_configurable_expiry_is_enforced (test_credential_handoff_v2.HybridHandoffTests.test_configurable_expiry_is_enforced) ... ok
+test_nonce_bound_no_expiry_and_configurable_larger_credentials (test_credential_handoff_v2.HybridHandoffTests.test_nonce_bound_no_expiry_and_configurable_larger_credentials) ... ok
+test_private_permissions_parser_budget_and_existing_destination_preserved (test_credential_handoff_v2.HybridHandoffTests.test_private_permissions_parser_budget_and_existing_destination_preserved) ... ok
+test_public_html_contains_no_private_material_no_network_or_persistent_storage (test_credential_handoff_v2.HybridHandoffTests.test_public_html_contains_no_private_material_no_network_or_persistent_storage) ... ok
+test_real_webcrypto_javascript_roundtrip_consumes_private_session (test_credential_handoff_v2.HybridHandoffTests.test_real_webcrypto_javascript_roundtrip_consumes_private_session) ... ok
+test_session_programme_and_expiry_tampering_rejected (test_credential_handoff_v2.HybridHandoffTests.test_session_programme_and_expiry_tampering_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 12.169s
+
+OK

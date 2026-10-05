@@ -232,3 +232,44 @@ authorization, EUR/USD cap mismatch, identity/reset/management checks, price
 freshness and charge coverage, cumulative actual costs, unknown reservations,
 duplicate operation IDs and budget overflow. Their invented FX/prices are
 test fixtures. Neither this preparation nor these tests made paid calls.
+
+## Work Mode credential handoff
+
+The owner's existing private-entry workflow is a downloaded local HTML form:
+enter the new key locally, download an encrypted JSON envelope, and attach only
+that envelope to the conversation. Repeating a shell `export` instruction is
+not an actionable input method for a user operating Work Mode on Android.
+
+A fresh form was generated for this new programme. Its public HTML contains
+only a session nonce, programme binding and RSA public key. The corresponding
+private session is outside every Git tree and is never saved to Library; its
+directory is mode `0700`, private files `0600`. The form makes no network
+request and stores no credential in browser persistence. If WebCrypto is
+unavailable in a preview, input remains disabled; download the HTML and open
+it locally in a supported browser.
+
+[credential_handoff_v2.py](../../../loom/tools/structure/credential_handoff_v2.py)
+is a separate successor to the preserved original handoff. A newly generated
+AES-256-GCM key encrypts the credential; RSA-OAEP with SHA-256 wraps that AES
+key. Purpose, session, programme and optional expiry bind both encryption
+layers. The default session uses a one-time nonce without an arbitrary expiry;
+`--ttl-seconds` enables a caller-chosen lifetime. Successful decryption writes
+the credential to an owner-only file, then consumes the private decryption
+material. Decryption failures preserve the session and print no supplied
+credential, private key or detailed exception.
+
+The delivered HTML is a user-facing artifact, not a repository input. Its
+private decryption path is communicated only within the active coordinator's
+handoff, not committed to the public report. Private material is transient;
+if it becomes unavailable, issue a new form rather than reusing an old or
+expired credential. Encrypted owner envelopes and decrypted credentials are
+also excluded from public commits and ordinary artifact saving.
+
+Eight offline regressions passed, including execution of the exact HTML
+JavaScript with actual Node WebCrypto followed by independent Python
+decryption of a fabricated credential. Other checks cover ciphertext and
+wrapped-key tampering, metadata binding, optional expiry, one-time consumption,
+owner-only permissions, configured parser budgets and secret-safe error
+output. See [handoff-v2-test-results.txt](billing/handoff-v2-test-results.txt).
+No real credential has been supplied or decrypted, and no OpenRouter request
+was made by this handoff work.
