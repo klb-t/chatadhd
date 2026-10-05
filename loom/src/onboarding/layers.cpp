@@ -3,6 +3,7 @@
 #include <set>
 #include <string>
 
+#include "loom/onboarding_presentation.h"
 #include "loom/util/sha256.h"
 
 namespace loom::onboarding {
@@ -25,6 +26,21 @@ bool positive_revision(const Json& object, const char* key) {
 }
 bool mode_valid(const Json& mode) { return mode == "proposal" || mode == "direct"; }
 
+constexpr std::string_view layer_messages[] = {
+    "layer.missing", "layer.excluded", "layer.disabled",
+    "layer.user", "layer.proposal", "layer.builtin"};
+
+Status validate_layer_presentation(const Json& presentation) {
+  LOOM_TRY(validate_presentation(presentation));
+  for (const auto& [locale, messages] : presentation.at("locales").items()) {
+    for (const auto id : layer_messages) {
+      if (!messages.contains(id) || !messages.at(id).is_string())
+        return invalid("presentation locale " + locale + " needs layer message " + std::string(id));
+    }
+  }
+  return ok_status();
+}
+
 Status validate_pack(const Json& pack) {
   if (!pack.is_object() || pack.value("schema", Json{}) != "loom.default_layers_pack/1" ||
       !nonempty_string(pack, "pack_id") || !positive_revision(pack, "revision") ||
@@ -34,6 +50,8 @@ Status validate_pack(const Json& pack) {
       !pack["policy"].contains("excluded_area_new_defaults") ||
       !mode_valid(pack["policy"]["excluded_area_new_defaults"]))
     return invalid("pack policy must declare excluded_area_new_defaults: proposal or direct");
+  if (pack.contains("presentation_key") && !nonempty_string(pack, "presentation_key"))
+    return invalid("presentation_key must name a nonempty layer key");
   std::set<std::string> ids, keys;
   for (const auto& entry : pack["entries"]) {
     if (!entry.is_object() || !nonempty_string(entry, "id") || !nonempty_string(entry, "key") ||
@@ -145,17 +163,51 @@ Result<DefaultLayers> DefaultLayers::create(const Json& pack, const Json& state)
     DefaultLayers result;
     result.pack_ = pack;
     result.state_ = std::move(migrated);
+    if (pack.contains("presentation_key")) {
+      LOOM_TRY_ASSIGN(auto effective, result.resolve_raw(pack.at("presentation_key").get<std::string>()));
+      if (effective.at("status") == "effective") {
+        result.presentation_ = effective.at("value");
+        LOOM_TRY(validate_layer_presentation(result.presentation_));
+      }
+    } else {
+      // Compatibility for arbitrary older packs uses generated canonical data,
+      // never a second literal preset. An explicit binding never falls back.
+      LOOM_TRY_ASSIGN(result.presentation_, builtin_presentation());
+      LOOM_TRY(validate_layer_presentation(result.presentation_));
+    }
     return result;
   } catch (const Json::exception& e) { return invalid(e.what()); }
 }
 
 Result<Json> DefaultLayers::resolve(std::string_view key) const {
+  return resolve(key, {});
+}
+
+Result<Json> DefaultLayers::resolve(std::string_view key, std::string_view locale) const {
+  LOOM_TRY_ASSIGN(auto result, resolve_raw(key));
+  if (presentation_.is_null()) return result;
+  const std::string status = result.at("status");
+  const std::string layer = result.at("layer");
+  std::string_view message;
+  if (status == "missing") message = "layer.missing";
+  else if (status == "excluded") message = "layer.excluded";
+  else if (status == "disabled") message = "layer.disabled";
+  else if (status == "proposal") message = "layer.proposal";
+  else if (status == "effective" && layer == "user") message = "layer.user";
+  else if (status == "effective" && layer == "builtin") message = "layer.builtin";
+  else return invalid("unsupported layer resolution state");
+  LOOM_TRY_ASSIGN(auto explanation, presentation_text(presentation_, message, result, locale));
+  result["explanation"] = std::move(explanation);
+  return result;
+}
+
+Result<Json> DefaultLayers::resolve_raw(std::string_view key) const {
   if (key.empty()) return invalid("key must not be empty");
   try {
     const auto* entry = active_entry(pack_, key);
     const auto* historical = entry ? entry : historical_entry(state_, key);
     Json result{{"key", key}, {"status", "missing"}, {"layer", "none"},
-                {"explanation", "No current default or user value exists for this key."}};
+                {"explanation", nullptr}};
     if (historical) {
       const std::string id = (*historical)["id"];
       result["id"] = id;
@@ -165,13 +217,11 @@ Result<Json> DefaultLayers::resolve(std::string_view key) const {
       result["entity"].erase("value");
       if (state_["exclusions"].contains(id)) {
         result["status"] = "excluded"; result["layer"] = "user_exclusion";
-        result["explanation"] = "A durable user exclusion blocks this stable id across pack updates.";
         result["source"] = state_["exclusions"][id];
         return result;
       }
       if (state_["disabled"].contains(id)) {
         result["status"] = "disabled"; result["layer"] = "user_disabled";
-        result["explanation"] = "The user retained this default but disabled its use.";
         result["source"] = state_["disabled"][id];
         return result;
       }
@@ -181,19 +231,16 @@ Result<Json> DefaultLayers::resolve(std::string_view key) const {
       result["status"] = "effective"; result["layer"] = "user";
       result["value"] = state_["overrides"][string_key]["value"];
       result["source"] = state_["overrides"][string_key];
-      result["explanation"] = "An explicit user value overrides the built-in graph layer.";
     } else if (entry) {
       const std::string id = (*entry)["id"];
       if (state_["proposals"].contains(id)) {
         result["status"] = "proposal"; result["layer"] = "pack_proposal";
-        result["explanation"] = "This new default touches an excluded area and awaits user acceptance.";
         result["source"] = state_["proposals"][id];
       } else {
         result["status"] = "effective"; result["layer"] = "builtin";
         result["value"] = (*entry)["value"];
         result["source"] = Json{{"pack_id", pack_["pack_id"]}, {"pack_revision", pack_["revision"]},
                                 {"entry_id", id}, {"entry_revision", (*entry)["revision"]}};
-        result["explanation"] = "The built-in graph default applies because no user suppression or override exists.";
       }
     }
     return result;
@@ -259,7 +306,10 @@ Result<Json> DefaultLayers::dispatch(const Json& action) const {
 }
 
 Result<Json> DefaultLayers::update_pack(const Json& pack) const {
-  try { return migrate(pack, state_); }
+  try {
+    LOOM_TRY_ASSIGN(auto updated, create(pack, state_));
+    return updated.snapshot();
+  }
   catch (const Json::exception& e) { return invalid(e.what()); }
 }
 

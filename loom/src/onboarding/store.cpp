@@ -5,6 +5,7 @@
 #include "loom/knowledge_store.h"
 #include "loom/onboarding.h"
 #include "loom/onboarding_layers.h"
+#include "loom/onboarding_presentation.h"
 #include "loom/util/sha256.h"
 #include "loom/util/time.h"
 #include "runtime_adapter.h"
@@ -109,6 +110,15 @@ Result<Json> decorate(Json state) {
     if (state.at("profile").contains(key)) state[key] = state.at("profile").at(key);
   LOOM_TRY_ASSIGN(auto privacy_layer, layers.resolve("onboarding.privacy"));
   state["effective_privacy"] = {{"available", privacy_layer.at("status") == "effective"}, {"resolution", privacy_layer}};
+  // Presentation is a separate graph default, never inferred from a personal
+  // language preference. Suppression does not restore a hidden UI preset.
+  if (state.at("pack").contains("presentation_key")) {
+    LOOM_TRY_ASSIGN(auto presentation, layers.resolve(state.at("pack").at("presentation_key").get<std::string>()));
+    const bool available = presentation.at("status") == "effective";
+    state["presentation"] = Json{{"available", available}, {"status", presentation.at("status")},
+        {"resolution", presentation}};
+    if (available) state["presentation"]["value"] = presentation.at("value");
+  }
   return state;
 }
 
@@ -227,6 +237,11 @@ Status enforce_layer_retention(Json& state) {
 
 Result<Json> builtin_pack() { return json::parse(kOnboardingPack); }
 Result<Json> builtin_scenario() { return json::parse(kOnboardingScenario); }
+Result<Json> builtin_presentation() {
+  LOOM_TRY_ASSIGN(auto catalog, json::parse(kOnboardingPresentation));
+  LOOM_TRY(validate_presentation(catalog));
+  return catalog;
+}
 
 Status OnboardingStore::ensure_schema() {
   auto lock = db_.lock();
