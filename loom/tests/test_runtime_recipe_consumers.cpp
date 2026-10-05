@@ -176,6 +176,8 @@ TEST_SUITE("runtime_recipe_consumers") {
     };
     auto baseline = unwrap(stage(prepare()));
     CHECK(kinds(baseline) == std::vector<std::string>{"self_description", "dossier", "extrapolated_spec", "dossier", "extrapolated_spec", "backlog"});
+    CHECK_FALSE(baseline.contains("complete"));
+    CHECK_FALSE(baseline.contains("omitted_products"));
     auto recipe = [](std::string_view renderer, bool enabled) {
       return Json{{"renderer", renderer}, {"enabled", enabled}, {"on_error", "error"}};
     };
@@ -185,6 +187,21 @@ TEST_SUITE("runtime_recipe_consumers") {
     CHECK(kinds(custom) == std::vector<std::string>{"backlog", "extrapolated_spec", "dossier", "extrapolated_spec", "dossier"});
     CHECK(custom.at("stats").at("products") == Json(5));
     CHECK(unwrap(store.list_products(custom_run)).size() == 5);
+    overlay_at(td.path(), "materialize", Json{{"templates", Json{{"dossier_header", "{{missing}}"}}}});
+    const auto incomplete_run = prepare(); auto incomplete = unwrap(stage(incomplete_run));
+    CHECK(incomplete.at("complete") == Json(false));
+    CHECK(kinds(incomplete) == std::vector<std::string>{"self_description", "extrapolated_spec", "extrapolated_spec", "backlog"});
+    CHECK(incomplete.at("stats").at("dossiers") == Json(0));
+    CHECK(unwrap(store.list_products(incomplete_run)).size() == 4);
+    REQUIRE(incomplete.at("omitted_products").size() == 2);
+    auto omitted_instances = unwrap(store.query_instances(incomplete_run, "", ""));
+    for (std::size_t index = 0; index < omitted_instances.size(); ++index) {
+      const auto& omitted = incomplete.at("omitted_products").at(index);
+      CHECK(omitted.at("renderer") == Json("dossier"));
+      CHECK(omitted.at("key") == Json(omitted_instances[index].id));
+      CHECK(omitted.at("error").at("code") == Json("invalid_argument"));
+      CHECK(omitted.at("error").at("message").get<std::string>().find("missing") != std::string::npos);
+    }
     const auto before = unwrap(rt->provenance().list_artifacts()).size();
     overlay_at(td.path(), "materialize", Json{{"products", Json::array({recipe("backlog", true), recipe("unavailable", false)})}});
     config.out_dir = (td.path() / "unwritten").string(); const auto bad_run = prepare();
@@ -256,8 +273,16 @@ TEST_SUITE("runtime_recipe_consumers") {
       {"context", Json{{"include_memory", false}, {"include_search", false}}}});
     auto omitted = unwrap(ContextRequest::from_json(Json{{"text", "class Widget"}}));
     CHECK(unwrap(selector.select(omitted)).items.size() == 1);
+    auto profile = unwrap(RuntimeProfile::load("graph_memory", td.path()));
+    auto parsed_with_profile = unwrap(ContextRequest::from_json_with_profile(Json{{"text", "class Widget"}}, profile));
+    CHECK_FALSE(parsed_with_profile.provided_fields.is_null());
+    CHECK_FALSE(parsed_with_profile.provided_fields.contains("depth"));
+    CHECK(unwrap(selector.select(parsed_with_profile)).items.size() == 1);
     auto zero = unwrap(ContextRequest::from_json(Json{{"text", "class Widget"}, {"depth", 0}}));
     CHECK(zero.provided_fields.contains("depth")); CHECK(unwrap(selector.select(zero)).items.empty());
+    auto zero_with_profile = unwrap(ContextRequest::from_json_with_profile(Json{{"text", "class Widget"}, {"depth", 0}}, profile));
+    CHECK(zero_with_profile.provided_fields.contains("depth"));
+    CHECK(unwrap(selector.select(zero_with_profile)).items.empty());
     cfg.set("graph_memory_max_nodes", "invalid");
     auto invalid = graph.select_context_checked("class Widget");
     REQUIRE_FALSE(invalid); CHECK(invalid.error().code == Errc::InvalidArgument);

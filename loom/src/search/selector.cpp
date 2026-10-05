@@ -18,6 +18,21 @@
 namespace loom {
 
 namespace {
+Status validate_embeddings(const std::vector<std::vector<float>>& vectors, std::size_t expected_count,
+                           std::optional<std::size_t> expected_dimension = {}) {
+  if (vectors.size() != expected_count)
+    return Error(Errc::InvalidArgument, "embedding provider returned a different document count");
+  if (vectors.empty()) return {};
+  const auto dimension = expected_dimension.value_or(vectors.front().size());
+  if (!dimension) return Error(Errc::InvalidArgument, "embedding provider returned an empty vector");
+  for (const auto& vector : vectors) {
+    if (vector.size() != dimension)
+      return Error(Errc::InvalidArgument, "embedding provider returned inconsistent vector dimensions");
+    for (float value : vector)
+      if (!std::isfinite(value)) return Error(Errc::InvalidArgument, "embedding provider returned a nonfinite coordinate");
+  }
+  return {};
+}
 
 // Maximal runs of Unicode "word" code points (sklearn's `(?u)\b\w\w+\b` when
 // min_len=2, Python's `\w+` for the keyword tier when min_len=1).
@@ -265,6 +280,7 @@ Status SelectorEngine::index(std::vector<std::string> texts, std::vector<std::st
   if (staged->tier == kTierEmbedding && staged->embedder) {
     auto r = staged->embedder->embed(staged->corpus);
     if (r) {
+      LOOM_TRY(validate_embeddings(*r, staged->corpus.size()));
       staged->embeddings = std::move(r).value();
       impl_ = std::move(staged);
       return ok_status();
@@ -284,7 +300,7 @@ Result<std::vector<SelectorHit>> SelectorEngine::search_checked(std::string_view
   if (impl_->tier == kTierEmbedding && impl_->embedder) {
     auto r = impl_->embedder->embed({std::string(query)});
     if (!r) return r.error();
-    if (r->empty()) return std::vector<SelectorHit>{};
+    LOOM_TRY(validate_embeddings(*r, 1, impl_->embeddings.front().size()));
     const auto& qv = (*r)[0];
     std::vector<double> scores;
     scores.reserve(impl_->embeddings.size());
@@ -350,8 +366,7 @@ Status SelectorEngine::set_profile(const RuntimeProfile& profile) {
   if (staged->tier == kTierEmbedding && staged->embedder && !staged->corpus.empty()) {
     auto embeddings = staged->embedder->embed(staged->corpus);
     if (!embeddings) return embeddings.error();
-    if (embeddings->size() != staged->corpus.size())
-      return Error(Errc::InvalidArgument, "embedding provider returned a different document count");
+    LOOM_TRY(validate_embeddings(*embeddings, staged->corpus.size()));
     staged->embeddings = std::move(*embeddings);
   } else if (staged->tier == kTierTfIdf) {
     staged->build_tfidf();

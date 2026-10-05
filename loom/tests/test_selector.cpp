@@ -1,4 +1,5 @@
 #include <doctest/doctest.h>
+#include <limits>
 
 #include "loom/selector.h"
 
@@ -8,15 +9,47 @@ namespace {
 class RecipeEmbedding final : public EmbeddingProvider {
  public:
   bool fail = false;
+  int malformed = 0;
   std::string model_id() const override { return "synthetic-recipe-fixture"; }
   Result<std::vector<std::vector<float>>> embed(const std::vector<std::string>& texts) override {
     if (fail) return Error(Errc::Unavailable, "synthetic provider failure");
-    return std::vector<std::vector<float>>(texts.size(), {1.0f, 0.0f});
+    std::vector<std::vector<float>> result(texts.size(), {1.0f, 0.0f});
+    if (malformed == 1) result.emplace_back(std::vector<float>{1.0f, 0.0f});
+    if (malformed == 2) result.clear();
+    if (malformed == 3 && !result.empty()) result[0].clear();
+    if (malformed == 4 && !result.empty()) result[0].push_back(0.0f);
+    if (malformed == 5 && !result.empty()) result[0][0] = std::numeric_limits<float>::quiet_NaN();
+    if (malformed == 6 && !result.empty()) result[0][0] = std::numeric_limits<float>::infinity();
+    return result;
   }
 };
 }
 
 TEST_SUITE("selector") {
+  TEST_CASE("embedding shape errors preserve the old index and recipe") {
+    auto provider = std::make_shared<RecipeEmbedding>();
+    SelectorEngine engine(SelectorEngine::kTierEmbedding, provider);
+    REQUIRE(engine.index({"alpha", "beta"}, {"first", "second"}));
+    const auto original = engine.profile_inspection();
+    REQUIRE(original);
+    auto preset = RuntimeProfile::builtin("selector");
+    REQUIRE(preset);
+    for (int malformed : {1, 2, 3, 4, 5, 6}) {
+      provider->malformed = malformed;
+      CHECK_FALSE(engine.index({"changed", "replacement"}));
+      CHECK(engine.size() == 2);
+      CHECK_FALSE(engine.set_profile(*preset));
+      CHECK(engine.profile_inspection()->at("hash") == original->at("hash"));
+      CHECK_FALSE(engine.search_checked("query"));
+      provider->malformed = 0;
+      auto hits = engine.search_checked("query");
+      REQUIRE(hits);
+      REQUIRE(hits->size() == 2);
+      CHECK((*hits)[0].id == "first");
+      CHECK((*hits)[0].text == "alpha");
+    }
+  }
+
   TEST_CASE("keyword tier: substring scoring, ranking, top_k, score<=0 cutoff") {
     SelectorEngine sel(SelectorEngine::kTierKeyword);
     CHECK(sel.tier() == SelectorEngine::kTierKeyword);

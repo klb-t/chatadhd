@@ -1,0 +1,99 @@
+[
+  {
+    "id": "DIC-0149",
+    "status": "migrated",
+    "destination": "loom/data/runtime/archive.pack#/defaults/synthesis_rendering/display",
+    "notes": "Separate display260, dedup120 and superseded90 presets; named additional clip lengths are independently configurable. Generic Markdown escaping/clipping remains compiled.",
+    "current_evidence": [
+      "loom/src/archive/synth.cpp:234",
+      "loom/src/archive/synth.cpp:268",
+      "loom/src/archive/synth.cpp:289"
+    ]
+  },
+  {
+    "id": "DIC-0153",
+    "status": "migrated",
+    "destination": "loom/data/runtime/archive.pack#/defaults/synthesis_rendering/identifiers; /defaults/synthesis/named_min_bytes; /defaults/synthesis/inflection_max_bytes",
+    "notes": "Initial-case, plural-acronym suffix list, project-name suppression, suffix-case and minimum inflection-base length are data; existing byte thresholds remain data. Default names are unchanged.",
+    "current_evidence": [
+      "loom/src/archive/synth.cpp:343",
+      "loom/src/archive/synth.cpp:344",
+      "loom/src/archive/synth.cpp:347",
+      "loom/src/archive/synth.cpp:370"
+    ]
+  },
+  {
+    "id": "DIC-0154",
+    "status": "migrated",
+    "destination": "loom/data/runtime/archive.pack#/defaults/synthesis_rendering/interfaces",
+    "notes": "Shared generic configured-prefix/case/length matcher drives both factual component interpretation and sorting; I/minimum3/uppercase is only the default preset.",
+    "current_evidence": [
+      "loom/src/archive/synth.cpp:77",
+      "loom/src/archive/synth.cpp:402",
+      "loom/src/archive/synth.cpp:949"
+    ]
+  },
+  {
+    "id": "DIC-0155",
+    "status": "migrated",
+    "destination": "loom/data/runtime/archive.pack#/defaults/synthesis_rendering/component_evidence",
+    "notes": "Declaration3/use2/comment2 projection caps are settings; zero omits evidence without fabricating status; higher counts allowed through native representation.",
+    "current_evidence": [
+      "loom/src/archive/synth.cpp:406",
+      "loom/src/archive/synth.cpp:410",
+      "loom/src/archive/synth.cpp:414",
+      "loom/src/archive/synth.cpp:418"
+    ]
+  },
+  {
+    "id": "DIC-0157",
+    "status": "migrated",
+    "destination": "loom/data/runtime/archive.pack#/defaults/synthesis_rendering/feature_terms; /defaults/synthesis/feature_max_codepoints; /defaults/synthesis/section_min_features",
+    "notes": "Description called this numeric prefix, but current operation counts tokens in a term before a description separator. Ordered separators and token interval1..5 now data; existing70-codepoint and minimum2-feature thresholds already data. Markdown fence/bullet grammar remains compiled.",
+    "current_evidence": [
+      "loom/src/archive/synth.cpp:554",
+      "loom/src/archive/synth.cpp:560",
+      "loom/src/archive/synth.cpp:566",
+      "loom/src/archive/synth.cpp:571"
+    ]
+  },
+  {
+    "id": "DIC-0158",
+    "status": "migrated",
+    "destination": "loom/data/runtime/archive.pack#/defaults/synthesis_rendering/source_references; /defaults/synthesis/source_extensions",
+    "notes": "All nine source-reference scanner/eligibility/known-suffix settings are data. Empty exclusion lists and required-marker boolean permit alternatives including absolute/http/dot paths. Scanner only reports strings compared with known corpus URIs; no filesystem or URL resolution is performed, source provenance remains the real source-doc key. Alphanumeric byte classification and extension-suffix grammar remain universal operations.",
+    "current_evidence": [
+      "loom/src/archive/synth.cpp:629",
+      "loom/src/archive/synth.cpp:635",
+      "loom/src/archive/synth.cpp:656",
+      "loom/src/archive/synth.cpp:662",
+      "loom/tests/test_archive_synthesis_policy.cpp:253",
+      "loom/tests/test_archive_synthesis_policy.cpp:276"
+    ]
+  },
+  {
+    "id": "DIC-0165",
+    "status": "migrated",
+    "destination": "loom/data/runtime/archive.pack#/defaults/synthesis_rendering/display; /defaults/synthesis_rendering/selection/manifest_items",
+    "notes": "Manifesttext240/graphlabel100/picker80 are independently configurable. Stable JSON fields, factual status strings and graph relation tags remain the wire contract.",
+    "current_evidence": [
+      "loom/src/archive/synth.cpp:1084",
+      "loom/src/archive/synth.cpp:1103",
+      "loom/src/archive/synth.cpp:1104"
+    ]
+  },
+  {
+    "id": "DIC-0167",
+    "status": "migrated",
+    "destination": "loom/data/runtime/archive.pack#/defaults/synthesis_rendering/files; /defaults/synthesis_rendering/csv; /defaults/synthesis_rendering/strings",
+    "notes": "Seven filenames, ordered CSV projections/quote flags/score precision/term separator and105 report strings are data. Empty filenames disable projections; collisions/missing fields/template variables are explicit errors. RFC CSV/Markdown writers and immutable archive graph schema/JSON keys remain universal wire operations. Templates substitute once without evaluation.",
+    "current_evidence": [
+      "loom/src/archive/synth.cpp:70",
+      "loom/src/archive/synth.cpp:91",
+      "loom/src/archive/synth.cpp:232",
+      "loom/src/archive/synth.cpp:1004",
+      "loom/src/archive/synth.cpp:1027",
+      "loom/src/archive/synth.cpp:1159"
+    ]
+  }
+]

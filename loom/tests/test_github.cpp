@@ -25,6 +25,39 @@ void write_file(const std::filesystem::path& p, std::string_view content) {
 }  // namespace
 
 TEST_SUITE("github_sync") {
+  TEST_CASE("direction names and status actions resolve through the profile") {
+    auto base = unwrap(RuntimeProfile::builtin("github"));
+    auto profile = unwrap(base.with_overrides(Json{{"sync_policy", {
+      {"directions", {{"review", {{"pull", false}, {"push", false}}}}},
+      {"sync_actions", {{"new_remote", "conflict"}, {"modified", "ignore"}}}
+    }}}));
+    fsutil::TempDir td;
+    SyncConfig cfg;
+    cfg.local_path = td.path().string();
+    cfg.sync_direction = "review";
+    net::ScriptedTransport http;
+    GitHubSync sync(cfg, http, profile);
+    GitHubFile file;
+    file.path = "review.md";
+    file.status = "new_remote";
+    file.url = "https://offline.invalid/review";
+    auto refused = sync.pull_file(file);
+    REQUIRE_FALSE(refused);
+    CHECK(refused.error().message == "pull disabled in review mode");
+    CHECK_FALSE(sync.push_file(file));
+    CHECK(http.requests().empty());
+    auto result = unwrap(sync.sync(std::vector<GitHubFile>{file}));
+    CHECK(result["conflicts"] == Json::array({"review.md"}));
+    CHECK(result["pulled"]["success"] == 0);
+    CHECK(http.requests().empty());
+    cfg.sync_direction = "unknown-legacy-direction";
+    http.set_fallback(net::ScriptedTransport::Reply::text(200, "offline fixture"));
+    GitHubSync fallback(cfg, http, profile);
+    LOOM_REQUIRE_OK(fallback.pull_file(file));
+    CHECK(unwrap(fsutil::read_file(td.path() / file.path)) == "offline fixture");
+    CHECK_FALSE(base.with_overrides(Json{{"sync_policy", {{"unknown_sync_action", "invented-operation"}}}}));
+  }
+
   TEST_CASE("profile injection changes REST metadata and commit templates") {
     auto builtin = unwrap(RuntimeProfile::builtin("github"));
     auto profile = unwrap(builtin.with_overrides(Json{{"base_url", "https://offline.invalid"},
