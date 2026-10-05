@@ -15,7 +15,7 @@ Każdy odbiór: świeży fetch, rzeczywisty rebase, pełny CTest + niezmieniony 
 |7| `gpt/model-research-2026-10-04` / `5753d2c` | [raport7](https://github.com/klb-t/chatadhd/blob/5753d2cf93dcba4edd5c35534b667f23b915c9b7/docs/reports/model-research-2026-10-04.md) | Przygotowania offline; właściciel przekaże osobny klucz5€. Integrator0paidcalls. |
 |8| `gpt/repo-hygiene-2026-10-04` / `758aba6` | [raport8](https://github.com/klb-t/chatadhd/blob/758aba648f0b2e848828c603b54cc3c2b8abfbcf/docs/reports/repo-hygiene-2026-10-04.md) | Po rebase i poprawceClanga10: potrzebna aktualna pełna macierz Clang/vendored iASan. Seeding/results nadal używane; zachować. |
 |9| `gpt/integrator-state-2026-10-04` | [raport9](integrator-intake-2026-10-05/README.md) | Odbiera całą kolejkę; każdy przyrost ma własne bramki i wpis indeksu. |
-|10| `gpt/interface-2-2026-10-04` / `8570fec` | [raport10](https://github.com/klb-t/chatadhd/blob/8570fec6d1192c27a91c7372bb382d1d5f8236d2/docs/reports/interface-2-2026-10-04.md) | 8570fec naprawia captures; autor fullCTest nadal W TRAKCIE. Odbiór po zakończeniu pełnych bramek aktualnego źródła. |
+|10| `gpt/interface-2-2026-10-04` / `fa7538d` | [raport10](https://github.com/klb-t/chatadhd/blob/fa7538d/docs/reports/interface-2-2026-10-04.md) | fa7538d: autor zakończył pełny CTest108/108, web, fixture84/84, nativeUI20/20, E2E16/16. Gotowy do osobnego rebase i mixed gates9 po12. Clang captures naprawione. |
 |11| `gpt/data-profiles-2026-10-04` / `d3488a6` | [raport11](https://github.com/klb-t/chatadhd/blob/d3488a6bee016d1ea5e6e286dbc7d3a0249761fc/docs/reports/data-in-code/README.md) | WSTRZYMANY: data/runtime/usage_policy.pack:6–12 drugi literalny preset; generator/model loader niezależne od kanonicznego2. Wymagana poprawka autora i rebase. Reszta kolejki nie czeka. |
 |12| `gpt/onboarding-2026-10-04` / `3c0bc36` | [raport12](https://github.com/klb-t/chatadhd/blob/3c0bc36552ef9851f1174946cfb108549aae3228/docs/reports/onboarding-2026-10-04.md) | Gotowy przyrost onboarding/profile/layers/store + komponentyUI. Most HTTP/nawigacja/retencja to dalsze zadania10/3/11; nie deklarujemy pełnej aplikacji. |
 
@@ -62,7 +62,7 @@ Potem rebase, regeneracja i dowód zmiany canonicalsource plus pełne bramki. In
 ## Archiwum i ograniczenia dowodów
 
 Przed selekcją pełne źródła zachowujemy na archive/2026-10-05/*-before-intake; oryginalne gałęzie i wszystkie historyczne negatywy pozostają dostępne.
-Na main przenosimy wyłącznie wybrane implementacje/testy i pozytywne dowody. Nowe nieudane próby środowiskowe9 zachowane osobno w archive.
+Na main przenosimy wyłącznie wybrane implementacje/testy i pozytywne dowody. Lokalne pierwsze nieudane próby9 nie zostały wypchnięte przed automatycznym czyszczeniem; surowe logi utracono. Kompletny pozytywny ZIP90plików jest zachowany i niezależnie sprawdzony.
 Nie zmieniono progów ani usunięto testów. Opt-in catalogscale jawnie0/0, pozostałe wymagane zestawy rzeczywiście wykonane.
 Nie czytano ślepego korpusu ani eval/real-holdout-key;0nowych paidcalls.
 

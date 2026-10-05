@@ -18,10 +18,14 @@ Dowód ZIP SHA256 `18979611566f4dd17e1d901b723ae85deb38a289799e1b0bcdd624036bbe3
 
 W11d3488a6: drugi preset usage jest konkretnym blokerem; zadanie/sourcecites wINDEX. Pełna gałąź i negatywy pozostają poza main.
 Dalsze R39–R41, startup2, legacycalls3, UIbridge12 i inne otwarte migracje są przekazane autorom; nie deklarujemy ich jako ukończonych.
-Nowe pierwsze nieudane próby9 (braki zależności/nieprawidłowe artefakty/ucięteJUnit/zerocases) zachowane w osobnym archive, z pełnymi logami i źródłem.
+Pierwsze nieudane próby infrastruktury9 nie zostały wypchnięte przed automatycznym czyszczeniem workspace. Ich surowe logi lokalne zostały utracone; nie deklarujemy pełnego archiwum tych prób. Testowane źródło a1be689 i wszystkie90plików pełnego pozytywnego odbioru są zachowane w ZIP powyżej.
 Zero paid/externalprovidercalls; nie czytano blind ani real-holdout-key.
 
 ## Do wątku N
 
 11: jedno kanoniczne źródło usage2, regeneracja, sourceeditproof i rebase. 10/3/11: konsumować warstwy/wykluczenia12 i dopiąć most/nawigację/retencję.
 1/2/3/4/5/6/7/8: dalsze zadania według INDEX; przyjęty checkpoint nie zamyka całej migracji do danych/grafu.
+
+## Wznowienie po zawieszeniu — 2026-10-05
+
+Push kodu i dowodów zakończył się na fef1694, przed fast-forwardem main. Po odzyskaniu repo sprawdzono SHA256 ZIP, wszystkie90hashy artefaktów, niezmienione źródło, pełny110/110 CTest i guard:663/24489 native,1303 Python,0skip; źródła i237objects przed/po bez zmian. Zmiany od testowanego a1be689 do fef1694 obejmują wyłącznie dokumentację i ZIP. Nie trzeba odtwarzać utraconych buildów, aby zweryfikować ten kompletny dowód.
