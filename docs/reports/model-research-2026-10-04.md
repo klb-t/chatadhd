@@ -3,14 +3,16 @@
 Aktualizacja: 2026-10-05. Gałąź `gpt/model-research-2026-10-04`, baza po
 czystym rebase: `main` `30ad7d3`. Zakres: `loom/tools/structure`,
 `docs/research` i ten raport. Nie zmieniano produkcyjnych zakresów innych wątków,
-`STATE.md`, README ani interfejsu. Gotowość całego przyrostu: **w toku**;
-pełna bramka 108/108 jest zielona; etap 1 ukończony, etap 2 trwa.
+`STATE.md`, głównego README ani interfejsu. Gotowość całego przyrostu: **w toku**;
+pełna bramka 108/108 jest zielona; etapy 1–2 ukończone, etap 3 w toku.
 
 Właściciel zatwierdził osobny klucz/budżet **5 €**. To zastępuje starsze
 ograniczenie do przygotowania offline i klucza 2 USD. Zgoda na wywołania jest;
 właściciel dostarczył zaszyfrowany klucz 2026-10-05. Nowych ukończonych płatnych
-wywołań: **432/432 w etapie 1**, potwierdzony koszt **0,052296100 USD**.
-Świeży licznik operatora jest równy sumie wszystkich 432 rachunków generacji;
+wywołań: **432/432 w etapie 1**, potwierdzony koszt **0,052296100 USD**, oraz
+**60/60 w etapie 2**, koszt **0,1639080 USD**. Ukończone etapy 1–2 razem:
+**492 pierwsze próby i 0,216204100 USD**; nie doliczamy tu nieukończonego etapu 3.
+Na zamknięciu etapu 1 licznik operatora był równy sumie jego 432 rachunków generacji;
 nie ma nieznanych kosztów ani pozostałych rezerwacji tego etapu. Limit operatora
 to **5 USD**, mieszczący się w autoryzacji 5 € przy zapisanym kursie ECB
 1,1225 USD/EUR. Prywatne materiały nie trafiają do publicznego repo.
@@ -24,10 +26,14 @@ POST obowiązywał ścisły przedział zużycia i świeża kontrola limitów. Na
 potwierdzono wszystkie unikalne generacje oraz pełną sumę kosztów. Publiczny
 preset nadal używa rozliczania każdego zapytania i zatrzymania przy niepewności.
 
-Etap 2 jest uruchomiony: **60** zapytań native synthetic DEV. Przed wysłaniem
+Etap 2 ukończono: **60** zapytań native synthetic DEV. Przed wysłaniem
 zapisano [świeży plan](../research/model_research_2026-10-04/programme-actual/plans-20261005/stage2.plan.json):
 prognoza komponentów i rezerwacja **0,443196 USD**. To górna projekcja, nie koszt
-rzeczywisty. Rachunek i ocena semantyczna zostaną dopisane po zakończeniu.
+rzeczywisty; pełny rachunek wynosi **0,1639080 USD**. Zachowano 41 odpowiedzi
+odrzuconych przed native i 19 alternatyw odrzuconych przez native: **0/60
+mechanicznie przyjętych**, nie semantyczne 0. Ocena semantyczna pozostaje null,
+bez zwycięzcy. Etap 3 trwa; jego świeża górna projekcja **1,965986350 USD**
+nie jest wydatkiem rzeczywistym.
 
 ## Zrobione i liczby
 
@@ -91,7 +97,10 @@ części historii, błędne pokwitowania, BYOK i wznowienie bez powtarzania POST
 
 Przyjmij przepisy i wyniki jako dane wersjonowanych metod. Historyczne Jev42/48
 i45/48 dotyczą sprawdzania dostarczonych kandydatów, nie dowolnej ekstrakcji.
-Nowe Jev mają zmierzony wynik źródłowego commitment; nowe warianty native są w toku, bez zmierzonego zwycięzcy. Stage2
+Nowe Jev mają zmierzony wynik źródłowego commitment. Przekazano osiem
+[dokładnych przepisów jako dane](../research/model_research_2026-10-04/stage1-measured-recipes-for-w1-v1.json),
+bez przyjęcia do produkcji lub native extraction. Stage2 jest ukończony
+mechanicznie: 0/60 przyjętych, bez zmierzonego wyniku semantycznego lub zwycięzcy. Stage2
 wymaga native override promptu/parametrów, hashów w fingerprint/provenance i
 oddzielenia zgodności schematu od interpretacji; bieżące API/rejestr należy
 sprawdzić na twoim aktualnym przyroście.
@@ -112,6 +121,29 @@ ModelProfile zamiast konkurencyjnej metryki. Sam pakiet nie dowodzi przyjęcia
 do store lub wykonania rejestru. Pełne consumer/API bramki należą do3/4.
 
 ## Do wątku 9
+
+Aktualny milestone: kompaktowy publiczny etap1 `43ed079` oraz dodatkowe
+zamrożenie stage5 `cb647034`. Etap1 ma **12** autorskich przypadków DEV,
+po cztery pytania: 48 zależnych ocen w każdym z ośmiu ramion. Domyślny protokół
+pięciu kryteriów pozostał niezmieniony i wyklucza te wyniki z powodu brakujących
+osobnych wymiarów. Jawny dodatkowy preset eksploracyjny po obejrzeniu etapu1
+wykorzystuje wyłącznie poprawność etykiety, dostępność i pełny koszt pierwszych
+prób; Pareto zachowuje `j_active` i `j_directed`, bez limitu liczby wybranych,
+progu lub dopisanych
+wyników semantycznych/grounding. **Nowego korpusu nie tworzymy przed zamrożeniem
+wszystkich właściwych grup selekcji.** Nie wyciągamy z etykiet wniosków o prawdzie
+światowej, mechanizmie rozumowania ani jakości native extraction.
+
+Najnowsze publiczne źródło funkcjonalne `1259d475` (adapter SHA-256 `f92da5c4…`) przeszło **108/108 CTest**,
+127,91 s, **2263 przypadki jednostkowe i dwa smoke**; końcowy niezmienny pakiet
+dowodowy jest kompletowany. Wcześniejsze pokwitowanie 128,72 s pozostaje osobnym
+historycznym zamrożeniem i nie otrzymuje hashów nowszego źródła. Oryginały
+pierwszych odpowiedzi, zatrzymań i negatywnych kontrprzykładów pozostają zachowane.
+Nieodzyskany stary generic SHA V1 nadal uniemożliwia pełne odtworzenie jego
+historycznej orkiestracji; nowy wykonawca nie odzyskuje starego producenta.
+Luka **1,098135722 USD** wciąż wymaga dowodu starego klucza, a nie świeżego konta.
+Limit operatora pozostał **5 USD** przy zgodzie właściciela na **5 EUR**;
+ECB 1,1225 daje równowartość 5,6125 USD, lecz limitu nie podniesiono.
 
 Po końcowych bramkach przyjmij tylko aktualną gałąź po rebase, liniowo; archiwów
 negatywnych i szkiców nie włączaj do main. Zaktualizuj INDEX/STATE na podstawie
