@@ -1,0 +1,32 @@
+Expected negative reproduction of the existing native cleanup condition at 8570fec.
+The already closed child event is deterministic; this does NOT establish the cause of the lost historical exit0 log.
+Node: v24.19.0
+Command: node --input-type=module -e <source below>
+SOURCE:
+import {spawn} from "node:child_process";
+const child = spawn(process.execPath, ["-e", "setInterval(()=>{},1000)"]);
+await new Promise(resolve => child.once("spawn", resolve));
+const closed = new Promise(resolve => child.once("close", resolve));
+child.kill("SIGTERM");
+await closed;
+console.log("Already closed child:", {exitCode:child.exitCode, signalCode:child.signalCode});
+// Existing operations-panel.mjs native finally condition at 8570fec:
+if (child.exitCode === null) {
+  const stopped = new Promise(resolve => child.once("close", resolve));
+  child.kill("SIGTERM");
+  await stopped;
+}
+console.log("COMPLETE");
+
+STDOUT:
+Already closed child: { exitCode: null, signalCode: 'SIGTERM' }
+
+STDERR:
+Warning: Detected unsettled top-level await at file:///workspace/scratch/308e2340bae7/chatadhd/loom/web/[eval1]:12
+  await stopped;
+  ^
+
+
+
+
+EXIT: 13

@@ -1,0 +1,26 @@
+UpdateCTestConfiguration  from :/workspace/scratch/308e2340bae7/chatadhd/loom/build/dev/DartConfiguration.tcl
+Test project /workspace/scratch/308e2340bae7/chatadhd/loom/build/dev
+Constructing a list of tests
+Done constructing a list of tests
+Updating test list for fixtures
+Added 0 tests to meet fixture requirements
+Checking test dependency graph...
+Checking test dependency graph end
+test 31
+    Start 31: unit.test_context_counter
+
+31: Test command: /workspace/scratch/308e2340bae7/chatadhd/loom/build/dev/loom_tests "--source-file=*/test_context_counter.cpp" "--no-intro=true"
+31: Working Directory: /workspace/scratch/308e2340bae7/chatadhd/loom/build/dev
+31: Test timeout computed to be: 10000000
+31: ===============================================================================
+31: [doctest] test cases:  4 |  4 passed | 0 failed | 656 skipped
+31: [doctest] assertions: 38 | 38 passed | 0 failed |
+31: [doctest] Status: SUCCESS!
+1/1 Test #31: unit.test_context_counter ........   Passed    0.74 sec
+
+The following tests passed:
+	unit.test_context_counter
+
+100% tests passed out of 1
+
+Total Test time (real) =   0.74 sec

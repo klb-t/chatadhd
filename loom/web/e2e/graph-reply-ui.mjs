@@ -163,7 +163,7 @@ try {
   address = await page.evaluate(() => window.__address);
   assert.equal(address.action, "correct"); assert.deepEqual(address.fragment, fragments[2]);
   await page.getByRole("button", { name: "Validate compilation", exact: true }).click();
-  await page.waitForFunction(() => document.querySelector('[data-testid="gr-status"]').textContent.includes("replay validated"));
+  await page.waitForFunction(() => document.querySelector('[data-testid="gr-status"]')?.textContent?.includes("replay validated"));
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, "Narrow viewport has no document overflow");
   pass("candidate compilation, exact raw wire, native replay validation, semantic fragment addresses and narrow layout");
 
@@ -219,7 +219,7 @@ try {
   await page.getByTestId("gr-usage-receipt").waitFor();
   const beforeDecline = packetRequests.length;
   await page.getByRole("button", { name: "Decline increase", exact: true }).click();
-  await page.waitForFunction(() => document.querySelector('[data-testid="gr-status"]').textContent.includes("declined"));
+  await page.waitForFunction(() => document.querySelector('[data-testid="gr-status"]')?.textContent?.includes("declined"));
   assert.equal(packetRequests.length, beforeDecline);
   assert.equal(confirmations.at(-1).approved, false);
   pass("declined usage never retries or compiles the held operation");

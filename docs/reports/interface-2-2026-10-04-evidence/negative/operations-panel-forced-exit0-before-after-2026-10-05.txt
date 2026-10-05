@@ -1,0 +1,47 @@
+Expected negative fault-injection regression, not historical root-cause attribution.
+Native projection/provider dispatch never starts: forced early exit happens after the seven offline groups in browser.close.
+Node: v24.19.0
+Old source: git show8570fec:loom/web/e2e/operations-panel.mjs
+Old source SHA256: b19cac8aaae19045fb3c5134045b7ed10214de401cc03fbb20b6c7c680de4b3e
+Hook source (recreate in loom/web/e2e to resolve playwright):
+// Explicit fault injection; not a claim about the lost historical failure.
+import {chromium} from "playwright";
+const launch = chromium.launch.bind(chromium);
+chromium.launch = async options => {
+  const browser = await launch(options);
+  const close = browser.close.bind(browser);
+  browser.close = async () => { await close(); process.exit(0); };
+  return browser;
+};
+
+BEFORE: original8570fec
+Command: node --import e2e/<hook.mjs> e2e/<old8570fec.mjs> --native
+STDOUT:
+[operations-panel] PASS transport filters, encoded identity, explicit content and unavailable upload
+[operations-panel] PASS capabilities individually queryable; source/profile serializer preserved
+[operations-panel] PASS duplicate evidence rejected before persistence
+[operations-panel] PASS artifact metadata listing never reads content; explicit read stays inert
+[operations-panel] PASS audio upload is explicit; chosen provider/language and exact file survive
+[operations-panel] PASS capability status and additive persistence surface native read receipt
+[operations-panel] PASS provider failures are visible, without automatic retry
+
+STDERR:
+
+EXIT: 0
+
+AFTER: working tree with completion guard
+Command: node --import e2e/<hook.mjs> e2e/operations-panel.mjs --native
+STDOUT:
+[operations-panel] PASS transport filters, encoded identity, explicit content and unavailable upload
+[operations-panel] PASS capabilities individually queryable; source/profile serializer preserved
+[operations-panel] PASS duplicate evidence rejected before persistence
+[operations-panel] PASS artifact metadata listing never reads content; explicit read stays inert
+[operations-panel] PASS audio upload is explicit; chosen provider/language and exact file survive
+[operations-panel] PASS capability status and additive persistence surface native read receipt
+[operations-panel] PASS provider failures are visible, without automatic retry
+
+STDERR:
+[operations-panel] INCOMPLETE: 7/8 groups; suite cleanup/summary did not complete
+
+EXIT: 1
+

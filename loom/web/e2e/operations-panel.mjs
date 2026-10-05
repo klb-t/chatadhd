@@ -12,6 +12,7 @@ import { fileURLToPath } from "node:url";
 import { build } from "esbuild";
 import { chromium } from "playwright";
 import ts from "typescript";
+import { closeHttpFixture, stopChild, suiteCompletionGuard } from "./harness-lifecycle.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const loomRoot = path.resolve(root, "..");
@@ -27,6 +28,9 @@ const graphUrl = url(transpile("../src/profiles/graph.ts").replaceAll('from "./r
 const capabilityGraph = await import(url(transpile("../src/profiles/capability-graph.ts").replaceAll('from "./graph"', `from "${graphUrl}"`)));
 const operationsModule = await import(url(transpile("../src/api/operations.ts")));
 const groups = [];
+const nativeMode = process.argv.includes("--native");
+const expectedGroups = nativeMode ? 8 : 7;
+const completion = suiteCompletionGuard("operations-panel", expectedGroups, groups);
 async function check(name, fn) { await fn(); groups.push(name); console.log(`[operations-panel] PASS ${name}`); }
 
 const profile = JSON.parse(readFileSync(path.join(root, "src/profiles/data/loom-default.json"), "utf8"));
@@ -178,9 +182,9 @@ try {
     assert.equal(uploads.length, 2); assert.equal(await page.locator('[data-testid="transcription-result"]').count(), 0);
     assert.deepEqual(pageErrors, []); assert.deepEqual(remote, []);
   });
-} finally { await browser?.close(); await new Promise(resolve => fixtureServer.close(resolve)); }
+} finally { await browser?.close(); await closeHttpFixture(fixtureServer); }
 
-if (process.argv.includes("--native")) {
+if (nativeMode) {
   const serverBin = process.env.LOOM_SERVER_BIN || path.join(loomRoot, "build/dev/server/loom-server");
   assert.ok(existsSync(serverBin), `Build native server first: ${serverBin}`);
   const nativeDir = mkdtempSync(path.join(tmpdir(), "loom-capability-native-"));
@@ -208,8 +212,9 @@ if (process.argv.includes("--native")) {
       assert.equal(read.row_drift.matches, true);
     });
   } finally {
-    if (server.exitCode === null) { const stopped = new Promise(resolve => server.once("close", resolve)); server.kill("SIGTERM"); await stopped; }
+    await stopChild(server);
     rmSync(nativeDir, { recursive: true, force: true });
   }
 }
-console.log(`[operations-panel] ${groups.length}/${groups.length} groups passed; synthetic offline fixtures, zero paid calls`);
+completion.complete();
+console.log(`[operations-panel] ${groups.length}/${expectedGroups} groups passed; synthetic offline fixtures${nativeMode ? " and actual native graph persistence" : ""}, zero paid calls`);

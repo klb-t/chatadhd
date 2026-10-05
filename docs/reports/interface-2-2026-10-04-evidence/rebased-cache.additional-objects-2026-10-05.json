@@ -1,0 +1,10 @@
+{
+  "found": [],
+  "searched": [
+    "loom/src/chat/chat_engine.cpp",
+    "loom/src/context/context_engine.cpp",
+    "loom/src/kb/graph_packet_store.cpp",
+    "loom/src/kb/pack.cpp",
+    "loom/src/providers/providers.cpp"
+  ]
+}
