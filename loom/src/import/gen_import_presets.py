@@ -62,7 +62,7 @@ def _positive_integer(value, label):
 
 def _nonempty_text(value, label):
     # Numeric token subclasses are not text metadata.
-    if type(value) is not str or not value.strip():
+    if type(value) is not str or not value:
         raise ValueError(f"{label} must be a nonempty JSON string")
 
 
@@ -90,12 +90,12 @@ def generate_layers(spec_raw, import_raw, audit_raw):
     """Project mapped values into the common layer contract, without state."""
     sources = {"import": _validate_source(import_raw),
                "import_audit": _validate_source(audit_raw)}
-    contracts = {"import": ("loom.import_preset/1", "loom.preset.import.default"),
-                 "import_audit": ("loom.import_audit_preset/1", "loom.preset.import-audit.default")}
+    contracts = {"import": "loom.import_preset/1",
+                 "import_audit": "loom.import_audit_preset/1"}
     for resource, source in sources.items():
-        schema, identity = contracts[resource]
-        if source.get("schema") != schema or source.get("id") != identity:
-            raise ValueError(f"invalid source identity/schema for resource {resource}")
+        if source.get("schema") != contracts[resource]:
+            raise ValueError(f"invalid source schema for resource {resource}")
+        _nonempty_text(source.get("id"), f"{resource} source identity")
         _positive_integer(source.get("version"), f"{resource} source version")
         if not isinstance(source.get("values"), dict):
             raise ValueError(f"{resource} source values must be an object")
