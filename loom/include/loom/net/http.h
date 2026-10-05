@@ -20,6 +20,7 @@
 #pragma once
 
 #include <deque>
+#include <filesystem>
 #include <functional>
 #include <memory>
 #include <mutex>
@@ -33,6 +34,8 @@
 #include "loom/util/cancel.h"
 #include "loom/util/json.h"
 
+namespace loom { class RuntimeProfile; }
+
 namespace loom::net {
 
 using Headers = std::vector<std::pair<std::string, std::string>>;
@@ -40,12 +43,16 @@ using Headers = std::vector<std::pair<std::string, std::string>>;
 // Case-insensitive header lookup ("" when absent).
 std::string header_value(const Headers& h, std::string_view name);
 
+// The legacy aggregate default comes from the immutable built-in net recipe.
+// Profile-aware JSON parsing applies the selected recipe's omitted default.
+int builtin_http_timeout_ms();
+
 struct HttpRequest {
   std::string method = "GET";
   std::string url;
   Headers headers;
   std::string body;
-  int timeout_ms = 30000;
+  int timeout_ms = builtin_http_timeout_ms();
   // Hint that the caller will consume the body incrementally (SSE, JSONL).
   bool stream = false;
 
@@ -53,6 +60,7 @@ struct HttpRequest {
   // (the shape handed to platform transports through the C API).
   Json to_json() const;
   static Result<HttpRequest> from_json(const Json& j);
+  static Result<HttpRequest> from_json_with_profile(const Json& j, const RuntimeProfile& profile);
 };
 
 struct HttpResponse {
@@ -78,10 +86,31 @@ class HttpTransport {
   virtual std::string name() const = 0;
 };
 
-// Desktop default: cpp-httplib (HTTPS when built with OpenSSL, honours
-// HTTPS_PROXY/HTTP_PROXY and SSL_CERT_FILE). On builds without a usable
+// Desktop default: cpp-httplib (HTTPS when built with OpenSSL). The built-in
+// recipe retains HTTPS_PROXY and SSL_CERT_FILE/REQUESTS_CA_BUNDLE precedence.
+// On builds without a usable
 // stack every send() fails with Errc::Unavailable.
 std::shared_ptr<HttpTransport> make_default_transport();
+// Objects are immutable snapshots. Existing malformed overlays fail closed;
+// custom definitions are revalidated against the supported net descriptor.
+Result<std::shared_ptr<HttpTransport>> make_default_transport_checked(
+    const std::filesystem::path& data_dir = {}, const Json& overrides = Json::object());
+Result<std::shared_ptr<HttpTransport>> make_default_transport_with_profile(const RuntimeProfile& profile);
+
+using EnvironmentLookup = std::function<std::optional<std::string>(std::string_view)>;
+// Deterministic preparation shared by the real adapter and offline inspection.
+// An empty lookup reads the process environment. No request is sent here.
+// TLS certificate verification remains an engine invariant, never a setting.
+struct HttpTransportPolicy {
+  int timeout_ms = 0;
+  bool follow_redirects = false;
+  bool keep_alive = false;
+  std::optional<std::string> ca_cert_path;
+  std::optional<std::string> proxy_url;
+  std::string profile_hash;
+  static Result<HttpTransportPolicy> for_request(const HttpRequest& request, const RuntimeProfile& profile,
+                                                const EnvironmentLookup& lookup = {});
+};
 
 // ── Test double (implemented in the foundation; used by all wave-2 tests) ──
 // Expectations are consumed FIFO: the first unused expectation whose method

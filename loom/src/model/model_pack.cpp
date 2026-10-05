@@ -3,6 +3,7 @@
 #include <algorithm>
 
 #include "model/model_json.h"
+#include "model/model_profile.h"
 
 namespace loom::model {
 
@@ -139,8 +140,14 @@ Result<std::vector<Morphism>> morphisms(const kb::Pack& pack) {
 }
 
 Result<std::vector<Morphism>> anchoring_morphisms(const kb::Pack& pack) {
+  LOOM_TRY_ASSIGN(auto profile, RuntimeProfile::builtin("model"));
+  return anchoring_morphisms(pack, profile);
+}
+
+Result<std::vector<Morphism>> anchoring_morphisms(const kb::Pack& pack, const RuntimeProfile& profile) {
+  LOOM_TRY_ASSIGN(auto checked, detail::checked_model_profile(profile));
   std::vector<Morphism> out;
-  auto add = [&](const ParadigmHeader& h, const std::vector<DomainKind>& kinds) {
+  auto add = [&](const ParadigmHeader& h, const std::vector<DomainKind>& kinds) -> Status {
     for (const auto& k : kinds) {
       Morphism m;
       m.id = "m.anchor." + h.id + "." + k.id;
@@ -150,21 +157,23 @@ Result<std::vector<Morphism>> anchoring_morphisms(const kb::Pack& pack) {
       m.to.role = k.role;
       m.bidirectional = false;
       m.confidence = 1.0;
-      m.rationale = "domain kind '" + k.id + "' plays the universal role '" + std::string(to_string(k.role)) + "'";
+      LOOM_TRY_ASSIGN(m.rationale, render_profile_template(checked.values().at("anchoring_rationale").get<std::string>(),
+                         Json{{"paradigm", h.id}, {"kind", k.id}, {"role", std::string(to_string(k.role))}}));
       m.origin = h.origin;
       m.validation = h.validation;
       out.push_back(std::move(m));
     }
+    return {};
   };
   for (const auto& f : pack.files()) {
     const Json& d = pack.file(f);
     std::string schema = json::get_string(d, "schema");
     if (schema == "loom.kb.project_kind/1") {
       LOOM_TRY_ASSIGN(auto pk, ProjectKind::from_json(d));
-      add(pk.header, pk.domain_kinds);
+      LOOM_TRY(add(pk.header, pk.domain_kinds));
     } else if (schema == "loom.kb.facet/1") {
       LOOM_TRY_ASSIGN(auto fc, Facet::from_json(d));
-      add(fc.header, fc.domain_kinds);
+      LOOM_TRY(add(fc.header, fc.domain_kinds));
     }
   }
   std::sort(out.begin(), out.end(), [](const Morphism& a, const Morphism& b) { return a.id < b.id; });
