@@ -1,0 +1,21 @@
+{
+  "schema": "loom.test_setup_comparison/1",
+  "source_parent": "68f7531329dd8fe5132327038b75c65b31e2626a",
+  "test_file": "loom/tools/structure/test_frontier_comparison_v1.py",
+  "test_sha256": "e4ef15c8df3e029997dcfd0543ffc437dc93b2067268fd09f82f858874259d32",
+  "cases_before": 17,
+  "cases_after": 17,
+  "passed_before": 17,
+  "passed_after": 17,
+  "before": {
+    "wall_seconds": 15.389,
+    "cpu_seconds": 4.463
+  },
+  "after": {
+    "wall_seconds": 6.345,
+    "cpu_seconds": 2.581
+  },
+  "changed": "Prepare common full36-request fixture once per class; deep-copy cases/references/manifest per test. Every counterexample and preparation-specific call remains.",
+  "boundary": "Sequential focused tests on a shared loaded machine; wall time is not a controlled benchmark. Full CTest retains its60-second timeout.",
+  "paid_calls": 0
+}
