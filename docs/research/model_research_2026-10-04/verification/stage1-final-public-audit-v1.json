@@ -1,0 +1,449 @@
+{
+  "schema": "loom.stage1_public_audit/1",
+  "version": "2026-10-05-v1",
+  "scope": "Public selected-field snapshot and authored source-commitment DEV only; no private ledger/account/key/provider calls",
+  "status": "PASS",
+  "snapshot_directory": "docs/research/model_research_2026-10-04/programme-actual/stage1-final-20261005-v2",
+  "all_17_original_file_bindings": {
+    "METHODS.json": {
+      "sha256": "b0ad89a27ceab7aa692e7cbe2d722417dfb2b2343ba6be9e7c93fd54977897e0",
+      "bytes": 64917
+    },
+    "NORMALIZED.json": {
+      "sha256": "5bf76c634da05a287730c6bdbe35b7cf3654c40b8078ad8c6cbc8b4094eb0875",
+      "bytes": 3283482
+    },
+    "REQUESTS.json": {
+      "sha256": "9c35cd3803575923d1c0338369e76151d06169911cac65464c5dc6c50e5f80d8",
+      "bytes": 1539867
+    },
+    "RESPONSES.json": {
+      "sha256": "cc2f2e24452f8107d32f7661c88ae558bfc51cb9fff81bb58a607474b1d736ee",
+      "bytes": 538350
+    },
+    "SCORE.json": {
+      "sha256": "926169a54b53ef6c7c963f6ae1edda3c63aa8de76dca5e95ff37ea0e34b35fca",
+      "bytes": 161459
+    },
+    "VERIFICATION.json": {
+      "sha256": "455b4134d9398ecf89168504599f076c79c47d4ceebcfd625c1f3be180848b1b",
+      "bytes": 5413
+    },
+    "configuration.json": {
+      "sha256": "ed9e1739ff47e157d2802865b07599e2ea0a520b218b68cfc2fba33974747099",
+      "bytes": 1431138
+    },
+    "group-2625a5137af1e4797055ad9bd64952032e2a9fc84572e9b5f16308b675f9dad8.json": {
+      "sha256": "260fba61db58f39b17d8e7a32a8a2aa86ea78eeee9636f1a4246e9eeda6b26c8",
+      "bytes": 214931
+    },
+    "group-4241c61f6d09dc357737de59ce30f161ce81b1bc094835959d06716bbe32c4ed.json": {
+      "sha256": "f671766d79c5f75cf6910756a82dde0c2d12b1427cbb75333671d2a81e2a9b7a",
+      "bytes": 222041
+    },
+    "group-645eda9d71f6182675bc7cc4f55454caca38f92e44998f3f43ab7092ad075bc2.json": {
+      "sha256": "c8fa01132a9fb10e9f9c857e14d9e4d885e6d3b5351c5107923644146350dd06",
+      "bytes": 214590
+    },
+    "group-6a9aa4b9c73a97fe6b2d5e6f49614b5ad1f78d8874930f892706c0576961c0be.json": {
+      "sha256": "ed79cff31bfcae2d6535a8b18300cd2404daec8d933e9d10bcd5f96fe04bb78e",
+      "bytes": 221095
+    },
+    "group-8775c7f63ecb89b8b2223f71416646040be8210f491ac0cb966c1ce6d973505d.json": {
+      "sha256": "e14473ed518b9c4e8a27326e82559df022d3ebb04956f3e5d82b6f95c0ce95fa",
+      "bytes": 216927
+    },
+    "group-a207e25d16e1b911131bd1cec60cbebf196c5fa217bee9bc2d83c9df59283850.json": {
+      "sha256": "1d8dea5c4c8486fec500bd3cfec92ad87a73e731d0a2817700b949910d1927ef",
+      "bytes": 216906
+    },
+    "group-a3faf534ef8b79926fbf7396a6f530477a203dc3e5817687f2299740f15785f0.json": {
+      "sha256": "eb7027c6f6594e63c530d525303ab87a3d3e4ebdb1b1069ec2343d1e17b2d6c5",
+      "bytes": 214661
+    },
+    "group-d8d0afc81be22b4bcbae5b2c017c82bfa57f44e4ea932022b1f68eaf9fbf1e2e.json": {
+      "sha256": "6a01b0f89f21c948d601488af971778bd657c4c4254f37aac15cca0c52ac88bd",
+      "bytes": 221624
+    },
+    "group-da6c92152ea2502b3e440df181d02aabb0772f931e1605e8c8b8c6f24d7eec9f.json": {
+      "sha256": "ee772c7625fb7004c09d7180973070a6e2dafb0633f0494b884fadb788f447c3",
+      "bytes": 214927
+    },
+    "packet.json.gz": {
+      "sha256": "0ba09587215b796c1296021893c5a3e6e4a313125d9fcf0a761e3b7321df3a92",
+      "bytes": 2180141
+    }
+  },
+  "immutable_originals_unchanged_after_packaging": true,
+  "replay_inputs_zip": {
+    "path": "docs/research/model_research_2026-10-04/programme-actual/stage1-final-20261005-v2/replay-inputs.zip",
+    "sha256": "7f7ae287e6c6644427e89ea009cb17577816d230cf9b56915048a0f63c19cefa",
+    "bytes": 534204,
+    "payload_json_count": 14,
+    "internal_manifest": "REPLAY_MANIFEST.json",
+    "all_payload_bytes_verified_against_originals": true
+  },
+  "counts": {
+    "planned_requests": 432,
+    "attempted_rows": 432,
+    "captured_response_projections": 432,
+    "unique_operation_ids": 432,
+    "unique_generation_ids": 432,
+    "execution_arms": 9,
+    "captures_per_execution_arm": 48,
+    "composed_scored_arms": 8,
+    "planned_decisions": 384,
+    "decisions_per_scored_arm": 48,
+    "available_decisions": 384,
+    "gold_supported_per_arm": 14,
+    "gold_refuted_per_arm": 10,
+    "gold_unknown_per_arm": 24,
+    "packet_entities": 2292,
+    "packet_claims": 6336,
+    "packet_sources": 14,
+    "scripted_actual_mix": false,
+    "model_profile_entities": 0,
+    "distinct_authored_DEV_cases": 12
+  },
+  "verified_checks": {
+    "all_original_file_hashes_and_sizes": true,
+    "all_24_prepared_payload_hashes": true,
+    "all_432_exact_source_manifest_query_body_bindings": true,
+    "all_432_canonical_request_body_hashes": true,
+    "all_432_projected_first_answers_recompiled": true,
+    "all_8_complete_reports_failure_lists_slices_and_7_contrasts_replayed": true,
+    "all_9_group_resources_metrics_and_event_bindings_replayed": true,
+    "all_generation_ids_unique_no_double_cost_in_public_snapshot": true,
+    "all_14_packet_sources_and_6336_claim_support_spans": true,
+    "packet_id_and_raw_bytes_replayed": true,
+    "deterministic_gzip_bytes_replayed": true,
+    "native_DTO_codec_validation": true,
+    "credential_account_metadata_field_scan": true
+  },
+  "public_cost_consistency": {
+    "normalized_actual_usd_exact": "0.052296100",
+    "normalized_reported_and_ledger_usd_exact": "0.052296100",
+    "response_usage_projection_usd_exact": "0.052296100",
+    "generation_receipt_projection_usd_exact": "0.052296100",
+    "all_rows_verified_flags": true,
+    "unknown_cost_rows": 0,
+    "input_tokens_total": 303190,
+    "output_tokens_total": 11803,
+    "all_current_transport_states": "completed",
+    "original_state_cohorts": {
+      "completed": 3,
+      "uncertain": 3,
+      "pending_billing": 426
+    },
+    "late_resolution_rows": 429,
+    "owner_account_attestation": "Root reports a strict fresh key/account read exactly matched USD0.052296100 and zero pending/reservations. This public-only auditor did not inspect or authenticate that private proof."
+  },
+  "packet": {
+    "packet_id": "c79b6762459f94c0e10562d4bb34a3540af287abf6964d402d4025c50fadf42f",
+    "raw_sha256": "c84c4c225956e0b409482ce3240c1638b26f6d1ff7734b16e42d773234101d32",
+    "raw_bytes": 36883401,
+    "gzip_sha256": "0ba09587215b796c1296021893c5a3e6e4a313125d9fcf0a761e3b7321df3a92",
+    "gzip_bytes": 2180141,
+    "validation_scope": "Existing native DTO codec/schema and byte-identical exporter replay; no canonical store write/native apply."
+  },
+  "source_drift_from_frozen_preparation": [],
+  "source_bindings": [
+    {
+      "role": "adapter",
+      "path": "loom/tools/structure/programme_results_v1.py",
+      "sha256": "5e7b2ce2e8a3b4c6cc9c0c3ee963dc41c23fcd27e06d6adc9b4bc7b3bf6f6506",
+      "git_commit": "e71e30aa26bbf0ce22b74c386627d9a2d8a9c373"
+    },
+    {
+      "role": "manifest_adapter",
+      "path": "loom/tools/structure/research_programme_manifest.py",
+      "sha256": "1810ae8d1b97ae9403e969de3b0efe6ff52e31b7fa9b87f4a6a1be62b84cfbb4",
+      "git_commit": "e71e30aa26bbf0ce22b74c386627d9a2d8a9c373"
+    },
+    {
+      "role": "transport_receipt_parser",
+      "path": "loom/tools/structure/research_programme_transport.py",
+      "sha256": "6f0925ac5a976fdbc4e9ade01816187d8fe3214a4562756fb63530ec2cfa9241",
+      "git_commit": "e71e30aa26bbf0ce22b74c386627d9a2d8a9c373"
+    },
+    {
+      "role": "programme_study_aggregation",
+      "path": "loom/tools/structure/programme_study_results_v1.py",
+      "sha256": "c0d14e87a668149e2ba3df2fe8e2a625d962f97618b82ebe9096e763af5711f6",
+      "git_commit": "e71e30aa26bbf0ce22b74c386627d9a2d8a9c373"
+    },
+    {
+      "role": "original_study_pure_helpers",
+      "path": "loom/tools/structure/analysis_optimization_v1.py",
+      "sha256": "b7c2ce5541c0f3fd7f0d647074105fd47bc414d287267ec939598b952b1e1a8d",
+      "git_commit": "e71e30aa26bbf0ce22b74c386627d9a2d8a9c373"
+    },
+    {
+      "role": "pure_judgment_compiler_and_scorer",
+      "path": "loom/tools/structure/graph_panel_live.py",
+      "sha256": "31ad2a56e69dc472ef686c257953297a28465a16aa4eb903e29aa829c0012c16",
+      "git_commit": "e71e30aa26bbf0ce22b74c386627d9a2d8a9c373"
+    },
+    {
+      "role": "gold_dev",
+      "path": "loom/tests/fixtures/research/w3_directed_commitment_v1/gold_dev.json",
+      "sha256": "417e03f56e10608ab9daeec3bbdedef177b41c134ca363ca0200c070853617f7",
+      "git_commit": "e71e30aa26bbf0ce22b74c386627d9a2d8a9c373"
+    },
+    {
+      "role": "prepared_freeze",
+      "path": "docs/research/model_research_2026-10-04/study/prepared/freeze.json",
+      "sha256": "c6fc3495d09094a7ccb62766efc4abf1b5cc672475aad380ccbbabd4cf9cff6a",
+      "git_commit": "e71e30aa26bbf0ce22b74c386627d9a2d8a9c373"
+    },
+    {
+      "role": "graph_exporter",
+      "path": "loom/tools/structure/method_graph_export_v1.py",
+      "sha256": "537589147b8548a86c68de1a9726b6fb423e52aee02ce2a185232ad83a9943b6",
+      "git_commit": "e71e30aa26bbf0ce22b74c386627d9a2d8a9c373"
+    },
+    {
+      "role": "native_DTO_codec",
+      "path": "loom/tools/structure/agentic_graph_v1/packet.py",
+      "sha256": "1b949dad8319f21713b984367cba162d1330f188d26557b21b264ef10910bbc4",
+      "git_commit": "e71e30aa26bbf0ce22b74c386627d9a2d8a9c373"
+    },
+    {
+      "role": "shared_model_profile_schema_adapter",
+      "path": "loom/tools/eval/model_profiles.py",
+      "sha256": "2521ca315a34f8a173d3d756ddcc6b31a5556cd8490581bfda62bec1b4726bf3",
+      "git_commit": "e71e30aa26bbf0ce22b74c386627d9a2d8a9c373"
+    }
+  ],
+  "reproduction_boundary": {
+    "public_semantic_metrics": "Fully replayed from projected first-response fields with exact published pure scorer/gold hashes.",
+    "public_graph": "Fully regenerated byte-for-byte from original public evidence/configuration; ZIP extraction restores those referenced paths.",
+    "private_original_normalization_and_billing": "Raw original response/generation bytes, complete late-proof bindings, account reconciliation and absence of unpublished retries are not authenticated by selected public fields or hash references alone. Root retained and reconciled all original generation proofs separately.",
+    "source_closure": "All v2 adapter/scorer/code hashes checked against published immutable Git snapshot e71e30aa26bbf0ce22b74c386627d9a2d8a9c373. No v2 producer-code gap found. Earlier archived v1 source-gap limits are not silently repaired or conflated with this v2 replay.",
+    "split_graph_limitation": "Combined split semantic report is in the full SCORE Observation; the two physical component accuracy metrics are null, and the current graph has no composite semantic-evaluation node.",
+    "quality_scope": "Authored matched source-commitment DEV. Content truth, heldout/generalization, graph-completion/pattern/reply adequacy and Stage5 selection are unmeasured here.",
+    "case_count_correction": "The immutable final requests and frozen gold cover12 cases×4 judgments=48 perarm. Earlier task/adapter prose said16; that inherited descriptive count is incorrect and is not used to compute scores."
+  },
+  "arm_measurements": [
+    {
+      "scored_arm": "j_active",
+      "execution_arms": [
+        "j_active"
+      ],
+      "planned_decisions": 48,
+      "available_decisions": 48,
+      "correct": 40,
+      "accuracy_all_planned": 0.8333333333333334,
+      "macro_recall": 0.8888888888888888,
+      "unknown_gold": 24,
+      "unknown_correct": 16,
+      "unknown_misclassified_refuted": 8,
+      "billed_usd_exact": "0.001699908",
+      "physical_calls": 48,
+      "input_tokens": 40474,
+      "output_tokens": 1920,
+      "measured_first_response_latency_mean_seconds": 0.389589368395832,
+      "latency_scope": "Host-measured first response per physical call, including the actual heterogeneous transport cohort; not isolated provider inference latency or split-decision wall time.",
+      "score_reference": {
+        "path": "docs/research/model_research_2026-10-04/programme-actual/stage1-final-20261005-v2/SCORE.json",
+        "sha256": "926169a54b53ef6c7c963f6ae1edda3c63aa8de76dca5e95ff37ea0e34b35fca",
+        "pointer": "/reports/j_active"
+      }
+    },
+    {
+      "scored_arm": "j_directed",
+      "execution_arms": [
+        "j_directed"
+      ],
+      "planned_decisions": 48,
+      "available_decisions": 48,
+      "correct": 43,
+      "accuracy_all_planned": 0.8958333333333334,
+      "macro_recall": 0.9305555555555555,
+      "unknown_gold": 24,
+      "unknown_correct": 19,
+      "unknown_misclassified_refuted": 5,
+      "billed_usd_exact": "0.001899492",
+      "physical_calls": 48,
+      "input_tokens": 45226,
+      "output_tokens": 1920,
+      "measured_first_response_latency_mean_seconds": 0.3021500383749374,
+      "latency_scope": "Host-measured first response per physical call, including the actual heterogeneous transport cohort; not isolated provider inference latency or split-decision wall time.",
+      "score_reference": {
+        "path": "docs/research/model_research_2026-10-04/programme-actual/stage1-final-20261005-v2/SCORE.json",
+        "sha256": "926169a54b53ef6c7c963f6ae1edda3c63aa8de76dca5e95ff37ea0e34b35fca",
+        "pointer": "/reports/j_directed"
+      }
+    },
+    {
+      "scored_arm": "j_roles",
+      "execution_arms": [
+        "j_roles"
+      ],
+      "planned_decisions": 48,
+      "available_decisions": 48,
+      "correct": 43,
+      "accuracy_all_planned": 0.8958333333333334,
+      "macro_recall": 0.9305555555555555,
+      "unknown_gold": 24,
+      "unknown_correct": 19,
+      "unknown_misclassified_refuted": 5,
+      "billed_usd_exact": "0.002117556",
+      "physical_calls": 48,
+      "input_tokens": 50418,
+      "output_tokens": 1920,
+      "measured_first_response_latency_mean_seconds": 0.29722045424993365,
+      "latency_scope": "Host-measured first response per physical call, including the actual heterogeneous transport cohort; not isolated provider inference latency or split-decision wall time.",
+      "score_reference": {
+        "path": "docs/research/model_research_2026-10-04/programme-actual/stage1-final-20261005-v2/SCORE.json",
+        "sha256": "926169a54b53ef6c7c963f6ae1edda3c63aa8de76dca5e95ff37ea0e34b35fca",
+        "pointer": "/reports/j_roles"
+      }
+    },
+    {
+      "scored_arm": "g_brief_t0",
+      "execution_arms": [
+        "g_brief_t0"
+      ],
+      "planned_decisions": 48,
+      "available_decisions": 48,
+      "correct": 32,
+      "accuracy_all_planned": 0.6666666666666666,
+      "macro_recall": 0.7678571428571429,
+      "unknown_gold": 24,
+      "unknown_correct": 9,
+      "unknown_misclassified_refuted": 15,
+      "billed_usd_exact": "0.009852400",
+      "physical_calls": 48,
+      "input_tokens": 20691,
+      "output_tokens": 985,
+      "measured_first_response_latency_mean_seconds": 0.8826237166459047,
+      "latency_scope": "Host-measured first response per physical call, including the actual heterogeneous transport cohort; not isolated provider inference latency or split-decision wall time.",
+      "score_reference": {
+        "path": "docs/research/model_research_2026-10-04/programme-actual/stage1-final-20261005-v2/SCORE.json",
+        "sha256": "926169a54b53ef6c7c963f6ae1edda3c63aa8de76dca5e95ff37ea0e34b35fca",
+        "pointer": "/reports/g_brief_t0"
+      }
+    },
+    {
+      "scored_arm": "g_brief_t03",
+      "execution_arms": [
+        "g_brief_t03"
+      ],
+      "planned_decisions": 48,
+      "available_decisions": 48,
+      "correct": 33,
+      "accuracy_all_planned": 0.6875,
+      "macro_recall": 0.7916666666666666,
+      "unknown_gold": 24,
+      "unknown_correct": 9,
+      "unknown_misclassified_refuted": 15,
+      "billed_usd_exact": "0.009852400",
+      "physical_calls": 48,
+      "input_tokens": 20691,
+      "output_tokens": 985,
+      "measured_first_response_latency_mean_seconds": 0.8913061937710912,
+      "latency_scope": "Host-measured first response per physical call, including the actual heterogeneous transport cohort; not isolated provider inference latency or split-decision wall time.",
+      "score_reference": {
+        "path": "docs/research/model_research_2026-10-04/programme-actual/stage1-final-20261005-v2/SCORE.json",
+        "sha256": "926169a54b53ef6c7c963f6ae1edda3c63aa8de76dca5e95ff37ea0e34b35fca",
+        "pointer": "/reports/g_brief_t03"
+      }
+    },
+    {
+      "scored_arm": "g_rules_t0",
+      "execution_arms": [
+        "g_rules_t0"
+      ],
+      "planned_decisions": 48,
+      "available_decisions": 48,
+      "correct": 37,
+      "accuracy_all_planned": 0.7708333333333334,
+      "macro_recall": 0.8472222222222222,
+      "unknown_gold": 24,
+      "unknown_correct": 13,
+      "unknown_misclassified_refuted": 11,
+      "billed_usd_exact": "0.011881200",
+      "physical_calls": 48,
+      "input_tokens": 25779,
+      "output_tokens": 981,
+      "measured_first_response_latency_mean_seconds": 0.9090945196250004,
+      "latency_scope": "Host-measured first response per physical call, including the actual heterogeneous transport cohort; not isolated provider inference latency or split-decision wall time.",
+      "score_reference": {
+        "path": "docs/research/model_research_2026-10-04/programme-actual/stage1-final-20261005-v2/SCORE.json",
+        "sha256": "926169a54b53ef6c7c963f6ae1edda3c63aa8de76dca5e95ff37ea0e34b35fca",
+        "pointer": "/reports/g_rules_t0"
+      }
+    },
+    {
+      "scored_arm": "g_rules_t03",
+      "execution_arms": [
+        "g_rules_t03"
+      ],
+      "planned_decisions": 48,
+      "available_decisions": 48,
+      "correct": 38,
+      "accuracy_all_planned": 0.7916666666666666,
+      "macro_recall": 0.8611111111111112,
+      "unknown_gold": 24,
+      "unknown_correct": 14,
+      "unknown_misclassified_refuted": 10,
+      "billed_usd_exact": "0.011879600",
+      "physical_calls": 48,
+      "input_tokens": 25779,
+      "output_tokens": 980,
+      "measured_first_response_latency_mean_seconds": 0.9093710865416446,
+      "latency_scope": "Host-measured first response per physical call, including the actual heterogeneous transport cohort; not isolated provider inference latency or split-decision wall time.",
+      "score_reference": {
+        "path": "docs/research/model_research_2026-10-04/programme-actual/stage1-final-20261005-v2/SCORE.json",
+        "sha256": "926169a54b53ef6c7c963f6ae1edda3c63aa8de76dca5e95ff37ea0e34b35fca",
+        "pointer": "/reports/g_rules_t03"
+      }
+    },
+    {
+      "scored_arm": "j_split",
+      "execution_arms": [
+        "j_split_q01",
+        "j_split_q02"
+      ],
+      "planned_decisions": 48,
+      "available_decisions": 48,
+      "correct": 43,
+      "accuracy_all_planned": 0.8958333333333334,
+      "macro_recall": 0.9305555555555555,
+      "unknown_gold": 24,
+      "unknown_correct": 19,
+      "unknown_misclassified_refuted": 5,
+      "billed_usd_exact": "0.003113544",
+      "physical_calls": 96,
+      "input_tokens": 74132,
+      "output_tokens": 2112,
+      "measured_first_response_latency_mean_seconds": 0.3020011034479732,
+      "latency_scope": "Host-measured first response per physical call, including the actual heterogeneous transport cohort; not isolated provider inference latency or split-decision wall time.",
+      "score_reference": {
+        "path": "docs/research/model_research_2026-10-04/programme-actual/stage1-final-20261005-v2/SCORE.json",
+        "sha256": "926169a54b53ef6c7c963f6ae1edda3c63aa8de76dca5e95ff37ea0e34b35fca",
+        "pointer": "/reports/j_split"
+      }
+    }
+  ],
+  "w1_handoff": {
+    "path": "docs/research/model_research_2026-10-04/stage1-measured-recipes-for-w1-v1.json",
+    "sha256": "c2db1f32e6645fee14a6993ad7619793daa5d9bcc90d414b3c235ca6c3446964"
+  },
+  "independent_review": {
+    "status": "PASS",
+    "scope": "Independent public-only input/output/cost/semantic and graph/source-span audit",
+    "concrete_issue_found": null,
+    "private_data_read": false,
+    "code_or_test_edits": false,
+    "descriptive_handoff_corrections": [
+      "12 authored DEV cases rather than the earlier task/prose count of 16; scored grid and metrics unchanged",
+      "Role-explicit j_roles uses 48 calls; two-call composition belongs to j_split, which uses 96 calls"
+    ]
+  },
+  "new_model_calls": 0,
+  "private_ledger_key_or_account_files_read": false,
+  "code_or_test_files_changed": false,
+  "stage5_winner_selected": false
+}

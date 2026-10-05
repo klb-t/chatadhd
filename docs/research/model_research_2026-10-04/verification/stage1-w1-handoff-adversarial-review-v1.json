@@ -1,0 +1,23 @@
+{
+  "all_scores_and_costs_recomputed": true,
+  "complete_provider_reported_cost_usd": "0.052296100",
+  "exact_consumed_body_bindings": 432,
+  "execution_components": 9,
+  "handoff_sha256": "c2db1f32e6645fee14a6993ad7619793daa5d9bcc90d414b3c235ca6c3446964",
+  "new_model_calls": 0,
+  "private_records_read": false,
+  "production_adoption": false,
+  "recipe_and_parameter_hashes_match_descriptors_and_actual_requests": true,
+  "requested_aliases_and_observed_dated_identity_preserved": true,
+  "review_scope": "Independent public-only exact recipe, parameter, consumed-body, descriptor, source-package and billed-denominator audit. No new model calls or production adoption. This is not the additional stage5 selection.",
+  "schema": "loom.measured_recipe_handoff_review/1",
+  "scope_disclosures_present": true,
+  "scored_arms": 8,
+  "source_package_zip_members_match_standalone": true,
+  "source_score_sha256": "926169a54b53ef6c7c963f6ae1edda3c63aa8de76dca5e95ff37ea0e34b35fca",
+  "source_snapshot": "docs/research/model_research_2026-10-04/programme-actual/stage1-final-20261005-v2",
+  "split_physical_calls": 96,
+  "split_planned_decisions": 48,
+  "stage5_winner_claimed": false,
+  "verdict": "PASS_with_task_conditional_DEV_scope"
+}

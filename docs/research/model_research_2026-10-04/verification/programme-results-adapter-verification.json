@@ -37,9 +37,16 @@
     "planned_execution_operations": 432,
     "planned_decisions_after_split_composition": 384,
     "planned_queries_per_scored_arm": 48,
-    "cases": 16,
+    "cases": 12,
     "corpus": "authored independent DEV; not holdout",
-    "quality_scope": "explicit source commitment; content/world truth unmeasured"
+    "quality_scope": "explicit source commitment; content/world truth unmeasured",
+    "case_count_correction": {
+      "previous_prose_count": 16,
+      "audited_actual_count": 12,
+      "queries_per_case": 4,
+      "source": "stage1-final-public-audit-v1.json",
+      "scope": "documentation count corrected from exact frozen query/gold inventory; all384 decision and432 operation denominators unchanged"
+    }
   },
   "source_drift": {
     "path": "loom/tools/structure/analysis_optimization_v1.py",
