@@ -1,6 +1,6 @@
 # Wątek 10 — kolejny przyrost UI/API, 2026-10-05
 
-Gałąź: `gpt/interface-2-2026-10-04`. Status: implementacja UI zakończona; ODBIÓR WSTRZYMANY — pełny CTest120/121, regresja mieszanej bazy W1/W3 w knowledge_semantic. Zero płatnych wywołań i danych prywatnych; tylko fixture/HTTP atrapy.
+Gałąź: `gpt/interface-2-2026-10-04`. Status: implementacja UI zakończona; ODBIÓR WSTRZYMANY — pełny CTest120/121, regresja mieszanej bazy W1/W2 w knowledge_semantic. Zero płatnych wywołań i danych prywatnych; tylko fixture/HTTP atrapy.
 
 ## Przypięte zależności
 
@@ -47,7 +47,13 @@ Methods14/14 PASS na końcowym c65181cb.37 pełnych real native HTTP responses. 
 
 Pełny CTest:120/121 PASS,677.13s. Negatyw unit.test_knowledge_semantic:13 przypadków,10PASS/3FAIL,125 assertions/8FAIL. Linie252,255,256,319,354,355,358,362 wymagają starej ścieżki retry; runtime zwraca blocked/0 accepted. Pełne stdout/JUnit/LastTest.log i źródła zachowane; trwa izolowane potwierdzenie. Nie zmieniono testów ani progów, nie edytujemy cudzych zakresów. Nowy przyrost NIE jest gotowy do integracji mimo zielonych bramek UI.
 
-## W trakcie
+## Checkpoint 7 — whole-App i koniec implementacji
+
+Whole-App7/7 real native PASS po naprawieniu odbiorcy this przy HTTP metodach AnalysisPanel. Test od początku prowadzi nawigację App, wybiera jeden user ID w obu widokach12, zapisuje/przegląda odpowiedź, warstwy/wykluczenia i scenariusz, ładuje rzeczywisty graf metod oraz przygotowuje/inspectuje rzeczywisty handle analizy. Native server, źródła i dist mają identyczne hashe przed/po.0 provider calls/0 zdalnych requests/0 browser page errors. Negatyw receiver bug ma kompletne źródło/DOM/HTTP/screenshot; poprawka nie dotyka rdzenia.
+
+Web build PASS po końcowej poprawce. Gotowy kod UI jest wypchnięty; gotowość odbioru pozostaje wstrzymana wyłącznie pełną regresją rdzenia1/2 opisaną poniżej. Brak funkcji model interview, trwałego TaskEngine resume i per-call ChatOptions jest jawnie raportowaną granicą istniejących API, bez atrapy implementacji.
+
+## Dostarczone API
 
 Most HTTP korzysta z tego samego statycznego Runtime i rzeczywistej deklaracji opaque context w `src/capi/context.h`. Nie odtwarza layoutu, nie tworzy drugiej DB/silnika i nie dodaje C ABI. To jawna zależność źródłowa serwera; stare JNI pozostaje bez nowej zdolności.
 
@@ -58,13 +64,19 @@ Most HTTP korzysta z tego samego statycznego Runtime i rzeczywistej deklaracji o
 
 ## Liczby przed i po
 
-Przed: zaakceptowany autorski przyrost10:108/108 CTest,659native/24465 assertions,1276Python0skip,84fixture,20nativeUI,16E2E,webPASS. To historyczny receipt pinnedfa7538d, nie wynik obecnej mieszanej bazy. Po: bramki jeszcze nie wykonane; bez deklaracji gotowości na podstawie samych kontrolek.
+Przed: zaakceptowany autorski przyrost10:108/108 CTest,659native/24465 assertions,1276Python0skip,84fixture,20nativeUI,16E2E,webPASS. To historyczny receipt pinnedfa7538d, nie wynik obecnej mieszanej bazy. Po: pełny mixed CTest120/121,761 native cases (758PASS/3FAIL),29103 assertions (29095PASS/8FAIL),1322 Python/0skip; web PASS,84 fixture,20 nativeUI,16 E2E oraz nowe Methods14,GraphChat14,Analysis5,OnboardingHTTP8,Host21 iwhole-App7. Opt-in catalog_scale odziedziczone0cases jawnie pozostaje, nie jest dowodem wykonanych przypadków. Full CTest zmienił wyłącznie źródła serwera/binary podczas poprawki; kernel/test inputs i pozostałe5binarek były identyczne. Testy serwera118/119 wykonały końcową c651. Izolowany CTest potwierdza dokładnie ten sam bloker1/2.
 
 ## Do wątku 1
 
-Bloker mixed CTest: `loom/tests/test_knowledge_semantic.cpp`252/255/256/319/354/355/358/362, status blocked po poprzednim offline błędzie modelu. Pełny13-case suite:3FAIL/8assertions. Proszę uzgodnić właściwe retry/usage semantics z3 i dostarczyć poprawkę w swoim zakresie; W10 nie luzuje testów.
+Bloker mixed CTest: `loom/tests/test_knowledge_semantic.cpp`252/255/256/319/354/355/358/362, status blocked po poprzednim offline błędzie modelu. Pełny13-case suite:3FAIL/8assertions. Izolowany świeży CTest powtarza13 cases/125 assertions:10/117 PASS,3/8 FAIL. To rzeczywista regresja W1+W2. `extract/semantic.cpp:798` daje ten sam operation_id dla run|chunk|wire-request_hash.905–906 rozliczają request/input_bytes, lecz tokeny/koszt zostają unknown, więc policy353 zachowuje unresolved, a policy258–263 zwraca stary receipt. Caller880–886 słusznie odmawia powtórzenia. Max_proposals/response_bytes zmieniają cache key829–830, ale nie tożsamość próby. W1 ma nadać nowej jawnej próbie odrębne ID i utrzymać je w checkpoint dla resume/confirmation; zachować cache/candidate identity, unknown accounting i anty-double-dispatch839–844. W10 nie edytuje tych zakresów ani nie luzuje testów.
+
+## Do wątku 2
+
+Zachować unknown/unresolved accounting i odmowę powtórzenia tej samej operation_id. Naprawa nowej próby należy do1; nie odblokowywać starego receipt ani nie luzować strażnika, aby test przeszedł.
 
 ## Do wątku 3
+
+StageContext `knowledge.h:101/109` oferuje run/resume checkpoint, bez osobnego attempt ID. Uzgodnić interoperacyjną tożsamość nowej próby z1. Graph guard1177–1185 nie jest przyczyną negatywu CTest.
 
 Publiczny per-call context_execution i immutable Chat PreparedRequest/resume nadal nie istnieją w przyjętym3. Obecny UI używa realnej globalnej konfiguracji; nie ponawia Chat.send po potwierdzeniu jako substytutu resume.
 
@@ -74,4 +86,4 @@ Most UI/HTTP korzysta z3c0bc36, zachowuje outer revision, stable layer keys, sou
 
 ## Do wątku 9
 
-Nie odbierać nowego przyrostu: pełny CTest120/121 ma bloker1/3. Najpierw dokładnie1 i12, następnie10; deklaracje APIs nie zastępują bramek. Pierwotne źródła i wszystkie negatywy pozostają odtwarzalne na przypiętych gałęziach.
+Nie odbierać nowego przyrostu: pełny CTest120/121 ma bloker1/2. Najpierw dokładnie1 i12, następnie10; deklaracje APIs nie zastępują bramek. Pierwotne źródła i wszystkie negatywy pozostają odtwarzalne na przypiętych gałęziach.
