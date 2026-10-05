@@ -94,16 +94,23 @@ await check("accepted selection persistence reads fresh siblings and verifies gl
 
 const bundle = await build({ stdin: { contents: `
   import React from "react"; import {createRoot} from "react-dom/client"; import MethodsPanel from "./src/components/MethodsPanel";
-  async function request(method,path,body,options) {
-    const response=await fetch(path,{method,signal:options?.signal,headers:{"Content-Type":"application/json"},...(body===undefined?{}:{body:JSON.stringify(body)})});
-    const data=await response.json(); if(!response.ok||data.error)throw new Error(data.error?.message??"Request failed"); return data;
-  }
-  const transport={methods:(body,options)=>request("POST","/api/methods",body,options),getConfig:()=>request("GET","/api/config"),setConfigKey:(key,value)=>request("PUT","/api/config/"+encodeURIComponent(key),{value})};
+  import {LoomHttpApi} from "./src/api/loom-http";
+  const transport=new LoomHttpApi();
   createRoot(document.getElementById("root")).render(<MethodsPanel transport={location.search.includes("unavailable")?{}:transport}/>);
   `, resolveDir: web, loader: "tsx" }, write: false, bundle: true, format: "iife", platform: "browser", jsx: "automatic", outfile: "/tmp/methods-ui-fixture.js" });
 const js = bundle.outputFiles.find(file => file.path.endsWith(".js")).text, css = bundle.outputFiles.find(file => file.path.endsWith(".css"))?.text ?? "";
 const calls = []; let cfg = { context_execution: { method_registry: { profile, receipt_ids: [], future: "preserve" }, graph_reply: { mode: "off", future: { sibling: true } }, unknown: [1, null] } };
 let lastPreview, stored, configFailure = false, nativeBase = null, nativeServer, nativeDir, nativeLog = "";
+const nativeReceipts = [], nativeResponses = [];
+const relevantSources = ["server/src/app.cpp", "server/src/native-ui-common.h", "server/src/method-ui-routes.h", "src/context/method_registry.cpp", "src/packet/METHOD_GRAPH.md",
+  "web/src/api/loom-http.ts", "web/src/components/MethodsPanel.tsx", "web/src/components/methods-panel.css", "web/src/methods/graph-methods.ts", "web/e2e/methods-ui.mjs",
+  "src/packet/tests/method-registry-variants/canonical-w3-export.json.gz", "src/packet/tests/method-registry-variants/nested-combination.json.gz"];
+function fileManifest() {
+  const sources = Object.fromEntries(relevantSources.map(relative => [relative, createHash("sha256").update(readFileSync(path.join(loom, relative))).digest("hex")]));
+  const bin = process.env.LOOM_SERVER_BIN || path.join(loom, "build/dev/server/loom-server");
+  return { node: process.version, command: process.argv, sources, ...(nativeMode ? { server_binary: bin, server_binary_sha256: createHash("sha256").update(readFileSync(bin)).digest("hex") } : {}) };
+}
+const manifestBefore = fileManifest();
 function preview(command) {
   const old = command.snapshot.entities[command.entity_id], attrs = structuredClone(command.attrs);
   attrs.definition_sha256 = createHash("sha256").update(JSON.stringify(attrs.definition)).digest("hex");
@@ -122,7 +129,11 @@ const server = createServer(async (req, res) => {
     res.setHeader("Content-Type", "application/json");
     if (req.url?.startsWith("/api/")) {
       calls.push({ path: req.url, method: req.method, body });
-      if (nativeBase) { const result = await fetch(nativeBase + req.url, { method: req.method, headers: { "Content-Type": "application/json" }, ...(raw ? { body: raw } : {}) }); res.statusCode = result.status; res.end(await result.text()); return; }
+      if (nativeBase) { const result = await fetch(nativeBase + req.url, { method: req.method, headers: { "Content-Type": "application/json" }, ...(raw ? { body: raw } : {}) });
+        const responseRaw = await result.text(); nativeResponses.push({ source: "actual_LoomHttpApi_browser", method: req.method, path: req.url, command: body?.operation ?? body?.action ?? null, status: result.status,
+          request_raw: raw, request_sha256: createHash("sha256").update(raw).digest("hex"), raw: responseRaw, sha256: createHash("sha256").update(responseRaw).digest("hex") });
+        res.statusCode = result.status; res.end(responseRaw); return; }
+      if (req.url === "/api/methods/chat-settings" && req.method === "GET") body = { operation: "chat_settings" };
       if (body) {
         body = { ...body };
         for (const key of ["profile", "snapshot", "selection", "attrs"]) if (typeof body[key + "_json"] === "string") body[key] = JSON.parse(body[key + "_json"]);
@@ -165,9 +176,13 @@ const server = createServer(async (req, res) => {
 await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
 const base = `http://127.0.0.1:${server.address().port}`;
 let browser; const external = [], errors = [];
-async function native(method, endpoint, body) {
-  const response = await fetch(nativeBase + endpoint, { method, headers: { "Content-Type": "application/json" }, ...(body === undefined ? {} : { body: JSON.stringify(body) }) });
-  const data = await response.json(); assert.ok(response.ok, JSON.stringify(data)); return data;
+async function native(method, endpoint, body, originalBody) {
+  const requestRaw = originalBody ?? (body === undefined ? undefined : JSON.stringify(body));
+  const response = await fetch(nativeBase + endpoint, { method, headers: { "Content-Type": "application/json" }, ...(requestRaw === undefined ? {} : { body: requestRaw }) });
+  const raw = await response.text(), data = JSON.parse(raw);
+  nativeResponses.push({ source: "native_verification", method, path: endpoint, command: body?.operation ?? body?.action ?? null, status: response.status,
+    ...(requestRaw === undefined ? {} : { request_raw: requestRaw, request_sha256: createHash("sha256").update(requestRaw).digest("hex") }), raw, sha256: createHash("sha256").update(raw).digest("hex") });
+  assert.ok(response.ok, JSON.stringify(data)); return data;
 }
 async function startNative() {
   const bin = process.env.LOOM_SERVER_BIN || path.join(loom, "build/dev/server/loom-server"); assert.ok(existsSync(bin), `Build native server first: ${bin}`);
@@ -278,13 +293,28 @@ try {
     nativeDir = mkdtempSync(path.join(tmpdir(), "loom-method-ui-native-")); await startNative();
     const seed = spawnSync("python3", ["-c", `import json,gzip,sys
 f=json.load(gzip.open(sys.argv[1],'rt'));p={k:f['packet'][k] for k in ['entities','claims','sources']};p['vocabulary']=f['contract']['vocabulary'];p['selection']={'members':[{'combination_version_id':f['contract']['bindings']['combination_version_id']}],'parameter_layers':['method','combination','member','selection','user']}
-print(json.dumps({'value':{'method_registry':{'profile':p,'receipt_ids':[],'selection':{'parameters':{'retained_owner_overlay':314}},'preserve':{'sibling':'Żółć','native_float':1.0}},'graph_reply':{'mode':'off','untouched':True}}},ensure_ascii=False))`, path.join(loom, "src/packet/tests/method-registry-variants/nested-combination.json.gz")], { encoding: "utf8" });
+print(json.dumps({'method_registry':{'profile':p,'receipt_ids':[],'selection':{'parameters':{'retained_owner_overlay':314}},'preserve':{'sibling':'Żółć','native_float':1.0}},'graph_reply':{'mode':'off','untouched':True}},ensure_ascii=False))`, path.join(loom, "src/packet/tests/method-registry-variants/nested-combination.json.gz")], { encoding: "utf8" });
     assert.equal(seed.status, 0, seed.stderr);
-    const seeded = await fetch(nativeBase + "/api/config/context_execution", { method: "PUT", headers: { "Content-Type": "application/json" }, body: seed.stdout }); assert.equal(seeded.ok, true, await seeded.text());
+    // Seed through the native opaque/CAS boundary: the generic config JSON
+    // endpoint parses into unordered objects and cannot preserve DTO key order.
+    const settingsBeforeSeed = await native("GET", "/api/methods/chat-settings");
+    await native("POST", "/api/methods", { operation: "set_chat_settings", context_execution_json: seed.stdout,
+      expected_context_execution_sha256: settingsBeforeSeed.context_execution_sha256 });
     await page.goto(base); await page.getByLabel("Method profile", { exact: true }).selectOption(record.id);
     await page.getByRole("button", { name: "Load graph", exact: true }).click(); await page.locator('[data-testid="methods-snapshot"]').waitFor();
     await check("actual native catalog/load/resolve returns repeated DAG paths and exact result Claims", async () => {
       assert.equal(await page.locator('[data-testid="methods-result"][data-complete="true"]').count(), 3);
+      const callsBeforeFilter = calls.length;
+      await page.locator(`[data-entity-id="${initialDefinition.id}"] button`).click();
+      await page.getByRole("button", { name: "Results from this version", exact: true }).click();
+      assert.equal(await page.locator('[data-testid="methods-result"]').count(), 3);
+      const unused = nested.packet.entities.find(row => row.kind === profile.vocabulary.kinds.method_version && row.id !== initialDefinition.id);
+      await page.locator(`[data-entity-id="${unused.id}"] button`).click();
+      await page.getByRole("button", { name: "Results from this version", exact: true }).click();
+      assert.equal(await page.locator('[data-testid="methods-result"]').count(), 0);
+      await page.getByRole("button", { name: "Show all results", exact: true }).click();
+      assert.equal(await page.locator('[data-testid="methods-result"]').count(), 3);
+      assert.equal(calls.length, callsBeforeFilter, "Exact producer filtering is a read-only graph projection");
       assert.equal(JSON.parse(await page.locator('[data-testid="methods-selection-json"]').inputValue()).parameters.retained_owner_overlay, 314);
       await page.getByRole("button", { name: "Resolve selection without execution", exact: true }).click(); await page.locator('[data-testid="methods-resolution"]').waitFor();
       assert.equal(await page.locator('[data-testid="methods-resolved-leaf"]').count(), 4);
@@ -292,14 +322,30 @@ print(json.dumps({'value':{'method_registry':{'profile':p,'receipt_ids':[],'sele
       await page.locator('[data-testid="methods-native-lineage"] summary').click();
       const rows = JSON.parse(await page.locator('[data-testid="methods-native-lineage"] pre').innerText()); assert.equal(rows.provider_calls, 0);
       assert.equal(rows.producer_execution_verified, false);
+      const baselineCatalog = await native("POST", "/api/methods", { operation: "catalog" });
+      const baselineProfileJson = baselineCatalog.profiles.find(row => row.id === record.id).profile_json;
+      const baselineSnapshot = await native("POST", "/api/methods", { operation: "load", profile_json: baselineProfileJson, receipt_ids: [] });
+      // Generic config writes also have to retain exact ordered native DTOs.
+      // Both paths receive original Python fixture bytes, without JS reencoding.
+      for (const [verb, endpoint, rawBody] of [["PUT", "/api/config/context_execution", `{"value":${seed.stdout}}`],
+        ["PATCH", "/api/config", `{"context_execution":${seed.stdout}}`]]) {
+        await native(verb, endpoint, undefined, rawBody);
+        const catalog = await native("POST", "/api/methods", { operation: "catalog" });
+        const retainedJson = catalog.profiles.find(row => row.id === record.id).profile_json;
+        assert.equal(retainedJson, baselineProfileJson, `${verb} must preserve DTO key order, float tokens and retained graph/source rows`);
+        const retained = await native("POST", "/api/methods", { operation: "load", profile_json: retainedJson, receipt_ids: [] });
+        assert.equal(retained.snapshot_sha256, baselineSnapshot.snapshot_sha256, `${verb} must preserve exact loadable native snapshot identity`);
+      }
     });
-    let nativeReceiptId, nativeVersionId;
+    let nativeReceiptId, nativeVersionId, nativeReceiptJson;
     await check("actual native version fork/closed CAS accept saves explicit new selection while old run edges remain", async () => {
       await page.locator(`[data-entity-id="${initialDefinition.id}"] button`).click();
       await page.getByLabel("Target library", { exact: true }).fill("synthetic/UI/native-methods"); await page.getByLabel("Actor", { exact: true }).fill("synthetic-owner");
       await page.getByLabel("Known at (timestamp with timezone)", { exact: true }).fill("2026-10-05T11:00:00Z");
       const attrs = structuredClone(initialDefinition.attrs); attrs.definition.ui_native_fixture = { value: "Aą🙂B", unknown: [null, -17] }; attrs.retained_unknown = { yes: true };
-      assert.match(await page.locator('[data-testid="methods-version-json"]').inputValue(), /"weight"\s*:\s*-6\.0/);
+      const originalAttrsJson = JSON.parse(nativeResponses.findLast(row => row.command === "load").raw).edit_attrs_json[initialDefinition.id];
+      assert.equal(await page.locator('[data-testid="methods-version-json"]').inputValue(), originalAttrsJson);
+      assert.match(originalAttrsJson, new RegExp(`"weight"\\s*:\\s*${initialDefinition.attrs.definition.selection.weight}\\.0`));
       await page.locator('[data-testid="methods-version-json"]').fill(JSON.stringify(attrs)); await page.getByRole("button", { name: "Validate new version", exact: true }).click();
       await page.locator('[data-testid="methods-version-preview"]').waitFor(); nativeVersionId = await page.locator('[data-testid="methods-version-preview"] > p code').innerText();
       const nativePreview = JSON.parse(await page.locator('[data-testid="methods-version-preview"] pre').textContent());
@@ -307,6 +353,9 @@ print(json.dumps({'value':{'method_registry':{'profile':p,'receipt_ids':[],'sele
       await page.getByRole("button", { name: "Accept new version into library", exact: true }).click(); await page.locator('[data-testid="methods-accepted"]').waitFor();
       nativeReceiptId = await page.locator('[data-testid="methods-accepted"] > p code').innerText();
       const read = await native("POST", "/api/methods", { operation: "read", receipt_id: nativeReceiptId }); assert.equal(read.row_drift.matches, true);
+      nativeReceiptJson = read.receipt_json;
+      assert.equal(typeof nativeReceiptJson, "string", "Native immutable receipt must expose its exact JSON bytes");
+      nativeReceipts.push({ stage: "accepted_before_negative_overwrite", result: read });
       assert.deepEqual(read.receipt.packet.entities.find(row => row.id === initialDefinition.id), initialDefinition);
       assert.deepEqual(read.receipt.packet.entities.find(row => row.id === nativeVersionId).attrs.retained_unknown, { yes: true });
       const produced = read.receipt.packet.claims.filter(row => row.predicate === profile.vocabulary.predicates.produced_by_method_version);
@@ -316,10 +365,16 @@ print(json.dumps({'value':{'method_registry':{'profile':p,'receipt_ids':[],'sele
 d=json.load(sys.stdin);p=json.loads(d['profile_json']);edited=json.loads(d['edited_profile_json']);old=next(e for e in p['entities'] if e['id']==d['old_id']);new=next(e for e in edited['entities'] if e['id']==d['new_id']);old['attrs']=new['attrs'];print(json.dumps(p,ensure_ascii=False))`], {
         input: JSON.stringify({ profile_json: catalogBefore.profiles.find(row => row.id === record.id).profile_json, edited_profile_json: nativePreview.profile_json, old_id: initialDefinition.id, new_id: nativeVersionId }), encoding: "utf8" });
       assert.equal(tampered.status, 0, tampered.stderr);
-      const rejected = await fetch(nativeBase + "/api/methods", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ operation: "profile_preview", profile_json: tampered.stdout, receipt_ids: [], target: "synthetic/UI/native-methods", actor: "synthetic-owner", known_at: "2026-10-05T11:01:00Z" }) });
+      const rejectedRequest = JSON.stringify({ operation: "profile_preview", profile_json: tampered.stdout, receipt_ids: [], target: "synthetic/UI/native-methods", actor: "synthetic-owner", known_at: "2026-10-05T11:01:00Z" });
+      const rejected = await fetch(nativeBase + "/api/methods", { method: "POST", headers: { "Content-Type": "application/json" }, body: rejectedRequest });
+      const rejectedRaw = await rejected.text();
+      nativeResponses.push({ source: "native_negative_verification", method: "POST", path: "/api/methods", command: "profile_preview", status: rejected.status,
+        request_raw: rejectedRequest, request_sha256: createHash("sha256").update(rejectedRequest).digest("hex"), raw: rejectedRaw, sha256: createHash("sha256").update(rejectedRaw).digest("hex") });
       assert.equal(rejected.ok, false, "Existing immutable definition under original ID must be rejected at preview");
-      assert.match((await rejected.json()).error.message, /immutable|new version/i);
+      assert.match(JSON.parse(rejectedRaw).error.message, /immutable|new version/i);
       const originalAgain = await native("POST", "/api/methods", { operation: "read", receipt_id: nativeReceiptId }); assert.equal(originalAgain.row_drift.matches, true);
+      assert.equal(originalAgain.receipt_json, nativeReceiptJson, "Rejected overwrite must leave the entire native receipt unchanged");
+      nativeReceipts.push({ stage: "after_rejected_immutable_overwrite", result: originalAgain });
       assert.deepEqual(originalAgain.receipt.packet.entities.find(row => row.id === initialDefinition.id), initialDefinition);
       const selection = { ...profile.selection, members: [{ method_version_id: nativeVersionId, weight: -42 }] };
       await page.locator('[data-testid="methods-selection-json"]').fill(JSON.stringify(selection));
@@ -329,10 +384,20 @@ d=json.load(sys.stdin);p=json.loads(d['profile_json']);edited=json.loads(d['edit
       assert.deepEqual(config.context_execution.method_registry.receipt_ids, [nativeReceiptId]); assert.deepEqual(config.context_execution.graph_reply, { mode: "off", untouched: true });
       assert.deepEqual(config.context_execution.method_registry.preserve, { sibling: "Żółć", native_float: 1 });
       const settings = await native("POST", "/api/methods", { operation: "chat_settings" }); assert.match(settings.context_execution_json, /"native_float"\s*:\s*1\.0/);
+      await page.getByRole("button", { name: "Load graph", exact: true }).click();
+      await page.locator(`[data-entity-id="${nativeVersionId}"]`).waitFor();
+      await page.locator(`[data-entity-id="${nativeVersionId}"] button`).click();
+      await page.getByRole("button", { name: "Results from this version", exact: true }).click();
+      assert.equal(await page.locator('[data-testid="methods-result"]').count(), 0, "Publishing/selecting a new version must not reassign older executed results");
+      await page.locator(`[data-entity-id="${initialDefinition.id}"] button`).click();
+      await page.getByRole("button", { name: "Results from this version", exact: true }).click();
+      assert.equal(await page.locator('[data-testid="methods-result"]').count(), 3);
     });
     await check("actual native restart reads receipt and selected frozen profile without rewriting executed results", async () => {
       await stopChild(nativeServer); nativeServer = undefined; await startNative();
       const read = await native("POST", "/api/methods", { operation: "read", receipt_id: nativeReceiptId }); assert.equal(read.row_drift.matches, true);
+      assert.equal(read.receipt_json, nativeReceiptJson, "Server restart must retain the entire immutable receipt byte-for-byte");
+      nativeReceipts.push({ stage: "after_server_restart", result: read });
       const config = await native("GET", "/api/config"), registry = config.context_execution.method_registry;
       assert.equal(registry.profile.selection.members[0].method_version_id, nativeVersionId);
       const catalog = await native("POST", "/api/methods", { operation: "catalog" }), row = catalog.profiles.find(row => row.id === record.id);
@@ -349,7 +414,8 @@ d=json.load(sys.stdin);p=json.loads(d['profile_json']);edited=json.loads(d['edit
     for (const name of ["results.json", "server.log"]) assert.equal(existsSync(path.join(evidence, name)), false, "Do not overwrite prior evidence");
     writeFileSync(path.join(evidence, "server.log"), nativeLog);
     writeFileSync(path.join(evidence, "results.json"), JSON.stringify({ groups, expected, nativeMode, externalRequests: external, pageErrors: errors,
-      modelDispatchCommands: calls.filter(row => ["prepare", "bind"].includes(row.body?.operation)), calls, nativeLog }, null, 2));
+      modelDispatchCommands: calls.filter(row => ["prepare", "bind"].includes(row.body?.operation)), calls, nativeLog,
+      manifestBefore, manifestAfter: fileManifest(), nativeReceipts, nativeResponses }, null, 2));
   }
   if (nativeDir) rmSync(nativeDir, { recursive: true, force: true });
 }
