@@ -1,0 +1,200 @@
+{
+  "schema": "loom.runtime_profile_effective/1",
+  "domain": "graph_ingest",
+  "revision": 1,
+  "hash": "74c1008cc61d4b60363a54253dddc78252167c8613926794e7b79f5beed90312",
+  "is_builtin": true,
+  "values": {
+    "min_input_codepoints": 10,
+    "reindex_conversation_limit": 9999,
+    "entities": {
+      "array": "entities",
+      "name": "name",
+      "kind": "kind",
+      "relevance": "relevance",
+      "default_kind": "entity",
+      "default_relevance": 0.5,
+      "min_label_codepoints": 2,
+      "min_relevance": 0.3,
+      "predicate": "mentions"
+    },
+    "topics": {
+      "array": "topics",
+      "label": "label",
+      "confidence": "confidence",
+      "default_confidence": 0.5,
+      "min_confidence": 0.3,
+      "kind": "topic",
+      "lowercase": true,
+      "predicate": "tagged_with"
+    },
+    "relations": {
+      "array": "relations",
+      "subject": "subject",
+      "object": "object",
+      "predicate": "predicate",
+      "default_predicate": "related",
+      "weight": 0.7
+    },
+    "membership": {
+      "predicate": "part_of",
+      "weight": 0.3
+    }
+  },
+  "value_schema": {
+    "type": "object",
+    "properties": {
+      "min_input_codepoints": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "reindex_conversation_limit": {
+        "type": "integer",
+        "minimum": 0,
+        "description": "0 means unlimited; current default is 9999. Positive values are explicit selection presets."
+      },
+      "entities": {
+        "type": "object",
+        "properties": {
+          "array": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "relevance": {
+            "type": "string"
+          },
+          "default_kind": {
+            "type": "string"
+          },
+          "default_relevance": {
+            "type": "number"
+          },
+          "min_label_codepoints": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "min_relevance": {
+            "type": "number"
+          },
+          "predicate": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "array",
+          "name",
+          "kind",
+          "relevance",
+          "default_kind",
+          "default_relevance",
+          "min_label_codepoints",
+          "min_relevance",
+          "predicate"
+        ],
+        "additionalProperties": false
+      },
+      "topics": {
+        "type": "object",
+        "properties": {
+          "array": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "confidence": {
+            "type": "string"
+          },
+          "default_confidence": {
+            "type": "number"
+          },
+          "min_confidence": {
+            "type": "number"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "lowercase": {
+            "type": "boolean"
+          },
+          "predicate": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "array",
+          "label",
+          "confidence",
+          "default_confidence",
+          "min_confidence",
+          "kind",
+          "lowercase",
+          "predicate"
+        ],
+        "additionalProperties": false
+      },
+      "relations": {
+        "type": "object",
+        "properties": {
+          "array": {
+            "type": "string"
+          },
+          "subject": {
+            "type": "string"
+          },
+          "object": {
+            "type": "string"
+          },
+          "predicate": {
+            "type": "string"
+          },
+          "default_predicate": {
+            "type": "string"
+          },
+          "weight": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "array",
+          "subject",
+          "object",
+          "predicate",
+          "default_predicate",
+          "weight"
+        ],
+        "additionalProperties": false
+      },
+      "membership": {
+        "type": "object",
+        "properties": {
+          "predicate": {
+            "type": "string"
+          },
+          "weight": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "predicate",
+          "weight"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "required": [
+      "min_input_codepoints",
+      "reindex_conversation_limit",
+      "entities",
+      "topics",
+      "relations",
+      "membership"
+    ],
+    "additionalProperties": false
+  }
+}

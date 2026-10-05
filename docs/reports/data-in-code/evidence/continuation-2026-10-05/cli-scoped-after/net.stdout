@@ -1,0 +1,73 @@
+{
+  "schema": "loom.runtime_profile_effective/1",
+  "domain": "net",
+  "revision": 1,
+  "hash": "af35eeae915e1ee46030e1b10fa2cc37ba16b38665b5ad48e06dd6e8ed4e6346",
+  "is_builtin": true,
+  "values": {
+    "default_timeout_ms": 30000,
+    "follow_redirects": true,
+    "keep_alive": false,
+    "ca_environment": [
+      "SSL_CERT_FILE",
+      "REQUESTS_CA_BUNDLE"
+    ],
+    "proxy_environment": {
+      "https": [
+        "HTTPS_PROXY"
+      ]
+    }
+  },
+  "value_schema": {
+    "type": "object",
+    "required": [
+      "default_timeout_ms",
+      "follow_redirects",
+      "keep_alive",
+      "ca_environment",
+      "proxy_environment"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "default_timeout_ms": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 2147483647,
+        "x-setting": "/default_timeout_ms",
+        "x-unit": "milliseconds",
+        "x-consumer": "HttpRequest and default transport"
+      },
+      "follow_redirects": {
+        "type": "boolean",
+        "x-setting": "/follow_redirects",
+        "x-consumer": "default transport"
+      },
+      "keep_alive": {
+        "type": "boolean",
+        "x-setting": "/keep_alive",
+        "x-consumer": "default transport"
+      },
+      "ca_environment": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "minLength": 1
+        },
+        "x-setting": "/ca_environment",
+        "x-consumer": "default TLS adapter"
+      },
+      "proxy_environment": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "x-setting": "/proxy_environment",
+        "x-consumer": "default transport"
+      }
+    }
+  }
+}

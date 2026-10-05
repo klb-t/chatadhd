@@ -1,0 +1,17 @@
+{
+  "schema": "loom.profile_capture_negative/1",
+  "actual_exit": 1,
+  "failed_cli_exit": 2,
+  "reason": "Evidence harness used unsupported --version instead of the native version command; no product code changed.",
+  "source_ref": "2eb65d475cb6671dbe6388c53bb63eec74ea92a8",
+  "command": [
+    "python3",
+    "capture_cli_profiles.py",
+    "--binary",
+    "<before-cli>",
+    "--output",
+    "<fresh-output>",
+    "--source-ref",
+    "2eb65d475cb6671dbe6388c53bb63eec74ea92a8"
+  ]
+}

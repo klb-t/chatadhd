@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/continuation-2026-10-05/capture_cli_profiles.py", line 92, in <module>
+    main()
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/continuation-2026-10-05/capture_cli_profiles.py", line 79, in main
+    result = capture(args.binary.resolve(), args.output, args.source_ref)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/continuation-2026-10-05/capture_cli_profiles.py", line 34, in capture
+    version_output = run(["--version"], "version")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/continuation-2026-10-05/capture_cli_profiles.py", line 30, in run
+    raise RuntimeError(f"{filename}: exit {result.returncode}")
+RuntimeError: version: exit 2
