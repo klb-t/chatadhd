@@ -1,0 +1,9 @@
+{
+  "head_at_end": "1100455b012108bc0965a545b38dfc422488e894",
+  "functional_paths_changed_since_start": [],
+  "public_policy_unchanged": true,
+  "binaries_unchanged": true,
+  "ctest_exit_code": 0,
+  "elapsed_seconds": "127",
+  "gate_green": true
+}

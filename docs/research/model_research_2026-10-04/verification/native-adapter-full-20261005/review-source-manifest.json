@@ -1,0 +1,23 @@
+{
+  "second_negative": {
+    "sha256": "70bd2b84b51efdd6644acbcacb235a22ecaea2cd4b3ebc1faf3e1f445ce6d4db",
+    "source": "negative-source-70bd2b84/loom/tools/structure/programme_native_results_v1.py",
+    "recovery": "Inverse of only fresh-instance assignment/comment; matches independently recorded original probe source hash"
+  },
+  "accepted_candidate": {
+    "files": {
+      "loom/tools/structure/programme_native_results_v1.py": "f92da5c47bc5478d401a3afb1631d31a1f77be100279dddb794458915a75f8f2",
+      "loom/tools/structure/test_programme_native_results_v1.py": "6eb24bdee15f77d34a316f3d8c2b15dd121aa48f8719c06fbc09353e089bfcce",
+      "docs/research/model_research_2026-10-04/native-results-policy.json": "c22682e1df1910fe220503337666543212a89cc45a7c0f180a331220f0717503"
+    }
+  },
+  "real_paid_artifacts_read": false,
+  "first_negative": {
+    "source": "negative-source-00618f64/loom/tools/structure/programme_native_results_v1.py",
+    "sha256": "00618f64bf1bc6e028b5d3e4b096df3de462513de03091c5566bfec87eda92f5",
+    "recovery": "Inverse only later recorded edits; complete source SHA256 matches initial probe. Effective caller policy canonical snapshots recovered by removing later schema/reference additions and matching both original recorded canonical hashes",
+    "real_effective_policy_canonical_sha256": "9a8035b1f9d703c8751af14419eb83edd7f9865bad36837dfb3549e2bc285c0e",
+    "wrong_native_instance_effective_policy_canonical_sha256": "b532b532404044d4ce15ad0f117c18d6c17ec64115f7fe9868f9ca74923f80b6",
+    "initial_raw_policy_file_bytes_claimed": false
+  }
+}
