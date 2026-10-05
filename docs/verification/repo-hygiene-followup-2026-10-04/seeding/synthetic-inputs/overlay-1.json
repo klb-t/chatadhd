@@ -1,0 +1,64 @@
+{
+  "dimensions": [
+    {
+      "id": "all",
+      "predict": true,
+      "rows": {
+        "$op": "items",
+        "value": {
+          "$op": "get",
+          "value": {
+            "$ref": "project"
+          },
+          "key": "tags",
+          "default": []
+        }
+      },
+      "label": {
+        "$op": "get",
+        "value": {
+          "$ref": "item"
+        },
+        "key": "label",
+        "default": null
+      },
+      "properties": {
+        "$op": "merge",
+        "items": [
+          {
+            "expected_properties": [
+              {
+                "relation": "has_synthetic_tag",
+                "label": {
+                  "$ref": "label"
+                },
+                "requires_validation": true
+              }
+            ]
+          },
+          {
+            "$op": "source_record",
+            "item": {
+              "$ref": "item"
+            },
+            "path": {
+              "$op": "format",
+              "template": "projects/{project}/tags/{key}",
+              "values": {
+                "project": {
+                  "$ref": "project/id"
+                },
+                "key": {
+                  "$ref": "key"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "extensions": {
+    "input_class": "synthetic_only"
+  }
+}

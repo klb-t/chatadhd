@@ -1,0 +1,21 @@
+{
+  "version": "synthetic-custom-dimension-demo-v1",
+  "methods": [
+    "partial_mapping",
+    "most_frequent",
+    "premise_filtered_frequency",
+    "random"
+  ],
+  "relation_weights": {
+    "all": 1.0
+  },
+  "minimum_preserved_edges": 1,
+  "candidate_budgets": [
+    2
+  ],
+  "random_seeds": [
+    7,
+    8
+  ],
+  "include_no_removal_controls": true
+}

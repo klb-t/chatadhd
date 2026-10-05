@@ -1,0 +1,47 @@
+{
+  "schema": "loom.verification.seeding_frozen_cli_replay/1",
+  "synthetic_only": true,
+  "cases": 6,
+  "dimensions": [
+    "all"
+  ],
+  "selected_methods": [
+    "partial_mapping",
+    "most_frequent",
+    "premise_filtered_frequency",
+    "random"
+  ],
+  "selected_budgets": [
+    2
+  ],
+  "selected_random_seeds": [
+    7,
+    8
+  ],
+  "typed_score_groups": 4,
+  "ambiguous_score_aliases": [
+    "all"
+  ],
+  "replayed_score_groups_exact": true,
+  "replayed_module_hashes_exact": true,
+  "replayed_effective_profile_hash_exact": true,
+  "canonical_graph_mutated": false,
+  "paid_api_calls": 0,
+  "raw_json_files": [
+    {
+      "utf8_path": "synthetic-new-run/predictions.json",
+      "utf8_sha256": "03f066dd0a9eb403e873001394d6c30e2fcd377d45deb2662e3f2704907bafe9",
+      "runtime_gzip_sha256": "14d4c584d22a35dc67d40c34b1d79d334da9044ec02bd48323c05c12d5a046c5",
+      "runtime_gzip_bytes": 3566,
+      "conversion": "exact gzip decompression, JSON bytes unchanged"
+    },
+    {
+      "utf8_path": "synthetic-new-run/results.json",
+      "utf8_sha256": "b70775e9caf12b36b4fa59db52d25db65cf6fb98c148bd323831a124fafb7a47",
+      "runtime_gzip_sha256": "da364cec452993409e40e90642d4fa8436ecec0c4220fd773c2b5781e9b0de1a",
+      "runtime_gzip_bytes": 2495,
+      "conversion": "exact gzip decompression, JSON bytes unchanged"
+    }
+  ],
+  "replay_command": "python3 synthetic-new-run/modules_frozen/prototype.py --output <new-directory> --fixture synthetic-new-run/fixture_frozen.json --policy synthetic-new-run/policy_frozen.json --protocol synthetic-new-run/protocol_frozen.md --profile synthetic-new-run/profile_frozen.json --profile-overlay synthetic-new-run/profile_overlays/000.json --profile-overlay synthetic-new-run/profile_overlays/001.json"
+}
