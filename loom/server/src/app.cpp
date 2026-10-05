@@ -765,11 +765,11 @@ void App::route_provenance_events_tasks() {
 // ── Logs & misc ────────────────────────────────────────────────────────
 
 void App::route_logs_misc() {
-  svr_.Get("/api/logs", [this](const httplib::Request& req, httplib::Response& res) {
+  svr_.Get("/api/logs", [](const httplib::Request& req, httplib::Response& res) {
     int max_lines = req.has_param("max_lines") ? std::atoi(req.get_param_value("max_lines").c_str()) : 200;
     send_loom(res, loom_get_logs(max_lines));
   });
-  svr_.Get("/api/version", [this](const httplib::Request&, httplib::Response& res) {
+  svr_.Get("/api/version", [](const httplib::Request&, httplib::Response& res) {
     send_loom(res, loom_version());
   });
   svr_.Get("/api/info", [this](const httplib::Request&, httplib::Response& res) {
