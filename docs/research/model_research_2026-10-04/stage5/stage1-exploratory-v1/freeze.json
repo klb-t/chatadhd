@@ -1,0 +1,69 @@
+{
+  "artifact_files": {
+    "README.md": {
+      "bytes": 4006,
+      "sha256": "4a1519b9168c318ff092babd2ba8af891799ec194d224047060c2a9f2e23ed70"
+    },
+    "default-protocol-selection.json": {
+      "bytes": 11335,
+      "sha256": "b037a79b3a18f2cf9b34127854e4f17216c476236092583e6faadfd9b3544187"
+    },
+    "derivation-receipt.json": {
+      "bytes": 7132,
+      "sha256": "af08aa895d4386424c1b3e36479e0c16b7884aff36797276fb015f93c98699bc"
+    },
+    "neutral-summary.json": {
+      "bytes": 9203,
+      "sha256": "d812f2a9d454553737b25922954290415d961aefd7573e870642bc46e3ac5cef"
+    },
+    "protocol.json": {
+      "bytes": 10065,
+      "sha256": "8b624f81354ae9e3dd7df1c8cda3d38e67b1b402cd954d98ceb80a60bf22cb31"
+    },
+    "selection.json": {
+      "bytes": 10250,
+      "sha256": "57c923f27b8d13bb7a6f2ae48b4db8803ad37d0e1fe36c14ac02c9e2292d48de"
+    }
+  },
+  "code_or_test_mutations": false,
+  "default_exclusion_payload_sha256": "1480bd2758effd63ec2dc861103b1f616bed61e081bd01037bfc270a7dfc21ed",
+  "default_protocol_unchanged_sha256": "3810a869ea29a79334e2f889f6c36d980c5d7ec1a4c66d56407977be94fc3742",
+  "eligibility_thresholds": [],
+  "frozen_at_utc": "2026-10-05T11:37:05.282814+00:00",
+  "future_execution_quantities_frozen": false,
+  "new_corpus": {
+    "authored": false,
+    "case_manifest_sha256": null,
+    "inspected": false,
+    "label_manifest_sha256": null
+  },
+  "new_model_calls": 0,
+  "no_quota": true,
+  "post_stage1_choice_disclosed": true,
+  "private_records_read": false,
+  "protocol_version": "stage5-stage1-source-commitment-exploratory-three-criteria-2026-10-05-v1",
+  "schema": "loom.stage5.exploratory_selection_freeze/1",
+  "selected_configuration_ids": [
+    "j_active",
+    "j_directed"
+  ],
+  "selection_payload_sha256": "4acdce73aa17436639338b3e47f1ef5c3f3367c6276355669522b93485d02ebf",
+  "selector_sha256": "b376a13dc443f65609bcb397243e00ab74d9f22807b4f93bb96f5a930c4eaa3a",
+  "source_files_sha256": {
+    "docs/research/model_research_2026-10-04/programme-actual/stage1-final-20261005-v2/NORMALIZED.json": "5bf76c634da05a287730c6bdbe35b7cf3654c40b8078ad8c6cbc8b4094eb0875",
+    "docs/research/model_research_2026-10-04/programme-actual/stage1-final-20261005-v2/REQUESTS.json": "9c35cd3803575923d1c0338369e76151d06169911cac65464c5dc6c50e5f80d8",
+    "docs/research/model_research_2026-10-04/programme-actual/stage1-final-20261005-v2/RESPONSES.json": "cc2f2e24452f8107d32f7661c88ae558bfc51cb9fff81bb58a607474b1d736ee",
+    "docs/research/model_research_2026-10-04/programme-actual/stage1-final-20261005-v2/SCORE.json": "926169a54b53ef6c7c963f6ae1edda3c63aa8de76dca5e95ff37ea0e34b35fca",
+    "docs/research/model_research_2026-10-04/stage5_protocol.json": "3810a869ea29a79334e2f889f6c36d980c5d7ec1a4c66d56407977be94fc3742",
+    "docs/research/model_research_2026-10-04/study/prepared/freeze.json": "c6fc3495d09094a7ccb62766efc4abf1b5cc672475aad380ccbbabd4cf9cff6a",
+    "docs/research/model_research_2026-10-04/study/prepared/plan.json": "4862239755d4047327ce354e43eafadae6e625fb11cf4c7b11533751d263ab2f",
+    "docs/research/w3_directed_commitment_v1/PROTOCOL.md": "72b569a3d946509a3186c94f6fd06196b685ac2685a703fc61cac371b0bad963",
+    "loom/tests/fixtures/research/w3_directed_commitment_v1/gold_dev.json": "417e03f56e10608ab9daeec3bbdedef177b41c134ca363ca0200c070853617f7",
+    "loom/tests/fixtures/research/w3_directed_commitment_v1/inputs_dev.json": "80e16e7bf7a360b809cda9c994bc0516cce14c32a7839b76f2a88cdd3224e996",
+    "loom/tools/structure/analysis_optimization_v1.py": "b7c2ce5541c0f3fd7f0d647074105fd47bc414d287267ec939598b952b1e1a8d",
+    "loom/tools/structure/graph_panel_live.py": "31ad2a56e69dc472ef686c257953297a28465a16aa4eb903e29aa829c0012c16",
+    "loom/tools/structure/programme_study_results_v1.py": "c0d14e87a668149e2ba3df2fe8e2a625d962f97618b82ebe9096e763af5711f6",
+    "loom/tools/structure/stage5_selection_v1.py": "b376a13dc443f65609bcb397243e00ab74d9f22807b4f93bb96f5a930c4eaa3a"
+  },
+  "status": "selection_frozen_before_new_corpus;execution_not_planned"
+}

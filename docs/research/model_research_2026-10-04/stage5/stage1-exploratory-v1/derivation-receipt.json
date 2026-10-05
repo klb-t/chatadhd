@@ -1,0 +1,146 @@
+{
+  "code_or_tests_changed": false,
+  "comparison_identity": {
+    "dataset_sha256": "80e16e7bf7a360b809cda9c994bc0516cce14c32a7839b76f2a88cdd3224e996",
+    "planned_query_set_sha256": "35f22a27169408b04fe608eab2266641f36b7478e59f998bb0bb709686dccb93",
+    "rubric_sha256": "417e03f56e10608ab9daeec3bbdedef177b41c134ca363ca0200c070853617f7",
+    "task_id": "source_view.latest_active_commitment/1;explicit_source_commitment_ternary"
+  },
+  "configuration_derivations": [
+    {
+      "available": 48,
+      "billed_total_usd": "0.0098524",
+      "configuration_id": "g_brief_t0",
+      "correct": 32,
+      "operation_id_set_sha256": "0bd45532e8e2d191d3efb7c2d27b744d7f4b84815810d8fbabb07d67addf38ab",
+      "physical_execution_arms": [
+        "g_brief_t0"
+      ],
+      "physical_first_attempts": 48,
+      "planned_judgments": 48
+    },
+    {
+      "available": 48,
+      "billed_total_usd": "0.0098524",
+      "configuration_id": "g_brief_t03",
+      "correct": 33,
+      "operation_id_set_sha256": "da40c37bcdaf3035db7f4ac61a3ed7d0039143eb5dff45a4a8054c96401ed762",
+      "physical_execution_arms": [
+        "g_brief_t03"
+      ],
+      "physical_first_attempts": 48,
+      "planned_judgments": 48
+    },
+    {
+      "available": 48,
+      "billed_total_usd": "0.0118812",
+      "configuration_id": "g_rules_t0",
+      "correct": 37,
+      "operation_id_set_sha256": "f86b25e88debd2cf5f9534ea3cdacfedb1efd39be8e31fd58971642735656201",
+      "physical_execution_arms": [
+        "g_rules_t0"
+      ],
+      "physical_first_attempts": 48,
+      "planned_judgments": 48
+    },
+    {
+      "available": 48,
+      "billed_total_usd": "0.0118796",
+      "configuration_id": "g_rules_t03",
+      "correct": 38,
+      "operation_id_set_sha256": "fbe9c6e73396a98c9c131e7787f6011d53a154c0b483a6c567a35ecec09323f9",
+      "physical_execution_arms": [
+        "g_rules_t03"
+      ],
+      "physical_first_attempts": 48,
+      "planned_judgments": 48
+    },
+    {
+      "available": 48,
+      "billed_total_usd": "0.001699908",
+      "configuration_id": "j_active",
+      "correct": 40,
+      "operation_id_set_sha256": "3b9e0fa52815bb6fe2f7d4dcb6eee69313a3b07c63fd341733838c5a5cb100f8",
+      "physical_execution_arms": [
+        "j_active"
+      ],
+      "physical_first_attempts": 48,
+      "planned_judgments": 48
+    },
+    {
+      "available": 48,
+      "billed_total_usd": "0.001899492",
+      "configuration_id": "j_directed",
+      "correct": 43,
+      "operation_id_set_sha256": "5ebebd6f01601e7911d6c6bc06ba6d0d631006c8380af0acb547016cc317f0ba",
+      "physical_execution_arms": [
+        "j_directed"
+      ],
+      "physical_first_attempts": 48,
+      "planned_judgments": 48
+    },
+    {
+      "available": 48,
+      "billed_total_usd": "0.002117556",
+      "configuration_id": "j_roles",
+      "correct": 43,
+      "operation_id_set_sha256": "d90ba1e5afac42a1ab9e0e080322ff03cd1bbbb4bc378109d6abd68130648400",
+      "physical_execution_arms": [
+        "j_roles"
+      ],
+      "physical_first_attempts": 48,
+      "planned_judgments": 48
+    },
+    {
+      "available": 48,
+      "billed_total_usd": "0.003113544",
+      "configuration_id": "j_split",
+      "correct": 43,
+      "operation_id_set_sha256": "2b947e23c93abd9fe191108e6a1dc01f59034245171253a2c03d21a07bf25b3e",
+      "physical_execution_arms": [
+        "j_split_q01",
+        "j_split_q02"
+      ],
+      "physical_first_attempts": 96,
+      "planned_judgments": 48
+    }
+  ],
+  "dataset_hash_definition": "SHA-256 of exact original inputs_dev.json bytes.",
+  "default_protocol_preserved": true,
+  "default_stage1_ineligible_records": 8,
+  "independent_public_projection_recompile_matches_all_eight_score_reports": true,
+  "new_corpus_authored_or_inspected": false,
+  "new_model_calls": 0,
+  "original_prepared_at": "2026-10-04T14:32:05.642541Z",
+  "planned_query_set_hash_definition": "SHA-256 of UTF-8 canonical JSON sorted array of the 48 exact query IDs from original inputs_dev.judgment_queries; no newline; ensure_ascii=False, sort_keys=True, separators=(comma,colon). Gold query identity set must match exactly.",
+  "post_stage1_exploratory_choice": true,
+  "private_records_read": false,
+  "public_billing_verification": "Every normalized operation is completed, credit billed, billing_verified and billing_replay_verified, response-ledger bound and exact sent-request-capture verified. Exact actual/reported/ledger/projected usage/generation costs agree. This review reads public projections only, not private captures or an invoice.",
+  "public_rows": 432,
+  "reduced_protocol_eligible_records": 8,
+  "reduced_protocol_selected_configuration_ids": [
+    "j_active",
+    "j_directed"
+  ],
+  "rubric_hash_definition": "SHA-256 of exact original gold_dev.json bytes, including source-view policy and labels. Frozen compiler/scorer/prompt hashes separately pinned in source_files_sha256 and original preparation freeze.",
+  "schema": "loom.stage5.public_derivation_receipt/1",
+  "source_files_sha256": {
+    "docs/research/model_research_2026-10-04/programme-actual/stage1-final-20261005-v2/NORMALIZED.json": "5bf76c634da05a287730c6bdbe35b7cf3654c40b8078ad8c6cbc8b4094eb0875",
+    "docs/research/model_research_2026-10-04/programme-actual/stage1-final-20261005-v2/REQUESTS.json": "9c35cd3803575923d1c0338369e76151d06169911cac65464c5dc6c50e5f80d8",
+    "docs/research/model_research_2026-10-04/programme-actual/stage1-final-20261005-v2/RESPONSES.json": "cc2f2e24452f8107d32f7661c88ae558bfc51cb9fff81bb58a607474b1d736ee",
+    "docs/research/model_research_2026-10-04/programme-actual/stage1-final-20261005-v2/SCORE.json": "926169a54b53ef6c7c963f6ae1edda3c63aa8de76dca5e95ff37ea0e34b35fca",
+    "docs/research/model_research_2026-10-04/stage5_protocol.json": "3810a869ea29a79334e2f889f6c36d980c5d7ec1a4c66d56407977be94fc3742",
+    "docs/research/model_research_2026-10-04/study/prepared/freeze.json": "c6fc3495d09094a7ccb62766efc4abf1b5cc672475aad380ccbbabd4cf9cff6a",
+    "docs/research/model_research_2026-10-04/study/prepared/plan.json": "4862239755d4047327ce354e43eafadae6e625fb11cf4c7b11533751d263ab2f",
+    "docs/research/w3_directed_commitment_v1/PROTOCOL.md": "72b569a3d946509a3186c94f6fd06196b685ac2685a703fc61cac371b0bad963",
+    "loom/tests/fixtures/research/w3_directed_commitment_v1/gold_dev.json": "417e03f56e10608ab9daeec3bbdedef177b41c134ca363ca0200c070853617f7",
+    "loom/tests/fixtures/research/w3_directed_commitment_v1/inputs_dev.json": "80e16e7bf7a360b809cda9c994bc0516cce14c32a7839b76f2a88cdd3224e996",
+    "loom/tools/structure/analysis_optimization_v1.py": "b7c2ce5541c0f3fd7f0d647074105fd47bc414d287267ec939598b952b1e1a8d",
+    "loom/tools/structure/graph_panel_live.py": "31ad2a56e69dc472ef686c257953297a28465a16aa4eb903e29aa829c0012c16",
+    "loom/tools/structure/programme_study_results_v1.py": "c0d14e87a668149e2ba3df2fe8e2a625d962f97618b82ebe9096e763af5711f6",
+    "loom/tools/structure/stage5_selection_v1.py": "b376a13dc443f65609bcb397243e00ab74d9f22807b4f93bb96f5a930c4eaa3a"
+  },
+  "total_provider_reported_first_attempt_usd": "0.052296100",
+  "unique_bound_operation_ids": 432,
+  "unique_provider_generation_ids": 432
+}
