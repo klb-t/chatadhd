@@ -36,3 +36,23 @@ partial paused-history loss, bootstrap, resume and cross-stage negatives.
 Final runner SHA256:
 `dd74b3d4197c3d274f780a1b324b56d9d579b8df905c512282e7f33cd25f6b97`.
 All transports are fabricated; no real account or paid evidence is included.
+
+## Owner STOP checkpoint — 2026-10-05
+
+`old-strong-repetitions-close-20261005-v1.zip` preserves the complete 8 old
+Stage3 and 4 old Stage4 first responses, actual billing projections, original
+whole-row digest negatives, explicitly derived scoring projections, unchanged
+source dependencies and primary manual reviews. Supplementary Stage3 peer
+semantic review and graph-claim export are unfinished. No new calls were made
+at close. See its sidecar manifest/README for 46 payloads and 48 ZIP entries.
+
+`new-corpus-precollection-corrections-20261005-v1.zip` preserves all before/final
+corpus drafts and independent source reviews: 420 ZIP entries, SHA256
+`46e55ff2d6e33dd4666585f88b41f04ac7e0b6041b2fc33353e203c00645f82e`.
+The three source ambiguities were corrected before any new-cohort collection.
+Those 210 planned calls were never made. Internal manifest/verification files
+provide full byte-preservation evidence.
+
+CRC, relative-path safety and literal credential exclusion passed for both
+ZIPs; safe aggregate evidence is in `CLOSE_CAPSULE_CHECKS_20261005.json`.
+These full negative and historical artifacts stay on this archive branch.

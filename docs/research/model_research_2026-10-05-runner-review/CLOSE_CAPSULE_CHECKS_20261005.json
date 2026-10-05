@@ -1,0 +1,22 @@
+{
+  "schema": "loom.research_capsule_close_checks/1",
+  "new_paid_calls": 0,
+  "checks": [
+    {
+      "file": "old-strong-repetitions-close-20261005-v1.zip",
+      "bytes": 583244,
+      "sha256": "0a9c03b7771710f41db87264b516ecef881dccad26c146dae18431c79c89906e",
+      "members": 48,
+      "crc_pass": true,
+      "literal_key_excluded": true
+    },
+    {
+      "file": "new-corpus-precollection-corrections-20261005-v1.zip",
+      "bytes": 1361877,
+      "sha256": "46e55ff2d6e33dd4666585f88b41f04ac7e0b6041b2fc33353e203c00645f82e",
+      "members": 420,
+      "crc_pass": true,
+      "literal_key_excluded": true
+    }
+  ]
+}

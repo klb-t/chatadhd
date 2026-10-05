@@ -1,0 +1,284 @@
+{
+  "schema": "loom.research_preservation_capsule/1",
+  "capsule_id": "old-strong-repetitions-close-20261005-v1",
+  "created_at_utc": "2026-10-05T15:05:49.660412+00:00",
+  "purpose": "Preserve existing historical strong-model repetition outputs, primary reviews, projections and row-digest/peer evidence at owner STOP.",
+  "status": "historical_results_preserved_no_new_collection",
+  "no_payload_modified": true,
+  "new_model_calls": 0,
+  "network_calls": 0,
+  "new_tests_executed": 0,
+  "source_root_in_zip": "repository-relative",
+  "source_groups": [
+    "old-stage3-repetitions-v1",
+    "old-stage4-repetitions-v1",
+    "old-stage3-results-v1",
+    "old-stage4-results-v1",
+    "old-stage3-source-review-v1.json",
+    "old-stage3-source-review-v1.md",
+    "old-stage4-source-review-v1.json",
+    "old-stage4-source-review-v1.md",
+    "legacy-row-digest-projection-v1",
+    "old-strong-repetition-row-digest-supplement-v1",
+    "old-strong-repetition-peer-v1"
+  ],
+  "excluded_path_patterns": [
+    "__pycache__",
+    "*.pyc",
+    "*.pyo",
+    "*draft*"
+  ],
+  "excluded_paths": [],
+  "payload_file_count": 46,
+  "payload_bytes": 4206624,
+  "payloads": [
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/legacy-row-digest-projection-v1/ACTUAL_VERIFICATION.json",
+      "bytes": 28500,
+      "sha256": "2bef616fdd6a5765664e3e11d44af06f25b9d0976ac2973792a50696411f9825"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/legacy-row-digest-projection-v1/FAKE_VERIFICATION.json",
+      "bytes": 574,
+      "sha256": "43b67873e382f81d981d380b29ccfde08326d6dfc1ce0e0c6f54dd7f895d3803"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/legacy-row-digest-projection-v1/README.md",
+      "bytes": 3914,
+      "sha256": "9088635712239e5a4dd018b85750c353445a5a0946e553e5f17ab5ed67309ede"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/legacy-row-digest-projection-v1/project.py",
+      "bytes": 9353,
+      "sha256": "ed8a9e3ae3e651810784322cadefbbeebe1096da8def42438fa0647fff8b0034"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/legacy-row-digest-projection-v1/verify_fake.py",
+      "bytes": 2429,
+      "sha256": "cc7f42a882d8ef355c8b6611ad6bd1c21f663b34cecb9218c2af6b252d9e033b"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-stage3-repetitions-v1/README.md",
+      "bytes": 1241,
+      "sha256": "061d11dbbd353a07ad8f41e2f884ad88eca283222d3aa3d2f48658a36335ace2"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-stage3-repetitions-v1/cost-plan-v1.json",
+      "bytes": 7397,
+      "sha256": "ee2f200cc23b82e1ee950bebb52bf0f7adb7a0f549c878d3808725c06a1c7c36"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-stage3-repetitions-v1/google_gemini-3.1-pro-preview-endpoints.json",
+      "bytes": 8814,
+      "sha256": "0674ab0bd3a4a6be691e8cfad59b5561147c0a53aaab76d8f2e0cb77e0f3bea9"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-stage3-repetitions-v1/openai_gpt-6.1-sol-endpoints.json",
+      "bytes": 8896,
+      "sha256": "aeef79e683105ec42f55b8cb4458ce1cd7641e5d3381224e7ccc497cbad1a357"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-stage3-repetitions-v1/operator-policy.json",
+      "bytes": 9060,
+      "sha256": "b751c062320be3723a6556c02dbeacbf8588bc52a9b1655c4632d33e73d289ac"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-stage3-repetitions-v1/prepared/manifest.json",
+      "bytes": 9843,
+      "sha256": "497dcaf0c60f1b68f265251da242f11b9a07fe5c2af661c6c8151dc49cc51716"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-stage3-repetitions-v1/prepared/requests/0556426643262184ca9deb5e5bfb29655b72b66b1356c7dd4ec8c0f2fa32fed1.json",
+      "bytes": 12824,
+      "sha256": "0556426643262184ca9deb5e5bfb29655b72b66b1356c7dd4ec8c0f2fa32fed1"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-stage3-repetitions-v1/prepared/requests/4c22a257126b5178df531a9980c9e5abf225ad2e22e257c4efc1f0a2b72fd48c.json",
+      "bytes": 13000,
+      "sha256": "4c22a257126b5178df531a9980c9e5abf225ad2e22e257c4efc1f0a2b72fd48c"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-stage3-repetitions-v1/prepared/requests/972c2cde242bd085b39e88e7c8bb1207283655f8c2857b016817b0bd999e47c0.json",
+      "bytes": 12824,
+      "sha256": "972c2cde242bd085b39e88e7c8bb1207283655f8c2857b016817b0bd999e47c0"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-stage3-repetitions-v1/prepared/requests/a4d7f40a6051b31dfe9877772191b5b34e3cb295145892824b2fbcdfe6d5a8c5.json",
+      "bytes": 13000,
+      "sha256": "a4d7f40a6051b31dfe9877772191b5b34e3cb295145892824b2fbcdfe6d5a8c5"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-stage3-repetitions-v1/selection-source-crosswalk.json",
+      "bytes": 955,
+      "sha256": "f386c7908e1725c0ffc506127051a77c238a98675b3712f5f63c93379e1597c2"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-stage3-repetitions-v1/source-prepared.json",
+      "bytes": 327106,
+      "sha256": "36c52f8e8c87f93f9d54d9510eae6dcd096d05e773c0309943663fbc48a1d87f"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-stage3-results-v1/MECHANICAL_RESULTS.json",
+      "bytes": 288140,
+      "sha256": "f3d5863aa2b10bcf9b14ee5683a0a80eeefa47dfb669e2214230bac0c67c6d4b"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-stage3-results-v1/NORMALIZED.json",
+      "bytes": 171041,
+      "sha256": "d86810437c1b942a7e1d8bd115cabada429942723e642c720efe3e94a08dec4d"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-stage3-results-v1/projection-v1/LINEAGE.json",
+      "bytes": 8485,
+      "sha256": "f58ce598f8c4ff0bb299f3198aa0c2e86f9744a51bd8fdb1c1a4db0377555969"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-stage3-results-v1/projection-v1/NORMALIZED.json",
+      "bytes": 161562,
+      "sha256": "05b0a5d322524b1fc174fe4ff4479f4ac850a5e26c3652f6fd96a4ffaa2b51da"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-stage3-results-v1/projection-v1/POLICY.json",
+      "bytes": 1659,
+      "sha256": "7e7f45585e5cc8e8e7c83677b50de64c08840375e8f8e67f831506878622136f"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-stage3-results-v1/projection-v1/SOURCE.json",
+      "bytes": 327106,
+      "sha256": "19ff3bf8c971aeef555d2c1eec2153264d6542a31d88de3e8b7154df28809d10"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-stage3-source-review-v1.json",
+      "bytes": 94353,
+      "sha256": "bd8b73f24b158029f7a67cab5eb475b7748822a1a1abda3d82e762c7c15e5f44"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-stage3-source-review-v1.md",
+      "bytes": 15422,
+      "sha256": "8968f959c44009f35c1384446eb7168c7b8589c5ccbd3ce8206a897e83bb81d8"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-stage4-repetitions-v1/README.md",
+      "bytes": 1241,
+      "sha256": "061d11dbbd353a07ad8f41e2f884ad88eca283222d3aa3d2f48658a36335ace2"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-stage4-repetitions-v1/cost-plan-v1.json",
+      "bytes": 3764,
+      "sha256": "b8ca36b39481d217b11adb3d6af884dd5b88682c203e1ab607f0238714d491b8"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-stage4-repetitions-v1/openai_gpt-6.1-sol-endpoints.json",
+      "bytes": 8896,
+      "sha256": "aeef79e683105ec42f55b8cb4458ce1cd7641e5d3381224e7ccc497cbad1a357"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-stage4-repetitions-v1/operator-policy.json",
+      "bytes": 9060,
+      "sha256": "b751c062320be3723a6556c02dbeacbf8588bc52a9b1655c4632d33e73d289ac"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-stage4-repetitions-v1/prepared/manifest.json",
+      "bytes": 5113,
+      "sha256": "edb2c3c1171699ff503ef74937313fb8353b2bd045ee9aac4e03768f2a51ace7"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-stage4-repetitions-v1/prepared/requests/9c854f81b98e4984a139e631dd988ef52357ee5f763c52e073cb69627db19cfe.json",
+      "bytes": 8508,
+      "sha256": "9c854f81b98e4984a139e631dd988ef52357ee5f763c52e073cb69627db19cfe"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-stage4-repetitions-v1/prepared/requests/ec6e789c5ed3a0c6c12ace9bb672a8258451743a617507431dfd3d94110458d9.json",
+      "bytes": 8452,
+      "sha256": "ec6e789c5ed3a0c6c12ace9bb672a8258451743a617507431dfd3d94110458d9"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-stage4-repetitions-v1/selection-source-crosswalk.json",
+      "bytes": 434,
+      "sha256": "a64e5aec4023c55282c8db5d7f1effc2eab3227263f857365b34e211468aeced"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-stage4-repetitions-v1/source-prepared.json",
+      "bytes": 92947,
+      "sha256": "0cdcf22185d32f423e730a327a87afe17b570989e3f8ff8e15f7db6e5fc37fc6"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-stage4-results-v1/MECHANICAL_RESULTS.json",
+      "bytes": 519476,
+      "sha256": "74c04bb915eb8047ee9d0a7651b4de2bebe4425baa1c489df4c69c4f65df375a"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-stage4-results-v1/NORMALIZED.json",
+      "bytes": 64255,
+      "sha256": "1610197cba489e24069250d3e81495b8b47e0059ae40675ecf55ef2a8ed79410"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-stage4-results-v1/projection-v1/LINEAGE.json",
+      "bytes": 5245,
+      "sha256": "1d0e113e056deb549fc67094b386092bfce2a132c8a092e20569f178ec3ea0df"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-stage4-results-v1/projection-v1/NORMALIZED.json",
+      "bytes": 51544,
+      "sha256": "6d78281c9ae48f19778f673df44aab379b59a70c632cd39c33250393e2a5f3f0"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-stage4-results-v1/projection-v1/POLICY.json",
+      "bytes": 2094,
+      "sha256": "b1cc3bf12b97681b18b1a610c192ce0ec807bdcbae3e07d34f4d8af379ed7183"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-stage4-results-v1/projection-v1/SOURCE.json",
+      "bytes": 92947,
+      "sha256": "17caa9e61e45fc825af2beb27ad4b6c4ac17790a2e7b5eddcf7c2cfb4e4fe0db"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-stage4-source-review-v1.json",
+      "bytes": 199761,
+      "sha256": "6ac15caa117a473b2ad9b131a3f23c414107ec3f67ef745c549ff790c47d5470"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-stage4-source-review-v1.md",
+      "bytes": 3033,
+      "sha256": "9a6bccc5669fb1ed5d4cb4af70517d4d009fb9cbab5f27b1379fa1305f76206d"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-strong-repetition-peer-v1/README.md",
+      "bytes": 2745,
+      "sha256": "a8cfe675fd2aa74502b1d3c59a35d2ea229a5b3bc5e62425be1737b9ebed4098"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-strong-repetition-peer-v1/VERIFICATION.json",
+      "bytes": 44199,
+      "sha256": "c4ba6020e8ea9a72b9bbf36b11fcd081736aee7decfa3be825180843a3072250"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-strong-repetition-row-digest-supplement-v1/README.md",
+      "bytes": 2880,
+      "sha256": "c61b5b9d44f598aaa314bd7ec2381003c201ebb6208a1deea82049d5fca28603"
+    },
+    {
+      "path": "docs/research/model_research_2026-10-04/stage5/old-strong-repetition-row-digest-supplement-v1/VERIFICATION.json",
+      "bytes": 1542532,
+      "sha256": "d9f4c78f33ddbe775364fc953ac3a864ab27e945062f615ba196fdf45c3a4d9e"
+    }
+  ],
+  "credential_check": {
+    "private_and_key_paths_excluded": true,
+    "credential_shaped_literal_scan_pass": true,
+    "actual_secret_literal_scan": "PASS: root compared the real credential bytes against every ZIP member on 2026-10-05; credential neither copied nor printed"
+  },
+  "scientific_outputs_reinterpreted_in_capsule_step": false,
+  "supplemental_graph_claims_exported": false,
+  "zip": {
+    "filename": "old-strong-repetitions-close-20261005-v1.zip",
+    "bytes": 583244,
+    "sha256": "0a9c03b7771710f41db87264b516ecef881dccad26c146dae18431c79c89906e",
+    "member_count": 48,
+    "crc_check_pass": true,
+    "payloads_byte_equal_to_current_sources": true,
+    "member_paths_safe_relative": true,
+    "internal_manifest_sha256": "c836fa8326bb65792d8f879ba9922164beea9d349599fc26a3b090eb09bfdf72",
+    "internal_readme_sha256": "7240e56085249bcf76a8da6c056a1a6483c36952c4ee4a68203c1a9c19c1f59d"
+  }
+}
