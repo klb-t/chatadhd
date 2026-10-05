@@ -1,0 +1,14 @@
+test_changed_ledger_request_or_capture_is_rejected_without_repair (test_programme_results_v1.ProgrammeResults.test_changed_ledger_request_or_capture_is_rejected_without_repair) ... ok
+test_duplicate_generation_identity_cannot_double_bill (test_programme_results_v1.ProgrammeResults.test_duplicate_generation_identity_cannot_double_bill) ... ok
+test_failed_and_unattempted_denominators_resources_and_producer_are_real_edges (test_programme_results_v1.ProgrammeResults.test_failed_and_unattempted_denominators_resources_and_producer_are_real_edges) ... ok
+test_invalid_first_bytes_preserved_and_unknown_billing_does_not_erase_answer (test_programme_results_v1.ProgrammeResults.test_invalid_first_bytes_preserved_and_unknown_billing_does_not_erase_answer) ... ok
+test_late_generation_projection_retains_original_404_and_excludes_full_proof (test_programme_results_v1.ProgrammeResults.test_late_generation_projection_retains_original_404_and_excludes_full_proof) ... ok
+test_selective_projection_keeps_actual_identity_and_excludes_private_fields (test_programme_results_v1.ProgrammeResults.test_selective_projection_keeps_actual_identity_and_excludes_private_fields) ... ok
+test_empty_results_match_retained_negative_control_and_keep_all_slots (test_programme_study_score_v1.ProgrammeStudyScore.test_empty_results_match_retained_negative_control_and_keep_all_slots) ... ok
+test_partial_valid_results_do_not_shrink_accuracy_denominator (test_programme_study_score_v1.ProgrammeStudyScore.test_partial_valid_results_do_not_shrink_accuracy_denominator) ... ok
+test_split_missing_conflicting_and_half_threshold_remain_distinct (test_programme_study_score_v1.ProgrammeStudyScore.test_split_missing_conflicting_and_half_threshold_remain_distinct) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.131s
+
+OK
