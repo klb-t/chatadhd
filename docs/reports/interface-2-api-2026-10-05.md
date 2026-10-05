@@ -15,6 +15,14 @@ Rebased API stack publiczny: `3d7e5fd2246ffd94f803ec405dd371cf6a7a8f32` (29 lini
 
 Negatywy budowy zachowane: przerwanyj4, syntaxOOM, następnie pusty `prompt_contract.cpp.o` po przerwaniu. Wymuszona wyłącznie rekompilacja tego0-byte artefaktu, bez zmiany źródeł/testów.
 
+## Checkpoint 2 — widok metod
+
+Panel metod:11/11 offline (10 wcześniejszych +1 filtr po rzeczywistych produced-by Claims), TypeScript PASS. Profile, nested/signed combinations, nowe wersje, raw definicje i oddzielne przyjęcie/aktywacja; aktywacja używa natywnego CAS i zachowuje siblings/selection overlay. Most lossless JSON oraz14 grup native są w trakcie; nie deklarujemy gotowości na podstawie samych atrap.
+
+Onboarding HTTP:8/8 real native grup,0 provider completions. Pierwszy negatyw miał błędne wymaganie opcjonalnego RuntimeProfile W11; korekta testu jawnie sprawdza brak tej zdolności/reason na bazie1+12, żadnego skip. Stary test i pełny negatyw pozostają zachowane. Podłączona droga read-only ustawień metod przechodzi na GET, aby utrzymać niezmieniony sentinel zerowych zapisów przy samym otwarciu/odtworzeniu widoków. Pierwsza próba baseline ten problem wykryła; stary test pozostaje bez zmian.
+
+Świeży fetch: integrator `0a81480` dokłada wyłącznie receipt5 do66da570d; main nadal e4109df. Przypięte API pozostaje bez zmian.
+
 ## W trakcie
 
 Most HTTP korzysta z tego samego statycznego Runtime i rzeczywistej deklaracji opaque context w `src/capi/context.h`. Nie odtwarza layoutu, nie tworzy drugiej DB/silnika i nie dodaje C ABI. To jawna zależność źródłowa serwera; stare JNI pozostaje bez nowej zdolności.

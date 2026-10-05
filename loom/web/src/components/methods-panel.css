@@ -1,0 +1,16 @@
+.methods-panel { display: flex; flex-direction: column; gap: .75rem; min-width: 0; }
+.methods-panel h2, .methods-panel h3, .methods-panel p { margin: 0; }
+.methods-panel label { display: flex; flex-direction: column; gap: .3rem; min-width: 0; }
+.methods-panel textarea { box-sizing: border-box; width: 100%; min-height: 10rem; resize: vertical; font-family: monospace; }
+.methods-panel input, .methods-panel select { box-sizing: border-box; width: 100%; }
+.methods-panel pre { white-space: pre-wrap; overflow-wrap: anywhere; max-width: 100%; }
+.methods-panel code, .methods-panel summary { overflow-wrap: anywhere; }
+.methods-profile-fields, .methods-record { display: grid; gap: .75rem; }
+.methods-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.methods-table-scroll { overflow-x: auto; }
+.methods-panel table { width: 100%; border-collapse: collapse; }
+.methods-panel th, .methods-panel td { text-align: left; vertical-align: top; padding: .5rem; border-bottom: 1px solid var(--border, #7776); }
+.methods-panel small { display: block; }
+.methods-record, .methods-panel [data-testid="methods-result"], .methods-panel [data-testid="methods-version-preview"] { padding: .75rem; border: 1px solid var(--border, #7776); border-radius: .5rem; }
+.methods-panel [role="alert"] { color: var(--danger, #bc3434); }
+.methods-panel button { align-self: start; }
