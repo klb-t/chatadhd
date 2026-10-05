@@ -115,7 +115,6 @@ struct AliasTerm {
   std::vector<std::string> requires_any;  // folded context cues
   int requires_min = 1;
   std::vector<std::string> negative;      // folded negative-context cues
-  double weight = 3.0;
   // Whole-token inflection (AliasIndex::enable_inflection): the alias's
   // word tokens, their Polish match keys and the byte prefix every
   // inflected form must start with. Empty = exact matching only.
@@ -138,6 +137,8 @@ struct Mention {
 class AliasIndex {
  public:
   static AliasIndex from_profile(const SelfProfile& profile, int context_window_tokens = 30);
+  static Result<AliasIndex> from_pack_checked(const kb::Pack& pack);
+  // Legacy private test adapter; malformed policy throws std::invalid_argument.
   static AliasIndex from_pack(const kb::Pack& pack);
 
   // Every match against `folded_text` (already Normalizer::fold()-ed), valid
@@ -180,6 +181,8 @@ int alias_context_window_tokens(const kb::Pack& pack);
 // light best-effort scan of file stems under it ("path" class terms). Shared
 // by Catalog::build_profile (profile.cpp) and AliasIndex::from_pack, so
 // scan() has usable mentions even before build_profile() is ever called.
+Result<Json> flatten_self_profile_checked(const kb::Pack& pack, const kb::Normalizer& norm, const ProfileConfig& cfg);
+// Legacy private test adapter; malformed policy throws std::invalid_argument.
 Json flatten_self_profile(const kb::Pack& pack, const kb::Normalizer& norm, const ProfileConfig& cfg);
 
 // Folds `text` and searches for a version string near an alias mention
