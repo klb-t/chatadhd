@@ -47,23 +47,23 @@ export default function AnalysisPanel({ transport = api }: { transport?: Analysi
   useEffect(() => {
     mounted.current = true;
     const abort = new AbortController();
-    analysisCall(transport.analysis, { operation: "catalog" }, abort.signal).then(async result => {
+    analysisCall(transport.analysis?.bind(transport), { operation: "catalog" }, abort.signal).then(async result => {
       if (!mounted.current) return;
       setCatalog(Array.isArray(result.contracts) ? result.contracts.map(analysisObject) : []);
       const runtime = analysisObject(result.runtime);
       setModel(typeof runtime.model === "string" ? runtime.model : "");
       setProvider(typeof runtime.provider === "string" ? runtime.provider : "");
-      const effective = await analysisCall(transport.analysis, { operation: "resolve", contract_id: "semantic.analysis" }, abort.signal);
+      const effective = await analysisCall(transport.analysis?.bind(transport), { operation: "resolve", contract_id: "semantic.analysis" }, abort.signal);
       if (mounted.current && generation.current === 0) setContractDraft(nativeJson(effective, "contract_json"));
     }).catch(cause => { if (mounted.current && !abort.signal.aborted) setError(errorText(cause)); });
-    if (transport.methods) analysisCall(transport.methods, { action: "catalog" }, abort.signal).then(result => {
+    if (transport.methods) analysisCall(transport.methods?.bind(transport), { action: "catalog" }, abort.signal).then(result => {
       if (mounted.current) setProfiles(Array.isArray(result.profiles) ? result.profiles.map(analysisObject) : []);
     }).catch(() => { /* Optional graph registry availability is shown below. */ });
     return () => { mounted.current = false; generation.current++; abort.abort(); };
   }, [transport]);
 
   const discard = (value: AnalysisPrepared | null) => {
-    if (value && !value.attempted) void analysisCall(transport.analysis, { operation: "discard", prepared_id: value.prepared_id }).catch(() => {});
+    if (value && !value.attempted) void analysisCall(transport.analysis?.bind(transport), { operation: "discard", prepared_id: value.prepared_id }).catch(() => {});
   };
   const invalidate = () => {
     generation.current++; discard(prepared); setPrepared(null); setHeld(null); setConfirmationRef("");
@@ -77,7 +77,7 @@ export default function AnalysisPanel({ transport = api }: { transport?: Analysi
     finally { if (mounted.current) setBusy(false); }
   };
   const loadContract = () => run(async epoch => {
-    const result = await analysisCall(transport.analysis, { operation: "resolve", contract_id: selected });
+    const result = await analysisCall(transport.analysis?.bind(transport), { operation: "resolve", contract_id: selected });
     if (!mounted.current || epoch !== generation.current) return;
     discard(prepared); generation.current++; setContractDraft(nativeJson(result, "contract_json")); setPrepared(null); setHeld(null);
     setVersionPreview(null); setMethodRef(null); setDirty(false); setBodyOverride(false); setExactBody("");
@@ -85,11 +85,11 @@ export default function AnalysisPanel({ transport = api }: { transport?: Analysi
   });
   const prepare = () => run(async epoch => {
     parseAnalysisObject(contractDraft, "Prompt contract");
-    const resolved = await analysisCall(transport.analysis, { operation: "resolve", prompt_snapshot_json: contractDraft });
+    const resolved = await analysisCall(transport.analysis?.bind(transport), { operation: "resolve", prompt_snapshot_json: contractDraft });
     const selectedVersion = snapshot ? methodVersions(snapshot).find(item => item.id === versionId) : undefined;
     const registeredContractHash = analysisObject(analysisObject(selectedVersion?.attrs).definition).analysis_contract_sha256;
     const matchingMethod = registeredContractHash === resolved.contract_hash;
-    const result = readAnalysisPrepared(await analysisCall(transport.analysis, {
+    const result = readAnalysisPrepared(await analysisCall(transport.analysis?.bind(transport), {
       operation: "prepare", prompt_snapshot_json: contractDraft,
       bindings: parseAnalysisObject(bindingsDraft, "Bindings"), request_patch: parseAnalysisObject(patchDraft, "Request patch"),
       execution: parseAnalysisObject(executionDraft, "Execution presets and forecasts"), model, provider,
@@ -110,7 +110,7 @@ export default function AnalysisPanel({ transport = api }: { transport?: Analysi
     if (!value) throw new Error("Prepare and review this draft first.");
     // Only the immutable identity is sent; drafts are never reconstructed at dispatch.
     let result: AnalysisPrepared;
-    try { result = readAnalysisPrepared(await analysisCall(transport.analysis, exactAnalysisCommand(value, confirmation))); }
+    try { result = readAnalysisPrepared(await analysisCall(transport.analysis?.bind(transport), exactAnalysisCommand(value, confirmation))); }
     catch (cause) {
       if (mounted.current && epoch === generation.current) {
         setPrepared({ ...value, attempted: true, status: "outcome_unknown" }); setHeld(null);
@@ -126,12 +126,12 @@ export default function AnalysisPanel({ transport = api }: { transport?: Analysi
   });
   const inspect = () => run(async epoch => {
     if (!prepared) return;
-    const result = readAnalysisPrepared(await analysisCall(transport.analysis, { operation: "inspect", prepared_id: prepared.prepared_id }));
+    const result = readAnalysisPrepared(await analysisCall(transport.analysis?.bind(transport), { operation: "inspect", prepared_id: prepared.prepared_id }));
     if (mounted.current && epoch === generation.current) { setPrepared(result); setHeld(result.status === "requires_confirmation" ? result : null); setNotice("Saved attempt inspected. No provider call was made."); }
   });
   const setMode = (mode: string) => run(async epoch => {
     parseAnalysisObject(contractDraft, "Prompt contract");
-    const resolved = await analysisCall(transport.analysis, { operation: "resolve", prompt_snapshot_json: contractDraft, prompt_patch: { validation_mode: mode } });
+    const resolved = await analysisCall(transport.analysis?.bind(transport), { operation: "resolve", prompt_snapshot_json: contractDraft, prompt_patch: { validation_mode: mode } });
     if (!mounted.current || epoch !== generation.current) return;
     const text = nativeJson(resolved, "contract_json");
     invalidate(); setContractDraft(text);
@@ -139,7 +139,7 @@ export default function AnalysisPanel({ transport = api }: { transport?: Analysi
   const loadProfile = () => run(async epoch => {
     const entry = profiles.find(item => item.id === profileId);
     if (!entry) throw new Error("Choose an available native method profile.");
-    const loaded = await analysisCall(transport.methods, { action: "load", profile_json: nativeJson(entry, "profile_json"), receipt_ids: entry.receipt_ids ?? [] });
+    const loaded = await analysisCall(transport.methods?.bind(transport), { action: "load", profile_json: nativeJson(entry, "profile_json"), receipt_ids: entry.receipt_ids ?? [] });
     if (mounted.current && epoch === generation.current) {
       setSnapshot(loaded); const versions = methodVersions(loaded); setVersionId(String(versions[0]?.id ?? "")); setVersionPreview(null);
       setMethodProfileJson(nativeJson(loaded, "profile_json")); setMethodReceipts(Array.isArray(loaded.receipts) ? loaded.receipts.map(item => String(analysisObject(item).receipt_id)) : []);
@@ -156,9 +156,9 @@ export default function AnalysisPanel({ transport = api }: { transport?: Analysi
     if (!identityClaims.length) throw new Error("The selected version has no active native method identity Claim.");
     parseAnalysisObject(contractDraft, "Prompt contract");
     parseAnalysisObject(executionDraft, "Execution presets"); parseAnalysisObject(patchDraft, "Request patch");
-    const resolved = await analysisCall(transport.analysis, { operation: "resolve", prompt_snapshot_json: contractDraft });
+    const resolved = await analysisCall(transport.analysis?.bind(transport), { operation: "resolve", prompt_snapshot_json: contractDraft });
     const attrsPatch = `{"definition":{"analysis_contract":${nativeJson(resolved, "contract_json")},"analysis_contract_sha256":${JSON.stringify(resolved.contract_hash)},"execution_capability":"analysis.http","analysis_result_kind":${JSON.stringify(resultKind.trim())},"analysis_execution_presets":${executionDraft},"analysis_request_patch":${patchDraft}}}`;
-    const result = await analysisCall(transport.methods, { action: "version_edit", snapshot_json: nativeJson(snapshot, "snapshot_json"), entity_id: entity.id,
+    const result = await analysisCall(transport.methods?.bind(transport), { action: "version_edit", snapshot_json: nativeJson(snapshot, "snapshot_json"), entity_id: entity.id,
       attrs_patch_json: attrsPatch,
       outgoing_claim_ids: identityClaims,
       attrs_remove_paths: ["recipe_sha256", "prompt_sha256", "preset_sha256", "parameter_set_sha256"].map(key => ["definition", key]),
@@ -168,14 +168,14 @@ export default function AnalysisPanel({ transport = api }: { transport?: Analysi
   const acceptVersion = () => run(async epoch => {
     if (!versionPreview || typeof versionPreview.accept_request_json !== "string") throw new Error("Preview a new method version first.");
     const preview = versionPreview;
-    const result = await analysisCall(transport.methods, { action: "accept", request_json: nativeJson(preview, "accept_request_json") });
+    const result = await analysisCall(transport.methods?.bind(transport), { action: "accept", request_json: nativeJson(preview, "accept_request_json") });
     if (!mounted.current || epoch !== generation.current) return;
     const receipt = analysisObject(result.receipt ?? result);
     const receiptId = String(receipt.receipt_id ?? receipt.id ?? "");
     if (!receiptId) throw new Error("Native acceptance did not return a receipt identity.");
     const profileJson = nativeJson(preview, "profile_json");
     const receipts = [...methodReceipts, receiptId];
-    const loaded = await analysisCall(transport.methods, { action: "load", profile_json: profileJson, receipt_ids: receipts });
+    const loaded = await analysisCall(transport.methods?.bind(transport), { action: "load", profile_json: profileJson, receipt_ids: receipts });
     if (!mounted.current || epoch !== generation.current) return;
     setSnapshot(loaded); setMethodProfileJson(profileJson); setMethodReceipts(receipts); setVersionId(String(preview.new_version_id));
     setMethodRef({ version_id: preview.new_version_id, definition_sha256: preview.definition_sha256,
@@ -185,7 +185,7 @@ export default function AnalysisPanel({ transport = api }: { transport?: Analysi
   });
   const acceptResult = () => run(async epoch => {
     if (!prepared?.result.accept_request_json) throw new Error("This attempt has no native bound result packet.");
-    const result = await analysisCall(transport.methods, { action: "accept", request_json: nativeJson(prepared.result, "accept_request_json") });
+    const result = await analysisCall(transport.methods?.bind(transport), { action: "accept", request_json: nativeJson(prepared.result, "accept_request_json") });
     if (mounted.current && epoch === generation.current) { setResultReceipt(result); setNotice("The result packet and its actual run/version edges were accepted. Model content remains unverified."); }
   });
 
