@@ -1,0 +1,7 @@
+/workspace/scratch/2a6e71927cf3/chatadhd/loom/server/src/app.cpp:768:26: error: lambda capture 'this' is not used [-Werror,-Wunused-lambda-capture]
+  768 |   svr_.Get("/api/logs", [this](const httplib::Request& req, httplib::Response& res) {
+      |                          ^~~~
+/workspace/scratch/2a6e71927cf3/chatadhd/loom/server/src/app.cpp:772:29: error: lambda capture 'this' is not used [-Werror,-Wunused-lambda-capture]
+  772 |   svr_.Get("/api/version", [this](const httplib::Request&, httplib::Response& res) {
+      |                             ^~~~
+2 errors generated.

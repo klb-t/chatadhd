@@ -21,6 +21,10 @@ Poprawka W10: `23c6e74c50b87c2157ffc317d45fca79aade27fa`, tip
 `fa7538d650da2f4ad37f5ff9254b60a6ee72938f`.
 W8 nie kopiuje starego W10 `app.cpp`, gdyż utraciłby nową trasę `/api/packet`.
 Wyniki na własnej gałęzi oraz kombinowanym źródle walidacyjnym będą rozdzielone.
+Automatyczne czyste `git merge-tree` W8+W10 (bez ręcznej edycji implementacji)
+zachowano w `archive/repo-hygiene-w10-validation-2026-10-05`:
+`b31b4d439594bca0a051a2e95557a3fd06c39141`, tree
+`611cc9acf0c9085a6b125d4164df98f16462679c`.
 Gotowość jeszcze niezgłoszona: pełne bramki są w toku.
 
 Pierwsze dwie kompilacje ASan (`-g`, równolegle2 i potem1) zakończyły się

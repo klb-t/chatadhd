@@ -1,0 +1,10 @@
+[0/2] Re-checking globbed directories...
+[1/251] Building C object CMakeFiles/loom_sqlite3_amalgamation.dir/third_party/sqlite/sqlite3.c.o
+[2/251] Building C object CMakeFiles/loom_miniz.dir/third_party/miniz/miniz.c.o
+[3/251] Linking C static library libloom_sqlite3_amalgamation.a
+[4/251] Linking C static library libloom_miniz.a
+[5/251] Building CXX object CMakeFiles/loom_core.dir/src/archive/cluster.cpp.o
+[6/251] Building CXX object CMakeFiles/loom_core.dir/src/archive/ingest.cpp.o
+[7/251] Building CXX object CMakeFiles/loom_core.dir/src/archive/ingest_parse.cpp.o
+[8/251] Building CXX object CMakeFiles/loom_core.dir/src/archive/items.cpp.o
+[9/251] Building CXX object CMakeFiles/loom_core.dir/src/archive/pipeline.cpp.o
