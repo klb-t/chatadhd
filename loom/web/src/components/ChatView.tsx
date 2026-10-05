@@ -5,10 +5,13 @@ import { api } from "../api";
 import type { ChatChunk, ChatContextTrace, ChatKnowledgeContextRequest, ChatRequest, Message, ModelInfo } from "../api/types";
 import "./chat-context.css";
 import ContextPlanEditor from "./ContextPlanEditor";
-import { buildRetrievalPlan, newPlan } from "../context/retrieval-plan";
+import { buildRetrievalPlan } from "../context/retrieval-plan";
 import { shouldSubmit, type ApplicationProfile } from "../profiles/runtime";
 import ImportedMessageContent from "./ImportedMessageContent";
 import { projectImportedMessage } from "../content/imported-message";
+import ConversationBranches, { conversationBranchPath } from "./ConversationBranches";
+import { parseCandidateChannels, readChatSettings, storedPlan, writeChatSettings } from "../context/chat-settings";
+import GraphReplyWorkbench from "./GraphReplyWorkbench";
 
 marked.setOptions({ breaks: true });
 
@@ -40,6 +43,7 @@ function renderMarkdown(text: string): { __html: string } {
 }
 
 interface Props {
+  settingsKey?: string;
   convId: string | null;
   onConversationCreated: (id: string) => void;
   profile?: ApplicationProfile;
@@ -73,35 +77,53 @@ function ContextTrace({ trace }: { trace: ChatContextTrace }) {
   );
 }
 
-export default function ChatView({ convId, onConversationCreated, profile, runProfileOperation, availableOperations, refreshKey, onMessagesChanged }: Props) {
+export default function ChatView({ settingsKey = "default", convId, onConversationCreated, profile, runProfileOperation, availableOperations, refreshKey, onMessagesChanged }: Props) {
+  const [stored] = useState(() => readChatSettings(settingsKey));
+  const storedString = (key: string, fallback: string) => typeof stored.value[key] === "string" ? stored.value[key] as string : fallback;
+  const storedBool = (key: string, fallback: boolean) => typeof stored.value[key] === "boolean" ? stored.value[key] as boolean : fallback;
+  const [settingsError, setSettingsError] = useState(stored.error ?? "");
+  const [branchLeaf, setBranchLeaf] = useState<string | null>(null);
+  const [showBranches, setShowBranches] = useState(false);
+  const [branchMessages, setBranchMessages] = useState<Message[]>([]);
+  const [channels, setChannels] = useState(() => storedString("channels", "[]"));
+  const [scanLimit, setScanLimit] = useState(() => storedString("scanLimit", "10000"));
+  const [counterEvidence, setCounterEvidence] = useState(() => storedBool("counterEvidence", false));
+  const [lexicalShadow, setLexicalShadow] = useState(() => storedBool("lexicalShadow", false));
+  const [requestOverride, setRequestOverride] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [showAllMessages, setShowAllMessages] = useState(false);
   const allMessagesRef = useRef(showAllMessages);
   allMessagesRef.current = showAllMessages;
   const [input, setInput] = useState("");
   const [models, setModels] = useState<ModelInfo[]>([]);
-  const [model, setModel] = useState<string>("");
+  const [model, setModel] = useState<string>(() => storedString("model", ""));
   const [pendingUserText, setPendingUserText] = useState<{ text: string; convId: string | null } | null>(null);
   const [stream, setStream] = useState<StreamState | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editText, setEditText] = useState("");
   const [versionsById, setVersionsById] = useState<Record<string, Message[]>>({});
   const [error, setError] = useState<string | null>(null);
-  const [useKnowledge, setUseKnowledge] = useState(false);
-  const [contextQuery, setContextQuery] = useState("");
-  const [contextProject, setContextProject] = useState("");
-  const [contextTargets, setContextTargets] = useState("");
-  const [contextRun, setContextRun] = useState("");
-  const [contextLanguage, setContextLanguage] = useState("");
-  const [contextBudget, setContextBudget] = useState("4000");
-  const [contextHops, setContextHops] = useState("1");
-  const [contextDetail, setContextDetail] = useState<NonNullable<ChatKnowledgeContextRequest["detail_resolution"]> | "auto">("auto");
-  const [usePlan, setUsePlan] = useState(false);
-  const [planDraft, setPlanDraft] = useState(newPlan);
-  const [includeMemory, setIncludeMemory] = useState(true);
-  const [includeGraphMemory, setIncludeGraphMemory] = useState(true);
-  const [includeHistory, setIncludeHistory] = useState(true);
-  const [traceContext, setTraceContext] = useState<"auto" | "on" | "off">("auto");
+  const [useKnowledge, setUseKnowledge] = useState(() => storedBool("useKnowledge", false));
+  const [contextQuery, setContextQuery] = useState(() => storedString("contextQuery", ""));
+  const [contextProject, setContextProject] = useState(() => storedString("contextProject", ""));
+  const [contextTargets, setContextTargets] = useState(() => storedString("contextTargets", ""));
+  const [contextRun, setContextRun] = useState(() => storedString("contextRun", ""));
+  const [contextLanguage, setContextLanguage] = useState(() => storedString("contextLanguage", ""));
+  const [contextBudget, setContextBudget] = useState(() => storedString("contextBudget", "4000"));
+  const [contextHops, setContextHops] = useState(() => storedString("contextHops", "1"));
+  const [contextDetail, setContextDetail] = useState<NonNullable<ChatKnowledgeContextRequest["detail_resolution"]> | "auto">(() => {
+    const value = storedString("contextDetail", "auto");
+    return ["auto", "label", "summary", "full", "raw"].includes(value) ? value as NonNullable<ChatKnowledgeContextRequest["detail_resolution"]> | "auto" : "auto";
+  });
+  const [usePlan, setUsePlan] = useState(() => storedBool("usePlan", false));
+  const [planDraft, setPlanDraft] = useState(() => storedPlan(stored.value.planDraft));
+  const [includeMemory, setIncludeMemory] = useState(() => storedBool("includeMemory", true));
+  const [includeGraphMemory, setIncludeGraphMemory] = useState(() => storedBool("includeGraphMemory", true));
+  const [includeHistory, setIncludeHistory] = useState(() => storedBool("includeHistory", true));
+  const [traceContext, setTraceContext] = useState<"auto" | "on" | "off">(() => {
+    const value = storedString("traceContext", "auto");
+    return ["auto", "on", "off"].includes(value) ? value as "auto" | "on" | "off" : "auto";
+  });
   const [lastTrace, setLastTrace] = useState<{ convId: string; userId: string | null; trace: ChatContextTrace } | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const unsubRef = useRef<(() => void) | null>(null);
@@ -114,6 +136,27 @@ export default function ChatView({ convId, onConversationCreated, profile, runPr
   const fetchEpochRef = useRef(0);
   const available = useMemo(() => availableOperations ? new Set(availableOperations) : null, [availableOperations]);
   const supports = useCallback((operation: string) => !available || available.has(operation), [available]);
+
+  useEffect(() => {
+    if (stored.error) return;
+    try {
+      writeChatSettings(settingsKey, { model, useKnowledge, contextQuery, contextProject, contextTargets,
+        contextRun, contextLanguage, contextBudget, contextHops, contextDetail, includeMemory, includeGraphMemory,
+        includeHistory, traceContext, channels, scanLimit, counterEvidence, lexicalShadow, usePlan, planDraft });
+      setSettingsError("");
+    } catch (err) { setSettingsError(`Cannot save view settings: ${err instanceof Error ? err.message : String(err)}`); }
+  }, [settingsKey, stored.error, model, useKnowledge, contextQuery, contextProject, contextTargets, contextRun,
+    contextLanguage, contextBudget, contextHops, contextDetail, includeMemory, includeGraphMemory, includeHistory,
+    traceContext, channels, scanLimit, counterEvidence, lexicalShadow, usePlan, planDraft]);
+
+  useEffect(() => {
+    setBranchLeaf(null); setBranchMessages([]);
+    if (!showBranches || !convId) return;
+    let cancelled = false;
+    api.getMessages(convId, true).then(rows => { if (!cancelled) setBranchMessages(rows); })
+      .catch(err => { if (!cancelled) setError(String(err)); });
+    return () => { cancelled = true; };
+  }, [convId, refreshKey, showBranches]);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -162,9 +205,22 @@ export default function ChatView({ convId, onConversationCreated, profile, runPr
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, stream, pendingUserText]);
 
-  const send = useCallback(() => {
+  const send = useCallback((mode: "send" | "preview" = "send") => {
     const text = input.trim();
-    if (!text || stream || !supports("chat.send")) return;
+    if (branchLeaf) { setError("Return to current conversation before sending from a branch projection."); return; }
+    if (stream || !supports("chat.send")) return;
+    if (!text && !(mode === "send" && requestOverride !== null)) return;
+    let request: ChatRequest;
+    if (mode === "send" && requestOverride !== null) {
+      try {
+        const parsed: unknown = JSON.parse(requestOverride);
+        if (!parsed || typeof parsed !== "object" || Array.isArray(parsed) ||
+            typeof (parsed as Record<string, unknown>).message !== "string" || !(parsed as Record<string, unknown>).message) {
+          throw new Error("One-call request must be an object with a nonempty message string.");
+        }
+        request = parsed as ChatRequest;
+      } catch (err) { setError(err instanceof Error ? err.message : String(err)); return; }
+    } else {
     const budget = Number(contextBudget);
     if (useKnowledge && (!Number.isSafeInteger(budget) || budget < 1 || budget > 2147483647)) {
       setError("Knowledge token budget must be a positive whole number within the supported integer range.");
@@ -175,12 +231,21 @@ export default function ChatView({ convId, onConversationCreated, profile, runPr
       setError("Graph reach must be a non-negative whole number within the supported integer range.");
       return;
     }
+    let candidateChannels: ChatKnowledgeContextRequest["candidate_channels"];
+    const candidateScan = Number(scanLimit);
+    if (useKnowledge) {
+      try { candidateChannels = parseCandidateChannels(channels); }
+      catch (err) { setError(err instanceof Error ? err.message : String(err)); return; }
+      if (!scanLimit.trim() || !Number.isSafeInteger(candidateScan) || candidateScan < 1 || candidateScan > 2147483647) {
+        setError("Candidate scan limit must be a positive native integer."); return;
+      }
+    }
     let plan: ChatKnowledgeContextRequest["plan"];
     if (useKnowledge && usePlan) {
       try { plan = buildRetrievalPlan(planDraft); }
       catch (err) { setError(err instanceof Error ? err.message : String(err)); return; }
     }
-    const request: ChatRequest = {
+    request = {
       message: text, conv_id: convId ?? undefined, model: model || undefined,
       // Omit unchanged options so the existing default request stays intact.
       ...(!includeMemory && { include_memory: false }),
@@ -197,12 +262,18 @@ export default function ChatView({ convId, onConversationCreated, profile, runPr
         ...(hops !== 1 && { relation_hops: hops }),
         ...(contextDetail !== "auto" && { detail_resolution: contextDetail }),
         ...(plan && { plan }),
+        ...(candidateChannels?.length && { candidate_channels: candidateChannels }),
+        ...(candidateScan !== 10000 && { candidate_scan_limit: candidateScan }),
+        ...(counterEvidence && { include_counter_evidence: true }),
+        ...(lexicalShadow && { lexical_shadow: true }),
       } }),
     };
+    if (mode === "preview") { setRequestOverride(JSON.stringify(request, null, 2)); setError(null); return; }
+    }
     const epoch = ++sendEpochRef.current;
     const isCurrent = () => mountedRef.current && epoch === sendEpochRef.current;
     let terminal = false;
-    let requestConvId = convId;
+    let requestConvId = request.conv_id ?? null;
     const refreshShared = () => {
       if (requestConvId) void refreshMessages(requestConvId);
       onMessagesChanged?.();
@@ -216,10 +287,11 @@ export default function ChatView({ convId, onConversationCreated, profile, runPr
       refreshShared();
     };
     setInput("");
+    setRequestOverride(null);
     currentUserIdRef.current = null;
-    currentConvIdRef.current = convId;
-    setPendingUserText({ text, convId });
-    setStream({ reasoning: "", text: "", requestId: null, convId });
+    currentConvIdRef.current = requestConvId;
+    setPendingUserText({ text: request.message, convId: requestConvId });
+    setStream({ reasoning: "", text: "", requestId: null, convId: requestConvId });
     setError(null);
 
     const handlers = {
@@ -263,7 +335,7 @@ export default function ChatView({ convId, onConversationCreated, profile, runPr
     }
   }, [input, stream, convId, model, onConversationCreated, refreshMessages,
     useKnowledge, contextQuery, contextProject, contextTargets, contextRun,
-    contextLanguage, contextBudget, contextHops, contextDetail, usePlan, planDraft, includeMemory, includeGraphMemory, includeHistory, traceContext, runProfileOperation, onMessagesChanged, supports]);
+    contextLanguage, contextBudget, contextHops, contextDetail, usePlan, planDraft, includeMemory, includeGraphMemory, includeHistory, traceContext, runProfileOperation, onMessagesChanged, supports, channels, scanLimit, counterEvidence, lexicalShadow, branchLeaf, requestOverride]);
 
   const cancelStreaming = useCallback(() => {
     const epoch = ++sendEpochRef.current;
@@ -356,13 +428,19 @@ export default function ChatView({ convId, onConversationCreated, profile, runPr
     [convId, refreshMessages, runProfileOperation, onMessagesChanged, supports],
   );
 
-  const visibleMessages = useMemo(() => messages.filter(message => message.conv_id === convId), [messages, convId]);
+  const visibleMessages = useMemo(() => branchLeaf
+    ? conversationBranchPath(branchMessages, branchLeaf).messages
+    : messages.filter(message => message.conv_id === convId), [messages, convId, branchLeaf, branchMessages]);
   const displayedStream = stream?.convId === convId ? stream : null;
   const displayedPending = pendingUserText?.convId === convId ? pendingUserText : null;
 
   return (
     <div className="chat-view" data-testid="chat-view">
       <label className="profile-workspace-controls"><input type="checkbox" checked={showAllMessages} onChange={e => setShowAllMessages(e.target.checked)} data-testid="show-all-messages" />Show excluded messages and saved versions</label>
+      <label className="profile-workspace-controls"><input type="checkbox" checked={showBranches} onChange={e => { setShowBranches(e.target.checked); setBranchLeaf(null); }} data-testid="show-conversation-branches" />Browse retained descendant branches</label>
+      {showBranches && <ConversationBranches messages={branchMessages} selectedId={branchLeaf} onSelect={message => setBranchLeaf(message.id)} />}
+      {branchLeaf && <p role="status">Ancestor path projection <button onClick={() => setBranchLeaf(null)} data-testid="return-current-branch">Return to current conversation</button></p>}
+      {settingsError && <p role="alert">{settingsError}</p>}
       <div className="chat-scroll" ref={scrollRef}>
         {visibleMessages.length === 0 && !displayedPending && !displayedStream && (
           <div className="empty-state">Say something to start the conversation.</div>
@@ -424,6 +502,11 @@ export default function ChatView({ convId, onConversationCreated, profile, runPr
                 </button>
               </div>
               {trace && <ContextTrace trace={trace} />}
+              {m.role === "assistant" && <details className="chat-context-controls"><summary>Graph reply · inspect and address fragments</summary>
+                <GraphReplyWorkbench packet={api.packet?.bind(api)} usagePolicy={api.usagePolicy?.bind(api)}
+                  responseText={m.text} conversationId={m.conv_id} turnId={m.id} requestId={String(m.metadata?.request_id ?? m.id)} model={m.model ?? ""}
+                  onAddressFragment={(action, fragment) => { setInput(`${action === "expand" ? "Expand" : "Correct"} the addressed model fragment:\n${JSON.stringify(fragment, null, 2)}`); setRequestOverride(null); }} />
+              </details>}
             </div>
           );
         })}
@@ -488,6 +571,13 @@ export default function ChatView({ convId, onConversationCreated, profile, runPr
               <label>Rendering language<input type="text" value={contextLanguage} onChange={(e) => setContextLanguage(e.target.value)} placeholder="Use message language" data-testid="context-language" /></label>
             </div>
           )}
+          {useKnowledge && <div className="chat-context-fields">
+            <label>Candidate channels JSON<textarea data-testid="context-channels" value={channels} onChange={e => setChannels(e.target.value)} placeholder='[{"id":"tfidf","limit":50,"min_score":0}]' /></label>
+            <label>Candidate scan limit<input type="number" value={scanLimit} onChange={e => setScanLimit(e.target.value)} data-testid="context-scan-limit" /></label>
+            <label><input type="checkbox" checked={counterEvidence} onChange={e => setCounterEvidence(e.target.checked)} data-testid="context-counter-evidence" />Follow recorded counter-evidence links</label>
+            <label><input type="checkbox" checked={lexicalShadow} onChange={e => setLexicalShadow(e.target.checked)} data-testid="context-lexical-shadow" />Lexical shadow diagnostic</label>
+            <p>Channel hits combine before selection. Local TF-IDF and lexical instruments work offline; other IDs report installed capability in the trace. Method weights require the method registry API.</p>
+          </div>}
           {useKnowledge && <ContextPlanEditor enabled={usePlan} onEnabled={setUsePlan} draft={planDraft} onChange={setPlanDraft} />}
           <label className="chat-context-record">Context recording
             <select value={traceContext} onChange={(e) => setTraceContext(e.target.value as "auto" | "on" | "off")} data-testid="record-context">
@@ -498,6 +588,16 @@ export default function ChatView({ convId, onConversationCreated, profile, runPr
           </label>
           <p>Recording saves the exact assembled messages and selection with the turn for later inspection.</p>
         </fieldset>
+      </details>
+
+      <details className="chat-context-controls" data-testid="expert-chat-request"><summary>Expert · inspect or edit one request</summary>
+        <p>This is the client request sent to Loom. Compiled provider messages are inspected in the recorded context after execution.</p>
+        <button onClick={() => send("preview")} disabled={!!stream || !!branchLeaf || !input.trim()} data-testid="preview-chat-request">Prepare client request</button>
+        {requestOverride !== null && <>
+          <textarea aria-label="One-call client request JSON" data-testid="one-call-request" rows={9} value={requestOverride} onChange={event => setRequestOverride(event.target.value)} disabled={!!stream} />
+          <p>The next Send uses this exact JSON once. Profile, saved context and later calls keep their settings.</p>
+          <button onClick={() => setRequestOverride(null)} data-testid="discard-one-call-request">Discard override</button>
+        </>}
       </details>
 
       <div className="composer">
@@ -533,7 +633,7 @@ export default function ChatView({ convId, onConversationCreated, profile, runPr
             Stop
           </button>
         ) : (
-          <button className="primary" onClick={send} data-testid="send-chat" disabled={!input.trim() || !supports("chat.send")}>
+          <button className="primary" onClick={() => send()} data-testid="send-chat" disabled={!!branchLeaf || (requestOverride === null && !input.trim()) || !supports("chat.send")}>
             Send
           </button>
         )}
