@@ -1,0 +1,10 @@
+{
+  "head_at_end": "a3dc9e7ab18764393ee1ce99b417fdf57b3639c3",
+  "functional_paths_changed_since_start": [],
+  "public_policy_unchanged": true,
+  "binaries_unchanged": true,
+  "ctest_exit_code": 0,
+  "elapsed_seconds": "127.01",
+  "junit_elapsed_seconds": "127",
+  "gate_green": true
+}
