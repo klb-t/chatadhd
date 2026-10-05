@@ -1,0 +1,48 @@
+test_deterministic_bytes_across_output_directories (test_prepare_real.BundleTests.test_deterministic_bytes_across_output_directories) ... ok
+test_exact_freeze_inventory (test_prepare_real.BundleTests.test_exact_freeze_inventory) ... ok
+test_factorial_and_original_algorithm_preserved (test_prepare_real.BundleTests.test_factorial_and_original_algorithm_preserved) ... ok
+test_failure_does_not_publish_partial_bundle (test_prepare_real.BundleTests.test_failure_does_not_publish_partial_bundle) ... ok
+test_hash_binding_rejects_tampered_request (test_prepare_real.BundleTests.test_hash_binding_rejects_tampered_request) ... ok
+test_no_attempt_scoring_preserves_null_quality (test_prepare_real.BundleTests.test_no_attempt_scoring_preserves_null_quality) ... ok
+test_output_refuses_overwrite (test_prepare_real.BundleTests.test_output_refuses_overwrite) ... ok
+test_private_output_refused_inside_git (test_prepare_real.BundleTests.test_private_output_refused_inside_git) ... ok
+test_private_permissions (test_prepare_real.BundleTests.test_private_permissions) ... ok
+test_private_values_cannot_enter_public_provenance (test_prepare_real.BundleTests.test_private_values_cannot_enter_public_provenance) ... ok
+test_public_receipt_does_not_copy_private_content (test_prepare_real.BundleTests.test_public_receipt_does_not_copy_private_content) ... ok
+test_source_views_cannot_be_mistaken_for_provider_operations (test_prepare_real.BundleTests.test_source_views_cannot_be_mistaken_for_provider_operations) ... ok
+test_dependency_tamper_fails (test_prepare_real.ParseTests.test_dependency_tamper_fails) ... ok
+test_duplicate_json_keys_fail (test_prepare_real.ParseTests.test_duplicate_json_keys_fail) ... ok
+test_invalid_expected_hash (test_prepare_real.ParseTests.test_invalid_expected_hash) ... ok
+test_nonfinite_json_fails (test_prepare_real.ParseTests.test_nonfinite_json_fails) ... ok
+test_original_dependency_exact_bytes (test_prepare_real.ParseTests.test_original_dependency_exact_bytes) ... ok
+test_attribution_mismatch_rejected (test_prepare_real.SourceTests.test_attribution_mismatch_rejected) ... ok
+test_branched_graph_not_flattened (test_prepare_real.SourceTests.test_branched_graph_not_flattened) ... ok
+test_changed_quote_message_hash_rejected (test_prepare_real.SourceTests.test_changed_quote_message_hash_rejected) ... ok
+test_changed_quote_rejected (test_prepare_real.SourceTests.test_changed_quote_rejected) ... ok
+test_credentials_require_review_not_silent_redaction (test_prepare_real.SourceTests.test_credentials_require_review_not_silent_redaction) ... ok
+test_directed_relation_not_lost (test_prepare_real.SourceTests.test_directed_relation_not_lost) ... ok
+test_duplicate_queries_rejected (test_prepare_real.SourceTests.test_duplicate_queries_rejected) ... ok
+test_equal_times_not_arbitrarily_ordered (test_prepare_real.SourceTests.test_equal_times_not_arbitrarily_ordered) ... ok
+test_exact_sources_preserved_without_mutating_inputs (test_prepare_real.SourceTests.test_exact_sources_preserved_without_mutating_inputs) ... ok
+test_future_evidence_rejected (test_prepare_real.SourceTests.test_future_evidence_rejected) ... ok
+test_future_turn_excluded (test_prepare_real.SourceTests.test_future_turn_excluded) ... ok
+test_independent_review_not_invented (test_prepare_real.SourceTests.test_independent_review_not_invented) ... ok
+test_invalid_reference_label_rejected (test_prepare_real.SourceTests.test_invalid_reference_label_rejected) ... ok
+test_inverted_time_rejected (test_prepare_real.SourceTests.test_inverted_time_rejected) ... ok
+test_native_message_tamper_rejected (test_prepare_real.SourceTests.test_native_message_tamper_rejected) ... ok
+test_native_role_mismatch_rejected (test_prepare_real.SourceTests.test_native_role_mismatch_rejected) ... ok
+test_nontext_content_explicitly_not_interpreted (test_prepare_real.SourceTests.test_nontext_content_explicitly_not_interpreted) ... ok
+test_positive_reference_requires_quote (test_prepare_real.SourceTests.test_positive_reference_requires_quote) ... ok
+test_reference_rationale_required (test_prepare_real.SourceTests.test_reference_rationale_required) ... ok
+test_unknown_asof_rejected (test_prepare_real.SourceTests.test_unknown_asof_rejected) ... ok
+test_unknown_is_not_refutation (test_prepare_real.SourceTests.test_unknown_is_not_refutation) ... ok
+test_unknown_question_case_rejected (test_prepare_real.SourceTests.test_unknown_question_case_rejected) ... ok
+test_unknown_speaker_rejected (test_prepare_real.SourceTests.test_unknown_speaker_rejected) ... ok
+test_unknown_time_not_invented (test_prepare_real.SourceTests.test_unknown_time_not_invented) ... ok
+test_wrong_parent_order_rejected (test_prepare_real.SourceTests.test_wrong_parent_order_rejected) ... ok
+test_wrong_utf8_offset_rejected (test_prepare_real.SourceTests.test_wrong_utf8_offset_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 43 tests in 0.061s
+
+OK
