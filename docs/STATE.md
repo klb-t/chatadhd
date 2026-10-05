@@ -281,17 +281,26 @@ Przyjęto po rebase; testowane źródło `1e63bcc9350d126611b4931ddd21b3b7a01b22
 
 [Dowody](reports/integrator-intake-2026-10-05/README.md) i [INDEX](reports/INDEX.md). Zachowano cały INTERFEJS i wcześniejsze wpisy; zero płatnych wywołań.
 
+
+
+## Integrator9 — przyrost 10 (2026-10-05)
+
+Przyjęto po rebase; testowane źródło `e8fbb6d356247efe2943ff91cfea5a567f7eb3d3`. Pełny CTest 121/121 (214.03s), 761 native / 29103 asercji, 1322 Python / 0 skips; build web PASS.
+
+Pierwszy przyrost67źródeł identyczny z rebasedprefixda50562 autora fa7538d; zachowano packetroute4 i28źródeł12. Wymagane fullCTest/webPASS. Autor pierwszego84fixture/20nativeUI/16E2EPASS; niezależny9 replay27/84 iBLOCKED przed geometry:Chromium socket() OperationNotPermitted.0/20nativeUI i0/16E2E w tej próbie9; nie deklarujemy ich powtórki. Pełny negatyw archive/integrator-runtime-negatives5b081f6, bez obchodzenia ochron/zmiany testów. Drugi10 nadalwstrzymany120/121 nafullcaller1.
+
+[Dowody](reports/integrator-intake-2026-10-05/README.md) i [INDEX](reports/INDEX.md). Zachowano cały INTERFEJS i wcześniejsze wpisy; zero płatnych wywołań.
+
 ## Integrator9 — bieżąca kolejka sesji 2026-10-05
 
 ## Stan kolejki integratora — bieżący checkpoint
 
-**Przyjęte:** 2:first, 3+4:first, 5:first, 1:partial, 12:first. Każdy kodowy przyrost ma własny pełny CTest, guard rzeczywiście wykonanych przypadków i build web; dokumenty Claude są wyjątkiem zleconym przez właściciela.
+**Przyjęte:** 2:first, 3+4:first, 5:first, 1:partial, 12:first, 10:first. Każdy kodowy przyrost ma własny pełny CTest, guard rzeczywiście wykonanych przypadków i build web; dokumenty Claude są wyjątkiem zleconym przez właściciela.
 
 **Czeka w kolejce, z commitem gotowym do odbioru** (ready autora nie zastępuje bramek9):
 
 | Przyrost | Przypięty commit | Pozostały odbiór |
 |---|---|---|
-|10:first|`fa7538d650da2f4ad37f5ff9254b60a6ee72938f`|równoważny prefix da50562; zachować packet routes|
 |Claude:docs|`3cd5848e7484d50d00f19f0855bc2cd228ad7f3b`|R42 i AGENTS budget; tylko rebase|
 |11:first|`22873e047abe6b56808dd2fbc4fe41188ee0e7a8`|canonical usage projection; rebase/full clean build/gates9|
 |6:first|`d9b29c502bafd3b4cb17f187e3e74f32cfff72ee`|wyłącznie mechanizm; neutralne31/45,0FP; DEV, bez blind|

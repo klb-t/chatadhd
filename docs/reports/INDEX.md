@@ -15,7 +15,7 @@ Każdy odbiór: świeży fetch, rzeczywisty rebase, pełny CTest + niezmieniony 
 |7| `gpt/model-research-2026-10-04` / `5753d2c` | [raport7](https://github.com/klb-t/chatadhd/blob/5753d2cf93dcba4edd5c35534b667f23b915c9b7/docs/reports/model-research-2026-10-04.md) | Przygotowania offline; właściciel przekaże osobny klucz5€. Integrator0paidcalls. |
 |8| `gpt/repo-hygiene-2026-10-04` / `fedaf6b` | [raport8](https://github.com/klb-t/chatadhd/blob/fedaf6b/docs/reports/repo-hygiene-2026-10-05.md) | NIEZGŁOSZONY gotowy: autorfedaf6b nadal pełna macierz w toku.16live źródeł identyczne9c47124, nowy sourcebound runner. Własny normalgate i Clang/vendored potrzebne; seeding/results nadal używane. |
 |9| `gpt/integrator-queue-2026-10-05` | [raport9](integrator-intake-2026-10-05/README.md) | Odbiera całą kolejkę; każdy przyrost ma własne bramki i wpis indeksu. |
-|10| `gpt/interface-2-2026-10-04` / `fa7538d` | [raport10](https://github.com/klb-t/chatadhd/blob/fa7538d/docs/reports/interface-2-2026-10-04.md) | fa7538d: autor zakończył pełny CTest108/108, web, fixture84/84, nativeUI20/20, E2E16/16. Gotowy do osobnego rebase i mixed gates9 po12. Clang captures naprawione. |
+|10| `gpt/interface-2-2026-10-04` / `fa7538d` | [raport10](https://github.com/klb-t/chatadhd/blob/fa7538d/docs/reports/interface-2-2026-10-04.md) | PRZYJĘTY przyrost; źródło9 `e8fbb6d`. CTest 121/121, native 761/29103, Python 1322/0skip; web PASS. Pierwszy przyrost67źródeł identyczny z rebasedprefixda50562 autora fa7538d; zachowano packetroute4 i28źródeł12. Wymagane fullCTest/webPASS. Autor pierwszego84fixture/20nativeUI/16E2EPASS; niezależny9 replay27/84 iBLOCKED przed geometry:Chromium socket() OperationNotPermitted.0/20nativeUI i0/16E2E w tej próbie9; nie deklarujemy ich powtórki. Pełny negatyw archive/integrator-runtime-negatives5b081f6, bez obchodzenia ochron/zmiany testów. Drugi10 nadalwstrzymany120/121 nafullcaller1. |
 |11| `gpt/data-profiles-2026-10-04` / `22873e0` | [raport11](https://github.com/klb-t/chatadhd/blob/22873e047abe6b56808dd2fbc4fe41188ee0e7a8/docs/reports/data-profiles-2026-10-05.md) | GOTOWY pierwszy przyrost22873e0: poprzedni bloker naprawiony; wrapper wynika z canonical2 przez source recipe. Autor127/127,783native/26985assertions,1371Python0skip; własny rebase i mixed gates9 po dokumentachClaude. |
 |12| `gpt/onboarding-2026-10-04` / `3c0bc36` | [raport12](https://github.com/klb-t/chatadhd/blob/3c0bc36552ef9851f1174946cfb108549aae3228/docs/reports/onboarding-2026-10-04.md) | PRZYJĘTY przyrost; źródło9 `1e63bcc`. CTest 121/121, native 761/29103, Python 1322/0skip; web PASS. 28źródeł autora3c0bc36 byte-identical po realnym rebase. Native onboarding4suites=51/2704 z pełnego JUnit; controller17/17, generatorcheckPASS. ActualW3registry bridge load/resolve/tamper/multiversionPASS;0providers/0method-execution, bez deklaracji podpiętego czatu. Profile/scenario/layers/store+UIcomponents przyjęte; HTTP/nawigacja/retencja dalsze10/3/11. Helperreporter Node22 jawnieTAP;pierwszy parsernegatyw w archive. |
 
@@ -83,13 +83,12 @@ Pełne obecne negatywy9 zachowane na archive/2026-10-05/integrator-runtime-negat
 
 ## Stan kolejki integratora — bieżący checkpoint
 
-**Przyjęte:** 2:first, 3+4:first, 5:first, 1:partial, 12:first. Każdy kodowy przyrost ma własny pełny CTest, guard rzeczywiście wykonanych przypadków i build web; dokumenty Claude są wyjątkiem zleconym przez właściciela.
+**Przyjęte:** 2:first, 3+4:first, 5:first, 1:partial, 12:first, 10:first. Każdy kodowy przyrost ma własny pełny CTest, guard rzeczywiście wykonanych przypadków i build web; dokumenty Claude są wyjątkiem zleconym przez właściciela.
 
 **Czeka w kolejce, z commitem gotowym do odbioru** (ready autora nie zastępuje bramek9):
 
 | Przyrost | Przypięty commit | Pozostały odbiór |
 |---|---|---|
-|10:first|`fa7538d650da2f4ad37f5ff9254b60a6ee72938f`|równoważny prefix da50562; zachować packet routes|
 |Claude:docs|`3cd5848e7484d50d00f19f0855bc2cd228ad7f3b`|R42 i AGENTS budget; tylko rebase|
 |11:first|`22873e047abe6b56808dd2fbc4fe41188ee0e7a8`|canonical usage projection; rebase/full clean build/gates9|
 |6:first|`d9b29c502bafd3b4cb17f187e3e74f32cfff72ee`|wyłącznie mechanizm; neutralne31/45,0FP; DEV, bez blind|
@@ -102,6 +101,14 @@ Pełne obecne negatywy9 zachowane na archive/2026-10-05/integrator-runtime-negat
 ## Do wątku1 — regresja pełnego caller
 
 Pełny50e6bb9 odrzucony: `unit.test_knowledge_semantic`13cases/125assertions:10PASS+3FAIL,8failedassertions; retry zwraca blocked zamiast failed i nie odtwarza cache/kandydatów. Naprawić tożsamość/lifecycle próby z W2 bez luzowania ledger/testów. [Pełny negatyw](https://github.com/klb-t/chatadhd/tree/archive/2026-10-05/precision-intake-negative/docs/reports/integrator-intake-2026-10-05). Wybrany20pathpartial nie zawiera semantic.cpp/semantic_usage.h. Rejestr43 nie jest dowodem podłączenia produkcyjnego caller.
+
+## Do wątku10 — niezależne UI9 ograniczone środowiskiem
+
+Wymagane mixed121/121 i webPASS. Powtórka27/84 kończy się naChromium socket() OperationNotPermitted przedgeometry; nativeUI20/E2E16 nie wykonane przez9, autorfirstfa ma pełne wyniki. [Rawnegatyw](https://github.com/klb-t/chatadhd/tree/archive/2026-10-05/integrator-runtime-negatives/docs/reports/integrator-intake-2026-10-05). Powtórzyć na środowisku z obsługą Chromium; nie luzować testów ani ochron.
+
+## Do wątku3 — odrzucony ancestor
+
+Drugi6b54926 dziedziczy4887eb0 (fullcaller1 odrzucony). Rebase na aktualny main albo wyłącznie własny zakres; nie wnosić semantic.cpp/semantic_usage.h z negatywu. Pierwszy3+4 już przyjęty,4second niezależnie gotowy.
 
 ## Do wątku N
 

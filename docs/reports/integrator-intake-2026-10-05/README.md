@@ -8,6 +8,7 @@ Baza30ad7d3. Cały wcześniejszy INTERFEJS, R39–R41 Claude i usage2 zachowany.
 |5|`0a81480bd1a70b394bac72e98f6b5e7cb49f5d0b`|117/117 / 225.60s|710/26399|1322/0|[5-evidence.zip](5-evidence.zip)|
 |1|`a95a3e1d9117af4b5ebfa3bc2a042c74efbd08f8`|117/117 / 196.85s|710/26399|1322/0|[1-evidence.zip](1-evidence.zip)|
 |12|`1e63bcc9350d126611b4931ddd21b3b7a01b2230`|121/121 / 229.50s|761/29103|1322/0|[12-evidence.zip](12-evidence.zip)|
+|10|`e8fbb6d356247efe2943ff91cfea5a567f7eb3d3`|121/121 / 214.03s|761/29103|1322/0|[10-evidence.zip](10-evidence.zip)|
 
 Każdy ZIP ma pełny manifest/JUnit/log/guard, manifest źródeł, niepustych ELF objects/binaries przed i po, polecenia i hashe.
 Webbuild przeszedł dla każdego przyrostu. Nie sumujemy retry zamiast jednego pełnego przebiegu. Opt-in catalogscale jawnie niewykonany; inne wymagane przypadki pozytywne.
@@ -34,6 +35,12 @@ Testowane źródło `a95a3e1d9117af4b5ebfa3bc2a042c74efbd08f8`. CTest 117/117, 7
 28źródeł autora3c0bc36 byte-identical po realnym rebase. Native onboarding4suites=51/2704 z pełnego JUnit; controller17/17, generatorcheckPASS. ActualW3registry bridge load/resolve/tamper/multiversionPASS;0providers/0method-execution, bez deklaracji podpiętego czatu. Profile/scenario/layers/store+UIcomponents przyjęte; HTTP/nawigacja/retencja dalsze10/3/11. Helperreporter Node22 jawnieTAP;pierwszy parsernegatyw w archive.
 
 Testowane źródło `1e63bcc9350d126611b4931ddd21b3b7a01b2230`. CTest 121/121, 761 przypadków natywnych / 29103 asercji, 1322 Python / 0 skips; 229.50s; build web PASS. ZIP SHA256 `57d4718077ebe1ed9f64b5fd90dbc5d1e8cfa1b04b34339f6ac13513d252300e`, 40 plików.
+
+## Przyrost 10
+
+Pierwszy przyrost67źródeł identyczny z rebasedprefixda50562 autora fa7538d; zachowano packetroute4 i28źródeł12. Wymagane fullCTest/webPASS. Autor pierwszego84fixture/20nativeUI/16E2EPASS; niezależny9 replay27/84 iBLOCKED przed geometry:Chromium socket() OperationNotPermitted.0/20nativeUI i0/16E2E w tej próbie9; nie deklarujemy ich powtórki. Pełny negatyw archive/integrator-runtime-negatives5b081f6, bez obchodzenia ochron/zmiany testów. Drugi10 nadalwstrzymany120/121 nafullcaller1.
+
+Testowane źródło `e8fbb6d356247efe2943ff91cfea5a567f7eb3d3`. CTest 121/121, 761 przypadków natywnych / 29103 asercji, 1322 Python / 0 skips; 214.03s; build web PASS. ZIP SHA256 `69979686105c4e2e7df0602e4f3e484f332cb05ad57eb0b52db75a81180493c6`, 16 plików.
 
 ## Czego nie przyjęto
 
