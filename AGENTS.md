@@ -1,9 +1,12 @@
 # Instructions for coding agents (Codex / Claude / others)
 
-Current direct-owner clarification: `docs/research/OWNER_CLARIFICATION_2026-09-30.md`.
-Continue the already authorised cheap/Jev experiments within the existing USD 2
-non-resetting budget; no newly invented paid frontier pilot. The older blanket
-paid-synthetic restriction in the Claude handoff is superseded by this correction.
+Paid model calls (owner, 2026-10-04): allowed, funds are limited — use them wisely.
+The owner authorised **EUR 5 on a separate OpenRouter key** for thread 7 (model
+research), covering cheap-model prompt/parameter studies, a small frontier-model
+panel (graph completion, pattern discovery, graph reply vs text+JSON) and
+repeats/unseen checks. Plan and cost estimate before each stage and the actual
+cost after it. The key is never committed. Supersedes the earlier USD 2 limit and the
+"no frontier pilot" note in `docs/research/OWNER_CLARIFICATION_2026-09-30.md`.
 
 > **ZASADA WŁAŚCICIELA (2026-09-30), OBOWIĄZUJE ZAWSZE:** NIE PODEJMUJEMY DECYZJI ZA UŻYTKOWNIKA,
 > ZWŁASZCZA OGRANICZAJĄCYCH. WSZYSTKO JEST KONFIGUROWALNE: MODEL, ZAKRES, ROZUMOWANIE, AUTOMATYCZNE
@@ -22,7 +25,11 @@ Python↔C++ compatibility invariant), `loom/README.md`.
 ## Rules that have proved necessary
 
 - Keep the owner's options open; policy and variety live in **data**, code holds
-  universal operations. Inference is never presented as observation; the owner's
+  universal operations. String literals in product code are limited to the six
+  categories of R42 (contract keys/schema ids, external standards, mechanism
+  vocabulary, contract serialization formats, data bootstrap, developer
+  diagnostics). Test: if someone could want to change it without changing the
+  algorithm, it is data. Inference is never presented as observation; the owner's
   judgement always wins; missing capability => lower evidence class, never a
   fabricated metric.
 - Preserve all source bytes; derived state must be rebuildable.
