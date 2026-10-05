@@ -34,6 +34,7 @@
 #include <string_view>
 
 #include "loom/event_bus.h"
+#include "loom/result.h"
 #include "loom/util/json.h"
 
 namespace loom {
@@ -57,7 +58,11 @@ class GraphEngine {
   bool active() const noexcept { return active_.load(); }
 
   void on_message(const Json& data);
+  Status on_message_checked(const Json& data, const Json& overrides = Json::object());
   bool ingest_analysis(std::string_view msg_id, std::string_view conv_id, const Json& analysis);
+  Result<bool> ingest_analysis_checked(std::string_view msg_id, std::string_view conv_id, const Json& analysis,
+                                       const Json& overrides = Json::object());
+  Result<Json> profile_inspection(const Json& overrides = Json::object()) const;
   int reindex_conversation(std::string_view conv_id);
   int reindex_all();
 

@@ -30,6 +30,7 @@ namespace loom {
 
 class Database;
 class Config;
+class RuntimeProfile;
 class SemanticAnalyzer;
 class MemoryEngine;
 
@@ -46,12 +47,17 @@ class GraphMemorySelector {
 
   std::string select_context(std::string_view text, const GraphSelectOptions& opts = {});
   std::vector<std::string> extract_seed_labels(std::string_view text, const std::optional<Json>& analysis) const;
+  Result<std::vector<std::string>> extract_seed_labels_checked(std::string_view text, const std::optional<Json>& analysis,
+                                                              const Json& overrides = Json::object()) const;
+  Result<std::string> select_context_checked(std::string_view text, const GraphSelectOptions& opts = {},
+                                            const Json& overrides = Json::object());
 
   // Loom: BFS subgraph around `seed_ids` (nodes or messages) up to `depth`
   // hops, capped at max_nodes. Output shape matches Database::get_graph_data
   // ({"nodes":[{"id","label","type","kind",...}], "edges":[{"src","dst",
   // "type","weight"}]}) plus "depth" per node. Backs loom_expand_graph.
-  Result<Json> expand(const std::vector<std::string>& seed_ids, int depth, int max_nodes = 500);
+  Result<Json> expand(const std::vector<std::string>& seed_ids, int depth);
+  Result<Json> expand(const std::vector<std::string>& seed_ids, int depth, int max_nodes);
 
  private:
   Database& db_;
@@ -75,7 +81,11 @@ struct ContextRequest {
   bool include_memory = true;
   bool include_graph = true;
   bool include_search = true;
+  // A parsed request remembers only field presence, never source text.
+  // null denotes a directly constructed C++ request with explicit values.
+  Json provided_fields = nullptr;
   static Result<ContextRequest> from_json(const Json& j);
+  static Result<ContextRequest> from_json_with_profile(const Json& j, const RuntimeProfile& profile);
 };
 
 struct ContextItem {
