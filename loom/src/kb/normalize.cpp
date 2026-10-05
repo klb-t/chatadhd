@@ -15,44 +15,33 @@ bool ends_with(std::string_view s, std::string_view suf) {
   return s.size() >= suf.size() && s.compare(s.size() - suf.size(), suf.size(), suf) == 0;
 }
 
-// Polish letters with diacritics (lowercase) mark a token as Polish.
-bool has_polish_diacritic(std::string_view token) {
-  static constexpr char32_t kPl[] = {U'ą', U'ć', U'ę', U'ł', U'ń', U'ó', U'ś', U'ź', U'ż'};
-  for (char32_t c : utf8::decode(token)) {
-    if (std::find(std::begin(kPl), std::end(kPl), c) != std::end(kPl)) return true;
+bool is_vowel(char32_t c, std::u32string_view vowels) { return vowels.find(c) != std::u32string_view::npos; }
+
+bool has_vowel(std::string_view s, std::u32string_view vowels, bool non_ascii_vowel) {
+  for (char32_t c : utf8::decode(s)) {
+    if (is_vowel(c, vowels) || (non_ascii_vowel && c >= 0x80)) return true;
   }
   return false;
 }
 
-bool is_ascii_vowel(char c) { return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' || c == 'y'; }
-
-bool has_vowel(std::string_view s) {
-  for (char c : s) {
-    if (is_ascii_vowel(c)) return true;
-  }
-  // Non-ASCII letters (Polish, accented) count as vowels here: the verbal
-  // repair below only ever runs on English stems.
-  for (char c : s) {
-    if (static_cast<unsigned char>(c) >= 0x80) return true;
-  }
-  return false;
-}
-
-// "stor", "hop", "creat" ... : exactly one vowel group, ending consonant-
-// vowel-consonant with the last consonant not w/x/y (Porter's *o).
-bool short_cvc(std::string_view s) {
-  if (s.size() < 3) return false;
-  int groups = 0;
+// Count configured vowel groups and check the terminal consonant-vowel-
+// consonant pattern. Character classes and eligibility are recipe data.
+bool short_cvc(std::string_view s, std::u32string_view vowels, std::u32string_view terminal_exceptions,
+               bool allow_non_ascii, std::size_t vowel_groups) {
+  const auto chars = utf8::decode(s);
+  if (chars.size() < 3) return false;
+  std::size_t groups = 0;
   bool in_vowel = false;
-  for (char c : s) {
-    if (static_cast<unsigned char>(c) >= 0x80) return false;
-    bool v = is_ascii_vowel(c);
+  for (char32_t c : chars) {
+    if (c >= 0x80 && !allow_non_ascii) return false;
+    bool v = is_vowel(c, vowels);
     if (v && !in_vowel) ++groups;
     in_vowel = v;
   }
-  if (groups != 1) return false;
-  char a = s[s.size() - 3], b = s[s.size() - 2], c = s[s.size() - 1];
-  return !is_ascii_vowel(a) && is_ascii_vowel(b) && !is_ascii_vowel(c) && c != 'w' && c != 'x' && c != 'y';
+  if (groups != vowel_groups) return false;
+  char32_t a = chars[chars.size() - 3], b = chars[chars.size() - 2], c = chars[chars.size() - 1];
+  return !is_vowel(a, vowels) && is_vowel(b, vowels) && !is_vowel(c, vowels) &&
+         terminal_exceptions.find(c) == std::u32string_view::npos;
 }
 
 void add_words(const Json& arr, std::set<std::string, std::less<>>& out) {
@@ -98,8 +87,31 @@ std::string join(const std::vector<std::string>& v, std::size_t from, std::size_
 
 }  // namespace
 
+Result<Normalizer> Normalizer::create(const Pack& pack) {
+  const Json& stemming = pack.lexicon("stemming");
+  if (stemming.is_null()) return Error(Errc::Unavailable, "kb_normalization_recipe_unavailable");
+  if (json::get_string(stemming, "schema") != "loom.kb.stemming/2") {
+    return Error(Errc::InvalidArgument, "kb_normalization_recipe_schema_invalid");
+  }
+  return Normalizer(pack);
+}
+
 Normalizer::Normalizer(const Pack& pack) {
   const Json& st = pack.lexicon("stemming");
+  const Json& recipe = st.at("normalization");
+  pl_character_cues_ = utf8::decode(recipe.at("pl_character_cues").get<std::string>());
+  vowels_ = utf8::decode(recipe.at("vowels").get<std::string>());
+  non_ascii_vowel_ = recipe.at("non_ascii_vowel").get<bool>();
+  cvc_terminal_exceptions_ = utf8::decode(recipe.at("cvc_terminal_exceptions").get<std::string>());
+  undouble_exceptions_ = utf8::decode(recipe.at("undouble_exceptions").get<std::string>());
+  cvc_allow_non_ascii_ = recipe.at("cvc_allow_non_ascii").get<bool>();
+  undouble_allow_non_ascii_ = recipe.at("undouble_allow_non_ascii").get<bool>();
+  cvc_vowel_groups_ = recipe.at("cvc_vowel_groups").get<std::size_t>();
+  restore_suffix_ = recipe.at("restore_suffix").get<std::string>();
+  guess_min_tokens_ = recipe.at("guess_min_tokens").get<std::size_t>();
+  mixed_min_fraction_ = recipe.at("mixed_min_fraction").get<double>();
+  pl_min_fraction_ = recipe.at("pl_min_fraction").get<double>();
+  en_min_fraction_ = recipe.at("en_min_fraction").get<double>();
   if (const Json* f = json::find(st, "fold"); f && f->is_object()) {
     for (auto it = f->begin(); it != f->end(); ++it) {
       auto cps = utf8::decode(it.key());
@@ -109,8 +121,8 @@ Normalizer::Normalizer(const Pack& pack) {
   auto load = [&](std::string_view lang, Stemmer& s) {
     const Json* j = json::find(st, lang);
     if (!j || !j->is_object()) return;
-    s.min_token = static_cast<std::size_t>(json::get_int(*j, "min_token", 4));
-    s.min_stem = static_cast<std::size_t>(json::get_int(*j, "min_stem", 3));
+    s.min_token = j->at("min_token").get<std::size_t>();
+    s.min_stem = j->at("min_stem").get<std::size_t>();
     if (const Json* r = json::find(*j, "rewrite"); r && r->is_array()) {
       for (const auto& x : *r) s.rewrite.emplace_back(json::get_string(x, "suffix"), json::get_string(x, "to"));
     }
@@ -131,10 +143,10 @@ Normalizer::Normalizer(const Pack& pack) {
   };
   load("pl", pl_);
   load("en", en_);
-  for (const char* name : {"stopwords_base", "stopwords"}) {
-    const Json& sw = pack.lexicon(name);
-    for (const char* k : {"en", "pl", "code"}) add_words(sw[k], stop_);
-    add_words(sw["pl"], pl_stop_);
+  for (const auto& source : recipe.at("stopword_sources")) {
+    const Json& sw = pack.lexicon(source.at("lexicon").get<std::string>());
+    for (const auto& field : source.at("fields")) add_words(sw.at(field.get<std::string>()), stop_);
+    for (const auto& field : source.at("pl_signal_fields")) add_words(sw.at(field.get<std::string>()), pl_stop_);
   }
   // Folded forms are stop words too ("się" -> "sie").
   std::vector<std::string> folded;
@@ -197,8 +209,15 @@ bool Normalizer::is_stopword(std::string_view token) const {
   return stop_.count(fold(token)) > 0;
 }
 
+bool Normalizer::has_pl_character_cue(std::string_view token) const {
+  for (char32_t c : utf8::decode(token)) {
+    if (pl_character_cues_.find(c) != std::u32string::npos) return true;
+  }
+  return false;
+}
+
 bool Normalizer::has_pl_signal(std::string_view low) const {
-  if (has_polish_diacritic(low) || pl_.exceptions.count(low) || pl_stop_.count(low)) return true;
+  if (has_pl_character_cue(low) || pl_.exceptions.count(low) || pl_stop_.count(low)) return true;
   if (utf8::length(low) < pl_.min_token) return false;
   for (const auto& m : pl_.markers) {
     if (ends_with(low, m)) return true;
@@ -227,22 +246,26 @@ std::string Normalizer::stem_with(const Stemmer& s, std::string_view token) cons
     if (blocked) continue;
     std::string stem = t.substr(0, t.size() - suf.size());
     if (s.verbal.count(suf)) {
-      if (!has_vowel(stem)) continue;  // "string", "bring"
-      std::size_t n = stem.size();
-      char last = stem[n - 1];
-      if (n >= 2 && stem[n - 2] == last && !is_ascii_vowel(last) && last != 'l' && last != 's' && last != 'z' &&
-          static_cast<unsigned char>(last) < 0x80) {
-        stem.pop_back();  // "runn" -> "run", "mapp" -> "map"
+      if (!has_vowel(stem, vowels_, non_ascii_vowel_)) continue;
+      const auto chars = utf8::decode(stem);
+      const auto n = chars.size();
+      const char32_t last = chars.back();
+      if (n >= 2 && chars[n - 2] == last && !is_vowel(last, vowels_) &&
+          undouble_exceptions_.find(last) == std::u32string::npos &&
+          (last < 0x80 || undouble_allow_non_ascii_)) {
+        stem.resize(utf8::byte_offset(stem, n - 1));
       } else {
         bool restored = false;
         for (const auto& r : s.restore_e) {
           if (ends_with(stem, r)) {
-            stem += 'e';  // "creat" -> "create"
+            stem += restore_suffix_;
             restored = true;
             break;
           }
         }
-        if (!restored && short_cvc(stem)) stem += 'e';  // "stor" -> "store"
+        if (!restored && short_cvc(stem, vowels_, cvc_terminal_exceptions_, cvc_allow_non_ascii_, cvc_vowel_groups_)) {
+          stem += restore_suffix_;
+        }
       }
     }
     return stem;
@@ -257,7 +280,7 @@ std::string Normalizer::stem(std::string_view token, Lang lang) const {
 
 std::string Normalizer::key_as(std::string_view low, Lang lang) const {
   // English exceptions ("data", "status") hold even inside Polish text.
-  if (lang == Lang::Pl && !has_polish_diacritic(low) && !pl_.exceptions.count(low) && en_.exceptions.count(low)) {
+  if (lang == Lang::Pl && !has_pl_character_cue(low) && !pl_.exceptions.count(low) && en_.exceptions.count(low)) {
     lang = Lang::En;
   }
   return fold(stem_with(lang == Lang::Pl ? pl_ : en_, low));
@@ -280,7 +303,7 @@ std::string Normalizer::phrase_key(std::string_view phrase, bool map_glossary, L
     if (is_stopword(t)) continue;
     Lang tl = phrase_pl ? Lang::Pl : (lang == Lang::En ? Lang::En : token_lang(t));
     // A token with a Polish signal is Polish even in English text.
-    if (tl == Lang::En && lang == Lang::En && has_polish_diacritic(t)) tl = Lang::Pl;
+    if (tl == Lang::En && lang == Lang::En && has_pl_character_cue(t)) tl = Lang::Pl;
     std::string k = key_as(t, tl);
     if (k.empty()) continue;
     primary.push_back(k);
@@ -312,15 +335,16 @@ std::string Normalizer::phrase_key(std::string_view phrase, bool map_glossary, L
 
 Lang Normalizer::guess_lang(std::string_view text) const {
   auto toks = tokens(text);
-  if (toks.size() < 3) {
+  if (toks.empty()) return Lang::Unknown;
+  if (toks.size() < guess_min_tokens_) {
     bool pl = false;
-    for (const auto& t : toks) pl = pl || has_polish_diacritic(t);
+    for (const auto& t : toks) pl = pl || has_pl_character_cue(t);
     return pl ? Lang::Pl : Lang::Unknown;
   }
   std::size_t pl = 0;
   std::size_t en = 0;
   for (const auto& t : toks) {
-    if (pl_stop_.count(t) || has_polish_diacritic(t)) {
+    if (pl_stop_.count(t) || has_pl_character_cue(t)) {
       ++pl;
     } else if (stop_.count(t)) {
       ++en;
@@ -329,9 +353,9 @@ Lang Normalizer::guess_lang(std::string_view text) const {
   double n = static_cast<double>(toks.size());
   double fp = static_cast<double>(pl) / n;
   double fe = static_cast<double>(en) / n;
-  if (fp >= 0.25 && fe >= 0.25) return Lang::Mixed;
-  if (fp > fe && fp >= 0.05) return Lang::Pl;
-  if (fe > 0.05) return Lang::En;
+  if (fp >= mixed_min_fraction_ && fe >= mixed_min_fraction_) return Lang::Mixed;
+  if (fp > fe && fp >= pl_min_fraction_) return Lang::Pl;
+  if (fe > en_min_fraction_) return Lang::En;
   return Lang::Unknown;
 }
 
