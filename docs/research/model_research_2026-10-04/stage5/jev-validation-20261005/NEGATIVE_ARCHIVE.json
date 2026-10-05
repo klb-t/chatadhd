@@ -1,0 +1,13 @@
+{
+  "schema": "loom.jev_fake_archive/1",
+  "payload_files": 105,
+  "sha256": "11bf5411560c30a52bf1f3b7a6dadae7769706530196272ce63bfb8837413b4e",
+  "bytes": 164812,
+  "crc_pass": true,
+  "fake_only": true,
+  "all_positive_and_negative_controls_preserved": true,
+  "branch": "archive/gpt/research-jev-validation-2026-10-05",
+  "archive_repo_path": "docs/research/model_research_2026-10-04/stage5/jev-validation-20261005/negative-controls-20261005.zip",
+  "new_model_calls": 0,
+  "includes_192_slot_empty_control": true
+}

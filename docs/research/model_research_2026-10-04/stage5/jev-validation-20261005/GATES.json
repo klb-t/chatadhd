@@ -1,0 +1,23 @@
+{
+  "schema": "loom.jev_validation.gates/1",
+  "observed_on": "2026-10-05",
+  "changed_native_code": false,
+  "legacy_normalizer_and_manifest_unittest_cases": 25,
+  "binding_and_exporter_unittest_cases": 17,
+  "frozen_scorer_control_cases": 8,
+  "integration_controls": [
+    "192_planned_empty_score",
+    "192_planned_empty_method_graph_export"
+  ],
+  "all_passed": true,
+  "frozen_scoring_helper_changed": false,
+  "threshold_changed": false,
+  "gold_changed": false,
+  "request_body_or_operation_id_changed": false,
+  "actual_new_population_results_read": false,
+  "network_model_calls": 0,
+  "logs_sha256": {
+    "BASE_COMPAT_TESTS.log": "9213b13f8fb95c397428cd970773f1d7f4fd2cd0d1cb169e42079a019da66ce1",
+    "VALIDATION_TESTS.log": "372631c8bea6f98cb6b1faf21dd279918e00c60f2500a1cb60d45800daffddbb"
+  }
+}

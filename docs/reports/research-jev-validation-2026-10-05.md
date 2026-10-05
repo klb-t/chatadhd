@@ -7,10 +7,14 @@ opublikowanego `edcb32f` i pobraniu późniejszego commitu z checkoutu prowadzą
 Nie ponawiano wcześniejszych 720 wywołań. Nie czytano `eval/real-holdout-key`,
 prywatnych danych, klucza ani prywatnego ledgeru.
 
-Przyrost odtworzenia: lokalny `c13cea5`. Dispatch jest przygotowany w
-`stage5/new-label-dispatch-binding-v1`; commit opublikowany przez connector i
-końcowe wyniki zostaną przypięte poniżej. Zwykły `git push` nie miał dostępnego
-uwierzytelnienia; publikacja korzysta z połączonego GitHub, bez czytania credentiali.
+**Commit gotowy do dispatch / odbioru: `957819e9e17da29603a6587cc9d543a455ccef8e`**
+na `gpt/research-jev-validation-2026-10-05`. Drzewo SHA
+`beaf13c420c530f2a4085144a25500de3044af0a` jest identyczne z lokalnym `7c5cb10`.
+Przyrost odtworzenia: opublikowany `37a65efab8927f5fa3901b1db4237a7bbb69e141`
+(lokalny `c13cea5`). Bazowe przygotowanie `66cd016` opublikowano pod
+`9e1a8bb1334d061dd07703dfaedde568f9550373`, również z identycznym drzewem.
+Wszystkie przyrosty wypchnięto kolejno, bez force. API GitHub utworzyło nowe SHA
+commitów ze względu na własne metadane; treści i drzewa nie uległy zmianie.
 
 ## Populacja i stan wyników
 
@@ -50,6 +54,17 @@ zachowano osobno i nie zastąpiono go zawartością kapsuły.
 - Osiem oryginalnych kontroli scorera — PASS na nowym checkout.
 - Producent `programme_context_preparation_v1.py verify` — PASS, dokładnie 192 operacje.
 - Powiązanie programu: 9/9 testów PASS; wszystkie 192 body i ID identyczne.
+- Eksport wyników i porównanie par: 8/8 testów PASS, w tym actual `produced_by`
+  w zakodowanym grafie, rozdzielenie poprawnego protokołu i konfliktu etykiet,
+  stałe 96/48, hash binding i brak wyniku przy całkowicie niewykonanym badaniu.
+- Istniejący normalizer i manifest: 25/25 testów kompatybilności PASS.
+- Integracja pełnej zamrożonej populacji z pustym bundle: 192 brakujące pierwsze
+  odpowiedzi pozostają w mianowniku; eksport grafu zachowuje null jakości.
+
+Dowody nowych bramek: `stage5/jev-validation-20261005/GATES.json`, dwa pełne logi
+oraz `EMPTY_CONTROL.json` / `EMPTY_EXPORT_CONTROL.json`. To wyłącznie kontrola
+mechanizmu na atrapach, nie wynik modeli. 42 unittest cases + 8 oryginalnych
+kontroli protokołu + dwa integration controls; pełny CTest nie był uruchamiany.
 
 Manifest wykonawcy SHA256 `e0dea1c45f0306cd4e7253fa4989bd9d1007a8c4878989bb80a98d7c850bea26`;
 config scorera SHA256 `4cfc08a2afbe4e98204232eda45d4cafd81f6a12f738fd4d7c5456bbc9f328ce`.
@@ -74,15 +89,29 @@ Pełnych historycznych bramek C++ nie przenosimy na ten przyrost Python/danych.
    operacje, rozlicza generacje i publikuje wyłącznie bezpieczny NORMALIZED bundle
    z niezależnie zapisanym SHA. 7C nie otrzymuje klucza ani kopii prywatnego ledgeru.
 4. Uruchomić oryginalny scorer na publicznym bundle z hashami config/bundle;
-   następnie wyeksportować datowane twierdzenia o wersjach przepisów w istniejącym
-   formacie profili metod. Zachować requested/observed modele, prompt/version hash,
-   parametry, dowody, produced_by i wszystkie mianowniki.
+   następnie użyć gotowego `python -m loom.tools.structure.jev_validation_results_v1`
+   z `--score`, `--bundle`, `--manifest`, `--config`, `--output`,
+   `--observed-on 2026-10-05` i osobnymi `--score-sha256`, `--bundle-sha256`,
+   `--manifest-sha256`, `--config-sha256`. Inputami są wynik zamrożonego scorera,
+   publiczny NORMALIZED i powyższy manifest/config wykonawcy. Output musi być nowym
+   katalogiem w repo, np. `stage5/jev-validation-20261005/measured-v1`.
+   Eksporter zapisuje datowane twierdzenia o wersjach przepisów w istniejącym
+   formacie profili metod: requested/observed modele, prompt/version hash,
+   parametry, dowody, produced_by i wszystkie mianowniki. Zachowuje oryginalne
+   bajty czterech wejść oraz osobny `VALIDATION.json` z 96 porównaniami par.
 5. Porównać dostępność, protokół, etykiety, PL/EN, koszt, błędy i pary rozbieżności.
    Zachować pełne negatywy na gałęzi archiwalnej, bez automatycznej adopcji presetu.
+
+Pozostaje zależność: 7A musi wykonać i opublikować collection oraz potwierdzone
+rachunki. Offline nie można ustalić dostępności, jakości i kosztu nowych modeli.
+Komplet własnych pozytywnych i negatywnych fixture'ów oraz pusty kontrolny bundle
+zachowujemy w archiwum wskazanym przez `NEGATIVE_ARCHIVE.json`; archiwum nie jest
+wynikiem nowej populacji. Po wynikach nie zmieniać instrumentu ani wejść.
 
 ## Do wątku N
 
 - **7A:** Odbierz preparację 7C i wykonaj dispatch na jedynym istniejącym rejestrze.
+  Gotowy commit: `957819e9e17da29603a6587cc9d543a455ccef8e`.
   Oczekujemy publicznych pierwszych odpowiedzi i rachunków generacji, nie klucza.
 - **1, 3/4:** Nowych wyników jeszcze nie ma; historyczne 80/96 i 89/96 nie opisują
   nowych rodzin. Twierdzenia i produced_by będą osobnym przyrostem po collection.

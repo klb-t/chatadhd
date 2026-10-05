@@ -1,0 +1,15 @@
+{
+  "schema": "loom.jev_empty_control/1",
+  "fake_only": true,
+  "physical_calls": 0,
+  "first_rows": 0,
+  "planned_decisions": 192,
+  "per_arm_unavailable": 96,
+  "replacements_used": false,
+  "result": "pass",
+  "manifest_sha256": "e0dea1c45f0306cd4e7253fa4989bd9d1007a8c4878989bb80a98d7c850bea26",
+  "config_sha256": "4cfc08a2afbe4e98204232eda45d4cafd81f6a12f738fd4d7c5456bbc9f328ce",
+  "control_bundle_sha256": "eb829c8b0728b47c4460d7349188bf2ce3555fcb9edfb6d6d5dc425341fe5408",
+  "control_score_sha256": "ae252a4ad950c5fa2dd87f3e7f8a339fc411d34ab976cc84878e12da418dd0a3",
+  "actual_results_read": false
+}

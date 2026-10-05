@@ -1,0 +1,22 @@
+test_bound_config_relative_paths_resolve_to_original_dependencies (loom.tools.structure.test_jev_dispatch_binding_v1.BindingTests.test_bound_config_relative_paths_resolve_to_original_dependencies) ... ok
+test_forbidden_body_id_parameter_and_config_deltas_rejected (loom.tools.structure.test_jev_dispatch_binding_v1.BindingTests.test_forbidden_body_id_parameter_and_config_deltas_rejected) ... ok
+test_frozen_gold_tampering_is_rejected_before_output (loom.tools.structure.test_jev_dispatch_binding_v1.BindingTests.test_frozen_gold_tampering_is_rejected_before_output) ... ok
+test_frozen_manifest_tampering_is_rejected_before_output (loom.tools.structure.test_jev_dispatch_binding_v1.BindingTests.test_frozen_manifest_tampering_is_rejected_before_output) ... ok
+test_missing_duplicate_or_invalid_explicit_operator_policy_rejected (loom.tools.structure.test_jev_dispatch_binding_v1.BindingTests.test_missing_duplicate_or_invalid_explicit_operator_policy_rejected) ... ok
+test_nonempty_output_and_wrong_relative_base_rejected (loom.tools.structure.test_jev_dispatch_binding_v1.BindingTests.test_nonempty_output_and_wrong_relative_base_rejected) ... ok
+test_only_identity_and_paid_manifest_binding_change (loom.tools.structure.test_jev_dispatch_binding_v1.BindingTests.test_only_identity_and_paid_manifest_binding_change) ... ok
+test_request_bytes_tampering_rejected (loom.tools.structure.test_jev_dispatch_binding_v1.BindingTests.test_request_bytes_tampering_rejected) ... ok
+test_threshold_or_mapping_tampering_is_rejected_by_source_pin (loom.tools.structure.test_jev_dispatch_binding_v1.BindingTests.test_threshold_or_mapping_tampering_is_rejected_by_source_pin) ... ok
+test_attempted_missing_capture_is_zero_success_not_unexecuted_null (loom.tools.structure.test_jev_validation_results_v1.JevValidation.test_attempted_missing_capture_is_zero_success_not_unexecuted_null) ... ok
+test_bound_score_and_bundle_cannot_be_substituted (loom.tools.structure.test_jev_validation_results_v1.JevValidation.test_bound_score_and_bundle_cannot_be_substituted) ... ok
+test_conflict_is_protocol_valid_but_unavailable_and_pairs_retained (loom.tools.structure.test_jev_validation_results_v1.JevValidation.test_conflict_is_protocol_valid_but_unavailable_and_pairs_retained) ... ok
+test_generation_cost_change_cannot_become_actual_resource_claim (loom.tools.structure.test_jev_validation_results_v1.JevValidation.test_generation_cost_change_cannot_become_actual_resource_claim) ... ok
+test_graph_has_actual_producers_version_parameters_and_dated_96_metrics (loom.tools.structure.test_jev_validation_results_v1.JevValidation.test_graph_has_actual_producers_version_parameters_and_dated_96_metrics) ... ok
+test_missing_first_slots_keep_96_and_48_and_unknown_actual_cost (loom.tools.structure.test_jev_validation_results_v1.JevValidation.test_missing_first_slots_keep_96_and_48_and_unknown_actual_cost) ... ok
+test_unattempted_population_emits_no_measured_model_quality (loom.tools.structure.test_jev_validation_results_v1.JevValidation.test_unattempted_population_emits_no_measured_model_quality) ... ok
+test_valid_external_hashes_do_not_allow_changed_request_or_denominator (loom.tools.structure.test_jev_validation_results_v1.JevValidation.test_valid_external_hashes_do_not_allow_changed_request_or_denominator) ... ok
+
+----------------------------------------------------------------------
+Ran 17 tests in 11.551s
+
+OK
