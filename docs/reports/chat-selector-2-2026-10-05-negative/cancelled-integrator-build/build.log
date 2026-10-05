@@ -1,0 +1,129 @@
+ninja: warning: premature end of file; recovering
+[0/2] Re-checking globbed directories...
+-- GLOB mismatch!
+The following files were added:
+  +/tmp/w3-selector-2-baseline/loom/src/extract/prompt_contract.cpp
+[1/2] Re-running CMake...
+-- loom: SQLite = vendored amalgamation 3.47.2
+-- loom: OpenSSL = ON
+-- Configuring done (0.3s)
+-- Generating done (0.0s)
+-- Build files have been written to: /tmp/w3-selector-2-baseline-build
+ninja: warning: premature end of file; recovering
+[0/4] Re-checking globbed directories...
+[1/266] Building C object CMakeFiles/loom_sqlite3_amalgamation.dir/third_party/sqlite/sqlite3.c.o
+[2/266] Building C object CMakeFiles/loom_miniz.dir/third_party/miniz/miniz.c.o
+/tmp/w3-selector-2-baseline/loom/third_party/miniz/miniz.c:3185:9: note: ‘#pragma message: Using fopen, ftello, fseeko, stat() etc. path for file I/O - this path may not support large files.’
+ 3185 | #pragma message("Using fopen, ftello, fseeko, stat() etc. path for file I/O - this path may not support large files.")
+      |         ^~~~~~~
+[3/266] Linking C static library libloom_sqlite3_amalgamation.a
+[4/266] Linking C static library libloom_miniz.a
+[5/266] Building CXX object CMakeFiles/loom_core.dir/src/archive/cluster.cpp.o
+[6/266] Building CXX object CMakeFiles/loom_core.dir/src/archive/ingest.cpp.o
+[7/266] Building CXX object CMakeFiles/loom_core.dir/src/archive/ingest_parse.cpp.o
+[8/266] Building CXX object CMakeFiles/loom_core.dir/src/archive/items.cpp.o
+[9/266] Building CXX object CMakeFiles/loom_core.dir/src/archive/pipeline.cpp.o
+[10/266] Building CXX object CMakeFiles/loom_core.dir/src/archive/synth.cpp.o
+[11/266] Building CXX object CMakeFiles/loom_core.dir/src/archive/text.cpp.o
+[12/266] Building CXX object CMakeFiles/loom_core.dir/src/archive/vocab.cpp.o
+[13/266] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_archive.cpp.o
+[14/266] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_catalog.cpp.o
+[15/266] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_chat.cpp.o
+[16/266] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_config.cpp.o
+[17/266] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_context.cpp.o
+[18/266] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_core.cpp.o
+[19/266] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_extract.cpp.o
+[20/266] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_generalize.cpp.o
+[21/266] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_graph.cpp.o
+[22/266] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_graph_packet_store.cpp.o
+[23/266] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_http.cpp.o
+[24/266] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_import.cpp.o
+[25/266] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_knowledge.cpp.o
+[26/266] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_media.cpp.o
+[27/266] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_packet.cpp.o
+[28/266] Building CXX object CMakeFiles/loom_core.dir/src/catalog/alias.cpp.o
+[29/266] Building CXX object CMakeFiles/loom_core.dir/src/catalog/catalog.cpp.o
+[30/266] Building CXX object CMakeFiles/loom_core.dir/src/catalog/extract_text.cpp.o
+[31/266] Building CXX object CMakeFiles/loom_core.dir/src/catalog/import.cpp.o
+[32/266] Building CXX object CMakeFiles/loom_core.dir/src/catalog/links.cpp.o
+[33/266] Building CXX object CMakeFiles/loom_core.dir/src/catalog/profile.cpp.o
+[34/266] Building CXX object CMakeFiles/loom_core.dir/src/catalog/query.cpp.o
+[35/266] Building CXX object CMakeFiles/loom_core.dir/src/catalog/scan.cpp.o
+[36/266] Building CXX object CMakeFiles/loom_core.dir/src/catalog/schema.cpp.o
+[37/266] Building CXX object CMakeFiles/loom_core.dir/src/catalog/score.cpp.o
+[38/266] Building CXX object CMakeFiles/loom_core.dir/src/catalog/select.cpp.o
+[39/266] Building CXX object CMakeFiles/loom_core.dir/src/catalog/semantic.cpp.o
+[40/266] Building CXX object CMakeFiles/loom_core.dir/src/catalog/sketch.cpp.o
+[41/266] Building CXX object CMakeFiles/loom_core.dir/src/catalog/stream.cpp.o
+[42/266] Building CXX object CMakeFiles/loom_core.dir/src/chat/active_task_acceptance.cpp.o
+[43/266] Building CXX object CMakeFiles/loom_core.dir/src/chat/active_task_spec.cpp.o
+[44/266] Building CXX object CMakeFiles/loom_core.dir/src/chat/batch_api.cpp.o
+[45/266] Building CXX object CMakeFiles/loom_core.dir/src/chat/chat_engine.cpp.o
+[46/266] Building CXX object CMakeFiles/loom_core.dir/src/chat/graph_reply.cpp.o
+[47/266] Building CXX object CMakeFiles/loom_core.dir/src/chat/tests/chat_preset_parity.cpp.o
+[48/266] Building CXX object CMakeFiles/loom_core.dir/src/chat/tests/chat_reasoning_profile_test.cpp.o
+[49/266] Building CXX object CMakeFiles/loom_core.dir/src/context/context_candidates.cpp.o
+[50/266] Building CXX object CMakeFiles/loom_core.dir/src/context/context_diagnostics.cpp.o
+[51/266] Building CXX object CMakeFiles/loom_core.dir/src/context/context_engine.cpp.o
+[52/266] Building CXX object CMakeFiles/loom_core.dir/src/context/context_evidence.cpp.o
+[53/266] Building CXX object CMakeFiles/loom_core.dir/src/context/context_plan.cpp.o
+[54/266] Building CXX object CMakeFiles/loom_core.dir/src/context/context_request_ext.cpp.o
+[55/266] Building CXX object CMakeFiles/loom_core.dir/src/context/ctx_common.cpp.o
+[56/266] Building CXX object CMakeFiles/loom_core.dir/src/context/method_channels.cpp.o
+[57/266] Building CXX object CMakeFiles/loom_core.dir/src/context/method_execution.cpp.o
+[58/266] Building CXX object CMakeFiles/loom_core.dir/src/context/method_registry.cpp.o
+[59/266] Building CXX object CMakeFiles/loom_core.dir/src/context/provider_vector.cpp.o
+[60/266] Building CXX object CMakeFiles/loom_core.dir/src/context/retrieval.cpp.o
+[61/266] Building CXX object CMakeFiles/loom_core.dir/src/context/tests/goal_cues_configuration.cpp.o
+[62/266] Building CXX object CMakeFiles/loom_core.dir/src/context/tests/goal_cues_parity.cpp.o
+[63/266] Building CXX object CMakeFiles/loom_core.dir/src/context/tests/runtime_preset_test.cpp.o
+[64/266] Building CXX object CMakeFiles/loom_core.dir/src/context/unified_context.cpp.o
+[65/266] Building CXX object CMakeFiles/loom_core.dir/src/core/config.cpp.o
+[66/266] Building CXX object CMakeFiles/loom_core.dir/src/core/config_usage_policy.cpp.o
+[67/266] Building CXX object CMakeFiles/loom_core.dir/src/core/event_bus.cpp.o
+[68/266] Building CXX object CMakeFiles/loom_core.dir/src/core/provenance.cpp.o
+[69/266] Building CXX object CMakeFiles/loom_core.dir/src/core/relations.cpp.o
+[70/266] Building CXX object CMakeFiles/loom_core.dir/src/core/tasks.cpp.o
+[71/266] Building CXX object CMakeFiles/loom_core.dir/src/crypto/crypto.cpp.o
+[72/266] Building CXX object CMakeFiles/loom_core.dir/src/db/annotations.cpp.o
+[73/266] Building CXX object CMakeFiles/loom_core.dir/src/db/db.cpp.o
+[74/266] Building CXX object CMakeFiles/loom_core.dir/src/db/fts.cpp.o
+[75/266] Building CXX object CMakeFiles/loom_core.dir/src/db/sqlite.cpp.o
+[76/266] Building CXX object CMakeFiles/loom_core.dir/src/extract/candidate_graph.cpp.o
+[77/266] Building CXX object CMakeFiles/loom_core.dir/src/extract/extract.cpp.o
+[78/266] Building CXX object CMakeFiles/loom_core.dir/src/extract/extractors.cpp.o
+[79/266] Building CXX object CMakeFiles/loom_core.dir/src/extract/lexicon.cpp.o
+[80/266] Building CXX object CMakeFiles/loom_core.dir/src/extract/prompt_contract.cpp.o
+[81/266] Building CXX object CMakeFiles/loom_core.dir/src/extract/semantic.cpp.o
+[82/266] Building CXX object CMakeFiles/loom_core.dir/src/extract/sources.cpp.o
+[83/266] Building CXX object CMakeFiles/loom_core.dir/src/extract/stage.cpp.o
+[84/266] Building CXX object CMakeFiles/loom_core.dir/src/generalize/common.cpp.o
+[85/266] Building CXX object CMakeFiles/loom_core.dir/src/generalize/evidence.cpp.o
+[86/266] Building CXX object CMakeFiles/loom_core.dir/src/generalize/infer.cpp.o
+[87/266] Building CXX object CMakeFiles/loom_core.dir/src/generalize/match.cpp.o
+[88/266] Building CXX object CMakeFiles/loom_core.dir/src/generalize/operators.cpp.o
+[89/266] Building CXX object CMakeFiles/loom_core.dir/src/generalize/principles.cpp.o
+[90/266] Building CXX object CMakeFiles/loom_core.dir/src/generalize/stage.cpp.o
+[91/266] Building CXX object CMakeFiles/loom_core.dir/src/github/github_sync.cpp.o
+[92/266] Building CXX object CMakeFiles/loom_core.dir/src/graph/graph_engine.cpp.o
+[93/266] Building CXX object CMakeFiles/loom_core.dir/src/graph/graph_memory.cpp.o
+[94/266] Building CXX object CMakeFiles/loom_core.dir/src/import/export_anthropic.cpp.o
+[95/266] Building CXX object CMakeFiles/loom_core.dir/src/import/export_archive.cpp.o
+[96/266] Building CXX object CMakeFiles/loom_core.dir/src/import/export_checkpoint.cpp.o
+[97/266] Building CXX object CMakeFiles/loom_core.dir/src/import/export_common.cpp.o
+[98/266] Building CXX object CMakeFiles/loom_core.dir/src/import/export_openai.cpp.o
+[99/266] Building CXX object CMakeFiles/loom_core.dir/src/import/export_unknown.cpp.o
+[100/266] Building CXX object CMakeFiles/loom_core.dir/src/import/exporter.cpp.o
+[101/266] Building CXX object CMakeFiles/loom_core.dir/src/import/import_audit.cpp.o
+[102/266] Building CXX object CMakeFiles/loom_core.dir/src/import/import_usage.cpp.o
+[103/266] Building CXX object CMakeFiles/loom_core.dir/src/import/importer_common.cpp.o
+[104/266] Building CXX object CMakeFiles/loom_core.dir/src/import/importer_core.cpp.o
+[105/266] Building CXX object CMakeFiles/loom_core.dir/src/import/importer_html.cpp.o
+[106/266] Building CXX object CMakeFiles/loom_core.dir/src/import/importer_json.cpp.o
+[107/266] Building CXX object CMakeFiles/loom_core.dir/src/import/importer_sqlite.cpp.o
+[108/266] Building CXX object CMakeFiles/loom_core.dir/src/import/importer_text.cpp.o
+[109/266] Building CXX object CMakeFiles/loom_core.dir/src/import/importer_zip.cpp.o
+[110/266] Building CXX object CMakeFiles/loom_core.dir/src/kb/candidates.cpp.o
+[111/266] Building CXX object CMakeFiles/loom_core.dir/src/kb/evidence.cpp.o
+[112/266] Building CXX object CMakeFiles/loom_core.dir/src/kb/graph_packet_store.cpp.o
+[113/266] Building CXX object CMakeFiles/loom_core.dir/src/kb/normalize.cpp.o

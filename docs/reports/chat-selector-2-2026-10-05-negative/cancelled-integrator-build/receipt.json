@@ -1,0 +1,21 @@
+{
+  "schema": "loom.cancelled_build_attempt/1",
+  "source_commit": "6b54926950752c6890eb69ec85bf1c4643ec346a",
+  "base_commit": "4887eb08ef0653c3c834b18fe866609b641f2dc3",
+  "build_command": [
+    "cmake",
+    "--build",
+    "/tmp/w3-selector-2-baseline-build",
+    "--parallel",
+    "1"
+  ],
+  "werror": true,
+  "sqlite": "vendored",
+  "configuration": "Debug -O0 -g0",
+  "terminated_by": "Explicit Ctrl-C via existing exec session",
+  "observed_exit_code": 130,
+  "gate_pass_claimed": false,
+  "reason": "Closing scope on current main 6ae0e28 whose complete product source equals the already passed 115-entry gate. Ahead-of-main thread1 source is outside this intake base.",
+  "private_data": false,
+  "paid_calls": 0
+}
