@@ -7,6 +7,7 @@
 #include <unordered_set>
 
 #include "archive/archive_internal.h"
+#include "archive/profile.h"
 #include "loom/util/utf8.h"
 
 namespace loom::archive {
@@ -71,6 +72,14 @@ Corpus Corpus::from_json(const Json& j) {
 }
 
 // ── Markdown sections ───────────────────────────────────────────────
+std::vector<Section> split_markdown(std::string_view content) {
+  ProfileScope scope(nullptr);
+  return split_markdown(content, scope.get());
+}
+std::vector<Section> split_markdown(std::string_view content, const ArchiveProfile& profile) {
+  return split_markdown(content, static_cast<std::size_t>(profile.integer("/markdown/section_max_bytes")));
+}
+
 std::vector<Section> split_markdown(std::string_view content, std::size_t max_chars) {
   std::vector<Section> out;
   std::vector<std::pair<int, std::string>> stack;  // (level, heading)
@@ -188,26 +197,18 @@ std::vector<Section> split_markdown(std::string_view content, std::size_t max_ch
 }
 
 // ── Code digests ────────────────────────────────────────────────────
-std::string code_language(const fs::path& p) {
-  static const std::unordered_map<std::string, std::string> kExt = {
-      {".c", "c"},          {".h", "cpp"},        {".cc", "cpp"},      {".cpp", "cpp"},     {".cxx", "cpp"},
-      {".hh", "cpp"},       {".hpp", "cpp"},      {".hxx", "cpp"},     {".ipp", "cpp"},     {".py", "python"},
-      {".pyi", "python"},   {".kt", "kotlin"},    {".kts", "kotlin"},  {".java", "java"},   {".js", "javascript"},
-      {".mjs", "javascript"}, {".jsx", "javascript"}, {".ts", "typescript"}, {".tsx", "typescript"},
-      {".go", "go"},        {".rs", "rust"},      {".swift", "swift"}, {".m", "objc"},      {".mm", "objc"},
-      {".cs", "csharp"},    {".rb", "ruby"},      {".php", "php"},     {".sh", "shell"},    {".bash", "shell"},
-      {".cmake", "cmake"},  {".gradle", "gradle"}, {".proto", "proto"}, {".sql", "sql"},   {".dart", "dart"},
-      {".scala", "scala"},  {".lua", "lua"},      {".r", "r"},         {".jl", "julia"},    {".zig", "zig"},
-      {".vue", "vue"},      {".svelte", "svelte"},
-  };
+std::string code_language(const fs::path& p, const ArchiveProfile* profile) {
+  ProfileScope scope(profile);
+  const auto& policy = scope.get();
+
   std::string name = p.filename().string();
-  if (name == "CMakeLists.txt") return "cmake";
-  if (name == "Makefile" || name == "makefile") return "make";
-  if (name == "Dockerfile") return "docker";
+  const auto& filenames = policy.value("/code/filenames");
+  if (auto it = filenames.find(name); it != filenames.end()) return it->get<std::string>();
   std::string ext = p.extension().string();
   std::transform(ext.begin(), ext.end(), ext.begin(), [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
-  auto it = kExt.find(ext);
-  return it == kExt.end() ? "" : it->second;
+  const auto& extensions = policy.value("/code/extensions");
+  auto it = extensions.find(ext);
+  return it == extensions.end() ? "" : it->get<std::string>();
 }
 
 namespace {
@@ -225,18 +226,9 @@ bool starts_with_word(std::string_view s, std::string_view w) {
   return s.size() > w.size() && s.substr(0, w.size()) == w && !is_ident_char(s[w.size()]);
 }
 
-const std::unordered_set<std::string>& cpp_non_functions() {
-  static const std::unordered_set<std::string> k = {"if",     "for",    "while",  "switch", "return", "catch",
-                                                    "sizeof", "decltype", "static_assert", "alignof", "defined",
-                                                    "else",   "do",     "new",    "delete", "throw", "assert",
-                                                    "LOOM_TRY", "LOOM_TRY_ASSIGN", "TEST_CASE", "SUBCASE",
-                                                    "CHECK", "REQUIRE", "extern"};
-  return k;
-}
-
 // The identifier right before the first '(' of a declaration line, with an
 // optional "Qualifier::" prefix. "" when the line is not a declaration.
-std::string cpp_function_name(std::string_view s) {
+std::string cpp_function_name(std::string_view s, const ArchiveProfile& policy) {
   std::size_t paren = s.find('(');
   if (paren == std::string_view::npos || paren == 0) return "";
   std::size_t e = paren;
@@ -247,7 +239,7 @@ std::string cpp_function_name(std::string_view s) {
   if (name.empty() || name.find("operator") != std::string::npos) return "";
   if (b == 0) return "";  // needs a return type (or qualifier) before the name
   std::string last = name.substr(name.rfind(':') == std::string::npos ? 0 : name.rfind(':') + 1);
-  if (last.empty() || cpp_non_functions().count(last) || std::isdigit(static_cast<unsigned char>(last[0]))) return "";
+  if (last.empty() || policy.contains("/code/non_functions", last) || std::isdigit(static_cast<unsigned char>(last[0]))) return "";
   // the text before the name must look like a type ("Result<int> ", "void ", "const char* ")
   std::string_view before = utf8::rstrip(s.substr(0, b));
   if (before.empty()) return "";
@@ -282,21 +274,21 @@ std::string normalise_comment(const std::vector<std::string>& lines) {
 
 }  // namespace
 
-CodeDigest digest_code(std::string_view rel_path, std::string_view language, std::string_view content) {
+CodeDigest digest_code(std::string_view rel_path, std::string_view language, std::string_view content, const ArchiveProfile* profile) {
+  ProfileScope scope(profile);
+  const auto& policy = scope.get();
+  profile = scope.ptr();
   CodeDigest d;
   d.language = std::string(language);
-  const bool c_like = language == "c" || language == "cpp" || language == "java" || language == "kotlin" ||
-                      language == "javascript" || language == "typescript" || language == "go" ||
-                      language == "rust" || language == "swift" || language == "objc" || language == "csharp" ||
-                      language == "php" || language == "gradle" || language == "proto" || language == "dart" ||
-                      language == "scala" || language == "zig" || language == "vue" || language == "svelte";
-  const bool hash_comments = language == "python" || language == "shell" || language == "cmake" ||
-                             language == "ruby" || language == "make" || language == "docker" || language == "r" ||
-                             language == "julia";
+  const bool c_like = policy.contains("/code/c_like", language);
+  const bool hash_comments = policy.contains("/code/hash_comments", language);
+  const auto& routes = policy.value("/code/parser_routes");
+  const auto route = routes.find(std::string(language));
+  const std::string parser = route == routes.end() ? "none" : route->get<std::string>();
   std::unordered_set<std::string> seen;
   std::unordered_set<std::string> used_seen;
   auto note_uses = [&](std::string_view line) {
-    if (d.uses.size() >= 500) return;
+    if (d.uses.size() >= static_cast<std::size_t>(policy.integer("/code/max_uses"))) return;
     // identifiers inside string literals are data, not uses
     std::string code;
     char quote = 0;
@@ -314,7 +306,7 @@ CodeDigest digest_code(std::string_view rel_path, std::string_view language, std
       }
       code.push_back(ch);
     }
-    for (auto& id : camel_identifiers(code)) {
+    for (auto& id : camel_identifiers(code, profile)) {
       if (used_seen.insert(id).second) d.uses.push_back(std::move(id));
     }
   };
@@ -329,13 +321,14 @@ CodeDigest digest_code(std::string_view rel_path, std::string_view language, std
   auto end_block = [&] {
     if (!block.empty()) {
       std::string c = normalise_comment(block);
-      if (tokenize(c).size() >= 3) d.comments.push_back(std::move(c));
+      if (tokenize(c).size() >= static_cast<std::size_t>(policy.integer("/code/min_comment_tokens"))) d.comments.push_back(std::move(c));
     }
     block.clear();
   };
   auto scan_todo = [&](std::string_view comment_text) {
-    static const char* kMarks[] = {"TODO", "FIXME", "XXX", "HACK"};
-    for (const char* m : kMarks) {
+
+    for (const auto& marker : policy.value("/code/todo_markers")) {
+      const auto& m = marker.get_ref<const std::string&>();
       std::string_view body = utf8::lstrip(comment_text);
       if (body.substr(0, std::string_view(m).size()) != m) continue;
       std::size_t p = comment_text.size() - body.size();
@@ -343,7 +336,7 @@ CodeDigest digest_code(std::string_view rel_path, std::string_view language, std
       if (p > 0 && is_ident_char(comment_text[p - 1])) continue;
       if (p + ml < comment_text.size() && is_ident_char(comment_text[p + ml])) continue;
       std::string rest(utf8::strip(comment_text.substr(p)));
-      d.todos.emplace_back(line_no, clip(rest, 200));
+      d.todos.emplace_back(line_no, clip(rest, static_cast<std::size_t>(policy.integer("/code/todo_text_max_codepoints"))));
       return;
     }
   };
@@ -409,14 +402,12 @@ CodeDigest digest_code(std::string_view rel_path, std::string_view language, std
       }
       // symbols
       std::string_view t = s;
-      static const char* kPrefixes[] = {"export ", "public ", "private ", "internal ", "open ", "abstract ",
-                                        "final ", "data ", "sealed ", "static ", "pub ", "async ", "inline ",
-                                        "template<", "extern \"C\" "};
+
       bool stripped = true;
       while (stripped) {
         stripped = false;
-        for (const char* p : kPrefixes) {
-          std::string_view pv(p);
+        for (const auto& prefix : policy.value("/code/modifiers")) {
+          std::string_view pv(prefix.get_ref<const std::string&>());
           if (t.substr(0, pv.size()) == pv) {
             if (pv == "template<") {
               std::size_t close = t.find('>');
@@ -429,32 +420,33 @@ CodeDigest digest_code(std::string_view rel_path, std::string_view language, std
           }
         }
       }
-      static const char* kTypeWords[] = {"class", "struct", "interface", "enum class", "enum struct", "enum",
-                                         "object", "trait", "protocol", "union", "namespace", "fun", "func", "fn",
-                                         "function", "typealias", "type"};
+
       bool found = false;
-      for (const char* kw : kTypeWords) {
+      for (const auto& word : policy.value("/code/type_words")) {
+        const auto& kw = word.get_ref<const std::string&>();
         if (!starts_with_word(t, kw)) continue;
         std::size_t i = std::string_view(kw).size();
         std::string name = read_ident(t, i);
         std::string_view rest = utf8::strip(t.substr(i));
         bool fwd = !rest.empty() && rest.front() == ';';
         std::string_view kwv(kw);
-        if ((kwv == "type" || kwv == "typealias") && language == "cpp") break;
-        if (!name.empty() && !fwd && name != "final") {
-          if (kwv == "namespace") break;  // namespaces are not components
+        const auto& exclusions = policy.value("/code/excluded_type_words");
+        if (auto excluded = exclusions.find(std::string(language)); excluded != exclusions.end() &&
+            std::find(excluded->begin(), excluded->end(), kw) != excluded->end()) break;
+        if (!name.empty() && !fwd && !policy.contains("/code/excluded_symbol_names", name)) {
+          if (policy.contains("/code/non_component_type_words", kwv)) break;  // namespaces are not components
           add_unique(d.symbols, seen, name);
         }
         found = true;
         break;
       }
-      if (!found && (language == "cpp" || language == "c") && indent == 0 && !s.empty() && s[0] != '#' &&
+      if (!found && policy.contains("/code/function_declaration_languages", language) && indent == 0 && !s.empty() && s[0] != '#' &&
           s[0] != '}' && s.find('(') != std::string_view::npos) {
-        std::string fn = cpp_function_name(t);
+        std::string fn = cpp_function_name(t, policy);
         if (!fn.empty()) add_unique(d.symbols, seen, fn);
       }
     } else if (hash_comments) {
-      if (language == "python") {
+      if (parser == "python") {
         if (in_docstring) {
           std::size_t endq = s.find(doc_quote);
           std::string_view body = endq == std::string_view::npos ? s : s.substr(0, endq);
@@ -495,7 +487,7 @@ CodeDigest digest_code(std::string_view rel_path, std::string_view language, std
       end_block();
       note_uses(s.substr(0, s.find(" #")));
       if (std::size_t tc = s.find(" #"); tc != std::string_view::npos) scan_todo(s.substr(tc + 2));
-      if (language == "python") {
+      if (parser == "python") {
         if (py_class_indent >= 0 && indent <= py_class_indent && !s.empty()) {
           py_class.clear();
           py_class_indent = -1;
@@ -511,24 +503,29 @@ CodeDigest digest_code(std::string_view rel_path, std::string_view language, std
         } else if (starts_with_word(t, "def")) {
           std::size_t i = 3;
           std::string name = read_ident(t, i);
-          if (!name.empty() && !(name.size() > 4 && name.substr(0, 2) == "__" && name != "__init__")) {
+          bool excluded_special = name.size() > static_cast<std::size_t>(policy.integer("/code/special_name_min_bytes_exclusive")) &&
+              !policy.contains("/code/allowed_special_names", name) &&
+              std::any_of(policy.value("/code/excluded_special_prefixes").begin(),
+                          policy.value("/code/excluded_special_prefixes").end(),
+                          [&](const Json& prefix) { return name.starts_with(prefix.get_ref<const std::string&>()); });
+          if (!name.empty() && !excluded_special) {
             if (!py_class.empty() && indent > py_class_indent) {
-              if (name != "__init__") add_unique(d.symbols, seen, py_class + "." + name);
+              if (!policy.contains("/code/excluded_class_methods", name)) add_unique(d.symbols, seen, py_class + "." + name);
             } else if (indent == 0) {
               add_unique(d.symbols, seen, name);
             }
           }
         }
-      } else if (language == "cmake") {
-        static const char* kCmd[] = {"add_library(", "add_executable(", "option(", "project("};
-        for (const char* c : kCmd) {
-          std::string_view cv(c);
+      } else if (parser == "cmake") {
+
+        for (const auto& command : policy.value("/code/cmake_commands")) {
+          std::string_view cv(command.get_ref<const std::string&>());
           if (s.substr(0, cv.size()) == cv) {
             std::size_t i = cv.size();
             add_unique(d.symbols, seen, read_ident(s, i));
           }
         }
-      } else if (language == "shell") {
+      } else if (parser == "shell") {
         if (std::size_t p = s.find("()"); p != std::string_view::npos && p > 0 && s.find('{') != std::string_view::npos) {
           std::string_view name = s.substr(0, p);
           if (starts_with_word(name, "function")) name = utf8::lstrip(name.substr(8));
@@ -546,12 +543,12 @@ CodeDigest digest_code(std::string_view rel_path, std::string_view language, std
     text += "Symbols:";
     std::size_t n = 0;
     for (const auto& s : d.symbols) {
-      if (++n > 200) break;
+      if (++n > static_cast<std::size_t>(policy.integer("/code/max_digest_symbols"))) break;
       text += (n == 1 ? " " : ", ") + s;
     }
     text += "\n";
   }
-  std::size_t budget = 12000;
+  std::size_t budget = static_cast<std::size_t>(policy.integer("/code/comment_budget_bytes"));
   for (const auto& c : d.comments) {
     if (c.size() + 1 > budget) break;
     text += c + "\n";
@@ -564,6 +561,11 @@ CodeDigest digest_code(std::string_view rel_path, std::string_view language, std
 
 // ── git log ─────────────────────────────────────────────────────────
 std::vector<GitCommit> parse_git_log(std::string_view raw) {
+  return parse_git_log(raw, nullptr);
+}
+std::vector<GitCommit> parse_git_log(std::string_view raw, const ArchiveProfile* profile) {
+  ProfileScope scope(profile);
+  const auto& policy = scope.get();
   std::vector<GitCommit> out;
   std::size_t pos = 0;
   while (true) {
@@ -583,7 +585,7 @@ std::vector<GitCommit> parse_git_log(std::string_view raw) {
     if (f.size() < 5) continue;
     GitCommit c;
     c.hash = std::string(utf8::strip(f[0]));
-    c.date = normalize_date(f[1]);
+    c.date = normalize_date(f[1], &policy);
     c.author = std::string(utf8::strip(f[2]));
     c.subject = std::string(utf8::strip(f[3]));
     {
@@ -597,9 +599,19 @@ std::vector<GitCommit> parse_git_log(std::string_view raw) {
         std::string_view line = b.substr(bp, e - bp);
         bp = e + 1;
         std::size_t colon = line.find(':');
-        bool trailer = colon != std::string_view::npos && colon > 0 && colon < 30 &&
-                       line.substr(0, colon).find(' ') == std::string_view::npos &&
-                       line.substr(0, colon).find('-') != std::string_view::npos;
+        const auto key = line.substr(0, colon);
+        const auto& forbidden = policy.value("/git/trailer_forbidden_key_chars");
+        const auto& required = policy.value("/git/trailer_required_key_fragments");
+        bool trailer = policy.value("/git/strip_trailers").get<bool>() &&
+                       colon != std::string_view::npos &&
+                       colon >= static_cast<std::size_t>(policy.integer("/git/trailer_key_min_bytes")) &&
+                       colon < static_cast<std::size_t>(policy.integer("/git/trailer_key_max_bytes_exclusive")) &&
+                       std::none_of(forbidden.begin(), forbidden.end(), [&](const Json& fragment) {
+                         return key.find(fragment.get_ref<const std::string&>()) != std::string_view::npos;
+                       }) &&
+                       (required.empty() || std::any_of(required.begin(), required.end(), [&](const Json& fragment) {
+                         return key.find(fragment.get_ref<const std::string&>()) != std::string_view::npos;
+                       }));
         if (!trailer) {
           body.append(line);
           body.push_back('\n');
@@ -660,9 +672,9 @@ std::string chatgpt_text(const Json& msg) {
   return text;
 }
 
-double num_or(const Json& j, std::string_view key) {
+std::string epoch_date(const Json& j, std::string_view key, const ArchiveProfile* profile) {
   const Json* v = json::find(j, key);
-  return v && v->is_number() ? v->get<double>() : 0.0;
+  return v && v->is_number() ? iso_from_epoch(v->get<double>(), profile) : "";
 }
 
 // Generic tree walk shared by both exports. nodes: id -> (parent, emitted?,
@@ -773,11 +785,12 @@ void walk_tree(const std::vector<std::string>& order, const std::unordered_map<s
 
 }  // namespace
 
-ChatWalk walk_chatgpt(const Json& conv) {
+ChatWalk walk_chatgpt(const Json& conv) { return walk_chatgpt(conv, nullptr); }
+ChatWalk walk_chatgpt(const Json& conv, const ArchiveProfile* profile) {
   ChatWalk w;
   if (!conv.is_object()) return w;
   w.title = json::get_string(conv, "title");
-  w.date = iso_from_epoch(num_or(conv, "create_time"));
+  w.date = epoch_date(conv, "create_time", profile);
   const Json* mapping = json::find(conv, "mapping");
   if (!mapping || !mapping->is_object()) return w;
   std::vector<std::string> order;
@@ -790,7 +803,7 @@ ChatWalk walk_chatgpt(const Json& conv) {
       std::string role = author ? json::get_string(*author, "role", "unknown") : "unknown";
       std::string text = chatgpt_text(*msg);
       if ((role == "user" || role == "assistant") && !utf8::is_blank(text)) {
-        std::string date = iso_from_epoch(num_or(*msg, "create_time"));
+        std::string date = epoch_date(*msg, "create_time", profile);
         if (date.empty()) date = w.date;
         n.emit = true;
         n.msg = Json{{"role", role}, {"text", text}, {"date", date}};
@@ -803,11 +816,12 @@ ChatWalk walk_chatgpt(const Json& conv) {
   return w;
 }
 
-ChatWalk walk_claude(const Json& conv) {
+ChatWalk walk_claude(const Json& conv) { return walk_claude(conv, nullptr); }
+ChatWalk walk_claude(const Json& conv, const ArchiveProfile* profile) {
   ChatWalk w;
   if (!conv.is_object()) return w;
   w.title = json::get_string(conv, "name", json::get_string(conv, "title"));
-  w.date = normalize_date(json::get_string(conv, "created_at"));
+  w.date = normalize_date(json::get_string(conv, "created_at"), profile);
   const Json* msgs = json::find(conv, "chat_messages");
   if (!msgs || !msgs->is_array()) return w;
   std::vector<std::string> order;
@@ -840,7 +854,7 @@ ChatWalk walk_claude(const Json& conv) {
       }
     }
     if (!utf8::is_blank(text)) {
-      std::string date = normalize_date(json::get_string(m, "created_at"));
+      std::string date = normalize_date(json::get_string(m, "created_at"), profile);
       if (date.empty()) date = w.date;
       n.emit = true;
       n.msg = Json{{"role", role}, {"text", text}, {"date", date}};

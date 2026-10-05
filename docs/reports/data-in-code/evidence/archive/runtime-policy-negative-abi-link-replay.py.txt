@@ -1,0 +1,21 @@
+import json,shlex,subprocess,concurrent.futures
+from pathlib import Path
+repo=Path('/workspace/scratch/72fc60ad1cc5/chatadhd');scratch=repo.parent;out=scratch/'archive-pure-objects';out.mkdir(exist_ok=True)
+entries=json.loads((scratch/'build-before/compile_commands.json').read_text());template=next(x for x in entries if x['file'].endswith('/archive/text.cpp'))
+extra=['archive/ingest.cpp','archive/pipeline.cpp']
+def compile_source(path):
+ a=shlex.split(template['command']);i=a.index('-o');a[i+1]=str(out/path.replace('/','-'))+'.o';a[-1]=str(repo/'loom/src'/path);a=[x for x in a if x!='-g'];a+=['-g0'];p=subprocess.run(a,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT);return path,p.returncode,p.stdout,a
+commands=[]
+with concurrent.futures.ThreadPoolExecutor(max_workers=2) as ex:
+ for path,code,output,command in ex.map(compile_source,extra):
+  print(path,code,output,flush=True);commands.append(command)
+  if code:raise SystemExit(code)
+s=(repo/'loom/tests/test_archive_runtime_policy.cpp').read_text();s=s[:s.index('  TEST_CASE("scan and presentation')]+ '}\n';subset=scratch/'archive_runtime_policy_pure_subset.cpp';subset.write_text(s)
+entry=next(x for x in entries if x['file'].endswith('/test_archive.cpp'));a=shlex.split(entry['command']);i=a.index('-o');del a[i:i+2];a.remove('-c');a[-1]=str(subset);a=[x for x in a if x!='-g'];a+=['-g0',str(scratch/'archive_doctest_main.cpp'),'-o',str(scratch/'archive-runtime-policy-pure-tests')]
+paths=['archive/text.cpp','archive/items.cpp','archive/vocab.cpp','archive/cluster.cpp','archive/ingest_parse.cpp','archive/profile.cpp','model/runtime_profile.cpp']+extra
+a += [str(out/path.replace('/','-'))+'.o' for path in paths]
+build=scratch/'current-build';a += [str(build/'libloom_core.a'),str(build/'libloom_sqlite3_amalgamation.a'),'-ldl','-lm',str(build/'libloom_miniz.a'),'-lssl','-lcrypto','-lpthread'];commands.append(a)
+p=subprocess.run(a,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT);(scratch/'archive-runtime-policy-pure-link.log').write_text(p.stdout);print(p.stdout,flush=True);print('link',p.returncode,flush=True)
+(scratch/'archive-runtime-policy-pure-commands.json').write_text(json.dumps(commands,indent=2)+'\n')
+if p.returncode:raise SystemExit(p.returncode)
+p=subprocess.run([str(scratch/'archive-runtime-policy-pure-tests')],text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT);(scratch/'archive-runtime-policy-pure-tests.log').write_text(p.stdout);print(p.stdout);print('tests',p.returncode);raise SystemExit(p.returncode)

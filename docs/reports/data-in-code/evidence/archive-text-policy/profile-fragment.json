@@ -1,0 +1,391 @@
+{
+  "defaults": {
+    "text_item_closure": {
+      "phrase_orders": [
+        2,
+        1
+      ],
+      "phrase_separators": " -",
+      "phrase_output_separator": " ",
+      "phrase_distinct_adjacent": true,
+      "bullet_max_digits": 4,
+      "sentence_terminals": ".!?",
+      "sentence_closers": ".!?)\"”'",
+      "sentence_openers": "\"„“([*`",
+      "sentence_opener_classes": [
+        "uppercase",
+        "decimal"
+      ],
+      "abbreviation_terminals": ".",
+      "year_min": 1990,
+      "year_max": 2100,
+      "penalty_target_type": "requirement",
+      "question_target_type": "open_question",
+      "question_closing_suffixes": [
+        ")",
+        "*",
+        "\""
+      ],
+      "confidence_multiplier": 100.0,
+      "todo_source_kinds": [
+        "code"
+      ],
+      "commit_source_kinds": [
+        "commit"
+      ],
+      "todo_bug_binding": {
+        "type": "bug",
+        "cue": "fixme"
+      },
+      "todo_default_binding": {
+        "type": "requirement",
+        "cue": "todo"
+      },
+      "commit_bug_binding": {
+        "type": "bug",
+        "cue": "commit"
+      },
+      "commit_default_binding": {
+        "type": "implementation",
+        "cue": "commit"
+      },
+      "list_intro_suffixes": [
+        ":"
+      ],
+      "question_role_types": [
+        "open_question"
+      ],
+      "answer_role_types": [
+        "decision"
+      ],
+      "superseding_role_types": [
+        "decision",
+        "rejected_option"
+      ],
+      "resolution_relation": "resolves",
+      "resolution_status": "resolved",
+      "resolution_reason_template": "decision ({{answer_date}}) answers question ({{question_date}})",
+      "allow_nonpositive_epoch": false
+    },
+    "vocab_closure": {
+      "camel_min_lowercase": 1,
+      "camel_require_inner_uppercase": true,
+      "score_multiplier": 10000.0,
+      "reason_score_precision": 3,
+      "reason_lift_precision": 1
+    }
+  },
+  "value_schema": {
+    "type": "object",
+    "required": [
+      "text_item_closure",
+      "vocab_closure"
+    ],
+    "properties": {
+      "text_item_closure": {
+        "type": "object",
+        "required": [
+          "phrase_orders",
+          "phrase_separators",
+          "phrase_output_separator",
+          "phrase_distinct_adjacent",
+          "bullet_max_digits",
+          "sentence_terminals",
+          "sentence_closers",
+          "sentence_openers",
+          "sentence_opener_classes",
+          "abbreviation_terminals",
+          "year_min",
+          "year_max",
+          "penalty_target_type",
+          "question_target_type",
+          "question_closing_suffixes",
+          "confidence_multiplier",
+          "todo_source_kinds",
+          "commit_source_kinds",
+          "todo_bug_binding",
+          "todo_default_binding",
+          "commit_bug_binding",
+          "commit_default_binding",
+          "list_intro_suffixes",
+          "question_role_types",
+          "answer_role_types",
+          "superseding_role_types",
+          "resolution_relation",
+          "resolution_status",
+          "resolution_reason_template",
+          "allow_nonpositive_epoch"
+        ],
+        "properties": {
+          "phrase_separators": {
+            "type": "string",
+            "x-consumer": "loom::archive text/items"
+          },
+          "phrase_output_separator": {
+            "type": "string",
+            "x-consumer": "loom::archive text/items"
+          },
+          "sentence_terminals": {
+            "type": "string",
+            "x-consumer": "loom::archive text/items"
+          },
+          "sentence_closers": {
+            "type": "string",
+            "x-consumer": "loom::archive text/items"
+          },
+          "sentence_openers": {
+            "type": "string",
+            "x-consumer": "loom::archive text/items"
+          },
+          "abbreviation_terminals": {
+            "type": "string",
+            "x-consumer": "loom::archive text/items"
+          },
+          "penalty_target_type": {
+            "type": "string",
+            "x-consumer": "loom::archive text/items"
+          },
+          "question_target_type": {
+            "type": "string",
+            "x-consumer": "loom::archive text/items"
+          },
+          "resolution_relation": {
+            "type": "string",
+            "x-consumer": "loom::archive text/items"
+          },
+          "resolution_status": {
+            "type": "string",
+            "x-consumer": "loom::archive text/items"
+          },
+          "phrase_orders": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 18446744073709551615
+            },
+            "x-consumer": "loom::archive text/items"
+          },
+          "phrase_distinct_adjacent": {
+            "type": "boolean",
+            "x-consumer": "loom::archive text/items"
+          },
+          "bullet_max_digits": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 18446744073709551615,
+            "x-consumer": "loom::archive text/items"
+          },
+          "sentence_opener_classes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "uppercase",
+                "lowercase",
+                "decimal",
+                "alpha",
+                "alnum",
+                "space",
+                "any"
+              ]
+            },
+            "x-consumer": "loom::archive text/items"
+          },
+          "year_min": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": -2147483648,
+            "maximum": 2147483647,
+            "x-consumer": "loom::archive text/items"
+          },
+          "year_max": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": -2147483648,
+            "maximum": 2147483647,
+            "x-consumer": "loom::archive text/items"
+          },
+          "confidence_multiplier": {
+            "type": "number",
+            "minimum": 0,
+            "x-consumer": "loom::archive text/items"
+          },
+          "todo_source_kinds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-consumer": "loom::archive text/items"
+          },
+          "commit_source_kinds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-consumer": "loom::archive text/items"
+          },
+          "question_role_types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-consumer": "loom::archive text/items"
+          },
+          "answer_role_types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-consumer": "loom::archive text/items"
+          },
+          "superseding_role_types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-consumer": "loom::archive text/items"
+          },
+          "question_closing_suffixes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "x-consumer": "loom::archive text/items"
+          },
+          "list_intro_suffixes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "x-consumer": "loom::archive text/items"
+          },
+          "todo_bug_binding": {
+            "type": "object",
+            "required": [
+              "type",
+              "cue"
+            ],
+            "properties": {
+              "type": {
+                "type": "string"
+              },
+              "cue": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false,
+            "x-consumer": "loom::archive text/items"
+          },
+          "todo_default_binding": {
+            "type": "object",
+            "required": [
+              "type",
+              "cue"
+            ],
+            "properties": {
+              "type": {
+                "type": "string"
+              },
+              "cue": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false,
+            "x-consumer": "loom::archive text/items"
+          },
+          "commit_bug_binding": {
+            "type": "object",
+            "required": [
+              "type",
+              "cue"
+            ],
+            "properties": {
+              "type": {
+                "type": "string"
+              },
+              "cue": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false,
+            "x-consumer": "loom::archive text/items"
+          },
+          "commit_default_binding": {
+            "type": "object",
+            "required": [
+              "type",
+              "cue"
+            ],
+            "properties": {
+              "type": {
+                "type": "string"
+              },
+              "cue": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false,
+            "x-consumer": "loom::archive text/items"
+          },
+          "resolution_reason_template": {
+            "type": "string",
+            "x-consumer": "loom::archive text/items"
+          },
+          "allow_nonpositive_epoch": {
+            "type": "boolean",
+            "x-consumer": "loom::archive epoch/ISO normalization",
+            "description": "False preserves legacy positive-only epoch acceptance; true accepts zero/negative values representable by native time_t and calendar conversion."
+          }
+        },
+        "additionalProperties": false
+      },
+      "vocab_closure": {
+        "type": "object",
+        "required": [
+          "camel_min_lowercase",
+          "camel_require_inner_uppercase",
+          "score_multiplier",
+          "reason_score_precision",
+          "reason_lift_precision"
+        ],
+        "properties": {
+          "camel_min_lowercase": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483647,
+            "x-consumer": "loom::archive vocabulary"
+          },
+          "camel_require_inner_uppercase": {
+            "type": "boolean",
+            "x-consumer": "loom::archive vocabulary"
+          },
+          "score_multiplier": {
+            "type": "number",
+            "minimum": 0,
+            "x-consumer": "loom::archive vocabulary"
+          },
+          "reason_score_precision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483647,
+            "x-consumer": "loom::archive vocabulary"
+          },
+          "reason_lift_precision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483647,
+            "x-consumer": "loom::archive vocabulary"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

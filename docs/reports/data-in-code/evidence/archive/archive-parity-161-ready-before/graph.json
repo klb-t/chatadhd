@@ -1,0 +1,802 @@
+{
+ "project": "fixture",
+ "nodes": [
+  {
+   "id": "T1",
+   "kind": "theme",
+   "label": "knowledge · sqlite · local",
+   "size": 13
+  },
+  {
+   "id": "term:knowledge",
+   "kind": "term",
+   "label": "knowledge"
+  },
+  {
+   "id": "term:knowledge graph",
+   "kind": "term",
+   "label": "knowledge graph"
+  },
+  {
+   "id": "term:sqlite",
+   "kind": "term",
+   "label": "sqlite"
+  },
+  {
+   "id": "term:local",
+   "kind": "term",
+   "label": "local"
+  },
+  {
+   "id": "term:store",
+   "kind": "term",
+   "label": "store"
+  },
+  {
+   "id": "term:chatadhd knowledge",
+   "kind": "term",
+   "label": "chatadhd knowledge"
+  },
+  {
+   "id": "term:chat",
+   "kind": "term",
+   "label": "chat"
+  },
+  {
+   "id": "term:graph chat",
+   "kind": "term",
+   "label": "graph chat"
+  },
+  {
+   "id": "term:links",
+   "kind": "term",
+   "label": "links"
+  },
+  {
+   "id": "term:nodes",
+   "kind": "term",
+   "label": "nodes"
+  },
+  {
+   "id": "term:app",
+   "kind": "term",
+   "label": "app"
+  },
+  {
+   "id": "term:database",
+   "kind": "term",
+   "label": "database"
+  },
+  {
+   "id": "T2",
+   "kind": "theme",
+   "label": "importer · conversation · bytes",
+   "size": 8
+  },
+  {
+   "id": "term:importer",
+   "kind": "term",
+   "label": "importer"
+  },
+  {
+   "id": "term:conversation",
+   "kind": "term",
+   "label": "conversation"
+  },
+  {
+   "id": "term:conversation importer",
+   "kind": "term",
+   "label": "conversation importer"
+  },
+  {
+   "id": "term:bytes",
+   "kind": "term",
+   "label": "bytes"
+  },
+  {
+   "id": "term:raw source",
+   "kind": "term",
+   "label": "raw source"
+  },
+  {
+   "id": "term:source",
+   "kind": "term",
+   "label": "source"
+  },
+  {
+   "id": "term:source bytes",
+   "kind": "term",
+   "label": "source bytes"
+  },
+  {
+   "id": "term:compose",
+   "kind": "term",
+   "label": "compose"
+  },
+  {
+   "id": "term:compose renderer",
+   "kind": "term",
+   "label": "compose renderer"
+  },
+  {
+   "id": "term:provenance",
+   "kind": "term",
+   "label": "provenance"
+  },
+  {
+   "id": "term:renderer",
+   "kind": "term",
+   "label": "renderer"
+  },
+  {
+   "id": "term:graph store",
+   "kind": "term",
+   "label": "graph store"
+  },
+  {
+   "id": "T3",
+   "kind": "theme",
+   "label": "kivy · mobile · android",
+   "size": 3
+  },
+  {
+   "id": "term:kivy",
+   "kind": "term",
+   "label": "kivy"
+  },
+  {
+   "id": "term:mobile",
+   "kind": "term",
+   "label": "mobile"
+  },
+  {
+   "id": "term:android",
+   "kind": "term",
+   "label": "android"
+  },
+  {
+   "id": "term:code",
+   "kind": "term",
+   "label": "code"
+  },
+  {
+   "id": "term:python",
+   "kind": "term",
+   "label": "python"
+  },
+  {
+   "id": "term:decided",
+   "kind": "term",
+   "label": "decided"
+  },
+  {
+   "id": "T4",
+   "kind": "theme",
+   "label": "other",
+   "size": 2
+  },
+  {
+   "id": "cb11c09557b0c",
+   "kind": "chat",
+   "label": "[misc › #2 assistant @ 2025-06-01]",
+   "date": "2025-06-01"
+  },
+  {
+   "id": "cf8d567bbd070",
+   "kind": "chat",
+   "label": "[misc › #1 user @ 2025-06-01]",
+   "date": "2025-06-01"
+  },
+  {
+   "id": "p6fe17a88f676",
+   "kind": "project",
+   "label": "[Project: ChatADHD project › notes.md › Notes @ 2025-01-05]",
+   "date": "2025-01-05"
+  },
+  {
+   "id": "ye2682e9c5deb",
+   "kind": "memory",
+   "label": "[Claude memory › project memory p1]",
+   "date": ""
+  },
+  {
+   "id": "cec18ba61ac87",
+   "kind": "chat",
+   "label": "[Untitled › #1 user @ 2025-02-01]",
+   "date": "2025-02-01"
+  },
+  {
+   "id": "cf5fe3408ad90",
+   "kind": "chat",
+   "label": "[Untitled › #3 user @ 2025-02-01]",
+   "date": "2025-02-01"
+  },
+  {
+   "id": "pd4b42d4db906",
+   "kind": "project",
+   "label": "[Project: ChatADHD project › instructions @ 2025-01-05]",
+   "date": "2025-01-05"
+  },
+  {
+   "id": "c5a8276a7c4eb",
+   "kind": "chat",
+   "label": "[Untitled › #2 assistant @ 2025-02-01]",
+   "date": "2025-02-01"
+  },
+  {
+   "id": "y3e0110e1fdaf",
+   "kind": "memory",
+   "label": "[Claude memory › conversations memory]",
+   "date": ""
+  },
+  {
+   "id": "cf125ccfef3f4",
+   "kind": "chat",
+   "label": "[Untitled › #4 assistant @ 2025-02-01]",
+   "date": "2025-02-01"
+  },
+  {
+   "id": "c075abae0fc17",
+   "kind": "chat",
+   "label": "[Untitled › #7 user @ 2025-02-01]",
+   "date": "2025-02-01"
+  },
+  {
+   "id": "c0495a36af8a8",
+   "kind": "chat",
+   "label": "[Random thoughts › #4 assistant @ 2025-01-10]",
+   "date": "2025-01-10"
+  },
+  {
+   "id": "d6ac4ace25ec9",
+   "kind": "doc",
+   "label": "[README.md › Mini repo]",
+   "date": ""
+  },
+  {
+   "id": "c301a4a75ec67",
+   "kind": "chat",
+   "label": "[Random thoughts › #6 assistant @ 2025-01-11]",
+   "date": "2025-01-11"
+  },
+  {
+   "id": "c3b68ad8dcc0d",
+   "kind": "chat",
+   "label": "[Untitled › #6 assistant @ 2025-02-01]",
+   "date": "2025-02-01"
+  },
+  {
+   "id": "ca2a1e345ad9e",
+   "kind": "chat",
+   "label": "[Random thoughts › #1 user @ 2025-01-10]",
+   "date": "2025-01-10"
+  },
+  {
+   "id": "k9f6621cc2870",
+   "kind": "code",
+   "label": "[src/importer.py]",
+   "date": ""
+  },
+  {
+   "id": "d642ee19b1f77",
+   "kind": "doc",
+   "label": "[docs/spec.md › Components @ 2025-03-01]",
+   "date": "2025-03-01"
+  },
+  {
+   "id": "k17df22dccae2",
+   "kind": "code",
+   "label": "[src/graph_store.cpp]",
+   "date": ""
+  },
+  {
+   "id": "c7ecafb225af2",
+   "kind": "chat",
+   "label": "[Untitled › #5 user @ 2025-02-01]",
+   "date": "2025-02-01"
+  },
+  {
+   "id": "cc5ab3aaa7985",
+   "kind": "chat",
+   "label": "[Random thoughts › #5 user @ 2025-01-11]",
+   "date": "2025-01-11"
+  },
+  {
+   "id": "cdbd9f6a8ed17",
+   "kind": "chat",
+   "label": "[Random thoughts › #2 assistant @ 2025-01-10]",
+   "date": "2025-01-10"
+  },
+  {
+   "id": "cfd8ad3318086",
+   "kind": "chat",
+   "label": "[Random thoughts › #3 user @ 2025-01-10]",
+   "date": "2025-01-10"
+  },
+  {
+   "id": "d8dde4f565f7b",
+   "kind": "doc",
+   "label": "[docs/spec.md › Open questions @ 2025-03-01]",
+   "date": "2025-03-01"
+  },
+  {
+   "id": "da196540d0031",
+   "kind": "doc",
+   "label": "[docs/spec.md › Invariants @ 2025-03-01]",
+   "date": "2025-03-01"
+  },
+  {
+   "id": "p1bc14068adb5",
+   "kind": "project",
+   "label": "[Project: ChatADHD project › description @ 2025-01-05]",
+   "date": "2025-01-05"
+  },
+  {
+   "id": "i_5787d89d2a",
+   "kind": "invariant",
+   "label": "Raw source bytes are never modified after import, so every derived graph can be rebuilt.",
+   "status": "active"
+  },
+  {
+   "id": "i_fa335ddbba",
+   "kind": "open_question",
+   "label": "Which sync transport should be the default for the knowledge graph?",
+   "status": "active"
+  },
+  {
+   "id": "i_a384234358",
+   "kind": "open_question",
+   "label": "Should we store the ChatADHD knowledge graph in SQLite or in a separate graph database?",
+   "status": "resolved"
+  },
+  {
+   "id": "i_d6fc542e96",
+   "kind": "open_question",
+   "label": "What if we use Neo4j for the knowledge graph instead?",
+   "status": "active"
+  },
+  {
+   "id": "i_dc96c4c653",
+   "kind": "requirement",
+   "label": "Neo4j needs a server, which breaks the local-first requirement of ChatADHD.",
+   "status": "active"
+  },
+  {
+   "id": "i_012c57a6a9",
+   "kind": "decision",
+   "label": "We decided to use SQLite for the knowledge graph storage because it keeps everything local-first.",
+   "status": "active"
+  },
+  {
+   "id": "i_752fcd35f8",
+   "kind": "decision",
+   "label": "Decision: we drop Kivy and use Compose Multiplatform for the mobile UI instead.",
+   "status": "active"
+  },
+  {
+   "id": "i_1ebe777bed",
+   "kind": "decision",
+   "label": "We decided to use Kivy for the mobile UI because it runs on Android.",
+   "status": "superseded"
+  },
+  {
+   "id": "i_2fbfdc6c96",
+   "kind": "decision",
+   "label": "Zdecydowaliśmy, że importer musi zachować surowe źródło każdej rozmowy.",
+   "status": "active"
+  },
+  {
+   "id": "i_f741250fc1",
+   "kind": "open_question",
+   "label": "Czy synchronizacja grafu ma być szyfrowana end-to-end?",
+   "status": "active"
+  },
+  {
+   "id": "i_ee222fb35b",
+   "kind": "open_question",
+   "label": "Open question: which embedding model should be the default for semantic search in ChatADHD?",
+   "status": "active"
+  },
+  {
+   "id": "i_e92e269590",
+   "kind": "rejected_option",
+   "label": "Odrzucamy pomysł osobnego serwera grafu, bo aplikacja ChatADHD ma działać offline.",
+   "status": "active"
+  },
+  {
+   "id": "i_af35a4aaa8",
+   "kind": "invariant",
+   "label": "The importer must never modify raw sources.",
+   "status": "active"
+  },
+  {
+   "id": "i_d381891cbd",
+   "kind": "requirement",
+   "label": "TODO: add graph compaction for deleted nodes",
+   "status": "active"
+  },
+  {
+   "id": "i_fce02fba14",
+   "kind": "bug",
+   "label": "FIXME: the html parser drops code blocks",
+   "status": "active"
+  }
+ ],
+ "edges": [
+  {
+   "src": "term:knowledge",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "term:knowledge graph",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "term:sqlite",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "term:local",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "term:store",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "term:chatadhd knowledge",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "term:chat",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "term:graph chat",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "term:links",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "term:nodes",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "term:app",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "term:database",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "term:importer",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "term:conversation",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "term:conversation importer",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "term:bytes",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "term:raw source",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "term:source",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "term:source bytes",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "term:compose",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "term:compose renderer",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "term:provenance",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "term:renderer",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "term:graph store",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "term:kivy",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "term:mobile",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "term:android",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "term:code",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "term:python",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "term:decided",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "cb11c09557b0c",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "cf8d567bbd070",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "p6fe17a88f676",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "ye2682e9c5deb",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "cec18ba61ac87",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "cf5fe3408ad90",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "pd4b42d4db906",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "c5a8276a7c4eb",
+   "dst": "T3",
+   "type": "part_of"
+  },
+  {
+   "src": "y3e0110e1fdaf",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "cf125ccfef3f4",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "c075abae0fc17",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "c0495a36af8a8",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "d6ac4ace25ec9",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "c301a4a75ec67",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "c3b68ad8dcc0d",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "ca2a1e345ad9e",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "k9f6621cc2870",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "d642ee19b1f77",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "k17df22dccae2",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "c7ecafb225af2",
+   "dst": "T4",
+   "type": "part_of"
+  },
+  {
+   "src": "cc5ab3aaa7985",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "cdbd9f6a8ed17",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "cfd8ad3318086",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "d8dde4f565f7b",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "da196540d0031",
+   "dst": "T2",
+   "type": "part_of"
+  },
+  {
+   "src": "p1bc14068adb5",
+   "dst": "T1",
+   "type": "part_of"
+  },
+  {
+   "src": "i_5787d89d2a",
+   "dst": "da196540d0031",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_fa335ddbba",
+   "dst": "d8dde4f565f7b",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_a384234358",
+   "dst": "ca2a1e345ad9e",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_d6fc542e96",
+   "dst": "cfd8ad3318086",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_dc96c4c653",
+   "dst": "c0495a36af8a8",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_012c57a6a9",
+   "dst": "cc5ab3aaa7985",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_752fcd35f8",
+   "dst": "cf8d567bbd070",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_1ebe777bed",
+   "dst": "cec18ba61ac87",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_2fbfdc6c96",
+   "dst": "cf5fe3408ad90",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_f741250fc1",
+   "dst": "c7ecafb225af2",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_ee222fb35b",
+   "dst": "c3b68ad8dcc0d",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_e92e269590",
+   "dst": "c075abae0fc17",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_af35a4aaa8",
+   "dst": "p6fe17a88f676",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_d381891cbd",
+   "dst": "k17df22dccae2",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_fce02fba14",
+   "dst": "k9f6621cc2870",
+   "type": "derived_from"
+  },
+  {
+   "src": "i_012c57a6a9",
+   "dst": "i_a384234358",
+   "type": "resolves"
+  },
+  {
+   "src": "i_752fcd35f8",
+   "dst": "i_1ebe777bed",
+   "type": "supersedes"
+  },
+  {
+   "src": "cfd8ad3318086",
+   "dst": "cdbd9f6a8ed17",
+   "type": "fork_of"
+  },
+  {
+   "src": "cc5ab3aaa7985",
+   "dst": "cdbd9f6a8ed17",
+   "type": "reply_to"
+  }
+ ]
+}

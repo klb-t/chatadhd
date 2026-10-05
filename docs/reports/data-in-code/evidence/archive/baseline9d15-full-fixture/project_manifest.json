@@ -1,0 +1,305 @@
+{
+ "project": "fixture",
+ "generated_by": "loom archive v1",
+ "settings": {
+  "seed_terms": [
+   "chatadhd",
+   "graph",
+   "kivy",
+   "importer"
+  ],
+  "max_passes": 3,
+  "max_new_terms": 8,
+  "max_hits_per_term": 25,
+  "max_synthesis_rounds": 1,
+  "llm": "off"
+ },
+ "vocabulary": [
+  "chatadhd",
+  "graph",
+  "kivy",
+  "importer"
+ ],
+ "themes": [
+  {
+   "id": "T1",
+   "label": "knowledge · sqlite · local",
+   "terms": [
+    "knowledge",
+    "knowledge graph",
+    "sqlite",
+    "local",
+    "store",
+    "chatadhd knowledge",
+    "chat",
+    "graph chat",
+    "links",
+    "nodes",
+    "app",
+    "database"
+   ],
+   "size": 13
+  },
+  {
+   "id": "T2",
+   "label": "importer · conversation · bytes",
+   "terms": [
+    "importer",
+    "conversation",
+    "conversation importer",
+    "bytes",
+    "raw source",
+    "source",
+    "source bytes",
+    "compose",
+    "compose renderer",
+    "provenance",
+    "renderer",
+    "graph store"
+   ],
+   "size": 8
+  },
+  {
+   "id": "T3",
+   "label": "kivy · mobile · android",
+   "terms": [
+    "kivy",
+    "mobile",
+    "android",
+    "code",
+    "python",
+    "decided"
+   ],
+   "size": 3
+  },
+  {
+   "id": "T4",
+   "label": "other",
+   "terms": [],
+   "size": 2
+  }
+ ],
+ "components": [
+  {
+   "name": "ChatADHD",
+   "kind": "identifier",
+   "status": "missing",
+   "evidence": [
+    "src/graph_store.cpp"
+   ],
+   "mentions": 9,
+   "source": "ca2a1e345ad9e",
+   "note": "no declaration, only named in code comments"
+  },
+  {
+   "name": "IExecutionEnvironment",
+   "kind": "identifier",
+   "status": "missing",
+   "evidence": [],
+   "mentions": 1,
+   "source": "d642ee19b1f77",
+   "note": ""
+  },
+  {
+   "name": "IGraphStore",
+   "kind": "identifier",
+   "status": "partial",
+   "evidence": [
+    "src/graph_store.cpp"
+   ],
+   "mentions": 1,
+   "source": "d642ee19b1f77",
+   "note": "concrete `GraphStore` exists, no `IGraphStore` interface"
+  },
+  {
+   "name": "Compose Multiplatform",
+   "kind": "named_phrase",
+   "status": "missing",
+   "evidence": [],
+   "mentions": 1,
+   "source": "cf8d567bbd070",
+   "note": ""
+  }
+ ],
+ "requirements": [
+  {
+   "id": "i_dc96c4c653",
+   "text": "Neo4j needs a server, which breaks the local-first requirement of ChatADHD.",
+   "theme": "T1",
+   "status": "active",
+   "confidence": 0.65,
+   "source": "[Random thoughts › #4 assistant @ 2025-01-10]"
+  },
+  {
+   "id": "i_d381891cbd",
+   "text": "TODO: add graph compaction for deleted nodes",
+   "theme": "T1",
+   "status": "active",
+   "confidence": 0.6,
+   "source": "[src/graph_store.cpp]"
+  }
+ ],
+ "invariants": [
+  {
+   "id": "i_af35a4aaa8",
+   "text": "The importer must never modify raw sources.",
+   "theme": "T2",
+   "status": "active",
+   "confidence": 0.95,
+   "source": "[Project: ChatADHD project › notes.md › Notes @ 2025-01-05]"
+  },
+  {
+   "id": "i_5787d89d2a",
+   "text": "Raw source bytes are never modified after import, so every derived graph can be rebuilt.",
+   "theme": "T2",
+   "status": "active",
+   "confidence": 0.88,
+   "source": "[docs/spec.md › Invariants @ 2025-03-01]"
+  }
+ ],
+ "decisions": [
+  {
+   "id": "i_1ebe777bed",
+   "text": "We decided to use Kivy for the mobile UI because it runs on Android.",
+   "theme": "T3",
+   "status": "superseded",
+   "confidence": 0.88,
+   "source": "[Untitled › #1 user @ 2025-02-01]"
+  },
+  {
+   "id": "i_012c57a6a9",
+   "text": "We decided to use SQLite for the knowledge graph storage because it keeps everything local-first.",
+   "theme": "T1",
+   "status": "active",
+   "confidence": 0.88,
+   "source": "[Random thoughts › #5 user @ 2025-01-11]"
+  },
+  {
+   "id": "i_2fbfdc6c96",
+   "text": "Zdecydowaliśmy, że importer musi zachować surowe źródło każdej rozmowy.",
+   "theme": "T2",
+   "status": "active",
+   "confidence": 0.65,
+   "source": "[Untitled › #3 user @ 2025-02-01]"
+  },
+  {
+   "id": "i_752fcd35f8",
+   "text": "Decision: we drop Kivy and use Compose Multiplatform for the mobile UI instead.",
+   "theme": "T3",
+   "status": "active",
+   "confidence": 0.55,
+   "source": "[misc › #1 user @ 2025-06-01]"
+  }
+ ],
+ "rejected_options": [
+  {
+   "id": "i_e92e269590",
+   "text": "Odrzucamy pomysł osobnego serwera grafu, bo aplikacja ChatADHD ma działać offline.",
+   "theme": "T4",
+   "status": "active",
+   "confidence": 0.55,
+   "source": "[Untitled › #7 user @ 2025-02-01]"
+  }
+ ],
+ "open_questions": [
+  {
+   "id": "i_fa335ddbba",
+   "text": "Which sync transport should be the default for the knowledge graph?",
+   "theme": "T1",
+   "status": "active",
+   "confidence": 0.95,
+   "source": "[docs/spec.md › Open questions @ 2025-03-01]"
+  },
+  {
+   "id": "i_ee222fb35b",
+   "text": "Open question: which embedding model should be the default for semantic search in ChatADHD?",
+   "theme": "T1",
+   "status": "active",
+   "confidence": 0.95,
+   "source": "[Untitled › #6 assistant @ 2025-02-01]"
+  },
+  {
+   "id": "i_f741250fc1",
+   "text": "Czy synchronizacja grafu ma być szyfrowana end-to-end?",
+   "theme": "T4",
+   "status": "active",
+   "confidence": 0.88,
+   "source": "[Untitled › #5 user @ 2025-02-01]"
+  },
+  {
+   "id": "i_d6fc542e96",
+   "text": "What if we use Neo4j for the knowledge graph instead?",
+   "theme": "T1",
+   "status": "active",
+   "confidence": 0.73,
+   "source": "[Random thoughts › #3 user @ 2025-01-10]"
+  }
+ ],
+ "missing_files": [],
+ "sources": [
+  {
+   "uri": "README.md",
+   "adapter": "text",
+   "format": "doc",
+   "hash": "0592418e0b786a4be7c76c747f0df4c5aa4302e1564946cca1fc43d203fc28ad",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "docs/spec.md",
+   "adapter": "text",
+   "format": "doc",
+   "hash": "557283ff9ca4eed378dc975f62411752826fc549a590fd9156a803aefeb309c6",
+   "units": 1,
+   "docs": 3
+  },
+  {
+   "uri": "exports/chatgpt/conversations.json",
+   "adapter": "json",
+   "format": "chatgpt",
+   "hash": "16b37fafcb352e5721c079e1020679cbb17ca90b6d43c9ec9d600729e350d1ca",
+   "units": 2,
+   "docs": 8
+  },
+  {
+   "uri": "exports/claude/conversations.json",
+   "adapter": "json",
+   "format": "claude",
+   "hash": "361adf5c133dd0cf36c63d1e7215dc3891a1b454c5e72fd0d3df9ec3d471910e",
+   "units": 1,
+   "docs": 7
+  },
+  {
+   "uri": "exports/claude/memories.json",
+   "adapter": "json",
+   "format": "claude_memories",
+   "hash": "2373bc71d1014f81c93414ab497ca9a95251c74855955988cbc14100bb2e92a4",
+   "units": 1,
+   "docs": 2
+  },
+  {
+   "uri": "exports/claude/projects.json",
+   "adapter": "json",
+   "format": "claude_projects",
+   "hash": "6b3601ba1114c744af9aef9cf8df42260da740173e0b89856fa6e9ef2d7ac748",
+   "units": 1,
+   "docs": 3
+  },
+  {
+   "uri": "src/graph_store.cpp",
+   "adapter": "code",
+   "format": "cpp",
+   "hash": "e21bfb08120dc0db30a1e584ecbc53056e513e2492506cc4f58e754fdfb9963d",
+   "units": 1,
+   "docs": 1
+  },
+  {
+   "uri": "src/importer.py",
+   "adapter": "code",
+   "format": "python",
+   "hash": "dae727389e0ac6622d44be28e16d9718e57a9b35908a943289245fd14eae6896",
+   "units": 1,
+   "docs": 1
+  }
+ ]
+}

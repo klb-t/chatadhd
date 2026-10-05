@@ -1,0 +1,216 @@
+{
+ "project": "fixture",
+ "themes": [
+  {
+   "id": "T1",
+   "label": "knowledge · sqlite · local",
+   "first": "2025-01-05",
+   "last": "2025-03-01",
+   "commits": 0,
+   "events": [
+    {
+     "date": "2025-01-05",
+     "key": "p1bc14068adb5",
+     "kind": "project"
+    },
+    {
+     "date": "2025-01-05",
+     "key": "pd4b42d4db906",
+     "kind": "project"
+    },
+    {
+     "date": "2025-01-10",
+     "key": "ca2a1e345ad9e",
+     "kind": "chat"
+    },
+    {
+     "date": "2025-01-10",
+     "key": "cdbd9f6a8ed17",
+     "kind": "chat"
+    },
+    {
+     "date": "2025-01-10",
+     "key": "cfd8ad3318086",
+     "kind": "chat"
+    },
+    {
+     "date": "2025-01-10",
+     "key": "c0495a36af8a8",
+     "kind": "chat"
+    },
+    {
+     "date": "2025-01-11",
+     "key": "cc5ab3aaa7985",
+     "kind": "chat"
+    },
+    {
+     "date": "2025-01-11",
+     "key": "c301a4a75ec67",
+     "kind": "chat"
+    },
+    {
+     "date": "2025-02-01",
+     "key": "c3b68ad8dcc0d",
+     "kind": "chat"
+    },
+    {
+     "date": "2025-03-01",
+     "key": "d8dde4f565f7b",
+     "kind": "doc"
+    },
+    {
+     "date": "",
+     "key": "k17df22dccae2",
+     "kind": "code"
+    },
+    {
+     "date": "",
+     "key": "y3e0110e1fdaf",
+     "kind": "memory"
+    },
+    {
+     "date": "",
+     "key": "ye2682e9c5deb",
+     "kind": "memory"
+    }
+   ],
+   "forks": [
+    {
+     "unit": "u054b6c7d5820",
+     "title": "Random thoughts",
+     "after": "cdbd9f6a8ed17",
+     "date": "2025-01-10T10:01:00Z",
+     "origin": "chatgpt",
+     "alternatives": [
+      {
+       "first": "cfd8ad3318086",
+       "messages": 2,
+       "current": false
+      },
+      {
+       "first": "cc5ab3aaa7985",
+       "messages": 2,
+       "current": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "T2",
+   "label": "importer · conversation · bytes",
+   "first": "2025-01-05",
+   "last": "2025-06-01",
+   "commits": 0,
+   "events": [
+    {
+     "date": "2025-01-05",
+     "key": "p6fe17a88f676",
+     "kind": "project"
+    },
+    {
+     "date": "2025-02-01",
+     "key": "cf5fe3408ad90",
+     "kind": "chat"
+    },
+    {
+     "date": "2025-02-01",
+     "key": "cf125ccfef3f4",
+     "kind": "chat"
+    },
+    {
+     "date": "2025-03-01",
+     "key": "d642ee19b1f77",
+     "kind": "doc"
+    },
+    {
+     "date": "2025-03-01",
+     "key": "da196540d0031",
+     "kind": "doc"
+    },
+    {
+     "date": "2025-06-01",
+     "key": "cb11c09557b0c",
+     "kind": "chat"
+    },
+    {
+     "date": "",
+     "key": "d6ac4ace25ec9",
+     "kind": "doc"
+    },
+    {
+     "date": "",
+     "key": "k9f6621cc2870",
+     "kind": "code"
+    }
+   ],
+   "forks": []
+  },
+  {
+   "id": "T3",
+   "label": "kivy · mobile · android",
+   "first": "2025-02-01",
+   "last": "2025-06-01",
+   "commits": 0,
+   "events": [
+    {
+     "date": "2025-02-01",
+     "key": "cec18ba61ac87",
+     "kind": "chat"
+    },
+    {
+     "date": "2025-02-01",
+     "key": "c5a8276a7c4eb",
+     "kind": "chat"
+    },
+    {
+     "date": "2025-06-01",
+     "key": "cf8d567bbd070",
+     "kind": "chat"
+    }
+   ],
+   "forks": []
+  },
+  {
+   "id": "T4",
+   "label": "other",
+   "first": "2025-02-01",
+   "last": "2025-02-01",
+   "commits": 0,
+   "events": [
+    {
+     "date": "2025-02-01",
+     "key": "c7ecafb225af2",
+     "kind": "chat"
+    },
+    {
+     "date": "2025-02-01",
+     "key": "c075abae0fc17",
+     "kind": "chat"
+    }
+   ],
+   "forks": []
+  }
+ ],
+ "forks": [
+  {
+   "unit": "u054b6c7d5820",
+   "title": "Random thoughts",
+   "after": "cdbd9f6a8ed17",
+   "date": "2025-01-10T10:01:00Z",
+   "origin": "chatgpt",
+   "alternatives": [
+    {
+     "first": "cfd8ad3318086",
+     "messages": 2,
+     "current": false
+    },
+    {
+     "first": "cc5ab3aaa7985",
+     "messages": 2,
+     "current": true
+    }
+   ]
+  }
+ ]
+}

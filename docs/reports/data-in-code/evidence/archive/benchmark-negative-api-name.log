@@ -1,0 +1,4 @@
+before compile 1 /workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/fixtures/archive_profile_parity/benchmark.cpp: In function ‘uint64_t {anonymous}::fixture()’:
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/fixtures/archive_profile_parity/benchmark.cpp:22:32: error: ‘candidate_tokens’ was not declared in this scope
+   22 |     checksum += words.size() + candidate_tokens(text).size() + split_sentences(text).size();
+      |                                ^~~~~~~~~~~~~~~~

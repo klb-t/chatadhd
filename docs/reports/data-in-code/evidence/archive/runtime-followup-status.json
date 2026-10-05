@@ -1,0 +1,114 @@
+[
+  {
+    "id": "DIC-0109",
+    "status": "migrated",
+    "destination": "loom/data/runtime/archive.pack",
+    "notes": "loom/src/archive/ingest.cpp:217 — scan skip_dir_prefixes/skip_dir_sentinels; output.marker_file keeps generated marker identity default.",
+    "current_path": "loom/src/archive/ingest.cpp",
+    "current_line": 217
+  },
+  {
+    "id": "DIC-0114",
+    "status": "partially-migrated",
+    "destination": "loom/data/runtime/archive.pack",
+    "notes": "loom/src/archive/ingest.cpp:567 — Local array-stream adapter chunk configurable; whole-wrapper fallback remains shared streaming work Do5.",
+    "current_path": "loom/src/archive/ingest.cpp",
+    "current_line": 567
+  },
+  {
+    "id": "DIC-0116",
+    "status": "migrated",
+    "destination": "loom/data/runtime/archive.pack",
+    "notes": "loom/src/archive/ingest.cpp:33 — titles named templates, import prefix cleanup, projection label limits; generic one-pass interpolation.",
+    "current_path": "loom/src/archive/ingest.cpp",
+    "current_line": 33
+  },
+  {
+    "id": "DIC-0117",
+    "status": "migrated",
+    "destination": "loom/data/runtime/archive.pack",
+    "notes": "loom/src/archive/ingest.cpp:886 — projection git hash/subject/text-files/extra-files and more-files text; full source blob preserved.",
+    "current_path": "loom/src/archive/ingest.cpp",
+    "current_line": 886
+  },
+  {
+    "id": "DIC-0119",
+    "status": "migrated",
+    "destination": "loom/data/runtime/archive.pack",
+    "notes": "loom/src/archive/ingest.cpp:1052 — README eligibility kinds/prefix/casefold and existing seed count from data.",
+    "current_path": "loom/src/archive/ingest.cpp",
+    "current_line": 1052
+  },
+  {
+    "id": "DIC-0125",
+    "status": "migrated",
+    "destination": "loom/data/runtime/archive.pack",
+    "notes": "loom/src/archive/ingest_parse.cpp:433 — Code modifiers/types/exclusions/function-language eligibility from data; structural trusted parser operators retained.",
+    "current_path": "loom/src/archive/ingest_parse.cpp",
+    "current_line": 433
+  },
+  {
+    "id": "DIC-0126",
+    "status": "migrated",
+    "destination": "loom/data/runtime/archive.pack",
+    "notes": "loom/src/archive/ingest_parse.cpp:285 — Language→registered trusted strategy routing, special-name prefix/min/allowlist and excluded-method policy from data. Python/CMake/shell syntax remains trusted grammar operations.",
+    "current_path": "loom/src/archive/ingest_parse.cpp",
+    "current_line": 285
+  },
+  {
+    "id": "DIC-0129",
+    "status": "migrated",
+    "destination": "loom/data/runtime/archive.pack",
+    "notes": "loom/src/archive/ingest_parse.cpp:605 — Trailer enabled/key length/forbidden/required fragments are explicit profile policy; git delimiter wire codec preserved.",
+    "current_path": "loom/src/archive/ingest_parse.cpp",
+    "current_line": 605
+  },
+  {
+    "id": "DIC-0131",
+    "status": "migrated",
+    "destination": "loom/data/runtime/archive.pack",
+    "notes": "loom/src/archive/pipeline.cpp:74 — Complete config_defaults invocation DTO in data; native default constructor reads builtin, checked parser uses active omitted defaults, explicit arrays replace and repo:null clears.",
+    "current_path": "loom/src/archive/pipeline.cpp",
+    "current_line": 74
+  },
+  {
+    "id": "DIC-0133",
+    "status": "migrated",
+    "destination": "loom/data/runtime/archive.pack",
+    "notes": "loom/src/archive/pipeline.cpp:55 — Ordered suffix MIME registry + fallback, marker/file/text/task-log names; exact legacy suffix prefix rule preserved.",
+    "current_path": "loom/src/archive/pipeline.cpp",
+    "current_line": 55
+  },
+  {
+    "id": "DIC-0142",
+    "status": "migrated",
+    "destination": "loom/data/runtime/archive.pack",
+    "notes": "loom/src/archive/pipeline.cpp:491 — Prose eligibility list joins existing configurable minimum hit count.",
+    "current_path": "loom/src/archive/pipeline.cpp",
+    "current_line": 491
+  },
+  {
+    "id": "DIC-0146",
+    "status": "migrated",
+    "destination": "loom/data/runtime/archive.pack",
+    "notes": "loom/src/archive/pipeline.cpp:941 — Derived_from/item_relation/theme weights + materialization exclusion and label cap explicit.",
+    "current_path": "loom/src/archive/pipeline.cpp",
+    "current_line": 941
+  },
+  {
+    "id": "DIC-0148",
+    "status": "migrated",
+    "destination": "loom/data/runtime/archive.pack",
+    "notes": "loom/src/archive/pipeline.cpp:1089 — Initial and synthesis-discovered seed weights explicit; TermRecord serialization uses scoped profile.",
+    "current_path": "loom/src/archive/pipeline.cpp",
+    "current_line": 1089
+  },
+  {
+    "id": "DIC-0203",
+    "status": "migrated",
+    "destination": "loom/data/runtime/archive.pack",
+    "notes": "loom/src/archive/ingest_parse.cpp:80 — Default Markdown section limit data; explicit size overload unchanged. Stable hash width12 intentionally retained identity wire contract.",
+    "current_path": "loom/src/archive/ingest_parse.cpp",
+    "current_line": 80
+  }
+]

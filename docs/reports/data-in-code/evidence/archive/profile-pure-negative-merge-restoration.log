@@ -1,0 +1,14 @@
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+/workspace/scratch/72fc60ad1cc5/archive_profile_pure_subset.cpp:41:
+TEST SUITE: archive.profiles
+TEST CASE:  explicit overrides change lexical behavior without changing another instance
+
+/workspace/scratch/72fc60ad1cc5/archive_profile_pure_subset.cpp:54: ERROR: CHECK( unwrap(changed.with_overrides(Json{{"text", base.value("/text")}, {"items", base.value("/items")}})).is_builtin() ) is NOT correct!
+  values: CHECK( false )
+
+===============================================================================
+[doctest] test cases:  4 |  3 passed | 1 failed | 0 skipped
+[doctest] assertions: 36 | 35 passed | 1 failed |
+[doctest] Status: FAILURE!

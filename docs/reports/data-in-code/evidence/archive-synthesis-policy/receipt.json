@@ -1,0 +1,82 @@
+{
+  "schema": "loom.archive_synthesis_policy.parity/1",
+  "verified_at_utc": "2026-10-04T16:23:03.427331+00:00",
+  "comparison_scope": "Frozen pre-followup synth.cpp versus current synth.cpp, common current helper dependencies and builtin defaults; no Runtime/transport constructed. This is not a full main-vs-branch integrated parity proof.",
+  "byte_equal": true,
+  "before_bytes": 142841,
+  "after_bytes": 142841,
+  "before_sha256": "134d5f3d6ebc3514b268e08254bdc26120385986608a359f358e6c63b7bf3c40",
+  "after_sha256": "134d5f3d6ebc3514b268e08254bdc26120385986608a359f358e6c63b7bf3c40",
+  "artifact_count": 7,
+  "artifact_bytes": 130009,
+  "artifacts": {
+    "MASTER.md": {
+      "bytes": 16412,
+      "sha256": "f58f440b52b408a7b1d0d33b720874653f2d6e5b087a7a01749e15bbc950d562"
+    },
+    "gap_report.md": {
+      "bytes": 3239,
+      "sha256": "abcc4416d9c78bda0c53de03686fc00461757e3dc3b6b65415b71fc4657e5aa5"
+    },
+    "graph.json": {
+      "bytes": 26221,
+      "sha256": "99f83ecfd1d9d74cc2b94b549ebd6c2dcd0325fcdffe761d558dca6c854734fb"
+    },
+    "items.jsonl": {
+      "bytes": 46509,
+      "sha256": "47ddf361e6af576c7c3535a13c883cfcc135f4f87154aaf1981ef521491d54f7"
+    },
+    "project_manifest.json": {
+      "bytes": 35754,
+      "sha256": "6ad7bdc7e29e57ab33ca59e9fd522c26ac425d0025dbb91d487028d4ec1d01b0"
+    },
+    "source_map.csv": {
+      "bytes": 663,
+      "sha256": "e8513c6448917d38e39f916875286797f8b5afa6c8dfc60559460c2989c507db"
+    },
+    "timeline.json": {
+      "bytes": 1211,
+      "sha256": "d2d02344e03e02f2c6ebfc1e5f253c84f6a3e770d2a6b70788fd6c90e8a2bfdd"
+    }
+  },
+  "focused_test_cases": {
+    "passed": 6,
+    "failed": 0,
+    "skipped": 0
+  },
+  "focused_test_assertions": {
+    "passed": 219,
+    "failed": 0
+  },
+  "strict_compiled_translation_units": {
+    "synth-before": {
+      "exit": 0,
+      "object_sha256": "c3509e6445f5b6dc0983755213557c9d33c514fa08f85f522f0db777aeb1a839"
+    },
+    "synth-after": {
+      "exit": 0,
+      "object_sha256": "9328eb332d8166aad1441b5f26c731a566de67bc212aa388b2b96526291f4881"
+    },
+    "profile-current": {
+      "exit": 0,
+      "object_sha256": "eab851b6dbd7126d93a57983f03f1c55e776ca10753c9017fb05e0b03654de72"
+    },
+    "framework-current": {
+      "exit": 0,
+      "object_sha256": "a932c16759c18b9e77e410e9eda5c820a43233034321391b193d9ede2d457b68"
+    },
+    "probe": {
+      "exit": 0,
+      "object_sha256": "bbc72949a9027894376187b6962dfd21fe408b10355feee07801e328a04fb4d8"
+    },
+    "test": {
+      "exit": 0,
+      "object_sha256": "dc9bc3bd987e9aa008a8cfee7d13eaebf0cffe6c4204400e140e44c8476c436f"
+    }
+  },
+  "fragment_sha256": "91e7d39f8cd3b1da645158b864b46f7c9b7f676c922bd29847e65aa565b04e59",
+  "snapshot_source_sha256": "6398fd6a43407b7dfa25079f7d6f611a41003726168ccf43bc269210ba81b829",
+  "current_source_sha256": "2bef091e054b4ef0dbee9621f6d8642a5a34a0adef2e63493650924680bb82ee",
+  "test_source_sha256": "cbebd9b6adf333cda2eed559fd00cb0a166b3cb6402071ed658bc0c18ac2cccc",
+  "metadata_correction": "Profile fragment corrects167 x-setting editor hints after test; defaultvalues/schema constraints/source unchanged. Parent merges corrected schema before final full build."
+}

@@ -1,0 +1,1872 @@
+{
+  "texts": [
+    {
+      "input": "",
+      "tokens": [],
+      "candidates": [],
+      "sentences": [],
+      "class": {
+        "type": "",
+        "confidence": 0.0,
+        "cues": [],
+        "polarity": 1
+      }
+    },
+    {
+      "input": "We decided to use SQLite.",
+      "tokens": [
+        "decided",
+        "sqlite"
+      ],
+      "candidates": [
+        "decided",
+        "sqlite"
+      ],
+      "sentences": [
+        "We decided to use SQLite."
+      ],
+      "class": {
+        "type": "decision",
+        "confidence": 0.95,
+        "cues": [
+          "we decided",
+          "decided to",
+          "§decision"
+        ],
+        "polarity": 1
+      }
+    },
+    {
+      "input": "We must not lose source provenance.",
+      "tokens": [
+        "lose",
+        "source",
+        "provenance"
+      ],
+      "candidates": [
+        "lose",
+        "lose source",
+        "source",
+        "source provenance",
+        "provenance"
+      ],
+      "sentences": [
+        "We must not lose source provenance."
+      ],
+      "class": {
+        "type": "invariant",
+        "confidence": 0.65,
+        "cues": [
+          "must not"
+        ],
+        "polarity": -1
+      }
+    },
+    {
+      "input": "Should we use knowledge graphs?",
+      "tokens": [
+        "knowledge",
+        "graphs"
+      ],
+      "candidates": [
+        "knowledge",
+        "knowledge graphs",
+        "graphs"
+      ],
+      "sentences": [
+        "Should we use knowledge graphs?"
+      ],
+      "class": {
+        "type": "open_question",
+        "confidence": 0.95,
+        "cues": [
+          "should we",
+          "?"
+        ],
+        "polarity": 1
+      }
+    },
+    {
+      "input": "Czy pamięć ma przechowywać źródła?",
+      "tokens": [
+        "pamięć",
+        "przechowywać",
+        "źródła"
+      ],
+      "candidates": [
+        "pamięć",
+        "przechowywać",
+        "przechowywać źródła",
+        "źródła"
+      ],
+      "sentences": [
+        "Czy pamięć ma przechowywać źródła?"
+      ],
+      "class": {
+        "type": "open_question",
+        "confidence": 0.88,
+        "cues": [
+          "?",
+          "czy"
+        ],
+        "polarity": 1
+      }
+    },
+    {
+      "input": "The implementation uses GraphStore and semantic_worker.cpp.",
+      "tokens": [
+        "implementation",
+        "graphstore",
+        "semantic",
+        "worker"
+      ],
+      "candidates": [
+        "implementation",
+        "graphstore",
+        "semantic",
+        "worker"
+      ],
+      "sentences": [
+        "The implementation uses GraphStore and semantic_worker.cpp."
+      ],
+      "class": {
+        "type": "decision",
+        "confidence": 0.57,
+        "cues": [
+          "§decision"
+        ],
+        "polarity": 1
+      }
+    },
+    {
+      "input": "Rejected the vector index because lexical search was enough.",
+      "tokens": [
+        "rejected",
+        "index",
+        "lexical",
+        "search",
+        "enough"
+      ],
+      "candidates": [
+        "rejected",
+        "index",
+        "lexical",
+        "lexical search",
+        "search",
+        "enough"
+      ],
+      "sentences": [
+        "Rejected the vector index because lexical search was enough."
+      ],
+      "class": {
+        "type": "rejected_option",
+        "confidence": 0.65,
+        "cues": [
+          "rejected"
+        ],
+        "polarity": -1
+      }
+    },
+    {
+      "input": "# Decisions\n1. We decided to preserve every raw archive.\n- Keep source IDs stable.\n",
+      "tokens": [
+        "decisions",
+        "decided",
+        "preserve",
+        "raw",
+        "archive",
+        "source",
+        "stable"
+      ],
+      "candidates": [
+        "decisions",
+        "decided",
+        "preserve",
+        "raw",
+        "raw archive",
+        "archive",
+        "source",
+        "stable"
+      ],
+      "sentences": [
+        "We decided to preserve every raw archive.",
+        "Keep source IDs stable."
+      ],
+      "class": {
+        "type": "decision",
+        "confidence": 0.95,
+        "cues": [
+          "we decided",
+          "decided to",
+          "§decision"
+        ],
+        "polarity": 1
+      }
+    },
+    {
+      "input": "## Otwarte decyzje\nCzy synchronizacja będzie offline?\n",
+      "tokens": [
+        "otwarte",
+        "decyzje",
+        "synchronizacja",
+        "offline"
+      ],
+      "candidates": [
+        "otwarte",
+        "otwarte decyzje",
+        "decyzje",
+        "synchronizacja",
+        "offline"
+      ],
+      "sentences": [
+        "Czy synchronizacja będzie offline?"
+      ],
+      "class": {
+        "type": "open_question",
+        "confidence": 0.73,
+        "cues": [
+          "?"
+        ],
+        "polarity": 1
+      }
+    },
+    {
+      "input": "e.g. GraphStore uses BM25. Prof. Smith agrees.",
+      "tokens": [
+        "graphstore",
+        "bm25",
+        "prof",
+        "smith",
+        "agrees"
+      ],
+      "candidates": [
+        "graphstore",
+        "bm25",
+        "prof",
+        "smith",
+        "smith agrees",
+        "agrees"
+      ],
+      "sentences": [
+        "e.g. GraphStore uses BM25.",
+        "Prof. Smith agrees."
+      ],
+      "class": {
+        "type": "decision",
+        "confidence": 0.57,
+        "cues": [
+          "§decision"
+        ],
+        "polarity": 1
+      }
+    },
+    {
+      "input": "Rust ::GraphStore; knowledge-graph /search/semantic worker",
+      "tokens": [
+        "rust",
+        "graphstore",
+        "knowledge",
+        "graph",
+        "search",
+        "semantic",
+        "worker"
+      ],
+      "candidates": [
+        "rust",
+        "graphstore",
+        "knowledge",
+        "knowledge graph",
+        "graph",
+        "search",
+        "semantic",
+        "semantic worker",
+        "worker"
+      ],
+      "sentences": [
+        "Rust ::GraphStore; knowledge-graph /search/semantic worker"
+      ],
+      "class": {
+        "type": "decision",
+        "confidence": 0.57,
+        "cues": [
+          "§decision"
+        ],
+        "polarity": 1
+      }
+    },
+    {
+      "input": "się sie function functions import export",
+      "tokens": [
+        "sie",
+        "export"
+      ],
+      "candidates": [
+        "sie",
+        "export"
+      ],
+      "sentences": [
+        "się sie function functions import export"
+      ],
+      "class": {
+        "type": "decision",
+        "confidence": 0.57,
+        "cues": [
+          "§decision"
+        ],
+        "polarity": 1
+      }
+    },
+    {
+      "input": "pamięci grafu zadania szyfrowania źródeł wyszukiwania rozmów",
+      "tokens": [
+        "pamięci",
+        "grafu",
+        "zadania",
+        "szyfrowania",
+        "źródeł",
+        "wyszukiwania",
+        "rozmów"
+      ],
+      "candidates": [
+        "pamięci",
+        "pamięci grafu",
+        "grafu",
+        "grafu zadania",
+        "zadania",
+        "zadania szyfrowania",
+        "szyfrowania",
+        "szyfrowania źródeł",
+        "źródeł",
+        "źródeł wyszukiwania",
+        "wyszukiwania",
+        "wyszukiwania rozmów",
+        "rozmów"
+      ],
+      "sentences": [
+        "pamięci grafu zadania szyfrowania źródeł wyszukiwania rozmów"
+      ],
+      "class": {
+        "type": "decision",
+        "confidence": 0.57,
+        "cues": [
+          "§decision"
+        ],
+        "polarity": 1
+      }
+    },
+    {
+      "input": "stories classes analysis status physics",
+      "tokens": [
+        "stories",
+        "classes",
+        "analysis",
+        "physics"
+      ],
+      "candidates": [
+        "stories",
+        "stories classes",
+        "classes",
+        "classes analysis",
+        "analysis",
+        "physics"
+      ],
+      "sentences": [
+        "stories classes analysis status physics"
+      ],
+      "class": {
+        "type": "decision",
+        "confidence": 0.57,
+        "cues": [
+          "§decision"
+        ],
+        "polarity": 1
+      }
+    },
+    {
+      "input": "We need an importer. We must preserve links. Fix archive regression.",
+      "tokens": [
+        "importer",
+        "preserve",
+        "links",
+        "fix",
+        "archive",
+        "regression"
+      ],
+      "candidates": [
+        "importer",
+        "preserve",
+        "preserve links",
+        "links",
+        "fix",
+        "fix archive",
+        "archive",
+        "archive regression",
+        "regression"
+      ],
+      "sentences": [
+        "We need an importer.",
+        "We must preserve links.",
+        "Fix archive regression."
+      ],
+      "class": {
+        "type": "bug",
+        "confidence": 0.65,
+        "cues": [
+          "regression"
+        ],
+        "polarity": 1
+      }
+    },
+    {
+      "input": "10. Otwarte decyzje\nAlgorytm powinien być konfigurowalny.\n",
+      "tokens": [
+        "otwarte",
+        "decyzje",
+        "algorytm",
+        "konfigurowalny"
+      ],
+      "candidates": [
+        "otwarte",
+        "otwarte decyzje",
+        "decyzje",
+        "algorytm",
+        "konfigurowalny"
+      ],
+      "sentences": [
+        "Otwarte decyzje Algorytm powinien być konfigurowalny."
+      ],
+      "class": {
+        "type": "decision",
+        "confidence": 0.57,
+        "cues": [
+          "§decision"
+        ],
+        "polarity": 1
+      }
+    },
+    {
+      "input": "We decided to use SQLite durable storage for Graphite archives.",
+      "tokens": [
+        "decided",
+        "sqlite",
+        "durable",
+        "storage",
+        "graphite",
+        "archives"
+      ],
+      "candidates": [
+        "decided",
+        "sqlite",
+        "sqlite durable",
+        "durable",
+        "durable storage",
+        "storage",
+        "graphite",
+        "graphite archives",
+        "archives"
+      ],
+      "sentences": [
+        "We decided to use SQLite durable storage for Graphite archives."
+      ],
+      "class": {
+        "type": "decision",
+        "confidence": 0.95,
+        "cues": [
+          "we decided",
+          "decided to",
+          "§decision"
+        ],
+        "polarity": 1
+      }
+    },
+    {
+      "input": "We decided to reject SQLite durable storage for Graphite archives.",
+      "tokens": [
+        "decided",
+        "reject",
+        "sqlite",
+        "durable",
+        "storage",
+        "graphite",
+        "archives"
+      ],
+      "candidates": [
+        "decided",
+        "reject",
+        "reject sqlite",
+        "sqlite",
+        "sqlite durable",
+        "durable",
+        "durable storage",
+        "storage",
+        "graphite",
+        "graphite archives",
+        "archives"
+      ],
+      "sentences": [
+        "We decided to reject SQLite durable storage for Graphite archives."
+      ],
+      "class": {
+        "type": "decision",
+        "confidence": 0.95,
+        "cues": [
+          "we decided",
+          "decided to",
+          "§decision"
+        ],
+        "polarity": -1
+      }
+    }
+  ],
+  "words": [
+    {
+      "word": "we",
+      "stem": "we",
+      "gloss": "we",
+      "stopword": true
+    },
+    {
+      "word": "decided",
+      "stem": "decided",
+      "gloss": "decided",
+      "stopword": false
+    },
+    {
+      "word": "to",
+      "stem": "to",
+      "gloss": "to",
+      "stopword": true
+    },
+    {
+      "word": "use",
+      "stem": "use",
+      "gloss": "use",
+      "stopword": true
+    },
+    {
+      "word": "sqlite",
+      "stem": "sqlite",
+      "gloss": "sqlite",
+      "stopword": false
+    },
+    {
+      "word": "we",
+      "stem": "we",
+      "gloss": "we",
+      "stopword": true
+    },
+    {
+      "word": "must",
+      "stem": "must",
+      "gloss": "must",
+      "stopword": true
+    },
+    {
+      "word": "not",
+      "stem": "not",
+      "gloss": "not",
+      "stopword": true
+    },
+    {
+      "word": "lose",
+      "stem": "lose",
+      "gloss": "lose",
+      "stopword": false
+    },
+    {
+      "word": "source",
+      "stem": "source",
+      "gloss": "source",
+      "stopword": false
+    },
+    {
+      "word": "provenance",
+      "stem": "provenance",
+      "gloss": "provenance",
+      "stopword": false
+    },
+    {
+      "word": "should",
+      "stem": "should",
+      "gloss": "should",
+      "stopword": true
+    },
+    {
+      "word": "we",
+      "stem": "we",
+      "gloss": "we",
+      "stopword": true
+    },
+    {
+      "word": "use",
+      "stem": "use",
+      "gloss": "use",
+      "stopword": true
+    },
+    {
+      "word": "knowledge",
+      "stem": "knowledge",
+      "gloss": "knowledge",
+      "stopword": false
+    },
+    {
+      "word": "graphs",
+      "stem": "graph",
+      "gloss": "graphs",
+      "stopword": false
+    },
+    {
+      "word": "czy",
+      "stem": "czy",
+      "gloss": "czy",
+      "stopword": true
+    },
+    {
+      "word": "pamięć",
+      "stem": "pamięć",
+      "gloss": "memory",
+      "stopword": false
+    },
+    {
+      "word": "ma",
+      "stem": "ma",
+      "gloss": "ma",
+      "stopword": true
+    },
+    {
+      "word": "przechowywać",
+      "stem": "przechowywać",
+      "gloss": "przechowywać",
+      "stopword": false
+    },
+    {
+      "word": "źródła",
+      "stem": "źródła",
+      "gloss": "source",
+      "stopword": false
+    },
+    {
+      "word": "the",
+      "stem": "the",
+      "gloss": "the",
+      "stopword": true
+    },
+    {
+      "word": "implementation",
+      "stem": "implementation",
+      "gloss": "implementation",
+      "stopword": false
+    },
+    {
+      "word": "uses",
+      "stem": "use",
+      "gloss": "uses",
+      "stopword": true
+    },
+    {
+      "word": "graphstore",
+      "stem": "graphstore",
+      "gloss": "graphstore",
+      "stopword": false
+    },
+    {
+      "word": "and",
+      "stem": "and",
+      "gloss": "and",
+      "stopword": true
+    },
+    {
+      "word": "semantic",
+      "stem": "semantic",
+      "gloss": "semantic",
+      "stopword": false
+    },
+    {
+      "word": "worker",
+      "stem": "worker",
+      "gloss": "worker",
+      "stopword": false
+    },
+    {
+      "word": "cpp",
+      "stem": "cpp",
+      "gloss": "cpp",
+      "stopword": true
+    },
+    {
+      "word": "rejected",
+      "stem": "rejected",
+      "gloss": "rejected",
+      "stopword": false
+    },
+    {
+      "word": "the",
+      "stem": "the",
+      "gloss": "the",
+      "stopword": true
+    },
+    {
+      "word": "vector",
+      "stem": "vector",
+      "gloss": "vector",
+      "stopword": true
+    },
+    {
+      "word": "index",
+      "stem": "index",
+      "gloss": "index",
+      "stopword": false
+    },
+    {
+      "word": "because",
+      "stem": "because",
+      "gloss": "because",
+      "stopword": true
+    },
+    {
+      "word": "lexical",
+      "stem": "lexical",
+      "gloss": "lexical",
+      "stopword": false
+    },
+    {
+      "word": "search",
+      "stem": "search",
+      "gloss": "search",
+      "stopword": false
+    },
+    {
+      "word": "was",
+      "stem": "was",
+      "gloss": "was",
+      "stopword": true
+    },
+    {
+      "word": "enough",
+      "stem": "enough",
+      "gloss": "enough",
+      "stopword": false
+    },
+    {
+      "word": "decisions",
+      "stem": "decision",
+      "gloss": "decisions",
+      "stopword": false
+    },
+    {
+      "word": "we",
+      "stem": "we",
+      "gloss": "we",
+      "stopword": true
+    },
+    {
+      "word": "decided",
+      "stem": "decided",
+      "gloss": "decided",
+      "stopword": false
+    },
+    {
+      "word": "to",
+      "stem": "to",
+      "gloss": "to",
+      "stopword": true
+    },
+    {
+      "word": "preserve",
+      "stem": "preserve",
+      "gloss": "preserve",
+      "stopword": false
+    },
+    {
+      "word": "every",
+      "stem": "every",
+      "gloss": "every",
+      "stopword": true
+    },
+    {
+      "word": "raw",
+      "stem": "raw",
+      "gloss": "raw",
+      "stopword": false
+    },
+    {
+      "word": "archive",
+      "stem": "archive",
+      "gloss": "archive",
+      "stopword": false
+    },
+    {
+      "word": "keep",
+      "stem": "keep",
+      "gloss": "keep",
+      "stopword": true
+    },
+    {
+      "word": "source",
+      "stem": "source",
+      "gloss": "source",
+      "stopword": false
+    },
+    {
+      "word": "ids",
+      "stem": "ids",
+      "gloss": "ids",
+      "stopword": true
+    },
+    {
+      "word": "stable",
+      "stem": "stable",
+      "gloss": "stable",
+      "stopword": false
+    },
+    {
+      "word": "otwarte",
+      "stem": "otwarte",
+      "gloss": "otwarte",
+      "stopword": false
+    },
+    {
+      "word": "decyzje",
+      "stem": "decyzje",
+      "gloss": "decision",
+      "stopword": false
+    },
+    {
+      "word": "czy",
+      "stem": "czy",
+      "gloss": "czy",
+      "stopword": true
+    },
+    {
+      "word": "synchronizacja",
+      "stem": "synchronizacja",
+      "gloss": "sync",
+      "stopword": false
+    },
+    {
+      "word": "będzie",
+      "stem": "będzie",
+      "gloss": "będzie",
+      "stopword": true
+    },
+    {
+      "word": "offline",
+      "stem": "offline",
+      "gloss": "offline",
+      "stopword": false
+    },
+    {
+      "word": "e",
+      "stem": "e",
+      "gloss": "e",
+      "stopword": true
+    },
+    {
+      "word": "g",
+      "stem": "g",
+      "gloss": "g",
+      "stopword": true
+    },
+    {
+      "word": "graphstore",
+      "stem": "graphstore",
+      "gloss": "graphstore",
+      "stopword": false
+    },
+    {
+      "word": "uses",
+      "stem": "use",
+      "gloss": "uses",
+      "stopword": true
+    },
+    {
+      "word": "bm25",
+      "stem": "bm25",
+      "gloss": "bm25",
+      "stopword": false
+    },
+    {
+      "word": "prof",
+      "stem": "prof",
+      "gloss": "prof",
+      "stopword": false
+    },
+    {
+      "word": "smith",
+      "stem": "smith",
+      "gloss": "smith",
+      "stopword": false
+    },
+    {
+      "word": "agrees",
+      "stem": "agree",
+      "gloss": "agrees",
+      "stopword": false
+    },
+    {
+      "word": "rust",
+      "stem": "rust",
+      "gloss": "rust",
+      "stopword": false
+    },
+    {
+      "word": "graphstore",
+      "stem": "graphstore",
+      "gloss": "graphstore",
+      "stopword": false
+    },
+    {
+      "word": "knowledge",
+      "stem": "knowledge",
+      "gloss": "knowledge",
+      "stopword": false
+    },
+    {
+      "word": "graph",
+      "stem": "graph",
+      "gloss": "graph",
+      "stopword": false
+    },
+    {
+      "word": "search",
+      "stem": "search",
+      "gloss": "search",
+      "stopword": false
+    },
+    {
+      "word": "semantic",
+      "stem": "semantic",
+      "gloss": "semantic",
+      "stopword": false
+    },
+    {
+      "word": "worker",
+      "stem": "worker",
+      "gloss": "worker",
+      "stopword": false
+    },
+    {
+      "word": "się",
+      "stem": "się",
+      "gloss": "się",
+      "stopword": true
+    },
+    {
+      "word": "sie",
+      "stem": "sie",
+      "gloss": "sie",
+      "stopword": false
+    },
+    {
+      "word": "function",
+      "stem": "function",
+      "gloss": "function",
+      "stopword": true
+    },
+    {
+      "word": "functions",
+      "stem": "function",
+      "gloss": "functions",
+      "stopword": true
+    },
+    {
+      "word": "import",
+      "stem": "import",
+      "gloss": "import",
+      "stopword": true
+    },
+    {
+      "word": "export",
+      "stem": "export",
+      "gloss": "export",
+      "stopword": false
+    },
+    {
+      "word": "pamięci",
+      "stem": "pamięci",
+      "gloss": "memory",
+      "stopword": false
+    },
+    {
+      "word": "grafu",
+      "stem": "grafu",
+      "gloss": "graph",
+      "stopword": false
+    },
+    {
+      "word": "zadania",
+      "stem": "zadania",
+      "gloss": "task",
+      "stopword": false
+    },
+    {
+      "word": "szyfrowania",
+      "stem": "szyfrowania",
+      "gloss": "encryption",
+      "stopword": false
+    },
+    {
+      "word": "źródeł",
+      "stem": "źródeł",
+      "gloss": "source",
+      "stopword": false
+    },
+    {
+      "word": "wyszukiwania",
+      "stem": "wyszukiwania",
+      "gloss": "search",
+      "stopword": false
+    },
+    {
+      "word": "rozmów",
+      "stem": "rozmów",
+      "gloss": "conversation",
+      "stopword": false
+    },
+    {
+      "word": "stories",
+      "stem": "story",
+      "gloss": "stories",
+      "stopword": false
+    },
+    {
+      "word": "classes",
+      "stem": "class",
+      "gloss": "classes",
+      "stopword": false
+    },
+    {
+      "word": "analysis",
+      "stem": "analysis",
+      "gloss": "analysis",
+      "stopword": false
+    },
+    {
+      "word": "status",
+      "stem": "status",
+      "gloss": "status",
+      "stopword": true
+    },
+    {
+      "word": "physics",
+      "stem": "physic",
+      "gloss": "physics",
+      "stopword": false
+    },
+    {
+      "word": "we",
+      "stem": "we",
+      "gloss": "we",
+      "stopword": true
+    },
+    {
+      "word": "need",
+      "stem": "need",
+      "gloss": "need",
+      "stopword": true
+    },
+    {
+      "word": "an",
+      "stem": "an",
+      "gloss": "an",
+      "stopword": true
+    },
+    {
+      "word": "importer",
+      "stem": "importer",
+      "gloss": "importer",
+      "stopword": false
+    },
+    {
+      "word": "we",
+      "stem": "we",
+      "gloss": "we",
+      "stopword": true
+    },
+    {
+      "word": "must",
+      "stem": "must",
+      "gloss": "must",
+      "stopword": true
+    },
+    {
+      "word": "preserve",
+      "stem": "preserve",
+      "gloss": "preserve",
+      "stopword": false
+    },
+    {
+      "word": "links",
+      "stem": "link",
+      "gloss": "links",
+      "stopword": false
+    },
+    {
+      "word": "fix",
+      "stem": "fix",
+      "gloss": "fix",
+      "stopword": false
+    },
+    {
+      "word": "archive",
+      "stem": "archive",
+      "gloss": "archive",
+      "stopword": false
+    },
+    {
+      "word": "regression",
+      "stem": "regression",
+      "gloss": "regression",
+      "stopword": false
+    },
+    {
+      "word": "otwarte",
+      "stem": "otwarte",
+      "gloss": "otwarte",
+      "stopword": false
+    },
+    {
+      "word": "decyzje",
+      "stem": "decyzje",
+      "gloss": "decision",
+      "stopword": false
+    },
+    {
+      "word": "algorytm",
+      "stem": "algorytm",
+      "gloss": "algorytm",
+      "stopword": false
+    },
+    {
+      "word": "powinien",
+      "stem": "powinien",
+      "gloss": "powinien",
+      "stopword": true
+    },
+    {
+      "word": "być",
+      "stem": "być",
+      "gloss": "być",
+      "stopword": true
+    },
+    {
+      "word": "konfigurowalny",
+      "stem": "konfigurowalny",
+      "gloss": "konfigurowalny",
+      "stopword": false
+    },
+    {
+      "word": "we",
+      "stem": "we",
+      "gloss": "we",
+      "stopword": true
+    },
+    {
+      "word": "decided",
+      "stem": "decided",
+      "gloss": "decided",
+      "stopword": false
+    },
+    {
+      "word": "to",
+      "stem": "to",
+      "gloss": "to",
+      "stopword": true
+    },
+    {
+      "word": "use",
+      "stem": "use",
+      "gloss": "use",
+      "stopword": true
+    },
+    {
+      "word": "sqlite",
+      "stem": "sqlite",
+      "gloss": "sqlite",
+      "stopword": false
+    },
+    {
+      "word": "durable",
+      "stem": "durable",
+      "gloss": "durable",
+      "stopword": false
+    },
+    {
+      "word": "storage",
+      "stem": "storage",
+      "gloss": "storage",
+      "stopword": false
+    },
+    {
+      "word": "for",
+      "stem": "for",
+      "gloss": "for",
+      "stopword": true
+    },
+    {
+      "word": "graphite",
+      "stem": "graphite",
+      "gloss": "graphite",
+      "stopword": false
+    },
+    {
+      "word": "archives",
+      "stem": "archive",
+      "gloss": "archives",
+      "stopword": false
+    },
+    {
+      "word": "we",
+      "stem": "we",
+      "gloss": "we",
+      "stopword": true
+    },
+    {
+      "word": "decided",
+      "stem": "decided",
+      "gloss": "decided",
+      "stopword": false
+    },
+    {
+      "word": "to",
+      "stem": "to",
+      "gloss": "to",
+      "stopword": true
+    },
+    {
+      "word": "reject",
+      "stem": "reject",
+      "gloss": "reject",
+      "stopword": false
+    },
+    {
+      "word": "sqlite",
+      "stem": "sqlite",
+      "gloss": "sqlite",
+      "stopword": false
+    },
+    {
+      "word": "durable",
+      "stem": "durable",
+      "gloss": "durable",
+      "stopword": false
+    },
+    {
+      "word": "storage",
+      "stem": "storage",
+      "gloss": "storage",
+      "stopword": false
+    },
+    {
+      "word": "for",
+      "stem": "for",
+      "gloss": "for",
+      "stopword": true
+    },
+    {
+      "word": "graphite",
+      "stem": "graphite",
+      "gloss": "graphite",
+      "stopword": false
+    },
+    {
+      "word": "archives",
+      "stem": "archive",
+      "gloss": "archives",
+      "stopword": false
+    }
+  ],
+  "salient": [
+    [],
+    [
+      [
+        "sqlite",
+        1.55814461804655
+      ],
+      [
+        "decided",
+        1.33500106673234
+      ]
+    ],
+    [
+      [
+        "source",
+        1.8458266904983307
+      ]
+    ],
+    [
+      [
+        "knowledge",
+        1.8458266904983307
+      ]
+    ],
+    [],
+    [
+      [
+        "semantic",
+        1.8458266904983307
+      ],
+      [
+        "worker",
+        1.8458266904983307
+      ],
+      [
+        "graphstore",
+        1.55814461804655
+      ]
+    ],
+    [
+      [
+        "search",
+        1.8458266904983307
+      ]
+    ],
+    [
+      [
+        "archive",
+        1.8458266904983307
+      ],
+      [
+        "preserve",
+        1.8458266904983307
+      ],
+      [
+        "source",
+        1.8458266904983307
+      ],
+      [
+        "decided",
+        1.33500106673234
+      ]
+    ],
+    [
+      [
+        "otwarte decyzje",
+        2.12270069407308
+      ],
+      [
+        "decyzje",
+        1.8458266904983307
+      ],
+      [
+        "otwarte",
+        1.8458266904983307
+      ]
+    ],
+    [
+      [
+        "graphstore",
+        1.55814461804655
+      ]
+    ],
+    [
+      [
+        "knowledge",
+        1.8458266904983307
+      ],
+      [
+        "search",
+        1.8458266904983307
+      ],
+      [
+        "semantic",
+        1.8458266904983307
+      ],
+      [
+        "worker",
+        1.8458266904983307
+      ],
+      [
+        "graphstore",
+        1.55814461804655
+      ]
+    ],
+    [],
+    [],
+    [],
+    [
+      [
+        "archive",
+        1.8458266904983307
+      ],
+      [
+        "preserve",
+        1.8458266904983307
+      ]
+    ],
+    [
+      [
+        "otwarte decyzje",
+        2.12270069407308
+      ],
+      [
+        "decyzje",
+        1.8458266904983307
+      ],
+      [
+        "otwarte",
+        1.8458266904983307
+      ]
+    ],
+    [
+      [
+        "durable storage",
+        2.12270069407308
+      ],
+      [
+        "graphite archives",
+        2.12270069407308
+      ],
+      [
+        "sqlite durable",
+        2.12270069407308
+      ],
+      [
+        "archives",
+        1.8458266904983307
+      ],
+      [
+        "durable",
+        1.8458266904983307
+      ],
+      [
+        "graphite",
+        1.8458266904983307
+      ],
+      [
+        "storage",
+        1.8458266904983307
+      ],
+      [
+        "sqlite",
+        1.55814461804655
+      ],
+      [
+        "decided",
+        1.33500106673234
+      ]
+    ],
+    [
+      [
+        "durable storage",
+        2.12270069407308
+      ],
+      [
+        "graphite archives",
+        2.12270069407308
+      ],
+      [
+        "sqlite durable",
+        2.12270069407308
+      ],
+      [
+        "archives",
+        1.8458266904983307
+      ],
+      [
+        "durable",
+        1.8458266904983307
+      ],
+      [
+        "graphite",
+        1.8458266904983307
+      ],
+      [
+        "storage",
+        1.8458266904983307
+      ],
+      [
+        "sqlite",
+        1.55814461804655
+      ],
+      [
+        "decided",
+        1.33500106673234
+      ]
+    ]
+  ],
+  "added": [
+    {
+      "term": "sqlite",
+      "pass": 1,
+      "origin": "expansion",
+      "score": 1.4594,
+      "reasons": [
+        "tfidf-contrast 1.946: in 2/2 hits vs 3/18 docs (lift 6.0)",
+        "identifier SQLite"
+      ],
+      "evidence": [
+        "d16",
+        "d17"
+      ]
+    },
+    {
+      "term": "durable storage",
+      "pass": 1,
+      "origin": "expansion",
+      "score": 1.3816,
+      "reasons": [
+        "tfidf-contrast 2.763: in 2/2 hits vs 2/18 docs (lift 9.0)"
+      ],
+      "evidence": [
+        "d16",
+        "d17"
+      ]
+    },
+    {
+      "term": "graphite archives",
+      "pass": 1,
+      "origin": "expansion",
+      "score": 1.3816,
+      "reasons": [
+        "tfidf-contrast 2.763: in 2/2 hits vs 2/18 docs (lift 9.0)"
+      ],
+      "evidence": [
+        "d16",
+        "d17"
+      ]
+    },
+    {
+      "term": "sqlite durable",
+      "pass": 1,
+      "origin": "expansion",
+      "score": 1.3816,
+      "reasons": [
+        "tfidf-contrast 2.763: in 2/2 hits vs 2/18 docs (lift 9.0)"
+      ],
+      "evidence": [
+        "d16",
+        "d17"
+      ]
+    },
+    {
+      "term": "decided",
+      "pass": 1,
+      "origin": "expansion",
+      "score": 0.8524,
+      "reasons": [
+        "tfidf-contrast 1.705: in 2/2 hits vs 4/18 docs (lift 4.5)"
+      ],
+      "evidence": [
+        "d16",
+        "d17"
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "i_1818e949b3",
+      "type": "decision",
+      "text": "We decided to use SQLite.",
+      "doc": "d1",
+      "unit": "u0",
+      "theme": "archive",
+      "date": "2026-09-11",
+      "confidence": 0.88,
+      "cues": [
+        "we decided",
+        "decided to"
+      ],
+      "subject": [
+        "sqlite"
+      ],
+      "negated": {},
+      "status": "active"
+    },
+    {
+      "id": "i_51d5bb3f1c",
+      "type": "invariant",
+      "text": "We must not lose source provenance.",
+      "doc": "d2",
+      "unit": "u0",
+      "theme": "archive",
+      "date": "2026-09-12",
+      "confidence": 0.65,
+      "cues": [
+        "must not"
+      ],
+      "subject": [
+        "lose",
+        "provenance",
+        "source"
+      ],
+      "negated": {
+        "lose": -1,
+        "provenance": -1,
+        "source": -1
+      },
+      "status": "active"
+    },
+    {
+      "id": "i_cea0952bac",
+      "type": "open_question",
+      "text": "Should we use knowledge graphs?",
+      "doc": "d3",
+      "unit": "u0",
+      "theme": "archive",
+      "date": "2026-09-13",
+      "confidence": 0.95,
+      "cues": [
+        "should we",
+        "?"
+      ],
+      "subject": [
+        "graph",
+        "knowledge"
+      ],
+      "negated": {},
+      "status": "active"
+    },
+    {
+      "id": "i_de033c5523",
+      "type": "open_question",
+      "text": "Czy pamięć ma przechowywać źródła?",
+      "doc": "d4",
+      "unit": "u1",
+      "theme": "archive",
+      "date": "2026-09-14",
+      "confidence": 0.88,
+      "cues": [
+        "?",
+        "czy"
+      ],
+      "subject": [
+        "pamięć",
+        "przechowywać",
+        "źródła"
+      ],
+      "negated": {},
+      "status": "active"
+    },
+    {
+      "id": "i_887a694690",
+      "type": "rejected_option",
+      "text": "Rejected the vector index because lexical search was enough.",
+      "doc": "d6",
+      "unit": "u1",
+      "theme": "archive",
+      "date": "2026-09-16",
+      "confidence": 0.65,
+      "cues": [
+        "rejected"
+      ],
+      "subject": [
+        "enough",
+        "index",
+        "lexical",
+        "search"
+      ],
+      "negated": {
+        "index": -1
+      },
+      "status": "active"
+    },
+    {
+      "id": "i_4dde8d2682",
+      "type": "decision",
+      "text": "We decided to preserve every raw archive.",
+      "doc": "d7",
+      "unit": "u1",
+      "theme": "archive",
+      "date": "2026-09-17",
+      "confidence": 0.88,
+      "cues": [
+        "we decided",
+        "decided to"
+      ],
+      "subject": [
+        "archive",
+        "preserve",
+        "raw"
+      ],
+      "negated": {},
+      "status": "active"
+    },
+    {
+      "id": "i_37a900facc",
+      "type": "open_question",
+      "text": "Czy synchronizacja będzie offline?",
+      "doc": "d8",
+      "unit": "u2",
+      "theme": "archive",
+      "date": "2026-09-18",
+      "confidence": 0.88,
+      "cues": [
+        "?",
+        "czy"
+      ],
+      "subject": [
+        "offline",
+        "synchronizacja"
+      ],
+      "negated": {},
+      "status": "active"
+    },
+    {
+      "id": "i_7c9eb9b5be",
+      "type": "requirement",
+      "text": "We must preserve links.",
+      "doc": "d14",
+      "unit": "u3",
+      "theme": "archive",
+      "date": "2026-09-24",
+      "confidence": 0.57,
+      "cues": [
+        "must"
+      ],
+      "subject": [
+        "link",
+        "preserve"
+      ],
+      "negated": {},
+      "status": "active"
+    },
+    {
+      "id": "i_64a581a634",
+      "type": "bug",
+      "text": "Fix archive regression.",
+      "doc": "d14",
+      "unit": "u3",
+      "theme": "archive",
+      "date": "2026-09-24",
+      "confidence": 0.65,
+      "cues": [
+        "regression"
+      ],
+      "subject": [
+        "archive",
+        "fix",
+        "regression"
+      ],
+      "negated": {},
+      "status": "active"
+    },
+    {
+      "id": "i_adff3bae2a",
+      "type": "decision",
+      "text": "We decided to use SQLite durable storage for Graphite archives.",
+      "doc": "d16",
+      "unit": "u4",
+      "theme": "archive",
+      "date": "2026-09-26",
+      "confidence": 0.88,
+      "cues": [
+        "we decided",
+        "decided to"
+      ],
+      "subject": [
+        "archive",
+        "durable",
+        "graphite",
+        "sqlite",
+        "storage"
+      ],
+      "negated": {},
+      "status": "active"
+    },
+    {
+      "id": "i_b96a64c64d",
+      "type": "decision",
+      "text": "We decided to reject SQLite durable storage for Graphite archives.",
+      "doc": "d17",
+      "unit": "u4",
+      "theme": "archive",
+      "date": "2026-09-27",
+      "confidence": 0.88,
+      "cues": [
+        "we decided",
+        "decided to"
+      ],
+      "subject": [
+        "archive",
+        "durable",
+        "graphite",
+        "sqlite",
+        "storage"
+      ],
+      "negated": {
+        "durable": -1,
+        "sqlite": -1,
+        "storage": -1
+      },
+      "status": "active"
+    }
+  ],
+  "edges": [
+    {
+      "src": "i_b96a64c64d",
+      "dst": "i_adff3bae2a",
+      "type": "supersedes",
+      "reason": "later decision (2026-09-27) reverses decision (2026-09-26) on 'durable', 'sqlite', 'storage'"
+    }
+  ],
+  "communities": [
+    0,
+    0,
+    0,
+    1,
+    1,
+    1
+  ],
+  "digests": [
+    {
+      "file": "graph.cpp",
+      "language": "cpp",
+      "digest": "graph.cpp [cpp]\nSymbols: GraphStore\nUses graph database.\nTODO: improve cache\nL5: TODO: improve cache\n",
+      "symbols": [
+        "GraphStore"
+      ],
+      "uses": [
+        "GraphStore"
+      ],
+      "todos": [
+        [
+          5,
+          "TODO: improve cache"
+        ]
+      ]
+    },
+    {
+      "file": "worker.py",
+      "language": "python",
+      "digest": "worker.py [python]\nSymbols: SemanticWorker, SemanticWorker.analyse\nFIXME: bad timestamp\nL5: FIXME: bad timestamp\n",
+      "symbols": [
+        "SemanticWorker",
+        "SemanticWorker.analyse"
+      ],
+      "uses": [
+        "SemanticWorker"
+      ],
+      "todos": [
+        [
+          5,
+          "FIXME: bad timestamp"
+        ]
+      ]
+    },
+    {
+      "file": "CMakeLists.txt",
+      "language": "cmake",
+      "digest": "CMakeLists.txt [cmake]\nSymbols: loom, worker\n",
+      "symbols": [
+        "loom",
+        "worker"
+      ],
+      "uses": [],
+      "todos": []
+    },
+    {
+      "file": "main.ts",
+      "language": "typescript",
+      "digest": "main.ts [typescript]\nSymbols: ArchiveEngine\n",
+      "symbols": [
+        "ArchiveEngine"
+      ],
+      "uses": [
+        "GraphStore",
+        "ArchiveEngine"
+      ],
+      "todos": []
+    }
+  ]
+}
