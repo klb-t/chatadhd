@@ -1,0 +1,92 @@
+{
+  "schema": "loom.stage4.neutral_selection_inventory/1",
+  "dataset_inventory": {
+    "schema": "loom.stage4.shared_case_input_inventory/1",
+    "cases": [
+      {
+        "case_id": "correction_a_b",
+        "exact_common_input_sha256": "1f35a47eb34dc85a74c1e58d976b4374ad44496f65d370fe041941f9fcd2ce32",
+        "prior_packet_id": "919a11e48176ad83a3df295d7555ae446557c54b2d65190eba5d6a1a552c5cfe",
+        "source_point_text_sha256": [
+          {
+            "source_point_id": "ob_ctx_ca1",
+            "sha256": "658cd436547ae4fb077aa5969378b1cb024e5838258e8204c89b09d6fbb9bfeb"
+          },
+          {
+            "source_point_id": "ob_ctx_ca2",
+            "sha256": "345d644cd574f4835504b1093a2b76e2142617c22168c0be2628464994a7b494"
+          }
+        ]
+      },
+      {
+        "case_id": "negated_conditional",
+        "exact_common_input_sha256": "9be53eaee4baff0ef0f64360c4f4ee637682195a9c3bc9f8d22b1fa7e9217791",
+        "prior_packet_id": "903eee4e42904b3fd3817159668b492714a122318f499459b80417b02bf44086",
+        "source_point_text_sha256": [
+          {
+            "source_point_id": "ob_ctx_nc1",
+            "sha256": "b533b5822dc03524570b019cd8c731abe3389129a6ee99a3365138b814ca973d"
+          },
+          {
+            "source_point_id": "ob_ctx_nc2",
+            "sha256": "191099d4bf2839b4eabc79ac8d03863a982bda94fec8f452b7817752c98b0076"
+          }
+        ]
+      }
+    ]
+  },
+  "dataset_sha256": "fdaf97654a905c3d528466aa9ed8eec7db7e86efac6792ca5f8f2aed85a787cb",
+  "planned_query_inventory": {
+    "schema": "loom.stage4.shared_planned_query_inventory/1",
+    "queries": [
+      {
+        "case_id": "correction_a_b",
+        "current_request_utf8_sha256": "0e642f6081a27b21a8aab4ee45170257a89e1ead2c7a958e687fb9764b6ad175",
+        "exact_common_input_sha256": "1f35a47eb34dc85a74c1e58d976b4374ad44496f65d370fe041941f9fcd2ce32"
+      },
+      {
+        "case_id": "negated_conditional",
+        "current_request_utf8_sha256": "885383c1d52b4f2cb18d7b3e5309440061c669085f952a1a72dc56db56f98369",
+        "exact_common_input_sha256": "9be53eaee4baff0ef0f64360c4f4ee637682195a9c3bc9f8d22b1fa7e9217791"
+      }
+    ]
+  },
+  "planned_query_set_sha256": "cdd6c5943515704843de9f9664ec63bb2b79d21816d646d1cbe01f2a85350f9b",
+  "rubric_inventory": {
+    "raw_preregistration_sha256": "9787f92838174075e34e1fa579153abbce6a28f02e57b3d653895d224163c9d8",
+    "version": "2026-10-05-v1",
+    "applicable_stage_pointer": "/stages/stage4",
+    "common_criteria_ids": [
+      "scope-and-attribution",
+      "source-versus-inference",
+      "no-unsupported-completion",
+      "history-retained"
+    ],
+    "case_required_target_criterion_ids": {
+      "correction_a_b": [
+        "current-B",
+        "A-history",
+        "same-user-correction"
+      ],
+      "negated_conditional": [
+        "negative-conditional",
+        "unknown-validation",
+        "no-current-source-permission"
+      ]
+    },
+    "source_grounding_criterion_ids": [
+      "bind-source-roles",
+      "no-new-binding-decision",
+      "optional-link-direction"
+    ],
+    "identical_format_criteria": true,
+    "world_truth_measured": false
+  },
+  "hash_recipe": {
+    "dataset_sha256": "SHA256 of canonical dataset_inventory only; no newline.",
+    "planned_query_set_sha256": "SHA256 of canonical planned_query_inventory only; no newline.",
+    "rubric_sha256": "Raw immutable preregistration-file SHA2569787f, not the bytes of this explanatory inventory.",
+    "canonicalization": "UTF-8 JSON, ensure_ascii=False, sort_keys=True, separators=(comma,colon), allow_nan=False.",
+    "comparison_group_exclusions": "Model, provider, arm, response labels, results, arm-specific prompts/schema, prices and method IDs never enter the shared dataset/query hashes."
+  }
+}
