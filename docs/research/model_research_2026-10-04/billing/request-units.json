@@ -1,0 +1,12 @@
+{
+  "chat": {
+    "prompt_fixed_allowance": 1024,
+    "prompt_per_message_allowance": 32,
+    "request": 1
+  },
+  "jev": {
+    "prompt_fixed_allowance": 1024,
+    "completion": 0,
+    "request": 1
+  }
+}
