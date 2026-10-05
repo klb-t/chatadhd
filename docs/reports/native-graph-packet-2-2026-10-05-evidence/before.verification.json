@@ -1,0 +1,9 @@
+{
+  "corpus_sha256": "0707ce7bda21413fec0f6c209d4c48991f341375cf90d1f7646b1cf2cbf8335c",
+  "native_execution": "PASS",
+  "paid_calls": 0,
+  "phrase_records": 300,
+  "schema": "loom.normalizer_snapshot_verification/1",
+  "snapshot_sha256": "c72968941cdbac69987d26bad16fd0892bd8faeffec79252877c67056e239af3",
+  "token_records": 1236
+}
