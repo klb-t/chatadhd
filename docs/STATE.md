@@ -254,3 +254,37 @@ Powyższe wpisy pozostają historią. Przyjęto przyrost3+4, testowane źródło
 Pełny CTest110/110 (149.03s), guard663 native/24489asercji, 1303Python/0skip; webPASS.
 Wspólny kontrakt METHOD_GRAPH i kanoniczny golden uzgodnione. Integrator: registry/wykonanie/ślad121/1604, canonical+freshnativeconsumerPASS, alias/nested/nested+alias3/3PASS, KBwindowPASS. 3 czystyrebase na30ad7d3; bez merytorycznych zmian. Historyczne negatywy4 pozostają na archive; domyślneprofile/legacywiring to dalszyprzyrost.
 [Dowód9](reports/integrator-intake-2026-10-05/README.md); [bieżący INDEX](reports/INDEX.md). Cały INTERFEJS i wcześniejsze wpisy zachowane;0paidcalls.
+
+
+## W12 — drugi przyrost onboarding (2026-10-05)
+
+Gałąź `gpt/onboarding-2-2026-10-05`, baza integratora `66da570` (main e4109df
+i wybrana implementacja W5; bez deklaracji odbioru W5 przez9). Pierwszy W12
+`3c0bc36552ef9851f1174946cfb108549aae3228` pozostaje nietknięty/w kolejce.
+Jego siedem commitów odtworzono bez zmian jako jawną zależność na nowej gałęzi
+do `aa887242`; nowy przyrost jest oddzielnym diffem po tej zależności.
+
+Osiem własnych grup R40/R42: katalog prezentacji EN/PL153/153, presety kontrolek
+i CSS, sześć objaśnień warstw oraz defaults RuntimeProfile wyprowadzone z entries
+i runtime_bindings zamiast drugiej ręcznej kopii. User pack3/presentation entry2;
+wykluczenia i wartości użytkownika pozostają. Źródło produktu `6adbf2a`, końcowy
+pin build/test `5115477fda183572acb901cfd2ea98979fb0f45d`: później zmieniły się
+wyłącznie dwa pliki testów, bez osłabienia asercji lub progów.
+
+Pełny CTest125/125 PASS306,35s; guard rzeczywiście wykonanych native775/29387
+asercji, Python unittest1340/0skip. W12native65/2988; generator18/18, kontroler/helpery
+UI28/28 (bez ReactDOM), TypeScript/Vite85 PASS. Domyślny opt-in catalogscale0/0
+jawny, nie uruchamiano powolnego korpusu. Same C++probe BEFORE/AFTER:9+12 etapów,
+21 wyników przygotowania żądania (18 sukcesów/3 oczekiwane odmowy),120 wyników
+oceny polityki; dokładnie rozliczone dodatki grafu. Rzeczywista stara SQLite
+z known/declined/never i wykluczeniem: jawny update1→3,15/15 kontroli PASS,
+oryginał nienaruszony. Zero modeli/paidcalls, testy syntetyczne offline.
+
+[Raport i przekazania3/9/10/11/12](reports/onboarding-2-2026-10-05.md),
+[surowe dowody i zachowane negatywy](reports/onboarding-2-2026-10-05-evidence/README.md).
+Nie deklarujemy pełnego R42: trzy grupy danych nadal otwarte i dwie grupy
+kontraktu/diagnostyki do guarda11. W bazie brak runtime_profile.h; warunkowy
+adapter pozostaje unavailable, podłączenie wspólnego loadera wymaga11.
+Produkcja selector/writer3, HTTP/nawigacja10 i retencja pozostają przekazaniami.
+Onboarding/R39–R40 jest w12 zgodnie z przeniesieniem przez właściciela;10
+wpina naszą część UI poza jej katalogiem. Main aktualizuje wyłącznie9.
