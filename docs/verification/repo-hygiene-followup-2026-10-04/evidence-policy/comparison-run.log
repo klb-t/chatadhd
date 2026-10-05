@@ -1,0 +1,7 @@
+{
+  "legacy_tests": 16,
+  "fixture_calls": 44,
+  "complete_ci_pairs": 2,
+  "missing_original_junit": 2,
+  "equivalent": true
+}
