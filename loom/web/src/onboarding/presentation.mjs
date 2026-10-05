@@ -5,39 +5,68 @@ function canonical(value) {
   if (value && typeof value === "object") return Object.fromEntries(Object.keys(value).sort().map(key => [key, canonical(value[key])]));
   return value;
 }
-/** Inert substitution only; a replacement is never reinterpreted as a template. */
-export function formatTemplate(template, parameters = {}) {
-  if (!record(parameters) || ![Object.prototype, null].includes(Object.getPrototypeOf(parameters))) throw new PresentationError("error.template_parameters");
-  if (typeof template !== "string") throw new PresentationError("error.template_syntax");
+/** Parser failures carry only mechanism IDs, never another catalog lookup. */
+class TemplateFailure extends Error {
+  constructor(code, parameters = {}) { super(code); this.code = code; this.parameters = parameters; }
+}
+function renderTemplate(template, parameters = {}) {
+  if (!record(parameters) || ![Object.prototype, null].includes(Object.getPrototypeOf(parameters))) throw new TemplateFailure("error.template_parameters");
+  if (typeof template !== "string") throw new TemplateFailure("error.template_syntax");
   let cursor = 0;
   let result = "";
   while (true) {
     const start = template.indexOf("{{", cursor);
     if (start < 0) return result + template.slice(cursor);
     const end = template.indexOf("}}", start + 2);
-    if (end < 0 || end === start + 2) throw new PresentationError("error.template_syntax");
+    if (end < 0 || end === start + 2) throw new TemplateFailure("error.template_syntax");
     const key = template.slice(start + 2, end);
-    if (key.includes("{{")) throw new PresentationError("error.template_syntax");
-    if (!Object.hasOwn(parameters, key)) throw new PresentationError("error.template_parameter", { key });
+    if (key.includes("{{")) throw new TemplateFailure("error.template_syntax");
+    if (!Object.hasOwn(parameters, key)) throw new TemplateFailure("error.template_parameter", { key });
     const value = parameters[key];
     result += template.slice(cursor, start) + (typeof value === "string" ? value : JSON.stringify(canonical(value)));
     cursor = end + 2;
   }
 }
+/** Inert substitution only; a replacement is never reinterpreted as a template. */
+export function formatTemplate(template, parameters = {}) {
+  try { return renderTemplate(template, parameters); }
+  catch (failure) {
+    if (failure instanceof TemplateFailure) throw new PresentationError(failure.code, failure.parameters);
+    throw failure;
+  }
+}
+function diagnosticText(code, parameters, machineOnly) {
+  if (machineOnly) return { text: code, machineOnly: true };
+  const catalog = embedded?.locales?.[embedded?.default_locale];
+  if (typeof catalog?.[code] !== "string") return { text: code, machineOnly: true };
+  const renderedParameters = parameters?.expectedType ? { ...parameters, expected: catalog?.[`type.${parameters.expectedType}`] ?? parameters.expectedType } : parameters;
+  try { return { text: renderTemplate(catalog[code], renderedParameters), machineOnly: false }; }
+  catch { return { text: code, machineOnly: true }; }
+}
 export class PresentationError extends Error {
   constructor(code, parameters = {}, machineOnly = false) {
-    const catalog = embedded.locales?.[embedded.default_locale];
-    const renderedParameters = parameters.expectedType ? { ...parameters, expected: catalog?.[`type.${parameters.expectedType}`] ?? parameters.expectedType } : parameters;
-    super(!machineOnly && catalog?.[code] ? formatTemplate(catalog[code], renderedParameters) : code);
+    const diagnostic = diagnosticText(code, parameters, machineOnly);
+    super(diagnostic.text);
     this.name = "PresentationError";
     this.code = code;
     this.parameters = parameters;
-    this.machineOnly = machineOnly;
+    this.machineOnly = diagnostic.machineOnly;
   }
 }
 function record(value) { return Boolean(value && typeof value === "object" && !Array.isArray(value)); }
 function invalid(path) { throw new PresentationError("error.presentation_invalid", { path }); }
+function validateBootstrap() {
+  const defaults = embedded?.defaults;
+  const messages = embedded?.locales?.[embedded?.default_locale];
+  if (!record(embedded) || embedded.schema !== "loom.onboarding.presentation/1" ||
+      typeof embedded.default_locale !== "string" || !embedded.default_locale ||
+      !record(embedded.locales) || !record(messages) || !record(defaults) ||
+      !record(defaults.rows) || !record(defaults.control_order) ||
+      Object.values(defaults.control_order).some(ids => !Array.isArray(ids) || ids.some(id => typeof id !== "string")))
+    throw new PresentationError("error.presentation_invalid", { path: "bootstrap" }, true);
+}
 function validate(pack) {
+  validateBootstrap();
   if (!record(pack) || pack.schema !== "loom.onboarding.presentation/1" || typeof pack.default_locale !== "string" || !record(pack.locales) || !record(pack.defaults)) invalid("schema");
   const requiredMessages = Object.keys(embedded.locales[embedded.default_locale]);
   if (!Object.hasOwn(pack.locales, pack.default_locale)) invalid("default_locale");
@@ -70,7 +99,11 @@ export function resolvePresentation(input, locale) {
     if (!input.available || ["disabled", "excluded", "proposal", "missing"].includes(input.status)) throw new PresentationError("error.presentation", { reason: input.reason ?? input.status ?? "unavailable" }, true);
     pack = input.value;
   }
-  validate(pack);
+  try { validate(pack); }
+  catch (failure) {
+    if (pack === embedded && failure instanceof PresentationError) throw new PresentationError(failure.code, failure.parameters, true);
+    throw failure;
+  }
   const chosen = locale === undefined || locale === "" ? pack.default_locale : locale;
   if (!Object.hasOwn(pack.locales, chosen)) throw new PresentationError("error.presentation_locale", { locale: chosen });
   return { pack, locale: chosen, defaults: pack.defaults };
