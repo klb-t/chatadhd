@@ -577,6 +577,10 @@ struct CompiledClasses {
 }  // namespace
 
 struct Regex::Program {
+  explicit Program(RuntimeProfile recipe)
+      : profile(std::move(recipe)), step_limit(profile.values().at("step_limit").get<std::uint64_t>()) {}
+
+  RuntimeProfile profile;
   std::string pattern;
   Flags flags = kNone;
   int group_count = 0;
@@ -584,7 +588,7 @@ struct Regex::Program {
   std::vector<Inst> insts;
   std::vector<CharClassAst> classes;
   std::vector<SubProgram> lookaheads;
-  std::atomic<std::uint64_t> step_limit{10'000'000};
+  std::atomic<std::uint64_t> step_limit;
   mutable std::atomic<bool> hit_limit{false};
 };
 
@@ -1015,8 +1019,26 @@ std::string Match::group_utf8(std::size_t g) const { return utf8::encode(group(g
 Regex::~Regex() = default;
 
 Result<Regex> Regex::compile(std::string_view pattern_utf8, Flags flags) {
+  LOOM_TRY_ASSIGN(auto profile, RuntimeProfile::builtin("re"));
+  return compile(pattern_utf8, flags, profile);
+}
+
+namespace {
+Result<RuntimeProfile> validate_regex_profile(const RuntimeProfile& profile) {
+  if (profile.domain() != "re")
+    return Error(Errc::InvalidArgument, "regex requires the re runtime profile");
+  LOOM_TRY_ASSIGN(auto consumer, RuntimeProfile::builtin("re"));
+  // Caller-defined schemas cannot weaken this consumer's representation
+  // requirements or advertise executable settings the VM does not read.
+  LOOM_TRY(consumer.with_values(profile.values()));
+  return profile;
+}
+}  // namespace
+
+Result<Regex> Regex::compile(std::string_view pattern_utf8, Flags flags, const RuntimeProfile& profile) {
+  LOOM_TRY_ASSIGN(auto recipe, validate_regex_profile(profile));
   std::u32string pat32 = utf8::decode(pattern_utf8);
-  auto prog = std::make_shared<Program>();
+  auto prog = std::make_shared<Program>(std::move(recipe));
   prog->pattern = std::string(pattern_utf8);
 
   Parser parser(pat32, flags);
@@ -1033,6 +1055,26 @@ Result<Regex> Regex::compile(std::string_view pattern_utf8, Flags flags) {
   compiler.compile_root(**ast);
 
   return Regex(prog);
+}
+
+Result<Regex> Regex::with_profile(const RuntimeProfile& profile) const {
+  if (!prog_) return Error(Errc::Unavailable, "regex has no compiled program");
+  LOOM_TRY_ASSIGN(auto recipe, validate_regex_profile(profile));
+  auto program = std::make_shared<Program>(std::move(recipe));
+  program->pattern = prog_->pattern;
+  program->flags = prog_->flags;
+  program->group_count = prog_->group_count;
+  program->num_slots = prog_->num_slots;
+  program->insts = prog_->insts;
+  program->classes = prog_->classes;
+  program->lookaheads = prog_->lookaheads;
+  return Regex(std::move(program));
+}
+
+Result<Json> Regex::profile_inspection() const {
+  if (!prog_) return Error(Errc::Unavailable, "regex has no compiled program");
+  LOOM_TRY_ASSIGN(auto effective, prog_->profile.with_overrides(Json{{"step_limit", step_limit()}}));
+  return effective.inspection();
 }
 
 namespace {
@@ -1231,6 +1273,7 @@ Flags Regex::flags() const noexcept { return prog_ ? prog_->flags : kNone; }
 void Regex::set_step_limit(std::uint64_t steps) noexcept {
   if (prog_) prog_->step_limit.store(steps);
 }
+std::uint64_t Regex::step_limit() const noexcept { return prog_ ? prog_->step_limit.load() : 0; }
 bool Regex::last_search_hit_limit() const noexcept { return prog_ && prog_->hit_limit.load(); }
 
 }  // namespace loom::re

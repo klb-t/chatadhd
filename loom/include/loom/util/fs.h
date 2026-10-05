@@ -2,10 +2,12 @@
 #pragma once
 
 #include <filesystem>
+#include <optional>
 #include <string>
 #include <string_view>
 
 #include "loom/result.h"
+#include "loom/runtime_profile.h"
 
 namespace loom::fsutil {
 
@@ -40,7 +42,15 @@ fs::path resolve_path(std::string_view p);
 // destruction (RAII). Used by tests and the ZIP importer.
 class TempDir {
  public:
+  // Retain the historical exported constructor and source-level default for
+  // existing C++ consumers. create(profile) uses the data-owned prefix preset.
   explicit TempDir(std::string_view prefix = "loom_");
+  // Per-call preset plus caller prefix. An empty temp.base_root discovers
+  // the system temp directory; fallback_root is used only on discovery error.
+  // Legacy constructors preserve valid()==false on allocation failure;
+  // checked creation exposes schema/filesystem failures without global state.
+  static Result<TempDir> create(const RuntimeProfile& profile,
+                                std::optional<std::string_view> prefix = std::nullopt);
   ~TempDir();
   TempDir(const TempDir&) = delete;
   TempDir& operator=(const TempDir&) = delete;
@@ -53,6 +63,9 @@ class TempDir {
   void release() noexcept { path_.clear(); }
 
  private:
+  struct EmptyTag {};
+  explicit TempDir(EmptyTag) {}
+  Status initialize(const RuntimeProfile& profile, std::optional<std::string_view> prefix);
   fs::path path_;
 };
 
