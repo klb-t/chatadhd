@@ -1,0 +1,77 @@
+loom — Loom kernel command line (ChatADHD engine)
+
+Usage: loom [--data-dir DIR] [--json] [--quiet] <command> [args]
+
+Global options:
+  --data-dir DIR   data directory (default: $CHATADHD_DATA, sentinel search, ~/.chatadhd)
+  --json           print JSON instead of text
+  --quiet          no progress output on stderr
+  --log-level L    debug | info | warning | error (default: warning)
+
+Commands:
+  init                                  create/open the data directory, print paths
+  version                               build info
+  conv list [--limit N]                 conversations (newest first)
+  conv create [TITLE]
+  conv show ID [--all]                  messages (--all: versions, excluded, deleted)
+  conv rename ID TITLE
+  conv delete ID
+  msg edit ID TEXT                      new version (old one kept)
+  msg restore ID                        make ID the active version
+  msg versions ID                       all versions of ID's group
+  msg status ID active|excluded|version|deleted
+  chat [--conv ID] [--model M] [--depth N] [--effort E] [--web] MESSAGE...
+                                        stream an answer ("-" reads the message from stdin)
+  import PATH [--title T] [--force] [--export-mode auto|off|on] [--audit]
+                                        universal importer (ChatGPT/Claude/HTML/MD/...); ChatGPT/Claude
+                                        export ZIPs are imported losslessly (on: bare .json too)
+  export CONV_ID [--format json|markdown|text|html] [--out FILE]
+  graph nodes [--kind K] [--limit N]
+  graph edges [--node ID] [--type T]
+  graph expand ID... [--depth N]
+  graph reindex [CONV_ID]
+  graph stats
+  context TEXT [--depth N] [--max-tokens N]      ContextSet for a prompt
+  search QUERY [--limit N] [--conv ID] [--all]   full-text search (FTS5/BM25)
+  semantic status|pause|resume|wake|run         background analysis (run = drain now)
+  memory list | add CONTENT [--parent ID] | delete ID | context
+  config get [KEY] | set KEY VALUE              VALUE is JSON (plain text = string)
+  secret set KEY | has KEY | delete KEY | list  set reads the value from stdin
+  models [--refresh]
+  tasks list [--kind K] [--status S] [--limit N] | show ID | resume | cancel ID
+  provenance ID                         sources + transformation records of an id
+  sources [--limit N]
+  artifacts list [--kind K] | show ID [--out FILE]
+  archive run [--source PATH]... [--repo DIR] [--out DIR] [--seed TERM]...
+              [--project NAME] [--max-passes N] [--max-new-terms N] [--max-hits N]
+              [--rounds N] [--exclude FRAGMENT]... [--no-git] [--no-code]
+              [--include-db] [--llm auto|off] [--force] [--config FILE.json]
+              [--knowledge]                  also run knowledge; failure of either pipeline fails the command
+  archive status [RUN_ID]
+  knowledge run [--source PATH]... [--repo DIR] [--out DIR] [--project NAME] [--cut YYYY-MM-DD]
+                [--no-priors] [--snapshot DIR[=LABEL]]... [--stage S]... [--llm auto|off]
+                [--force] [--config FILE.json]
+                catalog -> extract -> resolve -> assess -> generalize -> materialize (resumable)
+                --cut filters seed priors only; supply an independently date-filtered source corpus for holdout
+  knowledge status [TASK_ID]
+  catalog scan [--source PATH]... [--threads N] [--mobile] [--force]
+               stream files/dirs/zips into loom_cat_units + sketches (R1: no import)
+  catalog profile [--repo DIR]              build the self-profile from the pack + repo
+  catalog score [--profile ID] [--max-passes N]
+  catalog list [--label relevant|candidate|irrelevant] [--project ID] [--text Q]
+               [--sort score|date|id] [--limit N] [--offset N] [--run ID]
+  catalog show UNIT_ID                      metadata, score reasons, verified snippets
+  catalog include UNIT_ID [--reason R] | exclude UNIT_ID [--reason R] | pin UNIT_ID [--reason R]
+  catalog import [--run ID] [--dry-run] [--mode selective|full]
+                 [--include-project-siblings] [--time-window-hours N] [--store-mode copy|link]
+                 targeted import of the selected units (mode=full: every catalogued unit, lossless)
+  catalog watch --source PATH... [--interval SECONDS]
+                 rescans on an interval until Ctrl-C (new/changed files only; already incremental)
+  catalog status
+  catalog eval --truth ground_truth.json [--run ID]
+               recall/precision/noise-trap FP against a synthetic_dev-shaped ground truth
+  crypto status | setup | unlock | lock        passwords are read from stdin
+
+Archive example (the self-hosting run):
+  loom --data-dir /tmp/loom-selfhost archive run --repo . --out docs/selfhost \
+       --seed ChatADHD --seed Loom --seed provenance --seed graph --seed importer
