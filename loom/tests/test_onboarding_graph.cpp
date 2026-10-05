@@ -234,7 +234,7 @@ TEST_SUITE("onboarding native graph projection") {
     action(fixture.layers, Json{{"op", "exclude"}, {"key", "profile.self"}});
     action(fixture.layers, Json{{"op", "exclude"}, {"key", "preference.style"}});
     action(fixture.layers, Json{{"op", "exclude"}, {"key", "method.onboarding"}});
-    fixture.pack["revision"] = 2;
+    fixture.pack["revision"] = fixture.pack["revision"].get<std::int64_t>() + 1;
     fixture.layers = unwrap(DefaultLayers::create(fixture.pack, fixture.layers.snapshot()));
     const auto graph = fixture.project();
     CHECK(graph["method_profile"]["entities"].empty());
@@ -334,7 +334,7 @@ TEST_SUITE("onboarding native graph projection") {
   TEST_CASE("vocabulary absence and contradictory immutable hashes are explicit errors") {
     GraphFixture fixture;
     fixture.pack["vocabulary"]["kinds"].erase("field");
-    fixture.pack["revision"] = 2;
+    fixture.pack["revision"] = fixture.pack["revision"].get<std::int64_t>() + 1;
     const auto unavailable = project_graph(fixture.pack, fixture.scenario, fixture.profile, fixture.layers.snapshot(), "synthetic-user");
     REQUIRE_FALSE(unavailable);
     CHECK(unavailable.error().code == Errc::Unavailable);
