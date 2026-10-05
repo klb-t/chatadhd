@@ -17,10 +17,14 @@ in-memory and overlay packs use the same validation and canonical pack hash.
 | `cvc_vowel_groups` | Required number of vowel groups in a short-CVC stem; nonnegative integer representable as `size_t`. |
 | `restore_suffix` | Text appended by either configured-ending or short-CVC restoration. Empty string disables addition. |
 | `guess_min_tokens` | Nonnegative integer representable as `size_t`: shorter texts use character cues alone. Empty token lists always produce `Unknown`. |
-| `mixed_min_fraction` | Fraction in `[0,1]`, inclusive for both language signals. |
-| `pl_min_fraction` | Fraction in `[0,1]`, inclusive, with PL signal greater than EN signal. |
-| `en_min_fraction` | Fraction in `[0,1]`, exclusive, preserving the existing boundary behavior. |
+| `mixed_min_fraction` | Finite cutoff compared with both signal fractions, inclusive. |
+| `pl_min_fraction` | Finite cutoff compared with the PL fraction, inclusive, with PL signal greater than EN signal. |
+| `en_min_fraction` | Finite cutoff compared with the EN fraction, exclusive, preserving the existing boundary behavior. |
 | `stopword_sources` | Ordered list of `{lexicon, fields, pl_signal_fields}`; each field references a string array in the named pack lexicon. Empty list disables these word-table contributions. |
+
+Cutoffs above one can disable a comparison; negative cutoffs are valid.
+They are settings compared with fractions, not probability outputs. Nonfinite
+values are rejected by the shared pack validator.
 
 The previous `pl` and `en` stemming tables remain unchanged. Their minimum
 lengths, fold map, exceptions, rewrites, suffixes, markers and restoration

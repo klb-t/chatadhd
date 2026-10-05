@@ -65,6 +65,15 @@ struct V {
     }
     return true;
   }
+  bool finite_number(const Json& o, const std::string& ptr, std::string_view key) {
+    const Json* value = member(o, ptr, key);
+    if (!value) return false;
+    if (!value->is_number() || !std::isfinite(value->get<double>())) {
+      err(ptr + "/" + std::string(key), "expected a finite number");
+      return false;
+    }
+    return true;
+  }
   bool integer(const Json& o, const std::string& ptr, std::string_view key, long lo, long hi, bool required = true) {
     const Json* m = member(o, ptr, key, required);
     if (!m) return !required;
@@ -372,7 +381,7 @@ void v_stemming(V& v, const Json& d) {
       v.size_count(*recipe, ptr, key);
     }
     for (const char* key : {"mixed_min_fraction", "pl_min_fraction", "en_min_fraction"}) {
-      v.num(*recipe, ptr, key, 0, 1);
+      v.finite_number(*recipe, ptr, key);
     }
     if (const Json* sources = v.array(*recipe, ptr, "stopword_sources")) {
       for (std::size_t i = 0; i < sources->size(); ++i) {
