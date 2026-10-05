@@ -26,7 +26,7 @@ opublikowanego `edcb32f` i pobraniu późniejszego commitu z checkoutu prowadzą
 Nie ponawiano wcześniejszych 720 wywołań. Nie czytano `eval/real-holdout-key`,
 prywatnych danych, klucza ani prywatnego ledgeru.
 
-**Commit gotowy do dispatch: `957819e9e17da29603a6587cc9d543a455ccef8e`**.
+**Historyczny commit dispatchu, WYCOFANY: `957819e9e17da29603a6587cc9d543a455ccef8e`**.
 **Commit do odbioru eksportera/bramek: `dee0923a593b9db3c6bb8340fd666a69c9330354`**
 (lokalny `4bf73e6`; dokładne drzewo `0e7b10df1cbccfe3c77ea83f1e7586e8527a2540`).
 Przekazanie do 7A: [draft PR13](https://github.com/klb-t/chatadhd/pull/13).
@@ -55,7 +55,8 @@ kierunku, mówcy i czasu, bez twierdzenia o prawdziwości świata.
 | Populacja | j_active | j_directed | Status |
 |---|---:|---:|---|
 | Znane rodziny: dwie wcześniejsze powtórki | 80/96 | 89/96 | Wynik historyczny; osobna populacja |
-| Nowe 24 rodziny | null/96 | null/96 | Oczekuje na publiczne pierwsze odpowiedzi od 7A |
+| Nowe 24 rodziny autorskie | null/96 | null/96 | Dispatch wycofany; nie zebrano wyników |
+| Wspólny wycinek rzeczywistych eksportów | null | null | Czeka na źródła i nowy freeze 7A/7C |
 
 Mianowniki nowych danych pozostają 96/arm i 48/arm/język. Braki, niepoprawny
 protokół i konflikt nie są usuwane. Nie zmieniamy gold, etykiet, progu >0,5,
@@ -73,8 +74,9 @@ Wszystkie dane i instrument pozostają niezmienione. Reprodukcja:
 `python docs/research/model_research_2026-10-04/stage5/jev-validation-20261005/audit_corpus.py`;
 wynik `CORPUS_AUDIT.json` ma datę, hashe wejść i produced_by do skryptu.
 
-Planowana rezerwa: **0,192 USD**. Rzeczywisty koszt nowej populacji: **null** do
-otrzymania rachunków generacji. Własne płatne wywołania 7C: **0**. Historyczne
+Planowana rezerwa wycofanego dispatchu: **0,192 USD**. Rzeczywisty koszt tej
+populacji: **null**, bez rachunków generacji. Rezerwa nowego rzeczywistego wycinka
+wymaga nowego manifestu i preflightu 7A. Własne płatne wywołania 7C: **0**. Historyczne
 0,873216500 USD/720 prób to wcześniejszy checkpoint całego programu, nie aktualne
 saldo ani koszt tego badania. Wspólny limit klucza: 5 USD; bez drugiego wykonawcy.
 
@@ -120,30 +122,32 @@ Pełnych historycznych bramek C++ nie przenosimy na ten przyrost Python/danych.
 
 ## Wznowienie
 
-1. Fetch tej gałęzi i gałęzi prowadzącego. Sprawdzić powyższe hashe oraz oryginalne
-   osiem testów: `python docs/research/model_research_2026-10-04/stage5/new-label-scoring-v1/test_score_first_only.py`.
-2. Odbiór gotowej transformacji i dokładne polecenia:
-   `stage5/jev-validation-20261005/DISPATCH_7A.md` oraz `DISPATCH_READY.json`.
-   Nie generować nowej preparacji ani nie zmieniać opublikowanych requestów.
-3. 7A wykonuje preflight świeżych cen i wspólnego stanu kosztów, wysyła raz 192
-   operacje, rozlicza generacje i publikuje wyłącznie bezpieczny NORMALIZED bundle
-   z niezależnie zapisanym SHA. 7C nie otrzymuje klucza ani kopii prywatnego ledgeru.
-4. Uruchomić oryginalny scorer na publicznym bundle z hashami config/bundle;
-   następnie użyć gotowego `python -m loom.tools.structure.jev_validation_results_v1`
-   z `--score`, `--bundle`, `--manifest`, `--config`, `--output`,
-   `--observed-on 2026-10-05` i osobnymi `--score-sha256`, `--bundle-sha256`,
-   `--manifest-sha256`, `--config-sha256`. Inputami są wynik zamrożonego scorera,
-   publiczny NORMALIZED i powyższy manifest/config wykonawcy. Output musi być nowym
-   katalogiem w repo, np. `stage5/jev-validation-20261005/measured-v1`.
-   Eksporter zapisuje datowane twierdzenia o wersjach przepisów w istniejącym
-   formacie profili metod: requested/observed modele, prompt/version hash,
-   parametry, dowody, produced_by i wszystkie mianowniki. Zachowuje oryginalne
-   bajty czterech wejść oraz osobny `VALIDATION.json` z 96 porównaniami par.
-5. Porównać dostępność, protokół, etykiety, PL/EN, koszt, błędy i pary rozbieżności.
-   Zachować pełne negatywy na gałęzi archiwalnej, bez automatycznej adopcji presetu.
+1. Fetch `gpt/model-research-2026-10-04` i tej gałęzi. Odczytać nową koordynację
+   `express20261005/COORDINATION.md` / `.json`; zapisać jej commit i hash. Starszy
+   plan na syntetykach nie upoważnia do dispatchu po aktualizacji właściciela.
+2. Odbiór wspólnego rzeczywistego wycinka od 7A zgodnie z
+   `stage5/jev-validation-20261005/REAL_SOURCE_READINESS.md`. Sprawdzić pochodzenie,
+   hashe, locatory, role, gałęzie, czas i kontrakt publicznej projekcji.
+   Prywatny pełny replay pozostaje poza publicznym repo.
+3. Zamrozić osobno nowe źródło, recenzowany gold i nowe żądania obu przepisów
+   przed collection. Zachować stare pliki i ich hashe. Ustalić populację PL/EN
+   na rzeczywistym wycinku; braki ujawnić przed freeze. Zweryfikować scorer
+   oryginalnymi ośmioma kontrolami i właściwymi testami nowej konfiguracji,
+   bez zmiany progów. Opublikować wyłącznie dozwoloną preparację do odbioru 7A.
+4. 7A wykonuje nowy preflight kosztów i jedyny płatny dispatch na wspólnym
+   rejestrze. 7C nie otrzymuje klucza ani kopii prywatnego ledgeru. Stary
+   `DISPATCH_7A.md` oraz manifest `957819e9` pozostają wycofane.
+5. Ocenić zapisane pierwsze odpowiedzi zamrożonym instrumentem, bez naprawy JSON,
+   retry ani usuwania braków. Porównać dostępność, protokół, etykiety, PL/EN,
+   koszt z rachunków, błędy i wszystkie pary. Publiczne datowane twierdzenia
+   zawierają hashe wersji/promptów, parametry, dowody, mianowniki i produced_by
+   w formacie profili metod. Pełny dotychczasowy eksporter zachowuje body wejść;
+   dla prywatnych źródeł uruchamiać go wyłącznie w prywatnym replay, a publikować
+   projekcję zgodną z kontraktem 7A. Pełne negatywy zachować w dozwolonym archiwum.
 
-Pozostaje zależność: 7A musi wykonać i opublikować collection oraz potwierdzone
-rachunki. Offline nie można ustalić dostępności, jakości i kosztu nowych modeli.
+Pozostaje zależność: 7A musi opublikować nową koordynację i wycinek rzeczywistych
+eksportów, a następnie wykonać collection i rozliczenie. Offline nie można
+ustalić dostępności, jakości i kosztu nowych modeli.
 Komplet własnych pozytywnych i negatywnych fixture'ów oraz pusty kontrolny bundle
 zachowujemy w archiwum wskazanym przez `NEGATIVE_ARCHIVE.json`; archiwum nie jest
 wynikiem nowej populacji. Po wynikach nie zmieniać instrumentu ani wejść.
