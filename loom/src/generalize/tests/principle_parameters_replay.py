@@ -41,6 +41,14 @@ def sha256(content: bytes) -> str:
     return hashlib.sha256(content).hexdigest()
 
 
+def file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as source:
+        for chunk in iter(lambda: source.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
 def canonical(value: object) -> bytes:
     return json.dumps(value, sort_keys=True, separators=(",", ":"),
                       ensure_ascii=False, allow_nan=False).encode()
@@ -157,11 +165,11 @@ def main() -> int:
             libraries.append(sqlite)
         for library in libraries:
             assert library is not None
-            digest = sha256(library.read_bytes())
+            digest = file_sha256(library)
             watched[library] = digest
             summary["library_sha256"][str(library)] = digest
         def unchanged() -> None:
-            changed = [str(path) for path, expected in watched.items() if sha256(path.read_bytes()) != expected]
+            changed = [str(path) for path, expected in watched.items() if file_sha256(path) != expected]
             if changed:
                 raise RuntimeError(f"input changed during paired proof: {changed}")
         output = {}
@@ -222,6 +230,8 @@ def main() -> int:
                   before["results"][case]["serialized_report"])
             for kind, result in after["results"]["invalid"][key].items():
                 check(f"invalid_explicit_error:{key}:{kind}", result.get("ok") is False and
+                      result.get("code") == "invalid_argument" and
+                      result.get("phase") in {"pack_validation", "discover_principles"} and
                       key in result.get("message", ""), phase=result.get("phase"),
                       code=result.get("code"), message=result.get("message"))
         changed_seed = after["results"]["changed"]["seed_jaccard_multiplier"]

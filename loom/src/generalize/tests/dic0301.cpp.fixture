@@ -63,8 +63,8 @@ Json typed(const kb::Pack& pack, const std::string& text) {
 } // namespace
 
 int main(int argc, char** argv) {
-  if (argc != 4) {
-    std::cerr << "usage: dic0301 exact-legacy-classes.json before-cues.json overlay-dir\n";
+  if (argc != 5) {
+    std::cerr << "usage: dic0301 exact-legacy-classes.json cues.json thresholds.json overlay-dir\n";
     return 2;
   }
   const Json oracle = read_json(argv[1]);
@@ -72,7 +72,11 @@ int main(int argc, char** argv) {
   if (!builtin) { std::cerr << builtin.error().message << '\n'; return 2; }
   Documents docs = documents(**builtin);
   docs["lexicons/cues.json"] = read_json(argv[2]);
-  const std::filesystem::path overlay_dir(argv[3]);
+  // Both phases use the same explicit current numeric policy. The exact base
+  // producer ignores newly introduced recipe fields; the after producer reads
+  // their identical default values. Neither phase relies on a new embedding.
+  docs["policy/thresholds.json"] = read_json(argv[3]);
+  const std::filesystem::path overlay_dir(argv[4]);
   std::filesystem::create_directories(overlay_dir / "lexicons");
   const auto cue_file = overlay_dir / "lexicons/cues.json";
   auto pack = checked_pack(docs);

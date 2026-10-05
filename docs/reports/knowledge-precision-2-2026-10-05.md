@@ -1,6 +1,6 @@
 # Wątek 1 — przyrost 2, 2026-10-05
 
-Status: przygotowany kod i niezależny przegląd statyczny; pełny build, natywne replaye i pomiary są w toku. Ten wpis nie zgłasza jeszcze gotowości do przyjęcia.
+Status: przygotowany kod, przegląd statyczny oraz natywny replay parametrów **46/46 PASS**. Replay słowników, pełny build/CTest i oba pomiary są w toku; nie zgłaszamy jeszcze gotowości do przyjęcia.
 
 Gałąź: `gpt/knowledge-precision-2-2026-10-05`. Baza: aktualny `main` `e4109df7e4af22b461def5f7d62e268d9b9a8825`; poprzednia gałąź `gpt/knowledge-precision-2026-10-04` (`50e6bb9`) pozostaje niezmieniona w kolejce. Przeczytano aktualny INDEX i Do1. Inwentarz w bazie nie jest jeszcze lokalnym plikiem: użyto `docs/reports/data-in-code/thread-1.md` ze zdalnego przyrostu11. R42 pochodzi z dokumentacyjnego przyrostu Claude `1c990a9` / tip `3cd5848e7484d50d00f19f0855bc2cd228ad7f3b`, nie z bazowego main.
 
@@ -23,7 +23,7 @@ Usunięcie pojedynczej klasy w replacement `cues.json` ma wyłączyć ten matche
 
 Stara własna nakładka `policy/thresholds.json` musi dostać pięć nowych pól z bieżącego presetu albo zostać świadomie zastąpiona bieżącym dokumentem. Brak liczby oznacza niekompletną receptę. Nie wskrzeszamy usuniętego parametru przez ręczny fallback. Literalne nazwy pliku/kluczy pozostają kontraktem kod↔dane według R42; istniejące semantyczne wiązania klas i inne polityki spoza tych grup pozostają długiem, a nie zbiorczą kategorią „standard”.
 
-## Weryfikacja — jeszcze w toku
+## Weryfikacja — częściowo wykonana
 
 Przygotowano source-pinned replays w `loom/src/generalize/tests/`:
 
@@ -32,9 +32,13 @@ python3 loom/src/generalize/tests/dic0301_replay.py --core-build <frozen-build> 
 python3 loom/src/generalize/tests/principle_parameters_replay.py --help
 ```
 
-Fixture C++ i runner Python przeszły kontrolę składni. Replaye porównują rzeczywiste `discover_principles`/`type_principle` i Pack przed/po przeciw temu samemu niezmiennemu zestawowi archiwów. Osobne scenariusze obejmują faktyczny disk overlay/reload/delete/replace/bad-JSON oraz zmianę każdego z pięciu parametrów i brak/błędny typ/NaN/Inf. Przygotowanie tych kontroli nie jest ich wykonaniem. Pełny CTest bez PYTHONPATH/TMPDIR oraz `knowledge_eval.py synthetic` i `selfhost` pozostają wymagane przed gotowością.
+Parametry: pierwszy rzeczywisty replay **46/46 PASS**. Pięć pełnych serializowanych raportów domyślnych jest identycznych (DEV z priorami i bez: 30→30; trzy mikroklastry: 1→1). Każde z pięciu ustawień działa (przed migracją: 0/5), a 25/25 niepoprawnych wartości daje `invalid_argument` z nazwą parametru — 10 na etapie Pack i 15 przy analizie. Pełne źródła, surowe wyniki, komendy i receipt: `loom/src/generalize/tests/evidence/2026-10-05/principle_parameters/`. Oba jawne warianty modułów i dokumentów linkują ten sam zamrożony core z niezmienionego e410 (SHA256 `c0ebde6e82d3bbfd1e529550c71a56dc6000ac4c3a69d9a592b94cc2b558dd02`); nowy embedded pack weryfikuje osobna pełna bramka.
+
+Replaye porównują rzeczywiste `discover_principles`/`type_principle` i Pack przed/po przeciw temu samemu niezmiennemu zestawowi archiwów. Osobne scenariusze obejmują faktyczny disk overlay/reload/delete/replace/bad-JSON oraz zmianę każdego z pięciu parametrów i brak/błędny typ/NaN/Inf. Replay słowników pozostaje w toku. Pełny CTest bez PYTHONPATH/TMPDIR oraz `knowledge_eval.py synthetic` i `selfhost` pozostają wymagane przed gotowością.
 
 Nie wykonano płatnych ani zewnętrznych wywołań modeli; nie czytano ślepego korpusu ani `eval/real-holdout-key`. Ten przyrost nie zgłasza nowego zysku precyzji: jego celem jest identyczny domyślny wynik i rzeczywista konfigurowalność.
+
+Pierwszy all-target build niezmienionej bazy został przerwany przez OOM linkera, nie przez błąd produktu. Kompletne logi pierwszych prób i przypięte źródło zachowano na `archive/2026-10-05/knowledge-precision-2-build-infrastructure-negative` (`d1c9c822fb7d8df7b2f80ce23e96404d53d3a4c8`). Ponowienie jest pojedynczym procesem; nie zmieniono kodu/progów z powodu awarii.
 
 ## Czego nie włączono
 

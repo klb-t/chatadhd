@@ -15,8 +15,12 @@ python3 loom/src/generalize/tests/dic0301_replay.py \
 
 The output directory must not exist. Both phases compile exact baseline/current
 `common.cpp` and `principles.cpp` modules before the same static core, SQLite and
-miniz archives. They load explicit baseline/current cue documents through the
-native Pack validator. Every pack document, DEV corpus file, generalization
+miniz archives. They load explicit baseline/current cue documents and the same
+explicit current numeric policy through the native Pack validator. The exact
+base producer ignores newly introduced recipe fields, while the after producer
+uses their identical default values. This allows a frozen base core to support
+the paired check without implying that it embeds the new pack. Every pack
+document, DEV corpus file, generalization
 source/header, binary, command and output receives a SHA256 receipt. Sources and
 archives must remain unchanged until replay finishes.
 
@@ -33,3 +37,21 @@ marker. That integration belongs to the graph/profile owners. This focused
 proof establishes default preservation and configurable dictionary lookup; it
 does not measure a new precision gain or replace full CTest and evaluator runs.
 No paid model call, private source or sealed/holdout input is used.
+
+Archive the complete run before changing any of its source inputs:
+
+```sh
+python3 loom/src/generalize/tests/dic0301_archive_replay.py \
+  --run /tmp/loom-dic0301-fresh-run \
+  --output loom/src/generalize/tests/evidence/2026-10-05/dic0301-replay.tar.gz
+```
+
+The archive preserves full before/current source snapshots, pack and public DEV
+inputs, fixture/runner, raw reports and the full command/error log. Its manifest
+contains hashes of every member and the omitted native archives/objects/ELFs.
+Rebuild those binaries from the pinned Git source and archived source overlay.
+Members are sorted; tar timestamps/owners and gzip timestamp are fixed, so the
+same frozen run produces identical archive bytes. Existing archive destinations
+are rejected. Failed and interrupted runs can also be archived; absence of a
+final summary is explicitly recorded and never treated as success. The replay
+writes frozen input receipts and source snapshots before its first compile.

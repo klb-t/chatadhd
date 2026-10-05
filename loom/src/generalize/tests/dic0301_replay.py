@@ -57,6 +57,7 @@ def main():
         "principles.cpp": "loom/src/generalize/principles.cpp",
         "internal.h": "loom/src/generalize/internal.h",
         "cues.json": "loom/data/lexicons/cues.json",
+        "thresholds.json": "loom/data/policy/thresholds.json",
     }
     for name, path in sources.items():
         (legacy / name).write_bytes(subprocess.check_output(["git", "show", f"{args.base_pin}:{path}"], cwd=repo))
@@ -74,6 +75,24 @@ def main():
         repo / "loom/src/kb/pack_embedded.inc", *pack_files, *mechanism_files, *libraries,
         *(path for path in corpus_files if path.is_file())]))
     frozen_hashes = {path: sha(path) for path in frozen_paths}
+    snapshots = {}
+    for path in frozen_paths:
+        if path in libraries:
+            continue
+        target = output / "source_snapshot" / path.relative_to(repo)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(path.read_bytes())
+        assert sha(target) == frozen_hashes[path], "source changed during snapshot"
+        snapshots[str(path.relative_to(repo))] = str(target.relative_to(output))
+    # Persist inputs before the first compile so a negative/interrupted replay
+    # retains its exact source and native-library identities, even after fixes.
+    labels = {str(path.relative_to(repo)) if path.is_relative_to(repo) else str(path): digest
+        for path, digest in frozen_hashes.items()}
+    (output / "inputs.json").write_text(json.dumps({
+        "schema": "loom.test.dic0301_inputs/1", "base_pin": args.base_pin,
+        "repository_head": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo, text=True).strip(),
+        "sha256": labels, "snapshots": snapshots,
+    }, ensure_ascii=False, indent=1) + "\n")
     expected = json.loads(oracle.read_text())
     actual = json.loads((current / "cues.json").read_text())["classes"]
     old = json.loads((legacy / "cues.json").read_text())["classes"]
@@ -102,7 +121,8 @@ def main():
         run(compile_flags + ["-x", "c++", str(fixture), "-x", "none"] + [str(obj) for obj in objects[phase]] +
             link + ["-o", str(executable)], cwd=repo, log=log)
         run([str(executable), str(oracle), str((legacy if phase == "before" else current) / "cues.json"),
-            str(output / (phase + "_overlay"))], cwd=repo, log=log, stdout=output / (phase + ".json"))
+            str(current / "thresholds.json"), str(output / (phase + "_overlay"))],
+            cwd=repo, log=log, stdout=output / (phase + ".json"))
     before, after = (json.loads((output / (phase + ".json")).read_text()) for phase in objects)
     preserved = {key: before[key] == after[key] for key in ("defaults", "dev_principles", "empty_pack_override", "replacement")}
     counts = after["counts"]
@@ -131,6 +151,7 @@ def main():
             "Whole-file pack overlay deletion survives reload; this is not the shared R40 graph exclusion-marker mechanism.",
             "Empty phrases[] remains rejected by the unchanged Pack validator; class deletion disables matching.",
             "Both explicit before/current modules use the same frozen native archives and explicit cue documents.",
+            "Both phases receive the same explicit current thresholds document; the exact base producer ignores new recipe fields and the after producer uses their unchanged defaults.",
             "Full build/test_kb_pack separately verifies the newly embedded pack; this focused replay is not full CTest.",
             "Public fictional synthetic_dev only; unchanged defaults are not a new accuracy measurement."],
         "sha256": {label(path): sha(path) for path in receipts},

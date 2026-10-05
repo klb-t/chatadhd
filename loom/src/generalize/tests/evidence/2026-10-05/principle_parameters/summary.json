@@ -1,0 +1,121 @@
+{
+  "schema": "loom.principle_parameter_summary/1",
+  "status": "pass",
+  "passed": 46,
+  "total": 46,
+  "before": "e4109df7e4af22b461def5f7d62e268d9b9a8825",
+  "library_sha256": {
+    "/workspace/scratch/98e6ad903811/precision2-frozen-core-before/libloom_core.a": "c0ebde6e82d3bbfd1e529550c71a56dc6000ac4c3a69d9a592b94cc2b558dd02",
+    "/workspace/scratch/98e6ad903811/precision2-frozen-core-before/libloom_miniz.a": "84d3950e968f77b81c5477a6116d1a953381794ad61aa167faecc3296e6161a5",
+    "/workspace/scratch/98e6ad903811/precision2-frozen-core-before/libloom_sqlite3_amalgamation.a": "fa49de1205ad8353e9ad9299027730e91bf94149b449b010a243457f23da634b"
+  },
+  "default_report_byte_identity": [
+    {
+      "name": "default_byte_identity:synthetic_dev",
+      "passed": true,
+      "before_sha256": "218dc2460642cebc6dd533c534f0d24ea1aeb0d750860d5e66f2fd1d1e64704a",
+      "after_sha256": "218dc2460642cebc6dd533c534f0d24ea1aeb0d750860d5e66f2fd1d1e64704a",
+      "before_count": 30,
+      "after_count": 30
+    },
+    {
+      "name": "default_byte_identity:synthetic_dev_without_priors",
+      "passed": true,
+      "before_sha256": "d72b1beb5501c22331b1e84d8f733105d17e1cf4c07a0488c65307b8e32658f2",
+      "after_sha256": "d72b1beb5501c22331b1e84d8f733105d17e1cf4c07a0488c65307b8e32658f2",
+      "before_count": 30,
+      "after_count": 30
+    },
+    {
+      "name": "default_byte_identity:seed_default",
+      "passed": true,
+      "before_sha256": "76b120c7360c500b42f9f8d6ff47882fc48c6a5d41ac3f3237fe0829a8526293",
+      "after_sha256": "76b120c7360c500b42f9f8d6ff47882fc48c6a5d41ac3f3237fe0829a8526293",
+      "before_count": 1,
+      "after_count": 1
+    },
+    {
+      "name": "default_byte_identity:discovered_low_default",
+      "passed": true,
+      "before_sha256": "145d8c3676eca58f500c6cb71be7ef241330b5641ab2d2a24d9953990b52fd55",
+      "after_sha256": "145d8c3676eca58f500c6cb71be7ef241330b5641ab2d2a24d9953990b52fd55",
+      "before_count": 1,
+      "after_count": 1
+    },
+    {
+      "name": "default_byte_identity:discovered_high_default",
+      "passed": true,
+      "before_sha256": "efede695887a1ff70043e371be4ea3cf64e515d8c566e15c0121dac1043b1ff4",
+      "after_sha256": "efede695887a1ff70043e371be4ea3cf64e515d8c566e15c0121dac1043b1ff4",
+      "before_count": 1,
+      "after_count": 1
+    }
+  ],
+  "setting_effects_passed": 5,
+  "before_ignored_settings_passed": 5,
+  "invalid_explicit_error_passed": 25,
+  "formula_checks": [
+    {
+      "name": "seed_default_formula",
+      "passed": true,
+      "expected": 0.9314,
+      "actual": 0.9314
+    },
+    {
+      "name": "changed_formula:repeat_confidence_residual_factor",
+      "passed": true,
+      "expected": 0.8542000000000001,
+      "actual": 0.8542000000000001
+    },
+    {
+      "name": "changed_formula:discovered_confidence_cap",
+      "passed": true,
+      "expected": 0.784,
+      "actual": 0.784
+    },
+    {
+      "name": "changed_formula:discovered_confidence_base",
+      "passed": true,
+      "expected": 0.936,
+      "actual": 0.936
+    },
+    {
+      "name": "changed_formula:discovered_confidence_score_factor",
+      "passed": true,
+      "expected": 0.957125,
+      "actual": 0.957125
+    }
+  ],
+  "error_phase_counts": {
+    "discover_principles": 15,
+    "pack_validation": 10
+  },
+  "artifacts": {
+    "after_results.json.gz": {
+      "bytes": 17882,
+      "sha256": "ef72314bc099c20ae5c7b811d336d948e7aed0157aa7150c3e549512ff785241"
+    },
+    "before_results.json.gz": {
+      "bytes": 19347,
+      "sha256": "b84062170e1e15d473087dde98ca5a50ea4afbcf757c251402055ecdbc766984"
+    },
+    "commands.log.gz": {
+      "bytes": 37541,
+      "sha256": "d040f7862f14d39e642d9ec1d688e494b5ab008f152ae4db657326ddbd798537"
+    },
+    "receipt.json": {
+      "bytes": 26548,
+      "sha256": "38fb71b07dcb0ff20227a1e6bb52683a61955aea0f383bd053ba1f91657f721e"
+    },
+    "sources.tar.gz": {
+      "bytes": 353631,
+      "sha256": "3ab803d9e3e4f858ab39d065c701e3e0c0349bbeb14f7f9c9b3c5092a3ab2fac"
+    }
+  },
+  "limits": [
+    "Focused native module migration controls, not full end-to-end or CTest.",
+    "Shared linked archives are immutable baseline e4109df; explicit modules and Pack documents vary.",
+    "The archive omits full header closure and binary libraries; replay needs the pinned checkout and normal build.",
+    "Only public fictional DEV inputs; no unseen-corpus accuracy claim."
+  ]
+}

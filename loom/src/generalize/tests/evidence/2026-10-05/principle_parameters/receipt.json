@@ -1,0 +1,478 @@
+{
+  "schema": "loom.principle_parameter_replay/1",
+  "status": "pass",
+  "before": "e4109df7e4af22b461def5f7d62e268d9b9a8825",
+  "commands": [
+    {
+      "command": [
+        "g++",
+        "-std=c++20",
+        "-O0",
+        "-g0",
+        "-pthread",
+        "-I/workspace/scratch/98e6ad903811/chatadhd/loom/include",
+        "-I/workspace/scratch/98e6ad903811/chatadhd/loom/src",
+        "-I/workspace/scratch/98e6ad903811/chatadhd/loom/tests",
+        "-I/workspace/scratch/98e6ad903811/chatadhd/loom/third_party/nlohmann",
+        "-DLOOM_TEST_FIXTURES=\"/workspace/scratch/98e6ad903811/chatadhd/loom/tests/fixtures\"",
+        "/workspace/scratch/98e6ad903811/principle-parameters-e410-paired-2026-10-05-run1/sources/probe.cpp",
+        "/workspace/scratch/98e6ad903811/principle-parameters-e410-paired-2026-10-05-run1/sources/before/generalize/principles.cpp",
+        "/workspace/scratch/98e6ad903811/principle-parameters-e410-paired-2026-10-05-run1/sources/before/generalize/common.cpp",
+        "/workspace/scratch/98e6ad903811/precision2-frozen-core-before/libloom_core.a",
+        "/workspace/scratch/98e6ad903811/precision2-frozen-core-before/libloom_miniz.a",
+        "/workspace/scratch/98e6ad903811/precision2-frozen-core-before/libloom_sqlite3_amalgamation.a",
+        "-ldl",
+        "-lm",
+        "-lssl",
+        "-lcrypto",
+        "-Wl,--no-keep-memory",
+        "-o",
+        "/workspace/scratch/98e6ad903811/principle-parameters-e410-paired-2026-10-05-run1/probe_before"
+      ],
+      "returncode": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 0
+    },
+    {
+      "command": [
+        "/workspace/scratch/98e6ad903811/principle-parameters-e410-paired-2026-10-05-run1/probe_before",
+        "/workspace/scratch/98e6ad903811/principle-parameters-e410-paired-2026-10-05-run1/before_pack_documents.json"
+      ],
+      "returncode": 0,
+      "stdout_sha256": "dcdbb89c1efe9ea6783fc6e2af8e01920dca117ded50f7992f2799fd8c70e874",
+      "stdout_bytes": 315344
+    },
+    {
+      "command": [
+        "g++",
+        "-std=c++20",
+        "-O0",
+        "-g0",
+        "-pthread",
+        "-I/workspace/scratch/98e6ad903811/chatadhd/loom/include",
+        "-I/workspace/scratch/98e6ad903811/chatadhd/loom/src",
+        "-I/workspace/scratch/98e6ad903811/chatadhd/loom/tests",
+        "-I/workspace/scratch/98e6ad903811/chatadhd/loom/third_party/nlohmann",
+        "-DLOOM_TEST_FIXTURES=\"/workspace/scratch/98e6ad903811/chatadhd/loom/tests/fixtures\"",
+        "/workspace/scratch/98e6ad903811/principle-parameters-e410-paired-2026-10-05-run1/sources/probe.cpp",
+        "/workspace/scratch/98e6ad903811/principle-parameters-e410-paired-2026-10-05-run1/sources/after/generalize/principles.cpp",
+        "/workspace/scratch/98e6ad903811/principle-parameters-e410-paired-2026-10-05-run1/sources/after/generalize/common.cpp",
+        "/workspace/scratch/98e6ad903811/precision2-frozen-core-before/libloom_core.a",
+        "/workspace/scratch/98e6ad903811/precision2-frozen-core-before/libloom_miniz.a",
+        "/workspace/scratch/98e6ad903811/precision2-frozen-core-before/libloom_sqlite3_amalgamation.a",
+        "-ldl",
+        "-lm",
+        "-lssl",
+        "-lcrypto",
+        "-Wl,--no-keep-memory",
+        "-o",
+        "/workspace/scratch/98e6ad903811/principle-parameters-e410-paired-2026-10-05-run1/probe_after"
+      ],
+      "returncode": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_bytes": 0
+    },
+    {
+      "command": [
+        "/workspace/scratch/98e6ad903811/principle-parameters-e410-paired-2026-10-05-run1/probe_after",
+        "/workspace/scratch/98e6ad903811/principle-parameters-e410-paired-2026-10-05-run1/after_pack_documents.json"
+      ],
+      "returncode": 0,
+      "stdout_sha256": "b240ec598d5a92b330f6efbd67cc6cb3249748d1843f4bafcbdb933f11076f34",
+      "stdout_bytes": 183833
+    }
+  ],
+  "source_sha256": {
+    "before/loom/data/artifact_types/brainstorm.json": "e01b310bcbe6e2c0c940649938e8fa29d6016cacb8219d78e1b12eb29a98c9ed",
+    "before/loom/data/artifact_types/codebase.json": "957e849ad04264e9c05b0a4681a875a4fe42d334e4ae1a438634fc5410476fbe",
+    "before/loom/data/artifact_types/commit.json": "fba15bc0b6008e581f0ccbebd456b76c3838b546fb10e5f94552b1a7f05bc026",
+    "before/loom/data/artifact_types/conversation.json": "4279589ee37a8d5684cf90088edd212742c4921f56284e0fa319c16f78f48f0a",
+    "before/loom/data/artifact_types/email.json": "de516ceb97464007a5b13c2724d55e3489bbdc88043180b4eb9c67c4bb24ac2b",
+    "before/loom/data/artifact_types/pleading.json": "ccae036a8c2d551760ec6e581fb88413c802d7d535f60e1ec93c4512afbf06c4",
+    "before/loom/data/artifact_types/recording_transcript.json": "811090ab1925ecfe2a7c310abf9d66fc9eceff62b6322136ec64b480687d0eb9",
+    "before/loom/data/artifact_types/screenplay.json": "57cf5c0c592f977fda8e93d61b5dccdbc5759646f4aa63518ffef3fdb5c2c825",
+    "before/loom/data/artifact_types/specification.json": "2f743f828efa3b9d0c886f00b57f6455c3409e6b455531a3d35c5b18692adb21",
+    "before/loom/data/facets/agent.json": "8b202d700de4f6f4bb87873dc6dd6e821406cc25a1cd85c5a431e05e46532651",
+    "before/loom/data/facets/multiplatform.json": "7b7c346e6a7af2fb175b1e85df334e75db79089ecb5a658acfdeb5ceadd9c642",
+    "before/loom/data/facets/staged_transformation.json": "1bd01cf124acd9087999df2a9bd4c8a2c61d3b161caef234468a30a6019d3a71",
+    "before/loom/data/goals/goal_types.json": "e11360763acf339eeaf2cee7ac2dd1641fcf6ad09a8eb07110f9155669ba4720",
+    "before/loom/data/lexicons/cues.json": "ec964d3a90d7295540be7aee580521e5822518f5397ec683b8d3bfe4e460031a",
+    "before/loom/data/lexicons/gazetteer.json": "bb1a07e053bcf5d44b0a527073360e537a3ca80ae12b33dfc45ba975b927aac7",
+    "before/loom/data/lexicons/glossary.json": "fea9b59f69ba648cc30bb5e407afdd690b569f7c89a118bed63bf1aa45eb3d45",
+    "before/loom/data/lexicons/item_cues.json": "ac0c7229a80d922f0876d347701c537cc3bf6842f16f39832f88939bbaf995b5",
+    "before/loom/data/lexicons/relation_patterns.json": "0e5cc0f7d0a3135d9c66a85e9174d720b15678cbf0810a46674807cc99a04fdc",
+    "before/loom/data/lexicons/stemming.json": "2c4720550ddec5d907c5d746d165787dfd2079b6ca4a22ef317d3323dadc776c",
+    "before/loom/data/lexicons/stopwords.json": "e6e7055bf6c65dd02bdfe705967a14e817075f934a6091be9e978bc482897fa4",
+    "before/loom/data/lexicons/stopwords_base.json": "88baf0cb84152444cc9d35cfbac0582fa75142dcc19d643fe47be13a6d221303",
+    "before/loom/data/lexicons/version_patterns.json": "3198c87e2f8b8ed64fe4e4723932e7b936fb620b406059a877d3d05bba61691e",
+    "before/loom/data/morphisms/anchoring.json": "4c0e32b9dd85ca43664b7ff6b8f0832745c77eee27be42c1ab12832b01e9404e",
+    "before/loom/data/morphisms/transfer.json": "c490e3e198806a0e466ba196bedbd079a6f5b30b4745b40776736c4c2f2c922f",
+    "before/loom/data/pack.json": "098333d6008346ce8d3aa7ce477433309bd39a0155e7fc93dea1684eb3f4ace4",
+    "before/loom/data/philosophy/operators.json": "00bb69784f3afb3b4ec48567e01af00c173840ec53410b451b1542617c6a08e1",
+    "before/loom/data/philosophy/principles.json": "a765d02b320e4fe493fe7d34869be31ed7ce90f5abb08ce4986de55e0d2ac40f",
+    "before/loom/data/policy/calibration.json": "0d5c1b99b57b97f0f707ac270ca60cb3efe65e2085271b6833992bf56dda1f71",
+    "before/loom/data/policy/candidate_graph.json": "8f1fc07eeea427d71ef4f05e646709b23ed744141ff61f4014781ea1f614e736",
+    "before/loom/data/policy/evidence_encoding.json": "17815a292efbb4fa1ff1d39381ae11ef59bfade1b5ebfe464bf8b68419671fc3",
+    "before/loom/data/policy/relevance.json": "992aa0a4ca657ea4b0ccd32039ea0a93639d228b064f44f0ff81f24de4cb387f",
+    "before/loom/data/policy/selection_rules.json": "b98da5d1c509e8bbafee8f13fc6c5fe4230217bb14300ffc1281803109189685",
+    "before/loom/data/policy/thresholds.json": "b527c94ca4ff65651f46505420f236f958313524754b611e9a418013bdc72451",
+    "before/loom/data/profiles/self.json": "338299e23bc6b8974601d72afb543d5bd19d5a7ca9fec4b6e1c4e3ea0cc3b155",
+    "before/loom/data/project_kinds/film.json": "a2086da993ccc7779e0bb4c4e45ac60011793a9eb8149fd8c18f2b4ee038db70",
+    "before/loom/data/project_kinds/legal_case.json": "719f0d23a753d607fa54328054ef23f5f8e2f2580e4dede7a5166a9b09851e3c",
+    "before/loom/data/project_kinds/music.json": "bc409ef5a64c533f5a014f47e2b8d180c1e1b20aac3deb121d1aa980be5991ec",
+    "before/loom/data/project_kinds/research.json": "b3b1edf3fa55627fd0bc0e0e9f7036e87ee70277f10994ff72f88f54f1cfbd83",
+    "before/loom/data/project_kinds/software_app.json": "42cc9f8d8c78daff942d1dbf907d713ae0692d71b43b578dd3b6bdffc8bbd6e7",
+    "before/loom/data/rules/checks.json": "d92359e21af79368c9f3a53cbd3ee0b373f1b26835da049540f4a91b962ee387",
+    "before/loom/data/rules/inference_rules.json": "400505281ea522d2945f44946169f8281634b80caf671fe4a1d52806758b60a0",
+    "before/loom/data/schema/types.json": "7198c1c72571b1edb3ede3d49ff30332a6f3943eabbfb40d16d86f50b0753084",
+    "after/loom/data/artifact_types/brainstorm.json": "e01b310bcbe6e2c0c940649938e8fa29d6016cacb8219d78e1b12eb29a98c9ed",
+    "after/loom/data/artifact_types/codebase.json": "957e849ad04264e9c05b0a4681a875a4fe42d334e4ae1a438634fc5410476fbe",
+    "after/loom/data/artifact_types/commit.json": "fba15bc0b6008e581f0ccbebd456b76c3838b546fb10e5f94552b1a7f05bc026",
+    "after/loom/data/artifact_types/conversation.json": "4279589ee37a8d5684cf90088edd212742c4921f56284e0fa319c16f78f48f0a",
+    "after/loom/data/artifact_types/email.json": "de516ceb97464007a5b13c2724d55e3489bbdc88043180b4eb9c67c4bb24ac2b",
+    "after/loom/data/artifact_types/pleading.json": "ccae036a8c2d551760ec6e581fb88413c802d7d535f60e1ec93c4512afbf06c4",
+    "after/loom/data/artifact_types/recording_transcript.json": "811090ab1925ecfe2a7c310abf9d66fc9eceff62b6322136ec64b480687d0eb9",
+    "after/loom/data/artifact_types/screenplay.json": "57cf5c0c592f977fda8e93d61b5dccdbc5759646f4aa63518ffef3fdb5c2c825",
+    "after/loom/data/artifact_types/specification.json": "2f743f828efa3b9d0c886f00b57f6455c3409e6b455531a3d35c5b18692adb21",
+    "after/loom/data/facets/agent.json": "8b202d700de4f6f4bb87873dc6dd6e821406cc25a1cd85c5a431e05e46532651",
+    "after/loom/data/facets/multiplatform.json": "7b7c346e6a7af2fb175b1e85df334e75db79089ecb5a658acfdeb5ceadd9c642",
+    "after/loom/data/facets/staged_transformation.json": "1bd01cf124acd9087999df2a9bd4c8a2c61d3b161caef234468a30a6019d3a71",
+    "after/loom/data/goals/goal_types.json": "e11360763acf339eeaf2cee7ac2dd1641fcf6ad09a8eb07110f9155669ba4720",
+    "after/loom/data/lexicons/cues.json": "02b59eb7a30ddbf74f1bca2df726ca62e062db4586b5ea68b7e283612f28f1aa",
+    "after/loom/data/lexicons/gazetteer.json": "bb1a07e053bcf5d44b0a527073360e537a3ca80ae12b33dfc45ba975b927aac7",
+    "after/loom/data/lexicons/glossary.json": "fea9b59f69ba648cc30bb5e407afdd690b569f7c89a118bed63bf1aa45eb3d45",
+    "after/loom/data/lexicons/item_cues.json": "ac0c7229a80d922f0876d347701c537cc3bf6842f16f39832f88939bbaf995b5",
+    "after/loom/data/lexicons/relation_patterns.json": "0e5cc0f7d0a3135d9c66a85e9174d720b15678cbf0810a46674807cc99a04fdc",
+    "after/loom/data/lexicons/stemming.json": "2c4720550ddec5d907c5d746d165787dfd2079b6ca4a22ef317d3323dadc776c",
+    "after/loom/data/lexicons/stopwords.json": "e6e7055bf6c65dd02bdfe705967a14e817075f934a6091be9e978bc482897fa4",
+    "after/loom/data/lexicons/stopwords_base.json": "88baf0cb84152444cc9d35cfbac0582fa75142dcc19d643fe47be13a6d221303",
+    "after/loom/data/lexicons/version_patterns.json": "3198c87e2f8b8ed64fe4e4723932e7b936fb620b406059a877d3d05bba61691e",
+    "after/loom/data/morphisms/anchoring.json": "4c0e32b9dd85ca43664b7ff6b8f0832745c77eee27be42c1ab12832b01e9404e",
+    "after/loom/data/morphisms/transfer.json": "c490e3e198806a0e466ba196bedbd079a6f5b30b4745b40776736c4c2f2c922f",
+    "after/loom/data/pack.json": "098333d6008346ce8d3aa7ce477433309bd39a0155e7fc93dea1684eb3f4ace4",
+    "after/loom/data/philosophy/operators.json": "00bb69784f3afb3b4ec48567e01af00c173840ec53410b451b1542617c6a08e1",
+    "after/loom/data/philosophy/principles.json": "a765d02b320e4fe493fe7d34869be31ed7ce90f5abb08ce4986de55e0d2ac40f",
+    "after/loom/data/policy/calibration.json": "0d5c1b99b57b97f0f707ac270ca60cb3efe65e2085271b6833992bf56dda1f71",
+    "after/loom/data/policy/candidate_graph.json": "8f1fc07eeea427d71ef4f05e646709b23ed744141ff61f4014781ea1f614e736",
+    "after/loom/data/policy/evidence_encoding.json": "17815a292efbb4fa1ff1d39381ae11ef59bfade1b5ebfe464bf8b68419671fc3",
+    "after/loom/data/policy/relevance.json": "992aa0a4ca657ea4b0ccd32039ea0a93639d228b064f44f0ff81f24de4cb387f",
+    "after/loom/data/policy/selection_rules.json": "b98da5d1c509e8bbafee8f13fc6c5fe4230217bb14300ffc1281803109189685",
+    "after/loom/data/policy/thresholds.json": "30f6abda7ca666edb9a7a3b116d15ea5f4f2b22b1f70f0ecd9520b3cc77b5ee2",
+    "after/loom/data/profiles/self.json": "338299e23bc6b8974601d72afb543d5bd19d5a7ca9fec4b6e1c4e3ea0cc3b155",
+    "after/loom/data/project_kinds/film.json": "a2086da993ccc7779e0bb4c4e45ac60011793a9eb8149fd8c18f2b4ee038db70",
+    "after/loom/data/project_kinds/legal_case.json": "719f0d23a753d607fa54328054ef23f5f8e2f2580e4dede7a5166a9b09851e3c",
+    "after/loom/data/project_kinds/music.json": "bc409ef5a64c533f5a014f47e2b8d180c1e1b20aac3deb121d1aa980be5991ec",
+    "after/loom/data/project_kinds/research.json": "b3b1edf3fa55627fd0bc0e0e9f7036e87ee70277f10994ff72f88f54f1cfbd83",
+    "after/loom/data/project_kinds/software_app.json": "42cc9f8d8c78daff942d1dbf907d713ae0692d71b43b578dd3b6bdffc8bbd6e7",
+    "after/loom/data/rules/checks.json": "d92359e21af79368c9f3a53cbd3ee0b373f1b26835da049540f4a91b962ee387",
+    "after/loom/data/rules/inference_rules.json": "400505281ea522d2945f44946169f8281634b80caf671fe4a1d52806758b60a0",
+    "after/loom/data/schema/types.json": "7198c1c72571b1edb3ede3d49ff30332a6f3943eabbfb40d16d86f50b0753084",
+    "before/loom/src/generalize/principles.cpp": "7ebe190a3433084d5f8330e18f03f7f42a0ce0e70d2ae4096298eb4a6eec0cd3",
+    "before/loom/src/generalize/common.cpp": "7b0bd75af952929b8af9a3208a4c75487b9dc497e635c09431d591c4c32eca57",
+    "before/loom/src/generalize/internal.h": "7a023bab382055172744c3a6b0ecbc826ba168cd4a1c2c52c38b4656c258d34e",
+    "after/loom/src/generalize/principles.cpp": "2b683ae5ae5e4e8ee69977eb47391caccd52988cb7bee0bcd59b1a0f5bd2cc01",
+    "after/loom/src/generalize/common.cpp": "85da248f85b2c0ce5dae9d24e815b13a8c75214726c35e6c368e13df0f1537e8",
+    "after/loom/src/generalize/internal.h": "5ae2047c55abbc1d67d5a427b3ac3afc092e7a515b5e01d26c3b4671729a4f9b"
+  },
+  "library_sha256": {
+    "/workspace/scratch/98e6ad903811/precision2-frozen-core-before/libloom_core.a": "c0ebde6e82d3bbfd1e529550c71a56dc6000ac4c3a69d9a592b94cc2b558dd02",
+    "/workspace/scratch/98e6ad903811/precision2-frozen-core-before/libloom_miniz.a": "84d3950e968f77b81c5477a6116d1a953381794ad61aa167faecc3296e6161a5",
+    "/workspace/scratch/98e6ad903811/precision2-frozen-core-before/libloom_sqlite3_amalgamation.a": "fa49de1205ad8353e9ad9299027730e91bf94149b449b010a243457f23da634b"
+  },
+  "checks": [
+    {
+      "name": "default_byte_identity:synthetic_dev",
+      "passed": true,
+      "before_sha256": "218dc2460642cebc6dd533c534f0d24ea1aeb0d750860d5e66f2fd1d1e64704a",
+      "after_sha256": "218dc2460642cebc6dd533c534f0d24ea1aeb0d750860d5e66f2fd1d1e64704a",
+      "before_count": 30,
+      "after_count": 30
+    },
+    {
+      "name": "default_byte_identity:synthetic_dev_without_priors",
+      "passed": true,
+      "before_sha256": "d72b1beb5501c22331b1e84d8f733105d17e1cf4c07a0488c65307b8e32658f2",
+      "after_sha256": "d72b1beb5501c22331b1e84d8f733105d17e1cf4c07a0488c65307b8e32658f2",
+      "before_count": 30,
+      "after_count": 30
+    },
+    {
+      "name": "default_byte_identity:seed_default",
+      "passed": true,
+      "before_sha256": "76b120c7360c500b42f9f8d6ff47882fc48c6a5d41ac3f3237fe0829a8526293",
+      "after_sha256": "76b120c7360c500b42f9f8d6ff47882fc48c6a5d41ac3f3237fe0829a8526293",
+      "before_count": 1,
+      "after_count": 1
+    },
+    {
+      "name": "default_byte_identity:discovered_low_default",
+      "passed": true,
+      "before_sha256": "145d8c3676eca58f500c6cb71be7ef241330b5641ab2d2a24d9953990b52fd55",
+      "after_sha256": "145d8c3676eca58f500c6cb71be7ef241330b5641ab2d2a24d9953990b52fd55",
+      "before_count": 1,
+      "after_count": 1
+    },
+    {
+      "name": "default_byte_identity:discovered_high_default",
+      "passed": true,
+      "before_sha256": "efede695887a1ff70043e371be4ea3cf64e515d8c566e15c0121dac1043b1ff4",
+      "after_sha256": "efede695887a1ff70043e371be4ea3cf64e515d8c566e15c0121dac1043b1ff4",
+      "before_count": 1,
+      "after_count": 1
+    },
+    {
+      "name": "seed_default_formula",
+      "passed": true,
+      "expected": 0.9314,
+      "actual": 0.9314
+    },
+    {
+      "name": "setting_affects_result:seed_jaccard_multiplier",
+      "passed": true
+    },
+    {
+      "name": "before_ignored_setting:seed_jaccard_multiplier",
+      "passed": true
+    },
+    {
+      "name": "invalid_explicit_error:seed_jaccard_multiplier:missing",
+      "passed": true,
+      "phase": "discover_principles",
+      "code": "invalid_argument",
+      "message": "invalid_argument: required numeric policy parameter: principles/seed_jaccard_multiplier"
+    },
+    {
+      "name": "invalid_explicit_error:seed_jaccard_multiplier:string",
+      "passed": true,
+      "phase": "pack_validation",
+      "code": "invalid_argument",
+      "message": "invalid_argument: invalid kb pack (1 issue(s)):\n  policy/thresholds.json#/principles/seed_jaccard_multiplier: expected a number"
+    },
+    {
+      "name": "invalid_explicit_error:seed_jaccard_multiplier:null",
+      "passed": true,
+      "phase": "pack_validation",
+      "code": "invalid_argument",
+      "message": "invalid_argument: invalid kb pack (1 issue(s)):\n  policy/thresholds.json#/principles/seed_jaccard_multiplier: expected a number"
+    },
+    {
+      "name": "invalid_explicit_error:seed_jaccard_multiplier:nan",
+      "passed": true,
+      "phase": "discover_principles",
+      "code": "invalid_argument",
+      "message": "invalid_argument: nonfinite policy parameter: principles/seed_jaccard_multiplier"
+    },
+    {
+      "name": "invalid_explicit_error:seed_jaccard_multiplier:infinity",
+      "passed": true,
+      "phase": "discover_principles",
+      "code": "invalid_argument",
+      "message": "invalid_argument: nonfinite policy parameter: principles/seed_jaccard_multiplier"
+    },
+    {
+      "name": "setting_affects_result:repeat_confidence_residual_factor",
+      "passed": true
+    },
+    {
+      "name": "before_ignored_setting:repeat_confidence_residual_factor",
+      "passed": true
+    },
+    {
+      "name": "invalid_explicit_error:repeat_confidence_residual_factor:missing",
+      "passed": true,
+      "phase": "discover_principles",
+      "code": "invalid_argument",
+      "message": "invalid_argument: required numeric policy parameter: principles/repeat_confidence_residual_factor"
+    },
+    {
+      "name": "invalid_explicit_error:repeat_confidence_residual_factor:string",
+      "passed": true,
+      "phase": "pack_validation",
+      "code": "invalid_argument",
+      "message": "invalid_argument: invalid kb pack (1 issue(s)):\n  policy/thresholds.json#/principles/repeat_confidence_residual_factor: expected a number"
+    },
+    {
+      "name": "invalid_explicit_error:repeat_confidence_residual_factor:null",
+      "passed": true,
+      "phase": "pack_validation",
+      "code": "invalid_argument",
+      "message": "invalid_argument: invalid kb pack (1 issue(s)):\n  policy/thresholds.json#/principles/repeat_confidence_residual_factor: expected a number"
+    },
+    {
+      "name": "invalid_explicit_error:repeat_confidence_residual_factor:nan",
+      "passed": true,
+      "phase": "discover_principles",
+      "code": "invalid_argument",
+      "message": "invalid_argument: nonfinite policy parameter: principles/repeat_confidence_residual_factor"
+    },
+    {
+      "name": "invalid_explicit_error:repeat_confidence_residual_factor:infinity",
+      "passed": true,
+      "phase": "discover_principles",
+      "code": "invalid_argument",
+      "message": "invalid_argument: nonfinite policy parameter: principles/repeat_confidence_residual_factor"
+    },
+    {
+      "name": "setting_affects_result:discovered_confidence_cap",
+      "passed": true
+    },
+    {
+      "name": "before_ignored_setting:discovered_confidence_cap",
+      "passed": true
+    },
+    {
+      "name": "invalid_explicit_error:discovered_confidence_cap:missing",
+      "passed": true,
+      "phase": "discover_principles",
+      "code": "invalid_argument",
+      "message": "invalid_argument: required numeric policy parameter: principles/discovered_confidence_cap"
+    },
+    {
+      "name": "invalid_explicit_error:discovered_confidence_cap:string",
+      "passed": true,
+      "phase": "pack_validation",
+      "code": "invalid_argument",
+      "message": "invalid_argument: invalid kb pack (1 issue(s)):\n  policy/thresholds.json#/principles/discovered_confidence_cap: expected a number"
+    },
+    {
+      "name": "invalid_explicit_error:discovered_confidence_cap:null",
+      "passed": true,
+      "phase": "pack_validation",
+      "code": "invalid_argument",
+      "message": "invalid_argument: invalid kb pack (1 issue(s)):\n  policy/thresholds.json#/principles/discovered_confidence_cap: expected a number"
+    },
+    {
+      "name": "invalid_explicit_error:discovered_confidence_cap:nan",
+      "passed": true,
+      "phase": "discover_principles",
+      "code": "invalid_argument",
+      "message": "invalid_argument: nonfinite policy parameter: principles/discovered_confidence_cap"
+    },
+    {
+      "name": "invalid_explicit_error:discovered_confidence_cap:infinity",
+      "passed": true,
+      "phase": "discover_principles",
+      "code": "invalid_argument",
+      "message": "invalid_argument: nonfinite policy parameter: principles/discovered_confidence_cap"
+    },
+    {
+      "name": "setting_affects_result:discovered_confidence_base",
+      "passed": true
+    },
+    {
+      "name": "before_ignored_setting:discovered_confidence_base",
+      "passed": true
+    },
+    {
+      "name": "invalid_explicit_error:discovered_confidence_base:missing",
+      "passed": true,
+      "phase": "discover_principles",
+      "code": "invalid_argument",
+      "message": "invalid_argument: required numeric policy parameter: principles/discovered_confidence_base"
+    },
+    {
+      "name": "invalid_explicit_error:discovered_confidence_base:string",
+      "passed": true,
+      "phase": "pack_validation",
+      "code": "invalid_argument",
+      "message": "invalid_argument: invalid kb pack (1 issue(s)):\n  policy/thresholds.json#/principles/discovered_confidence_base: expected a number"
+    },
+    {
+      "name": "invalid_explicit_error:discovered_confidence_base:null",
+      "passed": true,
+      "phase": "pack_validation",
+      "code": "invalid_argument",
+      "message": "invalid_argument: invalid kb pack (1 issue(s)):\n  policy/thresholds.json#/principles/discovered_confidence_base: expected a number"
+    },
+    {
+      "name": "invalid_explicit_error:discovered_confidence_base:nan",
+      "passed": true,
+      "phase": "discover_principles",
+      "code": "invalid_argument",
+      "message": "invalid_argument: nonfinite policy parameter: principles/discovered_confidence_base"
+    },
+    {
+      "name": "invalid_explicit_error:discovered_confidence_base:infinity",
+      "passed": true,
+      "phase": "discover_principles",
+      "code": "invalid_argument",
+      "message": "invalid_argument: nonfinite policy parameter: principles/discovered_confidence_base"
+    },
+    {
+      "name": "setting_affects_result:discovered_confidence_score_factor",
+      "passed": true
+    },
+    {
+      "name": "before_ignored_setting:discovered_confidence_score_factor",
+      "passed": true
+    },
+    {
+      "name": "invalid_explicit_error:discovered_confidence_score_factor:missing",
+      "passed": true,
+      "phase": "discover_principles",
+      "code": "invalid_argument",
+      "message": "invalid_argument: required numeric policy parameter: principles/discovered_confidence_score_factor"
+    },
+    {
+      "name": "invalid_explicit_error:discovered_confidence_score_factor:string",
+      "passed": true,
+      "phase": "pack_validation",
+      "code": "invalid_argument",
+      "message": "invalid_argument: invalid kb pack (1 issue(s)):\n  policy/thresholds.json#/principles/discovered_confidence_score_factor: expected a number"
+    },
+    {
+      "name": "invalid_explicit_error:discovered_confidence_score_factor:null",
+      "passed": true,
+      "phase": "pack_validation",
+      "code": "invalid_argument",
+      "message": "invalid_argument: invalid kb pack (1 issue(s)):\n  policy/thresholds.json#/principles/discovered_confidence_score_factor: expected a number"
+    },
+    {
+      "name": "invalid_explicit_error:discovered_confidence_score_factor:nan",
+      "passed": true,
+      "phase": "discover_principles",
+      "code": "invalid_argument",
+      "message": "invalid_argument: nonfinite policy parameter: principles/discovered_confidence_score_factor"
+    },
+    {
+      "name": "invalid_explicit_error:discovered_confidence_score_factor:infinity",
+      "passed": true,
+      "phase": "discover_principles",
+      "code": "invalid_argument",
+      "message": "invalid_argument: nonfinite policy parameter: principles/discovered_confidence_score_factor"
+    },
+    {
+      "name": "zero_multiplier_removes_seed_match",
+      "passed": true
+    },
+    {
+      "name": "changed_formula:repeat_confidence_residual_factor",
+      "passed": true,
+      "expected": 0.8542000000000001,
+      "actual": 0.8542000000000001
+    },
+    {
+      "name": "changed_formula:discovered_confidence_cap",
+      "passed": true,
+      "expected": 0.784,
+      "actual": 0.784
+    },
+    {
+      "name": "changed_formula:discovered_confidence_base",
+      "passed": true,
+      "expected": 0.936,
+      "actual": 0.936
+    },
+    {
+      "name": "changed_formula:discovered_confidence_score_factor",
+      "passed": true,
+      "expected": 0.957125,
+      "actual": 0.957125
+    }
+  ],
+  "source_archive_sha256": "3ab803d9e3e4f858ab39d065c701e3e0c0349bbeb14f7f9c9b3c5092a3ab2fac",
+  "before_results_sha256": "dcdbb89c1efe9ea6783fc6e2af8e01920dca117ded50f7992f2799fd8c70e874",
+  "after_results_sha256": "b240ec598d5a92b330f6efbd67cc6cb3249748d1843f4bafcbdb933f11076f34",
+  "passed": 46,
+  "total": 46
+}

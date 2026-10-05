@@ -37,8 +37,37 @@ range restriction. The runner does not modify quality thresholds or CTest tests.
 individual checks. `before_results.json` and `after_results.json` retain the full
 native API reports, including their original serialized bytes. `sources.tar.gz`
 contains exact before/after source and data bytes, the probe and runner, and the
-public fixture inputs. Compiled binaries are scratch artifacts; replay requires a
-normal build and the recorded source archive or Git revision.
+public fixture inputs. The archive is a focused source snapshot; the complete
+header closure and compiled libraries are not included. Compiled binaries are
+scratch artifacts. Replay requires the pinned Git checkout and a normal build
+whose library hashes match the receipt; the archived modules and data allow the
+measured variants to be restored exactly.
 
 This proves preservation of the measured DEV behavior and operation of the five
 settings. It is not a new accuracy estimate on unseen conversation archives.
+
+## Recorded run: 2026-10-05
+
+The first paired run passed **46/46** controls. Both probes linked the immutable
+baseline archives copied from the pristine `e4109df` build. The explicit current
+modules and explicit current Pack documents supplied the after implementation;
+this receipt does not claim that the linked archive contained the regenerated
+after embedded Pack. The normal final build and full CTest cover that separately.
+
+The five complete native report serializations were byte-identical: DEV with
+priors **30 → 30**, DEV without priors **30 → 30**, and all three micro-controls
+**1 → 1**. Each of the five settings had the intended actual effect. All 25
+malformed-value controls returned `invalid_argument` naming the setting: 10 in
+Pack validation and 15 in `discover_principles`.
+
+For the three-unit seeded control, confidence stayed **0.9314** at the default
+residual factor and changed to **0.8542000000000001** at `0.9`. The discovered
+confidence controls matched the separate changed formulas: cap **0.784**, base
+**0.936**, score factor **0.957125**. A zero seed Jaccard multiplier removed the
+seed match. These are mechanism controls on fictional DEV input.
+
+The committed evidence is in
+[`evidence/2026-10-05/principle_parameters/summary.json`](evidence/2026-10-05/principle_parameters/summary.json).
+The complete reports and command log are deterministic gzip files next to the
+receipt and exact source tarball. The shared `libloom_core.a` hash is
+`c0ebde6e82d3bbfd1e529550c71a56dc6000ac4c3a69d9a592b94cc2b558dd02`.
