@@ -10,6 +10,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <map>
+#include <limits>
 #include <set>
 
 #include "archive/archive_internal.h"
@@ -49,6 +50,7 @@ struct ObsInfo {
   std::vector<Token> toks;   // tokens of the folded text
   std::vector<Token> otoks;  // tokens of the original text (parallel when sizes match)
   bool text = false;         // a leaf text observation (sentence, list item, heading, lone utterance)
+  bool prose = true;         // configurable syntax gate; the observation remains intact
 };
 
 struct Mention {
@@ -413,6 +415,7 @@ void Run::prepare() {
       default:
         break;
     }
+    in.prose = lex_.prose_ok(o.text);
     obs_index_.emplace(o.id, info_.size());
     info_.push_back(std::move(in));
   }
@@ -557,7 +560,7 @@ void Run::find_named_mentions() {
   }();
   for (std::size_t oi = 0; oi < info_.size(); ++oi) {
     const ObsInfo& in = info_[oi];
-    if (!in.text) continue;
+    if (!in.text || !in.prose) continue;
     const std::string& text = in.o->text;
     const std::string& f = in.folded;
     const bool parallel = in.otoks.size() == in.toks.size();
@@ -588,8 +591,13 @@ void Run::find_named_mentions() {
       if (items.size() == 1 && !plural) {
         // appositive: the head np is an alias of the name in parentheses
         std::size_t fs = p + 1, fe = q;
+        // Token-to-surface reconstruction omits trailing punctuation. Check
+        // the source span too so a truncated call such as getValue( cannot
+        // become the apparently clean identifier getValue.
+        if (!lex_.name_ok("project", std::string_view(f).substr(fs, fe - fs), type_, false)) continue;
         std::string name = surface_bytes(oi, fs, fe);
         if (lex_.norm.tokens(name).size() > 3 || lex_.norm.tokens(name).empty()) continue;
+        if (!lex_.name_ok("project", name, type_, false)) continue;
         std::string np = surface_of(oi, head, tp);
         std::string id = mention_label(oi, "project", name, fs, fe, "appositive", 0.8);
         if (!np.empty()) {
@@ -614,6 +622,7 @@ void Run::find_named_mentions() {
           if (parts.empty() || lex_.norm.tokens(parts[0]).empty() || lex_.norm.tokens(parts[0]).size() > 4) continue;
           std::size_t p0 = f.find(parts[0], at);
           std::string label = surface_bytes(oi, p0, p0 + parts[0].size());
+          if (!lex_.name_ok("project", label, type_, false)) continue;
           std::string id = mention_label(oi, "project", label, p0, p0 + parts[0].size(), "enumeration", 0.75);
           std::vector<std::string> al;
           for (std::size_t k = 1; k < parts.size(); ++k) {
@@ -650,7 +659,7 @@ void Run::find_named_mentions() {
       }
       if (stop <= k + 1 || stop - (k + 1) > 3) continue;
       std::string label = surface_of(oi, k + 1, stop);
-      if (lex_.norm.phrase_key(label).empty()) continue;
+      if (lex_.norm.phrase_key(label).empty() || !lex_.name_ok("project", label, type_)) continue;
       mention_label(oi, "project", label, in.toks[k + 1].start, in.toks[stop - 1].end, "head_colon", 0.6);
       note_name("project", label, {});
     }
@@ -672,6 +681,7 @@ void Run::find_named_mentions() {
       if ((ti > 0 && is_head(in.toks[ti - 1].lower)) || (ti + 1 < in.toks.size() && is_head(in.toks[ti + 1].lower))) {
         kind = "project";
       }
+      if (!lex_.name_ok(kind, ident, type_)) continue;
       mention_label(oi, kind, ident, fs, fs + fid.size(), "camel", 0.6);
       if (kind != "concept") note_name(kind, ident, {});
     }
@@ -690,7 +700,7 @@ void Run::find_named_mentions() {
         if (title) {
           std::string fi = lex_.fold(inner);
           std::size_t fs = f.find(fi);
-          if (fs != std::string::npos && !overlaps(oi, fs, fs + fi.size())) {
+          if (fs != std::string::npos && !overlaps(oi, fs, fs + fi.size()) && lex_.name_ok("concept", inner, type_)) {
             mention_label(oi, "concept", inner, fs, fs + fi.size(), "quoted_title", 0.6);
             note_name("concept", inner, {});
           }
@@ -737,7 +747,8 @@ void Run::find_version_mentions() {
   std::vector<std::string> status_classes = lex_.classes_with_prefix("status.");
   for (std::size_t oi = 0; oi < info_.size(); ++oi) {
     const ObsInfo& in = info_[oi];
-    if (!in.text && in.o->kind != ObservationKind::Field) continue;
+    if (!in.text && in.o->kind != ObservationKind::Field &&
+        !lex_.version_extra_observation_kinds.count(std::string(model::to_string(in.o->kind)))) continue;
     std::u32string u = utf8::decode(in.o->text);
     // declarations: which versions are declared by a pattern
     std::map<std::string, double> declared;
@@ -753,17 +764,27 @@ void Run::find_version_mentions() {
       std::string raw = m.group_utf8(0);
       std::string v = kb::normalize_version(m.matched(1) ? m.group_utf8(1) : raw);
       if (v.empty()) continue;
+      if (lex_.version_declaration_only_kinds.count(std::string(model::to_string(in.o->kind))) && !declared.count(v)) continue;
       std::size_t bstart = utf8::byte_offset(in.o->text, static_cast<std::size_t>(m.start(0)));
       std::size_t bend = utf8::byte_offset(in.o->text, static_cast<std::size_t>(m.end(0)));
-      // "0.6.x", "1.2.3.4", "3.5%": not a version of ours
-      if (bend < in.o->text.size() && (in.o->text[bend] == '.' || in.o->text[bend] == '%') && bend + 1 < in.o->text.size() &&
-          std::isalnum(static_cast<unsigned char>(in.o->text[bend + 1]))) {
-        continue;
+      const std::size_t fs = lex_.fold(in.o->text.substr(0, bstart)).size();
+      const std::size_t fe = lex_.fold(in.o->text.substr(0, bend)).size();
+      if (lex_.version_reject_suffix_re && lex_.version_reject_suffix_re->search(utf8::decode(lex_.fold(in.o->text.substr(bend))))) continue;
+      // Bind the actual occurrence, not the first equal version string in the
+      // observation. Kind and separator policy come from the pack; dependency
+      // versions must never become versions of the surrounding project.
+      const Mention* bound = nullptr;
+      for (const auto& mn : mentions_) {
+        if (mn.obs != oi || mn.entity.empty() || mn.fend > fs || !lex_.version_entity_kinds.count(mn.kind)) continue;
+        const std::string gap = in.folded.substr(mn.fend, fs - mn.fend);
+        if (utf8::length(gap) > lex_.version_binding_max_gap || !lex_.version_binding_gap_re ||
+            !lex_.version_binding_gap_re->fullmatch(utf8::decode(gap))) continue;
+        if (!bound || mn.fend > bound->fend || (mn.fend == bound->fend && mn.entity < bound->entity)) bound = &mn;
       }
       std::string ctx = lex_.fold(in.o->text.substr(bstart >= 12 ? bstart - 12 : 0, (bstart >= 12 ? 12 : bstart) + (bend - bstart) + 4));
       bool excluded = false;
       for (const auto& x : lex_.version_excludes) excluded = excluded || (!x.empty() && ctx.find(x) != std::string::npos);
-      if (excluded) continue;
+      if (excluded && !bound) continue;
       // anchors
       double q = 0.0;
       std::string how;
@@ -775,11 +796,10 @@ void Run::find_version_mentions() {
         q = 0.8;
         how = "v_prefix";
       }
-      // map the byte offset to folded token index approximately via token order
+      // Token coordinates are already in the folded text, including this
+      // occurrence's real offset and any Unicode folding length changes.
       std::size_t ti = 0;
-      if (in.otoks.size() == in.toks.size()) {
-        while (ti < in.otoks.size() && in.otoks[ti].end <= bstart) ++ti;
-      }
+      while (ti < in.toks.size() && in.toks[ti].end <= fs) ++ti;
       std::size_t lo = ti >= static_cast<std::size_t>(lex_.version_window) ? ti - lex_.version_window : 0;
       std::size_t hi = std::min(in.toks.size(), ti + lex_.version_window);
       if (q < 0.8) {
@@ -793,14 +813,25 @@ void Run::find_version_mentions() {
         }
       }
       std::string project;
+      std::size_t nearest_distance = std::numeric_limits<std::size_t>::max();
       for (const auto& mn : mentions_) {
-        if (mn.obs == oi && mn.kind == "project") {
+        if (mn.obs == oi && mn.kind == "project" && mn.fend >= mn.fstart) {
+          std::size_t mt = 0;
+          while (mt < in.toks.size() && in.toks[mt].end <= mn.fstart) ++mt;
+          const std::size_t distance = mt > ti ? mt - ti : ti - mt;
+          if (mt < lo || mt >= hi || distance >= nearest_distance) continue;
+          nearest_distance = distance;
           project = mn.entity;
           if (q < 0.7) {
             q = 0.7;
             how = "project_alias";
           }
         }
+      }
+      if (bound) {
+        project = bound->entity;
+        if (q < 0.8) q = 0.8;
+        how = "entity_binding";
       }
       if (q < 0.6) {
         for (const auto& cls : status_classes) {
@@ -814,16 +845,16 @@ void Run::find_version_mentions() {
         ++unanchored_;
         continue;
       }
-      versions_.emplace_back(oi, v);
-      std::string ffs = lex_.fold(raw);
-      std::size_t fs = in.folded.find(ffs);
+      // Dependency versions remain observed has_version claims, but do not
+      // set the ambient project's version for feature-status qualifiers.
+      if (!bound || bound->kind == "project") versions_.emplace_back(oi, v);
       Mention mn;
       mn.obs = oi;
       mn.kind = "version";
       mn.cls = how;
       mn.label = v;
-      mn.fstart = fs == std::string::npos ? 0 : fs;
-      mn.fend = fs == std::string::npos ? 0 : fs + ffs.size();
+      mn.fstart = fs;
+      mn.fend = fe;
       mn.entity = project;  // the version's project when named nearby
       mn.source = std::to_string(q);
       mentions_.push_back(std::move(mn));
@@ -1106,7 +1137,7 @@ void Run::do_relation_patterns() {
 void Run::do_items() {
   for (std::size_t oi = 0; oi < info_.size(); ++oi) {
     const ObsInfo& in = info_[oi];
-    if (!in.text) continue;
+    if (!in.text || !in.prose) continue;
     std::map<std::string, double> score;
     for (const auto& [type, phrases] : lex_.item_cues) {
       for (const auto& p : phrases) {
@@ -1220,7 +1251,7 @@ std::vector<std::string> Run::parse_options(std::string text) const {
 void Run::do_decisions() {
   for (std::size_t oi = 0; oi < info_.size(); ++oi) {
     const ObsInfo& in = info_[oi];
-    if (!in.text) continue;
+    if (!in.text || !in.prose) continue;
     double reversal = lex_.score("decision.reversal", in.folded);
     if (item_type_[oi] != "decision" && reversal < 2.5) continue;
     // alternatives: the latest option enumeration in the 8 observations before (or this one)
@@ -1348,7 +1379,7 @@ void Run::do_status() {
   std::optional<Topic> last_topic;
   for (std::size_t oi = 0; oi < info_.size(); ++oi) {
     const ObsInfo& in = info_[oi];
-    if (!in.text) continue;
+    if (!in.text || !in.prose) continue;
     // clauses: split at , ; and " - "
     std::vector<std::pair<std::size_t, std::size_t>> clauses;
     std::size_t a = 0;
@@ -1603,7 +1634,7 @@ model::PrincipleForm form_of(const Lexicons& lex, std::string_view folded) {
 void Run::do_normative() {
   for (std::size_t oi = 0; oi < info_.size(); ++oi) {
     const ObsInfo& in = info_[oi];
-    if (!in.text) continue;
+    if (!in.text || !in.prose) continue;
     double s = 0;
     for (const auto& h : lex_.match("normative", in.folded)) s += h.w;
     if (s < 1.0) continue;

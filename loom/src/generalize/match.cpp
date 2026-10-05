@@ -4,6 +4,7 @@
 // slots are first-class claims; cross-subject similarity -> analogous_to.
 #include <algorithm>
 #include <cmath>
+#include <cstdint>
 #include <map>
 #include <optional>
 #include <set>
@@ -65,6 +66,7 @@ struct AnchorEnv {
   std::map<std::string, std::optional<detail::PreparedCues>, std::less<>> classes;
   std::unordered_map<const model::Observation*, detail::FoldedText> folded;
   std::map<std::pair<std::string, std::string>, int> unit_hits;
+  std::map<std::pair<std::string, const model::Observation*>, std::set<std::size_t>> obs_phrases;
 
   AnchorEnv(const kb::Pack& p, const kb::Normalizer& n, const Index& i) : pack(p), norm(n), ix(i) {}
 
@@ -94,12 +96,105 @@ struct AnchorEnv {
     unit_hits.emplace(std::move(key), n);
     return n;
   }
+
+  struct KindStat {
+    std::map<std::string, std::map<std::string, std::size_t>> per;
+    std::map<std::string, std::pair<std::string, std::size_t>> best;
+    std::set<std::string> tied;
+  };
+  std::map<std::string, KindStat> kind_stats;
+
+  // A whole-unit scope is an explicit policy option. Only a UNIQUE largest
+  // source-support count qualifies; a tie does not establish which subject
+  // owns a multi-subject document. This is a context heuristic, not a claim
+  // that the whole unit was observed to concern the subject.
+  bool dominant(const std::string& entity, const std::string& kind, const std::string& unit) {
+    auto ks = kind_stats.find(kind);
+    if (ks == kind_stats.end()) {
+      KindStat st;
+      for (const auto& e : ix.ev.entities) {
+        if (e.kind != kind || e.status == model::ClaimStatus::Rejected) continue;
+        auto so = ix.subject_obs.find(e.id);
+        if (so == ix.subject_obs.end()) continue;
+        for (const auto& oid : so->second) {
+          if (auto* o = ix.find_obs(oid)) ++st.per[e.id][o->unit];
+        }
+      }
+      for (const auto& [id, units] : st.per) {
+        for (const auto& [u, count] : units) {
+          auto& best = st.best[u];
+          if (count > best.second) {
+            best = {id, count};
+            st.tied.erase(u);
+          } else if (count == best.second) {
+            st.tied.insert(u);
+          }
+        }
+      }
+      ks = kind_stats.emplace(kind, std::move(st)).first;
+    }
+    auto best = ks->second.best.find(unit);
+    return best != ks->second.best.end() && best->second.first == entity && !ks->second.tied.count(unit);
+  }
+
+  struct CueEvidence {
+    double weight = 0.0;
+    std::set<std::size_t> phrases;
+    std::set<std::string> observations;
+    std::map<std::string, std::set<std::string>> observations_by_unit;
+    bool whole_unit = false;
+  };
+
+  CueEvidence distinct_weight(const std::string& cls, const detail::PreparedCues& cues, const model::Entity& entity,
+                              const std::string& unit, std::uint64_t requested_window, bool dominant_context) {
+    CueEvidence evidence;
+    auto uo = ix.unit_obs.find(unit);
+    auto so = ix.subject_obs.find(entity.id);
+    if (uo == ix.unit_obs.end() || so == ix.subject_obs.end()) return evidence;
+    const auto& list = uo->second;
+    // A context window cannot extend beyond the existing unit. Narrow only
+    // after bounding by its actual size, including on 32-bit targets.
+    std::size_t window = static_cast<std::size_t>(std::min<std::uint64_t>(requested_window, list.size()));
+    evidence.whole_unit = dominant_context && dominant(entity.id, entity.kind, unit);
+    if (evidence.whole_unit) window = list.size();
+    // Merge overlapping windows before scanning, avoiding quadratic revisits
+    // when a subject occurs frequently in a large unit.
+    std::vector<std::pair<std::size_t, std::size_t>> ranges;
+    for (std::size_t i = 0; i < list.size(); ++i) {
+      if (!so->second.count(list[i]->id)) continue;
+      std::size_t lo = i >= window ? i - window : 0;
+      std::size_t hi = window >= list.size() - i - 1 ? list.size() : i + window + 1;
+      if (!ranges.empty() && lo <= ranges.back().second) ranges.back().second = std::max(ranges.back().second, hi);
+      else ranges.emplace_back(lo, hi);
+    }
+    for (const auto& [lo, hi] : ranges) {
+      for (std::size_t i = lo; i < hi; ++i) {
+        auto key = std::make_pair(cls, list[i]);
+        auto pit = obs_phrases.find(key);
+        if (pit == obs_phrases.end()) {
+          auto f = folded.find(list[i]);
+          if (f == folded.end()) f = folded.emplace(list[i], detail::fold_text(norm, list[i]->text)).first;
+          std::set<std::size_t> phrases;
+          cues.hit_phrases(f->second, phrases);
+          pit = obs_phrases.emplace(std::move(key), std::move(phrases)).first;
+        }
+        evidence.phrases.insert(pit->second.begin(), pit->second.end());
+        if (!pit->second.empty()) {
+          evidence.observations.insert(list[i]->id);
+          evidence.observations_by_unit[unit].insert(list[i]->id);
+        }
+      }
+    }
+    for (std::size_t i : evidence.phrases) evidence.weight += cues.weight_of(i);
+    return evidence;
+  }
 };
 
-double anchor_op(AnchorEnv& env, const model::Entity& e, const Json& op, Json& reasons) {
+Result<double> anchor_op(AnchorEnv& env, const model::Entity& e, const Json& op, Json& reasons) {
   const Index& ix = env.ix;
   std::string name = json::get_string(op, "op");
   double s = 0.0;
+  Json measured;
   if (name == "claim_count") {
     double min = std::max(1.0, json::get_number(op, "min", 1));
     s = std::min(1.0, count_claims(ix, e.id, json::get_string(op, "rel")) / min);
@@ -108,16 +203,69 @@ double anchor_op(AnchorEnv& env, const model::Entity& e, const Json& op, Json& r
   } else if (name == "cue") {
     std::string cls = json::get_string(op, "class", json::get_string(op, "value"));
     const detail::PreparedCues* c = env.cues(cls);
-    double min = std::max(1.0, json::get_number(op, "min", 1));
+    // Scope/weights are data-defined per cue class. An anchor-local value
+    // overrides its preset; no domain vocabulary is embedded in this code.
+    Json policy = Json::object();
+    const Json* overrides = json::find(env.pack.lexicon("cues"), "anchor_policy");
+    const Json* preset = overrides ? json::find(*overrides, cls) : nullptr;
+    if (preset && preset->is_object()) policy = *preset;
+    if (op.is_object()) policy.update(op);
+    const double min = std::max(1.0, json::get_number(policy, "min", 1));
+    const double min_weight = json::get_number(policy, "min_weight", 0);
+    const auto requested_window = json::get_int(policy, "window", 1);
+    const std::uint64_t window = requested_window > 0 ? static_cast<std::uint64_t>(requested_window) : 0;
+    const bool dominant_context = json::get_bool(policy, "dominant_context", false);
+    const std::string aggregation = json::get_string(policy, "aggregation", "distinct_across_units");
+    if (min_weight > 0) {
+      const Json* configured = json::find(policy, "aggregation");
+      if ((configured && !configured->is_string()) ||
+          (aggregation != "distinct_across_units" && aggregation != "per_unit")) {
+        return Error(Errc::InvalidArgument, "generalize.cue: unsupported aggregation for class '" + cls +
+                     "' (expected distinct_across_units or per_unit)");
+      }
+    }
     int n = 0;
+    AnchorEnv::CueEvidence best;
+    std::string best_unit;
     if (c) {
       auto it = ix.subject_units.find(e.id);
       if (it != ix.subject_units.end()) {
-        for (const auto& u : it->second) n += env.hits(cls, *c, u);
+        for (const auto& u : it->second) {
+          if (min_weight > 0) {
+            auto evidence = env.distinct_weight(cls, *c, e, u, window, dominant_context);
+            if (aggregation == "distinct_across_units") {
+              best.phrases.insert(evidence.phrases.begin(), evidence.phrases.end());
+              best.observations.insert(evidence.observations.begin(), evidence.observations.end());
+              best.observations_by_unit.insert(evidence.observations_by_unit.begin(), evidence.observations_by_unit.end());
+              best.whole_unit |= evidence.whole_unit;
+            } else if (evidence.weight > best.weight) {
+              best = std::move(evidence);
+              best_unit = u;
+            }
+          } else {
+            n += env.hits(cls, *c, u);
+          }
+        }
       }
     }
     // Fewer hits than the anchor asks for is weak evidence, not a match.
-    s = n >= min ? 1.0 : 0.5 * n / min;
+    if (min_weight > 0) {
+      // A project may accumulate distinct evidence across its own source
+      // units. Repeated phrases count once; an unrelated unit without actual
+      // subject support never enters these local windows. Per-unit scoring
+      // remains an explicit, optional policy strategy.
+      if (aggregation == "distinct_across_units") {
+        for (std::size_t i : best.phrases) best.weight += c->weight_of(i);
+      }
+      s = best.weight >= min_weight ? 1.0 : 0.5 * best.weight / min_weight;
+      measured = Json{{"class", cls}, {"min_weight", min_weight}, {"distinct_weight", best.weight},
+                      {"distinct_phrases", best.phrases.size()}, {"unit", best_unit}, {"window", window},
+                      {"dominant_context", dominant_context}, {"whole_unit", best.whole_unit},
+                      {"aggregation", aggregation}, {"observations", best.observations},
+                      {"observations_by_unit", best.observations_by_unit}};
+    } else {
+      s = n >= min ? 1.0 : 0.5 * n / min;
+    }
   } else if (name == "codebase") {
     auto it = ix.by_subject.find(e.id);
     if (it != ix.by_subject.end()) {
@@ -134,20 +282,30 @@ double anchor_op(AnchorEnv& env, const model::Entity& e, const Json& op, Json& r
     for (const auto& p : ix.ev.principles) n += p.scope.empty() || std::find(p.scope.areas.begin(), p.scope.areas.end(), e.id) != p.scope.areas.end();
     s = std::min(1.0, n / min);
   }
-  if (s > 0) reasons.push_back(Json{{"anchor", name}, {"op", op}, {"score", s}});
+  if (s > 0) {
+    Json reason{{"anchor", name}, {"op", op}, {"score", s}};
+    if (!measured.is_null()) reason["evidence"] = std::move(measured);
+    reasons.push_back(std::move(reason));
+  }
   return s;
 }
 
-AnchorResult anchors(AnchorEnv& env, const model::Entity& e, const Json& a) {
+Result<AnchorResult> anchors(AnchorEnv& env, const model::Entity& e, const Json& a) {
   AnchorResult r;
   double any = -1, all = -1;
   if (const Json* v = json::find(a, "any"); v && v->is_array()) {
     any = 0;
-    for (const auto& op : *v) any = std::max(any, anchor_op(env, e, op, r.reasons));
+    for (const auto& op : *v) {
+      LOOM_TRY_ASSIGN(double score, anchor_op(env, e, op, r.reasons));
+      any = std::max(any, score);
+    }
   }
   if (const Json* v = json::find(a, "all"); v && v->is_array()) {
     all = 1;
-    for (const auto& op : *v) all = std::min(all, anchor_op(env, e, op, r.reasons));
+    for (const auto& op : *v) {
+      LOOM_TRY_ASSIGN(double score, anchor_op(env, e, op, r.reasons));
+      all = std::min(all, score);
+    }
   }
   if (any < 0 && all < 0) {
     r.score = 0;
@@ -421,7 +579,7 @@ Result<std::vector<Match>> ParadigmMatcher::match_projects(const Evidence& ev) c
     const auto owners = relation_owners(pk.domain_kinds, "");
     for (const auto& e : ev.entities) {
       if (e.kind != pk.subject_kind || e.status == model::ClaimStatus::Rejected) continue;
-      auto ar = anchors(env, e, pk.anchors);
+      LOOM_TRY_ASSIGN(auto ar, anchors(env, e, pk.anchors));
       if (ar.score < min_score || ar.score <= 0) continue;
       Match m;
       m.instance.id = model::Instance::make_id(pk.header.id, e.id);
@@ -445,7 +603,7 @@ Result<std::vector<Match>> ParadigmMatcher::match_projects(const Evidence& ev) c
       for (const auto& f_id : pk.facets) {
         const model::Facet* f = facet_of(f_id);
         if (!f) continue;
-        auto fr = anchors(env, e, f->anchors);
+        LOOM_TRY_ASSIGN(auto fr, anchors(env, e, f->anchors));
         if (fr.score < json::get_number(f->anchors, "min_score", 0.4) || fr.score <= 0) continue;
         m.instance.facets.push_back(f_id);
         m.reasons.push_back(Json{{"facet", f_id}, {"anchors", fr.reasons}, {"score", fr.score}});
