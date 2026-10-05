@@ -1,0 +1,17 @@
+{
+  "schema": "loom.readiness_audit_receipt/1",
+  "created_at": "2026-10-04T15:07:29.937999+00:00",
+  "source_parent": "68f7531329dd8fe5132327038b75c65b31e2626a",
+  "paid_calls": 0,
+  "max_price_age_seconds": 86400,
+  "future_tolerance_seconds": 300,
+  "sources_sha256": {
+    "loom/tools/structure/model_study_readiness_v1.py": "86b362b980b1efe3067ad86646da69539c1e43c42844c4484b874d9a32ac8f98",
+    "loom/tools/structure/test_model_study_readiness_v1.py": "34817053457a878703f46491c61918943cc26d43b2c5794e9e14a9dfe2082d41",
+    "docs/research/model_research_2026-10-04/study/readiness_after_orphan_fix.json": "e933c9810aceb5551f8aa3ea814352794203aedc538c9cddb96745f1fef83f9a",
+    "docs/research/model_research_2026-10-04/study/prepared/freeze.json": "c6fc3495d09094a7ccb62766efc4abf1b5cc672475aad380ccbbabd4cf9cff6a",
+    "docs/research/model_research_2026-10-04/study/recipes/freeze.json": "0759710323c80bea7c1042571cffe78daab6ead76d50007e3dd71095a47235d0"
+  },
+  "original_successor_receipt_preserved": true,
+  "boundary": "Original preparation receipt pins the tool used at preparation time. This new receipt binds the later orphan-aware audit; no original preparation hash or request is retroactively relabelled."
+}

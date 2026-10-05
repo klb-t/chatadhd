@@ -162,9 +162,73 @@ class ReadinessTests(unittest.TestCase):
     def test_orphaned_response_blocks_campaign_without_new_first_attempt(self):
         directory = self.runs / 'g_brief_t0'
         directory.mkdir()
-        (directory / 'orphan.response.bin').write_bytes(b'{}')
+        orphan = directory / 'orphan.response.bin'
+        orphan.write_bytes(b'{}')
         result = self.audit()
         self.assertIn({'arm': 'g_brief_t0', 'reason': 'stranded_responses_without_ledger'}, result['blockers'])
+        arm = next(a for a in result['arms'] if a['arm'] == 'g_brief_t0')
+        self.assertEqual(arm['unreferenced_response_artifacts'][0]['sha256'], e.digest_file(orphan))
+        self.assertEqual(orphan.read_bytes(), b'{}')
+
+    def test_valid_ledger_with_next_response_blocks_campaign_without_adoption(self):
+        ledger = self.ledger('j_active')
+        directory = self.runs / 'j_active'
+        manifest = e.study.read(self.prepared / 'j_active/manifest.json')
+        next_id = manifest['requests'][1]['id']
+        # Even a byte-identical response is not another attempt's receipt.
+        orphan = directory / (next_id + '.response.bin')
+        orphan.write_bytes((directory / ledger['attempts'][0]['response_file']).read_bytes())
+        original = {p.name: p.read_bytes() for p in directory.iterdir()}
+        result = self.audit()
+        self.assertTrue(result['campaign_resume_blocked'])
+        self.assertIn({'arm': 'j_active', 'reason': 'unreferenced_responses_with_ledger'}, result['blockers'])
+        arm = next(a for a in result['arms'] if a['arm'] == 'j_active')
+        self.assertEqual(arm['attempts'], 1)
+        self.assertEqual(arm['reported_cost_usd'], '0.0000042')
+        self.assertEqual(arm['never_retry_attempt_ids'], [ledger['attempts'][0]['id']])
+        self.assertIn(next_id, arm['unattempted_ids'])
+        self.assertIn('not_proof_of_no_charge_or_permission_to_launch', arm['unattempted_ids_basis'])
+        self.assertEqual(arm['unreferenced_response_artifacts'], [{
+            'response_file': orphan.name, 'ledger_bound': False, 'adopted_as_attempt': False,
+            'kind': 'unreferenced_response', 'sha256': e.digest_file(orphan),
+            'bytes': len(original[orphan.name])}])
+        self.assertEqual({p.name: p.read_bytes() for p in directory.iterdir()}, original)
+
+    def test_started_ledger_with_stranded_response_retains_both_blockers(self):
+        ledger = self.ledger('j_active', state='started')
+        orphan = self.runs / 'j_active' / (ledger['attempts'][0]['id'] + '.response.bin')
+        orphan.write_bytes(b'{"id":"gen-unbound","usage":{"cost":"0.1"}}')
+        result = self.audit()
+        arm = next(a for a in result['arms'] if a['arm'] == 'j_active')
+        self.assertTrue(result['campaign_resume_blocked'])
+        self.assertIn('unreferenced_responses_with_ledger', arm['blockers'])
+        self.assertIn('attempt_with_uncertain_effect', arm['blockers'])
+        self.assertEqual(arm['reported_cost_usd'], '0')
+        self.assertEqual(arm['unknown_cost_reservation_usd'], '0.001')
+        self.assertFalse(arm['unreferenced_response_artifacts'][0]['adopted_as_attempt'])
+        self.assertTrue(orphan.exists())
+
+    def test_valid_ledger_with_only_bound_response_has_no_inventory_blocker(self):
+        self.ledger('j_active')
+        result = self.audit()
+        arm = next(a for a in result['arms'] if a['arm'] == 'j_active')
+        self.assertFalse(result['campaign_resume_blocked'])
+        self.assertEqual(arm['blockers'], [])
+        self.assertEqual(arm['unreferenced_response_artifacts'], [])
+
+    def test_unreferenced_symlink_is_blocked_without_reading_its_target(self):
+        self.ledger('j_active')
+        target = self.runs / 'outside-response.bin'
+        target.write_bytes(b'outside bytes must not be read or copied')
+        orphan = self.runs / 'j_active' / 'unbound.response.bin'
+        orphan.symlink_to(target)
+        result = self.audit()
+        arm = next(a for a in result['arms'] if a['arm'] == 'j_active')
+        self.assertTrue(result['campaign_resume_blocked'])
+        self.assertEqual(arm['unreferenced_response_artifacts'], [{
+            'response_file': orphan.name, 'ledger_bound': False, 'adopted_as_attempt': False,
+            'kind': 'symlink_not_read', 'sha256': None, 'bytes': None}])
+        self.assertTrue(orphan.is_symlink())
 
     def test_completed_billing_mismatch_and_provider_drift_are_rejected(self):
         self.ledger('j_active', raw_cost='.000005')

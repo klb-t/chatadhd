@@ -141,9 +141,34 @@ def arm_audit(prepared, runs, arm, *, now, max_age_seconds, future_tolerance_sec
                     else safe._validate_ledger(ledger, safe.plan_manifest(manifest), directory))
         if ledger.get('stopped_reason'):
             blockers.append('stopped_ledger')
-    else:
-        if any(directory.glob('*.response.bin')):
-            blockers.append('stranded_responses_without_ledger')
+    # A response can survive a missing final ledger write even when earlier
+    # attempts have valid receipts. Only exact, validated ledger filenames bind
+    # a response to an attempt; a filename or matching content does not adopt it.
+    bound_response_files = {row['response_file'] for row in attempts
+                            if 'response_file' in row}
+    unreferenced_responses = []
+    for response_path in sorted(directory.glob('*.response.bin')):
+        if response_path.name in bound_response_files:
+            continue
+        artifact = {'response_file': response_path.name,
+                    'ledger_bound': False, 'adopted_as_attempt': False}
+        if response_path.is_symlink():
+            # Do not follow an unreferenced artifact outside the run directory.
+            artifact.update(kind='symlink_not_read', sha256=None, bytes=None)
+        elif not response_path.is_file():
+            artifact.update(kind='non_file_not_read', sha256=None, bytes=None)
+        else:
+            digest, byte_count = hashlib.sha256(), 0
+            with response_path.open('rb') as response:
+                for chunk in iter(lambda: response.read(65536), b''):
+                    digest.update(chunk)
+                    byte_count += len(chunk)
+            artifact.update(kind='unreferenced_response', sha256=digest.hexdigest(),
+                            bytes=byte_count)
+        unreferenced_responses.append(artifact)
+    if unreferenced_responses:
+        blockers.append('stranded_responses_without_ledger' if ledger is None
+                        else 'unreferenced_responses_with_ledger')
     fresh = _snapshot_status(manifest, arm['kind'], now, max_age_seconds,
                              future_tolerance_seconds)
     evidence_rows = []
@@ -202,6 +227,8 @@ def arm_audit(prepared, runs, arm, *, now, max_age_seconds, future_tolerance_sec
             'first_response_only': True, 'retry_attempt_ids': [],
             'never_retry_attempt_ids': [r['id'] for r in attempts],
             'unattempted_ids': [r['id'] for r in unattempted],
+            'unattempted_ids_basis': 'no_bound_ledger_attempt; not_proof_of_no_charge_or_permission_to_launch',
+            'unreferenced_response_artifacts': unreferenced_responses,
             'unattempted_reservation_usd': str(sum((safe._money(r['reservation_usd']) for r in unattempted), Decimal(0))),
             'reported_cost_usd': str(sum((safe._money(r['reported_cost_usd']) for r in evidence_rows
                                         if r['reported_cost_usd'] is not None), Decimal(0))),
