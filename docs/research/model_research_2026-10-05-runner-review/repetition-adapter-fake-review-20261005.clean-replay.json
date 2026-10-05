@@ -1,0 +1,30 @@
+{
+  "zip_sha256": "44abfccfc37d87e493499a02fa50d5c87e3e92f0bdba49f7ef30312edca3356e",
+  "extracted_manifest_files_verified": 264,
+  "clean_extraction_replay": {
+    "actual_repeat_outputs_read": false,
+    "boundary": "Exact retained draft and final sources with full invented input/output fixtures. Public normalized attestations are not independent private/provider receipt replay.",
+    "complementary_retained_invocations": 26,
+    "focused_unique_tests_passed": 43,
+    "own_retained_invocations": 12,
+    "private_reads": 0,
+    "provider_calls": 0,
+    "status": "PASS"
+  },
+  "replay_returncode": 0,
+  "stdout_sha256": "b038be67705ac2baa5ab8fe2a579dc880348e4fe9d725dfbd5a4da6de8f3a6d5",
+  "stderr_sha256": "9c8687abd1e62a9c9434cbb02ed3b687dc2d4854bf6ba419f2f541bea729e8ec",
+  "pythonpath_unset": true,
+  "tmpdir_unset": true,
+  "command": [
+    "python3",
+    "portable-replay/replay_all.py",
+    "--archive",
+    ".",
+    "--companions",
+    "portable-replay/closure"
+  ],
+  "working_directory": "Fresh /tmp extraction, no checkout files used",
+  "stdout_raw": "{\"actual_repeat_outputs_read\": false, \"boundary\": \"Exact retained draft and final sources with full invented input/output fixtures. Public normalized attestations are not independent private/provider receipt replay.\", \"complementary_retained_invocations\": 26, \"focused_unique_tests_passed\": 43, \"own_retained_invocations\": 12, \"private_reads\": 0, \"provider_calls\": 0, \"status\": \"PASS\"}\n",
+  "stderr_raw": "...........................................\n----------------------------------------------------------------------\nRan 43 tests in 0.297s\n\nOK\n"
+}

@@ -1,0 +1,12 @@
+{
+  "zip": "repetition-gold-container-fake-review-20261005.zip",
+  "bytes": 576049,
+  "sha256": "906cc233a2d80493e8d3fa16df64694706a2d2d48eeececac337f114d0e9814b",
+  "contents_files": 186,
+  "entry_sha256_verified": true,
+  "zip_crc_verified": true,
+  "private_actual_material_included": false,
+  "clean_extraction_replay": "PASS: 15 peer + 9 complementary saved probes and exact author before/fixed replay + 52 focused tests, zero skips",
+  "clean_replay_receipt": "repetition-gold-container-fake-review-20261005.clean-replay.json",
+  "clean_replay_receipt_sha256": "62f28674448d0e8c116c7f940e9964e0307291abaa7e106683665c99356d5936"
+}

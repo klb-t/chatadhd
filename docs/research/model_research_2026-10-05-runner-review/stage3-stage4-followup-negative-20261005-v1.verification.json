@@ -1,0 +1,80 @@
+{
+  "all_28_original_files_byte_equal": true,
+  "all_member_crc_and_sha256_pass": true,
+  "archive": "stage3-stage4-followup-negative-20261005-v1.zip",
+  "archive_bytes": 1604261,
+  "archive_sha256": "71dd854dde0f86623b045c6aaad1d90e251e5bc923860eaf23a5ff10e67e6dd6",
+  "first_contents": 24,
+  "focused_tests_passed": 64,
+  "independent_seal_review": "pending separate peer receipt",
+  "manifest_payloads": 199,
+  "manifest_sha256": "234bae71d09911209a6c0eebe58e38c2d2bc7e9af292cdd39279740d6cbb1733",
+  "members": 200,
+  "native_cpp_execution": false,
+  "new_provider_calls": 0,
+  "no_original_or_source_changes": true,
+  "portable_pinned_source_bindings": 5,
+  "portable_selected_Git_objects": 21,
+  "private_data_read_or_included": false,
+  "readme_sha256": "bdffd4205bb6b9f343f938ca9626beefa79e35496647efd83e46935f808d2e49",
+  "reproduction_checks_sha256": "e7e3d3ff84d55352f7052fffc38a8f7e5d1568e0e07bd59b698f54ae503aba45",
+  "schema": "loom.followup_public_archive_seal/1",
+  "scientific_scope": "Public original DATA, source-bound manual judgments and exact source/code replay. Upstream billing/account authentication is not repeated; no new corpus or production adoption.",
+  "selection_freeze_commit": "7aed09b9df6b8d2fc0afc3a399f12016795ca687",
+  "source_commit": "a3dc9e7ab18764393ee1ce99b417fdf57b3639c3",
+  "source_manifest_payloads": 198,
+  "source_manifest_sha256": "c8865af5c7d253d7e2bea1ee94d8afafe78518786d314d856c0b23ba7bd4a478",
+  "stage3_manual_dimensions": {
+    "semantic_adequacy": {
+      "fail": 3,
+      "pass": 3,
+      "planned": 12,
+      "unavailable": 6
+    },
+    "source_grounding": {
+      "fail": 2,
+      "pass": 6,
+      "planned": 12,
+      "unavailable": 4
+    },
+    "target_correctness": {
+      "fail": 1,
+      "pass": 5,
+      "planned": 12,
+      "unavailable": 6
+    }
+  },
+  "stage3_mechanically_valid": 0,
+  "stage3_stage4_separate": true,
+  "stage4_manual_dimensions": {
+    "evaluation_available": {
+      "evaluable": 12,
+      "fail": 0,
+      "pass": 12,
+      "planned": 12,
+      "unavailable": 0
+    },
+    "semantic_adequacy": {
+      "evaluable": 12,
+      "fail": 3,
+      "pass": 9,
+      "planned": 12,
+      "unavailable": 0
+    },
+    "source_grounding": {
+      "evaluable": 12,
+      "fail": 3,
+      "pass": 9,
+      "planned": 12,
+      "unavailable": 0
+    },
+    "target_correctness": {
+      "evaluable": 12,
+      "fail": 2,
+      "pass": 10,
+      "planned": 12,
+      "unavailable": 0
+    }
+  },
+  "stage4_mechanically_valid": 12
+}

@@ -1,0 +1,12 @@
+{
+  "zip": "repetition-adapter-fake-review-20261005.zip",
+  "bytes": 737515,
+  "sha256": "44abfccfc37d87e493499a02fa50d5c87e3e92f0bdba49f7ef30312edca3356e",
+  "contents_files": 265,
+  "entry_sha256_verified": true,
+  "zip_crc_verified": true,
+  "real_private_artifacts_included": false,
+  "clean_extraction_replay": "PASS: 12 own retained invokes + 26 complementary + 43 unique tests, zero skips",
+  "clean_replay_receipt": "repetition-adapter-fake-review-20261005.clean-replay.json",
+  "clean_replay_receipt_sha256": "50eeeed723b3f49fe49753c2a11bbb8047b13836a3b1e6f2d1b278eaed182837"
+}

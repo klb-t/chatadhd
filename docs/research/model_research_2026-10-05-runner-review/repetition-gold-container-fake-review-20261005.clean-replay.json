@@ -1,0 +1,170 @@
+{
+  "zip_sha256": "906cc233a2d80493e8d3fa16df64694706a2d2d48eeececac337f114d0e9814b",
+  "extracted_manifest_files_verified": 185,
+  "pythonpath_unset": true,
+  "tmpdir_unset": true,
+  "working_directory": "Fresh /tmp extraction, no checkout used",
+  "clean_extraction_replay": "PASS",
+  "results": {
+    "peer": {
+      "command": [
+        "python3",
+        "-B",
+        "peer-review/replay_gold_pointer.py",
+        "--archive",
+        "peer-review"
+      ],
+      "result": {
+        "actual_gold_read": false,
+        "actual_repeat_outputs_read": false,
+        "before_source_sha256": "4eb320b01d4dc4e12c4451d3bd81714e830a52f2de11defceadb2306a2dc6561",
+        "checks": [
+          {
+            "exception": "ValueError",
+            "message": "repetition_gold_invalid",
+            "probe": "exact_before_dict_failure"
+          },
+          {
+            "all_arms_available": 4,
+            "original_inputs_unchanged": true,
+            "planned_operations": 8,
+            "probe": "exact_fixed_dict_pass"
+          },
+          {
+            "exception": "ValueError",
+            "message": "repetition_gold_invalid",
+            "probe": "dictionary_does_not_autodetect_cases",
+            "selector": ""
+          },
+          {
+            "only_new_fields": [
+              "gold_selection",
+              "code_sha256.repetition_adapter"
+            ],
+            "probe": "default_list_legacy_report_equivalence"
+          },
+          {
+            "planned_operations": 8,
+            "probe": "generic_escaped_nested_array_empty_key"
+          },
+          {
+            "exception": "KeyError",
+            "message": "'missing'",
+            "probe": "missing_path",
+            "selector": "/missing"
+          },
+          {
+            "exception": "ValueError",
+            "message": "invalid_json_pointer_escape",
+            "probe": "malformed_escape",
+            "selector": "/ca~2ses"
+          },
+          {
+            "exception": "ValueError",
+            "message": "json_pointer_required",
+            "probe": "nonpointer_string",
+            "selector": "cases"
+          },
+          {
+            "exception": "ValueError",
+            "message": "json_pointer_required",
+            "probe": "null_pointer",
+            "selector": null
+          },
+          {
+            "exception": "ValueError",
+            "message": "repetition_gold_invalid",
+            "probe": "selected_scalar",
+            "selector": "/invented_metadata/format"
+          },
+          {
+            "exception": "ValueError",
+            "message": "json_pointer_array_index_invalid",
+            "probe": "leading_zero_index",
+            "selector": "/cases/00"
+          },
+          {
+            "exception": "ValueError",
+            "message": "repetition_gold_snapshot_changed",
+            "probe": "raw_byte_hash_checked_before_missing_selector",
+            "selector": "/missing"
+          },
+          {
+            "exception": "ValueError",
+            "message": "repetition_gold_inventory_mismatch",
+            "probe": "selected_missing_query_inventory",
+            "selector": ""
+          },
+          {
+            "exception": "ValueError",
+            "message": "repetition_gold_inventory_mismatch",
+            "probe": "selected_duplicate_query_inventory",
+            "selector": ""
+          },
+          {
+            "exit_code": 0,
+            "full_report_equals_api": true,
+            "probe": "actual_cli_runtime_selector",
+            "pythonpath_unset": true,
+            "tmpdir_unset": true
+          }
+        ],
+        "fixed_source_sha256": "9aec8378f5e51b78cf7a9bfcb02fbcb1a3d027e3471a0ebdef6ea27d5e8ea560",
+        "fixed_tests_sha256": "7928da45ba50e8c486f2cf09ffa0d31fa842dce385985d6a231a2d356bc430bc",
+        "independent_probes": 15,
+        "private_reads": 0,
+        "provider_calls": 0,
+        "status": "PASS"
+      },
+      "exit_code": 0,
+      "stdout_raw": "{\"actual_gold_read\": false, \"actual_repeat_outputs_read\": false, \"before_source_sha256\": \"4eb320b01d4dc4e12c4451d3bd81714e830a52f2de11defceadb2306a2dc6561\", \"checks\": [{\"exception\": \"ValueError\", \"message\": \"repetition_gold_invalid\", \"probe\": \"exact_before_dict_failure\"}, {\"all_arms_available\": 4, \"original_inputs_unchanged\": true, \"planned_operations\": 8, \"probe\": \"exact_fixed_dict_pass\"}, {\"exception\": \"ValueError\", \"message\": \"repetition_gold_invalid\", \"probe\": \"dictionary_does_not_autodetect_cases\", \"selector\": \"\"}, {\"only_new_fields\": [\"gold_selection\", \"code_sha256.repetition_adapter\"], \"probe\": \"default_list_legacy_report_equivalence\"}, {\"planned_operations\": 8, \"probe\": \"generic_escaped_nested_array_empty_key\"}, {\"exception\": \"KeyError\", \"message\": \"'missing'\", \"probe\": \"missing_path\", \"selector\": \"/missing\"}, {\"exception\": \"ValueError\", \"message\": \"invalid_json_pointer_escape\", \"probe\": \"malformed_escape\", \"selector\": \"/ca~2ses\"}, {\"exception\": \"ValueError\", \"message\": \"json_pointer_required\", \"probe\": \"nonpointer_string\", \"selector\": \"cases\"}, {\"exception\": \"ValueError\", \"message\": \"json_pointer_required\", \"probe\": \"null_pointer\", \"selector\": null}, {\"exception\": \"ValueError\", \"message\": \"repetition_gold_invalid\", \"probe\": \"selected_scalar\", \"selector\": \"/invented_metadata/format\"}, {\"exception\": \"ValueError\", \"message\": \"json_pointer_array_index_invalid\", \"probe\": \"leading_zero_index\", \"selector\": \"/cases/00\"}, {\"exception\": \"ValueError\", \"message\": \"repetition_gold_snapshot_changed\", \"probe\": \"raw_byte_hash_checked_before_missing_selector\", \"selector\": \"/missing\"}, {\"exception\": \"ValueError\", \"message\": \"repetition_gold_inventory_mismatch\", \"probe\": \"selected_missing_query_inventory\", \"selector\": \"\"}, {\"exception\": \"ValueError\", \"message\": \"repetition_gold_inventory_mismatch\", \"probe\": \"selected_duplicate_query_inventory\", \"selector\": \"\"}, {\"exit_code\": 0, \"full_report_equals_api\": true, \"probe\": \"actual_cli_runtime_selector\", \"pythonpath_unset\": true, \"tmpdir_unset\": true}], \"fixed_source_sha256\": \"9aec8378f5e51b78cf7a9bfcb02fbcb1a3d027e3471a0ebdef6ea27d5e8ea560\", \"fixed_tests_sha256\": \"7928da45ba50e8c486f2cf09ffa0d31fa842dce385985d6a231a2d356bc430bc\", \"independent_probes\": 15, \"private_reads\": 0, \"provider_calls\": 0, \"status\": \"PASS\"}\n",
+      "stderr_raw": "",
+      "stdout_sha256": "b0c242074b795af3ba9dd587d960299558c90fad45a268ebce1004354edd66fe",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "author": {
+      "command": [
+        "python3",
+        "-B",
+        "author-review/replay.py"
+      ],
+      "result": {
+        "actual_gold_or_model_outputs_read": false,
+        "default_list_behavior_preserved": true,
+        "exact_before_failure_reproduced": true,
+        "fixed_same_invented_raw_gold_and_manifest_reproduced": true,
+        "focused_tests_passed": 52,
+        "private_material_read": false,
+        "provider_calls": 0,
+        "status": "PASS"
+      },
+      "exit_code": 0,
+      "stdout_raw": "{\"actual_gold_or_model_outputs_read\": false, \"default_list_behavior_preserved\": true, \"exact_before_failure_reproduced\": true, \"fixed_same_invented_raw_gold_and_manifest_reproduced\": true, \"focused_tests_passed\": 52, \"private_material_read\": false, \"provider_calls\": 0, \"status\": \"PASS\"}\n",
+      "stderr_raw": "....................................................\n----------------------------------------------------------------------\nRan 52 tests in 0.402s\n\nOK\n",
+      "stdout_sha256": "30c1361a292c6798061550a6c653e7f9156336e4d48ec503a4cd8b0340450425",
+      "stderr_sha256": "8fc49d35e91dd70e1271f580b6f161b2b04938237e116c852ce287ec29c06ec5"
+    },
+    "complementary": {
+      "command": [
+        "python3",
+        "-B",
+        "complementary-review/replay_saved_gold_pointer.py",
+        "--companions",
+        "peer-review/fixed-closure"
+      ],
+      "result": {
+        "status": "PASS",
+        "retained_probes": 9,
+        "unchanged_ASTs": 8,
+        "before_fixed_prepared_byte_equality": true,
+        "no_fixture_regeneration": true,
+        "no_private_gold_repeat_or_provider_reads": true
+      },
+      "exit_code": 0,
+      "stdout_raw": "{\"status\": \"PASS\", \"retained_probes\": 9, \"unchanged_ASTs\": 8, \"before_fixed_prepared_byte_equality\": true, \"no_fixture_regeneration\": true, \"no_private_gold_repeat_or_provider_reads\": true}\n",
+      "stderr_raw": "",
+      "stdout_sha256": "368c4b66a9d49bb8100a284d38a153d30585539bde792d48362c167794b18ac7",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}
