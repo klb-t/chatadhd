@@ -247,3 +247,10 @@ aktualne przekazania R39–R41 i właściwe commity. Kolejność kodu2→3/4/5�
 README czeka na odbiór funkcji; kod innych wątków nie jest dopisywany przez9.
 Nowe płatne wywołania0;7 dokańcza offline i czeka wyłącznie z płatnym wykonaniem
 na osobny klucz5€ przekazany przez właściciela.
+
+## Integrator9 — przyrost3+4 (2026-10-05)
+
+Powyższe wpisy pozostają historią. Przyjęto przyrost3+4, testowane źródło `a1be689dc026367783473133de3c25cf5ae60971` po rebase.
+Pełny CTest110/110 (149.03s), guard663 native/24489asercji, 1303Python/0skip; webPASS.
+Wspólny kontrakt METHOD_GRAPH i kanoniczny golden uzgodnione. Integrator: registry/wykonanie/ślad121/1604, canonical+freshnativeconsumerPASS, alias/nested/nested+alias3/3PASS, KBwindowPASS. 3 czystyrebase na30ad7d3; bez merytorycznych zmian. Historyczne negatywy4 pozostają na archive; domyślneprofile/legacywiring to dalszyprzyrost.
+[Dowód9](reports/integrator-intake-2026-10-05/README.md); [bieżący INDEX](reports/INDEX.md). Cały INTERFEJS i wcześniejsze wpisy zachowane;0paidcalls.
