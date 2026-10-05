@@ -8,6 +8,16 @@ ROOT = Path(__file__).resolve().parents[2]
 DOMAINS = ("chat_reasoning", "context_goal_cues")
 
 
+def cpp_getter(name, value):
+    payload = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    # Escape the JSON bytes as a C++ string, including any raw-string delimiter
+    # a user might legitimately put in a marker or graph identity.
+    literal = json.dumps(payload, ensure_ascii=False)
+    return (f"inline const Json& builtin_{name}() {{\n"
+            f"  static const Json value = Json::parse({literal});\n"
+            "  return value;\n}\n")
+
+
 def generate():
     pieces = ["// Generated from canonical W3 .pack files by context/gen_runtime_presets.py.\n",
               "#pragma once\n",
@@ -24,14 +34,7 @@ def generate():
             raise ValueError(f"descriptor identity mismatch: {source}")
         if type(definition["revision"]) is not int or definition["revision"] < 1:
             raise ValueError(f"descriptor revision must be a positive integer: {source}")
-        payload = json.dumps(definition, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
-        # C++ raw delimiter is representational, not an execution limit.
-        delimiter = "W3_PRESET"
-        if f'){delimiter}\"' in payload:
-            raise ValueError("descriptor contains raw-string delimiter")
-        pieces.append(f"inline const Json& builtin_{domain}_definition() {{\n"
-                      f"  static const Json definition = Json::parse(R\"{delimiter}({payload}){delimiter}\");\n"
-                      "  return definition;\n}\n")
+        pieces.append(cpp_getter(f"{domain}_definition", definition))
         consumed = set()
         layer_bindings[domain] = {}
         for entry in bindings["domains"][domain]:
@@ -47,12 +50,18 @@ def generate():
                                  {"value": definition["defaults"][field]})
         if consumed != set(definition["defaults"]):
             raise ValueError(f"bindings omit a setting: {domain}")
-    for name, value in (("runtime_preset_layer_entries", layer_entries),
+    anchors = bindings.get("legacy_identity_hashes", {})
+    if not isinstance(anchors, dict) or any(
+            domain not in DOMAINS or not isinstance(value, str) or len(value) != 64 or
+            any(c not in "0123456789abcdef" for c in value)
+            for domain, value in anchors.items()):
+        raise ValueError("invalid legacy identity hash metadata")
+    # Historical compatibility identities are intentional data, not recomputed
+    # when a descriptor changes: doing so would conceal a recipe upgrade.
+    for name, value in (("runtime_preset_legacy_identity_hashes", anchors),
+                        ("runtime_preset_layer_entries", layer_entries),
                         ("runtime_preset_layer_bindings", layer_bindings)):
-        payload = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
-        pieces.append(f"inline const Json& builtin_{name}() {{\n"
-                      f"  static const Json value = Json::parse(R\"W3_PRESET({payload})W3_PRESET\");\n"
-                      "  return value;\n}\n")
+        pieces.append(cpp_getter(name, value))
     return "".join(pieces)
 
 
