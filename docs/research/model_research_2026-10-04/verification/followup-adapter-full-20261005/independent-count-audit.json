@@ -1,0 +1,1480 @@
+{
+  "verdict": "pass",
+  "ctest_entries": 108,
+  "complete_LastTest_JUnit_per_entry_summaries_match": true,
+  "native_suites": 81,
+  "native_cases": 659,
+  "native_assertions": 24465,
+  "unittest_suites": 25,
+  "unittest_cases": 1636,
+  "custom_smoke_suites": 2,
+  "skip_events": 0,
+  "junit_truncated_outputs": 0,
+  "complete_stdout_entries": 108,
+  "stdout_stream_saved_bytes_and_sha256_match": true,
+  "functional_files_unchanged": 1045,
+  "public_policies_unchanged": 5,
+  "binaries_unchanged": true,
+  "raw_ctest_elapsed_seconds": 127.01,
+  "junit_elapsed_integer_metadata": "127",
+  "per_entry_summaries": {
+    "unit.test_import_stream": {
+      "name": "unit.test_import_stream",
+      "native": [
+        1,
+        1,
+        0,
+        659
+      ],
+      "assertions": [
+        13,
+        13,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "research.structure": {
+      "name": "research.structure",
+      "python": 1219,
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "research.contracts": {
+      "name": "research.contracts",
+      "python": 209,
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_context_diagnostics": {
+      "name": "unit.test_context_diagnostics",
+      "native": [
+        9,
+        9,
+        0,
+        651
+      ],
+      "assertions": [
+        335,
+        335,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "compat.test_crypto_compat": {
+      "name": "compat.test_crypto_compat",
+      "python": 6,
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_context_engine": {
+      "name": "unit.test_context_engine",
+      "native": [
+        18,
+        18,
+        0,
+        642
+      ],
+      "assertions": [
+        1364,
+        1364,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_chat_active_task_durable_audit": {
+      "name": "unit.test_chat_active_task_durable_audit",
+      "native": [
+        6,
+        6,
+        0,
+        654
+      ],
+      "assertions": [
+        76,
+        76,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_kb_pack": {
+      "name": "unit.test_kb_pack",
+      "native": [
+        14,
+        14,
+        0,
+        646
+      ],
+      "assertions": [
+        184,
+        184,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_knowledge": {
+      "name": "unit.test_knowledge",
+      "native": [
+        18,
+        18,
+        0,
+        642
+      ],
+      "assertions": [
+        150,
+        150,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_catalog_links": {
+      "name": "unit.test_catalog_links",
+      "native": [
+        4,
+        4,
+        0,
+        656
+      ],
+      "assertions": [
+        3136,
+        3136,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_chat_active_task_acceptance_scale": {
+      "name": "unit.test_chat_active_task_acceptance_scale",
+      "native": [
+        2,
+        2,
+        0,
+        658
+      ],
+      "assertions": [
+        2014,
+        2014,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "research.seeding": {
+      "name": "research.seeding",
+      "python": 36,
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "compat.test_semantic_compat": {
+      "name": "compat.test_semantic_compat",
+      "python": 6,
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_context_tfidf_reuse": {
+      "name": "unit.test_context_tfidf_reuse",
+      "native": [
+        9,
+        9,
+        0,
+        651
+      ],
+      "assertions": [
+        219,
+        219,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_resolve_attribution": {
+      "name": "unit.test_resolve_attribution",
+      "native": [
+        7,
+        7,
+        0,
+        653
+      ],
+      "assertions": [
+        420,
+        420,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_crypto": {
+      "name": "unit.test_crypto",
+      "native": [
+        12,
+        12,
+        0,
+        648
+      ],
+      "assertions": [
+        66,
+        66,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_knowledge_semantic_graph": {
+      "name": "unit.test_knowledge_semantic_graph",
+      "native": [
+        11,
+        11,
+        0,
+        649
+      ],
+      "assertions": [
+        100,
+        100,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "compat.test_chat_compat": {
+      "name": "compat.test_chat_compat",
+      "python": 2,
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_context_plan": {
+      "name": "unit.test_context_plan",
+      "native": [
+        15,
+        15,
+        0,
+        645
+      ],
+      "assertions": [
+        159,
+        159,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "compat.test_chat_active_task_http": {
+      "name": "compat.test_chat_active_task_http",
+      "python": 4,
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_generalize": {
+      "name": "unit.test_generalize",
+      "native": [
+        7,
+        7,
+        0,
+        653
+      ],
+      "assertions": [
+        199,
+        199,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_knowledge_semantic": {
+      "name": "unit.test_knowledge_semantic",
+      "native": [
+        13,
+        13,
+        0,
+        647
+      ],
+      "assertions": [
+        125,
+        125,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_chat_knowledge_context": {
+      "name": "unit.test_chat_knowledge_context",
+      "native": [
+        15,
+        15,
+        0,
+        645
+      ],
+      "assertions": [
+        212,
+        212,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_extract": {
+      "name": "unit.test_extract",
+      "native": [
+        15,
+        15,
+        0,
+        645
+      ],
+      "assertions": [
+        241,
+        241,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_extract_eval": {
+      "name": "unit.test_extract_eval",
+      "native": [
+        6,
+        6,
+        0,
+        654
+      ],
+      "assertions": [
+        27,
+        27,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_capi": {
+      "name": "unit.test_capi",
+      "native": [
+        12,
+        12,
+        0,
+        648
+      ],
+      "assertions": [
+        598,
+        598,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "compat.test_graph_compat": {
+      "name": "compat.test_graph_compat",
+      "python": 3,
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "compat.test_semantic_recovery": {
+      "name": "compat.test_semantic_recovery",
+      "python": 8,
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "compat.test_util_compat": {
+      "name": "compat.test_util_compat",
+      "python": 6,
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_context_controls": {
+      "name": "unit.test_context_controls",
+      "native": [
+        9,
+        9,
+        0,
+        651
+      ],
+      "assertions": [
+        153,
+        153,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "cli.smoke": {
+      "name": "cli.smoke",
+      "python_skips": 0,
+      "smoke_complete": true,
+      "explicit_skip_markers": false
+    },
+    "unit.test_catalog": {
+      "name": "unit.test_catalog",
+      "native": [
+        13,
+        13,
+        0,
+        647
+      ],
+      "assertions": [
+        344,
+        344,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "server.smoke": {
+      "name": "server.smoke",
+      "python_skips": 0,
+      "smoke_complete": true,
+      "explicit_skip_markers": false
+    },
+    "compat.test_memory_compat": {
+      "name": "compat.test_memory_compat",
+      "python": 4,
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_chat_retrieval_plan": {
+      "name": "unit.test_chat_retrieval_plan",
+      "native": [
+        8,
+        8,
+        0,
+        652
+      ],
+      "assertions": [
+        244,
+        244,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_catalog_context": {
+      "name": "unit.test_catalog_context",
+      "native": [
+        7,
+        7,
+        0,
+        653
+      ],
+      "assertions": [
+        81,
+        81,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_resolve_lineage": {
+      "name": "unit.test_resolve_lineage",
+      "native": [
+        2,
+        2,
+        0,
+        658
+      ],
+      "assertions": [
+        15,
+        15,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_catalog_retention": {
+      "name": "unit.test_catalog_retention",
+      "native": [
+        5,
+        5,
+        0,
+        655
+      ],
+      "assertions": [
+        179,
+        179,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_import_exports": {
+      "name": "unit.test_import_exports",
+      "native": [
+        18,
+        18,
+        0,
+        642
+      ],
+      "assertions": [
+        2202,
+        2202,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_context_native_consumer": {
+      "name": "unit.test_context_native_consumer",
+      "native": [
+        6,
+        6,
+        0,
+        654
+      ],
+      "assertions": [
+        105,
+        105,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_generalize_eval": {
+      "name": "unit.test_generalize_eval",
+      "native": [
+        1,
+        1,
+        0,
+        659
+      ],
+      "assertions": [
+        173,
+        173,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_knowledge_flow": {
+      "name": "unit.test_knowledge_flow",
+      "native": [
+        2,
+        2,
+        0,
+        658
+      ],
+      "assertions": [
+        53,
+        53,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_materialize": {
+      "name": "unit.test_materialize",
+      "native": [
+        6,
+        6,
+        0,
+        654
+      ],
+      "assertions": [
+        67,
+        67,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "server.chat_active_task": {
+      "name": "server.chat_active_task",
+      "python": 1,
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_pack_model": {
+      "name": "unit.test_pack_model",
+      "native": [
+        6,
+        6,
+        0,
+        654
+      ],
+      "assertions": [
+        900,
+        900,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_archive": {
+      "name": "unit.test_archive",
+      "native": [
+        18,
+        18,
+        0,
+        642
+      ],
+      "assertions": [
+        270,
+        270,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_context_retrieval_dev": {
+      "name": "unit.test_context_retrieval_dev",
+      "native": [
+        1,
+        1,
+        0,
+        659
+      ],
+      "assertions": [
+        241,
+        241,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_context_channel_integration": {
+      "name": "unit.test_context_channel_integration",
+      "native": [
+        5,
+        5,
+        0,
+        655
+      ],
+      "assertions": [
+        63,
+        63,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_catalog_eval": {
+      "name": "unit.test_catalog_eval",
+      "native": [
+        1,
+        1,
+        0,
+        659
+      ],
+      "assertions": [
+        76,
+        76,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_context_eval": {
+      "name": "unit.test_context_eval",
+      "native": [
+        2,
+        2,
+        0,
+        658
+      ],
+      "assertions": [
+        268,
+        268,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_chat_active_task": {
+      "name": "unit.test_chat_active_task",
+      "native": [
+        19,
+        19,
+        0,
+        641
+      ],
+      "assertions": [
+        197,
+        197,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_chat_active_task_revisions": {
+      "name": "unit.test_chat_active_task_revisions",
+      "native": [
+        10,
+        10,
+        0,
+        650
+      ],
+      "assertions": [
+        228,
+        228,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "compat.test_db_compat": {
+      "name": "compat.test_db_compat",
+      "python": 7,
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_context_retrieval": {
+      "name": "unit.test_context_retrieval",
+      "native": [
+        13,
+        13,
+        0,
+        647
+      ],
+      "assertions": [
+        130,
+        130,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_context_counter": {
+      "name": "unit.test_context_counter",
+      "native": [
+        4,
+        4,
+        0,
+        656
+      ],
+      "assertions": [
+        38,
+        38,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "compat.test_candidate_graph_native": {
+      "name": "compat.test_candidate_graph_native",
+      "python": 9,
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "compat.test_graph_packet_store": {
+      "name": "compat.test_graph_packet_store",
+      "python": 18,
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_chat_active_task_acceptance_validation": {
+      "name": "unit.test_chat_active_task_acceptance_validation",
+      "native": [
+        6,
+        6,
+        0,
+        654
+      ],
+      "assertions": [
+        151,
+        151,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "compat.test_active_task_compiler_compat": {
+      "name": "compat.test_active_task_compiler_compat",
+      "python": 4,
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_capi_knowledge_latest_run": {
+      "name": "unit.test_capi_knowledge_latest_run",
+      "native": [
+        2,
+        2,
+        0,
+        658
+      ],
+      "assertions": [
+        73,
+        73,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "eval.harness": {
+      "name": "eval.harness",
+      "python": 19,
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "compat.test_import_compat": {
+      "name": "compat.test_import_compat",
+      "python": 24,
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "research.candidate_graph_protocol": {
+      "name": "research.candidate_graph_protocol",
+      "python": 15,
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_chat_active_task_retention": {
+      "name": "unit.test_chat_active_task_retention",
+      "native": [
+        11,
+        11,
+        0,
+        649
+      ],
+      "assertions": [
+        232,
+        232,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_chat_active_task_acceptance_audit": {
+      "name": "unit.test_chat_active_task_acceptance_audit",
+      "native": [
+        5,
+        5,
+        0,
+        655
+      ],
+      "assertions": [
+        40,
+        40,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "research.graph_native_protocol": {
+      "name": "research.graph_native_protocol",
+      "python": 12,
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_capi_knowledge": {
+      "name": "unit.test_capi_knowledge",
+      "native": [
+        1,
+        1,
+        0,
+        659
+      ],
+      "assertions": [
+        55,
+        55,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_chat_active_task_durability": {
+      "name": "unit.test_chat_active_task_durability",
+      "native": [
+        8,
+        8,
+        0,
+        652
+      ],
+      "assertions": [
+        106,
+        106,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_resolve": {
+      "name": "unit.test_resolve",
+      "native": [
+        8,
+        8,
+        0,
+        652
+      ],
+      "assertions": [
+        71,
+        71,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "compat.test_abi_compat": {
+      "name": "compat.test_abi_compat",
+      "python": 3,
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_semantic_worker": {
+      "name": "unit.test_semantic_worker",
+      "native": [
+        9,
+        9,
+        0,
+        651
+      ],
+      "assertions": [
+        34,
+        34,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_db": {
+      "name": "unit.test_db",
+      "native": [
+        13,
+        13,
+        0,
+        647
+      ],
+      "assertions": [
+        5178,
+        5178,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_chat_active_task_concurrency": {
+      "name": "unit.test_chat_active_task_concurrency",
+      "native": [
+        4,
+        4,
+        0,
+        656
+      ],
+      "assertions": [
+        49,
+        49,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_knowledge_candidate_graph": {
+      "name": "unit.test_knowledge_candidate_graph",
+      "native": [
+        10,
+        10,
+        0,
+        650
+      ],
+      "assertions": [
+        114,
+        114,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_import_source_materialization": {
+      "name": "unit.test_import_source_materialization",
+      "native": [
+        8,
+        8,
+        0,
+        652
+      ],
+      "assertions": [
+        592,
+        592,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_chat_active_task_exceptional": {
+      "name": "unit.test_chat_active_task_exceptional",
+      "native": [
+        4,
+        4,
+        0,
+        656
+      ],
+      "assertions": [
+        45,
+        45,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_knowledge_store": {
+      "name": "unit.test_knowledge_store",
+      "native": [
+        7,
+        7,
+        0,
+        653
+      ],
+      "assertions": [
+        124,
+        124,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_chat_active_task_scope_identity": {
+      "name": "unit.test_chat_active_task_scope_identity",
+      "native": [
+        2,
+        2,
+        0,
+        658
+      ],
+      "assertions": [
+        20,
+        20,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_import": {
+      "name": "unit.test_import",
+      "native": [
+        23,
+        23,
+        0,
+        637
+      ],
+      "assertions": [
+        223,
+        223,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "compat.test_github_sync_defaults": {
+      "name": "compat.test_github_sync_defaults",
+      "python": 2,
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "compat.test_config_compat": {
+      "name": "compat.test_config_compat",
+      "python": 5,
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_import_export_fidelity": {
+      "name": "unit.test_import_export_fidelity",
+      "native": [
+        5,
+        5,
+        0,
+        655
+      ],
+      "assertions": [
+        327,
+        327,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "research.independent_protocol": {
+      "name": "research.independent_protocol",
+      "python": 10,
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_tasks": {
+      "name": "unit.test_tasks",
+      "native": [
+        5,
+        5,
+        0,
+        655
+      ],
+      "assertions": [
+        56,
+        56,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "compat.test_selector_compat": {
+      "name": "compat.test_selector_compat",
+      "python": 4,
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_chat_engine": {
+      "name": "unit.test_chat_engine",
+      "native": [
+        15,
+        15,
+        0,
+        645
+      ],
+      "assertions": [
+        67,
+        67,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_fts": {
+      "name": "unit.test_fts",
+      "native": [
+        5,
+        5,
+        0,
+        655
+      ],
+      "assertions": [
+        53,
+        53,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_batch_api": {
+      "name": "unit.test_batch_api",
+      "native": [
+        8,
+        8,
+        0,
+        652
+      ],
+      "assertions": [
+        36,
+        36,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_graph": {
+      "name": "unit.test_graph",
+      "native": [
+        8,
+        8,
+        0,
+        652
+      ],
+      "assertions": [
+        30,
+        30,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_semantic_llm": {
+      "name": "unit.test_semantic_llm",
+      "native": [
+        11,
+        11,
+        0,
+        649
+      ],
+      "assertions": [
+        91,
+        91,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_provenance": {
+      "name": "unit.test_provenance",
+      "native": [
+        3,
+        3,
+        0,
+        657
+      ],
+      "assertions": [
+        49,
+        49,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_util": {
+      "name": "unit.test_util",
+      "native": [
+        10,
+        10,
+        0,
+        650
+      ],
+      "assertions": [
+        94,
+        94,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_runtime": {
+      "name": "unit.test_runtime",
+      "native": [
+        4,
+        4,
+        0,
+        656
+      ],
+      "assertions": [
+        50,
+        50,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_event_bus": {
+      "name": "unit.test_event_bus",
+      "native": [
+        5,
+        5,
+        0,
+        655
+      ],
+      "assertions": [
+        28,
+        28,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_github": {
+      "name": "unit.test_github",
+      "native": [
+        19,
+        19,
+        0,
+        641
+      ],
+      "assertions": [
+        113,
+        113,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_chat_active_task_history_aba": {
+      "name": "unit.test_chat_active_task_history_aba",
+      "native": [
+        1,
+        1,
+        0,
+        659
+      ],
+      "assertions": [
+        9,
+        9,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_knowledge_candidates": {
+      "name": "unit.test_knowledge_candidates",
+      "native": [
+        1,
+        1,
+        0,
+        659
+      ],
+      "assertions": [
+        14,
+        14,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_regex": {
+      "name": "unit.test_regex",
+      "native": [
+        15,
+        15,
+        0,
+        645
+      ],
+      "assertions": [
+        89,
+        89,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_model": {
+      "name": "unit.test_model",
+      "native": [
+        10,
+        10,
+        0,
+        650
+      ],
+      "assertions": [
+        137,
+        137,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_chat_active_task_reference": {
+      "name": "unit.test_chat_active_task_reference",
+      "native": [
+        7,
+        7,
+        0,
+        653
+      ],
+      "assertions": [
+        49,
+        49,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_memory": {
+      "name": "unit.test_memory",
+      "native": [
+        9,
+        9,
+        0,
+        651
+      ],
+      "assertions": [
+        40,
+        40,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_config": {
+      "name": "unit.test_config",
+      "native": [
+        5,
+        5,
+        0,
+        655
+      ],
+      "assertions": [
+        113,
+        113,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_relations": {
+      "name": "unit.test_relations",
+      "native": [
+        1,
+        1,
+        0,
+        659
+      ],
+      "assertions": [
+        39,
+        39,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_media": {
+      "name": "unit.test_media",
+      "native": [
+        13,
+        13,
+        0,
+        647
+      ],
+      "assertions": [
+        81,
+        81,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_providers": {
+      "name": "unit.test_providers",
+      "native": [
+        13,
+        13,
+        0,
+        647
+      ],
+      "assertions": [
+        61,
+        61,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_catalog_scale": {
+      "name": "unit.test_catalog_scale",
+      "native": [
+        0,
+        0,
+        0,
+        660
+      ],
+      "assertions": [
+        0,
+        0,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_selector": {
+      "name": "unit.test_selector",
+      "native": [
+        5,
+        5,
+        0,
+        655
+      ],
+      "assertions": [
+        22,
+        22,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    },
+    "unit.test_net_sse": {
+      "name": "unit.test_net_sse",
+      "native": [
+        10,
+        10,
+        0,
+        650
+      ],
+      "assertions": [
+        45,
+        45,
+        0
+      ],
+      "python_skips": 0,
+      "explicit_skip_markers": false
+    }
+  }
+}

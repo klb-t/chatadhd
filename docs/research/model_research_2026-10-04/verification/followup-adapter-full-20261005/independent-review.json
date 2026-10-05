@@ -1,0 +1,69 @@
+{
+  "schema": "loom.programme_followup_independent_review/1",
+  "verdict": "pass_after_concrete_offline_fixes",
+  "adapter_sha256": "89b05c9673e256b4be8e2d74c865ae080e757bba5e80dc96111cc1db0f892c18",
+  "tests_sha256": "b7cab428341e70f0351c49af6080098ac77e018c0d76ef2fb993d3a7c25fd197",
+  "stage3_policy_sha256": "e6040efef66d54f202229f996aebeab0fce750da020bab93371b800d59371146",
+  "stage4_policy_sha256": "6f21e5b1814f6eeddf77f1997361b7a58fed916e18d66a450adbe9d1b759e9ba",
+  "focused_unittest_cases_passed": 32,
+  "focused_unittest_cases_skipped": 0,
+  "complementary_graph_probe_cases_passed": 23,
+  "findings": [
+    {
+      "source_sha256": "054de9dc207e6272289c557e68a6d168a4166855d1db4cebeaf72aff3df4c380",
+      "issue": "One physical response could score two prepared repetitions with identical bodies",
+      "before_valid_slots": 2,
+      "physical_responses": 1,
+      "fixed_valid_slots": 0,
+      "proof": "identity-proofs/one_capture_two_prepared_repetitions/"
+    },
+    {
+      "source_sha256": "054de9dc207e6272289c557e68a6d168a4166855d1db4cebeaf72aff3df4c380",
+      "issue": "Matching null response/receipt hashes could establish a binding",
+      "before_valid_slots": 12,
+      "fixed_valid_slots": 11,
+      "fixed_affected_slot_valid": false,
+      "proof": "identity-proofs/matching_null_receipt_hashes/"
+    },
+    {
+      "source_sha256": "054de9dc207e6272289c557e68a6d168a4166855d1db4cebeaf72aff3df4c380",
+      "issue": "Unused extra diff in pattern response changed the existing scorer valid result into adapter failure",
+      "before_adapter_valid": false,
+      "existing_scorer_valid": true,
+      "fixed_adapter_valid": true,
+      "proof_before": "pattern-extra-diff-before/",
+      "proof_fixed": "pattern-extra-diff-after/"
+    },
+    {
+      "source_sha256": "87ec97818cd6020e2a363a72c26230ec8b57d5ed97595460270a3458c34af593",
+      "issue": "A preserved lone surrogate choice prevented CLI exporting all valid later slots",
+      "before_cli_bytes": 0,
+      "fixed_cli_completed": true,
+      "fixed_valid_slots": 11,
+      "original_invalid_value_preserved_reversibly": true,
+      "invalid_content_utf8_hash_claimed": false,
+      "proof_before": "surrogate-choice-before/",
+      "proof_fixed": "surrogate-choice-after/"
+    },
+    {
+      "source_sha256": "0bc2a770d87ef27058469beb376314bfef6e18f17b163417676ea1178499232a",
+      "issue": "An actually executing followup source loader could be omitted from caller instrument pins",
+      "before_valid_slots": 12,
+      "fixed_error": "instrument_dependency_binding_missing",
+      "proof_before": "missing-followup-instrument-pin/",
+      "proof_fixed": "final-identity-replay.json"
+    }
+  ],
+  "scope": [
+    "All planned rows and all choices retained; no best-of, repairs or canonical graph writes",
+    "Existing pinned score_response/compile_reply instruments with explicit caller DATA dispatch",
+    "Exact raw source/config/reference and request/response hash bindings; pre/post executable helper source pins",
+    "Strict declared text/schema projection with explicit loss/augmentation and preserved original first content",
+    "Mechanical validity separate from billing/model verification and semantic judgement"
+  ],
+  "real_stage3_or_stage4_outputs_read": false,
+  "private_ledger_or_credentials_read": false,
+  "provider_calls": 0,
+  "native_cpp_execution_for_followup": false,
+  "functional_files_edited_by_reviewer": 0
+}
