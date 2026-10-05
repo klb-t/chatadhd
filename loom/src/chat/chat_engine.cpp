@@ -6,6 +6,7 @@
 #include <map>
 #include <limits>
 #include <set>
+#include <stdexcept>
 
 #include "loom/config.h"
 #include "loom/event_bus.h"
@@ -31,6 +32,7 @@
 #include "context/unified_context.h"
 #include "context/method_registry.h"
 #include "graph_reply.h"
+#include "reasoning_profile.h"
 
 namespace loom {
 
@@ -834,31 +836,11 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
 }
 
 void ChatEngine::configure_reasoning(Json& payload, std::string_view model, const std::optional<std::string>& effort) {
-  std::string lower(model);
-  std::transform(lower.begin(), lower.end(), lower.begin(), [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
-  static const std::vector<std::string> kThinkingIndicators = {"opus", "sonnet", "o1", "o3", "r1", "thinking", "deepseek"};
-  bool is_thinking = std::any_of(kThinkingIndicators.begin(), kThinkingIndicators.end(),
-                                 [&](const std::string& s) { return lower.find(s) != std::string::npos; });
-  if (!is_thinking) return;
-
-  Json reasoning{{"enabled", true}};
-  std::string model_str(model);
-  static const std::vector<std::string> kNewClaudeMarkers = {"4.6", "4-6", "4.5", "4-5"};
-  bool is_claude_new = std::any_of(kNewClaudeMarkers.begin(), kNewClaudeMarkers.end(),
-                                   [&](const std::string& v) { return model_str.find(v) != std::string::npos; });
-
-  if (is_claude_new) {
-    if (effort && *effort == "max") {
-      payload["verbosity"] = "max";
-    } else if (effort && *effort != "adaptive") {
-      static const std::map<std::string, int> kBudget = {{"low", 5000}, {"medium", 15000}, {"high", 30000}};
-      auto it = kBudget.find(*effort);
-      reasoning["max_tokens"] = it != kBudget.end() ? it->second : 15000;
-    }
-  } else if (effort) {
-    reasoning["effort"] = *effort;
-  }
-  payload["reasoning"] = reasoning;
+  // Compatibility API has no configuration argument. Its preset is generated
+  // from the same canonical data used by send(), never a second C++ recipe.
+  static const auto recipe = chat::reasoning_recipe();
+  if (!recipe) throw std::runtime_error(recipe.error().message);
+  chat::apply_reasoning_recipe(payload, model, effort, *recipe);
 }
 
 std::optional<std::string> ChatEngine::last_reasoning() const {
@@ -870,6 +852,9 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
                                     const CancelToken* cancel) {
   const Json execution = cfg_.get("context_execution", Json::object());
   LOOM_TRY(context::validate_context_execution_options(execution));
+  const Json reasoning_options = cfg_.get("chat_reasoning", Json::object());
+  LOOM_TRY_ASSIGN(auto reasoning_recipe, chat::reasoning_recipe(reasoning_options));
+  const bool reasoning_profile_explicit = !reasoning_options.empty();
   const Json graph_options = execution.value("graph_reply", Json::object());
   if (!graph_options.is_object() || (graph_options.contains("mode") && !graph_options["mode"].is_string()))
     return Error(Errc::InvalidArgument, "context_execution.graph_reply must be an object with text mode");
@@ -1024,7 +1009,7 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
   if (source_lock.owns_lock()) source_lock.unlock();
 
   auto retain_request_metadata = [&]() -> Status {
-    if (!record_context && !opts.active_task_spec) return ok_status();
+    if (!record_context && !opts.active_task_spec && !reasoning_profile_explicit) return ok_status();
     // Retain compilation even if the provider later fails. This is deliberately
     // not a RequestSnapshot or a claim that a provider received these messages.
     auto db_lock = db_.lock();
@@ -1036,6 +1021,7 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
         (**user_message).attachments != nm.attachments);
     Json metadata = (**user_message).metadata;
     if (!metadata.is_object()) metadata = Json{{"loom_preserved_metadata", metadata}};
+    if (reasoning_profile_explicit) metadata["reasoning_profile"] = reasoning_recipe.snapshot.inspection();
     if (opts.active_task_spec && (!metadata.contains("active_task") || metadata["active_task"] != accepted_active_task)) {
       // Callbacks may add arbitrary metadata or replace the entire column.
       // Retain their conflicting value as evidence, while keeping the exact
@@ -1114,7 +1100,7 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
     payload["plugins"] = Json::array({plugin});
   }
 
-  configure_reasoning(payload, model, opts.reasoning_effort);
+  chat::apply_reasoning_recipe(payload, model, opts.reasoning_effort, reasoning_recipe);
   payload["include_reasoning"] = true;
 
   std::unique_ptr<ChatGraphExecution> graph;
@@ -1377,6 +1363,8 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
 
   // 7. Persist the assistant message.
   Json metadata = Json::object();
+  if (reasoning_profile_explicit)
+    metadata["reasoning_profile"] = reasoning_recipe.snapshot.inspection();
   if (graph) metadata["graph_reply"] = graph->result;
   if (!reasoning_text.empty()) metadata["reasoning"] = std::string(utf8::prefix(reasoning_text, 2000));
   {
