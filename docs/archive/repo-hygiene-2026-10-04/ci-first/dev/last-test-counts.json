@@ -1,0 +1,2167 @@
+{
+  "schema": "loom.last_test_case_inventory/1",
+  "derivation": "derived from complete LastTest.log; not original JUnit",
+  "boundary": "Independent parsed case inventory only. The original CI guard did not pass: its JUnit path was misplaced. No XML was synthesized.",
+  "preset": "dev",
+  "inputs": {
+    "last_test_log": {
+      "path": "docs/archive/repo-hygiene-2026-10-04/ci-first/dev/Testing/Temporary/LastTest.log",
+      "sha256": "549dadd0af84a18589df83a411a5776d69c3ea469333833fd3462ae9b0940b62",
+      "bytes": 228338
+    },
+    "ctest_manifest": {
+      "path": "docs/archive/repo-hygiene-2026-10-04/ci-first/dev/verification/ctest-manifest.json",
+      "sha256": "a3eff44602f14d911a85ceb7f78408e60e748cb7e2f919b65675e282d4a5fd24",
+      "bytes": 76864
+    }
+  },
+  "complete_blocks": 108,
+  "manifest_entries": 108,
+  "outer_passed_entries": 108,
+  "observed_execution_entries": 107,
+  "unexecuted_entries": [
+    "unit.test_catalog_scale"
+  ],
+  "native_executed_cases": 659,
+  "native_executed_assertions": 24465,
+  "python_discovered_cases": 1276,
+  "python_executed_cases": 1276,
+  "python_skipped_cases": 0,
+  "native_skip_note": "Doctest per-entry skipped figures also include cases excluded by the source-file filter; they are not summed as unexecuted scenario coverage.",
+  "observations": [
+    {
+      "name": "unit.test_batch_api",
+      "entry_number": 2,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  8 |  8 passed | 0 failed | 652 skipped",
+        "[doctest] assertions: 36 | 36 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 8,
+      "passed_cases": 8,
+      "failed_cases": 0,
+      "executed_assertions": 36,
+      "passed_assertions": 36,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 652,
+      "errors": []
+    },
+    {
+      "name": "unit.test_capi_knowledge",
+      "entry_number": 4,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  1 |  1 passed | 0 failed | 659 skipped",
+        "[doctest] assertions: 55 | 55 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 1,
+      "passed_cases": 1,
+      "failed_cases": 0,
+      "executed_assertions": 55,
+      "passed_assertions": 55,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 659,
+      "errors": []
+    },
+    {
+      "name": "unit.test_capi_knowledge_latest_run",
+      "entry_number": 5,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  2 |  2 passed | 0 failed | 658 skipped",
+        "[doctest] assertions: 73 | 73 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 2,
+      "passed_cases": 2,
+      "failed_cases": 0,
+      "executed_assertions": 73,
+      "passed_assertions": 73,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 658,
+      "errors": []
+    },
+    {
+      "name": "unit.test_archive",
+      "entry_number": 1,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  18 |  18 passed | 0 failed | 642 skipped",
+        "[doctest] assertions: 270 | 270 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 18,
+      "passed_cases": 18,
+      "failed_cases": 0,
+      "executed_assertions": 270,
+      "passed_assertions": 270,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 642,
+      "errors": []
+    },
+    {
+      "name": "unit.test_catalog_eval",
+      "entry_number": 8,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  1 |  1 passed | 0 failed | 659 skipped",
+        "[doctest] assertions: 76 | 76 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 1,
+      "passed_cases": 1,
+      "failed_cases": 0,
+      "executed_assertions": 76,
+      "passed_assertions": 76,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 659,
+      "errors": []
+    },
+    {
+      "name": "unit.test_catalog",
+      "entry_number": 6,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  13 |  13 passed | 0 failed | 647 skipped",
+        "[doctest] assertions: 344 | 344 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 13,
+      "passed_cases": 13,
+      "failed_cases": 0,
+      "executed_assertions": 344,
+      "passed_assertions": 344,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 647,
+      "errors": []
+    },
+    {
+      "name": "unit.test_capi",
+      "entry_number": 3,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  12 |  12 passed | 0 failed | 648 skipped",
+        "[doctest] assertions: 598 | 598 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 12,
+      "passed_cases": 12,
+      "failed_cases": 0,
+      "executed_assertions": 598,
+      "passed_assertions": 598,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 648,
+      "errors": []
+    },
+    {
+      "name": "unit.test_catalog_scale",
+      "entry_number": 11,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "unexecuted",
+      "summary_lines": [
+        "[doctest] test cases: 0 | 0 passed | 0 failed | 660 skipped",
+        "[doctest] assertions: 0 | 0 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 0,
+      "passed_cases": 0,
+      "failed_cases": 0,
+      "executed_assertions": 0,
+      "passed_assertions": 0,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 660,
+      "reason": "existing opt-in scale scenario was not enabled",
+      "errors": []
+    },
+    {
+      "name": "unit.test_catalog_context",
+      "entry_number": 7,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  7 |  7 passed | 0 failed | 653 skipped",
+        "[doctest] assertions: 81 | 81 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 7,
+      "passed_cases": 7,
+      "failed_cases": 0,
+      "executed_assertions": 81,
+      "passed_assertions": 81,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 653,
+      "errors": []
+    },
+    {
+      "name": "unit.test_chat_active_task_acceptance_audit",
+      "entry_number": 13,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  5 |  5 passed | 0 failed | 655 skipped",
+        "[doctest] assertions: 40 | 40 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 5,
+      "passed_cases": 5,
+      "failed_cases": 0,
+      "executed_assertions": 40,
+      "passed_assertions": 40,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 655,
+      "errors": []
+    },
+    {
+      "name": "unit.test_catalog_retention",
+      "entry_number": 10,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:   5 |   5 passed | 0 failed | 655 skipped",
+        "[doctest] assertions: 179 | 179 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 5,
+      "passed_cases": 5,
+      "failed_cases": 0,
+      "executed_assertions": 179,
+      "passed_assertions": 179,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 655,
+      "errors": []
+    },
+    {
+      "name": "unit.test_chat_active_task",
+      "entry_number": 12,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  19 |  19 passed | 0 failed | 641 skipped",
+        "[doctest] assertions: 197 | 197 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 19,
+      "passed_cases": 19,
+      "failed_cases": 0,
+      "executed_assertions": 197,
+      "passed_assertions": 197,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 641,
+      "errors": []
+    },
+    {
+      "name": "unit.test_chat_active_task_concurrency",
+      "entry_number": 16,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  4 |  4 passed | 0 failed | 656 skipped",
+        "[doctest] assertions: 49 | 49 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 4,
+      "passed_cases": 4,
+      "failed_cases": 0,
+      "executed_assertions": 49,
+      "passed_assertions": 49,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 656,
+      "errors": []
+    },
+    {
+      "name": "unit.test_chat_active_task_acceptance_validation",
+      "entry_number": 15,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:   6 |   6 passed | 0 failed | 654 skipped",
+        "[doctest] assertions: 151 | 151 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 6,
+      "passed_cases": 6,
+      "failed_cases": 0,
+      "executed_assertions": 151,
+      "passed_assertions": 151,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 654,
+      "errors": []
+    },
+    {
+      "name": "unit.test_chat_active_task_durability",
+      "entry_number": 17,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:   8 |   8 passed | 0 failed | 652 skipped",
+        "[doctest] assertions: 106 | 106 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 8,
+      "passed_cases": 8,
+      "failed_cases": 0,
+      "executed_assertions": 106,
+      "passed_assertions": 106,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 652,
+      "errors": []
+    },
+    {
+      "name": "unit.test_chat_active_task_exceptional",
+      "entry_number": 19,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  4 |  4 passed | 0 failed | 656 skipped",
+        "[doctest] assertions: 45 | 45 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 4,
+      "passed_cases": 4,
+      "failed_cases": 0,
+      "executed_assertions": 45,
+      "passed_assertions": 45,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 656,
+      "errors": []
+    },
+    {
+      "name": "unit.test_chat_active_task_history_aba",
+      "entry_number": 20,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases: 1 | 1 passed | 0 failed | 659 skipped",
+        "[doctest] assertions: 9 | 9 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 1,
+      "passed_cases": 1,
+      "failed_cases": 0,
+      "executed_assertions": 9,
+      "passed_assertions": 9,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 659,
+      "errors": []
+    },
+    {
+      "name": "unit.test_chat_active_task_reference",
+      "entry_number": 21,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  7 |  7 passed | 0 failed | 653 skipped",
+        "[doctest] assertions: 49 | 49 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 7,
+      "passed_cases": 7,
+      "failed_cases": 0,
+      "executed_assertions": 49,
+      "passed_assertions": 49,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 653,
+      "errors": []
+    },
+    {
+      "name": "unit.test_chat_active_task_retention",
+      "entry_number": 22,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  11 |  11 passed | 0 failed | 649 skipped",
+        "[doctest] assertions: 232 | 232 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 11,
+      "passed_cases": 11,
+      "failed_cases": 0,
+      "executed_assertions": 232,
+      "passed_assertions": 232,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 649,
+      "errors": []
+    },
+    {
+      "name": "unit.test_chat_active_task_revisions",
+      "entry_number": 23,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  10 |  10 passed | 0 failed | 650 skipped",
+        "[doctest] assertions: 228 | 228 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 10,
+      "passed_cases": 10,
+      "failed_cases": 0,
+      "executed_assertions": 228,
+      "passed_assertions": 228,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 650,
+      "errors": []
+    },
+    {
+      "name": "unit.test_chat_active_task_scope_identity",
+      "entry_number": 24,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  2 |  2 passed | 0 failed | 658 skipped",
+        "[doctest] assertions: 20 | 20 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 2,
+      "passed_cases": 2,
+      "failed_cases": 0,
+      "executed_assertions": 20,
+      "passed_assertions": 20,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 658,
+      "errors": []
+    },
+    {
+      "name": "unit.test_chat_engine",
+      "entry_number": 25,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases: 15 | 15 passed | 0 failed | 645 skipped",
+        "[doctest] assertions: 67 | 67 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 15,
+      "passed_cases": 15,
+      "failed_cases": 0,
+      "executed_assertions": 67,
+      "passed_assertions": 67,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 645,
+      "errors": []
+    },
+    {
+      "name": "unit.test_catalog_links",
+      "entry_number": 9,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:    4 |    4 passed | 0 failed | 656 skipped",
+        "[doctest] assertions: 3136 | 3136 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 4,
+      "passed_cases": 4,
+      "failed_cases": 0,
+      "executed_assertions": 3136,
+      "passed_assertions": 3136,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 656,
+      "errors": []
+    },
+    {
+      "name": "unit.test_chat_active_task_acceptance_scale",
+      "entry_number": 14,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:    2 |    2 passed | 0 failed | 658 skipped",
+        "[doctest] assertions: 2014 | 2014 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 2,
+      "passed_cases": 2,
+      "failed_cases": 0,
+      "executed_assertions": 2014,
+      "passed_assertions": 2014,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 658,
+      "errors": []
+    },
+    {
+      "name": "unit.test_config",
+      "entry_number": 28,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:   5 |   5 passed | 0 failed | 655 skipped",
+        "[doctest] assertions: 113 | 113 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 5,
+      "passed_cases": 5,
+      "failed_cases": 0,
+      "executed_assertions": 113,
+      "passed_assertions": 113,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 655,
+      "errors": []
+    },
+    {
+      "name": "unit.test_chat_retrieval_plan",
+      "entry_number": 27,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:   8 |   8 passed | 0 failed | 652 skipped",
+        "[doctest] assertions: 244 | 244 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 8,
+      "passed_cases": 8,
+      "failed_cases": 0,
+      "executed_assertions": 244,
+      "passed_assertions": 244,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 652,
+      "errors": []
+    },
+    {
+      "name": "unit.test_context_channel_integration",
+      "entry_number": 29,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  5 |  5 passed | 0 failed | 655 skipped",
+        "[doctest] assertions: 63 | 63 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 5,
+      "passed_cases": 5,
+      "failed_cases": 0,
+      "executed_assertions": 63,
+      "passed_assertions": 63,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 655,
+      "errors": []
+    },
+    {
+      "name": "unit.test_chat_knowledge_context",
+      "entry_number": 26,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  15 |  15 passed | 0 failed | 645 skipped",
+        "[doctest] assertions: 212 | 212 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 15,
+      "passed_cases": 15,
+      "failed_cases": 0,
+      "executed_assertions": 212,
+      "passed_assertions": 212,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 645,
+      "errors": []
+    },
+    {
+      "name": "unit.test_context_counter",
+      "entry_number": 31,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  4 |  4 passed | 0 failed | 656 skipped",
+        "[doctest] assertions: 38 | 38 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 4,
+      "passed_cases": 4,
+      "failed_cases": 0,
+      "executed_assertions": 38,
+      "passed_assertions": 38,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 656,
+      "errors": []
+    },
+    {
+      "name": "unit.test_chat_active_task_durable_audit",
+      "entry_number": 18,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  6 |  6 passed | 0 failed | 654 skipped",
+        "[doctest] assertions: 76 | 76 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 6,
+      "passed_cases": 6,
+      "failed_cases": 0,
+      "executed_assertions": 76,
+      "passed_assertions": 76,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 654,
+      "errors": []
+    },
+    {
+      "name": "unit.test_context_controls",
+      "entry_number": 30,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:   9 |   9 passed | 0 failed | 651 skipped",
+        "[doctest] assertions: 153 | 153 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 9,
+      "passed_cases": 9,
+      "failed_cases": 0,
+      "executed_assertions": 153,
+      "passed_assertions": 153,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 651,
+      "errors": []
+    },
+    {
+      "name": "unit.test_context_eval",
+      "entry_number": 34,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:   2 |   2 passed | 0 failed | 658 skipped",
+        "[doctest] assertions: 268 | 268 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 2,
+      "passed_cases": 2,
+      "failed_cases": 0,
+      "executed_assertions": 268,
+      "passed_assertions": 268,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 658,
+      "errors": []
+    },
+    {
+      "name": "unit.test_context_native_consumer",
+      "entry_number": 35,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:   6 |   6 passed | 0 failed | 654 skipped",
+        "[doctest] assertions: 105 | 105 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 6,
+      "passed_cases": 6,
+      "failed_cases": 0,
+      "executed_assertions": 105,
+      "passed_assertions": 105,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 654,
+      "errors": []
+    },
+    {
+      "name": "unit.test_context_retrieval",
+      "entry_number": 37,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  13 |  13 passed | 0 failed | 647 skipped",
+        "[doctest] assertions: 130 | 130 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 13,
+      "passed_cases": 13,
+      "failed_cases": 0,
+      "executed_assertions": 130,
+      "passed_assertions": 130,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 647,
+      "errors": []
+    },
+    {
+      "name": "unit.test_context_retrieval_dev",
+      "entry_number": 38,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:   1 |   1 passed | 0 failed | 659 skipped",
+        "[doctest] assertions: 241 | 241 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 1,
+      "passed_cases": 1,
+      "failed_cases": 0,
+      "executed_assertions": 241,
+      "passed_assertions": 241,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 659,
+      "errors": []
+    },
+    {
+      "name": "unit.test_context_plan",
+      "entry_number": 36,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  15 |  15 passed | 0 failed | 645 skipped",
+        "[doctest] assertions: 159 | 159 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 15,
+      "passed_cases": 15,
+      "failed_cases": 0,
+      "executed_assertions": 159,
+      "passed_assertions": 159,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 645,
+      "errors": []
+    },
+    {
+      "name": "unit.test_context_tfidf_reuse",
+      "entry_number": 39,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:   9 |   9 passed | 0 failed | 651 skipped",
+        "[doctest] assertions: 219 | 219 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 9,
+      "passed_cases": 9,
+      "failed_cases": 0,
+      "executed_assertions": 219,
+      "passed_assertions": 219,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 651,
+      "errors": []
+    },
+    {
+      "name": "unit.test_db",
+      "entry_number": 41,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:   13 |   13 passed | 0 failed | 647 skipped",
+        "[doctest] assertions: 5178 | 5178 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 13,
+      "passed_cases": 13,
+      "failed_cases": 0,
+      "executed_assertions": 5178,
+      "passed_assertions": 5178,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 647,
+      "errors": []
+    },
+    {
+      "name": "unit.test_event_bus",
+      "entry_number": 42,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  5 |  5 passed | 0 failed | 655 skipped",
+        "[doctest] assertions: 28 | 28 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 5,
+      "passed_cases": 5,
+      "failed_cases": 0,
+      "executed_assertions": 28,
+      "passed_assertions": 28,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 655,
+      "errors": []
+    },
+    {
+      "name": "unit.test_crypto",
+      "entry_number": 40,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases: 12 | 12 passed | 0 failed | 648 skipped",
+        "[doctest] assertions: 66 | 66 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 12,
+      "passed_cases": 12,
+      "failed_cases": 0,
+      "executed_assertions": 66,
+      "passed_assertions": 66,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 648,
+      "errors": []
+    },
+    {
+      "name": "unit.test_context_engine",
+      "entry_number": 33,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:   18 |   18 passed | 0 failed | 642 skipped",
+        "[doctest] assertions: 1364 | 1364 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 18,
+      "passed_cases": 18,
+      "failed_cases": 0,
+      "executed_assertions": 1364,
+      "passed_assertions": 1364,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 642,
+      "errors": []
+    },
+    {
+      "name": "unit.test_context_diagnostics",
+      "entry_number": 32,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:   9 |   9 passed | 0 failed | 651 skipped",
+        "[doctest] assertions: 335 | 335 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 9,
+      "passed_cases": 9,
+      "failed_cases": 0,
+      "executed_assertions": 335,
+      "passed_assertions": 335,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 651,
+      "errors": []
+    },
+    {
+      "name": "unit.test_fts",
+      "entry_number": 45,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  5 |  5 passed | 0 failed | 655 skipped",
+        "[doctest] assertions: 53 | 53 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 5,
+      "passed_cases": 5,
+      "failed_cases": 0,
+      "executed_assertions": 53,
+      "passed_assertions": 53,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 655,
+      "errors": []
+    },
+    {
+      "name": "unit.test_generalize_eval",
+      "entry_number": 47,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:   1 |   1 passed | 0 failed | 659 skipped",
+        "[doctest] assertions: 173 | 173 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 1,
+      "passed_cases": 1,
+      "failed_cases": 0,
+      "executed_assertions": 173,
+      "passed_assertions": 173,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 659,
+      "errors": []
+    },
+    {
+      "name": "unit.test_github",
+      "entry_number": 48,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  19 |  19 passed | 0 failed | 641 skipped",
+        "[doctest] assertions: 113 | 113 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 19,
+      "passed_cases": 19,
+      "failed_cases": 0,
+      "executed_assertions": 113,
+      "passed_assertions": 113,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 641,
+      "errors": []
+    },
+    {
+      "name": "unit.test_graph",
+      "entry_number": 49,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  8 |  8 passed | 0 failed | 652 skipped",
+        "[doctest] assertions: 30 | 30 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 8,
+      "passed_cases": 8,
+      "failed_cases": 0,
+      "executed_assertions": 30,
+      "passed_assertions": 30,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 652,
+      "errors": []
+    },
+    {
+      "name": "unit.test_import",
+      "entry_number": 50,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  23 |  23 passed | 0 failed | 637 skipped",
+        "[doctest] assertions: 223 | 223 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 23,
+      "passed_cases": 23,
+      "failed_cases": 0,
+      "executed_assertions": 223,
+      "passed_assertions": 223,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 637,
+      "errors": []
+    },
+    {
+      "name": "unit.test_import_export_fidelity",
+      "entry_number": 51,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:   5 |   5 passed | 0 failed | 655 skipped",
+        "[doctest] assertions: 327 | 327 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 5,
+      "passed_cases": 5,
+      "failed_cases": 0,
+      "executed_assertions": 327,
+      "passed_assertions": 327,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 655,
+      "errors": []
+    },
+    {
+      "name": "unit.test_extract_eval",
+      "entry_number": 44,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  6 |  6 passed | 0 failed | 654 skipped",
+        "[doctest] assertions: 27 | 27 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 6,
+      "passed_cases": 6,
+      "failed_cases": 0,
+      "executed_assertions": 27,
+      "passed_assertions": 27,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 654,
+      "errors": []
+    },
+    {
+      "name": "unit.test_extract",
+      "entry_number": 43,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  15 |  15 passed | 0 failed | 645 skipped",
+        "[doctest] assertions: 241 | 241 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 15,
+      "passed_cases": 15,
+      "failed_cases": 0,
+      "executed_assertions": 241,
+      "passed_assertions": 241,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 645,
+      "errors": []
+    },
+    {
+      "name": "unit.test_import_source_materialization",
+      "entry_number": 53,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:   8 |   8 passed | 0 failed | 652 skipped",
+        "[doctest] assertions: 592 | 592 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 8,
+      "passed_cases": 8,
+      "failed_cases": 0,
+      "executed_assertions": 592,
+      "passed_assertions": 592,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 652,
+      "errors": []
+    },
+    {
+      "name": "unit.test_generalize",
+      "entry_number": 46,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:   7 |   7 passed | 0 failed | 653 skipped",
+        "[doctest] assertions: 199 | 199 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 7,
+      "passed_cases": 7,
+      "failed_cases": 0,
+      "executed_assertions": 199,
+      "passed_assertions": 199,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 653,
+      "errors": []
+    },
+    {
+      "name": "unit.test_import_exports",
+      "entry_number": 52,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:   18 |   18 passed | 0 failed | 642 skipped",
+        "[doctest] assertions: 2202 | 2202 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 18,
+      "passed_cases": 18,
+      "failed_cases": 0,
+      "executed_assertions": 2202,
+      "passed_assertions": 2202,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 642,
+      "errors": []
+    },
+    {
+      "name": "unit.test_knowledge_candidate_graph",
+      "entry_number": 57,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  10 |  10 passed | 0 failed | 650 skipped",
+        "[doctest] assertions: 114 | 114 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 10,
+      "passed_cases": 10,
+      "failed_cases": 0,
+      "executed_assertions": 114,
+      "passed_assertions": 114,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 650,
+      "errors": []
+    },
+    {
+      "name": "unit.test_knowledge_candidates",
+      "entry_number": 58,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  1 |  1 passed | 0 failed | 659 skipped",
+        "[doctest] assertions: 14 | 14 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 1,
+      "passed_cases": 1,
+      "failed_cases": 0,
+      "executed_assertions": 14,
+      "passed_assertions": 14,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 659,
+      "errors": []
+    },
+    {
+      "name": "unit.test_knowledge_flow",
+      "entry_number": 59,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  2 |  2 passed | 0 failed | 658 skipped",
+        "[doctest] assertions: 53 | 53 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 2,
+      "passed_cases": 2,
+      "failed_cases": 0,
+      "executed_assertions": 53,
+      "passed_assertions": 53,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 658,
+      "errors": []
+    },
+    {
+      "name": "unit.test_knowledge_semantic",
+      "entry_number": 60,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  13 |  13 passed | 0 failed | 647 skipped",
+        "[doctest] assertions: 125 | 125 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 13,
+      "passed_cases": 13,
+      "failed_cases": 0,
+      "executed_assertions": 125,
+      "passed_assertions": 125,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 647,
+      "errors": []
+    },
+    {
+      "name": "unit.test_knowledge",
+      "entry_number": 56,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  18 |  18 passed | 0 failed | 642 skipped",
+        "[doctest] assertions: 150 | 150 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 18,
+      "passed_cases": 18,
+      "failed_cases": 0,
+      "executed_assertions": 150,
+      "passed_assertions": 150,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 642,
+      "errors": []
+    },
+    {
+      "name": "unit.test_knowledge_store",
+      "entry_number": 62,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:   7 |   7 passed | 0 failed | 653 skipped",
+        "[doctest] assertions: 124 | 124 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 7,
+      "passed_cases": 7,
+      "failed_cases": 0,
+      "executed_assertions": 124,
+      "passed_assertions": 124,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 653,
+      "errors": []
+    },
+    {
+      "name": "unit.test_kb_pack",
+      "entry_number": 55,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  14 |  14 passed | 0 failed | 646 skipped",
+        "[doctest] assertions: 184 | 184 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 14,
+      "passed_cases": 14,
+      "failed_cases": 0,
+      "executed_assertions": 184,
+      "passed_assertions": 184,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 646,
+      "errors": []
+    },
+    {
+      "name": "unit.test_media",
+      "entry_number": 64,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases: 13 | 13 passed | 0 failed | 647 skipped",
+        "[doctest] assertions: 81 | 81 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 13,
+      "passed_cases": 13,
+      "failed_cases": 0,
+      "executed_assertions": 81,
+      "passed_assertions": 81,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 647,
+      "errors": []
+    },
+    {
+      "name": "unit.test_memory",
+      "entry_number": 65,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  9 |  9 passed | 0 failed | 651 skipped",
+        "[doctest] assertions: 40 | 40 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 9,
+      "passed_cases": 9,
+      "failed_cases": 0,
+      "executed_assertions": 40,
+      "passed_assertions": 40,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 651,
+      "errors": []
+    },
+    {
+      "name": "unit.test_model",
+      "entry_number": 66,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  10 |  10 passed | 0 failed | 650 skipped",
+        "[doctest] assertions: 137 | 137 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 10,
+      "passed_cases": 10,
+      "failed_cases": 0,
+      "executed_assertions": 137,
+      "passed_assertions": 137,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 650,
+      "errors": []
+    },
+    {
+      "name": "unit.test_net_sse",
+      "entry_number": 67,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases: 10 | 10 passed | 0 failed | 650 skipped",
+        "[doctest] assertions: 45 | 45 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 10,
+      "passed_cases": 10,
+      "failed_cases": 0,
+      "executed_assertions": 45,
+      "passed_assertions": 45,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 650,
+      "errors": []
+    },
+    {
+      "name": "unit.test_materialize",
+      "entry_number": 63,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  6 |  6 passed | 0 failed | 654 skipped",
+        "[doctest] assertions: 67 | 67 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 6,
+      "passed_cases": 6,
+      "failed_cases": 0,
+      "executed_assertions": 67,
+      "passed_assertions": 67,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 654,
+      "errors": []
+    },
+    {
+      "name": "unit.test_provenance",
+      "entry_number": 69,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  3 |  3 passed | 0 failed | 657 skipped",
+        "[doctest] assertions: 49 | 49 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 3,
+      "passed_cases": 3,
+      "failed_cases": 0,
+      "executed_assertions": 49,
+      "passed_assertions": 49,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 657,
+      "errors": []
+    },
+    {
+      "name": "unit.test_pack_model",
+      "entry_number": 68,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:   6 |   6 passed | 0 failed | 654 skipped",
+        "[doctest] assertions: 900 | 900 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 6,
+      "passed_cases": 6,
+      "failed_cases": 0,
+      "executed_assertions": 900,
+      "passed_assertions": 900,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 654,
+      "errors": []
+    },
+    {
+      "name": "unit.test_providers",
+      "entry_number": 70,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases: 13 | 13 passed | 0 failed | 647 skipped",
+        "[doctest] assertions: 61 | 61 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 13,
+      "passed_cases": 13,
+      "failed_cases": 0,
+      "executed_assertions": 61,
+      "passed_assertions": 61,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 647,
+      "errors": []
+    },
+    {
+      "name": "unit.test_regex",
+      "entry_number": 71,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases: 15 | 15 passed | 0 failed | 645 skipped",
+        "[doctest] assertions: 89 | 89 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 15,
+      "passed_cases": 15,
+      "failed_cases": 0,
+      "executed_assertions": 89,
+      "passed_assertions": 89,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 645,
+      "errors": []
+    },
+    {
+      "name": "unit.test_relations",
+      "entry_number": 72,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  1 |  1 passed | 0 failed | 659 skipped",
+        "[doctest] assertions: 39 | 39 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 1,
+      "passed_cases": 1,
+      "failed_cases": 0,
+      "executed_assertions": 39,
+      "passed_assertions": 39,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 659,
+      "errors": []
+    },
+    {
+      "name": "unit.test_resolve",
+      "entry_number": 73,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  8 |  8 passed | 0 failed | 652 skipped",
+        "[doctest] assertions: 71 | 71 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 8,
+      "passed_cases": 8,
+      "failed_cases": 0,
+      "executed_assertions": 71,
+      "passed_assertions": 71,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 652,
+      "errors": []
+    },
+    {
+      "name": "unit.test_knowledge_semantic_graph",
+      "entry_number": 61,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  11 |  11 passed | 0 failed | 649 skipped",
+        "[doctest] assertions: 100 | 100 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 11,
+      "passed_cases": 11,
+      "failed_cases": 0,
+      "executed_assertions": 100,
+      "passed_assertions": 100,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 649,
+      "errors": []
+    },
+    {
+      "name": "unit.test_runtime",
+      "entry_number": 76,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  4 |  4 passed | 0 failed | 656 skipped",
+        "[doctest] assertions: 50 | 50 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 4,
+      "passed_cases": 4,
+      "failed_cases": 0,
+      "executed_assertions": 50,
+      "passed_assertions": 50,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 656,
+      "errors": []
+    },
+    {
+      "name": "unit.test_selector",
+      "entry_number": 77,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  5 |  5 passed | 0 failed | 655 skipped",
+        "[doctest] assertions: 22 | 22 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 5,
+      "passed_cases": 5,
+      "failed_cases": 0,
+      "executed_assertions": 22,
+      "passed_assertions": 22,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 655,
+      "errors": []
+    },
+    {
+      "name": "unit.test_semantic_llm",
+      "entry_number": 78,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases: 11 | 11 passed | 0 failed | 649 skipped",
+        "[doctest] assertions: 91 | 91 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 11,
+      "passed_cases": 11,
+      "failed_cases": 0,
+      "executed_assertions": 91,
+      "passed_assertions": 91,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 649,
+      "errors": []
+    },
+    {
+      "name": "unit.test_semantic_worker",
+      "entry_number": 79,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  9 |  9 passed | 0 failed | 651 skipped",
+        "[doctest] assertions: 34 | 34 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 9,
+      "passed_cases": 9,
+      "failed_cases": 0,
+      "executed_assertions": 34,
+      "passed_assertions": 34,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 651,
+      "errors": []
+    },
+    {
+      "name": "unit.test_tasks",
+      "entry_number": 80,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  5 |  5 passed | 0 failed | 655 skipped",
+        "[doctest] assertions: 56 | 56 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 5,
+      "passed_cases": 5,
+      "failed_cases": 0,
+      "executed_assertions": 56,
+      "passed_assertions": 56,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 655,
+      "errors": []
+    },
+    {
+      "name": "unit.test_util",
+      "entry_number": 81,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases: 10 | 10 passed | 0 failed | 650 skipped",
+        "[doctest] assertions: 94 | 94 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 10,
+      "passed_cases": 10,
+      "failed_cases": 0,
+      "executed_assertions": 94,
+      "passed_assertions": 94,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 650,
+      "errors": []
+    },
+    {
+      "name": "compat.test_abi_compat",
+      "entry_number": 82,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "Ran 3 tests in 0.433s",
+        "OK"
+      ],
+      "runner": "unittest",
+      "discovered_cases": 3,
+      "executed_cases": 3,
+      "skipped_cases": 0,
+      "errors": []
+    },
+    {
+      "name": "unit.test_resolve_lineage",
+      "entry_number": 75,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  2 |  2 passed | 0 failed | 658 skipped",
+        "[doctest] assertions: 15 | 15 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 2,
+      "passed_cases": 2,
+      "failed_cases": 0,
+      "executed_assertions": 15,
+      "passed_assertions": 15,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 658,
+      "errors": []
+    },
+    {
+      "name": "compat.test_active_task_compiler_compat",
+      "entry_number": 83,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "Ran 4 tests in 0.951s",
+        "OK"
+      ],
+      "runner": "unittest",
+      "discovered_cases": 4,
+      "executed_cases": 4,
+      "skipped_cases": 0,
+      "errors": []
+    },
+    {
+      "name": "compat.test_candidate_graph_native",
+      "entry_number": 84,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "Ran 9 tests in 1.094s",
+        "OK"
+      ],
+      "runner": "unittest",
+      "discovered_cases": 9,
+      "executed_cases": 9,
+      "skipped_cases": 0,
+      "errors": []
+    },
+    {
+      "name": "compat.test_chat_compat",
+      "entry_number": 86,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "Ran 2 tests in 1.053s",
+        "OK"
+      ],
+      "runner": "unittest",
+      "discovered_cases": 2,
+      "executed_cases": 2,
+      "skipped_cases": 0,
+      "errors": []
+    },
+    {
+      "name": "compat.test_config_compat",
+      "entry_number": 87,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "Ran 5 tests in 0.085s",
+        "OK"
+      ],
+      "runner": "unittest",
+      "discovered_cases": 5,
+      "executed_cases": 5,
+      "skipped_cases": 0,
+      "errors": []
+    },
+    {
+      "name": "unit.test_resolve_attribution",
+      "entry_number": 74,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:   7 |   7 passed | 0 failed | 653 skipped",
+        "[doctest] assertions: 420 | 420 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 7,
+      "passed_cases": 7,
+      "failed_cases": 0,
+      "executed_assertions": 420,
+      "passed_assertions": 420,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 653,
+      "errors": []
+    },
+    {
+      "name": "compat.test_chat_active_task_http",
+      "entry_number": 85,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "Ran 4 tests in 3.406s",
+        "OK"
+      ],
+      "runner": "unittest",
+      "discovered_cases": 4,
+      "executed_cases": 4,
+      "skipped_cases": 0,
+      "errors": []
+    },
+    {
+      "name": "compat.test_github_sync_defaults",
+      "entry_number": 90,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "Ran 2 tests in 0.008s",
+        "OK"
+      ],
+      "runner": "unittest",
+      "discovered_cases": 2,
+      "executed_cases": 2,
+      "skipped_cases": 0,
+      "errors": []
+    },
+    {
+      "name": "compat.test_graph_compat",
+      "entry_number": 91,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "Ran 3 tests in 0.154s",
+        "OK"
+      ],
+      "runner": "unittest",
+      "discovered_cases": 3,
+      "executed_cases": 3,
+      "skipped_cases": 0,
+      "errors": []
+    },
+    {
+      "name": "compat.test_db_compat",
+      "entry_number": 89,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "Ran 7 tests in 1.476s",
+        "OK"
+      ],
+      "runner": "unittest",
+      "discovered_cases": 7,
+      "executed_cases": 7,
+      "skipped_cases": 0,
+      "errors": []
+    },
+    {
+      "name": "compat.test_graph_packet_store",
+      "entry_number": 92,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "Ran 18 tests in 0.978s",
+        "OK"
+      ],
+      "runner": "unittest",
+      "discovered_cases": 18,
+      "executed_cases": 18,
+      "skipped_cases": 0,
+      "errors": []
+    },
+    {
+      "name": "compat.test_memory_compat",
+      "entry_number": 94,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "Ran 4 tests in 0.107s",
+        "OK"
+      ],
+      "runner": "unittest",
+      "discovered_cases": 4,
+      "executed_cases": 4,
+      "skipped_cases": 0,
+      "errors": []
+    },
+    {
+      "name": "compat.test_import_compat",
+      "entry_number": 93,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "Ran 24 tests in 1.002s",
+        "OK"
+      ],
+      "runner": "unittest",
+      "discovered_cases": 24,
+      "executed_cases": 24,
+      "skipped_cases": 0,
+      "errors": []
+    },
+    {
+      "name": "compat.test_selector_compat",
+      "entry_number": 95,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "Ran 4 tests in 0.029s",
+        "OK"
+      ],
+      "runner": "unittest",
+      "discovered_cases": 4,
+      "executed_cases": 4,
+      "skipped_cases": 0,
+      "errors": []
+    },
+    {
+      "name": "compat.test_semantic_recovery",
+      "entry_number": 97,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "Ran 8 tests in 0.032s",
+        "OK"
+      ],
+      "runner": "unittest",
+      "discovered_cases": 8,
+      "executed_cases": 8,
+      "skipped_cases": 0,
+      "errors": []
+    },
+    {
+      "name": "compat.test_util_compat",
+      "entry_number": 98,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "Ran 6 tests in 0.293s",
+        "OK"
+      ],
+      "runner": "unittest",
+      "discovered_cases": 6,
+      "executed_cases": 6,
+      "skipped_cases": 0,
+      "errors": []
+    },
+    {
+      "name": "compat.test_semantic_compat",
+      "entry_number": 96,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "Ran 6 tests in 4.633s",
+        "OK"
+      ],
+      "runner": "unittest",
+      "discovered_cases": 6,
+      "executed_cases": 6,
+      "skipped_cases": 0,
+      "errors": []
+    },
+    {
+      "name": "research.independent_protocol",
+      "entry_number": 100,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "Ran 10 tests in 0.077s",
+        "OK"
+      ],
+      "runner": "unittest",
+      "discovered_cases": 10,
+      "executed_cases": 10,
+      "skipped_cases": 0,
+      "errors": []
+    },
+    {
+      "name": "research.graph_native_protocol",
+      "entry_number": 101,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "Ran 12 tests in 0.802s",
+        "OK"
+      ],
+      "runner": "unittest",
+      "discovered_cases": 12,
+      "executed_cases": 12,
+      "skipped_cases": 0,
+      "errors": []
+    },
+    {
+      "name": "research.candidate_graph_protocol",
+      "entry_number": 102,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "Ran 15 tests in 0.637s",
+        "OK"
+      ],
+      "runner": "unittest",
+      "discovered_cases": 15,
+      "executed_cases": 15,
+      "skipped_cases": 0,
+      "errors": []
+    },
+    {
+      "name": "compat.test_crypto_compat",
+      "entry_number": 88,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "Ran 6 tests in 11.596s",
+        "OK"
+      ],
+      "runner": "unittest",
+      "discovered_cases": 6,
+      "executed_cases": 6,
+      "skipped_cases": 0,
+      "errors": []
+    },
+    {
+      "name": "research.seeding",
+      "entry_number": 104,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "Ran 36 tests in 6.780s",
+        "OK"
+      ],
+      "runner": "unittest",
+      "discovered_cases": 36,
+      "executed_cases": 36,
+      "skipped_cases": 0,
+      "errors": []
+    },
+    {
+      "name": "server.smoke",
+      "entry_number": 105,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "OK: loom-server knowledge/catalog/context checks passed",
+        "OK: loom-server graph-packet profile acceptance/read/replay/CAS/drift checks passed",
+        "OK: all loom-server smoke checks passed",
+        "OK: loom-server auth checks passed"
+      ],
+      "runner": "script",
+      "inner_cases": "not enumerated by script",
+      "errors": []
+    },
+    {
+      "name": "server.chat_active_task",
+      "entry_number": 106,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "Ran 1 test in 1.369s",
+        "OK"
+      ],
+      "runner": "unittest",
+      "discovered_cases": 1,
+      "executed_cases": 1,
+      "skipped_cases": 0,
+      "errors": []
+    },
+    {
+      "name": "cli.smoke",
+      "entry_number": 107,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "cli smoke: ok"
+      ],
+      "runner": "script",
+      "inner_cases": "not enumerated by script",
+      "errors": []
+    },
+    {
+      "name": "eval.harness",
+      "entry_number": 108,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "Ran 19 tests in 0.659s",
+        "OK"
+      ],
+      "runner": "unittest",
+      "discovered_cases": 19,
+      "executed_cases": 19,
+      "skipped_cases": 0,
+      "errors": []
+    },
+    {
+      "name": "unit.test_import_stream",
+      "entry_number": 54,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "[doctest] test cases:  1 |  1 passed | 0 failed | 659 skipped",
+        "[doctest] assertions: 13 | 13 passed | 0 failed |",
+        "[doctest] Status: SUCCESS!"
+      ],
+      "runner": "doctest",
+      "executed_cases": 1,
+      "passed_cases": 1,
+      "failed_cases": 0,
+      "executed_assertions": 13,
+      "passed_assertions": 13,
+      "failed_assertions": 0,
+      "doctest_reported_filtered_or_skipped": 659,
+      "errors": []
+    },
+    {
+      "name": "research.structure",
+      "entry_number": 99,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "Ran 859 tests in 39.529s",
+        "OK"
+      ],
+      "runner": "unittest",
+      "discovered_cases": 859,
+      "executed_cases": 859,
+      "skipped_cases": 0,
+      "errors": []
+    },
+    {
+      "name": "research.contracts",
+      "entry_number": 103,
+      "entry_denominator": 108,
+      "outer_status": "passed",
+      "classification": "executed",
+      "summary_lines": [
+        "Ran 209 tests in 38.358s",
+        "OK"
+      ],
+      "runner": "unittest",
+      "discovered_cases": 209,
+      "executed_cases": 209,
+      "skipped_cases": 0,
+      "errors": []
+    }
+  ],
+  "errors": [],
+  "derived_inventory_checks_passed": true,
+  "original_ci_guard_passed": false
+}
