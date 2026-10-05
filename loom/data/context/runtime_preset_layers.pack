@@ -96,5 +96,8 @@
         "revision": 1
       }
     ]
+  },
+  "legacy_identity_hashes": {
+    "context_goal_cues": "1b8025d678a6831c8c80468e1ee62a6a938f5e0ec2715f683dbbe12b8da44d77"
   }
 }
