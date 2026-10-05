@@ -15,7 +15,7 @@ R42 sprawdzono w autoryzowanej gałęzi właściciela `claude/chataddhd-cpp-loom
 ## Weryfikacja i liczby
 
 Przed:5 domyślnych wartości importu i audyt rozproszone w C++/Python. Po:2 kanoniczne pliki danych,5+20 pól; domyślne zachowanie pozostaje wymaganiem bramki.
-Python:13 pełnych wyników API/CLI identycznych bajt po bajcie z bazą;19 starych testów zachowane,12 nowych przypadków, zwykły suite31/31 PASS. Niezależny przegląd ponownie wykonał31/31,0skip. Generator:9/9 PASS, kontrola dokładnych bajtów i25 wpisów warstw; nowa natywna regresja15 przypadków (preset/audyt/cache/pokwitowania) czeka na rzeczywisty build. Natywna zgodność, pełny CTest i build web: jeszcze w toku; nie zgłaszam gotowości przed zakończeniem.
+Python:13 pełnych wyników API/CLI identycznych bajt po bajcie z bazą;19 starych testów zachowane,12 nowych przypadków, zwykły suite31/31 PASS. Niezależny przegląd ponownie wykonał31/31,0skip. Generator:9/9 PASS, kontrola dokładnych bajtów i25 wpisów warstw; nowa natywna regresja15 przypadków (preset/audyt/cache/pokwitowania) czeka na rzeczywisty build. Niezależny rzeczywisty konsument W12 + decoder W5:55/55 sprawdzeń PASS,25/25 wpisów; sprawdza wykluczenia/aktualizacje wersji, bez produkcyjnego OnboardingStore. Build web PASS (85 modułów,5,13s). Natywna zgodność i pełny CTest: jeszcze w toku; nie zgłaszam gotowości przed zakończeniem.
 
 ## API i uruchomienie u właściciela
 
@@ -61,7 +61,7 @@ Po odbiorze foundation włączyć te2 zasoby do wspólnego rejestru profili; nie
 
 ## Do wątku 12
 
-Przyjąć wygenerowany `loom.default_layers_pack/1` jako źródło25 wpisów; id/key/area/revision są trwałe. Konsument ma respektować suppressed/wykluczenia przed walidacją, bez ponownego merge. Most HTTP/UI nie jest w zakresie5.
+Wygenerowany `loom.default_layers_pack/1` jest poprawnym źródłem25 wpisów; id/key/area/revision są trwałe. **Granica integracji:** `DefaultLayers` przypina jeden pack_id, a OnboardingStore ma już swój `user.pack`. Nie podmieniać tożsamości tego stanu na `loom.defaults.archive-import`. Złożyć wpisy z zachowaniem ich tożsamości do autorytatywnego packa z podniesioną rewizją albo użyć uzgodnionego wspólnego API kompozycji wielu packów. Nie tworzyć drugiego trwałego magazynu wykluczeń w5. Konsument ma respektować suppressed/wykluczenia przed walidacją, bez ponownego merge. Most HTTP/UI nie jest w zakresie5.
 
 ## Do wątku 9
 
