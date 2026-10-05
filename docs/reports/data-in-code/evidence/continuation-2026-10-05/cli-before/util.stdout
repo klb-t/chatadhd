@@ -1,0 +1,179 @@
+{
+  "schema": "loom.runtime_profile_effective/1",
+  "domain": "util",
+  "revision": 1,
+  "hash": "d0490d4178f708d22864fd9eb9b1d47b446a6d2c8bee923e7c8207684770c5ea",
+  "is_builtin": true,
+  "values": {
+    "temp": {
+      "prefix": "loom_",
+      "base_root": "",
+      "fallback_root": "/tmp",
+      "attempts": 16,
+      "id_chars": 12
+    },
+    "log": {
+      "ring_capacity": 500,
+      "recent_lines": 500,
+      "default_level": 20,
+      "stderr_enabled": true,
+      "level_environment": "LOOM_LOG_LEVEL",
+      "stderr_environment": "LOOM_LOG_STDERR",
+      "stderr_disabled_value": "0",
+      "level_names": {
+        "10": "DEBUG",
+        "20": "INFO",
+        "30": "WARN",
+        "40": "ERROR"
+      },
+      "default_level_name": "INFO",
+      "level_aliases": {
+        "debug": 10,
+        "warning": 30,
+        "warn": 30,
+        "error": 40
+      },
+      "level_width": 5,
+      "record_template": "{{time}} [{{level}}] {{logger}}: {{message}}"
+    }
+  },
+  "value_schema": {
+    "type": "object",
+    "required": [
+      "temp",
+      "log"
+    ],
+    "properties": {
+      "temp": {
+        "type": "object",
+        "required": [
+          "prefix",
+          "base_root",
+          "fallback_root",
+          "attempts",
+          "id_chars"
+        ],
+        "properties": {
+          "prefix": {
+            "type": "string",
+            "x-consumer": "loom::fsutil::TempDir"
+          },
+          "base_root": {
+            "type": "string",
+            "x-consumer": "loom::fsutil::TempDir"
+          },
+          "fallback_root": {
+            "type": "string",
+            "x-consumer": "loom::fsutil::TempDir"
+          },
+          "attempts": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 18446744073709551615,
+            "x-consumer": "loom::fsutil::TempDir"
+          },
+          "id_chars": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 18446744073709551615,
+            "x-consumer": "loom::fsutil::TempDir"
+          }
+        },
+        "additionalProperties": false
+      },
+      "log": {
+        "type": "object",
+        "required": [
+          "ring_capacity",
+          "recent_lines",
+          "default_level",
+          "stderr_enabled",
+          "level_environment",
+          "stderr_environment",
+          "stderr_disabled_value",
+          "level_names",
+          "default_level_name",
+          "level_aliases",
+          "level_width",
+          "record_template"
+        ],
+        "properties": {
+          "level_environment": {
+            "type": "string",
+            "x-consumer": "loom::log"
+          },
+          "stderr_environment": {
+            "type": "string",
+            "x-consumer": "loom::log"
+          },
+          "stderr_disabled_value": {
+            "type": "string",
+            "x-consumer": "loom::log"
+          },
+          "default_level_name": {
+            "type": "string",
+            "x-consumer": "loom::log"
+          },
+          "record_template": {
+            "type": "string",
+            "x-consumer": "loom::log"
+          },
+          "ring_capacity": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 18446744073709551615,
+            "x-consumer": "loom::log"
+          },
+          "recent_lines": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 18446744073709551615,
+            "x-consumer": "loom::log"
+          },
+          "level_width": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 18446744073709551615,
+            "x-consumer": "loom::log"
+          },
+          "default_level": {
+            "type": "integer",
+            "enum": [
+              10,
+              20,
+              30,
+              40
+            ],
+            "x-consumer": "loom::log"
+          },
+          "stderr_enabled": {
+            "type": "boolean",
+            "x-consumer": "loom::log"
+          },
+          "level_names": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "x-consumer": "loom::log"
+          },
+          "level_aliases": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer",
+              "enum": [
+                10,
+                20,
+                30,
+                40
+              ]
+            },
+            "x-consumer": "loom::log"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "additionalProperties": false
+  }
+}

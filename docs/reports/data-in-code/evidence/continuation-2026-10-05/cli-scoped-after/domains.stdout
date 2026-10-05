@@ -1,0 +1,21 @@
+[
+  "archive",
+  "cli",
+  "config",
+  "github",
+  "graph_ingest",
+  "graph_memory",
+  "knowledge",
+  "materialize",
+  "media",
+  "memory",
+  "model",
+  "net",
+  "re",
+  "runtime_paths",
+  "selector",
+  "semantic_analyzer",
+  "usage_policy",
+  "util",
+  "worker"
+]

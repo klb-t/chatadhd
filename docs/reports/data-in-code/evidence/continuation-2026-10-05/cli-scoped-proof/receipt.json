@@ -1,0 +1,38 @@
+{
+  "schema": "loom.cli_profile_scope_verification/1",
+  "valid": true,
+  "smoke_exit": 0,
+  "parity_exit": 0,
+  "before_source_ref": "2eb65d475cb6671dbe6388c53bb63eec74ea92a8",
+  "scope": "New CLI compiled with the actual complete before core and before headers. This is CLI-only verification, not the final current-core gate.",
+  "source_unchanged_after_scope_run": true,
+  "artifacts": [
+    {
+      "path": "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/cli/main.cpp",
+      "bytes": 56151,
+      "sha256": "410b81ac0b5b85428f3a868e0f1faa0a2a4ff76f08c50728065255191b82ebd4"
+    },
+    {
+      "path": "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/cli/tests/test_cli_smoke.py",
+      "bytes": 22999,
+      "sha256": "5505b781c008e32012e563bc11da3a934face50542aacff0dc1e700a51bc3a72"
+    },
+    {
+      "path": "/workspace/scratch/72fc60ad1cc5/chatadhd-before/loom/include/loom/runtime_profile.h",
+      "bytes": 2385,
+      "sha256": "f59642e1235b352d8782e4413680230bf2c08008b2d223f5f45f1135e0bd9060"
+    },
+    {
+      "path": "/workspace/scratch/72fc60ad1cc5/before-build/libloom_core.a",
+      "bytes": 343178086,
+      "sha256": "8806fcd44e9cdd0798d5f8acaa6d94f35c1edff4500d62963d83a96f29bb92c3"
+    },
+    {
+      "path": "/workspace/scratch/72fc60ad1cc5/cli-current-candidate",
+      "bytes": 34915248,
+      "sha256": "e8d5aec168dd022d40d15a201a08241277a6a7e3c3606cad0329d683ff2b556c"
+    }
+  ],
+  "comparison": "../cli-scoped-after/comparison.json",
+  "paid_calls": 0
+}

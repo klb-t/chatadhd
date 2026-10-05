@@ -2,8 +2,8 @@
 //
 //   loom [--data-dir DIR] [--json] [--quiet] <command> [args]
 //
-// Every command opens one Runtime on the data directory (shared with the
-// ChatADHD app), without background workers, and closes it on exit.
+// Application commands open one Runtime on the shared data directory, without
+// background workers. Profile editing only reads/writes its profile overlay.
 // --json prints machine-readable JSON; otherwise output is for humans.
 // Secrets and passwords are read from stdin, never from argv.
 #include <unistd.h>
@@ -46,6 +46,7 @@
 #include "loom/runtime_profile.h"
 #include "loom/semantic_worker.h"
 #include "loom/tasks.h"
+#include "loom/usage_policy.h"
 #include "loom/util/cancel.h"
 #include "loom/util/fs.h"
 #include "loom/util/json.h"
@@ -1086,26 +1087,112 @@ int cmd_catalog(Runtime& rt, const Args& a) {
   return 0;
 }
 
-int cmd_profile(Runtime& rt, const Args& a) {
+struct LoadedProfile {
+  RuntimeProfile effective;
+  Json overlay;
+};
+
+Result<LoadedProfile> load_profile_document(const fs::path& root, std::string_view domain) {
+  LOOM_TRY_ASSIGN(auto base, RuntimeProfile::builtin(domain));
+  Json document{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", domain}, {"overrides", Json::object()}};
+  const auto path = root / "profiles" / (std::string(domain) + ".pack");
+  std::error_code ec;
+  const auto status = fs::symlink_status(path, ec);
+  if (ec && ec != std::errc::no_such_file_or_directory && ec != std::errc::not_a_directory)
+    return Error(Errc::Io, "cannot inspect runtime profile overlay: " + ec.message());
+  if (ec != std::errc::not_a_directory && status.type() != fs::file_type::not_found) {
+    LOOM_TRY_ASSIGN(auto bytes, fsutil::read_file(path));
+    if (!utf8::is_valid(bytes)) return Error(Errc::InvalidArgument, "runtime profile overlay is not UTF-8");
+    LOOM_TRY_ASSIGN(document, json::parse(bytes));
+    LOOM_TRY_ASSIGN(base, base.with_overlay(document));
+  }
+  // One read supplies both effective values and saved user choices.
+  return LoadedProfile{std::move(base), std::move(document)};
+}
+
+void merge_profile_choices(Json& target, const Json& changes) {
+  for (auto it = changes.begin(); it != changes.end(); ++it) {
+    if (it->is_object() && target.contains(it.key()) && target[it.key()].is_object())
+      merge_profile_choices(target[it.key()], it.value());
+    else target[it.key()] = it.value();
+  }
+}
+
+// Keep the user's selected fields, including choices equal to the preset. A
+// later patch can remove or replace them; removed fields must not reappear.
+Json effective_profile_choices(const Json& choices, const Json& values) {
+  Json selected = Json::object();
+  for (auto it = choices.begin(); it != choices.end(); ++it) {
+    if (!values.contains(it.key())) continue;
+    const auto& value = values.at(it.key());
+    selected[it.key()] = it->is_object() && value.is_object()
+                            ? effective_profile_choices(it.value(), value) : value;
+  }
+  return selected;
+}
+
+void profile_patch_choices(const Json& document, std::set<std::string>& paths) {
+  const auto* patch = json::find(document, "patch");
+  if (!patch) return;
+  for (const auto& operation : *patch) {
+    const auto op = operation.at("op").get<std::string>();
+    if (op == "add" || op == "replace" || op == "copy" || op == "move")
+      paths.insert(operation.at("path").get<std::string>());
+  }
+}
+
+bool profile_overlay_envelope(const Json& document) {
+  return document.is_object() && json::get_string(document, "schema") == "loom.runtime_profile_overlay/1";
+}
+
+Json saved_profile_document(const RuntimeProfile& base, const Json& previous,
+                            const Json& changes, const RuntimeProfile& effective) {
+  Json choices = previous.value("overrides", Json::object());
+  const bool envelope = profile_overlay_envelope(changes);
+  merge_profile_choices(choices, envelope ? changes.value("overrides", Json::object()) : changes);
+  choices = effective_profile_choices(choices, effective.values());
+  auto selected = must(base.with_overrides(choices));
+  Json patch = Json::diff(selected.values(), effective.values());
+  std::set<std::string> explicit_paths;
+  profile_patch_choices(previous, explicit_paths);
+  if (envelope) profile_patch_choices(changes, explicit_paths);
+  for (const auto& path : explicit_paths) {
+    const Json::json_pointer pointer(path);
+    if (effective.values().contains(pointer)) {
+      // replace is also inert for arrays: add would insert another element.
+      patch.push_back(Json{{"op", "replace"}, {"path", path}, {"value", effective.values().at(pointer)}});
+    }
+  }
+  Json document{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", base.domain()},
+                {"overrides", std::move(choices)}, {"patch", std::move(patch)}};
+  auto checked = must(base.with_overlay(document));
+  if (checked.hash() != effective.hash())
+    throw Error(Errc::Internal, "saved profile does not reproduce the validated values");
+  return document;
+}
+
+int cmd_profile(const fs::path& root, const Args& a) {
   const std::string op = a.pos.empty() ? "list" : a.pos[0];
   if (op == "list") { print_json(RuntimeProfile::domains()); return 0; }
   if (a.pos.size() < 2) throw UsageError{"profile needs a domain"};
   const std::string domain = a.pos[1];
-  auto profile = must(RuntimeProfile::load(domain, rt.paths().root));
+  auto loaded = must(load_profile_document(root, domain));
+  const auto& profile = loaded.effective;
   if (op == "inspect") { print_json(profile.inspection()); return 0; }
   if (op != "validate" && op != "save") throw UsageError{"unknown profile operation: " + op};
   Json changes = must(read_json_input(a));
   RuntimeProfile effective = profile;
-  if (changes.is_object() && changes.contains("overrides")) {
+  if (profile_overlay_envelope(changes)) {
     effective = must(profile.with_overlay(changes));
   } else effective = must(profile.with_overrides(changes));
   if (domain == "cli") must(validate_cli_consumers(effective));
+  // Editor validation does not activate this file in Config's usage policy,
+  // open a ledger, or authorize an operation.
+  if (domain == "usage_policy") must(validate_usage_policy_options(effective.values()));
   if (op == "save") {
-    // A patch preserves removals as well as unmentioned effective values.
     auto base = must(RuntimeProfile::builtin(domain));
-    Json doc{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", domain}, {"overrides", Json::object()},
-             {"patch", Json::diff(base.values(), effective.values())}};
-    must(fsutil::atomic_write(rt.paths().root / "profiles" / (domain + ".pack"), json::dump(doc, 2) + "\n"));
+    auto doc = saved_profile_document(base, loaded.overlay, changes, effective);
+    must(fsutil::atomic_write(root / "profiles" / (domain + ".pack"), json::dump(doc, 2) + "\n"));
   }
   print_json(effective.inspection());
   return 0;
@@ -1197,19 +1284,18 @@ int main(int argc, char** argv) {
   if (!levels.contains(log_level)) return fail(Error(Errc::InvalidArgument, "CLI logging fallback is not registered"));
   log::set_level(static_cast<log::Level>(levels.at(log_level).get<int>()));
 
-  RuntimeOptions ro;
-  ro.data_dir = data_dir;
-  ro.start_workers = false;
-  auto rt_r = Runtime::open(ro);
-  if (!rt_r) return fail(rt_r.error());
-  Runtime& rt = **rt_r;
-
   try {
     if (!args.pos.empty()) {
       const auto* aliases = json::find(cli_values.at("subcommands"), cmd);
       if (aliases) args.pos[0] = json::get_string(*aliases, args.pos[0], args.pos[0]);
     }
-    if (cmd == "profile") return cmd_profile(rt, args);
+    if (cmd == "profile") return cmd_profile(cli_data_root_read_only(data_dir), args);
+    RuntimeOptions ro;
+    ro.data_dir = data_dir;
+    ro.start_workers = false;
+    auto rt_r = Runtime::open(ro);
+    if (!rt_r) return fail(rt_r.error());
+    Runtime& rt = **rt_r;
     if (cmd == "init") {
       Json info = rt.info();
       if (g_json) print_json(info);

@@ -1,0 +1,211 @@
+{
+  "schema": "loom.runtime_profile_effective/1",
+  "domain": "worker",
+  "revision": 1,
+  "hash": "cff72fbb795d0d7cf546d5ad4148efcdbe1e8d0b6646a96c5390eefe873f1f01",
+  "is_builtin": true,
+  "values": {
+    "drain_batch": 50,
+    "idle_poll_ms": 30000,
+    "llm_rate_limit": 2.0,
+    "startup_delay_ms": 3000,
+    "batch_threshold": 500,
+    "batch_max_messages": 10000,
+    "batch_endpoint": "https://api.anthropic.com/v1/messages/batches",
+    "pause_poll_ms": 5000,
+    "error_backoff_ms": 5000,
+    "rate_elapsed_floor": 0.01,
+    "batch_output_tokens": 800,
+    "batch_input_chars": 3000,
+    "submit_timeout_ms": 120000,
+    "poll_timeout_ms": 30000,
+    "results_timeout_ms": 300000,
+    "batch_secret_key": "anthropic_batch_key",
+    "headers": {
+      "anthropic-version": "2023-06-01"
+    },
+    "strip_model_provider": true,
+    "batch_estimate_per_message": 6.5e-05,
+    "terminal_statuses": [
+      "failed",
+      "canceled",
+      "expired"
+    ],
+    "submit_error_body_chars": 200
+  },
+  "value_schema": {
+    "x-setting": "",
+    "x-consumer": "worker/media/github",
+    "type": "object",
+    "required": [
+      "drain_batch",
+      "idle_poll_ms",
+      "llm_rate_limit",
+      "startup_delay_ms",
+      "batch_threshold",
+      "batch_max_messages",
+      "batch_endpoint",
+      "pause_poll_ms",
+      "error_backoff_ms",
+      "rate_elapsed_floor",
+      "batch_output_tokens",
+      "batch_input_chars",
+      "submit_timeout_ms",
+      "poll_timeout_ms",
+      "results_timeout_ms",
+      "batch_secret_key",
+      "headers",
+      "strip_model_provider",
+      "batch_estimate_per_message",
+      "terminal_statuses",
+      "submit_error_body_chars"
+    ],
+    "properties": {
+      "drain_batch": {
+        "x-setting": "/drain_batch",
+        "x-consumer": "worker/media/github",
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 2147483647
+      },
+      "idle_poll_ms": {
+        "x-setting": "/idle_poll_ms",
+        "x-consumer": "worker/media/github",
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 9223372036854775807,
+        "x-unit": "milliseconds"
+      },
+      "llm_rate_limit": {
+        "x-setting": "/llm_rate_limit",
+        "x-consumer": "worker/media/github",
+        "type": "number",
+        "minimum": 0
+      },
+      "startup_delay_ms": {
+        "x-setting": "/startup_delay_ms",
+        "x-consumer": "worker/media/github",
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 9223372036854775807,
+        "x-unit": "milliseconds"
+      },
+      "batch_threshold": {
+        "x-setting": "/batch_threshold",
+        "x-consumer": "worker/media/github",
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 9223372036854775807,
+        "x-unit": "messages"
+      },
+      "batch_max_messages": {
+        "x-setting": "/batch_max_messages",
+        "x-consumer": "worker/media/github",
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 2147483647
+      },
+      "batch_endpoint": {
+        "x-setting": "/batch_endpoint",
+        "x-consumer": "worker/media/github",
+        "type": "string"
+      },
+      "pause_poll_ms": {
+        "x-setting": "/pause_poll_ms",
+        "x-consumer": "worker/media/github",
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 9223372036854775807,
+        "x-unit": "milliseconds"
+      },
+      "error_backoff_ms": {
+        "x-setting": "/error_backoff_ms",
+        "x-consumer": "worker/media/github",
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 9223372036854775807,
+        "x-unit": "milliseconds"
+      },
+      "rate_elapsed_floor": {
+        "x-setting": "/rate_elapsed_floor",
+        "x-consumer": "worker/media/github",
+        "type": "number",
+        "minimum": 0
+      },
+      "batch_output_tokens": {
+        "x-setting": "/batch_output_tokens",
+        "x-consumer": "worker/media/github",
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 2147483647
+      },
+      "batch_input_chars": {
+        "x-setting": "/batch_input_chars",
+        "x-consumer": "worker/media/github",
+        "type": "integer",
+        "minimum": 0
+      },
+      "submit_timeout_ms": {
+        "x-setting": "/submit_timeout_ms",
+        "x-consumer": "worker/media/github",
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 2147483647
+      },
+      "poll_timeout_ms": {
+        "x-setting": "/poll_timeout_ms",
+        "x-consumer": "worker/media/github",
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 2147483647
+      },
+      "results_timeout_ms": {
+        "x-setting": "/results_timeout_ms",
+        "x-consumer": "worker/media/github",
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 2147483647
+      },
+      "batch_secret_key": {
+        "x-setting": "/batch_secret_key",
+        "x-consumer": "worker/media/github",
+        "type": "string"
+      },
+      "headers": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        }
+      },
+      "strip_model_provider": {
+        "x-setting": "/strip_model_provider",
+        "x-consumer": "worker/media/github",
+        "type": "boolean"
+      },
+      "batch_estimate_per_message": {
+        "x-setting": "/batch_estimate_per_message",
+        "x-consumer": "worker/media/github",
+        "type": "number",
+        "minimum": 0
+      },
+      "terminal_statuses": {
+        "x-setting": "/terminal_statuses",
+        "x-consumer": "worker/media/github",
+        "type": "array",
+        "items": {
+          "x-setting": "/terminal_statuses/<index>",
+          "x-consumer": "worker/media/github",
+          "type": "string"
+        }
+      },
+      "submit_error_body_chars": {
+        "type": "integer",
+        "minimum": 0,
+        "x-setting": "/submit_error_body_chars",
+        "x-consumer": "worker",
+        "x-unit": "Unicode codepoints"
+      }
+    },
+    "additionalProperties": false
+  }
+}
