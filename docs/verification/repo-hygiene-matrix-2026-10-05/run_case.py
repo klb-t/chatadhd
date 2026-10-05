@@ -19,6 +19,8 @@ def main():
     parser.add_argument("--companion-cache", type=Path)
     args = parser.parse_args()
     root, out = args.source.resolve(), args.output.resolve()
+    if out.exists() and any(out.iterdir()):
+        parser.error("evidence directory must be empty; retain previous attempts separately")
     out.mkdir(parents=True, exist_ok=True)
     build = root / "loom/build" / args.preset
     env = os.environ.copy()
@@ -29,6 +31,11 @@ def main():
     elif args.companion_cache:
         parser.error("--companion-cache requires --ffi-companion")
     commands = []
+    git = lambda rev: subprocess.check_output(["git", "rev-parse", rev], cwd=root,
+                                             text=True).strip()
+    context = {"source_commit": git("HEAD"), "source_tree": git("HEAD^{tree}"),
+               "helper_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest()}
+    (out / "run-context.json").write_text(json.dumps(context, indent=2) + "\n")
 
     def run(argv, filename, cwd=root, required=True):
         start = datetime.now(timezone.utc).isoformat()
@@ -95,6 +102,9 @@ def main():
         args.preset, "--manifest", out / "ctest-manifest.json", "--junit",
         out / "ctest.xml", "--output", out / "executed-cases.json"],
         "guard.log", required=False)
+    after = {"source_commit": git("HEAD"), "source_tree": git("HEAD^{tree}"),
+             "helper_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+             "binaries": [], "source_inputs": [], "errors": []}
     for filename in ("build-receipt.json", "ffi-companion-receipt.json"):
         path = out / filename
         if not path.is_file():
@@ -102,9 +112,21 @@ def main():
         data = json.loads(path.read_text())
         for binary in data["binaries"]:
             current = Path(binary["path"]).read_bytes()
-            if hashlib.sha256(current).hexdigest() != binary["sha256"]:
-                raise RuntimeError("binary changed during tests: " + binary["path"])
-    raise SystemExit(status or gate)
+            digest = hashlib.sha256(current).hexdigest()
+            after["binaries"].append({"path": binary["path"], "sha256": digest})
+            if digest != binary["sha256"]:
+                after["errors"].append("binary changed during tests: " + binary["path"])
+    for source in inputs:
+        file = root / source["path"]
+        digest = hashlib.sha256(file.read_bytes()).hexdigest() if file.is_file() else None
+        after["source_inputs"].append({"path": source["path"], "sha256": digest})
+        if digest != source["sha256"]:
+            after["errors"].append("source changed during tests: " + source["path"])
+    for key, before in context.items():
+        if after[key] != before:
+            after["errors"].append(key + " changed during tests")
+    (out / "after-verification.json").write_text(json.dumps(after, indent=2) + "\n")
+    raise SystemExit(status or gate or bool(after["errors"]))
 
 
 if __name__ == "__main__":
