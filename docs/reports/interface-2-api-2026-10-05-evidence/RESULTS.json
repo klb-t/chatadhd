@@ -42,5 +42,9 @@
       "bytes": 860632,
       "sha256": "7cced43126e116a85fce9647a273c0017950239e1c6cfb022ff7eaf26c7f9936"
     }
-  }
+  },
+  "code_commit": "760ddc37be32a1162f81f39977389c03b208fb1c",
+  "negative_archive_commit": "51c4ae5ce053cf49e5e1447e7445a44cd8556116",
+  "negative_archive_sha256": "686247ba906877df9bc27eb2a88bc818ef9626f54e6f5b559988dfef63d66957",
+  "next_step": "Thread1 attempt-identity fix, then full frozen mixed CTest. UI code complete; main acceptance blocked."
 }

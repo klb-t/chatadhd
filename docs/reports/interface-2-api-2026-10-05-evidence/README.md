@@ -18,7 +18,7 @@ npm run build
 npm run test:interface-2
 npm run test:interface-2-native
 npm run e2e
-node e2e/onboarding-host.mjs
+node e2e/onboarding-host.mjs --browser
 node e2e/onboarding-native.mjs
 node e2e/methods-ui.mjs --native
 node e2e/graph-chat-ui.mjs --native
