@@ -33,6 +33,8 @@ assert.deepEqual(fragments.map(fragment => fragment.span.char_len), [4, 3, 1]);
 assert.deepEqual(fragments.map(fragment => fragment.span.byte_len), [8, 7, 1]);
 assert.ok(fragments.every(fragment => fragment.origin === "model" && fragment.content_verification === "unverified"));
 assert.throws(() => inspection.inspectReply({ ...fixture.expected, spans: { bad: { char_start: 4, char_len: 3 } } }), /Invalid compiler/);
+assert.deepEqual(inspection.packetResult({ executed: false, replayed: true, result: fixture.expected }), fixture.expected);
+assert.throws(() => inspection.packetResult({ executed: false, replayed: false, dispatch_status: "pending_or_interrupted" }), /dispatch recovery/);
 pass("Python fixture code-point spans preserve supplementary Unicode and model provenance");
 
 function applyWithPython(policy) {
@@ -56,7 +58,7 @@ const bundle = await build({
     const root = createRoot(document.getElementById("root"));
     const request = (path, body) => fetch(path, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body) }).then(response => response.json());
     const packet = command => request("/api/packet?mode=" + (window.__mockMode || "normal"), command);
-    const usagePolicy = command => request("/api/usage-policy", command);
+    const usagePolicy = command => request("/api/usage-policy?mode=" + (window.__usageMode || "normal"), command);
     const address = (action, fragment) => { window.__address = { action, fragment }; };
     window.renderWorkbench = overrides => root.render(<GraphReplyWorkbench packet={packet} usagePolicy={usagePolicy}
       responseText={fixture.request.raw} requestId={fixture.request.host.request_id} turnId={fixture.request.host.turn_id}
@@ -80,12 +82,20 @@ const server = createServer(async (req, res) => {
         confirmations.push(command);
         assert.equal(command.action, "confirm");
         assert.equal(command.receipt_id, `usage_mock:${command.operation_id}`);
+        if (url.searchParams.get("mode") === "unresolved") { res.end(JSON.stringify({ authorized: true, status: "unresolved" })); return; }
         if (command.approved) confirmed.add(command.operation_id);
         res.end(JSON.stringify({ authorized: command.approved, status: command.approved ? "allowed" : "denied" })); return;
       }
       assert.equal(url.pathname, "/api/packet");
       packetRequests.push(command);
-      if (command.usage_estimate && !confirmed.has(command.usage_estimate.operation_id)) {
+      const mode = url.searchParams.get("mode");
+      if (mode === "pending_or_interrupted" || mode === "legacy_unresolved_indeterminate") {
+        res.end(JSON.stringify({ executed: false, replayed: false, dispatch_status: mode,
+          usage_decision: { status: mode === "pending_or_interrupted" ? "allowed" : "unresolved", authorized: true },
+          ...(mode === "pending_or_interrupted" ? { dispatch_receipt: { schema: "loom.packet_dispatch/1", status: "claimed", result: null, actual: null } } : {}),
+        })); return;
+      }
+      if (command.usage_estimate && !confirmed.has(command.usage_estimate.operation_id) && !mode?.startsWith("replay")) {
         const operationId = command.usage_estimate.operation_id;
         res.end(JSON.stringify({ executed: false, usage_decision: { status: "requires_confirmation", authorized: false, operation_id: operationId, receipt_id: `usage_mock:${operationId}`, estimate: command.usage_estimate, resources: { calls: { ratio: 10, requires_confirmation: true } } } })); return;
       }
@@ -95,7 +105,9 @@ const server = createServer(async (req, res) => {
         assert.deepEqual(command.packet, fixture.request.packet);
         if (command.raw !== fixture.request.raw) {
           const raw = Buffer.from(command.raw, "utf8");
-          res.statusCode = 400; res.end(JSON.stringify({ error: { code: "invalid_argument", message: "graph_reply_first_invalid_response", raw_capture: { sha256: createHash("sha256").update(raw).digest("hex"), byte_len: raw.length, raw_base64: raw.toString("base64") } } })); return;
+          const failure = { error: { code: "invalid_argument", message: "graph_reply_first_invalid_response", raw_capture: { sha256: createHash("sha256").update(raw).digest("hex"), byte_len: raw.length, raw_base64: raw.toString("base64") } } };
+          res.statusCode = 400; res.end(JSON.stringify(mode === "replay_error" ? { ...failure, executed: false, replayed: true,
+            usage_decision: { status: "allowed", authorized: true }, usage_settlement: { status: "cancelled" }, usage_current_decision: { status: "cancelled", authorized: false } } : failure)); return;
         }
         for (const field of ["request_id", "turn_id", "model"]) assert.equal(command.host[field], fixture.request.host[field]);
         result = url.searchParams.get("mode") === "malformed" ? { schema: "unexpected" } : fixture.expected;
@@ -106,7 +118,11 @@ const server = createServer(async (req, res) => {
         assert.equal(command.explicitly_accepted, true);
         result = applyWithPython(command.policy);
       } else throw new Error(`Unexpected operation: ${command.operation}`);
-      const send = () => res.end(JSON.stringify(command.usage_estimate ? { executed: true, result, usage_decision: { authorized: true }, usage_settlement: { status: "completed" } } : result));
+      const envelope = mode === "replay_completed" || mode === "replay_unresolved" ? { executed: false, replayed: true, result,
+        usage_decision: { status: "allowed", authorized: true }, usage_settlement: { status: mode === "replay_completed" ? "completed" : "unresolved" },
+        usage_current_decision: { status: mode === "replay_completed" ? "completed" : "unresolved", authorized: mode === "replay_unresolved" } }
+        : command.usage_estimate ? { executed: true, result, usage_decision: { authorized: true }, usage_settlement: { status: "completed" } } : result;
+      const send = () => res.end(JSON.stringify(envelope));
       if (url.searchParams.get("mode") === "delay") delayed.push(send); else send();
     } catch (failure) { serverErrors.push(failure); res.statusCode = 500; res.end(JSON.stringify({ error: { message: String(failure) } })); }
     return;
@@ -207,6 +223,69 @@ try {
   assert.equal(packetRequests.length, beforeDecline);
   assert.equal(confirmations.at(-1).approved, false);
   pass("declined usage never retries or compiles the held operation");
+
+  await reload(); await seedPacket(); await page.evaluate(() => window.__mockMode = "replay_completed");
+  const beforeReplay = packetRequests.length, beforeReplayConfirmation = confirmations.length;
+  await compile();
+  assert.equal(packetRequests.length, beforeReplay + 1, "Cached output never triggers another request");
+  assert.equal(confirmations.length, beforeReplayConfirmation);
+  assert.match(await page.getByTestId("gr-replay-status").innerText(), /did not execute again.*Original admission: allowed.*Current accounting: completed/);
+  assert.equal(await page.getByTestId("gr-fragment").count(), 3);
+  assert.equal(await page.getByTestId("gr-error").count(), 0);
+  assert.equal(await page.getByTestId("gr-usage-receipt").count(), 0);
+  pass("executed:false replayed:true renders retained compilation while separating historical admission from completed current accounting");
+
+  await reload(); await seedPacket(); await page.evaluate(() => window.__mockMode = "replay_unresolved");
+  const beforeUnresolvedReplay = packetRequests.length;
+  await compile();
+  assert.equal(packetRequests.length, beforeUnresolvedReplay + 1);
+  assert.match(await page.getByTestId("gr-replay-status").innerText(), /Original admission: allowed.*Current accounting: unresolved/);
+  assert.equal(await page.getByTestId("gr-usage-receipt").count(), 0);
+  assert.equal(await page.getByLabel("Raw model response").inputValue(), fixture.request.raw);
+  pass("cached output with unresolved current reservations is inspection state, without a new execution or confirmation");
+
+  for (const recoveryStatus of ["pending_or_interrupted", "legacy_unresolved_indeterminate"]) {
+    await reload(); await seedPacket(); await page.evaluate(mode => window.__mockMode = mode, recoveryStatus);
+    const beforeRecovery = packetRequests.length, beforeRecoveryConfirmation = confirmations.length;
+    await page.getByRole("button", { name: "Compile candidate", exact: true }).click();
+    await page.getByTestId("gr-error").waitFor();
+    assert.match(await page.getByTestId("gr-error").innerText(), new RegExp(recoveryStatus));
+    assert.match(await page.getByTestId("gr-error").innerText(), /outcome is unknown|earlier execution cannot be determined/);
+    assert.equal(packetRequests.length, beforeRecovery + 1);
+    assert.equal(confirmations.length, beforeRecoveryConfirmation);
+    assert.equal(await page.getByTestId("gr-rendered-response").count(), 0);
+    assert.equal(await page.getByTestId("gr-usage-receipt").count(), 0);
+    assert.equal(await page.getByLabel("Raw model response").inputValue(), fixture.request.raw);
+  }
+  pass("pending/interrupted and legacy unresolved dispatches visibly retain uncertainty without retrying or inventing confirmation grants");
+
+  await reload(); await seedPacket(); await page.evaluate(() => window.__mockMode = "replay_error");
+  const replayInvalid = "retained first failure\r\nŻółć 🙂";
+  await page.evaluate(raw => window.renderWorkbench({ responseText: raw }), replayInvalid);
+  await page.waitForFunction(() => document.querySelector('[aria-label="Raw model response"]').value.startsWith("retained first failure"));
+  await page.getByRole("button", { name: "Compile candidate", exact: true }).click();
+  await page.getByTestId("gr-error").waitFor();
+  await page.getByText("Native response and accounting", { exact: true }).click();
+  const replayedFailure = JSON.parse(await page.getByTestId("gr-native-response").textContent());
+  assert.equal(replayedFailure.replayed, true); assert.equal(replayedFailure.executed, false);
+  assert.equal(Buffer.from(replayedFailure.error.raw_capture.raw_base64, "base64").toString("utf8"), replayInvalid);
+  assert.match(await page.getByTestId("gr-replay-status").innerText(), /Current accounting: cancelled/);
+  assert.equal(await page.getByTestId("gr-rendered-response").count(), 0);
+  pass("cached native error retains its original exact-byte capture and current cancelled accounting");
+
+  await reload(); await seedPacket();
+  await page.getByText("Usage estimate", { exact: true }).click();
+  await page.getByLabel("Request the shared usage policy").check();
+  await page.getByRole("button", { name: "Compile candidate", exact: true }).click();
+  await page.getByTestId("gr-usage-receipt").waitFor();
+  await page.evaluate(() => window.__usageMode = "unresolved");
+  const beforeUnresolvedConfirmation = packetRequests.length;
+  await page.getByRole("button", { name: "Confirm increase and retry exact operation", exact: true }).click();
+  await page.getByTestId("gr-error").waitFor();
+  assert.match(await page.getByTestId("gr-error").innerText(), /did not authorize.*unresolved.*No retry was dispatched/);
+  assert.equal(packetRequests.length, beforeUnresolvedConfirmation);
+  assert.equal(await page.getByTestId("gr-rendered-response").count(), 0);
+  pass("unresolved authorized reservation returned during confirmation cannot be treated as an allowed dispatch grant");
 
   await reload(); await page.evaluate(() => window.renderWorkbench({ packet: undefined, usagePolicy: undefined }));
   await page.waitForFunction(() => document.body.textContent.includes("Native packet API is unavailable"));
