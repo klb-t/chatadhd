@@ -25,6 +25,15 @@ For exact historical code replay, restore `prototype_frozen.py` to the original
 module path in an isolated checkout; its relative fixture paths expect that
 location. The snapshot file is retained as provenance, not an in-place launcher.
 
+The five saved run directories under `results/` are active regression fixtures.
+`test_independent.py` reads their predictions, scores and frozen inputs to
+independently recount metrics, verify provenance and hashes, and preserve
+negative results. CMake includes this suite in `research.seeding`. The
+2026-10-04 cleanup therefore retains all 26 result files (13,800,361 bytes) in
+place; none qualifies as an unused run copy. Run both mechanism and artifact
+checks from the repository root with
+`python3 -m unittest discover -s loom/tools/seeding -p 'test_*.py' -v`.
+
 Every random ranking is saved; random seed zero owns full candidate/provenance records,
 and later seeds refer to that pool by label. First v1 JSON was compressed after
 the run without changing bytes; `uncompressed_sha256.txt` verifies them.
