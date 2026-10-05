@@ -1,0 +1,332 @@
+{
+  "schema": "loom.stage4.neutral_summary_derivation/1",
+  "generated_at_utc": "2026-10-05T12:32:23.865685+00:00",
+  "source_bindings": {
+    "docs/research/model_research_2026-10-04/followup-results/stage4-source-review-v1.json": "375183e53017df69c9d3db42e63eddea9f1fb521634fcc9f9c0dea7b42f048f7",
+    "docs/research/model_research_2026-10-04/followup-results/stage4-source-peer-review-build-v1.json": "518dabcaec1bec234f12b279448dc0f73f6ec7bf1fc031e2c465f03507d68808",
+    "docs/research/model_research_2026-10-04/followup-semantic-preregistration-v1.json": "9787f92838174075e34e1fa579153abbce6a28f02e57b3d653895d224163c9d8",
+    "docs/research/model_research_2026-10-04/programme-actual/stage4-final-20261005-v1/MECHANICAL_RESULTS.json": "19a120bec35cafb442b85cf0fd93f331cd008180c4705bf5712ca3a35d1ec443",
+    "docs/research/model_research_2026-10-04/programme-actual/stage4-final-20261005-v1/NORMALIZED.json": "9a349e923c61726cfd8c3d68969688705ef07bb27319ae156845c4718e9eec77",
+    "docs/research/model_research_2026-10-04/programme-actual/stage4-final-20261005-v1/REQUESTS.json": "6841943e62cfbb96e654ccce3ca68d53023e4b458a32d95ba6ff38b8018772bf",
+    "docs/research/model_research_2026-10-04/programme-actual/stage4-final-20261005-v1/RESPONSES.json": "7f4f0da391dbe82649ce7e76f0fe7d2ae61b96850984f73fbb8a357fbcacba49",
+    "docs/research/model_research_2026-10-04/programme-actual/stage4-final-20261005-v1/METHODS.json": "53d320c9ee2135a97c0e038e8c65112bd53ae45d6d56e54a7589f017da3da9ee",
+    "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage4/manifest.json": "89e035f4b664121688634fc7b751d6cbab8e9e8539309581fcd84b659fea142b",
+    "docs/research/model_research_2026-10-04/stage5_protocol.json": "3810a869ea29a79334e2f889f6c36d980c5d7ec1a4c66d56407977be94fc3742",
+    "docs/research/model_research_2026-10-04/followup-results/stage4-source-review-v1-selection-inventory.json": "f299e7732472efb24f520fa565e81d148cfdaadb4f029b97a8a6cf6b61a299a5",
+    "docs/research/model_research_2026-10-04/followup-results/stage4-source-review-v1-neutral-summary.json": "7d85a4f947f8831681c2d5687998afec4fec8b68e4fa8ac3b9a5d7d666a1be66",
+    "loom/tools/structure/stage5_selection_v1.py": "b376a13dc443f65609bcb397243e00ab74d9f22807b4f93bb96f5a930c4eaa3a"
+  },
+  "summary_path": "docs/research/model_research_2026-10-04/followup-results/stage4-source-review-v1-neutral-summary.json",
+  "summary_sha256": "7d85a4f947f8831681c2d5687998afec4fec8b68e4fa8ac3b9a5d7d666a1be66",
+  "group_inventory_path": "docs/research/model_research_2026-10-04/followup-results/stage4-source-review-v1-selection-inventory.json",
+  "group_inventory_sha256": "f299e7732472efb24f520fa565e81d148cfdaadb4f029b97a8a6cf6b61a299a5",
+  "default_protocol_unchanged": true,
+  "planned_candidates": 6,
+  "planned_opportunities_each": 2,
+  "planned_physical_charges_each": 2,
+  "total_planned_first_opportunities": 12,
+  "all_billing_known_in_bound_public_upstream_receipts": true,
+  "total_actual_first_attempt_cost_usd": "0.163190",
+  "group_identity": {
+    "task_id": "loom.source_relative_reply_commitments/1;authored_DEV_two_case_reply",
+    "dataset_sha256": "fdaf97654a905c3d528466aa9ed8eec7db7e86efac6792ca5f8f2aed85a787cb",
+    "planned_query_set_sha256": "cdd6c5943515704843de9f9664ec63bb2b79d21816d646d1cbe01f2a85350f9b",
+    "rubric_sha256": "9787f92838174075e34e1fa579153abbce6a28f02e57b3d653895d224163c9d8"
+  },
+  "input_SOURCE_manifest_pointers": {
+    "correction_a_b": "/requests/0/common_input",
+    "negated_conditional": "/requests/6/common_input"
+  },
+  "candidate_identity_and_metric_mapping": [
+    {
+      "candidate_id": "gpt61_sol:graph_v2",
+      "configuration_id": "23fd66f194b54779bd6e27fec5dd2eef423c1373d0503b519f28972c4d5b3ed1",
+      "method_id": "research.programme.graph_v2",
+      "original_scientific_method_id": "research.reply_graph_v2/1",
+      "configured_alias": "openai/gpt-6.1-sol",
+      "observed_response_models": [
+        "openai/gpt-6.1-sol"
+      ],
+      "observed_generation_models": [
+        "openai/gpt-6.1-sol-20260929"
+      ],
+      "observed_generation_provider": "OpenAI",
+      "review_row_indices": [
+        0,
+        6
+      ],
+      "request_ids": [
+        "5dff1a98b7ff861bb7a1b0b1b78822ea8bfb78082bc1707fe26e44640150306f:graph_v2",
+        "7e1464a33662b8d23542e2b1634e825904209291fa13fbd8beb1e636928859d0:graph_v2"
+      ],
+      "source_method_record_pointer": "/0",
+      "selection_axes_exact_fraction_inputs": {
+        "correctness_all_planned": {
+          "numerator": 2,
+          "denominator": 2
+        },
+        "semantic_validity_all_planned": {
+          "numerator": 2,
+          "denominator": 2
+        },
+        "source_grounding_all_planned": {
+          "numerator": 2,
+          "denominator": 2
+        },
+        "availability_all_planned": {
+          "numerator": 2,
+          "denominator": 2
+        },
+        "reported_cost_per_planned_usd": {
+          "numerator": "0.015497",
+          "denominator": 2
+        }
+      }
+    },
+    {
+      "candidate_id": "gpt61_sol:text_json",
+      "configuration_id": "38f305a21a55814c9b6f227d7643798c9db953f2b5333e3d9fa33f96c79813ec",
+      "method_id": "research.programme.text_json",
+      "original_scientific_method_id": "research.reply_text_json/1",
+      "configured_alias": "openai/gpt-6.1-sol",
+      "observed_response_models": [
+        "openai/gpt-6.1-sol"
+      ],
+      "observed_generation_models": [
+        "openai/gpt-6.1-sol-20260929"
+      ],
+      "observed_generation_provider": "OpenAI",
+      "review_row_indices": [
+        1,
+        7
+      ],
+      "request_ids": [
+        "5dff1a98b7ff861bb7a1b0b1b78822ea8bfb78082bc1707fe26e44640150306f:text_json",
+        "7e1464a33662b8d23542e2b1634e825904209291fa13fbd8beb1e636928859d0:text_json"
+      ],
+      "source_method_record_pointer": "/2",
+      "selection_axes_exact_fraction_inputs": {
+        "correctness_all_planned": {
+          "numerator": 2,
+          "denominator": 2
+        },
+        "semantic_validity_all_planned": {
+          "numerator": 2,
+          "denominator": 2
+        },
+        "source_grounding_all_planned": {
+          "numerator": 2,
+          "denominator": 2
+        },
+        "availability_all_planned": {
+          "numerator": 2,
+          "denominator": 2
+        },
+        "reported_cost_per_planned_usd": {
+          "numerator": "0.019107",
+          "denominator": 2
+        }
+      }
+    },
+    {
+      "candidate_id": "sonnet55:graph_v2",
+      "configuration_id": "d2d93d078727e6e153f3f9bbb60d44a3385480f09fbec477d25e654032771188",
+      "method_id": "research.programme.graph_v2",
+      "original_scientific_method_id": "research.reply_graph_v2/1",
+      "configured_alias": "anthropic/claude-sonnet-5.5",
+      "observed_response_models": [
+        "anthropic/claude-sonnet-5.5"
+      ],
+      "observed_generation_models": [
+        "anthropic/claude-sonnet-5.5-20260928"
+      ],
+      "observed_generation_provider": "Anthropic",
+      "review_row_indices": [
+        2,
+        8
+      ],
+      "request_ids": [
+        "0b9b04a889ad5c252a6496c02d753e02ab13d3e084a1960428e921a9d8f72954:graph_v2",
+        "81a23713be76c9417aa9507a7aef08dbc77abbdf55831951f2a8c6e07d2481eb:graph_v2"
+      ],
+      "source_method_record_pointer": "/4",
+      "selection_axes_exact_fraction_inputs": {
+        "correctness_all_planned": {
+          "numerator": 2,
+          "denominator": 2
+        },
+        "semantic_validity_all_planned": {
+          "numerator": 2,
+          "denominator": 2
+        },
+        "source_grounding_all_planned": {
+          "numerator": 2,
+          "denominator": 2
+        },
+        "availability_all_planned": {
+          "numerator": 2,
+          "denominator": 2
+        },
+        "reported_cost_per_planned_usd": {
+          "numerator": "0.024352",
+          "denominator": 2
+        }
+      }
+    },
+    {
+      "candidate_id": "sonnet55:text_json",
+      "configuration_id": "3d5f0a442ffcd588d4d668076e81b3828605bec4ff6a55bb014b27fb1fc8997d",
+      "method_id": "research.programme.text_json",
+      "original_scientific_method_id": "research.reply_text_json/1",
+      "configured_alias": "anthropic/claude-sonnet-5.5",
+      "observed_response_models": [
+        "anthropic/claude-sonnet-5.5"
+      ],
+      "observed_generation_models": [
+        "anthropic/claude-sonnet-5.5-20260928"
+      ],
+      "observed_generation_provider": "Anthropic",
+      "review_row_indices": [
+        3,
+        9
+      ],
+      "request_ids": [
+        "0b9b04a889ad5c252a6496c02d753e02ab13d3e084a1960428e921a9d8f72954:text_json",
+        "81a23713be76c9417aa9507a7aef08dbc77abbdf55831951f2a8c6e07d2481eb:text_json"
+      ],
+      "source_method_record_pointer": "/6",
+      "selection_axes_exact_fraction_inputs": {
+        "correctness_all_planned": {
+          "numerator": 2,
+          "denominator": 2
+        },
+        "semantic_validity_all_planned": {
+          "numerator": 1,
+          "denominator": 2
+        },
+        "source_grounding_all_planned": {
+          "numerator": 1,
+          "denominator": 2
+        },
+        "availability_all_planned": {
+          "numerator": 2,
+          "denominator": 2
+        },
+        "reported_cost_per_planned_usd": {
+          "numerator": "0.028730",
+          "denominator": 2
+        }
+      }
+    },
+    {
+      "candidate_id": "gemini31_pro:graph_v2",
+      "configuration_id": "8f0f552325b20c96476a74b6fc6f508e077fea96547cefab9d34f03f541b997c",
+      "method_id": "research.programme.graph_v2",
+      "original_scientific_method_id": "research.reply_graph_v2/1",
+      "configured_alias": "google/gemini-3.1-pro-preview",
+      "observed_response_models": [
+        "google/gemini-3.1-pro-preview"
+      ],
+      "observed_generation_models": [
+        "google/gemini-3.1-pro-preview-20260219"
+      ],
+      "observed_generation_provider": "Google AI Studio",
+      "review_row_indices": [
+        4,
+        10
+      ],
+      "request_ids": [
+        "e41ade177b0fed84ec89ba82734ba0a7c85a1920f449886560921eccfabaafc5:graph_v2",
+        "8e57a8330a8b0aab10cf7d5f421e9170c7a8b895bc869176d72b1748f806a9ae:graph_v2"
+      ],
+      "source_method_record_pointer": "/8",
+      "selection_axes_exact_fraction_inputs": {
+        "correctness_all_planned": {
+          "numerator": 1,
+          "denominator": 2
+        },
+        "semantic_validity_all_planned": {
+          "numerator": 1,
+          "denominator": 2
+        },
+        "source_grounding_all_planned": {
+          "numerator": 1,
+          "denominator": 2
+        },
+        "availability_all_planned": {
+          "numerator": 2,
+          "denominator": 2
+        },
+        "reported_cost_per_planned_usd": {
+          "numerator": "0.042090",
+          "denominator": 2
+        }
+      }
+    },
+    {
+      "candidate_id": "gemini31_pro:text_json",
+      "configuration_id": "b44f7859df7dc5ec6587959e72a4c1e6157a08668c55e9e32a1902d54da17fb5",
+      "method_id": "research.programme.text_json",
+      "original_scientific_method_id": "research.reply_text_json/1",
+      "configured_alias": "google/gemini-3.1-pro-preview",
+      "observed_response_models": [
+        "google/gemini-3.1-pro-preview"
+      ],
+      "observed_generation_models": [
+        "google/gemini-3.1-pro-preview-20260219"
+      ],
+      "observed_generation_provider": "Google AI Studio",
+      "review_row_indices": [
+        5,
+        11
+      ],
+      "request_ids": [
+        "e41ade177b0fed84ec89ba82734ba0a7c85a1920f449886560921eccfabaafc5:text_json",
+        "8e57a8330a8b0aab10cf7d5f421e9170c7a8b895bc869176d72b1748f806a9ae:text_json"
+      ],
+      "source_method_record_pointer": "/10",
+      "selection_axes_exact_fraction_inputs": {
+        "correctness_all_planned": {
+          "numerator": 1,
+          "denominator": 2
+        },
+        "semantic_validity_all_planned": {
+          "numerator": 1,
+          "denominator": 2
+        },
+        "source_grounding_all_planned": {
+          "numerator": 1,
+          "denominator": 2
+        },
+        "availability_all_planned": {
+          "numerator": 2,
+          "denominator": 2
+        },
+        "reported_cost_per_planned_usd": {
+          "numerator": "0.033414",
+          "denominator": 2
+        }
+      }
+    }
+  ],
+  "counts_derivation": {
+    "correct": "Sum manual target_correctness=pass across both original first outputs for this candidate.",
+    "semantically_valid": "Sum manual full semantic_adequacy=pass including emitted extras, using pre-paid preregistered9787f rubric; not parse/availability/target alias.",
+    "source_grounded": "Sum independently annotated manual source_grounding=pass under the same separately frozen source-support obligations.",
+    "available": "Sum manual evaluation_available=pass. All12 original first public contents are interpretable/usable for this task; not merely HTTP/envelope success.",
+    "planned": "Both originally planned distinct authored case opportunities; no dropped outputs or choice best-of substitution.",
+    "attempted_requests": "Exactly two original physical first requests per candidate.",
+    "cost": "Decimal sum of all two original first-attempt costs over bound public normalized credit-billing attestations, including semantic failures."
+  },
+  "validation": {
+    "unchanged_generic_helper_contract_and_arithmetic_validators_only": true,
+    "all_six_records_admitted_by_contract_validators": true,
+    "one_identical_comparison_group": true,
+    "all_input_and_original_reviewer_hashes_unchanged": true,
+    "exact_Fraction_metric_inputs_without_rounding": true,
+    "selector_select_or_Pareto_dominance_executed": false,
+    "winner_or_selection_output_created": false,
+    "new_thresholds_or_quotas_or_metric_aliases": false
+  },
+  "scientific_boundary": "Known authored synthetic DEV/source-relative commitments, not general quality/world truth/native answer verification or independent unseen holdout. Models actual and requested alias fields remain separate in identity mapping. No new corpus, holdout, private/key/account record or provider call; no original semantic review/preregistration/default protocol/code/test mutation."
+}
