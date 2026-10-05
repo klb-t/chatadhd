@@ -1,0 +1,145 @@
+{
+  "schema": "loom.research_gate_capsule/1",
+  "zip_sha256": "32d7777e5f789c5a30d5a5e18e12918e9aaed42a3fb28c571f3a3682bea45de5",
+  "bytes": 241050,
+  "members": 26,
+  "payloads": [
+    {
+      "path": "CMakeCache.after.txt",
+      "sha256": "ca164dc9a1bd17d0c980b67e3c3849804d3c02986bfde41e4da6375bbe836d21",
+      "bytes": 18728
+    },
+    {
+      "path": "CMakeCache.before.txt",
+      "sha256": "ca164dc9a1bd17d0c980b67e3c3849804d3c02986bfde41e4da6375bbe836d21",
+      "bytes": 18728
+    },
+    {
+      "path": "CMakeLists.existing-main.txt",
+      "sha256": "c5169b02cf9d501adaba11d18f0bce4b7df3c6e2d2664e3a0269d7af38c6548c",
+      "bytes": 12703
+    },
+    {
+      "path": "LastTest.log",
+      "sha256": "7e19eeb566477cd18c1c36efac95d9914878ecf95fb7c509a917fe7f88a46e92",
+      "bytes": 264441
+    },
+    {
+      "path": "LastTestsFailed.log",
+      "sha256": "31abaa5f97418c366455199d5f0fa35d9571e98c357bf1593fbc377b96a17784",
+      "bytes": 22
+    },
+    {
+      "path": "README.md",
+      "sha256": "71ca9a64337b018940b3b5fc9403f41582087fcb9f31552ff511db68dcda6064",
+      "bytes": 3270
+    },
+    {
+      "path": "WHITELIST.json",
+      "sha256": "4d798eeae7ad6a0b706927e0d82a3db2ae99cbe43ef005b2da1506376488bc1f",
+      "bytes": 1077
+    },
+    {
+      "path": "artifact-manifest.json",
+      "sha256": "c1ce3a4468434f18c727cdb66782d74e9ab855a6ff0147fdcfd82115c68b13ba",
+      "bytes": 3459
+    },
+    {
+      "path": "build-source-before.json",
+      "sha256": "9351b3069b4696591b5e4122ddfdaee31739d62b8f56249b8d93509e3d7eec90",
+      "bytes": 139029
+    },
+    {
+      "path": "build.raw.log",
+      "sha256": "bfc1a4e40819c5513b18bd2e70760e14a625f4ff7bfbf08673a7a434cc0910e1",
+      "bytes": 3874
+    },
+    {
+      "path": "build.raw.log.receipt.json",
+      "sha256": "14534078d0c6a5fb93d4592da93625782506030868a9c2be3a770088dc1c322e",
+      "bytes": 411
+    },
+    {
+      "path": "catalog-scale-existing-main-source.cpp",
+      "sha256": "96965c9fd748e4cdc1b7873e5f9d7c2bc1b412e8319357b04bce3c5927d65d13",
+      "bytes": 4231
+    },
+    {
+      "path": "configure.raw.log",
+      "sha256": "1720340b623e8129011321b5b233c13f092c4981991873c2d93870776ecef353",
+      "bytes": 197
+    },
+    {
+      "path": "configure.raw.log.receipt.json",
+      "sha256": "aec84dfb883789a19c3b7204757b996f36b52fde6c4cb052d6e121a5661c9d08",
+      "bytes": 457
+    },
+    {
+      "path": "ctest-show-only.json",
+      "sha256": "2917a10349f4907669a54a95b93e6ac8380e105c23e6f5ae9e605d6c9267b3c6",
+      "bytes": 76288
+    },
+    {
+      "path": "ctest-source-after.json",
+      "sha256": "f9a2eaa5384ff5d4725d9982e9d8e8f7a05a90fc5415bae86265cbee2c7ec99c",
+      "bytes": 139029
+    },
+    {
+      "path": "ctest-source-before.json",
+      "sha256": "d7888d960a605cc17b557eeca3a248e20604309e7a7bad6f9fa8ae975b52a7a3",
+      "bytes": 139029
+    },
+    {
+      "path": "ctest.junit.xml",
+      "sha256": "cec1b9e311d021a9c964ecadf37ed15f137d1e68eba9c27f70c103036f8366a3",
+      "bytes": 209866
+    },
+    {
+      "path": "ctest.raw.log",
+      "sha256": "e453b86a0252e28c4215028212440b2bf3a76057aaf7e1c1a23613ffd9480a7e",
+      "bytes": 15275
+    },
+    {
+      "path": "ctest.raw.log.receipt.json",
+      "sha256": "1d7fd79d8f9b7809dda7f2671aad18b8dacf3e87138251bd3981f3aeee28c3b1",
+      "bytes": 706
+    },
+    {
+      "path": "existing-main-zero-case-finding.json",
+      "sha256": "c8298bc0d09babf32cd44b49bf0f07971a451263faf11c4ff17f98152883a3fe",
+      "bytes": 2024
+    },
+    {
+      "path": "object-integrity.json",
+      "sha256": "ec9174b159352f802520167a4c7546d7ef5ad3a8e8c08a1521e528f91889e583",
+      "bytes": 51
+    },
+    {
+      "path": "published-code-binding.json",
+      "sha256": "bd4f8151427057b527cb4a3a226a156b28695e46ba8e4aec5fb2142ca740280d",
+      "bytes": 707
+    },
+    {
+      "path": "receipt.json",
+      "sha256": "05c5fd94283073be383cd4596157d0d355fa4fadcf64c133b54cad9e69638347",
+      "bytes": 29506
+    },
+    {
+      "path": "run_final_gate.py",
+      "sha256": "5d0b4da3b85f288acc714f1f98b6efa1a917c28d17ece2614b9fa0c71e8b5074",
+      "bytes": 10420
+    },
+    {
+      "path": "stale-LastTestsFailed-provenance.json",
+      "sha256": "74ac2de84691ba89a7f6c10dc52cff7d422e344b71efda23b41c6c93ae50e8a6",
+      "bytes": 724
+    }
+  ],
+  "raw_capture_bytes_unchanged": true,
+  "ctest_passed": 110,
+  "ctest_total": 110,
+  "audit_gate_green": false,
+  "audit_reason": "existing_main_catalog_scale_zero_cases",
+  "no_test_or_threshold_modified": true,
+  "note": "Raw CMake-generated whitespace is retained exactly in ZIP. Source and preparation whitespace gate remains active."
+}
