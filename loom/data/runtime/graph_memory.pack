@@ -31,7 +31,13 @@
         "graph",
         "search"
       ],
-      "oversized_candidate": "stop"
+      "oversized_candidate": "stop",
+      "zero_as_default": true,
+      "failure_policy": {
+        "memory": "error",
+        "graph": "error",
+        "search": "omit"
+      }
     }
   },
   "value_schema": {
@@ -138,6 +144,49 @@
               "stop",
               "skip"
             ]
+          },
+          "zero_as_default": {
+            "type": "boolean",
+            "description": "True retains legacy explicit nonpositive max_tokens fallback. False permits explicit0 as unlimited and rejects negative values.",
+            "x-setting": "context.zero_as_default",
+            "x-consumer": "ContextSelector"
+          },
+          "failure_policy": {
+            "type": "object",
+            "required": [
+              "memory",
+              "graph",
+              "search"
+            ],
+            "properties": {
+              "memory": {
+                "type": "string",
+                "enum": [
+                  "error",
+                  "omit"
+                ],
+                "description": "Whether a failing enabled channel aborts selection or is omitted."
+              },
+              "graph": {
+                "type": "string",
+                "enum": [
+                  "error",
+                  "omit"
+                ],
+                "description": "Whether a failing enabled channel aborts selection or is omitted."
+              },
+              "search": {
+                "type": "string",
+                "enum": [
+                  "error",
+                  "omit"
+                ],
+                "description": "Whether a failing enabled channel aborts selection or is omitted."
+              }
+            },
+            "additionalProperties": false,
+            "x-setting": "context.failure_policy.<channel>",
+            "x-consumer": "ContextSelector"
           }
         },
         "required": [
@@ -151,7 +200,9 @@
           "codepoints_per_token",
           "separator",
           "source_order",
-          "oversized_candidate"
+          "oversized_candidate",
+          "zero_as_default",
+          "failure_policy"
         ],
         "additionalProperties": false
       }

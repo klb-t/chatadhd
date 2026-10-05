@@ -133,7 +133,9 @@ Status validate_schema(const Json& schema, const std::string& p) {
   }
   const Json* t = json::find(schema, "type");
   static const std::set<std::string> types{"object", "array", "string", "integer", "number", "boolean", "null"};
-  if (!t || !t->is_string() || !types.count(t->get<std::string>())) return invalid(p, "schema needs a supported type");
+  auto supported = [&](const Json& name) { return name.is_string() && types.count(name.get<std::string>()); };
+  if (!t || (t->is_array() ? t->empty() || !std::all_of(t->begin(), t->end(), supported) : !supported(*t)))
+    return invalid(p, "schema needs a supported type or nonempty type union");
   if (const Json* r = json::find(schema, "required")) {
     if (!r->is_array()) return invalid(p + "/required", "must be an array of names");
     for (const auto& k : *r) if (!k.is_string()) return invalid(p + "/required", "must contain names");
@@ -162,8 +164,11 @@ Status validate_schema(const Json& schema, const std::string& p) {
 }
 
 Status validate_value(const Json& value, const Json& schema, const std::string& p) {
-  const std::string type = schema.at("type").get<std::string>();
-  if (!is_type(value, type)) return invalid(p, "expected " + type);
+  const auto& type = schema.at("type");
+  const bool matches = type.is_array()
+      ? std::any_of(type.begin(), type.end(), [&](const Json& name) { return is_type(value, name.get<std::string>()); })
+      : is_type(value, type.get<std::string>());
+  if (!matches) return invalid(p, "expected " + json::dump(type));
   if (const Json* e = json::find(schema, "enum")) {
     if (!std::any_of(e->begin(), e->end(), [&](const Json& candidate) { return exact_equal(candidate, value); }))
       return invalid(p, "value is outside declared enum");
@@ -243,10 +248,20 @@ Result<RuntimeProfile> RuntimeProfile::from_definition(const Json& definition, c
 
 Result<RuntimeProfile> RuntimeProfile::builtin(std::string_view domain) {
   if (!safe_domain(domain)) return invalid("/domain", "invalid domain");
-  for (const auto& entry : kRuntimeProfiles) {
-    if (entry.first != domain) continue;
-    LOOM_TRY_ASSIGN(auto definition, json::parse(entry.second));
-    return from_definition(definition);
+  // Embedded definitions are immutable for this binary. Parse, validate and
+  // hash once; user overlays are still read afresh by load(). Function-local
+  // initialization also works when a consumer requests a preset at startup.
+  static const auto profiles = [] {
+    std::vector<std::pair<std::string_view, Result<RuntimeProfile>>> out;
+    for (const auto& entry : kRuntimeProfiles) {
+      auto definition = json::parse(entry.second);
+      out.emplace_back(entry.first, definition ? from_definition(*definition)
+                                               : Result<RuntimeProfile>(definition.error()));
+    }
+    return out;
+  }();
+  for (const auto& entry : profiles) {
+    if (entry.first == domain) return entry.second;
   }
   return Error(Errc::NotFound, "runtime profile domain is unavailable: " + std::string(domain));
 }
@@ -271,12 +286,14 @@ Result<RuntimeProfile> RuntimeProfile::load(std::string_view domain, const std::
 
 Result<RuntimeProfile> RuntimeProfile::with_overrides(const Json& overrides) const {
   if (!overrides.is_object()) return invalid("/overrides", "expected a partial object");
+  if (overrides.empty()) return *this;
   Json changes = values_;
   overlay(changes, overrides);
   return with_values(changes);
 }
 
 Result<RuntimeProfile> RuntimeProfile::with_values(const Json& values) const {
+  if (exact_equal(values, values_)) return *this;
   LOOM_TRY(validate_value(values, value_schema(), "/values"));
   RuntimeProfile out = *this;
   out.values_ = values;

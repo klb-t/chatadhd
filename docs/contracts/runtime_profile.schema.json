@@ -45,14 +45,33 @@
       "additionalProperties": false,
       "properties": {
         "type": {
-          "enum": [
-            "object",
-            "array",
-            "string",
-            "integer",
-            "number",
-            "boolean",
-            "null"
+          "oneOf": [
+            {
+              "enum": [
+                "object",
+                "array",
+                "string",
+                "integer",
+                "number",
+                "boolean",
+                "null"
+              ]
+            },
+            {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "object",
+                  "array",
+                  "string",
+                  "integer",
+                  "number",
+                  "boolean",
+                  "null"
+                ]
+              },
+              "minItems": 1
+            }
           ]
         },
         "required": {

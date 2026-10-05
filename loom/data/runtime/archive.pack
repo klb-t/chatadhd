@@ -688,6 +688,24 @@
       "max_local_passes": 100,
       "max_levels": 10,
       "gain_tolerance": 1e-12
+    },
+    "config_bounds": {
+      "max_passes": {
+        "minimum": 1,
+        "maximum": 20
+      },
+      "max_new_terms": {
+        "minimum": 0,
+        "maximum": 100
+      },
+      "max_hits_per_term": {
+        "minimum": 0,
+        "maximum": 5000
+      },
+      "max_synthesis_rounds": {
+        "minimum": 0,
+        "maximum": 5
+      }
     }
   },
   "value_schema": {
@@ -701,7 +719,8 @@
       "vocabulary",
       "pipeline",
       "refinement",
-      "clustering"
+      "clustering",
+      "config_bounds"
     ],
     "properties": {
       "text": {
@@ -2293,6 +2312,157 @@
         "x-setting": "/clustering",
         "x-consumer": "archive",
         "title": "clustering"
+      },
+      "config_bounds": {
+        "type": "object",
+        "required": [
+          "max_passes",
+          "max_new_terms",
+          "max_hits_per_term",
+          "max_synthesis_rounds"
+        ],
+        "properties": {
+          "max_passes": {
+            "type": "object",
+            "required": [
+              "minimum",
+              "maximum"
+            ],
+            "properties": {
+              "minimum": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647,
+                "x-setting": "/config_bounds/max_passes/minimum",
+                "x-consumer": "archive",
+                "title": "minimum",
+                "description": "Preset lower bound."
+              },
+              "maximum": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0,
+                "maximum": 2147483647,
+                "x-setting": "/config_bounds/max_passes/maximum",
+                "x-consumer": "archive",
+                "title": "maximum",
+                "description": "null means no configured upper bound; native int representation remains checked."
+              }
+            },
+            "additionalProperties": false,
+            "x-setting": "/config_bounds/max_passes",
+            "x-consumer": "archive",
+            "title": "max passes"
+          },
+          "max_new_terms": {
+            "type": "object",
+            "required": [
+              "minimum",
+              "maximum"
+            ],
+            "properties": {
+              "minimum": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647,
+                "x-setting": "/config_bounds/max_new_terms/minimum",
+                "x-consumer": "archive",
+                "title": "minimum",
+                "description": "Preset lower bound."
+              },
+              "maximum": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0,
+                "maximum": 2147483647,
+                "x-setting": "/config_bounds/max_new_terms/maximum",
+                "x-consumer": "archive",
+                "title": "maximum",
+                "description": "null means no configured upper bound; native int representation remains checked."
+              }
+            },
+            "additionalProperties": false,
+            "x-setting": "/config_bounds/max_new_terms",
+            "x-consumer": "archive",
+            "title": "max new terms"
+          },
+          "max_hits_per_term": {
+            "type": "object",
+            "required": [
+              "minimum",
+              "maximum"
+            ],
+            "properties": {
+              "minimum": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647,
+                "x-setting": "/config_bounds/max_hits_per_term/minimum",
+                "x-consumer": "archive",
+                "title": "minimum",
+                "description": "Preset lower bound."
+              },
+              "maximum": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0,
+                "maximum": 2147483647,
+                "x-setting": "/config_bounds/max_hits_per_term/maximum",
+                "x-consumer": "archive",
+                "title": "maximum",
+                "description": "null means no configured upper bound; native int representation remains checked."
+              }
+            },
+            "additionalProperties": false,
+            "x-setting": "/config_bounds/max_hits_per_term",
+            "x-consumer": "archive",
+            "title": "max hits per term"
+          },
+          "max_synthesis_rounds": {
+            "type": "object",
+            "required": [
+              "minimum",
+              "maximum"
+            ],
+            "properties": {
+              "minimum": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647,
+                "x-setting": "/config_bounds/max_synthesis_rounds/minimum",
+                "x-consumer": "archive",
+                "title": "minimum",
+                "description": "Preset lower bound."
+              },
+              "maximum": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0,
+                "maximum": 2147483647,
+                "x-setting": "/config_bounds/max_synthesis_rounds/maximum",
+                "x-consumer": "archive",
+                "title": "maximum",
+                "description": "null means no configured upper bound; native int representation remains checked."
+              }
+            },
+            "additionalProperties": false,
+            "x-setting": "/config_bounds/max_synthesis_rounds",
+            "x-consumer": "archive",
+            "title": "max synthesis rounds"
+          }
+        },
+        "additionalProperties": false,
+        "x-setting": "/config_bounds",
+        "x-consumer": "archive",
+        "title": "legacy call bounds preset"
       }
     },
     "additionalProperties": false
