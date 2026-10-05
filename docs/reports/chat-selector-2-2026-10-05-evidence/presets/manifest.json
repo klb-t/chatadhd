@@ -1,0 +1,354 @@
+{
+  "schema": "loom.runtime_preset_verification/1",
+  "mode": "both",
+  "link_scope": "actual_utility_dependencies",
+  "core_sha256": null,
+  "core_build_started": false,
+  "source_sha256": {
+    "loom/src/context/runtime_preset.h": "7b06a1107e7a62a30e6a92ae4e65c7b0c3b2b41c2ad2aaf2595b322eff84171b",
+    "loom/src/context/runtime_presets.inc": "72b6d0f025ad48c1ed4568d455dd00217336839cef2e4407708bbba015c0d58d",
+    "loom/src/context/gen_runtime_presets.py": "9e018616a3c2dde5f77d727ca791629360df9531e2abff53bc561208eb0def3a",
+    "loom/src/chat/reasoning_profile.h": "2ab5263d67f4d8c023b0c6d96be67909de1bf422c95bbb92134cf8a329546976",
+    "loom/data/runtime/context_goal_cues.pack": "a53f6e3a046459bd81d447fb551db68319afe38679ad0c7f5b3fa658ebd4ae1b",
+    "loom/data/runtime/chat_reasoning.pack": "3d4fa820e87225e5c0fd5e7221c7bfa64adcdb23b43b6d4ac8bf69b4a5296b6e",
+    "loom/data/context/runtime_preset_layers.pack": "492dafac17381d269b8e8b1e19f7ddd03c9e5c839ac5e3c5f632d47fe4d17296",
+    "loom/src/context/tests/runtime_preset_test.cpp": "a5050ac7662bd7ded68eea2631ab959722d577e93332ffe77b45273fe2a2e109",
+    "loom/src/context/tests/run_runtime_preset_test.py": "2a359a3fe838b5e5d4d662884cc550a853be4d32d487089cbc2a3ed5e42704df",
+    "loom/src/util/json.cpp": "49d882300afe82a764cca67b7a00f8dfd9c9ce5ed2318933312bdaafbeb9b89d",
+    "loom/src/util/sha256.cpp": "c8d783c4ebaa9d46703a65dc228931fe2e355c2be9ac1fc26dad089f6f0b031c",
+    "loom/src/util/result.cpp": "1488f760d6b3959bf15cb8b6425c593b066e227ebd9edeb8209df0e37b32e018",
+    "loom/src/util/utf8.cpp": "91f6786cf4d759768074a26cbae5b150284a241840f0f3761c867616831f3902",
+    "loom/src/util/unicode.cpp": "4780360568de8fae034cc070f27efa033eb5e991d77c6d8d3e1fda4070523165",
+    "loom/src/util/unicode_tables.inc": "aa19c84617ed20d2d3eaab5bfab834a88d4287d277ea8e7c3f0ea82ecfdea240",
+    "loom/src/util/fs.cpp": "ed3412eb6e87589009e63c3bd974a7c5d63bf104806d74a550986c305099ebdd",
+    "loom/src/util/random_ids_time.cpp": "8918765710c94b7d9e667ae2923dfb78b3eb13b3c3239405aadb18e1b9ee6586",
+    "loom/src/util/log.cpp": "dc44f67cbe6868f041998a122747713109a56196eb7502b65bf5d9be35fd9fa2"
+  },
+  "dependencies": {
+    "W11": {
+      "requested_ref": "2eb65d475cb6671dbe6388c53bb63eec74ea92a8",
+      "commit": "2eb65d475cb6671dbe6388c53bb63eec74ea92a8",
+      "files": {
+        "loom/include/loom/runtime_profile.h": "f59642e1235b352d8782e4413680230bf2c08008b2d223f5f45f1135e0bd9060",
+        "loom/src/model/runtime_profile.cpp": "8eb961d633996a115f499e9b8d9ac9eb6d8eba06657d865efb9a5cbf1aa16faa",
+        "loom/src/model/runtime_profiles_embedded.inc": "7067a324a22d86bdae342712d96757bd6a54c79a6ec5cac91872e1e3be8a671e"
+      }
+    },
+    "W12": {
+      "requested_ref": "3c0bc36552ef9851f1174946cfb108549aae3228",
+      "commit": "3c0bc36552ef9851f1174946cfb108549aae3228",
+      "files": {
+        "loom/include/loom/onboarding_layers.h": "263d3724731b79c2c7e4e0fa995ce50901e804a671a15c683af4bc0ea6451ea0",
+        "loom/src/onboarding/layers.cpp": "066a1e41f960b69bc3440d97dfef41495907c6ef9964ba49d84b9cf3958f65b0",
+        "loom/src/onboarding/runtime_adapter.h": "7c9f8441ad5dcf3014dc71a83622469c7a4ba4b35dfce69a3119c24550b7e916",
+        "loom/src/onboarding/runtime_adapter.cpp": "790b865280b41b2405f65bbe37a4508f158a620df7aec73a399d53e25c661bcd"
+      }
+    }
+  },
+  "commands": [
+    [
+      "python3",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-release/source/checkout/loom/src/context/gen_runtime_presets.py",
+      "--check"
+    ],
+    [
+      "/usr/bin/c++",
+      "-std=c++20",
+      "-O0",
+      "-g0",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+      "-I",
+      "/workspace/scratch/f98faad71b9c/chatadhd/loom/include",
+      "-I",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-release/source/checkout/loom/src",
+      "-I",
+      "/workspace/scratch/f98faad71b9c/chatadhd/loom/src",
+      "-isystem",
+      "/workspace/scratch/f98faad71b9c/chatadhd/loom/third_party/nlohmann",
+      "-isystem",
+      "/workspace/scratch/f98faad71b9c/chatadhd/loom/third_party/doctest",
+      "-DLOOM_RUNTIME_PRESET_TEST_MAIN=1",
+      "-c",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-release/source/checkout/loom/src/context/tests/runtime_preset_test.cpp",
+      "-o",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-release/base/runtime_preset_test.o"
+    ],
+    [
+      "/usr/bin/c++",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-release/base/runtime_preset_test.o",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-second/base/native_0.o",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-second/base/native_1.o",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-second/base/native_2.o",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-second/base/native_3.o",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-second/base/native_4.o",
+      "-fuse-ld=gold",
+      "-Wl,--no-map-whole-files",
+      "-pthread",
+      "-ldl",
+      "-lm",
+      "-o",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-release/base/runtime_preset_test"
+    ],
+    [
+      "/tmp/w3-runtime-preset-actual-2026-10-05-release/base/runtime_preset_test",
+      "--no-intro=true",
+      "--no-colors=true"
+    ],
+    [
+      "/usr/bin/c++",
+      "-std=c++20",
+      "-O0",
+      "-g0",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+      "-I",
+      "/workspace/scratch/f98faad71b9c/chatadhd/loom/include",
+      "-I",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-release/source/checkout/loom/src",
+      "-I",
+      "/workspace/scratch/f98faad71b9c/chatadhd/loom/src",
+      "-isystem",
+      "/workspace/scratch/f98faad71b9c/chatadhd/loom/third_party/nlohmann",
+      "-isystem",
+      "/workspace/scratch/f98faad71b9c/chatadhd/loom/third_party/doctest",
+      "-DLOOM_RUNTIME_PRESET_TEST_MAIN=1",
+      "-c",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-release/generator_codec/generator_codec.cpp",
+      "-o",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-release/generator_codec/generator_codec.o"
+    ],
+    [
+      "/usr/bin/c++",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-release/generator_codec/generator_codec.o",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-second/base/native_0.o",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-second/base/native_1.o",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-second/base/native_2.o",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-second/base/native_3.o",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-second/base/native_4.o",
+      "-fuse-ld=gold",
+      "-Wl,--no-map-whole-files",
+      "-pthread",
+      "-ldl",
+      "-lm",
+      "-o",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-release/generator_codec/generator_codec"
+    ],
+    [
+      "/tmp/w3-runtime-preset-actual-2026-10-05-release/generator_codec/generator_codec",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-release/generator_codec/expected.json"
+    ],
+    [
+      "/usr/bin/c++",
+      "-std=c++20",
+      "-O0",
+      "-g0",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+      "-I",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-second/source/loom/include",
+      "-I",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-second/source/loom/src",
+      "-I",
+      "/workspace/scratch/f98faad71b9c/chatadhd/loom/include",
+      "-I",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-release/source/checkout/loom/src",
+      "-I",
+      "/workspace/scratch/f98faad71b9c/chatadhd/loom/src",
+      "-isystem",
+      "/workspace/scratch/f98faad71b9c/chatadhd/loom/third_party/nlohmann",
+      "-isystem",
+      "/workspace/scratch/f98faad71b9c/chatadhd/loom/third_party/doctest",
+      "-DLOOM_RUNTIME_PRESET_TEST_MAIN=1",
+      "-c",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-release/source/checkout/loom/src/context/tests/runtime_preset_test.cpp",
+      "-o",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-release/layers/runtime_preset_test.o"
+    ],
+    [
+      "/usr/bin/c++",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-release/layers/runtime_preset_test.o",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-second/layers/native_0.o",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-second/layers/native_1.o",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-second/layers/native_2.o",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-second/layers/native_3.o",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-second/layers/native_4.o",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-second/layers/native_5.o",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-second/layers/native_6.o",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-second/layers/native_7.o",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-second/layers/native_8.o",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-second/layers/native_9.o",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-second/layers/native_10.o",
+      "-fuse-ld=gold",
+      "-Wl,--no-map-whole-files",
+      "-pthread",
+      "-ldl",
+      "-lm",
+      "-o",
+      "/tmp/w3-runtime-preset-actual-2026-10-05-release/layers/runtime_preset_test"
+    ],
+    [
+      "/tmp/w3-runtime-preset-actual-2026-10-05-release/layers/runtime_preset_test",
+      "--no-intro=true",
+      "--no-colors=true"
+    ]
+  ],
+  "variants": {
+    "base": {
+      "counts": {
+        "cases": 5,
+        "passed": 5,
+        "failed": 0,
+        "skipped": 0,
+        "assertions": 62,
+        "assertions_passed": 62,
+        "assertions_failed": 0
+      },
+      "executable_sha256": "286511e690cbf52c29e911370e9e5784db3328424116fa53d4c457d9568468ba",
+      "provider_calls": 0,
+      "paid_calls": 0
+    },
+    "layers": {
+      "counts": {
+        "cases": 7,
+        "passed": 7,
+        "failed": 0,
+        "skipped": 0,
+        "assertions": 97,
+        "assertions_passed": 97,
+        "assertions_failed": 0
+      },
+      "executable_sha256": "8a437b1aa92ce9b7ad488724007832247ac89cfe64250a02a49c97dab0713d04",
+      "provider_calls": 0,
+      "paid_calls": 0
+    }
+  },
+  "objects": {
+    "/tmp/w3-runtime-preset-actual-2026-10-05-release/base/runtime_preset_test.o": "5679499b052977b07b802eb8971e34915e4266bdb7785d785e3db698c03959cf",
+    "/tmp/w3-runtime-preset-actual-2026-10-05-release/generator_codec/generator_codec.o": "0fd666a3fa1eef473c34f70fc39e364a7703a665f89c9179017dadbe4b75dcb6",
+    "/tmp/w3-runtime-preset-actual-2026-10-05-release/layers/runtime_preset_test.o": "1d1dff27e8fdb106166b142304d251fcc724a4b85321c6f6d7bd359f38744246"
+  },
+  "reused_components": [
+    {
+      "object": "/tmp/w3-runtime-preset-actual-2026-10-05-second/base/native_0.o",
+      "sha256": "8d4576d83e65e13e881663fc659dcfe5bff685829d4ad125047f83c2c1d47da4",
+      "original_manifest_sha256": "4e1b1bb7ace5f6e8409d3361273b2dcd83dd4370a48adfbdaee2275ea82b824b",
+      "source_scope": "actual utility/W11/W12 units; source SHA unchanged and pinned headers/embedded include verified"
+    },
+    {
+      "object": "/tmp/w3-runtime-preset-actual-2026-10-05-second/base/native_1.o",
+      "sha256": "6b77cc0938b58ea44ee27de17044f81a1aba4cafd2f69d4bd90da738aed1dce5",
+      "original_manifest_sha256": "4e1b1bb7ace5f6e8409d3361273b2dcd83dd4370a48adfbdaee2275ea82b824b",
+      "source_scope": "actual utility/W11/W12 units; source SHA unchanged and pinned headers/embedded include verified"
+    },
+    {
+      "object": "/tmp/w3-runtime-preset-actual-2026-10-05-second/base/native_2.o",
+      "sha256": "e4ae37fb0e05aab528cc7c7cd5a3ee5422d6ed61c4d1abaa31b2beb6af55adc7",
+      "original_manifest_sha256": "4e1b1bb7ace5f6e8409d3361273b2dcd83dd4370a48adfbdaee2275ea82b824b",
+      "source_scope": "actual utility/W11/W12 units; source SHA unchanged and pinned headers/embedded include verified"
+    },
+    {
+      "object": "/tmp/w3-runtime-preset-actual-2026-10-05-second/base/native_3.o",
+      "sha256": "cfc003b352fb983fdf73fe2bb40b3ddcf8c718640309fea50855b46d01a41b2f",
+      "original_manifest_sha256": "4e1b1bb7ace5f6e8409d3361273b2dcd83dd4370a48adfbdaee2275ea82b824b",
+      "source_scope": "actual utility/W11/W12 units; source SHA unchanged and pinned headers/embedded include verified"
+    },
+    {
+      "object": "/tmp/w3-runtime-preset-actual-2026-10-05-second/base/native_4.o",
+      "sha256": "8a2abef0a65bee7f0993b9335a14b1974b51496430ed3bdc0f622d5d1cb1a780",
+      "original_manifest_sha256": "4e1b1bb7ace5f6e8409d3361273b2dcd83dd4370a48adfbdaee2275ea82b824b",
+      "source_scope": "actual utility/W11/W12 units; source SHA unchanged and pinned headers/embedded include verified"
+    },
+    {
+      "object": "/tmp/w3-runtime-preset-actual-2026-10-05-second/layers/native_0.o",
+      "sha256": "996309b7ec78c805bce215e9f523eff2f0f15b2066cbb3f7885ca1dadcb3ba84",
+      "original_manifest_sha256": "4e1b1bb7ace5f6e8409d3361273b2dcd83dd4370a48adfbdaee2275ea82b824b",
+      "source_scope": "actual utility/W11/W12 units; source SHA unchanged and pinned headers/embedded include verified"
+    },
+    {
+      "object": "/tmp/w3-runtime-preset-actual-2026-10-05-second/layers/native_1.o",
+      "sha256": "effa81c162a3abce27207ae99e225a96a541dd064c03488cafceb3f385cd8507",
+      "original_manifest_sha256": "4e1b1bb7ace5f6e8409d3361273b2dcd83dd4370a48adfbdaee2275ea82b824b",
+      "source_scope": "actual utility/W11/W12 units; source SHA unchanged and pinned headers/embedded include verified"
+    },
+    {
+      "object": "/tmp/w3-runtime-preset-actual-2026-10-05-second/layers/native_10.o",
+      "sha256": "c2671d9f414c1dc61e6d2464a48b1e780f042851a882aa7f87d607f8ea1d19a3",
+      "original_manifest_sha256": "4e1b1bb7ace5f6e8409d3361273b2dcd83dd4370a48adfbdaee2275ea82b824b",
+      "source_scope": "actual utility/W11/W12 units; source SHA unchanged and pinned headers/embedded include verified"
+    },
+    {
+      "object": "/tmp/w3-runtime-preset-actual-2026-10-05-second/layers/native_2.o",
+      "sha256": "bf396ff509bb13d7454451da231b73a6bfe441a8f404f8412484a372d7797196",
+      "original_manifest_sha256": "4e1b1bb7ace5f6e8409d3361273b2dcd83dd4370a48adfbdaee2275ea82b824b",
+      "source_scope": "actual utility/W11/W12 units; source SHA unchanged and pinned headers/embedded include verified"
+    },
+    {
+      "object": "/tmp/w3-runtime-preset-actual-2026-10-05-second/layers/native_3.o",
+      "sha256": "8d4576d83e65e13e881663fc659dcfe5bff685829d4ad125047f83c2c1d47da4",
+      "original_manifest_sha256": "4e1b1bb7ace5f6e8409d3361273b2dcd83dd4370a48adfbdaee2275ea82b824b",
+      "source_scope": "actual utility/W11/W12 units; source SHA unchanged and pinned headers/embedded include verified"
+    },
+    {
+      "object": "/tmp/w3-runtime-preset-actual-2026-10-05-second/layers/native_4.o",
+      "sha256": "6b77cc0938b58ea44ee27de17044f81a1aba4cafd2f69d4bd90da738aed1dce5",
+      "original_manifest_sha256": "4e1b1bb7ace5f6e8409d3361273b2dcd83dd4370a48adfbdaee2275ea82b824b",
+      "source_scope": "actual utility/W11/W12 units; source SHA unchanged and pinned headers/embedded include verified"
+    },
+    {
+      "object": "/tmp/w3-runtime-preset-actual-2026-10-05-second/layers/native_5.o",
+      "sha256": "e4ae37fb0e05aab528cc7c7cd5a3ee5422d6ed61c4d1abaa31b2beb6af55adc7",
+      "original_manifest_sha256": "4e1b1bb7ace5f6e8409d3361273b2dcd83dd4370a48adfbdaee2275ea82b824b",
+      "source_scope": "actual utility/W11/W12 units; source SHA unchanged and pinned headers/embedded include verified"
+    },
+    {
+      "object": "/tmp/w3-runtime-preset-actual-2026-10-05-second/layers/native_6.o",
+      "sha256": "cfc003b352fb983fdf73fe2bb40b3ddcf8c718640309fea50855b46d01a41b2f",
+      "original_manifest_sha256": "4e1b1bb7ace5f6e8409d3361273b2dcd83dd4370a48adfbdaee2275ea82b824b",
+      "source_scope": "actual utility/W11/W12 units; source SHA unchanged and pinned headers/embedded include verified"
+    },
+    {
+      "object": "/tmp/w3-runtime-preset-actual-2026-10-05-second/layers/native_7.o",
+      "sha256": "8a2abef0a65bee7f0993b9335a14b1974b51496430ed3bdc0f622d5d1cb1a780",
+      "original_manifest_sha256": "4e1b1bb7ace5f6e8409d3361273b2dcd83dd4370a48adfbdaee2275ea82b824b",
+      "source_scope": "actual utility/W11/W12 units; source SHA unchanged and pinned headers/embedded include verified"
+    },
+    {
+      "object": "/tmp/w3-runtime-preset-actual-2026-10-05-second/layers/native_8.o",
+      "sha256": "0cac41bfd3cd58aa73485268957d2ac991bf46f3e9dd476f1e15f34c94931e86",
+      "original_manifest_sha256": "4e1b1bb7ace5f6e8409d3361273b2dcd83dd4370a48adfbdaee2275ea82b824b",
+      "source_scope": "actual utility/W11/W12 units; source SHA unchanged and pinned headers/embedded include verified"
+    },
+    {
+      "object": "/tmp/w3-runtime-preset-actual-2026-10-05-second/layers/native_9.o",
+      "sha256": "a6fe18e9ead7115d6a3bc05f807ffedaeee975cb9e3a432b30d1aa8b4c763ba8",
+      "original_manifest_sha256": "4e1b1bb7ace5f6e8409d3361273b2dcd83dd4370a48adfbdaee2275ea82b824b",
+      "source_scope": "actual utility/W11/W12 units; source SHA unchanged and pinned headers/embedded include verified"
+    }
+  ],
+  "passed": true,
+  "generator_regression": {
+    "result": {
+      "passed": true,
+      "cases": 1,
+      "strings_round_tripped": 13,
+      "full_value_equal": true,
+      "canonical_value_equal": true,
+      "provider_calls": 0,
+      "paid_calls": 0
+    },
+    "generator_sha256": "9e018616a3c2dde5f77d727ca791629360df9531e2abff53bc561208eb0def3a",
+    "expected_sha256": "93cdbdbf022a5690ed1e22be9abfff6db91c757c5dd8574153318c8e817ecf92",
+    "generated_getter_sha256": "d2fbf67e76d21a3b0d1f94ad1fc541886138a5d1e13b0f469e45ef0f94625ed0",
+    "driver_sha256": "8d91c039b8933b879e0bd5fe5072c6e32cdf16cdb3e4c73035f6e1a1a3927317",
+    "executable_sha256": "b6618c3e7a587ccaf199ca2418d0e55f0f7b8b294ed36a148c5f1556208100d0"
+  },
+  "source_before_after_matches": true,
+  "compiled_private_source_snapshot": true
+}
