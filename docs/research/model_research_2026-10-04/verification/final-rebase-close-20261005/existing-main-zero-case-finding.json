@@ -1,0 +1,45 @@
+{
+  "status": "integration_audit_blocked_by_preexisting_main_opt_in_zero_case_suite",
+  "CTest": "110/110 passed; exit 0",
+  "audit_gate_green": false,
+  "suite": "unit.test_catalog_scale",
+  "native_doctest_summary": {
+    "executed_cases": 0,
+    "passed": 0,
+    "failed": 0,
+    "filtered_or_skipped": 664,
+    "assertions": 0
+  },
+  "source": "loom/tests/test_catalog_scale.cpp",
+  "source_lines": {
+    "enablement_env_check": 58,
+    "test_case": 63,
+    "skip_condition_and_timeout": 64
+  },
+  "skip_condition": "doctest::skip(!slow_tests_enabled())",
+  "enablement": "LOOM_RUN_SLOW_TESTS set in environment",
+  "source_command_example": "LOOM_RUN_SLOW_TESTS=1 ./build/dev/loom_tests --test-suite=catalog_scale",
+  "registered_command": [
+    "/workspace/scratch/407fe6f6ff42/build/loom_tests",
+    "--source-file=*/test_catalog_scale.cpp",
+    "--no-intro=true"
+  ],
+  "CTest_registration_source": "loom/CMakeLists.txt:184",
+  "registered_name_derivation": "unit.${_name}; test_catalog_scale.cpp is included by native test source glob",
+  "main_source_blob": "1fd840f7f541aa2a86d5493e4fb07afa392602a0",
+  "tested_source_blob": "1fd840f7f541aa2a86d5493e4fb07afa392602a0",
+  "source_sha256": "96965c9fd748e4cdc1b7873e5f9d7c2bc1b412e8319357b04bce3c5927d65d13",
+  "source_changed_in_this_branch": false,
+  "copy": "catalog-scale-existing-main-source.cpp",
+  "CMake_source_blob": "ad3b93fbcc4df4aaa326e7232c92b0025d9aa9e4",
+  "tested_CMake_blob": "ad3b93fbcc4df4aaa326e7232c92b0025d9aa9e4",
+  "CMake_source_sha256": "c5169b02cf9d501adaba11d18f0bce4b7df3c6e2d2664e3a0269d7af38c6548c",
+  "CMake_copy": "CMakeLists.existing-main.txt",
+  "no_cross_scope_fix_or_threshold_change_or_rerun": true,
+  "handoff_threads": [
+    6,
+    8,
+    9
+  ],
+  "note": "The zero-case suite is a slow test explicitly skipped by its unchanged main source. No JUnit skip element or Python skipped= event appears. Doctest aggregate filtered/skipped=664 combines source-file filtering with the conditional skip; it is not 664 executed skips."
+}

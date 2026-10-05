@@ -1,0 +1,14 @@
+{
+  "local_rebased_head": "cd378a1e72a57776f912547ad4e95ac115b0862e",
+  "local_rebased_tree": "e9aa579c691bc9dcca776239c5b81403e75c73a9",
+  "published_api_head": "459846915d01fe084c80718812cda7dfd37ebfe6",
+  "published_api_tree": "e9aa579c691bc9dcca776239c5b81403e75c73a9",
+  "main_base": "e4109df7e4af22b461def5f7d62e268d9b9a8825",
+  "source_and_policy_byte_hashes_unchanged_during_build_and_test": true,
+  "test_start_source_binding": "build-source-before.json",
+  "test_before_binding": "ctest-source-before.json",
+  "test_after_binding": "ctest-source-after.json",
+  "metadata_only_git_head_transition": true,
+  "no_new_functional_commit_after_gate": true,
+  "local_and_api_trees_exactly_equal": true
+}
