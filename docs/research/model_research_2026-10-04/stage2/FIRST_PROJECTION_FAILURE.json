@@ -1,0 +1,1 @@
+{"cause":"source uses empty parent_message_uuid as explicit root sentinel","conversation":"nf-07-fork-python-or-cpp","error":"source_branch_cycle_or_missing_node","new_provider_calls":0,"provider":"claude","source_was_not_modified":true}
