@@ -57,7 +57,15 @@ export interface StreamHandlers<TChunk> {
 // underlying operation.
 export type Unsubscribe = () => void;
 
+export interface NativeUiRequestOptions { signal?: AbortSignal; }
+
 export interface LoomApi {
+  // Server-owned static-kernel bridges. Older embedded hosts omit capabilities
+  // until their actual native dispatch is available.
+  onboarding?(command: Record<string, unknown>, options?: NativeUiRequestOptions): Promise<Record<string, unknown>>;
+  methods?(command: Record<string, unknown>, options?: NativeUiRequestOptions): Promise<Record<string, unknown>>;
+  analysis?(command: Record<string, unknown>, options?: NativeUiRequestOptions): Promise<Record<string, unknown>>;
+  graphReply?(command: Record<string, unknown>, options?: NativeUiRequestOptions): Promise<Record<string, unknown>>;
   // Optional native extensions: older embedded hosts report unavailable.
   usagePolicy?(command: Record<string, unknown>): Promise<Record<string, unknown>>;
   packet?(command: Record<string, unknown>): Promise<Record<string, unknown>>;
