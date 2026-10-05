@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "-u",
+    "loom/tools/seeding/verify_method_graph.py",
+    "--run",
+    "/workspace/scratch/2a6e71927cf3/chatadhd/loom/tools/seeding/results/synthetic_lopo_v4_application_alternatives_first",
+    "--fixture",
+    "/workspace/scratch/2a6e71927cf3/chatadhd/loom/tests/fixtures/eval/synthetic_dev/ground_truth.json",
+    "--replay-frozen-producer",
+    "--evidence-dir",
+    "/workspace/scratch/2a6e71927cf3/seeding-method-bridge-proposal/proof/full-v4-closed"
+  ],
+  "exit_code": 0,
+  "wall_seconds": 17.206487608000316
+}

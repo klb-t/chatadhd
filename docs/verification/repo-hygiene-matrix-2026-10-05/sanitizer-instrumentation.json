@@ -1,0 +1,94 @@
+{
+  "proof": "ELF runtime dependencies of each completed native binary; ordinary FFI companion has no sanitizer runtimes.",
+  "binaries": [
+    {
+      "path": "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/asan/loom_tests",
+      "instrumented_asan_ubsan": true,
+      "elf_needed": [
+        "0x0000000000000001 (NEEDED)             Shared library: [libasan.so.8]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libsqlite3.so.0]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libssl.so.3]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libcrypto.so.3]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libstdc++.so.6]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libm.so.6]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libubsan.so.1]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libgcc_s.so.1]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]"
+      ]
+    },
+    {
+      "path": "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/asan/loom_compat_tool",
+      "instrumented_asan_ubsan": true,
+      "elf_needed": [
+        "0x0000000000000001 (NEEDED)             Shared library: [libasan.so.8]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libsqlite3.so.0]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libssl.so.3]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libcrypto.so.3]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libstdc++.so.6]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libm.so.6]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libubsan.so.1]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libgcc_s.so.1]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]"
+      ]
+    },
+    {
+      "path": "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/asan/loom_candidate_graph_native_tool",
+      "instrumented_asan_ubsan": true,
+      "elf_needed": [
+        "0x0000000000000001 (NEEDED)             Shared library: [libasan.so.8]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libsqlite3.so.0]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libssl.so.3]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libcrypto.so.3]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libstdc++.so.6]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libm.so.6]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libubsan.so.1]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libgcc_s.so.1]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]"
+      ]
+    },
+    {
+      "path": "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/asan/cli/loom",
+      "instrumented_asan_ubsan": true,
+      "elf_needed": [
+        "0x0000000000000001 (NEEDED)             Shared library: [libasan.so.8]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libsqlite3.so.0]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libssl.so.3]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libcrypto.so.3]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libstdc++.so.6]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libm.so.6]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libubsan.so.1]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libgcc_s.so.1]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]"
+      ]
+    },
+    {
+      "path": "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/asan/server/loom-server",
+      "instrumented_asan_ubsan": true,
+      "elf_needed": [
+        "0x0000000000000001 (NEEDED)             Shared library: [libasan.so.8]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libssl.so.3]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libcrypto.so.3]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libsqlite3.so.0]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libstdc++.so.6]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libm.so.6]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libubsan.so.1]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libgcc_s.so.1]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]"
+      ]
+    },
+    {
+      "path": "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/libloom.so",
+      "instrumented_asan_ubsan": false,
+      "elf_needed": [
+        "0x0000000000000001 (NEEDED)             Shared library: [libsqlite3.so.0]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libssl.so.3]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libcrypto.so.3]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libstdc++.so.6]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libm.so.6]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libgcc_s.so.1]",
+        "0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]",
+        "0x0000000000000001 (NEEDED)             Shared library: [ld-linux-x86-64.so.2]"
+      ]
+    }
+  ]
+}

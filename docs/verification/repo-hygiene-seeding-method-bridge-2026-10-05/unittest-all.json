@@ -1,0 +1,18 @@
+{
+  "schema": "loom.verification.seeding_method_bridge_suite/1",
+  "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=<proposal>:<repository> python3 -m unittest discover -s loom/tools/seeding -p 'test_*.py' -v",
+  "exit_code": 0,
+  "tests": 66,
+  "seconds_from_actual_log": 10.294,
+  "unchanged_existing_tests": 50,
+  "new_tests": 16,
+  "scope": "proposal isolated via copied unchanged files and read-only symlinks to synthetic fixture/results; repository and HEAD not edited",
+  "source_sha256": {
+    "loom/tools/seeding/method_graph.py": "ad7b9b2fe87db2851652784acb161fa79a745617c34339a3c41658d066605386",
+    "loom/tools/seeding/profiles/method_graph.json": "80692ed5bfc36eb70ef754e6589e49f3e9b1f51a2988cf0a8fd15ed4ab496459",
+    "loom/tools/seeding/test_method_graph.py": "fdf9ee8f4e980d406b91d7a8d55b430134eecc6760a6bbb70a2a078eff2339f6",
+    "loom/tools/seeding/verify_method_graph.py": "2f8755994de411f9148ea9008a07e8289a5d3b46060947591a5f437674bd9f92",
+    "loom/tools/seeding/prototype.py": "c4a993b17f3d7f7a18c3219d60b874355bb3507d77ebe8907e0da54552d77c94",
+    "loom/tools/seeding/README.md": "a044d260b0bc21f93c3667b9ebcd97c4af71ff7058beebaef765aae3a2490cbc"
+  }
+}

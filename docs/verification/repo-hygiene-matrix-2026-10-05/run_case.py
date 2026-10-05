@@ -123,8 +123,8 @@ def main():
             continue
         data = json.loads(path.read_text())
         for binary in data["binaries"]:
-            current = Path(binary["path"]).read_bytes()
-            digest = hashlib.sha256(current).hexdigest()
+            with Path(binary["path"]).open("rb") as stream:
+                digest = hashlib.file_digest(stream, "sha256").hexdigest()
             after["binaries"].append({"path": binary["path"], "sha256": digest})
             if digest != binary["sha256"]:
                 after["errors"].append("binary changed during tests: " + binary["path"])

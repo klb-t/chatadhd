@@ -1,0 +1,27 @@
+{
+  "schema": "loom.seeding_method_graph_unittest_proof/1",
+  "passed": true,
+  "tests": 16,
+  "elapsed_seconds": 1.384,
+  "exit_code": 0,
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "/workspace/scratch/2a6e71927cf3/seeding-method-bridge-proposal/loom/tools/seeding",
+    "-p",
+    "test_method_graph.py",
+    "-v"
+  ],
+  "source_sha256": {
+    "loom/tools/seeding/method_graph.py": "ad7b9b2fe87db2851652784acb161fa79a745617c34339a3c41658d066605386",
+    "loom/tools/seeding/test_method_graph.py": "fdf9ee8f4e980d406b91d7a8d55b430134eecc6760a6bbb70a2a078eff2339f6",
+    "loom/tools/seeding/profiles/method_graph.json": "80692ed5bfc36eb70ef754e6589e49f3e9b1f51a2988cf0a8fd15ed4ab496459"
+  },
+  "mandatory_dependencies": "Python standard library plus existing shared graph codec",
+  "native_calls": 0,
+  "provider_calls": 0,
+  "input_hashes_unchanged": true
+}

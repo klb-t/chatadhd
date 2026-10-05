@@ -1,0 +1,16 @@
+{
+   "methods": [
+      "custom/m~",
+      "random/m~"
+   ],
+   "random_seeds": [
+      7,
+      8
+   ],
+   "candidate_budgets": [
+      1
+   ],
+   "caller_setting": {
+      "version": "first"
+   }
+}
