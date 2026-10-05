@@ -1,0 +1,10 @@
+{
+  "schema": "loom.negative_evidence_bundle/1",
+  "archive_sha256": "9d557c67a925659ce61017536bbd05f74296e899d8ccf9acbf0df2cfd45bd97f",
+  "archive_bytes": 222583,
+  "files": 59,
+  "selected_source_commit": "c0e6d0ba29363d88c19c03f3583955c85868bac0",
+  "binary_ledger_replay": "ninja: warning: premature end of file; recovering",
+  "selected_branch": "gpt/chat-selector-2-2026-10-05",
+  "provider_paid_calls": 0
+}
