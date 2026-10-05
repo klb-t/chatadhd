@@ -1,0 +1,15 @@
+2026-10-04T14:57:00.3277502Z FAILED: [code=1] server/CMakeFiles/loom-server.dir/src/app.cpp.o 
+2026-10-04T14:57:00.3283478Z /usr/bin/ccache /usr/bin/clang++ -DCPPHTTPLIB_OPENSSL_SUPPORT=1 -DJSON_USE_IMPLICIT_CONVERSIONS=1 -DLOOM_VERSION_STRING=\"0.1.0\" -I/home/runner/work/chatadhd/chatadhd/loom/include -I/home/runner/work/chatadhd/chatadhd/loom/server/src -isystem /home/runner/work/chatadhd/chatadhd/loom/third_party/cpp-httplib -isystem /home/runner/work/chatadhd/chatadhd/loom/third_party/nlohmann -g -std=c++20 -fPIE -fvisibility=hidden -fvisibility-inlines-hidden -Wall -Wextra -Wpedantic -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Woverloaded-virtual -Wnull-dereference -Wimplicit-fallthrough -Wno-unused-parameter -Wno-unused-private-field -Werror -MD -MT server/CMakeFiles/loom-server.dir/src/app.cpp.o -MF server/CMakeFiles/loom-server.dir/src/app.cpp.o.d -o server/CMakeFiles/loom-server.dir/src/app.cpp.o -c /home/runner/work/chatadhd/chatadhd/loom/server/src/app.cpp
+2026-10-04T14:57:00.3287529Z /home/runner/work/chatadhd/chatadhd/loom/server/src/app.cpp:768:26: error: lambda capture 'this' is not used [-Werror,-Wunused-lambda-capture]
+2026-10-04T14:57:00.3288913Z   768 |   svr_.Get("/api/logs", [this](const httplib::Request& req, httplib::Response& res) {
+2026-10-04T14:57:00.3289407Z       |                          ^~~~
+2026-10-04T14:57:00.3290227Z /home/runner/work/chatadhd/chatadhd/loom/server/src/app.cpp:772:29: error: lambda capture 'this' is not used [-Werror,-Wunused-lambda-capture]
+2026-10-04T14:57:00.3290997Z   772 |   svr_.Get("/api/version", [this](const httplib::Request&, httplib::Response& res) {
+2026-10-04T14:57:00.3291411Z       |                             ^~~~
+2026-10-04T14:57:00.3291660Z 2 errors generated.
+2026-10-04T14:57:01.4135777Z [233/237] Linking CXX executable loom_compat_tool
+2026-10-04T14:57:01.4136415Z ninja: build stopped: subcommand failed.
+2026-10-04T14:57:01.4163788Z ##[error]Process completed with exit code 1.
+2026-10-04T14:57:01.4219190Z ##[group]Run python .github/scripts/verify_ctest.py \
+2026-10-04T14:57:01.4219593Z [36;1mpython .github/scripts/verify_ctest.py \[0m
+2026-10-04T14:57:01.4220004Z [36;1m  --manifest loom/build/vendored/verification/ctest-manifest.json \[0m

@@ -1,0 +1,7 @@
+[0/2] Re-checking globbed directories...
+[1/103] Linking CXX shared library libloom.so.0.1.0
+FAILED: [code=1] libloom.so.0.1.0 
+: && /usr/bin/c++ -fPIC -O0 -g0  -shared -Wl,--no-undefined -Wl,--dependency-file=CMakeFiles/loom.dir/link.d -Wl,-soname,libloom.so.0 -o libloom.so.0.1.0 CMakeFiles/loom.dir/src/capi/shared_anchor.c.o  -Wl,--push-state,--whole-archive  libloom_core.a  -Wl,--pop-state  libloom_sqlite3_amalgamation.a  -ldl  -lm  libloom_miniz.a  /usr/lib/x86_64-linux-gnu/libssl.so  /usr/lib/x86_64-linux-gnu/libcrypto.so && :
+/usr/bin/ld: libloom_core.a: member libloom_core.a(fts.cpp.o) in archive is not an object
+collect2: error: ld returned 1 exit status
+ninja: build stopped: subcommand failed.
