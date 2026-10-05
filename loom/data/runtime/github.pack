@@ -29,7 +29,45 @@
     "connection_timeout_ms": 10000,
     "request_timeout_ms": 30000,
     "commit_message_template": "Update {{path}} via ChatADHD",
-    "secret_key": "github_token"
+    "secret_key": "github_token",
+    "sync_policy": {
+      "directions": {
+        "bidirectional": {
+          "pull": true,
+          "push": true
+        },
+        "push_only": {
+          "pull": false,
+          "push": true
+        },
+        "pull_only": {
+          "pull": true,
+          "push": false
+        }
+      },
+      "unknown_direction": {
+        "pull": true,
+        "push": true
+      },
+      "disabled_message_templates": {
+        "pull": "pull disabled in {{mode}} mode",
+        "push": "push disabled in {{mode}} mode"
+      },
+      "pull_statuses": [
+        "new_remote",
+        "modified"
+      ],
+      "push_statuses": [
+        "new_local",
+        "modified"
+      ],
+      "sync_actions": {
+        "new_remote": "pull",
+        "new_local": "push",
+        "modified": "conflict"
+      },
+      "unknown_sync_action": "ignore"
+    }
   },
   "value_schema": {
     "x-setting": "",
@@ -47,7 +85,8 @@
       "connection_timeout_ms",
       "request_timeout_ms",
       "commit_message_template",
-      "secret_key"
+      "secret_key",
+      "sync_policy"
     ],
     "properties": {
       "branch": {
@@ -124,6 +163,107 @@
         "x-setting": "secret_key",
         "x-consumer": "worker/media/github",
         "type": "string"
+      },
+      "sync_policy": {
+        "type": "object",
+        "required": [
+          "directions",
+          "unknown_direction",
+          "disabled_message_templates",
+          "pull_statuses",
+          "push_statuses",
+          "sync_actions",
+          "unknown_sync_action"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "directions": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "required": [
+                "pull",
+                "push"
+              ],
+              "properties": {
+                "pull": {
+                  "type": "boolean"
+                },
+                "push": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "unknown_direction": {
+            "type": "object",
+            "required": [
+              "pull",
+              "push"
+            ],
+            "properties": {
+              "pull": {
+                "type": "boolean"
+              },
+              "push": {
+                "type": "boolean"
+              }
+            },
+            "additionalProperties": false
+          },
+          "disabled_message_templates": {
+            "type": "object",
+            "required": [
+              "pull",
+              "push"
+            ],
+            "properties": {
+              "pull": {
+                "type": "string"
+              },
+              "push": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          },
+          "pull_statuses": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "push_statuses": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sync_actions": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "enum": [
+                "pull",
+                "push",
+                "conflict",
+                "ignore"
+              ]
+            }
+          },
+          "unknown_sync_action": {
+            "type": "string",
+            "enum": [
+              "pull",
+              "push",
+              "conflict",
+              "ignore"
+            ]
+          }
+        },
+        "x-setting": "/sync_policy",
+        "x-consumer": "github"
       }
     },
     "additionalProperties": false
