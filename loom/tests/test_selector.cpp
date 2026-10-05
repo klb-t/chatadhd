@@ -171,4 +171,25 @@ TEST_SUITE("selector") {
     provider->fail = false;
     CHECK(strict.search("query").size() == 2);
   }
+
+  TEST_CASE("threshold equality inclusion is configurable for every existing method") {
+    auto recipe = RuntimeProfile::builtin("selector");
+    REQUIRE(recipe);
+    auto strict = recipe->with_overrides(Json{{"ranking", Json{{"minimum_score", 1.0}}}});
+    REQUIRE(strict);
+    auto inclusive = strict->with_overrides(Json{{"ranking", Json{{"threshold_inclusive", true}}}});
+    REQUIRE(inclusive);
+    for (int tier : {SelectorEngine::kTierTfIdf, SelectorEngine::kTierKeyword, SelectorEngine::kTierEmbedding}) {
+      auto provider = std::make_shared<RecipeEmbedding>();
+      SelectorEngine engine(tier, provider, *strict);
+      REQUIRE(engine.index({"alpha"}, {"one"}));
+      CHECK(engine.search("alpha").empty());
+      REQUIRE(engine.set_profile(*inclusive));
+      auto hits = engine.search_checked("alpha");
+      REQUIRE(hits);
+      REQUIRE(hits->size() == 1);
+      CHECK((*hits)[0].id == "one");
+      CHECK((*hits)[0].score == doctest::Approx(1.0));
+    }
+  }
 }

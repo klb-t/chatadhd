@@ -3,6 +3,7 @@
 #include "loom/graph_memory.h"
 
 #include <algorithm>
+#include <limits>
 #include <deque>
 #include <set>
 #include <stdexcept>
@@ -75,10 +76,25 @@ Result<std::string> GraphMemorySelector::select_context_checked(std::string_view
   LOOM_TRY_ASSIGN(auto profile, RuntimeProfile::load("graph_memory", cfg_.path().parent_path(), overrides));
   const Json& policy = profile.values();
   const bool zero_as_default = policy.at("zero_as_default").get<bool>();
-  int max_n = (opts.max_nodes && (!zero_as_default || *opts.max_nodes != 0)) ? *opts.max_nodes
-                                                       : static_cast<int>(cfg_.get("graph_memory_max_nodes", policy.at("default_max_nodes")).get<std::int64_t>());
-  int max_d = (opts.depth && (!zero_as_default || *opts.depth != 0)) ? *opts.depth
-                                               : static_cast<int>(cfg_.get("graph_memory_depth", policy.at("default_depth")).get<std::int64_t>());
+  auto config_integer = [&](std::string_view key, const Json& fallback) -> Result<int> {
+    const Json value = cfg_.get(key, fallback);
+    if (!value.is_number_integer()) return Error(Errc::InvalidArgument, "graph setting " + std::string(key) + " must be an integer");
+    if (value.is_number_unsigned()) {
+      const auto number = value.get<std::uint64_t>();
+      if (number > static_cast<std::uint64_t>(std::numeric_limits<int>::max()))
+        return Error(Errc::InvalidArgument, "graph setting " + std::string(key) + " exceeds the native integer representation");
+      return static_cast<int>(number);
+    }
+    const auto number = value.get<std::int64_t>();
+    if (number < std::numeric_limits<int>::min() || number > std::numeric_limits<int>::max())
+      return Error(Errc::InvalidArgument, "graph setting " + std::string(key) + " exceeds the native integer representation");
+    return static_cast<int>(number);
+  };
+  int max_n, max_d;
+  if (opts.max_nodes && (!zero_as_default || *opts.max_nodes != 0)) max_n = *opts.max_nodes;
+  else { LOOM_TRY_ASSIGN(max_n, config_integer("graph_memory_max_nodes", policy.at("default_max_nodes"))); }
+  if (opts.depth && (!zero_as_default || *opts.depth != 0)) max_d = *opts.depth;
+  else { LOOM_TRY_ASSIGN(max_d, config_integer("graph_memory_depth", policy.at("default_depth"))); }
 
   LOOM_TRY_ASSIGN(auto seed_labels, extract_seed_labels_checked(text, opts.analysis, overrides));
   if (seed_labels.empty()) return "";
@@ -213,7 +229,7 @@ Result<ContextRequest> ContextRequest::from_json(const Json& j) {
   LOOM_TRY_ASSIGN(auto profile, RuntimeProfile::builtin("graph_memory"));
   LOOM_TRY_ASSIGN(auto request, from_json_with_profile(j, profile));
   request.provided_fields = Json::object();
-  for (const auto& field : {"max_tokens", "include_memory", "include_graph", "include_search"})
+  for (const auto& field : {"depth", "max_tokens", "include_memory", "include_graph", "include_search"})
     if (j.contains(field)) request.provided_fields[field] = true;
   return request;
 }
@@ -262,25 +278,35 @@ Result<ContextSet> ContextSelector::select(const ContextRequest& req) {
   auto supplied = [&](std::string_view field) {
     return req.provided_fields.is_null() || req.provided_fields.contains(std::string(field));
   };
+  const bool zero_as_default = policy.at("zero_as_default").get<bool>();
+  if (supplied("max_tokens") && req.max_tokens < 0 && !zero_as_default)
+    return Error(Errc::InvalidArgument, "context max_tokens must be nonnegative when zero_as_default is disabled");
+  auto fail_channel = [&](std::string_view channel) {
+    return policy.at("failure_policy").at(std::string(channel)) == "error";
+  };
   const bool include_memory = supplied("include_memory") ? req.include_memory : policy.at("include_memory").get<bool>();
   const bool include_graph = supplied("include_graph") ? req.include_graph : policy.at("include_graph").get<bool>();
   const bool include_search = supplied("include_search") ? req.include_search : policy.at("include_search").get<bool>();
   std::vector<ContextItem> candidates;
 
   if (include_memory && memory_) {
-    LOOM_TRY_ASSIGN(auto mem_ctx, memory_->get_active_context_checked());
-    if (!mem_ctx.empty()) {
-      candidates.push_back(ContextItem{"memory", "memory", "memory_tree", mem_ctx, policy.at("memory_score").get<double>(), Json::object()});
+    auto mem_ctx = memory_->get_active_context_checked();
+    if (!mem_ctx) {
+      if (fail_channel("memory")) return mem_ctx.error();
+    } else if (!mem_ctx->empty()) {
+      candidates.push_back(ContextItem{"memory", "memory", "memory_tree", *mem_ctx, policy.at("memory_score").get<double>(), Json::object()});
     }
   }
 
   if (include_graph) {
     GraphSelectOptions opts;
-    if (req.depth > 0) opts.depth = req.depth;
+    if (req.depth > 0 || (supplied("depth") && !profile.values().at("zero_as_default").get<bool>())) opts.depth = req.depth;
     opts.current_conv_id = req.conv_id;
-    LOOM_TRY_ASSIGN(auto g, graph_.select_context_checked(req.text, opts));
-    if (!g.empty()) {
-      candidates.push_back(ContextItem{"graph", "message", "graph", g, policy.at("graph_score").get<double>(), Json::object()});
+    auto g = graph_.select_context_checked(req.text, opts);
+    if (!g) {
+      if (fail_channel("graph")) return g.error();
+    } else if (!g->empty()) {
+      candidates.push_back(ContextItem{"graph", "message", "graph", *g, policy.at("graph_score").get<double>(), Json::object()});
     }
   }
 
@@ -288,7 +314,9 @@ Result<ContextSet> ContextSelector::select(const ContextRequest& req) {
     SearchOptions sopts;
     sopts.limit = policy.at("search_limit").get<int>();
     auto sr = db_.search_messages(req.text, sopts);
-    if (sr) {
+    if (!sr) {
+      if (fail_channel("search")) return sr.error();
+    } else {
       for (const auto& hit : sr->hits) {
         if (req.conv_id && hit.message.conv_id == *req.conv_id) continue;
         candidates.push_back(ContextItem{hit.message.id, "search", "fts", hit.message.text, hit.score, Json::object()});
@@ -311,7 +339,9 @@ Result<ContextSet> ContextSelector::select(const ContextRequest& req) {
   }
 
   ContextSet result;
-  int budget = supplied("max_tokens") && req.max_tokens > 0 ? req.max_tokens : policy.at("max_tokens").get<int>();
+  int budget = supplied("max_tokens") && (req.max_tokens > 0 || (!zero_as_default && req.max_tokens == 0))
+                   ? req.max_tokens
+                   : policy.at("max_tokens").get<int>();
   int used = 0;
   std::string prompt;
   for (auto& it : deduped) {

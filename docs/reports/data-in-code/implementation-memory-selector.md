@@ -4,26 +4,28 @@ Data: 2026-10-04. Baza źródeł: `161cc22`. Inwentarz zapisano przed edycją ko
 
 ## Co przeniesiono
 
-`loom/data/runtime/selector.pack` zawiera 14 parametrów w czterech grupach. Domyślne wartości odtwarzają wcześniejsze zachowanie:
+`loom/data/runtime/selector.pack` zawiera 15 parametrów w czterech grupach. Domyślne wartości odtwarzają wcześniejsze zachowanie:
 
 | Grupa | Wartości domyślne |
 |---|---|
 | `tfidf` | `min_token_length=2`, `lowercase=true`, `max_features=5000`, `idf_smoothing=1`, `idf_offset=1`, `normalize=true`, `sublinear_tf=false` |
 | `keyword` | `min_token_length=1`, `lowercase=true` |
-| `ranking` | `minimum_score=0`, `top_k=5` |
+| `ranking` | `minimum_score=0`, `top_k=5`, `threshold_inclusive=false` |
 | `tiers` | `with_embedding=1`, `without_embedding=2`, `embedding_failure=2` |
 
 `max_features=0` oznacza brak limitu liczby cech. `5000` jest presetem, a nie granicą polityki. Identyfikatory 1/2/3 oznaczają implementowane możliwości embedding/TF-IDF/keyword. Wybór embeddingu bez dostawcy zwraca jawne `Unavailable`; nie wykonuje innej metody pod etykietą embeddingu. Domyślny fallback do TF-IDF pozostaje taki sam.
 
-`loom/data/runtime/memory.pack` zawiera 21 pól najwyższego poziomu:
+`loom/data/runtime/memory.pack` zawiera 24 pola najwyższego poziomu:
 
 | Przeznaczenie | Wartości domyślne |
 |---|---|
 | Tworzenie | typ `text`, waga `1`, identyfikator 12 znaków, auto-tagi dla `["text"]`, próg tagowania `1` |
 | Wielkość wyników | kontekst 16000 znaków, wyszukiwanie 10 wyników, etykieta grafu 25 znaków |
 | Graf | typ `memory`, relacja `child`, waga relacji `1` |
-| Format | wcięcie dwa znaki spacji, separator `\n`, prefiks i separator tagów ` #`, precyzja wagi `1`, szablon ` [w:{{weight}}]` |
-| Dyspozycja po danych | mapa szablonów `folder/file/dir`, szablon domyślny, mapa priorytetów `folder:0`, priorytet domyślny `1` |
+| Format | wcięcie dwa znaki spacji, separator `\n`, prefiks i separator tagów ` #`, precyzja wagi `1`, szablon ` [w:{{weight}}]`, `show_weights=true`, `show_default_weight=false` |
+| Dyspozycja po danych | mapa szablonów `folder/file/dir`, szablon domyślny, mapa priorytetów `folder:0`, priorytet domyślny `1`, `sort_keys=[created ascending]` |
+
+Włączanie wag jest niezależne od wagi domyślnej: `show_weights` wyłącza adnotacje, a `show_default_weight` pokazuje również wagę równą presetowi. `sort_keys` ustala dowolną kolejność zarejestrowanych pól węzła oraz kierunki; pusta lista zachowuje kolejność wstawiania przy równych priorytetach typów. Klucze są przygotowywane raz przed sortowaniem, bez serializacji wewnątrz komparatora.
 
 Renderowanie nie zawiera już warunków po nazwach `folder/file/dir`. Nowy typ węzła otrzymuje szablon i kolejność przez mapy danych. Zmienne szablonu obejmują pola zapisanego węzła oraz `indent`, sformatowane `weight`, `tags` i `path`; dostęp do metadata działa przez `{{/metadata/topic}}`. Renderer jest inertny: nie wykonuje treści węzła ani ponownego rozwijania podstawionego tekstu.
 
@@ -134,6 +136,23 @@ Po zmianach w innych domenach, zwłaszcza układzie `SemanticAnalyzer`, testy ko
 - Nie zmieniono pełnego okablowania Runtime, publicznego C API, ContextEngine ani guardów zużycia. Nakładkę selektora można dziś jawnie załadować i wstrzyknąć; runtime nie został automatycznie zmieniony w tym zakresie.
 - Nie deklarujemy zielonego pełnego `ctest` ani buildu web na podstawie tych testów zakresu.
 
+## Uzupełnienie po kontroli pozostałej polityki
+
+Kontrola końcowa ujawniła trzy dalsze warianty, które również przeniesiono do danych: niezależną widoczność wag (`show_weights`, `show_default_weight`), uporządkowane klucze/kierunki sortowania (`sort_keys`) oraz równość z progiem selektora (`threshold_inclusive`). Presety są identyczne z poprzednim zachowaniem. Nazwy kluczy sortowania są rejestrem faktycznych pól `MemoryNode`; nie są listą dziedzin ani typów węzłów. Klucze przygotowuje się przed sortowaniem, raz na węzeł, bez serializacji w komparatorze.
+
+Po zakończeniu świeżej kompilacji zamrożonego `161cc22` powtórzono pełną sondę zakresu już z tym archiwum. [before-161.json](evidence/memory-selector/before-161.json) i [after-161.json](evidence/memory-selector/after-161.json): ponownie **59955 B**, ten sam SHA-256 `caec4bb87a68e1f284978793feceffa8a5b42445db38776c691561e425150360`, identyczność bajtowa. Ta późniejsza sonda obejmuje końcowe ustawienia i usuwa konieczność wnioskowania o bazie 161 przez pusty diff z 9d15. Wcześniejszy wtórny dowód pozostaje zachowany w całości. Wariant „po” nadal linkuje nowe produkcyjne obiekty modułów z niezmienionym świeżym archiwum bazowym, więc nie jest dowodem pełnego zintegrowanego buildu.
+
+Końcowe testy z tym świeżym archiwum:
+
+- [selector-residual-tests.log](evidence/memory-selector/selector-residual-tests.log): **11/11 przypadków, 91/91 asercji**, obejmuje wszystkie testy selektora oraz strict/inclusive dla trzech metod;
+- [memory-residual-tests.log](evidence/memory-selector/memory-residual-tests.log): **6/6 przypadków, 55/55 asercji**, obejmuje wagę domyślną, ukrywanie wag, sortowanie weight descending/content ascending z priorytetem typu, pustą listę kluczy, metadata, stabilność remisu, domyślne created ascending oraz odrzucenie nieobsługiwanego pola/kierunku.
+
+Oba zestawy mają 0 pominiętych. Ich liczb nie dodajemy do wcześniejszych 22 testów, ponieważ zestawy selektora częściowo się pokrywają. Nie konstruują starego SemanticAnalyzer przy zmienionym układzie klasy. Wszystkie zmienione źródła i nowe testy przeszły ponowną kontrolę składni z `-Werror`.
+
+Odtworzenie późniejszej sondy używa wcześniejszych komend kompilacji, ustawiając `OLD_BUILD=/workspace/scratch/72fc60ad1cc5/baseline-build` (świeży `161cc22`) zamiast katalogu 9d15. Do testów końcowych linkować odpowiednio `loom/tests/test_selector.cpp` albo `loom/tests/test_memory_sort_profiles.cpp` i `loom/tests/test_memory_visibility_profiles.cpp`, wraz z `loom/tests/main.cpp` i tymi samymi nowymi obiektami. Sonda publicznego API nie zmieniła się między kompilacjami przed/po.
+
+Końcowy fragment statusu inwentarza zawiera 14 zmigrowanych grup i jedną częściową: DIC-0033, ponieważ dowolny rejestr/kombinacje metod pozostają zadaniem wątku 3. Zamknięty zestaw trzech implementowanych operacji nie jest przedstawiany jako ukończony rejestr.
+
 ## Do wątku 2
 
 Podłączyć oszacowanie przed przebudową indeksu, embeddingiem i renderowaniem dużego kontekstu do polityki zużycia ×10. Liczba cech, wyników, tokenów/znaków i precyzja formatu są danymi/presetami; do potwierdzenia wzrostu używać rzeczywistego szacunku, a nie wprowadzać stałych limitów w tych modułach.
@@ -148,4 +167,4 @@ Do trybu eksperckiego używać `profile_inspection()` i `value_schema` jako form
 
 ## Do wątku 9
 
-Przebudować wszystkich konsumentów zmienionych nagłówków, podłączyć profile do kompozycji Runtime/C API i wykonać pełny `ctest` oraz build web. Zastąpić wtórny dowód świeżym porównaniem całego `161cc22`, zachowując obecne pełne wyjścia i sondę. Nie mylić 22 testów zakresu z bramką całego repo. Uwagę z audytu CLI o ignorowanych nakładkach `help`/`flags` i aliasach `version/help` przekazano integratorowi; integrator wdrożył bootstrap profilu przed parserem i przed obsługą tych poleceń.
+Przebudować wszystkich konsumentów zmienionych nagłówków, podłączyć profile do kompozycji Runtime/C API i wykonać pełny `ctest` oraz build web. Świeże porównanie zakresu z `161cc22` jest już zielone; zachować również wcześniejszy wtórny dowód i sondę. Nie mylić testów zakresu z bramką całego repo. Uwagę z audytu CLI o ignorowanych nakładkach `help`/`flags` i aliasach `version/help` przekazano integratorowi; integrator wdrożył bootstrap profilu przed parserem i przed obsługą tych poleceń.
