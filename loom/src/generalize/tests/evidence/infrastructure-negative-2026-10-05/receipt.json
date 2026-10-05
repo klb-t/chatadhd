@@ -1,0 +1,33 @@
+{
+  "schema": "loom.build_infrastructure_negative/1",
+  "source_commit": "e4109df7e4af22b461def5f7d62e268d9b9a8825",
+  "scope": "unchanged baseline, before data migration",
+  "diagnostic": "shared-library ld killed by signal9 at parallel4, earlier builds interrupted to adjust parallelism; no product assertion or metric failure",
+  "followup": "serial build/link, no source or test threshold changes",
+  "files": [
+    {
+      "file": "precision2-configure-before.log.gz",
+      "raw_bytes": 1001,
+      "raw_sha256": "bbb4f0a731fcfc7809185cdbdb073a46517ae14d032729ee8bf9f3e01ca3258b",
+      "compressed_sha256": "d56aa23d13fc1c40aba149845336458d9cf797c63855c38b22a71cc0de41b7ac"
+    },
+    {
+      "file": "precision2-build-before.log.gz",
+      "raw_bytes": 7405,
+      "raw_sha256": "95594c18ccb328063514e478b35a44a4f93ce03fe610816fd465101357d59ed4",
+      "compressed_sha256": "451d4ac08a4e49345f90c7f100bcac55be56d87b2abc0b85f5bc23df9aa89673"
+    },
+    {
+      "file": "precision2-build-before-final.log.gz",
+      "raw_bytes": 536,
+      "raw_sha256": "14364c8a9b7aea26565fa5831ee267a5e5d272800e63a17d215ddff1ad5a5611",
+      "compressed_sha256": "3faa772753aafa9a0958a1a1b13b784dbd5a101cfbfc3328255439f8314ae7da"
+    },
+    {
+      "file": "precision2-build-before-complete.log.gz",
+      "raw_bytes": 6522,
+      "raw_sha256": "29985919c203d600e5f33d9210be9ee5a372237ccd478db8288be4c53031c784",
+      "compressed_sha256": "a06682ef35dec0f03868422c8f25ea92c060401ff7d8ed028c5e4ec9991f082a"
+    }
+  ]
+}
