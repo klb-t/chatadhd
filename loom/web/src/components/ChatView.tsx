@@ -12,6 +12,8 @@ import { projectImportedMessage } from "../content/imported-message";
 import ConversationBranches, { conversationBranchPath } from "./ConversationBranches";
 import { parseCandidateChannels, readChatSettings, storedPlan, writeChatSettings } from "../context/chat-settings";
 import GraphReplyWorkbench from "./GraphReplyWorkbench";
+import GraphChatSettings from "../graph/GraphChatSettings";
+import { nativeFragmentPrompt, nativeGraphDisplayText, recordedGraphReply } from "../graph/chat-graph";
 
 marked.setOptions({ breaks: true });
 
@@ -448,6 +450,7 @@ export default function ChatView({ settingsKey = "default", convId, onConversati
         {visibleMessages.map((m) => {
           const versions = m.version_group_id ? versionsById[m.version_group_id] : undefined;
           const trace = recordedContext(m.metadata?.context_trace);
+          const graphReply = recordedGraphReply(m.metadata);
           return (
             <div key={m.id} className={`msg ${m.role}`} data-testid="message" data-role={m.role} data-status={m.status}>
               <div className="meta">
@@ -489,7 +492,7 @@ export default function ChatView({ settingsKey = "default", convId, onConversati
               ) : projectImportedMessage(m) ? (
                 <ImportedMessageContent message={m} />
               ) : (
-                <div className="body" dangerouslySetInnerHTML={renderMarkdown(m.text)} />
+                <div className="body" dangerouslySetInnerHTML={renderMarkdown(m.role === "assistant" ? nativeGraphDisplayText(graphReply, m.text) : m.text)} />
               )}
               <div className="actions">
                 {m.role === "user" && editingId !== m.id && (
@@ -502,9 +505,11 @@ export default function ChatView({ settingsKey = "default", convId, onConversati
                 </button>
               </div>
               {trace && <ContextTrace trace={trace} />}
-              {m.role === "assistant" && <details className="chat-context-controls"><summary>Graph reply · inspect and address fragments</summary>
+              {(m.role === "assistant" || graphReply) && <details className="chat-context-controls"><summary>Graph reply · inspect and address fragments</summary>
                 <GraphReplyWorkbench packet={api.packet?.bind(api)} usagePolicy={api.usagePolicy?.bind(api)}
-                  responseText={m.text} conversationId={m.conv_id} turnId={m.id} requestId={String(m.metadata?.request_id ?? m.id)} model={m.model ?? ""}
+                  responseText={m.role === "assistant" ? m.text : typeof graphReply?.retained_text === "string" ? graphReply.retained_text : ""} recordedReply={graphReply} graphReply={api.graphReply?.bind(api)}
+                  onNativeAddressFragment={(action, fragment) => { setInput(nativeFragmentPrompt(action, fragment)); setRequestOverride(null); }}
+                  conversationId={m.conv_id} turnId={m.id} requestId={String(m.metadata?.request_id ?? m.id)} model={m.model ?? ""}
                   onAddressFragment={(action, fragment) => { setInput(`${action === "expand" ? "Expand" : "Correct"} the addressed model fragment:\n${JSON.stringify(fragment, null, 2)}`); setRequestOverride(null); }} />
               </details>}
             </div>
@@ -542,6 +547,7 @@ export default function ChatView({ settingsKey = "default", convId, onConversati
         </div>
       )}
 
+      <GraphChatSettings transport={api} disabled={!!stream} />
       <details className="chat-context-controls" data-testid="chat-context-controls">
         <summary>Context for next message{useKnowledge ? " · knowledge enabled" : ""}</summary>
         <fieldset disabled={!!stream}>
