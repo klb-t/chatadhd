@@ -1,18 +1,19 @@
+import { PresentationError } from "./presentation.mjs";
 /** Pure projection/envelopes for W10. This file calls no transport and persists
  * nothing; its input is the actual native OnboardingStore JSON response. */
 import type { EffectiveDefault, HistoryRecord, JsonValue, LayerAction, ModelReply, OnboardingAction, OnboardingScenario, OnboardingSnapshot, PrivacyRule, ProfileCandidate, ProfileField, ScenarioField } from "./types";
 
 type JsonObject = { [key: string]: JsonValue };
 function object(value: unknown, label: string): JsonObject {
-  if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error(`Native onboarding ${label} must be an object.`);
+  if (!value || typeof value !== "object" || Array.isArray(value)) throw new PresentationError("error.native_type", { label, expectedType: "object" });
   return value as JsonObject;
 }
 function array(value: unknown, label: string): JsonValue[] {
-  if (!Array.isArray(value)) throw new Error(`Native onboarding ${label} must be an array.`);
+  if (!Array.isArray(value)) throw new PresentationError("error.native_type", { label, expectedType: "array" });
   return value as JsonValue[];
 }
 function text(value: unknown, label: string): string {
-  if (typeof value !== "string") throw new Error(`Native onboarding ${label} must be a string.`);
+  if (typeof value !== "string") throw new PresentationError("error.native_type", { label, expectedType: "string" });
   return value;
 }
 
@@ -31,7 +32,7 @@ export function normalizeNativeSnapshot(input: JsonValue): OnboardingSnapshot {
       ...descriptors.filter((descriptor) => descriptor.section === id).map((descriptor) => text(descriptor.id, "field.id"))])];
     const fields = orderedIds.map((fieldId): ScenarioField => {
       const descriptor = fieldMap.get(fieldId);
-      if (!descriptor) throw new Error(`Native scenario question names missing field ${fieldId}.`);
+      if (!descriptor) throw new PresentationError("error.missing_field", { field: fieldId });
       const question = questionMap.get(fieldId);
       return {
         id: fieldId, label: typeof descriptor.label === "string" ? descriptor.label : fieldId,
@@ -58,9 +59,9 @@ export function normalizeNativeSnapshot(input: JsonValue): OnboardingSnapshot {
     const areaConfig = areas?.[area] ? object(areas[area], "area config") : undefined;
     const entity = resolved.entity ? object(resolved.entity, "default entity") : undefined;
     return {
-      id: typeof resolved.id === "string" ? resolved.id : key, key, area,
+      id: typeof resolved.id === "string" ? resolved.id : key, key, area, resolution: resolved,
       label: typeof entity?.label === "string" ? entity.label : key,
-      value: resolved.value, layer: text(resolved.layer, "default layer"), reason: text(resolved.explanation, "default explanation"),
+      value: resolved.value, layer: text(resolved.layer, "default layer"), reason: resolved.explanation === null ? null : text(resolved.explanation, "default explanation"),
       enabled: resolved.status === "effective", excluded: resolved.status === "excluded",
       status: text(resolved.status, "default status"), area_mode: areaConfig?.new_defaults_mode as EffectiveDefault["area_mode"],
       history: layerHistory.filter((event) => object(event, "layer history event").key === key || object(event, "layer history event").area === area) as HistoryRecord[],
@@ -77,6 +78,7 @@ export function normalizeNativeSnapshot(input: JsonValue): OnboardingSnapshot {
     return [id, { ...candidate, section: candidate.section ?? descriptor?.section } as unknown as ProfileCandidate];
   }));
   return {
+    presentation: raw.presentation as unknown as OnboardingSnapshot["presentation"],
     scenario: uiScenario, fields: object(profile.fields, "fields") as unknown as Record<string, ProfileField>,
     session: { status: text(session.status, "session.status"), section: activeId,
       sections: Object.fromEntries(Object.entries(sessionSections).map(([id, value]) => [id, text(object(value, "section state").status, "section status")])),

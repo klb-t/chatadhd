@@ -1,3 +1,4 @@
+import type { PresentationAvailability, PresentationPack } from "./presentation.mjs";
 /** Native onboarding/layer snapshots are translated here by the W10 adapter.
  * No persisted user data or policy defaults belong in this frontend contract. */
 export type JsonValue = null | boolean | number | string | JsonValue[] | { [key: string]: JsonValue };
@@ -66,13 +67,15 @@ export interface HistoryRecord {
   [key: string]: JsonValue | undefined;
 }
 export interface EffectiveDefault {
+  /** Full native resolve parameters, retained for data-authored explanation templates. */
+  resolution?: Record<string, JsonValue>;
   id: string;
   key: string;
   area: string;
   label?: string;
   value?: JsonValue;
   layer: string;
-  reason: string;
+  reason: string | null;
   enabled: boolean;
   excluded: boolean;
   status?: string;
@@ -80,6 +83,7 @@ export interface EffectiveDefault {
   history?: HistoryRecord[];
 }
 export interface OnboardingSnapshot {
+  presentation?: PresentationAvailability | PresentationPack;
   scenario: OnboardingScenario;
   fields: Record<string, ProfileField>;
   session: {
