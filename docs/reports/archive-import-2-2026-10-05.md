@@ -1,70 +1,94 @@
 # Wątek 5 — drugi przyrost, 2026-10-05
 
-Status: W TRAKCIE. Gałąź `gpt/archive-import-2-2026-10-05`; poprzednia `gpt/archive-import-2026-10-04` jest zamrożona i nie jest zmieniana.
-Baza to dozwolony przez właściciela `gpt/integrator-state-2026-10-04` (`0a81480bd1a70b394bac72e98f6b5e7cb49f5d0b`), zawierający odebrany przyrost5 oraz3/4. `main` podczas fetch: `e4109df7e4af22b461def5f7d62e268d9b9a8825`. Natywny punkt odniesienia66da570 ma identyczne źródła produkcyjne; późniejszy0a81480 dodaje tylko dowody integratora.
+**GOTOWY DO ODBIORU WYBRANEGO PRZYROSTU.** Gałąź `gpt/archive-import-2-2026-10-05`; kod zamrożony w `156a82080a7abb8a68d249747dfa167b3045effe`. Poprzednia gałąź `gpt/archive-import-2026-10-04` pozostaje nietknięta.
 
-## Wybrany zakres
+Baza: dozwolony `gpt/integrator-state-2026-10-04`, `0a81480bd1a70b394bac72e98f6b5e7cb49f5d0b`, z przyjętym poprzednim W5 oraz 3/4. Świeży fetch potwierdził nadal ten tip i `main=e4109df7e4af22b461def5f7d62e268d9b9a8825`. Natywny punkt odniesienia `66da570d3b5379492e128d940ad474467082c59f` ma identyczne źródła produkcyjne; późniejszy commit bazy dodaje dowody integratora.
 
-Inwentarz [wątku5](https://github.com/klb-t/chatadhd/blob/c21e664c8145568e0505f9218fda67a75616056f/docs/reports/data-in-code/thread-5.md): DIC0424 (inline), DIC0428 (głębokość) i DIC0682 (audyt); wraz z pozostałymi ustawieniami parsera tworzą komplet5 ustawień importu i20 współdzielonych pól audytu. To część52 grup, nie deklaracja przeniesienia całego inwentarza.
+## Co zrobiono
 
-Jedno źródło wartości: `loom/data/presets/import.pack` i `import_audit.pack`. Generator zachowuje dokładne oryginalne bajty w natywnym osadzeniu. Nie ma drugiej ręcznej tabeli wartości ani cichego fallbacku. Domyślne różnice native/API Python/CLI (zakres i prefix) są zachowane w danych. Stawki nie są automatycznie pobierane; audyt i cały przyrost są offline.
+Wybrano z [inwentarza W5](https://github.com/klb-t/chatadhd/blob/753858ea00f0bf7966e4dbc2e0b6a12bf101d1cf/docs/reports/data-in-code/thread-5.md) DIC-0424, DIC-0428 oraz DIC-0682: wartości parsera/importu i audytu. To część 52 grup z aktualnego INDEX, nie ukończenie całego inwentarza.
 
-R40: kompletne już rozstrzygnięte wartości są walidowane przed zastosowaniem, brak/null nie jest ponownie uzupełniany z defaults. `import_layers.spec.pack` wiąże pola z trwałymi identyfikatorami/obszarami kontraktu warstw12, bez powielania wartości. Most jest transformacją danych; nie zastępuje mechanizmu wykluczeń ani API profili11/12.
-R42 sprawdzono w autoryzowanej gałęzi właściciela `claude/chataddhd-cpp-loom-core-IRGRN`, commit3cd5848; tekst nie jest jeszcze na naszej bazie. Pozostają dozwolone nazwy pól/schematów, reprezentacyjne granice typów, komunikaty błędów i mechanika; wartości i nazwy presetów pochodzą z danych; także zmiana ID bez zmiany algorytmu jest sprawdzona. ID ma być niepustym tekstem, nie konkretną nazwą zaszytą w kodzie.
+| Miara | Przed | Po |
+|---|---|---|
+| Domyślne ustawienia importu | 5 liczb w kodzie, część powtórzona | Jeden `loom/data/presets/import.pack` |
+| Domyślne ustawienia audytu | Rozproszone C++/Python | 20 pól w `import_audit.pack`; zachowane różnice native/API/CLI |
+| Warstwy R40 | Brak deskryptora tych ustawień | 25 trwałych wpisów wyprowadzonych z obu packów |
+| Audyt Python | 19 zwykłych testów | 32, wszystkie stare zachowane |
+| Zarejestrowane wpisy CTest | 117 | 121, żadnego nie usunięto |
 
-## Weryfikacja i liczby
+Generator osadza dokładne bajty dwóch kanonicznych packów w C++. `import_layers.spec.pack` opisuje wiązania, a wygenerowany `import_layers.pack` ma kontrakt `loom.default_layers_pack/1`. W specyfikacji nie ma kopii wartości. Nazwy presetów są danymi; kod nie wymaga konkretnego ID.
 
-Przed:5 domyślnych wartości importu i audyt rozproszone w C++/Python. Po:2 kanoniczne pliki danych,5+20 pól; domyślne zachowanie pozostaje wymaganiem bramki.
-Python:13 pełnych wyników API/CLI identycznych bajt po bajcie z bazą;19 starych testów zachowane,13 nowych przypadków, zwykły suite32/32 PASS. Root niezależnie ponownie wykonał32/32,0skip; wcześniejszy przegląd31 przypadków wykrył także potrzebę usunięcia ograniczenia rewizji danych do1, co jest poprawione i objęte32. testem. Generator:10/10 PASS, kontrola dokładnych bajtów i25 wpisów warstw; Nowa natywna regresja rzeczywiście wykonana na świeżych obiektach156a820:15/15 przypadków,442/442 asercje,0skip; niezależny audyt haszy PASS. [Runner, dokładne wejścia i pełny log](archive-import-2-2026-10-05-focused-native.zip). Niezależny rzeczywisty konsument W12 + decoder W5:55/55 sprawdzeń PASS,25/25 wpisów; sprawdza wykluczenia/aktualizacje wersji, bez produkcyjnego OnboardingStore. Powtórzenie po zmianie ID jako danych:55/55 i wynik identyczny; [źródła, runner, oba pokwitowania](archive-import-2-2026-10-05-layers-evidence.zip), SHA2561ec05099e4f16043115a9e0ddee2dbb7db958f616cda975552d84ba93915490c. W5=156a820, rzeczywisty silnik W12=3c0bc365. Build web PASS (85 modułów,5,13s). Natywny punkt odniesienia66da570 rzeczywiście wykonany:3 rozmowy,7 wiadomości,86 znaków Unicode;11/11 bramek,10 wpisów pochodzenia. Natywne wykonanie po zmianie156a820:11/11 bramek,6 pełnych sekcji i704 wartości zgodnych. Zachowano raw stdout (40 365/40 364 B); normalizacja zmienia wyłącznie generowane ID/datę/ścieżkę kopii, nie usuwa kluczy. [Dokładny runner, fixture, pełne wyniki i pokwitowania](archive-import-2-2026-10-05-native-parity.zip). Zakres to SQLite/audit, nie nowy dowód live-WAL ani JSONL/OCR. Pełny build vendored/GCC/WERROR/CLI/server/shared zakończony exit0; pełny CTest121 wpisów jest w toku; nie zgłaszam gotowości przed zakończeniem.
+Import wiąże cache/wznowienie z efektywną projekcją semantyczną (inline i generic). Zmiany ustawień zasobów zachowują tożsamość starego checkpointu. Pokwitowanie W2 wiąże wszystkie 5 ustawień, więc zmiana któregokolwiek pod tym samym operation-id nie przyjmuje starego potwierdzenia. Domyślne formaty źródeł i pokwitowań pozostają zgodne z historycznymi.
 
-## API i uruchomienie u właściciela
+R40: adapter przyjmuje już rozstrzygnięte wartości; brak/null używanego pola kończy się błędem, bez ponownego uzupełnienia defaults. Kompletność dotyczy konkretnego konsumenta: **import 5 / audyt natywny 4 / audyt Python 20 pól**. Nie tworzymy drugiego trwałego magazynu wykluczeń.
 
-Python: `archive_stats`, `project_stats` i `estimate` przyjmują `audit_preset=` (ścieżka deskryptora albo kompletne Mapping wartości); pominięty argument używa danych kanonicznych. Jawne argumenty pojedynczego wywołania mają pierwszeństwo. `load_audit_preset` waliduje, `inspect_audit_preset` podaje wartości, wersję, hash źródła i pochodzenie. Import modułu nie czyta packa, więc kompletny jawny preset działa również przy uszkodzonym/brakującym domyślnym pliku. Wybrany błędny preset kończy się błędem przed otwarciem DB.
+R42 odczytano z autoryzowanej gałęzi właściciela `claude/chataddhd-cpp-loom-core-IRGRN`, `3cd5848e7484d50d00f19f0855bc2cd228ad7f3b`; tekst nie jest jeszcze na naszej bazie. W kodzie pozostają kontrakty pól/schematów, operacje, diagnostyka i granice reprezentacji typów. Wartości i ID presetów są w danych; pozytywne rewizje danych nie są ograniczone do 1.
 
-Przykłady offline, na własnych danych właściciela (nie dodawać eksportu do repo):
+## Weryfikacja
+
+Wszystkie wykonania offline, wyłącznie publiczne/syntetyczne fixtures: **0 prywatnych wejść, 0 płatnych wywołań**.
+
+| Bramka | Wynik |
+|---|---|
+| Pełny build GCC/vendored SQLite, WERROR, shared/CLI/server/tests | PASS, exit 0 |
+| Pełny CTest | **121/121 PASS**, exit 0, 352,65 s |
+| Niezmieniony strażnik W8 `f64e0ef…` | 120 wykonanych wpisów; **725 native / 26 841 asercji / 1 345 Python / 0 pominięć Python** |
+| Istniejący opt-in `catalog_scale` | Jawne 0/0; jedyny niewykonany zestaw |
+| Nowe zwykłe testy natywne | 15 przypadków / 442 asercje PASS; także niezależne wykonanie świeżych obiektów |
+| Audyt Python / generator | 32/32 i 10/10 PASS w tym samym pełnym przebiegu |
+| Rzeczywisty CLI | 3 nowe scenariusze i 12 odrzuceń błędnego presetu przed zmianą importowanych danych/blobów |
+| Web: `tsc` + Vite | PASS, 85 modułów, 5,13 s; instalacja z offline cache |
+
+Strażnik sprawdził pełne, nieprzycięte strumienie; nie rekonstruowano XML. `knowledge` i `context_engine` rzeczywiście wykonały po 18 przypadków; `import_resume` 23/696 i `import_screenshot` 6/872. Niezależny audyt potwierdził 1274/1274 hashe źródeł względem Git oraz 7/7 hashe artefaktów względem zapisanych snapshotów i kontroli po bramkach. Snapshot wykonano w trakcie CTest, potem ponownie sprawdzono; nie deklarujemy pełnego snapshotu przed startem. Obie strony natywnego porównania użyły GCC 13.3, Release `-O0 -DNDEBUG`; nie deklarujemy macierzy Clang/ASan ani izolowanego benchmarku.
+
+Zgodność domyślnych wyników:
+
+- Python: **13 pełnych wyników API/CLI identycznych bajtowo** z bazą; surowe wyniki i kolektor w dowodzie bramek.
+- Native: rzeczywiste wykonania przed/po, po 11/11 sprawdzeń; **6 pełnych sekcji / 704 wartości zgodnych**. Fixture: 3 rozmowy, 7 wiadomości, 86 znaków Unicode, 10 wpisów pochodzenia. Zachowano raw stdout; normalizacja zmienia jedynie generowane ID/datę/URI kopii, nie usuwa kluczy. To dowód SQLite/audit, nie nowy pomiar wielogigabajtowy ani live-WAL.
+- Rzeczywisty silnik warstw W12 `3c0bc365` i decoder W5: **55/55 sprawdzeń, 25/25 wpisów**; wykluczenia, zmiany rewizji, propozycje nowych defaults i brak fallbacku. Powtórzenie na finalnym `156a820` daje ten sam wynik; nie jest to integracja produkcyjnego OnboardingStore.
+
+Pełne publiczne dowody:
+
+- [Bramki, source/binary hashes, XML, logi i odtwarzalny runner](archive-import-2-2026-10-05-gates.zip): 51 plików, 216373 B; SHA256 `4f6ce2b4928081ea330894a1d170d813dc11f62076106609a7f229e8dc1a93f2`. Zawiera również pełny oryginalny dowód W12 przed zmianą ID.
+- [Porównanie natywne przed/po](archive-import-2-2026-10-05-native-parity.zip).
+- [Niezależne wykonanie 15/442](archive-import-2-2026-10-05-focused-native.zip).
+- [Powtórzenie konsumenta warstw po zmianie ID](archive-import-2-2026-10-05-layers-evidence.zip).
+
+Pełne przechwycone próby narzędziowe/przerwane buildy i historyczne dowody pozostają oddzielnie na [archiwalnym przyroście](https://github.com/klb-t/chatadhd/blob/ec18cdd3262fa850eb39dfe6d57f8d03fca507ea/docs/reports/archive-import-2-2026-10-05-build-attempts.md). Nie są negatywnym wynikiem funkcjonalnym. Zmniejszono współbieżność kompilacji i przeniesiono wyłącznie ukończone własne artefakty bajtowo identycznie do tmpfs; źródła, flagi i hashe wynikowych binariów pozostały bez zmian. Nie luzowano progów.
+
+## API i instrukcja dla właściciela
+
+Python `archive_stats`, `project_stats`, `estimate`: `audit_preset=` przyjmuje deskryptor lub kompletne Mapping; jawne argumenty mają pierwszeństwo. `load_audit_preset` waliduje, `inspect_audit_preset` pokazuje źródło/ID/wersję/hash/wartości. Import modułu nie czyta domyślnego packa; kompletny jawny preset działa także bez niego. Błędny wybrany preset nie otwiera DB.
+
+CLI: `--import-preset PATH` / `--audit-preset PATH` przyjmują deskryptory `loom.import_preset/1` / `loom.import_audit_preset/1` z kompletnym `values`. Istniejące pojedyncze flagi mają pierwszeństwo. Native API projekcji: `import_preset_from_values`, `apply_import_preset_values`, `inspect_import_preset` oraz odpowiedniki `import_audit_*`. Zastosowanie atomowe; callbacki, proweniencja i jawne ceny wywołującego pozostają zachowane.
 
 ```sh
-python3 loom/tools/eval/archive_cost.py --help
+# Na własnych danych; nie dodawać eksportu ani DB do publicznego repo.
 python3 loom/tools/eval/archive_cost.py --db archive.sqlite --audit-preset /path/audit.pack --json
-```
-
-CLI audytu zachowuje stare flagi ujemne i dodaje jawne `--include-versions`, `--include-unknown-status`, `--include-tools`, żeby ustawienie z pliku można było także ponownie włączyć w wywołaniu. Historyczny plik cen pozostaje datowaną opcją; nie jest aktualnym cennikiem ani automatycznym wydatkiem.
-
-Natywny CLI otrzymuje `--import-preset PATH` i `--audit-preset PATH`: odpowiednio deskryptory `loom.import_preset/1` i `loom.import_audit_preset/1` z kompletnym `values`. Istniejące pojedyncze flagi importu/audytu mają pierwszeństwo. Nie są to pliki utrwalonego stanu wykluczeń.
-
-```sh
 loom import export.zip --audit --import-preset /path/import.pack --audit-preset /path/audit.pack
-```
-
-Prywatne API konsumenta: `import_preset_from_values`, `apply_import_preset_values`, `inspect_import_preset` oraz odpowiedniki `import_audit_*`. Zastosowanie jest atomowe, nie zmienia callbacków/proweniencji/cen wywołującego. Zachowane zera parsera mają poprzednią semantykę, np. głębokość0 oznacza brak limitu; rozmiar chunk musi być dodatni i reprezentowalny, bez wymyślonego maksimum.
-
-Format `schema` ma numer kontraktu `/1`, a `version` jest dowolną dodatnią całkowitą rewizją danych; nie blokujemy kolejnych rewizji.
-
-Regeneracja danych:
-
-```sh
-python3 loom/src/import/gen_import_presets.py
 python3 loom/src/import/gen_import_presets.py --check
 ```
 
-Zmiana wartości wymaga zmiany wersji źródła oraz odpowiedniej rewizji wpisu i pakietu w specyfikacji warstw. Trwałych id/key/area nie używać ponownie dla innego znaczenia. Generator jest transformacją bez historii; konflikty rewizji/wykluczenia sprawdza silnik12. Tokeny `compatibility` opisują historyczny format źródeł i pokwitowań, nie aktualny preset; nie aktualizować ich automatycznie przy nowym domyślnym ustawieniu.
+`import --audit` wykonuje import i raportuje jego wynik. Stawki natywne są nieznane bez jawnego podania. Historyczny snapshot Python pozostaje datowanym wejściem; nie pobieramy aktualnych cen ani nie wysyłamy danych do modelu. CLI Python zachowuje stare flagi ujemne i dodaje dodatnie `--include-versions`, `--include-unknown-status`, `--include-tools`.
 
-## Czego ten przyrost nie robi
+Zera mają poprzednią semantykę (np. depth 0 = bez limitu); chunk jest dodatni i reprezentowalny bez sztucznego maksimum. Przy zmianie packa uruchomić generator bez `--check`; podnieść wersję źródła oraz odpowiednią rewizję wpisu/pakietu warstw. Generator nie ma historii: konflikty wersji rozstrzyga W12. Tokeny `compatibility` opisują historyczne formaty, nie aktualne defaults; nie aktualizować ich automatycznie.
 
-Nie przenosi jeszcze profili formatów/ról, FTS ani wszystkich ustawień DB. Zachowuje `recorded|model|user` i zakresy adnotacji z poprzedniego przyrostu. Nie modyfikuje grafu metod ani UI. Pełne R40/R41 wymagają wspólnego konsumenta11/12 i późniejszego powiązania z grafem; kompletne dane nie udają stanu wykluczeń.
+## Czego nie zrobiono
+
+Pozostałe formaty/role, DB/FTS oraz pełne UI/profile/graf metod zostają kolejnymi przyrostami właściwych właścicieli. Nie zmieniono migracji DB ani adnotacji `recorded|model|user` i ich zakresów. Ten most danych nie kończy R40/R41 i nie reklamuje wszystkich 52 grup jako przeniesionych.
 
 ## Do wątku 2
 
-Zmiana5 ustawień musi wiązać treść oczekującego potwierdzenia importu; domyślne legacy pokwitowania pozostają identyczne. Sześć zwykłych natywnych regresji obejmuje cache pełny/częściowy oraz zmianę każdego pola przy realnym pokwitowaniu W2. Szacunek istniejącej operacji pozostaje liczony z bajtów źródła. Przewidywanie pamięci/CPU/rozmiaru projekcji wymaga osobnego modelu kosztu, nie zmyślonych cen.
+W5 już wiąże wszystkie 5 ustawień z pending receipt; 6 zwykłych regresji cache/wznowienia i rzeczywistego potwierdzenia W2 przechodzi. Estymacja nadal mierzy bajty źródła. CPU/RAM/rozmiar projekcji wymaga osobnego modelu zużycia, nie wymyślonych cen.
 
 ## Do wątku 11
 
-Po odbiorze foundation włączyć te2 zasoby do wspólnego rejestru profili; nie kopiować ich wartości. Natywne/Python API przyjmują kompletne efektywne wartości, także po usunięciu pola przez warstwy; brak jest błędem.
+Włączyć te 2 zasoby do wspólnego rejestru bez kopiowania wartości. Przyrost `5f9774c` (obserwowany tip `1b7379c`) już zawiera niewpięte `loom/data/runtime/import.pack`, `import_audit.pack`, `import_formats.pack`; nakładające się 5+20 defaults wyprowadzić z kanonicznych packów W5 przed aktywacją. Projekcje mają 5/4/20 wymaganych pól: brak/null używanego pola po warstwach jest błędem; pole należące wyłącznie do innego konsumenta nie jest przywracane. Formatów/ról nie deklarujemy jako podłączonych tym przyrostem.
 
 ## Do wątku 12
 
-Wygenerowany `loom.default_layers_pack/1` jest poprawnym źródłem25 wpisów; id/key/area/revision są trwałe. **Granica integracji:** `DefaultLayers` przypina jeden pack_id, a OnboardingStore ma już swój `user.pack`. Nie podmieniać tożsamości tego stanu na `loom.defaults.archive-import`. Złożyć wpisy z zachowaniem ich tożsamości do autorytatywnego packa z podniesioną rewizją albo użyć uzgodnionego wspólnego API kompozycji wielu packów. Nie tworzyć drugiego trwałego magazynu wykluczeń w5. Konsument ma respektować suppressed/wykluczenia przed walidacją, bez ponownego merge. Most HTTP/UI nie jest w zakresie5.
+`import_layers.pack` ma 25 trwałych id/key/area/revision. **Granica:** DefaultLayers przypina jeden pack_id, a OnboardingStore ma już `user.pack`. Nie podmieniać tej tożsamości na `loom.defaults.archive-import`. Złożyć wpisy do autorytatywnego packa z podniesioną rewizją albo uzgodnić wspólne API kompozycji. Respektować suppressed/wykluczenia przed walidacją, bez ponownego merge. Drugi magazyn wykluczeń oraz most HTTP/UI nie są pracą W5.
 
 ## Do wątku 9
 
-Przyrost jest oddzielny od poprzedniego5. Obecnie NIEGOTOWY; gotowość zostanie wpisana po pełnych bramkach. Zachować wymagania R42 z3cd5848 w kolejce dokumentacji. Otwarte52 grup5 z INDEX są częściowo pokrywane w tym przyroście; pozostałe formaty/role/DB/FTS zostają kolejnym zadaniem.
+**GOTOWY:** odebrać wyłącznie drugi przyrost z `gpt/archive-import-2-2026-10-05` po własnym świeżym fetch/rebase i mixed gates. Kod `156a820` ma pełny pozytywny dowód; kolejne commity zapisują wyłącznie raporty/dowody. Baza to aktualny dozwolony fallback, będący potomkiem `main`; poprzedni W5 nietknięty. Archiwalnego przyrostu `ec18cdd…` nie przenosić na main. Zachować wymagania R42 z `3cd5848…` w kolejce dokumentacji. Przekazać konkretne Do11/12; pozostałe formaty/role/DB/FTS z 52 grup pozostają otwarte.
