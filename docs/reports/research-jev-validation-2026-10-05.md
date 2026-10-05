@@ -7,12 +7,15 @@ na rzeczywistych eksportach ChatADHD, ze wspólnego wycinka przygotowywanego prz
 zachowano bez zmian; nie są nowym eksperymentem ani wynikiem walidacji.**
 
 Zaktualizowano [PR13](https://github.com/klb-t/chatadhd/pull/13), status przekazania
-i dokument dispatchu. Pobranie `gpt/model-research-2026-10-04` po tej wiadomości
+i dokument dispatchu; opublikowany commit STOP: `abd2f33ae8f41171841b539dc4c27a096a8362d6`.
+Pobranie `gpt/model-research-2026-10-04` po tej wiadomości
 nadal zwróciło `edcb32f` bez nowego pliku koordynacji; czekamy na publikację 7A.
 Nowe źródła/gold/żądania dostaną osobny freeze, bez podmieniania starych hashy.
 Raw rzeczywistych rozmów i request body nie wolno kopiować do publicznego repo;
 dotychczasowy pełny publiczny eksporter jest właściwy dla fikcyjnych danych i
 przed nową collection potrzebuje jawnego kontraktu publicznej projekcji.
+Dokładna instrukcja nowego source/gold/request freeze oraz granicy publikacji:
+`stage5/jev-validation-20261005/REAL_SOURCE_READINESS.md`.
 
 Poniższe sekcje opisują wcześniejszy, wycofany etap offline.
 
