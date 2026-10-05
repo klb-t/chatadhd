@@ -58,7 +58,12 @@
     "cluster_jaccard": 0.5,
     "seed_match_overlap": 0.5,
     "min_units": 2,
-    "min_distinct_dates": 2
+    "min_distinct_dates": 2,
+    "seed_jaccard_multiplier": 2.0,
+    "repeat_confidence_residual_factor": 0.7,
+    "discovered_confidence_cap": 0.8,
+    "discovered_confidence_base": 0.25,
+    "discovered_confidence_score_factor": 0.1
   },
   "atlas": {
     "node_budget_phone": 60,

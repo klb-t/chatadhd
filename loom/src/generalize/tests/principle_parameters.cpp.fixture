@@ -1,0 +1,136 @@
+// Offline native controls for the five DIC0322/0323/0324 policy parameters.
+// Both executables receive explicit Pack documents; neither uses the embedded pack.
+#include <cmath>
+#include <fstream>
+#include <iostream>
+#include <limits>
+#include <sstream>
+
+#include "loom/generalize.h"
+#include "loom/util/json.h"
+#include "test_generalize_fixture.h"
+
+using namespace loom;
+
+namespace {
+using Documents = std::map<std::string, Json>;
+
+Json error_json(std::string_view phase, const Error& error) {
+  return Json{{"ok", false}, {"phase", phase}, {"code", std::string(errc_name(error.code))}, {"message", error.to_string()}};
+}
+
+Json discover(const Documents& docs, const generalize::Evidence& evidence,
+              const model::PriorFilter& priors) {
+  auto pack = kb::Pack::from_documents(docs);
+  if (!pack) return error_json("pack_validation", pack.error());
+  auto report = generalize::discover_principles(**pack, evidence, priors);
+  if (!report) return error_json("discover_principles", report.error());
+  return Json{{"ok", true}, {"report", report->to_json()},
+              {"serialized_report", json::dump(report->to_json())}};
+}
+
+generalize::Evidence repeated(const std::string& text, bool candidate) {
+  generalize::Evidence evidence;
+  for (int index = 0; index < 3; ++index) {
+    model::Observation observation;
+    observation.unit = "un_fictional_parameter_control_" + std::to_string(index);
+    observation.text = text;
+    observation.date = "2026-01-0" + std::to_string(index + 1);
+    observation.speaker = "user";
+    observation.lang = "en";
+    observation.ordinal = index;
+    observation.kind = model::ObservationKind::Utterance;
+    observation.artifact_type = "conversation";
+    observation.locator.source = "sha256:fictional_parameter_controls";
+    observation.locator.json_pointer = "/" + std::to_string(index);
+    observation.id = model::Observation::make_id(observation.unit, observation.locator, text);
+    evidence.observations.push_back(observation);
+  }
+  if (candidate) {
+    model::Principle principle;
+    principle.id = "p_fictional_parameter_control";
+    principle.statement["en"] = text;
+    for (const auto& observation : evidence.observations) principle.evidence_for.push_back(observation.id);
+    evidence.principles.push_back(principle);
+  }
+  return evidence;
+}
+
+Documents cue_controls(Documents docs) {
+  // Test data creates an unsaturated score of exactly 2 and a saturated score
+  // of exactly 10; the production matcher, clustering and typing still run.
+  docs.at("lexicons/cues.json")["classes"]["normative"] = Json{
+      {"description", "Fictional DEV control phrases"},
+      {"phrases", Json::array({Json{{"p", "control principle"}, {"w", 2.0}},
+                               Json{{"p", "saturated principle"}, {"w", 10.0}}})}};
+  docs.at("lexicons/cues.json")["classes"]["generalize.generalization"] = Json{
+      {"description", "No extra score for the fictional DEV control phrases"},
+      {"phrases", Json::array({Json{{"p", "unmatched nebula marker"}, {"w", 1.0}}})}};
+  return docs;
+}
+}  // namespace
+
+int main(int argc, char** argv) {
+  if (argc != 2) return 2;
+  std::ifstream input(argv[1]);
+  std::stringstream bytes;
+  bytes << input.rdbuf();
+  auto parsed = json::parse(bytes.str());
+  if (!parsed || !parsed->is_object()) return 3;
+  Documents docs;
+  for (const auto& [path, document] : parsed->items()) docs.emplace(path, document);
+  auto pack = kb::Pack::from_documents(docs);
+  if (!pack) {
+    std::cerr << pack.error().to_string() << '\n';
+    return 4;
+  }
+  auto seeds = model::principles(**pack, model::PriorFilter{});
+  if (!seeds || seeds->empty()) return 5;
+  const auto& seed = seeds->front();
+  const auto text = seed.statement.at("en");
+  const auto seed_evidence = repeated(text, true);
+  const auto low_evidence = repeated("control principle silver lantern", false);
+  const auto high_evidence = repeated("saturated principle copper orchard", false);
+  const auto control_docs = cue_controls(docs);
+
+  Json results = Json::object();
+  auto fixture = test::gfix::load(**pack);
+  results["synthetic_dev"] = discover(docs, fixture.ev, model::PriorFilter{});
+  results["synthetic_dev_without_priors"] = discover(docs, fixture.ev, model::PriorFilter::none());
+  results["seed_default"] = discover(docs, seed_evidence, model::PriorFilter{});
+  results["discovered_low_default"] = discover(control_docs, low_evidence, model::PriorFilter::none());
+  results["discovered_high_default"] = discover(control_docs, high_evidence, model::PriorFilter::none());
+
+  const std::vector<std::pair<std::string, double>> settings = {
+      {"seed_jaccard_multiplier", 0.0},
+      {"repeat_confidence_residual_factor", 0.9},
+      {"discovered_confidence_cap", 0.4},
+      {"discovered_confidence_base", 0.4},
+      {"discovered_confidence_score_factor", 0.2}};
+  for (const auto& [key, value] : settings) {
+    auto changed = key.starts_with("discovered_") ? control_docs : docs;
+    changed.at("policy/thresholds.json")["principles"][key] = value;
+    const auto& evidence = key == "discovered_confidence_cap" ? high_evidence :
+                           key.starts_with("discovered_") ? low_evidence : seed_evidence;
+    const auto priors = key.starts_with("discovered_") ? model::PriorFilter::none() : model::PriorFilter{};
+    results["changed"][key] = discover(changed, evidence, priors);
+    for (std::string invalid : {"missing", "string", "null", "nan", "infinity"}) {
+      auto broken = docs;
+      auto& section = broken.at("policy/thresholds.json")["principles"];
+      if (invalid == "missing") section.erase(key);
+      else if (invalid == "string") section[key] = "not-a-number";
+      else if (invalid == "null") section[key] = nullptr;
+      else if (invalid == "nan") section[key] = std::numeric_limits<double>::quiet_NaN();
+      else section[key] = std::numeric_limits<double>::infinity();
+      results["invalid"][key][invalid] = discover(broken, seed_evidence, model::PriorFilter{});
+    }
+  }
+  Json receipt{{"schema", "loom.principle_parameter_probe/1"},
+               {"fixture", "fictional synthetic_dev and fictional three-unit controls"},
+               {"seed_id", seed.id}, {"seed_initial_confidence", seed.confidence},
+               {"unit_count", 3}, {"distinct_date_count", 3},
+               {"control_scores", Json{{"low", 2.0}, {"high", 10.0}}},
+               {"results", results}};
+  std::cout << json::dump(receipt, 2) << '\n';
+  return 0;
+}

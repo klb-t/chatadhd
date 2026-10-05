@@ -274,68 +274,6 @@ const Json& cue_class(const kb::Pack& pack, std::string_view name) {
   return it == classes->end() ? kNull : *it;
 }
 
-namespace {
-Json phrases(std::initializer_list<std::pair<const char*, double>> v) {
-  Json a = Json::array();
-  for (const auto& [p, w] : v) a.push_back(Json{{"p", p}, {"w", w}});
-  return Json{{"phrases", a}};
-}
-
-// Built-in defaults of the classes this area reads (used only when the pack
-// has no class of that name). They are tuned on the synthetic dev corpus and
-// are meant to move into lexicons/cues.json (lead edit).
-Json default_class(std::string_view name) {
-  if (name == "generalize.generalization") {
-    return phrases({{"ważniejsz* niż", 2}, {"more important than", 2}, {"matters more", 2}, {"na pierwszym miejscu", 2},
-                    {"wolę", 1.5}, {"prefer*", 1.5}, {"reguł*", 2}, {"zasad*", 2}, {"rule", 1.5},
-                    {"jak zawsze", 2}, {"za każdym razem", 2}, {"u mnie", 1.5}, {"po pierwsze", 2}, {"po drugie", 2},
-                    {"po trzecie", 2}, {"nie kasuj*", 2}, {"never delete", 2}, {"wygrywa", 2}, {"wins", 1.5},
-                    {"ten sam wzorzec", 2}, {"same pattern", 2}, {"kiedy", 1}, {"gdy", 1}, {"whenever", 1.5},
-                    {"zamiast", 1}, {"instead of", 1}, {"nie nowy", 1.5}, {"nie nową", 1.5}, {"not a new", 1.5},
-                    {"zanim", 1}, {"before", 0.5}, {"najpierw", 1}, {"dopiero", 1}, {"nie zmienia", 1},
-                    {"zero zmian", 1}, {"nie zapisuj*", 1}, {"zostawiam", 1}, {"odwracaln*", 1.5},
-                    {"reversible", 1.5}, {"wprost", 1}, {"czemu odpadł*", 1.5}, {"dokładnie tak jak", 1}});
-  }
-  if (name == "principle.level.value") {
-    return phrases({{"ważniejsz* niż", 2}, {"more important than", 2}, {"matters more", 2}, {"na pierwszym miejscu", 2},
-                    {"wartoś*", 1.5}, {"value*", 1}, {"opcjonalnoś*", 1.5}, {"optionality", 1.5}, {"prawd*", 1},
-                    {"truth", 1}, {"wprost", 2.5}, {"honest*", 1.5}, {"autonomi*", 1.5}, {"tempa", 1.5},
-                    {"tempo", 1.5}, {"momentum", 1.5}, {"przejrzyst*", 1.5}, {"transparen*", 1.5}});
-  }
-  if (name == "principle.level.epistemic") {
-    return phrases({{"nie wiem", 2}, {"know", 1}, {"zapisuj*", 1.5}, {"record*", 1}, {"notatk*", 1}, {"note*", 0.5},
-                    {"kontrprzykład*", 2}, {"counterexample*", 2}, {"dowod*", 1.5}, {"evidence", 1.5},
-                    {"utknęł*", 1.5}, {"utkn*", 1}, {"stuck", 1.5}, {"opisuj*", 1}, {"z opisem", 1.5},
-                    {"czemu", 1}, {"porzucon*", 1}, {"nie kasuj*", 1.5}, {"gałęzi", 1}, {"branch", 1},
-                    {"ręczn*", 0.5}});
-  }
-  if (name == "principle.form.invariant") {
-    return phrases({{"nigdy", 2}, {"never", 2}, {"nie kasuj*", 2}, {"po pierwsze", 1.5}, {"po drugie", 1.5},
-                    {"na pierwszym miejscu", 1.5}, {"wprost", 1}, {"dalej", 0.5}});
-  }
-  if (name == "principle.form.conflict_resolution") {
-    return phrases({{"kłóc*", 2.5}, {"konflikt*", 2.5}, {"conflict*", 2.5}, {"wygrywa", 2.5}, {"wins", 2},
-                    {"zgod*", 2}, {"consent", 2}, {"potwierdz*", 1.5}, {"confirm*", 1.5}, {"koszt", 1}});
-  }
-  if (name == "principle.form.meta") {
-    return phrases({{"reguł*", 2.5}, {"zasad*", 2}, {"rule", 2}, {"principle", 2}, {"za drugim razem", 2},
-                    {"second time", 2}, {"kontrprzykład*", 1}});
-  }
-  if (name == "principle.form.default") {
-    return phrases({{"na razie", 1.5}, {"for now", 1.5}, {"domyślnie", 2}, {"by default", 2}, {"na start*", 1.5},
-                    {"wolę", 1}, {"prefer*", 1}, {"decyduj*", 1.5}, {"szybko", 1.5}, {"małe", 1}, {"kroki", 1.5},
-                    {"steps", 1}, {"tempa", 1.5}, {"momentum", 1}});
-  }
-  return Json();
-}
-}  // namespace
-
-Json cue_class_or_default(const kb::Pack& pack, std::string_view name) {
-  const Json& c = cue_class(pack, name);
-  if (!c.is_null()) return c;
-  return default_class(name);
-}
-
 void TermWeights::add(const std::vector<std::string>& doc) {
   ++n_;
   for (const auto& t : doc) ++df_[t];

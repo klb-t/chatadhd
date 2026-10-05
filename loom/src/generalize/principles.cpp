@@ -152,7 +152,7 @@ struct TypingContext {
   std::map<std::string, std::set<std::string>, std::less<>> project_subjects_of_unit;  // unit -> project entity ids
 
   TypingContext(const kb::Pack& pack, const kb::Normalizer& n, const Index& index) : norm(n), ix(index) {
-    auto prep = [&](std::string_view cls) { return PreparedCues(norm, detail::cue_class_or_default(pack, cls)); };
+    auto prep = [&](std::string_view cls) { return PreparedCues(norm, detail::cue_class(pack, cls)); };
     value = prep("principle.level.value");
     epistemic = prep("principle.level.epistemic");
     conflict = prep("principle.form.conflict_resolution");
@@ -296,7 +296,25 @@ Status type_principle(const kb::Pack& pack, model::Principle& p, const Evidence&
   return {};
 }
 
+namespace {
+Result<double> required_parameter(const kb::Pack& pack, std::string_view section, std::string_view key) {
+  const Json* values = json::find(pack.file("policy/thresholds.json"), section);
+  const Json* value = values && values->is_object() ? json::find(*values, key) : nullptr;
+  if (!value || !value->is_number())
+    return Error(Errc::InvalidArgument, "required numeric policy parameter: " + std::string(section) + "/" + std::string(key));
+  const double number = value->get<double>();
+  if (!std::isfinite(number))
+    return Error(Errc::InvalidArgument, "nonfinite policy parameter: " + std::string(section) + "/" + std::string(key));
+  return number;
+}
+}  // namespace
+
 Result<PrincipleReport> discover_principles(const kb::Pack& pack, const Evidence& ev, const model::PriorFilter& priors) {
+  LOOM_TRY_ASSIGN(const double seed_jaccard_multiplier, required_parameter(pack, "principles", "seed_jaccard_multiplier"));
+  LOOM_TRY_ASSIGN(const double repeat_confidence_residual_factor, required_parameter(pack, "principles", "repeat_confidence_residual_factor"));
+  LOOM_TRY_ASSIGN(const double discovered_confidence_cap, required_parameter(pack, "principles", "discovered_confidence_cap"));
+  LOOM_TRY_ASSIGN(const double discovered_confidence_base, required_parameter(pack, "principles", "discovered_confidence_base"));
+  LOOM_TRY_ASSIGN(const double discovered_confidence_score_factor, required_parameter(pack, "principles", "discovered_confidence_score_factor"));
   kb::Normalizer norm(pack);
   Index ix(ev);
   const double tau_cluster = detail::threshold(pack, "principles", "cluster_jaccard", 0.5);
@@ -304,8 +322,8 @@ Result<PrincipleReport> discover_principles(const kb::Pack& pack, const Evidence
   const int min_units = static_cast<int>(detail::threshold(pack, "principles", "min_units", 2));
   const int min_dates = static_cast<int>(detail::threshold(pack, "principles", "min_distinct_dates", 2));
   const double tau_statement = detail::threshold(pack, "principles", "min_cue_score", 1.5);
-  const PreparedCues normative(norm, detail::cue_class_or_default(pack, "normative"));
-  const PreparedCues general(norm, detail::cue_class_or_default(pack, "generalize.generalization"));
+  const PreparedCues normative(norm, detail::cue_class(pack, "normative"));
+  const PreparedCues general(norm, detail::cue_class(pack, "generalize.generalization"));
 
   // 1. Candidate statements.
   std::optional<prof::Scope> ph(std::in_place, "generalize.principles.statements");
@@ -467,7 +485,7 @@ Result<PrincipleReport> discover_principles(const kb::Pack& pack, const Evidence
           // Overlap must cover most of the statement (not only the seed): a
           // long seed statement does not swallow every short sentence.
           auto sim = similarity(m->ids, seed_ids[k][ti], m->weight, seed_sum[k][ti], table.weight);
-          double s = std::min(sim.overlap, 2.0 * sim.jaccard);
+          double s = std::min(sim.overlap, seed_jaccard_multiplier * sim.jaccard);
           if (s > best_s + 1e-12) {
             best_s = s;
             best = static_cast<int>(k);
@@ -509,7 +527,7 @@ Result<PrincipleReport> discover_principles(const kb::Pack& pack, const Evidence
     int u = 0, d = 0;
     support(p.evidence_for, u, d);
     if (u >= min_units && d >= min_dates && p.validation == model::ValidationStatus::Candidate) p.validation = model::ValidationStatus::Supported;
-    p.confidence = detail::clamp01(1.0 - (1.0 - p.confidence) * std::pow(0.7, u));
+    p.confidence = detail::clamp01(1.0 - (1.0 - p.confidence) * std::pow(repeat_confidence_residual_factor, u));
     rep.seed_status[s.id] = "found";
     rep.principles.push_back(p);
   }
@@ -545,7 +563,7 @@ Result<PrincipleReport> discover_principles(const kb::Pack& pack, const Evidence
     int u = 0, d = 0;
     support(p.evidence_for, u, d);
     p.validation = (u >= min_units && d >= min_dates) ? model::ValidationStatus::Supported : model::ValidationStatus::Candidate;
-    p.confidence = detail::clamp01(1.0 - std::pow(1.0 - std::min(0.8, 0.25 + 0.1 * top), std::max(1, u)));
+    p.confidence = detail::clamp01(1.0 - std::pow(1.0 - std::min(discovered_confidence_cap, discovered_confidence_base + discovered_confidence_score_factor * top), std::max(1, u)));
     p.owner = "user";
     p.origin = model::Origin::Archive;
     discovered.push_back(std::move(p));

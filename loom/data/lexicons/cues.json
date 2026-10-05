@@ -2312,6 +2312,514 @@
      "w": 1
     }
    ]
+  },
+  "generalize.generalization": {
+   "phrases": [
+    {
+     "p": "ważniejsz* niż",
+     "w": 2
+    },
+    {
+     "p": "more important than",
+     "w": 2
+    },
+    {
+     "p": "matters more",
+     "w": 2
+    },
+    {
+     "p": "na pierwszym miejscu",
+     "w": 2
+    },
+    {
+     "p": "wolę",
+     "w": 1.5
+    },
+    {
+     "p": "prefer*",
+     "w": 1.5
+    },
+    {
+     "p": "reguł*",
+     "w": 2
+    },
+    {
+     "p": "zasad*",
+     "w": 2
+    },
+    {
+     "p": "rule",
+     "w": 1.5
+    },
+    {
+     "p": "jak zawsze",
+     "w": 2
+    },
+    {
+     "p": "za każdym razem",
+     "w": 2
+    },
+    {
+     "p": "u mnie",
+     "w": 1.5
+    },
+    {
+     "p": "po pierwsze",
+     "w": 2
+    },
+    {
+     "p": "po drugie",
+     "w": 2
+    },
+    {
+     "p": "po trzecie",
+     "w": 2
+    },
+    {
+     "p": "nie kasuj*",
+     "w": 2
+    },
+    {
+     "p": "never delete",
+     "w": 2
+    },
+    {
+     "p": "wygrywa",
+     "w": 2
+    },
+    {
+     "p": "wins",
+     "w": 1.5
+    },
+    {
+     "p": "ten sam wzorzec",
+     "w": 2
+    },
+    {
+     "p": "same pattern",
+     "w": 2
+    },
+    {
+     "p": "kiedy",
+     "w": 1
+    },
+    {
+     "p": "gdy",
+     "w": 1
+    },
+    {
+     "p": "whenever",
+     "w": 1.5
+    },
+    {
+     "p": "zamiast",
+     "w": 1
+    },
+    {
+     "p": "instead of",
+     "w": 1
+    },
+    {
+     "p": "nie nowy",
+     "w": 1.5
+    },
+    {
+     "p": "nie nową",
+     "w": 1.5
+    },
+    {
+     "p": "not a new",
+     "w": 1.5
+    },
+    {
+     "p": "zanim",
+     "w": 1
+    },
+    {
+     "p": "before",
+     "w": 0.5
+    },
+    {
+     "p": "najpierw",
+     "w": 1
+    },
+    {
+     "p": "dopiero",
+     "w": 1
+    },
+    {
+     "p": "nie zmienia",
+     "w": 1
+    },
+    {
+     "p": "zero zmian",
+     "w": 1
+    },
+    {
+     "p": "nie zapisuj*",
+     "w": 1
+    },
+    {
+     "p": "zostawiam",
+     "w": 1
+    },
+    {
+     "p": "odwracaln*",
+     "w": 1.5
+    },
+    {
+     "p": "reversible",
+     "w": 1.5
+    },
+    {
+     "p": "wprost",
+     "w": 1
+    },
+    {
+     "p": "czemu odpadł*",
+     "w": 1.5
+    },
+    {
+     "p": "dokładnie tak jak",
+     "w": 1
+    }
+   ]
+  },
+  "principle.level.value": {
+   "phrases": [
+    {
+     "p": "ważniejsz* niż",
+     "w": 2
+    },
+    {
+     "p": "more important than",
+     "w": 2
+    },
+    {
+     "p": "matters more",
+     "w": 2
+    },
+    {
+     "p": "na pierwszym miejscu",
+     "w": 2
+    },
+    {
+     "p": "wartoś*",
+     "w": 1.5
+    },
+    {
+     "p": "value*",
+     "w": 1
+    },
+    {
+     "p": "opcjonalnoś*",
+     "w": 1.5
+    },
+    {
+     "p": "optionality",
+     "w": 1.5
+    },
+    {
+     "p": "prawd*",
+     "w": 1
+    },
+    {
+     "p": "truth",
+     "w": 1
+    },
+    {
+     "p": "wprost",
+     "w": 2.5
+    },
+    {
+     "p": "honest*",
+     "w": 1.5
+    },
+    {
+     "p": "autonomi*",
+     "w": 1.5
+    },
+    {
+     "p": "tempa",
+     "w": 1.5
+    },
+    {
+     "p": "tempo",
+     "w": 1.5
+    },
+    {
+     "p": "momentum",
+     "w": 1.5
+    },
+    {
+     "p": "przejrzyst*",
+     "w": 1.5
+    },
+    {
+     "p": "transparen*",
+     "w": 1.5
+    }
+   ]
+  },
+  "principle.level.epistemic": {
+   "phrases": [
+    {
+     "p": "nie wiem",
+     "w": 2
+    },
+    {
+     "p": "know",
+     "w": 1
+    },
+    {
+     "p": "zapisuj*",
+     "w": 1.5
+    },
+    {
+     "p": "record*",
+     "w": 1
+    },
+    {
+     "p": "notatk*",
+     "w": 1
+    },
+    {
+     "p": "note*",
+     "w": 0.5
+    },
+    {
+     "p": "kontrprzykład*",
+     "w": 2
+    },
+    {
+     "p": "counterexample*",
+     "w": 2
+    },
+    {
+     "p": "dowod*",
+     "w": 1.5
+    },
+    {
+     "p": "evidence",
+     "w": 1.5
+    },
+    {
+     "p": "utknęł*",
+     "w": 1.5
+    },
+    {
+     "p": "utkn*",
+     "w": 1
+    },
+    {
+     "p": "stuck",
+     "w": 1.5
+    },
+    {
+     "p": "opisuj*",
+     "w": 1
+    },
+    {
+     "p": "z opisem",
+     "w": 1.5
+    },
+    {
+     "p": "czemu",
+     "w": 1
+    },
+    {
+     "p": "porzucon*",
+     "w": 1
+    },
+    {
+     "p": "nie kasuj*",
+     "w": 1.5
+    },
+    {
+     "p": "gałęzi",
+     "w": 1
+    },
+    {
+     "p": "branch",
+     "w": 1
+    },
+    {
+     "p": "ręczn*",
+     "w": 0.5
+    }
+   ]
+  },
+  "principle.form.invariant": {
+   "phrases": [
+    {
+     "p": "nigdy",
+     "w": 2
+    },
+    {
+     "p": "never",
+     "w": 2
+    },
+    {
+     "p": "nie kasuj*",
+     "w": 2
+    },
+    {
+     "p": "po pierwsze",
+     "w": 1.5
+    },
+    {
+     "p": "po drugie",
+     "w": 1.5
+    },
+    {
+     "p": "na pierwszym miejscu",
+     "w": 1.5
+    },
+    {
+     "p": "wprost",
+     "w": 1
+    },
+    {
+     "p": "dalej",
+     "w": 0.5
+    }
+   ]
+  },
+  "principle.form.conflict_resolution": {
+   "phrases": [
+    {
+     "p": "kłóc*",
+     "w": 2.5
+    },
+    {
+     "p": "konflikt*",
+     "w": 2.5
+    },
+    {
+     "p": "conflict*",
+     "w": 2.5
+    },
+    {
+     "p": "wygrywa",
+     "w": 2.5
+    },
+    {
+     "p": "wins",
+     "w": 2
+    },
+    {
+     "p": "zgod*",
+     "w": 2
+    },
+    {
+     "p": "consent",
+     "w": 2
+    },
+    {
+     "p": "potwierdz*",
+     "w": 1.5
+    },
+    {
+     "p": "confirm*",
+     "w": 1.5
+    },
+    {
+     "p": "koszt",
+     "w": 1
+    }
+   ]
+  },
+  "principle.form.meta": {
+   "phrases": [
+    {
+     "p": "reguł*",
+     "w": 2.5
+    },
+    {
+     "p": "zasad*",
+     "w": 2
+    },
+    {
+     "p": "rule",
+     "w": 2
+    },
+    {
+     "p": "principle",
+     "w": 2
+    },
+    {
+     "p": "za drugim razem",
+     "w": 2
+    },
+    {
+     "p": "second time",
+     "w": 2
+    },
+    {
+     "p": "kontrprzykład*",
+     "w": 1
+    }
+   ]
+  },
+  "principle.form.default": {
+   "phrases": [
+    {
+     "p": "na razie",
+     "w": 1.5
+    },
+    {
+     "p": "for now",
+     "w": 1.5
+    },
+    {
+     "p": "domyślnie",
+     "w": 2
+    },
+    {
+     "p": "by default",
+     "w": 2
+    },
+    {
+     "p": "na start*",
+     "w": 1.5
+    },
+    {
+     "p": "wolę",
+     "w": 1
+    },
+    {
+     "p": "prefer*",
+     "w": 1
+    },
+    {
+     "p": "decyduj*",
+     "w": 1.5
+    },
+    {
+     "p": "szybko",
+     "w": 1.5
+    },
+    {
+     "p": "małe",
+     "w": 1
+    },
+    {
+     "p": "kroki",
+     "w": 1.5
+    },
+    {
+     "p": "steps",
+     "w": 1
+    },
+    {
+     "p": "tempa",
+     "w": 1.5
+    },
+    {
+     "p": "momentum",
+     "w": 1
+    }
+   ]
   }
  }
 }
