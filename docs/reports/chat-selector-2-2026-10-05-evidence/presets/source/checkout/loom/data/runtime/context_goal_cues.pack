@@ -1,0 +1,68 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "context_goal_cues",
+  "revision": 1,
+  "defaults": {
+    "cue_weight_base": 1.0,
+    "cue_weight_per_additional_word": 0.4,
+    "no_cue_confidence": 0.25,
+    "confidence_denominator_offset": 1.0,
+    "fallback_goal_type": "answer_question",
+    "fallback_when_unavailable": "first_by_id"
+  },
+  "value_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "cue_weight_base",
+      "cue_weight_per_additional_word",
+      "no_cue_confidence",
+      "confidence_denominator_offset",
+      "fallback_goal_type",
+      "fallback_when_unavailable"
+    ],
+    "properties": {
+      "cue_weight_base": {
+        "type": "number",
+        "title": "Weight of a one-word cue",
+        "x-setting": "/cue_weight_base",
+        "x-consumer": "ContextEngine::type_goal"
+      },
+      "cue_weight_per_additional_word": {
+        "type": "number",
+        "title": "Additional weight per additional cue word",
+        "x-setting": "/cue_weight_per_additional_word",
+        "x-consumer": "ContextEngine::type_goal"
+      },
+      "no_cue_confidence": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1,
+        "title": "Heuristic confidence when no cue scores positively",
+        "x-setting": "/no_cue_confidence",
+        "x-consumer": "ContextEngine::type_goal"
+      },
+      "confidence_denominator_offset": {
+        "type": "number",
+        "title": "Offset in best / (best + second + offset)",
+        "description": "The actual confidence denominator must be finite and positive.",
+        "x-setting": "/confidence_denominator_offset",
+        "x-consumer": "ContextEngine::type_goal"
+      },
+      "fallback_goal_type": {
+        "type": "string",
+        "minLength": 1,
+        "title": "Preferred fallback goal type",
+        "x-setting": "/fallback_goal_type",
+        "x-consumer": "ContextEngine::type_goal"
+      },
+      "fallback_when_unavailable": {
+        "type": "string",
+        "enum": ["first_by_id", "error"],
+        "title": "Operation when the preferred fallback is absent",
+        "x-setting": "/fallback_when_unavailable",
+        "x-consumer": "ContextEngine::type_goal"
+      }
+    }
+  }
+}
