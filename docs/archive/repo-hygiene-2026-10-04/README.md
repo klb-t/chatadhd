@@ -13,6 +13,9 @@ tested branch head `ee97311d6545ca19e19266d2f37514f2663f0aa9`, merge commit
 `295de864dc42507ce4f54a0bbd7adf42fd1bc9fa`, based on `161cc22`.
 `ci-first/*-job.log` retains each complete job log. Matching JSON records the
 hash, source, public URL, commands and any redactions (none were needed).
+Those job JSON files are first-capture metadata and can still mark artifact
+inspection as pending; later downloaded files and the case inventory retain
+the subsequent inspection without rewriting that first capture.
 `ci-first/run-terminal.json` records all job/artifact identities and ZIP hashes.
 Artifact directories retain every downloaded file, including complete
 `LastTest.log` and discovery manifest. Original capture paths in diagnostics
