@@ -1,0 +1,286 @@
+{
+  "schema": "loom.default_layers_pack/1",
+  "pack_id": "loom.onboarding.defaults",
+  "revision": 1,
+  "policy": {
+    "excluded_area_new_defaults": "proposal"
+  },
+  "entries": [
+    {
+      "id": "onboarding.settings/v1",
+      "key": "onboarding.settings",
+      "area": "onboarding/settings",
+      "revision": 1,
+      "value": {
+        "preference_mode": "ask"
+      }
+    },
+    {
+      "id": "onboarding.privacy/v1",
+      "key": "onboarding.privacy",
+      "area": "privacy",
+      "revision": 1,
+      "value": {
+        "rules": [
+          {
+            "id": "local-explicit-preset",
+            "category": "*",
+            "store": true,
+            "infer": false,
+            "explicit_only": true,
+            "providers": [],
+            "max_detail": null,
+            "max_sensitivity": null,
+            "retention": {
+              "history": "full",
+              "max_events": null,
+              "metadata_keys": [
+                "id",
+                "op",
+                "field",
+                "category",
+                "time",
+                "provenance",
+                "review",
+                "review_time",
+                "presentation",
+                "detail",
+                "sensitivity",
+                "candidate",
+                "decision",
+                "status",
+                "source_refs",
+                "method_version_id",
+                "method_run_id"
+              ]
+            },
+            "provenance": "builtin_preset",
+            "consent_event": null
+          }
+        ]
+      },
+      "requires_explicit_consent": true
+    },
+    {
+      "id": "preference.style/v1",
+      "key": "preference.style",
+      "area": "preferences/communication",
+      "revision": 1,
+      "value": "neutral"
+    },
+    {
+      "id": "preference.length/v1",
+      "key": "preference.length",
+      "area": "preferences/communication",
+      "revision": 1,
+      "value": "concise"
+    },
+    {
+      "id": "preference.language/v1",
+      "key": "preference.language",
+      "area": "preferences/communication",
+      "revision": 1,
+      "value": "auto"
+    },
+    {
+      "id": "preference.adhd_needs/v1",
+      "key": "preference.adhd_needs",
+      "area": "preferences/communication",
+      "revision": 1,
+      "value": []
+    },
+    {
+      "id": "profile.self/v1",
+      "key": "profile.self",
+      "area": "profiles/application",
+      "revision": 1,
+      "value": {
+        "pack_path": "profiles/self.json",
+        "role": "application_probe",
+        "user_personal_fact": false
+      }
+    },
+    {
+      "id": "method.onboarding/v1",
+      "key": "method.onboarding",
+      "area": "methods/onboarding",
+      "revision": 1,
+      "value": {
+        "schema": "loom.default_reference/1",
+        "source": "scenario",
+        "pointer": "/graph_method"
+      }
+    },
+    {
+      "id": "prompt.onboarding/v1",
+      "key": "prompt.onboarding",
+      "area": "prompts/onboarding",
+      "revision": 1,
+      "value": {
+        "schema": "loom.default_reference/1",
+        "source": "scenario",
+        "pointer": "/prompt"
+      }
+    }
+  ],
+  "vocabulary": {
+    "kinds": {
+      "profile": "profile",
+      "field": "field",
+      "privacy_rule": "privacy_rule",
+      "default": "default",
+      "layer": "layer",
+      "exclusion": "exclusion",
+      "pack_document": "pack_document",
+      "type": "type",
+      "method": "method",
+      "method_version": "method_version",
+      "prompt_version": "prompt_version",
+      "recipe_version": "recipe_version",
+      "parameter_set_version": "parameter_set_version",
+      "preset_version": "preset_version",
+      "run": "run"
+    },
+    "predicates": {
+      "has_field": "has_field",
+      "has_rule": "has_rule",
+      "has_default": "has_default",
+      "excluded": "excluded",
+      "version_of": "version_of",
+      "uses_prompt": "uses_prompt",
+      "uses_recipe": "uses_recipe",
+      "uses_parameter_set": "uses_parameter_set",
+      "uses_preset": "uses_preset",
+      "declares_type": "declares_type",
+      "has_state": "has_state",
+      "has_value": "has_value",
+      "from_layer": "from_layer",
+      "part_of": "part_of",
+      "has_profile": "has_profile",
+      "has_method": "has_method",
+      "uses_method_version": "uses_method_version",
+      "requests_method_version": "requests_method_version",
+      "produced_in_run": "produced_in_run",
+      "produced_by_method_version": "produced_by_method_version"
+    }
+  },
+  "runtime_definition": {
+    "schema": "loom.runtime_profile/1",
+    "domain": "onboarding",
+    "revision": 1,
+    "defaults": {
+      "settings": {
+        "preference_mode": "ask"
+      },
+      "privacy": {
+        "rules": [
+          {
+            "id": "local-explicit-preset",
+            "category": "*",
+            "store": true,
+            "infer": false,
+            "explicit_only": true,
+            "providers": [],
+            "max_detail": null,
+            "max_sensitivity": null,
+            "retention": {
+              "history": "full",
+              "max_events": null,
+              "metadata_keys": [
+                "id",
+                "op",
+                "field",
+                "category",
+                "time",
+                "provenance",
+                "review",
+                "review_time",
+                "presentation",
+                "detail",
+                "sensitivity",
+                "candidate",
+                "decision",
+                "status",
+                "source_refs",
+                "method_version_id",
+                "method_run_id"
+              ]
+            },
+            "provenance": "builtin_preset",
+            "consent_event": null
+          }
+        ]
+      }
+    },
+    "value_schema": {
+      "type": "object",
+      "required": [
+        "settings",
+        "privacy"
+      ],
+      "properties": {
+        "settings": {
+          "type": "object",
+          "required": [
+            "preference_mode"
+          ],
+          "properties": {
+            "preference_mode": {
+              "type": "string",
+              "enum": [
+                "ask",
+                "candidate",
+                "automatic"
+              ],
+              "x-setting": "/settings/preference_mode"
+            }
+          },
+          "additionalProperties": true
+        },
+        "privacy": {
+          "type": "object",
+          "required": [
+            "rules"
+          ],
+          "properties": {
+            "rules": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "x-setting": "/privacy/rules"
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "runtime_bindings": {
+    "/settings": "onboarding.settings",
+    "/privacy": "onboarding.privacy"
+  },
+  "scenario_bindings": {
+    "/prompt": "prompt.onboarding",
+    "/graph_method/prompt/text": "prompt.onboarding"
+  },
+  "method_selection": {
+    "parameter_layers": [
+      "preset",
+      "recipe",
+      "method",
+      "parameter_set",
+      "selection",
+      "user"
+    ],
+    "parameters": {},
+    "user_overrides": {}
+  },
+  "scenario_copy_bindings": {
+    "/graph_method/recipe/sections": "/sections",
+    "/graph_method/recipe/reply_schema": "/reply_schema",
+    "/graph_method/recipe/fields": "/fields"
+  }
+}
