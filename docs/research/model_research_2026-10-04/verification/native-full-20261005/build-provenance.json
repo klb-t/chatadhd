@@ -1,0 +1,74 @@
+{
+  "configured_commit": "70587e4d12fac9fa0042e554dbeb7a4aa60127ba",
+  "configured_tree": "a8e5eb7fb77e11a15e328f55efb65668da5e720c",
+  "native_git_objects": {
+    "loom/CMakeLists.txt": "ad3b93fbcc4df4aaa326e7232c92b0025d9aa9e4",
+    "loom/CMakePresets.json": "b78ba150bf92a2e47c6282cb56ae4a15ade0eda8",
+    "loom/include": "d6379c5933b53257c741da4ecc40f3f155667af8",
+    "loom/src": "ece645c06e77c193dae09999980b505e6389eb5e",
+    "loom/tests": "b79f907c42161f30e3a74dd726e0a5d06fb36d8f",
+    "loom/cli": "76959965bd4353c1705be49fb7391bc80636be15",
+    "loom/server": "11f355e52d7578bbd06fc2a2770a5802c8d1c99b",
+    "loom/third_party": "070d3a3fecc7caa8c2c568d1ab03fceea977225c",
+    "loom/data": "3ed3885718c5a4db5a49c87e327555e8a9af4a62",
+    "engine": "e9c1ac5e0cbac581db02b56206ddf6ff67614aa1",
+    "core": "b9b1b999869eb0901334a966bbb3703d35b7521c"
+  },
+  "build_dir": "/workspace/scratch/407fe6f6ff42/build",
+  "cmake_version": "4.4.4",
+  "compiler": "GNU 13.3.0",
+  "python": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+  "parallel_build_jobs": 2,
+  "configure_command": "/root/.local/bin/cmake -S loom -B /workspace/scratch/407fe6f6ff42/build -G Ninja -DCMAKE_MAKE_PROGRAM=/root/.local/bin/ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS_DEBUG=\"-O0 -g0\" -DCMAKE_CXX_FLAGS_DEBUG=\"-O0 -g0\" -DLOOM_WERROR=ON -DLOOM_USE_SYSTEM_SQLITE=OFF -DLOOM_SHARED=ON -DLOOM_BUILD_CLI=ON -DLOOM_BUILD_SERVER=ON -DLOOM_BUILD_TESTS=ON -DPython3_EXECUTABLE=/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+  "build_command": "/root/.local/bin/cmake --build /workspace/scratch/407fe6f6ff42/build -j2",
+  "observed_head_during_build": "8c72c88b3aa80e56e42cabc6feb249c1bc1f6e09",
+  "native_input_equivalent": true,
+  "elf_validation": {
+    "object_count": 229,
+    "invalid_objects": []
+  },
+  "binaries": {
+    "loom_tests": {
+      "size": 49449584,
+      "sha256": "0050047a7a4b1c6313d9d5938f1d0012ce69ce6a7961c044c1ea26da4c3ba05b",
+      "mode": "0o755"
+    },
+    "loom_compat_tool": {
+      "size": 32373152,
+      "sha256": "01a490a8f0ad169a20c1eeeda5079de9fe3851c70231d055b753e871e8189464",
+      "mode": "0o755"
+    },
+    "loom_candidate_graph_native_tool": {
+      "size": 2008704,
+      "sha256": "d3e8411f099698bca28d6f7f089eb8f5ba5920637826eb447796db6d86c79def",
+      "mode": "0o755"
+    },
+    "cli/loom": {
+      "size": 32182400,
+      "sha256": "6d7277b8384041ef7bdc8d3f03c95c03fd81cc59a9533d9da094e6e6bc04c872",
+      "mode": "0o755"
+    },
+    "server/loom-server": {
+      "size": 34738016,
+      "sha256": "14e9f958078e87b668a14130d3a7127400499d96e751e0a84789533b0aee8707",
+      "mode": "0o755"
+    },
+    "libloom.so.0.1.0": {
+      "size": 34451376,
+      "sha256": "2024c211bf38b8b74dd12273e3826a39894059b8deda2bf15bdcb86de3b994e9",
+      "mode": "0o755"
+    }
+  },
+  "observed_head_at_build_completion": "2b52108c704bebecf74035106c57aa0d3e29a44b",
+  "initial_build_exit_code": 1,
+  "initial_failure": "Two generated objects were zero-byte despite successful compiler status; ld rejected store.cpp.o",
+  "repair_command": "/root/.local/bin/ninja -C /workspace/scratch/407fe6f6ff42/build -j1 CMakeFiles/loom_core.dir/src/kb/store.cpp.o CMakeFiles/loom_tests.dir/tests/test_archive.cpp.o",
+  "continuation_command": "/root/.local/bin/cmake --build /workspace/scratch/407fe6f6ff42/build -j1",
+  "continuation_exit_code": 0,
+  "permissions_repair": {
+    "binary": "loom_compat_tool",
+    "before": "0o644",
+    "after": "0o755",
+    "sha256_unchanged": true
+  }
+}
