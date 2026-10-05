@@ -1,0 +1,27 @@
+{
+  "schema": "loom.final_source_equivalence/1",
+  "tested_source_commit": "ec34a67b379dd1397d64ff728033c3b502778e41",
+  "tested_compiled_base": "66da570d3b5379492e128d940ad474467082c59f",
+  "selected_base": "6ae0e28b8405b43aa9d8995ad8273a0bcb0b34c4",
+  "selected_local_tree": "cc6e8b3e5450110d5bcfbb2fcd1642c22c97f34f",
+  "product_paths": [
+    "loom",
+    "engine",
+    "core",
+    "gui",
+    "tools",
+    ".github",
+    "AGENTS.md"
+  ],
+  "product_diff_empty": true,
+  "base_product_diff_empty": true,
+  "only_foreign_changes": [
+    "docs/STATE.md",
+    "docs/reports/INDEX.md",
+    "docs/reports/integrator-2026-10-05.md",
+    "docs/reports/integrator-intake-2026-10-05/5-evidence.zip",
+    "docs/reports/integrator-intake-2026-10-05/README.md"
+  ],
+  "passed_ctest_receipt_sha256": "a1f682b407700550190b58e8814844623e2cb7c75cf504ff60362a9e68218224",
+  "extra_integrator_488_build_status": "explicit Ctrl-C, exit130; not a gate PASS"
+}
