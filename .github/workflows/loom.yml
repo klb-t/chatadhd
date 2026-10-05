@@ -98,11 +98,39 @@ jobs:
         working-directory: loom
         run: cmake --build --preset ${{ matrix.preset }} --parallel 2
 
+      - name: Build the ordinary FFI companion for native sanitizer tests
+        if: matrix.preset == 'asan'
+        working-directory: loom
+        # Native executables remain instrumented. ctypes must also execute the
+        # mandatory Packet suite, without loading ASan into ordinary CPython.
+        run: |
+          cmake -S . -B build/asan-ffi -G Ninja \
+            -DCMAKE_BUILD_TYPE=Debug -DLOOM_USE_SYSTEM_SQLITE=ON \
+            -DLOOM_SHARED=ON -DLOOM_WERROR=ON \
+            -DLOOM_BUILD_TESTS=OFF -DLOOM_BUILD_CLI=OFF -DLOOM_BUILD_SERVER=OFF
+          cmake --build build/asan-ffi --target loom --parallel 2
+
       - name: Test
         working-directory: loom
         shell: bash
         run: |
           mkdir -p build/${{ matrix.preset }}/verification
+          if [ '${{ matrix.preset }}' = asan ]; then
+            export LOOM_LIBRARY="$PWD/build/asan-ffi/libloom.so"
+            python ../.github/scripts/write_build_receipt.py \
+              --preset asan-ffi-companion \
+              --cmake-cache build/asan-ffi/CMakeCache.txt \
+              --cmake-field CMAKE_BUILD_TYPE \
+              --cmake-field CMAKE_C_COMPILER \
+              --cmake-field CMAKE_CXX_COMPILER \
+              --cmake-field CMAKE_C_FLAGS \
+              --cmake-field CMAKE_CXX_FLAGS \
+              --cmake-field LOOM_USE_SYSTEM_SQLITE \
+              --cmake-field LOOM_SHARED \
+              --cmake-field LOOM_WERROR \
+              --output build/asan/verification/ffi-companion-receipt.json \
+              --binary "$LOOM_LIBRARY"
+          fi
           python ../.github/scripts/write_build_receipt.py \
             --preset ${{ matrix.preset }} \
             --cmake-cache build/${{ matrix.preset }}/CMakeCache.txt \
