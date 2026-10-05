@@ -3,7 +3,9 @@
 No actual programme outputs, credentials, account metadata or provider calls.
 """
 from copy import deepcopy
+from contextlib import redirect_stdout
 import hashlib
+import io
 import json
 from pathlib import Path
 import tempfile
@@ -658,3 +660,106 @@ class RepetitionBootstrapTests(RepetitionFixture, unittest.TestCase):
         self.policy_raw = canonical(self.policy)
         with self.assertRaises(KeyError):
             self.score(self.bundle())
+
+
+class RepetitionGoldContainerTests(RepetitionFixture, unittest.TestCase):
+    setUp = RepetitionScoreTests.setUp
+    bundle = RepetitionScoreTests.bundle
+    score = RepetitionScoreTests.score
+
+    def container(self, value):
+        self.gold_raw = canonical(value)
+        self.policy['scoring']['gold_sha256'] = digest(self.gold_raw)
+        self.policy_raw = canonical(self.policy)
+
+    def selected_score(self, bundle, pointer):
+        return r.score(self.source_path, self.selection_raw, self.policy_raw,
+                       self.output / 'manifest.json', canonical(bundle), self.gold_raw,
+                       gold_cases_pointer=pointer)
+
+    def test_default_list_selector_preserves_reports_and_records_provenance(self):
+        bundle = self.bundle()
+        result = self.score(bundle)
+        self.assertEqual(result, self.selected_score(bundle, ''))
+        self.assertEqual(result['gold_selection'], {
+            'cases_pointer': '', 'source_sha256': digest(self.gold_raw),
+            'selected_array_sha256': digest(canonical(json.loads(self.gold_raw)))})
+        self.assertEqual(result['arms'][0]['pooled_source_label_report']['available'], 4)
+
+    def test_dictionary_cases_selector_preserves_exact_container_and_preparation(self):
+        cases = json.loads(self.gold_raw)
+        self.container({'schema': 'invented.gold/1', 'split': 'invented-dev',
+                        'policy_id': 'invented-policy', 'cases': cases})
+        bundle = self.bundle()
+        manifest_raw = (self.output / 'manifest.json').read_bytes()
+        policy_raw, gold_raw = self.policy_raw, self.gold_raw
+        result = self.selected_score(bundle, '/cases')
+        self.assertEqual(result['gold_selection'], {'cases_pointer': '/cases',
+                         'source_sha256': digest(gold_raw), 'selected_array_sha256': digest(canonical(cases))})
+        self.assertEqual(result['input_sha256']['gold'], digest(gold_raw))
+        self.assertEqual((self.output / 'manifest.json').read_bytes(), manifest_raw)
+        self.assertEqual(self.policy_raw, policy_raw)
+        self.assertEqual(self.gold_raw, gold_raw)
+        self.assertEqual(result['planned_operations'], 8)
+        self.assertEqual(result['arms'][0]['pooled_source_label_report']['accuracy_all_queries'], 1)
+
+    def test_arbitrary_nested_selector_uses_existing_rfc6901_pointer(self):
+        cases = json.loads(self.gold_raw)
+        self.container({'a/b': [{'~cases': cases}]})
+        result = self.selected_score(self.bundle(), '/a~1b/0/~0cases')
+        self.assertEqual(result['gold_selection']['cases_pointer'], '/a~1b/0/~0cases')
+        self.assertEqual(result['gold_selection']['selected_array_sha256'], digest(canonical(cases)))
+        self.assertEqual(result['arms'][0]['pooled_source_label_report']['available'], 4)
+
+    def test_missing_selector_does_not_fall_back_or_infer_cases(self):
+        self.container({'cases': json.loads(self.gold_raw)})
+        with self.assertRaises(KeyError):
+            self.selected_score(self.bundle(), '/absent')
+
+    def test_selected_non_array_or_empty_array_rejected(self):
+        for value in ({}, None, 'not cases', 0, False, []):
+            with self.subTest(value=value):
+                self.container({'cases': value})
+                self.output = self.directory / ('invalid-cases-' + digest(self.gold_raw))
+                with self.assertRaisesRegex(ValueError, 'repetition_gold_invalid'):
+                    self.selected_score(self.bundle(), '/cases')
+
+    def test_default_still_rejects_dictionary_without_explicit_selector(self):
+        self.container({'cases': json.loads(self.gold_raw)})
+        with self.assertRaisesRegex(ValueError, 'repetition_gold_invalid'):
+            self.score(self.bundle())
+
+    def test_invalid_pointer_is_rejected_by_existing_pointer_semantics(self):
+        self.container({'cases': json.loads(self.gold_raw)})
+        bundle = self.bundle()
+        for pointer in ('cases', '/ca~2ses', '/cases/01', None):
+            with self.subTest(pointer=pointer), self.assertRaises(ValueError):
+                self.selected_score(bundle, pointer)
+
+    def test_source_hash_binding_precedes_selector_and_covers_full_container(self):
+        self.container({'cases': json.loads(self.gold_raw), 'metadata': 'invented'})
+        bundle = self.bundle()
+        self.gold_raw += b' '
+        with self.assertRaisesRegex(ValueError, 'repetition_gold_snapshot_changed'):
+            self.selected_score(bundle, '/cases')
+
+    def test_score_cli_selector_is_runtime_data_and_emits_bound_provenance(self):
+        cases = json.loads(self.gold_raw)
+        self.container({'cases': cases})
+        bundle = self.bundle()
+        paths = {}
+        for name, raw in [('selection', self.selection_raw), ('policy', self.policy_raw),
+                          ('bundle', canonical(bundle)), ('gold', self.gold_raw)]:
+            paths[name] = self.directory / (name + '.json')
+            paths[name].write_bytes(raw)
+        output = self.directory / 'score.json'
+        arguments = ['score', '--source-manifest', str(self.source_path),
+                     '--manifest', str(self.output / 'manifest.json'), '--output', str(output),
+                     '--gold-cases-pointer', '/cases']
+        for name, path in paths.items():
+            arguments.extend(['--' + name, str(path)])
+        with redirect_stdout(io.StringIO()) as stdout:
+            r.main(arguments)
+        result = json.loads(output.read_bytes())
+        self.assertEqual(result, self.selected_score(bundle, '/cases'))
+        self.assertEqual(json.loads(stdout.getvalue()), {'new_model_calls': 0, 'planned_operations': 8})
