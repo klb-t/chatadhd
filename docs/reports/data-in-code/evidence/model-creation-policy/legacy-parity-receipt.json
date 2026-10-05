@@ -1,0 +1,8 @@
+{
+  "exit": 0,
+  "byte_equal": true,
+  "before_bytes": 264606,
+  "after_bytes": 264606,
+  "before_sha256": "6eb6f00d3c398870a15f350a918d7558eb20d68e31b64af82ca745d250b0b7a4",
+  "after_sha256": "6eb6f00d3c398870a15f350a918d7558eb20d68e31b64af82ca745d250b0b7a4"
+}

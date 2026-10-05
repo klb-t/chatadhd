@@ -2,44 +2,422 @@
   "schema": "loom.runtime_profile/1",
   "domain": "model",
   "revision": 1,
-  "description": "Model policy defaults for origin authority ranks, status-history classification and anchoring rationale formatting. Ranks and class membership do not rewrite recorded Origin, EvidenceClass or StatusValue. Evidence/premise protections remain engine invariants. Anchoring identity and exact role-binding confidence are unchanged. If status classes overlap, loss classification takes precedence, matching the history state machine's branch order.",
+  "description": "Model policy defaults for origin authority ranks, status-history classification and anchoring rationale formatting. Ranks and class membership do not rewrite recorded Origin, EvidenceClass or StatusValue. Evidence/premise protections remain engine invariants. Anchoring identity and exact role-binding confidence are unchanged. If status classes overlap, loss classification takes precedence, matching the history state machine's branch order. Creation defaults apply only through the new normalize_creation API; historic DTO defaults and from_json interpretation remain unchanged. Producer origin, identity/type and evidence/provenance cannot be supplied by profile templates.",
   "defaults": {
-    "authority_ranks": {"archive": 4, "repo": 4, "user": 5, "external_authority": 3, "model_knowledge": 1, "system": 2},
+    "authority_ranks": {
+      "archive": 4,
+      "repo": 4,
+      "user": 5,
+      "external_authority": 3,
+      "model_knowledge": 1,
+      "system": 2
+    },
     "unknown_origin_rank": 0,
-    "status_history": {"present": ["implemented", "partial", "restored"], "lost": ["lost"]},
-    "anchoring_rationale": "domain kind '{{kind}}' plays the universal role '{{role}}'"
+    "status_history": {
+      "present": [
+        "implemented",
+        "partial",
+        "restored"
+      ],
+      "lost": [
+        "lost"
+      ]
+    },
+    "anchoring_rationale": "domain kind '{{kind}}' plays the universal role '{{role}}'",
+    "creation_defaults": {
+      "principle": {
+        "confidence": 0.5,
+        "validation_status": "candidate"
+      },
+      "operator": {
+        "confidence": 0.5,
+        "validation_status": "candidate"
+      },
+      "morphism": {
+        "confidence": 0.5,
+        "validation_status": "candidate",
+        "mode": "presence"
+      },
+      "slot": {
+        "card": "one",
+        "required": false,
+        "weight": 1.0
+      },
+      "domain_relation": {
+        "card": "many"
+      },
+      "domain_kind": {
+        "card": "many",
+        "required": false,
+        "weight": 1.0
+      },
+      "project_kind": {
+        "subject_kind": "project",
+        "validation_status": "candidate"
+      }
+    }
   },
   "value_schema": {
     "type": "object",
-    "required": ["authority_ranks", "unknown_origin_rank", "status_history", "anchoring_rationale"],
+    "required": [
+      "authority_ranks",
+      "unknown_origin_rank",
+      "status_history",
+      "anchoring_rationale",
+      "creation_defaults"
+    ],
     "additionalProperties": false,
     "properties": {
       "authority_ranks": {
         "type": "object",
-        "required": ["archive", "repo", "user", "external_authority", "model_knowledge", "system"],
+        "required": [
+          "archive",
+          "repo",
+          "user",
+          "external_authority",
+          "model_knowledge",
+          "system"
+        ],
         "additionalProperties": false,
         "properties": {
-          "archive": {"type": "integer", "minimum": -2147483648, "maximum": 2147483647},
-          "repo": {"type": "integer", "minimum": -2147483648, "maximum": 2147483647},
-          "user": {"type": "integer", "minimum": -2147483648, "maximum": 2147483647},
-          "external_authority": {"type": "integer", "minimum": -2147483648, "maximum": 2147483647},
-          "model_knowledge": {"type": "integer", "minimum": -2147483648, "maximum": 2147483647},
-          "system": {"type": "integer", "minimum": -2147483648, "maximum": 2147483647}
+          "archive": {
+            "type": "integer",
+            "minimum": -2147483648,
+            "maximum": 2147483647
+          },
+          "repo": {
+            "type": "integer",
+            "minimum": -2147483648,
+            "maximum": 2147483647
+          },
+          "user": {
+            "type": "integer",
+            "minimum": -2147483648,
+            "maximum": 2147483647
+          },
+          "external_authority": {
+            "type": "integer",
+            "minimum": -2147483648,
+            "maximum": 2147483647
+          },
+          "model_knowledge": {
+            "type": "integer",
+            "minimum": -2147483648,
+            "maximum": 2147483647
+          },
+          "system": {
+            "type": "integer",
+            "minimum": -2147483648,
+            "maximum": 2147483647
+          }
         },
-        "x-setting": "authority_ranks.<origin>",
+        "x-setting": "/authority_ranks",
         "x-consumer": "model authority lookup"
       },
-      "unknown_origin_rank": {"type": "integer", "minimum": -2147483648, "maximum": 2147483647, "x-setting": "unknown_origin_rank", "x-consumer": "model authority lookup"},
+      "unknown_origin_rank": {
+        "type": "integer",
+        "minimum": -2147483648,
+        "maximum": 2147483647,
+        "x-setting": "/unknown_origin_rank",
+        "x-consumer": "model authority lookup"
+      },
       "status_history": {
         "type": "object",
-        "required": ["present", "lost"],
+        "required": [
+          "present",
+          "lost"
+        ],
         "additionalProperties": false,
         "properties": {
-          "present": {"type": "array", "items": {"type": "string", "enum": ["implemented", "partial", "planned", "abandoned", "superseded", "lost", "restored"]}, "x-setting": "status_history.present", "x-consumer": "status history state machine"},
-          "lost": {"type": "array", "items": {"type": "string", "enum": ["implemented", "partial", "planned", "abandoned", "superseded", "lost", "restored"]}, "x-setting": "status_history.lost", "x-consumer": "status history state machine"}
+          "present": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "implemented",
+                "partial",
+                "planned",
+                "abandoned",
+                "superseded",
+                "lost",
+                "restored"
+              ]
+            },
+            "x-setting": "/status_history/present",
+            "x-consumer": "status history state machine"
+          },
+          "lost": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "implemented",
+                "partial",
+                "planned",
+                "abandoned",
+                "superseded",
+                "lost",
+                "restored"
+              ]
+            },
+            "x-setting": "/status_history/lost",
+            "x-consumer": "status history state machine"
+          }
         }
       },
-      "anchoring_rationale": {"type": "string", "x-setting": "anchoring_rationale", "x-consumer": "anchoring morphism renderer"}
+      "anchoring_rationale": {
+        "type": "string",
+        "x-setting": "/anchoring_rationale",
+        "x-consumer": "anchoring morphism renderer"
+      },
+      "creation_defaults": {
+        "type": "object",
+        "required": [
+          "principle",
+          "operator",
+          "morphism",
+          "slot",
+          "domain_relation",
+          "domain_kind",
+          "project_kind"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "principle": {
+            "type": "object",
+            "required": [
+              "confidence",
+              "validation_status"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "confidence": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Creation prior only; applied_defaults records insertion. Never a calibrated measurement or evidence of validation.",
+                "x-setting": "/creation_defaults/principle/confidence",
+                "x-consumer": "model creation normalizer"
+              },
+              "validation_status": {
+                "type": "string",
+                "enum": [
+                  "candidate",
+                  "supported",
+                  "confirmed",
+                  "rejected",
+                  "retired"
+                ],
+                "description": "Creation-policy status; does not produce evidence or checks. Explicit producer value wins.",
+                "x-setting": "/creation_defaults/principle/validation_status",
+                "x-consumer": "model creation normalizer"
+              }
+            },
+            "x-setting": "/creation_defaults/principle",
+            "x-consumer": "model creation normalizer"
+          },
+          "operator": {
+            "type": "object",
+            "required": [
+              "confidence",
+              "validation_status"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "confidence": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Creation prior only; applied_defaults records insertion. Never a calibrated measurement or evidence of validation.",
+                "x-setting": "/creation_defaults/operator/confidence",
+                "x-consumer": "model creation normalizer"
+              },
+              "validation_status": {
+                "type": "string",
+                "enum": [
+                  "candidate",
+                  "supported",
+                  "confirmed",
+                  "rejected",
+                  "retired"
+                ],
+                "description": "Creation-policy status; does not produce evidence or checks. Explicit producer value wins.",
+                "x-setting": "/creation_defaults/operator/validation_status",
+                "x-consumer": "model creation normalizer"
+              }
+            },
+            "x-setting": "/creation_defaults/operator",
+            "x-consumer": "model creation normalizer"
+          },
+          "morphism": {
+            "type": "object",
+            "required": [
+              "confidence",
+              "validation_status",
+              "mode"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "confidence": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Creation prior only; applied_defaults records insertion. Never a calibrated measurement or evidence of validation.",
+                "x-setting": "/creation_defaults/morphism/confidence",
+                "x-consumer": "model creation normalizer"
+              },
+              "validation_status": {
+                "type": "string",
+                "enum": [
+                  "candidate",
+                  "supported",
+                  "confirmed",
+                  "rejected",
+                  "retired"
+                ],
+                "description": "Creation-policy status; does not produce evidence or checks. Explicit producer value wins.",
+                "x-setting": "/creation_defaults/morphism/validation_status",
+                "x-consumer": "model creation normalizer"
+              },
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "presence",
+                  "value"
+                ],
+                "x-setting": "/creation_defaults/morphism/mode",
+                "x-consumer": "model creation normalizer"
+              }
+            },
+            "x-setting": "/creation_defaults/morphism",
+            "x-consumer": "model creation normalizer"
+          },
+          "slot": {
+            "type": "object",
+            "required": [
+              "card",
+              "required",
+              "weight"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "card": {
+                "type": "string",
+                "enum": [
+                  "one",
+                  "many",
+                  "list"
+                ],
+                "x-setting": "/creation_defaults/slot/card",
+                "x-consumer": "model creation normalizer"
+              },
+              "required": {
+                "type": "boolean",
+                "x-setting": "/creation_defaults/slot/required",
+                "x-consumer": "model creation normalizer"
+              },
+              "weight": {
+                "type": "number",
+                "minimum": 5e-324,
+                "description": "Finite positive weight required by unchanged SlotSpec/DomainKind decoder. No arbitrary policy ceiling.",
+                "x-setting": "/creation_defaults/slot/weight",
+                "x-consumer": "model creation normalizer"
+              }
+            },
+            "x-setting": "/creation_defaults/slot",
+            "x-consumer": "model creation normalizer"
+          },
+          "domain_relation": {
+            "type": "object",
+            "required": [
+              "card"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "card": {
+                "type": "string",
+                "enum": [
+                  "one",
+                  "many",
+                  "list"
+                ],
+                "x-setting": "/creation_defaults/domain_relation/card",
+                "x-consumer": "model creation normalizer"
+              }
+            },
+            "x-setting": "/creation_defaults/domain_relation",
+            "x-consumer": "model creation normalizer"
+          },
+          "domain_kind": {
+            "type": "object",
+            "required": [
+              "card",
+              "required",
+              "weight"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "card": {
+                "type": "string",
+                "enum": [
+                  "one",
+                  "many",
+                  "list"
+                ],
+                "x-setting": "/creation_defaults/domain_kind/card",
+                "x-consumer": "model creation normalizer"
+              },
+              "required": {
+                "type": "boolean",
+                "x-setting": "/creation_defaults/domain_kind/required",
+                "x-consumer": "model creation normalizer"
+              },
+              "weight": {
+                "type": "number",
+                "minimum": 5e-324,
+                "description": "Finite positive weight required by unchanged SlotSpec/DomainKind decoder. No arbitrary policy ceiling.",
+                "x-setting": "/creation_defaults/domain_kind/weight",
+                "x-consumer": "model creation normalizer"
+              }
+            },
+            "x-setting": "/creation_defaults/domain_kind",
+            "x-consumer": "model creation normalizer"
+          },
+          "project_kind": {
+            "type": "object",
+            "required": [
+              "subject_kind",
+              "validation_status"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "subject_kind": {
+                "type": "string",
+                "x-setting": "/creation_defaults/project_kind/subject_kind",
+                "x-consumer": "model creation normalizer"
+              },
+              "validation_status": {
+                "type": "string",
+                "enum": [
+                  "candidate",
+                  "supported",
+                  "confirmed",
+                  "rejected",
+                  "retired"
+                ],
+                "description": "Creation-policy status; does not produce evidence or checks. Explicit producer value wins.",
+                "x-setting": "/creation_defaults/project_kind/validation_status",
+                "x-consumer": "model creation normalizer"
+              }
+            },
+            "x-setting": "/creation_defaults/project_kind",
+            "x-consumer": "model creation normalizer"
+          }
+        },
+        "x-setting": "/creation_defaults",
+        "x-consumer": "model creation normalizer",
+        "description": "For new records only, resolved before serialization. Historical missing-field decoding stays immutable. No origin, identity, type, evidence or provenance templates: producer-bearing records require explicit origin. Supplied fields are preserved and validated. Confidence is a creation prior only when inserted; applied_defaults records exact JSON pointers and effective profile_hash. Nested project domain kinds/slots/relations use the same local profile."
+      }
     }
   }
 }

@@ -86,7 +86,7 @@
       "lost": "- {{label}} (branch {{branch}}): lost as of {{date}}{{oscillation}}\n",
       "missing_branch": "main",
       "backlog_title": "Backlog",
-      "extrapolated_header": "# Extrapolated spec: {{label}}\n\nProposals only \u2014 never facts (I3).\n\n## Proposals\n\n",
+      "extrapolated_header": "# Extrapolated spec: {{label}}\n\nProposals only — never facts (I3).\n\n## Proposals\n\n",
       "extrapolated_title": "Extrapolated spec: {{label}}",
       "no_proposals": "(none)\n",
       "detail_header": "{{count}} hit(s): ",
@@ -464,7 +464,7 @@
           },
           "additionalProperties": false
         },
-        "x-setting": "products",
+        "x-setting": "/products",
         "x-consumer": "materialize::run_stage"
       }
     },

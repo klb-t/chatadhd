@@ -1,0 +1,52 @@
+{
+  "schema": "loom.model_creation_policy.verification/1",
+  "verified_at_utc": "2026-10-04T16:32:12.548302+00:00",
+  "focused_test_cases": {
+    "passed": 6,
+    "failed": 0,
+    "skipped": 0
+  },
+  "focused_test_assertions": {
+    "passed": 99,
+    "failed": 0
+  },
+  "creation_kinds": 7,
+  "policy_defaults": 16,
+  "builtin_decoder_differential_records": 7,
+  "historical_decoder_matches_available_baseline_bytewise": true,
+  "historical_decoder_source_sha256": "03df74670f2afc1bddccbf004ab2c1f003fc61a4b3904e6d6f17742f3e8cf5d6",
+  "source_sha256": {
+    "loom/include/loom/model_profile.h": "388e716cfa32cf48f7ba23ef2f8a4ae33d591525386f7d868a057d2ed5bf805f",
+    "loom/src/model/model_pack.cpp": "229a5bffd7da30d1f7df7ddbee663129c394f3b70a4ecf0c5f18617c30e86492",
+    "loom/src/model/model_general.cpp": "03df74670f2afc1bddccbf004ab2c1f003fc61a4b3904e6d6f17742f3e8cf5d6",
+    "loom/data/runtime/model.pack": "051e961438dc6c5723860492c4ea03c352c1a880caf6bfdeb30835e26612311b",
+    "loom/tests/test_model_creation_profile.cpp": "ccc382d5a81a04b12ece149ba441aa9ea5b7709dff502dadf1a0cadd3928d4c8"
+  },
+  "strict_compile": {
+    "model_pack": 0,
+    "runtime_profile": 0,
+    "test": 0
+  },
+  "link_exit": 0,
+  "run_exit": 0,
+  "scope": "Current model_pack and fresh embedded RuntimeProfile explicit objects with unchanged first-build universal/model decoder dependencies; no Runtime/transport. Not a full ctest or integration claim.",
+  "review": "Independent native-other read-only review found no direct compatibility/provenance defect.",
+  "inventory_status": {
+    "partial": [
+      "DIC-0055",
+      "DIC-0056",
+      "DIC-0057",
+      "DIC-0058",
+      "DIC-0059"
+    ]
+  },
+  "limitation": "External constructors and producer write paths remain unconnected; handoff threads1/4/9. Historic from_json/model.h unchanged.",
+  "legacy_net_model_parity": {
+    "exit": 0,
+    "byte_equal": true,
+    "before_bytes": 264606,
+    "after_bytes": 264606,
+    "before_sha256": "6eb6f00d3c398870a15f350a918d7558eb20d68e31b64af82ca745d250b0b7a4",
+    "after_sha256": "6eb6f00d3c398870a15f350a918d7558eb20d68e31b64af82ca745d250b0b7a4"
+  }
+}

@@ -105,7 +105,7 @@
     ],
     "properties": {
       "defaults_by_adapter": {
-        "x-setting": "defaults_by_adapter",
+        "x-setting": "/defaults_by_adapter",
         "x-consumer": "worker/media/github",
         "type": "object",
         "required": [
@@ -115,17 +115,17 @@
         ],
         "properties": {
           "groq_whisper": {
-            "x-setting": "defaults_by_adapter.groq_whisper",
+            "x-setting": "/defaults_by_adapter/groq_whisper",
             "x-consumer": "worker/media/github",
             "type": "string"
           },
           "google_speech": {
-            "x-setting": "defaults_by_adapter.google_speech",
+            "x-setting": "/defaults_by_adapter/google_speech",
             "x-consumer": "worker/media/github",
             "type": "string"
           },
           "ocr_space": {
-            "x-setting": "defaults_by_adapter.ocr_space",
+            "x-setting": "/defaults_by_adapter/ocr_space",
             "x-consumer": "worker/media/github",
             "type": "string"
           }
@@ -133,27 +133,27 @@
         "additionalProperties": false
       },
       "asr_order": {
-        "x-setting": "asr_order",
+        "x-setting": "/asr_order",
         "x-consumer": "worker/media/github",
         "type": "array",
         "items": {
-          "x-setting": "asr_order[]",
+          "x-setting": "/asr_order/<index>",
           "x-consumer": "worker/media/github",
           "type": "string"
         }
       },
       "ocr_order": {
-        "x-setting": "ocr_order",
+        "x-setting": "/ocr_order",
         "x-consumer": "worker/media/github",
         "type": "array",
         "items": {
-          "x-setting": "ocr_order[]",
+          "x-setting": "/ocr_order/<index>",
           "x-consumer": "worker/media/github",
           "type": "string"
         }
       },
       "error_body_chars": {
-        "x-setting": "error_body_chars",
+        "x-setting": "/error_body_chars",
         "x-consumer": "worker/media/github",
         "type": "integer",
         "minimum": 0
@@ -161,7 +161,7 @@
       "providers": {
         "type": "object",
         "additionalProperties": {
-          "x-setting": "providers.groq",
+          "x-setting": "/providers/<key>",
           "x-consumer": "worker/media/github",
           "type": "object",
           "required": [
@@ -174,27 +174,27 @@
           ],
           "properties": {
             "name": {
-              "x-setting": "providers.ocr.space.name",
+              "x-setting": "/providers/<key>/name",
               "x-consumer": "worker/media/github",
               "type": "string"
             },
             "adapter": {
-              "x-setting": "providers.ocr.space.adapter",
+              "x-setting": "/providers/<key>/adapter",
               "x-consumer": "worker/media/github",
               "type": "string"
             },
             "secret_key": {
-              "x-setting": "providers.ocr.space.secret_key",
+              "x-setting": "/providers/<key>/secret_key",
               "x-consumer": "worker/media/github",
               "type": "string"
             },
             "endpoint": {
-              "x-setting": "providers.ocr.space.endpoint",
+              "x-setting": "/providers/<key>/endpoint",
               "x-consumer": "worker/media/github",
               "type": "string"
             },
             "timeout_ms": {
-              "x-setting": "providers.ocr.space.timeout_ms",
+              "x-setting": "/providers/<key>/timeout_ms",
               "x-consumer": "worker/media/github",
               "type": "integer",
               "minimum": 0,
@@ -205,7 +205,7 @@
               "additionalProperties": {
                 "type": "string"
               },
-              "x-setting": "providers.*.headers",
+              "x-setting": "/providers/<key>/headers",
               "x-consumer": "media"
             },
             "format_map": {
@@ -213,31 +213,31 @@
               "additionalProperties": {
                 "type": "string"
               },
-              "x-setting": "providers.*.format_map"
+              "x-setting": "/providers/<key>/format_map"
             },
             "default_format": {
-              "x-setting": "providers.groq.default_format",
+              "x-setting": "/providers/<key>/default_format",
               "x-consumer": "worker/media/github",
               "type": "string"
             },
             "model": {
-              "x-setting": "providers.groq.model",
+              "x-setting": "/providers/<key>/model",
               "x-consumer": "worker/media/github",
               "type": "string"
             },
             "response_format": {
-              "x-setting": "providers.groq.response_format",
+              "x-setting": "/providers/<key>/response_format",
               "x-consumer": "worker/media/github",
               "type": "string"
             },
             "max_segments": {
-              "x-setting": "providers.groq.max_segments",
+              "x-setting": "/providers/<key>/max_segments",
               "x-consumer": "worker/media/github",
               "type": "integer",
               "minimum": 0
             },
             "placeholder_confidence": {
-              "x-setting": "providers.groq.placeholder_confidence",
+              "x-setting": "/providers/<key>/placeholder_confidence",
               "x-consumer": "worker/media/github",
               "type": "number",
               "minimum": 0
@@ -247,31 +247,31 @@
               "additionalProperties": {
                 "type": "string"
               },
-              "x-setting": "providers.*.encoding_map"
+              "x-setting": "/providers/<key>/encoding_map"
             },
             "default_encoding": {
-              "x-setting": "providers.google.default_encoding",
+              "x-setting": "/providers/<key>/default_encoding",
               "x-consumer": "worker/media/github",
               "type": "string"
             },
             "default_language": {
-              "x-setting": "providers.ocr.space.default_language",
+              "x-setting": "/providers/<key>/default_language",
               "x-consumer": "worker/media/github",
               "type": "string"
             },
             "max_alternatives": {
-              "x-setting": "providers.google.max_alternatives",
+              "x-setting": "/providers/<key>/max_alternatives",
               "x-consumer": "worker/media/github",
               "type": "integer",
               "minimum": 0
             },
             "word_confidence": {
-              "x-setting": "providers.google.word_confidence",
+              "x-setting": "/providers/<key>/word_confidence",
               "x-consumer": "worker/media/github",
               "type": "boolean"
             },
             "word_time_offsets": {
-              "x-setting": "providers.google.word_time_offsets",
+              "x-setting": "/providers/<key>/word_time_offsets",
               "x-consumer": "worker/media/github",
               "type": "boolean"
             },
@@ -280,33 +280,33 @@
               "additionalProperties": {
                 "type": "string"
               },
-              "x-setting": "providers.*.language_map"
+              "x-setting": "/providers/<key>/language_map"
             },
             "engine": {
-              "x-setting": "providers.ocr.space.engine",
+              "x-setting": "/providers/<key>/engine",
               "x-consumer": "worker/media/github",
               "type": "integer",
               "minimum": 0,
               "maximum": 2147483647
             },
             "is_table": {
-              "x-setting": "providers.ocr.space.is_table",
+              "x-setting": "/providers/<key>/is_table",
               "x-consumer": "worker/media/github",
               "type": "string"
             },
             "scale": {
-              "x-setting": "providers.ocr.space.scale",
+              "x-setting": "/providers/<key>/scale",
               "x-consumer": "worker/media/github",
               "type": "string"
             },
             "overlay_placeholder_confidence": {
-              "x-setting": "providers.ocr.space.overlay_placeholder_confidence",
+              "x-setting": "/providers/<key>/overlay_placeholder_confidence",
               "x-consumer": "worker/media/github",
               "type": "number",
               "minimum": 0
             },
             "text_placeholder_confidence": {
-              "x-setting": "providers.ocr.space.text_placeholder_confidence",
+              "x-setting": "/providers/<key>/text_placeholder_confidence",
               "x-consumer": "worker/media/github",
               "type": "number",
               "minimum": 0
