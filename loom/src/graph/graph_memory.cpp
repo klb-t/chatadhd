@@ -227,11 +227,7 @@ Result<Json> GraphMemorySelector::expand(const std::vector<std::string>& seed_id
 
 Result<ContextRequest> ContextRequest::from_json(const Json& j) {
   LOOM_TRY_ASSIGN(auto profile, RuntimeProfile::builtin("graph_memory"));
-  LOOM_TRY_ASSIGN(auto request, from_json_with_profile(j, profile));
-  request.provided_fields = Json::object();
-  for (const auto& field : {"depth", "max_tokens", "include_memory", "include_graph", "include_search"})
-    if (j.contains(field)) request.provided_fields[field] = true;
-  return request;
+  return from_json_with_profile(j, profile);
 }
 
 Result<ContextRequest> ContextRequest::from_json_with_profile(const Json& j, const RuntimeProfile& profile) {
@@ -248,6 +244,9 @@ Result<ContextRequest> ContextRequest::from_json_with_profile(const Json& j, con
   r.include_memory = json::get_bool(j, "include_memory", defaults.at("include_memory").get<bool>());
   r.include_graph = json::get_bool(j, "include_graph", defaults.at("include_graph").get<bool>());
   r.include_search = json::get_bool(j, "include_search", defaults.at("include_search").get<bool>());
+  r.provided_fields = Json::object();
+  for (const auto& field : {"depth", "max_tokens", "include_memory", "include_graph", "include_search"})
+    if (j.contains(field)) r.provided_fields[field] = true;
   return r;
 }
 

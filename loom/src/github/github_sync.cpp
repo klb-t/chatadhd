@@ -3,6 +3,7 @@
 #include "loom/github_sync.h"
 
 #include <algorithm>
+#include <cctype>
 #include <map>
 #include <regex>
 
@@ -19,6 +20,27 @@ using OptFiles = std::optional<std::vector<GitHubFile>>;
 
 namespace {
 constexpr std::string_view kLog = "loom.github";
+
+Status permit_direction(const SyncConfig& config, const RuntimeProfile& profile, std::string_view operation) {
+  const auto& policy = profile.values().at("sync_policy");
+  const auto& directions = policy.at("directions");
+  const auto& rule = directions.contains(config.sync_direction)
+      ? directions.at(config.sync_direction) : policy.at("unknown_direction");
+  if (rule.at(std::string(operation)).get<bool>()) return {};
+  LOOM_TRY_ASSIGN(auto message, render_profile_template(
+      policy.at("disabled_message_templates").at(std::string(operation)).get<std::string>(),
+      Json{{"mode", config.sync_direction}}));
+  auto display = message;
+  if (!display.empty()) display[0] = static_cast<char>(std::toupper(static_cast<unsigned char>(display[0])));
+  log::warn(kLog, "{}", display);
+  return Error(Errc::Unsupported, std::move(message));
+}
+
+bool selected_status(const Json& statuses, std::string_view status) {
+  return std::any_of(statuses.begin(), statuses.end(), [&](const Json& item) {
+    return item.get<std::string>() == status;
+  });
+}
 
 // Python fnmatch.translate(), reimplemented over std::regex (ECMAScript).
 // '.' in the emitted pattern is written as [\s\S] instead of relying on an
@@ -378,10 +400,8 @@ Result<std::string> GitHubSync::fetch_file_content(const GitHubFile& file) {
 }
 
 Status GitHubSync::pull_file(const GitHubFile& file) {
-  if (cfg_.sync_direction == "push_only") {
-    log::warn(kLog, "Pull disabled in push_only mode");
-    return Error(Errc::Unsupported, "pull disabled in push_only mode");
-  }
+  LOOM_TRY(profile_);
+  LOOM_TRY(permit_direction(cfg_, *profile_, "pull"));
   LOOM_TRY_ASSIGN(std::string content, fetch_file_content(file));
   if (content.empty() && file.size > 0) return Error(Errc::Http, "empty content for non-empty file " + file.path);
 
@@ -394,10 +414,7 @@ Status GitHubSync::pull_file(const GitHubFile& file) {
 
 Status GitHubSync::push_file(const GitHubFile& file, const std::optional<std::string>& message) {
   LOOM_TRY(profile_);
-  if (cfg_.sync_direction == "pull_only") {
-    log::warn(kLog, "Push disabled in pull_only mode");
-    return Error(Errc::Unsupported, "push disabled in pull_only mode");
-  }
+  LOOM_TRY(permit_direction(cfg_, *profile_, "push"));
   if (!file.local_path || file.local_path->empty()) return Error(Errc::InvalidArgument, "file has no local_path");
 
   auto content = fsutil::read_file(*file.local_path);
@@ -442,6 +459,7 @@ Json tally(int success, int failed) { return Json{{"success", success}, {"failed
 }  // namespace
 
 Result<Json> GitHubSync::pull_all(const OptFiles& files) {
+  LOOM_TRY(profile_);
   std::vector<GitHubFile> chosen;
   if (files) {
     chosen = *files;
@@ -449,7 +467,7 @@ Result<Json> GitHubSync::pull_all(const OptFiles& files) {
     auto status = get_sync_status();
     if (!status) return status.error();
     for (auto& f : *status) {
-      if (f.status == "new_remote" || f.status == "modified") chosen.push_back(std::move(f));
+      if (selected_status(profile_->values().at("sync_policy").at("pull_statuses"), f.status)) chosen.push_back(std::move(f));
     }
   }
   int ok = 0, failed = 0;
@@ -461,6 +479,7 @@ Result<Json> GitHubSync::pull_all(const OptFiles& files) {
 }
 
 Result<Json> GitHubSync::push_all(const OptFiles& files) {
+  LOOM_TRY(profile_);
   std::vector<GitHubFile> chosen;
   if (files) {
     chosen = *files;
@@ -468,7 +487,7 @@ Result<Json> GitHubSync::push_all(const OptFiles& files) {
     auto status = get_sync_status();
     if (!status) return status.error();
     for (auto& f : *status) {
-      if (f.status == "new_local" || f.status == "modified") chosen.push_back(std::move(f));
+      if (selected_status(profile_->values().at("sync_policy").at("push_statuses"), f.status)) chosen.push_back(std::move(f));
     }
   }
   int ok = 0, failed = 0;
@@ -480,6 +499,7 @@ Result<Json> GitHubSync::push_all(const OptFiles& files) {
 }
 
 Result<Json> GitHubSync::sync(const OptFiles& files) {
+  LOOM_TRY(profile_);
   std::vector<GitHubFile> chosen;
   if (files) {
     chosen = *files;
@@ -490,14 +510,17 @@ Result<Json> GitHubSync::sync(const OptFiles& files) {
   }
   int pulled_ok = 0, pulled_failed = 0, pushed_ok = 0, pushed_failed = 0;
   std::vector<std::string> conflicts;
+  const auto& policy = profile_->values().at("sync_policy");
+  const auto& actions = policy.at("sync_actions");
   for (const auto& f : chosen) {
-    if (f.status == "new_remote") {
+    const auto action = (actions.contains(f.status) ? actions.at(f.status) : policy.at("unknown_sync_action")).get<std::string>();
+    if (action == "pull") {
       if (pull_file(f)) ++pulled_ok;
       else ++pulled_failed;
-    } else if (f.status == "new_local") {
+    } else if (action == "push") {
       if (push_file(f)) ++pushed_ok;
       else ++pushed_failed;
-    } else if (f.status == "modified") {
+    } else if (action == "conflict") {
       conflicts.push_back(f.path);
     }
   }

@@ -249,5 +249,54 @@ TEST_SUITE("archive.synthesis_policy") {
     const auto missing = unwrap(base.with_overrides(Json{{"synthesis_rendering", Json{{"strings", Json{{"master_generated", "{{missing}}"}}}}}}));
     CHECK_THROWS_AS(synthesize(fixture.input(&missing)), std::invalid_argument);
   }
+
+  TEST_CASE("source reference policy can report absolute http and dot paths without resolving them") {
+    Fixture fixture;
+    fixture.corpus.docs[0].text = "/absolute/missing.cpp httpfake/missing.cpp local/../missing.cpp "
+                                 "http://example.invalid/missing.cpp src/missing.cpp\n";
+    const auto base = unwrap(ArchiveProfile::builtin());
+    const auto original = synthesize(fixture.input(&base));
+    REQUIRE(original.gap.at("missing_files").size() == 1);
+    CHECK(original.gap.at("missing_files").at(0).at("path") == "src/missing.cpp");
+    const auto changed = unwrap(base.with_overrides(Json{{"synthesis_rendering", Json{{"source_references", Json{
+        {"lexical_extra_characters", "/_.-:"}, {"forbidden_sequences", Json::array()},
+        {"forbidden_prefixes", Json::array()}, {"excluded_absolute_prefixes", Json::array()}}}}}}));
+    const auto out = synthesize(fixture.input(&changed));
+    std::set<std::string> paths;
+    for (const auto& reference : out.gap.at("missing_files")) {
+      paths.insert(reference.at("path").get<std::string>());
+      CHECK(reference.at("source") == "spec");
+    }
+    CHECK(paths == std::set<std::string>{"/absolute/missing.cpp", "httpfake/missing.cpp", "local/../missing.cpp",
+                                       "http://example.invalid/missing.cpp", "src/missing.cpp"});
+    CHECK(fixture.corpus.docs.size() == 5);
+    CHECK(fixture.corpus.docs[0].uri == "docs/spec.md");
+  }
+
+  TEST_CASE("source lexical trimming required markers and known suffix boundaries are configurable") {
+    Fixture fixture;
+    fixture.corpus.docs[0].text = "folder\\missing.cpp; plain.cpp src/synthetic-0.cpp src/synthetic-1.cpp\n";
+    fixture.corpus.docs[1].uri = "root!src/synthetic-0.cpp";
+    fixture.corpus.docs[2].uri = "root/src/synthetic-1.cpp";
+    const auto base = unwrap(ArchiveProfile::builtin());
+    const auto original = synthesize(fixture.input(&base));
+    REQUIRE(original.gap.at("missing_files").size() == 1);
+    CHECK(original.gap.at("missing_files").at(0).at("path") == "src/synthetic-0.cpp");
+    const auto changed = unwrap(base.with_overrides(Json{{"synthesis_rendering", Json{{"source_references", Json{
+        {"lexical_extra_characters", "/_.-\\;"}, {"trim_suffix_characters", ";"},
+        {"require_path_marker", false}, {"known_suffix_boundary_characters", "/!"}}}}}}));
+    const auto out = synthesize(fixture.input(&changed));
+    std::set<std::string> paths;
+    for (const auto& reference : out.gap.at("missing_files")) paths.insert(reference.at("path").get<std::string>());
+    CHECK(paths == std::set<std::string>{"folder\\missing.cpp", "plain.cpp"});
+    const auto exact = unwrap(changed.with_overrides(Json{{"synthesis_rendering", Json{{"source_references", Json{
+        {"known_suffix_match", false}}}}}}));
+    CHECK(synthesize(fixture.input(&exact)).gap.at("missing_files").size() == 4);
+    const auto required = unwrap(changed.with_overrides(Json{{"synthesis_rendering", Json{{"source_references", Json{
+        {"require_path_marker", true}, {"path_markers", Json::array({"\\"})}}}}}}));
+    const auto selected = synthesize(fixture.input(&required));
+    REQUIRE(selected.gap.at("missing_files").size() == 1);
+    CHECK(selected.gap.at("missing_files").at(0).at("path") == "folder\\missing.cpp");
+  }
 }
 #endif
