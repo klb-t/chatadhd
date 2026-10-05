@@ -1,0 +1,33 @@
+{
+  "schema": "loom.github_job_evidence/1",
+  "repository": "klb-t/chatadhd",
+  "head_sha": "6523c1b1a3870f2a6c7bba66554ad082cd9ea832",
+  "tested_merge_sha": "93420bbb82124ba5493e5fc9c3dea793703bfb74",
+  "run_id": 37211656572,
+  "job_id": 111463896846,
+  "preset": "asan",
+  "job_name": "asan (g++)",
+  "conclusion": "success",
+  "source": "GitHub fetch_workflow_job_logs connector",
+  "url": "https://github.com/klb-t/chatadhd/actions/runs/37211656572/job/111463896846",
+  "log_file": "asan-job.log",
+  "redactions": [],
+  "successful_steps": [
+    "Build",
+    "Test",
+    "Require actual case execution and account for opt-in scenarios"
+  ],
+  "ctest": {
+    "passed_entries": 108,
+    "failed_entries": 0,
+    "duration_seconds": 219.25,
+    "gate_result": "success",
+    "executed_entries": 105,
+    "explicitly_unexecuted_entries": 3,
+    "actual_case_counts": "See retained CTest artifact executed-cases.json"
+  },
+  "artifact_id": 11306949252,
+  "raw_sha256": "53a0fab94c72e92ccd9ed0e73575572e12d88f5b200712dffbdb753a71b1904c",
+  "saved_sha256": "53a0fab94c72e92ccd9ed0e73575572e12d88f5b200712dffbdb753a71b1904c",
+  "log_bytes": 106869
+}
