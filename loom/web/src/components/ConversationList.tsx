@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { api } from "../api";
 import type { Conversation } from "../api/types";
 
@@ -6,23 +6,30 @@ interface Props {
   activeConvId: string | null;
   onSelect: (id: string) => void;
   onCreated: (id: string) => void;
+  onActivity?: (delta: number) => void;
 }
 
-export default function ConversationList({ activeConvId, onSelect, onCreated }: Props) {
+export default function ConversationList({ activeConvId, onSelect, onCreated, onActivity }: Props) {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const mounted = useRef(true);
+  const refreshGeneration = useRef(0);
+  useEffect(() => { mounted.current = true; return () => { mounted.current = false; }; }, []);
 
   const refresh = useCallback(async () => {
+    const generation = ++refreshGeneration.current;
+    if (!mounted.current) return;
     setLoading(true);
     try {
       const list = await api.listConversations(100);
+      if (!mounted.current || generation !== refreshGeneration.current) return;
       setConversations(list);
       setError(null);
     } catch (err) {
-      setError(err instanceof Error ? err.message : String(err));
+      if (mounted.current && generation === refreshGeneration.current) setError(err instanceof Error ? err.message : String(err));
     } finally {
-      setLoading(false);
+      if (mounted.current && generation === refreshGeneration.current) setLoading(false);
     }
   }, []);
 
@@ -31,27 +38,29 @@ export default function ConversationList({ activeConvId, onSelect, onCreated }: 
   }, [refresh]);
 
   const createConversation = useCallback(async () => {
+    onActivity?.(1);
     try {
       const conv = await api.createConversation();
       await refresh();
-      onCreated(conv.id);
+      if (mounted.current) onCreated(conv.id);
     } catch (err) {
-      setError(err instanceof Error ? err.message : String(err));
-    }
-  }, [refresh, onCreated]);
+      if (mounted.current) setError(err instanceof Error ? err.message : String(err));
+    } finally { onActivity?.(-1); }
+  }, [refresh, onCreated, onActivity]);
 
   const deleteConversation = useCallback(
     async (id: string, ev: React.MouseEvent) => {
       ev.stopPropagation();
       if (!confirm("Delete this conversation?")) return;
+      onActivity?.(1);
       try {
         await api.deleteConversation(id);
         await refresh();
       } catch (err) {
-        setError(err instanceof Error ? err.message : String(err));
-      }
+        if (mounted.current) setError(err instanceof Error ? err.message : String(err));
+      } finally { onActivity?.(-1); }
     },
-    [refresh],
+    [refresh, onActivity],
   );
 
   return (

@@ -18,7 +18,9 @@
     "test:imported-message-content-state": "node e2e/imported-message-content-state.mjs",
     "test:imported-message-content-browser": "node e2e/imported-message-content-browser.mjs",
     "test:imported-message-content-native": "node e2e/imported-message-content-native.mjs",
-    "test:application-profile-graph": "node e2e/application-profile-graph.mjs"
+    "test:application-profile-graph": "node e2e/application-profile-graph.mjs",
+    "test:interface-2": "node e2e/harness-lifecycle-test.mjs && node e2e/source-views.mjs && node e2e/chat-settings-state.mjs && node e2e/profile-view-geometry.mjs && node e2e/workflow-snapshot.mjs --browser && node e2e/workflow-checkpoint.mjs && node e2e/operations-panel.mjs && node e2e/usage-policy-ui.mjs && node e2e/graph-reply-ui.mjs && node e2e/resource-controls.mjs",
+    "test:interface-2-native": "node e2e/interface-2-native-runner.mjs"
   },
   "dependencies": {
     "dompurify": "^3.2.4",

@@ -1,0 +1,16 @@
+.operations-panel { display: grid; gap: 18px; padding: 14px; min-width: 0; }
+.operations-panel section { display: grid; gap: 10px; min-width: 0; }
+.operations-panel h3 { margin: 0; }
+.operations-panel label { display: grid; gap: 5px; }
+.operations-panel textarea { min-height: 110px; width: 100%; box-sizing: border-box; }
+.operations-panel pre { white-space: pre-wrap; overflow-wrap: anywhere; margin: 0; max-height: 380px; overflow: auto; }
+.operations-panel .operations-controls { display: flex; gap: 8px; flex-wrap: wrap; align-items: end; }
+.operations-panel table { border-collapse: collapse; width: 100%; }
+.operations-panel td, .operations-panel th { text-align: left; padding: 7px; vertical-align: top; border-bottom: 1px solid var(--border, #555); overflow-wrap: anywhere; }
+.operations-panel .operation-evidence { padding: 7px; border: 1px solid var(--border, #555); border-radius: 5px; }
+.operations-panel .operation-evidence span { font-weight: 600; }
+.operations-panel .operations-result { padding: 10px; border: 1px solid var(--border, #555); border-radius: 5px; }
+.operations-panel p { margin: 0; }
+.operations-panel input[type="file"] { max-width: 100%; }
+.operations-panel .operations-status { color: var(--muted, #999); }
+@media (max-width: 580px) { .operations-panel th:nth-child(2), .operations-panel td:nth-child(2) { display: none; } }

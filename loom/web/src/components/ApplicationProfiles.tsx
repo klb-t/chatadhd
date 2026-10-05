@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import { api } from "../api";
 import ChatView from "./ChatView";
+import ConversationList from "./ConversationList";
 import { BUILTIN_PROFILE_DOCUMENTS, builtinProfileSource } from "../profiles/builtins";
 import { createLoomProfileRegistry } from "../profiles/loom-adapter";
 import type { LoomProfileUi } from "../profiles/loom-adapter";
@@ -9,13 +10,18 @@ import {
   createProfileSession, executeProfileAction, profileAvailability, registerProfile,
   serializeProfileSession,
 } from "../profiles/runtime";
-import type { ApplicationProfile, ProfileRegistry, ProfileSession } from "../profiles/runtime";
+import type { ApplicationProfile, ProfileSession } from "../profiles/runtime";
 import { makeApplicationProfileGraphAcceptance, parseApplicationProfileSource, readProfileFromReceipt } from "../profiles/graph";
 import { asRecord } from "../api/knowledge";
+import { newApplicationView, readApplicationView, setConversationCoupling, viewConversationId } from "../profiles/view-state";
+import type { ApplicationViewState, ConversationCoupling } from "../profiles/view-state";
+import WorkflowRecoveryPanel from "./WorkflowRecoveryPanel";
+import { workflowSnapshotCanContinue, type WorkflowSnapshot, type WorkflowSnapshotDraft } from "../profiles/workflow-snapshot";
+import { readWorkflowCheckpoint, writeWorkflowCheckpoint, writeWorkflowCheckpoints } from "../profiles/workflow-checkpoint";
 import "./application-profiles.css";
 
 const STORAGE_KEY = "loom.application.views.v1";
-interface View { id: string; profile: string }
+type View = ApplicationViewState;
 interface ProfileSource { profile: string; text: string; sourceRef: string }
 const key = (profile: ApplicationProfile) => JSON.stringify([profile.id, profile.profile_revision]);
 const errorText = (error: unknown) => error instanceof Error ? error.message : String(error);
@@ -38,14 +44,16 @@ interface Props {
   convId: string | null; onConversationCreated: (id: string) => void;
   refreshKey: number; onMessagesChanged: () => void; ui: LoomProfileUi;
   onPrimaryProfile: (profile: ApplicationProfile) => void;
+  onSharedConversationRestored?: (id: string | null) => void;
+  canRestoreWorkspace?: () => boolean;
 }
 
-/** Profiles are simultaneous projections of the same conversation, not provider modes. */
+/** Profiles project native conversations; selection can be coupled or independent. */
 export default function ApplicationProfiles(props: Props) {
   const registry = useMemo(() => createLoomProfileRegistry(api, props.ui), [props.ui]);
   const [initial] = useState(() => {
     const profiles = BUILTIN_PROFILE_DOCUMENTS.map(doc => registerProfile(registry, doc));
-    const defaultViews = [{ id: "primary", profile: key(profiles[0]) }];
+    const defaultViews = [newApplicationView("primary", key(profiles[0]))];
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return { profiles, views: defaultViews, sources: [] as ProfileSource[], error: "" };
@@ -62,14 +70,15 @@ export default function ApplicationProfiles(props: Props) {
         if (key(parsed) !== source.profile) throw new Error("Profile source identity does not match its saved record.");
       }
       const ids = new Set<string>();
-      for (const view of saved.views) {
+      const restoredViews = saved.views.map(readApplicationView);
+      for (const view of restoredViews) {
         if (!view || typeof view.id !== "string" || !view.id || ids.has(view.id) ||
             !profiles.some(p => key(p) === view.profile && profileAvailability(p, registry).supported)) {
           throw new Error("A saved application view has a missing or unsupported profile revision.");
         }
         ids.add(view.id);
       }
-      return { profiles, views: saved.views as View[], sources, error: "" };
+      return { profiles, views: restoredViews as View[], sources, error: "" };
     } catch (error) {
       return { profiles, views: defaultViews, sources: [] as ProfileSource[], error: `${errorText(error)} Saved bytes were preserved; showing the native view.` };
     }
@@ -78,6 +87,8 @@ export default function ApplicationProfiles(props: Props) {
   const workspaceRef = useRef(workspace);
   workspaceRef.current = workspace;
   const viewIntents = useRef(new Map<string, number>());
+  const activeOperations = useRef(0);
+  const operationActivity = useCallback((delta: number) => { activeOperations.current += delta; }, []);
   const { profiles, views, sources } = workspace;
   function nextIntent(viewId: string) {
     const intent = (viewIntents.current.get(viewId) ?? 0) + 1;
@@ -91,6 +102,7 @@ export default function ApplicationProfiles(props: Props) {
   const [receiptInput, setReceiptInput] = useState("");
   const [loadingReceipt, setLoadingReceipt] = useState(false);
   const [nativeReceipts, setNativeReceipts] = useState<{ id: string; target: string }[]>([]);
+  const [restoreEpoch, setRestoreEpoch] = useState(0);
   const primary = profiles.find(p => key(p) === views[0].profile)!;
   // Callback runs on explicit edits below; restore also informs the surrounding sidebar.
   useEffect(() => props.onPrimaryProfile(primary), [primary, props.onPrimaryProfile]);
@@ -107,6 +119,23 @@ export default function ApplicationProfiles(props: Props) {
     nextIntent(viewId);
     const current = workspaceRef.current;
     commitWorkspace({ ...current, views: current.views.map(v => v.id === viewId ? { ...v, profile: profileKey } : v) });
+  }
+  function updateView(viewId: string, update: (view: View) => View) {
+    const current = workspaceRef.current;
+    commitWorkspace({ ...current, views: current.views.map(view => view.id === viewId ? update(view) : view) });
+  }
+  function selectConversation(viewId: string, id: string, created = false) {
+    const view = workspaceRef.current.views.find(item => item.id === viewId);
+    // A remote operation may finish after its view closes. Refresh native data,
+    // but do not restore the closed view or redirect another view's selection.
+    if (!view) { if (created) props.onMessagesChanged(); return; }
+    if (view.conversation.coupling === "coupled") {
+      if (created) props.onConversationCreated(id);
+      else props.ui.selectConversation?.(id);
+    } else {
+      updateView(viewId, current => ({ ...current, conversation: { ...current.conversation, selectedId: id } }));
+      if (created) props.onMessagesChanged();
+    }
   }
   function retainProfile(profile: ApplicationProfile, text: string, sourceRef: string, viewId: string, intent: number) {
     const current = workspaceRef.current;
@@ -155,13 +184,47 @@ export default function ApplicationProfiles(props: Props) {
     finally { setLoadingReceipt(false); }
   }
 
+  function snapshotValue(): WorkflowSnapshotDraft {
+    const current = workspaceRef.current;
+    const selected = current.profiles.filter(profile => current.views.some(view => view.profile === key(profile)));
+    return { profiles: selected, views: current.views, sharedConversationId: props.convId,
+      sources: selected.map(profile => ({ profile: key(profile), ...([...current.sources].reverse().find(source => source.profile === key(profile))
+        ?? builtinProfileSource(profile.id, profile.profile_revision)
+        ?? { text: JSON.stringify(profile), sourceRef: `derived:browser-profile:${key(profile)}` }) })),
+      sessions: current.views.map(view => {
+        const profile = selected.find(value => key(value) === view.profile)!;
+        const sessionKey = `loom.application.workflow.v1:${JSON.stringify([view.id, profile.id, profile.profile_revision])}`;
+        return readWorkflowCheckpoint(sessionKey, view.id, profile, registry);
+      }) };
+  }
+  function restoreSnapshot(snapshot: WorkflowSnapshot) {
+    if (activeOperations.current > 0 || props.canRestoreWorkspace?.() === false) throw new Error("Finish or cancel active operations before restoring a workflow session.");
+    // The panel has validated every definition, source, trace and recovery flag.
+    // Store all sessions before remounting. This never dispatches adapters.
+    writeWorkflowCheckpoints(snapshot.sessions.map(entry => {
+      const definition = snapshot.profiles.find(profile => key(profile) === entry.profile)!;
+      const sessionKey = `loom.application.workflow.v1:${JSON.stringify([entry.viewId, definition.id, definition.profile_revision])}`;
+      return { key: sessionKey, entry, profile: registerProfile(registry, definition) };
+    }), registry);
+    const current = workspaceRef.current;
+    for (const view of [...current.views, ...snapshot.views]) nextIntent(view.id);
+    const next = [...current.profiles];
+    for (const definition of snapshot.profiles) {
+      const profile = registerProfile(registry, definition);
+      if (!next.some(existing => key(existing) === key(profile))) next.push(profile);
+    }
+    commitWorkspace({ profiles: next, views: snapshot.views, sources: [...current.sources, ...snapshot.sources] });
+    setRestoreEpoch(epoch => epoch + 1);
+    props.onSharedConversationRestored?.(snapshot.sharedConversationId);
+  }
+
   return <section className="application-views" aria-label="Application profile views">
     <div className="profile-workspace-controls">
       <button onClick={() => {
         const current = workspaceRef.current;
-        commitWorkspace({ ...current, views: [...current.views, { id: crypto.randomUUID(), profile: current.views[0].profile }] });
+        commitWorkspace({ ...current, views: [...current.views, newApplicationView(crypto.randomUUID(), current.views[0].profile)] });
       }} data-testid="add-profile-view">Add application view</button>
-      <span>Views share the selected conversation. Models and context remain independent.</span>
+      <span>Conversation selection can be shared or independent. Models and context remain independent.</span>
       <details className="profile-native-storage"><summary>Saved profiles</summary><div>
       <label>Native profile receipt<input aria-label="Native profile receipt ID" value={receiptInput} onChange={e => setReceiptInput(e.target.value)} /></label>
       <button data-testid="load-profile-receipt" disabled={!api.graphPacketStore || loadingReceipt || !receiptInput.trim()} onClick={() => void loadReceipt()}>Load from graph</button>
@@ -172,9 +235,15 @@ export default function ApplicationProfiles(props: Props) {
       </div></details>
     </div>
     {error && <p role="alert" className="profile-error">{error}</p>}
+    <WorkflowRecoveryPanel api={api} registry={registry} getValue={snapshotValue} onRestore={restoreSnapshot} />
     <div className="application-view-grid">
-      {views.map(view => <ApplicationView key={view.id} {...props} viewId={view.id}
-        profile={profiles.find(p => key(p) === view.profile)!} profiles={profiles} registry={registry}
+      {views.map(view => <ApplicationView key={`${view.id}:${restoreEpoch}`} {...props} convId={viewConversationId(view, props.convId)} viewId={view.id}
+        operationActivity={operationActivity}
+        conversation={view.conversation} onConversationCreated={id => selectConversation(view.id, id, true)}
+        selectConversation={id => selectConversation(view.id, id)}
+        setCoupling={coupling => updateView(view.id, current => setConversationCoupling(current, coupling, props.convId))}
+        toggleSidebar={() => updateView(view.id, current => ({ ...current, conversation: { ...current.conversation, sidebarOpen: !current.conversation.sidebarOpen } }))}
+        profile={profiles.find(p => key(p) === view.profile)!} profiles={profiles}
         source={[...sources].reverse().find(s => s.profile === view.profile) ?? builtinProfileSource(profiles.find(p => key(p) === view.profile)!.id, profiles.find(p => key(p) === view.profile)!.profile_revision)}
         choose={p => choose(view.id, p)} importProfile={file => importProfile(file, view.id)}
         remove={views.length > 1 ? () => {
@@ -186,11 +255,34 @@ export default function ApplicationProfiles(props: Props) {
   </section>;
 }
 
-function ApplicationView({ profile, profiles, registry, viewId, source, choose, importProfile, remove, ...props }: Props & {
-  profile: ApplicationProfile; profiles: ApplicationProfile[]; registry: ProfileRegistry; viewId: string;
+function ApplicationView({ profile: inputProfile, profiles: inputProfiles, viewId, source, choose, importProfile, remove,
+  conversation, selectConversation, setCoupling, toggleSidebar, operationActivity, ...props }: Props & {
+  profile: ApplicationProfile; profiles: ApplicationProfile[]; viewId: string;
   source?: { text: string; sourceRef: string };
   choose: (key: string) => void; importProfile: (file: File) => Promise<void>; remove?: () => void;
+  conversation: View["conversation"]; selectConversation: (id: string) => void;
+  setCoupling: (coupling: ConversationCoupling) => void; toggleSidebar: () => void;
+  operationActivity: (delta: number) => void;
 }) {
+  // Workflow adapters select/create in the view that invoked them. Use refs to
+  // retain the registry and live send/cancel subscriptions across layout edits.
+  const callbacks = useRef({ selectConversation, conversationCreated: props.onConversationCreated });
+  const mounted = useRef(true);
+  useEffect(() => { mounted.current = true; return () => { mounted.current = false; }; }, []);
+  const dispatchCheckpoint = useRef<(() => void) | null>(null);
+  const observedApi = useMemo(() => new Proxy(api, { get(target, property, receiver) {
+    const value = Reflect.get(target, property, receiver);
+    return typeof value === "function" ? (...args: unknown[]) => { dispatchCheckpoint.current?.(); return Reflect.apply(value, target, args); } : value;
+  } }), []);
+  callbacks.current = { selectConversation, conversationCreated: props.onConversationCreated };
+  const registry = useMemo(() => createLoomProfileRegistry(observedApi, { ...props.ui,
+    selectConversation: id => { if (mounted.current) callbacks.current.selectConversation(id); },
+    conversationCreated: id => { if (mounted.current) callbacks.current.conversationCreated(id); },
+  }), [props.ui]);
+  // Registry ownership is part of the checked profile identity. Each view binds
+  // the shared definitions to its own UI callbacks through normal registration.
+  const profiles = useMemo(() => inputProfiles.map(definition => registerProfile(registry, definition)), [inputProfiles, registry]);
+  const profile = profiles.find(definition => key(definition) === key(inputProfile))!;
   const sessionRef = useRef<ProfileSession | null>(null);
   const [session, setSession] = useState<ProfileSession | null>(null);
   const [error, setError] = useState("");
@@ -207,33 +299,52 @@ function ApplicationView({ profile, profiles, registry, viewId, source, choose, 
     if (!action) throw new Error(`This profile has no action for ${operation}.`);
     // Independent control events have their own snapshot, so Stop can interrupt Send.
     const current = createProfileSession(profile, registry);
-    return (await executeProfileAction(current, registry, action.id, { payload })).result;
-  }, [profile, registry]);
+    operationActivity(1);
+    try { return (await executeProfileAction(current, registry, action.id, { payload })).result; }
+    finally { operationActivity(-1); }
+  }, [profile, registry, operationActivity]);
 
   function workflowSession(): ProfileSession {
     if (sessionRef.current?.profile.id === profile.id && sessionRef.current.profile.profile_revision === profile.profile_revision) return sessionRef.current;
-    let raw: string | null = null;
-    try { raw = localStorage.getItem(sessionKey); } catch { /* Workflows still execute in memory. */ }
-    const loaded = createProfileSession(profile, registry, raw ?? undefined);
+    const entry = readWorkflowCheckpoint(sessionKey, viewId, profile, registry);
+    const loaded = createProfileSession(profile, registry, JSON.stringify(entry.session));
     sessionRef.current = loaded;
     return loaded;
   }
   async function runWorkflow(workflowId: string, event: string, action: string) {
+    operationActivity(1);
     setBusy(true); setError("");
     try {
       const current = workflowSession();
+      const checkpoint = readWorkflowCheckpoint(sessionKey, viewId, profile, registry);
+      if (!workflowSnapshotCanContinue(checkpoint)) {
+        throw new Error("This workflow has an unknown or abandoned operation. Inspect and reconcile its session snapshot before continuing.");
+      }
       const inputs = JSON.parse(workflowInputs);
       const workflow = profile.workflows.find(w => w.id === workflowId)!;
       const transition = workflow.transitions.find(t => t.from === current.workflows[workflowId] && t.event === event)!;
+      // Persist the pre-operation state first. A browser crash leaves a visible
+      // unknown outcome; reopening never blindly repeats its remote side effect.
+      let dispatched = false;
+      dispatchCheckpoint.current = () => {
+        if (dispatched) return;
+        writeWorkflowCheckpoint(sessionKey, { viewId, profile: key(profile), session: current,
+          recovery: { status: "unknown", pending: { action, workflowId, event } } }, profile, registry);
+        dispatched = true;
+      };
       const next = await executeProfileAction(current, registry, action, { workflowId, event,
         bindings: { inputs, context: { conversation_id: props.convId } },
         ...(transition.payload === undefined ? { payload: inputs } : {}) });
+      if (!mounted.current) return;
       sessionRef.current = next.session; setSession(next.session);
       props.onMessagesChanged();
-      try { localStorage.setItem(sessionKey, serializeProfileSession(next.session)); }
-      catch (err) { setError(`Operation completed; saving workflow failed: ${errorText(err)}`); }
-    } catch (err) { setError(errorText(err)); }
-    finally { setBusy(false); }
+      try {
+        writeWorkflowCheckpoint(sessionKey, { viewId, profile: key(profile), session: next.session, recovery: { status: "ready" } }, profile, registry);
+        // Compatibility projection only; the atomic checkpoint is authoritative.
+        localStorage.setItem(sessionKey, serializeProfileSession(next.session));
+      } catch (err) { setError(`Operation completed; saving workflow failed: ${errorText(err)} The pending outcome must be reconciled.`); }
+    } catch (err) { if (mounted.current) setError(errorText(err)); }
+    finally { dispatchCheckpoint.current = null; operationActivity(-1); if (mounted.current) setBusy(false); }
   }
   async function saveGraph() {
     setSavingGraph(true); setError("");
@@ -253,13 +364,22 @@ function ApplicationView({ profile, profiles, registry, viewId, source, choose, 
   const currentProfileSession = session?.profile.id === profile.id && session.profile.profile_revision === profile.profile_revision ? session : current;
 
   return <section className={`application-profile-view profile-messages-${profile.presentation.message_style}`}
-    style={profileStyle(profile)} data-testid="application-profile-view" data-profile-id={profile.id} data-profile-revision={profile.profile_revision}>
+    style={profileStyle(profile)} data-testid="application-profile-view" data-profile-id={profile.id} data-profile-revision={profile.profile_revision}
+    data-profile-view-id={viewId} data-conversation-coupling={conversation.coupling} data-conversation-id={props.convId ?? ""}
+    data-sidebar-side={profile.presentation.sidebar.side} data-view-sidebar-open={conversation.sidebarOpen}>
     <div className="application-profile-toolbar">
       <label>Application view<select aria-label="Application view profile" value={key(profile)} onChange={e => choose(e.target.value)}>
         {profiles.map(p => <option key={key(p)} value={key(p)} disabled={!profileAvailability(p, registry).supported}>
           {p.label} · {p.target.version ?? "version unverified"} · r{p.profile_revision}
         </option>)}
       </select></label>
+      <label>Conversation selection<select aria-label="Conversation selection" value={conversation.coupling}
+        onChange={event => setCoupling(event.target.value as ConversationCoupling)}>
+        <option value="coupled">Shared selection</option><option value="independent">Independent selection</option>
+      </select></label>
+      <button data-testid="toggle-view-sidebar" aria-pressed={conversation.sidebarOpen} onClick={toggleSidebar}>
+        {conversation.sidebarOpen ? "Hide view conversations" : "Show view conversations"}
+      </button>
       <label className="profile-file">Import profile<input aria-label="Import application profile" type="file" accept=".json,application/json" onChange={event => {
         const file = event.target.files?.[0]; event.target.value = ""; if (file) void importProfile(file);
       }} /></label>
@@ -298,8 +418,16 @@ function ApplicationView({ profile, profiles, registry, viewId, source, choose, 
       </details>
     </div>
     {(error || restoreError) && <p role="alert" className="profile-error">{error || restoreError}</p>}
-    <ChatView convId={props.convId} onConversationCreated={props.onConversationCreated} profile={profile}
-      runProfileOperation={runOperation} refreshKey={props.refreshKey} onMessagesChanged={props.onMessagesChanged}
-      availableOperations={profile.actions.filter(a => ![...availability.requiredGaps, ...availability.optionalGaps].some(g => g.action_id === a.id)).map(a => a.operation)} />
+    <div className="application-profile-body">
+      {conversation.sidebarOpen && <aside className="application-profile-sidebar" data-testid="profile-view-sidebar"
+        aria-label="View conversations">
+        <ConversationList key={props.refreshKey} activeConvId={props.convId} onSelect={selectConversation} onCreated={props.onConversationCreated} onActivity={operationActivity} />
+      </aside>}
+      <div className="application-profile-chat">
+        <ChatView settingsKey={viewId} convId={props.convId} onConversationCreated={props.onConversationCreated} profile={profile}
+          runProfileOperation={runOperation} refreshKey={props.refreshKey} onMessagesChanged={props.onMessagesChanged}
+          availableOperations={profile.actions.filter(a => ![...availability.requiredGaps, ...availability.optionalGaps].some(g => g.action_id === a.id)).map(a => a.operation)} />
+      </div>
+    </div>
   </section>;
 }

@@ -15,6 +15,11 @@
 
 #include "sse_stream.h"
 
+#if __has_include("loom/usage_policy.h")
+#include "loom/usage_policy.h"
+#define LOOM_SERVER_HAS_USAGE_POLICY 1
+#endif
+
 namespace loom_server {
 
 namespace {
@@ -447,6 +452,51 @@ void App::route_chat() {
 // ── Models & providers ─────────────────────────────────────────────────
 
 void App::route_models_providers() {
+  svr_.Get("/api/media/status", [this](const httplib::Request&, httplib::Response& res) {
+    send_loom(res, loom_media_status(ctx_));
+  });
+  svr_.Post("/api/media/transcribe", [this](const httplib::Request& req, httplib::Response& res) {
+    if (!req.has_file("file")) {
+      send_error(res, "invalid_argument", "multipart field file is required");
+      return;
+    }
+    json options = json::object();
+    if (req.has_file("options")) {
+      options = json::parse(req.get_file_value("options").content, nullptr, false);
+      if (options.is_discarded() || !options.is_object()) {
+        send_error(res, "invalid_argument", "options must be a JSON object");
+        return;
+      }
+    }
+    const auto file = req.get_file_value("file");
+    std::error_code ec;
+    const auto directory = fs::temp_directory_path(ec) / ("loom-media-" + next_request_id());
+    if (ec || !fs::create_directory(directory, ec) || ec) {
+      send_error(res, "io", "Cannot create temporary audio directory");
+      return;
+    }
+    fs::permissions(directory, fs::perms::owner_all, fs::perm_options::replace, ec);
+    if (ec) {
+      fs::remove_all(directory, ec);
+      send_error(res, "io", "Cannot restrict temporary audio directory permissions");
+      return;
+    }
+    // Never incorporate the untrusted upload filename into the directory.
+    const auto path = directory / ("audio" + fs::path(file.filename).extension().string());
+    struct Cleanup {
+      fs::path directory;
+      ~Cleanup() { std::error_code ignored; fs::remove_all(directory, ignored); }
+    } cleanup{directory};
+    {
+      std::ofstream out(path, std::ios::binary);
+      if (!out.write(file.content.data(), static_cast<std::streamsize>(file.content.size()))) {
+        send_error(res, "io", "Cannot write uploaded audio");
+        return;
+      }
+    }
+    const auto encoded = options.dump();
+    send_loom(res, loom_transcribe(ctx_, path.string().c_str(), encoded.c_str()));
+  });
   svr_.Get("/api/models", [this](const httplib::Request&, httplib::Response& res) {
     send_loom(res, loom_get_models(ctx_));
   });
@@ -461,13 +511,29 @@ void App::route_models_providers() {
 // ── Config & secrets ───────────────────────────────────────────────────
 
 void App::route_config_secrets() {
+  // Static-kernel command adapter. No parallel HTTP ledger or approval engine.
+  // Capture the context only in builds that contain the native policy adapter.
+#ifdef LOOM_SERVER_HAS_USAGE_POLICY
+  svr_.Post("/api/usage-policy", [ctx = ctx_](const httplib::Request& req, httplib::Response& res) {
+#else
+  svr_.Post("/api/usage-policy", [](const httplib::Request& req, httplib::Response& res) {
+#endif
+    json body;
+    if (!object_body(req, res, body)) return;
+#ifdef LOOM_SERVER_HAS_USAGE_POLICY
+    send_loom(res, loom_usage_policy_json(ctx, req.body.c_str()));
+#else
+    send_error(res, "unavailable", "Native usage policy is not installed in this build");
+#endif
+  });
   svr_.Get("/api/config", [this](const httplib::Request&, httplib::Response& res) {
     send_loom(res, loom_get_config(ctx_));
   });
 
   // Merge-patch: {"key": value, ...} -> loom_set_config_json.
   svr_.Patch("/api/config", [this](const httplib::Request& req, httplib::Response& res) {
-    json body = parse_body(req);
+    json body;
+    if (!object_body(req, res, body)) return;
     int rc = loom_set_config_json(ctx_, body.dump(-1, ' ', false, json::error_handler_t::replace).c_str());
     if (rc != LOOM_OK) {
       send_rc(res, rc, json::object());
@@ -478,13 +544,19 @@ void App::route_config_secrets() {
 
   // Single-key set: PUT /api/config/:key {"value": <json or raw text>}.
   svr_.Put(R"(/api/config/([^/]+))", [this](const httplib::Request& req, httplib::Response& res) {
-    json body = parse_body(req);
-    std::string key = req.matches[1].str();
-    std::string value;
-    if (body.contains("value")) {
-      value = body["value"].is_string() ? body["value"].get<std::string>() : body["value"].dump(-1, ' ', false, json::error_handler_t::replace);
+    json body;
+    if (!object_body(req, res, body)) return;
+    if (!body.contains("value")) {
+      send_error(res, "invalid_argument", "Configuration request requires a value");
+      return;
     }
-    loom_set_config(ctx_, key.c_str(), value.c_str());
+    const std::string key = req.matches[1].str();
+    const json patch = {{key, body["value"]}};
+    const int rc = loom_set_config_json(ctx_, patch.dump(-1, ' ', false, json::error_handler_t::replace).c_str());
+    if (rc < 0) {
+      send_error(res, errc_name_for_rc(rc), "Configuration value was rejected");
+      return;
+    }
     send_loom(res, loom_get_config(ctx_));
   });
 
@@ -765,11 +837,11 @@ void App::route_provenance_events_tasks() {
 // ── Logs & misc ────────────────────────────────────────────────────────
 
 void App::route_logs_misc() {
-  svr_.Get("/api/logs", [this](const httplib::Request& req, httplib::Response& res) {
+  svr_.Get("/api/logs", [](const httplib::Request& req, httplib::Response& res) {
     int max_lines = req.has_param("max_lines") ? std::atoi(req.get_param_value("max_lines").c_str()) : 200;
     send_loom(res, loom_get_logs(max_lines));
   });
-  svr_.Get("/api/version", [this](const httplib::Request&, httplib::Response& res) {
+  svr_.Get("/api/version", [](const httplib::Request&, httplib::Response& res) {
     send_loom(res, loom_version());
   });
   svr_.Get("/api/info", [this](const httplib::Request&, httplib::Response& res) {
