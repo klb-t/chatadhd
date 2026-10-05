@@ -1,0 +1,17 @@
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_runtime_recipe_consumers.cpp:217:
+TEST SUITE: runtime_recipe_consumers
+TEST CASE:  context explicit zero and channel failure behavior are presets
+
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_runtime_recipe_consumers.cpp:233: ERROR: CHECK_FALSE( selector.select(zero) ) is NOT correct!
+  values: CHECK_FALSE( {?} )
+
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_runtime_recipe_consumers.cpp:236: ERROR: CHECK( unwrap(selector.select(zero)).items.empty() ) is NOT correct!
+  values: CHECK( false )
+
+===============================================================================
+[doctest] test cases:  7 |  6 passed | 1 failed | 0 skipped
+[doctest] assertions: 51 | 49 passed | 2 failed |
+[doctest] Status: FAILURE!

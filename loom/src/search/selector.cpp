@@ -112,7 +112,10 @@ struct SelectorEngine::Impl {
     std::vector<SelectorHit> out;
     for (int i : idx) {
       if (static_cast<int>(out.size()) >= top_k) break;
-      if (scores[static_cast<std::size_t>(i)] <= settings().at("ranking").at("minimum_score").get<double>()) break;
+      const auto& ranking = settings().at("ranking");
+      const auto score = scores[static_cast<std::size_t>(i)];
+      const auto minimum_score = ranking.at("minimum_score").get<double>();
+      if (ranking.at("threshold_inclusive").get<bool>() ? score < minimum_score : score <= minimum_score) break;
       out.push_back(SelectorHit{ids[static_cast<std::size_t>(i)], corpus[static_cast<std::size_t>(i)],
                                 scores[static_cast<std::size_t>(i)]});
     }

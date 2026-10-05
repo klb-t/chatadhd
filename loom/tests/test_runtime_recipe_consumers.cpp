@@ -7,6 +7,7 @@
 #include "loom/knowledge.h"
 #include "loom/materialize.h"
 #include "loom/memory_engine.h"
+#include "loom/provenance.h"
 #include "loom/runtime.h"
 #include "loom/runtime_profile.h"
 #include "loom/semantic_analyzer.h"
@@ -144,6 +145,55 @@ TEST_SUITE("runtime_recipe_consumers") {
     CHECK_FALSE(original.self_description(run));
   }
 
+  TEST_CASE("materialize recipe selects order and subset and rejects unknown capabilities before writes") {
+    fsutil::TempDir td("loom_");
+    RuntimeOptions options; options.data_dir = td.path().string(); options.start_workers = false;
+    auto rt = unwrap(Runtime::open(options));
+    auto pack = unwrap(rt->knowledge().pack()); auto& store = rt->knowledge().store();
+    kb::Normalizer normalizer(*pack); knowledge::KnowledgeConfig config;
+    auto prepare = [&]() {
+      auto run = unwrap(store.begin_run(pack->hash(), Json::object())).id;
+      std::vector<model::Entity> entities; std::vector<model::Instance> instances;
+      for (std::string key : {"first", "second"}) {
+        model::Entity project; project.kind = "project"; project.canonical_key = key; project.label = key;
+        project.id = model::Entity::make_id(project.kind, key); entities.push_back(project);
+        model::Instance instance; instance.paradigm = "software"; instance.subject = project.id;
+        instance.subject_label = key; instance.id = model::Instance::make_id(instance.paradigm, instance.subject);
+        instances.push_back(instance);
+      }
+      LOOM_REQUIRE_OK(store.put_entities(run, entities)); LOOM_REQUIRE_OK(store.put_instances(run, instances));
+      return run;
+    };
+    auto stage = [&](const std::string& run) {
+      knowledge::StageContext context{*rt, store, pack, normalizer, config, run, "materialize", Json::object(),
+        Json::object(), model::PriorFilter{}, {}, {}, {}, std::nullopt, std::nullopt};
+      return materialize::run_stage(context);
+    };
+    auto kinds = [](const Json& result) {
+      std::vector<std::string> out;
+      for (const auto& artifact : result.at("artifacts")) out.push_back(artifact.at("kind").get<std::string>());
+      return out;
+    };
+    auto baseline = unwrap(stage(prepare()));
+    CHECK(kinds(baseline) == std::vector<std::string>{"self_description", "dossier", "extrapolated_spec", "dossier", "extrapolated_spec", "backlog"});
+    auto recipe = [](std::string_view renderer, bool enabled) {
+      return Json{{"renderer", renderer}, {"enabled", enabled}, {"on_error", "error"}};
+    };
+    overlay_at(td.path(), "materialize", Json{{"products", Json::array({recipe("backlog", true), recipe("self_description", false),
+      recipe("extrapolated_spec", true), recipe("dossier", true)})}});
+    const auto custom_run = prepare(); auto custom = unwrap(stage(custom_run));
+    CHECK(kinds(custom) == std::vector<std::string>{"backlog", "extrapolated_spec", "dossier", "extrapolated_spec", "dossier"});
+    CHECK(custom.at("stats").at("products") == Json(5));
+    CHECK(unwrap(store.list_products(custom_run)).size() == 5);
+    const auto before = unwrap(rt->provenance().list_artifacts()).size();
+    overlay_at(td.path(), "materialize", Json{{"products", Json::array({recipe("backlog", true), recipe("unavailable", false)})}});
+    config.out_dir = (td.path() / "unwritten").string(); const auto bad_run = prepare();
+    auto failed = stage(bad_run); REQUIRE_FALSE(failed); CHECK(failed.error().code == Errc::Unavailable);
+    CHECK(unwrap(rt->provenance().list_artifacts()).size() == before);
+    CHECK(unwrap(store.list_products(bad_run)).empty());
+    CHECK_FALSE(std::filesystem::exists(config.out_dir));
+  }
+
 #endif
 
   TEST_CASE("parsed context omissions use profile settings and explicit fields take precedence") {
@@ -162,5 +212,56 @@ TEST_SUITE("runtime_recipe_consumers") {
     CHECK(unwrap(selector.select(unwrap(ContextRequest::from_json(Json::object())))).items.empty());
     auto explicit_channel = unwrap(selector.select(unwrap(ContextRequest::from_json(Json{{"include_memory", true}}))));
     CHECK(explicit_channel.items.size() == 1);
+  }
+
+  TEST_CASE("context explicit zero and channel failure behavior are presets") {
+    fsutil::TempDir td("loom_");
+    auto db = loom::test::open_db(td.path() / "graph.db"); Config cfg(td.path() / "config.json");
+    auto analyzer = unwrap(SemanticAnalyzer::create()); GraphMemorySelector graph(*db, cfg, *analyzer);
+    MemoryEngine memory(td.path() / "memory.json", analyzer.get());
+    unwrap(memory.add_node("Retained memory longer than the one-token preset"));
+    ContextSelector selector(*db, cfg, graph, &memory);
+    overlay_at(td.path(), "graph_memory", Json{{"context", Json{{"max_tokens", 1}, {"include_graph", false}, {"include_search", false}}}});
+    auto zero = unwrap(ContextRequest::from_json(Json{{"max_tokens", 0}}));
+    CHECK(unwrap(selector.select(zero)).truncated);
+    overlay_at(td.path(), "graph_memory", Json{{"context", Json{{"max_tokens", 1}, {"zero_as_default", false}, {"include_graph", false}, {"include_search", false}}}});
+    auto unlimited = unwrap(selector.select(zero));
+    CHECK(unlimited.items.size() == 1); CHECK_FALSE(unlimited.truncated);
+    CHECK_FALSE(selector.select(unwrap(ContextRequest::from_json(Json{{"max_tokens", -1}}))));
+
+    overlay_at(td.path(), "memory", Json{{"context_max_chars", "invalid"}});
+    CHECK_FALSE(memory.reload());  // Immutable memory recipes change on explicit reload.
+    CHECK_FALSE(selector.select(zero));
+    overlay_at(td.path(), "graph_memory", Json{{"context", Json{{"include_graph", false}, {"include_search", false},
+      {"failure_policy", Json{{"memory", "omit"}}}}}});
+    CHECK(unwrap(selector.select(zero)).items.empty());
+
+    { auto lock = db->lock(); LOOM_REQUIRE_OK(db->conn().exec("DROP TABLE messages")); }
+    overlay_at(td.path(), "graph_memory", Json{{"context", Json{{"include_memory", false}, {"include_graph", false}, {"include_search", true}}}});
+    auto search = unwrap(ContextRequest::from_json(Json{{"text", "synthetic"}}));
+    CHECK(selector.select(search));  // Legacy FTS failure omission.
+    overlay_at(td.path(), "graph_memory", Json{{"context", Json{{"include_memory", false}, {"include_graph", false}, {"include_search", true},
+      {"failure_policy", Json{{"search", "error"}}}}}});
+    CHECK_FALSE(selector.select(search));
+  }
+
+  TEST_CASE("context explicit zero depth reaches graph preset and malformed Config returns checked error") {
+    fsutil::TempDir td("loom_");
+    auto db = loom::test::open_db(td.path() / "graph.db"); Config cfg(td.path() / "config.json");
+    auto analyzer = unwrap(SemanticAnalyzer::create()); GraphMemorySelector graph(*db, cfg, *analyzer);
+    ContextSelector selector(*db, cfg, graph, nullptr);
+    auto conv = unwrap(db->create_conv("Depth fixture")); auto mid = message(*db, conv.id, "Connected retained content");
+    auto seed = unwrap(db->get_or_create_node("Widget", "code_ref")); unwrap(db->create_link(mid, seed, "mentions", 1));
+    overlay_at(td.path(), "graph_memory", Json{{"zero_as_default", false},
+      {"context", Json{{"include_memory", false}, {"include_search", false}}}});
+    auto omitted = unwrap(ContextRequest::from_json(Json{{"text", "class Widget"}}));
+    CHECK(unwrap(selector.select(omitted)).items.size() == 1);
+    auto zero = unwrap(ContextRequest::from_json(Json{{"text", "class Widget"}, {"depth", 0}}));
+    CHECK(zero.provided_fields.contains("depth")); CHECK(unwrap(selector.select(zero)).items.empty());
+    cfg.set("graph_memory_max_nodes", "invalid");
+    auto invalid = graph.select_context_checked("class Widget");
+    REQUIRE_FALSE(invalid); CHECK(invalid.error().code == Errc::InvalidArgument);
+    GraphSelectOptions explicit_options; explicit_options.max_nodes = 20; explicit_options.depth = 2;
+    CHECK(graph.select_context_checked("class Widget", explicit_options));
   }
 }

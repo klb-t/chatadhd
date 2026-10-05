@@ -275,7 +275,8 @@ Result<std::string> MemoryEngine::get_active_context_checked(std::optional<std::
     std::string prefix;
     for (int i = 0; i < indent; ++i) prefix += values.at("indent").get_ref<const std::string&>();
     std::string weight;
-    if (node.weight != values.at("default_weight").get<double>()) {
+    if (values.at("show_weights").get<bool>() &&
+        (values.at("show_default_weight").get<bool>() || node.weight != values.at("default_weight").get<double>())) {
       const auto formatted = std::format("{:.{}f}", node.weight, values.at("weight_precision").get<int>());
       auto rendered = render_profile_template(values.at("weight_template").get_ref<const std::string&>(), Json{{"weight", formatted}});
       if (!rendered) { render_error = rendered.error(); return; }
@@ -317,20 +318,45 @@ std::string MemoryEngine::get_active_context(std::optional<std::size_t> max_char
 }
 
 std::vector<MemoryNode> MemoryEngine::children_locked(std::optional<std::string_view> parent_id) const {
-  std::vector<MemoryNode> out;
-  for (const auto& n : nodes_) {
-    if (parent_eq(n.parent_id, parent_id)) out.push_back(n);
-  }
   const auto& values = profile_->values();
-  const auto priority = [&](const MemoryNode& node) {
-    const auto* found = json::find(values.at("sort_priorities"), node.node_type);
-    return found ? found->get<int>() : values.at("default_sort_priority").get<int>();
+  struct SortRule {
+    std::string field;
+    bool descending;
   };
-  std::stable_sort(out.begin(), out.end(), [&](const MemoryNode& a, const MemoryNode& b) {
-    const auto ap = priority(a), bp = priority(b);
-    if (ap != bp) return ap < bp;
-    return a.created < b.created;
+  std::vector<SortRule> rules;
+  for (const auto& rule : values.at("sort_keys")) {
+    rules.push_back(SortRule{rule.at("field").get<std::string>(),
+                             rule.at("direction") == "descending"});
+  }
+  struct RankedNode {
+    MemoryNode node;
+    int priority;
+    std::vector<Json> keys;
+  };
+  std::vector<RankedNode> ranked;
+  for (const auto& node : nodes_) {
+    if (!parent_eq(node.parent_id, parent_id)) continue;
+    const auto* found = json::find(values.at("sort_priorities"), node.node_type);
+    const auto priority = found ? found->get<int>() : values.at("default_sort_priority").get<int>();
+    std::vector<Json> keys;
+    keys.reserve(rules.size());
+    if (!rules.empty()) {
+      const auto serialized = node.to_json();
+      for (const auto& rule : rules) keys.push_back(serialized.at(rule.field));
+    }
+    ranked.push_back(RankedNode{node, priority, std::move(keys)});
+  }
+  std::stable_sort(ranked.begin(), ranked.end(), [&](const RankedNode& a, const RankedNode& b) {
+    if (a.priority != b.priority) return a.priority < b.priority;
+    for (std::size_t i = 0; i < rules.size(); ++i) {
+      if (a.keys[i] < b.keys[i]) return !rules[i].descending;
+      if (b.keys[i] < a.keys[i]) return rules[i].descending;
+    }
+    return false;
   });
+  std::vector<MemoryNode> out;
+  out.reserve(ranked.size());
+  for (auto& item : ranked) out.push_back(std::move(item.node));
   return out;
 }
 
