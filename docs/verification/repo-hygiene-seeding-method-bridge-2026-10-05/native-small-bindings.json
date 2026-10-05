@@ -1,0 +1,4151 @@
+{
+  "contract": {
+    "schema": "loom.method_graph/1",
+    "vocabulary": {
+      "kinds": {
+        "method": "Method",
+        "method_version": "MethodVersion",
+        "run": "MethodRun",
+        "parameter_set_version": "ParameterSetVersion",
+        "recipe_version": "RecipeVersion",
+        "profile_version": "ProfileVersion",
+        "source_version": "SourceVersion",
+        "result": "CapturedResult",
+        "projection_version": "ProjectionVersion"
+      },
+      "predicates": {
+        "version_of": "version_of",
+        "requests_method_version": "requests_method_version",
+        "produced_in_run": "produced_in_run",
+        "produced_by_method_version": "produced_by_method_version",
+        "uses_parameter_set": "uses_parameter_set",
+        "uses_recipe": "uses_recipe",
+        "uses_profile": "uses_profile",
+        "uses_source_version": "uses_source_version",
+        "captured_record": "captured_record",
+        "uses_projection": "uses_projection",
+        "evaluation_record": "has_evaluation_record"
+      }
+    },
+    "bindings": {
+      "method_identity_id": "seeding:method:6a04d76ad40fc2becdd0f47d55c83170cbde07360468a4df427f24709b8484f5",
+      "method_version_id": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc",
+      "run_id": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+      "parameter_set_version_id": "seeding:parameters:3a5c7cd9e534590a9018d0221e065803b09db3d49161b9ddfaa6a7f72dda1796",
+      "recipe_version_id": "seeding:recipe:af588654311b8818e117189e2ad280f1cd0092335f4c5221dd1554e0542c2af2",
+      "projection_version_id": "seeding:projection-version:3c5876af0edc031c028328fba27fc29569b891fbeb502d454c10931f46c7ab7c"
+    },
+    "definition_hashes": {
+      "method_version": "6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc",
+      "parameter_set": "3a5c7cd9e534590a9018d0221e065803b09db3d49161b9ddfaa6a7f72dda1796",
+      "recipe": "af588654311b8818e117189e2ad280f1cd0092335f4c5221dd1554e0542c2af2",
+      "projection": "3c5876af0edc031c028328fba27fc29569b891fbeb502d454c10931f46c7ab7c"
+    },
+    "trace": {
+      "schema": "loom.method_run_trace/1",
+      "run_id": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+      "method_identity_id": "seeding:method:6a04d76ad40fc2becdd0f47d55c83170cbde07360468a4df427f24709b8484f5",
+      "method_version_id": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc",
+      "parameter_set_version_id": "seeding:parameters:3a5c7cd9e534590a9018d0221e065803b09db3d49161b9ddfaa6a7f72dda1796",
+      "parameter_set_sha256": "3a5c7cd9e534590a9018d0221e065803b09db3d49161b9ddfaa6a7f72dda1796",
+      "recipe_sha256": "af588654311b8818e117189e2ad280f1cd0092335f4c5221dd1554e0542c2af2",
+      "projection_version_id": "seeding:projection-version:3c5876af0edc031c028328fba27fc29569b891fbeb502d454c10931f46c7ab7c",
+      "effective_parameters": {
+        "methods": [
+          "custom/m~",
+          "random/m~"
+        ],
+        "random_seeds": [
+          7,
+          8
+        ],
+        "candidate_budgets": [
+          1
+        ],
+        "caller_setting": {
+          "version": "first"
+        }
+      },
+      "user_overrides": {
+        "status": "recorded",
+        "profile_sources": [
+          {
+            "order": 0,
+            "role": "base",
+            "frozen_path": "profile_frozen.json",
+            "sha256": "11912c4b69f051a477d615cb20d82f7dcbfe7b552a1c5527df91172e312f1aae"
+          },
+          {
+            "order": 1,
+            "role": "overlay",
+            "frozen_path": "profile_overlays/000.json",
+            "sha256": "c44597473cf39ba46bbe803f98ec566dc1656d693ee21f27293a209d4cdae5a5"
+          }
+        ]
+      },
+      "input_sha256": "c38ab7f2a089b094ecf890dc0cd80e29c0404c7ff28e29790dad0a6a7a3beef5",
+      "prepared_at": "2026-10-05T08:00:00+00:00",
+      "execution_kind": "offline-captured-output-projection",
+      "measurement_scope": "captured output counts; original producer CPU/cost unrecorded"
+    }
+  },
+  "trace": {
+    "schema": "loom.method_run_trace/1",
+    "run_id": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+    "method_identity_id": "seeding:method:6a04d76ad40fc2becdd0f47d55c83170cbde07360468a4df427f24709b8484f5",
+    "method_version_id": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc",
+    "parameter_set_version_id": "seeding:parameters:3a5c7cd9e534590a9018d0221e065803b09db3d49161b9ddfaa6a7f72dda1796",
+    "parameter_set_sha256": "3a5c7cd9e534590a9018d0221e065803b09db3d49161b9ddfaa6a7f72dda1796",
+    "recipe_sha256": "af588654311b8818e117189e2ad280f1cd0092335f4c5221dd1554e0542c2af2",
+    "projection_version_id": "seeding:projection-version:3c5876af0edc031c028328fba27fc29569b891fbeb502d454c10931f46c7ab7c",
+    "effective_parameters": {
+      "methods": [
+        "custom/m~",
+        "random/m~"
+      ],
+      "random_seeds": [
+        7,
+        8
+      ],
+      "candidate_budgets": [
+        1
+      ],
+      "caller_setting": {
+        "version": "first"
+      }
+    },
+    "user_overrides": {
+      "status": "recorded",
+      "profile_sources": [
+        {
+          "order": 0,
+          "role": "base",
+          "frozen_path": "profile_frozen.json",
+          "sha256": "11912c4b69f051a477d615cb20d82f7dcbfe7b552a1c5527df91172e312f1aae"
+        },
+        {
+          "order": 1,
+          "role": "overlay",
+          "frozen_path": "profile_overlays/000.json",
+          "sha256": "c44597473cf39ba46bbe803f98ec566dc1656d693ee21f27293a209d4cdae5a5"
+        }
+      ]
+    },
+    "input_sha256": "c38ab7f2a089b094ecf890dc0cd80e29c0404c7ff28e29790dad0a6a7a3beef5",
+    "prepared_at": "2026-10-05T08:00:00+00:00",
+    "projected_at": "2026-10-05T00:00:00+00:00",
+    "execution_kind": "offline-captured-output-projection",
+    "projection_status": "complete",
+    "measurements": {
+      "result_records": 18,
+      "adapter_provider_calls": 0,
+      "producer_cpu_seconds": null,
+      "producer_cost_usd": null,
+      "records/ranking": 6,
+      "records/metric": 6,
+      "records/metric-repetition": 6
+    },
+    "measurement_scope": "captured output counts; original producer CPU/cost unrecorded",
+    "result_bindings": [
+      {
+        "result_entity_id": "seeding:result:a962925f1dd0f32985abfe40251116f4ef0fdb0175012e7ef39965e8fe70def0",
+        "run_id": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+        "method_version_id": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc"
+      },
+      {
+        "result_entity_id": "seeding:result:e1c555e0df6f91d58a0d11af2d7013a39d9f01adafca2eba3d081bf490a32c1b",
+        "run_id": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+        "method_version_id": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc"
+      },
+      {
+        "result_entity_id": "seeding:result:87fd6d22cad9f964c50291b7d3d1766857e04f81f561e225050ccdbee263d497",
+        "run_id": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+        "method_version_id": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc"
+      },
+      {
+        "result_entity_id": "seeding:result:7801ebd842a163903b7ba8ddaa97447d2334303cdcdf00b2b028ce2fc2e4e475",
+        "run_id": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+        "method_version_id": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc"
+      },
+      {
+        "result_entity_id": "seeding:result:618a2a6084f9a7d5dfeadddabb12e00e47ef22bcaa7ef3b2917c545a29e3b331",
+        "run_id": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+        "method_version_id": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc"
+      },
+      {
+        "result_entity_id": "seeding:result:9ec15551bd1c3d67024f1f9d6fff04e6557bbd8e194af226b56021c3586484c3",
+        "run_id": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+        "method_version_id": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc"
+      },
+      {
+        "result_entity_id": "seeding:result:3aa1f4639bb411fad306c382d89ca865bd724310683d391a681e68e2597c6887",
+        "run_id": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+        "method_version_id": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc"
+      },
+      {
+        "result_entity_id": "seeding:result:38553a1f679429962ff2b56a9d5b4c1bf52d535bae5819b996a0128027a6874f",
+        "run_id": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+        "method_version_id": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc"
+      },
+      {
+        "result_entity_id": "seeding:result:2aa7e3c59d28b6d80d82ffb256199a603a53e12e395466f9b86bfbf5a0bf1510",
+        "run_id": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+        "method_version_id": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc"
+      },
+      {
+        "result_entity_id": "seeding:result:9dca272f8ad88274acb9ade988408bc4540600d1973f241600902f246e40514a",
+        "run_id": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+        "method_version_id": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc"
+      },
+      {
+        "result_entity_id": "seeding:result:1614faa22e44eb6c129b5876637c32574fee169cef08eb6eabbd11f289fa6e9e",
+        "run_id": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+        "method_version_id": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc"
+      },
+      {
+        "result_entity_id": "seeding:result:fae7adb6aaa88910137ed71afc7e54b4f2098156aea3781fd3cee9e0257b5be0",
+        "run_id": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+        "method_version_id": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc"
+      },
+      {
+        "result_entity_id": "seeding:result:387fcab26652fed1089a71134ecf3cb46646a3462894d236d3add759bec9ee9f",
+        "run_id": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+        "method_version_id": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc"
+      },
+      {
+        "result_entity_id": "seeding:result:64a6e04f3be2099571932d4419304553f6ac738b500d510251df6c5035ba6e5b",
+        "run_id": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+        "method_version_id": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc"
+      },
+      {
+        "result_entity_id": "seeding:result:775b36a1fe573ad002fe4351ee93481add5188e37912204923509ba0a7e2fa12",
+        "run_id": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+        "method_version_id": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc"
+      },
+      {
+        "result_entity_id": "seeding:result:3f77c98f411eca5a4f042d6e4da53210de2f8753c2fb003834b0e27bb4f82748",
+        "run_id": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+        "method_version_id": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc"
+      },
+      {
+        "result_entity_id": "seeding:result:a02edcad7a459375d8b1f4b03595ede31dc44b7c5bac750143f8ec35aba29d6d",
+        "run_id": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+        "method_version_id": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc"
+      },
+      {
+        "result_entity_id": "seeding:result:f912ffd6d65253999655d4d56b3e6492009d5bbbccaadb7655ffbfe03f6aa608",
+        "run_id": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+        "method_version_id": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc"
+      }
+    ]
+  },
+  "provenance_edges": [
+    {
+      "id": "seeding:claim:e49990a9a004ee99617fda0dfd38ba954f1a28d0b2892ce44bf1a4b1433d9794",
+      "subject": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc",
+      "predicate": "version_of",
+      "object": "seeding:method:6a04d76ad40fc2becdd0f47d55c83170cbde07360468a4df427f24709b8484f5",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:f695943f21c32b8281e2512a9eaa0eccb3fba5fcb352fdfa6e77a9be6379f595",
+              "locator": {
+                "source": "captured-run",
+                "member": "method_graph.json",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"export\":{\"confirmation_ratio\":10,\"format\":\"json.gz\",\"mode\":\"re",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:7fc1d483ec8e26f75b82989ff15ec5ed53a67c9d082b086d9951d4077eefbda6",
+      "subject": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+      "predicate": "requests_method_version",
+      "object": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:f695943f21c32b8281e2512a9eaa0eccb3fba5fcb352fdfa6e77a9be6379f595",
+              "locator": {
+                "source": "captured-run",
+                "member": "method_graph.json",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"export\":{\"confirmation_ratio\":10,\"format\":\"json.gz\",\"mode\":\"re",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:526e39d74055efa54f9d9e82ac630f98f3e21d37ca6893a4f90273be50723a6b",
+      "subject": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+      "predicate": "uses_projection",
+      "object": "seeding:projection-version:3c5876af0edc031c028328fba27fc29569b891fbeb502d454c10931f46c7ab7c",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:f695943f21c32b8281e2512a9eaa0eccb3fba5fcb352fdfa6e77a9be6379f595",
+              "locator": {
+                "source": "captured-run",
+                "member": "method_graph.json",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"export\":{\"confirmation_ratio\":10,\"format\":\"json.gz\",\"mode\":\"re",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:50c794633a5cd2f5b512d35adacb2fff4386b5d394ae905e41431945ee1a1139",
+      "subject": "seeding:result:a962925f1dd0f32985abfe40251116f4ef0fdb0175012e7ef39965e8fe70def0",
+      "predicate": "produced_in_run",
+      "object": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:1df89af8a82947d755596923df1fc1cbad9ebc7aa05de17f8ec6397ee5e7e8a7",
+              "locator": {
+                "source": "captured-run",
+                "member": "predictions.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAHsAAAAC/+1X0W4jKwx9z1dUed22AQYG2O+4b1dVZIzZzO5kiGYm3eZW6bdf",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:0055bbf18b89df54fa74af9b03017ccb58a31e9ecf72a40559aa85d48b506008",
+      "subject": "seeding:result:a962925f1dd0f32985abfe40251116f4ef0fdb0175012e7ef39965e8fe70def0",
+      "predicate": "produced_by_method_version",
+      "object": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:1df89af8a82947d755596923df1fc1cbad9ebc7aa05de17f8ec6397ee5e7e8a7",
+              "locator": {
+                "source": "captured-run",
+                "member": "predictions.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAHsAAAAC/+1X0W4jKwx9z1dUed22AQYG2O+4b1dVZIzZzO5kiGYm3eZW6bdf",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:d7faf423f500e81776ddd81425510c3271efd8963d1143673805499d827700df",
+      "subject": "seeding:result:e1c555e0df6f91d58a0d11af2d7013a39d9f01adafca2eba3d081bf490a32c1b",
+      "predicate": "produced_in_run",
+      "object": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:1df89af8a82947d755596923df1fc1cbad9ebc7aa05de17f8ec6397ee5e7e8a7",
+              "locator": {
+                "source": "captured-run",
+                "member": "predictions.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAHsAAAAC/+1X0W4jKwx9z1dUed22AQYG2O+4b1dVZIzZzO5kiGYm3eZW6bdf",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:222d38d1dcf67892045d345240ac8e31cf7b0dc866cb25d963d530447a1cffb4",
+      "subject": "seeding:result:e1c555e0df6f91d58a0d11af2d7013a39d9f01adafca2eba3d081bf490a32c1b",
+      "predicate": "produced_by_method_version",
+      "object": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:1df89af8a82947d755596923df1fc1cbad9ebc7aa05de17f8ec6397ee5e7e8a7",
+              "locator": {
+                "source": "captured-run",
+                "member": "predictions.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAHsAAAAC/+1X0W4jKwx9z1dUed22AQYG2O+4b1dVZIzZzO5kiGYm3eZW6bdf",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:9100b2abe835bd10de50346a77d3e551ca4d642fb4b2b917f2cb969484b4679c",
+      "subject": "seeding:result:87fd6d22cad9f964c50291b7d3d1766857e04f81f561e225050ccdbee263d497",
+      "predicate": "produced_in_run",
+      "object": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:1df89af8a82947d755596923df1fc1cbad9ebc7aa05de17f8ec6397ee5e7e8a7",
+              "locator": {
+                "source": "captured-run",
+                "member": "predictions.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAHsAAAAC/+1X0W4jKwx9z1dUed22AQYG2O+4b1dVZIzZzO5kiGYm3eZW6bdf",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:816f5aad9cc2e4e4cd6b702db3288340b50647be81024fecab8f33d205fae83d",
+      "subject": "seeding:result:87fd6d22cad9f964c50291b7d3d1766857e04f81f561e225050ccdbee263d497",
+      "predicate": "produced_by_method_version",
+      "object": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:1df89af8a82947d755596923df1fc1cbad9ebc7aa05de17f8ec6397ee5e7e8a7",
+              "locator": {
+                "source": "captured-run",
+                "member": "predictions.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAHsAAAAC/+1X0W4jKwx9z1dUed22AQYG2O+4b1dVZIzZzO5kiGYm3eZW6bdf",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:4854b182b61509dae0dedd02fcd146b34f5b2cafc37447f29a1f0902392bc0bd",
+      "subject": "seeding:result:7801ebd842a163903b7ba8ddaa97447d2334303cdcdf00b2b028ce2fc2e4e475",
+      "predicate": "produced_in_run",
+      "object": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:1df89af8a82947d755596923df1fc1cbad9ebc7aa05de17f8ec6397ee5e7e8a7",
+              "locator": {
+                "source": "captured-run",
+                "member": "predictions.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAHsAAAAC/+1X0W4jKwx9z1dUed22AQYG2O+4b1dVZIzZzO5kiGYm3eZW6bdf",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:c74d203653baab8c277c4d79577dd04bd29b2f431918d538129950eaa1e295a5",
+      "subject": "seeding:result:7801ebd842a163903b7ba8ddaa97447d2334303cdcdf00b2b028ce2fc2e4e475",
+      "predicate": "produced_by_method_version",
+      "object": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:1df89af8a82947d755596923df1fc1cbad9ebc7aa05de17f8ec6397ee5e7e8a7",
+              "locator": {
+                "source": "captured-run",
+                "member": "predictions.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAHsAAAAC/+1X0W4jKwx9z1dUed22AQYG2O+4b1dVZIzZzO5kiGYm3eZW6bdf",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:5bb909c5f6c0e47d27cb48f5c2af96ee59384c8b77e472cd7be3e960c56b1319",
+      "subject": "seeding:result:618a2a6084f9a7d5dfeadddabb12e00e47ef22bcaa7ef3b2917c545a29e3b331",
+      "predicate": "produced_in_run",
+      "object": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:1df89af8a82947d755596923df1fc1cbad9ebc7aa05de17f8ec6397ee5e7e8a7",
+              "locator": {
+                "source": "captured-run",
+                "member": "predictions.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAHsAAAAC/+1X0W4jKwx9z1dUed22AQYG2O+4b1dVZIzZzO5kiGYm3eZW6bdf",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:0cc4bee2f93a0220c5311ae7fc18ee2f2801cc0862544d4b7f4982be4cfc36be",
+      "subject": "seeding:result:618a2a6084f9a7d5dfeadddabb12e00e47ef22bcaa7ef3b2917c545a29e3b331",
+      "predicate": "produced_by_method_version",
+      "object": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:1df89af8a82947d755596923df1fc1cbad9ebc7aa05de17f8ec6397ee5e7e8a7",
+              "locator": {
+                "source": "captured-run",
+                "member": "predictions.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAHsAAAAC/+1X0W4jKwx9z1dUed22AQYG2O+4b1dVZIzZzO5kiGYm3eZW6bdf",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:fee2cc443e4afb78889472a9e19b3f825cc95e9857fa73e05ec305b30ab36907",
+      "subject": "seeding:result:9ec15551bd1c3d67024f1f9d6fff04e6557bbd8e194af226b56021c3586484c3",
+      "predicate": "produced_in_run",
+      "object": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:1df89af8a82947d755596923df1fc1cbad9ebc7aa05de17f8ec6397ee5e7e8a7",
+              "locator": {
+                "source": "captured-run",
+                "member": "predictions.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAHsAAAAC/+1X0W4jKwx9z1dUed22AQYG2O+4b1dVZIzZzO5kiGYm3eZW6bdf",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:b0cfa8d163d5a28645bc147ec9cebee86abd3ff34b5f15a1ddc2c530f4d7fe16",
+      "subject": "seeding:result:9ec15551bd1c3d67024f1f9d6fff04e6557bbd8e194af226b56021c3586484c3",
+      "predicate": "produced_by_method_version",
+      "object": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:1df89af8a82947d755596923df1fc1cbad9ebc7aa05de17f8ec6397ee5e7e8a7",
+              "locator": {
+                "source": "captured-run",
+                "member": "predictions.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAHsAAAAC/+1X0W4jKwx9z1dUed22AQYG2O+4b1dVZIzZzO5kiGYm3eZW6bdf",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:1edca3a5c027f6886a7922d705be58f74a612c07ea2a16646a7ceb584c83c440",
+      "subject": "seeding:result:3aa1f4639bb411fad306c382d89ca865bd724310683d391a681e68e2597c6887",
+      "predicate": "produced_in_run",
+      "object": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:0bb0a86f1b4d4fd7339adb57e3279e8a37bf009ef48be27c52d60e516ed3c968",
+              "locator": {
+                "source": "captured-run",
+                "member": "results.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAMgBAAAC/+1YXW/qOBB951dUvO4ttR1/3t+xb6sqGo/Hl9wNcZSE6rJV97ev",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:cca031497ee80ecf33d75b73328ea6ade04f048ecfe17003dc50898702dc74b8",
+      "subject": "seeding:result:3aa1f4639bb411fad306c382d89ca865bd724310683d391a681e68e2597c6887",
+      "predicate": "produced_by_method_version",
+      "object": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:0bb0a86f1b4d4fd7339adb57e3279e8a37bf009ef48be27c52d60e516ed3c968",
+              "locator": {
+                "source": "captured-run",
+                "member": "results.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAMgBAAAC/+1YXW/qOBB951dUvO4ttR1/3t+xb6sqGo/Hl9wNcZSE6rJV97ev",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:e547c21312e0521a7ed8c11accc53e7fe9426cfa83d773569b2f2538b09f5959",
+      "subject": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc",
+      "predicate": "has_evaluation_record",
+      "object": "seeding:result:3aa1f4639bb411fad306c382d89ca865bd724310683d391a681e68e2597c6887",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:0bb0a86f1b4d4fd7339adb57e3279e8a37bf009ef48be27c52d60e516ed3c968",
+              "locator": {
+                "source": "captured-run",
+                "member": "results.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAMgBAAAC/+1YXW/qOBB951dUvO4ttR1/3t+xb6sqGo/Hl9wNcZSE6rJV97ev",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:92d4f82b1a4d7c8744e92034450c60b33d2d4d59710f6e110044116d7827ad68",
+      "subject": "seeding:result:38553a1f679429962ff2b56a9d5b4c1bf52d535bae5819b996a0128027a6874f",
+      "predicate": "produced_in_run",
+      "object": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:0bb0a86f1b4d4fd7339adb57e3279e8a37bf009ef48be27c52d60e516ed3c968",
+              "locator": {
+                "source": "captured-run",
+                "member": "results.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAMgBAAAC/+1YXW/qOBB951dUvO4ttR1/3t+xb6sqGo/Hl9wNcZSE6rJV97ev",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:59194cf390ff4041ae8586cb94d0c30205cff0dbc8ee78e563f37eabb9ab43e7",
+      "subject": "seeding:result:38553a1f679429962ff2b56a9d5b4c1bf52d535bae5819b996a0128027a6874f",
+      "predicate": "produced_by_method_version",
+      "object": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:0bb0a86f1b4d4fd7339adb57e3279e8a37bf009ef48be27c52d60e516ed3c968",
+              "locator": {
+                "source": "captured-run",
+                "member": "results.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAMgBAAAC/+1YXW/qOBB951dUvO4ttR1/3t+xb6sqGo/Hl9wNcZSE6rJV97ev",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:57545d96068bfe857860c44c03753882f16782dc9771db5c0f07fd922e39dd01",
+      "subject": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc",
+      "predicate": "has_evaluation_record",
+      "object": "seeding:result:38553a1f679429962ff2b56a9d5b4c1bf52d535bae5819b996a0128027a6874f",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:0bb0a86f1b4d4fd7339adb57e3279e8a37bf009ef48be27c52d60e516ed3c968",
+              "locator": {
+                "source": "captured-run",
+                "member": "results.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAMgBAAAC/+1YXW/qOBB951dUvO4ttR1/3t+xb6sqGo/Hl9wNcZSE6rJV97ev",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:8094170a237f750cbdbd4e5b9cc6626af12e20ec4499563ff28a637754a65231",
+      "subject": "seeding:result:2aa7e3c59d28b6d80d82ffb256199a603a53e12e395466f9b86bfbf5a0bf1510",
+      "predicate": "produced_in_run",
+      "object": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:0bb0a86f1b4d4fd7339adb57e3279e8a37bf009ef48be27c52d60e516ed3c968",
+              "locator": {
+                "source": "captured-run",
+                "member": "results.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAMgBAAAC/+1YXW/qOBB951dUvO4ttR1/3t+xb6sqGo/Hl9wNcZSE6rJV97ev",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:297dcce1b4e4eb7c2a1bd39cc11e813ba4000e383251cbec8db919138bdd25c2",
+      "subject": "seeding:result:2aa7e3c59d28b6d80d82ffb256199a603a53e12e395466f9b86bfbf5a0bf1510",
+      "predicate": "produced_by_method_version",
+      "object": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:0bb0a86f1b4d4fd7339adb57e3279e8a37bf009ef48be27c52d60e516ed3c968",
+              "locator": {
+                "source": "captured-run",
+                "member": "results.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAMgBAAAC/+1YXW/qOBB951dUvO4ttR1/3t+xb6sqGo/Hl9wNcZSE6rJV97ev",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:89137faa3dece41eb76d938e874b844745fc786f94888fa9c1bd25b9cae71d33",
+      "subject": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc",
+      "predicate": "has_evaluation_record",
+      "object": "seeding:result:2aa7e3c59d28b6d80d82ffb256199a603a53e12e395466f9b86bfbf5a0bf1510",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:0bb0a86f1b4d4fd7339adb57e3279e8a37bf009ef48be27c52d60e516ed3c968",
+              "locator": {
+                "source": "captured-run",
+                "member": "results.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAMgBAAAC/+1YXW/qOBB951dUvO4ttR1/3t+xb6sqGo/Hl9wNcZSE6rJV97ev",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:02140a45ad9a0d368655675d49a4d206cdc258da9a606961351f27613ce77f83",
+      "subject": "seeding:result:9dca272f8ad88274acb9ade988408bc4540600d1973f241600902f246e40514a",
+      "predicate": "produced_in_run",
+      "object": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:0bb0a86f1b4d4fd7339adb57e3279e8a37bf009ef48be27c52d60e516ed3c968",
+              "locator": {
+                "source": "captured-run",
+                "member": "results.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAMgBAAAC/+1YXW/qOBB951dUvO4ttR1/3t+xb6sqGo/Hl9wNcZSE6rJV97ev",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:e788969671496064bd95a6688805da1202b6fe83636673af20a72b64faddb8b9",
+      "subject": "seeding:result:9dca272f8ad88274acb9ade988408bc4540600d1973f241600902f246e40514a",
+      "predicate": "produced_by_method_version",
+      "object": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:0bb0a86f1b4d4fd7339adb57e3279e8a37bf009ef48be27c52d60e516ed3c968",
+              "locator": {
+                "source": "captured-run",
+                "member": "results.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAMgBAAAC/+1YXW/qOBB951dUvO4ttR1/3t+xb6sqGo/Hl9wNcZSE6rJV97ev",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:83f1b5b6d61e12591616f9ad3032d6ac714a49eba89f7b4e8a5630e4e5bce293",
+      "subject": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc",
+      "predicate": "has_evaluation_record",
+      "object": "seeding:result:9dca272f8ad88274acb9ade988408bc4540600d1973f241600902f246e40514a",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:0bb0a86f1b4d4fd7339adb57e3279e8a37bf009ef48be27c52d60e516ed3c968",
+              "locator": {
+                "source": "captured-run",
+                "member": "results.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAMgBAAAC/+1YXW/qOBB951dUvO4ttR1/3t+xb6sqGo/Hl9wNcZSE6rJV97ev",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:c9f4723bc343e2a4940cd44b4e0bc05ad6a63850b3fa6835d0746c2116891653",
+      "subject": "seeding:result:1614faa22e44eb6c129b5876637c32574fee169cef08eb6eabbd11f289fa6e9e",
+      "predicate": "produced_in_run",
+      "object": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:0bb0a86f1b4d4fd7339adb57e3279e8a37bf009ef48be27c52d60e516ed3c968",
+              "locator": {
+                "source": "captured-run",
+                "member": "results.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAMgBAAAC/+1YXW/qOBB951dUvO4ttR1/3t+xb6sqGo/Hl9wNcZSE6rJV97ev",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:5f4a64ab0642949a89eca007c7a20967f1216a8256396768ae2e7d71294f316f",
+      "subject": "seeding:result:1614faa22e44eb6c129b5876637c32574fee169cef08eb6eabbd11f289fa6e9e",
+      "predicate": "produced_by_method_version",
+      "object": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:0bb0a86f1b4d4fd7339adb57e3279e8a37bf009ef48be27c52d60e516ed3c968",
+              "locator": {
+                "source": "captured-run",
+                "member": "results.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAMgBAAAC/+1YXW/qOBB951dUvO4ttR1/3t+xb6sqGo/Hl9wNcZSE6rJV97ev",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:3ae3e78a2178e7f1d1beaa8b8fb0407c31ba5268750be1ed42fbeb7806fd32b2",
+      "subject": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc",
+      "predicate": "has_evaluation_record",
+      "object": "seeding:result:1614faa22e44eb6c129b5876637c32574fee169cef08eb6eabbd11f289fa6e9e",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:0bb0a86f1b4d4fd7339adb57e3279e8a37bf009ef48be27c52d60e516ed3c968",
+              "locator": {
+                "source": "captured-run",
+                "member": "results.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAMgBAAAC/+1YXW/qOBB951dUvO4ttR1/3t+xb6sqGo/Hl9wNcZSE6rJV97ev",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:d4b8f660055f803e8b1c067e427e8227ba1e1ffd069b6b3e6304799d98dcb0fd",
+      "subject": "seeding:result:fae7adb6aaa88910137ed71afc7e54b4f2098156aea3781fd3cee9e0257b5be0",
+      "predicate": "produced_in_run",
+      "object": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:0bb0a86f1b4d4fd7339adb57e3279e8a37bf009ef48be27c52d60e516ed3c968",
+              "locator": {
+                "source": "captured-run",
+                "member": "results.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAMgBAAAC/+1YXW/qOBB951dUvO4ttR1/3t+xb6sqGo/Hl9wNcZSE6rJV97ev",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:982e402a0c3b388df53497e0ca0c56a3baf7db405ff570e6a886093269a25cee",
+      "subject": "seeding:result:fae7adb6aaa88910137ed71afc7e54b4f2098156aea3781fd3cee9e0257b5be0",
+      "predicate": "produced_by_method_version",
+      "object": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:0bb0a86f1b4d4fd7339adb57e3279e8a37bf009ef48be27c52d60e516ed3c968",
+              "locator": {
+                "source": "captured-run",
+                "member": "results.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAMgBAAAC/+1YXW/qOBB951dUvO4ttR1/3t+xb6sqGo/Hl9wNcZSE6rJV97ev",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:4f09f5d118c162db5c420abcbae03daf52e5dc70542236fe052f2f3933ccf991",
+      "subject": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc",
+      "predicate": "has_evaluation_record",
+      "object": "seeding:result:fae7adb6aaa88910137ed71afc7e54b4f2098156aea3781fd3cee9e0257b5be0",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:0bb0a86f1b4d4fd7339adb57e3279e8a37bf009ef48be27c52d60e516ed3c968",
+              "locator": {
+                "source": "captured-run",
+                "member": "results.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAMgBAAAC/+1YXW/qOBB951dUvO4ttR1/3t+xb6sqGo/Hl9wNcZSE6rJV97ev",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:ee130f067306dfb5e116c83b503c70591b1b42fe31a95566db185fd10a332839",
+      "subject": "seeding:result:387fcab26652fed1089a71134ecf3cb46646a3462894d236d3add759bec9ee9f",
+      "predicate": "produced_in_run",
+      "object": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:0bb0a86f1b4d4fd7339adb57e3279e8a37bf009ef48be27c52d60e516ed3c968",
+              "locator": {
+                "source": "captured-run",
+                "member": "results.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAMgBAAAC/+1YXW/qOBB951dUvO4ttR1/3t+xb6sqGo/Hl9wNcZSE6rJV97ev",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:2cf6e530612c4fcc879914413ecec678bb764c34ef1ef25ec2c30cd4b96bb6d3",
+      "subject": "seeding:result:387fcab26652fed1089a71134ecf3cb46646a3462894d236d3add759bec9ee9f",
+      "predicate": "produced_by_method_version",
+      "object": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:0bb0a86f1b4d4fd7339adb57e3279e8a37bf009ef48be27c52d60e516ed3c968",
+              "locator": {
+                "source": "captured-run",
+                "member": "results.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAMgBAAAC/+1YXW/qOBB951dUvO4ttR1/3t+xb6sqGo/Hl9wNcZSE6rJV97ev",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:d2e21fcc216d305d1d60fa3830e58afe633da4f4eb6fd8b276e0b4f0d6f9bf76",
+      "subject": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc",
+      "predicate": "has_evaluation_record",
+      "object": "seeding:result:387fcab26652fed1089a71134ecf3cb46646a3462894d236d3add759bec9ee9f",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:0bb0a86f1b4d4fd7339adb57e3279e8a37bf009ef48be27c52d60e516ed3c968",
+              "locator": {
+                "source": "captured-run",
+                "member": "results.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAMgBAAAC/+1YXW/qOBB951dUvO4ttR1/3t+xb6sqGo/Hl9wNcZSE6rJV97ev",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:51aa93888762bd701177f1551339ca15c1126534e7d3586e7171e061cd232530",
+      "subject": "seeding:result:64a6e04f3be2099571932d4419304553f6ac738b500d510251df6c5035ba6e5b",
+      "predicate": "produced_in_run",
+      "object": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:0bb0a86f1b4d4fd7339adb57e3279e8a37bf009ef48be27c52d60e516ed3c968",
+              "locator": {
+                "source": "captured-run",
+                "member": "results.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAMgBAAAC/+1YXW/qOBB951dUvO4ttR1/3t+xb6sqGo/Hl9wNcZSE6rJV97ev",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:514a39a512511832e9ea6661c7be83a3f2f6b2803887e7a3bdb6b3755db8f95f",
+      "subject": "seeding:result:64a6e04f3be2099571932d4419304553f6ac738b500d510251df6c5035ba6e5b",
+      "predicate": "produced_by_method_version",
+      "object": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:0bb0a86f1b4d4fd7339adb57e3279e8a37bf009ef48be27c52d60e516ed3c968",
+              "locator": {
+                "source": "captured-run",
+                "member": "results.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAMgBAAAC/+1YXW/qOBB951dUvO4ttR1/3t+xb6sqGo/Hl9wNcZSE6rJV97ev",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:fc6d626bf340561825fcdd1e7450a7d9e0f817b9dfd82824584f7aadcaf9e451",
+      "subject": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc",
+      "predicate": "has_evaluation_record",
+      "object": "seeding:result:64a6e04f3be2099571932d4419304553f6ac738b500d510251df6c5035ba6e5b",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:0bb0a86f1b4d4fd7339adb57e3279e8a37bf009ef48be27c52d60e516ed3c968",
+              "locator": {
+                "source": "captured-run",
+                "member": "results.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAMgBAAAC/+1YXW/qOBB951dUvO4ttR1/3t+xb6sqGo/Hl9wNcZSE6rJV97ev",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:5e8e957824c55fb9759dad70a43caf3f27d0a78dd0d6c581fc828ccfb43590a1",
+      "subject": "seeding:result:775b36a1fe573ad002fe4351ee93481add5188e37912204923509ba0a7e2fa12",
+      "predicate": "produced_in_run",
+      "object": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:0bb0a86f1b4d4fd7339adb57e3279e8a37bf009ef48be27c52d60e516ed3c968",
+              "locator": {
+                "source": "captured-run",
+                "member": "results.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAMgBAAAC/+1YXW/qOBB951dUvO4ttR1/3t+xb6sqGo/Hl9wNcZSE6rJV97ev",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:04ea2e61563cdbd37ef8e1947474f13e4810e777bce4322af701b54b74c81299",
+      "subject": "seeding:result:775b36a1fe573ad002fe4351ee93481add5188e37912204923509ba0a7e2fa12",
+      "predicate": "produced_by_method_version",
+      "object": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:0bb0a86f1b4d4fd7339adb57e3279e8a37bf009ef48be27c52d60e516ed3c968",
+              "locator": {
+                "source": "captured-run",
+                "member": "results.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAMgBAAAC/+1YXW/qOBB951dUvO4ttR1/3t+xb6sqGo/Hl9wNcZSE6rJV97ev",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:85d3a4d0a5135a6ff38f09ea16399f3819a0cbc84bcff4fc5a249ba04da1272b",
+      "subject": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc",
+      "predicate": "has_evaluation_record",
+      "object": "seeding:result:775b36a1fe573ad002fe4351ee93481add5188e37912204923509ba0a7e2fa12",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:0bb0a86f1b4d4fd7339adb57e3279e8a37bf009ef48be27c52d60e516ed3c968",
+              "locator": {
+                "source": "captured-run",
+                "member": "results.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAMgBAAAC/+1YXW/qOBB951dUvO4ttR1/3t+xb6sqGo/Hl9wNcZSE6rJV97ev",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:718c8d073af5cb77ef31959b671f503665a77a3f188e8427963d3614eeb1e8ca",
+      "subject": "seeding:result:3f77c98f411eca5a4f042d6e4da53210de2f8753c2fb003834b0e27bb4f82748",
+      "predicate": "produced_in_run",
+      "object": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:0bb0a86f1b4d4fd7339adb57e3279e8a37bf009ef48be27c52d60e516ed3c968",
+              "locator": {
+                "source": "captured-run",
+                "member": "results.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAMgBAAAC/+1YXW/qOBB951dUvO4ttR1/3t+xb6sqGo/Hl9wNcZSE6rJV97ev",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:f2e856a2cad4a56edd0ce33e57828d9b536bbfb613b0ed5558c2315b96bdc285",
+      "subject": "seeding:result:3f77c98f411eca5a4f042d6e4da53210de2f8753c2fb003834b0e27bb4f82748",
+      "predicate": "produced_by_method_version",
+      "object": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:0bb0a86f1b4d4fd7339adb57e3279e8a37bf009ef48be27c52d60e516ed3c968",
+              "locator": {
+                "source": "captured-run",
+                "member": "results.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAMgBAAAC/+1YXW/qOBB951dUvO4ttR1/3t+xb6sqGo/Hl9wNcZSE6rJV97ev",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:7465f8df4fe7ebdbc657970b542149ad955cd5a3ee15a5324f3892c1661ab10f",
+      "subject": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc",
+      "predicate": "has_evaluation_record",
+      "object": "seeding:result:3f77c98f411eca5a4f042d6e4da53210de2f8753c2fb003834b0e27bb4f82748",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:0bb0a86f1b4d4fd7339adb57e3279e8a37bf009ef48be27c52d60e516ed3c968",
+              "locator": {
+                "source": "captured-run",
+                "member": "results.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAMgBAAAC/+1YXW/qOBB951dUvO4ttR1/3t+xb6sqGo/Hl9wNcZSE6rJV97ev",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:d9fd8123ea246efeb84cf4519e15f8e960d40ee2ec5b14818eb7f61046fae879",
+      "subject": "seeding:result:a02edcad7a459375d8b1f4b03595ede31dc44b7c5bac750143f8ec35aba29d6d",
+      "predicate": "produced_in_run",
+      "object": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:0bb0a86f1b4d4fd7339adb57e3279e8a37bf009ef48be27c52d60e516ed3c968",
+              "locator": {
+                "source": "captured-run",
+                "member": "results.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAMgBAAAC/+1YXW/qOBB951dUvO4ttR1/3t+xb6sqGo/Hl9wNcZSE6rJV97ev",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:66727d7cb670c38d2df0b1c0f03d63ad1b99861dba4fc640aec1e2255633777d",
+      "subject": "seeding:result:a02edcad7a459375d8b1f4b03595ede31dc44b7c5bac750143f8ec35aba29d6d",
+      "predicate": "produced_by_method_version",
+      "object": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:0bb0a86f1b4d4fd7339adb57e3279e8a37bf009ef48be27c52d60e516ed3c968",
+              "locator": {
+                "source": "captured-run",
+                "member": "results.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAMgBAAAC/+1YXW/qOBB951dUvO4ttR1/3t+xb6sqGo/Hl9wNcZSE6rJV97ev",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:e47c2113169b4528770b7d296bc86328c4a071302a26d2b74eeb7077d921ae2d",
+      "subject": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc",
+      "predicate": "has_evaluation_record",
+      "object": "seeding:result:a02edcad7a459375d8b1f4b03595ede31dc44b7c5bac750143f8ec35aba29d6d",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:0bb0a86f1b4d4fd7339adb57e3279e8a37bf009ef48be27c52d60e516ed3c968",
+              "locator": {
+                "source": "captured-run",
+                "member": "results.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAMgBAAAC/+1YXW/qOBB951dUvO4ttR1/3t+xb6sqGo/Hl9wNcZSE6rJV97ev",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:2fe8c8f58ffb51e06e063ebb266e1a3bb4af5bbf8ea8fa2eac582dbc9b52fac0",
+      "subject": "seeding:result:f912ffd6d65253999655d4d56b3e6492009d5bbbccaadb7655ffbfe03f6aa608",
+      "predicate": "produced_in_run",
+      "object": "seeding:run:d2fecbbd450bff13ad136f10551a2215c83995a5983322230beb0e9647b57faf",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:0bb0a86f1b4d4fd7339adb57e3279e8a37bf009ef48be27c52d60e516ed3c968",
+              "locator": {
+                "source": "captured-run",
+                "member": "results.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAMgBAAAC/+1YXW/qOBB951dUvO4ttR1/3t+xb6sqGo/Hl9wNcZSE6rJV97ev",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:c0a6a5193c57048a7e63365e99c2d42e733fdfcaf59f1a1f073eecadb7349e82",
+      "subject": "seeding:result:f912ffd6d65253999655d4d56b3e6492009d5bbbccaadb7655ffbfe03f6aa608",
+      "predicate": "produced_by_method_version",
+      "object": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:0bb0a86f1b4d4fd7339adb57e3279e8a37bf009ef48be27c52d60e516ed3c968",
+              "locator": {
+                "source": "captured-run",
+                "member": "results.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAMgBAAAC/+1YXW/qOBB951dUvO4ttR1/3t+xb6sqGo/Hl9wNcZSE6rJV97ev",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "seeding:claim:1a0c66a4c9162bde95f627c0a31364ec5d0735cab2e0d0d181a89609472bc91b",
+      "subject": "seeding:version:6c4beb2fa4702f28d63775175719cca2f6ce382bcc530d01cc622dbf55165abc",
+      "predicate": "has_evaluation_record",
+      "object": "seeding:result:f912ffd6d65253999655d4d56b3e6492009d5bbbccaadb7655ffbfe03f6aa608",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "captured-output-structure",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "seeding:source:0bb0a86f1b4d4fd7339adb57e3279e8a37bf009ef48be27c52d60e516ed3c968",
+              "locator": {
+                "source": "captured-run",
+                "member": "results.json.gz",
+                "json_pointer": "",
+                "byte_start": null,
+                "byte_len": null,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "H4sIAMgBAAAC/+1YXW/qOBB951dUvO4ttR1/3t+xb6sqGo/Hl9wNcZSE6rJV97ev",
+              "extractor": "seeding-method-graph/1",
+              "quality": 1
+            }
+          ],
+          "derivation": {
+            "operator": "captured-record-projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1,
+        "status": "active",
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    }
+  ],
+  "native_sources": [
+    {
+      "id": "seeding:source:1df89af8a82947d755596923df1fc1cbad9ebc7aa05de17f8ec6397ee5e7e8a7",
+      "text_sha256": "524ce7d883521793c7e5a2116850b4f451d05268f4b3415d2ddf1ee12069583c",
+      "attrs": {
+        "encoding": "base64",
+        "compression": "gzip",
+        "role": "predictions",
+        "raw_sha256": "bbd1d57831eb73e2dc197911fe9faf390f6997eca6d85e4260cf803b3c99e034",
+        "decoded_sha256": "5749ae71aa503c8564d3e950ac273705ca12e67d596f0ef3f58ea49dcee99760",
+        "raw_bytes": 1094,
+        "decoded_bytes": 5053,
+        "original_prepared_at": "2026-10-05T08:00:00+00:00",
+        "known_at_semantics": "bytes observed at projection"
+      }
+    },
+    {
+      "id": "seeding:source:0bb0a86f1b4d4fd7339adb57e3279e8a37bf009ef48be27c52d60e516ed3c968",
+      "text_sha256": "14b108d70573d34f9f1d495fa697eb92b87c07f591fe46a3bbe8ba9a457bf5fb",
+      "attrs": {
+        "encoding": "base64",
+        "compression": "gzip",
+        "role": "results",
+        "raw_sha256": "bb8b8f82d99b70536702be31cc9d95eb2be0a714e67994e1712f3b97047984ec",
+        "decoded_sha256": "388d4e301aee23c3ce19bcdd1a6b9eb846f78f2a0adf60d7e09f4397b769359e",
+        "raw_bytes": 1030,
+        "decoded_bytes": 6072,
+        "original_prepared_at": "2026-10-05T08:00:00+00:00",
+        "known_at_semantics": "bytes observed at projection"
+      }
+    },
+    {
+      "id": "seeding:source:f82bf156b2f867eda97e30f936ea1151ea3db90ff07f7a284c8fded04d993ab3",
+      "text_sha256": "1f540970658bce9f1087f5cd2d9bec14348b620fcb2268f99f8926c9108ce631",
+      "attrs": {
+        "encoding": "base64",
+        "compression": "none",
+        "role": "policy",
+        "raw_sha256": "b9e2f9d7dd99cfc895d815af19853311b848a6f59c3e43e284c637576adf9caf",
+        "decoded_sha256": "b9e2f9d7dd99cfc895d815af19853311b848a6f59c3e43e284c637576adf9caf",
+        "raw_bytes": 201,
+        "decoded_bytes": 201,
+        "original_prepared_at": "2026-10-05T08:00:00+00:00",
+        "known_at_semantics": "bytes observed at projection"
+      }
+    },
+    {
+      "id": "seeding:source:99304857e99630c76b361ff0bd1cf532fb55e122e254a684edfae168053f95c0",
+      "text_sha256": "17651d2a23ac4f68139b9fa37dd4a62a54081462385a5232a78ec5b22fa7e528",
+      "attrs": {
+        "encoding": "base64",
+        "compression": "none",
+        "role": "protocol",
+        "raw_sha256": "519d54f3deb84b15cbbd0acf5c85dfd41556ce1752ba5c50eb8c1a06975c5970",
+        "decoded_sha256": "519d54f3deb84b15cbbd0acf5c85dfd41556ce1752ba5c50eb8c1a06975c5970",
+        "raw_bytes": 48,
+        "decoded_bytes": 48,
+        "original_prepared_at": "2026-10-05T08:00:00+00:00",
+        "known_at_semantics": "bytes observed at projection"
+      }
+    },
+    {
+      "id": "seeding:source:eae9d2f610b90a51cc88debb024b9af9b9a4f4b4ad172e862d4cc2aef55c352f",
+      "text_sha256": "f582cafc20a883cf76da3c0af362f94a1010dc5b6558fc1f06c8e35e2f23af50",
+      "attrs": {
+        "encoding": "base64",
+        "compression": "none",
+        "role": "program",
+        "raw_sha256": "abdeec13ddc145ed0bf70c48cdc74c45288be9c3a2201362e21ead7722bbb226",
+        "decoded_sha256": "abdeec13ddc145ed0bf70c48cdc74c45288be9c3a2201362e21ead7722bbb226",
+        "raw_bytes": 37,
+        "decoded_bytes": 37,
+        "original_prepared_at": "2026-10-05T08:00:00+00:00",
+        "known_at_semantics": "bytes observed at projection"
+      }
+    },
+    {
+      "id": "seeding:source:4cb364a4b47cd4eb55f06564e1460d77f5c23f3aeb0febcd45817ea1c826f008",
+      "text_sha256": "ad4c1ea9a775c94646e6b288661d3a87acec621046343f2803242dd98b07e900",
+      "attrs": {
+        "encoding": "base64",
+        "compression": "none",
+        "role": "fixture",
+        "raw_sha256": "c38ab7f2a089b094ecf890dc0cd80e29c0404c7ff28e29790dad0a6a7a3beef5",
+        "decoded_sha256": "c38ab7f2a089b094ecf890dc0cd80e29c0404c7ff28e29790dad0a6a7a3beef5",
+        "raw_bytes": 84,
+        "decoded_bytes": 84,
+        "original_prepared_at": "2026-10-05T08:00:00+00:00",
+        "known_at_semantics": "bytes observed at projection"
+      }
+    },
+    {
+      "id": "seeding:source:c8c18e9c570c6c7819b02288ba3f06cc78f10c6f6231f0d1143d1648c247b6d7",
+      "text_sha256": "284bd7133e54070a92f718992dcbce127af17ade91ae84b64b6eaa650bd14e64",
+      "attrs": {
+        "encoding": "base64",
+        "compression": "none",
+        "role": "effective_profile",
+        "raw_sha256": "54b6e318891b8d101549cd9477669cb47aceae3b5d8d49a0175212a49c09d6b0",
+        "decoded_sha256": "54b6e318891b8d101549cd9477669cb47aceae3b5d8d49a0175212a49c09d6b0",
+        "raw_bytes": 262,
+        "decoded_bytes": 262,
+        "original_prepared_at": "2026-10-05T08:00:00+00:00",
+        "known_at_semantics": "bytes observed at projection"
+      }
+    },
+    {
+      "id": "seeding:source:860bf00a6d6ab889b780dacc6d6a586dcec6979c5bde0df891fc9c2bdc477916",
+      "text_sha256": "f582cafc20a883cf76da3c0af362f94a1010dc5b6558fc1f06c8e35e2f23af50",
+      "attrs": {
+        "encoding": "base64",
+        "compression": "none",
+        "role": "module:modules_frozen/prototype.py",
+        "raw_sha256": "abdeec13ddc145ed0bf70c48cdc74c45288be9c3a2201362e21ead7722bbb226",
+        "decoded_sha256": "abdeec13ddc145ed0bf70c48cdc74c45288be9c3a2201362e21ead7722bbb226",
+        "raw_bytes": 37,
+        "decoded_bytes": 37,
+        "original_prepared_at": "2026-10-05T08:00:00+00:00",
+        "known_at_semantics": "bytes observed at projection"
+      }
+    },
+    {
+      "id": "seeding:source:d9bcd232e7397b9f873857b0075ce4c1fb7a99dddfe9a8e4844d17791843839d",
+      "text_sha256": "c6c22dd1749504daa792765159bd8506f32de4db7032c260cf2ab18586747d0d",
+      "attrs": {
+        "encoding": "base64",
+        "compression": "none",
+        "role": "module:modules_frozen/recipe.py",
+        "raw_sha256": "ef3c8e88c32cab08dbae173563eada21d911eb06fa4487625d1fc1d00dd174ff",
+        "decoded_sha256": "ef3c8e88c32cab08dbae173563eada21d911eb06fa4487625d1fc1d00dd174ff",
+        "raw_bytes": 43,
+        "decoded_bytes": 43,
+        "original_prepared_at": "2026-10-05T08:00:00+00:00",
+        "known_at_semantics": "bytes observed at projection"
+      }
+    },
+    {
+      "id": "seeding:source:d4f044ba34b4386523aa04bac012982049ea5684962d3fe16b577c11563a7cdd",
+      "text_sha256": "b3d6fe0f5e9f8e138f271a42fd75889a67a2bbd3c3903b93c133337b2c03bfa6",
+      "attrs": {
+        "encoding": "base64",
+        "compression": "none",
+        "role": "profile-source:0",
+        "raw_sha256": "11912c4b69f051a477d615cb20d82f7dcbfe7b552a1c5527df91172e312f1aae",
+        "decoded_sha256": "11912c4b69f051a477d615cb20d82f7dcbfe7b552a1c5527df91172e312f1aae",
+        "raw_bytes": 207,
+        "decoded_bytes": 207,
+        "original_prepared_at": "2026-10-05T08:00:00+00:00",
+        "known_at_semantics": "bytes observed at projection"
+      }
+    },
+    {
+      "id": "seeding:source:19da652f386d69b946f02e1b368087b7819a9a9095af11686d58ee00897ca678",
+      "text_sha256": "d7afd48068c977fa8c869363d411a00b3886074e0c446cbbc194ef9437e46c9a",
+      "attrs": {
+        "encoding": "base64",
+        "compression": "none",
+        "role": "profile-source:1",
+        "raw_sha256": "c44597473cf39ba46bbe803f98ec566dc1656d693ee21f27293a209d4cdae5a5",
+        "decoded_sha256": "c44597473cf39ba46bbe803f98ec566dc1656d693ee21f27293a209d4cdae5a5",
+        "raw_bytes": 87,
+        "decoded_bytes": 87,
+        "original_prepared_at": "2026-10-05T08:00:00+00:00",
+        "known_at_semantics": "bytes observed at projection"
+      }
+    },
+    {
+      "id": "seeding:source:f695943f21c32b8281e2512a9eaa0eccb3fba5fcb352fdfa6e77a9be6379f595",
+      "text_sha256": "d93cd9c01ca215bff6eafd44b71ff27d63592317714c3e0bd1567ce683d4dcdc",
+      "attrs": {}
+    },
+    {
+      "id": "seeding:source:44bd0842beea75db674511570afc34fd1ab2dfd5356e57f9b82110fb4248b55c",
+      "text_sha256": "62b0fa586816aaa314d6e3c71516c2d8943f389c3fbba3851660879c5ab427e6",
+      "attrs": {
+        "role": "projection-module:adapter",
+        "encoding": "base64",
+        "compression": "none",
+        "raw_sha256": "ad7b9b2fe87db2851652784acb161fa79a745617c34339a3c41658d066605386",
+        "decoded_sha256": "ad7b9b2fe87db2851652784acb161fa79a745617c34339a3c41658d066605386",
+        "raw_bytes": 33246,
+        "decoded_bytes": 33246
+      }
+    },
+    {
+      "id": "seeding:source:d45e2498cbef3998a6befb7e727452a2d2a61046d9d507639c00e7e9103a95f4",
+      "text_sha256": "5a41fc9136a28cfc4913c13757321360f5b7538037f5c316aad931423966869b",
+      "attrs": {
+        "role": "projection-module:packet_codec",
+        "encoding": "base64",
+        "compression": "none",
+        "raw_sha256": "1b949dad8319f21713b984367cba162d1330f188d26557b21b264ef10910bbc4",
+        "decoded_sha256": "1b949dad8319f21713b984367cba162d1330f188d26557b21b264ef10910bbc4",
+        "raw_bytes": 35648,
+        "decoded_bytes": 35648
+      }
+    },
+    {
+      "id": "seeding:source:e0c18d0942d9e914cf2c3726cbf51540d88e085180c6d5e9fce6cd88a0a3cc38",
+      "text_sha256": "60edb1541d820be3431339388fafbc4a28f521bd51e3f7128bb0b6dc5ab09d9b",
+      "attrs": {
+        "role": "projection-module:canonical_codec",
+        "encoding": "base64",
+        "compression": "none",
+        "raw_sha256": "2cd14424ca190f3d5fed47faf1e328993668a620b8202cfb7b196b363f971635",
+        "decoded_sha256": "2cd14424ca190f3d5fed47faf1e328993668a620b8202cfb7b196b363f971635",
+        "raw_bytes": 34349,
+        "decoded_bytes": 34349
+      }
+    },
+    {
+      "id": "seeding:source:6d836ea906a356bf0af216ed9d17983ef0551bb646eb78383d8e0050d660bb29",
+      "text_sha256": "6ed93b42c05c5db36b806aa96737680282d93f30e743924e3ac4406b003e8dd6",
+      "attrs": {
+        "role": "projection-profile-bytes",
+        "encoding": "base64",
+        "compression": "none",
+        "raw_sha256": "80692ed5bfc36eb70ef754e6589e49f3e9b1f51a2988cf0a8fd15ed4ab496459",
+        "decoded_sha256": "80692ed5bfc36eb70ef754e6589e49f3e9b1f51a2988cf0a8fd15ed4ab496459",
+        "raw_bytes": 3377,
+        "decoded_bytes": 3377
+      }
+    },
+    {
+      "id": "seeding:source:a3216008eb5d76c78e5886894019cb622b307f9484fc1e08e4177403c7dbfeea",
+      "text_sha256": "f180c7bb3634fbd9fa06650d179a9db2983b8de116ed97e6cf93662c2c3d5fb7",
+      "attrs": {}
+    },
+    {
+      "id": "seeding:source:8d143db54d97f5b7b9571b8d145708dc24682451aa5af97198aad5b6c7c8a216",
+      "text_sha256": "a9ea05a48c4afdf7e5a25977750532a829a958380462adf6f9fe74635b5c501b",
+      "attrs": {}
+    }
+  ],
+  "scope": "Actual native receipt excerpts and source hashes; full packet/receipt reproducible, producer execution unverified"
+}

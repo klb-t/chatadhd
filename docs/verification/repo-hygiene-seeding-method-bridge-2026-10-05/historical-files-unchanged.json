@@ -1,0 +1,8 @@
+{
+  "schema": "loom.verification.seeding_frozen_bytes/1",
+  "observation": "Read-only recount against previously committed exact-byte audit manifest",
+  "files": 26,
+  "bytes": 13800361,
+  "all_sha256_unchanged": true,
+  "reference": "docs/verification/repo-hygiene-2026-10-04/seeding-audit.json"
+}

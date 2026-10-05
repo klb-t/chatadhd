@@ -1,0 +1,53 @@
+{
+  "operators": [],
+  "projects": [
+    {
+      "id": "all",
+      "kind": "synthetic_demo",
+      "tags": [
+        {
+          "label": "shared",
+          "unit": {
+            "provider": "synthetic",
+            "conv_id": "all",
+            "node_id": "tag-0",
+            "date": "2026-09-30"
+          }
+        },
+        {
+          "label": "first",
+          "unit": {
+            "provider": "synthetic",
+            "conv_id": "all",
+            "node_id": "tag-1",
+            "date": "2026-09-30"
+          }
+        }
+      ]
+    },
+    {
+      "id": "beta/seam",
+      "kind": "synthetic_demo",
+      "tags": [
+        {
+          "label": "shared",
+          "unit": {
+            "provider": "synthetic",
+            "conv_id": "beta/seam",
+            "node_id": "tag-0",
+            "date": "2026-09-30"
+          }
+        },
+        {
+          "label": "second",
+          "unit": {
+            "provider": "synthetic",
+            "conv_id": "beta/seam",
+            "node_id": "tag-1",
+            "date": "2026-09-30"
+          }
+        }
+      ]
+    }
+  ]
+}

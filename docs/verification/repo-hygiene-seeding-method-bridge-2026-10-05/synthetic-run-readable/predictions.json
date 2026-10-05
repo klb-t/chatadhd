@@ -1,0 +1,152 @@
+{
+   "manifest": {
+      "predicted_at": "2026-10-05T08:00:00+00:00",
+      "evaluation_class": "development_corpus_lopo",
+      "paid_api_calls": 0,
+      "hashes": {
+         "policy": "b9e2f9d7dd99cfc895d815af19853311b848a6f59c3e43e284c637576adf9caf",
+         "protocol": "519d54f3deb84b15cbbd0acf5c85dfd41556ce1752ba5c50eb8c1a06975c5970",
+         "code": "abdeec13ddc145ed0bf70c48cdc74c45288be9c3a2201362e21ead7722bbb226",
+         "fixture": "c38ab7f2a089b094ecf890dc0cd80e29c0404c7ff28e29790dad0a6a7a3beef5"
+      },
+      "modules": {
+         "modules_frozen/prototype.py": "abdeec13ddc145ed0bf70c48cdc74c45288be9c3a2201362e21ead7722bbb226",
+         "modules_frozen/recipe.py": "ef3c8e88c32cab08dbae173563eada21d911eb06fa4487625d1fc1d00dd174ff"
+      },
+      "profile": {
+         "schema": "loom.seeding.recipe/1",
+         "version": "synthetic-only",
+         "effective_path": "effective_profile.json",
+         "effective_sha256": "54b6e318891b8d101549cd9477669cb47aceae3b5d8d49a0175212a49c09d6b0",
+         "source_files": [
+            {
+               "order": 0,
+               "role": "base",
+               "frozen_path": "profile_frozen.json",
+               "sha256": "11912c4b69f051a477d615cb20d82f7dcbfe7b552a1c5527df91172e312f1aae"
+            },
+            {
+               "order": 1,
+               "role": "overlay",
+               "frozen_path": "profile_overlays/000.json",
+               "sha256": "c44597473cf39ba46bbe803f98ec566dc1656d693ee21f27293a209d4cdae5a5"
+            }
+         ]
+      }
+   },
+   "cases": [
+      {
+         "case_id": "all/all/000",
+         "project": "all",
+         "task": "all",
+         "control": false,
+         "visible_edges": {
+            "all": []
+         },
+         "methods": {
+            "custom/m~": {
+               "0": [
+                  {
+                     "label": "x/one~",
+                     "evidence_class": "extrapolated",
+                     "validation_status": "candidate",
+                     "expected_properties": [
+                        {
+                           "relation": "future/tag",
+                           "label": "x/one~"
+                        }
+                     ],
+                     "premises_and_provenance": [
+                        {
+                           "donor_project": "donor/a~",
+                           "properties": {
+                              "known_at": null
+                           }
+                        }
+                     ],
+                     "assessment": {
+                        "calibrated_probability": null,
+                        "score": 0.375
+                     }
+                  }
+               ]
+            },
+            "random/m~": {
+               "7": [
+                  {
+                     "label": "x/one~",
+                     "evidence_class": "extrapolated",
+                     "validation_status": "candidate",
+                     "expected_properties": [
+                        {
+                           "relation": "future/tag",
+                           "label": "x/one~"
+                        }
+                     ],
+                     "premises_and_provenance": [
+                        {
+                           "donor_project": "donor/a~",
+                           "properties": {
+                              "known_at": null
+                           }
+                        }
+                     ],
+                     "assessment": {
+                        "calibrated_probability": null,
+                        "score": 0.375
+                     }
+                  },
+                  {
+                     "label": "y~two",
+                     "evidence_class": "extrapolated",
+                     "validation_status": "candidate",
+                     "expected_properties": [
+                        {
+                           "relation": "future/tag",
+                           "label": "x/one~"
+                        }
+                     ],
+                     "premises_and_provenance": [
+                        {
+                           "donor_project": "donor/a~",
+                           "properties": {
+                              "known_at": null
+                           }
+                        }
+                     ],
+                     "assessment": {
+                        "calibrated_probability": null,
+                        "score": 0.375
+                     }
+                  }
+               ],
+               "8": [
+                  "y~two",
+                  "x/one~"
+               ]
+            }
+         }
+      },
+      {
+         "case_id": "all/all/001",
+         "project": "all",
+         "task": "all",
+         "control": true,
+         "visible_edges": {
+            "all": [
+               "x/one~"
+            ]
+         },
+         "methods": {
+            "custom/m~": {
+               "0": []
+            },
+            "random/m~": {
+               "7": [],
+               "8": []
+            }
+         }
+      }
+   ]
+}
+

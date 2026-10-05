@@ -1,0 +1,15 @@
+{
+  "schema": "loom.verification.source_correspondence/1",
+  "measured_at_utc": "2026-10-04T18:06:58.516449+00:00",
+  "tested_commit": "57d9daa19591ba7008d3158c7ba49db1f609c110",
+  "rebased_commit": "497877f915cdee99a018e1cc55c76b6ceb19f328",
+  "main_base": "ba6eaf6244d2d4136fbb3534bc0d45a4900eeda1",
+  "main_delta_since_initial_fetch": [
+    "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md"
+  ],
+  "exact_source_fingerprints_checked": 1164,
+  "exact_tested_binaries_checked": 6,
+  "production_or_test_code_changed_by_rebase": false,
+  "compile_profile": "vendored/GCC, shared, WERROR, Debug symbols disabled",
+  "not_a_clang_run": true
+}

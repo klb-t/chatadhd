@@ -1,0 +1,17 @@
+Read-only replay of rejected backup integrity check; no native test run.
+compressed_bytes 87088412
+partial_gzip_sha256 9ed25c399b46d5d5681c36c46b1599fb5dd6229d05c640cbd2891b5f8961fbc5
+Traceback (most recent call last):
+  File "<stdin>", line 7, in <module>
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/hashlib.py", line 233, in file_digest
+    size = fileobj.readinto(buf)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/gzip.py", line 338, in read
+    return self._buffer.read(size)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/_compression.py", line 68, in readinto
+    data = self.read(len(byte_view))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/gzip.py", line 564, in read
+    raise EOFError("Compressed file ended before the "
+EOFError: Compressed file ended before the end-of-stream marker was reached

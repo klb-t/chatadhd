@@ -8,17 +8,23 @@ on:
       - "loom/**"
       - "engine/**"
       - "core/**"
+      - "docs/contracts/**"
       - "!loom/*.md"
       - "!loom/tools/structure/*.md"
       - ".github/workflows/loom.yml"
+      - ".github/scripts/**"
+      - ".github/ctest-evidence-policy*.json"
   pull_request:
     paths:
       - "loom/**"
       - "engine/**"
       - "core/**"
+      - "docs/contracts/**"
       - "!loom/*.md"
       - "!loom/tools/structure/*.md"
       - ".github/workflows/loom.yml"
+      - ".github/scripts/**"
+      - ".github/ctest-evidence-policy*.json"
   workflow_dispatch:
 
 permissions:
@@ -37,10 +43,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { preset: dev, cc: gcc, cxx: g++ }
-          - { preset: asan, cc: gcc, cxx: g++ }
+          - { preset: dev, cc: gcc, cxx: g++, debug_info: "-g" }
+          # Keep line tables/stack locations, omitting bulky local-variable DWARF.
+          - { preset: asan, cc: gcc, cxx: g++, debug_info: "-g1" }
           # Closest to the Android build: Clang + the vendored SQLite amalgamation.
-          - { preset: vendored, cc: clang, cxx: clang++ }
+          - { preset: vendored, cc: clang, cxx: clang++, debug_info: "-g" }
     env:
       CC: ${{ matrix.cc }}
       CXX: ${{ matrix.cxx }}
@@ -48,6 +55,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          # Lineage regressions compare preserved historical commits, not only HEAD.
+          fetch-depth: 0
 
       - name: Install toolchain
         run: |
@@ -62,7 +73,10 @@ jobs:
           python-version: "3.11"
 
       - name: Install Python engine dependencies
-        run: python -m pip install requests cryptography
+        run: python -m pip install requests cryptography -r loom/tools/contracts/requirements.txt
+
+      - name: Check the CTest evidence guard
+        run: python -m unittest discover -s .github/scripts -p 'test_*.py' -v
 
       - name: ccache
         uses: actions/cache@v4
@@ -73,15 +87,99 @@ jobs:
 
       - name: Configure
         working-directory: loom
-        run: cmake --preset ${{ matrix.preset }} -DLOOM_BUILD_SERVER=ON -DPython3_EXECUTABLE="$(which python)"
+        # ctypes is exercised in both ordinary builds. The existing ASan preset
+        # runs instrumented native executables and does not build the FFI library;
+        # its ctypes cases use a separately recorded ordinary GCC companion.
+        run: >-
+          cmake --preset ${{ matrix.preset }} -DLOOM_BUILD_SERVER=ON
+          -DLOOM_SHARED=${{ matrix.preset == 'asan' && 'OFF' || 'ON' }}
+          -DCMAKE_C_FLAGS_DEBUG=${{ matrix.debug_info }}
+          -DCMAKE_CXX_FLAGS_DEBUG=${{ matrix.debug_info }}
+          -DPython3_EXECUTABLE="$(which python)"
 
       - name: Build
         working-directory: loom
         run: cmake --build --preset ${{ matrix.preset }} --parallel 2
 
+      - name: Build the ordinary FFI companion for native sanitizer tests
+        if: matrix.preset == 'asan'
+        working-directory: loom
+        # Native executables remain instrumented. ctypes must also execute the
+        # mandatory Packet suite, without loading ASan into ordinary CPython.
+        run: |
+          cmake -S . -B build/asan-ffi -G Ninja \
+            -DCMAKE_BUILD_TYPE=Debug -DLOOM_USE_SYSTEM_SQLITE=ON \
+            -DLOOM_SHARED=ON -DLOOM_WERROR=ON \
+            -DLOOM_BUILD_TESTS=OFF -DLOOM_BUILD_CLI=OFF -DLOOM_BUILD_SERVER=OFF
+          cmake --build build/asan-ffi --target loom --parallel 2
+
       - name: Test
         working-directory: loom
-        run: ctest --preset ${{ matrix.preset }}
+        shell: bash
+        run: |
+          mkdir -p build/${{ matrix.preset }}/verification
+          if [ '${{ matrix.preset }}' = asan ]; then
+            export LOOM_LIBRARY="$PWD/build/asan-ffi/libloom.so"
+            python ../.github/scripts/write_build_receipt.py \
+              --preset asan-ffi-companion \
+              --cmake-cache build/asan-ffi/CMakeCache.txt \
+              --cmake-field CMAKE_BUILD_TYPE \
+              --cmake-field CMAKE_C_COMPILER \
+              --cmake-field CMAKE_CXX_COMPILER \
+              --cmake-field CMAKE_C_FLAGS \
+              --cmake-field CMAKE_CXX_FLAGS \
+              --cmake-field LOOM_USE_SYSTEM_SQLITE \
+              --cmake-field LOOM_SHARED \
+              --cmake-field LOOM_WERROR \
+              --output build/asan/verification/ffi-companion-receipt.json \
+              --binary "$LOOM_LIBRARY"
+          fi
+          python ../.github/scripts/write_build_receipt.py \
+            --preset ${{ matrix.preset }} \
+            --cmake-cache build/${{ matrix.preset }}/CMakeCache.txt \
+            --cmake-field CMAKE_GENERATOR \
+            --cmake-field CMAKE_BUILD_TYPE \
+            --cmake-field CMAKE_C_COMPILER \
+            --cmake-field CMAKE_CXX_COMPILER \
+            --cmake-field CMAKE_C_FLAGS \
+            --cmake-field CMAKE_C_FLAGS_DEBUG \
+            --cmake-field CMAKE_CXX_FLAGS \
+            --cmake-field CMAKE_CXX_FLAGS_DEBUG \
+            --cmake-field LOOM_USE_SYSTEM_SQLITE \
+            --cmake-field LOOM_SHARED \
+            --cmake-field LOOM_WERROR \
+            --cmake-field LOOM_BUILD_SERVER \
+            --output build/${{ matrix.preset }}/verification/build-receipt.json \
+            --binary build/${{ matrix.preset }}/loom_tests \
+            --binary build/${{ matrix.preset }}/loom_compat_tool \
+            --binary build/${{ matrix.preset }}/loom_candidate_graph_native_tool \
+            --binary build/${{ matrix.preset }}/cli/loom \
+            --binary build/${{ matrix.preset }}/server/loom-server \
+            --optional-binary build/${{ matrix.preset }}/libloom.so
+          ctest --preset ${{ matrix.preset }} --show-only=json-v1 > build/${{ matrix.preset }}/verification/ctest-manifest.json
+          ctest --preset ${{ matrix.preset }} --no-tests=error \
+            --test-output-size-passed 10485760 --test-output-size-failed 10485760 \
+            --output-junit "$PWD/build/${{ matrix.preset }}/verification/ctest.xml"
+
+      - name: Require actual case execution and account for opt-in scenarios
+        if: always()
+        run: |
+          python .github/scripts/verify_ctest.py \
+            --policy .github/ctest-evidence-policy.json \
+            --manifest loom/build/${{ matrix.preset }}/verification/ctest-manifest.json \
+            --junit loom/build/${{ matrix.preset }}/verification/ctest.xml \
+            --preset ${{ matrix.preset }} \
+            --output loom/build/${{ matrix.preset }}/verification/executed-cases.json
+
+      - name: Retain complete CTest evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ctest-${{ matrix.preset }}-${{ matrix.cxx }}
+          path: |
+            loom/build/${{ matrix.preset }}/verification/
+            loom/build/${{ matrix.preset }}/Testing/Temporary/LastTest.log
+          if-no-files-found: warn
 
       - name: Set up Java for the real JNI bridge smoke test
         if: matrix.preset == 'dev'
@@ -112,5 +210,19 @@ jobs:
           npm ci
           npm run build
           npm run test:transport
+          npm run test:workspace-state
+          npm run test:context-plan
+          npm run test:application-profiles
+          npm run test:imported-message-content-state
           npx playwright install --with-deps chromium
           npm run e2e
+          npm run test:workspace
+          npm run test:chat-context
+          npm run test:application-profiles-browser
+          npm run test:imported-message-content-browser
+          npm run test:imported-message-content-native
+          npm run test:application-profile-graph
+          python ../../.github/scripts/run_optional_npm_scripts.py \
+            --package-json package.json \
+            --script test:interface-2 \
+            --script test:interface-2-native

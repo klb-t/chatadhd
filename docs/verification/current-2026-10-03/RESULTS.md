@@ -1,6 +1,15 @@
 # Native integration verification — 2026-10-03
 
-**108/108 CTest entries passed, with no skips.** The first full run passed
+**108/108 outer CTest entries passed, with no outer CTest skips.**
+**Correction dated 2026-10-04:** the retained XML shows zero actual doctest cases
+and assertions in `unit.test_context_engine` and `unit.test_knowledge`, in
+addition to the documented opt-in `unit.test_catalog_scale`. The lineage entry
+also returned early with zero assertions when Git history was unavailable.
+These entries do not establish scenario coverage; the historical XML and binary
+receipt remain unchanged. See the
+[empty-suite audit and replacement verification](../repo-hygiene-2026-10-04/zero-discovery-audit.md).
+
+The first full run passed
 93 entries and failed 15 because the restored runtime lacked documented Python
 dependencies and a generated compatibility executable was corrupted. Installing
 those dependencies and relinking that executable changed no source. All 15

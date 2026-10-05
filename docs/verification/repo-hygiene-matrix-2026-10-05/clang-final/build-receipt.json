@@ -1,0 +1,122 @@
+{
+  "architecture": "x86_64",
+  "binaries": [
+    {
+      "bytes": 202919752,
+      "path": "/workspace/scratch/2a6e71927cf3/w8-w10-validation/loom/build/vendored/loom_tests",
+      "present": true,
+      "sha256": "1314e3394cda19e9f2de4f0a2118d7434bd65f20fd10563d46666482e9440c42"
+    },
+    {
+      "bytes": 128323440,
+      "path": "/workspace/scratch/2a6e71927cf3/w8-w10-validation/loom/build/vendored/loom_compat_tool",
+      "present": true,
+      "sha256": "6bde225c1af9a4a0786631e781ad56d3585427f5f890d67922882e3478a62191"
+    },
+    {
+      "bytes": 5651344,
+      "path": "/workspace/scratch/2a6e71927cf3/w8-w10-validation/loom/build/vendored/loom_candidate_graph_native_tool",
+      "present": true,
+      "sha256": "dc6e0b6e0900e801d4ecd8a1a6d0566c82a635988e8316e4f973b63378f87708"
+    },
+    {
+      "bytes": 125966376,
+      "path": "/workspace/scratch/2a6e71927cf3/w8-w10-validation/loom/build/vendored/cli/loom",
+      "present": true,
+      "sha256": "ec5b00502f420c2e5e31117fb20140e25e05851e4eebb219dc445c96a09372f0"
+    },
+    {
+      "bytes": 136599776,
+      "path": "/workspace/scratch/2a6e71927cf3/w8-w10-validation/loom/build/vendored/server/loom-server",
+      "present": true,
+      "sha256": "63e678694943e7afd5addf1681068481bc9f3bc8ed0296eda0c8d2b46dbc13d7"
+    },
+    {
+      "bytes": 136234792,
+      "path": "/workspace/scratch/2a6e71927cf3/w8-w10-validation/loom/build/vendored/libloom.so",
+      "present": true,
+      "sha256": "527d4d410ea65f17f4baad49cff1a5882b3f2efee2ec6e3a0a10fb57fc1010bb"
+    }
+  ],
+  "cmake_configuration": {
+    "bytes": 19770,
+    "fields": {
+      "CMAKE_AR": {
+        "type": "FILEPATH",
+        "value": "/usr/bin/ar"
+      },
+      "CMAKE_BUILD_TYPE": {
+        "type": "STRING",
+        "value": "Debug"
+      },
+      "CMAKE_CXX_ARCHIVE_CREATE": {
+        "type": "UNINITIALIZED",
+        "value": "<CMAKE_AR> qcT <TARGET> <LINK_FLAGS> <OBJECTS>"
+      },
+      "CMAKE_CXX_COMPILER": {
+        "type": "UNINITIALIZED",
+        "value": "/workspace/scratch/2a6e71927cf3/toolchain/usr/bin/clang++-18"
+      },
+      "CMAKE_CXX_FLAGS": {
+        "type": "STRING",
+        "value": ""
+      },
+      "CMAKE_CXX_FLAGS_DEBUG": {
+        "type": "STRING",
+        "value": "-g"
+      },
+      "CMAKE_C_ARCHIVE_CREATE": {
+        "type": "UNINITIALIZED",
+        "value": "<CMAKE_AR> qcT <TARGET> <LINK_FLAGS> <OBJECTS>"
+      },
+      "CMAKE_C_COMPILER": {
+        "type": "UNINITIALIZED",
+        "value": "/workspace/scratch/2a6e71927cf3/toolchain/usr/bin/clang-18"
+      },
+      "CMAKE_C_FLAGS": {
+        "type": "STRING",
+        "value": ""
+      },
+      "CMAKE_C_FLAGS_DEBUG": {
+        "type": "STRING",
+        "value": "-g"
+      },
+      "CMAKE_EXE_LINKER_FLAGS": {
+        "type": "STRING",
+        "value": ""
+      },
+      "CMAKE_GENERATOR": {
+        "type": "INTERNAL",
+        "value": "Ninja"
+      },
+      "CMAKE_SHARED_LINKER_FLAGS": {
+        "type": "STRING",
+        "value": ""
+      },
+      "LOOM_BUILD_SERVER": {
+        "type": "BOOL",
+        "value": "ON"
+      },
+      "LOOM_SHARED": {
+        "type": "BOOL",
+        "value": "ON"
+      },
+      "LOOM_USE_SYSTEM_SQLITE": {
+        "type": "BOOL",
+        "value": "OFF"
+      },
+      "LOOM_WERROR": {
+        "type": "BOOL",
+        "value": "ON"
+      }
+    },
+    "path": "/workspace/scratch/2a6e71927cf3/w8-w10-validation/loom/build/vendored/CMakeCache.txt",
+    "sha256": "d19d7e402ff01048cad3248a6b248663aedf490a81b631ffef5df36624868a48"
+  },
+  "platform": "Linux",
+  "preset": "vendored",
+  "python": "3.12.14",
+  "schema": "loom.build_evidence/1",
+  "source_commit": "20ddd8dfaebe00ee6deb9896bad184fb615924dc",
+  "source_tree": "015f07134f74eb03e06432d1b78ab3bfcfc08b55"
+}

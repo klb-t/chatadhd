@@ -82,3 +82,19 @@ and 35 archive tags. Those counts describe that optional local artifact,
 not the branch or tag list on GitHub. Its two excluded evaluation refs remain
 recoverable in the complete original backup. No evaluation contents were
 inspected or merged, and repository visibility remains public.
+
+## Retired Actions workflows (2026-10-04)
+
+[The three former OpenRouter pilot/preflight workflows](retired-workflows-2026-10-04/README.md)
+are retained byte-for-byte with a path/size/SHA-256 manifest, outside Actions
+discovery. Their activation branch was retired; research runners, requests and
+saved responses remain available. Seeding result files remain active fixtures:
+the independent regression tests actually read them, so they were not archived.
+
+## Repository hygiene verification attempts (2026-10-04)
+
+[Complete unsuccessful CI and local build evidence](repo-hygiene-2026-10-04/README.md)
+preserves the first JUnit-path error, the Clang server build blocker and local
+disk-exhaustion attempts, with source/job identities, hashes and reproduction
+commands. Successful native case counts derived from the first CI log remain
+labelled separately from the failed workflow result.

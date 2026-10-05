@@ -1,0 +1,22 @@
+{
+  "schema": "loom.verification.historical_proof_annotation/1",
+  "annotated_at": "2026-10-05T14:58:35.451211+00:00",
+  "original_evidence_unchanged": {
+    "native-small.json": "1aa013562e3087238015d2914a859bdfc71f28765f18fd2774cf16c5a8a8d01e",
+    "native-small-bindings.json": "b4f6dd4eec799e11d74df40d8b2ed8e7ed397d6d7151f56b36f7834875e493eb",
+    "full-v4-pure.json": "b882879e643d6f7ef858cdf6824906f9658c4443e79dcab4aac7935167134ef4",
+    "full-v4-command.json": "387ed82a65fedd6ae29658389b6cc1013400a976a2f00bb0515471b1aa2511bd"
+  },
+  "prior_verifier_clock": {
+    "mode": "development_fixture_simulation",
+    "projected_at": "2026-10-05T00:00:00+00:00",
+    "actual_observation_time_verified": false
+  },
+  "prior_preflight_guard": {
+    "executed": false,
+    "native_small_total_output_ratio": 37.277306967984934,
+    "new_confirmation_was_not_obtained": true
+  },
+  "scope": "Historical native operations and frozen replay really ran. These are unguarded fixed-clock development fixture proofs; Source.known_at/date and Entity.first_seen do not establish actual observation at midnight. Original hashes and receipts have not been rewritten.",
+  "replacement_behavior": "Verifier now uses shared estimate before export/native writes, records decision, defaults to current UTC, and labels explicit fixture-clock simulation inside Packet.task and every Source attrs. Shared codec recomputes source/provenance/packet hashes. Tiny native operation above x10 is not repeated."
+}

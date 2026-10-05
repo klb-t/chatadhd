@@ -7,6 +7,7 @@ No external dependencies, model calls, or writes to the canonical graph.
 from __future__ import annotations
 
 import argparse
+from collections import Counter
 from dataclasses import dataclass
 from datetime import datetime, timezone
 import hashlib
@@ -15,13 +16,21 @@ import json
 from pathlib import Path
 import random
 from typing import Any
+from urllib.parse import quote
+
+if __package__:
+    from .recipe import (DEFAULT_PROFILE, PROFILE_SCHEMA, prediction_dimensions,
+                         project_graph, resolved_profile, load_profile, source_record, profile_snapshot, property_key)
+else:
+    from recipe import (DEFAULT_PROFILE, PROFILE_SCHEMA, prediction_dimensions,
+                        project_graph, resolved_profile, load_profile, source_record, profile_snapshot, property_key)
 
 
 ROOT = Path(__file__).resolve().parents[3]
 FIXTURE = ROOT / "loom/tests/fixtures/eval/synthetic_dev/ground_truth.json"
 PROTOCOL = ROOT / "docs/research/SEEDING_PROTOCOL_2026-09-29.md"
 POLICY = Path(__file__).with_name("policy.json")
-TASKS = ("roles", "capabilities", "features")
+TASKS = prediction_dimensions()  # backwards-compatible default, declared in profile data
 
 
 def digest(path: Path) -> str:
@@ -40,65 +49,11 @@ class Graph:
     properties: dict[str, dict[str, Any]]
 
 
-def source_record(item: dict[str, Any], path: str) -> dict[str, Any]:
-    """Donor locators only. Dates describe the oracle, not ingest timestamps."""
-    units = item.get("units", []) + ([item["unit"]] if "unit" in item else [])
-    locators = [{k: u[k] for k in ("provider", "conv_id", "node_id", "date") if k in u}
-                for u in units]
-    dates = [u["date"] for u in locators if u.get("date")]
-    return {"oracle_path": path, "source_locators": locators,
-            "known_at": None, "known_at_status": "not_supplied_by_oracle",
-            "source_created_at_max": max(dates) if dates else None}
-
-
-def build_graph(project: dict[str, Any], operators: dict[str, dict[str, Any]]) -> Graph:
-    """Annotated training graph. Inferred/absent oracle roles are excluded."""
-    edges: dict[str, set[str]] = {k: set() for k in (*TASKS, "principles")}
-    props: dict[str, dict[str, Any]] = {}
-    base = f"projects/{project['id']}"
-    for role, record in project.get("universal_roles", {}).items():
-        if not record.get("observed"):
-            continue
-        edges["roles"].add(role)
-        props[f"roles:{role}"] = {
-            "expected_properties": [{"relation": "has_universal_role", "role": role,
-                                     "specific_content": "unverified_on_target"}],
-            **source_record({"units": record["observed"]}, f"{base}/universal_roles/{role}/observed")}
-    for feature in project.get("features_status", []):
-        label = feature["label"]
-        edges["features"].add(label)
-        props[f"features:{label}"] = {
-            "expected_properties": [{"relation": "has_feature", "label": label,
-                                     "implementation_status": "unverified_on_target"}],
-            "donor_status_history": feature.get("events", []),
-            **source_record(feature, f"{base}/features_status/{feature['id']}")}
-    applications: dict[str, list[dict[str, Any]]] = {}
-    for decision in project.get("decisions", []):
-        edges["principles"].update(decision.get("principle_evidence", []))
-        op = decision.get("operator")
-        if op:
-            edges["capabilities"].add(op)
-            applications.setdefault(op, []).append(decision)
-    for op, decisions in applications.items():
-        records = [source_record(d, f"{base}/decisions/{d['id']}") for d in decisions]
-        definition = operators[op]
-        props[f"capabilities:{op}"] = {
-            "expected_properties": [{"relation": "applies_solution_class",
-                                     "solution": definition["solution"],
-                                     "requires_validation": True}],
-            "justifying_principles": sorted({p for d in decisions for p in d.get("principle_evidence", [])}),
-            "application_premise_alternatives": [
-                {"principles": sorted(set(decision.get("principle_evidence", []))),
-                 "decision_id": decision["id"], "application_source": record}
-                for decision, record in zip(decisions, records)],
-            "operator_definition_path": f"operators/{op}",
-            "oracle_path": f"{base}/operator_applications/{op}",
-            "source_locators": [loc for r in records for loc in r["source_locators"]],
-            "known_at": None, "known_at_status": "not_supplied_by_oracle",
-            "source_created_at_max": max((r["source_created_at_max"] for r in records
-                                          if r["source_created_at_max"]), default=None)}
-    return Graph(project["id"], project["kind"],
-                 {k: frozenset(v) for k, v in edges.items()}, props)
+def build_graph(project: dict[str, Any], operators: dict[str, dict[str, Any]],
+                profile: dict[str, Any] | None = None) -> Graph:
+    """Annotated graph projected by data; the default excludes inferred/absent roles."""
+    edges, properties = project_graph(project, operators, profile)
+    return Graph(project["id"], project["kind"], edges, properties)
 
 
 def target_view(graph: Graph, task: str, hidden: str | None) -> Graph:
@@ -123,17 +78,25 @@ def mapping(target: Graph, donor: Graph, policy: dict[str, Any]) -> dict[str, An
 
 def predict(training: list[Graph], target: Graph, task: str, method: str,
             policy: dict[str, Any], predicted_at: str, case_id: str,
-            seed: int = 0) -> list[dict[str, Any]]:
+            seed: int = 0, profile: dict[str, Any] | None = None) -> list[dict[str, Any]]:
     """Candidate generation: no fixture/oracle/hidden label arguments or reads."""
     if target.properties:
         raise ValueError("target view must contain no oracle properties")
     if any(g.project == target.project for g in training):
         raise ValueError("target project leaked into donor training")
-    if task not in TASKS or method not in ("partial_mapping", "most_frequent", "premise_filtered_frequency", "random"):
+    recipe = resolved_profile(profile)
+    dimensions = {d["id"]: d for d in recipe["dimensions"]}
+    if task not in prediction_dimensions(recipe) or method not in ("partial_mapping", "most_frequent", "premise_filtered_frequency", "random"):
         raise ValueError("unknown task/method")
-    if policy.get("capability_mapping") not in (None, "preserve_justifying_principles",
-                                               "preserve_application_alternatives"):
-        raise ValueError("unknown capability_mapping policy; refusing unfiltered fallback")
+    for dimension in dimensions.values():
+        if "eligibility" not in dimension:
+            continue
+        key = dimension["eligibility"]["policy_key"]
+        if policy.get(key) not in (None, "preserve_justifying_principles",
+                                   "preserve_application_alternatives"):
+            raise ValueError(f"unknown {key} policy; refusing unfiltered fallback")
+    eligibility = dimensions[task].get("eligibility")
+    mode = policy.get(eligibility["policy_key"]) if eligibility else None
     mapped_eligibility = method in ("partial_mapping", "premise_filtered_frequency")
     candidates: dict[str, list[dict[str, Any]]] = {}
     for donor in training:
@@ -142,28 +105,27 @@ def predict(training: list[Graph], target: Graph, task: str, method: str,
         if mapped_eligibility and not valid:
             continue
         for label in sorted(donor.edges[task] - target.edges[task]):
-            prop = donor.properties[f"{task}:{label}"]
+            prop = donor.properties[property_key(task, label)]
             local_premises = []
             applicable_applications = []
-            if (mapped_eligibility and task == "capabilities"
-                    and policy.get("capability_mapping") == "preserve_justifying_principles"):
-                principles = set(prop.get("justifying_principles", []))
-                if not principles or not principles <= target.edges["principles"]:
+            if mapped_eligibility and eligibility and mode == "preserve_justifying_principles":
+                principles = set(prop.get(eligibility["union_property"], []))
+                if not principles or not principles <= target.edges[eligibility["support_dimension"]]:
                     continue
                 local_premises = [{"donor_principle": p, "target_principle": p,
-                                   "relation": "justifies_operator", "operator": label}
+                                   "relation": eligibility["mapping_relation"],
+                                   eligibility["mapping_label_key"]: label}
                                   for p in sorted(principles)]
-            elif (mapped_eligibility and task == "capabilities"
-                    and policy.get("capability_mapping") == "preserve_application_alternatives"):
-                for application in prop.get("application_premise_alternatives", []):
-                    principles = set(application["principles"])
-                    if not principles or not principles <= target.edges["principles"]:
+            elif mapped_eligibility and eligibility and mode == "preserve_application_alternatives":
+                for application in prop.get(eligibility["alternatives_property"], []):
+                    principles = set(application[eligibility["member_property"]])
+                    if not principles or not principles <= target.edges[eligibility["support_dimension"]]:
                         continue
                     applicable_applications.append(application)
                     local_premises.extend({"donor_principle": p, "target_principle": p,
-                        "relation": "justifies_operator", "operator": label,
-                        "donor_decision": application["decision_id"],
-                        "application_source": application["application_source"]}
+                        "relation": eligibility["mapping_relation"], eligibility["mapping_label_key"]: label,
+                        eligibility["mapping_witness_id_key"]: application[eligibility["application_id_property"]],
+                        "application_source": application[eligibility["application_source_property"]]}
                         for p in sorted(principles))
                 if not applicable_applications:
                     continue
@@ -237,7 +199,11 @@ def random_expectation(cases: list[dict[str, Any]], answers: dict[str, str | Non
     tp = 0.0
     emitted = positives = 0
     for case in cases:
-        labels = [c["label"] for c in case["methods"]["random"]["0"]]
+        rankings = case["methods"]["random"]
+        if not rankings:
+            raise ValueError("random expectation requires at least one saved ranking")
+        pool = rankings.get("0", next(iter(rankings.values())))
+        labels = [candidate["label"] if isinstance(candidate, dict) else candidate for candidate in pool]
         hidden = answers[case["case_id"]]
         n = min(budget, len(labels))
         emitted += n
@@ -256,25 +222,38 @@ def save_json_gzip(path: Path, value: Any) -> None:
     path.write_bytes(gzip.compress(raw, mtime=0))
 
 
-def experiment(output: Path, policy_path: Path = POLICY, protocol_path: Path = PROTOCOL) -> dict[str, Any]:
+def experiment(output: Path, policy_path: Path = POLICY, protocol_path: Path = PROTOCOL,
+               profile_path: Path = DEFAULT_PROFILE, overlay_paths: list[Path] | tuple[Path, ...] = (),
+               fixture_path: Path | None = None) -> dict[str, Any]:
     # Refuse overwrite: the first output remains recoverable.
     output.mkdir(parents=True, exist_ok=False)
-    corpus = json.loads(FIXTURE.read_text())
-    policy = json.loads(policy_path.read_text())
+    fixture_raw = Path(fixture_path or FIXTURE).read_bytes()
+    policy_raw = Path(policy_path).read_bytes()
+    protocol_raw = Path(protocol_path).read_bytes()
+    corpus = json.loads(fixture_raw)
+    policy = json.loads(policy_raw)
+    profile, profile_sources = profile_snapshot(profile_path, overlay_paths)
+    tasks = prediction_dimensions(profile)
+    # Freeze every local runtime module and the packaged profile/schema. Capturing
+    # bytes before prediction also keeps hashes bound to the actual run inputs.
+    module_root = Path(__file__).resolve().parent
+    module_sources = {name: (module_root / name).read_bytes() for name in
+                      ("prototype.py", "recipe.py", "__init__.py", "profiles/default.json", "profiles/schema.json")}
+    effective_raw = (json.dumps(profile, ensure_ascii=False, indent=2) + "\n").encode()
     methods = policy.get("methods", ["partial_mapping", "most_frequent", "random"])
     operators = {op["id"]: op for op in corpus["operators"]}
-    graphs = [build_graph(p, operators) for p in corpus["projects"]]
+    graphs = [build_graph(p, operators, profile) for p in corpus["projects"]]
     timestamp = datetime.now(timezone.utc).isoformat()
     cases: list[dict[str, Any]] = []
     answers: dict[str, str | None] = {}
     for graph in graphs:
         training = [g for g in graphs if g.project != graph.project]
-        for task in TASKS:
+        for task in tasks:
             hidden_values: list[str | None] = sorted(graph.edges[task])
             if policy["include_no_removal_controls"]:
                 hidden_values += [None]
             for index, hidden in enumerate(hidden_values):
-                case_id = f"{graph.project}/{task}/{index:03d}"
+                case_id = f"{quote(graph.project, safe='')}/{quote(task, safe='')}/{index:03d}"
                 target = target_view(graph, task, hidden)
                 record = {"case_id": case_id, "project": graph.project, "task": task,
                           "control": hidden is None,
@@ -282,41 +261,78 @@ def experiment(output: Path, policy_path: Path = POLICY, protocol_path: Path = P
                 for method in methods:
                     seeds = policy["random_seeds"] if method == "random" else [0]
                     ranked = {str(seed): predict(training, target, task, method,
-                        policy, timestamp, case_id, seed) for seed in seeds}
-                    # Seed zero owns full candidate records; later random seeds
-                    # refer to that same pool by label, preserving every ordering
+                        policy, timestamp, case_id, seed, profile=profile) for seed in seeds}
+                    # Seed zero, or the first selected seed, owns full candidate
+                    # records; other seeds refer to that pool by label, preserving every ordering
                     # without duplicating provenance/alternatives 32 times.
                     if method == "random":
-                        ranked = {seed: items if seed == "0" else [p["label"] for p in items]
+                        provenance_seed = "0" if "0" in ranked else next(iter(ranked), None)
+                        ranked = {seed: items if seed == provenance_seed else [p["label"] for p in items]
                                   for seed, items in ranked.items()}
                     record["methods"][method] = ranked
                 cases.append(record)
                 answers[case_id] = hidden
-    manifest = {"protocol_version": policy["version"], "output_schema_version": "candidate-known-time-v2",
+    sha256 = lambda raw: hashlib.sha256(raw).hexdigest()
+    frozen_sources = [
+        {"order": index, "role": "base" if index == 0 else "overlay", "source_name": path.name,
+         "frozen_path": "profile_frozen.json" if index == 0 else f"profile_overlays/{index - 1:03d}.json",
+         "sha256": sha256(raw)}
+        for index, (path, raw) in enumerate(profile_sources)]
+    manifest = {"protocol_version": policy["version"], "output_schema_version": "candidate-profile-projection-v3",
                 "evaluation_class": "development_corpus_lopo",
-                "predicted_at": timestamp, "hashes": {"fixture": digest(FIXTURE), "protocol": digest(protocol_path),
-                    "policy": digest(policy_path), "code": digest(Path(__file__))},
+                "predicted_at": timestamp, "hashes": {"fixture": sha256(fixture_raw), "protocol": sha256(protocol_raw),
+                    "policy": sha256(policy_raw), "code": sha256(module_sources["prototype.py"])},
+                "profile": {"schema": profile["schema"], "version": profile["version"],
+                    "source_files": frozen_sources, "effective_path": "effective_profile.json",
+                    "effective_sha256": sha256(effective_raw), "prediction_dimensions": list(tasks),
+                    "property_key_encoding": "escaped-dimension-prefix-v1"},
+                "modules": {f"modules_frozen/{name}": sha256(raw) for name, raw in module_sources.items()},
+                "method_graph_bridge": {"status": "available_opt_in", "schema": "loom.method_graph/1",
+                    "exporter": "loom.tools.seeding.method_graph", "projection_profile": "profiles/method_graph.json"},
                 "canonical_graph_mutated": False, "paid_api_calls": 0}
     predictions = {"manifest": manifest, "cases": cases}
     # Explicit prediction-before-score boundary. No answers are serialized here.
-    (output / "protocol_frozen.md").write_bytes(protocol_path.read_bytes())
-    (output / "policy_frozen.json").write_bytes(policy_path.read_bytes())
-    (output / "prototype_frozen.py").write_bytes(Path(__file__).read_bytes())
+    (output / "protocol_frozen.md").write_bytes(protocol_raw)
+    (output / "policy_frozen.json").write_bytes(policy_raw)
+    (output / "fixture_frozen.json").write_bytes(fixture_raw)
+    (output / "prototype_frozen.py").write_bytes(module_sources["prototype.py"])
+    (output / "effective_profile.json").write_bytes(effective_raw)
+    for source, (_, raw) in zip(frozen_sources, profile_sources):
+        destination = output / source["frozen_path"]
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_bytes(raw)
+    for name, raw in module_sources.items():
+        destination = output / "modules_frozen" / name
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_bytes(raw)
     save_json_gzip(output / "predictions.json.gz", predictions)
-    results: dict[str, Any] = {"manifest": manifest, "scores": {}}
-    for group in ("all", *TASKS, *(g.project for g in graphs)):
-        selected = [c for c in cases if group == "all" or c["task"] == group or c["project"] == group]
+    # Typed groups keep arbitrary dimension/project names distinct, including
+    # the name "all". Unambiguous old score aliases remain for existing readers.
+    groups = [("all", None), *(("dimension", task) for task in tasks),
+              *(("project", graph.project) for graph in graphs)]
+    alias_counts = Counter("all" if kind == "all" else name for kind, name in groups)
+    results: dict[str, Any] = {"manifest": manifest, "scores": {}, "score_groups": [],
+                              "ambiguous_score_aliases": sorted(name for name, count in alias_counts.items() if count > 1)}
+    for kind, name in groups:
+        selected = [case for case in cases if kind == "all" or
+                    (kind == "dimension" and case["task"] == name) or
+                    (kind == "project" and case["project"] == name)]
         scores = {}
         for budget in policy["candidate_budgets"]:
-            scores[str(budget)] = {"partial_mapping": metrics(selected, answers, "partial_mapping", budget),
-                "most_frequent": metrics(selected, answers, "most_frequent", budget),
-                "random_expected": random_expectation(selected, answers, budget),
-                "random_repetitions": {str(seed): metrics(selected, answers, "random", budget, seed)
-                                       for seed in policy["random_seeds"]}}
-            if "premise_filtered_frequency" in methods:
-                scores[str(budget)]["premise_filtered_frequency"] = metrics(
-                    selected, answers, "premise_filtered_frequency", budget)
-        results["scores"][group] = scores
+            values = {}
+            for method in methods:
+                if method == "random":
+                    values["random_expected"] = (random_expectation(selected, answers, budget)
+                        if policy["random_seeds"] else {"status": "unavailable", "reason": "no_random_rankings"})
+                    values["random_repetitions"] = {str(seed): metrics(selected, answers, method, budget, seed)
+                                                     for seed in policy["random_seeds"]}
+                else:
+                    values[method] = metrics(selected, answers, method, budget)
+            scores[str(budget)] = values
+        results["score_groups"].append({"kind": kind, "id": name, "scores": scores})
+        alias = "all" if kind == "all" else name
+        if alias_counts[alias] == 1:
+            results["scores"][alias] = scores
     save_json_gzip(output / "results.json.gz", results)
     return results
 
@@ -326,11 +342,22 @@ def main() -> None:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--policy", type=Path, default=POLICY)
     parser.add_argument("--protocol", type=Path, default=PROTOCOL)
+    parser.add_argument("--profile", "--recipe", type=Path, default=DEFAULT_PROFILE)
+    parser.add_argument("--profile-overlay", "--recipe-overlay", type=Path, action="append", default=[])
+    parser.add_argument("--fixture", type=Path, default=None)
     args = parser.parse_args()
-    results = experiment(args.output, args.policy, args.protocol)
-    for group in ("all", *TASKS):
-        score = results["scores"][group]["1"]
-        print(group, {method: {key: value for key, value in values.items() if key in
+    results = experiment(args.output, args.policy, args.protocol, args.profile, args.profile_overlay, args.fixture)
+    for group in results["score_groups"]:
+        if group["kind"] == "project":
+            continue
+        label = "all" if group["kind"] == "all" else f"dimension/{group['id']}"
+        budgets = group["scores"]
+        if not budgets:
+            print(label, {"status": "no_candidate_budgets"})
+            continue
+        budget = next(iter(budgets))
+        score = budgets[budget]
+        print(label, {method: {key: value for key, value in values.items() if key in
               ("tp", "emitted", "hidden_elements", "precision", "recall", "expected_tp", "expected_recall")}
               for method, values in score.items() if method != "random_repetitions"})
 

@@ -1,0 +1,8 @@
+{
+  "errors": [
+    "cannot validate input: [Errno 2] No such file or directory: 'loom/build/dev/verification/ctest.xml'"
+  ],
+  "preset": "dev",
+  "schema": "loom.ctest_evidence/1",
+  "valid": false
+}

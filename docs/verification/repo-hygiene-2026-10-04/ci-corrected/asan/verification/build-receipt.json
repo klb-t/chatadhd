@@ -1,0 +1,33 @@
+{
+  "architecture": "x86_64",
+  "binaries": [
+    {
+      "bytes": 1059491904,
+      "path": "build/asan/loom_tests",
+      "present": true,
+      "sha256": "e6019ae12e61f005f928c11dcc7936998dfaa6d89abbd40fc2be4d24d83cce12"
+    },
+    {
+      "bytes": 557615872,
+      "path": "build/asan/cli/loom",
+      "present": true,
+      "sha256": "c144c578d6a31b81785da8d106cee79410b53805321db5216795bb485dcbf06f"
+    },
+    {
+      "bytes": 627147584,
+      "path": "build/asan/server/loom-server",
+      "present": true,
+      "sha256": "1fa06019d978dd6b04caaa07923a5d6dd3d2cf39ed134442ebb365822788f570"
+    },
+    {
+      "path": "build/asan/libloom.so",
+      "present": false
+    }
+  ],
+  "platform": "Linux",
+  "preset": "asan",
+  "python": "3.11.16",
+  "schema": "loom.build_evidence/1",
+  "source_commit": "93420bbb82124ba5493e5fc9c3dea793703bfb74",
+  "source_tree": "237d9618ca61780a4011896a03719e8b4184daf9"
+}

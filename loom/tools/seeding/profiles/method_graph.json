@@ -1,0 +1,51 @@
+{
+  "schema": "loom.seeding.method_graph_projection/1",
+  "namespace": "seeding",
+  "method": {"identity": "offline-experiment", "label": "Captured seeding experiment"},
+  "vocabulary": {
+    "kinds": {
+      "method": "Method", "method_version": "MethodVersion", "run": "MethodRun",
+      "parameter_set_version": "ParameterSetVersion", "recipe_version": "RecipeVersion",
+      "profile_version": "ProfileVersion", "source_version": "SourceVersion", "result": "CapturedResult",
+      "projection_version": "ProjectionVersion"
+    },
+    "predicates": {
+      "version_of": "version_of", "requests_method_version": "requests_method_version",
+      "produced_in_run": "produced_in_run", "produced_by_method_version": "produced_by_method_version",
+      "uses_parameter_set": "uses_parameter_set", "uses_recipe": "uses_recipe",
+      "uses_profile": "uses_profile", "uses_source_version": "uses_source_version",
+      "captured_record": "captured_record", "uses_projection": "uses_projection",
+      "evaluation_record": "has_evaluation_record"
+    }
+  },
+  "inputs": {
+    "predictions": {"paths": ["predictions.json.gz", "predictions.json"], "required": true},
+    "results": {"paths": ["results.json.gz", "results.json"], "required": true},
+    "policy": {"paths": ["policy_frozen.json"], "required": true},
+    "protocol": {"paths": ["protocol_frozen.md"], "required": true},
+    "program": {"paths": ["prototype_frozen.py"], "required": true},
+    "fixture": {"paths": ["fixture_frozen.json"], "required": false},
+    "effective_profile": {"paths": ["effective_profile.json"], "required": false}
+  },
+  "manifest": {"input": "predictions", "pointer": "/manifest", "timestamp_pointer": "/predicted_at", "input_hash_pointer": "/hashes/fixture"},
+  "output_manifests": [{"input": "results", "pointer": "/manifest"}],
+  "source_roles": {"outputs": ["predictions", "results"], "recipe_exclude": ["predictions", "results", "fixture"]},
+  "parameters": {"input": "policy", "pointer": ""},
+  "hash_bindings": {"policy": "policy", "protocol": "protocol", "code": "program", "fixture": "fixture"},
+  "profiles": {"effective_role": "effective_profile", "descriptor_pointer": "/profile", "modules_pointer": "/modules"},
+  "projections": {
+    "records": [
+      {"id": "ranking", "input": "predictions", "path": ["cases", "*", "methods", "*", "*"]},
+      {"id": "metric", "input": "results", "evaluation": true, "unless_pointer": "/score_groups", "path": ["scores", "*", "*", "*"], "exclude_final_keys": ["random_repetitions"]},
+      {"id": "metric-repetition", "input": "results", "evaluation": true, "unless_pointer": "/score_groups", "path": ["scores", "*", "*", "random_repetitions", "*"]},
+      {"id": "metric", "input": "results", "evaluation": true, "when_pointer": "/score_groups", "path": ["score_groups", "*", "scores", "*", "*"], "exclude_final_keys": ["random_repetitions"]},
+      {"id": "metric-repetition", "input": "results", "evaluation": true, "when_pointer": "/score_groups", "path": ["score_groups", "*", "scores", "*", "random_repetitions", "*"]}
+    ],
+    "bulk": [
+      {"id": "predictions-snapshot", "input": "predictions", "path": []},
+      {"id": "results-snapshot", "input": "results", "path": []}
+    ]
+  },
+  "support": {"quote_chars": 64},
+  "export": {"mode": "records", "format": "json.gz", "source_encoding": "base64", "confirmation_ratio": 10}
+}

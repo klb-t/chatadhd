@@ -1,0 +1,16 @@
+{
+  "historical_commit": "b118c80e981c08ec6d7f9ab6aacc177979186cf2",
+  "required_tree": "b122b30314009a4b7d793a2c634e5b65d6835397",
+  "actual_tree": "b122b30314009a4b7d793a2c634e5b65d6835397",
+  "source_commit": "fedaf6b26d54a2d84f2a42e0c18fed6d8fa9828f",
+  "main": "e4109df7e4af22b461def5f7d62e268d9b9a8825",
+  "rehydrated": "git fetch origin all preserved head refs; no holdout checkout or content read",
+  "diagnostic_before": "859 cases; one error: missing historical Git object after single-branch clone",
+  "ctest_after": {
+    "entries": 1,
+    "passed": 1,
+    "elapsed_seconds": 33.29,
+    "timeout_seconds": 60
+  },
+  "does_not_replace_full_matrix": true
+}

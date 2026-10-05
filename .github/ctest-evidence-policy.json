@@ -1,0 +1,51 @@
+{
+  "schema": "loom.ctest_evidence_policy/1",
+  "revision": 1,
+  "default_runner": "script",
+  "runner_bindings": [
+    {"match": {"prefix": "unit."}, "runner": "doctest"},
+    {"match": {"prefix": "compat."}, "runner": "unittest"},
+    {"match": {"prefix": "research."}, "runner": "unittest"},
+    {"match": {"name": "server.chat_active_task"}, "runner": "unittest"},
+    {"match": {"name": "eval.harness"}, "runner": "unittest"}
+  ],
+  "opt_in_entries": [
+    {
+      "name": "unit.test_catalog_scale",
+      "runner": "doctest",
+      "when": {"cases": 0, "assertions": 0},
+      "reason": "existing opt-in scale test"
+    }
+  ],
+  "presets": {
+    "dev": {"unavailable_entries": []},
+    "asan": {
+      "unavailable_entries": [
+        {
+          "name": "compat.test_graph_packet_store",
+          "mode": "all_discovered_skipped",
+          "required_output": "LOOM_LIBRARY not set",
+          "capability": "LOOM_SHARED=OFF",
+          "reason": "existing ASan preset has LOOM_SHARED=OFF"
+        },
+        {
+          "name": "compat.test_chat_active_task_http",
+          "mode": "all_discovered_skipped",
+          "required_output": "LOOM_LIBRARY not set",
+          "capability": "LOOM_SHARED=OFF",
+          "reason": "existing ASan preset has LOOM_SHARED=OFF"
+        },
+        {
+          "name": "compat.test_abi_compat",
+          "mode": "exact_skipped",
+          "skipped_cases": 2,
+          "requires_execution": true,
+          "required_output": "LOOM_LIBRARY not set",
+          "capability": "LOOM_SHARED=OFF",
+          "availability_note": "two existing shared-library ABI cases unavailable in ASan"
+        }
+      ]
+    },
+    "vendored": {"unavailable_entries": []}
+  }
+}

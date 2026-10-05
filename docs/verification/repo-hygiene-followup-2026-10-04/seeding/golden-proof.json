@@ -1,0 +1,36 @@
+{
+  "active_source_sha256": {
+    "profiles/default.json": "94e0894278bd424c535aed3b67d2f235eb6f1cbfbcf2cdc999f145575de4c1bb",
+    "profiles/schema.json": "92da1edde97ac6060c2569b3e601ae88ed7fb605a5bc1602dd8f8d371b7d9f9a",
+    "prototype.py": "5576a7e5c09650318c05d5612c447c005ec902f0a6979205320b1c040e3dafba",
+    "recipe.py": "e76af458f8a850c454b19c11a891d46cee8e95798318f1075271faf84ee9befd",
+    "test_profiles.py": "a534955308779057cf2f13067dfc1e9c310a4cd5c557899cebb9dcfd7ce24d8e"
+  },
+  "after_rank_matrix_sha256": "f8ce4cef77210b18c6fea394f1098cb8a87326766ffe5339dd0d60721effcd4e",
+  "baseline": {
+    "frozen_code_sha256": "5cede60257ff883ce83be8434cd8d7180c22cda7b0f020b2c5f03e1401474cc1",
+    "predicted_at": "2026-09-29T23:49:07.540045+00:00",
+    "predictions_sha256": "e0fd191946708430af6f3d886f86bb48dafa49c53829c09c559bb9fd202590b9",
+    "run": "loom/tools/seeding/results/synthetic_lopo_v4_application_alternatives_first"
+  },
+  "before_rank_matrix_sha256": "f8ce4cef77210b18c6fea394f1098cb8a87326766ffe5339dd0d60721effcd4e",
+  "cases_exact": 61,
+  "default_prediction_dimensions": [
+    "roles",
+    "capabilities",
+    "features"
+  ],
+  "evaluation_class": "inspected_synthetic_development_regression",
+  "graphs_exact": 5,
+  "historical_result_bytes_unchanged": 13800361,
+  "historical_result_files_unchanged": 26,
+  "measured_at_utc": "2026-10-04T17:45:45.662845+00:00",
+  "method_graph_bridge": "pending_agreed_contract",
+  "metric_dictionaries_exact": 648,
+  "negative_controls": 15,
+  "paid_calls": 0,
+  "positive_masks": 46,
+  "quality_gain_claimed": false,
+  "ranked_outputs_exact": 2135,
+  "schema": "loom.verification.seeding_profile_migration/1"
+}

@@ -1,0 +1,43 @@
+[
+  {
+    "kind": "actual_npm_offline_fixture",
+    "argv": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+      "/workspace/scratch/2a6e71927cf3/chatadhd/.github/scripts/run_optional_npm_scripts.py",
+      "--package-json",
+      "/tmp/w8-npm-argv-3wm_uxx5/package.json",
+      "--script=--literal ; $(no-shell) script"
+    ],
+    "returncode": 0,
+    "stdout": "START: npm script '--literal ; $(no-shell) script'; argv=npm run -- '--literal ; $(no-shell) script'; cwd=/tmp/w8-npm-argv-3wm_uxx5\n\n> w8-offline-process-fixture@1.0.0 --literal ; $(no-shell) script\n> node fixture.cjs\n\nACTUAL_NPM_LOCAL_FIXTURE_EXECUTED\nPROCESS_RESULT: npm script '--literal ; $(no-shell) script'; exit=0\n",
+    "stderr": "npm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm.\n",
+    "scope": "Only a temporary local package/node fixture; not W10 product test coverage.",
+    "fixture_sources": {
+      "package.json": {
+        "name": "w8-offline-process-fixture",
+        "version": "1.0.0",
+        "scripts": {
+          "--literal ; $(no-shell) script": "node fixture.cjs"
+        }
+      },
+      "fixture.cjs": "process.stdout.write(\"ACTUAL_NPM_LOCAL_FIXTURE_EXECUTED\\n\");\n"
+    }
+  },
+  {
+    "kind": "checked_out_package_capabilities",
+    "argv": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+      "/workspace/scratch/2a6e71927cf3/chatadhd/.github/scripts/run_optional_npm_scripts.py",
+      "--package-json",
+      "/workspace/scratch/2a6e71927cf3/chatadhd/loom/web/package.json",
+      "--script",
+      "test:interface-2",
+      "--script",
+      "test:interface-2-native"
+    ],
+    "returncode": 0,
+    "stdout": "CAPABILITY_UNAVAILABLE: npm script 'test:interface-2' is not declared in /workspace/scratch/2a6e71927cf3/chatadhd/loom/web/package.json; no command executed for this capability.\nCAPABILITY_UNAVAILABLE: npm script 'test:interface-2-native' is not declared in /workspace/scratch/2a6e71927cf3/chatadhd/loom/web/package.json; no command executed for this capability.\n",
+    "stderr": "",
+    "scope": "Both W10 scripts absent on current source; zero W10 scripts started."
+  }
+]

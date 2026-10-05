@@ -1,0 +1,512 @@
+{
+  "operation": "local storage conversion to thin archive; compile/link flags unchanged",
+  "archive_members": 126,
+  "original_bytes": 317927312,
+  "thin_bytes": 55337314,
+  "members": [
+    {
+      "path": "CMakeFiles/loom_core.dir/src/archive/cluster.cpp.o",
+      "sha256": "c4a773483922e91caf1aac230494e79b792562b699a1ab61459cc86f1099bf97"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/archive/ingest.cpp.o",
+      "sha256": "e51c49e4bcadb1c8fa99795527d00229fa5de03e4775382aa8de0b0227b805e2"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/archive/ingest_parse.cpp.o",
+      "sha256": "9a7d9d7a36320af0a1aecf24f600f357c4428e10abb5eca3328aece434ec4ab9"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/archive/items.cpp.o",
+      "sha256": "908da42f964b167e7fe82a57823a4d05850745b48b86e28124e1fc67b8c81779"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/archive/pipeline.cpp.o",
+      "sha256": "e6dd5de69f2db4e2846483558f6fe53dc608883b3b40a953706cbe159c52cbde"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/archive/synth.cpp.o",
+      "sha256": "67ed8466e0496ff7d32bacdcb0d7bee5c8e62b1f15bd21554ae361d376d6a629"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/archive/text.cpp.o",
+      "sha256": "dcb4729e9f80bae8c19c5645fe1953c3ad518d8ef5e5fb0adda140ddd1a74e9c"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/archive/vocab.cpp.o",
+      "sha256": "7491cadcada37c720eb4a1d41b3e080d1156de3f12162e72d240d2435c9eab77"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/capi/capi_archive.cpp.o",
+      "sha256": "9124bf7709b159a401cb14f48eeddacfbe10ec91e7b6bc422ff0cedd52c95f02"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/capi/capi_catalog.cpp.o",
+      "sha256": "7bfe21c9f9ee12b5922b6c19dd9a218801c36d432b90c08f688f7946daba4296"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/capi/capi_chat.cpp.o",
+      "sha256": "75b9496d6ee0afab6ec4793ddcacb94e7b2ad6f8b0ce1fc7920a7de01760bcb2"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/capi/capi_context.cpp.o",
+      "sha256": "155bbc76c325659900268f1c6dfdb832a9d5a6654c55e075d17ebd539574013f"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/capi/capi_core.cpp.o",
+      "sha256": "63fb873b4ffc7b583e5c4298944f04de5eead10486595b09d8706cfb9d79988f"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/capi/capi_extract.cpp.o",
+      "sha256": "1c623afd49852ab28cee72b37bc315af4772e1f2addf32823c7eb3c4eb931224"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/capi/capi_generalize.cpp.o",
+      "sha256": "f8668a1318615cbf0745d60b33eee6a31ac543de30bd3fc1ff5b00fea326a0cb"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/capi/capi_graph.cpp.o",
+      "sha256": "52226ef817a1ce83cfd2b1f3385bf67cef84bb77c57ec54a9412f87742a88236"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/capi/capi_graph_packet_store.cpp.o",
+      "sha256": "1d76e6ccaeffb9229ee9cea081e93f2a7130c39f1f0619e2956b97c86a74e82b"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/capi/capi_http.cpp.o",
+      "sha256": "5cb0f1107c86d928a11dd1f12571d1a73867a6146de109aa226ad4cbad3bec3c"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/capi/capi_import.cpp.o",
+      "sha256": "91329f0fc10dae3c58b376aa8624bff75b19067e986dc514cd0a1443a919117e"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/capi/capi_knowledge.cpp.o",
+      "sha256": "0c206fe0ba4125d44c9bd00bd43f2e54a0253dfb587db32ceafeb45b278afc9e"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/capi/capi_media.cpp.o",
+      "sha256": "ea68525f38aaea616aa1c0a3ce70910d2df102f23d9dcb73ac209f2a207853c0"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/catalog/alias.cpp.o",
+      "sha256": "42fca16fec34fa437da12b90aa8d363a3e261ebb0f21c580aaa72f9da0d5c3e6"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/catalog/catalog.cpp.o",
+      "sha256": "d3fb7a9bde0e8e7ee7fba3621dba898a7b43b76f58884e4a02aa46c480f560c1"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/catalog/extract_text.cpp.o",
+      "sha256": "02322fc380b739fe403b4a2c7d41bd8cf7556f81762ebbabe38e0bf23f61f6b0"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/catalog/import.cpp.o",
+      "sha256": "ed76cd9dd03d71bfea8c03c83f769d1db799533cc4320a42dfa2d9481947d332"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/catalog/links.cpp.o",
+      "sha256": "c89b433e15e73e355bcd23272459754b044e30e4316c12b1c58670dea75cabd3"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/catalog/profile.cpp.o",
+      "sha256": "7071b010340c1961076d6b44497d1e1831b7c2751f58851ba41a326162fcb146"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/catalog/query.cpp.o",
+      "sha256": "25a9bca11015fd7ac53cca6faeebbdd9f4143c86671c58e1647f60c609fb8266"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/catalog/scan.cpp.o",
+      "sha256": "b7ed18ac1b97db04b20e1a942d0d59d8b2b3b96dba2d1014f9937e403e4e731f"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/catalog/schema.cpp.o",
+      "sha256": "eb8d1c3fe970bba13d58c72525deb2f07cc4100110f28e6f829e6b9a8c26ae14"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/catalog/score.cpp.o",
+      "sha256": "3b428298dca54024c1e747e3fdfc08b34c41f541c0546e9cdd3a89982a7a2654"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/catalog/select.cpp.o",
+      "sha256": "13c6889c8c34e1f738e99857d90b676275df69e2071932e1a86624f8a299e6f8"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/catalog/semantic.cpp.o",
+      "sha256": "75985dfce5192a7b56965a5fdfb5611f7c0e2d476c9ef95162ffc197f42b35d0"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/catalog/sketch.cpp.o",
+      "sha256": "a851884a822891fcaeae5b7a27738f0b901feb58444793e0d8b0384ded459919"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/catalog/stream.cpp.o",
+      "sha256": "427f72926a7c3e3143aeb8b0ed325de3b5eac850153de9a2c33c94c733b8f5a0"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/chat/active_task_acceptance.cpp.o",
+      "sha256": "09f21ed90fde50158610e228123c0018546a6dadef5d308531f73cc79028181e"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/chat/active_task_spec.cpp.o",
+      "sha256": "8a966b0525fc21071c29e85092276624fab4e8b6ee611581a0cf2e572a905ae1"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/chat/batch_api.cpp.o",
+      "sha256": "b69cce697e4429e308b92d06e10aef5ee299acf4007883fc234f7456f35c3206"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/chat/chat_engine.cpp.o",
+      "sha256": "82246829e7905f8d56c34603aa6a6a0b516bb0ee519e33f991fefafa6841c16a"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/context/context_candidates.cpp.o",
+      "sha256": "5a03dee3f5c4124f74a924cb6b0008a429efaa812b23196f98ba89f0381bf9d1"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/context/context_diagnostics.cpp.o",
+      "sha256": "20fed87c931b0aac01a726778a52ef8bf53ff980f0bc098e117e6dfe1d219c77"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/context/context_engine.cpp.o",
+      "sha256": "036b14f9e14f6c73119b476e841722a8607f1fcbad4b94e09349ed7493d11c4b"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/context/context_evidence.cpp.o",
+      "sha256": "1e5f7f0bf882d9b3e7b2c80fdc4615120bdc293cce81722864d67f13bad1e943"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/context/context_plan.cpp.o",
+      "sha256": "e7d3317fbd3d7adfcddc734ff3f70e96575ccae2e4d594edece6b5b05275d058"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/context/context_request_ext.cpp.o",
+      "sha256": "30fc3fc47ebc9bcbe85c4689a3ce5538e5a7dc45b0022e136f1472bdc8d8993e"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/context/ctx_common.cpp.o",
+      "sha256": "8db37a4d7d571c00a515892908c550dd5ccbca21be7407fada45c87e5741dd86"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/context/retrieval.cpp.o",
+      "sha256": "426707f68ec8f63f412212c2291181ad14a426906cc34e67c55d0b81e6c8c1a5"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/core/config.cpp.o",
+      "sha256": "0afb420daab030eb0bb37af669b954708c9412dc066faca082a43f2aeb6801e0"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/core/event_bus.cpp.o",
+      "sha256": "3241b7b07a68a501e044b80226b24df1371792a8b653f0475863c1e2d15059ab"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/core/provenance.cpp.o",
+      "sha256": "8d47bc680816916791fbcba0ca81786ae593ba5bb2b3a2607d85f2e8d1c3f747"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/core/relations.cpp.o",
+      "sha256": "9c295f9065df5bcd11f2941707f62077ce8247d5792f5a3dcd597b1af5f92c44"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/core/tasks.cpp.o",
+      "sha256": "06a9e1400b8b2e2fe7fee2780b393b21220b1da02c89c8eb550dd1b9abee9506"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/crypto/crypto.cpp.o",
+      "sha256": "78454c242949e1bdef297f1560b10d2045f97697a6f7e9ce71a1419dbf006295"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/db/db.cpp.o",
+      "sha256": "fd62009c57d5ea8928234b3e8098ff5416ea4426cce85c92560165a0d8c1acfb"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/db/fts.cpp.o",
+      "sha256": "346f3908b8a48748e42cd5214e2d3b0c02853c4e88e173c841128fb6a0bd70a3"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/db/sqlite.cpp.o",
+      "sha256": "f6da48a36e9f48f959624fbc5fa92bd5143aa54511393fc5c22a4615105257c0"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/extract/candidate_graph.cpp.o",
+      "sha256": "6cf5916e43d65538329963b0e741b3aaaa05e910ce2a9c4458a3a87839142ab7"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/extract/extract.cpp.o",
+      "sha256": "06b471cd93524d4be4ab8896613c3f035f6c1cdd4eee4c5a181f813f55f9b22c"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/extract/extractors.cpp.o",
+      "sha256": "f0c2996e41f97dc464c3a48d06ac430f947d6bc4d53f47d0c2d04cf17157702a"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/extract/lexicon.cpp.o",
+      "sha256": "09a54e63da33d3864605a8ddb59acb06715f78560f23325a3142a4082c3d6d5f"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/extract/semantic.cpp.o",
+      "sha256": "93290566a800a9d0e0cabee9c6a2262ddfc485771e06cfe1c91112e225012411"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/extract/sources.cpp.o",
+      "sha256": "994cc189bf56cfc6bc2c57f1974a2ed36115cc2b60b8fb8845d5a4d7c2666541"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/extract/stage.cpp.o",
+      "sha256": "d0027174c5e699a6ffb08f9e43b4d54f752566bce27d515604296614199b59f8"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/generalize/common.cpp.o",
+      "sha256": "dde9f5ea6f2f1c3b10da36ffd7035c9cfdcf112b0f0b20c13b3b2ed6e49c049e"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/generalize/evidence.cpp.o",
+      "sha256": "b76a8fcf067e4591778c18410e2dd3694ad63fff492214f589163d65c5e749ce"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/generalize/infer.cpp.o",
+      "sha256": "f533276ea9bb6aa3d00559cf88122a80b3ee600ef14bac4ae5f0931c87eab056"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/generalize/match.cpp.o",
+      "sha256": "a3145036c52b8f7a57cb5dcf0483405bde83699db2fe0a611e6189f6f6762579"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/generalize/operators.cpp.o",
+      "sha256": "6aa23e51db83f31763ff83288ab484cc74d14d55808cfc74004bea8475235d52"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/generalize/principles.cpp.o",
+      "sha256": "ab3596285903b8c3f080bf7b7bd4cdc7578fd8a0b5a34f7c8876b728f389007f"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/generalize/stage.cpp.o",
+      "sha256": "2cfa1a7ef65c6bc6f89dda099c05fe7cc1beb6e6ebfab095ca3b478c9d620b8c"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/github/github_sync.cpp.o",
+      "sha256": "8496dd94f0d6259a9bed254ef62b8720d0f6217bead489fe3ca8555a0e222476"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/graph/graph_engine.cpp.o",
+      "sha256": "eb1ec45287a03091da660ab5fdbcf6ff9ac6c24a9ade226799e421f7707ba27c"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/graph/graph_memory.cpp.o",
+      "sha256": "e85f60acab73921673753c8b0c71f172dfa9404ee5ceb5e2c3432e70cca974ae"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/import/export_anthropic.cpp.o",
+      "sha256": "1febeead45953fdb627701756a30931f3d3a8a18e3f0e40d5377087a7b71144f"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/import/export_archive.cpp.o",
+      "sha256": "94bb0599a1f9f3ba08ef85347f06959b3dcd7c4f594459b223811770ec0e4803"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/import/export_common.cpp.o",
+      "sha256": "e95024c3884ff6d912b144afa1abab7551da622e1cfba74ca233222ad248b6ec"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/import/export_openai.cpp.o",
+      "sha256": "30529b5f45ef84eae39c66c0758f14065e290a7d2f4c7dbc5372537bfcf9ceb7"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/import/export_unknown.cpp.o",
+      "sha256": "f0fea5b824f30b941c8533865f4c32428c5caaeb0764096edd30778af3c2678b"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/import/exporter.cpp.o",
+      "sha256": "0cbf6ea41255b9443d3491e3e13234cb659d559522ae8409d5463af8ad16b46e"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/import/importer_common.cpp.o",
+      "sha256": "a182ca59f382ec32335bb4170e16c5db27860e5711b54441302599566d960f32"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/import/importer_core.cpp.o",
+      "sha256": "e05cbf03407514666b4049fbf3b8439ab14dbd218e248dcc4770ad5a27acadec"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/import/importer_html.cpp.o",
+      "sha256": "8f0f4a4b59676b3ae717983ad1cee286fba011eee111aa0e4f8501ed67530aa3"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/import/importer_json.cpp.o",
+      "sha256": "2a476b2d1ce7cfaa95d8b5c0bfa7f038e2595b3b7ff4a14efed518bc831c4131"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/import/importer_sqlite.cpp.o",
+      "sha256": "6a13bedd4df4a2acd20f491e78a153faf128da7f68e5935625dbaaa8cc0aebf8"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/import/importer_text.cpp.o",
+      "sha256": "6cccf29a958f8b50fbfdde67ac5e28783e03b1166e5c0285f7743498896f0b8b"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/import/importer_zip.cpp.o",
+      "sha256": "6ef0060b479ff984d81cf449953af707c614e4abd8917427b3230da4ae8cb733"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/kb/candidates.cpp.o",
+      "sha256": "df218920dce648a362bbdfa474664a6ac9254bf983e731ce5198501d20bed901"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/kb/evidence.cpp.o",
+      "sha256": "ba2f4b387602deef798f1d0a7beb8a891e7d0298526535217ba171e6dbf8eba0"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/kb/graph_packet_store.cpp.o",
+      "sha256": "a445021e2c58618fe32fc01b5fd523bca32dea58b4e16bbb4d19cb2ecff7e88d"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/kb/normalize.cpp.o",
+      "sha256": "f4c52d3845485c23e1e57bcd27ef87083f5be4f598a0a0e66fd39565713837f6"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/kb/pack.cpp.o",
+      "sha256": "63228c49ba08148851fafe16697919a5898142538344486484670cb6d40bd81d"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/kb/schema.cpp.o",
+      "sha256": "15fdfb19709049a9e26a1a4187da6f4239b33567b607cafc3dcc9802ca33326a"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/kb/store.cpp.o",
+      "sha256": "b1931fb02c72e646d24af3b667d17fd868297a4fbe1690bc50b69e174523dd8b"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/knowledge/engine.cpp.o",
+      "sha256": "bb19e2b9bfeb02f6c370512334e3e601188f093ce833250254063b57fe57a0f9"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/materialize/materialize.cpp.o",
+      "sha256": "af6c95b39e8e2442ca7c39638b1bd0c625f3ef86579f6e4e94a74b37b96f42dc"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/media/media_providers.cpp.o",
+      "sha256": "5b31741f3b6ce466bbd96eb3b15ac9aad9395a7b96fa33283719b6e31b622297"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/memory/memory_engine.cpp.o",
+      "sha256": "d8cfd53dc134aaeba19a69b73f575eebb2d97e38ebf2dd62d55d27cf02cb6355"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/model/model_action.cpp.o",
+      "sha256": "f3f639bbe5b1c4bbbcf3c569f040281f6faae9be3e8732f981eb941406ae4adf"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/model/model_core.cpp.o",
+      "sha256": "593a23288d18eddbf55a45b261181c067f3a286641fe3fc8458d25e7bd5eb8ae"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/model/model_general.cpp.o",
+      "sha256": "a59dcc72831f0b9631ac8a599dc106c8f29b80dab52d185f0dc402cb7035ad39"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/model/model_pack.cpp.o",
+      "sha256": "8db2920cb3218f5becbb1bdde2c175bc21a4cc6e58682ea719f18010906a38a0"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/net/http_common.cpp.o",
+      "sha256": "d0d615464448ebd77a3f6b0add843f7d25d60898eeb0167a8403b4947ff08b93"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/net/http_default.cpp.o",
+      "sha256": "0fba03d9df41164610a7c51b64edcd986659d51d9a7ff499891d6dc95ea66569"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/net/sse.cpp.o",
+      "sha256": "f96a8d7c3b2e36bb51e6e67340a5b75cbc32cc5857716ab7716a07a51e91a892"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/providers/providers.cpp.o",
+      "sha256": "1eaac1e9523fbfb8d256c1d651e7d1002dc746e344f1f168a88115d141d487ba"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/re/regex.cpp.o",
+      "sha256": "10cdbdd129ec6940f0cca1f6db562264f9bec5580df081025a955a1a774ae661"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/resolve/assess.cpp.o",
+      "sha256": "ba66a8c0b4825ddb5f5f5945ae059aaa9f52f7e426d6af5800efcb30343ddcb3"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/resolve/attribution.cpp.o",
+      "sha256": "e3ec0ae9d11d42c626762f72f6e6c53737b5aa61e3e99d4fa10581a7d779a1b3"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/resolve/lineage.cpp.o",
+      "sha256": "b063b10934986c570d2fe08ee7bbf9e6c5794cfb64d1e2ef026ccc917fcad9d3"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/resolve/resolver.cpp.o",
+      "sha256": "927c9164f476896e540f41a836340f69b7accdcb089ea8ba50881f35e8837a9a"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/resolve/stage.cpp.o",
+      "sha256": "26cd595548472398ba52d13a164febbf4cddd30570155753fb6f35c3ecc740f2"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/resolve/vectors.cpp.o",
+      "sha256": "311b66c47be6f4ed942f41a02cccbb0a90c3ab273005d804f7a583c6716d016e"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/runtime.cpp.o",
+      "sha256": "ac8cfe01619720496e20d266faab8d1f8f5683070a2ec7a2ba8bd8304ed7038f"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/search/selector.cpp.o",
+      "sha256": "96998a91a74d5de001796116b74ffd13650063d8756c867dd286f4fe868e6cd6"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/semantic/analyzer.cpp.o",
+      "sha256": "02ee144e55d0b60edaba90793e06d5a97f5a9ddbf62f5abab5a08ec9dad9147b"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/semantic/semantic_llm.cpp.o",
+      "sha256": "62decf3a28574f393642107ca2cdd60634f8d737e8be6a0ceb2378cde3d73efe"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/util/base64.cpp.o",
+      "sha256": "4b41e2bb78f5a96a598532054c6ec593c7c4a896a68a516032549e8439bf4b74"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/util/fs.cpp.o",
+      "sha256": "f4fb90b242cfc5b6cdd05823b7a68234fad7c389c767158871f1e1bbcb79c9d7"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/util/json.cpp.o",
+      "sha256": "b765249496d5ad04e03246ce2da1c0bce3d3296ef16e1399958a380c25e0443d"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/util/log.cpp.o",
+      "sha256": "b66933fa02d6dad0f2463d09560a0da2f977e44080e13f7dec2e94b1160585ed"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/util/random_ids_time.cpp.o",
+      "sha256": "fc2fd01e335c9aa5b8f6ba1bd9c3208881348c3ec8dc9bad1fe0d5448f72e217"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/util/result.cpp.o",
+      "sha256": "1e5e9bb17a776d33ace40d0de559bf64881cf9d88377a2916dd09f32e2e48259"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/util/sha256.cpp.o",
+      "sha256": "46199a77f681ccb57d72e85cd327c81b20de1811a50ba7615f4609410ddfd2c1"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/util/unicode.cpp.o",
+      "sha256": "f4636c2a0de137aa251588444a6e50ca87908092c1b702ba5c515fa0b7b66bfe"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/util/utf8.cpp.o",
+      "sha256": "94086bb2e1d09a12bbf39783dd21f5fc59102b49952e03561cd439c61e220643"
+    },
+    {
+      "path": "CMakeFiles/loom_core.dir/src/worker/semantic_worker.cpp.o",
+      "sha256": "504ae82e733ca0bf03bbeca76f4bb96f0915531145e1809d2e59d51e08f275c9"
+    }
+  ]
+}

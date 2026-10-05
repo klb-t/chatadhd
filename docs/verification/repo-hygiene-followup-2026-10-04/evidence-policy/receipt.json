@@ -1,0 +1,62 @@
+{
+  "schema": "loom.evidence_policy_followup/1",
+  "checks": [
+    {
+      "command": [
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        ".github/scripts",
+        "-p",
+        "test_verify_ctest.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "log": "regressions-after.log",
+      "reported_tests": [
+        "28"
+      ]
+    },
+    {
+      "command": [
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        ".github/scripts",
+        "-p",
+        "test_*.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "log": "all-github-scripts.log",
+      "reported_tests": [
+        "38"
+      ]
+    },
+    {
+      "command": [
+        "python",
+        "docs/verification/repo-hygiene-followup-2026-10-04/evidence-policy/compare.py",
+        "--output",
+        "docs/verification/repo-hygiene-followup-2026-10-04/evidence-policy/comparison.json"
+      ],
+      "exit_code": 0,
+      "log": "comparison-run.log",
+      "reported_tests": []
+    }
+  ],
+  "files": {
+    ".github/scripts/verify_ctest.py": "ecfb45f0883d2aeb8d61647fb90ec3c0ee161ec4b998f0a9b075dba7efa1bb35",
+    ".github/scripts/test_verify_ctest.py": "0738a65a34361859d74427e9f00d95a53ee5dddd8947f9da3eb1b5105876de24",
+    ".github/ctest-evidence-policy.json": "1dc457125c40c0e225365e20c8839d9726d71dfa5872a8be1d890707666526a4",
+    ".github/ctest-evidence-policy.schema.json": "29ff3cd357e02cd0fc8139cacb86293fcfab5803c9f0001eb8aec53b4f4be6e0",
+    "docs/verification/repo-hygiene-followup-2026-10-04/evidence-policy/compare.py": "b9c7e8f3602145fefe277cecab4d49e56b4c847dac8f0c84d6a128f280de35b1",
+    "docs/verification/repo-hygiene-followup-2026-10-04/evidence-policy/before/verify_ctest.py": "39e7748da96c3fb5a58e788b5a751bf8c80501b86ed17204e3f62057e2351c3a",
+    "docs/verification/repo-hygiene-followup-2026-10-04/evidence-policy/before/test_verify_ctest.py": "1a7f17c942ecf74378ef3b4f6bab599f5471416731ff88124ccda645b2b6d170"
+  },
+  "boundary": "Offline fixture and archived-receipt replay; no new native/model/CI execution."
+}
