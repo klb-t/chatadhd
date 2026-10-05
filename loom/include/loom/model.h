@@ -65,6 +65,8 @@
 #include "loom/result.h"
 #include "loom/util/json.h"
 
+namespace loom { class RuntimeProfile; }
+
 namespace loom::model {
 
 // ═════════════════════════════════════════════════════════════════════
@@ -257,6 +259,9 @@ bool may_be_premise(EvidenceClass e) noexcept;
 // Ties inside a rank are broken by recency and explicitness (engine policy).
 // I3: model_knowledge never outranks the owner's sources.
 int authority_rank(Origin o) noexcept;
+// Explicit recipe lookup; ranks never alter evidence or origin labels.
+// Owner-evidence and premise protections remain separate engine invariants.
+Result<int> authority_rank(Origin o, const RuntimeProfile& profile);
 // Evidence classes a rule/operator may produce: derived | inferred | extrapolated.
 bool is_producible(EvidenceClass e) noexcept;
 
@@ -1018,6 +1023,8 @@ struct StatusRecord {
 // `restored` cycle exists, or goes `lost` again after a `restored`.
 // Deterministic; other fields untouched.
 std::vector<StatusRecord> order_status_history(std::vector<StatusRecord> records);
+Result<std::vector<StatusRecord>> order_status_history(std::vector<StatusRecord> records,
+                                                     const RuntimeProfile& profile);
 
 // §5 Prediction: an inferred claim about a future decision — in situation D
 // the owner will choose solution class E — evaluated in the temporal holdout.
@@ -1132,5 +1139,6 @@ Result<std::vector<Morphism>> morphisms(const kb::Pack& pack);  // explicit tran
 // ({"use":"anchoring","from":{"paradigm","kind"},"to":{"role"}}, id
 // "m.anchor.<paradigm>.<kind>"), derived from the `role` of the domain kind.
 Result<std::vector<Morphism>> anchoring_morphisms(const kb::Pack& pack);
+Result<std::vector<Morphism>> anchoring_morphisms(const kb::Pack& pack, const RuntimeProfile& profile);
 
 }  // namespace loom::model

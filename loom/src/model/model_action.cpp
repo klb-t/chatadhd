@@ -3,8 +3,10 @@
 #include <algorithm>
 #include <cmath>
 #include <map>
+#include <stdexcept>
 
 #include "model/model_json.h"
+#include "model/model_profile.h"
 
 namespace loom::model {
 
@@ -322,6 +324,16 @@ Result<StatusRecord> StatusRecord::from_json(const Json& j) {
 }
 
 std::vector<StatusRecord> order_status_history(std::vector<StatusRecord> records) {
+  auto profile = RuntimeProfile::builtin("model");
+  if (!profile) throw std::logic_error(profile.error().to_string());
+  auto ordered = order_status_history(std::move(records), *profile);
+  if (!ordered) throw std::logic_error(ordered.error().to_string());
+  return std::move(*ordered);
+}
+
+Result<std::vector<StatusRecord>> order_status_history(std::vector<StatusRecord> records, const RuntimeProfile& profile) {
+  LOOM_TRY_ASSIGN(auto checked, detail::checked_model_profile(profile));
+  const auto& classes = checked.values().at("status_history");
   auto less = [](const StatusRecord& a, const StatusRecord& b) {
     if (a.entity != b.entity) return a.entity < b.entity;
     if (a.branch != b.branch) return a.branch < b.branch;
@@ -332,8 +344,9 @@ std::vector<StatusRecord> order_status_history(std::vector<StatusRecord> records
     return a.id < b.id;
   };
   std::stable_sort(records.begin(), records.end(), less);
-  auto present = [](StatusValue s) {
-    return s == StatusValue::Implemented || s == StatusValue::Partial || s == StatusValue::Restored;
+  auto member = [&](StatusValue s, std::string_view which) {
+    const auto& names = classes.at(std::string(which));
+    return std::find(names.begin(), names.end(), Json(std::string(to_string(s)))) != names.end();
   };
   std::size_t i = 0;
   while (i < records.size()) {
@@ -345,9 +358,9 @@ std::vector<StatusRecord> order_status_history(std::vector<StatusRecord> records
       StatusRecord& rec = records[j];
       rec.previous = prev;
       rec.oscillation = false;
-      if (rec.status == StatusValue::Lost) {
+      if (member(rec.status, "lost")) {
         if (returned_after_lost) rec.oscillation = true;  // lost again after being restored
-      } else if (present(rec.status) && prev == StatusValue::Lost) {
+      } else if (member(rec.status, "present") && prev && member(*prev, "lost")) {
         if (cycle_done) rec.oscillation = true;  // back again after a second loss
         cycle_done = true;
         returned_after_lost = true;
