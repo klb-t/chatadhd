@@ -1,5 +1,20 @@
 # STATE — ChatADHD / Loom
 
+## 2026-10-05 wieczór — Claude przejmuje integrację (najnowsze; czytaj najpierw)
+
+Wątki GPT skończyły tokeny; właściciel: „przyjmij jego wyniki”. Na `main`
+weszła cała gotowa i wstrzymana kolejka po rebase oraz trzy poprawki
+integracyjne. Szczegóły, źródła autorów i otwarte prace:
+[reports/INDEX.md](reports/INDEX.md).
+
+- Przyjęte (w kolejności): 11 (dane → profile), 6 (mechanizm katalogu),
+  5₂, 4₂, 6₂, 7 (wyniki badań etapów 1–5a), 3₂, 12₂, 8 (higiena/CI),
+  1 (pełny caller semantyczny z naprawą ponowienia W2), 10₂ (UI metod).
+- Bramka na czubku: CTest 146/146, 923 native / 32 739 asercji, 1876 Python, 0 pominięć; web PASS.
+- Nie wykonano: ASan (8), niezależna powtórka Chromium E2E (10), sprawdzian
+  wątku 7 na nowych danych i na prawdziwych eksportach właściciela.
+- Płatnych wywołań w tej integracji: 0. Badania 7: 0,70 USD z 5 USD.
+
 Updated 2026-10-04. **The owner authorized autonomous development and integration
 of the application profile cycle described below.** Claude retains the broader
 next-cycle handoff outside this owner-requested scope.
