@@ -17,7 +17,7 @@ Każdy odbiór: świeży fetch, rzeczywisty rebase, pełny CTest + niezmieniony 
 |9| `gpt/integrator-queue-2026-10-05` | [raport9](integrator-intake-2026-10-05/README.md) | Odbiera całą kolejkę; każdy przyrost ma własne bramki i wpis indeksu. |
 |10| `gpt/interface-2-2026-10-04` / `fa7538d` | [raport10](https://github.com/klb-t/chatadhd/blob/fa7538d/docs/reports/interface-2-2026-10-04.md) | fa7538d: autor zakończył pełny CTest108/108, web, fixture84/84, nativeUI20/20, E2E16/16. Gotowy do osobnego rebase i mixed gates9 po12. Clang captures naprawione. |
 |11| `gpt/data-profiles-2026-10-04` / `22873e0` | [raport11](https://github.com/klb-t/chatadhd/blob/22873e047abe6b56808dd2fbc4fe41188ee0e7a8/docs/reports/data-profiles-2026-10-05.md) | GOTOWY pierwszy przyrost22873e0: poprzedni bloker naprawiony; wrapper wynika z canonical2 przez source recipe. Autor127/127,783native/26985assertions,1371Python0skip; własny rebase i mixed gates9 po dokumentachClaude. |
-|12| `gpt/onboarding-2026-10-04` / `3c0bc36` | [raport12](https://github.com/klb-t/chatadhd/blob/3c0bc36552ef9851f1174946cfb108549aae3228/docs/reports/onboarding-2026-10-04.md) | Gotowy przyrost onboarding/profile/layers/store + komponentyUI. Most HTTP/nawigacja/retencja to dalsze zadania10/3/11; nie deklarujemy pełnej aplikacji. |
+|12| `gpt/onboarding-2026-10-04` / `3c0bc36` | [raport12](https://github.com/klb-t/chatadhd/blob/3c0bc36552ef9851f1174946cfb108549aae3228/docs/reports/onboarding-2026-10-04.md) | PRZYJĘTY przyrost; źródło9 `1e63bcc`. CTest 121/121, native 761/29103, Python 1322/0skip; web PASS. 28źródeł autora3c0bc36 byte-identical po realnym rebase. Native onboarding4suites=51/2704 z pełnego JUnit; controller17/17, generatorcheckPASS. ActualW3registry bridge load/resolve/tamper/multiversionPASS;0providers/0method-execution, bez deklaracji podpiętego czatu. Profile/scenario/layers/store+UIcomponents przyjęte; HTTP/nawigacja/retencja dalsze10/3/11. Helperreporter Node22 jawnieTAP;pierwszy parsernegatyw w archive. |
 
 ## Wspólny format3/4
 
@@ -83,13 +83,12 @@ Pełne obecne negatywy9 zachowane na archive/2026-10-05/integrator-runtime-negat
 
 ## Stan kolejki integratora — bieżący checkpoint
 
-**Przyjęte:** 2:first, 3+4:first, 5:first, 1:partial. Każdy kodowy przyrost ma własny pełny CTest, guard rzeczywiście wykonanych przypadków i build web; dokumenty Claude są wyjątkiem zleconym przez właściciela.
+**Przyjęte:** 2:first, 3+4:first, 5:first, 1:partial, 12:first. Każdy kodowy przyrost ma własny pełny CTest, guard rzeczywiście wykonanych przypadków i build web; dokumenty Claude są wyjątkiem zleconym przez właściciela.
 
 **Czeka w kolejce, z commitem gotowym do odbioru** (ready autora nie zastępuje bramek9):
 
 | Przyrost | Przypięty commit | Pozostały odbiór |
 |---|---|---|
-|12:first|`3c0bc36552ef9851f1174946cfb108549aae3228`|onboarding foundation; rebase/bramki9|
 |10:first|`fa7538d650da2f4ad37f5ff9254b60a6ee72938f`|równoważny prefix da50562; zachować packet routes|
 |Claude:docs|`3cd5848e7484d50d00f19f0855bc2cd228ad7f3b`|R42 i AGENTS budget; tylko rebase|
 |11:first|`22873e047abe6b56808dd2fbc4fe41188ee0e7a8`|canonical usage projection; rebase/full clean build/gates9|

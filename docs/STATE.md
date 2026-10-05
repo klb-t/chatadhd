@@ -271,17 +271,26 @@ CZĘŚCIOWO:20źródeł identycznych z50e6bb9:precyzja leksykalna i privatePromp
 
 [Dowody](reports/integrator-intake-2026-10-05/README.md) i [INDEX](reports/INDEX.md). Zachowano cały INTERFEJS i wcześniejsze wpisy; zero płatnych wywołań.
 
+
+
+## Integrator9 — przyrost 12 (2026-10-05)
+
+Przyjęto po rebase; testowane źródło `1e63bcc9350d126611b4931ddd21b3b7a01b2230`. Pełny CTest 121/121 (229.50s), 761 native / 29103 asercji, 1322 Python / 0 skips; build web PASS.
+
+28źródeł autora3c0bc36 byte-identical po realnym rebase. Native onboarding4suites=51/2704 z pełnego JUnit; controller17/17, generatorcheckPASS. ActualW3registry bridge load/resolve/tamper/multiversionPASS;0providers/0method-execution, bez deklaracji podpiętego czatu. Profile/scenario/layers/store+UIcomponents przyjęte; HTTP/nawigacja/retencja dalsze10/3/11. Helperreporter Node22 jawnieTAP;pierwszy parsernegatyw w archive.
+
+[Dowody](reports/integrator-intake-2026-10-05/README.md) i [INDEX](reports/INDEX.md). Zachowano cały INTERFEJS i wcześniejsze wpisy; zero płatnych wywołań.
+
 ## Integrator9 — bieżąca kolejka sesji 2026-10-05
 
 ## Stan kolejki integratora — bieżący checkpoint
 
-**Przyjęte:** 2:first, 3+4:first, 5:first, 1:partial. Każdy kodowy przyrost ma własny pełny CTest, guard rzeczywiście wykonanych przypadków i build web; dokumenty Claude są wyjątkiem zleconym przez właściciela.
+**Przyjęte:** 2:first, 3+4:first, 5:first, 1:partial, 12:first. Każdy kodowy przyrost ma własny pełny CTest, guard rzeczywiście wykonanych przypadków i build web; dokumenty Claude są wyjątkiem zleconym przez właściciela.
 
 **Czeka w kolejce, z commitem gotowym do odbioru** (ready autora nie zastępuje bramek9):
 
 | Przyrost | Przypięty commit | Pozostały odbiór |
 |---|---|---|
-|12:first|`3c0bc36552ef9851f1174946cfb108549aae3228`|onboarding foundation; rebase/bramki9|
 |10:first|`fa7538d650da2f4ad37f5ff9254b60a6ee72938f`|równoważny prefix da50562; zachować packet routes|
 |Claude:docs|`3cd5848e7484d50d00f19f0855bc2cd228ad7f3b`|R42 i AGENTS budget; tylko rebase|
 |11:first|`22873e047abe6b56808dd2fbc4fe41188ee0e7a8`|canonical usage projection; rebase/full clean build/gates9|
