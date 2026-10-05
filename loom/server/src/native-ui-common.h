@@ -7,6 +7,7 @@
 
 #include <httplib.h>
 #include <exception>
+#include <mutex>
 #include <utility>
 
 namespace loom_server::native_ui {

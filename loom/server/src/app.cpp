@@ -14,6 +14,9 @@
 #include <nlohmann/json.hpp>
 
 #include "sse_stream.h"
+#include "onboarding-ui-routes.h"
+#include "method-ui-routes.h"
+#include "analysis-ui-routes.h"
 
 #if __has_include("loom/usage_policy.h")
 #include "loom/usage_policy.h"
@@ -303,6 +306,9 @@ void App::register_routes() {
   route_logs_misc();
   route_archive_placeholder();
   route_knowledge();
+  register_onboarding_ui_routes(svr_, ctx_);
+  register_method_ui_routes(svr_, ctx_);
+  register_analysis_ui_routes(svr_, ctx_);
 }
 
 // ── Conversations ──────────────────────────────────────────────────────
@@ -534,7 +540,11 @@ void App::route_config_secrets() {
   svr_.Patch("/api/config", [this](const httplib::Request& req, httplib::Response& res) {
     json body;
     if (!object_body(req, res, body)) return;
-    int rc = loom_set_config_json(ctx_, body.dump(-1, ' ', false, json::error_handler_t::replace).c_str());
+    std::lock_guard config_guard(native_ui::config_mutex());
+    // Validation must not reorder opaque method/profile DTOs before the
+    // native ordered-json config reader sees them.
+    const std::string patch_bytes = req.body.empty() ? "{}" : req.body;
+    int rc = loom_set_config_json(ctx_, patch_bytes.c_str());
     if (rc != LOOM_OK) {
       send_rc(res, rc, json::object());
       return;
@@ -551,8 +561,10 @@ void App::route_config_secrets() {
       return;
     }
     const std::string key = req.matches[1].str();
-    const json patch = {{key, body["value"]}};
-    const int rc = loom_set_config_json(ctx_, patch.dump(-1, ' ', false, json::error_handler_t::replace).c_str());
+    const auto ordered_body = nlohmann::ordered_json::parse(req.body);
+    const nlohmann::ordered_json patch = {{key, ordered_body["value"]}};
+    std::lock_guard config_guard(native_ui::config_mutex());
+    const int rc = loom_set_config_json(ctx_, patch.dump(-1, ' ', false, nlohmann::ordered_json::error_handler_t::replace).c_str());
     if (rc < 0) {
       send_error(res, errc_name_for_rc(rc), "Configuration value was rejected");
       return;

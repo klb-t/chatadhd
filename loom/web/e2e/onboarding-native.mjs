@@ -14,6 +14,7 @@ import { stopChild, suiteCompletionGuard } from "./harness-lifecycle.mjs";
 const loomRoot = fileURLToPath(new URL("../../", import.meta.url));
 const serverBin = process.env.LOOM_SERVER_BIN || path.join(loomRoot, "build/dev/server/loom-server");
 assert.ok(existsSync(serverBin), `Build the current native server first: ${serverBin}`);
+const runtimeFoundationInstalled = existsSync(path.join(loomRoot, "include/loom/runtime_profile.h"));
 const evidenceDir = process.env.ONBOARDING_NATIVE_EVIDENCE_DIR;
 if (evidenceDir) {
   mkdirSync(evidenceDir, { recursive: true });
@@ -113,7 +114,13 @@ try {
     snapshot = state(await command("open", { legacy: { public_fixture_extension: { bytes: "  keep\n Ω  ", null_value: null } } }));
     assert.equal(snapshot.revision, "0");
     assert.ok(snapshot.snapshot.graph_run_id);
-    assert.ok(snapshot.snapshot.runtime_profile.available !== false, "This gate requires the installed native RuntimeProfile foundation");
+    if (runtimeFoundationInstalled) {
+      assert.ok(snapshot.snapshot.runtime_profile.available !== false, "An installed RuntimeProfile foundation must be operative");
+    } else {
+      assert.equal(snapshot.snapshot.runtime_profile.available, false);
+      assert.match(snapshot.snapshot.runtime_profile.reason, /RuntimeProfile from thread 11 is not integrated/,
+        "Native inspection must explicitly disclose the absent optional foundation");
+    }
     for (const field of Object.values(snapshot.snapshot.profile.fields)) { assert.equal(field.status, "unknown"); assert.equal(field.value, null); }
     assert.ok(Object.keys(snapshot.snapshot.graph.nodes).length > 0);
     const entities = await request({ what: "entities", run: snapshot.snapshot.graph_run_id, limit: 10000 }, 200, { endpoint: "/api/knowledge/query" });
@@ -239,7 +246,9 @@ try {
     writeFileSync(path.join(evidenceDir, "server.log"), serverLog, { flag: "wx" });
     writeFileSync(path.join(evidenceDir, "results.json"), JSON.stringify({ status: failure ? "failed" : "passed", groups, failure,
       server_binary: serverBin, server_sha256: createHash("sha256").update(readFileSync(serverBin)).digest("hex"),
-      provider_completions: 0, commands, final_revision: snapshot?.revision }, null, 2) + "\n", { flag: "wx" });
+      provider_completions: 0, runtime_foundation_installed: runtimeFoundationInstalled,
+      runtime_foundation_inspection: snapshot?.snapshot.runtime_profile,
+      commands, final_revision: snapshot?.revision }, null, 2) + "\n", { flag: "wx" });
   }
   rmSync(dataDir, { recursive: true, force: true });
 }

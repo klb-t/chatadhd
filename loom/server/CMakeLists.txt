@@ -2,7 +2,9 @@
 #
 # Built only when LOOM_BUILD_SERVER is ON (the top-level CMakeLists.txt adds
 # this subdirectory conditionally). Links loom_core directly (not the shared
-# libloom.so) and talks to it exclusively through include/loom/loom.h.
+# libloom.so). Existing routes use include/loom/loom.h; server-owned UI
+# adapters also borrow its authoritative static Runtime declaration from
+# src/capi/context.h. They create no second runtime and add no C ABI exports.
 
 add_executable(loom-server
   src/main.cpp

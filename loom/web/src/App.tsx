@@ -11,11 +11,15 @@ import MemoryPanel from "./components/MemoryPanel";
 import LogPanel from "./components/LogPanel";
 import KnowledgeWorkbench from "./components/KnowledgeWorkbench";
 import OperationsPanel from "./components/OperationsPanel";
+import MethodsPanel from "./components/MethodsPanel";
+import AnalysisPanel from "./components/AnalysisPanel";
+import UserProfilePanel from "./components/UserProfilePanel";
+import { createUserProfileHost } from "./api/onboarding-host";
 import { api } from "./api";
 import { createLoomProfileRegistry } from "./profiles/loom-adapter";
 
 type Theme = "dark" | "amoled";
-type PanelId = "graph" | "memory" | "import" | "context" | "settings" | "logs" | "operations";
+type PanelId = "graph" | "memory" | "import" | "context" | "settings" | "logs" | "operations" | "methods" | "analysis" | "onboarding" | "user-knowledge";
 
 function readStored(key: string, fallback: string): string {
   try {
@@ -41,6 +45,10 @@ const PANEL_LABELS: Record<PanelId, string> = {
   settings: "Settings",
   logs: "Logs",
   operations: "Operations",
+  methods: "Methods",
+  analysis: "Analysis",
+  onboarding: "Onboarding",
+  "user-knowledge": "What app knows",
 };
 
 export default function App() {
@@ -56,6 +64,7 @@ export default function App() {
   const [primaryProfile, setPrimaryProfile] = useState<ApplicationProfile | null>(null);
   const sidebarOperations = useRef(0);
   const sidebarActivity = useCallback((delta: number) => { sidebarOperations.current += delta; }, []);
+  const userProfileHost = useMemo(() => createUserProfileHost(api, { onActivity: sidebarActivity }), [sidebarActivity]);
   const canRestoreWorkspace = useCallback(() => sidebarOperations.current === 0, []);
 
   useEffect(() => {
@@ -160,6 +169,10 @@ export default function App() {
                 {activePanel === "context" && <ContextSlider convId={activeConvId} />}
                 {activePanel === "settings" && <SettingsPanel />}
                 {activePanel === "logs" && <LogPanel />}
+                {activePanel === "methods" && <MethodsPanel transport={api} />}
+                {activePanel === "analysis" && <AnalysisPanel />}
+                {activePanel === "onboarding" && <UserProfilePanel view="onboarding" host={userProfileHost} />}
+                {activePanel === "user-knowledge" && <UserProfilePanel view="knowledge" host={userProfileHost} />}
                 {activePanel === "operations" && <OperationsPanel operations={api.operations}
                   profiles={primaryProfile ? [primaryProfile] : []} graphPacketStore={api.graphPacketStore?.bind(api)}
                   adapterEvidence={(primaryProfile?.actions ?? []).filter(action => {

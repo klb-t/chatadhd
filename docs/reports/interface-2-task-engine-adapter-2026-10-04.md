@@ -331,28 +331,32 @@ oraz immutable prepared resume uniemożliwia prawdziwą implementację.
 Wyniku odczytu TaskRecord nie należy nazywać brakującym API wyniku:
 jest dostępny, lecz brakuje kontraktu zapisu i powiązania wykonania.
 
+## Przyrost W10 z 2026-10-05
+
+Publiczne cztery operacje TaskEngine pozostają bez zmian na bazie integratora
+66da570d + API W1 50e6bb9 + W12 3c0bc36. W10 dostarcza źródłowy most HTTP
+OnboardingStore i wspólny user-bound host w App dla obu widoków. Zachowane
+exact outer revision, native CAS, stable layer keys i prywatność. Nowe mosty
+`/api/methods`, `/api/analysis` i fragment GraphReply korzystają z istniejącego
+Runtime; nie są publicznym C ABI/JNI. Prepared analysis request jest process-local,
+nie TaskEngine record ani trwały resume. Host model-interview ma jawnie brakującą
+zdolność completion; nie wysyła prywatnego profilu przez zwykły chat.
+
+Szczegóły oraz dowody bramek nowego przyrostu są w
+[raporcie API](interface-2-api-2026-10-05.md). Powyższa starsza sekcja W12 opisuje
+oryginalny kontrakt, nie deklaruje jego aktualnej niedostępności w HTTP W10.
+
 ## Do wątku N
 
-- **Do wątku 9:** przydzielić publikację publicznego TaskEngine
-  submit/checkpoint/complete/resume_one/CAS i bezpieczną granicę
-  globalnego recovery. Cztery gotowe callable metody, payloady i wyniki
-  są w tabeli powyżej. Zachować różnicę między odczytem wyniku a
-  brakującym zapisem/wiązaniem wykonania. Przydzielić publiczny bridge
-  `OnboardingStore` C ABI / HTTP / JNI / `LoomApi` i integrację przyrostu
-  W12 z zależnością RuntimeProfile W11.
-- **Do wątku 3:** dostarczyć publiczny trwały immutable PreparedRequest
-  i wznowienie tego samego żądania po dokładnym receipt W2; określić
-  błędy stale/already-attempted/unknown i receipt odpowiedzi. Nie
-  zastępować kontynuacji ponownym `Chat.send`.
-- **Do wątku 2:** utrzymać dokładną parę operation/receipt i jawny
-  mapping `confirmation_ref` → wewnętrzne `confirmation.ref` w
-  zaakceptowanym adapterze W3; approval księgi nie oznacza delivery.
-- **Do wątku 12:** komponenty, propsy i helpery są dostarczone przy
-  `3c0bc36`; utrzymać ten kontrakt i uzgodnić obsługę CAS/prywatności
-  w publicznym bridge. W10 podłącza je po przyjęciu i publikacji
-  faktycznego adaptera. Onboarding i warstwy danych pozostają zakresem W12.
-- **Do wątku 10:** po przyjęciu prawdziwych API zarejestrować wyłącznie
-  obsługiwane zdolności. Konsument list/get/cancel jest możliwy już
-  teraz; resume workflow wymaga nowych kontraktów rdzenia. Wpiąć oba
-  widoki W12 przez jeden stabilny adapter dla wybranego użytkownika,
-  zachowujący raw outer revision i native CAS; nie kopiować UI W12.
+- **Do wątku 9:** przydzielić publiczne TaskEngine submit/checkpoint-write/complete/
+  resume-one/CAS i granicę globalnego recovery. HTTP OnboardingStore oraz nawigację
+  obu widoków dostarczył W10; C ABI/JNI i RuntimeProfile W11 nadal są osobnymi
+  zależnościami. Odczyt wyniku istnieje, brak dotyczy zapisu/wiązania wykonania.
+- **Do wątku 3:** trwały publiczny immutable PreparedRequest czatu i wznowienie
+  oryginalnej operacji po receipt W2 ze stanami stale/already-attempted/unknown;
+  nie zastępować go powtórzeniem Chat.send.
+- **Do wątku 2:** dokładne operation/receipt i mapping confirmation_ref;
+  approval księgi nie oznacza delivery.
+- **Do wątku 12:** utrzymać outer revision CAS i effective privacy. Completion
+  model-interview wymaga dedykowanego hosta i W2-bound filtrowanego transportu;
+  przedstawienie RuntimeProfile status w widokach wymaga projekcji tego pola.
