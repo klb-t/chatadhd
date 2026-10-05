@@ -1,0 +1,44 @@
+{
+  "schema": "loom.github_job_evidence/1",
+  "repository": "klb-t/chatadhd",
+  "head_sha": "6523c1b1a3870f2a6c7bba66554ad082cd9ea832",
+  "tested_merge_sha": "93420bbb82124ba5493e5fc9c3dea793703bfb74",
+  "run_id": 37211656572,
+  "job_id": 111463896962,
+  "preset": "dev",
+  "job_name": "dev (g++)",
+  "conclusion": "success",
+  "source": "GitHub fetch_workflow_job_logs connector",
+  "url": "https://github.com/klb-t/chatadhd/actions/runs/37211656572/job/111463896962",
+  "log_file": "dev-job.log",
+  "redactions": [],
+  "successful_steps": [
+    "Build",
+    "Test",
+    "Require actual case execution and account for opt-in scenarios",
+    "Verify JNI against libloom",
+    "Build and test web workbench"
+  ],
+  "ctest": {
+    "passed_entries": 108,
+    "failed_entries": 0,
+    "gate_result": "success",
+    "actual_case_counts": "See retained CTest artifact executed-cases.json",
+    "executed_entries": 107,
+    "explicitly_unexecuted_entries": 1,
+    "duration_seconds": 100.83
+  },
+  "web": {
+    "e2e_steps": 16,
+    "workspace_scenarios": 10,
+    "application_profiles_browser_groups": 15,
+    "imported_message_content_state_groups": 8,
+    "imported_message_content_browser_groups": 1,
+    "imported_message_content_native_groups": 4,
+    "application_profile_graph_groups": 11
+  },
+  "artifact_id": 11306503134,
+  "raw_sha256": "7e0562b1e6e359db8e08cf45b5baa06eff16404f983548fa7f78819b0b9af777",
+  "saved_sha256": "7e0562b1e6e359db8e08cf45b5baa06eff16404f983548fa7f78819b0b9af777",
+  "log_bytes": 161181
+}

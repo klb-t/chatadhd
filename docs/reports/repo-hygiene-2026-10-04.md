@@ -2,7 +2,7 @@
 
 Gałąź: `gpt/repo-hygiene-2026-10-04`, baza `161cc22` (aktualny `main`
 po pracy INTERFEJS). [PR #11](https://github.com/klb-t/chatadhd/pull/11) jest
-roboczy. Wątek 8 nie przesuwa `main`.
+roboczy z jedną blokadą poza zakresem. Wątek 8 nie przesuwa `main`.
 
 ## Zrobione i pomiary
 
@@ -31,9 +31,15 @@ przypadków natywnych / 24 465 asercji oraz 1276 przypadków Python / 0 pominię
 Pełny `LastTest.log` potwierdza powyższe liczniki; błędna względna ścieżka
 XML zatrzymała następny krok. Ścieżkę poprawiono na bezwzględną; rzeczywisty
 mały sprawdzian `ctest --preset` wraz ze strażnikiem przeszedł.
-Drugi CI, na poprawce `6523c1b`, nadal trwa:
+Drugi CI, na poprawce `6523c1b`, zakończony:
 [run 37211656572](https://github.com/klb-t/chatadhd/actions/runs/37211656572).
-Jego wynik zostanie dopisany po zakończeniu; nie deklaruję zielonego całego CI.
+**dev i ASan są zielone**, każdy 108/108 CTest (100,83 s / 219,25 s), ze
+strażnikiem dowodu. Dev: 659 przypadków natywnych / 24 465 asercji i 1276
+Python / 0 pominięć. ASan: 659 / 24 464 oraz 1252 Python / 24 jawnie
+niedostępne przypadki FFI. JNI 1/1 i cały web/przeglądarki przeszły.
+[Pełny świeży dowód](../verification/repo-hygiene-2026-10-04/RESULTS.md)
+zawiera oryginalne XML, hashe źródła/binarek i pełne logi. Cała macierz CI
+pozostaje czerwona wyłącznie przez błąd kompilacji Clanga poniżej.
 
 Clang zatrzymał build na dwóch nieużywanych przechwyceniach `this` w
 `loom/server/src/app.cpp:768,772`. Nie obniżono ostrzeżeń i nie zmieniono
@@ -48,6 +54,8 @@ ten build nie jest dowodem testów. Lokalny produkcyjny build web przeszedł
 Nie wykonano płatnych wywołań, nie czytano klucza holdout ani ślepego korpusu.
 Nie przeniesiono aktywnych fixture seeding. Nie zmieniono STATE, istniejących
 README, UI ani kontraktów profili.
+Ostatni `fetch` nadal wskazuje `main=161cc22`; gałąź jest na tej bazie.
+Nie było zmiany bazy wymagającej powtórzenia rebase lub testów.
 
 ## Do wątku 10
 
@@ -66,6 +74,12 @@ odliczanie niewykonanych przypadków i odrzucanie nieoczekiwanych pominięć.
 Parsery podsumowań doctest/unittest są formatami dowodu, nie metodami analizy
 semantycznej. Metody analizy jako byty grafu opisano w roadmapie szkicu README
 jako wymaganie do uzgodnienia przez wątki 3 i 4, nie przyjętą funkcjonalność.
+Przeczytano nowy raport `data-in-code/thread-8.md` z `c21e664`: **DIC-0692**
+dotyczy wymiarów `roles/capabilities/features` i mapowania grafu w
+`loom/tools/seeding/prototype.py:24`. Zostaje otwarty jako `inventory_only`:
+zamrożony prototyp i jego wyniki zachowują dotychczasowe zachowanie/pochodzenie.
+Docelowy pack/nakładka użytkownika leży poza zakresem W8 i potrzebuje wspólnego
+formatu metod z W3/W4; nie wprowadzono drugiego, lokalnego formatu receptur.
 
 ## Do wątku 9
 
@@ -81,3 +95,7 @@ jako wymaganie do uzgodnienia przez wątki 3 i 4, nie przyjętą funkcjonalnoś�
   nazw poza rozpoznanymi rodzinami strażnik raportuje tylko status skryptu.
 - Rejestracja CMake i centralny eksport ABI z raportów W2/W4 wymagają
   przydzielenia właściciela przez integratora. Wątek 8 ich nie edytuje.
+- Uzgodnij format metody / wersji / przebiegu i krawędź „wytworzony przez”
+  między W3 i W4 przed scaleniem. DIC-0692 z inwentarza W11 wymaga przypisania
+  właściciela packa/schema i późniejszego następcy zamrożonego prototypu seeding.
+  Świeży raport W10 (`ccc8bbf`) jeszcze nie potwierdza poprawki Clanga.
