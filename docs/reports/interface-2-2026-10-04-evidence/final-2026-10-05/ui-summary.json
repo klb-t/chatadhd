@@ -1,0 +1,133 @@
+{
+  "git_head_at_validation": "8570fec6d1192c27a91c7372bb382d1d5f8236d2",
+  "fresh_native_sha256": "7900da2614086d8baac8c86e3e3285c234cf8c516882819f32eda6271aabb0d6",
+  "sources_sha256": {
+    "loom/web/e2e/operations-panel.mjs": "64ed1b0ca43ce614b32b7e9d38f14c7b99e08b8d2cdaa60d13277d17a7ee022c",
+    "loom/web/e2e/harness-lifecycle.mjs": "6e5486f629362a71fb8da138e3b5d88f4407ed29868c4cd38573e3dfc47a006f",
+    "loom/web/e2e/harness-lifecycle-test.mjs": "d483d65e442fa1e57fe189cb8e2d4786835bd631b15a7efe0aafdaadc7869692",
+    "loom/web/e2e/interface-2-native-runner.mjs": "e40db587c1a4867f5643ecbce1992035e3a526167432e7da4f9c30829053fe9d",
+    "loom/web/package.json": "ce20e817c8273e69a07f19fb4be51900ccc136029a979000ccbb60b108a2897e",
+    "loom/web/dist/index.html": "b26294aff8c840fa32071381ececfdbd3e87aaf7702a45aef6441bc25fd98004"
+  },
+  "tests": [
+    {
+      "log": "01-interface-2-native.txt",
+      "command": "npm run test:interface-2-native",
+      "exit_code": 0,
+      "counts": {
+        "interface_groups": 8,
+        "operations_groups": 8,
+        "usage_groups": 4,
+        "native_groups": 20
+      },
+      "sha256": "b3f6693aa49f4edd81c4e5123bf5f230e907f4c9076fd7b7da157b91ebd60dd7",
+      "bytes": 3171,
+      "required_summary_markers": [
+        "[interface-2-native] 8/8 groups passed",
+        "[operations-panel] 8/8 groups passed",
+        "[usage-policy-native] 4/4 groups passed",
+        "[interface-2-native-runner] 3/3 suites complete; 20/20 declared groups"
+      ]
+    },
+    {
+      "log": "02-e2e.txt",
+      "command": "npm run e2e",
+      "exit_code": 0,
+      "counts": {
+        "steps": 16
+      },
+      "sha256": "3e7d392e5ab4b6f4eb9bdbe56914288b46a5c928e324604b77e887137f7f16d0",
+      "bytes": 2491,
+      "required_summary_markers": [
+        "[e2e] 16/16 steps passed"
+      ]
+    },
+    {
+      "log": "03-chat-context.txt",
+      "command": "npm run test:chat-context",
+      "exit_code": 0,
+      "counts": {
+        "aggregate_suite": "passed",
+        "local_fake_provider_calls": 5,
+        "remote_calls": 0
+      },
+      "sha256": "5caa447b3b82bc0229d2989f3cd9bbd018dd2b0cb2e885d02e93ce24f3c319ab",
+      "bytes": 554,
+      "required_summary_markers": [
+        "[chat-context] PASS:",
+        "5 local fake-provider calls, 0 remote calls"
+      ]
+    },
+    {
+      "log": "04-application-profiles-browser.txt",
+      "command": "npm run test:application-profiles-browser",
+      "exit_code": 0,
+      "counts": {
+        "groups": 15,
+        "local_fake_provider_calls": 6,
+        "remote_calls": 0
+      },
+      "sha256": "c5eacb806219304d05994767e4565ad9d443a5061c337503b6080d86017c1890",
+      "bytes": 1999,
+      "required_summary_markers": [
+        "[application-profiles] 15/15 groups passed"
+      ]
+    },
+    {
+      "log": "05-application-profile-graph.txt",
+      "command": "npm run test:application-profile-graph",
+      "exit_code": 0,
+      "counts": {
+        "groups": 11,
+        "model_provider_calls": 0
+      },
+      "sha256": "8260a03757c4cd3bfc8d84f99c58c85f2699d617fa977e30e1b600c1fd043e52",
+      "bytes": 1838,
+      "required_summary_markers": [
+        "[application-profile-graph] 11/11 groups passed"
+      ]
+    },
+    {
+      "log": "06-imported-message-content-native.txt",
+      "command": "npm run test:imported-message-content-native",
+      "exit_code": 0,
+      "counts": {
+        "groups": 4,
+        "remote_media_inference_requests": 0
+      },
+      "sha256": "272abc3f525ce43629fc06059613fd8d29b42e935dfd512e47d3a4508e4128f7",
+      "bytes": 980,
+      "required_summary_markers": [
+        "[imported-message-content-native] 4/4 groups passed"
+      ]
+    },
+    {
+      "log": "07-workspace.txt",
+      "command": "npm run test:workspace",
+      "exit_code": 0,
+      "counts": {
+        "state_groups": 8,
+        "native_scenarios": 10,
+        "model_calls": 0
+      },
+      "sha256": "32fac607c18b0a6a5aca767bc8fa18a7a8f09ba45b0fb7116f908217dec0d8ca",
+      "bytes": 1915,
+      "required_summary_markers": [
+        "[workspace-state] 8/8 groups passed",
+        "[workspace] 10/10 scenarios passed"
+      ]
+    }
+  ],
+  "historical_partial_exit0": "unexplained; lost log cannot establish its process-termination cause",
+  "known_reproduced_harness_defects": [
+    "already signal-closed child retains exitCode=null; old close await remains unsettled and exits13",
+    "npm chained child exit codes alone cannot reject an early exit0 without a final suite count"
+  ],
+  "added_regression_groups": 11,
+  "no_paid_provider_calls": true,
+  "executed_sequentially": true,
+  "retry_count": 0,
+  "git_head_recorded_before_publication": "8570fec6d1192c27a91c7372bb382d1d5f8236d2",
+  "source_commit_published_after_validation": "8c4c46a323d94ebe0e7632e4abe8b7e2ba319648",
+  "note": "Validation occurred before committing the harness changes; exact source SHA256 values bind the tested working tree. Product source and server source are unchanged from8570fec."
+}
