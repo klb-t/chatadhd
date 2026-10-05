@@ -16,6 +16,6 @@ test_scale_opt_in_is_classified_unexecuted (test_verify_ctest.EvidenceGateTests.
 test_smoke_explicit_skip_is_not_success (test_verify_ctest.EvidenceGateTests.test_smoke_explicit_skip_is_not_success) ... ok
 
 ----------------------------------------------------------------------
-Ran 16 tests in 0.017s
+Ran 16 tests in 0.038s
 
 OK
