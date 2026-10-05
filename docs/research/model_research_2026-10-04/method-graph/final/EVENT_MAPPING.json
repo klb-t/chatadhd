@@ -1,0 +1,422 @@
+[
+  {
+    "group": "old_frontier.family_a.graph_completion",
+    "intended_configuration": "old_frontier.family_a.graph_completion.planned",
+    "actual_producer": "old_frontier.family_a.graph_completion.actual_scripted_producer",
+    "request_ids": [
+      "2912c0ce8f3f8f89fb8177dc8bed3143bf31133b9f87f94faceb662146c67cdd:graph_completion",
+      "8c041ec1096169673452ccb9368f02b869245842dbe0f582c2d5cb1783f67bed:graph_completion",
+      "ea891abe947cbfd237be350dce851556ec3240c1a0295bc801a4ab63a76c5663:graph_completion",
+      "6f4b04052c53e9dc6fb379ab494e18b904589911292357e98d5dd708fb6caf21:graph_completion",
+      "8557a9827764aeb9421c6fa55fdf6bcd60900fee8840524332758362c6ee1e6e:graph_completion",
+      "e9253654cf32be8a6eda2fb321697041aab869af98cd17eb5992acfd84f7691b:graph_completion"
+    ],
+    "manifest": {
+      "path": "docs/research/model_research_2026-10-04/frontier/final/manifest.json",
+      "sha256": "c34771ea9908e425ccafd865a2de959ceb3267f1bfa0eda39951d9775ab25ff6"
+    },
+    "results": {
+      "path": "docs/research/model_research_2026-10-04/frontier/final/results.scripted.json",
+      "sha256": "ba3cc9f9ea0c54d4e3919947030012f63c6d370258d9ec3f7199ae5093388a5c"
+    },
+    "responses": {
+      "path": "docs/research/model_research_2026-10-04/frontier/final/responses.scripted.json",
+      "sha256": "d92dddffc7c561a40b3ee2077ce0dc17e8be1781096c166428d34afa694fd85a"
+    },
+    "model_quality_measured": false
+  },
+  {
+    "group": "old_frontier.family_a.pattern_discovery",
+    "intended_configuration": "old_frontier.family_a.pattern_discovery.planned",
+    "actual_producer": "old_frontier.family_a.pattern_discovery.actual_scripted_producer",
+    "request_ids": [
+      "2912c0ce8f3f8f89fb8177dc8bed3143bf31133b9f87f94faceb662146c67cdd:pattern_discovery",
+      "8c041ec1096169673452ccb9368f02b869245842dbe0f582c2d5cb1783f67bed:pattern_discovery",
+      "ea891abe947cbfd237be350dce851556ec3240c1a0295bc801a4ab63a76c5663:pattern_discovery",
+      "6f4b04052c53e9dc6fb379ab494e18b904589911292357e98d5dd708fb6caf21:pattern_discovery",
+      "8557a9827764aeb9421c6fa55fdf6bcd60900fee8840524332758362c6ee1e6e:pattern_discovery",
+      "e9253654cf32be8a6eda2fb321697041aab869af98cd17eb5992acfd84f7691b:pattern_discovery"
+    ],
+    "manifest": {
+      "path": "docs/research/model_research_2026-10-04/frontier/final/manifest.json",
+      "sha256": "c34771ea9908e425ccafd865a2de959ceb3267f1bfa0eda39951d9775ab25ff6"
+    },
+    "results": {
+      "path": "docs/research/model_research_2026-10-04/frontier/final/results.scripted.json",
+      "sha256": "ba3cc9f9ea0c54d4e3919947030012f63c6d370258d9ec3f7199ae5093388a5c"
+    },
+    "responses": {
+      "path": "docs/research/model_research_2026-10-04/frontier/final/responses.scripted.json",
+      "sha256": "d92dddffc7c561a40b3ee2077ce0dc17e8be1781096c166428d34afa694fd85a"
+    },
+    "model_quality_measured": false
+  },
+  {
+    "group": "old_frontier.family_b.graph_completion",
+    "intended_configuration": "old_frontier.family_b.graph_completion.planned",
+    "actual_producer": "old_frontier.family_b.graph_completion.actual_scripted_producer",
+    "request_ids": [
+      "6d1b757d83ce01fb8bd8af83f01d16e812355e2a7c7d1ebf1667ea40ee7c5573:graph_completion",
+      "dce8df014c4e83cea9a6c6127048c3d30f6c3ecf31d945afc3b70a289b1643bf:graph_completion",
+      "fc65c1027e23b0e7ecbe89a0e3dc2b71add8de75946204f37ed8e70e0d939d49:graph_completion",
+      "a43e72560b00ecdf63fcaf128fbd5b99f9100600d99805bcdb91433d8a564322:graph_completion",
+      "f101eae8a6bca4352bfa0e81c58c770996e9b0f556dddb9a440db875936ce0e3:graph_completion",
+      "361869f3940129b3da3e094fc64a83b5ae0b1df99645ece3da3c63c58d136d2c:graph_completion"
+    ],
+    "manifest": {
+      "path": "docs/research/model_research_2026-10-04/frontier/final/manifest.json",
+      "sha256": "c34771ea9908e425ccafd865a2de959ceb3267f1bfa0eda39951d9775ab25ff6"
+    },
+    "results": {
+      "path": "docs/research/model_research_2026-10-04/frontier/final/results.scripted.json",
+      "sha256": "ba3cc9f9ea0c54d4e3919947030012f63c6d370258d9ec3f7199ae5093388a5c"
+    },
+    "responses": {
+      "path": "docs/research/model_research_2026-10-04/frontier/final/responses.scripted.json",
+      "sha256": "d92dddffc7c561a40b3ee2077ce0dc17e8be1781096c166428d34afa694fd85a"
+    },
+    "model_quality_measured": false
+  },
+  {
+    "group": "old_frontier.family_b.pattern_discovery",
+    "intended_configuration": "old_frontier.family_b.pattern_discovery.planned",
+    "actual_producer": "old_frontier.family_b.pattern_discovery.actual_scripted_producer",
+    "request_ids": [
+      "6d1b757d83ce01fb8bd8af83f01d16e812355e2a7c7d1ebf1667ea40ee7c5573:pattern_discovery",
+      "dce8df014c4e83cea9a6c6127048c3d30f6c3ecf31d945afc3b70a289b1643bf:pattern_discovery",
+      "fc65c1027e23b0e7ecbe89a0e3dc2b71add8de75946204f37ed8e70e0d939d49:pattern_discovery",
+      "a43e72560b00ecdf63fcaf128fbd5b99f9100600d99805bcdb91433d8a564322:pattern_discovery",
+      "f101eae8a6bca4352bfa0e81c58c770996e9b0f556dddb9a440db875936ce0e3:pattern_discovery",
+      "361869f3940129b3da3e094fc64a83b5ae0b1df99645ece3da3c63c58d136d2c:pattern_discovery"
+    ],
+    "manifest": {
+      "path": "docs/research/model_research_2026-10-04/frontier/final/manifest.json",
+      "sha256": "c34771ea9908e425ccafd865a2de959ceb3267f1bfa0eda39951d9775ab25ff6"
+    },
+    "results": {
+      "path": "docs/research/model_research_2026-10-04/frontier/final/results.scripted.json",
+      "sha256": "ba3cc9f9ea0c54d4e3919947030012f63c6d370258d9ec3f7199ae5093388a5c"
+    },
+    "responses": {
+      "path": "docs/research/model_research_2026-10-04/frontier/final/responses.scripted.json",
+      "sha256": "d92dddffc7c561a40b3ee2077ce0dc17e8be1781096c166428d34afa694fd85a"
+    },
+    "model_quality_measured": false
+  },
+  {
+    "group": "old_frontier.family_c.graph_completion",
+    "intended_configuration": "old_frontier.family_c.graph_completion.planned",
+    "actual_producer": "old_frontier.family_c.graph_completion.actual_scripted_producer",
+    "request_ids": [
+      "fef6d44ea7e19b70661f6d99f09c151022e86addc84c9fe9d6ec1aa645287307:graph_completion",
+      "b0b5f1087764323a087d10fdd993bc9ac497f5ae46c2985018b6373e8053b997:graph_completion",
+      "8e3a9479d6da0b866fe97289e558efc594c88c572e92a622b687edd36ea648ef:graph_completion",
+      "35739b1611edd43d988744c36ad7369c6b14ddb503bf0a30c92fb57094a04c51:graph_completion",
+      "7d69f82d39a53dff821401dd241a233cde2c88f773aa77a91b6254cb5243ac96:graph_completion",
+      "d1c31490041a4d7f26f6acab1d59999ff43e2d6c614e03a6ea51252f5955e075:graph_completion"
+    ],
+    "manifest": {
+      "path": "docs/research/model_research_2026-10-04/frontier/final/manifest.json",
+      "sha256": "c34771ea9908e425ccafd865a2de959ceb3267f1bfa0eda39951d9775ab25ff6"
+    },
+    "results": {
+      "path": "docs/research/model_research_2026-10-04/frontier/final/results.scripted.json",
+      "sha256": "ba3cc9f9ea0c54d4e3919947030012f63c6d370258d9ec3f7199ae5093388a5c"
+    },
+    "responses": {
+      "path": "docs/research/model_research_2026-10-04/frontier/final/responses.scripted.json",
+      "sha256": "d92dddffc7c561a40b3ee2077ce0dc17e8be1781096c166428d34afa694fd85a"
+    },
+    "model_quality_measured": false
+  },
+  {
+    "group": "old_frontier.family_c.pattern_discovery",
+    "intended_configuration": "old_frontier.family_c.pattern_discovery.planned",
+    "actual_producer": "old_frontier.family_c.pattern_discovery.actual_scripted_producer",
+    "request_ids": [
+      "fef6d44ea7e19b70661f6d99f09c151022e86addc84c9fe9d6ec1aa645287307:pattern_discovery",
+      "b0b5f1087764323a087d10fdd993bc9ac497f5ae46c2985018b6373e8053b997:pattern_discovery",
+      "8e3a9479d6da0b866fe97289e558efc594c88c572e92a622b687edd36ea648ef:pattern_discovery",
+      "35739b1611edd43d988744c36ad7369c6b14ddb503bf0a30c92fb57094a04c51:pattern_discovery",
+      "7d69f82d39a53dff821401dd241a233cde2c88f773aa77a91b6254cb5243ac96:pattern_discovery",
+      "d1c31490041a4d7f26f6acab1d59999ff43e2d6c614e03a6ea51252f5955e075:pattern_discovery"
+    ],
+    "manifest": {
+      "path": "docs/research/model_research_2026-10-04/frontier/final/manifest.json",
+      "sha256": "c34771ea9908e425ccafd865a2de959ceb3267f1bfa0eda39951d9775ab25ff6"
+    },
+    "results": {
+      "path": "docs/research/model_research_2026-10-04/frontier/final/results.scripted.json",
+      "sha256": "ba3cc9f9ea0c54d4e3919947030012f63c6d370258d9ec3f7199ae5093388a5c"
+    },
+    "responses": {
+      "path": "docs/research/model_research_2026-10-04/frontier/final/responses.scripted.json",
+      "sha256": "d92dddffc7c561a40b3ee2077ce0dc17e8be1781096c166428d34afa694fd85a"
+    },
+    "model_quality_measured": false
+  },
+  {
+    "group": "followup.research.frontier_completion/1:4e1295df03b05bf3170a8e747c350cee13b9bee20b320159571545c5ba26dae6",
+    "intended_configuration": "followup.research.frontier_completion/1:4e1295df03b05bf3170a8e747c350cee13b9bee20b320159571545c5ba26dae6",
+    "actual_producer": "followup.research.frontier_completion/1:4e1295df03b05bf3170a8e747c350cee13b9bee20b320159571545c5ba26dae6.actual_scripted_producer",
+    "request_ids": [
+      "1644a27452631c27f2aa32de253863521578dd0f27d9c3aba8e359f98bdf20dd:graph_completion",
+      "fd75b2e642da3853e29e2fa121dcc23611c38b0d62bf3f0d61ab504618610bb6:graph_completion"
+    ],
+    "manifest": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage3/manifest.json",
+      "sha256": "0f401778783fa46ffff29a7f4458617733a348995e63e313018bc60b0b3908d8"
+    },
+    "results": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage3/results.json",
+      "sha256": "18aa9ded5d9bb99cdc318417ea15f102f7921ae7b7a51ca79587c2a055eaa7d7"
+    },
+    "responses": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage3/responses.json",
+      "sha256": "7fb7679b98cca336c0ab3206c59a28871f30832ef4d99cf6ed50b58fb0666c7c"
+    },
+    "model_quality_measured": false
+  },
+  {
+    "group": "followup.research.frontier_completion/1:ae7f107eb667026e3f0cffc70973cbcb10c5590c989638eef21dce7216a03221",
+    "intended_configuration": "followup.research.frontier_completion/1:ae7f107eb667026e3f0cffc70973cbcb10c5590c989638eef21dce7216a03221",
+    "actual_producer": "followup.research.frontier_completion/1:ae7f107eb667026e3f0cffc70973cbcb10c5590c989638eef21dce7216a03221.actual_scripted_producer",
+    "request_ids": [
+      "ad8ad1411d566068f79e71c2893ecd044d81a732e73bf24ffe31b0f6fe043749:graph_completion",
+      "73f8542443550657fff30736c293db35f6e2b1183f55d333d57d4c64a9bb8dec:graph_completion"
+    ],
+    "manifest": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage3/manifest.json",
+      "sha256": "0f401778783fa46ffff29a7f4458617733a348995e63e313018bc60b0b3908d8"
+    },
+    "results": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage3/results.json",
+      "sha256": "18aa9ded5d9bb99cdc318417ea15f102f7921ae7b7a51ca79587c2a055eaa7d7"
+    },
+    "responses": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage3/responses.json",
+      "sha256": "7fb7679b98cca336c0ab3206c59a28871f30832ef4d99cf6ed50b58fb0666c7c"
+    },
+    "model_quality_measured": false
+  },
+  {
+    "group": "followup.research.frontier_completion/1:13cd24f5ec01e8efcff45021ab6055d6e998d17b3a149cb86575f5bf71de38db",
+    "intended_configuration": "followup.research.frontier_completion/1:13cd24f5ec01e8efcff45021ab6055d6e998d17b3a149cb86575f5bf71de38db",
+    "actual_producer": "followup.research.frontier_completion/1:13cd24f5ec01e8efcff45021ab6055d6e998d17b3a149cb86575f5bf71de38db.actual_scripted_producer",
+    "request_ids": [
+      "e41c599d13c321e8b0521c7a6c25b1e810fe420bdd541146ed8ad9fd0da65edb:graph_completion",
+      "4a44fbbbde0305c26e124e7edbfc215df111a007c1100a09e5abee4fb1f0e7f2:graph_completion"
+    ],
+    "manifest": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage3/manifest.json",
+      "sha256": "0f401778783fa46ffff29a7f4458617733a348995e63e313018bc60b0b3908d8"
+    },
+    "results": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage3/results.json",
+      "sha256": "18aa9ded5d9bb99cdc318417ea15f102f7921ae7b7a51ca79587c2a055eaa7d7"
+    },
+    "responses": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage3/responses.json",
+      "sha256": "7fb7679b98cca336c0ab3206c59a28871f30832ef4d99cf6ed50b58fb0666c7c"
+    },
+    "model_quality_measured": false
+  },
+  {
+    "group": "followup.research.frontier_pattern_discovery/1:4e1295df03b05bf3170a8e747c350cee13b9bee20b320159571545c5ba26dae6",
+    "intended_configuration": "followup.research.frontier_pattern_discovery/1:4e1295df03b05bf3170a8e747c350cee13b9bee20b320159571545c5ba26dae6",
+    "actual_producer": "followup.research.frontier_pattern_discovery/1:4e1295df03b05bf3170a8e747c350cee13b9bee20b320159571545c5ba26dae6.actual_scripted_producer",
+    "request_ids": [
+      "1644a27452631c27f2aa32de253863521578dd0f27d9c3aba8e359f98bdf20dd:pattern_discovery",
+      "fd75b2e642da3853e29e2fa121dcc23611c38b0d62bf3f0d61ab504618610bb6:pattern_discovery"
+    ],
+    "manifest": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage3/manifest.json",
+      "sha256": "0f401778783fa46ffff29a7f4458617733a348995e63e313018bc60b0b3908d8"
+    },
+    "results": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage3/results.json",
+      "sha256": "18aa9ded5d9bb99cdc318417ea15f102f7921ae7b7a51ca79587c2a055eaa7d7"
+    },
+    "responses": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage3/responses.json",
+      "sha256": "7fb7679b98cca336c0ab3206c59a28871f30832ef4d99cf6ed50b58fb0666c7c"
+    },
+    "model_quality_measured": false
+  },
+  {
+    "group": "followup.research.frontier_pattern_discovery/1:ae7f107eb667026e3f0cffc70973cbcb10c5590c989638eef21dce7216a03221",
+    "intended_configuration": "followup.research.frontier_pattern_discovery/1:ae7f107eb667026e3f0cffc70973cbcb10c5590c989638eef21dce7216a03221",
+    "actual_producer": "followup.research.frontier_pattern_discovery/1:ae7f107eb667026e3f0cffc70973cbcb10c5590c989638eef21dce7216a03221.actual_scripted_producer",
+    "request_ids": [
+      "ad8ad1411d566068f79e71c2893ecd044d81a732e73bf24ffe31b0f6fe043749:pattern_discovery",
+      "73f8542443550657fff30736c293db35f6e2b1183f55d333d57d4c64a9bb8dec:pattern_discovery"
+    ],
+    "manifest": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage3/manifest.json",
+      "sha256": "0f401778783fa46ffff29a7f4458617733a348995e63e313018bc60b0b3908d8"
+    },
+    "results": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage3/results.json",
+      "sha256": "18aa9ded5d9bb99cdc318417ea15f102f7921ae7b7a51ca79587c2a055eaa7d7"
+    },
+    "responses": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage3/responses.json",
+      "sha256": "7fb7679b98cca336c0ab3206c59a28871f30832ef4d99cf6ed50b58fb0666c7c"
+    },
+    "model_quality_measured": false
+  },
+  {
+    "group": "followup.research.frontier_pattern_discovery/1:13cd24f5ec01e8efcff45021ab6055d6e998d17b3a149cb86575f5bf71de38db",
+    "intended_configuration": "followup.research.frontier_pattern_discovery/1:13cd24f5ec01e8efcff45021ab6055d6e998d17b3a149cb86575f5bf71de38db",
+    "actual_producer": "followup.research.frontier_pattern_discovery/1:13cd24f5ec01e8efcff45021ab6055d6e998d17b3a149cb86575f5bf71de38db.actual_scripted_producer",
+    "request_ids": [
+      "e41c599d13c321e8b0521c7a6c25b1e810fe420bdd541146ed8ad9fd0da65edb:pattern_discovery",
+      "4a44fbbbde0305c26e124e7edbfc215df111a007c1100a09e5abee4fb1f0e7f2:pattern_discovery"
+    ],
+    "manifest": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage3/manifest.json",
+      "sha256": "0f401778783fa46ffff29a7f4458617733a348995e63e313018bc60b0b3908d8"
+    },
+    "results": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage3/results.json",
+      "sha256": "18aa9ded5d9bb99cdc318417ea15f102f7921ae7b7a51ca79587c2a055eaa7d7"
+    },
+    "responses": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage3/responses.json",
+      "sha256": "7fb7679b98cca336c0ab3206c59a28871f30832ef4d99cf6ed50b58fb0666c7c"
+    },
+    "model_quality_measured": false
+  },
+  {
+    "group": "followup.research.reply_graph_v2/1:a717ad02357d41af83b6d40da5f19753660646366b4a3a9b506d15a52b10282a",
+    "intended_configuration": "followup.research.reply_graph_v2/1:a717ad02357d41af83b6d40da5f19753660646366b4a3a9b506d15a52b10282a",
+    "actual_producer": "followup.research.reply_graph_v2/1:a717ad02357d41af83b6d40da5f19753660646366b4a3a9b506d15a52b10282a.actual_scripted_producer",
+    "request_ids": [
+      "5dff1a98b7ff861bb7a1b0b1b78822ea8bfb78082bc1707fe26e44640150306f:graph_v2",
+      "7e1464a33662b8d23542e2b1634e825904209291fa13fbd8beb1e636928859d0:graph_v2"
+    ],
+    "manifest": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage4/manifest.json",
+      "sha256": "89e035f4b664121688634fc7b751d6cbab8e9e8539309581fcd84b659fea142b"
+    },
+    "results": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage4/results.json",
+      "sha256": "07867899cca3c3a1b43a63ab06a753be6641b50c284cb0a517df3375892b7d24"
+    },
+    "responses": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage4/responses.json",
+      "sha256": "195a5f71d5bdc77d628362c39ad811c4933d688a03055375efd597aa3e41dc46"
+    },
+    "model_quality_measured": false
+  },
+  {
+    "group": "followup.research.reply_graph_v2/1:4079d966279d7fa13f4925fee405b6fcd965f790459696ace3b27ffb176656f5",
+    "intended_configuration": "followup.research.reply_graph_v2/1:4079d966279d7fa13f4925fee405b6fcd965f790459696ace3b27ffb176656f5",
+    "actual_producer": "followup.research.reply_graph_v2/1:4079d966279d7fa13f4925fee405b6fcd965f790459696ace3b27ffb176656f5.actual_scripted_producer",
+    "request_ids": [
+      "0b9b04a889ad5c252a6496c02d753e02ab13d3e084a1960428e921a9d8f72954:graph_v2",
+      "81a23713be76c9417aa9507a7aef08dbc77abbdf55831951f2a8c6e07d2481eb:graph_v2"
+    ],
+    "manifest": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage4/manifest.json",
+      "sha256": "89e035f4b664121688634fc7b751d6cbab8e9e8539309581fcd84b659fea142b"
+    },
+    "results": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage4/results.json",
+      "sha256": "07867899cca3c3a1b43a63ab06a753be6641b50c284cb0a517df3375892b7d24"
+    },
+    "responses": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage4/responses.json",
+      "sha256": "195a5f71d5bdc77d628362c39ad811c4933d688a03055375efd597aa3e41dc46"
+    },
+    "model_quality_measured": false
+  },
+  {
+    "group": "followup.research.reply_graph_v2/1:1cf767b61fe6a600531c3eb99fe6dce89a27f4f66083e3831dc1d0ac4a7f4f43",
+    "intended_configuration": "followup.research.reply_graph_v2/1:1cf767b61fe6a600531c3eb99fe6dce89a27f4f66083e3831dc1d0ac4a7f4f43",
+    "actual_producer": "followup.research.reply_graph_v2/1:1cf767b61fe6a600531c3eb99fe6dce89a27f4f66083e3831dc1d0ac4a7f4f43.actual_scripted_producer",
+    "request_ids": [
+      "e41ade177b0fed84ec89ba82734ba0a7c85a1920f449886560921eccfabaafc5:graph_v2",
+      "8e57a8330a8b0aab10cf7d5f421e9170c7a8b895bc869176d72b1748f806a9ae:graph_v2"
+    ],
+    "manifest": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage4/manifest.json",
+      "sha256": "89e035f4b664121688634fc7b751d6cbab8e9e8539309581fcd84b659fea142b"
+    },
+    "results": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage4/results.json",
+      "sha256": "07867899cca3c3a1b43a63ab06a753be6641b50c284cb0a517df3375892b7d24"
+    },
+    "responses": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage4/responses.json",
+      "sha256": "195a5f71d5bdc77d628362c39ad811c4933d688a03055375efd597aa3e41dc46"
+    },
+    "model_quality_measured": false
+  },
+  {
+    "group": "followup.research.reply_text_json/1:192eb7ac2ec35931d4d04a07c900c347efe85df196ba455478ab2d9055136888",
+    "intended_configuration": "followup.research.reply_text_json/1:192eb7ac2ec35931d4d04a07c900c347efe85df196ba455478ab2d9055136888",
+    "actual_producer": "followup.research.reply_text_json/1:192eb7ac2ec35931d4d04a07c900c347efe85df196ba455478ab2d9055136888.actual_scripted_producer",
+    "request_ids": [
+      "5dff1a98b7ff861bb7a1b0b1b78822ea8bfb78082bc1707fe26e44640150306f:text_json",
+      "7e1464a33662b8d23542e2b1634e825904209291fa13fbd8beb1e636928859d0:text_json"
+    ],
+    "manifest": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage4/manifest.json",
+      "sha256": "89e035f4b664121688634fc7b751d6cbab8e9e8539309581fcd84b659fea142b"
+    },
+    "results": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage4/results.json",
+      "sha256": "07867899cca3c3a1b43a63ab06a753be6641b50c284cb0a517df3375892b7d24"
+    },
+    "responses": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage4/responses.json",
+      "sha256": "195a5f71d5bdc77d628362c39ad811c4933d688a03055375efd597aa3e41dc46"
+    },
+    "model_quality_measured": false
+  },
+  {
+    "group": "followup.research.reply_text_json/1:0055f08a4fc9c453c992745765573ed42dd75dd91555bee8f1eb187f08c47296",
+    "intended_configuration": "followup.research.reply_text_json/1:0055f08a4fc9c453c992745765573ed42dd75dd91555bee8f1eb187f08c47296",
+    "actual_producer": "followup.research.reply_text_json/1:0055f08a4fc9c453c992745765573ed42dd75dd91555bee8f1eb187f08c47296.actual_scripted_producer",
+    "request_ids": [
+      "0b9b04a889ad5c252a6496c02d753e02ab13d3e084a1960428e921a9d8f72954:text_json",
+      "81a23713be76c9417aa9507a7aef08dbc77abbdf55831951f2a8c6e07d2481eb:text_json"
+    ],
+    "manifest": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage4/manifest.json",
+      "sha256": "89e035f4b664121688634fc7b751d6cbab8e9e8539309581fcd84b659fea142b"
+    },
+    "results": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage4/results.json",
+      "sha256": "07867899cca3c3a1b43a63ab06a753be6641b50c284cb0a517df3375892b7d24"
+    },
+    "responses": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage4/responses.json",
+      "sha256": "195a5f71d5bdc77d628362c39ad811c4933d688a03055375efd597aa3e41dc46"
+    },
+    "model_quality_measured": false
+  },
+  {
+    "group": "followup.research.reply_text_json/1:c4d4b9b08d162c4c9b76e9bb53c037d18bd50ec77c10e5459953eb6af9b457b8",
+    "intended_configuration": "followup.research.reply_text_json/1:c4d4b9b08d162c4c9b76e9bb53c037d18bd50ec77c10e5459953eb6af9b457b8",
+    "actual_producer": "followup.research.reply_text_json/1:c4d4b9b08d162c4c9b76e9bb53c037d18bd50ec77c10e5459953eb6af9b457b8.actual_scripted_producer",
+    "request_ids": [
+      "e41ade177b0fed84ec89ba82734ba0a7c85a1920f449886560921eccfabaafc5:text_json",
+      "8e57a8330a8b0aab10cf7d5f421e9170c7a8b895bc869176d72b1748f806a9ae:text_json"
+    ],
+    "manifest": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage4/manifest.json",
+      "sha256": "89e035f4b664121688634fc7b751d6cbab8e9e8539309581fcd84b659fea142b"
+    },
+    "results": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage4/results.json",
+      "sha256": "07867899cca3c3a1b43a63ab06a753be6641b50c284cb0a517df3375892b7d24"
+    },
+    "responses": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage4/responses.json",
+      "sha256": "195a5f71d5bdc77d628362c39ad811c4933d688a03055375efd597aa3e41dc46"
+    },
+    "model_quality_measured": false
+  }
+]
