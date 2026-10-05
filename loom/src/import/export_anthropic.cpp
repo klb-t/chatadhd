@@ -466,7 +466,7 @@ bool import_anthropic_member(Env& env, AnthropicCtx& cx, const std::string& rel,
   if (base != "projects.json" && base != "users.json" && base != "memories.json") return false;
 
   LoadStats st;
-  auto doc = load_json_doc(abs, st);
+  auto doc = load_json_doc(abs, st, env.opts.json_max_depth);
   if (!doc) {
     rep.errors.push_back(Json{{"member", rel}, {"code", st.empty ? "empty" : "invalid_json"}, {"message", st.message}});
     rep.partial = true;
@@ -482,7 +482,7 @@ bool import_anthropic_member(Env& env, AnthropicCtx& cx, const std::string& rel,
   };
   auto link = [&](const std::string& a, const std::string& b, const char* t) {
     if (a.empty() || b.empty()) return;
-    if (auto r = env.db.create_link(a, b, t, 1.0, Json::object()); !r) log::warn(kLog, "link failed: {}", r.error().message);
+    if (auto r = env.db.create_link(a, b, t, 1.0, Json::object()); !r) { env.write_error = r.error(); log::warn(kLog, "link failed: {}", r.error().message); }
   };
   auto items_of = [&](const char* wrapper) -> std::vector<const Json*> {
     std::vector<const Json*> v;

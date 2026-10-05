@@ -243,8 +243,13 @@ void infer_generic(Env& env, const Json& doc, const std::string& member, const s
     out.counts.add(counts);
     rep.json_leaves += cm.leaves_total;
     rep.leaves_preserved += cm.leaves_kept;
-    out.conversations.push_back(*w);
-    if (env.on_conv) env.on_conv(*w, member, index);
+    Conversation returned = *w;
+    if (!env.opts.include_result_metadata) returned.metadata = Json::object();
+    out.conversations.push_back(std::move(returned));
+    if (env.on_conv) {
+      auto recorded = env.on_conv(*w, member, index);
+      if (!recorded) { rep.partial = true; rep.errors.push_back(Json{{"code", "provenance_failed"}, {"message", recorded.error().message}}); }
+    }
     ++index;
   }
 }

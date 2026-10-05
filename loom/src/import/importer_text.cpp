@@ -87,14 +87,18 @@ Result<std::vector<Conversation>> ConversationImporter::markdown_body(const fs::
   LOOM_TRY_ASSIGN(std::string content, fsutil::read_file(path));
   Json messages = parse_markdown(content);
   std::optional<std::string> title = opts.title;
-  if (!title || title->empty()) title = path.stem().string();
+  if (!title || title->empty()) {
+    const fs::path identity = current_source_ && !current_source_->source_filename.empty()
+        ? fs::path(current_source_->source_filename) : path;
+    title = identity.stem().string();
+  }
   LOOM_TRY_ASSIGN(Conversation conv, import_message_list(messages, title));
   return std::vector<Conversation>{std::move(conv)};
 }
 
 Result<std::vector<Conversation>> ConversationImporter::import_markdown(const fs::path& path,
                                                                         const ImportOptions& opts) {
-  return with_source(path, "markdown", opts, "file", [&] { return markdown_body(path, opts); });
+  return with_source(path, "markdown", opts, "file", [&](const fs::path& input_path) { return markdown_body(input_path, opts); });
 }
 
 // ── Plain text (Python import_text) ─────────────────────────────────
@@ -175,13 +179,17 @@ Result<std::vector<Conversation>> ConversationImporter::text_body(const fs::path
   std::string content = utf8::repair(raw);  // Python: open(..., errors='replace')
   Json messages = parse_plain_text(content);
   std::optional<std::string> title = opts.title;
-  if (!title || title->empty()) title = path.stem().string();
+  if (!title || title->empty()) {
+    const fs::path identity = current_source_ && !current_source_->source_filename.empty()
+        ? fs::path(current_source_->source_filename) : path;
+    title = identity.stem().string();
+  }
   LOOM_TRY_ASSIGN(Conversation conv, import_message_list(messages, title));
   return std::vector<Conversation>{std::move(conv)};
 }
 
 Result<std::vector<Conversation>> ConversationImporter::import_text(const fs::path& path, const ImportOptions& opts) {
-  return with_source(path, "text", opts, "file", [&] { return text_body(path, opts); });
+  return with_source(path, "text", opts, "file", [&](const fs::path& input_path) { return text_body(input_path, opts); });
 }
 
 // ── Screenshot (OCR via MediaProviders) ─────────────────────────────
@@ -330,7 +338,16 @@ Result<std::vector<Conversation>> ConversationImporter::screenshot_body(const fs
   if (!media_) {
     return Error(Errc::Unavailable, "No OCR provider configured (MediaProviders unavailable)");
   }
-  auto ocr = media_->ocr(path);
+  // Source blobs are named by hash, without the original extension. Keep the
+  // declared format from the import context while reading only captured bytes.
+  const fs::path declared_path = current_source_ && !current_source_->source_filename.empty()
+      ? fs::path(current_source_->source_filename) : path;
+  std::string format = declared_path.extension().string();
+  if (!format.empty() && format.front() == '.') format.erase(0, 1);
+  std::transform(format.begin(), format.end(), format.begin(),
+                 [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+  LOOM_TRY_ASSIGN(auto image, fsutil::read_file(path));
+  auto ocr = media_->ocr_bytes(image, format);
   if (!ocr) return ocr.error();
   if (ocr->text.empty() || utf8::length(std::string(utf8::strip(ocr->text))) < 10) {
     return Error(Errc::InvalidArgument, "Could not extract text from image. Try a clearer screenshot.");
@@ -347,7 +364,7 @@ Result<std::vector<Conversation>> ConversationImporter::screenshot_body(const fs
 
 Result<std::vector<Conversation>> ConversationImporter::import_screenshot(const fs::path& path,
                                                                           const ImportOptions& opts) {
-  return with_source(path, "screenshot", opts, "file", [&] { return screenshot_body(path, opts); });
+  return with_source(path, "screenshot", opts, "file", [&](const fs::path& input_path) { return screenshot_body(input_path, opts); });
 }
 
 }  // namespace loom

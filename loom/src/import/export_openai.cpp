@@ -765,7 +765,7 @@ std::string base_of(const std::string& rel) {
 
 void link_or_note(Env& env, const std::string& src, const std::string& dst, const char* type, Json meta = Json::object()) {
   auto r = env.db.create_link(src, dst, type, 1.0, meta);
-  if (!r) log::warn(kLog, "link {} -> {} failed: {}", src, dst, r.error().message);
+  if (!r) { env.write_error = r.error(); log::warn(kLog, "link {} -> {} failed: {}", src, dst, r.error().message); }
 }
 }  // namespace
 
@@ -779,7 +779,7 @@ bool import_openai_member(Env& env, OpenAiCtx& cx, const std::string& rel, const
     return false;
 
   LoadStats st;
-  auto doc = load_json_doc(abs, st);
+  auto doc = load_json_doc(abs, st, env.opts.json_max_depth);
   if (!doc) {
     rep.errors.push_back(Json{{"member", rel}, {"code", st.empty ? "empty" : "invalid_json"}, {"message", st.message}});
     rep.partial = true;
@@ -812,9 +812,17 @@ bool import_openai_member(Env& env, OpenAiCtx& cx, const std::string& rel, const
         std::string nid = ent("export:feedback", label, rec.is_object() ? gets(rec, "content") : "", rec);
         rep.counts.feedback += 1;
         if (nid.empty() || !rec.is_object()) continue;
-        auto mit = cx.msg_db_id.find(gets(rec, "conversation_id") + '\x1f' + gets(rec, "message_id"));
-        if (mit != cx.msg_db_id.end()) {
-          link_or_note(env, nid, mit->second, "references");
+        std::string message;
+        if (const std::string conversation = conv_id_of(rec); !conversation.empty()) {
+          auto lock = env.db.lock();
+          auto found = env.db.conn().query_text(
+              "SELECT id FROM messages WHERE conv_id=? AND "
+              "(json_extract(metadata,'$.export.key')=? OR json_extract(metadata,'$.export.message_id')=?) "
+              "ORDER BY rowid DESC LIMIT 1", conversation, gets(rec, "message_id"), gets(rec, "message_id"));
+          if (found && *found) message = **found;
+        }
+        if (!message.empty()) {
+          link_or_note(env, nid, message, "references");
         } else {
           rep.warnings.push_back("feedback " + gets(rec, "id") + " references message " + gets(rec, "message_id") +
                                  " that is not in the export");
@@ -847,6 +855,101 @@ bool import_openai_member(Env& env, OpenAiCtx& cx, const std::string& rel, const
     if (!empty) ent("export:member", rel, "", *doc);
   }
   return true;
+}
+
+// Reconcile the dependency effects of an older completed member journal. The
+// journal predates target binding certificates, so its report alone cannot
+// prove that a reference omitted during a failed conversation write recovered.
+// Keep the retained auxiliary record's identity; append only a missing edge.
+Status reconcile_openai_member_checkpoint(Env& env, OpenAiCtx& cx, const std::string& rel,
+                                          const fs::path& abs) {
+  const std::string base = base_of(rel);
+  const bool feedback = base == "message_feedback.json";
+  const bool shared = base == "shared_conversations.json";
+  const bool textdoc = rel.rfind("textdocs/", 0) == 0 && base.size() > 5 && base.ends_with(".json");
+  if (!feedback && !shared && !textdoc) return {};
+  if (env.checkpoint_source_id.empty())
+    return Error(Errc::Conflict, "member " + rel + ": checkpoint source identity is missing");
+
+  LoadStats stats;
+  auto doc = load_json_doc(abs, stats, env.opts.json_max_depth);
+  if (!doc) return Error(Errc::Parse, "cannot reconcile member " + rel + ": " + stats.message);
+  auto lock = env.db.lock();
+  sql::Txn transaction(env.db.conn());
+  LOOM_TRY(transaction.begin_status());
+
+  auto reconcile = [&](const Json& record, std::string_view kind, const std::string& content,
+                       std::string_view edge_type) -> Status {
+    if (!record.is_object()) return {};
+    const auto conversation = cx.conv_db_id.find(gets(record, "conversation_id"));
+    // A reference outside this fully interpreted source retains the existing
+    // warning semantics. It is not evidence of an interrupted local binding.
+    if (conversation == cx.conv_db_id.end()) return {};
+    LOOM_TRY_ASSIGN(auto target_conversation, env.db.get_conv(conversation->second));
+    if (!target_conversation)
+      return Error(Errc::Conflict, "member " + rel + ": resolved conversation is missing");
+    std::string target = conversation->second;
+    if (feedback) {
+      const std::string external_message = gets(record, "message_id");
+      // Feedback may refer to a deleted/outside message even when its
+      // conversation is present. Keep the journal's original warning rather
+      // than converting a natural external reference into a retry failure.
+      if (external_message.empty()) return {};
+      LOOM_TRY_ASSIGN(auto message, env.db.conn().prepare(
+          "SELECT id FROM messages WHERE conv_id=? AND "
+          "(json_extract(metadata,'$.export.key')=? OR json_extract(metadata,'$.export.message_id')=?)"));
+      message.bind_all(target, external_message, external_message);
+      LOOM_TRY_ASSIGN(bool found, message.step());
+      if (!found) return {};
+      target = message.get_text(0);
+      LOOM_TRY_ASSIGN(bool ambiguous, message.step());
+      if (ambiguous) return Error(Errc::Conflict, "member " + rel + ": feedback target is ambiguous");
+    }
+
+    LOOM_TRY_ASSIGN(auto nodes, env.db.conn().prepare(
+        "SELECT id,metadata FROM nodes WHERE kind=? AND content=? "
+        "AND json_extract(metadata,'$.export.provider')='openai' "
+        "AND json_extract(metadata,'$.export.member')=? "
+        "AND json_extract(metadata,'$.export.source_id')=?"));
+    nodes.bind_all(kind, content, rel, env.checkpoint_source_id);
+    std::string retained;
+    const std::string expected_record = record.dump();
+    // A unique global record match cannot prove this source owns the node.
+    // Untagged historical records remain intact and explicitly unresolved.
+    for (;;) {
+      LOOM_TRY_ASSIGN(bool row, nodes.step());
+      if (!row) break;
+      LOOM_TRY_ASSIGN(auto metadata, json::parse(nodes.get_text(1)));
+      const Json* ex = json::find(metadata, "export");
+      const Json* original = ex ? json::find(*ex, "record") : nullptr;
+      // Dumped canonical objects also distinguish boolean/number and
+      // integer/float changes that ordinary JSON numeric equality may hide.
+      if (!original || original->dump() != expected_record) continue;
+      if (!retained.empty())
+        return Error(Errc::Conflict, "member " + rel + ": retained auxiliary identity is ambiguous");
+      retained = nodes.get_text(0);
+    }
+    if (retained.empty())
+      return Error(Errc::Conflict, "member " + rel + ": retained auxiliary identity is missing");
+    LOOM_TRY_ASSIGN(auto links, env.db.conn().query_int(
+        "SELECT COUNT(*) FROM links WHERE src=? AND dst=? AND link_type=?", retained, target, edge_type));
+    if (links.value_or(0) == 0) {
+      LOOM_TRY(env.db.create_link(retained, target, edge_type, 1.0, Json::object()));
+    }
+    return {};
+  };
+
+  // Match the original member interpreter's shape and entity content exactly.
+  if (feedback && doc->is_array()) {
+    for (const auto& record : *doc)
+      LOOM_TRY(reconcile(record, "export:feedback", gets(record, "content"), "references"));
+  } else if (shared && doc->is_array()) {
+    for (const auto& record : *doc)
+      LOOM_TRY(reconcile(record, "export:shared_link", "", "references"));
+  } else if (textdoc && doc->is_object()) {
+    LOOM_TRY(reconcile(*doc, "export:artifact", gets(*doc, "content"), "part_of"));
+  }
+  return transaction.commit();
 }
 
 }  // namespace loom::xport

@@ -75,8 +75,8 @@ class MediaProviders;
 inline constexpr std::string_view kImporterParserVersion = "1";
 inline constexpr std::string_view kExportParserVersion = "export-3";
 
-// (current, total, status). Units: conversations when the total is known,
-// otherwise bytes read; total = -1 when unknown.
+// (current, total, status). Units depend on status: export conversations,
+// ZIP entry/member progress, or legacy stream bytes. total = -1 when unknown.
 using ImportProgressFn = std::function<void(std::int64_t current, std::int64_t total, std::string_view status)>;
 
 // Provider-export interpretation (OpenAI/ChatGPT and Anthropic/Claude data
@@ -92,6 +92,8 @@ using ImportProgressFn = std::function<void(std::int64_t current, std::int64_t t
 //         losslessly too.
 enum class ExportMode { Auto, Off, On };
 
+struct ImportResult;
+
 struct ImportOptions {
   std::optional<std::string> title;
   ExportMode export_mode = ExportMode::Auto;
@@ -104,6 +106,33 @@ struct ImportOptions {
   // is skipped and the prior conversations are returned instead of being
   // recreated. `force` re-imports (and re-registers a source row) anyway.
   bool force = false;
+  // Resume provider-export conversations and interpreted ZIP records from
+  // durable per-item checkpoints. Requires the source/provenance stores;
+  // force starts a fresh source identity even when resume is enabled.
+  // Library callers opt in to preserve the historical retry/new-source
+  // behavior; the import CLI enables resume in its caller preset.
+  bool resume = false;
+  // Result projection only: complete metadata remains durably stored. Disable
+  // for large-archive summary callers to avoid retaining every graph/unknown
+  // metadata value in the returned vector. IDs/title/source remain available.
+  bool include_result_metadata = true;
+  // Optional admission binding for the outer file (nested ZIP members inherit
+  // the admitted archive, not its byte/hash identity). Size is checked before
+  // copying; the snapshot hash is checked before source/conversation writes.
+  std::optional<std::string> expected_source_hash;
+  std::optional<std::int64_t> expected_source_bytes;
+  // Caller presets for the provider JSON scanner; zero depth means unlimited.
+  // Memory is bounded by this input buffer plus the largest conversation and
+  // retained wrapper metadata, rather than the complete conversations array.
+  std::size_t json_read_chunk_bytes = 65'536;
+  std::size_t json_max_depth = 512;
+  std::int64_t json_inline_threshold_bytes = 1'000'000;
+  std::int64_t generic_inference_max_bytes = 64'000'000;  // zero = unlimited
+  // Outer import_file execution hooks; stages remain available for offline
+  // tools. Preflight runs before hashing/storage; completion follows durable
+  // work and also runs for completed-source cache hits.
+  std::function<Status(const std::filesystem::path&)> preflight;
+  std::function<void(const ImportResult&)> completed;
 };
 
 struct ImportResult {
@@ -117,6 +146,8 @@ struct ImportResult {
   // parser version (see ImportOptions::force) and returned its prior
   // conversations instead of importing again.
   bool already_imported = false;
+  bool resumed = false;  // an incomplete durable provider import was reused
+  bool include_result_metadata = true;
   std::vector<std::string> warnings;
   // Provider-export interpretation report (null unless the lossless export
   // path ran): provider, member dispositions, counts, asset links, errors,
@@ -198,8 +229,10 @@ class ConversationImporter {
   // extra parameter through every public Python-parity signature.
   struct SourceCtx {
     std::string source_id;
+    std::string source_filename;
     std::string blob_hash;
     int conv_index = 0;
+    bool resumed = false;
     std::optional<std::string> zip_member;
     std::optional<std::string> json_path;
     std::optional<std::int64_t> archive_index;
@@ -239,7 +272,7 @@ class ConversationImporter {
   // independently testable/callable and so each self-registers its source.
   Result<std::vector<Conversation>> with_source(const std::filesystem::path& path, std::string_view fmt,
                                                 const ImportOptions& opts, std::string_view kind,
-                                                const std::function<Result<std::vector<Conversation>>()>& body);
+                                                const std::function<Result<std::vector<Conversation>>(const std::filesystem::path&)>& body);
   // import_file(), but lets zip recursion tag members as "zip_member" and
   // annotate their provenance locator with the member's path inside the zip.
   Result<ImportResult> import_file_as(const std::filesystem::path& path, const ImportOptions& opts,
@@ -275,9 +308,10 @@ class ConversationImporter {
   Result<Conversation> finish_import(const std::string& conv_title, std::vector<BatchMessage> batch,
                                      std::string_view handler);
   // Records loom_provenance rows for one just-created conversation and its
-  // messages (best-effort: logged and ignored on failure, never fails the
-  // import). No-op when current_source_ or prov_ is null.
-  void record_provenance(const Conversation& conv, std::string_view handler);
+  // messages. Provider exports propagate failure within their checkpoint
+  // transaction; legacy handlers retain their best-effort logged policy.
+  // No-op when no source/provenance store is active.
+  Status record_provenance(const Conversation& conv, std::string_view handler);
   bool cancelled(const ImportOptions& opts) const noexcept { return opts.cancel && opts.cancel->cancelled(); }
 
   Database& db_;

@@ -4,6 +4,7 @@
 #include <cmath>
 #include <cstring>
 #include <fstream>
+#include <limits>
 
 #include "export_internal.h"
 #include "loom/log.h"
@@ -18,7 +19,6 @@ namespace loom::xport {
 
 namespace {
 constexpr std::string_view kLog = "loom.import.export";
-constexpr int kMaxDepth = 512;
 }  // namespace
 
 // ── Counts / Report ─────────────────────────────────────────────────
@@ -42,6 +42,31 @@ void Counts::add(const Counts& o) {
   project_doc += o.project_doc;
   record += o.record;
   for (const auto& [k, v] : o.block_kind) block_kind[k] += v;
+}
+
+Counts Counts::from_json(const Json& value) {
+  Counts result;
+  result.conversation = json::get_int(value, "conversation");
+  result.message = json::get_int(value, "message");
+  result.block = json::get_int(value, "block");
+  result.attachment = json::get_int(value, "attachment");
+  result.citation = json::get_int(value, "citation");
+  result.citation_group = json::get_int(value, "citation_group");
+  result.branch = json::get_int(value, "branch");
+  result.fork_points = json::get_int(value, "fork_points");
+  result.custom_instruction = json::get_int(value, "custom_instruction");
+  result.memory = json::get_int(value, "memory");
+  result.artifact = json::get_int(value, "artifact");
+  result.current_path_messages = json::get_int(value, "current_path_messages");
+  result.account = json::get_int(value, "account");
+  result.feedback = json::get_int(value, "feedback");
+  result.shared_link = json::get_int(value, "shared_link");
+  result.project = json::get_int(value, "project");
+  result.project_doc = json::get_int(value, "project_doc");
+  result.record = json::get_int(value, "record");
+  if (const Json* kinds = json::find(value, "block_kind"); kinds && kinds->is_object())
+    for (auto item = kinds->begin(); item != kinds->end(); ++item) result.block_kind[item.key()] = item.value().get<std::int64_t>();
+  return result;
 }
 
 Json Counts::to_json() const {
@@ -80,7 +105,12 @@ Json Report::to_json() const {
   j["errors"] = Json(errors);
   j["warnings"] = Json(warnings);
   j["partial"] = partial;
+  j["include_result_metadata"] = include_result_metadata;
   j["inferred"] = inferred;
+  j["resumed_conversations"] = resumed_conversations;
+  j["resumed_members"] = resumed_members;
+  j["largest_json_value_bytes"] = largest_json_value_bytes;
+  j["scanner_buffer_bytes"] = scanner_buffer_bytes;
   j["repairs"] = repairs;
   j["json_leaves"] = json_leaves;
   j["leaves_preserved"] = leaves_preserved;
@@ -211,8 +241,9 @@ std::int64_t fix_lone_surrogates(std::string& s) {
   return n;
 }
 
-bool too_deep(std::string_view s) {
-  int depth = 0;
+bool too_deep(std::string_view s, std::size_t max_depth) {
+  if (!max_depth) return false;
+  std::size_t depth = 0;
   bool in_str = false, esc = false;
   for (char c : s) {
     if (in_str) {
@@ -223,7 +254,7 @@ bool too_deep(std::string_view s) {
     }
     if (c == '"') in_str = true;
     else if (c == '[' || c == '{') {
-      if (++depth > kMaxDepth) return true;
+      if (++depth > max_depth) return true;
     } else if (c == ']' || c == '}') {
       --depth;
     }
@@ -231,7 +262,7 @@ bool too_deep(std::string_view s) {
   return false;
 }
 
-bool parse_tolerant(std::string_view raw, LoadStats& st, Json& out, std::string& why) {
+bool parse_tolerant(std::string_view raw, LoadStats& st, Json& out, std::string& why, std::size_t max_depth) {
   std::string fixed;
   std::string_view text = raw;
   if (!utf8::is_valid(raw)) {
@@ -244,9 +275,9 @@ bool parse_tolerant(std::string_view raw, LoadStats& st, Json& out, std::string&
     if (auto n = fix_lone_surrogates(fixed); n > 0) st.lone_surrogates += n;
     text = fixed;
   }
-  if (too_deep(text)) {
+  if (too_deep(text, max_depth)) {
     st.too_deep = true;
-    why = "JSON nesting deeper than " + std::to_string(kMaxDepth);
+    why = "JSON nesting deeper than " + std::to_string(max_depth);
     return false;
   }
   auto r = json::parse(text);
@@ -260,7 +291,7 @@ bool parse_tolerant(std::string_view raw, LoadStats& st, Json& out, std::string&
 
 }  // namespace
 
-std::optional<Json> load_json_doc(const fs::path& path, LoadStats& st) {
+std::optional<Json> load_json_doc(const fs::path& path, LoadStats& st, std::size_t max_depth) {
   auto raw = fsutil::read_file(path);
   if (!raw) {
     st.invalid = true;
@@ -274,7 +305,7 @@ std::optional<Json> load_json_doc(const fs::path& path, LoadStats& st) {
   }
   Json out;
   std::string why;
-  if (!parse_tolerant(*raw, st, out, why)) {
+  if (!parse_tolerant(*raw, st, out, why, max_depth)) {
     st.invalid = true;
     st.message = why;
     return std::nullopt;
@@ -282,118 +313,218 @@ std::optional<Json> load_json_doc(const fs::path& path, LoadStats& st) {
   return out;
 }
 
-LoadStats load_json_file(const fs::path& path, Loader& L) {
-  LoadStats st;
-  std::ifstream f(path, std::ios::binary);
-  if (!f) {
-    st.invalid = true;
-    st.message = "cannot open file";
-    return st;
+namespace {
+// The scanner never keeps the complete conversations array. A wrapper is
+// scanned once to retain all sibling fields, then its array is visited using
+// seek. Thus suffix metadata is already available for the first conversation.
+class JsonReader {
+ public:
+  JsonReader(const fs::path& path, const Loader& loader, LoadStats& stats)
+      : file_(path, std::ios::binary), loader_(loader), stats_(stats), buffer_(loader.read_chunk_bytes, '\0') {
+    stats_.scanner_buffer_bytes = static_cast<std::int64_t>(buffer_.size());
   }
-  std::string chunk(1 << 16, '\0');
-  std::streamsize n = 0;
-  std::size_t first = 0;
-  bool skipped_bom = false;
-  // Discard whitespace a chunk at a time. Root dispatch must not depend on
-  // how much whitespace preceded it, nor materialize a large array just to
-  // discover its root. Objects/wrappers retain their documented DOM path.
+  bool open() const { return file_.is_open(); }
+  int peek() {
+    // Cancellation is an observed stop, even when a caller poll returns true
+    // only once. Subsequent lookahead must never resume filling the buffer.
+    if (stats_.cancelled) return EOF;
+    if (index_ == used_) {
+      if (loader_.cancelled && loader_.cancelled()) { stats_.cancelled = true; return EOF; }
+      file_.read(buffer_.data(), static_cast<std::streamsize>(buffer_.size()));
+      used_ = static_cast<std::size_t>(file_.gcount());
+      index_ = 0;
+      if (!used_) return EOF;
+    }
+    return static_cast<unsigned char>(buffer_[index_]);
+  }
+  int get() { const int c = peek(); if (c != EOF) { ++index_; ++offset_; } return c; }
+  std::int64_t position() const { return offset_; }
+  void seek(std::int64_t position) {
+    file_.clear(); file_.seekg(position); index_ = used_ = 0; offset_ = position;
+  }
+  void spaces() {
+    for (;;) {
+      const int c = peek();
+      if (c != ' ' && c != '\t' && c != '\r' && c != '\n') return;
+      get();
+    }
+  }
+  bool value(std::string* captured) {
+    spaces();
+    if (peek() == EOF) return false;
+    std::vector<int> closes;
+    bool quoted = false, escaped = false, scalar = false;
+    std::int64_t bytes = 0;
+    const int first = peek();
+    scalar = first != '{' && first != '[' && first != '"';
+    for (;;) {
+      int c = peek();
+      if (c == EOF) { pending_ = bytes; return scalar && bytes > 0 && !stats_.cancelled; }
+      if (scalar && !quoted && closes.empty() && (c == ',' || c == ']' || c == '}' ||
+          c == ' ' || c == '\t' || c == '\r' || c == '\n')) break;
+      get(); ++bytes;
+      if (captured) captured->push_back(static_cast<char>(c));
+      if (quoted) {
+        if (escaped) escaped = false;
+        else if (c == '\\') escaped = true;
+        else if (c == '"') { quoted = false; if (closes.empty()) break; }
+      } else if (c == '"') quoted = true;
+      else if (c == '{') closes.push_back('}');
+      else if (c == '[') closes.push_back(']');
+      else if (c == '}' || c == ']') {
+        if (closes.empty() || closes.back() != c) { pending_ = bytes; return false; }
+        closes.pop_back(); if (closes.empty()) break;
+      }
+    }
+    if (captured) stats_.largest_value_bytes = std::max(stats_.largest_value_bytes, bytes);
+    pending_ = 0;
+    return bytes > 0;
+  }
+  std::int64_t pending() const { return pending_; }
+ private:
+  std::ifstream file_;
+  const Loader& loader_;
+  LoadStats& stats_;
+  std::string buffer_;
+  std::size_t index_ = 0, used_ = 0;
+  std::int64_t offset_ = 0, pending_ = 0;
+};
+
+bool scan_array(JsonReader& reader, Loader& loader, LoadStats& stats) {
+  if (reader.get() != '[') return false;
+  std::int64_t index = 0;
+  reader.spaces();
+  if (reader.peek() == ']') { reader.get(); return true; }
   for (;;) {
-    if (L.cancelled && L.cancelled()) { st.cancelled = true; return st; }
-    if (first == static_cast<std::size_t>(n)) {
-      f.read(chunk.data(), static_cast<std::streamsize>(chunk.size()));
-      n = f.gcount();
-      first = 0;
-      if (n <= 0) {
-        st.empty = !f.bad();
-        st.invalid = f.bad();
-        st.message = f.bad() ? "cannot read file" : "empty file";
-        return st;
+    if (loader.cancelled && loader.cancelled()) { stats.cancelled = true; return false; }
+    std::string raw;
+    if (!reader.value(&raw)) {
+      if (!stats.cancelled) {
+        stats.truncated = true; stats.truncated_bytes = reader.pending(); stats.message = "array element not terminated";
       }
+      return false;
     }
-    auto whitespace = [](char c) { return c == ' ' || c == '\t' || c == '\r' || c == '\n'; };
-    while (first < static_cast<std::size_t>(n) && whitespace(chunk[first])) ++first;
-    if (first == static_cast<std::size_t>(n)) continue;
-    if (!skipped_bom && static_cast<unsigned char>(chunk[first]) == 0xEF) {
-      // A BOM can straddle the scanner's chunk boundary. Keep only its
-      // candidate bytes and refill; malformed prefixes still reach JSON validation.
-      if (static_cast<std::size_t>(n) - first < 3 && !f.eof()) {
-        const auto kept = static_cast<std::size_t>(n) - first;
-        chunk.replace(0, kept, chunk.substr(first, kept));
-        f.read(chunk.data() + kept, static_cast<std::streamsize>(chunk.size() - kept));
-        n = static_cast<std::streamsize>(kept) + f.gcount();
-        first = 0;
-      }
-      if (static_cast<std::size_t>(n) - first >= 3 && chunk.compare(first, 3, "\xEF\xBB\xBF") == 0) {
-        first += 3;
-        skipped_bom = true;
-        continue;
-      }
+    Json element;
+    std::string why;
+    if (!parse_tolerant(raw, stats, element, why, loader.max_depth)) {
+      if (loader.bad_element) loader.bad_element(index, why);
+    } else if (loader.element && !loader.element(std::move(element), index)) return false;
+    ++index;
+    reader.spaces();
+    const int delimiter = reader.get();
+    if (delimiter == ']') return true;
+    if (delimiter != ',') {
+      stats.truncated = delimiter == EOF && !stats.cancelled;
+      stats.invalid = delimiter != EOF;
+      stats.message = "expected comma or array terminator";
+      return false;
     }
-    break;
+    reader.spaces();
+    if (reader.peek() == ']') { stats.invalid = true; stats.message = "trailing comma in array"; return false; }
   }
+}
+}  // namespace
 
-  if (chunk[first] == '[') {
-    L.top_is_array = true;
-    JsonArrayStreamer streamer;
-    std::int64_t idx = 0;
-    bool stop = false;
-    auto on_element = [&](std::string_view raw) {
-      if (stop) return;
-      if (L.cancelled && L.cancelled()) { st.cancelled = true; stop = true; return; }
-      Json el;
+LoadStats load_json_file(const fs::path& path, Loader& loader) {
+  LoadStats stats;
+  if (!loader.read_chunk_bytes || loader.read_chunk_bytes > static_cast<std::size_t>(std::numeric_limits<std::streamsize>::max())) {
+    stats.invalid = true; stats.message = "JSON read chunk must be positive and representable"; return stats;
+  }
+  JsonReader reader(path, loader, stats);
+  if (!reader.open()) { stats.invalid = true; stats.message = "cannot open file"; return stats; }
+  reader.spaces();
+  if (reader.peek() == 0xEF) {
+    if (reader.get() != 0xEF || reader.get() != 0xBB || reader.get() != 0xBF) {
+      stats.invalid = true; stats.invalid_utf8 = true; stats.message = "invalid UTF-8 BOM"; return stats;
+    }
+    reader.spaces();
+  }
+  if (reader.peek() == EOF) {
+    stats.empty = !stats.cancelled; stats.message = stats.cancelled ? "cancelled" : "empty file"; return stats;
+  }
+  const auto root = reader.position();
+  bool finished = false;
+  if (reader.peek() == '[') {
+    loader.top_is_array = true;
+    finished = scan_array(reader, loader, stats);
+  } else if (reader.peek() == '{') {
+    // Capture sibling values individually. Discard the conversation array
+    // while locating its end; it will be read element by element below.
+    reader.get(); reader.spaces();
+    std::int64_t array_position = -1;
+    bool provider_object = false, valid_object = true;
+    if (reader.peek() == '}') reader.get();
+    else for (;;) {
+      std::string key_raw, value_raw;
+      Json key;
       std::string why;
-      if (!parse_tolerant(raw, st, el, why)) {
-        if (L.bad_element) L.bad_element(idx, why);
-      } else if (!L.element(std::move(el), idx)) {
-        stop = true;
+      if (reader.peek() != '"' || !reader.value(&key_raw) ||
+          !parse_tolerant(key_raw, stats, key, why, loader.max_depth) || !key.is_string()) { valid_object = false; break; }
+      const auto name = key.get<std::string>();
+      reader.spaces(); if (reader.get() != ':') { valid_object = false; break; }
+      reader.spaces();
+      if (name == "conversations" && reader.peek() == '[') {
+        array_position = reader.position();
+        if (!reader.value(nullptr)) { valid_object = false; break; }
+      } else {
+        if (!reader.value(&value_raw)) { valid_object = false; break; }
+        Json value;
+        if (!parse_tolerant(value_raw, stats, value, why, loader.max_depth)) {
+          stats.invalid = true; stats.message = why; return stats;
+        }
+        loader.wrapper_fields[name] = std::move(value);
+        provider_object = provider_object || name == "mapping" || name == "chat_messages";
       }
-      ++idx;
-    };
-    std::string_view head(chunk.data() + first, static_cast<std::size_t>(n) - first);
-    bool ok = streamer.feed(head, on_element);
-    while (ok && !streamer.finished() && !stop && f) {
-      if (L.cancelled && L.cancelled()) { st.cancelled = true; stop = true; break; }
-      f.read(chunk.data(), static_cast<std::streamsize>(chunk.size()));
-      auto m = f.gcount();
-      if (m <= 0) break;
-      ok = streamer.feed(std::string_view(chunk.data(), static_cast<std::size_t>(m)), on_element);
+      reader.spaces(); const int delimiter = reader.get();
+      if (delimiter == '}') break;
+      if (delimiter != ',') { valid_object = false; break; }
+      reader.spaces();
     }
-    if (!streamer.finished() && !stop) {
-      st.truncated = true;
-      st.truncated_bytes = static_cast<std::int64_t>(streamer.pending_bytes());
-      st.message = "array not terminated (truncated file)";
-    }
-    return st;
-  }
-
-  // Object (or scalar) at top level: whole-document parse.
-  std::string all = chunk.substr(first, static_cast<std::size_t>(n) - first);
-  all.append((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>());
-  Json doc;
-  std::string why;
-  if (!parse_tolerant(all, st, doc, why)) {
-    st.invalid = true;
-    st.message = why;
-    return st;
-  }
-  if (doc.is_object()) {
-    if (const Json* c = json::find(doc, "conversations"); c && c->is_array() && !json::find(doc, "mapping") &&
-                                                       !json::find(doc, "chat_messages")) {
-      L.wrapper = true;
-      L.top_is_array = true;
-      for (auto it = doc.begin(); it != doc.end(); ++it) {
-        if (it.key() != "conversations") L.wrapper_fields[it.key()] = it.value();
+    if (stats.cancelled) return stats;
+    if (!valid_object) {
+      stats.truncated = reader.peek() == EOF; stats.invalid = !stats.truncated;
+      stats.truncated_bytes = reader.pending(); stats.message = "invalid or truncated top-level object";
+      if (array_position >= 0 && !provider_object) {
+        // Completed elements remain usable even when a wrapper's array/tail
+        // was truncated. Missing suffix fields remain an explicit partial run.
+        loader.wrapper = true; loader.top_is_array = true;
+        reader.seek(array_position); (void)scan_array(reader, loader, stats);
       }
-      std::int64_t i = 0;
-      for (const auto& item : *c) {
-        Json copy = item;
-        if (!L.element(std::move(copy), i++)) break;
-      }
-      return st;
+      return stats;
     }
+    reader.spaces();
+    if (reader.peek() != EOF) { stats.invalid = true; stats.message = "trailing bytes after JSON object"; return stats; }
+    if (array_position >= 0 && !provider_object) {
+      loader.wrapper = true; loader.top_is_array = true;
+      reader.seek(array_position);
+      // The complete wrapper was already checked, so suffix bytes are known.
+      (void)scan_array(reader, loader, stats);
+      return stats;
+    }
+    loader.wrapper_fields = Json::object();
+    // Sibling probing of a single provider object is not an additional source
+    // observation; count tolerant repairs once when parsing the whole object.
+    stats.invalid_utf8 = false; stats.lone_surrogates = 0;
+    reader.seek(root);
+    std::string raw; Json value; std::string why;
+    if (!reader.value(&raw) || !parse_tolerant(raw, stats, value, why, loader.max_depth)) {
+      stats.invalid = true; stats.message = why.empty() ? "invalid JSON value" : why; return stats;
+    }
+    if (loader.element) loader.element(std::move(value), 0);
+    return stats;
+  } else {
+    std::string raw; Json value; std::string why;
+    if (!reader.value(&raw) || !parse_tolerant(raw, stats, value, why, loader.max_depth)) {
+      stats.invalid = true; stats.message = why.empty() ? "invalid JSON value" : why; return stats;
+    }
+    if (loader.element) loader.element(std::move(value), 0);
+    finished = true;
   }
-  L.element(std::move(doc), 0);
-  return st;
+  if (finished) {
+    reader.spaces();
+    if (reader.peek() != EOF) { stats.invalid = true; stats.message = "trailing bytes after JSON value"; }
+  }
+  return stats;
 }
 
 Json stats_to_json(const LoadStats& s) {
@@ -459,10 +590,13 @@ Result<Conversation> write_conversation(Env& env, ConvModel& cm, std::map<std::s
 
 Result<std::string> write_entity(Env& env, std::string_view kind, std::string_view label, std::string_view content,
                                  Json metadata) {
+  if (!env.checkpoint_source_id.empty()) metadata["export"]["source_id"] = env.checkpoint_source_id;
   NodeOptions no;
   no.content = std::string(content);
   no.metadata = std::move(metadata);
-  return env.db.create_node(label, kind, no);
+  auto result = env.db.create_node(label, kind, no);
+  if (!result) env.write_error = result.error();
+  return result;
 }
 
 // ── AssetIndex ──────────────────────────────────────────────────────

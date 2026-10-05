@@ -134,7 +134,7 @@ Result<std::vector<Conversation>> ConversationImporter::sqlite_body(const fs::pa
 }
 
 Result<std::vector<Conversation>> ConversationImporter::import_sqlite(const fs::path& path, const ImportOptions& opts) {
-  return with_source(path, "sqlite", opts, "file", [&] { return sqlite_body(path, opts); });
+  return with_source(path, "sqlite", opts, "file", [&](const fs::path& input_path) { return sqlite_body(input_path, opts); });
 }
 
 }  // namespace loom
