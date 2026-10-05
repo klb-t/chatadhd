@@ -214,17 +214,19 @@ def _bootstrap(gold, predictions, specification):
             'boundary': 'All repetitions of each sampled source family remain together; authored DEV dependence remains.'}
 
 
-def score(source_path, selection_raw, policy_raw, manifest_path, bundle_raw, gold_raw):
+def score(source_path, selection_raw, policy_raw, manifest_path, bundle_raw, gold_raw, *, gold_cases_pointer=''):
     """Use unchanged pure Jev compiler/panel scorer on all planned first rows.
 
     Inputs are caller-supplied public normalized receipts. Exact public hashes and
     projections are bound; private HTTP/generation bytes are not read here. Credit
     replay status is an explicit input attestation, distinct from label agreement.
+    The runtime JSON pointer selects a cases array after the entire raw gold
+    container passes its existing hash binding; preparation does not use it.
     """
     manifest = verify(source_path, selection_raw, policy_raw, manifest_path); p = _policy(policy_raw)
     if sha(gold_raw) != p['scoring']['gold_sha256']:
         raise ValueError('repetition_gold_snapshot_changed')
-    gold = wire.parse_json(gold_raw)
+    gold = graph.pointer(wire.parse_json(gold_raw), gold_cases_pointer)
     if not isinstance(gold, list) or not gold:
         raise ValueError('repetition_gold_invalid')
     gold_queries = [q['query_id'] for group in gold for q in group['judgments']]
@@ -340,6 +342,7 @@ def score(source_path, selection_raw, policy_raw, manifest_path, bundle_raw, gol
     return {'schema': 'loom.programme_repetition_score/1', 'programme_id': manifest['programme_id'], 'stage_id': manifest['stage_id'],
         'policy': detached(p), 'input_sha256': {'policy': sha(policy_raw), 'selection': sha(selection_raw), 'source_manifest': p['source_manifest_sha256'],
             'repeat_manifest': sha(Path(manifest_path).read_bytes()), 'normalized_bundle': sha(bundle_raw), 'gold': sha(gold_raw)},
+        'gold_selection': {'cases_pointer': gold_cases_pointer, 'source_sha256': sha(gold_raw), 'selected_array_sha256': wire.digest(gold)},
         'code_sha256': {'repetition_adapter': sha(Path(__file__).read_bytes()), 'pure_judgment_compiler_and_scorer': sha(Path(panel.__file__).read_bytes()),
                        'manifest_adapter': sha(Path(manifests.__file__).read_bytes())},
         'planned_operations': len(allowed), 'received_first_rows': len(rows), 'records': records, 'arms': reports,
@@ -357,11 +360,12 @@ def main(argv=None):
         else:cli.add_argument('--manifest', required=True, type=Path)
         if command == 'score':
             cli.add_argument('--bundle', required=True, type=Path); cli.add_argument('--gold', required=True, type=Path); cli.add_argument('--output', required=True, type=Path)
+            cli.add_argument('--gold-cases-pointer', default='')
     a = parser.parse_args(argv); arguments = (a.source_manifest, a.selection.read_bytes(), a.policy.read_bytes())
     if a.command == 'prepare':result = prepare(*arguments, a.output)
     elif a.command == 'verify':result = verify(*arguments, a.manifest)
     else:
-        result = score(*arguments, a.manifest, a.bundle.read_bytes(), a.gold.read_bytes())
+        result = score(*arguments, a.manifest, a.bundle.read_bytes(), a.gold.read_bytes(), gold_cases_pointer=a.gold_cases_pointer)
         manifests._write_exact(a.output, wire.canonical(result)+b'\n')
     print(wire.canonical({'new_model_calls': 0, 'planned_operations': len(result['operations']) if 'operations' in result else result['planned_operations']}).decode())
 
