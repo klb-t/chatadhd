@@ -21,5 +21,11 @@
   "normalized_sha256_must_be_recorded_separately": true,
   "do_not_retry": true,
   "7c_reads_private_ledger_or_key": false,
-  "dispatch_started_by_7c": false
+  "dispatch_started_by_7c": false,
+  "dispatch_authorized": false,
+  "dispatch_status": "STOP_OWNER_REAL_EXPORTS_ONLY_20261005T161609Z",
+  "supersedes_original_handoff": true,
+  "owner_update_local": "2026-10-05T18:16:09+02:00",
+  "replacement_cohort": "pending shared real ChatADHD export subset prepared by 7A",
+  "actual_synthetic_dispatch_by_7c": false
 }

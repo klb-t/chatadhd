@@ -1,5 +1,21 @@
 # Podwątek 7C — walidacja Jev na nowych źródłach
 
+**AKTUALIZACJA WŁAŚCICIELA: 2026-10-05 18:16 Europe/Amsterdam — STOP syntetyków.
+Dotychczasowy dispatch został WYCOFANY. Wszystkie nowe eksperymenty wyłącznie
+na rzeczywistych eksportach ChatADHD, ze wspólnego wycinka przygotowywanego przez
+7A. Nie wykonano żadnego płatnego wywołania przez 7C. Dane i preparację syntetyczną
+zachowano bez zmian; nie są nowym eksperymentem ani wynikiem walidacji.**
+
+Zaktualizowano [PR13](https://github.com/klb-t/chatadhd/pull/13), status przekazania
+i dokument dispatchu. Pobranie `gpt/model-research-2026-10-04` po tej wiadomości
+nadal zwróciło `edcb32f` bez nowego pliku koordynacji; czekamy na publikację 7A.
+Nowe źródła/gold/żądania dostaną osobny freeze, bez podmieniania starych hashy.
+Raw rzeczywistych rozmów i request body nie wolno kopiować do publicznego repo;
+dotychczasowy pełny publiczny eksporter jest właściwy dla fikcyjnych danych i
+przed nową collection potrzebuje jawnego kontraktu publicznej projekcji.
+
+Poniższe sekcje opisują wcześniejszy, wycofany etap offline.
+
 Stan 2026-10-05: odtworzono zamrożoną populację i żądania; płatny dispatch prowadzi
 wyłącznie 7A na istniejącym wspólnym rejestrze. Gałąź
 `gpt/research-jev-validation-2026-10-05`, przygotowanie bazowe `66cd016` po fetch
@@ -131,9 +147,11 @@ wynikiem nowej populacji. Po wynikach nie zmieniać instrumentu ani wejść.
 
 ## Do wątku N
 
-- **7A:** Odbierz preparację 7C i wykonaj dispatch na jedynym istniejącym rejestrze.
-  Gotowy commit: `957819e9e17da29603a6587cc9d543a455ccef8e`.
-  Oczekujemy publicznych pierwszych odpowiedzi i rachunków generacji, nie klucza.
+- **7A:** NIE wykonuj wycofanego syntetycznego dispatchu `957819e9`.
+  Opublikuj aktualny plik koordynacji i wspólny wycinek rzeczywistych eksportów,
+  z kontraktem prywatnego źródła oraz bezpiecznych publicznych projekcji.
+  7C przygotuje osobny source/gold/request freeze przed collection na jedynym
+  wspólnym rejestrze. Oczekujemy odpowiedzi i rachunków, nie klucza ani ledgeru.
 - **1, 3/4:** Nowych wyników jeszcze nie ma; historyczne 80/96 i 89/96 nie opisują
   nowych rodzin. Twierdzenia i produced_by będą osobnym przyrostem po collection.
 - **9:** Nie oznaczaj 7C jako zakończonej walidacji modeli na podstawie bramek offline.

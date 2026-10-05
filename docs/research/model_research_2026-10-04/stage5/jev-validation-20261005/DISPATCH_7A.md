@@ -1,5 +1,11 @@
 # 7C → 7A: 192 zamrożone pierwsze operacje
 
+**STOP — właściciel, 2026-10-05 18:16 Europe/Amsterdam. Ten dispatch na
+syntetykach został wycofany. NIE WYKONYWAĆ poniższych poleceń `run`. Wszystkie nowe
+eksperymenty mają korzystać z rzeczywistych eksportów ChatADHD. Wątek 7A
+przygotowuje wspólny wycinek i plik koordynacji na `gpt/model-research-2026-10-04`.
+Poniższa paczka jest zachowaną historią preparacji; nie udziela zgody na calls.**
+
 Paczkę wykonuje tylko prowadzący 7A, na istniejącym wspólnym prywatnym rejestrze
 programu `thread7-new-key-2026-10-04-eur5`. Nie tworzyć nowego ledgeru ani jego kopii.
 Nie powtarzać wcześniejszych 720 operacji. Ta paczka ma dokładnie 192 nowe ID,
