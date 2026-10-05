@@ -1,6 +1,6 @@
 {
   "schema": "loom.research_thread_coordination/1",
-  "updated_at_utc": "2026-10-05T16:59:22Z",
+  "updated_at_utc": "2026-10-05T17:44:55.878012Z",
   "research_base_commit": "b0b02c1b7d8b3717799e7b86ed976b21ab1fa4c4",
   "mode": "real_exports_only",
   "sole_payer": "7A",
@@ -22,33 +22,40 @@
     "old_prepared_operations_preserved": 8,
     "array_parent_inversions_observed": 20,
     "graph_view_private_only": true,
-    "new_request_freeze_required": true
+    "new_request_freeze_required": true,
+    "7B_request_freeze_complete": true,
+    "7C_request_freeze_complete": false
+  },
+  "real_prompt_preparation": {
+    "implementation_commit": "59df6dd0b9159be7e5ebd195e32eea288980df2e",
+    "readme": "real-prompt-recovery-20261005/README.md",
+    "receipt": "real-prompt-recovery-20261005/REAL_PREPARATION_RECEIPT.json",
+    "verification": "real-prompt-recovery-20261005/VERIFICATION.json",
+    "question_count": 8,
+    "configuration_count": 16,
+    "prepared_operation_count": 128,
+    "tests_passed": 43,
+    "reference_status": "assistant_authored_source_reviewed_provisional",
+    "independent_review": false,
+    "manifest_sha256": "6fd509fd37cba2a28b06f3ed1fcf8d72c187e2eb627e330fb38579930c13190f",
+    "private_freeze_sha256": "bf94e92b996b388197ed0097ec484e9f874d10821d4559dc0865c7895233ffcd",
+    "private_conversation_artifact": "PRIVATE_ChatADHD_real_prompts_checkpoint_2026-10-05.zip",
+    "private_artifact_sha256": "45272501536ee49c448bc1f541e68b30a1ea5dc0d9a60720a6a3862633bdfdbe",
+    "library_upload_claimed": false
   },
   "dispatch_ready": false,
   "not_dispatch_authorization": true,
   "missing_gates": [
-    "reviewed_gold_freeze",
-    "new_request_freeze",
-    "central_7A_cost_preflight"
+    "independent_semantic_reference_review_or_explicit_provisional_evaluation_decision",
+    "7C_new_request_freeze",
+    "central_7A_current_endpoint_cost_and_ledger_preflight",
+    "central_7A_dispatch_authorization"
   ],
-  "7B": "Reuse the shared verified source, adapt the existing prompt/preference scorer and freeze new source-bound questions and requests; retain the withdrawn synthetic panel unchanged.",
-  "7C": "Reuse the shared verified source, freeze reviewed ordered-argument/speaker/as-of gold and j_active/j_directed requests; disclose the three-case population and missing target strata before collection.",
+  "7B": "Offline real-source preparation complete: eight questions, sixteen configurations, 128 exact requests and the unchanged first-response scorer through a real-source wrapper. The private reference is provisional, not independently adjudicated. Preserve all old preparations. Use the new checkpoint and current central payer preflight; do not dispatch here.",
+  "7C": "The same shared private questions, directed propositions, attributed speakers and as-of views now exist. Dedicated real-data j_active/j_directed request preparation and collection remain incomplete. The source-view manifest is non-executable and is not a Jev request. Keep the frozen classifier threshold unchanged and declare missing population strata.",
   "privacy": {
-    "public_allowlist": [
-      "technical_hashes",
-      "aggregate_counts",
-      "implementation_and_test_code",
-      "status"
-    ],
-    "do_not_publish": [
-      "raw_conversations",
-      "private_identifiers",
-      "source_locators",
-      "request_bodies",
-      "raw_responses",
-      "credentials",
-      "payer_ledger"
-    ],
+    "public_allowlist": ["technical_hashes", "aggregate_counts", "implementation_and_test_code", "status"],
+    "do_not_publish": ["raw_conversations", "private_identifiers", "source_locators", "request_bodies", "raw_responses", "credentials", "payer_ledger"],
     "public_full_replay": false
   },
   "quality": null,
