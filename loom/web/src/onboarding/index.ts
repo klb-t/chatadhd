@@ -6,3 +6,7 @@ export { OnboardingController, mayAsk, draftValue, parseDraft } from "./controll
 export type { ControllerState } from "./controller";
 export { normalizeNativeSnapshot, nativeDispatchAction } from "./native-snapshot";
 export type * from "./types";
+
+export { resolvePresentation, formatTemplate, message, vocabulary, presentationStyle, controlOrder, errorPresentation, layerExplanation, PresentationError } from "./presentation.mjs";
+export type { Presentation, PresentationPack, PresentationAvailability } from "./presentation.mjs";
+export { PresentationProvider } from "./presentation-context";

@@ -1,9 +1,11 @@
+import { message, PresentationError, resolvePresentation } from "./presentation.mjs";
+import type { Presentation } from "./presentation.mjs";
 import type { JsonValue, LayerAction, ModelReply, OnboardingAction, OnboardingAdapter, OnboardingSnapshot, ProviderModelRequest } from "./types";
 
 /** A transport that ignores AbortSignal must not keep the view busy forever. */
 function abortable<T>(operation: Promise<T>, signal: AbortSignal): Promise<T> {
   return new Promise((resolve, reject) => {
-    const abort = () => reject(new DOMException("Interview was interrupted", "AbortError"));
+    const abort = () => reject(new DOMException(message(resolvePresentation(), "error.interrupted"), "AbortError"));
     signal.addEventListener("abort", abort, { once: true });
     operation.then(resolve, reject).finally(() => signal.removeEventListener("abort", abort));
     if (signal.aborted) abort();
@@ -16,6 +18,7 @@ export interface ControllerState {
   reply: ModelReply | null;
   busy: boolean;
   error: string | null;
+  errorCause?: unknown;
 }
 
 /** Serial native mutations; invalidate an in-flight model reply whenever policy
@@ -50,11 +53,11 @@ export class OnboardingController {
   private async track<T>(operation: () => Promise<T>): Promise<T | undefined> {
     if (this.stopped) return undefined;
     this.pending += 1;
-    this.publish({ busy: true, error: null });
+    this.publish({ busy: true, error: null, errorCause: null });
     try { return await operation(); }
     catch (error) {
       if (!(error instanceof Error && error.name === "AbortError")) {
-        this.publish({ error: error instanceof Error ? error.message : String(error) });
+        this.publish({ error: error instanceof Error ? error.message : String(error), errorCause: error });
       }
       return undefined;
     } finally {
@@ -64,7 +67,7 @@ export class OnboardingController {
   }
   private serial<T>(operation: () => Promise<T>): Promise<T> {
     const run = this.queue.then(() => {
-      if (this.stopped) throw new DOMException("Onboarding view was closed", "AbortError");
+      if (this.stopped) throw new DOMException(message(resolvePresentation(), "error.closed"), "AbortError");
       return operation();
     });
     this.queue = run.catch(() => undefined);
@@ -85,14 +88,14 @@ export class OnboardingController {
   dispatchLayer(action: LayerAction): Promise<OnboardingSnapshot | undefined> {
     this.invalidateModel();
     return this.track(() => this.serial(async () => {
-      if (!this.adapter.dispatchLayer) throw new Error("The host has not connected native default layers.");
+      if (!this.adapter.dispatchLayer) throw new PresentationError("error.layers_unavailable");
       return this.install(await this.adapter.dispatchLayer(action));
     }));
   }
   saveScenario(source: JsonValue): Promise<OnboardingSnapshot | undefined> {
     this.invalidateModel();
     return this.track(() => this.serial(async () => {
-      if (!this.adapter.saveScenario) throw new Error("The host has not connected graph-method editing.");
+      if (!this.adapter.saveScenario) throw new PresentationError("error.scenario_unavailable");
       return this.install(await this.adapter.saveScenario(source));
     }));
   }
@@ -104,7 +107,7 @@ export class OnboardingController {
     return this.track(async () => {
       const { modelRequest, completeModelRequest, ingestModelReply } = this.adapter;
       if (!modelRequest || !completeModelRequest || !ingestModelReply) {
-        throw new Error("The host has not connected the native interview method and model transport.");
+        throw new PresentationError("error.model_unavailable");
       }
       const options = { signal: cancellation.signal };
       const request = await this.serial(() => modelRequest.call(this.adapter, provider, options));
@@ -145,17 +148,17 @@ export function mayAsk(snapshot: OnboardingSnapshot, field: string): boolean {
   return status === "unknown" || status === "known";
 }
 
-export function draftValue(value: JsonValue | undefined, kind?: string): string {
+export function draftValue(value: JsonValue | undefined, kind?: string, presentation: Presentation = resolvePresentation()): string {
   if (value === undefined) return "";
-  if (kind === "json" || typeof value !== "string") return JSON.stringify(value, null, 2);
+  if (kind === "json" || typeof value !== "string") return JSON.stringify(value, null, presentation.defaults.json_indent);
   return value;
 }
 
 export function parseDraft(value: string, kind?: string): JsonValue {
   if (kind === "json" || kind === "number" || kind === "boolean" || kind === "select") {
     const parsed: unknown = JSON.parse(value);
-    if (kind === "number" && typeof parsed !== "number") throw new Error("Enter a number.");
-    if (kind === "boolean" && typeof parsed !== "boolean") throw new Error("Choose true or false.");
+    if (kind === "number" && typeof parsed !== "number") throw new PresentationError("error.number");
+    if (kind === "boolean" && typeof parsed !== "boolean") throw new PresentationError("error.boolean");
     return parsed as JsonValue;
   }
   return value;

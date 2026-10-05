@@ -88,7 +88,7 @@ adapter and disables that control. It never silently saves into localStorage.
 With Node 24 (built-in TypeScript stripping):
 
 ```sh
-node --test loom/web/src/onboarding/controller.test.mjs
+node --test loom/web/src/onboarding/controller.test.mjs loom/web/src/onboarding/presentation.test.mjs
 ```
 
 The 17 controller tests cover recorded interview/review, form provenance,
@@ -102,3 +102,55 @@ interruption during model transport. The fixture adapter is deliberately synthet
 do not claim native privacy, pack update, migration or transport integration;
 those gates belong to W12 native tests and W10 integration. No private input or
 provider call is used.
+
+## Data-authored presentation
+
+`loom/data/onboarding/ui.pack` is the canonical presentation document, schema
+`loom.onboarding.presentation/1`. Its `locales` contain EN/PL messages and the six
+native `layer.*` explanations. Its `defaults` contain initial mode, available
+mode/preference choices, field editor fallback, boolean options, editor row
+counts, JSON indentation, provider-list separator, privacy editor descriptors,
+control order and CSS custom-property values. The views use these values rather
+than maintaining a second collection of product defaults.
+
+The native layer key is `presentation.onboarding`. `normalizeNativeSnapshot`
+passes the decorated native `presentation` envelope to the views. Supply either
+the resolved document or `{ available: true, value: document, status: "effective" }`.
+Explicit `available: false`, or `disabled`/`excluded`/`proposal`/`missing` status,
+leaves the presentation unavailable and displays its machine diagnostic only;
+functional controls and generated English defaults are not restored. An older
+adapter omitting the descriptor uses `generated/ui.json`, produced directly from
+the canonical pack by `python3 loom/src/onboarding/gen_onboarding_pack.py`.
+Do not edit that generated JSON or add a browser presentation store.
+
+`resolvePresentation`, `message`, `formatTemplate`, `vocabulary`,
+`presentationStyle`, `controlOrder`, `errorPresentation` and `layerExplanation`
+are exported from `index.ts`; implementation is `presentation.mjs`, declarations
+are `presentation.d.mts`. `locale` on either view is an explicit host/UI choice;
+an empty locale selects the pack default. Personal `communication.language`
+does not choose this locale. Invalid envelopes, undeclared locales/messages,
+unsupported operation/editor IDs and malformed templates fail explicitly.
+Choices and controls may be omitted through empty arrays; the available native
+operations themselves remain mechanism identifiers in the controller.
+
+Templates use inert `{{parameter}}` substitution and require an object parameter
+map. Replacement text is never executed or recursively substituted. Structured
+parameters use recursively sorted JSON keys in the JavaScript runtime. This is
+not a promise of byte parity with C++ canonical JSON for all numeric values or
+non-BMP object keys; the six shipped layer texts have no JSON parameters and
+retain exact EN parity. `EffectiveDefault.resolution` retains the full native
+resolve object (including revision, source, entity and value) for authored layer
+explanation templates. As in the native renderer, the explanation parameter is
+null before the rendered explanation is assigned; a suppressed native
+`explanation: null` remains null. Ordinary errors
+use translated machine messages while original provider/parser diagnostics are
+inspectable separately.
+
+The 10 presentation tests check canonical/generated equality, the former EN
+presets and native explanations, data-only mutation, suppressed catalogs, invalid
+input and omitted controls, inert/malformed templates, explicit locale choice,
+localized diagnostics, full native explanation parameters and source presentation
+token/text boundaries. They run offline alongside the unchanged 17 controller
+tests. These checks and `npm run build` do not assert App/navigation, HTTP/native
+transport, cross-client invalidation or live provider integration; W10 owns those
+integration points.
