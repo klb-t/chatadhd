@@ -1,0 +1,1533 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="(empty)"
+	tests="108"
+	failures="0"
+	disabled="0"
+	skipped="0"
+	hostname=""
+	time="135"
+	timestamp="2026-10-05T14:27:24"
+	>
+	<testcase name="unit.test_archive" classname="unit.test_archive" time="1.08962" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  18 |  18 passed | 0 failed | 642 skipped
+[doctest] assertions: 270 | 270 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_batch_api" classname="unit.test_batch_api" time="0.0595665" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  8 |  8 passed | 0 failed | 652 skipped
+[doctest] assertions: 36 | 36 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_capi" classname="unit.test_capi" time="2.5192" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  12 |  12 passed | 0 failed | 648 skipped
+[doctest] assertions: 598 | 598 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_capi_knowledge" classname="unit.test_capi_knowledge" time="0.376222" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  1 |  1 passed | 0 failed | 659 skipped
+[doctest] assertions: 55 | 55 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_capi_knowledge_latest_run" classname="unit.test_capi_knowledge_latest_run" time="0.639267" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  2 |  2 passed | 0 failed | 658 skipped
+[doctest] assertions: 73 | 73 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_catalog" classname="unit.test_catalog" time="2.05164" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  13 |  13 passed | 0 failed | 647 skipped
+[doctest] assertions: 344 | 344 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_catalog_context" classname="unit.test_catalog_context" time="1.84368" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  7 |  7 passed | 0 failed | 653 skipped
+[doctest] assertions: 81 | 81 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_catalog_eval" classname="unit.test_catalog_eval" time="1.10513" status="run">
+		<properties/>
+		<system-out>===============================================================================
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_catalog_eval.cpp:118:
+TEST SUITE: catalog_eval
+TEST CASE:  synthetic_dev: recall/precision/noise-trap FP
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_catalog_eval.cpp:249: MESSAGE: ranking AUC final=0.965556 lexical=0.777222 semantic=0.981111
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_catalog_eval.cpp:250: MESSAGE: ranking hits@20=20/20 hits@45=42/45 (lexical hits@45=36, semantic hits@45=43)
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_catalog_eval.cpp:253: MESSAGE: shadow: |C_lexical|=10 |C_semantic|=5 gap(lex-sem): rescue=5 noise=0 undecided=2 [cx-04-venting mu-01-kickoff rt-02-storyboard rt-05-clips-gate rt-07-stalled ] semantic-only: relevant=2 noise=0
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_catalog_eval.cpp:258: MESSAGE: relevant: 31/45 recall=0.688889
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_catalog_eval.cpp:259: MESSAGE: traps: 0/5 trap_fpr=0
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_catalog_eval.cpp:260: MESSAGE: noise_generic selected: 0/15
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_catalog_eval.cpp:261: MESSAGE: selected conversations: 31 precision=1
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_catalog_eval.cpp:263: MESSAGE: selected auxiliary documents (outside conversation labels): 3
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_catalog_eval.cpp:264: MESSAGE: selector stats: {"run_id":"run_56ed9f716a7945b4","scoring_evidence_version":3,"legacy_combined_features":["id_hits","class_diversity","code_evidence"],"identity_unavailable":0,"relevant":34,"candidate":7,"irrelevant":27,"traps":4,"expanded_terms":[{"term":"zero","pass":1,"lift":3.4,"df_relevant":3,"df_corpus":6,"evidence":["un_3d70b7a34635f5fe","un_9e8228809931d5d0","un_e7c579ba8fc08dd1"],"reason":"lift &gt;= 3.000000 against the verified-relevant set (vocabulary expansion)"}],"semantic":{"available":true,"passes":1,"seeds":40,"method":"tfidf_cosine(word_stems)+tfidf_cosine(char_4grams)","floor_word":0.0283,"ref_word":0.1362,"floor_gram":0.0865,"ref_gram":0.2412,"word_vocabulary":1267,"gram_vocabulary":4074},"channels":{"lexical_relevant":10,"semantic_relevant":5,"both":3,"lexical_only":7,"semantic_only":2},"links":56,"link_stats":{"mode":"candidates","units":68,"links":56,"project_groups_aggregated":0,"minhash_pairs_verified":1,"lsh_candidates":1,"rare_term_candidates":653,"uncorroborated_sessions":0}}
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+===============================================================================
+[doctest] test cases:  1 |  1 passed | 0 failed | 659 skipped
+[doctest] assertions: 76 | 76 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_catalog_links" classname="unit.test_catalog_links" time="6.50424" status="run">
+		<properties/>
+		<system-out>===============================================================================
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_catalog_links.cpp:103:
+TEST SUITE: catalog_links
+TEST CASE:  candidate generation reproduces the exhaustive reference scan
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_catalog_links.cpp:130: MESSAGE: continuation links: reference=164 candidates=164 recall=1
+
+===============================================================================
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_catalog_links.cpp:166:
+TEST SUITE: catalog_links
+TEST CASE:  50k units: near-linear candidate generation, planted near-duplicates found
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_catalog_links.cpp:203: MESSAGE: 50k units: 3.56398 s, {"mode":"candidates","units":50000,"links":143314,"project_groups_aggregated":0,"minhash_pairs_verified":499,"lsh_candidates":499,"rare_term_candidates":506472}
+
+===============================================================================
+[doctest] test cases:    4 |    4 passed | 0 failed | 656 skipped
+[doctest] assertions: 3136 | 3136 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_catalog_retention" classname="unit.test_catalog_retention" time="1.56747" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   5 |   5 passed | 0 failed | 655 skipped
+[doctest] assertions: 179 | 179 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_catalog_scale" classname="unit.test_catalog_scale" time="0.00511042" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases: 0 | 0 passed | 0 failed | 660 skipped
+[doctest] assertions: 0 | 0 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task" classname="unit.test_chat_active_task" time="0.95471" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  19 |  19 passed | 0 failed | 641 skipped
+[doctest] assertions: 197 | 197 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_acceptance_audit" classname="unit.test_chat_active_task_acceptance_audit" time="0.39373" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  5 |  5 passed | 0 failed | 655 skipped
+[doctest] assertions: 40 | 40 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_acceptance_scale" classname="unit.test_chat_active_task_acceptance_scale" time="5.1865" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:    2 |    2 passed | 0 failed | 658 skipped
+[doctest] assertions: 2014 | 2014 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_acceptance_validation" classname="unit.test_chat_active_task_acceptance_validation" time="0.765696" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   6 |   6 passed | 0 failed | 654 skipped
+[doctest] assertions: 151 | 151 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_concurrency" classname="unit.test_chat_active_task_concurrency" time="0.199088" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  4 |  4 passed | 0 failed | 656 skipped
+[doctest] assertions: 49 | 49 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_durability" classname="unit.test_chat_active_task_durability" time="0.387774" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   8 |   8 passed | 0 failed | 652 skipped
+[doctest] assertions: 106 | 106 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_durable_audit" classname="unit.test_chat_active_task_durable_audit" time="7.53382" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  6 |  6 passed | 0 failed | 654 skipped
+[doctest] assertions: 76 | 76 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_exceptional" classname="unit.test_chat_active_task_exceptional" time="0.192408" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  4 |  4 passed | 0 failed | 656 skipped
+[doctest] assertions: 45 | 45 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_history_aba" classname="unit.test_chat_active_task_history_aba" time="0.020441" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 659 skipped
+[doctest] assertions: 9 | 9 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_reference" classname="unit.test_chat_active_task_reference" time="0.0124275" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  7 |  7 passed | 0 failed | 653 skipped
+[doctest] assertions: 49 | 49 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_retention" classname="unit.test_chat_active_task_retention" time="0.500269" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  11 |  11 passed | 0 failed | 649 skipped
+[doctest] assertions: 232 | 232 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_revisions" classname="unit.test_chat_active_task_revisions" time="1.06394" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  10 |  10 passed | 0 failed | 650 skipped
+[doctest] assertions: 228 | 228 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_scope_identity" classname="unit.test_chat_active_task_scope_identity" time="0.173392" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  2 |  2 passed | 0 failed | 658 skipped
+[doctest] assertions: 20 | 20 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_engine" classname="unit.test_chat_engine" time="0.0609762" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases: 15 | 15 passed | 0 failed | 645 skipped
+[doctest] assertions: 67 | 67 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_knowledge_context" classname="unit.test_chat_knowledge_context" time="3.27078" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  15 |  15 passed | 0 failed | 645 skipped
+[doctest] assertions: 212 | 212 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_retrieval_plan" classname="unit.test_chat_retrieval_plan" time="1.73038" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   8 |   8 passed | 0 failed | 652 skipped
+[doctest] assertions: 244 | 244 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_config" classname="unit.test_config" time="0.01044" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   5 |   5 passed | 0 failed | 655 skipped
+[doctest] assertions: 113 | 113 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_channel_integration" classname="unit.test_context_channel_integration" time="1.0818" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  5 |  5 passed | 0 failed | 655 skipped
+[doctest] assertions: 63 | 63 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_controls" classname="unit.test_context_controls" time="2.05965" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   9 |   9 passed | 0 failed | 651 skipped
+[doctest] assertions: 153 | 153 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_counter" classname="unit.test_context_counter" time="0.727233" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  4 |  4 passed | 0 failed | 656 skipped
+[doctest] assertions: 38 | 38 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_diagnostics" classname="unit.test_context_diagnostics" time="11.0082" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   9 |   9 passed | 0 failed | 651 skipped
+[doctest] assertions: 335 | 335 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_engine" classname="unit.test_context_engine" time="11.5935" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   18 |   18 passed | 0 failed | 642 skipped
+[doctest] assertions: 1364 | 1364 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_eval" classname="unit.test_context_eval" time="0.974218" status="run">
+		<properties/>
+		<system-out>===============================================================================
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_context_eval.cpp:346:
+TEST SUITE: context_eval
+TEST CASE:  context efficiency vs naive full-history and flat-retrieval, coverage@budget, determinism
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_context_eval.cpp:429: MESSAGE: naive=1040 flat_tokens=161 flat_coverage=1/1 selected=551
+  logged: scenario: implement checklist feature (PL)
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_context_eval.cpp:429: MESSAGE: naive=1040 flat_tokens=161 flat_coverage=2/2 selected=667
+  logged: scenario: verify encryption claim
+
+===============================================================================
+[doctest] test cases:   2 |   2 passed | 0 failed | 658 skipped
+[doctest] assertions: 268 | 268 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_native_consumer" classname="unit.test_context_native_consumer" time="1.66089" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   6 |   6 passed | 0 failed | 654 skipped
+[doctest] assertions: 105 | 105 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_plan" classname="unit.test_context_plan" time="3.22907" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  15 |  15 passed | 0 failed | 645 skipped
+[doctest] assertions: 159 | 159 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_retrieval" classname="unit.test_context_retrieval" time="0.931367" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  13 |  13 passed | 0 failed | 647 skipped
+[doctest] assertions: 130 | 130 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_retrieval_dev" classname="unit.test_context_retrieval_dev" time="1.28027" status="run">
+		<properties/>
+		<system-out>===============================================================================
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_context_retrieval_dev.cpp:223:
+TEST SUITE: context_retrieval_dev
+TEST CASE:  synthetic DEV compares native graph tfidf union and lexical shadow without quality gates
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_context_retrieval_dev.cpp:289: MESSAGE: W2_RETRIEVAL_DEV_ROW {"protocol":"w2.synthetic_dev.v1","case":"checkpoint_union","mode":"graph","pack_hash":"b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759","request":{"text":"checkpoint","targets":["e_6dcaaa07327a560f"],"project":"","budget_tokens":4096,"goal_type":"answer_question","run":"kr_69c5ea8ee1f275a0","lang":"en","detail_resolution":"full"},"gold":["cl.dev.offset","cl.dev.resume"],"candidate_metrics":{"gold_count":2,"retrieved_count":2,"relevant_count":1,"irrelevant_count":1,"recall":0.5,"precision":0.5,"first_relevant_rank":1,"reciprocal_rank":1.0,"hits_at_1":true,"hits_at_3":true},"selected_metrics":{"gold_count":2,"retrieved_count":2,"relevant_count":1,"irrelevant_count":1,"recall":0.5,"precision":0.5,"first_relevant_rank":1,"reciprocal_rank":1.0,"hits_at_1":true,"hits_at_3":true},"candidate_rank":[{"ref":"cl.dev.resume","score":0.27999999999999997},{"ref":"cl.dev.toolbar","score":0.27999999999999997}],"selected_rank":[{"ref":"cl.dev.resume","score":0.27999999999999997},{"ref":"cl.dev.toolbar","score":0.27999999999999997}],"used_tokens":61,"dropped":[],"engine_diagnostics":{"confidence_basis":"explicit_owner_type","calibration_status":"unavailable","external_goal_typing":{"status":"offline","requests":0},"classifier":"forced","context_controls":{"relation_hops":1,"detail_resolution":"full"},"retrieval_diagnostics":{"status":"bounded","exhaustive":false,"queries":[{"operation":"principles","selector":{},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_instances","selector":{"project":"e_6dcaaa07327a560f"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_decisions","selector":{"project":"e_6dcaaa07327a560f"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"status_history","selector":{"entity":"e_6dcaaa07327a560f"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"graph","selector":{"entity":"e_6dcaaa07327a560f","direction":"outgoing","hop":1},"limit":10000,"returned":2,"status":"below_cap"},{"operation":"graph","selector":{"entity":"e_6dcaaa07327a560f","direction":"incoming","hop":1},"limit":10000,"returned":0,"status":"below_cap"}],"lookup_issues":[],"excluded":[],"missing_premises":[],"query_errors":0,"cap_hits":0,"gathered_candidates":2,"unique_candidates":2,"duplicate_candidates_merged":0,"budget":{"metric":"rendered_item_codepoints_div_4","includes_prompt_overhead":false,"initial_band_tokens":[614,1434,2048],"total_tokens":4096,"final_band_tokens":[0,0,4096],"used_band_tokens":[0,0,61],"used_tokens":61},"recovered_budget_drops":[]}},"answer_correctness":"not_measured"}
+  logged: DEV case checkpoint_union
+          mode graph
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_context_retrieval_dev.cpp:289: MESSAGE: W2_RETRIEVAL_DEV_ROW {"protocol":"w2.synthetic_dev.v1","case":"checkpoint_union","mode":"tfidf","pack_hash":"b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759","request":{"text":"checkpoint","targets":["e_6dcaaa07327a560f"],"project":"","budget_tokens":4096,"goal_type":"answer_question","run":"kr_69c5ea8ee1f275a0","lang":"en","relation_hops":0,"detail_resolution":"full","candidate_channels":[{"id":"tfidf","limit":100,"min_score":0.0}]},"gold":["cl.dev.offset","cl.dev.resume"],"candidate_metrics":{"gold_count":2,"retrieved_count":2,"relevant_count":1,"irrelevant_count":1,"recall":0.5,"precision":0.5,"first_relevant_rank":2,"reciprocal_rank":0.5,"hits_at_1":false,"hits_at_3":true},"selected_metrics":{"gold_count":2,"retrieved_count":2,"relevant_count":1,"irrelevant_count":1,"recall":0.5,"precision":0.5,"first_relevant_rank":2,"reciprocal_rank":0.5,"hits_at_1":false,"hits_at_3":true},"candidate_rank":[{"ref":"cl.dev.wallpaper","score":0.8},{"ref":"cl.dev.offset","score":0.4}],"selected_rank":[{"ref":"cl.dev.wallpaper","score":0.8},{"ref":"cl.dev.offset","score":0.4}],"used_tokens":55,"dropped":[],"engine_diagnostics":{"confidence_basis":"explicit_owner_type","calibration_status":"unavailable","external_goal_typing":{"status":"offline","requests":0},"classifier":"forced","context_controls":{"relation_hops":0,"detail_resolution":"full"},"candidate_retrieval":{"run":"kr_69c5ea8ee1f275a0","scan_limit":10000,"channels":[{"method":"tfidf","status":"ok","reason":"","corpus_count":7,"scored_count":7,"unrepresentable_count":0,"unrepresentable_refs":[],"zero_score_count":5,"eligible_count":2,"truncated":false,"scores":[{"ref":"cl.dev.wallpaper","score":0.3128445040346275},{"ref":"cl.dev.offset","score":0.2591976395028348},{"ref":"cl.dev.crypto","score":0.0},{"ref":"cl.dev.orchid","score":0.0},{"ref":"cl.dev.resume","score":0.0},{"ref":"cl.dev.toolbar","score":0.0},{"ref":"cl.dev.weather","score":0.0}],"hits":[{"ref":"cl.dev.wallpaper","score":0.3128445040346275},{"ref":"cl.dev.offset","score":0.2591976395028348}],"id":"tfidf","request":{"id":"tfidf","limit":100,"min_score":0.0},"invalid_hits":[],"accepted_hits":[{"ref":"cl.dev.wallpaper","score":0.3128445040346275},{"ref":"cl.dev.offset","score":0.2591976395028348}]}],"corpus_status":"ok","possibly_truncated":false,"evidence_boundary":"candidate_similarity_is_not_support_truth_or_identity","scanned_claims":7,"admitted_claims":7,"filtered_claims":0,"entity_label_query_errors":0},"retrieval_diagnostics":{"status":"bounded","exhaustive":false,"queries":[{"operation":"principles","selector":{},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_instances","selector":{"project":"e_6dcaaa07327a560f"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_decisions","selector":{"project":"e_6dcaaa07327a560f"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"status_history","selector":{"entity":"e_6dcaaa07327a560f"},"limit":1000000,"returned":0,"status":"below_cap"}],"lookup_issues":[],"excluded":[],"missing_premises":[],"query_errors":0,"cap_hits":0,"gathered_candidates":2,"unique_candidates":2,"duplicate_candidates_merged":0,"budget":{"metric":"rendered_item_codepoints_div_4","includes_prompt_overhead":false,"initial_band_tokens":[614,1434,2048],"total_tokens":4096,"final_band_tokens":[0,0,4096],"used_band_tokens":[0,0,55],"used_tokens":55},"recovered_budget_drops":[]}},"answer_correctness":"not_measured"}
+  logged: DEV case checkpoint_union
+          mode tfidf
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_context_retrieval_dev.cpp:289: MESSAGE: W2_RETRIEVAL_DEV_ROW {"protocol":"w2.synthetic_dev.v1","case":"checkpoint_union","mode":"union","pack_hash":"b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759","request":{"text":"checkpoint","targets":["e_6dcaaa07327a560f"],"project":"","budget_tokens":4096,"goal_type":"answer_question","run":"kr_69c5ea8ee1f275a0","lang":"en","detail_resolution":"full","candidate_channels":[{"id":"tfidf","limit":100,"min_score":0.0}]},"gold":["cl.dev.offset","cl.dev.resume"],"candidate_metrics":{"gold_count":2,"retrieved_count":4,"relevant_count":2,"irrelevant_count":2,"recall":1.0,"precision":0.5,"first_relevant_rank":2,"reciprocal_rank":0.5,"hits_at_1":false,"hits_at_3":true},"selected_metrics":{"gold_count":2,"retrieved_count":4,"relevant_count":2,"irrelevant_count":2,"recall":1.0,"precision":0.5,"first_relevant_rank":2,"reciprocal_rank":0.5,"hits_at_1":false,"hits_at_3":true},"candidate_rank":[{"ref":"cl.dev.wallpaper","score":0.8},{"ref":"cl.dev.offset","score":0.4},{"ref":"cl.dev.resume","score":0.27999999999999997},{"ref":"cl.dev.toolbar","score":0.27999999999999997}],"selected_rank":[{"ref":"cl.dev.wallpaper","score":0.8},{"ref":"cl.dev.offset","score":0.4},{"ref":"cl.dev.resume","score":0.27999999999999997},{"ref":"cl.dev.toolbar","score":0.27999999999999997}],"used_tokens":116,"dropped":[],"engine_diagnostics":{"confidence_basis":"explicit_owner_type","calibration_status":"unavailable","external_goal_typing":{"status":"offline","requests":0},"classifier":"forced","context_controls":{"relation_hops":1,"detail_resolution":"full"},"candidate_retrieval":{"run":"kr_69c5ea8ee1f275a0","scan_limit":10000,"channels":[{"method":"tfidf","status":"ok","reason":"","corpus_count":7,"scored_count":7,"unrepresentable_count":0,"unrepresentable_refs":[],"zero_score_count":5,"eligible_count":2,"truncated":false,"scores":[{"ref":"cl.dev.wallpaper","score":0.3128445040346275},{"ref":"cl.dev.offset","score":0.2591976395028348},{"ref":"cl.dev.crypto","score":0.0},{"ref":"cl.dev.orchid","score":0.0},{"ref":"cl.dev.resume","score":0.0},{"ref":"cl.dev.toolbar","score":0.0},{"ref":"cl.dev.weather","score":0.0}],"hits":[{"ref":"cl.dev.wallpaper","score":0.3128445040346275},{"ref":"cl.dev.offset","score":0.2591976395028348}],"id":"tfidf","request":{"id":"tfidf","limit":100,"min_score":0.0},"invalid_hits":[],"accepted_hits":[{"ref":"cl.dev.wallpaper","score":0.3128445040346275},{"ref":"cl.dev.offset","score":0.2591976395028348}]}],"corpus_status":"ok","possibly_truncated":false,"evidence_boundary":"candidate_similarity_is_not_support_truth_or_identity","scanned_claims":7,"admitted_claims":7,"filtered_claims":0,"entity_label_query_errors":0},"retrieval_diagnostics":{"status":"bounded","exhaustive":false,"queries":[{"operation":"principles","selector":{},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_instances","selector":{"project":"e_6dcaaa07327a560f"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_decisions","selector":{"project":"e_6dcaaa07327a560f"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"status_history","selector":{"entity":"e_6dcaaa07327a560f"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"graph","selector":{"entity":"e_6dcaaa07327a560f","direction":"outgoing","hop":1},"limit":10000,"returned":2,"status":"below_cap"},{"operation":"graph","selector":{"entity":"e_6dcaaa07327a560f","direction":"incoming","hop":1},"limit":10000,"returned":0,"status":"below_cap"}],"lookup_issues":[],"excluded":[],"missing_premises":[],"query_errors":0,"cap_hits":0,"gathered_candidates":4,"unique_candidates":4,"duplicate_candidates_merged":0,"budget":{"metric":"rendered_item_codepoints_div_4","includes_prompt_overhead":false,"initial_band_tokens":[614,1434,2048],"total_tokens":4096,"final_band_tokens":[0,0,4096],"used_band_tokens":[0,0,116],"used_tokens":116},"recovered_budget_drops":[]}},"answer_correctness":"not_measured"}
+  logged: DEV case checkpoint_union
+          mode union
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_context_retrieval_dev.cpp:289: MESSAGE: W2_RETRIEVAL_DEV_ROW {"protocol":"w2.synthetic_dev.v1","case":"checkpoint_union","mode":"graph_shadow","pack_hash":"b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759","request":{"text":"checkpoint","targets":["e_6dcaaa07327a560f"],"project":"","budget_tokens":4096,"goal_type":"answer_question","run":"kr_69c5ea8ee1f275a0","lang":"en","detail_resolution":"full","lexical_shadow":true},"gold":["cl.dev.offset","cl.dev.resume"],"candidate_metrics":{"gold_count":2,"retrieved_count":2,"relevant_count":1,"irrelevant_count":1,"recall":0.5,"precision":0.5,"first_relevant_rank":1,"reciprocal_rank":1.0,"hits_at_1":true,"hits_at_3":true},"selected_metrics":{"gold_count":2,"retrieved_count":2,"relevant_count":1,"irrelevant_count":1,"recall":0.5,"precision":0.5,"first_relevant_rank":1,"reciprocal_rank":1.0,"hits_at_1":true,"hits_at_3":true},"candidate_rank":[{"ref":"cl.dev.resume","score":0.27999999999999997},{"ref":"cl.dev.toolbar","score":0.27999999999999997}],"selected_rank":[{"ref":"cl.dev.resume","score":0.27999999999999997},{"ref":"cl.dev.toolbar","score":0.27999999999999997}],"used_tokens":61,"dropped":[],"engine_diagnostics":{"confidence_basis":"explicit_owner_type","calibration_status":"unavailable","external_goal_typing":{"status":"offline","requests":0},"classifier":"forced","context_controls":{"relation_hops":1,"detail_resolution":"full"},"candidate_retrieval":{"run":"kr_69c5ea8ee1f275a0","scan_limit":10000,"channels":[],"corpus_status":"ok","possibly_truncated":false,"evidence_boundary":"candidate_similarity_is_not_support_truth_or_identity","scanned_claims":7,"admitted_claims":7,"filtered_claims":0,"entity_label_query_errors":0,"lexical_shadow":{"method":"lexical_token_overlap","status":"ok","reason":"","corpus_count":7,"scored_count":7,"unrepresentable_count":0,"unrepresentable_refs":[],"zero_score_count":5,"eligible_count":2,"truncated":false,"scores":[{"ref":"cl.dev.offset","score":1.0},{"ref":"cl.dev.wallpaper","score":1.0},{"ref":"cl.dev.crypto","score":0.0},{"ref":"cl.dev.orchid","score":0.0},{"ref":"cl.dev.resume","score":0.0},{"ref":"cl.dev.toolbar","score":0.0},{"ref":"cl.dev.weather","score":0.0}],"hits":[{"ref":"cl.dev.offset","score":1.0},{"ref":"cl.dev.wallpaper","score":1.0}],"diagnostic_gap":[{"ref":"cl.dev.offset","score":1.0,"verification":"undecided"},{"ref":"cl.dev.wallpaper","score":1.0,"verification":"undecided"}],"comparison":"lexical_hits_minus_graph_and_nonlexical_channel_hits_before_selection","selection_effect":"none"}},"retrieval_diagnostics":{"status":"bounded","exhaustive":false,"queries":[{"operation":"principles","selector":{},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_instances","selector":{"project":"e_6dcaaa07327a560f"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_decisions","selector":{"project":"e_6dcaaa07327a560f"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"status_history","selector":{"entity":"e_6dcaaa07327a560f"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"graph","selector":{"entity":"e_6dcaaa07327a560f","direction":"outgoing","hop":1},"limit":10000,"returned":2,"status":"below_cap"},{"operation":"graph","selector":{"entity":"e_6dcaaa07327a560f","direction":"incoming","hop":1},"limit":10000,"returned":0,"status":"below_cap"}],"lookup_issues":[],"excluded":[],"missing_premises":[],"query_errors":0,"cap_hits":0,"gathered_candidates":2,"unique_candidates":2,"duplicate_candidates_merged":0,"budget":{"metric":"rendered_item_codepoints_div_4","includes_prompt_overhead":false,"initial_band_tokens":[614,1434,2048],"total_tokens":4096,"final_band_tokens":[0,0,4096],"used_band_tokens":[0,0,61],"used_tokens":61},"recovered_budget_drops":[]}},"answer_correctness":"not_measured"}
+  logged: DEV case checkpoint_union
+          mode graph_shadow
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_context_retrieval_dev.cpp:289: MESSAGE: W2_RETRIEVAL_DEV_ROW {"protocol":"w2.synthetic_dev.v1","case":"support_quote_only","mode":"graph","pack_hash":"b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759","request":{"text":"orchid","targets":["e_f10e3a58512ccb1e"],"project":"","budget_tokens":4096,"goal_type":"answer_question","run":"kr_69c5ea8ee1f275a0","lang":"en","detail_resolution":"full"},"gold":["cl.dev.orchid"],"candidate_metrics":{"gold_count":1,"retrieved_count":0,"relevant_count":0,"irrelevant_count":0,"recall":0.0,"precision":null,"first_relevant_rank":null,"reciprocal_rank":0.0,"hits_at_1":false,"hits_at_3":false},"selected_metrics":{"gold_count":1,"retrieved_count":0,"relevant_count":0,"irrelevant_count":0,"recall":0.0,"precision":null,"first_relevant_rank":null,"reciprocal_rank":0.0,"hits_at_1":false,"hits_at_3":false},"candidate_rank":[],"selected_rank":[],"used_tokens":0,"dropped":[],"engine_diagnostics":{"confidence_basis":"explicit_owner_type","calibration_status":"unavailable","external_goal_typing":{"status":"offline","requests":0},"classifier":"forced","context_controls":{"relation_hops":1,"detail_resolution":"full"},"retrieval_diagnostics":{"status":"bounded","exhaustive":false,"queries":[{"operation":"principles","selector":{},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_instances","selector":{"project":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_decisions","selector":{"project":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"status_history","selector":{"entity":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"graph","selector":{"entity":"e_f10e3a58512ccb1e","direction":"outgoing","hop":1},"limit":10000,"returned":0,"status":"below_cap"},{"operation":"graph","selector":{"entity":"e_f10e3a58512ccb1e","direction":"incoming","hop":1},"limit":10000,"returned":0,"status":"below_cap"}],"lookup_issues":[],"excluded":[],"missing_premises":[],"query_errors":0,"cap_hits":0,"gathered_candidates":0,"unique_candidates":0,"duplicate_candidates_merged":0,"budget":{"metric":"rendered_item_codepoints_div_4","includes_prompt_overhead":false,"initial_band_tokens":[614,1434,2048],"total_tokens":4096,"final_band_tokens":[0,0,4096],"used_band_tokens":[0,0,0],"used_tokens":0},"recovered_budget_drops":[]}},"answer_correctness":"not_measured"}
+  logged: DEV case support_quote_only
+          mode graph
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_context_retrieval_dev.cpp:289: MESSAGE: W2_RETRIEVAL_DEV_ROW {"protocol":"w2.synthetic_dev.v1","case":"support_quote_only","mode":"tfidf","pack_hash":"b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759","request":{"text":"orchid","targets":["e_f10e3a58512ccb1e"],"project":"","budget_tokens":4096,"goal_type":"answer_question","run":"kr_69c5ea8ee1f275a0","lang":"en","relation_hops":0,"detail_resolution":"full","candidate_channels":[{"id":"tfidf","limit":100,"min_score":0.0}]},"gold":["cl.dev.orchid"],"candidate_metrics":{"gold_count":1,"retrieved_count":1,"relevant_count":1,"irrelevant_count":0,"recall":1.0,"precision":1.0,"first_relevant_rank":1,"reciprocal_rank":1.0,"hits_at_1":true,"hits_at_3":true},"selected_metrics":{"gold_count":1,"retrieved_count":1,"relevant_count":1,"irrelevant_count":0,"recall":1.0,"precision":1.0,"first_relevant_rank":1,"reciprocal_rank":1.0,"hits_at_1":true,"hits_at_3":true},"candidate_rank":[{"ref":"cl.dev.orchid","score":0.8}],"selected_rank":[{"ref":"cl.dev.orchid","score":0.8}],"used_tokens":30,"dropped":[],"engine_diagnostics":{"confidence_basis":"explicit_owner_type","calibration_status":"unavailable","external_goal_typing":{"status":"offline","requests":0},"classifier":"forced","context_controls":{"relation_hops":0,"detail_resolution":"full"},"candidate_retrieval":{"run":"kr_69c5ea8ee1f275a0","scan_limit":10000,"channels":[{"method":"tfidf","status":"ok","reason":"","corpus_count":7,"scored_count":7,"unrepresentable_count":0,"unrepresentable_refs":[],"zero_score_count":6,"eligible_count":1,"truncated":false,"scores":[{"ref":"cl.dev.orchid","score":0.29681010828190285},{"ref":"cl.dev.crypto","score":0.0},{"ref":"cl.dev.offset","score":0.0},{"ref":"cl.dev.resume","score":0.0},{"ref":"cl.dev.toolbar","score":0.0},{"ref":"cl.dev.wallpaper","score":0.0},{"ref":"cl.dev.weather","score":0.0}],"hits":[{"ref":"cl.dev.orchid","score":0.29681010828190285}],"id":"tfidf","request":{"id":"tfidf","limit":100,"min_score":0.0},"invalid_hits":[],"accepted_hits":[{"ref":"cl.dev.orchid","score":0.29681010828190285}]}],"corpus_status":"ok","possibly_truncated":false,"evidence_boundary":"candidate_similarity_is_not_support_truth_or_identity","scanned_claims":7,"admitted_claims":7,"filtered_claims":0,"entity_label_query_errors":0},"retrieval_diagnostics":{"status":"bounded","exhaustive":false,"queries":[{"operation":"principles","selector":{},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_instances","selector":{"project":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_decisions","selector":{"project":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"status_history","selector":{"entity":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"}],"lookup_issues":[],"excluded":[],"missing_premises":[],"query_errors":0,"cap_hits":0,"gathered_candidates":1,"unique_candidates":1,"duplicate_candidates_merged":0,"budget":{"metric":"rendered_item_codepoints_div_4","includes_prompt_overhead":false,"initial_band_tokens":[614,1434,2048],"total_tokens":4096,"final_band_tokens":[0,0,4096],"used_band_tokens":[0,0,30],"used_tokens":30},"recovered_budget_drops":[]}},"answer_correctness":"not_measured"}
+  logged: DEV case support_quote_only
+          mode tfidf
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_context_retrieval_dev.cpp:289: MESSAGE: W2_RETRIEVAL_DEV_ROW {"protocol":"w2.synthetic_dev.v1","case":"support_quote_only","mode":"union","pack_hash":"b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759","request":{"text":"orchid","targets":["e_f10e3a58512ccb1e"],"project":"","budget_tokens":4096,"goal_type":"answer_question","run":"kr_69c5ea8ee1f275a0","lang":"en","detail_resolution":"full","candidate_channels":[{"id":"tfidf","limit":100,"min_score":0.0}]},"gold":["cl.dev.orchid"],"candidate_metrics":{"gold_count":1,"retrieved_count":1,"relevant_count":1,"irrelevant_count":0,"recall":1.0,"precision":1.0,"first_relevant_rank":1,"reciprocal_rank":1.0,"hits_at_1":true,"hits_at_3":true},"selected_metrics":{"gold_count":1,"retrieved_count":1,"relevant_count":1,"irrelevant_count":0,"recall":1.0,"precision":1.0,"first_relevant_rank":1,"reciprocal_rank":1.0,"hits_at_1":true,"hits_at_3":true},"candidate_rank":[{"ref":"cl.dev.orchid","score":0.8}],"selected_rank":[{"ref":"cl.dev.orchid","score":0.8}],"used_tokens":30,"dropped":[],"engine_diagnostics":{"confidence_basis":"explicit_owner_type","calibration_status":"unavailable","external_goal_typing":{"status":"offline","requests":0},"classifier":"forced","context_controls":{"relation_hops":1,"detail_resolution":"full"},"candidate_retrieval":{"run":"kr_69c5ea8ee1f275a0","scan_limit":10000,"channels":[{"method":"tfidf","status":"ok","reason":"","corpus_count":7,"scored_count":7,"unrepresentable_count":0,"unrepresentable_refs":[],"zero_score_count":6,"eligible_count":1,"truncated":false,"scores":[{"ref":"cl.dev.orchid","score":0.29681010828190285},{"ref":"cl.dev.crypto","score":0.0},{"ref":"cl.dev.offset","score":0.0},{"ref":"cl.dev.resume","score":0.0},{"ref":"cl.dev.toolbar","score":0.0},{"ref":"cl.dev.wallpaper","score":0.0},{"ref":"cl.dev.weather","score":0.0}],"hits":[{"ref":"cl.dev.orchid","score":0.29681010828190285}],"id":"tfidf","request":{"id":"tfidf","limit":100,"min_score":0.0},"invalid_hits":[],"accepted_hits":[{"ref":"cl.dev.orchid","score":0.29681010828190285}]}],"corpus_status":"ok","possibly_truncated":false,"evidence_boundary":"candidate_similarity_is_not_support_truth_or_identity","scanned_claims":7,"admitted_claims":7,"filtered_claims":0,"entity_label_query_errors":0},"retrieval_diagnostics":{"status":"bounded","exhaustive":false,"queries":[{"operation":"principles","selector":{},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_instances","selector":{"project":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_decisions","selector":{"project":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"status_history","selector":{"entity":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"graph","selector":{"entity":"e_f10e3a58512ccb1e","direction":"outgoing","hop":1},"limit":10000,"returned":0,"status":"below_cap"},{"operation":"graph","selector":{"entity":"e_f10e3a58512ccb1e","direction":"incoming","hop":1},"limit":10000,"returned":0,"status":"below_cap"}],"lookup_issues":[],"excluded":[],"missing_premises":[],"query_errors":0,"cap_hits":0,"gathered_candidates":1,"unique_candidates":1,"duplicate_candidates_merged":0,"budget":{"metric":"rendered_item_codepoints_div_4","includes_prompt_overhead":false,"initial_band_tokens":[614,1434,2048],"total_tokens":4096,"final_band_tokens":[0,0,4096],"used_band_tokens":[0,0,30],"used_tokens":30},"recovered_budget_drops":[]}},"answer_correctness":"not_measured"}
+  logged: DEV case support_quote_only
+          mode union
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_context_retrieval_dev.cpp:289: MESSAGE: W2_RETRIEVAL_DEV_ROW {"protocol":"w2.synthetic_dev.v1","case":"support_quote_only","mode":"graph_shadow","pack_hash":"b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759","request":{"text":"orchid","targets":["e_f10e3a58512ccb1e"],"project":"","budget_tokens":4096,"goal_type":"answer_question","run":"kr_69c5ea8ee1f275a0","lang":"en","detail_resolution":"full","lexical_shadow":true},"gold":["cl.dev.orchid"],"candidate_metrics":{"gold_count":1,"retrieved_count":0,"relevant_count":0,"irrelevant_count":0,"recall":0.0,"precision":null,"first_relevant_rank":null,"reciprocal_rank":0.0,"hits_at_1":false,"hits_at_3":false},"selected_metrics":{"gold_count":1,"retrieved_count":0,"relevant_count":0,"irrelevant_count":0,"recall":0.0,"precision":null,"first_relevant_rank":null,"reciprocal_rank":0.0,"hits_at_1":false,"hits_at_3":false},"candidate_rank":[],"selected_rank":[],"used_tokens":0,"dropped":[],"engine_diagnostics":{"confidence_basis":"explicit_owner_type","calibration_status":"unavailable","external_goal_typing":{"status":"offline","requests":0},"classifier":"forced","context_controls":{"relation_hops":1,"detail_resolution":"full"},"candidate_retrieval":{"run":"kr_69c5ea8ee1f275a0","scan_limit":10000,"channels":[],"corpus_status":"ok","possibly_truncated":false,"evidence_boundary":"candidate_similarity_is_not_support_truth_or_identity","scanned_claims":7,"admitted_claims":7,"filtered_claims":0,"entity_label_query_errors":0,"lexical_shadow":{"method":"lexical_token_overlap","status":"ok","reason":"","corpus_count":7,"scored_count":7,"unrepresentable_count":0,"unrepresentable_refs":[],"zero_score_count":6,"eligible_count":1,"truncated":false,"scores":[{"ref":"cl.dev.orchid","score":1.0},{"ref":"cl.dev.crypto","score":0.0},{"ref":"cl.dev.offset","score":0.0},{"ref":"cl.dev.resume","score":0.0},{"ref":"cl.dev.toolbar","score":0.0},{"ref":"cl.dev.wallpaper","score":0.0},{"ref":"cl.dev.weather","score":0.0}],"hits":[{"ref":"cl.dev.orchid","score":1.0}],"diagnostic_gap":[{"ref":"cl.dev.orchid","score":1.0,"verification":"undecided"}],"comparison":"lexical_hits_minus_graph_and_nonlexical_channel_hits_before_selection","selection_effect":"none"}},"retrieval_diagnostics":{"status":"bounded","exhaustive":false,"queries":[{"operation":"principles","selector":{},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_instances","selector":{"project":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_decisions","selector":{"project":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"status_history","selector":{"entity":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"graph","selector":{"entity":"e_f10e3a58512ccb1e","direction":"outgoing","hop":1},"limit":10000,"returned":0,"status":"below_cap"},{"operation":"graph","selector":{"entity":"e_f10e3a58512ccb1e","direction":"incoming","hop":1},"limit":10000,"returned":0,"status":"below_cap"}],"lookup_issues":[],"excluded":[],"missing_premises":[],"query_errors":0,"cap_hits":0,"gathered_candidates":0,"unique_candidates":0,"duplicate_candidates_merged":0,"budget":{"metric":"rendered_item_codepoints_div_4","includes_prompt_overhead":false,"initial_band_tokens":[614,1434,2048],"total_tokens":4096,"final_band_tokens":[0,0,4096],"used_band_tokens":[0,0,0],"used_tokens":0},"recovered_budget_drops":[]}},"answer_correctness":"not_measured"}
+  logged: DEV case support_quote_only
+          mode graph_shadow
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_context_retrieval_dev.cpp:289: MESSAGE: W2_RETRIEVAL_DEV_ROW {"protocol":"w2.synthetic_dev.v1","case":"glossary_pl_en","mode":"graph","pack_hash":"b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759","request":{"text":"szyfrowanie","targets":["e_f10e3a58512ccb1e"],"project":"","budget_tokens":4096,"goal_type":"answer_question","run":"kr_69c5ea8ee1f275a0","lang":"en","detail_resolution":"full"},"gold":["cl.dev.crypto"],"candidate_metrics":{"gold_count":1,"retrieved_count":0,"relevant_count":0,"irrelevant_count":0,"recall":0.0,"precision":null,"first_relevant_rank":null,"reciprocal_rank":0.0,"hits_at_1":false,"hits_at_3":false},"selected_metrics":{"gold_count":1,"retrieved_count":0,"relevant_count":0,"irrelevant_count":0,"recall":0.0,"precision":null,"first_relevant_rank":null,"reciprocal_rank":0.0,"hits_at_1":false,"hits_at_3":false},"candidate_rank":[],"selected_rank":[],"used_tokens":0,"dropped":[],"engine_diagnostics":{"confidence_basis":"explicit_owner_type","calibration_status":"unavailable","external_goal_typing":{"status":"offline","requests":0},"classifier":"forced","context_controls":{"relation_hops":1,"detail_resolution":"full"},"retrieval_diagnostics":{"status":"bounded","exhaustive":false,"queries":[{"operation":"principles","selector":{},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_instances","selector":{"project":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_decisions","selector":{"project":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"status_history","selector":{"entity":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"graph","selector":{"entity":"e_f10e3a58512ccb1e","direction":"outgoing","hop":1},"limit":10000,"returned":0,"status":"below_cap"},{"operation":"graph","selector":{"entity":"e_f10e3a58512ccb1e","direction":"incoming","hop":1},"limit":10000,"returned":0,"status":"below_cap"}],"lookup_issues":[],"excluded":[],"missing_premises":[],"query_errors":0,"cap_hits":0,"gathered_candidates":0,"unique_candidates":0,"duplicate_candidates_merged":0,"budget":{"metric":"rendered_item_codepoints_div_4","includes_prompt_overhead":false,"initial_band_tokens":[614,1434,2048],"total_tokens":4096,"final_band_tokens":[0,0,4096],"used_band_tokens":[0,0,0],"used_tokens":0},"recovered_budget_drops":[]}},"answer_correctness":"not_measured"}
+  logged: DEV case glossary_pl_en
+          mode graph
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_context_retrieval_dev.cpp:289: MESSAGE: W2_RETRIEVAL_DEV_ROW {"protocol":"w2.synthetic_dev.v1","case":"glossary_pl_en","mode":"tfidf","pack_hash":"b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759","request":{"text":"szyfrowanie","targets":["e_f10e3a58512ccb1e"],"project":"","budget_tokens":4096,"goal_type":"answer_question","run":"kr_69c5ea8ee1f275a0","lang":"en","relation_hops":0,"detail_resolution":"full","candidate_channels":[{"id":"tfidf","limit":100,"min_score":0.0}]},"gold":["cl.dev.crypto"],"candidate_metrics":{"gold_count":1,"retrieved_count":1,"relevant_count":1,"irrelevant_count":0,"recall":1.0,"precision":1.0,"first_relevant_rank":1,"reciprocal_rank":1.0,"hits_at_1":true,"hits_at_3":true},"selected_metrics":{"gold_count":1,"retrieved_count":1,"relevant_count":1,"irrelevant_count":0,"recall":1.0,"precision":1.0,"first_relevant_rank":1,"reciprocal_rank":1.0,"hits_at_1":true,"hits_at_3":true},"candidate_rank":[{"ref":"cl.dev.crypto","score":0.8}],"selected_rank":[{"ref":"cl.dev.crypto","score":0.8}],"used_tokens":28,"dropped":[],"engine_diagnostics":{"confidence_basis":"explicit_owner_type","calibration_status":"unavailable","external_goal_typing":{"status":"offline","requests":0},"classifier":"forced","context_controls":{"relation_hops":0,"detail_resolution":"full"},"candidate_retrieval":{"run":"kr_69c5ea8ee1f275a0","scan_limit":10000,"channels":[{"method":"tfidf","status":"ok","reason":"","corpus_count":7,"scored_count":7,"unrepresentable_count":0,"unrepresentable_refs":[],"zero_score_count":6,"eligible_count":1,"truncated":false,"scores":[{"ref":"cl.dev.crypto","score":0.35627921077737135},{"ref":"cl.dev.offset","score":0.0},{"ref":"cl.dev.orchid","score":0.0},{"ref":"cl.dev.resume","score":0.0},{"ref":"cl.dev.toolbar","score":0.0},{"ref":"cl.dev.wallpaper","score":0.0},{"ref":"cl.dev.weather","score":0.0}],"hits":[{"ref":"cl.dev.crypto","score":0.35627921077737135}],"id":"tfidf","request":{"id":"tfidf","limit":100,"min_score":0.0},"invalid_hits":[],"accepted_hits":[{"ref":"cl.dev.crypto","score":0.35627921077737135}]}],"corpus_status":"ok","possibly_truncated":false,"evidence_boundary":"candidate_similarity_is_not_support_truth_or_identity","scanned_claims":7,"admitted_claims":7,"filtered_claims":0,"entity_label_query_errors":0},"retrieval_diagnostics":{"status":"bounded","exhaustive":false,"queries":[{"operation":"principles","selector":{},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_instances","selector":{"project":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_decisions","selector":{"project":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"status_history","selector":{"entity":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"}],"lookup_issues":[],"excluded":[],"missing_premises":[],"query_errors":0,"cap_hits":0,"gathered_candidates":1,"unique_candidates":1,"duplicate_candidates_merged":0,"budget":{"metric":"rendered_item_codepoints_div_4","includes_prompt_overhead":false,"initial_band_tokens":[614,1434,2048],"total_tokens":4096,"final_band_tokens":[0,0,4096],"used_band_tokens":[0,0,28],"used_tokens":28},"recovered_budget_drops":[]}},"answer_correctness":"not_measured"}
+  logged: DEV case glossary_pl_en
+          mode tfidf
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_context_retrieval_dev.cpp:289: MESSAGE: W2_RETRIEVAL_DEV_ROW {"protocol":"w2.synthetic_dev.v1","case":"glossary_pl_en","mode":"union","pack_hash":"b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759","request":{"text":"szyfrowanie","targets":["e_f10e3a58512ccb1e"],"project":"","budget_tokens":4096,"goal_type":"answer_question","run":"kr_69c5ea8ee1f275a0","lang":"en","detail_resolution":"full","candidate_channels":[{"id":"tfidf","limit":100,"min_score":0.0}]},"gold":["cl.dev.crypto"],"candidate_metrics":{"gold_count":1,"retrieved_count":1,"relevant_count":1,"irrelevant_count":0,"recall":1.0,"precision":1.0,"first_relevant_rank":1,"reciprocal_rank":1.0,"hits_at_1":true,"hits_at_3":true},"selected_metrics":{"gold_count":1,"retrieved_count":1,"relevant_count":1,"irrelevant_count":0,"recall":1.0,"precision":1.0,"first_relevant_rank":1,"reciprocal_rank":1.0,"hits_at_1":true,"hits_at_3":true},"candidate_rank":[{"ref":"cl.dev.crypto","score":0.8}],"selected_rank":[{"ref":"cl.dev.crypto","score":0.8}],"used_tokens":28,"dropped":[],"engine_diagnostics":{"confidence_basis":"explicit_owner_type","calibration_status":"unavailable","external_goal_typing":{"status":"offline","requests":0},"classifier":"forced","context_controls":{"relation_hops":1,"detail_resolution":"full"},"candidate_retrieval":{"run":"kr_69c5ea8ee1f275a0","scan_limit":10000,"channels":[{"method":"tfidf","status":"ok","reason":"","corpus_count":7,"scored_count":7,"unrepresentable_count":0,"unrepresentable_refs":[],"zero_score_count":6,"eligible_count":1,"truncated":false,"scores":[{"ref":"cl.dev.crypto","score":0.35627921077737135},{"ref":"cl.dev.offset","score":0.0},{"ref":"cl.dev.orchid","score":0.0},{"ref":"cl.dev.resume","score":0.0},{"ref":"cl.dev.toolbar","score":0.0},{"ref":"cl.dev.wallpaper","score":0.0},{"ref":"cl.dev.weather","score":0.0}],"hits":[{"ref":"cl.dev.crypto","score":0.35627921077737135}],"id":"tfidf","request":{"id":"tfidf","limit":100,"min_score":0.0},"invalid_hits":[],"accepted_hits":[{"ref":"cl.dev.crypto","score":0.35627921077737135}]}],"corpus_status":"ok","possibly_truncated":false,"evidence_boundary":"candidate_similarity_is_not_support_truth_or_identity","scanned_claims":7,"admitted_claims":7,"filtered_claims":0,"entity_label_query_errors":0},"retrieval_diagnostics":{"status":"bounded","exhaustive":false,"queries":[{"operation":"principles","selector":{},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_instances","selector":{"project":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_decisions","selector":{"project":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"status_history","selector":{"entity":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"graph","selector":{"entity":"e_f10e3a58512ccb1e","direction":"outgoing","hop":1},"limit":10000,"returned":0,"status":"below_cap"},{"operation":"graph","selector":{"entity":"e_f10e3a58512ccb1e","direction":"incoming","hop":1},"limit":10000,"returned":0,"status":"below_cap"}],"lookup_issues":[],"excluded":[],"missing_premises":[],"query_errors":0,"cap_hits":0,"gathered_candidates":1,"unique_candidates":1,"duplicate_candidates_merged":0,"budget":{"metric":"rendered_item_codepoints_div_4","includes_prompt_overhead":false,"initial_band_tokens":[614,1434,2048],"total_tokens":4096,"final_band_tokens":[0,0,4096],"used_band_tokens":[0,0,28],"used_tokens":28},"recovered_budget_drops":[]}},"answer_correctness":"not_measured"}
+  logged: DEV case glossary_pl_en
+          mode union
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_context_retrieval_dev.cpp:289: MESSAGE: W2_RETRIEVAL_DEV_ROW {"protocol":"w2.synthetic_dev.v1","case":"glossary_pl_en","mode":"graph_shadow","pack_hash":"b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759","request":{"text":"szyfrowanie","targets":["e_f10e3a58512ccb1e"],"project":"","budget_tokens":4096,"goal_type":"answer_question","run":"kr_69c5ea8ee1f275a0","lang":"en","detail_resolution":"full","lexical_shadow":true},"gold":["cl.dev.crypto"],"candidate_metrics":{"gold_count":1,"retrieved_count":0,"relevant_count":0,"irrelevant_count":0,"recall":0.0,"precision":null,"first_relevant_rank":null,"reciprocal_rank":0.0,"hits_at_1":false,"hits_at_3":false},"selected_metrics":{"gold_count":1,"retrieved_count":0,"relevant_count":0,"irrelevant_count":0,"recall":0.0,"precision":null,"first_relevant_rank":null,"reciprocal_rank":0.0,"hits_at_1":false,"hits_at_3":false},"candidate_rank":[],"selected_rank":[],"used_tokens":0,"dropped":[],"engine_diagnostics":{"confidence_basis":"explicit_owner_type","calibration_status":"unavailable","external_goal_typing":{"status":"offline","requests":0},"classifier":"forced","context_controls":{"relation_hops":1,"detail_resolution":"full"},"candidate_retrieval":{"run":"kr_69c5ea8ee1f275a0","scan_limit":10000,"channels":[],"corpus_status":"ok","possibly_truncated":false,"evidence_boundary":"candidate_similarity_is_not_support_truth_or_identity","scanned_claims":7,"admitted_claims":7,"filtered_claims":0,"entity_label_query_errors":0,"lexical_shadow":{"method":"lexical_token_overlap","status":"ok","reason":"","corpus_count":7,"scored_count":7,"unrepresentable_count":0,"unrepresentable_refs":[],"zero_score_count":7,"eligible_count":0,"truncated":false,"scores":[{"ref":"cl.dev.crypto","score":0.0},{"ref":"cl.dev.offset","score":0.0},{"ref":"cl.dev.orchid","score":0.0},{"ref":"cl.dev.resume","score":0.0},{"ref":"cl.dev.toolbar","score":0.0},{"ref":"cl.dev.wallpaper","score":0.0},{"ref":"cl.dev.weather","score":0.0}],"hits":[],"diagnostic_gap":[],"comparison":"lexical_hits_minus_graph_and_nonlexical_channel_hits_before_selection","selection_effect":"none"}},"retrieval_diagnostics":{"status":"bounded","exhaustive":false,"queries":[{"operation":"principles","selector":{},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_instances","selector":{"project":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_decisions","selector":{"project":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"status_history","selector":{"entity":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"graph","selector":{"entity":"e_f10e3a58512ccb1e","direction":"outgoing","hop":1},"limit":10000,"returned":0,"status":"below_cap"},{"operation":"graph","selector":{"entity":"e_f10e3a58512ccb1e","direction":"incoming","hop":1},"limit":10000,"returned":0,"status":"below_cap"}],"lookup_issues":[],"excluded":[],"missing_premises":[],"query_errors":0,"cap_hits":0,"gathered_candidates":0,"unique_candidates":0,"duplicate_candidates_merged":0,"budget":{"metric":"rendered_item_codepoints_div_4","includes_prompt_overhead":false,"initial_band_tokens":[614,1434,2048],"total_tokens":4096,"final_band_tokens":[0,0,4096],"used_band_tokens":[0,0,0],"used_tokens":0},"recovered_budget_drops":[]}},"answer_correctness":"not_measured"}
+  logged: DEV case glossary_pl_en
+          mode graph_shadow
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_context_retrieval_dev.cpp:289: MESSAGE: W2_RETRIEVAL_DEV_ROW {"protocol":"w2.synthetic_dev.v1","case":"misleading_word","mode":"graph","pack_hash":"b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759","request":{"text":"checkpoint","targets":["e_f10e3a58512ccb1e"],"project":"","budget_tokens":4096,"goal_type":"answer_question","run":"kr_69c5ea8ee1f275a0","lang":"en","detail_resolution":"full"},"gold":["cl.dev.offset","cl.dev.resume"],"candidate_metrics":{"gold_count":2,"retrieved_count":0,"relevant_count":0,"irrelevant_count":0,"recall":0.0,"precision":null,"first_relevant_rank":null,"reciprocal_rank":0.0,"hits_at_1":false,"hits_at_3":false},"selected_metrics":{"gold_count":2,"retrieved_count":0,"relevant_count":0,"irrelevant_count":0,"recall":0.0,"precision":null,"first_relevant_rank":null,"reciprocal_rank":0.0,"hits_at_1":false,"hits_at_3":false},"candidate_rank":[],"selected_rank":[],"used_tokens":0,"dropped":[],"engine_diagnostics":{"confidence_basis":"explicit_owner_type","calibration_status":"unavailable","external_goal_typing":{"status":"offline","requests":0},"classifier":"forced","context_controls":{"relation_hops":1,"detail_resolution":"full"},"retrieval_diagnostics":{"status":"bounded","exhaustive":false,"queries":[{"operation":"principles","selector":{},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_instances","selector":{"project":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_decisions","selector":{"project":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"status_history","selector":{"entity":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"graph","selector":{"entity":"e_f10e3a58512ccb1e","direction":"outgoing","hop":1},"limit":10000,"returned":0,"status":"below_cap"},{"operation":"graph","selector":{"entity":"e_f10e3a58512ccb1e","direction":"incoming","hop":1},"limit":10000,"returned":0,"status":"below_cap"}],"lookup_issues":[],"excluded":[],"missing_premises":[],"query_errors":0,"cap_hits":0,"gathered_candidates":0,"unique_candidates":0,"duplicate_candidates_merged":0,"budget":{"metric":"rendered_item_codepoints_div_4","includes_prompt_overhead":false,"initial_band_tokens":[614,1434,2048],"total_tokens":4096,"final_band_tokens":[0,0,4096],"used_band_tokens":[0,0,0],"used_tokens":0},"recovered_budget_drops":[]}},"answer_correctness":"not_measured"}
+  logged: DEV case misleading_word
+          mode graph
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_context_retrieval_dev.cpp:289: MESSAGE: W2_RETRIEVAL_DEV_ROW {"protocol":"w2.synthetic_dev.v1","case":"misleading_word","mode":"tfidf","pack_hash":"b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759","request":{"text":"checkpoint","targets":["e_f10e3a58512ccb1e"],"project":"","budget_tokens":4096,"goal_type":"answer_question","run":"kr_69c5ea8ee1f275a0","lang":"en","relation_hops":0,"detail_resolution":"full","candidate_channels":[{"id":"tfidf","limit":100,"min_score":0.0}]},"gold":["cl.dev.offset","cl.dev.resume"],"candidate_metrics":{"gold_count":2,"retrieved_count":2,"relevant_count":1,"irrelevant_count":1,"recall":0.5,"precision":0.5,"first_relevant_rank":2,"reciprocal_rank":0.5,"hits_at_1":false,"hits_at_3":true},"selected_metrics":{"gold_count":2,"retrieved_count":2,"relevant_count":1,"irrelevant_count":1,"recall":0.5,"precision":0.5,"first_relevant_rank":2,"reciprocal_rank":0.5,"hits_at_1":false,"hits_at_3":true},"candidate_rank":[{"ref":"cl.dev.wallpaper","score":0.8},{"ref":"cl.dev.offset","score":0.4}],"selected_rank":[{"ref":"cl.dev.wallpaper","score":0.8},{"ref":"cl.dev.offset","score":0.4}],"used_tokens":55,"dropped":[],"engine_diagnostics":{"confidence_basis":"explicit_owner_type","calibration_status":"unavailable","external_goal_typing":{"status":"offline","requests":0},"classifier":"forced","context_controls":{"relation_hops":0,"detail_resolution":"full"},"candidate_retrieval":{"run":"kr_69c5ea8ee1f275a0","scan_limit":10000,"channels":[{"method":"tfidf","status":"ok","reason":"","corpus_count":7,"scored_count":7,"unrepresentable_count":0,"unrepresentable_refs":[],"zero_score_count":5,"eligible_count":2,"truncated":false,"scores":[{"ref":"cl.dev.wallpaper","score":0.3128445040346275},{"ref":"cl.dev.offset","score":0.2591976395028348},{"ref":"cl.dev.crypto","score":0.0},{"ref":"cl.dev.orchid","score":0.0},{"ref":"cl.dev.resume","score":0.0},{"ref":"cl.dev.toolbar","score":0.0},{"ref":"cl.dev.weather","score":0.0}],"hits":[{"ref":"cl.dev.wallpaper","score":0.3128445040346275},{"ref":"cl.dev.offset","score":0.2591976395028348}],"id":"tfidf","request":{"id":"tfidf","limit":100,"min_score":0.0},"invalid_hits":[],"accepted_hits":[{"ref":"cl.dev.wallpaper","score":0.3128445040346275},{"ref":"cl.dev.offset","score":0.2591976395028348}]}],"corpus_status":"ok","possibly_truncated":false,"evidence_boundary":"candidate_similarity_is_not_support_truth_or_identity","scanned_claims":7,"admitted_claims":7,"filtered_claims":0,"entity_label_query_errors":0},"retrieval_diagnostics":{"status":"bounded","exhaustive":false,"queries":[{"operation":"principles","selector":{},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_instances","selector":{"project":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_decisions","selector":{"project":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"status_history","selector":{"entity":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"}],"lookup_issues":[],"excluded":[],"missing_premises":[],"query_errors":0,"cap_hits":0,"gathered_candidates":2,"unique_candidates":2,"duplicate_candidates_merged":0,"budget":{"metric":"rendered_item_codepoints_div_4","includes_prompt_overhead":false,"initial_band_tokens":[614,1434,2048],"total_tokens":4096,"final_band_tokens":[0,0,4096],"used_band_tokens":[0,0,55],"used_tokens":55},"recovered_budget_drops":[]}},"answer_correctness":"not_measured"}
+  logged: DEV case misleading_word
+          mode tfidf
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_context_retrieval_dev.cpp:289: MESSAGE: W2_RETRIEVAL_DEV_ROW {"protocol":"w2.synthetic_dev.v1","case":"misleading_word","mode":"union","pack_hash":"b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759","request":{"text":"checkpoint","targets":["e_f10e3a58512ccb1e"],"project":"","budget_tokens":4096,"goal_type":"answer_question","run":"kr_69c5ea8ee1f275a0","lang":"en","detail_resolution":"full","candidate_channels":[{"id":"tfidf","limit":100,"min_score":0.0}]},"gold":["cl.dev.offset","cl.dev.resume"],"candidate_metrics":{"gold_count":2,"retrieved_count":2,"relevant_count":1,"irrelevant_count":1,"recall":0.5,"precision":0.5,"first_relevant_rank":2,"reciprocal_rank":0.5,"hits_at_1":false,"hits_at_3":true},"selected_metrics":{"gold_count":2,"retrieved_count":2,"relevant_count":1,"irrelevant_count":1,"recall":0.5,"precision":0.5,"first_relevant_rank":2,"reciprocal_rank":0.5,"hits_at_1":false,"hits_at_3":true},"candidate_rank":[{"ref":"cl.dev.wallpaper","score":0.8},{"ref":"cl.dev.offset","score":0.4}],"selected_rank":[{"ref":"cl.dev.wallpaper","score":0.8},{"ref":"cl.dev.offset","score":0.4}],"used_tokens":55,"dropped":[],"engine_diagnostics":{"confidence_basis":"explicit_owner_type","calibration_status":"unavailable","external_goal_typing":{"status":"offline","requests":0},"classifier":"forced","context_controls":{"relation_hops":1,"detail_resolution":"full"},"candidate_retrieval":{"run":"kr_69c5ea8ee1f275a0","scan_limit":10000,"channels":[{"method":"tfidf","status":"ok","reason":"","corpus_count":7,"scored_count":7,"unrepresentable_count":0,"unrepresentable_refs":[],"zero_score_count":5,"eligible_count":2,"truncated":false,"scores":[{"ref":"cl.dev.wallpaper","score":0.3128445040346275},{"ref":"cl.dev.offset","score":0.2591976395028348},{"ref":"cl.dev.crypto","score":0.0},{"ref":"cl.dev.orchid","score":0.0},{"ref":"cl.dev.resume","score":0.0},{"ref":"cl.dev.toolbar","score":0.0},{"ref":"cl.dev.weather","score":0.0}],"hits":[{"ref":"cl.dev.wallpaper","score":0.3128445040346275},{"ref":"cl.dev.offset","score":0.2591976395028348}],"id":"tfidf","request":{"id":"tfidf","limit":100,"min_score":0.0},"invalid_hits":[],"accepted_hits":[{"ref":"cl.dev.wallpaper","score":0.3128445040346275},{"ref":"cl.dev.offset","score":0.2591976395028348}]}],"corpus_status":"ok","possibly_truncated":false,"evidence_boundary":"candidate_similarity_is_not_support_truth_or_identity","scanned_claims":7,"admitted_claims":7,"filtered_claims":0,"entity_label_query_errors":0},"retrieval_diagnostics":{"status":"bounded","exhaustive":false,"queries":[{"operation":"principles","selector":{},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_instances","selector":{"project":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_decisions","selector":{"project":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"status_history","selector":{"entity":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"graph","selector":{"entity":"e_f10e3a58512ccb1e","direction":"outgoing","hop":1},"limit":10000,"returned":0,"status":"below_cap"},{"operation":"graph","selector":{"entity":"e_f10e3a58512ccb1e","direction":"incoming","hop":1},"limit":10000,"returned":0,"status":"below_cap"}],"lookup_issues":[],"excluded":[],"missing_premises":[],"query_errors":0,"cap_hits":0,"gathered_candidates":2,"unique_candidates":2,"duplicate_candidates_merged":0,"budget":{"metric":"rendered_item_codepoints_div_4","includes_prompt_overhead":false,"initial_band_tokens":[614,1434,2048],"total_tokens":4096,"final_band_tokens":[0,0,4096],"used_band_tokens":[0,0,55],"used_tokens":55},"recovered_budget_drops":[]}},"answer_correctness":"not_measured"}
+  logged: DEV case misleading_word
+          mode union
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_context_retrieval_dev.cpp:289: MESSAGE: W2_RETRIEVAL_DEV_ROW {"protocol":"w2.synthetic_dev.v1","case":"misleading_word","mode":"graph_shadow","pack_hash":"b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759","request":{"text":"checkpoint","targets":["e_f10e3a58512ccb1e"],"project":"","budget_tokens":4096,"goal_type":"answer_question","run":"kr_69c5ea8ee1f275a0","lang":"en","detail_resolution":"full","lexical_shadow":true},"gold":["cl.dev.offset","cl.dev.resume"],"candidate_metrics":{"gold_count":2,"retrieved_count":0,"relevant_count":0,"irrelevant_count":0,"recall":0.0,"precision":null,"first_relevant_rank":null,"reciprocal_rank":0.0,"hits_at_1":false,"hits_at_3":false},"selected_metrics":{"gold_count":2,"retrieved_count":0,"relevant_count":0,"irrelevant_count":0,"recall":0.0,"precision":null,"first_relevant_rank":null,"reciprocal_rank":0.0,"hits_at_1":false,"hits_at_3":false},"candidate_rank":[],"selected_rank":[],"used_tokens":0,"dropped":[],"engine_diagnostics":{"confidence_basis":"explicit_owner_type","calibration_status":"unavailable","external_goal_typing":{"status":"offline","requests":0},"classifier":"forced","context_controls":{"relation_hops":1,"detail_resolution":"full"},"candidate_retrieval":{"run":"kr_69c5ea8ee1f275a0","scan_limit":10000,"channels":[],"corpus_status":"ok","possibly_truncated":false,"evidence_boundary":"candidate_similarity_is_not_support_truth_or_identity","scanned_claims":7,"admitted_claims":7,"filtered_claims":0,"entity_label_query_errors":0,"lexical_shadow":{"method":"lexical_token_overlap","status":"ok","reason":"","corpus_count":7,"scored_count":7,"unrepresentable_count":0,"unrepresentable_refs":[],"zero_score_count":5,"eligible_count":2,"truncated":false,"scores":[{"ref":"cl.dev.offset","score":1.0},{"ref":"cl.dev.wallpaper","score":1.0},{"ref":"cl.dev.crypto","score":0.0},{"ref":"cl.dev.orchid","score":0.0},{"ref":"cl.dev.resume","score":0.0},{"ref":"cl.dev.toolbar","score":0.0},{"ref":"cl.dev.weather","score":0.0}],"hits":[{"ref":"cl.dev.offset","score":1.0},{"ref":"cl.dev.wallpaper","score":1.0}],"diagnostic_gap":[{"ref":"cl.dev.offset","score":1.0,"verification":"undecided"},{"ref":"cl.dev.wallpaper","score":1.0,"verification":"undecided"}],"comparison":"lexical_hits_minus_graph_and_nonlexical_channel_hits_before_selection","selection_effect":"none"}},"retrieval_diagnostics":{"status":"bounded","exhaustive":false,"queries":[{"operation":"principles","selector":{},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_instances","selector":{"project":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_decisions","selector":{"project":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"status_history","selector":{"entity":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"graph","selector":{"entity":"e_f10e3a58512ccb1e","direction":"outgoing","hop":1},"limit":10000,"returned":0,"status":"below_cap"},{"operation":"graph","selector":{"entity":"e_f10e3a58512ccb1e","direction":"incoming","hop":1},"limit":10000,"returned":0,"status":"below_cap"}],"lookup_issues":[],"excluded":[],"missing_premises":[],"query_errors":0,"cap_hits":0,"gathered_candidates":0,"unique_candidates":0,"duplicate_candidates_merged":0,"budget":{"metric":"rendered_item_codepoints_div_4","includes_prompt_overhead":false,"initial_band_tokens":[614,1434,2048],"total_tokens":4096,"final_band_tokens":[0,0,4096],"used_band_tokens":[0,0,0],"used_tokens":0},"recovered_budget_drops":[]}},"answer_correctness":"not_measured"}
+  logged: DEV case misleading_word
+          mode graph_shadow
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_context_retrieval_dev.cpp:289: MESSAGE: W2_RETRIEVAL_DEV_ROW {"protocol":"w2.synthetic_dev.v1","case":"no_answer","mode":"graph","pack_hash":"b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759","request":{"text":"quasarflux","targets":["e_f10e3a58512ccb1e"],"project":"","budget_tokens":4096,"goal_type":"answer_question","run":"kr_69c5ea8ee1f275a0","lang":"en","detail_resolution":"full"},"gold":[],"candidate_metrics":{"gold_count":0,"retrieved_count":0,"relevant_count":0,"irrelevant_count":0,"recall":null,"precision":null,"first_relevant_rank":null,"reciprocal_rank":null,"hits_at_1":null,"hits_at_3":null},"selected_metrics":{"gold_count":0,"retrieved_count":0,"relevant_count":0,"irrelevant_count":0,"recall":null,"precision":null,"first_relevant_rank":null,"reciprocal_rank":null,"hits_at_1":null,"hits_at_3":null},"candidate_rank":[],"selected_rank":[],"used_tokens":0,"dropped":[],"engine_diagnostics":{"confidence_basis":"explicit_owner_type","calibration_status":"unavailable","external_goal_typing":{"status":"offline","requests":0},"classifier":"forced","context_controls":{"relation_hops":1,"detail_resolution":"full"},"retrieval_diagnostics":{"status":"bounded","exhaustive":false,"queries":[{"operation":"principles","selector":{},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_instances","selector":{"project":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_decisions","selector":{"project":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"status_history","selector":{"entity":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"graph","selector":{"entity":"e_f10e3a58512ccb1e","direction":"outgoing","hop":1},"limit":10000,"returned":0,"status":"below_cap"},{"operation":"graph","selector":{"entity":"e_f10e3a58512ccb1e","direction":"incoming","hop":1},"limit":10000,"returned":0,"status":"below_cap"}],"lookup_issues":[],"excluded":[],"missing_premises":[],"query_errors":0,"cap_hits":0,"gathered_candidates":0,"unique_candidates":0,"duplicate_candidates_merged":0,"budget":{"metric":"rendered_item_codepoints_div_4","includes_prompt_overhead":false,"initial_band_tokens":[614,1434,2048],"total_tokens":4096,"final_band_tokens":[0,0,4096],"used_band_tokens":[0,0,0],"used_tokens":0},"recovered_budget_drops":[]}},"answer_correctness":"not_measured"}
+  logged: DEV case no_answer
+          mode graph
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_context_retrieval_dev.cpp:289: MESSAGE: W2_RETRIEVAL_DEV_ROW {"protocol":"w2.synthetic_dev.v1","case":"no_answer","mode":"tfidf","pack_hash":"b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759","request":{"text":"quasarflux","targets":["e_f10e3a58512ccb1e"],"project":"","budget_tokens":4096,"goal_type":"answer_question","run":"kr_69c5ea8ee1f275a0","lang":"en","relation_hops":0,"detail_resolution":"full","candidate_channels":[{"id":"tfidf","limit":100,"min_score":0.0}]},"gold":[],"candidate_metrics":{"gold_count":0,"retrieved_count":0,"relevant_count":0,"irrelevant_count":0,"recall":null,"precision":null,"first_relevant_rank":null,"reciprocal_rank":null,"hits_at_1":null,"hits_at_3":null},"selected_metrics":{"gold_count":0,"retrieved_count":0,"relevant_count":0,"irrelevant_count":0,"recall":null,"precision":null,"first_relevant_rank":null,"reciprocal_rank":null,"hits_at_1":null,"hits_at_3":null},"candidate_rank":[],"selected_rank":[],"used_tokens":0,"dropped":[],"engine_diagnostics":{"confidence_basis":"explicit_owner_type","calibration_status":"unavailable","external_goal_typing":{"status":"offline","requests":0},"classifier":"forced","context_controls":{"relation_hops":0,"detail_resolution":"full"},"candidate_retrieval":{"run":"kr_69c5ea8ee1f275a0","scan_limit":10000,"channels":[{"method":"tfidf","status":"ok","reason":"","corpus_count":7,"scored_count":7,"unrepresentable_count":0,"unrepresentable_refs":[],"zero_score_count":7,"eligible_count":0,"truncated":false,"scores":[{"ref":"cl.dev.crypto","score":0.0},{"ref":"cl.dev.offset","score":0.0},{"ref":"cl.dev.orchid","score":0.0},{"ref":"cl.dev.resume","score":0.0},{"ref":"cl.dev.toolbar","score":0.0},{"ref":"cl.dev.wallpaper","score":0.0},{"ref":"cl.dev.weather","score":0.0}],"hits":[],"id":"tfidf","request":{"id":"tfidf","limit":100,"min_score":0.0},"invalid_hits":[],"accepted_hits":[]}],"corpus_status":"ok","possibly_truncated":false,"evidence_boundary":"candidate_similarity_is_not_support_truth_or_identity","scanned_claims":7,"admitted_claims":7,"filtered_claims":0,"entity_label_query_errors":0},"retrieval_diagnostics":{"status":"bounded","exhaustive":false,"queries":[{"operation":"principles","selector":{},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_instances","selector":{"project":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_decisions","selector":{"project":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"status_history","selector":{"entity":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"}],"lookup_issues":[],"excluded":[],"missing_premises":[],"query_errors":0,"cap_hits":0,"gathered_candidates":0,"unique_candidates":0,"duplicate_candidates_merged":0,"budget":{"metric":"rendered_item_codepoints_div_4","includes_prompt_overhead":false,"initial_band_tokens":[614,1434,2048],"total_tokens":4096,"final_band_tokens":[0,0,4096],"used_band_tokens":[0,0,0],"used_tokens":0},"recovered_budget_drops":[]}},"answer_correctness":"not_measured"}
+  logged: DEV case no_answer
+          mode tfidf
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_context_retrieval_dev.cpp:289: MESSAGE: W2_RETRIEVAL_DEV_ROW {"protocol":"w2.synthetic_dev.v1","case":"no_answer","mode":"union","pack_hash":"b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759","request":{"text":"quasarflux","targets":["e_f10e3a58512ccb1e"],"project":"","budget_tokens":4096,"goal_type":"answer_question","run":"kr_69c5ea8ee1f275a0","lang":"en","detail_resolution":"full","candidate_channels":[{"id":"tfidf","limit":100,"min_score":0.0}]},"gold":[],"candidate_metrics":{"gold_count":0,"retrieved_count":0,"relevant_count":0,"irrelevant_count":0,"recall":null,"precision":null,"first_relevant_rank":null,"reciprocal_rank":null,"hits_at_1":null,"hits_at_3":null},"selected_metrics":{"gold_count":0,"retrieved_count":0,"relevant_count":0,"irrelevant_count":0,"recall":null,"precision":null,"first_relevant_rank":null,"reciprocal_rank":null,"hits_at_1":null,"hits_at_3":null},"candidate_rank":[],"selected_rank":[],"used_tokens":0,"dropped":[],"engine_diagnostics":{"confidence_basis":"explicit_owner_type","calibration_status":"unavailable","external_goal_typing":{"status":"offline","requests":0},"classifier":"forced","context_controls":{"relation_hops":1,"detail_resolution":"full"},"candidate_retrieval":{"run":"kr_69c5ea8ee1f275a0","scan_limit":10000,"channels":[{"method":"tfidf","status":"ok","reason":"","corpus_count":7,"scored_count":7,"unrepresentable_count":0,"unrepresentable_refs":[],"zero_score_count":7,"eligible_count":0,"truncated":false,"scores":[{"ref":"cl.dev.crypto","score":0.0},{"ref":"cl.dev.offset","score":0.0},{"ref":"cl.dev.orchid","score":0.0},{"ref":"cl.dev.resume","score":0.0},{"ref":"cl.dev.toolbar","score":0.0},{"ref":"cl.dev.wallpaper","score":0.0},{"ref":"cl.dev.weather","score":0.0}],"hits":[],"id":"tfidf","request":{"id":"tfidf","limit":100,"min_score":0.0},"invalid_hits":[],"accepted_hits":[]}],"corpus_status":"ok","possibly_truncated":false,"evidence_boundary":"candidate_similarity_is_not_support_truth_or_identity","scanned_claims":7,"admitted_claims":7,"filtered_claims":0,"entity_label_query_errors":0},"retrieval_diagnostics":{"status":"bounded","exhaustive":false,"queries":[{"operation":"principles","selector":{},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_instances","selector":{"project":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_decisions","selector":{"project":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"status_history","selector":{"entity":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"graph","selector":{"entity":"e_f10e3a58512ccb1e","direction":"outgoing","hop":1},"limit":10000,"returned":0,"status":"below_cap"},{"operation":"graph","selector":{"entity":"e_f10e3a58512ccb1e","direction":"incoming","hop":1},"limit":10000,"returned":0,"status":"below_cap"}],"lookup_issues":[],"excluded":[],"missing_premises":[],"query_errors":0,"cap_hits":0,"gathered_candidates":0,"unique_candidates":0,"duplicate_candidates_merged":0,"budget":{"metric":"rendered_item_codepoints_div_4","includes_prompt_overhead":false,"initial_band_tokens":[614,1434,2048],"total_tokens":4096,"final_band_tokens":[0,0,4096],"used_band_tokens":[0,0,0],"used_tokens":0},"recovered_budget_drops":[]}},"answer_correctness":"not_measured"}
+  logged: DEV case no_answer
+          mode union
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_context_retrieval_dev.cpp:289: MESSAGE: W2_RETRIEVAL_DEV_ROW {"protocol":"w2.synthetic_dev.v1","case":"no_answer","mode":"graph_shadow","pack_hash":"b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759","request":{"text":"quasarflux","targets":["e_f10e3a58512ccb1e"],"project":"","budget_tokens":4096,"goal_type":"answer_question","run":"kr_69c5ea8ee1f275a0","lang":"en","detail_resolution":"full","lexical_shadow":true},"gold":[],"candidate_metrics":{"gold_count":0,"retrieved_count":0,"relevant_count":0,"irrelevant_count":0,"recall":null,"precision":null,"first_relevant_rank":null,"reciprocal_rank":null,"hits_at_1":null,"hits_at_3":null},"selected_metrics":{"gold_count":0,"retrieved_count":0,"relevant_count":0,"irrelevant_count":0,"recall":null,"precision":null,"first_relevant_rank":null,"reciprocal_rank":null,"hits_at_1":null,"hits_at_3":null},"candidate_rank":[],"selected_rank":[],"used_tokens":0,"dropped":[],"engine_diagnostics":{"confidence_basis":"explicit_owner_type","calibration_status":"unavailable","external_goal_typing":{"status":"offline","requests":0},"classifier":"forced","context_controls":{"relation_hops":1,"detail_resolution":"full"},"candidate_retrieval":{"run":"kr_69c5ea8ee1f275a0","scan_limit":10000,"channels":[],"corpus_status":"ok","possibly_truncated":false,"evidence_boundary":"candidate_similarity_is_not_support_truth_or_identity","scanned_claims":7,"admitted_claims":7,"filtered_claims":0,"entity_label_query_errors":0,"lexical_shadow":{"method":"lexical_token_overlap","status":"ok","reason":"","corpus_count":7,"scored_count":7,"unrepresentable_count":0,"unrepresentable_refs":[],"zero_score_count":7,"eligible_count":0,"truncated":false,"scores":[{"ref":"cl.dev.crypto","score":0.0},{"ref":"cl.dev.offset","score":0.0},{"ref":"cl.dev.orchid","score":0.0},{"ref":"cl.dev.resume","score":0.0},{"ref":"cl.dev.toolbar","score":0.0},{"ref":"cl.dev.wallpaper","score":0.0},{"ref":"cl.dev.weather","score":0.0}],"hits":[],"diagnostic_gap":[],"comparison":"lexical_hits_minus_graph_and_nonlexical_channel_hits_before_selection","selection_effect":"none"}},"retrieval_diagnostics":{"status":"bounded","exhaustive":false,"queries":[{"operation":"principles","selector":{},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_instances","selector":{"project":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_decisions","selector":{"project":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"status_history","selector":{"entity":"e_f10e3a58512ccb1e"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"graph","selector":{"entity":"e_f10e3a58512ccb1e","direction":"outgoing","hop":1},"limit":10000,"returned":0,"status":"below_cap"},{"operation":"graph","selector":{"entity":"e_f10e3a58512ccb1e","direction":"incoming","hop":1},"limit":10000,"returned":0,"status":"below_cap"}],"lookup_issues":[],"excluded":[],"missing_premises":[],"query_errors":0,"cap_hits":0,"gathered_candidates":0,"unique_candidates":0,"duplicate_candidates_merged":0,"budget":{"metric":"rendered_item_codepoints_div_4","includes_prompt_overhead":false,"initial_band_tokens":[614,1434,2048],"total_tokens":4096,"final_band_tokens":[0,0,4096],"used_band_tokens":[0,0,0],"used_tokens":0},"recovered_budget_drops":[]}},"answer_correctness":"not_measured"}
+  logged: DEV case no_answer
+          mode graph_shadow
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_context_retrieval_dev.cpp:289: MESSAGE: W2_RETRIEVAL_DEV_ROW {"protocol":"w2.synthetic_dev.v1","case":"low_budget","mode":"graph","pack_hash":"b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759","request":{"text":"checkpoint","targets":["e_6dcaaa07327a560f"],"project":"","budget_tokens":1,"goal_type":"answer_question","run":"kr_69c5ea8ee1f275a0","lang":"en","detail_resolution":"full"},"gold":["cl.dev.offset","cl.dev.resume"],"candidate_metrics":{"gold_count":2,"retrieved_count":2,"relevant_count":1,"irrelevant_count":1,"recall":0.5,"precision":0.5,"first_relevant_rank":1,"reciprocal_rank":1.0,"hits_at_1":true,"hits_at_3":true},"selected_metrics":{"gold_count":2,"retrieved_count":0,"relevant_count":0,"irrelevant_count":0,"recall":0.0,"precision":null,"first_relevant_rank":null,"reciprocal_rank":0.0,"hits_at_1":false,"hits_at_3":false},"candidate_rank":[{"ref":"cl.dev.resume","score":0.27999999999999997},{"ref":"cl.dev.toolbar","score":0.27999999999999997}],"selected_rank":[],"used_tokens":0,"dropped":[{"ref_kind":"claim","ref":"cl.dev.resume","band":"goal","resolution":"full","score":0.27999999999999997,"factors":{"relevance":0.35,"authority":0.8,"freshness":1.0,"confidence":1.0,"exclusion_reason":"budget","discovery_reason":"one hop from 'node alpha' via 'records'","direct_goal_candidate":true,"relation_hops":1},"tokens":34,"why":"over budget (needed 34 tokens, none of the remaining bands had room)","required_by":[],"text":""},{"ref_kind":"claim","ref":"cl.dev.toolbar","band":"goal","resolution":"full","score":0.27999999999999997,"factors":{"relevance":0.35,"authority":0.8,"freshness":1.0,"confidence":1.0,"exclusion_reason":"budget","discovery_reason":"one hop from 'node alpha' via 'records'","direct_goal_candidate":true,"relation_hops":1},"tokens":27,"why":"over budget (needed 27 tokens, none of the remaining bands had room)","required_by":[],"text":""}],"engine_diagnostics":{"confidence_basis":"explicit_owner_type","calibration_status":"unavailable","external_goal_typing":{"status":"offline","requests":0},"classifier":"forced","context_controls":{"relation_hops":1,"detail_resolution":"full"},"retrieval_diagnostics":{"status":"bounded","exhaustive":false,"queries":[{"operation":"principles","selector":{},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_instances","selector":{"project":"e_6dcaaa07327a560f"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_decisions","selector":{"project":"e_6dcaaa07327a560f"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"status_history","selector":{"entity":"e_6dcaaa07327a560f"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"graph","selector":{"entity":"e_6dcaaa07327a560f","direction":"outgoing","hop":1},"limit":10000,"returned":2,"status":"below_cap"},{"operation":"graph","selector":{"entity":"e_6dcaaa07327a560f","direction":"incoming","hop":1},"limit":10000,"returned":0,"status":"below_cap"}],"lookup_issues":[],"excluded":[],"missing_premises":[],"query_errors":0,"cap_hits":0,"gathered_candidates":2,"unique_candidates":2,"duplicate_candidates_merged":0,"budget":{"metric":"rendered_item_codepoints_div_4","includes_prompt_overhead":false,"initial_band_tokens":[0,1,0],"total_tokens":1,"final_band_tokens":[0,0,1],"used_band_tokens":[0,0,0],"used_tokens":0},"recovered_budget_drops":[]}},"answer_correctness":"not_measured"}
+  logged: DEV case low_budget
+          mode graph
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_context_retrieval_dev.cpp:289: MESSAGE: W2_RETRIEVAL_DEV_ROW {"protocol":"w2.synthetic_dev.v1","case":"low_budget","mode":"tfidf","pack_hash":"b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759","request":{"text":"checkpoint","targets":["e_6dcaaa07327a560f"],"project":"","budget_tokens":1,"goal_type":"answer_question","run":"kr_69c5ea8ee1f275a0","lang":"en","relation_hops":0,"detail_resolution":"full","candidate_channels":[{"id":"tfidf","limit":100,"min_score":0.0}]},"gold":["cl.dev.offset","cl.dev.resume"],"candidate_metrics":{"gold_count":2,"retrieved_count":2,"relevant_count":1,"irrelevant_count":1,"recall":0.5,"precision":0.5,"first_relevant_rank":2,"reciprocal_rank":0.5,"hits_at_1":false,"hits_at_3":true},"selected_metrics":{"gold_count":2,"retrieved_count":0,"relevant_count":0,"irrelevant_count":0,"recall":0.0,"precision":null,"first_relevant_rank":null,"reciprocal_rank":0.0,"hits_at_1":false,"hits_at_3":false},"candidate_rank":[{"ref":"cl.dev.wallpaper","score":0.8},{"ref":"cl.dev.offset","score":0.4}],"selected_rank":[],"used_tokens":0,"dropped":[{"ref_kind":"claim","ref":"cl.dev.wallpaper","band":"goal","resolution":"full","score":0.8,"factors":{"relevance":1.0,"authority":0.8,"freshness":1.0,"confidence":1.0,"exclusion_reason":"budget","discovery_reason":"explicit claim or candidate instrument; independent candidate instrument (reciprocal rank signal)","direct_goal_candidate":true,"candidate_channels":{"tfidf":{"method":"tfidf","score":0.3128445040346275,"rank":1,"selection_relevance":1.0,"ranking_signal":"reciprocal_channel_rank"}}},"tokens":27,"why":"over budget (needed 27 tokens, none of the remaining bands had room)","required_by":[],"text":""},{"ref_kind":"claim","ref":"cl.dev.offset","band":"goal","resolution":"full","score":0.4,"factors":{"relevance":0.5,"authority":0.8,"freshness":1.0,"confidence":1.0,"exclusion_reason":"budget","discovery_reason":"explicit claim or candidate instrument; independent candidate instrument (reciprocal rank signal)","direct_goal_candidate":true,"candidate_channels":{"tfidf":{"method":"tfidf","score":0.2591976395028348,"rank":2,"selection_relevance":0.5,"ranking_signal":"reciprocal_channel_rank"}}},"tokens":28,"why":"over budget (needed 28 tokens, none of the remaining bands had room)","required_by":[],"text":""}],"engine_diagnostics":{"confidence_basis":"explicit_owner_type","calibration_status":"unavailable","external_goal_typing":{"status":"offline","requests":0},"classifier":"forced","context_controls":{"relation_hops":0,"detail_resolution":"full"},"candidate_retrieval":{"run":"kr_69c5ea8ee1f275a0","scan_limit":10000,"channels":[{"method":"tfidf","status":"ok","reason":"","corpus_count":7,"scored_count":7,"unrepresentable_count":0,"unrepresentable_refs":[],"zero_score_count":5,"eligible_count":2,"truncated":false,"scores":[{"ref":"cl.dev.wallpaper","score":0.3128445040346275},{"ref":"cl.dev.offset","score":0.2591976395028348},{"ref":"cl.dev.crypto","score":0.0},{"ref":"cl.dev.orchid","score":0.0},{"ref":"cl.dev.resume","score":0.0},{"ref":"cl.dev.toolbar","score":0.0},{"ref":"cl.dev.weather","score":0.0}],"hits":[{"ref":"cl.dev.wallpaper","score":0.3128445040346275},{"ref":"cl.dev.offset","score":0.2591976395028348}],"id":"tfidf","request":{"id":"tfidf","limit":100,"min_score":0.0},"invalid_hits":[],"accepted_hits":[{"ref":"cl.dev.wallpaper","score":0.3128445040346275},{"ref":"cl.dev.offset","score":0.2591976395028348}]}],"corpus_status":"ok","possibly_truncated":false,"evidence_boundary":"candidate_similarity_is_not_support_truth_or_identity","scanned_claims":7,"admitted_claims":7,"filtered_claims":0,"entity_label_query_errors":0},"retrieval_diagnostics":{"status":"bounded","exhaustive":false,"queries":[{"operation":"principles","selector":{},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_instances","selector":{"project":"e_6dcaaa07327a560f"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_decisions","selector":{"project":"e_6dcaaa07327a560f"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"status_history","selector":{"entity":"e_6dcaaa07327a560f"},"limit":1000000,"returned":0,"status":"below_cap"}],"lookup_issues":[],"excluded":[],"missing_premises":[],"query_errors":0,"cap_hits":0,"gathered_candidates":2,"unique_candidates":2,"duplicate_candidates_merged":0,"budget":{"metric":"rendered_item_codepoints_div_4","includes_prompt_overhead":false,"initial_band_tokens":[0,1,0],"total_tokens":1,"final_band_tokens":[0,0,1],"used_band_tokens":[0,0,0],"used_tokens":0},"recovered_budget_drops":[]}},"answer_correctness":"not_measured"}
+  logged: DEV case low_budget
+          mode tfidf
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_context_retrieval_dev.cpp:289: MESSAGE: W2_RETRIEVAL_DEV_ROW {"protocol":"w2.synthetic_dev.v1","case":"low_budget","mode":"union","pack_hash":"b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759","request":{"text":"checkpoint","targets":["e_6dcaaa07327a560f"],"project":"","budget_tokens":1,"goal_type":"answer_question","run":"kr_69c5ea8ee1f275a0","lang":"en","detail_resolution":"full","candidate_channels":[{"id":"tfidf","limit":100,"min_score":0.0}]},"gold":["cl.dev.offset","cl.dev.resume"],"candidate_metrics":{"gold_count":2,"retrieved_count":4,"relevant_count":2,"irrelevant_count":2,"recall":1.0,"precision":0.5,"first_relevant_rank":2,"reciprocal_rank":0.5,"hits_at_1":false,"hits_at_3":true},"selected_metrics":{"gold_count":2,"retrieved_count":0,"relevant_count":0,"irrelevant_count":0,"recall":0.0,"precision":null,"first_relevant_rank":null,"reciprocal_rank":0.0,"hits_at_1":false,"hits_at_3":false},"candidate_rank":[{"ref":"cl.dev.wallpaper","score":0.8},{"ref":"cl.dev.offset","score":0.4},{"ref":"cl.dev.resume","score":0.27999999999999997},{"ref":"cl.dev.toolbar","score":0.27999999999999997}],"selected_rank":[],"used_tokens":0,"dropped":[{"ref_kind":"claim","ref":"cl.dev.wallpaper","band":"goal","resolution":"full","score":0.8,"factors":{"relevance":1.0,"authority":0.8,"freshness":1.0,"confidence":1.0,"exclusion_reason":"budget","discovery_reason":"explicit claim or candidate instrument; independent candidate instrument (reciprocal rank signal)","direct_goal_candidate":true,"candidate_channels":{"tfidf":{"method":"tfidf","score":0.3128445040346275,"rank":1,"selection_relevance":1.0,"ranking_signal":"reciprocal_channel_rank"}}},"tokens":27,"why":"over budget (needed 27 tokens, none of the remaining bands had room)","required_by":[],"text":""},{"ref_kind":"claim","ref":"cl.dev.offset","band":"goal","resolution":"full","score":0.4,"factors":{"relevance":0.5,"authority":0.8,"freshness":1.0,"confidence":1.0,"exclusion_reason":"budget","discovery_reason":"explicit claim or candidate instrument; independent candidate instrument (reciprocal rank signal)","direct_goal_candidate":true,"candidate_channels":{"tfidf":{"method":"tfidf","score":0.2591976395028348,"rank":2,"selection_relevance":0.5,"ranking_signal":"reciprocal_channel_rank"}}},"tokens":28,"why":"over budget (needed 28 tokens, none of the remaining bands had room)","required_by":[],"text":""},{"ref_kind":"claim","ref":"cl.dev.resume","band":"goal","resolution":"full","score":0.27999999999999997,"factors":{"relevance":0.35,"authority":0.8,"freshness":1.0,"confidence":1.0,"exclusion_reason":"budget","discovery_reason":"one hop from 'node alpha' via 'records'","direct_goal_candidate":true,"relation_hops":1},"tokens":34,"why":"over budget (needed 34 tokens, none of the remaining bands had room)","required_by":[],"text":""},{"ref_kind":"claim","ref":"cl.dev.toolbar","band":"goal","resolution":"full","score":0.27999999999999997,"factors":{"relevance":0.35,"authority":0.8,"freshness":1.0,"confidence":1.0,"exclusion_reason":"budget","discovery_reason":"one hop from 'node alpha' via 'records'","direct_goal_candidate":true,"relation_hops":1},"tokens":27,"why":"over budget (needed 27 tokens, none of the remaining bands had room)","required_by":[],"text":""}],"engine_diagnostics":{"confidence_basis":"explicit_owner_type","calibration_status":"unavailable","external_goal_typing":{"status":"offline","requests":0},"classifier":"forced","context_controls":{"relation_hops":1,"detail_resolution":"full"},"candidate_retrieval":{"run":"kr_69c5ea8ee1f275a0","scan_limit":10000,"channels":[{"method":"tfidf","status":"ok","reason":"","corpus_count":7,"scored_count":7,"unrepresentable_count":0,"unrepresentable_refs":[],"zero_score_count":5,"eligible_count":2,"truncated":false,"scores":[{"ref":"cl.dev.wallpaper","score":0.3128445040346275},{"ref":"cl.dev.offset","score":0.2591976395028348},{"ref":"cl.dev.crypto","score":0.0},{"ref":"cl.dev.orchid","score":0.0},{"ref":"cl.dev.resume","score":0.0},{"ref":"cl.dev.toolbar","score":0.0},{"ref":"cl.dev.weather","score":0.0}],"hits":[{"ref":"cl.dev.wallpaper","score":0.3128445040346275},{"ref":"cl.dev.offset","score":0.2591976395028348}],"id":"tfidf","request":{"id":"tfidf","limit":100,"min_score":0.0},"invalid_hits":[],"accepted_hits":[{"ref":"cl.dev.wallpaper","score":0.3128445040346275},{"ref":"cl.dev.offset","score":0.2591976395028348}]}],"corpus_status":"ok","possibly_truncated":false,"evidence_boundary":"candidate_similarity_is_not_support_truth_or_identity","scanned_claims":7,"admitted_claims":7,"filtered_claims":0,"entity_label_query_errors":0},"retrieval_diagnostics":{"status":"bounded","exhaustive":false,"queries":[{"operation":"principles","selector":{},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_instances","selector":{"project":"e_6dcaaa07327a560f"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_decisions","selector":{"project":"e_6dcaaa07327a560f"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"status_history","selector":{"entity":"e_6dcaaa07327a560f"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"graph","selector":{"entity":"e_6dcaaa07327a560f","direction":"outgoing","hop":1},"limit":10000,"returned":2,"status":"below_cap"},{"operation":"graph","selector":{"entity":"e_6dcaaa07327a560f","direction":"incoming","hop":1},"limit":10000,"returned":0,"status":"below_cap"}],"lookup_issues":[],"excluded":[],"missing_premises":[],"query_errors":0,"cap_hits":0,"gathered_candidates":4,"unique_candidates":4,"duplicate_candidates_merged":0,"budget":{"metric":"rendered_item_codepoints_div_4","includes_prompt_overhead":false,"initial_band_tokens":[0,1,0],"total_tokens":1,"final_band_tokens":[0,0,1],"used_band_tokens":[0,0,0],"used_tokens":0},"recovered_budget_drops":[]}},"answer_correctness":"not_measured"}
+  logged: DEV case low_budget
+          mode union
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_context_retrieval_dev.cpp:289: MESSAGE: W2_RETRIEVAL_DEV_ROW {"protocol":"w2.synthetic_dev.v1","case":"low_budget","mode":"graph_shadow","pack_hash":"b149a86f452d2594b80088da6fe0d990b1a766d72a7b841c1b86f41970251759","request":{"text":"checkpoint","targets":["e_6dcaaa07327a560f"],"project":"","budget_tokens":1,"goal_type":"answer_question","run":"kr_69c5ea8ee1f275a0","lang":"en","detail_resolution":"full","lexical_shadow":true},"gold":["cl.dev.offset","cl.dev.resume"],"candidate_metrics":{"gold_count":2,"retrieved_count":2,"relevant_count":1,"irrelevant_count":1,"recall":0.5,"precision":0.5,"first_relevant_rank":1,"reciprocal_rank":1.0,"hits_at_1":true,"hits_at_3":true},"selected_metrics":{"gold_count":2,"retrieved_count":0,"relevant_count":0,"irrelevant_count":0,"recall":0.0,"precision":null,"first_relevant_rank":null,"reciprocal_rank":0.0,"hits_at_1":false,"hits_at_3":false},"candidate_rank":[{"ref":"cl.dev.resume","score":0.27999999999999997},{"ref":"cl.dev.toolbar","score":0.27999999999999997}],"selected_rank":[],"used_tokens":0,"dropped":[{"ref_kind":"claim","ref":"cl.dev.resume","band":"goal","resolution":"full","score":0.27999999999999997,"factors":{"relevance":0.35,"authority":0.8,"freshness":1.0,"confidence":1.0,"exclusion_reason":"budget","discovery_reason":"one hop from 'node alpha' via 'records'","direct_goal_candidate":true,"relation_hops":1},"tokens":34,"why":"over budget (needed 34 tokens, none of the remaining bands had room)","required_by":[],"text":""},{"ref_kind":"claim","ref":"cl.dev.toolbar","band":"goal","resolution":"full","score":0.27999999999999997,"factors":{"relevance":0.35,"authority":0.8,"freshness":1.0,"confidence":1.0,"exclusion_reason":"budget","discovery_reason":"one hop from 'node alpha' via 'records'","direct_goal_candidate":true,"relation_hops":1},"tokens":27,"why":"over budget (needed 27 tokens, none of the remaining bands had room)","required_by":[],"text":""}],"engine_diagnostics":{"confidence_basis":"explicit_owner_type","calibration_status":"unavailable","external_goal_typing":{"status":"offline","requests":0},"classifier":"forced","context_controls":{"relation_hops":1,"detail_resolution":"full"},"candidate_retrieval":{"run":"kr_69c5ea8ee1f275a0","scan_limit":10000,"channels":[],"corpus_status":"ok","possibly_truncated":false,"evidence_boundary":"candidate_similarity_is_not_support_truth_or_identity","scanned_claims":7,"admitted_claims":7,"filtered_claims":0,"entity_label_query_errors":0,"lexical_shadow":{"method":"lexical_token_overlap","status":"ok","reason":"","corpus_count":7,"scored_count":7,"unrepresentable_count":0,"unrepresentable_refs":[],"zero_score_count":5,"eligible_count":2,"truncated":false,"scores":[{"ref":"cl.dev.offset","score":1.0},{"ref":"cl.dev.wallpaper","score":1.0},{"ref":"cl.dev.crypto","score":0.0},{"ref":"cl.dev.orchid","score":0.0},{"ref":"cl.dev.resume","score":0.0},{"ref":"cl.dev.toolbar","score":0.0},{"ref":"cl.dev.weather","score":0.0}],"hits":[{"ref":"cl.dev.offset","score":1.0},{"ref":"cl.dev.wallpaper","score":1.0}],"diagnostic_gap":[{"ref":"cl.dev.offset","score":1.0,"verification":"undecided"},{"ref":"cl.dev.wallpaper","score":1.0,"verification":"undecided"}],"comparison":"lexical_hits_minus_graph_and_nonlexical_channel_hits_before_selection","selection_effect":"none"}},"retrieval_diagnostics":{"status":"bounded","exhaustive":false,"queries":[{"operation":"principles","selector":{},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_instances","selector":{"project":"e_6dcaaa07327a560f"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"project_decisions","selector":{"project":"e_6dcaaa07327a560f"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"status_history","selector":{"entity":"e_6dcaaa07327a560f"},"limit":1000000,"returned":0,"status":"below_cap"},{"operation":"graph","selector":{"entity":"e_6dcaaa07327a560f","direction":"outgoing","hop":1},"limit":10000,"returned":2,"status":"below_cap"},{"operation":"graph","selector":{"entity":"e_6dcaaa07327a560f","direction":"incoming","hop":1},"limit":10000,"returned":0,"status":"below_cap"}],"lookup_issues":[],"excluded":[],"missing_premises":[],"query_errors":0,"cap_hits":0,"gathered_candidates":2,"unique_candidates":2,"duplicate_candidates_merged":0,"budget":{"metric":"rendered_item_codepoints_div_4","includes_prompt_overhead":false,"initial_band_tokens":[0,1,0],"total_tokens":1,"final_band_tokens":[0,0,1],"used_band_tokens":[0,0,0],"used_tokens":0},"recovered_budget_drops":[]}},"answer_correctness":"not_measured"}
+  logged: DEV case low_budget
+          mode graph_shadow
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_context_retrieval_dev.cpp:320: MESSAGE: W2_RETRIEVAL_DEV_SUMMARY {"protocol":"w2.synthetic_dev.v1","mode":"graph","candidate":{"case_count":6,"nonempty_gold_case_count":5,"gold_count":8,"retrieved_count":4,"relevant_count":2,"micro_recall":0.25,"micro_precision":0.5,"mrr":0.4,"hits_at_1_count":2,"hits_at_3_count":2},"selected":{"case_count":6,"nonempty_gold_case_count":5,"gold_count":8,"retrieved_count":2,"relevant_count":1,"micro_recall":0.125,"micro_precision":0.5,"mrr":0.2,"hits_at_1_count":1,"hits_at_3_count":1},"answer_correctness":"not_measured","quality_thresholds":"none; fixed synthetic DEV diagnostic"}
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_context_retrieval_dev.cpp:320: MESSAGE: W2_RETRIEVAL_DEV_SUMMARY {"protocol":"w2.synthetic_dev.v1","mode":"tfidf","candidate":{"case_count":6,"nonempty_gold_case_count":5,"gold_count":8,"retrieved_count":8,"relevant_count":5,"micro_recall":0.625,"micro_precision":0.625,"mrr":0.7,"hits_at_1_count":2,"hits_at_3_count":5},"selected":{"case_count":6,"nonempty_gold_case_count":5,"gold_count":8,"retrieved_count":6,"relevant_count":4,"micro_recall":0.5,"micro_precision":0.6666666666666666,"mrr":0.6,"hits_at_1_count":2,"hits_at_3_count":4},"answer_correctness":"not_measured","quality_thresholds":"none; fixed synthetic DEV diagnostic"}
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_context_retrieval_dev.cpp:320: MESSAGE: W2_RETRIEVAL_DEV_SUMMARY {"protocol":"w2.synthetic_dev.v1","mode":"union","candidate":{"case_count":6,"nonempty_gold_case_count":5,"gold_count":8,"retrieved_count":12,"relevant_count":7,"micro_recall":0.875,"micro_precision":0.5833333333333334,"mrr":0.7,"hits_at_1_count":2,"hits_at_3_count":5},"selected":{"case_count":6,"nonempty_gold_case_count":5,"gold_count":8,"retrieved_count":8,"relevant_count":5,"micro_recall":0.625,"micro_precision":0.625,"mrr":0.6,"hits_at_1_count":2,"hits_at_3_count":4},"answer_correctness":"not_measured","quality_thresholds":"none; fixed synthetic DEV diagnostic"}
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_context_retrieval_dev.cpp:320: MESSAGE: W2_RETRIEVAL_DEV_SUMMARY {"protocol":"w2.synthetic_dev.v1","mode":"graph_shadow","candidate":{"case_count":6,"nonempty_gold_case_count":5,"gold_count":8,"retrieved_count":4,"relevant_count":2,"micro_recall":0.25,"micro_precision":0.5,"mrr":0.4,"hits_at_1_count":2,"hits_at_3_count":2},"selected":{"case_count":6,"nonempty_gold_case_count":5,"gold_count":8,"retrieved_count":2,"relevant_count":1,"micro_recall":0.125,"micro_precision":0.5,"mrr":0.2,"hits_at_1_count":1,"hits_at_3_count":1},"answer_correctness":"not_measured","quality_thresholds":"none; fixed synthetic DEV diagnostic"}
+
+===============================================================================
+[doctest] test cases:   1 |   1 passed | 0 failed | 659 skipped
+[doctest] assertions: 241 | 241 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_tfidf_reuse" classname="unit.test_context_tfidf_reuse" time="4.69704" status="run">
+		<properties/>
+		<system-out>N2_RETAINED_PAYLOAD {"schema":"loom.n2.logical_cache_payload/1","sizes":[{"claims":64,"copied_document_id_bytes":704,"copied_document_text_bytes":14124,"normalized_vector_entries":1152,"normalized_vector_key_bytes":8576,"vector_numeric_bytes":9216,"state_bytes":256},{"claims":256,"copied_document_id_bytes":2816,"copied_document_text_bytes":56868,"normalized_vector_entries":4608,"normalized_vector_key_bytes":34304,"vector_numeric_bytes":36864,"state_bytes":1024},{"claims":1024,"copied_document_id_bytes":11264,"copied_document_text_bytes":228180,"normalized_vector_entries":18432,"normalized_vector_key_bytes":137216,"vector_numeric_bytes":147456,"state_bytes":4096}],"excludes":"container nodes, string capacity, allocator overhead, query id, temporary cold-fit copies and result JSON"}
+===============================================================================
+[doctest] test cases:   9 |   9 passed | 0 failed | 651 skipped
+[doctest] assertions: 219 | 219 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_crypto" classname="unit.test_crypto" time="3.65809" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases: 12 | 12 passed | 0 failed | 648 skipped
+[doctest] assertions: 66 | 66 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_db" classname="unit.test_db" time="0.242697" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   13 |   13 passed | 0 failed | 647 skipped
+[doctest] assertions: 5178 | 5178 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_event_bus" classname="unit.test_event_bus" time="0.0292841" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  5 |  5 passed | 0 failed | 655 skipped
+[doctest] assertions: 28 | 28 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_extract" classname="unit.test_extract" time="3.18989" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  15 |  15 passed | 0 failed | 645 skipped
+[doctest] assertions: 241 | 241 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_extract_eval" classname="unit.test_extract_eval" time="2.55232" status="run">
+		<properties/>
+		<system-out>===============================================================================
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_extract_eval.cpp:92:
+TEST SUITE: extract_eval
+TEST CASE:  synthetic_dev: entities and aliases (after resolution)
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_extract_eval.cpp:141: MESSAGE: project entity P/R/F1 = 0.833333 / 1 / 0.909091  (5 of 5, predicted 6)
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_extract_eval.cpp:143: MESSAGE: alias P/R/F1 = 0.545455 / 0.230769 / 0.324324
+
+===============================================================================
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_extract_eval.cpp:149:
+TEST SUITE: extract_eval
+TEST CASE:  synthetic_dev: versions
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_extract_eval.cpp:191: MESSAGE: version precision/recall = 0.95 / 0.818182  (18/22)
+
+===============================================================================
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_extract_eval.cpp:196:
+TEST SUITE: extract_eval
+TEST CASE:  synthetic_dev: status per branch and version
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_extract_eval.cpp:230: MESSAGE: status accuracy = 0.8, status+version accuracy = 0.76  (25 located events)
+
+===============================================================================
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_extract_eval.cpp:243:
+TEST SUITE: extract_eval
+TEST CASE:  synthetic_dev: decisions and forks
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_extract_eval.cpp:270: MESSAGE: decision recall (unit) = 0.619048, (message) = 0.571429, with recorded alternatives = 0.238095  (21)
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_extract_eval.cpp:306: MESSAGE: fork recall = 1  (5 forked conversations), design fork found = true
+
+===============================================================================
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_extract_eval.cpp:313:
+TEST SUITE: extract_eval
+TEST CASE:  synthetic_dev: areas (R10)
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_extract_eval.cpp:350: MESSAGE: area recall = 1, listed-member recall = 0.428571 (token overlap, PL vs EN), member count exact = 5/5
+
+===============================================================================
+[doctest] test cases:  6 |  6 passed | 0 failed | 654 skipped
+[doctest] assertions: 27 | 27 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_fts" classname="unit.test_fts" time="0.0526128" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  5 |  5 passed | 0 failed | 655 skipped
+[doctest] assertions: 53 | 53 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_generalize" classname="unit.test_generalize" time="2.97351" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   7 |   7 passed | 0 failed | 653 skipped
+[doctest] assertions: 199 | 199 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_generalize_eval" classname="unit.test_generalize_eval" time="1.3821" status="run">
+		<properties/>
+		<system-out>===============================================================================
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_generalize_eval.cpp:68:
+TEST SUITE: generalize_eval
+TEST CASE:  synthetic_dev: principles, operators, predictions, false certainty, EP soundness
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_generalize_eval.cpp:106: MESSAGE: principle pr.optionality_over_speed -&gt; p_4b48be69aa2f49d2 level value ok form invariant ok
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_generalize_eval.cpp:106: MESSAGE: principle pr.honesty_over_comfort -&gt; p_e3a2d7988454a4aa level value ok form invariant ok
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_generalize_eval.cpp:106: MESSAGE: principle pr.keep_both_branches -&gt; p_0c2b3b04100e4bd2 level epistemic ok form heuristic WRONG
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_generalize_eval.cpp:106: MESSAGE: principle pr.data_over_branches -&gt; p.presets_are_data level strategy ok form invariant ok
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_generalize_eval.cpp:106: MESSAGE: principle pr.write_down_the_blocker -&gt; p_db3c63210eee0c93 level epistemic ok form heuristic ok
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_generalize_eval.cpp:106: MESSAGE: principle pr.counterexample_hunting -&gt; p_8654c1ed489e8d32 level epistemic ok form meta WRONG
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_generalize_eval.cpp:98: MESSAGE: principle not recalled: pr.provider_not_special_case
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_generalize_eval.cpp:98: MESSAGE: principle not recalled: pr.momentum_over_perfection
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_generalize_eval.cpp:106: MESSAGE: principle pr.decide_fast_correct_later -&gt; p_57a4844d39c09722 level strategy ok form default ok
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_generalize_eval.cpp:106: MESSAGE: principle pr.small_reversible_steps -&gt; p_b7552f556fbfe41a level strategy ok form default ok
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_generalize_eval.cpp:106: MESSAGE: principle pr.owner_confirmation_for_money -&gt; p_962c0010c407c989 level strategy ok form conflict_resolution ok
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_generalize_eval.cpp:106: MESSAGE: principle pr.two_masters_conflict -&gt; p_231595376cdf4c41 level strategy ok form conflict_resolution ok
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_generalize_eval.cpp:106: MESSAGE: principle pr.meta_two_examples_rule -&gt; p_599da6dc0ad9146d level epistemic WRONG form meta ok
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_generalize_eval.cpp:114: MESSAGE: principles: 30 (29 discovered), recall 0.846154, level acc 0.909091, form acc 0.818182
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_generalize_eval.cpp:144: MESSAGE: operator op.new_source_new_adapter: pre-T candidate yes, pre/post merged yes
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_generalize_eval.cpp:144: MESSAGE: operator op.new_artifact_shared_structure: pre-T candidate yes, pre/post merged no
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_generalize_eval.cpp:144: MESSAGE: operator op.observe_before_automate: pre-T candidate yes, pre/post merged no
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_generalize_eval.cpp:144: MESSAGE: operator op.uncertainty_keep_alternatives: pre-T candidate yes, pre/post merged yes
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_generalize_eval.cpp:144: MESSAGE: operator op.impl_detail_not_propagated: pre-T candidate yes, pre/post merged no
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_generalize_eval.cpp:144: MESSAGE: operator op.cost_gate_on_irreversibility: pre-T candidate yes, pre/post merged yes
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_generalize_eval.cpp:162: MESSAGE: operators: 14 mined &lt;= T, pre-T recovery 6/6; full-corpus recurrence 3/6, merged operators 3 (impure 0)
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_generalize_eval.cpp:180: MESSAGE: prediction pred.op.new_source_new_adapter: holds
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_generalize_eval.cpp:180: MESSAGE: prediction pred.op.new_artifact_shared_structure: MISSED
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_generalize_eval.cpp:180: MESSAGE: prediction pred.op.observe_before_automate: MISSED
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_generalize_eval.cpp:180: MESSAGE: prediction pred.op.uncertainty_keep_alternatives: holds
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_generalize_eval.cpp:180: MESSAGE: prediction pred.op.impl_detail_not_propagated: MISSED
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_generalize_eval.cpp:180: MESSAGE: prediction pred.op.cost_gate_on_irreversibility: holds
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_generalize_eval.cpp:195: MESSAGE: predictions: 15 made at T, 3 evaluated (3 hold); holdout pair accuracy 0.5; negative control attributed 0x, specific-choice predictions 0, confident-but-violated 0
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_generalize_eval.cpp:215: MESSAGE: kind proj.analogghosts (music): music ok
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_generalize_eval.cpp:215: MESSAGE: kind proj.lokatorka (legal_case): legal_case ok
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_generalize_eval.cpp:215: MESSAGE: kind proj.noteflow (multiplatform_app): software_app+multiplatform ok
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_generalize_eval.cpp:215: MESSAGE: kind proj.reeltime (pipeline): film+staged_transformation WRONG
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_generalize_eval.cpp:215: MESSAGE: kind proj.watchdog (agent_system): software_app ok
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_generalize_eval.cpp:257: MESSAGE: matching: kind accuracy 4/5; produced 157 claims (12 inferred, 4 transferred, 3 extrapolated, 4 analogies); false-certainty rate 0; inferred with EP 16/16; EP re-check after T: holds 6, violated 0, pending 6 (soundness 1)
+
+GENERALIZE_EVAL principle_recall=0.846 level_acc=0.909 form_acc=0.818 op_pre=6/6 op_recur=3/6 impure=0 pred_acc=0.500 neg_attr=0 specific=0 fc=0.000 ep_sound=1.000 kinds=4/5
+===============================================================================
+[doctest] test cases:   1 |   1 passed | 0 failed | 659 skipped
+[doctest] assertions: 173 | 173 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_github" classname="unit.test_github" time="0.0206437" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  19 |  19 passed | 0 failed | 641 skipped
+[doctest] assertions: 113 | 113 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_graph" classname="unit.test_graph" time="0.0575281" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  8 |  8 passed | 0 failed | 652 skipped
+[doctest] assertions: 30 | 30 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_import" classname="unit.test_import" time="0.109357" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  23 |  23 passed | 0 failed | 637 skipped
+[doctest] assertions: 223 | 223 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_import_export_fidelity" classname="unit.test_import_export_fidelity" time="0.105662" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   5 |   5 passed | 0 failed | 655 skipped
+[doctest] assertions: 327 | 327 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_import_exports" classname="unit.test_import_exports" time="1.59008" status="run">
+		<properties/>
+		<system-out>===============================================================================
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_import_exports.cpp:723:
+TEST SUITE: import_exports
+TEST CASE:  completeness: every JSON leaf path of every fixture conversation is stored verbatim (independent recount)
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_import_exports.cpp:765: MESSAGE: completeness: 1604/1604 conversation JSON leaves preserved verbatim
+
+===============================================================================
+[doctest] test cases:   18 |   18 passed | 0 failed | 642 skipped
+[doctest] assertions: 2202 | 2202 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_import_source_materialization" classname="unit.test_import_source_materialization" time="0.173715" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   8 |   8 passed | 0 failed | 652 skipped
+[doctest] assertions: 592 | 592 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_import_stream" classname="unit.test_import_stream" time="33.8344" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  1 |  1 passed | 0 failed | 659 skipped
+[doctest] assertions: 13 | 13 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_kb_pack" classname="unit.test_kb_pack" time="7.7599" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  14 |  14 passed | 0 failed | 646 skipped
+[doctest] assertions: 184 | 184 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_knowledge" classname="unit.test_knowledge" time="6.43141" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  18 |  18 passed | 0 failed | 642 skipped
+[doctest] assertions: 150 | 150 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_knowledge_candidate_graph" classname="unit.test_knowledge_candidate_graph" time="0.213969" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  10 |  10 passed | 0 failed | 650 skipped
+[doctest] assertions: 114 | 114 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_knowledge_candidates" classname="unit.test_knowledge_candidates" time="0.019856" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  1 |  1 passed | 0 failed | 659 skipped
+[doctest] assertions: 14 | 14 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_knowledge_flow" classname="unit.test_knowledge_flow" time="1.34765" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  2 |  2 passed | 0 failed | 658 skipped
+[doctest] assertions: 53 | 53 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_knowledge_semantic" classname="unit.test_knowledge_semantic" time="3.06205" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  13 |  13 passed | 0 failed | 647 skipped
+[doctest] assertions: 125 | 125 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_knowledge_semantic_graph" classname="unit.test_knowledge_semantic_graph" time="3.31371" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  11 |  11 passed | 0 failed | 649 skipped
+[doctest] assertions: 100 | 100 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_knowledge_store" classname="unit.test_knowledge_store" time="0.172784" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   7 |   7 passed | 0 failed | 653 skipped
+[doctest] assertions: 124 | 124 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_materialize" classname="unit.test_materialize" time="1.23204" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  6 |  6 passed | 0 failed | 654 skipped
+[doctest] assertions: 67 | 67 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_media" classname="unit.test_media" time="0.00704213" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases: 13 | 13 passed | 0 failed | 647 skipped
+[doctest] assertions: 81 | 81 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_memory" classname="unit.test_memory" time="0.0167548" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  9 |  9 passed | 0 failed | 651 skipped
+[doctest] assertions: 40 | 40 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_model" classname="unit.test_model" time="0.0165318" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  10 |  10 passed | 0 failed | 650 skipped
+[doctest] assertions: 137 | 137 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_net_sse" classname="unit.test_net_sse" time="0.00604434" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases: 10 | 10 passed | 0 failed | 650 skipped
+[doctest] assertions: 45 | 45 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_pack_model" classname="unit.test_pack_model" time="1.28781" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   6 |   6 passed | 0 failed | 654 skipped
+[doctest] assertions: 900 | 900 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_provenance" classname="unit.test_provenance" time="0.0662423" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  3 |  3 passed | 0 failed | 657 skipped
+[doctest] assertions: 49 | 49 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_providers" classname="unit.test_providers" time="0.0103441" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases: 13 | 13 passed | 0 failed | 647 skipped
+[doctest] assertions: 61 | 61 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_regex" classname="unit.test_regex" time="0.00717134" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases: 15 | 15 passed | 0 failed | 645 skipped
+[doctest] assertions: 89 | 89 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_relations" classname="unit.test_relations" time="0.0113605" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  1 |  1 passed | 0 failed | 659 skipped
+[doctest] assertions: 39 | 39 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_resolve" classname="unit.test_resolve" time="0.267269" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  8 |  8 passed | 0 failed | 652 skipped
+[doctest] assertions: 71 | 71 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_resolve_attribution" classname="unit.test_resolve_attribution" time="4.15312" status="run">
+		<properties/>
+		<system-out>===============================================================================
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_resolve_attribution.cpp:327:
+TEST SUITE: resolve_attribution
+TEST CASE:  synthetic_dev: attribution of units that never name their project, before vs after
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_resolve_attribution.cpp:413: MESSAGE: noise conversations attributed to a project: 1/20
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_resolve_attribution.cpp:417: MESSAGE: method tfidf, stats {"method":"tfidf","units":68,"unattributed":56,"attributed":35,"ambiguous":2,"passes":17,"foundations":0,"inferred_aliases":0,"resubjected":91,"members":{"notatnik":["gdzie to trzymac@1","un_d92a70c431c9bf2b","notatki@2","un_f9cf3aaf24f1bdc9"],"Stroz":["un_4e5a46a0e672b6d3","watcher + restart dziala@4","ile razy w tym tygodniu recznie zabijalam zawieszony proces@1","podsumowania po restarcie@5","un_7b368a1dfb7f5866","buduje stroza@2","un_e9efb004cac9f0e7","powiadomienia na pulpit@3"],"plyta":["rozne@1"],"sprawa z Kwiatowej":["olal pismo, idziemy do sadu@3","zbieram dowody - Kwiatowa@1","strategia: pismo czy od razu sad@4","un_88da9b32fddd0402","Zenon sie wypiera, ale mam maila ze stycznia@2"],"NoteFlow":["czemu ciagle zmieniam zdanie@10","notatki 0.2 i co z szyfrowaniem@6","przeglad u dentysty@3","porzucam Slow Fracture (na razie)@15","un_51a74c052f244b55","nowa synchronizacja i graf wiedzy v2@1","transkrypcja wrocila + offline fallback@4","rozjazd: python czy c++@9","riffy i pomysly na EP@16","d-moll wygrywa@13","molowy czy inny - jeszcze nie wiem@14","szyfrowanie w koncu + zgubione checklisty (znowu)@8","wygrywa c++@11","notatki glosowe dzialaja@5","zmieniam polling na inotify@12","synchronizacja pierwsza wersja@2","rozne@7"],"generator reelsow":["storyboard z tekstu dziala@2","klipy beda drogie, trzeba to ogarnac@4","pomysl na generator reelsow@1","compose dalej czeka@3"]},"alias_probe":{"notatnik":{"best":"NoteFlow","cosine":0.151,"second":0.084},"plyta":{"best":"NoteFlow","cosine":0.106,"second":0.013},"sprawa z Kwiatowej":{"best":"Stroz","cosine":0.06,"second":0.019},"NoteFlow":{"best":"Stroz","cosine":0.014,"second":0.0},"generator reelsow":{"best":"NoteFlow","cosine":0.036,"second":0.035},"Stroz":{"best":"NoteFlow","cosine":0.066,"second":0.0}}}
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_resolve_attribution.cpp:418: MESSAGE: unnamed relevant units = 33: attribution accuracy before 0 -&gt; after 0.727273 (top-1), 0.757576 (GT among chosen), ambiguous 2
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_resolve_attribution.cpp:420: MESSAGE: alias recall before 0.230769 -&gt; after 0.230769 (precision 0.545455 -&gt; 0.545455, F1 0.324324 -&gt; 0.324324)
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_resolve_attribution.cpp:423: MESSAGE: claims attached to a project: before 0.0920245 -&gt; after 0.595092  (163 claims of relevant units)
+
+===============================================================================
+[doctest] test cases:   7 |   7 passed | 0 failed | 653 skipped
+[doctest] assertions: 420 | 420 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_resolve_lineage" classname="unit.test_resolve_lineage" time="1.54432" status="run">
+		<properties/>
+		<system-out>===============================================================================
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_resolve_lineage.cpp:42:
+TEST SUITE: resolve_lineage
+TEST CASE:  history/chatadhd_v0.8.3 forked from 0.7.9 (46d0ba7)
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_resolve_lineage.cpp:49: MESSAGE: 0.8.3 base 46d0ba7 confidence 1 votes {"revision":"46d0ba7474a2ea3edae8f402ce57f51934b94d73","label":"0.7.9","date":"2026-02-11T20:11:51Z","files":34,"weight":13860.98,"similarity":0.8825} / {"revision":"1e3fa2b6ed746a2252cd83182c47b5d7ae257505","label":"0.7.10","date":"2026-02-11T20:22:53Z","files":31,"weight":13625.175,"similarity":0.8712}
+
+===============================================================================
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_resolve_lineage.cpp:66:
+TEST SUITE: resolve_lineage
+TEST CASE:  history/chatadhd_v0.9.0 forked from 0.7.10 (1e3fa2b), before the abspath fix
+
+/workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/test_resolve_lineage.cpp:72: MESSAGE: 0.9.0 base 1e3fa2b confidence 0.9672 votes {"revision":"1e3fa2b6ed746a2252cd83182c47b5d7ae257505","label":"0.7.10","date":"2026-02-11T20:22:53Z","files":50,"weight":16845.765,"similarity":0.4565} / {"revision":"6ab43662d64a20808742a6e9c2ea818bae0cdff1","label":"0.7.10","date":"2026-02-11T20:22:53Z","files":50,"weight":16845.765,"similarity":0.4565}
+
+===============================================================================
+[doctest] test cases:  2 |  2 passed | 0 failed | 658 skipped
+[doctest] assertions: 15 | 15 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_runtime" classname="unit.test_runtime" time="0.0301472" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  4 |  4 passed | 0 failed | 656 skipped
+[doctest] assertions: 50 | 50 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_selector" classname="unit.test_selector" time="0.00622481" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  5 |  5 passed | 0 failed | 655 skipped
+[doctest] assertions: 22 | 22 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_semantic_llm" classname="unit.test_semantic_llm" time="0.052325" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases: 11 | 11 passed | 0 failed | 649 skipped
+[doctest] assertions: 91 | 91 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_semantic_worker" classname="unit.test_semantic_worker" time="0.240851" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  9 |  9 passed | 0 failed | 651 skipped
+[doctest] assertions: 34 | 34 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_tasks" classname="unit.test_tasks" time="0.0676688" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  5 |  5 passed | 0 failed | 655 skipped
+[doctest] assertions: 56 | 56 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_util" classname="unit.test_util" time="0.0596892" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases: 10 | 10 passed | 0 failed | 650 skipped
+[doctest] assertions: 94 | 94 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="compat.test_abi_compat" classname="compat.test_abi_compat" time="0.268169" status="run">
+		<properties/>
+		<system-out>test_ctypes_smoke (__main__.AbiTest.test_ctypes_smoke) ... ok
+test_original_spec_signatures_are_exact (__main__.AbiTest.test_original_spec_signatures_are_exact) ... ok
+test_shared_library_exports_exactly_the_declared_api (__main__.AbiTest.test_shared_library_exports_exactly_the_declared_api) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.212s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_active_task_compiler_compat" classname="compat.test_active_task_compiler_compat" time="0.599151" status="run">
+		<properties/>
+		<system-out>....
+----------------------------------------------------------------------
+Ran 4 tests in 0.475s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_candidate_graph_native" classname="compat.test_candidate_graph_native" time="0.791186" status="run">
+		<properties/>
+		<system-out>.........
+----------------------------------------------------------------------
+Ran 9 tests in 0.721s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_chat_active_task_http" classname="compat.test_chat_active_task_http" time="3.13379" status="run">
+		<properties/>
+		<system-out>test_compiled_instruction_reaches_local_provider_and_invalid_binding_does_not (__main__.ActiveTaskHttpTest.test_compiled_instruction_reaches_local_provider_and_invalid_binding_does_not) ... 14:29:00 [INFO ] loom.config: config.json not found - using defaults
+14:29:00 [INFO ] loom.config: secrets.json not found - using defaults
+14:29:00 [INFO ] loom.db: Schema upgraded: v0 -&gt; v4
+14:29:00 [INFO ] loom.db: Database opened: /tmp/loom-w1-http-97eji7ug/chatadhd.db
+14:29:00 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+14:29:00 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom-w1-http-97eji7ug)
+14:29:01 [INFO ] loom.db: Database closed
+14:29:01 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_native_source_edit_requires_explicit_new_id_hash_and_quote_rebinding (__main__.ActiveTaskRevisionHttpTest.test_native_source_edit_requires_explicit_new_id_hash_and_quote_rebinding) ... 14:29:01 [INFO ] loom.config: config.json not found - using defaults
+14:29:01 [INFO ] loom.config: secrets.json not found - using defaults
+14:29:01 [INFO ] loom.db: Schema upgraded: v0 -&gt; v4
+14:29:01 [INFO ] loom.db: Database opened: /tmp/loom-w1-revision-http-053orwah/chatadhd.db
+14:29:01 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+14:29:01 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom-w1-revision-http-053orwah)
+14:29:01 [INFO ] loom.db: Database closed
+14:29:01 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_selective_v2_v3_latest_replay_and_stale_rejection (__main__.ActiveTaskRevisionHttpTest.test_selective_v2_v3_latest_replay_and_stale_rejection) ... 14:29:02 [INFO ] loom.config: config.json not found - using defaults
+14:29:02 [INFO ] loom.config: secrets.json not found - using defaults
+14:29:02 [INFO ] loom.db: Schema upgraded: v0 -&gt; v4
+14:29:02 [INFO ] loom.db: Database opened: /tmp/loom-w1-revision-http-fxcunh02/chatadhd.db
+14:29:02 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+14:29:02 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom-w1-revision-http-fxcunh02)
+14:29:02 [INFO ] loom.db: Database closed
+14:29:02 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_trace_off_provider_failure_retains_product_across_runtime_restart (__main__.ActiveTaskRevisionHttpTest.test_trace_off_provider_failure_retains_product_across_runtime_restart) ... 14:29:03 [INFO ] loom.config: config.json not found - using defaults
+14:29:03 [INFO ] loom.config: secrets.json not found - using defaults
+14:29:03 [INFO ] loom.db: Schema upgraded: v0 -&gt; v4
+14:29:03 [INFO ] loom.db: Database opened: /tmp/loom-w1-revision-http-ksmkk3c5/chatadhd.db
+14:29:03 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+14:29:03 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom-w1-revision-http-ksmkk3c5)
+14:29:03 [INFO ] loom.db: Database closed
+14:29:03 [INFO ] loom.runtime: Loom runtime shut down
+14:29:03 [INFO ] loom.config: Loaded config.json (12 keys)
+14:29:03 [INFO ] loom.config: Loaded secrets.json (1 keys)
+14:29:03 [INFO ] loom.db: Database opened: /tmp/loom-w1-revision-http-ksmkk3c5/chatadhd.db
+14:29:03 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+14:29:03 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom-w1-revision-http-ksmkk3c5)
+14:29:03 [INFO ] loom.db: Database closed
+14:29:03 [INFO ] loom.runtime: Loom runtime shut down
+ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 3.058s
+
+OK
+W1 transport receipt: 3 local provider calls, 0 remote calls; invalid binding adds 0 messages.
+W1 retained synthetic HTTP database: /tmp/loom-w1-revision-http-053orwah
+W1 native edit transport: 3 local calls, 0 remote; 2 rejected rebinding attempts add 0 calls/rows.
+W1 retained synthetic HTTP database: /tmp/loom-w1-revision-http-fxcunh02
+W1 revisions transport: 7 local calls, 0 remote; 2 stale rejections add 0 calls/rows.
+W1 retained synthetic HTTP database: /tmp/loom-w1-revision-http-ksmkk3c5
+W1 restart transport: 5 local calls (1 HTTP 503), 0 remote; 2 version rejections add 0 calls/rows.
+</system-out>
+	</testcase>
+	<testcase name="compat.test_chat_compat" classname="compat.test_chat_compat" time="2.93326" status="run">
+		<properties/>
+		<system-out>/workspace/scratch/407fe6f6ff42/chatadhd/engine/db.py:304: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/407fe6f6ff42/chatadhd/engine/db.py:360: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/407fe6f6ff42/chatadhd/engine/db.py:328: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  kwargs["updated"] = datetime.utcnow().isoformat() + "Z"
+..
+----------------------------------------------------------------------
+Ran 2 tests in 1.041s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_config_compat" classname="compat.test_config_compat" time="0.109028" status="run">
+		<properties/>
+		<system-out>test_corrupt_config_falls_back_to_defaults_like_python (__main__.ConfigCompatTest.test_corrupt_config_falls_back_to_defaults_like_python) ... ok
+test_data_dir_resolution_matches_python (__main__.ConfigCompatTest.test_data_dir_resolution_matches_python) ... ok
+test_loom_written_config_is_read_by_python_without_upgrade (__main__.ConfigCompatTest.test_loom_written_config_is_read_by_python_without_upgrade) ... ok
+test_python_written_config_is_read_by_loom (__main__.ConfigCompatTest.test_python_written_config_is_read_by_loom) ... ok
+test_user_model_preservation_is_identical (__main__.ConfigCompatTest.test_user_model_preservation_is_identical) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.056s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_crypto_compat" classname="compat.test_crypto_compat" time="10.1826" status="run">
+		<properties/>
+		<system-out>test_cpp_encrypts_python_decrypts (__main__.CryptoCompatTest.test_cpp_encrypts_python_decrypts) ... ok
+test_encrypted_blob_wire_format_is_byte_identical (__main__.CryptoCompatTest.test_encrypted_blob_wire_format_is_byte_identical)
+Loom's EncryptedBlob.to_dict() must use the same keys/order/defaults ... ok
+test_known_answer_vector (__main__.CryptoCompatTest.test_known_answer_vector) ... ok
+test_python_encrypts_cpp_decrypts (__main__.CryptoCompatTest.test_python_encrypts_cpp_decrypts) ... ok
+test_tampered_ciphertext_fails_on_both_sides (__main__.CryptoCompatTest.test_tampered_ciphertext_fails_on_both_sides) ... ok
+test_wrong_password_fails_on_both_sides (__main__.CryptoCompatTest.test_wrong_password_fails_on_both_sides) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 7.985s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_db_compat" classname="compat.test_db_compat" time="0.819558" status="run">
+		<properties/>
+		<system-out>test_a_python_created_db_is_read_identically_by_loom (__main__.DbCompatTest.test_a_python_created_db_is_read_identically_by_loom) ... /workspace/scratch/407fe6f6ff42/chatadhd/engine/db.py:304: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/407fe6f6ff42/chatadhd/engine/db.py:360: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/407fe6f6ff42/chatadhd/engine/db.py:328: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  kwargs["updated"] = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/407fe6f6ff42/chatadhd/engine/db.py:405: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/407fe6f6ff42/chatadhd/engine/db.py:634: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/407fe6f6ff42/chatadhd/engine/db.py:577: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+ok
+test_b_loom_created_db_is_fully_usable_by_python (__main__.DbCompatTest.test_b_loom_created_db_is_fully_usable_by_python) ... ok
+test_c_interleaved_python_and_loom_on_one_file (__main__.DbCompatTest.test_c_interleaved_python_and_loom_on_one_file) ... ok
+test_d_concurrent_writers_python_and_loom (__main__.DbCompatTest.test_d_concurrent_writers_python_and_loom) ... ok
+test_fts_index_is_separate_and_python_vacuum_works (__main__.DbCompatTest.test_fts_index_is_separate_and_python_vacuum_works) ... ok
+test_legacy_schema_migrates_identically (__main__.DbCompatTest.test_legacy_schema_migrates_identically) ... ok
+test_schema_text_matches_python (__main__.DbCompatTest.test_schema_text_matches_python) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.755s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_github_sync_defaults" classname="compat.test_github_sync_defaults" time="0.114719" status="run">
+		<properties/>
+		<system-out>..
+----------------------------------------------------------------------
+Ran 2 tests in 0.004s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_graph_compat" classname="compat.test_graph_compat" time="2.10309" status="run">
+		<properties/>
+		<system-out>test_empty_and_short_messages_produce_no_graph_writes (__main__.GraphCompat.test_empty_and_short_messages_produce_no_graph_writes) ... /workspace/scratch/407fe6f6ff42/chatadhd/engine/db.py:304: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/407fe6f6ff42/chatadhd/engine/db.py:360: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/407fe6f6ff42/chatadhd/engine/db.py:328: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  kwargs["updated"] = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/407fe6f6ff42/chatadhd/core/semantic.py:189: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  "timestamp": datetime.utcnow().isoformat() + "Z",
+ok
+test_entities_topics_relations_across_conversations (__main__.GraphCompat.test_entities_topics_relations_across_conversations) ... /workspace/scratch/407fe6f6ff42/chatadhd/engine/db.py:634: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/407fe6f6ff42/chatadhd/engine/db.py:577: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+ok
+test_reindex_like_sequence_single_conversation (__main__.GraphCompat.test_reindex_like_sequence_single_conversation) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 1.905s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_graph_packet_store" classname="compat.test_graph_packet_store" time="0.688526" status="run">
+		<properties/>
+		<system-out>test_cas_cannot_rewrite_immutable_source_or_entity_and_claim_identity (__main__.GraphPacketStoreTests.test_cas_cannot_rewrite_immutable_source_or_entity_and_claim_identity) ... 14:29:34 [INFO ] loom.config: config.json not found - using defaults
+14:29:34 [INFO ] loom.config: secrets.json not found - using defaults
+14:29:34 [INFO ] loom.db: Schema upgraded: v0 -&gt; v4
+14:29:34 [INFO ] loom.db: Database opened: /tmp/loom_compat_8c98801g/graph-store/chatadhd.db
+14:29:34 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+14:29:34 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_8c98801g/graph-store)
+14:29:34 [INFO ] loom.db: Database closed
+14:29:34 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_cas_mismatch_rolls_back_new_packet_and_receipt (__main__.GraphPacketStoreTests.test_cas_mismatch_rolls_back_new_packet_and_receipt) ... 14:29:34 [INFO ] loom.config: config.json not found - using defaults
+14:29:34 [INFO ] loom.config: secrets.json not found - using defaults
+14:29:34 [INFO ] loom.db: Schema upgraded: v0 -&gt; v4
+14:29:34 [INFO ] loom.db: Database opened: /tmp/loom_compat_f3jv89me/graph-store/chatadhd.db
+14:29:34 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+14:29:34 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_f3jv89me/graph-store)
+14:29:34 [INFO ] loom.db: Database closed
+14:29:34 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_direct_abi_rejects_bad_head_source_hash_and_quote_without_python_validation (__main__.GraphPacketStoreTests.test_direct_abi_rejects_bad_head_source_hash_and_quote_without_python_validation) ... 14:29:34 [INFO ] loom.config: config.json not found - using defaults
+14:29:34 [INFO ] loom.config: secrets.json not found - using defaults
+14:29:34 [INFO ] loom.db: Schema upgraded: v0 -&gt; v4
+14:29:34 [INFO ] loom.db: Database opened: /tmp/loom_compat_uelh7kst/graph-store/chatadhd.db
+14:29:34 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+14:29:34 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_uelh7kst/graph-store)
+14:29:34 [INFO ] loom.db: Database closed
+14:29:34 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_existing_owner_judgement_remains_authoritative_after_later_acceptance (__main__.GraphPacketStoreTests.test_existing_owner_judgement_remains_authoritative_after_later_acceptance) ... 14:29:34 [INFO ] loom.config: config.json not found - using defaults
+14:29:34 [INFO ] loom.config: secrets.json not found - using defaults
+14:29:34 [INFO ] loom.db: Schema upgraded: v0 -&gt; v4
+14:29:34 [INFO ] loom.db: Database opened: /tmp/loom_compat_2ltzhaw9/graph-store/chatadhd.db
+14:29:34 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+14:29:34 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_2ltzhaw9/graph-store)
+14:29:34 [INFO ] loom.db: Database closed
+14:29:34 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_explicit_acceptance_and_closed_selection_are_required (__main__.GraphPacketStoreTests.test_explicit_acceptance_and_closed_selection_are_required) ... 14:29:34 [INFO ] loom.config: config.json not found - using defaults
+14:29:34 [INFO ] loom.config: secrets.json not found - using defaults
+14:29:34 [INFO ] loom.db: Schema upgraded: v0 -&gt; v4
+14:29:34 [INFO ] loom.db: Database opened: /tmp/loom_compat_z_9e3v15/graph-store/chatadhd.db
+14:29:34 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+14:29:34 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_z_9e3v15/graph-store)
+14:29:34 [INFO ] loom.db: Database closed
+14:29:34 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_full_packet_history_and_metadata_survive_accept_read_replay_restart (__main__.GraphPacketStoreTests.test_full_packet_history_and_metadata_survive_accept_read_replay_restart) ... 14:29:34 [INFO ] loom.config: config.json not found - using defaults
+14:29:34 [INFO ] loom.config: secrets.json not found - using defaults
+14:29:34 [INFO ] loom.db: Schema upgraded: v0 -&gt; v4
+14:29:34 [INFO ] loom.db: Database opened: /tmp/loom_compat__sbmxyqi/graph-store/chatadhd.db
+14:29:34 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+14:29:34 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat__sbmxyqi/graph-store)
+14:29:35 [INFO ] loom.db: Database closed
+14:29:35 [INFO ] loom.runtime: Loom runtime shut down
+14:29:35 [INFO ] loom.config: config.json not found - using defaults
+14:29:35 [INFO ] loom.config: secrets.json not found - using defaults
+14:29:35 [INFO ] loom.db: Database opened: /tmp/loom_compat__sbmxyqi/graph-store/chatadhd.db
+14:29:35 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+14:29:35 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat__sbmxyqi/graph-store)
+14:29:35 [INFO ] loom.db: Database closed
+14:29:35 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_integer_to_float_precision_loss_rejects_without_native_writes (__main__.GraphPacketStoreTests.test_integer_to_float_precision_loss_rejects_without_native_writes) ... 14:29:35 [INFO ] loom.config: config.json not found - using defaults
+14:29:35 [INFO ] loom.config: secrets.json not found - using defaults
+14:29:35 [INFO ] loom.db: Schema upgraded: v0 -&gt; v4
+14:29:35 [INFO ] loom.db: Database opened: /tmp/loom_compat_wl5htvr5/graph-store/chatadhd.db
+14:29:35 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+14:29:35 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_wl5htvr5/graph-store)
+14:29:35 [INFO ] loom.db: Database closed
+14:29:35 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_late_sql_error_rolls_back_rows_run_and_receipt (__main__.GraphPacketStoreTests.test_late_sql_error_rolls_back_rows_run_and_receipt) ... 14:29:35 [INFO ] loom.config: config.json not found - using defaults
+14:29:35 [INFO ] loom.config: secrets.json not found - using defaults
+14:29:35 [INFO ] loom.db: Schema upgraded: v0 -&gt; v4
+14:29:35 [INFO ] loom.db: Database opened: /tmp/loom_compat_i3myoo54/graph-store/chatadhd.db
+14:29:35 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+14:29:35 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_i3myoo54/graph-store)
+14:29:35 [INFO ] loom.db: Database closed
+14:29:35 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_lossless_numeric_normalization_preserves_large_json_attrs (__main__.GraphPacketStoreTests.test_lossless_numeric_normalization_preserves_large_json_attrs) ... 14:29:35 [INFO ] loom.config: config.json not found - using defaults
+14:29:35 [INFO ] loom.config: secrets.json not found - using defaults
+14:29:35 [INFO ] loom.db: Schema upgraded: v0 -&gt; v4
+14:29:35 [INFO ] loom.db: Database opened: /tmp/loom_compat_h2hwrvy2/graph-store/chatadhd.db
+14:29:35 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+14:29:35 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_h2hwrvy2/graph-store)
+14:29:35 [INFO ] loom.db: Database closed
+14:29:35 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_member_order_tolerance_still_rejects_discarded_fields (__main__.GraphPacketStoreTests.test_member_order_tolerance_still_rejects_discarded_fields) ... 14:29:35 [INFO ] loom.config: config.json not found - using defaults
+14:29:35 [INFO ] loom.config: secrets.json not found - using defaults
+14:29:35 [INFO ] loom.db: Schema upgraded: v0 -&gt; v4
+14:29:35 [INFO ] loom.db: Database opened: /tmp/loom_compat_ofj7gx1c/graph-store/chatadhd.db
+14:29:35 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+14:29:35 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_ofj7gx1c/graph-store)
+14:29:35 [INFO ] loom.db: Database closed
+14:29:35 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_missing_or_changed_or_index_only_drift_blocks_replay_and_retry (__main__.GraphPacketStoreTests.test_missing_or_changed_or_index_only_drift_blocks_replay_and_retry) ... 14:29:35 [INFO ] loom.config: config.json not found - using defaults
+14:29:35 [INFO ] loom.config: secrets.json not found - using defaults
+14:29:35 [INFO ] loom.db: Schema upgraded: v0 -&gt; v4
+14:29:35 [INFO ] loom.db: Database opened: /tmp/loom_compat_c5zgz6re/graph-store/chatadhd.db
+14:29:35 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+14:29:35 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_c5zgz6re/graph-store)
+14:29:35 [INFO ] loom.db: Database closed
+14:29:35 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_object_key_order_is_not_native_content_loss_or_identity_change (__main__.GraphPacketStoreTests.test_object_key_order_is_not_native_content_loss_or_identity_change) ... 14:29:35 [INFO ] loom.config: config.json not found - using defaults
+14:29:35 [INFO ] loom.config: secrets.json not found - using defaults
+14:29:35 [INFO ] loom.db: Schema upgraded: v0 -&gt; v4
+14:29:35 [INFO ] loom.db: Database opened: /tmp/loom_compat_yu0gemms/graph-store/chatadhd.db
+14:29:35 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+14:29:35 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_yu0gemms/graph-store)
+14:29:35 [INFO ] loom.db: Database closed
+14:29:35 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_oversized_unsigned_ordinal_rejects_without_native_writes (__main__.GraphPacketStoreTests.test_oversized_unsigned_ordinal_rejects_without_native_writes) ... 14:29:35 [INFO ] loom.config: config.json not found - using defaults
+14:29:35 [INFO ] loom.config: secrets.json not found - using defaults
+14:29:35 [INFO ] loom.db: Schema upgraded: v0 -&gt; v4
+14:29:35 [INFO ] loom.db: Database opened: /tmp/loom_compat_mw_dh_oz/graph-store/chatadhd.db
+14:29:35 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+14:29:35 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_mw_dh_oz/graph-store)
+14:29:35 [INFO ] loom.db: Database closed
+14:29:35 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_python_caller_rejects_forged_reversible_history_before_native_write (__main__.GraphPacketStoreTests.test_python_caller_rejects_forged_reversible_history_before_native_write) ... 14:29:35 [INFO ] loom.config: config.json not found - using defaults
+14:29:35 [INFO ] loom.config: secrets.json not found - using defaults
+14:29:35 [INFO ] loom.db: Schema upgraded: v0 -&gt; v4
+14:29:35 [INFO ] loom.db: Database opened: /tmp/loom_compat_57vnhe_i/graph-store/chatadhd.db
+14:29:35 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+14:29:35 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_57vnhe_i/graph-store)
+14:29:35 [INFO ] loom.db: Database closed
+14:29:35 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_receipt_updates_and_deletes_are_rejected_by_database (__main__.GraphPacketStoreTests.test_receipt_updates_and_deletes_are_rejected_by_database) ... 14:29:35 [INFO ] loom.config: config.json not found - using defaults
+14:29:35 [INFO ] loom.config: secrets.json not found - using defaults
+14:29:35 [INFO ] loom.db: Schema upgraded: v0 -&gt; v4
+14:29:35 [INFO ] loom.db: Database opened: /tmp/loom_compat_mvyupgfe/graph-store/chatadhd.db
+14:29:35 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+14:29:35 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_mvyupgfe/graph-store)
+14:29:35 [INFO ] loom.db: Database closed
+14:29:35 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_selection_imports_only_explicit_rows_and_reports_opaque_typed_references (__main__.GraphPacketStoreTests.test_selection_imports_only_explicit_rows_and_reports_opaque_typed_references) ... 14:29:35 [INFO ] loom.config: config.json not found - using defaults
+14:29:35 [INFO ] loom.config: secrets.json not found - using defaults
+14:29:35 [INFO ] loom.db: Schema upgraded: v0 -&gt; v4
+14:29:35 [INFO ] loom.db: Database opened: /tmp/loom_compat_qo51k86n/graph-store/chatadhd.db
+14:29:35 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+14:29:35 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_qo51k86n/graph-store)
+14:29:35 [INFO ] loom.db: Database closed
+14:29:35 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_utf8_subspan_projection_does_not_rewrite_quote_or_locator (__main__.GraphPacketStoreTests.test_utf8_subspan_projection_does_not_rewrite_quote_or_locator) ... 14:29:35 [INFO ] loom.config: config.json not found - using defaults
+14:29:35 [INFO ] loom.config: secrets.json not found - using defaults
+14:29:35 [INFO ] loom.db: Schema upgraded: v0 -&gt; v4
+14:29:35 [INFO ] loom.db: Database opened: /tmp/loom_compat_z3co5w9o/graph-store/chatadhd.db
+14:29:35 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+14:29:35 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_z3co5w9o/graph-store)
+14:29:35 [INFO ] loom.db: Database closed
+14:29:35 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_v2_to_v3_migration_preserves_existing_knowledge_and_core_v4 (__main__.GraphPacketStoreTests.test_v2_to_v3_migration_preserves_existing_knowledge_and_core_v4) ... 14:29:35 [INFO ] loom.config: config.json not found - using defaults
+14:29:35 [INFO ] loom.config: secrets.json not found - using defaults
+14:29:35 [INFO ] loom.db: Schema upgraded: v0 -&gt; v4
+14:29:35 [INFO ] loom.db: Database opened: /tmp/loom_compat_9feh2xr3/graph-store/chatadhd.db
+14:29:35 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+14:29:35 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_9feh2xr3/graph-store)
+14:29:35 [INFO ] loom.db: Database closed
+14:29:35 [INFO ] loom.runtime: Loom runtime shut down
+ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.602s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_import_compat" classname="compat.test_import_compat" time="0.586817" status="run">
+		<properties/>
+		<system-out>/workspace/scratch/407fe6f6ff42/chatadhd/engine/db.py:304: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/407fe6f6ff42/chatadhd/engine/db.py:405: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/407fe6f6ff42/chatadhd/engine/db.py:328: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  kwargs["updated"] = datetime.utcnow().isoformat() + "Z"
+................./workspace/scratch/407fe6f6ff42/chatadhd/engine/db.py:360: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+.......
+----------------------------------------------------------------------
+Ran 24 tests in 0.513s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_memory_compat" classname="compat.test_memory_compat" time="2.0868" status="run">
+		<properties/>
+		<system-out>test_cpp_builds_python_reads (__main__.MemoryCompat.test_cpp_builds_python_reads) ... ok
+test_get_active_context_identical_with_deep_nesting (__main__.MemoryCompat.test_get_active_context_identical_with_deep_nesting) ... ok
+test_python_builds_cpp_reads (__main__.MemoryCompat.test_python_builds_cpp_reads) ... /workspace/scratch/407fe6f6ff42/chatadhd/engine/memory_engine.py:38: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  self.created = datetime.utcnow().isoformat() + "Z"
+ok
+test_recursive_delete_orphaning_matches (__main__.MemoryCompat.test_recursive_delete_orphaning_matches) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 1.828s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_selector_compat" classname="compat.test_selector_compat" time="0.0676184" status="run">
+		<properties/>
+		<system-out>....
+----------------------------------------------------------------------
+Ran 4 tests in 0.017s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_semantic_compat" classname="compat.test_semantic_compat" time="4.73581" status="run">
+		<properties/>
+		<system-out>...../workspace/scratch/407fe6f6ff42/chatadhd/core/semantic.py:189: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  "timestamp": datetime.utcnow().isoformat() + "Z",
+.
+----------------------------------------------------------------------
+Ran 6 tests in 2.551s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_semantic_recovery" classname="compat.test_semantic_recovery" time="2.137" status="run">
+		<properties/>
+		<system-out>test_config_identity_returning_to_old_value_still_rejects_old_completion (__main__.SemanticRecoveryTest.test_config_identity_returning_to_old_value_still_rejects_old_completion) ... /workspace/scratch/407fe6f6ff42/chatadhd/core/semantic.py:189: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  "timestamp": datetime.utcnow().isoformat() + "Z",
+ok
+test_each_relevant_change_recovers_without_automatic_replay (__main__.SemanticRecoveryTest.test_each_relevant_change_recovers_without_automatic_replay) ... ok
+test_manual_reset_invalidates_old_request (__main__.SemanticRecoveryTest.test_manual_reset_invalidates_old_request) ... ok
+test_old_failure_cannot_affect_changed_settings_without_enabled_poll (__main__.SemanticRecoveryTest.test_old_failure_cannot_affect_changed_settings_without_enabled_poll) ... ok
+test_old_success_cannot_clear_new_generation_failures (__main__.SemanticRecoveryTest.test_old_success_cannot_clear_new_generation_failures) ... ok
+test_preserves_configured_model_on_repeated_load (__main__.SemanticRecoveryTest.test_preserves_configured_model_on_repeated_load) ... ok
+test_same_or_unrelated_settings_do_not_reenable_or_make_requests (__main__.SemanticRecoveryTest.test_same_or_unrelated_settings_do_not_reenable_or_make_requests) ... ok
+test_success_resets_current_failure_count (__main__.SemanticRecoveryTest.test_success_resets_current_failure_count) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.070s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_util_compat" classname="compat.test_util_compat" time="2.13142" status="run">
+		<properties/>
+		<system-out>test_embedded_contract_data_matches_python_sources (__main__.UtilCompatTest.test_embedded_contract_data_matches_python_sources) ... ok
+test_float_repr (__main__.UtilCompatTest.test_float_repr) ... ok
+test_generated_ids_have_python_shape (__main__.UtilCompatTest.test_generated_ids_have_python_shape) ... ok
+test_json_dumps_is_byte_identical (__main__.UtilCompatTest.test_json_dumps_is_byte_identical) ... ok
+test_timestamps_match_utcnow_isoformat (__main__.UtilCompatTest.test_timestamps_match_utcnow_isoformat) ... /workspace/scratch/407fe6f6ff42/chatadhd/loom/tests/compat/test_util_compat.py:94: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  self.assertLess(abs((datetime.datetime.utcnow() - now).total_seconds()), 60)
+ok
+test_utf8_semantics_match_python_str (__main__.UtilCompatTest.test_utf8_semantics_match_python_str) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 1.912s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="research.structure" classname="research.structure" time="43.8569" status="run">
+		<properties/>
+		<system-out>................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................usage: round3_eval [-h] [--split {dev,validation}]
+                   [--policy {bounded,explicit_relations}]
+                   [--predictions PREDICTIONS] --output OUTPUT
+                   [--validation-release] [--freeze FREEZE]
+                   [--write-freeze WRITE_FREEZE]
+round3_eval: error: validation requires a pre-existing freeze; cannot create it in the same invocation
+..............................................................................................................................................................................................
+----------------------------------------------------------------------
+Ran 1262 tests in 43.331s
+
+OK
+{"attempts": 1, "stopped_reason": "fixture-stop"}
+</system-out>
+	</testcase>
+	<testcase name="research.independent_protocol" classname="research.independent_protocol" time="0.0958193" status="run">
+		<properties/>
+		<system-out>..........
+----------------------------------------------------------------------
+Ran 10 tests in 0.035s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="research.graph_native_protocol" classname="research.graph_native_protocol" time="0.421212" status="run">
+		<properties/>
+		<system-out>............
+----------------------------------------------------------------------
+Ran 12 tests in 0.359s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="research.candidate_graph_protocol" classname="research.candidate_graph_protocol" time="0.413124" status="run">
+		<properties/>
+		<system-out>...............
+----------------------------------------------------------------------
+Ran 15 tests in 0.353s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="research.contracts" classname="research.contracts" time="19.242" status="run">
+		<properties/>
+		<system-out>.................................................................................................................................................................................................................
+----------------------------------------------------------------------
+Ran 209 tests in 19.031s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="research.seeding" classname="research.seeding" time="6.38172" status="run">
+		<properties/>
+		<system-out>....................................
+----------------------------------------------------------------------
+Ran 36 tests in 4.016s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="server.smoke" classname="server.smoke" time="2.11372" status="run">
+		<properties/>
+		<system-out>OK: loom-server knowledge/catalog/context checks passed
+OK: loom-server graph-packet profile acceptance/read/replay/CAS/drift checks passed
+OK: all loom-server smoke checks passed
+OK: loom-server auth checks passed
+</system-out>
+	</testcase>
+	<testcase name="server.chat_active_task" classname="server.chat_active_task" time="1.15326" status="run">
+		<properties/>
+		<system-out>test_revision_rejection_and_trace_off_failure_survive_server_restart (__main__.ActiveTaskServerTest.test_revision_rejection_and_trace_off_failure_survive_server_restart) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 1.078s
+
+OK
+W1 server transport: 1 scenario, 5 local provider calls, 0 remote; stale versions emit SSE error without start/persistence/transport; full server restart verified.
+Synthetic server fixture retained at /tmp/loom-w1-server-o_qy68zc
+</system-out>
+	</testcase>
+	<testcase name="cli.smoke" classname="cli.smoke" time="2.12586" status="run">
+		<properties/>
+		<system-out>cli smoke: ok
+</system-out>
+	</testcase>
+	<testcase name="eval.harness" classname="eval.harness" time="0.540136" status="run">
+		<properties/>
+		<system-out>.............no verifiable snapshot on HEAD's mainline exists on or before 2026-03-06 (UTC)
+......
+----------------------------------------------------------------------
+Ran 19 tests in 0.456s
+
+OK
+cut 2026-03-06: unavailable -&gt; /tmp/tmpt_nwgkzo/nested/result.json
+</system-out>
+	</testcase>
+</testsuite>
