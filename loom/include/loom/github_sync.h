@@ -37,6 +37,7 @@
 #include <vector>
 
 #include "loom/result.h"
+#include "loom/runtime_profile.h"
 #include "loom/util/json.h"
 
 namespace loom {
@@ -63,24 +64,26 @@ struct GitHubFile {
 };
 
 struct SyncConfig {
+  SyncConfig();
   std::string repo;  // owner/repo
-  std::string branch = "main";
+  std::string branch;
   std::string local_path;
   std::string token;  // never serialised
-  std::string sync_direction = "bidirectional";  // bidirectional | push_only | pull_only
+  std::string sync_direction;  // bidirectional | push_only | pull_only
   bool auto_sync = false;
-  std::vector<std::string> include_patterns{"*.py", "*.md", "*.json", "*.txt"};
+  std::vector<std::string> include_patterns;
   // Default preset only; callers may replace it, including with an empty list.
-  std::vector<std::string> exclude_patterns{"__pycache__/*", ".git/*", "*.pyc", "secrets.json", "*/secrets.json"};
+  std::vector<std::string> exclude_patterns;
   Json to_json() const;  // without token
-  static Result<SyncConfig> from_json(const Json& j);
+  static Result<SyncConfig> from_json(const Json& j, const std::optional<RuntimeProfile>& profile = {});
 };
 
 class GitHubSync {
  public:
-  static constexpr std::string_view kBaseUrl = "https://api.github.com";
+  static const std::string kBaseUrl;  // Compatibility view of the builtin profile.
 
-  GitHubSync(SyncConfig cfg, net::HttpTransport& http);
+  GitHubSync(SyncConfig cfg, net::HttpTransport& http, std::optional<RuntimeProfile> profile = {});
+  Result<Json> runtime_profile() const;
 
   bool test_connection();
   Result<std::vector<GitHubFile>> list_remote_files(std::string_view path = "");
@@ -99,13 +102,15 @@ class GitHubSync {
  private:
   SyncConfig cfg_;
   net::HttpTransport& http_;
+  Result<RuntimeProfile> profile_;
 };
 
 class GitHubSyncManager {
  public:
   GitHubSyncManager(std::filesystem::path config_path, const Secrets& secrets, net::HttpTransport& http);
   Result<SyncConfig> add_config(std::string_view name, std::string_view repo, std::string_view local_path,
-                                std::string_view branch = "main", std::string_view direction = "bidirectional");
+                                std::optional<std::string_view> branch = {}, std::optional<std::string_view> direction = {});
+  Result<Json> runtime_profile() const;
   Status remove_config(std::string_view name);
   // nullptr when unknown; token filled from secrets.github_token.
   std::unique_ptr<GitHubSync> get_syncer(std::string_view name) const;
@@ -117,6 +122,7 @@ class GitHubSyncManager {
   std::filesystem::path path_;
   const Secrets& secrets_;
   net::HttpTransport& http_;
+  Result<RuntimeProfile> profile_;
   std::map<std::string, SyncConfig, std::less<>> configs_;
 };
 

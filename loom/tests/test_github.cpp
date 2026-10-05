@@ -25,6 +25,86 @@ void write_file(const std::filesystem::path& p, std::string_view content) {
 }  // namespace
 
 TEST_SUITE("github_sync") {
+  TEST_CASE("profile injection changes REST metadata and commit templates") {
+    auto builtin = unwrap(RuntimeProfile::builtin("github"));
+    auto profile = unwrap(builtin.with_overrides(Json{{"base_url", "https://offline.invalid"},
+      {"headers", {{"User-Agent", "custom-agent"}, {"X-Profile", "test"}}},
+      {"authorization_template", "Bearer {{token}}"}, {"connection_timeout_ms", 6},
+      {"request_timeout_ms", 8}, {"commit_message_template", "Publish {{path}}"}}));
+    fsutil::TempDir td;
+    write_file(td.path() / "a.md", "content");
+    SyncConfig cfg;
+    cfg.repo = "owner/repo";
+    cfg.local_path = td.path().string();
+    cfg.token = "fake-token";
+    net::ScriptedTransport http;
+    http.set_fallback(net::ScriptedTransport::Reply::json(200, Json::object()));
+    GitHubSync sync(cfg, http, profile);
+    CHECK(sync.test_connection());
+    auto req = http.requests().back();
+    CHECK(req.url == "https://offline.invalid/repos/owner/repo");
+    CHECK(req.timeout_ms == 6);
+    CHECK(net::header_value(req.headers, "Authorization") == "Bearer fake-token");
+    CHECK(net::header_value(req.headers, "User-Agent") == "custom-agent");
+    CHECK(net::header_value(req.headers, "X-Profile") == "test");
+    GitHubFile file;
+    file.path = "a.md";
+    file.sha = "existing";
+    file.local_path = (td.path() / "a.md").string();
+    LOOM_REQUIRE_OK(sync.push_file(file));
+    req = http.requests().back();
+    CHECK(req.timeout_ms == 8);
+    CHECK(req.url == "https://offline.invalid/repos/owner/repo/contents/a.md");
+    CHECK(unwrap(json::parse(req.body))["message"] == "Publish a.md");
+    CHECK(unwrap(sync.runtime_profile())["hash"] == profile.hash());
+
+    auto removed = unwrap(profile.with_patch(Json::array({
+      Json{{"op", "remove"}, {"path", "/headers/User-Agent"}}})));
+    GitHubSync without_agent(cfg, http, removed);
+    CHECK(without_agent.test_connection());
+    CHECK(net::header_value(http.requests().back().headers, "User-Agent").empty());
+    Json forged_definition = builtin.definition();
+    forged_definition["value_schema"] = Json{{"type", "object"}};
+    forged_definition["defaults"]["request_timeout_ms"] = "invalid";
+    GitHubSync invalid(cfg, http, unwrap(RuntimeProfile::from_definition(forged_definition)));
+    const auto before = http.requests().size();
+    CHECK_FALSE(invalid.runtime_profile());
+    CHECK_FALSE(invalid.list_remote_files());
+    CHECK(http.requests().size() == before);
+  }
+
+  TEST_CASE("manager overlay controls defaults and secret references; explicit values win") {
+    fsutil::TempDir td;
+    Json overlay{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "github"},
+      {"overrides", {{"branch", "work"}, {"sync_direction", "pull_only"}, {"secret_key", "local_github_key"},
+                     {"include_patterns", Json::array({"*.cpp"})}, {"exclude_patterns", Json::array()}}}};
+    write_file(td.path() / "profiles/github.pack", overlay.dump());
+    Secrets secrets(td.path() / "secrets.json");
+    secrets.set("local_github_key", "fake-token");
+    net::ScriptedTransport http;
+    GitHubSyncManager mgr(td.path() / "github_sync.json", secrets, http);
+    auto cfg = unwrap(mgr.add_config("custom", "owner/repo", td.path().string()));
+    CHECK(cfg.branch == "work");
+    CHECK(cfg.sync_direction == "pull_only");
+    CHECK(cfg.include_patterns == std::vector<std::string>{"*.cpp"});
+    CHECK(cfg.exclude_patterns.empty());
+    CHECK(cfg.token == "fake-token");
+    CHECK(mgr.to_json().dump().find("fake-token") == std::string::npos);
+    auto explicit_cfg = unwrap(mgr.add_config("explicit", "owner/repo", td.path().string(), "", "push_only"));
+    CHECK(explicit_cfg.branch.empty());
+    CHECK(explicit_cfg.sync_direction == "push_only");
+    auto sync = mgr.get_syncer("custom");
+    REQUIRE(sync);
+    CHECK(sync->should_include("x.cpp"));
+    CHECK_FALSE(sync->should_include("x.py"));
+    CHECK(unwrap(mgr.runtime_profile())["is_builtin"] == false);
+    write_file(td.path() / "profiles/github.pack", "invalid");
+    GitHubSyncManager invalid(td.path() / "github_sync.json", secrets, http);
+    CHECK_FALSE(invalid.runtime_profile());
+    CHECK_FALSE(invalid.add_config("new", "owner/repo", "/tmp"));
+    CHECK(http.requests().empty());
+  }
+
   TEST_CASE("fnmatch: literal, star, question mark, char classes") {
     CHECK(fnmatch("readme.md", "*.md"));
     CHECK_FALSE(fnmatch("readme.py", "*.md"));
