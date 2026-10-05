@@ -1,0 +1,15 @@
+.analysis-panel { display: grid; gap: 1rem; max-width: 1100px; margin: auto; padding: 1.25rem; }
+.analysis-panel h2, .analysis-panel h3, .analysis-panel p { margin: 0; }
+.analysis-panel label { display: grid; gap: .35rem; }
+.analysis-panel textarea { min-height: 8rem; width: 100%; resize: vertical; font-family: ui-monospace, monospace; line-height: 1.5; }
+.analysis-panel textarea[data-testid="analysis-contract"] { min-height: 22rem; }
+.analysis-panel input, .analysis-panel select, .analysis-panel textarea { color: inherit; background: var(--panel, #171b24); border: 1px solid #646979; border-radius: .35rem; padding: .55rem; box-sizing: border-box; }
+.analysis-panel pre { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 35rem; overflow: auto; padding: .8rem; border: 1px solid #646979; border-radius: .35rem; font-size: .8rem; }
+.analysis-actions { display: flex; flex-wrap: wrap; align-items: end; gap: .65rem; }
+.analysis-panel button { padding: .55rem .8rem; cursor: pointer; }
+.analysis-panel button:disabled { cursor: default; opacity: .5; }
+.analysis-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 1rem; }
+.analysis-panel .analysis-check { display: flex; align-items: center; }
+.analysis-panel [role="alert"] { color: #fda4af; }
+.analysis-panel [role="status"] { padding: .7rem; background: #22433f; border-radius: .35rem; }
+@media (max-width: 650px) { .analysis-grid { grid-template-columns: 1fr; } .analysis-panel { padding: .75rem; } }
