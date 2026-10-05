@@ -262,3 +262,35 @@ Przyjęto po rebase; testowane źródło `0a81480bd1a70b394bac72e98f6b5e7cb49f5d
 31wybranych źródeł bez zmian merytorycznych po rebase; OCR3/3 MIME i22/22kontrole, checkpoint2/2scenariusze i31/31kontrole na rzeczywistym kernelu. Forward-only adnotacje i audit przyjęte; runbook autora przypięty w INDEX. Pierwsze timeouty zachowane w archive, progi bez zmian.
 
 [Dowody](reports/integrator-intake-2026-10-05/README.md) i [INDEX](reports/INDEX.md). Zachowano cały INTERFEJS i wcześniejsze wpisy; zero płatnych wywołań.
+
+## Integrator9 — przyrost 1 (2026-10-05)
+
+Przyjęto po rebase; testowane źródło `a95a3e1d9117af4b5ebfa3bc2a042c74efbd08f8`. Pełny CTest 117/117 (196.85s), 710 native / 26399 asercji, 1322 Python / 0 skips; build web PASS.
+
+CZĘŚCIOWO:20źródeł identycznych z50e6bb9:precyzja leksykalna i privatePromptRegistry.43/43registry;11sekcji metryk synthetic równe i24/24integrity. Zmienione inputhash/runID wynikają dokładnie z wersji packa; nie deklarujemy całej karty byte-parity. semantic.cpp/semantic_usage.h wykluczone na3FAIL/8asercjach retry; pełny negatyw archive. Backend wiring/graph-method projection pozostają otwarte. Selfhost autora:18005→12863claims i37249→37249observations; brak nowego selfhost9.
+
+[Dowody](reports/integrator-intake-2026-10-05/README.md) i [INDEX](reports/INDEX.md). Zachowano cały INTERFEJS i wcześniejsze wpisy; zero płatnych wywołań.
+
+## Integrator9 — bieżąca kolejka sesji 2026-10-05
+
+## Stan kolejki integratora — bieżący checkpoint
+
+**Przyjęte:** 2:first, 3+4:first, 5:first, 1:partial. Każdy kodowy przyrost ma własny pełny CTest, guard rzeczywiście wykonanych przypadków i build web; dokumenty Claude są wyjątkiem zleconym przez właściciela.
+
+**Czeka w kolejce, z commitem gotowym do odbioru** (ready autora nie zastępuje bramek9):
+
+| Przyrost | Przypięty commit | Pozostały odbiór |
+|---|---|---|
+|12:first|`3c0bc36552ef9851f1174946cfb108549aae3228`|onboarding foundation; rebase/bramki9|
+|10:first|`fa7538d650da2f4ad37f5ff9254b60a6ee72938f`|równoważny prefix da50562; zachować packet routes|
+|Claude:docs|`3cd5848e7484d50d00f19f0855bc2cd228ad7f3b`|R42 i AGENTS budget; tylko rebase|
+|11:first|`22873e047abe6b56808dd2fbc4fe41188ee0e7a8`|canonical usage projection; rebase/full clean build/gates9|
+|6:first|`d9b29c502bafd3b4cb17f187e3e74f32cfff72ee`|wyłącznie mechanizm; neutralne31/45,0FP; DEV, bez blind|
+|5:second|`f494931dbf24c7debac588361d1d0098275bd47a`|source156a820;24paths; własne mixed gates9|
+|4:second|`097859af292bf2b28915e4684f9c085efabd66e2`|autor117/117/parity1536; własny rebase/gates9|
+|6:second|`dab76dfc5c2b9ac0cb71c434146fd71bd33bab65`|dane alias/index; własny rebase/gates9|
+
+**Wstrzymane / niegotowe:** pełny1 (3 przypadki/8 asercji retry/cache), drugi10 (120/121, ten sam błąd);8 `57ad9bb20b5e21b4445d03abb7bcd2e616f63f2d` (pełna macierz nieukończona);3second `6b54926950752c6890eb69ec85bf1c4643ec346a` i12second `374bab7` (WIP, bez gotowego własnego fullgate).1second nie zawiera nowego gotowego przyrostu. Nie cofamy przyjętego INTERFEJS.0 płatnych wywołań9.
+
+
+Pełny1 i drugi10 wstrzymane na błędzie retry; szczegóły i Do wątku N w [INDEX](reports/INDEX.md). Historyczne wpisy zachowane.

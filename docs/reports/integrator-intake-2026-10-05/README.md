@@ -6,6 +6,7 @@ Baza30ad7d3. Cały wcześniejszy INTERFEJS, R39–R41 Claude i usage2 zachowany.
 |---|---|---|---|---|---|
 |3+4|`a1be689dc026367783473133de3c25cf5ae60971`|110/110 / 149.03s|663/24489|1303/0|[3+4-evidence.zip](3+4-evidence.zip)|
 |5|`0a81480bd1a70b394bac72e98f6b5e7cb49f5d0b`|117/117 / 225.60s|710/26399|1322/0|[5-evidence.zip](5-evidence.zip)|
+|1|`a95a3e1d9117af4b5ebfa3bc2a042c74efbd08f8`|117/117 / 196.85s|710/26399|1322/0|[1-evidence.zip](1-evidence.zip)|
 
 Każdy ZIP ma pełny manifest/JUnit/log/guard, manifest źródeł, niepustych ELF objects/binaries przed i po, polecenia i hashe.
 Webbuild przeszedł dla każdego przyrostu. Nie sumujemy retry zamiast jednego pełnego przebiegu. Opt-in catalogscale jawnie niewykonany; inne wymagane przypadki pozytywne.
@@ -20,6 +21,12 @@ Dowód ZIP SHA256 `18979611566f4dd17e1d901b723ae85deb38a289799e1b0bcdd624036bbe3
 31wybranych źródeł bez zmian merytorycznych po rebase; OCR3/3 MIME i22/22kontrole, checkpoint2/2scenariusze i31/31kontrole na rzeczywistym kernelu. Forward-only adnotacje i audit przyjęte; runbook autora przypięty w INDEX. Pierwsze timeouty zachowane w archive, progi bez zmian.
 
 Testowane źródło `0a81480bd1a70b394bac72e98f6b5e7cb49f5d0b`. CTest 117/117, 710 przypadków natywnych / 26399 asercji, 1322 Python / 0 skips; 225.60s; build web PASS. ZIP SHA256 `c3c18af18955ec90e22e79ad98d9fcce24d54c9ff9370afadb8aa0af4fd329b8`, 12 plików.
+
+## Przyrost 1
+
+CZĘŚCIOWO:20źródeł identycznych z50e6bb9:precyzja leksykalna i privatePromptRegistry.43/43registry;11sekcji metryk synthetic równe i24/24integrity. Zmienione inputhash/runID wynikają dokładnie z wersji packa; nie deklarujemy całej karty byte-parity. semantic.cpp/semantic_usage.h wykluczone na3FAIL/8asercjach retry; pełny negatyw archive. Backend wiring/graph-method projection pozostają otwarte. Selfhost autora:18005→12863claims i37249→37249observations; brak nowego selfhost9.
+
+Testowane źródło `a95a3e1d9117af4b5ebfa3bc2a042c74efbd08f8`. CTest 117/117, 710 przypadków natywnych / 26399 asercji, 1322 Python / 0 skips; 196.85s; build web PASS. ZIP SHA256 `2636e8855e89b2c374fcbf8f4dccea86df15a758384f23cb58a511a1d08590c0`, 54 plików.
 
 ## Czego nie przyjęto
 
