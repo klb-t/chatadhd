@@ -1,0 +1,15 @@
+{
+  "schema": "loom.runtime_preset_negative_snapshot/1",
+  "recorded_source_hashes_verified": true,
+  "count": 18,
+  "reconstructed_sources": [
+    "loom/src/context/runtime_preset.h",
+    "loom/src/context/gen_runtime_presets.py"
+  ],
+  "transformations": [
+    "Removed later source-inspection metadata and envelope domain/positive-revision checks from helper.",
+    "Removed later generator positive-revision check."
+  ],
+  "compile_failure": "doctest string-versus-Json hash assertion at runtime_preset_test.cpp:158",
+  "caveat": "Original run compiled live checkout; helper was extended concurrently. These exact recorded input bytes reproduce deterministic compile failure; original compiler inputs were not frozen."
+}
