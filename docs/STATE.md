@@ -291,17 +291,22 @@ Pierwszy przyrost67źródeł identyczny z rebasedprefixda50562 autora fa7538d; z
 
 [Dowody](reports/integrator-intake-2026-10-05/README.md) i [INDEX](reports/INDEX.md). Zachowano cały INTERFEJS i wcześniejsze wpisy; zero płatnych wywołań.
 
+
+
+## Integrator9 — Claude R42 i budżet (2026-10-05)
+
+Przyjęto dokumenty autora3cd5848 po rzeczywistym rebase,2/2pliki byte-identical. R42: sześć klas danych/polityki do profili; AGENTS wskazuje osobny budżet5€ tylko7.0paidcalls9. Właściciel zlecił rebase bez pełnego build, kod nie zmieniony. [Dowód](reports/integrator-intake-2026-10-05/claude-r42-proof.json).
+
 ## Integrator9 — bieżąca kolejka sesji 2026-10-05
 
 ## Stan kolejki integratora — bieżący checkpoint
 
-**Przyjęte:** 2:first, 3+4:first, 5:first, 1:partial, 12:first, 10:first. Każdy kodowy przyrost ma własny pełny CTest, guard rzeczywiście wykonanych przypadków i build web; dokumenty Claude są wyjątkiem zleconym przez właściciela.
+**Przyjęte:** 2:first, 3+4:first, 5:first, 1:partial, 12:first, 10:first, Claude:docs. Każdy kodowy przyrost ma własny pełny CTest, guard rzeczywiście wykonanych przypadków i build web; dokumenty Claude są wyjątkiem zleconym przez właściciela.
 
 **Czeka w kolejce, z commitem gotowym do odbioru** (ready autora nie zastępuje bramek9):
 
 | Przyrost | Przypięty commit | Pozostały odbiór |
 |---|---|---|
-|Claude:docs|`3cd5848e7484d50d00f19f0855bc2cd228ad7f3b`|R42 i AGENTS budget; tylko rebase|
 |11:first|`22873e047abe6b56808dd2fbc4fe41188ee0e7a8`|canonical usage projection; rebase/full clean build/gates9|
 |6:first|`d9b29c502bafd3b4cb17f187e3e74f32cfff72ee`|wyłącznie mechanizm; neutralne31/45,0FP; DEV, bez blind|
 |5:second|`f494931dbf24c7debac588361d1d0098275bd47a`|source156a820;24paths; własne mixed gates9|

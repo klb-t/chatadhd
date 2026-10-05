@@ -42,6 +42,10 @@ Pierwszy przyrost67źródeł identyczny z rebasedprefixda50562 autora fa7538d; z
 
 Testowane źródło `e8fbb6d356247efe2943ff91cfea5a567f7eb3d3`. CTest 121/121, 761 przypadków natywnych / 29103 asercji, 1322 Python / 0 skips; 214.03s; build web PASS. ZIP SHA256 `69979686105c4e2e7df0602e4f3e484f332cb05ad57eb0b52db75a81180493c6`, 16 plików.
 
+## Claude R42 i budżet
+
+Docs-only5fdca44, original3cd5848:2/2byte-identical po realnym rebase. Bez runtime/testchanges, fullbuild pominięty na wyraźne zlecenie właściciela. [Proof](claude-r42-proof.json).
+
 ## Czego nie przyjęto
 
 Dawny W11d3488a6 miał drugi presetusage.22873e0 naprawia to przez canonical source recipe; jest w kolejce własnego rebase i mixedgates. Pełne historyczne negatywy pozostają poza main.

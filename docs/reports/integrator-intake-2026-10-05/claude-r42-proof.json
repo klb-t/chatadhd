@@ -1,0 +1,18 @@
+{
+  "original": "3cd5848e7484d50d00f19f0855bc2cd228ad7f3b",
+  "actual_rebased": "f0a2666b62f2edb70585f4b0fc44551b97cb9f30",
+  "onto": "7e969ad3a890c89273d2babe82dce0375859f6d5",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "1f51965b01c2d267a3714e28dd52ad2439cae85ec7e7059321cd2f31769b28e8",
+      "byte_identical": true
+    },
+    {
+      "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+      "sha256": "851f6d2000f7d013ec000c6e7694713ef7079b76c3db386111f989871775bed3",
+      "byte_identical": true
+    }
+  ],
+  "gate": "Owner explicitly requires rebase only for this docs-only increment; no source/build changes."
+}
