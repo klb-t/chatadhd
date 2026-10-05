@@ -10,18 +10,27 @@
 #include "loom/config.h"
 #include "loom/event_bus.h"
 #include "loom/graph_memory.h"
+#include "loom/knowledge_store.h"
 #include "loom/log.h"
 #include "loom/memory_engine.h"
+#include "loom/providers.h"
+#include "loom/provenance.h"
 #include "loom/net/http.h"
 #include "loom/net/sse.h"
 #include "loom/semantic_analyzer.h"
 #include "loom/util/base64.h"
 #include "loom/util/fs.h"
 #include "loom/util/sha256.h"
+#include "loom/util/ids.h"
+#include "loom/util/time.h"
 #include "loom/util/utf8.h"
 #include "stub.h"
 #include "active_task_spec.h"
 #include "active_task_acceptance.h"
+#include "context/context_execution.h"
+#include "context/unified_context.h"
+#include "context/method_registry.h"
+#include "graph_reply.h"
 
 namespace loom {
 
@@ -69,6 +78,201 @@ bool contains(const std::vector<std::string>& v, const std::string& s) {
   return std::find(v.begin(), v.end(), s) != v.end();
 }
 
+// Only an explicitly selected graph mode creates these borrowed services.
+// Definition/prompt/default data is supplied by the caller's native graph;
+// this adapter advertises executable protocols, never a method catalogue.
+struct ChatGraphExecution {
+  ChatGraphExecution(const Config& config, const Secrets& secrets, Database& db, net::HttpTransport& http,
+                     Json graph_options)
+      : paths(DataPaths::for_root(config.path().parent_path())), blobs(paths.blobs, db), provenance(db),
+        providers(config, secrets), registry(db), services{paths.root, db, config, secrets, http, &providers, blobs, provenance},
+        options(std::move(graph_options)) {}
+  DataPaths paths;
+  BlobStore blobs;
+  ProvenanceStore provenance;
+  ProviderRegistry providers;
+  context::MethodRegistry registry;
+  chat::GraphReplyServices services;
+  Json options;
+  std::optional<chat::GraphReplyPrepared> prepared;
+  std::unique_ptr<chat::ModelUsageGuard> guard;
+  Json result = Json::object();
+  Json first_response = Json::object();
+  Json chunk_sources = Json::array();
+  std::string wire_bytes;
+  bool attempted = false;
+  bool settled = false;
+  bool capture_failed = false;
+  std::string transport_issue;
+  ~ChatGraphExecution() {
+    // Callback exceptions after dispatch keep attempted usage unknown rather
+    // than cancelling a request that may already have incurred a charge.
+    if (guard && !settled) { try { settle(Json::object()); } catch (...) {} }
+  }
+
+  void issue(std::string_view status, std::string_view code, std::string_view text = "") {
+    const auto resolution = result.value("method_resolution", Json(nullptr));
+    result = Json{{"schema", "loom.chat_graph_reply/1"}, {"mode", options.value("mode", Json("off"))},
+        {"status", status}, {"error", Json{{"code", code}}}, {"text", text}, {"retained_text", text},
+        {"model_content_origin", "model"}, {"canonical_store_written", false}};
+    if (!resolution.is_null()) result["method_resolution"] = resolution;
+  }
+  Result<Json> accept(const Json& supplied) {
+    const auto* admission = json::find(options, "admission");
+    const auto* scope = admission ? json::find(*admission, "selection_scope") : nullptr;
+    // An absent dynamic policy preserves the caller's exact selection and CAS.
+    if (!scope) return registry.accept(supplied);
+    if (!scope->is_string() || *scope != "all_native_rows")
+      return Error(Errc::Unsupported, "graph admission selection_scope unavailable");
+    if (!supplied.is_object() || !supplied.contains("packet") ||
+        !supplied["packet"].is_object() || json::get_string(supplied, "target").empty() ||
+        !supplied.contains("explicitly_accepted") || supplied["explicitly_accepted"] != true)
+      return Error(Errc::InvalidArgument, "dynamic graph acceptance needs packet, target and explicit acceptance");
+
+    auto lock = services.db.lock();
+    sql::Txn snapshot(services.db.conn());
+    LOOM_TRY(snapshot.begin_status());
+    kb::KnowledgeStore store(services.db);
+    LOOM_TRY(store.ensure_schema());
+    const std::string run = kb::KnowledgeRun::make_id("loom.graph_packet_store/1",
+        Json{{"graph_packet_target", supplied["target"]}});
+    Json request = supplied;
+    request["selection"] = Json::object();
+    request["expected_rows"] = Json::object();
+    for (const char* collection : {"entities", "claims", "sources"}) {
+      const auto* rows = json::find(supplied["packet"], collection);
+      if (!rows || !rows->is_array())
+        return Error(Errc::InvalidArgument, "dynamic graph acceptance needs native packet rows");
+      request["selection"][collection] = Json::array();
+      request["expected_rows"][collection] = Json::object();
+      for (const auto& row : *rows) {
+        const Json* native = &row;
+        if (std::string_view(collection) == "sources") native = json::find(row, "observation");
+        const std::string id = native ? json::get_string(*native, "id") : "";
+        if (id.empty() || request["expected_rows"][collection].contains(id))
+          return Error(Errc::InvalidArgument, "dynamic graph acceptance has invalid or duplicate row ID");
+        Json expected = nullptr;
+        if (std::string_view(collection) == "entities") {
+          LOOM_TRY_ASSIGN(auto current, store.get_entity(run, id));
+          if (current) expected = Sha256::hex(json::canonical(current->to_json()));
+        } else if (std::string_view(collection) == "claims") {
+          LOOM_TRY_ASSIGN(auto current, store.get_claim(run, id));
+          if (current) expected = Sha256::hex(json::canonical(current->to_json()));
+        } else {
+          LOOM_TRY_ASSIGN(auto current, store.get_observation(run, id));
+          if (current) expected = Sha256::hex(json::canonical(current->to_json()));
+        }
+        request["selection"][collection].push_back(id);
+        request["expected_rows"][collection][id] = std::move(expected);
+      }
+    }
+    // The store validates closure and CAS in its nested transaction while this
+    // same-database snapshot remains locked. A conflict is returned unchanged.
+    LOOM_TRY_ASSIGN(auto receipt, registry.accept(request));
+    LOOM_TRY(snapshot.commit());
+    return receipt;
+  }
+  Status prepare(std::string_view model, const Json& original_request, std::string_view primary_text,
+                 std::string_view user_message_id) {
+    LOOM_TRY(providers.load_builtin());
+    if (const auto* manifests = json::find(options, "provider_manifests")) LOOM_TRY(providers.load(*manifests));
+    const auto* profile = json::find(options, "profile");
+    if (!profile) return Error(Errc::Unavailable, "graph reply method profile unavailable");
+    std::vector<std::string> receipts;
+    if (const auto* value = json::find(options, "receipt_ids")) {
+      if (!value->is_array()) return Error(Errc::InvalidArgument, "graph reply receipt_ids must be an array");
+      for (const auto& id : *value) {
+        if (!id.is_string()) return Error(Errc::InvalidArgument, "graph reply receipt ID must be text");
+        receipts.push_back(id.get<std::string>());
+      }
+    }
+    LOOM_TRY_ASSIGN(auto snapshot, registry.load(*profile, receipts));
+    Json capabilities{{"execution", Json{{"llm.chat.completions", Json{{"available", true},
+        {"protocol", "openai_chat_completions"}}}}}, {"fusion", Json::object()}};
+    LOOM_TRY_ASSIGN(auto resolved, registry.resolve(snapshot, options.value("selection", Json::object()), capabilities));
+    result["method_resolution"] = resolved;
+    // Reply composition needs one fully bound final provider request. The
+    // registry still exposes every member; an unsupported composition is never
+    // reduced silently to the first member of a combination.
+    if (resolved["leaves"].size() != 1)
+      return Error(Errc::Unsupported, "graph reply composition requires one final request method");
+    const auto& leaf = resolved["leaves"][0];
+    Json run = options.value("run_context", Json::object());
+    if (!run.is_object()) return Error(Errc::InvalidArgument, "graph reply run_context must be an object");
+    run["run_id"] = "e_chat_method_run_" + random_hex(32);
+    run["known_at"] = timeutil::utc_now_iso();
+    run["input_sha256"] = Sha256::hex(json::canonical(Json{{"original_request", original_request},
+        {"primary_text", primary_text}, {"first_response_ref", first_response},
+        {"user_message_id", user_message_id}, {"selected_leaf", leaf},
+        {"base_packet", options.value("base_packet", Json(nullptr))}}));
+    run["request"] = original_request;
+    run["messages"] = original_request.at("messages");
+    run["model"] = model;
+    run["primary_text"] = primary_text;
+    run["user_message_id"] = user_message_id;
+    run["first_response_ref"] = first_response;
+    if (options.contains("base_packet")) run["base_packet"] = options["base_packet"];
+    auto operation = chat::graph_reply_packet_operation;
+    LOOM_TRY_ASSIGN(auto registered, registry.prepare(snapshot, leaf, run, operation));
+    Json host = options.value("host", Json::object());
+    if (!host.is_object()) return Error(Errc::InvalidArgument, "graph reply host must be an object");
+    host["request_id"] = "chat_request_" + random_hex(32);
+    host["turn_id"] = "chat_turn_" + random_hex(32);
+    const auto& recipe = registered["effective_recipe"];
+    const auto* actual_request = json::find(recipe, "request");
+    if (!actual_request || !actual_request->is_object() ||
+        json::get_string(*actual_request, "model").empty() || !actual_request->contains("messages") ||
+        !(*actual_request)["messages"].is_array() || !actual_request->contains("stream") ||
+        !(*actual_request)["stream"].is_boolean())
+      return Error(Errc::InvalidArgument, "graph recipe must bind a complete provider request with model/messages/stream");
+    host["model"] = (*actual_request)["model"];
+    host["recipe_sha256"] = recipe.at("definition_sha256");
+    host["known_at"] = run["known_at"];
+    chat::GraphReplyCallbacks callbacks;
+    callbacks.operation = operation;
+    callbacks.bind_results = [this, origin = run.value("origin", Json(nullptr))](
+        const Json& candidate, const Json& manifest, const Json& bindings) -> Result<Json> {
+      Json actual = bindings;
+      actual["origin"] = origin;
+      actual["known_at"] = timeutil::utc_now_iso();
+      actual["response_provenance"] = "first_provider_response_captured";
+      return registry.bind_results(candidate, manifest, actual, chat::graph_reply_packet_operation);
+    };
+    callbacks.accept = [this](const Json& request) { return accept(request); };
+    LOOM_TRY_ASSIGN(auto projected, chat::prepare_graph_reply(options, registered["packet"], host,
+        recipe, registered["manifest"], std::move(callbacks)));
+    if (!projected.append_messages.empty())
+      return Error(Errc::Unsupported, "graph reply append_messages must be incorporated in the complete recipe request");
+    prepared = std::move(projected);
+    return {};
+  }
+  void capture_chunk(std::string_view bytes, std::string_view model) {
+    wire_bytes.append(bytes);
+    auto source = chat::retain_graph_reply_bytes(services, bytes, Json{{"channel", "transport_chunk"},
+        {"ordinal", chunk_sources.size()}, {"model_origin", Json{{"kind", "model"}, {"model", nullptr}}},
+        {"requested_model", model}, {"model_identity_basis", "requested_unverified"}});
+    if (source) chunk_sources.push_back(*source);
+    else capture_failed = true;
+  }
+  void capture_final(std::string_view model, bool cancelled, int status) {
+    auto source = chat::retain_graph_reply_bytes(services, wire_bytes, Json{{"channel", "first_transport_response"},
+        {"chunk_sources", chunk_sources}, {"cancelled", cancelled}, {"status", status},
+        {"model_origin", Json{{"kind", "model"}, {"model", nullptr}}},
+        {"requested_model", model}, {"model_identity_basis", "requested_unverified"}});
+    if (source) first_response = *source;
+    else { capture_failed = true; first_response = Json{{"source_status", "unavailable"},
+        {"blob_hash", Sha256::hex(wire_bytes)}, {"bytes", wire_bytes.size()}}; }
+  }
+  void settle(const Json& usage) {
+    if (!guard || settled) return;
+    settled = true;
+    auto accounting = guard->settle(attempted, wire_bytes.size(), usage);
+    if (!accounting) result["usage_settlement_error"] = std::string(errc_name(accounting.error().code));
+    else result["usage_settlement"] = *accounting;
+    result["execution_usage"] = guard->decisions();
+  }
+};
+
 Result<context::ContextRequest> chat_context_request(const Json& value) {
   if (!value.is_object()) return Error(Errc::InvalidArgument, "knowledge_context must be an object");
   for (auto it = value.begin(); it != value.end(); ++it) {
@@ -96,6 +300,20 @@ Result<context::ContextRequest> chat_context_request(const Json& value) {
     if (!valid) return Error(Errc::InvalidArgument, "invalid knowledge_context option: " + k);
   }
   return context::ContextRequest::from_json(value);
+}
+
+Result<std::size_t> active_memory_cap(const Json& execution) {
+  const auto* unified = json::find(execution, "unified");
+  if (!unified || !unified->value("enabled", false)) return std::size_t(16000);
+  const auto* value = json::find(*unified, "memory_max_chars");
+  if (!value) return std::size_t(16000);
+  if (!value->is_number_integer() || (!value->is_number_unsigned() && value->get<std::int64_t>() < 0))
+    return Error(Errc::InvalidArgument, "unified memory_max_chars must be a nonnegative supported integer");
+  const auto number = value->get<std::uint64_t>();
+  if (number > std::numeric_limits<std::size_t>::max())
+    return Error(Errc::InvalidArgument, "unified memory_max_chars must be a nonnegative supported integer");
+  const auto cap = static_cast<std::size_t>(number);
+  return cap == 0 ? std::numeric_limits<std::size_t>::max() : cap;
 }
 
 Json native_history_row(const Message& message) {
@@ -482,7 +700,19 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
   std::string sys_prompt = opts.system_prompt ? *opts.system_prompt : cfg_string(cfg_, "system_prompt");
   if (!sys_prompt.empty()) messages.push_back(Json{{"role", "system"}, {"content", sys_prompt}});
 
-  if (memory_ && opts.include_memory) {
+  // The configured modern recipe is explicit; historical callers retain their
+  // compatible message order. Preview compilation never creates an execution
+  // scope, so configured provider credentials cannot turn it into a paid call.
+  const Json execution = context::current_context_execution_scope()
+      ? context::current_context_execution_scope()->options() : cfg_.get("context_execution", Json::object());
+  LOOM_TRY(context::validate_context_execution_options(execution));
+  const Json unified_options = execution.value("unified", Json::object());
+  if (!unified_options.is_object() || (unified_options.contains("enabled") && !unified_options["enabled"].is_boolean()))
+    return Error(Errc::InvalidArgument, "context_execution.unified must be an object with boolean enabled");
+  const bool unified = unified_options.value("enabled", false);
+  Json unified_context;
+
+  if (!unified && memory_ && opts.include_memory) {
     std::string mem_ctx = memory_->get_active_context();
     if (!mem_ctx.empty()) {
       messages.push_back(Json{{"role", "system"}, {"content", "User's memory/context:\n" + mem_ctx}});
@@ -490,7 +720,7 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
   }
 
   bool graph_disabled = opts.context_depth.has_value() && *opts.context_depth == 0;
-  if (graph_memory_ && opts.include_graph_memory && !graph_disabled) {
+  if (!unified && graph_memory_ && opts.include_graph_memory && !graph_disabled) {
     try {
       GraphSelectOptions gopts;
       if (opts.context_depth && *opts.context_depth > 0) gopts.depth = *opts.context_depth;
@@ -502,8 +732,14 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
     }
   }
 
-  if (opts.knowledge_context) {
-    auto request = *opts.knowledge_context;
+  if (opts.knowledge_context || unified) {
+    context::ContextRequest request;
+    if (opts.knowledge_context) request = *opts.knowledge_context;
+    else if (const auto* configured = json::find(execution, "request")) {
+      auto parsed = chat_context_request(*configured);
+      if (!parsed) return parsed.error();
+      request = *parsed;
+    }
     if (request.budget_tokens <= 0) return Error(Errc::InvalidArgument, "knowledge_context budget_tokens must be positive");
     if (request.text.empty()) request.text = current_text;
     KnowledgeContextBuilder builder;
@@ -511,17 +747,42 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
       std::lock_guard lk(mu_);
       builder = knowledge_context_builder_;
     }
-    if (!builder) return Error(Errc::NotImplemented, "knowledge context is unavailable on this ChatEngine");
-    auto compiled = builder(request);
-    if (!compiled) return compiled.error();
-    if (!compiled->is_object() || !compiled->contains("prompt") || !(*compiled)["prompt"].is_string() ||
-        !compiled->contains("context_set") || !(*compiled)["context_set"].is_object()) {
-      return Error(Errc::Internal, "knowledge context builder returned an invalid result");
+    const bool include_knowledge = !unified || unified_options.value("include_knowledge", true);
+    if (include_knowledge) {
+      if (!builder && (!unified || opts.knowledge_context))
+        return Error(Errc::NotImplemented, "knowledge context is unavailable on this ChatEngine");
+      if (builder) {
+        auto compiled = builder(request);
+        if (!compiled) {
+          // A modern legacy-only recipe can run before its first KB snapshot.
+          // Explicit run/goal requests still fail rather than hiding a typo.
+          if (!unified || opts.knowledge_context || !request.run.empty() ||
+              (request.goal_type && !request.goal_type->empty()) || compiled.error().code != Errc::NotFound)
+            return compiled.error();
+        } else {
+          if (!compiled->is_object() || !compiled->contains("prompt") || !(*compiled)["prompt"].is_string() ||
+              !compiled->contains("context_set") || !(*compiled)["context_set"].is_object()) {
+            return Error(Errc::Internal, "knowledge context builder returned an invalid result");
+          }
+          compiled_context = *compiled;
+        }
+      }
     }
-    compiled_context = *compiled;
-    resolved_context_request = compiled->value("request", request.to_json());
-    const auto prompt = (*compiled)["prompt"].get<std::string>();
-    if (!prompt.empty()) messages.push_back(Json{{"role", "system"}, {"content", prompt}});
+    resolved_context_request = compiled_context.is_object() ? compiled_context.value("request", request.to_json()) : request.to_json();
+    if (unified) {
+      Json settings = unified_options;
+      if (opts.context_depth) settings["legacy_relation_hops"] = *opts.context_depth;
+      else if (!settings.contains("legacy_relation_hops")) settings["legacy_relation_hops"] = cfg_.get("graph_memory_depth", 2);
+      auto selected = context::compile_unified_context(db_, cfg_, graph_memory_, memory_, request,
+          compiled_context, conv_id, opts.include_memory, opts.include_graph_memory && !graph_disabled, settings);
+      if (!selected) return selected.error();
+      unified_context = *selected;
+      const auto prompt = json::get_string(unified_context, "prompt");
+      if (!prompt.empty()) messages.push_back(Json{{"role", "system"}, {"content", prompt}});
+    } else {
+      const auto prompt = json::get_string(compiled_context, "prompt");
+      if (!prompt.empty()) messages.push_back(Json{{"role", "system"}, {"content", prompt}});
+    }
   }
 
   if (!conv_id.empty() && opts.include_history) {
@@ -562,6 +823,7 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
                                         {"context_depth", opts.context_depth ? Json(*opts.context_depth) : Json(nullptr)}}},
                          {"knowledge_context_request", resolved_context_request},
                          {"knowledge_context", compiled_context}};
+    if (unified) (*context_trace)["unified_context"] = unified_context;
     if (opts.active_task_spec) {
       (*context_trace)["active_task"] = *active_task;
       (*context_trace)["replaced_history_message_ids"] = replaced_ids;
@@ -606,6 +868,15 @@ std::optional<std::string> ChatEngine::last_reasoning() const {
 
 Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& opts, const ChatCallbacks& cb,
                                     const CancelToken* cancel) {
+  const Json execution = cfg_.get("context_execution", Json::object());
+  LOOM_TRY(context::validate_context_execution_options(execution));
+  const Json graph_options = execution.value("graph_reply", Json::object());
+  if (!graph_options.is_object() || (graph_options.contains("mode") && !graph_options["mode"].is_string()))
+    return Error(Errc::InvalidArgument, "context_execution.graph_reply must be an object with text mode");
+  const auto graph_mode = json::get_string(graph_options, "mode", "off");
+  const bool graph_enabled = graph_mode != "off";
+  LOOM_TRY_ASSIGN(auto memory_cap, active_memory_cap(execution));
+  context::ContextExecutionScope context_execution(execution);
   // 1. Resolve the conversation. Keep one lock order (database -> mu_)
   // shared with task compilation, and serialize implicit first-conversation
   // creation so concurrent sends do not unexpectedly create separate chats.
@@ -640,7 +911,10 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
   // retained provenance; callbacks cannot change it between those operations.
   const bool record_context = opts.trace_context.value_or(opts.active_task_spec.has_value() ||
       opts.knowledge_context.has_value() || !opts.include_memory ||
-      !opts.include_graph_memory || !opts.include_history);
+      !opts.include_graph_memory || !opts.include_history ||
+      execution.value("unified", Json::object()).value("enabled", false) ||
+      execution.value("goal_typing", Json::object()).value("enabled", false) ||
+      execution.value("embedding", Json::object()).value("enabled", false) || graph_enabled);
   Json context_trace;
   Json task_messages;
   Json accepted_active_task;
@@ -667,7 +941,7 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
     auto before = native_request_inputs(db_, conv.id);
     if (!before) return before.error();
     const auto prepared_system = opts.system_prompt.value_or(cfg_string(cfg_, "system_prompt"));
-    const auto prepared_memory = memory_ && opts.include_memory ? memory_->get_active_context() : std::string{};
+    const auto prepared_memory = memory_ && opts.include_memory ? memory_->get_active_context(memory_cap) : std::string{};
     // Arbitrary context builders run outside SQL transactions. Their returned
     // graph/knowledge/file context is frozen derived content, not a promise
     // that independent stores or external files remain globally current.
@@ -679,6 +953,12 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
       return Error(Errc::Internal, "active_task: actual native history was not captured");
     Json prepared_native_history = std::move(*captured);
     context_trace.erase("_native_history_snapshot"); // internal validation, not a public trace field
+    if (memory_ && opts.include_memory && execution.value("unified", Json::object()).value("enabled", false)) {
+      const auto& consumed = context_trace["unified_context"];
+      if (consumed.value("memory_input_sha256", "") != Sha256::hex(prepared_memory) ||
+          !consumed.value("memory_input_mapping_verified", false))
+        return Error(Errc::InvalidArgument, "active_task: memory consumed during context preparation changed or could not be verified");
+    }
     if (db_.conn().in_transaction()) {
       return Error(Errc::InvalidArgument,
         "active_task: context preparation left an externally owned transaction open");
@@ -698,7 +978,7 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
     if (*before != *after || *current_history != prepared_native_history ||
         *rechecked != context_trace["active_task"] ||
         prepared_system != opts.system_prompt.value_or(cfg_string(cfg_, "system_prompt")) ||
-        prepared_memory != (memory_ && opts.include_memory ? memory_->get_active_context() : std::string{})) {
+        prepared_memory != (memory_ && opts.include_memory ? memory_->get_active_context(memory_cap) : std::string{})) {
       return Error(Errc::InvalidArgument,
         "active_task: request inputs changed during context preparation; request was not accepted");
     }
@@ -837,6 +1117,36 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
   configure_reasoning(payload, model, opts.reasoning_effort);
   payload["include_reasoning"] = true;
 
+  std::unique_ptr<ChatGraphExecution> graph;
+  const bool graph_postprocess = graph_mode == "separate_model_afterwards" || graph_mode == "separate-model-postprocess";
+  if (graph_enabled) {
+    graph = std::make_unique<ChatGraphExecution>(cfg_, secrets_, db_, http_, graph_options);
+    if (!graph_postprocess) {
+      auto prepared = graph->prepare(model, payload, "", user_mid);
+      if (!prepared) graph->issue("preparation_error", errc_name(prepared.error().code));
+      else if (graph->prepared->capability.value("available", false)) {
+        // Exact complete caller recipe, instantiated by the registry. No
+        // late protocol/default patch can make its request hash misleading.
+        payload = graph->prepared->request_patch;
+        model = json::get_string(payload, "model");
+        stream = payload["stream"].get<bool>();
+        if (opts.active_task_spec) {
+          const Json task_message{{"role", "user"}, {"content", "[Active task specification; derived from the selected source messages]\n" +
+              context_trace["active_task"]["compiled_spec"]["compiled_instruction"]["text"].get<std::string>()}};
+          if (std::find(payload["messages"].begin(), payload["messages"].end(), task_message) == payload["messages"].end())
+            return Error(Errc::InvalidArgument, "graph recipe omitted the explicitly accepted active task instruction");
+        }
+        if (record_context) {
+          context_trace["pre_graph_messages"] = context_trace["messages"];
+          context_trace["pre_graph_messages_sha256"] = context_trace["messages_sha256"];
+          context_trace["messages"] = payload["messages"];
+          context_trace["messages_sha256"] = Sha256::hex(json::dump(payload["messages"]));
+          LOOM_TRY(retain_request_metadata());
+        }
+      }
+    }
+  }
+
   net::HttpRequest req;
   req.method = "POST";
   req.url = base + "/chat/completions";
@@ -849,18 +1159,55 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
   req.body = json::dump(payload);
   req.timeout_ms = 180000;
   req.stream = stream;
+  if (graph && graph->prepared && graph->prepared->capability.value("available", false) && !graph_postprocess) {
+    const Json transport = graph_options.value("transport", Json::object());
+    if (!transport.is_object() || transport.value("calls_authorized", Json(false)) != Json(true)) {
+      graph->issue("authorization_required", "graph_reply_calls_not_authorized");
+      if (record_context) { context_trace["graph_reply"] = graph->result; LOOM_TRY(retain_request_metadata()); }
+      return Error(Errc::Paused, "graph reply calls require explicit authorization");
+    }
+    if (const auto* timeout = json::find(transport, "timeout_ms")) {
+      if (!timeout->is_number_integer() || *timeout <= 0 || *timeout > std::numeric_limits<int>::max())
+        return Error(Errc::InvalidArgument, "graph reply transport timeout must be a positive native integer");
+      req.timeout_ms = timeout->get<int>();
+    }
+    graph->prepared->request_bytes = req.body;
+    graph->prepared->binding_origin = graph_options.value("run_context", Json::object()).value("origin", Json(nullptr));
+    graph->guard = std::make_unique<chat::ModelUsageGuard>(graph->services);
+    auto admitted = graph->guard->admit(req, transport.value("usage_estimate", Json::object()),
+        transport.value("confirmation", Json::object()));
+    if (!admitted || !admitted->value("dispatch_authorized", false)) {
+      graph->issue("usage_policy_pending", admitted ? json::get_string(*admitted, "status", "unavailable") :
+          std::string(errc_name(admitted.error().code)));
+      graph->result["execution_usage"] = graph->guard->decisions();
+      if (admitted) graph->result["usage_decision"] = *admitted;
+      if (record_context) { context_trace["graph_reply"] = graph->result; LOOM_TRY(retain_request_metadata()); }
+      return Error(Errc::Paused, "graph reply model usage is not admitted; inspect retained context trace");
+    }
+  }
 
   std::string full_text, reasoning_text;
+  std::string reported_model;
   Json usage = Json::object();
   bool cancelled = false;
+  int response_status = 0;
 
   auto handle_event = [&](const net::SseEvent& evt) {
     if (cancel && cancel->cancelled()) return;
     if (evt.is_done()) return;
     auto parsed = json::parse(evt.data);
     if (!parsed) {
+      if (graph) graph->transport_issue = "parse";
       log::debug("loom.chat_engine", "Skipped malformed SSE chunk: {}", std::string(utf8::prefix(evt.data, 100)));
       return;
+    }
+    if (graph) {
+      if (const auto* name = json::find(*parsed, "model"); name && !name->is_null()) {
+        if (!name->is_string()) graph->transport_issue = "provider_model_invalid";
+        else if (!reported_model.empty() && reported_model != name->get<std::string>())
+          graph->transport_issue = "provider_model_changed";
+        else reported_model = name->get<std::string>();
+      }
     }
     const Json* choices = json::find(*parsed, "choices");
     if (choices && choices->is_array() && !choices->empty()) {
@@ -892,9 +1239,13 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
 
     sink.on_headers = [&](int s, const net::Headers&) {
       status = s;
+      response_status = s;
       return true;
     };
     sink.on_data = [&](std::string_view chunk) -> bool {
+      // Preserve each exact source chunk before parsing or a cancellation
+      // callback. The final full wire source is independent of model content.
+      if (graph) graph->capture_chunk(chunk, model);
       if (cancel && cancel->cancelled()) {
         aborted = true;
         return false;
@@ -911,43 +1262,122 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
       return true;
     };
 
-    auto resp = http_.send(req, &sink, cancel);
+    Result<net::HttpResponse> resp = Error(Errc::Internal, "transport not attempted");
+    if (graph) {
+      graph->attempted = true;
+      try { resp = http_.send(req, &sink, cancel); }
+      catch (...) { resp = Error(Errc::Internal, "graph reply transport callback failed"); }
+    } else resp = http_.send(req, &sink, cancel);
     bool was_cancelled = aborted || (cancel && cancel->cancelled()) || (!resp && resp.error().code == Errc::Cancelled);
     if (was_cancelled) {
       cancelled = true;
     } else if (!resp) {
-      return resp.error();
+      if (!graph) return resp.error();
+      graph->transport_issue = std::string(errc_name(resp.error().code));
     } else if (status != 200) {
-      return Error(Errc::Http, "API error " + std::to_string(status) + ": " + std::string(utf8::prefix(err_body, 500)));
+      if (!graph) return Error(Errc::Http, "API error " + std::to_string(status) + ": " + std::string(utf8::prefix(err_body, 500)));
+      graph->transport_issue = "http";
+      if (full_text.empty()) full_text = err_body;
     } else {
-      parser.finish(handle_event);
+      if (graph) {
+        try { parser.finish(handle_event); }
+        catch (...) { graph->transport_issue = "callback_exception"; }
+      } else parser.finish(handle_event);
       if (cancel && cancel->cancelled()) cancelled = true;
     }
   } else {
-    auto resp = http_.send(req, nullptr, cancel);
+    Result<net::HttpResponse> resp = Error(Errc::Internal, "transport not attempted");
+    if (graph) {
+      graph->attempted = true;
+      try { resp = http_.send(req, nullptr, cancel); }
+      catch (...) { resp = Error(Errc::Internal, "graph reply transport callback failed"); }
+      if (resp) {
+        response_status = resp->status;
+        graph->capture_chunk(resp->body, model);
+        graph->capture_final(model, false, response_status);
+      }
+    } else resp = http_.send(req, nullptr, cancel);
     if (!resp) {
       if (resp.error().code == Errc::Cancelled) {
         cancelled = true;
       } else {
-        return resp.error();
+        if (!graph) return resp.error();
+        graph->transport_issue = std::string(errc_name(resp.error().code));
       }
     } else if (resp->status != 200) {
-      return Error(Errc::Http, "API error " + std::to_string(resp->status) + ": " + std::string(utf8::prefix(resp->body, 500)));
+      if (!graph) return Error(Errc::Http, "API error " + std::to_string(resp->status) + ": " + std::string(utf8::prefix(resp->body, 500)));
+      graph->transport_issue = "http";
+      full_text = resp->body;
     } else {
       auto j = resp->json();
-      if (!j) return Error(Errc::Parse, "invalid JSON response from chat completions");
-      const Json* choices = json::find(*j, "choices");
-      if (!choices || !choices->is_array() || choices->empty()) return Error(Errc::Parse, "response missing choices");
-      const Json* message = json::find((*choices)[0], "message");
-      if (!message) return Error(Errc::Parse, "response missing message");
-      full_text = json::get_string(*message, "content");
-      reasoning_text = json::get_string(*message, "reasoning");
-      if (const Json* u = json::find(*j, "usage"); u && u->is_object()) usage = *u;
+      const Json* choices = j ? json::find(*j, "choices") : nullptr;
+      const Json* message = choices && choices->is_array() && !choices->empty() ? json::find((*choices)[0], "message") : nullptr;
+      if (!j || !message) {
+        if (!graph) return Error(Errc::Parse, !j ? "invalid JSON response from chat completions" :
+            (!choices || !choices->is_array() || choices->empty()) ? "response missing choices" : "response missing message");
+        graph->transport_issue = "parse";
+        full_text = resp->body;
+      } else {
+        if (graph) {
+          if (const auto* name = json::find(*j, "model"); name && !name->is_null()) {
+            if (!name->is_string()) graph->transport_issue = "provider_model_invalid";
+            else reported_model = name->get<std::string>();
+          }
+        }
+        full_text = json::get_string(*message, "content");
+        reasoning_text = json::get_string(*message, "reasoning");
+        if (const Json* u = json::find(*j, "usage"); u && u->is_object()) usage = *u;
+      }
+    }
+  }
+
+  if (graph) {
+    if (stream || graph->first_response.empty()) graph->capture_final(model, cancelled, response_status);
+    graph->settle(usage);
+    const auto settlement = graph->result;
+    if (graph_postprocess && !cancelled && graph->transport_issue.empty() && !graph->capture_failed) {
+      auto prepared = graph->prepare(model, payload, full_text, user_mid);
+      if (!prepared) graph->issue("preparation_error", errc_name(prepared.error().code), full_text);
+      else {
+        graph->prepared->binding_origin = graph_options.value("run_context", Json::object()).value("origin", Json(nullptr));
+        graph->result = chat::run_graph_reply_postprocess(graph->services, *graph->prepared,
+            graph->prepared->request_patch, graph_options.value("postprocess_transport", Json::object()),
+            full_text, graph->first_response, cancel);
+      }
+    } else if (graph->prepared && graph->transport_issue.empty() && !cancelled && !graph->capture_failed) {
+      if (!reported_model.empty()) graph->prepared->host["model"] = reported_model;
+      graph->result = chat::finish_graph_reply(graph->services, *graph->prepared, full_text, full_text,
+          graph->first_response, Json{{"requests", graph->attempted ? 1 : 0}, {"response_bytes", graph->wire_bytes.size()},
+              {"provider_usage", usage}, {"requested_model", model},
+              {"reported_model", reported_model.empty() ? Json(nullptr) : Json(reported_model)},
+              {"model_identity_basis", reported_model.empty() ? "requested_unverified" : "provider_reported"}});
+      const auto graph_status = json::get_string(graph->result, "status");
+      const bool bound_first_text = json::get_string(graph->result, "display_text_source") == "first_response_output_binding";
+      if ((graph_status == "candidate" || graph_status == "accepted" || bound_first_text) &&
+          graph->result.contains("text") && graph->result["text"].is_string())
+        full_text = graph->result["text"].get<std::string>();
+    } else {
+      if (graph->capture_failed) graph->issue("storage_error", "first_response_storage_failed", full_text);
+      else if (cancelled) graph->issue("cancelled", "incomplete_response", full_text);
+      else if (!graph->transport_issue.empty()) graph->issue("transport_error", graph->transport_issue, full_text);
+      else { graph->result["text"] = full_text; graph->result["retained_text"] = full_text; }
+    }
+    if (graph_postprocess) graph->result["primary_response_ref"] = graph->first_response;
+    if (!graph_postprocess || !graph->result.contains("first_response_ref")) graph->result["first_response_ref"] = graph->first_response;
+    graph->result[graph_postprocess ? "primary_wire_response_sha256" : "wire_response_sha256"] = Sha256::hex(graph->wire_bytes);
+    graph->result[graph_postprocess ? "primary_wire_response_bytes" : "wire_response_bytes"] = graph->wire_bytes.size();
+    graph->result["transport_chunk_sources"] = graph->chunk_sources;
+    for (const auto* usage_field : {"usage_settlement", "usage_settlement_error", "execution_usage"})
+      if (settlement.contains(usage_field)) graph->result[usage_field] = settlement[usage_field];
+    if (record_context) {
+      context_trace["graph_reply"] = graph->result;
+      LOOM_TRY(retain_request_metadata());
     }
   }
 
   // 7. Persist the assistant message.
   Json metadata = Json::object();
+  if (graph) metadata["graph_reply"] = graph->result;
   if (!reasoning_text.empty()) metadata["reasoning"] = std::string(utf8::prefix(reasoning_text, 2000));
   {
     auto topics = analyzer_.extract_topics(full_text, 2);

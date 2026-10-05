@@ -1,0 +1,8 @@
+{
+  "core_library_sha256": "328c75a89d1662a441e14336a17490d4f33470a748beaf03c052604c8e75bfe6",
+  "ctest_passed": 108,
+  "ctest_total": 108,
+  "ctest_elapsed_seconds": 276.11,
+  "paid_calls": 0,
+  "scope": "full unchanged native gates after deriving method-trace response identity from validated compiler inputs"
+}

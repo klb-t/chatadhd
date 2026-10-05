@@ -1,0 +1,573 @@
+{
+  "schema": "loom.w3_native_golden_consumer_build_evidence/1",
+  "build_passed": true,
+  "w2_commit": "5a73a360f44626333ce6510f26261c32239de73c",
+  "w4_commit": "1377e20c71f200b01416c7c87f06c3ffdafb02b6",
+  "core_sha256": "328c75a89d1662a441e14336a17490d4f33470a748beaf03c052604c8e75bfe6",
+  "final_core_sha256": "328c75a89d1662a441e14336a17490d4f33470a748beaf03c052604c8e75bfe6",
+  "library_sha256": "57c1b549c260e14b4f31d21c36bec34690cdcbd16c47d4238079a9c0bb23be97",
+  "isolated_archive_sha256": "c651cf42e4226e196a7fc7b6659e93974514f5e63938da691fc6adf376dc5da3",
+  "removed_archive_members": [
+    "context_engine.cpp.o",
+    "provider_vector.cpp.o",
+    "graph_reply.cpp.o",
+    "config.cpp.o",
+    "graph_packet_store.cpp.o"
+  ],
+  "provider_calls": 0,
+  "fake_abi_shims": false,
+  "manifest_sha256": "d09245bb9a4511355b27086efc263134adbed31785e6a930d27a619e0a05cd2b",
+  "parent_overlay_core_sha256": "50a21838c0774ee5a616b6d8d8a1c0e6dd9865aadf9496d21684603eba93e479",
+  "sources": {
+    "loom/src/capi/capi_packet.cpp@1377e20c71f200b01416c7c87f06c3ffdafb02b6": "b11a970e8bcbdbcba910c3e1dc49d69c4ff843e0afbbb838f40c281bf9c4a00b",
+    "loom/src/packet/packet.h@1377e20c71f200b01416c7c87f06c3ffdafb02b6": "c1ffb4580ac99feb98bbc81006731b0bc8763ddb13c618e832aa675f30dc4bc7",
+    "loom/src/packet/packet.cpp@1377e20c71f200b01416c7c87f06c3ffdafb02b6": "f95574debd94ff675596807b7de7eff8a65b5aafc3360b9be2d513a335bfaf59",
+    "loom/src/packet/reply.cpp@1377e20c71f200b01416c7c87f06c3ffdafb02b6": "4575f44b4614888fa25166b6b3a2e58c59966b49021cb25b07c06aaf74fc091c",
+    "loom/src/kb/graph_packet_store.cpp@1377e20c71f200b01416c7c87f06c3ffdafb02b6": "904cb420a6264962a7d77805d8a69e2ca0193474bcfbee3550ed284a475bd466",
+    "loom/src/packet/METHOD_GRAPH.md@1377e20c71f200b01416c7c87f06c3ffdafb02b6": "b9a291868473a15dde6c97abf424ec934f6c08927fe898b136f12eadff9c8725",
+    "loom/src/packet/method-graph.schema.json@1377e20c71f200b01416c7c87f06c3ffdafb02b6": "76613d7e7586d28cdb28678372361c9120950cac85fb4ec20459cb1d7f3ccdd9",
+    "loom/src/packet/tests/verify_method_graph_artifact.py@1377e20c71f200b01416c7c87f06c3ffdafb02b6": "0a4c2a6db77bd8d4cffbe5a7ee7b49da46b4efb21150e844f5d1dc57faab18aa",
+    "loom/tools/coordination/graph_store.py@1377e20c71f200b01416c7c87f06c3ffdafb02b6": "5409db2624335b0984ddd95a63a99906648f6d6acaf72f7951ddc7eff9ca758c",
+    "loom/tools/structure/agentic_graph_v1/packet.py@1377e20c71f200b01416c7c87f06c3ffdafb02b6": "1b949dad8319f21713b984367cba162d1330f188d26557b21b264ef10910bbc4",
+    "loom/tools/structure/openrouter_runner.py@1377e20c71f200b01416c7c87f06c3ffdafb02b6": "2cd14424ca190f3d5fed47faf1e328993668a620b8202cfb7b196b363f971635",
+    "loom/include/loom/usage_policy.h@5a73a360f44626333ce6510f26261c32239de73c": "9ab715b2b45cafcaf36b3cf7cee10e4300c99acd2731743ebd010c9954ed4a62",
+    "loom/src/core/config.cpp@5a73a360f44626333ce6510f26261c32239de73c": "42bbe385964814a555b6cd9399e019ed5df6f70bf92ea935dcf5ad74e753d4b7",
+    "loom/src/core/config_usage_policy.cpp@5a73a360f44626333ce6510f26261c32239de73c": "70422d10d9a133326e99593b2c46b7d02cc97af3a1fc928c1be77c920210078d",
+    "loom/src/policy/usage_policy.cpp@5a73a360f44626333ce6510f26261c32239de73c": "d128c9c1eb48294ec14b905ef713e3e13e94099fecf4e2aa4e57f188634a45cb",
+    "loom/src/policy/usage_policy_preset.inc@5a73a360f44626333ce6510f26261c32239de73c": "c903963a1ea37c555ddf533739faded0ab3e279214176d2ccc910c1caaeafabf",
+    "loom/data/policy/usage_policy.pack@5a73a360f44626333ce6510f26261c32239de73c": "6a576acf69ccc3be7af2b8ccde641977bdb76b8b52e2c76e77895609d76e20df",
+    "loom/src/capi/context.h@working_tree": "fcdcf7b498b561d226c7b769495e29cb08e875304ed530814ad0c573c7136a54"
+  },
+  "objects": {
+    "<CONSUMER_BUILD>/component_0.o": {
+      "sha256": "c99857e227e7056ee3c9f1215aed8e380be14686e9f188433e1f8b6e05bc5cdb",
+      "source": "<REPO>/loom/src/context/context_engine.cpp"
+    },
+    "<CONSUMER_BUILD>/component_1.o": {
+      "sha256": "9e91ea8b9ae0bb033c970bb4b94c348a8f4bcfcbf74d97eec04d2842fde20eeb",
+      "source": "<REPO>/loom/src/context/provider_vector.cpp"
+    },
+    "<CONSUMER_BUILD>/component_2.o": {
+      "sha256": "09e4b27cbaa6d6eaffa3a2cb7db520976d8f3ade66fab84e966f7508cfb8f27b",
+      "source": "<REPO>/loom/src/chat/graph_reply.cpp"
+    },
+    "<CONSUMER_BUILD>/component_3.o": {
+      "sha256": "4f0aa0766654f26eec10efb962f9c0702e5f5613dc9790140f36ac8cff3a99c8",
+      "source": "<CONSUMER_BUILD>/source/loom/src/core/config.cpp"
+    },
+    "<CONSUMER_BUILD>/component_4.o": {
+      "sha256": "c7d2a92faffe51b80f7eb36ad4f873afe6098e8d3ececa6d6a12f67b81bf3076",
+      "source": "<CONSUMER_BUILD>/source/loom/src/core/config_usage_policy.cpp"
+    },
+    "<CONSUMER_BUILD>/component_5.o": {
+      "sha256": "8bf623e07332f47cc81b92d8fd4b211187e35698afd4736e0b29d153d6ddfc14",
+      "source": "<CONSUMER_BUILD>/source/loom/src/policy/usage_policy.cpp"
+    },
+    "<CONSUMER_BUILD>/component_6.o": {
+      "sha256": "d54205e9063ad1ee4b2ae931e931e97fadc6662fe6558f1fc2f04d0514527d13",
+      "source": "<PRIOR_COMBINED_OVERLAY>/source/loom/src/packet/packet.cpp"
+    },
+    "<CONSUMER_BUILD>/component_7.o": {
+      "sha256": "f6a6ea6e47576d7ad7f10ba62b1fa98554104300dab61cfbadc5238f3a71d46b",
+      "source": "<PRIOR_COMBINED_OVERLAY>/source/loom/src/packet/reply.cpp"
+    },
+    "<CONSUMER_BUILD>/component_8.o": {
+      "sha256": "a986241d467aa3c6e919e1f0573c462915dc5fa49e5bd4aa6d37e995f083cf9d",
+      "source": "<PRIOR_COMBINED_OVERLAY>/source/loom/src/kb/graph_packet_store.cpp"
+    },
+    "<CONSUMER_BUILD>/capi_packet.cpp.o": {
+      "sha256": "c1c7840e52dd4b644597d577fea1c3526f9678ad7027ef06037c323cd7f2267c",
+      "source": "loom/src/capi/capi_packet.cpp@1377e20c71f200b01416c7c87f06c3ffdafb02b6"
+    },
+    "<CMAKE_BUILD>/libloom_sqlite3_amalgamation.a": {
+      "sha256": "fa49de1205ad8353e9ad9299027730e91bf94149b449b010a243457f23da634b",
+      "source": "unchanged production vendor archive"
+    },
+    "<CMAKE_BUILD>/libloom_miniz.a": {
+      "sha256": "d6173c23bb9747759438dc1d592a08cf36b68975781f7ca7a93131b0adf0bdbf",
+      "source": "unchanged production vendor archive"
+    }
+  },
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "show",
+        "1377e20c71f200b01416c7c87f06c3ffdafb02b6:loom/src/capi/capi_packet.cpp"
+      ],
+      "cwd": "<REPO>",
+      "log": null
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "1377e20c71f200b01416c7c87f06c3ffdafb02b6:loom/src/packet/packet.h"
+      ],
+      "cwd": "<REPO>",
+      "log": null
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "1377e20c71f200b01416c7c87f06c3ffdafb02b6:loom/src/packet/packet.cpp"
+      ],
+      "cwd": "<REPO>",
+      "log": null
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "1377e20c71f200b01416c7c87f06c3ffdafb02b6:loom/src/packet/reply.cpp"
+      ],
+      "cwd": "<REPO>",
+      "log": null
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "1377e20c71f200b01416c7c87f06c3ffdafb02b6:loom/src/kb/graph_packet_store.cpp"
+      ],
+      "cwd": "<REPO>",
+      "log": null
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "1377e20c71f200b01416c7c87f06c3ffdafb02b6:loom/src/packet/METHOD_GRAPH.md"
+      ],
+      "cwd": "<REPO>",
+      "log": null
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "1377e20c71f200b01416c7c87f06c3ffdafb02b6:loom/src/packet/method-graph.schema.json"
+      ],
+      "cwd": "<REPO>",
+      "log": null
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "1377e20c71f200b01416c7c87f06c3ffdafb02b6:loom/src/packet/tests/verify_method_graph_artifact.py"
+      ],
+      "cwd": "<REPO>",
+      "log": null
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "1377e20c71f200b01416c7c87f06c3ffdafb02b6:loom/tools/coordination/graph_store.py"
+      ],
+      "cwd": "<REPO>",
+      "log": null
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "1377e20c71f200b01416c7c87f06c3ffdafb02b6:loom/tools/structure/agentic_graph_v1/packet.py"
+      ],
+      "cwd": "<REPO>",
+      "log": null
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "1377e20c71f200b01416c7c87f06c3ffdafb02b6:loom/tools/structure/openrouter_runner.py"
+      ],
+      "cwd": "<REPO>",
+      "log": null
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "5a73a360f44626333ce6510f26261c32239de73c:loom/include/loom/usage_policy.h"
+      ],
+      "cwd": "<REPO>",
+      "log": null
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "5a73a360f44626333ce6510f26261c32239de73c:loom/src/core/config.cpp"
+      ],
+      "cwd": "<REPO>",
+      "log": null
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "5a73a360f44626333ce6510f26261c32239de73c:loom/src/core/config_usage_policy.cpp"
+      ],
+      "cwd": "<REPO>",
+      "log": null
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "5a73a360f44626333ce6510f26261c32239de73c:loom/src/policy/usage_policy.cpp"
+      ],
+      "cwd": "<REPO>",
+      "log": null
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "5a73a360f44626333ce6510f26261c32239de73c:loom/src/policy/usage_policy_preset.inc"
+      ],
+      "cwd": "<REPO>",
+      "log": null
+    },
+    {
+      "argv": [
+        "git",
+        "show",
+        "5a73a360f44626333ce6510f26261c32239de73c:loom/data/policy/usage_policy.pack"
+      ],
+      "cwd": "<REPO>",
+      "log": null
+    },
+    {
+      "argv": [
+        "ar",
+        "t",
+        "<CONSUMER_BUILD>/libloom_w3_w2_w4_actual.a"
+      ],
+      "cwd": "<CONSUMER_BUILD>",
+      "log": null
+    },
+    {
+      "argv": [
+        "ar",
+        "d",
+        "<CONSUMER_BUILD>/libloom_w3_w2_w4_actual.a",
+        "context_engine.cpp.o",
+        "provider_vector.cpp.o",
+        "graph_reply.cpp.o",
+        "config.cpp.o",
+        "graph_packet_store.cpp.o"
+      ],
+      "cwd": "<CONSUMER_BUILD>",
+      "log": "<CONSUMER_BUILD>/archive-remove.log"
+    },
+    {
+      "argv": [
+        "/usr/bin/c++",
+        "-I",
+        "<CONSUMER_BUILD>/source/loom/include",
+        "-I",
+        "<CONSUMER_BUILD>/source/loom/src",
+        "-DCPPHTTPLIB_OPENSSL_SUPPORT=1",
+        "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+        "-DLOOM_BUILDING=1",
+        "-DLOOM_HAVE_OPENSSL=1",
+        "-DLOOM_VENDORED_SQLITE=1",
+        "-DLOOM_VERSION_STRING=\"0.1.0\"",
+        "-I<REPO>/loom/include",
+        "-I<REPO>/loom/src",
+        "-isystem",
+        "<REPO>/loom/third_party/nlohmann",
+        "-isystem",
+        "<REPO>/loom/third_party/cpp-httplib",
+        "-isystem",
+        "<REPO>/loom/third_party/sqlite",
+        "-isystem",
+        "<REPO>/loom/third_party/miniz",
+        "-g0",
+        "-std=c++20",
+        "-fPIC",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+        "-Wshadow",
+        "-Wnon-virtual-dtor",
+        "-Wold-style-cast",
+        "-Wcast-align",
+        "-Woverloaded-virtual",
+        "-Wnull-dereference",
+        "-Wimplicit-fallthrough",
+        "-Wno-unused-parameter",
+        "-Werror",
+        "-O0",
+        "-g0",
+        "-Werror",
+        "-c",
+        "<CONSUMER_BUILD>/source/loom/src/core/config.cpp",
+        "-o",
+        "<CONSUMER_BUILD>/component_3.o"
+      ],
+      "cwd": "<CONSUMER_BUILD>",
+      "log": "<CONSUMER_BUILD>/compile-component-3.log"
+    },
+    {
+      "argv": [
+        "/usr/bin/c++",
+        "-I",
+        "<CONSUMER_BUILD>/source/loom/include",
+        "-I",
+        "<CONSUMER_BUILD>/source/loom/src",
+        "-DCPPHTTPLIB_OPENSSL_SUPPORT=1",
+        "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+        "-DLOOM_BUILDING=1",
+        "-DLOOM_HAVE_OPENSSL=1",
+        "-DLOOM_VENDORED_SQLITE=1",
+        "-DLOOM_VERSION_STRING=\"0.1.0\"",
+        "-I<REPO>/loom/include",
+        "-I<REPO>/loom/src",
+        "-isystem",
+        "<REPO>/loom/third_party/nlohmann",
+        "-isystem",
+        "<REPO>/loom/third_party/cpp-httplib",
+        "-isystem",
+        "<REPO>/loom/third_party/sqlite",
+        "-isystem",
+        "<REPO>/loom/third_party/miniz",
+        "-g0",
+        "-std=c++20",
+        "-fPIC",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+        "-Wshadow",
+        "-Wnon-virtual-dtor",
+        "-Wold-style-cast",
+        "-Wcast-align",
+        "-Woverloaded-virtual",
+        "-Wnull-dereference",
+        "-Wimplicit-fallthrough",
+        "-Wno-unused-parameter",
+        "-Werror",
+        "-O0",
+        "-g0",
+        "-Werror",
+        "-c",
+        "<CONSUMER_BUILD>/source/loom/src/core/config_usage_policy.cpp",
+        "-o",
+        "<CONSUMER_BUILD>/component_4.o"
+      ],
+      "cwd": "<CONSUMER_BUILD>",
+      "log": "<CONSUMER_BUILD>/compile-component-4.log"
+    },
+    {
+      "argv": [
+        "/usr/bin/c++",
+        "-I",
+        "<CONSUMER_BUILD>/source/loom/include",
+        "-I",
+        "<CONSUMER_BUILD>/source/loom/src",
+        "-DCPPHTTPLIB_OPENSSL_SUPPORT=1",
+        "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+        "-DLOOM_BUILDING=1",
+        "-DLOOM_HAVE_OPENSSL=1",
+        "-DLOOM_VENDORED_SQLITE=1",
+        "-DLOOM_VERSION_STRING=\"0.1.0\"",
+        "-I<REPO>/loom/include",
+        "-I<REPO>/loom/src",
+        "-isystem",
+        "<REPO>/loom/third_party/nlohmann",
+        "-isystem",
+        "<REPO>/loom/third_party/cpp-httplib",
+        "-isystem",
+        "<REPO>/loom/third_party/sqlite",
+        "-isystem",
+        "<REPO>/loom/third_party/miniz",
+        "-g0",
+        "-std=c++20",
+        "-fPIC",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+        "-Wshadow",
+        "-Wnon-virtual-dtor",
+        "-Wold-style-cast",
+        "-Wcast-align",
+        "-Woverloaded-virtual",
+        "-Wnull-dereference",
+        "-Wimplicit-fallthrough",
+        "-Wno-unused-parameter",
+        "-Werror",
+        "-O0",
+        "-g0",
+        "-Werror",
+        "-c",
+        "<CONSUMER_BUILD>/source/loom/src/policy/usage_policy.cpp",
+        "-o",
+        "<CONSUMER_BUILD>/component_5.o"
+      ],
+      "cwd": "<CONSUMER_BUILD>",
+      "log": "<CONSUMER_BUILD>/compile-component-5.log"
+    },
+    {
+      "argv": [
+        "/usr/bin/c++",
+        "-I",
+        "<CONSUMER_BUILD>/source/loom/include",
+        "-I",
+        "<CONSUMER_BUILD>/source/loom/src",
+        "-DCPPHTTPLIB_OPENSSL_SUPPORT=1",
+        "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+        "-DLOOM_BUILDING=1",
+        "-DLOOM_HAVE_OPENSSL=1",
+        "-DLOOM_VENDORED_SQLITE=1",
+        "-DLOOM_VERSION_STRING=\"0.1.0\"",
+        "-I<REPO>/loom/include",
+        "-I<REPO>/loom/src",
+        "-isystem",
+        "<REPO>/loom/third_party/nlohmann",
+        "-isystem",
+        "<REPO>/loom/third_party/cpp-httplib",
+        "-isystem",
+        "<REPO>/loom/third_party/sqlite",
+        "-isystem",
+        "<REPO>/loom/third_party/miniz",
+        "-g0",
+        "-std=c++20",
+        "-fPIC",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+        "-Wshadow",
+        "-Wnon-virtual-dtor",
+        "-Wold-style-cast",
+        "-Wcast-align",
+        "-Woverloaded-virtual",
+        "-Wnull-dereference",
+        "-Wimplicit-fallthrough",
+        "-Wno-unused-parameter",
+        "-Werror",
+        "-O0",
+        "-g0",
+        "-Werror",
+        "-c",
+        "<CONSUMER_BUILD>/source/loom/src/capi/capi_packet.cpp",
+        "-o",
+        "<CONSUMER_BUILD>/capi_packet.cpp.o"
+      ],
+      "cwd": "<CONSUMER_BUILD>",
+      "log": "<CONSUMER_BUILD>/compile-capi-packet.log"
+    },
+    {
+      "argv": [
+        "ar",
+        "r",
+        "<CONSUMER_BUILD>/libloom_w3_w2_w4_actual.a",
+        "<CONSUMER_BUILD>/component_0.o",
+        "<CONSUMER_BUILD>/component_1.o",
+        "<CONSUMER_BUILD>/component_2.o",
+        "<CONSUMER_BUILD>/component_3.o",
+        "<CONSUMER_BUILD>/component_4.o",
+        "<CONSUMER_BUILD>/component_5.o",
+        "<CONSUMER_BUILD>/component_6.o",
+        "<CONSUMER_BUILD>/component_7.o",
+        "<CONSUMER_BUILD>/component_8.o",
+        "<CONSUMER_BUILD>/capi_packet.cpp.o"
+      ],
+      "cwd": "<CONSUMER_BUILD>",
+      "log": "<CONSUMER_BUILD>/archive-add.log"
+    },
+    {
+      "argv": [
+        "ar",
+        "t",
+        "<CONSUMER_BUILD>/libloom_w3_w2_w4_actual.a"
+      ],
+      "cwd": "<CONSUMER_BUILD>",
+      "log": null
+    },
+    {
+      "argv": [
+        "/usr/bin/c++",
+        "-shared",
+        "-fuse-ld=gold",
+        "-Wl,--no-map-whole-files",
+        "-Wl,--no-undefined",
+        "-Wl,--whole-archive",
+        "<CONSUMER_BUILD>/libloom_w3_w2_w4_actual.a",
+        "-Wl,--no-whole-archive",
+        "<CMAKE_BUILD>/libloom_sqlite3_amalgamation.a",
+        "<CMAKE_BUILD>/libloom_miniz.a",
+        "-lssl",
+        "-lcrypto",
+        "-pthread",
+        "-ldl",
+        "-lm",
+        "-Wl,-soname,libloom_w3_w2_w4_actual.so",
+        "-o",
+        "<CONSUMER_BUILD>/libloom_w3_w2_w4_actual.so"
+      ],
+      "cwd": "<CONSUMER_BUILD>",
+      "log": "<CONSUMER_BUILD>/link-shared.log"
+    },
+    {
+      "argv": [
+        "nm",
+        "-D",
+        "--defined-only",
+        "<CONSUMER_BUILD>/libloom_w3_w2_w4_actual.so"
+      ],
+      "cwd": "<CONSUMER_BUILD>",
+      "log": "<CONSUMER_BUILD>/exported-symbols.txt"
+    }
+  ],
+  "notes": [
+    "Source-identical W3 and W4 PIC objects reused from the earlier real combined overlay; W2 config/config_usage_policy/usage_policy and W4 capi_packet rebuilt from the stated pins.",
+    "Core 328c75a includes the W3 producer binder fix; the earlier parent overlay used core50a2183. Native W4 consumer directly exercises loom_packet and loom_graph_packet_store.",
+    "Actual consumer result is published separately only after the actual W3 producer artifact is available."
+  ],
+  "reused_w3_source_hashes": {
+    "loom/src/chat/chat_engine.cpp": "858bbff9c99be159f36d33952dbac1bbaff1e93edc94579df882ba33f619c168",
+    "loom/src/context/context_engine.cpp": "b7e696b60b0659f7ea3ea002c85eeb33f0ebfa3bfb8f79cd5f5af87ca4922bba",
+    "loom/src/context/unified_context.cpp": "10a96a4beb8f86396276e10f0d5619d2e1bb0d3f897bd9f4201ae41e0270edbe",
+    "loom/src/context/provider_vector.cpp": "2055184aa4b88801e1c427adfe21161a301dffe572492925f2644515b1a3d41b",
+    "loom/src/providers/embedding.cpp": "d66ddf3417f86b087e3513a878a04ae4795e578c0c41d5cb13bfa4c8faf1ee4f",
+    "loom/src/context/method_registry.cpp": "30a1711371684dbdb385fd0366d627e64e90fb16358449c05d62af6b4635658b",
+    "loom/src/context/method_channels.cpp": "ababb06a0ce3bc02cd499e298db620bd4ed341bfbcf79e03ad2823fe282cb460",
+    "loom/src/context/method_execution.cpp": "fcb3c0aa44ec248565685bc7dde4b3a31d2b51287462e95b72aac924c497e032",
+    "loom/src/chat/graph_reply.cpp": "64c5f50e52d3b3bc178a9b10a8021c7a0c4f24866dec5d0057f25725f6c0e9e2",
+    "loom/src/context/context_candidates.h": "b017e199dac0a4d337eca41fdd64e125699dbb439282e36db377f5dcd57b9694",
+    "loom/src/context/context_goal_usage.h": "0c8853593b3f4af094661d318620e5f8e8535aa885b1de82e953f979106eb442",
+    "loom/src/context/method_execution.h": "74060b92cf094dd235b6ffdc1ade17ce3c0157565047c1555b7ca1bb4e84bdd2",
+    "loom/src/context/provider_vector.h": "1d17927155625afcdb5bd6e1f7443c7c21782021a64fbac71fbc8a217a233d76",
+    "loom/src/context/context_diagnostics.h": "9831ea4b0de8456e44a54f94438fd1ab3950bbd84f34c38c9f704d99bc83af3d",
+    "loom/src/context/method_registry.h": "894b99c3db59aafa1df152f29f982ec4e8675ba976d673561bfdb50b227559cc",
+    "loom/src/context/context_request_ext.h": "ab072d83bc2c81d02766a8e6cc15820234eb5c217e09740d5f669f42dffc58d3",
+    "loom/src/context/method_channels.h": "471a660c5bced599e1ace151607c8ed4a04cbfbc65c8b4b35036c3022eb19e75",
+    "loom/src/context/context_execution.h": "5fc4f9ad8e2452bdc6a072acaa28726fd1f08c13f9e4ece2c3321f7dea95fc5f",
+    "loom/src/context/context_usage_claim.h": "75ff7731d55ed50209af74c0c4ce19aa8f4c5f0047289d5053fc614d270d240b",
+    "loom/src/context/ctx_common.h": "daf291535068e411f05204a2c6ff8d8c70c17de2660c74e784332762a8c343f4",
+    "loom/src/context/context_evidence.h": "665f776ba4d39e24032fa95ea49e402f886a39fd194c92093111bc938c400918",
+    "loom/src/context/unified_context.h": "9d94da54da0b2b2b68e2168971a84ecaec3e37b23eb8d475481adbc77cdcf2e1",
+    "loom/src/providers/embedding.h": "e60e8f12c3b5351ba430735e3b79459ad260617ef2dbd7d2cc48f67d7d7bb5a3",
+    "loom/src/chat/active_task_spec.h": "e6ab83172115b2863aec6c944a4b95f1995705695b58f6d8444ad3f218d77229",
+    "loom/src/chat/graph_reply.h": "deea40a22d3ad29205bb4cc08385791ddca67f1586606385fc9720cc4ee403bd",
+    "loom/src/chat/active_task_acceptance.h": "665e9fe55f77b06a3c140e2a186a7a835f4155f11a76b7c50005a0c01f82a97e"
+  },
+  "reused_w3_compile_usage_policy_header": {
+    "commit": "910a1d6b3764f82c78e39c5b0adca796ba1168e5",
+    "sha256": "2c7f9e00556f729e835dba2b9fb0cdac124b7e7c7ccf90ef29adb794c983c129",
+    "note": "W3 PIC objects were compiled against this compatible header; latest policy/config implementation and CABI were rebuilt against 5a73a360."
+  }
+}

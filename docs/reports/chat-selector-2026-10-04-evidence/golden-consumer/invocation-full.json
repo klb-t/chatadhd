@@ -1,0 +1,59 @@
+{
+  "schema": "loom.w3_native_golden_consumer_invocation/1",
+  "exit_code": 0,
+  "command": [
+    "python3",
+    "<CONSUMER_BUILD>/source/loom/src/packet/tests/verify_method_graph_artifact.py",
+    "--library",
+    "<CONSUMER_BUILD>/libloom_w3_w2_w4_actual.so",
+    "--artifact",
+    "<FINAL_PRODUCER_ARTIFACT>",
+    "--evidence-dir",
+    "<CONSUMER_BUILD>/actual-w3-artifact-full"
+  ],
+  "input_sha256": "27dc7422709e176620e4ceecf58898afb0e02ec6c939f0a2ad189d81870476a2",
+  "library_sha256": "57c1b549c260e14b4f31d21c36bec34690cdcbd16c47d4238079a9c0bb23be97",
+  "producer_full_test_cases": 121,
+  "producer_full_assertions": 1604,
+  "producer_full_skipped_cases": 0,
+  "producer_execution_verified_by_consumer": false,
+  "consumer_scope": "declared graph consistency and actual native accept/restart/read/replay/retry",
+  "provider_calls": 0,
+  "archives": {
+    "producer-full.json.gz": {
+      "gzip_sha256": "b237ae14af1c10d7616d489831c87c142827d305bd6b23f316825c31d4c5d591",
+      "gzip_bytes": 54550,
+      "uncompressed_sha256": "27dc7422709e176620e4ceecf58898afb0e02ec6c939f0a2ad189d81870476a2",
+      "uncompressed_bytes": 1309060,
+      "gzip_mtime": 0
+    },
+    "receipt-full.json.gz": {
+      "gzip_sha256": "2ca2cc2afbd5b73cd843839bb8d7dbb83e70e63ec4fbb1134c8b5854c83ebbd4",
+      "gzip_bytes": 80125,
+      "uncompressed_sha256": "77a8f4726fae656cdd3a11d77f36d5f0850554f7bb0c2f11db4a6527cc70f48b",
+      "uncompressed_bytes": 1851250,
+      "gzip_mtime": 0
+    }
+  },
+  "comparison_with_first": {
+    "exact_contract_equal": true,
+    "producer_evidence_equal": true,
+    "consumed_request_bytes_equal": true,
+    "effective_parameters_equal": true,
+    "response_sha256_equal": true,
+    "compilation_sha256_equal": true,
+    "result_node_ids_equal": true,
+    "request_sha256": "e634d856f018a0c445856e31c95ce16a6c00b09cf66050855895e08596b84ebb",
+    "trace_changed_fields": [
+      "raw_response_source_ref.source_id"
+    ],
+    "first_source_id": "src_581cfe2c7f32",
+    "final_source_id": "src_3e36d17154d5",
+    "explanation": "A new retained SourceRecord received a different runtime-generated source_id. This is captured by run attrs and the trace Observation, then by evidence-support/record/history/packet hashes. Model/request/parameters and compiled model records are unchanged."
+  },
+  "published_file_sha256": {
+    "verification-full.json": "90fd75a6dbb34146ffe60da9c95d82dade0d15e5f35ee77aa24cf20fe4eb6171",
+    "consumer-full.log": "5bd05c6caf16776ad9201d7689aebe1b6858ee4d0383dd18b67cafbcd30545a1"
+  },
+  "stderr_log_sanitization": "Only the random temporary database directory was replaced with <TEMP_DATABASE>."
+}

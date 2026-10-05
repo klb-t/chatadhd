@@ -13,6 +13,8 @@
 #include "loom/provenance.h"
 #include "loom/runtime.h"
 #include "loom/semantic_llm.h"
+#include "loom/util/ids.h"
+#include "loom/util/sha256.h"
 #include "loom/util/utf8.h"
 #include "ctx_common.h"
 #include "loom/context_plan.h"
@@ -20,8 +22,78 @@
 #include "context_candidates.h"
 #include "context_evidence.h"
 #include "context_diagnostics.h"
+#include "context_execution.h"
+#include "context_goal_usage.h"
+#include "provider_vector.h"
+#include "method_execution.h"
 
 namespace loom::context {
+
+namespace {
+thread_local ContextExecutionScope* execution_scope = nullptr;
+}
+
+ContextExecutionScope::ContextExecutionScope(Json options)
+    : options_(std::move(options)), previous_(execution_scope) { execution_scope = this; }
+ContextExecutionScope::~ContextExecutionScope() { execution_scope = previous_; }
+ContextExecutionScope* current_context_execution_scope() { return execution_scope; }
+
+Status validate_context_execution_options(const Json& options) {
+  if (!options.is_object()) return Error(Errc::InvalidArgument, "context execution options must be an object");
+  for (const auto* section : {"unified", "embedding", "goal_typing", "method_registry", "graph_reply"}) {
+    if (const auto* settings = json::find(options, section)) {
+      if (!settings->is_object()) return Error(Errc::InvalidArgument, std::string("context execution ") + section + " must be an object");
+      for (const auto* key : {"enabled", "calls_authorized", "include_knowledge", "include_graph_memory", "include_memory", "include_history"}) {
+        if (const auto* flag = json::find(*settings, key); flag && !flag->is_boolean())
+          return Error(Errc::InvalidArgument, std::string("context execution ") + section + "." + key + " must be boolean");
+      }
+    }
+  }
+  const auto* typing = json::find(options, "goal_typing");
+  if (!typing) return {};
+  if (!typing->is_object()) return Error(Errc::InvalidArgument, "goal_typing must be an object");
+  for (const auto* key : {"enabled", "calls_authorized"}) {
+    if (const auto* value = json::find(*typing, key); value && !value->is_boolean())
+      return Error(Errc::InvalidArgument, std::string("goal_typing.") + key + " must be boolean");
+  }
+  for (const auto* key : {"model", "base_url"}) {
+    if (const auto* value = json::find(*typing, key); value && !value->is_string())
+      return Error(Errc::InvalidArgument, std::string("goal_typing.") + key + " must be a string");
+  }
+  for (const auto* key : {"max_requests", "max_input_bytes", "max_output_tokens", "timeout_ms", "max_response_bytes"}) {
+    if (const auto* value = json::find(*typing, key)) {
+      const auto maximum = std::string_view(key) == "max_input_bytes" || std::string_view(key) == "max_response_bytes"
+          ? static_cast<std::uint64_t>(std::numeric_limits<std::size_t>::max())
+          : static_cast<std::uint64_t>(std::numeric_limits<int>::max());
+      if (!value->is_number_integer() || (!value->is_number_unsigned() && value->get<std::int64_t>() < 0))
+        return Error(Errc::InvalidArgument, std::string("goal_typing.") + key + " must be a nonnegative supported integer");
+      const auto amount = value->is_number_unsigned() ? value->get<std::uint64_t>()
+          : static_cast<std::uint64_t>(value->get<std::int64_t>());
+      if (amount > maximum)
+        return Error(Errc::InvalidArgument, std::string("goal_typing.") + key + " exceeds the supported integer representation");
+    }
+  }
+  for (const auto* key : {"confidence_threshold", "temperature", "estimated_cost_usd", "estimated_output_tokens", "estimated_response_bytes"}) {
+    if (const auto* value = json::find(*typing, key); value && !(std::string_view(key).starts_with("estimated_") && value->is_null())) {
+      if (!value->is_number() || !std::isfinite(value->get<double>()) || value->get<double>() < 0 ||
+          (std::string_view(key) == "confidence_threshold" && value->get<double>() > 1))
+        return Error(Errc::InvalidArgument, std::string("goal_typing.") + key + " has an invalid numeric value");
+    }
+  }
+  if (const auto* usage = json::find(*typing, "usage")) {
+    if (!usage->is_object()) return Error(Errc::InvalidArgument, "goal_typing.usage must be an object");
+    for (const auto* key : {"operation_id", "resume_operation_id", "baseline_key"}) {
+      if (const auto* value = json::find(*usage, key); value && (!value->is_string() || value->get_ref<const std::string&>().empty()))
+        return Error(Errc::InvalidArgument, std::string("goal_typing.usage.") + key + " must be a nonempty string");
+    }
+    if (const auto* confirmation = json::find(*usage, "confirmation")) {
+      if (!confirmation->is_object() || !confirmation->contains("approved") || !(*confirmation)["approved"].is_boolean() ||
+          json::get_string(*confirmation, "receipt_id").empty() || json::get_string(*confirmation, "ref").empty())
+        return Error(Errc::InvalidArgument, "usage confirmation needs receipt_id, approved and ref");
+    }
+  }
+  return {};
+}
 
 namespace {
 
@@ -181,7 +253,7 @@ void score_all(std::vector<Candidate>& cands, std::string_view anchor_date) {
 // Maximal-marginal-relevance-style diversity: repeatedly pick the remaining
 // candidate whose score, discounted by how many items of the same subject
 // were already picked, is highest. Deterministic (ties broken by ref).
-std::vector<Candidate> diversify(std::vector<Candidate> cands) {
+Result<std::vector<Candidate>> diversify(std::vector<Candidate> cands, const Json* method_settings = nullptr) {
   std::vector<Candidate> out;
   out.reserve(cands.size());
   std::map<std::string, int> subject_count;
@@ -193,6 +265,9 @@ std::vector<Candidate> diversify(std::vector<Candidate> cands) {
       if (used[i]) continue;
       int cnt = subject_count.count(cands[i].subject) ? subject_count[cands[i].subject] : 0;
       double eff = cands[i].score * std::pow(0.8, cnt);
+      if (method_settings) {
+        LOOM_TRY_ASSIGN(eff, method_diversity_score(cands[i].score, static_cast<std::size_t>(cnt), *method_settings));
+      }
       if (best < 0 || eff > best_eff || (eff == best_eff && cands[i].ref < cands[best].ref)) {
         best = static_cast<int>(i);
         best_eff = eff;
@@ -270,6 +345,7 @@ ContextEngine::ContextEngine(Runtime& rt, kb::KnowledgeStore& store, std::shared
   // corpus vectors. Every thesis still reads its corpus from the store; an
   // explicit caller injection under this id replaces the built-in normally.
   candidate_channels_.emplace("tfidf", make_tfidf_candidate_channel(pack_));
+  (void)install_provider_vector(*this, rt_, rt_.config().get("context_execution", Json::object()), false);
 }
 
 int ContextEngine::estimate_tokens(std::string_view text) noexcept {
@@ -366,8 +442,11 @@ Result<model::Goal> ContextEngine::type_goal(const ContextRequest& req) {
 }
 
 Result<model::Goal> ContextEngine::type_goal_with_model(const ContextRequest& req, const GoalTypingBudget& budget) {
-  if (budget.max_requests < 0 || budget.max_requests > 1 || budget.max_input_bytes > 256000 || budget.max_response_bytes > 256000 ||
-      budget.max_output_tokens < 0 || budget.max_output_tokens > 4096 || budget.timeout_ms < 0 || budget.timeout_ms > 60000 ||
+  // Preserve the old native compatibility contract without constraining the
+  // explicitly configured production capability. Its values are presets.
+  const bool legacy_ceiling = !execution_scope && (budget.max_requests > 1 || budget.max_input_bytes > 256000 ||
+      budget.max_response_bytes > 256000 || budget.max_output_tokens > 4096 || budget.timeout_ms > 60000);
+  if (legacy_ceiling || budget.max_requests < 0 || budget.max_output_tokens < 0 || budget.timeout_ms < 0 ||
       (budget.max_requests > 0 && (budget.max_input_bytes == 0 || budget.max_output_tokens == 0 || budget.timeout_ms == 0 || budget.max_response_bytes == 0))) {
     return Error(Errc::InvalidArgument, "goal typing requires an explicit bounded request/input/output/timeout/response budget");
   }
@@ -381,6 +460,8 @@ Result<model::Goal> ContextEngine::type_goal_impl(const ContextRequest& req, con
   std::string chosen_type;
   double confidence = 0.0;
   Json params = Json::object();
+  const auto typing_options = budget ? detail::goal_typing_options(rt_) : Json::object();
+  if (budget) LOOM_TRY(validate_context_execution_options(Json{{"goal_typing", typing_options}}));
   params["confidence_basis"] = "heuristic_cue_margin";
   params["calibration_status"] = "unavailable";
   params["external_goal_typing"] = Json{{"status", budget ? "not_needed" : "offline"}, {"requests", 0}};
@@ -406,18 +487,18 @@ Result<model::Goal> ContextEngine::type_goal_impl(const ContextRequest& req, con
     params["classifier"] = "cue";
     params["scores"] = cls.scores;
 
-    // Preview/select/build always use offline typing. A separate native caller
-    // can authorize a bounded optional instrument; model/key presence is only
-    // a capability check, never permission to spend or send prompt contents.
-    if (budget && budget->max_requests > 0 && confidence < 0.55) {
+    // Preview stays offline. Only the synchronous execution scope or the old
+    // explicit native instrument supplies an authorization budget.
+    const double threshold = typing_options.value("confidence_threshold", 0.55);
+    if (budget && budget->max_requests > 0 && confidence < threshold) {
       auto& attempt = params["external_goal_typing"];
       attempt["status"] = "unavailable";
-      std::string model = rt_.config().get("semantic_model", "").is_string()
+      std::string model = typing_options.contains("model") ? typing_options["model"].get<std::string>() : rt_.config().get("semantic_model", "").is_string()
                               ? rt_.config().get("semantic_model", "").get<std::string>()
                               : "";
       std::string api_key = rt_.secrets().get_string("api_key");
       if (!model.empty() && !api_key.empty() && !chosen_type.empty()) {
-        Json base_url_j = rt_.config().get("base_url", "https://openrouter.ai/api/v1");
+        Json base_url_j = typing_options.contains("base_url") ? typing_options["base_url"] : rt_.config().get("base_url", "https://openrouter.ai/api/v1");
         std::string base_url = base_url_j.is_string() ? base_url_j.get<std::string>() : "https://openrouter.ai/api/v1";
         std::string prompt =
             "Classify the following prompt into exactly one goal type id. Reply with strict JSON only: "
@@ -440,104 +521,118 @@ Result<model::Goal> ContextEngine::type_goal_impl(const ContextRequest& req, con
                           {"X-Title", "ChatADHD-Context"}};
           hreq.body = json::dump(Json{{"model", model},
                                       {"messages", Json::array({Json{{"role", "user"}, {"content", prompt}}})},
-                                      {"temperature", 0.0},
+                                      {"temperature", typing_options.value("temperature", 0.0)},
                                       {"max_tokens", budget->max_output_tokens}});
           hreq.timeout_ms = budget->timeout_ms;
-          attempt["status"] = "failed";
-          attempt["requests"] = 1;
           attempt["retry_authorized"] = false;
           attempt["model"] = model;
           attempt["input_bytes"] = prompt.size();
-          std::string response_bytes;
-          bool response_limited = false, received_headers = false;
-          int response_status = 0;
-          net::StreamSink sink;
-          sink.on_headers = [&](int status, const net::Headers&) {
-            received_headers = true;
-            response_status = status;
-            return true;
-          };
-          sink.on_data = [&](std::string_view part) {
-            const auto room = budget->max_response_bytes - response_bytes.size();
-            response_bytes.append(part.substr(0, room));
-            if (part.size() > room) {
-              response_limited = true;
-              return false;
-            }
-            return true;
-          };
-          auto resp = rt_.http().send(hreq, &sink);
-          if (resp) response_status = resp->status;
-          else attempt["transport_error"] = std::string(errc_name(resp.error().code));
-          // The provider may echo private prompt contents or credentials. Keep
-          // the actual bytes in the canonical raw-source store; a loggable goal
-          // trace carries references only. Oversized replies retain an explicitly
-          // incomplete prefix and are never interpreted or automatically retried.
-          bool response_recorded = false;
-          if (received_headers || resp || !response_bytes.empty()) {
-            auto blob = rt_.blobs().put(response_bytes, "application/json");
-            if (!blob) {
-              attempt["status"] = "storage_failure";
-              attempt["storage_error"] = std::string(errc_name(blob.error().code));
-              attempt["response"] = Json{{"status", response_status}, {"source_status", "unavailable"},
-                                          {"complete", resp.has_value() && !response_limited}};
-            } else {
-              SourceRecord source;
-              source.kind = "api";
-              source.blob_hash = blob->hash;
-              source.size = blob->size;
-              source.mime = "application/json";
-              source.title = "Goal typing first response";
-              source.parser = "loom.context.goal_typing";
-              source.parser_version = "1";
-              source.metadata = Json{{"model", model}, {"status", response_status},
-                                     {"complete", resp.has_value() && !response_limited},
-                                     {"response_limit", response_limited}};
-              attempt["response"] = Json{{"blob_hash", blob->hash}, {"bytes", blob->size},
-                                          {"status", response_status}, {"complete", resp.has_value() && !response_limited}};
-              auto source_id = rt_.provenance().add_source(std::move(source));
-              if (!source_id) {
+          detail::GoalTypingUsage usage;
+          const bool admitted = usage.admit(rt_, typing_options, hreq, prompt.size(), *budget, attempt);
+          if (admitted) {
+            attempt["status"] = "failed";
+            attempt["requests"] = 1;
+            if (execution_scope) execution_scope->note_goal_typing_request();
+            std::string response_bytes;
+            std::size_t received_response_bytes = 0;
+            bool response_limited = false, received_headers = false;
+            int response_status = 0;
+            net::StreamSink sink;
+            sink.on_headers = [&](int status, const net::Headers&) {
+              received_headers = true;
+              response_status = status;
+              return true;
+            };
+            sink.on_data = [&](std::string_view part) {
+              received_response_bytes += std::min(part.size(), std::numeric_limits<std::size_t>::max() - received_response_bytes);
+              const auto room = budget->max_response_bytes - response_bytes.size();
+              response_bytes.append(part.substr(0, room));
+              if (part.size() > room) {
+                response_limited = true;
+                return false;
+              }
+              return true;
+            };
+            Result<net::HttpResponse> resp = Error(Errc::Network, "goal typing transport failed");
+            try { resp = rt_.http().send(hreq, &sink); }
+            catch (...) { resp = Error(Errc::Network, "goal typing transport failed"); }
+            if (resp) response_status = resp->status;
+            else attempt["transport_error"] = std::string(errc_name(resp.error().code));
+            // The provider may echo private prompt contents or credentials. Keep
+            // the actual bytes in the canonical raw-source store; a loggable goal
+            // trace carries references only. Oversized replies retain an explicitly
+            // incomplete prefix and are never interpreted or automatically retried.
+            bool response_recorded = false;
+            if (received_headers || resp || !response_bytes.empty()) {
+              auto blob = rt_.blobs().put(response_bytes, "application/json");
+              if (!blob) {
                 attempt["status"] = "storage_failure";
-                attempt["storage_error"] = std::string(errc_name(source_id.error().code));
-                attempt["response"]["source_status"] = "unavailable";
+                attempt["storage_error"] = std::string(errc_name(blob.error().code));
+                attempt["response"] = Json{{"status", response_status}, {"source_status", "unavailable"},
+                                            {"complete", resp.has_value() && !response_limited}};
               } else {
-                attempt["response"]["source_id"] = *source_id;
-                attempt["response"]["source_status"] = "recorded";
-                response_recorded = true;
-              }
-            }
-          }
-          if (response_limited && attempt["status"] != "storage_failure") attempt["status"] = "response_limit";
-          if (resp && resp->ok() && !response_limited && response_recorded) {
-            auto body = json::parse(response_bytes);
-            if (body) {
-              std::string content;
-              if (const Json* choices = json::find(*body, "choices"); choices && choices->is_array() && !choices->empty()) {
-                if (const Json* msg = json::find((*choices)[0], "message"); msg) content = json::get_string(*msg, "content");
-              }
-              if (auto parsed = SemanticLLM::parse_response_json(content)) {
-                std::string llm_type = json::get_string(*parsed, "goal_type");
-                const Json* reported_confidence = json::find(*parsed, "confidence");
-                bool valid = false;
-                for (const auto& gt : all_types) valid = valid || gt.id == llm_type;
-                const double llm_conf = reported_confidence && reported_confidence->is_number()
-                                            ? reported_confidence->get<double>()
-                                            : std::numeric_limits<double>::quiet_NaN();
-                if (valid && std::isfinite(llm_conf) && llm_conf >= 0.0 && llm_conf <= 1.0) {
-                  chosen_type = llm_type;
-                  confidence = llm_conf;
-                  params["classifier"] = "llm";
-                  params["confidence_basis"] = "provider_self_report";
-                  params["reported_confidence"] = llm_conf;
-                  attempt["confidence_basis"] = "provider_self_report";
-                  attempt["calibration_status"] = "unavailable";
-                  attempt["reported_confidence"] = llm_conf;
-                  attempt["status"] = "accepted";
+                SourceRecord source;
+                source.kind = "api";
+                source.blob_hash = blob->hash;
+                source.size = blob->size;
+                source.mime = "application/json";
+                source.title = "Goal typing first response";
+                source.parser = "loom.context.goal_typing";
+                source.parser_version = "1";
+                source.metadata = Json{{"model", model}, {"status", response_status},
+                                       {"complete", resp.has_value() && !response_limited},
+                                       {"response_limit", response_limited}};
+                attempt["response"] = Json{{"blob_hash", blob->hash}, {"bytes", blob->size},
+                                            {"status", response_status}, {"complete", resp.has_value() && !response_limited}};
+                auto source_id = rt_.provenance().add_source(std::move(source));
+                if (!source_id) {
+                  attempt["status"] = "storage_failure";
+                  attempt["storage_error"] = std::string(errc_name(source_id.error().code));
+                  attempt["response"]["source_status"] = "unavailable";
+                } else {
+                  attempt["response"]["source_id"] = *source_id;
+                  attempt["response"]["source_status"] = "recorded";
+                  response_recorded = true;
                 }
               }
             }
+            // Even usage reconciliation follows durable retention. A failed
+            // source write leaves provider totals unknown; independently
+            // measured wire bytes are still settled for the attempted call.
+            auto usage_body = response_recorded ? json::parse(response_bytes) : Result<Json>(Error(Errc::Unavailable, "raw response not retained"));
+            usage.complete(prompt.size(), received_response_bytes, usage_body ? &*usage_body : nullptr, attempt);
+            if (response_limited && attempt["status"] != "storage_failure") attempt["status"] = "response_limit";
+            if (resp && resp->ok() && !response_limited && response_recorded) {
+              auto body = json::parse(response_bytes);
+              if (body) {
+                std::string content;
+                if (const Json* choices = json::find(*body, "choices"); choices && choices->is_array() && !choices->empty()) {
+                  if (const Json* msg = json::find((*choices)[0], "message"); msg) content = json::get_string(*msg, "content");
+                }
+                if (auto parsed = SemanticLLM::parse_response_json(content)) {
+                  std::string llm_type = json::get_string(*parsed, "goal_type");
+                  const Json* reported_confidence = json::find(*parsed, "confidence");
+                  bool valid = false;
+                  for (const auto& gt : all_types) valid = valid || gt.id == llm_type;
+                  const double llm_conf = reported_confidence && reported_confidence->is_number()
+                                              ? reported_confidence->get<double>()
+                                              : std::numeric_limits<double>::quiet_NaN();
+                  if (valid && std::isfinite(llm_conf) && llm_conf >= 0.0 && llm_conf <= 1.0) {
+                    chosen_type = llm_type;
+                    confidence = llm_conf;
+                    params["classifier"] = "llm";
+                    params["confidence_basis"] = "provider_self_report";
+                    params["reported_confidence"] = llm_conf;
+                    attempt["confidence_basis"] = "provider_self_report";
+                    attempt["calibration_status"] = "unavailable";
+                    attempt["reported_confidence"] = llm_conf;
+                    attempt["status"] = "accepted";
+                  }
+                }
+              }
+            }
+            // Any failed attempt retains the cue result and its labelled trace.
           }
-          // Any failed attempt retains the cue result and its labelled trace.
         }
       }
     }
@@ -562,9 +657,21 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
   if (req.detail_resolution && !model::from_string<Resolution>(model::to_string(*req.detail_resolution))) {
     return Error(Errc::InvalidArgument, "invalid detail_resolution");
   }
+  if (execution_scope) LOOM_TRY(validate_context_execution_options(execution_scope->options()));
   if (!req.plan.is_null()) return select_context_plan(*this, store_, req);
-  LOOM_TRY_ASSIGN(model::Goal goal, type_goal(req));
   LOOM_TRY_ASSIGN(std::string run, ctx::resolve_run(store_, req.run));
+  auto typed = [&]() -> Result<model::Goal> {
+    if (execution_scope) {
+      const auto settings = detail::goal_typing_options(rt_);
+      if (settings.value("enabled", false) && settings.value("calls_authorized", false)) {
+        LOOM_TRY_ASSIGN(auto budget, detail::execution_goal_budget(rt_));
+        return type_goal_with_model(req, budget);
+      }
+    }
+    return type_goal(req);
+  }();
+  if (!typed) return typed.error();
+  model::Goal goal = std::move(*typed);
   LOOM_TRY_ASSIGN(auto all_types, ctx::list_goal_types(*pack_));
   LOOM_TRY_ASSIGN(model::GoalType gt, find_goal_type_checked(*pack_, goal.type, all_types));
   const bool explicit_controls = req.relation_hops != 1 || req.detail_resolution.has_value();
@@ -942,7 +1049,16 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
     }
   }
   const std::set<std::string> graph_ids(direct_refs.begin(), direct_refs.end());
-  const auto retrieved = gather_context_candidates(store_, run, pack_, req, gt.evidence, direct_refs, candidate_channels_);
+  Json execution = execution_scope ? execution_scope->options() :
+      rt_.config().get("context_execution", Json::object());
+  execution.erase("_native_embedding_binding");
+  const Json method_settings = execution.value("method_registry", Json::object());
+  if (method_settings.is_object() && method_settings.value("enabled", false))
+    execution["_native_embedding_binding"] = install_provider_vector(*this, rt_, execution, execution_scope != nullptr);
+  LOOM_TRY_ASSIGN(auto methods, gather_method_candidates(rt_, store_, run, pack_, req,
+      gt.evidence, direct_refs, candidate_channels_, execution));
+  const auto retrieved = methods.enabled ? std::move(methods.candidates) :
+      gather_context_candidates(store_, run, pack_, req, gt.evidence, direct_refs, candidate_channels_);
   for (const auto& claim : retrieved.claims) {
     if (known_refs.insert(claim.id).second) add_goal_claim(claim, "", 0);
     direct_refs.push_back(claim.id);
@@ -977,7 +1093,7 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
     }
   }
   const bool extended = !req.claim_targets.empty() || req.include_counter_evidence ||
-      !req.candidate_channels.empty() || req.lexical_shadow;
+      !req.candidate_channels.empty() || req.lexical_shadow || methods.enabled;
   for (auto* band : {&project_b, &goal_b}) {
     for (auto& c : *band) {
       if (direct_ids.count(c.ref)) c.extra_factors["direct_goal_candidate"] = true;
@@ -994,10 +1110,11 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
           c.base_relevance = 0.0;
         }
         merge_factors(c.extra_factors, channels->second);
-        for (const auto& signal : channels->second["candidate_channels"]) {
-          c.base_relevance = std::max(c.base_relevance, signal.value("selection_relevance", 0.0));
+        if (!methods.enabled) {
+          for (const auto& signal : channels->second["candidate_channels"])
+            c.base_relevance = std::max(c.base_relevance, signal.value("selection_relevance", 0.0));
+          c.why += "; independent candidate instrument (reciprocal rank signal)";
         }
-        c.why += "; independent candidate instrument (reciprocal rank signal)";
       }
     }
   }
@@ -1019,8 +1136,58 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
   diagnostics["gathered_candidates"] = gathered;
   diagnostics["unique_candidates"] = unique.size();
   diagnostics["duplicate_candidates_merged"] = gathered - unique.size();
+  // Capture the actual selector inputs and controls before blending, scoring,
+  // diversity and budgeting. The optional graph version comes from the caller;
+  // old knowledge claims remain inputs, never newly produced selector results.
+  const double stable_share = gt.budget.count(ContextBand::Stable) ? gt.budget.at(ContextBand::Stable) : 0.15;
+  const double project_share = gt.budget.count(ContextBand::Project) ? gt.budget.at(ContextBand::Project) : 0.25;
+  const int stable_end = std::clamp(static_cast<int>(std::llround(stable_share * total_budget)), 0, total_budget);
+  const int project_end = std::clamp(static_cast<int>(std::llround((stable_share + project_share) * total_budget)), stable_end, total_budget);
+  if (methods.enabled) {
+    Json captured = Json::array();
+    for (const auto& [ref, c] : unique) {
+      const Resolution resolution = req.detail_resolution.value_or(resolution_for(gt, c.role));
+      const std::string text = c.is_principle ? c.content.pick(resolution) :
+          ctx::evidence_markdown(*pack_, c.evidence, c.origin, c.confidence,
+              c.content.pick(resolution), c.expected, c.basis, c.fill_query);
+      captured.push_back(Json{{"ref", ref}, {"ref_kind", std::string(model::to_string(c.ref_kind))},
+          {"band", std::string(model::to_string(c.band))},
+          {"role", c.role ? Json(std::string(model::to_string(*c.role))) : Json(nullptr)},
+          {"subject", c.subject}, {"date", c.date}, {"origin", std::string(model::to_string(c.origin))},
+          {"evidence", c.is_principle ? Json(nullptr) : Json(std::string(model::to_string(c.evidence)))},
+          {"confidence", c.confidence}, {"authority", ctx::authority_score(c.origin)},
+          {"freshness", ctx::freshness_score(c.date, anchor_date)}, {"base_relevance", c.base_relevance},
+          {"factors", c.extra_factors}, {"why", c.why},
+          {"content", Json{{"label", c.content.label}, {"summary", c.content.summary},
+                           {"full", c.content.full}, {"raw", c.content.raw}}},
+          {"premise_claims", c.premise_claims}, {"premise_principles", c.premise_principles},
+          {"resolution", std::string(model::to_string(resolution))},
+          {"rendered_text", text}, {"estimated_tokens", estimate_tokens(text)}});
+    }
+    LOOM_TRY(prepare_method_selection(methods, Json{{"candidates", captured},
+        {"fused_scores", methods.scores}, {"fusion_stage", methods.graph["stages"]["fusion"]}},
+        Json{{"request", req.to_json()}, {"goal_type", gt.to_json()}, {"pack_sha256", pack_->hash()},
+             {"effective_budget_tokens", total_budget}, {"anchor_date", anchor_date},
+             {"initial_band_tokens", Json::array({stable_end, project_end - stable_end, total_budget - project_end})},
+             {"score_operation", "relevance * authority * freshness * confidence"},
+             {"token_metric", "rendered_item_codepoints_div_4"}, {"includes_prompt_overhead", false},
+             {"evidence_encoding", pack_->file("policy/evidence_encoding.json")}}));
+  }
   for (auto& [ref, candidate] : unique) {
-    (void)ref;
+    if (methods.enabled && candidate.band != ContextBand::Stable) {
+      const auto score = methods.scores.find(ref);
+      const std::optional<double> measured = score == methods.scores.end() ? std::nullopt : std::optional<double>(score->second);
+      if (!measured && methods.settings.value("graph_blend_operation", "") == "method_only") {
+        excluded(ref, "method_registry", "no_measured_selected_method_result");
+        continue;
+      }
+      LOOM_TRY_ASSIGN(candidate.base_relevance,
+          blend_method_score(candidate.base_relevance, measured, methods.settings));
+      candidate.extra_factors["method_selection"] = Json{{"measured", measured ? Json(*measured) : Json(nullptr)},
+          {"resolution_sha256", methods.plan["resolution_sha256"]},
+          {"graph_blend_operation", methods.settings["graph_blend_operation"]}};
+      candidate.why += "; configured graph-method combination";
+    }
     (candidate.band == ContextBand::Stable ? stable : candidate.band == ContextBand::Project ? project_b : goal_b)
         .push_back(std::move(candidate));
   }
@@ -1029,16 +1196,13 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
   score_all(stable, anchor_date);
   score_all(project_b, anchor_date);
   score_all(goal_b, anchor_date);
-  auto stable_d = diversify(std::move(stable));
-  auto project_d = diversify(std::move(project_b));
-  auto goal_d = diversify(std::move(goal_b));
+  const Json* method_diversity = methods.enabled ? &methods.settings : nullptr;
+  LOOM_TRY_ASSIGN(auto stable_d, diversify(std::move(stable), method_diversity));
+  LOOM_TRY_ASSIGN(auto project_d, diversify(std::move(project_b), method_diversity));
+  LOOM_TRY_ASSIGN(auto goal_d, diversify(std::move(goal_b), method_diversity));
 
   // Round cumulative boundaries, not independent shares: the capacities always
   // add up to the exact item budget, including budgets of one or two tokens.
-  const double stable_share = gt.budget.count(ContextBand::Stable) ? gt.budget.at(ContextBand::Stable) : 0.15;
-  const double project_share = gt.budget.count(ContextBand::Project) ? gt.budget.at(ContextBand::Project) : 0.25;
-  const int stable_end = std::clamp(static_cast<int>(std::llround(stable_share * total_budget)), 0, total_budget);
-  const int project_end = std::clamp(static_cast<int>(std::llround((stable_share + project_share) * total_budget)), stable_end, total_budget);
   std::array<int, 3> band_budget = {stable_end, project_end - stable_end, total_budget - project_end};
   std::array<int, 3> used = {0, 0, 0};
   int used_total = 0;
@@ -1260,6 +1424,7 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
   if (!req.claim_targets.empty()) goal.params["claim_selection"] = evidence.requested;
   if (req.include_counter_evidence) goal.params["counter_evidence"] = evidence.counters;
   if (!retrieved.trace.empty()) goal.params["candidate_retrieval"] = retrieved.trace;
+  if (methods.enabled) goal.params["method_registry"] = Json{{"resolution", methods.plan}, {"result_graph", methods.graph}};
 
   model::ContextSet set;
   diagnostics["budget"]["final_band_tokens"] = band_budget;
@@ -1278,6 +1443,7 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
   }
   set.items = std::move(accepted);
   set.dropped = std::move(dropped);
+  LOOM_TRY(finalize_method_selection(methods, set));
   if (extended) {
     set.id.clear();
     set.id = kb::stable_id("cx_", json::dump(Json{{"request", req.to_json()}, {"run", run}, {"context_set", set.to_json()}}));
@@ -1350,17 +1516,120 @@ Json ContextEngine::trace(const model::ContextSet& set) const {
   }
   Json dropped = Json::array();
   for (const auto& d : set.dropped) dropped.push_back(d.to_json());
+  Json capabilities = Json::array({Json{{"id", "graph"}, {"available", true}, {"source", "knowledge_store"}},
+      Json{{"id", "lexical"}, {"available", true}, {"source", "offline_builtin"}}});
+  for (const auto& [id, channel] : candidate_channels_) {
+    capabilities.push_back(Json{{"id", id}, {"available", static_cast<bool>(channel)},
+        {"source", id == "tfidf" ? "offline_builtin_or_injection" : "native_capability"},
+        {"measurement_status", "reported_per_retrieval"}});
+  }
+  if (const auto* known = json::find(set.goal.params, "selector_channels")) capabilities = *known;
+  if (const auto* retrieval = json::find(set.goal.params, "candidate_retrieval"); retrieval && retrieval->is_object()) {
+    if (const auto* channels = json::find(*retrieval, "channels"); channels && channels->is_array()) {
+      for (const auto& result : *channels) {
+        const auto id = json::get_string(result, "id");
+        auto found = std::find_if(capabilities.begin(), capabilities.end(), [&](const auto& capability) {
+          return json::get_string(capability, "id") == id;
+        });
+        if (found == capabilities.end()) {
+          capabilities.push_back(Json{{"id", id}, {"available", json::get_string(result, "status") == "ok"},
+              {"source", "requested_instrument"}});
+          found = std::prev(capabilities.end());
+        }
+        (*found)["last_retrieval_status"] = json::get_string(result, "status");
+        (*found)["last_retrieval_reason"] = json::get_string(result, "reason");
+        (*found)["measurement_status"] = "instrument_retrieval_not_truth_verdict";
+      }
+    }
+  }
+  const auto execution = execution_scope ? execution_scope->options() : rt_.config().get("context_execution", Json::object());
+  const auto* embedding = json::find(execution, "embedding");
+  if (embedding && embedding->is_object()) {
+    const auto id = json::get_string(*embedding, "channel_id", "vector");
+    auto found = std::find_if(capabilities.begin(), capabilities.end(), [&](const auto& capability) {
+      return json::get_string(capability, "id") == id;
+    });
+    if (found != capabilities.end()) {
+      (*found)["configured_enabled"] = json::get_bool(*embedding, "enabled", false);
+      (*found)["calls_authorized"] = execution_scope && json::get_bool(*embedding, "calls_authorized", false);
+      (*found)["execution_scope_active"] = execution_scope != nullptr;
+      (*found)["usage_policy_dependency"] = LOOM_CONTEXT_HAS_USAGE_POLICY ? "available" : "requires_thread_2_integration";
+      (*found)["provider_execution_ready"] = (*found)["configured_enabled"].get<bool>() &&
+          (*found)["calls_authorized"].get<bool>() && json::get_bool(*found, "available") && LOOM_CONTEXT_HAS_USAGE_POLICY;
+    }
+  }
+  const auto* typing = json::find(execution, "goal_typing");
+  const Json settings = typing && typing->is_object() ? *typing : Json::object();
+  const auto model = json::get_string(settings, "model", json::get_string(rt_.config().all(), "semantic_model"));
+  Json goal_typing_capability{{"available", !model.empty() && rt_.secrets().has("api_key")},
+      {"model", model}, {"configured_enabled", json::get_bool(settings, "enabled", false)},
+      {"calls_authorized", execution_scope && json::get_bool(settings, "calls_authorized", false)},
+      {"execution_scope_active", execution_scope != nullptr},
+      {"usage_policy_dependency", LOOM_CONTEXT_HAS_USAGE_POLICY ? "available" : "requires_thread_2_integration"}};
   return Json{{"goal", set.goal.to_json()},
               {"budget_tokens", set.budget_tokens},
               {"used_tokens", set.used_tokens},
               {"sections", out_sections},
-              {"dropped", dropped}};
+              {"dropped", dropped}, {"selector_channels", capabilities},
+              {"goal_typing_capability", goal_typing_capability}};
+}
+
+Result<Json> build_context_with_execution(ContextEngine& engine, const ContextRequest& request,
+                                         Runtime& runtime, const Json& options) {
+  LOOM_TRY(validate_context_execution_options(options));
+  std::optional<ContextExecutionScope> scope;
+  if (!current_context_execution_scope()) scope.emplace(options);
+  ContextRequest selected_request = request;
+  if (const auto* embedding = json::find(options, "embedding")) {
+    if (!embedding->is_object() || (embedding->contains("enabled") && !(*embedding)["enabled"].is_boolean()))
+      return Error(Errc::InvalidArgument, "execution embedding must be an object with boolean enabled");
+  }
+  // Caller-requested instruments remain present. Defaults only add channels
+  // that the caller explicitly enabled in execution settings.
+  if (const auto* channels = json::find(options, "candidate_channels")) {
+    if (!channels->is_array()) return Error(Errc::InvalidArgument, "execution candidate_channels must be an array");
+    for (const auto& value : *channels) {
+      LOOM_TRY_ASSIGN(auto parsed, CandidateChannelRequest::from_json(value));
+      if (std::none_of(selected_request.candidate_channels.begin(), selected_request.candidate_channels.end(),
+          [&](const auto& existing) { return existing.id == parsed.id; })) selected_request.candidate_channels.push_back(std::move(parsed));
+    }
+  }
+  const Json provider = install_provider_vector(engine, runtime, options, true);
+  if (const auto* embedding = json::find(options, "embedding"); embedding && embedding->is_object() &&
+      embedding->value("enabled", false)) {
+    const auto id = json::get_string(*embedding, "channel_id", "vector");
+    if (std::none_of(selected_request.candidate_channels.begin(), selected_request.candidate_channels.end(),
+        [&](const auto& existing) { return existing.id == id; })) {
+      LOOM_TRY_ASSIGN(auto parsed, CandidateChannelRequest::from_json(Json{{"id", id},
+          {"limit", embedding->value("limit", Json(50))}, {"min_score", embedding->value("min_score", Json(0.0))}}));
+      selected_request.candidate_channels.push_back(std::move(parsed));
+    }
+  }
+  LOOM_TRY_ASSIGN(auto set, engine.select(selected_request));
+  Json capabilities = engine.trace(set)["selector_channels"];
+  const auto provider_id = json::get_string(provider, "id", "vector");
+  auto existing = std::find_if(capabilities.begin(), capabilities.end(), [&](const auto& channel) {
+    return json::get_string(channel, "id") == provider_id;
+  });
+  if (existing == capabilities.end()) capabilities.push_back(provider);
+  else if (provider.value("available", false) || json::get_string(provider, "reason") != "embedding_not_configured") existing->update(provider);
+  set.goal.params["selector_channels"] = capabilities;
+  const Json execution_usage = current_context_execution_scope()->usage_decisions();
+  set.goal.params["execution_usage"] = execution_usage;
+  LOOM_TRY_ASSIGN(auto prompt, engine.render(set));
+  return Json{{"goal", set.goal.to_json()}, {"context_set", set.to_json()}, {"prompt", prompt},
+      {"request", selected_request.to_json()}, {"selector_channels", capabilities},
+      {"execution_usage", execution_usage},
+      {"goal_typing_capability", engine.trace(set)["goal_typing_capability"]}};
 }
 
 Result<Json> ContextEngine::build(const ContextRequest& req) {
+  if (execution_scope) return build_context_with_execution(*this, req, rt_, execution_scope->options());
   LOOM_TRY_ASSIGN(model::ContextSet set, select(req));
   LOOM_TRY_ASSIGN(std::string prompt, render(set));
-  return Json{{"goal", set.goal.to_json()}, {"context_set", set.to_json()}, {"prompt", prompt}};
+  return Json{{"goal", set.goal.to_json()}, {"context_set", set.to_json()}, {"prompt", prompt},
+      {"selector_channels", trace(set)["selector_channels"]},
+      {"goal_typing_capability", trace(set)["goal_typing_capability"]}};
 }
 
 }  // namespace loom::context

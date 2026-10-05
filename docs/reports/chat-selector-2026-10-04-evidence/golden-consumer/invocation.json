@@ -1,0 +1,30 @@
+{
+  "schema": "loom.w3_native_golden_consumer_invocation/1",
+  "command": [
+    "python3",
+    "<CONSUMER_BUILD>/source/loom/src/packet/tests/verify_method_graph_artifact.py",
+    "--library",
+    "<CONSUMER_BUILD>/libloom_w3_w2_w4_actual.so",
+    "--artifact",
+    "<PRODUCER_ARTIFACT>",
+    "--evidence-dir",
+    "<CONSUMER_BUILD>/actual-w3-artifact-first"
+  ],
+  "input_sha256": "8db8175c3b70c3947711ddf5daee5073b99bc5a5114ce0075e06e51932cec54e",
+  "library_sha256": "57c1b549c260e14b4f31d21c36bec34690cdcbd16c47d4238079a9c0bb23be97",
+  "exit_code": 0,
+  "stderr_log_sanitization": "Only the random temporary database directory was replaced with <TEMP_DATABASE>.",
+  "producer_test_cases": 1,
+  "producer_assertions": 97,
+  "producer_execution_verified_by_consumer": false,
+  "consumer_scope": "declared graph consistency and actual native accept/restart/read/replay/retry",
+  "provider_calls": 0,
+  "published_file_sha256": {
+    "input.json": "8db8175c3b70c3947711ddf5daee5073b99bc5a5114ce0075e06e51932cec54e",
+    "receipt.json": "13d80f2a861fdb0ba5fa53cbc35662ab1e4af1bfd536c769ab528406384701c8",
+    "verification.json": "a4d0bf15122f12792972781b88e8bb779fc5e4934d6de704cd56256780ee2aae",
+    "consumer.log": "5959bb4f3ff418e7cac5b0e0a66b70c9f71d84de9e6ff72e26ed2069785d5615",
+    "reproduce.py": "fe840cd810879d109beb6ea877bdb57fe976db445c679df1f34aab9658eef0e3",
+    "build.json": "e1197a2f40982c7dc0247175d56be98e8a8a7582bcc6a3a39e33fe5f682c0cfb"
+  }
+}

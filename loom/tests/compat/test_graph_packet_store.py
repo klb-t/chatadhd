@@ -1,10 +1,14 @@
 """N3 real FFI/store boundary, immutable receipts, CAS and atomic drift checks."""
 from copy import deepcopy
 import ctypes
+import gzip
 import hashlib
 import json
 import os
+from pathlib import Path
 import sqlite3
+import subprocess
+import sys
 import unittest
 
 from compat_common import CompatTestCase
@@ -36,6 +40,155 @@ class GraphPacketStoreTests(CompatTestCase):
     def database(self):
         return sqlite3.connect(self.data / 'chatadhd.db')
 
+    def test_native_compiled_reply_history_and_model_sources_survive_acceptance(self):
+        fixtures = json.loads((Path(__file__).resolve().parents[2] /
+                               'src/packet/tests/reply-fixtures.json').read_text())['cases']
+        library = self.store.library
+        library.loom_packet.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
+        library.loom_packet.restype = ctypes.c_void_p
+        for i, fixture in enumerate(fixtures):
+            with self.subTest(fixture=i):
+                compiled = self.store._take(library.loom_packet(
+                    self.store.context, json.dumps(fixture['request'], ensure_ascii=False).encode()))
+                self.assertEqual(compiled, fixture['expected'])
+                applied = self.store._take(library.loom_packet(self.store.context, json.dumps(
+                    {'operation': 'apply_compiled_reply', 'packet': fixture['request']['packet'],
+                     'compilation': compiled, 'policy': AUTO}, ensure_ascii=False).encode()))
+                self.assertNotIn('error', applied)
+                packet = applied['packet']
+                selection = {name: [codec.record_id(name, row) for row in packet[name]]
+                             for name in ('entities', 'claims', 'sources')}
+                expected = {name: {id_: None for id_ in ids} for name, ids in selection.items()}
+                accepted = self.store.execute({'operation': 'accept', 'target': 'compiled-' + str(i),
+                    'packet': packet, 'selection': selection, 'expected_rows': expected,
+                    'explicitly_accepted': True})
+                receipt = accepted['receipt']
+                self.assertEqual(receipt['packet'], packet)
+                self.assertEqual(self.store.replay(receipt['id'])['receipt'], receipt)
+                self.assertEqual(self.store.read(receipt['id'])['receipt']['packet']['sources'],
+                                 packet['sources'])
+                for source in compiled['diff']['sources']['add']:
+                    self.assertEqual(source['observation']['attrs']['model_origin']['kind'], 'model')
+
+    def test_versioned_method_graph_reply_bindings_survive_native_store_replay(self):
+        fixture = json.loads((Path(__file__).resolve().parents[2] /
+                              'src/packet/tests/method-graph-fixture.json').read_text())
+        contract = fixture['contract']
+        bindings = contract['bindings']
+        predicates = contract['vocabulary']['predicates']
+        expected = fixture['expected']
+        library = self.store.library
+        library.loom_packet.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
+        library.loom_packet.restype = ctypes.c_void_p
+
+        def execute(request):
+            return self.store._take(library.loom_packet(
+                self.store.context, json.dumps(request, ensure_ascii=False).encode()))
+
+        base = execute(fixture['base_make_request'])
+        self.assertEqual(base['packet_id'], expected['base_packet_id'])
+        compiled = execute({'operation': 'compile_reply', 'packet': base,
+                            **fixture['reply_request']})
+        self.assertEqual(compiled['node_ids'], expected['node_ids'])
+        self.assertEqual(compiled['compilation_sha256'], expected['compilation_sha256'])
+        self.assertEqual(compiled['response_text'], expected['response_text'])
+        reply = execute({'operation': 'apply_compiled_reply', 'packet': base,
+                         'compilation': compiled, 'policy': fixture['apply_policy']})['packet']
+        self.assertEqual(reply['packet_id'], expected['reply_packet_id'])
+        applied = execute({'operation': 'apply', 'packet': reply,
+                           'diff': fixture['binding_diff'], 'policy': fixture['apply_policy']})
+        packet = applied['packet']
+        self.assertFalse(applied['receipt']['acceptance_establishes_content_truth'])
+        self.assertEqual(packet['packet_id'], expected['bound_packet_id'])
+        self.assertEqual(execute({'operation': 'validate', 'packet': packet}), packet)
+        self.assertEqual(execute({'operation': 'invert', 'packet': packet,
+                                  'receipt': applied['receipt']}), reply)
+
+        entities = {row['id']: row for row in packet['entities']}
+        claims = {row['id']: row for row in packet['claims']}
+        sources = {row['observation']['id']: row for row in packet['sources']}
+        for name in ('method_version', 'recipe_version', 'preset_version', 'combination_version',
+                     'parameter_set_version'):
+            attrs = entities[bindings[name + '_id']]['attrs']
+            self.assertEqual(codec.digest(attrs['definition']), attrs['definition_sha256'])
+        prompt = entities[bindings['prompt_version_id']]['attrs']
+        self.assertEqual(hashlib.sha256(prompt['text'].encode()).hexdigest(),
+                         contract['definition_hashes']['prompt_bytes'])
+        trace = entities[bindings['run_id']]['attrs']
+        for name in ('effective_parameters', 'user_overrides', 'parameter_set_version_id',
+                     'parameter_set_sha256', 'preset_sha256',
+                     'combination_sha256', 'prompt_sha256', 'recipe_sha256', 'measurements'):
+            self.assertEqual(trace[name], contract['trace'][name])
+        self.assertEqual(trace['projection_status'], 'response_projected')
+        self.assertEqual(trace['response_sha256'], compiled['raw_capture']['sha256'])
+        self.assertIsNone(trace['measurements']['accuracy'])
+        parameters = entities[bindings['parameter_set_version_id']]['attrs']
+        self.assertEqual(parameters['definition']['effective_parameters'], trace['effective_parameters'])
+        self.assertEqual(parameters['definition']['user_overrides'], trace['user_overrides'])
+        self.assertEqual(parameters['definition_sha256'], trace['parameter_set_sha256'])
+        self.assertEqual(entities[bindings['method_version_id']]['attrs']['definition']['parameter_set_sha256'],
+                         trace['parameter_set_sha256'])
+        self.assertEqual(entities[bindings['recipe_version_id']]['attrs']['definition']['parameters'],
+                         trace['effective_parameters'])
+        for subject, role, target in (
+                (bindings['method_version_id'], 'uses_parameter_set', bindings['parameter_set_version_id']),
+                (bindings['run_id'], 'uses_parameter_set', bindings['parameter_set_version_id']),
+                (bindings['run_id'], 'uses_combination', bindings['combination_version_id'])):
+            edges = [c for c in claims.values()
+                     if c['subject'] == subject and c['predicate'] == predicates[role]]
+            self.assertEqual([edge['object'] for edge in edges], [target])
+        captured_definitions = json.loads(sources[expected['source_ids'][0]]['observation']['text'])
+        self.assertEqual(captured_definitions['definition_records'], contract['definition_records'])
+        for role, attrs in contract['definition_records'].items():
+            self.assertEqual(entities[bindings[role]]['attrs'], attrs)
+        for result_id in compiled['node_ids'].values():
+            for role, target in (('produced_in_run', bindings['run_id']),
+                                 ('produced_by_method_version', bindings['method_version_id']),
+                                 ('projected_by_compiler', bindings['compiler_transform_id'])):
+                edges = [c for c in claims.values()
+                         if c['subject'] == result_id and c['predicate'] == predicates[role]]
+                self.assertEqual([edge['object'] for edge in edges], [target])
+                self.assertEqual(edges[0]['qualifiers']['extra']['confidence_scope'], 'structure_only')
+            origin = entities[result_id]['attrs']['model_origin']
+            self.assertEqual(origin['kind'], 'model')
+            self.assertEqual(origin['recipe_sha256'], trace['recipe_sha256'])
+        for source in compiled['diff']['sources']['add']:
+            self.assertEqual(sources[source['observation']['id']], source)
+        evaluation = claims[expected['evaluation_claim_id']]
+        self.assertEqual(evaluation['subject'], bindings['method_version_id'])
+        self.assertEqual(evaluation['qualifiers']['valid_from'], evaluation['value']['evaluated_at'])
+        self.assertEqual(evaluation['value']['measurement_status'], 'unavailable')
+        self.assertEqual(evaluation['assessment']['origin'], 'model_knowledge')
+        self.assertEqual(evaluation['qualifiers']['extra']['model_origin']['kind'], 'model')
+        self.assertIsNone(evaluation['qualifiers']['extra']['model_origin']['recipe_sha256'])
+        self.assertIsNone(sources[expected['source_ids'][-1]]['observation']['attrs']['model_origin']['recipe_sha256'])
+        self.assertEqual(evaluation['qualifiers']['extra']['content_verification'], 'unverified')
+        self.assertEqual(evaluation['assessment']['basis']['support'][0]['observation'],
+                         expected['source_ids'][-1])
+
+        bad = deepcopy(fixture['binding_diff'])
+        bad['claims']['add'][0]['object'] = 'missing-run-target'
+        rejected = execute({'operation': 'apply', 'packet': reply, 'diff': bad,
+                            'policy': fixture['apply_policy']})
+        self.assertIn('error', rejected)
+        self.assertEqual(rejected['error']['message'], 'graph_packet_unknown_claim_entity')
+        self.assertEqual(execute({'operation': 'validate', 'packet': reply}), reply)
+
+        selection = {name: [codec.record_id(name, row) for row in packet[name]]
+                     for name in ('entities', 'claims', 'sources')}
+        accepted = self.store.execute({'operation': 'accept', 'target': 'method-graph',
+            'packet': packet, 'selection': selection,
+            'expected_rows': {name: {id_: None for id_ in ids} for name, ids in selection.items()},
+            'explicitly_accepted': True})['receipt']
+        self.assertEqual(accepted['packet'], packet)
+        self.assertFalse(accepted['acceptance_establishes_content_truth'])
+        self.store.close()
+        self.store = NativeGraphStore(os.environ['LOOM_LIBRARY'], self.data)
+        self.addCleanup(self.store.close)
+        for result in (self.store.read(accepted['id']), self.store.replay(accepted['id'])):
+            self.assertEqual(result['receipt'], accepted)
+            self.assertTrue(result['row_drift']['matches'])
+
     def test_full_packet_history_and_metadata_survive_accept_read_replay_restart(self):
         diff = codec.empty_diff(self.packet, proposal_id='review', origin=MODEL)
         after = deepcopy(self.packet['claims'][0]); after['assessment']['status'] = 'contested'
@@ -46,7 +199,8 @@ class GraphPacketStoreTests(CompatTestCase):
         receipt = result['receipt']
         self.assertEqual(receipt['packet'], packet)
         self.assertFalse(receipt['acceptance_establishes_content_truth'])
-        self.assertIn('not_performed', receipt['reversible_history_validation'])
+        self.assertEqual(receipt['reversible_history_validation'],
+                         'native_codec_backwards_and_forwards_history_replay')
         self.assertFalse(result['replayed'])
         self.assertEqual(self.accept(packet)['receipt'], receipt)
         with self.database() as db:
@@ -60,6 +214,334 @@ class GraphPacketStoreTests(CompatTestCase):
         self.addCleanup(self.store.close)
         self.assertEqual(self.store.read(receipt['id'])['receipt'], receipt)
         self.assertEqual(self.store.replay(receipt['id'])['receipt'], receipt)
+
+    def method_artifact(self):
+        from loom.src.packet.tests.verify_method_graph_artifact import reference_artifact
+        fixture = json.loads((Path(__file__).resolve().parents[2] /
+                              'src/packet/tests/method-graph-fixture.json').read_text())
+        return reference_artifact(fixture, os.environ['LOOM_LIBRARY'], self.tmp.path / 'reference',
+                                  definition_source_id=fixture['expected']['source_ids'][0],
+                                  trace_source_id=fixture['expected']['source_ids'][1])
+
+    def update_method_artifact_entity(self, artifact, id_, attrs):
+        from loom.src.packet.tests.verify_method_graph_artifact import packet_call
+        packet = artifact['packet']
+        before = next(row for row in packet['entities'] if row['id'] == id_)
+        after = deepcopy(before)
+        after['attrs'] = attrs
+        diff = packet_call(self.store, {'operation': 'empty_diff', 'packet': packet,
+                                       'proposal_id': 'artifact-entity-update', 'origin': MODEL})
+        diff['entities']['update'].append({'id': id_, 'before_sha256': codec.digest(before),
+                                          'after': after})
+        artifact['packet'] = packet_call(self.store, {'operation': 'apply', 'packet': packet,
+                                                     'diff': diff, 'policy': AUTO})['packet']
+
+    def registry_artifact(self, name):
+        path = Path(__file__).resolve().parents[2] / 'src/packet/tests/method-registry-variants'
+        return json.loads(gzip.decompress((path / (name + '.json.gz')).read_bytes()))
+
+    def test_real_registry_exports_preserve_aliases_and_nested_combinations(self):
+        from loom.src.packet.tests.verify_method_graph_artifact import verify_artifact
+        for name in ('canonical-w3-export', 'observed-model-alias', 'nested-combination',
+                     'nested-combination-alias'):
+            with self.subTest(name=name):
+                artifact = self.registry_artifact(name)
+                summary, receipt = verify_artifact(artifact, os.environ['LOOM_LIBRARY'], self.tmp.path / name)
+                self.assertTrue(summary['passed'])
+                self.assertEqual(summary['result_count'], 3)
+                self.assertFalse(summary['producer_execution_verified'])
+                self.assertEqual(summary['verifier_provider_calls'], 0)
+                self.assertEqual(receipt['packet'], artifact['packet'])
+
+    def test_registry_exports_reject_false_observations_and_reused_nested_versions(self):
+        from loom.src.packet.tests.verify_method_graph_artifact import ArtifactError, packet_call, verify_artifact
+        original = self.registry_artifact('nested-combination-alias')
+
+        def trace_change(artifact, **values):
+            artifact['trace'].update(values)
+            run_id = artifact['contract']['bindings']['run_id']
+            before = next(row for row in artifact['packet']['entities'] if row['id'] == run_id)
+            after = deepcopy(before)
+            after['attrs'].update(values)
+            old = next(row for row in artifact['packet']['sources']
+                       if row['observation']['id'] == artifact['trace_capture_source_id'])
+            source = deepcopy(old)
+            trace_bytes = codec.safe.canonical(artifact['trace'])
+            text = trace_bytes.decode('utf-8')
+            trace_sha256 = hashlib.sha256(trace_bytes).hexdigest()
+            id_ = 'synthetic_negative_trace_' + trace_sha256
+            source['observation'].update(id=id_, text=text)
+            source['observation']['locator'].update(source='sha256:' + trace_sha256,
+                                                    byte_start=0, byte_len=len(trace_bytes))
+            source['text_sha256'] = trace_sha256
+            diff = packet_call(self.store, {'operation': 'empty_diff', 'packet': artifact['packet'],
+                                           'proposal_id': 'false-observation-capture', 'origin': MODEL})
+            diff['entities']['update'].append({'id': run_id, 'before_sha256': codec.digest(before),
+                                              'after': after})
+            diff['sources']['add'].append(source)
+            artifact['packet'] = packet_call(self.store, {'operation': 'apply', 'packet': artifact['packet'],
+                                                         'diff': diff, 'policy': AUTO})['packet']
+            artifact['trace_capture_source_id'] = id_
+
+        def inactive_original_membership(artifact):
+            packet = artifact['packet']
+            path = artifact['trace']['selection_path']
+            predicate = artifact['contract']['vocabulary']['predicates']['includes_method']
+            before = next(row for row in packet['claims'] if row['subject'] == path[0]['id']
+                          and row['object'] == path[1]['id'] and row['predicate'] == predicate)
+            after = deepcopy(before)
+            after['assessment']['status'] = 'rejected'
+            diff = packet_call(self.store, {'operation': 'empty_diff', 'packet': packet,
+                                           'proposal_id': 'inactive-original-membership', 'origin': MODEL})
+            diff['claims']['update'].append({'id': before['id'], 'before_sha256': codec.digest(before), 'after': after})
+            artifact['packet'] = packet_call(self.store, {'operation': 'apply', 'packet': packet,
+                                                         'diff': diff, 'policy': AUTO})['packet']
+
+        def restored_original_combination(artifact):
+            id_ = artifact['trace']['selection_path'][1]['id']
+            before = deepcopy(next(row['attrs'] for row in artifact['packet']['entities'] if row['id'] == id_))
+            after = deepcopy(before)
+            after['definition']['members'][1]['weight'] = 9.0
+            after['definition_sha256'] = codec.digest(after['definition'])
+            self.update_method_artifact_entity(artifact, id_, after)
+            self.update_method_artifact_entity(artifact, id_, before)
+
+        requested_id = original['contract']['bindings']['model_identity_id']
+        changes = [
+            ('actual_models', lambda a: trace_change(a, actual_models=['synthetic/false-observed-model'])),
+            ('requested_model', lambda a: trace_change(a, requested_model='synthetic/false-requested-model')),
+            ('alias_descriptor_reused', lambda a: trace_change(a, model_identity_id=requested_id,
+                                                               actual_model_identity_id=requested_id)),
+            ('request_hash', lambda a: trace_change(a, request_sha256='f' * 64)),
+            ('missing_edge:includes_method', inactive_original_membership),
+            ('version_overwritten', restored_original_combination),
+        ]
+        for index, (error, change) in enumerate(changes):
+            with self.subTest(error=error):
+                artifact = deepcopy(original)
+                change(artifact)
+                self.assertEqual(packet_call(self.store, {'operation': 'validate', 'packet': artifact['packet']}),
+                                 artifact['packet'])
+                with self.assertRaisesRegex(ArtifactError, error):
+                    verify_artifact(artifact, os.environ['LOOM_LIBRARY'], self.tmp.path / ('registry-reject-' + str(index)))
+
+    def test_shared_method_artifact_is_persisted_without_claiming_registry_execution(self):
+        from loom.src.packet.tests.verify_method_graph_artifact import verify_artifact
+        artifact = self.method_artifact()
+        summary, receipt = verify_artifact(artifact, os.environ['LOOM_LIBRARY'], self.data)
+        self.assertEqual(summary['native_records'], {'entities': 14, 'claims': 22, 'sources': 5})
+        self.assertEqual(summary['result_count'], 3)
+        self.assertTrue(summary['passed'])
+        self.assertFalse(summary['producer_execution_verified'])
+        self.assertEqual(summary['verifier_provider_calls'], 0)
+        self.assertEqual(receipt['packet'], artifact['packet'])
+        with self.database() as db:
+            self.assertEqual(db.execute('SELECT COUNT(*) FROM loom_kb_graph_receipts').fetchone()[0], 1)
+            self.assertEqual(db.execute('SELECT COUNT(*) FROM loom_kb_runs').fetchone()[0], 1)
+
+    def test_method_version_annotations_preserve_identity_and_survive_native_replay(self):
+        from loom.src.packet.tests.verify_method_graph_artifact import packet_call, verify_artifact
+        artifact = self.method_artifact()
+        original_contract = deepcopy(artifact['contract'])
+        expected_attrs = {}
+        for role in ('method_version_id', 'prompt_version_id', 'parameter_set_version_id'):
+            id_ = artifact['contract']['bindings'][role]
+            before = deepcopy(next(row['attrs'] for row in artifact['packet']['entities'] if row['id'] == id_))
+            annotated = deepcopy(before)
+            annotated['annotation'] = {'reviewer': 'synthetic-owner', 'note': 'first inspection'}
+            self.update_method_artifact_entity(artifact, id_, annotated)
+            revised = deepcopy(annotated)
+            revised['annotation']['note'] = 'updated inspection'
+            self.update_method_artifact_entity(artifact, id_, revised)
+            expected_attrs[id_] = revised
+            for field in ('definition', 'definition_sha256', 'text', 'text_sha256', 'encoding'):
+                self.assertEqual(revised.get(field), before.get(field))
+        self.assertEqual(artifact['contract'], original_contract)
+        self.assertEqual(packet_call(self.store, {'operation': 'validate', 'packet': artifact['packet']}),
+                         artifact['packet'])
+        summary, receipt = verify_artifact(artifact, os.environ['LOOM_LIBRARY'], self.data)
+        self.assertTrue(summary['passed'])
+        self.assertFalse(summary['producer_execution_verified'])
+        self.assertEqual(receipt['packet'], artifact['packet'])
+        self.assertEqual({row['id']: row['attrs'] for row in receipt['packet']['entities']
+                          if row['id'] in expected_attrs}, expected_attrs)
+        replayed = self.store.replay(receipt['id'])
+        self.assertEqual(replayed['receipt'], receipt)
+        self.assertTrue(replayed['row_drift']['matches'])
+
+    def test_shared_method_artifact_rejects_consistent_native_packets_with_false_bindings(self):
+        from loom.src.packet.tests.verify_method_graph_artifact import (
+            ArtifactError, packet_call, verify_artifact)
+        original = self.method_artifact()
+
+        def update_entity(artifact, id_, attrs):
+            self.update_method_artifact_entity(artifact, id_, attrs)
+
+        def missing_edge(artifact):
+            packet = artifact['packet']
+            predicate = artifact['contract']['vocabulary']['predicates']['produced_by_method_version']
+            before = next(row for row in packet['claims'] if row['predicate'] == predicate)
+            diff = packet_call(self.store, {'operation': 'empty_diff', 'packet': packet,
+                                           'proposal_id': 'remove-real-edge', 'origin': MODEL})
+            diff['claims']['remove'].append({'id': before['id'], 'before_sha256': codec.digest(before),
+                                              'reason': 'synthetic missing provenance edge'})
+            artifact['packet'] = packet_call(self.store, {'operation': 'apply', 'packet': packet,
+                                                         'diff': diff, 'policy': AUTO})['packet']
+
+        def false_hash(artifact):
+            id_ = artifact['contract']['bindings']['parameter_set_version_id']
+            attrs = deepcopy(next(row['attrs'] for row in artifact['packet']['entities'] if row['id'] == id_))
+            attrs['definition']['effective_parameters']['temperature'] = 0.9
+            update_entity(artifact, id_, attrs)
+
+        def overwritten_version(artifact):
+            id_ = artifact['contract']['bindings']['method_version_id']
+            before = deepcopy(next(row['attrs'] for row in artifact['packet']['entities'] if row['id'] == id_))
+            altered = deepcopy(before)
+            altered['definition']['method_key'] = 'synthetic/different-method-under-same-version'
+            altered['definition_sha256'] = codec.digest(altered['definition'])
+            update_entity(artifact, id_, altered)
+            update_entity(artifact, id_, before)
+
+        def overwritten_prompt(artifact):
+            id_ = artifact['contract']['bindings']['prompt_version_id']
+            before = deepcopy(next(row['attrs'] for row in artifact['packet']['entities'] if row['id'] == id_))
+            altered = deepcopy(before)
+            altered['text'] += '\nSynthetic changed prompt under the same version ID.'
+            altered['text_sha256'] = hashlib.sha256(altered['text'].encode()).hexdigest()
+            update_entity(artifact, id_, altered)
+            update_entity(artifact, id_, before)
+
+        def wrong_method_preset(artifact):
+            id_ = artifact['contract']['bindings']['method_version_id']
+            attrs = deepcopy(next(row['attrs'] for row in artifact['packet']['entities'] if row['id'] == id_))
+            attrs['definition']['preset_sha256'] = 'f' * 64
+            attrs['definition_sha256'] = codec.digest(attrs['definition'])
+            artifact['contract']['definition_hashes']['method_version'] = attrs['definition_sha256']
+            artifact['contract']['definition_records']['method_version_id'] = deepcopy(attrs)
+            update_entity(artifact, id_, attrs)
+
+        def captured_trace_drift(artifact):
+            artifact['trace']['response_provenance'] = 'different-recorded-provenance'
+            id_ = artifact['contract']['bindings']['run_id']
+            attrs = deepcopy(next(row['attrs'] for row in artifact['packet']['entities'] if row['id'] == id_))
+            attrs['response_provenance'] = artifact['trace']['response_provenance']
+            update_entity(artifact, id_, attrs)
+
+        def conflicting_result_attrs(artifact):
+            id_ = artifact['contract']['bindings']['run_id']
+            attrs = deepcopy(next(row['attrs'] for row in artifact['packet']['entities'] if row['id'] == id_))
+            attrs['result_bindings'] = []
+            update_entity(artifact, id_, attrs)
+
+        changes = [
+            ('unknown_binding', lambda a: a['contract']['bindings'].update(run_id='unknown-run')),
+            ('trace_binding:model_identity_id', lambda a: a['trace'].update(
+                model_identity_id=a['contract']['bindings']['method_identity_id'])),
+            ('definition_hash:parameter_set', false_hash),
+            ('missing_edge:produced_by_method_version', missing_edge),
+            ('result_set', lambda a: a['result_entity_ids'].pop()),
+            ('definition_capture', lambda a: a['contract'].update(uncaptured_setting=True)),
+            ('trace_capture', captured_trace_drift),
+            ('result_origin_capture', lambda a: a['trace']['result_bindings'][0].pop('model_origin')),
+            ('result_compiler', lambda a: a['trace']['result_bindings'][0].pop('compiler_transform_id')),
+            ('version_overwritten', overwritten_version),
+            ('version_overwritten', overwritten_prompt),
+            ('run_trace:result_bindings', conflicting_result_attrs),
+            ('method_preset_hash', wrong_method_preset),
+        ]
+        for index, (error, change) in enumerate(changes):
+            with self.subTest(error=error):
+                artifact = deepcopy(original)
+                change(artifact)
+                # Counterexamples are valid native packets, including their
+                # reversible history; rejection must come from the graph contract.
+                self.assertEqual(packet_call(self.store, {'operation': 'validate',
+                                                          'packet': artifact['packet']}), artifact['packet'])
+                directory = self.tmp.path / ('artifact-reject-' + str(index))
+                with self.assertRaisesRegex(ArtifactError, '^' + error):
+                    verify_artifact(artifact, os.environ['LOOM_LIBRARY'], directory)
+                with sqlite3.connect(directory / 'chatadhd.db') as db:
+                    tables = {row[0] for row in db.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+                    for name in ('loom_kb_entities', 'loom_kb_claims', 'loom_kb_observations',
+                                 'loom_kb_runs', 'loom_kb_graph_receipts'):
+                        if name in tables:
+                            self.assertEqual(db.execute('SELECT COUNT(*) FROM ' + name).fetchone()[0], 0)
+
+    def test_method_artifact_cli_preserves_failed_input_and_refuses_receipt_overwrite(self):
+        script = Path(__file__).resolve().parents[2] / 'src/packet/tests/verify_method_graph_artifact.py'
+        artifact = self.tmp.path / 'duplicate-key.json'
+        artifact.write_bytes(b'{"schema":"loom.method_graph_fixture/1","schema":"forged"}')
+        evidence = self.tmp.path / 'evidence'
+        command = [sys.executable, str(script), '--library', os.environ['LOOM_LIBRARY'],
+                   '--artifact', str(artifact), '--evidence-dir', str(evidence)]
+        result = subprocess.run(command, capture_output=True, text=True, check=False)
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertEqual((evidence / 'input.json').read_bytes(), artifact.read_bytes())
+        self.assertEqual(json.loads((evidence / 'error.json').read_text())['error'], 'duplicate_json_key')
+        before = {path.name: path.read_bytes() for path in evidence.iterdir()}
+        artifact.write_bytes(b'{"schema":"replacement"}')
+        retry = subprocess.run(command, capture_output=True, text=True, check=False)
+        self.assertEqual(retry.returncode, 2, retry.stderr)
+        self.assertIn('--evidence-dir must be empty', retry.stderr)
+        self.assertEqual({path.name: path.read_bytes() for path in evidence.iterdir()}, before)
+        for index, raw in enumerate((b'[]', b'null')):
+            with self.subTest(raw=raw):
+                artifact.write_bytes(raw)
+                other = self.tmp.path / ('non-object-evidence-' + str(index))
+                command[-1] = str(other)
+                failed = subprocess.run(command, capture_output=True, text=True, check=False)
+                self.assertEqual(failed.returncode, 1, failed.stderr)
+                self.assertEqual(json.loads((other / 'error.json').read_text())['error'], 'artifact_object_required')
+                self.assertEqual((other / 'input.json').read_bytes(), raw)
+
+    def test_retry_preserves_exact_receipt_without_a_second_insertion(self):
+        result = self.accept()
+        receipt = result['receipt']
+        with self.database() as db:
+            body = db.execute('SELECT body FROM loom_kb_graph_receipts WHERE id=?',
+                              (receipt['id'],)).fetchone()[0]
+        retry = self.accept()
+        self.assertTrue(retry['replayed'])
+        self.assertEqual(retry['receipt'], receipt)
+        with self.database() as db:
+            self.assertEqual(db.execute('SELECT COUNT(*) FROM loom_kb_graph_receipts').fetchone()[0], 1)
+            self.assertEqual(db.execute('SELECT COUNT(*) FROM loom_kb_runs').fetchone()[0], 1)
+            self.assertEqual(db.execute('SELECT body FROM loom_kb_graph_receipts WHERE id=?',
+                                        (receipt['id'],)).fetchone()[0], body)
+
+    def test_legacy_receipt_keeps_original_validation_scope_on_read_replay_and_retry(self):
+        # Reconstruct a synthetic pre-upgrade receipt table before its immutable
+        # triggers are installed. The native rows/snapshots and request identity
+        # are the same as today; only the historical validation receipt differs.
+        legacy = deepcopy(self.accept()['receipt'])
+        legacy['native_validation_scope'] = (
+            'packet_head_and_provenance_hashes_selected_native_rows_entity_claim_'
+            'observation_reference_closure_source_hashes_quotes_utf8_subspans')
+        legacy['reversible_history_validation'] = (
+            'not_performed_by_native_adapter_use_graph_packet_codec')
+        legacy.pop('packet_codec_validation', None)
+        legacy.pop('receipt_sha256')
+        legacy['receipt_sha256'] = codec.digest(legacy)
+        original_body = json.dumps(legacy, ensure_ascii=False, indent=2)
+        self.store.close()
+        with self.database() as db:
+            db.execute('DROP TABLE loom_kb_graph_receipts')
+            db.execute('CREATE TABLE loom_kb_graph_receipts '
+                       '(id TEXT PRIMARY KEY, run_id TEXT NOT NULL, body TEXT NOT NULL)')
+            db.execute('INSERT INTO loom_kb_graph_receipts (id,run_id,body) VALUES (?,?,?)',
+                       (legacy['id'], legacy['run_id'], original_body))
+        self.store = NativeGraphStore(os.environ['LOOM_LIBRARY'], self.data)
+        self.addCleanup(self.store.close)
+        for result in (self.store.read(legacy['id']), self.store.replay(legacy['id']), self.accept()):
+            self.assertEqual(result['receipt'], legacy)
+            self.assertNotIn('packet_codec_validation', result['receipt'])
+            self.assertTrue(result['row_drift']['matches'])
+        with self.database() as db:
+            self.assertEqual(db.execute('SELECT COUNT(*) FROM loom_kb_graph_receipts').fetchone()[0], 1)
+            self.assertEqual(db.execute('SELECT COUNT(*) FROM loom_kb_runs').fetchone()[0], 1)
+            self.assertEqual(db.execute('SELECT body FROM loom_kb_graph_receipts WHERE id=?',
+                                        (legacy['id'],)).fetchone()[0], original_body)
 
     def test_utf8_subspan_projection_does_not_rewrite_quote_or_locator(self):
         packet = deepcopy(self.packet)
@@ -272,6 +754,47 @@ class GraphPacketStoreTests(CompatTestCase):
         packet['history'] = [{'forged': True}]
         rehash(packet)
         with self.assertRaises(ValueError): self.accept(packet)
+
+    def test_direct_abi_rejects_rehashed_corrupt_history_without_any_native_writes(self):
+        diff = codec.empty_diff(self.packet, proposal_id='native-history', origin=MODEL)
+        after = deepcopy(self.packet['claims'][0])
+        after['assessment']['status'] = 'contested'
+        diff['claims']['update'].append({'id': after['id'],
+            'before_sha256': codec.digest(self.packet['claims'][0]), 'after': after})
+        valid, _ = codec.apply_diff(self.packet, diff, AUTO)
+        for mutation, error in (
+                ('event_hash', 'graph_packet_history_hash_drift'),
+                ('parent', 'graph_packet_history_parent_hash_mismatch'),
+                ('forward', 'graph_packet_history_forward_replay_mismatch')):
+            with self.subTest(mutation=mutation):
+                packet = deepcopy(valid)
+                event = packet['history'][0]
+                if mutation == 'event_hash':
+                    event['application_id'] = '0' * 64
+                elif mutation == 'parent':
+                    event['previous_task']['fabricated_earlier_task'] = True
+                else:
+                    event['diff']['claims']['update'][0]['after']['assessment']['status'] = 'rejected'
+                if mutation != 'event_hash':
+                    event['application_id'] = codec.digest(
+                        {key: value for key, value in event.items() if key != 'application_id'})
+                # Rehash the outer head too: rejection must come from full
+                # history replay, not the existing packet-head hash gate.
+                rehash(packet)
+                request = {'operation': 'accept', 'target': 'corrupt-history-' + mutation,
+                           'packet': packet, 'selection': self.selection,
+                           'expected_rows': self.expected, 'explicitly_accepted': True}
+                # Bypass acceptance_request/Python validation, just like a
+                # direct HTTP or C ABI client supplying an exchange packet.
+                result = self.store._take(self.store.library.loom_graph_packet_store(
+                    self.store.context, json.dumps(request, ensure_ascii=False).encode('utf-8')))
+                self.assertEqual(result['error']['code'], 'invalid_argument')
+                self.assertIn(error, result['error']['message'])
+                with self.database() as db:
+                    for table in ('loom_kb_observations', 'loom_kb_entities', 'loom_kb_claims',
+                                  'loom_kb_runs', 'loom_kb_graph_receipts'):
+                        if db.execute('SELECT 1 FROM sqlite_master WHERE name=?', (table,)).fetchone():
+                            self.assertEqual(db.execute('SELECT COUNT(*) FROM ' + table).fetchone()[0], 0)
 
     def test_v2_to_v3_migration_preserves_existing_knowledge_and_core_v4(self):
         receipt = self.accept(target='v2-existing')['receipt']
