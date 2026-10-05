@@ -6,7 +6,9 @@
 #include <algorithm>
 #include <cmath>
 #include <numeric>
+#include <limits>
 #include <set>
+#include <stdexcept>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -36,13 +38,9 @@ std::vector<std::string> word_runs(std::string_view text, std::size_t min_len) {
   return out;
 }
 
-std::vector<std::string> tokenize_tfidf(std::string_view text) {
-  std::string lower = utf8::to_lower(text);
-  return word_runs(lower, 2);
-}
-std::vector<std::string> tokenize_keyword(std::string_view text) {
-  std::string lower = utf8::to_lower(text);
-  return word_runs(lower, 1);
+std::vector<std::string> tokenize(std::string_view text, const Json& recipe) {
+  std::string normalized = recipe.at("lowercase").get<bool>() ? utf8::to_lower(text) : std::string(text);
+  return word_runs(normalized, recipe.at("min_token_length").get<std::size_t>());
 }
 
 double sparse_dot(const std::vector<std::pair<int, double>>& a, const std::vector<std::pair<int, double>>& b) {
@@ -89,9 +87,14 @@ Json SelectorHit::to_json() const { return Json{{"id", id}, {"text", text}, {"sc
 
 struct SelectorEngine::Impl {
   int tier = SelectorEngine::kTierKeyword;
+  std::optional<int> requested_tier;
   std::shared_ptr<EmbeddingProvider> embedder;
   std::vector<std::string> corpus;
   std::vector<std::string> ids;
+  std::optional<RuntimeProfile> profile;
+  std::optional<Error> profile_error;
+
+  const Json& settings() const { return profile->values(); }
 
   // Tier 2 (TF-IDF), sklearn TfidfVectorizer(max_features=5000) semantics.
   std::vector<std::string> vocab;  // alphabetical, final (post max_features) order
@@ -109,7 +112,7 @@ struct SelectorEngine::Impl {
     std::vector<SelectorHit> out;
     for (int i : idx) {
       if (static_cast<int>(out.size()) >= top_k) break;
-      if (scores[static_cast<std::size_t>(i)] <= 0.0) break;
+      if (scores[static_cast<std::size_t>(i)] <= settings().at("ranking").at("minimum_score").get<double>()) break;
       out.push_back(SelectorHit{ids[static_cast<std::size_t>(i)], corpus[static_cast<std::size_t>(i)],
                                 scores[static_cast<std::size_t>(i)]});
     }
@@ -127,7 +130,7 @@ struct SelectorEngine::Impl {
     std::unordered_map<std::string, long long> total_count;
     std::unordered_map<std::string, int> doc_freq;
     for (std::size_t d = 0; d < corpus.size(); ++d) {
-      doc_tokens[d] = tokenize_tfidf(corpus[d]);
+      doc_tokens[d] = tokenize(corpus[d], settings().at("tfidf"));
       std::unordered_set<std::string> seen;
       for (const auto& t : doc_tokens[d]) {
         total_count[t]++;
@@ -138,14 +141,14 @@ struct SelectorEngine::Impl {
     std::vector<std::string> terms;
     terms.reserve(total_count.size());
     for (const auto& [t, c] : total_count) terms.push_back(t);
-    constexpr std::size_t kMaxFeatures = 5000;
-    if (terms.size() > kMaxFeatures) {
+    const auto max_features = settings().at("tfidf").at("max_features").get<std::size_t>();
+    if (max_features && terms.size() > max_features) {
       std::sort(terms.begin(), terms.end(), [&](const std::string& a, const std::string& b) {
         long long ca = total_count[a], cb = total_count[b];
         if (ca != cb) return ca > cb;
         return a < b;
       });
-      terms.resize(kMaxFeatures);
+      terms.resize(max_features);
     }
     std::sort(terms.begin(), terms.end());  // sklearn re-alphabetizes the kept vocabulary
     vocab = terms;
@@ -155,7 +158,9 @@ struct SelectorEngine::Impl {
     idf.assign(vocab.size(), 0.0);
     for (std::size_t i = 0; i < vocab.size(); ++i) {
       int df = doc_freq[vocab[i]];
-      idf[i] = std::log((1.0 + n_docs) / (1.0 + static_cast<double>(df))) + 1.0;
+      const auto& recipe = settings().at("tfidf");
+      const auto smoothing = recipe.at("idf_smoothing").get<double>();
+      idf[i] = std::log((smoothing + n_docs) / (smoothing + static_cast<double>(df))) + recipe.at("idf_offset").get<double>();
     }
 
     doc_vecs.assign(corpus.size(), {});
@@ -168,40 +173,62 @@ struct SelectorEngine::Impl {
       }
       std::vector<std::pair<int, double>> vec;
       vec.reserve(counts.size());
-      for (const auto& [col, tf] : counts) vec.push_back({col, tf * idf[static_cast<std::size_t>(col)]});
+      for (const auto& [col, tf] : counts) {
+        const auto scaled_tf = settings().at("tfidf").at("sublinear_tf").get<bool>() ? 1.0 + std::log(tf) : tf;
+        vec.push_back({col, scaled_tf * idf[static_cast<std::size_t>(col)]});
+      }
       std::sort(vec.begin(), vec.end());
-      l2_normalize(vec);
+      if (settings().at("tfidf").at("normalize").get<bool>()) l2_normalize(vec);
       doc_vecs[d] = std::move(vec);
     }
   }
 
   std::vector<std::pair<int, double>> tfidf_query_vec(std::string_view query) const {
     std::unordered_map<int, double> counts;
-    for (const auto& t : tokenize_tfidf(query)) {
+    for (const auto& t : tokenize(query, settings().at("tfidf"))) {
       auto it = vocab_index.find(t);
       if (it == vocab_index.end()) continue;
       counts[it->second] += 1.0;
     }
     std::vector<std::pair<int, double>> vec;
     vec.reserve(counts.size());
-    for (const auto& [col, tf] : counts) vec.push_back({col, tf * idf[static_cast<std::size_t>(col)]});
+    for (const auto& [col, tf] : counts) {
+        const auto scaled_tf = settings().at("tfidf").at("sublinear_tf").get<bool>() ? 1.0 + std::log(tf) : tf;
+        vec.push_back({col, scaled_tf * idf[static_cast<std::size_t>(col)]});
+      }
     std::sort(vec.begin(), vec.end());
-    l2_normalize(vec);
+    if (settings().at("tfidf").at("normalize").get<bool>()) l2_normalize(vec);
     return vec;
   }
 };
 
-SelectorEngine::SelectorEngine(std::optional<int> tier, std::shared_ptr<EmbeddingProvider> embedder)
+SelectorEngine::SelectorEngine(std::optional<int> tier, std::shared_ptr<EmbeddingProvider> embedder,
+                               std::optional<RuntimeProfile> requested_profile)
     : impl_(std::make_unique<Impl>()) {
+  auto profile = RuntimeProfile::builtin("selector");
+  if (!profile) { impl_->profile_error = profile.error(); return; }
+  if (requested_profile) {
+    if (requested_profile->domain() != "selector") {
+      impl_->profile_error = Error(Errc::InvalidArgument, "expected selector profile");
+      return;
+    }
+    profile = profile->with_values(requested_profile->values());
+    if (!profile) { impl_->profile_error = profile.error(); return; }
+  }
+  impl_->profile = std::move(*profile);
+  impl_->requested_tier = tier;
+  const auto& tiers = impl_->settings().at("tiers");
   int t;
   if (tier) {
     t = *tier;
-    if (t == kTierEmbedding && !embedder) t = kTierTfIdf;  // Python: model failed to load -> tier 2
+    if (t == kTierEmbedding && !embedder) t = tiers.at("without_embedding").get<int>();  // Python: model failed to load -> tier 2
   } else {
-    t = embedder ? kTierEmbedding : kTierTfIdf;  // Loom: native TF-IDF always available
+    t = tiers.at(embedder ? "with_embedding" : "without_embedding").get<int>();  // Loom: native TF-IDF always available
   }
   impl_->tier = t;
   impl_->embedder = std::move(embedder);
+  if (t == kTierEmbedding && !impl_->embedder)
+    impl_->profile_error = Error(Errc::Unavailable, "configured embedding tier has no embedding provider");
 }
 SelectorEngine::~SelectorEngine() = default;
 SelectorEngine::SelectorEngine(SelectorEngine&&) noexcept = default;
@@ -210,39 +237,51 @@ SelectorEngine& SelectorEngine::operator=(SelectorEngine&&) noexcept = default;
 int SelectorEngine::tier() const noexcept { return impl_ ? impl_->tier : kTierKeyword; }
 
 Status SelectorEngine::index(std::vector<std::string> texts, std::vector<std::string> ids) {
-  impl_->corpus = std::move(texts);
+  if (impl_->profile_error) return *impl_->profile_error;
+  if (texts.size() > static_cast<std::size_t>(std::numeric_limits<int>::max()))
+    return Error(Errc::InvalidArgument, "selector corpus exceeds native index representation");
+  if (!ids.empty() && ids.size() != texts.size())
+    return Error(Errc::InvalidArgument, "selector ids must have one entry per document");
+  auto staged = std::make_unique<Impl>(*impl_);
+  staged->corpus = std::move(texts);
   if (!ids.empty()) {
-    impl_->ids = std::move(ids);
+    staged->ids = std::move(ids);
   } else {
-    impl_->ids.clear();
-    impl_->ids.reserve(impl_->corpus.size());
-    for (std::size_t i = 0; i < impl_->corpus.size(); ++i) impl_->ids.push_back(std::to_string(i));
+    staged->ids.clear();
+    staged->ids.reserve(staged->corpus.size());
+    for (std::size_t i = 0; i < staged->corpus.size(); ++i) staged->ids.push_back(std::to_string(i));
   }
-  impl_->vocab.clear();
-  impl_->vocab_index.clear();
-  impl_->idf.clear();
-  impl_->doc_vecs.clear();
-  impl_->embeddings.clear();
+  staged->vocab.clear();
+  staged->vocab_index.clear();
+  staged->idf.clear();
+  staged->doc_vecs.clear();
+  staged->embeddings.clear();
 
-  if (impl_->corpus.empty()) return ok_status();
+  if (staged->corpus.empty()) { impl_ = std::move(staged); return ok_status(); }
 
-  if (impl_->tier == kTierEmbedding && impl_->embedder) {
-    auto r = impl_->embedder->embed(impl_->corpus);
+  if (staged->tier == kTierEmbedding && staged->embedder) {
+    auto r = staged->embedder->embed(staged->corpus);
     if (r) {
-      impl_->embeddings = std::move(r).value();
+      staged->embeddings = std::move(r).value();
+      impl_ = std::move(staged);
       return ok_status();
     }
-    impl_->tier = kTierTfIdf;  // Python: load/encode failure -> fall back
+    staged->tier = staged->settings().at("tiers").at("embedding_failure").get<int>();
+    if (staged->tier == kTierEmbedding) return r.error();
   }
-  if (impl_->tier == kTierTfIdf) impl_->build_tfidf();
+  if (staged->tier == kTierTfIdf) staged->build_tfidf();
+  impl_ = std::move(staged);
   return ok_status();
 }
 
-std::vector<SelectorHit> SelectorEngine::search(std::string_view query, int top_k) const {
-  if (impl_->corpus.empty()) return {};
+Result<std::vector<SelectorHit>> SelectorEngine::search_checked(std::string_view query, std::optional<int> requested_top_k) const {
+  if (impl_->profile_error) return *impl_->profile_error;
+  const auto top_k = requested_top_k.value_or(impl_->settings().at("ranking").at("top_k").get<int>());
+  if (impl_->corpus.empty()) return std::vector<SelectorHit>{};
   if (impl_->tier == kTierEmbedding && impl_->embedder) {
     auto r = impl_->embedder->embed({std::string(query)});
-    if (!r || r->empty()) return {};
+    if (!r) return r.error();
+    if (r->empty()) return std::vector<SelectorHit>{};
     const auto& qv = (*r)[0];
     std::vector<double> scores;
     scores.reserve(impl_->embeddings.size());
@@ -257,13 +296,13 @@ std::vector<SelectorHit> SelectorEngine::search(std::string_view query, int top_
     return impl_->rank(scores, top_k);
   }
   // Tier 3: keyword.
-  auto qtokens_vec = tokenize_keyword(query);
+  auto qtokens_vec = tokenize(query, impl_->settings().at("keyword"));
   std::set<std::string> qtokens(qtokens_vec.begin(), qtokens_vec.end());
-  if (qtokens.empty()) return {};
+  if (qtokens.empty()) return std::vector<SelectorHit>{};
   std::vector<double> scores;
   scores.reserve(impl_->corpus.size());
   for (const auto& text : impl_->corpus) {
-    std::string text_lower = utf8::to_lower(text);
+    std::string text_lower = impl_->settings().at("keyword").at("lowercase").get<bool>() ? utf8::to_lower(text) : text;
     int hits = 0;
     for (const auto& t : qtokens) {
       if (text_lower.find(t) != std::string::npos) hits++;
@@ -271,6 +310,51 @@ std::vector<SelectorHit> SelectorEngine::search(std::string_view query, int top_
     scores.push_back(static_cast<double>(hits) / static_cast<double>(qtokens.size()));
   }
   return impl_->rank(scores, top_k);
+}
+
+
+std::vector<SelectorHit> SelectorEngine::search(std::string_view query, std::optional<int> top_k) const {
+  auto result = search_checked(query, top_k);
+  if (!result) {
+    if (impl_->profile_error) throw std::runtime_error(result.error().to_string());
+    // Legacy embedding-query failures were empty results. The checked entry
+    // point exposes the provider error without changing that default API.
+    return {};
+  }
+  return std::move(*result);
+}
+
+Result<Json> SelectorEngine::profile_inspection() const {
+  if (impl_->profile_error) return *impl_->profile_error;
+  return impl_->profile->inspection();
+}
+
+Status SelectorEngine::set_profile(const RuntimeProfile& profile) {
+  if (profile.domain() != "selector") return Error(Errc::InvalidArgument, "expected selector profile");
+  // Revalidate against the supported consumer descriptor, even when the input
+  // was built from a caller-supplied definition with a permissive schema.
+  LOOM_TRY_ASSIGN(auto builtin, RuntimeProfile::builtin("selector"));
+  LOOM_TRY_ASSIGN(auto checked, builtin.with_values(profile.values()));
+  auto staged = std::make_unique<Impl>(*impl_);
+  staged->profile = std::move(checked);
+  staged->profile_error.reset();
+  const auto& tiers = staged->settings().at("tiers");
+  staged->tier = staged->requested_tier.value_or(tiers.at(staged->embedder ? "with_embedding" : "without_embedding").get<int>());
+  if (staged->tier == kTierEmbedding && !staged->embedder)
+    staged->tier = tiers.at("without_embedding").get<int>();
+  if (staged->tier == kTierEmbedding && !staged->embedder)
+    return Error(Errc::Unavailable, "configured embedding tier has no embedding provider");
+  if (staged->tier == kTierEmbedding && staged->embedder && !staged->corpus.empty()) {
+    auto embeddings = staged->embedder->embed(staged->corpus);
+    if (!embeddings) return embeddings.error();
+    if (embeddings->size() != staged->corpus.size())
+      return Error(Errc::InvalidArgument, "embedding provider returned a different document count");
+    staged->embeddings = std::move(*embeddings);
+  } else if (staged->tier == kTierTfIdf) {
+    staged->build_tfidf();
+  }
+  impl_ = std::move(staged);
+  return {};
 }
 
 std::size_t SelectorEngine::size() const noexcept { return impl_ ? impl_->corpus.size() : 0; }

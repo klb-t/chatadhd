@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <format>
 #include <functional>
+#include <stdexcept>
 
 #include "loom/log.h"
 #include "loom/semantic_analyzer.h"
@@ -58,6 +59,9 @@ Result<MemoryNode> MemoryNode::from_json(const Json& j) {
 
 MemoryEngine::MemoryEngine(std::filesystem::path path, const SemanticAnalyzer* analyzer)
     : path_(std::move(path)), analyzer_(analyzer) {
+  auto profile = RuntimeProfile::load("memory", path_.parent_path());
+  if (profile) profile_ = std::move(*profile);
+  else profile_error_ = profile.error();
   std::lock_guard<std::mutex> lock(mu_);
   load_locked();
 }
@@ -112,6 +116,10 @@ Status MemoryEngine::save_locked() const {
 
 Status MemoryEngine::reload() {
   std::lock_guard<std::mutex> lock(mu_);
+  auto profile = RuntimeProfile::load("memory", path_.parent_path());
+  if (!profile) { profile_error_ = profile.error(); return profile.error(); }
+  profile_ = std::move(*profile);
+  profile_error_.reset();
   load_locked();
   return ok_status();
 }
@@ -129,10 +137,13 @@ bool parent_eq(const std::optional<std::string>& a, std::optional<std::string_vi
 // ── CRUD ────────────────────────────────────────────────────────────────
 
 Result<std::string> MemoryEngine::add_node(std::string_view content, std::optional<std::string> parent_id,
-                                           std::string_view node_type, Json metadata,
+                                           std::optional<std::string_view> node_type, Json metadata,
                                            std::vector<std::string> tags) {
   std::lock_guard<std::mutex> lock(mu_);
-  std::string nid = random_hex(12);
+  if (profile_error_) return *profile_error_;
+  const auto& values = profile_->values();
+  const auto resolved_type = node_type ? std::string(*node_type) : values.at("default_node_type").get<std::string>();
+  std::string nid = random_hex(values.at("id_chars").get<std::size_t>());
   int depth = 0;
   if (parent_id) {
     for (const auto& n : nodes_) {
@@ -144,15 +155,17 @@ Result<std::string> MemoryEngine::add_node(std::string_view content, std::option
   }
 
   std::vector<std::string> auto_tags;
-  if (analyzer_ && node_type == "text") {
-    auto_tags = analyzer_->extract_topics(content, /*threshold=*/1);
+  const auto& auto_types = values.at("auto_tag_node_types");
+  if (analyzer_ && std::find(auto_types.begin(), auto_types.end(), Json(resolved_type)) != auto_types.end()) {
+    auto_tags = analyzer_->extract_topics(content, values.at("auto_tag_threshold").get<int>());
   }
 
   MemoryNode node;
   node.id = nid;
   node.content = std::string(content);
   node.parent_id = std::move(parent_id);
-  node.node_type = std::string(node_type);
+  node.node_type = resolved_type;
+  node.weight = values.at("default_weight").get<double>();
   node.depth = depth;
   node.metadata = std::move(metadata);
   node.tags = std::move(tags);
@@ -231,9 +244,15 @@ std::optional<MemoryNode> MemoryEngine::get_node(std::string_view nid) const {
   return std::nullopt;
 }
 
-std::vector<MemoryNode> MemoryEngine::get_children(std::optional<std::string_view> parent_id) const {
+Result<std::vector<MemoryNode>> MemoryEngine::get_children_checked(std::optional<std::string_view> parent_id) const {
   std::lock_guard<std::mutex> lock(mu_);
+  if (profile_error_) return *profile_error_;
   return children_locked(parent_id);
+}
+std::vector<MemoryNode> MemoryEngine::get_children(std::optional<std::string_view> parent_id) const {
+  auto result = get_children_checked(parent_id);
+  if (!result) throw std::runtime_error(result.error().to_string());
+  return std::move(*result);
 }
 
 std::vector<MemoryNode> MemoryEngine::get_all() const {
@@ -243,59 +262,58 @@ std::vector<MemoryNode> MemoryEngine::get_all() const {
 
 // ── Context building ───────────────────────────────────────────────────
 
-namespace {
-std::string format_weight(double w) {
-  if (w == 1.0) return "";
-  return std::format(" [w:{:.1f}]", w);
-}
-std::string format_tags(const std::vector<std::string>& tags) {
-  if (tags.empty()) return "";
-  std::string out = " #";
-  for (std::size_t i = 0; i < tags.size(); ++i) {
-    if (i) out += " #";
-    out += tags[i];
-  }
-  return out;
-}
-}  // namespace
-
-std::string MemoryEngine::get_active_context(std::size_t max_chars) const {
+Result<std::string> MemoryEngine::get_active_context_checked(std::optional<std::size_t> requested_max_chars) const {
   std::lock_guard<std::mutex> lock(mu_);
+  if (profile_error_) return *profile_error_;
+  const auto& values = profile_->values();
+  const auto max_chars = requested_max_chars.value_or(values.at("context_max_chars").get<std::size_t>());
   std::vector<std::string> lines;
   std::size_t char_count = 0;
-
+  std::optional<Error> render_error;
   std::function<void(const MemoryNode&, int)> walk = [&](const MemoryNode& node, int indent) {
-    if (!node.active || char_count > max_chars) return;
+    if (render_error || !node.active || char_count > max_chars) return;
     std::string prefix;
-    for (int i = 0; i < indent; ++i) prefix += "  ";
-    std::string w = format_weight(node.weight);
-    std::string tag_str = format_tags(node.tags);
-    std::string line;
-    if (node.node_type == "folder") {
-      line = prefix + "[" + node.content + "]" + w + tag_str;
-    } else if (node.node_type == "file") {
-      std::string path = json::get_string(node.metadata, "path", "");
-      line = prefix + "FILE: " + node.content + " (" + path + ")" + w;
-    } else if (node.node_type == "dir") {
-      std::string path = json::get_string(node.metadata, "path", "");
-      line = prefix + "DIR: " + node.content + " (" + path + ")" + w;
-    } else {
-      line = prefix + node.content + w + tag_str;
+    for (int i = 0; i < indent; ++i) prefix += values.at("indent").get_ref<const std::string&>();
+    std::string weight;
+    if (node.weight != values.at("default_weight").get<double>()) {
+      const auto formatted = std::format("{:.{}f}", node.weight, values.at("weight_precision").get<int>());
+      auto rendered = render_profile_template(values.at("weight_template").get_ref<const std::string&>(), Json{{"weight", formatted}});
+      if (!rendered) { render_error = rendered.error(); return; }
+      weight = std::move(*rendered);
     }
-    lines.push_back(line);
-    char_count += utf8::length(line);
-
+    std::string tags;
+    for (std::size_t i = 0; i < node.tags.size(); ++i) {
+      tags += values.at(i ? "tag_separator" : "tag_prefix").get_ref<const std::string&>();
+      tags += node.tags[i];
+    }
+    Json vars = node.to_json();
+    vars["indent"] = prefix;
+    vars["weight"] = weight;
+    vars["tags"] = tags;
+    vars["path"] = json::get_string(node.metadata, "path", "");
+    const auto& renderers = values.at("renderers");
+    const auto* selected = json::find(renderers, node.node_type);
+    const auto& renderer = selected ? *selected : values.at("default_renderer");
+    auto rendered = render_profile_template(renderer.get_ref<const std::string&>(), vars);
+    if (!rendered) { render_error = rendered.error(); return; }
+    char_count += utf8::length(*rendered);
+    lines.push_back(std::move(*rendered));
     for (const auto& child : children_locked(node.id)) walk(child, indent + 1);
   };
-
   for (const auto& root : children_locked(std::nullopt)) walk(root, 0);
-
+  if (render_error) return *render_error;
   std::string out;
   for (std::size_t i = 0; i < lines.size(); ++i) {
-    if (i) out += "\n";
+    if (i) out += values.at("line_separator").get_ref<const std::string&>();
     out += lines[i];
   }
   return out;
+}
+
+std::string MemoryEngine::get_active_context(std::optional<std::size_t> max_chars) const {
+  auto result = get_active_context_checked(max_chars);
+  if (!result) throw std::runtime_error(result.error().to_string());
+  return std::move(*result);
 }
 
 std::vector<MemoryNode> MemoryEngine::children_locked(std::optional<std::string_view> parent_id) const {
@@ -303,10 +321,14 @@ std::vector<MemoryNode> MemoryEngine::children_locked(std::optional<std::string_
   for (const auto& n : nodes_) {
     if (parent_eq(n.parent_id, parent_id)) out.push_back(n);
   }
-  std::stable_sort(out.begin(), out.end(), [](const MemoryNode& a, const MemoryNode& b) {
-    bool a_not_folder = a.node_type != "folder";
-    bool b_not_folder = b.node_type != "folder";
-    if (a_not_folder != b_not_folder) return a_not_folder < b_not_folder;
+  const auto& values = profile_->values();
+  const auto priority = [&](const MemoryNode& node) {
+    const auto* found = json::find(values.at("sort_priorities"), node.node_type);
+    return found ? found->get<int>() : values.at("default_sort_priority").get<int>();
+  };
+  std::stable_sort(out.begin(), out.end(), [&](const MemoryNode& a, const MemoryNode& b) {
+    const auto ap = priority(a), bp = priority(b);
+    if (ap != bp) return ap < bp;
     return a.created < b.created;
   });
   return out;
@@ -314,8 +336,10 @@ std::vector<MemoryNode> MemoryEngine::children_locked(std::optional<std::string_
 
 // ── Search ──────────────────────────────────────────────────────────────
 
-std::vector<MemoryNode> MemoryEngine::search(std::string_view query, int limit) const {
+Result<std::vector<MemoryNode>> MemoryEngine::search_checked(std::string_view query, std::optional<int> requested_limit) const {
   std::lock_guard<std::mutex> lock(mu_);
+  if (profile_error_) return *profile_error_;
+  const auto limit = requested_limit.value_or(profile_->values().at("search_limit").get<int>());
   std::string q = utf8::to_lower(query);
   std::vector<MemoryNode> results;
   for (const auto& n : nodes_) {
@@ -330,23 +354,46 @@ std::vector<MemoryNode> MemoryEngine::search(std::string_view query, int limit) 
 
 // ── Graph data ──────────────────────────────────────────────────────────
 
-Json MemoryEngine::get_graph_data() const {
+Result<Json> MemoryEngine::get_graph_data_checked() const {
   std::lock_guard<std::mutex> lock(mu_);
+  if (profile_error_) return *profile_error_;
+  const auto& values = profile_->values();
   Json nodes = Json::array();
   Json edges = Json::array();
   for (const auto& n : nodes_) {
     nodes.push_back(Json{{"id", n.id},
-                         {"label", std::string(utf8::prefix(n.content, 25))},
-                         {"type", "memory"},
+                         {"label", std::string(utf8::prefix(n.content, values.at("graph_label_chars").get<std::size_t>()))},
+                         {"type", values.at("graph_node_type")},
                          {"node_type", n.node_type},
                          {"active", n.active},
                          {"weight", n.weight},
                          {"tags", n.tags}});
     if (n.parent_id) {
-      edges.push_back(Json{{"src", *n.parent_id}, {"dst", n.id}, {"type", "child"}, {"weight", 1.0}});
+      edges.push_back(Json{{"src", *n.parent_id}, {"dst", n.id}, {"type", values.at("graph_child_relation")}, {"weight", values.at("graph_child_weight")}});
     }
   }
   return Json{{"nodes", nodes}, {"edges", edges}};
+}
+
+std::vector<MemoryNode> MemoryEngine::search(std::string_view query, std::optional<int> limit) const {
+  auto result = search_checked(query, limit);
+  if (!result) throw std::runtime_error(result.error().to_string());
+  return std::move(*result);
+}
+Json MemoryEngine::get_graph_data() const {
+  auto result = get_graph_data_checked();
+  if (!result) throw std::runtime_error(result.error().to_string());
+  return std::move(*result);
+}
+Result<Json> MemoryEngine::profile_inspection() const {
+  std::lock_guard<std::mutex> lock(mu_);
+  if (profile_error_) return *profile_error_;
+  return profile_->inspection();
+}
+Status MemoryEngine::profile_status() const {
+  std::lock_guard<std::mutex> lock(mu_);
+  if (profile_error_) return *profile_error_;
+  return {};
 }
 
 }  // namespace loom
