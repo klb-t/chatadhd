@@ -1,0 +1,61 @@
+{
+  "schema": "loom.product_literal_full_historical_replay/1",
+  "kind": "New scoped subprocess replay; not an original log recovery.",
+  "source_provenance": "Complete run2 source derived by reversing the recorded post-run2 protection patch from SHA-verified run3.",
+  "archived_guard_sha256": "6278d048a8c9004cdbadbb0d48b9bcea513587c9a718749291cebaffeabfade2",
+  "schema_sha256": "fbdffaf662c94af95731430f466238bb9eb53f499e0be010066f46e7cda1843d",
+  "fixture_policy_sha256": "2654c74eada20142fec6eb2f6f9875c6207250596aac244505fdca6a69ed5ea8",
+  "replay_sha256": "ea9231a4727ea2ffe7128e6ee40fe272054ab1858498da406febfc15bb81e2e5",
+  "overwrite_case": {
+    "command": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+      "-B",
+      "/tmp/historical-literal-guard-x9q7ohj3/archived-tool-repo/loom/src/util/product_literal_guard.py",
+      "--root",
+      "/tmp/historical-literal-guard-x9q7ohj3/synthetic-input-repo",
+      "--pack",
+      "/tmp/historical-literal-guard-x9q7ohj3/synthetic-input-repo/loom/data/validation/product_literals.pack",
+      "--schema",
+      "/tmp/historical-literal-guard-x9q7ohj3/synthetic-input-repo/docs/contracts/product_literals.schema.json",
+      "--check",
+      "--report",
+      "/tmp/historical-literal-guard-x9q7ohj3/synthetic-input-repo/loom/src/model/preserved.cpp",
+      "--manifest",
+      "/tmp/historical-literal-guard-x9q7ohj3/synthetic-input-repo/manifest.json"
+    ],
+    "exit": 2,
+    "before_sha256": "693fc7576ab4ad7b1789d24bfae07200a5a23fdbb2485eeb8961c657d47464ab",
+    "after_sha256": "a4647d468ae09e73faf90c7292c2a98f0d9dc588e49c05061b3e73659c3bb15e",
+    "source_overwritten": true,
+    "exact_overwritten_source": "{\n  \"schema\": \"loom.product_literals_report/1\",\n  \"valid\": false,\n  \"counts\": {\n    \"files\": 0,\n    \"candidates\": 0,\n    \"allowed\": 0,\n    \"unclassified\": 0,\n    \"blocked_files\": 0,\n    \"stale_allowlist\": 0\n  },\n  \"findings\": [],\n  \"issues\": [\n    {\n      \"status\": \"BLOCKED\",\n      \"code\": \"configuration_error\",\n      \"reason\": \"' ' does not match '\\\\\\\\S'\\n\\nFailed validating 'pattern' in schema['properties']['allowlist']['items']['properties']['reason']:\\n    {'type': 'string',\\n     'pattern': '\\\\\\\\S',\\n     'description': 'An explicit, nonblank reviewed reason; a category '\\n                    'without a reason grants nothing.'}\\n\\nOn instance['allowlist'][0]['reason']:\\n    ' '\"\n    }\n  ],\n  \"io\": {\n    \"network_calls\": 0,\n    \"source_writes\": 0,\n    \"generator_output_writes\": 0\n  }\n}\n",
+    "stdout": "{\"counts\": {\"allowed\": 0, \"blocked_files\": 0, \"candidates\": 0, \"files\": 0, \"stale_allowlist\": 0, \"unclassified\": 0}, \"io\": {\"generator_output_writes\": 0, \"network_calls\": 0, \"source_writes\": 0}, \"schema\": \"loom.product_literals_report/1\", \"valid\": false}\n",
+    "stderr": "{\"issue_codes\": {\"configuration_error\": 1}, \"issue_count\": 1}\n"
+  },
+  "revision2_case": {
+    "command": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+      "-B",
+      "/tmp/historical-literal-guard-x9q7ohj3/archived-tool-repo/loom/src/util/product_literal_guard.py",
+      "--root",
+      "/tmp/historical-literal-guard-x9q7ohj3/synthetic-input-repo",
+      "--pack",
+      "/tmp/historical-literal-guard-x9q7ohj3/synthetic-input-repo/loom/data/validation/product_literals.pack",
+      "--schema",
+      "/tmp/historical-literal-guard-x9q7ohj3/synthetic-input-repo/docs/contracts/product_literals.schema.json",
+      "--check",
+      "--report",
+      "/tmp/historical-literal-guard-x9q7ohj3/synthetic-input-repo/empty-report.json",
+      "--manifest",
+      "/tmp/historical-literal-guard-x9q7ohj3/synthetic-input-repo/manifest.json"
+    ],
+    "exit": 1,
+    "schema_rejected": false,
+    "issue_codes": [
+      "empty_product_scope"
+    ],
+    "stdout": "{\"counts\": {\"allowed\": 0, \"blocked_files\": 0, \"candidates\": 0, \"excluded_test_fixture_files\": 0, \"files\": 0, \"product_files\": 0, \"source_bytes\": 0, \"stale_allowlist\": 0, \"unclassified\": 0, \"verified_generated_files\": 0}, \"io\": {\"generator_output_writes\": 0, \"network_calls\": 0, \"source_writes\": 0}, \"schema\": \"loom.product_literals_report/1\", \"valid\": false}\n",
+    "stderr": "{\"issue_codes\": {\"empty_product_scope\": 1}, \"issue_count\": 1}\n"
+  },
+  "repository_source_writes": 0,
+  "network_calls": 0
+}

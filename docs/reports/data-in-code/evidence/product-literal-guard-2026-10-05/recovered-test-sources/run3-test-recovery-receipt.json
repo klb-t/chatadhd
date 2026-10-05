@@ -1,0 +1,93 @@
+{
+  "schema": "loom.source_history_recovery/1",
+  "source_read_only_path": "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py",
+  "source_read_sha256": "8b80c6f44f46c83c2e8a4c51c7a4ee6b5e5120aa348459fcd2cd2925c7edbba2",
+  "recovery_source": "Literal additions after synthetic run 3 visible in the agent tool-call history; their exact method/import additions were removed on an in-memory copy only.",
+  "independent_expected_sha256": "d543631015aac8474f43592cf6c5da49da8ce6f76052091b48ba65bd32ab3bca",
+  "independent_expected_bytes": 31633,
+  "target_provenance": "SHA and byte count supplied by parent from review-freeze.json, independently of this reversal.",
+  "target_matches": true,
+  "artifact": {
+    "file": "test_product_literal_guard-run3.py",
+    "bytes": 31633,
+    "sha256": "d543631015aac8474f43592cf6c5da49da8ce6f76052091b48ba65bd32ab3bca"
+  },
+  "reversals": [
+    {
+      "kind": "literal_import_addition",
+      "removed": "import contextlib\n",
+      "bytes": 18,
+      "sha256": "0c94d65b90022c2ce099813b27d1508bd1196ee32e4735dfe204dfbd7034b090"
+    },
+    {
+      "kind": "literal_import_addition",
+      "removed": "import io\n",
+      "bytes": 10,
+      "sha256": "62cd3ae402970adfdc586f270368421b44d9ad2f06053e20c14a2a61cf3b310b"
+    },
+    {
+      "kind": "literal_import_addition",
+      "removed": "from unittest import mock\n",
+      "bytes": 26,
+      "sha256": "31bea3c5cfc75c425dbb3d83cd9da4d9351cc98f510a3241e147d1cbae0f2b70"
+    },
+    {
+      "kind": "literal_method_addition",
+      "name": "test_unsupported_prelex_translations_cannot_hide_literals",
+      "removed_bytes": 1309,
+      "removed_sha256": "93732ad587db3eef8ac6715ac9ff8dfa6bc41171486d5faa27246598cffd0285"
+    },
+    {
+      "kind": "literal_method_addition",
+      "name": "test_wrong_typed_scopes_are_input_errors_without_recovery_writes",
+      "removed_bytes": 512,
+      "removed_sha256": "452d066f9e696dddeeac0c1c2441e2a7f820f82c032bd1db63195fcddce7c41a"
+    },
+    {
+      "kind": "literal_method_addition",
+      "name": "test_empty_or_partial_keyword_registry_is_an_input_error",
+      "removed_bytes": 892,
+      "removed_sha256": "dbeb8e40b5976070cd311282407437cec858806fa1d878f32577bde83748ffe9"
+    },
+    {
+      "kind": "literal_method_addition",
+      "name": "test_scandir_error_blocks_audit_and_output_writes_with_accepted_companion",
+      "removed_bytes": 2647,
+      "removed_sha256": "04e77bdb9e3179119fb02922b3c55c4eac4197e7e6140bfc89cd4503f8277246"
+    },
+    {
+      "kind": "literal_method_addition",
+      "name": "test_public_header_default_requires_anchor_and_keeps_declared_owner",
+      "removed_bytes": 890,
+      "removed_sha256": "4f510ceb0bdc6978408ea59f881284053fb1adfbb0d5eef70aa323315c00601f"
+    },
+    {
+      "kind": "literal_method_addition",
+      "name": "test_report_and_manifest_hardlink_collision_preserves_both_outputs",
+      "removed_bytes": 1460,
+      "removed_sha256": "e0bd4768e4686746dbb0f432b8c29c60be90f37639cf8f962624026648968844"
+    },
+    {
+      "kind": "literal_method_addition",
+      "name": "assert_report_hardlink_rejected",
+      "removed_bytes": 1318,
+      "removed_sha256": "a8339c3e1845816cc6503d20394b48175ec4aaabc6a78660ed348ff766b79c83"
+    },
+    {
+      "kind": "literal_method_addition",
+      "name": "test_report_hardlinks_to_source_pack_and_schema_are_rejected",
+      "removed_bytes": 428,
+      "removed_sha256": "e66aa31d5094e8d2ef909b6ec69e0a9dab75c0e9424872035ad3f9b10ada4f14"
+    },
+    {
+      "kind": "literal_method_addition",
+      "name": "test_input_error_cannot_overwrite_source_through_report_hardlink",
+      "removed_bytes": 368,
+      "removed_sha256": "f949aac72668815dd556eda3a5a5ebd3557aa20975080c119c35684c729c752a"
+    }
+  ],
+  "new_test_execution_performed": false,
+  "current_source_modified": false,
+  "temporary_fixtures_recovered": false,
+  "run1_source_snapshot_recovered": false
+}

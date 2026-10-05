@@ -1,0 +1,219 @@
+{
+  "schema": "loom.product_literal_source_recovery/1",
+  "method": "Reverse literal post-review-freeze patches on a copy; verify against previously retained independent SHA256. No guard execution.",
+  "base_source_sha256": "d5d7e3db09b313e2ef84ad71e42f69a6b8b2fd6ce3234a8618ab183f5daa90ae",
+  "expected_run3_sha256": "1e0768846130bc17ca252c309b19554435f6e61acd94c8dd0b1ad73e6c3abb72",
+  "actual_run3_sha256": "1e0768846130bc17ca252c309b19554435f6e61acd94c8dd0b1ad73e6c3abb72",
+  "verified": true,
+  "candidate_bytes": 27978,
+  "reverse_operations": [
+    {
+      "before": "import os\n",
+      "after": ""
+    },
+    {
+      "before": "import stat\n",
+      "after": ""
+    },
+    {
+      "before": "def discover(path):\n    files, errors, pending = [], [], [path]\n    while pending:\n        node = pending.pop()\n        try:\n            metadata = node.lstat()\n            if not stat.S_ISDIR(metadata.st_mode):\n                files.append(node)\n                continue\n            with os.scandir(node) as entries:\n                children = [Path(entry.path) for entry in entries]\n            pending.extend(sorted(children, reverse=True))\n        except OSError as error:\n            errors.append((node, str(error)))\n    return files, errors\n\n\n",
+      "after": ""
+    },
+    {
+      "before": "def scan_source(raw, scanner):\n    backend, keywords = scanner[\"backend\"], scanner[\"keyword_literals\"]\n    try:\n        text = raw.decode(\"utf-8\")\n    except UnicodeError as error:\n        return [], [issue(\"invalid_source_encoding\", str(error))]\n    offsets, lines = coordinates(text)\n    prelex_errors = []\n    if re.search(r\"\\r(?!\\n)\", text) or (backend == \"javascript\" and re.search(r\"[\\u2028\\u2029]\", text)):\n        prelex_errors.append(issue(\"unsupported_line_terminator\", diagnostic(\"unsupported_line_terminator\")))\n    if backend == \"java\" and re.search(r\"\\\\u+[0-9a-fA-F]{4}\", text):\n        prelex_errors.append(issue(\"unsupported_java_unicode_translation\", diagnostic(\"unsupported_java_unicode_translation\")))\n    if backend == \"cxx\" and re.search(r\"\\\\\\r?\\n\", text):\n        prelex_errors.append(issue(\"unsupported_cxx_line_translation\", diagnostic(\"unsupported_cxx_line_translation\")))\n    if backend == \"python\":\n        candidates, errors = scan_python(text, offsets, lines, keywords)\n        return candidates, prelex_errors + errors\n    if backend in (\"cxx\", \"javascript\", \"java\", \"kotlin\"):\n        candidates, errors = scan_c_family(text, backend, offsets, lines, keywords)\n        return candidates, prelex_errors + errors\n    return [], [issue(\"unsupported_file_form\", diagnostic('unsupported_file_form'))]\n\n\n",
+      "after": "def scan_source(raw, scanner):\n    backend, keywords = scanner[\"backend\"], scanner[\"keyword_literals\"]\n    try:\n        text = raw.decode(\"utf-8\")\n    except UnicodeError as error:\n        return [], [issue(\"invalid_source_encoding\", str(error))]\n    offsets, lines = coordinates(text)\n    if backend == \"python\":\n        return scan_python(text, offsets, lines, keywords)\n    if backend in (\"cxx\", \"javascript\", \"java\", \"kotlin\"):\n        return scan_c_family(text, backend, offsets, lines, keywords)\n    return [], [issue(\"unsupported_file_form\", diagnostic('unsupported_file_form'))]\n\n\n"
+    },
+    {
+      "before": "        try:\n            path.lstat()\n        except FileNotFoundError:\n            manifest.setdefault(\"absent_scopes\", []).append(scope)\n            if scope not in policy[\"optional_scopes\"]:\n                report[\"issues\"].append(issue(\"missing_product_scope\", diagnostic(\"missing_product_scope\"), scope))\n            continue\n        except OSError as error:\n            report[\"issues\"].append(issue(\"filesystem_discovery_error\", str(error), scope, owner=owner_for(scope, policy)))\n            continue\n        files, errors = discover(path)\n        for failed_path, error in errors:\n            name = failed_path.relative_to(root).as_posix()\n            report[\"issues\"].append(issue(\"filesystem_discovery_error\", error, name, owner=owner_for(name, policy)))\n            manifest.setdefault(\"discovery_errors\", []).append({\"path\": name, \"reason\": error, \"status\": \"BLOCKED\"})\n        for file in files:\n            paths[file.relative_to(root).as_posix()] = file\n",
+      "after": "        if not path.exists():\n            manifest.setdefault(\"absent_scopes\", []).append(scope)\n            if scope not in policy[\"optional_scopes\"]:\n                report[\"issues\"].append(issue(\"missing_product_scope\", diagnostic(\"missing_product_scope\"), scope))\n            continue\n        for file in ([path] if path.is_file() else path.rglob(\"*\")):\n            if file.is_file() or file.is_symlink():\n                paths[file.relative_to(root).as_posix()] = file\n"
+    },
+    {
+      "before": "record = {\"path\": name, \"bytes\": None,",
+      "after": "record = {\"path\": name, \"bytes\": path.lstat().st_size,"
+    },
+    {
+      "before": "        try:\n            record[\"bytes\"] = path.lstat().st_size\n        except OSError as error:\n            report[\"issues\"].append(issue(\"filesystem_discovery_error\", str(error), name, owner=owner))\n            continue\n",
+      "after": ""
+    },
+    {
+      "before": "            if not stat.S_ISREG(path.stat().st_mode):\n                raise ValueError(\"unsupported_filesystem_form\")\n",
+      "after": ""
+    },
+    {
+      "before": "        \"source_bytes\": sum(row[\"bytes\"] for row in manifest[\"source_files\"] if row[\"status\"] != \"EXCLUDED_TEST_FIXTURE\" and row[\"bytes\"] is not None),\n        \"unknown_size_files\": sum(row[\"bytes\"] is None for row in manifest[\"source_files\"]),\n        \"discovery_errors\": sum(error[\"code\"] == \"filesystem_discovery_error\" for error in report[\"issues\"]),\n",
+      "after": "        \"source_bytes\": sum(row[\"bytes\"] for row in manifest[\"source_files\"] if row[\"status\"] != \"EXCLUDED_TEST_FIXTURE\"),\n"
+    },
+    {
+      "before": "        files, errors = discover(path) if path.exists() else ([], [])\n        for failed_path, error in errors:\n            report[\"issues\"].append(issue(\"filesystem_discovery_error\", error, failed_path.relative_to(root).as_posix()))\n",
+      "after": "        files = [] if not path.exists() else [path] if path.is_file() else [file for file in path.rglob(\"*\") if file.is_file() or file.is_symlink()]\n"
+    },
+    {
+      "before": "    protected.update((POLICY.resolve(), SCHEMA.resolve()))\n",
+      "after": ""
+    },
+    {
+      "before": "        generator = source.get(\"generation\", {}).get(\"generator\")\n        if generator:\n            protected.add((args.root / generator[\"path\"]).resolve())\n",
+      "after": ""
+    },
+    {
+      "before": "            except (OSError, ValueError, UnicodeError, AttributeError, TypeError):\n",
+      "after": "            except (OSError, ValueError, UnicodeError, AttributeError):\n"
+    },
+    {
+      "before": "    # Path normalization does not identify aliases sharing a protected inode.\n    # Include directory entries even on the configuration-error branch.\n    for scope in scopes:\n        try:\n            scope.lstat()\n        except FileNotFoundError:\n            continue\n        except OSError as error:\n            print(json.dumps({\"event\": \"output_protection_discovery_failed\", \"error\": str(error)}), file=sys.stderr)\n            return 2\n        files, errors = discover(scope)\n        if errors:\n            print(json.dumps({\"event\": \"output_protection_discovery_failed\", \"errors\": [{\"path\": str(path), \"error\": error} for path, error in errors]}), file=sys.stderr)\n            return 2\n        protected.update(files)\n    try:\n        identities = {(stat.st_dev, stat.st_ino) for path in protected if path.exists() for stat in (path.stat(),)}\n        aliases = [path for path in destinations if path.exists() and (path.stat().st_dev, path.stat().st_ino) in identities]\n        output_identities = [(path.stat().st_dev, path.stat().st_ino) for path in destinations if path.exists()]\n    except OSError as error:\n        print(json.dumps({\"event\": \"output_identity_check_failed\", \"error\": str(error)}), file=sys.stderr)\n        return 2\n    if aliases:\n        print(json.dumps({\"event\": \"output_aliases_protected_input\"}), file=sys.stderr)\n        return 2\n    if len(output_identities) != len(set(output_identities)):\n        print(json.dumps({\"event\": \"output_destination_alias_collision\"}), file=sys.stderr)\n        return 2\n",
+      "after": ""
+    }
+  ],
+  "run3_file": "guard-run3-verified.py",
+  "run2_derivation": {
+    "file": "guard-run2-derived.py",
+    "sha256": "6278d048a8c9004cdbadbb0d48b9bcea513587c9a718749291cebaffeabfade2",
+    "bytes": 27027,
+    "operation": "Remove exact configuration-error-output-protection patch added after failing run2, before verified run3.",
+    "removed_patch": "    if code == 2:\n        # Error reporting cannot become a source-write path. These roots only\n        # add write protection; neither policy grants an acceptance fallback.\n        for pack in (POLICY, args.pack):\n            try:\n                candidate, _ = read_json(pack)\n                for scope in candidate.get(\"scopes\", []):\n                    scopes.append(inside(args.root.resolve(), scope))\n            except (OSError, ValueError, UnicodeError, AttributeError):\n                if pack == POLICY:\n                    scopes.append(args.root.resolve())\n        for path in destinations:\n            if path.exists():\n                try:\n                    previous, _ = read_json(path)\n                    if previous.get(\"schema\") not in (REPORT_SCHEMA, MANIFEST_SCHEMA):\n                        protected.add(path)\n                except (OSError, ValueError, UnicodeError, AttributeError):\n                    protected.add(path)\n",
+    "independently_saved_run2_hash_available": false,
+    "source_history": "Parent agent toolcalls retained the added configerror protection block and immediate exception refinement; neither existed at run2."
+  },
+  "schema_recovery": {
+    "file": "schema-run2-run3-verified.json",
+    "expected_sha256": "fbdffaf662c94af95731430f466238bb9eb53f499e0be010066f46e7cda1843d",
+    "actual_sha256": "fbdffaf662c94af95731430f466238bb9eb53f499e0be010066f46e7cda1843d",
+    "verified": true,
+    "reversed_added_allOf": [
+      {
+        "if": {
+          "properties": {
+            "backend": {
+              "const": "cxx"
+            }
+          },
+          "required": [
+            "backend"
+          ]
+        },
+        "then": {
+          "properties": {
+            "keyword_literals": {
+              "const": {
+                "true": "boolean",
+                "false": "boolean",
+                "nullptr": "null"
+              }
+            }
+          }
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "backend": {
+              "const": "python"
+            }
+          },
+          "required": [
+            "backend"
+          ]
+        },
+        "then": {
+          "properties": {
+            "keyword_literals": {
+              "const": {
+                "True": "boolean",
+                "False": "boolean",
+                "None": "null"
+              }
+            }
+          }
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "backend": {
+              "const": "javascript"
+            }
+          },
+          "required": [
+            "backend"
+          ]
+        },
+        "then": {
+          "properties": {
+            "keyword_literals": {
+              "const": {
+                "true": "boolean",
+                "false": "boolean",
+                "null": "null"
+              }
+            }
+          }
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "backend": {
+              "const": "java"
+            }
+          },
+          "required": [
+            "backend"
+          ]
+        },
+        "then": {
+          "properties": {
+            "keyword_literals": {
+              "const": {
+                "true": "boolean",
+                "false": "boolean",
+                "null": "null"
+              }
+            }
+          }
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "backend": {
+              "const": "kotlin"
+            }
+          },
+          "required": [
+            "backend"
+          ]
+        },
+        "then": {
+          "properties": {
+            "keyword_literals": {
+              "const": {
+                "true": "boolean",
+                "false": "boolean",
+                "null": "null"
+              }
+            }
+          }
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "backend": {
+              "const": "unsupported"
+            }
+          },
+          "required": [
+            "backend"
+          ]
+        },
+        "then": {
+          "properties": {
+            "keyword_literals": {
+              "const": {}
+            }
+          }
+        }
+      }
+    ]
+  }
+}

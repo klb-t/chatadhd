@@ -1,0 +1,674 @@
+{
+  "schema": "loom.runtime_profile_effective/1",
+  "domain": "runtime_paths",
+  "revision": 1,
+  "hash": "d85ac4481c7e7cd6df189ee89468cbe3f6fcd5304709681daef69409ae7c09be",
+  "is_builtin": true,
+  "values": {
+    "process_inputs": {
+      "chatadhd_data": "CHATADHD_DATA",
+      "xdg_data_home": "XDG_DATA_HOME",
+      "home": "HOME"
+    },
+    "missing_home": "/",
+    "candidate_rules": [
+      {
+        "when": {
+          "is_android": true
+        },
+        "path_segments": [
+          [
+            "/storage/emulated/0",
+            "Documents",
+            "ChatADHD"
+          ],
+          [
+            "/storage/emulated/0",
+            "Download",
+            "chatadhd_data"
+          ]
+        ]
+      },
+      {
+        "when": {
+          "is_android": false,
+          "has_xdg_data_home": true
+        },
+        "path_segments": [
+          [
+            "{{xdg_data_home}}",
+            "chatadhd"
+          ],
+          [
+            "{{home}}",
+            ".chatadhd"
+          ]
+        ]
+      },
+      {
+        "when": {
+          "is_android": false,
+          "has_xdg_data_home": false
+        },
+        "path_segments": [
+          [
+            "{{home}}",
+            ".chatadhd"
+          ]
+        ]
+      }
+    ],
+    "resolution_precedence": [
+      "explicit_override",
+      "nonempty_data_environment",
+      "first_sentinel_candidate",
+      "first_candidate"
+    ],
+    "sentinel": {
+      "filename": ".chatadhd_data",
+      "content": "ChatADHD data directory\n"
+    },
+    "initialize_subdirs": [
+      "attachments",
+      "exports",
+      "logs"
+    ],
+    "data_path_suffixes": {
+      "db": "chatadhd.db",
+      "fts_index": "chatadhd.fts.db",
+      "config": "config.json",
+      "secrets": "secrets.json",
+      "memory": "memory.json",
+      "models": "models.json",
+      "github_sync": "github_sync.json",
+      "attachments": "attachments",
+      "exports": "exports",
+      "logs": "logs",
+      "blobs": "blobs"
+    }
+  },
+  "value_schema": {
+    "type": "object",
+    "required": [
+      "process_inputs",
+      "missing_home",
+      "candidate_rules",
+      "resolution_precedence",
+      "sentinel",
+      "initialize_subdirs",
+      "data_path_suffixes"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "process_inputs": {
+        "type": "object",
+        "required": [
+          "chatadhd_data",
+          "xdg_data_home",
+          "home"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "chatadhd_data": {
+            "type": "string",
+            "minLength": 1,
+            "x-setting": "/process_inputs/chatadhd_data",
+            "x-consumer": "PathEnv process injection"
+          },
+          "xdg_data_home": {
+            "type": "string",
+            "minLength": 1,
+            "x-setting": "/process_inputs/xdg_data_home",
+            "x-consumer": "PathEnv process injection"
+          },
+          "home": {
+            "type": "string",
+            "minLength": 1,
+            "x-setting": "/process_inputs/home",
+            "x-consumer": "PathEnv process injection"
+          }
+        }
+      },
+      "missing_home": {
+        "type": "string",
+        "x-setting": "/missing_home",
+        "x-consumer": "PathEnv fallback"
+      },
+      "candidate_rules": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "type": "object",
+          "required": [
+            "when",
+            "path_segments"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "when": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "boolean"
+              },
+              "description": "All named injected boolean facts must match. First matching rule selects the ordered candidates."
+            },
+            "path_segments": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "x-setting": "/candidate_rules",
+        "x-consumer": "Data root discovery"
+      },
+      "resolution_precedence": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "type": "string",
+          "enum": [
+            "explicit_override",
+            "nonempty_data_environment",
+            "first_sentinel_candidate",
+            "first_candidate"
+          ]
+        },
+        "description": "Trusted universal path-selection operations. Validate the full startup recipe before discovery; do not infer an overlay from an unknown root.",
+        "x-setting": "/resolution_precedence",
+        "x-consumer": "Data root resolution"
+      },
+      "sentinel": {
+        "type": "object",
+        "required": [
+          "filename",
+          "content"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "filename": {
+            "type": "string",
+            "minLength": 1,
+            "x-setting": "/sentinel/filename",
+            "x-consumer": "Data root sentinel"
+          },
+          "content": {
+            "type": "string",
+            "x-setting": "/sentinel/content",
+            "x-consumer": "Data root initialization"
+          }
+        }
+      },
+      "initialize_subdirs": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "x-setting": "/initialize_subdirs",
+        "x-consumer": "Data root initialization"
+      },
+      "data_path_suffixes": {
+        "type": "object",
+        "required": [
+          "db",
+          "fts_index",
+          "config",
+          "secrets",
+          "memory",
+          "models",
+          "github_sync",
+          "attachments",
+          "exports",
+          "logs",
+          "blobs"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "db": {
+            "type": "string",
+            "x-setting": "/data_path_suffixes/db",
+            "x-consumer": "DataPaths.db"
+          },
+          "fts_index": {
+            "type": "string",
+            "x-setting": "/data_path_suffixes/fts_index",
+            "x-consumer": "DataPaths.fts_index"
+          },
+          "config": {
+            "type": "string",
+            "x-setting": "/data_path_suffixes/config",
+            "x-consumer": "DataPaths.config"
+          },
+          "secrets": {
+            "type": "string",
+            "x-setting": "/data_path_suffixes/secrets",
+            "x-consumer": "DataPaths.secrets"
+          },
+          "memory": {
+            "type": "string",
+            "x-setting": "/data_path_suffixes/memory",
+            "x-consumer": "DataPaths.memory"
+          },
+          "models": {
+            "type": "string",
+            "x-setting": "/data_path_suffixes/models",
+            "x-consumer": "DataPaths.models"
+          },
+          "github_sync": {
+            "type": "string",
+            "x-setting": "/data_path_suffixes/github_sync",
+            "x-consumer": "DataPaths.github_sync"
+          },
+          "attachments": {
+            "type": "string",
+            "x-setting": "/data_path_suffixes/attachments",
+            "x-consumer": "DataPaths.attachments"
+          },
+          "exports": {
+            "type": "string",
+            "x-setting": "/data_path_suffixes/exports",
+            "x-consumer": "DataPaths.exports"
+          },
+          "logs": {
+            "type": "string",
+            "x-setting": "/data_path_suffixes/logs",
+            "x-consumer": "DataPaths.logs"
+          },
+          "blobs": {
+            "type": "string",
+            "x-setting": "/data_path_suffixes/blobs",
+            "x-consumer": "DataPaths.blobs"
+          }
+        }
+      }
+    }
+  },
+  "definition": {
+    "schema": "loom.runtime_profile/1",
+    "domain": "runtime_paths",
+    "revision": 1,
+    "description": "Bootstrap recipe from 161cc22. Before the root is known use builtin recipes or an explicitly supplied startup profile; per-root overlays load only after root discovery. Generic candidate engine matches fact dictionaries in order, renders each inert template segment, and joins filesystem paths without string slash concatenation. Preserve existing-data compatibility when changing suffixes.",
+    "defaults": {
+      "process_inputs": {
+        "chatadhd_data": "CHATADHD_DATA",
+        "xdg_data_home": "XDG_DATA_HOME",
+        "home": "HOME"
+      },
+      "missing_home": "/",
+      "candidate_rules": [
+        {
+          "when": {
+            "is_android": true
+          },
+          "path_segments": [
+            [
+              "/storage/emulated/0",
+              "Documents",
+              "ChatADHD"
+            ],
+            [
+              "/storage/emulated/0",
+              "Download",
+              "chatadhd_data"
+            ]
+          ]
+        },
+        {
+          "when": {
+            "is_android": false,
+            "has_xdg_data_home": true
+          },
+          "path_segments": [
+            [
+              "{{xdg_data_home}}",
+              "chatadhd"
+            ],
+            [
+              "{{home}}",
+              ".chatadhd"
+            ]
+          ]
+        },
+        {
+          "when": {
+            "is_android": false,
+            "has_xdg_data_home": false
+          },
+          "path_segments": [
+            [
+              "{{home}}",
+              ".chatadhd"
+            ]
+          ]
+        }
+      ],
+      "resolution_precedence": [
+        "explicit_override",
+        "nonempty_data_environment",
+        "first_sentinel_candidate",
+        "first_candidate"
+      ],
+      "sentinel": {
+        "filename": ".chatadhd_data",
+        "content": "ChatADHD data directory\n"
+      },
+      "initialize_subdirs": [
+        "attachments",
+        "exports",
+        "logs"
+      ],
+      "data_path_suffixes": {
+        "db": "chatadhd.db",
+        "fts_index": "chatadhd.fts.db",
+        "config": "config.json",
+        "secrets": "secrets.json",
+        "memory": "memory.json",
+        "models": "models.json",
+        "github_sync": "github_sync.json",
+        "attachments": "attachments",
+        "exports": "exports",
+        "logs": "logs",
+        "blobs": "blobs"
+      }
+    },
+    "value_schema": {
+      "type": "object",
+      "required": [
+        "process_inputs",
+        "missing_home",
+        "candidate_rules",
+        "resolution_precedence",
+        "sentinel",
+        "initialize_subdirs",
+        "data_path_suffixes"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "process_inputs": {
+          "type": "object",
+          "required": [
+            "chatadhd_data",
+            "xdg_data_home",
+            "home"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "chatadhd_data": {
+              "type": "string",
+              "minLength": 1,
+              "x-setting": "/process_inputs/chatadhd_data",
+              "x-consumer": "PathEnv process injection"
+            },
+            "xdg_data_home": {
+              "type": "string",
+              "minLength": 1,
+              "x-setting": "/process_inputs/xdg_data_home",
+              "x-consumer": "PathEnv process injection"
+            },
+            "home": {
+              "type": "string",
+              "minLength": 1,
+              "x-setting": "/process_inputs/home",
+              "x-consumer": "PathEnv process injection"
+            }
+          }
+        },
+        "missing_home": {
+          "type": "string",
+          "x-setting": "/missing_home",
+          "x-consumer": "PathEnv fallback"
+        },
+        "candidate_rules": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "when",
+              "path_segments"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "when": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "boolean"
+                },
+                "description": "All named injected boolean facts must match. First matching rule selects the ordered candidates."
+              },
+              "path_segments": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "x-setting": "/candidate_rules",
+          "x-consumer": "Data root discovery"
+        },
+        "resolution_precedence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "enum": [
+              "explicit_override",
+              "nonempty_data_environment",
+              "first_sentinel_candidate",
+              "first_candidate"
+            ]
+          },
+          "description": "Trusted universal path-selection operations. Validate the full startup recipe before discovery; do not infer an overlay from an unknown root.",
+          "x-setting": "/resolution_precedence",
+          "x-consumer": "Data root resolution"
+        },
+        "sentinel": {
+          "type": "object",
+          "required": [
+            "filename",
+            "content"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "filename": {
+              "type": "string",
+              "minLength": 1,
+              "x-setting": "/sentinel/filename",
+              "x-consumer": "Data root sentinel"
+            },
+            "content": {
+              "type": "string",
+              "x-setting": "/sentinel/content",
+              "x-consumer": "Data root initialization"
+            }
+          }
+        },
+        "initialize_subdirs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "x-setting": "/initialize_subdirs",
+          "x-consumer": "Data root initialization"
+        },
+        "data_path_suffixes": {
+          "type": "object",
+          "required": [
+            "db",
+            "fts_index",
+            "config",
+            "secrets",
+            "memory",
+            "models",
+            "github_sync",
+            "attachments",
+            "exports",
+            "logs",
+            "blobs"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "db": {
+              "type": "string",
+              "x-setting": "/data_path_suffixes/db",
+              "x-consumer": "DataPaths.db"
+            },
+            "fts_index": {
+              "type": "string",
+              "x-setting": "/data_path_suffixes/fts_index",
+              "x-consumer": "DataPaths.fts_index"
+            },
+            "config": {
+              "type": "string",
+              "x-setting": "/data_path_suffixes/config",
+              "x-consumer": "DataPaths.config"
+            },
+            "secrets": {
+              "type": "string",
+              "x-setting": "/data_path_suffixes/secrets",
+              "x-consumer": "DataPaths.secrets"
+            },
+            "memory": {
+              "type": "string",
+              "x-setting": "/data_path_suffixes/memory",
+              "x-consumer": "DataPaths.memory"
+            },
+            "models": {
+              "type": "string",
+              "x-setting": "/data_path_suffixes/models",
+              "x-consumer": "DataPaths.models"
+            },
+            "github_sync": {
+              "type": "string",
+              "x-setting": "/data_path_suffixes/github_sync",
+              "x-consumer": "DataPaths.github_sync"
+            },
+            "attachments": {
+              "type": "string",
+              "x-setting": "/data_path_suffixes/attachments",
+              "x-consumer": "DataPaths.attachments"
+            },
+            "exports": {
+              "type": "string",
+              "x-setting": "/data_path_suffixes/exports",
+              "x-consumer": "DataPaths.exports"
+            },
+            "logs": {
+              "type": "string",
+              "x-setting": "/data_path_suffixes/logs",
+              "x-consumer": "DataPaths.logs"
+            },
+            "blobs": {
+              "type": "string",
+              "x-setting": "/data_path_suffixes/blobs",
+              "x-consumer": "DataPaths.blobs"
+            }
+          }
+        }
+      }
+    }
+  },
+  "defaults": {
+    "process_inputs": {
+      "chatadhd_data": "CHATADHD_DATA",
+      "xdg_data_home": "XDG_DATA_HOME",
+      "home": "HOME"
+    },
+    "missing_home": "/",
+    "candidate_rules": [
+      {
+        "when": {
+          "is_android": true
+        },
+        "path_segments": [
+          [
+            "/storage/emulated/0",
+            "Documents",
+            "ChatADHD"
+          ],
+          [
+            "/storage/emulated/0",
+            "Download",
+            "chatadhd_data"
+          ]
+        ]
+      },
+      {
+        "when": {
+          "is_android": false,
+          "has_xdg_data_home": true
+        },
+        "path_segments": [
+          [
+            "{{xdg_data_home}}",
+            "chatadhd"
+          ],
+          [
+            "{{home}}",
+            ".chatadhd"
+          ]
+        ]
+      },
+      {
+        "when": {
+          "is_android": false,
+          "has_xdg_data_home": false
+        },
+        "path_segments": [
+          [
+            "{{home}}",
+            ".chatadhd"
+          ]
+        ]
+      }
+    ],
+    "resolution_precedence": [
+      "explicit_override",
+      "nonempty_data_environment",
+      "first_sentinel_candidate",
+      "first_candidate"
+    ],
+    "sentinel": {
+      "filename": ".chatadhd_data",
+      "content": "ChatADHD data directory\n"
+    },
+    "initialize_subdirs": [
+      "attachments",
+      "exports",
+      "logs"
+    ],
+    "data_path_suffixes": {
+      "db": "chatadhd.db",
+      "fts_index": "chatadhd.fts.db",
+      "config": "config.json",
+      "secrets": "secrets.json",
+      "memory": "memory.json",
+      "models": "models.json",
+      "github_sync": "github_sync.json",
+      "attachments": "attachments",
+      "exports": "exports",
+      "logs": "logs",
+      "blobs": "blobs"
+    }
+  },
+  "source_provenance": [
+    {
+      "path": "loom/data/runtime/runtime_paths.pack",
+      "pointer": "",
+      "raw_sha256": "b796635d5661d960212045a8981c16b66e5e74e6c688e0eb5cdbc90faf2f3f22",
+      "target": ""
+    }
+  ]
+}

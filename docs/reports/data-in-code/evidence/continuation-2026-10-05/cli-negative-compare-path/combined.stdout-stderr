@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/continuation-2026-10-05/capture_cli_profiles.py", line 92, in <module>
+    main()
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/continuation-2026-10-05/capture_cli_profiles.py", line 81, in main
+    comparison = compare(json.loads(args.compare.read_text()), result)
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1027, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+IsADirectoryError: [Errno 21] Is a directory: 'docs/reports/data-in-code/evidence/continuation-2026-10-05/cli-before'

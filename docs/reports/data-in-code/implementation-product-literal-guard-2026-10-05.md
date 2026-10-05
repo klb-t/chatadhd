@@ -168,11 +168,46 @@ oraz [replay starej gałęzi zapisu](evidence/product-literal-guard-2026-10-05/r
 odtwarzają nadpisanie w tym starym mechanizmie i brak nadpisania w obecnym.
 [Surowy wynik replay](evidence/product-literal-guard-2026-10-05/negative-run2-replay.stdout)
 potwierdza obie obserwacje. Jest to odtworzenie dokładnego przypadku i dawnej
-gałęzi wyjścia z użyciem obecnej walidacji; pełny dawny plik strażnika nie został
-odzyskany i nie jest przedstawiany jako historyczny snapshot. Run 1 był
-przejściowym rozjazdem fixture/schematu; jego surowy zapis pozostał wyłącznie
-w transkrypcie narzędzia, bez rekonstruowania logu. Zielone runy 3–6 zachowano
-oddzielnie od wyniku ujemnego.
+gałęzi wyjścia z użyciem obecnej walidacji, zachowane osobno od późniejszego
+odzyskania źródeł. Odtworzenie nie zastępuje oryginalnego ujemnego logu.
+
+Przed publikacją odzyskano także **pełny guard run 3 bajtowo zgodny** z uprzednio
+zapisanym SHA-256 `1e0768846130bc17ca252c309b19554435f6e61acd94c8dd0b1ad73e6c3abb72`
+(27 978 bajtów) przez literalne odwrócenie późniejszych patchy na kopii evidence.
+[Guard](evidence/product-literal-guard-2026-10-05/historical-recovery/guard-run3-verified.py)
+oraz [pełny łańcuch odwróceń](evidence/product-literal-guard-2026-10-05/historical-recovery/source-recovery-receipt.json)
+pozostają w archiwum. Usunięcie udokumentowanego patcha ochrony zapisu dodanego
+po run 2 daje pełny [source run 2](evidence/product-literal-guard-2026-10-05/historical-recovery/guard-run2-derived.py),
+SHA `6278d048a8c9004cdbadbb0d48b9bcea513587c9a718749291cebaffeabfade2`.
+Dla run 2 nie było wcześniej niezależnie zapisanego hasha; jego pochodzenie
+wynika z jawnej historii patcha i zweryfikowanego sąsiedniego snapshotu, nie
+z nieistniejącego pierwotnego receipt. Stary schemat odzyskano bajtowo zgodnie
+z uprzednio zapisanym SHA `fbdffaf662c94af95731430f466238bb9eb53f499e0be010066f46e7cda1843d`.
+Cały [test run 3](evidence/product-literal-guard-2026-10-05/recovered-test-sources/test_product_literal_guard-run3.py)
+także odzyskano przez jawne odwrócenie patchy: 31 633 bajty, zgodne z niezależnym
+uprzednim SHA `d543631015aac8474f43592cf6c5da49da8ce6f76052091b48ba65bd32ab3bca`.
+Jawne odwrócenie pięciu późniejszych hunków daje także pełny
+[test run 2](evidence/product-literal-guard-2026-10-05/recovered-test-sources/test_product_literal_guard-run2-history-derived.py),
+SHA `b9a7a1b08f03808edf6e4dcd0ae48e9940de25c79c2e7fffa74d7f3d235f38ab`,
+bez niezależnego starego targetSHA. Obie linie tracebacków 498 i 435 odpowiadają
+oryginalnemu ujemnemu logowi; wszystkie inverse hunks zachowano w receipt.
+Te odzyskane kopie nie zmieniają bieżących źródeł ani oryginalnych logów.
+[Osobny replay kompletnego historycznego guard](evidence/product-literal-guard-2026-10-05/historical-recovery/replay_full_guard_run2.py)
+wywołuje go przez subprocess tylko na zachowanych syntetycznych wejściach;
+[nowy wynik replay](evidence/product-literal-guard-2026-10-05/historical-recovery/full-guard-run2-replay.stdout)
+odtwarza exit 2 i nadpisanie źródła oraz exit 1 dla poprawnej rewizji 2 w pustym
+zakresie. Nie jest przedstawiany jako odzyskany oryginalny log.
+
+Run 1 był przejściowym rozjazdem fixture/schematu. Jego **trzy kompletne pola
+`output` narzędzia** odzyskano literalnie z kontekstu do
+[połączonego zapisu](evidence/product-literal-guard-2026-10-05/recovered-run1/combined-tool-output.txt)
+(40 897 bajtów), osobnych chunków i [receipt](evidence/product-literal-guard-2026-10-05/recovered-run1/receipt.json).
+Zakres odzyskania to decoded combined tool output, bez rozdzielenia stdout/stderr
+i bez deklaracji oryginalnych bajtów PTY/pipe. Narzędzie nie obcięło pól; skróty
+`repr` emitowane przez sam unittest zachowano dokładnie. Tymczasowe źródła,
+polityka, schematy i zmieniający się w trakcie run 1 stan plików nie zostały
+utrwalone i nie są fabrykowane. Zielone runy 3–6 zachowano oddzielnie od obu
+wyników ujemnych.
 
 ## Do wątku N
 

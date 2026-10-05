@@ -1,0 +1,63 @@
+{
+  "schema": "loom.source_history_recovery/1",
+  "classification": "history-derived source, not an originally captured run2 snapshot",
+  "run": 2,
+  "base": {
+    "file": "test_product_literal_guard-run3.py",
+    "bytes": 31633,
+    "sha256": "d543631015aac8474f43592cf6c5da49da8ce6f76052091b48ba65bd32ab3bca",
+    "independently_pinned": true
+  },
+  "artifact": {
+    "file": "test_product_literal_guard-run2-history-derived.py",
+    "bytes": 31244,
+    "sha256": "b9a7a1b08f03808edf6e4dcd0ae48e9940de25c79c2e7fffa74d7f3d235f38ab"
+  },
+  "independent_run2_target_sha256": null,
+  "literal_reverse_hunks": [
+    {
+      "name": "remove_post_run2_maxDiff_addition",
+      "run3_text": "        self.maxDiff = None\n",
+      "run2_text": ""
+    },
+    {
+      "name": "restore_run2_revision_negative",
+      "run3_text": "                    self.policy['revision'] = 0\n",
+      "run2_text": "                    self.policy['revision'] = 2\n"
+    },
+    {
+      "name": "restore_run2_run_guard_assertion_diagnostics",
+      "run3_text": "        details = (result.stdout.decode('utf-8', errors='replace') +\n                   result.stderr.decode('utf-8', errors='replace'))\n        if result.returncode != expected and self.report_path.is_file():\n            details += self.report_path.read_text(encoding='utf-8', errors='replace')\n        self.assertEqual(result.returncode, expected, details)\n",
+      "run2_text": "        self.assertEqual(result.returncode, expected,\n                         result.stdout.decode('utf-8', errors='replace') +\n                         result.stderr.decode('utf-8', errors='replace'))\n"
+    },
+    {
+      "name": "restore_run2_valid_policy_overwrite_assertion",
+      "run3_text": "                    observed = path.read_bytes()\n                    self.assertEqual(observed, original,\n                                     'Bytes after rejected output: ' + repr(observed))\n",
+      "run2_text": "                    self.assertEqual(path.read_bytes(), original)\n"
+    },
+    {
+      "name": "restore_run2_configuration_error_overwrite_assertion",
+      "run3_text": "        observed = path.read_bytes()\n        self.assertEqual(observed, original, 'Bytes after rejected output: ' + repr(observed))\n",
+      "run2_text": "        self.assertEqual(path.read_bytes(), original)\n"
+    }
+  ],
+  "hunk_provenance": "Two literal apply_patch tool-call diffs visible in this agent history immediately after run2: maxDiff/revision change, then detailed report JSON and overwrite assertion diagnostics. These fields record exact inverse hunks from independently recovered run3 to run2.",
+  "visible_run2_traceback_anchors": [
+    {
+      "line": 498,
+      "expected_visible_run2_traceback_line": "        self.assertEqual(path.read_bytes(), original)",
+      "derived_line": "        self.assertEqual(path.read_bytes(), original)",
+      "matches": true
+    },
+    {
+      "line": 435,
+      "expected_visible_run2_traceback_line": "                report, _ = self.run_guard(2)",
+      "derived_line": "                report, _ = self.run_guard(2)",
+      "matches": true
+    }
+  ],
+  "current_source_schema_pack_test_modified": false,
+  "new_test_execution_performed": false,
+  "temporary_fixtures_recovered": false,
+  "original_run2_file_capture_claimed": false
+}

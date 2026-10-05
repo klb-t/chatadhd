@@ -1,0 +1,1908 @@
+{
+  "schema": "loom.runtime_profile_effective/1",
+  "domain": "import_formats",
+  "revision": 1,
+  "hash": "b6065d9883404e6c705e1c6e21d863b18c4188db07bd0785ba721f36c2664397",
+  "is_builtin": true,
+  "values": {
+    "detection": {
+      "extension_rules": [
+        {
+          "extensions": [
+            ".zip"
+          ],
+          "format": "zip"
+        },
+        {
+          "extensions": [
+            ".db"
+          ],
+          "format": "sqlite"
+        },
+        {
+          "extensions": [
+            ".json"
+          ],
+          "format": "json"
+        },
+        {
+          "extensions": [
+            ".jsonl",
+            ".ndjson"
+          ],
+          "format": "jsonl"
+        },
+        {
+          "extensions": [
+            ".html",
+            ".htm"
+          ],
+          "format": "html"
+        },
+        {
+          "extensions": [
+            ".mht",
+            ".mhtml"
+          ],
+          "format": "mht"
+        },
+        {
+          "extensions": [
+            ".png",
+            ".jpg",
+            ".jpeg",
+            ".webp"
+          ],
+          "format": "screenshot"
+        },
+        {
+          "extensions": [
+            ".md"
+          ],
+          "format": "markdown"
+        },
+        {
+          "extensions": [
+            ".txt",
+            ".log"
+          ],
+          "format": "text"
+        }
+      ],
+      "sniff_bytes": 200,
+      "zip_prefix": "PK\u0003\u0004",
+      "sqlite_contains": "SQLite format",
+      "json_first_non_whitespace": [
+        "{",
+        "["
+      ],
+      "html_contains_case_insensitive": [
+        "<html",
+        "<!doctype"
+      ],
+      "fallback_format": "unknown"
+    },
+    "mime_by_format": {
+      "zip": "application/zip",
+      "sqlite": "application/vnd.sqlite3",
+      "json": "application/json",
+      "jsonl": "application/x-ndjson",
+      "html": "text/html",
+      "mht": "message/rfc822",
+      "markdown": "text/markdown",
+      "text": "text/plain",
+      "screenshot": "image/*"
+    },
+    "fallback_mime": "application/octet-stream",
+    "export_mode_names": [
+      "auto",
+      "off",
+      "on"
+    ],
+    "legacy_json_roles": {
+      "field_priority": [
+        "role",
+        "sender"
+      ],
+      "absent_role": "user",
+      "user_inputs": [
+        "user",
+        "human"
+      ],
+      "excluded_roles": [
+        "system"
+      ],
+      "other_role": "assistant"
+    },
+    "legacy_sqlite_roles": {
+      "user_inputs": [
+        "user",
+        "human"
+      ],
+      "other_role": "assistant"
+    },
+    "provider_exports": {
+      "openai": {
+        "source": "import:openai",
+        "conversation_field": "mapping",
+        "absent_role": "unknown"
+      },
+      "anthropic": {
+        "source": "import:anthropic",
+        "conversation_field": "chat_messages",
+        "role_map": {
+          "human": "user"
+        },
+        "absent_role": "assistant"
+      },
+      "generic_message_wrappers": [
+        "messages",
+        "chat_messages",
+        "items",
+        "data"
+      ],
+      "streamed_conversations_wrapper": "conversations"
+    },
+    "text_formats": {
+      "markdown": {
+        "user_prefixes": [
+          "## human",
+          "## user",
+          "**human**",
+          "**user**"
+        ],
+        "assistant_prefixes": [
+          "## assistant",
+          "## claude",
+          "**assistant**",
+          "**claude**"
+        ],
+        "separators": [
+          "---",
+          "***"
+        ],
+        "fallback_role": "assistant"
+      },
+      "plain_text": {
+        "user_labels": [
+          "Human",
+          "User",
+          "You"
+        ],
+        "assistant_labels": [
+          "Assistant",
+          "AI",
+          "Claude"
+        ],
+        "label_order": [
+          "Human",
+          "User",
+          "You",
+          "Assistant",
+          "AI",
+          "Claude"
+        ],
+        "fallback_role": "assistant"
+      },
+      "screenshot": {
+        "user_words": [
+          "You",
+          "Human",
+          "User",
+          "Ja",
+          "Ty"
+        ],
+        "assistant_words": [
+          "Claude",
+          "Assistant",
+          "AI",
+          "ChatGPT",
+          "GPT",
+          "Gemini",
+          "Bot"
+        ],
+        "user_arrows": [
+          "►",
+          "▶",
+          "→",
+          ">"
+        ],
+        "assistant_arrows": [
+          "◄",
+          "◀",
+          "←",
+          "<"
+        ],
+        "user_sidebar_labels": [
+          "h",
+          "human"
+        ],
+        "assistant_sidebar_labels": [
+          "a",
+          "assistant"
+        ],
+        "block_length_exclusive_minimum": 3,
+        "unlabelled_user_length_exclusive_maximum": 50,
+        "unlabelled_user_question_suffix": "?",
+        "ocr_text_minimum_codepoints": 10,
+        "fallback_role": "assistant",
+        "title_prefix": "Screenshot ",
+        "title_time_format": "%Y-%m-%d %H:%M"
+      }
+    }
+  },
+  "value_schema": {
+    "x-setting": "",
+    "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+    "type": "object",
+    "required": [
+      "detection",
+      "mime_by_format",
+      "fallback_mime",
+      "export_mode_names",
+      "legacy_json_roles",
+      "legacy_sqlite_roles",
+      "provider_exports",
+      "text_formats"
+    ],
+    "properties": {
+      "detection": {
+        "x-setting": "/detection",
+        "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+        "type": "object",
+        "required": [
+          "extension_rules",
+          "sniff_bytes",
+          "zip_prefix",
+          "sqlite_contains",
+          "json_first_non_whitespace",
+          "html_contains_case_insensitive",
+          "fallback_format"
+        ],
+        "properties": {
+          "extension_rules": {
+            "x-setting": "/detection/extension_rules",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "array",
+            "items": {
+              "x-setting": "/detection/extension_rules/*",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "object",
+              "required": [
+                "extensions",
+                "format"
+              ],
+              "properties": {
+                "extensions": {
+                  "x-setting": "/detection/extension_rules/*/extensions",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "array",
+                  "items": {
+                    "x-setting": "/detection/extension_rules/*/extensions/*",
+                    "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                    "type": "string"
+                  }
+                },
+                "format": {
+                  "x-setting": "/detection/extension_rules/*/format",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "string"
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "sniff_bytes": {
+            "x-setting": "/detection/sniff_bytes",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9223372036854775807,
+            "x-unit": "bytes",
+            "description": "Current native detector uses a streamsize-sized read; this is native representation, not a policy ceiling."
+          },
+          "zip_prefix": {
+            "x-setting": "/detection/zip_prefix",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "string"
+          },
+          "sqlite_contains": {
+            "x-setting": "/detection/sqlite_contains",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "string"
+          },
+          "json_first_non_whitespace": {
+            "x-setting": "/detection/json_first_non_whitespace",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "array",
+            "items": {
+              "x-setting": "/detection/json_first_non_whitespace/*",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "string"
+            }
+          },
+          "html_contains_case_insensitive": {
+            "x-setting": "/detection/html_contains_case_insensitive",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "array",
+            "items": {
+              "x-setting": "/detection/html_contains_case_insensitive/*",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "string"
+            }
+          },
+          "fallback_format": {
+            "x-setting": "/detection/fallback_format",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      },
+      "mime_by_format": {
+        "x-setting": "/mime_by_format",
+        "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+        "type": "object",
+        "properties": {
+          "zip": {
+            "x-setting": "/mime_by_format/zip",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "string"
+          },
+          "sqlite": {
+            "x-setting": "/mime_by_format/sqlite",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "string"
+          },
+          "json": {
+            "x-setting": "/mime_by_format/json",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "string"
+          },
+          "jsonl": {
+            "x-setting": "/mime_by_format/jsonl",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "string"
+          },
+          "html": {
+            "x-setting": "/mime_by_format/html",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "string"
+          },
+          "mht": {
+            "x-setting": "/mime_by_format/mht",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "string"
+          },
+          "markdown": {
+            "x-setting": "/mime_by_format/markdown",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "string"
+          },
+          "text": {
+            "x-setting": "/mime_by_format/text",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "string"
+          },
+          "screenshot": {
+            "x-setting": "/mime_by_format/screenshot",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "string"
+          }
+        },
+        "additionalProperties": {
+          "type": "string"
+        },
+        "description": "Native detector MIME defaults. OCR separately preserves declared filename format (jpg remains image/jpg) with snapshot bytes."
+      },
+      "fallback_mime": {
+        "x-setting": "/fallback_mime",
+        "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+        "type": "string"
+      },
+      "export_mode_names": {
+        "x-setting": "/export_mode_names",
+        "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+        "type": "array",
+        "items": {
+          "x-setting": "/export_mode_names/*",
+          "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+          "type": "string"
+        },
+        "description": "Names of the current native ExportMode codec, not a mutable switch implementation. W5 must report unsupported names when wiring."
+      },
+      "legacy_json_roles": {
+        "x-setting": "/legacy_json_roles",
+        "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+        "type": "object",
+        "required": [
+          "field_priority",
+          "absent_role",
+          "user_inputs",
+          "excluded_roles",
+          "other_role"
+        ],
+        "properties": {
+          "field_priority": {
+            "x-setting": "/legacy_json_roles/field_priority",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "array",
+            "items": {
+              "x-setting": "/legacy_json_roles/field_priority/*",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "string"
+            }
+          },
+          "absent_role": {
+            "x-setting": "/legacy_json_roles/absent_role",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "string"
+          },
+          "user_inputs": {
+            "x-setting": "/legacy_json_roles/user_inputs",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "array",
+            "items": {
+              "x-setting": "/legacy_json_roles/user_inputs/*",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "string"
+            }
+          },
+          "excluded_roles": {
+            "x-setting": "/legacy_json_roles/excluded_roles",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "array",
+            "items": {
+              "x-setting": "/legacy_json_roles/excluded_roles/*",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "string"
+            }
+          },
+          "other_role": {
+            "x-setting": "/legacy_json_roles/other_role",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      },
+      "legacy_sqlite_roles": {
+        "x-setting": "/legacy_sqlite_roles",
+        "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+        "type": "object",
+        "required": [
+          "user_inputs",
+          "other_role"
+        ],
+        "properties": {
+          "user_inputs": {
+            "x-setting": "/legacy_sqlite_roles/user_inputs",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "array",
+            "items": {
+              "x-setting": "/legacy_sqlite_roles/user_inputs/*",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "string"
+            }
+          },
+          "other_role": {
+            "x-setting": "/legacy_sqlite_roles/other_role",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      },
+      "provider_exports": {
+        "x-setting": "/provider_exports",
+        "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+        "type": "object",
+        "required": [
+          "openai",
+          "anthropic",
+          "generic_message_wrappers",
+          "streamed_conversations_wrapper"
+        ],
+        "properties": {
+          "openai": {
+            "x-setting": "/provider_exports/openai",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "object",
+            "required": [
+              "source",
+              "conversation_field",
+              "absent_role"
+            ],
+            "properties": {
+              "source": {
+                "x-setting": "/provider_exports/openai/source",
+                "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                "type": "string"
+              },
+              "conversation_field": {
+                "x-setting": "/provider_exports/openai/conversation_field",
+                "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                "type": "string"
+              },
+              "absent_role": {
+                "x-setting": "/provider_exports/openai/absent_role",
+                "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                "type": "string"
+              }
+            },
+            "additionalProperties": true
+          },
+          "anthropic": {
+            "x-setting": "/provider_exports/anthropic",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "object",
+            "required": [
+              "source",
+              "conversation_field",
+              "role_map",
+              "absent_role"
+            ],
+            "properties": {
+              "source": {
+                "x-setting": "/provider_exports/anthropic/source",
+                "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                "type": "string"
+              },
+              "conversation_field": {
+                "x-setting": "/provider_exports/anthropic/conversation_field",
+                "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                "type": "string"
+              },
+              "role_map": {
+                "x-setting": "/provider_exports/anthropic/role_map",
+                "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                "type": "object",
+                "properties": {
+                  "human": {
+                    "x-setting": "/provider_exports/anthropic/role_map/human",
+                    "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                    "type": "string"
+                  }
+                },
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "absent_role": {
+                "x-setting": "/provider_exports/anthropic/absent_role",
+                "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                "type": "string"
+              }
+            },
+            "additionalProperties": true
+          },
+          "generic_message_wrappers": {
+            "x-setting": "/provider_exports/generic_message_wrappers",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "array",
+            "items": {
+              "x-setting": "/provider_exports/generic_message_wrappers/*",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "string"
+            }
+          },
+          "streamed_conversations_wrapper": {
+            "x-setting": "/provider_exports/streamed_conversations_wrapper",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "string",
+            "description": "Only the existing conversations wrapper is streamed by W5 Loader. Changing this inspected recipe does not add native support while UNWIRED."
+          }
+        },
+        "additionalProperties": true
+      },
+      "text_formats": {
+        "x-setting": "/text_formats",
+        "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+        "type": "object",
+        "required": [
+          "markdown",
+          "plain_text",
+          "screenshot"
+        ],
+        "properties": {
+          "markdown": {
+            "x-setting": "/text_formats/markdown",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "object",
+            "required": [
+              "user_prefixes",
+              "assistant_prefixes",
+              "separators",
+              "fallback_role"
+            ],
+            "properties": {
+              "user_prefixes": {
+                "x-setting": "/text_formats/markdown/user_prefixes",
+                "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                "type": "array",
+                "items": {
+                  "x-setting": "/text_formats/markdown/user_prefixes/*",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "string"
+                }
+              },
+              "assistant_prefixes": {
+                "x-setting": "/text_formats/markdown/assistant_prefixes",
+                "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                "type": "array",
+                "items": {
+                  "x-setting": "/text_formats/markdown/assistant_prefixes/*",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "string"
+                }
+              },
+              "separators": {
+                "x-setting": "/text_formats/markdown/separators",
+                "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                "type": "array",
+                "items": {
+                  "x-setting": "/text_formats/markdown/separators/*",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "string"
+                }
+              },
+              "fallback_role": {
+                "x-setting": "/text_formats/markdown/fallback_role",
+                "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                "type": "string"
+              }
+            },
+            "additionalProperties": true
+          },
+          "plain_text": {
+            "x-setting": "/text_formats/plain_text",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "object",
+            "required": [
+              "user_labels",
+              "assistant_labels",
+              "label_order",
+              "fallback_role"
+            ],
+            "properties": {
+              "user_labels": {
+                "x-setting": "/text_formats/plain_text/user_labels",
+                "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                "type": "array",
+                "items": {
+                  "x-setting": "/text_formats/plain_text/user_labels/*",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "string"
+                }
+              },
+              "assistant_labels": {
+                "x-setting": "/text_formats/plain_text/assistant_labels",
+                "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                "type": "array",
+                "items": {
+                  "x-setting": "/text_formats/plain_text/assistant_labels/*",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "string"
+                }
+              },
+              "label_order": {
+                "x-setting": "/text_formats/plain_text/label_order",
+                "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                "type": "array",
+                "items": {
+                  "x-setting": "/text_formats/plain_text/label_order/*",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "string"
+                }
+              },
+              "fallback_role": {
+                "x-setting": "/text_formats/plain_text/fallback_role",
+                "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                "type": "string"
+              }
+            },
+            "additionalProperties": true
+          },
+          "screenshot": {
+            "x-setting": "/text_formats/screenshot",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "object",
+            "required": [
+              "user_words",
+              "assistant_words",
+              "user_arrows",
+              "assistant_arrows",
+              "user_sidebar_labels",
+              "assistant_sidebar_labels",
+              "block_length_exclusive_minimum",
+              "unlabelled_user_length_exclusive_maximum",
+              "unlabelled_user_question_suffix",
+              "ocr_text_minimum_codepoints",
+              "fallback_role",
+              "title_prefix",
+              "title_time_format"
+            ],
+            "properties": {
+              "user_words": {
+                "x-setting": "/text_formats/screenshot/user_words",
+                "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                "type": "array",
+                "items": {
+                  "x-setting": "/text_formats/screenshot/user_words/*",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "string"
+                }
+              },
+              "assistant_words": {
+                "x-setting": "/text_formats/screenshot/assistant_words",
+                "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                "type": "array",
+                "items": {
+                  "x-setting": "/text_formats/screenshot/assistant_words/*",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "string"
+                }
+              },
+              "user_arrows": {
+                "x-setting": "/text_formats/screenshot/user_arrows",
+                "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                "type": "array",
+                "items": {
+                  "x-setting": "/text_formats/screenshot/user_arrows/*",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "string"
+                }
+              },
+              "assistant_arrows": {
+                "x-setting": "/text_formats/screenshot/assistant_arrows",
+                "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                "type": "array",
+                "items": {
+                  "x-setting": "/text_formats/screenshot/assistant_arrows/*",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "string"
+                }
+              },
+              "user_sidebar_labels": {
+                "x-setting": "/text_formats/screenshot/user_sidebar_labels",
+                "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                "type": "array",
+                "items": {
+                  "x-setting": "/text_formats/screenshot/user_sidebar_labels/*",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "string"
+                }
+              },
+              "assistant_sidebar_labels": {
+                "x-setting": "/text_formats/screenshot/assistant_sidebar_labels",
+                "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                "type": "array",
+                "items": {
+                  "x-setting": "/text_formats/screenshot/assistant_sidebar_labels/*",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "string"
+                }
+              },
+              "block_length_exclusive_minimum": {
+                "x-setting": "/text_formats/screenshot/block_length_exclusive_minimum",
+                "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                "type": "integer",
+                "minimum": 0,
+                "x-unit": "Unicode codepoints"
+              },
+              "unlabelled_user_length_exclusive_maximum": {
+                "x-setting": "/text_formats/screenshot/unlabelled_user_length_exclusive_maximum",
+                "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                "type": "integer",
+                "minimum": 0,
+                "x-unit": "Unicode codepoints"
+              },
+              "unlabelled_user_question_suffix": {
+                "x-setting": "/text_formats/screenshot/unlabelled_user_question_suffix",
+                "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                "type": "string"
+              },
+              "ocr_text_minimum_codepoints": {
+                "x-setting": "/text_formats/screenshot/ocr_text_minimum_codepoints",
+                "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                "type": "integer",
+                "minimum": 0,
+                "x-unit": "Unicode codepoints"
+              },
+              "fallback_role": {
+                "x-setting": "/text_formats/screenshot/fallback_role",
+                "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                "type": "string"
+              },
+              "title_prefix": {
+                "x-setting": "/text_formats/screenshot/title_prefix",
+                "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                "type": "string"
+              },
+              "title_time_format": {
+                "x-setting": "/text_formats/screenshot/title_time_format",
+                "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                "type": "string"
+              }
+            },
+            "additionalProperties": true
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "additionalProperties": true,
+    "description": "UNWIRED: exact format, MIME, role and text-parser recipes captured from W5 4e8c3de. RuntimeProfile inspection/overrides only; native import dispatch/parser remains unchanged until W5 wires it. Lists/dictionaries are open registries; codecs and lossless provenance operations remain native."
+  },
+  "definition": {
+    "schema": "loom.runtime_profile/1",
+    "domain": "import_formats",
+    "revision": 1,
+    "description": "UNWIRED: exact format, MIME, role and text-parser recipes captured from W5 4e8c3de. RuntimeProfile inspection/overrides only; native import dispatch/parser remains unchanged until W5 wires it. Lists/dictionaries are open registries; codecs and lossless provenance operations remain native.",
+    "defaults": {
+      "detection": {
+        "extension_rules": [
+          {
+            "extensions": [
+              ".zip"
+            ],
+            "format": "zip"
+          },
+          {
+            "extensions": [
+              ".db"
+            ],
+            "format": "sqlite"
+          },
+          {
+            "extensions": [
+              ".json"
+            ],
+            "format": "json"
+          },
+          {
+            "extensions": [
+              ".jsonl",
+              ".ndjson"
+            ],
+            "format": "jsonl"
+          },
+          {
+            "extensions": [
+              ".html",
+              ".htm"
+            ],
+            "format": "html"
+          },
+          {
+            "extensions": [
+              ".mht",
+              ".mhtml"
+            ],
+            "format": "mht"
+          },
+          {
+            "extensions": [
+              ".png",
+              ".jpg",
+              ".jpeg",
+              ".webp"
+            ],
+            "format": "screenshot"
+          },
+          {
+            "extensions": [
+              ".md"
+            ],
+            "format": "markdown"
+          },
+          {
+            "extensions": [
+              ".txt",
+              ".log"
+            ],
+            "format": "text"
+          }
+        ],
+        "sniff_bytes": 200,
+        "zip_prefix": "PK\u0003\u0004",
+        "sqlite_contains": "SQLite format",
+        "json_first_non_whitespace": [
+          "{",
+          "["
+        ],
+        "html_contains_case_insensitive": [
+          "<html",
+          "<!doctype"
+        ],
+        "fallback_format": "unknown"
+      },
+      "mime_by_format": {
+        "zip": "application/zip",
+        "sqlite": "application/vnd.sqlite3",
+        "json": "application/json",
+        "jsonl": "application/x-ndjson",
+        "html": "text/html",
+        "mht": "message/rfc822",
+        "markdown": "text/markdown",
+        "text": "text/plain",
+        "screenshot": "image/*"
+      },
+      "fallback_mime": "application/octet-stream",
+      "export_mode_names": [
+        "auto",
+        "off",
+        "on"
+      ],
+      "legacy_json_roles": {
+        "field_priority": [
+          "role",
+          "sender"
+        ],
+        "absent_role": "user",
+        "user_inputs": [
+          "user",
+          "human"
+        ],
+        "excluded_roles": [
+          "system"
+        ],
+        "other_role": "assistant"
+      },
+      "legacy_sqlite_roles": {
+        "user_inputs": [
+          "user",
+          "human"
+        ],
+        "other_role": "assistant"
+      },
+      "provider_exports": {
+        "openai": {
+          "source": "import:openai",
+          "conversation_field": "mapping",
+          "absent_role": "unknown"
+        },
+        "anthropic": {
+          "source": "import:anthropic",
+          "conversation_field": "chat_messages",
+          "role_map": {
+            "human": "user"
+          },
+          "absent_role": "assistant"
+        },
+        "generic_message_wrappers": [
+          "messages",
+          "chat_messages",
+          "items",
+          "data"
+        ],
+        "streamed_conversations_wrapper": "conversations"
+      },
+      "text_formats": {
+        "markdown": {
+          "user_prefixes": [
+            "## human",
+            "## user",
+            "**human**",
+            "**user**"
+          ],
+          "assistant_prefixes": [
+            "## assistant",
+            "## claude",
+            "**assistant**",
+            "**claude**"
+          ],
+          "separators": [
+            "---",
+            "***"
+          ],
+          "fallback_role": "assistant"
+        },
+        "plain_text": {
+          "user_labels": [
+            "Human",
+            "User",
+            "You"
+          ],
+          "assistant_labels": [
+            "Assistant",
+            "AI",
+            "Claude"
+          ],
+          "label_order": [
+            "Human",
+            "User",
+            "You",
+            "Assistant",
+            "AI",
+            "Claude"
+          ],
+          "fallback_role": "assistant"
+        },
+        "screenshot": {
+          "user_words": [
+            "You",
+            "Human",
+            "User",
+            "Ja",
+            "Ty"
+          ],
+          "assistant_words": [
+            "Claude",
+            "Assistant",
+            "AI",
+            "ChatGPT",
+            "GPT",
+            "Gemini",
+            "Bot"
+          ],
+          "user_arrows": [
+            "►",
+            "▶",
+            "→",
+            ">"
+          ],
+          "assistant_arrows": [
+            "◄",
+            "◀",
+            "←",
+            "<"
+          ],
+          "user_sidebar_labels": [
+            "h",
+            "human"
+          ],
+          "assistant_sidebar_labels": [
+            "a",
+            "assistant"
+          ],
+          "block_length_exclusive_minimum": 3,
+          "unlabelled_user_length_exclusive_maximum": 50,
+          "unlabelled_user_question_suffix": "?",
+          "ocr_text_minimum_codepoints": 10,
+          "fallback_role": "assistant",
+          "title_prefix": "Screenshot ",
+          "title_time_format": "%Y-%m-%d %H:%M"
+        }
+      }
+    },
+    "value_schema": {
+      "x-setting": "",
+      "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+      "type": "object",
+      "required": [
+        "detection",
+        "mime_by_format",
+        "fallback_mime",
+        "export_mode_names",
+        "legacy_json_roles",
+        "legacy_sqlite_roles",
+        "provider_exports",
+        "text_formats"
+      ],
+      "properties": {
+        "detection": {
+          "x-setting": "/detection",
+          "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+          "type": "object",
+          "required": [
+            "extension_rules",
+            "sniff_bytes",
+            "zip_prefix",
+            "sqlite_contains",
+            "json_first_non_whitespace",
+            "html_contains_case_insensitive",
+            "fallback_format"
+          ],
+          "properties": {
+            "extension_rules": {
+              "x-setting": "/detection/extension_rules",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "array",
+              "items": {
+                "x-setting": "/detection/extension_rules/*",
+                "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                "type": "object",
+                "required": [
+                  "extensions",
+                  "format"
+                ],
+                "properties": {
+                  "extensions": {
+                    "x-setting": "/detection/extension_rules/*/extensions",
+                    "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                    "type": "array",
+                    "items": {
+                      "x-setting": "/detection/extension_rules/*/extensions/*",
+                      "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                      "type": "string"
+                    }
+                  },
+                  "format": {
+                    "x-setting": "/detection/extension_rules/*/format",
+                    "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                    "type": "string"
+                  }
+                },
+                "additionalProperties": true
+              }
+            },
+            "sniff_bytes": {
+              "x-setting": "/detection/sniff_bytes",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9223372036854775807,
+              "x-unit": "bytes",
+              "description": "Current native detector uses a streamsize-sized read; this is native representation, not a policy ceiling."
+            },
+            "zip_prefix": {
+              "x-setting": "/detection/zip_prefix",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "string"
+            },
+            "sqlite_contains": {
+              "x-setting": "/detection/sqlite_contains",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "string"
+            },
+            "json_first_non_whitespace": {
+              "x-setting": "/detection/json_first_non_whitespace",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "array",
+              "items": {
+                "x-setting": "/detection/json_first_non_whitespace/*",
+                "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                "type": "string"
+              }
+            },
+            "html_contains_case_insensitive": {
+              "x-setting": "/detection/html_contains_case_insensitive",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "array",
+              "items": {
+                "x-setting": "/detection/html_contains_case_insensitive/*",
+                "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                "type": "string"
+              }
+            },
+            "fallback_format": {
+              "x-setting": "/detection/fallback_format",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "string"
+            }
+          },
+          "additionalProperties": true
+        },
+        "mime_by_format": {
+          "x-setting": "/mime_by_format",
+          "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+          "type": "object",
+          "properties": {
+            "zip": {
+              "x-setting": "/mime_by_format/zip",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "string"
+            },
+            "sqlite": {
+              "x-setting": "/mime_by_format/sqlite",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "string"
+            },
+            "json": {
+              "x-setting": "/mime_by_format/json",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "string"
+            },
+            "jsonl": {
+              "x-setting": "/mime_by_format/jsonl",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "string"
+            },
+            "html": {
+              "x-setting": "/mime_by_format/html",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "string"
+            },
+            "mht": {
+              "x-setting": "/mime_by_format/mht",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "string"
+            },
+            "markdown": {
+              "x-setting": "/mime_by_format/markdown",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "string"
+            },
+            "text": {
+              "x-setting": "/mime_by_format/text",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "string"
+            },
+            "screenshot": {
+              "x-setting": "/mime_by_format/screenshot",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "string"
+            }
+          },
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Native detector MIME defaults. OCR separately preserves declared filename format (jpg remains image/jpg) with snapshot bytes."
+        },
+        "fallback_mime": {
+          "x-setting": "/fallback_mime",
+          "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+          "type": "string"
+        },
+        "export_mode_names": {
+          "x-setting": "/export_mode_names",
+          "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+          "type": "array",
+          "items": {
+            "x-setting": "/export_mode_names/*",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "string"
+          },
+          "description": "Names of the current native ExportMode codec, not a mutable switch implementation. W5 must report unsupported names when wiring."
+        },
+        "legacy_json_roles": {
+          "x-setting": "/legacy_json_roles",
+          "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+          "type": "object",
+          "required": [
+            "field_priority",
+            "absent_role",
+            "user_inputs",
+            "excluded_roles",
+            "other_role"
+          ],
+          "properties": {
+            "field_priority": {
+              "x-setting": "/legacy_json_roles/field_priority",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "array",
+              "items": {
+                "x-setting": "/legacy_json_roles/field_priority/*",
+                "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                "type": "string"
+              }
+            },
+            "absent_role": {
+              "x-setting": "/legacy_json_roles/absent_role",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "string"
+            },
+            "user_inputs": {
+              "x-setting": "/legacy_json_roles/user_inputs",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "array",
+              "items": {
+                "x-setting": "/legacy_json_roles/user_inputs/*",
+                "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                "type": "string"
+              }
+            },
+            "excluded_roles": {
+              "x-setting": "/legacy_json_roles/excluded_roles",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "array",
+              "items": {
+                "x-setting": "/legacy_json_roles/excluded_roles/*",
+                "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                "type": "string"
+              }
+            },
+            "other_role": {
+              "x-setting": "/legacy_json_roles/other_role",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "string"
+            }
+          },
+          "additionalProperties": true
+        },
+        "legacy_sqlite_roles": {
+          "x-setting": "/legacy_sqlite_roles",
+          "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+          "type": "object",
+          "required": [
+            "user_inputs",
+            "other_role"
+          ],
+          "properties": {
+            "user_inputs": {
+              "x-setting": "/legacy_sqlite_roles/user_inputs",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "array",
+              "items": {
+                "x-setting": "/legacy_sqlite_roles/user_inputs/*",
+                "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                "type": "string"
+              }
+            },
+            "other_role": {
+              "x-setting": "/legacy_sqlite_roles/other_role",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "string"
+            }
+          },
+          "additionalProperties": true
+        },
+        "provider_exports": {
+          "x-setting": "/provider_exports",
+          "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+          "type": "object",
+          "required": [
+            "openai",
+            "anthropic",
+            "generic_message_wrappers",
+            "streamed_conversations_wrapper"
+          ],
+          "properties": {
+            "openai": {
+              "x-setting": "/provider_exports/openai",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "object",
+              "required": [
+                "source",
+                "conversation_field",
+                "absent_role"
+              ],
+              "properties": {
+                "source": {
+                  "x-setting": "/provider_exports/openai/source",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "string"
+                },
+                "conversation_field": {
+                  "x-setting": "/provider_exports/openai/conversation_field",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "string"
+                },
+                "absent_role": {
+                  "x-setting": "/provider_exports/openai/absent_role",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "string"
+                }
+              },
+              "additionalProperties": true
+            },
+            "anthropic": {
+              "x-setting": "/provider_exports/anthropic",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "object",
+              "required": [
+                "source",
+                "conversation_field",
+                "role_map",
+                "absent_role"
+              ],
+              "properties": {
+                "source": {
+                  "x-setting": "/provider_exports/anthropic/source",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "string"
+                },
+                "conversation_field": {
+                  "x-setting": "/provider_exports/anthropic/conversation_field",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "string"
+                },
+                "role_map": {
+                  "x-setting": "/provider_exports/anthropic/role_map",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "object",
+                  "properties": {
+                    "human": {
+                      "x-setting": "/provider_exports/anthropic/role_map/human",
+                      "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                },
+                "absent_role": {
+                  "x-setting": "/provider_exports/anthropic/absent_role",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "string"
+                }
+              },
+              "additionalProperties": true
+            },
+            "generic_message_wrappers": {
+              "x-setting": "/provider_exports/generic_message_wrappers",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "array",
+              "items": {
+                "x-setting": "/provider_exports/generic_message_wrappers/*",
+                "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                "type": "string"
+              }
+            },
+            "streamed_conversations_wrapper": {
+              "x-setting": "/provider_exports/streamed_conversations_wrapper",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "string",
+              "description": "Only the existing conversations wrapper is streamed by W5 Loader. Changing this inspected recipe does not add native support while UNWIRED."
+            }
+          },
+          "additionalProperties": true
+        },
+        "text_formats": {
+          "x-setting": "/text_formats",
+          "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+          "type": "object",
+          "required": [
+            "markdown",
+            "plain_text",
+            "screenshot"
+          ],
+          "properties": {
+            "markdown": {
+              "x-setting": "/text_formats/markdown",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "object",
+              "required": [
+                "user_prefixes",
+                "assistant_prefixes",
+                "separators",
+                "fallback_role"
+              ],
+              "properties": {
+                "user_prefixes": {
+                  "x-setting": "/text_formats/markdown/user_prefixes",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "array",
+                  "items": {
+                    "x-setting": "/text_formats/markdown/user_prefixes/*",
+                    "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                    "type": "string"
+                  }
+                },
+                "assistant_prefixes": {
+                  "x-setting": "/text_formats/markdown/assistant_prefixes",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "array",
+                  "items": {
+                    "x-setting": "/text_formats/markdown/assistant_prefixes/*",
+                    "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                    "type": "string"
+                  }
+                },
+                "separators": {
+                  "x-setting": "/text_formats/markdown/separators",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "array",
+                  "items": {
+                    "x-setting": "/text_formats/markdown/separators/*",
+                    "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                    "type": "string"
+                  }
+                },
+                "fallback_role": {
+                  "x-setting": "/text_formats/markdown/fallback_role",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "string"
+                }
+              },
+              "additionalProperties": true
+            },
+            "plain_text": {
+              "x-setting": "/text_formats/plain_text",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "object",
+              "required": [
+                "user_labels",
+                "assistant_labels",
+                "label_order",
+                "fallback_role"
+              ],
+              "properties": {
+                "user_labels": {
+                  "x-setting": "/text_formats/plain_text/user_labels",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "array",
+                  "items": {
+                    "x-setting": "/text_formats/plain_text/user_labels/*",
+                    "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                    "type": "string"
+                  }
+                },
+                "assistant_labels": {
+                  "x-setting": "/text_formats/plain_text/assistant_labels",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "array",
+                  "items": {
+                    "x-setting": "/text_formats/plain_text/assistant_labels/*",
+                    "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                    "type": "string"
+                  }
+                },
+                "label_order": {
+                  "x-setting": "/text_formats/plain_text/label_order",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "array",
+                  "items": {
+                    "x-setting": "/text_formats/plain_text/label_order/*",
+                    "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                    "type": "string"
+                  }
+                },
+                "fallback_role": {
+                  "x-setting": "/text_formats/plain_text/fallback_role",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "string"
+                }
+              },
+              "additionalProperties": true
+            },
+            "screenshot": {
+              "x-setting": "/text_formats/screenshot",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "object",
+              "required": [
+                "user_words",
+                "assistant_words",
+                "user_arrows",
+                "assistant_arrows",
+                "user_sidebar_labels",
+                "assistant_sidebar_labels",
+                "block_length_exclusive_minimum",
+                "unlabelled_user_length_exclusive_maximum",
+                "unlabelled_user_question_suffix",
+                "ocr_text_minimum_codepoints",
+                "fallback_role",
+                "title_prefix",
+                "title_time_format"
+              ],
+              "properties": {
+                "user_words": {
+                  "x-setting": "/text_formats/screenshot/user_words",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "array",
+                  "items": {
+                    "x-setting": "/text_formats/screenshot/user_words/*",
+                    "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                    "type": "string"
+                  }
+                },
+                "assistant_words": {
+                  "x-setting": "/text_formats/screenshot/assistant_words",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "array",
+                  "items": {
+                    "x-setting": "/text_formats/screenshot/assistant_words/*",
+                    "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                    "type": "string"
+                  }
+                },
+                "user_arrows": {
+                  "x-setting": "/text_formats/screenshot/user_arrows",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "array",
+                  "items": {
+                    "x-setting": "/text_formats/screenshot/user_arrows/*",
+                    "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                    "type": "string"
+                  }
+                },
+                "assistant_arrows": {
+                  "x-setting": "/text_formats/screenshot/assistant_arrows",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "array",
+                  "items": {
+                    "x-setting": "/text_formats/screenshot/assistant_arrows/*",
+                    "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                    "type": "string"
+                  }
+                },
+                "user_sidebar_labels": {
+                  "x-setting": "/text_formats/screenshot/user_sidebar_labels",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "array",
+                  "items": {
+                    "x-setting": "/text_formats/screenshot/user_sidebar_labels/*",
+                    "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                    "type": "string"
+                  }
+                },
+                "assistant_sidebar_labels": {
+                  "x-setting": "/text_formats/screenshot/assistant_sidebar_labels",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "array",
+                  "items": {
+                    "x-setting": "/text_formats/screenshot/assistant_sidebar_labels/*",
+                    "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                    "type": "string"
+                  }
+                },
+                "block_length_exclusive_minimum": {
+                  "x-setting": "/text_formats/screenshot/block_length_exclusive_minimum",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "integer",
+                  "minimum": 0,
+                  "x-unit": "Unicode codepoints"
+                },
+                "unlabelled_user_length_exclusive_maximum": {
+                  "x-setting": "/text_formats/screenshot/unlabelled_user_length_exclusive_maximum",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "integer",
+                  "minimum": 0,
+                  "x-unit": "Unicode codepoints"
+                },
+                "unlabelled_user_question_suffix": {
+                  "x-setting": "/text_formats/screenshot/unlabelled_user_question_suffix",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "string"
+                },
+                "ocr_text_minimum_codepoints": {
+                  "x-setting": "/text_formats/screenshot/ocr_text_minimum_codepoints",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "integer",
+                  "minimum": 0,
+                  "x-unit": "Unicode codepoints"
+                },
+                "fallback_role": {
+                  "x-setting": "/text_formats/screenshot/fallback_role",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "string"
+                },
+                "title_prefix": {
+                  "x-setting": "/text_formats/screenshot/title_prefix",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "string"
+                },
+                "title_time_format": {
+                  "x-setting": "/text_formats/screenshot/title_time_format",
+                  "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+                  "type": "string"
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true,
+      "description": "UNWIRED: exact format, MIME, role and text-parser recipes captured from W5 4e8c3de. RuntimeProfile inspection/overrides only; native import dispatch/parser remains unchanged until W5 wires it. Lists/dictionaries are open registries; codecs and lossless provenance operations remain native."
+    }
+  },
+  "defaults": {
+    "detection": {
+      "extension_rules": [
+        {
+          "extensions": [
+            ".zip"
+          ],
+          "format": "zip"
+        },
+        {
+          "extensions": [
+            ".db"
+          ],
+          "format": "sqlite"
+        },
+        {
+          "extensions": [
+            ".json"
+          ],
+          "format": "json"
+        },
+        {
+          "extensions": [
+            ".jsonl",
+            ".ndjson"
+          ],
+          "format": "jsonl"
+        },
+        {
+          "extensions": [
+            ".html",
+            ".htm"
+          ],
+          "format": "html"
+        },
+        {
+          "extensions": [
+            ".mht",
+            ".mhtml"
+          ],
+          "format": "mht"
+        },
+        {
+          "extensions": [
+            ".png",
+            ".jpg",
+            ".jpeg",
+            ".webp"
+          ],
+          "format": "screenshot"
+        },
+        {
+          "extensions": [
+            ".md"
+          ],
+          "format": "markdown"
+        },
+        {
+          "extensions": [
+            ".txt",
+            ".log"
+          ],
+          "format": "text"
+        }
+      ],
+      "sniff_bytes": 200,
+      "zip_prefix": "PK\u0003\u0004",
+      "sqlite_contains": "SQLite format",
+      "json_first_non_whitespace": [
+        "{",
+        "["
+      ],
+      "html_contains_case_insensitive": [
+        "<html",
+        "<!doctype"
+      ],
+      "fallback_format": "unknown"
+    },
+    "mime_by_format": {
+      "zip": "application/zip",
+      "sqlite": "application/vnd.sqlite3",
+      "json": "application/json",
+      "jsonl": "application/x-ndjson",
+      "html": "text/html",
+      "mht": "message/rfc822",
+      "markdown": "text/markdown",
+      "text": "text/plain",
+      "screenshot": "image/*"
+    },
+    "fallback_mime": "application/octet-stream",
+    "export_mode_names": [
+      "auto",
+      "off",
+      "on"
+    ],
+    "legacy_json_roles": {
+      "field_priority": [
+        "role",
+        "sender"
+      ],
+      "absent_role": "user",
+      "user_inputs": [
+        "user",
+        "human"
+      ],
+      "excluded_roles": [
+        "system"
+      ],
+      "other_role": "assistant"
+    },
+    "legacy_sqlite_roles": {
+      "user_inputs": [
+        "user",
+        "human"
+      ],
+      "other_role": "assistant"
+    },
+    "provider_exports": {
+      "openai": {
+        "source": "import:openai",
+        "conversation_field": "mapping",
+        "absent_role": "unknown"
+      },
+      "anthropic": {
+        "source": "import:anthropic",
+        "conversation_field": "chat_messages",
+        "role_map": {
+          "human": "user"
+        },
+        "absent_role": "assistant"
+      },
+      "generic_message_wrappers": [
+        "messages",
+        "chat_messages",
+        "items",
+        "data"
+      ],
+      "streamed_conversations_wrapper": "conversations"
+    },
+    "text_formats": {
+      "markdown": {
+        "user_prefixes": [
+          "## human",
+          "## user",
+          "**human**",
+          "**user**"
+        ],
+        "assistant_prefixes": [
+          "## assistant",
+          "## claude",
+          "**assistant**",
+          "**claude**"
+        ],
+        "separators": [
+          "---",
+          "***"
+        ],
+        "fallback_role": "assistant"
+      },
+      "plain_text": {
+        "user_labels": [
+          "Human",
+          "User",
+          "You"
+        ],
+        "assistant_labels": [
+          "Assistant",
+          "AI",
+          "Claude"
+        ],
+        "label_order": [
+          "Human",
+          "User",
+          "You",
+          "Assistant",
+          "AI",
+          "Claude"
+        ],
+        "fallback_role": "assistant"
+      },
+      "screenshot": {
+        "user_words": [
+          "You",
+          "Human",
+          "User",
+          "Ja",
+          "Ty"
+        ],
+        "assistant_words": [
+          "Claude",
+          "Assistant",
+          "AI",
+          "ChatGPT",
+          "GPT",
+          "Gemini",
+          "Bot"
+        ],
+        "user_arrows": [
+          "►",
+          "▶",
+          "→",
+          ">"
+        ],
+        "assistant_arrows": [
+          "◄",
+          "◀",
+          "←",
+          "<"
+        ],
+        "user_sidebar_labels": [
+          "h",
+          "human"
+        ],
+        "assistant_sidebar_labels": [
+          "a",
+          "assistant"
+        ],
+        "block_length_exclusive_minimum": 3,
+        "unlabelled_user_length_exclusive_maximum": 50,
+        "unlabelled_user_question_suffix": "?",
+        "ocr_text_minimum_codepoints": 10,
+        "fallback_role": "assistant",
+        "title_prefix": "Screenshot ",
+        "title_time_format": "%Y-%m-%d %H:%M"
+      }
+    }
+  },
+  "source_provenance": [
+    {
+      "path": "loom/data/runtime/import_formats.pack",
+      "pointer": "",
+      "raw_sha256": "294ebc7ce789c079662ec322d4517935f57270296841dc3737e625164de5d8c3",
+      "target": ""
+    }
+  ]
+}

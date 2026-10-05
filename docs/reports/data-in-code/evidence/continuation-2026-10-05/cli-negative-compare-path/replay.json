@@ -1,0 +1,21 @@
+{
+  "schema": "loom.verification_negative/1",
+  "exit": 1,
+  "reason": "Harness received directory in --compare where receipt JSON file was required; complete22-domain CLI capture succeeded before comparison exception",
+  "command": [
+    "python3",
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/capture_cli_profiles.py",
+    "--binary",
+    "/workspace/scratch/72fc60ad1cc5/current-build/cli/loom",
+    "--output",
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/cli-fullcore-after",
+    "--source-ref",
+    "1b7379c80e62e30e58e97c4ba84c490d9ddbc6f4",
+    "--compare",
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/cli-before"
+  ],
+  "harness_sha256": "b1ba49817da147f1b1d3b9b7380dce52511048cb6f4a887d4ac2f586d28b2937",
+  "product_changed_for_fix": false,
+  "corrected_compare": "docs/reports/data-in-code/evidence/continuation-2026-10-05/cli-before/receipt.json",
+  "binary_identity": "capture/receipt.json"
+}

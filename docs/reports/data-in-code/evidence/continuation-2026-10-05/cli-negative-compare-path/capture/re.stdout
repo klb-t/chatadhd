@@ -1,0 +1,65 @@
+{
+  "schema": "loom.runtime_profile_effective/1",
+  "domain": "re",
+  "revision": 1,
+  "hash": "a9adf46210307fd4f84f2c7bfd8bdc514d51b5fbcc8a730ec1bea0f9af9f0310",
+  "is_builtin": true,
+  "values": {
+    "step_limit": 10000000
+  },
+  "value_schema": {
+    "type": "object",
+    "required": [
+      "step_limit"
+    ],
+    "properties": {
+      "step_limit": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 18446744073709551615,
+        "description": "Per-search VM instruction budget. Zero exhausts before executing an instruction; the maximum is only the uint64 representation boundary. Legacy set_step_limit has the same semantics.",
+        "x-setting": "/step_limit",
+        "x-unit": "VM instructions",
+        "x-consumer": "loom::re::Regex"
+      }
+    },
+    "additionalProperties": false
+  },
+  "definition": {
+    "schema": "loom.runtime_profile/1",
+    "domain": "re",
+    "revision": 1,
+    "defaults": {
+      "step_limit": 10000000
+    },
+    "value_schema": {
+      "type": "object",
+      "required": [
+        "step_limit"
+      ],
+      "properties": {
+        "step_limit": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 18446744073709551615,
+          "description": "Per-search VM instruction budget. Zero exhausts before executing an instruction; the maximum is only the uint64 representation boundary. Legacy set_step_limit has the same semantics.",
+          "x-setting": "/step_limit",
+          "x-unit": "VM instructions",
+          "x-consumer": "loom::re::Regex"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "defaults": {
+    "step_limit": 10000000
+  },
+  "source_provenance": [
+    {
+      "path": "loom/data/runtime/re.pack",
+      "pointer": "",
+      "raw_sha256": "ed6152fd54a830cf20b831e9bb471bf9e52daf89a33c9a23a4d206bd427df508",
+      "target": ""
+    }
+  ]
+}

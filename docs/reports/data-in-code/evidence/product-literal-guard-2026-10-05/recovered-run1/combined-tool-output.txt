@@ -1,0 +1,429 @@
+test_boolean_and_null_spellings_require_exact_classification (__main__.ProductLiteralGuardTests.test_boolean_and_null_spellings_require_exact_classification) ... ok
+test_cpp_strings_characters_numbers_and_raw_strings_are_candidates (__main__.ProductLiteralGuardTests.test_cpp_strings_characters_numbers_and_raw_strings_are_candidates) ... ok
+test_empty_product_source_is_valid (__main__.ProductLiteralGuardTests.test_empty_product_source_is_valid) ... ok
+test_empty_scope_is_an_input_error (__main__.ProductLiteralGuardTests.test_empty_scope_is_an_input_error) ... ok
+test_every_declared_category_accepts_an_exact_anchor (__main__.ProductLiteralGuardTests.test_every_declared_category_accepts_an_exact_anchor) ... ok
+test_exclusions_are_policy_rules_not_implicit_scanner_shortcuts (__main__.ProductLiteralGuardTests.test_exclusions_are_policy_rules_not_implicit_scanner_shortcuts) ... ok
+test_explicit_tests_and_fixtures_exclusions_are_recorded (__main__.ProductLiteralGuardTests.test_explicit_tests_and_fixtures_exclusions_are_recorded) ... FAIL
+test_inserting_literal_requires_its_own_classification (__main__.ProductLiteralGuardTests.test_inserting_literal_requires_its_own_classification) ... ok
+test_invalid_utf8_and_unterminated_tokens_fail_closed (__main__.ProductLiteralGuardTests.test_invalid_utf8_and_unterminated_tokens_fail_closed) ... ok
+test_javascript_java_and_kotlin_plain_literals (__main__.ProductLiteralGuardTests.test_javascript_java_and_kotlin_plain_literals) ... 
+  test_javascript_java_and_kotlin_plain_literals (__main__.ProductLiteralGuardTests.test_javascript_java_and_kotlin_plain_literals) (name='Values.kt') ... FAIL
+test_javascript_regex_and_templates_fail_closed (__main__.ProductLiteralGuardTests.test_javascript_regex_and_templates_fail_closed) ... 
+  test_javascript_regex_and_templates_fail_closed (__main__.ProductLiteralGuardTests.test_javascript_regex_and_templates_fail_closed) (text='const matcher = /[0-9]+/g;\n') ... FAIL
+  test_javascript_regex_and_templates_fail_closed (__main__.ProductLiteralGuardTests.test_javascript_regex_and_templates_fail_closed) (text='const text = `hello ${name}`;\n') ... FAIL
+test_json_valid_but_invalid_value_schema_is_an_input_error (__main__.ProductLiteralGuardTests.test_json_valid_but_invalid_value_schema_is_an_input_error) ... ok
+test_malformed_and_duplicate_pack_and_schema_are_input_errors (__main__.ProductLiteralGuardTests.test_malformed_and_duplicate_pack_and_schema_are_input_errors) ... ok
+test_missing_allowlisted_source_is_stale (__main__.ProductLiteralGuardTests.test_missing_allowlisted_source_is_stale) ... FAIL
+test_missing_pack_and_schema_are_input_errors (__main__.ProductLiteralGuardTests.test_missing_pack_and_schema_are_input_errors) ... ok
+test_owner_rule_and_fallback_are_deterministic (__main__.ProductLiteralGuardTests.test_owner_rule_and_fallback_are_deterministic) ... FAIL
+test_python_utf8_byte_anchors_triple_strings_and_numbers (__main__.ProductLiteralGuardTests.test_python_utf8_byte_anchors_triple_strings_and_numbers) ... FAIL
+test_report_and_manifest_are_repeatable (__main__.ProductLiteralGuardTests.test_report_and_manifest_are_repeatable) ... FAIL
+test_report_and_manifest_cannot_overwrite_product_source (__main__.ProductLiteralGuardTests.test_report_and_manifest_cannot_overwrite_product_source) ... 
+  test_report_and_manifest_cannot_overwrite_product_source (__main__.ProductLiteralGuardTests.test_report_and_manifest_cannot_overwrite_product_source) (flag='--report') ... FAIL
+  test_report_and_manifest_cannot_overwrite_product_source (__main__.ProductLiteralGuardTests.test_report_and_manifest_cannot_overwrite_product_source) (flag='--manifest') ... FAIL
+test_runtime_embedding_input_and_output_hash_tampering_blocks (__main__.ProductLiteralGuardTests.test_runtime_embedding_input_and_output_hash_tampering_blocks) ... 
+  test_runtime_embedding_input_and_output_hash_tampering_blocks (__main__.ProductLiteralGuardTests.test_runtime_embedding_input_and_output_hash_tampering_blocks) (field='input') ... FAIL
+  test_runtime_embedding_input_and_output_hash_tampering_blocks (__main__.ProductLiteralGuardTests.test_runtime_embedding_input_and_output_hash_tampering_blocks) (field='output') ... FAIL
+test_runtime_embedding_is_accepted_only_by_exact_generator_provenance (__main__.ProductLiteralGuardTests.test_runtime_embedding_is_accepted_only_by_exact_generator_provenance) ... FAIL
+test_runtime_embedding_new_source_is_not_silently_adopted (__main__.ProductLiteralGuardTests.test_runtime_embedding_new_source_is_not_silently_adopted) ... FAIL
+test_runtime_embedding_source_output_and_generator_changes_block (__main__.ProductLiteralGuardTests.test_runtime_embedding_source_output_and_generator_changes_block) ... 
+  test_runtime_embedding_source_output_and_generator_changes_block (__main__.ProductLiteralGuardTests.test_runtime_embedding_source_output_and_generator_changes_block) (changed='profile') ... FAIL
+  test_runtime_embedding_source_output_and_generator_changes_block (__main__.ProductLiteralGuardTests.test_runtime_embedding_source_output_and_generator_changes_block) (changed='manifest') ... FAIL
+  test_runtime_embedding_source_output_and_generator_changes_block (__main__.ProductLiteralGuardTests.test_runtime_embedding_source_output_and_generator_changes_block) (changed='output') ... FAIL
+  test_runtime_embedding_source_output_and_generator_changes_block (__main__.ProductLiteralGuardTests.test_runtime_embedding_source_output_and_generator_changes_block) (changed='generator') ... FAIL
+test_runtime_embedding_source_output_and_generator_changes_block (__main__.ProductLiteralGuardTests.test_runtime_embedding_source_output_and_generator_changes_block) ... FAIL
+test_runtime_embedding_untrusted_operation_and_generator_path_are_input_errors (__main__.ProductLiteralGuardTests.test_runtime_embedding_untrusted_operation_and_generator_path_are_input_errors) ... ok
+test_tampered_byte_and_literal_hash_anchors_are_stale (__main__.ProductLiteralGuardTests.test_tampered_byte_and_literal_hash_anchors_are_stale) ... 
+  test_tampered_byte_and_literal_hash_anchors_are_stale (__main__.ProductLiteralGuardTests.test_tampered_byte_and_literal_hash_anchors_are_stale) (change={'byte_start': 10}) ... FAIL
+  test_tampered_byte_and_literal_hash_anchors_are_stale (__main__.ProductLiteralGuardTests.test_tampered_byte_and_literal_hash_anchors_are_stale) (change={'byte_end': 18}) ... FAIL
+  test_tampered_byte_and_literal_hash_anchors_are_stale (__main__.ProductLiteralGuardTests.test_tampered_byte_and_literal_hash_anchors_are_stale) (change={'literal_sha256': '0000000000000000000000000000000000000000000000000000000000000000'}) ... FAIL
+test_unknown_category_blank_reason_and_duplicate_anchor_are_input_errors (__main__.ProductLiteralGuardTests.test_unknown_category_blank_reason_and_duplicate_anchor_are_input_errors) ... ok
+test_unknown_policy_fields_and_categories_are_input_errors (__main__.ProductLiteralGuardTests.test_unknown_policy_fields_and_categories_are_input_errors) ... ok
+test_unknown_suffix_and_unsupported_markup_css_fail_closed (__main__.ProductLiteralGuardTests.test_unknown_suffix_and_unsupported_markup_css_fail_closed) ... 
+  test_unknown_suffix_and_unsupported_markup_css_fail_closed (__main__.ProductLiteralGuardTests.test_unknown_suffix_and_unsupported_markup_css_fail_closed) (name='unknown.xyz') ... FAIL
+  test_unknown_suffix_and_unsupported_markup_css_fail_closed (__main__.ProductLiteralGuardTests.test_unknown_suffix_and_unsupported_markup_css_fail_closed) (name='page.html') ... FAIL
+  test_unknown_suffix_and_unsupported_markup_css_fail_closed (__main__.ProductLiteralGuardTests.test_unknown_suffix_and_unsupported_markup_css_fail_closed) (name='style.css') ... FAIL
+test_unsupported_interpolations_text_blocks_and_nested_comments_block (__main__.ProductLiteralGuardTests.test_unsupported_interpolations_text_blocks_and_nested_comments_block) ... 
+  test_unsupported_interpolations_text_blocks_and_nested_comments_block (__main__.ProductLiteralGuardTests.test_unsupported_interpolations_text_blocks_and_nested_comments_block) (name='template.py') ... FAIL
+  test_unsupported_interpolations_text_blocks_and_nested_comments_block (__main__.ProductLiteralGuardTests.test_unsupported_interpolations_text_blocks_and_nested_comments_block) (name='template.kt') ... FAIL
+  test_unsupported_interpolations_text_blocks_and_nested_comments_block (__main__.ProductLiteralGuardTests.test_unsupported_interpolations_text_blocks_and_nested_comments_block) (name='Text.java') ... FAIL
+  test_unsupported_interpolations_text_blocks_and_nested_comments_block (__main__.ProductLiteralGuardTests.test_unsupported_interpolations_text_blocks_and_nested_comments_block) (name='comment.kt') ... FAIL
+test_weakened_value_schema_is_an_input_error (__main__.ProductLiteralGuardTests.test_weakened_value_schema_is_an_input_error) ... ok
+test_whole_source_hash_change_invalidates_unchanged_literal (__main__.ProductLiteralGuardTests.test_whole_source_hash_change_invalidates_unchanged_literal) ... FAIL
+
+======================================================================
+FAIL: test_explicit_tests_and_fixtures_exclusions_are_recorded (__main__.ProductLiteralGuardTests.test_explicit_tests_and_fixtures_exclusions_are_recorded)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 305, in test_explicit_tests_and_fixtures_exclusions_are_recorded
+    self.assertTrue(all(f['status'] == 'EXCLUDED' for f in manifest['source_files']))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_javascript_java_and_kotlin_plain_literals (__main__.ProductLiteralGuardTests.test_javascript_java_and_kotlin_plain_literals) (name='Values.kt')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 198, in test_javascript_java_and_kotlin_plain_literals
+    self.run_guard(0)
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 94, in run_guard
+    self.assertEqual(result.returncode, expected,
+AssertionError: 2 != 0 : {"counts": {"allowed": 0, "blocked_files": 0, "candidates": 0, "files": 0, "stale_allowlist": 0, "unclassified": 0}, "io": {"generator_output_writes": 0, "network_calls": 0, "source_writes": 0}, "schema": "loom.product_literals_report/1", "valid": false}
+{"issue_codes": {"configuration_error": 1}, "issue_count": 1}
+
+
+======================================================================
+FAIL: test_javascript_regex_and_templates_fail_closed (__main__.ProductLiteralGuardTests.test_javascript_regex_and_templates_fail_closed) (text='const matcher = /[0-9]+/g;\n')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 348, in test_javascript_regex_and_templates_fail_closed
+    report, _ = self.run_guard(1)
+                ^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 94, in run_guard
+    self.assertEqual(result.returncode, expected,
+AssertionError: 2 != 1 : {"counts": {"allowed": 0, "blocked_files": 0, "candidates": 0, "files": 0, "stale_allowlist": 0, "unclassified": 0}, "io": {"generator_output_writes": 0, "network_calls": 0, "source_writes": 0}, "schema": "loom.product_literals_report/1", "valid": false}
+{"issue_codes": {"configuration_error": 1}, "issue_count": 1}
+
+
+======================================================================
+FAIL: test_javascript_regex_and_templates_fail_closed (__main__.ProductLiteralGuardTests.test_javascript_regex_and_templates_fail_closed) (text='const text = `hello ${name}`;\n')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 348, in test_javascript_regex_and_templates_fail_closed
+    report, _ = self.run_guard(1)
+                ^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 94, in run_guard
+    self.assertEqual(result.returncode, expected,
+AssertionError: 2 != 1 : {"counts": {"allowed": 0, "blocked_files": 0, "candidates": 0, "files": 0, "stale_allowlist": 0, "unclassified": 0}, "io": {"generator_output_writes": 0, "network_calls": 0, "source_writes": 0}, "schema": "loom.product_literals_report/1", "valid": false}
+{"issue_codes": {"configuration_error": 1}, "issue_count": 1}
+
+
+======================================================================
+FAIL: test_missing_allowlisted_source_is_stale (__main__.ProductLiteralGuardTests.test_missing_allowlisted_source_is_stale)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 290, in test_missing_allowlisted_source_is_stale
+    report, _ = self.run_guard(1)
+                ^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 94, in run_guard
+    self.assertEqual(result.returncode, expected,
+AssertionError: 2 != 1 : {"counts": {"allowed": 0, "blocked_files": 0, "candidates": 0, "files": 0, "stale_allowlist": 0, "unclassified": 0}, "io": {"generator_output_writes": 0, "network_calls": 0, "source_writes": 0}, "schema": "loom.product_literals_report/1", "valid": false}
+{"issue_codes": {"configuration_error": 1}, "issue_count": 1}
+
+
+======================================================================
+FAIL: test_owner_rule_and_fallback_are_deterministic (__main__.ProductLiteralGuardTests.test_owner_rule_and_fallback_are_deterministic)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 321, in test_owner_rule_and_fallback_are_deterministic
+    report, _ = self.run_guard(1)
+                ^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 94, in run_guard
+    self.assertEqual(result.returncode, expected,
+AssertionError: 2 != 1 : {"counts": {"allowed": 0, "blocked_files": 0, "candidates": 0, "files": 0, "stale_allowlist": 0, "unclassified": 0}, "io": {"generator_output_writes": 0, "network_calls": 0, "source_writes": 0}, "schema": "loom.product_literals_report/1", "valid": false}
+{"issue_codes": {"configuration_error": 1}, "issue_count": 1}
+
+
+======================================================================
+FAIL: test_python_utf8_byte_anchors_triple_strings_and_numbers (__main__.ProductLiteralGuardTests.test_python_utf8_byte_anchors_triple_strings_and_numbers)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 174, in test_python_utf8_byte_anchors_triple_strings_and_numbers
+    report, _ = self.run_guard(1)
+                ^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 94, in run_guard
+    self.assertEqual(result.returncode, expected,
+AssertionError: 2 != 1 : {"counts": {"allowed": 0, "blocked_files": 0, "candidates": 0, "files": 0, "stale_allowlist": 0, "unclassified": 0}, "io": {"generator_output_writes": 0, "network_calls": 0, "source_writes": 0}, "schema": "loom.product_literals_report/1", "valid": false}
+{"issue_codes": {"configuration_error": 1}, "issue_count": 1}
+
+
+======================================================================
+FAIL: test_report_and_manifest_are_repeatable (__main__.ProductLiteralGuardTests.test_report_and_manifest_are_repeatable)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 479, in test_report_and_manifest_are_repeatable
+    self.run_guard(1)
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 94, in run_guard
+    self.assertEqual(result.returncode, expected,
+AssertionError: 2 != 1 : {"counts": {"allowed": 0, "blocked_files": 0, "candidates": 0, "files": 0, "stale_allowlist": 0, "unclassified": 0}, "io": {"generator_output_writes": 0, "network_calls": 0, "source_writes": 0}, "schema": "loom.product_literals_report/1", "valid": false}
+{"issue_codes": {"configuration_error": 1}, "issue_count": 1}
+
+
+======================================================================
+FAIL: test_report_and_manifest_cannot_overwrite_product_source (__main__.ProductLiteralGuardTests.test_report_and_manifest_cannot_overwrite_product_source) (flag='--report')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 473, in test_report_and_manifest_cannot_overwrite_product_source
+    self.assertEqual(path.read_bytes(), original)
+AssertionError: b'{\n  "schema": "loom.product_literals_rep[448 chars]n}\n' != b'"preserved";\n'
+
+======================================================================
+FAIL: test_report_and_manifest_cannot_overwrite_product_source (__main__.ProductLiteralGuardTests.test_report_and_manifest_cannot_overwrite_product_source) (flag='--manifest')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 473, in test_report_and_manifest_cannot_overwrite_product_source
+    self.assertEqual(path.read_bytes(), original)
+AssertionError: b'{\n  "schema": "loom.product_literals_manifest/1",\n  "source_files": []\n}\n' != b'"preserved";\n'
+
+======================================================================
+FAIL: test_runtime_embedding_input_and_output_hash_tampering_blocks (__main__.ProductLiteralGuardTests.test_runtime_embedding_input_and_output_hash_tampering_blocks) (field='input')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 566, in test_runtime_embedding_input_and_output_hash_tampering_blocks
+    report, _ = self.run_guard(1)
+                ^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 94, in run_guard
+    self.assertEqual(result.returncode, expected,
+AssertionError: 2 != 1 : {"counts": {"allowed": 0, "blocked_files": 0, "candidates": 0, "files": 0, "stale_allowlist": 0, "unclassified": 0}, "io": {"generator_output_writes": 0, "network_calls": 0, "source_writes": 0}, "schema": "loom.product_literals_report/1", "valid": false}
+{"issue_codes": {"configuration_error": 1}, "issue_count": 1}
+
+
+======================================================================
+FAIL: test_runtime_embedding_input_and_output_hash_tampering_blocks (__main__.ProductLiteralGuardTests.test_runtime_embedding_input_and_output_hash_tampering_blocks) (field='output')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 566, in test_runtime_embedding_input_and_output_hash_tampering_blocks
+    report, _ = self.run_guard(1)
+                ^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 94, in run_guard
+    self.assertEqual(result.returncode, expected,
+AssertionError: 2 != 1 : {"counts": {"allowed": 0, "blocked_files": 0, "candidates": 0, "files": 0, "stale_allowlist": 0, "unclassified": 0}, "io": {"generator_output_writes": 0, "network_calls": 0, "source_writes": 0}, "schema": "loom.product_literals_report/1", "valid": false}
+{"issue_codes": {"configuration_error": 1}, "issue_count": 1}
+
+
+======================================================================
+FAIL: test_runtime_embedding_is_accepted_only_by_exact_generator_provenance (__main__.ProductLiteralGuardTests.test_runtime_embedding_is_accepted_only_by_exact_generator_provenance)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 520, in test_runtime_embedding_is_accepted_only_by_exact_generator_provenance
+    report, manifest = self.run_guard(0)
+                       ^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 94, in run_guard
+    self.assertEqual(result.returncode, expected,
+AssertionError: 2 != 0 : {"counts": {"allowed": 0, "blocked_files": 0, "candidates": 0, "files": 0, "stale_allowlist": 0, "unclassified": 0}, "io": {"generator_output_writes": 0, "network_calls": 0, "source_writes": 0}, "schema": "loom.product_literals_report/1", "valid": false}
+{"issue_codes": {"configuration_error": 1}, "issue_count": 1}
+
+
+======================================================================
+FAIL: test_runtime_embedding_new_source_is_not_silently_adopted (__main__.ProductLiteralGuardTests.test_runtime_embedding_new_source_is_not_silently_adopted)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 550, in test_runtime_embedding_new_source_is_not_silently_adopted
+    report, _ = self.run_guard(1)
+                ^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 94, in run_guard
+    self.assertEqual(result.returncode, expected,
+AssertionError: 2 != 1 : {"counts": {"allowed": 0, "blocked_files": 0, "candidates": 0, "files": 0, "stale_allowlist": 0, "unclassified": 0}, "io": {"generator_output_writes": 0, "network_calls": 0, "source_writes": 0}, "schema": "loom.product_literals_report/1", "valid": false}
+{"issue_codes": {"configuration_error": 1}, "issue_count": 1}
+
+
+======================================================================
+FAIL: test_runtime_embedding_source_output_and_generator_changes_block (__main__.ProductLiteralGuardTests.test_runtime_embedding_source_output_and_generator_changes_block) (changed='profile')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 538, in test_runtime_embedding_source_output_and_generator_changes_block
+    report, _ = self.run_guard(1)
+                ^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 94, in run_guard
+    self.assertEqual(result.returncode, expected,
+AssertionError: 2 != 1 : {"counts": {"allowed": 0, "blocked_files": 0, "candidates": 0, "files": 0, "stale_allowlist": 0, "unclassified": 0}, "io": {"generator_output_writes": 0, "network_calls": 0, "source_writes": 0}, "schema": "loom.product_literals_report/1", "valid": false}
+{"issue_codes": {"configuration_error": 1}, "issue_count": 1}
+
+
+======================================================================
+FAIL: test_runtime_embedding_source_output_and_generator_changes_block (__main__.ProductLiteralGuardTests.test_runtime_embedding_source_output_and_generator_changes_block) (changed='manifest')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 538, in test_runtime_embedding_source_output_and_generator_changes_block
+    report, _ = self.run_guard(1)
+                ^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 94, in run_guard
+    self.assertEqual(result.returncode, expected,
+AssertionError: 2 != 1 : {"counts": {"allowed": 0, "blocked_files": 0, "candidates": 0, "files": 0, "stale_allowlist": 0, "unclassified": 0}, "io": {"generator_output_writes": 0, "network_calls": 0, "source_writes": 0}, "schema": "loom.product_literals_report/1", "valid": false}
+{"issue_codes": {"configuration_error": 1}, "issue_count": 1}
+
+
+======================================================================
+FAIL: test_runtime_embedding_source_output_and_generator_changes_block (__main__.ProductLiteralGuardTests.test_runtime_embedding_source_output_and_generator_changes_block) (changed='output')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 538, in test_runtime_embedding_source_output_and_generator_changes_block
+    report, _ = self.run_guard(1)
+                ^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 94, in run_guard
+    self.assertEqual(result.returncode, expected,
+AssertionError: 2 != 1 : {"counts": {"allowed": 0, "blocked_files": 0, "candidates": 0, "files": 0, "stale_allowlist": 0, "unclassified": 0}, "io": {"generator_output_writes": 0, "network_calls": 0, "source_writes": 0}, "schema": "loom.product_literals_report/1", "valid": false}
+{"issue_codes": {"configuration_error": 1}, "issue_count": 1}
+
+
+======================================================================
+FAIL: test_runtime_embedding_source_output_and_generator_changes_block (__main__.ProductLiteralGuardTests.test_runtime_embedding_source_output_and_generator_changes_block) (changed='generator')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 538, in test_runtime_embedding_source_output_and_generator_changes_block
+    report, _ = self.run_guard(1)
+                ^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 94, in run_guard
+    self.assertEqual(result.returncode, expected,
+AssertionError: 2 != 1 : {"counts": {"allowed": 0, "blocked_files": 0, "candidates": 0, "files": 0, "stale_allowlist": 0, "unclassified": 0}, "io": {"generator_output_writes": 0, "network_calls": 0, "source_writes": 0}, "schema": "loom.product_literals_report/1", "valid": false}
+{"issue_codes": {"configuration_error": 1}, "issue_count": 1}
+
+
+======================================================================
+FAIL: test_runtime_embedding_source_output_and_generator_changes_block (__main__.ProductLiteralGuardTests.test_runtime_embedding_source_output_and_generator_changes_block)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 543, in test_runtime_embedding_source_output_and_generator_changes_block
+    self.run_guard(0)
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 94, in run_guard
+    self.assertEqual(result.returncode, expected,
+AssertionError: 2 != 0 : {"counts": {"allowed": 0, "blocked_files": 0, "candidates": 0, "files": 0, "stale_allowlist": 0, "unclassified": 0}, "io": {"generator_output_writes": 0, "network_calls": 0, "source_writes": 0}, "schema": "loom.product_literals_report/1", "valid": false}
+{"issue_codes": {"configuration_error": 1}, "issue_count": 1}
+
+
+======================================================================
+FAIL: test_tampered_byte_and_literal_hash_anchors_are_stale (__main__.ProductLiteralGuardTests.test_tampered_byte_and_literal_hash_anchors_are_stale) (change={'byte_start': 10})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 280, in test_tampered_byte_and_literal_hash_anchors_are_stale
+    report, _ = self.run_guard(1)
+                ^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 94, in run_guard
+    self.assertEqual(result.returncode, expected,
+AssertionError: 2 != 1 : {"counts": {"allowed": 0, "blocked_files": 0, "candidates": 0, "files": 0, "stale_allowlist": 0, "unclassified": 0}, "io": {"generator_output_writes": 0, "network_calls": 0, "source_writes": 0}, "schema": "loom.product_literals_report/1", "valid": false}
+{"issue_codes": {"configuration_error": 1}, "issue_count": 1}
+
+
+======================================================================
+FAIL: test_tampered_byte_and_literal_hash_anchors_are_stale (__main__.ProductLiteralGuardTests.test_tampered_byte_and_literal_hash_anchors_are_stale) (change={'byte_end': 18})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 280, in test_tampered_byte_and_literal_hash_anchors_are_stale
+    report, _ = self.run_guard(1)
+                ^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 94, in run_guard
+    self.assertEqual(result.returncode, expected,
+AssertionError: 2 != 1 : {"counts": {"allowed": 0, "blocked_files": 0, "candidates": 0, "files": 0, "stale_allowlist": 0, "unclassified": 0}, "io": {"generator_output_writes": 0, "network_calls": 0, "source_writes": 0}, "schema": "loom.product_literals_report/1", "valid": false}
+{"issue_codes": {"configuration_error": 1}, "issue_count": 1}
+
+
+======================================================================
+FAIL: test_tampered_byte_and_literal_hash_anchors_are_stale (__main__.ProductLiteralGuardTests.test_tampered_byte_and_literal_hash_anchors_are_stale) (change={'literal_sha256': '0000000000000000000000000000000000000000000000000000000000000000'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 280, in test_tampered_byte_and_literal_hash_anchors_are_stale
+    report, _ = self.run_guard(1)
+                ^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 94, in run_guard
+    self.assertEqual(result.returncode, expected,
+AssertionError: 2 != 1 : {"counts": {"allowed": 0, "blocked_files": 0, "candidates": 0, "files": 0, "stale_allowlist": 0, "unclassified": 0}, "io": {"generator_output_writes": 0, "network_calls": 0, "source_writes": 0}, "schema": "loom.product_literals_report/1", "valid": false}
+{"issue_codes": {"configuration_error": 1}, "issue_count": 1}
+
+
+======================================================================
+FAIL: test_unknown_suffix_and_unsupported_markup_css_fail_closed (__main__.ProductLiteralGuardTests.test_unknown_suffix_and_unsupported_markup_css_fail_closed) (name='unknown.xyz')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 337, in test_unknown_suffix_and_unsupported_markup_css_fail_closed
+    report, _ = self.run_guard(1)
+                ^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 94, in run_guard
+    self.assertEqual(result.returncode, expected,
+AssertionError: 2 != 1 : {"counts": {"allowed": 0, "blocked_files": 0, "candidates": 0, "files": 0, "stale_allowlist": 0, "unclassified": 0}, "io": {"generator_output_writes": 0, "network_calls": 0, "source_writes": 0}, "schema": "loom.product_literals_report/1", "valid": false}
+{"issue_codes": {"configuration_error": 1}, "issue_count": 1}
+
+
+======================================================================
+FAIL: test_unknown_suffix_and_unsupported_markup_css_fail_closed (__main__.ProductLiteralGuardTests.test_unknown_suffix_and_unsupported_markup_css_fail_closed) (name='page.html')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 337, in test_unknown_suffix_and_unsupported_markup_css_fail_closed
+    report, _ = self.run_guard(1)
+                ^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 94, in run_guard
+    self.assertEqual(result.returncode, expected,
+AssertionError: 2 != 1 : {"counts": {"allowed": 0, "blocked_files": 0, "candidates": 0, "files": 0, "stale_allowlist": 0, "unclassified": 0}, "io": {"generator_output_writes": 0, "network_calls": 0, "source_writes": 0}, "schema": "loom.product_literals_report/1", "valid": false}
+{"issue_codes": {"configuration_error": 1}, "issue_count": 1}
+
+
+======================================================================
+FAIL: test_unknown_suffix_and_unsupported_markup_css_fail_closed (__main__.ProductLiteralGuardTests.test_unknown_suffix_and_unsupported_markup_css_fail_closed) (name='style.css')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 337, in test_unknown_suffix_and_unsupported_markup_css_fail_closed
+    report, _ = self.run_guard(1)
+                ^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 94, in run_guard
+    self.assertEqual(result.returncode, expected,
+AssertionError: 2 != 1 : {"counts": {"allowed": 0, "blocked_files": 0, "candidates": 0, "files": 0, "stale_allowlist": 0, "unclassified": 0}, "io": {"generator_output_writes": 0, "network_calls": 0, "source_writes": 0}, "schema": "loom.product_literals_report/1", "valid": false}
+{"issue_codes": {"configuration_error": 1}, "issue_count": 1}
+
+
+======================================================================
+FAIL: test_unsupported_interpolations_text_blocks_and_nested_comments_block (__main__.ProductLiteralGuardTests.test_unsupported_interpolations_text_blocks_and_nested_comments_block) (name='template.py')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 361, in test_unsupported_interpolations_text_blocks_and_nested_comments_block
+    report, _ = self.run_guard(1)
+                ^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 94, in run_guard
+    self.assertEqual(result.returncode, expected,
+AssertionError: 2 != 1 : {"counts": {"allowed": 0, "blocked_files": 0, "candidates": 0, "files": 0, "stale_allowlist": 0, "unclassified": 0}, "io": {"generator_output_writes": 0, "network_calls": 0, "source_writes": 0}, "schema": "loom.product_literals_report/1", "valid": false}
+{"issue_codes": {"configuration_error": 1}, "issue_count": 1}
+
+
+======================================================================
+FAIL: test_unsupported_interpolations_text_blocks_and_nested_comments_block (__main__.ProductLiteralGuardTests.test_unsupported_interpolations_text_blocks_and_nested_comments_block) (name='template.kt')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 361, in test_unsupported_interpolations_text_blocks_and_nested_comments_block
+    report, _ = self.run_guard(1)
+                ^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 94, in run_guard
+    self.assertEqual(result.returncode, expected,
+AssertionError: 2 != 1 : {"counts": {"allowed": 0, "blocked_files": 0, "candidates": 0, "files": 0, "stale_allowlist": 0, "unclassified": 0}, "io": {"generator_output_writes": 0, "network_calls": 0, "source_writes": 0}, "schema": "loom.product_literals_report/1", "valid": false}
+{"issue_codes": {"configuration_error": 1}, "issue_count": 1}
+
+
+======================================================================
+FAIL: test_unsupported_interpolations_text_blocks_and_nested_comments_block (__main__.ProductLiteralGuardTests.test_unsupported_interpolations_text_blocks_and_nested_comments_block) (name='Text.java')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 361, in test_unsupported_interpolations_text_blocks_and_nested_comments_block
+    report, _ = self.run_guard(1)
+                ^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 94, in run_guard
+    self.assertEqual(result.returncode, expected,
+AssertionError: 2 != 1 : {"counts": {"allowed": 0, "blocked_files": 0, "candidates": 0, "files": 0, "stale_allowlist": 0, "unclassified": 0}, "io": {"generator_output_writes": 0, "network_calls": 0, "source_writes": 0}, "schema": "loom.product_literals_report/1", "valid": false}
+{"issue_codes": {"configuration_error": 1}, "issue_count": 1}
+
+
+======================================================================
+FAIL: test_unsupported_interpolations_text_blocks_and_nested_comments_block (__main__.ProductLiteralGuardTests.test_unsupported_interpolations_text_blocks_and_nested_comments_block) (name='comment.kt')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 361, in test_unsupported_interpolations_text_blocks_and_nested_comments_block
+    report, _ = self.run_guard(1)
+                ^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 94, in run_guard
+    self.assertEqual(result.returncode, expected,
+AssertionError: 2 != 1 : {"counts": {"allowed": 0, "blocked_files": 0, "candidates": 0, "files": 0, "stale_allowlist": 0, "unclassified": 0}, "io": {"generator_output_writes": 0, "network_calls": 0, "source_writes": 0}, "schema": "loom.product_literals_report/1", "valid": false}
+{"issue_codes": {"configuration_error": 1}, "issue_count": 1}
+
+
+======================================================================
+FAIL: test_whole_source_hash_change_invalidates_unchanged_literal (__main__.ProductLiteralGuardTests.test_whole_source_hash_change_invalidates_unchanged_literal)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 246, in test_whole_source_hash_change_invalidates_unchanged_literal
+    self.run_guard(0)
+  File "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_product_literal_guard.py", line 94, in run_guard
+    self.assertEqual(result.returncode, expected,
+AssertionError: 2 != 0 : {"counts": {"allowed": 0, "blocked_files": 0, "candidates": 0, "files": 0, "stale_allowlist": 0, "unclassified": 0}, "io": {"generator_output_writes": 0, "network_calls": 0, "source_writes": 0}, "schema": "loom.product_literals_report/1", "valid": false}
+{"issue_codes": {"configuration_error": 1}, "issue_count": 1}
+
+
+----------------------------------------------------------------------
+Ran 31 tests in 27.816s
+
+FAILED (failures=30)

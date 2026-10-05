@@ -1,0 +1,650 @@
+{
+  "schema": "loom.runtime_profile_effective/1",
+  "domain": "import_audit",
+  "revision": 1,
+  "hash": "000b2bca2836271e0c862ec55b3dec85e737d03678f53bcdd66051a6c561eab2",
+  "is_builtin": true,
+  "values": {
+    "estimator": {
+      "chars_per_token_low": 4.0,
+      "chars_per_token_high": 3.0,
+      "output_ratio": 0.4,
+      "input_price": null,
+      "output_price": null
+    },
+    "native_scope": {
+      "active_only": false
+    },
+    "python_estimate": {
+      "fraction": 1.0,
+      "prefix_tokens": 8000,
+      "include_versions": true,
+      "include_unknown_status": true,
+      "include_active": true,
+      "include_excluded": false,
+      "include_deleted": false,
+      "include_tools": true
+    },
+    "python_cli": {
+      "scope": "all",
+      "prefix_tokens": 0,
+      "sqlite_cache_kib": 4096,
+      "include_excluded": null,
+      "include_deleted": null
+    },
+    "status_classes": [
+      "active",
+      "version",
+      "excluded",
+      "deleted",
+      "unknown"
+    ],
+    "tool_roles": [
+      "tool",
+      "function"
+    ],
+    "python_inventory": {
+      "sqlite_cache_kib": 4096
+    }
+  },
+  "value_schema": {
+    "x-setting": "",
+    "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+    "type": "object",
+    "required": [
+      "estimator",
+      "native_scope",
+      "python_estimate",
+      "python_cli",
+      "status_classes",
+      "tool_roles",
+      "python_inventory"
+    ],
+    "properties": {
+      "estimator": {
+        "x-setting": "/estimator",
+        "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+        "type": "object",
+        "required": [
+          "chars_per_token_low",
+          "chars_per_token_high",
+          "output_ratio",
+          "input_price",
+          "output_price"
+        ],
+        "properties": {
+          "chars_per_token_low": {
+            "x-setting": "/estimator/chars_per_token_low",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "number",
+            "minimum": 0,
+            "x-unit": "Unicode codepoints per estimated token",
+            "description": "Existing native/Python semantic validator additionally requires finite low >= high > 0. Supported RuntimeProfile schema vocabulary cannot express strict positivity or cross-field ordering; retain that validator when wiring."
+          },
+          "chars_per_token_high": {
+            "x-setting": "/estimator/chars_per_token_high",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "number",
+            "minimum": 0,
+            "x-unit": "Unicode codepoints per estimated token",
+            "description": "Existing native/Python semantic validator additionally requires finite low >= high > 0. Supported RuntimeProfile schema vocabulary cannot express strict positivity or cross-field ordering; retain that validator when wiring."
+          },
+          "output_ratio": {
+            "x-setting": "/estimator/output_ratio",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "number",
+            "minimum": 0,
+            "description": "Nonnegative output/input projection ratio; no invented upper bound."
+          },
+          "input_price": {
+            "x-setting": "/estimator/input_price",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": [
+              "number",
+              "null"
+            ],
+            "x-unit": "USD per million tokens",
+            "minimum": 0,
+            "description": "Caller-supplied price or null. Existing native validator requires both input/output prices together. No current price is inferred."
+          },
+          "output_price": {
+            "x-setting": "/estimator/output_price",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": [
+              "number",
+              "null"
+            ],
+            "x-unit": "USD per million tokens",
+            "minimum": 0,
+            "description": "Caller-supplied price or null. Existing native validator requires both input/output prices together. No current price is inferred."
+          }
+        },
+        "additionalProperties": true
+      },
+      "native_scope": {
+        "x-setting": "/native_scope",
+        "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+        "type": "object",
+        "required": [
+          "active_only"
+        ],
+        "properties": {
+          "active_only": {
+            "x-setting": "/native_scope/active_only",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": true
+      },
+      "python_estimate": {
+        "x-setting": "/python_estimate",
+        "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+        "type": "object",
+        "required": [
+          "fraction",
+          "prefix_tokens",
+          "include_versions",
+          "include_unknown_status",
+          "include_active",
+          "include_excluded",
+          "include_deleted",
+          "include_tools"
+        ],
+        "properties": {
+          "fraction": {
+            "x-setting": "/python_estimate/fraction",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Existing Python estimate() additionally requires > 0; a proportional fraction of the corpus, not a measured sample."
+          },
+          "prefix_tokens": {
+            "x-setting": "/python_estimate/prefix_tokens",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "integer",
+            "minimum": 0,
+            "x-unit": "tokens per selected conversation"
+          },
+          "include_versions": {
+            "x-setting": "/python_estimate/include_versions",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "boolean"
+          },
+          "include_unknown_status": {
+            "x-setting": "/python_estimate/include_unknown_status",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "boolean"
+          },
+          "include_active": {
+            "x-setting": "/python_estimate/include_active",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "boolean"
+          },
+          "include_excluded": {
+            "x-setting": "/python_estimate/include_excluded",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "boolean"
+          },
+          "include_deleted": {
+            "x-setting": "/python_estimate/include_deleted",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "boolean"
+          },
+          "include_tools": {
+            "x-setting": "/python_estimate/include_tools",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": true
+      },
+      "python_cli": {
+        "x-setting": "/python_cli",
+        "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+        "type": "object",
+        "required": [
+          "scope",
+          "prefix_tokens",
+          "sqlite_cache_kib",
+          "include_excluded",
+          "include_deleted"
+        ],
+        "properties": {
+          "scope": {
+            "x-setting": "/python_cli/scope",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "string",
+            "description": "Current Python CLI codec names are all/active/legacy; an inspected custom name is not automatically supported by that CLI."
+          },
+          "prefix_tokens": {
+            "x-setting": "/python_cli/prefix_tokens",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "integer",
+            "minimum": 0,
+            "x-unit": "tokens per selected conversation"
+          },
+          "sqlite_cache_kib": {
+            "x-setting": "/python_cli/sqlite_cache_kib",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "integer",
+            "minimum": 1,
+            "x-unit": "KiB",
+            "description": "Positive existing Python SQLite cache contract; no policy ceiling. CLI and callable inventory defaults are separate caller layers."
+          },
+          "include_excluded": {
+            "x-setting": "/python_cli/include_excluded",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "Null preserves existing scope-dependent CLI behavior: included for all scope, excluded otherwise."
+          },
+          "include_deleted": {
+            "x-setting": "/python_cli/include_deleted",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "Null preserves existing scope-dependent CLI behavior: included for all scope, excluded otherwise."
+          }
+        },
+        "additionalProperties": true
+      },
+      "status_classes": {
+        "x-setting": "/status_classes",
+        "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+        "type": "array",
+        "items": {
+          "x-setting": "/status_classes/*",
+          "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+          "type": "string"
+        }
+      },
+      "tool_roles": {
+        "x-setting": "/tool_roles",
+        "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+        "type": "array",
+        "items": {
+          "x-setting": "/tool_roles/*",
+          "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+          "type": "string"
+        }
+      },
+      "python_inventory": {
+        "x-setting": "/python_inventory",
+        "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+        "type": "object",
+        "required": [
+          "sqlite_cache_kib"
+        ],
+        "properties": {
+          "sqlite_cache_kib": {
+            "x-setting": "/python_inventory/sqlite_cache_kib",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "integer",
+            "minimum": 1,
+            "x-unit": "KiB",
+            "description": "Positive existing Python SQLite cache contract; no policy ceiling. CLI and callable inventory defaults are separate caller layers."
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "additionalProperties": true,
+    "description": "UNWIRED: exact W5 native audit, Python estimate(), Python CLI and SQLite inventory caller recipes captured from 4e8c3de. RuntimeProfile inspection/overrides only; audit engine/tool does not consume this domain. Preserve existing semantic validation and output schemas; no model prices or measured billing are inferred."
+  },
+  "definition": {
+    "schema": "loom.runtime_profile/1",
+    "domain": "import_audit",
+    "revision": 1,
+    "description": "UNWIRED: exact W5 native audit, Python estimate(), Python CLI and SQLite inventory caller recipes captured from 4e8c3de. RuntimeProfile inspection/overrides only; audit engine/tool does not consume this domain. Preserve existing semantic validation and output schemas; no model prices or measured billing are inferred.",
+    "defaults": {
+      "estimator": {
+        "chars_per_token_low": 4.0,
+        "chars_per_token_high": 3.0,
+        "output_ratio": 0.4,
+        "input_price": null,
+        "output_price": null
+      },
+      "native_scope": {
+        "active_only": false
+      },
+      "python_estimate": {
+        "fraction": 1.0,
+        "prefix_tokens": 8000,
+        "include_versions": true,
+        "include_unknown_status": true,
+        "include_active": true,
+        "include_excluded": false,
+        "include_deleted": false,
+        "include_tools": true
+      },
+      "python_cli": {
+        "scope": "all",
+        "prefix_tokens": 0,
+        "sqlite_cache_kib": 4096,
+        "include_excluded": null,
+        "include_deleted": null
+      },
+      "status_classes": [
+        "active",
+        "version",
+        "excluded",
+        "deleted",
+        "unknown"
+      ],
+      "tool_roles": [
+        "tool",
+        "function"
+      ],
+      "python_inventory": {
+        "sqlite_cache_kib": 4096
+      }
+    },
+    "value_schema": {
+      "x-setting": "",
+      "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+      "type": "object",
+      "required": [
+        "estimator",
+        "native_scope",
+        "python_estimate",
+        "python_cli",
+        "status_classes",
+        "tool_roles",
+        "python_inventory"
+      ],
+      "properties": {
+        "estimator": {
+          "x-setting": "/estimator",
+          "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+          "type": "object",
+          "required": [
+            "chars_per_token_low",
+            "chars_per_token_high",
+            "output_ratio",
+            "input_price",
+            "output_price"
+          ],
+          "properties": {
+            "chars_per_token_low": {
+              "x-setting": "/estimator/chars_per_token_low",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "number",
+              "minimum": 0,
+              "x-unit": "Unicode codepoints per estimated token",
+              "description": "Existing native/Python semantic validator additionally requires finite low >= high > 0. Supported RuntimeProfile schema vocabulary cannot express strict positivity or cross-field ordering; retain that validator when wiring."
+            },
+            "chars_per_token_high": {
+              "x-setting": "/estimator/chars_per_token_high",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "number",
+              "minimum": 0,
+              "x-unit": "Unicode codepoints per estimated token",
+              "description": "Existing native/Python semantic validator additionally requires finite low >= high > 0. Supported RuntimeProfile schema vocabulary cannot express strict positivity or cross-field ordering; retain that validator when wiring."
+            },
+            "output_ratio": {
+              "x-setting": "/estimator/output_ratio",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "number",
+              "minimum": 0,
+              "description": "Nonnegative output/input projection ratio; no invented upper bound."
+            },
+            "input_price": {
+              "x-setting": "/estimator/input_price",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": [
+                "number",
+                "null"
+              ],
+              "x-unit": "USD per million tokens",
+              "minimum": 0,
+              "description": "Caller-supplied price or null. Existing native validator requires both input/output prices together. No current price is inferred."
+            },
+            "output_price": {
+              "x-setting": "/estimator/output_price",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": [
+                "number",
+                "null"
+              ],
+              "x-unit": "USD per million tokens",
+              "minimum": 0,
+              "description": "Caller-supplied price or null. Existing native validator requires both input/output prices together. No current price is inferred."
+            }
+          },
+          "additionalProperties": true
+        },
+        "native_scope": {
+          "x-setting": "/native_scope",
+          "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+          "type": "object",
+          "required": [
+            "active_only"
+          ],
+          "properties": {
+            "active_only": {
+              "x-setting": "/native_scope/active_only",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": true
+        },
+        "python_estimate": {
+          "x-setting": "/python_estimate",
+          "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+          "type": "object",
+          "required": [
+            "fraction",
+            "prefix_tokens",
+            "include_versions",
+            "include_unknown_status",
+            "include_active",
+            "include_excluded",
+            "include_deleted",
+            "include_tools"
+          ],
+          "properties": {
+            "fraction": {
+              "x-setting": "/python_estimate/fraction",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "Existing Python estimate() additionally requires > 0; a proportional fraction of the corpus, not a measured sample."
+            },
+            "prefix_tokens": {
+              "x-setting": "/python_estimate/prefix_tokens",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "integer",
+              "minimum": 0,
+              "x-unit": "tokens per selected conversation"
+            },
+            "include_versions": {
+              "x-setting": "/python_estimate/include_versions",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "boolean"
+            },
+            "include_unknown_status": {
+              "x-setting": "/python_estimate/include_unknown_status",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "boolean"
+            },
+            "include_active": {
+              "x-setting": "/python_estimate/include_active",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "boolean"
+            },
+            "include_excluded": {
+              "x-setting": "/python_estimate/include_excluded",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "boolean"
+            },
+            "include_deleted": {
+              "x-setting": "/python_estimate/include_deleted",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "boolean"
+            },
+            "include_tools": {
+              "x-setting": "/python_estimate/include_tools",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": true
+        },
+        "python_cli": {
+          "x-setting": "/python_cli",
+          "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+          "type": "object",
+          "required": [
+            "scope",
+            "prefix_tokens",
+            "sqlite_cache_kib",
+            "include_excluded",
+            "include_deleted"
+          ],
+          "properties": {
+            "scope": {
+              "x-setting": "/python_cli/scope",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "string",
+              "description": "Current Python CLI codec names are all/active/legacy; an inspected custom name is not automatically supported by that CLI."
+            },
+            "prefix_tokens": {
+              "x-setting": "/python_cli/prefix_tokens",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "integer",
+              "minimum": 0,
+              "x-unit": "tokens per selected conversation"
+            },
+            "sqlite_cache_kib": {
+              "x-setting": "/python_cli/sqlite_cache_kib",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "integer",
+              "minimum": 1,
+              "x-unit": "KiB",
+              "description": "Positive existing Python SQLite cache contract; no policy ceiling. CLI and callable inventory defaults are separate caller layers."
+            },
+            "include_excluded": {
+              "x-setting": "/python_cli/include_excluded",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": [
+                "boolean",
+                "null"
+              ],
+              "description": "Null preserves existing scope-dependent CLI behavior: included for all scope, excluded otherwise."
+            },
+            "include_deleted": {
+              "x-setting": "/python_cli/include_deleted",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": [
+                "boolean",
+                "null"
+              ],
+              "description": "Null preserves existing scope-dependent CLI behavior: included for all scope, excluded otherwise."
+            }
+          },
+          "additionalProperties": true
+        },
+        "status_classes": {
+          "x-setting": "/status_classes",
+          "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+          "type": "array",
+          "items": {
+            "x-setting": "/status_classes/*",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "string"
+          }
+        },
+        "tool_roles": {
+          "x-setting": "/tool_roles",
+          "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+          "type": "array",
+          "items": {
+            "x-setting": "/tool_roles/*",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "string"
+          }
+        },
+        "python_inventory": {
+          "x-setting": "/python_inventory",
+          "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+          "type": "object",
+          "required": [
+            "sqlite_cache_kib"
+          ],
+          "properties": {
+            "sqlite_cache_kib": {
+              "x-setting": "/python_inventory/sqlite_cache_kib",
+              "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+              "type": "integer",
+              "minimum": 1,
+              "x-unit": "KiB",
+              "description": "Positive existing Python SQLite cache contract; no policy ceiling. CLI and callable inventory defaults are separate caller layers."
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true,
+      "description": "UNWIRED: exact W5 native audit, Python estimate(), Python CLI and SQLite inventory caller recipes captured from 4e8c3de. RuntimeProfile inspection/overrides only; audit engine/tool does not consume this domain. Preserve existing semantic validation and output schemas; no model prices or measured billing are inferred."
+    }
+  },
+  "defaults": {
+    "estimator": {
+      "chars_per_token_low": 4.0,
+      "chars_per_token_high": 3.0,
+      "output_ratio": 0.4,
+      "input_price": null,
+      "output_price": null
+    },
+    "native_scope": {
+      "active_only": false
+    },
+    "python_estimate": {
+      "fraction": 1.0,
+      "prefix_tokens": 8000,
+      "include_versions": true,
+      "include_unknown_status": true,
+      "include_active": true,
+      "include_excluded": false,
+      "include_deleted": false,
+      "include_tools": true
+    },
+    "python_cli": {
+      "scope": "all",
+      "prefix_tokens": 0,
+      "sqlite_cache_kib": 4096,
+      "include_excluded": null,
+      "include_deleted": null
+    },
+    "status_classes": [
+      "active",
+      "version",
+      "excluded",
+      "deleted",
+      "unknown"
+    ],
+    "tool_roles": [
+      "tool",
+      "function"
+    ],
+    "python_inventory": {
+      "sqlite_cache_kib": 4096
+    }
+  },
+  "source_provenance": [
+    {
+      "path": "loom/data/runtime/import_audit.pack",
+      "pointer": "",
+      "raw_sha256": "7e3abefa4c8dff5e0d696b24c1a4c65b89003a146ce708d2e9148f97fc912c26",
+      "target": ""
+    }
+  ]
+}
