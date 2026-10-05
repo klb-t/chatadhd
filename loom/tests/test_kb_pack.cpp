@@ -34,6 +34,8 @@ std::string error_of(std::map<std::string, Json> docs) {
 
 }  // namespace
 
+#include "kb/tests/normalizer_data.verify.cc"
+
 TEST_SUITE("kb_pack") {
   TEST_CASE("every file under loom/data loads and validates (schema + cross references)") {
     auto r = kb::Pack::load_dir(data_dir());

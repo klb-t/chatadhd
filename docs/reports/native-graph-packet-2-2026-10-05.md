@@ -35,9 +35,9 @@ nie jest przedstawiany jako pełna bramka starego rdzenia. Pełny bazowy build
 `-j3` przerwał OOM; powtórzenie `-j1` świadomie skrócono do zależności probe.
 Oba logi, manifest obiektów i komendy pozostają w dowodach.
 
-Następnie: porównanie wyników bajt w bajt na tym samym korpusie, 11 regresji
+Następnie: porównanie wyników bajt w bajt na tym samym korpusie, 13 regresji
 nakładek i błędnej konfiguracji, pełny CTest na vendored SQLite, WERROR,
-CLI, shared library i serwer. Trwa build zmienionego rdzenia.
+CLI, shared library i serwer. Trwa build zmienionego rdzenia. Kod ma niezależny przegląd; nie jest jeszcze zgłoszony do odbioru.
 Wywołania płatne: 0.
 
 Kontrakt nowego przepisu: [NORMALIZER_RECIPE.md](../../loom/src/kb/NORMALIZER_RECIPE.md).

@@ -3,6 +3,7 @@
 // what they may say is an invariant enforced here.
 #include <algorithm>
 #include <cmath>
+#include <cstdint>
 #include <filesystem>
 #include <functional>
 #include <limits>
@@ -69,6 +70,17 @@ struct V {
     if (!m) return !required;
     if (!m->is_number_integer() || m->get<long>() < lo || m->get<long>() > hi) {
       err(ptr + "/" + std::string(key), "expected an integer in [" + std::to_string(lo) + ", " + std::to_string(hi) + "]");
+      return false;
+    }
+    return true;
+  }
+  bool size_count(const Json& o, const std::string& ptr, std::string_view key) {
+    const Json* value = member(o, ptr, key);
+    if (!value) return false;
+    if (!value->is_number_integer() ||
+        (!value->is_number_unsigned() && value->get<std::int64_t>() < 0) ||
+        value->get<std::uint64_t>() > std::numeric_limits<std::size_t>::max()) {
+      err(ptr + "/" + std::string(key), "expected a nonnegative integer representable as size_t");
       return false;
     }
     return true;
@@ -347,6 +359,31 @@ void v_stopwords(V& v, const Json& d) {
 }
 
 void v_stemming(V& v, const Json& d) {
+  if (const Json* recipe = v.object(d, "", "normalization")) {
+    const std::string ptr = "/normalization";
+    for (const char* key : {"pl_character_cues", "vowels", "cvc_terminal_exceptions", "undouble_exceptions",
+                            "restore_suffix"}) v.str(*recipe, ptr, key, true, false);
+    for (const char* key : {"non_ascii_vowel", "cvc_allow_non_ascii", "undouble_allow_non_ascii"}) {
+      if (const Json* value = v.member(*recipe, ptr, key); value && !value->is_boolean()) {
+        v.err(ptr + "/" + key, "expected a boolean");
+      }
+    }
+    for (const char* key : {"guess_min_tokens", "cvc_vowel_groups"}) {
+      v.size_count(*recipe, ptr, key);
+    }
+    for (const char* key : {"mixed_min_fraction", "pl_min_fraction", "en_min_fraction"}) {
+      v.num(*recipe, ptr, key, 0, 1);
+    }
+    if (const Json* sources = v.array(*recipe, ptr, "stopword_sources")) {
+      for (std::size_t i = 0; i < sources->size(); ++i) {
+        const Json& source = (*sources)[i];
+        const std::string p = idx(ptr + "/stopword_sources", i);
+        v.str(source, p, "lexicon");
+        v.strings(source, p, "fields");
+        v.strings(source, p, "pl_signal_fields");
+      }
+    }
+  }
   if (const Json* f = v.object(d, "", "fold")) {
     for (auto it = f->begin(); it != f->end(); ++it) {
       if (utf8::length(it.key()) != 1 || !it.value().is_string()) v.err("/fold/" + it.key(), "expected one code point -> string");
@@ -356,8 +393,8 @@ void v_stemming(V& v, const Json& d) {
     const Json* s = v.object(d, "", lang);
     if (!s) continue;
     std::string p = std::string("/") + lang;
-    v.integer(*s, p, "min_token", 1, 32);
-    v.integer(*s, p, "min_stem", 1, 32);
+    v.size_count(*s, p, "min_token");
+    v.size_count(*s, p, "min_stem");
     v.strings(*s, p, "suffixes", true, true);
     for (const char* key : {"markers", "keep_endings", "verbal", "restore_e"}) v.strings(*s, p, key, false);
     if (const Json* vb = json::find(*s, "verbal"); vb && vb->is_array()) {
@@ -1176,7 +1213,7 @@ bool validate_document(std::string_view relpath, std::string_view schema, const 
   if (schema == "loom.kb.pack/1") v_pack(v, d);
   else if (schema == "loom.kb.types/1") v_types(v, d);
   else if (schema == "loom.kb.stopwords/1") v_stopwords(v, d);
-  else if (schema == "loom.kb.stemming/1") v_stemming(v, d);
+  else if (schema == "loom.kb.stemming/2") v_stemming(v, d);
   else if (schema == "loom.kb.glossary/1") v_glossary(v, d);
   else if (schema == "loom.kb.gazetteer/1") v_gazetteer(v, d, t);
   else if (schema == "loom.kb.item_cues/1") v_item_cues(v, d, t);
@@ -1626,6 +1663,38 @@ void validate_cross_references(const Docs& docs, std::vector<PackIssue>& issues)
     if (json::get_string(d, "schema") == "loom.kb.stopwords/1") {
       std::string ext = json::get_string(d, "extends");
       if (!ext.empty() && !docs.count(ext)) issues.push_back({p, "/extends", "unknown pack file " + ext});
+    }
+  }
+  // Normalization sources reference actual lexicon fields, including
+  // user-defined fields. Empty source/field lists deliberately contribute none.
+  const std::string stemming_file = "lexicons/stemming.json";
+  if (const Json* recipe = json::find(doc(docs, stemming_file), "normalization")) {
+    if (const Json* sources = json::find(*recipe, "stopword_sources"); sources && sources->is_array()) {
+      for (std::size_t i = 0; i < sources->size(); ++i) {
+        const Json& source = (*sources)[i];
+        const std::string pointer = idx("/normalization/stopword_sources", i);
+        const std::string target = "lexicons/" + json::get_string(source, "lexicon") + ".json";
+        const auto entry = docs.find(target);
+        if (entry == docs.end()) {
+          issues.push_back({stemming_file, pointer + "/lexicon", "unknown pack lexicon " + target});
+          continue;
+        }
+        for (const char* key : {"fields", "pl_signal_fields"}) {
+          const Json* fields = json::find(source, key);
+          if (!fields || !fields->is_array()) continue;
+          for (std::size_t j = 0; j < fields->size(); ++j) {
+            const Json& field = (*fields)[j];
+            if (!field.is_string()) continue;
+            const Json* words = json::find(entry->second, field.get<std::string>());
+            bool valid = words && words->is_array();
+            if (valid) {
+              for (const Json& word : *words) valid = valid && word.is_string();
+            }
+            if (!valid) issues.push_back({stemming_file, idx(pointer + "/" + key, j),
+                                         "expected a string array at " + target + "#/" + field.get<std::string>()});
+          }
+        }
+      }
     }
   }
   // Relation patterns: slot types resolve.
