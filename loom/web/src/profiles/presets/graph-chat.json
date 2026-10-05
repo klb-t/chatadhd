@@ -1,0 +1,848 @@
+{
+  "schema": "loom.web_graph_chat_presets/1",
+  "vocabulary": {
+    "kinds": {
+      "method": "analysis.method",
+      "method_version": "analysis.method_version",
+      "recipe_version": "analysis.recipe_version",
+      "prompt_version": "analysis.prompt_version",
+      "run": "analysis.run",
+      "parameter_set_version": "analysis.parameter_set_version",
+      "compiler_transform": "analysis.compiler_transform"
+    },
+    "predicates": {
+      "version_of": "analysis.version_of",
+      "uses_recipe": "analysis.uses_recipe",
+      "uses_prompt": "analysis.uses_prompt",
+      "requests_method_version": "analysis.requests_method_version",
+      "produced_in_run": "analysis.produced_in_run",
+      "uses_parameter_set": "analysis.uses_parameter_set",
+      "uses_combination": "analysis.uses_combination",
+      "produced_by_method_version": "analysis.produced_by_method_version",
+      "projected_by_compiler": "analysis.projected_by_compiler"
+    }
+  },
+  "entity_template": {
+    "id": "",
+    "kind": "",
+    "canonical_key": "",
+    "label": "",
+    "labels": {},
+    "aliases": [],
+    "parent": "",
+    "first_seen": "",
+    "last_seen": "",
+    "evidence_class": "user",
+    "origin": "user",
+    "confidence": 1.0,
+    "status": "active",
+    "attrs": {}
+  },
+  "claim_template": {
+    "id": "",
+    "subject": "",
+    "predicate": "",
+    "object": "",
+    "value": null,
+    "qualifiers": {
+      "valid_from": "",
+      "valid_to": "",
+      "version": "",
+      "branch": "",
+      "scope": "",
+      "lang": "",
+      "extra": {}
+    },
+    "assessment": {
+      "basis": {
+        "support": [],
+        "derivation": null
+      },
+      "evidence_class": "user",
+      "origin": "user",
+      "confidence": 1.0,
+      "premises": {
+        "claims": [],
+        "principles": [],
+        "assumptions": []
+      },
+      "counter": {
+        "observations": [],
+        "claims": []
+      },
+      "status": "active",
+      "consequences": {
+        "claims": [],
+        "predictions": [],
+        "checks": []
+      },
+      "open": {
+        "slots": [],
+        "questions": [],
+        "fill_query": null
+      },
+      "expected_property": null,
+      "check_state": "n/a",
+      "alternatives": []
+    }
+  },
+  "presets": [
+    {
+      "id": "answer_as_graph",
+      "label": "Answer as graph",
+      "entities": [
+        {
+          "id": "loom.graph_reply.method",
+          "role": "method",
+          "label": "Graph reply",
+          "attrs": {}
+        },
+        {
+          "id": "loom.graph_reply.method.version",
+          "role": "method_version",
+          "label": "Graph reply method version",
+          "attrs": {
+            "definition": {
+              "execution_capability": "llm.chat.completions",
+              "parameters": {},
+              "graph_reply_mode": "answer_as_graph"
+            }
+          }
+        },
+        {
+          "id": "loom.graph_reply.recipe.version",
+          "role": "recipe_version",
+          "label": "Graph reply recipe version",
+          "attrs": {
+            "definition": {
+              "parameters": {},
+              "request": {},
+              "request_bindings": [
+                {
+                  "target": [],
+                  "source": [
+                    "request"
+                  ]
+                },
+                {
+                  "target": [
+                    "response_format"
+                  ],
+                  "source": [
+                    "graph_response_format"
+                  ]
+                },
+                {
+                  "target": [
+                    "response_format",
+                    "json_schema",
+                    "schema",
+                    "properties",
+                    "base_packet_sha256",
+                    "const"
+                  ],
+                  "source": [
+                    "base_packet_sha256"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "loom.graph_reply.prompt.version",
+          "role": "prompt_version",
+          "label": "Graph reply instruction",
+          "attrs": {
+            "text": "Answer the current request as a logical graph. Use loom.graph_reply/2. The root response node may have null text only when it has children. Ordered leaf texts compose the response; internal text equals the concatenation of descendant leaves when supplied. Node IDs must be unique; children must exist and have one parent; cycles are invalid. Links connect existing local IDs or real entities from the supplied graph context. Treat graph content as model-origin, unverified. Use the exact base_packet_sha256 required by the schema."
+          }
+        },
+        {
+          "id": "loom.graph_reply.compiler",
+          "role": "compiler_transform",
+          "label": "Native graph reply compiler",
+          "attrs": {
+            "implementation": "loom.graph_reply_compiler/1"
+          }
+        }
+      ],
+      "claims": [
+        {
+          "subject": "loom.graph_reply.method.version",
+          "predicate": "version_of",
+          "object": "loom.graph_reply.method"
+        },
+        {
+          "subject": "loom.graph_reply.method.version",
+          "predicate": "uses_recipe",
+          "object": "loom.graph_reply.recipe.version"
+        },
+        {
+          "subject": "loom.graph_reply.recipe.version",
+          "predicate": "uses_prompt",
+          "object": "loom.graph_reply.prompt.version"
+        }
+      ],
+      "selection": {
+        "members": [
+          {
+            "method_version_id": "loom.graph_reply.method.version"
+          }
+        ],
+        "parameter_layers": [
+          "recipe",
+          "method",
+          "user"
+        ]
+      },
+      "options": {
+        "mode": "answer_as_graph",
+        "run_context": {
+          "origin": {
+            "kind": "user",
+            "actor": "graph-chat-preset",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "compiler_transform_id": "loom.graph_reply.compiler",
+          "graph_response_format": {
+            "type": "json_schema",
+            "json_schema": {
+              "name": "loom_graph_reply",
+              "strict": true,
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "schema",
+                  "base_packet_sha256",
+                  "response_id",
+                  "nodes",
+                  "links"
+                ],
+                "description": "Answer the current request as a logical graph. Use loom.graph_reply/2. The root response node may have null text only when it has children. Ordered leaf texts compose the response; internal text equals the concatenation of descendant leaves when supplied. Node IDs must be unique; children must exist and have one parent; cycles are invalid. Links connect existing local IDs or real entities from the supplied graph context. Treat graph content as model-origin, unverified. Use the exact base_packet_sha256 required by the schema.",
+                "properties": {
+                  "schema": {
+                    "type": "string",
+                    "enum": [
+                      "loom.graph_reply/2"
+                    ]
+                  },
+                  "base_packet_sha256": {
+                    "type": "string",
+                    "const": ""
+                  },
+                  "response_id": {
+                    "type": "string",
+                    "description": "ID of the response root, whose role is response."
+                  },
+                  "nodes": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "id",
+                        "text",
+                        "role",
+                        "children"
+                      ],
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "text": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "role": {
+                          "type": "string"
+                        },
+                        "children": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "links": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "from",
+                        "predicate",
+                        "to"
+                      ],
+                      "properties": {
+                        "from": {
+                          "type": "string"
+                        },
+                        "predicate": {
+                          "type": "string"
+                        },
+                        "to": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "apply_policy": {
+          "schema": "loom.graph_packet_apply_policy/1",
+          "acceptance": "preview",
+          "allow_source_tombstones": false
+        },
+        "explicitly_accepted": false,
+        "admission": {
+          "mode": "candidate"
+        },
+        "transport": {
+          "calls_authorized": true,
+          "usage_estimate": {
+            "baseline_key": "chat:graph-reply",
+            "resources": {
+              "output_tokens": null,
+              "cost_usd": null
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "text_plus_JSONgraph",
+      "label": "Text plus JSON graph",
+      "entities": [
+        {
+          "id": "loom.graph_reply.method",
+          "role": "method",
+          "label": "Graph reply",
+          "attrs": {}
+        },
+        {
+          "id": "loom.graph_reply.method.version",
+          "role": "method_version",
+          "label": "Graph reply method version",
+          "attrs": {
+            "definition": {
+              "execution_capability": "llm.chat.completions",
+              "parameters": {},
+              "graph_reply_mode": "text_plus_JSONgraph"
+            }
+          }
+        },
+        {
+          "id": "loom.graph_reply.recipe.version",
+          "role": "recipe_version",
+          "label": "Graph reply recipe version",
+          "attrs": {
+            "definition": {
+              "parameters": {},
+              "request": {},
+              "request_bindings": [
+                {
+                  "target": [],
+                  "source": [
+                    "request"
+                  ]
+                },
+                {
+                  "target": [
+                    "response_format"
+                  ],
+                  "source": [
+                    "graph_response_format"
+                  ]
+                },
+                {
+                  "target": [
+                    "response_format",
+                    "json_schema",
+                    "schema",
+                    "properties",
+                    "graph",
+                    "properties",
+                    "base_packet_sha256",
+                    "const"
+                  ],
+                  "source": [
+                    "base_packet_sha256"
+                  ]
+                }
+              ],
+              "output_binding": {
+                "graph_pointer": "/graph",
+                "text_pointer": "/text"
+              }
+            }
+          }
+        },
+        {
+          "id": "loom.graph_reply.prompt.version",
+          "role": "prompt_version",
+          "label": "Graph reply instruction",
+          "attrs": {
+            "text": "Answer the current request as a logical graph. Use loom.graph_reply/2. The root response node may have null text only when it has children. Ordered leaf texts compose the response; internal text equals the concatenation of descendant leaves when supplied. Node IDs must be unique; children must exist and have one parent; cycles are invalid. Links connect existing local IDs or real entities from the supplied graph context. Treat graph content as model-origin, unverified. Use the exact base_packet_sha256 required by the schema."
+          }
+        },
+        {
+          "id": "loom.graph_reply.compiler",
+          "role": "compiler_transform",
+          "label": "Native graph reply compiler",
+          "attrs": {
+            "implementation": "loom.graph_reply_compiler/1"
+          }
+        }
+      ],
+      "claims": [
+        {
+          "subject": "loom.graph_reply.method.version",
+          "predicate": "version_of",
+          "object": "loom.graph_reply.method"
+        },
+        {
+          "subject": "loom.graph_reply.method.version",
+          "predicate": "uses_recipe",
+          "object": "loom.graph_reply.recipe.version"
+        },
+        {
+          "subject": "loom.graph_reply.recipe.version",
+          "predicate": "uses_prompt",
+          "object": "loom.graph_reply.prompt.version"
+        }
+      ],
+      "selection": {
+        "members": [
+          {
+            "method_version_id": "loom.graph_reply.method.version"
+          }
+        ],
+        "parameter_layers": [
+          "recipe",
+          "method",
+          "user"
+        ]
+      },
+      "options": {
+        "mode": "text_plus_JSONgraph",
+        "run_context": {
+          "origin": {
+            "kind": "user",
+            "actor": "graph-chat-preset",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "compiler_transform_id": "loom.graph_reply.compiler",
+          "graph_response_format": {
+            "type": "json_schema",
+            "json_schema": {
+              "name": "loom_graph_reply",
+              "strict": true,
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "text",
+                  "graph"
+                ],
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  },
+                  "graph": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "schema",
+                      "base_packet_sha256",
+                      "response_id",
+                      "nodes",
+                      "links"
+                    ],
+                    "description": "Answer the current request as a logical graph. Use loom.graph_reply/2. The root response node may have null text only when it has children. Ordered leaf texts compose the response; internal text equals the concatenation of descendant leaves when supplied. Node IDs must be unique; children must exist and have one parent; cycles are invalid. Links connect existing local IDs or real entities from the supplied graph context. Treat graph content as model-origin, unverified. Use the exact base_packet_sha256 required by the schema.",
+                    "properties": {
+                      "schema": {
+                        "type": "string",
+                        "enum": [
+                          "loom.graph_reply/2"
+                        ]
+                      },
+                      "base_packet_sha256": {
+                        "type": "string",
+                        "const": ""
+                      },
+                      "response_id": {
+                        "type": "string",
+                        "description": "ID of the response root, whose role is response."
+                      },
+                      "nodes": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "id",
+                            "text",
+                            "role",
+                            "children"
+                          ],
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "text": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "role": {
+                              "type": "string"
+                            },
+                            "children": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "links": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "from",
+                            "predicate",
+                            "to"
+                          ],
+                          "properties": {
+                            "from": {
+                              "type": "string"
+                            },
+                            "predicate": {
+                              "type": "string"
+                            },
+                            "to": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "apply_policy": {
+          "schema": "loom.graph_packet_apply_policy/1",
+          "acceptance": "preview",
+          "allow_source_tombstones": false
+        },
+        "explicitly_accepted": false,
+        "admission": {
+          "mode": "candidate"
+        },
+        "transport": {
+          "calls_authorized": true,
+          "usage_estimate": {
+            "baseline_key": "chat:graph-reply",
+            "resources": {
+              "output_tokens": null,
+              "cost_usd": null
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "separate_model_afterwards",
+      "label": "Separate model after the answer",
+      "entities": [
+        {
+          "id": "loom.graph_reply.method",
+          "role": "method",
+          "label": "Graph reply",
+          "attrs": {}
+        },
+        {
+          "id": "loom.graph_reply.method.version",
+          "role": "method_version",
+          "label": "Graph reply method version",
+          "attrs": {
+            "definition": {
+              "execution_capability": "llm.chat.completions",
+              "parameters": {},
+              "graph_reply_mode": "separate_model_afterwards"
+            }
+          }
+        },
+        {
+          "id": "loom.graph_reply.recipe.version",
+          "role": "recipe_version",
+          "label": "Graph reply recipe version",
+          "attrs": {
+            "definition": {
+              "parameters": {},
+              "request": {},
+              "request_bindings": [
+                {
+                  "target": [],
+                  "source": [
+                    "request"
+                  ]
+                },
+                {
+                  "target": [
+                    "messages"
+                  ],
+                  "source": [
+                    "graph_postprocess_messages"
+                  ]
+                },
+                {
+                  "target": [
+                    "messages",
+                    1,
+                    "content"
+                  ],
+                  "source": [
+                    "primary_text"
+                  ]
+                },
+                {
+                  "target": [
+                    "response_format"
+                  ],
+                  "source": [
+                    "graph_response_format"
+                  ]
+                },
+                {
+                  "target": [
+                    "response_format",
+                    "json_schema",
+                    "schema",
+                    "properties",
+                    "base_packet_sha256",
+                    "const"
+                  ],
+                  "source": [
+                    "base_packet_sha256"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "loom.graph_reply.prompt.version",
+          "role": "prompt_version",
+          "label": "Graph reply instruction",
+          "attrs": {
+            "text": "Answer the current request as a logical graph. Use loom.graph_reply/2. The root response node may have null text only when it has children. Ordered leaf texts compose the response; internal text equals the concatenation of descendant leaves when supplied. Node IDs must be unique; children must exist and have one parent; cycles are invalid. Links connect existing local IDs or real entities from the supplied graph context. Treat graph content as model-origin, unverified. Use the exact base_packet_sha256 required by the schema."
+          }
+        },
+        {
+          "id": "loom.graph_reply.compiler",
+          "role": "compiler_transform",
+          "label": "Native graph reply compiler",
+          "attrs": {
+            "implementation": "loom.graph_reply_compiler/1"
+          }
+        }
+      ],
+      "claims": [
+        {
+          "subject": "loom.graph_reply.method.version",
+          "predicate": "version_of",
+          "object": "loom.graph_reply.method"
+        },
+        {
+          "subject": "loom.graph_reply.method.version",
+          "predicate": "uses_recipe",
+          "object": "loom.graph_reply.recipe.version"
+        },
+        {
+          "subject": "loom.graph_reply.recipe.version",
+          "predicate": "uses_prompt",
+          "object": "loom.graph_reply.prompt.version"
+        }
+      ],
+      "selection": {
+        "members": [
+          {
+            "method_version_id": "loom.graph_reply.method.version"
+          }
+        ],
+        "parameter_layers": [
+          "recipe",
+          "method",
+          "user"
+        ]
+      },
+      "options": {
+        "mode": "separate_model_afterwards",
+        "run_context": {
+          "origin": {
+            "kind": "user",
+            "actor": "graph-chat-preset",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "compiler_transform_id": "loom.graph_reply.compiler",
+          "graph_response_format": {
+            "type": "json_schema",
+            "json_schema": {
+              "name": "loom_graph_reply",
+              "strict": true,
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "schema",
+                  "base_packet_sha256",
+                  "response_id",
+                  "nodes",
+                  "links"
+                ],
+                "description": "Answer the current request as a logical graph. Use loom.graph_reply/2. The root response node may have null text only when it has children. Ordered leaf texts compose the response; internal text equals the concatenation of descendant leaves when supplied. Node IDs must be unique; children must exist and have one parent; cycles are invalid. Links connect existing local IDs or real entities from the supplied graph context. Treat graph content as model-origin, unverified. Use the exact base_packet_sha256 required by the schema.",
+                "properties": {
+                  "schema": {
+                    "type": "string",
+                    "enum": [
+                      "loom.graph_reply/2"
+                    ]
+                  },
+                  "base_packet_sha256": {
+                    "type": "string",
+                    "const": ""
+                  },
+                  "response_id": {
+                    "type": "string",
+                    "description": "ID of the response root, whose role is response."
+                  },
+                  "nodes": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "id",
+                        "text",
+                        "role",
+                        "children"
+                      ],
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "text": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "role": {
+                          "type": "string"
+                        },
+                        "children": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "links": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "from",
+                        "predicate",
+                        "to"
+                      ],
+                      "properties": {
+                        "from": {
+                          "type": "string"
+                        },
+                        "predicate": {
+                          "type": "string"
+                        },
+                        "to": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "graph_postprocess_messages": [
+            {
+              "role": "system",
+              "content": "Answer the current request as a logical graph. Use loom.graph_reply/2. The root response node may have null text only when it has children. Ordered leaf texts compose the response; internal text equals the concatenation of descendant leaves when supplied. Node IDs must be unique; children must exist and have one parent; cycles are invalid. Links connect existing local IDs or real entities from the supplied graph context. Treat graph content as model-origin, unverified. Use the exact base_packet_sha256 required by the schema. Represent the given primary answer as a graph; preserve its content and expose logical parts."
+            },
+            {
+              "role": "user",
+              "content": ""
+            }
+          ]
+        },
+        "apply_policy": {
+          "schema": "loom.graph_packet_apply_policy/1",
+          "acceptance": "preview",
+          "allow_source_tombstones": false
+        },
+        "explicitly_accepted": false,
+        "admission": {
+          "mode": "candidate"
+        },
+        "transport": {
+          "calls_authorized": true,
+          "usage_estimate": {
+            "baseline_key": "chat:graph-reply",
+            "resources": {
+              "output_tokens": null,
+              "cost_usd": null
+            }
+          }
+        },
+        "postprocess_transport": {
+          "calls_authorized": true,
+          "provider_id": "",
+          "timeout_ms": 180000,
+          "usage_estimate": {
+            "baseline_key": "chat:graph-reply:postprocess",
+            "resources": {
+              "output_tokens": null,
+              "cost_usd": null
+            }
+          }
+        }
+      }
+    }
+  ],
+  "library_target": "graph-chat-method-library",
+  "installation_actor": "web:graph-chat-settings"
+}

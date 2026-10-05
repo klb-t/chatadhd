@@ -31,6 +31,10 @@ Ekspercki panel W1/3/4: pełne body provider request jako exact bytes, read-only
 
 Wykryto dodatkowy rzeczywisty negatyw granicy HTTP config: zwykły JSON serwera sortował klucze native DTO. PUT/PATCH są poprawiane w zakresie W10; testy obu ścieżek zachowują oryginalny golden i wymagają dokładnego readback. Pełne negatywne receipts pozostają zachowane.
 
+## Checkpoint 4 — czat z odpowiedzią grafową
+
+Dane presetów w `loom/web/src/profiles/presets/graph-chat.json`: trzy tryby grafowe oraz kontrola off, method/recipe/prompt/version jako byty grafu. Panel instaluje definicje natywnie, dopiero osobny CAS aktywuje globalne ustawienie; raw JSON zachowuje tokeny liczb i nieznane pola. `GraphReplyWorkbench` korzysta z zapisanej kompilacji i sprawdza jej hash przed adresowaniem fragmentu. Rozwiń/popraw wpisuje edytowalną prośbę do kompozytora bez samoczynnego wysłania.14/14 native PASS,29 pełnych HTTP exchanges,3 method acceptance receipts i4 fake model calls. Zapisany graf, fragmenty i pierwsze błędy/odpowiedzi pozostają dostępne. Brak publicznego Chat.resume jest jawnie opisany niżej.
+
 ## W trakcie
 
 Most HTTP korzysta z tego samego statycznego Runtime i rzeczywistej deklaracji opaque context w `src/capi/context.h`. Nie odtwarza layoutu, nie tworzy drugiej DB/silnika i nie dodaje C ABI. To jawna zależność źródłowa serwera; stare JNI pozostaje bez nowej zdolności.

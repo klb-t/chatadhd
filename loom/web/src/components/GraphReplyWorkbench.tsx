@@ -1,11 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { inspectReply, packetFailure, packetResult, parseObject, record, type GraphReplyAction, type GraphReplyFragmentAddress, type PacketCommandApi } from "../graph/reply-inspection";
 import "./graph-reply-workbench.css";
+import { addressNativeGraphFragment } from "../graph/chat-graph";
 
 export interface GraphReplyWorkbenchProps {
   packet?: PacketCommandApi;
   usagePolicy?: PacketCommandApi;
   responseText?: string;
+  recordedReply?: Record<string, unknown>;
+  graphReply?: PacketCommandApi;
+  onNativeAddressFragment?: (action: GraphReplyAction, fragment: Record<string, unknown>) => void;
   conversationId?: string;
   turnId?: string;
   requestId?: string;
@@ -38,6 +42,17 @@ export default function GraphReplyWorkbench(props: GraphReplyWorkbenchProps) {
   useEffect(() => {
     epoch.current++; setBusy(false); setRaw(props.responseText ?? ""); setHostJson(initialHost(props)); setCompiled(null); setResult(null); setPending(null); setResponseEnvelope(null); setStatus(""); setError("");
   }, [props.responseText, props.conversationId, props.turnId, props.requestId, props.model]);
+  useEffect(() => {
+    if (!props.recordedReply) return;
+    epoch.current++; setBusy(false); setPending(null); setResult(null); setError("");
+    const reply = props.recordedReply;
+    if (reply.base_packet) setPacketJson(json(reply.base_packet));
+    const compilation = record(reply.compilation);
+    if (compilation.schema === "loom.graph_reply_compilation/1") {
+      try { inspectReply(compilation); setCompiled(compilation); setHostJson(json(compilation.host)); setStatus(`Recorded native graph reply: ${String(reply.status ?? "unknown")}. No recompilation or model call was dispatched.`); }
+      catch (failure) { setCompiled(null); setError(errorText(failure)); }
+    } else { setCompiled(null); setStatus(`Recorded native graph reply: ${String(reply.status ?? "unknown")}.`); }
+  }, [props.recordedReply]);
   const fragments = useMemo(() => compiled ? inspectReply(compiled) : [], [compiled]);
   const invalidate = () => { epoch.current++; setCompiled(null); setResult(null); setPending(null); setResponseEnvelope(null); setStatus(""); setError(""); };
 
@@ -113,9 +128,28 @@ export default function GraphReplyWorkbench(props: GraphReplyWorkbenchProps) {
     } catch (failure) { if (mounted.current && epoch.current === currentEpoch) setError(errorText(failure)); }
     finally { if (mounted.current && epoch.current === currentEpoch) setBusy(false); }
   };
+  const addressFragment = async (action: GraphReplyAction, fragment: GraphReplyFragmentAddress) => {
+    if (!props.recordedReply) { onAddressFragment?.(action, fragment); return; }
+    if (compiled?.compilation_sha256 !== record(props.recordedReply.compilation).compilation_sha256) { setError("The edited compilation differs from the recorded native reply. Its original address cannot be reused."); return; }
+    if (!props.graphReply || !props.onNativeAddressFragment) { setError("Verified native fragment addressing is unavailable on this transport."); return; }
+    const currentEpoch = ++epoch.current; setBusy(true); setError("");
+    try {
+      const addressed = await addressNativeGraphFragment(props.graphReply, props.recordedReply, fragment.local_id, props.turnId);
+      if (!mounted.current || epoch.current !== currentEpoch) return;
+      props.onNativeAddressFragment(action, addressed); setStatus("Native fragment address and provenance inserted into the editable composer. Review before sending.");
+    } catch (failure) { if (mounted.current && epoch.current === currentEpoch) setError(`${errorText(failure)} The recorded response is retained.`); }
+    finally { if (mounted.current && epoch.current === currentEpoch) setBusy(false); }
+  };
+  const addressAvailable = props.recordedReply ? !!props.graphReply && !!props.onNativeAddressFragment : !!onAddressFragment;
   return <section className="graph-reply-workbench" aria-label="Graph reply workbench" data-testid="graph-reply-workbench">
     <h3>Graph reply workbench</h3>
     <p>Compile an existing model response, inspect its logical parts, and apply it to a packet. Model content remains unverified.</p>
+    {props.recordedReply && <section aria-label="Recorded graph reply" data-testid="gr-recorded-reply">
+      <p>Status: {String(props.recordedReply.status ?? "unknown")} · mode: {String(props.recordedReply.mode ?? "unknown")} · origin: model · content unverified</p>
+      {props.recordedReply.error != null && <p role="alert" data-testid="gr-recorded-error">{json(props.recordedReply.error)} The original message and native capture references are retained.</p>}
+      <details><summary>Recorded result, graph context and source captures</summary><pre data-testid="gr-recorded-json">{json(props.recordedReply)}</pre></details>
+      {props.recordedReply.execution_usage != null && <details><summary>Model usage receipts</summary><pre>{json(props.recordedReply.execution_usage)}</pre><p>Review the retained receipt in Usage settings. Confirmation alone does not resume this chat; a new send would create a separate request.</p></details>}
+    </section>}
     {!packet && <p role="status">Native packet API is unavailable on this transport. The response remains available below.</p>}
     <details className="gr-original"><summary>Original response</summary><pre data-testid="gr-original-response">{props.responseText ?? ""}</pre></details>
     <label>Raw model response<textarea aria-label="Raw model response" value={raw} spellCheck={false} disabled={busy} onChange={event => { invalidate(); setRaw(event.target.value); }} /></label>
@@ -144,9 +178,9 @@ export default function GraphReplyWorkbench(props: GraphReplyWorkbenchProps) {
       <div className="gr-fragments">{fragments.map(fragment => <article key={fragment.entity_id} data-testid="gr-fragment"><header><strong>{fragment.local_id}</strong><span>{fragment.role}</span></header><pre>{fragment.text}</pre>
         <p>Code points: {String(fragment.span.char_start)} + {String(fragment.span.char_len)} · UTF-8 bytes: {String(fragment.span.byte_start)} + {String(fragment.span.byte_len)}</p>
         <details><summary>Fragment address and provenance</summary><pre>{json(fragment)}</pre></details>
-        <div className="gr-actions"><button disabled={!onAddressFragment || busy} onClick={() => onAddressFragment?.("expand", fragment)}>Expand this node</button><button disabled={!onAddressFragment || busy} onClick={() => onAddressFragment?.("correct", fragment)}>Correct this node</button></div>
+        <div className="gr-actions"><button disabled={!addressAvailable || busy} onClick={() => void addressFragment("expand", fragment)}>Expand this node</button><button disabled={!addressAvailable || busy} onClick={() => void addressFragment("correct", fragment)}>Correct this node</button></div>
       </article>)}</div>
-      {!onAddressFragment && <p>Fragment prompting is unavailable here. Addresses remain available for inspection.</p>}
+      {!addressAvailable && <p>Fragment prompting is unavailable here. Addresses remain available for inspection.</p>}
       <details><summary>Compilation JSON</summary><pre data-testid="gr-compilation-json">{json(compiled)}</pre></details></>}
     {result && <details open><summary>Applied packet and receipt</summary><pre data-testid="gr-applied-result">{json(result)}</pre></details>}
     {responseEnvelope && <details><summary>Native response and accounting</summary><pre data-testid="gr-native-response">{json(responseEnvelope)}</pre></details>}
