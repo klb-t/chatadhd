@@ -1,0 +1,19 @@
+{
+  "completion_units_upper": 81920,
+  "configuration_count": 16,
+  "manifest_loader_operations": 128,
+  "manifest_sha256": "58df44c424f2d2851caee2fcca688731f65d4c46cb7b117858348244f12b9315",
+  "paid_calls": 0,
+  "pricing_status": "historical planning estimate only; root must fresh-read exact endpoint prices before any dispatch",
+  "prompt_units_upper": 567568,
+  "provisional_estimate_usd": "0.3580992",
+  "provisional_prices_per_token_usd": {
+    "completion": "0.0000016",
+    "prompt": "0.0000004"
+  },
+  "query_count": 8,
+  "schema": "loom.express_prompt_parameters.offline_verification/1",
+  "status": "PASS",
+  "test_log_sha256": "2e308f4c1793fa16eae3deb9315d9e6b0af054e572354f4dfcfb6b3574e719bb",
+  "tests": 7
+}

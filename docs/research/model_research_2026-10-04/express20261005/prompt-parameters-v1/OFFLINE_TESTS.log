@@ -1,0 +1,12 @@
+test_changed_source_raw_hash_rejected_before_materialization (__main__.PreparationTests.test_changed_source_raw_hash_rejected_before_materialization) ... ok
+test_corrupted_body_rejected_by_actual_runner_loader (__main__.PreparationTests.test_corrupted_body_rejected_by_actual_runner_loader) ... ok
+test_exact_full_crossing_without_duplicate_operations (__main__.PreparationTests.test_exact_full_crossing_without_duplicate_operations) ... ok
+test_exact_source_text_same_for_every_configuration_and_no_gold_rationale (__main__.PreparationTests.test_exact_source_text_same_for_every_configuration_and_no_gold_rationale) ... ok
+test_parameter_and_prompt_hash_bindings (__main__.PreparationTests.test_parameter_and_prompt_hash_bindings) ... ok
+test_pinned_loader_accepts_and_bounds_cover_actual_body (__main__.PreparationTests.test_pinned_loader_accepts_and_bounds_cover_actual_body) ... ok
+test_replay_exact_and_collision_rejected (__main__.PreparationTests.test_replay_exact_and_collision_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.396s
+
+OK
