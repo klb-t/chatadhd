@@ -9,9 +9,19 @@ import frontier_comparison_v1 as comparison
 
 
 class FrontierComparisonTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        # Build and validate the common full DEV preparation once. Each test
+        # receives independent copies; counterexamples still run real scoring
+        # and the preparation-specific tests still call the actual builder.
+        cls._base_cases, cls._base_references = comparison.synthetic_cases()
+        cls._base_manifest = comparison.prepare(
+            cls._base_cases, comparison.default_config(), references=cls._base_references)
+
     def setUp(self):
-        self.cases, self.references = comparison.synthetic_cases()
-        self.manifest = comparison.prepare(self.cases, comparison.default_config(), references=self.references)
+        self.cases = deepcopy(self._base_cases)
+        self.references = deepcopy(self._base_references)
+        self.manifest = deepcopy(self._base_manifest)
 
     def request(self, case_id='repeat', track='graph_completion'):
         return next(x for x in self.manifest['requests'] if x['case_id'] == case_id and x['track'] == track)
