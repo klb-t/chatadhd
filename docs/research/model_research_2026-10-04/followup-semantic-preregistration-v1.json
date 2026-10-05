@@ -1,0 +1,1718 @@
+{
+  "schema": "loom.followup_semantic_preregistration/1",
+  "version": "2026-10-05-v1",
+  "registered_at_utc": "2026-10-05T11:05:09.750871+00:00",
+  "status": "prospective criteria for future live stage3/stage4 first responses; no result values computed",
+  "scope": "All and only 24 requests in the two exact frozen followup manifests. Authored synthetic DEV/source-relative adequacy and grounding; not independent holdout, world truth or general model quality.",
+  "registration_exposure": {
+    "inputs_and_authored_reference_only_in_this_task": true,
+    "future_live_stage3_stage4_outputs_inspected": false,
+    "stage5_corpus_or_holdout_or_private_ledger_or_key_inspected": false,
+    "prior_thread_exposure": "Earlier recovery inspected accepted authored/scripted offline mechanical artifacts. These are known synthetic controls, not unseen independent quality labels; this registration does not claim ignorance of that historical material.",
+    "results_or_responses_files_used_for_this_registration": []
+  },
+  "source_bindings": {
+    "stage3_manifest": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage3/manifest.json",
+      "sha256": "0f401778783fa46ffff29a7f4458617733a348995e63e313018bc60b0b3908d8"
+    },
+    "stage4_manifest": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage4/manifest.json",
+      "sha256": "89e035f4b664121688634fc7b751d6cbab8e9e8539309581fcd84b659fea142b"
+    },
+    "stage3_authored_references": {
+      "path": "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage3/references.json",
+      "sha256": "042d48a1574abb6ac800a0a58b083fcbca99a96a6d8d1030153d4aa6e84169ac"
+    },
+    "stage4_authored_cases": {
+      "commit": "d49e05fd484e1a0af8432a5512762107ff633c1e",
+      "path": "docs/research/graph_reply_2026-10-02/cases.json",
+      "sha256": "a59c42fa3da75f74d703621a475fcea8a15628fd9c3c2101a59e678489d6ad2c"
+    }
+  },
+  "code_bindings": {
+    "loom/tools/structure/agentic_graph_v1/packet.py": {
+      "sha256": "1b949dad8319f21713b984367cba162d1330f188d26557b21b264ef10910bbc4",
+      "role": "frozen preparation/mechanical validation, not semantic truth oracle"
+    },
+    "loom/tools/structure/frontier_comparison_v1.py": {
+      "sha256": "ef88ef613637579d47af7b5ec2ca4a07d94f0447e2b823e2907b7312ad1b892f",
+      "role": "frozen preparation/mechanical validation, not semantic truth oracle"
+    },
+    "loom/tools/structure/openrouter_runner.py": {
+      "sha256": "2cd14424ca190f3d5fed47faf1e328993668a620b8202cfb7b196b363f971635",
+      "role": "frozen preparation/mechanical validation, not semantic truth oracle"
+    },
+    "loom/tools/structure/frontier_reply_followup_v1.py": {
+      "sha256": "32e94b41da69660cbfcd7950dac5cfc07b7278f900e5ab5193c1ddfed07f777d",
+      "role": "frozen preparation/mechanical validation, not semantic truth oracle"
+    },
+    "reply_compiler": {
+      "commit": "d49e05fd484e1a0af8432a5512762107ff633c1e",
+      "path": "loom/tools/structure/graph_reply_v1/reply.py",
+      "sha256": "50fffaffbf1abcbb2de1b626ae51f270a5842cd3e023c1dc3cee8011a401a903",
+      "role": "pinned reply shape/topology/span/compiler contract; semantic links remain draft"
+    },
+    "reply_prompt": {
+      "commit": "d49e05fd484e1a0af8432a5512762107ff633c1e",
+      "path": "loom/tools/structure/graph_reply_v1/prompt.py",
+      "sha256": "375cdff3fea91ca7317c40d9d2c08ba4ce11388072f4f03b14ba94cdd0ad50bc",
+      "role": "pinned reply shape/topology/span/compiler contract; semantic links remain draft"
+    }
+  },
+  "common_case_criteria": [
+    {
+      "id": "scope-and-attribution",
+      "requirement": "Preserve the supplied speaker, branch/source scope, polarity, conditional scope, chronology and asserted/required versus hypothetical/proposed role; never turn the prior graph into automatic world truth.",
+      "source_evidence": [
+        "stage3 recipes and source qualifiers",
+        "stage4 reply_prompt and input entity attrs"
+      ]
+    },
+    {
+      "id": "source-versus-inference",
+      "requirement": "A source-backed statement must be entailed by its exact source span with those qualifiers. Unwitnessed inferences, hypotheses or assistant recommendations must be explicit as such and must not replace or impersonate the source/user commitment.",
+      "source_evidence": [
+        "stage3 recipes",
+        "stage4 reply_prompt"
+      ]
+    },
+    {
+      "id": "no-unsupported-completion",
+      "requirement": "No unsupported relation, inverse implication, current decision, validation result, independent-source claim or general law may be presented as an observed/source-authorized fact.",
+      "source_evidence": [
+        "frozen case source observations",
+        "authored case references"
+      ]
+    },
+    {
+      "id": "history-retained",
+      "requirement": "A later correction can supersede an earlier source commitment without deleting its historical existence or attributing the change to another speaker.",
+      "source_evidence": [
+        "stage4 correction_a_b source turns"
+      ]
+    }
+  ],
+  "evaluation_protocol": {
+    "unit": "One immutable first-response opportunity per planned request. The exact case criteria do not vary by requested/observed model, provider, prompt arm or transport outcome.",
+    "dimensions_separate": {
+      "compiler_validity": "Existing pinned schema/DTO/topology/span/diff and transformation-loss checks. A valid compilation may still be semantically wrong or ungrounded.",
+      "semantic_adequacy": "All applicable required content obligations satisfied and no contradictory/unsupported source assertion; representation-independent meaning, not record shape alone.",
+      "source_grounding": "Each asserted source-relative fact or verified occurrence is warranted by exact supplied evidence with attribution and qualifiers; hypotheses/proposals remain explicitly separate.",
+      "transport_and_billing": "Not semantic correctness; retained separately and never substituted for an adequacy/grounding label."
+    },
+    "raw_preservation": "Evaluate the bound original first capture, never a repaired JSON retry or rewritten answer. Mechanical invalidity remains recorded even if public content is unambiguously interpretable for independent semantic review. Missing, unreadable or ambiguously rendered public content is semantic_unavailable, not correct.",
+    "annotation_trace": "For each dimension retain label pass/fail/unavailable, criterion IDs, exact response span or proposal pointer, and input source-point IDs/spans. Reviewers map sources; do not impose a citation field absent from the frozen format. Keep disagreements/ambiguities unresolved until separately reported.",
+    "primary_planned_denominators": {
+      "stage3_all_requests": 12,
+      "stage3_per_track": 6,
+      "stage3_per_model_and_track": 2,
+      "stage4_all_requests": 12,
+      "stage4_per_arm": 6,
+      "stage4_per_model_and_arm": 2,
+      "matched_pairs_per_stage": 6,
+      "total_requests": 24,
+      "requests_per_case_per_stage": 6
+    },
+    "missingness_rule": "Every planned request remains in adequacy and grounding denominators. Failed, missing, unattempted, unreadable or unresolved responses have zero successful outcomes and an explicit unavailable reason; they are never dropped or counted correct. Report attempted/evaluable/compiled counts separately. Before future execution, all measured values remain uncomputed/null.",
+    "reporting_rule": "Report pass_count/planned_count and evaluable/planned coverage for each dimension and arm. Optional pass/evaluable is labeled conditional and accompanies the full planned denominator. All-unavailable semantic content has no measured model-quality claim. Grounding of an explicitly correct empty negative-control result can pass the no-unsupported-assertion check; its emitted-assertion/link cohort is zero, not fabricated evidence.",
+    "pairing_rule": "Stage4 content criteria are identical for graph and textJSON arms. Stage3 shares the same case integrity/grounding facts across tracks, but completion and pattern discovery have different frozen task targets; their track-specific success rates are not a direct same-task winner comparison.",
+    "extras_rule": "Optional links, hypotheses, recommendations, wording, node granularity and confidence values are not newly required. If emitted they must preserve the source/proposal distinction and may not assert unsupported source truth. No numeric confidence threshold, external domain rule or forced semantic link is introduced.",
+    "semantic_equivalence_policy": {
+      "authored_reference_record_role": "Audit target and evidence anchor, not a required literal model-output template. Existing literal reference_agreement remains a separately named record/mechanism metric.",
+      "added_claim_identifiers": "A valid noncolliding added claim identifier may differ from the authored target ID. Existing input entity/source identities and their meaning are still preserved.",
+      "wording": "Faithful paraphrase may differ from authored wording or predicate spelling when relation meaning, direction, qualifiers, epistemic mode and exact supporting source are unchanged. No stronger causal claim or new implication is licensed.",
+      "historical_metadata": "Do not impose authored confidence numbers, archive/scripted origin metadata or particular prose/node granularity as semantic gold."
+    }
+  },
+  "stages": {
+    "stage3": {
+      "cases": [
+        {
+          "case_id": "repeat",
+          "same_input_sha256": "13cc413bbf8c4abca89c3b6d08508d14159b6d1bea72359a5fca519e21b1edf1",
+          "packet_id": "1ece29ce0ca267aea3fcb68608aae4cba4b75b805a9017384cd334294efac80a",
+          "input_scope": {
+            "scope": "author_owned_synthetic_dev",
+            "source_completeness": "fixture_only",
+            "source_groups": {
+              "left-first": "left-source",
+              "right-first": "right-source"
+            }
+          },
+          "reference_pointer": "/repeat",
+          "reference_sha256": "87f975a8b4e52f8e02bad1b26cef50dd02a5880639051862e7a0f1ce1fa65b0b",
+          "source_points": [
+            {
+              "id": "left-first",
+              "manifest_pointer": "/requests/0/input/packet/sources/0/observation/text",
+              "source_text": "left: trigger permits action; polarity=positive; scope=dev.",
+              "source_text_sha256": "2667a52124210c930e6c59d1edef52776191b5d8188257dbbca0ecbdb93f63c4",
+              "speaker": "synthetic-author",
+              "source_scope": {
+                "unit": "left-first",
+                "date": "2026-10-04",
+                "ordinal": 0,
+                "lang": "en",
+                "attrs": {}
+              },
+              "original_locator": {
+                "byte_len": 59,
+                "byte_start": 0,
+                "json_pointer": "/left-first",
+                "line": null,
+                "member": "synthetic-dev.json",
+                "source": "sha256:2667a52124210c930e6c59d1edef52776191b5d8188257dbbca0ecbdb93f63c4",
+                "time_end": null,
+                "time_start": null
+              },
+              "observation_local_span": {
+                "byte_start": 0,
+                "byte_len": 59,
+                "codepoint_start": 0,
+                "codepoint_len": 59,
+                "scope": "exact observation.text, not inferred offsets in an unavailable source file"
+              }
+            },
+            {
+              "id": "left-second",
+              "manifest_pointer": "/requests/0/input/packet/sources/1/observation/text",
+              "source_text": "left: action produces result; scope=dev.",
+              "source_text_sha256": "66cad0d8003d1097c877517f178fdf9fa20e4f311d6e854d018f72ababb2036f",
+              "speaker": "synthetic-author",
+              "source_scope": {
+                "unit": "left-second",
+                "date": "2026-10-04",
+                "ordinal": 0,
+                "lang": "en",
+                "attrs": {}
+              },
+              "original_locator": {
+                "byte_len": 40,
+                "byte_start": 0,
+                "json_pointer": "/left-second",
+                "line": null,
+                "member": "synthetic-dev.json",
+                "source": "sha256:66cad0d8003d1097c877517f178fdf9fa20e4f311d6e854d018f72ababb2036f",
+                "time_end": null,
+                "time_start": null
+              },
+              "observation_local_span": {
+                "byte_start": 0,
+                "byte_len": 40,
+                "codepoint_start": 0,
+                "codepoint_len": 40,
+                "scope": "exact observation.text, not inferred offsets in an unavailable source file"
+              }
+            },
+            {
+              "id": "right-first",
+              "manifest_pointer": "/requests/0/input/packet/sources/2/observation/text",
+              "source_text": "right: trigger permits action; polarity=positive; scope=dev.",
+              "source_text_sha256": "fb31a4a25da69e7e5926457b85ab30b0945776a1261ac55c91ae89c791644104",
+              "speaker": "synthetic-author",
+              "source_scope": {
+                "unit": "right-first",
+                "date": "2026-10-04",
+                "ordinal": 0,
+                "lang": "en",
+                "attrs": {}
+              },
+              "original_locator": {
+                "byte_len": 60,
+                "byte_start": 0,
+                "json_pointer": "/right-first",
+                "line": null,
+                "member": "synthetic-dev.json",
+                "source": "sha256:fb31a4a25da69e7e5926457b85ab30b0945776a1261ac55c91ae89c791644104",
+                "time_end": null,
+                "time_start": null
+              },
+              "observation_local_span": {
+                "byte_start": 0,
+                "byte_len": 60,
+                "codepoint_start": 0,
+                "codepoint_len": 60,
+                "scope": "exact observation.text, not inferred offsets in an unavailable source file"
+              }
+            },
+            {
+              "id": "right-second",
+              "manifest_pointer": "/requests/0/input/packet/sources/3/observation/text",
+              "source_text": "right: action produces result; scope=dev.",
+              "source_text_sha256": "6f08617a5354260294cbc336c742351dc5586f615bc26c174ed5af539318a8ab",
+              "speaker": "synthetic-author",
+              "source_scope": {
+                "unit": "right-second",
+                "date": "2026-10-04",
+                "ordinal": 0,
+                "lang": "en",
+                "attrs": {}
+              },
+              "original_locator": {
+                "byte_len": 41,
+                "byte_start": 0,
+                "json_pointer": "/right-second",
+                "line": null,
+                "member": "synthetic-dev.json",
+                "source": "sha256:6f08617a5354260294cbc336c742351dc5586f615bc26c174ed5af539318a8ab",
+                "time_end": null,
+                "time_start": null
+              },
+              "observation_local_span": {
+                "byte_start": 0,
+                "byte_len": 41,
+                "codepoint_start": 0,
+                "codepoint_len": 41,
+                "scope": "exact observation.text, not inferred offsets in an unavailable source file"
+              }
+            }
+          ],
+          "existing_claim_semantics": [
+            {
+              "id": "left-first-claim",
+              "subject": "left0",
+              "predicate": "permits",
+              "object": "left1",
+              "qualifiers": {
+                "branch": "",
+                "extra": {
+                  "polarity": "positive"
+                },
+                "lang": "en",
+                "scope": "dev",
+                "valid_from": "",
+                "valid_to": "",
+                "version": ""
+              }
+            },
+            {
+              "id": "left-second-claim",
+              "subject": "left1",
+              "predicate": "produces",
+              "object": "left2",
+              "qualifiers": {
+                "branch": "",
+                "extra": {
+                  "polarity": "positive"
+                },
+                "lang": "en",
+                "scope": "dev",
+                "valid_from": "",
+                "valid_to": "",
+                "version": ""
+              }
+            },
+            {
+              "id": "right-first-claim",
+              "subject": "right0",
+              "predicate": "permits",
+              "object": "right1",
+              "qualifiers": {
+                "branch": "",
+                "extra": {
+                  "polarity": "positive"
+                },
+                "lang": "en",
+                "scope": "dev",
+                "valid_from": "",
+                "valid_to": "",
+                "version": ""
+              }
+            }
+          ],
+          "shared_case_criteria": [
+            {
+              "id": "stated-omission",
+              "requirement": "The source explicitly states right action produces right result; the corresponding right1 -> produces -> right2 claim is absent from the input claim collection. It is an omission in this fixture, not missing world evidence.",
+              "source_evidence": [
+                "right-second"
+              ]
+            },
+            {
+              "id": "no-recurrence-as-gap-evidence",
+              "requirement": "Recurrence itself cannot warrant the missing produces relation; only the separately supplied right-second utterance supports that completion.",
+              "source_evidence": [
+                "right-second",
+                "stage3 recipes"
+              ]
+            },
+            {
+              "id": "retain-fixture-qualifiers",
+              "requirement": "All supplied relation directions, entity kinds, dev scope, English language, positive/negative polarity and original observations remain distinct.",
+              "source_evidence": [
+                "left-first",
+                "left-second",
+                "right-first",
+                "right-second"
+              ]
+            }
+          ],
+          "track_criteria": {
+            "graph_completion": {
+              "semantic_adequacy": [
+                {
+                  "id": "required-source-backed-relation",
+                  "requirement": "Recover exactly the meaning right1 -> produces -> right2, value null, positive polarity, scope dev, lang en. The relation must remain source-backed extraction with content/world truth unverified; no guessed causal/transitive relation substitutes for it.",
+                  "source_evidence": [
+                    "right-second",
+                    "stage3_authored_references/repeat/completion_claims/0"
+                  ]
+                },
+                {
+                  "id": "preserve-existing-content",
+                  "requirement": "Retain the existing input record content and task; a declared loss does not make erased polarity/scope/source bytes semantically adequate.",
+                  "source_evidence": [
+                    "frozen base packet",
+                    "graph_completion recipe"
+                  ]
+                }
+              ],
+              "source_grounding": [
+                {
+                  "id": "completion-exact-support",
+                  "requirement": "Bind the proposed completion to right-second and its exact quote/locator. Support from left-second, a recurring template or model knowledge alone is inadequate.",
+                  "source_evidence": [
+                    "right-second"
+                  ]
+                },
+                {
+                  "id": "evidence-mode",
+                  "requirement": "Preserve extraction versus model inference and observed-source versus content-truth distinction; an added native-valid claim is not proof of real-world truth.",
+                  "source_evidence": [
+                    "right-second",
+                    "graph_completion recipe"
+                  ]
+                }
+              ],
+              "author_reference_record": {
+                "assessment": {
+                  "alternatives": [],
+                  "basis": {
+                    "derivation": null,
+                    "support": [
+                      {
+                        "extractor": "author-owned-dev@1",
+                        "locator": {
+                          "byte_len": 41,
+                          "byte_start": 0,
+                          "json_pointer": "/right-second",
+                          "line": null,
+                          "member": "synthetic-dev.json",
+                          "source": "sha256:6f08617a5354260294cbc336c742351dc5586f615bc26c174ed5af539318a8ab",
+                          "time_end": null,
+                          "time_start": null
+                        },
+                        "observation": "right-second",
+                        "quality": 1,
+                        "quote": "right: action produces result; scope=dev."
+                      }
+                    ]
+                  },
+                  "check_state": "n/a",
+                  "confidence": 1,
+                  "consequences": {
+                    "checks": [],
+                    "claims": [],
+                    "predictions": []
+                  },
+                  "counter": {
+                    "claims": [],
+                    "observations": []
+                  },
+                  "evidence_class": "observed",
+                  "expected_property": null,
+                  "open": {
+                    "fill_query": null,
+                    "questions": [
+                      "Content truth is unverified."
+                    ],
+                    "slots": []
+                  },
+                  "origin": "archive",
+                  "premises": {
+                    "assumptions": [],
+                    "claims": [],
+                    "principles": []
+                  },
+                  "status": "active"
+                },
+                "id": "right-second-claim",
+                "object": "right2",
+                "predicate": "produces",
+                "qualifiers": {
+                  "branch": "",
+                  "extra": {
+                    "polarity": "positive"
+                  },
+                  "lang": "en",
+                  "scope": "dev",
+                  "valid_from": "",
+                  "valid_to": "",
+                  "version": ""
+                },
+                "subject": "right1",
+                "value": null
+              },
+              "metadata_exclusions": [
+                "No demanded confidence threshold or empirical truth probability.",
+                "A raw model proposal origin may differ from the authored reference origin; source semantic content and evidence bindings are evaluated separately from historical scripted metadata."
+              ]
+            },
+            "pattern_discovery": {
+              "semantic_adequacy": [
+                {
+                  "id": "required-qualified-recurrence",
+                  "requirement": "Identify the shared condition -> permits -> action template witnessed by left-first-claim and right-first-claim, with positive polarity and dev scope unchanged, using two separate occurrences rather than merging their entity identities.",
+                  "source_evidence": [
+                    "left-first",
+                    "right-first",
+                    "stage3_authored_references/repeat/pattern_claim_sets/0"
+                  ]
+                }
+              ],
+              "source_grounding": [
+                {
+                  "id": "witnessed-occurrences",
+                  "requirement": "Every claimed verified occurrence must map injectively to existing entity IDs and existing claim IDs in template edge order, preserving direction, node kinds, multiplicity, predicate and every qualifier.",
+                  "source_evidence": [
+                    "existing_claim_semantics",
+                    "pattern_discovery recipe"
+                  ]
+                },
+                {
+                  "id": "declared-abstraction",
+                  "requirement": "Omitting distinct left/right labels is label abstraction and must be declared as loss; polarity, scope, version and direction cannot be abstracted away implicitly.",
+                  "source_evidence": [
+                    "pattern_discovery recipe"
+                  ]
+                },
+                {
+                  "id": "provisional-recurrence",
+                  "requirement": "A witnessed recurrence is a candidate pattern, not universal validity or permission to add an unwitnessed edge. Source group labels are caller-declared; their empirical independence is unverified.",
+                  "source_evidence": [
+                    "source_groups",
+                    "pattern_discovery recipe"
+                  ]
+                }
+              ],
+              "expected_pattern_claim_sets": [
+                [
+                  "left-first-claim",
+                  "right-first-claim"
+                ]
+              ],
+              "pattern_reference_scope": "Exact authored DEV target; exhaustive discovery over other possible templates and world/generalization quality are not measured."
+            }
+          }
+        },
+        {
+          "case_id": "polarity",
+          "same_input_sha256": "51b9b585a8a2fea8c79271ba2440271a9e733a56c030167a2f6c7c6a554edbed",
+          "packet_id": "57f08e8ca607def2f76ca8eee75e1fddb64f9d06474a562382d9ffeb169c636e",
+          "input_scope": {
+            "scope": "author_owned_synthetic_dev",
+            "source_completeness": "fixture_only",
+            "source_groups": {
+              "left-first": "left-source",
+              "right-first": "right-source"
+            }
+          },
+          "reference_pointer": "/polarity",
+          "reference_sha256": "856c2242fab5daf373c8c6c83ef507312701e61d63f746c31e4d1d27364649a2",
+          "source_points": [
+            {
+              "id": "left-first",
+              "manifest_pointer": "/requests/6/input/packet/sources/0/observation/text",
+              "source_text": "left: trigger permits action; polarity=positive; scope=dev.",
+              "source_text_sha256": "2667a52124210c930e6c59d1edef52776191b5d8188257dbbca0ecbdb93f63c4",
+              "speaker": "synthetic-author",
+              "source_scope": {
+                "unit": "left-first",
+                "date": "2026-10-04",
+                "ordinal": 0,
+                "lang": "en",
+                "attrs": {}
+              },
+              "original_locator": {
+                "byte_len": 59,
+                "byte_start": 0,
+                "json_pointer": "/left-first",
+                "line": null,
+                "member": "synthetic-dev.json",
+                "source": "sha256:2667a52124210c930e6c59d1edef52776191b5d8188257dbbca0ecbdb93f63c4",
+                "time_end": null,
+                "time_start": null
+              },
+              "observation_local_span": {
+                "byte_start": 0,
+                "byte_len": 59,
+                "codepoint_start": 0,
+                "codepoint_len": 59,
+                "scope": "exact observation.text, not inferred offsets in an unavailable source file"
+              }
+            },
+            {
+              "id": "left-second",
+              "manifest_pointer": "/requests/6/input/packet/sources/1/observation/text",
+              "source_text": "left: action produces result; scope=dev.",
+              "source_text_sha256": "66cad0d8003d1097c877517f178fdf9fa20e4f311d6e854d018f72ababb2036f",
+              "speaker": "synthetic-author",
+              "source_scope": {
+                "unit": "left-second",
+                "date": "2026-10-04",
+                "ordinal": 0,
+                "lang": "en",
+                "attrs": {}
+              },
+              "original_locator": {
+                "byte_len": 40,
+                "byte_start": 0,
+                "json_pointer": "/left-second",
+                "line": null,
+                "member": "synthetic-dev.json",
+                "source": "sha256:66cad0d8003d1097c877517f178fdf9fa20e4f311d6e854d018f72ababb2036f",
+                "time_end": null,
+                "time_start": null
+              },
+              "observation_local_span": {
+                "byte_start": 0,
+                "byte_len": 40,
+                "codepoint_start": 0,
+                "codepoint_len": 40,
+                "scope": "exact observation.text, not inferred offsets in an unavailable source file"
+              }
+            },
+            {
+              "id": "right-first",
+              "manifest_pointer": "/requests/6/input/packet/sources/2/observation/text",
+              "source_text": "right: trigger permits action; polarity=negative; scope=dev.",
+              "source_text_sha256": "16a6c0603caaf8bdd735ad92693e4f107bdbc60dd126c6bbf819e5d651417ccd",
+              "speaker": "synthetic-author",
+              "source_scope": {
+                "unit": "right-first",
+                "date": "2026-10-04",
+                "ordinal": 0,
+                "lang": "en",
+                "attrs": {}
+              },
+              "original_locator": {
+                "byte_len": 60,
+                "byte_start": 0,
+                "json_pointer": "/right-first",
+                "line": null,
+                "member": "synthetic-dev.json",
+                "source": "sha256:16a6c0603caaf8bdd735ad92693e4f107bdbc60dd126c6bbf819e5d651417ccd",
+                "time_end": null,
+                "time_start": null
+              },
+              "observation_local_span": {
+                "byte_start": 0,
+                "byte_len": 60,
+                "codepoint_start": 0,
+                "codepoint_len": 60,
+                "scope": "exact observation.text, not inferred offsets in an unavailable source file"
+              }
+            },
+            {
+              "id": "right-second",
+              "manifest_pointer": "/requests/6/input/packet/sources/3/observation/text",
+              "source_text": "right: action produces result; scope=dev.",
+              "source_text_sha256": "6f08617a5354260294cbc336c742351dc5586f615bc26c174ed5af539318a8ab",
+              "speaker": "synthetic-author",
+              "source_scope": {
+                "unit": "right-second",
+                "date": "2026-10-04",
+                "ordinal": 0,
+                "lang": "en",
+                "attrs": {}
+              },
+              "original_locator": {
+                "byte_len": 41,
+                "byte_start": 0,
+                "json_pointer": "/right-second",
+                "line": null,
+                "member": "synthetic-dev.json",
+                "source": "sha256:6f08617a5354260294cbc336c742351dc5586f615bc26c174ed5af539318a8ab",
+                "time_end": null,
+                "time_start": null
+              },
+              "observation_local_span": {
+                "byte_start": 0,
+                "byte_len": 41,
+                "codepoint_start": 0,
+                "codepoint_len": 41,
+                "scope": "exact observation.text, not inferred offsets in an unavailable source file"
+              }
+            }
+          ],
+          "existing_claim_semantics": [
+            {
+              "id": "left-first-claim",
+              "subject": "left0",
+              "predicate": "permits",
+              "object": "left1",
+              "qualifiers": {
+                "branch": "",
+                "extra": {
+                  "polarity": "positive"
+                },
+                "lang": "en",
+                "scope": "dev",
+                "valid_from": "",
+                "valid_to": "",
+                "version": ""
+              }
+            },
+            {
+              "id": "left-second-claim",
+              "subject": "left1",
+              "predicate": "produces",
+              "object": "left2",
+              "qualifiers": {
+                "branch": "",
+                "extra": {
+                  "polarity": "positive"
+                },
+                "lang": "en",
+                "scope": "dev",
+                "valid_from": "",
+                "valid_to": "",
+                "version": ""
+              }
+            },
+            {
+              "id": "right-first-claim",
+              "subject": "right0",
+              "predicate": "permits",
+              "object": "right1",
+              "qualifiers": {
+                "branch": "",
+                "extra": {
+                  "polarity": "negative"
+                },
+                "lang": "en",
+                "scope": "dev",
+                "valid_from": "",
+                "valid_to": "",
+                "version": ""
+              }
+            }
+          ],
+          "shared_case_criteria": [
+            {
+              "id": "stated-omission",
+              "requirement": "The source explicitly states right action produces right result; the corresponding right1 -> produces -> right2 claim is absent from the input claim collection. It is an omission in this fixture, not missing world evidence.",
+              "source_evidence": [
+                "right-second"
+              ]
+            },
+            {
+              "id": "no-recurrence-as-gap-evidence",
+              "requirement": "Recurrence itself cannot warrant the missing produces relation; only the separately supplied right-second utterance supports that completion.",
+              "source_evidence": [
+                "right-second",
+                "stage3 recipes"
+              ]
+            },
+            {
+              "id": "retain-fixture-qualifiers",
+              "requirement": "All supplied relation directions, entity kinds, dev scope, English language, positive/negative polarity and original observations remain distinct.",
+              "source_evidence": [
+                "left-first",
+                "left-second",
+                "right-first",
+                "right-second"
+              ]
+            }
+          ],
+          "track_criteria": {
+            "graph_completion": {
+              "semantic_adequacy": [
+                {
+                  "id": "required-source-backed-relation",
+                  "requirement": "Recover exactly the meaning right1 -> produces -> right2, value null, positive polarity, scope dev, lang en. The relation must remain source-backed extraction with content/world truth unverified; no guessed causal/transitive relation substitutes for it.",
+                  "source_evidence": [
+                    "right-second",
+                    "stage3_authored_references/polarity/completion_claims/0"
+                  ]
+                },
+                {
+                  "id": "preserve-existing-content",
+                  "requirement": "Retain the existing input record content and task; a declared loss does not make erased polarity/scope/source bytes semantically adequate.",
+                  "source_evidence": [
+                    "frozen base packet",
+                    "graph_completion recipe"
+                  ]
+                }
+              ],
+              "source_grounding": [
+                {
+                  "id": "completion-exact-support",
+                  "requirement": "Bind the proposed completion to right-second and its exact quote/locator. Support from left-second, a recurring template or model knowledge alone is inadequate.",
+                  "source_evidence": [
+                    "right-second"
+                  ]
+                },
+                {
+                  "id": "evidence-mode",
+                  "requirement": "Preserve extraction versus model inference and observed-source versus content-truth distinction; an added native-valid claim is not proof of real-world truth.",
+                  "source_evidence": [
+                    "right-second",
+                    "graph_completion recipe"
+                  ]
+                }
+              ],
+              "author_reference_record": {
+                "assessment": {
+                  "alternatives": [],
+                  "basis": {
+                    "derivation": null,
+                    "support": [
+                      {
+                        "extractor": "author-owned-dev@1",
+                        "locator": {
+                          "byte_len": 41,
+                          "byte_start": 0,
+                          "json_pointer": "/right-second",
+                          "line": null,
+                          "member": "synthetic-dev.json",
+                          "source": "sha256:6f08617a5354260294cbc336c742351dc5586f615bc26c174ed5af539318a8ab",
+                          "time_end": null,
+                          "time_start": null
+                        },
+                        "observation": "right-second",
+                        "quality": 1,
+                        "quote": "right: action produces result; scope=dev."
+                      }
+                    ]
+                  },
+                  "check_state": "n/a",
+                  "confidence": 1,
+                  "consequences": {
+                    "checks": [],
+                    "claims": [],
+                    "predictions": []
+                  },
+                  "counter": {
+                    "claims": [],
+                    "observations": []
+                  },
+                  "evidence_class": "observed",
+                  "expected_property": null,
+                  "open": {
+                    "fill_query": null,
+                    "questions": [
+                      "Content truth is unverified."
+                    ],
+                    "slots": []
+                  },
+                  "origin": "archive",
+                  "premises": {
+                    "assumptions": [],
+                    "claims": [],
+                    "principles": []
+                  },
+                  "status": "active"
+                },
+                "id": "right-second-claim",
+                "object": "right2",
+                "predicate": "produces",
+                "qualifiers": {
+                  "branch": "",
+                  "extra": {
+                    "polarity": "positive"
+                  },
+                  "lang": "en",
+                  "scope": "dev",
+                  "valid_from": "",
+                  "valid_to": "",
+                  "version": ""
+                },
+                "subject": "right1",
+                "value": null
+              },
+              "metadata_exclusions": [
+                "No demanded confidence threshold or empirical truth probability.",
+                "A raw model proposal origin may differ from the authored reference origin; source semantic content and evidence bindings are evaluated separately from historical scripted metadata."
+              ]
+            },
+            "pattern_discovery": {
+              "semantic_adequacy": [
+                {
+                  "id": "polarity-negative-control",
+                  "requirement": "Return no verified repeated permits template for left-first-claim plus right-first-claim: the left occurrence is positive and the right occurrence negative. A pattern that erases the sign is not the authored qualified recurrence.",
+                  "source_evidence": [
+                    "left-first",
+                    "right-first",
+                    "stage3_authored_references/polarity/pattern_claim_sets"
+                  ]
+                },
+                {
+                  "id": "no-forced-positive-pattern",
+                  "requirement": "An empty verified patterns list is a correct explicit negative-control outcome; any optional abstract hypothesis belongs in declared augmentation, outside verified occurrences.",
+                  "source_evidence": [
+                    "pattern_discovery recipe",
+                    "stage3_authored_references/polarity/pattern_claim_sets"
+                  ]
+                }
+              ],
+              "source_grounding": [
+                {
+                  "id": "witnessed-occurrences",
+                  "requirement": "Every claimed verified occurrence must map injectively to existing entity IDs and existing claim IDs in template edge order, preserving direction, node kinds, multiplicity, predicate and every qualifier.",
+                  "source_evidence": [
+                    "existing_claim_semantics",
+                    "pattern_discovery recipe"
+                  ]
+                },
+                {
+                  "id": "declared-abstraction",
+                  "requirement": "Omitting distinct left/right labels is label abstraction and must be declared as loss; polarity, scope, version and direction cannot be abstracted away implicitly.",
+                  "source_evidence": [
+                    "pattern_discovery recipe"
+                  ]
+                },
+                {
+                  "id": "provisional-recurrence",
+                  "requirement": "A witnessed recurrence is a candidate pattern, not universal validity or permission to add an unwitnessed edge. Source group labels are caller-declared; their empirical independence is unverified.",
+                  "source_evidence": [
+                    "source_groups",
+                    "pattern_discovery recipe"
+                  ]
+                }
+              ],
+              "expected_pattern_claim_sets": [],
+              "pattern_reference_scope": "Exact authored DEV target; exhaustive discovery over other possible templates and world/generalization quality are not measured."
+            }
+          }
+        }
+      ],
+      "planned_inventory": [
+        {
+          "request_id": "1644a27452631c27f2aa32de253863521578dd0f27d9c3aba8e359f98bdf20dd:graph_completion",
+          "request_sha256": "97ed55bd31133f9a88ec7cb01a428b5545f437ea97adca64148125230f378a42",
+          "manifest_pointer": "/requests/0",
+          "pair_id": "1644a27452631c27f2aa32de253863521578dd0f27d9c3aba8e359f98bdf20dd",
+          "case_id": "repeat",
+          "arm_or_track": "graph_completion",
+          "requested_model_key": "gpt61_sol",
+          "requested_model_id": "openai/gpt-6.1-sol",
+          "requested_provider": "openai",
+          "repetition": 0,
+          "same_case_input_sha256": "13cc413bbf8c4abca89c3b6d08508d14159b6d1bea72359a5fca519e21b1edf1",
+          "system_prompt_sha256": "07b5617207541215202785994496257d12f1a952a37631737b16901b602dc4fb",
+          "exact_user_content_sha256": "13cc413bbf8c4abca89c3b6d08508d14159b6d1bea72359a5fca519e21b1edf1",
+          "semantic_case_criteria_ref": "stage3/repeat"
+        },
+        {
+          "request_id": "1644a27452631c27f2aa32de253863521578dd0f27d9c3aba8e359f98bdf20dd:pattern_discovery",
+          "request_sha256": "dad9eebc71e0be6fab1a715e4b0d420e844c40d6f4c1f30daefcaa5e5332d2b9",
+          "manifest_pointer": "/requests/1",
+          "pair_id": "1644a27452631c27f2aa32de253863521578dd0f27d9c3aba8e359f98bdf20dd",
+          "case_id": "repeat",
+          "arm_or_track": "pattern_discovery",
+          "requested_model_key": "gpt61_sol",
+          "requested_model_id": "openai/gpt-6.1-sol",
+          "requested_provider": "openai",
+          "repetition": 0,
+          "same_case_input_sha256": "13cc413bbf8c4abca89c3b6d08508d14159b6d1bea72359a5fca519e21b1edf1",
+          "system_prompt_sha256": "9409c68bfb5580b989f2ee16455a7576ee08c16f46ca53c3fc93e7fcc3b48982",
+          "exact_user_content_sha256": "13cc413bbf8c4abca89c3b6d08508d14159b6d1bea72359a5fca519e21b1edf1",
+          "semantic_case_criteria_ref": "stage3/repeat"
+        },
+        {
+          "request_id": "ad8ad1411d566068f79e71c2893ecd044d81a732e73bf24ffe31b0f6fe043749:graph_completion",
+          "request_sha256": "21631eed9de20ea3904cc69a48db2b3fc749adc66754b7bce4814e80630b0586",
+          "manifest_pointer": "/requests/2",
+          "pair_id": "ad8ad1411d566068f79e71c2893ecd044d81a732e73bf24ffe31b0f6fe043749",
+          "case_id": "repeat",
+          "arm_or_track": "graph_completion",
+          "requested_model_key": "sonnet55",
+          "requested_model_id": "anthropic/claude-sonnet-5.5",
+          "requested_provider": "anthropic",
+          "repetition": 0,
+          "same_case_input_sha256": "13cc413bbf8c4abca89c3b6d08508d14159b6d1bea72359a5fca519e21b1edf1",
+          "system_prompt_sha256": "07b5617207541215202785994496257d12f1a952a37631737b16901b602dc4fb",
+          "exact_user_content_sha256": "13cc413bbf8c4abca89c3b6d08508d14159b6d1bea72359a5fca519e21b1edf1",
+          "semantic_case_criteria_ref": "stage3/repeat"
+        },
+        {
+          "request_id": "ad8ad1411d566068f79e71c2893ecd044d81a732e73bf24ffe31b0f6fe043749:pattern_discovery",
+          "request_sha256": "99909406a6eacf40446a7b4aab05de5cb66328746d7574ac3d13216ab6c4dc50",
+          "manifest_pointer": "/requests/3",
+          "pair_id": "ad8ad1411d566068f79e71c2893ecd044d81a732e73bf24ffe31b0f6fe043749",
+          "case_id": "repeat",
+          "arm_or_track": "pattern_discovery",
+          "requested_model_key": "sonnet55",
+          "requested_model_id": "anthropic/claude-sonnet-5.5",
+          "requested_provider": "anthropic",
+          "repetition": 0,
+          "same_case_input_sha256": "13cc413bbf8c4abca89c3b6d08508d14159b6d1bea72359a5fca519e21b1edf1",
+          "system_prompt_sha256": "9409c68bfb5580b989f2ee16455a7576ee08c16f46ca53c3fc93e7fcc3b48982",
+          "exact_user_content_sha256": "13cc413bbf8c4abca89c3b6d08508d14159b6d1bea72359a5fca519e21b1edf1",
+          "semantic_case_criteria_ref": "stage3/repeat"
+        },
+        {
+          "request_id": "e41c599d13c321e8b0521c7a6c25b1e810fe420bdd541146ed8ad9fd0da65edb:graph_completion",
+          "request_sha256": "167fd8608b3c44fdc3ceda2ceb211457e7dc55267809b8ac1916f17de7496939",
+          "manifest_pointer": "/requests/4",
+          "pair_id": "e41c599d13c321e8b0521c7a6c25b1e810fe420bdd541146ed8ad9fd0da65edb",
+          "case_id": "repeat",
+          "arm_or_track": "graph_completion",
+          "requested_model_key": "gemini31_pro",
+          "requested_model_id": "google/gemini-3.1-pro-preview",
+          "requested_provider": "google-ai-studio",
+          "repetition": 0,
+          "same_case_input_sha256": "13cc413bbf8c4abca89c3b6d08508d14159b6d1bea72359a5fca519e21b1edf1",
+          "system_prompt_sha256": "07b5617207541215202785994496257d12f1a952a37631737b16901b602dc4fb",
+          "exact_user_content_sha256": "13cc413bbf8c4abca89c3b6d08508d14159b6d1bea72359a5fca519e21b1edf1",
+          "semantic_case_criteria_ref": "stage3/repeat"
+        },
+        {
+          "request_id": "e41c599d13c321e8b0521c7a6c25b1e810fe420bdd541146ed8ad9fd0da65edb:pattern_discovery",
+          "request_sha256": "68a612da3a122f25ac1cdf94ce05a1936a7e47d19af97d8fa9ad0c09fb252c0e",
+          "manifest_pointer": "/requests/5",
+          "pair_id": "e41c599d13c321e8b0521c7a6c25b1e810fe420bdd541146ed8ad9fd0da65edb",
+          "case_id": "repeat",
+          "arm_or_track": "pattern_discovery",
+          "requested_model_key": "gemini31_pro",
+          "requested_model_id": "google/gemini-3.1-pro-preview",
+          "requested_provider": "google-ai-studio",
+          "repetition": 0,
+          "same_case_input_sha256": "13cc413bbf8c4abca89c3b6d08508d14159b6d1bea72359a5fca519e21b1edf1",
+          "system_prompt_sha256": "9409c68bfb5580b989f2ee16455a7576ee08c16f46ca53c3fc93e7fcc3b48982",
+          "exact_user_content_sha256": "13cc413bbf8c4abca89c3b6d08508d14159b6d1bea72359a5fca519e21b1edf1",
+          "semantic_case_criteria_ref": "stage3/repeat"
+        },
+        {
+          "request_id": "fd75b2e642da3853e29e2fa121dcc23611c38b0d62bf3f0d61ab504618610bb6:graph_completion",
+          "request_sha256": "1190a536efc725d6824e3fa0953d974b922e50f399aee059fb94e1b8fe21086d",
+          "manifest_pointer": "/requests/6",
+          "pair_id": "fd75b2e642da3853e29e2fa121dcc23611c38b0d62bf3f0d61ab504618610bb6",
+          "case_id": "polarity",
+          "arm_or_track": "graph_completion",
+          "requested_model_key": "gpt61_sol",
+          "requested_model_id": "openai/gpt-6.1-sol",
+          "requested_provider": "openai",
+          "repetition": 0,
+          "same_case_input_sha256": "51b9b585a8a2fea8c79271ba2440271a9e733a56c030167a2f6c7c6a554edbed",
+          "system_prompt_sha256": "07b5617207541215202785994496257d12f1a952a37631737b16901b602dc4fb",
+          "exact_user_content_sha256": "51b9b585a8a2fea8c79271ba2440271a9e733a56c030167a2f6c7c6a554edbed",
+          "semantic_case_criteria_ref": "stage3/polarity"
+        },
+        {
+          "request_id": "fd75b2e642da3853e29e2fa121dcc23611c38b0d62bf3f0d61ab504618610bb6:pattern_discovery",
+          "request_sha256": "39871da4d1f7ad98cedbc62150ea59222adfcb1bac5359fa02e4ad6007ad9cd0",
+          "manifest_pointer": "/requests/7",
+          "pair_id": "fd75b2e642da3853e29e2fa121dcc23611c38b0d62bf3f0d61ab504618610bb6",
+          "case_id": "polarity",
+          "arm_or_track": "pattern_discovery",
+          "requested_model_key": "gpt61_sol",
+          "requested_model_id": "openai/gpt-6.1-sol",
+          "requested_provider": "openai",
+          "repetition": 0,
+          "same_case_input_sha256": "51b9b585a8a2fea8c79271ba2440271a9e733a56c030167a2f6c7c6a554edbed",
+          "system_prompt_sha256": "9409c68bfb5580b989f2ee16455a7576ee08c16f46ca53c3fc93e7fcc3b48982",
+          "exact_user_content_sha256": "51b9b585a8a2fea8c79271ba2440271a9e733a56c030167a2f6c7c6a554edbed",
+          "semantic_case_criteria_ref": "stage3/polarity"
+        },
+        {
+          "request_id": "73f8542443550657fff30736c293db35f6e2b1183f55d333d57d4c64a9bb8dec:graph_completion",
+          "request_sha256": "4fbfe55460a0363cf6077f09b74221cbb538e56bc7b1f6f92ed3761e3db0b45a",
+          "manifest_pointer": "/requests/8",
+          "pair_id": "73f8542443550657fff30736c293db35f6e2b1183f55d333d57d4c64a9bb8dec",
+          "case_id": "polarity",
+          "arm_or_track": "graph_completion",
+          "requested_model_key": "sonnet55",
+          "requested_model_id": "anthropic/claude-sonnet-5.5",
+          "requested_provider": "anthropic",
+          "repetition": 0,
+          "same_case_input_sha256": "51b9b585a8a2fea8c79271ba2440271a9e733a56c030167a2f6c7c6a554edbed",
+          "system_prompt_sha256": "07b5617207541215202785994496257d12f1a952a37631737b16901b602dc4fb",
+          "exact_user_content_sha256": "51b9b585a8a2fea8c79271ba2440271a9e733a56c030167a2f6c7c6a554edbed",
+          "semantic_case_criteria_ref": "stage3/polarity"
+        },
+        {
+          "request_id": "73f8542443550657fff30736c293db35f6e2b1183f55d333d57d4c64a9bb8dec:pattern_discovery",
+          "request_sha256": "a861ee6cc314aa5c4521d7511abc729001de7b52ef9904eacbbb0640090a9adb",
+          "manifest_pointer": "/requests/9",
+          "pair_id": "73f8542443550657fff30736c293db35f6e2b1183f55d333d57d4c64a9bb8dec",
+          "case_id": "polarity",
+          "arm_or_track": "pattern_discovery",
+          "requested_model_key": "sonnet55",
+          "requested_model_id": "anthropic/claude-sonnet-5.5",
+          "requested_provider": "anthropic",
+          "repetition": 0,
+          "same_case_input_sha256": "51b9b585a8a2fea8c79271ba2440271a9e733a56c030167a2f6c7c6a554edbed",
+          "system_prompt_sha256": "9409c68bfb5580b989f2ee16455a7576ee08c16f46ca53c3fc93e7fcc3b48982",
+          "exact_user_content_sha256": "51b9b585a8a2fea8c79271ba2440271a9e733a56c030167a2f6c7c6a554edbed",
+          "semantic_case_criteria_ref": "stage3/polarity"
+        },
+        {
+          "request_id": "4a44fbbbde0305c26e124e7edbfc215df111a007c1100a09e5abee4fb1f0e7f2:graph_completion",
+          "request_sha256": "8dd7245f756b890a93384859cef4261d88897c14f4d9f9e1e567e117f0186026",
+          "manifest_pointer": "/requests/10",
+          "pair_id": "4a44fbbbde0305c26e124e7edbfc215df111a007c1100a09e5abee4fb1f0e7f2",
+          "case_id": "polarity",
+          "arm_or_track": "graph_completion",
+          "requested_model_key": "gemini31_pro",
+          "requested_model_id": "google/gemini-3.1-pro-preview",
+          "requested_provider": "google-ai-studio",
+          "repetition": 0,
+          "same_case_input_sha256": "51b9b585a8a2fea8c79271ba2440271a9e733a56c030167a2f6c7c6a554edbed",
+          "system_prompt_sha256": "07b5617207541215202785994496257d12f1a952a37631737b16901b602dc4fb",
+          "exact_user_content_sha256": "51b9b585a8a2fea8c79271ba2440271a9e733a56c030167a2f6c7c6a554edbed",
+          "semantic_case_criteria_ref": "stage3/polarity"
+        },
+        {
+          "request_id": "4a44fbbbde0305c26e124e7edbfc215df111a007c1100a09e5abee4fb1f0e7f2:pattern_discovery",
+          "request_sha256": "0e2ae55172e2bb38e4c05c774831e5c498f336b33f7c76eb0fd3be5ae5ba6f23",
+          "manifest_pointer": "/requests/11",
+          "pair_id": "4a44fbbbde0305c26e124e7edbfc215df111a007c1100a09e5abee4fb1f0e7f2",
+          "case_id": "polarity",
+          "arm_or_track": "pattern_discovery",
+          "requested_model_key": "gemini31_pro",
+          "requested_model_id": "google/gemini-3.1-pro-preview",
+          "requested_provider": "google-ai-studio",
+          "repetition": 0,
+          "same_case_input_sha256": "51b9b585a8a2fea8c79271ba2440271a9e733a56c030167a2f6c7c6a554edbed",
+          "system_prompt_sha256": "9409c68bfb5580b989f2ee16455a7576ee08c16f46ca53c3fc93e7fcc3b48982",
+          "exact_user_content_sha256": "51b9b585a8a2fea8c79271ba2440271a9e733a56c030167a2f6c7c6a554edbed",
+          "semantic_case_criteria_ref": "stage3/polarity"
+        }
+      ]
+    },
+    "stage4": {
+      "cases": [
+        {
+          "case_id": "correction_a_b",
+          "same_common_input_sha256": "1f35a47eb34dc85a74c1e58d976b4374ad44496f65d370fe041941f9fcd2ce32",
+          "packet_id": "919a11e48176ad83a3df295d7555ae446557c54b2d65190eba5d6a1a552c5cfe",
+          "current_request": "Który plik jest teraz obowiązujący i co stało się z poprzednim ustaleniem? Odpowiedz krótko.",
+          "pinned_case_pointer": "/cases/0",
+          "pinned_case_sha256": "e83c34440f1e4685eaa8d084e634daed5c770ad4bbe2679ff7b176259b424850",
+          "source_points": [
+            {
+              "id": "ob_ctx_ca1",
+              "manifest_pointer": "/requests/0/base_packet/sources/0/observation/text",
+              "source_text": "W prototypie zapisuj logi w pliku A.",
+              "source_text_sha256": "658cd436547ae4fb077aa5969378b1cb024e5838258e8204c89b09d6fbb9bfeb",
+              "speaker": "user",
+              "source_scope": {
+                "unit": "unit_correction_a_b",
+                "date": "2026-10-02",
+                "ordinal": 0,
+                "lang": "pl",
+                "attrs": {
+                  "branch": "main"
+                }
+              },
+              "original_locator": {
+                "byte_len": null,
+                "byte_start": null,
+                "json_pointer": "/0/3",
+                "line": null,
+                "member": "synthetic_conversation.json",
+                "source": "sha256:e9a75e54044b76f03656f3eaf6d6b6bd1a6d1aed0f96ab91efefa9ee1d4db1c8",
+                "time_end": null,
+                "time_start": null
+              },
+              "observation_local_span": {
+                "byte_start": 0,
+                "byte_len": 36,
+                "codepoint_start": 0,
+                "codepoint_len": 36,
+                "scope": "exact observation.text, not inferred offsets in an unavailable source file"
+              },
+              "embedded_fixture_span": {
+                "git_source": "stage4_authored_cases",
+                "json_pointer": "/cases/0/source_fixture_json",
+                "fixture_utf8_sha256": "e9a75e54044b76f03656f3eaf6d6b6bd1a6d1aed0f96ab91efefa9ee1d4db1c8",
+                "byte_start": 27,
+                "byte_len": 36,
+                "codepoint_start": 27,
+                "codepoint_len": 36,
+                "scope": "host-derived span within exact embedded source_fixture_json bytes; original locator null offsets remain unchanged"
+              }
+            },
+            {
+              "id": "ob_ctx_ca2",
+              "manifest_pointer": "/requests/0/base_packet/sources/1/observation/text",
+              "source_text": "Korekta poprzedniego ustalenia: zapisuj w pliku B zamiast A. A zostaje tylko jako historyczna wersja pomysłu.",
+              "source_text_sha256": "345d644cd574f4835504b1093a2b76e2142617c22168c0be2628464994a7b494",
+              "speaker": "user",
+              "source_scope": {
+                "unit": "unit_correction_a_b",
+                "date": "2026-10-02",
+                "ordinal": 1,
+                "lang": "pl",
+                "attrs": {
+                  "branch": "main"
+                }
+              },
+              "original_locator": {
+                "byte_len": null,
+                "byte_start": null,
+                "json_pointer": "/1/3",
+                "line": null,
+                "member": "synthetic_conversation.json",
+                "source": "sha256:e9a75e54044b76f03656f3eaf6d6b6bd1a6d1aed0f96ab91efefa9ee1d4db1c8",
+                "time_end": null,
+                "time_start": null
+              },
+              "observation_local_span": {
+                "byte_start": 0,
+                "byte_len": 110,
+                "codepoint_start": 0,
+                "codepoint_len": 109,
+                "scope": "exact observation.text, not inferred offsets in an unavailable source file"
+              },
+              "embedded_fixture_span": {
+                "git_source": "stage4_authored_cases",
+                "json_pointer": "/cases/0/source_fixture_json",
+                "fixture_utf8_sha256": "e9a75e54044b76f03656f3eaf6d6b6bd1a6d1aed0f96ab91efefa9ee1d4db1c8",
+                "byte_start": 92,
+                "byte_len": 110,
+                "codepoint_start": 92,
+                "codepoint_len": 109,
+                "scope": "host-derived span within exact embedded source_fixture_json bytes; original locator null offsets remain unchanged"
+              }
+            }
+          ],
+          "input_entity_roles": [
+            {
+              "id": "ctx_ca1",
+              "status": "superseded",
+              "attrs": {
+                "bindingness": "requirement",
+                "branch": "main",
+                "conversation_order": 0,
+                "previous_turn_id": null,
+                "source_fixture": "synthetic_dev",
+                "source_observation_id": "ob_ctx_ca1",
+                "source_text": "W prototypie zapisuj logi w pliku A.",
+                "speaker": "user"
+              }
+            },
+            {
+              "id": "ctx_ca2",
+              "status": "active",
+              "attrs": {
+                "bindingness": "requirement",
+                "branch": "main",
+                "conversation_order": 1,
+                "corrects": "ctx_ca1",
+                "previous_turn_id": "ctx_ca1",
+                "source_fixture": "synthetic_dev",
+                "source_observation_id": "ob_ctx_ca2",
+                "source_text": "Korekta poprzedniego ustalenia: zapisuj w pliku B zamiast A. A zostaje tylko jako historyczna wersja pomysłu.",
+                "speaker": "user"
+              }
+            }
+          ],
+          "semantic_adequacy": [
+            {
+              "id": "current-B",
+              "requirement": "Answer that B is the current user-required log file on main, based on the later correction; do not present A or both A and B as simultaneously current.",
+              "source_evidence": [
+                "ob_ctx_ca2",
+                "ctx_ca2 attrs status active/bindingness requirement"
+              ]
+            },
+            {
+              "id": "A-history",
+              "requirement": "Explain that the previous A instruction was superseded/corrected and remains only the historical version of the idea, without claiming the earlier utterance was absent or deleted.",
+              "source_evidence": [
+                "ob_ctx_ca1",
+                "ob_ctx_ca2",
+                "ctx_ca1 status superseded",
+                "ctx_ca2 corrects ctx_ca1"
+              ]
+            },
+            {
+              "id": "same-user-correction",
+              "requirement": "Keep both commitments attributed to user; a report of that correction is not an assistant-created binding change or a change on another branch.",
+              "source_evidence": [
+                "ob_ctx_ca1",
+                "ob_ctx_ca2"
+              ]
+            }
+          ],
+          "source_grounding": [
+            {
+              "id": "bind-source-roles",
+              "requirement": "Every factual/source-commitment statement in the public answer must be mapped by the evaluator to these exact source spans plus their user speaker, main branch, bindingness, status and order; source citation syntax is not required by the frozen reply format.",
+              "source_evidence": [
+                "input_entity_roles",
+                "source_points",
+                "reply_prompt"
+              ]
+            },
+            {
+              "id": "no-new-binding-decision",
+              "requirement": "Assistant advice and model links remain proposals; they cannot create or rewrite a user requirement or native validated logical truth.",
+              "source_evidence": [
+                "reply_prompt",
+                "reply_compiler"
+              ]
+            },
+            {
+              "id": "optional-link-direction",
+              "requirement": "If semantic links are emitted, their targets must be the relevant prior entity or new node and their intended direction/scope must agree with the source. Empty links are valid and incur no absence penalty; link correctness is reported only for emitted links.",
+              "source_evidence": [
+                "reply_prompt"
+              ]
+            }
+          ],
+          "representation_policy": {
+            "same_semantic_criteria_for_method_ids": [
+              "research.reply_graph_v2/1",
+              "research.reply_text_json/1"
+            ],
+            "short_root_only_answer_allowed": true,
+            "optional_semantic_links_allowed_empty": true,
+            "required_citation_format": null,
+            "exact_tree_rendering_and_text_JSON_equality": "mechanical/representation consistency checks only; they do not establish source correctness",
+            "no_confidence_threshold_or_world_truth_score": true
+          },
+          "prohibited_source_assertions": [
+            "A is still the current log destination.",
+            "A and B are both current requirements.",
+            "The assistant independently decided to replace A.",
+            "The original A instruction never existed or was erased."
+          ]
+        },
+        {
+          "case_id": "negated_conditional",
+          "same_common_input_sha256": "9be53eaee4baff0ef0f64360c4f4ee637682195a9c3bc9f8d22b1fa7e9217791",
+          "packet_id": "903eee4e42904b3fd3817159668b492714a122318f499459b80417b02bf44086",
+          "current_request": "Czy na podstawie tego ustalenia wolno teraz wykonać publikację i co wiadomo o walidacji? Nie odwracaj implikacji.",
+          "pinned_case_pointer": "/cases/3",
+          "pinned_case_sha256": "0f036807ba081979f12512e6b9439b47152f2c9182c72446c13c0d8b24fa17f4",
+          "source_points": [
+            {
+              "id": "ob_ctx_nc1",
+              "manifest_pointer": "/requests/6/base_packet/sources/0/observation/text",
+              "source_text": "Jeżeli walidacja nie przejdzie, nie publikuj wyniku.",
+              "source_text_sha256": "b533b5822dc03524570b019cd8c731abe3389129a6ee99a3365138b814ca973d",
+              "speaker": "user",
+              "source_scope": {
+                "unit": "unit_negated_conditional",
+                "date": "2026-10-02",
+                "ordinal": 0,
+                "lang": "pl",
+                "attrs": {
+                  "branch": "main"
+                }
+              },
+              "original_locator": {
+                "byte_len": null,
+                "byte_start": null,
+                "json_pointer": "/0/3",
+                "line": null,
+                "member": "synthetic_conversation.json",
+                "source": "sha256:37699a69e466606776ea0078e6aacd848faf1901d195960440a47f8842e7c886",
+                "time_end": null,
+                "time_start": null
+              },
+              "observation_local_span": {
+                "byte_start": 0,
+                "byte_len": 53,
+                "codepoint_start": 0,
+                "codepoint_len": 52,
+                "scope": "exact observation.text, not inferred offsets in an unavailable source file"
+              },
+              "embedded_fixture_span": {
+                "git_source": "stage4_authored_cases",
+                "json_pointer": "/cases/3/source_fixture_json",
+                "fixture_utf8_sha256": "37699a69e466606776ea0078e6aacd848faf1901d195960440a47f8842e7c886",
+                "byte_start": 27,
+                "byte_len": 53,
+                "codepoint_start": 27,
+                "codepoint_len": 52,
+                "scope": "host-derived span within exact embedded source_fixture_json bytes; original locator null offsets remain unchanged"
+              }
+            },
+            {
+              "id": "ob_ctx_nc2",
+              "manifest_pointer": "/requests/6/base_packet/sources/1/observation/text",
+              "source_text": "W tej chwili wynik walidacji jest nieznany. Nic jeszcze nie potwierdziłem.",
+              "source_text_sha256": "191099d4bf2839b4eabc79ac8d03863a982bda94fec8f452b7817752c98b0076",
+              "speaker": "user",
+              "source_scope": {
+                "unit": "unit_negated_conditional",
+                "date": "2026-10-02",
+                "ordinal": 1,
+                "lang": "pl",
+                "attrs": {
+                  "branch": "main"
+                }
+              },
+              "original_locator": {
+                "byte_len": null,
+                "byte_start": null,
+                "json_pointer": "/1/3",
+                "line": null,
+                "member": "synthetic_conversation.json",
+                "source": "sha256:37699a69e466606776ea0078e6aacd848faf1901d195960440a47f8842e7c886",
+                "time_end": null,
+                "time_start": null
+              },
+              "observation_local_span": {
+                "byte_start": 0,
+                "byte_len": 75,
+                "codepoint_start": 0,
+                "codepoint_len": 74,
+                "scope": "exact observation.text, not inferred offsets in an unavailable source file"
+              },
+              "embedded_fixture_span": {
+                "git_source": "stage4_authored_cases",
+                "json_pointer": "/cases/3/source_fixture_json",
+                "fixture_utf8_sha256": "37699a69e466606776ea0078e6aacd848faf1901d195960440a47f8842e7c886",
+                "byte_start": 109,
+                "byte_len": 75,
+                "codepoint_start": 108,
+                "codepoint_len": 74,
+                "scope": "host-derived span within exact embedded source_fixture_json bytes; original locator null offsets remain unchanged"
+              }
+            }
+          ],
+          "input_entity_roles": [
+            {
+              "id": "ctx_nc1",
+              "status": "active",
+              "attrs": {
+                "bindingness": "conditional_requirement",
+                "branch": "main",
+                "conversation_order": 0,
+                "previous_turn_id": null,
+                "source_fixture": "synthetic_dev",
+                "source_observation_id": "ob_ctx_nc1",
+                "source_text": "Jeżeli walidacja nie przejdzie, nie publikuj wyniku.",
+                "speaker": "user"
+              }
+            },
+            {
+              "id": "ctx_nc2",
+              "status": "active",
+              "attrs": {
+                "bindingness": "state_report",
+                "branch": "main",
+                "conversation_order": 1,
+                "previous_turn_id": "ctx_nc1",
+                "source_fixture": "synthetic_dev",
+                "source_observation_id": "ob_ctx_nc2",
+                "source_text": "W tej chwili wynik walidacji jest nieznany. Nic jeszcze nie potwierdziłem.",
+                "speaker": "user"
+              }
+            }
+          ],
+          "semantic_adequacy": [
+            {
+              "id": "negative-conditional",
+              "requirement": "Preserve the user conditional: if validation does not pass, do not publish the result. It is a conditional requirement, not a report that validation has failed or that publication has already occurred.",
+              "source_evidence": [
+                "ob_ctx_nc1",
+                "ctx_nc1 bindingness conditional_requirement"
+              ]
+            },
+            {
+              "id": "unknown-validation",
+              "requirement": "State that validation is currently unknown and nothing has yet been confirmed; do not turn unknown into passed or failed.",
+              "source_evidence": [
+                "ob_ctx_nc2",
+                "ctx_nc2 bindingness state_report"
+              ]
+            },
+            {
+              "id": "no-current-source-permission",
+              "requirement": "The provided source does not establish current permission to publish: the validation condition is unresolved. Do not infer permission from an unknown condition, assert the converse/inverse, or present a recommendation as an additional user rule.",
+              "source_evidence": [
+                "ob_ctx_nc1",
+                "ob_ctx_nc2",
+                "current_request: Nie odwracaj implikacji."
+              ]
+            }
+          ],
+          "source_grounding": [
+            {
+              "id": "bind-source-roles",
+              "requirement": "Every factual/source-commitment statement in the public answer must be mapped by the evaluator to these exact source spans plus their user speaker, main branch, bindingness, status and order; source citation syntax is not required by the frozen reply format.",
+              "source_evidence": [
+                "input_entity_roles",
+                "source_points",
+                "reply_prompt"
+              ]
+            },
+            {
+              "id": "no-new-binding-decision",
+              "requirement": "Assistant advice and model links remain proposals; they cannot create or rewrite a user requirement or native validated logical truth.",
+              "source_evidence": [
+                "reply_prompt",
+                "reply_compiler"
+              ]
+            },
+            {
+              "id": "optional-link-direction",
+              "requirement": "If semantic links are emitted, their targets must be the relevant prior entity or new node and their intended direction/scope must agree with the source. Empty links are valid and incur no absence penalty; link correctness is reported only for emitted links.",
+              "source_evidence": [
+                "reply_prompt"
+              ]
+            }
+          ],
+          "representation_policy": {
+            "same_semantic_criteria_for_method_ids": [
+              "research.reply_graph_v2/1",
+              "research.reply_text_json/1"
+            ],
+            "short_root_only_answer_allowed": true,
+            "optional_semantic_links_allowed_empty": true,
+            "required_citation_format": null,
+            "exact_tree_rendering_and_text_JSON_equality": "mechanical/representation consistency checks only; they do not establish source correctness",
+            "no_confidence_threshold_or_world_truth_score": true
+          },
+          "prohibited_source_assertions": [
+            "Validation has passed.",
+            "Validation has failed.",
+            "Unknown validation establishes publication permission.",
+            "If validation passes, this source necessarily authorizes publication.",
+            "Not publishing proves that validation failed.",
+            "The conditional is an unconditional source-reported failure or a completed publication event."
+          ],
+          "ambiguity": {
+            "source_permission_scope": "No current source-backed permission is established. This is not a claim that unknown validation logically proves failure or a new unconditional prohibition. A cautious recommendation may be emitted only as assistant advice.",
+            "logical_exclusions": "No new domain policy, safety protocol, probability threshold or external validation fact is introduced."
+          }
+        }
+      ],
+      "planned_inventory": [
+        {
+          "request_id": "5dff1a98b7ff861bb7a1b0b1b78822ea8bfb78082bc1707fe26e44640150306f:graph_v2",
+          "request_sha256": "f201fe69ce99bd025a2b3954fd2adc8a32232462beb65d74640af1c37fa74b7f",
+          "manifest_pointer": "/requests/0",
+          "pair_id": "5dff1a98b7ff861bb7a1b0b1b78822ea8bfb78082bc1707fe26e44640150306f",
+          "case_id": "correction_a_b",
+          "arm_or_track": "research.reply_graph_v2/1",
+          "requested_model_key": "gpt61_sol",
+          "requested_model_id": "openai/gpt-6.1-sol",
+          "requested_provider": "openai",
+          "repetition": 0,
+          "same_case_input_sha256": "1f35a47eb34dc85a74c1e58d976b4374ad44496f65d370fe041941f9fcd2ce32",
+          "system_prompt_sha256": "333268f547eb94d7eff744a21a43db6d2e6a74a7be3f9d753f13000ff012b157",
+          "exact_user_content_sha256": "1f35a47eb34dc85a74c1e58d976b4374ad44496f65d370fe041941f9fcd2ce32",
+          "semantic_case_criteria_ref": "stage4/correction_a_b"
+        },
+        {
+          "request_id": "5dff1a98b7ff861bb7a1b0b1b78822ea8bfb78082bc1707fe26e44640150306f:text_json",
+          "request_sha256": "9f8dc200c78a8b24d1ddbdaa01180b79238c45da44cecdb2242a42e4cd2f1887",
+          "manifest_pointer": "/requests/1",
+          "pair_id": "5dff1a98b7ff861bb7a1b0b1b78822ea8bfb78082bc1707fe26e44640150306f",
+          "case_id": "correction_a_b",
+          "arm_or_track": "research.reply_text_json/1",
+          "requested_model_key": "gpt61_sol",
+          "requested_model_id": "openai/gpt-6.1-sol",
+          "requested_provider": "openai",
+          "repetition": 0,
+          "same_case_input_sha256": "1f35a47eb34dc85a74c1e58d976b4374ad44496f65d370fe041941f9fcd2ce32",
+          "system_prompt_sha256": "7e1d78d9003bdd4ea68292212f88ea91ccde30b8cf9b4417cf1c811ca21b6f00",
+          "exact_user_content_sha256": "1f35a47eb34dc85a74c1e58d976b4374ad44496f65d370fe041941f9fcd2ce32",
+          "semantic_case_criteria_ref": "stage4/correction_a_b"
+        },
+        {
+          "request_id": "0b9b04a889ad5c252a6496c02d753e02ab13d3e084a1960428e921a9d8f72954:graph_v2",
+          "request_sha256": "bc0157e73bce8446998e2da5c1fe37267b58a1177c45707918e62f8ddc611fdb",
+          "manifest_pointer": "/requests/2",
+          "pair_id": "0b9b04a889ad5c252a6496c02d753e02ab13d3e084a1960428e921a9d8f72954",
+          "case_id": "correction_a_b",
+          "arm_or_track": "research.reply_graph_v2/1",
+          "requested_model_key": "sonnet55",
+          "requested_model_id": "anthropic/claude-sonnet-5.5",
+          "requested_provider": "anthropic",
+          "repetition": 0,
+          "same_case_input_sha256": "1f35a47eb34dc85a74c1e58d976b4374ad44496f65d370fe041941f9fcd2ce32",
+          "system_prompt_sha256": "333268f547eb94d7eff744a21a43db6d2e6a74a7be3f9d753f13000ff012b157",
+          "exact_user_content_sha256": "1f35a47eb34dc85a74c1e58d976b4374ad44496f65d370fe041941f9fcd2ce32",
+          "semantic_case_criteria_ref": "stage4/correction_a_b"
+        },
+        {
+          "request_id": "0b9b04a889ad5c252a6496c02d753e02ab13d3e084a1960428e921a9d8f72954:text_json",
+          "request_sha256": "a657bd559a8094ec56a5458c951ee850302ae82d39655eeed6cf302a57acc27a",
+          "manifest_pointer": "/requests/3",
+          "pair_id": "0b9b04a889ad5c252a6496c02d753e02ab13d3e084a1960428e921a9d8f72954",
+          "case_id": "correction_a_b",
+          "arm_or_track": "research.reply_text_json/1",
+          "requested_model_key": "sonnet55",
+          "requested_model_id": "anthropic/claude-sonnet-5.5",
+          "requested_provider": "anthropic",
+          "repetition": 0,
+          "same_case_input_sha256": "1f35a47eb34dc85a74c1e58d976b4374ad44496f65d370fe041941f9fcd2ce32",
+          "system_prompt_sha256": "7e1d78d9003bdd4ea68292212f88ea91ccde30b8cf9b4417cf1c811ca21b6f00",
+          "exact_user_content_sha256": "1f35a47eb34dc85a74c1e58d976b4374ad44496f65d370fe041941f9fcd2ce32",
+          "semantic_case_criteria_ref": "stage4/correction_a_b"
+        },
+        {
+          "request_id": "e41ade177b0fed84ec89ba82734ba0a7c85a1920f449886560921eccfabaafc5:graph_v2",
+          "request_sha256": "5b6cc6c7ff16e5e0e96e6c728a1efb060109e7681023672f9bed378ec54c3500",
+          "manifest_pointer": "/requests/4",
+          "pair_id": "e41ade177b0fed84ec89ba82734ba0a7c85a1920f449886560921eccfabaafc5",
+          "case_id": "correction_a_b",
+          "arm_or_track": "research.reply_graph_v2/1",
+          "requested_model_key": "gemini31_pro",
+          "requested_model_id": "google/gemini-3.1-pro-preview",
+          "requested_provider": "google-ai-studio",
+          "repetition": 0,
+          "same_case_input_sha256": "1f35a47eb34dc85a74c1e58d976b4374ad44496f65d370fe041941f9fcd2ce32",
+          "system_prompt_sha256": "333268f547eb94d7eff744a21a43db6d2e6a74a7be3f9d753f13000ff012b157",
+          "exact_user_content_sha256": "1f35a47eb34dc85a74c1e58d976b4374ad44496f65d370fe041941f9fcd2ce32",
+          "semantic_case_criteria_ref": "stage4/correction_a_b"
+        },
+        {
+          "request_id": "e41ade177b0fed84ec89ba82734ba0a7c85a1920f449886560921eccfabaafc5:text_json",
+          "request_sha256": "5b24893bef48475d5cb68fa73c412d04f0d90ea482c89390827c9b7b7765af2d",
+          "manifest_pointer": "/requests/5",
+          "pair_id": "e41ade177b0fed84ec89ba82734ba0a7c85a1920f449886560921eccfabaafc5",
+          "case_id": "correction_a_b",
+          "arm_or_track": "research.reply_text_json/1",
+          "requested_model_key": "gemini31_pro",
+          "requested_model_id": "google/gemini-3.1-pro-preview",
+          "requested_provider": "google-ai-studio",
+          "repetition": 0,
+          "same_case_input_sha256": "1f35a47eb34dc85a74c1e58d976b4374ad44496f65d370fe041941f9fcd2ce32",
+          "system_prompt_sha256": "7e1d78d9003bdd4ea68292212f88ea91ccde30b8cf9b4417cf1c811ca21b6f00",
+          "exact_user_content_sha256": "1f35a47eb34dc85a74c1e58d976b4374ad44496f65d370fe041941f9fcd2ce32",
+          "semantic_case_criteria_ref": "stage4/correction_a_b"
+        },
+        {
+          "request_id": "7e1464a33662b8d23542e2b1634e825904209291fa13fbd8beb1e636928859d0:graph_v2",
+          "request_sha256": "6f3e2586aad7d7f82ca98cd3a5baacbb561a490d6ac53c8386731a7d80947d84",
+          "manifest_pointer": "/requests/6",
+          "pair_id": "7e1464a33662b8d23542e2b1634e825904209291fa13fbd8beb1e636928859d0",
+          "case_id": "negated_conditional",
+          "arm_or_track": "research.reply_graph_v2/1",
+          "requested_model_key": "gpt61_sol",
+          "requested_model_id": "openai/gpt-6.1-sol",
+          "requested_provider": "openai",
+          "repetition": 0,
+          "same_case_input_sha256": "9be53eaee4baff0ef0f64360c4f4ee637682195a9c3bc9f8d22b1fa7e9217791",
+          "system_prompt_sha256": "333268f547eb94d7eff744a21a43db6d2e6a74a7be3f9d753f13000ff012b157",
+          "exact_user_content_sha256": "9be53eaee4baff0ef0f64360c4f4ee637682195a9c3bc9f8d22b1fa7e9217791",
+          "semantic_case_criteria_ref": "stage4/negated_conditional"
+        },
+        {
+          "request_id": "7e1464a33662b8d23542e2b1634e825904209291fa13fbd8beb1e636928859d0:text_json",
+          "request_sha256": "79fe2058bfea9d9ec44ad172bff7ee353fd7fd76e78b4e6c13f184c8a64ce447",
+          "manifest_pointer": "/requests/7",
+          "pair_id": "7e1464a33662b8d23542e2b1634e825904209291fa13fbd8beb1e636928859d0",
+          "case_id": "negated_conditional",
+          "arm_or_track": "research.reply_text_json/1",
+          "requested_model_key": "gpt61_sol",
+          "requested_model_id": "openai/gpt-6.1-sol",
+          "requested_provider": "openai",
+          "repetition": 0,
+          "same_case_input_sha256": "9be53eaee4baff0ef0f64360c4f4ee637682195a9c3bc9f8d22b1fa7e9217791",
+          "system_prompt_sha256": "7e1d78d9003bdd4ea68292212f88ea91ccde30b8cf9b4417cf1c811ca21b6f00",
+          "exact_user_content_sha256": "9be53eaee4baff0ef0f64360c4f4ee637682195a9c3bc9f8d22b1fa7e9217791",
+          "semantic_case_criteria_ref": "stage4/negated_conditional"
+        },
+        {
+          "request_id": "81a23713be76c9417aa9507a7aef08dbc77abbdf55831951f2a8c6e07d2481eb:graph_v2",
+          "request_sha256": "b93749118d1628e3a0d2943aa415af83b53aeb0219411812e7e0123cc6facd33",
+          "manifest_pointer": "/requests/8",
+          "pair_id": "81a23713be76c9417aa9507a7aef08dbc77abbdf55831951f2a8c6e07d2481eb",
+          "case_id": "negated_conditional",
+          "arm_or_track": "research.reply_graph_v2/1",
+          "requested_model_key": "sonnet55",
+          "requested_model_id": "anthropic/claude-sonnet-5.5",
+          "requested_provider": "anthropic",
+          "repetition": 0,
+          "same_case_input_sha256": "9be53eaee4baff0ef0f64360c4f4ee637682195a9c3bc9f8d22b1fa7e9217791",
+          "system_prompt_sha256": "333268f547eb94d7eff744a21a43db6d2e6a74a7be3f9d753f13000ff012b157",
+          "exact_user_content_sha256": "9be53eaee4baff0ef0f64360c4f4ee637682195a9c3bc9f8d22b1fa7e9217791",
+          "semantic_case_criteria_ref": "stage4/negated_conditional"
+        },
+        {
+          "request_id": "81a23713be76c9417aa9507a7aef08dbc77abbdf55831951f2a8c6e07d2481eb:text_json",
+          "request_sha256": "c15304141db40f55c338b4bfd38c60d72b84312bcfd6b69b38d3422b5704870f",
+          "manifest_pointer": "/requests/9",
+          "pair_id": "81a23713be76c9417aa9507a7aef08dbc77abbdf55831951f2a8c6e07d2481eb",
+          "case_id": "negated_conditional",
+          "arm_or_track": "research.reply_text_json/1",
+          "requested_model_key": "sonnet55",
+          "requested_model_id": "anthropic/claude-sonnet-5.5",
+          "requested_provider": "anthropic",
+          "repetition": 0,
+          "same_case_input_sha256": "9be53eaee4baff0ef0f64360c4f4ee637682195a9c3bc9f8d22b1fa7e9217791",
+          "system_prompt_sha256": "7e1d78d9003bdd4ea68292212f88ea91ccde30b8cf9b4417cf1c811ca21b6f00",
+          "exact_user_content_sha256": "9be53eaee4baff0ef0f64360c4f4ee637682195a9c3bc9f8d22b1fa7e9217791",
+          "semantic_case_criteria_ref": "stage4/negated_conditional"
+        },
+        {
+          "request_id": "8e57a8330a8b0aab10cf7d5f421e9170c7a8b895bc869176d72b1748f806a9ae:graph_v2",
+          "request_sha256": "bdb398d66cecedb737bb5a1ab66e53e790d4837917282e42ebade500e5a6991b",
+          "manifest_pointer": "/requests/10",
+          "pair_id": "8e57a8330a8b0aab10cf7d5f421e9170c7a8b895bc869176d72b1748f806a9ae",
+          "case_id": "negated_conditional",
+          "arm_or_track": "research.reply_graph_v2/1",
+          "requested_model_key": "gemini31_pro",
+          "requested_model_id": "google/gemini-3.1-pro-preview",
+          "requested_provider": "google-ai-studio",
+          "repetition": 0,
+          "same_case_input_sha256": "9be53eaee4baff0ef0f64360c4f4ee637682195a9c3bc9f8d22b1fa7e9217791",
+          "system_prompt_sha256": "333268f547eb94d7eff744a21a43db6d2e6a74a7be3f9d753f13000ff012b157",
+          "exact_user_content_sha256": "9be53eaee4baff0ef0f64360c4f4ee637682195a9c3bc9f8d22b1fa7e9217791",
+          "semantic_case_criteria_ref": "stage4/negated_conditional"
+        },
+        {
+          "request_id": "8e57a8330a8b0aab10cf7d5f421e9170c7a8b895bc869176d72b1748f806a9ae:text_json",
+          "request_sha256": "d291afabdc0df78c73b63180754a2e96e20a152048002268ad8466d475e22238",
+          "manifest_pointer": "/requests/11",
+          "pair_id": "8e57a8330a8b0aab10cf7d5f421e9170c7a8b895bc869176d72b1748f806a9ae",
+          "case_id": "negated_conditional",
+          "arm_or_track": "research.reply_text_json/1",
+          "requested_model_key": "gemini31_pro",
+          "requested_model_id": "google/gemini-3.1-pro-preview",
+          "requested_provider": "google-ai-studio",
+          "repetition": 0,
+          "same_case_input_sha256": "9be53eaee4baff0ef0f64360c4f4ee637682195a9c3bc9f8d22b1fa7e9217791",
+          "system_prompt_sha256": "7e1d78d9003bdd4ea68292212f88ea91ccde30b8cf9b4417cf1c811ca21b6f00",
+          "exact_user_content_sha256": "9be53eaee4baff0ef0f64360c4f4ee637682195a9c3bc9f8d22b1fa7e9217791",
+          "semantic_case_criteria_ref": "stage4/negated_conditional"
+        }
+      ]
+    }
+  },
+  "ambiguities_and_exclusions": [
+    {
+      "id": "known-authored-controls",
+      "detail": "Author references were used to create scripted offline controls; future live performance on these known cases is source-relative DEV performance, not independent unseen semantic gold."
+    },
+    {
+      "id": "stage3-task-asymmetry",
+      "detail": "The paired stage3 recipes ask different tasks. Shared input is not interchangeable completion-versus-pattern correctness."
+    },
+    {
+      "id": "stage3-reference-not-exhaustive",
+      "detail": "The frozen authored target selects one omitted relation and one qualified recurrence/negative control. Novel hypotheses or other templates are not silently relabeled correct gold or independent discoveries; report separately with source witnesses."
+    },
+    {
+      "id": "source-group-independence",
+      "detail": "left-source/right-source are caller-declared fixture labels. Actual independent source origins are unverified; no independence/generalization metric is registered."
+    },
+    {
+      "id": "optional-stage4-links",
+      "detail": "The frozen prompt allows links=[]. No link count, mandatory topology depth or particular relation predicate is a semantic-adequacy gold requirement."
+    },
+    {
+      "id": "negated-conditional-open-world",
+      "detail": "Unknown validation does not establish failure or permission. No outside policy is added to resolve that source ambiguity."
+    },
+    {
+      "id": "excluded-unselected-inputs",
+      "detail": "Stage3 direction/shared_source/scope/unicode references and unselected pinned reply cases are outside the frozen 24-request population. Stage5, holdout and private material are excluded."
+    }
+  ],
+  "model_outputs_read_for_this_registration": 0,
+  "new_model_calls": 0,
+  "canonical_store_written": false
+}
