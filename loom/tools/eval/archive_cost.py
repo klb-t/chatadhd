@@ -17,19 +17,22 @@ opt-in. No network or model calls: private exports remain on the owner's machine
 from __future__ import annotations
 
 import argparse
+from collections.abc import Mapping
+import hashlib
 import json
 import math
 import sqlite3
 import sys
 from pathlib import Path
 
-PRICING = Path(__file__).with_name("pricing_2026-09-25.json")
-CHARS_PER_TOKEN = {"low": 4.0, "high": 3.0}  # low/high token estimate
+_UNSET = object()
+_REPO_ROOT = Path(__file__).resolve().parents[3]
+BUILTIN_AUDIT_PRESET = _REPO_ROOT / "loom/data/presets/import_audit.pack"
 STATUS_CLASSES = ("active", "version", "excluded", "deleted", "unknown")
 TOOL_ROLES = ("tool", "function")
 
 
-def archive_stats(db_path: str | Path, *, sqlite_cache_kib: int = 4096) -> dict:
+def archive_stats(db_path: str | Path, *, sqlite_cache_kib=_UNSET, audit_preset=_UNSET) -> dict:
     """Complete read-only inventory, grouped in SQLite without retaining text.
 
     ``raw`` includes every stored row. Historical aliases are preserved:
@@ -38,6 +41,8 @@ def archive_stats(db_path: str | Path, *, sqlite_cache_kib: int = 4096) -> dict:
     should use explicit ``raw`` and ``projected`` scopes instead. Counting one
     message may temporarily materialize its text; no archive-wide list exists.
     """
+    values = load_audit_preset(audit_preset)
+    sqlite_cache_kib = _effective(sqlite_cache_kib, values, "sqlite_cache_kib")
     _number(sqlite_cache_kib, "sqlite_cache_kib", integer=True)
     if not sqlite_cache_kib:
         raise ValueError("sqlite_cache_kib must be positive")
@@ -133,16 +138,26 @@ def archive_stats(db_path: str | Path, *, sqlite_cache_kib: int = 4096) -> dict:
             "execution": {"sqlite_cache_kib": sqlite_cache_kib, "temporary_storage": "file; counts, roles/statuses and conversation IDs only",
                           "python_retention": "status/role aggregates and <=1024 conversation-presence groups"},
         }
-        result["projected"] = project_stats(result, include_excluded=True, include_deleted=True)
+        # This inventory projection explicitly covers every stored status/role.
+        result["projected"] = project_stats(result, include_active=True, include_versions=True,
+            include_unknown_status=True, include_excluded=True, include_deleted=True,
+            include_tools=True, audit_preset=values)
         return result
     finally:
         con.close()
 
 
-def project_stats(stats: dict, *, include_active=True, include_versions=True,
-                  include_unknown_status=True, include_excluded=False,
-                  include_deleted=False, include_tools=True) -> dict:
+def project_stats(stats: dict, *, include_active=_UNSET, include_versions=_UNSET,
+                  include_unknown_status=_UNSET, include_excluded=_UNSET,
+                  include_deleted=_UNSET, include_tools=_UNSET, audit_preset=_UNSET) -> dict:
     """Project a selected text scope from aggregates without reading content."""
+    values = load_audit_preset(audit_preset)
+    include_active = _effective(include_active, values, "api_include_active")
+    include_versions = _effective(include_versions, values, "api_include_versions")
+    include_unknown_status = _effective(include_unknown_status, values, "api_include_unknown_status")
+    include_excluded = _effective(include_excluded, values, "api_include_excluded")
+    include_deleted = _effective(include_deleted, values, "api_include_deleted")
+    include_tools = _effective(include_tools, values, "api_include_tools")
     flags = {"active": include_active, "version": include_versions,
              "unknown": include_unknown_status, "excluded": include_excluded, "deleted": include_deleted}
     if any(type(flag) is not bool for flag in [*flags.values(), include_tools]):
@@ -185,12 +200,100 @@ def _number(value, name, *, integer=False):
     return value
 
 
-def estimate(stats: dict, pricing: dict | None = None, *, fraction: float = 1.0, output_ratio: float = 0.4,
-             prefix_tokens: int = 8000, include_versions: bool = True,
-             include_unknown_status: bool = True, include_active: bool = True,
-             include_excluded: bool = False, include_deleted: bool = False,
-             include_tools: bool = True, chars_per_token_low: float = 4.0,
-             chars_per_token_high: float = 3.0) -> dict:
+def _effective(value, values, key):
+    return values[key] if value is _UNSET else value
+
+
+def _validated_preset_values(values):
+    if not isinstance(values, Mapping):
+        raise ValueError("audit preset values must be a complete object")
+    numeric = ("chars_per_token_low", "chars_per_token_high", "output_ratio",
+               "fraction", "pricing_batch_discount")
+    integer = ("sqlite_cache_kib", "api_prefix_tokens", "cli_prefix_tokens")
+    boolean = ("native_active_only", "api_include_active", "api_include_versions",
+               "api_include_unknown_status", "api_include_excluded", "api_include_deleted",
+               "api_include_tools", "cli_include_versions", "cli_include_unknown_status",
+               "cli_include_tools")
+    expected = {*numeric, *integer, *boolean, "cli_scope", "historical_pricing"}
+    if set(values) != expected:
+        missing, unknown = sorted(expected - set(values)), sorted(set(values) - expected, key=str)
+        raise ValueError(f"audit preset values must be complete; missing={missing}, unknown={unknown}")
+    values = dict(values)
+    for name in numeric:
+        _number(values[name], "audit preset " + name)
+    for name in integer:
+        _number(values[name], "audit preset " + name, integer=True)
+    for name in boolean:
+        if type(values[name]) is not bool:
+            raise ValueError("audit preset " + name + " must be a boolean")
+    if not 0 < values["fraction"] <= 1:
+        raise ValueError("audit preset fraction must be in (0, 1]")
+    if not values["sqlite_cache_kib"]:
+        raise ValueError("audit preset sqlite_cache_kib must be positive")
+    if values["chars_per_token_high"] <= 0 or values["chars_per_token_low"] < values["chars_per_token_high"]:
+        raise ValueError("audit preset chars_per_token_low must be >= chars_per_token_high > 0")
+    if values["cli_scope"] not in ("all", "active", "legacy"):
+        raise ValueError("audit preset cli_scope must be all, active or legacy")
+    if type(values["historical_pricing"]) is not str or not values["historical_pricing"]:
+        raise ValueError("audit preset historical_pricing must be a nonempty path reference")
+    return values
+
+
+def inspect_audit_preset(audit_preset=_UNSET) -> dict:
+    """Inspect one complete pack or already-resolved values; no layering/fallback.
+
+    File identity is the hash of the exact source bytes. A Mapping is a complete
+    effective-values object supplied by a caller, hashed as canonical JSON.
+    Neither inspection nor estimation loads the historical pricing reference.
+    """
+    if isinstance(audit_preset, Mapping):
+        values = _validated_preset_values(audit_preset)
+        raw = json.dumps(values, sort_keys=True, separators=(",", ":")).encode()
+        return {"source": "caller-supplied effective values", "sha256": hashlib.sha256(raw).hexdigest(),
+                "hash_scope": "canonical effective-values JSON", "values": values}
+    path = BUILTIN_AUDIT_PRESET if audit_preset is _UNSET else audit_preset
+    if not isinstance(path, (str, Path)):
+        raise ValueError("audit_preset must be a pack path or complete effective-values object")
+    path = Path(path)
+    raw = path.read_bytes()
+    pack = json.loads(raw)
+    if not isinstance(pack, dict) or set(pack) != {"schema", "id", "version", "values"}:
+        raise ValueError("audit preset must contain schema, id, version and complete values")
+    if pack["schema"] != "loom.import_audit_preset/1" or type(pack["id"]) is not str or not pack["id"]:
+        raise ValueError("invalid audit preset schema/id")
+    if type(pack["version"]) is not int or pack["version"] != 1:
+        raise ValueError("unsupported audit preset version")
+    values = _validated_preset_values(pack["values"])
+    return {"source": str(path), "sha256": hashlib.sha256(raw).hexdigest(),
+            "hash_scope": "exact pack source bytes", "values": values}
+
+
+def load_audit_preset(audit_preset=_UNSET) -> dict:
+    """Read and validate all effective audit values; an explicit bad input fails."""
+    return inspect_audit_preset(audit_preset)["values"]
+
+
+def __getattr__(name):
+    # Preserve the public Path/dict aliases without forcing builtin data reads
+    # before a caller can explicitly select a different complete preset.
+    if name not in ("PRICING", "CHARS_PER_TOKEN"):
+        raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    values = load_audit_preset()
+    if name == "PRICING":
+        return _REPO_ROOT / values["historical_pricing"]
+    return {"low": values["chars_per_token_low"], "high": values["chars_per_token_high"]}
+
+
+def __dir__():
+    return sorted(set(globals()) | {"PRICING", "CHARS_PER_TOKEN"})
+
+
+def estimate(stats: dict, pricing: dict | None = None, *, fraction=_UNSET, output_ratio=_UNSET,
+             prefix_tokens=_UNSET, include_versions=_UNSET,
+             include_unknown_status=_UNSET, include_active=_UNSET,
+             include_excluded=_UNSET, include_deleted=_UNSET,
+             include_tools=_UNSET, chars_per_token_low=_UNSET,
+             chars_per_token_high=_UNSET, audit_preset=_UNSET) -> dict:
     """One pass over selected text, projected output and a caller-set prefix.
 
     Fraction is a proportional projection, not measured sample selection.
@@ -198,6 +301,18 @@ def estimate(stats: dict, pricing: dict | None = None, *, fraction: float = 1.0,
     Historical estimate() defaults retain the legacy status scope and prefix;
     the CLI defaults to every stored row and no invented additional prefix.
     """
+    values = load_audit_preset(audit_preset)
+    fraction = _effective(fraction, values, "fraction")
+    output_ratio = _effective(output_ratio, values, "output_ratio")
+    prefix_tokens = _effective(prefix_tokens, values, "api_prefix_tokens")
+    include_active = _effective(include_active, values, "api_include_active")
+    include_versions = _effective(include_versions, values, "api_include_versions")
+    include_unknown_status = _effective(include_unknown_status, values, "api_include_unknown_status")
+    include_excluded = _effective(include_excluded, values, "api_include_excluded")
+    include_deleted = _effective(include_deleted, values, "api_include_deleted")
+    include_tools = _effective(include_tools, values, "api_include_tools")
+    chars_per_token_low = _effective(chars_per_token_low, values, "chars_per_token_low")
+    chars_per_token_high = _effective(chars_per_token_high, values, "chars_per_token_high")
     _number(fraction, "fraction")
     if not 0 < fraction <= 1:
         raise ValueError("fraction must be in (0, 1]")
@@ -212,10 +327,10 @@ def estimate(stats: dict, pricing: dict | None = None, *, fraction: float = 1.0,
         raise ValueError("chars_per_token_low must be >= chars_per_token_high > 0")
     projected = project_stats(stats, include_active=include_active, include_versions=include_versions,
         include_unknown_status=include_unknown_status, include_excluded=include_excluded,
-        include_deleted=include_deleted, include_tools=include_tools)
+        include_deleted=include_deleted, include_tools=include_tools, audit_preset=values)
     if pricing is not None and (not isinstance(pricing, dict) or not isinstance(pricing.get("models"), dict)):
         raise ValueError("pricing must be an object with a models object")
-    discount = _number((pricing or {}).get("batch_discount", 1.0), "batch_discount")
+    discount = _number((pricing or {}).get("batch_discount", values["pricing_batch_discount"]), "batch_discount")
     prices = pricing["models"] if pricing is not None else {}
     for p in prices.values():
         if not isinstance(p, dict):
@@ -280,23 +395,28 @@ def estimate(stats: dict, pricing: dict | None = None, *, fraction: float = 1.0,
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--db", required=True, help="path to chatadhd.db (opened read-only)")
+    ap.add_argument("--audit-preset", default=_UNSET,
+                    help="complete import_audit.pack; explicit flags override its effective values")
     ap.add_argument("--pricing", help="explicit historical/custom pricing JSON; never fetched online")
     ap.add_argument("--input-price", type=float, help="caller-supplied USD per million input tokens")
     ap.add_argument("--output-price", type=float, help="caller-supplied USD per million output tokens")
     ap.add_argument("--prefix-price", type=float, help="USD per million prefix tokens; defaults to input price")
-    ap.add_argument("--scope", choices=("all", "active", "legacy"), default="all",
-                    help="all stored rows (default), active rows, or historical active+version+unknown scope")
-    ap.add_argument("--fraction", type=float, default=1.0, help="share of conversations read by the model")
-    ap.add_argument("--output-ratio", type=float, default=0.4)
-    ap.add_argument("--prefix-tokens", type=int, default=0, help="additional prompt prefix tokens per selected conversation")
-    ap.add_argument("--chars-per-token-low", type=float, default=4.0)
-    ap.add_argument("--chars-per-token-high", type=float, default=3.0)
-    ap.add_argument("--sqlite-cache-kib", type=int, default=4096)
-    ap.add_argument("--no-versions", action="store_true", help="skip kept older branches")
-    ap.add_argument("--no-unknown-status", action="store_true", help="omit explicitly counted unknown-status messages")
-    ap.add_argument("--no-tools", action="store_true", help="exclude tool/function roles from projection only")
-    ap.add_argument("--include-excluded", action=argparse.BooleanOptionalAction, default=None)
-    ap.add_argument("--include-deleted", action=argparse.BooleanOptionalAction, default=None)
+    ap.add_argument("--scope", choices=("all", "active", "legacy"), default=_UNSET,
+                    help="all stored rows, active rows, or historical active+version+unknown scope; default from preset")
+    ap.add_argument("--fraction", type=float, default=_UNSET, help="share of conversations read by the model")
+    ap.add_argument("--output-ratio", type=float, default=_UNSET)
+    ap.add_argument("--prefix-tokens", type=int, default=_UNSET, help="additional prompt prefix tokens per selected conversation")
+    ap.add_argument("--chars-per-token-low", type=float, default=_UNSET)
+    ap.add_argument("--chars-per-token-high", type=float, default=_UNSET)
+    ap.add_argument("--sqlite-cache-kib", type=int, default=_UNSET)
+    ap.add_argument("--include-versions", dest="include_versions", action="store_true", default=_UNSET, help="include kept older branches")
+    ap.add_argument("--no-versions", dest="include_versions", action="store_false", default=_UNSET, help="skip kept older branches")
+    ap.add_argument("--include-unknown-status", dest="include_unknown_status", action="store_true", default=_UNSET, help="include counted unknown-status messages")
+    ap.add_argument("--no-unknown-status", dest="include_unknown_status", action="store_false", default=_UNSET, help="omit explicitly counted unknown-status messages")
+    ap.add_argument("--include-tools", dest="include_tools", action="store_true", default=_UNSET, help="include tool/function roles in projection")
+    ap.add_argument("--no-tools", dest="include_tools", action="store_false", default=_UNSET, help="exclude tool/function roles from projection only")
+    ap.add_argument("--include-excluded", action=argparse.BooleanOptionalAction, default=_UNSET)
+    ap.add_argument("--include-deleted", action=argparse.BooleanOptionalAction, default=_UNSET)
     ap.add_argument("--json", action="store_true")
     a = ap.parse_args(argv)
     if (a.input_price is None) != (a.output_price is None):
@@ -306,20 +426,26 @@ def main(argv=None) -> int:
     if a.pricing and a.input_price is not None:
         ap.error("choose --pricing or explicit prices")
     try:
-        stats = archive_stats(a.db, sqlite_cache_kib=a.sqlite_cache_kib)
+        values = load_audit_preset(a.audit_preset)
+        scope = _effective(a.scope, values, "cli_scope")
+        fraction = _effective(a.fraction, values, "fraction")
+        stats = archive_stats(a.db, sqlite_cache_kib=a.sqlite_cache_kib, audit_preset=values)
         pricing = json.loads(Path(a.pricing).read_text(encoding="utf-8")) if a.pricing else None
         if a.input_price is not None:
             pricing = {"source": "caller-supplied USD per million tokens; not verified current prices",
                 "prefix_assumption": "prefix price caller-supplied; cache eligibility unverified" if a.prefix_price is not None else "prefix charged at input rate; cache eligibility unverified",
                 "models": {"configured": {"input": a.input_price, "output": a.output_price,
                     "cache_read": a.prefix_price if a.prefix_price is not None else a.input_price}}}
-        est = estimate(stats, pricing, fraction=a.fraction, output_ratio=a.output_ratio,
-            prefix_tokens=a.prefix_tokens, include_versions=a.scope != "active" and not a.no_versions,
-            include_unknown_status=a.scope != "active" and not a.no_unknown_status,
-            include_excluded=(a.scope == "all") if a.include_excluded is None else a.include_excluded,
-            include_deleted=(a.scope == "all") if a.include_deleted is None else a.include_deleted,
-            include_tools=not a.no_tools, chars_per_token_low=a.chars_per_token_low,
-            chars_per_token_high=a.chars_per_token_high)
+        est = estimate(stats, pricing, fraction=fraction, output_ratio=a.output_ratio,
+            prefix_tokens=_effective(a.prefix_tokens, values, "cli_prefix_tokens"),
+            include_active=True,
+            include_versions=(scope != "active" and values["cli_include_versions"]) if a.include_versions is _UNSET else a.include_versions,
+            include_unknown_status=(scope != "active" and values["cli_include_unknown_status"]) if a.include_unknown_status is _UNSET else a.include_unknown_status,
+            include_excluded=(scope == "all") if a.include_excluded is _UNSET else a.include_excluded,
+            include_deleted=(scope == "all") if a.include_deleted is _UNSET else a.include_deleted,
+            include_tools=_effective(a.include_tools, values, "cli_include_tools"),
+            chars_per_token_low=a.chars_per_token_low,
+            chars_per_token_high=a.chars_per_token_high, audit_preset=values)
     except (ValueError, OSError, sqlite3.Error, KeyError, TypeError) as exc:
         ap.error(str(exc))
     stats["projected"] = est["projected"]
@@ -330,7 +456,7 @@ def main(argv=None) -> int:
     raw, projected = stats["raw"], est["projected"]
     print(f"Raw stored text: {raw['conversations']:,} conversations, {raw['messages']:,} messages, {raw['chars']:,} Unicode characters")
     print(f"Projection: {projected['conversations']:,} conversations, {projected['messages']:,} messages, {projected['chars']:,} characters; scope {projected['scope']}")
-    print(f"Estimated text input tokens (fraction {a.fraction}): {est['tokens']['low']:,} - {est['tokens']['high']:,}; prefix tokens {est['prefix_tokens']:,.0f}")
+    print(f"Estimated text input tokens (fraction {fraction}): {est['tokens']['low']:,} - {est['tokens']['high']:,}; prefix tokens {est['prefix_tokens']:,.0f}")
     if est["models"] is None:
         print("Model USD estimate unavailable: supply input/output prices or an explicit pricing file. Local import model-call cost: $0; local compute cost unmeasured.")
     else:

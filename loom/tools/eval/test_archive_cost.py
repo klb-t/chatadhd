@@ -1,4 +1,6 @@
 import contextlib
+import hashlib
+import importlib.util
 import io
 import json
 from copy import deepcopy
@@ -6,6 +8,8 @@ import sqlite3
 import tempfile
 import unittest
 from pathlib import Path
+from types import MappingProxyType
+from unittest import mock
 
 import archive_cost
 
@@ -232,6 +236,228 @@ class ArchiveCostRegressionTest(unittest.TestCase):
         stats = archive_cost.archive_stats(self.db)
         self.assertEqual(stats["raw"], {"conversations": 0, "messages": 0, "chars": 0})
         self.assertEqual(stats["conversation_chars"], {"median": 0, "max": 0})
+
+
+class ArchiveAuditPresetTest(unittest.TestCase):
+    """Authoritative preset data, complete effective values and call overrides."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.db = Path(self.tmp.name) / "audit.db"
+        make_db(self.db)
+        self.pack = json.loads(archive_cost.BUILTIN_AUDIT_PRESET.read_bytes())
+        self.path = Path(self.tmp.name) / "import_audit.pack"
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def write_pack(self, pack=None):
+        self.path.write_text(json.dumps(self.pack if pack is None else pack), encoding="utf-8")
+        return self.path
+
+    def cli(self, *flags):
+        with contextlib.redirect_stdout(io.StringIO()) as output:
+            self.assertEqual(archive_cost.main(["--db", str(self.db), *flags, "--json"]), 0)
+        return json.loads(output.getvalue())
+
+    def test_builtin_hash_and_distinct_api_cli_defaults(self):
+        raw = archive_cost.BUILTIN_AUDIT_PRESET.read_bytes()
+        info = archive_cost.inspect_audit_preset()
+        self.assertEqual(info["sha256"], hashlib.sha256(raw).hexdigest())
+        self.assertEqual(info["hash_scope"], "exact pack source bytes")
+        self.assertEqual(info["values"], self.pack["values"])
+        stats = archive_cost.archive_stats(self.db)
+        api = archive_cost.estimate(stats)
+        cli = self.cli()["estimate"]
+        self.assertEqual(api["assumptions"]["prefix_tokens"], 8000)
+        self.assertEqual(cli["assumptions"]["prefix_tokens"], 0)
+        self.assertEqual(api["projected"]["chars"], 5400)
+        self.assertEqual(cli["projected"]["chars"], 11399)
+        self.assertNotIn("audit_preset", api)
+        self.assertNotIn("sha256", api)
+        self.assertEqual(archive_cost.PRICING, archive_cost._REPO_ROOT / info["values"]["historical_pricing"])
+
+    def test_explicit_none_is_rejected_but_no_pricing_is_valid(self):
+        stats = archive_cost.archive_stats(self.db)
+        with self.assertRaises(ValueError):
+            archive_cost.archive_stats(self.db, sqlite_cache_kib=None)
+        numeric = ("fraction", "output_ratio", "prefix_tokens", "chars_per_token_low", "chars_per_token_high")
+        boolean = ("include_active", "include_versions", "include_unknown_status",
+                   "include_excluded", "include_deleted", "include_tools")
+        for name in (*numeric, *boolean):
+            with self.subTest(name=name), self.assertRaises(ValueError):
+                archive_cost.estimate(stats, **{name: None})
+        for name in boolean:
+            with self.subTest(projection=name), self.assertRaises(ValueError):
+                archive_cost.project_stats(stats, **{name: None})
+        for call in (archive_cost.load_audit_preset, archive_cost.inspect_audit_preset):
+            with self.assertRaises(ValueError):
+                call(None)
+        self.assertIsNone(archive_cost.estimate(stats, None)["models"])
+
+    def test_custom_file_api_and_cli_presets(self):
+        values = self.pack["values"]
+        values.update(chars_per_token_low=10.0, chars_per_token_high=5.0, output_ratio=2.0,
+                      fraction=.5, sqlite_cache_kib=256, api_prefix_tokens=7,
+                      cli_prefix_tokens=2, api_include_versions=False, api_include_excluded=True,
+                      cli_scope="active", cli_include_tools=False)
+        path = self.write_pack()
+        stats = archive_cost.archive_stats(self.db, audit_preset=path)
+        api = archive_cost.estimate(stats, audit_preset=path)
+        self.assertEqual(stats["execution"]["sqlite_cache_kib"], 256)
+        self.assertEqual(api["projected"]["chars"], 5799)
+        self.assertEqual(api["tokens"], {"low": 290, "high": 580})
+        self.assertEqual(api["prefix_tokens"], 7)
+        cli = self.cli("--audit-preset", str(path))
+        self.assertEqual(cli["estimate"]["projected"]["chars"], 4800)
+        self.assertEqual(cli["estimate"]["tokens"], {"low": 240, "high": 480})
+        self.assertEqual(cli["estimate"]["prefix_tokens"], 2)
+
+    def test_explicit_flags_and_api_arguments_override_preset(self):
+        self.pack["values"].update(chars_per_token_low=10.0, chars_per_token_high=5.0,
+                                  output_ratio=2.0, fraction=.5, sqlite_cache_kib=256,
+                                  api_prefix_tokens=7, cli_prefix_tokens=2, cli_scope="active")
+        path = self.write_pack()
+        stats = archive_cost.archive_stats(self.db, audit_preset=path, sqlite_cache_kib=512)
+        api = archive_cost.estimate(stats, audit_preset=path, output_ratio=0,
+                                    prefix_tokens=0, fraction=1.0, include_versions=False)
+        self.assertEqual(stats["execution"]["sqlite_cache_kib"], 512)
+        self.assertEqual(api["tokens"], {"low": 480, "high": 960})
+        self.assertEqual(api["output_tokens"], {"low": 0.0, "high": 0.0})
+        self.assertEqual(api["prefix_tokens"], 0)
+        cli = self.cli("--audit-preset", str(path), "--scope", "all", "--fraction", "1",
+                       "--output-ratio", "0", "--prefix-tokens", "0", "--no-versions",
+                       "--chars-per-token-low", "8", "--chars-per-token-high", "4",
+                       "--sqlite-cache-kib", "512", "--no-include-excluded", "--no-include-deleted")
+        self.assertEqual(cli["stats"]["execution"]["sqlite_cache_kib"], 512)
+        self.assertEqual(cli["estimate"]["tokens"], {"low": 600, "high": 1200})
+        self.assertEqual(cli["estimate"]["output_tokens"], {"low": 0.0, "high": 0.0})
+        self.assertEqual(cli["estimate"]["prefix_tokens"], 0)
+
+    def test_complete_effective_mapping_needs_no_builtin_file(self):
+        values = MappingProxyType(dict(self.pack["values"]))
+        with mock.patch.object(archive_cost, "BUILTIN_AUDIT_PRESET", Path(self.tmp.name) / "missing.pack"):
+            stats = archive_cost.archive_stats(self.db, audit_preset=values)
+            self.assertEqual(archive_cost.estimate(stats, audit_preset=values)["tokens"],
+                             {"low": 1350, "high": 1800})
+            info = archive_cost.inspect_audit_preset(values)
+            canonical = json.dumps(dict(values), sort_keys=True, separators=(",", ":")).encode()
+            self.assertEqual(info["sha256"], hashlib.sha256(canonical).hexdigest())
+            self.assertEqual(info["hash_scope"], "canonical effective-values JSON")
+
+    def test_cold_import_with_missing_or_bad_builtin_can_use_explicit_data(self):
+        root = Path(self.tmp.name) / "sandbox"
+        source = root / "loom/tools/eval/archive_cost.py"
+        source.parent.mkdir(parents=True)
+        source.write_bytes(Path(archive_cost.__file__).read_bytes())
+        builtin = root / "loom/data/presets/import_audit.pack"
+        for missing in (True, False):
+            if not missing:
+                builtin.parent.mkdir(parents=True)
+                builtin.write_text('{"values":null}')
+            spec = importlib.util.spec_from_file_location("sandbox_archive_cost", source)
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            with self.subTest(missing=missing):
+                stats = module.archive_stats(self.db, audit_preset=self.pack["values"])
+                self.assertEqual(module.estimate(stats, audit_preset=self.pack["values"])["tokens"],
+                                 {"low": 1350, "high": 1800})
+                with contextlib.redirect_stdout(io.StringIO()) as output:
+                    self.assertEqual(module.main(["--db", str(self.db), "--audit-preset",
+                                                  str(self.write_pack()), "--json"]), 0)
+                self.assertIsNone(json.loads(output.getvalue())["estimate"]["models"])
+                with self.assertRaises((FileNotFoundError, ValueError)):
+                    module.load_audit_preset()
+
+    def test_cli_can_reenable_preset_disabled_channels(self):
+        with sqlite3.connect(self.db) as con:
+            con.executemany("INSERT INTO messages VALUES(?,?,?,?,?)", [
+                ("tool", "ctool", "tool", "call", "active"),
+                ("unknown", "cunknown", "user", "future", "future_status"),
+            ])
+        self.pack["values"].update(cli_scope="active", cli_include_versions=False,
+                                  cli_include_unknown_status=False, cli_include_tools=False)
+        path = self.write_pack()
+        self.assertEqual(self.cli("--audit-preset", str(path))["estimate"]["projected"]["chars"], 4800)
+        flags = ("--audit-preset", str(path), "--include-versions", "--include-unknown-status")
+        enabled = self.cli(*flags, "--include-tools")["estimate"]["projected"]
+        self.assertEqual(enabled["chars"], 5410)
+        self.assertEqual(enabled["scope"]["status_classes"], ["active", "version", "unknown"])
+        self.assertTrue(enabled["scope"]["include_tools"])
+        self.assertEqual(self.cli(*flags, "--include-tools", "--no-tools")["estimate"]["projected"]["chars"], 5406)
+        self.assertEqual(self.cli(*flags, "--no-tools", "--include-tools")["estimate"]["projected"]["chars"], 5410)
+
+    def test_missing_or_incomplete_data_does_not_fall_back(self):
+        stats = archive_cost.archive_stats(self.db)
+        missing = Path(self.tmp.name) / "missing.pack"
+        with mock.patch.object(archive_cost, "BUILTIN_AUDIT_PRESET", missing):
+            with self.assertRaises(FileNotFoundError):
+                archive_cost.archive_stats(self.db, sqlite_cache_kib=512)
+        incomplete = dict(self.pack["values"])
+        del incomplete["output_ratio"]
+        with self.assertRaises(ValueError):
+            archive_cost.estimate(stats, audit_preset=incomplete, output_ratio=0)
+        for value in ({}, {"enabled": False}, {"excluded": True}, {"values": self.pack["values"]}):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                archive_cost.load_audit_preset(value)
+
+    def test_bad_numeric_data_and_disabled_envelopes_fail_before_db(self):
+        bad_packs = []
+        for name in ("fraction", "output_ratio", "sqlite_cache_kib", "api_prefix_tokens",
+                     "cli_prefix_tokens", "chars_per_token_low", "chars_per_token_high", "pricing_batch_discount"):
+            for value in (None, True, -1, float("nan"), float("inf")):
+                pack = deepcopy(self.pack)
+                pack["values"][name] = value
+                bad_packs.append(pack)
+        for change in ({"values": {}}, {"values": None}, {"enabled": False}, {"excluded": True}):
+            bad_packs.append({**self.pack, **change})
+        for index, pack in enumerate(bad_packs):
+            path = self.write_pack(pack)
+            with self.subTest(index=index), mock.patch.object(archive_cost.sqlite3, "connect") as connect:
+                with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as error:
+                    archive_cost.main(["--db", str(self.db), "--audit-preset", str(path)])
+                self.assertEqual(error.exception.code, 2)
+                connect.assert_not_called()
+
+    def test_invalid_schema_version_types_and_flags(self):
+        for change in ({"schema": "old"}, {"version": 0}, {"version": 2}, {"version": True},
+                       {"id": None}, {"id": ""}):
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                archive_cost.load_audit_preset(self.write_pack({**self.pack, **change}))
+        for name, value in (("cli_scope", None), ("cli_scope", "unsupported"),
+                            ("historical_pricing", None), ("historical_pricing", ""),
+                            ("api_include_active", None), ("cli_include_tools", 1),
+                            ("native_active_only", None), ("sqlite_cache_kib", 0),
+                            ("api_prefix_tokens", 1.5)):
+            values = {**self.pack["values"], name: value}
+            with self.subTest(name=name, value=value), self.assertRaises(ValueError):
+                archive_cost.load_audit_preset(values)
+
+    def test_source_edits_change_defaults_and_source_hash_without_cache(self):
+        path = self.write_pack()
+        with mock.patch.object(archive_cost, "BUILTIN_AUDIT_PRESET", path):
+            stats = archive_cost.archive_stats(self.db)
+            first = archive_cost.inspect_audit_preset()
+            self.pack["values"].update(output_ratio=3.0, chars_per_token_low=6.0, chars_per_token_high=2.0)
+            self.write_pack()
+            second = archive_cost.inspect_audit_preset()
+            estimate = archive_cost.estimate(stats)
+            self.assertNotEqual(first["sha256"], second["sha256"])
+            self.assertEqual(estimate["tokens"], {"low": 900, "high": 2700})
+            self.assertEqual(estimate["output_tokens"], {"low": 2700.0, "high": 8100.0})
+            self.assertEqual(second["sha256"], hashlib.sha256(path.read_bytes()).hexdigest())
+
+    def test_pricing_reference_opt_in_and_discount_from_data(self):
+        values = {**self.pack["values"], "historical_pricing": "no-such-historical-table.json",
+                  "pricing_batch_discount": 2.0}
+        stats = archive_cost.archive_stats(self.db, audit_preset=values)
+        self.assertIsNone(archive_cost.estimate(stats, audit_preset=values)["models"])
+        pricing = {"models": {"mock": {"input": 1000, "output": 500, "cache_read": 0}}}
+        estimate = archive_cost.estimate(stats, pricing, audit_preset=values)
+        row = estimate["models_unrounded"]["mock"]
+        self.assertEqual(row["high_batch"], row["high"] * 2)
+        explicit = archive_cost.estimate(stats, {**pricing, "batch_discount": 0}, audit_preset=values)
+        self.assertEqual(explicit["models_unrounded"]["mock"]["high_batch"], 0)
 
 
 if __name__ == "__main__":
