@@ -8,10 +8,12 @@ Baza: `66da570d3b5379492e128d940ad474467082c59f`
 ## Zakres i punkty wejścia
 
 Inwentarz: `docs/reports/data-in-code/thread-4.md` z gałęzi
-`gpt/data-profiles-2026-10-04`. Wybrany przyrost: DIC-0383–0389,
+`gpt/data-profiles-2026-10-04`. Wybrany przyrost: sześć pełnych grup DIC-0383/0384/0385/0387/0388/0389
+i część DIC-0386 (źródła oraz pola stopwordów; nie nowe języki),
 dane językowe, reguły naprawy lekkiego stemmera, źródła stopwordów i progi
 rozpoznawania języka w `kb::Normalizer`. Wartości domyślne pozostają takie
-same; dane mają jedną istniejącą ścieżkę ładowania: `kb::Pack`.
+same; 14 nastaw przepisu jest teraz danymi, a dwa getterowe fallbacki
+`min_token`/`min_stem` zostały usunięte; dane mają jedną istniejącą ścieżkę ładowania: `kb::Pack`.
 
 R40 odczytane z wymagań na bazie. R42 odczytane z commitów `1c990a9` /
 `3cd5848` gałęzi `claude/chataddhd-cpp-loom-core-IRGRN`; nie były jeszcze
@@ -33,7 +35,8 @@ Probe i launcher używają natywnego kodu oraz rzeczywistego loadera i walidator
 Pack. Bazowy pomiar linkuje archiwum 94 ukończonych obiektów ze źródeł bazy;
 nie jest przedstawiany jako pełna bramka starego rdzenia. Pełny bazowy build
 `-j3` przerwał OOM; powtórzenie `-j1` świadomie skrócono do zależności probe.
-Oba logi, manifest obiektów i komendy pozostają w dowodach.
+Oba pełne logi są w archiwum `19d72fe`; manifest obiektów i komendy
+pozostają w pozytywnych dowodach.
 
 Porównanie po zmianie: **PASS, 1536/1536 rekordów identycznych bajt w bajt**;
 SHA256 wyniku po zmianie jest identyczny z bazowym. Pomiar używa pełnego
@@ -60,7 +63,14 @@ Indeks na `main` uznaje wspólny kontrakt 3/4 za zamknięty. Pozostają
 „Dalsze KB pack/store profile i grafowy profil”. Przyrost dotyczy KB packa;
 nie zmienia `METHOD_GRAPH.md`, kanonicznego goldena ani przyjętego kodu
 packet. Pełna migracja parametrów zapytań store/CABI i grafowe warstwy
-domyślnych pozostają osobnymi zadaniami.
+domyślnych pozostają osobnymi zadaniami. Nie rozszerzono `Lang`, nie przeniesiono
+słowników kategoriami relacji ani pozostałych sufitów walidacji innych dokumentów.
+
+Po świeżym fetch przeczytano też aktualne przekazania W3 i W11 (`1b7379c`)
+oraz W12: definicje metod i profile runtime muszą korzystać z jednego resolvera;
+W11 nadal oczekuje normalizatora **tworzenia nowych rekordów** z zachowaniem
+historycznego wire. `Normalizer::create` z tego przyrostu jest sprawdzaną
+konstrukcją normalizatora **tekstu** i nie zamyka tamtego zadania.
 
 ## Do wątku N
 
@@ -70,7 +80,11 @@ domyślnych pozostają osobnymi zadaniami.
   pozostawiamy dotychczasowe słowniki i ich domyślne wyniki.
 - **3/12:** packowa nakładka nie jest pełnym R40. Wspólne wyłączenia,
   trwałe wykluczenia i wyjaśnienia warstw trzeba podłączyć przez istniejący
-  resolver W12; W4 nie tworzy drugiego mechanizmu warstw.
+  resolver W12; W4 nie tworzy drugiego mechanizmu warstw. Konsument opcjonalnej
+  metody powinien używać `Normalizer::create`, propagować `Unavailable` przy
+  braku przepisu i zapisać efektywny przepis oraz hash jego packa w konkretnej
+  wersji metody. Pełny pack hash obejmuje też jej słowniki/zależności.
+  Pozostaje kanoniczny kontrakt `loom/src/packet/METHOD_GRAPH.md`.
 - **11:** prywatny stan `Normalizer` w publicznym `kb.h` wymaga dodatków
   związanych z przenoszonym przepisem. Query presety store i CABI wymagają
   wspólnej odpowiedzialności za `knowledge_store.h` / `capi_knowledge`;
