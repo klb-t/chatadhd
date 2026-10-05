@@ -1,0 +1,30 @@
+{
+  "schema": "loom.native_semantic_review.freeze/1",
+  "created_at_utc": "2026-10-05T10:08:22.625314+00:00",
+  "before_stage2_provider_output_collection": true,
+  "model_outputs_used": false,
+  "source_only": true,
+  "independent_gold": false,
+  "source_sha256": {
+    "docs/research/model_research_2026-10-04/stage2/semantic_reference.source_only.v1.json": "71abce66c29680e110a7f47679a331898ffa2ec17b7124a1673d3ca30658b718",
+    "docs/research/model_research_2026-10-04/stage2/SEMANTIC_REVIEW.md": "e48e493d08ede88976c7042fc7591d0d571165814d6034267ba054ab8f902fe6",
+    "docs/research/model_research_2026-10-04/stage2/semantic_reference.annotation_review.v1.json": "d9bfade4e72c3a321dd15e3904edaf05a0ec4084c5a40f0173da485c9a6ce7ef",
+    "loom/tools/structure/stage2_semantic_review_v1.py": "86e46aa1c306d4b0d676035fa81e64cfa6f881b07a48dccbec52d093c71dbc44",
+    "loom/tools/structure/test_stage2_semantic_review_v1.py": "31544304e0efbe567078e7cff0c6fed778cda35ecbba5335439ec0355b8eafea"
+  },
+  "protected_dependency_sha256": {
+    "inputs.synthetic_dev.json": "ffa4e0ed3353ba43b200f10f50c526a7979481cafa2432de3da6c429edd941b5",
+    "recipes.json": "243e2459080157fb1b0ef98888c3ab66d702fd8adfe0ed9123acdc404fd55dd1",
+    "prepared/prepared.json": "e97f08e1c7fc63268a3ce9634c45b8d24594ae2528652c1326c4ded718b59664",
+    "prepared/freeze.json": "99d27d8da7e02884c45614fdceb2b3ec5473dc7bd22a296ff83a48da18675681"
+  },
+  "case_count": 15,
+  "criteria_per_four_method_plan": 192,
+  "planned_requests": 60,
+  "semantic_quality_measured": false,
+  "tests": {
+    "new_mechanical_tests_passed": 4,
+    "stage2_combined_offline_tests_passed": 10,
+    "prepared_freeze_verification_passed": true
+  }
+}

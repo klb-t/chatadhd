@@ -1,0 +1,31 @@
+{
+  "schema": "loom.native_semantic_review.annotation_review/1",
+  "reviewer": "separate Codex agent /root/semantic_reference/rubric_review",
+  "reviewed_at_utc": "2026-10-05T10:08:22.625314+00:00",
+  "reference_file": "semantic_reference.source_only.v1.json",
+  "reference_sha256": "71abce66c29680e110a7f47679a331898ffa2ec17b7124a1673d3ca30658b718",
+  "review_status": "passed_with_editorial_revisions_applied_then_reverified",
+  "review_class": "independent_in_session_review_of_source_interpretation_annotation_not_independent_gold",
+  "source_only": true,
+  "source_reads": [
+    "inputs.synthetic_dev.json",
+    "recipes.json",
+    "semantic_reference.source_only.v1.json",
+    "SEMANTIC_REVIEW.md",
+    "repository instructions"
+  ],
+  "prohibited_reference_or_private_or_model_output_reads": false,
+  "model_calls": 0,
+  "verified": {
+    "cases": 15,
+    "unique_criteria": 48,
+    "exact_utf8_support_spans": 86,
+    "source_locators": 64,
+    "packet_hashes_match": true,
+    "inputs_and_recipes_sha256_match": true,
+    "problems_remaining": 0
+  },
+  "substantive_revision": "Allow gate prerequisite-to-permission and event-to-prior-confirmation necessary-condition readings; confirmation alone does not establish actual execution.",
+  "editorial_revision": "Generic source-grounded atomic-predicate allowance takes precedence over native-boundary notes; require located limitations only for unpreserved meaning/structure.",
+  "finding": "Attribution, planning/uncertainty, chronology versus logical negation, retained alternatives, ordered gate scope, quotation and limited principle scope are preserved."
+}
