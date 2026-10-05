@@ -1,0 +1,2677 @@
+{
+  "manifest": {
+    "protocol_version": "synthetic-custom-dimension-demo-v1",
+    "output_schema_version": "candidate-profile-projection-v3",
+    "evaluation_class": "development_corpus_lopo",
+    "predicted_at": "2026-10-04T17:45:12.975091+00:00",
+    "hashes": {
+      "fixture": "bc4a79c4a684b87ec2b90984e72d8b772c9d947a41a0ad6e48e0c643312a76c0",
+      "protocol": "dbf8b83afafcc62fc1f2399c21ef4232dcb2c2273ea994ab1662301b05d190f3",
+      "policy": "61ba17ad8a03e3dbd4a80c70df14f733f2441fcecc56ccf4cc1b2e5bf0421828",
+      "code": "5576a7e5c09650318c05d5612c447c005ec902f0a6979205320b1c040e3dafba"
+    },
+    "profile": {
+      "schema": "loom.seeding.recipe/1",
+      "version": "synthetic-custom-dimension-demo-v1",
+      "source_files": [
+        {
+          "order": 0,
+          "role": "base",
+          "source_name": "base.json",
+          "frozen_path": "profile_frozen.json",
+          "sha256": "96c27cf9190f655a7aa6773d090de3a9f946e1bc8f466fad8edd7e9f62a1c8ce"
+        },
+        {
+          "order": 1,
+          "role": "overlay",
+          "source_name": "overlay-1.json",
+          "frozen_path": "profile_overlays/000.json",
+          "sha256": "ac0cb4a5775ee13b4ae4f5ca7729df7b938a890a91b7db580becc1c7d8f0d6d6"
+        },
+        {
+          "order": 2,
+          "role": "overlay",
+          "source_name": "overlay-2.json",
+          "frozen_path": "profile_overlays/001.json",
+          "sha256": "2b440728ab7d4a751f626189899db26b6e4bd63f4628dbaf6e4ac7bce70ac3f2"
+        }
+      ],
+      "effective_path": "effective_profile.json",
+      "effective_sha256": "4cd613140bb3a90ddf04eeca9a7b1005afcdcfdaefa893c7511ceef1b034604e",
+      "prediction_dimensions": [
+        "all"
+      ],
+      "property_key_encoding": "escaped-dimension-prefix-v1"
+    },
+    "modules": {
+      "modules_frozen/prototype.py": "5576a7e5c09650318c05d5612c447c005ec902f0a6979205320b1c040e3dafba",
+      "modules_frozen/recipe.py": "e76af458f8a850c454b19c11a891d46cee8e95798318f1075271faf84ee9befd",
+      "modules_frozen/__init__.py": "d1b9c3d2cd66b364f0b38efea6964dc3483dc88382aca1cd8c8639ee11d5cfb3",
+      "modules_frozen/profiles/default.json": "94e0894278bd424c535aed3b67d2f235eb6f1cbfbcf2cdc999f145575de4c1bb",
+      "modules_frozen/profiles/schema.json": "92da1edde97ac6060c2569b3e601ae88ed7fb605a5bc1602dd8f8d371b7d9f9a"
+    },
+    "method_graph_bridge": {
+      "status": "pending_agreed_contract"
+    },
+    "canonical_graph_mutated": false,
+    "paid_api_calls": 0
+  },
+  "cases": [
+    {
+      "case_id": "all/all/000",
+      "project": "all",
+      "task": "all",
+      "control": false,
+      "visible_edges": {
+        "all": [
+          "shared"
+        ]
+      },
+      "methods": {
+        "partial_mapping": {
+          "0": [
+            {
+              "label": "second",
+              "task": "all",
+              "target_project": "all",
+              "evidence_class": "extrapolated",
+              "validation_status": "candidate",
+              "predicted_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at_semantics": "candidate created in this run; historical source know-times are unknown unless supplied",
+              "premises_known_at": null,
+              "operator": {
+                "id": "partial_subgraph_relation_transfer/v1",
+                "policy_version": "synthetic-custom-dimension-demo-v1",
+                "task": "all"
+              },
+              "expected_properties": [
+                {
+                  "relation": "has_synthetic_tag",
+                  "label": "second",
+                  "requires_validation": true
+                }
+              ],
+              "premises_and_provenance": [
+                {
+                  "donor_project": "beta/seam",
+                  "mapping": {
+                    "preserved_relations": [
+                      {
+                        "target": "all",
+                        "donor": "beta/seam",
+                        "relation": "all",
+                        "label": "shared"
+                      }
+                    ],
+                    "score": 0.5,
+                    "unverified_properties": [
+                      "domain/kind compatibility",
+                      "target-specific implementation",
+                      "truth of transferred content",
+                      "temporal independence"
+                    ]
+                  },
+                  "properties": {
+                    "expected_properties": [
+                      {
+                        "relation": "has_synthetic_tag",
+                        "label": "second",
+                        "requires_validation": true
+                      }
+                    ],
+                    "oracle_path": "projects/beta/seam/tags/1",
+                    "source_locators": [
+                      {
+                        "provider": "synthetic",
+                        "conv_id": "beta/seam",
+                        "node_id": "tag-1",
+                        "date": "2026-09-30"
+                      }
+                    ],
+                    "known_at": null,
+                    "known_at_status": "not_supplied_by_oracle",
+                    "source_created_at_max": "2026-09-30"
+                  },
+                  "operator_premise_mapping": [],
+                  "applicable_application_witnesses": []
+                }
+              ],
+              "assessment": {
+                "score_kind": "similarity_sum",
+                "score": 0.5,
+                "calibrated_probability": null,
+                "supporting_donor_projects": 1
+              },
+              "unverified_properties": [
+                "target-specific applicability",
+                "implementation status",
+                "causal relation",
+                "truth"
+              ],
+              "counter_evidence": {
+                "status": "not_evaluated",
+                "items": []
+              },
+              "alternatives": []
+            }
+          ]
+        },
+        "most_frequent": {
+          "0": [
+            {
+              "label": "second",
+              "task": "all",
+              "target_project": "all",
+              "evidence_class": "extrapolated",
+              "validation_status": "candidate",
+              "predicted_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at_semantics": "candidate created in this run; historical source know-times are unknown unless supplied",
+              "premises_known_at": null,
+              "operator": {
+                "id": "baseline/most_frequent/v1",
+                "policy_version": "synthetic-custom-dimension-demo-v1",
+                "task": "all"
+              },
+              "expected_properties": [
+                {
+                  "relation": "has_synthetic_tag",
+                  "label": "second",
+                  "requires_validation": true
+                }
+              ],
+              "premises_and_provenance": [
+                {
+                  "donor_project": "beta/seam",
+                  "mapping": {
+                    "preserved_relations": [
+                      {
+                        "target": "all",
+                        "donor": "beta/seam",
+                        "relation": "all",
+                        "label": "shared"
+                      }
+                    ],
+                    "score": 0.5,
+                    "unverified_properties": [
+                      "domain/kind compatibility",
+                      "target-specific implementation",
+                      "truth of transferred content",
+                      "temporal independence"
+                    ]
+                  },
+                  "properties": {
+                    "expected_properties": [
+                      {
+                        "relation": "has_synthetic_tag",
+                        "label": "second",
+                        "requires_validation": true
+                      }
+                    ],
+                    "oracle_path": "projects/beta/seam/tags/1",
+                    "source_locators": [
+                      {
+                        "provider": "synthetic",
+                        "conv_id": "beta/seam",
+                        "node_id": "tag-1",
+                        "date": "2026-09-30"
+                      }
+                    ],
+                    "known_at": null,
+                    "known_at_status": "not_supplied_by_oracle",
+                    "source_created_at_max": "2026-09-30"
+                  },
+                  "operator_premise_mapping": [],
+                  "applicable_application_witnesses": []
+                }
+              ],
+              "assessment": {
+                "score_kind": "donor_count",
+                "score": 1,
+                "calibrated_probability": null,
+                "supporting_donor_projects": 1
+              },
+              "unverified_properties": [
+                "target-specific applicability",
+                "implementation status",
+                "causal relation",
+                "truth"
+              ],
+              "counter_evidence": {
+                "status": "not_evaluated",
+                "items": []
+              },
+              "alternatives": []
+            }
+          ]
+        },
+        "premise_filtered_frequency": {
+          "0": [
+            {
+              "label": "second",
+              "task": "all",
+              "target_project": "all",
+              "evidence_class": "extrapolated",
+              "validation_status": "candidate",
+              "predicted_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at_semantics": "candidate created in this run; historical source know-times are unknown unless supplied",
+              "premises_known_at": null,
+              "operator": {
+                "id": "baseline/premise_filtered_frequency/v1",
+                "policy_version": "synthetic-custom-dimension-demo-v1",
+                "task": "all"
+              },
+              "expected_properties": [
+                {
+                  "relation": "has_synthetic_tag",
+                  "label": "second",
+                  "requires_validation": true
+                }
+              ],
+              "premises_and_provenance": [
+                {
+                  "donor_project": "beta/seam",
+                  "mapping": {
+                    "preserved_relations": [
+                      {
+                        "target": "all",
+                        "donor": "beta/seam",
+                        "relation": "all",
+                        "label": "shared"
+                      }
+                    ],
+                    "score": 0.5,
+                    "unverified_properties": [
+                      "domain/kind compatibility",
+                      "target-specific implementation",
+                      "truth of transferred content",
+                      "temporal independence"
+                    ]
+                  },
+                  "properties": {
+                    "expected_properties": [
+                      {
+                        "relation": "has_synthetic_tag",
+                        "label": "second",
+                        "requires_validation": true
+                      }
+                    ],
+                    "oracle_path": "projects/beta/seam/tags/1",
+                    "source_locators": [
+                      {
+                        "provider": "synthetic",
+                        "conv_id": "beta/seam",
+                        "node_id": "tag-1",
+                        "date": "2026-09-30"
+                      }
+                    ],
+                    "known_at": null,
+                    "known_at_status": "not_supplied_by_oracle",
+                    "source_created_at_max": "2026-09-30"
+                  },
+                  "operator_premise_mapping": [],
+                  "applicable_application_witnesses": []
+                }
+              ],
+              "assessment": {
+                "score_kind": "donor_count",
+                "score": 1,
+                "calibrated_probability": null,
+                "supporting_donor_projects": 1
+              },
+              "unverified_properties": [
+                "target-specific applicability",
+                "implementation status",
+                "causal relation",
+                "truth"
+              ],
+              "counter_evidence": {
+                "status": "not_evaluated",
+                "items": []
+              },
+              "alternatives": []
+            }
+          ]
+        },
+        "random": {
+          "7": [
+            {
+              "label": "second",
+              "task": "all",
+              "target_project": "all",
+              "evidence_class": "extrapolated",
+              "validation_status": "candidate",
+              "predicted_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at_semantics": "candidate created in this run; historical source know-times are unknown unless supplied",
+              "premises_known_at": null,
+              "operator": {
+                "id": "baseline/random/v1",
+                "policy_version": "synthetic-custom-dimension-demo-v1",
+                "task": "all"
+              },
+              "expected_properties": [
+                {
+                  "relation": "has_synthetic_tag",
+                  "label": "second",
+                  "requires_validation": true
+                }
+              ],
+              "premises_and_provenance": [
+                {
+                  "donor_project": "beta/seam",
+                  "mapping": {
+                    "preserved_relations": [
+                      {
+                        "target": "all",
+                        "donor": "beta/seam",
+                        "relation": "all",
+                        "label": "shared"
+                      }
+                    ],
+                    "score": 0.5,
+                    "unverified_properties": [
+                      "domain/kind compatibility",
+                      "target-specific implementation",
+                      "truth of transferred content",
+                      "temporal independence"
+                    ]
+                  },
+                  "properties": {
+                    "expected_properties": [
+                      {
+                        "relation": "has_synthetic_tag",
+                        "label": "second",
+                        "requires_validation": true
+                      }
+                    ],
+                    "oracle_path": "projects/beta/seam/tags/1",
+                    "source_locators": [
+                      {
+                        "provider": "synthetic",
+                        "conv_id": "beta/seam",
+                        "node_id": "tag-1",
+                        "date": "2026-09-30"
+                      }
+                    ],
+                    "known_at": null,
+                    "known_at_status": "not_supplied_by_oracle",
+                    "source_created_at_max": "2026-09-30"
+                  },
+                  "operator_premise_mapping": [],
+                  "applicable_application_witnesses": []
+                }
+              ],
+              "assessment": {
+                "score_kind": "donor_count",
+                "score": 1,
+                "calibrated_probability": null,
+                "supporting_donor_projects": 1
+              },
+              "unverified_properties": [
+                "target-specific applicability",
+                "implementation status",
+                "causal relation",
+                "truth"
+              ],
+              "counter_evidence": {
+                "status": "not_evaluated",
+                "items": []
+              },
+              "alternatives": []
+            }
+          ],
+          "8": [
+            "second"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "all/all/001",
+      "project": "all",
+      "task": "all",
+      "control": false,
+      "visible_edges": {
+        "all": [
+          "first"
+        ]
+      },
+      "methods": {
+        "partial_mapping": {
+          "0": []
+        },
+        "most_frequent": {
+          "0": [
+            {
+              "label": "second",
+              "task": "all",
+              "target_project": "all",
+              "evidence_class": "extrapolated",
+              "validation_status": "candidate",
+              "predicted_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at_semantics": "candidate created in this run; historical source know-times are unknown unless supplied",
+              "premises_known_at": null,
+              "operator": {
+                "id": "baseline/most_frequent/v1",
+                "policy_version": "synthetic-custom-dimension-demo-v1",
+                "task": "all"
+              },
+              "expected_properties": [
+                {
+                  "relation": "has_synthetic_tag",
+                  "label": "second",
+                  "requires_validation": true
+                }
+              ],
+              "premises_and_provenance": [
+                {
+                  "donor_project": "beta/seam",
+                  "mapping": {
+                    "preserved_relations": [],
+                    "score": 0.0,
+                    "unverified_properties": [
+                      "domain/kind compatibility",
+                      "target-specific implementation",
+                      "truth of transferred content",
+                      "temporal independence"
+                    ]
+                  },
+                  "properties": {
+                    "expected_properties": [
+                      {
+                        "relation": "has_synthetic_tag",
+                        "label": "second",
+                        "requires_validation": true
+                      }
+                    ],
+                    "oracle_path": "projects/beta/seam/tags/1",
+                    "source_locators": [
+                      {
+                        "provider": "synthetic",
+                        "conv_id": "beta/seam",
+                        "node_id": "tag-1",
+                        "date": "2026-09-30"
+                      }
+                    ],
+                    "known_at": null,
+                    "known_at_status": "not_supplied_by_oracle",
+                    "source_created_at_max": "2026-09-30"
+                  },
+                  "operator_premise_mapping": [],
+                  "applicable_application_witnesses": []
+                }
+              ],
+              "assessment": {
+                "score_kind": "donor_count",
+                "score": 1,
+                "calibrated_probability": null,
+                "supporting_donor_projects": 1
+              },
+              "unverified_properties": [
+                "target-specific applicability",
+                "implementation status",
+                "causal relation",
+                "truth"
+              ],
+              "counter_evidence": {
+                "status": "not_evaluated",
+                "items": []
+              },
+              "alternatives": [
+                {
+                  "label": "shared",
+                  "expected_properties": [
+                    {
+                      "relation": "has_synthetic_tag",
+                      "label": "shared",
+                      "requires_validation": true
+                    }
+                  ],
+                  "premises_and_provenance": [
+                    {
+                      "donor_project": "beta/seam",
+                      "mapping": {
+                        "preserved_relations": [],
+                        "score": 0.0,
+                        "unverified_properties": [
+                          "domain/kind compatibility",
+                          "target-specific implementation",
+                          "truth of transferred content",
+                          "temporal independence"
+                        ]
+                      },
+                      "properties": {
+                        "expected_properties": [
+                          {
+                            "relation": "has_synthetic_tag",
+                            "label": "shared",
+                            "requires_validation": true
+                          }
+                        ],
+                        "oracle_path": "projects/beta/seam/tags/0",
+                        "source_locators": [
+                          {
+                            "provider": "synthetic",
+                            "conv_id": "beta/seam",
+                            "node_id": "tag-0",
+                            "date": "2026-09-30"
+                          }
+                        ],
+                        "known_at": null,
+                        "known_at_status": "not_supplied_by_oracle",
+                        "source_created_at_max": "2026-09-30"
+                      },
+                      "operator_premise_mapping": [],
+                      "applicable_application_witnesses": []
+                    }
+                  ],
+                  "assessment": {
+                    "score_kind": "donor_count",
+                    "score": 1,
+                    "calibrated_probability": null,
+                    "supporting_donor_projects": 1
+                  }
+                }
+              ]
+            },
+            {
+              "label": "shared",
+              "task": "all",
+              "target_project": "all",
+              "evidence_class": "extrapolated",
+              "validation_status": "candidate",
+              "predicted_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at_semantics": "candidate created in this run; historical source know-times are unknown unless supplied",
+              "premises_known_at": null,
+              "operator": {
+                "id": "baseline/most_frequent/v1",
+                "policy_version": "synthetic-custom-dimension-demo-v1",
+                "task": "all"
+              },
+              "expected_properties": [
+                {
+                  "relation": "has_synthetic_tag",
+                  "label": "shared",
+                  "requires_validation": true
+                }
+              ],
+              "premises_and_provenance": [
+                {
+                  "donor_project": "beta/seam",
+                  "mapping": {
+                    "preserved_relations": [],
+                    "score": 0.0,
+                    "unverified_properties": [
+                      "domain/kind compatibility",
+                      "target-specific implementation",
+                      "truth of transferred content",
+                      "temporal independence"
+                    ]
+                  },
+                  "properties": {
+                    "expected_properties": [
+                      {
+                        "relation": "has_synthetic_tag",
+                        "label": "shared",
+                        "requires_validation": true
+                      }
+                    ],
+                    "oracle_path": "projects/beta/seam/tags/0",
+                    "source_locators": [
+                      {
+                        "provider": "synthetic",
+                        "conv_id": "beta/seam",
+                        "node_id": "tag-0",
+                        "date": "2026-09-30"
+                      }
+                    ],
+                    "known_at": null,
+                    "known_at_status": "not_supplied_by_oracle",
+                    "source_created_at_max": "2026-09-30"
+                  },
+                  "operator_premise_mapping": [],
+                  "applicable_application_witnesses": []
+                }
+              ],
+              "assessment": {
+                "score_kind": "donor_count",
+                "score": 1,
+                "calibrated_probability": null,
+                "supporting_donor_projects": 1
+              },
+              "unverified_properties": [
+                "target-specific applicability",
+                "implementation status",
+                "causal relation",
+                "truth"
+              ],
+              "counter_evidence": {
+                "status": "not_evaluated",
+                "items": []
+              },
+              "alternatives": [
+                {
+                  "label": "second",
+                  "expected_properties": [
+                    {
+                      "relation": "has_synthetic_tag",
+                      "label": "second",
+                      "requires_validation": true
+                    }
+                  ],
+                  "premises_and_provenance": [
+                    {
+                      "donor_project": "beta/seam",
+                      "mapping": {
+                        "preserved_relations": [],
+                        "score": 0.0,
+                        "unverified_properties": [
+                          "domain/kind compatibility",
+                          "target-specific implementation",
+                          "truth of transferred content",
+                          "temporal independence"
+                        ]
+                      },
+                      "properties": {
+                        "expected_properties": [
+                          {
+                            "relation": "has_synthetic_tag",
+                            "label": "second",
+                            "requires_validation": true
+                          }
+                        ],
+                        "oracle_path": "projects/beta/seam/tags/1",
+                        "source_locators": [
+                          {
+                            "provider": "synthetic",
+                            "conv_id": "beta/seam",
+                            "node_id": "tag-1",
+                            "date": "2026-09-30"
+                          }
+                        ],
+                        "known_at": null,
+                        "known_at_status": "not_supplied_by_oracle",
+                        "source_created_at_max": "2026-09-30"
+                      },
+                      "operator_premise_mapping": [],
+                      "applicable_application_witnesses": []
+                    }
+                  ],
+                  "assessment": {
+                    "score_kind": "donor_count",
+                    "score": 1,
+                    "calibrated_probability": null,
+                    "supporting_donor_projects": 1
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "premise_filtered_frequency": {
+          "0": []
+        },
+        "random": {
+          "7": [
+            {
+              "label": "shared",
+              "task": "all",
+              "target_project": "all",
+              "evidence_class": "extrapolated",
+              "validation_status": "candidate",
+              "predicted_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at_semantics": "candidate created in this run; historical source know-times are unknown unless supplied",
+              "premises_known_at": null,
+              "operator": {
+                "id": "baseline/random/v1",
+                "policy_version": "synthetic-custom-dimension-demo-v1",
+                "task": "all"
+              },
+              "expected_properties": [
+                {
+                  "relation": "has_synthetic_tag",
+                  "label": "shared",
+                  "requires_validation": true
+                }
+              ],
+              "premises_and_provenance": [
+                {
+                  "donor_project": "beta/seam",
+                  "mapping": {
+                    "preserved_relations": [],
+                    "score": 0.0,
+                    "unverified_properties": [
+                      "domain/kind compatibility",
+                      "target-specific implementation",
+                      "truth of transferred content",
+                      "temporal independence"
+                    ]
+                  },
+                  "properties": {
+                    "expected_properties": [
+                      {
+                        "relation": "has_synthetic_tag",
+                        "label": "shared",
+                        "requires_validation": true
+                      }
+                    ],
+                    "oracle_path": "projects/beta/seam/tags/0",
+                    "source_locators": [
+                      {
+                        "provider": "synthetic",
+                        "conv_id": "beta/seam",
+                        "node_id": "tag-0",
+                        "date": "2026-09-30"
+                      }
+                    ],
+                    "known_at": null,
+                    "known_at_status": "not_supplied_by_oracle",
+                    "source_created_at_max": "2026-09-30"
+                  },
+                  "operator_premise_mapping": [],
+                  "applicable_application_witnesses": []
+                }
+              ],
+              "assessment": {
+                "score_kind": "donor_count",
+                "score": 1,
+                "calibrated_probability": null,
+                "supporting_donor_projects": 1
+              },
+              "unverified_properties": [
+                "target-specific applicability",
+                "implementation status",
+                "causal relation",
+                "truth"
+              ],
+              "counter_evidence": {
+                "status": "not_evaluated",
+                "items": []
+              },
+              "alternatives": [
+                {
+                  "label": "second",
+                  "expected_properties": [
+                    {
+                      "relation": "has_synthetic_tag",
+                      "label": "second",
+                      "requires_validation": true
+                    }
+                  ],
+                  "premises_and_provenance": [
+                    {
+                      "donor_project": "beta/seam",
+                      "mapping": {
+                        "preserved_relations": [],
+                        "score": 0.0,
+                        "unverified_properties": [
+                          "domain/kind compatibility",
+                          "target-specific implementation",
+                          "truth of transferred content",
+                          "temporal independence"
+                        ]
+                      },
+                      "properties": {
+                        "expected_properties": [
+                          {
+                            "relation": "has_synthetic_tag",
+                            "label": "second",
+                            "requires_validation": true
+                          }
+                        ],
+                        "oracle_path": "projects/beta/seam/tags/1",
+                        "source_locators": [
+                          {
+                            "provider": "synthetic",
+                            "conv_id": "beta/seam",
+                            "node_id": "tag-1",
+                            "date": "2026-09-30"
+                          }
+                        ],
+                        "known_at": null,
+                        "known_at_status": "not_supplied_by_oracle",
+                        "source_created_at_max": "2026-09-30"
+                      },
+                      "operator_premise_mapping": [],
+                      "applicable_application_witnesses": []
+                    }
+                  ],
+                  "assessment": {
+                    "score_kind": "donor_count",
+                    "score": 1,
+                    "calibrated_probability": null,
+                    "supporting_donor_projects": 1
+                  }
+                }
+              ]
+            },
+            {
+              "label": "second",
+              "task": "all",
+              "target_project": "all",
+              "evidence_class": "extrapolated",
+              "validation_status": "candidate",
+              "predicted_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at_semantics": "candidate created in this run; historical source know-times are unknown unless supplied",
+              "premises_known_at": null,
+              "operator": {
+                "id": "baseline/random/v1",
+                "policy_version": "synthetic-custom-dimension-demo-v1",
+                "task": "all"
+              },
+              "expected_properties": [
+                {
+                  "relation": "has_synthetic_tag",
+                  "label": "second",
+                  "requires_validation": true
+                }
+              ],
+              "premises_and_provenance": [
+                {
+                  "donor_project": "beta/seam",
+                  "mapping": {
+                    "preserved_relations": [],
+                    "score": 0.0,
+                    "unverified_properties": [
+                      "domain/kind compatibility",
+                      "target-specific implementation",
+                      "truth of transferred content",
+                      "temporal independence"
+                    ]
+                  },
+                  "properties": {
+                    "expected_properties": [
+                      {
+                        "relation": "has_synthetic_tag",
+                        "label": "second",
+                        "requires_validation": true
+                      }
+                    ],
+                    "oracle_path": "projects/beta/seam/tags/1",
+                    "source_locators": [
+                      {
+                        "provider": "synthetic",
+                        "conv_id": "beta/seam",
+                        "node_id": "tag-1",
+                        "date": "2026-09-30"
+                      }
+                    ],
+                    "known_at": null,
+                    "known_at_status": "not_supplied_by_oracle",
+                    "source_created_at_max": "2026-09-30"
+                  },
+                  "operator_premise_mapping": [],
+                  "applicable_application_witnesses": []
+                }
+              ],
+              "assessment": {
+                "score_kind": "donor_count",
+                "score": 1,
+                "calibrated_probability": null,
+                "supporting_donor_projects": 1
+              },
+              "unverified_properties": [
+                "target-specific applicability",
+                "implementation status",
+                "causal relation",
+                "truth"
+              ],
+              "counter_evidence": {
+                "status": "not_evaluated",
+                "items": []
+              },
+              "alternatives": [
+                {
+                  "label": "shared",
+                  "expected_properties": [
+                    {
+                      "relation": "has_synthetic_tag",
+                      "label": "shared",
+                      "requires_validation": true
+                    }
+                  ],
+                  "premises_and_provenance": [
+                    {
+                      "donor_project": "beta/seam",
+                      "mapping": {
+                        "preserved_relations": [],
+                        "score": 0.0,
+                        "unverified_properties": [
+                          "domain/kind compatibility",
+                          "target-specific implementation",
+                          "truth of transferred content",
+                          "temporal independence"
+                        ]
+                      },
+                      "properties": {
+                        "expected_properties": [
+                          {
+                            "relation": "has_synthetic_tag",
+                            "label": "shared",
+                            "requires_validation": true
+                          }
+                        ],
+                        "oracle_path": "projects/beta/seam/tags/0",
+                        "source_locators": [
+                          {
+                            "provider": "synthetic",
+                            "conv_id": "beta/seam",
+                            "node_id": "tag-0",
+                            "date": "2026-09-30"
+                          }
+                        ],
+                        "known_at": null,
+                        "known_at_status": "not_supplied_by_oracle",
+                        "source_created_at_max": "2026-09-30"
+                      },
+                      "operator_premise_mapping": [],
+                      "applicable_application_witnesses": []
+                    }
+                  ],
+                  "assessment": {
+                    "score_kind": "donor_count",
+                    "score": 1,
+                    "calibrated_probability": null,
+                    "supporting_donor_projects": 1
+                  }
+                }
+              ]
+            }
+          ],
+          "8": [
+            "second",
+            "shared"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "all/all/002",
+      "project": "all",
+      "task": "all",
+      "control": true,
+      "visible_edges": {
+        "all": [
+          "first",
+          "shared"
+        ]
+      },
+      "methods": {
+        "partial_mapping": {
+          "0": [
+            {
+              "label": "second",
+              "task": "all",
+              "target_project": "all",
+              "evidence_class": "extrapolated",
+              "validation_status": "candidate",
+              "predicted_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at_semantics": "candidate created in this run; historical source know-times are unknown unless supplied",
+              "premises_known_at": null,
+              "operator": {
+                "id": "partial_subgraph_relation_transfer/v1",
+                "policy_version": "synthetic-custom-dimension-demo-v1",
+                "task": "all"
+              },
+              "expected_properties": [
+                {
+                  "relation": "has_synthetic_tag",
+                  "label": "second",
+                  "requires_validation": true
+                }
+              ],
+              "premises_and_provenance": [
+                {
+                  "donor_project": "beta/seam",
+                  "mapping": {
+                    "preserved_relations": [
+                      {
+                        "target": "all",
+                        "donor": "beta/seam",
+                        "relation": "all",
+                        "label": "shared"
+                      }
+                    ],
+                    "score": 0.3333333333333333,
+                    "unverified_properties": [
+                      "domain/kind compatibility",
+                      "target-specific implementation",
+                      "truth of transferred content",
+                      "temporal independence"
+                    ]
+                  },
+                  "properties": {
+                    "expected_properties": [
+                      {
+                        "relation": "has_synthetic_tag",
+                        "label": "second",
+                        "requires_validation": true
+                      }
+                    ],
+                    "oracle_path": "projects/beta/seam/tags/1",
+                    "source_locators": [
+                      {
+                        "provider": "synthetic",
+                        "conv_id": "beta/seam",
+                        "node_id": "tag-1",
+                        "date": "2026-09-30"
+                      }
+                    ],
+                    "known_at": null,
+                    "known_at_status": "not_supplied_by_oracle",
+                    "source_created_at_max": "2026-09-30"
+                  },
+                  "operator_premise_mapping": [],
+                  "applicable_application_witnesses": []
+                }
+              ],
+              "assessment": {
+                "score_kind": "similarity_sum",
+                "score": 0.3333333333333333,
+                "calibrated_probability": null,
+                "supporting_donor_projects": 1
+              },
+              "unverified_properties": [
+                "target-specific applicability",
+                "implementation status",
+                "causal relation",
+                "truth"
+              ],
+              "counter_evidence": {
+                "status": "not_evaluated",
+                "items": []
+              },
+              "alternatives": []
+            }
+          ]
+        },
+        "most_frequent": {
+          "0": [
+            {
+              "label": "second",
+              "task": "all",
+              "target_project": "all",
+              "evidence_class": "extrapolated",
+              "validation_status": "candidate",
+              "predicted_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at_semantics": "candidate created in this run; historical source know-times are unknown unless supplied",
+              "premises_known_at": null,
+              "operator": {
+                "id": "baseline/most_frequent/v1",
+                "policy_version": "synthetic-custom-dimension-demo-v1",
+                "task": "all"
+              },
+              "expected_properties": [
+                {
+                  "relation": "has_synthetic_tag",
+                  "label": "second",
+                  "requires_validation": true
+                }
+              ],
+              "premises_and_provenance": [
+                {
+                  "donor_project": "beta/seam",
+                  "mapping": {
+                    "preserved_relations": [
+                      {
+                        "target": "all",
+                        "donor": "beta/seam",
+                        "relation": "all",
+                        "label": "shared"
+                      }
+                    ],
+                    "score": 0.3333333333333333,
+                    "unverified_properties": [
+                      "domain/kind compatibility",
+                      "target-specific implementation",
+                      "truth of transferred content",
+                      "temporal independence"
+                    ]
+                  },
+                  "properties": {
+                    "expected_properties": [
+                      {
+                        "relation": "has_synthetic_tag",
+                        "label": "second",
+                        "requires_validation": true
+                      }
+                    ],
+                    "oracle_path": "projects/beta/seam/tags/1",
+                    "source_locators": [
+                      {
+                        "provider": "synthetic",
+                        "conv_id": "beta/seam",
+                        "node_id": "tag-1",
+                        "date": "2026-09-30"
+                      }
+                    ],
+                    "known_at": null,
+                    "known_at_status": "not_supplied_by_oracle",
+                    "source_created_at_max": "2026-09-30"
+                  },
+                  "operator_premise_mapping": [],
+                  "applicable_application_witnesses": []
+                }
+              ],
+              "assessment": {
+                "score_kind": "donor_count",
+                "score": 1,
+                "calibrated_probability": null,
+                "supporting_donor_projects": 1
+              },
+              "unverified_properties": [
+                "target-specific applicability",
+                "implementation status",
+                "causal relation",
+                "truth"
+              ],
+              "counter_evidence": {
+                "status": "not_evaluated",
+                "items": []
+              },
+              "alternatives": []
+            }
+          ]
+        },
+        "premise_filtered_frequency": {
+          "0": [
+            {
+              "label": "second",
+              "task": "all",
+              "target_project": "all",
+              "evidence_class": "extrapolated",
+              "validation_status": "candidate",
+              "predicted_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at_semantics": "candidate created in this run; historical source know-times are unknown unless supplied",
+              "premises_known_at": null,
+              "operator": {
+                "id": "baseline/premise_filtered_frequency/v1",
+                "policy_version": "synthetic-custom-dimension-demo-v1",
+                "task": "all"
+              },
+              "expected_properties": [
+                {
+                  "relation": "has_synthetic_tag",
+                  "label": "second",
+                  "requires_validation": true
+                }
+              ],
+              "premises_and_provenance": [
+                {
+                  "donor_project": "beta/seam",
+                  "mapping": {
+                    "preserved_relations": [
+                      {
+                        "target": "all",
+                        "donor": "beta/seam",
+                        "relation": "all",
+                        "label": "shared"
+                      }
+                    ],
+                    "score": 0.3333333333333333,
+                    "unverified_properties": [
+                      "domain/kind compatibility",
+                      "target-specific implementation",
+                      "truth of transferred content",
+                      "temporal independence"
+                    ]
+                  },
+                  "properties": {
+                    "expected_properties": [
+                      {
+                        "relation": "has_synthetic_tag",
+                        "label": "second",
+                        "requires_validation": true
+                      }
+                    ],
+                    "oracle_path": "projects/beta/seam/tags/1",
+                    "source_locators": [
+                      {
+                        "provider": "synthetic",
+                        "conv_id": "beta/seam",
+                        "node_id": "tag-1",
+                        "date": "2026-09-30"
+                      }
+                    ],
+                    "known_at": null,
+                    "known_at_status": "not_supplied_by_oracle",
+                    "source_created_at_max": "2026-09-30"
+                  },
+                  "operator_premise_mapping": [],
+                  "applicable_application_witnesses": []
+                }
+              ],
+              "assessment": {
+                "score_kind": "donor_count",
+                "score": 1,
+                "calibrated_probability": null,
+                "supporting_donor_projects": 1
+              },
+              "unverified_properties": [
+                "target-specific applicability",
+                "implementation status",
+                "causal relation",
+                "truth"
+              ],
+              "counter_evidence": {
+                "status": "not_evaluated",
+                "items": []
+              },
+              "alternatives": []
+            }
+          ]
+        },
+        "random": {
+          "7": [
+            {
+              "label": "second",
+              "task": "all",
+              "target_project": "all",
+              "evidence_class": "extrapolated",
+              "validation_status": "candidate",
+              "predicted_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at_semantics": "candidate created in this run; historical source know-times are unknown unless supplied",
+              "premises_known_at": null,
+              "operator": {
+                "id": "baseline/random/v1",
+                "policy_version": "synthetic-custom-dimension-demo-v1",
+                "task": "all"
+              },
+              "expected_properties": [
+                {
+                  "relation": "has_synthetic_tag",
+                  "label": "second",
+                  "requires_validation": true
+                }
+              ],
+              "premises_and_provenance": [
+                {
+                  "donor_project": "beta/seam",
+                  "mapping": {
+                    "preserved_relations": [
+                      {
+                        "target": "all",
+                        "donor": "beta/seam",
+                        "relation": "all",
+                        "label": "shared"
+                      }
+                    ],
+                    "score": 0.3333333333333333,
+                    "unverified_properties": [
+                      "domain/kind compatibility",
+                      "target-specific implementation",
+                      "truth of transferred content",
+                      "temporal independence"
+                    ]
+                  },
+                  "properties": {
+                    "expected_properties": [
+                      {
+                        "relation": "has_synthetic_tag",
+                        "label": "second",
+                        "requires_validation": true
+                      }
+                    ],
+                    "oracle_path": "projects/beta/seam/tags/1",
+                    "source_locators": [
+                      {
+                        "provider": "synthetic",
+                        "conv_id": "beta/seam",
+                        "node_id": "tag-1",
+                        "date": "2026-09-30"
+                      }
+                    ],
+                    "known_at": null,
+                    "known_at_status": "not_supplied_by_oracle",
+                    "source_created_at_max": "2026-09-30"
+                  },
+                  "operator_premise_mapping": [],
+                  "applicable_application_witnesses": []
+                }
+              ],
+              "assessment": {
+                "score_kind": "donor_count",
+                "score": 1,
+                "calibrated_probability": null,
+                "supporting_donor_projects": 1
+              },
+              "unverified_properties": [
+                "target-specific applicability",
+                "implementation status",
+                "causal relation",
+                "truth"
+              ],
+              "counter_evidence": {
+                "status": "not_evaluated",
+                "items": []
+              },
+              "alternatives": []
+            }
+          ],
+          "8": [
+            "second"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "beta%2Fseam/all/000",
+      "project": "beta/seam",
+      "task": "all",
+      "control": false,
+      "visible_edges": {
+        "all": [
+          "shared"
+        ]
+      },
+      "methods": {
+        "partial_mapping": {
+          "0": [
+            {
+              "label": "first",
+              "task": "all",
+              "target_project": "beta/seam",
+              "evidence_class": "extrapolated",
+              "validation_status": "candidate",
+              "predicted_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at_semantics": "candidate created in this run; historical source know-times are unknown unless supplied",
+              "premises_known_at": null,
+              "operator": {
+                "id": "partial_subgraph_relation_transfer/v1",
+                "policy_version": "synthetic-custom-dimension-demo-v1",
+                "task": "all"
+              },
+              "expected_properties": [
+                {
+                  "relation": "has_synthetic_tag",
+                  "label": "first",
+                  "requires_validation": true
+                }
+              ],
+              "premises_and_provenance": [
+                {
+                  "donor_project": "all",
+                  "mapping": {
+                    "preserved_relations": [
+                      {
+                        "target": "beta/seam",
+                        "donor": "all",
+                        "relation": "all",
+                        "label": "shared"
+                      }
+                    ],
+                    "score": 0.5,
+                    "unverified_properties": [
+                      "domain/kind compatibility",
+                      "target-specific implementation",
+                      "truth of transferred content",
+                      "temporal independence"
+                    ]
+                  },
+                  "properties": {
+                    "expected_properties": [
+                      {
+                        "relation": "has_synthetic_tag",
+                        "label": "first",
+                        "requires_validation": true
+                      }
+                    ],
+                    "oracle_path": "projects/all/tags/1",
+                    "source_locators": [
+                      {
+                        "provider": "synthetic",
+                        "conv_id": "all",
+                        "node_id": "tag-1",
+                        "date": "2026-09-30"
+                      }
+                    ],
+                    "known_at": null,
+                    "known_at_status": "not_supplied_by_oracle",
+                    "source_created_at_max": "2026-09-30"
+                  },
+                  "operator_premise_mapping": [],
+                  "applicable_application_witnesses": []
+                }
+              ],
+              "assessment": {
+                "score_kind": "similarity_sum",
+                "score": 0.5,
+                "calibrated_probability": null,
+                "supporting_donor_projects": 1
+              },
+              "unverified_properties": [
+                "target-specific applicability",
+                "implementation status",
+                "causal relation",
+                "truth"
+              ],
+              "counter_evidence": {
+                "status": "not_evaluated",
+                "items": []
+              },
+              "alternatives": []
+            }
+          ]
+        },
+        "most_frequent": {
+          "0": [
+            {
+              "label": "first",
+              "task": "all",
+              "target_project": "beta/seam",
+              "evidence_class": "extrapolated",
+              "validation_status": "candidate",
+              "predicted_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at_semantics": "candidate created in this run; historical source know-times are unknown unless supplied",
+              "premises_known_at": null,
+              "operator": {
+                "id": "baseline/most_frequent/v1",
+                "policy_version": "synthetic-custom-dimension-demo-v1",
+                "task": "all"
+              },
+              "expected_properties": [
+                {
+                  "relation": "has_synthetic_tag",
+                  "label": "first",
+                  "requires_validation": true
+                }
+              ],
+              "premises_and_provenance": [
+                {
+                  "donor_project": "all",
+                  "mapping": {
+                    "preserved_relations": [
+                      {
+                        "target": "beta/seam",
+                        "donor": "all",
+                        "relation": "all",
+                        "label": "shared"
+                      }
+                    ],
+                    "score": 0.5,
+                    "unverified_properties": [
+                      "domain/kind compatibility",
+                      "target-specific implementation",
+                      "truth of transferred content",
+                      "temporal independence"
+                    ]
+                  },
+                  "properties": {
+                    "expected_properties": [
+                      {
+                        "relation": "has_synthetic_tag",
+                        "label": "first",
+                        "requires_validation": true
+                      }
+                    ],
+                    "oracle_path": "projects/all/tags/1",
+                    "source_locators": [
+                      {
+                        "provider": "synthetic",
+                        "conv_id": "all",
+                        "node_id": "tag-1",
+                        "date": "2026-09-30"
+                      }
+                    ],
+                    "known_at": null,
+                    "known_at_status": "not_supplied_by_oracle",
+                    "source_created_at_max": "2026-09-30"
+                  },
+                  "operator_premise_mapping": [],
+                  "applicable_application_witnesses": []
+                }
+              ],
+              "assessment": {
+                "score_kind": "donor_count",
+                "score": 1,
+                "calibrated_probability": null,
+                "supporting_donor_projects": 1
+              },
+              "unverified_properties": [
+                "target-specific applicability",
+                "implementation status",
+                "causal relation",
+                "truth"
+              ],
+              "counter_evidence": {
+                "status": "not_evaluated",
+                "items": []
+              },
+              "alternatives": []
+            }
+          ]
+        },
+        "premise_filtered_frequency": {
+          "0": [
+            {
+              "label": "first",
+              "task": "all",
+              "target_project": "beta/seam",
+              "evidence_class": "extrapolated",
+              "validation_status": "candidate",
+              "predicted_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at_semantics": "candidate created in this run; historical source know-times are unknown unless supplied",
+              "premises_known_at": null,
+              "operator": {
+                "id": "baseline/premise_filtered_frequency/v1",
+                "policy_version": "synthetic-custom-dimension-demo-v1",
+                "task": "all"
+              },
+              "expected_properties": [
+                {
+                  "relation": "has_synthetic_tag",
+                  "label": "first",
+                  "requires_validation": true
+                }
+              ],
+              "premises_and_provenance": [
+                {
+                  "donor_project": "all",
+                  "mapping": {
+                    "preserved_relations": [
+                      {
+                        "target": "beta/seam",
+                        "donor": "all",
+                        "relation": "all",
+                        "label": "shared"
+                      }
+                    ],
+                    "score": 0.5,
+                    "unverified_properties": [
+                      "domain/kind compatibility",
+                      "target-specific implementation",
+                      "truth of transferred content",
+                      "temporal independence"
+                    ]
+                  },
+                  "properties": {
+                    "expected_properties": [
+                      {
+                        "relation": "has_synthetic_tag",
+                        "label": "first",
+                        "requires_validation": true
+                      }
+                    ],
+                    "oracle_path": "projects/all/tags/1",
+                    "source_locators": [
+                      {
+                        "provider": "synthetic",
+                        "conv_id": "all",
+                        "node_id": "tag-1",
+                        "date": "2026-09-30"
+                      }
+                    ],
+                    "known_at": null,
+                    "known_at_status": "not_supplied_by_oracle",
+                    "source_created_at_max": "2026-09-30"
+                  },
+                  "operator_premise_mapping": [],
+                  "applicable_application_witnesses": []
+                }
+              ],
+              "assessment": {
+                "score_kind": "donor_count",
+                "score": 1,
+                "calibrated_probability": null,
+                "supporting_donor_projects": 1
+              },
+              "unverified_properties": [
+                "target-specific applicability",
+                "implementation status",
+                "causal relation",
+                "truth"
+              ],
+              "counter_evidence": {
+                "status": "not_evaluated",
+                "items": []
+              },
+              "alternatives": []
+            }
+          ]
+        },
+        "random": {
+          "7": [
+            {
+              "label": "first",
+              "task": "all",
+              "target_project": "beta/seam",
+              "evidence_class": "extrapolated",
+              "validation_status": "candidate",
+              "predicted_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at_semantics": "candidate created in this run; historical source know-times are unknown unless supplied",
+              "premises_known_at": null,
+              "operator": {
+                "id": "baseline/random/v1",
+                "policy_version": "synthetic-custom-dimension-demo-v1",
+                "task": "all"
+              },
+              "expected_properties": [
+                {
+                  "relation": "has_synthetic_tag",
+                  "label": "first",
+                  "requires_validation": true
+                }
+              ],
+              "premises_and_provenance": [
+                {
+                  "donor_project": "all",
+                  "mapping": {
+                    "preserved_relations": [
+                      {
+                        "target": "beta/seam",
+                        "donor": "all",
+                        "relation": "all",
+                        "label": "shared"
+                      }
+                    ],
+                    "score": 0.5,
+                    "unverified_properties": [
+                      "domain/kind compatibility",
+                      "target-specific implementation",
+                      "truth of transferred content",
+                      "temporal independence"
+                    ]
+                  },
+                  "properties": {
+                    "expected_properties": [
+                      {
+                        "relation": "has_synthetic_tag",
+                        "label": "first",
+                        "requires_validation": true
+                      }
+                    ],
+                    "oracle_path": "projects/all/tags/1",
+                    "source_locators": [
+                      {
+                        "provider": "synthetic",
+                        "conv_id": "all",
+                        "node_id": "tag-1",
+                        "date": "2026-09-30"
+                      }
+                    ],
+                    "known_at": null,
+                    "known_at_status": "not_supplied_by_oracle",
+                    "source_created_at_max": "2026-09-30"
+                  },
+                  "operator_premise_mapping": [],
+                  "applicable_application_witnesses": []
+                }
+              ],
+              "assessment": {
+                "score_kind": "donor_count",
+                "score": 1,
+                "calibrated_probability": null,
+                "supporting_donor_projects": 1
+              },
+              "unverified_properties": [
+                "target-specific applicability",
+                "implementation status",
+                "causal relation",
+                "truth"
+              ],
+              "counter_evidence": {
+                "status": "not_evaluated",
+                "items": []
+              },
+              "alternatives": []
+            }
+          ],
+          "8": [
+            "first"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "beta%2Fseam/all/001",
+      "project": "beta/seam",
+      "task": "all",
+      "control": false,
+      "visible_edges": {
+        "all": [
+          "second"
+        ]
+      },
+      "methods": {
+        "partial_mapping": {
+          "0": []
+        },
+        "most_frequent": {
+          "0": [
+            {
+              "label": "first",
+              "task": "all",
+              "target_project": "beta/seam",
+              "evidence_class": "extrapolated",
+              "validation_status": "candidate",
+              "predicted_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at_semantics": "candidate created in this run; historical source know-times are unknown unless supplied",
+              "premises_known_at": null,
+              "operator": {
+                "id": "baseline/most_frequent/v1",
+                "policy_version": "synthetic-custom-dimension-demo-v1",
+                "task": "all"
+              },
+              "expected_properties": [
+                {
+                  "relation": "has_synthetic_tag",
+                  "label": "first",
+                  "requires_validation": true
+                }
+              ],
+              "premises_and_provenance": [
+                {
+                  "donor_project": "all",
+                  "mapping": {
+                    "preserved_relations": [],
+                    "score": 0.0,
+                    "unverified_properties": [
+                      "domain/kind compatibility",
+                      "target-specific implementation",
+                      "truth of transferred content",
+                      "temporal independence"
+                    ]
+                  },
+                  "properties": {
+                    "expected_properties": [
+                      {
+                        "relation": "has_synthetic_tag",
+                        "label": "first",
+                        "requires_validation": true
+                      }
+                    ],
+                    "oracle_path": "projects/all/tags/1",
+                    "source_locators": [
+                      {
+                        "provider": "synthetic",
+                        "conv_id": "all",
+                        "node_id": "tag-1",
+                        "date": "2026-09-30"
+                      }
+                    ],
+                    "known_at": null,
+                    "known_at_status": "not_supplied_by_oracle",
+                    "source_created_at_max": "2026-09-30"
+                  },
+                  "operator_premise_mapping": [],
+                  "applicable_application_witnesses": []
+                }
+              ],
+              "assessment": {
+                "score_kind": "donor_count",
+                "score": 1,
+                "calibrated_probability": null,
+                "supporting_donor_projects": 1
+              },
+              "unverified_properties": [
+                "target-specific applicability",
+                "implementation status",
+                "causal relation",
+                "truth"
+              ],
+              "counter_evidence": {
+                "status": "not_evaluated",
+                "items": []
+              },
+              "alternatives": [
+                {
+                  "label": "shared",
+                  "expected_properties": [
+                    {
+                      "relation": "has_synthetic_tag",
+                      "label": "shared",
+                      "requires_validation": true
+                    }
+                  ],
+                  "premises_and_provenance": [
+                    {
+                      "donor_project": "all",
+                      "mapping": {
+                        "preserved_relations": [],
+                        "score": 0.0,
+                        "unverified_properties": [
+                          "domain/kind compatibility",
+                          "target-specific implementation",
+                          "truth of transferred content",
+                          "temporal independence"
+                        ]
+                      },
+                      "properties": {
+                        "expected_properties": [
+                          {
+                            "relation": "has_synthetic_tag",
+                            "label": "shared",
+                            "requires_validation": true
+                          }
+                        ],
+                        "oracle_path": "projects/all/tags/0",
+                        "source_locators": [
+                          {
+                            "provider": "synthetic",
+                            "conv_id": "all",
+                            "node_id": "tag-0",
+                            "date": "2026-09-30"
+                          }
+                        ],
+                        "known_at": null,
+                        "known_at_status": "not_supplied_by_oracle",
+                        "source_created_at_max": "2026-09-30"
+                      },
+                      "operator_premise_mapping": [],
+                      "applicable_application_witnesses": []
+                    }
+                  ],
+                  "assessment": {
+                    "score_kind": "donor_count",
+                    "score": 1,
+                    "calibrated_probability": null,
+                    "supporting_donor_projects": 1
+                  }
+                }
+              ]
+            },
+            {
+              "label": "shared",
+              "task": "all",
+              "target_project": "beta/seam",
+              "evidence_class": "extrapolated",
+              "validation_status": "candidate",
+              "predicted_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at_semantics": "candidate created in this run; historical source know-times are unknown unless supplied",
+              "premises_known_at": null,
+              "operator": {
+                "id": "baseline/most_frequent/v1",
+                "policy_version": "synthetic-custom-dimension-demo-v1",
+                "task": "all"
+              },
+              "expected_properties": [
+                {
+                  "relation": "has_synthetic_tag",
+                  "label": "shared",
+                  "requires_validation": true
+                }
+              ],
+              "premises_and_provenance": [
+                {
+                  "donor_project": "all",
+                  "mapping": {
+                    "preserved_relations": [],
+                    "score": 0.0,
+                    "unverified_properties": [
+                      "domain/kind compatibility",
+                      "target-specific implementation",
+                      "truth of transferred content",
+                      "temporal independence"
+                    ]
+                  },
+                  "properties": {
+                    "expected_properties": [
+                      {
+                        "relation": "has_synthetic_tag",
+                        "label": "shared",
+                        "requires_validation": true
+                      }
+                    ],
+                    "oracle_path": "projects/all/tags/0",
+                    "source_locators": [
+                      {
+                        "provider": "synthetic",
+                        "conv_id": "all",
+                        "node_id": "tag-0",
+                        "date": "2026-09-30"
+                      }
+                    ],
+                    "known_at": null,
+                    "known_at_status": "not_supplied_by_oracle",
+                    "source_created_at_max": "2026-09-30"
+                  },
+                  "operator_premise_mapping": [],
+                  "applicable_application_witnesses": []
+                }
+              ],
+              "assessment": {
+                "score_kind": "donor_count",
+                "score": 1,
+                "calibrated_probability": null,
+                "supporting_donor_projects": 1
+              },
+              "unverified_properties": [
+                "target-specific applicability",
+                "implementation status",
+                "causal relation",
+                "truth"
+              ],
+              "counter_evidence": {
+                "status": "not_evaluated",
+                "items": []
+              },
+              "alternatives": [
+                {
+                  "label": "first",
+                  "expected_properties": [
+                    {
+                      "relation": "has_synthetic_tag",
+                      "label": "first",
+                      "requires_validation": true
+                    }
+                  ],
+                  "premises_and_provenance": [
+                    {
+                      "donor_project": "all",
+                      "mapping": {
+                        "preserved_relations": [],
+                        "score": 0.0,
+                        "unverified_properties": [
+                          "domain/kind compatibility",
+                          "target-specific implementation",
+                          "truth of transferred content",
+                          "temporal independence"
+                        ]
+                      },
+                      "properties": {
+                        "expected_properties": [
+                          {
+                            "relation": "has_synthetic_tag",
+                            "label": "first",
+                            "requires_validation": true
+                          }
+                        ],
+                        "oracle_path": "projects/all/tags/1",
+                        "source_locators": [
+                          {
+                            "provider": "synthetic",
+                            "conv_id": "all",
+                            "node_id": "tag-1",
+                            "date": "2026-09-30"
+                          }
+                        ],
+                        "known_at": null,
+                        "known_at_status": "not_supplied_by_oracle",
+                        "source_created_at_max": "2026-09-30"
+                      },
+                      "operator_premise_mapping": [],
+                      "applicable_application_witnesses": []
+                    }
+                  ],
+                  "assessment": {
+                    "score_kind": "donor_count",
+                    "score": 1,
+                    "calibrated_probability": null,
+                    "supporting_donor_projects": 1
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "premise_filtered_frequency": {
+          "0": []
+        },
+        "random": {
+          "7": [
+            {
+              "label": "first",
+              "task": "all",
+              "target_project": "beta/seam",
+              "evidence_class": "extrapolated",
+              "validation_status": "candidate",
+              "predicted_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at_semantics": "candidate created in this run; historical source know-times are unknown unless supplied",
+              "premises_known_at": null,
+              "operator": {
+                "id": "baseline/random/v1",
+                "policy_version": "synthetic-custom-dimension-demo-v1",
+                "task": "all"
+              },
+              "expected_properties": [
+                {
+                  "relation": "has_synthetic_tag",
+                  "label": "first",
+                  "requires_validation": true
+                }
+              ],
+              "premises_and_provenance": [
+                {
+                  "donor_project": "all",
+                  "mapping": {
+                    "preserved_relations": [],
+                    "score": 0.0,
+                    "unverified_properties": [
+                      "domain/kind compatibility",
+                      "target-specific implementation",
+                      "truth of transferred content",
+                      "temporal independence"
+                    ]
+                  },
+                  "properties": {
+                    "expected_properties": [
+                      {
+                        "relation": "has_synthetic_tag",
+                        "label": "first",
+                        "requires_validation": true
+                      }
+                    ],
+                    "oracle_path": "projects/all/tags/1",
+                    "source_locators": [
+                      {
+                        "provider": "synthetic",
+                        "conv_id": "all",
+                        "node_id": "tag-1",
+                        "date": "2026-09-30"
+                      }
+                    ],
+                    "known_at": null,
+                    "known_at_status": "not_supplied_by_oracle",
+                    "source_created_at_max": "2026-09-30"
+                  },
+                  "operator_premise_mapping": [],
+                  "applicable_application_witnesses": []
+                }
+              ],
+              "assessment": {
+                "score_kind": "donor_count",
+                "score": 1,
+                "calibrated_probability": null,
+                "supporting_donor_projects": 1
+              },
+              "unverified_properties": [
+                "target-specific applicability",
+                "implementation status",
+                "causal relation",
+                "truth"
+              ],
+              "counter_evidence": {
+                "status": "not_evaluated",
+                "items": []
+              },
+              "alternatives": [
+                {
+                  "label": "shared",
+                  "expected_properties": [
+                    {
+                      "relation": "has_synthetic_tag",
+                      "label": "shared",
+                      "requires_validation": true
+                    }
+                  ],
+                  "premises_and_provenance": [
+                    {
+                      "donor_project": "all",
+                      "mapping": {
+                        "preserved_relations": [],
+                        "score": 0.0,
+                        "unverified_properties": [
+                          "domain/kind compatibility",
+                          "target-specific implementation",
+                          "truth of transferred content",
+                          "temporal independence"
+                        ]
+                      },
+                      "properties": {
+                        "expected_properties": [
+                          {
+                            "relation": "has_synthetic_tag",
+                            "label": "shared",
+                            "requires_validation": true
+                          }
+                        ],
+                        "oracle_path": "projects/all/tags/0",
+                        "source_locators": [
+                          {
+                            "provider": "synthetic",
+                            "conv_id": "all",
+                            "node_id": "tag-0",
+                            "date": "2026-09-30"
+                          }
+                        ],
+                        "known_at": null,
+                        "known_at_status": "not_supplied_by_oracle",
+                        "source_created_at_max": "2026-09-30"
+                      },
+                      "operator_premise_mapping": [],
+                      "applicable_application_witnesses": []
+                    }
+                  ],
+                  "assessment": {
+                    "score_kind": "donor_count",
+                    "score": 1,
+                    "calibrated_probability": null,
+                    "supporting_donor_projects": 1
+                  }
+                }
+              ]
+            },
+            {
+              "label": "shared",
+              "task": "all",
+              "target_project": "beta/seam",
+              "evidence_class": "extrapolated",
+              "validation_status": "candidate",
+              "predicted_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at_semantics": "candidate created in this run; historical source know-times are unknown unless supplied",
+              "premises_known_at": null,
+              "operator": {
+                "id": "baseline/random/v1",
+                "policy_version": "synthetic-custom-dimension-demo-v1",
+                "task": "all"
+              },
+              "expected_properties": [
+                {
+                  "relation": "has_synthetic_tag",
+                  "label": "shared",
+                  "requires_validation": true
+                }
+              ],
+              "premises_and_provenance": [
+                {
+                  "donor_project": "all",
+                  "mapping": {
+                    "preserved_relations": [],
+                    "score": 0.0,
+                    "unverified_properties": [
+                      "domain/kind compatibility",
+                      "target-specific implementation",
+                      "truth of transferred content",
+                      "temporal independence"
+                    ]
+                  },
+                  "properties": {
+                    "expected_properties": [
+                      {
+                        "relation": "has_synthetic_tag",
+                        "label": "shared",
+                        "requires_validation": true
+                      }
+                    ],
+                    "oracle_path": "projects/all/tags/0",
+                    "source_locators": [
+                      {
+                        "provider": "synthetic",
+                        "conv_id": "all",
+                        "node_id": "tag-0",
+                        "date": "2026-09-30"
+                      }
+                    ],
+                    "known_at": null,
+                    "known_at_status": "not_supplied_by_oracle",
+                    "source_created_at_max": "2026-09-30"
+                  },
+                  "operator_premise_mapping": [],
+                  "applicable_application_witnesses": []
+                }
+              ],
+              "assessment": {
+                "score_kind": "donor_count",
+                "score": 1,
+                "calibrated_probability": null,
+                "supporting_donor_projects": 1
+              },
+              "unverified_properties": [
+                "target-specific applicability",
+                "implementation status",
+                "causal relation",
+                "truth"
+              ],
+              "counter_evidence": {
+                "status": "not_evaluated",
+                "items": []
+              },
+              "alternatives": [
+                {
+                  "label": "first",
+                  "expected_properties": [
+                    {
+                      "relation": "has_synthetic_tag",
+                      "label": "first",
+                      "requires_validation": true
+                    }
+                  ],
+                  "premises_and_provenance": [
+                    {
+                      "donor_project": "all",
+                      "mapping": {
+                        "preserved_relations": [],
+                        "score": 0.0,
+                        "unverified_properties": [
+                          "domain/kind compatibility",
+                          "target-specific implementation",
+                          "truth of transferred content",
+                          "temporal independence"
+                        ]
+                      },
+                      "properties": {
+                        "expected_properties": [
+                          {
+                            "relation": "has_synthetic_tag",
+                            "label": "first",
+                            "requires_validation": true
+                          }
+                        ],
+                        "oracle_path": "projects/all/tags/1",
+                        "source_locators": [
+                          {
+                            "provider": "synthetic",
+                            "conv_id": "all",
+                            "node_id": "tag-1",
+                            "date": "2026-09-30"
+                          }
+                        ],
+                        "known_at": null,
+                        "known_at_status": "not_supplied_by_oracle",
+                        "source_created_at_max": "2026-09-30"
+                      },
+                      "operator_premise_mapping": [],
+                      "applicable_application_witnesses": []
+                    }
+                  ],
+                  "assessment": {
+                    "score_kind": "donor_count",
+                    "score": 1,
+                    "calibrated_probability": null,
+                    "supporting_donor_projects": 1
+                  }
+                }
+              ]
+            }
+          ],
+          "8": [
+            "first",
+            "shared"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "beta%2Fseam/all/002",
+      "project": "beta/seam",
+      "task": "all",
+      "control": true,
+      "visible_edges": {
+        "all": [
+          "second",
+          "shared"
+        ]
+      },
+      "methods": {
+        "partial_mapping": {
+          "0": [
+            {
+              "label": "first",
+              "task": "all",
+              "target_project": "beta/seam",
+              "evidence_class": "extrapolated",
+              "validation_status": "candidate",
+              "predicted_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at_semantics": "candidate created in this run; historical source know-times are unknown unless supplied",
+              "premises_known_at": null,
+              "operator": {
+                "id": "partial_subgraph_relation_transfer/v1",
+                "policy_version": "synthetic-custom-dimension-demo-v1",
+                "task": "all"
+              },
+              "expected_properties": [
+                {
+                  "relation": "has_synthetic_tag",
+                  "label": "first",
+                  "requires_validation": true
+                }
+              ],
+              "premises_and_provenance": [
+                {
+                  "donor_project": "all",
+                  "mapping": {
+                    "preserved_relations": [
+                      {
+                        "target": "beta/seam",
+                        "donor": "all",
+                        "relation": "all",
+                        "label": "shared"
+                      }
+                    ],
+                    "score": 0.3333333333333333,
+                    "unverified_properties": [
+                      "domain/kind compatibility",
+                      "target-specific implementation",
+                      "truth of transferred content",
+                      "temporal independence"
+                    ]
+                  },
+                  "properties": {
+                    "expected_properties": [
+                      {
+                        "relation": "has_synthetic_tag",
+                        "label": "first",
+                        "requires_validation": true
+                      }
+                    ],
+                    "oracle_path": "projects/all/tags/1",
+                    "source_locators": [
+                      {
+                        "provider": "synthetic",
+                        "conv_id": "all",
+                        "node_id": "tag-1",
+                        "date": "2026-09-30"
+                      }
+                    ],
+                    "known_at": null,
+                    "known_at_status": "not_supplied_by_oracle",
+                    "source_created_at_max": "2026-09-30"
+                  },
+                  "operator_premise_mapping": [],
+                  "applicable_application_witnesses": []
+                }
+              ],
+              "assessment": {
+                "score_kind": "similarity_sum",
+                "score": 0.3333333333333333,
+                "calibrated_probability": null,
+                "supporting_donor_projects": 1
+              },
+              "unverified_properties": [
+                "target-specific applicability",
+                "implementation status",
+                "causal relation",
+                "truth"
+              ],
+              "counter_evidence": {
+                "status": "not_evaluated",
+                "items": []
+              },
+              "alternatives": []
+            }
+          ]
+        },
+        "most_frequent": {
+          "0": [
+            {
+              "label": "first",
+              "task": "all",
+              "target_project": "beta/seam",
+              "evidence_class": "extrapolated",
+              "validation_status": "candidate",
+              "predicted_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at_semantics": "candidate created in this run; historical source know-times are unknown unless supplied",
+              "premises_known_at": null,
+              "operator": {
+                "id": "baseline/most_frequent/v1",
+                "policy_version": "synthetic-custom-dimension-demo-v1",
+                "task": "all"
+              },
+              "expected_properties": [
+                {
+                  "relation": "has_synthetic_tag",
+                  "label": "first",
+                  "requires_validation": true
+                }
+              ],
+              "premises_and_provenance": [
+                {
+                  "donor_project": "all",
+                  "mapping": {
+                    "preserved_relations": [
+                      {
+                        "target": "beta/seam",
+                        "donor": "all",
+                        "relation": "all",
+                        "label": "shared"
+                      }
+                    ],
+                    "score": 0.3333333333333333,
+                    "unverified_properties": [
+                      "domain/kind compatibility",
+                      "target-specific implementation",
+                      "truth of transferred content",
+                      "temporal independence"
+                    ]
+                  },
+                  "properties": {
+                    "expected_properties": [
+                      {
+                        "relation": "has_synthetic_tag",
+                        "label": "first",
+                        "requires_validation": true
+                      }
+                    ],
+                    "oracle_path": "projects/all/tags/1",
+                    "source_locators": [
+                      {
+                        "provider": "synthetic",
+                        "conv_id": "all",
+                        "node_id": "tag-1",
+                        "date": "2026-09-30"
+                      }
+                    ],
+                    "known_at": null,
+                    "known_at_status": "not_supplied_by_oracle",
+                    "source_created_at_max": "2026-09-30"
+                  },
+                  "operator_premise_mapping": [],
+                  "applicable_application_witnesses": []
+                }
+              ],
+              "assessment": {
+                "score_kind": "donor_count",
+                "score": 1,
+                "calibrated_probability": null,
+                "supporting_donor_projects": 1
+              },
+              "unverified_properties": [
+                "target-specific applicability",
+                "implementation status",
+                "causal relation",
+                "truth"
+              ],
+              "counter_evidence": {
+                "status": "not_evaluated",
+                "items": []
+              },
+              "alternatives": []
+            }
+          ]
+        },
+        "premise_filtered_frequency": {
+          "0": [
+            {
+              "label": "first",
+              "task": "all",
+              "target_project": "beta/seam",
+              "evidence_class": "extrapolated",
+              "validation_status": "candidate",
+              "predicted_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at_semantics": "candidate created in this run; historical source know-times are unknown unless supplied",
+              "premises_known_at": null,
+              "operator": {
+                "id": "baseline/premise_filtered_frequency/v1",
+                "policy_version": "synthetic-custom-dimension-demo-v1",
+                "task": "all"
+              },
+              "expected_properties": [
+                {
+                  "relation": "has_synthetic_tag",
+                  "label": "first",
+                  "requires_validation": true
+                }
+              ],
+              "premises_and_provenance": [
+                {
+                  "donor_project": "all",
+                  "mapping": {
+                    "preserved_relations": [
+                      {
+                        "target": "beta/seam",
+                        "donor": "all",
+                        "relation": "all",
+                        "label": "shared"
+                      }
+                    ],
+                    "score": 0.3333333333333333,
+                    "unverified_properties": [
+                      "domain/kind compatibility",
+                      "target-specific implementation",
+                      "truth of transferred content",
+                      "temporal independence"
+                    ]
+                  },
+                  "properties": {
+                    "expected_properties": [
+                      {
+                        "relation": "has_synthetic_tag",
+                        "label": "first",
+                        "requires_validation": true
+                      }
+                    ],
+                    "oracle_path": "projects/all/tags/1",
+                    "source_locators": [
+                      {
+                        "provider": "synthetic",
+                        "conv_id": "all",
+                        "node_id": "tag-1",
+                        "date": "2026-09-30"
+                      }
+                    ],
+                    "known_at": null,
+                    "known_at_status": "not_supplied_by_oracle",
+                    "source_created_at_max": "2026-09-30"
+                  },
+                  "operator_premise_mapping": [],
+                  "applicable_application_witnesses": []
+                }
+              ],
+              "assessment": {
+                "score_kind": "donor_count",
+                "score": 1,
+                "calibrated_probability": null,
+                "supporting_donor_projects": 1
+              },
+              "unverified_properties": [
+                "target-specific applicability",
+                "implementation status",
+                "causal relation",
+                "truth"
+              ],
+              "counter_evidence": {
+                "status": "not_evaluated",
+                "items": []
+              },
+              "alternatives": []
+            }
+          ]
+        },
+        "random": {
+          "7": [
+            {
+              "label": "first",
+              "task": "all",
+              "target_project": "beta/seam",
+              "evidence_class": "extrapolated",
+              "validation_status": "candidate",
+              "predicted_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at": "2026-10-04T17:45:12.975091+00:00",
+              "known_at_semantics": "candidate created in this run; historical source know-times are unknown unless supplied",
+              "premises_known_at": null,
+              "operator": {
+                "id": "baseline/random/v1",
+                "policy_version": "synthetic-custom-dimension-demo-v1",
+                "task": "all"
+              },
+              "expected_properties": [
+                {
+                  "relation": "has_synthetic_tag",
+                  "label": "first",
+                  "requires_validation": true
+                }
+              ],
+              "premises_and_provenance": [
+                {
+                  "donor_project": "all",
+                  "mapping": {
+                    "preserved_relations": [
+                      {
+                        "target": "beta/seam",
+                        "donor": "all",
+                        "relation": "all",
+                        "label": "shared"
+                      }
+                    ],
+                    "score": 0.3333333333333333,
+                    "unverified_properties": [
+                      "domain/kind compatibility",
+                      "target-specific implementation",
+                      "truth of transferred content",
+                      "temporal independence"
+                    ]
+                  },
+                  "properties": {
+                    "expected_properties": [
+                      {
+                        "relation": "has_synthetic_tag",
+                        "label": "first",
+                        "requires_validation": true
+                      }
+                    ],
+                    "oracle_path": "projects/all/tags/1",
+                    "source_locators": [
+                      {
+                        "provider": "synthetic",
+                        "conv_id": "all",
+                        "node_id": "tag-1",
+                        "date": "2026-09-30"
+                      }
+                    ],
+                    "known_at": null,
+                    "known_at_status": "not_supplied_by_oracle",
+                    "source_created_at_max": "2026-09-30"
+                  },
+                  "operator_premise_mapping": [],
+                  "applicable_application_witnesses": []
+                }
+              ],
+              "assessment": {
+                "score_kind": "donor_count",
+                "score": 1,
+                "calibrated_probability": null,
+                "supporting_donor_projects": 1
+              },
+              "unverified_properties": [
+                "target-specific applicability",
+                "implementation status",
+                "causal relation",
+                "truth"
+              ],
+              "counter_evidence": {
+                "status": "not_evaluated",
+                "items": []
+              },
+              "alternatives": []
+            }
+          ],
+          "8": [
+            "first"
+          ]
+        }
+      }
+    }
+  ]
+}
