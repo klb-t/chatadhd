@@ -132,16 +132,38 @@ fs::path resolve_path(std::string_view p) {
 }
 
 TempDir::TempDir(std::string_view prefix) {
+  auto profile = RuntimeProfile::builtin("util");
+  if (profile) (void)initialize(*profile, prefix);
+}
+
+Result<TempDir> TempDir::create(const RuntimeProfile& profile, std::optional<std::string_view> prefix) {
+  TempDir out(EmptyTag{});
+  LOOM_TRY(out.initialize(profile, prefix));
+  return out;
+}
+
+Status TempDir::initialize(const RuntimeProfile& profile, std::optional<std::string_view> prefix) {
+  if (profile.domain() != "util") return Error(Errc::InvalidArgument, "expected util profile");
+  LOOM_TRY_ASSIGN(auto builtin, RuntimeProfile::builtin("util"));
+  LOOM_TRY_ASSIGN(auto checked, builtin.with_values(profile.values()));
+  const auto& values = checked.values().at("temp");
   std::error_code ec;
-  fs::path base = fs::temp_directory_path(ec);
-  if (ec) base = "/tmp";
-  for (int attempt = 0; attempt < 16; ++attempt) {
-    fs::path cand = base / (std::string(prefix) + random_hex(12));
+  fs::path base(values.at("base_root").get<std::string>());
+  if (base.empty()) {
+    base = fs::temp_directory_path(ec);
+    if (ec) base = values.at("fallback_root").get<std::string>();
+  }
+  const auto resolved_prefix = prefix ? std::string(*prefix) : values.at("prefix").get<std::string>();
+  const auto attempts = values.at("attempts").get<std::size_t>();
+  for (std::size_t attempt = 0; attempt < attempts; ++attempt) {
+    fs::path cand = base / (resolved_prefix + random_hex(values.at("id_chars").get<std::size_t>()));
     if (fs::create_directory(cand, ec) && !ec) {
       path_ = cand;
-      return;
+      return {};
     }
   }
+  return Error(Errc::Io, "temporary directory creation failed under " + base.string() +
+                            (ec ? ": " + ec.message() : ": configured attempts exhausted"));
 }
 
 TempDir::~TempDir() {
