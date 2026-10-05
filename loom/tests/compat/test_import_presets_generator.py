@@ -229,6 +229,26 @@ class ImportPresetGeneratorTests(unittest.TestCase):
             self.assertEqual(subprocess.run(command, capture_output=True).returncode, 0)
             self.assertEqual(paths["layers_output"].read_bytes(), generated)
 
+    def test_renamed_source_ids_preserve_raw_bytes_and_stable_layer_entry_ids(self):
+        with tempfile.TemporaryDirectory() as directory:
+            paths, documents, command = self.isolated_fixture(Path(directory))
+            documents["import"]["id"] = "owner.import.alternate"
+            documents["import_audit"]["id"] = "owner.import-audit.alternate"
+            for resource in ("import", "import_audit"):
+                paths[resource].write_bytes(self.json_bytes(documents[resource]))
+            import_raw, audit_raw = paths["import"].read_bytes(), paths["import_audit"].read_bytes()
+            generated_embedding = generator.generate(import_raw, audit_raw)
+            self.assertEqual(self.emitted_bytes(generated_embedding), (import_raw, audit_raw))
+            generated_layers = generator.generate_layers(paths["spec"].read_bytes(), import_raw, audit_raw)
+            entries = json.loads(generated_layers)["entries"]
+            self.assertEqual([entry["id"] for entry in entries],
+                             [entry["id"] for entry in documents["spec"]["entries"]])
+            self.assertEqual({entry["key"]: entry["value"] for entry in entries},
+                             {"import.arbitrary": 17, "import.audit.arbitrary": 17})
+            self.assertEqual(subprocess.run(command, capture_output=True).returncode, 0)
+            self.assertEqual(paths["output"].read_bytes(), generated_embedding)
+            self.assertEqual(paths["layers_output"].read_bytes(), generated_layers)
+
     def test_invalid_layers_bindings_versions_or_source_provenance_preserve_both_outputs(self):
         mutations = [
             ("spec", lambda document: document["entries"][0].update(resource="unknown")),
@@ -245,7 +265,9 @@ class ImportPresetGeneratorTests(unittest.TestCase):
             ("import_audit", lambda document: document.pop("version")),
             ("import_audit", lambda document: document.update(version=-1)),
             ("import", lambda document: document.update(id="")),
-            ("import", lambda document: document.update(id="unrelated.source")),
+            ("import", lambda document: document.update(id=17)),
+            ("import_audit", lambda document: document.update(id=None)),
+            ("import_audit", lambda document: document.update(id=True)),
             ("import_audit", lambda document: document.pop("id")),
             ("import", lambda document: document.update(schema="other.schema/1")),
             ("import_audit", lambda document: document.pop("values")),

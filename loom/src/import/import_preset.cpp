@@ -58,8 +58,9 @@ const Result<Json>& import_document() {
     if (!parsed.is_object()) return Error(Errc::InvalidArgument, "import preset source must be an object");
     if (!parsed.contains("schema") || parsed["schema"] != "loom.import_preset/1")
       return Error(Errc::Unsupported, "unsupported import preset schema");
-    if (!parsed.contains("id") || parsed["id"] != "loom.preset.import.default")
-      return Error(Errc::InvalidArgument, "invalid import preset source identity");
+    if (!parsed.contains("id") || !parsed["id"].is_string() ||
+        parsed["id"].get_ref<const std::string&>().empty())
+      return Error(Errc::InvalidArgument, "import preset source identity must be a nonempty string");
     if (!parsed.contains("version")) return Error(Errc::InvalidArgument, "missing import preset version");
     LOOM_TRY_ASSIGN(const auto version, unsigned_integer(parsed, "version"));
     if (!version) return Error(Errc::InvalidArgument, "import preset version must be positive");
