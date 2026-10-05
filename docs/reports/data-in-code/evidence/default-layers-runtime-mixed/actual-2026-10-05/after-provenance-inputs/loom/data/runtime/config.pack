@@ -1,0 +1,172 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "config",
+  "revision": 1,
+  "description": "Exact 161cc22 fresh Config recipe: seed legacy_defaults in legacy_key_order, append remaining declared keys, and serve loom_defaults only as absent-key fallbacks. Usage fallback belongs to usage_policy. Stored config merges shallowly at top level; existing files are not automatically rewritten.",
+  "defaults": {
+    "legacy_defaults": {
+      "base_url": "https://openrouter.ai/api/v1",
+      "default_model": "anthropic/claude-sonnet-4-20250514",
+      "semantic_model": "",
+      "temperature": 0.7,
+      "max_tokens": 4096,
+      "theme": "dark",
+      "system_prompt": "You are a helpful assistant with access to the user's hierarchical memory.",
+      "auto_title": true,
+      "stream": true,
+      "semantic_analysis": true,
+      "graph_memory_depth": 2,
+      "graph_memory_max_nodes": 20
+    },
+    "legacy_key_order": [
+      "base_url",
+      "default_model",
+      "semantic_model",
+      "temperature",
+      "max_tokens",
+      "theme",
+      "system_prompt",
+      "auto_title",
+      "stream",
+      "semantic_analysis",
+      "graph_memory_depth",
+      "graph_memory_max_nodes"
+    ],
+    "loom_defaults": {
+      "loom_event_log_types": [
+        "conv:created",
+        "import:done",
+        "graph:changed"
+      ],
+      "loom_task_workers": 1
+    }
+  },
+  "value_schema": {
+    "type": "object",
+    "required": [
+      "legacy_defaults",
+      "legacy_key_order",
+      "loom_defaults"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "legacy_defaults": {
+        "type": "object",
+        "required": [
+          "base_url",
+          "default_model",
+          "semantic_model",
+          "temperature",
+          "max_tokens",
+          "theme",
+          "system_prompt",
+          "auto_title",
+          "stream",
+          "semantic_analysis",
+          "graph_memory_depth",
+          "graph_memory_max_nodes"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "base_url": {
+            "type": "string",
+            "x-setting": "/legacy_defaults/base_url",
+            "x-consumer": "Config preset"
+          },
+          "default_model": {
+            "type": "string",
+            "x-setting": "/legacy_defaults/default_model",
+            "x-consumer": "Config preset"
+          },
+          "semantic_model": {
+            "type": "string",
+            "x-setting": "/legacy_defaults/semantic_model",
+            "x-consumer": "Config preset"
+          },
+          "temperature": {
+            "type": "number",
+            "x-setting": "/legacy_defaults/temperature",
+            "x-consumer": "Config preset"
+          },
+          "max_tokens": {
+            "type": "integer",
+            "x-setting": "/legacy_defaults/max_tokens",
+            "x-consumer": "Config preset"
+          },
+          "theme": {
+            "type": "string",
+            "x-setting": "/legacy_defaults/theme",
+            "x-consumer": "Config preset"
+          },
+          "system_prompt": {
+            "type": "string",
+            "x-setting": "/legacy_defaults/system_prompt",
+            "x-consumer": "Config preset"
+          },
+          "auto_title": {
+            "type": "boolean",
+            "x-setting": "/legacy_defaults/auto_title",
+            "x-consumer": "Config preset"
+          },
+          "stream": {
+            "type": "boolean",
+            "x-setting": "/legacy_defaults/stream",
+            "x-consumer": "Config preset"
+          },
+          "semantic_analysis": {
+            "type": "boolean",
+            "x-setting": "/legacy_defaults/semantic_analysis",
+            "x-consumer": "Config preset"
+          },
+          "graph_memory_depth": {
+            "type": "integer",
+            "x-setting": "/legacy_defaults/graph_memory_depth",
+            "x-consumer": "Config preset"
+          },
+          "graph_memory_max_nodes": {
+            "type": "integer",
+            "x-setting": "/legacy_defaults/graph_memory_max_nodes",
+            "x-consumer": "Config preset"
+          }
+        },
+        "x-setting": "/legacy_defaults",
+        "x-consumer": "Config constructor"
+      },
+      "legacy_key_order": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": "Ordered key recipe; consumer must reject duplicate/unknown keys and retain all effective defaults. Additional declared keys append without changing legacy positions.",
+        "x-setting": "/legacy_key_order",
+        "x-consumer": "Config ordered serialization"
+      },
+      "loom_defaults": {
+        "type": "object",
+        "required": [
+          "loom_event_log_types",
+          "loom_task_workers"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "loom_event_log_types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "x-setting": "/loom_defaults/loom_event_log_types",
+            "x-consumer": "EventLog"
+          },
+          "loom_task_workers": {
+            "type": "integer",
+            "x-setting": "/loom_defaults/loom_task_workers",
+            "x-consumer": "TaskEngine"
+          }
+        },
+        "x-setting": "/loom_defaults",
+        "x-consumer": "Config absent-key fallback only"
+      }
+    }
+  }
+}

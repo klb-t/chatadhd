@@ -1,0 +1,321 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "media",
+  "revision": 1,
+  "description": "Default transport/results equal legacy; confidence placeholders are compatibility priors, not measured provider confidence. Supported adapters instantiate from descriptors; new adapter semantics require code.",
+  "defaults": {
+    "defaults_by_adapter": {
+      "groq_whisper": "groq",
+      "google_speech": "google",
+      "ocr_space": "ocr.space"
+    },
+    "asr_order": [
+      "groq",
+      "google"
+    ],
+    "ocr_order": [
+      "ocr.space"
+    ],
+    "error_body_chars": 500,
+    "providers": {
+      "groq": {
+        "name": "groq",
+        "adapter": "groq_whisper",
+        "secret_key": "groq_api_key",
+        "endpoint": "https://api.groq.com/openai/v1/audio/transcriptions",
+        "timeout_ms": 60000,
+        "headers": {},
+        "format_map": {
+          "mp3": "mp3",
+          "wav": "wav",
+          "m4a": "mp4",
+          "ogg": "ogg",
+          "webm": "webm"
+        },
+        "default_format": "wav",
+        "model": "whisper-large-v3-turbo",
+        "response_format": "verbose_json",
+        "max_segments": 5,
+        "placeholder_confidence": 0.9
+      },
+      "google": {
+        "name": "google",
+        "adapter": "google_speech",
+        "secret_key": "google_speech_api_key",
+        "endpoint": "https://speech.googleapis.com/v1/speech:recognize",
+        "timeout_ms": 60000,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "encoding_map": {
+          "wav": "LINEAR16",
+          "mp3": "MP3",
+          "ogg": "OGG_OPUS",
+          "flac": "FLAC",
+          "webm": "WEBM_OPUS"
+        },
+        "default_encoding": "LINEAR16",
+        "default_language": "en-US",
+        "max_alternatives": 5,
+        "word_confidence": true,
+        "word_time_offsets": true
+      },
+      "ocr.space": {
+        "name": "ocr.space",
+        "adapter": "ocr_space",
+        "secret_key": "ocr_space_api_key",
+        "endpoint": "https://api.ocr.space/parse/image",
+        "timeout_ms": 60000,
+        "headers": {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        "language_map": {
+          "en": "eng",
+          "pl": "pol",
+          "de": "ger",
+          "fr": "fre",
+          "es": "spa",
+          "it": "ita",
+          "nl": "dut",
+          "pt": "por",
+          "ru": "rus",
+          "zh": "chs",
+          "ja": "jpn",
+          "ko": "kor"
+        },
+        "default_language": "eng",
+        "engine": 2,
+        "is_table": "True",
+        "scale": "True",
+        "overlay_placeholder_confidence": 0.9,
+        "text_placeholder_confidence": 0.85
+      }
+    }
+  },
+  "value_schema": {
+    "x-setting": "",
+    "x-consumer": "worker/media/github",
+    "type": "object",
+    "required": [
+      "defaults_by_adapter",
+      "asr_order",
+      "ocr_order",
+      "error_body_chars",
+      "providers"
+    ],
+    "properties": {
+      "defaults_by_adapter": {
+        "x-setting": "/defaults_by_adapter",
+        "x-consumer": "worker/media/github",
+        "type": "object",
+        "required": [
+          "groq_whisper",
+          "google_speech",
+          "ocr_space"
+        ],
+        "properties": {
+          "groq_whisper": {
+            "x-setting": "/defaults_by_adapter/groq_whisper",
+            "x-consumer": "worker/media/github",
+            "type": "string"
+          },
+          "google_speech": {
+            "x-setting": "/defaults_by_adapter/google_speech",
+            "x-consumer": "worker/media/github",
+            "type": "string"
+          },
+          "ocr_space": {
+            "x-setting": "/defaults_by_adapter/ocr_space",
+            "x-consumer": "worker/media/github",
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "asr_order": {
+        "x-setting": "/asr_order",
+        "x-consumer": "worker/media/github",
+        "type": "array",
+        "items": {
+          "x-setting": "/asr_order/<index>",
+          "x-consumer": "worker/media/github",
+          "type": "string"
+        }
+      },
+      "ocr_order": {
+        "x-setting": "/ocr_order",
+        "x-consumer": "worker/media/github",
+        "type": "array",
+        "items": {
+          "x-setting": "/ocr_order/<index>",
+          "x-consumer": "worker/media/github",
+          "type": "string"
+        }
+      },
+      "error_body_chars": {
+        "x-setting": "/error_body_chars",
+        "x-consumer": "worker/media/github",
+        "type": "integer",
+        "minimum": 0
+      },
+      "providers": {
+        "type": "object",
+        "additionalProperties": {
+          "x-setting": "/providers/<key>",
+          "x-consumer": "worker/media/github",
+          "type": "object",
+          "required": [
+            "name",
+            "adapter",
+            "secret_key",
+            "endpoint",
+            "timeout_ms",
+            "headers"
+          ],
+          "properties": {
+            "name": {
+              "x-setting": "/providers/<key>/name",
+              "x-consumer": "worker/media/github",
+              "type": "string"
+            },
+            "adapter": {
+              "x-setting": "/providers/<key>/adapter",
+              "x-consumer": "worker/media/github",
+              "type": "string"
+            },
+            "secret_key": {
+              "x-setting": "/providers/<key>/secret_key",
+              "x-consumer": "worker/media/github",
+              "type": "string"
+            },
+            "endpoint": {
+              "x-setting": "/providers/<key>/endpoint",
+              "x-consumer": "worker/media/github",
+              "type": "string"
+            },
+            "timeout_ms": {
+              "x-setting": "/providers/<key>/timeout_ms",
+              "x-consumer": "worker/media/github",
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            },
+            "headers": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              },
+              "x-setting": "/providers/<key>/headers",
+              "x-consumer": "media"
+            },
+            "format_map": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              },
+              "x-setting": "/providers/<key>/format_map"
+            },
+            "default_format": {
+              "x-setting": "/providers/<key>/default_format",
+              "x-consumer": "worker/media/github",
+              "type": "string"
+            },
+            "model": {
+              "x-setting": "/providers/<key>/model",
+              "x-consumer": "worker/media/github",
+              "type": "string"
+            },
+            "response_format": {
+              "x-setting": "/providers/<key>/response_format",
+              "x-consumer": "worker/media/github",
+              "type": "string"
+            },
+            "max_segments": {
+              "x-setting": "/providers/<key>/max_segments",
+              "x-consumer": "worker/media/github",
+              "type": "integer",
+              "minimum": 0
+            },
+            "placeholder_confidence": {
+              "x-setting": "/providers/<key>/placeholder_confidence",
+              "x-consumer": "worker/media/github",
+              "type": "number",
+              "minimum": 0
+            },
+            "encoding_map": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              },
+              "x-setting": "/providers/<key>/encoding_map"
+            },
+            "default_encoding": {
+              "x-setting": "/providers/<key>/default_encoding",
+              "x-consumer": "worker/media/github",
+              "type": "string"
+            },
+            "default_language": {
+              "x-setting": "/providers/<key>/default_language",
+              "x-consumer": "worker/media/github",
+              "type": "string"
+            },
+            "max_alternatives": {
+              "x-setting": "/providers/<key>/max_alternatives",
+              "x-consumer": "worker/media/github",
+              "type": "integer",
+              "minimum": 0
+            },
+            "word_confidence": {
+              "x-setting": "/providers/<key>/word_confidence",
+              "x-consumer": "worker/media/github",
+              "type": "boolean"
+            },
+            "word_time_offsets": {
+              "x-setting": "/providers/<key>/word_time_offsets",
+              "x-consumer": "worker/media/github",
+              "type": "boolean"
+            },
+            "language_map": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              },
+              "x-setting": "/providers/<key>/language_map"
+            },
+            "engine": {
+              "x-setting": "/providers/<key>/engine",
+              "x-consumer": "worker/media/github",
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            },
+            "is_table": {
+              "x-setting": "/providers/<key>/is_table",
+              "x-consumer": "worker/media/github",
+              "type": "string"
+            },
+            "scale": {
+              "x-setting": "/providers/<key>/scale",
+              "x-consumer": "worker/media/github",
+              "type": "string"
+            },
+            "overlay_placeholder_confidence": {
+              "x-setting": "/providers/<key>/overlay_placeholder_confidence",
+              "x-consumer": "worker/media/github",
+              "type": "number",
+              "minimum": 0
+            },
+            "text_placeholder_confidence": {
+              "x-setting": "/providers/<key>/text_placeholder_confidence",
+              "x-consumer": "worker/media/github",
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    "additionalProperties": false
+  }
+}

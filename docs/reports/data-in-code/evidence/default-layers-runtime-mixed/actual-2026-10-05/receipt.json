@@ -1,0 +1,869 @@
+{
+  "schema": "loom.runtime_layers_mixed_capture/1",
+  "valid": true,
+  "baseline_commit": "fffa9fd557db97cae549d555959fedf3910d346c",
+  "w12_commit": "3c0bc36552ef9851f1174946cfb108549aae3228",
+  "compiler": "c++",
+  "compiler_version": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "runner_sha256": "667bb72fbf1d196c5569b8d88e6a26d2ecdebfc646ef7274c7a2efbbcf5dc96b",
+  "capture_script_sha256": "83e551beea8789b4317025ff561c828f9ba7fd0bbab00ea8f3f0673b6324cfd3",
+  "fixture_sha256": "1bf3b237a3c71e3e44eb5f390a2c2938b405a1be0fecef5b2ef5fbd53b19a065",
+  "policy_source": {
+    "git_path": "loom/data/profiles/user.pack",
+    "git_commit": "3c0bc36552ef9851f1174946cfb108549aae3228",
+    "raw_sha256": "957cb6e7842ce4bfa6bd13b7c5440b5e9217a2bbb1a3f97f4953f1ca8c091b56",
+    "json_pointer": "/policy"
+  },
+  "provider_calls": 0,
+  "database_created": false,
+  "root_cmake_changed": false,
+  "production_bindings_claimed": false,
+  "variants": [
+    {
+      "variant": "before",
+      "inputs": [
+        {
+          "path": "loom/third_party/nlohmann/nlohmann/json.hpp",
+          "bytes": 919975,
+          "sha256": "9bea4c8066ef4a1c206b2be5a36302f8926f7fdc6087af5d20b417d0cf103ea6",
+          "source": "git",
+          "commit": "fffa9fd557db97cae549d555959fedf3910d346c"
+        },
+        {
+          "path": "loom/src/onboarding/runtime_adapter.h",
+          "bytes": 419,
+          "sha256": "7c9f8441ad5dcf3014dc71a83622469c7a4ba4b35dfce69a3119c24550b7e916",
+          "source": "git",
+          "commit": "3c0bc36552ef9851f1174946cfb108549aae3228"
+        },
+        {
+          "path": "loom/include/loom/onboarding_layers.h",
+          "bytes": 1868,
+          "sha256": "263d3724731b79c2c7e4e0fa995ce50901e804a671a15c683af4bc0ea6451ea0",
+          "source": "git",
+          "commit": "3c0bc36552ef9851f1174946cfb108549aae3228"
+        },
+        {
+          "path": "loom/include/loom/util/json.h",
+          "bytes": 2551,
+          "sha256": "38aebe6cf03b613b75290cf8ac09fa57ecd87d730032fdebb8cc4fcf162ca8de",
+          "source": "git",
+          "commit": "fffa9fd557db97cae549d555959fedf3910d346c"
+        },
+        {
+          "path": "loom/include/loom/result.h",
+          "bytes": 5337,
+          "sha256": "a6f27a2b1c0de258d8452af3d25d16f23179825dfc07033521c3c1ace1643553",
+          "source": "git",
+          "commit": "fffa9fd557db97cae549d555959fedf3910d346c"
+        },
+        {
+          "path": "loom/src/onboarding/runtime_adapter.cpp",
+          "bytes": 3439,
+          "sha256": "790b865280b41b2405f65bbe37a4508f158a620df7aec73a399d53e25c661bcd",
+          "source": "git",
+          "commit": "3c0bc36552ef9851f1174946cfb108549aae3228"
+        },
+        {
+          "path": "loom/include/loom/runtime_profile.h",
+          "bytes": 2385,
+          "sha256": "f59642e1235b352d8782e4413680230bf2c08008b2d223f5f45f1135e0bd9060",
+          "source": "git",
+          "commit": "fffa9fd557db97cae549d555959fedf3910d346c"
+        },
+        {
+          "path": "loom/src/onboarding/layers.cpp",
+          "bytes": 14102,
+          "sha256": "066a1e41f960b69bc3440d97dfef41495907c6ef9964ba49d84b9cf3958f65b0",
+          "source": "git",
+          "commit": "3c0bc36552ef9851f1174946cfb108549aae3228"
+        },
+        {
+          "path": "loom/include/loom/util/sha256.h",
+          "bytes": 1746,
+          "sha256": "2723f226f5be04cb0fcca1e6ca0b63105b2c5b36178a6bf1701bee99031a127d",
+          "source": "git",
+          "commit": "fffa9fd557db97cae549d555959fedf3910d346c"
+        },
+        {
+          "path": "loom/src/util/result.cpp",
+          "bytes": 1359,
+          "sha256": "1488f760d6b3959bf15cb8b6425c593b066e227ebd9edeb8209df0e37b32e018",
+          "source": "git",
+          "commit": "fffa9fd557db97cae549d555959fedf3910d346c"
+        },
+        {
+          "path": "loom/src/util/unicode.cpp",
+          "bytes": 3274,
+          "sha256": "4780360568de8fae034cc070f27efa033eb5e991d77c6d8d3e1fda4070523165",
+          "source": "git",
+          "commit": "fffa9fd557db97cae549d555959fedf3910d346c"
+        },
+        {
+          "path": "loom/src/util/unicode_tables.inc",
+          "bytes": 80225,
+          "sha256": "aa19c84617ed20d2d3eaab5bfab834a88d4287d277ea8e7c3f0ea82ecfdea240",
+          "source": "git",
+          "commit": "fffa9fd557db97cae549d555959fedf3910d346c"
+        },
+        {
+          "path": "loom/include/loom/util/unicode.h",
+          "bytes": 1715,
+          "sha256": "a363672f385af55cd43fbdd1b80632dba0bf28d370b7392e26f65c3d74d724d0",
+          "source": "git",
+          "commit": "fffa9fd557db97cae549d555959fedf3910d346c"
+        },
+        {
+          "path": "loom/src/util/utf8.cpp",
+          "bytes": 7174,
+          "sha256": "91f6786cf4d759768074a26cbae5b150284a241840f0f3761c867616831f3902",
+          "source": "git",
+          "commit": "fffa9fd557db97cae549d555959fedf3910d346c"
+        },
+        {
+          "path": "loom/include/loom/util/utf8.h",
+          "bytes": 2142,
+          "sha256": "8b20f2da731065f9bd89aed76362e33ce53bc7abfad83fd5d4b4ef5c2907a196",
+          "source": "git",
+          "commit": "fffa9fd557db97cae549d555959fedf3910d346c"
+        },
+        {
+          "path": "loom/src/util/sha256.cpp",
+          "bytes": 7173,
+          "sha256": "c8d783c4ebaa9d46703a65dc228931fe2e355c2be9ac1fc26dad089f6f0b031c",
+          "source": "git",
+          "commit": "fffa9fd557db97cae549d555959fedf3910d346c"
+        },
+        {
+          "path": "loom/src/util/json.cpp",
+          "bytes": 8944,
+          "sha256": "49d882300afe82a764cca67b7a00f8dfd9c9ce5ed2318933312bdaafbeb9b89d",
+          "source": "git",
+          "commit": "fffa9fd557db97cae549d555959fedf3910d346c"
+        },
+        {
+          "path": "loom/src/util/random_ids_time.cpp",
+          "bytes": 4512,
+          "sha256": "8918765710c94b7d9e667ae2923dfb78b3eb13b3c3239405aadb18e1b9ee6586",
+          "source": "git",
+          "commit": "fffa9fd557db97cae549d555959fedf3910d346c"
+        },
+        {
+          "path": "loom/include/loom/util/time.h",
+          "bytes": 975,
+          "sha256": "51d2363cd0636810e4d73f0a718f8b245857e0c9e1cb4d6843276a270b71dece",
+          "source": "git",
+          "commit": "fffa9fd557db97cae549d555959fedf3910d346c"
+        },
+        {
+          "path": "loom/include/loom/util/random.h",
+          "bytes": 443,
+          "sha256": "a49774652aad58f9937a1ccd45bf598ae4a109f950711041f4a5ab29470b67d3",
+          "source": "git",
+          "commit": "fffa9fd557db97cae549d555959fedf3910d346c"
+        },
+        {
+          "path": "loom/include/loom/util/ids.h",
+          "bytes": 1343,
+          "sha256": "63162ffded704ad2b199f519e5ac9828c4a47281108dc3125379ee565a92c876",
+          "source": "git",
+          "commit": "fffa9fd557db97cae549d555959fedf3910d346c"
+        },
+        {
+          "path": "loom/src/util/log.cpp",
+          "bytes": 7261,
+          "sha256": "5c63aeb87b5bfcf626b1cc68904d47532a767c57d8f49c5ec845c0ba75f03dfc",
+          "source": "git",
+          "commit": "fffa9fd557db97cae549d555959fedf3910d346c"
+        },
+        {
+          "path": "loom/include/loom/log.h",
+          "bytes": 3965,
+          "sha256": "a098067534d2cbe558c1076fca4761300ff3eff137568a2ff0212aafbe30fa43",
+          "source": "git",
+          "commit": "fffa9fd557db97cae549d555959fedf3910d346c"
+        },
+        {
+          "path": "loom/src/util/fs.cpp",
+          "bytes": 6483,
+          "sha256": "3a0202d4a38159c4ce28c8c141d2f9a86bccab18e9879c36cc7ea551364594aa",
+          "source": "git",
+          "commit": "fffa9fd557db97cae549d555959fedf3910d346c"
+        },
+        {
+          "path": "loom/include/loom/util/fs.h",
+          "bytes": 2912,
+          "sha256": "117cc8d3cfba55fbfeff55f64a1696ee96c4da12aadb738989be4ca047503359",
+          "source": "git",
+          "commit": "fffa9fd557db97cae549d555959fedf3910d346c"
+        },
+        {
+          "path": "loom/src/model/runtime_profile.cpp",
+          "bytes": 17417,
+          "sha256": "8eb961d633996a115f499e9b8d9ac9eb6d8eba06657d865efb9a5cbf1aa16faa",
+          "source": "git",
+          "commit": "fffa9fd557db97cae549d555959fedf3910d346c"
+        },
+        {
+          "path": "loom/src/model/runtime_profiles_embedded.inc",
+          "bytes": 207937,
+          "sha256": "7067a324a22d86bdae342712d96757bd6a54c79a6ec5cac91872e1e3be8a671e",
+          "source": "git",
+          "commit": "fffa9fd557db97cae549d555959fedf3910d346c"
+        },
+        {
+          "path": "runner.cpp",
+          "bytes": 16533,
+          "sha256": "667bb72fbf1d196c5569b8d88e6a26d2ecdebfc646ef7274c7a2efbbcf5dc96b",
+          "source": "evidence_runner"
+        }
+      ],
+      "compile": {
+        "argv": [
+          "c++",
+          "-std=c++20",
+          "-O0",
+          "-g0",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-I/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/default-layers-runtime-mixed/actual-2026-10-05/before-inputs/loom/include",
+          "-isystem",
+          "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/default-layers-runtime-mixed/actual-2026-10-05/before-inputs/loom/third_party/nlohmann",
+          "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/default-layers-runtime-mixed/actual-2026-10-05/before-inputs/runner.cpp",
+          "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/default-layers-runtime-mixed/actual-2026-10-05/before-inputs/loom/src/model/runtime_profile.cpp",
+          "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/default-layers-runtime-mixed/actual-2026-10-05/before-inputs/loom/src/util/fs.cpp",
+          "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/default-layers-runtime-mixed/actual-2026-10-05/before-inputs/loom/src/util/log.cpp",
+          "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/default-layers-runtime-mixed/actual-2026-10-05/before-inputs/loom/src/util/random_ids_time.cpp",
+          "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/default-layers-runtime-mixed/actual-2026-10-05/before-inputs/loom/src/util/json.cpp",
+          "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/default-layers-runtime-mixed/actual-2026-10-05/before-inputs/loom/src/util/sha256.cpp",
+          "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/default-layers-runtime-mixed/actual-2026-10-05/before-inputs/loom/src/util/utf8.cpp",
+          "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/default-layers-runtime-mixed/actual-2026-10-05/before-inputs/loom/src/util/unicode.cpp",
+          "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/default-layers-runtime-mixed/actual-2026-10-05/before-inputs/loom/src/util/result.cpp",
+          "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/default-layers-runtime-mixed/actual-2026-10-05/before-inputs/loom/src/onboarding/layers.cpp",
+          "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/default-layers-runtime-mixed/actual-2026-10-05/before-inputs/loom/src/onboarding/runtime_adapter.cpp",
+          "-pthread",
+          "-o",
+          "/tmp/w11-runtime-layers-q21x3r3j/before-runner"
+        ],
+        "cwd": "/workspace/scratch/72fc60ad1cc5/chatadhd",
+        "exit": 0,
+        "combined_output": {
+          "file": "before.compile.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      "binary_sha256": "ef0bdf1d24da4261af9a391ff906c4963b5857a7c2da59c58ab01ade0a641236",
+      "binary_included": false,
+      "run": {
+        "argv": [
+          "/tmp/w11-runtime-layers-q21x3r3j/before-runner",
+          "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/default-layers-runtime-mixed/actual-2026-10-05/fixture.json"
+        ],
+        "exit": 0,
+        "stdout": {
+          "file": "before.json",
+          "bytes": 302607,
+          "sha256": "b2b413cc5365a9740f3b78a20270aeda2cf255b96e24339ba4da035a4174f048"
+        },
+        "stderr": {
+          "file": "before.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "variant": "after",
+      "inputs": [
+        {
+          "path": "loom/third_party/nlohmann/nlohmann/json.hpp",
+          "bytes": 919975,
+          "sha256": "9bea4c8066ef4a1c206b2be5a36302f8926f7fdc6087af5d20b417d0cf103ea6",
+          "source": "working_tree",
+          "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+        },
+        {
+          "path": "loom/src/onboarding/runtime_adapter.h",
+          "bytes": 419,
+          "sha256": "7c9f8441ad5dcf3014dc71a83622469c7a4ba4b35dfce69a3119c24550b7e916",
+          "source": "git",
+          "commit": "3c0bc36552ef9851f1174946cfb108549aae3228"
+        },
+        {
+          "path": "loom/include/loom/onboarding_layers.h",
+          "bytes": 1868,
+          "sha256": "263d3724731b79c2c7e4e0fa995ce50901e804a671a15c683af4bc0ea6451ea0",
+          "source": "git",
+          "commit": "3c0bc36552ef9851f1174946cfb108549aae3228"
+        },
+        {
+          "path": "loom/include/loom/util/json.h",
+          "bytes": 2551,
+          "sha256": "38aebe6cf03b613b75290cf8ac09fa57ecd87d730032fdebb8cc4fcf162ca8de",
+          "source": "working_tree",
+          "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+        },
+        {
+          "path": "loom/include/loom/result.h",
+          "bytes": 5337,
+          "sha256": "a6f27a2b1c0de258d8452af3d25d16f23179825dfc07033521c3c1ace1643553",
+          "source": "working_tree",
+          "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+        },
+        {
+          "path": "loom/src/onboarding/runtime_adapter.cpp",
+          "bytes": 3439,
+          "sha256": "790b865280b41b2405f65bbe37a4508f158a620df7aec73a399d53e25c661bcd",
+          "source": "git",
+          "commit": "3c0bc36552ef9851f1174946cfb108549aae3228"
+        },
+        {
+          "path": "loom/include/loom/runtime_profile.h",
+          "bytes": 2799,
+          "sha256": "ce3faf9179dc4bf8ca18d00f43a0bd93df038a5c6908589a136c7407d5fbb88d",
+          "source": "working_tree",
+          "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+        },
+        {
+          "path": "loom/src/onboarding/layers.cpp",
+          "bytes": 14102,
+          "sha256": "066a1e41f960b69bc3440d97dfef41495907c6ef9964ba49d84b9cf3958f65b0",
+          "source": "git",
+          "commit": "3c0bc36552ef9851f1174946cfb108549aae3228"
+        },
+        {
+          "path": "loom/include/loom/util/sha256.h",
+          "bytes": 1746,
+          "sha256": "2723f226f5be04cb0fcca1e6ca0b63105b2c5b36178a6bf1701bee99031a127d",
+          "source": "working_tree",
+          "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+        },
+        {
+          "path": "loom/src/util/result.cpp",
+          "bytes": 1359,
+          "sha256": "1488f760d6b3959bf15cb8b6425c593b066e227ebd9edeb8209df0e37b32e018",
+          "source": "working_tree",
+          "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+        },
+        {
+          "path": "loom/src/util/unicode.cpp",
+          "bytes": 3274,
+          "sha256": "4780360568de8fae034cc070f27efa033eb5e991d77c6d8d3e1fda4070523165",
+          "source": "working_tree",
+          "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+        },
+        {
+          "path": "loom/src/util/unicode_tables.inc",
+          "bytes": 80225,
+          "sha256": "aa19c84617ed20d2d3eaab5bfab834a88d4287d277ea8e7c3f0ea82ecfdea240",
+          "source": "working_tree",
+          "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+        },
+        {
+          "path": "loom/include/loom/util/unicode.h",
+          "bytes": 1715,
+          "sha256": "a363672f385af55cd43fbdd1b80632dba0bf28d370b7392e26f65c3d74d724d0",
+          "source": "working_tree",
+          "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+        },
+        {
+          "path": "loom/src/util/utf8.cpp",
+          "bytes": 7174,
+          "sha256": "91f6786cf4d759768074a26cbae5b150284a241840f0f3761c867616831f3902",
+          "source": "working_tree",
+          "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+        },
+        {
+          "path": "loom/include/loom/util/utf8.h",
+          "bytes": 2142,
+          "sha256": "8b20f2da731065f9bd89aed76362e33ce53bc7abfad83fd5d4b4ef5c2907a196",
+          "source": "working_tree",
+          "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+        },
+        {
+          "path": "loom/src/util/sha256.cpp",
+          "bytes": 7173,
+          "sha256": "c8d783c4ebaa9d46703a65dc228931fe2e355c2be9ac1fc26dad089f6f0b031c",
+          "source": "working_tree",
+          "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+        },
+        {
+          "path": "loom/src/util/json.cpp",
+          "bytes": 8944,
+          "sha256": "49d882300afe82a764cca67b7a00f8dfd9c9ce5ed2318933312bdaafbeb9b89d",
+          "source": "working_tree",
+          "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+        },
+        {
+          "path": "loom/src/util/random_ids_time.cpp",
+          "bytes": 4512,
+          "sha256": "8918765710c94b7d9e667ae2923dfb78b3eb13b3c3239405aadb18e1b9ee6586",
+          "source": "working_tree",
+          "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+        },
+        {
+          "path": "loom/include/loom/util/time.h",
+          "bytes": 975,
+          "sha256": "51d2363cd0636810e4d73f0a718f8b245857e0c9e1cb4d6843276a270b71dece",
+          "source": "working_tree",
+          "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+        },
+        {
+          "path": "loom/include/loom/util/random.h",
+          "bytes": 443,
+          "sha256": "a49774652aad58f9937a1ccd45bf598ae4a109f950711041f4a5ab29470b67d3",
+          "source": "working_tree",
+          "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+        },
+        {
+          "path": "loom/include/loom/util/ids.h",
+          "bytes": 1343,
+          "sha256": "63162ffded704ad2b199f519e5ac9828c4a47281108dc3125379ee565a92c876",
+          "source": "working_tree",
+          "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+        },
+        {
+          "path": "loom/src/util/log.cpp",
+          "bytes": 7261,
+          "sha256": "5c63aeb87b5bfcf626b1cc68904d47532a767c57d8f49c5ec845c0ba75f03dfc",
+          "source": "working_tree",
+          "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+        },
+        {
+          "path": "loom/include/loom/log.h",
+          "bytes": 3965,
+          "sha256": "a098067534d2cbe558c1076fca4761300ff3eff137568a2ff0212aafbe30fa43",
+          "source": "working_tree",
+          "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+        },
+        {
+          "path": "loom/src/util/fs.cpp",
+          "bytes": 6483,
+          "sha256": "3a0202d4a38159c4ce28c8c141d2f9a86bccab18e9879c36cc7ea551364594aa",
+          "source": "working_tree",
+          "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+        },
+        {
+          "path": "loom/include/loom/util/fs.h",
+          "bytes": 2912,
+          "sha256": "117cc8d3cfba55fbfeff55f64a1696ee96c4da12aadb738989be4ca047503359",
+          "source": "working_tree",
+          "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+        },
+        {
+          "path": "loom/src/model/runtime_profile.cpp",
+          "bytes": 17898,
+          "sha256": "0aab7afb23b413fdc62e6cd51b852a5596b0e8fb7b029bd95583f71e8ee6cc93",
+          "source": "working_tree",
+          "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+        },
+        {
+          "path": "loom/src/model/runtime_profiles_embedded.inc",
+          "bytes": 245926,
+          "sha256": "45670e3f6cadc150cc0483bd5870d685f55f785c06f60cf0ebf14b820e645e3f",
+          "source": "working_tree",
+          "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+        },
+        {
+          "path": "runner.cpp",
+          "bytes": 16533,
+          "sha256": "667bb72fbf1d196c5569b8d88e6a26d2ecdebfc646ef7274c7a2efbbcf5dc96b",
+          "source": "evidence_runner"
+        }
+      ],
+      "compile": {
+        "argv": [
+          "c++",
+          "-std=c++20",
+          "-O0",
+          "-g0",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-I/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/default-layers-runtime-mixed/actual-2026-10-05/after-inputs/loom/include",
+          "-isystem",
+          "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/default-layers-runtime-mixed/actual-2026-10-05/after-inputs/loom/third_party/nlohmann",
+          "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/default-layers-runtime-mixed/actual-2026-10-05/after-inputs/runner.cpp",
+          "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/default-layers-runtime-mixed/actual-2026-10-05/after-inputs/loom/src/model/runtime_profile.cpp",
+          "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/default-layers-runtime-mixed/actual-2026-10-05/after-inputs/loom/src/util/fs.cpp",
+          "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/default-layers-runtime-mixed/actual-2026-10-05/after-inputs/loom/src/util/log.cpp",
+          "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/default-layers-runtime-mixed/actual-2026-10-05/after-inputs/loom/src/util/random_ids_time.cpp",
+          "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/default-layers-runtime-mixed/actual-2026-10-05/after-inputs/loom/src/util/json.cpp",
+          "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/default-layers-runtime-mixed/actual-2026-10-05/after-inputs/loom/src/util/sha256.cpp",
+          "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/default-layers-runtime-mixed/actual-2026-10-05/after-inputs/loom/src/util/utf8.cpp",
+          "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/default-layers-runtime-mixed/actual-2026-10-05/after-inputs/loom/src/util/unicode.cpp",
+          "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/default-layers-runtime-mixed/actual-2026-10-05/after-inputs/loom/src/util/result.cpp",
+          "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/default-layers-runtime-mixed/actual-2026-10-05/after-inputs/loom/src/onboarding/layers.cpp",
+          "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/default-layers-runtime-mixed/actual-2026-10-05/after-inputs/loom/src/onboarding/runtime_adapter.cpp",
+          "-pthread",
+          "-o",
+          "/tmp/w11-runtime-layers-q21x3r3j/after-runner"
+        ],
+        "cwd": "/workspace/scratch/72fc60ad1cc5/chatadhd",
+        "exit": 0,
+        "combined_output": {
+          "file": "after.compile.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      "binary_sha256": "0e8fd9492f2ac353f439472f22fcf6f082efb1f62cc3dfb34ec38e0504aef690",
+      "binary_included": false,
+      "run": {
+        "argv": [
+          "/tmp/w11-runtime-layers-q21x3r3j/after-runner",
+          "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/default-layers-runtime-mixed/actual-2026-10-05/fixture.json"
+        ],
+        "exit": 0,
+        "stdout": {
+          "file": "after.json",
+          "bytes": 350558,
+          "sha256": "396ec3a04d6f943eabaacdff8e57b257064f79c0afd06aa676b404aa3301505d"
+        },
+        "stderr": {
+          "file": "after.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    }
+  ],
+  "summary": {
+    "before_domains": 19,
+    "after_domains": 22,
+    "shared_identical_domains": 19,
+    "added_domains": [
+      "import",
+      "import_audit",
+      "import_formats"
+    ],
+    "before_binding_groups": 162,
+    "after_binding_groups": 179,
+    "before_assertions": 1828,
+    "after_assertions": 2148,
+    "source_provenance_records_verified": 23
+  },
+  "shared_domain_parity": [
+    {
+      "domain": "archive",
+      "default_hash": "8fb7382d110f09a91ace1818c584d425c989ee712224bb808677c50d4d266218",
+      "definition_sha256": "e912b58c1ed002b4ef9b059a699a796cc05fbc876899aac16ad3365ad6dfd6f9",
+      "defaults_sha256": "fe90fd305d1f1f698fee1c1dc5a8c96240daa95ce1b056b11dff1b29f0003894",
+      "identical": true
+    },
+    {
+      "domain": "cli",
+      "default_hash": "704d2f6c3b3af216f9ed45aea4eaf743e4ce209175b54df245991b7ad84d2a36",
+      "definition_sha256": "07feeec9b1773d843221fa0f115fa36fcf6c8c1813be8c3c2d2257986a022552",
+      "defaults_sha256": "2a2f4b6280c1b9ef1e03669f62a454019b4dfcd34f6a20c0d266dfc479a9ff29",
+      "identical": true
+    },
+    {
+      "domain": "config",
+      "default_hash": "97ac032c7d306b0379f96ec24fb0ea0302992f0618b19e0ee6c932d616198f39",
+      "definition_sha256": "d935f20730c6d4853c7a72d3527a99a3c23c6012f938b056cd623a12ef8994f5",
+      "defaults_sha256": "15e12eb6430c2dbbdcc37b3ab7bcff5bf63eb9562ce65774dd8352839342b132",
+      "identical": true
+    },
+    {
+      "domain": "github",
+      "default_hash": "16953b27153147db2e53646ecff418a801142d423a5f37f33bae38059f2f618c",
+      "definition_sha256": "2a6d362eb084b0626cd0f7bd6237eff7797e5c8d46c2ddcc1469855ce6369579",
+      "defaults_sha256": "80fc1014b94fd0977722e9d03a664298ceace4a01c56b4d4e936c5ac4ae002cd",
+      "identical": true
+    },
+    {
+      "domain": "graph_ingest",
+      "default_hash": "74c1008cc61d4b60363a54253dddc78252167c8613926794e7b79f5beed90312",
+      "definition_sha256": "2b60d404460575cd95b5737eadfa43e26e4413b8e2f1803cce892b8cd469e002",
+      "defaults_sha256": "1c56da98f3a612b8797117fce9149548156aa1bd9344ac9a99c606266ebbf6ff",
+      "identical": true
+    },
+    {
+      "domain": "graph_memory",
+      "default_hash": "b847a9a4a25efd7cc40a61f697f45a394c944558e35f24540c8be624272a78e4",
+      "definition_sha256": "768f1e63c43b90935121b9ece5fa700616cf48f38923b29879caea31b6334ca4",
+      "defaults_sha256": "5850986aee003a577a8e6319013c8cd52a04a908fdf5e03b15be05b656eb95c2",
+      "identical": true
+    },
+    {
+      "domain": "knowledge",
+      "default_hash": "0234ebcd1d5db32af811a30b232ef1aaecb2eaddd6d367a510ad1045da330bdc",
+      "definition_sha256": "c34d23936debc2d5543b9681021230743babab98ebf109fafb19111503204e7c",
+      "defaults_sha256": "a6d13d01d139956210bbc53f2cac0d9b791cb0dd5b4a415c2c58a33bd8d5082f",
+      "identical": true
+    },
+    {
+      "domain": "materialize",
+      "default_hash": "e161d5685807de88f7b11e4cb97c99b5f985c783c2a27c5ace722c4cac2cf833",
+      "definition_sha256": "1cc8c640157dd6bc6ef7a343da597c2fa95cdf00943a6511a4aaf5009fa42f8c",
+      "defaults_sha256": "efb78b96c3677c0f52b0eb9dfaaf3fb31c189cfb074f45571d34a9238ef73702",
+      "identical": true
+    },
+    {
+      "domain": "media",
+      "default_hash": "f38ff951f3b3605d15ba1f968a4dcbd29fd691a5921f36982d4d2e18642d9b0a",
+      "definition_sha256": "5f315994e4198fcb814898720cc1b2d894d15d6d9c180cf9c769eba913015f6e",
+      "defaults_sha256": "6c80c3551a32510e1e29e56535300debc76d4deed1de77587a5767408a12646d",
+      "identical": true
+    },
+    {
+      "domain": "memory",
+      "default_hash": "54156b9d8a105adb9cfd5c20bda4c7a0fe689998d9ecfdc76e77ff8fc6c2cf31",
+      "definition_sha256": "dcc7d64c356c340fe93693f64162140ad7a552644a57a8a90236549cb59c48dc",
+      "defaults_sha256": "aaebd8bfc3e7af744f7176fe8ff996b5e37a8772f360de6bb353f524084e24dc",
+      "identical": true
+    },
+    {
+      "domain": "model",
+      "default_hash": "e7aed4ac787436868744bf8adfd38e5105bfdb76a0b7628eab2239f8a06344cf",
+      "definition_sha256": "b6d9fc60cf8fc1feea00c88176b5950c3384c8c5bc97e82da9f7c1752b8dfab2",
+      "defaults_sha256": "d170d5d11ccadf3b73c7c491c1531739656cf095e7b06024d0e7782674b894b5",
+      "identical": true
+    },
+    {
+      "domain": "net",
+      "default_hash": "af35eeae915e1ee46030e1b10fa2cc37ba16b38665b5ad48e06dd6e8ed4e6346",
+      "definition_sha256": "64ac2d8323bdcfe7712aaec90c1049553ef5c62bb8484611ceb54e1c846a9e26",
+      "defaults_sha256": "0000638615683796f437aa0428d05ddfdaf26a0ab4663ef0cec98d924e84f28b",
+      "identical": true
+    },
+    {
+      "domain": "re",
+      "default_hash": "a9adf46210307fd4f84f2c7bfd8bdc514d51b5fbcc8a730ec1bea0f9af9f0310",
+      "definition_sha256": "a19485701ac5552df02baf3834088a5a8445e4caf6bd569fb5364064f632a50f",
+      "defaults_sha256": "17c63e562a533b3b107a22cf4868acd8ad61f83a3c859edd6224d6a8fb356fcb",
+      "identical": true
+    },
+    {
+      "domain": "runtime_paths",
+      "default_hash": "d85ac4481c7e7cd6df189ee89468cbe3f6fcd5304709681daef69409ae7c09be",
+      "definition_sha256": "264c15b7829cd6b6dbd04e083f4e9a29ebdd7e51089b6a20586795f3dd21d2f5",
+      "defaults_sha256": "3da638a27fd3cdbf461f499cf1e64e7708b6321d43cad8740f413fbf8c41f151",
+      "identical": true
+    },
+    {
+      "domain": "selector",
+      "default_hash": "790f21194bd34852095026d1ceeab4adb5778b6c4a649e33bf73c517e6a052f8",
+      "definition_sha256": "324ed5ffdbcb6ca9f86fd7bf08639d7187af1be5331458e7014634e345eb773d",
+      "defaults_sha256": "641660be2a69cf1ec4fd233e17c27f345756e6a88d19aef4c7811a2404376788",
+      "identical": true
+    },
+    {
+      "domain": "semantic_analyzer",
+      "default_hash": "d0d5a3d54f555b6f24e71236d38ba9a4157d23a53c422fcd104170a16d1bb847",
+      "definition_sha256": "e9e594dc612eef112dfcd2d06882ebfd6877de784d78b3df01e6b65a213cf8c0",
+      "defaults_sha256": "c9bbbf185f3af8e6b101547ca950815f92e17c6efccc3b053ea8e72bdde40783",
+      "identical": true
+    },
+    {
+      "domain": "usage_policy",
+      "default_hash": "e8b8d4e5b098213a421b88b1f11db949a8a6056838a2f8c9487303913da5a8bd",
+      "definition_sha256": "9951498427b62a50d9c911219a07b9f86d8e96dc871fb746b28a1b87273afc44",
+      "defaults_sha256": "a8adbf007ded2ce699fb6673a9be1922edf4eb75222359df0fd7463f6de5096f",
+      "identical": true
+    },
+    {
+      "domain": "util",
+      "default_hash": "d0490d4178f708d22864fd9eb9b1d47b446a6d2c8bee923e7c8207684770c5ea",
+      "definition_sha256": "51a138e13428b5412daa31762f6ee434dd8cb6a1ffe75a288708ec55dfb1dbe0",
+      "defaults_sha256": "1953ed911714ea7d063a4b4d7a9b75ffc6233cfadffea43e910e613915bcacf5",
+      "identical": true
+    },
+    {
+      "domain": "worker",
+      "default_hash": "cff72fbb795d0d7cf546d5ad4148efcdbe1e8d0b6646a96c5390eefe873f1f01",
+      "definition_sha256": "bfdf0138a72d706a3fc29efdb4d36b064e363fcb79e9fcf73978dc007b3ec340",
+      "defaults_sha256": "4dfcd0af278a998f32969a6ce4224220ded1682c6fabd8c3a1c3a411cc5fc970",
+      "identical": true
+    }
+  ],
+  "verified_source_provenance": [
+    {
+      "domain": "archive",
+      "path": "loom/data/runtime/archive.pack",
+      "pointer": "",
+      "raw_sha256": "c1d34a47b5f6a5a57bf2d969338bccf7a0065e45df268d896de6e85f49489c67",
+      "target": "",
+      "verified": true
+    },
+    {
+      "domain": "cli",
+      "path": "loom/data/runtime/cli.pack",
+      "pointer": "",
+      "raw_sha256": "56998afe641e43c8950c4520aef423bf8916e51aa2974f1a9b46a91ed5015a2b",
+      "target": "",
+      "verified": true
+    },
+    {
+      "domain": "config",
+      "path": "loom/data/runtime/config.pack",
+      "pointer": "",
+      "raw_sha256": "6f7c11c5ad857e3e3936df7667fcc0c673ddf2e2f652ae5aef8c3d3f4d1c20cd",
+      "target": "",
+      "verified": true
+    },
+    {
+      "domain": "github",
+      "path": "loom/data/runtime/github.pack",
+      "pointer": "",
+      "raw_sha256": "2f2d72f6fe94f57ebe11ab90883a530266188180bd803cc72a7697f336a108f3",
+      "target": "",
+      "verified": true
+    },
+    {
+      "domain": "graph_ingest",
+      "path": "loom/data/runtime/graph_ingest.pack",
+      "pointer": "",
+      "raw_sha256": "3860f807fb21dc150a09660d0d6ad452d0cd066e970462b2f4530a1a3c60e987",
+      "target": "",
+      "verified": true
+    },
+    {
+      "domain": "graph_memory",
+      "path": "loom/data/runtime/graph_memory.pack",
+      "pointer": "",
+      "raw_sha256": "4224741a5014c5454ef0c24d36304d172fc74fe468afd4f0b0b1f541ca143a23",
+      "target": "",
+      "verified": true
+    },
+    {
+      "domain": "import",
+      "path": "loom/data/runtime/import.pack",
+      "pointer": "",
+      "raw_sha256": "0640988c7d9ff76afa9d64481280b939a1f93cc47a9b0235675446db90771af3",
+      "target": "",
+      "verified": true
+    },
+    {
+      "domain": "import_audit",
+      "path": "loom/data/runtime/import_audit.pack",
+      "pointer": "",
+      "raw_sha256": "7e3abefa4c8dff5e0d696b24c1a4c65b89003a146ce708d2e9148f97fc912c26",
+      "target": "",
+      "verified": true
+    },
+    {
+      "domain": "import_formats",
+      "path": "loom/data/runtime/import_formats.pack",
+      "pointer": "",
+      "raw_sha256": "294ebc7ce789c079662ec322d4517935f57270296841dc3737e625164de5d8c3",
+      "target": "",
+      "verified": true
+    },
+    {
+      "domain": "knowledge",
+      "path": "loom/data/runtime/knowledge.pack",
+      "pointer": "",
+      "raw_sha256": "ce1516d9fde3aa2bb0145bb9c6c1261e3422628a898cce5273f185e558f912e7",
+      "target": "",
+      "verified": true
+    },
+    {
+      "domain": "materialize",
+      "path": "loom/data/runtime/materialize.pack",
+      "pointer": "",
+      "raw_sha256": "4dbb1e4d99a6f2332b45cbb243361cb831bd021e6a744071b3cff8732012a8f3",
+      "target": "",
+      "verified": true
+    },
+    {
+      "domain": "media",
+      "path": "loom/data/runtime/media.pack",
+      "pointer": "",
+      "raw_sha256": "f70e9c6fef0507a731da6074e764e115cf4cb84e3a81690d95258b06395ea0af",
+      "target": "",
+      "verified": true
+    },
+    {
+      "domain": "memory",
+      "path": "loom/data/runtime/memory.pack",
+      "pointer": "",
+      "raw_sha256": "a45496645536944f1f0b5069a4d143693878fa0cdb21c4e2440408058beeaf89",
+      "target": "",
+      "verified": true
+    },
+    {
+      "domain": "model",
+      "path": "loom/data/runtime/model.pack",
+      "pointer": "",
+      "raw_sha256": "051e961438dc6c5723860492c4ea03c352c1a880caf6bfdeb30835e26612311b",
+      "target": "",
+      "verified": true
+    },
+    {
+      "domain": "net",
+      "path": "loom/data/runtime/net.pack",
+      "pointer": "",
+      "raw_sha256": "cf27f54845174d961a05ca40aae5c54f9e2ca5f0387b6a06fb7ec4a424083389",
+      "target": "",
+      "verified": true
+    },
+    {
+      "domain": "re",
+      "path": "loom/data/runtime/re.pack",
+      "pointer": "",
+      "raw_sha256": "ed6152fd54a830cf20b831e9bb471bf9e52daf89a33c9a23a4d206bd427df508",
+      "target": "",
+      "verified": true
+    },
+    {
+      "domain": "runtime_paths",
+      "path": "loom/data/runtime/runtime_paths.pack",
+      "pointer": "",
+      "raw_sha256": "b796635d5661d960212045a8981c16b66e5e74e6c688e0eb5cdbc90faf2f3f22",
+      "target": "",
+      "verified": true
+    },
+    {
+      "domain": "selector",
+      "path": "loom/data/runtime/selector.pack",
+      "pointer": "",
+      "raw_sha256": "f0894d5359db0d7ee4b94a2e27b3d25381253696744f5d9254af5a094c9ebae2",
+      "target": "",
+      "verified": true
+    },
+    {
+      "domain": "semantic_analyzer",
+      "path": "loom/data/runtime/semantic_analyzer.pack",
+      "pointer": "",
+      "raw_sha256": "e1855a8646b51903d1b33da6a138773c233f163a5da8b501273f0aa003b08fcb",
+      "target": "",
+      "verified": true
+    },
+    {
+      "domain": "usage_policy",
+      "path": "loom/data/runtime_sources.pack",
+      "pointer": "/recipes/0/definition",
+      "raw_sha256": "781279229d42b12141dd19bdb6fe55de5142657a1c870e7517dc997964a42099",
+      "target": "",
+      "verified": true
+    },
+    {
+      "domain": "usage_policy",
+      "path": "loom/data/policy/usage_policy.pack",
+      "pointer": "",
+      "raw_sha256": "6a576acf69ccc3be7af2b8ccde641977bdb76b8b52e2c76e77895609d76e20df",
+      "target": "/defaults",
+      "verified": true
+    },
+    {
+      "domain": "util",
+      "path": "loom/data/runtime/util.pack",
+      "pointer": "",
+      "raw_sha256": "b1b11b72251aa5afa0b90c128e7fc5d6571cde81d964da2e8aa3a2aa0600181f",
+      "target": "",
+      "verified": true
+    },
+    {
+      "domain": "worker",
+      "path": "loom/data/runtime/worker.pack",
+      "pointer": "",
+      "raw_sha256": "569b54b601dcf8c64e97bddab8e6d99a6239bb831372fc31a9ea9a7bbbd12c8f",
+      "target": "",
+      "verified": true
+    }
+  ]
+}

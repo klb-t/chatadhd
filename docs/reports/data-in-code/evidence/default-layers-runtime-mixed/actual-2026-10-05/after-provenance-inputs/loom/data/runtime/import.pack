@@ -1,0 +1,181 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "import",
+  "revision": 1,
+  "description": "UNWIRED: exact W5 ImportOptions library defaults plus the two current CLI overrides, captured from 4e8c3de. RuntimeProfile inspection/overrides only; native import/CLI does not consume this domain. Callbacks, cancellation, source/hash/CAS and parser identities remain native operations.",
+  "defaults": {
+    "library": {
+      "record_provenance": true,
+      "stream_threshold_bytes": 5000000,
+      "force": false,
+      "resume": false,
+      "include_result_metadata": true,
+      "json_read_chunk_bytes": 65536,
+      "json_max_depth": 512,
+      "json_inline_threshold_bytes": 1000000,
+      "generic_inference_max_bytes": 64000000,
+      "title": null,
+      "expected_source_hash": null,
+      "expected_source_bytes": null,
+      "export_mode": "auto"
+    },
+    "cli_overrides": {
+      "resume": true,
+      "include_result_metadata": false
+    }
+  },
+  "value_schema": {
+    "x-setting": "",
+    "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+    "type": "object",
+    "required": [
+      "library",
+      "cli_overrides"
+    ],
+    "properties": {
+      "library": {
+        "x-setting": "/library",
+        "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+        "type": "object",
+        "required": [
+          "record_provenance",
+          "stream_threshold_bytes",
+          "force",
+          "resume",
+          "include_result_metadata",
+          "json_read_chunk_bytes",
+          "json_max_depth",
+          "json_inline_threshold_bytes",
+          "generic_inference_max_bytes",
+          "title",
+          "expected_source_hash",
+          "expected_source_bytes",
+          "export_mode"
+        ],
+        "properties": {
+          "record_provenance": {
+            "x-setting": "/library/record_provenance",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "boolean"
+          },
+          "stream_threshold_bytes": {
+            "x-setting": "/library/stream_threshold_bytes",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "integer",
+            "minimum": -9223372036854775808,
+            "maximum": 9223372036854775807,
+            "x-unit": "bytes",
+            "description": "Signed int64 native representation. CLI nonnegative parsing remains its own input contract; no additional policy ceiling."
+          },
+          "force": {
+            "x-setting": "/library/force",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "boolean"
+          },
+          "resume": {
+            "x-setting": "/library/resume",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "boolean"
+          },
+          "include_result_metadata": {
+            "x-setting": "/library/include_result_metadata",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "boolean"
+          },
+          "json_read_chunk_bytes": {
+            "x-setting": "/library/json_read_chunk_bytes",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9223372036854775807,
+            "x-unit": "bytes",
+            "description": "Positive and representable streamsize is already required by W5 Loader. This is a reader validity condition, not an archive size ceiling."
+          },
+          "json_max_depth": {
+            "x-setting": "/library/json_max_depth",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 18446744073709551615,
+            "x-unit": "levels",
+            "description": "Native size_t representation; zero means unlimited. The value 512 is the current ImportOptions caller preset, not a universal limit."
+          },
+          "json_inline_threshold_bytes": {
+            "x-setting": "/library/json_inline_threshold_bytes",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "integer",
+            "minimum": -9223372036854775808,
+            "maximum": 9223372036854775807,
+            "x-unit": "bytes",
+            "description": "Signed int64 native representation. CLI nonnegative parsing remains its own input contract; no additional policy ceiling."
+          },
+          "generic_inference_max_bytes": {
+            "x-setting": "/library/generic_inference_max_bytes",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "integer",
+            "minimum": -9223372036854775808,
+            "maximum": 9223372036854775807,
+            "x-unit": "bytes",
+            "description": "Signed int64 native representation. CLI nonnegative parsing remains its own input contract; no additional policy ceiling. Zero means unlimited."
+          },
+          "title": {
+            "x-setting": "/library/title",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "expected_source_hash": {
+            "x-setting": "/library/expected_source_hash",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "expected_source_bytes": {
+            "x-setting": "/library/expected_source_bytes",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 9223372036854775807,
+            "x-unit": "bytes",
+            "description": "Optional admitted outer source byte identity; native compare/hash/CAS checks remain engine invariants."
+          },
+          "export_mode": {
+            "x-setting": "/library/export_mode",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "string",
+            "description": "Current codec accepts auto/off/on. This open string schema does not add mode support; W5 must capability-check the resolved value."
+          }
+        },
+        "additionalProperties": true
+      },
+      "cli_overrides": {
+        "x-setting": "/cli_overrides",
+        "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+        "type": "object",
+        "properties": {
+          "resume": {
+            "x-setting": "/cli_overrides/resume",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "boolean"
+          },
+          "include_result_metadata": {
+            "x-setting": "/cli_overrides/include_result_metadata",
+            "x-consumer": "W5 import engine/CLI; UNWIRED data contract only",
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": true,
+        "description": "Only the current two CLI differences from the library layer. Resolve library then these optional keys, then explicit per-call flags."
+      }
+    },
+    "additionalProperties": true,
+    "description": "UNWIRED: exact W5 ImportOptions library defaults plus the two current CLI overrides, captured from 4e8c3de. RuntimeProfile inspection/overrides only; native import/CLI does not consume this domain. Callbacks, cancellation, source/hash/CAS and parser identities remain native operations."
+  }
+}
