@@ -85,12 +85,63 @@ Json confirm_presentation_preference(OnboardingStore& store, Json state) {
 }  // namespace
 
 TEST_SUITE("onboarding native presentation isolation") {
+  TEST_CASE("answer and review remain operational with disabled or excluded presentation across restart") {
+    for (const char* op : {"disable", "exclude"}) {
+      INFO(op);
+      fsutil::TempDir temp;
+      const auto path = temp.path() / "presentation-answer-review.db";
+      auto db = open_db(path, presentation_db_options());
+      OnboardingStore store(*db);
+      auto state = confirm_presentation_preference(store, unwrap(store.open(kPresentationUser)));
+      state = presentation_apply(store, state, Json{{"target", "layers"}, {"op", op}, {"key", kPresentationKey}});
+      const auto status = std::string(op) == "disable" ? "disabled" : "excluded";
+      const auto original_field = state.at("profile").at("fields").at("communication.style");
+      const auto settings = state.at("profile").at("settings");
+      const auto privacy = state.at("profile").at("privacy");
+      const auto candidate = std::string("synthetic/presentation-suppressed-style/") + op;
+      const Json value = std::string("Synthetic new confirmed style while presentation is ") + status;
+      state = presentation_apply(store, state, Json{{"op", "answer"}, {"id", candidate},
+          {"field", "communication.style"}, {"value", value}, {"provenance", "form"},
+          {"time", "2000-01-01T00:00:00Z"}, {"source_refs", Json::array({"synthetic/suppressed-form"})}});
+      CHECK(state.at("profile").at("candidates").at(candidate).at("review") == "pending");
+      CHECK(state.at("profile").at("fields").at("communication.style") == original_field);
+      CHECK(presentation_resolution(state, "preference.style").at("value") == original_field.at("value"));
+      state = presentation_apply(store, state, Json{{"op", "review"}, {"id", "confirm/" + candidate},
+          {"candidate", candidate}, {"decision", "confirmed"}, {"time", "2000-01-01T00:00:00Z"},
+          {"source_refs", Json::array({"synthetic/suppressed-form"})}});
+      const auto confirmed = state.at("profile").at("fields").at("communication.style");
+      CHECK(confirmed.at("status") == "known");
+      CHECK(confirmed.at("review") == "confirmed");
+      CHECK(confirmed.at("provenance") == "form");
+      CHECK(confirmed.at("value") == value);
+      CHECK(state.at("profile").at("candidates").at(candidate).at("review") == "confirmed");
+      CHECK(presentation_resolution(state, "preference.style").at("layer") == "user");
+      CHECK(presentation_resolution(state, "preference.style").at("value") == value);
+      CHECK(state.at("presentation").at("available") == false);
+      CHECK(state.at("presentation").at("status") == status);
+      CHECK_FALSE(state.at("presentation").contains("value"));
+      CHECK(state.at("profile").at("settings") == settings);
+      CHECK(state.at("profile").at("privacy") == privacy);
+      CHECK(unwrap(store.policy_decision(kPresentationUser, privacy_request("store"))).at("allowed") == true);
+      const auto raw = presentation_body(*db);
+      db.reset();
+      auto restarted_db = open_db(path, presentation_db_options());
+      OnboardingStore restarted(*restarted_db);
+      const auto restored = unwrap(restarted.open(kPresentationUser));
+      CHECK(restored == state);
+      CHECK(presentation_body(*restarted_db) == raw);
+      CHECK(restored.at("profile").at("fields").at("communication.style") == confirmed);
+      CHECK(presentation_resolution(restored, "preference.style").at("value") == value);
+      CHECK(restored.at("presentation").at("available") == false);
+    }
+  }
+
   TEST_CASE("disabled and excluded presentation preserve profile policy and prepared model inputs") {
     fsutil::TempDir temp;
     auto db = open_db(temp.path() / "presentation-isolation.db", presentation_db_options());
     OnboardingStore store(*db);
     auto state = confirm_presentation_preference(store, unwrap(store.open(kPresentationUser)));
-    REQUIRE(state.at("pack").at("revision") == 2);
+    REQUIRE(state.at("pack").at("revision") == 3);
     REQUIRE(state.at("presentation").at("available") == true);
     const auto profile = state.at("profile");
     const auto settings = presentation_resolution(state, "onboarding.settings");
@@ -140,8 +191,8 @@ TEST_SUITE("onboarding native presentation isolation") {
     const auto privacy = state.at("profile").at("privacy");
     const auto request = model_facing_request(unwrap(store.model_request(kPresentationUser, kOfflineProvider)));
     auto pack = state.at("pack");
-    REQUIRE(pack.at("revision") == 2);
-    pack["revision"] = 3;
+    REQUIRE(pack.at("revision") == 3);
+    pack["revision"] = 4;
     auto& entry = presentation_entry(pack);
     entry["revision"] = entry.at("revision").get<std::int64_t>() + 1;
     entry.at("value").at("locales").at("en")["layer.builtin"] = "Synthetic upgraded catalog label";
