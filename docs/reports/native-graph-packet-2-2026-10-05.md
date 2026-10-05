@@ -35,9 +35,19 @@ nie jest przedstawiany jako pełna bramka starego rdzenia. Pełny bazowy build
 `-j3` przerwał OOM; powtórzenie `-j1` świadomie skrócono do zależności probe.
 Oba logi, manifest obiektów i komendy pozostają w dowodach.
 
-Następnie: porównanie wyników bajt w bajt na tym samym korpusie, 13 regresji
-nakładek i błędnej konfiguracji, pełny CTest na vendored SQLite, WERROR,
-CLI, shared library i serwer. Trwa build zmienionego rdzenia. Kod ma niezależny przegląd; nie jest jeszcze zgłoszony do odbioru.
+Porównanie po zmianie: **PASS, 1536/1536 rekordów identycznych bajt w bajt**;
+SHA256 wyniku po zmianie jest identyczny z bazowym. Pomiar używa pełnego
+archiwum zmienionego rdzenia, nie atrapy. Zapisano komendy i hash źródeł oraz
+archiwum. Kod wypchnięty w `d7e9968`; pozostaje pełny build i CTest na
+vendored SQLite, WERROR, CLI, shared library i serwer. Do odbioru jeszcze
+nie zgłoszono. Dodano 13 regresji nakładek i błędnej konfiguracji; wymagany
+CTest powinien wykonać 14 dotychczasowych + 13 nowych przypadków packa.
+Pełne pliki trzech ujemnych wariantów z przeglądu są zachowane na
+`archive/2026-10-05/native-graph-packet-2-review-negatives` (`19d72fe`).
+To statyczne ustalenia, nie raport wykonanych nieudanych testów: pomijane
+rejestracje pod filtrem CTest, błędna szerokość usuwania niepoprawnego UTF-8
+w opt-in oraz brak sprawdzanej konstrukcji dla mniejszego packa. Wszystkie
+trzy poprawione; komentarz i pełne warianty pozwalają odtworzyć przegląd.
 Wywołania płatne: 0.
 
 Kontrakt nowego przepisu: [NORMALIZER_RECIPE.md](../../loom/src/kb/NORMALIZER_RECIPE.md).

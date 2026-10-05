@@ -1,0 +1,19 @@
+{
+  "archives": {
+    "libloom_core.a": "2ba3c505dd8ae9b464ec5e6bcfe47b900db52c543a98ff1cead6ca742da45567",
+    "libloom_miniz.a": "3a5e7164b9b91b3b89a7fffa071ab5f31c8098d40c2964d0ae605fd01c95e4f2",
+    "libloom_sqlite3_amalgamation.a": "b20cf45e197eeb3366e4ffa562f7661304b5beb01145f5a64a228864206420c9"
+  },
+  "build": "/workspace/scratch/b189e486f506/chatadhd/build/w4-2",
+  "git_commit": "d7e99685a5519ea5582cffedd87e74bbf67e45f7",
+  "scope": "native normalizer API outputs; offline builtin lexicons and public synthetic inputs",
+  "sources": {
+    "loom/data/lexicons/stemming.json": "530e82465f43b29be91aca0d40a6549081b66c7d983e9ade3456dd5c1f000b6d",
+    "loom/include/loom/kb.h": "f1d1d2890857337a0f00907e935d10311fcdb56827b36e28eb33fcab22b2eb52",
+    "loom/src/kb/normalize.cpp": "6a9582398b760a9900da3e6ea4cdb3b5cc2633822da39565dde0ca572d5448af",
+    "loom/src/kb/pack.cpp": "e43f66aa43038852912759689c5362be5e678661f5bc1a0e46c05c5744a233e8",
+    "loom/src/kb/pack_embedded.inc": "9f150b790dac23ffdf0521e9275fe3dffc2958e139446b32a07b57146625a5a0",
+    "loom/src/kb/tests/normalizer_snapshot.cc": "c7334f2b675ba8804cee48a76a148c25240c18ad95ed5abfb3aff8355e52f04d",
+    "loom/src/kb/tests/run_normalizer_snapshot.py": "0d3527c2c1d14ca6eb91d93ac19e689ef61f83052735fc07d69b636b0aa3233f"
+  }
+}
