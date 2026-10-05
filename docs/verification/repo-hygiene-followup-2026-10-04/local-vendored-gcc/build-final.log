@@ -1,0 +1,3 @@
+[0/2] Re-checking globbed directories...
+[1/3] Linking CXX shared library libloom.so.0.1.0
+[2/3] Creating library symlink libloom.so.0 libloom.so
