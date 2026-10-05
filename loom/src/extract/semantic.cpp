@@ -806,6 +806,9 @@ Result<Json> propose_semantics(knowledge::StageContext& ctx, const std::vector<m
     estimate = prompts::overlay(estimate, identity.value("usage_estimate", Json::object()));
     if (json::get_string(estimate, "operation_id") != operation_id)
       return Error(Errc::InvalidArgument, "usage_estimate cannot replace execution operation_id");
+    // The ledger operation actually dispatched; a later explicit invocation may
+    // admit a further attempt under a derived ID (see the request below).
+    std::string attempt_id = operation_id;
     if (preview) {
       LOOM_TRY_ASSIGN(auto decision, usage->preview(estimate));
       prepared["chunk"] = in.chunk_id;
@@ -875,8 +878,22 @@ Result<Json> propose_semantics(knowledge::StageContext& ctx, const std::vector<m
       };
       // Record the paid attempt before starting it. A crash/pause after this
       // point can reuse a valid cache but cannot silently issue it again.
-      LOOM_TRY_ASSIGN(auto decision, usage->request(estimate));
-      stats["usage_decisions"].push_back(Json{{"chunk", in.chunk_id}, {"operation_id", operation_id}, {"decision", decision}});
+      // Each dispatch is its own ledger operation. Repeating an operation ID
+      // returns its existing record, so an attempt that was already dispatched
+      // or withdrawn (unresolved, completed, cancelled) is never another grant;
+      // a fresh explicit invocation is admitted as the next attempt instead.
+      // A pending confirmation or a denial stays bound to its own operation.
+      // Resume never reaches here for an attempted request (see `attempted`).
+      Json decision;
+      for (std::uint64_t attempt = 0;; ++attempt) {
+        attempt_id = attempt == 0 ? operation_id : operation_id + "#" + std::to_string(attempt);
+        estimate["operation_id"] = attempt_id;
+        LOOM_TRY_ASSIGN(auto answer, usage->request(estimate));
+        decision = std::move(answer);
+        const auto status = json::get_string(decision, "status");
+        if (!usage->available() || (status != "unresolved" && status != "completed" && status != "cancelled")) break;
+      }
+      stats["usage_decisions"].push_back(Json{{"chunk", in.chunk_id}, {"operation_id", attempt_id}, {"decision", decision}});
       const bool authorized = usage->available() ? json::get_string(decision, "status") == "allowed" && json::get_bool(decision, "authorized") :
           json::get_bool(decision, "legacy_execution_allowed");
       if (!authorized) {
@@ -889,7 +906,7 @@ Result<Json> propose_semantics(knowledge::StageContext& ctx, const std::vector<m
       spent_bytes += static_cast<std::int64_t>(bytes);
       const auto saved = checkpoint();
       if (!saved) {
-        LOOM_TRY(usage->cancel(operation_id, "checkpoint_failed_before_dispatch"));
+        LOOM_TRY(usage->cancel(attempt_id, "checkpoint_failed_before_dispatch"));
         return saved.error();
       }
       ++requests;
@@ -898,11 +915,11 @@ Result<Json> propose_semantics(knowledge::StageContext& ctx, const std::vector<m
       // The run checkpoint retains partial/error responses independently of
       // the reusable checked cache, without promoting them as graph evidence.
       capture_response(Json{{"chunk", in.chunk_id}, {"request_hash", prepared["request_hash"]},
-        {"operation_id", operation_id}, {"from_cache", false}, {"http_status", response ? Json(response->status) : Json(nullptr)},
+        {"operation_id", attempt_id}, {"from_cache", false}, {"http_status", response ? Json(response->status) : Json(nullptr)},
         {"transport_error", response ? Json(nullptr) : Json(response.error().message)},
         {"body", response_bytes}, {"response_hash", Sha256::hex(response_bytes)}, {"capture_truncated", response_limit_reached}});
       LOOM_TRY(checkpoint());
-      auto measured = usage->complete(operation_id, Json{{"resources", Json{{"requests", 1}, {"input_bytes", bytes},
+      auto measured = usage->complete(attempt_id, Json{{"resources", Json{{"requests", 1}, {"input_bytes", bytes},
         {"input_tokens", nullptr}, {"output_tokens", nullptr}, {"money_usd", nullptr}}}, {"provenance", "instrument_measured"}});
       if (measured) stats["usage_decisions"].back()["completion"] = std::move(*measured);
       else {
@@ -928,7 +945,7 @@ Result<Json> propose_semantics(knowledge::StageContext& ctx, const std::vector<m
           Json amounts{{"input_tokens", reported->value("prompt_tokens", Json(nullptr))},
                        {"output_tokens", reported->value("completion_tokens", Json(nullptr))},
                        {"money_usd", reported->value("cost", Json(nullptr))}};
-          auto completion = usage->complete(operation_id, Json{{"resources", amounts},
+          auto completion = usage->complete(attempt_id, Json{{"resources", amounts},
             {"provenance", "provider_reported"}, {"provider_usage", *reported}});
           if (completion) stats["usage_decisions"].back()["provider_completion"] = std::move(*completion);
           else {
@@ -1039,7 +1056,7 @@ Result<Json> propose_semantics(knowledge::StageContext& ctx, const std::vector<m
                                         {"origin", "model"}, {"contract_id", call_contract.definition["id"]},
                                         {"contract_version", call_contract.definition["version"]}, {"contract_hash", wire_contract.hash},
                                         {"output_schema_hash", prepared["output_schema_hash"]}, {"request_hash", prepared["request_hash"]},
-                                        {"validation_mode", validation_mode}, {"usage_operation_id", from_cache ? Json(nullptr) : Json(operation_id)}}}};
+                                        {"validation_mode", validation_mode}, {"usage_operation_id", from_cache ? Json(nullptr) : Json(attempt_id)}}}};
       payload["output_validation"] = schema_report;
       payload["native_validation"] = native_validation;
       if (graph_mode) {
