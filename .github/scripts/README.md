@@ -9,10 +9,17 @@ threshold is changed.
 
 The existing opt-in `unit.test_catalog_scale` is reported as **unexecuted** when
 its output contains zero cases/assertions; it does not count as 1 GB coverage.
-The existing non-shared `asan` preset has explicitly named unavailable ctypes
+Historical non-shared `asan` runs have explicitly named unavailable ctypes
 cases; those are reported separately and subtracted from executed coverage.
-`dev` and `vendored` CI builds enable the shared library and require those cases
-to execute. Lineage tests require checkout of the complete preserved Git history.
+Current ASan CI retains the instrumented native build and additionally builds an
+ordinary GCC shared-library companion from the same commit/tree. Its absolute
+`LOOM_LIBRARY` reaches ctypes tests, including the mandatory Packet suite.
+The separate companion receipt records its binary hash and ordinary flags:
+this is FFI execution without sanitizer coverage, alongside native ASan/UBSan.
+The sanitizer options and execution guard remain unchanged. A local full GCC
+build of the same source can supply this ordinary companion too, with its own
+receipt. `dev` and `vendored` builds require all shared-library cases to execute.
+Lineage tests require checkout of the complete preserved Git history.
 
 From the repository root, after building the selected preset:
 
