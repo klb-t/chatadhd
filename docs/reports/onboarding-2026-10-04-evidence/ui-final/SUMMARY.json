@@ -1,0 +1,32 @@
+{
+  "source_unchanged": true,
+  "outcomes": [
+    {
+      "command": [
+        "node",
+        "--test",
+        "loom/web/src/onboarding/controller.test.mjs"
+      ],
+      "cwd": "/workspace/scratch/4db3ee41b13b/chatadhd",
+      "exit_code": 0,
+      "seconds": 0.422,
+      "log": "/tmp/onboarding-verification-2026-10-04/ui-final/controller-tests.log"
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "cwd": "/workspace/scratch/4db3ee41b13b/chatadhd/loom/web",
+      "exit_code": 0,
+      "seconds": 10.693,
+      "log": "/tmp/onboarding-verification-2026-10-04/ui-final/web-build.log"
+    }
+  ],
+  "boundaries": [
+    "Standalone UI exports; App/navigation integration not exercised.",
+    "Synthetic recorded controller/model adapter; no provider/network calls.",
+    "Native snapshot projection reads actual pack definitions; native persistence/privacy gates are separate."
+  ]
+}

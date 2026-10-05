@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="(empty)"
+	tests="4"
+	failures="1"
+	disabled="0"
+	skipped="0"
+	hostname=""
+	time="54"
+	timestamp="2026-10-05T03:35:22"
+	>
+	<testcase name="unit.test_onboarding" classname="unit.test_onboarding" time="0.626469" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  18 |  18 passed | 0 failed | 693 skipped
+[doctest] assertions: 228 | 228 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_onboarding_graph" classname="unit.test_onboarding_graph" time="9.23348" status="fail">
+		<failure message="Failed"/>
+		<properties/>
+		<system-out>===============================================================================
+/workspace/scratch/4db3ee41b13b/chatadhd/loom/tests/test_onboarding_graph.cpp:120:
+TEST SUITE: onboarding native graph projection
+TEST CASE:  multiple versions share method identity while preserving exact version bindings
+
+/workspace/scratch/4db3ee41b13b/chatadhd/loom/tests/test_helpers.h:26: FATAL ERROR: unexpected error: conflict: default layers: pack content changed without a revision increment
+
+===============================================================================
+[doctest] test cases:   11 |   10 passed | 1 failed | 700 skipped
+[doctest] assertions: 2133 | 2132 passed | 1 failed |
+[doctest] Status: FAILURE!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_onboarding_layers" classname="unit.test_onboarding_layers" time="0.0598048" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  8 |  8 passed | 0 failed | 703 skipped
+[doctest] assertions: 51 | 51 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_onboarding_store" classname="unit.test_onboarding_store" time="54.4885" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  14 |  14 passed | 0 failed | 697 skipped
+[doctest] assertions: 286 | 286 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+</testsuite>

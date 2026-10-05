@@ -1,0 +1,58 @@
+[
+  {
+    "path": "/workspace/scratch/4db3ee41b13b/chatadhd/loom/src/onboarding/store.cpp",
+    "sha256": "a96588808ad54f2918f751adcc74f2fbfa0c5922cc0399117811ccdf5f51f32d",
+    "bytes": 28061
+  },
+  {
+    "path": "/workspace/scratch/4db3ee41b13b/chatadhd/loom/src/onboarding/graph.cpp",
+    "sha256": "e7e7d95473eda71a35ab6cf66eb106ff262ad03be134493150937c1948fcc6cf",
+    "bytes": 36103
+  },
+  {
+    "path": "/workspace/scratch/4db3ee41b13b/chatadhd/loom/src/onboarding/profile.cpp",
+    "sha256": "abb08247adfe2043e0ab0536937de6f0df52aa0494c94fb20127ee4c2cb8e920",
+    "bytes": 38780
+  },
+  {
+    "path": "/workspace/scratch/4db3ee41b13b/chatadhd/loom/include/loom/onboarding_store.h",
+    "sha256": "fd9ce5cc3b2e7734ef20af83a1f5284c8599e1f7d29f2555be98132ca793a074",
+    "bytes": 1911
+  },
+  {
+    "path": "/workspace/scratch/4db3ee41b13b/chatadhd/loom/include/loom/onboarding.h",
+    "sha256": "bc9217f3aba2837cd14d78c28e9f1df65be0edcfa9d7a891717efd6fa5adaa7d",
+    "bytes": 1644
+  },
+  {
+    "path": "/workspace/scratch/4db3ee41b13b/chatadhd/loom/src/onboarding/builtin.inc",
+    "sha256": "4666d989840680f19304b280df1e956d20cfa1e8c4819f9cbfd3198e3011a1d1",
+    "bytes": 16695
+  },
+  {
+    "path": "/workspace/scratch/4db3ee41b13b/onboarding_store_review.cpp",
+    "sha256": "cf989de7b5a05a5c6e60ef42bcbf4cb77353c6f5832eacb0bfd09777a6f30ccd",
+    "bytes": 3995
+  },
+  {
+    "path": "/workspace/scratch/4db3ee41b13b/onboarding_review.cpp",
+    "sha256": "c85a527b29b09b1fc795b39ca0c4d8e4daee934df880e43f49afbe6e9781ec5b",
+    "bytes": 2466
+  },
+  {
+    "path": "/tmp/onboarding-build-2026-10-04/libloom_core.a",
+    "exact_link_copy": "/tmp/onboarding-review-linked-library.a",
+    "sha256": "458c69441f36559c23acd9fda4618e52ef66b823b89c2ffa1504922d50038ceb",
+    "bytes": 338690920
+  },
+  {
+    "path": "/tmp/onboarding-build-2026-10-04/libloom_sqlite3_amalgamation.a",
+    "sha256": "fa49de1205ad8353e9ad9299027730e91bf94149b449b010a243457f23da634b",
+    "bytes": 1836182
+  },
+  {
+    "path": "/tmp/onboarding-build-2026-10-04/libloom_miniz.a",
+    "sha256": "bffec05ae6233f7f4ffbd98f9ddc5729bac01ea6341704c8779ec15c87b9adb6",
+    "bytes": 176756
+  }
+]

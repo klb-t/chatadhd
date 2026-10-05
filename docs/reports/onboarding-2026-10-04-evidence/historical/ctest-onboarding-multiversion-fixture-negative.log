@@ -1,0 +1,29 @@
+Test project /tmp/onboarding-build-2026-10-04
+    Start 71: unit.test_onboarding_store
+    Start 69: unit.test_onboarding_graph
+1/4 Test #69: unit.test_onboarding_graph .......***Failed    9.23 sec
+===============================================================================
+/workspace/scratch/4db3ee41b13b/chatadhd/loom/tests/test_onboarding_graph.cpp:120:
+TEST SUITE: onboarding native graph projection
+TEST CASE:  multiple versions share method identity while preserving exact version bindings
+
+/workspace/scratch/4db3ee41b13b/chatadhd/loom/tests/test_helpers.h:26: FATAL ERROR: unexpected error: conflict: default layers: pack content changed without a revision increment
+
+===============================================================================
+[doctest] test cases:   11 |   10 passed | 1 failed | 700 skipped
+[doctest] assertions: 2133 | 2132 passed | 1 failed |
+[doctest] Status: FAILURE!
+
+    Start 68: unit.test_onboarding
+2/4 Test #68: unit.test_onboarding .............   Passed    0.63 sec
+    Start 70: unit.test_onboarding_layers
+3/4 Test #70: unit.test_onboarding_layers ......   Passed    0.06 sec
+4/4 Test #71: unit.test_onboarding_store .......   Passed   54.49 sec
+
+75% tests passed, 1 tests failed out of 4
+
+Total Test time (real) =  54.49 sec
+
+The following tests FAILED:
+	 69 - unit.test_onboarding_graph (Failed)
+Errors while running CTest

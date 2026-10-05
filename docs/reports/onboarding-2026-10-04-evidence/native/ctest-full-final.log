@@ -1,0 +1,229 @@
+Test project /tmp/onboarding-build-2026-10-04
+        Start  71: unit.test_onboarding_store
+        Start  69: unit.test_onboarding_graph
+  1/112 Test  #69: unit.test_onboarding_graph .........................   Passed    8.11 sec
+        Start  68: unit.test_onboarding
+  2/112 Test  #68: unit.test_onboarding ...............................   Passed    0.27 sec
+        Start  70: unit.test_onboarding_layers
+  3/112 Test  #70: unit.test_onboarding_layers ........................   Passed    0.02 sec
+        Start   1: unit.test_archive
+  4/112 Test   #1: unit.test_archive ..................................   Passed    1.42 sec
+        Start   2: unit.test_batch_api
+  5/112 Test   #2: unit.test_batch_api ................................   Passed    0.07 sec
+        Start   3: unit.test_capi
+  6/112 Test   #3: unit.test_capi .....................................   Passed    2.62 sec
+        Start   4: unit.test_capi_knowledge
+  7/112 Test   #4: unit.test_capi_knowledge ...........................   Passed    0.51 sec
+        Start   5: unit.test_capi_knowledge_latest_run
+  8/112 Test   #5: unit.test_capi_knowledge_latest_run ................   Passed    0.67 sec
+        Start   6: unit.test_catalog
+  9/112 Test   #6: unit.test_catalog ..................................   Passed    1.79 sec
+        Start   7: unit.test_catalog_context
+ 10/112 Test   #7: unit.test_catalog_context ..........................   Passed    1.84 sec
+        Start   8: unit.test_catalog_eval
+ 11/112 Test   #8: unit.test_catalog_eval .............................   Passed    1.39 sec
+        Start   9: unit.test_catalog_links
+ 12/112 Test   #9: unit.test_catalog_links ............................   Passed    9.89 sec
+        Start  10: unit.test_catalog_retention
+ 13/112 Test  #10: unit.test_catalog_retention ........................   Passed    1.38 sec
+        Start  11: unit.test_catalog_scale
+ 14/112 Test  #11: unit.test_catalog_scale ............................   Passed    0.01 sec
+        Start  12: unit.test_chat_active_task
+ 15/112 Test  #12: unit.test_chat_active_task .........................   Passed    0.92 sec
+        Start  13: unit.test_chat_active_task_acceptance_audit
+ 16/112 Test  #13: unit.test_chat_active_task_acceptance_audit ........   Passed    1.17 sec
+        Start  14: unit.test_chat_active_task_acceptance_scale
+ 17/112 Test  #14: unit.test_chat_active_task_acceptance_scale ........   Passed    4.82 sec
+        Start  15: unit.test_chat_active_task_acceptance_validation
+ 18/112 Test  #15: unit.test_chat_active_task_acceptance_validation ...   Passed    0.73 sec
+        Start  16: unit.test_chat_active_task_concurrency
+ 19/112 Test  #16: unit.test_chat_active_task_concurrency .............   Passed    0.26 sec
+        Start  17: unit.test_chat_active_task_durability
+ 20/112 Test  #17: unit.test_chat_active_task_durability ..............   Passed    0.39 sec
+        Start  18: unit.test_chat_active_task_durable_audit
+ 21/112 Test  #18: unit.test_chat_active_task_durable_audit ...........   Passed    7.65 sec
+        Start  19: unit.test_chat_active_task_exceptional
+ 22/112 Test  #19: unit.test_chat_active_task_exceptional .............   Passed    0.24 sec
+        Start  20: unit.test_chat_active_task_history_aba
+ 23/112 Test  #20: unit.test_chat_active_task_history_aba .............   Passed    0.03 sec
+        Start  21: unit.test_chat_active_task_reference
+ 24/112 Test  #21: unit.test_chat_active_task_reference ...............   Passed    0.02 sec
+        Start  22: unit.test_chat_active_task_retention
+ 25/112 Test  #71: unit.test_onboarding_store .........................   Passed   46.91 sec
+        Start  23: unit.test_chat_active_task_revisions
+ 26/112 Test  #22: unit.test_chat_active_task_retention ...............   Passed    0.72 sec
+        Start  24: unit.test_chat_active_task_scope_identity
+ 27/112 Test  #24: unit.test_chat_active_task_scope_identity ..........   Passed    0.15 sec
+        Start  25: unit.test_chat_engine
+ 28/112 Test  #25: unit.test_chat_engine ..............................   Passed    0.09 sec
+        Start  26: unit.test_chat_knowledge_context
+ 29/112 Test  #23: unit.test_chat_active_task_revisions ...............   Passed    1.05 sec
+        Start  27: unit.test_chat_retrieval_plan
+ 30/112 Test  #27: unit.test_chat_retrieval_plan ......................   Passed    1.90 sec
+        Start  28: unit.test_config
+ 31/112 Test  #28: unit.test_config ...................................   Passed    0.02 sec
+        Start  29: unit.test_context_channel_integration
+ 32/112 Test  #26: unit.test_chat_knowledge_context ...................   Passed    3.79 sec
+        Start  30: unit.test_context_controls
+ 33/112 Test  #29: unit.test_context_channel_integration ..............   Passed    1.24 sec
+        Start  31: unit.test_context_counter
+ 34/112 Test  #31: unit.test_context_counter ..........................   Passed    0.95 sec
+        Start  32: unit.test_context_diagnostics
+ 35/112 Test  #30: unit.test_context_controls .........................   Passed    2.36 sec
+        Start  33: unit.test_context_engine
+ 36/112 Test  #32: unit.test_context_diagnostics ......................   Passed   12.87 sec
+        Start  34: unit.test_context_eval
+ 37/112 Test  #33: unit.test_context_engine ...........................   Passed   12.58 sec
+        Start  35: unit.test_context_native_consumer
+ 38/112 Test  #34: unit.test_context_eval .............................   Passed    0.99 sec
+        Start  36: unit.test_context_plan
+ 39/112 Test  #35: unit.test_context_native_consumer ..................   Passed    1.51 sec
+        Start  37: unit.test_context_retrieval
+ 40/112 Test  #37: unit.test_context_retrieval ........................   Passed    0.96 sec
+        Start  38: unit.test_context_retrieval_dev
+ 41/112 Test  #36: unit.test_context_plan .............................   Passed    3.46 sec
+        Start  39: unit.test_context_tfidf_reuse
+ 42/112 Test  #38: unit.test_context_retrieval_dev ....................   Passed    1.41 sec
+        Start  40: unit.test_crypto
+ 43/112 Test  #39: unit.test_context_tfidf_reuse ......................   Passed    4.89 sec
+        Start  41: unit.test_db
+ 44/112 Test  #40: unit.test_crypto ...................................   Passed    4.65 sec
+        Start  42: unit.test_event_bus
+ 45/112 Test  #42: unit.test_event_bus ................................   Passed    0.04 sec
+        Start  43: unit.test_extract
+ 46/112 Test  #41: unit.test_db .......................................   Passed    0.36 sec
+        Start  44: unit.test_extract_eval
+ 47/112 Test  #43: unit.test_extract ..................................   Passed    2.71 sec
+        Start  45: unit.test_fts
+ 48/112 Test  #45: unit.test_fts ......................................   Passed    0.10 sec
+        Start  46: unit.test_generalize
+ 49/112 Test  #44: unit.test_extract_eval .............................   Passed    3.47 sec
+        Start  47: unit.test_generalize_eval
+ 50/112 Test  #47: unit.test_generalize_eval ..........................   Passed    1.64 sec
+        Start  48: unit.test_github
+ 51/112 Test  #48: unit.test_github ...................................   Passed    0.05 sec
+        Start  49: unit.test_graph
+ 52/112 Test  #49: unit.test_graph ....................................   Passed    0.11 sec
+        Start  50: unit.test_import
+ 53/112 Test  #50: unit.test_import ...................................   Passed    0.20 sec
+        Start  51: unit.test_import_export_fidelity
+ 54/112 Test  #51: unit.test_import_export_fidelity ...................   Passed    0.23 sec
+        Start  52: unit.test_import_exports
+ 55/112 Test  #46: unit.test_generalize ...............................   Passed    3.16 sec
+        Start  53: unit.test_import_source_materialization
+ 56/112 Test  #53: unit.test_import_source_materialization ............   Passed    0.30 sec
+        Start  54: unit.test_import_stream
+ 57/112 Test  #52: unit.test_import_exports ...........................   Passed    2.19 sec
+        Start  55: unit.test_kb_pack
+ 58/112 Test  #55: unit.test_kb_pack ..................................   Passed    9.00 sec
+        Start  56: unit.test_knowledge
+ 59/112 Test  #56: unit.test_knowledge ................................   Passed   10.55 sec
+        Start  57: unit.test_knowledge_candidate_graph
+ 60/112 Test  #57: unit.test_knowledge_candidate_graph ................   Passed    0.29 sec
+        Start  58: unit.test_knowledge_candidates
+ 61/112 Test  #58: unit.test_knowledge_candidates .....................   Passed    0.03 sec
+        Start  59: unit.test_knowledge_flow
+ 62/112 Test  #59: unit.test_knowledge_flow ...........................   Passed    1.46 sec
+        Start  60: unit.test_knowledge_semantic
+ 63/112 Test  #60: unit.test_knowledge_semantic .......................   Passed    3.26 sec
+        Start  61: unit.test_knowledge_semantic_graph
+ 64/112 Test  #61: unit.test_knowledge_semantic_graph .................   Passed    4.88 sec
+        Start  62: unit.test_knowledge_store
+ 65/112 Test  #62: unit.test_knowledge_store ..........................   Passed    0.28 sec
+        Start  63: unit.test_materialize
+ 66/112 Test  #63: unit.test_materialize ..............................   Passed    1.89 sec
+        Start  64: unit.test_media
+ 67/112 Test  #64: unit.test_media ....................................   Passed    0.02 sec
+        Start  65: unit.test_memory
+ 68/112 Test  #65: unit.test_memory ...................................   Passed    0.03 sec
+        Start  66: unit.test_model
+ 69/112 Test  #66: unit.test_model ....................................   Passed    0.03 sec
+        Start  67: unit.test_net_sse
+ 70/112 Test  #67: unit.test_net_sse ..................................   Passed    0.02 sec
+        Start  72: unit.test_pack_model
+ 71/112 Test  #72: unit.test_pack_model ...............................   Passed    1.73 sec
+        Start  73: unit.test_provenance
+ 72/112 Test  #73: unit.test_provenance ...............................   Passed    0.10 sec
+        Start  74: unit.test_providers
+ 73/112 Test  #74: unit.test_providers ................................   Passed    0.02 sec
+        Start  75: unit.test_regex
+ 74/112 Test  #75: unit.test_regex ....................................   Passed    0.02 sec
+        Start  76: unit.test_relations
+ 75/112 Test  #76: unit.test_relations ................................   Passed    0.02 sec
+        Start  77: unit.test_resolve
+ 76/112 Test  #77: unit.test_resolve ..................................   Passed    0.43 sec
+        Start  78: unit.test_resolve_attribution
+ 77/112 Test  #78: unit.test_resolve_attribution ......................   Passed    5.25 sec
+        Start  79: unit.test_resolve_lineage
+ 78/112 Test  #54: unit.test_import_stream ............................   Passed   43.92 sec
+        Start  80: unit.test_runtime
+ 79/112 Test  #80: unit.test_runtime ..................................   Passed    0.05 sec
+        Start  81: unit.test_selector
+ 80/112 Test  #81: unit.test_selector .................................   Passed    0.01 sec
+        Start  82: unit.test_semantic_llm
+ 81/112 Test  #82: unit.test_semantic_llm .............................   Passed    0.07 sec
+        Start  83: unit.test_semantic_worker
+ 82/112 Test  #79: unit.test_resolve_lineage ..........................   Passed    3.12 sec
+        Start  84: unit.test_tasks
+ 83/112 Test  #83: unit.test_semantic_worker ..........................   Passed    0.24 sec
+        Start  85: unit.test_util
+ 84/112 Test  #84: unit.test_tasks ....................................   Passed    0.12 sec
+        Start  86: compat.test_abi_compat
+ 85/112 Test  #85: unit.test_util .....................................   Passed    0.05 sec
+        Start  87: compat.test_active_task_compiler_compat
+ 86/112 Test  #86: compat.test_abi_compat .............................   Passed    0.49 sec
+        Start  88: compat.test_candidate_graph_native
+ 87/112 Test  #87: compat.test_active_task_compiler_compat ............   Passed    1.15 sec
+        Start  89: compat.test_chat_active_task_http
+ 88/112 Test  #88: compat.test_candidate_graph_native .................   Passed    1.22 sec
+        Start  90: compat.test_chat_compat
+ 89/112 Test  #89: compat.test_chat_active_task_http ..................   Passed    3.42 sec
+        Start  91: compat.test_config_compat
+ 90/112 Test  #91: compat.test_config_compat ..........................   Passed    0.19 sec
+        Start  92: compat.test_crypto_compat
+ 91/112 Test  #90: compat.test_chat_compat ............................   Passed    4.92 sec
+        Start  93: compat.test_db_compat
+ 92/112 Test  #93: compat.test_db_compat ..............................   Passed    1.65 sec
+        Start  94: compat.test_github_sync_defaults
+ 93/112 Test  #94: compat.test_github_sync_defaults ...................   Passed    0.22 sec
+        Start  95: compat.test_graph_compat
+ 94/112 Test  #95: compat.test_graph_compat ...........................   Passed    3.39 sec
+        Start  96: compat.test_graph_packet_store
+ 95/112 Test  #96: compat.test_graph_packet_store .....................   Passed    1.18 sec
+        Start  97: compat.test_import_compat
+ 96/112 Test  #97: compat.test_import_compat ..........................   Passed    0.82 sec
+        Start  98: compat.test_memory_compat
+ 97/112 Test  #98: compat.test_memory_compat ..........................   Passed    3.56 sec
+        Start  99: compat.test_selector_compat
+ 98/112 Test  #99: compat.test_selector_compat ........................   Passed    0.14 sec
+        Start 100: compat.test_semantic_compat
+ 99/112 Test  #92: compat.test_crypto_compat ..........................   Passed   14.36 sec
+        Start 101: compat.test_semantic_recovery
+100/112 Test #101: compat.test_semantic_recovery ......................   Passed    3.43 sec
+        Start 102: compat.test_util_compat
+101/112 Test #100: compat.test_semantic_compat ........................   Passed    7.34 sec
+        Start 103: research.structure
+102/112 Test #102: compat.test_util_compat ............................   Passed    3.14 sec
+        Start 104: research.independent_protocol
+103/112 Test #104: research.independent_protocol ......................   Passed    0.12 sec
+        Start 105: research.graph_native_protocol
+104/112 Test #105: research.graph_native_protocol .....................   Passed    0.83 sec
+        Start 106: research.candidate_graph_protocol
+105/112 Test #106: research.candidate_graph_protocol ..................   Passed    0.49 sec
+        Start 107: research.contracts
+106/112 Test #107: research.contracts .................................   Passed   25.47 sec
+        Start 108: research.seeding
+107/112 Test #103: research.structure .................................   Passed   29.27 sec
+        Start 109: server.smoke
+108/112 Test #109: server.smoke .......................................   Passed    1.98 sec
+        Start 110: server.chat_active_task
+109/112 Test #110: server.chat_active_task ............................   Passed    1.22 sec
+        Start 111: cli.smoke
+110/112 Test #108: research.seeding ...................................   Passed    6.21 sec
+        Start 112: eval.harness
+111/112 Test #112: eval.harness .......................................   Passed    0.80 sec
+112/112 Test #111: cli.smoke ..........................................   Passed    2.80 sec
+
+100% tests passed out of 112
+
+Total Test time (real) = 185.29 sec

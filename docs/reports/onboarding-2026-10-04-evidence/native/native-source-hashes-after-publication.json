@@ -1,0 +1,10 @@
+{
+  "checked_utc": "2026-10-04T19:42:47.684855+00:00",
+  "published_head": "40907ad28f3244bfe508da647273d2e1d3bcf1b3",
+  "capture_head": "8fd3cbcceb1b24f8d6a91ad14d53a2cf22ea5f93",
+  "compared_inputs": 335,
+  "source_manifest_sha256": "dbe6532d6482e64b3feab17014e350297cbd80071fcff37360e31b98f21ee487",
+  "changed": [],
+  "missing": [],
+  "identical": true
+}

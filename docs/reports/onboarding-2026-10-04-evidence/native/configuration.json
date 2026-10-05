@@ -1,0 +1,23 @@
+{
+  "source_root": "/workspace/scratch/4db3ee41b13b/chatadhd",
+  "build_root": "/tmp/onboarding-build-2026-10-04",
+  "cmake_cache": {
+    "CMAKE_BUILD_TYPE": "Debug",
+    "CMAKE_CXX_FLAGS_DEBUG": "-g0 -O0",
+    "CMAKE_C_FLAGS_DEBUG": "-g0 -O0",
+    "LOOM_BUILD_CLI": "ON",
+    "LOOM_BUILD_SERVER": "ON",
+    "LOOM_BUILD_TESTS": "ON",
+    "LOOM_SHARED": "ON",
+    "LOOM_USE_SYSTEM_SQLITE": "OFF",
+    "LOOM_WERROR": "ON",
+    "LOOM_WITH_OPENSSL": "AUTO"
+  },
+  "compiler": "GNU 13.3.0",
+  "build_parallelism": 2,
+  "configure_command": "/root/.local/bin/cmake -S loom -B /tmp/onboarding-build-2026-10-04 -G Ninja -DCMAKE_MAKE_PROGRAM=/root/.local/bin/ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS_DEBUG='-g0 -O0' -DCMAKE_CXX_FLAGS_DEBUG='-g0 -O0' -DLOOM_WERROR=ON -DLOOM_SHARED=ON -DLOOM_BUILD_CLI=ON -DLOOM_BUILD_SERVER=ON -DLOOM_BUILD_TESTS=ON -DLOOM_USE_SYSTEM_SQLITE=OFF",
+  "build_command": "/root/.local/bin/cmake --build /tmp/onboarding-build-2026-10-04 -j2",
+  "head_at_metadata_capture": "67e2124ecae25d841e611b629268987372b658fd",
+  "base_head": "30ad7d37337d6641cb7714b03e9feff0e6e25d25",
+  "metadata_captured_utc": "2026-10-04T19:08:33.466295+00:00"
+}

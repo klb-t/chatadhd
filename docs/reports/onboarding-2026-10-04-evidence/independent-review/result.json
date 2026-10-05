@@ -1,0 +1,21 @@
+{
+  "scope": "synthetic offline targeted reproductions only; no full CTest claim",
+  "timestamp_utc": "2026-10-04T19:36:16.663987+00:00",
+  "runs": [
+    {
+      "name": "onboarding_store_review",
+      "exit_code": 0,
+      "binary_sha256": "f7f3b3e43cd79b73417d427345e8a7ed17125aae8ae211def210e49f38629bb0",
+      "stdout_sha256": "c659ab21de22fdae71c32621d747dfbbf35fe5191715646294c171872d8e945c",
+      "stderr_sha256": "b302bd734e30c7f526ea94b73b887dbbf92dce65b0e845b27e5596ca8b826c90"
+    },
+    {
+      "name": "onboarding_review",
+      "exit_code": 0,
+      "binary_sha256": "afc36656c11fd3309ed9dc2765a838a70da92ece1e6298bba1cfd0068384cabe",
+      "stdout_sha256": "cbd5839e5ea290b1ffddc24c4f3be556cef6f1f8db6ec33ab2bd66bd7eae1ded",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "source_hash_scope": "Frozen workspace hashes were observed before recompilation and checked unchanged afterward. Store harness compiles store.cpp and graph.cpp directly. Profile implementation used by both harnesses comes from the exact SHA256-recorded static archive; this evidence does not infer its source build provenance from workspace hashes."
+}

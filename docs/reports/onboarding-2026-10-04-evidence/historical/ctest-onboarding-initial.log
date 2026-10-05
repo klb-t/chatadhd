@@ -1,0 +1,30 @@
+Test project /tmp/onboarding-build-2026-10-04
+    Start 68: unit.test_onboarding
+    Start 69: unit.test_onboarding_graph
+1/4 Test #68: unit.test_onboarding .............   Passed    0.81 sec
+    Start 70: unit.test_onboarding_layers
+2/4 Test #70: unit.test_onboarding_layers ......   Passed    0.07 sec
+    Start 71: unit.test_onboarding_store
+3/4 Test #69: unit.test_onboarding_graph .......***Failed    9.44 sec
+===============================================================================
+/workspace/scratch/4db3ee41b13b/chatadhd/loom/tests/test_onboarding_graph.cpp:276:
+TEST SUITE: onboarding native graph projection
+TEST CASE:  vocabulary absence and contradictory immutable hashes are explicit errors
+
+/workspace/scratch/4db3ee41b13b/chatadhd/loom/tests/test_onboarding_graph.cpp:281: ERROR: CHECK( unavailable.error().code == Errc::Unavailable ) is NOT correct!
+  values: CHECK( 15 == 12 )
+
+===============================================================================
+[doctest] test cases:    8 |    7 passed | 1 failed | 695 skipped
+[doctest] assertions: 2100 | 2099 passed | 1 failed |
+[doctest] Status: FAILURE!
+
+4/4 Test #71: unit.test_onboarding_store .......   Passed   37.71 sec
+
+75% tests passed, 1 tests failed out of 4
+
+Total Test time (real) =  38.59 sec
+
+The following tests FAILED:
+	 69 - unit.test_onboarding_graph (Failed)
+Errors while running CTest
