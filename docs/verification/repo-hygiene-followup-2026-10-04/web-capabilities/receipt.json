@@ -1,0 +1,56 @@
+{
+  "schema": "loom.optional_web_capability_evidence/1",
+  "source_commit": "6c6c446549636801bb743c71c0b2069060b8012d",
+  "changes": "uncommitted followup files at verification time",
+  "process_fixture_tests": {
+    "executed": 6,
+    "passed": 6,
+    "failed": 0,
+    "command": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+      ".github/scripts/test_run_optional_npm_scripts.py",
+      "-v"
+    ]
+  },
+  "product_tests": {
+    "w10_scripts_started": 0,
+    "reason": "Both requested W10 scripts absent in checked-out package.json"
+  },
+  "files": [
+    {
+      "path": ".github/scripts/run_optional_npm_scripts.py",
+      "sha256": "c1e4474aea3efaf9c01a3c959ded862295e15da7ef4334b97274834da6f88503"
+    },
+    {
+      "path": ".github/scripts/test_run_optional_npm_scripts.py",
+      "sha256": "9bf9140563944bc2476ec1400dcd4edd3e488e96ad5596f9fd6478ee00fe1d58"
+    },
+    {
+      "path": ".github/workflows/loom.yml",
+      "sha256": "0273ef3ef9a6445082895e8ffa3a3dcd6489596d14e2d15f7c29ec49e1c7c999"
+    }
+  ],
+  "paid_calls": 0,
+  "remote_ci_started": false,
+  "workflow_structure_checks": {
+    "data_policy_trigger_in_both_event_paths": true,
+    "explicit_cmake_cache_for_build_receipt": true,
+    "optional_web_script_sequence_after_playwright": true,
+    "explicit_cmake_fields": [
+      "CMAKE_GENERATOR",
+      "CMAKE_BUILD_TYPE",
+      "CMAKE_C_COMPILER",
+      "CMAKE_CXX_COMPILER",
+      "CMAKE_C_FLAGS",
+      "CMAKE_C_FLAGS_DEBUG",
+      "CMAKE_CXX_FLAGS",
+      "CMAKE_CXX_FLAGS_DEBUG",
+      "LOOM_USE_SYSTEM_SQLITE",
+      "LOOM_SHARED",
+      "LOOM_WERROR",
+      "LOOM_BUILD_SERVER"
+    ],
+    "explicit_evidence_policy": true,
+    "source_commit_when_configuration_last_checked": "9849711cfea717d9c303a012566c3b30432cb68b"
+  }
+}

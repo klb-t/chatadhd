@@ -66,3 +66,15 @@ the provenance metadata, so it cannot drift after hashing.
 A valid policy's provenance is retained even when the manifest/JUnit input
 fails. Invalid policies produce failure evidence without claiming a validated
 policy version.
+
+`--cmake-cache PATH` plus repeated `--cmake-field NAME` records the selected
+build settings and an exact-byte cache hash. Field selection belongs to the
+caller/workflow; unrelated cache values are omitted. Missing, duplicate or
+malformed selected fields fail. CI pins both native compatibility tools as well
+as the test runner, CLI, server and shared library.
+
+`run_optional_npm_scripts.py` runs caller-selected names from the actual package
+after existing web checks. An absent name produces `CAPABILITY_UNAVAILABLE`;
+it establishes no test coverage. Every declared name starts through argv in its
+package directory, and a failing child fails CI. The current main does not yet
+declare W10's `test:interface-2` or `test:interface-2-native`.

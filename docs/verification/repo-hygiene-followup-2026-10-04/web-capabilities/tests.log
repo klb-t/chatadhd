@@ -1,0 +1,11 @@
+test_declared_capability_with_unavailable_executable_is_a_failure (__main__.OptionalNpmScriptTests.test_declared_capability_with_unavailable_executable_is_a_failure) ... ok
+test_declared_name_is_one_argv_argument_and_uses_package_directory (__main__.OptionalNpmScriptTests.test_declared_name_is_one_argv_argument_and_uses_package_directory) ... ok
+test_invalid_package_is_an_error_not_an_unavailable_capability (__main__.OptionalNpmScriptTests.test_invalid_package_is_an_error_not_an_unavailable_capability) ... ok
+test_missing_capability_never_starts_a_command_or_claims_test_success (__main__.OptionalNpmScriptTests.test_missing_capability_never_starts_a_command_or_claims_test_success) ... ok
+test_missing_then_declared_capability_starts_only_the_declared_one (__main__.OptionalNpmScriptTests.test_missing_then_declared_capability_starts_only_the_declared_one) ... ok
+test_nonzero_child_status_fails_process_and_stops_remaining_sequence (__main__.OptionalNpmScriptTests.test_nonzero_child_status_fails_process_and_stops_remaining_sequence) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 1.319s
+
+OK

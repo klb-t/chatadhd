@@ -1,0 +1,8 @@
+{
+  "scope": "source inspection only, not remote CI execution",
+  "workflow_sha256": "fe1ce96e727426ecf7f9f0bfd604551e503d366a74dfb2f4226d72ff62edeffa",
+  "additional_required_binaries": [
+    "loom_compat_tool",
+    "loom_candidate_graph_native_tool"
+  ]
+}
