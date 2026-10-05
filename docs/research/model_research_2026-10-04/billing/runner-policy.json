@@ -1,0 +1,74 @@
+{
+  "schema": "loom.new_programme_budget/1",
+  "programme_id": "thread7-new-key-2026-10-04-eur5",
+  "authorization": {
+    "status": "owner_authorized_within_budget",
+    "source_ref": "owner-followup-new-scope-thread7-2026-10-04",
+    "currency": "EUR",
+    "amount": "5"
+  },
+  "provider_currency": "USD",
+  "usd_cap": null,
+  "separate_new_key_owner_confirmation_ref": "owner-followup-new-scope-thread7-2026-10-04",
+  "freshness_presets_seconds": {
+    "key_metadata": 300,
+    "pricing": 86400,
+    "fx": 259200,
+    "future_clock_skew": 300
+  },
+  "unknown_cost_policy": "stop",
+  "transport": {
+    "base_url": "https://openrouter.ai",
+    "proxy_mode": "disabled",
+    "timeout_seconds": 120,
+    "routes": {
+      "chat": {"method": "POST", "path": "/api/v1/chat/completions", "api_type": "completions"},
+      "jev": {"method": "POST", "path": "/api/alpha/decisions", "api_type": "decisions"},
+      "key": {"method": "GET", "path": "/api/v1/key"},
+      "model_endpoints": {"method": "GET", "path": "/api/v1/models/{model_id}/endpoints"},
+      "generation": {"method": "GET", "path": "/api/v1/generation", "query": ["id"]}
+    }
+  },
+  "provider_aliases": {
+    "openai": ["OpenAI"],
+    "typesafe": ["TypeSafe"],
+    "anthropic": ["Anthropic"],
+    "google": ["Google"],
+    "deepinfra": ["DeepInfra"]
+  },
+  "model_aliases": {},
+  "noncharge_price_fields": ["discount"],
+  "absent_component_prices_usd": {"request": "0"},
+  "unit_bounds_defaults": {
+    "input_cache_read": {"copy_bound": "prompt"},
+    "input_cache_write": {"copy_bound": "prompt"},
+    "web_search": {"value": "0"}
+  },
+  "units_bound_verifiers": {
+    "prompt_at_least_request_bytes": true,
+    "completion_at_least_max_tokens": true
+  },
+  "read_only_reconciliation": {
+    "key": {"maximum_reads": 3, "delay_seconds": "0.5"},
+    "generation": {"maximum_reads": 3, "delay_seconds": "0.5", "pending_http_statuses": [404, 503]}
+  },
+  "fx_snapshot": {
+    "format": "ecb_xml",
+    "source_url_prefix": "https://www.ecb.europa.eu/stats/eurofxref/",
+    "maximum_rate_age_seconds": 604800
+  },
+  "escalation_guard": {
+    "factor": "10",
+    "scope": "per_operation",
+    "baseline_metric": "expected_cost_usd",
+    "evaluation_boundary": "stage_admission",
+    "rolling_window_operations": 8,
+    "unknown_baseline_policy": "allow_with_existing_programme_authorization",
+    "confirmations": []
+  },
+  "initial_ledger": {
+    "schema": "loom.new_programme_billing_ledger/1",
+    "programme_id": "thread7-new-key-2026-10-04-eur5",
+    "attempts": []
+  }
+}
