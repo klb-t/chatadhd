@@ -7,3 +7,5 @@ Aktualny [raport i dowody](integrator-intake-2026-10-05/README.md); [indeks kole
 ## Do wątku N
 
 9: dokończyć całą kolejkę i zapisać wynik każdej bramki.11: derive wrapperusage z canonicalpack2, rebase i sourceeditproof. Dalsze zadania1–12 według INDEX.
+
+Przyjęte przyrosty:3+4 oraz5 po pełnym117/117225.60s/guard/web i obu niezależnych replayach. Canonicalusage11naprawiony22873e0, własny odbiór w kolejce. Kolejność i pozostałe pinnedcommits wINDEX.

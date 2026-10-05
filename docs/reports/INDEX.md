@@ -10,13 +10,13 @@ Każdy odbiór: świeży fetch, rzeczywisty rebase, pełny CTest + niezmieniony 
 |2| `gpt/usage-policy-2026-10-04` / `cc6a758` | [raport2](https://github.com/klb-t/chatadhd/blob/cc6a7587c4548cc455f69a6b8bfa3490cde94bb7/docs/reports/usage-policy-2026-10-04.md) | PRZYJĘTY pierwszy przyrost6930fd2:6defaults→0ręcznych,5defaultpaths; startup/config dalszy przyrost osobno. Nie czeka na3/4/11. |
 |3| `gpt/chat-selector-2026-10-04` / `03c670c` | [raport3](https://github.com/klb-t/chatadhd/blob/03c670caa6ee3d8ac2c478186548114f8e83927f/docs/reports/chat-selector-2026-10-04.md) | PRZYJĘTY przyrost; źródło9 `a1be689`. CTest110/110, native663/24489, Python1303,0skip; webPASS. Wspólny kontrakt METHOD_GRAPH i kanoniczny golden uzgodnione. Integrator: registry/wykonanie/ślad121/1604, canonical+freshnativeconsumerPASS, alias/nested/nested+alias3/3PASS, KBwindowPASS. 3 czystyrebase na30ad7d3; bez merytorycznych zmian. Historyczne negatywy4 pozostają na archive; domyślneprofile/legacywiring to dalszyprzyrost. |
 |4| `gpt/native-graph-packet-2026-10-04` / `b302df2` | [raport4](https://github.com/klb-t/chatadhd/blob/b302df25e1a65f20c395eadc5ad5ef065d26e33d/docs/reports/native-graph-packet-2026-10-04.md) | PRZYJĘTY przyrost; źródło9 `a1be689`. CTest110/110, native663/24489, Python1303,0skip; webPASS. Wspólny kontrakt METHOD_GRAPH i kanoniczny golden uzgodnione. Integrator: registry/wykonanie/ślad121/1604, canonical+freshnativeconsumerPASS, alias/nested/nested+alias3/3PASS, KBwindowPASS. 3 czystyrebase na30ad7d3; bez merytorycznych zmian. Historyczne negatywy4 pozostają na archive; domyślneprofile/legacywiring to dalszyprzyrost. |
-|5| `gpt/archive-import-2026-10-04` / `5f0abd2` | [raport5](https://github.com/klb-t/chatadhd/blob/5f0abd20dd83e5c0e7f43e84c333d5e23a5e681f/docs/reports/archive-import-2026-10-04.md) | Po rebase na e4109df; źródło9 66da570. Niezależny OCR3/3 +22/22 i checkpoint2/2 +31/31 PASS, [dowód](integrator-intake-2026-10-05/5-replay-checkpoint.md). Pełny mixed build/CTest/guard/web jeszcze w toku; main nie przesunięty dla5. |
+|5| `gpt/archive-import-2026-10-04` / `5f0abd2` | [raport5](https://github.com/klb-t/chatadhd/blob/5f0abd20dd83e5c0e7f43e84c333d5e23a5e681f/docs/reports/archive-import-2026-10-04.md) | PRZYJĘTY przyrost; źródło9 `0a81480`. CTest 117/117, native 710/26399, Python 1322/0skip; web PASS. 31wybranych źródeł bez zmian merytorycznych po rebase; OCR3/3 MIME i22/22kontrole, checkpoint2/2scenariusze i31/31kontrole na rzeczywistym kernelu. Forward-only adnotacje i audit przyjęte; runbook autora przypięty w INDEX. Pierwsze timeouty zachowane w archive, progi bez zmian. |
 |6| `gpt/catalog-selection-2026-10-04` / `d9b29c5` | [raport6](https://github.com/klb-t/chatadhd/blob/d9b29c502bafd3b4cb17f187e3e74f32cfff72ee/docs/reports/catalog-selection-2026-10-04.md) | Odbieramy wyłącznie mechanizm. Domyślna jakość31/45,0FP: NEUTRALNA. Opcjonalny DEV33/45 nie promowany; blind nie czytany ani używany ponownie. |
 |7| `gpt/model-research-2026-10-04` / `5753d2c` | [raport7](https://github.com/klb-t/chatadhd/blob/5753d2cf93dcba4edd5c35534b667f23b915c9b7/docs/reports/model-research-2026-10-04.md) | Przygotowania offline; właściciel przekaże osobny klucz5€. Integrator0paidcalls. |
-|8| `gpt/repo-hygiene-2026-10-04` / `758aba6` | [raport8](https://github.com/klb-t/chatadhd/blob/758aba648f0b2e848828c603b54cc3c2b8abfbcf/docs/reports/repo-hygiene-2026-10-04.md) | Po rebase i poprawceClanga10: potrzebna aktualna pełna macierz Clang/vendored iASan. Seeding/results nadal używane; zachować. |
+|8| `gpt/repo-hygiene-2026-10-04` / `fedaf6b` | [raport8](https://github.com/klb-t/chatadhd/blob/fedaf6b/docs/reports/repo-hygiene-2026-10-05.md) | NIEZGŁOSZONY gotowy: autorfedaf6b nadal pełna macierz w toku.16live źródeł identyczne9c47124, nowy sourcebound runner. Własny normalgate i Clang/vendored potrzebne; seeding/results nadal używane. |
 |9| `gpt/integrator-state-2026-10-04` | [raport9](integrator-intake-2026-10-05/README.md) | Odbiera całą kolejkę; każdy przyrost ma własne bramki i wpis indeksu. |
 |10| `gpt/interface-2-2026-10-04` / `fa7538d` | [raport10](https://github.com/klb-t/chatadhd/blob/fa7538d/docs/reports/interface-2-2026-10-04.md) | fa7538d: autor zakończył pełny CTest108/108, web, fixture84/84, nativeUI20/20, E2E16/16. Gotowy do osobnego rebase i mixed gates9 po12. Clang captures naprawione. |
-|11| `gpt/data-profiles-2026-10-04` / `d3488a6` | [raport11](https://github.com/klb-t/chatadhd/blob/d3488a6bee016d1ea5e6e286dbc7d3a0249761fc/docs/reports/data-in-code/README.md) | WSTRZYMANY: data/runtime/usage_policy.pack:6–12 drugi literalny preset; generator/model loader niezależne od kanonicznego2. Wymagana poprawka autora i rebase. Reszta kolejki nie czeka. |
+|11| `gpt/data-profiles-2026-10-04` / `22873e0` | [raport11](https://github.com/klb-t/chatadhd/blob/22873e047abe6b56808dd2fbc4fe41188ee0e7a8/docs/reports/data-profiles-2026-10-05.md) | GOTOWY pierwszy przyrost22873e0: poprzedni bloker naprawiony; wrapper wynika z canonical2 przez source recipe. Autor127/127,783native/26985assertions,1371Python0skip; własny rebase i mixed gates9 po dokumentachClaude. |
 |12| `gpt/onboarding-2026-10-04` / `3c0bc36` | [raport12](https://github.com/klb-t/chatadhd/blob/3c0bc36552ef9851f1174946cfb108549aae3228/docs/reports/onboarding-2026-10-04.md) | Gotowy przyrost onboarding/profile/layers/store + komponentyUI. Most HTTP/nawigacja/retencja to dalsze zadania10/3/11; nie deklarujemy pełnej aplikacji. |
 
 ## Wspólny format3/4
@@ -43,7 +43,7 @@ Inwentarz c21e664:695 grup,559plików,39496wierszy mechanicznych; nie oznacza wd
 |2|5|Ponowny przydział: startup/config/path/model/log/worker; identyczne defaults, overlay i ownership publicAPI.|
 |3|51|Pack/profile defaults rejestru, legacy/resume/publicwiring; selector respektuje warstwy/wykluczenia12.|
 |4|27|Dalsze KB pack/store profile i grafowy profil; wspólny kontrakt3/4 jużzamknięty.|
-|5|52| Po rebase na e4109df; źródło9 66da570. Niezależny OCR3/3 +22/22 i checkpoint2/2 +31/31 PASS, [dowód](integrator-intake-2026-10-05/5-replay-checkpoint.md). Pełny mixed build/CTest/guard/web jeszcze w toku; main nie przesunięty dla5. |
+|5|52| PRZYJĘTY przyrost; źródło9 `0a81480`. CTest 117/117, native 710/26399, Python 1322/0skip; web PASS. 31wybranych źródeł bez zmian merytorycznych po rebase; OCR3/3 MIME i22/22kontrole, checkpoint2/2scenariusze i31/31kontrole na rzeczywistym kernelu. Forward-only adnotacje i audit przyjęte; runbook autora przypięty w INDEX. Pierwsze timeouty zachowane w archive, progi bez zmian. |
 |6|31|Nowe strojenie tylkoDEV; archiwum/alias/sketch/score jako dane; jakośćdomyślna neutralna.|
 |7|9|Offline plan etapów/kosztów; datowane twierdzenia o metodach. Klucz5€ dostarczywłaściciel.|
 |8|1|Seeding dimensions/projection, bridge metod; pełna aktualna macierzCI, bez luzowania guard.|
@@ -52,12 +52,12 @@ Inwentarz c21e664:695 grup,559plików,39496wierszy mechanicznych; nie oznacza wd
 |11|213|Foundation/profile subsystemy; jedno źródłousage2, nie drugi preset; koordynacja1/3/12.|
 |12|nowy|Onboarding foundationodebrać; dalszeconsumers/retencję/nawigację uzgodnić3/10/11.|
 
-## Do wątku11 — konkretny bloker
+## Do wątku11 — dawny bloker zamknięty w22873e0
 
 `loom/data/runtime/usage_policy.pack:6–12` kopiuje sześć wartości ręcznie. `loom/src/model/gen_runtime_profiles.py:16–34` czyta tylko runtime/*.pack;
 `runtime_profile.cpp:249–265` ładuje tę niezależną tabelę; `test_runtime_bootstrap_profiles.cpp:60–68` porównuje kolejne literały.
 Wyprowadzić wrapper11 z kanonicznego `loom/data/policy/usage_policy.pack`2, zachować walidację/nakładkę oraz shallowConfigoverride.
-Potem rebase, regeneracja i dowód zmiany canonicalsource plus pełne bramki. Integrator nie edytuje implementacji11.
+Dawny bloker powyżej naprawiony w22873e0: projection recipe korzysta z canonical2; generator/native provenance i source-edit tests obecne. Pełne autor127/127. Pozostaje własny rebase/mixedgate9. Integrator nie edytował implementacji11.
 
 ## Archiwum i ograniczenia dowodów
 
@@ -68,9 +68,15 @@ Nie czytano ślepego korpusu ani eval/real-holdout-key;0nowych paidcalls.
 
 ## Do wątku9
 
-Kontynuować całą kolejkę, aktualizować ten indeks po każdym fast-forward. Wstrzymany11 nie blokuje8 ani6.
+Kontynuować całą kolejkę, aktualizować ten indeks po każdym fast-forward. Naprawiony11 ma własny odbiór po dokumentachClaude; niezgłoszony8 nie blokuje6.
 Jeśli pełna bramka konkretnego źródła nie przejdzie, podać dokładny log/miejsce i zwrócić autorowi, zachować pełny negatyw.
 
 ## Do wątku N
 
 Otwarte przekazania są przypisane w tabelach; status przyrostu nie jest zamknięciem wszystkich wymagań właściciela.
+
+## Priorytet właściciela — 2026-10-05 16:50 Europe/Amsterdam
+
+Kolejność:5→1→12→pierwszy10→ClaudeR42/budget(tylkodokumenty, rebase bez build)→11→8→6mechanizm→gotowe drugieprzyrosty. Pierwszy10fa7538d/nowy równoważny prefixda50562: gotowy; cała760ddc3 zawiera drugiprzyrost wstrzymany120/121, nie zastępuje pierwszego. Claude3cd5848e7484d50d00f19f0855bc2cd228ad7f3b: tylkoAGENTS+OWNER_REQUIREMENTS, gotowy clean stage.
+
+Pełne obecne negatywy9 zachowane na archive/2026-10-05/integrator-runtime-negatives (`156a4bb`): buildartefacts, kompletny failed117gate i85plików rawsynthetic DB/WAL. SHA256syntheticZIP52a0f3c14856c7d4609c1b7629926fc3a7e1dee88abdb0ae7f3bde0b41e732a2. Workspace-corruption reproduces; identyczny/tmpcontrol24/24integrity PASS. Dokładny mechanizmnieustalony. Serialny retry pozostał niekompletny; nie sumowano go jako PASS. Nowy kompletny117/117 jest osobnym przebiegiem.

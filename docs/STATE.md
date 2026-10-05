@@ -254,3 +254,11 @@ Powyższe wpisy pozostają historią. Przyjęto przyrost3+4, testowane źródło
 Pełny CTest110/110 (149.03s), guard663 native/24489asercji, 1303Python/0skip; webPASS.
 Wspólny kontrakt METHOD_GRAPH i kanoniczny golden uzgodnione. Integrator: registry/wykonanie/ślad121/1604, canonical+freshnativeconsumerPASS, alias/nested/nested+alias3/3PASS, KBwindowPASS. 3 czystyrebase na30ad7d3; bez merytorycznych zmian. Historyczne negatywy4 pozostają na archive; domyślneprofile/legacywiring to dalszyprzyrost.
 [Dowód9](reports/integrator-intake-2026-10-05/README.md); [bieżący INDEX](reports/INDEX.md). Cały INTERFEJS i wcześniejsze wpisy zachowane;0paidcalls.
+
+## Integrator9 — przyrost 5 (2026-10-05)
+
+Przyjęto po rebase; testowane źródło `0a81480bd1a70b394bac72e98f6b5e7cb49f5d0b`. Pełny CTest 117/117 (225.60s), 710 native / 26399 asercji, 1322 Python / 0 skips; build web PASS.
+
+31wybranych źródeł bez zmian merytorycznych po rebase; OCR3/3 MIME i22/22kontrole, checkpoint2/2scenariusze i31/31kontrole na rzeczywistym kernelu. Forward-only adnotacje i audit przyjęte; runbook autora przypięty w INDEX. Pierwsze timeouty zachowane w archive, progi bez zmian.
+
+[Dowody](reports/integrator-intake-2026-10-05/README.md) i [INDEX](reports/INDEX.md). Zachowano cały INTERFEJS i wcześniejsze wpisy; zero płatnych wywołań.
