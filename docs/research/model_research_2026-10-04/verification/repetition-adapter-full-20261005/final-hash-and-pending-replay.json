@@ -1,0 +1,28 @@
+{
+  "source_sha256": "4eb320b01d4dc4e12c4451d3bd81714e830a52f2de11defceadb2306a2dc6561",
+  "fake_only": true,
+  "proofs": {
+    "empty_capture_hash": {
+      "blocked": true,
+      "error": "repetition_first_capture_hash_invalid"
+    },
+    "null_capture_hash": {
+      "blocked": true,
+      "error": "repetition_first_capture_hash_invalid"
+    },
+    "duplicate_success_http_hash": {
+      "blocked": true,
+      "error": "repetition_duplicate_successful_first_capture"
+    },
+    "duplicate_proven_generation_hash": {
+      "blocked": true,
+      "error": "repetition_duplicate_verified_generation_capture"
+    },
+    "bound_pending_firstlabel": {
+      "label_available": true,
+      "actual_cost_usd": null,
+      "planned_queries": 4
+    }
+  },
+  "source_unchanged_during_probes": true
+}
