@@ -27,3 +27,12 @@ including the old explicit-zero request charge escape and corrected zero-POST
 preflight rejection. ZIP SHA256:
 `3f795f00b87618b8c1be08ff5fd40c61c2758bb9b02de8214a77facfc39cffd4`.
 Its own manifest and reproduction script run without provider calls.
+
+The stage-end final review ZIP preserves 611 complete fabricated payload files
+and exact before/final sources. SHA256:
+`7d5fcf20cd0975d1e56f4b7b9292340ab02064a6fd9815c059799fdf1ed51d03`.
+Its portable verifier and reproduction cover deleted contradiction witnesses,
+partial paused-history loss, bootstrap, resume and cross-stage negatives.
+Final runner SHA256:
+`dd74b3d4197c3d274f780a1b324b56d9d579b8df905c512282e7f33cd25f6b97`.
+All transports are fabricated; no real account or paid evidence is included.
