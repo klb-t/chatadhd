@@ -243,8 +243,12 @@ std::string_view to_string(Lang l) noexcept;
 //                    == "chat adhd", "grafu wiedzy" == "knowledge graph".
 class Normalizer {
  public:
-  // Reads lexicons/stemming.json, stopwords_base.json, stopwords.json and
-  // glossary.json of the pack.
+  // Checked construction: absent normalization capability is Unavailable;
+  // no built-in values are silently restored for a smaller effective pack.
+  static Result<Normalizer> create(const Pack& pack);
+  // Reads the validated stemming recipe, its declared stopword sources,
+  // and glossary.json from the pack. Precondition: a validated /2 recipe;
+  // callers handling optional methods should use create().
   explicit Normalizer(const Pack& pack);
 
   // Lowercase (full Unicode lowering) + diacritic folding (stemming.json "fold").
@@ -266,8 +270,8 @@ class Normalizer {
   // `lang` Pl/En forces the language of every token without a contrary
   // signal (use the observation's language when known).
   std::string phrase_key(std::string_view phrase, bool map_glossary = true, Lang lang = Lang::Unknown) const;
-  // Share of Polish stop words / diacritics decides Pl vs En; both above
-  // 0.25 -> Mixed; too little text -> Unknown.
+  // Share of signal/stop words decides Pl vs En; cutoffs and cue characters
+  // come from stemming.json/normalization. Empty text is Unknown.
   Lang guess_lang(std::string_view text) const;
 
  private:
@@ -282,12 +286,18 @@ class Normalizer {
     std::map<std::string, std::string, std::less<>> exceptions;
   };
   std::map<char32_t, std::string> fold_;
+  std::u32string pl_character_cues_, vowels_, cvc_terminal_exceptions_, undouble_exceptions_;
+  std::string restore_suffix_;
+  bool non_ascii_vowel_, cvc_allow_non_ascii_, undouble_allow_non_ascii_;
+  std::size_t guess_min_tokens_, cvc_vowel_groups_;
+  double mixed_min_fraction_, pl_min_fraction_, en_min_fraction_;
   Stemmer pl_, en_;
   std::set<std::string, std::less<>> stop_;
   std::set<std::string, std::less<>> pl_stop_;
   std::map<std::string, std::string, std::less<>> glossary_;  // phrase key (pl or en) -> en phrase key
   std::size_t glossary_max_tokens_ = 1;
   std::string stem_with(const Stemmer& s, std::string_view token) const;
+  bool has_pl_character_cue(std::string_view token) const;
   bool has_pl_signal(std::string_view lower_token) const;
   std::string key_as(std::string_view lower_token, Lang lang) const;
 };
