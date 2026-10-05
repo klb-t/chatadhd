@@ -1,0 +1,452 @@
+{
+  "schema": "loom.data_in_code.thread_supplement/1",
+  "thread": 12,
+  "namespace": "W12-DIC",
+  "recorded_date": "2026-10-05",
+  "baseline_source_commit": "3c0bc36552ef9851f1174946cfb108549aae3228",
+  "integration_base_commit": "66da570d3b5379492e128d940ad474467082c59f",
+  "requirements_source": {
+    "commit": "3cd5848e7484d50d00f19f0855bc2cd228ad7f3b",
+    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+    "lines": [
+      483,
+      515
+    ],
+    "requirement": "R42"
+  },
+  "original_inventory": {
+    "commit": "c21e664c8145568e0505f9218fda67a75616056f",
+    "reported_groups": 695,
+    "thread_12_exists": false,
+    "count_additive": false
+  },
+  "scope": "Selected second-increment W12 presentation/preset groups plus explicit remaining sites. Not an exhaustive literal guard and not a claim that original 695 groups are migrated.",
+  "implementation_status": "Eight selected groups migrated_reviewed by independent source review. Three remaining and two retained pending guard are explicit. This bounded supplement is not an exhaustive literal audit, full R42 completion, or full CTest acceptance.",
+  "groups": [
+    {
+      "id": "W12-DIC-0001",
+      "title": "Teksty kreatora, formularza i prywatności",
+      "baseline": {
+        "source_commit": "3c0bc36552ef9851f1174946cfb108549aae3228",
+        "path": "loom/web/src/onboarding/OnboardingPanel.tsx",
+        "line_ranges": [
+          [
+            47,
+            64
+          ],
+          [
+            76,
+            96
+          ],
+          [
+            114,
+            167
+          ],
+          [
+            178,
+            236
+          ]
+        ]
+      },
+      "kind": "locale_copy",
+      "destination": "loom/data/onboarding/ui.pack#/locales",
+      "status": "migrated_reviewed",
+      "note": "Widoczne etykiety, przyciski, opisy i komunikaty; wartości scenariusza pozostają w scenario.pack.",
+      "source_review": "Final selected implementation inspected; native core/full CTest and original695/R42 guard remain separate gates."
+    },
+    {
+      "id": "W12-DIC-0002",
+      "title": "Teksty widoku wiedzy i edytora warstw",
+      "baseline": {
+        "source_commit": "3c0bc36552ef9851f1174946cfb108549aae3228",
+        "path": "loom/web/src/onboarding/WhatAppKnows.tsx",
+        "line_ranges": [
+          [
+            15,
+            35
+          ],
+          [
+            46,
+            71
+          ],
+          [
+            80,
+            102
+          ]
+        ]
+      },
+      "kind": "locale_copy",
+      "destination": "loom/data/onboarding/ui.pack#/locales",
+      "status": "migrated_reviewed",
+      "note": "Edycja, usuwanie, historia i kontrolki R40 używają tego samego katalogu.",
+      "source_review": "Final selected implementation inspected; native core/full CTest and original695/R42 guard remain separate gates."
+    },
+    {
+      "id": "W12-DIC-0003",
+      "title": "Komunikaty kontrolera i walidacji formularza",
+      "baseline": {
+        "source_commit": "3c0bc36552ef9851f1174946cfb108549aae3228",
+        "path": "loom/web/src/onboarding/controller.ts",
+        "line_ranges": [
+          [
+            6,
+            6
+          ],
+          [
+            67,
+            67
+          ],
+          [
+            88,
+            107
+          ],
+          [
+            154,
+            158
+          ]
+        ]
+      },
+      "kind": "locale_copy",
+      "destination": "loom/data/onboarding/ui.pack#/locales",
+      "status": "migrated_reviewed",
+      "note": "Błędy zwykłego UI wymagają identyfikatorów wiadomości; obce failure.message nie może być angielskim fallbackiem.",
+      "source_review": "Final selected implementation inspected; native core/full CTest and original695/R42 guard remain separate gates."
+    },
+    {
+      "id": "W12-DIC-0004",
+      "title": "Presety renderowania i początkowego widoku",
+      "baseline": {
+        "source_commit": "3c0bc36552ef9851f1174946cfb108549aae3228",
+        "path": "loom/web/src/onboarding/OnboardingPanel.tsx",
+        "line_ranges": [
+          [
+            20,
+            21
+          ],
+          [
+            55,
+            55
+          ],
+          [
+            72,
+            85
+          ],
+          [
+            137,
+            143
+          ],
+          [
+            158,
+            158
+          ],
+          [
+            176,
+            176
+          ]
+        ]
+      },
+      "kind": "presentation_preset",
+      "destination": "loom/data/onboarding/ui.pack#/defaults",
+      "status": "migrated_reviewed",
+      "note": "Wcięcia JSON, liczba wierszy i początkowy conversation/form są danymi; brak polityki limitującej.",
+      "source_review": "Final selected implementation inspected; native core/full CTest and original695/R42 guard remain separate gates."
+    },
+    {
+      "id": "W12-DIC-0005",
+      "title": "Tokeny wizualne CSS",
+      "baseline": {
+        "source_commit": "3c0bc36552ef9851f1174946cfb108549aae3228",
+        "path": "loom/web/src/onboarding/onboarding.css",
+        "line_ranges": [
+          [
+            1,
+            16
+          ]
+        ]
+      },
+      "kind": "presentation_preset",
+      "destination": "loom/data/onboarding/ui.pack#/defaults/presentation_tokens",
+      "status": "migrated_reviewed",
+      "note": "Marginesy, padding, kolory, rozmiary i radius; mechanika layoutu zostaje w CSS.",
+      "source_review": "Final selected implementation inspected; native core/full CTest and original695/R42 guard remain separate gates."
+    },
+    {
+      "id": "W12-DIC-0006",
+      "title": "Tłumaczenia stanów, pochodzenia i warstw",
+      "baseline": {
+        "source_commit": "3c0bc36552ef9851f1174946cfb108549aae3228",
+        "path": "loom/web/src/onboarding/OnboardingPanel.tsx",
+        "line_ranges": [
+          [
+            47,
+            47
+          ],
+          [
+            76,
+            76
+          ],
+          [
+            186,
+            195
+          ]
+        ]
+      },
+      "kind": "mechanism_translation",
+      "destination": "loom/data/onboarding/ui.pack#/locales",
+      "status": "migrated_reviewed",
+      "note": "Wire states/op/provenance pozostają kontraktem; zwykłe UI pokazuje ich wersje językowe z danych. Również WhatAppKnows.tsx:15,47.",
+      "source_review": "Final selected implementation inspected; native core/full CTest and original695/R42 guard remain separate gates."
+    },
+    {
+      "id": "W12-DIC-0007",
+      "title": "Sześć objaśnień resolvera warstw",
+      "baseline": {
+        "source_commit": "3c0bc36552ef9851f1174946cfb108549aae3228",
+        "path": "loom/src/onboarding/layers.cpp",
+        "line_ranges": [
+          [
+            157,
+            158
+          ],
+          [
+            167,
+            168
+          ],
+          [
+            173,
+            174
+          ],
+          [
+            180,
+            184
+          ],
+          [
+            187,
+            189
+          ],
+          [
+            192,
+            196
+          ]
+        ]
+      },
+      "kind": "locale_copy",
+      "destination": "loom/data/onboarding/ui.pack#/locales/*/layer.*",
+      "status": "migrated_reviewed",
+      "note": "missing/excluded/disabled/user/proposal/builtin; identyfikatory są maszynowe, zdania są danymi.",
+      "source_review": "Final selected implementation inspected; native core/full CTest and original695/R42 guard remain separate gates."
+    },
+    {
+      "id": "W12-DIC-0008",
+      "title": "Drugi preset defaults RuntimeProfile",
+      "baseline": {
+        "source_commit": "3c0bc36552ef9851f1174946cfb108549aae3228",
+        "path": "loom/data/profiles/user.pack",
+        "line_ranges": [
+          [
+            167,
+            213
+          ]
+        ]
+      },
+      "kind": "duplicate_preset",
+      "destination": "loom/src/onboarding/gen_onboarding_pack.py + user.pack#/runtime_bindings",
+      "status": "migrated_reviewed",
+      "note": "Generator ma wyprowadzać runtime_definition.defaults z kanonicznych entries przez istniejące bindings, bez ręcznej kopii settings/privacy.",
+      "source_review": "Final selected implementation inspected; native core/full CTest and original695/R42 guard remain separate gates."
+    },
+    {
+      "id": "W12-DIC-0009",
+      "title": "Proza decyzji prywatności",
+      "baseline": {
+        "source_commit": "3c0bc36552ef9851f1174946cfb108549aae3228",
+        "path": "loom/src/onboarding/profile.cpp",
+        "line_ranges": [
+          [
+            206,
+            237
+          ]
+        ]
+      },
+      "kind": "locale_copy",
+      "destination": "przyszły wspólny katalog identyfikatorów polityki; kontrakt W3/W12",
+      "status": "remaining",
+      "note": "Nie należy mylić wszystkich reason z sześcioma objaśnieniami warstw; także store.cpp:440–441 pozostaje poza tym przyrostem."
+    },
+    {
+      "id": "W12-DIC-0010",
+      "title": "Diagnostyka native i walidacji snapshotu",
+      "baseline": {
+        "source_commit": "3c0bc36552ef9851f1174946cfb108549aae3228",
+        "path": "loom/src/onboarding/profile.cpp",
+        "line_ranges": [
+          [
+            41,
+            67
+          ],
+          [
+            240,
+            240
+          ]
+        ]
+      },
+      "kind": "developer_diagnostic",
+      "destination": "W11: guard/allowlist R42 category 6; W10: mapowanie publicznych błędów",
+      "status": "retained_diagnostic_pending_guard",
+      "note": "Diagnostyka nie jest przeniesionym UI. Ocena wpisów allowlist należy do W11; zwykłe UI nie powinno wyświetlać tej prozy wprost. Dotyczy również store/graph/layers/runtime_adapter oraz native-snapshot.ts."
+    },
+    {
+      "id": "W12-DIC-0011",
+      "title": "Wcięcie natywnego tekstu dokumentu scenariusza",
+      "baseline": {
+        "source_commit": "3c0bc36552ef9851f1174946cfb108549aae3228",
+        "path": "loom/src/onboarding/store.cpp",
+        "line_ranges": [
+          [
+            105,
+            106
+          ]
+        ]
+      },
+      "kind": "presentation_preset",
+      "destination": "przyszły preset formatu inspekcji",
+      "status": "remaining",
+      "note": "json::dump(...,2) dotyczy tekstu source do inspekcji; nie deklarujemy migracji przez samą zmianę frontend JSON.stringify."
+    },
+    {
+      "id": "W12-DIC-0012",
+      "title": "Nazwy kontraktu, schematy i słownik mechanizmu",
+      "baseline": {
+        "source_commit": "3c0bc36552ef9851f1174946cfb108549aae3228",
+        "path": "loom/include/loom/onboarding.h",
+        "line_ranges": [
+          [
+            9,
+            31
+          ]
+        ]
+      },
+      "kind": "contract_and_mechanism",
+      "destination": "R42 categories 1/3; przyszła allowlist W11",
+      "status": "retained_contract_pending_guard",
+      "note": "Nazwy pól, wersje schema, lifecycle/operacje/provenance i identyfikatory wiadomości mogą pozostać w kodzie. Nie jest to zezwolenie na widoczną prozę lub domyślne wartości."
+    },
+    {
+      "id": "W12-DIC-0013",
+      "title": "Etykiety prezentacyjne natywnej projekcji grafu",
+      "baseline": {
+        "source_commit": "3c0bc36552ef9851f1174946cfb108549aae3228",
+        "path": "loom/src/onboarding/graph.cpp",
+        "line_ranges": [
+          [
+            267,
+            275
+          ],
+          [
+            284,
+            285
+          ],
+          [
+            303,
+            304
+          ],
+          [
+            312,
+            313
+          ],
+          [
+            401,
+            403
+          ],
+          [
+            444,
+            445
+          ]
+        ]
+      },
+      "kind": "locale_copy",
+      "destination": "przyszłe dane etykiet projekcji grafu; uzgodnienie kontraktu W3/W12",
+      "status": "remaining",
+      "note": "Entity.label zawiera Built-in defaults, User overrides, Type definitions oraz doklejane sufiksy prompt/parameters/recipe/preset/version. Zmiana tych etykiet nie wymaga zmiany algorytmu, więc są danymi R42. To nie są schema IDs, nazwy pól/predykatów, identyfikatory z danych ani delimitery serializacji. Źródło produktu pozostaje niezmienione."
+    }
+  ],
+  "verification": {
+    "tests_run_by_inventory_author": true,
+    "full_ctest_claimed": false,
+    "independent_pure_helper_cases": 12,
+    "independent_pure_helper_assertions": 47,
+    "helper_evidence": "docs/reports/onboarding-2-2026-10-05-evidence/independent-presentation/verification.json",
+    "root_and_stage_source_audit_all_equal": true,
+    "actual_catalog_message_counts": {
+      "en": 153,
+      "pl": 153
+    },
+    "rendered_react_dom_or_native_behavior_claimed": false
+  },
+  "prerequisite_replay": {
+    "base": "66da570d3b5379492e128d940ad474467082c59f",
+    "published_tip": "aa8872421d7f0a727ae3b986592ab7c1c956d787",
+    "original_branch_tip_unchanged": "3c0bc36552ef9851f1174946cfb108549aae3228",
+    "method": "seven linear unchanged W12 prerequisite commits; separate from new selected migrations",
+    "read_only_blob_audit": "git diff-tree changed path lists plus git rev-parse original:path vs replayed:path; no test verdict inferred",
+    "commits": [
+      {
+        "original": "67e2124ecae25d841e611b629268987372b658fd",
+        "replayed": "b9bf62135483eb1a132831570e4038a6741c6e30",
+        "changed_paths": 1,
+        "changed_path_lists_equal": true,
+        "all_changed_path_blob_sha_equal": true
+      },
+      {
+        "original": "a8640c9b375c5f207dcc2429cbbe646fa8bb452c",
+        "replayed": "ce529710d33da95aa88229c286ac27e01a6094e2",
+        "changed_paths": 5,
+        "changed_path_lists_equal": true,
+        "all_changed_path_blob_sha_equal": true
+      },
+      {
+        "original": "306c6a763c8945402d80f490c183c3b04e51e91a",
+        "replayed": "8331a4991b4537dc21cc892ef36ea50fe8276763",
+        "changed_paths": 4,
+        "changed_path_lists_equal": true,
+        "all_changed_path_blob_sha_equal": true
+      },
+      {
+        "original": "8fd3cbcceb1b24f8d6a91ad14d53a2cf22ea5f93",
+        "replayed": "54ca5a972549fd64c1e8bf405f626319f544b58b",
+        "changed_paths": 10,
+        "changed_path_lists_equal": true,
+        "all_changed_path_blob_sha_equal": true
+      },
+      {
+        "original": "cfd1bda901c221de307a671e0a42aac2e694240b",
+        "replayed": "96ee59f4c5dfc753b4f517b91adaf00366460f24",
+        "changed_paths": 7,
+        "changed_path_lists_equal": true,
+        "all_changed_path_blob_sha_equal": true
+      },
+      {
+        "original": "40907ad28f3244bfe508da647273d2e1d3bcf1b3",
+        "replayed": "6f213a85a1f3cc755ea41644b54b5e4d109724e8",
+        "changed_paths": 2,
+        "changed_path_lists_equal": true,
+        "all_changed_path_blob_sha_equal": true
+      },
+      {
+        "original": "3c0bc36552ef9851f1174946cfb108549aae3228",
+        "replayed": "aa8872421d7f0a727ae3b986592ab7c1c956d787",
+        "changed_paths": 71,
+        "changed_path_lists_equal": true,
+        "all_changed_path_blob_sha_equal": true
+      }
+    ]
+  },
+  "current_data_facts": {
+    "user_pack_path": "loom/data/profiles/user.pack",
+    "user_pack_revision": 3,
+    "presentation_default_key": "presentation.onboarding",
+    "presentation_entry_id": "onboarding.presentation/v1",
+    "presentation_entry_revision": 2,
+    "note": "Current second-increment source facts; no native migration or full-gate result inferred."
+  }
+}
