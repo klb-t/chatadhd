@@ -22,7 +22,7 @@ const char* const kPackChunks0[] = {
   },
   {
    "path": "lexicons/stemming.json",
-   "schema": "loom.kb.stemming/1"
+   "schema": "loom.kb.stemming/2"
   },
   {
    "path": "lexicons/glossary.json",
@@ -2223,8 +2223,47 @@ const char* const kPackChunks3[] = {
     nullptr};
 const char* const kPackChunks4[] = {
     R"LOOMKB({
-  "schema": "loom.kb.stemming/1",
+  "schema": "loom.kb.stemming/2",
   "description": "Light stemmers for match keys (never for display). The algorithm is code (kb::Normalizer, documented in include/loom/kb.h); these are its tables. A token is Polish when it has a Polish diacritic, is a Polish stop word or exception form, or ends with one of pl.markers (checked only from pl.min_token code points); otherwise English. Stemming: exception form -> fixed key; tokens shorter than min_token are kept; the longest matching rewrite is applied; then the longest suffix whose removal keeps min_stem code points is stripped once, except a suffix that ends one of keep_endings when the token ends with that ending ('class', 'status', 'analysis' keep their 's'). After a verbal suffix the stem must keep a vowel ('string' stays), a doubled final consonant other than l/s/z is undoubled ('running' -> 'run'), a restore_e ending gets its 'e' back ('created' -> 'create') and a one-syllable consonant-vowel-consonant stem gets an 'e' ('stored' -> 'store'). Keys are then diacritic-folded. Exception values are the keys the algorithm itself gives the base form, so exception and regular forms agree ('wersji', 'wersjach' -> 'wersj').",
+  "normalization": {
+    "pl_character_cues": "ąćęłńóśźż",
+    "vowels": "aeiouy",
+    "non_ascii_vowel": true,
+    "cvc_terminal_exceptions": "wxy",
+    "undouble_exceptions": "lsz",
+    "cvc_allow_non_ascii": false,
+    "undouble_allow_non_ascii": false,
+    "cvc_vowel_groups": 1,
+    "restore_suffix": "e",
+    "guess_min_tokens": 3,
+    "mixed_min_fraction": 0.25,
+    "pl_min_fraction": 0.05,
+    "en_min_fraction": 0.05,
+    "stopword_sources": [
+      {
+        "lexicon": "stopwords_base",
+        "fields": [
+          "en",
+          "pl",
+          "code"
+        ],
+        "pl_signal_fields": [
+          "pl"
+        ]
+      },
+      {
+        "lexicon": "stopwords",
+        "fields": [
+          "en",
+          "pl",
+          "code"
+        ],
+        "pl_signal_fields": [
+          "pl"
+        ]
+      }
+    ]
+  },
   "fold": {
     "ą": "a",
     "ć": "c",

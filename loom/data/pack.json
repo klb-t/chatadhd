@@ -18,7 +18,7 @@
   },
   {
    "path": "lexicons/stemming.json",
-   "schema": "loom.kb.stemming/1"
+   "schema": "loom.kb.stemming/2"
   },
   {
    "path": "lexicons/glossary.json",
