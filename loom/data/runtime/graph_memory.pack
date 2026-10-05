@@ -1,0 +1,228 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "graph_memory",
+  "revision": 1,
+  "defaults": {
+    "seed_min_label_codepoints": 2,
+    "default_max_nodes": 20,
+    "default_depth": 2,
+    "zero_as_default": true,
+    "topic_kind": "topic",
+    "title_codepoints": 30,
+    "snippet_codepoints": 500,
+    "missing_title": "?",
+    "header": "Relevant context from past conversations:\n",
+    "row": "[{{title}} | {{role}}]: {{text}}",
+    "separator": "\n---\n",
+    "graph_label_codepoints": 40,
+    "default_expand_max_nodes": 500,
+    "context": {
+      "max_tokens": 4000,
+      "include_memory": true,
+      "include_graph": true,
+      "include_search": true,
+      "memory_score": 1.0,
+      "graph_score": 0.8,
+      "search_limit": 10,
+      "codepoints_per_token": 4,
+      "separator": "\n\n",
+      "source_order": [
+        "memory",
+        "graph",
+        "search"
+      ],
+      "oversized_candidate": "stop",
+      "zero_as_default": true,
+      "failure_policy": {
+        "memory": "error",
+        "graph": "error",
+        "search": "omit"
+      }
+    }
+  },
+  "value_schema": {
+    "type": "object",
+    "properties": {
+      "seed_min_label_codepoints": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "default_max_nodes": {
+        "type": "integer",
+        "minimum": 0,
+        "description": "0 means unlimited."
+      },
+      "default_depth": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "zero_as_default": {
+        "type": "boolean"
+      },
+      "topic_kind": {
+        "type": "string"
+      },
+      "title_codepoints": {
+        "type": "integer",
+        "minimum": 0,
+        "description": "0 means unlimited."
+      },
+      "snippet_codepoints": {
+        "type": "integer",
+        "minimum": 0,
+        "description": "0 means unlimited."
+      },
+      "missing_title": {
+        "type": "string"
+      },
+      "header": {
+        "type": "string"
+      },
+      "row": {
+        "type": "string"
+      },
+      "separator": {
+        "type": "string"
+      },
+      "graph_label_codepoints": {
+        "type": "integer",
+        "minimum": 0,
+        "description": "0 means unlimited."
+      },
+      "default_expand_max_nodes": {
+        "type": "integer",
+        "minimum": 0,
+        "description": "0 means unlimited."
+      },
+      "context": {
+        "type": "object",
+        "properties": {
+          "max_tokens": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "include_memory": {
+            "type": "boolean"
+          },
+          "include_graph": {
+            "type": "boolean"
+          },
+          "include_search": {
+            "type": "boolean"
+          },
+          "memory_score": {
+            "type": "number"
+          },
+          "graph_score": {
+            "type": "number"
+          },
+          "search_limit": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "codepoints_per_token": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "separator": {
+            "type": "string"
+          },
+          "source_order": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "memory",
+                "graph",
+                "search"
+              ]
+            }
+          },
+          "oversized_candidate": {
+            "type": "string",
+            "enum": [
+              "stop",
+              "skip"
+            ]
+          },
+          "zero_as_default": {
+            "type": "boolean",
+            "description": "True retains legacy explicit nonpositive max_tokens fallback. False permits explicit0 as unlimited and rejects negative values.",
+            "x-setting": "/context/zero_as_default",
+            "x-consumer": "ContextSelector"
+          },
+          "failure_policy": {
+            "type": "object",
+            "required": [
+              "memory",
+              "graph",
+              "search"
+            ],
+            "properties": {
+              "memory": {
+                "type": "string",
+                "enum": [
+                  "error",
+                  "omit"
+                ],
+                "description": "Whether a failing enabled channel aborts selection or is omitted."
+              },
+              "graph": {
+                "type": "string",
+                "enum": [
+                  "error",
+                  "omit"
+                ],
+                "description": "Whether a failing enabled channel aborts selection or is omitted."
+              },
+              "search": {
+                "type": "string",
+                "enum": [
+                  "error",
+                  "omit"
+                ],
+                "description": "Whether a failing enabled channel aborts selection or is omitted."
+              }
+            },
+            "additionalProperties": false,
+            "x-setting": "/context/failure_policy",
+            "x-consumer": "ContextSelector"
+          }
+        },
+        "required": [
+          "max_tokens",
+          "include_memory",
+          "include_graph",
+          "include_search",
+          "memory_score",
+          "graph_score",
+          "search_limit",
+          "codepoints_per_token",
+          "separator",
+          "source_order",
+          "oversized_candidate",
+          "zero_as_default",
+          "failure_policy"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "required": [
+      "seed_min_label_codepoints",
+      "default_max_nodes",
+      "default_depth",
+      "zero_as_default",
+      "topic_kind",
+      "title_codepoints",
+      "snippet_codepoints",
+      "missing_title",
+      "header",
+      "row",
+      "separator",
+      "graph_label_codepoints",
+      "default_expand_max_nodes",
+      "context"
+    ],
+    "additionalProperties": false
+  }
+}

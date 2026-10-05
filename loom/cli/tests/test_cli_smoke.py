@@ -7,6 +7,7 @@ asserts on exit codes and JSON output. No network access is needed.
 import json
 import os
 import shutil
+import struct
 import subprocess
 import sys
 import tempfile
@@ -39,10 +40,196 @@ def js(*args, **kw):
         return None
 
 
+def profile_only(root, *args, stdin=None, code=0, env=None, command="profile"):
+    argv = [LOOM]
+    if root is not None:
+        argv += ["--data-dir", root]
+    p = subprocess.run(argv + ["--json", "--quiet", command, *args], input=stdin, env=env,
+                       capture_output=True, text=True, timeout=240)
+    assert p.returncode == code, (args, p.returncode, p.stdout, p.stderr)
+    return json.loads(p.stdout)
+
+
+def tree_bytes(root):
+    if not os.path.exists(root):
+        return None
+    tree = {}
+    for parent, dirs, files in os.walk(root):
+        for name in dirs:
+            tree[os.path.relpath(os.path.join(parent, name), root)] = None
+        for name in files:
+            path = os.path.join(parent, name)
+            with open(path, "rb") as f:
+                tree[os.path.relpath(path, root)] = f.read()
+    return tree
+
+
 try:
     # help / usage
     p = subprocess.run([LOOM, "--help"], capture_output=True, text=True)
     assert p.returncode == 0 and "archive run" in p.stdout, "help text"
+    # Early informational commands must not initialize a data directory.
+    for label, args, code in [("help", ["--help"], 0), ("version", ["version"], 0), ("usage", [], 2)]:
+        unopened = os.path.join(tmp, "early-" + label)
+        p = subprocess.run([LOOM, "--data-dir", unopened, *args], capture_output=True, text=True, timeout=240)
+        assert p.returncode == code, (args, p.stdout, p.stderr)
+        assert not os.path.exists(unopened), "early command must not initialize its explicit root"
+    for label in ("read-only-home", "non-directory-home"):
+        home = os.path.join(tmp, label)
+        if label == "read-only-home":
+            os.mkdir(home)
+            os.chmod(home, 0o555)
+        else:
+            with open(home, "w") as f:
+                f.write("synthetic HOME blocker\n")
+        env = dict(os.environ)
+        env.pop("CHATADHD_DATA", None)
+        env.pop("XDG_DATA_HOME", None)
+        env["HOME"] = home
+        try:
+            for args, code in [(["--help"], 0), (["version"], 0), ([], 2)]:
+                p = subprocess.run([LOOM, *args], env=env, capture_output=True, text=True, timeout=240)
+                assert p.returncode == code, (label, args, p.stdout, p.stderr)
+                assert not os.path.exists(os.path.join(home, ".chatadhd")), "early command must not initialize HOME"
+        finally:
+            if label == "read-only-home":
+                os.chmod(home, 0o700)
+
+    # Profile inspection/editing is independent of Runtime startup and migrations.
+    profile_root = os.path.join(tmp, "profile-only")
+    assert "cli" in profile_only(profile_root, "list")
+    assert profile_only(profile_root) == profile_only(profile_root, "list")
+    profile_builtin = profile_only(profile_root, "inspect", "cli")
+    assert profile_only(profile_root, "validate", "cli", stdin="{}")["hash"] == profile_builtin["hash"]
+    assert not os.path.exists(profile_root), "profile reads/validation must not initialize any directory"
+    for op, domain, body, code in [("inspect", "no-such-domain", None, 1),
+                                  ("save", "cli", "{broken", 1),
+                                  ("save", "cli", '{"schema":"loom.runtime_profile_overlay/1","domain":"cli","patch":[]}', 1),
+                                  ("save", "usage_policy", '{"growth_factor":1}', 1),
+                                  ("save", "usage_policy", '{"initial_baselines":{"":{"tokens":1}}}', 1),
+                                  ("save", "usage_policy", '{"initial_baselines":{"cohort":{"":1}}}', 1)]:
+        assert "error" in profile_only(profile_root, op, domain, stdin=body, code=code)
+        assert not os.path.exists(profile_root), "failed validation/save must not initialize a root"
+
+    # An explicit choice equal to builtin must remain a stored choice after later saves.
+    title_default = profile_builtin["values"]["creation"]["conversation_title"]
+    explicit_defaults = {"creation": {"conversation_title": title_default},
+                         "flags": profile_builtin["values"]["flags"]}
+    saved_equal = profile_only(profile_root, "save", "cli", stdin=json.dumps(explicit_defaults))
+    assert saved_equal["hash"] == profile_builtin["hash"] and saved_equal["is_builtin"]
+    profile_path = os.path.join(profile_root, "profiles", "cli.pack")
+    document = json.loads(open(profile_path).read())
+    assert document["overrides"]["creation"]["conversation_title"] == title_default
+    assert document["overrides"]["flags"] == profile_builtin["values"]["flags"]
+    assert set(tree_bytes(profile_root)) == {"profiles", "profiles/cli.pack"}, "save only creates its overlay"
+    # The advertised overlay contract requires overrides even with a patch.
+    invalid_existing = os.path.join(profile_root, "profiles", "memory.pack")
+    with open(invalid_existing, "w") as f:
+        json.dump({"schema": "loom.runtime_profile_overlay/1", "domain": "memory", "patch": []}, f)
+    invalid_tree = tree_bytes(profile_root)
+    assert "error" in profile_only(profile_root, "inspect", "memory", code=1)
+    assert "error" in profile_only(profile_root, "save", "memory", stdin="{}", code=1)
+    assert tree_bytes(profile_root) == invalid_tree, "invalid existing envelope must not be rewritten"
+    os.remove(invalid_existing)
+    profile_only(profile_root, "save", "cli", stdin=json.dumps({"commands": {"pfixture": "profile"},
+                 "subcommands": {"profile": {"peekfixture": "inspect"}}}))
+    document = json.loads(open(profile_path).read())
+    assert document["overrides"]["creation"]["conversation_title"] == title_default
+    assert profile_only(profile_root, "peekfixture", "cli", command="pfixture")["values"]["commands"]["pfixture"] == "profile"
+
+    # Equal-value patch replacements preserve intent too, without inserting array elements.
+    profile_only(profile_root, "save", "cli", stdin=json.dumps({
+        "schema": "loom.runtime_profile_overlay/1", "domain": "cli", "overrides": {},
+        "patch": [{"op": "replace", "path": "/limits/conversation_list",
+                   "value": profile_builtin["values"]["limits"]["conversation_list"]},
+                  {"op": "replace", "path": "/flags/0", "value": profile_builtin["values"]["flags"][0]}]}))
+    document = json.loads(open(profile_path).read())
+    assert any(op["op"] == "replace" and op["path"] == "/limits/conversation_list" for op in document["patch"])
+    assert profile_only(profile_root, "inspect", "cli")["values"]["flags"] == profile_builtin["values"]["flags"]
+
+    # A removed array element survives a partial save; a later shorter array
+    # replacement must not replay the previous remove against invalid indices.
+    profile_only(profile_root, "save", "cli", stdin=json.dumps({
+        "schema": "loom.runtime_profile_overlay/1", "domain": "cli", "overrides": {},
+        "patch": [{"op": "remove", "path": "/flags/16"}]}))
+    profile_only(profile_root, "save", "cli", stdin=json.dumps({"creation": {"conversation_title": title_default}}))
+    assert "no-priors" not in profile_only(profile_root, "inspect", "cli")["values"]["flags"]
+    shorter_flags = profile_builtin["values"]["flags"][:2]
+    profile_only(profile_root, "save", "cli", stdin=json.dumps({"flags": shorter_flags}))
+    assert profile_only(profile_root, "inspect", "cli")["values"]["flags"] == shorter_flags
+    profile_only(profile_root, "save", "cli", stdin=json.dumps({"flags": profile_builtin["values"]["flags"]}))
+
+    # Corrupt unrelated runtime files do not get read, repaired, migrated or created.
+    for name, content in [("chatadhd.db", b"synthetic invalid database\x00"),
+                          ("config.json", b"{synthetic invalid config"),
+                          (".chatadhd_data", b"unchanged synthetic sentinel\n")]:
+        with open(os.path.join(profile_root, name), "wb") as f:
+            f.write(content)
+    untouched = tree_bytes(profile_root)
+    profile_only(profile_root, "list")
+    profile_only(profile_root, "inspect", "cli")
+    profile_only(profile_root, "validate", "cli", stdin="{}")
+    assert tree_bytes(profile_root) == untouched, "profile reads must not touch Runtime files"
+    os.chmod(profile_root, 0o555)
+    try:
+        assert profile_only(profile_root, "inspect", "cli")["values"]["creation"]["conversation_title"] == title_default
+        assert tree_bytes(profile_root) == untouched, "read-only inspection must not initialize data"
+    finally:
+        os.chmod(profile_root, 0o700)
+
+    usage_changes = {"baseline_window": None, "initial_baselines": {"open-cohort": {"tokens": None, "calls": 0}},
+                     "fixture_extension": {"description": "open native contract"},
+                     "overrides": {"description": "ordinary open extension, not an envelope"}}
+    usage_validated = profile_only(profile_root, "validate", "usage_policy", stdin=json.dumps(usage_changes))
+    assert usage_validated["values"]["baseline_window"] is None
+    assert usage_validated["values"]["overrides"] == usage_changes["overrides"]
+    assert tree_bytes(profile_root) == untouched, "native validation does not write/activate usage policy"
+    profile_only(profile_root, "save", "usage_policy", stdin=json.dumps(usage_changes))
+    usage_path = os.path.join(profile_root, "profiles", "usage_policy.pack")
+    usage_bytes = open(usage_path, "rb").read()
+    usage_tree = tree_bytes(profile_root)
+    assert set(usage_tree) == set(untouched) | {"profiles/usage_policy.pack"}, "usage save creates only its overlay"
+    assert all(usage_tree[name] == content for name, content in untouched.items()), "usage save leaves all other files unchanged"
+    for invalid in [{"growth_factor": 1}, {"initial_baselines": {"": {"tokens": 1}}},
+                    {"initial_baselines": {"cohort": {"": 1}}}, {"initial_baselines": {"cohort": {"tokens": -1}}}]:
+        for op in ("validate", "save"):
+            assert "error" in profile_only(profile_root, op, "usage_policy", stdin=json.dumps(invalid), code=1)
+            assert open(usage_path, "rb").read() == usage_bytes, "native rejection must preserve saved bytes"
+    usage_native_invalid = json.loads(usage_bytes)
+    usage_native_invalid["overrides"]["growth_factor"] = 1
+    with open(usage_path, "w") as f:
+        json.dump(usage_native_invalid, f)
+    assert "error" in profile_only(profile_root, "validate", "usage_policy", stdin="{}", code=1)
+    with open(usage_path, "wb") as f:
+        f.write(usage_bytes)
+    assert open(os.path.join(profile_root, "config.json"), "rb").read() == untouched["config.json"]
+    assert not os.path.exists(os.path.join(profile_root, "usage.db")), "profile editor must not open a ledger"
+
+    # A failed atomic write preserves the original overlay and unrelated files.
+    os.mkdir(os.path.join(profile_root, "profiles", "cli.tmp"))
+    before_failed_write = tree_bytes(profile_root)
+    assert "error" in profile_only(profile_root, "save", "cli", stdin='{"creation":{"conversation_title":"not saved"}}', code=1)
+    assert tree_bytes(profile_root) == before_failed_write, "failed save must preserve the complete tree"
+    os.rmdir(os.path.join(profile_root, "profiles", "cli.tmp"))
+
+    # Discovery honors explicit > environment > sentinel candidate, without initialization.
+    discover_home = os.path.join(tmp, "profile-discovery-home")
+    discover_xdg = os.path.join(tmp, "profile-discovery-xdg")
+    env = dict(os.environ, HOME=discover_home, XDG_DATA_HOME=discover_xdg, CHATADHD_DATA=profile_root)
+    assert profile_only(None, "inspect", "cli", env=env)["values"]["commands"]["pfixture"] == "profile"
+    assert profile_only(os.path.join(tmp, "profile-explicit-absent"), "inspect", "cli", env=env)["hash"] == profile_builtin["hash"]
+    env.pop("CHATADHD_DATA")
+    home_root = os.path.join(discover_home, ".chatadhd")
+    os.makedirs(os.path.join(home_root, "profiles"))
+    with open(os.path.join(home_root, ".chatadhd_data"), "w") as f:
+        f.write("synthetic candidate\n")
+    with open(os.path.join(home_root, "profiles", "cli.pack"), "w") as f:
+        json.dump({"schema": "loom.runtime_profile_overlay/1", "domain": "cli",
+                   "overrides": {"creation": {"conversation_title": "sentinel candidate"}}}, f)
+    candidate_before = tree_bytes(home_root)
+    assert profile_only(None, "inspect", "cli", env=env)["values"]["creation"]["conversation_title"] == "sentinel candidate"
+    assert tree_bytes(home_root) == candidate_before and not os.path.exists(discover_xdg)
+
     p = subprocess.run([LOOM, "no-such-command"], capture_output=True, text=True)
     assert p.returncode == 2, "unknown command exit 2"
 
@@ -147,6 +334,65 @@ try:
     assert knowledge["status"] == "done", knowledge
     assert len(knowledge["stages"]) == 6, knowledge
     assert os.path.isfile(os.path.join(knowledge_out, "SELF.md"))
+
+    # Execution profiles: actual CLI bootstrap, effective settings, and checked persistence.
+    domains = js("profile", "list")
+    assert {"cli", "selector", "materialize", "memory"}.issubset(domains), domains
+    builtin_help = js("profile", "inspect", "cli")["values"]["help"]
+    assert run("--help").stdout == builtin_help
+    cli_before = js("profile", "inspect", "cli")
+    settings = {"help": "profile help fixture\n", "commands": {"vfixture": "version", "cfixture": "conv"},
+                "subcommands": {"conv": {"newfixture": "create"}, "profile": {"peekfixture": "inspect"}},
+                "flags": cli_before["values"]["flags"] + ["fixture-toggle"],
+                "limits": {"conversation_list": 2}, "creation": {"conversation_title": "Profile title"}}
+    validated = js("profile", "validate", "cli", stdin=json.dumps(settings))
+    assert validated["hash"] != cli_before["hash"]
+    assert js("profile", "inspect", "cli")["hash"] == cli_before["hash"], "validate must not write"
+    saved = js("profile", "save", "cli", stdin=json.dumps(settings))
+    assert js("profile", "inspect", "cli")["hash"] == saved["hash"]
+    assert run("--help").stdout == "profile help fixture\n"
+    assert js("vfixture")["abi"] >= 1
+    assert js("profile", "peekfixture", "cli")["hash"] == saved["hash"]
+    assert js("cfixture", "newfixture")["title"] == "Profile title"
+    assert len(js("conv", "list", "--fixture-toggle")) == 2
+    assert len(js("conv", "list", "--limit", "100")) > 2, "explicit limit wins"
+    stored_path = os.path.join(data, "profiles", "cli.pack")
+    stored_bytes = open(stored_path, "rb").read()
+    rejected = js("profile", "save", "cli", stdin=json.dumps({"limits": {"conversation_list": "two"}}), code=1)
+    assert "error" in rejected
+    assert open(stored_path, "rb").read() == stored_bytes, "invalid save must preserve file"
+    rejected = js("profile", "save", "cli", stdin=json.dumps({"presentation": {"score_decimal_scale": 0}}), code=1)
+    assert "error" in rejected
+    assert open(stored_path, "rb").read() == stored_bytes, "zero decimal scale must not poison bootstrap"
+    # Wider values must pass checked native size_t conversion without wrapping.
+    native_size_max = (1 << (8 * struct.calcsize("P"))) - 1
+    large_sizes = {"presentation": {"widths": {"default": native_size_max},
+                                    "timestamps": {"message": native_size_max}, "hash_chars": native_size_max,
+                                    "score_decimal_scale": float.fromhex("0x0.0000000000001p-1022")}}
+    saved_sizes = js("profile", "save", "cli", stdin=json.dumps(large_sizes))
+    assert saved_sizes["values"]["presentation"]["hash_chars"] == native_size_max
+    assert js("profile", "inspect", "cli")["hash"] == saved_sizes["hash"]
+    assert js("version")["abi"] >= 1, "bootstrap accepts positive denormal scale and native presentation maxima"
+    os.remove(stored_path)
+    assert run("--help").stdout == builtin_help
+
+    # A dictionary removal must survive save, reload and a subsequent partial override.
+    changed = js("profile", "save", "materialize", stdin=json.dumps({
+        "schema": "loom.runtime_profile_overlay/1", "domain": "materialize", "overrides": {},
+        "patch": [{"op": "remove", "path": "/languages/.cpp"}]}))
+    assert ".cpp" not in changed["values"]["languages"]
+    changed = js("profile", "save", "materialize", stdin=json.dumps({"language": "pl"}))
+    reloaded = js("profile", "inspect", "materialize")
+    assert ".cpp" not in reloaded["values"]["languages"] and reloaded["values"]["language"] == "pl"
+    assert changed["hash"] == reloaded["hash"]
+    os.remove(os.path.join(data, "profiles", "materialize.pack"))
+
+    # Existing malformed overlays fail explicitly, including early help parsing.
+    with open(stored_path, "w") as f:
+        f.write("{broken")
+    assert "error" in js("profile", "inspect", "cli", code=1)
+    assert run("--help", code=1).returncode == 1
+    os.remove(stored_path)
 
     # crypto (password from stdin)
     run("crypto", "setup", stdin="pw-123\n")

@@ -3,6 +3,7 @@
 #include "loom/github_sync.h"
 
 #include <algorithm>
+#include <cctype>
 #include <map>
 #include <regex>
 
@@ -19,6 +20,27 @@ using OptFiles = std::optional<std::vector<GitHubFile>>;
 
 namespace {
 constexpr std::string_view kLog = "loom.github";
+
+Status permit_direction(const SyncConfig& config, const RuntimeProfile& profile, std::string_view operation) {
+  const auto& policy = profile.values().at("sync_policy");
+  const auto& directions = policy.at("directions");
+  const auto& rule = directions.contains(config.sync_direction)
+      ? directions.at(config.sync_direction) : policy.at("unknown_direction");
+  if (rule.at(std::string(operation)).get<bool>()) return {};
+  LOOM_TRY_ASSIGN(auto message, render_profile_template(
+      policy.at("disabled_message_templates").at(std::string(operation)).get<std::string>(),
+      Json{{"mode", config.sync_direction}}));
+  auto display = message;
+  if (!display.empty()) display[0] = static_cast<char>(std::toupper(static_cast<unsigned char>(display[0])));
+  log::warn(kLog, "{}", display);
+  return Error(Errc::Unsupported, std::move(message));
+}
+
+bool selected_status(const Json& statuses, std::string_view status) {
+  return std::any_of(statuses.begin(), statuses.end(), [&](const Json& item) {
+    return item.get<std::string>() == status;
+  });
+}
 
 // Python fnmatch.translate(), reimplemented over std::regex (ECMAScript).
 // '.' in the emitted pattern is written as [\s\S] instead of relying on an
@@ -106,6 +128,27 @@ Result<GitHubFile> GitHubFile::from_json(const Json& j) {
   return f;
 }
 
+namespace {
+Result<RuntimeProfile> github_profile(const std::optional<RuntimeProfile>& supplied) {
+  if (supplied && supplied->domain() != "github") return Error(Errc::InvalidArgument, "expected github runtime profile");
+  LOOM_TRY_ASSIGN(auto builtin, RuntimeProfile::builtin("github"));
+  return supplied ? builtin.with_values(supplied->values()) : Result<RuntimeProfile>(std::move(builtin));
+}
+
+void apply_sync_defaults(SyncConfig& config, const RuntimeProfile& profile) {
+  const auto& v = profile.values();
+  config.branch = v.at("branch").get<std::string>();
+  config.sync_direction = v.at("sync_direction").get<std::string>();
+  config.auto_sync = v.at("auto_sync").get<bool>();
+  config.include_patterns = v.at("include_patterns").get<std::vector<std::string>>();
+  config.exclude_patterns = v.at("exclude_patterns").get<std::vector<std::string>>();
+}
+}  // namespace
+
+SyncConfig::SyncConfig() {
+  if (auto profile = RuntimeProfile::builtin("github")) apply_sync_defaults(*this, *profile);
+}
+
 Json SyncConfig::to_json() const {
   return Json{{"repo", repo},
               {"branch", branch},
@@ -116,14 +159,18 @@ Json SyncConfig::to_json() const {
               {"exclude_patterns", exclude_patterns}};
 }
 
-Result<SyncConfig> SyncConfig::from_json(const Json& j) {
+Result<SyncConfig> SyncConfig::from_json(const Json& j, const std::optional<RuntimeProfile>& profile) {
   if (!j.is_object()) return Error(Errc::Parse, "SyncConfig must be a JSON object");
   SyncConfig c;
+  if (profile) {
+    LOOM_TRY_ASSIGN(auto checked, github_profile(profile));
+    apply_sync_defaults(c, checked);
+  }
   c.repo = json::get_string(j, "repo");
-  c.branch = json::get_string(j, "branch", "main");
+  c.branch = json::get_string(j, "branch", c.branch);
   c.local_path = json::get_string(j, "local_path");
-  c.sync_direction = json::get_string(j, "sync_direction", "bidirectional");
-  c.auto_sync = json::get_bool(j, "auto_sync", false);
+  c.sync_direction = json::get_string(j, "sync_direction", c.sync_direction);
+  c.auto_sync = json::get_bool(j, "auto_sync", c.auto_sync);
   if (const Json* inc = json::find(j, "include_patterns"); inc && inc->is_array()) {
     c.include_patterns.clear();
     for (const auto& v : *inc) {
@@ -143,41 +190,59 @@ Result<SyncConfig> SyncConfig::from_json(const Json& j) {
 
 namespace {
 
-net::Headers github_headers(const SyncConfig& cfg) {
-  net::Headers h = {{"Accept", "application/vnd.github.v3+json"}, {"User-Agent", "ChatADHD-Sync"}};
-  if (!cfg.token.empty()) h.push_back({"Authorization", "token " + cfg.token});
+Result<net::Headers> github_headers(const SyncConfig& cfg, const RuntimeProfile& profile) {
+  net::Headers h;
+  const auto& headers = profile.values().at("headers");
+  // Header order is part of the legacy request serialization.
+  for (auto it = headers.begin(); it != headers.end(); ++it) h.push_back({it.key(), it.value().get<std::string>()});
+  if (!cfg.token.empty()) {
+    LOOM_TRY_ASSIGN(auto auth, render_profile_template(profile.values().at("authorization_template").get<std::string>(), Json{{"token", cfg.token}}));
+    h.push_back({"Authorization", std::move(auth)});
+  }
   return h;
 }
 
-std::string contents_url(const SyncConfig& cfg, std::string_view path) {
+std::string contents_url(const SyncConfig& cfg, std::string_view path, const RuntimeProfile& profile) {
   // Python: f"{BASE_URL}/repos/{repo}/contents/{path}" - the trailing slash is
   // always there, even when path is empty (top-level listing).
-  std::string url = std::string(GitHubSync::kBaseUrl) + "/repos/" + cfg.repo + "/contents/";
+  std::string url = profile.values().at("base_url").get<std::string>() + "/repos/" + cfg.repo + "/contents/";
   url += path;
   return url;
 }
 
 }  // namespace
 
-GitHubSync::GitHubSync(SyncConfig cfg, net::HttpTransport& http) : cfg_(std::move(cfg)), http_(http) {}
+const std::string GitHubSync::kBaseUrl = [] {
+  auto profile = RuntimeProfile::builtin("github");
+  return profile ? profile->values().at("base_url").get<std::string>() : std::string();
+}();
+
+GitHubSync::GitHubSync(SyncConfig cfg, net::HttpTransport& http, std::optional<RuntimeProfile> profile)
+    : cfg_(std::move(cfg)), http_(http), profile_(github_profile(profile)) {}
+
+Result<Json> GitHubSync::runtime_profile() const { LOOM_TRY(profile_); return profile_->inspection(); }
 
 bool GitHubSync::test_connection() {
+  if (!profile_) return false;
   net::HttpRequest req;
   req.method = "GET";
-  req.url = std::string(kBaseUrl) + "/repos/" + cfg_.repo;
-  req.headers = github_headers(cfg_);
-  req.timeout_ms = 10000;
+  req.url = profile_->values().at("base_url").get<std::string>() + "/repos/" + cfg_.repo;
+  auto headers = github_headers(cfg_, *profile_);
+  if (!headers) return false;
+  req.headers = std::move(*headers);
+  req.timeout_ms = profile_->values().at("connection_timeout_ms").get<int>();
   auto resp = http_.send(req);
   return resp && resp->status == 200;
 }
 
 Result<std::vector<GitHubFile>> GitHubSync::list_remote_files(std::string_view path) {
+  LOOM_TRY(profile_);
   std::vector<GitHubFile> files;
   net::HttpRequest req;
   req.method = "GET";
-  req.url = net::with_query(contents_url(cfg_, path), {{"ref", cfg_.branch}});
-  req.headers = github_headers(cfg_);
-  req.timeout_ms = 30000;
+  req.url = net::with_query(contents_url(cfg_, path, *profile_), {{"ref", cfg_.branch}});
+  LOOM_TRY_ASSIGN(req.headers, github_headers(cfg_, *profile_));
+  req.timeout_ms = profile_->values().at("request_timeout_ms").get<int>();
 
   auto resp = http_.send(req);
   if (!resp) {
@@ -295,11 +360,12 @@ Result<std::vector<GitHubFile>> GitHubSync::get_sync_status() {
 }
 
 Result<std::string> GitHubSync::fetch_file_content(const GitHubFile& file) {
+  LOOM_TRY(profile_);
   if (!file.url.empty()) {
     net::HttpRequest req;
     req.method = "GET";
     req.url = file.url;
-    req.timeout_ms = 30000;
+    req.timeout_ms = profile_->values().at("request_timeout_ms").get<int>();
     auto resp = http_.send(req);
     if (!resp || !resp->ok()) {
       log::error(kLog, "Failed to fetch {}: {}", file.path, resp ? std::to_string(resp->status) : resp.error().message);
@@ -309,9 +375,9 @@ Result<std::string> GitHubSync::fetch_file_content(const GitHubFile& file) {
   }
   net::HttpRequest req;
   req.method = "GET";
-  req.url = net::with_query(contents_url(cfg_, file.path), {{"ref", cfg_.branch}});
-  req.headers = github_headers(cfg_);
-  req.timeout_ms = 30000;
+  req.url = net::with_query(contents_url(cfg_, file.path, *profile_), {{"ref", cfg_.branch}});
+  LOOM_TRY_ASSIGN(req.headers, github_headers(cfg_, *profile_));
+  req.timeout_ms = profile_->values().at("request_timeout_ms").get<int>();
   auto resp = http_.send(req);
   if (!resp || !resp->ok()) {
     log::error(kLog, "Failed to fetch {}: {}", file.path, resp ? std::to_string(resp->status) : resp.error().message);
@@ -334,10 +400,8 @@ Result<std::string> GitHubSync::fetch_file_content(const GitHubFile& file) {
 }
 
 Status GitHubSync::pull_file(const GitHubFile& file) {
-  if (cfg_.sync_direction == "push_only") {
-    log::warn(kLog, "Pull disabled in push_only mode");
-    return Error(Errc::Unsupported, "pull disabled in push_only mode");
-  }
+  LOOM_TRY(profile_);
+  LOOM_TRY(permit_direction(cfg_, *profile_, "pull"));
   LOOM_TRY_ASSIGN(std::string content, fetch_file_content(file));
   if (content.empty() && file.size > 0) return Error(Errc::Http, "empty content for non-empty file " + file.path);
 
@@ -349,10 +413,8 @@ Status GitHubSync::pull_file(const GitHubFile& file) {
 }
 
 Status GitHubSync::push_file(const GitHubFile& file, const std::optional<std::string>& message) {
-  if (cfg_.sync_direction == "pull_only") {
-    log::warn(kLog, "Push disabled in pull_only mode");
-    return Error(Errc::Unsupported, "push disabled in pull_only mode");
-  }
+  LOOM_TRY(profile_);
+  LOOM_TRY(permit_direction(cfg_, *profile_, "push"));
   if (!file.local_path || file.local_path->empty()) return Error(Errc::InvalidArgument, "file has no local_path");
 
   auto content = fsutil::read_file(*file.local_path);
@@ -361,18 +423,23 @@ Status GitHubSync::push_file(const GitHubFile& file, const std::optional<std::st
     return content.error();
   }
 
-  Json body{{"message", message.value_or("Update " + file.path + " via ChatADHD")},
+  std::string commit_message;
+  if (message) commit_message = *message;
+  else {
+    LOOM_TRY_ASSIGN(commit_message, render_profile_template(profile_->values().at("commit_message_template").get<std::string>(), Json{{"path", file.path}}));
+  }
+  Json body{{"message", commit_message},
            {"content", base64::encode(*content)},
            {"branch", cfg_.branch}};
   if (!file.sha.empty()) body["sha"] = file.sha;
 
   net::HttpRequest req;
   req.method = "PUT";
-  req.url = contents_url(cfg_, file.path);
-  req.headers = github_headers(cfg_);
+  req.url = contents_url(cfg_, file.path, *profile_);
+  LOOM_TRY_ASSIGN(req.headers, github_headers(cfg_, *profile_));
   req.headers.push_back({"Content-Type", "application/json"});
   req.body = json::dump(body);
-  req.timeout_ms = 30000;
+  req.timeout_ms = profile_->values().at("request_timeout_ms").get<int>();
 
   auto resp = http_.send(req);
   if (!resp) {
@@ -392,6 +459,7 @@ Json tally(int success, int failed) { return Json{{"success", success}, {"failed
 }  // namespace
 
 Result<Json> GitHubSync::pull_all(const OptFiles& files) {
+  LOOM_TRY(profile_);
   std::vector<GitHubFile> chosen;
   if (files) {
     chosen = *files;
@@ -399,7 +467,7 @@ Result<Json> GitHubSync::pull_all(const OptFiles& files) {
     auto status = get_sync_status();
     if (!status) return status.error();
     for (auto& f : *status) {
-      if (f.status == "new_remote" || f.status == "modified") chosen.push_back(std::move(f));
+      if (selected_status(profile_->values().at("sync_policy").at("pull_statuses"), f.status)) chosen.push_back(std::move(f));
     }
   }
   int ok = 0, failed = 0;
@@ -411,6 +479,7 @@ Result<Json> GitHubSync::pull_all(const OptFiles& files) {
 }
 
 Result<Json> GitHubSync::push_all(const OptFiles& files) {
+  LOOM_TRY(profile_);
   std::vector<GitHubFile> chosen;
   if (files) {
     chosen = *files;
@@ -418,7 +487,7 @@ Result<Json> GitHubSync::push_all(const OptFiles& files) {
     auto status = get_sync_status();
     if (!status) return status.error();
     for (auto& f : *status) {
-      if (f.status == "new_local" || f.status == "modified") chosen.push_back(std::move(f));
+      if (selected_status(profile_->values().at("sync_policy").at("push_statuses"), f.status)) chosen.push_back(std::move(f));
     }
   }
   int ok = 0, failed = 0;
@@ -430,6 +499,7 @@ Result<Json> GitHubSync::push_all(const OptFiles& files) {
 }
 
 Result<Json> GitHubSync::sync(const OptFiles& files) {
+  LOOM_TRY(profile_);
   std::vector<GitHubFile> chosen;
   if (files) {
     chosen = *files;
@@ -440,14 +510,17 @@ Result<Json> GitHubSync::sync(const OptFiles& files) {
   }
   int pulled_ok = 0, pulled_failed = 0, pushed_ok = 0, pushed_failed = 0;
   std::vector<std::string> conflicts;
+  const auto& policy = profile_->values().at("sync_policy");
+  const auto& actions = policy.at("sync_actions");
   for (const auto& f : chosen) {
-    if (f.status == "new_remote") {
+    const auto action = (actions.contains(f.status) ? actions.at(f.status) : policy.at("unknown_sync_action")).get<std::string>();
+    if (action == "pull") {
       if (pull_file(f)) ++pulled_ok;
       else ++pulled_failed;
-    } else if (f.status == "new_local") {
+    } else if (action == "push") {
       if (push_file(f)) ++pushed_ok;
       else ++pushed_failed;
-    } else if (f.status == "modified") {
+    } else if (action == "conflict") {
       conflicts.push_back(f.path);
     }
   }
@@ -457,7 +530,9 @@ Result<Json> GitHubSync::sync(const OptFiles& files) {
 // ── GitHubSyncManager ───────────────────────────────────────────────
 
 GitHubSyncManager::GitHubSyncManager(std::filesystem::path config_path, const Secrets& secrets, net::HttpTransport& http)
-    : path_(std::move(config_path)), secrets_(secrets), http_(http) {
+    : path_(std::move(config_path)), secrets_(secrets), http_(http),
+      profile_(RuntimeProfile::load("github", path_.parent_path())) {
+  if (!profile_) return;
   std::error_code ec;
   if (!fs::exists(path_, ec)) return;
   auto raw = fsutil::read_file(path_);
@@ -471,10 +546,12 @@ GitHubSyncManager::GitHubSyncManager(std::filesystem::path config_path, const Se
     return;
   }
   for (auto it = parsed->begin(); it != parsed->end(); ++it) {
-    auto cfg = SyncConfig::from_json(it.value());
+    auto cfg = SyncConfig::from_json(it.value(), *profile_);
     if (cfg) configs_.emplace(it.key(), *cfg);
   }
 }
+
+Result<Json> GitHubSyncManager::runtime_profile() const { LOOM_TRY(profile_); return profile_->inspection(); }
 
 Status GitHubSyncManager::save() const {
   Json data = Json::object();
@@ -485,13 +562,15 @@ Status GitHubSyncManager::save() const {
 }
 
 Result<SyncConfig> GitHubSyncManager::add_config(std::string_view name, std::string_view repo, std::string_view local_path,
-                                                 std::string_view branch, std::string_view direction) {
+                                                 std::optional<std::string_view> branch, std::optional<std::string_view> direction) {
+  LOOM_TRY(profile_);
   SyncConfig cfg;
+  apply_sync_defaults(cfg, *profile_);
   cfg.repo = std::string(repo);
-  cfg.branch = std::string(branch);
+  if (branch) cfg.branch = std::string(*branch);
   cfg.local_path = std::string(local_path);
-  cfg.token = secrets_.get_string("github_token");
-  cfg.sync_direction = std::string(direction);
+  cfg.token = secrets_.get_string(profile_->values().at("secret_key").get<std::string>());
+  if (direction) cfg.sync_direction = std::string(*direction);
   configs_[std::string(name)] = cfg;
   LOOM_TRY(save());
   return cfg;
@@ -506,10 +585,10 @@ Status GitHubSyncManager::remove_config(std::string_view name) {
 
 std::unique_ptr<GitHubSync> GitHubSyncManager::get_syncer(std::string_view name) const {
   auto it = configs_.find(name);
-  if (it == configs_.end()) return nullptr;
+  if (it == configs_.end() || !profile_) return nullptr;
   SyncConfig cfg = it->second;
-  cfg.token = secrets_.get_string("github_token");
-  return std::make_unique<GitHubSync>(std::move(cfg), http_);
+  cfg.token = secrets_.get_string(profile_->values().at("secret_key").get<std::string>());
+  return std::make_unique<GitHubSync>(std::move(cfg), http_, *profile_);
 }
 
 std::vector<std::string> GitHubSyncManager::list_configs() const {

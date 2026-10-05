@@ -2,27 +2,32 @@
 //
 //   loom [--data-dir DIR] [--json] [--quiet] <command> [args]
 //
-// Every command opens one Runtime on the data directory (shared with the
-// ChatADHD app), without background workers, and closes it on exit.
+// Application commands open one Runtime on the shared data directory, without
+// background workers. Profile editing only reads/writes its profile overlay.
 // --json prints machine-readable JSON; otherwise output is for humans.
 // Secrets and passwords are read from stdin, never from argv.
 #include <unistd.h>
 
 #include <termios.h>
+#include <time.h>
 
 #include <atomic>
 #include <csignal>
+#include <cstdint>
 #include <cstdio>
 #include <cmath>
 #include <fstream>
 #include <iostream>
+#include <limits>
 #include <map>
+#include <optional>
 #include <set>
 #include <sstream>
 #include <string>
 #include <vector>
 
 #include "loom/archive.h"
+#include "archive/profile.h"
 #include "loom/catalog.h"
 #include "loom/chat_engine.h"
 #include "loom/config.h"
@@ -38,8 +43,10 @@
 #include "loom/provenance.h"
 #include "loom/providers.h"
 #include "loom/runtime.h"
+#include "loom/runtime_profile.h"
 #include "loom/semantic_worker.h"
 #include "loom/tasks.h"
+#include "loom/usage_policy.h"
 #include "loom/util/cancel.h"
 #include "loom/util/fs.h"
 #include "loom/util/json.h"
@@ -51,103 +58,67 @@ using namespace loom;
 
 namespace {
 
-const char* kUsage = R"(loom — Loom kernel command line (ChatADHD engine)
+std::optional<RuntimeProfile> g_cli_profile;
+const Json& cli_data() { return g_cli_profile->values(); }
+std::size_t cli_width(std::string_view key) {
+  return cli_data().at("presentation").at("widths").at(std::string(key)).get<std::size_t>();
+}
+std::size_t cli_timestamp(std::string_view key) {
+  return cli_data().at("presentation").at("timestamps").at(std::string(key)).get<std::size_t>();
+}
 
-Usage: loom [--data-dir DIR] [--json] [--quiet] <command> [args]
+// Same discovery precedence as resolve_data_dir, without initialization.
+// Help/version must be able to inspect an existing overlay on a read-only root.
+fs::path cli_data_root_read_only(const std::optional<std::string>& data_dir) {
+  const auto env = PathEnv::from_process();
+  const auto resolve = [&](std::string_view raw) {
+    std::string path(raw);
+    if (!path.empty() && path[0] == '~' && (path.size() == 1 || path[1] == '/') && env.home)
+      path = *env.home + path.substr(1);
+    return fsutil::resolve_path(path);
+  };
+  if (data_dir && !data_dir->empty()) return resolve(*data_dir);
+  if (env.chatadhd_data) return resolve(*env.chatadhd_data);
+  const auto candidates = data_dir_candidates(env);
+  for (const auto& candidate : candidates) {
+    std::error_code ec;
+    if (fs::exists(candidate / kSentinelFile, ec)) return candidate;
+  }
+  return candidates.front();
+}
 
-Global options:
-  --data-dir DIR   data directory (default: $CHATADHD_DATA, sentinel search, ~/.chatadhd)
-  --json           print JSON instead of text
-  --quiet          no progress output on stderr
-  --log-level L    debug | info | warning | error (default: warning)
+Status validate_cli_consumers(const RuntimeProfile& profile) {
+  const auto& presentation = profile.values().at("presentation");
+  const auto check_size = [](const Json& value) -> Status {
+    if (!value.is_number_integer() || (!value.is_number_unsigned() && value.get<std::int64_t>() < 0))
+      return Error(Errc::InvalidArgument, "CLI presentation size must be a nonnegative integer");
+    if (value.get<std::uint64_t>() > std::numeric_limits<std::size_t>::max())
+      return Error(Errc::InvalidArgument, "CLI presentation size exceeds native size_t representation");
+    return {};
+  };
+  for (const auto* group : {"widths", "timestamps"})
+    for (const auto& value : presentation.at(group)) LOOM_TRY(check_size(value));
+  LOOM_TRY(check_size(presentation.at("hash_chars")));
+  const auto scale = presentation.at("score_decimal_scale").get<double>();
+  if (!std::isfinite(scale) || scale <= 0)
+    return Error(Errc::InvalidArgument, "CLI score_decimal_scale must be finite and positive");
+  return {};
+}
 
-Commands:
-  init                                  create/open the data directory, print paths
-  version                               build info
-  conv list [--limit N]                 conversations (newest first)
-  conv create [TITLE]
-  conv show ID [--all]                  messages (--all: versions, excluded, deleted)
-  conv rename ID TITLE
-  conv delete ID
-  msg edit ID TEXT                      new version (old one kept)
-  msg restore ID                        make ID the active version
-  msg versions ID                       all versions of ID's group
-  msg status ID active|excluded|version|deleted
-  chat [--conv ID] [--model M] [--depth N] [--effort E] [--web] MESSAGE...
-                                        stream an answer ("-" reads the message from stdin)
-  import PATH [--title T] [--force] [--export-mode auto|off|on] [--audit]
-                                        universal importer (ChatGPT/Claude/HTML/MD/...); ChatGPT/Claude
-                                        export ZIPs are imported losslessly (on: bare .json too)
-         [--resume | --no-resume] [--json-read-chunk-bytes N] [--json-max-depth N]
-         [--json-inline-threshold-bytes N] [--generic-inference-max-bytes N]
-         [--full-result]                include complete conversation metadata in the receipt too
-         [--audit-scope all|active] [--audit-chars-per-token-low N] [--audit-chars-per-token-high N]
-         [--audit-input-price USD_PER_MILLION --audit-output-price USD_PER_MILLION]
-         [--audit-output-ratio N]          offline text/token/cost estimates; no model call
-                                        exit 0: complete; 4: partial report; 130: cancelled (receipt retained)
-         [--usage-operation-id ID] [--usage-baseline-key KEY]
-         [--usage-confirm-receipt RECEIPT --usage-confirmation-ref OWNER_REF]
-                                        shared usage policy activates after thread 2 integration
-  export CONV_ID [--format json|markdown|text|html] [--out FILE]
-  graph nodes [--kind K] [--limit N]
-  graph edges [--node ID] [--type T]
-  graph expand ID... [--depth N]
-  graph reindex [CONV_ID]
-  graph stats
-  context TEXT [--depth N] [--max-tokens N]      ContextSet for a prompt
-  search QUERY [--limit N] [--conv ID] [--all]   full-text search (FTS5/BM25)
-  semantic status|pause|resume|wake|run         background analysis (run = drain now)
-  memory list | add CONTENT [--parent ID] | delete ID | context
-  config get [KEY] | set KEY VALUE              VALUE is JSON (plain text = string)
-  secret set KEY | has KEY | delete KEY | list  set reads the value from stdin
-  models [--refresh]
-  tasks list [--kind K] [--status S] [--limit N] | show ID | resume | cancel ID
-  provenance ID                         sources + transformation records of an id
-  sources [--limit N]
-  artifacts list [--kind K] | show ID [--out FILE]
-  archive run [--source PATH]... [--repo DIR] [--out DIR] [--seed TERM]...
-              [--project NAME] [--max-passes N] [--max-new-terms N] [--max-hits N]
-              [--rounds N] [--exclude FRAGMENT]... [--no-git] [--no-code]
-              [--include-db] [--llm auto|off] [--force] [--config FILE.json]
-              [--knowledge]                  also run knowledge; failure of either pipeline fails the command
-  archive status [RUN_ID]
-  knowledge run [--source PATH]... [--repo DIR] [--out DIR] [--project NAME] [--cut YYYY-MM-DD]
-                [--no-priors] [--snapshot DIR[=LABEL]]... [--stage S]... [--llm auto|off]
-                [--force] [--config FILE.json]
-                catalog -> extract -> resolve -> assess -> generalize -> materialize (resumable)
-                --cut filters seed priors only; supply an independently date-filtered source corpus for holdout
-  knowledge status [TASK_ID]
-  catalog scan [--source PATH]... [--threads N] [--mobile] [--force]
-               stream files/dirs/zips into loom_cat_units + sketches (R1: no import)
-  catalog profile [--repo DIR]              build the self-profile from the pack + repo
-  catalog score [--profile ID] [--max-passes N]
-  catalog list [--label relevant|candidate|irrelevant] [--project ID] [--text Q]
-               [--sort score|date|id] [--limit N] [--offset N] [--run ID]
-  catalog show UNIT_ID                      metadata, score reasons, verified snippets
-  catalog include UNIT_ID [--reason R] | exclude UNIT_ID [--reason R] | pin UNIT_ID [--reason R]
-  catalog import [--run ID] [--dry-run] [--mode selective|full]
-                 [--include-project-siblings] [--time-window-hours N] [--store-mode copy|link]
-                 targeted import of the selected units (mode=full: every catalogued unit, lossless)
-  catalog watch --source PATH... [--interval SECONDS]
-                 rescans on an interval until Ctrl-C (new/changed files only; already incremental)
-  catalog status
-  catalog eval --truth ground_truth.json [--run ID]
-               recall/precision/noise-trap FP against a synthetic_dev-shaped ground truth
-  crypto status | setup | unlock | lock        passwords are read from stdin
-
-Archive example (the self-hosting run):
-  loom --data-dir /tmp/loom-selfhost archive run --repo . --out docs/selfhost \
-       --seed ChatADHD --seed Loom --seed provenance --seed graph --seed importer
-)";
+Result<RuntimeProfile> load_cli_profile(const std::optional<std::string>& data_dir) {
+  const auto root = cli_data_root_read_only(data_dir);
+  std::error_code ec;
+  (void)fs::symlink_status(root / "profiles" / "cli.pack", ec);
+  // A non-directory path component cannot contain an overlay. Unlike a
+  // permission error, this is a known absence, relevant to early help/version.
+  auto profile = ec == std::errc::not_a_directory ? RuntimeProfile::builtin("cli")
+                                                : RuntimeProfile::load("cli", root);
+  if (!profile) return profile.error();
+  LOOM_TRY(validate_cli_consumers(*profile));
+  return std::move(*profile);
+}
 
 // ── argument parsing ────────────────────────────────────────────────
-const std::set<std::string>& flag_names() {
-  static const std::set<std::string> k = {"json",   "quiet",  "force",   "audit",   "all",     "refresh", "no-git",
-                                          "no-code", "include-db", "web", "help",    "deep",    "mobile",
-                                          "dry-run", "knowledge", "include-project-siblings", "no-priors",
-                                          "resume", "no-resume", "full-result"};
-  return k;
-}
 
 struct Args {
   std::vector<std::string> pos;
@@ -176,7 +147,7 @@ struct UsageError {
   std::string msg;
 };
 
-Args parse(int argc, char** argv, int start) {
+Args parse(int argc, char** argv, int start, const std::set<std::string>& flags) {
   Args a;
   for (int i = start; i < argc; ++i) {
     std::string s = argv[i];
@@ -189,7 +160,7 @@ Args parse(int argc, char** argv, int start) {
         k = k.substr(0, eq);
         has_v = true;
       }
-      if (flag_names().count(k)) {
+      if (flags.count(k)) {
         a.opt[k].push_back(has_v ? v : "1");
       } else {
         if (!has_v) {
@@ -214,10 +185,12 @@ void sigint_handler(int) { g_cancel.cancel(); }
 
 void print_json(const Json& j) { std::cout << json::dump(j, 2) << "\n"; }
 
-std::string one_line(std::string_view s, std::size_t max = 100) {
+std::string one_line(std::string_view s, std::optional<std::size_t> requested_max = std::nullopt) {
+  const std::size_t max = requested_max.value_or(cli_width("default"));
   std::string out;
   for (char c : s) out.push_back(c == '\n' || c == '\r' || c == '\t' ? ' ' : c);
-  if (utf8::length(out) > max) out = std::string(utf8::prefix(out, max - 1)) + "…";
+  if (!max) return "";
+  if (utf8::length(out) > max) out = std::string(utf8::prefix(out, max - 1)) + cli_data().at("presentation").at("ellipsis").get<std::string>();
   return out;
 }
 
@@ -270,20 +243,33 @@ std::string read_all_stdin() {
   return os.str();
 }
 
+Result<Json> read_json_input(const Args& a) {
+  if (a.has("file")) {
+    LOOM_TRY_ASSIGN(auto text, fsutil::read_file(a.get("file")));
+    return json::parse(text);
+  }
+  return json::parse(read_all_stdin());
+}
+
 void progress_line(std::string_view stage, std::int64_t cur, std::int64_t total, std::string_view msg) {
   if (g_quiet) return;
   std::cerr << "\r\x1b[K[" << stage << "] ";
   if (total > 0) std::cerr << cur << "/" << total << " ";
-  std::cerr << one_line(msg, 70) << std::flush;
+  std::cerr << one_line(msg, cli_width("short")) << std::flush;
+}
+
+int cli_limit(Runtime& rt, std::string_view key) {
+  auto profile = must(RuntimeProfile::load("cli", rt.paths().root));
+  return profile.values().at("limits").at(std::string(key)).get<int>();
 }
 
 // ── commands ────────────────────────────────────────────────────────
 void print_conv_line(const Conversation& c) {
-  std::cout << c.id << "  " << c.updated.substr(0, 16) << "  " << one_line(c.title, 70) << "\n";
+  std::cout << c.id << "  " << c.updated.substr(0, cli_timestamp("conversation")) << "  " << one_line(c.title, cli_width("short")) << "\n";
 }
 
 void print_msg(const Message& m) {
-  std::cout << "── " << m.role << " · " << m.id << " · " << m.created.substr(0, 19)
+  std::cout << "── " << m.role << " · " << m.id << " · " << m.created.substr(0, cli_timestamp("message"))
             << (m.status != "active" ? " · " + m.status : "")
             << (m.version_num > 1 ? " · v" + std::to_string(m.version_num) : "") << "\n"
             << m.text << "\n\n";
@@ -293,7 +279,7 @@ int cmd_conv(Runtime& rt, const Args& a) {
   std::string sub = need(a, 0, "conv subcommand");
   Database& db = rt.db();
   if (sub == "list") {
-    auto convs = must(db.list_convs(a.get_int("limit", 50)));
+    auto convs = must(db.list_convs(a.get_int("limit", cli_limit(rt, "conversation_list"))));
     if (g_json) {
       Json j = Json::array();
       for (const auto& c : convs) j.push_back(c.to_json());
@@ -302,7 +288,7 @@ int cmd_conv(Runtime& rt, const Args& a) {
       for (const auto& c : convs) print_conv_line(c);
     }
   } else if (sub == "create") {
-    auto c = must(db.create_conv(a.pos.size() > 1 ? a.pos[1] : "New Chat"));
+    auto c = must(db.create_conv(a.pos.size() > 1 ? a.pos[1] : cli_data().at("creation").at("conversation_title").get<std::string>()));
     g_json ? print_json(c.to_json()) : print_conv_line(c);
   } else if (sub == "show") {
     std::string id = need(a, 1, "conversation id");
@@ -377,7 +363,7 @@ int cmd_chat(Runtime& rt, const Args& a) {
   ChatOptions o;
   if (a.has("conv")) o.conv_id = a.get("conv");
   if (a.has("model")) o.model = a.get("model");
-  if (a.has("depth")) o.context_depth = a.get_int("depth", 2);
+  if (a.has("depth")) o.context_depth = a.get_int("depth", cli_limit(rt, "chat_depth"));
   if (a.has("effort")) o.reasoning_effort = a.get("effort");
   o.web_search = a.has("web");
   o.deep_research = a.has("deep");
@@ -535,7 +521,7 @@ int cmd_import(Runtime& rt, const Args& a) {
 
 int cmd_export(Runtime& rt, const Args& a) {
   std::string id = need(a, 0, "conversation id");
-  std::string fmt = a.get("format", "markdown");
+  std::string fmt = a.get("format", cli_data().at("creation").at("export_format").get<std::string>());
   auto s = must(rt.exporter().export_conversation(id, fmt, a.has("all")));
   if (a.has("out")) {
     must(fsutil::atomic_write(a.get("out"), s));
@@ -553,13 +539,13 @@ int cmd_graph(Runtime& rt, const Args& a) {
     std::optional<std::string_view> kind;
     std::string k = a.get("kind");
     if (!k.empty()) kind = k;
-    auto nodes = must(db.list_nodes(kind, a.get_int("limit", 200)));
+    auto nodes = must(db.list_nodes(kind, a.get_int("limit", cli_limit(rt, "graph_node_list"))));
     if (g_json) {
       Json j = Json::array();
       for (const auto& n : nodes) j.push_back(n.to_json());
       print_json(j);
     } else {
-      for (const auto& n : nodes) std::cout << n.id << "  " << n.kind << "  " << one_line(n.label, 80) << "\n";
+      for (const auto& n : nodes) std::cout << n.id << "  " << n.kind << "  " << one_line(n.label, cli_width("wide")) << "\n";
     }
   } else if (sub == "edges") {
     std::string node = a.get("node"), type = a.get("type");
@@ -575,7 +561,7 @@ int cmd_graph(Runtime& rt, const Args& a) {
   } else if (sub == "expand") {
     std::vector<std::string> seeds(a.pos.begin() + 1, a.pos.end());
     if (seeds.empty()) throw UsageError{"graph expand needs node or message ids"};
-    print_json(must(rt.graph_memory().expand(seeds, a.get_int("depth", 1))));
+    print_json(must(rt.graph_memory().expand(seeds, a.get_int("depth", cli_limit(rt, "graph_expansion_depth")))));
   } else if (sub == "reindex") {
     int n = a.pos.size() > 1 ? rt.graph().reindex_conversation(a.pos[1]) : rt.graph().reindex_all();
     g_json ? print_json(Json{{"reindexed", n}}) : void(std::cout << "reindexed " << n << " messages\n");
@@ -583,8 +569,14 @@ int cmd_graph(Runtime& rt, const Args& a) {
     auto& c = rt.db().conn();
     auto lk = rt.db().lock();
     Json j = Json::object();
-    for (const char* t : {"conversations", "messages", "nodes", "links"}) {
-      j[t] = must(c.query_int(std::string("SELECT COUNT(*) FROM ") + t)).value_or(0);
+    const std::map<std::string, std::string> metrics{
+      {"conversations", "SELECT COUNT(*) FROM conversations"}, {"messages", "SELECT COUNT(*) FROM messages"},
+      {"nodes", "SELECT COUNT(*) FROM nodes"}, {"links", "SELECT COUNT(*) FROM links"}};
+    for (const auto& entry : cli_data().at("graph_stats")) {
+      const auto key = entry.get<std::string>();
+      auto metric = metrics.find(key);
+      if (metric == metrics.end()) throw Error(Errc::Unavailable, "graph metric is unavailable: " + key);
+      j[key] = must(c.query_int(metric->second)).value_or(0);
     }
     Json kinds = Json::object();
     auto st = must(c.prepare("SELECT kind, COUNT(*) FROM nodes GROUP BY kind ORDER BY 2 DESC"));
@@ -605,8 +597,8 @@ int cmd_context(Runtime& rt, const Args& a) {
   ContextRequest req;
   for (const auto& p : a.pos) req.text += (req.text.empty() ? "" : " ") + p;
   if (req.text.empty()) throw UsageError{"context needs text"};
-  req.depth = a.get_int("depth", 0);
-  req.max_tokens = a.get_int("max-tokens", 4000);
+  req.depth = a.get_int("depth", cli_limit(rt, "context_depth"));
+  req.max_tokens = a.get_int("max-tokens", cli_limit(rt, "context_tokens"));
   auto cs = must(rt.context().select(req));
   if (g_json) print_json(cs.to_json());
   else std::cout << cs.prompt_text << "\n\n(" << cs.items.size() << " items, ~" << cs.token_estimate << " tokens"
@@ -618,7 +610,7 @@ int cmd_search(Runtime& rt, const Args& a) {
   std::string q;
   for (const auto& p : a.pos) q += (q.empty() ? "" : " ") + p;
   SearchOptions o;
-  o.limit = a.get_int("limit", 20);
+  o.limit = a.get_int("limit", cli_limit(rt, "search_results"));
   if (a.has("conv")) o.conv_id = a.get("conv");
   o.include_inactive = a.has("all");
   auto r = must(rt.db().search_messages(q, o));
@@ -627,8 +619,8 @@ int cmd_search(Runtime& rt, const Args& a) {
   } else {
     std::cout << r.hits.size() << " hits (" << r.mode << ")\n";
     for (const auto& h : r.hits) {
-      std::cout << h.message.id << "  " << h.message.conv_id << "  " << json::format_float_py(std::round(h.score * 100) / 100)
-                << "  " << one_line(h.snippet, 100) << "\n";
+      std::cout << h.message.id << "  " << h.message.conv_id << "  " << json::format_float_py(std::round(h.score * cli_data().at("presentation").at("score_decimal_scale").get<double>()) / cli_data().at("presentation").at("score_decimal_scale").get<double>())
+                << "  " << one_line(h.snippet, cli_width("default")) << "\n";
     }
   }
   return 0;
@@ -669,13 +661,13 @@ int cmd_memory(Runtime& rt, const Args& a) {
     } else {
       for (const auto& n : all) {
         std::cout << std::string(static_cast<std::size_t>(n.depth) * 2, ' ') << (n.active ? "● " : "○ ") << n.id
-                  << "  " << one_line(n.content, 80) << "\n";
+                  << "  " << one_line(n.content, cli_width("wide")) << "\n";
       }
     }
   } else if (sub == "add") {
     std::optional<std::string> parent;
     if (a.has("parent")) parent = a.get("parent");
-    std::string id = must(m.add_node(need(a, 1, "content"), parent, a.get("type", "text")));
+    std::string id = must(m.add_node(need(a, 1, "content"), parent, a.get("type", cli_data().at("creation").at("memory_node_type").get<std::string>())));
     g_json ? print_json(Json{{"id", id}}) : void(std::cout << id << "\n");
   } else if (sub == "delete") {
     must(m.delete_node(need(a, 1, "memory id"), true));
@@ -751,8 +743,8 @@ int cmd_models(Runtime& rt, const Args& a) {
 }
 
 void print_task(const TaskRecord& t) {
-  std::cout << t.id << "  " << t.kind << "  " << t.status << "  " << t.updated.substr(0, 19)
-            << (t.error.empty() ? "" : "  " + one_line(t.error, 60)) << "\n";
+  std::cout << t.id << "  " << t.kind << "  " << t.status << "  " << t.updated.substr(0, cli_timestamp("task"))
+            << (t.error.empty() ? "" : "  " + one_line(t.error, cli_width("brief"))) << "\n";
 }
 
 int cmd_tasks(Runtime& rt, const Args& a) {
@@ -762,7 +754,7 @@ int cmd_tasks(Runtime& rt, const Args& a) {
     TaskFilter f;
     if (a.has("kind")) f.kind = a.get("kind");
     if (a.has("status")) f.status = a.get("status");
-    f.limit = a.get_int("limit", 50);
+    f.limit = a.get_int("limit", cli_limit(rt, "task_list"));
     auto v = must(te.list(f));
     if (g_json) {
       Json j = Json::array();
@@ -785,7 +777,7 @@ int cmd_tasks(Runtime& rt, const Args& a) {
     // paused tasks too
     TaskFilter f;
     f.status = "paused";
-    f.limit = 1000;
+    f.limit = a.get_int("limit", cli_limit(rt, "task_resume_scan"));
     for (const auto& t : must(te.list(f))) must(te.resume(t.id));
     int runs = must(te.run_pending());
     print_json(Json{{"recovered", rec}, {"runs", runs}});
@@ -815,15 +807,15 @@ int cmd_provenance(Runtime& rt, const Args& a) {
 }
 
 int cmd_sources(Runtime& rt, const Args& a) {
-  auto v = must(rt.provenance().list_sources(a.get_int("limit", 100)));
+  auto v = must(rt.provenance().list_sources(a.get_int("limit", cli_limit(rt, "source_list"))));
   if (g_json) {
     Json j = Json::array();
     for (const auto& s : v) j.push_back(s.to_json());
     print_json(j);
   } else {
     for (const auto& s : v) {
-      std::cout << s.id << "  " << s.kind << "  " << s.format << "  " << s.blob_hash.substr(0, 12) << "  "
-                << one_line(s.uri, 70) << "\n";
+      std::cout << s.id << "  " << s.kind << "  " << s.format << "  " << s.blob_hash.substr(0, cli_data().at("presentation").at("hash_chars").get<std::size_t>()) << "  "
+                << one_line(s.uri, cli_width("short")) << "\n";
     }
   }
   return 0;
@@ -833,7 +825,7 @@ int cmd_artifacts(Runtime& rt, const Args& a) {
   std::string sub = a.pos.empty() ? "list" : a.pos[0];
   if (sub == "list") {
     std::string kind = a.get("kind");
-    auto v = must(rt.provenance().list_artifacts(a.get_int("limit", 100),
+    auto v = must(rt.provenance().list_artifacts(a.get_int("limit", cli_limit(rt, "artifact_list")),
                                                  kind.empty() ? std::nullopt : std::optional<std::string_view>(kind)));
     if (g_json) {
       Json j = Json::array();
@@ -841,7 +833,7 @@ int cmd_artifacts(Runtime& rt, const Args& a) {
       print_json(j);
     } else {
       for (const auto& x : v) {
-        std::cout << x.id << "  " << x.kind << "  " << x.created.substr(0, 19) << "  " << x.title << "\n";
+        std::cout << x.id << "  " << x.kind << "  " << x.created.substr(0, cli_timestamp("artifact")) << "  " << x.title << "\n";
       }
     }
   } else if (sub == "show") {
@@ -866,7 +858,8 @@ int cmd_archive(Runtime& rt, const Args& a) {
   if (sub != "run") throw UsageError{"unknown archive subcommand: " + sub};
   Json cj = Json::object();
   if (a.has("config")) cj = must(json::parse(must(fsutil::read_file(a.get("config")))));
-  archive::ArchiveConfig cfg = must(archive::ArchiveConfig::from_json(cj));
+  auto archive_profile = must(archive::ArchiveProfile::load(rt.paths().root));
+  archive::ArchiveConfig cfg = must(archive::ArchiveConfig::from_json_with_profile(cj, archive_profile));
   for (const auto& s : a.all("source")) cfg.sources.push_back(s);
   if (a.has("repo")) cfg.repo = a.get("repo");
   if (a.has("out")) cfg.out_dir = a.get("out");
@@ -882,7 +875,7 @@ int cmd_archive(Runtime& rt, const Args& a) {
   if (a.has("include-db")) cfg.include_db = true;
   if (a.has("llm")) cfg.llm = a.get("llm");
   if (a.has("force")) cfg.force = true;
-  cfg = must(archive::ArchiveConfig::from_json(cfg.to_json()));  // validate + clamp
+  cfg = must(archive::ArchiveConfig::from_json_with_profile(cfg.to_json(), archive_profile));
   if (cfg.sources.empty() && !cfg.repo && !cfg.include_db) throw UsageError{"archive run needs --source, --repo or --include-db"};
   std::signal(SIGINT, sigint_handler);
   auto r = must(rt.archive().run(cfg, progress_line, &g_cancel));
@@ -952,7 +945,8 @@ int cmd_knowledge(Runtime& rt, const Args& a) {
   if (sub != "run") throw UsageError{"unknown knowledge subcommand: " + sub};
   Json cj = Json::object();
   if (a.has("config")) cj = must(json::parse(must(fsutil::read_file(a.get("config")))));
-  knowledge::KnowledgeConfig cfg = must(knowledge::KnowledgeConfig::from_json(cj));
+  const auto knowledge_profile = must(RuntimeProfile::load("knowledge", rt.paths().root));
+  knowledge::KnowledgeConfig cfg = must(knowledge::KnowledgeConfig::from_json_with_profile(cj, knowledge_profile));
   for (const auto& s : a.all("source")) cfg.sources.push_back(s);
   if (a.has("repo")) cfg.repo = a.get("repo");
   if (a.has("out")) cfg.out_dir = a.get("out");
@@ -972,7 +966,7 @@ int cmd_knowledge(Runtime& rt, const Args& a) {
     if (!cfg.stage_params.is_object()) cfg.stage_params = Json::object();
     cfg.stage_params["resolve"]["snapshots"] = snaps;
   }
-  cfg = must(knowledge::KnowledgeConfig::from_json(cfg.to_json()));  // validate + order stages
+  cfg = must(knowledge::KnowledgeConfig::from_json_with_profile(cfg.to_json(), knowledge_profile));  // validate + order stages
   if (cfg.sources.empty() && !cfg.repo) throw UsageError{"knowledge run needs --source or --repo"};
   std::signal(SIGINT, sigint_handler);
   auto r = must(rt.knowledge().run(cfg, progress_line, &g_cancel));
@@ -984,7 +978,7 @@ int cmd_knowledge(Runtime& rt, const Args& a) {
   std::cout << "knowledge run " << r.run << ": " << r.status << (r.error.empty() ? "" : "  (" + r.error + ")") << "\n";
   for (const auto& s : r.stages) {
     std::cout << "  " << s.stage << (s.cache_hit ? "  (cache hit)" : s.resumed ? "  (resumed)" : "") << "  "
-              << one_line(json::dump(s.stats), 160) << "\n";
+              << one_line(json::dump(s.stats), cli_width("summary")) << "\n";
   }
   if (r.status == "paused") std::cout << "Run the same command again to resume from the last checkpoint.\n";
   if (!cfg.out_dir.empty() && r.status == "done") std::cout << "products written to " << cfg.out_dir << "\n";
@@ -992,8 +986,8 @@ int cmd_knowledge(Runtime& rt, const Args& a) {
 }
 
 void print_catalog_unit_line(const catalog::CatalogUnit& u) {
-  std::cout << u.unit.id << "  " << u.platform << "  " << u.unit.date.substr(0, 10) << "  " << u.n_msgs << "msg  "
-            << one_line(u.unit.title, 60) << "\n";
+  std::cout << u.unit.id << "  " << u.platform << "  " << u.unit.date.substr(0, cli_timestamp("date")) << "  " << u.n_msgs << "msg  "
+            << one_line(u.unit.title, cli_width("brief")) << "\n";
 }
 
 catalog::Catalog make_catalog(Runtime& rt) { return catalog::Catalog(rt, must(rt.knowledge().pack())); }
@@ -1007,11 +1001,12 @@ int cmd_catalog_eval(Runtime& rt, const Args& a) {
   std::string truth_path = a.get("truth");
   if (truth_path.empty()) throw UsageError{"catalog eval needs --truth ground_truth.json"};
   Json truth = must(json::parse(must(fsutil::read_file(truth_path))));
-  const Json& units = truth["units"];
+  const auto& eval = cli_data().at("evaluation");
+  const Json& units = truth[eval.at("units_key").get<std::string>()];
 
   catalog::UnitQuery q;
   q.run_id = a.get("run");
-  q.limit = 1000000;
+  q.limit = a.get_int("limit", cli_limit(rt, "catalog_eval_scan"));
   auto cat = make_catalog(rt);
   auto all = must(cat.query(q));
 
@@ -1033,16 +1028,16 @@ int cmd_catalog_eval(Runtime& rt, const Args& a) {
   auto count_selected = [&](const Json& arr) {
     int n = 0;
     for (const auto& r : arr) {
-      auto it = selected_by_ext.find(json::get_string(r, "conv_id"));
+      auto it = selected_by_ext.find(json::get_string(r, eval.at("external_id_key").get<std::string>()));
       if (it != selected_by_ext.end() && it->second) ++n;
     }
     return n;
   };
-  int relevant_total = static_cast<int>(units["relevant"].size());
-  int relevant_selected = count_selected(units["relevant"]);
-  int traps_total = static_cast<int>(units["noise_traps"].size());
-  int traps_selected = count_selected(units["noise_traps"]);
-  int generic_selected = count_selected(units["noise_generic"]);
+  int relevant_total = static_cast<int>(units[eval.at("relevant_key").get<std::string>()].size());
+  int relevant_selected = count_selected(units[eval.at("relevant_key").get<std::string>()]);
+  int traps_total = static_cast<int>(units[eval.at("traps_key").get<std::string>()].size());
+  int traps_selected = count_selected(units[eval.at("traps_key").get<std::string>()]);
+  int generic_selected = count_selected(units[eval.at("generic_key").get<std::string>()]);
   int selected_total = 0;
   for (auto& [k, v] : selected_by_ext) selected_total += v ? 1 : 0;
   int false_positives = traps_selected + generic_selected + std::max(0, selected_total - relevant_selected - traps_selected - generic_selected);
@@ -1094,7 +1089,7 @@ int cmd_catalog(Runtime& rt, const Args& a) {
     if (a.has("text")) q.text = a.get("text");
     q.run_id = a.get("run");
     q.sort = a.get("sort", "score");
-    q.limit = a.get_int("limit", 100);
+    q.limit = a.get_int("limit", cli_limit(rt, "catalog_list"));
     q.offset = a.get_int("offset", 0);
     auto v = must(cat.query(q));
     if (g_json) {
@@ -1138,7 +1133,7 @@ int cmd_catalog(Runtime& rt, const Args& a) {
     // et al) is future work, noted in the final report.
     std::vector<std::string> sources = a.all("source");
     if (sources.empty()) throw UsageError{"catalog watch needs at least one --source"};
-    int interval = a.get_int("interval", 300);
+    int interval = a.get_int("interval", cli_limit(rt, "catalog_watch_seconds"));
     if (interval < 1) throw UsageError{"catalog watch --interval must be >= 1 second"};
     catalog::ScanConfig cfg;
     cfg.sources = sources;
@@ -1152,12 +1147,131 @@ int cmd_catalog(Runtime& rt, const Args& a) {
       } else if (!g_quiet) {
         std::cerr << "watch: scan error: " << r.error().message << "\n";
       }
-      for (int i = 0; i < interval && !g_cancel.cancelled(); ++i) ::sleep(1);
+      std::int64_t remaining_ms = static_cast<std::int64_t>(interval) * 1000;
+      const auto slice_ms = cli_data().at("watch").at("sleep_slice_ms").get<std::int64_t>();
+      while (remaining_ms > 0 && !g_cancel.cancelled()) {
+        const auto duration_ms = std::min(remaining_ms, slice_ms);
+        timespec duration{static_cast<time_t>(duration_ms / 1000),
+                          static_cast<long>((duration_ms % 1000) * 1000000)};
+        ::nanosleep(&duration, nullptr);
+        remaining_ms -= duration_ms;
+      }
     }
     if (!g_quiet) std::cout << "watch: stopped\n";
   } else {
     throw UsageError{"unknown catalog subcommand: " + sub};
   }
+  return 0;
+}
+
+struct LoadedProfile {
+  RuntimeProfile effective;
+  Json overlay;
+};
+
+Result<LoadedProfile> load_profile_document(const fs::path& root, std::string_view domain) {
+  LOOM_TRY_ASSIGN(auto base, RuntimeProfile::builtin(domain));
+  Json document{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", domain}, {"overrides", Json::object()}};
+  const auto path = root / "profiles" / (std::string(domain) + ".pack");
+  std::error_code ec;
+  const auto status = fs::symlink_status(path, ec);
+  if (ec && ec != std::errc::no_such_file_or_directory && ec != std::errc::not_a_directory)
+    return Error(Errc::Io, "cannot inspect runtime profile overlay: " + ec.message());
+  if (ec != std::errc::not_a_directory && status.type() != fs::file_type::not_found) {
+    LOOM_TRY_ASSIGN(auto bytes, fsutil::read_file(path));
+    if (!utf8::is_valid(bytes)) return Error(Errc::InvalidArgument, "runtime profile overlay is not UTF-8");
+    LOOM_TRY_ASSIGN(document, json::parse(bytes));
+    LOOM_TRY_ASSIGN(base, base.with_overlay(document));
+  }
+  // One read supplies both effective values and saved user choices.
+  return LoadedProfile{std::move(base), std::move(document)};
+}
+
+void merge_profile_choices(Json& target, const Json& changes) {
+  for (auto it = changes.begin(); it != changes.end(); ++it) {
+    if (it->is_object() && target.contains(it.key()) && target[it.key()].is_object())
+      merge_profile_choices(target[it.key()], it.value());
+    else target[it.key()] = it.value();
+  }
+}
+
+// Keep the user's selected fields, including choices equal to the preset. A
+// later patch can remove or replace them; removed fields must not reappear.
+Json effective_profile_choices(const Json& choices, const Json& values) {
+  Json selected = Json::object();
+  for (auto it = choices.begin(); it != choices.end(); ++it) {
+    if (!values.contains(it.key())) continue;
+    const auto& value = values.at(it.key());
+    selected[it.key()] = it->is_object() && value.is_object()
+                            ? effective_profile_choices(it.value(), value) : value;
+  }
+  return selected;
+}
+
+void profile_patch_choices(const Json& document, std::set<std::string>& paths) {
+  const auto* patch = json::find(document, "patch");
+  if (!patch) return;
+  for (const auto& operation : *patch) {
+    const auto op = operation.at("op").get<std::string>();
+    if (op == "add" || op == "replace" || op == "copy" || op == "move")
+      paths.insert(operation.at("path").get<std::string>());
+  }
+}
+
+bool profile_overlay_envelope(const Json& document) {
+  return document.is_object() && json::get_string(document, "schema") == "loom.runtime_profile_overlay/1";
+}
+
+Json saved_profile_document(const RuntimeProfile& base, const Json& previous,
+                            const Json& changes, const RuntimeProfile& effective) {
+  Json choices = previous.value("overrides", Json::object());
+  const bool envelope = profile_overlay_envelope(changes);
+  merge_profile_choices(choices, envelope ? changes.value("overrides", Json::object()) : changes);
+  choices = effective_profile_choices(choices, effective.values());
+  auto selected = must(base.with_overrides(choices));
+  Json patch = Json::diff(selected.values(), effective.values());
+  std::set<std::string> explicit_paths;
+  profile_patch_choices(previous, explicit_paths);
+  if (envelope) profile_patch_choices(changes, explicit_paths);
+  for (const auto& path : explicit_paths) {
+    const Json::json_pointer pointer(path);
+    if (effective.values().contains(pointer)) {
+      // replace is also inert for arrays: add would insert another element.
+      patch.push_back(Json{{"op", "replace"}, {"path", path}, {"value", effective.values().at(pointer)}});
+    }
+  }
+  Json document{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", base.domain()},
+                {"overrides", std::move(choices)}, {"patch", std::move(patch)}};
+  auto checked = must(base.with_overlay(document));
+  if (checked.hash() != effective.hash())
+    throw Error(Errc::Internal, "saved profile does not reproduce the validated values");
+  return document;
+}
+
+int cmd_profile(const fs::path& root, const Args& a) {
+  const std::string op = a.pos.empty() ? "list" : a.pos[0];
+  if (op == "list") { print_json(RuntimeProfile::domains()); return 0; }
+  if (a.pos.size() < 2) throw UsageError{"profile needs a domain"};
+  const std::string domain = a.pos[1];
+  auto loaded = must(load_profile_document(root, domain));
+  const auto& profile = loaded.effective;
+  if (op == "inspect") { print_json(profile.inspection()); return 0; }
+  if (op != "validate" && op != "save") throw UsageError{"unknown profile operation: " + op};
+  Json changes = must(read_json_input(a));
+  RuntimeProfile effective = profile;
+  if (profile_overlay_envelope(changes)) {
+    effective = must(profile.with_overlay(changes));
+  } else effective = must(profile.with_overrides(changes));
+  if (domain == "cli") must(validate_cli_consumers(effective));
+  // Editor validation does not activate this file in Config's usage policy,
+  // open a ledger, or authorize an operation.
+  if (domain == "usage_policy") must(validate_usage_policy_options(effective.values()));
+  if (op == "save") {
+    auto base = must(RuntimeProfile::builtin(domain));
+    auto doc = saved_profile_document(base, loaded.overlay, changes, effective);
+    must(fsutil::atomic_write(root / "profiles" / (domain + ".pack"), json::dump(doc, 2) + "\n"));
+  }
+  print_json(effective.inspection());
   return 0;
 }
 
@@ -1187,14 +1301,16 @@ int cmd_crypto(Runtime& rt, const Args& a) {
 int main(int argc, char** argv) {
   // global options (before the command)
   std::optional<std::string> data_dir;
-  std::string log_level = "warning";
+  std::string log_level;
   int i = 1;
   for (; i < argc; ++i) {
     std::string s = argv[i];
     if (s == "--json") g_json = true;
     else if (s == "--quiet" || s == "-q") g_quiet = true;
     else if (s == "--help" || s == "-h") {
-      std::cout << kUsage;
+      auto p = load_cli_profile(data_dir);
+      if (!p) return fail(p.error());
+      std::cout << p->values().at("help").get<std::string>();
       return 0;
     } else if (s == "--data-dir" && i + 1 < argc) {
       data_dir = argv[++i];
@@ -1208,14 +1324,19 @@ int main(int argc, char** argv) {
       break;
     }
   }
+  auto cli_profile_r = load_cli_profile(data_dir);
+  if (!cli_profile_r) return fail(cli_profile_r.error());
+  g_cli_profile = *cli_profile_r;
+  const auto& cli_values = cli_data();
   if (i >= argc) {
-    std::cerr << kUsage;
+    std::cerr << cli_values.at("help").get<std::string>();
     return 2;
   }
-  std::string cmd = argv[i];
+  std::string cmd = json::get_string(cli_values.at("commands"), argv[i], argv[i]);
   Args args;
   try {
-    args = parse(argc, argv, i + 1);
+    const auto names = cli_values.at("flags").get<std::vector<std::string>>();
+    args = parse(argc, argv, i + 1, std::set<std::string>(names.begin(), names.end()));
   } catch (const UsageError& e) {
     std::cerr << "usage error: " << e.msg << "\n(see loom --help)\n";
     return 2;
@@ -1223,7 +1344,7 @@ int main(int argc, char** argv) {
   if (args.has("json")) g_json = true;
   if (args.has("quiet")) g_quiet = true;
   if (args.has("help") || cmd == "help") {
-    std::cout << kUsage;
+    std::cout << cli_values.at("help").get<std::string>();
     return 0;
   }
   if (cmd == "version") {
@@ -1233,19 +1354,25 @@ int main(int argc, char** argv) {
     return 0;
   }
 
-  if (log_level == "debug") log::set_level(log::Level::Debug);
-  else if (log_level == "info") log::set_level(log::Level::Info);
-  else if (log_level == "error") log::set_level(log::Level::Error);
-  else log::set_level(log::Level::Warning);
-
-  RuntimeOptions ro;
-  ro.data_dir = data_dir;
-  ro.start_workers = false;
-  auto rt_r = Runtime::open(ro);
-  if (!rt_r) return fail(rt_r.error());
-  Runtime& rt = **rt_r;
+  const auto& logging = cli_values.at("logging");
+  if (log_level.empty()) log_level = logging.at("default_level").get<std::string>();
+  const auto& levels = logging.at("levels");
+  if (!levels.contains(log_level)) log_level = logging.at("unknown_level").get<std::string>();
+  if (!levels.contains(log_level)) return fail(Error(Errc::InvalidArgument, "CLI logging fallback is not registered"));
+  log::set_level(static_cast<log::Level>(levels.at(log_level).get<int>()));
 
   try {
+    if (!args.pos.empty()) {
+      const auto* aliases = json::find(cli_values.at("subcommands"), cmd);
+      if (aliases) args.pos[0] = json::get_string(*aliases, args.pos[0], args.pos[0]);
+    }
+    if (cmd == "profile") return cmd_profile(cli_data_root_read_only(data_dir), args);
+    RuntimeOptions ro;
+    ro.data_dir = data_dir;
+    ro.start_workers = false;
+    auto rt_r = Runtime::open(ro);
+    if (!rt_r) return fail(rt_r.error());
+    Runtime& rt = **rt_r;
     if (cmd == "init") {
       Json info = rt.info();
       if (g_json) print_json(info);
@@ -1254,27 +1381,30 @@ int main(int argc, char** argv) {
                      << "fts5:           " << (json::get_bool(info, "fts5") ? "yes" : "no") << "\n";
       return 0;
     }
-    if (cmd == "conv") return cmd_conv(rt, args);
-    if (cmd == "msg") return cmd_msg(rt, args);
-    if (cmd == "chat") return cmd_chat(rt, args);
-    if (cmd == "import") return cmd_import(rt, args);
-    if (cmd == "export") return cmd_export(rt, args);
-    if (cmd == "graph") return cmd_graph(rt, args);
-    if (cmd == "context") return cmd_context(rt, args);
-    if (cmd == "search") return cmd_search(rt, args);
-    if (cmd == "semantic") return cmd_semantic(rt, args);
-    if (cmd == "memory") return cmd_memory(rt, args);
-    if (cmd == "config") return cmd_config(rt, args);
-    if (cmd == "secret") return cmd_secret(rt, args);
-    if (cmd == "models") return cmd_models(rt, args);
-    if (cmd == "tasks") return cmd_tasks(rt, args);
-    if (cmd == "provenance") return cmd_provenance(rt, args);
-    if (cmd == "sources") return cmd_sources(rt, args);
-    if (cmd == "artifacts") return cmd_artifacts(rt, args);
-    if (cmd == "archive") return cmd_archive(rt, args);
-    if (cmd == "catalog") return cmd_catalog(rt, args);
-    if (cmd == "knowledge") return cmd_knowledge(rt, args);
-    if (cmd == "crypto") return cmd_crypto(rt, args);
+    using Handler = int (*)(Runtime&, const Args&);
+    const std::map<std::string, Handler> handlers{
+      {"conv", cmd_conv},
+      {"msg", cmd_msg},
+      {"chat", cmd_chat},
+      {"import", cmd_import},
+      {"export", cmd_export},
+      {"graph", cmd_graph},
+      {"context", cmd_context},
+      {"search", cmd_search},
+      {"semantic", cmd_semantic},
+      {"memory", cmd_memory},
+      {"config", cmd_config},
+      {"secret", cmd_secret},
+      {"models", cmd_models},
+      {"tasks", cmd_tasks},
+      {"provenance", cmd_provenance},
+      {"sources", cmd_sources},
+      {"artifacts", cmd_artifacts},
+      {"archive", cmd_archive},
+      {"catalog", cmd_catalog},
+      {"knowledge", cmd_knowledge},
+      {"crypto", cmd_crypto} };
+    if (auto handler = handlers.find(cmd); handler != handlers.end()) return handler->second(rt, args);
     std::cerr << "unknown command: " << cmd << "\n(see loom --help)\n";
     return 2;
   } catch (const UsageError& e) {

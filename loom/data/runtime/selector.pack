@@ -1,0 +1,159 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "selector",
+  "revision": 1,
+  "defaults": {
+    "tfidf": {
+      "min_token_length": 2,
+      "lowercase": true,
+      "max_features": 5000,
+      "idf_smoothing": 1.0,
+      "idf_offset": 1.0,
+      "normalize": true,
+      "sublinear_tf": false
+    },
+    "keyword": {
+      "min_token_length": 1,
+      "lowercase": true
+    },
+    "ranking": {
+      "minimum_score": 0.0,
+      "top_k": 5,
+      "threshold_inclusive": false
+    },
+    "tiers": {
+      "with_embedding": 1,
+      "without_embedding": 2,
+      "embedding_failure": 2
+    }
+  },
+  "value_schema": {
+    "type": "object",
+    "required": [
+      "tfidf",
+      "keyword",
+      "ranking",
+      "tiers"
+    ],
+    "properties": {
+      "tfidf": {
+        "type": "object",
+        "required": [
+          "min_token_length",
+          "lowercase",
+          "max_features",
+          "idf_smoothing",
+          "idf_offset",
+          "normalize",
+          "sublinear_tf"
+        ],
+        "properties": {
+          "min_token_length": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 18446744073709551615
+          },
+          "lowercase": {
+            "type": "boolean"
+          },
+          "max_features": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483647
+          },
+          "idf_smoothing": {
+            "type": "number",
+            "minimum": 0
+          },
+          "idf_offset": {
+            "type": "number"
+          },
+          "normalize": {
+            "type": "boolean"
+          },
+          "sublinear_tf": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "keyword": {
+        "type": "object",
+        "required": [
+          "min_token_length",
+          "lowercase"
+        ],
+        "properties": {
+          "min_token_length": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 18446744073709551615
+          },
+          "lowercase": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ranking": {
+        "type": "object",
+        "required": [
+          "minimum_score",
+          "top_k",
+          "threshold_inclusive"
+        ],
+        "properties": {
+          "minimum_score": {
+            "type": "number"
+          },
+          "top_k": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483647
+          },
+          "threshold_inclusive": {
+            "type": "boolean",
+            "description": "Include scores equal to minimum_score. False preserves the historical strict comparison for all implemented selector methods."
+          }
+        },
+        "additionalProperties": false
+      },
+      "tiers": {
+        "type": "object",
+        "required": [
+          "with_embedding",
+          "without_embedding",
+          "embedding_failure"
+        ],
+        "properties": {
+          "with_embedding": {
+            "type": "integer",
+            "enum": [
+              1,
+              2,
+              3
+            ]
+          },
+          "without_embedding": {
+            "type": "integer",
+            "enum": [
+              1,
+              2,
+              3
+            ]
+          },
+          "embedding_failure": {
+            "type": "integer",
+            "enum": [
+              1,
+              2,
+              3
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "additionalProperties": false
+  }
+}

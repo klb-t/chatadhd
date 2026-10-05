@@ -1,0 +1,634 @@
+{
+  "schema": "loom.product_literals/1",
+  "revision": 1,
+  "requirement": {
+    "id": "R42",
+    "source_commit": "3cd5848e7484d50d00f19f0855bc2cd228ad7f3b",
+    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+    "section_sha256": "ae082e3275f57ad7f0ded968af4b92eb8387d280e1e6b6c69e4c40029bcf0aa6"
+  },
+  "categories": {
+    "contract": "Names/keys/schema versions and pack filenames of the code-data contract; changing them requires the matching implementation change.",
+    "external_standard": "Constants and parsing grammars fixed by an external standard, not domain recognition policy.",
+    "mechanism": "Lifecycle states, machine error/event codes and universal engine operation vocabulary.",
+    "serialization": "Date/number/serialization formats whose exact bytes are an existing compatibility contract.",
+    "bootstrap": "Minimal locators needed to discover the data before a pack can be loaded.",
+    "developer_diagnostic": "Developer diagnostics or assertions, never user-facing presentation, domain defaults or policy."
+  },
+  "scopes": [
+    "loom/src",
+    "loom/server",
+    "loom/cli",
+    "loom/web/src",
+    "android",
+    "rootandroid",
+    "loom/android",
+    "loom/include"
+  ],
+  "exclusions": [
+    {
+      "path_segment": "tests",
+      "reason": "Explicit R42 exclusion: tests are not product code; discovered files remain listed with no content scan."
+    },
+    {
+      "path_segment": "fixtures",
+      "reason": "Explicit R42 exclusion: fixtures are not product code; discovered files remain listed with no content scan."
+    }
+  ],
+  "scanners": [
+    {
+      "suffixes": [
+        ".cpp",
+        ".cc",
+        ".c",
+        ".h",
+        ".hpp",
+        ".inc"
+      ],
+      "backend": "cxx",
+      "keyword_literals": {
+        "true": "boolean",
+        "false": "boolean",
+        "nullptr": "null"
+      }
+    },
+    {
+      "suffixes": [
+        ".py"
+      ],
+      "backend": "python",
+      "keyword_literals": {
+        "True": "boolean",
+        "False": "boolean",
+        "None": "null"
+      }
+    },
+    {
+      "suffixes": [
+        ".ts",
+        ".tsx",
+        ".js",
+        ".jsx"
+      ],
+      "backend": "javascript",
+      "keyword_literals": {
+        "true": "boolean",
+        "false": "boolean",
+        "null": "null"
+      }
+    },
+    {
+      "suffixes": [
+        ".java"
+      ],
+      "backend": "java",
+      "keyword_literals": {
+        "true": "boolean",
+        "false": "boolean",
+        "null": "null"
+      }
+    },
+    {
+      "suffixes": [
+        ".kt",
+        ".kts"
+      ],
+      "backend": "kotlin",
+      "keyword_literals": {
+        "true": "boolean",
+        "false": "boolean",
+        "null": "null"
+      }
+    },
+    {
+      "suffixes": [
+        ".css",
+        ".html",
+        ".xml",
+        ".json",
+        ".md",
+        ".txt",
+        ".properties",
+        ".pro",
+        ".bat",
+        ".jar",
+        ".pyc",
+        ""
+      ],
+      "backend": "unsupported",
+      "keyword_literals": {}
+    }
+  ],
+  "owner_rules": [
+    {
+      "prefix": "loom/src/extract",
+      "thread": 1
+    },
+    {
+      "prefix": "loom/src/resolve",
+      "thread": 1
+    },
+    {
+      "prefix": "loom/src/generalize",
+      "thread": 1
+    },
+    {
+      "prefix": "loom/src/policy",
+      "thread": 2
+    },
+    {
+      "prefix": "loom/src/context",
+      "thread": 3
+    },
+    {
+      "prefix": "loom/src/chat",
+      "thread": 3
+    },
+    {
+      "prefix": "loom/src/providers",
+      "thread": 3
+    },
+    {
+      "prefix": "loom/src/packet",
+      "thread": 4
+    },
+    {
+      "prefix": "loom/src/kb",
+      "thread": 4
+    },
+    {
+      "prefix": "loom/src/import",
+      "thread": 5
+    },
+    {
+      "prefix": "loom/src/db",
+      "thread": 5
+    },
+    {
+      "prefix": "loom/src/catalog",
+      "thread": 6
+    },
+    {
+      "prefix": "loom/web/src",
+      "thread": 10
+    },
+    {
+      "prefix": "loom/server",
+      "thread": 10
+    },
+    {
+      "prefix": "loom/src/semantic",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/src/graph",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/src/archive",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/src/search",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/src/memory",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/src/materialize",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/src/knowledge",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/src/worker",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/src/media",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/src/github",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/src/net",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/src/re",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/src/model",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/src/util",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/cli",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/src/core/config_usage_policy.cpp",
+      "thread": 2
+    },
+    {
+      "prefix": "loom/src/core/config.cpp",
+      "thread": 2
+    },
+    {
+      "prefix": "loom/include/loom/extract.h",
+      "thread": 1
+    },
+    {
+      "prefix": "loom/include/loom/generalize.h",
+      "thread": 1
+    },
+    {
+      "prefix": "loom/include/loom/resolve.h",
+      "thread": 1
+    },
+    {
+      "prefix": "loom/include/loom/config.h",
+      "thread": 2
+    },
+    {
+      "prefix": "loom/include/loom/usage_policy.h",
+      "thread": 2
+    },
+    {
+      "prefix": "loom/include/loom/chat_engine.h",
+      "thread": 3
+    },
+    {
+      "prefix": "loom/include/loom/context_engine.h",
+      "thread": 3
+    },
+    {
+      "prefix": "loom/include/loom/context_plan.h",
+      "thread": 3
+    },
+    {
+      "prefix": "loom/include/loom/context_retrieval.h",
+      "thread": 3
+    },
+    {
+      "prefix": "loom/include/loom/providers.h",
+      "thread": 3
+    },
+    {
+      "prefix": "loom/include/loom/graph_packet_store.h",
+      "thread": 4
+    },
+    {
+      "prefix": "loom/include/loom/kb.h",
+      "thread": 4
+    },
+    {
+      "prefix": "loom/include/loom/db.h",
+      "thread": 5
+    },
+    {
+      "prefix": "loom/include/loom/importer.h",
+      "thread": 5
+    },
+    {
+      "prefix": "loom/include/loom/sqlite.h",
+      "thread": 5
+    },
+    {
+      "prefix": "loom/include/loom/catalog.h",
+      "thread": 6
+    },
+    {
+      "prefix": "loom/include/loom/archive.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/batch_api.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/crypto.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/github_sync.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/graph_engine.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/graph_memory.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/knowledge.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/knowledge_semantic.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/log.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/materialize.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/media_providers.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/memory_engine.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/model.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/model_profile.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/provenance.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/relations.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/result.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/runtime_profile.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/selector.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/semantic_analyzer.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/semantic_llm.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/semantic_worker.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/net",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/re",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/util",
+      "thread": 11
+    }
+  ],
+  "fallback_owner": 9,
+  "allowlist": [
+    {
+      "path": "loom/src/model/runtime_profile.cpp",
+      "source_sha256": "0aab7afb23b413fdc62e6cd51b852a5596b0e8fb7b029bd95583f71e8ee6cc93",
+      "byte_start": 10299,
+      "byte_end": 10323,
+      "literal_sha256": "df8f714d0dceff33742a8a29ac739f33533cf66f715a67a059c1fd32737553cc",
+      "category": "contract",
+      "reason": "Exact version identifier of RuntimeProfile descriptor decoding; changing it changes the code-data contract."
+    },
+    {
+      "path": "loom/src/net/http_common.cpp",
+      "source_sha256": "9c81f0959b00624e60899f56f2797f9891cef5e56895207d1678107766a384c4",
+      "byte_start": 10074,
+      "byte_end": 10092,
+      "literal_sha256": "86e656fac293c0e97f0e566503c9c66941942e5ba446d82f58fffe486b822972",
+      "category": "external_standard",
+      "reason": "Registered JSON MIME media type attached to ScriptedTransport JSON replies; external MIME contract, not a configured endpoint or model."
+    },
+    {
+      "path": "loom/src/util/result.cpp",
+      "source_sha256": "1488f760d6b3959bf15cb8b6425c593b066e227ebd9edeb8209df0e37b32e018",
+      "byte_start": 189,
+      "byte_end": 207,
+      "literal_sha256": "ad1178c68f284945f11e5c9b420e65568290954840a93094b04337e7eae548e9",
+      "category": "mechanism",
+      "reason": "Machine name mapped to Errc::InvalidArgument by errc_name/errc_from_name; mechanism error vocabulary, not user translation."
+    },
+    {
+      "path": "loom/src/util/random_ids_time.cpp",
+      "source_sha256": "8918765710c94b7d9e667ae2923dfb78b3eb13b3c3239405aadb18e1b9ee6586",
+      "byte_start": 2447,
+      "byte_end": 2479,
+      "literal_sha256": "3850527f2a8041e1c72397ea67479b21d0b0c265481ffdf53258a9b4ab01fad2",
+      "category": "serialization",
+      "reason": "Exact UTC serialization of format_iso_utc without fractional seconds; required ISO timestamp wire compatibility, separate from configurable local display formatting."
+    },
+    {
+      "path": "loom/src/core/config.cpp",
+      "source_sha256": "42bbe385964814a555b6cd9399e019ed5df6f70bf92ea935dcf5ad74e753d4b7",
+      "byte_start": 751,
+      "byte_end": 766,
+      "literal_sha256": "b3a378b9f50e9048763c0a11f3317204e40a60aacbef506c67e73ee55ef91380",
+      "category": "bootstrap",
+      "reason": "Minimal environment key used to discover the owner data root before configuration/profile loading."
+    },
+    {
+      "path": "loom/src/util/fs.cpp",
+      "source_sha256": "3a0202d4a38159c4ce28c8c141d2f9a86bccab18e9879c36cc7ea551364594aa",
+      "byte_start": 2094,
+      "byte_end": 2123,
+      "literal_sha256": "6616c2a44ca0f13f2bf82c01de6e75f9390761b6e8a283870b0803d83af294da",
+      "category": "developer_diagnostic",
+      "reason": "Existing log::debug diagnostic for a failed owner-only chmod operation; developer log with path/error parameters, not UI content or fallback policy."
+    }
+  ],
+  "generated_outputs": [
+    {
+      "path": "loom/src/model/runtime_profiles_embedded.inc",
+      "operation": "runtime_profiles_v1",
+      "generator": {
+        "path": "loom/src/model/gen_runtime_profiles.py",
+        "sha256": "3d8eb9be1ee1d5f491580d61caf35a9d69c08bb544e0fb0507ab195d2e1ea8fd"
+      },
+      "inputs": [
+        {
+          "path": "loom/data/policy/usage_policy.pack",
+          "sha256": "6a576acf69ccc3be7af2b8ccde641977bdb76b8b52e2c76e77895609d76e20df"
+        },
+        {
+          "path": "loom/data/runtime/archive.pack",
+          "sha256": "c1d34a47b5f6a5a57bf2d969338bccf7a0065e45df268d896de6e85f49489c67"
+        },
+        {
+          "path": "loom/data/runtime/cli.pack",
+          "sha256": "b94f7b94c186d3466af61fae70986fac17e77d26eeae3ea3cb7e5d92e867589b"
+        },
+        {
+          "path": "loom/data/runtime/config.pack",
+          "sha256": "6f7c11c5ad857e3e3936df7667fcc0c673ddf2e2f652ae5aef8c3d3f4d1c20cd"
+        },
+        {
+          "path": "loom/data/runtime/github.pack",
+          "sha256": "2f2d72f6fe94f57ebe11ab90883a530266188180bd803cc72a7697f336a108f3"
+        },
+        {
+          "path": "loom/data/runtime/graph_ingest.pack",
+          "sha256": "3860f807fb21dc150a09660d0d6ad452d0cd066e970462b2f4530a1a3c60e987"
+        },
+        {
+          "path": "loom/data/runtime/graph_memory.pack",
+          "sha256": "4224741a5014c5454ef0c24d36304d172fc74fe468afd4f0b0b1f541ca143a23"
+        },
+        {
+          "path": "loom/data/runtime/import.pack",
+          "sha256": "0640988c7d9ff76afa9d64481280b939a1f93cc47a9b0235675446db90771af3"
+        },
+        {
+          "path": "loom/data/runtime/import_audit.pack",
+          "sha256": "7e3abefa4c8dff5e0d696b24c1a4c65b89003a146ce708d2e9148f97fc912c26"
+        },
+        {
+          "path": "loom/data/runtime/import_formats.pack",
+          "sha256": "294ebc7ce789c079662ec322d4517935f57270296841dc3737e625164de5d8c3"
+        },
+        {
+          "path": "loom/data/runtime/knowledge.pack",
+          "sha256": "ce1516d9fde3aa2bb0145bb9c6c1261e3422628a898cce5273f185e558f912e7"
+        },
+        {
+          "path": "loom/data/runtime/materialize.pack",
+          "sha256": "4dbb1e4d99a6f2332b45cbb243361cb831bd021e6a744071b3cff8732012a8f3"
+        },
+        {
+          "path": "loom/data/runtime/media.pack",
+          "sha256": "f70e9c6fef0507a731da6074e764e115cf4cb84e3a81690d95258b06395ea0af"
+        },
+        {
+          "path": "loom/data/runtime/memory.pack",
+          "sha256": "a45496645536944f1f0b5069a4d143693878fa0cdb21c4e2440408058beeaf89"
+        },
+        {
+          "path": "loom/data/runtime/model.pack",
+          "sha256": "051e961438dc6c5723860492c4ea03c352c1a880caf6bfdeb30835e26612311b"
+        },
+        {
+          "path": "loom/data/runtime/net.pack",
+          "sha256": "cf27f54845174d961a05ca40aae5c54f9e2ca5f0387b6a06fb7ec4a424083389"
+        },
+        {
+          "path": "loom/data/runtime/re.pack",
+          "sha256": "ed6152fd54a830cf20b831e9bb471bf9e52daf89a33c9a23a4d206bd427df508"
+        },
+        {
+          "path": "loom/data/runtime/runtime_paths.pack",
+          "sha256": "b796635d5661d960212045a8981c16b66e5e74e6c688e0eb5cdbc90faf2f3f22"
+        },
+        {
+          "path": "loom/data/runtime/selector.pack",
+          "sha256": "f0894d5359db0d7ee4b94a2e27b3d25381253696744f5d9254af5a094c9ebae2"
+        },
+        {
+          "path": "loom/data/runtime/semantic_analyzer.pack",
+          "sha256": "e1855a8646b51903d1b33da6a138773c233f163a5da8b501273f0aa003b08fcb"
+        },
+        {
+          "path": "loom/data/runtime/util.pack",
+          "sha256": "b1b11b72251aa5afa0b90c128e7fc5d6571cde81d964da2e8aa3a2aa0600181f"
+        },
+        {
+          "path": "loom/data/runtime/worker.pack",
+          "sha256": "569b54b601dcf8c64e97bddab8e6d99a6239bb831372fc31a9ea9a7bbbd12c8f"
+        },
+        {
+          "path": "loom/data/runtime_sources.pack",
+          "sha256": "781279229d42b12141dd19bdb6fe55de5142657a1c870e7517dc997964a42099"
+        }
+      ],
+      "output_sha256": "c87ff0c575c5bd191ef2eebb5df01b0f626183fe5c0ce7329b693de46a64fef8",
+      "reason": "Only the exact current trusted in-memory generator result is non-literal product data. Generator bytes, every canonical input and complete output must match; no whole-file review waiver."
+    }
+  ],
+  "diagnostics": {
+    "ambiguous_scanner_suffix_registrations": "ambiguous scanner suffix registrations",
+    "duplicate_generated_output_registrations": "duplicate generated-output registrations",
+    "duplicate_generated_source_identities": "duplicate generated-source identities",
+    "duplicate_json_member": "duplicate JSON member: ",
+    "duplicate_literal_review_anchors": "duplicate literal review anchors",
+    "duplicate_owner_prefixes": "duplicate owner prefixes",
+    "empty_generated_source_identity_table": "empty generated source identity table",
+    "empty_reversed_literal_review_anchor": "empty/reversed literal review anchor",
+    "expected_a_nonempty_relative_posix_path": "expected a nonempty relative POSIX path",
+    "filesystem_link_escapes_declared_root": "filesystem link escapes declared root: ",
+    "generated_bytes_do_not_equal_the_current_trusted_in_memory_plan": "generated bytes do not equal the current trusted in-memory plan",
+    "generated_input_manifest_is_stale_incomplete": "generated input manifest is stale/incomplete",
+    "generated_metadata_disagrees_with_actual_source_bytes": "generated metadata disagrees with actual source bytes: ",
+    "generated_output_identity_is_stale_tampered": "generated output identity is stale/tampered",
+    "generator_output_has_no_source_identity_table": "generator output has no source identity table",
+    "generator_source_identity_is_stale": "generator source identity is stale",
+    "invalid_generated_source_identity_records": "invalid generated source identity records",
+    "jsonschema_dependency_is_unavailable_no_validation_fallback": "jsonschema dependency is unavailable; no validation fallback",
+    "malformed_raw_literal": "invalid C++ raw string delimiter",
+    "missing_generated_output": "registered generated output is absent/out of scope",
+    "nonfinite_json_number": "nonfinite JSON number: ",
+    "path_escapes_the_declared_root": "path escapes the declared root: ",
+    "stale_allowlist": "review anchor is absent, out of scope, or differs from source/literal identity",
+    "unclassified_literal": "No exact, source-bound reviewed R42 category",
+    "unexpected_product_literal_schema_identity": "unexpected product literal schema identity",
+    "unregistered_file_form": "file suffix has no scanner registration",
+    "unsupported_backtick": "backtick identifier/string syntax is not supported by this backend",
+    "unsupported_file_form": "no complete lexical scanner is implemented for this registered file form",
+    "unsupported_java_text_block": "Java text-block incidental whitespace/escapes are not interpreted",
+    "unsupported_javascript_markup": "lexical scan cannot establish JSX text/attribute coverage",
+    "unsupported_javascript_slash": "lexical scan cannot distinguish expression regex from division; file remains blocked",
+    "unsupported_kotlin_interpolation": "Kotlin string interpolation needs expression scanning",
+    "unsupported_nested_comment": "nested Kotlin block comments need a recursive scanner",
+    "unsupported_numeric_token": "Numeric literal form is not recognized by this lexical scanner",
+    "unsupported_python_interpolation": "f-string expression literals are not recursively tokenized; a lexical scan is incomplete",
+    "unsupported_python_token": "Python tokenizer reported an unsupported/error token",
+    "unsupported_template_expression": "JavaScript template expressions are not recursively scanned",
+    "unsupported_trusted_generation_operation": "unsupported trusted generation operation",
+    "unterminated_comment": "unterminated block comment",
+    "unterminated_quoted_literal": "newline in a non-multiline quoted literal",
+    "unterminated_raw_literal": "unterminated C++ raw string",
+    "missing_product_scope": "A required product scope is absent; coverage cannot be established.",
+    "empty_product_scope": "No source files were found in the declared product scopes.",
+    "schema_contract_identity_mismatch": "The supplied schema bytes differ from the canonical guard schema contract.",
+    "trusted_generator_contract_identity_mismatch": "The generator bytes differ from the canonical trusted operation implementation.",
+    "optional_scope_not_declared": "An optional scope was not listed among the declared product scopes.",
+    "unsupported_java_unicode_translation": "Java Unicode escapes require prelexical translation; complete coverage is blocked.",
+    "unsupported_cxx_line_translation": "C++ escaped newlines require preprocessing translation; complete coverage is blocked.",
+    "filesystem_discovery_error": "A filesystem entry could not be enumerated; coverage is blocked.",
+    "unsupported_filesystem_form": "The source entry is not a readable regular file.",
+    "unsupported_line_terminator": "A non-LF line terminator needs language-specific translation; complete lexical coverage is blocked."
+  },
+  "outside_scope": [],
+  "optional_scopes": [
+    "android",
+    "rootandroid",
+    "loom/android"
+  ]
+}

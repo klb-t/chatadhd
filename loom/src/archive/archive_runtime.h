@@ -44,7 +44,7 @@ struct Plan {
   static Plan from_json(const Json& j);
 };
 
-Result<Plan> make_plan(Runtime& rt, const ArchiveConfig& cfg);
+Result<Plan> make_plan(Runtime& rt, const ArchiveConfig& cfg, const ArchiveProfile* profile = nullptr);
 
 // Runs `git` (desktop-only adapter). Errc::Unsupported on platforms without
 // a shell; Errc::Unavailable when git is missing or the path is not a repo.
@@ -65,10 +65,11 @@ struct StageControl {
   std::optional<Json> resume_from;
 };
 
-Result<IngestResult> run_ingest(Runtime& rt, const Plan& plan, StageControl& ctl);
+Result<IngestResult> run_ingest(Runtime& rt, const Plan& plan, StageControl& ctl, const ArchiveProfile* profile = nullptr);
 
 // ── Synthesis (src/archive/synth.cpp) ───────────────────────────────
 struct SynthesisInput {
+  const ArchiveProfile* profile = nullptr;
   const Corpus* corpus = nullptr;
   const CorpusStats* stats = nullptr;
   std::string project;

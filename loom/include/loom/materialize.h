@@ -62,6 +62,7 @@ struct Rendered {
 class Materializer {
  public:
   Materializer(Runtime& rt, kb::KnowledgeStore& store, std::shared_ptr<const kb::Pack> pack);
+  Materializer(Runtime& rt, kb::KnowledgeStore& store, std::shared_ptr<const kb::Pack> pack, Json overrides);
 
   Result<Rendered> self_description(std::string_view run);
   Result<Rendered> dossier(std::string_view run, std::string_view instance_id);
@@ -76,6 +77,7 @@ class Materializer {
   Runtime& rt_;
   kb::KnowledgeStore& store_;
   std::shared_ptr<const kb::Pack> pack_;
+  Json overrides_;
 };
 
 // knowledge.materialize stage: SELF.md, one dossier per instance, backlog,

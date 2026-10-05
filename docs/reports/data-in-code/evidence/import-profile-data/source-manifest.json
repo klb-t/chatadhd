@@ -1,0 +1,155 @@
+{
+  "schema": "loom.import_profile_source_binding/1",
+  "source_commit": "4e8c3dec29bb3aa1e343e09bee00b7768f0fc0f2",
+  "source_tree_oid": "e3d52a542bbd991cbee5b20142de535138373194",
+  "latest_handoff_commit": "5f0abd20dd83e5c0e7f43e84c333d5e23a5e681f",
+  "engine_binding": {
+    "import": false,
+    "audit": false,
+    "archive_shared_scanner": false
+  },
+  "capture": {
+    "method": "git show <source_commit>:<path> (exact public Git blob bytes)",
+    "commands": [
+      "git show 4e8c3dec29bb3aa1e343e09bee00b7768f0fc0f2:<path>",
+      "git rev-parse 4e8c3dec29bb3aa1e343e09bee00b7768f0fc0f2:<path>"
+    ],
+    "network_calls": 0,
+    "provider_calls": 0
+  },
+  "sources": [
+    {
+      "path": "loom/include/loom/importer.h",
+      "snapshot": "sources/loom_include_loom_importer.h.txt",
+      "bytes": 20741,
+      "sha256": "32498025428eea26120df65050aae27d3678f3f08557cbd9f03bc2e741cc7d48",
+      "git_blob_oid": "280700e87cfa373d912c823b70220a45dc6a91b7"
+    },
+    {
+      "path": "loom/src/import/importer_core.cpp",
+      "snapshot": "sources/loom_src_import_importer_core.cpp.txt",
+      "bytes": 28836,
+      "sha256": "ee10e549f578d1dc510e67df8d04435000392dd5c3fefe89475b5b5099a91310",
+      "git_blob_oid": "26c8f5dafdcc56730ad3bff3875cfbc10f40f12e"
+    },
+    {
+      "path": "loom/src/import/importer_common.cpp",
+      "snapshot": "sources/loom_src_import_importer_common.cpp.txt",
+      "bytes": 8213,
+      "sha256": "75dcbc391a918526c4621fde6768d73c971cc03597320215e232cc1bd2c833b2",
+      "git_blob_oid": "d612bc02cc9b67d2d3b2fc9edb269a22a31ef322"
+    },
+    {
+      "path": "loom/src/import/importer_text.cpp",
+      "snapshot": "sources/loom_src_import_importer_text.cpp.txt",
+      "bytes": 14794,
+      "sha256": "c2ccb16be9f4426f2551b8b2009910937453f2b1f238abb8ded0080ddd4f2a50",
+      "git_blob_oid": "ef25a032c2817c8269b8082f4d783435f18a9a3b"
+    },
+    {
+      "path": "loom/src/import/importer_sqlite.cpp",
+      "snapshot": "sources/loom_src_import_importer_sqlite.cpp.txt",
+      "bytes": 5437,
+      "sha256": "50da21eb83bc7917de0874c53a5d092f93b090eecd8800ed5e496f5a038bc00f",
+      "git_blob_oid": "0f67c3297c4c2ad86eb93c514e107992165af086"
+    },
+    {
+      "path": "loom/src/import/importer_json.cpp",
+      "snapshot": "sources/loom_src_import_importer_json.cpp.txt",
+      "bytes": 15973,
+      "sha256": "92703995941f4ce84ea4afded617bd9e9c8f5faa0c577bf8f201e82a506bb420",
+      "git_blob_oid": "7ccb68949af6a89e02da9e267cbdfbbbe7e4f82c"
+    },
+    {
+      "path": "loom/src/import/export_internal.h",
+      "snapshot": "sources/loom_src_import_export_internal.h.txt",
+      "bytes": 12658,
+      "sha256": "98157ed61d22252f9d2a1181c7aa9a3cd2a683a3dfa4f9519382cb2d3ee36795",
+      "git_blob_oid": "304e9f4354147e432e58c2cf19f9b0a150bc2367"
+    },
+    {
+      "path": "loom/src/import/export_common.cpp",
+      "snapshot": "sources/loom_src_import_export_common.cpp.txt",
+      "bytes": 28018,
+      "sha256": "192998d1a8efb6f3b9ead684e5fe6f0a16661d24ce0100e357e234b7467c31ae",
+      "git_blob_oid": "8fec00c8b28e8665c2d415b575ce8f9e3ab4bd4a"
+    },
+    {
+      "path": "loom/src/import/export_anthropic.cpp",
+      "snapshot": "sources/loom_src_import_export_anthropic.cpp.txt",
+      "bytes": 22548,
+      "sha256": "3c10b6b398dce7e13cf09e00835346e58d13815fa766ae8ca49fd3c516a451b5",
+      "git_blob_oid": "fbf62ffab71a62f36dfb7a686163bd9bae9e71ca"
+    },
+    {
+      "path": "loom/src/import/export_openai.cpp",
+      "snapshot": "sources/loom_src_import_export_openai.cpp.txt",
+      "bytes": 39421,
+      "sha256": "7bd5a680ce50bcb4ae3030e8caea37c5376a939fffaafcfb97d095970710d465",
+      "git_blob_oid": "4fbcd2a7230283924694190b27f9287e9c58767d"
+    },
+    {
+      "path": "loom/src/import/import_audit.h",
+      "snapshot": "sources/loom_src_import_import_audit.h.txt",
+      "bytes": 743,
+      "sha256": "dadf6c91996ff52a6064265def64843989a27323dbedb7908ecaef660efc4e46",
+      "git_blob_oid": "e141a533f9acb5cd44b06b2ba70920d58128adf1"
+    },
+    {
+      "path": "loom/src/import/import_audit.cpp",
+      "snapshot": "sources/loom_src_import_import_audit.cpp.txt",
+      "bytes": 5671,
+      "sha256": "fb9dcaadb865823eb10a390ef76bdc6857a44a295a114cacadbeeaea9cb2ad40",
+      "git_blob_oid": "a58d4a03e7b3d1ab82674ba9f4b9a5ac46904bf5"
+    },
+    {
+      "path": "loom/cli/main.cpp",
+      "snapshot": "sources/loom_cli_main.cpp.txt",
+      "bytes": 54566,
+      "sha256": "dfca838ce0ab2e38be05533e3261c56a119ef7899c4f123b644de38874da63b0",
+      "git_blob_oid": "c3cca0c69055445efdc2b7dc4ac9832e636e3ec7"
+    },
+    {
+      "path": "loom/tools/eval/archive_cost.py",
+      "snapshot": "sources/loom_tools_eval_archive_cost.py.txt",
+      "bytes": 22129,
+      "sha256": "799e879bc20ce61835644a7c2ff2c1fe591a2e6f4c99e4d3955ccf19f1a01212",
+      "git_blob_oid": "d76bba66535a605518b299b565739fbcc57d49d1"
+    }
+  ],
+  "pointers": {
+    "import_formats": [
+      "loom/src/import/importer_core.cpp:117",
+      "loom/src/import/importer_common.cpp:106",
+      "loom/src/import/importer_common.cpp:235",
+      "loom/src/import/importer_sqlite.cpp:49",
+      "loom/src/import/importer_text.cpp:59",
+      "loom/src/import/importer_text.cpp:163",
+      "loom/src/import/importer_text.cpp:250",
+      "loom/src/import/importer_text.cpp:265",
+      "loom/src/import/importer_text.cpp:313",
+      "loom/src/import/importer_text.cpp:352",
+      "loom/src/import/export_openai.cpp:192",
+      "loom/src/import/export_openai.cpp:448",
+      "loom/src/import/export_anthropic.cpp:66",
+      "loom/src/import/export_anthropic.cpp:237",
+      "loom/src/import/importer_json.cpp:161",
+      "loom/src/import/export_common.cpp:466"
+    ],
+    "import": [
+      "loom/include/loom/importer.h:97",
+      "loom/cli/main.cpp:459",
+      "loom/cli/main.cpp:460",
+      "loom/cli/main.cpp:465",
+      "loom/src/import/export_common.cpp:428"
+    ],
+    "import_audit": [
+      "loom/src/import/import_audit.h:12",
+      "loom/src/import/import_audit.cpp:11",
+      "loom/tools/eval/archive_cost.py:27",
+      "loom/tools/eval/archive_cost.py:32",
+      "loom/tools/eval/archive_cost.py:188",
+      "loom/tools/eval/archive_cost.py:287"
+    ]
+  }
+}

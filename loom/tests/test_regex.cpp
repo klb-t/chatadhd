@@ -1,5 +1,7 @@
 #include <doctest/doctest.h>
 
+#include <limits>
+
 #include "loom/re/regex.h"
 #include "loom/util/utf8.h"
 
@@ -215,5 +217,78 @@ TEST_SUITE("regex") {
     REQUIRE(m);
     CHECK(m->end(0) - m->start(0) == 1);  // one code point, not two UTF-16 units
     CHECK(g(*m) == "😀");
+  }
+
+  TEST_CASE("step budget is a profile preset and exhaustion is explicit") {
+    auto preset = RuntimeProfile::builtin("re");
+    REQUIRE(preset);
+    auto original = Regex::compile("a+");
+    REQUIRE(original);
+    CHECK(original->step_limit() == preset->values().at("step_limit").get<std::uint64_t>());
+    auto zero = preset->with_overrides(Json{{"step_limit", 0}});
+    REQUIRE(zero);
+    auto limited = original->with_profile(*zero);
+    REQUIRE(limited);
+    auto text = utf8::decode("aaaa");
+    CHECK(!limited->search(text));
+    CHECK(limited->last_search_hit_limit());
+    CHECK(original->search(text));
+    CHECK(!original->last_search_hit_limit());
+    auto inspection = limited->profile_inspection();
+    REQUIRE(inspection);
+    CHECK(inspection->at("values").at("step_limit") == 0);
+    CHECK(inspection->at("hash") == zero->hash());
+
+    auto maximum = preset->with_overrides(Json{{"step_limit", std::numeric_limits<std::uint64_t>::max()}});
+    REQUIRE(maximum);
+    auto unlimited = Regex::compile("a+", kNone, *maximum);
+    REQUIRE(unlimited);
+    CHECK(unlimited->fullmatch(text));
+    CHECK(!unlimited->last_search_hit_limit());
+  }
+
+  TEST_CASE("legacy budget override stays observable without changing other profiles") {
+    auto original = Regex::compile("(?=a)a", kIgnoreCase);
+    REQUIRE(original);
+    auto alias = *original;
+    original->set_step_limit(0);
+    CHECK(alias.step_limit() == 0);  // Existing copies continue sharing this legacy setter.
+    auto inspection = original->profile_inspection();
+    REQUIRE(inspection);
+    CHECK(inspection->at("values").at("step_limit") == 0);
+    auto preset = RuntimeProfile::builtin("re");
+    REQUIRE(preset);
+    auto independent = alias.with_profile(*preset);
+    REQUIRE(independent);
+    independent->set_step_limit(100);
+    CHECK(original->step_limit() == 0);
+    CHECK(independent->search(utf8::decode("A")));
+    CHECK(independent->flags() == kIgnoreCase);
+    CHECK(independent->pattern() == "(?=a)a");
+  }
+
+  TEST_CASE("foreign and permissive caller profiles cannot evade regex consumer schema") {
+    auto preset = RuntimeProfile::builtin("re");
+    REQUIRE(preset);
+    auto original = Regex::compile("a");
+    REQUIRE(original);
+    auto foreign_definition = preset->definition();
+    foreign_definition["domain"] = "unrelated";
+    auto foreign = RuntimeProfile::from_definition(foreign_definition);
+    REQUIRE(foreign);
+    auto rejected = original->with_profile(*foreign);
+    REQUIRE(!rejected);
+    CHECK(rejected.error().code == Errc::InvalidArgument);
+    auto permissive_definition = preset->definition();
+    permissive_definition["value_schema"] = Json{{"type", "object"}};
+    permissive_definition["defaults"] = Json{{"step_limit", -1}};
+    auto invalid = RuntimeProfile::from_definition(permissive_definition);
+    REQUIRE(invalid);
+    CHECK(!Regex::compile("a", kNone, *invalid));
+    permissive_definition["defaults"] = Json::object();
+    auto incomplete = RuntimeProfile::from_definition(permissive_definition);
+    REQUIRE(incomplete);
+    CHECK(!original->with_profile(*incomplete));
+    CHECK(original->search(utf8::decode("a")));
   }
 }

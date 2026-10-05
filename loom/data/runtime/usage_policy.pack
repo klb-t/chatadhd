@@ -1,0 +1,81 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "usage_policy",
+  "revision": 1,
+  "description": "Usage admission preset from W2 PROFILE_HANDOFF.md. Every consumer must additionally run validate_usage_policy_options on complete effective values; generic schema is not admission approval. Config overrides replace whole top-level values and profile overlays retain recursive/patch semantics.",
+  "defaults": {
+    "schema": "loom.usage_policy/1",
+    "growth_factor": 10.0,
+    "baseline_window": 32,
+    "ledger_busy_timeout_ms": 30000,
+    "include_reservations": true,
+    "initial_baselines": {}
+  },
+  "value_schema": {
+    "type": "object",
+    "required": [
+      "schema",
+      "growth_factor",
+      "baseline_window",
+      "ledger_busy_timeout_ms",
+      "include_reservations",
+      "initial_baselines"
+    ],
+    "additionalProperties": true,
+    "properties": {
+      "schema": {
+        "type": "string",
+        "enum": [
+          "loom.usage_policy/1"
+        ]
+      },
+      "growth_factor": {
+        "type": "number",
+        "minimum": 1,
+        "description": "Finite factor must also be strictly greater than one under the native W2 validator. No spending maximum.",
+        "x-setting": "/growth_factor",
+        "x-consumer": "UsagePolicy"
+      },
+      "baseline_window": {
+        "type": [
+          "integer",
+          "null"
+        ],
+        "minimum": 1,
+        "maximum": 9223372036854775807,
+        "description": "Positive signed int64 sample count, or null for all history; maximum is native representation, not a product ceiling.",
+        "x-setting": "/baseline_window",
+        "x-consumer": "UsagePolicy moving baseline"
+      },
+      "ledger_busy_timeout_ms": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 2147483647,
+        "x-unit": "milliseconds",
+        "x-setting": "/ledger_busy_timeout_ms",
+        "x-consumer": "SQLite usage ledger connection"
+      },
+      "include_reservations": {
+        "type": "boolean",
+        "x-setting": "/include_reservations",
+        "x-consumer": "UsagePolicy projection"
+      },
+      "initial_baselines": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "description": "Finite nonnegative resource quantity or unavailable null; resource/cohort names remain data and need native validation."
+          }
+        },
+        "x-setting": "/initial_baselines",
+        "x-consumer": "UsagePolicy declared baseline"
+      }
+    }
+  }
+}

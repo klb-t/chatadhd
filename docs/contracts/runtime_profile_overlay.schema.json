@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "loom.runtime_profile_overlay/1",
+  "title": "User execution profile overlay",
+  "type": "object",
+  "required": [
+    "schema",
+    "domain",
+    "overrides"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "loom.runtime_profile_overlay/1"
+    },
+    "domain": {
+      "type": "string",
+      "pattern": "^[a-z0-9_-]+$"
+    },
+    "overrides": {
+      "type": "object"
+    },
+    "patch": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "op",
+          "path"
+        ],
+        "properties": {
+          "op": {
+            "enum": [
+              "add",
+              "remove",
+              "replace",
+              "move",
+              "copy",
+              "test"
+            ]
+          },
+          "path": {
+            "type": "string"
+          },
+          "from": {
+            "type": "string"
+          },
+          "value": {}
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

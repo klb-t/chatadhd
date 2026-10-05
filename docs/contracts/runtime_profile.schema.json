@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "loom.runtime_profile/1",
+  "title": "Canonical execution profile descriptor",
+  "type": "object",
+  "required": [
+    "schema",
+    "domain",
+    "revision",
+    "defaults",
+    "value_schema"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "loom.runtime_profile/1"
+    },
+    "domain": {
+      "type": "string",
+      "pattern": "^[a-z0-9_-]+$"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "defaults": {
+      "type": "object"
+    },
+    "value_schema": {
+      "$ref": "#/$defs/valueSchema"
+    },
+    "description": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    }
+  },
+  "$defs": {
+    "valueSchema": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "oneOf": [
+            {
+              "enum": [
+                "object",
+                "array",
+                "string",
+                "integer",
+                "number",
+                "boolean",
+                "null"
+              ]
+            },
+            {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "object",
+                  "array",
+                  "string",
+                  "integer",
+                  "number",
+                  "boolean",
+                  "null"
+                ]
+              },
+              "minItems": 1
+            }
+          ]
+        },
+        "required": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/valueSchema"
+          }
+        },
+        "items": {
+          "$ref": "#/$defs/valueSchema"
+        },
+        "additionalProperties": {
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "$ref": "#/$defs/valueSchema"
+            }
+          ]
+        },
+        "minimum": {
+          "type": "number"
+        },
+        "maximum": {
+          "type": "number"
+        },
+        "minLength": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "minItems": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "enum": {
+          "type": "array",
+          "minItems": 1
+        },
+        "description": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "x-setting": {
+          "type": "string"
+        },
+        "x-unit": {
+          "type": "string"
+        },
+        "x-consumer": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

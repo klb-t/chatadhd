@@ -3,29 +3,15 @@
 #include "loom/net/http.h"
 
 #include <chrono>
-#include <cstdlib>
-#include <initializer_list>
-#include <optional>
+#include <stdexcept>
 #include <string>
 
 #include "httplib.h"
 #include "loom/log.h"
+#include "loom/runtime_profile.h"
 
 namespace loom::net {
 namespace {
-
-std::optional<std::string> env_var(const char* name) {
-  const char* v = std::getenv(name);
-  if (!v || !*v) return std::nullopt;
-  return std::string(v);
-}
-
-std::optional<std::string> first_env(std::initializer_list<const char*> names) {
-  for (auto n : names) {
-    if (auto v = env_var(n)) return v;
-  }
-  return std::nullopt;
-}
 
 Errc map_httplib_error(httplib::Error e) {
   switch (e) {
@@ -53,12 +39,15 @@ Errc map_httplib_error(httplib::Error e) {
 
 class DefaultTransport final : public HttpTransport {
  public:
+  explicit DefaultTransport(RuntimeProfile profile) : profile_(std::move(profile)) {}
+
   Result<HttpResponse> send(const HttpRequest& req, const StreamSink* sink, const CancelToken* cancel) override {
     if (cancel && cancel->cancelled()) return Error(Errc::Cancelled, "request cancelled");
 
     auto urlr = parse_url(req.url);
     if (!urlr) return urlr.error();
     const Url& u = *urlr;
+    LOOM_TRY_ASSIGN(auto policy, HttpTransportPolicy::for_request(req, profile_));
 
     std::string scheme_host_port = u.scheme + "://" + u.host + ":" + std::to_string(u.port);
     httplib::Client cli(scheme_host_port);
@@ -69,27 +58,25 @@ class DefaultTransport final : public HttpTransport {
 
 #ifdef LOOM_HAVE_OPENSSL
     cli.enable_server_certificate_verification(true);
-    if (auto ca = first_env({"SSL_CERT_FILE", "REQUESTS_CA_BUNDLE"})) {
-      cli.set_ca_cert_path(*ca);
+    if (policy.ca_cert_path) {
+      cli.set_ca_cert_path(*policy.ca_cert_path);
     }
 #endif
 
-    if (u.scheme == "https") {
-      if (auto proxy = env_var("HTTPS_PROXY")) {
-        if (auto pu = parse_url(*proxy)) {
-          cli.set_proxy(pu->host, pu->port);
-        } else {
-          log::debug("loom.net.http", "ignoring unparsable HTTPS_PROXY value");
-        }
+    if (policy.proxy_url) {
+      if (auto pu = parse_url(*policy.proxy_url)) {
+        cli.set_proxy(pu->host, pu->port);
+      } else {
+        log::debug("loom.net.http", "ignoring unparsable configured proxy value");
       }
     }
 
-    int timeout_ms = req.timeout_ms > 0 ? req.timeout_ms : 30000;
+    int timeout_ms = policy.timeout_ms;
     cli.set_connection_timeout(std::chrono::milliseconds(timeout_ms));
     cli.set_read_timeout(std::chrono::milliseconds(timeout_ms));
     cli.set_write_timeout(std::chrono::milliseconds(timeout_ms));
-    cli.set_follow_location(true);
-    cli.set_keep_alive(false);
+    cli.set_follow_location(policy.follow_redirects);
+    cli.set_keep_alive(policy.keep_alive);
 
     httplib::Request hreq;
     hreq.method = req.method;
@@ -164,10 +151,30 @@ class DefaultTransport final : public HttpTransport {
     return "httplib";
 #endif
   }
+
+ private:
+  RuntimeProfile profile_;
 };
 
 }  // namespace
 
-std::shared_ptr<HttpTransport> make_default_transport() { return std::make_shared<DefaultTransport>(); }
+Result<std::shared_ptr<HttpTransport>> make_default_transport_with_profile(const RuntimeProfile& profile) {
+  if (profile.domain() != "net") return Error(Errc::InvalidArgument, "expected net profile");
+  LOOM_TRY_ASSIGN(auto builtin, RuntimeProfile::builtin("net"));
+  LOOM_TRY_ASSIGN(auto checked, builtin.with_values(profile.values()));
+  return std::shared_ptr<HttpTransport>(std::make_shared<DefaultTransport>(std::move(checked)));
+}
+
+Result<std::shared_ptr<HttpTransport>> make_default_transport_checked(const std::filesystem::path& data_dir,
+                                                                   const Json& overrides) {
+  LOOM_TRY_ASSIGN(auto profile, RuntimeProfile::load("net", data_dir, overrides));
+  return make_default_transport_with_profile(profile);
+}
+
+std::shared_ptr<HttpTransport> make_default_transport() {
+  auto transport = make_default_transport_checked();
+  if (!transport) throw std::logic_error(transport.error().to_string());
+  return std::move(*transport);
+}
 
 }  // namespace loom::net
