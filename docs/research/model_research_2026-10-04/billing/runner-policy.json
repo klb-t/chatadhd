@@ -18,6 +18,10 @@
   },
   "unknown_cost_policy": "stop",
   "provider_usage_lag": {"mode": "strict", "authority_ref": null},
+  "endpoint_pricing": null,
+  "billing_verification_timing": "per_operation",
+  "require_credit_proof_per_pair": true,
+  "pending_key_metadata_binding_fields": ["limit_usd", "limit_reset", "is_management_key", "include_byok_in_limit"],
   "transport": {
     "base_url": "https://openrouter.ai",
     "proxy_mode": "disabled",

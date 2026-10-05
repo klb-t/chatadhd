@@ -64,11 +64,14 @@ class CapturedResolutionTests(unittest.TestCase):
         self.assertFalse(f.send.calls)
 
     def test_still_pending_or_wrong_late_identity_cost_or_byok_keeps_stop(self):
-        self.pending(two=False)
         f = self.fixture
-        for field, value in (("id", "other-generation"), ("model", "other/model"),
+        for index, (field, value) in enumerate((("id", "other-generation"), ("model", "other/model"),
                              ("provider_name", "Other"), ("api_type", "decisions"),
-                             ("total_cost", "0.02"), ("is_byok", True)):
+                             ("total_cost", "0.02"), ("is_byok", True))):
+            f.private = f.root / ("mismatch-" + str(index))
+            f.send.usage = Decimal(0)
+            f.send.generation_override = None
+            self.pending(two=False)
             data = {"id": "gen-fake", "model": "fake/model", "provider_name": "Fake",
                     "api_type": "completions", "total_cost": "0.01", "is_byok": False}
             data[field] = value
@@ -78,11 +81,21 @@ class CapturedResolutionTests(unittest.TestCase):
             with sqlite3.connect(f.private / "ledger.sqlite3") as db:
                 self.assertTrue(db.execute("SELECT * FROM programme_state WHERE name='stop_reason'").fetchall())
                 self.assertEqual(db.execute("SELECT COUNT(*) FROM attempt_resolutions").fetchone()[0], 0)
+            f.send.calls.clear()
+            f.send.generation_override = None
+            with self.assertRaisesRegex(runner.ProgrammeError, "durable_billing_verification_contradiction"):
+                self.reconcile()
+            self.assertFalse(f.send.calls)
+        f.private = f.root / "still-pending"
+        f.send.usage = Decimal(0)
         f.send.generation_override = None
+        self.pending(two=False)
         f.send.generation_pending = 100
         with self.assertRaises(transport.TransportError):
             self.reconcile()
         self.assertFalse(f.send.posts())
+        f.send.generation_pending = 0
+        self.assertEqual(self.reconcile()["status"], "stop_resolved_read_only")
 
     def test_uncaptured_http_error_rejected_before_any_get(self):
         f = self.fixture
