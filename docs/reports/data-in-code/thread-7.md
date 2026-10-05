@@ -1,0 +1,19 @@
+# Data in code — thread 7
+
+Source: `161cc22dfb84fe863389d6b90323bd44516a68dc`. Inventory recorded before source edits. 9 reviewed groups; a group may contain an ordered table or several related literal sites. Full coverage/literal triage is in [inventory.json](inventory.json). Existing data-backed profiles and protocol/representation invariants are distinct from adjustable policy.
+
+| ID / source | What | Destination | Generic mechanism | Status |
+|---|---|---|---|---|
+| DIC-0683 — `loom/tools/structure/openrouter_runner.py:25` | Endpoint/input16MiB/response2MiB/body256KiB/timeout60 plus ID length96 and allowed body key list embedded. | research runner transport/usage/validation recipe | Typed configurable operation options; approved monetary ledger caps immutable per run, new recipe cannot reset or expand authorization. | inventory_only |
+| DIC-0684 — `loom/tools/structure/analysis_optimization_v1.py:19` | ModelGPT4.1mini, label vocabulary, BASE_PROMPT/RULES, provider-only/openai, tokens192 and pricing caps repeated in generated arm bodies. | research recipe asset + loom/data/prompts preset for accepted production recipe | Prepare from immutable recipe; retain exact historical request bodies/hashes and shared authorized ledger. | inventory_only |
+| DIC-0685 — `loom/tools/structure/graph_free_extraction.py:22` | CAPS/token2048/rows12 and SYSTEM extraction instruction embedded in frozen DEV experiment. | versioned experiment recipe/prompt asset | Freeze new recipe with complete parameters/hash; historical original remains reproducible; accepted prompt handed to thread1. | inventory_only |
+| DIC-0686 — `loom/tools/structure/graph_panel_live.py:23` | Fixed model/provider, relation/label vocabulary, EXTRACTION_SYSTEM/JUDGE_SYSTEM and required24 DEV rows. | panel experiment recipe + source-assertion schema | Prompt/schema/params as versioned artifacts; corpus24 expectation stays frozen validation identity, not application cap. | inventory_only |
+| DIC-0687 — `loom/tools/structure/structure_pair_chat.py:15` | Model/provider SYSTEM prompt, temperature0/tokens128 and provider price caps compiled into request builder. | paired-classification recipe/prompt preset | Immutable declarative body recipe with capability report; fixed48 study identity remains experiment metadata. | inventory_only |
+| DIC-0688 — `loom/tools/structure/jev_context_pilot.py:24` | Instruction plus TOPIC/CLAIM noul criteria and provider(typesafe)/price cap are embedded. | JEV context recipe/schema + prompt preset | Load independent criterion templates and backend/provider selection from recipe; preserve criteria string bytes/hash. | inventory_only |
+| DIC-0689 — `loom/tools/structure/local_embedding_panel.py:21` | Pinned MiniLM model/revision/artifact sizes/hashes, model size600MB, max tokens128 and pooling/tokenization recipe in Python. | embedding method/experiment recipe | Data holds model revision/integrity and method params; operations remain code; preserve reproducibility pins and truncation provenance. | inventory_only |
+| DIC-0690 — `loom/tools/structure/extract.py:32` | Operation family mapping, EN/PL unsafe-token regex and envelope PATTERNS compiled in research adapter. | linguistic rule pack + method recipe | Generic matching/operation dispatch over data descriptors; do not invent semantics for unsupported input; retain spans/loss trace. | inventory_only |
+| DIC-0691 — `loom/tools/structure/recipe_live_pilot.py:35` | Arms object_meaningful/string and provider-only typesafe/price config baked into pilot. | versioned experiment recipe | New recipe can select methods/settings; old authorization reference and archive hash are immutable history, not current budget. | inventory_only |
+
+## Do wątku 7
+
+Use the listed tasks only within your assigned edit scope. Preserve the exact current defaults, expose overrides, verify against the pinned baseline, and keep changes to evidence/transaction meaning explicit.
