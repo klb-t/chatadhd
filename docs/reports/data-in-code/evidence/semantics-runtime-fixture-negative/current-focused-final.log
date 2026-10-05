@@ -1,0 +1,36 @@
+Test project /workspace/scratch/72fc60ad1cc5/current-build
+    Start 52: unit.test_github
+1/4 Test #52: unit.test_github .....................   Passed    0.28 sec
+    Start 74: unit.test_model_creation_profile
+2/4 Test #74: unit.test_model_creation_profile .....   Passed    0.24 sec
+    Start 89: unit.test_runtime_recipe_consumers
+3/4 Test #89: unit.test_runtime_recipe_consumers ...***Failed    1.95 sec
+===============================================================================
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_runtime_recipe_consumers.cpp:148:
+TEST SUITE: runtime_recipe_consumers
+TEST CASE:  materialize recipe selects order and subset and rejects unknown capabilities before writes
+
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_runtime_recipe_consumers.cpp:189: ERROR: CHECK( unwrap(store.list_products(custom_run)).size() == 5 ) is NOT correct!
+  values: CHECK( 6 == 5 )
+
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_runtime_recipe_consumers.cpp:195: ERROR: CHECK( unwrap(store.list_products(incomplete_run)).size() == 4 ) is NOT correct!
+  values: CHECK( 6 == 4 )
+
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_runtime_recipe_consumers.cpp:210: ERROR: CHECK( unwrap(store.list_products(bad_run)).empty() ) is NOT correct!
+  values: CHECK( false )
+
+===============================================================================
+[doctest] test cases:  10 |   9 passed | 1 failed | 765 skipped
+[doctest] assertions: 110 | 107 passed | 3 failed |
+[doctest] Status: FAILURE!
+
+    Start 90: unit.test_selector
+4/4 Test #90: unit.test_selector ...................   Passed    0.23 sec
+
+75% tests passed, 1 tests failed out of 4
+
+Total Test time (real) =   2.70 sec
+
+The following tests FAILED:
+	 89 - unit.test_runtime_recipe_consumers (Failed)
+Errors while running CTest

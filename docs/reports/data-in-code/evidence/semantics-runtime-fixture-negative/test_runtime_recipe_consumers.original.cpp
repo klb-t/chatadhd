@@ -151,8 +151,8 @@ TEST_SUITE("runtime_recipe_consumers") {
     auto rt = unwrap(Runtime::open(options));
     auto pack = unwrap(rt->knowledge().pack()); auto& store = rt->knowledge().store();
     kb::Normalizer normalizer(*pack); knowledge::KnowledgeConfig config;
-    auto prepare = [&](std::string_view recipe_case) {
-      auto run = unwrap(store.begin_run(pack->hash(), Json{{"recipe_case", recipe_case}})).id;
+    auto prepare = [&]() {
+      auto run = unwrap(store.begin_run(pack->hash(), Json::object())).id;
       std::vector<model::Entity> entities; std::vector<model::Instance> instances;
       for (std::string key : {"first", "second"}) {
         model::Entity project; project.kind = "project"; project.canonical_key = key; project.label = key;
@@ -174,7 +174,7 @@ TEST_SUITE("runtime_recipe_consumers") {
       for (const auto& artifact : result.at("artifacts")) out.push_back(artifact.at("kind").get<std::string>());
       return out;
     };
-    const auto baseline_run = prepare("baseline"); auto baseline = unwrap(stage(baseline_run));
+    auto baseline = unwrap(stage(prepare()));
     CHECK(kinds(baseline) == std::vector<std::string>{"self_description", "dossier", "extrapolated_spec", "dossier", "extrapolated_spec", "backlog"});
     CHECK_FALSE(baseline.contains("complete"));
     CHECK_FALSE(baseline.contains("omitted_products"));
@@ -183,17 +183,12 @@ TEST_SUITE("runtime_recipe_consumers") {
     };
     overlay_at(td.path(), "materialize", Json{{"products", Json::array({recipe("backlog", true), recipe("self_description", false),
       recipe("extrapolated_spec", true), recipe("dossier", true)})}});
-    const auto custom_run = prepare("custom_subset");
-    REQUIRE(custom_run != baseline_run);
-    auto custom = unwrap(stage(custom_run));
+    const auto custom_run = prepare(); auto custom = unwrap(stage(custom_run));
     CHECK(kinds(custom) == std::vector<std::string>{"backlog", "extrapolated_spec", "dossier", "extrapolated_spec", "dossier"});
     CHECK(custom.at("stats").at("products") == Json(5));
     CHECK(unwrap(store.list_products(custom_run)).size() == 5);
     overlay_at(td.path(), "materialize", Json{{"templates", Json{{"dossier_header", "{{missing}}"}}}});
-    const auto incomplete_run = prepare("omitted_dossier");
-    REQUIRE(incomplete_run != baseline_run);
-    REQUIRE(incomplete_run != custom_run);
-    auto incomplete = unwrap(stage(incomplete_run));
+    const auto incomplete_run = prepare(); auto incomplete = unwrap(stage(incomplete_run));
     CHECK(incomplete.at("complete") == Json(false));
     CHECK(kinds(incomplete) == std::vector<std::string>{"self_description", "extrapolated_spec", "extrapolated_spec", "backlog"});
     CHECK(incomplete.at("stats").at("dossiers") == Json(0));
@@ -209,10 +204,7 @@ TEST_SUITE("runtime_recipe_consumers") {
     }
     const auto before = unwrap(rt->provenance().list_artifacts()).size();
     overlay_at(td.path(), "materialize", Json{{"products", Json::array({recipe("backlog", true), recipe("unavailable", false)})}});
-    config.out_dir = (td.path() / "unwritten").string(); const auto bad_run = prepare("unknown_renderer");
-    REQUIRE(bad_run != baseline_run);
-    REQUIRE(bad_run != custom_run);
-    REQUIRE(bad_run != incomplete_run);
+    config.out_dir = (td.path() / "unwritten").string(); const auto bad_run = prepare();
     auto failed = stage(bad_run); REQUIRE_FALSE(failed); CHECK(failed.error().code == Errc::Unavailable);
     CHECK(unwrap(rt->provenance().list_artifacts()).size() == before);
     CHECK(unwrap(store.list_products(bad_run)).empty());
