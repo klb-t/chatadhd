@@ -1,89 +1,68 @@
-# Wątek 10 — kolejny przyrost UI/API, 2026-10-05
+# Wątek 10 — UI nowych API, 2026-10-05
 
-Gałąź: `gpt/interface-2-2026-10-04`. Status: implementacja UI zakończona; ODBIÓR WSTRZYMANY — pełny CTest120/121, regresja mieszanej bazy W1/W2 w knowledge_semantic. Zero płatnych wywołań i danych prywatnych; tylko fixture/HTTP atrapy.
+Gałąź: `gpt/interface-2-2026-10-04`. **Kod UI zakończony i wypchnięty. Odbiór wstrzymany: pełny mixed CTest120/121, regresja analizatora W1+W2.** Wszystkie bramki UI są zielone.0 płatnych/zdalnych wywołań modeli; tylko publiczne fixture i lokalne atrapy.
 
-## Przypięte zależności
+## Baza i zależności
 
-- Integrator: `66da570d3b5379492e128d940ad474467082c59f` (3+4 oraz5), świeży main `e4109df7e4af22b461def5f7d62e268d9b9a8825`.
-- W1: `50e6bb9f80b0cd855e4dd1efedaf3399cac5e4e6`; osiem commitów API/promptów dołożonych bez zmian implementacji.
-- W12: `3c0bc36552ef9851f1174946cfb108549aae3228`; siedem commitów store/UI dołożonych bez zmian implementacji.
-- Poprzedni przyrost10: `fa7538d650da2f4ad37f5ff9254b60a6ee72938f` zachowany na `archive/2026-10-05/interface-2-before-api-intake`. Rebase zachowuje liniową historię.
+- Main: `e4109df7e4af22b461def5f7d62e268d9b9a8825`; integrator: `66da570d3b5379492e128d940ad474467082c59f` (przyjęte3+4 i5). Świeży fetch: integrator `0a81480` dokłada tylko receipt5, bez zmiany API. Przeczytano aktualny INDEX i przekazanie10.
+- W1: `50e6bb9f80b0cd855e4dd1efedaf3399cac5e4e6`,8 commitów dołożonych bez zmiany implementacji.
+- W12: `3c0bc36552ef9851f1174946cfb108549aae3228`,7 commitów dołożonych bez zmiany implementacji.
+- Kanoniczny kontrakt3/4: `loom/src/packet/METHOD_GRAPH.md`, `loom.method_graph/1` / `loom.method_run_trace/1`. Golden: `docs/reports/chat-selector-2026-10-04-evidence/golden-consumer/input.json`, SHA256 `8db8175c3b70c3947711ddf5daee5073b99bc5a5114ce0075e06e51932cec54e`.
+- Poprzedni gotowy przyrost `fa7538d650da2f4ad37f5ff9254b60a6ee72938f` zachowany na `archive/2026-10-05/interface-2-before-api-intake`. Rebase na bazę integratora jest liniowy, bez merge commitów. Publiczny rebased stack: `3d7e5fd2246ffd94f803ec405dd371cf6a7a8f32`.
 
-## Checkpoint 1 — adapter onboardingu
+## Co działa
 
-Rebased API stack publiczny: `3d7e5fd2246ffd94f803ec405dd371cf6a7a8f32` (29 liniowych commitów nad66da570d). Dodany host/komponenty W12, natywny most i transport HTTP; końcowe podpięcie tras/nawigacji będzie w następnym commicie.21/21 testów hosta (15 pure +6 Chromium React/W12/LoomHttpApi),0 page errors/0 external requests/0 provider calls, identyczne SHA źródeł przed/po. Native HTTP8 grup czeka na aktualną binarkę; nie zastępujemy ich fixture. Przypadek utraty odpowiedzi zachowany: Chromium może ponowić identyczny POST; CAS chroni podwójny zapis, adapter wymusza odczyt i nie ponawia sam.
+**Metody w grafie:** Methods przegląda natywne profile, metody, wersje, parametry, presety i nested/signed kombinacje. Edycja tworzy nową wersję i osobny native accept; aktywacja wymaga readback/CAS konfiguracji. Filtr „Results from this version” podąża po rzeczywistych produced-by/run Claims. Nowa wersja nie przejmuje starych wyników. Native próba:22 entities/35 Claims/22 sources →23/39/24; cały receipt_json identyczny przed/po odmowie overwrite i po restarcie.3 wyniki starej wersji,0 nowej. Opaque JSON zachowuje kolejność DTO, tokeny liczb i nieznane pola.
 
-Negatywy budowy zachowane: przerwanyj4, syntaxOOM, następnie pusty `prompt_contract.cpp.o` po przerwaniu. Wymuszona wyłącznie rekompilacja tego0-byte artefaktu, bez zmiany źródeł/testów.
+**Czat grafowy:** off oraz3 grafowe tryby z danych `loom/web/src/profiles/presets/graph-chat.json`. Definicje method/recipe/prompt/version są zapisywane w grafie przed osobną aktywacją. Kontrolka jawnie pokazuje globalny zakres istniejącego3; czyta ustawienia dopiero po otwarciu szczegółów,0 żądań przy montowaniu/przywróceniu. Recorded reply zachowuje tekst, schema error, źródła i natywną kompilację. Rozwiń/popraw sprawdza hash zapisanej kompilacji, adresuje fragment i wpisuje edytowalną prośbę do kompozytora. Nie wykonuje samoczynnego wysłania.
 
-## Checkpoint 2 — widok metod
+**Ekspercka analiza:** W1 catalog/resolve, pełny provider body jako exact bytes i server prepared handle, podgląd bez HTTP/wpisu fikcyjnego wykonania. Nowe prompt/schema/preset versions przechodzą przez MethodRegistry/GraphPacket. Execute wymaga dokładnego przygotowania, native method binding i admission W2; attempt marker zużywany przed transportem. Pierwsza odpowiedź zachowana przed parse/accounting, także błędna/binarna. Pochodzenie modelowe tylko dla rzeczywistej treści modelu. Potwierdzenie ×10 wiąże oryginalny receipt; unknown outcome pozostaje inspection, bez retry. Strict input odrzuca duplicate keys. Panel mieści16 kontrolek w drawer420px i phone390px; exact1099 bytes zapytania zachowane w obu widokach.
 
-Panel metod:11/11 offline (10 wcześniejszych +1 filtr po rzeczywistych produced-by Claims), TypeScript PASS. Profile, nested/signed combinations, nowe wersje, raw definicje i oddzielne przyjęcie/aktywacja; aktywacja używa natywnego CAS i zachowuje siblings/selection overlay. Most lossless JSON oraz14 grup native są w trakcie; nie deklarujemy gotowości na podstawie samych atrap.
+**Onboarding/R40:** App podłącza `OnboardingPanel` i `WhatAppKnows` W12 przez jeden stabilny user-bound host. Jawny Open/Create/Unload, zapis w browser settings tylko identity; profil/historia/defaults/prywatność w native DB. Formularze, osobny review, scenariusz, warstwy, overrides i exclusions korzystają z W12. Stable layer keys, event identity/source_refs i exact outer int64 revision jako decimal string zachowane. Konflikt/utrata odpowiedzi wymaga reload/inspection, bez automatycznego powtórzenia mutacji. W12 raw snapshot jawnie raportuje brak RuntimeProfile W11.
 
-Onboarding HTTP:8/8 real native grup,0 provider completions. Pierwszy negatyw miał błędne wymaganie opcjonalnego RuntimeProfile W11; korekta testu jawnie sprawdza brak tej zdolności/reason na bazie1+12, żadnego skip. Stary test i pełny negatyw pozostają zachowane. Podłączona droga read-only ustawień metod przechodzi na GET, aby utrzymać niezmieniony sentinel zerowych zapisów przy samym otwarciu/odtworzeniu widoków. Pierwsza próba baseline ten problem wykryła; stary test pozostaje bez zmian.
-
-Świeży fetch: integrator `0a81480` dokłada wyłącznie receipt5 do66da570d; main nadal e4109df. Przypięte API pozostaje bez zmian.
-
-## Checkpoint 3 — dokładne zapytania analizy
-
-Ekspercki panel W1/3/4: pełne body provider request jako exact bytes, read-only prepare bez HTTP i bez wpisu wykonania, osobny autoryzowany dispatch przez istniejący strażnik zużycia. Nowe wersje promptów i presetów trafiają do MethodRegistry/GraphPacket; nie nadpisują starszych wersji. Pierwsza odpowiedź zachowana przed parsowaniem, także błędna/binarna; pochodzenie modelowe tylko dla rzeczywistej treści modelu. Ścisłe JSON wejście odrzuca duplicate keys.5/5 grup (4 browser +1 C++ native fixture) PASS. Prepared handle jest process-local; nie jest trwałym TaskEngine resume.
-
-84/84 niezmienionych wcześniejszych fixtures PASS po poprawce lazy-read ustawień grafowych: montowanie/przywrócenie widoku nie wykonuje dodatkowego żądania. Natychmiastowe otwarcie szczegółów wykonuje prawdziwy GET. Grafowe tryby czatu14/14 real native PASS na binarce b97ac7cc, ze zgodnymi hashami źródeł przed/po;4 żądania lokalnego fake providera,0 zdalnych. Końcowa wspólna bramka nadal w toku.
-
-Wykryto dodatkowy rzeczywisty negatyw granicy HTTP config: zwykły JSON serwera sortował klucze native DTO. PUT/PATCH są poprawiane w zakresie W10; testy obu ścieżek zachowują oryginalny golden i wymagają dokładnego readback. Pełne negatywne receipts pozostają zachowane.
-
-## Checkpoint 4 — czat z odpowiedzią grafową
-
-Dane presetów w `loom/web/src/profiles/presets/graph-chat.json`: trzy tryby grafowe oraz kontrola off, method/recipe/prompt/version jako byty grafu. Panel instaluje definicje natywnie, dopiero osobny CAS aktywuje globalne ustawienie; raw JSON zachowuje tokeny liczb i nieznane pola. `GraphReplyWorkbench` korzysta z zapisanej kompilacji i sprawdza jej hash przed adresowaniem fragmentu. Rozwiń/popraw wpisuje edytowalną prośbę do kompozytora bez samoczynnego wysłania.14/14 native PASS,29 pełnych HTTP exchanges,3 method acceptance receipts i4 fake model calls. Zapisany graf, fragmenty i pierwsze błędy/odpowiedzi pozostają dostępne. Brak publicznego Chat.resume jest jawnie opisany niżej.
-
-## Checkpoint 5 — trasy natywne i nawigacja
-
-`App.tsx` podłącza Methods, Analysis i oba widoki W12 przez jeden host. Trzy źródłowe mosty HTTP korzystają z istniejącego Runtime; optional LoomApi capabilities zachowują unavailable w JNI bez implementacji. Naprawiony PUT/PATCH config zachowuje kolejność native DTO i tokeny liczb; save_profile_selection zapisuje dokładną zatwierdzoną selekcję zarówno w profilu, jak i overlay. Golden3/4 i rdzeń pozostają bez zmian. Negatyw aktywacji zachowany; test wymaga natywnego readback i nie toleruje pozornej aktywacji.
-
-GCC/vendored pełny build oraz web build PASS. Binarka końcowa `c65181cb064cf5326b0006bddf31f2244d369e1b6607e20cab6b559447475c2f`. Na niej graph chat14/14 PASS z identycznymi hashami źródeł przed/po oraz istniejące native E2E16/16 PASS. Wcześniejsze native UI20/20 PASS; pełne121 CTest trwa, consumer metod i pełna nawigacja pozostają w bramce końcowej.
-
-## Checkpoint 6 — natywny consumer metod i pełna bramka
-
-Methods14/14 PASS na końcowym c65181cb.37 pełnych real native HTTP responses. Zapis nowej wersji:22 entities/35 Claims/22 sources →23/39/24. Entire receipt_json identyczny przed/po odmowie immutable overwrite i po restarcie;3 stare wyniki nadal przypisane starej metodzie,0 wyników nowej. Obie ścieżki generic config PUT/PATCH zachowują raw profile i snapshot SHA.13 źródeł +binarka mają identyczne hashe przed/po.0 model dispatch,0 zdalnych wywołań,0 browser errors.
-
-Pełny CTest:120/121 PASS,677.13s. Negatyw unit.test_knowledge_semantic:13 przypadków,10PASS/3FAIL,125 assertions/8FAIL. Linie252,255,256,319,354,355,358,362 wymagają starej ścieżki retry; runtime zwraca blocked/0 accepted. Pełne stdout/JUnit/LastTest.log i źródła zachowane; trwa izolowane potwierdzenie. Nie zmieniono testów ani progów, nie edytujemy cudzych zakresów. Nowy przyrost NIE jest gotowy do integracji mimo zielonych bramek UI.
-
-## Checkpoint 7 — whole-App i koniec implementacji
-
-Whole-App7/7 real native PASS po naprawieniu odbiorcy this przy HTTP metodach AnalysisPanel. Test od początku prowadzi nawigację App, wybiera jeden user ID w obu widokach12, zapisuje/przegląda odpowiedź, warstwy/wykluczenia i scenariusz, ładuje rzeczywisty graf metod oraz przygotowuje/inspectuje rzeczywisty handle analizy. Native server, źródła i dist mają identyczne hashe przed/po.0 provider calls/0 zdalnych requests/0 browser page errors. Negatyw receiver bug ma kompletne źródło/DOM/HTTP/screenshot; poprawka nie dotyka rdzenia.
-
-Web build PASS po końcowej poprawce. Gotowy kod UI jest wypchnięty; gotowość odbioru pozostaje wstrzymana wyłącznie pełną regresją rdzenia1/2 opisaną poniżej. Brak funkcji model interview, trwałego TaskEngine resume i per-call ChatOptions jest jawnie raportowaną granicą istniejących API, bez atrapy implementacji.
-
-## Dostarczone API
-
-Most HTTP korzysta z tego samego statycznego Runtime i rzeczywistej deklaracji opaque context w `src/capi/context.h`. Nie odtwarza layoutu, nie tworzy drugiej DB/silnika i nie dodaje C ABI. To jawna zależność źródłowa serwera; stare JNI pozostaje bez nowej zdolności.
-
-- `/api/onboarding`: natywne open/read/apply/update_pack/model_request/policy_decision; exact int64 revision przekazywany jako decimal string, CAS w OnboardingStore. Formularz, what-app-knows, prywatność, warstwy/wykluczenia i scenariusz korzystają z jednego adaptera oraz jawnej tożsamości.
-- `/api/methods`: rzeczywisty MethodRegistry, wersje/parametry/presety/kombinacje, immutable edit i oddzielny native graph accept. Wyniki przeglądane po rzeczywistych produced-by/run Claims.
-- Graph chat: obecne3 ma config `context_execution.graph_reply`, bez per-call ChatOptions. Kontrolka pokazuje globalny zakres; nie dodaje ignorowanego pola żądania. Recorded native reply i fragmenty korzystają z3/4.
-- `/api/analysis`: W1 catalog/resolve/prepare; exact bytes trzymane przez server prepared handle. Dispatch musi używać dokładnego guard/receipt, retain first response oraz metod/run/edges3/4. Preview nie wykonuje HTTP ani nie rejestruje fikcyjnego wykonania.
+**HTTP:** `/api/onboarding`, `/api/methods`, read-only `/api/methods/chat-settings`, `/api/analysis` i adresowanie fragmentów `/api/graph-reply` pożyczają istniejący statyczny Runtime przez autorytatywną deklarację context. Nie tworzą drugiej DB/runtime ani nowych C ABI exports. LoomApi capabilities są optional; JNI bez implementacji raportuje unavailable. Config hash+mutex serializuje współpracujące zapisy w tym procesie HTTP, nie obiecuje CAS przeciw innemu procesowi.
 
 ## Liczby przed i po
 
-Przed: zaakceptowany autorski przyrost10:108/108 CTest,659native/24465 assertions,1276Python0skip,84fixture,20nativeUI,16E2E,webPASS. To historyczny receipt pinnedfa7538d, nie wynik obecnej mieszanej bazy. Po: pełny mixed CTest120/121,761 native cases (758PASS/3FAIL),29103 assertions (29095PASS/8FAIL),1322 Python/0skip; web PASS,84 fixture,20 nativeUI,16 E2E oraz nowe Methods14,GraphChat14,Analysis5,OnboardingHTTP8,Host21 iwhole-App7. Opt-in catalog_scale odziedziczone0cases jawnie pozostaje, nie jest dowodem wykonanych przypadków. Full CTest zmienił wyłącznie źródła serwera/binary podczas poprawki; kernel/test inputs i pozostałe5binarek były identyczne. Testy serwera118/119 wykonały końcową c651. Izolowany CTest potwierdza dokładnie ten sam bloker1/2.
+Przed: historyczny receipt fa7538d —108/108 CTest,659 native cases/24465 assertions,1276 Python/0skip,84 fixture,20 nativeUI,16 E2E,web PASS. Nie przypisujemy go nowej mieszanej bazie.
 
-## Do wątku 1
+| Bramka obecnego przyrostu | Wynik |
+|---|---|
+| Pełny GCC/Werror/vendored build | PASS |
+| Końcowy TypeScript/Vite build | PASS |
+| Pełny mixed CTest |120/121;761 native cases (758PASS/3FAIL),29103 assertions (29095PASS/8FAIL),1322 Python/0skip |
+| Niezmienione wcześniejsze fixture |84/84 |
+| Wcześniejsze native UI |20/20 |
+| Wcześniejsze native E2E |16/16 |
+| Metody — real native/store/config/restart |14/14 |
+| Czat grafowy — real ChatEngine/fragmenty |14/14;4 lokalne fake provider calls |
+| Analiza —4 browser +1 C++ native fixture |5/5 |
+| Onboarding HTTP — native DB/CAS/restart |8/8 |
+| Host W12 —15 pure +6 React/LoomHttpApi |21/21 |
+| Whole-App native + geometria drawer/phone |8/8;51 real HTTP responses;0 provider/external/page errors |
 
-Bloker mixed CTest: `loom/tests/test_knowledge_semantic.cpp`252/255/256/319/354/355/358/362, status blocked po poprzednim offline błędzie modelu. Pełny13-case suite:3FAIL/8assertions. Izolowany świeży CTest powtarza13 cases/125 assertions:10/117 PASS,3/8 FAIL. To rzeczywista regresja W1+W2. `extract/semantic.cpp:798` daje ten sam operation_id dla run|chunk|wire-request_hash.905–906 rozliczają request/input_bytes, lecz tokeny/koszt zostają unknown, więc policy353 zachowuje unresolved, a policy258–263 zwraca stary receipt. Caller880–886 słusznie odmawia powtórzenia. Max_proposals/response_bytes zmieniają cache key829–830, ale nie tożsamość próby. W1 ma nadać nowej jawnej próbie odrębne ID i utrzymać je w checkpoint dla resume/confirmation; zachować cache/candidate identity, unknown accounting i anty-double-dispatch839–844. W10 nie edytuje tych zakresów ani nie luzuje testów.
+Końcowa binarka SHA256 `c65181cb064cf5326b0006bddf31f2244d369e1b6607e20cab6b559447475c2f`. Poszczególne końcowe próby UI mają zgodne before/after source/binary/bundle hashes. Podczas pełnego CTest zmieniły się tylko app.cpp/method bridge/server binary; kernel/test inputs i pozostałe5binarek były identyczne, a testy serwera118/119 wykonały już c651. Nie przedstawiamy całego tego negative receipt jako frozen run. Odziedziczony opt-in `unit.test_catalog_scale` wykonał0cases i nie jest policzony jako pokrycie. Pełny Clang/vendored pozostaje macierzą8; wcześniejsze unused [this] naprawione i Clang18 proof retained w poprzednim przyroście.
 
-## Do wątku 2
+## Negatywy i odtworzenie
 
-Zachować unknown/unresolved accounting i odmowę powtórzenia tej samej operation_id. Naprawa nowej próby należy do1; nie odblokowywać starego receipt ani nie luzować strażnika, aby test przeszedł.
+[RESULTS + archiwa pozytywne](interface-2-api-2026-10-05-evidence/RESULTS.json) zawierają pełne HTTP/receipts, komendy, source manifests, źródła harnessów i screenshoty. [Instrukcja powtórzenia](interface-2-api-2026-10-05-evidence/README.md).
 
-## Do wątku 3
+Pełne negatywy pozostają osobno na `archive/2026-10-05/interface-2-api-negatives`: budowa j4/OOM i pusty artefakt po przerwaniu, pierwsze baseline reads, zachowany test braku opcjonalnego W11, test calibration failures, real config DTO reorder, niespójna aktywacja selekcji, Analysis receiver, clipping oraz pełny CTest/JUnit/LastTest i isolated repro. Oryginalne źródła lub zweryfikowane replay patches są opisane hashami; rekonstrukcje jawnie oznaczone. Żadnych testów nie usunięto ani progów nie poluzowano.
 
-StageContext `knowledge.h:101/109` oferuje run/resume checkpoint, bez osobnego attempt ID. Uzgodnić interoperacyjną tożsamość nowej próby z1. Graph guard1177–1185 nie jest przyczyną negatywu CTest.
+## Czego API jeszcze nie dostarcza
 
-Publiczny per-call context_execution i immutable Chat PreparedRequest/resume nadal nie istnieją w przyjętym3. Obecny UI używa realnej globalnej konfiguracji; nie ponawia Chat.send po potwierdzeniu jako substytutu resume.
+Publiczny per-call context_execution/immutable Chat.resume i składanie dowolnego dynamicznego GraphPacket z dowolną historią wiadomości pozostają luką3. Obecne presety zachowują istniejący graph memory/knowledge context; nie deklarują dodatkowej kompozycji, której nie ma w API. Handle analizy jest process-local, znika na restart i nie jest trwałym TaskEngine.
 
-## Do wątku 12
+Model interview W12 wymaga dedykowanego privacy-filtered/W2-bound completion transportu. Host go nie udaje przez ordinary chat; formularze/review/layers działają. RuntimeProfile W11 nie jest w tej bazie; dedykowany status jest w raw snapshot, bez projekcji w obecnych widokach W12.
 
-Most UI/HTTP korzysta z3c0bc36, zachowuje outer revision, stable layer keys, source_refs i review. Model completion pozostaje oddzielnym privacy-filtered transportem, nigdy ordinary api.chat z dodatkowym kontekstem.
+[Publiczny kontrakt TaskEngine](interface-2-task-engine-adapter-2026-10-04.md) opisuje realne4 operacje list/get/cancel/global recovery. Brakuje generic submit/checkpoint-write/complete/public pause/resume-one/TaskRecord CAS; workflow.task.execute pozostaje unavailable. Global recovery nie jest wznowieniem pojedynczego workflow ani potwierdzeniem jego ukończenia.
 
-## Do wątku 9
+## Do wątku N
 
-Nie odbierać nowego przyrostu: pełny CTest120/121 ma bloker1/2. Najpierw dokładnie1 i12, następnie10; deklaracje APIs nie zastępują bramek. Pierwotne źródła i wszystkie negatywy pozostają odtwarzalne na przypiętych gałęziach.
+- **Do wątku1:** jedyny bloker pełnej bramki: `test_knowledge_semantic.cpp`252/255/256/319/354/355/358/362. Isolated13cases/125assertions ponawia10/117PASS,3/8FAIL. `extract/semantic.cpp:798` nadaje nowej jawnej próbie ten sam operation_id z run|chunk|wire-request_hash;905–906 zostawiają unknown tokens/cost, więc policy353 zachowuje unresolved, a258–263 zwraca poprzedni receipt. Odmowa caller880–886 jest poprawna. Opcje max_proposals/response_bytes zmieniają cache key829–830, ale nie attempt identity. Nadać nowej jawnej próbie osobne ID i zachować je przez preview/confirmation/checkpoint/resume, bez zmiany cache/candidate identity i anty-double-dispatch839–844.
+- **Do wątku2:** zachować unknown/unresolved accounting i odmowę ponowienia tej samej operation_id; nie odblokowywać starego receipt ani nie osłabiać strażnika dla testu. Korekta nowej tożsamości należy do1.
+- **Do wątku3:** StageContext knowledge.h101/109 ma run/resume checkpoint, bez osobnego attempt ID — uzgodnić interoperacyjny identyfikator z1. Graph guard nie jest przyczyną regresji. Dostarczyć per-call context_execution/immutable Chat.resume oraz pełną konfigurowalną kompozycję grafu do dowolnej historii.
+- **Do wątku4:** publiczne C ABI/JNI odpowiedniki użytych source-private bridges, dokładne JSON/receipts/fragment addressing i transakcyjne expected_rows. Nie utożsamiać strukturalnego bindingu z dowodem wykonania.
+- **Do wątku8:** opt-in catalog_scale nadal0cases; utrzymać jawny guard i pełną macierz Clang/vendored bez luzowania progów.
+- **Do wątku12:** model interview completion wymaga rzeczywistego transportu z effective privacy, W2, provider/request_token i exact prepared CAS. Rozszerzyć projekcję RuntimeProfile capability, jeśli status ma być widoczny jako kontrolka.
+- **Do wątku9:** kod10 gotowy, **odbiór WSTRZYMANY do naprawy1/2 i ponownego pełnego CTest**. Kolejność1 →12 →10, dokładne źródła powyżej; main/STATE/README/INDEX nie edytowano. Żadne pozostałe API luki nie są zamaskowane fikcyjnym adapterem. Negatywnej gałęzi archiwalnej nie scalać na main.

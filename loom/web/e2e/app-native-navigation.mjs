@@ -31,7 +31,7 @@ function treeFiles(root) {
 const sourceFiles = [
   path.join(webRoot, "e2e/app-native-navigation.mjs"), path.join(webRoot, "e2e/harness-lifecycle.mjs"),
   ...["App.tsx", "api/loom-http.ts", "api/analysis.ts", "methods/graph-methods.ts", "api/onboarding-host.ts", "components/UserProfilePanel.tsx",
-    "components/MethodsPanel.tsx", "components/AnalysisPanel.tsx", "onboarding/controller.ts",
+    "components/MethodsPanel.tsx", "components/AnalysisPanel.tsx", "components/analysis-panel.css", "onboarding/controller.ts",
     "onboarding/native-snapshot.ts", "onboarding/OnboardingPanel.tsx", "onboarding/WhatAppKnows.tsx"].map(file => path.join(webRoot, "src", file)),
   ...["src/app.cpp", "src/app.h", "src/native-ui-common.h", "src/onboarding-ui-routes.h",
     "src/method-ui-routes.h", "src/analysis-ui-routes.h"].map(file => path.join(loomRoot, "server", file)),
@@ -53,7 +53,7 @@ const gitStatus = spawnSync("git", ["status", "--short"], { cwd: repoRoot, encod
 const user = "synthetic/whole-app-navigation Ω";
 const value = "Synthetic exact native form value Ω  retained double space";
 const groups = [], traffic = [], pageErrors = [], externalRequests = [], providerRequests = [], pendingResponses = [], observations = {};
-const completion = suiteCompletionGuard("app-native-navigation", 7, groups);
+const completion = suiteCompletionGuard("app-native-navigation", 8, groups);
 let server, browser, page, serverLog = "", failure = null;
 const provider = createServer((request, response) => {
   providerRequests.push({ method: request.method, url: request.url }); response.writeHead(503); response.end("No model calls are authorized by this suite.");
@@ -259,6 +259,54 @@ try {
     await Promise.all(pendingResponses); assert.deepEqual(pageErrors, []); assert.deepEqual(externalRequests, []); assert.deepEqual(providerRequests, []);
     assert.equal(traffic.some(row => row.endpoint === "/api/analysis" && row.command?.operation === "execute"), false);
   });
+  await check("desktop 420px and phone 390px analysis drawers fit controls and preserve edited exact query bytes without dispatch", async () => {
+    const bindings = await page.getByTestId("analysis-bindings").inputValue();
+    const originalBody = observations.analysis_preparation.request.body_bytes;
+    const geometry = async viewport => {
+      const measured = await page.getByTestId("panel-analysis").evaluate(drawer => {
+        const body = drawer.querySelector(".drawer-body"), panel = drawer.querySelector('[data-testid="analysis-panel"]');
+        const bounds = node => {
+          const rect = node.getBoundingClientRect();
+          return { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom, width: rect.width, height: rect.height };
+        };
+        return { drawer: bounds(drawer), body: { ...bounds(body), clientWidth: body.clientWidth, scrollWidth: body.scrollWidth },
+          panel: { ...bounds(panel), clientWidth: panel.clientWidth, scrollWidth: panel.scrollWidth },
+          controls: [...panel.querySelectorAll("input,textarea,select,button")].filter(control => control.getClientRects().length)
+            .map(control => ({ id: control.getAttribute("data-testid") || control.id || control.textContent.trim(), ...bounds(control) })) };
+      });
+      assert.ok(measured.drawer.width <= viewport.width + 1, `Drawer exceeds ${viewport.width}px viewport`);
+      assert.ok(Math.abs(measured.drawer.width - Math.min(420, viewport.width)) <= 1, "Actual configured drawer width");
+      assert.ok(measured.body.scrollWidth <= measured.body.clientWidth + 1, `Drawer body has horizontal overflow: ${JSON.stringify(measured.body)}`);
+      assert.ok(measured.panel.scrollWidth <= measured.panel.clientWidth + 1, `Analysis panel has horizontal overflow: ${JSON.stringify(measured.panel)}`);
+      assert.ok(measured.controls.length > 10, "Measure the actual analysis controls, not an empty panel");
+      for (const control of measured.controls) {
+        assert.ok(control.left >= Math.max(0, measured.body.left) - 1 && control.right <= Math.min(viewport.width, measured.body.right) + 1,
+          `Control ${control.id} is clipped horizontally: ${JSON.stringify(control)}`);
+      }
+      return measured;
+    };
+    observations.analysis_geometry = [];
+    for (const viewport of [{ width: 1800, height: 1100 }, { width: 390, height: 844 }]) {
+      await page.setViewportSize(viewport);
+      await page.waitForFunction(width => Math.abs(document.querySelector('[data-testid="panel-analysis"]').getBoundingClientRect().width - Math.min(420, width)) <= 1, viewport.width);
+      const before = await geometry(viewport), exactBytes = viewport.width === 390 ? `\n\t${originalBody}\n  ` : `\n  ${originalBody}\n `;
+      const body = page.getByTestId("analysis-body"); await body.scrollIntoViewIfNeeded();
+      assert.equal(await body.isVisible(), true); assert.equal(await body.isEditable(), true);
+      const bounds = await body.boundingBox(); assert.ok(bounds && bounds.x >= 0 && bounds.x + bounds.width <= viewport.width + 1 && bounds.y < viewport.height && bounds.y + bounds.height > 0);
+      await body.fill(exactBytes); assert.equal(await body.inputValue(), exactBytes); assert.equal(await page.getByTestId("analysis-bindings").inputValue(), bindings);
+      assert.equal(await page.getByTestId("analysis-body-override").isChecked(), true);
+      await page.getByTestId("analysis-prepare").click(); await page.getByTestId("analysis-prepared").waitFor();
+      const prepared = JSON.parse(await page.getByTestId("analysis-prepared").textContent());
+      assert.equal(prepared.request.body_bytes, exactBytes); assert.equal(prepared.attempted, false); assert.equal(prepared.graph_binding_available, false);
+      assert.notEqual(prepared.request_identity_hash, observations.analysis_preparation.request_identity_hash, "Exact whitespace changes the immutable request identity");
+      assert.equal(await page.getByTestId("analysis-send").isDisabled(), true);
+      assert.equal(await page.getByTestId("analysis-bindings").inputValue(), bindings);
+      const after = await geometry(viewport); await body.scrollIntoViewIfNeeded(); await screenshot(`analysis-geometry-${Math.min(420, viewport.width)}px`);
+      observations.analysis_geometry.push({ viewport, before, after, prepared, exact_bytes: exactBytes, source_bindings: bindings });
+    }
+    await Promise.all(pendingResponses); assert.deepEqual(pageErrors, []); assert.deepEqual(externalRequests, []); assert.deepEqual(providerRequests, []);
+    assert.equal(traffic.some(row => row.endpoint === "/api/analysis" && row.command?.operation === "execute"), false);
+  });
   assert.deepEqual(manifest(), inputsBefore, "Source, production assets and native binary must remain unchanged during this receipt");
 } catch (error) {
   failure = error; if (page) {
@@ -272,7 +320,7 @@ try {
   writeFileSync(path.join(directory, "server.log"), serverLog);
   writeFileSync(path.join(directory, "results.json"), JSON.stringify({ schema: "loom.app_native_navigation_receipt/1", status: failure ? "failed" : "passed",
     timestamp: new Date().toISOString(), gitHead, gitStatus, serverBin, dist, base, providerBase,
-    groups, declared_groups: 7, failure: failure ? { message: failure.message, stack: failure.stack } : null,
+    groups, declared_groups: 8, failure: failure ? { message: failure.message, stack: failure.stack } : null,
     inputsBefore, inputsAfter, inputs_stable: JSON.stringify(inputsBefore) === JSON.stringify(inputsAfter),
     traffic, observations, pageErrors, externalRequests, providerRequests,
     limitations: ["No onboarding model completion transport is connected; the interview button remains disabled.",
@@ -284,4 +332,4 @@ try {
 }
 if (failure) throw failure;
 completion.complete();
-console.log(`[app-native-navigation] 7/7 groups passed; real whole App/native forms/layers/privacy/library receipt/query preview; 0 provider calls; evidence ${directory}`);
+console.log(`[app-native-navigation] 8/8 groups passed; real whole App/native forms/layers/privacy/library receipt/query preview/desktop+phone geometry; 0 provider calls; evidence ${directory}`);
