@@ -1,0 +1,102 @@
+#!/usr/bin/env python3
+"""Conditional W1/W2 offline fixture build, in separate sequential phases.
+
+No cherry-pick, repository mutation, provider call or core build. Git reads
+exact public W2 source blobs into scratch. Run link only after the parent
+confirms that the selected root archive is complete.
+"""
+import argparse
+import hashlib
+import json
+import os
+from pathlib import Path
+import subprocess
+
+W2_PIN = "34cc920dd3cdb0c0fca0a514569b19111429583f"
+SOURCES = {
+    "include/loom/usage_policy.h": "loom/include/loom/usage_policy.h",
+    "usage_policy.cpp": "loom/src/policy/usage_policy.cpp",
+    "config_usage_policy.cpp": "loom/src/core/config_usage_policy.cpp",
+}
+
+
+def run(argv, repo):
+    subprocess.run([str(value) for value in argv], cwd=repo, check=True)
+
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("phase", choices=["objects", "link", "run"])
+    parser.add_argument("--repo", type=Path, default=Path.cwd())
+    parser.add_argument("--scratch", type=Path, required=True)
+    parser.add_argument("--w2-ref", default=W2_PIN)
+    parser.add_argument("--core-dir", type=Path)
+    parser.add_argument("--compiler", default="c++")
+    parser.add_argument("--output", type=Path)
+    args = parser.parse_args()
+    repo, scratch = args.repo.resolve(), args.scratch.resolve()
+    scratch.mkdir(parents=True, exist_ok=True)
+    core = (args.core_dir or repo / "loom/build/dev").resolve()
+    fixture = repo / "loom/src/extract/tests/semantic_w2_integration.cpp.fixture"
+    common = [args.compiler, "-std=c++20", "-g0", "-O0", "-I" + str(scratch / "include"),
+              "-Iloom/include", "-Iloom/src", "-isystem", "loom/third_party/nlohmann"]
+    if args.phase == "objects":
+        commit = subprocess.check_output(["git", "rev-parse", args.w2_ref], cwd=repo, text=True).strip()
+        copies = []
+        for local, source in SOURCES.items():
+            data = subprocess.check_output(["git", "show", commit + ":" + source], cwd=repo)
+            path = scratch / local
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(data)
+            copies.append({"source": source, "scratch": local, "sha256": sha(path), "bytes": len(data)})
+        semantic_bytes = (repo / "loom/src/extract/semantic.cpp").read_bytes()
+        semantic_hash = hashlib.sha256(semantic_bytes).hexdigest()
+        semantic_snapshot = scratch / ("semantic_w1_" + semantic_hash + ".cpp")
+        semantic_snapshot.write_bytes(semantic_bytes)
+        commands = [
+            [*common, "-c", scratch / "usage_policy.cpp", "-o", scratch / "usage_policy.o"],
+            [*common, "-c", scratch / "config_usage_policy.cpp", "-o", scratch / "config_usage_policy.o"],
+            [*common, "-c", semantic_snapshot, "-o", scratch / "semantic_w2.o"],
+            [*common, "-x", "c++", "-c", fixture, "-o", scratch / "fixture.o"],
+        ]
+        for command in commands:  # one compiler at a time
+            run(command, repo)
+        manifest = {"W2_commit": commit, "W2_source_copies": copies,
+                    "compiled_semantic_sha256": semantic_hash,
+                    "semantic_snapshot": str(semantic_snapshot),
+                    "current_root_semantic_sha256": sha(repo / "loom/src/extract/semantic.cpp"),
+                    "root_adapter_sha256": sha(repo / "loom/src/extract/semantic_usage.h"),
+                    "fixture_sha256": sha(fixture), "commands": [[str(v) for v in cmd] for cmd in commands],
+                    "link_or_run_executed": False, "paid_calls": 0}
+        (scratch / "object_build.json").write_text(json.dumps(manifest, indent=2) + "\n")
+        if manifest["current_root_semantic_sha256"] != semantic_hash:
+            raise SystemExit("semantic.cpp changed during compilation; snapshot retained, wait for source freeze and rebuild")
+    elif args.phase == "link":
+        # Explicit objects precede the archive. This supplies both semantic
+        # exported functions, so its fallback semantic.o is not pulled from it.
+        pending = scratch / "semantic_w2_probe.pending"
+        command = [args.compiler, "-g0", "-Wl,--no-keep-memory,--reduce-memory-overheads", scratch / "fixture.o",
+                   scratch / "semantic_w2.o", scratch / "usage_policy.o", scratch / "config_usage_policy.o",
+                   core / "libloom_core.a", core / "libloom_sqlite3_amalgamation.a", core / "libloom_miniz.a",
+                   "-lssl", "-lcrypto", "-lpthread", "-o", pending]
+        run(command, repo)
+        pending.replace(scratch / "semantic_w2_probe")
+        (scratch / "link_command.json").write_text(json.dumps([str(v) for v in command], indent=2) + "\n")
+    else:
+        if args.output is None:
+            raise SystemExit("run requires --output; use a fresh result path")
+        binary = scratch / "semantic_w2_probe"
+        if not binary.is_file() or binary.stat().st_size == 0 or not os.access(binary, os.X_OK):
+            raise SystemExit("no completed executable; link must succeed before creating a fixture result")
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        with args.output.open("xb") as output:  # retain first failed/successful result
+            completed = subprocess.run([str(binary)], cwd=repo, stdout=output)
+        raise SystemExit(completed.returncode)
+
+
+if __name__ == "__main__":
+    main()

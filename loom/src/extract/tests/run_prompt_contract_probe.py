@@ -13,7 +13,7 @@ import tempfile
 
 REPO = Path(__file__).resolve().parents[4]
 LOOM = REPO / "loom"
-EXPECTED_CASES = 42
+EXPECTED_CASES = 43
 
 
 def main() -> int:

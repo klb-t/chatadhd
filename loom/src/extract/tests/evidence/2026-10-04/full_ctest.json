@@ -1,0 +1,39 @@
+{
+  "schema": "loom.full_offline_gate/1",
+  "completed_utc": "2026-10-04T16:00:28.272217+00:00",
+  "exit_code": 0,
+  "passed": 108,
+  "total": 108,
+  "wall_seconds": 180.66,
+  "command": "ctest --test-dir loom/build/dev --output-on-failure -j 2",
+  "environment": {
+    "TMPDIR": "<scratch tmpfs directory>",
+    "build_type": "Debug",
+    "LOOM_USE_SYSTEM_SQLITE": false,
+    "LOOM_BUILD_SERVER": true
+  },
+  "paid_calls": 0,
+  "research_case_counts": {
+    "structure": 859,
+    "contracts": 209
+  },
+  "timeouts_or_thresholds_modified": false,
+  "w2_header_integrated_in_normal_build": false,
+  "native_source_sha256": {
+    "loom/src/extract/candidate_graph.cpp": "5beca05fef288acbdd24afa8897a8408fe07288a47d622e6772180b167626f2e",
+    "loom/src/extract/extract.cpp": "09aeca56f605ee1fd37e67ed123bb64f5e09c6d98dd195c6f9d05e7e8bad4c4d",
+    "loom/src/extract/extract_internal.h": "486143b2b85b866516c99a27f763ea4e95f1e8a337cc490425d6a69b53533948",
+    "loom/src/extract/extractors.cpp": "bda04587545a41b75a974d3b70001d43e9884c9fed8afdc55efa4fd683aae377",
+    "loom/src/extract/gen_prompt_contracts.py": "bff897e6f7786463d6a8199332da9bd20550c012500795a517301bd4539bf239",
+    "loom/src/extract/lexicon.cpp": "deae5daf973dce86a9accfe9a5321a3e53182569fba66fa9e1eebf69d837548e",
+    "loom/src/extract/lexicon.h": "a7d16e783a6db8cee4e3408edfbe2ff1c0254aade37c6b4951780a863e6a972b",
+    "loom/src/extract/prompt_contract.cpp": "73b7d5e4615725f0d119e6bfd1bf87ad794113650a7627d744222f2967ff5ac5",
+    "loom/src/extract/prompt_contract.h": "41428317875ef45d0e668827a673d3fb4ce73303923e0aafe048925f2bd66d8f",
+    "loom/src/extract/prompt_contract_data.inc": "3898ef9aac59ba7111b6802a1b32a9cccd53c8b1cab3712ad001f0b82b1aa86c",
+    "loom/src/extract/semantic.cpp": "c9e844ff65d87e3345ed51f2bdef5500724e7a781fa0912b19b1016143463db5",
+    "loom/src/extract/semantic_usage.h": "aabec6bfbf9b735ee7d2ad8dbc52822b2212b5422a06f9243866ddef84a6ba6b",
+    "loom/src/extract/sources.cpp": "11ba9f5a8b2edb644d0e126a4215682ec4313a532a722cb14881bc5bfb5ffa1f",
+    "loom/src/extract/stage.cpp": "fdd7ffae2c959b15fc5de7eb48d299c1640085a622a29747447da042fe1b1347"
+  },
+  "full_ctest_stdout_sha256": "57425d72c28525fd5441e6445d584d767730ab0ee6e2c0598b8327b56640ab66"
+}
