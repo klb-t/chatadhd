@@ -1,0 +1,153 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "memory",
+  "revision": 1,
+  "defaults": {
+    "default_node_type": "text",
+    "default_weight": 1.0,
+    "id_chars": 12,
+    "auto_tag_node_types": [
+      "text"
+    ],
+    "auto_tag_threshold": 1,
+    "context_max_chars": 16000,
+    "search_limit": 10,
+    "graph_label_chars": 25,
+    "graph_node_type": "memory",
+    "graph_child_relation": "child",
+    "graph_child_weight": 1.0,
+    "indent": "  ",
+    "line_separator": "\n",
+    "tag_prefix": " #",
+    "tag_separator": " #",
+    "weight_precision": 1,
+    "weight_template": " [w:{{weight}}]",
+    "renderers": {
+      "folder": "{{indent}}[{{content}}]{{weight}}{{tags}}",
+      "file": "{{indent}}FILE: {{content}} ({{path}}){{weight}}",
+      "dir": "{{indent}}DIR: {{content}} ({{path}}){{weight}}"
+    },
+    "default_renderer": "{{indent}}{{content}}{{weight}}{{tags}}",
+    "sort_priorities": {
+      "folder": 0
+    },
+    "default_sort_priority": 1
+  },
+  "value_schema": {
+    "type": "object",
+    "required": [
+      "default_node_type",
+      "graph_node_type",
+      "graph_child_relation",
+      "indent",
+      "line_separator",
+      "tag_prefix",
+      "tag_separator",
+      "weight_template",
+      "default_renderer",
+      "id_chars",
+      "auto_tag_threshold",
+      "context_max_chars",
+      "search_limit",
+      "graph_label_chars",
+      "weight_precision",
+      "default_weight",
+      "graph_child_weight",
+      "auto_tag_node_types",
+      "renderers",
+      "sort_priorities",
+      "default_sort_priority"
+    ],
+    "properties": {
+      "default_node_type": {
+        "type": "string"
+      },
+      "graph_node_type": {
+        "type": "string"
+      },
+      "graph_child_relation": {
+        "type": "string"
+      },
+      "indent": {
+        "type": "string"
+      },
+      "line_separator": {
+        "type": "string"
+      },
+      "tag_prefix": {
+        "type": "string"
+      },
+      "tag_separator": {
+        "type": "string"
+      },
+      "weight_template": {
+        "type": "string"
+      },
+      "default_renderer": {
+        "type": "string"
+      },
+      "id_chars": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 18446744073709551615
+      },
+      "auto_tag_threshold": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 2147483647
+      },
+      "context_max_chars": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 18446744073709551615
+      },
+      "search_limit": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 2147483647
+      },
+      "graph_label_chars": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 18446744073709551615
+      },
+      "weight_precision": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 2147483647
+      },
+      "default_weight": {
+        "type": "number"
+      },
+      "graph_child_weight": {
+        "type": "number"
+      },
+      "auto_tag_node_types": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "renderers": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        }
+      },
+      "sort_priorities": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        }
+      },
+      "default_sort_priority": {
+        "type": "integer",
+        "minimum": -2147483648,
+        "maximum": 2147483647
+      }
+    },
+    "additionalProperties": false
+  }
+}
