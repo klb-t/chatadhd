@@ -4,11 +4,14 @@
 // and an interrupted stage resumes from its checkpoint.
 #include <algorithm>
 #include <chrono>
+#include <limits>
 #include <map>
 #include <set>
 #include <thread>
+#include <stdexcept>
 
 #include "archive/archive_runtime.h"
+#include "archive/profile.h"
 #include "loom/archive.h"
 #include "loom/db.h"
 #include "loom/graph_engine.h"
@@ -48,23 +51,61 @@ std::vector<std::string> json_strings(const Json& j) {
 
 double round4(double v) { return std::round(v * 10000.0) / 10000.0; }
 
-std::string mime_for(const std::string& name) {
-  if (name.size() > 3 && name.substr(name.size() - 3) == ".md") return "text/markdown";
-  if (name.size() > 4 && name.substr(name.size() - 4) == ".csv") return "text/csv";
-  if (name.size() > 6 && name.substr(name.size() - 6) == ".jsonl") return "application/x-ndjson";
-  return "application/json";
+std::string mime_for(const std::string& name, const ArchiveProfile& profile) {
+  for (const auto& rule : profile.value("/output/mime_rules")) {
+    const auto suffix = rule.at("suffix").get<std::string>();
+    if (name.ends_with(suffix) && (!rule.at("require_prefix").get<bool>() || name.size() > suffix.size()))
+      return rule.at("mime").get<std::string>();
+  }
+  return profile.text("/output/default_mime");
+}
+
+const Json& builtin_config_defaults() {
+  static const Json defaults = [] {
+    auto profile = ArchiveProfile::builtin();
+    if (!profile) throw std::logic_error(profile.error().to_string());
+    return profile->value("/config_defaults");
+  }();
+  return defaults;
 }
 }  // namespace
 
 // ── Config ──────────────────────────────────────────────────────────
+ArchiveConfig::ArchiveConfig() {
+  const auto& d = builtin_config_defaults();
+  sources = json_strings(d.at("sources"));
+  if (d.at("repo").is_string()) repo = d.at("repo").get<std::string>();
+  code = d.at("code").get<bool>();
+  git = d.at("git").get<bool>();
+  seed_terms = json_strings(d.at("seed_terms"));
+  out_dir = d.at("out_dir").get<std::string>();
+  project = d.at("project").get<std::string>();
+  max_passes = d.at("max_passes").get<int>();
+  max_new_terms = d.at("max_new_terms").get<int>();
+  max_hits_per_term = d.at("max_hits_per_term").get<int>();
+  max_synthesis_rounds = d.at("max_synthesis_rounds").get<int>();
+  llm = d.at("llm").get<std::string>();
+  include_db = d.at("include_db").get<bool>();
+  exclude = json_strings(d.at("exclude"));
+  max_file_bytes = d.at("max_file_bytes").get<std::int64_t>();
+  force = d.at("force").get<bool>();
+}
+
 Result<ArchiveConfig> ArchiveConfig::from_json(const Json& j) {
+  LOOM_TRY_ASSIGN(auto profile, ArchiveProfile::builtin());
+  return from_json_with_profile(j, profile);
+}
+
+Result<ArchiveConfig> ArchiveConfig::from_json_with_profile(const Json& j, const ArchiveProfile& profile) {
+  if (!j.is_null() && !j.is_object()) return Error(Errc::InvalidArgument, "archive config must be a JSON object");
+  Json merged = profile.value("/config_defaults");
+  if (j.is_object()) for (auto it = j.begin(); it != j.end(); ++it) merged[it.key()] = it.value();
   ArchiveConfig c;
-  if (j.is_null()) return c;
-  if (!j.is_object()) return Error(Errc::InvalidArgument, "archive config must be a JSON object");
-  for (auto it = j.begin(); it != j.end(); ++it) {
+  for (auto it = merged.begin(); it != merged.end(); ++it) {
     const std::string& k = it.key();
     const Json& v = it.value();
     auto strings = [&](std::vector<std::string>& out) -> Status {
+      out.clear();
       if (v.is_string()) {
         out.push_back(v.get<std::string>());
         return {};
@@ -78,6 +119,13 @@ Result<ArchiveConfig> ArchiveConfig::from_json(const Json& j) {
     };
     auto integer = [&](int& out) -> Status {
       if (!v.is_number_integer()) return Error(Errc::InvalidArgument, k + " must be an integer");
+      if (v.is_number_unsigned()) {
+        if (v.get<std::uint64_t>() > static_cast<std::uint64_t>(std::numeric_limits<int>::max()))
+          return Error(Errc::InvalidArgument, k + " exceeds native integer representation");
+      } else if (const auto n = v.get<std::int64_t>();
+                 n < std::numeric_limits<int>::min() || n > std::numeric_limits<int>::max()) {
+        return Error(Errc::InvalidArgument, k + " exceeds native integer representation");
+      }
       out = v.get<int>();
       return {};
     };
@@ -85,7 +133,8 @@ Result<ArchiveConfig> ArchiveConfig::from_json(const Json& j) {
       LOOM_TRY(strings(c.sources));
     } else if (k == "repo") {
       if (v.is_string()) c.repo = v.get<std::string>();
-      else if (!v.is_null()) return Error(Errc::InvalidArgument, "repo must be a string");
+      else if (v.is_null()) c.repo.reset();
+      else return Error(Errc::InvalidArgument, "repo must be a string");
     } else if (k == "code" && v.is_boolean()) {
       c.code = v.get<bool>();
     } else if (k == "git" && v.is_boolean()) {
@@ -112,6 +161,8 @@ Result<ArchiveConfig> ArchiveConfig::from_json(const Json& j) {
     } else if (k == "exclude") {
       LOOM_TRY(strings(c.exclude));
     } else if (k == "max_file_bytes" && v.is_number_integer()) {
+      if (v.is_number_unsigned() && v.get<std::uint64_t>() > static_cast<std::uint64_t>(std::numeric_limits<std::int64_t>::max()))
+        return Error(Errc::InvalidArgument, k + " exceeds native integer representation");
       c.max_file_bytes = v.get<std::int64_t>();
     } else if (k == "force" && v.is_boolean()) {
       c.force = v.get<bool>();
@@ -119,10 +170,16 @@ Result<ArchiveConfig> ArchiveConfig::from_json(const Json& j) {
       return Error(Errc::InvalidArgument, "unknown or invalid archive option: " + k);
     }
   }
-  c.max_passes = std::clamp(c.max_passes, 1, 20);
-  c.max_new_terms = std::clamp(c.max_new_terms, 0, 100);
-  c.max_hits_per_term = std::clamp(c.max_hits_per_term, 0, 5000);
-  c.max_synthesis_rounds = std::clamp(c.max_synthesis_rounds, 0, 5);
+  auto bounds = [&](std::string_view name, int value) {
+    const auto& bound = profile.value("/config_bounds").at(std::string(name));
+    value = std::max(value, bound.at("minimum").get<int>());
+    if (!bound.at("maximum").is_null()) value = std::min(value, bound.at("maximum").get<int>());
+    return value;
+  };
+  c.max_passes = bounds("max_passes", c.max_passes);
+  c.max_new_terms = bounds("max_new_terms", c.max_new_terms);
+  c.max_hits_per_term = bounds("max_hits_per_term", c.max_hits_per_term);
+  c.max_synthesis_rounds = bounds("max_synthesis_rounds", c.max_synthesis_rounds);
   return c;
 }
 
@@ -158,6 +215,8 @@ Json ArchiveRunResult::to_json() const {
 
 // ── State ───────────────────────────────────────────────────────────
 struct ArchiveIntelligence::State {
+  std::optional<ArchiveProfile> profile;
+  std::optional<Error> profile_error;
   std::mutex run_mu;  // one orchestration at a time
   std::mutex mu;      // guards the fields below
   ArchiveProgressFn progress;
@@ -197,12 +256,13 @@ Result<Json> get_json(Runtime& rt, std::string_view hash) {
 
 // Optional LLM refinement of low-confidence items (never required; changes
 // the output, so only when llm = "auto" and a key + model are configured).
-int refine_items_llm(Runtime& rt, std::vector<Item>& items) {
+int refine_items_llm(Runtime& rt, std::vector<Item>& items, const ArchiveProfile& policy) {
   std::string key = rt.secrets().get_string("api_key");
   Json base_j = rt.config().get("base_url");
   std::string base = base_j.is_string() ? base_j.get<std::string>() : "";
   std::string model;
-  for (const char* k : {"semantic_model", "default_model"}) {
+  for (const auto& key_name : policy.value("/refinement/model_keys")) {
+    const auto& k = key_name.get_ref<const std::string&>();
     Json v = rt.config().get(k);
     if (v.is_string() && !v.get<std::string>().empty()) {
       model = v.get<std::string>();
@@ -213,27 +273,24 @@ int refine_items_llm(Runtime& rt, std::vector<Item>& items) {
   while (!base.empty() && base.back() == '/') base.pop_back();
   std::vector<std::size_t> low;
   for (std::size_t i = 0; i < items.size(); ++i) {
-    if (items[i].confidence < 0.6 && items[i].type != "implementation") low.push_back(i);
+    if (items[i].confidence < policy.number("/refinement/confidence_threshold") && !policy.contains("/refinement/excluded_types", items[i].type)) low.push_back(i);
   }
   int changed = 0;
-  for (std::size_t b = 0; b < low.size() && b < 100; b += 25) {
-    std::string prompt =
-        "Classify each numbered sentence from a project archive as one of: idea, decision, rejected_option, "
-        "open_question, implementation, bug, requirement, invariant, rationale, none. Sentences may be Polish or "
-        "English. Reply with only a JSON array of objects {\"i\": <number>, \"type\": <label>}.\n\n";
-    for (std::size_t k = b; k < low.size() && k < b + 25; ++k) {
-      prompt += std::to_string(k) + ". " + clip(items[low[k]].text, 300) + "\n";
+  for (std::size_t b = 0; b < low.size() && b < static_cast<std::size_t>(policy.integer("/refinement/max_items")); b += static_cast<std::size_t>(policy.integer("/refinement/batch_size"))) {
+    std::string prompt = policy.text("/refinement/prompt");
+    for (std::size_t k = b; k < low.size() && k < b + static_cast<std::size_t>(policy.integer("/refinement/batch_size")) && k < static_cast<std::size_t>(policy.integer("/refinement/max_items")); ++k) {
+      prompt += std::to_string(k) + ". " + clip(items[low[k]].text, static_cast<std::size_t>(policy.integer("/refinement/max_item_codepoints"))) + "\n";
     }
     net::HttpRequest req;
     req.method = "POST";
     req.url = base + "/chat/completions";
     req.headers = {{"Authorization", "Bearer " + key}, {"Content-Type", "application/json"},
-                   {"X-Title", "ChatADHD-Archive"}};
+                   {"X-Title", policy.text("/refinement/title")}};
     req.body = json::dump(Json{{"model", model},
                                {"messages", Json::array({Json{{"role", "user"}, {"content", prompt}}})},
-                               {"temperature", 0},
-                               {"max_tokens", 1500}});
-    req.timeout_ms = 60000;
+                               {"temperature", policy.value("/refinement/temperature")},
+                               {"max_tokens", policy.integer("/refinement/max_tokens")}});
+    req.timeout_ms = policy.integer("/refinement/timeout_ms");
     auto resp = rt.http().send(req);
     if (!resp || resp->status != 200) {
       log::warn(kLog, "item refinement skipped: {}", resp ? "HTTP " + std::to_string(resp->status) : resp.error().message);
@@ -256,10 +313,10 @@ int refine_items_llm(Runtime& rt, std::vector<Item>& items) {
       Item& it = items[low[static_cast<std::size_t>(i)]];
       if (type == "none") {
         it.type = "";
-      } else if (std::find(std::begin(kItemTypes), std::end(kItemTypes), type) != std::end(kItemTypes)) {
+      } else if (policy.contains("/items/types", type)) {
         if (type != it.type) ++changed;
         it.type = type;
-        it.confidence = std::max(it.confidence, 0.7);
+        it.confidence = std::max(it.confidence, policy.number("/refinement/confidence_floor"));
         it.cues.push_back("llm");
       }
     }
@@ -273,7 +330,8 @@ int refine_items_llm(Runtime& rt, std::vector<Item>& items) {
 // ── Stage implementations ───────────────────────────────────────────
 class StageRunner {
  public:
-  StageRunner(Runtime& rt, ArchiveIntelligence::State& st) : rt_(rt), st_(st) {}
+  StageRunner(Runtime& rt, ArchiveIntelligence::State& st) : rt_(rt), st_(st), policy_(*st.profile) {}
+  const ArchiveProfile& policy() const { return policy_; }
 
   Result<std::shared_ptr<const Corpus>> corpus(const std::string& hash) {
     {
@@ -283,7 +341,7 @@ class StageRunner {
     LOOM_TRY_ASSIGN(Json j, get_json(rt_, hash));
     auto c = std::make_shared<const Corpus>(Corpus::from_json(j));
     std::lock_guard lk(st_.mu);
-    if (st_.corpus_cache.size() > 4) st_.corpus_cache.clear();
+    if (st_.corpus_cache.size() > static_cast<std::size_t>(policy_.integer("/pipeline/corpus_cache_entries"))) st_.corpus_cache.clear();
     st_.corpus_cache[hash] = c;
     return c;
   }
@@ -293,9 +351,9 @@ class StageRunner {
       if (auto it = st_.stats_cache.find(hash); it != st_.stats_cache.end()) return it->second;
     }
     LOOM_TRY_ASSIGN(auto c, corpus(hash));
-    auto s = std::make_shared<const CorpusStats>(compute_stats(*c));
+    auto s = std::make_shared<const CorpusStats>(compute_stats(*c, &policy_));
     std::lock_guard lk(st_.mu);
-    if (st_.stats_cache.size() > 4) st_.stats_cache.clear();
+    if (st_.stats_cache.size() > static_cast<std::size_t>(policy_.integer("/pipeline/stats_cache_entries"))) st_.stats_cache.clear();
     st_.stats_cache[hash] = s;
     return s;
   }
@@ -327,11 +385,12 @@ class StageRunner {
  private:
   Runtime& rt_;
   ArchiveIntelligence::State& st_;
+  const ArchiveProfile& policy_;
 };
 
 Result<Json> StageRunner::ingest(const Json& p, StageControl& ctl) {
   Plan plan = Plan::from_json(p["plan"]);
-  LOOM_TRY_ASSIGN(IngestResult res, run_ingest(rt_, plan, ctl));
+  LOOM_TRY_ASSIGN(IngestResult res, run_ingest(rt_, plan, ctl, &policy_));
   LOOM_TRY_ASSIGN(std::string ch, put_json(rt_, res.corpus.to_json()));
   LOOM_TRY_ASSIGN(std::string bh, put_json(rt_, res.bindings));
   Json log{{"docs", res.corpus.docs.size()}, {"sources", res.corpus.sources.size()}, {"forks", res.corpus.forks.size()}};
@@ -343,7 +402,7 @@ Result<Json> StageRunner::retrieve(const Json& p, StageControl& ctl) {
   LOOM_TRY_ASSIGN(auto c, corpus(ch));
   LOOM_TRY_ASSIGN(auto keys, msg_keys(json::get_string(p, "bindings")));
   auto terms = json_strings(p["terms"]);
-  int max_hits = static_cast<int>(json::get_int(p, "max_hits", 150));
+  int max_hits = static_cast<int>(json::get_int(p, "max_hits", policy_.integer("/pipeline/standalone_hits")));
   struct Agg {
     double score = 0;
     std::vector<std::string> terms;
@@ -356,7 +415,7 @@ Result<Json> StageRunner::retrieve(const Json& p, StageControl& ctl) {
     if (ctl.should_stop && ctl.should_stop()) return Error(Errc::Paused, "retrieval paused");
     if (ctl.progress) ctl.progress(done++, static_cast<std::int64_t>(terms.size()), term);
     SearchOptions so;
-    so.limit = 5000;
+    so.limit = policy_.integer("/pipeline/search_query_limit");
     so.include_inactive = true;
     LOOM_TRY_ASSIGN(SearchResult r, rt_.db().search_messages(term, so));
     mode = r.mode;
@@ -387,10 +446,10 @@ Result<Json> StageRunner::retrieve(const Json& p, StageControl& ctl) {
     std::map<std::string, std::vector<const Doc*>> units;
     for (const auto& d : c->docs) units[d.unit].push_back(&d);
     for (const auto& [u, ds] : units) {
-      if (ds.size() < 2 || ds.size() > 300) continue;
+      if (ds.size() < static_cast<std::size_t>(policy_.integer("/pipeline/unit_min_docs")) || ds.size() > static_cast<std::size_t>(policy_.integer("/pipeline/unit_max_docs"))) continue;
       std::size_t n = 0;
       for (const Doc* d : ds) n += agg.count(d->key);
-      if (n == 0 || n * 10 < ds.size() * 3) continue;
+      if (n == 0 || static_cast<double>(n) < static_cast<double>(ds.size()) * policy_.number("/pipeline/unit_relevance_fraction")) continue;
       for (const Doc* d : ds) {
         if (agg.count(d->key)) continue;
         agg[d->key].terms.push_back("(context)");
@@ -429,16 +488,16 @@ Result<Json> StageRunner::expand(const Json& p, StageControl& ctl) {
   std::vector<std::size_t> prose;
   for (std::size_t i : hits) {
     const std::string& k = c->docs[i].kind;
-    if (k != "code" && k != "commit") prose.push_back(i);
+    if (!policy_.contains("/pipeline/prose_excluded_kinds", k)) prose.push_back(i);
   }
-  if (prose.size() >= 20) hits = prose;
+  if (prose.size() >= static_cast<std::size_t>(policy_.integer("/pipeline/prose_preference_threshold"))) hits = prose;
   auto vocab_v = json_strings(p["vocab"]);
   std::set<std::string> vocab(vocab_v.begin(), vocab_v.end());
   if (ctl.progress) ctl.progress(0, 1, "salient terms of " + std::to_string(hits.size()) + " hits");
   auto added = expand_vocabulary(*c, *s, hits, vocab, static_cast<int>(json::get_int(p, "pass")),
-                                 static_cast<int>(json::get_int(p, "max_new", 10)), &rt_.analyzer());
+                                 static_cast<int>(json::get_int(p, "max_new", policy_.integer("/pipeline/standalone_max_new_terms"))), &rt_.analyzer(), &policy_);
   Json a = Json::array();
-  for (const auto& t : added) a.push_back(t.to_json());
+  for (const auto& t : added) a.push_back(t.to_json(&policy_));
   // provenance: why each term was added (evidence = source messages)
   LOOM_TRY_ASSIGN(auto keys, msg_keys(json::get_string(p, "bindings")));
   std::unordered_map<std::string, std::string> key_msg;
@@ -477,7 +536,7 @@ Result<Json> StageRunner::graph(const Json& p, StageControl& ctl) {
   for (const auto& h : r["hits"]) keys.push_back(json::get_string(h, "key"));
   std::sort(keys.begin(), keys.end());
   for (const auto& key : keys) {
-    if (i % 25 == 0) {
+    if (i % policy_.integer("/pipeline/graph_poll_interval") == 0) {
       if (ctl.should_stop && ctl.should_stop()) return Error(Errc::Paused, "graph build paused");
       if (ctl.progress) ctl.progress(i, total, key);
     }
@@ -485,7 +544,7 @@ Result<Json> StageRunner::graph(const Json& p, StageControl& ctl) {
     auto it = c->index.find(key);
     if (it == c->index.end()) continue;
     const Doc& d = c->docs[it->second];
-    Analysis a = rt_.analyzer().analyse(utf8::prefix(d.text, 20000));
+    Analysis a = rt_.analyzer().analyse(utf8::prefix(d.text, static_cast<std::size_t>(policy_.integer("/pipeline/analysis_max_codepoints"))));
     // knowledge graph (DB): idempotent upserts, skipped when already analysed
     std::string msg = json::get_string(bindings[key], "msg"), conv = json::get_string(bindings[key], "conv");
     if (!msg.empty()) {
@@ -501,19 +560,19 @@ Result<Json> StageRunner::graph(const Json& p, StageControl& ctl) {
     }
     Json terms = Json::array();
     std::set<std::string> have;
-    for (const auto& [t, w] : salient_terms(*s, it->second, 10)) {
+    for (const auto& [t, w] : salient_terms(*s, it->second, policy_.integer("/pipeline/graph_salient_terms"), &policy_)) {
       terms.push_back(Json::array({t, round4(w)}));
       have.insert(t);
     }
     const auto& tf = s->docs[it->second].tf;
     for (const auto& v : vocab_v) {
       if (have.count(v) || !tf.count(v)) continue;
-      terms.push_back(Json::array({v, 0.5}));
+      terms.push_back(Json::array({v, policy_.number("/pipeline/fallback_term_weight")}));
     }
     Json ents = Json::array();
     std::set<std::string> seen;
     for (const auto& e : a.entities) {
-      if (ents.size() >= 20) break;
+      if (ents.size() >= static_cast<std::size_t>(policy_.integer("/pipeline/graph_max_entities"))) break;
       std::string k = e.entity_type + "|" + utf8::to_lower(e.text);
       if (!seen.insert(k).second) continue;
       ents.push_back(Json::array({e.text, e.entity_type}));
@@ -544,9 +603,9 @@ Result<Json> StageRunner::cluster(const Json& p, StageControl& ctl) {
   std::vector<std::pair<int, std::string>> global;
   std::map<std::string, int> node;
   for (const auto& [t, n] : df) {
-    if (h >= 10 && n > 0.35 * static_cast<double>(h)) {
+    if (h >= static_cast<std::size_t>(policy_.integer("/pipeline/global_min_docs")) && n > policy_.number("/pipeline/global_df_fraction") * static_cast<double>(h)) {
       global.emplace_back(-n, t);
-    } else if (n >= 2) {
+    } else if (n >= policy_.integer("/pipeline/cluster_min_df")) {
       node.emplace(t, 0);
     }
   }
@@ -571,7 +630,7 @@ Result<Json> StageRunner::cluster(const Json& p, StageControl& ctl) {
   }
   std::vector<std::tuple<int, int, double>> edges;
   for (const auto& [ab, x] : w) edges.emplace_back(ab.first, ab.second, x);
-  std::vector<int> comm = louvain(idx, edges);
+  std::vector<int> comm = louvain(idx, edges, -1, &policy_);
   int ncomm = comm.empty() ? 0 : *std::max_element(comm.begin(), comm.end()) + 1;
   // weighted degree inside the community
   std::vector<double> deg(static_cast<std::size_t>(idx), 0.0);
@@ -593,7 +652,7 @@ Result<Json> StageRunner::cluster(const Json& p, StageControl& ctl) {
     int best = -1;
     double bs = 0;
     for (int k = 0; k < ncomm; ++k) {
-      if (score[k] > bs + 1e-12) {
+      if (score[k] > bs + policy_.number("/clustering/gain_tolerance")) {
         bs = score[k];
         best = k;
       }
@@ -609,7 +668,7 @@ Result<Json> StageRunner::cluster(const Json& p, StageControl& ctl) {
   };
   std::vector<Theme> themes;
   for (int k = 0; k < ncomm; ++k) {
-    if (cdocs[k].size() < 3) {
+    if (cdocs[k].size() < static_cast<std::size_t>(policy_.integer("/pipeline/cluster_min_docs"))) {
       for (auto& x : cdocs[k]) other.push_back(std::move(x));
       continue;
     }
@@ -619,16 +678,17 @@ Result<Json> StageRunner::cluster(const Json& p, StageControl& ctl) {
     }
     std::sort(tv.begin(), tv.end());
     Theme t;
-    for (std::size_t i = 0; i < tv.size() && i < 12; ++i) t.terms.push_back(tv[i].second);
+    for (std::size_t i = 0; i < tv.size() && i < static_cast<std::size_t>(policy_.integer("/pipeline/theme_terms")); ++i) t.terms.push_back(tv[i].second);
     // label: top terms, skipping words already contained in a chosen phrase
     std::vector<std::string> lab;
     for (const auto& term : t.terms) {
+      if (lab.size() >= static_cast<std::size_t>(policy_.integer("/pipeline/label_terms"))) break;
       bool dup = false;
       for (const auto& l : lab) {
         if (l.find(term) != std::string::npos || term.find(l) != std::string::npos) dup = true;
       }
       if (!dup) lab.push_back(term);
-      if (lab.size() == 3) break;
+      if (lab.size() == static_cast<std::size_t>(policy_.integer("/pipeline/label_terms"))) break;
     }
     for (std::size_t i = 0; i < lab.size(); ++i) t.label += (i ? " · " : "") + lab[i];
     t.docs = std::move(cdocs[k]);
@@ -638,7 +698,7 @@ Result<Json> StageRunner::cluster(const Json& p, StageControl& ctl) {
     if (a.docs.size() != b.docs.size()) return a.docs.size() > b.docs.size();
     return a.label < b.label;
   });
-  const std::size_t kMaxThemes = 12;
+  const std::size_t kMaxThemes = static_cast<std::size_t>(policy_.integer("/pipeline/max_themes"));
   while (themes.size() > kMaxThemes) {
     for (auto& x : themes.back().docs) other.push_back(std::move(x));
     themes.pop_back();
@@ -664,7 +724,7 @@ Result<Json> StageRunner::cluster(const Json& p, StageControl& ctl) {
   }
   std::sort(global.begin(), global.end());
   Json gj = Json::array();
-  for (std::size_t i = 0; i < global.size() && i < 15; ++i) gj.push_back(global[i].second);
+  for (std::size_t i = 0; i < global.size() && i < static_cast<std::size_t>(policy_.integer("/pipeline/global_terms")); ++i) gj.push_back(global[i].second);
   (void)c;
   Json out{{"themes", tj}, {"doc_theme", doc_theme}, {"global_terms", gj}};
   LOOM_TRY_ASSIGN(std::string oh, put_json(rt_, out));
@@ -727,15 +787,15 @@ Result<Json> StageRunner::items(const Json& p, StageControl& ctl) {
   std::int64_t i = 0;
   const std::int64_t total = static_cast<std::int64_t>(c->docs.size());
   for (const auto& d : c->docs) {
-    if (i++ % 200 == 0) {
+    if (i++ % policy_.integer("/pipeline/items_poll_interval") == 0) {
       if (ctl.should_stop && ctl.should_stop()) return Error(Errc::Paused, "item extraction paused");
       if (ctl.progress) ctl.progress(i, total, d.key);
     }
     if (!dt.contains(d.key)) continue;  // only retrieved (relevant) documents
-    for (auto& it : extract_items(d, dt[d.key].get<std::string>())) all.push_back(std::move(it));
+    for (auto& it : extract_items(d, dt[d.key].get<std::string>(), &policy_)) all.push_back(std::move(it));
   }
   int refined = 0;
-  if (json::get_string(p, "llm") == "auto") refined = refine_items_llm(rt_, all);
+  if (json::get_string(p, "llm") == "auto") refined = refine_items_llm(rt_, all, policy_);
   Json a = Json::array();
   std::map<std::string, int> by_type;
   for (const auto& it : all) {
@@ -756,7 +816,7 @@ Result<Json> StageRunner::relate(const Json& p, StageControl& ctl) {
   if (ctl.progress) ctl.progress(0, 1, "supersession / contradiction");
   std::vector<Item> items;
   for (const auto& x : ij["items"]) items.push_back(Item::from_json(x));
-  auto edges = relate_items(items, s.get());
+  auto edges = relate_items(items, s.get(), &policy_);
   Json a = Json::array(), e = Json::array();
   for (const auto& it : items) a.push_back(it.to_json());
   std::map<std::string, int> by_type;
@@ -782,6 +842,7 @@ Result<Json> StageRunner::synthesize_stage(const Json& p, StageControl& ctl) {
   LOOM_TRY_ASSIGN(Json tl, get_json(rt_, json::get_string(p, "timeline")));
   LOOM_TRY_ASSIGN(Json rel, get_json(rt_, json::get_string(p, "relate")));
   SynthesisInput in;
+  in.profile = &policy_;
   in.corpus = c.get();
   in.stats = s.get();
   in.project = json::get_string(p, "project");
@@ -802,7 +863,7 @@ Result<Json> StageRunner::synthesize_stage(const Json& p, StageControl& ctl) {
   SynthesisOutput so = synthesize(in);
   Json files = Json::object();
   for (const auto& [name, content] : so.files) {
-    LOOM_TRY_ASSIGN(BlobRef ref, rt_.blobs().put(content, mime_for(name)));
+    LOOM_TRY_ASSIGN(BlobRef ref, rt_.blobs().put(content, mime_for(name, policy_)));
     files[name] = ref.hash;
   }
   Json out{{"files", files}, {"discovered_terms", str_array(so.discovered_terms)}, {"gap", so.gap["summary"]}};
@@ -821,14 +882,13 @@ Result<Json> StageRunner::materialize(const Json& p, StageControl& ctl, const st
   std::string project = json::get_string(p, "project");
   std::string out_dir = json::get_string(p, "out_dir");
   Json files = syn["files"];
-  files["task_log.jsonl"] = json::get_string(p, "task_log");
+  files[policy_.text("/output/task_log_file")] = json::get_string(p, "task_log");
   if (ctl.progress) ctl.progress(0, 2, "artifacts");
   fs::path od;
   if (!out_dir.empty()) {
     od = fsutil::expand_user(out_dir);
     LOOM_TRY(fsutil::ensure_dir(od));
-    LOOM_TRY(fsutil::atomic_write(od / ".loom-archive",
-                                  "Generated by `loom archive`. The archive walker skips this directory.\n"));
+    LOOM_TRY(fsutil::atomic_write(od / policy_.text("/output/marker_file"), policy_.text("/output/marker_text")));
   }
   Json artifacts = Json::array();
   for (auto it = files.begin(); it != files.end(); ++it) {
@@ -838,7 +898,7 @@ Result<Json> StageRunner::materialize(const Json& p, StageControl& ctl, const st
     ar.kind = "archive." + name.substr(0, name.find('.'));
     ar.title = name;
     ar.blob_hash = hash;
-    ar.mime = mime_for(name);
+    ar.mime = mime_for(name, policy_);
     ar.task_id = run_id.empty() ? task_id : run_id;
     ar.metadata = Json{{"project", project}, {"run_id", run_id}, {"file", name}};
     LOOM_TRY_ASSIGN(std::string aid, rt_.provenance().add_artifact(ar));
@@ -869,18 +929,18 @@ Result<Json> StageRunner::materialize(const Json& p, StageControl& ctl, const st
   int n_items = 0;
   for (const auto& x : rel["items"]) {
     std::string type = json::get_string(x, "type");
-    if (type == "implementation") continue;
+    if (policy_.contains("/pipeline/materialize_excluded_types", type)) continue;
     std::string id = json::get_string(x, "id");
     NodeOptions no;
     no.content = json::get_string(x, "text");
     no.metadata = Json{{"archive_item", id}, {"status", x["status"]}, {"confidence", x["confidence"]}};
-    LOOM_TRY_ASSIGN(std::string nid, db.get_or_create_node(clip(json::get_string(x, "text"), 90), type, no));
+    LOOM_TRY_ASSIGN(std::string nid, db.get_or_create_node(clip(json::get_string(x, "text"), static_cast<std::size_t>(policy_.integer("/pipeline/item_node_label_max_codepoints"))), type, no));
     item_node[id] = nid;
     std::string doc = json::get_string(x, "doc");
     std::string msg = bindings.contains(doc) ? json::get_string(bindings[doc], "msg") : "";
-    if (!msg.empty()) (void)db.create_link(nid, msg, "derived_from", 1.0);
+    if (!msg.empty()) (void)db.create_link(nid, msg, "derived_from", policy_.number("/pipeline/derived_from_weight"));
     std::string th = json::get_string(x, "theme");
-    if (theme_node.count(th)) (void)db.create_link(nid, theme_node[th], "part_of", 0.5);
+    if (theme_node.count(th)) (void)db.create_link(nid, theme_node[th], "part_of", policy_.number("/pipeline/theme_link_weight"));
     ++n_items;
   }
   for (const auto& e : rel["edges"]) {
@@ -889,7 +949,7 @@ Result<Json> StageRunner::materialize(const Json& p, StageControl& ctl, const st
     auto a = item_node.find(json::get_string(e, "src"));
     auto b = item_node.find(json::get_string(e, "dst"));
     if (a != item_node.end() && b != item_node.end()) {
-      (void)db.create_link(a->second, b->second, type, 1.0, Json{{"reason", e["reason"]}});
+      (void)db.create_link(a->second, b->second, type, policy_.number("/pipeline/item_relation_weight"), Json{{"reason", e["reason"]}});
     }
   }
   return Json{{"output", ""},
@@ -915,12 +975,14 @@ struct Orchestrator {
   Result<Json> stage(const std::string& label, const std::string& kind, const Json& params, const Json& hash_params) {
     StageRun sr;
     sr.stage = label;
-    sr.input_hash = Sha256::hex(kind + "|" + std::string(kPipelineVersion) + "|" + json::canonical(hash_params));
+    Json scoped_hash_params = hash_params;
+    if (!runner.policy().is_builtin()) scoped_hash_params["archive_profile_hash"] = runner.policy().hash();
+    sr.input_hash = Sha256::hex(kind + "|" + std::string(kPipelineVersion) + "|" + json::canonical(scoped_hash_params));
     SubmitOptions so;
     so.dedupe = !cfg.force;
     so.input_hash = sr.input_hash;
     so.parent_id = run_id;
-    so.max_attempts = 2;
+    so.max_attempts = runner.policy().integer("/pipeline/stage_attempts");
     LOOM_TRY_ASSIGN(sr.task_id, rt.tasks().submit(kind, params, so));
     bool first = true;
     while (true) {
@@ -956,10 +1018,10 @@ struct Orchestrator {
         if (rec->checkpoint) sr.resumed = true;
         auto r = rt.tasks().run_sync(sr.task_id);
         if (!r && r.error().code != Errc::Busy) return r.error();
-        if (!r) std::this_thread::sleep_for(std::chrono::milliseconds(20));
+        if (!r) std::this_thread::sleep_for(std::chrono::milliseconds(runner.policy().integer("/pipeline/run_poll_interval_ms")));
         continue;
       }
-      std::this_thread::sleep_for(std::chrono::milliseconds(20));  // running on a worker
+      std::this_thread::sleep_for(std::chrono::milliseconds(runner.policy().integer("/pipeline/run_poll_interval_ms")));  // running on a worker
     }
   }
 
@@ -991,7 +1053,7 @@ struct Orchestrator {
         Json m = json::parse_or(*txt, Json::object());
         for (const auto& t : json_strings(m["vocabulary"])) {
           raw.push_back(t);
-          if (raw.size() >= 12) break;
+          if (raw.size() >= static_cast<std::size_t>(runner.policy().integer("/pipeline/manifest_seed_limit"))) break;
         }
         if (!raw.empty()) break;
       }
@@ -1009,7 +1071,7 @@ struct Orchestrator {
 
   Result<Json> run() {
     st.notify("plan", 0, 1, "scanning sources");
-    LOOM_TRY_ASSIGN(Plan plan, make_plan(rt, cfg));
+    LOOM_TRY_ASSIGN(Plan plan, make_plan(rt, cfg, &runner.policy()));
     Json ing = Json::object();
     {
       Json hp{{"plan", plan.fingerprint()}};
@@ -1020,11 +1082,11 @@ struct Orchestrator {
     LOOM_TRY_ASSIGN(auto corpus, runner.corpus(corpus_h));
     auto seeds = resolve_seeds(*corpus, plan);
     if (cfg.max_hits_per_term <= 0) {
-      cfg.max_hits_per_term = static_cast<int>(std::clamp<std::size_t>(corpus->docs.size() / 10, 25, 200));
+      cfg.max_hits_per_term = static_cast<int>(std::clamp<std::size_t>(corpus->docs.size() / static_cast<std::size_t>(runner.policy().integer("/pipeline/auto_hits_divisor")), static_cast<std::size_t>(runner.policy().integer("/pipeline/auto_hits_min")), static_cast<std::size_t>(runner.policy().integer("/pipeline/auto_hits_max"))));
     }
 
     std::vector<TermRecord> vocab;
-    for (const auto& s : seeds) vocab.push_back(TermRecord{s, 0, "seed", 1.0, {"seed term"}, {}});
+    for (const auto& s : seeds) vocab.push_back(TermRecord{s, 0, "seed", runner.policy().number("/pipeline/initial_seed_weight"), {"seed term"}, {}});
     Json passes = Json::array();
     Json syn_out = Json::object();
     Json cluster_r, relate_r, synth_r;
@@ -1072,7 +1134,7 @@ struct Orchestrator {
       std::vector<std::string> terms;
       for (const auto& v : vocab) terms.push_back(v.term);
       Json vocab_j = Json::array();
-      for (const auto& v : vocab) vocab_j.push_back(v.to_json());
+      for (const auto& v : vocab) vocab_j.push_back(v.to_json(&runner.policy()));
       LOOM_TRY_ASSIGN(std::string vocab_h, put_json(rt, Json{{"terms", vocab_j}, {"passes", passes}}));
 
       Json gp{{"corpus", corpus_h}, {"bindings", bindings_h}, {"hits", final_hits_h}, {"vocab", str_array(terms)},
@@ -1106,7 +1168,7 @@ struct Orchestrator {
       }
       if (discovered.empty() || round == cfg.max_synthesis_rounds) break;
       for (const auto& t : discovered) {
-        vocab.push_back(TermRecord{t, pass, "synthesis", 0.5, {"named in decisions/requirements during synthesis"}, {}});
+        vocab.push_back(TermRecord{t, pass, "synthesis", runner.policy().number("/pipeline/synthesis_seed_weight"), {"named in decisions/requirements during synthesis"}, {}});
       }
       st.notify("synthesize", 1, 1, "new terms from synthesis: " + std::to_string(discovered.size()));
     }
@@ -1145,9 +1207,13 @@ struct Orchestrator {
 }  // namespace
 
 ArchiveIntelligence::ArchiveIntelligence(Runtime& rt) : rt_(rt), st_(std::make_unique<State>()) {
+  auto profile = ArchiveProfile::load(rt.paths().root);
+  if (profile) st_->profile = std::move(*profile);
+  else st_->profile_error = profile.error();
   auto reg = [this](const std::string& kind,
                     std::function<Result<Json>(StageRunner&, const Json&, StageControl&, TaskContext&)> body) {
     rt_.tasks().register_handler(kind, [this, kind, body](TaskContext& ctx) -> Status {
+      if (st_->profile_error) return *st_->profile_error;
       StageRunner runner(rt_, *st_);
       StageControl ctl;
       std::string stage = kind.substr(kind.find('.') + 1);
@@ -1185,7 +1251,8 @@ ArchiveIntelligence::ArchiveIntelligence(Runtime& rt) : rt_(rt), st_(std::make_u
 
   // The run itself: orchestrates the stages above (resumable as a whole).
   rt_.tasks().register_handler("archive.run", [this](TaskContext& ctx) -> Status {
-    auto cfg = ArchiveConfig::from_json(ctx.params()["config"]);
+    if (st_->profile_error) return *st_->profile_error;
+    auto cfg = ArchiveConfig::from_json_with_profile(ctx.params()["config"], *st_->profile);
     if (!cfg) return cfg.error();
     StageRunner runner(rt_, *st_);
     Orchestrator orch{rt_, *st_, runner, *cfg, ctx.id(), &ctx, {}};
@@ -1199,6 +1266,11 @@ ArchiveIntelligence::ArchiveIntelligence(Runtime& rt) : rt_(rt), st_(std::make_u
       st_->run_ctx = nullptr;
     }
     Json result{{"stages", orch.stages_json()}};
+    if (!runner.policy().is_builtin()) {
+      LOOM_TRY_ASSIGN(auto profile_provenance, runner.policy().provenance());
+      LOOM_TRY_ASSIGN(auto snapshot, put_json(rt_, profile_provenance));
+      result["profile_provenance"] = snapshot;
+    }
     if (!r) {
       (void)ctx.save_checkpoint(result);
       if (r.error().code == Errc::Paused && ctx.cancelled()) return Error(Errc::Cancelled, r.error().message);
@@ -1214,6 +1286,7 @@ ArchiveIntelligence::~ArchiveIntelligence() = default;
 
 Result<ArchiveRunResult> ArchiveIntelligence::run(const ArchiveConfig& cfg, const ArchiveProgressFn& progress,
                                                   const CancelToken* cancel) {
+  if (st_->profile_error) return *st_->profile_error;
   std::unique_lock run_lock(st_->run_mu, std::try_to_lock);
   if (!run_lock.owns_lock()) return Error(Errc::Busy, "an archive run is already in progress");
   {
@@ -1232,8 +1305,10 @@ Result<ArchiveRunResult> ArchiveIntelligence::run(const ArchiveConfig& cfg, cons
 
   (void)rt_.tasks().recover_interrupted();
   SubmitOptions so;
-  so.max_attempts = 1;
-  LOOM_TRY_ASSIGN(std::string id, rt_.tasks().submit("archive.run", Json{{"config", cfg.to_json()}}, so));
+  so.max_attempts = st_->profile->integer("/pipeline/run_attempts");
+  Json params{{"config", cfg.to_json()}};
+  if (!st_->profile->is_builtin()) params["archive_profile_hash"] = st_->profile->hash();
+  LOOM_TRY_ASSIGN(std::string id, rt_.tasks().submit("archive.run", params, so));
   TaskRecord rec;
   while (true) {
     LOOM_TRY_ASSIGN(auto r, rt_.tasks().get(id));
@@ -1241,11 +1316,11 @@ Result<ArchiveRunResult> ArchiveIntelligence::run(const ArchiveConfig& cfg, cons
     if (r->status == task_status::kPending) {
       auto x = rt_.tasks().run_sync(id);
       if (!x && x.error().code != Errc::Busy) return x.error();
-      if (!x) std::this_thread::sleep_for(std::chrono::milliseconds(20));
+      if (!x) std::this_thread::sleep_for(std::chrono::milliseconds(st_->profile->integer("/pipeline/run_poll_interval_ms")));
       continue;
     }
     if (r->status == task_status::kRunning) {
-      std::this_thread::sleep_for(std::chrono::milliseconds(20));
+      std::this_thread::sleep_for(std::chrono::milliseconds(st_->profile->integer("/pipeline/run_poll_interval_ms")));
       continue;
     }
     rec = *r;
@@ -1276,6 +1351,7 @@ Result<ArchiveRunResult> ArchiveIntelligence::run(const ArchiveConfig& cfg, cons
 }
 
 Result<Json> ArchiveIntelligence::status(std::string_view run_id) {
+  if (st_->profile_error) return *st_->profile_error;
   std::optional<TaskRecord> run;
   if (run_id.empty()) {
     TaskFilter f;
@@ -1298,14 +1374,30 @@ Result<Json> ArchiveIntelligence::status(std::string_view run_id) {
     }
   }
   Json arts = Json::array();
-  LOOM_TRY_ASSIGN(auto all, rt_.provenance().list_artifacts(1000));
+  LOOM_TRY_ASSIGN(auto all, rt_.provenance().list_artifacts(st_->profile->integer("/pipeline/status_artifact_limit")));
   for (const auto& a : all) {
     if (a.task_id == run->id) arts.push_back(a.to_json());
   }
   Json rj{{"id", run->id},           {"status", run->status}, {"created", run->created}, {"updated", run->updated},
           {"error", run->error},     {"config", run->params["config"]}};
   if (const Json* s = json::find(src, "summary")) rj["summary"] = *s;
-  return Json{{"run", rj}, {"stages", stages}, {"artifacts", arts}};
+  Json out{{"run", rj}, {"stages", stages}, {"artifacts", arts}};
+  const auto snapshot_hash = json::get_string(src, "profile_provenance");
+  if (!snapshot_hash.empty()) {
+    LOOM_TRY_ASSIGN(auto snapshot, get_json(rt_, snapshot_hash));
+    LOOM_TRY_ASSIGN(auto recorded, ArchiveProfile::from_provenance(snapshot));
+    out["profile"] = recorded.inspection();
+    out["profile_provenance_hash"] = snapshot_hash;
+  } else if (const auto hash = json::get_string(run->params, "archive_profile_hash"); !hash.empty()) {
+    out["profile"] = Json{{"hash", hash}, {"available", false}};
+  }
+  if (!st_->profile->is_builtin()) out["active_profile_hash"] = st_->profile->hash();
+  return out;
+}
+
+Result<Json> ArchiveIntelligence::profile() const {
+  if (st_->profile_error) return *st_->profile_error;
+  return st_->profile->inspection();
 }
 
 }  // namespace loom::archive

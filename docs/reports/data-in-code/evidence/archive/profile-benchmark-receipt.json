@@ -1,0 +1,149 @@
+{
+  "schema": "loom.archive_profile_benchmark/1",
+  "baseline_revision": "161cc22dfb84fe863389d6b90323bd44516a68dc",
+  "repetitions_per_steady_sample": 500,
+  "paired_runs": {
+    "before": [
+      {
+        "cold_ns": 1424220,
+        "steady_ns": 403117865,
+        "repetitions": 500,
+        "cold_checksum": 520,
+        "steady_checksum": 260000
+      },
+      {
+        "cold_ns": 1080114,
+        "steady_ns": 273272837,
+        "repetitions": 500,
+        "cold_checksum": 520,
+        "steady_checksum": 260000
+      },
+      {
+        "cold_ns": 1185713,
+        "steady_ns": 378115195,
+        "repetitions": 500,
+        "cold_checksum": 520,
+        "steady_checksum": 260000
+      },
+      {
+        "cold_ns": 895479,
+        "steady_ns": 302153656,
+        "repetitions": 500,
+        "cold_checksum": 520,
+        "steady_checksum": 260000
+      },
+      {
+        "cold_ns": 1208589,
+        "steady_ns": 291711944,
+        "repetitions": 500,
+        "cold_checksum": 520,
+        "steady_checksum": 260000
+      }
+    ],
+    "after": [
+      {
+        "cold_ns": 422263975,
+        "steady_ns": 2001499060,
+        "repetitions": 500,
+        "cold_checksum": 520,
+        "steady_checksum": 260000
+      },
+      {
+        "cold_ns": 253677353,
+        "steady_ns": 1383163124,
+        "repetitions": 500,
+        "cold_checksum": 520,
+        "steady_checksum": 260000
+      },
+      {
+        "cold_ns": 398900399,
+        "steady_ns": 1617093505,
+        "repetitions": 500,
+        "cold_checksum": 520,
+        "steady_checksum": 260000
+      },
+      {
+        "cold_ns": 526680510,
+        "steady_ns": 2246653410,
+        "repetitions": 500,
+        "cold_checksum": 520,
+        "steady_checksum": 260000
+      },
+      {
+        "cold_ns": 677056230,
+        "steady_ns": 2007829296,
+        "repetitions": 500,
+        "cold_checksum": 520,
+        "steady_checksum": 260000
+      }
+    ]
+  },
+  "medians": {
+    "before": {
+      "cold_ns": 1185713,
+      "steady_ns": 302153656
+    },
+    "after": {
+      "cold_ns": 422263975,
+      "steady_ns": 2001499060
+    }
+  },
+  "candidate_to_baseline_ratios": {
+    "cold_ns": 356.1266301373098,
+    "steady_ns": 6.624110019042761
+  },
+  "checksums_equal": true,
+  "methodology": "Both native builds O0, no Runtime constructed. Candidate latest pure helper objects link against stable true161 universal dependencies to avoid reading an archive during its rebuild. Cold is first six-text helper fixture in process; steady is500repetitions after initialization. Five alternating baseline/candidate subprocesses; medians. Shared machine has concurrent builds; this is a development microbenchmark, not a usage estimate or resource limit.",
+  "source_sha256": "921fcd1236ef22392b9dfef15fe4bbe37e7e37e52ac610c6485bc6e794bb7a02",
+  "commands": [
+    [
+      "c++",
+      "-std=c++20",
+      "-g0",
+      "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+      "-I/workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/include",
+      "-I/workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/src",
+      "-isystem",
+      "/workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/third_party/nlohmann",
+      "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/fixtures/archive_profile_parity/benchmark.cpp",
+      "-o",
+      "/workspace/scratch/72fc60ad1cc5/archive-benchmark-before",
+      "/workspace/scratch/72fc60ad1cc5/baseline-build/libloom_core.a",
+      "/workspace/scratch/72fc60ad1cc5/baseline-build/libloom_sqlite3_amalgamation.a",
+      "-ldl",
+      "-lm",
+      "/workspace/scratch/72fc60ad1cc5/baseline-build/libloom_miniz.a",
+      "-lssl",
+      "-lcrypto",
+      "-lpthread"
+    ],
+    [
+      "c++",
+      "-std=c++20",
+      "-g0",
+      "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+      "-I/workspace/scratch/72fc60ad1cc5/chatadhd/loom/include",
+      "-I/workspace/scratch/72fc60ad1cc5/chatadhd/loom/src",
+      "-isystem",
+      "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/third_party/nlohmann",
+      "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/fixtures/archive_profile_parity/benchmark.cpp",
+      "-o",
+      "/workspace/scratch/72fc60ad1cc5/archive-benchmark-after",
+      "/workspace/scratch/72fc60ad1cc5/archive-pure-objects/archive-text.cpp.o",
+      "/workspace/scratch/72fc60ad1cc5/archive-pure-objects/archive-items.cpp.o",
+      "/workspace/scratch/72fc60ad1cc5/archive-pure-objects/archive-vocab.cpp.o",
+      "/workspace/scratch/72fc60ad1cc5/archive-pure-objects/archive-cluster.cpp.o",
+      "/workspace/scratch/72fc60ad1cc5/archive-pure-objects/archive-ingest_parse.cpp.o",
+      "/workspace/scratch/72fc60ad1cc5/archive-pure-objects/archive-profile.cpp.o",
+      "/workspace/scratch/72fc60ad1cc5/archive-pure-objects/model-runtime_profile.cpp.o",
+      "/workspace/scratch/72fc60ad1cc5/baseline-build/libloom_core.a",
+      "/workspace/scratch/72fc60ad1cc5/baseline-build/libloom_sqlite3_amalgamation.a",
+      "-ldl",
+      "-lm",
+      "/workspace/scratch/72fc60ad1cc5/baseline-build/libloom_miniz.a",
+      "-lssl",
+      "-lcrypto",
+      "-lpthread"
+    ]
+  ]
+}

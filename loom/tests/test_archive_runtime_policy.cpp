@@ -1,0 +1,235 @@
+// Scoped archive presets retain the legacy DTO and make parser policies
+// independently overridable without changing another caller's defaults.
+#include <algorithm>
+#include <string>
+#include <vector>
+
+#include "archive/archive_internal.h"
+#include "archive/archive_runtime.h"
+#include "archive/profile.h"
+#include "loom/archive.h"
+#include "loom/db.h"
+#include "loom/runtime.h"
+#include "loom/util/fs.h"
+#include "test_helpers.h"
+
+using namespace loom;
+using namespace loom::archive;
+using loom::test::unwrap;
+
+TEST_SUITE("archive.runtime_policy") {
+  TEST_CASE("default config stays compatible and omitted fields use the active preset") {
+    const Json legacy{{"sources", Json::array()},
+                      {"repo", nullptr},
+                      {"code", true},
+                      {"git", true},
+                      {"seed_terms", Json::array()},
+                      {"out_dir", ""},
+                      {"project", ""},
+                      {"max_passes", 3},
+                      {"max_new_terms", 8},
+                      {"max_hits_per_term", 0},
+                      {"max_synthesis_rounds", 1},
+                      {"llm", "off"},
+                      {"include_db", false},
+                      {"exclude", Json::array()},
+                      {"max_file_bytes", 1'000'000},
+                      {"force", false}};
+    auto base = unwrap(ArchiveProfile::builtin());
+    CHECK(ArchiveConfig{}.to_json() == legacy);
+    CHECK(unwrap(ArchiveConfig::from_json(Json::object())).to_json() == legacy);
+    auto changed = unwrap(base.with_overrides(Json{{"config_defaults", Json{
+        {"sources", Json::array({"preset.zip"})}, {"repo", "preset-repo"},
+        {"code", false}, {"git", false}, {"seed_terms", Json::array({"preset", "topic"})},
+        {"project", "Preset project"}, {"max_passes", 7}, {"include_db", true},
+        {"exclude", Json::array({"generated"})}}}}));
+    auto omitted = unwrap(ArchiveConfig::from_json_with_profile(Json::object(), changed));
+    CHECK(omitted.sources == std::vector<std::string>{"preset.zip"});
+    CHECK(omitted.repo == "preset-repo");
+    CHECK_FALSE(omitted.code);
+    CHECK_FALSE(omitted.git);
+    CHECK(omitted.seed_terms == std::vector<std::string>{"preset", "topic"});
+    CHECK(omitted.project == "Preset project");
+    CHECK(omitted.max_passes == 7);
+    CHECK(omitted.include_db);
+    CHECK(unwrap(ArchiveConfig::from_json_with_profile(nullptr, changed)).to_json() == omitted.to_json());
+    auto explicit_call = unwrap(ArchiveConfig::from_json_with_profile(
+        Json{{"sources", Json::array({"call.zip"})}, {"repo", nullptr}, {"code", true},
+             {"seed_terms", Json::array({"new"})}, {"exclude", Json::array()}}, changed));
+    CHECK(explicit_call.sources == std::vector<std::string>{"call.zip"});
+    CHECK_FALSE(explicit_call.repo);
+    CHECK(explicit_call.code);
+    CHECK(explicit_call.seed_terms == std::vector<std::string>{"new"});
+    CHECK(explicit_call.exclude.empty());
+    CHECK(unwrap(ArchiveConfig::from_json_with_profile(Json::object(), base)).to_json() == legacy);
+  }
+
+  TEST_CASE("a language alias selects the trusted parser and can include special methods") {
+    const std::string code =
+        "\"\"\"Widget module description.\"\"\"\n"
+        "class Widget:\n"
+        "    def __init__(self):\n        pass\n"
+        "    def __repr__(self):\n        pass\n"
+        "    def load(self):\n        # TODO: support streaming\n        pass\n"
+        "def __private__():\n    pass\n"
+        "def __init__():\n    pass\n";
+    auto base = unwrap(ArchiveProfile::builtin());
+    auto legacy = digest_code("widget.py", "python", code, &base);
+    CHECK(legacy.symbols == std::vector<std::string>{"Widget", "Widget.load", "__init__"});
+    CHECK(legacy.comments == std::vector<std::string>{"Widget module description.", "TODO: support streaming"});
+    auto alias = unwrap(base.with_overrides(Json{{"code", Json{
+        {"hash_comments", Json::array({"project-python"})},
+        {"parser_routes", Json{{"project-python", "python"}}},
+        {"excluded_special_prefixes", Json::array()},
+        {"excluded_class_methods", Json::array()}}}}));
+    auto included = digest_code("widget.custom", "project-python", code, &alias);
+    CHECK(included.symbols == std::vector<std::string>{
+        "Widget", "Widget.__init__", "Widget.__repr__", "Widget.load", "__private__", "__init__"});
+    CHECK(included.comments == legacy.comments);
+    CHECK(included.todos == legacy.todos);
+    CHECK(included.language == "project-python");
+    CHECK(digest_code("widget.py", "python", code, &base).symbols == legacy.symbols);
+  }
+
+  TEST_CASE("Markdown chunk preset keeps headings and every body paragraph") {
+    const std::string markdown = "# Manual\n\nAlpha paragraph retained.\n\n"
+                                 "Beta paragraph retained.\n\nGamma paragraph retained.\n";
+    auto base = unwrap(ArchiveProfile::builtin());
+    auto default_sections = split_markdown(markdown, base);
+    auto legacy_sections = split_markdown(markdown, std::size_t{4000});
+    REQUIRE(default_sections.size() == 1);
+    REQUIRE(legacy_sections.size() == 1);
+    CHECK(default_sections[0].text == legacy_sections[0].text);
+    CHECK(default_sections[0].heading_path == legacy_sections[0].heading_path);
+    CHECK(default_sections[0].line == legacy_sections[0].line);
+    auto small = unwrap(base.with_overrides(Json{{"markdown", Json{{"section_max_bytes", 40}}}}));
+    auto pieces = split_markdown(markdown, small);
+    REQUIRE(pieces.size() > default_sections.size());
+    std::string combined;
+    int previous_line = 0;
+    for (const auto& piece : pieces) {
+      CHECK(piece.heading == "Manual");
+      CHECK(piece.heading_path == "Manual");
+      CHECK(piece.line > previous_line);
+      previous_line = piece.line;
+      combined += piece.text;
+    }
+    for (const std::string paragraph : {"Alpha paragraph retained.", "Beta paragraph retained.",
+                                        "Gamma paragraph retained."}) {
+      const auto found = combined.find(paragraph);
+      REQUIRE(found != std::string::npos);
+      CHECK(combined.find(paragraph, found + paragraph.size()) == std::string::npos);
+    }
+    CHECK(split_markdown(markdown, base).size() == 1);
+  }
+
+  TEST_CASE("Git trailer filtering can be disabled or extended without losing the commit") {
+    const std::string long_key = "Long-Header-With-A-Deliberately-Long-Key";
+    const std::string body = "Explain the change.\nSigned-off-by: Example author\n" +
+                             long_key + ": Keep by default\nPlain: Keep without a dash\n";
+    const std::string raw = std::string("\x1e") + "abc123" + "\x1f" +
+                            "2025-01-02T03:04:05+01:00" + "\x1f" + "Example author" + "\x1f" +
+                            "Improve archive" + "\x1f" + body + "\x1f" + "\nM\tsrc/archive.cpp\n";
+    auto base = unwrap(ArchiveProfile::builtin());
+    auto legacy = parse_git_log(raw);
+    auto defaults = parse_git_log(raw, &base);
+    REQUIRE(legacy.size() == 1);
+    REQUIRE(defaults.size() == 1);
+    CHECK(defaults[0].body == legacy[0].body);
+    CHECK(defaults[0].body == "Explain the change.\n" + long_key +
+                               ": Keep by default\nPlain: Keep without a dash");
+    auto disabled = unwrap(base.with_overrides(Json{{"git", Json{{"strip_trailers", false}}}}));
+    auto unfiltered = parse_git_log(raw, &disabled);
+    REQUIRE(unfiltered.size() == 1);
+    CHECK(unfiltered[0].body.find("Signed-off-by: Example author") != std::string::npos);
+    CHECK(unfiltered[0].files == defaults[0].files);
+    CHECK(unfiltered[0].hash == defaults[0].hash);
+    CHECK(unfiltered[0].date == "2025-01-02T02:04:05Z");
+    auto raised = unwrap(base.with_overrides(Json{{"git", Json{{"trailer_key_max_bytes_exclusive", 100}}}}));
+    auto filtered = parse_git_log(raw, &raised);
+    REQUIRE(filtered.size() == 1);
+    CHECK(filtered[0].body == "Explain the change.\nPlain: Keep without a dash");
+    CHECK(parse_git_log(raw, &base)[0].body == defaults[0].body);
+  }
+
+  TEST_CASE("recorded epoch zero uses the active recipe while a missing timestamp stays missing") {
+    Json conversation{{"create_time", 0}, {"current_node", "node"}, {"mapping", Json{{"node", Json{
+        {"parent", nullptr}, {"message", Json{{"create_time", 0}, {"author", Json{{"role", "user"}}},
+            {"content", Json{{"content_type", "text"}, {"parts", Json::array({"Recorded text."})}}}}}}}}}};
+    auto base = unwrap(ArchiveProfile::builtin());
+    auto legacy = walk_chatgpt(conversation, &base);
+    REQUIRE(legacy.messages.size() == 1);
+    CHECK(legacy.date.empty());
+    CHECK(legacy.messages[0]["date"] == "");
+    auto historical = unwrap(base.with_overrides(Json{{"text_item_closure", Json{{"allow_nonpositive_epoch", true}}}}));
+    auto dated = walk_chatgpt(conversation, &historical);
+    CHECK(dated.date == "1970-01-01T00:00:00Z");
+    CHECK(dated.messages[0]["date"] == dated.date);
+    conversation.erase("create_time");
+    conversation["mapping"]["node"]["message"].erase("create_time");
+    auto missing = walk_chatgpt(conversation, &historical);
+    REQUIRE(missing.messages.size() == 1);
+    CHECK(missing.date.empty());
+    CHECK(missing.messages[0]["date"] == "");
+  }
+
+  TEST_CASE("scan and presentation presets reach ingestion without changing stable document keys") {
+    fsutil::TempDir temp;
+    const auto input = temp.path() / "input";
+    unwrap(fsutil::ensure_dir(input / "cmake-build-custom"));
+    unwrap(fsutil::ensure_dir(input / "marked"));
+    unwrap(fsutil::write_file(input / "guide.md", "# Manual\nWrenchbox cargo routing.\n"));
+    unwrap(fsutil::write_file(input / "chat.json", json::dump(Json::array({Json{
+        {"uuid", "conversation"}, {"name", "Saved"}, {"created_at", "2025-01-02T00:00:00Z"},
+        {"chat_messages", Json::array({Json{{"uuid", "message"}, {"sender", "human"},
+                                            {"text", "Archive chunk boundaries preserve this message."}}})}}}))));
+    unwrap(fsutil::write_file(input / "cmake-build-custom/extra.md", "Extra source documentation.\n"));
+    unwrap(fsutil::write_file(input / "marked/.loom-archive", "generated\n"));
+    unwrap(fsutil::write_file(input / "marked/extra.md", "More source documentation.\n"));
+    RuntimeOptions options;
+    options.data_dir = (temp.path() / "runtime").string();
+    options.start_workers = false;
+    auto runtime = unwrap(Runtime::open(options));
+    ArchiveConfig config;
+    config.sources = {input.string()};
+    config.code = false;
+    config.git = false;
+    config.project = "Fixture";
+    auto base = unwrap(ArchiveProfile::builtin());
+    auto initial_plan = unwrap(make_plan(*runtime, config, &base));
+    REQUIRE(initial_plan.files.size() == 2);
+    StageControl control;
+    auto initial = unwrap(run_ingest(*runtime, initial_plan, control, &base));
+    REQUIRE(initial.corpus.docs.size() == 2);
+    auto original_manual = std::find_if(initial.corpus.docs.begin(), initial.corpus.docs.end(),
+                                        [](const Doc& doc) { return doc.uri == "input/guide.md"; });
+    REQUIRE(original_manual != initial.corpus.docs.end());
+    const auto stable_key = original_manual->key;
+    CHECK(std::find(initial.corpus.default_seeds.begin(), initial.corpus.default_seeds.end(), "wrenchbox") ==
+          initial.corpus.default_seeds.end());
+    auto changed = unwrap(base.with_overrides(Json{
+        {"scan", Json{{"skip_dir_prefixes", Json::array()}, {"skip_dir_sentinels", Json::array()},
+                      {"readme_name_prefixes", Json::array({"guide"})}, {"json_chunk_bytes", 7}}},
+        {"titles", Json{{"doc", "Evidence: {uri}"}, {"chat", "Transcript: {title}"}}}}));
+    auto changed_plan = unwrap(make_plan(*runtime, config, &changed));
+    REQUIRE(changed_plan.files.size() == 4);
+    auto ingested = unwrap(run_ingest(*runtime, changed_plan, control, &changed));
+    auto manual = std::find_if(ingested.corpus.docs.begin(), ingested.corpus.docs.end(),
+                               [](const Doc& doc) { return doc.uri == "input/guide.md"; });
+    REQUIRE(manual != ingested.corpus.docs.end());
+    CHECK(manual->key == stable_key);
+    CHECK(std::find(ingested.corpus.default_seeds.begin(), ingested.corpus.default_seeds.end(), "wrenchbox") !=
+          ingested.corpus.default_seeds.end());
+    auto conversations = unwrap(runtime->db().list_convs(10));
+    CHECK(std::any_of(conversations.begin(), conversations.end(), [](const Conversation& conversation) {
+      return conversation.title == "Evidence: input/guide.md";
+    }));
+    CHECK(std::any_of(conversations.begin(), conversations.end(), [](const Conversation& conversation) {
+      return conversation.title == "Transcript: Saved";
+    }));
+    CHECK(std::any_of(ingested.corpus.docs.begin(), ingested.corpus.docs.end(), [](const Doc& doc) {
+      return doc.text == "Archive chunk boundaries preserve this message.";
+    }));
+    CHECK(unwrap(make_plan(*runtime, config, &base)).files.size() == 2);
+  }
+}

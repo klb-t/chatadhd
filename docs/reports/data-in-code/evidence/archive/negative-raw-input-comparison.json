@@ -1,0 +1,9 @@
+{
+  "schema": "loom.archive_parity_negative/1",
+  "description": "Repeat true161 baseline: raw materialize stage input hash is not reproducible because it includes generated run and DB IDs, even with fixed out_dir. This is not a candidate regression. Full raw receipts and8artifacts retained. Replay compare raw stage_input_hashes on two baseline runs.",
+  "baseline_revision": "161cc22dfb84fe863389d6b90323bd44516a68dc",
+  "raw_input_equal": false,
+  "differing_stage_names": [
+    "materialize"
+  ]
+}

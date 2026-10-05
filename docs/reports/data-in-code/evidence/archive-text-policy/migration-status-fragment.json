@@ -1,0 +1,109 @@
+{
+  "schema": "loom.data_in_code.migration-status-fragment/1",
+  "date": "2026-10-04",
+  "agent": "inventory_native_other",
+  "reviewed_ids": 13,
+  "counts": {
+    "migrated": 13
+  },
+  "findings": [
+    {
+      "id": "DIC-0067",
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack#/defaults/text_item_closure/phrase_orders, phrase_separators, phrase_output_separator, phrase_distinct_adjacent",
+      "notes": "Ordered n-gram lengths, input delimiter codepoints, output delimiter and repeated-neighbor eligibility are data; empty orders disables candidates. Preset [2,1] preserves legacy emission ordering.",
+      "current_evidence": "loom/src/archive/text.cpp:67-122"
+    },
+    {
+      "id": "DIC-0068",
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack#/defaults/text_item_closure/bullet_max_digits",
+      "notes": "Numeric bullet width is profile data, default4; no product cap beyond native size_t representation. Markdown scanner remains a trusted grammar operation.",
+      "current_evidence": "loom/src/archive/text.cpp:146-151"
+    },
+    {
+      "id": "DIC-0071",
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack#/defaults/text_item_closure/sentence_terminals, sentence_closers, sentence_openers, sentence_opener_classes, abbreviation_terminals",
+      "notes": "Unicode codepoint punctuation sets and trusted opener category names are data; default sets/category order preserve boundaries. Unicode category predicates remain algorithm capabilities.",
+      "current_evidence": "loom/src/archive/text.cpp:166-212"
+    },
+    {
+      "id": "DIC-0073",
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack#/defaults/text_item_closure/year_min and year_max",
+      "notes": "Accepted year bounds are nullable settings (1990/2100 presets), separate from ISO 4-digit shape and month/day syntax; historical full timestamps also pass the new configured epoch policy.",
+      "current_evidence": "loom/src/archive/text.cpp:285-311; loom/src/archive/text.cpp:338-373"
+    },
+    {
+      "id": "DIC-0074",
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack#/defaults/text_item_closure/allow_nonpositive_epoch",
+      "notes": "Newly discovered positive-only epoch admission is configurable false by default; true accepts Unix epoch/history. Nonfinite/native time_t/gmtime/strftime conversion failures are representation checks. Fixed UTC ISO timestamp shape remains a wire contract; legacy one-argument symbol retained.",
+      "current_evidence": "loom/src/archive/text.cpp:313-336; loom/src/archive/text.cpp:373"
+    },
+    {
+      "id": "DIC-0077",
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack#/defaults/vocabulary/camel_min_length, camel_min_uppercase; vocab_closure/camel_min_lowercase and camel_require_inner_uppercase",
+      "notes": "All four CamelCase eligibility predicates are data; Unicode case/category operations remain trusted universal operations. Existing length4/upper2 plus lower1/innertrue presets unchanged.",
+      "current_evidence": "loom/src/archive/vocab.cpp:39-70"
+    },
+    {
+      "id": "DIC-0084",
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack#/defaults/vocab_closure/score_multiplier, reason_score_precision, reason_lift_precision",
+      "notes": "Final score encoder multiplier10000 and diagnostic fixed precisions3/1 are data; multiplier0 disables rounding. Computation/ranking unchanged; finite scaling overflow is an explicit native representation error. Legacy TermRecord::to_json() symbol retained.",
+      "current_evidence": "loom/src/archive/vocab.cpp:19-25; loom/src/archive/vocab.cpp:91-98; loom/src/archive/vocab.cpp:282-284"
+    },
+    {
+      "id": "DIC-0094",
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack#/defaults/items/requirement_penalty_phrases, requirement_penalty, question_*; text_item_closure/penalty_target_type, question_target_type, question_closing_suffixes",
+      "notes": "Existing phrase/prefix/suffix weights plus destination type labels and closing suffix eligibility are data; trusted match modes preserve historical phrase-boundary semantics.",
+      "current_evidence": "loom/src/archive/items.cpp:87-116"
+    },
+    {
+      "id": "DIC-0097",
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack#/defaults/items/confidence_* and ambiguity_*; text_item_closure/confidence_multiplier",
+      "notes": "Calibration base/slope/clamp/ambiguity were previously migrated; final multiplier100 two-decimal encoder now data with0 meaning no rounding.",
+      "current_evidence": "loom/src/archive/items.cpp:57-65; loom/src/archive/items.cpp:160-162"
+    },
+    {
+      "id": "DIC-0100",
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack#/defaults/items/bug_markers, todo_confidence; text_item_closure/todo_source_kinds, todo_bug_binding, todo_default_binding",
+      "notes": "Marker predicate, confidence, source kinds and output type/cue bindings are data. New source alias annotation is tested; stable source-based IDs intentionally unchanged.",
+      "current_evidence": "loom/src/archive/items.cpp:254-266"
+    },
+    {
+      "id": "DIC-0101",
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack#/defaults/items/commit_bug_phrases, commit_confidence; text_item_closure/commit_source_kinds, commit_bug_binding, commit_default_binding",
+      "notes": "Phrase predicate, confidence, source kinds and output type/cue bindings are data. New source alias change is tested; existing commit source field codec retained.",
+      "current_evidence": "loom/src/archive/items.cpp:268-278"
+    },
+    {
+      "id": "DIC-0102",
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack#/defaults/items/sentence_max_bytes, sentence_min_tokens; text_item_closure/list_intro_suffixes",
+      "notes": "Existing byte/token selection settings plus list-introduction suffix array now data; empty suffix array disables introduction rejection.",
+      "current_evidence": "loom/src/archive/items.cpp:283-290"
+    },
+    {
+      "id": "DIC-0104",
+      "status": "migrated",
+      "destination": "loom/data/runtime/archive.pack#/defaults/items/relation_types; text_item_closure/question_role_types, answer_role_types, superseding_role_types, resolution_relation, resolution_status, resolution_reason_template",
+      "notes": "Relation eligibility and question/answer/superseding roles are data, including custom answer roles outside default relation types. Resolution label/status/reason renderer are data. Other established relation wire kinds and universal chronological overlap algorithm are unchanged.",
+      "current_evidence": "loom/src/archive/items.cpp:317-319; loom/src/archive/items.cpp:339-341; loom/src/archive/items.cpp:375-393"
+    }
+  ],
+  "retained_contract_notes": [
+    {
+      "id": "DIC-0099",
+      "current_evidence": "loom/src/archive/items.cpp:243,250",
+      "notes": "Display clip320 is already profile /items/text_max_codepoints. Stable ID prefix i_, separators#, hash-prefix width10 remain deliberately unchanged per root instruction. This followup does not replace archive agent status for that mixed policy/wire finding."
+    }
+  ]
+}

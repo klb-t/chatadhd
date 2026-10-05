@@ -6,6 +6,7 @@
 #include <map>
 
 #include "archive/archive_internal.h"
+#include "archive/profile.h"
 
 namespace loom::archive {
 
@@ -13,7 +14,7 @@ namespace {
 using Adj = std::vector<std::map<int, double>>;  // ordered neighbours
 
 // One level of local moving. Returns true if any node moved.
-bool one_level(const Adj& adj, std::vector<int>& comm) {
+bool one_level(const Adj& adj, std::vector<int>& comm, const ArchiveProfile& policy) {
   const int n = static_cast<int>(adj.size());
   std::vector<double> k(n, 0.0);
   double m2 = 0.0;
@@ -25,7 +26,7 @@ bool one_level(const Adj& adj, std::vector<int>& comm) {
   std::vector<double> tot(n, 0.0);
   for (int i = 0; i < n; ++i) tot[comm[i]] += k[i];
   bool improved = false;
-  for (int pass = 0; pass < 100; ++pass) {
+  for (int pass = 0; pass < policy.integer("/clustering/max_local_passes"); ++pass) {
     bool moved = false;
     for (int i = 0; i < n; ++i) {
       int old = comm[i];
@@ -41,7 +42,7 @@ bool one_level(const Adj& adj, std::vector<int>& comm) {
       for (const auto& [c, w] : wc) {
         if (c == old) continue;
         double gain = w - tot[c] * k[i] / m2;
-        if (gain > best_gain + 1e-12) {
+        if (gain > best_gain + policy.number("/clustering/gain_tolerance")) {
           best = c;
           best_gain = gain;
         }
@@ -57,7 +58,10 @@ bool one_level(const Adj& adj, std::vector<int>& comm) {
 }
 }  // namespace
 
-std::vector<int> louvain(int n, const std::vector<std::tuple<int, int, double>>& edges, int max_levels) {
+std::vector<int> louvain(int n, const std::vector<std::tuple<int, int, double>>& edges, int max_levels, const ArchiveProfile* profile) {
+  ProfileScope scope(profile);
+  const auto& policy = scope.get();
+  if (max_levels < 0) max_levels = policy.integer("/clustering/max_levels");
   std::vector<int> result(static_cast<std::size_t>(std::max(0, n)));
   for (int i = 0; i < n; ++i) result[i] = i;
   if (n <= 0) return result;
@@ -75,7 +79,7 @@ std::vector<int> louvain(int n, const std::vector<std::tuple<int, int, double>>&
     const int m = static_cast<int>(adj.size());
     std::vector<int> comm(m);
     for (int i = 0; i < m; ++i) comm[i] = i;
-    if (!one_level(adj, comm)) break;
+    if (!one_level(adj, comm, policy)) break;
     // renumber by first appearance
     std::map<int, int> ren;
     for (int i = 0; i < m; ++i) {

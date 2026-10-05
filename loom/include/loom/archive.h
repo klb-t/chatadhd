@@ -67,30 +67,34 @@ class Runtime;
 
 namespace archive {
 
+class ArchiveProfile;
+
 inline constexpr std::string_view kPipelineVersion = "1";
 
 struct ArchiveConfig {
+  ArchiveConfig();  // Exact builtin invocation preset; overlays use the checked parser below.
   std::vector<std::string> sources;     // files, directories or zips (chat exports, docs)
   std::optional<std::string> repo;      // code repository root (code files + git history)
-  bool code = true;                     // ingest repository files
-  bool git = true;                      // ingest git history (desktop-only adapter)
+  bool code;                           // ingest repository files
+  bool git;                            // ingest git history (desktop-only adapter)
   std::vector<std::string> seed_terms;  // empty -> derived (project manifest, repo name)
   std::string out_dir;                  // "" -> artifacts are only stored in the BlobStore
   std::string project;                  // display name; "" -> derived
-  int max_passes = 3;                   // retrieve/expand iterations (>= 1)
-  int max_new_terms = 8;                // terms added per expansion pass
-  int max_hits_per_term = 0;            // BM25 top-k per term; 0 = auto (corpus/10, 25..200)
-  int max_synthesis_rounds = 1;         // extra rounds fed by synthesis terms (k)
-  std::string llm = "off";              // "off" | "auto" (refine items when a key exists)
-  bool include_db = false;              // existing conversations join the corpus
+  int max_passes;                       // retrieve/expand iterations
+  int max_new_terms;                    // terms added per expansion pass
+  int max_hits_per_term;                // BM25 top-k per term; 0 = auto using the active recipe
+  int max_synthesis_rounds;             // extra rounds fed by synthesis terms (k)
+  std::string llm;                      // "off" | "auto" (implemented refinement capabilities)
+  bool include_db;                      // existing conversations join the corpus
   std::vector<std::string> exclude;     // extra path fragments skipped in the repo walk
-  std::int64_t max_file_bytes = 1'000'000;
-  bool force = false;                   // ignore cached stage results
+  std::int64_t max_file_bytes;
+  bool force;                          // ignore cached stage results
 
   // Keys: sources, repo, code, git, seed_terms, out_dir, project, max_passes,
   // max_new_terms, max_hits_per_term, max_synthesis_rounds, llm, include_db,
   // exclude, max_file_bytes, force. Unknown keys -> InvalidArgument.
   static Result<ArchiveConfig> from_json(const Json& j);
+  static Result<ArchiveConfig> from_json_with_profile(const Json& j, const ArchiveProfile& profile);
   Json to_json() const;
 };
 
@@ -135,6 +139,8 @@ class ArchiveIntelligence {
   // Latest run (run_id empty) or a specific one: the run task, its stage
   // tasks and the artifacts it produced.
   Result<Json> status(std::string_view run_id = "");
+  // Active immutable settings, independent of any historical run receipt.
+  Result<Json> profile() const;
 
   struct State;  // src/archive only
 

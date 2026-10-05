@@ -12,6 +12,7 @@
 #include <unordered_map>
 
 #include "archive/archive_runtime.h"
+#include "archive/profile.h"
 #include "loom/db.h"
 #include "loom/event_bus.h"
 #include "loom/importer.h"
@@ -27,13 +28,25 @@ namespace loom::archive {
 namespace fs = std::filesystem;
 
 namespace {
-const std::set<std::string>& skip_dirs() {
-  static const std::set<std::string> k = {
-      ".git",     "build",        "node_modules", "third_party", "vendor",        "__pycache__", ".venv",
-      "venv",     "env",          "dist",         "target",      ".gradle",       ".idea",       ".vscode",
-      ".cache",   ".pytest_cache", ".mypy_cache", "Pods",        "DerivedData",   ".tox",        "site-packages",
-      "fixtures", "testdata",     ".next",        ".svn",        ".hg",           "out",         ".claude"};
-  return k;
+
+// Generic named interpolation; placeholder values are never parsed again.
+std::string display_text(const ArchiveProfile& profile, std::string_view key,
+                         const std::map<std::string, std::string>& values = {}) {
+  const auto pattern = profile.value("/titles").at(std::string(key)).get<std::string>();
+  std::string out;
+  std::size_t cursor = 0;
+  while (cursor < pattern.size()) {
+    const auto open = pattern.find('{', cursor);
+    if (open == std::string::npos) { out.append(pattern, cursor); break; }
+    out.append(pattern, cursor, open - cursor);
+    const auto close = pattern.find('}', open + 1);
+    if (close == std::string::npos) { out.append(pattern, open); break; }
+    const auto name = pattern.substr(open + 1, close - open - 1);
+    if (const auto value = values.find(name); value != values.end()) out += value->second;
+    else out.append(pattern, open, close - open + 1);
+    cursor = close + 1;
+  }
+  return out;
 }
 
 std::string lower_ext(const fs::path& p) {
@@ -42,25 +55,17 @@ std::string lower_ext(const fs::path& p) {
   return e;
 }
 
-bool is_doc_ext(const std::string& e) {
-  return e == ".md" || e == ".markdown" || e == ".txt" || e == ".rst" || e == ".adoc" || e == ".org";
-}
-
-bool is_import_ext(const std::string& e) {
-  static const std::set<std::string> k = {".jsonl", ".ndjson", ".html", ".htm",  ".mht",  ".mhtml", ".db",
-                                          ".sqlite", ".sqlite3", ".png", ".jpg", ".jpeg", ".webp"};
-  return k.count(e) > 0;
-}
+bool is_doc_ext(const std::string& e, const ArchiveProfile& policy) { return policy.contains("/scan/document_extensions", e); }
 
 // explicit = the user named this file/dir as a source (chat exports allowed).
-std::string adapter_for(const fs::path& p, bool explicit_source) {
+std::string adapter_for(const fs::path& p, bool explicit_source, const ArchiveProfile& policy) {
   std::string e = lower_ext(p);
-  if (!code_language(p).empty()) return "code";
-  if (is_doc_ext(e)) return "text";
+  if (!code_language(p, &policy).empty()) return "code";
+  if (is_doc_ext(e, policy)) return "text";
   if (!explicit_source) return "";
   if (e == ".zip") return "zip";
   if (e == ".json") return "json";
-  if (is_import_ext(e)) return "import";
+  if (policy.contains("/scan/import_extensions", e)) return "import";
   return "";
 }
 
@@ -161,7 +166,9 @@ Result<std::string> run_git(const std::string& repo, const std::vector<std::stri
 #endif
 }
 
-Result<Plan> make_plan(Runtime& rt, const ArchiveConfig& cfg) {
+Result<Plan> make_plan(Runtime& rt, const ArchiveConfig& cfg, const ArchiveProfile* profile) {
+  ProfileScope scope(profile);
+  const auto& policy = scope.get();
   Plan plan;
   plan.include_db = cfg.include_db;
   fs::path repo;
@@ -207,14 +214,22 @@ Result<Plan> make_plan(Runtime& rt, const ArchiveConfig& cfg) {
       }
       if (e.is_directory(ec)) {
         std::string uri = uri_for(p, &root);
-        if (skip_dirs().count(name) || name.rfind("cmake-build", 0) == 0 || fs::exists(p / ".loom-archive") ||
+        const auto& prefixes = policy.value("/scan/skip_dir_prefixes");
+        const auto& sentinels = policy.value("/scan/skip_dir_sentinels");
+        const bool prefix_skip = std::any_of(prefixes.begin(), prefixes.end(), [&](const Json& prefix) {
+          return name.starts_with(prefix.get_ref<const std::string&>());
+        });
+        const bool sentinel_skip = std::any_of(sentinels.begin(), sentinels.end(), [&](const Json& sentinel) {
+          return fs::exists(p / sentinel.get_ref<const std::string&>());
+        });
+        if (policy.contains("/scan/skip_dirs", name) || prefix_skip || sentinel_skip ||
             (!out_dir.empty() && fs::weakly_canonical(p, ec) == out_dir) || excluded(uri + "/")) {
           it.disable_recursion_pending();
         }
         continue;
       }
       if (!e.is_regular_file(ec)) continue;
-      std::string adapter = adapter_for(p, explicit_source);
+      std::string adapter = adapter_for(p, explicit_source, policy);
       if (adapter.empty()) continue;
       std::string uri = uri_for(p, &root);
       if (excluded(uri)) continue;
@@ -230,11 +245,11 @@ Result<Plan> make_plan(Runtime& rt, const ArchiveConfig& cfg) {
     if (fs::is_directory(p)) {
       walk(p, true);
     } else {
-      std::string adapter = adapter_for(p, true);
+      std::string adapter = adapter_for(p, true, policy);
       if (adapter.empty()) {
         // unknown extension: treat valid UTF-8 text as a document
         auto head = fsutil::read_file(p);
-        if (head && head->size() < 2'000'000 && utf8::is_valid(*head) && head->find('\0') == std::string::npos) {
+        if (head && head->size() < static_cast<std::size_t>(policy.integer("/scan/max_unknown_text_bytes")) && utf8::is_valid(*head) && head->find('\0') == std::string::npos) {
           adapter = "text";
         } else {
           plan.warnings.push_back("skipped unsupported source: " + p.filename().string());
@@ -276,7 +291,7 @@ Result<Plan> make_plan(Runtime& rt, const ArchiveConfig& cfg) {
   }
   if (cfg.include_db) {
     Sha256 h;
-    LOOM_TRY_ASSIGN(auto convs, rt.db().list_convs(1'000'000));
+    LOOM_TRY_ASSIGN(auto convs, rt.db().list_convs(policy.integer("/scan/db_query_limit")));
     for (const auto& c : convs) {
       if (c.source.rfind("archive.", 0) == 0) continue;
       h.update(c.id);
@@ -304,8 +319,8 @@ using PrevBindings = std::unordered_map<std::string, std::pair<std::string, std:
 
 class Ingestor {
  public:
-  Ingestor(Runtime& rt, const Plan& plan, StageControl& ctl, IngestResult& res)
-      : rt_(rt), plan_(plan), ctl_(ctl), res_(res) {}
+  Ingestor(Runtime& rt, const Plan& plan, StageControl& ctl, IngestResult& res, const ArchiveProfile& policy)
+      : rt_(rt), plan_(plan), ctl_(ctl), res_(res), policy_(policy) {}
 
   Status run();
 
@@ -332,6 +347,7 @@ class Ingestor {
   const Plan& plan_;
   StageControl& ctl_;
   IngestResult& res_;
+  const ArchiveProfile& policy_;
   std::unordered_map<std::string, std::string> path_date_;
   std::set<std::string> keys_;
   std::size_t created_convs_ = 0;
@@ -346,7 +362,9 @@ Result<std::string> Ingestor::source_for(const std::string& blob, const std::str
   for (const auto& s : srcs) {
     if (s.parser != parser || s.parser_version != kPipelineVersion) continue;
     if (json::get_string(s.metadata, "uri") != uri) continue;
-    LOOM_TRY_ASSIGN(auto recs, prov.for_source(s.id, 10'000'000));
+    const std::string expected_profile = policy_.is_builtin() ? "" : policy_.hash();
+    if (json::get_string(s.metadata, "archive_profile_hash") != expected_profile) continue;
+    LOOM_TRY_ASSIGN(auto recs, prov.for_source(s.id, policy_.integer("/scan/provenance_query_limit")));
     for (const auto& r : recs) {
       if (r.subject_kind != "message") continue;
       std::string key = json::get_string(r.locator, "doc_key");
@@ -364,6 +382,7 @@ Result<std::string> Ingestor::source_for(const std::string& blob, const std::str
   rec.parser = parser;
   rec.parser_version = std::string(kPipelineVersion);
   rec.metadata = Json{{"uri", uri}, {"project", plan_.project}};
+  if (!policy_.is_builtin()) rec.metadata["archive_profile_hash"] = policy_.hash();
   return prov.add_source(std::move(rec));
 }
 
@@ -460,7 +479,7 @@ Status Ingestor::ingest_text(const PlannedFile& f, std::string_view content, con
     for (const auto& m : md) {
       (json::get_string(m, "role") == "user" ? users : assistants) += 1;
     }
-    if (users >= 2 && assistants >= 2) return ingest_import(f.path, f.uri);
+    if (users >= policy_.integer("/scan/text_user_threshold") && assistants >= policy_.integer("/scan/text_assistant_threshold")) return ingest_import(f.path, f.uri);
   }
   PrevBindings prev;
   LOOM_TRY_ASSIGN(std::string sid, source_for(blob, "loom.archive." + kind, f.uri, "file", kind, f.size, prev));
@@ -468,7 +487,7 @@ Status Ingestor::ingest_text(const PlannedFile& f, std::string_view content, con
   std::string head;
   {
     std::size_t p = 0;
-    for (int line = 0; line < 3 && p < content.size(); ++line) {
+    for (int line = 0; line < policy_.integer("/scan/title_lines") && p < content.size(); ++line) {
       std::size_t e = content.find('\n', p);
       if (e == std::string_view::npos) e = content.size();
       head.append(content.substr(p, e - p));
@@ -476,22 +495,22 @@ Status Ingestor::ingest_text(const PlannedFile& f, std::string_view content, con
       p = e + 1;
     }
   }
-  std::string date = first_date(head);
+  std::string date = first_date(head, &policy_);
   if (date.empty()) {
     if (auto it = path_date_.find(f.uri); it != path_date_.end()) date = it->second;
   }
   Unit u;
   u.key = "u" + hash_prefix(blob + "#" + f.uri);
-  u.title = "[Doc] " + f.uri;
+  u.title = display_text(policy_, "doc", {{"uri", f.uri}});
   u.conv_source = "archive.doc";
   int i = 0;
-  for (auto& s : split_markdown(content)) {
+  for (auto& s : split_markdown(content, policy_)) {
     Doc d;
     d.key = "d" + hash_prefix(blob + "#s" + std::to_string(i));
     d.kind = kind;
     d.unit = u.key;
     d.title = f.uri;
-    d.label = s.heading_path.empty() ? "L" + std::to_string(s.line) : clip(s.heading_path, 120);
+    d.label = s.heading_path.empty() ? display_text(policy_, "line_label", {{"line", std::to_string(s.line)}}) : clip(s.heading_path, static_cast<std::size_t>(policy_.integer("/projection/doc_label_max_codepoints")));
     d.uri = f.uri;
     d.date = date;
     d.role = "document";
@@ -509,11 +528,11 @@ Status Ingestor::ingest_text(const PlannedFile& f, std::string_view content, con
 Status Ingestor::ingest_code(const PlannedFile& f, std::string_view content, const std::string& blob) {
   PrevBindings prev;
   LOOM_TRY_ASSIGN(std::string sid, source_for(blob, "loom.archive.code", f.uri, "file", "code", f.size, prev));
-  std::string lang = code_language(f.uri);
-  CodeDigest dg = digest_code(f.uri, lang, content);
+  std::string lang = code_language(f.uri, &policy_);
+  CodeDigest dg = digest_code(f.uri, lang, content, &policy_);
   Unit u;
   u.key = "u" + hash_prefix(blob + "#code#" + f.uri);
-  u.title = "[Code] " + f.uri;
+  u.title = display_text(policy_, "code", {{"uri", f.uri}});
   u.conv_source = "archive.code";
   Doc d;
   d.key = "k" + hash_prefix(blob + "#code#" + f.uri);
@@ -528,7 +547,7 @@ Status Ingestor::ingest_code(const PlannedFile& f, std::string_view content, con
   Json todos = Json::array();
   for (const auto& [ln, t] : dg.todos) todos.push_back(Json{{"line", ln}, {"text", t}});
   Json syms = Json::array();
-  for (std::size_t i = 0; i < dg.symbols.size() && i < 400; ++i) syms.push_back(dg.symbols[i]);
+  for (std::size_t i = 0; i < dg.symbols.size() && i < static_cast<std::size_t>(policy_.integer("/code/max_extra_symbols")); ++i) syms.push_back(dg.symbols[i]);
   std::int64_t lines = static_cast<std::int64_t>(std::count(content.begin(), content.end(), '\n'));
   Json uses = Json::array();
   for (const auto& used : dg.uses) uses.push_back(used);
@@ -541,11 +560,11 @@ Status Ingestor::ingest_code(const PlannedFile& f, std::string_view content, con
 
 // Streams a top-level JSON array element by element (bounded memory); a
 // non-array document is parsed whole. fn returns false to stop.
-Status for_each_json_element(const fs::path& path, const std::function<bool(const Json&)>& fn) {
+Status for_each_json_element(const fs::path& path, const std::function<bool(const Json&)>& fn, const ArchiveProfile& policy) {
   std::ifstream in(path, std::ios::binary);
   if (!in) return Error(Errc::Io, "cannot open " + path.string());
   JsonArrayStreamer streamer;
-  std::string chunk(1 << 20, '\0');
+  std::string chunk(static_cast<std::size_t>(policy.integer("/scan/json_chunk_bytes")), '\0');
   bool stop = false;
   bool is_array = true;
   Status err;
@@ -589,7 +608,7 @@ Status Ingestor::ingest_json_file(const fs::path& path, const std::string& uri, 
   LOOM_TRY(for_each_json_element(path, [&](const Json& e) {
     first_kind = sniff_export_element(e);
     return false;
-  }));
+  }, policy_));
   if (first_kind.empty()) return {};
   *handled = true;
   std::error_code ec;
@@ -607,12 +626,12 @@ Status Ingestor::ingest_json_file(const fs::path& path, const std::string& uri, 
     std::string kind = sniff_export_element(e);
     std::string base = blob + "#" + std::to_string(idx);
     if (kind == "chatgpt" || kind == "claude") {
-      ChatWalk w = kind == "chatgpt" ? walk_chatgpt(e) : walk_claude(e);
+      ChatWalk w = kind == "chatgpt" ? walk_chatgpt(e, &policy_) : walk_claude(e, &policy_);
       if (w.messages.empty()) return true;
       Unit u;
       u.key = "u" + hash_prefix(base);
-      std::string title = w.title.empty() ? "(untitled)" : w.title;
-      u.title = "[Chat] " + title;
+      std::string title = w.title.empty() ? display_text(policy_, "untitled_chat") : w.title;
+      u.title = display_text(policy_, "chat", {{"title", title}});
       u.conv_source = "archive.chat";
       std::unordered_map<std::string, std::string> node_key;
       int ord = 0;
@@ -625,7 +644,7 @@ Status Ingestor::ingest_json_file(const fs::path& path, const std::string& uri, 
         d.unit = u.key;
         d.title = title;
         d.role = json::get_string(m, "role");
-        d.label = "#" + std::to_string(ord + 1) + " " + d.role;
+        d.label = display_text(policy_, "chat_label", {{"ordinal", std::to_string(ord + 1)}, {"role", d.role}});
         d.uri = uri;
         d.date = json::get_string(m, "date");
         d.text = json::get_string(m, "text");
@@ -658,20 +677,20 @@ Status Ingestor::ingest_json_file(const fs::path& path, const std::string& uri, 
     } else if (kind == "claude_projects") {
       Unit u;
       u.key = "u" + hash_prefix(base);
-      std::string name = json::get_string(e, "name", "(project)");
-      u.title = "[Project] " + name;
+      std::string name = json::get_string(e, "name", display_text(policy_, "untitled_project"));
+      u.title = display_text(policy_, "project", {{"name", name}});
       u.conv_source = "archive.project";
-      std::string date = normalize_date(json::get_string(e, "created_at"));
+      std::string date = normalize_date(json::get_string(e, "created_at"), &policy_);
       int ord = 0;
       auto add_sections = [&](const std::string& label_prefix, const std::string& content, const std::string& salt) {
         int si = 0;
-        for (auto& s : split_markdown(content)) {
+        for (auto& s : split_markdown(content, policy_)) {
           Doc d;
           d.key = "p" + hash_prefix(base + "/" + salt + "/" + std::to_string(si++));
           d.kind = "project";
           d.unit = u.key;
-          d.title = "Project: " + name;
-          d.label = s.heading_path.empty() ? label_prefix : clip(label_prefix + " › " + s.heading_path, 120);
+          d.title = display_text(policy_, "project_document", {{"name", name}});
+          d.label = s.heading_path.empty() ? label_prefix : clip(display_text(policy_, "section_label", {{"label", label_prefix}, {"heading", s.heading_path}}), static_cast<std::size_t>(policy_.integer("/projection/section_label_max_codepoints")));
           d.uri = uri;
           d.date = date;
           d.role = "document";
@@ -683,12 +702,12 @@ Status Ingestor::ingest_json_file(const fs::path& path, const std::string& uri, 
       };
       std::string desc = json::get_string(e, "description");
       std::string prompt = json::get_string(e, "prompt_template");
-      if (!utf8::is_blank(desc)) add_sections("description", desc, "desc");
-      if (!utf8::is_blank(prompt)) add_sections("instructions", prompt, "prompt");
+      if (!utf8::is_blank(desc)) add_sections(display_text(policy_, "project_description_label"), desc, "desc");
+      if (!utf8::is_blank(prompt)) add_sections(display_text(policy_, "project_instructions_label"), prompt, "prompt");
       if (const Json* docs = json::find(e, "docs"); docs && docs->is_array()) {
         int di = 0;
         for (const auto& pd : *docs) {
-          add_sections(json::get_string(pd, "filename", "doc"), json::get_string(pd, "content"),
+          add_sections(json::get_string(pd, "filename", display_text(policy_, "project_document_fallback")), json::get_string(pd, "content"),
                        "doc" + std::to_string(di++));
         }
       }
@@ -697,18 +716,18 @@ Status Ingestor::ingest_json_file(const fs::path& path, const std::string& uri, 
     } else if (kind == "claude_memories") {
       Unit u;
       u.key = "u" + hash_prefix(base);
-      u.title = "[Memory] Claude memories";
+      u.title = display_text(policy_, "memory");
       u.conv_source = "archive.memory";
       int ord = 0;
       auto add = [&](const std::string& label, const std::string& content, const std::string& salt) {
         int si = 0;
-        for (auto& s : split_markdown(content)) {
+        for (auto& s : split_markdown(content, policy_)) {
           Doc d;
           d.key = "y" + hash_prefix(base + "/" + salt + "/" + std::to_string(si++));
           d.kind = "memory";
           d.unit = u.key;
-          d.title = "Claude memory";
-          d.label = s.heading_path.empty() ? label : clip(label + " › " + s.heading_path, 120);
+          d.title = display_text(policy_, "memory_document");
+          d.label = s.heading_path.empty() ? label : clip(display_text(policy_, "section_label", {{"label", label}, {"heading", s.heading_path}}), static_cast<std::size_t>(policy_.integer("/projection/section_label_max_codepoints")));
           d.uri = uri;
           d.role = "document";
           d.text = std::move(s.text);
@@ -718,11 +737,11 @@ Status Ingestor::ingest_json_file(const fs::path& path, const std::string& uri, 
         }
       };
       std::string cm = json::get_string(e, "conversations_memory");
-      if (!utf8::is_blank(cm)) add("conversations memory", cm, "conv");
+      if (!utf8::is_blank(cm)) add(display_text(policy_, "memory_conversations_label"), cm, "conv");
       if (const Json* pm = json::find(e, "project_memories"); pm && pm->is_object()) {
         for (auto it = pm->begin(); it != pm->end(); ++it) {
           if (it.value().is_string()) {
-            add("project memory " + it.key().substr(0, 8), it.value().get<std::string>(), "p" + it.key());
+            add(display_text(policy_, "memory_project_label", {{"key", it.key().substr(0, static_cast<std::size_t>(policy_.integer("/projection/memory_project_key_prefix_bytes")))}}), it.value().get<std::string>(), "p" + it.key());
           }
         }
       }
@@ -730,7 +749,7 @@ Status Ingestor::ingest_json_file(const fs::path& path, const std::string& uri, 
       ++units;
     }
     return static_cast<bool>(inner);
-  }));
+  }, policy_));
   LOOM_TRY(inner);
   add_source_summary(uri, "json", first_kind, blob, res_.corpus.docs.size() - docs_before, units);
   return {};
@@ -750,7 +769,8 @@ Status Ingestor::ingest_import(const fs::path& path, const std::string& uri) {
     LOOM_TRY_ASSIGN(auto msgs, rt_.db().get_msgs(conv.id, true));
     std::string unit = "u" + hash_prefix(blob + "#imp" + std::to_string(ci));
     std::string title = conv.title;
-    if (title.rfind("[Import] ", 0) == 0) title = title.substr(9);
+    const auto prefix = display_text(policy_, "import_strip_prefix");
+    if (title.starts_with(prefix)) title = title.substr(prefix.size());
     int mi = 0;
     for (const auto& m : msgs) {
       Doc d;
@@ -819,7 +839,7 @@ Status Ingestor::ingest_zip(const PlannedFile& f, const std::string& blob) {
       } else {
         others.push_back(m);
       }
-    } else if (is_doc_ext(ext)) {
+    } else if (is_doc_ext(ext, policy_)) {
       std::size_t sz = 0;
       void* p = mz_zip_reader_extract_to_heap(&zip, m.index, &sz, 0);
       if (!p) continue;
@@ -845,7 +865,7 @@ Status Ingestor::ingest_git() {
   LOOM_TRY_ASSIGN(std::string raw, run_git(plan_.repo_path, {"-c", "core.quotepath=off", "log", "--no-color",
                                                             "--format=" + std::string(kGitLogFormat),
                                                             "--name-status"}));
-  auto commits = parse_git_log(raw);
+  auto commits = parse_git_log(raw, &policy_);
   std::reverse(commits.begin(), commits.end());
   LOOM_TRY_ASSIGN(BlobRef ref, rt_.blobs().put(raw, "text/plain"));
   std::string uri = plan_.repo_name + ".git";
@@ -854,7 +874,7 @@ Status Ingestor::ingest_git() {
                                               static_cast<std::int64_t>(raw.size()), prev));
   Unit u;
   u.key = "u" + hash_prefix("git#" + plan_.repo_name);
-  u.title = "[Git] " + plan_.repo_name;
+  u.title = display_text(policy_, "git", {{"repo", plan_.repo_name}});
   u.conv_source = "archive.git";
   int ord = 0;
   for (const auto& c : commits) {
@@ -863,7 +883,7 @@ Status Ingestor::ingest_git() {
     d.kind = "commit";
     d.unit = u.key;
     d.title = "git " + plan_.repo_name;
-    d.label = c.hash.substr(0, 7) + " " + clip(c.subject, 72);
+    d.label = display_text(policy_, "commit_label", {{"hash", c.hash.substr(0, static_cast<std::size_t>(policy_.integer("/projection/git_hash_prefix_bytes")))}, {"subject", clip(c.subject, static_cast<std::size_t>(policy_.integer("/projection/git_subject_max_codepoints")))}});
     d.uri = uri;
     d.date = c.date;
     d.role = "commit";
@@ -871,11 +891,11 @@ Status Ingestor::ingest_git() {
     if (!c.body.empty()) d.text += "\n\n" + c.body;
     if (!c.files.empty()) {
       d.text += "\n\nFiles:";
-      for (std::size_t i = 0; i < c.files.size() && i < 40; ++i) d.text += "\n" + c.files[i];
-      if (c.files.size() > 40) d.text += "\n(+" + std::to_string(c.files.size() - 40) + " more)";
+      for (std::size_t i = 0; i < c.files.size() && i < static_cast<std::size_t>(policy_.integer("/projection/git_text_files")); ++i) d.text += "\n" + c.files[i];
+      if (c.files.size() > static_cast<std::size_t>(policy_.integer("/projection/git_text_files"))) d.text += display_text(policy_, "commit_more_files", {{"count", std::to_string(c.files.size() - static_cast<std::size_t>(policy_.integer("/projection/git_text_files")))}});
     }
     Json files = Json::array();
-    for (std::size_t i = 0; i < c.files.size() && i < 200; ++i) files.push_back(c.files[i]);
+    for (std::size_t i = 0; i < c.files.size() && i < static_cast<std::size_t>(policy_.integer("/projection/git_extra_files")); ++i) files.push_back(c.files[i]);
     d.extra = Json{{"hash", c.hash}, {"subject", c.subject}, {"author", c.author}, {"files", files}};
     d.ordinal = ord++;
     u.docs.push_back(std::move(d));
@@ -888,7 +908,7 @@ Status Ingestor::ingest_git() {
 
 Status Ingestor::ingest_db() {
   Database& db = rt_.db();
-  LOOM_TRY_ASSIGN(auto convs, db.list_convs(1'000'000));
+  LOOM_TRY_ASSIGN(auto convs, db.list_convs(policy_.integer("/scan/db_query_limit")));
   std::set<std::string> bound_convs;
   for (auto it = res_.bindings.begin(); it != res_.bindings.end(); ++it) bound_convs.insert(json::get_string(it.value(), "conv"));
   std::sort(convs.begin(), convs.end(), [](const Conversation& a, const Conversation& b) {
@@ -909,9 +929,9 @@ Status Ingestor::ingest_db() {
       d.unit = unit;
       d.title = c.title;
       d.role = m.role;
-      d.label = "#" + std::to_string(ord + 1) + " " + m.role + (m.status == "version" ? " (earlier version)" : "");
+      d.label = display_text(policy_, "db_chat_label", {{"ordinal", std::to_string(ord + 1)}, {"role", m.role}, {"version", m.status == "version" ? display_text(policy_, "earlier_version_suffix") : ""}});
       d.uri = "chatadhd.db";
-      d.date = normalize_date(m.created);
+      d.date = normalize_date(m.created, &policy_);
       d.text = m.text;
       d.ordinal = ord++;
       d.extra = Json{{"status", m.status}, {"version_num", m.version_num}, {"source", "db"}};
@@ -930,7 +950,7 @@ Status Ingestor::ingest_db() {
       res_.corpus.forks.push_back(Json{{"unit", unit},
                                        {"title", c.title},
                                        {"after", after},
-                                       {"date", normalize_date(first->created)},
+                                       {"date", normalize_date(first->created, &policy_)},
                                        {"origin", "versions"},
                                        {"alternatives", alts}});
     }
@@ -968,7 +988,7 @@ Status Ingestor::run() {
     auto raw = run_git(plan_.repo_path, {"-c", "core.quotepath=off", "log", "--no-color",
                                          "--format=" + std::string(kGitLogFormat), "--name-status"});
     if (raw) {
-      auto commits = parse_git_log(*raw);
+      auto commits = parse_git_log(*raw, &policy_);
       for (auto it = commits.rbegin(); it != commits.rend(); ++it) {
         for (const auto& f : it->files) {
           if (f.size() > 2) path_date_[f.substr(2)] = date_only(it->date);
@@ -1008,7 +1028,7 @@ Status Ingestor::run() {
     const auto& f = plan_.files[i];
     if (ctl_.progress) ctl_.progress(static_cast<std::int64_t>(i), static_cast<std::int64_t>(total), f.uri);
     LOOM_TRY(process_file(f));
-    if (std::chrono::steady_clock::now() - last_save > std::chrono::seconds(10)) {
+    if (std::chrono::steady_clock::now() - last_save > std::chrono::seconds(policy_.integer("/scan/checkpoint_seconds"))) {
       LOOM_TRY(save(i + 1));
       last_save = std::chrono::steady_clock::now();
     }
@@ -1025,20 +1045,24 @@ Status Ingestor::run() {
 
   // Corpus-derived default seeds: the project name + salient README terms.
   std::vector<std::string> seeds;
-  for (const auto& t : content_tokens(plan_.project)) seeds.push_back(t);
+  for (const auto& t : content_tokens(plan_.project, &policy_)) seeds.push_back(t);
   std::map<std::string, int> df;
   for (const auto& d : res_.corpus.docs) {
     std::string base = fs::path(d.uri).filename().string();
-    std::string low = utf8::to_lower(base);
-    if (d.kind != "doc" || low.rfind("readme", 0) != 0) continue;
+    std::string low = policy_.value("/scan/readme_name_case_fold").get<bool>() ? utf8::to_lower(base) : base;
+    const auto& prefixes = policy_.value("/scan/readme_name_prefixes");
+    if (!policy_.contains("/scan/readme_kinds", d.kind) ||
+        std::none_of(prefixes.begin(), prefixes.end(), [&](const Json& prefix) {
+          return low.starts_with(prefix.get_ref<const std::string&>());
+        })) continue;
     std::set<std::string> ts;
-    for (auto& t : content_tokens(d.text)) ts.insert(std::move(t));
+    for (auto& t : content_tokens(d.text, &policy_)) ts.insert(std::move(t));
     for (const auto& t : ts) ++df[t];
   }
   std::vector<std::pair<int, std::string>> top;
   for (const auto& [t, n] : df) top.emplace_back(-n, t);
   std::sort(top.begin(), top.end());
-  for (std::size_t i = 0; i < top.size() && seeds.size() < 6; ++i) {
+  for (std::size_t i = 0; i < top.size() && seeds.size() < static_cast<std::size_t>(policy_.integer("/scan/readme_seed_limit")); ++i) {
     if (std::find(seeds.begin(), seeds.end(), top[i].second) == seeds.end()) seeds.push_back(top[i].second);
   }
   res_.corpus.default_seeds = seeds;
@@ -1062,9 +1086,10 @@ Status Ingestor::run() {
 
 }  // namespace
 
-Result<IngestResult> run_ingest(Runtime& rt, const Plan& plan, StageControl& ctl) {
+Result<IngestResult> run_ingest(Runtime& rt, const Plan& plan, StageControl& ctl, const ArchiveProfile* profile) {
+  ProfileScope scope(profile);
   IngestResult res;
-  Ingestor ing(rt, plan, ctl, res);
+  Ingestor ing(rt, plan, ctl, res, scope.get());
   LOOM_TRY(ing.run());
   return res;
 }

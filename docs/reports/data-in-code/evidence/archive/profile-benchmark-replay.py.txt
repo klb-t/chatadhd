@@ -1,0 +1,15 @@
+import hashlib,json,pathlib,statistics,subprocess
+s=pathlib.Path('/workspace/scratch/72fc60ad1cc5');r=s/'chatadhd';src=r/'loom/tests/fixtures/archive_profile_parity/benchmark.cpp';baseline_repo=s/'chatadhd-baseline';baseline_build=s/'baseline-build'
+commands=[]
+for name,repo,build in [('before',baseline_repo,baseline_build),('after',r,baseline_build)]:
+ a=['c++','-std=c++20','-g0','-DJSON_USE_IMPLICIT_CONVERSIONS=1','-I'+str(repo/'loom/include'),'-I'+str(repo/'loom/src'),'-isystem',str(repo/'loom/third_party/nlohmann'),str(src),'-o',str(s/('archive-benchmark-'+name))]
+ if name=='after':
+  paths=['archive/text.cpp','archive/items.cpp','archive/vocab.cpp','archive/cluster.cpp','archive/ingest_parse.cpp','archive/profile.cpp','model/runtime_profile.cpp'];a += [str(s/'archive-pure-objects'/p.replace('/','-'))+'.o' for p in paths]
+ a += [str(build/'libloom_core.a'),str(build/'libloom_sqlite3_amalgamation.a'),'-ldl','-lm',str(build/'libloom_miniz.a'),'-lssl','-lcrypto','-lpthread'];commands.append(a);p=subprocess.run(a,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT);print(name,'compile',p.returncode,p.stdout,flush=True)
+ if p.returncode:raise SystemExit(p.returncode)
+runs={'before':[],'after':[]}
+for i in range(5):
+ for name in runs:
+  p=subprocess.run([str(s/('archive-benchmark-'+name))],text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,check=True);runs[name].append(json.loads(p.stdout));print(name,i,p.stdout.strip(),flush=True)
+assert all(x['cold_checksum']==runs['before'][0]['cold_checksum'] and x['steady_checksum']==runs['before'][0]['steady_checksum'] for x in runs['before']+runs['after'])
+medians={name:{key:statistics.median(x[key] for x in rows) for key in ['cold_ns','steady_ns']} for name,rows in runs.items()};ratios={key:medians['after'][key]/medians['before'][key] for key in ['cold_ns','steady_ns']};receipt={'schema':'loom.archive_profile_benchmark/1','baseline_revision':'161cc22dfb84fe863389d6b90323bd44516a68dc','repetitions_per_steady_sample':500,'paired_runs':runs,'medians':medians,'candidate_to_baseline_ratios':ratios,'checksums_equal':True,'methodology':'Both native builds O0, no Runtime constructed. Candidate latest pure helper objects link against stable true161 universal dependencies to avoid reading an archive during its rebuild. Cold is first six-text helper fixture in process; steady is500repetitions after initialization. Five alternating baseline/candidate subprocesses; medians. Shared machine has concurrent builds; this is a development microbenchmark, not a usage estimate or resource limit.','source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'commands':commands};(s/'archive-profile-benchmark-receipt.json').write_text(json.dumps(receipt,indent=2)+'\n');print(json.dumps({'medians':medians,'ratios':ratios}),flush=True)

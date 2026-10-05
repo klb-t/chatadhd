@@ -27,6 +27,8 @@ class SemanticAnalyzer;
 
 namespace loom::archive {
 
+class ArchiveProfile;
+
 // ── Documents ───────────────────────────────────────────────────────
 // One retrievable unit: a chat message, a document section, a code file
 // digest, a commit, a Claude project doc or memory.
@@ -64,21 +66,24 @@ struct Corpus {
 // ── Text utilities (src/archive/text.cpp) ───────────────────────────
 // Lowercased runs of letters/digits (underscore splits), numbers dropped.
 std::vector<std::string> tokenize(std::string_view text);
-bool is_stopword(std::string_view lower_token);
+bool is_stopword(std::string_view lower_token, const ArchiveProfile* profile = nullptr);
 // tokenize() minus stop words and tokens shorter than 3 code points.
-std::vector<std::string> content_tokens(std::string_view text);
+std::vector<std::string> content_tokens(std::string_view text, const ArchiveProfile* profile = nullptr);
 // content tokens + adjacent content-token bigrams ("knowledge graph").
-std::vector<std::string> candidate_terms(std::string_view text);
+std::vector<std::string> candidate_terms(std::string_view text, const ArchiveProfile* profile = nullptr);
 // Sentences / bullet lines; markdown bullets and heading marks stripped;
 // fenced code blocks skipped.
-std::vector<std::string> split_sentences(std::string_view text);
+std::vector<std::string> split_sentences(std::string_view text, const ArchiveProfile* profile = nullptr);
 // First ISO date (YYYY-MM-DD) in the text, "" when none.
 std::string first_date(std::string_view text);
+std::string first_date(std::string_view text, const ArchiveProfile* profile);
 // "2024-11-03T10:00:00Z" from epoch seconds (UTC).
 std::string iso_from_epoch(double seconds);
+std::string iso_from_epoch(double seconds, const ArchiveProfile* profile);
 // Normalises ISO-ish timestamps to "YYYY-MM-DDTHH:MM:SSZ" (UTC when an offset
 // is given); returns the input's date prefix or "" when unparseable.
 std::string normalize_date(std::string_view s);
+std::string normalize_date(std::string_view s, const ArchiveProfile* profile);
 std::string date_only(std::string_view iso);  // first 10 chars or ""
 // sha256 hex prefix of `s` (n chars).
 std::string hash_prefix(std::string_view s, std::size_t n = 12);
@@ -89,11 +94,11 @@ std::string clip(std::string_view s, std::size_t max_cp);
 std::vector<std::string> split_identifier(std::string_view ident);
 // CamelCase / mixedCase identifiers ("GraphEngine", "IExecutionEnvironment",
 // "ChatADHD") in original case, in order of appearance (duplicates kept).
-std::vector<std::string> camel_identifiers(std::string_view text);
+std::vector<std::string> camel_identifiers(std::string_view text, const ArchiveProfile* profile = nullptr);
 // Crude singular form used for matching ("stores" -> "store").
-std::string stem(std::string_view lower_token);
+std::string stem(std::string_view lower_token, const ArchiveProfile* profile = nullptr);
 // PL -> EN glossary for the gap report (policy data); identity when unknown.
-std::string gloss(std::string_view lower_token);
+std::string gloss(std::string_view lower_token, const ArchiveProfile* profile = nullptr);
 
 // ── Ingest helpers (src/archive/ingest_parse.cpp) ───────────────────
 struct Section {
@@ -104,7 +109,9 @@ struct Section {
 };
 // Splits markdown/plain text into sections by ATX headings; long sections are
 // split further at paragraph boundaries (max_chars per piece).
-std::vector<Section> split_markdown(std::string_view content, std::size_t max_chars = 4000);
+std::vector<Section> split_markdown(std::string_view content);
+std::vector<Section> split_markdown(std::string_view content, std::size_t max_chars);
+std::vector<Section> split_markdown(std::string_view content, const ArchiveProfile& profile);
 
 struct CodeDigest {
   std::string language;
@@ -114,8 +121,8 @@ struct CodeDigest {
   std::vector<std::string> uses;     // CamelCase identifiers used in code lines (not comments)
   std::string text;                  // the digest indexed as the document text
 };
-std::string code_language(const std::filesystem::path& p);  // "" when not code
-CodeDigest digest_code(std::string_view rel_path, std::string_view language, std::string_view content);
+std::string code_language(const std::filesystem::path& p, const ArchiveProfile* profile = nullptr);  // "" when not code
+CodeDigest digest_code(std::string_view rel_path, std::string_view language, std::string_view content, const ArchiveProfile* profile = nullptr);
 
 struct GitCommit {
   std::string hash;
@@ -128,6 +135,7 @@ struct GitCommit {
 // Parses the output of
 //   git log --format=%x1e%H%x1f%aI%x1f%an%x1f%s%x1f%b%x1f --name-status
 std::vector<GitCommit> parse_git_log(std::string_view raw);
+std::vector<GitCommit> parse_git_log(std::string_view raw, const ArchiveProfile* profile);
 inline constexpr std::string_view kGitLogFormat = "%x1e%H%x1f%aI%x1f%an%x1f%s%x1f%b%x1f";
 
 // Chat export structure walkers. Each returns
@@ -141,7 +149,9 @@ struct ChatWalk {
   std::string date;  // conversation creation date
 };
 ChatWalk walk_chatgpt(const Json& conv);
+ChatWalk walk_chatgpt(const Json& conv, const ArchiveProfile* profile);
 ChatWalk walk_claude(const Json& conv);
+ChatWalk walk_claude(const Json& conv, const ArchiveProfile* profile);
 // "chatgpt" | "claude" | "claude_projects" | "claude_memories" | "" for one
 // element (or top-level object) of an export file.
 std::string sniff_export_element(const Json& element);
@@ -156,7 +166,7 @@ struct CorpusStats {
   std::unordered_map<std::string, int> df;      // candidate term -> #docs
   std::vector<DocTerms> docs;                   // parallel to corpus.docs
 };
-CorpusStats compute_stats(const Corpus& corpus);
+CorpusStats compute_stats(const Corpus& corpus, const ArchiveProfile* profile = nullptr);
 
 struct TermRecord {
   std::string term;
@@ -166,27 +176,25 @@ struct TermRecord {
   std::vector<std::string> reasons;
   std::vector<std::string> evidence;  // doc keys (max 5)
   Json to_json() const;
+  Json to_json(const ArchiveProfile* profile) const;
   static TermRecord from_json(const Json& j);
 };
 
 // Salient new terms of `hits` (doc indexes) against the corpus.
 std::vector<TermRecord> expand_vocabulary(const Corpus& corpus, const CorpusStats& stats,
                                           const std::vector<std::size_t>& hits, const std::set<std::string>& vocab,
-                                          int pass, int max_new, const SemanticAnalyzer* analyzer);
+                                          int pass, int max_new, const SemanticAnalyzer* analyzer, const ArchiveProfile* profile = nullptr);
 
 // Top-k candidate terms of one document by tf-idf (df >= 2).
-std::vector<std::pair<std::string, double>> salient_terms(const CorpusStats& stats, std::size_t doc_index, int k);
+std::vector<std::pair<std::string, double>> salient_terms(const CorpusStats& stats, std::size_t doc_index, int k, const ArchiveProfile* profile = nullptr);
 
 // ── Clustering (src/archive/cluster.cpp) ────────────────────────────
 // Deterministic Louvain (nodes visited in index order, ties -> lowest
 // community id). Returns a community id per node, renumbered 0..k-1 by first
 // appearance.
-std::vector<int> louvain(int n, const std::vector<std::tuple<int, int, double>>& edges, int max_levels = 10);
+std::vector<int> louvain(int n, const std::vector<std::tuple<int, int, double>>& edges, int max_levels = -1, const ArchiveProfile* profile = nullptr);
 
 // ── Items (src/archive/items.cpp) ───────────────────────────────────
-inline constexpr std::string_view kItemTypes[] = {"decision",       "rejected_option", "open_question",
-                                                  "requirement",    "invariant",       "idea",
-                                                  "rationale",      "implementation",  "bug"};
 
 struct Classification {
   std::string type;          // "" when no cue fired
@@ -195,7 +203,7 @@ struct Classification {
   int polarity = 1;          // -1 when the sentence negates / rejects
 };
 // heading: enclosing section heading path (hints like "Otwarte decyzje").
-Classification classify_sentence(std::string_view sentence, std::string_view heading = "");
+Classification classify_sentence(std::string_view sentence, std::string_view heading = "", const ArchiveProfile* profile = nullptr);
 
 struct Item {
   std::string id;            // "i_" + hash prefix (stable)
@@ -215,7 +223,7 @@ struct Item {
 };
 // Items of one document (sentences classified; code docs: TODO/FIXME only;
 // commits: one implementation/bug item).
-std::vector<Item> extract_items(const Doc& doc, std::string_view theme);
+std::vector<Item> extract_items(const Doc& doc, std::string_view theme, const ArchiveProfile* profile = nullptr);
 
 struct ItemEdge {
   std::string src;           // item id (the later / superseding one)
@@ -225,6 +233,6 @@ struct ItemEdge {
   Json to_json() const;
 };
 // Detects supersession / contradiction; updates item.status.
-std::vector<ItemEdge> relate_items(std::vector<Item>& items, const CorpusStats* stats = nullptr);
+std::vector<ItemEdge> relate_items(std::vector<Item>& items, const CorpusStats* stats = nullptr, const ArchiveProfile* profile = nullptr);
 
 }  // namespace loom::archive

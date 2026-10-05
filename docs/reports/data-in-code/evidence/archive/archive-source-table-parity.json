@@ -1,0 +1,31 @@
+{
+  "stopword_order_duplicate_membership": {
+    "count": 597,
+    "equal": true
+  },
+  "cue_order_weights": {
+    "count": 206,
+    "equal": true
+  },
+  "heading_order_weights": {
+    "count": 26,
+    "equal": true
+  },
+  "negators": {
+    "count": 39,
+    "equal": true
+  },
+  "generic_subject_words": {
+    "count": 78,
+    "equal": true
+  },
+  "tie_order": {
+    "count": 9,
+    "equal": true
+  },
+  "source_revision": "161cc22dfb84fe863389d6b90323bd44516a68dc",
+  "lexicon_sha256": {
+    "stopwords_base.json": "88baf0cb84152444cc9d35cfbac0582fa75142dcc19d643fe47be13a6d221303",
+    "item_cues.json": "ac0c7229a80d922f0876d347701c537cc3bf6842f16f39832f88939bbaf995b5"
+  }
+}
