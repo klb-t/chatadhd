@@ -1,0 +1,26 @@
+{
+  "schema": "loom.cli.static_review/1",
+  "head": "14de82e02390fd4490a9810212c774ffc2b9f74c",
+  "help_byte_identical_to_head": true,
+  "help_bytes": 4770,
+  "help_sha256": "1efe7af10542ef871d475fae9b0e648372fe97dbc864f84e4ca07ac127ce8fbe",
+  "profile_counts": {
+    "commands": 24,
+    "boolean_flags": 17,
+    "limits": 14,
+    "subcommand_groups": 13,
+    "subcommands": 51
+  },
+  "checks": {
+    "cli_cpp_strict_syntax": "passed",
+    "smoke_python_ast": "passed",
+    "diff_whitespace": "passed",
+    "smoke_execution": "pending final full build; not run by this review",
+    "full_ctest": "pending final full build; not run by this review"
+  },
+  "source_sha256": {
+    "loom/cli/main.cpp": "c3616a5af609c156c914c827a2646b85e27081c1412c7635037a12494a7aed23",
+    "loom/cli/tests/test_cli_smoke.py": "6a36479e34cc01984474b2b780652beb48f01e25b2db4bce55ea52602a5870d3",
+    "loom/data/runtime/cli.pack": "56998afe641e43c8950c4520aef423bf8916e51aa2974f1a9b46a91ed5015a2b"
+  }
+}

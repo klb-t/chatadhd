@@ -1,0 +1,549 @@
+{
+  "schema": "loom.data_in_code.migration-status-snapshot/1",
+  "scope": "worker/media/github/net/CLI42-ID fragment, not42 CLI-only IDs",
+  "counts": {
+    "migrated": 38,
+    "partially-migrated": 2,
+    "retained-wire": 2
+  },
+  "by_id": {
+    "DIC-0173": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/worker.pack#/defaults",
+      "notes": "WorkerOptions constructor/from_profile and consumer load typed values; explicit options are merged into effective profile. Usage guard belongs to2 and remains separate. Current evidence: loom/src/worker/semantic_worker.cpp:40, loom/src/worker/semantic_worker.cpp:271.",
+      "current_evidence": [
+        "loom/src/worker/semantic_worker.cpp:40",
+        "loom/src/worker/semantic_worker.cpp:271"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/include/loom/semantic_worker.h:61",
+      "destination_before": "pack: profiles/semantic_worker.json"
+    },
+    "DIC-0174": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/worker.pack#/defaults/{batch_endpoint,headers,batch_secret_key}",
+      "notes": "Submit, polling and results all derive from effective endpoint and headers; canonical Anthropic protocol path suffixes remain executable adapter contract. Current evidence: loom/src/worker/semantic_worker.cpp:65, loom/src/worker/semantic_worker.cpp:33.",
+      "current_evidence": [
+        "loom/src/worker/semantic_worker.cpp:65",
+        "loom/src/worker/semantic_worker.cpp:33"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/worker/semantic_worker.cpp:47",
+      "destination_before": "pack: profiles/semantic_batch_providers.json"
+    },
+    "DIC-0175": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/worker.pack#/defaults/{submit_timeout_ms,poll_timeout_ms,results_timeout_ms}",
+      "notes": "All three timeout presets are data; API int representation bound is declared. Current evidence: loom/src/worker/semantic_worker.cpp:67, loom/src/worker/semantic_worker.cpp:146, loom/src/worker/semantic_worker.cpp:205.",
+      "current_evidence": [
+        "loom/src/worker/semantic_worker.cpp:67",
+        "loom/src/worker/semantic_worker.cpp:146",
+        "loom/src/worker/semantic_worker.cpp:205"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/worker/semantic_worker.cpp:49",
+      "destination_before": "pack: profiles/semantic_worker.json"
+    },
+    "DIC-0176": {
+      "status": "partially-migrated",
+      "destination": "loom/data/runtime/worker.pack#/defaults/{batch_output_tokens,batch_input_chars}; thread1 prompts API",
+      "notes": "Tokens/chars are data, but batch still concatenates kAnalysisPrompt directly. Shared prompt preview/hash/per-call API is not consumed; prompt owned thread1. Current evidence: loom/src/worker/semantic_worker.cpp:194, loom/src/worker/semantic_worker.cpp:196.",
+      "current_evidence": [
+        "loom/src/worker/semantic_worker.cpp:194",
+        "loom/src/worker/semantic_worker.cpp:196"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/worker/semantic_worker.cpp:175",
+      "destination_before": "pack: prompts analysis preset shared with semantic LLM"
+    },
+    "DIC-0177": {
+      "status": "partially-migrated",
+      "destination": "loom/data/runtime/worker.pack#/defaults/batch_estimate_per_message; thread2/7 pricing recipe",
+      "notes": "The old flat estimate is now configurable and remains a labeled estimate; no model/token/timestamp-specific pricing calculation or measured charge has been implemented. Current evidence: loom/src/worker/semantic_worker.cpp:216, loom/src/worker/semantic_worker.cpp:223.",
+      "current_evidence": [
+        "loom/src/worker/semantic_worker.cpp:216",
+        "loom/src/worker/semantic_worker.cpp:223"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/worker/semantic_worker.cpp:198",
+      "destination_before": "pack: policy/provider_pricing.json"
+    },
+    "DIC-0178": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/worker.pack#/defaults/{pause_poll_ms,error_backoff_ms}",
+      "notes": "Pause/error/exception waits read profile values and preserve cancellation predicates. Current evidence: loom/src/worker/semantic_worker.cpp:422, loom/src/worker/semantic_worker.cpp:432.",
+      "current_evidence": [
+        "loom/src/worker/semantic_worker.cpp:422",
+        "loom/src/worker/semantic_worker.cpp:432"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/worker/semantic_worker.cpp:378",
+      "destination_before": "pack: profiles/semantic_worker.json"
+    },
+    "DIC-0179": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/media.pack#/defaults/providers/groq/{format_map,default_format}",
+      "notes": "Overlayable format lookup and explicit configured fallback, including dictionary deletion via validated profile patch. Current evidence: loom/src/media/media_providers.cpp:130, loom/src/media/media_providers.cpp:132.",
+      "current_evidence": [
+        "loom/src/media/media_providers.cpp:130",
+        "loom/src/media/media_providers.cpp:132"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/media/media_providers.cpp:82",
+      "destination_before": "pack: profiles/media_providers.json"
+    },
+    "DIC-0180": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/media.pack#/defaults/providers/groq/{endpoint,response_format,timeout_ms}",
+      "notes": "Endpoint, response-format, headers and timeout selected from descriptor; multipart JSON parser is supported adapter capability. Current evidence: loom/src/media/media_providers.cpp:137, loom/src/media/media_providers.cpp:143, loom/src/media/media_providers.cpp:147.",
+      "current_evidence": [
+        "loom/src/media/media_providers.cpp:137",
+        "loom/src/media/media_providers.cpp:143",
+        "loom/src/media/media_providers.cpp:147"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/media/media_providers.cpp:97",
+      "destination_before": "pack: profiles/media_providers.json"
+    },
+    "DIC-0181": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/media.pack#/defaults/providers/groq/model",
+      "notes": "Constructor no longer embeds model-name default; optional explicit legacy model takes precedence over descriptor. Current evidence: loom/src/media/media_providers.cpp:120, loom/src/media/media_providers.cpp:122.",
+      "current_evidence": [
+        "loom/src/media/media_providers.cpp:120",
+        "loom/src/media/media_providers.cpp:122"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/include/loom/media_providers.h:88",
+      "destination_before": "pack: profiles/media_providers.json"
+    },
+    "DIC-0182": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/media.pack#/defaults/providers/groq/{placeholder_confidence,max_segments}",
+      "notes": "Both values moved to descriptor. Confidence remains explicitly described as a compatibility placeholder in pack/report, not a new measurement; legacy result JSON field shape is unchanged. Current evidence: loom/src/media/media_providers.cpp:160, loom/src/media/media_providers.cpp:164.",
+      "current_evidence": [
+        "loom/src/media/media_providers.cpp:160",
+        "loom/src/media/media_providers.cpp:164"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/media/media_providers.cpp:113",
+      "destination_before": "pack: policy/media_results.json"
+    },
+    "DIC-0183": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/media.pack#/defaults/providers/google/{encoding_map,default_encoding}",
+      "notes": "Encoding map and fallback are data, arbitrary aliases and removal supported. Current evidence: loom/src/media/media_providers.cpp:195, loom/src/media/media_providers.cpp:197.",
+      "current_evidence": [
+        "loom/src/media/media_providers.cpp:195",
+        "loom/src/media/media_providers.cpp:197"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/media/media_providers.cpp:141",
+      "destination_before": "pack: profiles/media_providers.json"
+    },
+    "DIC-0184": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/media.pack#/defaults/providers/google",
+      "notes": "Default language, alternatives, word flags, endpoint, timeout and headers all read descriptor. Current evidence: loom/src/media/media_providers.cpp:201, loom/src/media/media_providers.cpp:202, loom/src/media/media_providers.cpp:209.",
+      "current_evidence": [
+        "loom/src/media/media_providers.cpp:201",
+        "loom/src/media/media_providers.cpp:202",
+        "loom/src/media/media_providers.cpp:209"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/media/media_providers.cpp:148",
+      "destination_before": "pack: profiles/media_providers.json"
+    },
+    "DIC-0185": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/media.pack#/defaults/providers/ocr.space/{language_map,default_language}",
+      "notes": "No in-code language dictionary; provider IDs/fallback declared in data. Current evidence: loom/src/media/media_providers.cpp:265, loom/src/media/media_providers.cpp:267.",
+      "current_evidence": [
+        "loom/src/media/media_providers.cpp:265",
+        "loom/src/media/media_providers.cpp:267"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/media/media_providers.cpp:202",
+      "destination_before": "pack: profiles/media_providers.json"
+    },
+    "DIC-0186": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/media.pack#/defaults/providers/ocr.space",
+      "notes": "Engine, is_table/scale, endpoint/timeouts and headers are data; explicit engine constructor still wins. Current evidence: loom/src/media/media_providers.cpp:255, loom/src/media/media_providers.cpp:275, loom/src/media/media_providers.cpp:276.",
+      "current_evidence": [
+        "loom/src/media/media_providers.cpp:255",
+        "loom/src/media/media_providers.cpp:275",
+        "loom/src/media/media_providers.cpp:276"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/media/media_providers.cpp:216",
+      "destination_before": "pack: profiles/media_providers.json"
+    },
+    "DIC-0187": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/media.pack#/defaults/providers/ocr.space/{overlay_placeholder_confidence,text_placeholder_confidence}",
+      "notes": "Both priors moved. Comment/report/pack explicitly distinguish placeholders from provider observations; unchanged DTO still exposes legacy confidence field. Current evidence: loom/src/media/media_providers.cpp:332, loom/src/media/media_providers.cpp:334.",
+      "current_evidence": [
+        "loom/src/media/media_providers.cpp:332",
+        "loom/src/media/media_providers.cpp:334"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/media/media_providers.cpp:273",
+      "destination_before": "pack: policy/media_results.json"
+    },
+    "DIC-0188": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/media.pack#/defaults/{providers,asr_order,ocr_order,defaults_by_adapter}",
+      "notes": "Trusted factory registry supplies implemented adapters; descriptors select names, secret references/order. Arbitrary descriptors for implemented adapters supported, unknown adapters explicitly Unsupported. Current evidence: loom/src/media/media_providers.cpp:362, loom/src/media/media_providers.cpp:367, loom/src/media/media_providers.cpp:376, loom/src/media/media_providers.cpp:373.",
+      "current_evidence": [
+        "loom/src/media/media_providers.cpp:362",
+        "loom/src/media/media_providers.cpp:367",
+        "loom/src/media/media_providers.cpp:376",
+        "loom/src/media/media_providers.cpp:373"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/media/media_providers.cpp:294",
+      "destination_before": "pack: profiles/media_provider_registry.json"
+    },
+    "DIC-0189": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/media.pack#/defaults/error_body_chars",
+      "notes": "Error body excerpt size is profile setting; raw provider response handling remains local. Current evidence: loom/src/media/media_providers.cpp:152.",
+      "current_evidence": [
+        "loom/src/media/media_providers.cpp:152"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/media/media_providers.cpp:55",
+      "destination_before": "setting: media diagnostic projection"
+    },
+    "DIC-0190": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/github.pack#/defaults/{branch,sync_direction,auto_sync,include_patterns,exclude_patterns}",
+      "notes": "SyncConfig applies canonical profile; manager user overlay selects defaults. Explicit config vectors including empty remain authoritative; no token serialization. Current evidence: loom/src/github/github_sync.cpp:116, loom/src/github/github_sync.cpp:511, loom/src/github/github_sync.cpp:130.",
+      "current_evidence": [
+        "loom/src/github/github_sync.cpp:116",
+        "loom/src/github/github_sync.cpp:511",
+        "loom/src/github/github_sync.cpp:130"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/include/loom/github_sync.h:67",
+      "destination_before": "pack: profiles/github_sync.json"
+    },
+    "DIC-0191": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/github.pack#/defaults/base_url",
+      "notes": "kBaseUrl is compatibility view only; injected/manager-selected profile base_url is used by requests. Current evidence: loom/src/github/github_sync.cpp:193, loom/src/github/github_sync.cpp:186, loom/src/github/github_sync.cpp:207.",
+      "current_evidence": [
+        "loom/src/github/github_sync.cpp:193",
+        "loom/src/github/github_sync.cpp:186",
+        "loom/src/github/github_sync.cpp:207"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/include/loom/github_sync.h:81",
+      "destination_before": "pack: profiles/source_sync_providers.json"
+    },
+    "DIC-0192": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/github.pack#/defaults/{headers,authorization_template,secret_key}",
+      "notes": "Header map and inert authorization template are data; secret content stays in memory/secrets. Current evidence: loom/src/github/github_sync.cpp:171, loom/src/github/github_sync.cpp:177, loom/src/github/github_sync.cpp:549.",
+      "current_evidence": [
+        "loom/src/github/github_sync.cpp:171",
+        "loom/src/github/github_sync.cpp:177",
+        "loom/src/github/github_sync.cpp:549"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/github/github_sync.cpp:147",
+      "destination_before": "pack: profiles/source_sync_providers.json"
+    },
+    "DIC-0193": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/github.pack#/defaults/{connection_timeout_ms,request_timeout_ms}",
+      "notes": "Connection/list/fetch/push read profile timeout values. Current evidence: loom/src/github/github_sync.cpp:211, loom/src/github/github_sync.cpp:223.",
+      "current_evidence": [
+        "loom/src/github/github_sync.cpp:211",
+        "loom/src/github/github_sync.cpp:223"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/github/github_sync.cpp:169",
+      "destination_before": "pack: profiles/github_sync.json"
+    },
+    "DIC-0194": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/github.pack#/defaults/commit_message_template",
+      "notes": "Default commit text uses inert path template; explicit message including empty wins. Current evidence: loom/src/github/github_sync.cpp:410, loom/src/github/github_sync.cpp:412.",
+      "current_evidence": [
+        "loom/src/github/github_sync.cpp:410",
+        "loom/src/github/github_sync.cpp:412"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/github/github_sync.cpp:364",
+      "destination_before": "pack: profiles/github_sync.json"
+    },
+    "DIC-0195": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/net.pack#/defaults/default_timeout_ms",
+      "notes": "HttpRequest default and JSON omitted default use recipe, real policy resolves nonpositive explicit request to recipe default. Profile default=0 reaches native adapter; unbounded native timeout semantics are not claimed. Current evidence: loom/src/net/http_common.cpp:54, loom/src/net/http_common.cpp:93, loom/src/net/http_common.cpp:116.",
+      "current_evidence": [
+        "loom/src/net/http_common.cpp:54",
+        "loom/src/net/http_common.cpp:93",
+        "loom/src/net/http_common.cpp:116"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/net/http_common.cpp:60",
+      "destination_before": "setting: transport timeouts"
+    },
+    "DIC-0196": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/net.pack#/defaults/{ca_environment,proxy_environment}",
+      "notes": "Environment precedence and scheme-keyed proxy sources are data. TLS verification remains explicit engine invariant, trust root configurable via CA source. Current evidence: loom/src/net/http_common.cpp:105, loom/src/net/http_common.cpp:119, loom/src/net/http_common.cpp:120, loom/src/net/http_default.cpp:60.",
+      "current_evidence": [
+        "loom/src/net/http_common.cpp:105",
+        "loom/src/net/http_common.cpp:119",
+        "loom/src/net/http_common.cpp:120",
+        "loom/src/net/http_default.cpp:60"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/net/http_default.cpp:72",
+      "destination_before": "profile: transport environment integration"
+    },
+    "DIC-0197": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/net.pack#/defaults/{follow_redirects,keep_alive}",
+      "notes": "Both transport booleans are validated recipe settings used by native adapter. Current evidence: loom/src/net/http_common.cpp:117, loom/src/net/http_common.cpp:118, loom/src/net/http_default.cpp:78, loom/src/net/http_default.cpp:79.",
+      "current_evidence": [
+        "loom/src/net/http_common.cpp:117",
+        "loom/src/net/http_common.cpp:118",
+        "loom/src/net/http_default.cpp:78",
+        "loom/src/net/http_default.cpp:79"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/net/http_default.cpp:91",
+      "destination_before": "profile: transport behavior"
+    },
+    "DIC-0198": {
+      "status": "retained-wire",
+      "destination": "HTTP/URI protocol contract, no preset migration",
+      "notes": "80/443 default ports, 16-bit port representation and hexadecimal escaping alphabet remain wire constants; not a consumption cap. Current evidence: loom/src/net/http_common.cpp:161, loom/src/net/http_common.cpp:165, loom/src/net/http_common.cpp:171.",
+      "current_evidence": [
+        "loom/src/net/http_common.cpp:161",
+        "loom/src/net/http_common.cpp:165",
+        "loom/src/net/http_common.cpp:171"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/net/http_common.cpp:104",
+      "destination_before": "retain: HTTP wire standard"
+    },
+    "DIC-0199": {
+      "status": "retained-wire",
+      "destination": "SSE grammar + existing OpenAI-style is_done wire extension",
+      "notes": "BOM, SSE reserved field names/newlines remain grammar. [DONE] is existing adapter extension in is_done, not configurable generic SSE termination; changing it would require versioned/additive API. Current evidence: loom/src/net/sse.cpp:7, loom/src/net/sse.cpp:14, loom/src/net/sse.cpp:38.",
+      "current_evidence": [
+        "loom/src/net/sse.cpp:7",
+        "loom/src/net/sse.cpp:14",
+        "loom/src/net/sse.cpp:38"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/src/net/sse.cpp:7",
+      "destination_before": "retain: SSE grammar; profile done sentinel if protocol extended"
+    },
+    "DIC-0500": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/cli.pack#/defaults/help",
+      "notes": "kUsage removed; full legacy help/examples/format labels now data blob rendered from selected CLI profile. Other per-operation English diagnostics are not claimed migrated by this finding. Current evidence: loom/cli/main.cpp:1091, loom/cli/main.cpp:1110.",
+      "current_evidence": [
+        "loom/cli/main.cpp:1091",
+        "loom/cli/main.cpp:1110"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/cli/main.cpp:51",
+      "destination_before": "loom/data/profiles/cli.json + localized help data"
+    },
+    "DIC-0501": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/cli.pack#/defaults/flags",
+      "notes": "Parser arity for booleans comes from profile flags collection; value-taking options follow generic parser. Current evidence: loom/cli/main.cpp:99, loom/cli/main.cpp:1116, loom/cli/main.cpp:1117.",
+      "current_evidence": [
+        "loom/cli/main.cpp:99",
+        "loom/cli/main.cpp:1116",
+        "loom/cli/main.cpp:1117"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/cli/main.cpp:131",
+      "destination_before": "CLI command schema/profile"
+    },
+    "DIC-0502": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/cli.pack#/defaults/presentation",
+      "notes": "Widths, timestamp prefix lengths, hash_chars, ellipsis and decimal scale now profile data; UTF8 prefix and round are universal operations. Current evidence: loom/cli/main.cpp:56, loom/cli/main.cpp:59, loom/cli/main.cpp:142, loom/cli/main.cpp:496, loom/cli/main.cpp:691.",
+      "current_evidence": [
+        "loom/cli/main.cpp:56",
+        "loom/cli/main.cpp:59",
+        "loom/cli/main.cpp:142",
+        "loom/cli/main.cpp:496",
+        "loom/cli/main.cpp:691"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/cli/main.cpp:203",
+      "destination_before": "CLI presentation preset"
+    },
+    "DIC-0503": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/cli.pack#/defaults/limits",
+      "notes": "All enumerated listing/search limits resolve CLI profile and explicit --limit wins. Data limits remain independent transport presets, not fixed C++ maxima. Current evidence: loom/cli/main.cpp:210, loom/cli/main.cpp:231, loom/cli/main.cpp:416, loom/cli/main.cpp:631, loom/cli/main.cpp:965.",
+      "current_evidence": [
+        "loom/cli/main.cpp:210",
+        "loom/cli/main.cpp:231",
+        "loom/cli/main.cpp:416",
+        "loom/cli/main.cpp:631",
+        "loom/cli/main.cpp:965"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/cli/main.cpp:282",
+      "destination_before": "CLI operation preset/config"
+    },
+    "DIC-0504": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/cli.pack#/defaults/creation/conversation_title",
+      "notes": "Fallback title is profile value; supplied title bytes passed verbatim. Current evidence: loom/cli/main.cpp:240.",
+      "current_evidence": [
+        "loom/cli/main.cpp:240"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/cli/main.cpp:291",
+      "destination_before": "CLI locale/profile data"
+    },
+    "DIC-0505": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/cli.pack#/defaults/creation/export_format",
+      "notes": "CLI export default now data with explicit --format override. HTTP/exporter format capabilities owned elsewhere unchanged. Current evidence: loom/cli/main.cpp:398.",
+      "current_evidence": [
+        "loom/cli/main.cpp:398"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/cli/main.cpp:449",
+      "destination_before": "CLI/export transport preset"
+    },
+    "DIC-0506": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/cli.pack#/defaults/limits/{graph_expansion_depth,chat_depth,context_depth,context_tokens}; thread3 shared request presets",
+      "notes": "CLI profile owns the graph/context/chat depth and budget preset precedence; explicitly omitted chat fields let shared APIs choose their own defaults. Graph/context CLI defaults are intentional independent presets, configurable in cli.pack rather than inherited implicitly from selector data. Root confirmed this intended contract. Current evidence: loom/cli/main.cpp:315, loom/cli/main.cpp:438, loom/cli/main.cpp:474, loom/cli/main.cpp:475.",
+      "current_evidence": [
+        "loom/cli/main.cpp:315",
+        "loom/cli/main.cpp:438",
+        "loom/cli/main.cpp:474",
+        "loom/cli/main.cpp:475"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/cli/main.cpp:489",
+      "destination_before": "CLI contextual operation presets"
+    },
+    "DIC-0507": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/cli.pack#/defaults/creation/memory_node_type; loom/data/runtime/memory.pack default_node_type integration",
+      "notes": "CLI memory creation type is configurable in cli.pack creation.memory_node_type and overridden by --type. This is an intentional independent CLI preset with explicit API precedence, not implicit inheritance from memory.pack. Root confirmed this intended contract. Current evidence: loom/cli/main.cpp:544.",
+      "current_evidence": [
+        "loom/cli/main.cpp:544"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/cli/main.cpp:589",
+      "destination_before": "Memory/CLI preset"
+    },
+    "DIC-0508": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/cli.pack#/defaults/limits/task_resume_scan",
+      "notes": "Old1000 resume scan is configurable profile preset and --limit. One scan remains, not complete pagination; this finding permits explicit exposed total instead of all-task traversal. Current evidence: loom/cli/main.cpp:654.",
+      "current_evidence": [
+        "loom/cli/main.cpp:654"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/cli/main.cpp:699",
+      "destination_before": "task resume settings/preset"
+    },
+    "DIC-0509": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/cli.pack#/defaults/graph_stats",
+      "notes": "Selected stats IDs come from data and execute trusted prepared-SQL registry; unsupported ID explicit Unavailable. SQL tables are structural capabilities. Current evidence: loom/cli/main.cpp:446, loom/cli/main.cpp:449, loom/cli/main.cpp:452.",
+      "current_evidence": [
+        "loom/cli/main.cpp:446",
+        "loom/cli/main.cpp:449",
+        "loom/cli/main.cpp:452"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/cli/main.cpp:497",
+      "destination_before": "stats profile/catalog of available metrics"
+    },
+    "DIC-0510": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/cli.pack#/defaults/limits/catalog_eval_scan",
+      "notes": "Old1M query limit moved to preset and explicit --limit. Eval remains one query and does not report queried/total catalog coverage; truth denominator is reported. Adjustable cap resolved, coverage reporting remains separate quality follow-up. Current evidence: loom/cli/main.cpp:882, loom/cli/main.cpp:884, loom/cli/main.cpp:921.",
+      "current_evidence": [
+        "loom/cli/main.cpp:882",
+        "loom/cli/main.cpp:884",
+        "loom/cli/main.cpp:921"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/cli/main.cpp:925",
+      "destination_before": "CLI eval settings/preset"
+    },
+    "DIC-0511": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/cli.pack#/defaults/evaluation",
+      "notes": "Truth cohort paths and external-ID key come from recipe; confusion calculations operate on selected cohorts. Current evidence: loom/cli/main.cpp:877, loom/cli/main.cpp:878, loom/cli/main.cpp:904, loom/cli/main.cpp:909, loom/cli/main.cpp:911, loom/cli/main.cpp:913.",
+      "current_evidence": [
+        "loom/cli/main.cpp:877",
+        "loom/cli/main.cpp:878",
+        "loom/cli/main.cpp:904",
+        "loom/cli/main.cpp:909",
+        "loom/cli/main.cpp:911",
+        "loom/cli/main.cpp:913"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/cli/main.cpp:952",
+      "destination_before": "evaluation schema/profile"
+    },
+    "DIC-0512": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/cli.pack#/defaults/{limits/catalog_watch_seconds,watch/sleep_slice_ms}",
+      "notes": "Both interval300sec and cancellation sleep1000ms are data presets; --interval overrides the period, slice is truncated to remaining time. The positive integer-seconds and duration requirements are API/arithmetic validity, not a product budget ceiling. Unit conversion constants remain representation operations. Current evidence: loom/cli/main.cpp:1012, loom/cli/main.cpp:1013, loom/cli/main.cpp:1027, loom/cli/main.cpp:1029, loom/data/runtime/cli.pack:195, loom/data/runtime/cli.pack:1432.",
+      "current_evidence": [
+        "loom/cli/main.cpp:1012",
+        "loom/cli/main.cpp:1013",
+        "loom/cli/main.cpp:1027",
+        "loom/cli/main.cpp:1029",
+        "loom/data/runtime/cli.pack:195",
+        "loom/data/runtime/cli.pack:1432"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/cli/main.cpp:1052",
+      "destination_before": "watch runtime settings/preset"
+    },
+    "DIC-0513": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/cli.pack#/defaults/logging",
+      "notes": "Default severity, alias vocabulary and fallback are data; fallback must be registered. Unknown-name fallback behavior remains configurable for exact legacy defaults. Current evidence: loom/cli/main.cpp:1135, loom/cli/main.cpp:1136, loom/cli/main.cpp:1138, loom/cli/main.cpp:1140.",
+      "current_evidence": [
+        "loom/cli/main.cpp:1135",
+        "loom/cli/main.cpp:1136",
+        "loom/cli/main.cpp:1138",
+        "loom/cli/main.cpp:1140"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/cli/main.cpp:1101",
+      "destination_before": "CLI logging preset + shared log-level descriptors"
+    },
+    "DIC-0514": {
+      "status": "migrated",
+      "destination": "loom/data/runtime/cli.pack#/defaults/{commands,subcommands}; trusted CLI handler registry",
+      "notes": "Top-level name aliases and subcommand aliases resolve from profile; dispatch now handler registry for top-level methods. Canonical subcommand branches remain trusted capability IDs, not user-editable policy or invented support. Current evidence: loom/cli/main.cpp:1113, loom/cli/main.cpp:1160, loom/cli/main.cpp:1164, loom/cli/main.cpp:1186.",
+      "current_evidence": [
+        "loom/cli/main.cpp:1113",
+        "loom/cli/main.cpp:1160",
+        "loom/cli/main.cpp:1164",
+        "loom/cli/main.cpp:1186"
+      ],
+      "review_fragment": "migration-status-worker-media-github-cli.json",
+      "inventory_source": "loom/cli/main.cpp:1168",
+      "destination_before": "command metadata in CLI profile, executable handler registry in code"
+    }
+  }
+}

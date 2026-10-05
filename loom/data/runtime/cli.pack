@@ -568,42 +568,47 @@
               "default": {
                 "type": "integer",
                 "minimum": 0,
-                "maximum": 2147483647,
+                "maximum": 18446744073709551615,
                 "title": "default",
                 "x-setting": "/presentation/widths/default",
-                "x-consumer": "cli"
+                "x-consumer": "cli",
+                "description": "Native size_t representation is additionally checked by the CLI consumer; no presentation policy ceiling."
               },
               "short": {
                 "type": "integer",
                 "minimum": 0,
-                "maximum": 2147483647,
+                "maximum": 18446744073709551615,
                 "title": "short",
                 "x-setting": "/presentation/widths/short",
-                "x-consumer": "cli"
+                "x-consumer": "cli",
+                "description": "Native size_t representation is additionally checked by the CLI consumer; no presentation policy ceiling."
               },
               "wide": {
                 "type": "integer",
                 "minimum": 0,
-                "maximum": 2147483647,
+                "maximum": 18446744073709551615,
                 "title": "wide",
                 "x-setting": "/presentation/widths/wide",
-                "x-consumer": "cli"
+                "x-consumer": "cli",
+                "description": "Native size_t representation is additionally checked by the CLI consumer; no presentation policy ceiling."
               },
               "brief": {
                 "type": "integer",
                 "minimum": 0,
-                "maximum": 2147483647,
+                "maximum": 18446744073709551615,
                 "title": "brief",
                 "x-setting": "/presentation/widths/brief",
-                "x-consumer": "cli"
+                "x-consumer": "cli",
+                "description": "Native size_t representation is additionally checked by the CLI consumer; no presentation policy ceiling."
               },
               "summary": {
                 "type": "integer",
                 "minimum": 0,
-                "maximum": 2147483647,
+                "maximum": 18446744073709551615,
                 "title": "summary",
                 "x-setting": "/presentation/widths/summary",
-                "x-consumer": "cli"
+                "x-consumer": "cli",
+                "description": "Native size_t representation is additionally checked by the CLI consumer; no presentation policy ceiling."
               }
             },
             "additionalProperties": false,
@@ -624,42 +629,47 @@
               "conversation": {
                 "type": "integer",
                 "minimum": 0,
-                "maximum": 2147483647,
+                "maximum": 18446744073709551615,
                 "title": "conversation",
                 "x-setting": "/presentation/timestamps/conversation",
-                "x-consumer": "cli"
+                "x-consumer": "cli",
+                "description": "Native size_t representation is additionally checked by the CLI consumer; no presentation policy ceiling."
               },
               "message": {
                 "type": "integer",
                 "minimum": 0,
-                "maximum": 2147483647,
+                "maximum": 18446744073709551615,
                 "title": "message",
                 "x-setting": "/presentation/timestamps/message",
-                "x-consumer": "cli"
+                "x-consumer": "cli",
+                "description": "Native size_t representation is additionally checked by the CLI consumer; no presentation policy ceiling."
               },
               "task": {
                 "type": "integer",
                 "minimum": 0,
-                "maximum": 2147483647,
+                "maximum": 18446744073709551615,
                 "title": "task",
                 "x-setting": "/presentation/timestamps/task",
-                "x-consumer": "cli"
+                "x-consumer": "cli",
+                "description": "Native size_t representation is additionally checked by the CLI consumer; no presentation policy ceiling."
               },
               "artifact": {
                 "type": "integer",
                 "minimum": 0,
-                "maximum": 2147483647,
+                "maximum": 18446744073709551615,
                 "title": "artifact",
                 "x-setting": "/presentation/timestamps/artifact",
-                "x-consumer": "cli"
+                "x-consumer": "cli",
+                "description": "Native size_t representation is additionally checked by the CLI consumer; no presentation policy ceiling."
               },
               "date": {
                 "type": "integer",
                 "minimum": 0,
-                "maximum": 2147483647,
+                "maximum": 18446744073709551615,
                 "title": "date",
                 "x-setting": "/presentation/timestamps/date",
-                "x-consumer": "cli"
+                "x-consumer": "cli",
+                "description": "Native size_t representation is additionally checked by the CLI consumer; no presentation policy ceiling."
               }
             },
             "additionalProperties": false,
@@ -670,10 +680,11 @@
           "hash_chars": {
             "type": "integer",
             "minimum": 0,
-            "maximum": 2147483647,
+            "maximum": 18446744073709551615,
             "title": "hash chars",
             "x-setting": "/presentation/hash_chars",
-            "x-consumer": "cli"
+            "x-consumer": "cli",
+            "description": "Native size_t representation is additionally checked by the CLI consumer; no presentation policy ceiling."
           },
           "ellipsis": {
             "type": "string",
@@ -683,10 +694,11 @@
           },
           "score_decimal_scale": {
             "type": "number",
-            "minimum": 1e-300,
+            "minimum": 0,
             "title": "score decimal scale",
             "x-setting": "/presentation/score_decimal_scale",
-            "x-consumer": "cli"
+            "x-consumer": "cli",
+            "description": "CLI additionally requires a finite strictly positive native double; all positive representable values are accepted."
           }
         },
         "additionalProperties": false,
