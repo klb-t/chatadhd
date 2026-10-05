@@ -1,0 +1,119 @@
+{
+  "source": "/workspace/scratch/2a6e71927cf3/w8-w10-validation",
+  "preset": "vendored",
+  "explicit_environment": {
+    "LD_LIBRARY_PATH": "/workspace/scratch/2a6e71927cf3/toolchain/usr/lib/x86_64-linux-gnu"
+  },
+  "commands": [
+    {
+      "argv": [
+        "python3",
+        "/workspace/scratch/2a6e71927cf3/w8-w10-validation/.github/scripts/write_build_receipt.py",
+        "--preset",
+        "vendored",
+        "--cmake-cache",
+        "/workspace/scratch/2a6e71927cf3/w8-w10-validation/loom/build/vendored/CMakeCache.txt",
+        "--output",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/docs/verification/repo-hygiene-matrix-2026-10-05/clang-final/build-receipt.json",
+        "--cmake-field",
+        "CMAKE_GENERATOR",
+        "--cmake-field",
+        "CMAKE_BUILD_TYPE",
+        "--cmake-field",
+        "CMAKE_C_COMPILER",
+        "--cmake-field",
+        "CMAKE_CXX_COMPILER",
+        "--cmake-field",
+        "CMAKE_C_FLAGS",
+        "--cmake-field",
+        "CMAKE_C_FLAGS_DEBUG",
+        "--cmake-field",
+        "CMAKE_CXX_FLAGS",
+        "--cmake-field",
+        "CMAKE_CXX_FLAGS_DEBUG",
+        "--cmake-field",
+        "CMAKE_AR",
+        "--cmake-field",
+        "CMAKE_EXE_LINKER_FLAGS",
+        "--cmake-field",
+        "CMAKE_SHARED_LINKER_FLAGS",
+        "--cmake-field",
+        "LOOM_USE_SYSTEM_SQLITE",
+        "--cmake-field",
+        "LOOM_SHARED",
+        "--cmake-field",
+        "LOOM_WERROR",
+        "--cmake-field",
+        "LOOM_BUILD_SERVER",
+        "--cmake-field",
+        "CMAKE_C_ARCHIVE_CREATE",
+        "--cmake-field",
+        "CMAKE_CXX_ARCHIVE_CREATE",
+        "--binary",
+        "/workspace/scratch/2a6e71927cf3/w8-w10-validation/loom/build/vendored/loom_tests",
+        "--binary",
+        "/workspace/scratch/2a6e71927cf3/w8-w10-validation/loom/build/vendored/loom_compat_tool",
+        "--binary",
+        "/workspace/scratch/2a6e71927cf3/w8-w10-validation/loom/build/vendored/loom_candidate_graph_native_tool",
+        "--binary",
+        "/workspace/scratch/2a6e71927cf3/w8-w10-validation/loom/build/vendored/cli/loom",
+        "--binary",
+        "/workspace/scratch/2a6e71927cf3/w8-w10-validation/loom/build/vendored/server/loom-server",
+        "--binary",
+        "/workspace/scratch/2a6e71927cf3/w8-w10-validation/loom/build/vendored/libloom.so"
+      ],
+      "cwd": "/workspace/scratch/2a6e71927cf3/w8-w10-validation",
+      "started_at_utc": "2026-10-05T15:11:05.129605+00:00",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "ctest",
+        "--preset",
+        "vendored",
+        "--show-only=json-v1"
+      ],
+      "cwd": "/workspace/scratch/2a6e71927cf3/w8-w10-validation/loom",
+      "started_at_utc": "2026-10-05T15:11:05.920654+00:00",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "ctest",
+        "--preset",
+        "vendored",
+        "--no-tests=error",
+        "--test-output-size-passed",
+        "10485760",
+        "--test-output-size-failed",
+        "10485760",
+        "--output-junit",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/docs/verification/repo-hygiene-matrix-2026-10-05/clang-final/ctest.xml",
+        "--parallel",
+        "4"
+      ],
+      "cwd": "/workspace/scratch/2a6e71927cf3/w8-w10-validation/loom",
+      "started_at_utc": "2026-10-05T15:11:06.032976+00:00",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "python3",
+        "/workspace/scratch/2a6e71927cf3/w8-w10-validation/.github/scripts/verify_ctest.py",
+        "--policy",
+        "/workspace/scratch/2a6e71927cf3/w8-w10-validation/.github/ctest-evidence-policy.json",
+        "--preset",
+        "vendored",
+        "--manifest",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/docs/verification/repo-hygiene-matrix-2026-10-05/clang-final/ctest-manifest.json",
+        "--junit",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/docs/verification/repo-hygiene-matrix-2026-10-05/clang-final/ctest.xml",
+        "--output",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/docs/verification/repo-hygiene-matrix-2026-10-05/clang-final/executed-cases.json"
+      ],
+      "cwd": "/workspace/scratch/2a6e71927cf3/w8-w10-validation",
+      "started_at_utc": "2026-10-05T15:14:14.336198+00:00",
+      "exit_code": 0
+    }
+  ]
+}

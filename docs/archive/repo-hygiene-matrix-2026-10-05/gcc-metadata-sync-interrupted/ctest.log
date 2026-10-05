@@ -1,0 +1,45 @@
+Test project /workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev
+        Start  93: compat.test_graph_packet_store
+        Start  54: unit.test_import_stream
+        Start 105: research.contracts
+        Start 101: research.structure
+  1/110 Test #105: research.contracts .................................   Passed   21.15 sec
+        Start  32: unit.test_context_diagnostics
+  2/110 Test #101: research.structure .................................   Passed   28.21 sec
+        Start  33: unit.test_context_engine
+  3/110 Test  #32: unit.test_context_diagnostics ......................   Passed   10.57 sec
+        Start  89: compat.test_crypto_compat
+  4/110 Test  #54: unit.test_import_stream ............................   Passed   35.20 sec
+        Start   9: unit.test_catalog_links
+  5/110 Test  #33: unit.test_context_engine ...........................   Passed   11.04 sec
+        Start  18: unit.test_chat_active_task_durable_audit
+  6/110 Test  #89: compat.test_crypto_compat ..........................   Passed   10.14 sec
+        Start  56: unit.test_knowledge
+  7/110 Test   #9: unit.test_catalog_links ............................   Passed    7.29 sec
+        Start  55: unit.test_kb_pack
+  8/110 Test  #18: unit.test_chat_active_task_durable_audit ...........   Passed    7.71 sec
+        Start  14: unit.test_chat_active_task_acceptance_scale
+  9/110 Test  #56: unit.test_knowledge ................................   Passed    6.59 sec
+        Start  98: compat.test_semantic_compat
+ 10/110 Test  #55: unit.test_kb_pack ..................................   Passed    7.56 sec
+        Start  75: unit.test_resolve_attribution
+ 11/110 Test  #14: unit.test_chat_active_task_acceptance_scale ........   Passed    5.43 sec
+        Start  96: compat.test_packet
+ 12/110 Test  #98: compat.test_semantic_compat ........................   Passed    4.72 sec
+        Start  87: compat.test_chat_compat
+ 13/110 Test  #75: unit.test_resolve_attribution ......................   Passed    4.19 sec
+        Start   3: unit.test_capi
+ 14/110 Test  #87: compat.test_chat_compat ............................   Passed    3.31 sec
+        Start 106: research.seeding
+ 15/110 Test   #3: unit.test_capi .....................................   Passed    2.72 sec
+        Start  61: unit.test_knowledge_semantic_graph
+ 16/110 Test  #96: compat.test_packet .................................   Passed    6.36 sec
+        Start  46: unit.test_generalize
+ 17/110 Test  #61: unit.test_knowledge_semantic_graph .................   Passed    3.71 sec
+        Start  99: compat.test_semantic_recovery
+ 18/110 Test  #46: unit.test_generalize ...............................   Passed    3.03 sec
+        Start  26: unit.test_chat_knowledge_context
+ 19/110 Test  #99: compat.test_semantic_recovery ......................   Passed    2.22 sec
+        Start  40: unit.test_crypto
+ 20/110 Test  #26: unit.test_chat_knowledge_context ...................   Passed    2.90 sec
+        Start  30: unit.test_context_controls
