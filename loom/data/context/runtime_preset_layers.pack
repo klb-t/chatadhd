@@ -1,0 +1,100 @@
+{
+  "schema": "loom.runtime_preset_layer_bindings/1",
+  "domains": {
+    "chat_reasoning": [
+      {
+        "pointer": "/thinking_indicators",
+        "id": "default:chat_reasoning:thinking_indicators",
+        "key": "chat.reasoning.thinking_indicators",
+        "area": "chat.reasoning",
+        "revision": 1
+      },
+      {
+        "pointer": "/budget_model_markers",
+        "id": "default:chat_reasoning:budget_model_markers",
+        "key": "chat.reasoning.budget_model_markers",
+        "area": "chat.reasoning",
+        "revision": 1
+      },
+      {
+        "pointer": "/budget_by_effort",
+        "id": "default:chat_reasoning:budget_by_effort",
+        "key": "chat.reasoning.budget_by_effort",
+        "area": "chat.reasoning",
+        "revision": 1
+      },
+      {
+        "pointer": "/unknown_effort_budget",
+        "id": "default:chat_reasoning:unknown_effort_budget",
+        "key": "chat.reasoning.unknown_effort_budget",
+        "area": "chat.reasoning",
+        "revision": 1
+      },
+      {
+        "pointer": "/adaptive_effort",
+        "id": "default:chat_reasoning:adaptive_effort",
+        "key": "chat.reasoning.adaptive_effort",
+        "area": "chat.reasoning",
+        "revision": 1
+      },
+      {
+        "pointer": "/verbosity_effort",
+        "id": "default:chat_reasoning:verbosity_effort",
+        "key": "chat.reasoning.verbosity_effort",
+        "area": "chat.reasoning",
+        "revision": 1
+      },
+      {
+        "pointer": "/verbosity_value",
+        "id": "default:chat_reasoning:verbosity_value",
+        "key": "chat.reasoning.verbosity_value",
+        "area": "chat.reasoning",
+        "revision": 1
+      }
+    ],
+    "context_goal_cues": [
+      {
+        "pointer": "/cue_weight_base",
+        "id": "default:context_goal_cues:cue_weight_base",
+        "key": "context.goal_cues.cue_weight_base",
+        "area": "context.goal_cues",
+        "revision": 1
+      },
+      {
+        "pointer": "/cue_weight_per_additional_word",
+        "id": "default:context_goal_cues:cue_weight_per_additional_word",
+        "key": "context.goal_cues.cue_weight_per_additional_word",
+        "area": "context.goal_cues",
+        "revision": 1
+      },
+      {
+        "pointer": "/no_cue_confidence",
+        "id": "default:context_goal_cues:no_cue_confidence",
+        "key": "context.goal_cues.no_cue_confidence",
+        "area": "context.goal_cues",
+        "revision": 1
+      },
+      {
+        "pointer": "/confidence_denominator_offset",
+        "id": "default:context_goal_cues:confidence_denominator_offset",
+        "key": "context.goal_cues.confidence_denominator_offset",
+        "area": "context.goal_cues",
+        "revision": 1
+      },
+      {
+        "pointer": "/fallback_goal_type",
+        "id": "default:context_goal_cues:fallback_goal_type",
+        "key": "context.goal_cues.fallback_goal_type",
+        "area": "context.goal_cues",
+        "revision": 1
+      },
+      {
+        "pointer": "/fallback_when_unavailable",
+        "id": "default:context_goal_cues:fallback_when_unavailable",
+        "key": "context.goal_cues.fallback_when_unavailable",
+        "area": "context.goal_cues",
+        "revision": 1
+      }
+    ]
+  }
+}
