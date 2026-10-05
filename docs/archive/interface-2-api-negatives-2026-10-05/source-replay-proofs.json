@@ -1,0 +1,422 @@
+[
+  {
+    "case": "profile-selection",
+    "path": "loom/server/src/method-ui-routes.h",
+    "classification": "reconstructed_exact_historical_hash; also identical original copy retained",
+    "current_sha256": "c17121a486a67c1060d7faaf034fde6911b217bca893added7fc637cbced6476",
+    "replay_sha256": "c4536a08af3cbb93cf6842adc7e9d37b3acd11c8db12c468bfc7318004294f64",
+    "historical_expected_sha256": "c4536a08af3cbb93cf6842adc7e9d37b3acd11c8db12c468bfc7318004294f64",
+    "hash_verified": true
+  },
+  {
+    "case": "config-order",
+    "path": "loom/server/src/app.cpp",
+    "classification": "reconstructed_exact_historical_hash",
+    "current_sha256": "3ffc188f0f5babf8ee1ca75d8ef4c11397d7cae0262fbdf0bb6eaf83321e0f4c",
+    "replay_sha256": "c34705e78485d980656898dd3b27c13788bae200602b97dd8da3c298a1251ebd",
+    "historical_expected_sha256": "c34705e78485d980656898dd3b27c13788bae200602b97dd8da3c298a1251ebd",
+    "hash_verified": true
+  },
+  {
+    "case": "onboarding-optional-foundation-test",
+    "path": "loom/web/e2e/onboarding-native.mjs",
+    "classification": "reconstructed_exact_historical_hash",
+    "current_sha256": "6f08cc88a5cac46b8a64044208d27c7baebd029b0792b4b831afcfe3b2125be4",
+    "replay_sha256": "680d23874746d2f3a1df3d963c26f2dd9742b3c371d845f48a025818c8aa216c",
+    "historical_expected_sha256": "680d23874746d2f3a1df3d963c26f2dd9742b3c371d845f48a025818c8aa216c",
+    "hash_verified": true
+  },
+  {
+    "case": "onboarding-network-409",
+    "path": "loom/web/src/api/onboarding-host.ts",
+    "classification": "behavior_reconstruction_only; original source not retained and no original source hash",
+    "current_sha256": "159e9cd86a6651fb201b70812a884294306cba3664f1f01d46fe43590c2db3b0",
+    "replay_sha256": "b0b4b00adc732c7fe16e484d10607dca12859eb1020788e8799670d96eb6cfd4",
+    "historical_expected_sha256": null,
+    "hash_verified": false
+  },
+  {
+    "case": "methods-ui-native-attempt-001",
+    "path": "loom/server/src/app.cpp",
+    "historical_expected_sha256": "c34705e78485d980656898dd3b27c13788bae200602b97dd8da3c298a1251ebd",
+    "classification": "reconstructed_exact_historical_hash",
+    "archive_path": "replay/historical-hash-matches/c34705e78485d980656898dd3b27c13788bae200602b97dd8da3c298a1251ebd/app.cpp",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-001",
+    "path": "loom/server/src/native-ui-common.h",
+    "historical_expected_sha256": "4f23c5706c992a8a999c3e84971df4be8f3b09928e1114dc557eae057aef5e40",
+    "classification": "current_copy_matches_original_receipt_hash",
+    "archive_path": "replay/historical-hash-matches/4f23c5706c992a8a999c3e84971df4be8f3b09928e1114dc557eae057aef5e40/native-ui-common.h",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-001",
+    "path": "loom/server/src/method-ui-routes.h",
+    "historical_expected_sha256": "c4536a08af3cbb93cf6842adc7e9d37b3acd11c8db12c468bfc7318004294f64",
+    "classification": "retained_original_source",
+    "archive_path": "replay/historical-hash-matches/c4536a08af3cbb93cf6842adc7e9d37b3acd11c8db12c468bfc7318004294f64/method-ui-routes.h",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-001",
+    "path": "loom/src/context/method_registry.cpp",
+    "historical_expected_sha256": "445e67cc02381392e23e348dda5b3d37f3dac47b4312d71c3b5ceab529c54188",
+    "classification": "current_copy_matches_original_receipt_hash",
+    "archive_path": "replay/historical-hash-matches/445e67cc02381392e23e348dda5b3d37f3dac47b4312d71c3b5ceab529c54188/method_registry.cpp",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-001",
+    "path": "loom/src/packet/METHOD_GRAPH.md",
+    "historical_expected_sha256": "ce7d81f2157a4767f8cd8211fb8b625e621ae4d67d9fa3f1d28dfc0d3dd041b8",
+    "classification": "current_copy_matches_original_receipt_hash",
+    "archive_path": "replay/historical-hash-matches/ce7d81f2157a4767f8cd8211fb8b625e621ae4d67d9fa3f1d28dfc0d3dd041b8/METHOD_GRAPH.md",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-001",
+    "path": "loom/web/src/api/loom-http.ts",
+    "historical_expected_sha256": "ea8b6601f749704413053de62002e59b0b2d50e3b1d558981072cd8bf80c859f",
+    "classification": "current_copy_matches_original_receipt_hash",
+    "archive_path": "replay/historical-hash-matches/ea8b6601f749704413053de62002e59b0b2d50e3b1d558981072cd8bf80c859f/loom-http.ts",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-001",
+    "path": "loom/web/src/components/MethodsPanel.tsx",
+    "historical_expected_sha256": "bdc86f89cf8f7723912b9cbf2a843969421dd4f593850c86084d3a3f61a6c79d",
+    "classification": "current_copy_matches_original_receipt_hash",
+    "archive_path": "replay/historical-hash-matches/bdc86f89cf8f7723912b9cbf2a843969421dd4f593850c86084d3a3f61a6c79d/MethodsPanel.tsx",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-001",
+    "path": "loom/web/src/components/methods-panel.css",
+    "historical_expected_sha256": "cf5fa71e1214ad02b807fc3064f6698681891b53b60ad2fda556ddfb9e456f59",
+    "classification": "current_copy_matches_original_receipt_hash",
+    "archive_path": "replay/historical-hash-matches/cf5fa71e1214ad02b807fc3064f6698681891b53b60ad2fda556ddfb9e456f59/methods-panel.css",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-001",
+    "path": "loom/web/src/methods/graph-methods.ts",
+    "historical_expected_sha256": "192d31df65a1ea34255449f53135efcde0475bcc80bba41ceae86576ec4da690",
+    "classification": "current_copy_matches_original_receipt_hash",
+    "archive_path": "replay/historical-hash-matches/192d31df65a1ea34255449f53135efcde0475bcc80bba41ceae86576ec4da690/graph-methods.ts",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-001",
+    "path": "loom/web/e2e/methods-ui.mjs",
+    "historical_expected_sha256": "494ef23066b754d4bb913a0e61bf8f0326577cfd30da1116de17856cfb2a5b40",
+    "classification": "missing_original_source_bytes",
+    "archive_path": null,
+    "hash_verified": false
+  },
+  {
+    "case": "methods-ui-native-attempt-001",
+    "path": "loom/src/packet/tests/method-registry-variants/canonical-w3-export.json.gz",
+    "historical_expected_sha256": "ead6f775a2bc0bcf94deed3c9e3726c317565b8d8daa95447e09792ca23574a7",
+    "classification": "current_copy_matches_original_receipt_hash",
+    "archive_path": "replay/historical-hash-matches/ead6f775a2bc0bcf94deed3c9e3726c317565b8d8daa95447e09792ca23574a7/canonical-w3-export.json.gz",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-001",
+    "path": "loom/src/packet/tests/method-registry-variants/nested-combination.json.gz",
+    "historical_expected_sha256": "90869ba396f6c2eab46c3cf3687e45f58b4becf74d17bfedcb357b491a1fdc0c",
+    "classification": "current_copy_matches_original_receipt_hash",
+    "archive_path": "replay/historical-hash-matches/90869ba396f6c2eab46c3cf3687e45f58b4becf74d17bfedcb357b491a1fdc0c/nested-combination.json.gz",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-002",
+    "path": "loom/server/src/app.cpp",
+    "historical_expected_sha256": "c34705e78485d980656898dd3b27c13788bae200602b97dd8da3c298a1251ebd",
+    "classification": "reconstructed_exact_historical_hash",
+    "archive_path": "replay/historical-hash-matches/c34705e78485d980656898dd3b27c13788bae200602b97dd8da3c298a1251ebd/app.cpp",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-002",
+    "path": "loom/server/src/native-ui-common.h",
+    "historical_expected_sha256": "4f23c5706c992a8a999c3e84971df4be8f3b09928e1114dc557eae057aef5e40",
+    "classification": "current_copy_matches_original_receipt_hash",
+    "archive_path": "replay/historical-hash-matches/4f23c5706c992a8a999c3e84971df4be8f3b09928e1114dc557eae057aef5e40/native-ui-common.h",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-002",
+    "path": "loom/server/src/method-ui-routes.h",
+    "historical_expected_sha256": "c4536a08af3cbb93cf6842adc7e9d37b3acd11c8db12c468bfc7318004294f64",
+    "classification": "retained_original_source",
+    "archive_path": "replay/historical-hash-matches/c4536a08af3cbb93cf6842adc7e9d37b3acd11c8db12c468bfc7318004294f64/method-ui-routes.h",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-002",
+    "path": "loom/src/context/method_registry.cpp",
+    "historical_expected_sha256": "445e67cc02381392e23e348dda5b3d37f3dac47b4312d71c3b5ceab529c54188",
+    "classification": "current_copy_matches_original_receipt_hash",
+    "archive_path": "replay/historical-hash-matches/445e67cc02381392e23e348dda5b3d37f3dac47b4312d71c3b5ceab529c54188/method_registry.cpp",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-002",
+    "path": "loom/src/packet/METHOD_GRAPH.md",
+    "historical_expected_sha256": "ce7d81f2157a4767f8cd8211fb8b625e621ae4d67d9fa3f1d28dfc0d3dd041b8",
+    "classification": "current_copy_matches_original_receipt_hash",
+    "archive_path": "replay/historical-hash-matches/ce7d81f2157a4767f8cd8211fb8b625e621ae4d67d9fa3f1d28dfc0d3dd041b8/METHOD_GRAPH.md",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-002",
+    "path": "loom/web/src/api/loom-http.ts",
+    "historical_expected_sha256": "ea8b6601f749704413053de62002e59b0b2d50e3b1d558981072cd8bf80c859f",
+    "classification": "current_copy_matches_original_receipt_hash",
+    "archive_path": "replay/historical-hash-matches/ea8b6601f749704413053de62002e59b0b2d50e3b1d558981072cd8bf80c859f/loom-http.ts",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-002",
+    "path": "loom/web/src/components/MethodsPanel.tsx",
+    "historical_expected_sha256": "bdc86f89cf8f7723912b9cbf2a843969421dd4f593850c86084d3a3f61a6c79d",
+    "classification": "current_copy_matches_original_receipt_hash",
+    "archive_path": "replay/historical-hash-matches/bdc86f89cf8f7723912b9cbf2a843969421dd4f593850c86084d3a3f61a6c79d/MethodsPanel.tsx",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-002",
+    "path": "loom/web/src/components/methods-panel.css",
+    "historical_expected_sha256": "cf5fa71e1214ad02b807fc3064f6698681891b53b60ad2fda556ddfb9e456f59",
+    "classification": "current_copy_matches_original_receipt_hash",
+    "archive_path": "replay/historical-hash-matches/cf5fa71e1214ad02b807fc3064f6698681891b53b60ad2fda556ddfb9e456f59/methods-panel.css",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-002",
+    "path": "loom/web/src/methods/graph-methods.ts",
+    "historical_expected_sha256": "192d31df65a1ea34255449f53135efcde0475bcc80bba41ceae86576ec4da690",
+    "classification": "current_copy_matches_original_receipt_hash",
+    "archive_path": "replay/historical-hash-matches/192d31df65a1ea34255449f53135efcde0475bcc80bba41ceae86576ec4da690/graph-methods.ts",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-002",
+    "path": "loom/web/e2e/methods-ui.mjs",
+    "historical_expected_sha256": "2669706d456d7c666bf7baf9d0a3992c4aff0f4ef9090cf03e92c140ad7c61c4",
+    "classification": "missing_original_source_bytes",
+    "archive_path": null,
+    "hash_verified": false
+  },
+  {
+    "case": "methods-ui-native-attempt-002",
+    "path": "loom/src/packet/tests/method-registry-variants/canonical-w3-export.json.gz",
+    "historical_expected_sha256": "ead6f775a2bc0bcf94deed3c9e3726c317565b8d8daa95447e09792ca23574a7",
+    "classification": "current_copy_matches_original_receipt_hash",
+    "archive_path": "replay/historical-hash-matches/ead6f775a2bc0bcf94deed3c9e3726c317565b8d8daa95447e09792ca23574a7/canonical-w3-export.json.gz",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-002",
+    "path": "loom/src/packet/tests/method-registry-variants/nested-combination.json.gz",
+    "historical_expected_sha256": "90869ba396f6c2eab46c3cf3687e45f58b4becf74d17bfedcb357b491a1fdc0c",
+    "classification": "current_copy_matches_original_receipt_hash",
+    "archive_path": "replay/historical-hash-matches/90869ba396f6c2eab46c3cf3687e45f58b4becf74d17bfedcb357b491a1fdc0c/nested-combination.json.gz",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-003",
+    "path": "loom/server/src/app.cpp",
+    "historical_expected_sha256": "c34705e78485d980656898dd3b27c13788bae200602b97dd8da3c298a1251ebd",
+    "classification": "reconstructed_exact_historical_hash",
+    "archive_path": "replay/historical-hash-matches/c34705e78485d980656898dd3b27c13788bae200602b97dd8da3c298a1251ebd/app.cpp",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-003",
+    "path": "loom/server/src/native-ui-common.h",
+    "historical_expected_sha256": "4f23c5706c992a8a999c3e84971df4be8f3b09928e1114dc557eae057aef5e40",
+    "classification": "current_copy_matches_original_receipt_hash",
+    "archive_path": "replay/historical-hash-matches/4f23c5706c992a8a999c3e84971df4be8f3b09928e1114dc557eae057aef5e40/native-ui-common.h",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-003",
+    "path": "loom/server/src/method-ui-routes.h",
+    "historical_expected_sha256": "c4536a08af3cbb93cf6842adc7e9d37b3acd11c8db12c468bfc7318004294f64",
+    "classification": "retained_original_source",
+    "archive_path": "replay/historical-hash-matches/c4536a08af3cbb93cf6842adc7e9d37b3acd11c8db12c468bfc7318004294f64/method-ui-routes.h",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-003",
+    "path": "loom/src/context/method_registry.cpp",
+    "historical_expected_sha256": "445e67cc02381392e23e348dda5b3d37f3dac47b4312d71c3b5ceab529c54188",
+    "classification": "current_copy_matches_original_receipt_hash",
+    "archive_path": "replay/historical-hash-matches/445e67cc02381392e23e348dda5b3d37f3dac47b4312d71c3b5ceab529c54188/method_registry.cpp",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-003",
+    "path": "loom/src/packet/METHOD_GRAPH.md",
+    "historical_expected_sha256": "ce7d81f2157a4767f8cd8211fb8b625e621ae4d67d9fa3f1d28dfc0d3dd041b8",
+    "classification": "current_copy_matches_original_receipt_hash",
+    "archive_path": "replay/historical-hash-matches/ce7d81f2157a4767f8cd8211fb8b625e621ae4d67d9fa3f1d28dfc0d3dd041b8/METHOD_GRAPH.md",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-003",
+    "path": "loom/web/src/api/loom-http.ts",
+    "historical_expected_sha256": "ea8b6601f749704413053de62002e59b0b2d50e3b1d558981072cd8bf80c859f",
+    "classification": "current_copy_matches_original_receipt_hash",
+    "archive_path": "replay/historical-hash-matches/ea8b6601f749704413053de62002e59b0b2d50e3b1d558981072cd8bf80c859f/loom-http.ts",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-003",
+    "path": "loom/web/src/components/MethodsPanel.tsx",
+    "historical_expected_sha256": "bdc86f89cf8f7723912b9cbf2a843969421dd4f593850c86084d3a3f61a6c79d",
+    "classification": "current_copy_matches_original_receipt_hash",
+    "archive_path": "replay/historical-hash-matches/bdc86f89cf8f7723912b9cbf2a843969421dd4f593850c86084d3a3f61a6c79d/MethodsPanel.tsx",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-003",
+    "path": "loom/web/src/components/methods-panel.css",
+    "historical_expected_sha256": "cf5fa71e1214ad02b807fc3064f6698681891b53b60ad2fda556ddfb9e456f59",
+    "classification": "current_copy_matches_original_receipt_hash",
+    "archive_path": "replay/historical-hash-matches/cf5fa71e1214ad02b807fc3064f6698681891b53b60ad2fda556ddfb9e456f59/methods-panel.css",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-003",
+    "path": "loom/web/src/methods/graph-methods.ts",
+    "historical_expected_sha256": "192d31df65a1ea34255449f53135efcde0475bcc80bba41ceae86576ec4da690",
+    "classification": "current_copy_matches_original_receipt_hash",
+    "archive_path": "replay/historical-hash-matches/192d31df65a1ea34255449f53135efcde0475bcc80bba41ceae86576ec4da690/graph-methods.ts",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-003",
+    "path": "loom/web/e2e/methods-ui.mjs",
+    "historical_expected_sha256": "3afff2316d8132893132f4ee530f1d6ace5092c26facceaeedccd344ebf541af",
+    "classification": "missing_original_source_bytes",
+    "archive_path": null,
+    "hash_verified": false
+  },
+  {
+    "case": "methods-ui-native-attempt-003",
+    "path": "loom/src/packet/tests/method-registry-variants/canonical-w3-export.json.gz",
+    "historical_expected_sha256": "ead6f775a2bc0bcf94deed3c9e3726c317565b8d8daa95447e09792ca23574a7",
+    "classification": "current_copy_matches_original_receipt_hash",
+    "archive_path": "replay/historical-hash-matches/ead6f775a2bc0bcf94deed3c9e3726c317565b8d8daa95447e09792ca23574a7/canonical-w3-export.json.gz",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-003",
+    "path": "loom/src/packet/tests/method-registry-variants/nested-combination.json.gz",
+    "historical_expected_sha256": "90869ba396f6c2eab46c3cf3687e45f58b4becf74d17bfedcb357b491a1fdc0c",
+    "classification": "current_copy_matches_original_receipt_hash",
+    "archive_path": "replay/historical-hash-matches/90869ba396f6c2eab46c3cf3687e45f58b4becf74d17bfedcb357b491a1fdc0c/nested-combination.json.gz",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-004",
+    "path": "loom/server/src/app.cpp",
+    "historical_expected_sha256": "3ffc188f0f5babf8ee1ca75d8ef4c11397d7cae0262fbdf0bb6eaf83321e0f4c",
+    "classification": "current_copy_matches_original_receipt_hash",
+    "archive_path": "replay/historical-hash-matches/3ffc188f0f5babf8ee1ca75d8ef4c11397d7cae0262fbdf0bb6eaf83321e0f4c/app.cpp",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-004",
+    "path": "loom/server/src/native-ui-common.h",
+    "historical_expected_sha256": "4f23c5706c992a8a999c3e84971df4be8f3b09928e1114dc557eae057aef5e40",
+    "classification": "current_copy_matches_original_receipt_hash",
+    "archive_path": "replay/historical-hash-matches/4f23c5706c992a8a999c3e84971df4be8f3b09928e1114dc557eae057aef5e40/native-ui-common.h",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-004",
+    "path": "loom/server/src/method-ui-routes.h",
+    "historical_expected_sha256": "c17121a486a67c1060d7faaf034fde6911b217bca893added7fc637cbced6476",
+    "classification": "current_copy_matches_original_receipt_hash",
+    "archive_path": "replay/historical-hash-matches/c17121a486a67c1060d7faaf034fde6911b217bca893added7fc637cbced6476/method-ui-routes.h",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-004",
+    "path": "loom/src/context/method_registry.cpp",
+    "historical_expected_sha256": "445e67cc02381392e23e348dda5b3d37f3dac47b4312d71c3b5ceab529c54188",
+    "classification": "current_copy_matches_original_receipt_hash",
+    "archive_path": "replay/historical-hash-matches/445e67cc02381392e23e348dda5b3d37f3dac47b4312d71c3b5ceab529c54188/method_registry.cpp",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-004",
+    "path": "loom/src/packet/METHOD_GRAPH.md",
+    "historical_expected_sha256": "ce7d81f2157a4767f8cd8211fb8b625e621ae4d67d9fa3f1d28dfc0d3dd041b8",
+    "classification": "current_copy_matches_original_receipt_hash",
+    "archive_path": "replay/historical-hash-matches/ce7d81f2157a4767f8cd8211fb8b625e621ae4d67d9fa3f1d28dfc0d3dd041b8/METHOD_GRAPH.md",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-004",
+    "path": "loom/web/src/api/loom-http.ts",
+    "historical_expected_sha256": "ea8b6601f749704413053de62002e59b0b2d50e3b1d558981072cd8bf80c859f",
+    "classification": "current_copy_matches_original_receipt_hash",
+    "archive_path": "replay/historical-hash-matches/ea8b6601f749704413053de62002e59b0b2d50e3b1d558981072cd8bf80c859f/loom-http.ts",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-004",
+    "path": "loom/web/src/components/MethodsPanel.tsx",
+    "historical_expected_sha256": "bdc86f89cf8f7723912b9cbf2a843969421dd4f593850c86084d3a3f61a6c79d",
+    "classification": "current_copy_matches_original_receipt_hash",
+    "archive_path": "replay/historical-hash-matches/bdc86f89cf8f7723912b9cbf2a843969421dd4f593850c86084d3a3f61a6c79d/MethodsPanel.tsx",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-004",
+    "path": "loom/web/src/components/methods-panel.css",
+    "historical_expected_sha256": "cf5fa71e1214ad02b807fc3064f6698681891b53b60ad2fda556ddfb9e456f59",
+    "classification": "current_copy_matches_original_receipt_hash",
+    "archive_path": "replay/historical-hash-matches/cf5fa71e1214ad02b807fc3064f6698681891b53b60ad2fda556ddfb9e456f59/methods-panel.css",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-004",
+    "path": "loom/web/src/methods/graph-methods.ts",
+    "historical_expected_sha256": "192d31df65a1ea34255449f53135efcde0475bcc80bba41ceae86576ec4da690",
+    "classification": "current_copy_matches_original_receipt_hash",
+    "archive_path": "replay/historical-hash-matches/192d31df65a1ea34255449f53135efcde0475bcc80bba41ceae86576ec4da690/graph-methods.ts",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-004",
+    "path": "loom/web/e2e/methods-ui.mjs",
+    "historical_expected_sha256": "6d74f8fbf4ab270e3af62abb0205947ffa1247f6dba3b01d36c4527438c1277e",
+    "classification": "missing_original_source_bytes",
+    "archive_path": null,
+    "hash_verified": false
+  },
+  {
+    "case": "methods-ui-native-attempt-004",
+    "path": "loom/src/packet/tests/method-registry-variants/canonical-w3-export.json.gz",
+    "historical_expected_sha256": "ead6f775a2bc0bcf94deed3c9e3726c317565b8d8daa95447e09792ca23574a7",
+    "classification": "current_copy_matches_original_receipt_hash",
+    "archive_path": "replay/historical-hash-matches/ead6f775a2bc0bcf94deed3c9e3726c317565b8d8daa95447e09792ca23574a7/canonical-w3-export.json.gz",
+    "hash_verified": true
+  },
+  {
+    "case": "methods-ui-native-attempt-004",
+    "path": "loom/src/packet/tests/method-registry-variants/nested-combination.json.gz",
+    "historical_expected_sha256": "90869ba396f6c2eab46c3cf3687e45f58b4becf74d17bfedcb357b491a1fdc0c",
+    "classification": "current_copy_matches_original_receipt_hash",
+    "archive_path": "replay/historical-hash-matches/90869ba396f6c2eab46c3cf3687e45f58b4becf74d17bfedcb357b491a1fdc0c/nested-combination.json.gz",
+    "hash_verified": true
+  }
+]

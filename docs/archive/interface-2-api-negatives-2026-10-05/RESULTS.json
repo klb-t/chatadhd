@@ -1,0 +1,12 @@
+{
+  "status": "verified",
+  "files": 1628,
+  "raw_bytes": 287834799,
+  "archive": "interface-2-api-negatives-final.tar.xz",
+  "bytes": 6691128,
+  "sha256": "686247ba906877df9bc27eb2a88bc818ef9626f54e6f5b559988dfef63d66957",
+  "seconds": 55.06275877299777,
+  "verification": "Every archived raw/source byte verified by streaming SHA256 against corrected manifest; stale intermediate tar excluded.",
+  "missing_original_test_sources": 4,
+  "xz_stderr": "xz: Adjusted LZMA2 dictionary size from 64 MiB to 16 MiB to not exceed the memory usage limit of 192 MiB\n"
+}
