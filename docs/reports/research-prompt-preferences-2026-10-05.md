@@ -2,7 +2,7 @@
 
 Stan 2026-10-05 po aktualizacji właściciela 16:16:21 UTC: **wywołania na syntetykach wstrzymane; nowe badanie wyłącznie na rzeczywistych eksportach ChatADHD ze wspólnego wycinka A**.
 
-Gałąź `gpt/research-prompt-preferences-2026-10-05`, baza `edcb32fb87116ac497f8eb3d59d53ecea0cfee3f`. Bieżący kod/raport zostanie wskazany po publikacji tego checkpointu. Commit oryginalnych odzyskanych danych: `da3eb54f5dac455a2bd78660eabafbadb20589f3`. Nie ma commitu gotowego do płatnego uruchomienia na rzeczywistych eksportach.
+Gałąź `gpt/research-prompt-preferences-2026-10-05`, baza `edcb32fb87116ac497f8eb3d59d53ecea0cfee3f`. Sprawdzony commit kodu i checkpointu: `1a81ebff6dfcb6ac6628daaa1663ab0600523037` (wypchnięty). Ten późniejszy commit aktualizuje wyłącznie raport. Commit oryginalnych odzyskanych danych: `da3eb54f5dac455a2bd78660eabafbadb20589f3`. Nie ma commitu gotowego do płatnego uruchomienia na rzeczywistych eksportach.
 
 ## Gotowy przyrost i bramki
 
