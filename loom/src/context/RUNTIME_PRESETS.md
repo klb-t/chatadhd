@@ -38,6 +38,11 @@ Inspection carries descriptor revision, effective-value hash, source, consumed
 values, value schema and (for graph layers) effective resolution explanations.
 The hash uses W11's canonical `{definition, values}` input. Configuration is
 frozen before execution; callbacks cannot substitute another reasoning recipe.
+With W11 present, inspection and `is_builtin` come from its actual factory;
+`builtin_comparison=runtime_profile_exact_values`. Before that integration,
+`builtin_comparison=canonical_json`: object-key order is immaterial, but numeric
+representations such as integer `1` and floating-point `1.0` remain distinct.
+The bridge does not implement another exact-number comparator.
 
 ## Owned entry points
 
