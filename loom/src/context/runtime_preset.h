@@ -90,8 +90,18 @@ inline Result<RuntimePresetSnapshot> resolve_runtime_preset(const Json& definiti
     result.hash = Sha256::hex(json::canonical(Json{{"definition", definition}, {"values", values}}));
     result.details = Json{{"schema", "loom.runtime_profile_effective/1"}, {"domain", definition.at("domain")},
         {"revision", definition.at("revision")}, {"hash", result.hash},
-        {"is_builtin", values == definition["defaults"]}, {"values", values},
+        {"is_builtin", json::canonical(values) == json::canonical(definition["defaults"])}, {"values", values},
         {"value_schema", definition["value_schema"]}, {"validation_basis", basis}};
+    result.details["builtin_comparison"] = "canonical_json";
+#if __has_include("loom/runtime_profile.h")
+    // The shared factory owns exact numeric-value comparison and inspection.
+    // Before its integration canonical JSON provides an order-independent,
+    // representation-sensitive comparison without another value interpreter.
+    result.details = checked.inspection();
+    result.details["is_builtin"] = checked.is_builtin();
+    result.details["validation_basis"] = basis;
+    result.details["builtin_comparison"] = "runtime_profile_exact_values";
+#endif
     result.details["source"] = options.contains("layer_snapshot") ? "graph_layers" :
         options.contains("effective_values") ? "caller_effective_values" : "builtin";
     if (!resolutions.empty()) result.details["layer_resolutions"] = std::move(resolutions);

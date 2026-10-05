@@ -2,7 +2,7 @@
 """Verify W3 runtime presets offline against an existing static core.
 
 The base variant has the checkout's actual capabilities. The layered variant
-extracts only W11/W12's real required headers and three implementation units at
+extracts only W11/W12's real required headers and implementation units at
 resolved Git commits into isolated evidence. No checkout/build is modified, no
 schema or layer resolver is substituted, and no provider is invoked.
 --standalone-utilities compiles the checkout's actual utility implementation
@@ -62,7 +62,7 @@ def check_counts(output: str, mode: str) -> dict:
     count, good, bad = map(int, assertions.groups())
     if not total or passed != total or failed or skipped or not count or good != count or bad:
         raise ValueError("runtime preset verification did not execute a complete passing suite")
-    if mode == "layers" and total < 8:
+    if mode == "layers" and total < 9:
         raise ValueError("actual W11/W12 layer cases were not compiled/executed")
     return {"cases": total, "passed": passed, "failed": failed, "skipped": skipped,
             "assertions": count, "assertions_passed": good, "assertions_failed": bad}
@@ -129,15 +129,34 @@ def variant(root: Path, build: Path, evidence: Path, mode: str, args: argparse.N
     output.mkdir()
     loom = root / "loom"
     selected = []
+    presentation_dependency = False
     if mode == "layers":
         selected += extract(root, evidence, args.w11_ref, [
             "loom/include/loom/runtime_profile.h", "loom/src/model/runtime_profile.cpp",
             "loom/src/model/runtime_profiles_embedded.inc"], "W11", manifest)
-        selected += extract(root, evidence, args.w12_ref, [
+        w12_names = [
             "loom/include/loom/onboarding_layers.h", "loom/src/onboarding/layers.cpp",
-            "loom/src/onboarding/runtime_adapter.h", "loom/src/onboarding/runtime_adapter.cpp"], "W12", manifest)
+            "loom/src/onboarding/runtime_adapter.h", "loom/src/onboarding/runtime_adapter.cpp"]
+        presentation_header = "loom/include/loom/onboarding_presentation.h"
+        w12_commit = subprocess.check_output(
+            ["git", "rev-parse", "--verify", "--end-of-options", args.w12_ref + "^{commit}"], cwd=root, text=True).strip()
+        presentation_dependency = subprocess.check_output(
+            ["git", "ls-tree", "--name-only", w12_commit, "--", presentation_header], cwd=root, text=True).strip() == presentation_header
+        if presentation_dependency:
+            # The actual new DefaultLayers implementation obtains its builtin
+            # presentation through store.cpp. Compile that complete real unit;
+            # section GC excludes unrelated store/DB execution from this test.
+            w12_names += [presentation_header, "loom/include/loom/onboarding.h",
+                "loom/include/loom/onboarding_store.h", "loom/src/onboarding/presentation.cpp",
+                "loom/src/onboarding/store.cpp", "loom/src/onboarding/builtin.inc"]
+            manifest["W12_presentation_dependency"] = {"actual_store_translation_unit": True,
+                "unused_store_database_sections_discarded": True}
+        selected += extract(root, evidence, w12_commit, w12_names, "W12", manifest)
+        manifest["dependencies"]["W12"]["requested_ref"] = args.w12_ref
     flags = [args.compiler, "-std=c++20", "-O0", "-g0", "-Wall", "-Wextra", "-Werror",
              "-DJSON_USE_IMPLICIT_CONVERSIONS=1"]
+    if presentation_dependency:
+        flags += ["-ffunction-sections", "-fdata-sections"]
     if mode == "layers":
         flags += ["-I", str(evidence / "source/loom/include"), "-I", str(evidence / "source/loom/src")]
     flags += ["-I", str(loom / "include"), "-I", str(loom / "src"),
@@ -174,6 +193,8 @@ def variant(root: Path, build: Path, evidence: Path, mode: str, args: argparse.N
         if not (build / "libloom_sqlite3_amalgamation.a").exists():
             command.append("-lsqlite3")
         command += ["-lssl", "-lcrypto"]
+    if presentation_dependency:
+        command.append("-Wl,--gc-sections")
     generator_link_inputs = command[2:]
     command += ["-fuse-ld=gold", "-Wl,--no-map-whole-files", "-pthread", "-ldl", "-lm", "-o", str(executable)]
     execute(command, output / "link.log", manifest, root)
