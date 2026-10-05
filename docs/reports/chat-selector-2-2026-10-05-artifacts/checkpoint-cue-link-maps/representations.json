@@ -1,0 +1,51 @@
+{
+  "conversion": "streaming gzip decode to xz; no raw temporary file",
+  "maps": [
+    {
+      "exact_original_bytes_recoverable": true,
+      "gzip": {
+        "path": "/tmp/w3-goal-cues-consumer-final-2026-10-05/builtin_confidence/link.map.gz",
+        "sha256": "17064d2879c24c9ef3513dadeaf4a6d6585397419e8a9f6f140f6437ab2b4b1f",
+        "size_bytes": 6447702,
+        "staged_path": "/tmp/w3-final-positive-artifacts/cues-consumer/builtin_confidence/link.map.gz"
+      },
+      "gzip_decoded_sha256": "459404ed60e12a408f9c1c235af7e28312bd7af3033e299c49609d17f75335c6",
+      "original_path": "/tmp/w3-goal-cues-consumer-final-2026-10-05/builtin_confidence/link.map",
+      "original_sha256": "459404ed60e12a408f9c1c235af7e28312bd7af3033e299c49609d17f75335c6",
+      "original_size_bytes": 141660026,
+      "xz": {
+        "format": "xz",
+        "path": "/tmp/w3-goal-cues-consumer-final-2026-10-05/builtin_confidence/link.map.xz",
+        "preset": 6,
+        "sha256": "bf9914b4ae6b689421c9534421bb92ed27b6c6db65ec7058c3a85d4600aaaa98",
+        "size_bytes": 3563344,
+        "staged_path": "/tmp/w3-final-positive-artifacts/cues-consumer/builtin_confidence/link.map.xz"
+      },
+      "xz_decoded_sha256": "459404ed60e12a408f9c1c235af7e28312bd7af3033e299c49609d17f75335c6"
+    },
+    {
+      "exact_original_bytes_recoverable": true,
+      "gzip": {
+        "path": "/tmp/w3-goal-cues-consumer-final-2026-10-05/builtin_revision/link.map.gz",
+        "sha256": "d74f49dd38f913ab2d0976a5fceb3b1d3bb59c8be653f73bdfb8886a7b3e64c5",
+        "size_bytes": 6447333,
+        "staged_path": "/tmp/w3-final-positive-artifacts/cues-consumer/builtin_revision/link.map.gz"
+      },
+      "gzip_decoded_sha256": "7970cee1e43792431c5e286dc15a12967cc607d139433cbf4c7ffb7bc255843f",
+      "original_path": "/tmp/w3-goal-cues-consumer-final-2026-10-05/builtin_revision/link.map",
+      "original_sha256": "7970cee1e43792431c5e286dc15a12967cc607d139433cbf4c7ffb7bc255843f",
+      "original_size_bytes": 141630566,
+      "xz": {
+        "format": "xz",
+        "path": "/tmp/w3-goal-cues-consumer-final-2026-10-05/builtin_revision/link.map.xz",
+        "preset": 6,
+        "sha256": "563b8e710b0fe8b45630ae4e2d581aa54fc736bc79d73c45214eb8029aaf2304",
+        "size_bytes": 3563264,
+        "staged_path": "/tmp/w3-final-positive-artifacts/cues-consumer/builtin_revision/link.map.xz"
+      },
+      "xz_decoded_sha256": "7970cee1e43792431c5e286dc15a12967cc607d139433cbf4c7ffb7bc255843f"
+    }
+  ],
+  "preferred_archive_representation": "xz",
+  "schema": "loom.lossless_evidence_representations/1"
+}
