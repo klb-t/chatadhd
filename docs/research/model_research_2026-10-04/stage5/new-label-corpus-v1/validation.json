@@ -1,0 +1,72 @@
+{
+  "schema": "loom.new_label_corpus.validation/1",
+  "validated_at_utc": "2026-10-05T13:01:38.310974Z",
+  "corpus_id": "new-label-corpus-v1",
+  "structural_validation": "pass",
+  "families": 24,
+  "queries": 96,
+  "judgments": 96,
+  "languages_families": {
+    "pl": 12,
+    "en": 12
+  },
+  "label_counts": {
+    "refuted": 27,
+    "supported": 34,
+    "unknown": 35
+  },
+  "labels_by_language": {
+    "pl": {
+      "refuted": 13,
+      "supported": 17,
+      "unknown": 18
+    },
+    "en": {
+      "supported": 17,
+      "refuted": 14,
+      "unknown": 17
+    }
+  },
+  "relation_query_counts": {
+    "implies": 20,
+    "requires": 24,
+    "causes": 23,
+    "prevents": 12,
+    "supports": 17
+  },
+  "families_with_multiple_temporal_views": 24,
+  "families_with_multiple_requested_attributions": 24,
+  "families_with_both_query_directions": 24,
+  "families_with_explicit_negated_operand": [
+    "new_label_004",
+    "new_label_006",
+    "new_label_012",
+    "new_label_017",
+    "new_label_021",
+    "new_label_024"
+  ],
+  "exact_evidence_spans_checked": 163,
+  "gold_evidence_future_references": 0,
+  "query_id_collisions": 0,
+  "old_data_read": false,
+  "model_responses_read": false,
+  "new_model_calls": 0,
+  "scope": "author_data_structural_check; gold reviewed by author, independent root peer review pending",
+  "source_sha256": {
+    "inputs.json": "8cfd43c19f2603b6cc6adcf0187115fe17f4e4cb2c157eb23308a99ad11e290d",
+    "gold.json": "2f6e041024658543ffacc20f123ee9ef047ac32858638b8eecb49ff3c9d4c6e2"
+  },
+  "offline_replay_receipt": "prepared/offline-replay.json",
+  "design_checks_are_corpus_author_choices_not_engine_requirements": true,
+  "producer_numeric_limits_added": false,
+  "producer_reads_variant_and_inventory_data": "corpus-design.json",
+  "byte_exact_replay_after_producer_refinement": true,
+  "pre_freeze_peer_correction": {
+    "proof": "pre-freeze-correction-014.json",
+    "source_properties_changed": 1,
+    "gold_identical": true,
+    "criteria_identical": true,
+    "other_payload_rows_identical_per_recipe": 92,
+    "exact_evidence_spans_rechecked": 163
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "actual_prior_or_new_responses_read": false,
+  "dependencies_sha256": {
+    "docs/research/model_research_2026-10-04/billing/request-units.json": "ce066c25fec1c984b3d21f2d6a279954a66d8a4cf8a0d97efd76c32a90607219",
+    "loom/tools/structure/method_graph_export_v1.py": "537589147b8548a86c68de1a9726b6fb423e52aee02ce2a185232ad83a9943b6",
+    "loom/tools/structure/openrouter_runner.py": "2cd14424ca190f3d5fed47faf1e328993668a620b8202cfb7b196b363f971635",
+    "loom/tools/structure/research_programme_manifest.py": "1810ae8d1b97ae9403e969de3b0efe6ff52e31b7fa9b87f4a6a1be62b84cfbb4"
+  },
+  "fake_instrument_boundary": "Existing evaluator binding checks on invented inputs with semantic instrument explicitly mocked; no semantic quality claim.",
+  "focused_invented_tests_passed": 21,
+  "gold_or_rubric_read": false,
+  "groups": [
+    {
+      "config_sha256": "371d3fec32095f703fd28ddd5f40c93cf4f20acac12c0b222d6bdee4eefc7855",
+      "group": "label",
+      "manifest_sha256": "14cbb6bb88f0397554815c06ac63d0e19121bd662ceb985f301a2a4770d092b2"
+    },
+    {
+      "config_sha256": "e11e112774650f5a1dfbd5dc1c8384c20ad78e90e36360de323f36aae070f67f",
+      "group": "frontier",
+      "manifest_sha256": "554607190fcc03d55bf715b8ba0ba807048c013b5935f1211ca3fddd688de3c1"
+    },
+    {
+      "config_sha256": "6a07b42795773fe6950226c7d3130087d861ffb58583d83decf7f8a8202ab045",
+      "group": "reply",
+      "manifest_sha256": "0b3b8c131b52d8aa54d671f6d5ce0af7c854f63209f06cd832eb08f37ca7b1f2"
+    }
+  ],
+  "paid_calls": 0,
+  "schema": "loom.context_preparation.source_freeze/1",
+  "scope": "Research DATA producer only; no core/native/runner/transport/compiler/scorer change.",
+  "source_sha256": {
+    "programme_context_preparation_v1.py": "aca5238d9748cd078ae868a8790956d0c171bee010bf365d2d04247fa7edf447",
+    "test_programme_context_preparation_v1.py": "619e6a36ead3f7e3882cc3d0c6acbf05f1f9fc874c10184504b119a15346ad9e"
+  },
+  "status": "candidate_research_data_frozen_pending_root_acceptance"
+}
