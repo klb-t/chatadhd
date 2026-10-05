@@ -1,0 +1,12 @@
+Command: node e2e/harness-lifecycle-test.mjs
+Node: v24.19.0
+[harness-lifecycle] PASS early exit0 is rejected even when the caller exits explicitly
+[harness-lifecycle] PASS partial declared count is rejected before completion
+[harness-lifecycle] PASS only exact count and explicit final completion can exit0
+[harness-lifecycle] PASS unsettled cleanup cannot produce a successful suite result
+[harness-lifecycle] PASS HTTP cleanup closes an active fixture socket before native execution
+[harness-lifecycle] PASS missing HTTP close callback fails with a referenced deadline
+[harness-lifecycle] PASS already signal-closed child does not wait for a second close event
+[harness-lifecycle] PASS live native-style child shutdown waits for the close event
+[harness-lifecycle] 8/8 groups passed; standard library, zero provider calls
+Exit: 0

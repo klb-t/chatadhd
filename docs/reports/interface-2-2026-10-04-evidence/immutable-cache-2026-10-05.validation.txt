@@ -1,0 +1,9 @@
+Command: /workspace/scratch/308e2340bae7/chatadhd/docs/reports/interface-2-2026-10-04-evidence/immutable-cache-2026-10-05.launcher.py --check
+Exit: 0
+Seconds: 0.654
+{"verified_usable_core_objects": 125, "fresh_fallback_core_objects": 5, "test_objects_enabled": 0, "root_inputs_checked": 502, "cmake_inputs_checked": 6, "system_inputs_checked": 558, "fresh_fallback_sources": ["loom/src/chat/chat_engine.cpp", "loom/src/context/context_engine.cpp", "loom/src/kb/graph_packet_store.cpp", "loom/src/kb/pack.cpp", "loom/src/providers/providers.cpp"], "manifest_sha256": "066537d09632bb7cb88a87126cf8c26656ba350dac054de1541e030ebf6904e6", "reference_provenance_commit": "30ad7d37337d6641cb7714b03e9feff0e6e25d25"}
+
+Final launcher check after deduplicating identical compiler hash reads:
+Exit: 0
+Seconds: 0.498
+{"verified_usable_core_objects": 125, "fresh_fallback_core_objects": 5, "test_objects_enabled": 0, "root_inputs_checked": 502, "cmake_inputs_checked": 6, "system_inputs_checked": 558, "fresh_fallback_sources": ["loom/src/chat/chat_engine.cpp", "loom/src/context/context_engine.cpp", "loom/src/kb/graph_packet_store.cpp", "loom/src/kb/pack.cpp", "loom/src/providers/providers.cpp"], "manifest_sha256": "066537d09632bb7cb88a87126cf8c26656ba350dac054de1541e030ebf6904e6", "reference_provenance_commit": "30ad7d37337d6641cb7714b03e9feff0e6e25d25"}

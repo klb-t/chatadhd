@@ -1,0 +1,618 @@
+Start testing: Oct 05 12:28 CEST
+----------------------------------------------------------
+1/108 Testing: unit.test_archive
+1/108 Test: unit.test_archive
+Command: "/workspace/scratch/308e2340bae7/chatadhd/loom/build/dev/loom_tests" "--source-file=*/test_archive.cpp" "--no-intro=true"
+Directory: /workspace/scratch/308e2340bae7/chatadhd/loom/build/dev
+"unit.test_archive" start time: Oct 05 12:28 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  18 |  18 passed | 0 failed | 642 skipped
+[doctest] assertions: 270 | 270 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   1.13 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_archive" end time: Oct 05 12:28 CEST
+"unit.test_archive" time elapsed: 00:00:01
+----------------------------------------------------------
+
+2/108 Testing: unit.test_batch_api
+2/108 Test: unit.test_batch_api
+Command: "/workspace/scratch/308e2340bae7/chatadhd/loom/build/dev/loom_tests" "--source-file=*/test_batch_api.cpp" "--no-intro=true"
+Directory: /workspace/scratch/308e2340bae7/chatadhd/loom/build/dev
+"unit.test_batch_api" start time: Oct 05 12:28 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  8 |  8 passed | 0 failed | 652 skipped
+[doctest] assertions: 36 | 36 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.06 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_batch_api" end time: Oct 05 12:28 CEST
+"unit.test_batch_api" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/108 Testing: unit.test_capi
+3/108 Test: unit.test_capi
+Command: "/workspace/scratch/308e2340bae7/chatadhd/loom/build/dev/loom_tests" "--source-file=*/test_capi.cpp" "--no-intro=true"
+Directory: /workspace/scratch/308e2340bae7/chatadhd/loom/build/dev
+"unit.test_capi" start time: Oct 05 12:28 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  12 |  12 passed | 0 failed | 648 skipped
+[doctest] assertions: 598 | 598 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   2.44 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_capi" end time: Oct 05 12:28 CEST
+"unit.test_capi" time elapsed: 00:00:02
+----------------------------------------------------------
+
+4/108 Testing: unit.test_capi_knowledge
+4/108 Test: unit.test_capi_knowledge
+Command: "/workspace/scratch/308e2340bae7/chatadhd/loom/build/dev/loom_tests" "--source-file=*/test_capi_knowledge.cpp" "--no-intro=true"
+Directory: /workspace/scratch/308e2340bae7/chatadhd/loom/build/dev
+"unit.test_capi_knowledge" start time: Oct 05 12:28 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  1 |  1 passed | 0 failed | 659 skipped
+[doctest] assertions: 55 | 55 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.40 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_capi_knowledge" end time: Oct 05 12:28 CEST
+"unit.test_capi_knowledge" time elapsed: 00:00:00
+----------------------------------------------------------
+
+5/108 Testing: unit.test_capi_knowledge_latest_run
+5/108 Test: unit.test_capi_knowledge_latest_run
+Command: "/workspace/scratch/308e2340bae7/chatadhd/loom/build/dev/loom_tests" "--source-file=*/test_capi_knowledge_latest_run.cpp" "--no-intro=true"
+Directory: /workspace/scratch/308e2340bae7/chatadhd/loom/build/dev
+"unit.test_capi_knowledge_latest_run" start time: Oct 05 12:28 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  2 |  2 passed | 0 failed | 658 skipped
+[doctest] assertions: 73 | 73 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.65 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_capi_knowledge_latest_run" end time: Oct 05 12:28 CEST
+"unit.test_capi_knowledge_latest_run" time elapsed: 00:00:00
+----------------------------------------------------------
+
+6/108 Testing: unit.test_catalog
+6/108 Test: unit.test_catalog
+Command: "/workspace/scratch/308e2340bae7/chatadhd/loom/build/dev/loom_tests" "--source-file=*/test_catalog.cpp" "--no-intro=true"
+Directory: /workspace/scratch/308e2340bae7/chatadhd/loom/build/dev
+"unit.test_catalog" start time: Oct 05 12:28 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  13 |  13 passed | 0 failed | 647 skipped
+[doctest] assertions: 344 | 344 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   1.87 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_catalog" end time: Oct 05 12:28 CEST
+"unit.test_catalog" time elapsed: 00:00:01
+----------------------------------------------------------
+
+7/108 Testing: unit.test_catalog_context
+7/108 Test: unit.test_catalog_context
+Command: "/workspace/scratch/308e2340bae7/chatadhd/loom/build/dev/loom_tests" "--source-file=*/test_catalog_context.cpp" "--no-intro=true"
+Directory: /workspace/scratch/308e2340bae7/chatadhd/loom/build/dev
+"unit.test_catalog_context" start time: Oct 05 12:28 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  7 |  7 passed | 0 failed | 653 skipped
+[doctest] assertions: 81 | 81 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   1.83 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_catalog_context" end time: Oct 05 12:28 CEST
+"unit.test_catalog_context" time elapsed: 00:00:01
+----------------------------------------------------------
+
+8/108 Testing: unit.test_catalog_eval
+8/108 Test: unit.test_catalog_eval
+Command: "/workspace/scratch/308e2340bae7/chatadhd/loom/build/dev/loom_tests" "--source-file=*/test_catalog_eval.cpp" "--no-intro=true"
+Directory: /workspace/scratch/308e2340bae7/chatadhd/loom/build/dev
+"unit.test_catalog_eval" start time: Oct 05 12:28 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+/workspace/scratch/308e2340bae7/chatadhd/loom/tests/test_catalog_eval.cpp:118:
+TEST SUITE: catalog_eval
+TEST CASE:  synthetic_dev: recall/precision/noise-trap FP
+
+/workspace/scratch/308e2340bae7/chatadhd/loom/tests/test_catalog_eval.cpp:249: MESSAGE: ranking AUC final=0.965556 lexical=0.777222 semantic=0.981111
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/308e2340bae7/chatadhd/loom/tests/test_catalog_eval.cpp:250: MESSAGE: ranking hits@20=20/20 hits@45=42/45 (lexical hits@45=36, semantic hits@45=43)
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/308e2340bae7/chatadhd/loom/tests/test_catalog_eval.cpp:253: MESSAGE: shadow: |C_lexical|=10 |C_semantic|=5 gap(lex-sem): rescue=5 noise=0 undecided=2 [cx-04-venting mu-01-kickoff rt-02-storyboard rt-05-clips-gate rt-07-stalled ] semantic-only: relevant=2 noise=0
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/308e2340bae7/chatadhd/loom/tests/test_catalog_eval.cpp:258: MESSAGE: relevant: 31/45 recall=0.688889
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/308e2340bae7/chatadhd/loom/tests/test_catalog_eval.cpp:259: MESSAGE: traps: 0/5 trap_fpr=0
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/308e2340bae7/chatadhd/loom/tests/test_catalog_eval.cpp:260: MESSAGE: noise_generic selected: 0/15
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/308e2340bae7/chatadhd/loom/tests/test_catalog_eval.cpp:261: MESSAGE: selected conversations: 31 precision=1
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/308e2340bae7/chatadhd/loom/tests/test_catalog_eval.cpp:263: MESSAGE: selected auxiliary documents (outside conversation labels): 3
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/308e2340bae7/chatadhd/loom/tests/test_catalog_eval.cpp:264: MESSAGE: selector stats: {"run_id":"run_56ed9f716a7945b4","scoring_evidence_version":3,"legacy_combined_features":["id_hits","class_diversity","code_evidence"],"identity_unavailable":0,"relevant":34,"candidate":7,"irrelevant":27,"traps":4,"expanded_terms":[{"term":"zero","pass":1,"lift":3.4,"df_relevant":3,"df_corpus":6,"evidence":["un_3d70b7a34635f5fe","un_9e8228809931d5d0","un_e7c579ba8fc08dd1"],"reason":"lift >= 3.000000 against the verified-relevant set (vocabulary expansion)"}],"semantic":{"available":true,"passes":1,"seeds":40,"method":"tfidf_cosine(word_stems)+tfidf_cosine(char_4grams)","floor_word":0.0283,"ref_word":0.1362,"floor_gram":0.0865,"ref_gram":0.2412,"word_vocabulary":1267,"gram_vocabulary":4074},"channels":{"lexical_relevant":10,"semantic_relevant":5,"both":3,"lexical_only":7,"semantic_only":2},"links":56,"link_stats":{"mode":"candidates","units":68,"links":56,"project_groups_aggregated":0,"minhash_pairs_verified":1,"lsh_candidates":1,"rare_term_candidates":653,"uncorroborated_sessions":0}}
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"6846c88590f9d73e015fb7ae386cd0fbf3b5a672c1489aa020a5eb24a49961f8","versions":0,"bytes":93279,"warnings":[]}
+
+===============================================================================
+[doctest] test cases:  1 |  1 passed | 0 failed | 659 skipped
+[doctest] assertions: 76 | 76 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.98 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_catalog_eval" end time: Oct 05 12:28 CEST
+"unit.test_catalog_eval" time elapsed: 00:00:00
+----------------------------------------------------------
+
+9/108 Testing: unit.test_catalog_links
+9/108 Test: unit.test_catalog_links
+Command: "/workspace/scratch/308e2340bae7/chatadhd/loom/build/dev/loom_tests" "--source-file=*/test_catalog_links.cpp" "--no-intro=true"
+Directory: /workspace/scratch/308e2340bae7/chatadhd/loom/build/dev
+"unit.test_catalog_links" start time: Oct 05 12:28 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+/workspace/scratch/308e2340bae7/chatadhd/loom/tests/test_catalog_links.cpp:103:
+TEST SUITE: catalog_links
+TEST CASE:  candidate generation reproduces the exhaustive reference scan
+
+/workspace/scratch/308e2340bae7/chatadhd/loom/tests/test_catalog_links.cpp:130: MESSAGE: continuation links: reference=164 candidates=164 recall=1
+
+===============================================================================
+/workspace/scratch/308e2340bae7/chatadhd/loom/tests/test_catalog_links.cpp:166:
+TEST SUITE: catalog_links
+TEST CASE:  50k units: near-linear candidate generation, planted near-duplicates found
+
+/workspace/scratch/308e2340bae7/chatadhd/loom/tests/test_catalog_links.cpp:203: MESSAGE: 50k units: 3.49227 s, {"mode":"candidates","units":50000,"links":143314,"project_groups_aggregated":0,"minhash_pairs_verified":499,"lsh_candidates":499,"rare_term_candidates":506472}
+
+===============================================================================
+[doctest] test cases:    4 |    4 passed | 0 failed | 656 skipped
+[doctest] assertions: 3136 | 3136 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   6.27 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_catalog_links" end time: Oct 05 12:28 CEST
+"unit.test_catalog_links" time elapsed: 00:00:06
+----------------------------------------------------------
+
+10/108 Testing: unit.test_catalog_retention
+10/108 Test: unit.test_catalog_retention
+Command: "/workspace/scratch/308e2340bae7/chatadhd/loom/build/dev/loom_tests" "--source-file=*/test_catalog_retention.cpp" "--no-intro=true"
+Directory: /workspace/scratch/308e2340bae7/chatadhd/loom/build/dev
+"unit.test_catalog_retention" start time: Oct 05 12:28 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:   5 |   5 passed | 0 failed | 655 skipped
+[doctest] assertions: 179 | 179 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   1.39 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_catalog_retention" end time: Oct 05 12:28 CEST
+"unit.test_catalog_retention" time elapsed: 00:00:01
+----------------------------------------------------------
+
+11/108 Testing: unit.test_catalog_scale
+11/108 Test: unit.test_catalog_scale
+Command: "/workspace/scratch/308e2340bae7/chatadhd/loom/build/dev/loom_tests" "--source-file=*/test_catalog_scale.cpp" "--no-intro=true"
+Directory: /workspace/scratch/308e2340bae7/chatadhd/loom/build/dev
+"unit.test_catalog_scale" start time: Oct 05 12:28 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases: 0 | 0 passed | 0 failed | 660 skipped
+[doctest] assertions: 0 | 0 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_catalog_scale" end time: Oct 05 12:28 CEST
+"unit.test_catalog_scale" time elapsed: 00:00:00
+----------------------------------------------------------
+
+12/108 Testing: unit.test_chat_active_task
+12/108 Test: unit.test_chat_active_task
+Command: "/workspace/scratch/308e2340bae7/chatadhd/loom/build/dev/loom_tests" "--source-file=*/test_chat_active_task.cpp" "--no-intro=true"
+Directory: /workspace/scratch/308e2340bae7/chatadhd/loom/build/dev
+"unit.test_chat_active_task" start time: Oct 05 12:28 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  19 |  19 passed | 0 failed | 641 skipped
+[doctest] assertions: 197 | 197 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.99 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_chat_active_task" end time: Oct 05 12:28 CEST
+"unit.test_chat_active_task" time elapsed: 00:00:00
+----------------------------------------------------------
+
+13/108 Testing: unit.test_chat_active_task_acceptance_audit
+13/108 Test: unit.test_chat_active_task_acceptance_audit
+Command: "/workspace/scratch/308e2340bae7/chatadhd/loom/build/dev/loom_tests" "--source-file=*/test_chat_active_task_acceptance_audit.cpp" "--no-intro=true"
+Directory: /workspace/scratch/308e2340bae7/chatadhd/loom/build/dev
+"unit.test_chat_active_task_acceptance_audit" start time: Oct 05 12:28 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  5 |  5 passed | 0 failed | 655 skipped
+[doctest] assertions: 40 | 40 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.42 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_chat_active_task_acceptance_audit" end time: Oct 05 12:28 CEST
+"unit.test_chat_active_task_acceptance_audit" time elapsed: 00:00:00
+----------------------------------------------------------
+
+14/108 Testing: unit.test_chat_active_task_acceptance_scale
+14/108 Test: unit.test_chat_active_task_acceptance_scale
+Command: "/workspace/scratch/308e2340bae7/chatadhd/loom/build/dev/loom_tests" "--source-file=*/test_chat_active_task_acceptance_scale.cpp" "--no-intro=true"
+Directory: /workspace/scratch/308e2340bae7/chatadhd/loom/build/dev
+"unit.test_chat_active_task_acceptance_scale" start time: Oct 05 12:28 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:    2 |    2 passed | 0 failed | 658 skipped
+[doctest] assertions: 2014 | 2014 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   4.90 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_chat_active_task_acceptance_scale" end time: Oct 05 12:28 CEST
+"unit.test_chat_active_task_acceptance_scale" time elapsed: 00:00:04
+----------------------------------------------------------
+
+15/108 Testing: unit.test_chat_active_task_acceptance_validation
+15/108 Test: unit.test_chat_active_task_acceptance_validation
+Command: "/workspace/scratch/308e2340bae7/chatadhd/loom/build/dev/loom_tests" "--source-file=*/test_chat_active_task_acceptance_validation.cpp" "--no-intro=true"
+Directory: /workspace/scratch/308e2340bae7/chatadhd/loom/build/dev
+"unit.test_chat_active_task_acceptance_validation" start time: Oct 05 12:28 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:   6 |   6 passed | 0 failed | 654 skipped
+[doctest] assertions: 151 | 151 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.63 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_chat_active_task_acceptance_validation" end time: Oct 05 12:28 CEST
+"unit.test_chat_active_task_acceptance_validation" time elapsed: 00:00:00
+----------------------------------------------------------
+
+16/108 Testing: unit.test_chat_active_task_concurrency
+16/108 Test: unit.test_chat_active_task_concurrency
+Command: "/workspace/scratch/308e2340bae7/chatadhd/loom/build/dev/loom_tests" "--source-file=*/test_chat_active_task_concurrency.cpp" "--no-intro=true"
+Directory: /workspace/scratch/308e2340bae7/chatadhd/loom/build/dev
+"unit.test_chat_active_task_concurrency" start time: Oct 05 12:28 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  4 |  4 passed | 0 failed | 656 skipped
+[doctest] assertions: 49 | 49 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.19 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_chat_active_task_concurrency" end time: Oct 05 12:28 CEST
+"unit.test_chat_active_task_concurrency" time elapsed: 00:00:00
+----------------------------------------------------------
+
+17/108 Testing: unit.test_chat_active_task_durability
+17/108 Test: unit.test_chat_active_task_durability
+Command: "/workspace/scratch/308e2340bae7/chatadhd/loom/build/dev/loom_tests" "--source-file=*/test_chat_active_task_durability.cpp" "--no-intro=true"
+Directory: /workspace/scratch/308e2340bae7/chatadhd/loom/build/dev
+"unit.test_chat_active_task_durability" start time: Oct 05 12:28 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:   8 |   8 passed | 0 failed | 652 skipped
+[doctest] assertions: 106 | 106 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.37 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_chat_active_task_durability" end time: Oct 05 12:28 CEST
+"unit.test_chat_active_task_durability" time elapsed: 00:00:00
+----------------------------------------------------------
+
+18/108 Testing: unit.test_chat_active_task_durable_audit
+18/108 Test: unit.test_chat_active_task_durable_audit
+Command: "/workspace/scratch/308e2340bae7/chatadhd/loom/build/dev/loom_tests" "--source-file=*/test_chat_active_task_durable_audit.cpp" "--no-intro=true"
+Directory: /workspace/scratch/308e2340bae7/chatadhd/loom/build/dev
+"unit.test_chat_active_task_durable_audit" start time: Oct 05 12:28 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  6 |  6 passed | 0 failed | 654 skipped
+[doctest] assertions: 76 | 76 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   6.35 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_chat_active_task_durable_audit" end time: Oct 05 12:28 CEST
+"unit.test_chat_active_task_durable_audit" time elapsed: 00:00:06
+----------------------------------------------------------
+
+19/108 Testing: unit.test_chat_active_task_exceptional
+19/108 Test: unit.test_chat_active_task_exceptional
+Command: "/workspace/scratch/308e2340bae7/chatadhd/loom/build/dev/loom_tests" "--source-file=*/test_chat_active_task_exceptional.cpp" "--no-intro=true"
+Directory: /workspace/scratch/308e2340bae7/chatadhd/loom/build/dev
+"unit.test_chat_active_task_exceptional" start time: Oct 05 12:28 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  4 |  4 passed | 0 failed | 656 skipped
+[doctest] assertions: 45 | 45 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.18 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_chat_active_task_exceptional" end time: Oct 05 12:28 CEST
+"unit.test_chat_active_task_exceptional" time elapsed: 00:00:00
+----------------------------------------------------------
+
+20/108 Testing: unit.test_chat_active_task_history_aba
+20/108 Test: unit.test_chat_active_task_history_aba
+Command: "/workspace/scratch/308e2340bae7/chatadhd/loom/build/dev/loom_tests" "--source-file=*/test_chat_active_task_history_aba.cpp" "--no-intro=true"
+Directory: /workspace/scratch/308e2340bae7/chatadhd/loom/build/dev
+"unit.test_chat_active_task_history_aba" start time: Oct 05 12:28 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 659 skipped
+[doctest] assertions: 9 | 9 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_chat_active_task_history_aba" end time: Oct 05 12:28 CEST
+"unit.test_chat_active_task_history_aba" time elapsed: 00:00:00
+----------------------------------------------------------
+
+21/108 Testing: unit.test_chat_active_task_reference
+21/108 Test: unit.test_chat_active_task_reference
+Command: "/workspace/scratch/308e2340bae7/chatadhd/loom/build/dev/loom_tests" "--source-file=*/test_chat_active_task_reference.cpp" "--no-intro=true"
+Directory: /workspace/scratch/308e2340bae7/chatadhd/loom/build/dev
+"unit.test_chat_active_task_reference" start time: Oct 05 12:28 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  7 |  7 passed | 0 failed | 653 skipped
+[doctest] assertions: 49 | 49 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_chat_active_task_reference" end time: Oct 05 12:28 CEST
+"unit.test_chat_active_task_reference" time elapsed: 00:00:00
+----------------------------------------------------------
+
+22/108 Testing: unit.test_chat_active_task_retention
+22/108 Test: unit.test_chat_active_task_retention
+Command: "/workspace/scratch/308e2340bae7/chatadhd/loom/build/dev/loom_tests" "--source-file=*/test_chat_active_task_retention.cpp" "--no-intro=true"
+Directory: /workspace/scratch/308e2340bae7/chatadhd/loom/build/dev
+"unit.test_chat_active_task_retention" start time: Oct 05 12:28 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  11 |  11 passed | 0 failed | 649 skipped
+[doctest] assertions: 232 | 232 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.45 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_chat_active_task_retention" end time: Oct 05 12:28 CEST
+"unit.test_chat_active_task_retention" time elapsed: 00:00:00
+----------------------------------------------------------
+
+23/108 Testing: unit.test_chat_active_task_revisions
+23/108 Test: unit.test_chat_active_task_revisions
+Command: "/workspace/scratch/308e2340bae7/chatadhd/loom/build/dev/loom_tests" "--source-file=*/test_chat_active_task_revisions.cpp" "--no-intro=true"
+Directory: /workspace/scratch/308e2340bae7/chatadhd/loom/build/dev
+"unit.test_chat_active_task_revisions" start time: Oct 05 12:28 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  10 |  10 passed | 0 failed | 650 skipped
+[doctest] assertions: 228 | 228 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.90 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_chat_active_task_revisions" end time: Oct 05 12:28 CEST
+"unit.test_chat_active_task_revisions" time elapsed: 00:00:00
+----------------------------------------------------------
+
+24/108 Testing: unit.test_chat_active_task_scope_identity
+24/108 Test: unit.test_chat_active_task_scope_identity
+Command: "/workspace/scratch/308e2340bae7/chatadhd/loom/build/dev/loom_tests" "--source-file=*/test_chat_active_task_scope_identity.cpp" "--no-intro=true"
+Directory: /workspace/scratch/308e2340bae7/chatadhd/loom/build/dev
+"unit.test_chat_active_task_scope_identity" start time: Oct 05 12:28 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  2 |  2 passed | 0 failed | 658 skipped
+[doctest] assertions: 20 | 20 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.16 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_chat_active_task_scope_identity" end time: Oct 05 12:28 CEST
+"unit.test_chat_active_task_scope_identity" time elapsed: 00:00:00
+----------------------------------------------------------
+
+25/108 Testing: unit.test_chat_engine
+25/108 Test: unit.test_chat_engine
+Command: "/workspace/scratch/308e2340bae7/chatadhd/loom/build/dev/loom_tests" "--source-file=*/test_chat_engine.cpp" "--no-intro=true"
+Directory: /workspace/scratch/308e2340bae7/chatadhd/loom/build/dev
+"unit.test_chat_engine" start time: Oct 05 12:28 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases: 15 | 15 passed | 0 failed | 645 skipped
+[doctest] assertions: 67 | 67 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.06 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_chat_engine" end time: Oct 05 12:28 CEST
+"unit.test_chat_engine" time elapsed: 00:00:00
+----------------------------------------------------------
+
+26/108 Testing: unit.test_chat_knowledge_context
+26/108 Test: unit.test_chat_knowledge_context
+Command: "/workspace/scratch/308e2340bae7/chatadhd/loom/build/dev/loom_tests" "--source-file=*/test_chat_knowledge_context.cpp" "--no-intro=true"
+Directory: /workspace/scratch/308e2340bae7/chatadhd/loom/build/dev
+"unit.test_chat_knowledge_context" start time: Oct 05 12:28 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  15 |  15 passed | 0 failed | 645 skipped
+[doctest] assertions: 212 | 212 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   2.79 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_chat_knowledge_context" end time: Oct 05 12:28 CEST
+"unit.test_chat_knowledge_context" time elapsed: 00:00:02
+----------------------------------------------------------
+
+27/108 Testing: unit.test_chat_retrieval_plan
+27/108 Test: unit.test_chat_retrieval_plan
+Command: "/workspace/scratch/308e2340bae7/chatadhd/loom/build/dev/loom_tests" "--source-file=*/test_chat_retrieval_plan.cpp" "--no-intro=true"
+Directory: /workspace/scratch/308e2340bae7/chatadhd/loom/build/dev
+"unit.test_chat_retrieval_plan" start time: Oct 05 12:28 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:   8 |   8 passed | 0 failed | 652 skipped
+[doctest] assertions: 244 | 244 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   1.61 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_chat_retrieval_plan" end time: Oct 05 12:28 CEST
+"unit.test_chat_retrieval_plan" time elapsed: 00:00:01
+----------------------------------------------------------
+
+28/108 Testing: unit.test_config
+28/108 Test: unit.test_config
+Command: "/workspace/scratch/308e2340bae7/chatadhd/loom/build/dev/loom_tests" "--source-file=*/test_config.cpp" "--no-intro=true"
+Directory: /workspace/scratch/308e2340bae7/chatadhd/loom/build/dev
+"unit.test_config" start time: Oct 05 12:28 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:   5 |   5 passed | 0 failed | 655 skipped
+[doctest] assertions: 113 | 113 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_config" end time: Oct 05 12:28 CEST
+"unit.test_config" time elapsed: 00:00:00
+----------------------------------------------------------
+
+29/108 Testing: unit.test_context_channel_integration
+29/108 Test: unit.test_context_channel_integration
+Command: "/workspace/scratch/308e2340bae7/chatadhd/loom/build/dev/loom_tests" "--source-file=*/test_context_channel_integration.cpp" "--no-intro=true"
+Directory: /workspace/scratch/308e2340bae7/chatadhd/loom/build/dev
+"unit.test_context_channel_integration" start time: Oct 05 12:28 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:  5 |  5 passed | 0 failed | 655 skipped
+[doctest] assertions: 63 | 63 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   1.00 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_context_channel_integration" end time: Oct 05 12:28 CEST
+"unit.test_context_channel_integration" time elapsed: 00:00:01
+----------------------------------------------------------
+
+30/108 Testing: unit.test_context_controls
+30/108 Test: unit.test_context_controls
+Command: "/workspace/scratch/308e2340bae7/chatadhd/loom/build/dev/loom_tests" "--source-file=*/test_context_controls.cpp" "--no-intro=true"
+Directory: /workspace/scratch/308e2340bae7/chatadhd/loom/build/dev
+"unit.test_context_controls" start time: Oct 05 12:28 CEST
+Output:
+----------------------------------------------------------
+===============================================================================
+[doctest] test cases:   9 |   9 passed | 0 failed | 651 skipped
+[doctest] assertions: 153 | 153 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   1.95 sec
+----------------------------------------------------------
+Test Passed.
+"unit.test_context_controls" end time: Oct 05 12:28 CEST
+"unit.test_context_controls" time elapsed: 00:00:01
+----------------------------------------------------------
+

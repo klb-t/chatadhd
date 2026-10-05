@@ -1,0 +1,93 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> loom-web@0.1.0 test:interface-2
+> node e2e/harness-lifecycle-test.mjs && node e2e/source-views.mjs && node e2e/chat-settings-state.mjs && node e2e/profile-view-geometry.mjs && node e2e/workflow-snapshot.mjs --browser && node e2e/workflow-checkpoint.mjs && node e2e/operations-panel.mjs && node e2e/usage-policy-ui.mjs && node e2e/graph-reply-ui.mjs && node e2e/resource-controls.mjs
+
+[harness-lifecycle] PASS early exit0 is rejected even when the caller exits explicitly
+[harness-lifecycle] PASS partial declared count is rejected before completion
+[harness-lifecycle] PASS only exact count and explicit final completion can exit0
+[harness-lifecycle] PASS unsettled cleanup cannot produce a successful suite result
+[harness-lifecycle] PASS historical seven-group output and exit0 fail the native gate
+[harness-lifecycle] PASS full count still requires the declared final denominator and summary
+[harness-lifecycle] PASS native exit and signal failures cannot be masked by complete-looking output
+[harness-lifecycle] PASS HTTP cleanup closes an active fixture socket before native execution
+[harness-lifecycle] PASS missing HTTP close callback fails with a referenced deadline
+[harness-lifecycle] PASS already signal-closed child does not wait for a second close event
+[harness-lifecycle] PASS live native-style child shutdown waits for the close event
+[harness-lifecycle] 11/11 groups passed; standard library, zero provider calls
+PASS native artifact descriptors project exact retained fields without modifying source
+PASS media requires passive MIME, retained base64 and explicit activation
+PASS artifact projection preserves structure while scripts, styles and remote resources remain inert
+PASS retained media decodes only on click, then closes without remote requests
+PASS source view filters never discard unknown JSON or original edited/source distinction
+PASS branch navigation follows complete descendants without restoring messages
+PASS missing parents and cycles are reported with every retained row accessible
+PASS deep topology remains iterative and does not truncate descendants
+[source-views] 8/8 groups passed; zero model calls, zero remote fetches
+[chat-settings-state] PASS registered and unavailable channel IDs remain explicit transport data without guessed availability
+[chat-settings-state] PASS channel page sizes exceed previous UI presets and retain the native integer boundary
+[chat-settings-state] PASS unsupported method weights and parameters fail visibly instead of being silently discarded
+[chat-settings-state] PASS empty and malformed stored values retain their exact original bytes
+[chat-settings-state] PASS invalid known setting types are rejected before restoration without repairing stored values
+[chat-settings-state] PASS duplicate draft thesis identities cannot enter a restored plan
+[chat-settings-state] PASS independent view settings and full context plans survive restart and changes stay isolated
+[chat-settings-state] PASS failed settings persistence leaves both views' previous values intact
+[chat-settings-state] 8/8 passed; zero provider calls.
+[profile-view-geometry] PASS legacy view identities migrate to the unchanged shared selection default
+[profile-view-geometry] PASS detaching preserves the visible selection and stored independent state round trips
+[profile-view-geometry] PASS invalid persisted conversation settings are rejected without mutating source
+[profile-view-geometry] PASS new views retain the legacy shared sidebar and coupled conversation selection
+[profile-view-geometry] PASS independent selection and local creation do not redirect sibling or host selection
+[profile-view-geometry] PASS profile-specific sidebar geometry and workflow selection stay local to the invoking view
+[profile-view-geometry] PASS model and context controls survive coupling changes and sending uses the view's conversation
+[profile-view-geometry] PASS independent layout and successful local workflow survive reload and closing does not delete conversation data
+[profile-view-geometry] PASS legacy layout restoration preserves workflow identity and invalid new settings preserve saved bytes
+[profile-view-geometry] 9/9 passed; authored local HTTP fixtures; zero remote model calls.
+[workflow-snapshot] PASS restart restores exact source bytes, current variables, trace and references without dispatch
+[workflow-snapshot] PASS named snapshots coexist and replacing one uses whole-value config semantics
+[workflow-snapshot] PASS canonical definition/source drift and host same-revision drift are rejected without dispatch
+[workflow-snapshot] PASS changed snapshot state or saved variables cannot bypass trace replay
+[workflow-snapshot] PASS pending remote work survives restart as unknown and cannot continue automatically
+[workflow-snapshot] PASS explicit reconciliation never fabricates success, and abandonment keeps workflow blocked
+[workflow-snapshot] PASS readback detects a lost write and retains the candidate including source bytes
+[workflow-snapshot] PASS malformed remote store is preserved instead of overwritten or silently repaired
+[workflow-snapshot] PASS current capability availability and malformed pending state fail before dispatch
+[workflow-snapshot] PASS JSON boundaries reject hidden values, nonfinite references and invalid Unicode without source mutation
+[workflow-snapshot] PASS every view has exactly one selected-profile session; missing, duplicate, mismatched and extra sessions are rejected
+[workflow-snapshot] PASS browser panel performs no implicit reads/dispatch and read-only unknown recovery is explicit
+[workflow-snapshot] PASS browser reconciliation is staged, saved explicitly and survives browser restart without execution
+[workflow-snapshot] 13 groups passed; persistence/restore never dispatched an adapter.
+[workflow-checkpoint] PASS quota failure preserves the complete prior checkpoint and its recovery state
+[workflow-checkpoint] PASS invalid checkpoints preserve original bytes instead of creating a ready session
+[workflow-checkpoint] PASS failed multi-view restore rolls back prior writes including previously absent checkpoint keys
+[workflow-checkpoint] PASS missing bound input fails before native dispatch without creating an unknown-operation lock
+[workflow-checkpoint] PASS snapshot restore is blocked during delayed workflow dispatch and succeeds after completion
+[workflow-checkpoint] PASS snapshot restore invalidates a delayed file import while retaining its source definition
+[workflow-checkpoint] PASS closed-view completion preserves its pending checkpoint and cannot redirect restored selection
+[workflow-checkpoint] PASS global sidebar creation blocks restore until its native operation and selection complete
+[workflow-checkpoint] PASS closing a view with delayed sidebar creation preserves the restore lock and suppresses its old selection callback
+[workflow-checkpoint] 9/9 passed; authored local HTTP fixtures; zero remote calls.
+[operations-panel] PASS transport filters, encoded identity, explicit content and unavailable upload
+[operations-panel] PASS capabilities individually queryable; source/profile serializer preserved
+[operations-panel] PASS duplicate evidence rejected before persistence
+[operations-panel] PASS artifact metadata listing never reads content; explicit read stays inert
+[operations-panel] PASS audio upload is explicit; chosen provider/language and exact file survive
+[operations-panel] PASS capability status and additive persistence surface native read receipt
+[operations-panel] PASS provider failures are visible, without automatic retry
+[operations-panel] 7/7 groups passed; synthetic offline fixtures, zero paid calls
+[usage-policy-ui] 1/1 group passed: preset/override/effective, read-only override preview + hashes + invalid draft preservation, whole-object policy, failed draft preservation, preview vs request, exact approval/rejection, stale lockout/manual refresh, unknown reservations, config/secret separation, unavailable host
+[graph-reply-ui] PASS Python fixture code-point spans preserve supplementary Unicode and model provenance
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+page.waitForFunction: TypeError: Cannot read properties of null (reading 'textContent')
+    at eval (eval at predicate (eval at evaluate (:290:30)), <anonymous>:1:58)
+    at predicate (eval at evaluate (:290:30), <anonymous>:7:23)
+    at next (eval at evaluate (:290:30), <anonymous>:29:29)
+    at eval (eval at evaluate (:290:30), <anonymous>:42:9)
+    at UtilityScript.evaluate (<anonymous>:292:16)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
+    at /workspace/scratch/308e2340bae7/chatadhd/loom/web/e2e/graph-reply-ui.mjs:166:14
+
+Node.js v24.19.0
