@@ -5,13 +5,17 @@
 #include <doctest/doctest.h>
 
 #include <atomic>
+#include <sqlite3.h>
 
 #include "loom/catalog.h"
 #include "loom/config.h"
 #include "loom/event_bus.h"
 #include "loom/extract.h"
 #include "loom/knowledge.h"
+#include "loom/materialize.h"
+#include "loom/provenance.h"
 #include "loom/runtime.h"
+#include "loom/runtime_profile.h"
 #include "loom/sqlite.h"
 #include "loom/tasks.h"
 #include "loom/util/sha256.h"
@@ -46,6 +50,313 @@ StageFn fake(const std::string& name, std::atomic<int>& calls) {
 }  // namespace
 
 TEST_SUITE("knowledge") {
+  TEST_CASE("builtin runtime profiles preserve historical run and stage fingerprint bytes") {
+    fsutil::TempDir data;
+    auto rt = open_rt(data.path());
+    std::atomic<int> calls{0};
+    rt->knowledge().set_stage("materialize", fake("materialize", calls));
+    KnowledgeConfig cfg;
+    cfg.stages = {"materialize"};
+    const auto pack = unwrap(rt->knowledge().pack());
+    Json expected_inputs = cfg.fingerprint();
+    expected_inputs["source_contents"] = Json::object();
+    const auto expected_run = kb::KnowledgeRun::make_id(pack->hash(), expected_inputs);
+    const Json stage_inputs{{"pack", pack->hash()}, {"run", expected_run}, {"config", cfg.fingerprint()},
+                            {"params", Json::object()}, {"input", ""}};
+    const auto expected_stage = Sha256::hex("knowledge.materialize|" + std::string(kPipelineVersion) + "|" +
+                                          json::canonical(stage_inputs));
+    const auto first = unwrap(rt->knowledge().run(cfg));
+    REQUIRE(first.stages.size() == 1);
+    CHECK(first.run == expected_run);
+    CHECK(first.stages.front().input_hash == expected_stage);
+    auto stored = unwrap(rt->knowledge().store().get_run(first.run));
+    REQUIRE(stored);
+    CHECK(json::canonical(stored->inputs) == json::canonical(expected_inputs));
+    CHECK_FALSE(stored->inputs.contains("runtime_profiles"));
+    const auto run_task = unwrap(rt->tasks().get(first.task_id));
+    REQUIRE(run_task);
+    CHECK(run_task->params == Json{{"config", cfg.to_json()}, {"run", first.run}});
+    const auto stage_task = unwrap(rt->tasks().get(first.stages.front().task_id));
+    REQUIRE(stage_task);
+    CHECK(stage_task->params == Json{{"config", cfg.to_json()}, {"run", first.run}, {"input", nullptr}});
+    const auto repeated = unwrap(rt->knowledge().run(cfg));
+    CHECK(repeated.stages.front().cache_hit);
+    CHECK(calls == 1);
+  }
+
+  TEST_CASE("materialize overlay invalidates cache before rendering and removing it restores builtin identity") {
+    fsutil::TempDir data;
+    auto rt = open_rt(data.path());
+    KnowledgeConfig cfg;
+    cfg.stages = {"materialize"};
+    cfg.out_dir = (data.path() / "products").string();
+    const auto first = unwrap(rt->knowledge().run(cfg));
+    REQUIRE(first.status == "done");
+    const auto original = unwrap(fsutil::read_file(std::filesystem::path(cfg.out_dir) / "SELF.md"));
+    unwrap(fsutil::ensure_dir(data.path() / "profiles"));
+    const auto overlay_path = data.path() / "profiles/materialize.pack";
+    const Json overlay{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "materialize"},
+                       {"overrides", Json{{"templates", Json{{"self_header", "CUSTOM HEADER\n{{run}}\n"}}}}}};
+    unwrap(fsutil::write_file(overlay_path, json::dump(overlay)));
+    const auto profile = unwrap(RuntimeProfile::load("materialize", data.path()));
+    const auto changed = unwrap(rt->knowledge().run(cfg));
+    REQUIRE(changed.status == "done");
+    REQUIRE(changed.stages.size() == 1);
+    CHECK(changed.run != first.run);
+    CHECK(changed.stages.front().input_hash != first.stages.front().input_hash);
+    CHECK_FALSE(changed.stages.front().cache_hit);
+    const auto customized = unwrap(fsutil::read_file(std::filesystem::path(cfg.out_dir) / "SELF.md"));
+    CHECK(customized.rfind("CUSTOM HEADER\n", 0) == 0);
+    CHECK(customized != original);
+    auto stored = unwrap(rt->knowledge().store().get_run(changed.run));
+    REQUIRE(stored);
+    CHECK(stored->inputs["runtime_profiles"]["materialize"] == profile.hash());
+    const auto repeated = unwrap(rt->knowledge().run(cfg));
+    CHECK(repeated.run == changed.run);
+    CHECK(repeated.stages.front().cache_hit);
+    unwrap(fsutil::write_file(overlay_path, "{invalid"));
+    CHECK_FALSE(rt->knowledge().run(cfg));
+    CHECK(unwrap(fsutil::read_file(std::filesystem::path(cfg.out_dir) / "SELF.md")) == customized);
+    std::filesystem::remove(overlay_path);
+    const auto restored = unwrap(rt->knowledge().run(cfg));
+    CHECK(restored.run == first.run);
+    CHECK(restored.stages.front().cache_hit);
+    CHECK(unwrap(fsutil::read_file(std::filesystem::path(cfg.out_dir) / "SELF.md")) == original);
+  }
+
+  TEST_CASE("knowledge profile configures retries, task queries and fingerprint source filename filters") {
+    fsutil::TempDir data, source;
+    auto rt = open_rt(data.path());
+    std::atomic<int> calls{0};
+    rt->knowledge().set_stage("catalog", fake("catalog", calls));
+    unwrap(fsutil::write_file(source.path() / "visible.txt", "visible synthetic source"));
+    unwrap(fsutil::write_file(source.path() / ".hidden.txt", "hidden synthetic source"));
+    unwrap(fsutil::write_file(source.path() / "__MACOSX", "excluded synthetic source"));
+    KnowledgeConfig cfg;
+    cfg.sources = {source.path().string()};
+    cfg.stages = {"catalog"};
+    const auto first = unwrap(rt->knowledge().run(cfg));
+    const auto first_stored = unwrap(rt->knowledge().store().get_run(first.run));
+    REQUIRE(first_stored);
+    CHECK_FALSE(first_stored->inputs["source_contents"].contains((source.path() / ".hidden.txt").string()));
+    CHECK_FALSE(first_stored->inputs["source_contents"].contains((source.path() / "__MACOSX").string()));
+    unwrap(fsutil::ensure_dir(data.path() / "profiles"));
+    const Json overlay{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "knowledge"},
+                       {"overrides", Json{{"query", Json{{"latest_runs", 0}}},
+                                          {"attempts", Json{{"run", 2}, {"stage_default", 3}}},
+                                          {"source_filters", Json{{"excluded_prefixes", Json::array()},
+                                                                  {"excluded_names", Json::array()}}}}}};
+    const auto overlay_path = data.path() / "profiles/knowledge.pack";
+    unwrap(fsutil::write_file(overlay_path, json::dump(overlay)));
+    const auto changed = unwrap(rt->knowledge().run(cfg));
+    CHECK(changed.run != first.run);
+    const auto stored = unwrap(rt->knowledge().store().get_run(changed.run));
+    REQUIRE(stored);
+    CHECK(stored->inputs["source_contents"].contains((source.path() / ".hidden.txt").string()));
+    CHECK(stored->inputs["source_contents"].contains((source.path() / "__MACOSX").string()));
+    CHECK(stored->inputs["runtime_profiles"].contains("knowledge"));
+    const auto run_task = unwrap(rt->tasks().get(changed.task_id));
+    REQUIRE(run_task);
+    CHECK(run_task->max_attempts == 2);
+    const auto stage_task = unwrap(rt->tasks().get(changed.stages.front().task_id));
+    REQUIRE(stage_task);
+    CHECK(stage_task->max_attempts == 3);
+    CHECK(unwrap(rt->knowledge().status())["run"].is_null());
+    CHECK(unwrap(rt->knowledge().status(changed.task_id))["stages"].size() == 1);
+    unwrap(fsutil::write_file(overlay_path, "{invalid"));
+    CHECK_FALSE(rt->knowledge().run(cfg));
+    CHECK_FALSE(rt->knowledge().status(changed.task_id));
+    CHECK(calls == 2);
+  }
+
+  TEST_CASE("queued runs and stages reject a changed nonbuiltin recipe before executing or cache lookup") {
+    for (const std::string domain : {"knowledge", "materialize"}) {
+      CAPTURE(domain);
+      fsutil::TempDir data;
+      auto rt = open_rt(data.path());
+      std::atomic<int> calls{0};
+      rt->knowledge().set_stage("catalog", fake("catalog", calls));
+      unwrap(fsutil::ensure_dir(data.path() / "profiles"));
+      const auto overlay_path = data.path() / "profiles" / (domain + ".pack");
+      auto overlay = [&](int recipe) {
+        const Json values = domain == "knowledge"
+                                ? Json{{"poll_interval_ms", recipe}}
+                                : Json{{"templates", Json{{"self_header", "recipe " + std::to_string(recipe) + "\n"}}}};
+        return Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", domain}, {"overrides", values}};
+      };
+      unwrap(fsutil::write_file(overlay_path, json::dump(overlay(0))));
+      KnowledgeConfig cfg;
+      cfg.stages = {"catalog"};
+      const auto original = unwrap(rt->knowledge().run(cfg));
+      REQUIRE(original.status == "done");
+      const auto run_task = unwrap(rt->tasks().get(original.task_id));
+      const auto stage_task = unwrap(rt->tasks().get(original.stages.front().task_id));
+      REQUIRE(run_task);
+      REQUIRE(stage_task);
+      REQUIRE(run_task->params["runtime_profiles"].contains(domain));
+      CHECK(stage_task->params["runtime_profiles"] == run_task->params["runtime_profiles"]);
+      CHECK(run_task->params["config"]["stage_params"] == cfg.stage_params);
+      SubmitOptions queued;
+      queued.max_attempts = 1;
+      const auto run_id = unwrap(rt->tasks().submit("knowledge.run", run_task->params, queued));
+      const auto stage_id = unwrap(rt->tasks().submit("knowledge.catalog", stage_task->params, queued));
+      unwrap(fsutil::write_file(overlay_path, json::dump(overlay(1))));
+      for (const auto& id : {run_id, stage_id}) {
+        const auto failed = unwrap(rt->tasks().run_sync(id));
+        CHECK(failed.status == task_status::kFailed);
+        CHECK(failed.error.find("runtime profile recipe changed for " + domain) != std::string::npos);
+        CHECK(failed.output_hash.empty());
+        CHECK_FALSE(failed.result.has_value());
+      }
+      CHECK(calls == 1);
+      TaskFilter children;
+      children.parent_id = run_id;
+      CHECK(unwrap(rt->tasks().list(children)).empty());
+      const auto current = unwrap(rt->knowledge().run(cfg));
+      CHECK(current.status == "done");
+      CHECK(current.run != original.run);
+      CHECK_FALSE(current.stages.front().cache_hit);
+      CHECK(calls == 2);
+    }
+  }
+
+  TEST_CASE("missing queued recipe metadata pins builtin rather than adopting a later overlay") {
+    fsutil::TempDir data;
+    auto rt = open_rt(data.path());
+    std::atomic<int> calls{0};
+    rt->knowledge().set_stage("catalog", fake("catalog", calls));
+    KnowledgeConfig cfg;
+    cfg.stages = {"catalog"};
+    const auto original = unwrap(rt->knowledge().run(cfg));
+    const auto run_task = unwrap(rt->tasks().get(original.task_id));
+    const auto stage_task = unwrap(rt->tasks().get(original.stages.front().task_id));
+    REQUIRE(run_task);
+    REQUIRE(stage_task);
+    REQUIRE_FALSE(run_task->params.contains("runtime_profiles"));
+    REQUIRE_FALSE(stage_task->params.contains("runtime_profiles"));
+    SubmitOptions queued;
+    queued.max_attempts = 1;
+    const auto run_id = unwrap(rt->tasks().submit("knowledge.run", run_task->params, queued));
+    const auto stage_id = unwrap(rt->tasks().submit("knowledge.catalog", stage_task->params, queued));
+    unwrap(fsutil::ensure_dir(data.path() / "profiles"));
+    unwrap(fsutil::write_file(data.path() / "profiles/knowledge.pack",
+        json::dump(Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "knowledge"},
+                        {"overrides", Json{{"poll_interval_ms", 0}}}})));
+    for (const auto& id : {run_id, stage_id}) {
+      const auto failed = unwrap(rt->tasks().run_sync(id));
+      CHECK(failed.status == task_status::kFailed);
+      CHECK(failed.error.find("runtime profile recipe changed for knowledge") != std::string::npos);
+      CHECK(failed.output_hash.empty());
+    }
+    CHECK(calls == 1);
+  }
+
+  TEST_CASE("a stage changing its recipe cannot persist successful cache output") {
+    fsutil::TempDir data;
+    auto rt = open_rt(data.path());
+    unwrap(fsutil::ensure_dir(data.path() / "profiles"));
+    const auto overlay_path = data.path() / "profiles/knowledge.pack";
+    const Json changed{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "knowledge"},
+                       {"overrides", Json{{"poll_interval_ms", 0}}}};
+    rt->knowledge().set_stage("catalog", [&](StageContext&) -> Result<Json> {
+      LOOM_TRY(fsutil::write_file(overlay_path, json::dump(changed)));
+      return Json{{"output", "must-not-be-cached"}};
+    });
+    KnowledgeConfig cfg;
+    cfg.stages = {"catalog"};
+    const auto run = unwrap(rt->knowledge().run(cfg));
+    CHECK(run.status == "failed");
+    CHECK(run.error.find("runtime profile recipe changed for knowledge") != std::string::npos);
+    TaskFilter stages;
+    stages.kind = "knowledge.catalog";
+    const auto tasks = unwrap(rt->tasks().list(stages));
+    REQUIRE(tasks.size() == 1);
+    CHECK(tasks.front().status == task_status::kFailed);
+    CHECK(tasks.front().output_hash.empty());
+    CHECK_FALSE(tasks.front().result.has_value());
+  }
+
+  TEST_CASE("materialize checks its queued recipe again after the handler-to-stage boundary") {
+    fsutil::TempDir data;
+    auto rt = open_rt(data.path());
+    unwrap(fsutil::ensure_dir(data.path() / "profiles"));
+    const Json changed{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "materialize"},
+                       {"overrides", Json{{"templates", Json{{"self_header", "new recipe\n"}}}}}};
+    rt->knowledge().set_stage("materialize", [&](StageContext& ctx) -> Result<Json> {
+      LOOM_TRY(fsutil::write_file(data.path() / "profiles/materialize.pack", json::dump(changed)));
+      return materialize::run_stage(ctx);
+    });
+    KnowledgeConfig cfg;
+    cfg.stages = {"materialize"};
+    cfg.out_dir = (data.path() / "products").string();
+    const auto run = unwrap(rt->knowledge().run(cfg));
+    CHECK(run.status == "failed");
+    CHECK(run.error.find("runtime profile recipe changed for materialize") != std::string::npos);
+    CHECK(unwrap(rt->provenance().list_artifacts()).empty());
+    CHECK(unwrap(rt->knowledge().store().list_products(run.run)).empty());
+    CHECK_FALSE(std::filesystem::exists(std::filesystem::path(cfg.out_dir) / "SELF.md"));
+    const auto retry = unwrap(rt->knowledge().run(cfg));
+    CHECK(retry.status == "done");
+    CHECK_FALSE(retry.stages.front().cache_hit);
+    CHECK(retry.stages.front().input_hash != run.stages.front().input_hash);
+  }
+
+  TEST_CASE("materialize rejects a renderer reloading a changed recipe before the next artifact write") {
+    fsutil::TempDir data;
+    auto rt = open_rt(data.path());
+    unwrap(fsutil::ensure_dir(data.path() / "profiles"));
+    unwrap(fsutil::write_file(data.path() / "profiles/knowledge.pack",
+        json::dump(Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "knowledge"},
+                        {"overrides", Json{{"attempts", Json{{"stage_default", 1}}}}}})));
+    struct Swap {
+      std::filesystem::path path;
+      std::string content;
+      bool changed = false;
+      Status written;
+    } swap{data.path() / "profiles/materialize.pack",
+           json::dump(Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "materialize"},
+                           {"overrides", Json{{"templates", Json{{"backlog_header", "new backlog recipe\n"}}}}}}),
+           false, {}};
+    // The first artifact INSERT is an exact, synchronous point between the
+    // self-description renderer and the later backlog renderer; no timing or
+    // thread scheduling assumptions are needed to reproduce the reload race.
+    sqlite3_update_hook(rt->db().conn().handle(),
+        [](void* opaque, int operation, const char*, const char* table, sqlite3_int64) {
+          auto& state = *static_cast<Swap*>(opaque);
+          if (operation == SQLITE_INSERT && std::string_view(table) == "loom_artifacts" && !state.changed) {
+            state.changed = true;
+            state.written = fsutil::write_file(state.path, state.content);
+          }
+        }, &swap);
+    KnowledgeConfig cfg;
+    cfg.stages = {"materialize"};
+    cfg.out_dir = (data.path() / "products").string();
+    auto result = rt->knowledge().run(cfg);
+    sqlite3_update_hook(rt->db().conn().handle(), nullptr, nullptr);
+    const auto run = unwrap(std::move(result));
+    REQUIRE(swap.changed);
+    REQUIRE(swap.written);
+    CHECK(run.status == "failed");
+    CHECK(run.error.find("runtime profile recipe changed while materializing") != std::string::npos);
+    const auto artifacts = unwrap(rt->provenance().list_artifacts());
+    REQUIRE(artifacts.size() == 1);
+    CHECK(artifacts.front().kind == "knowledge.self_description");
+    CHECK_FALSE(artifacts.front().metadata.contains("runtime_profile_hash"));
+    CHECK(std::filesystem::exists(std::filesystem::path(cfg.out_dir) / "SELF.md"));
+    CHECK_FALSE(std::filesystem::exists(std::filesystem::path(cfg.out_dir) / "BACKLOG.md"));
+    {
+      const auto lock = rt->db().lock();
+      CHECK(unwrap(rt->db().conn().query_int("SELECT COUNT(*) FROM loom_blobs")) == 1);
+    }
+    CHECK(unwrap(rt->knowledge().store().list_products(run.run)).empty());
+    REQUIRE(run.stages.size() == 1);
+    const auto stage = unwrap(rt->tasks().get(run.stages.front().task_id));
+    REQUIRE(stage);
+    CHECK(stage->status == task_status::kFailed);
+    CHECK(stage->output_hash.empty());
+    CHECK_FALSE(stage->result.has_value());
+  }
+
   TEST_CASE("config: unknown keys and stages are rejected; stages run in pipeline order") {
     CHECK(!KnowledgeConfig::from_json(Json{{"nope", 1}}));
     CHECK(!KnowledgeConfig::from_json(Json{{"stages", Json::array({"dream"})}}));

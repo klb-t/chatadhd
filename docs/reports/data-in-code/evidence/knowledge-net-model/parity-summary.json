@@ -1,0 +1,10 @@
+{
+  "status_histories": 345,
+  "status_records": 1043,
+  "anchoring_morphisms": 122,
+  "http_requests": 7,
+  "authority_ranks": 7,
+  "bytes": 264606,
+  "sha256": "6eb6f00d3c398870a15f350a918d7558eb20d68e31b64af82ca745d250b0b7a4",
+  "byte_parity": true
+}

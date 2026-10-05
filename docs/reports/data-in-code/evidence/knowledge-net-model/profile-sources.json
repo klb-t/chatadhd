@@ -1,0 +1,10 @@
+{
+  "profile_files": {
+    "knowledge.pack": "7a6c7fbf2189b1313b048f153d45d650071d685f43ebd145f715c01a44a1d00d",
+    "net.pack": "09382936410d38f0ae086e3ef5220ddb2a669fc310f6cded7afa5739ded36fc1",
+    "model.pack": "1ff650b9a86b15d7409aaabf5c698d025fa09af843f7e856002a61c353fe71bd"
+  },
+  "generator_source_sha256": "b08a1a3c79f68cc9746fe9134d30738bf6b1de8a3e10994235adb10c5008b4ba",
+  "note": "knowledge.pack includes the later config_defaults addition; net/model focused run does not construct KnowledgeConfig or Runtime.",
+  "knowledge_config_generated_embedding_sha256": "5b5ee7fb33af9d0ca1b8b06a5d4fa8f952740e1c251f410c21298268f03b695b"
+}

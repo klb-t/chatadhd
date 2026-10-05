@@ -56,6 +56,7 @@
 namespace loom {
 
 class Runtime;
+class RuntimeProfile;
 
 namespace knowledge {
 
@@ -68,12 +69,14 @@ bool is_stage(std::string_view name) noexcept;
 std::string_view stage_input(std::string_view stage) noexcept;
 
 struct KnowledgeConfig {
+  static bool builtin_priors_default();
+  static std::string builtin_llm_default();
   std::vector<std::string> sources;       // exports / dirs / files: catalogued, imported selectively (R1)
   std::optional<std::string> repo;        // repository (code + git history)
   std::vector<std::string> stages;        // run these (in pipeline order); empty = all
   std::string prior_cut;                  // temporal holdout: model::PriorFilter::as_of ("" = none)
-  bool priors = true;                     // false = no seed priors at all
-  std::string llm = "off";                // "off" | "auto" (source-linked semantic candidates using semantic_model)
+  bool priors = builtin_priors_default(); // false = no seed priors at all
+  std::string llm = builtin_llm_default(); // "off" | "auto" (source-linked semantic candidates using semantic_model)
   std::string out_dir;                    // materialized files ("" = artifacts only)
   std::string project;                    // display name ("" = derived)
   bool force = false;                     // ignore cached stage results
@@ -82,6 +85,8 @@ struct KnowledgeConfig {
   // Keys: sources, repo, stages, prior_cut, priors, llm, out_dir, project,
   // force, stage_params. Unknown keys / stages -> InvalidArgument.
   static Result<KnowledgeConfig> from_json(const Json& j);
+  // Omitted priors/llm come from the validated recipe; explicit DTO fields win.
+  static Result<KnowledgeConfig> from_json_with_profile(const Json& j, const RuntimeProfile& profile);
   Json to_json() const;
   // What the results depend on (no out_dir, no force): the run id input.
   Json fingerprint() const;
@@ -107,6 +112,10 @@ struct StageContext {
   std::function<bool()> should_stop;              // true -> save a checkpoint, return Errc::Paused
   std::function<Status(const Json&)> checkpoint;  // persist resumable state
   std::optional<Json> resume_from;                // checkpoint of an interrupted attempt
+  // Internal task identity, separate from user stage params. An empty map
+  // pins built-in recipes; nullopt permits a directly invoked stage to select
+  // its recipe at entry. KnowledgeEngine always supplies the pinned map.
+  std::optional<Json> expected_runtime_profiles = std::nullopt;
 };
 
 // A stage returns its deterministic result:
@@ -163,7 +172,8 @@ class KnowledgeEngine {
   struct State;  // src/knowledge only
 
  private:
-  Result<RunResult> orchestrate(const KnowledgeConfig& cfg, const std::string& run_task, const std::string& krun);
+  Result<RunResult> orchestrate(const KnowledgeConfig& cfg, const std::string& run_task, const std::string& krun,
+                                const Json& expected_profiles);
   Runtime& rt_;
   std::unique_ptr<State> st_;
 };

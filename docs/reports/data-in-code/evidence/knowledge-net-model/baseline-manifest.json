@@ -1,0 +1,18 @@
+{
+  "headers": "/workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/include",
+  "old_dependencies": [
+    {
+      "path": "/workspace/scratch/98e6ad903811/baseline/loom/build/dev/libloom_core.a",
+      "sha256": "a3a68f4ac51b9aa3a65973baa8b01122ec7d0813f38cda70a6b31696d4dcfb91"
+    },
+    {
+      "path": "/workspace/scratch/98e6ad903811/baseline/loom/build/dev/libloom_sqlite3_amalgamation.a",
+      "sha256": "a1c23c826195f7dffa2b60289e1a6eb4fb88421e04f0a04fd00801218fc7a0ee"
+    },
+    {
+      "path": "/workspace/scratch/98e6ad903811/baseline/loom/build/dev/libloom_miniz.a",
+      "sha256": "820b88f2175e9c6e3e4587a18820f4ab53715093a16d080ba7425268b88428cb"
+    }
+  ],
+  "probe_sha256": "69680851938d501cbef6ac88e1667cbad0a7775420d33bb674e96fe38562e11f"
+}
