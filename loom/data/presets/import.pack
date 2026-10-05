@@ -1,0 +1,16 @@
+{
+  "schema": "loom.import_preset/1",
+  "id": "loom.preset.import.default",
+  "version": 1,
+  "values": {
+    "stream_threshold_bytes": 5000000,
+    "json_read_chunk_bytes": 65536,
+    "json_max_depth": 512,
+    "json_inline_threshold_bytes": 1000000,
+    "generic_inference_max_bytes": 64000000
+  },
+  "compatibility": {
+    "legacy_values_sha256": "8cbdba78941cc8b224f007ed5f089d79b1b6e3c35cf25cae06ef04d7102c8a35",
+    "legacy_projection_values_sha256": "264712ab0527df1efb35a08704c44d1ee16a8fa43a887fb0b4453f3f64c02bf0"
+  }
+}
