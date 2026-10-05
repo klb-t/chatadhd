@@ -42,6 +42,9 @@ TEST_CASE("runtime preset uses canonical generated descriptors with stable exact
     CHECK(preset.hash == authoritative.hash());
     CHECK(preset.values == authoritative.values());
     CHECK(preset.inspection()["validation_basis"] == "runtime_profile_value_schema");
+    const auto authoritative_inspection = authoritative.inspection();
+    for (const auto& field : authoritative_inspection.items())
+      CHECK(preset.inspection().at(field.key()) == field.value());
 #else
     CHECK(preset.inspection()["validation_basis"] == "native_consumed_fields");
 #endif
@@ -86,6 +89,47 @@ TEST_CASE("runtime preset historical cue identity stays anchored without hiding 
   }
   CHECK(matched == entries.size());
   CHECK(context::builtin_runtime_preset_layer_entries() == entries);
+}
+
+TEST_CASE("runtime preset builtin equality ignores object order without rounding distinct numbers") {
+  const auto& definition = context::builtin_chat_reasoning_definition();
+  const auto& defaults = definition["defaults"];
+  Json reordered = Json::object();
+  for (auto field = defaults.rbegin(); field != defaults.rend(); ++field)
+    reordered[field.key()] = field.value();
+  Json reordered_budgets = Json::object();
+  for (auto effort = defaults["budget_by_effort"].rbegin(); effort != defaults["budget_by_effort"].rend(); ++effort)
+    reordered_budgets[effort.key()] = effort.value();
+  reordered["budget_by_effort"] = reordered_budgets;
+  REQUIRE(json::dump(reordered) != json::dump(defaults));
+  CHECK(json::canonical(reordered) == json::canonical(defaults));
+  CHECK(reordered["thinking_indicators"] == defaults["thinking_indicators"]);
+  CHECK(reordered["budget_model_markers"] == defaults["budget_model_markers"]);
+  CHECK(reordered["unknown_effort_budget"].type() == defaults["unknown_effort_budget"].type());
+  CHECK(reordered["budget_by_effort"]["low"].type() == defaults["budget_by_effort"]["low"].type());
+  const auto unchanged = resolve(definition, Json{{"effective_values", reordered}});
+  CHECK(unchanged.hash == resolve(definition).hash);
+  CHECK(unchanged.inspection()["is_builtin"] == true);
+  CHECK(unchanged.inspection()["source"] == "caller_effective_values");
+  CHECK(json::dump(unchanged.values) == json::dump(reordered));
+
+  // These two finite values differ exactly, although an implicit uint64 ->
+  // double comparison can round them to the same floating-point value.
+  auto large_definition = context::builtin_context_goal_cues_definition();
+  large_definition["defaults"]["cue_weight_base"] = std::uint64_t{9007199254740993};
+  auto rounded = large_definition["defaults"];
+  rounded["cue_weight_base"] = 9007199254740992.0;
+  const auto changed = resolve(large_definition, Json{{"effective_values", rounded}});
+  CHECK(changed.hash != resolve(large_definition).hash);
+  CHECK(changed.inspection()["is_builtin"] == false);
+#if __has_include("loom/runtime_profile.h")
+  const auto authoritative = checked(checked(RuntimeProfile::from_definition(definition)).with_values(reordered));
+  CHECK(unchanged.hash == authoritative.hash());
+  CHECK(authoritative.is_builtin());
+  const auto distinct_number = checked(checked(RuntimeProfile::from_definition(large_definition)).with_values(rounded));
+  CHECK_FALSE(distinct_number.is_builtin());
+  CHECK(changed.hash == distinct_number.hash());
+#endif
 }
 
 TEST_CASE("runtime preset rejects invalid options and ambiguous snapshot ownership") {
