@@ -1,0 +1,15 @@
+.usage-policy-panel { margin-top: 24px; }
+.usage-policy-panel p { line-height: 1.5; overflow-wrap: anywhere; }
+.usage-policy-panel pre, .expert-config pre { max-height: 360px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; padding: 10px; background: var(--bg, #171a22); border: 1px solid var(--border, #3b3e48); border-radius: 6px; }
+.usage-policy-panel details { margin: 10px 0; }
+.usage-policy-panel summary { cursor: pointer; overflow-wrap: anywhere; }
+.usage-json-editor { width: 100%; box-sizing: border-box; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; resize: vertical; }
+.usage-settings-values { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 12px; }
+.usage-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+.usage-receipt { border: 1px solid var(--border, #3b3e48); border-radius: 8px; padding: 12px; margin: 14px 0; }
+.usage-table-scroll { overflow-x: auto; }
+.usage-resource-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.usage-resource-table th, .usage-resource-table td { text-align: left; vertical-align: top; padding: 8px; border-bottom: 1px solid var(--border, #3b3e48); }
+.usage-resource-table small { display: block; margin-top: 4px; opacity: .8; }
+.usage-resource-table [data-triggering="true"] { background: rgb(212 151 24 / .13); }
+.usage-policy-panel [role="alert"], .settings-errors [role="alert"] { border-left: 3px solid #d06666; padding: 8px 10px; margin: 8px 0; overflow-wrap: anywhere; }
