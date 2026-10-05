@@ -1,0 +1,37 @@
+{
+  "schema": "loom.recovery_verification/1",
+  "observed_at_utc": "2026-10-05T16:59:22.262944+00:00",
+  "python": "3.13.5",
+  "scope": "offline research intake only; no native/core/web changes",
+  "unit_tests": {
+    "executed": 37,
+    "passed": 37,
+    "failed": 0,
+    "skipped": 0,
+    "log": "tests-final.log"
+  },
+  "actual_capsule": {
+    "cases": 3,
+    "messages_preserved": 44,
+    "native_nodes": 47,
+    "parent_edges": 44,
+    "array_parent_inversions": 20,
+    "cases_with_inversions": 2,
+    "derived_parent_edges_forward": 44,
+    "previous_freeze_files_verified": 13,
+    "previous_prepared_operations_preserved": 8,
+    "input_archive_unchanged": true
+  },
+  "paid_calls": 0,
+  "cost_usd": "0",
+  "native_ctest": "not_run",
+  "web_build": "not_run",
+  "github_actions_runs": 0,
+  "hashes": {
+    "intake.py": "d173e8e612f6b62c6fef52693d8086979d9b9b44543c69ca9003019061ca128f",
+    "test_intake.py": "11a71f17db7fe8d3ecb335ed0ad16b962e9d55303749f067de5e869a43d70418",
+    "layout.json": "dcbfdfddf425448a77afd62d99a22a5d037017e9c5c3bfe91e48ef1a9b763a3d",
+    "REAL_SOURCE_RECEIPT.json": "a243a2ca5b52152f9c7c02341b54c3037e0b8065f1889f420576be8b788be512",
+    "tests-final.log": "ed422ad4243cd8eed3feaff233e5bb673900376d76881ba37483d940951b8540"
+  }
+}

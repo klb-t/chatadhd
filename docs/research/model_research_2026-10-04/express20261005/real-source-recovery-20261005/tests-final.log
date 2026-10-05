@@ -1,0 +1,42 @@
+test_duplicate_json_keys_are_rejected (test_intake.IntegrityTests.test_duplicate_json_keys_are_rejected) ... ok
+test_full_capsule_and_public_allowlist (test_intake.IntegrityTests.test_full_capsule_and_public_allowlist) ... ok
+test_layout_schema_is_checked (test_intake.IntegrityTests.test_layout_schema_is_checked) ... ok
+test_native_content_hash_is_frozen (test_intake.IntegrityTests.test_native_content_hash_is_frozen) ... ok
+test_nonfinite_json_numbers_are_rejected (test_intake.IntegrityTests.test_nonfinite_json_numbers_are_rejected) ... ok
+test_original_hash_is_canonical_not_pretty_bytes (test_intake.IntegrityTests.test_original_hash_is_canonical_not_pretty_bytes) ... ok
+test_previous_request_bytes_are_frozen (test_intake.IntegrityTests.test_previous_request_bytes_are_frozen) ... ok
+test_private_output_cannot_enter_git (test_intake.IntegrityTests.test_private_output_cannot_enter_git) ... ok
+test_private_output_never_overwrites (test_intake.IntegrityTests.test_private_output_never_overwrites) ... ok
+test_projected_source_bytes_are_frozen (test_intake.IntegrityTests.test_projected_source_bytes_are_frozen) ... ok
+test_unsafe_paths_are_rejected (test_intake.IntegrityTests.test_unsafe_paths_are_rejected) ... ok
+test_zip_duplicate (test_intake.IntegrityTests.test_zip_duplicate) ... ok
+test_zip_hash_mismatch (test_intake.IntegrityTests.test_zip_hash_mismatch) ... ok
+test_zip_load (test_intake.IntegrityTests.test_zip_load) ... ok
+test_zip_symlink (test_intake.IntegrityTests.test_zip_symlink) ... ok
+test_zip_traversal (test_intake.IntegrityTests.test_zip_traversal) ... ok
+test_absent_timestamp_is_not_invented (test_intake.ProjectionTests.test_absent_timestamp_is_not_invented) ... ok
+test_all_saved_branches_survive (test_intake.ProjectionTests.test_all_saved_branches_survive) ... ok
+test_clock_conflict_does_not_override_ancestry (test_intake.ProjectionTests.test_clock_conflict_does_not_override_ancestry) ... ok
+test_contradictory_child_list_is_rejected (test_intake.ProjectionTests.test_contradictory_child_list_is_rejected) ... ok
+test_cycle_is_rejected (test_intake.ProjectionTests.test_cycle_is_rejected) ... ok
+test_declared_children_match_parent_edges (test_intake.ProjectionTests.test_declared_children_match_parent_edges) ... ok
+test_dropped_branch_message_is_rejected (test_intake.ProjectionTests.test_dropped_branch_message_is_rejected) ... ok
+test_duplicate_declared_child_is_rejected (test_intake.ProjectionTests.test_duplicate_declared_child_is_rejected) ... ok
+test_duplicate_message_is_rejected (test_intake.ProjectionTests.test_duplicate_message_is_rejected) ... ok
+test_duplicate_turn_is_rejected (test_intake.ProjectionTests.test_duplicate_turn_is_rejected) ... ok
+test_invalid_case_container_is_rejected (test_intake.ProjectionTests.test_invalid_case_container_is_rejected) ... ok
+test_invalid_native_author_is_rejected (test_intake.ProjectionTests.test_invalid_native_author_is_rejected) ... ok
+test_malformed_current_node_is_rejected (test_intake.ProjectionTests.test_malformed_current_node_is_rejected) ... ok
+test_mapping_mutation_is_rejected (test_intake.ProjectionTests.test_mapping_mutation_is_rejected) ... ok
+test_message_mutation_is_rejected (test_intake.ProjectionTests.test_message_mutation_is_rejected) ... ok
+test_missing_current_node_is_rejected (test_intake.ProjectionTests.test_missing_current_node_is_rejected) ... ok
+test_missing_parent_is_rejected (test_intake.ProjectionTests.test_missing_parent_is_rejected) ... ok
+test_reverse_array_is_not_chronology (test_intake.ProjectionTests.test_reverse_array_is_not_chronology) ... ok
+test_source_objects_and_roles_do_not_change (test_intake.ProjectionTests.test_source_objects_and_roles_do_not_change) ... ok
+test_speaker_mutation_is_rejected (test_intake.ProjectionTests.test_speaker_mutation_is_rejected) ... ok
+test_unknown_native_fields_remain (test_intake.ProjectionTests.test_unknown_native_fields_remain) ... ok
+
+----------------------------------------------------------------------
+Ran 37 tests in 0.009s
+
+OK

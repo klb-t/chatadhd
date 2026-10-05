@@ -1,0 +1,56 @@
+{
+  "schema": "loom.research_thread_coordination/1",
+  "updated_at_utc": "2026-10-05T16:59:22Z",
+  "research_base_commit": "b0b02c1b7d8b3717799e7b86ed976b21ab1fa4c4",
+  "mode": "real_exports_only",
+  "sole_payer": "7A",
+  "new_paid_calls_in_this_recovery": 0,
+  "new_spend_usd": "0",
+  "source": {
+    "private_library_filename": "Thread7_REAL_SOURCE_FREEZE_20261005.zip",
+    "capsule_sha256": "5f976bbf9cee15dfe232e329dc2c85ebc40cae981af7ceedc56fc8e08719a832",
+    "source_intake_ready": true,
+    "case_count": 3,
+    "message_count": 44,
+    "receipt": "real-source-recovery-20261005/REAL_SOURCE_RECEIPT.json",
+    "receipt_sha256": "a243a2ca5b52152f9c7c02341b54c3037e0b8065f1889f420576be8b788be512",
+    "tool": "real-source-recovery-20261005/intake.py"
+  },
+  "projection": {
+    "additive": true,
+    "old_freeze_unchanged": true,
+    "old_prepared_operations_preserved": 8,
+    "array_parent_inversions_observed": 20,
+    "graph_view_private_only": true,
+    "new_request_freeze_required": true
+  },
+  "dispatch_ready": false,
+  "not_dispatch_authorization": true,
+  "missing_gates": [
+    "reviewed_gold_freeze",
+    "new_request_freeze",
+    "central_7A_cost_preflight"
+  ],
+  "7B": "Reuse the shared verified source, adapt the existing prompt/preference scorer and freeze new source-bound questions and requests; retain the withdrawn synthetic panel unchanged.",
+  "7C": "Reuse the shared verified source, freeze reviewed ordered-argument/speaker/as-of gold and j_active/j_directed requests; disclose the three-case population and missing target strata before collection.",
+  "privacy": {
+    "public_allowlist": [
+      "technical_hashes",
+      "aggregate_counts",
+      "implementation_and_test_code",
+      "status"
+    ],
+    "do_not_publish": [
+      "raw_conversations",
+      "private_identifiers",
+      "source_locators",
+      "request_bodies",
+      "raw_responses",
+      "credentials",
+      "payer_ledger"
+    ],
+    "public_full_replay": false
+  },
+  "quality": null,
+  "native_integration_status": "unchanged; not claimed by this research increment"
+}
