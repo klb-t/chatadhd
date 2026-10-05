@@ -1,0 +1,63 @@
+{
+  "schema": "loom.programme_native_results_policy/1",
+  "input_schemas": {
+    "normalized": "loom.programme_results/1",
+    "prepared": "loom.native_semantic_study.preparation/1",
+    "source_inputs": "loom.native_semantic_study.inputs/1"
+  },
+  "prepared": {
+    "requests_path": ["requests"],
+    "planned_count_path": ["planned_requests"],
+    "request_id_path": ["request", "id"],
+    "body_path": ["request", "body"],
+    "request_hash_path": ["request_hash"],
+    "packet_hash_path": ["packet_hash"],
+    "case_id_path": ["case_id"],
+    "method_id_path": ["method_id"]
+  },
+  "source_inputs": {"cases_path": ["cases"], "id_path": ["id"], "packet_path": ["source_packet"], "packet_hash_path": ["packet_hash"]},
+  "request_packet": {
+    "items_path": ["messages"], "item_filter": {"role": "user"},
+    "content_path": ["content"], "exact_fields": ["packet_hash", "source_packet"],
+    "packet_path": ["source_packet"], "packet_hash_path": ["packet_hash"]
+  },
+  "response": {"choices_path": ["projection", "choices"], "content_path": ["message", "content"]},
+  "envelope_schema": {
+    "type": "object", "required": ["schema_version", "packet_hash", "bundles"], "additionalProperties": false,
+    "properties": {"schema_version": {"type": "integer", "const": 2}, "packet_hash": {"type": "string"}, "bundles": {"type": "array"}}
+  },
+  "envelope_packet_hash_path": ["packet_hash"],
+  "envelope_bundles_path": ["bundles"],
+  "maximum_bundles": null,
+  "native_report": {
+    "version": "candidate-graph-native/1", "hash_algorithm": "loom-json-canonical-sha256",
+    "common_fields": ["version", "valid", "status", "errors", "coverage", "packet_hash", "hash_algorithm", "retained_input", "drafts", "no_inference", "no_persistence"],
+    "accepted_fields": ["vocabulary_hash"], "rejected_optional_fields": ["retention"],
+    "accepted_status": "valid", "rejected_status": "rejected",
+    "rejected_coverage": {"representation_status": "unknown", "semantic_accuracy": null},
+    "accepted_coverage_schema": {
+      "type": "object", "additionalProperties": false,
+      "required": ["source_observations", "source_bytes", "by_status_bytes", "represented_bytes", "uncovered_bytes", "uncovered_spans", "unknown_bytes", "representation_status", "semantic_accuracy", "source_status_rows", "located_unknowns"],
+      "properties": {
+        "source_observations": {"type": "integer"}, "source_bytes": {"type": "integer"},
+        "by_status_bytes": {"type": "object"}, "represented_bytes": {"type": "integer"},
+        "uncovered_bytes": {"type": "integer"}, "uncovered_spans": {"type": "array"}, "unknown_bytes": {"type": "integer"},
+        "representation_status": {"type": "string"}, "semantic_accuracy": {"type": "null"},
+        "source_status_rows": {"type": "array"}, "located_unknowns": {"type": "array"}
+      }
+    },
+    "accepted_equal_bindings": [
+      {"report_path": ["coverage", "source_status_rows"], "input": "bundle", "input_path": ["coverage"]},
+      {"report_path": ["coverage", "located_unknowns"], "input": "bundle", "input_path": ["unknowns"]}
+    ],
+    "accepted_derived_bindings": [
+      {"report_path": ["coverage", "source_observations"], "input": "packet", "input_path": ["observations"], "operation": "length"},
+      {"report_path": ["coverage", "source_bytes"], "input": "packet", "input_path": ["observations"], "operation": "sum_utf8_bytes", "item_path": ["text"]}
+    ],
+    "retention_exception": {"status": "not_copied", "reason": "input_preflight_rejection", "input_ownership": "caller"}
+  },
+  "validator": {"executable": null, "expected_binary_sha256": null, "timeout_seconds": 30, "provenance_files": []},
+  "manual_review": {"schema": "loom.programme_native_manual_review_skeleton/1", "criterion_id_path": ["id"],
+    "reference": {"schema": "loom.native_semantic_review.reference/1", "packet_hash_path": ["packet_hash"],
+      "validator": {"module": "stage2_semantic_review_v1", "function": "validate_reference"}}}
+}
