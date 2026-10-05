@@ -17,3 +17,7 @@ resolution witnesses, wrong late generation/cost/model and BYOK proofs block.
 
 The reviewed runner SHA256 is
 `81a0b3581b56234ae7a944c51a46df1dfa89c31a7911c1db7d9d5e59969af075`.
+
+The supplementary ZIP preserves endpoint-estimator negatives and the first
+partial live output. Its README explicitly records missing v1 producer source;
+full producer regeneration is not claimed.
