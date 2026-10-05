@@ -1,0 +1,17 @@
+{
+  "schema": "loom.research_prompt_preferences.capsule_verification/1",
+  "observed_on": "2026-10-05",
+  "source_commit": "37a65efab8927f5fa3901b1db4237a7bbb69e141",
+  "outer_zip_sha256": "3885798cdc1769a8de1b29e7a1ef8b1633edc8cf33502baa947497c19c91ec06",
+  "zip_bytes": 1476585,
+  "zip_crc_members": 568,
+  "payload_sha256_and_size_passed": 566,
+  "extracted_to_empty_directory": true,
+  "original_source_freeze_artifacts_verified": 137,
+  "original_source_freeze_artifacts_scope": "Exact original files in the source checkout; active scorer extension has a separate freeze",
+  "original_preparation_tests_passed": 7,
+  "runner_manifest_verify_operations": 128,
+  "actual_model_responses_read": 0,
+  "paid_calls": 0,
+  "model_call_cost_usd": "0.000000000"
+}

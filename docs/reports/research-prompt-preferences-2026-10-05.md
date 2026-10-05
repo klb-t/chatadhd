@@ -1,22 +1,43 @@
 # Podwątek 7B — prompty, parametry i preferencje użytkownika
 
-Stan 2026-10-05: **oryginalny panel odzyskany i sprawdzony; scorer w przeglądzie przed collection**.
-Gałąź `gpt/research-prompt-preferences-2026-10-05`, baza `edcb32fb87116ac497f8eb3d59d53ecea0cfee3f`.
+Stan 2026-10-05 po aktualizacji właściciela 16:16:21 UTC: **wywołania na syntetykach wstrzymane; nowe badanie wyłącznie na rzeczywistych eksportach ChatADHD ze wspólnego wycinka A**.
 
-Oryginalna paczka i panel zostały następnie opublikowane przez 7A na `gpt/research-jev-validation-2026-10-05`, commit `37a65efab8927f5fa3901b1db4237a7bbb69e141`. Zachowano ich dokładne bytes i hashe; nie używamy wcześniejszego projektu. Ten wcześniejszy stan odkrywania źródeł jest zachowany na `archive/gpt/research-prompt-preferences-source-discovery-2026-10-05`, commit `7b35923e1e74809bdc81353ba7dd833ffd65f72e`.
+Gałąź `gpt/research-prompt-preferences-2026-10-05`, baza `edcb32fb87116ac497f8eb3d59d53ecea0cfee3f`. Bieżący kod/raport zostanie wskazany po publikacji tego checkpointu. Commit oryginalnych odzyskanych danych: `da3eb54f5dac455a2bd78660eabafbadb20589f3`. Nie ma commitu gotowego do płatnego uruchomienia na rzeczywistych eksportach.
 
-CRC wszystkich 568 wpisów ZIP i SHA/rozmiary 566 payloadów PASS. SHA-256 ZIP: `3885798cdc1769a8de1b29e7a1ef8b1633edc8cf33502baa947497c19c91ec06`. Rozpakowano do nowego pustego katalogu. Wszystkie 137 wpisów historycznego SOURCE_FREEZE zweryfikowano na oryginalnych wersjach źródłowych.
+## Gotowy przyrost i bramki
 
-Oryginalne **16 konfiguracji × 8 pytań = 128 pierwszych żądań** zachowane byte-for-byte: 2 prompty × 0/0,7 × 256/1024 × zwięźle/pełny ślad. Całe źródła i aktualny gold zachowane; gold nie ma w promptach. Dokładny wspólny schemat pozostaje `label,evidence[{turn_id,quote}],explanation,counterarguments[string]`. Oryginalna kolejność i wszystkie hashe bez zmian.
+Kontynuowano istniejący panel `express20261005/prompt-parameters-v1`; nie utworzono drugiego płatnego wykonawcy. W istniejącym `prepare.py` dodano strict first-response scorer oraz `shared_metrics_by_configuration` w formacie metryk ModelProfile. Oryginalny materializer, prompty, schemat i 128 przygotowanych żądań pozostały byte-for-byte bez zmian.
 
-Siedem istniejących testów przygotowania PASS; istniejący loader wykonawcy przyjął manifest 128 operacji. Trwa dodatkowy przegląd kontrolowanych testów strict first-response scorera w istniejącym prepare.py. Jego dodatkowy freeze musi poprzedzać pierwsze odpowiedzi; ten checkpoint jeszcze nie daje sygnału do startu.
+**22/22 testy PASS**: siedem istniejących i 15 kontrolowanych testów scorera. Weryfikują dokładne źródłowe bindingi/gold/czas, JSON bez duplikatów i nonfinite, identyczny schemat, pierwsze odpowiedzi i duplikaty, cytaty/ucięcie, jawne braki i metryki profili. Nieuruchomione sloty nie są nieznanymi wydatkami: pusty panel daje 0 USD, 0 nieznanych kosztów i null dla jakości. Nie rozluźniono progów. To testy kodu na atrapach, nie modelowe eksperymenty na syntetykach.
 
-Planowana górna wycena przy publicznej referencji 0,40 USD/M input i 1,60 USD/M output: **0,3580992 USD** = 567568 górnych jednostek wejściowych ×0,0000004 +81920 limitowanych tokenów wyjścia ×0,0000016. Jednostki wejścia są konserwatywnym allowance (bytes+1088), nie wynikiem tokenizacji. To wycena referencyjna; 7A odświeża ofertę wszystkich komponentów i dopuszcza całość w jednym prywatnym rejestrze.
+[SCORER_CHECKPOINT_7B.json](../research/model_research_2026-10-04/express20261005/prompt-parameters-v1/SCORER_CHECKPOINT_7B.json) wiąże kod i log bramki. SHA-256 prepare.py: `357b7d3e1cf7b96538bc195560c42d280c69378bed910c78eb1e249e4ec84c1d`; test_prepare.py: `12beca93c28edf40ba384b5dae3c3ac2fdc0149d8bdf797ae2e3905cec37584a`.
 
-Rzeczywiste płatne wywołania/koszt/rezerwacje 7B: **0 / 0 USD / 0 USD**. Brak opublikowanych pierwszych odpowiedzi tego panelu; wszystkie wyniki modelu i wnioski zależne od preferencji pozostają niezmierzone. Nie wykonano drugiego płatnego wykonawcy, nie odczytywano kluczy ani eval/real-holdout-key, nie zmieniano STATE/README/UI. Build/CTest dla tego przyrostu danych nie uruchamiano.
+Bramka nowego badania: **NOT READY**. Ostatni pobrany stan `gpt/model-research-2026-10-04` nadal wskazywał `edcb32f`; `express20261005/COORDINATION.json` zwrócił 404. Nie opublikowano tam jeszcze koordynacji nowego rzeczywistego wycinka. Nie zamrożono pozornych real sources/gold/żądań, nie wyceniono nieotrzymanych wejść i nie uznano syntetycznych bindingów za rzeczywiste.
+
+Nie uruchamiano build/CTest dla tego przyrostu badawczego. Nie zmieniano STATE, głównego README, UI ani kodu natywnego. Nie odczytywano kluczy ani `eval/real-holdout-key`.
+
+## Zachowane niewykonane przygotowanie
+
+Źródła zostały odzyskane z publikacji `gpt/research-jev-validation-2026-10-05`, commit `37a65efab8927f5fa3901b1db4237a7bbb69e141`. ZIP ma SHA-256 `3885798cdc1769a8de1b29e7a1ef8b1633edc8cf33502baa947497c19c91ec06`. Rozpakowanie do pustego katalogu, CRC 568 wpisów i SHA/rozmiary 566 payloadów: PASS. Zweryfikowano 137 oryginalnych wpisów SOURCE_FREEZE. Siedem pierwotnych testów oraz istniejący loader manifestu 128 operacji: PASS.
+
+Zachowano całe źródła, aktualny gold, cztery pytania new_label_001 i cztery new_label_013 oraz pełne 16-config crossing. Gold nie trafia do promptów. Te dane są syntetyczne i **nie wolno ich teraz wykonywać**. SOURCE_FREEZE wiąże oryginalny producent sprzed rozszerzenia scorera. Wcześniejszy etap odkrywania źródeł zachowano na `archive/gpt/research-prompt-preferences-source-discovery-2026-10-05`, commit `7b35923e1e74809bdc81353ba7dd833ffd65f72e`; nie jest aktywnym protokołem.
+
+## Koszt i wyniki
+
+- Rzeczywiste płatne wywołania / koszt / rezerwacje **7B: 0 / 0,000000000 USD / 0 USD**.
+- Nowy panel rzeczywistych eksportów: **planowany koszt null**, do czasu bindingu wspólnego wycinka i aktualnej oferty wszystkich komponentów.
+- Niewykonany panel syntetyczny: dokładna konserwatywna wycena referencyjna **0,3580992 USD** = 567568 górnych jednostek wejścia ×0,40 USD/M +81920 limitowanych tokenów wyjścia ×1,60 USD/M. Jednostki wejścia są allowance bytes+1088, nie tokenizacją. [Wyliczenie każdego wariantu](../research/model_research_2026-10-04/express20261005/prompt-parameters-v1/reference-cost-plan-20261005.json). Nie jest to wycena rzeczywistych eksportów ani koszt wykonania.
+- Wspólny klucz ma limit **5 USD**; prowadzący 7A posiada jeden prywatny rejestr i wykonawca. Wywołań samodzielnych nie było.
+
+Wyniki wszystkich 16 konfiguracji: **niezmierzone**, zero pierwszych odpowiedzi; nie zapisano zer jako jakości. Dotyczy obu promptów, obu temperatur, obu limitów i obu preferencji. Wnioski empiryczne zależne od preferencji: **brak**. Mechaniczny scorer raportuje długości/liczności, ale nie przyznaje punktów za krótszy tekst i nie myli literalnego cytatu z adekwatnością. Ręczne metryki pozostają null. Przy rzeczywistych odpowiedziach trzeba zachować źródłową zależność obserwacji; nie deklarować ślepego holdoutu ani jakości produkcyjnej.
+
+## Dokładne wznowienie
+
+[7B_HANDOFF.md](../research/model_research_2026-10-04/express20261005/prompt-parameters-v1/7B_HANDOFF.md), **punkt 1: pobranie aktualnej opublikowanej koordynacji A i wspólnego wycinka rzeczywistych eksportów**. Potem nowa wersja source/gold/design, dostosowanie istniejącego binder/scorera, pełny freeze przed odpowiedziami oraz nowa wycena. Dopiero taki commit przekazać 7A do jego centralnego wykonania. Nie uruchamiać znajdującego się tu archiwalnego prepared/manifest.json.
 
 ## Do wątku N
 
-- **7A:** źródła już odebrane z `37a65efa`; przygotuj przyjęcie manifestu, lecz poczekaj na dodatkowy SCORING_FREEZE/raport 7B przed dispatch. Wspólny klucz ma limit 5 USD i jeden Twój prywatny ledger.
-- **7B:** dokończ aktualny przegląd scorera (braki kosztu tylko dla podjętych prób, zgodne metryki profili), przepuść jego testy i opublikuj freeze wszystkich aktywnych źródeł/kryteriów bez zmiany promptów/żądań.
-- **9:** checkpoint nie jest zakończonym empirycznym badaniem. Zachowaj archiwalny stan sprzed publikacji źródeł.
+- **7A / A:** 7B respektuje wyłącznie rzeczywiste eksporty. Opublikuj aktualne COORDINATION.json/md oraz autorytatywny wspólny wycinek/gold/manifest na gpt/model-research-2026-10-04. Archiwalnych 128 żądań nie wykonuj. Scorer i jego 22 testy są gotowe do adaptacji; rzeczywisty panel wymaga nowego freeze i wyceny.
+- **7B:** zacznij od punktu 1 handoffu. Nie twórz osobnego wycinka, nie zastępuj źródłowych etykiet ani nie czytaj odpowiedzi przed zamrożeniem aktualnych kryteriów. Oceniaj opublikowane pierwsze odpowiedzi zgodnymi metrykami ModelProfile i datowanym produced_by; negatywne odpowiedzi w pełni zachować w archiwum.
+- **3/4:** brak odpowiedzi nie jest pomiarem jakości. Export metryk/produced_by nie udaje zapisu native.
+- **9:** przyrost jest sprawdzonym scorerem i handoffem, nie zakończonym badaniem modeli. Nie przenoś archiwalnego panelu syntetycznego do aktywnej kolejki.

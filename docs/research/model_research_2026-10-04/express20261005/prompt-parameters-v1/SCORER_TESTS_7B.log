@@ -1,0 +1,27 @@
+test_all_declared_queries_and_no_preference_success_inferred (__main__.FirstResponseScoringTests.test_all_declared_queries_and_no_preference_success_inferred) ... ok
+test_contiguous_repeated_quotes_valid_and_future_or_invented_quotes_fail (__main__.FirstResponseScoringTests.test_contiguous_repeated_quotes_valid_and_future_or_invented_quotes_fail) ... ok
+test_duplicate_capture_and_generation_are_rejected (__main__.FirstResponseScoringTests.test_duplicate_capture_and_generation_are_rejected) ... ok
+test_duplicate_or_unknown_first_rows_are_rejected (__main__.FirstResponseScoringTests.test_duplicate_or_unknown_first_rows_are_rejected) ... ok
+test_exact_four_field_schema_rejects_missing_extra_and_wrong_types (__main__.FirstResponseScoringTests.test_exact_four_field_schema_rejects_missing_extra_and_wrong_types) ... ok
+test_gold_exact_raw_hash_is_mandatory (__main__.FirstResponseScoringTests.test_gold_exact_raw_hash_is_mandatory) ... ok
+test_missing_row_retained_and_not_wrong_observed_label (__main__.FirstResponseScoringTests.test_missing_row_retained_and_not_wrong_observed_label) ... ok
+test_no_attempts_are_unattempted_not_unknown_charges_or_observed_quality (__main__.FirstResponseScoringTests.test_no_attempts_are_unattempted_not_unknown_charges_or_observed_quality) ... ok
+test_portable_metrics_follow_model_profile_schema_and_preserve_missing_cost (__main__.FirstResponseScoringTests.test_portable_metrics_follow_model_profile_schema_and_preserve_missing_cost) ... ok
+test_public_request_and_order_drift_are_rejected (__main__.FirstResponseScoringTests.test_public_request_and_order_drift_are_rejected) ... ok
+test_strict_json_no_repair_duplicate_nonfinite_fences (__main__.FirstResponseScoringTests.test_strict_json_no_repair_duplicate_nonfinite_fences) ... ok
+test_transport_and_envelope_availability_independent_of_json (__main__.FirstResponseScoringTests.test_transport_and_envelope_availability_independent_of_json) ... ok
+test_truncation_and_invalid_json_are_separate (__main__.FirstResponseScoringTests.test_truncation_and_invalid_json_are_separate) ... ok
+test_unknown_empty_evidence_ratio_null_not_automatic_fail (__main__.FirstResponseScoringTests.test_unknown_empty_evidence_ratio_null_not_automatic_fail) ... ok
+test_verified_cost_crosschecked_and_unknown_cost_stays_null (__main__.FirstResponseScoringTests.test_verified_cost_crosschecked_and_unknown_cost_stays_null) ... ok
+test_changed_source_raw_hash_rejected_before_materialization (__main__.PreparationTests.test_changed_source_raw_hash_rejected_before_materialization) ... ok
+test_corrupted_body_rejected_by_actual_runner_loader (__main__.PreparationTests.test_corrupted_body_rejected_by_actual_runner_loader) ... ok
+test_exact_full_crossing_without_duplicate_operations (__main__.PreparationTests.test_exact_full_crossing_without_duplicate_operations) ... ok
+test_exact_source_text_same_for_every_configuration_and_no_gold_rationale (__main__.PreparationTests.test_exact_source_text_same_for_every_configuration_and_no_gold_rationale) ... ok
+test_parameter_and_prompt_hash_bindings (__main__.PreparationTests.test_parameter_and_prompt_hash_bindings) ... ok
+test_pinned_loader_accepts_and_bounds_cover_actual_body (__main__.PreparationTests.test_pinned_loader_accepts_and_bounds_cover_actual_body) ... ok
+test_replay_exact_and_collision_rejected (__main__.PreparationTests.test_replay_exact_and_collision_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 22 tests in 1.753s
+
+OK

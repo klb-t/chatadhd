@@ -1,0 +1,28 @@
+{
+  "schema": "loom.research_prompt_preferences.scorer_checkpoint/1",
+  "observed_on": "2026-10-05",
+  "state": "offline_mechanism_ready_real_corpus_binding_pending",
+  "dispatch_ready": false,
+  "owner_source_policy": "actual_ChatADHD_exports_only",
+  "source_code": [
+    {
+      "path": "prepare.py",
+      "sha256": "357b7d3e1cf7b96538bc195560c42d280c69378bed910c78eb1e249e4ec84c1d",
+      "bytes": 35500
+    },
+    {
+      "path": "test_prepare.py",
+      "sha256": "12beca93c28edf40ba384b5dae3c3ac2fdc0149d8bdf797ae2e3905cec37584a",
+      "bytes": 17820
+    }
+  ],
+  "tests_passed": 22,
+  "fixture_kind": "controlled offline software test fixtures; no model experiments or API calls",
+  "test_log_sha256": "39de0a1728012ff857eecdee59e27a6474f519c2dc54e4835f20763d6a073a7a",
+  "original_request_bodies_changed": false,
+  "model_call_cost_usd": "0.000000000",
+  "actual_outputs_read": 0,
+  "full_research_preregistration": false,
+  "next_step": "Fetch A COORDINATION at current base, use authoritative actual-export cut and source gold, adapt/re-freeze actual panel and all active code/rubric/request/order hashes before any first answer",
+  "native_store_written": false
+}

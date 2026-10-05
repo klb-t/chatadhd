@@ -1,0 +1,20 @@
+{
+  "schema": "loom.research_prompt_preferences.owner_source_switch/1",
+  "owner_message_at_utc": "2026-10-05T16:16:21Z",
+  "effective_source_policy": "actual_ChatADHD_exports_only",
+  "synthetic_dispatch_allowed": false,
+  "synthetic_panel_state": "preserved_unexecuted_not_active",
+  "own_paid_calls": 0,
+  "own_actual_cost_usd": "0.000000000",
+  "common_real_cut_owner": "A",
+  "coordination_branch": "gpt/model-research-2026-10-04",
+  "coordination_paths": [
+    "docs/research/model_research_2026-10-04/express20261005/COORDINATION.json",
+    "docs/research/model_research_2026-10-04/express20261005/COORDINATION.md"
+  ],
+  "last_fetched_commit": "edcb32fb87116ac497f8eb3d59d53ecea0cfee3f",
+  "new_real_coordination_published_at_last_fetch": false,
+  "real_source_gold_request_order_freeze": null,
+  "dispatch_ready": false,
+  "resume_requires": "Authoritative A coordination commit and bound common actual-export cut/gold, then adaptation and complete pre-response freeze. No new key or independent payer."
+}
