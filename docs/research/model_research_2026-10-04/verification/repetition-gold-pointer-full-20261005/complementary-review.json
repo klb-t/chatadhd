@@ -1,0 +1,99 @@
+{
+  "schema": "loom.repetition_gold_pointer_fake_peer/1",
+  "verdict": "PASS",
+  "source_sha256": "9aec8378f5e51b78cf7a9bfcb02fbcb1a3d027e3471a0ebdef6ea27d5e8ea560",
+  "tests_sha256": "7928da45ba50e8c486f2cf09ffa0d31fa842dce385985d6a231a2d356bc430bc",
+  "unchanged_function_ASTs": [
+    "_policy",
+    "_source",
+    "_build",
+    "prepare",
+    "verify",
+    "_money",
+    "_inventory",
+    "_bootstrap"
+  ],
+  "before_and_fixed_preparation_all_bytes_identical": true,
+  "immutable_fake_payload_hashes": {
+    "source": {
+      "manifest.json": "56ecdbc4f2a2c209585e6acea9478ee75aa6e7e32d90a27f0c10bd7b6c433c50",
+      "invented-arm-green.invented-query-Z.json": "d9e3f902d6596a3ef5f8e137688de8d8d35ea4a0762d040e7b73e1407f457606",
+      "invented-arm-blue.invented-query-A.json": "7b11e5b25e4bf0e2601db84bbeae8d81ca04831342ca955375eb87d77c1dc88c",
+      "invented-arm-blue.invented-query-Z.json": "ae274b75096009f1fd8124eb247e38a049046b92d8be9c2c869a715401ba2530",
+      "invented-arm-green.invented-query-A.json": "cf789afa076282f8c104e75448b496c25f807611e01d289f4e21704d389ab093"
+    },
+    "prepared": {
+      "manifest.json": "63cfb8ad05256336ff14b83dc6610520a1694de229ed1d39a389fe5e3eb799e4",
+      "requests/cf789afa076282f8c104e75448b496c25f807611e01d289f4e21704d389ab093.json": "cf789afa076282f8c104e75448b496c25f807611e01d289f4e21704d389ab093",
+      "requests/7b11e5b25e4bf0e2601db84bbeae8d81ca04831342ca955375eb87d77c1dc88c.json": "7b11e5b25e4bf0e2601db84bbeae8d81ca04831342ca955375eb87d77c1dc88c",
+      "requests/d9e3f902d6596a3ef5f8e137688de8d8d35ea4a0762d040e7b73e1407f457606.json": "d9e3f902d6596a3ef5f8e137688de8d8d35ea4a0762d040e7b73e1407f457606",
+      "requests/ae274b75096009f1fd8124eb247e38a049046b92d8be9c2c869a715401ba2530.json": "ae274b75096009f1fd8124eb247e38a049046b92d8be9c2c869a715401ba2530"
+    },
+    "policy": "33436ebaff0008cb9f54897d5d1e0641e4fd09540e4f01f41c36fe908cc7bd60",
+    "selection": "b6257272eb5310957db47cedfa60a7f86af42ea0c1299e43a4c310f11807a580",
+    "gold": "5f17d76fb503eee4e74cce049a8ee49c31065c868eae95dd18c177fc37433c14",
+    "bundle": "f9eabf3d81c6878a13dfd73031d4e491f7914a45678b13fa21e1a4ed20779677"
+  },
+  "results": {
+    "first": {
+      "accepted": true,
+      "gold_selection": {
+        "cases_pointer": "/first/cases",
+        "source_sha256": "5f17d76fb503eee4e74cce049a8ee49c31065c868eae95dd18c177fc37433c14",
+        "selected_array_sha256": "66ed5584f75465dbdecf908d251d0a4c5101dad0aab16e0c30a216e61bf1e2e0"
+      },
+      "source_accuracy": 1.0,
+      "planned": 4
+    },
+    "same": {
+      "accepted": true,
+      "gold_selection": {
+        "cases_pointer": "/same/cases",
+        "source_sha256": "5f17d76fb503eee4e74cce049a8ee49c31065c868eae95dd18c177fc37433c14",
+        "selected_array_sha256": "66ed5584f75465dbdecf908d251d0a4c5101dad0aab16e0c30a216e61bf1e2e0"
+      },
+      "source_accuracy": 1.0,
+      "planned": 4
+    },
+    "different": {
+      "accepted": true,
+      "gold_selection": {
+        "cases_pointer": "/different/cases",
+        "source_sha256": "5f17d76fb503eee4e74cce049a8ee49c31065c868eae95dd18c177fc37433c14",
+        "selected_array_sha256": "8fbdc937bf9f2be89bf057c0e27f272ac59851ccb47212636a9d62d8a9450b9d"
+      },
+      "source_accuracy": 0.5,
+      "planned": 4
+    },
+    "missing": {
+      "accepted": false,
+      "error": "repetition_gold_inventory_mismatch",
+      "error_type": "ValueError"
+    },
+    "duplicate": {
+      "accepted": false,
+      "error": "repetition_gold_inventory_mismatch",
+      "error_type": "ValueError"
+    },
+    "not-array": {
+      "accepted": false,
+      "error": "repetition_gold_invalid",
+      "error_type": "ValueError"
+    },
+    "raw-hash-before-selection": {
+      "accepted": false,
+      "error": "repetition_gold_snapshot_changed",
+      "gold_selector_calls": 0
+    },
+    "keyword-only": {
+      "positional_selector_rejected": true
+    },
+    "before-full-container": {
+      "accepted": false,
+      "error": "repetition_gold_invalid"
+    }
+  },
+  "focused_tests_passed": 52,
+  "real_gold_or_actual_repeat_response_or_private_or_provider_read": false,
+  "reproducibility": "All mocked source/policy/selection/gold/container/preparation/bundle/result bytes are retained; companion repository modules required. Different pointers/arrays are explicitly distinguished in gold_selection; no alternative gold is silently called the same selected rubric."
+}
