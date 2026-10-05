@@ -2,6 +2,18 @@
 
 Gałąź: `gpt/interface-2-2026-10-04`. **Kod UI zakończony i wypchnięty. Odbiór wstrzymany: pełny mixed CTest120/121, regresja analizatora W1+W2.** Wszystkie bramki UI są zielone.0 płatnych/zdalnych wywołań modeli; tylko publiczne fixture i lokalne atrapy.
 
+## Koniec sesji i punkt kontynuacji
+
+**Commit ukończonego kodu UI:** `760ddc37be32a1162f81f39977389c03b208fb1c`. Jest gotowy do przeglądu; odbiór całości na main jest wstrzymany przez opisany niżej CTest120/121. Końcowy commit dokumentacyjny dodaje wyłącznie ten handoff oraz poprawny browser flag w instrukcji powtórzenia; bez dalszych zmian kodu/testów i bez nowej pracy.
+
+**Archiwum jest już publiczne:** `archive/2026-10-05/interface-2-api-negatives`, commit `51c4ae5ce053cf49e5e1447e7445a44cd8556116`. [README/pełne źródła i replay](https://github.com/klb-t/chatadhd/tree/51c4ae5ce053cf49e5e1447e7445a44cd8556116/docs/archive/interface-2-api-negatives-2026-10-05). XZ6,691,128 bytes, SHA256 `686247ba906877df9bc27eb2a88bc818ef9626f54e6f5b559988dfef63d66957`;1628 plików/287,834,799 zachowanych bajtów, każdy człon sprawdzony strumieniowo przeciw SHA manifestu. Cztery historyczne, niezacommitowane wersje methods-ui.mjs nie mają oryginalnych bajtów; ograniczenie jawne, pełne odpowiedzi i zweryfikowane replay źródeł produkcyjnych zachowane. Nie przedstawiamy ich jako exact full-source replay.
+
+**Następna osoba zaczyna tutaj:**
+
+1. Fetch i sprawdzenie aktualnego fixu wątku1 dla attempt identity w `extract/semantic.cpp:798`, wraz z przekazaniem1/2 na końcu tego raportu. Sam approval/wyzerowanie unknown receipt nie jest poprawką. Izolowane odtworzenie i pełny negatyw są w archiwum.
+2. Dołożenie oficjalnej poprawki1 albo rebase po jej odbiorze, z zachowaniem W1/W12 pinów i wspólnego kontraktu3/4. Nie edytować cudzych zakresów. Pozostałe luki API są wyszczególnione poniżej i nie blokują ukończenia obecnego kodu UI.
+3. Pełny build/CTest/web na zamrożonych inputs po zmianie zależności; jeżeli zielone, uaktualnić gotowość dla9. Nie powtarzać już zielonych bramek UI bez nowej zmiany/failure. Nie scalać negative archive na main.
+
 ## Baza i zależności
 
 - Main: `e4109df7e4af22b461def5f7d62e268d9b9a8825`; integrator: `66da570d3b5379492e128d940ad474467082c59f` (przyjęte3+4 i5). Świeży fetch: integrator `0a81480` dokłada tylko receipt5, bez zmiany API. Przeczytano aktualny INDEX i przekazanie10.
