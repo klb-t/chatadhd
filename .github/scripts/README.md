@@ -31,3 +31,9 @@ observations and errors before returning nonzero. The output capture size in
 the workflow is an instrumentation setting; raise it if a complete summary
 would otherwise be truncated. This check does not establish model quality or
 execution of script-internal scenarios that do not expose a case count.
+
+Before CTest, `write_build_receipt.py` records the exact Git commit/tree and
+SHA-256 of the native runner, CLI, server and available shared library. Required
+executables must exist. Receipts are retained with the manifest, JUnit and
+observed execution counts; the initial unsuccessful CI run predates this
+binary-pinning step and cannot supply a retrospective executable hash.
