@@ -15,6 +15,7 @@ def main():
     parser.add_argument("--source", type=Path, required=True)
     parser.add_argument("--preset", required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--jobs", type=int, help="optional CTest parallelism override")
     parser.add_argument("--ffi-companion", type=Path)
     parser.add_argument("--companion-cache", type=Path)
     args = parser.parse_args()
@@ -89,9 +90,12 @@ def main():
     (out / "source-sha256.json").write_text(json.dumps(inputs, indent=2) + "\n")
     run(["ctest", "--preset", args.preset, "--show-only=json-v1"],
         "ctest-manifest.json", root / "loom")
-    status = run(["ctest", "--preset", args.preset, "--no-tests=error",
+    test_argv = ["ctest", "--preset", args.preset, "--no-tests=error",
         "--test-output-size-passed", "10485760", "--test-output-size-failed",
-        "10485760", "--output-junit", out / "ctest.xml"],
+        "10485760", "--output-junit", out / "ctest.xml"]
+    if args.jobs is not None:
+        test_argv += ["--parallel", str(args.jobs)]
+    status = run(test_argv,
         "ctest.log", root / "loom", required=False)
     temporary = build / "Testing/Temporary"
     for name in ("LastTest.log", "LastTestsFailed.log"):
