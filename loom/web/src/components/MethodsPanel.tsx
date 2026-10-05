@@ -19,6 +19,7 @@ export default function MethodsPanel({ transport = {} }: { transport?: MethodsTr
   const [target, setTarget] = useState(""), [actor, setActor] = useState(""), [knownAt, setKnownAt] = useState("");
   const [preview, setPreview] = useState<MethodJson | null>(null), [previewStamp, setPreviewStamp] = useState("");
   const [previewKind, setPreviewKind] = useState<"version" | "profile">("version"), [previewReceiptIds, setPreviewReceiptIds] = useState<string[]>([]);
+  const [previewProfileSelection, setPreviewProfileSelection] = useState("{}");
   const [receipt, setReceipt] = useState<MethodJson | null>(null), [lineage, setLineage] = useState<MethodJson | null>(null);
   const [accepted, setAccepted] = useState<{ profile: MethodJson; profileJson: string; receiptIds: string[] } | null>(null), [configSaved, setConfigSaved] = useState(false);
   const [readId, setReadId] = useState(""), [receiptRead, setReceiptRead] = useState<MethodJson | null>(null);
@@ -102,10 +103,16 @@ export default function MethodsPanel({ transport = {} }: { transport?: MethodsTr
   const previewProfile = () => run(async signal => {
     if (!target.trim() || !actor.trim() || !knownAt.trim()) throw new Error("Target library, actor and a known-at timestamp are required.");
     parseMethodObject(profileDraft, "Profile"); const ids = parseReceiptIds(receiptsDraft);
-    await command({ operation: "load", profile_json: profileDraft, receipt_ids: ids }, signal);
+    const loaded = await command({ operation: "load", profile_json: profileDraft, receipt_ids: ids }, signal);
+    let reviewedSelection = "{}";
+    if ("selection" in methodObject(loaded.profile)) {
+      const resolved = await command({ operation: "resolve", snapshot_json: loaded.snapshot_json, selection_json: "{}" }, signal);
+      reviewedSelection = typeof resolved.selection_json === "string" ? resolved.selection_json : methodPretty(resolved.selection);
+    }
     const result = await command({ operation: "profile_preview", profile_json: profileDraft, receipt_ids: ids, target, actor, known_at: knownAt }, signal);
     methodAcceptance(result);
-    if (!signal.aborted) { setPreview(result); setPreviewStamp(stamp); setPreviewKind("profile"); setPreviewReceiptIds(ids); }
+    if (!signal.aborted) { setPreview(result); setPreviewStamp(stamp); setPreviewKind("profile"); setPreviewReceiptIds(ids);
+      setPreviewProfileSelection(reviewedSelection); }
   });
   const accept = () => run(async signal => {
     if (!preview || previewStamp !== stamp) throw new Error("Validate the current draft again before accepting it.");
@@ -116,7 +123,7 @@ export default function MethodsPanel({ transport = {} }: { transport?: MethodsTr
       if (typeof id !== "string" || !id || !Object.keys(methodObject(preview.profile)).length) throw new Error("Library acceptance returned without a native receipt or frozen profile; inspect the retained acceptance result.");
       if (previewReceiptIds.some(value => !value)) throw new Error("Loaded snapshot receipt IDs are invalid; inspect the retained library acceptance.");
       setAccepted({ profile: methodObject(preview.profile), profileJson: typeof preview.profile_json === "string" ? preview.profile_json : methodPretty(preview.profile), receiptIds: [...new Set([...previewReceiptIds, id])] });
-      if (previewKind === "profile") setSelectionDraft(methodPretty(methodObject(preview.profile).selection ?? {}));
+      if (previewKind === "profile") setSelectionDraft(previewProfileSelection);
       setNotice("Native acceptance recorded. Original versions and their result relations are retained. Global native config has not been changed.");
     }
   });

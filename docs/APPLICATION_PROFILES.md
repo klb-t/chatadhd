@@ -169,54 +169,69 @@ sessions remain readable; malformed stored bytes are preserved and reported.
 
 ## Available cross-thread controls
 
-- **Context** exposes native channel IDs, per-channel limits and thresholds,
-  candidate scan limit, lexical shadow and recorded counter-evidence links.
-  Defaults preserve the current request. Unknown method IDs are sent through
-  the open native channel contract and retain unavailable diagnostics. Arbitrary
-  weights, method combinations and capability discovery await the W3 registry;
-  the UI does not silently drop unsupported weight fields.
-- **Settings / Usage policy** reads presets, effective settings and overrides
-  from the W2 data preset accepted on main, edits the complete policy JSON and
-  inspects exact receipt decisions. Read-only override preview and source/hash
-  metadata identify the embedded pack without writing config or opening its ledger.
-  Approve/decline use receipt and operation identities; stale confirmations need
-  inspection rather than an implicit new dispatch. The HTTP route calls the
-  existing W2 dispatcher when compiled with that dependency, otherwise returns
-  explicit unavailable. These ledger controls do not guard unrelated legacy
-  chat, transcription or import operations by themselves.
-- **Graph reply workbench** compiles a captured response through W4, preserves
-  its raw bytes and native error envelope, shows model-origin unverified nodes
-  and host-computed spans, validates compilation and explicitly applies a
-  candidate/automatic policy to a returned packet. Expand/correct puts a
-  fragment address into the composer for review. Application is a packet
-  projection, separate from a canonical knowledge-store write. W3 still owns
-  automatic chat reply modes and graph-context request assembly. Exact replay shows the retained result without another execution and distinguishes
-  original admission from current accounting. Interrupted or indeterminate outcomes
-  remain explicit. W4 reports its shared contract/golden, alias and nested-combination
-  checks ready on `b302df2`; joint W3/W4 intake is still outside main. Its original
-  replay-accounting regression has been independently closed.
-- **Expert controls** show/edit the exact client ChatRequest for one subsequent
-  send and accept generic config patches. A client preview is not the fully
-  assembled provider prompt; native context traces remain separate. Credentials
-  use the existing secret endpoints. Analysis prompt/schema/preset editing and
-  full provider-query preview need W1/W11 descriptors and overlay APIs.
+`App.tsx` connects Methods, Analysis, Onboarding and What app knows. Optional
+`LoomApi.methods`, `analysis`, `onboarding` and `graphReply` are implemented by
+`LoomHttpApi`. The server bridges borrow the existing static kernel Runtime;
+they add no C ABI exports. Embedded/JNI hosts without these capabilities show
+unavailable. The implementation uses accepted W3/W4 and pinned W1/W12 APIs;
+exact dependencies and receipts are in the [current report](reports/interface-2-api-2026-10-05.md).
 
-R41 methods use the same graph inspection/editing model as other nodes. The
-canonical `loom.method_graph/1` / `loom.method_run_trace/1` contract belongs to
-W3/W4; their shared acceptance and public registry/prepared-request adapters
-remain dependencies. A method edit creates a new version, and results keep
-produced-by edges to the version that executed.
+- **Context** exposes channels, thresholds, scan limits and counter-evidence.
+  **Methods** loads native graph profiles, versions, parameters and arbitrary
+  nested/signed combinations. Exact JSON fields preserve native DTOs and numeric
+  tokens. Editing creates a new version with native acceptance/readback; it does
+  not replace older results. The producer filter follows actual produced-by/run
+  Claims. Preview and structural lineage do not prove execution or content truth.
+  Graph acceptance and global profile activation are separate operations. Hash
+  checks serialize participating configuration writes within this HTTP process;
+  they do not provide CAS against another process or unrelated native writers.
+- **Settings / Usage policy** reads the W2 preset, overrides and effective policy,
+  previews exact estimates, edits whole policy JSON, and inspects/approves/declines
+  the original operation receipt. Stale or indeterminate decisions require
+  inspection. Approval does not itself establish delivery, and these controls
+  do not guard unrelated legacy operations.
+- **Graph replies in chat** offer off, answer as graph, text plus JSON graph, and
+  separate model after the answer. Recipes, prompts, hashes and method definitions
+  are data in the graph. Definition installation precedes explicit global CAS
+  activation. The scope is shared by conversations; drafts do not dispatch a model.
+  The current native API has no per-call context_execution or immutable Chat.resume.
+  Model/provider bindings, resource estimates, context and admission remain editable
+  JSON. Existing graph memory/knowledge context is retained; appending an arbitrary
+  dynamic GraphPacket to arbitrary message history requires a further native
+  composition API. Recorded replies preserve source text, schema errors, model
+  provenance and native receipts. Fragment expansion/correction verifies the saved
+  compilation hash and inserts an editable request into the composer.
+- **Graph reply workbench** also compiles captured raw responses through W4, validates
+  retained output, shows semantic addresses and makes candidate/automatic admission
+  explicit. Native replay distinguishes historical admission from current accounting;
+  incomplete or unknown operations remain inspection states. Packet projection and
+  canonical-store acceptance are separate operations.
+- **Analysis** resolves W1 contracts and retains the exact provider request behind
+  a server prepared handle. Preview exposes body bytes and hashes with credential
+  redaction; it performs no HTTP call or fictitious execution. Prompt, schema and
+  preset edits create immutable method versions. Execute requires the reviewed
+  identity, native method binding and W2 admission. The attempt marker is consumed
+  before transport; the same live handle retains the first response, including
+  invalid output and binary data, without another attempt. Handles are process-local
+  and disappear on restart. This is not durable TaskEngine recovery. The separate
+  client ChatRequest preview still describes the client request, not a provider body.
+- **Onboarding / What app knows** share one stable user-bound W12 host. The native DB
+  stores profile, history, privacy and defaults; browser settings store only the
+  chosen identity. Writes carry exact outer revision decimal strings and native CAS.
+  Conflicts or uncertain outcomes require reload; the adapter does not automatically
+  retry writes. Forms, reviews, scenarios, layers, overrides and exclusions use W12
+  operations. The host supplies no model-completion callbacks: a privacy-filtered
+  request can be prepared, but model interview requires its own genuine W2-bound
+  transport. The absent W11 RuntimeProfile foundation is reported in the raw native
+  snapshot; its dedicated status is not projected by the current W12 views.
 
-Onboarding and R39–R40 belong to W12. Its `3c0bc36` branch exports
-`OnboardingPanel` and `WhatAppKnows`; they are not yet accepted on main.
-W10 will connect both through one user-bound adapter in App navigation after
-intake and publication of the native OnboardingStore transport. The adapter
-must retain the native outer revision for CAS and preserve the pack envelope.
-No placeholder onboarding is advertised. The [TaskEngine adapter contract](reports/interface-2-task-engine-adapter-2026-10-04.md)
-records current callable operations and the missing execution binding.
+The [TaskEngine adapter contract](reports/interface-2-task-engine-adapter-2026-10-04.md)
+records the four callable operations: list, get, cancel and global recovery.
+Generic submit/checkpoint-write/complete/public pause/resume-one and TaskRecord CAS
+remain absent; `workflow.task.execute` stays unavailable. Global recovery of running
+records does not resume one selected workflow or establish its completion. Browser
+snapshots and unknown-outcome checkpoints do not become native execution records.
 
-The [thread-10 report](reports/interface-2-2026-10-04.md) records fresh checks,
-before/after counts, negative evidence and concrete requests to other lanes.
 The earlier [extended verification](verification/application-profiles-extended-2026-10-04/RESULTS.md)
 remains historical evidence for its pinned increment, rather than a receipt
 for these new changes.

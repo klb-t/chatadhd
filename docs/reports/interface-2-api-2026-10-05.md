@@ -35,6 +35,12 @@ Wykryto dodatkowy rzeczywisty negatyw granicy HTTP config: zwykły JSON serwera 
 
 Dane presetów w `loom/web/src/profiles/presets/graph-chat.json`: trzy tryby grafowe oraz kontrola off, method/recipe/prompt/version jako byty grafu. Panel instaluje definicje natywnie, dopiero osobny CAS aktywuje globalne ustawienie; raw JSON zachowuje tokeny liczb i nieznane pola. `GraphReplyWorkbench` korzysta z zapisanej kompilacji i sprawdza jej hash przed adresowaniem fragmentu. Rozwiń/popraw wpisuje edytowalną prośbę do kompozytora bez samoczynnego wysłania.14/14 native PASS,29 pełnych HTTP exchanges,3 method acceptance receipts i4 fake model calls. Zapisany graf, fragmenty i pierwsze błędy/odpowiedzi pozostają dostępne. Brak publicznego Chat.resume jest jawnie opisany niżej.
 
+## Checkpoint 5 — trasy natywne i nawigacja
+
+`App.tsx` podłącza Methods, Analysis i oba widoki W12 przez jeden host. Trzy źródłowe mosty HTTP korzystają z istniejącego Runtime; optional LoomApi capabilities zachowują unavailable w JNI bez implementacji. Naprawiony PUT/PATCH config zachowuje kolejność native DTO i tokeny liczb; save_profile_selection zapisuje dokładną zatwierdzoną selekcję zarówno w profilu, jak i overlay. Golden3/4 i rdzeń pozostają bez zmian. Negatyw aktywacji zachowany; test wymaga natywnego readback i nie toleruje pozornej aktywacji.
+
+GCC/vendored pełny build oraz web build PASS. Binarka końcowa `c65181cb064cf5326b0006bddf31f2244d369e1b6607e20cab6b559447475c2f`. Na niej graph chat14/14 PASS z identycznymi hashami źródeł przed/po oraz istniejące native E2E16/16 PASS. Wcześniejsze native UI20/20 PASS; pełne121 CTest trwa, consumer metod i pełna nawigacja pozostają w bramce końcowej.
+
 ## W trakcie
 
 Most HTTP korzysta z tego samego statycznego Runtime i rzeczywistej deklaracji opaque context w `src/capi/context.h`. Nie odtwarza layoutu, nie tworzy drugiej DB/silnika i nie dodaje C ABI. To jawna zależność źródłowa serwera; stare JNI pozostaje bez nowej zdolności.

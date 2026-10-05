@@ -41,6 +41,10 @@ export class LoomHttpApi implements LoomApi {
     return this.req("POST", "/api/onboarding", command, false, options?.signal);
   }
   methods(command: Record<string, unknown>, options?: NativeUiRequestOptions): Promise<Record<string, unknown>> {
+    // Mounting a view reads configuration; it never crosses a write endpoint.
+    if (Object.keys(command).length === 1 &&
+        (command.action === "chat_settings" || command.operation === "chat_settings"))
+      return this.req("GET", "/api/methods/chat-settings", undefined, false, options?.signal);
     return this.req("POST", "/api/methods", command, false, options?.signal);
   }
   analysis(command: Record<string, unknown>, options?: NativeUiRequestOptions): Promise<Record<string, unknown>> {
