@@ -1,0 +1,41 @@
+{
+  "schema": "loom.programme_native_independent_review/1",
+  "verdict": "pass_after_two_concrete_fixes",
+  "adapter_sha256": "f92da5c47bc5478d401a3afb1631d31a1f77be100279dddb794458915a75f8f2",
+  "tests_sha256": "6eb24bdee15f77d34a316f3d8c2b15dd121aa48f8719c06fbc09353e089bfcce",
+  "policy_sha256": "c22682e1df1910fe220503337666543212a89cc45a7c0f180a331220f0717503",
+  "focused_cases_passed": 22,
+  "focused_cases_skipped": 0,
+  "existing_native_cpp_cases_executed": 4,
+  "probes": [
+    "Every duplicate alternative and choice preserved, all planned missing responses retained",
+    "Exact envelope/source/packet/request/response/vocabulary bindings; malformed content unmodified",
+    "Injected callback cannot establish native execution or semantic truth",
+    "Configured process nonzero exit, malformed stdout and timeout retain native bytes and fail validation",
+    "Wrong caller expected binary hash rejects before dispatch",
+    "Supplied native instance executable/timeout/bound_files mutation cannot change freshly policy-bound actual process argv/hash",
+    "Effective policy and consumed source-file hashes retained; multi-choice legacy manual-review native eligibility remains null"
+  ],
+  "findings": [
+    {
+      "negative_adapter_sha256": "00618f64bf1bc6e028b5d3e4b096df3de462513de03091c5566bfec87eda92f5",
+      "issue": "Supplied NativeValidator skipped caller policy expected binary hash",
+      "proof": "draft-probes.json",
+      "exact_negative_source": "negative-source-00618f64/loom/tools/structure/programme_native_results_v1.py",
+      "exact_replay": "replayed-exact-negatives.json",
+      "recovered_effective_policy": "negative-source-00618f64/effective-inputs/wrong-native-instance-effective-policy.json",
+      "fixed_proof": "final-process-and-policy-probes.json"
+    },
+    {
+      "negative_adapter_sha256": "70bd2b84b51efdd6644acbcacb235a22ecaea2cd4b3ebc1faf3e1f445ce6d4db",
+      "issue": "Mutable supplied executable could launch canned-report fixture while recording real native binary provenance",
+      "proof": "mutable-validator-probe.json",
+      "fixed_proof": "fixed-mutable-validator-probe.json",
+      "exact_negative_source": "negative-source-70bd2b84/loom/tools/structure/programme_native_results_v1.py"
+    }
+  ],
+  "real_stage2_outputs_read": false,
+  "real_private_ledger_or_credentials_read": false,
+  "provider_calls": 0,
+  "functional_files_edited_by_reviewer": 0
+}

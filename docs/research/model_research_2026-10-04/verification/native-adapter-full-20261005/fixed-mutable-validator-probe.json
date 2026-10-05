@@ -1,0 +1,25 @@
+{
+  "adapter_sha256": "f92da5c47bc5478d401a3afb1631d31a1f77be100279dddb794458915a75f8f2",
+  "policy_binary": "/workspace/scratch/407fe6f6ff42/build/loom_candidate_graph_native_tool",
+  "recorded_binary": "/workspace/scratch/407fe6f6ff42/build/loom_candidate_graph_native_tool",
+  "mutated_untrusted_executable": "/tmp/fabricated-canned-report-w_e0qu9f/canned-report",
+  "observed_process_argv": [
+    [
+      "/workspace/scratch/407fe6f6ff42/build/loom_candidate_graph_native_tool"
+    ]
+  ],
+  "mutated_untrusted_executable_sha256": "5937aaaa417b52b6a89a1a6fd7c4922df85a21fd9da706e76ecef25261e67fae",
+  "observed_process_binary_sha256": "d3e8411f099698bca28d6f7f089eb8f5ba5920637826eb447796db6d86c79def",
+  "recorded_binary_sha256": "d3e8411f099698bca28d6f7f089eb8f5ba5920637826eb447796db6d86c79def",
+  "counts": {
+    "planned": 1,
+    "responses": 1,
+    "mechanically_valid": 1,
+    "mechanically_rejected": 0,
+    "validator_alternative_attempts": 1,
+    "native_bundle_invocations": 1,
+    "native_execution_captures": 1,
+    "native_verified_valid": 1,
+    "missing_responses": 0
+  }
+}
