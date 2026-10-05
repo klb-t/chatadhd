@@ -88,7 +88,7 @@ jobs:
         working-directory: loom
         # ctypes is exercised in both ordinary builds. The existing ASan preset
         # runs instrumented native executables and does not build the FFI library;
-        # its pre-existing unavailable FFI cases are identified in the receipt.
+        # its ctypes cases use a separately recorded ordinary GCC companion.
         run: >-
           cmake --preset ${{ matrix.preset }} -DLOOM_BUILD_SERVER=ON
           -DLOOM_SHARED=${{ matrix.preset == 'asan' && 'OFF' || 'ON' }}
