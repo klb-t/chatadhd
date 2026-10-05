@@ -1,0 +1,131 @@
+{
+  "schema": "loom.endpoint_pricing_policy/1",
+  "version": "2026-10-05",
+  "routing": {
+    "endpoint_slug_field": "tag",
+    "tier_request_field": "service_tier",
+    "native_tier_request_field": "speed",
+    "native_tier_request_values": {"fast": "priority"},
+    "default_tier": "default",
+    "request_tier_aliases": {
+      "default": "default", "standard": "default", "flex": "flex",
+      "priority": "priority", "fast": "priority", "ultrafast": "ultrafast"
+    },
+    "endpoint_tier_suffixes": {
+      "flex": "flex", "priority": "priority", "fast": "priority", "ultrafast": "ultrafast"
+    },
+    "model_variant_tiers": {
+      ":nitro": ["default", "priority"], ":floor": ["default", "flex"]
+    }
+  },
+  "pricing": {
+    "charge_components": [
+      "prompt", "completion", "request", "web_search", "internal_reasoning",
+      "input_cache_read", "input_cache_write", "input_cache_write_1h",
+      "image", "image_output", "image_token", "audio", "audio_output", "input_audio_cache"
+    ],
+    "required_components": ["prompt", "completion"],
+    "noncharge_fields": {"discount": "fractional_discount"},
+    "overrides_field": "overrides",
+    "condition_schemas": {
+      "min_prompt_tokens": {"type": "integer"},
+      "utc_start": {"type": "integer"},
+      "utc_end": {"type": "integer"},
+      "utc_days": {
+        "type": "array",
+        "items": {"enum": ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]}
+      }
+    },
+    "nonnegative_integer_conditions": ["min_prompt_tokens", "utc_start", "utc_end"],
+    "absent_component_prices_usd": {"request": "0"}
+  },
+  "unit_bounds_defaults": {
+    "request": {"value": "1"},
+    "input_cache_read": {"copy_bound": "prompt"},
+    "input_cache_write": {"copy_bound": "prompt"},
+    "input_cache_write_1h": {"copy_bound": "prompt"},
+    "internal_reasoning": {"copy_bound": "completion"},
+    "image": {"value": "0"},
+    "image_output": {"value": "0"},
+    "image_token": {"value": "0"},
+    "audio": {"value": "0"},
+    "audio_output": {"value": "0"},
+    "input_audio_cache": {"value": "0"},
+    "web_search": {"value": "0"}
+  },
+  "zero_unit_profiles": {
+    "image": "text_only_chat_without_paid_tools",
+    "image_output": "text_only_chat_without_paid_tools",
+    "image_token": "text_only_chat_without_paid_tools",
+    "audio": "text_only_chat_without_paid_tools",
+    "audio_output": "text_only_chat_without_paid_tools",
+    "input_audio_cache": "text_only_chat_without_paid_tools",
+    "web_search": "text_only_chat_without_paid_tools"
+  },
+  "operation_profile": "text_only_chat_without_paid_tools",
+  "units_bound_verifiers": {
+    "prompt": {"minimum_request_bytes": true},
+    "request": {"minimum_value": "1"},
+    "input_cache_read": {"minimum_bound": "prompt"},
+    "input_cache_write": {"minimum_bound": "prompt"},
+    "input_cache_write_1h": {"minimum_bound": "prompt"},
+    "completion": {"minimum_request_path": ["max_tokens"], "optional_minimum_request_paths": [["max_completion_tokens"]]},
+    "internal_reasoning": {"minimum_bound": "completion", "minimum_request_path": ["max_tokens"], "optional_minimum_request_paths": [["max_completion_tokens"]]}
+  },
+  "request_profiles": {
+    "text_only_chat_without_paid_tools": {
+      "body_schema": {
+        "type": "object",
+        "required": ["model", "messages", "max_tokens", "provider"],
+        "additionalProperties": false,
+        "properties": {
+          "model": {"type": "string"},
+          "provider": {"type": "object"},
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "object", "required": ["role", "content"], "additionalProperties": false,
+              "properties": {
+                "role": {"enum": ["system", "developer", "user", "assistant"]},
+                "content": {"type": "string"},
+                "name": {"type": "string"}
+              }
+            }
+          },
+          "max_tokens": {"type": "integer"},
+          "max_completion_tokens": {"type": "integer"},
+          "n": {"const": 1},
+          "temperature": {}, "top_p": {}, "seed": {"type": "integer"},
+          "stop": {}, "frequency_penalty": {}, "presence_penalty": {},
+          "reasoning": {"type": "object"}, "reasoning_effort": {"type": "string"},
+          "include_reasoning": {"type": "boolean"}, "verbosity": {"type": "string"},
+          "stream": {"const": false}, "usage": {"type": "object"},
+          "response_format": {
+            "type": "object", "required": ["type"],
+            "properties": {"type": {"enum": ["text", "json_object", "json_schema"]}}
+          },
+          "modalities": {"const": ["text"]},
+          "tools": {"const": []}, "functions": {"const": []}, "plugins": {"const": []},
+          "web_search_options": {"const": null}, "audio": {"const": null},
+          "service_tier": {"type": "string"}, "speed": {"type": "string"}
+        }
+      }
+    }
+  },
+  "bound_rationale": {
+    "rates": "Upper envelope includes every conditional rate and admitted routing endpoint. It may exceed any single served schedule. Discounts are ignored only because a validated fractional discount reduces cost.",
+    "cache": "Each cache component separately receives the complete prompt quantity. Charging prompt plus all cache possibilities together intentionally over-reserves; no hit or TTL is predicted.",
+    "reasoning": "The complete declared output quantity is additionally reserved at the internal-reasoning rate. This deliberately double counts possible output. The preset relies on the total-output contract, never on a precise thinking budget inferred from effort low.",
+    "zero_units": "Zero image/audio/search quantities require exact text-only messages, text response-format/modalities, and no paid tools/plugins in every individual request. Explicit zero quantities need the same witness.",
+    "boundary": "Source-bound reservations and body checks do not certify provider implementation, actual served tier, future price stability, tokenization allowances or final billing. First response and generation receipts remain authoritative."
+  },
+  "primary_sources_checked_2026_10_05": [
+    "https://openrouter.ai/docs/guides/routing/provider-selection#base-slug-matching",
+    "https://openrouter.ai/docs/guides/features/service-tiers",
+    "https://openrouter.ai/docs/guides/overview/models#pricing-overrides",
+    "https://github.com/OpenRouterTeam/terraform-provider-openrouter/blob/main/docs/data-sources/model.md",
+    "https://openrouter.ai/docs/guides/best-practices/reasoning-tokens#reasoning-tokens-and-max_tokens",
+    "https://ai.google.dev/gemini-api/docs/generate-content/thinking#token-limits-and-max_output_tokens",
+    "https://ai.google.dev/api/generate-content#v1beta.GenerationConfig"
+  ]
+}
