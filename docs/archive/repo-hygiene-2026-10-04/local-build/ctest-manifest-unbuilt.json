@@ -1,0 +1,2731 @@
+{
+  "backtraceGraph" : 
+  {
+    "commands" : 
+    [
+      "add_test"
+    ],
+    "files" : 
+    [
+      "/workspace/scratch/2a6e71927cf3/chatadhd/loom/CMakeLists.txt",
+      "/workspace/scratch/2a6e71927cf3/chatadhd/loom/cli/CMakeLists.txt"
+    ],
+    "nodes" : 
+    [
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 0
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 2
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 4
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 6
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 8
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 10
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 12
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 14
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 16
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 18
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 20
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 22
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 24
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 26
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 28
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 30
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 32
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 34
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 36
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 38
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 40
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 42
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 44
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 46
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 48
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 50
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 52
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 54
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 56
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 58
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 60
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 62
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 64
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 66
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 68
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 70
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 72
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 74
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 76
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 78
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 80
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 82
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 84
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 86
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 88
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 90
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 92
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 94
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 96
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 98
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 100
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 102
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 104
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 106
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 108
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 110
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 112
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 114
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 116
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 118
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 120
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 122
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 124
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 126
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 128
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 130
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 132
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 134
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 136
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 138
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 140
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 142
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 144
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 146
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 148
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 150
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 152
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 154
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 156
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 158
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 184,
+        "parent" : 160
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 212,
+        "parent" : 162
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 212,
+        "parent" : 164
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 212,
+        "parent" : 166
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 212,
+        "parent" : 168
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 212,
+        "parent" : 170
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 212,
+        "parent" : 172
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 212,
+        "parent" : 174
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 212,
+        "parent" : 176
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 212,
+        "parent" : 178
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 212,
+        "parent" : 180
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 212,
+        "parent" : 182
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 212,
+        "parent" : 184
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 212,
+        "parent" : 186
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 212,
+        "parent" : 188
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 212,
+        "parent" : 190
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 212,
+        "parent" : 192
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 212,
+        "parent" : 194
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 217,
+        "parent" : 196
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 220,
+        "parent" : 198
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 223,
+        "parent" : 200
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 226,
+        "parent" : 202
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 229,
+        "parent" : 204
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 232,
+        "parent" : 206
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 245,
+        "parent" : 208
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 249,
+        "parent" : 210
+      },
+      {
+        "file" : 1
+      },
+      {
+        "command" : 0,
+        "file" : 1,
+        "line" : 11,
+        "parent" : 212
+      },
+      {
+        "file" : 1
+      },
+      {
+        "command" : 0,
+        "file" : 1,
+        "line" : 15,
+        "parent" : 214
+      }
+    ]
+  },
+  "kind" : "ctestInfo",
+  "tests" : 
+  [
+    {
+      "backtrace" : 1,
+      "name" : "unit.test_archive",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 3,
+      "name" : "unit.test_batch_api",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 5,
+      "name" : "unit.test_capi",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 7,
+      "name" : "unit.test_capi_knowledge",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 9,
+      "name" : "unit.test_capi_knowledge_latest_run",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 11,
+      "name" : "unit.test_catalog",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 13,
+      "name" : "unit.test_catalog_context",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 15,
+      "name" : "unit.test_catalog_eval",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 17,
+      "name" : "unit.test_catalog_links",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 19,
+      "name" : "unit.test_catalog_retention",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 21,
+      "name" : "unit.test_catalog_scale",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 23,
+      "name" : "unit.test_chat_active_task",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 25,
+      "name" : "unit.test_chat_active_task_acceptance_audit",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 27,
+      "name" : "unit.test_chat_active_task_acceptance_scale",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 29,
+      "name" : "unit.test_chat_active_task_acceptance_validation",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 31,
+      "name" : "unit.test_chat_active_task_concurrency",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 33,
+      "name" : "unit.test_chat_active_task_durability",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 35,
+      "name" : "unit.test_chat_active_task_durable_audit",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 37,
+      "name" : "unit.test_chat_active_task_exceptional",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 39,
+      "name" : "unit.test_chat_active_task_history_aba",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 41,
+      "name" : "unit.test_chat_active_task_reference",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 43,
+      "name" : "unit.test_chat_active_task_retention",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 45,
+      "name" : "unit.test_chat_active_task_revisions",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 47,
+      "name" : "unit.test_chat_active_task_scope_identity",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 49,
+      "name" : "unit.test_chat_engine",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 51,
+      "name" : "unit.test_chat_knowledge_context",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 53,
+      "name" : "unit.test_chat_retrieval_plan",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 55,
+      "name" : "unit.test_config",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 57,
+      "name" : "unit.test_context_channel_integration",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 59,
+      "name" : "unit.test_context_controls",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 61,
+      "name" : "unit.test_context_counter",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 63,
+      "name" : "unit.test_context_diagnostics",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 65,
+      "name" : "unit.test_context_engine",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 67,
+      "name" : "unit.test_context_eval",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 69,
+      "name" : "unit.test_context_native_consumer",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 71,
+      "name" : "unit.test_context_plan",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 73,
+      "name" : "unit.test_context_retrieval",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 75,
+      "name" : "unit.test_context_retrieval_dev",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 77,
+      "name" : "unit.test_context_tfidf_reuse",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 79,
+      "name" : "unit.test_crypto",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 81,
+      "name" : "unit.test_db",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 83,
+      "name" : "unit.test_event_bus",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 85,
+      "name" : "unit.test_extract",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 87,
+      "name" : "unit.test_extract_eval",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 89,
+      "name" : "unit.test_fts",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 91,
+      "name" : "unit.test_generalize",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 93,
+      "name" : "unit.test_generalize_eval",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 95,
+      "name" : "unit.test_github",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 97,
+      "name" : "unit.test_graph",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 99,
+      "name" : "unit.test_import",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 101,
+      "name" : "unit.test_import_export_fidelity",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 103,
+      "name" : "unit.test_import_exports",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 105,
+      "name" : "unit.test_import_source_materialization",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 107,
+      "name" : "unit.test_import_stream",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 109,
+      "name" : "unit.test_kb_pack",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 111,
+      "name" : "unit.test_knowledge",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 113,
+      "name" : "unit.test_knowledge_candidate_graph",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 115,
+      "name" : "unit.test_knowledge_candidates",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 117,
+      "name" : "unit.test_knowledge_flow",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 119,
+      "name" : "unit.test_knowledge_semantic",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 121,
+      "name" : "unit.test_knowledge_semantic_graph",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 123,
+      "name" : "unit.test_knowledge_store",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 125,
+      "name" : "unit.test_materialize",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 127,
+      "name" : "unit.test_media",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 129,
+      "name" : "unit.test_memory",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 131,
+      "name" : "unit.test_model",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 133,
+      "name" : "unit.test_net_sse",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 135,
+      "name" : "unit.test_pack_model",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 137,
+      "name" : "unit.test_provenance",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 139,
+      "name" : "unit.test_providers",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 141,
+      "name" : "unit.test_regex",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 143,
+      "name" : "unit.test_relations",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 145,
+      "name" : "unit.test_resolve",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 147,
+      "name" : "unit.test_resolve_attribution",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 149,
+      "name" : "unit.test_resolve_lineage",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 151,
+      "name" : "unit.test_runtime",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 153,
+      "name" : "unit.test_selector",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 155,
+      "name" : "unit.test_semantic_llm",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 157,
+      "name" : "unit.test_semantic_worker",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 159,
+      "name" : "unit.test_tasks",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 161,
+      "name" : "unit.test_util",
+      "properties" : 
+      [
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 163,
+      "command" : 
+      [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/loom/tests/compat/test_abi_compat.py"
+      ],
+      "name" : "compat.test_abi_compat",
+      "properties" : 
+      [
+        {
+          "name" : "ENVIRONMENT",
+          "value" : 
+          [
+            "PYTHONPATH=/workspace/scratch/2a6e71927cf3/chatadhd/loom/..",
+            "PYTHONDONTWRITEBYTECODE=1",
+            "LOOM_COMPAT_TOOL=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/loom_compat_tool",
+            "LOOM_CANDIDATE_GRAPH_NATIVE_TOOL=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/loom_candidate_graph_native_tool",
+            "LOOM_LIBRARY=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/libloom.so.0.1.0"
+          ]
+        },
+        {
+          "name" : "TIMEOUT",
+          "value" : 600.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 165,
+      "command" : 
+      [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/loom/tests/compat/test_active_task_compiler_compat.py"
+      ],
+      "name" : "compat.test_active_task_compiler_compat",
+      "properties" : 
+      [
+        {
+          "name" : "ENVIRONMENT",
+          "value" : 
+          [
+            "PYTHONPATH=/workspace/scratch/2a6e71927cf3/chatadhd/loom/..",
+            "PYTHONDONTWRITEBYTECODE=1",
+            "LOOM_COMPAT_TOOL=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/loom_compat_tool",
+            "LOOM_CANDIDATE_GRAPH_NATIVE_TOOL=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/loom_candidate_graph_native_tool",
+            "LOOM_LIBRARY=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/libloom.so.0.1.0"
+          ]
+        },
+        {
+          "name" : "TIMEOUT",
+          "value" : 600.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 167,
+      "command" : 
+      [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/loom/tests/compat/test_candidate_graph_native.py"
+      ],
+      "name" : "compat.test_candidate_graph_native",
+      "properties" : 
+      [
+        {
+          "name" : "ENVIRONMENT",
+          "value" : 
+          [
+            "PYTHONPATH=/workspace/scratch/2a6e71927cf3/chatadhd/loom/..",
+            "PYTHONDONTWRITEBYTECODE=1",
+            "LOOM_COMPAT_TOOL=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/loom_compat_tool",
+            "LOOM_CANDIDATE_GRAPH_NATIVE_TOOL=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/loom_candidate_graph_native_tool",
+            "LOOM_LIBRARY=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/libloom.so.0.1.0"
+          ]
+        },
+        {
+          "name" : "TIMEOUT",
+          "value" : 600.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 169,
+      "command" : 
+      [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/loom/tests/compat/test_chat_active_task_http.py"
+      ],
+      "name" : "compat.test_chat_active_task_http",
+      "properties" : 
+      [
+        {
+          "name" : "ENVIRONMENT",
+          "value" : 
+          [
+            "PYTHONPATH=/workspace/scratch/2a6e71927cf3/chatadhd/loom/..",
+            "PYTHONDONTWRITEBYTECODE=1",
+            "LOOM_COMPAT_TOOL=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/loom_compat_tool",
+            "LOOM_CANDIDATE_GRAPH_NATIVE_TOOL=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/loom_candidate_graph_native_tool",
+            "LOOM_LIBRARY=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/libloom.so.0.1.0"
+          ]
+        },
+        {
+          "name" : "TIMEOUT",
+          "value" : 600.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 171,
+      "command" : 
+      [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/loom/tests/compat/test_chat_compat.py"
+      ],
+      "name" : "compat.test_chat_compat",
+      "properties" : 
+      [
+        {
+          "name" : "ENVIRONMENT",
+          "value" : 
+          [
+            "PYTHONPATH=/workspace/scratch/2a6e71927cf3/chatadhd/loom/..",
+            "PYTHONDONTWRITEBYTECODE=1",
+            "LOOM_COMPAT_TOOL=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/loom_compat_tool",
+            "LOOM_CANDIDATE_GRAPH_NATIVE_TOOL=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/loom_candidate_graph_native_tool",
+            "LOOM_LIBRARY=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/libloom.so.0.1.0"
+          ]
+        },
+        {
+          "name" : "TIMEOUT",
+          "value" : 600.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 173,
+      "command" : 
+      [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/loom/tests/compat/test_config_compat.py"
+      ],
+      "name" : "compat.test_config_compat",
+      "properties" : 
+      [
+        {
+          "name" : "ENVIRONMENT",
+          "value" : 
+          [
+            "PYTHONPATH=/workspace/scratch/2a6e71927cf3/chatadhd/loom/..",
+            "PYTHONDONTWRITEBYTECODE=1",
+            "LOOM_COMPAT_TOOL=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/loom_compat_tool",
+            "LOOM_CANDIDATE_GRAPH_NATIVE_TOOL=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/loom_candidate_graph_native_tool",
+            "LOOM_LIBRARY=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/libloom.so.0.1.0"
+          ]
+        },
+        {
+          "name" : "TIMEOUT",
+          "value" : 600.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 175,
+      "command" : 
+      [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/loom/tests/compat/test_crypto_compat.py"
+      ],
+      "name" : "compat.test_crypto_compat",
+      "properties" : 
+      [
+        {
+          "name" : "ENVIRONMENT",
+          "value" : 
+          [
+            "PYTHONPATH=/workspace/scratch/2a6e71927cf3/chatadhd/loom/..",
+            "PYTHONDONTWRITEBYTECODE=1",
+            "LOOM_COMPAT_TOOL=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/loom_compat_tool",
+            "LOOM_CANDIDATE_GRAPH_NATIVE_TOOL=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/loom_candidate_graph_native_tool",
+            "LOOM_LIBRARY=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/libloom.so.0.1.0"
+          ]
+        },
+        {
+          "name" : "TIMEOUT",
+          "value" : 600.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 177,
+      "command" : 
+      [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/loom/tests/compat/test_db_compat.py"
+      ],
+      "name" : "compat.test_db_compat",
+      "properties" : 
+      [
+        {
+          "name" : "ENVIRONMENT",
+          "value" : 
+          [
+            "PYTHONPATH=/workspace/scratch/2a6e71927cf3/chatadhd/loom/..",
+            "PYTHONDONTWRITEBYTECODE=1",
+            "LOOM_COMPAT_TOOL=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/loom_compat_tool",
+            "LOOM_CANDIDATE_GRAPH_NATIVE_TOOL=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/loom_candidate_graph_native_tool",
+            "LOOM_LIBRARY=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/libloom.so.0.1.0"
+          ]
+        },
+        {
+          "name" : "TIMEOUT",
+          "value" : 600.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 179,
+      "command" : 
+      [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/loom/tests/compat/test_github_sync_defaults.py"
+      ],
+      "name" : "compat.test_github_sync_defaults",
+      "properties" : 
+      [
+        {
+          "name" : "ENVIRONMENT",
+          "value" : 
+          [
+            "PYTHONPATH=/workspace/scratch/2a6e71927cf3/chatadhd/loom/..",
+            "PYTHONDONTWRITEBYTECODE=1",
+            "LOOM_COMPAT_TOOL=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/loom_compat_tool",
+            "LOOM_CANDIDATE_GRAPH_NATIVE_TOOL=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/loom_candidate_graph_native_tool",
+            "LOOM_LIBRARY=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/libloom.so.0.1.0"
+          ]
+        },
+        {
+          "name" : "TIMEOUT",
+          "value" : 600.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 181,
+      "command" : 
+      [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/loom/tests/compat/test_graph_compat.py"
+      ],
+      "name" : "compat.test_graph_compat",
+      "properties" : 
+      [
+        {
+          "name" : "ENVIRONMENT",
+          "value" : 
+          [
+            "PYTHONPATH=/workspace/scratch/2a6e71927cf3/chatadhd/loom/..",
+            "PYTHONDONTWRITEBYTECODE=1",
+            "LOOM_COMPAT_TOOL=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/loom_compat_tool",
+            "LOOM_CANDIDATE_GRAPH_NATIVE_TOOL=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/loom_candidate_graph_native_tool",
+            "LOOM_LIBRARY=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/libloom.so.0.1.0"
+          ]
+        },
+        {
+          "name" : "TIMEOUT",
+          "value" : 600.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 183,
+      "command" : 
+      [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/loom/tests/compat/test_graph_packet_store.py"
+      ],
+      "name" : "compat.test_graph_packet_store",
+      "properties" : 
+      [
+        {
+          "name" : "ENVIRONMENT",
+          "value" : 
+          [
+            "PYTHONPATH=/workspace/scratch/2a6e71927cf3/chatadhd/loom/..",
+            "PYTHONDONTWRITEBYTECODE=1",
+            "LOOM_COMPAT_TOOL=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/loom_compat_tool",
+            "LOOM_CANDIDATE_GRAPH_NATIVE_TOOL=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/loom_candidate_graph_native_tool",
+            "LOOM_LIBRARY=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/libloom.so.0.1.0"
+          ]
+        },
+        {
+          "name" : "TIMEOUT",
+          "value" : 600.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 185,
+      "command" : 
+      [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/loom/tests/compat/test_import_compat.py"
+      ],
+      "name" : "compat.test_import_compat",
+      "properties" : 
+      [
+        {
+          "name" : "ENVIRONMENT",
+          "value" : 
+          [
+            "PYTHONPATH=/workspace/scratch/2a6e71927cf3/chatadhd/loom/..",
+            "PYTHONDONTWRITEBYTECODE=1",
+            "LOOM_COMPAT_TOOL=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/loom_compat_tool",
+            "LOOM_CANDIDATE_GRAPH_NATIVE_TOOL=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/loom_candidate_graph_native_tool",
+            "LOOM_LIBRARY=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/libloom.so.0.1.0"
+          ]
+        },
+        {
+          "name" : "TIMEOUT",
+          "value" : 600.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 187,
+      "command" : 
+      [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/loom/tests/compat/test_memory_compat.py"
+      ],
+      "name" : "compat.test_memory_compat",
+      "properties" : 
+      [
+        {
+          "name" : "ENVIRONMENT",
+          "value" : 
+          [
+            "PYTHONPATH=/workspace/scratch/2a6e71927cf3/chatadhd/loom/..",
+            "PYTHONDONTWRITEBYTECODE=1",
+            "LOOM_COMPAT_TOOL=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/loom_compat_tool",
+            "LOOM_CANDIDATE_GRAPH_NATIVE_TOOL=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/loom_candidate_graph_native_tool",
+            "LOOM_LIBRARY=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/libloom.so.0.1.0"
+          ]
+        },
+        {
+          "name" : "TIMEOUT",
+          "value" : 600.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 189,
+      "command" : 
+      [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/loom/tests/compat/test_selector_compat.py"
+      ],
+      "name" : "compat.test_selector_compat",
+      "properties" : 
+      [
+        {
+          "name" : "ENVIRONMENT",
+          "value" : 
+          [
+            "PYTHONPATH=/workspace/scratch/2a6e71927cf3/chatadhd/loom/..",
+            "PYTHONDONTWRITEBYTECODE=1",
+            "LOOM_COMPAT_TOOL=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/loom_compat_tool",
+            "LOOM_CANDIDATE_GRAPH_NATIVE_TOOL=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/loom_candidate_graph_native_tool",
+            "LOOM_LIBRARY=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/libloom.so.0.1.0"
+          ]
+        },
+        {
+          "name" : "TIMEOUT",
+          "value" : 600.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 191,
+      "command" : 
+      [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/loom/tests/compat/test_semantic_compat.py"
+      ],
+      "name" : "compat.test_semantic_compat",
+      "properties" : 
+      [
+        {
+          "name" : "ENVIRONMENT",
+          "value" : 
+          [
+            "PYTHONPATH=/workspace/scratch/2a6e71927cf3/chatadhd/loom/..",
+            "PYTHONDONTWRITEBYTECODE=1",
+            "LOOM_COMPAT_TOOL=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/loom_compat_tool",
+            "LOOM_CANDIDATE_GRAPH_NATIVE_TOOL=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/loom_candidate_graph_native_tool",
+            "LOOM_LIBRARY=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/libloom.so.0.1.0"
+          ]
+        },
+        {
+          "name" : "TIMEOUT",
+          "value" : 600.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 193,
+      "command" : 
+      [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/loom/tests/compat/test_semantic_recovery.py"
+      ],
+      "name" : "compat.test_semantic_recovery",
+      "properties" : 
+      [
+        {
+          "name" : "ENVIRONMENT",
+          "value" : 
+          [
+            "PYTHONPATH=/workspace/scratch/2a6e71927cf3/chatadhd/loom/..",
+            "PYTHONDONTWRITEBYTECODE=1",
+            "LOOM_COMPAT_TOOL=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/loom_compat_tool",
+            "LOOM_CANDIDATE_GRAPH_NATIVE_TOOL=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/loom_candidate_graph_native_tool",
+            "LOOM_LIBRARY=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/libloom.so.0.1.0"
+          ]
+        },
+        {
+          "name" : "TIMEOUT",
+          "value" : 600.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 195,
+      "command" : 
+      [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/loom/tests/compat/test_util_compat.py"
+      ],
+      "name" : "compat.test_util_compat",
+      "properties" : 
+      [
+        {
+          "name" : "ENVIRONMENT",
+          "value" : 
+          [
+            "PYTHONPATH=/workspace/scratch/2a6e71927cf3/chatadhd/loom/..",
+            "PYTHONDONTWRITEBYTECODE=1",
+            "LOOM_COMPAT_TOOL=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/loom_compat_tool",
+            "LOOM_CANDIDATE_GRAPH_NATIVE_TOOL=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/loom_candidate_graph_native_tool",
+            "LOOM_LIBRARY=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/libloom.so.0.1.0"
+          ]
+        },
+        {
+          "name" : "TIMEOUT",
+          "value" : 600.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 197,
+      "command" : 
+      [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/loom/tools/structure",
+        "-p",
+        "test_*.py"
+      ],
+      "name" : "research.structure",
+      "properties" : 
+      [
+        {
+          "name" : "ENVIRONMENT",
+          "value" : 
+          [
+            "PYTHONPATH=/workspace/scratch/2a6e71927cf3/chatadhd/loom/..",
+            "PYTHONDONTWRITEBYTECODE=1"
+          ]
+        },
+        {
+          "name" : "TIMEOUT",
+          "value" : 60.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 199,
+      "command" : 
+      [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/loom/tools/eval",
+        "-p",
+        "test_independent_cases.py"
+      ],
+      "name" : "research.independent_protocol",
+      "properties" : 
+      [
+        {
+          "name" : "ENVIRONMENT",
+          "value" : 
+          [
+            "PYTHONPATH=/workspace/scratch/2a6e71927cf3/chatadhd/loom/..",
+            "PYTHONDONTWRITEBYTECODE=1"
+          ]
+        },
+        {
+          "name" : "TIMEOUT",
+          "value" : 60.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 201,
+      "command" : 
+      [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/loom/tools/eval",
+        "-p",
+        "test_graph_native_eval.py"
+      ],
+      "name" : "research.graph_native_protocol",
+      "properties" : 
+      [
+        {
+          "name" : "ENVIRONMENT",
+          "value" : 
+          [
+            "PYTHONPATH=/workspace/scratch/2a6e71927cf3/chatadhd/loom/..",
+            "PYTHONDONTWRITEBYTECODE=1"
+          ]
+        },
+        {
+          "name" : "TIMEOUT",
+          "value" : 60.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 203,
+      "command" : 
+      [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/loom/tools/eval",
+        "-p",
+        "test_candidate_graph_eval.py"
+      ],
+      "name" : "research.candidate_graph_protocol",
+      "properties" : 
+      [
+        {
+          "name" : "ENVIRONMENT",
+          "value" : 
+          [
+            "PYTHONPATH=/workspace/scratch/2a6e71927cf3/chatadhd/loom/..",
+            "PYTHONDONTWRITEBYTECODE=1"
+          ]
+        },
+        {
+          "name" : "TIMEOUT",
+          "value" : 60.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 205,
+      "command" : 
+      [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/loom/tools/contracts",
+        "-p",
+        "test_*.py"
+      ],
+      "name" : "research.contracts",
+      "properties" : 
+      [
+        {
+          "name" : "ENVIRONMENT",
+          "value" : 
+          [
+            "PYTHONPATH=/workspace/scratch/2a6e71927cf3/chatadhd/loom/..",
+            "PYTHONDONTWRITEBYTECODE=1"
+          ]
+        },
+        {
+          "name" : "TIMEOUT",
+          "value" : 60.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 207,
+      "command" : 
+      [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/loom/tools/seeding",
+        "-p",
+        "test_*.py"
+      ],
+      "name" : "research.seeding",
+      "properties" : 
+      [
+        {
+          "name" : "ENVIRONMENT",
+          "value" : 
+          [
+            "PYTHONPATH=/workspace/scratch/2a6e71927cf3/chatadhd/loom/..",
+            "PYTHONDONTWRITEBYTECODE=1"
+          ]
+        },
+        {
+          "name" : "TIMEOUT",
+          "value" : 60.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 209,
+      "command" : 
+      [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/loom/server/tests/test_server_smoke.py"
+      ],
+      "name" : "server.smoke",
+      "properties" : 
+      [
+        {
+          "name" : "ENVIRONMENT",
+          "value" : 
+          [
+            "LOOM_SERVER_BIN=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/server/loom-server"
+          ]
+        },
+        {
+          "name" : "TIMEOUT",
+          "value" : 60.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 211,
+      "command" : 
+      [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/loom/server/tests/test_chat_active_task_server.py"
+      ],
+      "name" : "server.chat_active_task",
+      "properties" : 
+      [
+        {
+          "name" : "ENVIRONMENT",
+          "value" : 
+          [
+            "LOOM_SERVER_BIN=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/server/loom-server",
+            "PYTHONDONTWRITEBYTECODE=1"
+          ]
+        },
+        {
+          "name" : "TIMEOUT",
+          "value" : 90.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev"
+        }
+      ]
+    },
+    {
+      "backtrace" : 213,
+      "command" : 
+      [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/loom/cli/tests/test_cli_smoke.py"
+      ],
+      "name" : "cli.smoke",
+      "properties" : 
+      [
+        {
+          "name" : "ENVIRONMENT",
+          "value" : 
+          [
+            "LOOM_CLI=/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/cli/loom",
+            "LOOM_FIXTURES=/workspace/scratch/2a6e71927cf3/chatadhd/loom/tests/fixtures",
+            "PYTHONDONTWRITEBYTECODE=1"
+          ]
+        },
+        {
+          "name" : "TIMEOUT",
+          "value" : 300.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/cli"
+        }
+      ]
+    },
+    {
+      "backtrace" : 215,
+      "command" : 
+      [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/loom/tools/eval/test_eval.py"
+      ],
+      "name" : "eval.harness",
+      "properties" : 
+      [
+        {
+          "name" : "ENVIRONMENT",
+          "value" : 
+          [
+            "PYTHONDONTWRITEBYTECODE=1"
+          ]
+        },
+        {
+          "name" : "TIMEOUT",
+          "value" : 60.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/cli"
+        }
+      ]
+    }
+  ],
+  "version" : 
+  {
+    "major" : 1,
+    "minor" : 0
+  }
+}

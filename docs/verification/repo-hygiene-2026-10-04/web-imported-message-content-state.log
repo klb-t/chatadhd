@@ -1,0 +1,14 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> loom-web@0.1.0 test:imported-message-content-state
+> node e2e/imported-message-content-state.mjs
+
+PASS all 13 actual native messages retain exact source objects and classifications
+PASS OpenAI indexless thoughts and recap read preserved content in exact order
+PASS OpenAI custom context remains two independent located source strings
+PASS Anthropic thoughts, nested tool results and artifact HTML stay inert source data
+PASS media reference binding and unresolved extracted attachments remain distinct
+PASS unknown widgets and original message versus edited text are never conflated
+PASS partial descriptors visibly retain missing payload and native inference
+PASS pointer navigation is RFC6901-safe and citations reject active or credential URLs
+[imported-message-content-state] 8/8 groups passed; 13 native fixture messages, offline
