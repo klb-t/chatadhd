@@ -26,8 +26,11 @@
 #include "context_goal_usage.h"
 #include "provider_vector.h"
 #include "method_execution.h"
+#include "runtime_preset.h"
 
 namespace loom::context {
+
+#include "runtime_presets.inc"
 
 namespace {
 thread_local ContextExecutionScope* execution_scope = nullptr;
@@ -363,8 +366,43 @@ struct Classification {
   Json scores = Json::object();
 };
 
-Classification classify_by_cues(const std::vector<model::GoalType>& types, const kb::Normalizer& norm,
-                                std::string_view text) {
+// Consumer validation mirrors only fields consumed by this native operation.
+// It does not claim to execute an arbitrary caller value_schema. The canonical
+// runtime descriptor owns the presets; malformed/missing fields never recover
+// silently to numeric or domain-specific values in C++.
+struct GoalCuePolicy {
+  double cue_weight_base;
+  double cue_weight_per_additional_word;
+  double no_cue_confidence;
+  double confidence_denominator_offset;
+  std::string fallback_goal_type;
+  std::string fallback_when_unavailable;
+
+  static Result<GoalCuePolicy> from_values(const Json& values) {
+    const std::set<std::string> fields{"cue_weight_base", "cue_weight_per_additional_word",
+        "no_cue_confidence", "confidence_denominator_offset", "fallback_goal_type", "fallback_when_unavailable"};
+    const auto invalid = [](const std::string& message) {
+      return Error(Errc::InvalidArgument, "context_goal_cues: " + message);
+    };
+    if (!values.is_object() || values.size() != fields.size()) return invalid("exact consumed field set required");
+    for (const auto& key : fields) if (!values.contains(key)) return invalid("missing " + key);
+    for (const auto* key : {"cue_weight_base", "cue_weight_per_additional_word",
+        "no_cue_confidence", "confidence_denominator_offset"})
+      if (!values[key].is_number() || !std::isfinite(values[key].get<double>())) return invalid(std::string(key) + " must be finite");
+    const double confidence = values["no_cue_confidence"].get<double>();
+    if (confidence < 0 || confidence > 1) return invalid("no_cue_confidence is outside the confidence representation [0,1]");
+    if (!values["fallback_goal_type"].is_string() || values["fallback_goal_type"].get_ref<const std::string&>().empty())
+      return invalid("fallback_goal_type must be a nonempty native goal type ID");
+    if (!values["fallback_when_unavailable"].is_string()) return invalid("fallback_when_unavailable must name a native operation");
+    const auto operation = values["fallback_when_unavailable"].get<std::string>();
+    if (operation != "first_by_id" && operation != "error") return invalid("unsupported fallback operation");
+    return GoalCuePolicy{values["cue_weight_base"].get<double>(), values["cue_weight_per_additional_word"].get<double>(),
+        confidence, values["confidence_denominator_offset"].get<double>(), values["fallback_goal_type"].get<std::string>(), operation};
+  }
+};
+
+Result<Classification> classify_by_cues(const std::vector<model::GoalType>& types, const kb::Normalizer& norm,
+                                std::string_view text, const GoalCuePolicy& policy) {
   std::string folded = norm.fold(text);
   std::map<std::string, double> scores;
   for (const auto& gt : types) {
@@ -378,13 +416,15 @@ Classification classify_by_cues(const std::vector<model::GoalType>& types, const
           std::string cue = norm.fold(cue_j.get<std::string>());
           if (cue.empty()) continue;
           std::size_t words = 1 + static_cast<std::size_t>(std::count(cue.begin(), cue.end(), ' '));
-          double weight = 1.0 + 0.4 * static_cast<double>(words - 1);
+          double weight = policy.cue_weight_base + policy.cue_weight_per_additional_word * static_cast<double>(words - 1);
           std::size_t pos = 0, hits = 0;
           while ((pos = folded.find(cue, pos)) != std::string::npos) {
             ++hits;
             pos += cue.size();
           }
           s += weight * static_cast<double>(hits);
+          if (!std::isfinite(weight) || !std::isfinite(s))
+            return Error(Errc::InvalidArgument, "context_goal_cues: nonfinite cue arithmetic");
         }
       }
     }
@@ -406,18 +446,30 @@ Classification classify_by_cues(const std::vector<model::GoalType>& types, const
   for (const auto& [id, s] : scores) sj[id] = s;
   c.scores = sj;
   if (best_s <= 0.0) {
-    // No cue matched anything: fall back to the most general goal type
-    // (first by id; goal_types.json sorts "answer_question" among them) at
-    // low confidence rather than guessing.
-    c.type = types.empty() ? "" : types.front().id;
+    bool found = false;
     for (const auto& gt : types) {
-      if (gt.id == "answer_question") c.type = gt.id;
+      if (gt.id == policy.fallback_goal_type) {
+        c.type = gt.id;
+        found = true;
+      }
     }
-    c.confidence = 0.25;
+    if (!found) {
+      if (policy.fallback_when_unavailable == "error")
+        return Error(Errc::NotFound, "context_goal_cues: configured fallback goal type is unavailable");
+      // list_goal_types returns sorted native IDs, so this operation preserves
+      // the historical first-available behavior for custom packs.
+      c.type = types.empty() ? "" : types.front().id;
+    }
+    c.confidence = policy.no_cue_confidence;
     return c;
   }
   c.type = best;
-  c.confidence = std::clamp(best_s / (best_s + second_s + 1.0), 0.0, 1.0);
+  const double denominator = best_s + second_s + policy.confidence_denominator_offset;
+  if (!std::isfinite(denominator) || denominator <= 0)
+    return Error(Errc::InvalidArgument, "context_goal_cues: actual confidence denominator must be finite and positive");
+  const double confidence = best_s / denominator;
+  if (!std::isfinite(confidence)) return Error(Errc::InvalidArgument, "context_goal_cues: nonfinite confidence arithmetic");
+  c.confidence = std::clamp(confidence, 0.0, 1.0);
   return c;
 }
 
@@ -481,11 +533,23 @@ Result<model::Goal> ContextEngine::type_goal_impl(const ContextRequest& req, con
     params["classifier"] = "forced";
     params["confidence_basis"] = "explicit_owner_type";
   } else {
-    auto cls = classify_by_cues(all_types, norm, req.text);
+    Json cue_options = rt_.config().get("context_goal_cues", Json::object());
+    if (execution_scope) {
+      if (const auto* typing = json::find(execution_scope->options(), "goal_typing"); typing && typing->is_object())
+        if (const auto* cue_override = json::find(*typing, "goal_cues")) cue_options = *cue_override;
+    }
+    const Json cue_definition = builtin_context_goal_cues_definition();
+    LOOM_TRY_ASSIGN(auto cue_snapshot, resolve_runtime_preset(cue_definition, cue_options));
+    LOOM_TRY_ASSIGN(auto cue_policy, GoalCuePolicy::from_values(cue_snapshot.values));
+    LOOM_TRY_ASSIGN(auto cls, classify_by_cues(all_types, norm, req.text, cue_policy));
     chosen_type = cls.type;
     confidence = cls.confidence;
     params["classifier"] = "cue";
     params["scores"] = cls.scores;
+    const auto legacy_hash = json::get_string(builtin_runtime_preset_legacy_identity_hashes(),
+                                              json::get_string(cue_definition, "domain"));
+    if (!cue_options.empty() || cue_snapshot.hash != legacy_hash)
+      params["goal_cues"] = cue_snapshot.inspection();
 
     // Preview stays offline. Only the synchronous execution scope or the old
     // explicit native instrument supplies an authorization budget.
@@ -646,6 +710,8 @@ Result<model::Goal> ContextEngine::type_goal_impl(const ContextRequest& req, con
   goal.confidence = confidence;
   goal.params = params;
   goal.id = model::Goal::make_id(goal.type, goal.text, goal.targets);
+  if (const auto* recipe = json::find(goal.params, "goal_cues"))
+    goal.id = kb::stable_id("g_", json::canonical(Json{{"base_id", goal.id}, {"goal_cues_hash", recipe->at("hash")}}));
   return goal;
 }
 
