@@ -1,0 +1,2281 @@
+{
+  "schema": "loom.native_semantic_review.reference/1",
+  "version": "source-only-in-session-2026-10-05.1",
+  "authorship": {
+    "author": "Codex Lane7 semantic_reference agent, in this session",
+    "status": "in_session_authored_source_interpretation_reference",
+    "independent_gold": false,
+    "world_truth_gold": false,
+    "model_quality_measurement": false,
+    "source_only": true,
+    "ground_truth_or_holdout_read": false,
+    "model_outputs_read": false
+  },
+  "population": "Inspected synthetic DEV: fifteen configured conversation branches from the actual knowledge_eval.py synthetic_dev archives; not the separate sixteen-case candidate-validator DEV corpus; not blind holdout.",
+  "created_at_utc": "2026-10-05T10:04:52.912606+00:00",
+  "native_operations": [
+    "predicate_application",
+    "conditional",
+    "negation",
+    "conjunction",
+    "quantifier"
+  ],
+  "source_sha256": {
+    "inputs.synthetic_dev.json": "ffa4e0ed3353ba43b200f10f50c526a7979481cafa2432de3da6c429edd941b5",
+    "recipes.json": "243e2459080157fb1b0ef98888c3ab66d702fd8adfe0ed9123acdc404fd55dd1",
+    "prepared/prepared.json": "e97f08e1c7fc63268a3ce9634c45b8d24594ae2528652c1326c4ded718b59664",
+    "prepared/freeze.json": "99d27d8da7e02884c45614fdceb2b3ec5473dc7bd22a296ff83a48da18675681"
+  },
+  "interpretation_policy": {
+    "multiple_graphs_allowed": true,
+    "unique_graph_gold": false,
+    "case_specific_prompt_answers": false,
+    "exact_labels_required": false,
+    "source_truth_not_inferred": true,
+    "all_candidate_bundles_reviewed_no_cherry_pick": true,
+    "unsupported_meaning_requires_located_coverage_or_unknowns": true,
+    "abstention_is_not_successful_extraction": true,
+    "questions_use_unknown_or_hypothetical_context_or_located_abstention": true,
+    "natural_language_binder_not_required_without_source_supported_domain_and_binding": true,
+    "byte_offsets_are_observation_local_not_archive_offsets": true,
+    "source_grounded_atomic_predicates_allowed": true,
+    "atomic_temporal_labels_do_not_establish_structural_sequence_accuracy": true,
+    "generic_atomic_predicate_allowance_takes_precedence_over_case_boundary_notes": true
+  },
+  "generic_rubric": [
+    {
+      "axis": "source_grounding",
+      "invariant": "Every draft and semantic review judgement uses supplied observations and exact UTF-8 occurrence spans. Preserve source speakers, pointers and branches; same quote text at another offset is another occurrence. No prior identities, code execution, hidden branch or world fact is imported."
+    },
+    {
+      "axis": "assertion_context",
+      "invariant": "Differentiate assertions of source speech from questions, suggestions, plans, uncertainty and hypotheticals. A quote grounds the asserted reporting event and its quoted content without certifying content truth. Source-supported completion claims remain attributed reports."
+    },
+    {
+      "axis": "quotation_context",
+      "invariant": "Reported/quoted propositions retain quoted scope; quoted labels, titles and code examples are not automatically propositions asserted by the speaker. Multiple scoped analyses are allowed if they preserve this distinction."
+    },
+    {
+      "axis": "operation_port_scope_semantics",
+      "invariant": "Negation has the correct local body; conjunction preserves each member without substituting for disjunction, timing or choice. A conditional must preserve its stated direction and whether it expresses a sufficient cause, necessary gate, or procedural permission; the surface event-to-prerequisite reading is valid for a necessary condition. Operand order alone does not encode event time."
+    },
+    {
+      "axis": "chronology_and_alternatives",
+      "invariant": "Preserve sequence, version labels, old/new direction and pending/rejected/retained alternatives. Changes, reversals and corrections are not automatically logical negations of historical propositions. Locate temporal/alternative meanings beyond the five native operations. Source-grounded predicate applications may preserve temporal/comparison/alternative content atomically; require located partial/unknown only where that interpretation loses required structure, and never claim that an atomic label proves structural sequence accuracy."
+    },
+    {
+      "axis": "binding",
+      "invariant": "A quantifier needs a source-grounded domain and binding; preserve binder identity, references and nearest-scope shadowing if present. This sample contains no explicit symbolic-variable or shadowing test; do not claim measured binder/shadowing quality from native validity."
+    },
+    {
+      "axis": "located_coverage_and_unknowns",
+      "invariant": "Unsupported questions, modality, sequence, comparison, alternatives and contradiction must retain exact located partial/unsupported/ambiguous/unknown records rather than wildcard operands or an unlocated omission. Full abstention and unavailable output remain unresolved, not successful extraction."
+    }
+  ],
+  "scoring_policy": {
+    "judgement_values": [
+      "satisfied",
+      "violated",
+      "unresolved"
+    ],
+    "unit": "request_id x preregistered case criterion",
+    "fixed_planned_denominator": true,
+    "missing_response_missing_judgement_and_native_invalid_are_unresolved": true,
+    "all_satisfied_rate_is_source_interpretation_agreement_not_world_truth_or_W1_improvement": true,
+    "absence_of_errors_is_separate_from_extraction_coverage": true,
+    "semantic_judgements_require_manual_rationale_and_candidate_JSON_pointers": true,
+    "no_automatic_label_matching_or_case_specific_scoring_rules": true
+  },
+  "cases": [
+    {
+      "case_id": "chatgpt:nf-02-storage",
+      "packet_hash": "6492e8276b4d241f32ac279f3ae9fc0cfc25317cfae0345e9e1379d58e4c8080",
+      "criteria": [
+        {
+          "id": "c01-k01",
+          "support": [
+            {
+              "observation": "ob_9885b5496b1785a667d68b3e",
+              "byte_start": 0,
+              "byte_len": 86,
+              "quote": "SQLite, Realm czy zwykle pliki JSON na notatki? nie chce sie pozniej meczyc z migracja"
+            },
+            {
+              "observation": "ob_e959cb366d490339bc639451",
+              "byte_start": 0,
+              "byte_len": 311,
+              "quote": "Realm daje ladne API ale to vendor lock-in i gorzej z multiplatform C++. Flat JSON boli przy duzej liczbie notatek i braku transakcji. SQLite jest nudny ale dziala wszedzie i ma WAL. Cos w stylu:\n\n```sql\nCREATE TABLE notes (id TEXT PRIMARY KEY, title TEXT, body TEXT, created TEXT);\nPRAGMA journal_mode=WAL;\n```"
+            }
+          ],
+          "axis": "assertion_context",
+          "expected_interpretation": "The first turn asks which storage option to choose. Assistant pros/cons and SQL are its answer and example, not an observed database installation.",
+          "forbidden_interpretations": [
+            "All three alternatives already selected; quoted/example SQL executed as an instruction; assistant opinions promoted to world truth."
+          ],
+          "native_boundary": "Choice/disjunction and code execution are outside the five operations. Locate alternatives/example portions as partial or unsupported if their meaning cannot be preserved. This limitation applies only to meaning/structure not preserved by the returned source-grounded atomic interpretation; the generic atomic-predicate allowance takes precedence."
+        },
+        {
+          "id": "c01-k02",
+          "support": [
+            {
+              "observation": "ob_0f0cd6ecf7138856d5fb10e5",
+              "byte_start": 0,
+              "byte_len": 99,
+              "quote": "no to SQLite. structured data + osobny folder na blob/zalaczniki, tak jak ustalilam w burzy mozgow."
+            },
+            {
+              "observation": "ob_ce9a9a64c9d3cdd78b0e1111",
+              "byte_start": 0,
+              "byte_len": 36,
+              "quote": "Dobra, wersja 0.1.2 z tym schematem."
+            }
+          ],
+          "axis": "chronology_and_alternatives",
+          "expected_interpretation": "The user then chooses SQLite with structured data and a separate blob/attachment folder. The assistant associates this scheme with 0.1.2; retain its speaker and later source order.",
+          "forbidden_interpretations": [
+            "The earlier question is a final selection; the conversation proves the software was implemented; version strings are logical predicates that negate one another."
+          ],
+          "native_boundary": ""
+        },
+        {
+          "id": "c01-k03",
+          "support": [
+            {
+              "observation": "ob_0f0cd6ecf7138856d5fb10e5",
+              "byte_start": 0,
+              "byte_len": 99,
+              "quote": "no to SQLite. structured data + osobny folder na blob/zalaczniki, tak jak ustalilam w burzy mozgow."
+            }
+          ],
+          "axis": "operation_port_scope_semantics",
+          "expected_interpretation": "If a conjunction models structured storage plus a separate blob folder, retain both components and their intended association with the storage choice.",
+          "forbidden_interpretations": [
+            "A conjunct is dropped; blob folder becomes the SQLite database; prior brainstorm content is invented."
+          ],
+          "native_boundary": ""
+        }
+      ],
+      "source_locators": [
+        {
+          "observation": "ob_9885b5496b1785a667d68b3e",
+          "ordinal": 0,
+          "speaker": "user",
+          "node": "u1",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/0/mapping/u1/message/content/parts/0",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:d9415914bcc384579de1cdcb3d6f0e8b5201344b1470da4cdb1a6850c6d9d569",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_e959cb366d490339bc639451",
+          "ordinal": 1,
+          "speaker": "assistant",
+          "node": "a1",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/0/mapping/a1/message/content/parts/0",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:d9415914bcc384579de1cdcb3d6f0e8b5201344b1470da4cdb1a6850c6d9d569",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_0f0cd6ecf7138856d5fb10e5",
+          "ordinal": 2,
+          "speaker": "user",
+          "node": "u2",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/0/mapping/u2/message/content/parts/0",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:d9415914bcc384579de1cdcb3d6f0e8b5201344b1470da4cdb1a6850c6d9d569",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_ce9a9a64c9d3cdd78b0e1111",
+          "ordinal": 3,
+          "speaker": "assistant",
+          "node": "a2",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/0/mapping/a2/message/content/parts/0",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:d9415914bcc384579de1cdcb3d6f0e8b5201344b1470da4cdb1a6850c6d9d569",
+            "time_end": null,
+            "time_start": null
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "chatgpt:nf-03-encryption-planning",
+      "packet_hash": "442e036f3a62a4439ce63d34ea12961ec61ad6e4b04b21121e27a6a22ec3f9d7",
+      "criteria": [
+        {
+          "id": "c02-k01",
+          "support": [
+            {
+              "observation": "ob_9044a82800f2ca47c640334e",
+              "byte_start": 0,
+              "byte_len": 65,
+              "quote": "0.2 gotowe. mysle o szyfrowaniu at-rest, warto teraz czy pozniej?"
+            },
+            {
+              "observation": "ob_3f8f809d1ab73ad1a4132fd3",
+              "byte_start": 0,
+              "byte_len": 77,
+              "quote": "no wlasnie nie wiem, czy w ogole warto szyfrowac, skoro to tylko moje notatki"
+            }
+          ],
+          "axis": "assertion_context",
+          "expected_interpretation": "0.2 is described as ready, while at-rest encryption remains a question and uncertainty about whether it is worthwhile.",
+          "forbidden_interpretations": [
+            "Encryption in 0.2 is asserted implemented or definitively rejected; a question becomes an affirmative encryption decision."
+          ],
+          "native_boundary": ""
+        },
+        {
+          "id": "c02-k02",
+          "support": [
+            {
+              "observation": "ob_ef4fe4f341f4035ab17cadfd",
+              "byte_start": 0,
+              "byte_len": 125,
+              "quote": "Zalezy od zagrozenia - to lokalne notatki, prawda? Mozna zaplanowac jako warstwe nad storage i dograc, kiedy bedzie potrzeba."
+            },
+            {
+              "observation": "ob_c7c7fc94cc00a25eb5b0dae9",
+              "byte_start": 0,
+              "byte_len": 70,
+              "quote": "Zapisz to jako otwarte pytanie, na razie 'planned', nie 'implemented'."
+            }
+          ],
+          "axis": "quotation_context",
+          "expected_interpretation": "Assistant suggests a possible layer when needed and says to record an open question, using the status words planned and implemented as labels. Preserve suggestion/status context.",
+          "forbidden_interpretations": [
+            "A suggestion is completed work; quotation of implemented asserts encryption implemented; negating that quoted label negates the existence of all encryption."
+          ],
+          "native_boundary": ""
+        },
+        {
+          "id": "c02-k03",
+          "support": [
+            {
+              "observation": "ob_9044a82800f2ca47c640334e",
+              "byte_start": 0,
+              "byte_len": 65,
+              "quote": "0.2 gotowe. mysle o szyfrowaniu at-rest, warto teraz czy pozniej?"
+            },
+            {
+              "observation": "ob_ef4fe4f341f4035ab17cadfd",
+              "byte_start": 0,
+              "byte_len": 125,
+              "quote": "Zalezy od zagrozenia - to lokalne notatki, prawda? Mozna zaplanowac jako warstwe nad storage i dograc, kiedy bedzie potrzeba."
+            },
+            {
+              "observation": "ob_3f8f809d1ab73ad1a4132fd3",
+              "byte_start": 0,
+              "byte_len": 77,
+              "quote": "no wlasnie nie wiem, czy w ogole warto szyfrowac, skoro to tylko moje notatki"
+            },
+            {
+              "observation": "ob_c7c7fc94cc00a25eb5b0dae9",
+              "byte_start": 0,
+              "byte_len": 70,
+              "quote": "Zapisz to jako otwarte pytanie, na razie 'planned', nie 'implemented'."
+            }
+          ],
+          "axis": "located_coverage_and_unknowns",
+          "expected_interpretation": "Questions, epistemic uncertainty and unresolved timing are either represented with unknown/hypothetical context or located as ambiguous/partial/unsupported.",
+          "forbidden_interpretations": [
+            "Unlocated empty coverage substitutes for semantic treatment of the planning question."
+          ],
+          "native_boundary": "No question, modality or temporal operation exists. A conditional may preserve the needed-condition clause, but must not silently encode planned status as fact. This limitation applies only to meaning/structure not preserved by the returned source-grounded atomic interpretation; the generic atomic-predicate allowance takes precedence."
+        }
+      ],
+      "source_locators": [
+        {
+          "observation": "ob_9044a82800f2ca47c640334e",
+          "ordinal": 0,
+          "speaker": "user",
+          "node": "u1",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/1/mapping/u1/message/content/parts/0",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:d9415914bcc384579de1cdcb3d6f0e8b5201344b1470da4cdb1a6850c6d9d569",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_ef4fe4f341f4035ab17cadfd",
+          "ordinal": 1,
+          "speaker": "assistant",
+          "node": "a1",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/1/mapping/a1/message/content/parts/0",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:d9415914bcc384579de1cdcb3d6f0e8b5201344b1470da4cdb1a6850c6d9d569",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_3f8f809d1ab73ad1a4132fd3",
+          "ordinal": 2,
+          "speaker": "user",
+          "node": "u2",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/1/mapping/u2/message/content/parts/0",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:d9415914bcc384579de1cdcb3d6f0e8b5201344b1470da4cdb1a6850c6d9d569",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_c7c7fc94cc00a25eb5b0dae9",
+          "ordinal": 3,
+          "speaker": "assistant",
+          "node": "a2",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/1/mapping/a2/message/content/parts/0",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:d9415914bcc384579de1cdcb3d6f0e8b5201344b1470da4cdb1a6850c6d9d569",
+            "time_end": null,
+            "time_start": null
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "chatgpt:nf-09-lost-and-billed",
+      "packet_hash": "8fcaa03ff25a9ed7925329087060ef1f99dbe0a3007212b56e84829bc8222c72",
+      "criteria": [
+        {
+          "id": "c03-k01",
+          "support": [
+            {
+              "observation": "ob_686c54806037179d8ff349a9",
+              "byte_start": 0,
+              "byte_len": 81,
+              "quote": "cos jest nie tak z 0.9.0, gdzie zniknal przycisk do nagrywania notatki glosowej??"
+            },
+            {
+              "observation": "ob_13f594cf289d9b35283e9153",
+              "byte_start": 0,
+              "byte_len": 93,
+              "quote": "Sprawdzmy, czy modul transcription w ogole jest teraz linkowany do UI po przepisaniu rdzenia."
+            },
+            {
+              "observation": "ob_31e31a63aff41decb687e396",
+              "byte_start": 0,
+              "byte_len": 91,
+              "quote": "no nie ma go, zgubilo sie to gdzies przy porcie na c++, checklisty tez zreszta nie dzialaja"
+            },
+            {
+              "observation": "ob_bef889ba17a53049ab192cb9",
+              "byte_start": 0,
+              "byte_len": 79,
+              "quote": "Zanotowane jako lost w 0.9.0, nie superseded - nic ich swiadomie nie zastapilo."
+            }
+          ],
+          "axis": "chronology_and_alternatives",
+          "expected_interpretation": "User reports missing voice-note control/module after the C++ port and nonworking checklists. Assistant names this lost in 0.9.0 and explicitly contrasts it with intentional replacement.",
+          "forbidden_interpretations": [
+            "Lost becomes consciously superseded; the diagnostic question proves transcription is unlinked; negation of working checklist negates all checklists in every version."
+          ],
+          "native_boundary": "Status/change history has no dedicated operation. Preserve version/source qualifiers in terms or located partial coverage; negation is only of the locally supported proposition. This limitation applies only to meaning/structure not preserved by the returned source-grounded atomic interpretation; the generic atomic-predicate allowance takes precedence."
+        },
+        {
+          "id": "c03-k02",
+          "support": [
+            {
+              "observation": "ob_6ce234839ffe11dc9f1bfe06",
+              "byte_start": 0,
+              "byte_len": 108,
+              "quote": "a osobno, dostalam rachunek za chmure na 340 zl bo cos auto-uploadowalo wielkie zalaczniki w tle bez pytania"
+            },
+            {
+              "observation": "ob_9b6571b63995a39b43368a12",
+              "byte_start": 0,
+              "byte_len": 31,
+              "quote": "To trzeba zgasic zanim urosnie."
+            }
+          ],
+          "axis": "assertion_context",
+          "expected_interpretation": "A separate user report concerns a 340 zl cloud bill attributed to background upload of large attachments without asking. The next assistant turn proposes stopping it.",
+          "forbidden_interpretations": [
+            "340 is a version or technical setting; bill is attached to the transcription feature; stopping the upload is already complete."
+          ],
+          "native_boundary": ""
+        },
+        {
+          "id": "c03-k03",
+          "support": [
+            {
+              "observation": "ob_a69743fc98cec8f2ff314f83",
+              "byte_start": 0,
+              "byte_len": 134,
+              "quote": "tak, dodaje bramke: przed duzym uploadem zawsze pytam / pokazuje estymowany koszt i czekam na potwierdzenie, zanim system dziala dalej"
+            },
+            {
+              "observation": "ob_9bcf3e8a4e490e233c8469fa",
+              "byte_start": 0,
+              "byte_len": 39,
+              "quote": "0.9.0 dostaje upload-confirmation gate."
+            }
+          ],
+          "axis": "operation_port_scope_semantics",
+          "expected_interpretation": "The added gate requires asking/displaying estimated cost and waiting for confirmation before large upload/system continuation. Accept a procedural fulfilled-prerequisite => permission-to-continue conditional, or an event-level continuation => prior-confirmation necessary-condition reading, if each preserves the gate and scope.",
+          "forbidden_interpretations": [
+            "Actual upload follows automatically solely because confirmation exists; approval is optional; waiting is after upload; a conjunction alone is claimed to preserve temporal ordering; a conditional reverses the intended necessary condition or procedural permission."
+          ],
+          "native_boundary": "The source order before/after is not representable by operand ordinal alone. Retain unsupported temporal ordering as located partial/unknown even if a prerequisite conditional is extracted. This limitation applies only to meaning/structure not preserved by the returned source-grounded atomic interpretation; the generic atomic-predicate allowance takes precedence."
+        },
+        {
+          "id": "c03-k04",
+          "support": [
+            {
+              "observation": "ob_a69743fc98cec8f2ff314f83",
+              "byte_start": 0,
+              "byte_len": 134,
+              "quote": "tak, dodaje bramke: przed duzym uploadem zawsze pytam / pokazuje estymowany koszt i czekam na potwierdzenie, zanim system dziala dalej"
+            }
+          ],
+          "axis": "binding",
+          "expected_interpretation": "Always before a large upload expresses the rule over the relevant uploads. A grounded forall reading is optional; any introduced binder must retain its source-supported upload domain and bound occurrences.",
+          "forbidden_interpretations": [
+            "Always is widened to every system action or every cost; an ungrounded variable/binder is fabricated."
+          ],
+          "native_boundary": "No explicit symbolic variable or shadowing example is present. No binder accuracy denominator may be inferred merely from the word always. This limitation applies only to meaning/structure not preserved by the returned source-grounded atomic interpretation; the generic atomic-predicate allowance takes precedence."
+        },
+        {
+          "id": "c03-k05",
+          "support": [
+            {
+              "observation": "ob_9c1da8766719faeb4c18bfc8",
+              "byte_start": 0,
+              "byte_len": 74,
+              "quote": "swietny tydzien, najpierw gubie feature'y, potem placę za to ze straty ;)"
+            }
+          ],
+          "axis": "assertion_context",
+          "expected_interpretation": "The final turn is a rueful/ironic summary of losses and payment, not a new successful feature or financial specification.",
+          "forbidden_interpretations": [
+            "Sarcasm becomes an asserted positive quality metric; a new project/version is invented."
+          ],
+          "native_boundary": ""
+        }
+      ],
+      "source_locators": [
+        {
+          "observation": "ob_686c54806037179d8ff349a9",
+          "ordinal": 0,
+          "speaker": "user",
+          "node": "u1",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/4/mapping/u1/message/content/parts/0",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:d9415914bcc384579de1cdcb3d6f0e8b5201344b1470da4cdb1a6850c6d9d569",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_13f594cf289d9b35283e9153",
+          "ordinal": 1,
+          "speaker": "assistant",
+          "node": "a1",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/4/mapping/a1/message/content/parts/0",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:d9415914bcc384579de1cdcb3d6f0e8b5201344b1470da4cdb1a6850c6d9d569",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_31e31a63aff41decb687e396",
+          "ordinal": 2,
+          "speaker": "user",
+          "node": "u2",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/4/mapping/u2/message/content/parts/0",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:d9415914bcc384579de1cdcb3d6f0e8b5201344b1470da4cdb1a6850c6d9d569",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_bef889ba17a53049ab192cb9",
+          "ordinal": 3,
+          "speaker": "assistant",
+          "node": "a2",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/4/mapping/a2/message/content/parts/0",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:d9415914bcc384579de1cdcb3d6f0e8b5201344b1470da4cdb1a6850c6d9d569",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_6ce234839ffe11dc9f1bfe06",
+          "ordinal": 4,
+          "speaker": "user",
+          "node": "u3",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/4/mapping/u3/message/content/parts/0",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:d9415914bcc384579de1cdcb3d6f0e8b5201344b1470da4cdb1a6850c6d9d569",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_9b6571b63995a39b43368a12",
+          "ordinal": 5,
+          "speaker": "assistant",
+          "node": "a3",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/4/mapping/a3/message/content/parts/0",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:d9415914bcc384579de1cdcb3d6f0e8b5201344b1470da4cdb1a6850c6d9d569",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_a69743fc98cec8f2ff314f83",
+          "ordinal": 6,
+          "speaker": "user",
+          "node": "u4",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/4/mapping/u4/message/content/parts/0",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:d9415914bcc384579de1cdcb3d6f0e8b5201344b1470da4cdb1a6850c6d9d569",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_9bcf3e8a4e490e233c8469fa",
+          "ordinal": 7,
+          "speaker": "assistant",
+          "node": "a4",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/4/mapping/a4/message/content/parts/0",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:d9415914bcc384579de1cdcb3d6f0e8b5201344b1470da4cdb1a6850c6d9d569",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_9c1da8766719faeb4c18bfc8",
+          "ordinal": 8,
+          "speaker": "user",
+          "node": "u5",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/4/mapping/u5/message/content/parts/0",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:d9415914bcc384579de1cdcb3d6f0e8b5201344b1470da4cdb1a6850c6d9d569",
+            "time_end": null,
+            "time_start": null
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "chatgpt:rt-05-clips-gate",
+      "packet_hash": "ab5c60a0ecc1666c6167d0f6a5850c76a586634d22f89e349afab22f66763278",
+      "criteria": [
+        {
+          "id": "c04-k01",
+          "support": [
+            {
+              "observation": "ob_ef705d1750c76876eaa41858",
+              "byte_start": 0,
+              "byte_len": 87,
+              "quote": "wracam do reelsow po dlugiej przerwie. w koncu robie ten gate przed generowaniem klipow"
+            },
+            {
+              "observation": "ob_71cef2497f8ec9c8d093e982",
+              "byte_start": 0,
+              "byte_len": 57,
+              "quote": "Estymacja kosztu + potwierdzenie zanim odpali sie render?"
+            },
+            {
+              "observation": "ob_7630b82baa631e1fb8f96f62",
+              "byte_start": 0,
+              "byte_len": 174,
+              "quote": "dokladnie, klipy dostaja bramke: pokazuje estymowany koszt, czekam na moje jawne potwierdzenie, dopiero potem render - dokladnie ten sam wzorzec co przy uploadach w notatniku"
+            },
+            {
+              "observation": "ob_59ea60853ebd87bbaf98b24e",
+              "byte_start": 0,
+              "byte_len": 36,
+              "quote": "0.3: clips stage implemented, gated."
+            }
+          ],
+          "axis": "assertion_context",
+          "expected_interpretation": "User says the clips gate is being done, confirms the assistant cost-and-confirmation question and gives the rule; assistant describes clips stage 0.3 as implemented and gated. Retain each attribution.",
+          "forbidden_interpretations": [
+            "The unconfirmed question alone proves implementation; 0.3 refers to the notebook upload version; the user supplies evidence of actual render execution."
+          ],
+          "native_boundary": ""
+        },
+        {
+          "id": "c04-k02",
+          "support": [
+            {
+              "observation": "ob_7630b82baa631e1fb8f96f62",
+              "byte_start": 0,
+              "byte_len": 174,
+              "quote": "dokladnie, klipy dostaja bramke: pokazuje estymowany koszt, czekam na moje jawne potwierdzenie, dopiero potem render - dokladnie ten sam wzorzec co przy uploadach w notatniku"
+            }
+          ],
+          "axis": "operation_port_scope_semantics",
+          "expected_interpretation": "Estimate display and explicit user confirmation precede render. Accept prerequisites => permission-to-render, or render => prior-confirmation as a necessary-condition reading, if cost and confirmation remain distinct requirements and actual execution is not invented.",
+          "forbidden_interpretations": [
+            "Render occurs automatically solely because prerequisites exist; render before confirmation; implicit or third-party confirmation; conjunction ordinal is reported as temporal semantics; a conditional changes the intended necessity or permission direction."
+          ],
+          "native_boundary": "The five operations support conjunction/conditional but no sequencing primitive. Locate remaining before/only-then meaning as partial/unsupported rather than inventing a temporal operator. This limitation applies only to meaning/structure not preserved by the returned source-grounded atomic interpretation; the generic atomic-predicate allowance takes precedence."
+        },
+        {
+          "id": "c04-k03",
+          "support": [
+            {
+              "observation": "ob_7630b82baa631e1fb8f96f62",
+              "byte_start": 0,
+              "byte_len": 174,
+              "quote": "dokladnie, klipy dostaja bramke: pokazuje estymowany koszt, czekam na moje jawne potwierdzenie, dopiero potem render - dokladnie ten sam wzorzec co przy uploadach w notatniku"
+            }
+          ],
+          "axis": "chronology_and_alternatives",
+          "expected_interpretation": "The user explicitly compares the pattern to notebook uploads, while clips remain the current target.",
+          "forbidden_interpretations": [
+            "Adjacency or analogy merges notebook upload and clip render into one source occurrence; invented prior upload details."
+          ],
+          "native_boundary": ""
+        }
+      ],
+      "source_locators": [
+        {
+          "observation": "ob_ef705d1750c76876eaa41858",
+          "ordinal": 0,
+          "speaker": "user",
+          "node": "u1",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/8/mapping/u1/message/content/parts/0",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:d9415914bcc384579de1cdcb3d6f0e8b5201344b1470da4cdb1a6850c6d9d569",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_71cef2497f8ec9c8d093e982",
+          "ordinal": 1,
+          "speaker": "assistant",
+          "node": "a1",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/8/mapping/a1/message/content/parts/0",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:d9415914bcc384579de1cdcb3d6f0e8b5201344b1470da4cdb1a6850c6d9d569",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_7630b82baa631e1fb8f96f62",
+          "ordinal": 2,
+          "speaker": "user",
+          "node": "u2",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/8/mapping/u2/message/content/parts/0",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:d9415914bcc384579de1cdcb3d6f0e8b5201344b1470da4cdb1a6850c6d9d569",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_59ea60853ebd87bbaf98b24e",
+          "ordinal": 3,
+          "speaker": "assistant",
+          "node": "a2",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/8/mapping/a2/message/content/parts/0",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:d9415914bcc384579de1cdcb3d6f0e8b5201344b1470da4cdb1a6850c6d9d569",
+            "time_end": null,
+            "time_start": null
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "chatgpt:wd-07-io-swap",
+      "packet_hash": "6c6882b23ba863684beec25e300c8fe90956f3c0966e0d96b39f86c4f6779049",
+      "criteria": [
+        {
+          "id": "c05-k01",
+          "support": [
+            {
+              "observation": "ob_f6907357e6c3d15266cd4c0e",
+              "byte_start": 0,
+              "byte_len": 104,
+              "quote": "polling logu co sekunde marnuje CPU, zamieniam na inotify, zero zmian na zewnatrz, zachowanie identyczne"
+            }
+          ],
+          "axis": "chronology_and_alternatives",
+          "expected_interpretation": "The user replaces once-per-second log polling with inotify and asserts external behavior/contract is unchanged.",
+          "forbidden_interpretations": [
+            "Polling is a logical negation of inotify; both are currently selected; external behavior changes; zero changes is read as zero CPU usage."
+          ],
+          "native_boundary": "Replacement and temporal equivalence lack dedicated operations; a predicate can report the change with partial coverage of ordering/equivalence. This limitation applies only to meaning/structure not preserved by the returned source-grounded atomic interpretation; the generic atomic-predicate allowance takes precedence."
+        },
+        {
+          "id": "c05-k02",
+          "support": [
+            {
+              "observation": "ob_0890f2e4e00404632fde6e5e",
+              "byte_start": 0,
+              "byte_len": 79,
+              "quote": "To czysto wewnetrzne, nie zapisuje jako decyzje architektoniczna, tylko commit."
+            }
+          ],
+          "axis": "assertion_context",
+          "expected_interpretation": "The assistant classifies the swap as internal, recorded as a commit rather than architecture decision.",
+          "forbidden_interpretations": [
+            "An architecture decision is positively recorded; assistant record proves a git commit exists outside this source."
+          ],
+          "native_boundary": ""
+        },
+        {
+          "id": "c05-k03",
+          "support": [
+            {
+              "observation": "ob_f6907357e6c3d15266cd4c0e",
+              "byte_start": 0,
+              "byte_len": 104,
+              "quote": "polling logu co sekunde marnuje CPU, zamieniam na inotify, zero zmian na zewnatrz, zachowanie identyczne"
+            },
+            {
+              "observation": "ob_0890f2e4e00404632fde6e5e",
+              "byte_start": 0,
+              "byte_len": 79,
+              "quote": "To czysto wewnetrzne, nie zapisuje jako decyzje architektoniczna, tylko commit."
+            }
+          ],
+          "axis": "operation_port_scope_semantics",
+          "expected_interpretation": "Any negation addresses changes on the outside or recording as architecture decision, preserving the locally stated subject.",
+          "forbidden_interpretations": [
+            "A negation scope is enlarged to no change of any kind or no decision of any kind."
+          ],
+          "native_boundary": ""
+        }
+      ],
+      "source_locators": [
+        {
+          "observation": "ob_f6907357e6c3d15266cd4c0e",
+          "ordinal": 0,
+          "speaker": "user",
+          "node": "u1",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/13/mapping/u1/message/content/parts/0",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:d9415914bcc384579de1cdcb3d6f0e8b5201344b1470da4cdb1a6850c6d9d569",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_0890f2e4e00404632fde6e5e",
+          "ordinal": 1,
+          "speaker": "assistant",
+          "node": "a1",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/13/mapping/a1/message/content/parts/0",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:d9415914bcc384579de1cdcb3d6f0e8b5201344b1470da4cdb1a6850c6d9d569",
+            "time_end": null,
+            "time_start": null
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "chatgpt:mu-03-recording-medium",
+      "packet_hash": "1b857e8d26c9f3e83518d1535c28f9e4d57a213ecf5dd303dc946986f8fdd73f",
+      "criteria": [
+        {
+          "id": "c06-k01",
+          "support": [
+            {
+              "observation": "ob_da3af952cc916395734ba10e",
+              "byte_start": 0,
+              "byte_len": 108,
+              "quote": "nagrywac prosto na tasme (cieplej, ale trudno cofnac) czy cyfrowy multitrack (latwo poprawic, gorzej brzmi)?"
+            },
+            {
+              "observation": "ob_64a528619ba777a2c4901468",
+              "byte_start": 0,
+              "byte_len": 31,
+              "quote": "Jak bardzo pewna jestes aranzu?"
+            }
+          ],
+          "axis": "assertion_context",
+          "expected_interpretation": "Tape and digital multitrack are alternatives in the initial question, with stated tradeoffs; the assistant asks arrangement certainty.",
+          "forbidden_interpretations": [
+            "Both alternatives are chosen; sound-quality tradeoffs become independently verified world facts; question asserts certainty."
+          ],
+          "native_boundary": "The native inventory has no dedicated disjunction/choice primitive. Source-grounded atomic alternative/choice predicates are acceptable if they preserve the question and alternatives. Locate meanings not preserved instead of treating an and conjunction as an or."
+        },
+        {
+          "id": "c06-k02",
+          "support": [
+            {
+              "observation": "ob_e227fe21f3393fec955f463a",
+              "byte_start": 0,
+              "byte_len": 141,
+              "quote": "wcale nie jestem pewna, wiec bioce cyfrowy multitrack - latwiej cofnac bledy, jak dwie rzeczy sie kloca to wygrywa ta latwiejsza do cofniecia"
+            }
+          ],
+          "axis": "chronology_and_alternatives",
+          "expected_interpretation": "The user then states lack of certainty and chooses digital multitrack because mistakes are easier to undo. The source typo bioce remains exact in support.",
+          "forbidden_interpretations": [
+            "Tape remains selected; the choice is inferred from a nonexistent hidden turn; lack of certainty means the arrangement is false."
+          ],
+          "native_boundary": ""
+        },
+        {
+          "id": "c06-k03",
+          "support": [
+            {
+              "observation": "ob_e227fe21f3393fec955f463a",
+              "byte_start": 0,
+              "byte_len": 141,
+              "quote": "wcale nie jestem pewna, wiec bioce cyfrowy multitrack - latwiej cofnac bledy, jak dwie rzeczy sie kloca to wygrywa ta latwiejsza do cofniecia"
+            }
+          ],
+          "axis": "operation_port_scope_semantics",
+          "expected_interpretation": "The if-two-things-conflict rule has conflict as antecedent and preference for the easier-to-reverse option as consequent.",
+          "forbidden_interpretations": [
+            "The consequent is the antecedent; relative easier is inflated into universally fastest/best; two alternatives are collapsed into one."
+          ],
+          "native_boundary": "The relative comparison and reversibility preference may remain partial. This has no explicit symbolic binder to require. This limitation applies only to meaning/structure not preserved by the returned source-grounded atomic interpretation; the generic atomic-predicate allowance takes precedence."
+        }
+      ],
+      "source_locators": [
+        {
+          "observation": "ob_da3af952cc916395734ba10e",
+          "ordinal": 0,
+          "speaker": "user",
+          "node": "u1",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/17/mapping/u1/message/content/parts/0",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:d9415914bcc384579de1cdcb3d6f0e8b5201344b1470da4cdb1a6850c6d9d569",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_64a528619ba777a2c4901468",
+          "ordinal": 1,
+          "speaker": "assistant",
+          "node": "a1",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/17/mapping/a1/message/content/parts/0",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:d9415914bcc384579de1cdcb3d6f0e8b5201344b1470da4cdb1a6850c6d9d569",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_e227fe21f3393fec955f463a",
+          "ordinal": 2,
+          "speaker": "user",
+          "node": "u2",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/17/mapping/u2/message/content/parts/0",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:d9415914bcc384579de1cdcb3d6f0e8b5201344b1470da4cdb1a6850c6d9d569",
+            "time_end": null,
+            "time_start": null
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "chatgpt:nt-03-agent-nieruchomosci",
+      "packet_hash": "d7e5c4f3e69b0b339115edfff7ee91d6f9de1b4f17f4899957b4dfe27acafc65",
+      "criteria": [
+        {
+          "id": "c07-k01",
+          "support": [
+            {
+              "observation": "ob_284a9fdefbb58eed3414b16b",
+              "byte_start": 0,
+              "byte_len": 98,
+              "quote": "dzwonil dzis agent nieruchomosci w sprawie tego mieszkania na Gornej, umowilam ogladanie na sobote"
+            },
+            {
+              "observation": "ob_f90edf7d2fc150024c668626",
+              "byte_start": 0,
+              "byte_len": 24,
+              "quote": "Ile pokoi, jakie pietro?"
+            }
+          ],
+          "axis": "assertion_context",
+          "expected_interpretation": "A real-estate agent called about an apartment on Gorna; viewing was arranged for Saturday. Assistant asks rooms/floor.",
+          "forbidden_interpretations": [
+            "Agent is an AI/software agent; Saturday viewing has already happened; the question supplies room/floor answers.",
+            "Today or Saturday receives an invented absolute date/year."
+          ],
+          "native_boundary": "Future scheduling has no native temporal operation; retain planned viewing/schedule as a reported arrangement and located temporal limitation. This limitation applies only to meaning/structure not preserved by the returned source-grounded atomic interpretation; the generic atomic-predicate allowance takes precedence."
+        },
+        {
+          "id": "c07-k02",
+          "support": [
+            {
+              "observation": "ob_9fbaa586b445c41a4fefb866",
+              "byte_start": 0,
+              "byte_len": 46,
+              "quote": "dwa pokoje, trzecie pietro, bez windy niestety"
+            }
+          ],
+          "axis": "operation_port_scope_semantics",
+          "expected_interpretation": "The apartment is reported to have two rooms, be on the third floor and lack an elevator. A conjunction may preserve the three distinct attributes, with absence limited to elevator.",
+          "forbidden_interpretations": [
+            "Two floors/three rooms; negation covers all apartment attributes; no elevator is widened to no access."
+          ],
+          "native_boundary": ""
+        },
+        {
+          "id": "c07-k03",
+          "support": [
+            {
+              "observation": "ob_284a9fdefbb58eed3414b16b",
+              "byte_start": 0,
+              "byte_len": 98,
+              "quote": "dzwonil dzis agent nieruchomosci w sprawie tego mieszkania na Gornej, umowilam ogladanie na sobote"
+            },
+            {
+              "observation": "ob_9fbaa586b445c41a4fefb866",
+              "byte_start": 0,
+              "byte_len": 46,
+              "quote": "dwa pokoje, trzecie pietro, bez windy niestety"
+            }
+          ],
+          "axis": "source_grounding",
+          "expected_interpretation": "The domain is the described apartment viewing; no software project identity is supplied.",
+          "forbidden_interpretations": [
+            "A software project/model identity is invented from the token agent or address."
+          ],
+          "native_boundary": ""
+        }
+      ],
+      "source_locators": [
+        {
+          "observation": "ob_284a9fdefbb58eed3414b16b",
+          "ordinal": 0,
+          "speaker": "user",
+          "node": "u1",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/24/mapping/u1/message/content/parts/0",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:d9415914bcc384579de1cdcb3d6f0e8b5201344b1470da4cdb1a6850c6d9d569",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_f90edf7d2fc150024c668626",
+          "ordinal": 1,
+          "speaker": "assistant",
+          "node": "a1",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/24/mapping/a1/message/content/parts/0",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:d9415914bcc384579de1cdcb3d6f0e8b5201344b1470da4cdb1a6850c6d9d569",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_9fbaa586b445c41a4fefb866",
+          "ordinal": 2,
+          "speaker": "user",
+          "node": "u2",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/24/mapping/u2/message/content/parts/0",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:d9415914bcc384579de1cdcb3d6f0e8b5201344b1470da4cdb1a6850c6d9d569",
+            "time_end": null,
+            "time_start": null
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "chatgpt:n20-wordpress-znajomego",
+      "packet_hash": "eb35b5cd74861b65e8a9fd1ad41aa488ad7a809bf1d28b295bf572573898f3ed",
+      "criteria": [
+        {
+          "id": "c08-k01",
+          "support": [
+            {
+              "observation": "ob_0479e42571189e92375f101a",
+              "byte_start": 0,
+              "byte_len": 98,
+              "quote": "znajomy prosi o rzut oka na stara strone WordPress, PHP sprzed lat, nic wspolnego z moimi rzeczami"
+            },
+            {
+              "observation": "ob_ec6107d0d80d819308ef4092",
+              "byte_start": 0,
+              "byte_len": 46,
+              "quote": "Jaki jest problem - wydajnosc, bezpieczenstwo?"
+            }
+          ],
+          "axis": "source_grounding",
+          "expected_interpretation": "The source concerns a friend's old WordPress/PHP page, explicitly unrelated to the speaker's own things. The assistant asks what the problem is.",
+          "forbidden_interpretations": [
+            "WordPress/PHP is a language migration in the user's own project; performance/security are diagnosed by the question."
+          ],
+          "native_boundary": ""
+        },
+        {
+          "id": "c08-k02",
+          "support": [
+            {
+              "observation": "ob_69dd889aeacf1358fe5eef70",
+              "byte_start": 0,
+              "byte_len": 84,
+              "quote": "podejrzewa ze cos go zainfekowalo, chce zeby ktos zerknal zanim zadzwoni do hostingu"
+            }
+          ],
+          "axis": "assertion_context",
+          "expected_interpretation": "The friend suspects infection and wants an inspection before contacting hosting; infection is suspected, and inspection/contact are desired or future.",
+          "forbidden_interpretations": [
+            "Infection is established fact; the inspection or hosting call is complete; the desire is a present implementation."
+          ],
+          "native_boundary": ""
+        },
+        {
+          "id": "c08-k03",
+          "support": [
+            {
+              "observation": "ob_69dd889aeacf1358fe5eef70",
+              "byte_start": 0,
+              "byte_len": 84,
+              "quote": "podejrzewa ze cos go zainfekowalo, chce zeby ktos zerknal zanim zadzwoni do hostingu"
+            }
+          ],
+          "axis": "located_coverage_and_unknowns",
+          "expected_interpretation": "Suspicion, desire and before-contact scheduling retain uncertainty and intention; preserve located partial/unknown records when native operations cannot express them.",
+          "forbidden_interpretations": [
+            "The source is omitted without a located explanation; conditional claims a proven causal infection diagnosis."
+          ],
+          "native_boundary": "No epistemic or scheduling operation exists. A predicate reading must preserve attribution/context instead of silently strengthening suspicion. This limitation applies only to meaning/structure not preserved by the returned source-grounded atomic interpretation; the generic atomic-predicate allowance takes precedence."
+        }
+      ],
+      "source_locators": [
+        {
+          "observation": "ob_0479e42571189e92375f101a",
+          "ordinal": 0,
+          "speaker": "user",
+          "node": "u1",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/33/mapping/u1/message/content/parts/0",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:d9415914bcc384579de1cdcb3d6f0e8b5201344b1470da4cdb1a6850c6d9d569",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_ec6107d0d80d819308ef4092",
+          "ordinal": 1,
+          "speaker": "assistant",
+          "node": "a1",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/33/mapping/a1/message/content/parts/0",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:d9415914bcc384579de1cdcb3d6f0e8b5201344b1470da4cdb1a6850c6d9d569",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_69dd889aeacf1358fe5eef70",
+          "ordinal": 2,
+          "speaker": "user",
+          "node": "u2",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/33/mapping/u2/message/content/parts/0",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:d9415914bcc384579de1cdcb3d6f0e8b5201344b1470da4cdb1a6850c6d9d569",
+            "time_end": null,
+            "time_start": null
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "claude:nf-07-fork-python-or-cpp",
+      "packet_hash": "c92cdaca0f3975cc9b3ca41ae5a5e1caf213c2c85481434ee8609aacfaf6d225",
+      "criteria": [
+        {
+          "id": "c09-k01",
+          "support": [
+            {
+              "observation": "ob_e38115cd4490f5d19c859d45",
+              "byte_start": 0,
+              "byte_len": 148,
+              "quote": "0.6.0 gotowe. Dwie galezie z tego samego punktu w glowie: zostac w Pythonie i szybko patchowac, albo przepisac rdzen na C++. Nie wiem jeszcze ktora."
+            }
+          ],
+          "axis": "chronology_and_alternatives",
+          "expected_interpretation": "0.6.0 is ready; staying in Python and rewriting in C++ are two considered branches from that point, with choice explicitly unresolved in this turn.",
+          "forbidden_interpretations": [
+            "Initial uncertainty is an asserted C++ final decision; both branches are simultaneously implemented; alternatives are a conjunction of selected choices."
+          ],
+          "native_boundary": "Alternative/fork semantics has no native operation; locate that limit, retain separate occurrence interpretations and source chronology. This limitation applies only to meaning/structure not preserved by the returned source-grounded atomic interpretation; the generic atomic-predicate allowance takes precedence."
+        },
+        {
+          "id": "c09-k02",
+          "support": [
+            {
+              "observation": "ob_da0271e995354196df67d5c8",
+              "byte_start": 0,
+              "byte_len": 120,
+              "quote": "galaz B: przepisujemy rdzen na C++, jeden silnik pod kazda platforme, wolniej na start ale bez podwojnej roboty pozniej."
+            },
+            {
+              "observation": "ob_1af535544cf2a27034a06ab4",
+              "byte_start": 0,
+              "byte_len": 75,
+              "quote": "cpp-core: wiecej pracy teraz, jeden kernel dla telefonu i desktopu pozniej."
+            }
+          ],
+          "axis": "assertion_context",
+          "expected_interpretation": "The source-current path includes branch B: rewriting the core to C++ for one engine across platforms, with slower start and reduced later duplicate work. Assistant paraphrases the tradeoff.",
+          "forbidden_interpretations": [
+            "An excluded branch is imported from outside the packet; one-engine future is proven completed implementation on every platform; a later final-choice message is invented."
+          ],
+          "native_boundary": ""
+        },
+        {
+          "id": "c09-k03",
+          "support": [
+            {
+              "observation": "ob_e38115cd4490f5d19c859d45",
+              "byte_start": 0,
+              "byte_len": 148,
+              "quote": "0.6.0 gotowe. Dwie galezie z tego samego punktu w glowie: zostac w Pythonie i szybko patchowac, albo przepisac rdzen na C++. Nie wiem jeszcze ktora."
+            },
+            {
+              "observation": "ob_da0271e995354196df67d5c8",
+              "byte_start": 0,
+              "byte_len": 120,
+              "quote": "galaz B: przepisujemy rdzen na C++, jeden silnik pod kazda platforme, wolniej na start ale bez podwojnej roboty pozniej."
+            },
+            {
+              "observation": "ob_1af535544cf2a27034a06ab4",
+              "byte_start": 0,
+              "byte_len": 75,
+              "quote": "cpp-core: wiecej pracy teraz, jeden kernel dla telefonu i desktopu pozniej."
+            }
+          ],
+          "axis": "source_grounding",
+          "expected_interpretation": "Mentioned alternatives in the visible opening turn remain source-supported; only the supplied current-path observations are evidence.",
+          "forbidden_interpretations": [
+            "Branch isolation means erase the Python option mentioned in the supplied source; excluded alternative-branch text becomes support."
+          ],
+          "native_boundary": ""
+        }
+      ],
+      "source_locators": [
+        {
+          "observation": "ob_e38115cd4490f5d19c859d45",
+          "ordinal": 0,
+          "speaker": "human",
+          "node": "u1",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/2/chat_messages/0/text",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:39cdfd5aa488e4fe71c11e57702517bc9ab397c01ec22cab2146821a2e415fa6",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_da0271e995354196df67d5c8",
+          "ordinal": 1,
+          "speaker": "human",
+          "node": "u2b",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/2/chat_messages/3/text",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:39cdfd5aa488e4fe71c11e57702517bc9ab397c01ec22cab2146821a2e415fa6",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_1af535544cf2a27034a06ab4",
+          "ordinal": 2,
+          "speaker": "assistant",
+          "node": "a2b",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/2/chat_messages/4/text",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:39cdfd5aa488e4fe71c11e57702517bc9ab397c01ec22cab2146821a2e415fa6",
+            "time_end": null,
+            "time_start": null
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "claude:nf-08-cpp-wins",
+      "packet_hash": "f78b32645781a5cbd5d52e6846ec0d662d0f61f1083a972abfd982045159e102",
+      "criteria": [
+        {
+          "id": "c10-k01",
+          "support": [
+            {
+              "observation": "ob_1628ed7c475a41d2d804e651",
+              "byte_start": 0,
+              "byte_len": 131,
+              "quote": "decyzja: bierzemy cpp-core. Python-quick zostaje porzucona, nie kasuje brancha, tylko opisuje czemu odpadl i zostawiam go jak jest."
+            }
+          ],
+          "axis": "chronology_and_alternatives",
+          "expected_interpretation": "The user explicitly selects cpp-core, abandons Python-quick but retains its branch and reason. Rejection/abandonment is distinct from deletion or absence.",
+          "forbidden_interpretations": [
+            "Python branch is deleted; abandoned option is never recorded; replacement is a logical negation of Python's entire history."
+          ],
+          "native_boundary": "Branch status and reversal chronology lack dedicated operations; locate partial status semantics rather than fabricating a fork operator. This limitation applies only to meaning/structure not preserved by the returned source-grounded atomic interpretation; the generic atomic-predicate allowance takes precedence."
+        },
+        {
+          "id": "c10-k02",
+          "support": [
+            {
+              "observation": "ob_9e189490d0b9d5875dab9ef1",
+              "byte_start": 0,
+              "byte_len": 68,
+              "quote": "0.7.0: rdzen w C++. Chcesz opisac tez czemu python-quick nie wygral?"
+            },
+            {
+              "observation": "ob_621e923cc507c7964c09fe4b",
+              "byte_start": 0,
+              "byte_len": 183,
+              "quote": "python-quick byl ok na 0.6.x ale kazda nowa platforma to byla osobna warstwa kompatybilnosci - C++ core rozwiazuje to raz a porzadnie, mimo ze ABI jeszcze nie jest w 100% dopracowane."
+            },
+            {
+              "observation": "ob_7b31c390c223ca627d506d3a",
+              "byte_start": 0,
+              "byte_len": 51,
+              "quote": "Zanotowane jako explicit reversal, nie cichy zanik."
+            }
+          ],
+          "axis": "assertion_context",
+          "expected_interpretation": "Assistant associates C++ core with 0.7.0 and names explicit reversal. User says Python was okay in 0.6.x but required per-platform compatibility, while C++ addresses that and ABI is not yet fully polished.",
+          "forbidden_interpretations": [
+            "All ABI work is complete; Python was always unusable; the assistant question is user endorsement of every proposed detail."
+          ],
+          "native_boundary": ""
+        },
+        {
+          "id": "c10-k03",
+          "support": [
+            {
+              "observation": "ob_12f8f61c11646bd3b4dd943b",
+              "byte_start": 0,
+              "byte_len": 204,
+              "quote": "przy okazji zamienilam recznie pisany diff na biblioteczny (Myers-style) do historii wersji notatek - to czysto wewnetrzne, nie zmienia kontraktu na zewnatrz, nie zapisuje tego jako architecture decision."
+            },
+            {
+              "observation": "ob_e5c20203f6038bbdb12d5596",
+              "byte_start": 0,
+              "byte_len": 40,
+              "quote": "0.7.1, tylko wpis w changelogu, bez ADR."
+            }
+          ],
+          "axis": "source_grounding",
+          "expected_interpretation": "Separately, user replaces manual diff with a Myers-style library for note history, describes unchanged external contract and explicitly avoids architecture-decision status; assistant associates internal changelog entry with 0.7.1.",
+          "forbidden_interpretations": [
+            "Diff swap becomes the C++ core architecture reversal; 0.7.1 is substituted for all earlier versions; Myers-style proves a particular unmentioned library."
+          ],
+          "native_boundary": ""
+        }
+      ],
+      "source_locators": [
+        {
+          "observation": "ob_1628ed7c475a41d2d804e651",
+          "ordinal": 0,
+          "speaker": "human",
+          "node": "u1",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/3/chat_messages/0/text",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:39cdfd5aa488e4fe71c11e57702517bc9ab397c01ec22cab2146821a2e415fa6",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_9e189490d0b9d5875dab9ef1",
+          "ordinal": 1,
+          "speaker": "assistant",
+          "node": "a1",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/3/chat_messages/1/text",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:39cdfd5aa488e4fe71c11e57702517bc9ab397c01ec22cab2146821a2e415fa6",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_621e923cc507c7964c09fe4b",
+          "ordinal": 2,
+          "speaker": "human",
+          "node": "u2",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/3/chat_messages/2/text",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:39cdfd5aa488e4fe71c11e57702517bc9ab397c01ec22cab2146821a2e415fa6",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_7b31c390c223ca627d506d3a",
+          "ordinal": 3,
+          "speaker": "assistant",
+          "node": "a2",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/3/chat_messages/3/text",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:39cdfd5aa488e4fe71c11e57702517bc9ab397c01ec22cab2146821a2e415fa6",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_12f8f61c11646bd3b4dd943b",
+          "ordinal": 4,
+          "speaker": "human",
+          "node": "u3",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/3/chat_messages/4/text",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:39cdfd5aa488e4fe71c11e57702517bc9ab397c01ec22cab2146821a2e415fa6",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_e5c20203f6038bbdb12d5596",
+          "ordinal": 5,
+          "speaker": "assistant",
+          "node": "a3",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/3/chat_messages/5/text",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:39cdfd5aa488e4fe71c11e57702517bc9ab397c01ec22cab2146821a2e415fa6",
+            "time_end": null,
+            "time_start": null
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "claude:nf-10-sync-v2-and-graph-v2",
+      "packet_hash": "b697422c9f303eb42e762714accd9456776048b49e6d06834b6904cccf3abb0c",
+      "criteria": [
+        {
+          "id": "c11-k01",
+          "support": [
+            {
+              "observation": "ob_26fea785d303ddf509a3fa65",
+              "byte_start": 0,
+              "byte_len": 113,
+              "quote": "sync po gicie sie nie skaluje, dua zalaczniki (nagrania glosowe!) sa bolesnie wolne po pol roku uzywania to widac"
+            },
+            {
+              "observation": "ob_5a7d475aeb70185f938b28fc",
+              "byte_start": 0,
+              "byte_len": 44,
+              "quote": "Wlasny REST sync z chunkowaniem zalacznikow?"
+            },
+            {
+              "observation": "ob_8f2af43c05ba1cf05f2ed6c7",
+              "byte_start": 0,
+              "byte_len": 136,
+              "quote": "tak, REST-based custom sync zastepuje sync po gicie - jawnie odwracam tamta decyzje, git-based bylo dobre na start ale juz nie wystarcza"
+            }
+          ],
+          "axis": "chronology_and_alternatives",
+          "expected_interpretation": "User reports git sync scaling/attachment slowness, then explicitly replaces it with REST custom sync and reverses the earlier choice. Assistant question is a suggestion until the following yes.",
+          "forbidden_interpretations": [
+            "Git remains the current choice; REST was always the choice; replacement is negation of existence of git sync; the suggested chunking is independently verified implementation."
+          ],
+          "native_boundary": ""
+        },
+        {
+          "id": "c11-k02",
+          "support": [
+            {
+              "observation": "ob_a8836be8f801719fbff8813b",
+              "byte_start": 0,
+              "byte_len": 29,
+              "quote": "1.0.0: sync v2. A checklisty?"
+            },
+            {
+              "observation": "ob_378bda17a254f5a46c1e55a0",
+              "byte_start": 0,
+              "byte_len": 70,
+              "quote": "przywrocone w tej samej wersji, przy okazji ogarniania encji po porcie"
+            },
+            {
+              "observation": "ob_5e03abc0d647f2a3eeead3c6",
+              "byte_start": 0,
+              "byte_len": 15,
+              "quote": "I graf pamieci?"
+            }
+          ],
+          "axis": "assertion_context",
+          "expected_interpretation": "Assistant says 1.0.0 sync v2 then asks about checklists; user says restored in the same version. Keep the version association grounded in these turns; graph-memory turn is a question.",
+          "forbidden_interpretations": [
+            "Checklist question asserts restoration; restored becomes first introduction or always working; graph question itself establishes the replacement."
+          ],
+          "native_boundary": "Resolving same version to the immediately stated 1.0.0 is permissible source discourse inference, to be labelled as interpretation rather than raw observation; native chronology remains partial. This limitation applies only to meaning/structure not preserved by the returned source-grounded atomic interpretation; the generic atomic-predicate allowance takes precedence."
+        },
+        {
+          "id": "c11-k03",
+          "support": [
+            {
+              "observation": "ob_c4cbf5dcc476433efb61384c",
+              "byte_start": 0,
+              "byte_len": 143,
+              "quote": "stary graph_memory (0.8.0, partial) zastepuje nowy 'knowledge graph v2', lepszy model encji, dziala tez offline z lokalnym modelem embeddingow."
+            }
+          ],
+          "axis": "chronology_and_alternatives",
+          "expected_interpretation": "The final user describes new knowledge graph v2 replacing old graph_memory (0.8.0, partial), with better entity model and offline local embeddings. Preserve old/new distinct roles.",
+          "forbidden_interpretations": [
+            "0.8.0 partial labels the new graph; old/new replacement direction swapped; version/feature labels become negation of each other; offline means no model dependency."
+          ],
+          "native_boundary": "Temporal replacement direction should remain located partial if only flat predicates/conjunctions are returned. This limitation applies only to meaning/structure not preserved by the returned source-grounded atomic interpretation; the generic atomic-predicate allowance takes precedence."
+        }
+      ],
+      "source_locators": [
+        {
+          "observation": "ob_26fea785d303ddf509a3fa65",
+          "ordinal": 0,
+          "speaker": "human",
+          "node": "u1",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/4/chat_messages/0/text",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:39cdfd5aa488e4fe71c11e57702517bc9ab397c01ec22cab2146821a2e415fa6",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_5a7d475aeb70185f938b28fc",
+          "ordinal": 1,
+          "speaker": "assistant",
+          "node": "a1",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/4/chat_messages/1/text",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:39cdfd5aa488e4fe71c11e57702517bc9ab397c01ec22cab2146821a2e415fa6",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_8f2af43c05ba1cf05f2ed6c7",
+          "ordinal": 2,
+          "speaker": "human",
+          "node": "u2",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/4/chat_messages/2/text",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:39cdfd5aa488e4fe71c11e57702517bc9ab397c01ec22cab2146821a2e415fa6",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_a8836be8f801719fbff8813b",
+          "ordinal": 3,
+          "speaker": "assistant",
+          "node": "a2",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/4/chat_messages/3/text",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:39cdfd5aa488e4fe71c11e57702517bc9ab397c01ec22cab2146821a2e415fa6",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_378bda17a254f5a46c1e55a0",
+          "ordinal": 4,
+          "speaker": "human",
+          "node": "u3",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/4/chat_messages/4/text",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:39cdfd5aa488e4fe71c11e57702517bc9ab397c01ec22cab2146821a2e415fa6",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_5e03abc0d647f2a3eeead3c6",
+          "ordinal": 5,
+          "speaker": "assistant",
+          "node": "a3",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/4/chat_messages/5/text",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:39cdfd5aa488e4fe71c11e57702517bc9ab397c01ec22cab2146821a2e415fa6",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_c4cbf5dcc476433efb61384c",
+          "ordinal": 6,
+          "speaker": "human",
+          "node": "u4",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/4/chat_messages/6/text",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:39cdfd5aa488e4fe71c11e57702517bc9ab397c01ec22cab2146821a2e415fa6",
+            "time_end": null,
+            "time_start": null
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "claude:rt-06-shared-artifact-model",
+      "packet_hash": "c654d4883fbf5b6d0768c0e5f8a959ad6d8ee611778095239609d28957b9a00d",
+      "criteria": [
+        {
+          "id": "c12-k01",
+          "support": [
+            {
+              "observation": "ob_9e86d4cebd6b75e4e1a7902f",
+              "byte_start": 0,
+              "byte_len": 217,
+              "quote": "compose/montaz dalej nie ruszony, ale przy okazji klipow pomyslalam: keyframe, klip i (kiedys) sekcja compose to w sumie ten sam ksztalt rekordu - etap, wejscie, wyjscie, koszt, status - roznia sie tylko polami danych"
+            }
+          ],
+          "axis": "assertion_context",
+          "expected_interpretation": "Compose/montage is still untouched; keyframe, clip and a future compose section are conceived as the same record shape with stage/input/output/cost/status, differing in data fields.",
+          "forbidden_interpretations": [
+            "Compose is already implemented; sharing a schema proves all stages executed; the future qualifier is dropped."
+          ],
+          "native_boundary": ""
+        },
+        {
+          "id": "c12-k02",
+          "support": [
+            {
+              "observation": "ob_3cf397d9dcbdc01f792fbd76",
+              "byte_start": 0,
+              "byte_len": 76,
+              "quote": "Czyli jeden 'stage artifact', pola jako dane, zamiast osobnych klas na etap?"
+            },
+            {
+              "observation": "ob_0c0b0bc906e5751a33f4acd7",
+              "byte_start": 0,
+              "byte_len": 85,
+              "quote": "tak, tak to widze, nawet jesli compose nigdy nie powstanie to schemat juz jest gotowy"
+            }
+          ],
+          "axis": "assertion_context",
+          "expected_interpretation": "Assistant asks whether this means one stage artifact with data fields instead of per-stage classes; user affirms this design and says schema is ready even if compose never exists.",
+          "forbidden_interpretations": [
+            "The assistant question alone is final assertion; if compose never exists asserts it certainly will never exist; schema readiness equals stage implementation."
+          ],
+          "native_boundary": ""
+        },
+        {
+          "id": "c12-k03",
+          "support": [
+            {
+              "observation": "ob_9e86d4cebd6b75e4e1a7902f",
+              "byte_start": 0,
+              "byte_len": 217,
+              "quote": "compose/montaz dalej nie ruszony, ale przy okazji klipow pomyslalam: keyframe, klip i (kiedys) sekcja compose to w sumie ten sam ksztalt rekordu - etap, wejscie, wyjscie, koszt, status - roznia sie tylko polami danych"
+            },
+            {
+              "observation": "ob_0c0b0bc906e5751a33f4acd7",
+              "byte_start": 0,
+              "byte_len": 85,
+              "quote": "tak, tak to widze, nawet jesli compose nigdy nie powstanie to schemat juz jest gotowy"
+            }
+          ],
+          "axis": "located_coverage_and_unknowns",
+          "expected_interpretation": "A conjunction can list fields or stated shared shape; keep future/counterfactual compose and the difference between artifact schema and implementation visible.",
+          "forbidden_interpretations": [
+            "A conjunction is claimed to encode counterfactual even-if or temporal readiness; missing modality silently strengthens the statement."
+          ],
+          "native_boundary": "The even-if/counterfactual relation and temporal status have no dedicated native operation; use located partial/unknown for their unresolved semantics. This limitation applies only to meaning/structure not preserved by the returned source-grounded atomic interpretation; the generic atomic-predicate allowance takes precedence."
+        }
+      ],
+      "source_locators": [
+        {
+          "observation": "ob_9e86d4cebd6b75e4e1a7902f",
+          "ordinal": 0,
+          "speaker": "human",
+          "node": "u1",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/8/chat_messages/0/text",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:39cdfd5aa488e4fe71c11e57702517bc9ab397c01ec22cab2146821a2e415fa6",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_3cf397d9dcbdc01f792fbd76",
+          "ordinal": 1,
+          "speaker": "assistant",
+          "node": "a1",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/8/chat_messages/1/text",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:39cdfd5aa488e4fe71c11e57702517bc9ab397c01ec22cab2146821a2e415fa6",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_0c0b0bc906e5751a33f4acd7",
+          "ordinal": 2,
+          "speaker": "human",
+          "node": "u2",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/8/chat_messages/2/text",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:39cdfd5aa488e4fe71c11e57702517bc9ab397c01ec22cab2146821a2e415fa6",
+            "time_end": null,
+            "time_start": null
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "claude:lk-04-contradiction",
+      "packet_hash": "5b361ff35edf6c63bfdee798286bf910a25928d255e923e9662086ed9271cbfc",
+      "criteria": [
+        {
+          "id": "c13-k01",
+          "support": [
+            {
+              "observation": "ob_771b1929c22d51a6585a806e",
+              "byte_start": 0,
+              "byte_len": 63,
+              "quote": "Zenon pisze, ze nigdy przed marcem nie zglaszalam zadnej plesni"
+            }
+          ],
+          "axis": "quotation_context",
+          "expected_interpretation": "The speaker reports what Zenon writes: no mold report before March. Any negation belongs to that reported content, within quoted/reported context; the act of reporting is separately asserted.",
+          "forbidden_interpretations": [
+            "The graph asserts no pre-March report as the annotator/model's verified fact; reported negation becomes the current speaker's endorsement; no-report negates mold existence.",
+            "March or January receives an invented absolute year."
+          ],
+          "native_boundary": "Indirect speech can use quotation context, although no exact embedded quote marks occur. Temporal negative universal may be partial; do not invent explicit variable binding. This limitation applies only to meaning/structure not preserved by the returned source-grounded atomic interpretation; the generic atomic-predicate allowance takes precedence."
+        },
+        {
+          "id": "c13-k02",
+          "support": [
+            {
+              "observation": "ob_4a58be2418b75cc5a074f8c2",
+              "byte_start": 0,
+              "byte_len": 24,
+              "quote": "A twoj mail ze stycznia?"
+            },
+            {
+              "observation": "ob_944de085858a0a7e37163d9a",
+              "byte_start": 0,
+              "byte_len": 107,
+              "quote": "wlasnie, mam datowanego maila ze stycznia gdzie zglaszam plesn - to sie wprost przeczy z tym co teraz pisze"
+            }
+          ],
+          "axis": "assertion_context",
+          "expected_interpretation": "Assistant asks about a January email. The user claims to possess a dated January email reporting mold and says this contradicts Zenon's present writing. This packet contains only that report of the email, not the email itself.",
+          "forbidden_interpretations": [
+            "The email is independently verified source evidence; a contradiction proves intentional lying or a legal result; the question alone establishes the email."
+          ],
+          "native_boundary": ""
+        },
+        {
+          "id": "c13-k03",
+          "support": [
+            {
+              "observation": "ob_5c7ccac58dda98d23ecb2ba9",
+              "byte_start": 0,
+              "byte_len": 88,
+              "quote": "Zapisuje to jako sprzecznosc, uzyjemy daty maila w pismie do sadu jesli dojdzie do tego."
+            }
+          ],
+          "axis": "operation_port_scope_semantics",
+          "expected_interpretation": "The assistant plans to use email date in court writing if that stage is reached. If a conditional is extracted, reaching that stage is antecedent and intended use is consequent; usage is hypothetical/planned.",
+          "forbidden_interpretations": [
+            "Court filing has occurred; intended use is unconditional; conditional ports reversed."
+          ],
+          "native_boundary": "There is no dedicated contradiction, chronology or future-intention operation; located partial treatment is acceptable instead of invented relations. This limitation applies only to meaning/structure not preserved by the returned source-grounded atomic interpretation; the generic atomic-predicate allowance takes precedence."
+        }
+      ],
+      "source_locators": [
+        {
+          "observation": "ob_771b1929c22d51a6585a806e",
+          "ordinal": 0,
+          "speaker": "human",
+          "node": "u1",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/13/chat_messages/0/text",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:39cdfd5aa488e4fe71c11e57702517bc9ab397c01ec22cab2146821a2e415fa6",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_4a58be2418b75cc5a074f8c2",
+          "ordinal": 1,
+          "speaker": "assistant",
+          "node": "a1",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/13/chat_messages/1/text",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:39cdfd5aa488e4fe71c11e57702517bc9ab397c01ec22cab2146821a2e415fa6",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_944de085858a0a7e37163d9a",
+          "ordinal": 2,
+          "speaker": "human",
+          "node": "u2",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/13/chat_messages/2/text",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:39cdfd5aa488e4fe71c11e57702517bc9ab397c01ec22cab2146821a2e415fa6",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_5c7ccac58dda98d23ecb2ba9",
+          "ordinal": 3,
+          "speaker": "assistant",
+          "node": "a2",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/13/chat_messages/3/text",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:39cdfd5aa488e4fe71c11e57702517bc9ab397c01ec22cab2146821a2e415fa6",
+            "time_end": null,
+            "time_start": null
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "claude:mu-05-key-final",
+      "packet_hash": "1fd1664464e41e7a8288a84b980196c49953640cec87c665c04527fef5a8404e",
+      "criteria": [
+        {
+          "id": "c14-k01",
+          "support": [
+            {
+              "observation": "ob_5d4d249afc74a17a47ab2c04",
+              "byte_start": 0,
+              "byte_len": 86,
+              "quote": "wrocilam do obu demo 'Paper Weather' po miesiacach - d-moll broni sie lepiej na swiezo"
+            }
+          ],
+          "axis": "chronology_and_alternatives",
+          "expected_interpretation": "The user revisits two Paper Weather demos after months and presently prefers d-moll. Titles/key names are source terms, not source quotes of other speech.",
+          "forbidden_interpretations": [
+            "A globally final musical truth is inferred; title text itself asserts a quoted proposition; a different song is invented."
+          ],
+          "native_boundary": ""
+        },
+        {
+          "id": "c14-k02",
+          "support": [
+            {
+              "observation": "ob_c2d0a00184ee542f25cf917a",
+              "byte_start": 0,
+              "byte_len": 62,
+              "quote": "Czyli c-moll demo zostaje jako odrzucona, ale zapisana, opcja?"
+            },
+            {
+              "observation": "ob_e76384e303b774cf30f631f3",
+              "byte_start": 0,
+              "byte_len": 45,
+              "quote": "tak, nie kasuje, tylko oznaczam jako rejected"
+            }
+          ],
+          "axis": "assertion_context",
+          "expected_interpretation": "Assistant asks whether c-moll remains a rejected but saved option; user confirms, does not delete it and marks it rejected.",
+          "forbidden_interpretations": [
+            "Rejected demo is deleted; the question alone is final confirmation; saved implies accepted/current chosen."
+          ],
+          "native_boundary": ""
+        },
+        {
+          "id": "c14-k03",
+          "support": [
+            {
+              "observation": "ob_5d4d249afc74a17a47ab2c04",
+              "byte_start": 0,
+              "byte_len": 86,
+              "quote": "wrocilam do obu demo 'Paper Weather' po miesiacach - d-moll broni sie lepiej na swiezo"
+            },
+            {
+              "observation": "ob_c2d0a00184ee542f25cf917a",
+              "byte_start": 0,
+              "byte_len": 62,
+              "quote": "Czyli c-moll demo zostaje jako odrzucona, ale zapisana, opcja?"
+            },
+            {
+              "observation": "ob_e76384e303b774cf30f631f3",
+              "byte_start": 0,
+              "byte_len": 45,
+              "quote": "tak, nie kasuje, tylko oznaczam jako rejected"
+            }
+          ],
+          "axis": "located_coverage_and_unknowns",
+          "expected_interpretation": "Preference/rejection/retention and later revisit are distinct meanings. If only predicates represent statuses, mark remaining alternatives/temporal aspects partial or unsupported.",
+          "forbidden_interpretations": [
+            "Logical negation of c-moll stands in for a rejected but retained alternative; a conjunction asserts both demos selected."
+          ],
+          "native_boundary": "No temporal-preference, alternative-status or branch-operation exists in the native five-operation inventory. This limitation applies only to meaning/structure not preserved by the returned source-grounded atomic interpretation; the generic atomic-predicate allowance takes precedence."
+        }
+      ],
+      "source_locators": [
+        {
+          "observation": "ob_5d4d249afc74a17a47ab2c04",
+          "ordinal": 0,
+          "speaker": "human",
+          "node": "u1",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/18/chat_messages/0/text",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:39cdfd5aa488e4fe71c11e57702517bc9ab397c01ec22cab2146821a2e415fa6",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_c2d0a00184ee542f25cf917a",
+          "ordinal": 1,
+          "speaker": "assistant",
+          "node": "a1",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/18/chat_messages/1/text",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:39cdfd5aa488e4fe71c11e57702517bc9ab397c01ec22cab2146821a2e415fa6",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_e76384e303b774cf30f631f3",
+          "ordinal": 2,
+          "speaker": "human",
+          "node": "u2",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/18/chat_messages/2/text",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:39cdfd5aa488e4fe71c11e57702517bc9ab397c01ec22cab2146821a2e415fa6",
+            "time_end": null,
+            "time_start": null
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "claude:cx-01-manifesto",
+      "packet_hash": "552c3b7411186d3e72feb0b32a7cff728e5db8acfed6b86fa42dd09df2103528",
+      "criteria": [
+        {
+          "id": "c15-k01",
+          "support": [
+            {
+              "observation": "ob_0b3ff5ce6d6588c67cb046a7",
+              "byte_start": 0,
+              "byte_len": 133,
+              "quote": "zanim zacznę cokolwiek kodować w tym roku, zapisuję sobie parę rzeczy, żeby nie musieć ich za każdym razem wymyślać od nowa."
+            },
+            {
+              "observation": "ob_0802990c71d4d71c38c6ab90",
+              "byte_start": 0,
+              "byte_len": 19,
+              "quote": "Śmiało, słucham."
+            }
+          ],
+          "axis": "assertion_context",
+          "expected_interpretation": "The user says they are writing down principles before coding this year; assistant invites continuation. This is source context for the following principles, not evidence code was completed.",
+          "forbidden_interpretations": [
+            "The assistant invitation is a principle; future coding is completed implementation."
+          ],
+          "native_boundary": ""
+        },
+        {
+          "id": "c15-k02",
+          "support": [
+            {
+              "observation": "ob_84db57df4b4859ede907932c",
+              "byte_start": 0,
+              "byte_len": 144,
+              "quote": "po pierwsze: opcjonalność jest ważniejsza niż tymczasowa szybkość - wolę zostawić sobie drogę odwrotu niż zaoszczędzić dzień teraz."
+            }
+          ],
+          "axis": "source_grounding",
+          "expected_interpretation": "The first principle prefers preserving reversibility/options over temporary speed or saving a day; it does not order deletion of fast options.",
+          "forbidden_interpretations": [
+            "A runtime cap or forbidden model choice is invented; speed is universally bad; a conditional reverses the stated preference."
+          ],
+          "native_boundary": ""
+        },
+        {
+          "id": "c15-k03",
+          "support": [
+            {
+              "observation": "ob_642e8544e08a862a7ac15935",
+              "byte_start": 0,
+              "byte_len": 157,
+              "quote": "po drugie: mówię wprost czego nie wiem albo czego nie zrobiłam, zamiast to ładnie opakowywać - i to dotyczy też rozmów z modelem, nie tylko z ludźmi."
+            }
+          ],
+          "axis": "assertion_context",
+          "expected_interpretation": "The second principle commits to openly saying what the speaker does not know or has not done, including model and human conversations. Embedded negation concerns the content of disclosures, not a claim that the speaker knows/did nothing.",
+          "forbidden_interpretations": [
+            "The speaker lacks all knowledge or performed no work; the negative content is promoted to a new factual absence across every project; model conversations are excluded."
+          ],
+          "native_boundary": "The or alternative and epistemic/disclosure relation may need located partial coverage; no explicit symbolic binder is present. This limitation applies only to meaning/structure not preserved by the returned source-grounded atomic interpretation; the generic atomic-predicate allowance takes precedence."
+        },
+        {
+          "id": "c15-k04",
+          "support": [
+            {
+              "observation": "ob_2eb1efe8817a1810aeb48c20",
+              "byte_start": 0,
+              "byte_len": 86,
+              "quote": "i po trzecie, na razie tylko dla presetów/configów: to dane, nie nowa gałąź kodu."
+            },
+            {
+              "observation": "ob_da2b30cb007d81e0fd1d68e2",
+              "byte_start": 0,
+              "byte_len": 56,
+              "quote": "Zapisane. To brzmi jak coś, do czego będziesz wracać."
+            }
+          ],
+          "axis": "source_grounding",
+          "expected_interpretation": "The third principle is explicitly limited for now to presets/configs: data rather than a new code branch. Assistant says recorded and predicts return to them.",
+          "forbidden_interpretations": [
+            "The rule is universal for all possible software entities; temporary scope is dropped; recording proves a storage action outside this source."
+          ],
+          "native_boundary": "Scope/temporary boundary is not a universal quantifier merely because the principle is generalized; preserve limited domain and located temporal qualification. This limitation applies only to meaning/structure not preserved by the returned source-grounded atomic interpretation; the generic atomic-predicate allowance takes precedence."
+        }
+      ],
+      "source_locators": [
+        {
+          "observation": "ob_0b3ff5ce6d6588c67cb046a7",
+          "ordinal": 0,
+          "speaker": "human",
+          "node": "u1",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/19/chat_messages/0/text",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:39cdfd5aa488e4fe71c11e57702517bc9ab397c01ec22cab2146821a2e415fa6",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_0802990c71d4d71c38c6ab90",
+          "ordinal": 1,
+          "speaker": "assistant",
+          "node": "a1",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/19/chat_messages/1/text",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:39cdfd5aa488e4fe71c11e57702517bc9ab397c01ec22cab2146821a2e415fa6",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_84db57df4b4859ede907932c",
+          "ordinal": 2,
+          "speaker": "human",
+          "node": "u2",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/19/chat_messages/2/text",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:39cdfd5aa488e4fe71c11e57702517bc9ab397c01ec22cab2146821a2e415fa6",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_642e8544e08a862a7ac15935",
+          "ordinal": 3,
+          "speaker": "human",
+          "node": "u3",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/19/chat_messages/3/text",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:39cdfd5aa488e4fe71c11e57702517bc9ab397c01ec22cab2146821a2e415fa6",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_2eb1efe8817a1810aeb48c20",
+          "ordinal": 4,
+          "speaker": "human",
+          "node": "u4",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/19/chat_messages/4/text",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:39cdfd5aa488e4fe71c11e57702517bc9ab397c01ec22cab2146821a2e415fa6",
+            "time_end": null,
+            "time_start": null
+          }
+        },
+        {
+          "observation": "ob_da2b30cb007d81e0fd1d68e2",
+          "ordinal": 5,
+          "speaker": "assistant",
+          "node": "a2",
+          "locator": {
+            "byte_len": null,
+            "byte_start": null,
+            "json_pointer": "/19/chat_messages/5/text",
+            "line": null,
+            "member": "conversations.json",
+            "source": "sha256:39cdfd5aa488e4fe71c11e57702517bc9ab397c01ec22cab2146821a2e415fa6",
+            "time_end": null,
+            "time_start": null
+          }
+        }
+      ]
+    }
+  ]
+}
