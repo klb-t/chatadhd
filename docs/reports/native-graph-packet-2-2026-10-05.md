@@ -1,6 +1,6 @@
 # Wątek 4 — drugi przyrost, 2026-10-05
 
-Status: praca w toku; poprzedni przyrost pozostaje przyjęty bez zmian.
+Status: bieżący przyrost zamrożony na polecenie właściciela; domykanie bramek. Poprzedni przyrost pozostaje przyjęty bez zmian.
 Gałąź: `gpt/native-graph-packet-2-2026-10-05`.
 Baza: `66da570d3b5379492e128d940ad474467082c59f`
 (`gpt/integrator-state-2026-10-04`, bezpośrednio po `main` `e4109df`).
@@ -41,10 +41,16 @@ pozostają w pozytywnych dowodach.
 Porównanie po zmianie: **PASS, 1536/1536 rekordów identycznych bajt w bajt**;
 SHA256 wyniku po zmianie jest identyczny z bazowym. Pomiar używa pełnego
 archiwum zmienionego rdzenia, nie atrapy. Zapisano komendy i hash źródeł oraz
-archiwum. Kod wypchnięty w `d7e9968`; pozostaje pełny build i CTest na
-vendored SQLite, WERROR, CLI, shared library i serwer. Do odbioru jeszcze
-nie zgłoszono. Dodano 13 regresji nakładek i błędnej konfiguracji; wymagany
+archiwum. Pełny końcowy build: **PASS** (GCC 13.3, Debug `-g0`, vendored
+SQLite 3.47.2, WERROR, CLI, shared library i serwer). Końcowy pomiar po
+wycofaniu nowego sztucznego zakresu `[0,1]` dla progów języka również PASS:
+progi są dowolnymi skończonymi liczbami, a wyniki domyślne bez zmian.
+Pełny CTest i niezmieniony guard wykonania trwają; gotowość dopiero po ich
+zakończeniu. Dodano 13 regresji nakładek i błędnej konfiguracji; wymagany
 CTest powinien wykonać 14 dotychczasowych + 13 nowych przypadków packa.
+Baza przed końcowym rebase: `66da570`; świeży main `6ae0e28` różni się od
+niej wyłącznie dokumentacją. Przyrost nie obejmuje dalszego kodu z nowszej
+gałęzi integratora.
 Pełne pliki trzech ujemnych wariantów z przeglądu są zachowane na
 `archive/2026-10-05/native-graph-packet-2-review-negatives` (`19d72fe`).
 To statyczne ustalenia, nie raport wykonanych nieudanych testów: pomijane
@@ -71,6 +77,20 @@ oraz W12: definicje metod i profile runtime muszą korzystać z jednego resolver
 W11 nadal oczekuje normalizatora **tworzenia nowych rekordów** z zachowaniem
 historycznego wire. `Normalizer::create` z tego przyrostu jest sprawdzaną
 konstrukcją normalizatora **tekstu** i nie zamyka tamtego zadania.
+
+## Niedokończone i punkt startu następnej osoby
+
+Nie zaczynać kolejnych migracji w tej sesji. Po odbiorze tego przyrostu
+zacząć od aktualnego inwentarza `docs/reports/data-in-code/thread-4.md`
+i przekazań w `INDEX.md`: presety query/store i CAPI wymagają uzgodnienia
+własności publicznego API z W11. Potem podłączyć efektywny przepis przez
+resolver warstw W12 i wersję metody z kontraktu `METHOD_GRAPH.md` (W3),
+z krawędzią pochodzenia wyniku. Nie tworzyć drugiego loadera ani ukrytych
+fallbacków. Normalizator tworzenia rekordów, rozszerzenie języków i
+pozostałe grupy inwentarza nie są zrobione. Starsze nakładki stemming `/1`
+wymagają jawnej aktualizacji do `/2`; zmiana prywatnego stanu C++
+`Normalizer` wymaga rekompilacji jego klientów. C ABI nie zmieniono.
+Web i macierz Clang/ASan nie były uruchamiane w tej sesji (W9/W8).
 
 ## Do wątku N
 
