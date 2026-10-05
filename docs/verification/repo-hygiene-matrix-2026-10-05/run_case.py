@@ -58,8 +58,16 @@ def main():
         fields = ["CMAKE_GENERATOR", "CMAKE_BUILD_TYPE", "CMAKE_C_COMPILER",
                   "CMAKE_CXX_COMPILER", "CMAKE_C_FLAGS", "CMAKE_C_FLAGS_DEBUG",
                   "CMAKE_CXX_FLAGS", "CMAKE_CXX_FLAGS_DEBUG",
+                  "CMAKE_AR",
+                  "CMAKE_EXE_LINKER_FLAGS", "CMAKE_SHARED_LINKER_FLAGS",
                   "LOOM_USE_SYSTEM_SQLITE", "LOOM_SHARED", "LOOM_WERROR",
                   "LOOM_BUILD_SERVER"]
+        # CMake caches archive recipes only when the caller explicitly overrides
+        # them. Preserve those overrides without requiring absent default keys.
+        cached_keys = {line.split(":", 1)[0] for line in cache.read_text().splitlines()
+                       if ":" in line and not line.startswith(("#", "//"))}
+        fields += [field for field in ("CMAKE_C_ARCHIVE_CREATE",
+                   "CMAKE_CXX_ARCHIVE_CREATE") if field in cached_keys]
         argv = ["python3", root / ".github/scripts/write_build_receipt.py",
                 "--preset", preset, "--cmake-cache", cache,
                 "--output", out / filename]

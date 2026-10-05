@@ -1,0 +1,1200 @@
+{
+  "reason": "All ASan native links completed successfully; final executable binaries kept. Truncated generated intermediate objects and archives to make shared disk space. A later rebuild requires clean/regenerate.",
+  "files": [
+    {
+      "path": "loom/build/asan/libloom_core.a",
+      "logical_bytes_before": 65065052,
+      "allocated_bytes_before": 65069056
+    },
+    {
+      "path": "loom/build/asan/libloom_miniz.a",
+      "logical_bytes_before": 3560,
+      "allocated_bytes_before": 4096
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_graph.cpp.o",
+      "logical_bytes_before": 6448976,
+      "allocated_bytes_before": 6451200
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_memory.cpp.o",
+      "logical_bytes_before": 4061984,
+      "allocated_bytes_before": 4063232
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_import.cpp.o",
+      "logical_bytes_before": 4092312,
+      "allocated_bytes_before": 4096000
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_compat_tool.dir/tests/compat/main.cpp.o",
+      "logical_bytes_before": 1011256,
+      "allocated_bytes_before": 1011712
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_crypto.cpp.o",
+      "logical_bytes_before": 3714928,
+      "allocated_bytes_before": 3715072
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_core.cpp.o",
+      "logical_bytes_before": 5345664,
+      "allocated_bytes_before": 5349376
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_chat.cpp.o",
+      "logical_bytes_before": 4444264,
+      "allocated_bytes_before": 4448256
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_semantic.cpp.o",
+      "logical_bytes_before": 5312384,
+      "allocated_bytes_before": 5312512
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_db.cpp.o",
+      "logical_bytes_before": 8351992,
+      "allocated_bytes_before": 8355840
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_active_task.cpp.o",
+      "logical_bytes_before": 3376688,
+      "allocated_bytes_before": 3379200
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_selector.cpp.o",
+      "logical_bytes_before": 3104864,
+      "allocated_bytes_before": 3108864
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_miniz.dir/third_party/miniz/miniz.c.o",
+      "logical_bytes_before": 3382016,
+      "allocated_bytes_before": 3383296
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_candidate_graph_native_tool.dir/tests/compat/candidate_graph_native_tool.cpp.o",
+      "logical_bytes_before": 2630856,
+      "allocated_bytes_before": 2633728
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/runtime.cpp.o",
+      "logical_bytes_before": 11793312,
+      "allocated_bytes_before": 11796480
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/extract/extract.cpp.o",
+      "logical_bytes_before": 10367448,
+      "allocated_bytes_before": 10371072
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/extract/candidate_graph.cpp.o",
+      "logical_bytes_before": 12264744,
+      "allocated_bytes_before": 12267520
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/extract/sources.cpp.o",
+      "logical_bytes_before": 5307224,
+      "allocated_bytes_before": 5308416
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/extract/extractors.cpp.o",
+      "logical_bytes_before": 20322976,
+      "allocated_bytes_before": 20324352
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/extract/lexicon.cpp.o",
+      "logical_bytes_before": 6796936,
+      "allocated_bytes_before": 6799360
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/extract/semantic.cpp.o",
+      "logical_bytes_before": 15064504,
+      "allocated_bytes_before": 15065088
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/extract/stage.cpp.o",
+      "logical_bytes_before": 14197856,
+      "allocated_bytes_before": 14200832
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/generalize/evidence.cpp.o",
+      "logical_bytes_before": 7698104,
+      "allocated_bytes_before": 7700480
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/generalize/infer.cpp.o",
+      "logical_bytes_before": 11411632,
+      "allocated_bytes_before": 11415552
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/generalize/common.cpp.o",
+      "logical_bytes_before": 20662424,
+      "allocated_bytes_before": 20664320
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/generalize/operators.cpp.o",
+      "logical_bytes_before": 9647528,
+      "allocated_bytes_before": 9650176
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/generalize/match.cpp.o",
+      "logical_bytes_before": 14529040,
+      "allocated_bytes_before": 14532608
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/generalize/stage.cpp.o",
+      "logical_bytes_before": 12627576,
+      "allocated_bytes_before": 12627968
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/generalize/principles.cpp.o",
+      "logical_bytes_before": 10884088,
+      "allocated_bytes_before": 10887168
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/net/sse.cpp.o",
+      "logical_bytes_before": 395696,
+      "allocated_bytes_before": 397312
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/net/http_common.cpp.o",
+      "logical_bytes_before": 5810968,
+      "allocated_bytes_before": 5812224
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/net/http_default.cpp.o",
+      "logical_bytes_before": 22851664,
+      "allocated_bytes_before": 22855680
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/github/github_sync.cpp.o",
+      "logical_bytes_before": 15933752,
+      "allocated_bytes_before": 15937536
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/capi/capi_import.cpp.o",
+      "logical_bytes_before": 5513504,
+      "allocated_bytes_before": 5517312
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/capi/capi_core.cpp.o",
+      "logical_bytes_before": 10658480,
+      "allocated_bytes_before": 10661888
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/capi/capi_graph.cpp.o",
+      "logical_bytes_before": 6864248,
+      "allocated_bytes_before": 6864896
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/capi/capi_graph_packet_store.cpp.o",
+      "logical_bytes_before": 5004784,
+      "allocated_bytes_before": 5005312
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/capi/capi_packet.cpp.o",
+      "logical_bytes_before": 8894784,
+      "allocated_bytes_before": 8896512
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/capi/capi_context.cpp.o",
+      "logical_bytes_before": 6322536,
+      "allocated_bytes_before": 6324224
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/capi/capi_media.cpp.o",
+      "logical_bytes_before": 6989832,
+      "allocated_bytes_before": 6991872
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/capi/capi_archive.cpp.o",
+      "logical_bytes_before": 6921104,
+      "allocated_bytes_before": 6922240
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/capi/capi_http.cpp.o",
+      "logical_bytes_before": 3627176,
+      "allocated_bytes_before": 3629056
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/capi/capi_knowledge.cpp.o",
+      "logical_bytes_before": 11947344,
+      "allocated_bytes_before": 11948032
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/capi/capi_config.cpp.o",
+      "logical_bytes_before": 6558864,
+      "allocated_bytes_before": 6561792
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/capi/capi_extract.cpp.o",
+      "logical_bytes_before": 6822920,
+      "allocated_bytes_before": 6823936
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/capi/capi_catalog.cpp.o",
+      "logical_bytes_before": 6615680,
+      "allocated_bytes_before": 6619136
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/capi/capi_chat.cpp.o",
+      "logical_bytes_before": 7775080,
+      "allocated_bytes_before": 7778304
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/capi/capi_generalize.cpp.o",
+      "logical_bytes_before": 10800944,
+      "allocated_bytes_before": 10801152
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/memory/memory_engine.cpp.o",
+      "logical_bytes_before": 8547040,
+      "allocated_bytes_before": 8548352
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/import/export_openai.cpp.o",
+      "logical_bytes_before": 10513888,
+      "allocated_bytes_before": 10514432
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/import/importer_text.cpp.o",
+      "logical_bytes_before": 5084728,
+      "allocated_bytes_before": 5087232
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/import/importer_zip.cpp.o",
+      "logical_bytes_before": 3922120,
+      "allocated_bytes_before": 3923968
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/import/export_anthropic.cpp.o",
+      "logical_bytes_before": 8947952,
+      "allocated_bytes_before": 8949760
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/import/exporter.cpp.o",
+      "logical_bytes_before": 3735488,
+      "allocated_bytes_before": 3735552
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/import/importer_html.cpp.o",
+      "logical_bytes_before": 5073584,
+      "allocated_bytes_before": 5074944
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/import/export_archive.cpp.o",
+      "logical_bytes_before": 12262528,
+      "allocated_bytes_before": 12263424
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/import/importer_common.cpp.o",
+      "logical_bytes_before": 1158888,
+      "allocated_bytes_before": 1159168
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/import/importer_sqlite.cpp.o",
+      "logical_bytes_before": 5635352,
+      "allocated_bytes_before": 5636096
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/import/importer_json.cpp.o",
+      "logical_bytes_before": 7131424,
+      "allocated_bytes_before": 7135232
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/import/importer_core.cpp.o",
+      "logical_bytes_before": 10028400,
+      "allocated_bytes_before": 10031104
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/import/export_unknown.cpp.o",
+      "logical_bytes_before": 5208096,
+      "allocated_bytes_before": 5210112
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/import/export_common.cpp.o",
+      "logical_bytes_before": 9784152,
+      "allocated_bytes_before": 9785344
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/search/selector.cpp.o",
+      "logical_bytes_before": 6937584,
+      "allocated_bytes_before": 6938624
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/materialize/materialize.cpp.o",
+      "logical_bytes_before": 11013248,
+      "allocated_bytes_before": 11014144
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/util/unicode.cpp.o",
+      "logical_bytes_before": 230728,
+      "allocated_bytes_before": 233472
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/util/base64.cpp.o",
+      "logical_bytes_before": 294472,
+      "allocated_bytes_before": 294912
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/util/random_ids_time.cpp.o",
+      "logical_bytes_before": 351680,
+      "allocated_bytes_before": 352256
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/util/utf8.cpp.o",
+      "logical_bytes_before": 367408,
+      "allocated_bytes_before": 368640
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/util/sha256.cpp.o",
+      "logical_bytes_before": 602024,
+      "allocated_bytes_before": 602112
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/util/fs.cpp.o",
+      "logical_bytes_before": 2619640,
+      "allocated_bytes_before": 2621440
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/util/json.cpp.o",
+      "logical_bytes_before": 6955984,
+      "allocated_bytes_before": 6959104
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/util/result.cpp.o",
+      "logical_bytes_before": 209936,
+      "allocated_bytes_before": 212992
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/util/log.cpp.o",
+      "logical_bytes_before": 1300120,
+      "allocated_bytes_before": 1302528
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/re/regex.cpp.o",
+      "logical_bytes_before": 3301352,
+      "allocated_bytes_before": 3301376
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/core/provenance.cpp.o",
+      "logical_bytes_before": 9063040,
+      "allocated_bytes_before": 9064448
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/core/event_bus.cpp.o",
+      "logical_bytes_before": 5253496,
+      "allocated_bytes_before": 5255168
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/core/config.cpp.o",
+      "logical_bytes_before": 8195856,
+      "allocated_bytes_before": 8196096
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/core/config_usage_policy.cpp.o",
+      "logical_bytes_before": 5503144,
+      "allocated_bytes_before": 5505024
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/core/relations.cpp.o",
+      "logical_bytes_before": 6817600,
+      "allocated_bytes_before": 6819840
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/core/tasks.cpp.o",
+      "logical_bytes_before": 9773992,
+      "allocated_bytes_before": 9777152
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/archive/text.cpp.o",
+      "logical_bytes_before": 2307752,
+      "allocated_bytes_before": 2310144
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/archive/ingest.cpp.o",
+      "logical_bytes_before": 13913368,
+      "allocated_bytes_before": 13914112
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/archive/ingest_parse.cpp.o",
+      "logical_bytes_before": 8431504,
+      "allocated_bytes_before": 8433664
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/archive/cluster.cpp.o",
+      "logical_bytes_before": 1015376,
+      "allocated_bytes_before": 1015808
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/archive/synth.cpp.o",
+      "logical_bytes_before": 13675264,
+      "allocated_bytes_before": 13676544
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/archive/items.cpp.o",
+      "logical_bytes_before": 7450056,
+      "allocated_bytes_before": 7450624
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/archive/vocab.cpp.o",
+      "logical_bytes_before": 7118560,
+      "allocated_bytes_before": 7118848
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/archive/pipeline.cpp.o",
+      "logical_bytes_before": 24012568,
+      "allocated_bytes_before": 24014848
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/chat/active_task_spec.cpp.o",
+      "logical_bytes_before": 5533880,
+      "allocated_bytes_before": 5537792
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/chat/active_task_acceptance.cpp.o",
+      "logical_bytes_before": 8591584,
+      "allocated_bytes_before": 8593408
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/chat/graph_reply.cpp.o",
+      "logical_bytes_before": 16448000,
+      "allocated_bytes_before": 16449536
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/chat/chat_engine.cpp.o",
+      "logical_bytes_before": 20491160,
+      "allocated_bytes_before": 20492288
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/chat/batch_api.cpp.o",
+      "logical_bytes_before": 8708624,
+      "allocated_bytes_before": 8712192
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/context/context_candidates.cpp.o",
+      "logical_bytes_before": 8379248,
+      "allocated_bytes_before": 8380416
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/context/context_plan.cpp.o",
+      "logical_bytes_before": 10940200,
+      "allocated_bytes_before": 10940416
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/context/method_execution.cpp.o",
+      "logical_bytes_before": 12991928,
+      "allocated_bytes_before": 12992512
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/context/method_channels.cpp.o",
+      "logical_bytes_before": 15147600,
+      "allocated_bytes_before": 15151104
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/context/context_diagnostics.cpp.o",
+      "logical_bytes_before": 881824,
+      "allocated_bytes_before": 884736
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/context/ctx_common.cpp.o",
+      "logical_bytes_before": 2501072,
+      "allocated_bytes_before": 2502656
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/context/context_request_ext.cpp.o",
+      "logical_bytes_before": 3886080,
+      "allocated_bytes_before": 3887104
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/context/context_engine.cpp.o",
+      "logical_bytes_before": 24968696,
+      "allocated_bytes_before": 24969216
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/context/method_registry.cpp.o",
+      "logical_bytes_before": 13375872,
+      "allocated_bytes_before": 13377536
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/context/retrieval.cpp.o",
+      "logical_bytes_before": 7565640,
+      "allocated_bytes_before": 7569408
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/context/unified_context.cpp.o",
+      "logical_bytes_before": 14482976,
+      "allocated_bytes_before": 14483456
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/context/context_evidence.cpp.o",
+      "logical_bytes_before": 7238376,
+      "allocated_bytes_before": 7241728
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/context/provider_vector.cpp.o",
+      "logical_bytes_before": 15693184,
+      "allocated_bytes_before": 15695872
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/packet/packet.cpp.o",
+      "logical_bytes_before": 19858880,
+      "allocated_bytes_before": 19861504
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/packet/reply.cpp.o",
+      "logical_bytes_before": 10510576,
+      "allocated_bytes_before": 10514432
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/providers/providers.cpp.o",
+      "logical_bytes_before": 8263888,
+      "allocated_bytes_before": 8265728
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/providers/embedding.cpp.o",
+      "logical_bytes_before": 8274184,
+      "allocated_bytes_before": 8278016
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/model/model_general.cpp.o",
+      "logical_bytes_before": 15462720,
+      "allocated_bytes_before": 15466496
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/model/model_action.cpp.o",
+      "logical_bytes_before": 14315680,
+      "allocated_bytes_before": 14319616
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/model/model_core.cpp.o",
+      "logical_bytes_before": 12969000,
+      "allocated_bytes_before": 12972032
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/model/model_pack.cpp.o",
+      "logical_bytes_before": 6256648,
+      "allocated_bytes_before": 6258688
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/kb/schema.cpp.o",
+      "logical_bytes_before": 1873136,
+      "allocated_bytes_before": 1875968
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/kb/store.cpp.o",
+      "logical_bytes_before": 25593488,
+      "allocated_bytes_before": 25600000
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/kb/evidence.cpp.o",
+      "logical_bytes_before": 3758600,
+      "allocated_bytes_before": 3760128
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/kb/pack.cpp.o",
+      "logical_bytes_before": 16138072,
+      "allocated_bytes_before": 16142336
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/kb/graph_packet_store.cpp.o",
+      "logical_bytes_before": 11339568,
+      "allocated_bytes_before": 11341824
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/kb/candidates.cpp.o",
+      "logical_bytes_before": 4525680,
+      "allocated_bytes_before": 4526080
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/kb/normalize.cpp.o",
+      "logical_bytes_before": 2931264,
+      "allocated_bytes_before": 2932736
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/worker/semantic_worker.cpp.o",
+      "logical_bytes_before": 8405912,
+      "allocated_bytes_before": 8409088
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/catalog/alias.cpp.o",
+      "logical_bytes_before": 4656576,
+      "allocated_bytes_before": 4657152
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/catalog/schema.cpp.o",
+      "logical_bytes_before": 611816,
+      "allocated_bytes_before": 614400
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/catalog/sketch.cpp.o",
+      "logical_bytes_before": 5878096,
+      "allocated_bytes_before": 5881856
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/catalog/scan.cpp.o",
+      "logical_bytes_before": 8270800,
+      "allocated_bytes_before": 8273920
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/catalog/import.cpp.o",
+      "logical_bytes_before": 7678264,
+      "allocated_bytes_before": 7680000
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/catalog/stream.cpp.o",
+      "logical_bytes_before": 628264,
+      "allocated_bytes_before": 630784
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/catalog/catalog.cpp.o",
+      "logical_bytes_before": 8818848,
+      "allocated_bytes_before": 8822784
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/catalog/semantic.cpp.o",
+      "logical_bytes_before": 2614912,
+      "allocated_bytes_before": 2617344
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/catalog/score.cpp.o",
+      "logical_bytes_before": 12901936,
+      "allocated_bytes_before": 12902400
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/catalog/select.cpp.o",
+      "logical_bytes_before": 11584448,
+      "allocated_bytes_before": 11587584
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/catalog/extract_text.cpp.o",
+      "logical_bytes_before": 1220080,
+      "allocated_bytes_before": 1220608
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/catalog/links.cpp.o",
+      "logical_bytes_before": 6203136,
+      "allocated_bytes_before": 6205440
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/catalog/query.cpp.o",
+      "logical_bytes_before": 8260112,
+      "allocated_bytes_before": 8261632
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/catalog/profile.cpp.o",
+      "logical_bytes_before": 5626160,
+      "allocated_bytes_before": 5627904
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/db/sqlite.cpp.o",
+      "logical_bytes_before": 1502384,
+      "allocated_bytes_before": 1503232
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/db/fts.cpp.o",
+      "logical_bytes_before": 6559376,
+      "allocated_bytes_before": 6561792
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/db/db.cpp.o",
+      "logical_bytes_before": 13547184,
+      "allocated_bytes_before": 13549568
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/crypto/crypto.cpp.o",
+      "logical_bytes_before": 6832104,
+      "allocated_bytes_before": 6832128
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/policy/usage_policy.cpp.o",
+      "logical_bytes_before": 8960808,
+      "allocated_bytes_before": 8962048
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/resolve/lineage.cpp.o",
+      "logical_bytes_before": 8637984,
+      "allocated_bytes_before": 8638464
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/resolve/vectors.cpp.o",
+      "logical_bytes_before": 5941800,
+      "allocated_bytes_before": 5943296
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/resolve/assess.cpp.o",
+      "logical_bytes_before": 5916728,
+      "allocated_bytes_before": 5918720
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/resolve/resolver.cpp.o",
+      "logical_bytes_before": 11416544,
+      "allocated_bytes_before": 11419648
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/resolve/attribution.cpp.o",
+      "logical_bytes_before": 14146936,
+      "allocated_bytes_before": 14147584
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/resolve/stage.cpp.o",
+      "logical_bytes_before": 10693328,
+      "allocated_bytes_before": 10694656
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/semantic/analyzer.cpp.o",
+      "logical_bytes_before": 9308840,
+      "allocated_bytes_before": 9310208
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/semantic/semantic_llm.cpp.o",
+      "logical_bytes_before": 7200576,
+      "allocated_bytes_before": 7200768
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/knowledge/engine.cpp.o",
+      "logical_bytes_before": 12479592,
+      "allocated_bytes_before": 12484608
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/graph/graph_engine.cpp.o",
+      "logical_bytes_before": 6964352,
+      "allocated_bytes_before": 6967296
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/graph/graph_memory.cpp.o",
+      "logical_bytes_before": 6522072,
+      "allocated_bytes_before": 6524928
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_core.dir/src/media/media_providers.cpp.o",
+      "logical_bytes_before": 10320912,
+      "allocated_bytes_before": 10321920
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_memory.cpp.o",
+      "logical_bytes_before": 5602624,
+      "allocated_bytes_before": 5603328
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_model.cpp.o",
+      "logical_bytes_before": 16679256,
+      "allocated_bytes_before": 16683008
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_chat_active_task_exceptional.cpp.o",
+      "logical_bytes_before": 10067184,
+      "allocated_bytes_before": 10072064
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_chat_active_task_acceptance_validation.cpp.o",
+      "logical_bytes_before": 13015704,
+      "allocated_bytes_before": 13017088
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_chat_active_task_retention.cpp.o",
+      "logical_bytes_before": 12972928,
+      "allocated_bytes_before": 12976128
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_context_channel_integration.cpp.o",
+      "logical_bytes_before": 8864752,
+      "allocated_bytes_before": 8867840
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_resolve.cpp.o",
+      "logical_bytes_before": 8854352,
+      "allocated_bytes_before": 8855552
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_regex.cpp.o",
+      "logical_bytes_before": 1454016,
+      "allocated_bytes_before": 1454080
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_import_stream.cpp.o",
+      "logical_bytes_before": 2126272,
+      "allocated_bytes_before": 2129920
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_net_sse.cpp.o",
+      "logical_bytes_before": 1090056,
+      "allocated_bytes_before": 1093632
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_knowledge_semantic_graph.cpp.o",
+      "logical_bytes_before": 14082944,
+      "allocated_bytes_before": 14086144
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_chat_active_task_acceptance_audit.cpp.o",
+      "logical_bytes_before": 11418040,
+      "allocated_bytes_before": 11423744
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_extract_eval.cpp.o",
+      "logical_bytes_before": 8033480,
+      "allocated_bytes_before": 8036352
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_catalog_context.cpp.o",
+      "logical_bytes_before": 9821024,
+      "allocated_bytes_before": 9822208
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_capi_knowledge_latest_run.cpp.o",
+      "logical_bytes_before": 5790648,
+      "allocated_bytes_before": 5791744
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_knowledge_semantic.cpp.o",
+      "logical_bytes_before": 13445928,
+      "allocated_bytes_before": 13447168
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_chat_engine.cpp.o",
+      "logical_bytes_before": 8545368,
+      "allocated_bytes_before": 8552448
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_kb_pack.cpp.o",
+      "logical_bytes_before": 10640632,
+      "allocated_bytes_before": 10641408
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_import_exports.cpp.o",
+      "logical_bytes_before": 12804504,
+      "allocated_bytes_before": 12808192
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_chat_active_task_concurrency.cpp.o",
+      "logical_bytes_before": 16569896,
+      "allocated_bytes_before": 16576512
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_db.cpp.o",
+      "logical_bytes_before": 12737160,
+      "allocated_bytes_before": 12742656
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_packet.cpp.o",
+      "logical_bytes_before": 6538728,
+      "allocated_bytes_before": 6541312
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_github.cpp.o",
+      "logical_bytes_before": 10306608,
+      "allocated_bytes_before": 10309632
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_knowledge.cpp.o",
+      "logical_bytes_before": 12137752,
+      "allocated_bytes_before": 12140544
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_import.cpp.o",
+      "logical_bytes_before": 7757296,
+      "allocated_bytes_before": 7757824
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_context_diagnostics.cpp.o",
+      "logical_bytes_before": 10899856,
+      "allocated_bytes_before": 10903552
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_config.cpp.o",
+      "logical_bytes_before": 6488248,
+      "allocated_bytes_before": 6492160
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/main.cpp.o",
+      "logical_bytes_before": 6281592,
+      "allocated_bytes_before": 6283264
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_generalize.cpp.o",
+      "logical_bytes_before": 17955776,
+      "allocated_bytes_before": 17956864
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_pack_model.cpp.o",
+      "logical_bytes_before": 6886216,
+      "allocated_bytes_before": 6889472
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_extract.cpp.o",
+      "logical_bytes_before": 13893688,
+      "allocated_bytes_before": 13901824
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_context_engine.cpp.o",
+      "logical_bytes_before": 14111592,
+      "allocated_bytes_before": 14114816
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_chat_active_task_scope_identity.cpp.o",
+      "logical_bytes_before": 9947192,
+      "allocated_bytes_before": 9949184
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_chat_knowledge_context.cpp.o",
+      "logical_bytes_before": 12482808,
+      "allocated_bytes_before": 12484608
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_context_eval.cpp.o",
+      "logical_bytes_before": 10562192,
+      "allocated_bytes_before": 10563584
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_chat_active_task_acceptance_scale.cpp.o",
+      "logical_bytes_before": 9455704,
+      "allocated_bytes_before": 9457664
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_context_plan.cpp.o",
+      "logical_bytes_before": 12420216,
+      "allocated_bytes_before": 12423168
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_media.cpp.o",
+      "logical_bytes_before": 8712432,
+      "allocated_bytes_before": 8716288
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_knowledge_candidate_graph.cpp.o",
+      "logical_bytes_before": 11849592,
+      "allocated_bytes_before": 11849728
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_knowledge_candidates.cpp.o",
+      "logical_bytes_before": 5617280,
+      "allocated_bytes_before": 5619712
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_fts.cpp.o",
+      "logical_bytes_before": 5275320,
+      "allocated_bytes_before": 5275648
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_relations.cpp.o",
+      "logical_bytes_before": 4379104,
+      "allocated_bytes_before": 4382720
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_batch_api.cpp.o",
+      "logical_bytes_before": 8647680,
+      "allocated_bytes_before": 8650752
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_resolve_lineage.cpp.o",
+      "logical_bytes_before": 5467752,
+      "allocated_bytes_before": 5468160
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_context_retrieval.cpp.o",
+      "logical_bytes_before": 8195880,
+      "allocated_bytes_before": 8196096
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_knowledge_store.cpp.o",
+      "logical_bytes_before": 16429664,
+      "allocated_bytes_before": 16433152
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_event_bus.cpp.o",
+      "logical_bytes_before": 6535712,
+      "allocated_bytes_before": 6537216
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_resolve_attribution.cpp.o",
+      "logical_bytes_before": 13027136,
+      "allocated_bytes_before": 13029376
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_catalog_eval.cpp.o",
+      "logical_bytes_before": 7633888,
+      "allocated_bytes_before": 7634944
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_providers.cpp.o",
+      "logical_bytes_before": 7580160,
+      "allocated_bytes_before": 7581696
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_tasks.cpp.o",
+      "logical_bytes_before": 7987296,
+      "allocated_bytes_before": 7991296
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_chat_active_task_revisions.cpp.o",
+      "logical_bytes_before": 12824792,
+      "allocated_bytes_before": 12828672
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_provenance.cpp.o",
+      "logical_bytes_before": 8139264,
+      "allocated_bytes_before": 8142848
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_chat_active_task_history_aba.cpp.o",
+      "logical_bytes_before": 10707016,
+      "allocated_bytes_before": 10715136
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_chat_active_task_durable_audit.cpp.o",
+      "logical_bytes_before": 11413768,
+      "allocated_bytes_before": 11415552
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_util.cpp.o",
+      "logical_bytes_before": 19037032,
+      "allocated_bytes_before": 19038208
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_context_controls.cpp.o",
+      "logical_bytes_before": 10560024,
+      "allocated_bytes_before": 10563584
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_semantic_llm.cpp.o",
+      "logical_bytes_before": 9596768,
+      "allocated_bytes_before": 9596928
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_knowledge_flow.cpp.o",
+      "logical_bytes_before": 10483784,
+      "allocated_bytes_before": 10485760
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_context_retrieval_dev.cpp.o",
+      "logical_bytes_before": 11371376,
+      "allocated_bytes_before": 11374592
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_catalog_links.cpp.o",
+      "logical_bytes_before": 3869584,
+      "allocated_bytes_before": 3870720
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_generalize_eval.cpp.o",
+      "logical_bytes_before": 13095392,
+      "allocated_bytes_before": 13099008
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_catalog_retention.cpp.o",
+      "logical_bytes_before": 4735776,
+      "allocated_bytes_before": 4739072
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_chat_active_task_durability.cpp.o",
+      "logical_bytes_before": 14217176,
+      "allocated_bytes_before": 14221312
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_archive.cpp.o",
+      "logical_bytes_before": 13423936,
+      "allocated_bytes_before": 13426688
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_context_counter.cpp.o",
+      "logical_bytes_before": 8132616,
+      "allocated_bytes_before": 8134656
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_chat_retrieval_plan.cpp.o",
+      "logical_bytes_before": 15432880,
+      "allocated_bytes_before": 15433728
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_chat_active_task_reference.cpp.o",
+      "logical_bytes_before": 11068448,
+      "allocated_bytes_before": 11071488
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_catalog.cpp.o",
+      "logical_bytes_before": 11286656,
+      "allocated_bytes_before": 11288576
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_selector.cpp.o",
+      "logical_bytes_before": 838328,
+      "allocated_bytes_before": 839680
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_import_export_fidelity.cpp.o",
+      "logical_bytes_before": 11773448,
+      "allocated_bytes_before": 11776000
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_crypto.cpp.o",
+      "logical_bytes_before": 6286624,
+      "allocated_bytes_before": 6287360
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_capi_knowledge.cpp.o",
+      "logical_bytes_before": 4802176,
+      "allocated_bytes_before": 4804608
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_import_source_materialization.cpp.o",
+      "logical_bytes_before": 10878008,
+      "allocated_bytes_before": 10878976
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_graph.cpp.o",
+      "logical_bytes_before": 6623904,
+      "allocated_bytes_before": 6627328
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_context_tfidf_reuse.cpp.o",
+      "logical_bytes_before": 14530872,
+      "allocated_bytes_before": 14536704
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_context_native_consumer.cpp.o",
+      "logical_bytes_before": 11930000,
+      "allocated_bytes_before": 11931648
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_materialize.cpp.o",
+      "logical_bytes_before": 11817624,
+      "allocated_bytes_before": 11821056
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_catalog_scale.cpp.o",
+      "logical_bytes_before": 1918080,
+      "allocated_bytes_before": 1921024
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_chat_active_task.cpp.o",
+      "logical_bytes_before": 13976152,
+      "allocated_bytes_before": 13979648
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_runtime.cpp.o",
+      "logical_bytes_before": 8893472,
+      "allocated_bytes_before": 8896512
+    },
+    {
+      "path": "loom/build/asan/CMakeFiles/loom_tests.dir/tests/test_capi.cpp.o",
+      "logical_bytes_before": 11374136,
+      "allocated_bytes_before": 11374592
+    },
+    {
+      "path": "loom/build/asan/server/CMakeFiles/loom-server.dir/src/app.cpp.o",
+      "logical_bytes_before": 29747096,
+      "allocated_bytes_before": 29749248
+    },
+    {
+      "path": "loom/build/asan/server/CMakeFiles/loom-server.dir/src/main.cpp.o",
+      "logical_bytes_before": 14822984,
+      "allocated_bytes_before": 14823424
+    },
+    {
+      "path": "loom/build/asan/cli/CMakeFiles/loom_cli.dir/main.cpp.o",
+      "logical_bytes_before": 15723944,
+      "allocated_bytes_before": 15724544
+    }
+  ]
+}

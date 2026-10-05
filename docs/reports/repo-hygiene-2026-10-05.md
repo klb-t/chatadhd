@@ -16,24 +16,57 @@ Workflow dodatkowo buduje zwykłą bibliotekę GCC z tego samego commit/tree dla
 wszystkich testów ctypes. Osobne pokwitowanie zachowuje jej hash i konfigurację.
 To wykonanie FFI bez sanitizera, a nie sanitizer coverage C API.
 
-W momencie fetch `main` nadal zawiera dwa błędne `[this]` w serwerze.
-Poprawka W10: `23c6e74c50b87c2157ffc317d45fca79aade27fa`, tip
-`fa7538d650da2f4ad37f5ff9254b60a6ee72938f`.
-W8 nie kopiuje starego W10 `app.cpp`, gdyż utraciłby nową trasę `/api/packet`.
-Wyniki na własnej gałęzi oraz kombinowanym źródle walidacyjnym będą rozdzielone.
-Automatyczne czyste `git merge-tree` W8+W10 (bez ręcznej edycji implementacji)
-zachowano w `archive/repo-hygiene-w10-validation-2026-10-05`:
-`b31b4d439594bca0a051a2e95557a3fd06c39141`, tree
-`611cc9acf0c9085a6b125d4164df98f16462679c`.
-Gotowość jeszcze niezgłoszona: pełne bramki są w toku.
+Bieżący `main` nie zawiera jeszcze dwóch poprawek `[this]` w serwerze.
+W10 dostarczył je w `23c6e74c50b87c2157ffc317d45fca79aade27fa`.
+W8 nie kopiuje starego `app.cpp`, bo utraciłby nową trasę `/api/packet`.
+Końcowy build Clang/vendored korzysta z wąskiego archiwum
+`archive/repo-hygiene-clang-fix-validation-2026-10-05`,
+`cbf374b0d53f1bc56357f9f6716bfb74ffff041a`, tree
+`661079afb8703fb8010425f7d1aa2f7d5c6cee6e`: wyłącznie dwa zastosowalne,
+oryginalne capture hunki W10 ponad W8 `fedaf6b` (2 dodane / 2 usunięte linie).
+Starsza pełna kompozycja W8/W10 `b31b4d4` pozostaje archiwalna i nie jest
+źródłem końcowej macierzy.
 
-Pierwsze dwie kompilacje ASan (`-g`, równolegle2 i potem1) zakończyły się
-`Killed signal terminated program cc1plus`; cgroup ma limit8GiB i raportuje
-OOM kills. Oryginalne logi zachowano w `docs/archive/repo-hygiene-matrix-2026-10-05/`.
-Nowa próba oraz preset CI używają minimalnych informacji Debug `-g1`: pozostają
-linie stosu, asercje, ostrzeżenia i wszystkie flagi ASan/UBSan. Nie zmieniono
-optymalizacji ani progów. Kompilacja Clanga została kontrolowanie wstrzymana,
-żeby zwolnić pamięć dla pozostałych konfiguracji; jej log również zachowano.
+| Konfiguracja | Build | Pełny CTest na aktualnym przyroście |
+| --- | --- | --- |
+| GCC/dev, WERROR, server/shared ON | PASS | Pierwsza próba 109/110; pełna powtórka w toku |
+| Clang18/vendored, WERROR, server/shared ON + capture fix W10 | PASS | Do wykonania po zamrożeniu przyrostu Python |
+| GCC13/ASan+UBSan, WERROR, server ON/shared OFF | PASS | Do wykonania z osobnym zwykłym FFI companion |
+
+Pierwszy GCC CTest jest kompletny i zachowany w
+`docs/archive/repo-hygiene-matrix-2026-10-05/gcc-first-attempt/`.
+`research.structure` przekroczył istniejący limit 60 s; guard poprawnie odrzucił
+próbę. Diagnostyka wykazała też brak obiektu historycznego Git w klonie
+single-branch. Fetch archiwalnych gałęzi udostępnił oryginalny
+`b118c80e981c08ec6d7f9ab6aacc177979186cf2`, z dokładnym wymaganym tree
+`b122b30314009a4b7d793a2c634e5b65d6835397`; nie odzyskano brakującego aliasu
+e8bbae. Bez edycji testów izolowany CTest przeszedł 1/1 w 33,28 s. Jego skrócony
+output nie dowodzi liczby wewnętrznych przypadków i nie zastępuje pełnej bramki.
+
+Wcześniejsze kompilacje zachowano z pełnymi logami: GCC linker memory kill,
+ASan `cc1plus` OOM przy `-g` (parallel2 i1), oraz ENOSPC przy archiwizacji
+normalnej i później linkowaniu CLI. Cgroup ma 8 GiB i wspólny dysk 32 GiB.
+ASan używa `-g1`, zachowując linie stosu, asercje i komplet flag sanitizera.
+Lokalne Clang/ASan korzystają z cienkich archiwów `ar qcT`, wyłącznie zmiana
+magazynowania obiektów. Końcowe oba buildy są kompletne, także serwery.
+Do odzyskania miejsca wyzerowano wyłącznie zakończone własne intermediates;
+ponowny build w tych katalogach wymaga clean/regenerate. Chwilowo spakowane
+własne pliki wykonywalne odtworzono byte-for-byte przed testami. Cache, binarne
+hashe, logi i osobne receipts zachowują konfigurację oraz źródło wykonania.
+
+`run_case.py` przypina commit/tree/helper, manifest pełnego preset oraz binaria
+i wszystkie tracked runtime inputs przed i po. Rozbieżność unieważnia dowód.
+Zachowuje 10 MiB outputu na zestaw, pełny LastTest.log i wynik niezmienionego
+guard. Równoległość ustawia wyłącznie caller `--jobs`; brak nowych filtrów,
+progów i wyjątków skip. Jawne lokalne recipe archiwów trafiają do receipt,
+nie wymagamy nieistniejących cache keys dla zwykłych domyślnych archiwów.
+
+Nowy bridge seeding → `loom.method_graph/1` jest opisany osobno w
+[raporcie](repo-hygiene-seeding-method-bridge-2026-10-05.md). Po zastosowaniu
+66/66 unittest w 9,243 s. Review wskazał dwie luki w helperze weryfikacji
+(preflight ×10 i domyślny czas projekcji); naprawa przed finalnym freeze.
+Płatnych wywołań: 0. Seeding/results używane przez testy pozostają w miejscu.
+Gotowość jeszcze niezgłoszona: pełne bramki są w toku.
 
 ## Do wątku 4
 

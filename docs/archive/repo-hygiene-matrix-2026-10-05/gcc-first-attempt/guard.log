@@ -1,0 +1,4 @@
+JUnit suite reports failures=1
+research.structure: outer status is 'fail'
+research.structure: outer failure/error/skip
+research.structure: missing or ambiguous successful unittest summary
