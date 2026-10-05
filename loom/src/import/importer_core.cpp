@@ -8,6 +8,7 @@
 #include <fstream>
 
 #include "importer_internal.h"
+#include "import_preset_identity.h"
 #include "loom/event_bus.h"
 #include "loom/log.h"
 #include "loom/provenance.h"
@@ -178,6 +179,14 @@ Result<std::optional<std::vector<Conversation>>> ConversationImporter::prepare_s
   if (outer_binding && opts.expected_source_bytes && blob.size != *opts.expected_source_bytes)
     return Error(Errc::Conflict, "source snapshot size differs from admission");
   ctx.blob_hash = blob.hash;
+  const std::string projection_hash = import_projection_hash(opts);
+  const bool legacy_projection = import_projection_is_legacy(opts);
+  auto projection_matches = [&](const SourceRecord& source) {
+    const Json* stored = json::find(source.metadata, "import_projection_hash");
+    // Only absence denotes a historical source; malformed explicit metadata
+    // must never turn into legacy compatibility or authorize a stale journal.
+    return stored ? stored->is_string() && *stored == projection_hash : legacy_projection;
+  };
   // Identity lookup/create is serialized independently of file I/O. Two
   // instances beginning the same resumable import share one source journal.
   auto lock = db_.lock();
@@ -187,7 +196,7 @@ Result<std::optional<std::vector<Conversation>>> ConversationImporter::prepare_s
   if (!opts.force) {
     LOOM_TRY_ASSIGN(auto sources, prov_->find_sources_by_hash(blob.hash));
     for (const auto& s : sources) {
-      if (s.parser_version != parser_version) continue;
+      if (s.parser_version != parser_version || !projection_matches(s)) continue;
       if (parser_version == kExportParserVersion) {
         // export-3 records completion explicitly. A crash, cancellation or
         // partial representation must never become a successful cache hit.
@@ -272,7 +281,7 @@ Result<std::optional<std::vector<Conversation>>> ConversationImporter::prepare_s
     for (const auto& source : sources) {
       if (source.parser_version != parser_version ||
           source.parser != "loom.importer." + std::string(fmt) + std::string(parser_suffix) ||
-          json::get_int(source.metadata, "import_resume_version") != 1) continue;
+          json::get_int(source.metadata, "import_resume_version") != 1 || !projection_matches(source)) continue;
       ctx.source_id = source.id;
       ctx.source_filename = fs::path(source.uri).filename().string();
       ctx.resumed = true;
@@ -293,6 +302,7 @@ Result<std::optional<std::vector<Conversation>>> ConversationImporter::prepare_s
   }
   rec.parser = "loom.importer." + std::string(fmt) + std::string(parser_suffix);
   rec.parser_version = std::string(parser_version);
+  if (!legacy_projection) rec.metadata["import_projection_hash"] = projection_hash;
   if (opts.title) rec.title = *opts.title;
   if (kind == "zip_member" && current_source_ && ctx.zip_member) {
     rec.metadata["parent_source_id"] = current_source_->source_id;
@@ -323,6 +333,7 @@ Result<Json> ConversationImporter::materialize_zip_member(const fs::path& path, 
   source.parser = "loom.importer.zip.member";
   source.parser_version = std::string(kExportParserVersion);
   source.metadata = Json{{"parent_source_id", parent.source_id}, {"locator", locator}};
+  if (!import_projection_is_legacy(opts)) source.metadata["import_projection_hash"] = import_projection_hash(opts);
   auto lock = db_.lock();
   sql::Txn member_transaction(db_.conn());
   LOOM_TRY(member_transaction.begin_status());

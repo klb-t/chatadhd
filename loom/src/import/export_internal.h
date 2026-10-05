@@ -155,8 +155,8 @@ struct Loader {
   std::function<bool(Json&& element, std::int64_t index)> element;
   std::function<void(std::int64_t index, const std::string& why)> bad_element;
   std::function<bool()> cancelled;  // cooperative stop while scanning/streaming
-  std::size_t read_chunk_bytes = 65'536;
-  std::size_t max_depth = 512;
+  std::size_t read_chunk_bytes = default_import_preset().json_read_chunk_bytes;
+  std::size_t max_depth = default_import_preset().json_max_depth;
   bool wrapper = false;
   bool top_is_array = false;
   std::optional<std::int64_t> archive_index;

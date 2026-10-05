@@ -52,6 +52,7 @@
 //     conversations; conversations already created are kept and reported).
 #pragma once
 
+#include <cstddef>
 #include <cstdint>
 #include <filesystem>
 #include <functional>
@@ -94,13 +95,25 @@ enum class ExportMode { Auto, Off, On };
 
 struct ImportResult;
 
+// Typed projection of the import data preset. Values are supplied by the
+// compiled resource, not a second set of defaults in native code.
+struct ImportPresetValues {
+  std::int64_t stream_threshold_bytes;
+  std::size_t json_read_chunk_bytes;
+  std::size_t json_max_depth;
+  std::int64_t json_inline_threshold_bytes;
+  std::int64_t generic_inference_max_bytes;
+};
+
+const ImportPresetValues& default_import_preset();
+
 struct ImportOptions {
   std::optional<std::string> title;
   ExportMode export_mode = ExportMode::Auto;
   ImportProgressFn progress;
   const CancelToken* cancel = nullptr;
   bool record_provenance = true;  // store raw bytes + sources + provenance rows
-  std::int64_t stream_threshold_bytes = 5'000'000;  // Python: > 5 MB -> streaming JSON
+  std::int64_t stream_threshold_bytes = default_import_preset().stream_threshold_bytes;
   // Loom addition (MEGA MASTER 2.F): when record_provenance finds a prior
   // loom_sources row with the same blob hash and parser_version, the import
   // is skipped and the prior conversations are returned instead of being
@@ -124,10 +137,10 @@ struct ImportOptions {
   // Caller presets for the provider JSON scanner; zero depth means unlimited.
   // Memory is bounded by this input buffer plus the largest conversation and
   // retained wrapper metadata, rather than the complete conversations array.
-  std::size_t json_read_chunk_bytes = 65'536;
-  std::size_t json_max_depth = 512;
-  std::int64_t json_inline_threshold_bytes = 1'000'000;
-  std::int64_t generic_inference_max_bytes = 64'000'000;  // zero = unlimited
+  std::size_t json_read_chunk_bytes = default_import_preset().json_read_chunk_bytes;
+  std::size_t json_max_depth = default_import_preset().json_max_depth;
+  std::int64_t json_inline_threshold_bytes = default_import_preset().json_inline_threshold_bytes;
+  std::int64_t generic_inference_max_bytes = default_import_preset().generic_inference_max_bytes;  // zero = unlimited
   // Outer import_file execution hooks; stages remain available for offline
   // tools. Preflight runs before hashing/storage; completion follows durable
   // work and also runs for completed-source cache hits.

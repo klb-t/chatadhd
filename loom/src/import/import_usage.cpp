@@ -1,4 +1,5 @@
 #include "import_usage.h"
+#include "import_preset_identity.h"
 
 #include "loom/util/ids.h"
 #include "loom/util/sha256.h"
@@ -47,12 +48,20 @@ Status ImportUsageSession::request(const std::filesystem::path& source, const Im
   // Reading a source hash is a bounded-memory preflight scan. It is not the
   // import, and no archive bytes/rows have been persisted at this point.
   LOOM_TRY_ASSIGN(auto source_hash, sha256_file_hex(source));
-  const Json estimate{{"operation_id", impl_->operation_id}, {"baseline_key", baseline_key},
+  Json estimate{{"operation_id", impl_->operation_id}, {"baseline_key", baseline_key},
       {"resources", {{"source_bytes", impl_->source_bytes}}},
       {"source_hash", source_hash}, {"parser_version", std::string(kExportParserVersion)},
       {"import_options", {{"export_mode", options.export_mode == ExportMode::On ? "on" :
                           options.export_mode == ExportMode::Off ? "off" : "auto"},
                           {"force", options.force}, {"resume", options.resume}}}};
+  // Historical receipts keep their exact estimate projection. Any caller
+  // change to numeric values binds the complete effective preset instead.
+  if (!import_preset_is_legacy(options)) {
+    auto& binding = estimate["import_options"];
+    binding["preset_values"] = import_preset_values(options);
+    binding["preset_values_sha256"] = import_preset_hash(options);
+    binding["projection_values_sha256"] = import_projection_hash(options);
+  }
   LOOM_TRY_ASSIGN(impl_->receipt, impl_->policy->request(estimate));
   // A terminal receipt records a past operation; it is not another dispatch
   // grant. A new import attempt needs its own operation identity/accounting.
