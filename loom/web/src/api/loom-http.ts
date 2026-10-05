@@ -2,6 +2,7 @@
 // request/response endpoints, fetch + ReadableStream for SSE endpoints
 // (chat, import progress, live events). Talks to loom-server's /api/*.
 import type { LoomApi, ContextSelectRequest, SearchOptions, SearchResult, StreamHandlers, Unsubscribe } from "./loom-api";
+import { createOperationsApi } from "./operations";
 import type {
   ChatChunk,
   ChatRequest,
@@ -36,6 +37,25 @@ class HttpError extends Error {
 
 export class LoomHttpApi implements LoomApi {
   private token: string | null = null;
+  readonly operations = createOperationsApi(
+    <T,>(method: string, path: string, body?: unknown) => this.req<T>(method, path, body),
+    async <T,>(path: string, body: FormData): Promise<T> => {
+      const response = await fetch(path, { method: "POST", headers: this.headers(), body });
+      const result: unknown = await response.json();
+      if (!response.ok || isLoomError(result)) {
+        throw new HttpError(response.status, isLoomError(result) ? result.error.message : `HTTP ${response.status}`);
+      }
+      return result as T;
+    },
+  );
+  usagePolicy(command: Record<string, unknown>): Promise<Record<string, unknown>> {
+    return this.req("POST", "/api/usage-policy", command);
+  }
+  packet(command: Record<string, unknown>): Promise<Record<string, unknown>> {
+    // Packet failures contain the immutable first-response capture. Preserve
+    // that envelope for inspection even when native validation returns HTTP 400.
+    return this.req("POST", "/api/packet", command, true);
+  }
   graphPacketStore(request: GraphPacketStoreRequest): Promise<GraphPacketStoreResult> {
     return this.req("POST", "/api/graph/packets/store", request);
   }
@@ -78,7 +98,7 @@ export class LoomHttpApi implements LoomApi {
     return h;
   }
 
-  private async req<T>(method: string, path: string, body?: unknown): Promise<T> {
+  private async req<T>(method: string, path: string, body?: unknown, keepError = false): Promise<T> {
     const res = await fetch(path, {
       method,
       headers: body !== undefined ? this.headers({ "Content-Type": "application/json" }) : this.headers(),
@@ -86,6 +106,7 @@ export class LoomHttpApi implements LoomApi {
     });
     const text = await res.text();
     const parsed = text ? JSON.parse(text) : {};
+    if (keepError && isLoomError(parsed)) return parsed as T;
     if (!res.ok || isLoomError(parsed)) {
       const msg = isLoomError(parsed) ? parsed.error.message : `HTTP ${res.status}`;
       throw new HttpError(res.status, msg);

@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ApplicationProfiles, { profileStyle } from "./components/ApplicationProfiles";
-import type { ApplicationProfile } from "./profiles/runtime";
+import { profileAvailability, registerProfile, type ApplicationProfile } from "./profiles/runtime";
 import ConversationList from "./components/ConversationList";
 import GraphView from "./components/GraphView";
 import SettingsPanel from "./components/SettingsPanel";
@@ -10,9 +10,12 @@ import ImportPanel from "./components/ImportPanel";
 import MemoryPanel from "./components/MemoryPanel";
 import LogPanel from "./components/LogPanel";
 import KnowledgeWorkbench from "./components/KnowledgeWorkbench";
+import OperationsPanel from "./components/OperationsPanel";
+import { api } from "./api";
+import { createLoomProfileRegistry } from "./profiles/loom-adapter";
 
 type Theme = "dark" | "amoled";
-type PanelId = "graph" | "memory" | "import" | "context" | "settings" | "logs";
+type PanelId = "graph" | "memory" | "import" | "context" | "settings" | "logs" | "operations";
 
 function readStored(key: string, fallback: string): string {
   try {
@@ -37,6 +40,7 @@ const PANEL_LABELS: Record<PanelId, string> = {
   context: "Context",
   settings: "Settings",
   logs: "Logs",
+  operations: "Operations",
 };
 
 export default function App() {
@@ -50,6 +54,9 @@ export default function App() {
   const [knowledgeOpen, setKnowledgeOpen] = useState(false);
   const [chatVisible, setChatVisible] = useState(true);
   const [primaryProfile, setPrimaryProfile] = useState<ApplicationProfile | null>(null);
+  const sidebarOperations = useRef(0);
+  const sidebarActivity = useCallback((delta: number) => { sidebarOperations.current += delta; }, []);
+  const canRestoreWorkspace = useCallback(() => sidebarOperations.current === 0, []);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
@@ -79,6 +86,8 @@ export default function App() {
     selectConversation: onSelectConversation, conversationCreated: onConversationCreated,
     openKnowledge: () => setKnowledgeOpen(true), openPanel: (panel: PanelId) => setActivePanel(panel),
   }), [onSelectConversation, onConversationCreated]);
+  const installedAdapters = useMemo(() => createLoomProfileRegistry(api, profileUi), [profileUi]);
+  const installedProfile = useMemo(() => primaryProfile ? registerProfile(installedAdapters, primaryProfile) : null, [installedAdapters, primaryProfile]);
 
   return (
     <div className="app-root" data-sidebar-side={primaryProfile?.presentation.sidebar.side ?? "left"}
@@ -120,6 +129,7 @@ export default function App() {
             activeConvId={activeConvId}
             onSelect={onSelectConversation}
             onCreated={onConversationCreated}
+            onActivity={sidebarActivity}
           />
         </aside>
 
@@ -127,7 +137,8 @@ export default function App() {
           <div className={`chat-host${knowledgeOpen ? " beside-workbench" : ""}`} hidden={knowledgeOpen && !chatVisible}>
             <ApplicationProfiles convId={activeConvId} onConversationCreated={onConversationCreated}
               refreshKey={convRefreshKey} onMessagesChanged={onMessagesChanged} ui={profileUi}
-              onPrimaryProfile={setPrimaryProfile} />
+              onPrimaryProfile={setPrimaryProfile} onSharedConversationRestored={setActiveConvId}
+              canRestoreWorkspace={canRestoreWorkspace} />
           </div>
           {knowledgeOpen && <KnowledgeWorkbench onClose={() => setKnowledgeOpen(false)} onDataChanged={() => setConvRefreshKey((key) => key + 1)} />}
         </div>
@@ -149,6 +160,15 @@ export default function App() {
                 {activePanel === "context" && <ContextSlider convId={activeConvId} />}
                 {activePanel === "settings" && <SettingsPanel />}
                 {activePanel === "logs" && <LogPanel />}
+                {activePanel === "operations" && <OperationsPanel operations={api.operations}
+                  profiles={primaryProfile ? [primaryProfile] : []} graphPacketStore={api.graphPacketStore?.bind(api)}
+                  adapterEvidence={(primaryProfile?.actions ?? []).filter(action => {
+                    const gaps = installedProfile ? profileAvailability(installedProfile, installedAdapters) : null;
+                    return ![...(gaps?.requiredGaps ?? []), ...(gaps?.optionalGaps ?? [])].some(gap => gap.action_id === action.id);
+                  }).map(action => ({
+                    operation: action.operation, capability: action.capability, status: "native" as const,
+                    detail: "Installed Loom adapter; source-service equivalence unverified.", evidence: ["host profile registry"],
+                  }))} />}
               </div>
             </div>
           </>
