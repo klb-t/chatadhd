@@ -1,0 +1,993 @@
+{
+  "archive_public_original_sha256": "71dd854dde0f86623b045c6aaad1d90e251e5bc923860eaf23a5ff10e67e6dd6",
+  "commits": 0,
+  "expected_physical_first_opportunities": 12,
+  "global_unique_operation_ids": 12,
+  "known_data_repetitions_are_separate_from_original_first_attempts": true,
+  "network_calls": 0,
+  "paid_calls": 0,
+  "price_boundary": "Source-bound conservative reservations from supplied captured public endpoint bytes. All admitted default-tier endpoint schedules and every charge component are checked per operation, with original floor max applied. These are forecasts, not measured bills or provider/account authentication; dispatch freshness/admission and final billing remain with the existing runner.",
+  "private_or_new_result_files_read": false,
+  "public_selection_freeze_commit": "7aed09b9df6b8d2fc0afc3a399f12016795ca687",
+  "requests_can_be_frozen": true,
+  "requests_original_sources_or_cost_artifacts_edited": false,
+  "result": "PASS",
+  "reviewer": "recover_method_frontier",
+  "schema": "loom.old_strong_repetition_offline_peer/1",
+  "scope": "Read-only offline public preparation, source ZIP, selection and captured pricing audit. No private ledger/key/account metadata, new-result inspection, provider/network calls, paid dispatch or source/artifact modification. Owner authorization remains 5 EUR; no extra approval or limit is introduced.",
+  "semantic_criteria_changed": false,
+  "source_bindings": {
+    "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage3/manifest.json": {
+      "bytes": 485542,
+      "sha256": "0f401778783fa46ffff29a7f4458617733a348995e63e313018bc60b0b3908d8"
+    },
+    "docs/research/model_research_2026-10-04/followup-frontier-reply/final-verified-lineage/stage4/manifest.json": {
+      "bytes": 279173,
+      "sha256": "89e035f4b664121688634fc7b751d6cbab8e9e8539309581fcd84b659fea142b"
+    },
+    "docs/research/model_research_2026-10-04/programme-actual/stage3-final-20261005-v1/REQUESTS.json": {
+      "bytes": 166545,
+      "sha256": "1325c4552e9cc08193d03d29c0b87c7223fc001261f98c9d378ca95069794f75"
+    },
+    "docs/research/model_research_2026-10-04/programme-actual/stage4-final-20261005-v1/REQUESTS.json": {
+      "bytes": 138967,
+      "sha256": "6841943e62cfbb96e654ccce3ca68d53023e4b458a32d95ba6ff38b8018772bf"
+    },
+    "docs/research/model_research_2026-10-04/stage5/all-group-selection-freeze-v1.json": {
+      "bytes": 5446,
+      "sha256": "1ed4a4896e0fa8055679d0c5cf12453f205de2cbde32d87b4c5581aa02751a4d"
+    },
+    "docs/research/model_research_2026-10-04/stage5/old-stage3-repetitions-v1/cost-plan-v1.json": {
+      "bytes": 7397,
+      "sha256": "ee2f200cc23b82e1ee950bebb52bf0f7adb7a0f549c878d3808725c06a1c7c36"
+    },
+    "docs/research/model_research_2026-10-04/stage5/old-stage3-repetitions-v1/google_gemini-3.1-pro-preview-endpoints.json": {
+      "bytes": 8814,
+      "sha256": "0674ab0bd3a4a6be691e8cfad59b5561147c0a53aaab76d8f2e0cb77e0f3bea9"
+    },
+    "docs/research/model_research_2026-10-04/stage5/old-stage3-repetitions-v1/openai_gpt-6.1-sol-endpoints.json": {
+      "bytes": 8896,
+      "sha256": "aeef79e683105ec42f55b8cb4458ce1cd7641e5d3381224e7ccc497cbad1a357"
+    },
+    "docs/research/model_research_2026-10-04/stage5/old-stage3-repetitions-v1/operator-policy.json": {
+      "bytes": 9060,
+      "sha256": "b751c062320be3723a6556c02dbeacbf8588bc52a9b1655c4632d33e73d289ac"
+    },
+    "docs/research/model_research_2026-10-04/stage5/old-stage3-repetitions-v1/prepared/manifest.json": {
+      "bytes": 9843,
+      "sha256": "497dcaf0c60f1b68f265251da242f11b9a07fe5c2af661c6c8151dc49cc51716"
+    },
+    "docs/research/model_research_2026-10-04/stage5/old-stage3-repetitions-v1/prepared/requests/0556426643262184ca9deb5e5bfb29655b72b66b1356c7dd4ec8c0f2fa32fed1.json": {
+      "bytes": 12824,
+      "sha256": "0556426643262184ca9deb5e5bfb29655b72b66b1356c7dd4ec8c0f2fa32fed1"
+    },
+    "docs/research/model_research_2026-10-04/stage5/old-stage3-repetitions-v1/prepared/requests/4c22a257126b5178df531a9980c9e5abf225ad2e22e257c4efc1f0a2b72fd48c.json": {
+      "bytes": 13000,
+      "sha256": "4c22a257126b5178df531a9980c9e5abf225ad2e22e257c4efc1f0a2b72fd48c"
+    },
+    "docs/research/model_research_2026-10-04/stage5/old-stage3-repetitions-v1/prepared/requests/972c2cde242bd085b39e88e7c8bb1207283655f8c2857b016817b0bd999e47c0.json": {
+      "bytes": 12824,
+      "sha256": "972c2cde242bd085b39e88e7c8bb1207283655f8c2857b016817b0bd999e47c0"
+    },
+    "docs/research/model_research_2026-10-04/stage5/old-stage3-repetitions-v1/prepared/requests/a4d7f40a6051b31dfe9877772191b5b34e3cb295145892824b2fbcdfe6d5a8c5.json": {
+      "bytes": 13000,
+      "sha256": "a4d7f40a6051b31dfe9877772191b5b34e3cb295145892824b2fbcdfe6d5a8c5"
+    },
+    "docs/research/model_research_2026-10-04/stage5/old-stage3-repetitions-v1/selection-source-crosswalk.json": {
+      "bytes": 955,
+      "sha256": "f386c7908e1725c0ffc506127051a77c238a98675b3712f5f63c93379e1597c2"
+    },
+    "docs/research/model_research_2026-10-04/stage5/old-stage3-repetitions-v1/source-prepared.json": {
+      "bytes": 327106,
+      "sha256": "36c52f8e8c87f93f9d54d9510eae6dcd096d05e773c0309943663fbc48a1d87f"
+    },
+    "docs/research/model_research_2026-10-04/stage5/old-stage4-repetitions-v1/cost-plan-v1.json": {
+      "bytes": 3764,
+      "sha256": "b8ca36b39481d217b11adb3d6af884dd5b88682c203e1ab607f0238714d491b8"
+    },
+    "docs/research/model_research_2026-10-04/stage5/old-stage4-repetitions-v1/openai_gpt-6.1-sol-endpoints.json": {
+      "bytes": 8896,
+      "sha256": "aeef79e683105ec42f55b8cb4458ce1cd7641e5d3381224e7ccc497cbad1a357"
+    },
+    "docs/research/model_research_2026-10-04/stage5/old-stage4-repetitions-v1/operator-policy.json": {
+      "bytes": 9060,
+      "sha256": "b751c062320be3723a6556c02dbeacbf8588bc52a9b1655c4632d33e73d289ac"
+    },
+    "docs/research/model_research_2026-10-04/stage5/old-stage4-repetitions-v1/prepared/manifest.json": {
+      "bytes": 5113,
+      "sha256": "edb2c3c1171699ff503ef74937313fb8353b2bd045ee9aac4e03768f2a51ace7"
+    },
+    "docs/research/model_research_2026-10-04/stage5/old-stage4-repetitions-v1/prepared/requests/9c854f81b98e4984a139e631dd988ef52357ee5f763c52e073cb69627db19cfe.json": {
+      "bytes": 8508,
+      "sha256": "9c854f81b98e4984a139e631dd988ef52357ee5f763c52e073cb69627db19cfe"
+    },
+    "docs/research/model_research_2026-10-04/stage5/old-stage4-repetitions-v1/prepared/requests/ec6e789c5ed3a0c6c12ace9bb672a8258451743a617507431dfd3d94110458d9.json": {
+      "bytes": 8452,
+      "sha256": "ec6e789c5ed3a0c6c12ace9bb672a8258451743a617507431dfd3d94110458d9"
+    },
+    "docs/research/model_research_2026-10-04/stage5/old-stage4-repetitions-v1/selection-source-crosswalk.json": {
+      "bytes": 434,
+      "sha256": "a64e5aec4023c55282c8db5d7f1effc2eab3227263f857365b34e211468aeced"
+    },
+    "docs/research/model_research_2026-10-04/stage5/old-stage4-repetitions-v1/source-prepared.json": {
+      "bytes": 92947,
+      "sha256": "0cdcf22185d32f423e730a327a87afe17b570989e3f8ff8e15f7db6e5fc37fc6"
+    },
+    "docs/research/model_research_2026-10-04/stage5/stage3-selection-v1/selection.json": {
+      "bytes": 9892,
+      "sha256": "af2a3a8cc7a69bcdf7caf959d93c16dc3a6794b3cbb62f76a0c1b9848a143536"
+    },
+    "docs/research/model_research_2026-10-04/stage5/stage4-selection-v1/selection.json": {
+      "bytes": 9848,
+      "sha256": "922ff4bfc3c9e50b93839e627d058caea4294e99ee48dff26ff9bcce9e5fced4"
+    },
+    "loom/tools/structure/endpoint_pricing_v1.py": {
+      "bytes": 15504,
+      "sha256": "77ef9a7871166fbfd8325b61eb7c173e14ce720402c49e3101b37a9bb161b2e9"
+    },
+    "loom/tools/structure/openrouter_runner.py": {
+      "bytes": 34349,
+      "sha256": "2cd14424ca190f3d5fed47faf1e328993668a620b8202cfb7b196b363f971635"
+    },
+    "loom/tools/structure/research_programme_manifest.py": {
+      "bytes": 19893,
+      "sha256": "1810ae8d1b97ae9403e969de3b0efe6ff52e31b7fa9b87f4a6a1be62b84cfbb4"
+    }
+  },
+  "stages": [
+    {
+      "aggregate_all_component_bounds": [
+        {
+          "model_id": "openai/gpt-6.1-sol",
+          "provider_id": "openai",
+          "units_upper_bounds": {
+            "completion": "8192",
+            "input_cache_read": "56352",
+            "input_cache_write": "56352",
+            "prompt": "56352",
+            "request": "4",
+            "web_search": "0"
+          }
+        },
+        {
+          "model_id": "google/gemini-3.1-pro-preview",
+          "provider_id": "google-ai-studio",
+          "units_upper_bounds": {
+            "audio": "0",
+            "completion": "16384",
+            "image": "0",
+            "input_audio_cache": "0",
+            "input_cache_read": "55648",
+            "input_cache_write": "55648",
+            "internal_reasoning": "16384",
+            "prompt": "55648",
+            "request": "4",
+            "web_search": "0"
+          }
+        }
+      ],
+      "body_model_provider_params_prompts_and_floors_exact": true,
+      "cases_per_selected_method": 2,
+      "distinct_original_bodies": 4,
+      "historical_source_cost_plan_retained": "The source-prepared document deliberately retains the original 12-call stale historical cost_plan. It is not the new repetition forecast; cost-plan-v1.json and this replay supply the full current captured-price reservation.",
+      "independent_full_reservation_usd": "1.398557600",
+      "operation_ids_unique": true,
+      "operations": 8,
+      "operations_checked": [
+        {
+          "case_id": "repeat",
+          "exact_body_bytes": 13000,
+          "exact_body_sha256": "4c22a257126b5178df531a9980c9e5abf225ad2e22e257c4efc1f0a2b72fd48c",
+          "forecast_all_components_usd": "0.1603296",
+          "historical_floor_usd": "0.101160",
+          "max_tokens": 2048,
+          "model_id": "openai/gpt-6.1-sol",
+          "new_operation_id": "strong-repeat.69ae9745e98d352264f4dfad791fb2102e337f6c938f5187855b9244c6862807",
+          "only_source_row_mutations": [
+            "id",
+            "repetition"
+          ],
+          "original_operation_id": "stage3.1644a27452631c27f2aa32de253863521578dd0f27d9c3aba8e359f98bdf20dd:pattern_discovery",
+          "parameters_sha256": "2ce3462ed36f1e0fbb999c6f29300651494feecb2f44c7131a25c3a31b9210d6",
+          "per_component_reservation_usd": {
+            "completion": "0.030720",
+            "input_cache_read": "0.0028176",
+            "input_cache_write": "0.070440",
+            "prompt": "0.056352",
+            "request": "0",
+            "web_search": "0.00"
+          },
+          "prompt_sha256": [
+            "9409c68bfb5580b989f2ee16455a7576ee08c16f46ca53c3fc93e7fcc3b48982",
+            "13cc413bbf8c4abca89c3b6d08508d14159b6d1bea72359a5fca519e21b1edf1"
+          ],
+          "provider_id": "openai",
+          "raw_body_matches_original_public_prepared_and_sent_body": true,
+          "repetition": 1,
+          "reservation_after_original_floor_usd": "0.1603296",
+          "resolved_all_component_units_upper_bounds": {
+            "completion": "2048",
+            "input_cache_read": "14088",
+            "input_cache_write": "14088",
+            "prompt": "14088",
+            "request": "1",
+            "web_search": "0"
+          },
+          "selected_configuration_id": "manual-source-relative:a6a71723b97f89e303236ba5f404afc2b628a6f7ab79e80645e08d55779efefe",
+          "source_prepared_row_pointer": "/requests/0",
+          "source_row_pointer": "/requests/1",
+          "source_units_upper_bounds": {
+            "completion": "2048",
+            "prompt": 14088,
+            "request": 1
+          }
+        },
+        {
+          "case_id": "repeat",
+          "exact_body_bytes": 12824,
+          "exact_body_sha256": "972c2cde242bd085b39e88e7c8bb1207283655f8c2857b016817b0bd999e47c0",
+          "forecast_all_components_usd": "0.189309800",
+          "historical_floor_usd": "0.129376",
+          "max_tokens": 2048,
+          "model_id": "google/gemini-3.1-pro-preview",
+          "new_operation_id": "strong-repeat.9f115d9b7fa65c744813128af143b73506883bee8f338881947566fa66c0e8c9",
+          "only_source_row_mutations": [
+            "id",
+            "repetition"
+          ],
+          "original_operation_id": "stage3.e41c599d13c321e8b0521c7a6c25b1e810fe420bdd541146ed8ad9fd0da65edb:graph_completion",
+          "parameters_sha256": "6fdf07172a9f5147c4bca7c6598d4e7dce07cbf2696b96b98743dd9c908e37e7",
+          "per_component_reservation_usd": {
+            "audio": "0.000000",
+            "completion": "0.073728",
+            "image": "0.000000",
+            "input_audio_cache": "0E-7",
+            "input_cache_read": "0.0055648",
+            "input_cache_write": "0.005217000",
+            "internal_reasoning": "0.049152",
+            "prompt": "0.055648",
+            "request": "0",
+            "web_search": "0.000"
+          },
+          "prompt_sha256": [
+            "07b5617207541215202785994496257d12f1a952a37631737b16901b602dc4fb",
+            "13cc413bbf8c4abca89c3b6d08508d14159b6d1bea72359a5fca519e21b1edf1"
+          ],
+          "provider_id": "google-ai-studio",
+          "raw_body_matches_original_public_prepared_and_sent_body": true,
+          "repetition": 1,
+          "reservation_after_original_floor_usd": "0.189309800",
+          "resolved_all_component_units_upper_bounds": {
+            "audio": "0",
+            "completion": "4096",
+            "image": "0",
+            "input_audio_cache": "0",
+            "input_cache_read": "13912",
+            "input_cache_write": "13912",
+            "internal_reasoning": "4096",
+            "prompt": "13912",
+            "request": "1",
+            "web_search": "0"
+          },
+          "selected_configuration_id": "manual-source-relative:e1dde3901b6fc754d4ae09ebaa961dae23cc5d5a4322491fbe3859361b3ebdb2",
+          "source_prepared_row_pointer": "/requests/1",
+          "source_row_pointer": "/requests/4",
+          "source_units_upper_bounds": {
+            "completion": "4096",
+            "prompt": 13912,
+            "request": 1
+          }
+        },
+        {
+          "case_id": "polarity",
+          "exact_body_bytes": 13000,
+          "exact_body_sha256": "a4d7f40a6051b31dfe9877772191b5b34e3cb295145892824b2fbcdfe6d5a8c5",
+          "forecast_all_components_usd": "0.1603296",
+          "historical_floor_usd": "0.101160",
+          "max_tokens": 2048,
+          "model_id": "openai/gpt-6.1-sol",
+          "new_operation_id": "strong-repeat.46a926d973632276e81b96fe4b43f46ec278e198aa57c6f9e9296345777a3a5d",
+          "only_source_row_mutations": [
+            "id",
+            "repetition"
+          ],
+          "original_operation_id": "stage3.fd75b2e642da3853e29e2fa121dcc23611c38b0d62bf3f0d61ab504618610bb6:pattern_discovery",
+          "parameters_sha256": "2ce3462ed36f1e0fbb999c6f29300651494feecb2f44c7131a25c3a31b9210d6",
+          "per_component_reservation_usd": {
+            "completion": "0.030720",
+            "input_cache_read": "0.0028176",
+            "input_cache_write": "0.070440",
+            "prompt": "0.056352",
+            "request": "0",
+            "web_search": "0.00"
+          },
+          "prompt_sha256": [
+            "9409c68bfb5580b989f2ee16455a7576ee08c16f46ca53c3fc93e7fcc3b48982",
+            "51b9b585a8a2fea8c79271ba2440271a9e733a56c030167a2f6c7c6a554edbed"
+          ],
+          "provider_id": "openai",
+          "raw_body_matches_original_public_prepared_and_sent_body": true,
+          "repetition": 1,
+          "reservation_after_original_floor_usd": "0.1603296",
+          "resolved_all_component_units_upper_bounds": {
+            "completion": "2048",
+            "input_cache_read": "14088",
+            "input_cache_write": "14088",
+            "prompt": "14088",
+            "request": "1",
+            "web_search": "0"
+          },
+          "selected_configuration_id": "manual-source-relative:a6a71723b97f89e303236ba5f404afc2b628a6f7ab79e80645e08d55779efefe",
+          "source_prepared_row_pointer": "/requests/2",
+          "source_row_pointer": "/requests/7",
+          "source_units_upper_bounds": {
+            "completion": "2048",
+            "prompt": 14088,
+            "request": 1
+          }
+        },
+        {
+          "case_id": "polarity",
+          "exact_body_bytes": 12824,
+          "exact_body_sha256": "0556426643262184ca9deb5e5bfb29655b72b66b1356c7dd4ec8c0f2fa32fed1",
+          "forecast_all_components_usd": "0.189309800",
+          "historical_floor_usd": "0.129376",
+          "max_tokens": 2048,
+          "model_id": "google/gemini-3.1-pro-preview",
+          "new_operation_id": "strong-repeat.0cb265ed5e75e8b8f8718ff9efeb7b294d9569e0a9f8517c4c5c438b5b3f9db7",
+          "only_source_row_mutations": [
+            "id",
+            "repetition"
+          ],
+          "original_operation_id": "stage3.4a44fbbbde0305c26e124e7edbfc215df111a007c1100a09e5abee4fb1f0e7f2:graph_completion",
+          "parameters_sha256": "6fdf07172a9f5147c4bca7c6598d4e7dce07cbf2696b96b98743dd9c908e37e7",
+          "per_component_reservation_usd": {
+            "audio": "0.000000",
+            "completion": "0.073728",
+            "image": "0.000000",
+            "input_audio_cache": "0E-7",
+            "input_cache_read": "0.0055648",
+            "input_cache_write": "0.005217000",
+            "internal_reasoning": "0.049152",
+            "prompt": "0.055648",
+            "request": "0",
+            "web_search": "0.000"
+          },
+          "prompt_sha256": [
+            "07b5617207541215202785994496257d12f1a952a37631737b16901b602dc4fb",
+            "51b9b585a8a2fea8c79271ba2440271a9e733a56c030167a2f6c7c6a554edbed"
+          ],
+          "provider_id": "google-ai-studio",
+          "raw_body_matches_original_public_prepared_and_sent_body": true,
+          "repetition": 1,
+          "reservation_after_original_floor_usd": "0.189309800",
+          "resolved_all_component_units_upper_bounds": {
+            "audio": "0",
+            "completion": "4096",
+            "image": "0",
+            "input_audio_cache": "0",
+            "input_cache_read": "13912",
+            "input_cache_write": "13912",
+            "internal_reasoning": "4096",
+            "prompt": "13912",
+            "request": "1",
+            "web_search": "0"
+          },
+          "selected_configuration_id": "manual-source-relative:e1dde3901b6fc754d4ae09ebaa961dae23cc5d5a4322491fbe3859361b3ebdb2",
+          "source_prepared_row_pointer": "/requests/3",
+          "source_row_pointer": "/requests/10",
+          "source_units_upper_bounds": {
+            "completion": "4096",
+            "prompt": 13912,
+            "request": 1
+          }
+        },
+        {
+          "case_id": "repeat",
+          "exact_body_bytes": 13000,
+          "exact_body_sha256": "4c22a257126b5178df531a9980c9e5abf225ad2e22e257c4efc1f0a2b72fd48c",
+          "forecast_all_components_usd": "0.1603296",
+          "historical_floor_usd": "0.101160",
+          "max_tokens": 2048,
+          "model_id": "openai/gpt-6.1-sol",
+          "new_operation_id": "strong-repeat.5bb959182bf847bff996d39972b5e9f1ff234ad1154e28eae73fea65bcf2117f",
+          "only_source_row_mutations": [
+            "id",
+            "repetition"
+          ],
+          "original_operation_id": "stage3.1644a27452631c27f2aa32de253863521578dd0f27d9c3aba8e359f98bdf20dd:pattern_discovery",
+          "parameters_sha256": "2ce3462ed36f1e0fbb999c6f29300651494feecb2f44c7131a25c3a31b9210d6",
+          "per_component_reservation_usd": {
+            "completion": "0.030720",
+            "input_cache_read": "0.0028176",
+            "input_cache_write": "0.070440",
+            "prompt": "0.056352",
+            "request": "0",
+            "web_search": "0.00"
+          },
+          "prompt_sha256": [
+            "9409c68bfb5580b989f2ee16455a7576ee08c16f46ca53c3fc93e7fcc3b48982",
+            "13cc413bbf8c4abca89c3b6d08508d14159b6d1bea72359a5fca519e21b1edf1"
+          ],
+          "provider_id": "openai",
+          "raw_body_matches_original_public_prepared_and_sent_body": true,
+          "repetition": 2,
+          "reservation_after_original_floor_usd": "0.1603296",
+          "resolved_all_component_units_upper_bounds": {
+            "completion": "2048",
+            "input_cache_read": "14088",
+            "input_cache_write": "14088",
+            "prompt": "14088",
+            "request": "1",
+            "web_search": "0"
+          },
+          "selected_configuration_id": "manual-source-relative:a6a71723b97f89e303236ba5f404afc2b628a6f7ab79e80645e08d55779efefe",
+          "source_prepared_row_pointer": "/requests/4",
+          "source_row_pointer": "/requests/1",
+          "source_units_upper_bounds": {
+            "completion": "2048",
+            "prompt": 14088,
+            "request": 1
+          }
+        },
+        {
+          "case_id": "repeat",
+          "exact_body_bytes": 12824,
+          "exact_body_sha256": "972c2cde242bd085b39e88e7c8bb1207283655f8c2857b016817b0bd999e47c0",
+          "forecast_all_components_usd": "0.189309800",
+          "historical_floor_usd": "0.129376",
+          "max_tokens": 2048,
+          "model_id": "google/gemini-3.1-pro-preview",
+          "new_operation_id": "strong-repeat.167b25f94d1f4a8e549388729b4419cf1964c85bbe665ddc8139bfe85ab1c990",
+          "only_source_row_mutations": [
+            "id",
+            "repetition"
+          ],
+          "original_operation_id": "stage3.e41c599d13c321e8b0521c7a6c25b1e810fe420bdd541146ed8ad9fd0da65edb:graph_completion",
+          "parameters_sha256": "6fdf07172a9f5147c4bca7c6598d4e7dce07cbf2696b96b98743dd9c908e37e7",
+          "per_component_reservation_usd": {
+            "audio": "0.000000",
+            "completion": "0.073728",
+            "image": "0.000000",
+            "input_audio_cache": "0E-7",
+            "input_cache_read": "0.0055648",
+            "input_cache_write": "0.005217000",
+            "internal_reasoning": "0.049152",
+            "prompt": "0.055648",
+            "request": "0",
+            "web_search": "0.000"
+          },
+          "prompt_sha256": [
+            "07b5617207541215202785994496257d12f1a952a37631737b16901b602dc4fb",
+            "13cc413bbf8c4abca89c3b6d08508d14159b6d1bea72359a5fca519e21b1edf1"
+          ],
+          "provider_id": "google-ai-studio",
+          "raw_body_matches_original_public_prepared_and_sent_body": true,
+          "repetition": 2,
+          "reservation_after_original_floor_usd": "0.189309800",
+          "resolved_all_component_units_upper_bounds": {
+            "audio": "0",
+            "completion": "4096",
+            "image": "0",
+            "input_audio_cache": "0",
+            "input_cache_read": "13912",
+            "input_cache_write": "13912",
+            "internal_reasoning": "4096",
+            "prompt": "13912",
+            "request": "1",
+            "web_search": "0"
+          },
+          "selected_configuration_id": "manual-source-relative:e1dde3901b6fc754d4ae09ebaa961dae23cc5d5a4322491fbe3859361b3ebdb2",
+          "source_prepared_row_pointer": "/requests/5",
+          "source_row_pointer": "/requests/4",
+          "source_units_upper_bounds": {
+            "completion": "4096",
+            "prompt": 13912,
+            "request": 1
+          }
+        },
+        {
+          "case_id": "polarity",
+          "exact_body_bytes": 13000,
+          "exact_body_sha256": "a4d7f40a6051b31dfe9877772191b5b34e3cb295145892824b2fbcdfe6d5a8c5",
+          "forecast_all_components_usd": "0.1603296",
+          "historical_floor_usd": "0.101160",
+          "max_tokens": 2048,
+          "model_id": "openai/gpt-6.1-sol",
+          "new_operation_id": "strong-repeat.f3a8743493d043427f915133e7cf876256fe6422bbf37ae725d53b100da595f6",
+          "only_source_row_mutations": [
+            "id",
+            "repetition"
+          ],
+          "original_operation_id": "stage3.fd75b2e642da3853e29e2fa121dcc23611c38b0d62bf3f0d61ab504618610bb6:pattern_discovery",
+          "parameters_sha256": "2ce3462ed36f1e0fbb999c6f29300651494feecb2f44c7131a25c3a31b9210d6",
+          "per_component_reservation_usd": {
+            "completion": "0.030720",
+            "input_cache_read": "0.0028176",
+            "input_cache_write": "0.070440",
+            "prompt": "0.056352",
+            "request": "0",
+            "web_search": "0.00"
+          },
+          "prompt_sha256": [
+            "9409c68bfb5580b989f2ee16455a7576ee08c16f46ca53c3fc93e7fcc3b48982",
+            "51b9b585a8a2fea8c79271ba2440271a9e733a56c030167a2f6c7c6a554edbed"
+          ],
+          "provider_id": "openai",
+          "raw_body_matches_original_public_prepared_and_sent_body": true,
+          "repetition": 2,
+          "reservation_after_original_floor_usd": "0.1603296",
+          "resolved_all_component_units_upper_bounds": {
+            "completion": "2048",
+            "input_cache_read": "14088",
+            "input_cache_write": "14088",
+            "prompt": "14088",
+            "request": "1",
+            "web_search": "0"
+          },
+          "selected_configuration_id": "manual-source-relative:a6a71723b97f89e303236ba5f404afc2b628a6f7ab79e80645e08d55779efefe",
+          "source_prepared_row_pointer": "/requests/6",
+          "source_row_pointer": "/requests/7",
+          "source_units_upper_bounds": {
+            "completion": "2048",
+            "prompt": 14088,
+            "request": 1
+          }
+        },
+        {
+          "case_id": "polarity",
+          "exact_body_bytes": 12824,
+          "exact_body_sha256": "0556426643262184ca9deb5e5bfb29655b72b66b1356c7dd4ec8c0f2fa32fed1",
+          "forecast_all_components_usd": "0.189309800",
+          "historical_floor_usd": "0.129376",
+          "max_tokens": 2048,
+          "model_id": "google/gemini-3.1-pro-preview",
+          "new_operation_id": "strong-repeat.1e6b86d0895b0f94ba0ceed01844f44a0ae5fc0b75e2764ff620c033075dc5ff",
+          "only_source_row_mutations": [
+            "id",
+            "repetition"
+          ],
+          "original_operation_id": "stage3.4a44fbbbde0305c26e124e7edbfc215df111a007c1100a09e5abee4fb1f0e7f2:graph_completion",
+          "parameters_sha256": "6fdf07172a9f5147c4bca7c6598d4e7dce07cbf2696b96b98743dd9c908e37e7",
+          "per_component_reservation_usd": {
+            "audio": "0.000000",
+            "completion": "0.073728",
+            "image": "0.000000",
+            "input_audio_cache": "0E-7",
+            "input_cache_read": "0.0055648",
+            "input_cache_write": "0.005217000",
+            "internal_reasoning": "0.049152",
+            "prompt": "0.055648",
+            "request": "0",
+            "web_search": "0.000"
+          },
+          "prompt_sha256": [
+            "07b5617207541215202785994496257d12f1a952a37631737b16901b602dc4fb",
+            "51b9b585a8a2fea8c79271ba2440271a9e733a56c030167a2f6c7c6a554edbed"
+          ],
+          "provider_id": "google-ai-studio",
+          "raw_body_matches_original_public_prepared_and_sent_body": true,
+          "repetition": 2,
+          "reservation_after_original_floor_usd": "0.189309800",
+          "resolved_all_component_units_upper_bounds": {
+            "audio": "0",
+            "completion": "4096",
+            "image": "0",
+            "input_audio_cache": "0",
+            "input_cache_read": "13912",
+            "input_cache_write": "13912",
+            "internal_reasoning": "4096",
+            "prompt": "13912",
+            "request": "1",
+            "web_search": "0"
+          },
+          "selected_configuration_id": "manual-source-relative:e1dde3901b6fc754d4ae09ebaa961dae23cc5d5a4322491fbe3859361b3ebdb2",
+          "source_prepared_row_pointer": "/requests/7",
+          "source_row_pointer": "/requests/10",
+          "source_units_upper_bounds": {
+            "completion": "4096",
+            "prompt": 13912,
+            "request": 1
+          }
+        }
+      ],
+      "original_paid_manifest_hash_boundary": "Original paid manifest SHA is retained as a public commitment; private original transport manifest/account chain is not read or reconstructed. Exact bodies are checked against both original public prepared rows and public sent-request projection.",
+      "owner_authorized_eur": {
+        "amount": "5",
+        "currency": "EUR",
+        "source_ref": "owner-followup-new-scope-thread7-2026-10-04",
+        "status": "owner_authorized_within_budget"
+      },
+      "paired_case_method_order_preserved_repetition_outermost": true,
+      "prepared_manifest_sha256": "497dcaf0c60f1b68f265251da242f11b9a07fe5c2af661c6c8151dc49cc51716",
+      "quote_envelopes": [
+        {
+          "admitted_endpoints": [
+            {
+              "endpoint_index": 2,
+              "provider_name": "OpenAI",
+              "tag": "openai",
+              "tier": "default"
+            }
+          ],
+          "all_conditional_rate_schedules_retained": true,
+          "checked_at_utc": "2026-10-05T12:45:58.283883+00:00",
+          "component_prices_usd": {
+            "completion": "0.000015",
+            "input_cache_read": "2E-7",
+            "input_cache_write": "0.000005",
+            "prompt": "0.000004",
+            "request": "0",
+            "web_search": "0.01"
+          },
+          "excluded_tier_endpoints": [
+            {
+              "endpoint_index": 0,
+              "reason": "service_tier_not_requested",
+              "tag": "openai/flex",
+              "tier": "flex"
+            },
+            {
+              "endpoint_index": 6,
+              "reason": "service_tier_not_requested",
+              "tag": "openai/fast",
+              "tier": "priority"
+            }
+          ],
+          "model_id": "openai/gpt-6.1-sol",
+          "provider_id": "openai",
+          "routing": {
+            "admitted_tiers": [
+              "default"
+            ],
+            "base_model": "openai/gpt-6.1-sol",
+            "provider_only": "openai"
+          },
+          "snapshot_sha256": "aeef79e683105ec42f55b8cb4458ce1cd7641e5d3381224e7ccc497cbad1a357"
+        },
+        {
+          "admitted_endpoints": [
+            {
+              "endpoint_index": 3,
+              "provider_name": "Google AI Studio",
+              "tag": "google-ai-studio",
+              "tier": "default"
+            }
+          ],
+          "all_conditional_rate_schedules_retained": true,
+          "checked_at_utc": "2026-10-05T12:45:51.885251+00:00",
+          "component_prices_usd": {
+            "audio": "0.000004",
+            "completion": "0.000018",
+            "image": "0.000002",
+            "input_audio_cache": "4E-7",
+            "input_cache_read": "4E-7",
+            "input_cache_write": "3.75E-7",
+            "internal_reasoning": "0.000012",
+            "prompt": "0.000004",
+            "request": "0",
+            "web_search": "0.014"
+          },
+          "excluded_tier_endpoints": [
+            {
+              "endpoint_index": 1,
+              "reason": "service_tier_not_requested",
+              "tag": "google-ai-studio/flex",
+              "tier": "flex"
+            },
+            {
+              "endpoint_index": 5,
+              "reason": "service_tier_not_requested",
+              "tag": "google-ai-studio/priority",
+              "tier": "priority"
+            }
+          ],
+          "model_id": "google/gemini-3.1-pro-preview",
+          "provider_id": "google-ai-studio",
+          "routing": {
+            "admitted_tiers": [
+              "default"
+            ],
+            "base_model": "google/gemini-3.1-pro-preview",
+            "provider_only": "google-ai-studio"
+          },
+          "snapshot_sha256": "0674ab0bd3a4a6be691e8cfad59b5561147c0a53aaab76d8f2e0cb77e0f3bea9"
+        }
+      ],
+      "scientific_repetitions_each": 2,
+      "selected_configurations": [
+        "manual-source-relative:a6a71723b97f89e303236ba5f404afc2b628a6f7ab79e80645e08d55779efefe",
+        "manual-source-relative:e1dde3901b6fc754d4ae09ebaa961dae23cc5d5a4322491fbe3859361b3ebdb2"
+      ],
+      "selection_crosswalk_exact": true,
+      "source_only_no_new_corpus": true,
+      "source_prepared_sha256": "36c52f8e8c87f93f9d54d9510eae6dcd096d05e773c0309943663fbc48a1d87f",
+      "source_rows_exact_except_id_repetition": true,
+      "stage": 3,
+      "sum_original_historical_floors_usd": "0.922144"
+    },
+    {
+      "aggregate_all_component_bounds": [
+        {
+          "model_id": "openai/gpt-6.1-sol",
+          "provider_id": "openai",
+          "units_upper_bounds": {
+            "completion": "8192",
+            "input_cache_read": "38272",
+            "input_cache_write": "38272",
+            "prompt": "38272",
+            "request": "4",
+            "web_search": "0"
+          }
+        }
+      ],
+      "body_model_provider_params_prompts_and_floors_exact": true,
+      "cases_per_selected_method": 2,
+      "distinct_original_bodies": 2,
+      "historical_source_cost_plan_retained": "The source-prepared document deliberately retains the original 12-call stale historical cost_plan. It is not the new repetition forecast; cost-plan-v1.json and this replay supply the full current captured-price reservation.",
+      "independent_full_reservation_usd": "0.4749824",
+      "operation_ids_unique": true,
+      "operations": 4,
+      "operations_checked": [
+        {
+          "case_id": "correction_a_b",
+          "exact_body_bytes": 8508,
+          "exact_body_sha256": "9c854f81b98e4984a139e631dd988ef52357ee5f763c52e073cb69627db19cfe",
+          "forecast_all_components_usd": "0.1190032",
+          "historical_floor_usd": "0.078700",
+          "max_tokens": 2048,
+          "model_id": "openai/gpt-6.1-sol",
+          "new_operation_id": "strong-repeat.1a3cb7207cd0df1e98ef46b499e5965e2fd0e0449348cf7f5a4540dc046e6f31",
+          "only_source_row_mutations": [
+            "id",
+            "repetition"
+          ],
+          "original_operation_id": "stage4.5dff1a98b7ff861bb7a1b0b1b78822ea8bfb78082bc1707fe26e44640150306f:graph_v2",
+          "parameters_sha256": "da21197ddf1f29edc931b3c9ab6547c24ee096a0f977a73ef58a91dda7193bb1",
+          "per_component_reservation_usd": {
+            "completion": "0.030720",
+            "input_cache_read": "0.0019192",
+            "input_cache_write": "0.047980",
+            "prompt": "0.038384",
+            "request": "0",
+            "web_search": "0.00"
+          },
+          "prompt_sha256": [
+            "333268f547eb94d7eff744a21a43db6d2e6a74a7be3f9d753f13000ff012b157",
+            "1f35a47eb34dc85a74c1e58d976b4374ad44496f65d370fe041941f9fcd2ce32"
+          ],
+          "provider_id": "openai",
+          "raw_body_matches_original_public_prepared_and_sent_body": true,
+          "repetition": 1,
+          "reservation_after_original_floor_usd": "0.1190032",
+          "resolved_all_component_units_upper_bounds": {
+            "completion": "2048",
+            "input_cache_read": "9596",
+            "input_cache_write": "9596",
+            "prompt": "9596",
+            "request": "1",
+            "web_search": "0"
+          },
+          "selected_configuration_id": "23fd66f194b54779bd6e27fec5dd2eef423c1373d0503b519f28972c4d5b3ed1",
+          "source_prepared_row_pointer": "/requests/0",
+          "source_row_pointer": "/requests/0",
+          "source_units_upper_bounds": {
+            "completion": "2048",
+            "prompt": 9596,
+            "request": 1
+          }
+        },
+        {
+          "case_id": "negated_conditional",
+          "exact_body_bytes": 8452,
+          "exact_body_sha256": "ec6e789c5ed3a0c6c12ace9bb672a8258451743a617507431dfd3d94110458d9",
+          "forecast_all_components_usd": "0.1184880",
+          "historical_floor_usd": "0.078420",
+          "max_tokens": 2048,
+          "model_id": "openai/gpt-6.1-sol",
+          "new_operation_id": "strong-repeat.3de28248980acda3124d3390761776b8c94a32cc5631bdaeb86ed772761a5cb1",
+          "only_source_row_mutations": [
+            "id",
+            "repetition"
+          ],
+          "original_operation_id": "stage4.7e1464a33662b8d23542e2b1634e825904209291fa13fbd8beb1e636928859d0:graph_v2",
+          "parameters_sha256": "da21197ddf1f29edc931b3c9ab6547c24ee096a0f977a73ef58a91dda7193bb1",
+          "per_component_reservation_usd": {
+            "completion": "0.030720",
+            "input_cache_read": "0.0019080",
+            "input_cache_write": "0.047700",
+            "prompt": "0.038160",
+            "request": "0",
+            "web_search": "0.00"
+          },
+          "prompt_sha256": [
+            "333268f547eb94d7eff744a21a43db6d2e6a74a7be3f9d753f13000ff012b157",
+            "9be53eaee4baff0ef0f64360c4f4ee637682195a9c3bc9f8d22b1fa7e9217791"
+          ],
+          "provider_id": "openai",
+          "raw_body_matches_original_public_prepared_and_sent_body": true,
+          "repetition": 1,
+          "reservation_after_original_floor_usd": "0.1184880",
+          "resolved_all_component_units_upper_bounds": {
+            "completion": "2048",
+            "input_cache_read": "9540",
+            "input_cache_write": "9540",
+            "prompt": "9540",
+            "request": "1",
+            "web_search": "0"
+          },
+          "selected_configuration_id": "23fd66f194b54779bd6e27fec5dd2eef423c1373d0503b519f28972c4d5b3ed1",
+          "source_prepared_row_pointer": "/requests/1",
+          "source_row_pointer": "/requests/6",
+          "source_units_upper_bounds": {
+            "completion": "2048",
+            "prompt": 9540,
+            "request": 1
+          }
+        },
+        {
+          "case_id": "correction_a_b",
+          "exact_body_bytes": 8508,
+          "exact_body_sha256": "9c854f81b98e4984a139e631dd988ef52357ee5f763c52e073cb69627db19cfe",
+          "forecast_all_components_usd": "0.1190032",
+          "historical_floor_usd": "0.078700",
+          "max_tokens": 2048,
+          "model_id": "openai/gpt-6.1-sol",
+          "new_operation_id": "strong-repeat.4bb244e155c0c14bbb4de2393eee496e5bae3268c7a7ba90e01ecd40659b73d2",
+          "only_source_row_mutations": [
+            "id",
+            "repetition"
+          ],
+          "original_operation_id": "stage4.5dff1a98b7ff861bb7a1b0b1b78822ea8bfb78082bc1707fe26e44640150306f:graph_v2",
+          "parameters_sha256": "da21197ddf1f29edc931b3c9ab6547c24ee096a0f977a73ef58a91dda7193bb1",
+          "per_component_reservation_usd": {
+            "completion": "0.030720",
+            "input_cache_read": "0.0019192",
+            "input_cache_write": "0.047980",
+            "prompt": "0.038384",
+            "request": "0",
+            "web_search": "0.00"
+          },
+          "prompt_sha256": [
+            "333268f547eb94d7eff744a21a43db6d2e6a74a7be3f9d753f13000ff012b157",
+            "1f35a47eb34dc85a74c1e58d976b4374ad44496f65d370fe041941f9fcd2ce32"
+          ],
+          "provider_id": "openai",
+          "raw_body_matches_original_public_prepared_and_sent_body": true,
+          "repetition": 2,
+          "reservation_after_original_floor_usd": "0.1190032",
+          "resolved_all_component_units_upper_bounds": {
+            "completion": "2048",
+            "input_cache_read": "9596",
+            "input_cache_write": "9596",
+            "prompt": "9596",
+            "request": "1",
+            "web_search": "0"
+          },
+          "selected_configuration_id": "23fd66f194b54779bd6e27fec5dd2eef423c1373d0503b519f28972c4d5b3ed1",
+          "source_prepared_row_pointer": "/requests/2",
+          "source_row_pointer": "/requests/0",
+          "source_units_upper_bounds": {
+            "completion": "2048",
+            "prompt": 9596,
+            "request": 1
+          }
+        },
+        {
+          "case_id": "negated_conditional",
+          "exact_body_bytes": 8452,
+          "exact_body_sha256": "ec6e789c5ed3a0c6c12ace9bb672a8258451743a617507431dfd3d94110458d9",
+          "forecast_all_components_usd": "0.1184880",
+          "historical_floor_usd": "0.078420",
+          "max_tokens": 2048,
+          "model_id": "openai/gpt-6.1-sol",
+          "new_operation_id": "strong-repeat.d58836162de7a833ff2d83ec8b4aa1c1b5f05448720744195b306c6fd9b19be0",
+          "only_source_row_mutations": [
+            "id",
+            "repetition"
+          ],
+          "original_operation_id": "stage4.7e1464a33662b8d23542e2b1634e825904209291fa13fbd8beb1e636928859d0:graph_v2",
+          "parameters_sha256": "da21197ddf1f29edc931b3c9ab6547c24ee096a0f977a73ef58a91dda7193bb1",
+          "per_component_reservation_usd": {
+            "completion": "0.030720",
+            "input_cache_read": "0.0019080",
+            "input_cache_write": "0.047700",
+            "prompt": "0.038160",
+            "request": "0",
+            "web_search": "0.00"
+          },
+          "prompt_sha256": [
+            "333268f547eb94d7eff744a21a43db6d2e6a74a7be3f9d753f13000ff012b157",
+            "9be53eaee4baff0ef0f64360c4f4ee637682195a9c3bc9f8d22b1fa7e9217791"
+          ],
+          "provider_id": "openai",
+          "raw_body_matches_original_public_prepared_and_sent_body": true,
+          "repetition": 2,
+          "reservation_after_original_floor_usd": "0.1184880",
+          "resolved_all_component_units_upper_bounds": {
+            "completion": "2048",
+            "input_cache_read": "9540",
+            "input_cache_write": "9540",
+            "prompt": "9540",
+            "request": "1",
+            "web_search": "0"
+          },
+          "selected_configuration_id": "23fd66f194b54779bd6e27fec5dd2eef423c1373d0503b519f28972c4d5b3ed1",
+          "source_prepared_row_pointer": "/requests/3",
+          "source_row_pointer": "/requests/6",
+          "source_units_upper_bounds": {
+            "completion": "2048",
+            "prompt": 9540,
+            "request": 1
+          }
+        }
+      ],
+      "original_paid_manifest_hash_boundary": "Original paid manifest SHA is retained as a public commitment; private original transport manifest/account chain is not read or reconstructed. Exact bodies are checked against both original public prepared rows and public sent-request projection.",
+      "owner_authorized_eur": {
+        "amount": "5",
+        "currency": "EUR",
+        "source_ref": "owner-followup-new-scope-thread7-2026-10-04",
+        "status": "owner_authorized_within_budget"
+      },
+      "paired_case_method_order_preserved_repetition_outermost": true,
+      "prepared_manifest_sha256": "edb2c3c1171699ff503ef74937313fb8353b2bd045ee9aac4e03768f2a51ace7",
+      "quote_envelopes": [
+        {
+          "admitted_endpoints": [
+            {
+              "endpoint_index": 2,
+              "provider_name": "OpenAI",
+              "tag": "openai",
+              "tier": "default"
+            }
+          ],
+          "all_conditional_rate_schedules_retained": true,
+          "checked_at_utc": "2026-10-05T12:46:03.715305+00:00",
+          "component_prices_usd": {
+            "completion": "0.000015",
+            "input_cache_read": "2E-7",
+            "input_cache_write": "0.000005",
+            "prompt": "0.000004",
+            "request": "0",
+            "web_search": "0.01"
+          },
+          "excluded_tier_endpoints": [
+            {
+              "endpoint_index": 0,
+              "reason": "service_tier_not_requested",
+              "tag": "openai/flex",
+              "tier": "flex"
+            },
+            {
+              "endpoint_index": 6,
+              "reason": "service_tier_not_requested",
+              "tag": "openai/fast",
+              "tier": "priority"
+            }
+          ],
+          "model_id": "openai/gpt-6.1-sol",
+          "provider_id": "openai",
+          "routing": {
+            "admitted_tiers": [
+              "default"
+            ],
+            "base_model": "openai/gpt-6.1-sol",
+            "provider_only": "openai"
+          },
+          "snapshot_sha256": "aeef79e683105ec42f55b8cb4458ce1cd7641e5d3381224e7ccc497cbad1a357"
+        }
+      ],
+      "scientific_repetitions_each": 2,
+      "selected_configurations": [
+        "23fd66f194b54779bd6e27fec5dd2eef423c1373d0503b519f28972c4d5b3ed1"
+      ],
+      "selection_crosswalk_exact": true,
+      "source_only_no_new_corpus": true,
+      "source_prepared_sha256": "0cdcf22185d32f423e730a327a87afe17b570989e3f8ff8e15f7db6e5fc37fc6",
+      "source_rows_exact_except_id_repetition": true,
+      "stage": 4,
+      "sum_original_historical_floors_usd": "0.314240"
+    }
+  ],
+  "total_reserved_usd": "1.873540000"
+}
