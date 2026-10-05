@@ -1,7 +1,7 @@
 {
   "argv": [
-    "/tmp/w4-2-normalizer-after/normalizer_snapshot",
-    "/tmp/w4-2-normalizer-after/corpus.json"
+    "/tmp/w4-2-normalizer-final/normalizer_snapshot",
+    "/tmp/w4-2-normalizer-final/corpus.json"
   ],
   "cwd": "/workspace/scratch/b189e486f506/chatadhd/build/w4-2",
   "exit_code": 0

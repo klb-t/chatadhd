@@ -1,0 +1,13 @@
+{
+  "schema": "loom.w4_rebase_receipt/1",
+  "tested_commit": "edf338b31903d3cfc780cac3047a0b37396c0fb7",
+  "tested_commit_archive": "archive/2026-10-05/native-graph-packet-2-before-rebase",
+  "ready_code_commit": "9c9110c45c6a6f0f331eb5122b79a4a75356e1ba",
+  "base": "6ae0e28b8405b43aa9d8995ad8273a0bcb0b34c4",
+  "tested_product_tree": "173a1aee71f0446c1c3ee01b4e869df3ed191cae",
+  "ready_product_tree": "173a1aee71f0446c1c3ee01b4e869df3ed191cae",
+  "product_tree_equal": true,
+  "changed_product_source_hashes_match": true,
+  "full_tests_repeated_after_document_only_rebase": false,
+  "negative_logs_excluded_from_selected_history": true
+}

@@ -1,0 +1,71 @@
+{
+  "commands": [
+    {
+      "argv": [
+        "python",
+        "loom/src/kb/tests/run_normalizer_snapshot.py",
+        "--build",
+        "build/w4-2",
+        "--output",
+        "/tmp/w4-2-normalizer-final",
+        "--corpus",
+        "/tmp/w4-2-normalizer-before/corpus.json",
+        "--compare",
+        "/tmp/w4-2-normalizer-before/snapshot.json"
+      ],
+      "cwd": "/workspace/scratch/b189e486f506/chatadhd",
+      "log": "/tmp/w4-2-normalizer-final.log",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "/root/.local/bin/ctest",
+        "--test-dir",
+        "build/w4-2",
+        "--show-only=json-v1"
+      ],
+      "cwd": "/workspace/scratch/b189e486f506/chatadhd",
+      "log": "/tmp/w4-2-ctest-manifest-final.json",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "/root/.local/bin/ctest",
+        "--test-dir",
+        "build/w4-2",
+        "--output-on-failure",
+        "--no-tests=error",
+        "--output-junit",
+        "/tmp/w4-2-ctest-final.xml",
+        "--test-output-size-passed",
+        "16777216",
+        "--test-output-size-failed",
+        "16777216",
+        "-j",
+        "2"
+      ],
+      "cwd": "/workspace/scratch/b189e486f506/chatadhd",
+      "log": "/tmp/w4-2-ctest-final.log",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "python",
+        "/tmp/w4-2-ctest-guard.py",
+        "--manifest",
+        "/tmp/w4-2-ctest-manifest-final.json",
+        "--junit",
+        "/tmp/w4-2-ctest-final.xml",
+        "--preset",
+        "dev",
+        "--output",
+        "/tmp/w4-2-executed-cases.json"
+      ],
+      "cwd": "/workspace/scratch/b189e486f506/chatadhd",
+      "log": "/tmp/w4-2-guard-final.log",
+      "exit_code": 0
+    }
+  ],
+  "source_commit": "edf338b31903d3cfc780cac3047a0b37396c0fb7",
+  "working_tree_status": " M docs/reports/native-graph-packet-2-2026-10-05-evidence/after.compile.command.json\n M docs/reports/native-graph-packet-2-2026-10-05-evidence/after.observe.command.json\n M docs/reports/native-graph-packet-2-2026-10-05-evidence/after.provenance.json\n?? docs/reports/native-graph-packet-2-2026-10-05-evidence/final-build-binding.json.gz\n?? docs/reports/native-graph-packet-2-2026-10-05-evidence/final-build.log.gz\n?? docs/reports/native-graph-packet-2-2026-10-05-evidence/final-configure.log.gz\n?? docs/reports/native-graph-packet-2-2026-10-05-evidence/verify_ctest.py\n"
+}
