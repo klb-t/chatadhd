@@ -1,0 +1,20 @@
+usage: verify_ctest.py [-h] --manifest MANIFEST --junit JUNIT --output OUTPUT
+                       --preset PRESET [--policy POLICY]
+
+Validate CTest entry coverage and the cases actually executed inside each
+entry. Use complete (untruncated) JUnit output. This gate does not change any
+product quality threshold. The only availability exceptions describe existing
+presets: the opt-in catalogue scale case, and shared-library checks in non-
+shared ASan.
+
+options:
+  -h, --help           show this help message and exit
+  --manifest MANIFEST
+  --junit JUNIT
+  --output OUTPUT
+  --preset PRESET
+  --policy POLICY      local versioned evidence policy (default: /workspace/sc
+                       ratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-
+                       code/evidence/continuation-2026-10-05/final-
+                       validation/validator-snapshot/.github/ctest-evidence-
+                       policy.json)

@@ -1,0 +1,6 @@
+tree 45f586233a9182d44896659a9983f4da7465f016
+parent 9c47124f56251b32b0fb16dc63f0730553ae55c0
+author klb-t <108205223+klb-t@users.noreply.github.com> 1791206949 +0200
+committer klb-t <108205223+klb-t@users.noreply.github.com> 1791206949 +0200
+
+Preserve negative compiler attempts and exact validation source archive [skip ci]

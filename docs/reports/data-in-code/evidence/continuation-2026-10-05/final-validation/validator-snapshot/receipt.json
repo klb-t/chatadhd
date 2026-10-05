@@ -1,0 +1,258 @@
+{
+  "checks": {
+    "copied_bytes_equal_git_blobs": true,
+    "ctest_help": {
+      "argv": [
+        "/root/.local/bin/ctest",
+        "--help"
+      ],
+      "exit_code": 0,
+      "required_capture_flags_present": true,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "16df578297c34aa299adb2811b3c91dfe1c88f91995afd354140f3ec02be7fb5"
+    },
+    "ctest_version": {
+      "argv": [
+        "/root/.local/bin/ctest",
+        "--version"
+      ],
+      "exit_code": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "21710b282175af2534f38143fae98bb3de9762a1ffcce63fda137c2a1a177ece"
+    },
+    "frozen_help": {
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-B",
+        "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/validator-snapshot/.github/scripts/verify_ctest.py",
+        "--help"
+      ],
+      "exit_code": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "15daac992b5eab822d5dd0244fd40347a50016355c0ec94a40693098865dbfba"
+    },
+    "json_parse": true,
+    "python_ast_parse": true
+  },
+  "evidence_policy_preset": "vendored",
+  "existing_legacy_guard": {
+    "bytes": 10308,
+    "git_blob_sha1_at_head": "1f64256c759660a1bd7c5a08535c207a2ccaa4f8",
+    "path": "docs/reports/data-in-code/evidence/final-validation/verify_ctest_thread8.py",
+    "sha256": "39e7748da96c3fb5a58e788b5a751bf8c80501b86ed17204e3f62057e2351c3a",
+    "working_tree_equals_git_head": true
+  },
+  "files": [
+    {
+      "bytes": 15145,
+      "copied_without_modification": true,
+      "git_blob_sha1": "b8dbf0336e677915450dd6af2e48bf954b62b47e",
+      "sha256": "ecfb45f0883d2aeb8d61647fb90ec3c0ee161ec4b998f0a9b075dba7efa1bb35",
+      "snapshot_path": ".github/scripts/verify_ctest.py",
+      "source_path": ".github/scripts/verify_ctest.py"
+    },
+    {
+      "bytes": 1707,
+      "copied_without_modification": true,
+      "git_blob_sha1": "9e3f4a8d87dbcae953bb1269e611d9ef99d0e4d0",
+      "sha256": "1dc457125c40c0e225365e20c8839d9726d71dfa5872a8be1d890707666526a4",
+      "snapshot_path": ".github/ctest-evidence-policy.json",
+      "source_path": ".github/ctest-evidence-policy.json"
+    },
+    {
+      "bytes": 3714,
+      "copied_without_modification": true,
+      "git_blob_sha1": "eebef646e1fe6550a4a5f5d174f4741106e2b93c",
+      "sha256": "29ff3cd357e02cd0fc8139cacb86293fcfab5803c9f0001eb8aec53b4f4be6e0",
+      "snapshot_path": ".github/ctest-evidence-policy.schema.json",
+      "source_path": ".github/ctest-evidence-policy.schema.json"
+    }
+  ],
+  "observed_build_config": {
+    "CMAKE_BUILD_TYPE": {
+      "type": "STRING",
+      "value": "Debug"
+    },
+    "CMAKE_CXX_FLAGS_DEBUG": {
+      "type": "STRING",
+      "value": "-g0"
+    },
+    "LOOM_BUILD_CLI": {
+      "type": "BOOL",
+      "value": "ON"
+    },
+    "LOOM_BUILD_SERVER": {
+      "type": "BOOL",
+      "value": "ON"
+    },
+    "LOOM_BUILD_TESTS": {
+      "type": "BOOL",
+      "value": "ON"
+    },
+    "LOOM_SHARED": {
+      "type": "BOOL",
+      "value": "ON"
+    },
+    "LOOM_USE_SYSTEM_SQLITE": {
+      "type": "BOOL",
+      "value": "OFF"
+    },
+    "LOOM_WERROR": {
+      "type": "BOOL",
+      "value": "ON"
+    }
+  },
+  "pending_final_ctest": {
+    "executed": false,
+    "junit": "../ctest.xml",
+    "legacy_guard_output": "../coverage-legacy.json",
+    "manifest": "../ctest-manifest.json",
+    "new_guard_output": "../coverage.json"
+  },
+  "policy_observation": {
+    "case_counts": "Observed from complete doctest/unittest summaries, no expected-count parameter.",
+    "opt_in_entries": [
+      {
+        "name": "unit.test_catalog_scale",
+        "reason": "existing opt-in scale test",
+        "runner": "doctest",
+        "when": {
+          "assertions": 0,
+          "cases": 0
+        }
+      }
+    ],
+    "parse_error_input_hash_limitation": "Policy provenance survives valid policy plus malformed/missing input; input_sha256 is absent on parser/read/type exception. Preserve raw input hashes independently for such failures.",
+    "unavailable_python_entries_vendored": []
+  },
+  "python": {
+    "dependencies": [
+      {
+        "name": "jsonschema",
+        "requires_dist": [
+          "attrs>=22.2.0",
+          "jsonschema-specifications>=2023.03.6",
+          "referencing>=0.28.4",
+          "rpds-py>=0.25.0",
+          "fqdn; extra == 'format'",
+          "idna; extra == 'format'",
+          "isoduration; extra == 'format'",
+          "jsonpointer>1.13; extra == 'format'",
+          "rfc3339-validator; extra == 'format'",
+          "rfc3987; extra == 'format'",
+          "uri-template; extra == 'format'",
+          "webcolors>=1.11; extra == 'format'",
+          "fqdn; extra == 'format-nongpl'",
+          "idna; extra == 'format-nongpl'",
+          "isoduration; extra == 'format-nongpl'",
+          "jsonpointer>1.13; extra == 'format-nongpl'",
+          "rfc3339-validator; extra == 'format-nongpl'",
+          "rfc3986-validator>0.1.0; extra == 'format-nongpl'",
+          "rfc3987-syntax>=1.1.0; extra == 'format-nongpl'",
+          "uri-template; extra == 'format-nongpl'",
+          "webcolors>=24.6.0; extra == 'format-nongpl'"
+        ],
+        "version": "4.26.0"
+      },
+      {
+        "name": "attrs",
+        "requires_dist": [],
+        "version": "26.1.0"
+      },
+      {
+        "name": "jsonschema-specifications",
+        "requires_dist": [
+          "referencing>=0.31.0"
+        ],
+        "version": "2025.9.1"
+      },
+      {
+        "name": "referencing",
+        "requires_dist": [
+          "attrs>=22.2.0",
+          "rpds-py>=0.7.0",
+          "typing-extensions>=4.4.0; python_version < '3.13'"
+        ],
+        "version": "0.37.0"
+      },
+      {
+        "name": "rpds-py",
+        "requires_dist": [],
+        "version": "2026.9.1"
+      }
+    ],
+    "dependencies_copied": false,
+    "executable": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "offline_requirement": "Compatible jsonschema and its installed transitive dependencies must be available; this snapshot performs no install or network access.",
+    "version": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]"
+  },
+  "schema": "loom.frozen_ctest_validator/1",
+  "scope": "Byte-exact immutable W8 validator source snapshot; syntax and help only; no build or test execution.",
+  "snapshot_artifacts": [
+    {
+      "bytes": 1707,
+      "path": ".github/ctest-evidence-policy.json",
+      "sha256": "1dc457125c40c0e225365e20c8839d9726d71dfa5872a8be1d890707666526a4"
+    },
+    {
+      "bytes": 3714,
+      "path": ".github/ctest-evidence-policy.schema.json",
+      "sha256": "29ff3cd357e02cd0fc8139cacb86293fcfab5803c9f0001eb8aec53b4f4be6e0"
+    },
+    {
+      "bytes": 15145,
+      "path": ".github/scripts/verify_ctest.py",
+      "sha256": "ecfb45f0883d2aeb8d61647fb90ec3c0ee161ec4b998f0a9b075dba7efa1bb35"
+    },
+    {
+      "bytes": 0,
+      "path": "ctest-help.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 11501,
+      "path": "ctest-help.stdout",
+      "sha256": "16df578297c34aa299adb2811b3c91dfe1c88f91995afd354140f3ec02be7fb5"
+    },
+    {
+      "bytes": 0,
+      "path": "ctest-version.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 90,
+      "path": "ctest-version.stdout",
+      "sha256": "21710b282175af2534f38143fae98bb3de9762a1ffcce63fda137c2a1a177ece"
+    },
+    {
+      "bytes": 0,
+      "path": "help.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 927,
+      "path": "help.stdout",
+      "sha256": "15daac992b5eab822d5dd0244fd40347a50016355c0ec94a40693098865dbfba"
+    },
+    {
+      "bytes": 107,
+      "path": "requirements-observed.txt",
+      "sha256": "67fcc67e78013678c851fea9b933facd03361ab399cba302b4ee3ce18125d1c2"
+    },
+    {
+      "bytes": 325,
+      "path": "source-commit.txt",
+      "sha256": "04adc20bb1dda0bba8b2a8b9fcd3cd9c8a69600c939692a801ea7f62e87e7aa8"
+    },
+    {
+      "bytes": 268,
+      "path": "source-files.ls-tree.txt",
+      "sha256": "948832f77ece9ff0f00b56f981263852b4d71ca8f5fe38e57007def95dd5b69f"
+    }
+  ],
+  "source_commit": "f64e0efcc290b255f9abc5b99516a366a3129c8b",
+  "source_commit_sha256": "04adc20bb1dda0bba8b2a8b9fcd3cd9c8a69600c939692a801ea7f62e87e7aa8",
+  "source_ls_tree_sha256": "948832f77ece9ff0f00b56f981263852b4d71ca8f5fe38e57007def95dd5b69f",
+  "source_ref_label": "origin/gpt/repo-hygiene-2026-10-04",
+  "source_tree": "45f586233a9182d44896659a9983f4da7465f016"
+}
