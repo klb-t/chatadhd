@@ -1,0 +1,14 @@
+[0/2] Re-checking globbed directories...
+[1/202] Building CXX object CMakeFiles/loom_core.dir/src/catalog/score.cpp.o
+[2/202] Building CXX object CMakeFiles/loom_core.dir/src/catalog/select.cpp.o
+[3/202] Building CXX object CMakeFiles/loom_core.dir/src/catalog/sketch.cpp.o
+[4/202] Building CXX object CMakeFiles/loom_core.dir/src/catalog/stream.cpp.o
+[5/202] Building CXX object CMakeFiles/loom_core.dir/src/chat/active_task_acceptance.cpp.o
+[6/202] Building CXX object CMakeFiles/loom_core.dir/src/chat/active_task_spec.cpp.o
+[7/202] Building CXX object CMakeFiles/loom_core.dir/src/chat/chat_engine.cpp.o
+FAILED: [code=1] CMakeFiles/loom_core.dir/src/chat/chat_engine.cpp.o 
+/usr/bin/c++ -DCPPHTTPLIB_OPENSSL_SUPPORT=1 -DJSON_USE_IMPLICIT_CONVERSIONS=1 -DLOOM_BUILDING=1 -DLOOM_HAVE_OPENSSL=1 -DLOOM_VENDORED_SQLITE=1 -DLOOM_VERSION_STRING=\"0.1.0\" -I/workspace/scratch/308e2340bae7/chatadhd/loom/include -I/workspace/scratch/308e2340bae7/chatadhd/loom/src -isystem /workspace/scratch/308e2340bae7/chatadhd/loom/third_party/nlohmann -isystem /workspace/scratch/308e2340bae7/chatadhd/loom/third_party/cpp-httplib -isystem /workspace/scratch/308e2340bae7/chatadhd/loom/third_party/sqlite -isystem /workspace/scratch/308e2340bae7/chatadhd/loom/third_party/miniz -g -std=c++20 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -Wall -Wextra -Wpedantic -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Woverloaded-virtual -Wnull-dereference -Wimplicit-fallthrough -Wno-unused-parameter -Werror -MD -MT CMakeFiles/loom_core.dir/src/chat/chat_engine.cpp.o -MF CMakeFiles/loom_core.dir/src/chat/chat_engine.cpp.o.d -o CMakeFiles/loom_core.dir/src/chat/chat_engine.cpp.o -c /workspace/scratch/308e2340bae7/chatadhd/loom/src/chat/chat_engine.cpp
+c++: fatal error: Killed signal terminated program cc1plus
+compilation terminated.
+[8/202] Building CXX object CMakeFiles/loom_core.dir/src/chat/batch_api.cpp.o
+ninja: build stopped: subcommand failed.

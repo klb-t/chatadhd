@@ -1,0 +1,15 @@
+Command: npm run test:imported-message-content-native
+Started UTC: 2026-10-05T10:29:32Z
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> loom-web@0.1.0 test:imported-message-content-native
+> node e2e/imported-message-content-native.mjs
+
+[imported-message-content-native] PASS native Claude import renders all ten typed blocks through ChatView without running tools or media
+[imported-message-content-native] PASS editing imported native message preserves source and displays the current version without fetching Markdown media
+[imported-message-content-native] PASS excluded native OpenAI thoughts, tool output and code are inspectable through the per-view display control
+[imported-message-content-native] PASS native OpenAI image references remain inspectable without automatic downloads
+[imported-message-content-native] 4/4 groups passed; zero remote media or inference requests
+
+Exit: 0
+Finished UTC: 2026-10-05T10:29:37Z

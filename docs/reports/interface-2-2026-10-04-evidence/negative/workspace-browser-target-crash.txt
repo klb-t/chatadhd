@@ -1,0 +1,25 @@
+[workspace] PASS actual run, stable identities and copied independent reference
+23:37:32 [INFO ] loom.config: config.json not found - using defaults
+23:37:32 [INFO ] loom.config: secrets.json not found - using defaults
+23:37:32 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:37:32 [INFO ] loom.db: Database opened: /tmp/loom-workspace-go6Ubq/chatadhd.db
+23:37:32 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+23:37:32 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom-workspace-go6Ubq)
+loom-server: listening on 127.0.0.1:42685 (static: /workspace/scratch/308e2340bae7/chatadhd/loom/web/dist)
+23:37:35 [INFO ] loom.semantic_worker: Semantic: 3 done (regex, 300.0/s, 0 left)
+
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.fill: Target crashed 
+Call log:
+[2m  - waiting for getByTestId('kb-pane-graph').first().getByLabel('Graph focus depth')[22m
+
+    at /workspace/scratch/308e2340bae7/chatadhd/loom/web/e2e/workspace.mjs:69:49
+    at async step (/workspace/scratch/308e2340bae7/chatadhd/loom/web/e2e/workspace.mjs:27:30)
+    at async file:///workspace/scratch/308e2340bae7/chatadhd/loom/web/e2e/workspace.mjs:62:3 {
+  name: 'Error'
+}
+
+Node.js v24.19.0

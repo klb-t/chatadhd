@@ -1,0 +1,865 @@
+Test project /workspace/scratch/308e2340bae7/chatadhd/loom/build/dev
+        Start   1: unit.test_archive
+  1/108 Test   #1: unit.test_archive ..................................   Passed    1.35 sec
+        Start   2: unit.test_batch_api
+  2/108 Test   #2: unit.test_batch_api ................................   Passed    0.08 sec
+        Start   3: unit.test_capi
+  3/108 Test   #3: unit.test_capi .....................................   Passed    2.58 sec
+        Start   4: unit.test_capi_knowledge
+  4/108 Test   #4: unit.test_capi_knowledge ...........................   Passed    0.39 sec
+        Start   5: unit.test_capi_knowledge_latest_run
+  5/108 Test   #5: unit.test_capi_knowledge_latest_run ................   Passed    0.57 sec
+        Start   6: unit.test_catalog
+  6/108 Test   #6: unit.test_catalog ..................................   Passed    2.69 sec
+        Start   7: unit.test_catalog_context
+  7/108 Test   #7: unit.test_catalog_context ..........................   Passed    2.68 sec
+        Start   8: unit.test_catalog_eval
+  8/108 Test   #8: unit.test_catalog_eval .............................   Passed    1.76 sec
+        Start   9: unit.test_catalog_links
+  9/108 Test   #9: unit.test_catalog_links ............................   Passed    7.42 sec
+        Start  10: unit.test_catalog_retention
+ 10/108 Test  #10: unit.test_catalog_retention ........................   Passed    1.62 sec
+        Start  11: unit.test_catalog_scale
+ 11/108 Test  #11: unit.test_catalog_scale ............................   Passed    0.02 sec
+        Start  12: unit.test_chat_active_task
+ 12/108 Test  #12: unit.test_chat_active_task .........................   Passed    1.26 sec
+        Start  13: unit.test_chat_active_task_acceptance_audit
+ 13/108 Test  #13: unit.test_chat_active_task_acceptance_audit ........   Passed    0.65 sec
+        Start  14: unit.test_chat_active_task_acceptance_scale
+ 14/108 Test  #14: unit.test_chat_active_task_acceptance_scale ........   Passed    7.55 sec
+        Start  15: unit.test_chat_active_task_acceptance_validation
+ 15/108 Test  #15: unit.test_chat_active_task_acceptance_validation ...   Passed    0.72 sec
+        Start  16: unit.test_chat_active_task_concurrency
+ 16/108 Test  #16: unit.test_chat_active_task_concurrency .............   Passed    0.23 sec
+        Start  17: unit.test_chat_active_task_durability
+ 17/108 Test  #17: unit.test_chat_active_task_durability ..............   Passed    0.61 sec
+        Start  18: unit.test_chat_active_task_durable_audit
+ 18/108 Test  #18: unit.test_chat_active_task_durable_audit ...........   Passed    6.60 sec
+        Start  19: unit.test_chat_active_task_exceptional
+ 19/108 Test  #19: unit.test_chat_active_task_exceptional .............   Passed    0.21 sec
+        Start  20: unit.test_chat_active_task_history_aba
+ 20/108 Test  #20: unit.test_chat_active_task_history_aba .............   Passed    0.02 sec
+        Start  21: unit.test_chat_active_task_reference
+ 21/108 Test  #21: unit.test_chat_active_task_reference ...............   Passed    0.02 sec
+        Start  22: unit.test_chat_active_task_retention
+ 22/108 Test  #22: unit.test_chat_active_task_retention ...............   Passed    0.56 sec
+        Start  23: unit.test_chat_active_task_revisions
+ 23/108 Test  #23: unit.test_chat_active_task_revisions ...............   Passed    1.15 sec
+        Start  24: unit.test_chat_active_task_scope_identity
+ 24/108 Test  #24: unit.test_chat_active_task_scope_identity ..........   Passed    0.17 sec
+        Start  25: unit.test_chat_engine
+ 25/108 Test  #25: unit.test_chat_engine ..............................   Passed    0.09 sec
+        Start  26: unit.test_chat_knowledge_context
+ 26/108 Test  #26: unit.test_chat_knowledge_context ...................   Passed    2.94 sec
+        Start  27: unit.test_chat_retrieval_plan
+ 27/108 Test  #27: unit.test_chat_retrieval_plan ......................   Passed    2.28 sec
+        Start  28: unit.test_config
+ 28/108 Test  #28: unit.test_config ...................................   Passed    0.02 sec
+        Start  29: unit.test_context_channel_integration
+ 29/108 Test  #29: unit.test_context_channel_integration ..............   Passed    1.10 sec
+        Start  30: unit.test_context_controls
+ 30/108 Test  #30: unit.test_context_controls .........................   Passed    2.24 sec
+        Start  31: unit.test_context_counter
+ 31/108 Test  #31: unit.test_context_counter ..........................   Passed    0.62 sec
+        Start  32: unit.test_context_diagnostics
+ 32/108 Test  #32: unit.test_context_diagnostics ......................   Passed   15.59 sec
+        Start  33: unit.test_context_engine
+ 33/108 Test  #33: unit.test_context_engine ...........................   Passed   14.64 sec
+        Start  34: unit.test_context_eval
+ 34/108 Test  #34: unit.test_context_eval .............................   Passed    1.28 sec
+        Start  35: unit.test_context_native_consumer
+ 35/108 Test  #35: unit.test_context_native_consumer ..................   Passed    5.05 sec
+        Start  36: unit.test_context_plan
+ 36/108 Test  #36: unit.test_context_plan .............................   Passed    5.21 sec
+        Start  37: unit.test_context_retrieval
+ 37/108 Test  #37: unit.test_context_retrieval ........................   Passed    1.09 sec
+        Start  38: unit.test_context_retrieval_dev
+ 38/108 Test  #38: unit.test_context_retrieval_dev ....................   Passed    1.71 sec
+        Start  39: unit.test_context_tfidf_reuse
+ 39/108 Test  #39: unit.test_context_tfidf_reuse ......................   Passed    5.71 sec
+        Start  40: unit.test_crypto
+ 40/108 Test  #40: unit.test_crypto ...................................   Passed    4.90 sec
+        Start  41: unit.test_db
+ 41/108 Test  #41: unit.test_db .......................................   Passed    0.29 sec
+        Start  42: unit.test_event_bus
+ 42/108 Test  #42: unit.test_event_bus ................................   Passed    0.03 sec
+        Start  43: unit.test_extract
+ 43/108 Test  #43: unit.test_extract ..................................   Passed    2.81 sec
+        Start  44: unit.test_extract_eval
+ 44/108 Test  #44: unit.test_extract_eval .............................   Passed    2.49 sec
+        Start  45: unit.test_fts
+ 45/108 Test  #45: unit.test_fts ......................................   Passed    0.11 sec
+        Start  46: unit.test_generalize
+ 46/108 Test  #46: unit.test_generalize ...............................   Passed    2.92 sec
+        Start  47: unit.test_generalize_eval
+ 47/108 Test  #47: unit.test_generalize_eval ..........................   Passed    1.38 sec
+        Start  48: unit.test_github
+ 48/108 Test  #48: unit.test_github ...................................   Passed    0.03 sec
+        Start  49: unit.test_graph
+ 49/108 Test  #49: unit.test_graph ....................................   Passed    0.09 sec
+        Start  50: unit.test_import
+ 50/108 Test  #50: unit.test_import ...................................   Passed    0.20 sec
+        Start  51: unit.test_import_export_fidelity
+ 51/108 Test  #51: unit.test_import_export_fidelity ...................   Passed    0.21 sec
+        Start  52: unit.test_import_exports
+ 52/108 Test  #52: unit.test_import_exports ...........................   Passed    1.86 sec
+        Start  53: unit.test_import_source_materialization
+ 53/108 Test  #53: unit.test_import_source_materialization ............   Passed    0.22 sec
+        Start  54: unit.test_import_stream
+ 54/108 Test  #54: unit.test_import_stream ............................   Passed   38.19 sec
+        Start  55: unit.test_kb_pack
+ 55/108 Test  #55: unit.test_kb_pack ..................................   Passed    8.20 sec
+        Start  56: unit.test_knowledge
+ 56/108 Test  #56: unit.test_knowledge ................................   Passed    8.11 sec
+        Start  57: unit.test_knowledge_candidate_graph
+ 57/108 Test  #57: unit.test_knowledge_candidate_graph ................   Passed    0.23 sec
+        Start  58: unit.test_knowledge_candidates
+ 58/108 Test  #58: unit.test_knowledge_candidates .....................   Passed    0.02 sec
+        Start  59: unit.test_knowledge_flow
+ 59/108 Test  #59: unit.test_knowledge_flow ...........................   Passed    1.59 sec
+        Start  60: unit.test_knowledge_semantic
+ 60/108 Test  #60: unit.test_knowledge_semantic .......................   Passed    3.84 sec
+        Start  61: unit.test_knowledge_semantic_graph
+ 61/108 Test  #61: unit.test_knowledge_semantic_graph .................   Passed    3.75 sec
+        Start  62: unit.test_knowledge_store
+ 62/108 Test  #62: unit.test_knowledge_store ..........................   Passed    0.18 sec
+        Start  63: unit.test_materialize
+ 63/108 Test  #63: unit.test_materialize ..............................   Passed    1.33 sec
+        Start  64: unit.test_media
+ 64/108 Test  #64: unit.test_media ....................................   Passed    0.01 sec
+        Start  65: unit.test_memory
+ 65/108 Test  #65: unit.test_memory ...................................   Passed    0.02 sec
+        Start  66: unit.test_model
+ 66/108 Test  #66: unit.test_model ....................................   Passed    0.02 sec
+        Start  67: unit.test_net_sse
+ 67/108 Test  #67: unit.test_net_sse ..................................   Passed    0.01 sec
+        Start  68: unit.test_pack_model
+ 68/108 Test  #68: unit.test_pack_model ...............................   Passed    1.46 sec
+        Start  69: unit.test_provenance
+ 69/108 Test  #69: unit.test_provenance ...............................   Passed    0.10 sec
+        Start  70: unit.test_providers
+ 70/108 Test  #70: unit.test_providers ................................   Passed    0.02 sec
+        Start  71: unit.test_regex
+ 71/108 Test  #71: unit.test_regex ....................................   Passed    0.01 sec
+        Start  72: unit.test_relations
+ 72/108 Test  #72: unit.test_relations ................................   Passed    0.02 sec
+        Start  73: unit.test_resolve
+ 73/108 Test  #73: unit.test_resolve ..................................   Passed    0.41 sec
+        Start  74: unit.test_resolve_attribution
+ 74/108 Test  #74: unit.test_resolve_attribution ......................   Passed    6.03 sec
+        Start  75: unit.test_resolve_lineage
+ 75/108 Test  #75: unit.test_resolve_lineage ..........................   Passed    2.83 sec
+        Start  76: unit.test_runtime
+ 76/108 Test  #76: unit.test_runtime ..................................   Passed    0.05 sec
+        Start  77: unit.test_selector
+ 77/108 Test  #77: unit.test_selector .................................   Passed    0.02 sec
+        Start  78: unit.test_semantic_llm
+ 78/108 Test  #78: unit.test_semantic_llm .............................   Passed    0.08 sec
+        Start  79: unit.test_semantic_worker
+ 79/108 Test  #79: unit.test_semantic_worker ..........................   Passed    0.26 sec
+        Start  80: unit.test_tasks
+ 80/108 Test  #80: unit.test_tasks ....................................   Passed    0.12 sec
+        Start  81: unit.test_util
+ 81/108 Test  #81: unit.test_util .....................................   Passed    0.05 sec
+        Start  82: compat.test_abi_compat
+ 82/108 Test  #82: compat.test_abi_compat .............................   Passed    0.34 sec
+        Start  83: compat.test_active_task_compiler_compat
+ 83/108 Test  #83: compat.test_active_task_compiler_compat ............   Passed    1.31 sec
+        Start  84: compat.test_candidate_graph_native
+ 84/108 Test  #84: compat.test_candidate_graph_native .................   Passed    1.14 sec
+        Start  85: compat.test_chat_active_task_http
+ 85/108 Test  #85: compat.test_chat_active_task_http ..................   Passed    3.10 sec
+        Start  86: compat.test_chat_compat
+ 86/108 Test  #86: compat.test_chat_compat ............................   Passed    4.17 sec
+        Start  87: compat.test_config_compat
+ 87/108 Test  #87: compat.test_config_compat ..........................   Passed    0.26 sec
+        Start  88: compat.test_crypto_compat
+ 88/108 Test  #88: compat.test_crypto_compat ..........................   Passed   15.89 sec
+        Start  89: compat.test_db_compat
+ 89/108 Test  #89: compat.test_db_compat ..............................   Passed    1.30 sec
+        Start  90: compat.test_github_sync_defaults
+ 90/108 Test  #90: compat.test_github_sync_defaults ...................   Passed    0.23 sec
+        Start  91: compat.test_graph_compat
+ 91/108 Test  #91: compat.test_graph_compat ...........................   Passed    3.10 sec
+        Start  92: compat.test_graph_packet_store
+ 92/108 Test  #92: compat.test_graph_packet_store .....................   Passed    0.76 sec
+        Start  93: compat.test_import_compat
+ 93/108 Test  #93: compat.test_import_compat ..........................   Passed    0.76 sec
+        Start  94: compat.test_memory_compat
+ 94/108 Test  #94: compat.test_memory_compat ..........................   Passed    3.09 sec
+        Start  95: compat.test_selector_compat
+ 95/108 Test  #95: compat.test_selector_compat ........................   Passed    0.14 sec
+        Start  96: compat.test_semantic_compat
+ 96/108 Test  #96: compat.test_semantic_compat ........................   Passed    6.33 sec
+        Start  97: compat.test_semantic_recovery
+ 97/108 Test  #97: compat.test_semantic_recovery ......................   Passed    4.03 sec
+        Start  98: compat.test_util_compat
+ 98/108 Test  #98: compat.test_util_compat ............................   Passed    4.46 sec
+        Start  99: research.structure
+ 99/108 Test  #99: research.structure .................................   Passed   40.73 sec
+        Start 100: research.independent_protocol
+100/108 Test #100: research.independent_protocol ......................   Passed    0.19 sec
+        Start 101: research.graph_native_protocol
+101/108 Test #101: research.graph_native_protocol .....................   Passed    0.84 sec
+        Start 102: research.candidate_graph_protocol
+102/108 Test #102: research.candidate_graph_protocol ..................   Passed    0.59 sec
+        Start 103: research.contracts
+103/108 Test #103: research.contracts .................................***Failed   39.51 sec
+....................................E............................................................................................................................................................................
+======================================================================
+ERROR: test_schema_and_all_actual_builtins_are_valid (test_application_profiles.ApplicationProfiles.test_schema_and_all_actual_builtins_are_valid) (path='resource-controls.json')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/308e2340bae7/chatadhd/loom/tools/contracts/test_application_profiles.py", line 39, in test_schema_and_all_actual_builtins_are_valid
+    self.validator.validate(read_json(path))
+  File "/root/.local/lib/python3.12/site-packages/jsonschema/validators.py", line 450, in validate
+    raise error
+jsonschema.exceptions.ValidationError: Additional properties are not allowed ('context_preview', 'semantic_analysis' were unexpected)
+
+Failed validating 'additionalProperties' in schema:
+    {'$schema': 'https://json-schema.org/draft/2020-12/schema',
+     '$id': 'https://chatadhd.local/contracts/application_profile.schema.json',
+     'title': 'Loom application interface and workflow profile v1',
+     'description': 'Declarative interface/workflow data. Target app '
+                    'versions are independent from profile revisions; null '
+                    'explicitly means unknown. Runtime validates renderer '
+                    'and operation registries, finite-state references and '
+                    'matching operation/capability adapters. This schema '
+                    'installs no code, model settings, permissions, hidden '
+                    'provider instructions or request reconstruction.',
+     'type': 'object',
+     'additionalProperties': False,
+     'required': ['schema',
+                  'id',
+                  'profile_revision',
+                  'label',
+                  'target',
+                  'evidence',
+                  'presentation',
+                  'composer',
+                  'actions',
+                  'workflows'],
+     'properties': {'schema': {'const': 'loom.application_profile/1'},
+                    'id': {'$ref': '#/$defs/nonempty'},
+                    'profile_revision': {'type': 'integer',
+                                         'minimum': 1,
+                                         'maximum': 9007199254740991,
+                                         'description': 'A safe integer '
+                                                        'representation '
+                                                        'invariant, '
+                                                        'independent from '
+                                                        'the target '
+                                                        "application's "
+                                                        'release.'},
+                    'label': {'$ref': '#/$defs/nonempty'},
+                    'target': {'type': 'object',
+                               'additionalProperties': False,
+                               'required': ['application_id',
+                                            'version',
+                                            'platform'],
+                               'properties': {'application_id': {'$ref': '#/$defs/nonempty',
+                                                                 'description': 'Open '
+                                                                                'identifier '
+                                                                                'vocabulary; '
+                                                                                'no '
+                                                                                'provider-specific '
+                                                                                'branches.'},
+                                              'version': {'anyOf': [{'$ref': '#/$defs/nonempty'},
+                                                                    {'type': 'null'}],
+                                                          'description': 'Original '
+                                                                         'app '
+                                                                         'release '
+                                                                         'identifier '
+                                                                         'or '
+                                                                         'null '
+                                                                         'when '
+                                                                         'unverified/unknown. '
+                                                                         'Never '
+                                                                         'inferred '
+                                                                         'from '
+                                                                         'profile_revision.'},
+                                              'platform': {'$ref': '#/$defs/nonempty'}}},
+                    'evidence': {'type': 'object',
+                                 'additionalProperties': False,
+                                 'required': ['status', 'sources', 'gaps'],
+                                 'properties': {'status': {'enum': ['inspired',
+                                                                    'partial',
+                                                                    'verified'],
+                                                           'description': 'Self-declared '
+                                                                          'mapping '
+                                                                          'evidence '
+                                                                          'status, '
+                                                                          'not '
+                                                                          'a '
+                                                                          'claim '
+                                                                          'of '
+                                                                          'hidden '
+                                                                          'engine '
+                                                                          'parity '
+                                                                          'or '
+                                                                          'measured '
+                                                                          'provider '
+                                                                          'request '
+                                                                          'fidelity.'},
+                                                'sources': {'type': 'array',
+                                                            'items': {'type': 'object',
+                                                                      'additionalProperties': False,
+                                                                      'required': ['url'],
+                                                                      'properties': {'url': {'type': 'string',
+                                                                                             'pattern': '^https?://[^\\s]+$',
+                                                                                             'not': {'pattern': '\\s'},
+                                                                                             'description': 'Absolute '
+                                                                                                            'HTTP(S) '
+                                                                                                            'provenance '
+                                                                                                            'URL '
+                                                                                                            'without '
+                                                                                                            'whitespace. '
+                                                                                                            'Runtime '
+                                                                                                            'URL '
+                                                                                                            'parsing '
+                                                                                                            'and '
+                                                                                                            'rejection '
+                                                                                                            'of '
+                                                                                                            'credentials '
+                                                                                                            'are '
+                                                                                                            'normative; '
+                                                                                                            'this '
+                                                                                                            'contract '
+                                                                                                            'requires '
+                                                                                                            'no '
+                                                                                                            'optional '
+                                                                                                            'URI '
+                                                                                                            'format '
+                                                                                                            'checker.'},
+                                                                                     'revision': {'$ref': '#/$defs/nonempty',
+                                                                                                  'description': 'Pinned '
+                                                                                                                 'source '
+                                                                                                                 'commit/release '
+                                                                                                                 'when '
+                                                                                                                 'known; '
+                                                                                                                 'optional '
+                                                                                                                 'does '
+                                                                                                                 'not '
+                                                                                                                 'imply '
+                                                                                                                 'a '
+                                                                                                                 'pin '
+                                                                                                                 'exists.'},
+                                                                                     'note': {'type': 'string'}}}},
+                                                'gaps': {'type': 'array',
+                                                         'items': {'$ref': '#/$defs/nonempty'},
+                                                         'description': 'Explicit '
+                                                                        'visual/workflow/evidence '
+                                                                        'omissions. '
+                                                                        'Missing '
+                                                                        'runtime '
+                                                                        'capabilities '
+                                                                        'are '
+                                                                        'reported '
+                                                                        'separately '
+                                                                        'from '
+                                                                        'actual '
+                                                                        'adapter '
+                                                                        'registrations.'}}},
+                    'presentation': {'type': 'object',
+                                     'additionalProperties': False,
+                                     'required': ['renderer',
+                                                  'tokens',
+                                                  'sidebar',
+                                                  'content_width',
+                                                  'message_style'],
+                                     'properties': {'renderer': {'$ref': '#/$defs/nonempty',
+                                                                 'description': 'Must '
+                                                                                'name '
+                                                                                'a '
+                                                                                'renderer '
+                                                                                'registered '
+                                                                                'by '
+                                                                                'trusted '
+                                                                                'code. '
+                                                                                'Unknown '
+                                                                                'renderers '
+                                                                                'fail '
+                                                                                'visibly.'},
+                                                    'tokens': {'type': 'object',
+                                                               'additionalProperties': False,
+                                                               'required': ['background',
+                                                                            'surface',
+                                                                            'text',
+                                                                            'muted',
+                                                                            'accent',
+                                                                            'border'],
+                                                               'properties': {'background': {'$ref': '#/$defs/hexColour'},
+                                                                              'surface': {'$ref': '#/$defs/hexColour'},
+                                                                              'text': {'$ref': '#/$defs/hexColour'},
+                                                                              'muted': {'$ref': '#/$defs/hexColour'},
+                                                                              'accent': {'$ref': '#/$defs/hexColour'},
+                                                                              'border': {'$ref': '#/$defs/hexColour'}}},
+                                                    'sidebar': {'type': 'object',
+                                                                'additionalProperties': False,
+                                                                'required': ['side',
+                                                                             'width'],
+                                                                'properties': {'side': {'enum': ['left',
+                                                                                                 'right']},
+                                                                               'width': {'$ref': '#/$defs/pixels'}}},
+                                                    'content_width': {'$ref': '#/$defs/pixels'},
+                                                    'message_style': {'enum': ['plain',
+                                                                               'bubble',
+                                                                               'user-bubble']}}},
+                    'composer': {'type': 'object',
+                                 'additionalProperties': False,
+                                 'required': ['submit', 'placeholder'],
+                                 'properties': {'submit': {'enum': ['enter',
+                                                                    'mod-enter',
+                                                                    'unmodified-enter']},
+                                                'placeholder': {'type': 'string'}}},
+                    'actions': {'type': 'array',
+                                'items': {'$ref': '#/$defs/action'},
+                                'description': 'Unique action IDs. '
+                                               'Required actions block '
+                                               'activation without their '
+                                               'matching adapters; '
+                                               'optional actions expose '
+                                               'explicit gaps and reject '
+                                               'execution.'},
+                    'workflows': {'type': 'array',
+                                  'items': {'$ref': '#/$defs/workflow'},
+                                  'description': 'Unique workflow IDs. '
+                                                 'State changes occur only '
+                                                 'after adapter success; '
+                                                 'runtime validates '
+                                                 'references, '
+                                                 'deterministic events, '
+                                                 'guards and restoration '
+                                                 'traces.'}},
+     'allOf': [{'if': {'properties': {'evidence': {'properties': {'status': {'const': 'verified'}}}}},
+                'then': {'properties': {'target': {'properties': {'version': {'$ref': '#/$defs/nonempty'}}},
+                                        'evidence': {'properties': {'sources': {'minItems': 1},
+                                                                    'gaps': {'maxItems': 0}}}}}}],
+     '$defs': {'nonempty': {'type': 'string', 'pattern': '\\S'},
+               'hexColour': {'type': 'string',
+                             'pattern': '^#([0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$',
+                             'not': {'pattern': '\\s'},
+                             'description': 'Bounded CSS colour syntax, '
+                                            'without executable or '
+                                            'arbitrary CSS values.'},
+               'pixels': {'type': 'number',
+                          'exclusiveMinimum': 0,
+                          'description': 'Positive finite width in CSS '
+                                         'pixels. No product-policy '
+                                         'ceiling; responsive CSS can fit '
+                                         'the viewport.'},
+               'jsonValue': {'description': 'Finite JSON-only values. '
+                                            'Runtime rejects cycles, '
+                                            'functions, accessors, hidden '
+                                            'properties, '
+                                            'noncanonical/sparse array '
+                                            'indices, custom prototypes, '
+                                            'undefined, non-finite numbers '
+                                            'and symbols before '
+                                            'binding/saving.',
+                             'anyOf': [{'type': ['null',
+                                                 'boolean',
+                                                 'number',
+                                                 'string']},
+                                       {'type': 'array',
+                                        'items': {'$ref': '#/$defs/jsonValue'}},
+                                       {'type': 'object',
+                                        'additionalProperties': {'$ref': '#/$defs/jsonValue'}}]},
+               'pointer': {'type': 'string',
+                           'pattern': '^(|/[\\s\\S]*)$',
+                           'not': {'pattern': '~([^01]|$)'},
+                           'description': 'RFC6901 JSON pointer. Empty '
+                                          'explicitly selects the root; ~0 '
+                                          'and ~1 escape tilde and slash. '
+                                          'Runtime traverses own data '
+                                          'fields only, with canonical '
+                                          'array indices and no getters.'},
+               'payloadExpression': {'description': 'Pure declarative '
+                                                    'payload. Missing '
+                                                    'references fail '
+                                                    'before effects. No '
+                                                    'result exists before '
+                                                    'execution. The caller '
+                                                    'cannot also supply an '
+                                                    'imperative payload.',
+                                     'oneOf': [{'type': 'object',
+                                                'additionalProperties': False,
+                                                'required': ['literal'],
+                                                'properties': {'literal': {'$ref': '#/$defs/jsonValue'}}},
+                                               {'type': 'object',
+                                                'additionalProperties': False,
+                                                'required': ['from',
+                                                             'pointer'],
+                                                'properties': {'from': {'enum': ['inputs',
+                                                                                 'context',
+                                                                                 'vars']},
+                                                               'pointer': {'$ref': '#/$defs/pointer'}}},
+                                               {'type': 'object',
+                                                'additionalProperties': False,
+                                                'required': ['object'],
+                                                'properties': {'object': {'type': 'object',
+                                                                          'propertyNames': {'$ref': '#/$defs/nonempty'},
+                                                                          'additionalProperties': {'$ref': '#/$defs/payloadExpression'}}}},
+                                               {'type': 'object',
+                                                'additionalProperties': False,
+                                                'required': ['array'],
+                                                'properties': {'array': {'type': 'array',
+                                                                         'items': {'$ref': '#/$defs/payloadExpression'}}}}]},
+               'saveExpression': {'description': 'Explicit selected-output '
+                                                 'expression. Non-result '
+                                                 'bindings are '
+                                                 'validated/captured '
+                                                 'before effects. Result '
+                                                 'selections are checked '
+                                                 'after adapter success; '
+                                                 'an invalid selection '
+                                                 'leaves session state '
+                                                 'unchanged but external '
+                                                 'effects cannot be rolled '
+                                                 'back. Nothing is '
+                                                 'persisted implicitly, '
+                                                 'including native '
+                                                 'requests, callbacks, '
+                                                 'inputs or full results.',
+                                  'oneOf': [{'type': 'object',
+                                             'additionalProperties': False,
+                                             'required': ['literal'],
+                                             'properties': {'literal': {'$ref': '#/$defs/jsonValue'}}},
+                                            {'type': 'object',
+                                             'additionalProperties': False,
+                                             'required': ['from',
+                                                          'pointer'],
+                                             'properties': {'from': {'enum': ['inputs',
+                                                                              'context',
+                                                                              'vars',
+                                                                              'result']},
+                                                            'pointer': {'$ref': '#/$defs/pointer'}}},
+                                            {'type': 'object',
+                                             'additionalProperties': False,
+                                             'required': ['object'],
+                                             'properties': {'object': {'type': 'object',
+                                                                       'propertyNames': {'$ref': '#/$defs/nonempty'},
+                                                                       'additionalProperties': {'$ref': '#/$defs/saveExpression'}}}},
+                                            {'type': 'object',
+                                             'additionalProperties': False,
+                                             'required': ['array'],
+                                             'properties': {'array': {'type': 'array',
+                                                                      'items': {'$ref': '#/$defs/saveExpression'}}}}]},
+               'action': {'type': 'object',
+                          'additionalProperties': False,
+                          'required': ['id',
+                                       'label',
+                                       'operation',
+                                       'capability',
+                                       'required'],
+                          'properties': {'id': {'$ref': '#/$defs/nonempty'},
+                                         'label': {'$ref': '#/$defs/nonempty'},
+                                         'operation': {'$ref': '#/$defs/nonempty',
+                                                       'description': 'Canonical '
+                                                                      'or '
+                                                                      'explicitly '
+                                                                      'extended '
+                                                                      'operation '
+                                                                      'identifier. '
+                                                                      'Runtime '
+                                                                      'rejects '
+                                                                      'unknown '
+                                                                      'operations.'},
+                                         'capability': {'$ref': '#/$defs/nonempty',
+                                                        'description': 'Satisfied '
+                                                                       'only '
+                                                                       'by '
+                                                                       'an '
+                                                                       'actual '
+                                                                       'adapter '
+                                                                       'registered '
+                                                                       'for '
+                                                                       'BOTH '
+                                                                       'this '
+                                                                       'capability '
+                                                                       'and '
+                                                                       'this '
+                                                                       'operation.'},
+                                         'required': {'type': 'boolean'}}},
+               'session': {'type': 'object',
+                           'additionalProperties': False,
+                           'description': 'Persistence contract exposed as '
+                                          'a reusable definition. Runtime '
+                                          'replays history against the '
+                                          'exact registered profile; a '
+                                          'local trace is not a server '
+                                          'authorization record. Adapter '
+                                          'failures cannot advance this '
+                                          'state, though external adapter '
+                                          'side effects are not '
+                                          'rollbackable by this UI '
+                                          'runtime.',
+                           'required': ['schema',
+                                        'profile',
+                                        'workflows',
+                                        'sequence',
+                                        'history'],
+                           'properties': {'schema': {'const': 'loom.application_profile_session/1'},
+                                          'profile': {'type': 'object',
+                                                      'additionalProperties': False,
+                                                      'required': ['id',
+                                                                   'profile_revision',
+                                                                   'target',
+                                                                   'definition'],
+                                                      'properties': {'id': {'$ref': '#/$defs/nonempty'},
+                                                                     'profile_revision': {'type': 'integer',
+                                                                                          'minimum': 1,
+                                                                                          'maximum': 9007199254740991},
+                                                                     'target': {'$ref': '#/properties/target'},
+                                                                     'definition': {'type': 'string',
+                                                                                    'description': 'Exact '
+                                                                                                   'canonical '
+                                                                                                   'JSON '
+                                                                                                   'content '
+                                                                                                   'identity '
+                                                                                                   '(object '
+                                                                                                   'keys '
+                                                                                                   'sorted '
+                                                                                                   'by '
+                                                                                                   'code '
+                                                                                                   'point, '
+                                                                                                   'array '
+                                                                                                   'order '
+                                                                                                   'preserved). '
+                                                                                                   'It '
+                                                                                                   'is '
+                                                                                                   'a '
+                                                                                                   'content '
+                                                                                                   'copy, '
+                                                                                                   'not '
+                                                                                                   'a '
+                                                                                                   'cryptographic '
+                                                                                                   'hash; '
+                                                                                                   'must '
+                                                                                                   'match '
+                                                                                                   'the '
+                                                                                                   'registered '
+                                                                                                   'definition '
+                                                                                                   'on '
+                                                                                                   'reload, '
+                                                                                                   'even '
+                                                                                                   'when '
+                                                                                                   'revision '
+                                                                                                   'and '
+                                                                                                   'target '
+                                                                                                   'labels '
+                                                                                                   'match.'}}},
+                                          'workflows': {'type': 'object',
+                                                        'additionalProperties': {'$ref': '#/$defs/nonempty'}},
+                                          'variables': {'type': 'object',
+                                                        'additionalProperties': {'type': 'object',
+                                                                                 'additionalProperties': {'$ref': '#/$defs/jsonValue'}},
+                                                        'description': 'Optional '
+                                                                       'additive '
+                                                                       '/1 '
+                                                                       'field. '
+                                                                       'Workflow-scoped '
+                                                                       'variables '
+                                                                       'exactly '
+                                                                       'replay '
+                                                                       'selected '
+                                                                       'receipt '
+                                                                       'updates. '
+                                                                       'Original '
+                                                                       'sessions '
+                                                                       'without '
+                                                                       'variables '
+                                                                       'remain '
+                                                                       'valid.'},
+                                          'sequence': {'type': 'integer',
+                                                       'minimum': 0,
+                                                       'maximum': 9007199254740991},
+                                          'history': {'type': 'array',
+                                                      'items': {'type': 'object',
+                                                                'additionalProperties': False,
+                                                                'required': ['sequence',
+                                                                             'action',
+                                                                             'operation'],
+                                                                'properties': {'sequence': {'type': 'integer',
+                                                                                            'minimum': 1,
+                                                                                            'maximum': 9007199254740991},
+                                                                               'action': {'$ref': '#/$defs/nonempty'},
+                                                                               'operation': {'$ref': '#/$defs/nonempty'},
+                                                                               'variables': {'type': 'object',
+                                                                                             'additionalProperties': {'$ref': '#/$defs/jsonValue'},
+                                                                                             'description': 'Only '
+                                                                                                            'updates '
+                                                                                                            'named '
+                                                                                                            'by '
+                                                                                                            'this '
+                                                                                                            'transition.save, '
+                                                                                                            'never '
+                                                                                                            'automatic '
+                                                                                                            'request/result '
+                                                                                                            'capture.'},
+                                                                               'workflow': {'type': 'object',
+                                                                                            'additionalProperties': False,
+                                                                                            'required': ['id',
+                                                                                                         'event',
+                                                                                                         'from',
+                                                                                                         'to'],
+                                                                                            'properties': {'id': {'$ref': '#/$defs/nonempty'},
+                                                                                                           'event': {'$ref': '#/$defs/nonempty'},
+                                                                                                           'from': {'$ref': '#/$defs/nonempty'},
+                                                                                                           'to': {'$ref': '#/$defs/nonempty'}}}}}}}},
+               'workflow': {'type': 'object',
+                            'additionalProperties': False,
+                            'required': ['id',
+                                         'initial',
+                                         'states',
+                                         'transitions'],
+                            'properties': {'id': {'$ref': '#/$defs/nonempty'},
+                                           'initial': {'$ref': '#/$defs/nonempty'},
+                                           'states': {'type': 'array',
+                                                      'minItems': 1,
+                                                      'uniqueItems': True,
+                                                      'items': {'$ref': '#/$defs/nonempty'}},
+                                           'transitions': {'type': 'array',
+                                                           'items': {'type': 'object',
+                                                                     'additionalProperties': False,
+                                                                     'required': ['from',
+                                                                                  'event',
+                                                                                  'action',
+                                                                                  'to'],
+                                                                     'properties': {'from': {'$ref': '#/$defs/nonempty'},
+                                                                                    'event': {'$ref': '#/$defs/nonempty'},
+                                                                                    'action': {'$ref': '#/$defs/nonempty'},
+                                                                                    'to': {'$ref': '#/$defs/nonempty'},
+                                                                                    'requires': {'type': 'array',
+                                                                                                 'uniqueItems': True,
+                                                                                                 'items': {'$ref': '#/$defs/nonempty'},
+                                                                                                 'description': 'Declarative '
+                                                                                                                'guard: '
+                                                                                                                'all '
+                                                                                                                'named '
+                                                                                                                'capabilities '
+                                                                                                                'must '
+                                                                                                                'have '
+                                                                                                                'actual '
+                                                                                                                'registered '
+                                                                                                                'adapters.'},
+                                                                                    'payload': {'$ref': '#/$defs/payloadExpression'},
+                                                                                    'save': {'type': 'object',
+                                                                                             'propertyNames': {'$ref': '#/$defs/nonempty'},
+                                                                                             'additionalProperties': {'$ref': '#/$defs/saveExpression'},
+                                                                                             'description': 'Optional '
+                                                                                                            'additive '
+                                                                                                            '/1 '
+                                                                                                            'field. '
+                                                                                                            'Values '
+                                                                                                            'are '
+                                                                                                            'selected '
+                                                                                                            'atomically '
+                                                                                                            'into '
+                                                                                                            'the '
+                                                                                                            'current '
+                                                                                                            "workflow's "
+                                                                                                            'vars '
+                                                                                                            'scope '
+                                                                                                            'after '
+                                                                                                            'successful '
+                                                                                                            'adapter '
+                                                                                                            'execution '
+                                                                                                            'and '
+                                                                                                            'JSON '
+                                                                                                            'validation. '
+                                                                                                            'Selections '
+                                                                                                            'use '
+                                                                                                            'prior '
+                                                                                                            'vars, '
+                                                                                                            'not '
+                                                                                                            'sibling '
+                                                                                                            'saves '
+                                                                                                            'from '
+                                                                                                            'the '
+                                                                                                            'same '
+                                                                                                            'transition.'}}}}}}}}
+
+On instance:
+    {'schema': 'loom.ui_resource_controls/1',
+     'context_preview': {'defaults': {'text': 'What have we discussed so '
+                                              'far?',
+                                      'depth': 2,
+                                      'max_tokens': 2000,
+                                      'auto_preview': True,
+                                      'debounce_ms': 300},
+                         'sliders': {'depth': {'min': 0,
+                                               'max': 4,
+                                               'step': 1},
+                                     'max_tokens': {'min': 200,
+                                                    'max': 16000,
+                                                    'step': 200}}},
+     'semantic_analysis': {'defaults': {'max_requests': 4,
+                                        'max_observations': 16,
+                                        'max_chunk_bytes': 16000,
+                                        'max_input_bytes': 64000,
+                                        'max_output_tokens': 1600,
+                                        'max_proposals': 16,
+                                        'max_response_bytes': 128000,
+                                        'timeout_ms': 30000},
+                           'fields': [{'key': 'max_requests',
+                                       'label': 'Maximum model requests',
+                                       'suggested_min': 0,
+                                       'suggested_max': 8},
+                                      {'key': 'max_input_bytes',
+                                       'label': 'Maximum total input bytes',
+                                       'suggested_min': 0,
+                                       'suggested_max': 256000},
+                                      {'key': 'max_output_tokens',
+                                       'label': 'Maximum output tokens per '
+                                                'request',
+                                       'suggested_min': 1,
+                                       'suggested_max': 4096},
+                                      {'key': 'max_observations',
+                                       'label': 'Maximum observations per '
+                                                'chunk',
+                                       'suggested_min': 1,
+                                       'suggested_max': 64},
+                                      {'key': 'max_chunk_bytes',
+                                       'label': 'Maximum input bytes per '
+                                                'chunk',
+                                       'suggested_min': 1,
+                                       'suggested_max': 64000},
+                                      {'key': 'max_proposals',
+                                       'label': 'Maximum proposals per '
+                                                'response',
+                                       'suggested_min': 1,
+                                       'suggested_max': 64},
+                                      {'key': 'max_response_bytes',
+                                       'label': 'Maximum response bytes',
+                                       'suggested_min': 1,
+                                       'suggested_max': 256000},
+                                      {'key': 'timeout_ms',
+                                       'label': 'Request timeout in '
+                                                'milliseconds',
+                                       'suggested_min': 1,
+                                       'suggested_max': 60000}]}}
+
+----------------------------------------------------------------------
+Ran 209 tests in 39.159s
+
+FAILED (errors=1)
+
+        Start 104: research.seeding
+104/108 Test #104: research.seeding ...................................   Passed   12.92 sec
+        Start 105: server.smoke
+105/108 Test #105: server.smoke .......................................   Passed    3.82 sec
+        Start 106: server.chat_active_task
+106/108 Test #106: server.chat_active_task ............................   Passed    1.98 sec
+        Start 107: cli.smoke
+107/108 Test #107: cli.smoke ..........................................   Passed    3.47 sec
+        Start 108: eval.harness
+108/108 Test #108: eval.harness .......................................   Passed    1.23 sec
+
+99% tests passed, 1 tests failed out of 108
+
+Total Test time (real) = 350.79 sec
+
+The following tests FAILED:
+	103 - research.contracts (Failed)
+Errors while running CTest

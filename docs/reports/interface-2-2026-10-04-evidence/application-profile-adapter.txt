@@ -1,0 +1,10 @@
+PASS native conversation/message operations preserve exact API arguments
+PASS chat request identity, all context fields and streaming handlers survive the adapter
+PASS native error, network failure and truncated stream never advance a workflow
+PASS request-ID cancellation settles the active send and stops the transport
+PASS pre-start cancellation uses the returned subscription without inventing an ID
+PASS failed backend cancellation preserves a live send unless explicitly unsubscribed
+PASS synchronous transport/callback failures and immediate unsubscribe all settle
+PASS UI capabilities come from installed host adapters and knowledge backend
+PASS invalid operation payloads cannot call native APIs or invent cancelled requests
+[application-profile-adapter] 9/9 groups passed (offline; no model/provider calls)

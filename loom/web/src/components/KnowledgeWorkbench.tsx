@@ -6,6 +6,8 @@ import {
   type KnowledgeRecord, type KnowledgeRun,
 } from "../api/knowledge";
 import "./knowledge.css";
+import { NATIVE_INT_MAX, SEMANTIC_BUDGET_KEY, nativeResourceInteger, useResourceParameters, useResourcePresets, validSemanticBudget } from "../context/resource-controls";
+import ResourcePresetEditor from "./ResourcePresetEditor";
 
 import { VIEWS, STORAGE_KEY, SAVED_KEY, loadWorkspace, parseWorkspace, addPane, changeParameter, connect, unlink, duplicatePane, setWorkspaceRun,
   type ViewKind, type Pane, type Parameters, type Parameter, type Workspace } from "../workspace/state";
@@ -206,21 +208,10 @@ function RunControls({ knowledge, onDone }: { knowledge: KnowledgeApi; onDone: (
   const [representation, setRepresentation] = useState("relation_v1");
   const [modelConfig, setModelConfig] = useState<KnowledgeRecord | null>(null);
   const [modelError, setModelError] = useState("");
-  const [semanticBudget, setSemanticBudget] = useState<Record<string, number>>({
-    max_requests: 4, max_observations: 16, max_chunk_bytes: 16000, max_input_bytes: 64000,
-    max_output_tokens: 1600, max_proposals: 16, max_response_bytes: 128000, timeout_ms: 30000,
-  });
-  const budgetFields = [
-    { key: "max_requests", label: "Maximum model requests", min: 0, max: 8 },
-    { key: "max_input_bytes", label: "Maximum total input bytes", min: 0, max: 256000 },
-    { key: "max_output_tokens", label: "Maximum output tokens per request", min: 1, max: 4096 },
-    { key: "max_observations", label: "Maximum observations per chunk", min: 1, max: 64 },
-    { key: "max_chunk_bytes", label: "Maximum input bytes per chunk", min: 1, max: 64000 },
-    { key: "max_proposals", label: "Maximum proposals per response", min: 1, max: 64 },
-    { key: "max_response_bytes", label: "Maximum response bytes", min: 1, max: 256000 },
-    { key: "timeout_ms", label: "Request timeout in milliseconds", min: 1, max: 60000 },
-  ];
-  const invalidBudget = budgetFields.some(({ key, min, max }) => !Number.isInteger(semanticBudget[key]) || semanticBudget[key] < min || semanticBudget[key] > max);
+  const { presets, error: presetError } = useResourcePresets();
+  const { value: semanticBudget, setValue: setSemanticBudget, storageError: budgetStorageError } = useResourceParameters<Record<string, number>>(SEMANTIC_BUDGET_KEY, presets.semantic_analysis.defaults, validSemanticBudget);
+  const budgetFields = presets.semantic_analysis.fields;
+  const invalidBudget = !validSemanticBudget(semanticBudget) || budgetFields.some(({ key }) => !nativeResourceInteger(semanticBudget[key]));
   const loadModelConfig = useCallback(async () => {
     setModelError("");
     try { setModelConfig(await api.getConfig()); }
@@ -232,7 +223,7 @@ function RunControls({ knowledge, onDone }: { knowledge: KnowledgeApi; onDone: (
   const semantic = asRecord(asRecord(extractStage?.stats).semantic);
   const hasSemantic = Object.keys(semantic).length > 0;
   const run = async () => {
-    if (useModel && invalidBudget) { setError("Use whole-number semantic limits within the displayed ranges."); return; }
+    if (useModel && invalidBudget) { setError(`Use finite nonnegative whole-number semantic parameters representable by the native integer fields (0–${NATIVE_INT_MAX}).`); return; }
     setRunning(true); setError(""); setResult(null);
     try {
       const outcome = await knowledge.run({ sources: sources.split("\n").map((path) => path.trim()).filter(Boolean), priors, llm: useModel ? "auto" : "off",
@@ -256,11 +247,14 @@ function RunControls({ knowledge, onDone }: { knowledge: KnowledgeApi; onDone: (
         <label>Candidate representation<select aria-label="Semantic candidate representation" value={representation} disabled={running} onChange={(event) => setRepresentation(event.target.value)}><option value="relation_v1">Relation proposals</option><option value="occurrence_graph_v1">Occurrence graph proposals (experimental)</option></select></label>
         {representation === "occurrence_graph_v1" && <p className="kb-muted">Proposes local entities, claim relationships, scopes and explicit unknowns. Draft checks verify the supplied structure and source spans; interpretation and inference remain unreviewed. Existing views stay open.</p>}
         <fieldset disabled={running}><legend>Semantic model budget</legend>
-          <div className="kb-pane-controls">{budgetFields.slice(0, 3).map(({ key, label, min, max }) => <label key={key}>{label} ({min}–{max})<input aria-label={label} type="number" min={min} max={max} step={1} value={Number.isNaN(semanticBudget[key]) ? "" : semanticBudget[key]} onChange={(event) => setSemanticBudget((current) => ({ ...current, [key]: event.target.value === "" ? NaN : Number(event.target.value) }))} /></label>)}</div>
-          <details><summary>More semantic limits</summary><div className="kb-pane-controls">{budgetFields.slice(3).map(({ key, label, min, max }) => <label key={key}>{label} ({min}–{max})<input aria-label={label} type="number" min={min} max={max} step={1} value={Number.isNaN(semanticBudget[key]) ? "" : semanticBudget[key]} onChange={(event) => setSemanticBudget((current) => ({ ...current, [key]: event.target.value === "" ? NaN : Number(event.target.value) }))} /></label>)}</div></details>
+          <div className="kb-pane-controls">{budgetFields.slice(0, 3).map(({ key, label, suggested_min, suggested_max }) => <label key={key}>{label} (preset suggestion {suggested_min}–{suggested_max})<input aria-label={label} type="number" min={0} max={NATIVE_INT_MAX} step={1} value={Number.isNaN(semanticBudget[key]) ? "" : semanticBudget[key]} onChange={(event) => setSemanticBudget((current) => ({ ...current, [key]: event.target.value === "" ? NaN : Number(event.target.value) }))} /></label>)}</div>
+          <details><summary>More semantic limits</summary><div className="kb-pane-controls">{budgetFields.slice(3).map(({ key, label, suggested_min, suggested_max }) => <label key={key}>{label} (preset suggestion {suggested_min}–{suggested_max})<input aria-label={label} type="number" min={0} max={NATIVE_INT_MAX} step={1} value={Number.isNaN(semanticBudget[key]) ? "" : semanticBudget[key]} onChange={(event) => setSemanticBudget((current) => ({ ...current, [key]: event.target.value === "" ? NaN : Number(event.target.value) }))} /></label>)}</div></details>
           <p className="kb-muted">Input limits count prompt and context bytes, including source excerpts. Request limits include cached chunks. Output-token limits apply to each request. Zero requests or zero total input permits no model work. These limits bound work, not its price.</p>
+          <p className="kb-muted">Chosen parameters are saved in this browser. Suggested ranges are editable presets; values above them are sent unchanged. The native engine or provider may report unsupported capabilities, which remain visible below.</p>
+          <ResourcePresetEditor />
         </fieldset>
-        {invalidBudget && <p className="kb-error" role="alert">Use whole-number semantic limits within the displayed ranges.</p>}
+        {invalidBudget && <p className="kb-error" role="alert">Use finite nonnegative whole-number semantic parameters representable by the native integer fields (0–{NATIVE_INT_MAX}).</p>}
+        {[presetError, budgetStorageError].filter(Boolean).map(message => <p className="kb-error" role="alert" key={message}>{message}</p>)}
       </div>}
       <p className="kb-muted">Selective mode uses the catalog profile. Original sources are preserved. {useModel ? "Model proposals use the limits above and the current server settings." : "Language-model proposals are off."}</p>
       <div className="kb-actions"><button className="primary" disabled={running || !sources.trim() || (useModel && invalidBudget)} onClick={run}>{running ? "Analyzing…" : "Analyze sources"}</button>

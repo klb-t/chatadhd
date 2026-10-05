@@ -1,0 +1,25 @@
+
+[start native usage-policy server]
+03:29:50 [INFO ] loom.config: Loaded config.json (3 keys)
+03:29:50 [INFO ] loom.config: secrets.json not found - using defaults
+03:29:50 [INFO ] loom.db: Schema upgraded: v0 -> v4
+03:29:50 [INFO ] loom.db: Database opened: /tmp/loom-usage-policy-ui-u8nP1K/chatadhd.db
+03:29:50 [INFO ] loom.models: Model cache empty or unrecognized — will refresh from API
+03:29:50 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+03:29:50 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom-usage-policy-ui-u8nP1K)
+loom-server: listening on 127.0.0.1:38615 (static: /workspace/scratch/308e2340bae7/chatadhd/loom/web/dist)
+loom-server: stopped
+03:29:52 [INFO ] loom.db: Database closed
+03:29:52 [INFO ] loom.runtime: Loom runtime shut down
+
+[start native usage-policy server]
+03:29:52 [INFO ] loom.config: Loaded config.json (13 keys)
+03:29:52 [INFO ] loom.config: secrets.json not found - using defaults
+03:29:52 [INFO ] loom.db: Database opened: /tmp/loom-usage-policy-ui-u8nP1K/chatadhd.db
+03:29:52 [INFO ] loom.models: Model cache empty or unrecognized — will refresh from API
+03:29:52 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+03:29:52 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom-usage-policy-ui-u8nP1K)
+loom-server: listening on 127.0.0.1:38615 (static: /workspace/scratch/308e2340bae7/chatadhd/loom/web/dist)
+loom-server: stopped
+03:29:53 [INFO ] loom.db: Database closed
+03:29:53 [INFO ] loom.runtime: Loom runtime shut down

@@ -58,6 +58,10 @@ export interface StreamHandlers<TChunk> {
 export type Unsubscribe = () => void;
 
 export interface LoomApi {
+  // Optional native extensions: older embedded hosts report unavailable.
+  usagePolicy?(command: Record<string, unknown>): Promise<Record<string, unknown>>;
+  packet?(command: Record<string, unknown>): Promise<Record<string, unknown>>;
+  readonly operations?: import("./operations").OperationsApi;
   // Additive capability; older embedded hosts can leave it unavailable.
   readonly knowledge?: KnowledgeApi;
   // Optional: older native embedded hosts do not dispatch this ABI yet.

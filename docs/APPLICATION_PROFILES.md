@@ -57,8 +57,10 @@ The web UI can import a profile JSON and open any number of simultaneous profile
 views over the selected conversation. Each retains its model and context controls;
 message edits and completed sends notify sibling views. Changing the UI profile
 does not select a provider, edit privacy/permission settings or compile a different
-context. The shared conversation sidebar uses the primary view's geometry;
-secondary profiles do not receive independent sidebars in this slice.
+context. The global conversation sidebar follows the primary view. Each composed view
+can also open its own sidebar using its profile geometry, and can couple its
+conversation selection to the host or choose independently. Model, context,
+channel and plan controls persist independently by view identity.
 
 Local persistence saves custom definitions, their exact accepted UTF-8 JSON
 source text, view identities, successful transitions and explicitly selected
@@ -89,8 +91,9 @@ receipt ID. Loading checks the native current-row drift report and the packet's
 source/identity before registering the profile. Older clients which did not
 retain original bytes use a visibly labelled JSON derivative when explicitly
 saved. Definitions can survive browser storage loss through native receipts;
-view layout, local workflow variables and remote execution recovery are not
-cross-device synchronized. Android's current JNI dispatch does not expose this
+an explicitly saved workflow snapshot can restore view layout, definitions,
+exact source JSON, local transitions and selected variables from server config.
+Remote execution outcomes still require inspection and reconciliation. Android's current JNI dispatch does not expose this
 store operation, so the UI marks it unavailable there.
 
 ## Included data profiles and reference projects
@@ -123,7 +126,7 @@ target a separate ID/version/platform, retain the source references and describe
 what is unverified. Import the JSON through **Import profile**. No code branch
 based on an application name is needed for existing renderer/operation vocabulary.
 Current rendering supports chat, plain/bubble/user-bubble messages, colour
-tokens, content width, shared sidebar geometry, composer shortcuts and workflow
+tokens, content width, per-view sidebar geometry, composer shortcuts and workflow
 controls with explicit JSON inputs.
 An arbitrary application's specialized screens still need renderer components;
 an unsupported operation still needs an adapter. A manifest cannot manufacture
@@ -135,7 +138,7 @@ Separate the following changes when translating a source application:
 |---|---|---|
 | Reference UI → profile data | Declared geometry/interaction choices, target and reference versions | Pixel/animation fidelity, accessibility and undisclosed state are unverified; Loom adds its own inspection controls |
 | Source workflow → canonical actions | Declared order and capability guards | Source service's hidden state, request assembly and tool policy remain unknown; local adapters have their own semantics |
-| Conversation → multiple views | Canonical current text, versions, model/context selections, original import blocks and unknown JSON | Media bytes are reference data, code/tools remain source inspection, full descendant navigation is open |
+| Conversation → multiple views | Canonical current text, versions, model/context selections, original import blocks and unknown JSON | Inline retained media can be previewed explicitly; code/tools remain source inspection; descendant paths are navigable projections, not selectable native send branches |
 | Action → saved navigation trace | Action/operation identity, successful transitions, explicitly selected variables | Unselected request/result fields omitted; trace is not an exact provider transmission record |
 
 ## Claude handoff and remaining work
@@ -144,32 +147,76 @@ The contract is a narrow implementation of the existing detachable `interface`
 and interaction axes (§11.10 of the conceptual model). It does not replace
 workspace/model/provider profiles or silently apply their other components.
 
-Next additions should demonstrate a specific target version against evidence:
+The thread-10 increment on `gpt/interface-2-2026-10-04` supplies the following
+projections and adapters. Each remains separate from a claim of parity with a
+source application.
 
-1. Extend the implemented typed-source inspector into specialized artifact,
-   media and branch renderers. Current imported messages expose source text,
-   exported reasoning, tool inputs/results, code, documents, media/attachment
-   references and unknown JSON. **Show excluded messages and saved versions**
-   enables retained source rows without changing request context policy. Edited
-   native text and original source are separate. Tools/code are inert, media is
-   not fetched automatically, and citations open only on an explicit click.
-2. Add actual project/artifact/browser/voice adapters with per-operation
-   `native/equivalent/limited/unavailable` evidence. Native message version
-   restore handles siblings, not complete descendant-branch navigation.
-3. Extend implemented native profile/source entities with individually queryable
-   capability links and server-backed workflow sessions. Profiles currently keep
-   their complete action/capability declarations inside preserved JSON; those
-   declarations do not assert tested source-service equivalence. Browser layout
-   and local workflow state remain a client projection, not graph authority.
-4. Bind durable execution checkpoints, idempotency and result references to
-   existing TaskEngine for remote/replayable workflows. Current local workflow
-   persistence cannot guarantee recovery after a successful remote side effect
-   followed by a browser crash.
-5. Extend geometry from one shared primary sidebar to independent composed
-   views; preserve existing unlimited graph panes and detachable couplings.
+| Handoff item | Implemented | Remaining native boundary |
+|---|---|---|
+| Specialized source renderers | Inert artifact/code/document inspection, explicitly opened retained inline media, complete descendant index and ancestor navigation with cycle/orphan diagnostics | Referenced blob retrieval and selecting an alternative branch as native chat history have no public adapter |
+| Project/artifact/browser/voice operations | Operations panel, native artifact listing/read, media status and explicit file-transcription route; per-operation `native/equivalent/limited/unavailable` evidence | Artifact editing, project execution, browser execution, microphone and realtime voice need actual adapters |
+| Queryable capability links | Explicit GraphPacket projection with separate profile/action/capability entities and native acceptance/readback | Evidence is the installed-adapter snapshot; acceptance does not establish original-service equivalence |
+| Server-backed workflow sessions | Explicit config-backed snapshots preserve definitions, exact sources, view selection, session traces, selected variables and recovery flags; restore performs no adapter dispatch | This config key has readback conflict detection rather than compare-and-swap. Concurrent writers can overwrite a snapshot |
+| Execution recovery | Atomic local pre-dispatch checkpoint records unknown outcomes; unknown/abandoned sessions block continuation. Restoring is blocked during native operations; closed views ignore late results | The public TaskEngine API reads checkpoint/result but lacks generic submit, checkpoint-write, complete and resume-one binding. Server-side exactly-once execution and reconciliation of successful remote effects remain core work |
+| Independent composed views | Per-view sidebar placement/width, independent/coupled conversation selection, stable adapter registrations, independent persistent model/context settings | Specialized screens still require trusted renderer registrations |
 
-Build/test commands and measured results belong in
-[the dated extended verification](verification/application-profiles-extended-2026-10-04/RESULTS.md).
-Fresh verification for this extended increment is separate from the earlier
-prototype and historical CTest reports. Native projection validation now ignores
-object-key order while retaining array order and exact numeric value checks.
+**Workflow recovery** never marks an unknown remote outcome as successful.
+An owner can reconcile only a verified-not-applied outcome before continuing,
+or abandon the session and keep it blocked. A browser crash after dispatch can
+therefore leave a visible unknown marker. Snapshot storage does not replace
+TaskEngine authority or undo a remote side effect. Legacy successful local
+sessions remain readable; malformed stored bytes are preserved and reported.
+
+## Available cross-thread controls
+
+- **Context** exposes native channel IDs, per-channel limits and thresholds,
+  candidate scan limit, lexical shadow and recorded counter-evidence links.
+  Defaults preserve the current request. Unknown method IDs are sent through
+  the open native channel contract and retain unavailable diagnostics. Arbitrary
+  weights, method combinations and capability discovery await the W3 registry;
+  the UI does not silently drop unsupported weight fields.
+- **Settings / Usage policy** reads presets, effective settings and overrides
+  from the W2 data preset accepted on main, edits the complete policy JSON and
+  inspects exact receipt decisions. Read-only override preview and source/hash
+  metadata identify the embedded pack without writing config or opening its ledger.
+  Approve/decline use receipt and operation identities; stale confirmations need
+  inspection rather than an implicit new dispatch. The HTTP route calls the
+  existing W2 dispatcher when compiled with that dependency, otherwise returns
+  explicit unavailable. These ledger controls do not guard unrelated legacy
+  chat, transcription or import operations by themselves.
+- **Graph reply workbench** compiles a captured response through W4, preserves
+  its raw bytes and native error envelope, shows model-origin unverified nodes
+  and host-computed spans, validates compilation and explicitly applies a
+  candidate/automatic policy to a returned packet. Expand/correct puts a
+  fragment address into the composer for review. Application is a packet
+  projection, separate from a canonical knowledge-store write. W3 still owns
+  automatic chat reply modes and graph-context request assembly. Exact replay shows the retained result without another execution and distinguishes
+  original admission from current accounting. Interrupted or indeterminate outcomes
+  remain explicit. W4 reports its shared contract/golden, alias and nested-combination
+  checks ready on `b302df2`; joint W3/W4 intake is still outside main. Its original
+  replay-accounting regression has been independently closed.
+- **Expert controls** show/edit the exact client ChatRequest for one subsequent
+  send and accept generic config patches. A client preview is not the fully
+  assembled provider prompt; native context traces remain separate. Credentials
+  use the existing secret endpoints. Analysis prompt/schema/preset editing and
+  full provider-query preview need W1/W11 descriptors and overlay APIs.
+
+R41 methods use the same graph inspection/editing model as other nodes. The
+canonical `loom.method_graph/1` / `loom.method_run_trace/1` contract belongs to
+W3/W4; their shared acceptance and public registry/prepared-request adapters
+remain dependencies. A method edit creates a new version, and results keep
+produced-by edges to the version that executed.
+
+Onboarding and R39–R40 belong to W12. Its `3c0bc36` branch exports
+`OnboardingPanel` and `WhatAppKnows`; they are not yet accepted on main.
+W10 will connect both through one user-bound adapter in App navigation after
+intake and publication of the native OnboardingStore transport. The adapter
+must retain the native outer revision for CAS and preserve the pack envelope.
+No placeholder onboarding is advertised. The [TaskEngine adapter contract](reports/interface-2-task-engine-adapter-2026-10-04.md)
+records current callable operations and the missing execution binding.
+
+The [thread-10 report](reports/interface-2-2026-10-04.md) records fresh checks,
+before/after counts, negative evidence and concrete requests to other lanes.
+The earlier [extended verification](verification/application-profiles-extended-2026-10-04/RESULTS.md)
+remains historical evidence for its pinned increment, rather than a receipt
+for these new changes.

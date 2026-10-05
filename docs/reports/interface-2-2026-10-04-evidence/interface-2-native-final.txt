@@ -1,0 +1,7 @@
+[interface-2-native] PASS channel validation precedes dispatch and native traces retain channels, counters and lexical shadow
+[interface-2-native] PASS exact one-call override dispatches with an empty composer and invalid normal drafts, then normal controls rebuild once
+[interface-2-native] PASS independent view context settings persist through reload without execution
+[interface-2-native] PASS native imported descendant paths navigate read-only with unchanged message statuses
+[interface-2-native] PASS native workflow snapshot restores original source and validated trace after browser storage reset
+[interface-2-native] PASS media capability read and failed multipart transcription clean uploaded temporary files
+[interface-2-native] PASS native config rejects malformed/nonobject PATCH and malformed/nonobject/missing-value PUT without changing stored values

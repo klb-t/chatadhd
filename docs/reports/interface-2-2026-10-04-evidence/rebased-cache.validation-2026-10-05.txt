@@ -1,0 +1,11 @@
+Command: /workspace/scratch/308e2340bae7/chatadhd/docs/reports/interface-2-2026-10-04-evidence/rebased-cache.launcher.py --check
+Exit: 1
+Seconds: 0.095
+Traceback (most recent call last):
+  File "/workspace/scratch/308e2340bae7/chatadhd/docs/reports/interface-2-2026-10-04-evidence/rebased-cache.launcher.py", line 161, in <module>
+    main()
+  File "/workspace/scratch/308e2340bae7/chatadhd/docs/reports/interface-2-2026-10-04-evidence/rebased-cache.launcher.py", line 123, in main
+    check_inputs(manifest)
+  File "/workspace/scratch/308e2340bae7/chatadhd/docs/reports/interface-2-2026-10-04-evidence/rebased-cache.launcher.py", line 62, in check_inputs
+    raise ValueError("Native source/header input changed: " + relative)
+ValueError: Native source/header input changed: loom/include/loom/loom.h

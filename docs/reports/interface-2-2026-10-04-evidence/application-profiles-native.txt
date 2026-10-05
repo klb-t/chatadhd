@@ -1,0 +1,16 @@
+[application-profiles] PASS profile changes preserve explicit model and native context selection
+[application-profiles] PASS two simultaneous application views keep independent profile/model/context settings
+[application-profiles] PASS pinned clone versions expose source-mapped layout and composer behavior
+[application-profiles] PASS profile Send reaches native completion and both views show the same saved conversation
+[application-profiles] PASS profile edit and restore use native message versions and refresh both views
+[application-profiles] PASS arbitrary versioned profile imports exact UTF-8 bytes with right sidebar and explicit shortcut
+[application-profiles] PASS invalid UTF-8 profile bytes cannot be silently repaired into accepted source
+[application-profiles] PASS a declared required capability without a real adapter cannot activate
+[application-profiles] PASS declarative new conversation → knowledge → return reaches actual native/UI operations
+[application-profiles] PASS exact profile source reaches canonical native graph and reloads from an immutable receipt
+[application-profiles] PASS two exact profile revisions and workflow state reload without provider/config mutation
+[application-profiles] PASS completion for conversation A cannot replace selected conversation B
+[application-profiles] PASS delayed old Stop failure cannot clear or report an error on a new Send
+[application-profiles] PASS truncated transport EOF clears pending content and exposes failure
+[application-profiles] PASS optional missing or absent Send stays disabled and preserves the draft
+[application-profiles] 15/15 groups passed; 6 local fake-provider calls; 0 remote calls

@@ -1,0 +1,182 @@
+// loom/extract.h — parse units per artifact type into observations and
+// observed claims (LOOM_CONCEPTUAL_MODEL §1, §3.7, §6.2). Area:
+// extract+resolve. STATUS: implemented (src/extract/).
+//
+// ── Semantics ───────────────────────────────────────────────────────
+// * detect(): which artifact types a unit is (artifact_types/*.json
+//   "detect" ops, kb::kDetectOps), best first; ties by id.
+// * segment(): the artifact type's segmenters (kb::kSegmenters) cut the unit
+//   into located, immutable Observations (I1): each has a Locator into the
+//   source (byte range / JSON pointer / time range) and its exact text.
+//   Observation ids are content-derived (model::Observation::make_id).
+// * extract(): the artifact type's extractors (kb::kExtractors) turn
+//   observations into OBSERVED claims only (evidence observed, origin from the
+//   source: archive | repo | external_authority for quoted statutes | user
+//   for the current conversation), each with Support pointing at its
+//   observations. Nothing here infers. Specifically:
+//     items / decisions / status_cues   decision, rejected_option, open_question, requirement, invariant,
+//                                       ... (archive item cues from lexicons/item_cues.json); Decisions
+//                                       with recorded alternatives; StatusRecords per branch/version cue
+//     forks                             conversation branch forks (edited messages keep both sides)
+//     versions                          anchored version mentions (lexicons/version_patterns.json)
+//     normative                         candidate principle statements (lexicons/cues.json "normative")
+//     generalizations / areas (R10)     umbrella statements that delimit an Area; the statement becomes a
+//                                       candidate Principle scoped to the area; listed items become observed
+//                                       member claims; an area without members is flagged as a gap
+//     entities_lexicon / relation_patterns   typed entity mentions (gazetteer, profile aliases) and
+//                                       claims from lexicons/relation_patterns.json
+//     code_symbols / citations / dates / speakers / headers   per medium
+// * Brainstorm segmentation (R10): headings and list structure give items;
+//   each item is classified against the project kind's domain kinds by their
+//   anchors (terms/lexicon/cues) -> (role, kind) with a score; an item that
+//   matches no kind keeps role "" and is reported (never forced).
+// * Language: every observation carries lang (kb::Normalizer::guess_lang);
+//   match keys come from the Normalizer (PL + EN, glossary).
+#pragma once
+
+#include <filesystem>
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <string_view>
+#include <vector>
+
+#include "loom/kb.h"
+#include "loom/model.h"
+#include "loom/result.h"
+#include "loom/util/json.h"
+
+namespace loom {
+namespace knowledge {
+struct StageContext;
+}
+
+namespace extract {
+
+inline constexpr std::string_view kExtractorVersion = "1";
+
+namespace detail {
+class Lexicons;
+}
+
+// What a unit is. {"artifact_type","score","reasons":[{"op","value","weight"}]}
+struct Detection {
+  std::string artifact_type;
+  double score = 0.0;
+  Json reasons = Json::array();
+  Json to_json() const;
+};
+
+// The content of one unit as handed to the extractor.
+struct UnitContent {
+  model::Unit unit;
+  std::string text;               // decoded text (UTF-8); "" for purely structured units
+  Json structured;                // parsed JSON element (chat export element, e-mail headers), or null
+  model::Origin origin = model::Origin::Archive;
+  // Entity the unit is about when known upstream (catalog project, repo):
+  // {"kind","label"}; null = derived from the unit's own mentions.
+  Json subject;
+};
+
+// A brainstorm item classified against a project kind (R10).
+//   {"observation","text","role","kind","score","area"}
+struct ClassifiedItem {
+  std::string observation;
+  std::string text;
+  std::optional<model::Role> role;
+  std::string kind;               // domain kind id ("" unclassified)
+  double score = 0.0;
+  std::string area;               // area id when inside an area
+  Json to_json() const;
+};
+
+// Everything extracted from one unit. All ids content-derived.
+//   {"observations":[...],"entities":[...],"claims":[...],"areas":[...],"principles":[...],
+//    "decisions":[...],"forks":[...],"statuses":[...],"items":[...],"stats":{...}}
+struct Extraction {
+  std::vector<model::Observation> observations;
+  std::vector<model::Entity> entities;       // mentioned entities (pre-resolution)
+  std::vector<model::Claim> claims;          // observed claims only
+  std::vector<model::Area> areas;
+  std::vector<model::Principle> principles;  // candidates (generalizations, normative statements)
+  std::vector<model::Decision> decisions;
+  std::vector<model::Fork> forks;
+  std::vector<model::StatusRecord> statuses;
+  std::vector<ClassifiedItem> items;         // brainstorm items
+  Json stats = Json::object();
+  Json to_json() const;
+};
+
+class Extractor {
+ public:
+  explicit Extractor(std::shared_ptr<const kb::Pack> pack);
+  // `discovered`: names found by a first pass over the other units of the
+  // same run, [{"kind","label","aliases":[...]}] (Extraction.stats["names"]);
+  // they are matched like lexicon entries (inflected forms included).
+  Extractor(std::shared_ptr<const kb::Pack> pack, const Json& discovered);
+  ~Extractor();
+  Extractor(const Extractor&) = delete;
+  Extractor& operator=(const Extractor&) = delete;
+
+  // Artifact types of the unit, best first (empty = unknown).
+  Result<std::vector<Detection>> detect(const UnitContent& content) const;
+  // Located observations of the unit per the artifact type's segmenters.
+  Result<std::vector<model::Observation>> segment(const model::ArtifactType& type, const UnitContent& content) const;
+  // Observed claims etc. per the artifact type's extractors.
+  Result<Extraction> extract(const model::ArtifactType& type, const UnitContent& content,
+                             const std::vector<model::Observation>& observations) const;
+  // detect -> segment -> extract with the best artifact type.
+  Result<Extraction> process(const UnitContent& content) const;
+  // R10: classify brainstorm items against a project kind (+ its facets).
+  Result<std::vector<ClassifiedItem>> classify_items(const model::ProjectKind& kind,
+                                                     const std::vector<model::Facet>& facets,
+                                                     const std::vector<model::Observation>& items) const;
+
+ private:
+  std::shared_ptr<const kb::Pack> pack_;
+  std::unique_ptr<detail::Lexicons> lex_;
+};
+
+// ── Reading sources into units (preview, and the stage when the catalog
+// hands over no units) ───────────────────────────────────────────────
+// A file or a directory: chat exports (.json / .jsonl / .zip with
+// conversations.json, projects.json, memories.json) -> one unit per
+// conversation / Claude project / memory object; markdown and text -> one
+// unit; code files -> one unit each (codebase); .eml -> email; .vtt/.srt ->
+// recording_transcript. Source = "sha256:<hex of the file bytes>" (I1);
+// unit ids Unit::make_id(source, locator). Deterministic order.
+Result<std::vector<UnitContent>> read_units(const std::filesystem::path& path);
+// A live conversation (rows of the core messages table, oldest first:
+// [{"id","parent_id"?,"role","text","created"?,"status"?}]) as the SAME unit
+// shape as an archived conversation, so archived and live conversations go
+// through one pipeline: the message tree (edits = forks), and the message
+// sequence, which every claim of a conversation records
+// (qualifiers.extra.seq: the position of the message that stated it) so the
+// order in which a structure was built stays in the graph. Deleted rows are
+// skipped; the newest active message is the current leaf. Source defaults
+// to "loom:conversation:<id>".
+UnitContent conversation_unit(std::string_view conv_id, std::string_view title, const Json& messages,
+                              std::string_view source = "");
+// One in-memory text unit (tests, previews): `member` names it (its
+// extension helps detection); source "sha256:<hex of text>" unless given.
+UnitContent text_unit(std::string_view member, std::string_view text, std::string_view date = "",
+                      std::string_view source = "");
+
+// The two-pass extraction of many units, merged into one Extraction (what
+// the stage stores): pass 1 collects the names units introduce, pass 2
+// extracts every unit with them (Extractor(pack, names)). Entities/claims
+// of the same id are merged (aliases, support); status histories ordered
+// across units. stats: {"units","failed","names":[...],"per_unit":[...]}.
+Extraction extract_units(std::shared_ptr<const kb::Pack> pack, const std::vector<UnitContent>& units,
+                         const std::function<bool()>& should_stop = {});
+
+// knowledge.extract stage: every unit selected by the catalog -> Extraction
+// -> KnowledgeStore (observations, entities, observed claims, areas,
+// candidate principles, decisions, forks, statuses). Params
+// (stage_params.extract): {"max_units"?, "types"?:[artifact type ids]}.
+// -> {"output","stats":{"units","observations","claims","areas",...}}
+Result<Json> run_stage(knowledge::StageContext& ctx);
+
+}  // namespace extract
+}  // namespace loom

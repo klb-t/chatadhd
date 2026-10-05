@@ -1,0 +1,15 @@
+.conversation-branches { padding: 8px; border: 1px solid var(--border); border-radius: 6px; margin: 8px 0; font-size: 12px; }
+.conversation-branches summary { cursor: pointer; color: var(--text); }
+.conversation-branches p { color: var(--dim); }
+.conversation-branch-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.conversation-branch-controls label { display: inline-flex; gap: 5px; align-items: center; }
+.conversation-branch-controls input:not([type="checkbox"]) { min-width: 100px; }
+.conversation-branch-list { padding: 0; list-style: none; max-height: 45vh; overflow: auto; }
+.conversation-branch-list li { margin: 5px 0; }
+.conversation-branch-list button { display: flex; flex-wrap: wrap; gap: 8px; width: 100%; text-align: left; border: 1px solid var(--border); border-radius: 4px; padding: 7px; background: var(--input-bg); color: var(--text); }
+.conversation-branch-list button[aria-current], .conversation-branch-path button[aria-current] { outline: 2px solid var(--accent); }
+.conversation-branch-position { color: var(--dim); }
+.conversation-branch-message { width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.conversation-branch-list code { overflow-wrap: anywhere; }
+.conversation-branch-path { display: flex; gap: 5px; flex-wrap: wrap; padding: 8px 0; }
+.conversation-branch-path button { font-size: 11px; }

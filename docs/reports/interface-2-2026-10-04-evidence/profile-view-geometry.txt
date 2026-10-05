@@ -1,0 +1,10 @@
+[profile-view-geometry] PASS legacy view identities migrate to the unchanged shared selection default
+[profile-view-geometry] PASS detaching preserves the visible selection and stored independent state round trips
+[profile-view-geometry] PASS invalid persisted conversation settings are rejected without mutating source
+[profile-view-geometry] PASS new views retain the legacy shared sidebar and coupled conversation selection
+[profile-view-geometry] PASS independent selection and local creation do not redirect sibling or host selection
+[profile-view-geometry] PASS profile-specific sidebar geometry and workflow selection stay local to the invoking view
+[profile-view-geometry] PASS model and context controls survive coupling changes and sending uses the view's conversation
+[profile-view-geometry] PASS independent layout and successful local workflow survive reload and closing does not delete conversation data
+[profile-view-geometry] PASS legacy layout restoration preserves workflow identity and invalid new settings preserve saved bytes
+[profile-view-geometry] 9/9 passed; authored local HTTP fixtures; zero remote model calls.

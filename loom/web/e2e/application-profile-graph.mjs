@@ -23,9 +23,12 @@ function transpile(file) {
 const moduleUrl = source => `data:text/javascript;base64,${Buffer.from(source).toString("base64")}`;
 const runtimeUrl = moduleUrl(transpile("../src/profiles/runtime.ts"));
 const typesUrl = moduleUrl(transpile("../src/api/types.ts"));
+const operationsUrl = moduleUrl(transpile("../src/api/operations.ts"));
 const runtime = await import(runtimeUrl);
 const graph = await import(moduleUrl(transpile("../src/profiles/graph.ts").replaceAll('from "./runtime"', `from "${runtimeUrl}"`)));
-const { LoomHttpApi } = await import(moduleUrl(transpile("../src/api/loom-http.ts").replaceAll('from "./types"', `from "${typesUrl}"`)));
+const { LoomHttpApi } = await import(moduleUrl(transpile("../src/api/loom-http.ts")
+  .replaceAll('from "./types"', `from "${typesUrl}"`)
+  .replaceAll('from "./operations"', `from "${operationsUrl}"`)));
 const { LoomJniApi } = await import(moduleUrl(transpile("../src/api/loom-jni.ts").replaceAll('from "./types"', `from "${typesUrl}"`)));
 
 const groups = [], nativeRequests = [], persisted = [];

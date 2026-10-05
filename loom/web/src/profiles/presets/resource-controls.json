@@ -1,0 +1,38 @@
+{
+  "schema": "loom.ui_resource_controls/1",
+  "context_preview": {
+    "defaults": {
+      "text": "What have we discussed so far?",
+      "depth": 2,
+      "max_tokens": 2000,
+      "auto_preview": true,
+      "debounce_ms": 300
+    },
+    "sliders": {
+      "depth": { "min": 0, "max": 4, "step": 1 },
+      "max_tokens": { "min": 200, "max": 16000, "step": 200 }
+    }
+  },
+  "semantic_analysis": {
+    "defaults": {
+      "max_requests": 4,
+      "max_observations": 16,
+      "max_chunk_bytes": 16000,
+      "max_input_bytes": 64000,
+      "max_output_tokens": 1600,
+      "max_proposals": 16,
+      "max_response_bytes": 128000,
+      "timeout_ms": 30000
+    },
+    "fields": [
+      { "key": "max_requests", "label": "Maximum model requests", "suggested_min": 0, "suggested_max": 8 },
+      { "key": "max_input_bytes", "label": "Maximum total input bytes", "suggested_min": 0, "suggested_max": 256000 },
+      { "key": "max_output_tokens", "label": "Maximum output tokens per request", "suggested_min": 1, "suggested_max": 4096 },
+      { "key": "max_observations", "label": "Maximum observations per chunk", "suggested_min": 1, "suggested_max": 64 },
+      { "key": "max_chunk_bytes", "label": "Maximum input bytes per chunk", "suggested_min": 1, "suggested_max": 64000 },
+      { "key": "max_proposals", "label": "Maximum proposals per response", "suggested_min": 1, "suggested_max": 64 },
+      { "key": "max_response_bytes", "label": "Maximum response bytes", "suggested_min": 1, "suggested_max": 256000 },
+      { "key": "timeout_ms", "label": "Request timeout in milliseconds", "suggested_min": 1, "suggested_max": 60000 }
+    ]
+  }
+}

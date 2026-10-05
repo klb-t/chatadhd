@@ -1,0 +1,1 @@
+[resource-controls] 4/4 groups passed: identical defaults, >old slider ranges + manual/persisted preview, >all old semantic ceilings + explicit native refusal + persistence, generic persisted preset overlay

@@ -1,0 +1,981 @@
+{
+  "status": "passed",
+  "groups": [
+    "embedded native settings and advisory override preview preserve config bytes and never open ledger",
+    "native ×10 receipt approval and rejection preserve arbitrary finite resource dimensions",
+    "native reservation change refuses stale approval and requires explicit original-estimate refresh plus a fresh owner reference",
+    "native restart preserves owner override, decisions, measured baseline and unresolved reservation; UI reload inspects actual durable records"
+  ],
+  "failure": null,
+  "external_requests": [],
+  "page_errors": [],
+  "browser_mutations": [
+    {
+      "method": "POST",
+      "path": "/api/usage-policy",
+      "body": {
+        "action": "settings"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/usage-policy",
+      "body": {
+        "action": "preview_settings",
+        "override": {
+          "schema": "loom.usage_policy/1",
+          "growth_factor": 10,
+          "baseline_window": null,
+          "ledger_busy_timeout_ms": 30000,
+          "include_reservations": true,
+          "initial_baselines": {
+            "owner/custom Ω/units-v2": {
+              "custom/quanta-v2": 2,
+              "arbitrary-large-units": 1e+290,
+              "unknown-owner-units": null
+            }
+          },
+          "extensions": {
+            "authored_public_fixture": true,
+            "arbitrary_owner_field": {
+              "unit_version": 2
+            }
+          }
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/usage-policy",
+      "body": {
+        "action": "preview_settings",
+        "override": {
+          "growth_factor": 1
+        }
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/api/config/loom_usage_policy",
+      "body": {
+        "value": {
+          "schema": "loom.usage_policy/1",
+          "growth_factor": 10,
+          "baseline_window": null,
+          "ledger_busy_timeout_ms": 30000,
+          "include_reservations": true,
+          "initial_baselines": {
+            "owner/custom Ω/units-v2": {
+              "custom/quanta-v2": 2,
+              "arbitrary-large-units": 1e+290,
+              "unknown-owner-units": null
+            }
+          },
+          "extensions": {
+            "authored_public_fixture": true,
+            "arbitrary_owner_field": {
+              "unit_version": 2
+            }
+          }
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/usage-policy",
+      "body": {
+        "action": "settings"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/usage-policy",
+      "body": {
+        "action": "request",
+        "estimate": {
+          "operation_id": "native-owner-approve",
+          "baseline_key": "owner/custom Ω/units-v2",
+          "resources": {
+            "custom/quanta-v2": 20,
+            "arbitrary-large-units": 1e+300,
+            "unknown-owner-units": null
+          },
+          "extensions": {
+            "authored_public_fixture": true
+          }
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/usage-policy",
+      "body": {
+        "action": "confirm",
+        "operation_id": "native-owner-approve",
+        "receipt_id": "usage_6eb430b05fb132f1b4e0035f984ae285ca5ae4aecfdb8fcf8c02db4f5d3a315c",
+        "approved": true,
+        "confirmation_ref": "public-owner-approval-v1"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/usage-policy",
+      "body": {
+        "action": "request",
+        "estimate": {
+          "operation_id": "native-owner-decline",
+          "baseline_key": "owner/custom Ω/units-v2",
+          "resources": {
+            "custom/quanta-v2": 20,
+            "arbitrary-large-units": 1e+300,
+            "unknown-owner-units": null
+          },
+          "extensions": {
+            "authored_public_fixture": true
+          }
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/usage-policy",
+      "body": {
+        "action": "confirm",
+        "operation_id": "native-owner-decline",
+        "receipt_id": "usage_e803d5f32929f2cd8f14482ac47a60f475df08f12e0ab533b26ebc9313f718c5",
+        "approved": false,
+        "confirmation_ref": "public-owner-rejection-v1"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/usage-policy",
+      "body": {
+        "action": "request",
+        "estimate": {
+          "operation_id": "native-owner-stale",
+          "baseline_key": "owner/custom Ω/units-v2",
+          "resources": {
+            "custom/quanta-v2": 20,
+            "arbitrary-large-units": 1e+300,
+            "unknown-owner-units": null
+          },
+          "extensions": {
+            "authored_public_fixture": true
+          }
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/usage-policy",
+      "body": {
+        "action": "confirm",
+        "operation_id": "native-owner-stale",
+        "receipt_id": "usage_cae769ac5f155362163b039e1d318edbca4bb424ed42d1470046ffd1d87f5088",
+        "approved": true,
+        "confirmation_ref": "public-stale-approval-attempt"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/usage-policy",
+      "body": {
+        "action": "request",
+        "estimate": {
+          "operation_id": "native-owner-stale",
+          "baseline_key": "owner/custom Ω/units-v2",
+          "resources": {
+            "custom/quanta-v2": 20,
+            "arbitrary-large-units": 1e+300,
+            "unknown-owner-units": null
+          },
+          "extensions": {
+            "authored_public_fixture": true
+          }
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/usage-policy",
+      "body": {
+        "action": "confirm",
+        "operation_id": "native-owner-stale",
+        "receipt_id": "usage_56051041507eeb15b86a21735b493940adba009d14872e9dde6b42a601229da3",
+        "approved": true,
+        "confirmation_ref": "public-fresh-approval-v2"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/usage-policy",
+      "body": {
+        "action": "settings"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/usage-policy",
+      "body": {
+        "action": "inspect",
+        "baseline_key": "owner/custom Ω/units-v2"
+      }
+    }
+  ],
+  "durable_inspection": {
+    "baseline_key": "owner/custom Ω/units-v2",
+    "options": {
+      "schema": "loom.usage_policy/1",
+      "growth_factor": 10,
+      "baseline_window": null,
+      "ledger_busy_timeout_ms": 30000,
+      "include_reservations": true,
+      "initial_baselines": {
+        "owner/custom Ω/units-v2": {
+          "arbitrary-large-units": 1e+290,
+          "custom/quanta-v2": 2,
+          "unknown-owner-units": null
+        }
+      },
+      "extensions": {
+        "arbitrary_owner_field": {
+          "unit_version": 2
+        },
+        "authored_public_fixture": true
+      }
+    },
+    "baseline": {
+      "arbitrary-large-units": {
+        "value": 1e+300,
+        "samples": 1,
+        "source": "measured"
+      },
+      "custom/quanta-v2": {
+        "value": 20,
+        "samples": 1,
+        "source": "measured"
+      },
+      "unknown-owner-units": {
+        "value": null,
+        "samples": 0,
+        "source": "unavailable"
+      }
+    },
+    "reservations": {
+      "unknown-owner-units": null
+    },
+    "operations": [
+      {
+        "schema": "loom.usage_decision/1",
+        "operation_id": "native-owner-approve",
+        "baseline_key": "owner/custom Ω/units-v2",
+        "estimate": {
+          "operation_id": "native-owner-approve",
+          "baseline_key": "owner/custom Ω/units-v2",
+          "resources": {
+            "custom/quanta-v2": 20,
+            "arbitrary-large-units": 1e+300,
+            "unknown-owner-units": null
+          },
+          "extensions": {
+            "authored_public_fixture": true
+          }
+        },
+        "options": {
+          "schema": "loom.usage_policy/1",
+          "growth_factor": 10,
+          "baseline_window": null,
+          "ledger_busy_timeout_ms": 30000,
+          "include_reservations": true,
+          "initial_baselines": {
+            "owner/custom Ω/units-v2": {
+              "arbitrary-large-units": 1e+290,
+              "custom/quanta-v2": 2,
+              "unknown-owner-units": null
+            }
+          },
+          "extensions": {
+            "arbitrary_owner_field": {
+              "unit_version": 2
+            },
+            "authored_public_fixture": true
+          }
+        },
+        "status": "cancelled",
+        "authorized": false,
+        "resources": {
+          "arbitrary-large-units": {
+            "estimate": 1e+300,
+            "baseline": 1e+290,
+            "baseline_source": "declared",
+            "baseline_samples": 0,
+            "reserved": 0,
+            "projected": 1e+300,
+            "ratio": 10000000000,
+            "reserved_lower_bound": 0,
+            "projected_lower_bound": 1e+300,
+            "projection_status": "estimated",
+            "baseline_status": "available",
+            "requires_confirmation": true
+          },
+          "custom/quanta-v2": {
+            "estimate": 20,
+            "baseline": 2,
+            "baseline_source": "declared",
+            "baseline_samples": 0,
+            "reserved": 0,
+            "projected": 20,
+            "ratio": 10,
+            "reserved_lower_bound": 0,
+            "projected_lower_bound": 20,
+            "projection_status": "estimated",
+            "baseline_status": "available",
+            "requires_confirmation": true
+          },
+          "unknown-owner-units": {
+            "estimate": null,
+            "baseline": null,
+            "baseline_source": "unavailable",
+            "baseline_samples": 0,
+            "reserved": 0,
+            "projected": null,
+            "ratio": null,
+            "reserved_lower_bound": 0,
+            "projected_lower_bound": 0,
+            "projection_status": "partial_unknown",
+            "baseline_status": "unavailable",
+            "requires_confirmation": false
+          }
+        },
+        "receipt_id": "usage_6eb430b05fb132f1b4e0035f984ae285ca5ae4aecfdb8fcf8c02db4f5d3a315c",
+        "remaining": {},
+        "actual": {},
+        "confirmation": {
+          "approved": true,
+          "ref": "public-owner-approval-v1"
+        },
+        "cancellation_reason": "Public fixture cancels reserved operation without dispatch"
+      },
+      {
+        "schema": "loom.usage_decision/1",
+        "operation_id": "native-owner-decline",
+        "baseline_key": "owner/custom Ω/units-v2",
+        "estimate": {
+          "operation_id": "native-owner-decline",
+          "baseline_key": "owner/custom Ω/units-v2",
+          "resources": {
+            "custom/quanta-v2": 20,
+            "arbitrary-large-units": 1e+300,
+            "unknown-owner-units": null
+          },
+          "extensions": {
+            "authored_public_fixture": true
+          }
+        },
+        "options": {
+          "schema": "loom.usage_policy/1",
+          "growth_factor": 10,
+          "baseline_window": null,
+          "ledger_busy_timeout_ms": 30000,
+          "include_reservations": true,
+          "initial_baselines": {
+            "owner/custom Ω/units-v2": {
+              "arbitrary-large-units": 1e+290,
+              "custom/quanta-v2": 2,
+              "unknown-owner-units": null
+            }
+          },
+          "extensions": {
+            "arbitrary_owner_field": {
+              "unit_version": 2
+            },
+            "authored_public_fixture": true
+          }
+        },
+        "status": "denied",
+        "authorized": false,
+        "resources": {
+          "arbitrary-large-units": {
+            "estimate": 1e+300,
+            "baseline": 1e+290,
+            "baseline_source": "declared",
+            "baseline_samples": 0,
+            "reserved": 1e+300,
+            "projected": 2e+300,
+            "ratio": 20000000000,
+            "reserved_lower_bound": 1e+300,
+            "projected_lower_bound": 2e+300,
+            "projection_status": "estimated",
+            "baseline_status": "available",
+            "requires_confirmation": true
+          },
+          "custom/quanta-v2": {
+            "estimate": 20,
+            "baseline": 2,
+            "baseline_source": "declared",
+            "baseline_samples": 0,
+            "reserved": 20,
+            "projected": 40,
+            "ratio": 20,
+            "reserved_lower_bound": 20,
+            "projected_lower_bound": 40,
+            "projection_status": "estimated",
+            "baseline_status": "available",
+            "requires_confirmation": true
+          },
+          "unknown-owner-units": {
+            "estimate": null,
+            "baseline": null,
+            "baseline_source": "unavailable",
+            "baseline_samples": 0,
+            "reserved": null,
+            "projected": null,
+            "ratio": null,
+            "reserved_lower_bound": 0,
+            "projected_lower_bound": 0,
+            "projection_status": "partial_unknown",
+            "baseline_status": "unavailable",
+            "requires_confirmation": false
+          }
+        },
+        "receipt_id": "usage_e803d5f32929f2cd8f14482ac47a60f475df08f12e0ab533b26ebc9313f718c5",
+        "remaining": {},
+        "actual": {},
+        "confirmation": {
+          "approved": false,
+          "ref": "public-owner-rejection-v1"
+        }
+      },
+      {
+        "schema": "loom.usage_decision/1",
+        "operation_id": "native-owner-stale",
+        "baseline_key": "owner/custom Ω/units-v2",
+        "estimate": {
+          "operation_id": "native-owner-stale",
+          "baseline_key": "owner/custom Ω/units-v2",
+          "resources": {
+            "custom/quanta-v2": 20,
+            "arbitrary-large-units": 1e+300,
+            "unknown-owner-units": null
+          },
+          "extensions": {
+            "authored_public_fixture": true
+          }
+        },
+        "options": {
+          "schema": "loom.usage_policy/1",
+          "growth_factor": 10,
+          "baseline_window": null,
+          "ledger_busy_timeout_ms": 30000,
+          "include_reservations": true,
+          "initial_baselines": {
+            "owner/custom Ω/units-v2": {
+              "arbitrary-large-units": 1e+290,
+              "custom/quanta-v2": 2,
+              "unknown-owner-units": null
+            }
+          },
+          "extensions": {
+            "arbitrary_owner_field": {
+              "unit_version": 2
+            },
+            "authored_public_fixture": true
+          }
+        },
+        "status": "unresolved",
+        "authorized": true,
+        "resources": {
+          "arbitrary-large-units": {
+            "estimate": 1e+300,
+            "baseline": 1e+290,
+            "baseline_source": "declared",
+            "baseline_samples": 0,
+            "reserved": 0,
+            "projected": 1e+300,
+            "ratio": 10000000000,
+            "reserved_lower_bound": 0,
+            "projected_lower_bound": 1e+300,
+            "projection_status": "estimated",
+            "baseline_status": "available",
+            "requires_confirmation": true
+          },
+          "custom/quanta-v2": {
+            "estimate": 20,
+            "baseline": 2,
+            "baseline_source": "declared",
+            "baseline_samples": 0,
+            "reserved": 0,
+            "projected": 20,
+            "ratio": 10,
+            "reserved_lower_bound": 0,
+            "projected_lower_bound": 20,
+            "projection_status": "estimated",
+            "baseline_status": "available",
+            "requires_confirmation": true
+          },
+          "unknown-owner-units": {
+            "estimate": null,
+            "baseline": null,
+            "baseline_source": "unavailable",
+            "baseline_samples": 0,
+            "reserved": 0,
+            "projected": null,
+            "ratio": null,
+            "reserved_lower_bound": 0,
+            "projected_lower_bound": 0,
+            "projection_status": "partial_unknown",
+            "baseline_status": "unavailable",
+            "requires_confirmation": false
+          }
+        },
+        "receipt_id": "usage_56051041507eeb15b86a21735b493940adba009d14872e9dde6b42a601229da3",
+        "remaining": {
+          "unknown-owner-units": null
+        },
+        "actual": {
+          "custom/quanta-v2": {
+            "value": 20,
+            "provenance": "instrument_measured"
+          },
+          "arbitrary-large-units": {
+            "value": 1e+300,
+            "provenance": "instrument_measured"
+          },
+          "unknown-owner-units": {
+            "value": null,
+            "provenance": "instrument_measured"
+          }
+        },
+        "confirmation": {
+          "approved": true,
+          "ref": "public-fresh-approval-v2"
+        },
+        "overrun": false
+      }
+    ],
+    "events": [
+      {
+        "sequence": 1,
+        "operation_id": "native-owner-approve",
+        "kind": "request",
+        "payload": {
+          "schema": "loom.usage_decision/1",
+          "operation_id": "native-owner-approve",
+          "baseline_key": "owner/custom Ω/units-v2",
+          "estimate": {
+            "operation_id": "native-owner-approve",
+            "baseline_key": "owner/custom Ω/units-v2",
+            "resources": {
+              "custom/quanta-v2": 20,
+              "arbitrary-large-units": 1e+300,
+              "unknown-owner-units": null
+            },
+            "extensions": {
+              "authored_public_fixture": true
+            }
+          },
+          "options": {
+            "schema": "loom.usage_policy/1",
+            "growth_factor": 10,
+            "baseline_window": null,
+            "ledger_busy_timeout_ms": 30000,
+            "include_reservations": true,
+            "initial_baselines": {
+              "owner/custom Ω/units-v2": {
+                "arbitrary-large-units": 1e+290,
+                "custom/quanta-v2": 2,
+                "unknown-owner-units": null
+              }
+            },
+            "extensions": {
+              "arbitrary_owner_field": {
+                "unit_version": 2
+              },
+              "authored_public_fixture": true
+            }
+          },
+          "status": "requires_confirmation",
+          "authorized": false,
+          "resources": {
+            "arbitrary-large-units": {
+              "estimate": 1e+300,
+              "baseline": 1e+290,
+              "baseline_source": "declared",
+              "baseline_samples": 0,
+              "reserved": 0,
+              "projected": 1e+300,
+              "ratio": 10000000000,
+              "reserved_lower_bound": 0,
+              "projected_lower_bound": 1e+300,
+              "projection_status": "estimated",
+              "baseline_status": "available",
+              "requires_confirmation": true
+            },
+            "custom/quanta-v2": {
+              "estimate": 20,
+              "baseline": 2,
+              "baseline_source": "declared",
+              "baseline_samples": 0,
+              "reserved": 0,
+              "projected": 20,
+              "ratio": 10,
+              "reserved_lower_bound": 0,
+              "projected_lower_bound": 20,
+              "projection_status": "estimated",
+              "baseline_status": "available",
+              "requires_confirmation": true
+            },
+            "unknown-owner-units": {
+              "estimate": null,
+              "baseline": null,
+              "baseline_source": "unavailable",
+              "baseline_samples": 0,
+              "reserved": 0,
+              "projected": null,
+              "ratio": null,
+              "reserved_lower_bound": 0,
+              "projected_lower_bound": 0,
+              "projection_status": "partial_unknown",
+              "baseline_status": "unavailable",
+              "requires_confirmation": false
+            }
+          },
+          "receipt_id": "usage_6eb430b05fb132f1b4e0035f984ae285ca5ae4aecfdb8fcf8c02db4f5d3a315c",
+          "remaining": {},
+          "actual": {}
+        },
+        "recorded_at": "2026-10-04 19:29:51"
+      },
+      {
+        "sequence": 2,
+        "operation_id": "native-owner-approve",
+        "kind": "confirmation",
+        "payload": {
+          "approved": true,
+          "ref": "public-owner-approval-v1"
+        },
+        "recorded_at": "2026-10-04 19:29:52"
+      },
+      {
+        "sequence": 3,
+        "operation_id": "native-owner-decline",
+        "kind": "request",
+        "payload": {
+          "schema": "loom.usage_decision/1",
+          "operation_id": "native-owner-decline",
+          "baseline_key": "owner/custom Ω/units-v2",
+          "estimate": {
+            "operation_id": "native-owner-decline",
+            "baseline_key": "owner/custom Ω/units-v2",
+            "resources": {
+              "custom/quanta-v2": 20,
+              "arbitrary-large-units": 1e+300,
+              "unknown-owner-units": null
+            },
+            "extensions": {
+              "authored_public_fixture": true
+            }
+          },
+          "options": {
+            "schema": "loom.usage_policy/1",
+            "growth_factor": 10,
+            "baseline_window": null,
+            "ledger_busy_timeout_ms": 30000,
+            "include_reservations": true,
+            "initial_baselines": {
+              "owner/custom Ω/units-v2": {
+                "arbitrary-large-units": 1e+290,
+                "custom/quanta-v2": 2,
+                "unknown-owner-units": null
+              }
+            },
+            "extensions": {
+              "arbitrary_owner_field": {
+                "unit_version": 2
+              },
+              "authored_public_fixture": true
+            }
+          },
+          "status": "requires_confirmation",
+          "authorized": false,
+          "resources": {
+            "arbitrary-large-units": {
+              "estimate": 1e+300,
+              "baseline": 1e+290,
+              "baseline_source": "declared",
+              "baseline_samples": 0,
+              "reserved": 1e+300,
+              "projected": 2e+300,
+              "ratio": 20000000000,
+              "reserved_lower_bound": 1e+300,
+              "projected_lower_bound": 2e+300,
+              "projection_status": "estimated",
+              "baseline_status": "available",
+              "requires_confirmation": true
+            },
+            "custom/quanta-v2": {
+              "estimate": 20,
+              "baseline": 2,
+              "baseline_source": "declared",
+              "baseline_samples": 0,
+              "reserved": 20,
+              "projected": 40,
+              "ratio": 20,
+              "reserved_lower_bound": 20,
+              "projected_lower_bound": 40,
+              "projection_status": "estimated",
+              "baseline_status": "available",
+              "requires_confirmation": true
+            },
+            "unknown-owner-units": {
+              "estimate": null,
+              "baseline": null,
+              "baseline_source": "unavailable",
+              "baseline_samples": 0,
+              "reserved": null,
+              "projected": null,
+              "ratio": null,
+              "reserved_lower_bound": 0,
+              "projected_lower_bound": 0,
+              "projection_status": "partial_unknown",
+              "baseline_status": "unavailable",
+              "requires_confirmation": false
+            }
+          },
+          "receipt_id": "usage_e803d5f32929f2cd8f14482ac47a60f475df08f12e0ab533b26ebc9313f718c5",
+          "remaining": {},
+          "actual": {}
+        },
+        "recorded_at": "2026-10-04 19:29:52"
+      },
+      {
+        "sequence": 4,
+        "operation_id": "native-owner-decline",
+        "kind": "confirmation",
+        "payload": {
+          "approved": false,
+          "ref": "public-owner-rejection-v1"
+        },
+        "recorded_at": "2026-10-04 19:29:52"
+      },
+      {
+        "sequence": 5,
+        "operation_id": "native-owner-stale",
+        "kind": "request",
+        "payload": {
+          "schema": "loom.usage_decision/1",
+          "operation_id": "native-owner-stale",
+          "baseline_key": "owner/custom Ω/units-v2",
+          "estimate": {
+            "operation_id": "native-owner-stale",
+            "baseline_key": "owner/custom Ω/units-v2",
+            "resources": {
+              "custom/quanta-v2": 20,
+              "arbitrary-large-units": 1e+300,
+              "unknown-owner-units": null
+            },
+            "extensions": {
+              "authored_public_fixture": true
+            }
+          },
+          "options": {
+            "schema": "loom.usage_policy/1",
+            "growth_factor": 10,
+            "baseline_window": null,
+            "ledger_busy_timeout_ms": 30000,
+            "include_reservations": true,
+            "initial_baselines": {
+              "owner/custom Ω/units-v2": {
+                "arbitrary-large-units": 1e+290,
+                "custom/quanta-v2": 2,
+                "unknown-owner-units": null
+              }
+            },
+            "extensions": {
+              "arbitrary_owner_field": {
+                "unit_version": 2
+              },
+              "authored_public_fixture": true
+            }
+          },
+          "status": "requires_confirmation",
+          "authorized": false,
+          "resources": {
+            "arbitrary-large-units": {
+              "estimate": 1e+300,
+              "baseline": 1e+290,
+              "baseline_source": "declared",
+              "baseline_samples": 0,
+              "reserved": 1e+300,
+              "projected": 2e+300,
+              "ratio": 20000000000,
+              "reserved_lower_bound": 1e+300,
+              "projected_lower_bound": 2e+300,
+              "projection_status": "estimated",
+              "baseline_status": "available",
+              "requires_confirmation": true
+            },
+            "custom/quanta-v2": {
+              "estimate": 20,
+              "baseline": 2,
+              "baseline_source": "declared",
+              "baseline_samples": 0,
+              "reserved": 20,
+              "projected": 40,
+              "ratio": 20,
+              "reserved_lower_bound": 20,
+              "projected_lower_bound": 40,
+              "projection_status": "estimated",
+              "baseline_status": "available",
+              "requires_confirmation": true
+            },
+            "unknown-owner-units": {
+              "estimate": null,
+              "baseline": null,
+              "baseline_source": "unavailable",
+              "baseline_samples": 0,
+              "reserved": null,
+              "projected": null,
+              "ratio": null,
+              "reserved_lower_bound": 0,
+              "projected_lower_bound": 0,
+              "projection_status": "partial_unknown",
+              "baseline_status": "unavailable",
+              "requires_confirmation": false
+            }
+          },
+          "receipt_id": "usage_cae769ac5f155362163b039e1d318edbca4bb424ed42d1470046ffd1d87f5088",
+          "remaining": {},
+          "actual": {}
+        },
+        "recorded_at": "2026-10-04 19:29:52"
+      },
+      {
+        "sequence": 6,
+        "operation_id": "native-owner-approve",
+        "kind": "cancel",
+        "payload": {
+          "reason": "Public fixture cancels reserved operation without dispatch"
+        },
+        "recorded_at": "2026-10-04 19:29:52"
+      },
+      {
+        "sequence": 7,
+        "operation_id": "native-owner-stale",
+        "kind": "request",
+        "payload": {
+          "schema": "loom.usage_decision/1",
+          "operation_id": "native-owner-stale",
+          "baseline_key": "owner/custom Ω/units-v2",
+          "estimate": {
+            "operation_id": "native-owner-stale",
+            "baseline_key": "owner/custom Ω/units-v2",
+            "resources": {
+              "custom/quanta-v2": 20,
+              "arbitrary-large-units": 1e+300,
+              "unknown-owner-units": null
+            },
+            "extensions": {
+              "authored_public_fixture": true
+            }
+          },
+          "options": {
+            "schema": "loom.usage_policy/1",
+            "growth_factor": 10,
+            "baseline_window": null,
+            "ledger_busy_timeout_ms": 30000,
+            "include_reservations": true,
+            "initial_baselines": {
+              "owner/custom Ω/units-v2": {
+                "arbitrary-large-units": 1e+290,
+                "custom/quanta-v2": 2,
+                "unknown-owner-units": null
+              }
+            },
+            "extensions": {
+              "arbitrary_owner_field": {
+                "unit_version": 2
+              },
+              "authored_public_fixture": true
+            }
+          },
+          "status": "requires_confirmation",
+          "authorized": false,
+          "resources": {
+            "arbitrary-large-units": {
+              "estimate": 1e+300,
+              "baseline": 1e+290,
+              "baseline_source": "declared",
+              "baseline_samples": 0,
+              "reserved": 0,
+              "projected": 1e+300,
+              "ratio": 10000000000,
+              "reserved_lower_bound": 0,
+              "projected_lower_bound": 1e+300,
+              "projection_status": "estimated",
+              "baseline_status": "available",
+              "requires_confirmation": true
+            },
+            "custom/quanta-v2": {
+              "estimate": 20,
+              "baseline": 2,
+              "baseline_source": "declared",
+              "baseline_samples": 0,
+              "reserved": 0,
+              "projected": 20,
+              "ratio": 10,
+              "reserved_lower_bound": 0,
+              "projected_lower_bound": 20,
+              "projection_status": "estimated",
+              "baseline_status": "available",
+              "requires_confirmation": true
+            },
+            "unknown-owner-units": {
+              "estimate": null,
+              "baseline": null,
+              "baseline_source": "unavailable",
+              "baseline_samples": 0,
+              "reserved": 0,
+              "projected": null,
+              "ratio": null,
+              "reserved_lower_bound": 0,
+              "projected_lower_bound": 0,
+              "projection_status": "partial_unknown",
+              "baseline_status": "unavailable",
+              "requires_confirmation": false
+            }
+          },
+          "receipt_id": "usage_56051041507eeb15b86a21735b493940adba009d14872e9dde6b42a601229da3",
+          "remaining": {},
+          "actual": {}
+        },
+        "recorded_at": "2026-10-04 19:29:52"
+      },
+      {
+        "sequence": 8,
+        "operation_id": "native-owner-stale",
+        "kind": "confirmation",
+        "payload": {
+          "approved": true,
+          "ref": "public-fresh-approval-v2"
+        },
+        "recorded_at": "2026-10-04 19:29:52"
+      },
+      {
+        "sequence": 9,
+        "operation_id": "native-owner-stale",
+        "kind": "actual",
+        "payload": {
+          "resources": {
+            "custom/quanta-v2": 20,
+            "arbitrary-large-units": 1e+300,
+            "unknown-owner-units": null
+          },
+          "provenance": "instrument_measured"
+        },
+        "recorded_at": "2026-10-04 19:29:52"
+      }
+    ]
+  }
+}

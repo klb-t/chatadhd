@@ -1,0 +1,11 @@
+Command: npm run test:chat-context
+Started UTC: 2026-10-05T10:29:14Z
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> loom-web@0.1.0 test:chat-context
+> node e2e/chat-context.mjs
+
+[chat-context] PASS: default path, native authored multi-thesis plan, independent sources, validation, exact provider trace, W5 perspective coexistence, recording opt-out, failure inspection, persisted inspection, and mobile layout; 5 local fake-provider calls, 0 remote calls
+
+Exit: 0
+Finished UTC: 2026-10-05T10:29:20Z

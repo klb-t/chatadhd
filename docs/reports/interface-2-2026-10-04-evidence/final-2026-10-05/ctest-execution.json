@@ -1,0 +1,715 @@
+{
+  "summary": {
+    "ctest_entries": 108,
+    "passed": 108,
+    "native_cases": 659,
+    "native_assertions": 24465,
+    "python_cases": 1276,
+    "python_skips": 0,
+    "zero_native_case_entries": [
+      "unit.test_catalog_scale"
+    ]
+  },
+  "entries": [
+    {
+      "name": "unit.test_archive",
+      "passed": true,
+      "cases": 18,
+      "failed": 0,
+      "assertions": 270
+    },
+    {
+      "name": "unit.test_batch_api",
+      "passed": true,
+      "cases": 8,
+      "failed": 0,
+      "assertions": 36
+    },
+    {
+      "name": "unit.test_capi",
+      "passed": true,
+      "cases": 12,
+      "failed": 0,
+      "assertions": 598
+    },
+    {
+      "name": "unit.test_capi_knowledge",
+      "passed": true,
+      "cases": 1,
+      "failed": 0,
+      "assertions": 55
+    },
+    {
+      "name": "unit.test_capi_knowledge_latest_run",
+      "passed": true,
+      "cases": 2,
+      "failed": 0,
+      "assertions": 73
+    },
+    {
+      "name": "unit.test_catalog",
+      "passed": true,
+      "cases": 13,
+      "failed": 0,
+      "assertions": 344
+    },
+    {
+      "name": "unit.test_catalog_context",
+      "passed": true,
+      "cases": 7,
+      "failed": 0,
+      "assertions": 81
+    },
+    {
+      "name": "unit.test_catalog_eval",
+      "passed": true,
+      "cases": 1,
+      "failed": 0,
+      "assertions": 76
+    },
+    {
+      "name": "unit.test_catalog_links",
+      "passed": true,
+      "cases": 4,
+      "failed": 0,
+      "assertions": 3136
+    },
+    {
+      "name": "unit.test_catalog_retention",
+      "passed": true,
+      "cases": 5,
+      "failed": 0,
+      "assertions": 179
+    },
+    {
+      "name": "unit.test_catalog_scale",
+      "passed": true,
+      "cases": 0,
+      "failed": 0,
+      "assertions": 0
+    },
+    {
+      "name": "unit.test_chat_active_task",
+      "passed": true,
+      "cases": 19,
+      "failed": 0,
+      "assertions": 197
+    },
+    {
+      "name": "unit.test_chat_active_task_acceptance_audit",
+      "passed": true,
+      "cases": 5,
+      "failed": 0,
+      "assertions": 40
+    },
+    {
+      "name": "unit.test_chat_active_task_acceptance_scale",
+      "passed": true,
+      "cases": 2,
+      "failed": 0,
+      "assertions": 2014
+    },
+    {
+      "name": "unit.test_chat_active_task_acceptance_validation",
+      "passed": true,
+      "cases": 6,
+      "failed": 0,
+      "assertions": 151
+    },
+    {
+      "name": "unit.test_chat_active_task_concurrency",
+      "passed": true,
+      "cases": 4,
+      "failed": 0,
+      "assertions": 49
+    },
+    {
+      "name": "unit.test_chat_active_task_durability",
+      "passed": true,
+      "cases": 8,
+      "failed": 0,
+      "assertions": 106
+    },
+    {
+      "name": "unit.test_chat_active_task_durable_audit",
+      "passed": true,
+      "cases": 6,
+      "failed": 0,
+      "assertions": 76
+    },
+    {
+      "name": "unit.test_chat_active_task_exceptional",
+      "passed": true,
+      "cases": 4,
+      "failed": 0,
+      "assertions": 45
+    },
+    {
+      "name": "unit.test_chat_active_task_history_aba",
+      "passed": true,
+      "cases": 1,
+      "failed": 0,
+      "assertions": 9
+    },
+    {
+      "name": "unit.test_chat_active_task_reference",
+      "passed": true,
+      "cases": 7,
+      "failed": 0,
+      "assertions": 49
+    },
+    {
+      "name": "unit.test_chat_active_task_retention",
+      "passed": true,
+      "cases": 11,
+      "failed": 0,
+      "assertions": 232
+    },
+    {
+      "name": "unit.test_chat_active_task_revisions",
+      "passed": true,
+      "cases": 10,
+      "failed": 0,
+      "assertions": 228
+    },
+    {
+      "name": "unit.test_chat_active_task_scope_identity",
+      "passed": true,
+      "cases": 2,
+      "failed": 0,
+      "assertions": 20
+    },
+    {
+      "name": "unit.test_chat_engine",
+      "passed": true,
+      "cases": 15,
+      "failed": 0,
+      "assertions": 67
+    },
+    {
+      "name": "unit.test_chat_knowledge_context",
+      "passed": true,
+      "cases": 15,
+      "failed": 0,
+      "assertions": 212
+    },
+    {
+      "name": "unit.test_chat_retrieval_plan",
+      "passed": true,
+      "cases": 8,
+      "failed": 0,
+      "assertions": 244
+    },
+    {
+      "name": "unit.test_config",
+      "passed": true,
+      "cases": 5,
+      "failed": 0,
+      "assertions": 113
+    },
+    {
+      "name": "unit.test_context_channel_integration",
+      "passed": true,
+      "cases": 5,
+      "failed": 0,
+      "assertions": 63
+    },
+    {
+      "name": "unit.test_context_controls",
+      "passed": true,
+      "cases": 9,
+      "failed": 0,
+      "assertions": 153
+    },
+    {
+      "name": "unit.test_context_counter",
+      "passed": true,
+      "cases": 4,
+      "failed": 0,
+      "assertions": 38
+    },
+    {
+      "name": "unit.test_context_diagnostics",
+      "passed": true,
+      "cases": 9,
+      "failed": 0,
+      "assertions": 335
+    },
+    {
+      "name": "unit.test_context_engine",
+      "passed": true,
+      "cases": 18,
+      "failed": 0,
+      "assertions": 1364
+    },
+    {
+      "name": "unit.test_context_eval",
+      "passed": true,
+      "cases": 2,
+      "failed": 0,
+      "assertions": 268
+    },
+    {
+      "name": "unit.test_context_native_consumer",
+      "passed": true,
+      "cases": 6,
+      "failed": 0,
+      "assertions": 105
+    },
+    {
+      "name": "unit.test_context_plan",
+      "passed": true,
+      "cases": 15,
+      "failed": 0,
+      "assertions": 159
+    },
+    {
+      "name": "unit.test_context_retrieval",
+      "passed": true,
+      "cases": 13,
+      "failed": 0,
+      "assertions": 130
+    },
+    {
+      "name": "unit.test_context_retrieval_dev",
+      "passed": true,
+      "cases": 1,
+      "failed": 0,
+      "assertions": 241
+    },
+    {
+      "name": "unit.test_context_tfidf_reuse",
+      "passed": true,
+      "cases": 9,
+      "failed": 0,
+      "assertions": 219
+    },
+    {
+      "name": "unit.test_crypto",
+      "passed": true,
+      "cases": 12,
+      "failed": 0,
+      "assertions": 66
+    },
+    {
+      "name": "unit.test_db",
+      "passed": true,
+      "cases": 13,
+      "failed": 0,
+      "assertions": 5178
+    },
+    {
+      "name": "unit.test_event_bus",
+      "passed": true,
+      "cases": 5,
+      "failed": 0,
+      "assertions": 28
+    },
+    {
+      "name": "unit.test_extract",
+      "passed": true,
+      "cases": 15,
+      "failed": 0,
+      "assertions": 241
+    },
+    {
+      "name": "unit.test_extract_eval",
+      "passed": true,
+      "cases": 6,
+      "failed": 0,
+      "assertions": 27
+    },
+    {
+      "name": "unit.test_fts",
+      "passed": true,
+      "cases": 5,
+      "failed": 0,
+      "assertions": 53
+    },
+    {
+      "name": "unit.test_generalize",
+      "passed": true,
+      "cases": 7,
+      "failed": 0,
+      "assertions": 199
+    },
+    {
+      "name": "unit.test_generalize_eval",
+      "passed": true,
+      "cases": 1,
+      "failed": 0,
+      "assertions": 173
+    },
+    {
+      "name": "unit.test_github",
+      "passed": true,
+      "cases": 19,
+      "failed": 0,
+      "assertions": 113
+    },
+    {
+      "name": "unit.test_graph",
+      "passed": true,
+      "cases": 8,
+      "failed": 0,
+      "assertions": 30
+    },
+    {
+      "name": "unit.test_import",
+      "passed": true,
+      "cases": 23,
+      "failed": 0,
+      "assertions": 223
+    },
+    {
+      "name": "unit.test_import_export_fidelity",
+      "passed": true,
+      "cases": 5,
+      "failed": 0,
+      "assertions": 327
+    },
+    {
+      "name": "unit.test_import_exports",
+      "passed": true,
+      "cases": 18,
+      "failed": 0,
+      "assertions": 2202
+    },
+    {
+      "name": "unit.test_import_source_materialization",
+      "passed": true,
+      "cases": 8,
+      "failed": 0,
+      "assertions": 592
+    },
+    {
+      "name": "unit.test_import_stream",
+      "passed": true,
+      "cases": 1,
+      "failed": 0,
+      "assertions": 13
+    },
+    {
+      "name": "unit.test_kb_pack",
+      "passed": true,
+      "cases": 14,
+      "failed": 0,
+      "assertions": 184
+    },
+    {
+      "name": "unit.test_knowledge",
+      "passed": true,
+      "cases": 18,
+      "failed": 0,
+      "assertions": 150
+    },
+    {
+      "name": "unit.test_knowledge_candidate_graph",
+      "passed": true,
+      "cases": 10,
+      "failed": 0,
+      "assertions": 114
+    },
+    {
+      "name": "unit.test_knowledge_candidates",
+      "passed": true,
+      "cases": 1,
+      "failed": 0,
+      "assertions": 14
+    },
+    {
+      "name": "unit.test_knowledge_flow",
+      "passed": true,
+      "cases": 2,
+      "failed": 0,
+      "assertions": 53
+    },
+    {
+      "name": "unit.test_knowledge_semantic",
+      "passed": true,
+      "cases": 13,
+      "failed": 0,
+      "assertions": 125
+    },
+    {
+      "name": "unit.test_knowledge_semantic_graph",
+      "passed": true,
+      "cases": 11,
+      "failed": 0,
+      "assertions": 100
+    },
+    {
+      "name": "unit.test_knowledge_store",
+      "passed": true,
+      "cases": 7,
+      "failed": 0,
+      "assertions": 124
+    },
+    {
+      "name": "unit.test_materialize",
+      "passed": true,
+      "cases": 6,
+      "failed": 0,
+      "assertions": 67
+    },
+    {
+      "name": "unit.test_media",
+      "passed": true,
+      "cases": 13,
+      "failed": 0,
+      "assertions": 81
+    },
+    {
+      "name": "unit.test_memory",
+      "passed": true,
+      "cases": 9,
+      "failed": 0,
+      "assertions": 40
+    },
+    {
+      "name": "unit.test_model",
+      "passed": true,
+      "cases": 10,
+      "failed": 0,
+      "assertions": 137
+    },
+    {
+      "name": "unit.test_net_sse",
+      "passed": true,
+      "cases": 10,
+      "failed": 0,
+      "assertions": 45
+    },
+    {
+      "name": "unit.test_pack_model",
+      "passed": true,
+      "cases": 6,
+      "failed": 0,
+      "assertions": 900
+    },
+    {
+      "name": "unit.test_provenance",
+      "passed": true,
+      "cases": 3,
+      "failed": 0,
+      "assertions": 49
+    },
+    {
+      "name": "unit.test_providers",
+      "passed": true,
+      "cases": 13,
+      "failed": 0,
+      "assertions": 61
+    },
+    {
+      "name": "unit.test_regex",
+      "passed": true,
+      "cases": 15,
+      "failed": 0,
+      "assertions": 89
+    },
+    {
+      "name": "unit.test_relations",
+      "passed": true,
+      "cases": 1,
+      "failed": 0,
+      "assertions": 39
+    },
+    {
+      "name": "unit.test_resolve",
+      "passed": true,
+      "cases": 8,
+      "failed": 0,
+      "assertions": 71
+    },
+    {
+      "name": "unit.test_resolve_attribution",
+      "passed": true,
+      "cases": 7,
+      "failed": 0,
+      "assertions": 420
+    },
+    {
+      "name": "unit.test_resolve_lineage",
+      "passed": true,
+      "cases": 2,
+      "failed": 0,
+      "assertions": 15
+    },
+    {
+      "name": "unit.test_runtime",
+      "passed": true,
+      "cases": 4,
+      "failed": 0,
+      "assertions": 50
+    },
+    {
+      "name": "unit.test_selector",
+      "passed": true,
+      "cases": 5,
+      "failed": 0,
+      "assertions": 22
+    },
+    {
+      "name": "unit.test_semantic_llm",
+      "passed": true,
+      "cases": 11,
+      "failed": 0,
+      "assertions": 91
+    },
+    {
+      "name": "unit.test_semantic_worker",
+      "passed": true,
+      "cases": 9,
+      "failed": 0,
+      "assertions": 34
+    },
+    {
+      "name": "unit.test_tasks",
+      "passed": true,
+      "cases": 5,
+      "failed": 0,
+      "assertions": 56
+    },
+    {
+      "name": "unit.test_util",
+      "passed": true,
+      "cases": 10,
+      "failed": 0,
+      "assertions": 94
+    },
+    {
+      "name": "compat.test_abi_compat",
+      "passed": true,
+      "python_cases": 3
+    },
+    {
+      "name": "compat.test_active_task_compiler_compat",
+      "passed": true,
+      "python_cases": 4
+    },
+    {
+      "name": "compat.test_candidate_graph_native",
+      "passed": true,
+      "python_cases": 9
+    },
+    {
+      "name": "compat.test_chat_active_task_http",
+      "passed": true,
+      "python_cases": 4
+    },
+    {
+      "name": "compat.test_chat_compat",
+      "passed": true,
+      "python_cases": 2
+    },
+    {
+      "name": "compat.test_config_compat",
+      "passed": true,
+      "python_cases": 5
+    },
+    {
+      "name": "compat.test_crypto_compat",
+      "passed": true,
+      "python_cases": 6
+    },
+    {
+      "name": "compat.test_db_compat",
+      "passed": true,
+      "python_cases": 7
+    },
+    {
+      "name": "compat.test_github_sync_defaults",
+      "passed": true,
+      "python_cases": 2
+    },
+    {
+      "name": "compat.test_graph_compat",
+      "passed": true,
+      "python_cases": 3
+    },
+    {
+      "name": "compat.test_graph_packet_store",
+      "passed": true,
+      "python_cases": 18
+    },
+    {
+      "name": "compat.test_import_compat",
+      "passed": true,
+      "python_cases": 24
+    },
+    {
+      "name": "compat.test_memory_compat",
+      "passed": true,
+      "python_cases": 4
+    },
+    {
+      "name": "compat.test_selector_compat",
+      "passed": true,
+      "python_cases": 4
+    },
+    {
+      "name": "compat.test_semantic_compat",
+      "passed": true,
+      "python_cases": 6
+    },
+    {
+      "name": "compat.test_semantic_recovery",
+      "passed": true,
+      "python_cases": 8
+    },
+    {
+      "name": "compat.test_util_compat",
+      "passed": true,
+      "python_cases": 6
+    },
+    {
+      "name": "research.structure",
+      "passed": true,
+      "python_cases": 859
+    },
+    {
+      "name": "research.independent_protocol",
+      "passed": true,
+      "python_cases": 10
+    },
+    {
+      "name": "research.graph_native_protocol",
+      "passed": true,
+      "python_cases": 12
+    },
+    {
+      "name": "research.candidate_graph_protocol",
+      "passed": true,
+      "python_cases": 15
+    },
+    {
+      "name": "research.contracts",
+      "passed": true,
+      "python_cases": 209
+    },
+    {
+      "name": "research.seeding",
+      "passed": true,
+      "python_cases": 36
+    },
+    {
+      "name": "server.smoke",
+      "passed": true
+    },
+    {
+      "name": "server.chat_active_task",
+      "passed": true,
+      "python_cases": 1
+    },
+    {
+      "name": "cli.smoke",
+      "passed": true
+    },
+    {
+      "name": "eval.harness",
+      "passed": true,
+      "python_cases": 19
+    }
+  ]
+}
