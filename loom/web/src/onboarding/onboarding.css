@@ -4,7 +4,7 @@
 .onboarding-panel label { display: block; margin: var(--onboarding-label-top) 0 var(--onboarding-label-bottom); }
 .onboarding-panel button { margin-top: var(--onboarding-button-space); }
 .onboarding-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--onboarding-gap); margin: var(--onboarding-space) 0; }
-.onboarding-field { padding: var(--onboarding-padding); margin: var(--onboarding-field-space) 0; border: var(--onboarding-border-width) solid var(--border, var(--onboarding-border-color)); border-radius: var(--radius, var(--onboarding-radius)); min-width: 0; }
+.onboarding-field { padding: var(--onboarding-padding); margin: var(--onboarding-field-space) 0; border: var(--onboarding-border-width) var(--onboarding-border-style) var(--border, var(--onboarding-border-color)); border-radius: var(--radius, var(--onboarding-radius)); min-width: 0; }
 .onboarding-field legend { padding: 0 var(--onboarding-legend-padding); }
 .onboarding-field legend small { color: var(--dim, var(--onboarding-dim)); }
 .onboarding-panel .onboarding-check { display: flex; gap: var(--onboarding-gap); align-items: center; }

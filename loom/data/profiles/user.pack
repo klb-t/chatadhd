@@ -1,7 +1,7 @@
 {
   "schema": "loom.default_layers_pack/1",
   "pack_id": "loom.onboarding.defaults",
-  "revision": 2,
+  "revision": 3,
   "policy": {
     "excluded_area_new_defaults": "proposal"
   },
@@ -126,7 +126,7 @@
       "id": "onboarding.presentation/v1",
       "key": "presentation.onboarding",
       "area": "onboarding/presentation",
-      "revision": 1,
+      "revision": 2,
       "value": {
         "$include": "onboarding/ui.pack"
       }

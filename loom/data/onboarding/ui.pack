@@ -450,7 +450,8 @@
       "--onboarding-ai": "#1f2e3d",
       "--onboarding-err": "#e88",
       "--onboarding-accent": "#4d8cf2",
-      "--onboarding-border-width": "1px"
+      "--onboarding-border-width": "1px",
+      "--onboarding-border-style": "solid"
     }
   }
 }

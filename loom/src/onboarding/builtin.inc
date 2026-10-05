@@ -2,7 +2,7 @@
 static constexpr char kOnboardingPack[] = R"loom_onboard({
   "schema": "loom.default_layers_pack/1",
   "pack_id": "loom.onboarding.defaults",
-  "revision": 2,
+  "revision": 3,
   "policy": {
     "excluded_area_new_defaults": "proposal"
   },
@@ -127,7 +127,7 @@ static constexpr char kOnboardingPack[] = R"loom_onboard({
       "id": "onboarding.presentation/v1",
       "key": "presentation.onboarding",
       "area": "onboarding/presentation",
-      "revision": 1,
+      "revision": 2,
       "value": {
         "schema": "loom.onboarding.presentation/1",
         "default_locale": "en",
@@ -580,7 +580,8 @@ static constexpr char kOnboardingPack[] = R"loom_onboard({
             "--onboarding-ai": "#1f2e3d",
             "--onboarding-err": "#e88",
             "--onboarding-accent": "#4d8cf2",
-            "--onboarding-border-width": "1px"
+            "--onboarding-border-width": "1px",
+            "--onboarding-border-style": "solid"
           }
         }
       }
@@ -1500,7 +1501,8 @@ static constexpr char kOnboardingPresentation[] = R"loom_onboard({
       "--onboarding-ai": "#1f2e3d",
       "--onboarding-err": "#e88",
       "--onboarding-accent": "#4d8cf2",
-      "--onboarding-border-width": "1px"
+      "--onboarding-border-width": "1px",
+      "--onboarding-border-style": "solid"
     }
   }
 }
