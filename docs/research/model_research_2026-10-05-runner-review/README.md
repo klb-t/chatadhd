@@ -21,3 +21,9 @@ The reviewed runner SHA256 is
 The supplementary ZIP preserves endpoint-estimator negatives and the first
 partial live output. Its README explicitly records missing v1 producer source;
 full producer regeneration is not claimed.
+
+The optional-endpoint unit-floor proof preserves 143 complete fabricated files,
+including the old explicit-zero request charge escape and corrected zero-POST
+preflight rejection. ZIP SHA256:
+`3f795f00b87618b8c1be08ff5fd40c61c2758bb9b02de8214a77facfc39cffd4`.
+Its own manifest and reproduction script run without provider calls.
