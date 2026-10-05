@@ -17,6 +17,36 @@ R42 sprawdzono w autoryzowanej gałęzi właściciela `claude/chataddhd-cpp-loom
 Przed:5 domyślnych wartości importu i audyt rozproszone w C++/Python. Po:2 kanoniczne pliki danych,5+20 pól; domyślne zachowanie pozostaje wymaganiem bramki.
 Python:13 pełnych wyników API/CLI identycznych bajt po bajcie z bazą;19 starych testów zachowane,12 nowych przypadków, zwykły suite31/31 PASS. Niezależny przegląd ponownie wykonał31/31,0skip. Natywna zgodność, pełny CTest i build web: jeszcze w toku; nie zgłaszam gotowości przed zakończeniem.
 
+## API i uruchomienie u właściciela
+
+Python: `archive_stats`, `project_stats` i `estimate` przyjmują `audit_preset=` (ścieżka deskryptora albo kompletne Mapping wartości); pominięty argument używa danych kanonicznych. Jawne argumenty pojedynczego wywołania mają pierwszeństwo. `load_audit_preset` waliduje, `inspect_audit_preset` podaje wartości, wersję, hash źródła i pochodzenie. Import modułu nie czyta packa, więc kompletny jawny preset działa również przy uszkodzonym/brakującym domyślnym pliku. Wybrany błędny preset kończy się błędem przed otwarciem DB.
+
+Przykłady offline, na własnych danych właściciela (nie dodawać eksportu do repo):
+
+```sh
+python3 loom/tools/eval/archive_cost.py --help
+python3 loom/tools/eval/archive_cost.py --db archive.sqlite --audit-preset /path/audit.pack --json
+```
+
+CLI audytu zachowuje stare flagi ujemne i dodaje jawne `--include-versions`, `--include-unknown-status`, `--include-tools`, żeby ustawienie z pliku można było także ponownie włączyć w wywołaniu. Historyczny plik cen pozostaje datowaną opcją; nie jest aktualnym cennikiem ani automatycznym wydatkiem.
+
+Natywny CLI otrzymuje `--import-preset PATH` i `--audit-preset PATH`: odpowiednio deskryptory `loom.import_preset/1` i `loom.import_audit_preset/1` z kompletnym `values`. Istniejące pojedyncze flagi importu/audytu mają pierwszeństwo. Nie są to pliki utrwalonego stanu wykluczeń.
+
+```sh
+loom import export.zip --audit --import-preset /path/import.pack --audit-preset /path/audit.pack
+```
+
+Prywatne API konsumenta: `import_preset_from_values`, `apply_import_preset_values`, `inspect_import_preset` oraz odpowiedniki `import_audit_*`. Zastosowanie jest atomowe, nie zmienia callbacków/proweniencji/cen wywołującego. Zachowane zera parsera mają poprzednią semantykę, np. głębokość0 oznacza brak limitu; rozmiar chunk musi być dodatni i reprezentowalny, bez wymyślonego maksimum.
+
+Regeneracja danych:
+
+```sh
+python3 loom/src/import/gen_import_presets.py
+python3 loom/src/import/gen_import_presets.py --check
+```
+
+Zmiana wartości wymaga zmiany wersji źródła oraz odpowiedniej rewizji wpisu i pakietu w specyfikacji warstw. Trwałych id/key/area nie używać ponownie dla innego znaczenia. Generator jest transformacją bez historii; konflikty rewizji/wykluczenia sprawdza silnik12. Tokeny `compatibility` opisują historyczny format źródeł i pokwitowań, nie aktualny preset; nie aktualizować ich automatycznie przy nowym domyślnym ustawieniu.
+
 ## Czego ten przyrost nie robi
 
 Nie przenosi jeszcze profili formatów/ról, FTS ani wszystkich ustawień DB. Zachowuje `recorded|model|user` i zakresy adnotacji z poprzedniego przyrostu. Nie modyfikuje grafu metod ani UI. Pełne R40/R41 wymagają wspólnego konsumenta11/12 i późniejszego powiązania z grafem; kompletne dane nie udają stanu wykluczeń.
