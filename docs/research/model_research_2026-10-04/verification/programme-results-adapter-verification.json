@@ -1,0 +1,61 @@
+{
+  "schema": "loom.programme_result_adapter_verification/1",
+  "verified_on": "2026-10-05",
+  "source_sha256": {
+    "loom/tools/structure/analysis_optimization_v1.py": "b7c2ce5541c0f3fd7f0d647074105fd47bc414d287267ec939598b952b1e1a8d",
+    "loom/tools/structure/programme_results_v1.py": "5e7b2ce2e8a3b4c6cc9c0c3ee963dc41c23fcd27e06d6adc9b4bc7b3bf6f6506",
+    "loom/tools/structure/programme_study_results_v1.py": "c0d14e87a668149e2ba3df2fe8e2a625d962f97618b82ebe9096e763af5711f6",
+    "loom/tools/structure/test_programme_results_v1.py": "1aa9cc619e1c8a1ca80bafa28a99ff32c971d385572719a6289876cb015d5c1d",
+    "loom/tools/structure/test_programme_study_score_v1.py": "5933b2eb38394a2e014c3403ff8d732d42ca8248313834d9d77b3fd902bf08cd"
+  },
+  "focused_tests": {
+    "passed": 37,
+    "command": "python -m unittest loom.tools.structure.test_programme_results_v1 loom.tools.structure.test_programme_study_score_v1 loom.tools.structure.test_analysis_optimization_v1 loom.tools.structure.test_model_study_readiness_v1 -v",
+    "log": "programme-results-tests.txt"
+  },
+  "flat_discovery": {
+    "passed": 9,
+    "command": "PYTHONPATH=. python -m unittest discover -s loom/tools/structure -p 'test_programme*.py' -v",
+    "log": "programme-results-flat-discovery.txt"
+  },
+  "verified_boundaries": {
+    "key_binding_fingerprint_and_key_metadata_not_queried": true,
+    "private_full_resolution_payload_not_queried": true,
+    "provider_personal_metadata_excluded_from_public_projection": true,
+    "actual_and_requested_model_ids_separate": true,
+    "invalid_first_capture_not_repaired": true,
+    "sent_request_capture_checked_when_available": true,
+    "late_generation_preserves_original_404_and_attempt_row": true,
+    "late_file_basename_cannot_name_key_metadata": true,
+    "duplicate_generation_cannot_double_bill": true,
+    "unknown_billing_null_independently_of_semantic_answer_availability": true,
+    "frozen_request_payloads_not_rewritten": true,
+    "existing_pure_scorer_threshold_and_denominators_preserved": true,
+    "no_fake_model_profiles": true
+  },
+  "study_population": {
+    "planned_execution_operations": 432,
+    "planned_decisions_after_split_composition": 384,
+    "planned_queries_per_scored_arm": 48,
+    "cases": 16,
+    "corpus": "authored independent DEV; not holdout",
+    "quality_scope": "explicit source commitment; content/world truth unmeasured"
+  },
+  "source_drift": {
+    "path": "loom/tools/structure/analysis_optimization_v1.py",
+    "frozen_preparation_sha256": "b7c2ce5541c0f3fd7f0d647074105fd47bc414d287267ec939598b952b1e1a8d",
+    "current_sha256": "b7c2ce5541c0f3fd7f0d647074105fd47bc414d287267ec939598b952b1e1a8d",
+    "change": "none; legacy study restored byte-for-byte to HEAD, new programme aggregation calls its unchanged pure helpers",
+    "frozen_manifest_or_freeze_bytes_changed": false,
+    "original_negative_control_and_drift_gate_preserved": true
+  },
+  "independent_review": {
+    "scope": "source-only privacy/report-integrity review plus synthetic duplicate-generation replay",
+    "concrete_issue": "duplicate generation identity could double bill",
+    "corrected_and_independently_replayed": true,
+    "actual_private_key_metadata_or_fingerprint_read": false
+  },
+  "new_model_calls": 0,
+  "canonical_store_written": false,
+  "native_validation_scope": "existing native DTO JSON schema/Python codec only; final full CTest belongs to integration owner"
+}
