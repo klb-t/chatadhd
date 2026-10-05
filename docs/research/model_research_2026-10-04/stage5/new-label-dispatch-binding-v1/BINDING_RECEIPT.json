@@ -1,0 +1,64 @@
+{
+  "schema": "loom.jev_dispatch_binding/1",
+  "captured_at": "2026-10-05T16:05:02.732071+00:00",
+  "original": {
+    "manifest_raw_sha256": "14cbb6bb88f0397554815c06ac63d0e19121bd662ceb985f301a2a4770d092b2",
+    "configuration_raw_sha256": "ebc02a4cef3a5c02189815d69ab09217a73d2d240a638f3dd127ca920004bd41",
+    "programme_id": "new-label-corpus-20261005",
+    "gold_raw_sha256": "2f6e041024658543ffacc20f123ee9ef047ac32858638b8eecb49ff3c9d4c6e2"
+  },
+  "bound": {
+    "manifest_raw_sha256": "e0dea1c45f0306cd4e7253fa4989bd9d1007a8c4878989bb80a98d7c850bea26",
+    "configuration_raw_sha256": "4cfc08a2afbe4e98204232eda45d4cafd81f6a12f738fd4d7c5456bbc9f328ce",
+    "programme_id": "thread7-new-key-2026-10-04-eur5",
+    "stage_id": "new-label-cases"
+  },
+  "operator_policy_raw_sha256": "0d4dc4782ad632d84b865133c177aa7cb33448d91531430c7297c1df34797738",
+  "allowed_delta": {
+    "manifest": [
+      "/programme_id"
+    ],
+    "configuration": [
+      "/paid_manifest/path",
+      "/paid_manifest/raw_sha256",
+      "/paid_manifest/programme_id"
+    ]
+  },
+  "planned_operations": 192,
+  "all_operations_request_bytes_and_ids_equal": true,
+  "original_artifacts_preserved": true,
+  "frozen_dependencies": [
+    {
+      "path": "../new-label-corpus-v1/gold.json",
+      "sha256": "2f6e041024658543ffacc20f123ee9ef047ac32858638b8eecb49ff3c9d4c6e2"
+    },
+    {
+      "path": "../new-label-corpus-v1/inputs.json",
+      "sha256": "8cfd43c19f2603b6cc6adcf0187115fe17f4e4cb2c157eb23308a99ad11e290d"
+    },
+    {
+      "path": "../new-label-corpus-v1/prepared/j_active_inputs.json",
+      "sha256": "9595e1bcc54bbb7cd1e2eb7057030a67065e84c725f3dbaf249e0ee8794e870f"
+    },
+    {
+      "path": "../new-label-corpus-v1/prepared/j_directed_inputs.json",
+      "sha256": "3ba529c148349cf8ffefc601b156020f9e2ae9b3504b1f300a28ab49ee1db527"
+    },
+    {
+      "path": "../../../../../loom/tools/structure/graph_panel_live.py",
+      "sha256": "31ad2a56e69dc472ef686c257953297a28465a16aa4eb903e29aa829c0012c16"
+    },
+    {
+      "path": "../../../../../loom/tools/structure/openrouter_runner.py",
+      "sha256": "2cd14424ca190f3d5fed47faf1e328993668a620b8202cfb7b196b363f971635"
+    }
+  ],
+  "frozen_helper_raw_sha256": "51a68636c569362e6777865467e6eace09ff9d79c7f7613a53a3132d7a782d13",
+  "no_threshold_gold_mapping_or_parameter_change": true,
+  "network_calls": 0,
+  "paid_calls": 0,
+  "private_key_or_ledger_read": false,
+  "dispatch": false,
+  "registry_state_verified": false,
+  "registry_boundary": "Identity bound to supplied existing operator policy only; 7A must verify the current shared registry and budget before dispatch."
+}

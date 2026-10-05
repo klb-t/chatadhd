@@ -7,8 +7,10 @@ opublikowanego `edcb32f` i pobraniu późniejszego commitu z checkoutu prowadzą
 Nie ponawiano wcześniejszych 720 wywołań. Nie czytano `eval/real-holdout-key`,
 prywatnych danych, klucza ani prywatnego ledgeru.
 
-Commit do odbioru: pierwszy przyrost preparacji jest wskazany przez commit tego
-raportu; końcowy dispatch i wyniki będą przypięte poniżej po publikacji.
+Przyrost odtworzenia: lokalny `c13cea5`. Dispatch jest przygotowany w
+`stage5/new-label-dispatch-binding-v1`; commit opublikowany przez connector i
+końcowe wyniki zostaną przypięte poniżej. Zwykły `git push` nie miał dostępnego
+uwierzytelnienia; publikacja korzysta z połączonego GitHub, bez czytania credentiali.
 
 ## Populacja i stan wyników
 
@@ -47,6 +49,13 @@ zachowano osobno i nie zastąpiono go zawartością kapsuły.
 - Konfiguracja SHA256: `ebc02a4cef3a5c02189815d69ab09217a73d2d240a638f3dd127ca920004bd41`.
 - Osiem oryginalnych kontroli scorera — PASS na nowym checkout.
 - Producent `programme_context_preparation_v1.py verify` — PASS, dokładnie 192 operacje.
+- Powiązanie programu: 9/9 testów PASS; wszystkie 192 body i ID identyczne.
+
+Manifest wykonawcy SHA256 `e0dea1c45f0306cd4e7253fa4989bd9d1007a8c4878989bb80a98d7c850bea26`;
+config scorera SHA256 `4cfc08a2afbe4e98204232eda45d4cafd81f6a12f738fd4d7c5456bbc9f328ce`.
+Zmiana wyłącznie programme_id i trzech pól powiązania manifestu w osobnym configu.
+Oryginalne hashe, gold, próg i helper pozostają niezmienione. Receipt nie twierdzi,
+że offline sprawdził stan prywatnego rejestru; tę bramkę wykonuje 7A.
 
 Pierwszy replay preparacji wykazał brak historycznych template'ów w checkout.
 Odtworzono oryginalny manifest i dwa wymagane body z istniejącej kapsuły
@@ -58,9 +67,9 @@ Pełnych historycznych bramek C++ nie przenosimy na ten przyrost Python/danych.
 
 1. Fetch tej gałęzi i gałęzi prowadzącego. Sprawdzić powyższe hashe oraz oryginalne
    osiem testów: `python docs/research/model_research_2026-10-04/stage5/new-label-scoring-v1/test_score_first_only.py`.
-2. Przygotować jawną transformację wyłącznie `programme_id` do istniejącego
-   `thread7-new-key-2026-10-04-eur5`; zachować oryginalny manifest i receipt delty.
-   Scorer otrzyma osobną hash-bound konfigurację do manifestu wykonawcy.
+2. Odbiór gotowej transformacji i dokładne polecenia:
+   `stage5/jev-validation-20261005/DISPATCH_7A.md` oraz `DISPATCH_READY.json`.
+   Nie generować nowej preparacji ani nie zmieniać opublikowanych requestów.
 3. 7A wykonuje preflight świeżych cen i wspólnego stanu kosztów, wysyła raz 192
    operacje, rozlicza generacje i publikuje wyłącznie bezpieczny NORMALIZED bundle
    z niezależnie zapisanym SHA. 7C nie otrzymuje klucza ani kopii prywatnego ledgeru.
