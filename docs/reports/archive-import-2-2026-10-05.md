@@ -15,7 +15,7 @@ R42 sprawdzono w autoryzowanej gałęzi właściciela `claude/chataddhd-cpp-loom
 ## Weryfikacja i liczby
 
 Przed:5 domyślnych wartości importu i audyt rozproszone w C++/Python. Po:2 kanoniczne pliki danych,5+20 pól; domyślne zachowanie pozostaje wymaganiem bramki.
-Python:13 pełnych wyników API/CLI identycznych bajt po bajcie z bazą;19 starych testów zachowane,12 nowych przypadków, zwykły suite31/31 PASS. Niezależny przegląd ponownie wykonał31/31,0skip. Natywna zgodność, pełny CTest i build web: jeszcze w toku; nie zgłaszam gotowości przed zakończeniem.
+Python:13 pełnych wyników API/CLI identycznych bajt po bajcie z bazą;19 starych testów zachowane,12 nowych przypadków, zwykły suite31/31 PASS. Niezależny przegląd ponownie wykonał31/31,0skip. Generator:9/9 PASS, kontrola dokładnych bajtów i25 wpisów warstw; nowa natywna regresja15 przypadków (preset/audyt/cache/pokwitowania) czeka na rzeczywisty build. Natywna zgodność, pełny CTest i build web: jeszcze w toku; nie zgłaszam gotowości przed zakończeniem.
 
 ## API i uruchomienie u właściciela
 
@@ -53,7 +53,7 @@ Nie przenosi jeszcze profili formatów/ról, FTS ani wszystkich ustawień DB. Za
 
 ## Do wątku 2
 
-Zmiana5 ustawień musi wiązać treść oczekującego potwierdzenia importu; domyślne legacy pokwitowania pozostają identyczne. Szacunek istniejącej operacji pozostaje liczony z bajtów źródła. Przewidywanie pamięci/CPU/rozmiaru projekcji wymaga osobnego modelu kosztu, nie zmyślonych cen.
+Zmiana5 ustawień musi wiązać treść oczekującego potwierdzenia importu; domyślne legacy pokwitowania pozostają identyczne. Sześć zwykłych natywnych regresji obejmuje cache pełny/częściowy oraz zmianę każdego pola przy realnym pokwitowaniu W2. Szacunek istniejącej operacji pozostaje liczony z bajtów źródła. Przewidywanie pamięci/CPU/rozmiaru projekcji wymaga osobnego modelu kosztu, nie zmyślonych cen.
 
 ## Do wątku 11
 

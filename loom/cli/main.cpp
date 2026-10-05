@@ -52,6 +52,7 @@
 #include "loom/util/json.h"
 #include "loom/util/utf8.h"
 #include "import/import_audit.h"
+#include "import/import_preset.h"
 #include "import/import_usage.h"
 
 using namespace loom;
@@ -421,6 +422,20 @@ void print_export_audit(const Json& rep) {
 int cmd_import(Runtime& rt, const Args& a) {
   ImportOptions o;
   ImportAuditOptions audit;
+  // These files contain complete already-resolved values, not a second
+  // profile/layer store. Required suppressed fields never regain defaults.
+  auto preset_values = [&](std::string_view flag, std::string_view schema) -> Json {
+    const auto path = a.get(std::string(flag));
+    const auto document = must(json::parse(must(fsutil::read_file(path))));
+    if (!document.is_object() || document.value("schema", "") != schema ||
+        !document.contains("values") || !document["values"].is_object())
+      throw UsageError{"invalid effective preset descriptor: " + path};
+    return document["values"];
+  };
+  if (a.has("import-preset"))
+    must(apply_import_preset_values(o, preset_values("import-preset", "loom.import_preset/1")));
+  if (a.has("audit-preset"))
+    must(apply_import_audit_preset_values(audit, preset_values("audit-preset", "loom.import_audit_preset/1")));
   auto number = [&](const std::string& key, double fallback) {
     if (!a.has(key)) return fallback;
     const auto s = a.get(key);

@@ -3,10 +3,76 @@
 #include <cmath>
 #include <limits>
 #include <set>
+#include <stdexcept>
 
+#include "import_preset.h"
+#include "loom/util/sha256.h"
 #include "loom/util/utf8.h"
 
 namespace loom {
+
+Result<ImportAuditPresetValues> import_audit_preset_from_values(const Json& values) {
+  if (!values.is_object()) return Error(Errc::InvalidArgument, "audit effective values must be an object");
+  const auto* active = json::find(values, "native_active_only");
+  if (!active || !active->is_boolean())
+    return Error(Errc::InvalidArgument, "audit native_active_only must be present and boolean");
+  auto number = [&](std::string_view key) -> Result<double> {
+    const auto* value = json::find(values, key);
+    if (!value || !value->is_number())
+      return Error(Errc::InvalidArgument, "audit numeric effective value missing or invalid: " + std::string(key));
+    const double result = value->get<double>();
+    if (!std::isfinite(result)) return Error(Errc::InvalidArgument, "audit effective value must be finite");
+    return result;
+  };
+  LOOM_TRY_ASSIGN(auto low, number("chars_per_token_low"));
+  LOOM_TRY_ASSIGN(auto high, number("chars_per_token_high"));
+  LOOM_TRY_ASSIGN(auto ratio, number("output_ratio"));
+  if (high <= 0 || low < high || ratio < 0)
+    return Error(Errc::InvalidArgument, "audit bounds require low >= high > 0 and nonnegative ratio");
+  return ImportAuditPresetValues{active->get<bool>(), low, high, ratio};
+}
+
+const ImportAuditPresetValues& default_import_audit_preset() {
+  static const ImportAuditPresetValues preset = [] {
+    const auto source = compiled_import_preset_source("import_audit");
+    if (!source) throw std::logic_error(source.error().to_string());
+    const auto document = json::parse(source.value());
+    if (!document || !document->is_object() || document->value("schema", "") != "loom.import_audit_preset/1")
+      throw std::logic_error("invalid embedded import audit descriptor");
+    const auto* values = json::find(*document, "values");
+    if (!values) throw std::logic_error("embedded audit descriptor lacks values");
+    const auto decoded = import_audit_preset_from_values(*values);
+    if (!decoded) throw std::logic_error(decoded.error().to_string());
+    return decoded.value();
+  }();
+  return preset;
+}
+
+Status apply_import_audit_preset_values(ImportAuditOptions& options, const Json& values) {
+  LOOM_TRY_ASSIGN(auto decoded, import_audit_preset_from_values(values));
+  auto replacement = options;
+  replacement.active_only = decoded.active_only;
+  replacement.chars_per_token_low = decoded.chars_per_token_low;
+  replacement.chars_per_token_high = decoded.chars_per_token_high;
+  replacement.output_ratio = decoded.output_ratio;
+  LOOM_TRY(validate_import_audit_options(replacement));
+  options = replacement;
+  return {};
+}
+
+Result<Json> inspect_import_audit_preset() {
+  LOOM_TRY_ASSIGN(auto raw, compiled_import_preset_source("import_audit"));
+  LOOM_TRY_ASSIGN(auto document, json::parse(raw));
+  if (!document.is_object() || document.value("schema", "") != "loom.import_audit_preset/1")
+    return Error(Errc::InvalidArgument, "invalid audit descriptor schema");
+  const auto* values = json::find(document, "values");
+  if (!values) return Error(Errc::InvalidArgument, "audit descriptor lacks effective values");
+  LOOM_TRY(import_audit_preset_from_values(*values));
+  document["source_path"] = "loom/data/presets/import_audit.pack";
+  document["source_sha256"] = Sha256::hex(raw);
+  document["raw_source"] = std::string(raw);
+  return document;
+}
 
 Status validate_import_audit_options(const ImportAuditOptions& o) {
   if (!std::isfinite(o.chars_per_token_low) || !std::isfinite(o.chars_per_token_high) ||
