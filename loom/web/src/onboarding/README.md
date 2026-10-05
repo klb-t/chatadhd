@@ -110,7 +110,9 @@ provider call is used.
 native `layer.*` explanations. Its `defaults` contain initial mode, available
 mode/preference choices, field editor fallback, boolean options, editor row
 counts, JSON indentation, provider-list separator, privacy editor descriptors,
-control order and CSS custom-property values. The views use these values rather
+control order and CSS custom-property values, including border width and style
+(`--onboarding-border-style` defaults to `solid` and can be changed to `dashed`).
+The views use these values rather
 than maintaining a second collection of product defaults.
 
 The native layer key is `presentation.onboarding`. `normalizeNativeSnapshot`
@@ -146,11 +148,15 @@ null before the rendered explanation is assigned; a suppressed native
 use translated machine messages while original provider/parser diagnostics are
 inspectable separately.
 
-The 10 presentation tests check canonical/generated equality, the former EN
+The 11 presentation tests check canonical/generated equality, the former EN
 presets and native explanations, data-only mutation, suppressed catalogs, invalid
 input and omitted controls, inert/malformed templates, explicit locale choice,
 localized diagnostics, full native explanation parameters and source presentation
-token/text boundaries. They run offline alongside the unchanged 17 controller
+token/text boundaries, including an isolated malformed/missing diagnostic catalog
+that must produce a machine code without recursive error construction. Null or
+structurally incomplete bootstrap dependencies also produce a typed machine
+diagnostic, including when a supplied document is present, without mounting
+another broken default consumer. They run offline alongside the unchanged 17 controller
 tests. These checks and `npm run build` do not assert App/navigation, HTTP/native
 transport, cross-client invalidation or live provider integration; W10 owns those
 integration points.

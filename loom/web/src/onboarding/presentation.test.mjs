@@ -1,5 +1,8 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { copyFile, mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { pathToFileURL } from "node:url";
 import test from "node:test";
 import { controlOrder, errorPresentation, formatTemplate, layerExplanation, message, presentationStyle, PresentationError, resolvePresentation, vocabulary } from "./presentation.mjs";
 import { normalizeNativeSnapshot } from "./native-snapshot.ts";
@@ -16,6 +19,7 @@ test("generated embedding equals canonical presentation data and exact former EN
   assert.equal(p.defaults.json_indent, 2);
   assert.deepEqual(p.defaults.rows, { field: 3, correction: 3, scenario: 14, privacy_rule: 6, knowledge: 3, default: 3 });
   assert.equal(p.defaults.provider_separator, "\n");
+  assert.equal(presentationStyle(p)["--onboarding-border-style"], "solid");
   assert.deepEqual(p.defaults.modes.map(item => message(p, item.label)), ["Conversation", "Form"]);
   assert.deepEqual(p.defaults.boolean_options.map(item => [message(p, item.label), item.value]), [["True", true], ["False", false]]);
   assert.equal(message(p, "session.prefix", { status: "active" }), "Session: active. Method: ");
@@ -46,6 +50,7 @@ test("changing only supplied pack values changes controls, labels, locale, geome
   edited.defaults.json_indent = 4;
   edited.defaults.control_order.section = ["skip", "confirmed", "repeat"];
   edited.defaults.presentation_tokens["--onboarding-width"] = "1100px";
+  edited.defaults.presentation_tokens["--onboarding-border-style"] = "dashed";
   edited.defaults.provider_separator = ";";
   const p = resolvePresentation({ available: true, status: "effective", value: edited });
   assert.equal(message(p, "field.submit"), "Własny napis");
@@ -55,6 +60,7 @@ test("changing only supplied pack values changes controls, labels, locale, geome
   assert.equal(p.defaults.json_indent, 4);
   assert.equal(p.defaults.provider_separator, ";");
   assert.equal(presentationStyle(p)["--onboarding-width"], "1100px");
+  assert.equal(presentationStyle(p)["--onboarding-border-style"], "dashed");
   assert.deepEqual(controlOrder(p, "section", { confirmed: 1, corrected: 1, rejected: 1, skip: 1, repeat: 1 }), ["skip", "confirmed", "repeat"]);
   assert.equal(canonical.default_locale, "en");
 });
@@ -150,4 +156,69 @@ test("product source contains no hand-authored visible JSX strings or CSS token 
   }
   const css = await readFile(new URL("onboarding.css", import.meta.url), "utf8");
   assert.equal(/#[\da-f]{3,6}|\d+px\b/i.test(css), false);
+});
+
+
+test("isolated broken or missing diagnostic catalogs fail once with a machine code, never recursive construction", async () => {
+  const directory = await mkdtemp(join(tmpdir(), "loom-onboarding-diagnostic-"));
+  const faults = [
+    { id: "syntax", edit: catalog => { catalog["error.template_syntax"] = "{{broken"; }, template: "{{broken", code: "error.template_syntax" },
+    { id: "parameter", edit: catalog => { catalog["error.template_parameter"] = "{{broken"; }, template: "{{absent}}", code: "error.template_parameter" },
+    { id: "missing", edit: catalog => { delete catalog["error.template_syntax"]; }, template: "{{broken", code: "error.template_syntax" },
+    { id: "empty", edit: catalog => { for (const key of Object.keys(catalog)) delete catalog[key]; }, template: "{{broken", code: "error.template_syntax" },
+    { id: "diagnostic_parameter", edit: catalog => { catalog["error.template_syntax"] = "{{absent}}"; }, template: "{{broken", code: "error.template_syntax" },
+    { id: "configured", edit: catalog => { catalog["error.template_syntax"] = "Configured synthetic diagnostic."; }, template: "{{broken", code: "error.template_syntax", message: "Configured synthetic diagnostic.", machineOnly: false },
+  ];
+  const loadIsolated = async (id, pack) => {
+    const moduleDirectory = join(directory, id);
+    await mkdir(join(moduleDirectory, "generated"), { recursive: true });
+    await copyFile(new URL("presentation.mjs", import.meta.url), join(moduleDirectory, "presentation.mjs"));
+    await writeFile(join(moduleDirectory, "generated", "ui.json"), JSON.stringify(pack));
+    return import(pathToFileURL(join(moduleDirectory, "presentation.mjs")).href);
+  };
+  try {
+    for (const fault of faults) {
+      const pack = clone(canonical);
+      fault.edit(pack.locales[pack.default_locale]);
+      const isolated = await loadIsolated(fault.id, pack);
+      let failure;
+      try { isolated.formatTemplate(fault.template); } catch (error) { failure = error; }
+      assert.ok(failure instanceof isolated.PresentationError, fault.id);
+      assert.equal(failure.code, fault.code, fault.id);
+      assert.equal(failure.message, fault.message ?? fault.code, fault.id);
+      assert.equal(failure.machineOnly, fault.machineOnly ?? true, fault.id);
+      if (failure.machineOnly) assert.deepEqual(isolated.errorPresentation(failure), { text: fault.code, details: fault.code }, fault.id);
+    }
+    const structuralFaults = [
+      { id: "bootstrap_null", edit: () => null },
+      { id: "bootstrap_primitive", edit: () => 7 },
+      { id: "bootstrap_locales", edit: pack => { delete pack.locales; return pack; } },
+      { id: "bootstrap_default_locale", edit: pack => { delete pack.default_locale; return pack; } },
+      { id: "bootstrap_defaults", edit: pack => { delete pack.defaults; return pack; } },
+      { id: "bootstrap_rows", edit: pack => { delete pack.defaults.rows; return pack; } },
+      { id: "bootstrap_control_order", edit: pack => { delete pack.defaults.control_order; return pack; } },
+      { id: "bootstrap_control_group", edit: pack => { pack.defaults.control_order.field_status = null; return pack; } },
+      { id: "bootstrap_mode", edit: pack => { delete pack.defaults.mode; return pack; } },
+    ];
+    for (const fault of structuralFaults) {
+      const isolated = await loadIsolated(fault.id, fault.edit(clone(canonical)));
+      for (const input of [undefined, clone(canonical)]) {
+        let failure;
+        try { isolated.resolvePresentation(input); } catch (error) { failure = error; }
+        // mode is not a bootstrap registry dependency: a complete supplied
+        // document may still work, while an invalid embedded default cannot.
+        if (fault.id === "bootstrap_mode" && input !== undefined) { assert.equal(failure, undefined); continue; }
+        assert.ok(failure instanceof isolated.PresentationError, fault.id);
+        assert.equal(failure.code, "error.presentation_invalid", fault.id);
+        assert.equal(failure.message, failure.code, fault.id);
+        assert.equal(failure.machineOnly, true, fault.id);
+        assert.deepEqual(isolated.errorPresentation(failure), { text: failure.code, details: failure.code }, fault.id);
+      }
+      if (["bootstrap_null", "bootstrap_primitive"].includes(fault.id)) {
+        const failure = new isolated.PresentationError("error.template_syntax");
+        assert.equal(failure.message, "error.template_syntax");
+        assert.equal(failure.machineOnly, true);
+      }
+    }
+  } finally { await rm(directory, { recursive: true, force: true }); }
 });
