@@ -1,0 +1,13 @@
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+loom/tests/test_runtime_profile.cpp:130:
+TEST SUITE: runtime_profile
+TEST CASE:  effective definitions match the canonical data source
+
+loom/tests/test_helpers.h:26: FATAL ERROR: unexpected error: not_found: runtime profile domain is unavailable: import_formats
+
+===============================================================================
+[doctest] test cases:  11 |  10 passed | 1 failed | 0 skipped
+[doctest] assertions: 221 | 220 passed | 1 failed |
+[doctest] Status: FAILURE!

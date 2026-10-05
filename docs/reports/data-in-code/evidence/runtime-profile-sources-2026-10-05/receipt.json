@@ -1,0 +1,82 @@
+{
+  "schema": "loom.runtime_profile_sources_verification/1",
+  "baseline_commit": "fffa9fd557db97cae549d555959fedf3910d346c",
+  "baseline_archive_sha256": "8806fcd44e9cdd0798d5f8acaa6d94f35c1edff4500d62963d83a96f29bb92c3",
+  "usage_wrapper_sha256": "85bea77d6f935c098ef3cb6de7ffc9fc9a07282e065bd9c10834f04b7d957335",
+  "unchanged_usage_profile_hash": "e8b8d4e5b098213a421b88b1f11db949a8a6056838a2f8c9487303913da5a8bd",
+  "original_definition_table_byte_identical": true,
+  "compiled_snapshot_domains": 19,
+  "current_input_domains": 22,
+  "results": {
+    "native-initial-abi-negative": {
+      "command": [
+        "/workspace/scratch/72fc60ad1cc5/profile-source-p0-native/tests",
+        "--no-colors"
+      ],
+      "exit": -6,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "236ccc8e8b7fb519a77b641c114904a337eba7de8fe64a41c6225677c5d13e02"
+    },
+    "native-19-vs-22-negative": {
+      "command": [
+        "/workspace/scratch/72fc60ad1cc5/profile-source-p0-native/tests-fixed",
+        "--no-colors"
+      ],
+      "exit": 1,
+      "stdout_sha256": "30475f484315f77f6960bd81e3459ab59396cec444c323d5188d64e4ec959794",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "python-generator": {
+      "command": [
+        "python3",
+        "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_runtime_profile_sources.py"
+      ],
+      "exit": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "ce0aedf61fec62af51e7afe3deb56ecb83af9aabbc0bc9a97a17e503395fef35"
+    },
+    "native-number-parser": {
+      "command": [
+        "/workspace/scratch/72fc60ad1cc5/profile-source-p0-before/native_number_probe"
+      ],
+      "exit": 0,
+      "stdout_sha256": "ab5b54b968317ca85cc1a5e3d0cbaf72437989a5e99e955f43e4a723540c28b6",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "native-22-positive": {
+      "command": [
+        "/workspace/scratch/72fc60ad1cc5/profile-source-p0-native/tests-22",
+        "--no-colors"
+      ],
+      "exit": 0,
+      "stdout_sha256": "2e44210c17c2f19721d2263d909963c4d349a1634b83a01a9a55ba6ff3ce1cdd",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "negative_explanations": {
+    "native-initial-abi-negative": "Old fs/log callers allocate prior RuntimeProfile layout. Isolated mixed-ABI harness abort; not valid production verification.",
+    "native-19-vs-22-negative": "Recompiled actual fs/log callers fixed ABI; 10 of 11 cases passed (220 of 221 assertions), only disk-domain equality failed because frozen embedding has19 and independently added data has22. New metadata and numeric cases passed. Not the full-tree gate."
+  },
+  "checks": {
+    "python_generator_cases": 16,
+    "contracts_python_cases": 209,
+    "contracts_python_exit": 0,
+    "strict_cpp_compile_exit": 0,
+    "full_ctest": "owned by integrator, not claimed here",
+    "focused_native_cases": 11,
+    "focused_native_assertions": 312,
+    "focused_native_skipped": 0,
+    "focused_native_scope": "New RuntimeProfile, new-ABI fs/log callers, current test_runtime_profile and runner; unchanged baseline utility dependencies only. No full-tree gate claimed."
+  },
+  "snapshot_sha256": {
+    "runtime_profile.cpp": "0aab7afb23b413fdc62e6cd51b852a5596b0e8fb7b029bd95583f71e8ee6cc93",
+    "fs.cpp": "3a0202d4a38159c4ce28c8c141d2f9a86bccab18e9879c36cc7ea551364594aa",
+    "runner.cpp": "010cc5d71fa312cc2aef083c5a8ecbcfa076db95fd50a3761df2d3e5b29b12a5",
+    "runtime_profile.h": "ce3faf9179dc4bf8ca18d00f43a0bd93df038a5c6908589a136c7407d5fbb88d",
+    "log.cpp": "5c63aeb87b5bfcf626b1cc68904d47532a767c57d8f49c5ec845c0ba75f03dfc",
+    "runtime_profiles_embedded.inc": "f8f659ce1747f8d8b18f404c63453013d503f736a722ec89aeb9ae6f28531c37",
+    "native_number_probe.cc": "06aba5dad265fce004e506cc4d3b17c4d1bd3ada4de6adea58b5bcde4276ec05",
+    "test_runtime_profile.cpp": "ebfadbc5af2b347e609d3be00de5806994cc9f756752e0b5e9ae8364380faf6b",
+    "runtime_profiles_embedded_22.inc": "45670e3f6cadc150cc0483bd5870d685f55f785c06f60cf0ebf14b820e645e3f"
+  }
+}
