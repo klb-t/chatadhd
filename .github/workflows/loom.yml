@@ -13,6 +13,7 @@ on:
       - "!loom/tools/structure/*.md"
       - ".github/workflows/loom.yml"
       - ".github/scripts/**"
+      - ".github/ctest-evidence-policy*.json"
   pull_request:
     paths:
       - "loom/**"
@@ -23,6 +24,7 @@ on:
       - "!loom/tools/structure/*.md"
       - ".github/workflows/loom.yml"
       - ".github/scripts/**"
+      - ".github/ctest-evidence-policy*.json"
   workflow_dispatch:
 
 permissions:
@@ -103,8 +105,23 @@ jobs:
           mkdir -p build/${{ matrix.preset }}/verification
           python ../.github/scripts/write_build_receipt.py \
             --preset ${{ matrix.preset }} \
+            --cmake-cache build/${{ matrix.preset }}/CMakeCache.txt \
+            --cmake-field CMAKE_GENERATOR \
+            --cmake-field CMAKE_BUILD_TYPE \
+            --cmake-field CMAKE_C_COMPILER \
+            --cmake-field CMAKE_CXX_COMPILER \
+            --cmake-field CMAKE_C_FLAGS \
+            --cmake-field CMAKE_C_FLAGS_DEBUG \
+            --cmake-field CMAKE_CXX_FLAGS \
+            --cmake-field CMAKE_CXX_FLAGS_DEBUG \
+            --cmake-field LOOM_USE_SYSTEM_SQLITE \
+            --cmake-field LOOM_SHARED \
+            --cmake-field LOOM_WERROR \
+            --cmake-field LOOM_BUILD_SERVER \
             --output build/${{ matrix.preset }}/verification/build-receipt.json \
             --binary build/${{ matrix.preset }}/loom_tests \
+            --binary build/${{ matrix.preset }}/loom_compat_tool \
+            --binary build/${{ matrix.preset }}/loom_candidate_graph_native_tool \
             --binary build/${{ matrix.preset }}/cli/loom \
             --binary build/${{ matrix.preset }}/server/loom-server \
             --optional-binary build/${{ matrix.preset }}/libloom.so
@@ -117,6 +134,7 @@ jobs:
         if: always()
         run: |
           python .github/scripts/verify_ctest.py \
+            --policy .github/ctest-evidence-policy.json \
             --manifest loom/build/${{ matrix.preset }}/verification/ctest-manifest.json \
             --junit loom/build/${{ matrix.preset }}/verification/ctest.xml \
             --preset ${{ matrix.preset }} \
@@ -173,3 +191,7 @@ jobs:
           npm run test:imported-message-content-browser
           npm run test:imported-message-content-native
           npm run test:application-profile-graph
+          python ../../.github/scripts/run_optional_npm_scripts.py \
+            --package-json package.json \
+            --script test:interface-2 \
+            --script test:interface-2-native
