@@ -1,0 +1,50 @@
+{
+  "schema": "loom.semantic_runtime_fixture.negative/1",
+  "date": "2026-10-04",
+  "source_head": "1841c26a30dee7631cb913083d70a08c851951ed",
+  "scope": "Full current Runtime consumer fixture; accompanying GitHub/model creation/selector focused entries passed.",
+  "result": "negative; three unchanged materialize assertions fail because fixture scenarios reuse deterministic run identity",
+  "reason": "prepare() passed pack.hash and empty semantic input to begin_run for each scenario; same deterministic run reused baseline products. Actual KnowledgeEngine includes the effective profile in its fingerprint. This is a test-fixture isolation bug, not a production cache regression.",
+  "failed_assertions": [
+    {
+      "line": 189,
+      "expected_products": 5,
+      "actual_products": 6
+    },
+    {
+      "line": 195,
+      "expected_products": 4,
+      "actual_products": 6
+    },
+    {
+      "line": 210,
+      "expected_products": "empty",
+      "actual_products": "nonempty"
+    }
+  ],
+  "negative_source_sha256": "1ce09cdebf44e056ad3a1a849cc7ad8c6b817cc8df2ace4c4bc32027acae2d04",
+  "full_negative_log_sha256": "edcb73efdaaf910b9968119d80cd6386837da97806f35981ba697bba4a672ae4",
+  "original_gate_command": [
+    "ctest",
+    "--test-dir",
+    "/workspace/scratch/72fc60ad1cc5/current-build",
+    "-R",
+    "^unit\\.test_(github|model_creation_profile|runtime_recipe_consumers|selector)$",
+    "--output-on-failure"
+  ],
+  "replay": [
+    "python3",
+    "docs/reports/data-in-code/evidence/semantics-runtime-fixture-negative/replay.py",
+    "--source-root",
+    "/path/chatadhd",
+    "--build",
+    "/path/current-build",
+    "--output",
+    "/tmp/semantics-negative-replay"
+  ],
+  "final_gate": "pending corrected fixture rebuild and full current CTest by parent",
+  "production_changes_for_fix": false,
+  "focused_gate_selector": "Equivalent four-entry selector; original invocation itself was not printed in the preserved CTest log.",
+  "corrected_source_sha256": "db7461a6040c68562fe45845c8611ee0f3b7c25253f7d623d3bf97abd7df28ba",
+  "fix": "Four named recipe_case semantic inputs; six additional REQUIRE assertions ensure pairwise-distinct run IDs; all original assertions retained."
+}
