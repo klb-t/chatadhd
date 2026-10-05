@@ -1,0 +1,401 @@
+{
+  "schema": "loom.thread11.independent_evidence_review/1",
+  "date": "2026-10-05",
+  "reviewer": "/root/profile_framework_review",
+  "status": "PASS",
+  "unresolved_findings": [],
+  "review_method": "Read-only artifact inspection, SHA256/size checks, original JUnit summary parsing, read-only Git blob/tree comparison, static README/derivation-script review. No product tests, guards, generators, build, rebase, fetch or Git mutations executed. Only this evidence JSON was written.",
+  "source": {
+    "commit": "2ac630a72e8ddc5ad126888f7e083a5b30235db8",
+    "tree": "409c056b046a3d563c9093f766d9393527fde5d8",
+    "files": 735,
+    "current_filesystem_matches": true,
+    "pinned_git_blobs_match": true,
+    "mismatches": []
+  },
+  "coverage": {
+    "valid": true,
+    "manifest_entries": 127,
+    "junit_entries": 127,
+    "executed_entries": 126,
+    "unexecuted_entries": [
+      "unit.test_catalog_scale"
+    ],
+    "executed_native_cases": 783,
+    "executed_native_assertions": 26985,
+    "executed_python_cases": 1371,
+    "skipped_python_cases": 0,
+    "both_guards_exact_observations_equal": true,
+    "actual_input_sha256": {
+      "manifest": "02160156e24ff4124cfbf06696d363367b7b482634af11f4b93d31a3b8fc3204",
+      "junit": "a744922087345fd64152433f686baf10da0a5945d233a8fa30e478fe54c2628e"
+    },
+    "original_junit_summaries_independently_reparsed": true,
+    "junit_names_equal_manifest": true,
+    "junit_failures": 0,
+    "junit_skipped": 0,
+    "opaque_script_entries_without_invented_inner_counts": [
+      "server.smoke",
+      "cli.smoke"
+    ]
+  },
+  "gate_statuses": {
+    "build": 0,
+    "build-glob": 0,
+    "ctest": 0,
+    "web-install": 0,
+    "web-build": 0,
+    "runtime-generator": 0,
+    "usage-generator": 0,
+    "coverage": 0,
+    "coverage-legacy": 0
+  },
+  "reviewed_receipt_fields_match_raw_evidence": true,
+  "reviewed_receipt_artifact_records_before_review_file": 53,
+  "fullcore_cli": {
+    "shared_domains": 19,
+    "changed_existing_values_schema_hash": [],
+    "added_domains": [
+      "import",
+      "import_audit",
+      "import_formats"
+    ],
+    "help_bytes": 4770,
+    "version_bytes": 34,
+    "help_version_raw_bytes_identical": true,
+    "after_created_files": [],
+    "captured_streams_hash_checked": 94,
+    "actual_inspection_json_matches_capture": true,
+    "current_cli_binary_hash_matches": true,
+    "all_four_built_binary_hashes_sizes_modes_match": true,
+    "new_import_domains_unwired": true
+  },
+  "historical_inventory": {
+    "groups": 695,
+    "thread11_groups": 213,
+    "statuses": {
+      "migrated": 187,
+      "partially-migrated": 19,
+      "retained-wire": 5,
+      "retained-algorithm": 1,
+      "deferred-to-other-thread": 1
+    },
+    "historical_2026_10_04_ctest_not_counted_as_current": true
+  },
+  "r42": {
+    "mechanism_fixture_cases": 41,
+    "mechanism_fixture_exit": 0,
+    "original_full_ctest_fixture_cases": 41,
+    "actual_repository_exit": 1,
+    "actual_repository_valid": false,
+    "counts": {
+      "files": 363,
+      "product_files": 339,
+      "excluded_test_fixture_files": 24,
+      "source_bytes": 4884696,
+      "unknown_size_files": 0,
+      "discovery_errors": 0,
+      "candidates": 56974,
+      "allowed": 6,
+      "unclassified": 56968,
+      "blocked_files": 85,
+      "stale_allowlist": 0,
+      "verified_generated_files": 1
+    },
+    "finding_rows_retained": 56974,
+    "manifest_rows_retained": 363,
+    "compressed_and_original_full_report_hashes_match": true,
+    "unchanged_capture_source_snapshots": true,
+    "repository_acceptance_claimed": false
+  },
+  "negative_recovery_boundaries": [
+    "P0 SIGABRT was an invalid mixed-ABI isolated harness; new-ABI fs/log and compatible22 snapshot positives remain scoped. Neither negative is promoted to full-tree PASS.",
+    "The frozen19 embedding versus22 data error remains10/11cases and220/221assertions; the compatible22 scoped run remains11/11cases and312/312assertions.",
+    "CLI --version and compare-directory failures remain harness negatives; fixes changed harness arguments, not product behavior.",
+    "R42 run1 retains exact decoded combined tool-output fields, not original pipe/PTY bytes, separated streams or missing transient fixtures/source/policy/schema.",
+    "R42 run3 recovered source and old schema match independently retained hashes; run2 source is an explicit reverse-patch derivation without an independent original run2 source hash.",
+    "R42 run2 replay is a new isolated synthetic replay, not the original negative log. Originalrun2 rawnegative and full current repository audit are separately retained."
+  ],
+  "derivation_assumptions": [
+    "derive_receipt.py rechecks retained source bytes, both observed guard outputs/counts/input hashes, retained zero exit files and the stored CLI comparison. It does not execute tests or authenticate shell sessions.",
+    "This review independently reparsed the original JUnit, checked all current artifact-map records, compared actual CLI stdout JSON/raw help/version, checked actual binaries and pinned source Git objects.",
+    "The source snapshot was captured after build and while CTest ran; it is not a compiler syscall trace. The original current JUnit was not reconstructed or replaced.",
+    "The final receipt excludes its own hash. This review likewise omits finalreceiptSHA to avoid a self-reference cycle; root will rederive receipt to include this review artifact.",
+    "Post-review receipt refresh changes the evidence artifact map only; source/rawinputs/counts are pinned here. Later changes to reviewed substantive evidence require renewed review.",
+    "No main acceptance, consumer activation for the three UNWIRED imports, W2config bridge or production W12bindings are implied by positive branch gates."
+  ],
+  "reviewed_artifact_sha256": {
+    "docs/reports/data-in-code/README.md": {
+      "bytes": 4970,
+      "sha256": "ce1da291522d6a4759b78d48c7f208aaed9a16cf090e4a91109e8a0925350d83"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/cli-before/receipt.json": {
+      "bytes": 386904,
+      "sha256": "029d7facd4a63237e3a00a00227cc65f1f2dbb879bc59618f766cb48bea6942a"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/cli-fullcore-after/comparison.json": {
+      "bytes": 426,
+      "sha256": "80cf2df059f603558d59b9aaa77aa2cae1c3559d7e75514ce95bfedd1b30a9a2"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/cli-fullcore-after/receipt.json": {
+      "bytes": 441966,
+      "sha256": "3981a6d6e63a6ef3a9dd3e521f8e13ae53f0a235aaa4fbf8c6990d77e0d80de9"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/LastTest.full.log": {
+      "bytes": 281153,
+      "sha256": "43654d2ad833379f2e1561253f9d02558e068a6d10f92cb695e85abba9d65a7f"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/README.md": {
+      "bytes": 5880,
+      "sha256": "674891fdf9c1b176e63461002ecfbb063ce31db0e231c24070a3f8bd109a431f"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/build-glob.exit": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/build-glob.stdout": {
+      "bytes": 477,
+      "sha256": "c246855b6208271c579959cf7f9d4e10bc2cc8310a3d97ad79e2de67e8712271"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/build-settings.json": {
+      "bytes": 440,
+      "sha256": "9dd9af2d019f64f5e78a9cd99fda9f1f5ff32f203be76dbc45f64e5ebb1663f1"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/build.exit": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/build.stdout": {
+      "bytes": 21976,
+      "sha256": "03ba986b743b960af1ae6bd20c81548ba252aa1bd7029a6e66bb60b1ed1c579d"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/built-binaries.json": {
+      "bytes": 607,
+      "sha256": "398190e95113b853fdc5dac5d776c355cf33aa8a3a67394a9832f067d797f9cd"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/cli-fullcore-positive.stdout": {
+      "bytes": 372,
+      "sha256": "eab86a2b688fa2185400c032b1fed9beeede2c3059b9dbeea423e7277d24db98"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/compiler-version.stdout": {
+      "bytes": 244,
+      "sha256": "d1587c99dacaf2619bba832ebf1d927d92d493f29fbef197f0636922de4ee952"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/coverage-legacy.exit": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/coverage-legacy.json": {
+      "bytes": 18637,
+      "sha256": "e270e2ade8a003c355a8e006bb9a3b60be45a9d9181392e0a1c99066b6d14f90"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/coverage-legacy.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/coverage-legacy.stdout": {
+      "bytes": 70,
+      "sha256": "27aa22287fae685d1a5b0f71e42b2ca9dc07c98f2752b1e0bb2a67c25c108a6a"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/coverage.exit": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/coverage.json": {
+      "bytes": 19088,
+      "sha256": "24020fa2396c931cebf3cc5c1443aefd04ff8b2d3417c7ef805c34b13ea0c275"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/coverage.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/coverage.stdout": {
+      "bytes": 70,
+      "sha256": "27aa22287fae685d1a5b0f71e42b2ca9dc07c98f2752b1e0bb2a67c25c108a6a"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/ctest-manifest.json": {
+      "bytes": 90149,
+      "sha256": "02160156e24ff4124cfbf06696d363367b7b482634af11f4b93d31a3b8fc3204"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/ctest-manifest.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/ctest.exit": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/ctest.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/ctest.stdout": {
+      "bytes": 17711,
+      "sha256": "7cf93d32ef5394e6b56dd3613a2294dc49e844ba9cac27a8eb278a3ec08ece75"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/ctest.xml": {
+      "bytes": 215905,
+      "sha256": "a744922087345fd64152433f686baf10da0a5945d233a8fa30e478fe54c2628e"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/derive_receipt.py": {
+      "bytes": 5482,
+      "sha256": "d1a65cf610b5c11db5317c1ef854548c890316657bc532435f33081d906b06b3"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/fresh-fetch-refs.json": {
+      "bytes": 2619,
+      "sha256": "a1f85ff637a7cc2b1bcbc435c27576b9fe099bb6c55facd2839866a9ee823162"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/generator-receipt.json": {
+      "bytes": 644,
+      "sha256": "6e6ca26d38ca1621a369901c9dab494809b45d1909fc5b056776a1c593a951c7"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/published-rebase.json": {
+      "bytes": 8424,
+      "sha256": "d9f8c92d59cf19f67faaff9467ce34917bbf1428b631c11946d8133e75a6cee6"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/runtime-generator.exit": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/runtime-generator.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/runtime-generator.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/tested-source-snapshot.json": {
+      "bytes": 118906,
+      "sha256": "cd684f400f98bee4147c72deb129ece62bd23c51bcc37dac4a81984c423cc758"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/usage-generator.exit": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/usage-generator.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/usage-generator.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/validator-snapshot/.github/ctest-evidence-policy.json": {
+      "bytes": 1707,
+      "sha256": "1dc457125c40c0e225365e20c8839d9726d71dfa5872a8be1d890707666526a4"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/validator-snapshot/.github/ctest-evidence-policy.schema.json": {
+      "bytes": 3714,
+      "sha256": "29ff3cd357e02cd0fc8139cacb86293fcfab5803c9f0001eb8aec53b4f4be6e0"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/validator-snapshot/.github/scripts/verify_ctest.py": {
+      "bytes": 15145,
+      "sha256": "ecfb45f0883d2aeb8d61647fb90ec3c0ee161ec4b998f0a9b075dba7efa1bb35"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/validator-snapshot/README.md": {
+      "bytes": 6838,
+      "sha256": "f579f2a0b01da5c462bb41d97489bec0fbb709124103b4864eca8c2589698cf0"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/validator-snapshot/ctest-help.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/validator-snapshot/ctest-help.stdout": {
+      "bytes": 11501,
+      "sha256": "16df578297c34aa299adb2811b3c91dfe1c88f91995afd354140f3ec02be7fb5"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/validator-snapshot/ctest-version.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/validator-snapshot/ctest-version.stdout": {
+      "bytes": 90,
+      "sha256": "21710b282175af2534f38143fae98bb3de9762a1ffcce63fda137c2a1a177ece"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/validator-snapshot/help.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/validator-snapshot/help.stdout": {
+      "bytes": 927,
+      "sha256": "15daac992b5eab822d5dd0244fd40347a50016355c0ec94a40693098865dbfba"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/validator-snapshot/receipt.json": {
+      "bytes": 8826,
+      "sha256": "dc31906009ddd1b1b9110cdc36f117e62eec15c269d63643f8fe5006000ebd79"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/validator-snapshot/requirements-observed.txt": {
+      "bytes": 107,
+      "sha256": "67fcc67e78013678c851fea9b933facd03361ab399cba302b4ee3ce18125d1c2"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/validator-snapshot/source-commit.txt": {
+      "bytes": 325,
+      "sha256": "04adc20bb1dda0bba8b2a8b9fcd3cd9c8a69600c939692a801ea7f62e87e7aa8"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/validator-snapshot/source-files.ls-tree.txt": {
+      "bytes": 268,
+      "sha256": "948832f77ece9ff0f00b56f981263852b4d71ca8f5fe38e57007def95dd5b69f"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/web-build.exit": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/web-build.stdout": {
+      "bytes": 500,
+      "sha256": "a101334e72d8c84a59e6cb40bef5acf5303452aff4fcd730095c1b9c41990d15"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/web-install.exit": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/web-install.stdout": {
+      "bytes": 124,
+      "sha256": "33bc3a2093b383f5ffb7b1af0bed9ceecff81067c18a774755585d9c57ec25d2"
+    },
+    "docs/reports/data-in-code/evidence/product-literal-guard-2026-10-05/actual-capture-receipt.json": {
+      "bytes": 3514,
+      "sha256": "792ef2c9b0fb491aa7666bb0655216df4dbb2a8902b2975d3043831007f7dbae"
+    },
+    "docs/reports/data-in-code/evidence/product-literal-guard-2026-10-05/historical-recovery/source-recovery-receipt.json": {
+      "bytes": 13299,
+      "sha256": "9d67e355beda4a36f1a5fd87e67a8c11bb0c2064f205e139d3fabad0c3eceb0b"
+    },
+    "docs/reports/data-in-code/evidence/product-literal-guard-2026-10-05/recovered-run1/receipt.json": {
+      "bytes": 3957,
+      "sha256": "8cad06dee3b87d4dd110f93442350693d4a390dc3380c0edb7941dfd8be8c0ab"
+    },
+    "docs/reports/data-in-code/evidence/product-literal-guard-2026-10-05/strict-manifest.json": {
+      "bytes": 97135,
+      "sha256": "f412e98ec9d90d3dddb89b91afc1e29d3dbc7f5b8e3530c7db3314264369dc95"
+    },
+    "docs/reports/data-in-code/evidence/product-literal-guard-2026-10-05/strict-report.json.gz": {
+      "bytes": 2635423,
+      "sha256": "52daa3bee3a2f302809ee9fb0454ae781ad5a16a3c362708b65229c53f027f10"
+    },
+    "docs/reports/data-in-code/evidence/product-literal-guard-2026-10-05/synthetic-run-2.log": {
+      "bytes": 7284,
+      "sha256": "f66bc6e118d51bfe42a2c2f5cdcdb604b5ee95a3292e805ea99112bdfdd4fc9e"
+    },
+    "docs/reports/data-in-code/evidence/product-literal-guard-2026-10-05/synthetic-run-6.log": {
+      "bytes": 6575,
+      "sha256": "220d2e3a341dde407cf81d5a0c9876416164a9608625ecb2b650bdcd30cafaf5"
+    },
+    "docs/reports/data-in-code/evidence/product-literal-guard-2026-10-05/validation-receipt.json": {
+      "bytes": 1137,
+      "sha256": "faa92fbe31013c59b65535ff574462beef9df4facdce807f72e4b2c0b1f8ecc3"
+    },
+    "docs/reports/data-in-code/inventory.json": {
+      "bytes": 1019984,
+      "sha256": "a2ee7cfcdcc71791e12e855ce73553eb6428c83a67a70a39c89463fad43604e3"
+    },
+    "docs/reports/data-in-code/migration-status.json": {
+      "bytes": 160113,
+      "sha256": "82c68da43e8ff9eae2a693cf2b15fde969dd270d51ed935a5a3b73b5ed710129"
+    },
+    "docs/reports/data-profiles-2026-10-05.md": {
+      "bytes": 24568,
+      "sha256": "1b0eb90881f2b9f812a289f576d2ffb0efd7e4143add86abfee3fb3f8c838b78"
+    }
+  }
+}

@@ -1,0 +1,1 @@
+{"schema": "loom.cli_profile_parity_comparison/1", "valid": true, "shared_domains": 19, "missing_domains": [], "changed_existing_domains": [], "added_domains": ["import", "import_audit", "import_formats"], "help_byte_identical": true, "version_byte_identical": true, "before_created_files": [".chatadhd_data", "chatadhd.db", "chatadhd.fts.db"], "after_created_files": []}

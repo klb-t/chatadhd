@@ -1,0 +1,339 @@
+{
+  "schema": "loom.thread11.final_gate_receipt/1",
+  "date": "2026-10-05",
+  "valid": true,
+  "base_main": "e4109df7e4af22b461def5f7d62e268d9b9a8825",
+  "source_commit": "2ac630a72e8ddc5ad126888f7e083a5b30235db8",
+  "source_tree": "409c056b046a3d563c9093f766d9393527fde5d8",
+  "source_files_verified": 735,
+  "changed_source_files": [],
+  "statuses": {
+    "build": 0,
+    "build-glob": 0,
+    "ctest": 0,
+    "web-install": 0,
+    "web-build": 0,
+    "runtime-generator": 0,
+    "usage-generator": 0,
+    "coverage": 0,
+    "coverage-legacy": 0
+  },
+  "coverage": {
+    "valid": true,
+    "manifest_entries": 127,
+    "junit_entries": 127,
+    "executed_entries": 126,
+    "unexecuted_entries": [
+      "unit.test_catalog_scale"
+    ],
+    "executed_native_cases": 783,
+    "executed_native_assertions": 26985,
+    "executed_python_cases": 1371,
+    "skipped_python_cases": 0
+  },
+  "guard_observation_differences": {},
+  "coverage_input_sha256": {
+    "junit": "a744922087345fd64152433f686baf10da0a5945d233a8fa30e478fe54c2628e",
+    "manifest": "02160156e24ff4124cfbf06696d363367b7b482634af11f4b93d31a3b8fc3204"
+  },
+  "legacy_input_sha256": {
+    "junit": "a744922087345fd64152433f686baf10da0a5945d233a8fa30e478fe54c2628e",
+    "manifest": "02160156e24ff4124cfbf06696d363367b7b482634af11f4b93d31a3b8fc3204"
+  },
+  "actual_input_sha256": {
+    "manifest": "02160156e24ff4124cfbf06696d363367b7b482634af11f4b93d31a3b8fc3204",
+    "junit": "a744922087345fd64152433f686baf10da0a5945d233a8fa30e478fe54c2628e"
+  },
+  "guard_input_hash_match": true,
+  "policy_provenance": {
+    "path": "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/validator-snapshot/.github/ctest-evidence-policy.json",
+    "revision": 1,
+    "schema": "loom.ctest_evidence_policy/1",
+    "schema_sha256": "29ff3cd357e02cd0fc8139cacb86293fcfab5803c9f0001eb8aec53b4f4be6e0",
+    "sha256": "1dc457125c40c0e225365e20c8839d9726d71dfa5872a8be1d890707666526a4"
+  },
+  "fullcore_cli": {
+    "schema": "loom.cli_profile_parity_comparison/1",
+    "valid": true,
+    "shared_domains": 19,
+    "missing_domains": [],
+    "changed_existing_domains": [],
+    "added_domains": [
+      "import",
+      "import_audit",
+      "import_formats"
+    ],
+    "help_byte_identical": true,
+    "version_byte_identical": true,
+    "before_created_files": [
+      ".chatadhd_data",
+      "chatadhd.db",
+      "chatadhd.fts.db"
+    ],
+    "after_created_files": []
+  },
+  "fullcore_cli_capture": {
+    "path": "../cli-fullcore-after/receipt.json",
+    "sha256": "3981a6d6e63a6ef3a9dd3e521f8e13ae53f0a235aaa4fbf8c6990d77e0d80de9",
+    "bytes": 441966,
+    "source_ref": "1b7379c80e62e30e58e97c4ba84c490d9ddbc6f4",
+    "binary": {
+      "path": "/workspace/scratch/72fc60ad1cc5/current-build/cli/loom",
+      "sha256": "40a3c4aa3fa05e7a736644593ddc6b118a2d25e399d348b51402c9f54b275108"
+    },
+    "domains": [
+      "archive",
+      "cli",
+      "config",
+      "github",
+      "graph_ingest",
+      "graph_memory",
+      "import",
+      "import_audit",
+      "import_formats",
+      "knowledge",
+      "materialize",
+      "media",
+      "memory",
+      "model",
+      "net",
+      "re",
+      "runtime_paths",
+      "selector",
+      "semantic_analyzer",
+      "usage_policy",
+      "util",
+      "worker"
+    ],
+    "help_bytes": 4770,
+    "version_bytes": 34,
+    "notes": "The complete capture/inspection streams are retained at the referenced path, without duplicating all profile JSON in this gate receipt."
+  },
+  "artifact_sha256": {
+    "LastTest.full.log": {
+      "bytes": 281153,
+      "sha256": "43654d2ad833379f2e1561253f9d02558e068a6d10f92cb695e85abba9d65a7f"
+    },
+    "README.md": {
+      "bytes": 5880,
+      "sha256": "674891fdf9c1b176e63461002ecfbb063ce31db0e231c24070a3f8bd109a431f"
+    },
+    "build-glob.exit": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "build-glob.stdout": {
+      "bytes": 477,
+      "sha256": "c246855b6208271c579959cf7f9d4e10bc2cc8310a3d97ad79e2de67e8712271"
+    },
+    "build-settings.json": {
+      "bytes": 440,
+      "sha256": "9dd9af2d019f64f5e78a9cd99fda9f1f5ff32f203be76dbc45f64e5ebb1663f1"
+    },
+    "build.exit": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "build.stdout": {
+      "bytes": 21976,
+      "sha256": "03ba986b743b960af1ae6bd20c81548ba252aa1bd7029a6e66bb60b1ed1c579d"
+    },
+    "built-binaries.json": {
+      "bytes": 607,
+      "sha256": "398190e95113b853fdc5dac5d776c355cf33aa8a3a67394a9832f067d797f9cd"
+    },
+    "cli-fullcore-positive.stdout": {
+      "bytes": 372,
+      "sha256": "eab86a2b688fa2185400c032b1fed9beeede2c3059b9dbeea423e7277d24db98"
+    },
+    "compiler-version.stdout": {
+      "bytes": 244,
+      "sha256": "d1587c99dacaf2619bba832ebf1d927d92d493f29fbef197f0636922de4ee952"
+    },
+    "coverage-legacy.exit": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "coverage-legacy.json": {
+      "bytes": 18637,
+      "sha256": "e270e2ade8a003c355a8e006bb9a3b60be45a9d9181392e0a1c99066b6d14f90"
+    },
+    "coverage-legacy.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "coverage-legacy.stdout": {
+      "bytes": 70,
+      "sha256": "27aa22287fae685d1a5b0f71e42b2ca9dc07c98f2752b1e0bb2a67c25c108a6a"
+    },
+    "coverage.exit": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "coverage.json": {
+      "bytes": 19088,
+      "sha256": "24020fa2396c931cebf3cc5c1443aefd04ff8b2d3417c7ef805c34b13ea0c275"
+    },
+    "coverage.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "coverage.stdout": {
+      "bytes": 70,
+      "sha256": "27aa22287fae685d1a5b0f71e42b2ca9dc07c98f2752b1e0bb2a67c25c108a6a"
+    },
+    "ctest-manifest.json": {
+      "bytes": 90149,
+      "sha256": "02160156e24ff4124cfbf06696d363367b7b482634af11f4b93d31a3b8fc3204"
+    },
+    "ctest-manifest.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "ctest.exit": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "ctest.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "ctest.stdout": {
+      "bytes": 17711,
+      "sha256": "7cf93d32ef5394e6b56dd3613a2294dc49e844ba9cac27a8eb278a3ec08ece75"
+    },
+    "ctest.xml": {
+      "bytes": 215905,
+      "sha256": "a744922087345fd64152433f686baf10da0a5945d233a8fa30e478fe54c2628e"
+    },
+    "derive_receipt.py": {
+      "bytes": 5482,
+      "sha256": "d1a65cf610b5c11db5317c1ef854548c890316657bc532435f33081d906b06b3"
+    },
+    "fresh-fetch-refs.json": {
+      "bytes": 2619,
+      "sha256": "a1f85ff637a7cc2b1bcbc435c27576b9fe099bb6c55facd2839866a9ee823162"
+    },
+    "generator-receipt.json": {
+      "bytes": 644,
+      "sha256": "6e6ca26d38ca1621a369901c9dab494809b45d1909fc5b056776a1c593a951c7"
+    },
+    "independent-review.json": {
+      "bytes": 20440,
+      "sha256": "8f7b88b4e222e2981950e1895633845454acbfe80177382aac024dd3c0a85bf0"
+    },
+    "published-rebase.json": {
+      "bytes": 8424,
+      "sha256": "d9f8c92d59cf19f67faaff9467ce34917bbf1428b631c11946d8133e75a6cee6"
+    },
+    "runtime-generator.exit": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "runtime-generator.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "runtime-generator.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "tested-source-snapshot.json": {
+      "bytes": 118906,
+      "sha256": "cd684f400f98bee4147c72deb129ece62bd23c51bcc37dac4a81984c423cc758"
+    },
+    "usage-generator.exit": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "usage-generator.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "usage-generator.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "validator-snapshot/.github/ctest-evidence-policy.json": {
+      "bytes": 1707,
+      "sha256": "1dc457125c40c0e225365e20c8839d9726d71dfa5872a8be1d890707666526a4"
+    },
+    "validator-snapshot/.github/ctest-evidence-policy.schema.json": {
+      "bytes": 3714,
+      "sha256": "29ff3cd357e02cd0fc8139cacb86293fcfab5803c9f0001eb8aec53b4f4be6e0"
+    },
+    "validator-snapshot/.github/scripts/verify_ctest.py": {
+      "bytes": 15145,
+      "sha256": "ecfb45f0883d2aeb8d61647fb90ec3c0ee161ec4b998f0a9b075dba7efa1bb35"
+    },
+    "validator-snapshot/README.md": {
+      "bytes": 6838,
+      "sha256": "f579f2a0b01da5c462bb41d97489bec0fbb709124103b4864eca8c2589698cf0"
+    },
+    "validator-snapshot/ctest-help.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "validator-snapshot/ctest-help.stdout": {
+      "bytes": 11501,
+      "sha256": "16df578297c34aa299adb2811b3c91dfe1c88f91995afd354140f3ec02be7fb5"
+    },
+    "validator-snapshot/ctest-version.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "validator-snapshot/ctest-version.stdout": {
+      "bytes": 90,
+      "sha256": "21710b282175af2534f38143fae98bb3de9762a1ffcce63fda137c2a1a177ece"
+    },
+    "validator-snapshot/help.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "validator-snapshot/help.stdout": {
+      "bytes": 927,
+      "sha256": "15daac992b5eab822d5dd0244fd40347a50016355c0ec94a40693098865dbfba"
+    },
+    "validator-snapshot/receipt.json": {
+      "bytes": 8826,
+      "sha256": "dc31906009ddd1b1b9110cdc36f117e62eec15c269d63643f8fe5006000ebd79"
+    },
+    "validator-snapshot/requirements-observed.txt": {
+      "bytes": 107,
+      "sha256": "67fcc67e78013678c851fea9b933facd03361ab399cba302b4ee3ce18125d1c2"
+    },
+    "validator-snapshot/source-commit.txt": {
+      "bytes": 325,
+      "sha256": "04adc20bb1dda0bba8b2a8b9fcd3cd9c8a69600c939692a801ea7f62e87e7aa8"
+    },
+    "validator-snapshot/source-files.ls-tree.txt": {
+      "bytes": 268,
+      "sha256": "948832f77ece9ff0f00b56f981263852b4d71ca8f5fe38e57007def95dd5b69f"
+    },
+    "web-build.exit": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "web-build.stdout": {
+      "bytes": 500,
+      "sha256": "a101334e72d8c84a59e6cb40bef5acf5303452aff4fcd730095c1b9c41990d15"
+    },
+    "web-install.exit": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "web-install.stdout": {
+      "bytes": 124,
+      "sha256": "33bc3a2093b383f5ffb7b1af0bed9ceecff81067c18a774755585d9c57ec25d2"
+    }
+  },
+  "boundaries": [
+    "Gate statuses are the observed exit codes retained by the root shell sessions; this script only derives and rechecks evidence.",
+    "Source snapshot was captured after the build and while CTest ran; all R42 sources were frozen before CTest started. Later changes are documentation/evidence only.",
+    "C++ RuntimeProfile layout changed: full native build and linked consumers are tested together, without old-ABI objects.",
+    "The existing catalog-scale opt-in remains explicitly unexecuted; it contributes no executed cases or assertions.",
+    "Synthetic literal-guard tests are included in CTest; the actual repository R42 audit is separately negative and is not accepted by this receipt.",
+    "Three import domains are UNWIRED; successful inspection does not activate W5 or the W2 config bridge.",
+    "Thread9 main acceptance is not claimed; this is the thread11 branch gate on the stated base."
+  ]
+}

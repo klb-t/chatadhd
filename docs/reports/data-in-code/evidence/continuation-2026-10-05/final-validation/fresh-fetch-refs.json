@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-05",
+  "refs": {
+    "main": "e4109df7e4af22b461def5f7d62e268d9b9a8825",
+    "gpt/data-profiles-2026-10-04": "2ac630a72e8ddc5ad126888f7e083a5b30235db8",
+    "gpt/archive-import-2-2026-10-05": "b93b0c908f124785652c7ca7761e3fd13c9211e7",
+    "gpt/native-graph-packet-2-2026-10-05": "49f760277889b5a63f68d293cde55ed2fb0a56a6",
+    "gpt/onboarding-2-2026-10-05": "6ea0772654736ac08c34743295beef27d9115d58",
+    "gpt/repo-hygiene-2026-10-04": "fedaf6b26d54a2d84f2a42e0c18fed6d8fa9828f",
+    "gpt/chat-selector-2-2026-10-05": "a23f769b436084a4cfbddbaef7f529bec1057520",
+    "gpt/catalog-selection-2-2026-10-05": "0a81480bd1a70b394bac72e98f6b5e7cb49f5d0b"
+  },
+  "reports_read": [
+    "docs/reports/native-graph-packet-2-2026-10-05.md",
+    "docs/reports/onboarding-2-2026-10-05.md",
+    "docs/reports/archive-import-2-2026-10-05.md",
+    "docs/reports/chat-selector-2-2026-10-05.md"
+  ],
+  "notes": [
+    "main unchanged e4109df; other-thread branches are dependencies/handoffs, not accepted main.",
+    "W12 duplication claim at pre-P0 2eb65d4 is superseded by canonical-source unit; active W2 config bridge remains pending.",
+    "W4 private Normalizer state in kb.h acknowledged within KB text recipe ownership; model-record creation bridge remains separate.",
+    "W5-2 requests canonical preset source references after its foundation acceptance, without duplicate values. Existing W11 import packs remain pinned historical UNWIRED descriptors until bridge is agreed.",
+    "W3-2 runtime descriptors will be enumerated by existing runtime generator after acceptance; active runtime settings/default layers and native field validation remain separate caller wiring."
+  ],
+  "post_gate_fetch": {
+    "main": "e4109df7e4af22b461def5f7d62e268d9b9a8825",
+    "other_changed_refs": {
+      "gpt/chat-selector-2-2026-10-05": "c0e6d0ba29363d88c19c03f3583955c85868bac0",
+      "gpt/onboarding-2-2026-10-05": "5115477fda183572acb901cfd2ea98979fb0f45d",
+      "gpt/interface-2-2026-10-04": "3807e31bc40cec155eef5038caee6caf77248170",
+      "gpt/catalog-selection-2-2026-10-05": "5b3ac6d5b96bdfd71f898f37eff8e66e3161850b"
+    },
+    "reports_read": [
+      "docs/reports/interface-2-api-2026-10-05.md",
+      "docs/reports/interface-2-task-engine-adapter-2026-10-04.md"
+    ],
+    "notes": [
+      "W3/W12 report bytes unchanged since prior read; their newer commits do not enter this tested source base.",
+      "W10 mixed branch120/121 has semantic retry attempt-identity regression assigned1/2, not present in this current e410-based full127/127. Branch tests cannot be transferred across bases."
+    ]
+  }
+}

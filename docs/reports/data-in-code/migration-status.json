@@ -5,7 +5,7 @@
   "inventory": "docs/reports/data-in-code/inventory.json",
   "inventory_scope": "original thread11 groups only; other owners and post-baseline supplements remain separate",
   "reviewed_groups": 213,
-  "review_status": "source audit complete; full current build/CTest verification is recorded separately by integrator",
+  "review_status": "Original 2026-10-04 source audit remains frozen; current continuation gates and post-baseline literal audit are recorded separately.",
   "status_definitions": {
     "migrated": "Identified mutable values use a canonical profile with exact default presets; trusted executable or wire operations may remain and are noted per row.",
     "partially-migrated": "Some data moved; specific caller wiring or compiled policy/contract portions remain and are stated explicitly.",
@@ -97,7 +97,8 @@
     "inventory_sha256": "a2ee7cfcdcc71791e12e855ce73553eb6428c83a67a70a39c89463fad43604e3",
     "baseline_inventory_sha256": "8e00f74bc64ab4a989331a9dbf2df3d3249bb373c6b44f7bd27b83f823cea1f0",
     "baseline_inventory_git_blob": "2b6a3dad56777b13983c1f73bab90d345f0e332c",
-    "note": "Hashes identify reviewed files including uncommitted final followups; source_head alone is not the full reviewed tree."
+    "note": "Hashes identify reviewed files including uncommitted final followups; source_head alone is not the full reviewed tree.",
+    "scope_note": "Historical 2026-10-04 snapshot. by_id/current_evidence and current_path/current_line are locators from that audit, not a refreshed line map for subsequent CLI changes."
   },
   "implementation_reports": [
     "docs/reports/data-in-code/implementation-semantics.md",
@@ -161,10 +162,13 @@
     "model_creation": "docs/reports/data-in-code/evidence/model-creation-policy/receipt.json",
     "semantic_graph_scoped": "docs/reports/data-in-code/evidence/semantics-scoped-receipt.json",
     "archive_text": "docs/reports/data-in-code/evidence/archive-text-policy/receipt.json",
-    "full_current_gate": "docs/reports/data-in-code/evidence/final-validation/receipt.json",
-    "full_raw_count_coverage": "docs/reports/data-in-code/evidence/final-validation/coverage-full.json",
-    "full_output_restoration": "docs/reports/data-in-code/evidence/final-validation/output-restoration-receipt.json",
-    "semantic_graph_full_runtime": "docs/reports/data-in-code/evidence/fullcore161/receipt-after-semantics_graph_materialize.json"
+    "semantic_graph_full_runtime": "docs/reports/data-in-code/evidence/fullcore161/receipt-after-semantics_graph_materialize.json",
+    "historical_full_gate_2026_10_04": "docs/reports/data-in-code/evidence/final-validation/receipt.json",
+    "historical_full_raw_count_coverage_2026_10_04": "docs/reports/data-in-code/evidence/final-validation/coverage-full.json",
+    "historical_full_output_restoration_2026_10_04": "docs/reports/data-in-code/evidence/final-validation/output-restoration-receipt.json",
+    "full_current_gate": "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/receipt.json",
+    "full_raw_count_coverage": "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/coverage.json",
+    "full_raw_count_coverage_legacy_guard": "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/coverage-legacy.json"
   },
   "by_id": {
     "DIC-0001": {
@@ -1648,7 +1652,7 @@
     "DIC-0132": {
       "status": "migrated",
       "destination": "runtime/archive.pack /config_bounds",
-      "notes": "loom/src/archive/pipeline.cpp:138 — Existingcaps moved to min/max preset; nullable max unbounded; profileparser used by archive tasks, CLIroot wiring pending, CAPIpreclamp Do9.",
+      "notes": "loom/src/archive/pipeline.cpp:138 — Existingcaps moved to min/max preset; nullable max unbounded; profileparser used by archive tasks, CLI root loads ArchiveProfile and uses checked parsing before/after flags (main.cpp:784–785,801); CAPI bridge remains pending, CAPIpreclamp Do9.",
       "current_path": "loom/src/archive/pipeline.cpp",
       "current_line": 138,
       "review_fragment": "migration-status-archive.json",
@@ -2715,6 +2719,52 @@
       "review_fragment": "migration-status-worker-media-github-cli.json",
       "inventory_source": "loom/cli/main.cpp:1168",
       "destination_before": "command metadata in CLI profile, executable handler registry in code"
+    }
+  },
+  "continuation_2026_10_05": {
+    "report": "docs/reports/data-profiles-2026-10-05.md",
+    "source_commit": "2ac630a72e8ddc5ad126888f7e083a5b30235db8",
+    "base_main": "e4109df7e4af22b461def5f7d62e268d9b9a8825",
+    "historical_counts_unchanged": true,
+    "runtime_domains": 22,
+    "new_domains": [
+      "import",
+      "import_audit",
+      "import_formats"
+    ],
+    "new_domain_engine_wiring": "UNWIRED (0 consumers); assigned thread5",
+    "fullcore_cli_receipt": "docs/reports/data-in-code/evidence/continuation-2026-10-05/cli-fullcore-after/receipt.json",
+    "fullcore_cli_comparison": "docs/reports/data-in-code/evidence/continuation-2026-10-05/cli-fullcore-after/comparison.json",
+    "canonical_usage_source": "loom/data/policy/usage_policy.pack",
+    "source_plan": "loom/data/runtime_sources.pack",
+    "usage_activation_bridge": "pending thread2/thread9; profile overlay does not activate config.json policy",
+    "default_layers_scope": "Paired native adapter proof only; synthetic bindings, no DB/CAS/full production consumers",
+    "r42": {
+      "report": "docs/reports/data-in-code/implementation-product-literal-guard-2026-10-05.md",
+      "actual_receipt": "docs/reports/data-in-code/evidence/product-literal-guard-2026-10-05/actual-capture-receipt.json",
+      "status": "negative: valid:false; synthetic mechanism tests do not accept repository literals",
+      "unclassified_literals": 56968,
+      "blocked_files": 85,
+      "thread11_unclassified_literals": 20093,
+      "thread11_blocked_files": 5,
+      "notes": "Lexical candidates are a separate post-baseline audit, not 695/213 reviewed groups and not all automatically forbidden product data."
+    },
+    "gate": {
+      "receipt": "docs/reports/data-in-code/evidence/continuation-2026-10-05/final-validation/receipt.json",
+      "ctest_entries_passed": 127,
+      "executed_entries": 126,
+      "native_cases": 783,
+      "native_assertions": 26985,
+      "python_cases": 1371,
+      "python_skips": 0,
+      "unexecuted_entries": [
+        "unit.test_catalog_scale"
+      ],
+      "build_native_exit": 0,
+      "web_exit": 0,
+      "both_evidence_guards_exit": 0,
+      "source_hashes_verified": 735,
+      "main_acceptance": "pending thread9"
     }
   }
 }

@@ -1,0 +1,191 @@
+{
+  "repository": "klb-t/chatadhd",
+  "branch": "gpt/data-profiles-2026-10-04",
+  "archive": "archive/2026-10-05/data-profiles-before-main-e4109df",
+  "archive_head": "5ff18d15e70c79dd35ef60a6872e444611d316ac",
+  "base": "e4109df7e4af22b461def5f7d62e268d9b9a8825",
+  "observed_main_before_update": "e4109df7e4af22b461def5f7d62e268d9b9a8825",
+  "local_tip": "373fe300b4e63e6fe75459babd9a1cbb112499d2",
+  "remote_tip": "2df0bcf9a6ceb2f6f96f5b296d0f3149e31d266a",
+  "exact_final_tree": "4146890fd62b1fb5e24ae00308f1f9378c9f0e11",
+  "commits": [
+    {
+      "index": 1,
+      "local": "e6a5e5a134b79f4fd77eb1f01742884bfb7dd957",
+      "remote": "753858ea00f0bf7966e4dbc2e0b6a12bf101d1cf",
+      "tree": "02a927526987b4da71017380f86a21f19610d23c",
+      "parent": "e4109df7e4af22b461def5f7d62e268d9b9a8825",
+      "message": "Inventory data in code across all runtime surfaces before migrations [skip ci]"
+    },
+    {
+      "index": 2,
+      "local": "607e4aa9bcd3676c7364ac1a6b787a4afde83a26",
+      "remote": "40f30b4091f8be12065050c654aa81fa3adc6672",
+      "tree": "9e2516abef426b37c0dae08f747fabb17a328122",
+      "parent": "753858ea00f0bf7966e4dbc2e0b6a12bf101d1cf",
+      "message": "Add immutable execution profiles with validated overlays and inspectable recipes"
+    },
+    {
+      "index": 3,
+      "local": "03845425127a5319a8b73c3b13156c85a753efba",
+      "remote": "77ca7c5b56ae0d4e2ead0d54546314f77dc7d59e",
+      "tree": "d3fb751a9810481f8cb1ac50c3dbb362c7390711",
+      "parent": "40f30b4091f8be12065050c654aa81fa3adc6672",
+      "message": "Read memory rendering and selector presets from checked profiles"
+    },
+    {
+      "index": 4,
+      "local": "24b149cdf2cd33deb7374041028a22200c97bb97",
+      "remote": "9dfc0487fd240fe1b2531fe5436029f44839feec",
+      "tree": "f4894f8a4c878a9013736fc71ad32533a4c6df27",
+      "parent": "77ca7c5b56ae0d4e2ead0d54546314f77dc7d59e",
+      "message": "Externalize analyzer graph ingestion context and materialized reports"
+    },
+    {
+      "index": 5,
+      "local": "6b9067352de0173714d5c09eec04e136aba3cd5f",
+      "remote": "736a3b15ac91440d168c09e44d8f8954f23824d3",
+      "tree": "d845329eec4005eedc1b9905643a60b16e28305d",
+      "parent": "9dfc0487fd240fe1b2531fe5436029f44839feec",
+      "message": "feat(profiles): validate nullable bounds and configurable runtime recipes"
+    },
+    {
+      "index": 6,
+      "local": "d12dd5ecb865decfb5cc089ef14ef007b7769316",
+      "remote": "538569278c5bf80e5f275ade4d269bdec0ca5bd0",
+      "tree": "4366ea3696ae5c8d1c3b367f922d3d5ce2b6df84",
+      "parent": "736a3b15ac91440d168c09e44d8f8954f23824d3",
+      "message": "feat(runtime): apply data profiles to regex, logging and temporary files"
+    },
+    {
+      "index": 7,
+      "local": "88cef3fa13382cfa20ac305fd11281f7508a2185",
+      "remote": "71c21758e743bebdaf02b0670fd1243a98c6bb62",
+      "tree": "23110658f74027e102cf235243212afc29af86ef",
+      "parent": "538569278c5bf80e5f275ade4d269bdec0ca5bd0",
+      "message": "feat(profiles): configure worker, media adapters and GitHub sync"
+    },
+    {
+      "index": 8,
+      "local": "00fa26368299be04d1dc9deb0c15e7381f5890a9",
+      "remote": "eca203dace22fe344187ae1195a9716ac3d8f261",
+      "tree": "4e00e2ba82269c1e51180ddd9410de0d34019e64",
+      "parent": "71c21758e743bebdaf02b0670fd1243a98c6bb62",
+      "message": "feat(profiles): configure model rules and HTTP transport presets"
+    },
+    {
+      "index": 9,
+      "local": "c22bf06afb63f2979e45d467ae5fb550ca42639c",
+      "remote": "a8ed2887477f514475a768bc2131f3cd904861d0",
+      "tree": "103d7398f023c8e18c42ae9564b2dc335c1478ba",
+      "parent": "eca203dace22fe344187ae1195a9716ac3d8f261",
+      "message": "fix(profiles): bind knowledge and materialization caches to effective recipes"
+    },
+    {
+      "index": 10,
+      "local": "d0883e002b5544517872dd9a5379f6dc9f4ab8dc",
+      "remote": "e292ebf6b81eb25dbce4b08607e4c5723690217e",
+      "tree": "ea8930ffa59cd07f8f962b0050dbe439a4dd8069",
+      "parent": "a8ed2887477f514475a768bc2131f3cd904861d0",
+      "message": "feat(profiles): configure context failures, memory ordering and selector thresholds"
+    },
+    {
+      "index": 11,
+      "local": "adf8f652dab5b7ae87375aa059d4892f9177258b",
+      "remote": "4198b655ddc0abe7b1fd814d10cc83a01511ef53",
+      "tree": "8d85c46c96c0676d4f89141263413b34965765f9",
+      "parent": "e292ebf6b81eb25dbce4b08607e4c5723690217e",
+      "message": "feat(profiles): publish bootstrap presets and complete archive policy data"
+    },
+    {
+      "index": 12,
+      "local": "633a16f7ea603beaefcd7b8349126e2c087eedc7",
+      "remote": "5ab6d564b7b229cda5c3017480488a07b7d8bf15",
+      "tree": "79a6d9e8f5ce916a62cabb7960d573a6f84b74f8",
+      "parent": "4198b655ddc0abe7b1fd814d10cc83a01511ef53",
+      "message": "feat(archive): apply immutable profiles to extraction, synthesis and resume"
+    },
+    {
+      "index": 13,
+      "local": "ee85e2bddec1a20b5155817a547ec6e46f7f1c14",
+      "remote": "4aefeec10fe3dcd327d827856d680b33bbabfdbe",
+      "tree": "5bf41718d3d57cadd4bc01c7411bca5bdc746909",
+      "parent": "5ab6d564b7b229cda5c3017480488a07b7d8bf15",
+      "message": "feat(profiles): expose creation priors and precise expert setting schemas"
+    },
+    {
+      "index": 14,
+      "local": "22c75e70c2571ebe3f8c1ac418a70fe80ca9400f",
+      "remote": "f63e70f25f8044add47e0e185803604c108466f4",
+      "tree": "d6a4e95e7d82d197cea445d41995314717640b40",
+      "parent": "4aefeec10fe3dcd327d827856d680b33bbabfdbe",
+      "message": "fix(profiles): preserve explicit context and expose incomplete products"
+    },
+    {
+      "index": 15,
+      "local": "7abacb3e606403fddec63415408e891258af71ca",
+      "remote": "1b81bfd9e583e71ee5c8b16d09de37254309d7e8",
+      "tree": "f856ed324d333fc940c2fad3d87641829af0dc4a",
+      "parent": "f63e70f25f8044add47e0e185803604c108466f4",
+      "message": "feat(cli): inspect and atomically persist configurable execution profiles"
+    },
+    {
+      "index": 16,
+      "local": "c22ef638086db05851ddb3e592fbdb2216f2e38e",
+      "remote": "c0267c788bb5c2651bfcd0aca02e1adbd6218f55",
+      "tree": "a94897f629077ade878375cc7e070bf03a7da8f9",
+      "parent": "1b81bfd9e583e71ee5c8b16d09de37254309d7e8",
+      "message": "test(materialize): isolate recipe fixtures by deterministic run input"
+    },
+    {
+      "index": 17,
+      "local": "e8049ec82254d385810b54e601428e996d4b5af7",
+      "remote": "1100c86124ba90524ba1651184089540537a03e3",
+      "tree": "0cde83d23df60c1f775ea411091793438a8492f9",
+      "parent": "c0267c788bb5c2651bfcd0aca02e1adbd6218f55",
+      "message": "docs(profiles): reconcile inventory and retain final verification evidence"
+    },
+    {
+      "index": 18,
+      "local": "275f671badec586668af8949c1175df6f1204a16",
+      "remote": "52b4c48a60a1b40277ea773100fdb878acd99a4c",
+      "tree": "a646b140f72b9ac4a0892053809b7fd9f7afcaa1",
+      "parent": "1100c86124ba90524ba1651184089540537a03e3",
+      "message": "fix(cli): inspect profiles without runtime initialization and retain explicit choices [skip ci]"
+    },
+    {
+      "index": 19,
+      "local": "9ab7c5596920d98db3d51ae8acd7f63472dd4162",
+      "remote": "82d210874362c259d78bbcc5c6e2dc6277a6e623",
+      "tree": "a619c736ba7379ed069d36d3760068213f2fefcb",
+      "parent": "52b4c48a60a1b40277ea773100fdb878acd99a4c",
+      "message": "feat(profiles): derive defaults from canonical sources and expose provenance [skip ci]"
+    },
+    {
+      "index": 20,
+      "local": "5a18c2021a1d196b00b445413f5e7c73ed19f04c",
+      "remote": "5f9774cf63425598e06641733a041be77af05759",
+      "tree": "e1b6e9fa06172e4d1e3e3b81d1a5370ffcd1775e",
+      "parent": "82d210874362c259d78bbcc5c6e2dc6277a6e623",
+      "message": "feat(profiles): publish source-pinned import presets for thread 5 [skip ci]"
+    },
+    {
+      "index": 21,
+      "local": "373fe300b4e63e6fe75459babd9a1cbb112499d2",
+      "remote": "2df0bcf9a6ceb2f6f96f5b296d0f3149e31d266a",
+      "tree": "4146890fd62b1fb5e24ae00308f1f9378c9f0e11",
+      "parent": "5f9774cf63425598e06641733a041be77af05759",
+      "message": "docs(profiles): retain native layer parity and expert API handoff [skip ci]"
+    }
+  ],
+  "verification": {
+    "commits": 21,
+    "trees_messages_single_parents": true,
+    "linear": true,
+    "archive_exact": true,
+    "expected_old_head_verified": true,
+    "branch_readback": true,
+    "main_untouched": true,
+    "blob_uploads": 0
+  }
+}

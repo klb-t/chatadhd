@@ -1,0 +1,22 @@
+{
+  "loom_tests": {
+    "bytes": 58497096,
+    "sha256": "44b4574d167c68105a5c8539dcdbd98c3bf6103bc42cf88492dcebebde51ed5f",
+    "mode": "0o755"
+  },
+  "libloom.so.0.1.0": {
+    "bytes": 40441304,
+    "sha256": "d1b0120bebb4463987e8b0521aed2975c8fe71308c10bfa1a3174daf900d4347",
+    "mode": "0o755"
+  },
+  "cli/loom": {
+    "bytes": 38660176,
+    "sha256": "40a3c4aa3fa05e7a736644593ddc6b118a2d25e399d348b51402c9f54b275108",
+    "mode": "0o755"
+  },
+  "server/loom-server": {
+    "bytes": 40953648,
+    "sha256": "d50981b118e110020a0c330f7c1939f85d8bb672fa8c19a92de07f78ec356ed4",
+    "mode": "0o755"
+  }
+}

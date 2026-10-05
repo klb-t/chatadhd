@@ -1,0 +1,26 @@
+[
+  {
+    "label": "runtime-generator",
+    "command": [
+      "python3",
+      "-B",
+      "loom/src/model/gen_runtime_profiles.py",
+      "--check"
+    ],
+    "cwd": "/workspace/scratch/72fc60ad1cc5/chatadhd",
+    "exit_code": 0,
+    "script_sha256": "3d8eb9be1ee1d5f491580d61caf35a9d69c08bb544e0fb0507ab195d2e1ea8fd"
+  },
+  {
+    "label": "usage-generator",
+    "command": [
+      "python3",
+      "-B",
+      "loom/src/policy/gen_usage_policy.py",
+      "--check"
+    ],
+    "cwd": "/workspace/scratch/72fc60ad1cc5/chatadhd",
+    "exit_code": 0,
+    "script_sha256": "26042dbe35495454a68e0dc828128d7701f5469d55470d8f6e0dada6bba856ef"
+  }
+]
