@@ -22,12 +22,27 @@ dawać jawny błąd walidacji, bez ręcznie zapisanych ukrytych domyślnych.
 
 ## Weryfikacja
 
-Plan: zamrożony publiczny korpus deweloperski, zbudowany z dotychczasowego
-builtin packa i syntetycznych przypadków brzegowych; rzeczywisty snapshot
-starego oraz nowego natywnego normalizatora. Porównanie wyników bajt w bajt,
-testy nakładek i błędnej konfiguracji, pełny CTest na vendored SQLite,
-WERROR, CLI, shared library i serwer. Liczby i dowody zostaną dopisane po
-wykonaniu. Wywołania płatne: 0.
+Pomiar bazowy: **1236 tokenów + 300 fraz**, rzeczywiste wywołania
+`Normalizer`, PASS. Zamrożony publiczny korpus deweloperski powstał z
+dotychczasowego builtin packa i syntetycznych przypadków brzegowych.
+SHA256 korpusu: `0707ce7bda21413fec0f6c209d4c48991f341375cf90d1f7646b1cf2cbf8335c`.
+SHA256 wyniku bazowego: `c72968941cdbac69987d26bad16fd0892bd8faeffec79252877c67056e239af3`.
+Dowody: [katalog](native-graph-packet-2-2026-10-05-evidence/).
+
+Probe i launcher używają natywnego kodu oraz rzeczywistego loadera i walidatora
+Pack. Bazowy pomiar linkuje archiwum 94 ukończonych obiektów ze źródeł bazy;
+nie jest przedstawiany jako pełna bramka starego rdzenia. Pełny bazowy build
+`-j3` przerwał OOM; powtórzenie `-j1` świadomie skrócono do zależności probe.
+Oba logi, manifest obiektów i komendy pozostają w dowodach.
+
+Następnie: porównanie wyników bajt w bajt na tym samym korpusie, 11 regresji
+nakładek i błędnej konfiguracji, pełny CTest na vendored SQLite, WERROR,
+CLI, shared library i serwer. Trwa build zmienionego rdzenia.
+Wywołania płatne: 0.
+
+Kontrakt nowego przepisu: [NORMALIZER_RECIPE.md](../../loom/src/kb/NORMALIZER_RECIPE.md).
+Format `loom.kb.stemming/2` jawnie wymaga przepisu; starszą nakładkę `/1`
+trzeba zaktualizować z bieżącego szablonu, zachowując własne tablice stemmera.
 
 ## Otwarte przekazania z indeksu
 
