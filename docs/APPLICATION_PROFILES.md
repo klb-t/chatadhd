@@ -192,8 +192,9 @@ sessions remain readable; malformed stored bytes are preserved and reported.
   projection, separate from a canonical knowledge-store write. W3 still owns
   automatic chat reply modes and graph-context request assembly. Exact replay shows the retained result without another execution and distinguishes
   original admission from current accounting. Interrupted or indeterminate outcomes
-  remain explicit. W4 awaits the shared method-graph contract gate with W3; its
-  original replay-accounting regression has been independently closed.
+  remain explicit. W4 reports its shared contract/golden, alias and nested-combination
+  checks ready on `b302df2`; joint W3/W4 intake is still outside main. Its original
+  replay-accounting regression has been independently closed.
 - **Expert controls** show/edit the exact client ChatRequest for one subsequent
   send and accept generic config patches. A client preview is not the fully
   assembled provider prompt; native context traces remain separate. Credentials
@@ -206,9 +207,12 @@ W3/W4; their shared acceptance and public registry/prepared-request adapters
 remain dependencies. A method edit creates a new version, and results keep
 produced-by edges to the version that executed.
 
-Onboarding and R39–R40 now belong to W12. W10 integrates its exported component
-into App navigation and transport once supplied; no placeholder onboarding is
-advertised. The [TaskEngine adapter contract](reports/interface-2-task-engine-adapter-2026-10-04.md)
+Onboarding and R39–R40 belong to W12. Its `3c0bc36` branch exports
+`OnboardingPanel` and `WhatAppKnows`; they are not yet accepted on main.
+W10 will connect both through one user-bound adapter in App navigation after
+intake and publication of the native OnboardingStore transport. The adapter
+must retain the native outer revision for CAS and preserve the pack envelope.
+No placeholder onboarding is advertised. The [TaskEngine adapter contract](reports/interface-2-task-engine-adapter-2026-10-04.md)
 records current callable operations and the missing execution binding.
 
 The [thread-10 report](reports/interface-2-2026-10-04.md) records fresh checks,

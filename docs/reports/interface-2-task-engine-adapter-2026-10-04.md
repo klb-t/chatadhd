@@ -171,29 +171,145 @@ Wewnętrzne wejście `confirmation` używa pola `ref`; publiczne W2 używa
 w sobie serializowalnego, trwałego publicznego uchwytu. W10 nie może
 zaimplementować brakującej trwałości przez ponowne `Chat.send`.
 
-## R39–R40: właściciel W12 i miejsce podłączenia
+## R39–R40: dostarczone komponenty W12, poza main
 
-Źródło przydziału: `origin/gpt/onboarding-2026-10-04`
-`67e2124ecae25d841e611b629268987372b658fd`, raport
-`docs/reports/onboarding-2026-10-04.md`. R39 (profil/onboarding z jawnym
-unknown/declined/never) i R40 (warstwowe domyślne grafy, override,
-wyłączenie i trwałe wykluczenie) należą wyłącznie do W12. W12 dostarcza
-komponenty z `loom/web/src/onboarding/`; W10 dostarcza hook powłoki po
-otrzymaniu rzeczywistych eksportów. Wskazana rewizja raportuje nadal
-pracę nad kontraktem, więc nie jest dowodem gotowego komponentu.
+Sprawdzono źródła 2026-10-05: `origin/gpt/onboarding-2026-10-04`
+`3c0bc36552ef9851f1174946cfb108549aae3228`, raport
+`docs/reports/onboarding-2026-10-04.md`, README UI i natywny oraz pliki
+w `loom/web/src/onboarding/`. Kod tego zakresu nie zmienił się od
+`40907ad28f3244bfe508da647273d2e1d3bcf1b3`; późniejszy commit publikuje
+dokumentację i dowody. Jest to **dostarczony przyrost na gałęzi W12,
+jeszcze poza `origin/main` `30ad7d3`**, nie wdrożony ekran W10.
 
-Miejsce integracji: `loom/web/src/App.tsx`, istniejące `PanelId`,
-`PANEL_LABELS` i warunkowe renderowanie w `drawer-body`, albo jawny
-callback powłoki wskazany przez finalny kontrakt W12. Dopiero po
-publikacji komponentu, jego propsów i zarejestrowanego adaptera należy
-dodać działającą pozycję nawigacji oraz przekazać faktycznie dostępne
-metody. Nie należy dodawać pustego panelu, atrap recovery, metod
-`resume_one` czy adaptera deklarującego nieistniejące możliwości.
+R39 (profil/onboarding z jawnym unknown/declined/never) i R40 (warstwowe
+domyślne grafy, override, wyłączenie i trwałe wykluczenie) należą do W12.
+W12 dostarczył komponenty i publiczną klasę C++ `OnboardingStore`;
+**brakuje publicznego mostu C ABI / HTTP / JNI / `LoomApi` i wpięcia
+w `App.tsx`**. Źródła tych granic na main nie zawierają onboarding,
+a przyrost W12 nie dodaje do nich wywołań. W10 podłącza powłokę
+i faktyczny transport po publikacji mostu; nie kopiuje UI W12 ani nie
+tworzy drugiego magazynu profilu w przeglądarce.
 
-Profilowe `unknown/declined/never` nie zmieniają kanonicznych typów
-pochodzenia `recorded|model|user`. Mechanizm RuntimeProfile W11 i
-trwałość w rdzeniu muszą być dostępne w zaakceptowanej rewizji przed
-deklarowaniem pełnej obsługi R39–R40.
+### Eksporty i jeden adapter
+
+`loom/web/src/onboarding/index.ts` eksportuje `OnboardingPanel`,
+`WhatAppKnows`, `CandidateReview`, `OnboardingController`,
+`normalizeNativeSnapshot`, `nativeDispatchAction` i typy kontraktu.
+Propsy obu widoków są już zdefiniowane:
+
+```ts
+interface OnboardingPanelProps {
+  adapter: OnboardingAdapter;
+  providerChoices?: { id: string; label: string }[];
+}
+interface WhatAppKnowsProps {
+  adapter: OnboardingAdapter;
+}
+```
+
+Host przekazuje **ten sam stabilny adapter dla wybranego użytkownika**,
+utworzony poza renderowaniem lub memoizowany. `providerChoices` to
+opcjonalne podpowiedzi hosta; provider pozostaje jawnym wyborem użytkownika.
+Każdy widok tworzy własny kontroler i na mount wywołuje `getSnapshot()`.
+Mount nie rozpoczyna rozmowy z modelem. Rozmowa i formularz zapisują
+do tego samego stanu natywnego; różni je akwizycja `user_stated` / `form`.
+Brak opcjonalnego callbacku jest ujawniany, a odpowiednia funkcja pozostaje
+wyłączona — komponenty nie zastępują go zapisem w localStorage.
+
+`OnboardingAdapter` z `types.ts` przyjmuje opcjonalne `RequestOptions`
+z `signal?: AbortSignal`. Dostarczone kontrakty i oczekiwane delegowanie:
+
+| Metoda adaptera | Natywna granica hosta i wynik |
+| --- | --- |
+| `getSnapshot(options?)` | Po inicjalizacji `open(user, legacy?)`, `read(user)` i `normalizeNativeSnapshot(raw)`; wynik `Promise<OnboardingSnapshot>`. Otwarcie tworzy trwały profil, nie wywołanie modelu. |
+| `dispatch(action, options?)` | `nativeDispatchAction(action, eventIdentity)` oraz `apply(user, expected_revision, envelope)`; po sukcesie zachować nowy raw snapshot i zwrócić jego normalizację. |
+| `dispatchLayer?(action, options?)` | Ten sam `apply`, z `target:"layers"`; wynik ten sam typ snapshotu. |
+| `modelRequest?(provider, options?)` | `model_request(user, provider)` najpierw sprawdza natywną prywatność i przygotowuje `Promise<ModelRequest>`; nie wykonuje transportu. |
+| `completeModelRequest?(request, options)` | Istniejący transport hosta po preflight W2. `options` zawiera jawny `provider` i opcjonalny `signal`; wynik `Promise<ModelReply>`. |
+| `ingestModelReply?(reply, options?)` | `apply(user, prepared_revision, {target:"model_reply", reply, time})`, z bindingiem oryginalnego requestu; wynik znormalizowany snapshot. To osobny envelope, nie `nativeDispatchAction` dla akcji formularza. |
+| `saveScenario?(source, options?)` | `update_pack(user, expected_revision, pack, scenario)` jako nowa wersja metody grafu; host zachowuje właściwy pack, wynik jest snapshotem. |
+
+Są to kontrakty wstrzykiwanej implementacji, **nie istniejące metody
+`LoomApi` ani nazwy opublikowanych tras**. Publiczna klasa C++ w
+`loom/include/loom/onboarding_store.h` ma `open`, `read`, `apply`,
+`update_pack`, `model_request` i `policy_decision`; ta dostępność nie
+zastępuje eksportowanego C ABI ani transportu do web/Android.
+
+### Tożsamość, raw revision i mapowanie akcji
+
+Surowy snapshot natywny ma `user_id` i zewnętrzny `revision`.
+Adapter wiąże wszystkie odczyty, zapisy i przygotowania z tym samym
+wybranym `user`; nie wyprowadza go z provider ID, profilu aplikacji,
+grafowego runu czy TaskEngine task ID. `normalizeNativeSnapshot()`
+projektuje scenariusz, pola, session, candidates, privacy, history,
+settings i `effectiveDefaults`, zachowując kolejność pytań, natywne
+atrybuty prywatności oraz stabilne klucze warstw. Pełny natywny dokument
+scenariusza trafia do `scenario.source`.
+
+**Normalizacja nie zachowuje zewnętrznego `revision` ani `user_id`
+w `OnboardingSnapshot`.** Host musi utrzymać te dane przy raw odpowiedzi
+i użyć dokładnego outer revision w `apply` / `update_pack`. Wewnętrzny
+revision profilu oraz licznik unieważnienia lokalnego kontrolera są
+odrębnymi licznikami. Natywny CAS odrzuca nieaktualny snapshot przez
+`Conflict`; host przekazuje błąd i wymaga ponownego odczytu, zamiast
+automatycznie powtarzać zapis na nowej rewizji.
+
+`nativeDispatchAction(action, {id, time})` tworzy envelope, ale nie
+generuje tożsamości użytkownika ani CAS:
+
+- Zwykła akcja otrzymuje `target:"profile"`; dla `answer` zachowane są
+  przesłane `id`, `time`, `source_refs` i `provenance`.
+- `review.id` jest **ID kandydata**. Helper przenosi je do `candidate`,
+  a `id` i `time` zdarzenia bierze z osobnego `eventIdentity`; dodaje
+  `source_refs:[]` i `target:"profile"`.
+- Akcja z `key`, albo `set_area_mode`, otrzymuje `target:"layers"`.
+  Mutacje używają stabilnego `key`, a nie wersjonowanego `EffectiveDefault.id`.
+  Operacje to `override`, `disable`, `exclude`, `reenable`,
+  `clear_override`, `accept_proposal` i `set_area_mode` (`proposal` / `direct`).
+
+### Przygotowanie modelu i współbieżność
+
+`model_request` zwraca `calls_authorized:false`: przygotowanie nie jest
+zgodą na wykonanie. Host przed transportem korzysta z W2; oczekiwany
+wzrost ×10 wymaga potwierdzenia. Do `completeModelRequest` kontroler
+przekazuje wyłącznie `prompt`, `section`, `questions`, `context`,
+`candidates`, `policy`, `reply_schema`. Raw profil, drafty, token,
+CAS, metoda, graf i przyszłe nieznane pola envelope nie trafiają do
+modelu przez spread całego requestu.
+
+Po odpowiedzi kontroler wiąże `provider`, `request_token`,
+`snapshot_revision` i `graph_run_id` z oryginalnym przygotowaniem,
+nadpisując kontrolne wartości zwrócone przez model. Host używa
+**prepared revision**, nie późniejszego ostatnio odczytanego revision,
+do natywnego ingest. Review pojedynczego kandydata i `confirm_section`
+są odrębnymi operacjami. `user_stated|form|model_inferred` opisują
+akwizycję, niezależnie od kanonicznego Origin `recorded|model|user`.
+
+Kontroler serializuje swoje zapisy; nowa akcja, pause, reload lub
+unmount unieważniają lokalną odpowiedź i przekazują abort. **Wspólny
+adapter sam nie zapewnia odświeżania wszystkich kontrolerów ani
+współbieżności między urządzeniami.** Host i rdzeń muszą zachować CAS,
+unieważnić przygotowanie po zmianie polityki/scenariusza w innym widoku
+i przekazać aktualny stan pozostałym konsumentom. `policy_decision(user,
+request)` sprawdza efektywną warstwę; zachowane `profile.privacy` jest
+inspection, nie upoważnieniem.
+
+Miejsce wpięcia W10 pozostaje `App.tsx`: `PanelId`, `PANEL_LABELS`
+i renderowanie w `drawer-body`. Działająca nawigacja wymaga komponentów
+przyjętych przez W9 i realnego adaptera; nie należy deklarować pełnego
+R39–R40 ani publicTaskEngine na podstawie samych eksportów UI.
+RuntimeProfile W11 pozostaje zależnością integracji: W12 zlinkowany z main
+bez tego loadera raportuje jawnie `available:false`, a nie zastępczą walidację.
+
+Hashe SHA-256 sprawdzonych źródeł przy pinie W12 `3c0bc36`:
+
+| Źródło | SHA-256 |
+| --- | --- |
+| `loom/web/src/onboarding/index.ts` | `8629366b7b708ffc553e2cb5e7206e1d48d2b3a7728257204be3f0ccbcc460e5` |
+| `loom/web/src/onboarding/types.ts` | `1e24746ed00a1cd7119272dff48231644f3674dc1b29297d8276fa8ce855b13e` |
+| `loom/web/src/onboarding/native-snapshot.ts` | `24e8494279a6ed92d7d2c26842f35dbd2567430a0eef4893ec9072c0ca25ef08` |
+| `loom/web/src/onboarding/controller.ts` | `7aa3fe958897a61d090909fbc5d2e25bf9b00ba36a62c9eadffe05a984c77616` |
+| `loom/include/loom/onboarding_store.h` | `fd9ce5cc3b2e7734ef20af83a1f5284c8599e1f7d29f2555be98132ca793a074` |
 
 ## Weryfikacja, liczby i niezrobione prace
 
@@ -202,6 +318,12 @@ odpowiadające trasy HTTP, zero dodanych metod/trasy/ekranów, zero
 płatnych wywołań. Zweryfikowano kod wskazanych rewizji i zgodność tego
 opisu z transportem. Ta zmiana dokumentacyjna nie uruchamia recovery
 na żywych zadaniach i nie stanowi nowego dowodu runtime/Android/ctest.
+
+Aktualizacja W12 z 2026-10-05 zastępuje stary pin `67e2124` pinem
+`3c0bc36`: potwierdzono dwa rzeczywiste eksporty widoków na gałęzi W12,
+zero dodanych ekranów/wywołań bridge na main. Porównano źródła propsów,
+adaptera, normalizatora, kontrolera i C++ store; zachowano hashe powyżej.
+Nie uruchamiano tu komponentów W12 ani ich raportowanych testów.
 
 Nie opublikowano adaptera wykonującego generic workflow, ponieważ brak
 publicznych operacji submit/checkpoint-write/complete/resume_one/CAS
@@ -215,7 +337,9 @@ jest dostępny, lecz brakuje kontraktu zapisu i powiązania wykonania.
   submit/checkpoint/complete/resume_one/CAS i bezpieczną granicę
   globalnego recovery. Cztery gotowe callable metody, payloady i wyniki
   są w tabeli powyżej. Zachować różnicę między odczytem wyniku a
-  brakującym zapisem/wiązaniem wykonania.
+  brakującym zapisem/wiązaniem wykonania. Przydzielić publiczny bridge
+  `OnboardingStore` C ABI / HTTP / JNI / `LoomApi` i integrację przyrostu
+  W12 z zależnością RuntimeProfile W11.
 - **Do wątku 3:** dostarczyć publiczny trwały immutable PreparedRequest
   i wznowienie tego samego żądania po dokładnym receipt W2; określić
   błędy stale/already-attempted/unknown i receipt odpowiedzi. Nie
@@ -223,9 +347,12 @@ jest dostępny, lecz brakuje kontraktu zapisu i powiązania wykonania.
 - **Do wątku 2:** utrzymać dokładną parę operation/receipt i jawny
   mapping `confirmation_ref` → wewnętrzne `confirmation.ref` w
   zaakceptowanym adapterze W3; approval księgi nie oznacza delivery.
-- **Do wątku 12:** opublikować komponent/eksport, propsy i wymagane
-  zdolności R39–R40; W10 wtedy podłącza go w `App.tsx`. Onboarding
-  i warstwy danych pozostają zakresem W12.
+- **Do wątku 12:** komponenty, propsy i helpery są dostarczone przy
+  `3c0bc36`; utrzymać ten kontrakt i uzgodnić obsługę CAS/prywatności
+  w publicznym bridge. W10 podłącza je po przyjęciu i publikacji
+  faktycznego adaptera. Onboarding i warstwy danych pozostają zakresem W12.
 - **Do wątku 10:** po przyjęciu prawdziwych API zarejestrować wyłącznie
   obsługiwane zdolności. Konsument list/get/cancel jest możliwy już
-  teraz; resume workflow wymaga nowych kontraktów rdzenia.
+  teraz; resume workflow wymaga nowych kontraktów rdzenia. Wpiąć oba
+  widoki W12 przez jeden stabilny adapter dla wybranego użytkownika,
+  zachowujący raw outer revision i native CAS; nie kopiować UI W12.

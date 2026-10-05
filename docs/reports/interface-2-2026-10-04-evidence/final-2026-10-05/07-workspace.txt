@@ -1,0 +1,30 @@
+Command: npm run test:workspace
+Started UTC: 2026-10-05T10:29:37Z
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> loom-web@0.1.0 test:workspace
+> node e2e/workspace-state.mjs && node e2e/workspace.mjs
+
+PASS identity cycles converge and unrelated parameters remain independent
+PASS unlink removes ingress and egress, duplicate retains settings independently
+PASS adding views never reconnects a detached reference
+PASS pagination survives reload and refresh but resets when the data run changes
+PASS round trip preserves stable IDs, empty layout, run, query, links and selection
+PASS no panel count limit and whitelist rejects execution profile fields
+PASS invalid snapshots are rejected, never substituted with valid-looking defaults
+PASS legacy layout is migrated without altering its source; corrupt v2 preserved
+[workspace-state] 8/8 groups passed
+[workspace] PASS actual run, stable identities and copied independent reference
+[workspace] PASS directed depth coupling, convergent cycle, keyboard selection and reference isolation
+[workspace] PASS saved perspective, profile isolation and exact reload restoration
+[workspace] PASS run switching preserves independent reference and native run provenance
+[workspace] PASS native context preview, persisted input and explicit non-delivery status
+[workspace] PASS no five-view cap, mobile layout and keyboard controls
+[workspace] PASS unlinked first pane stays independent when new views are added
+[workspace] PASS catalog selection restores from native data, not a saved record copy
+[workspace] PASS late catalog preview after pane close cannot corrupt saved active identity
+[workspace] PASS unavailable saved run is reported without silently selecting latest data
+[workspace] 10/10 scenarios passed; real native API, authored synthetic DEV fixture, zero model calls
+
+Exit: 0
+Finished UTC: 2026-10-05T10:29:47Z

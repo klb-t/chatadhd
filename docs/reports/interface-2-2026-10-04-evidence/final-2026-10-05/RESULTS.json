@@ -1,0 +1,54 @@
+{
+  "base_main": "30ad7d37337d6641cb7714b03e9feff0e6e25d25",
+  "tested_source_commit": "8c4c46a323d94ebe0e7632e4abe8b7e2ba319648",
+  "product_source_unchanged_since": "8570fec6d1192c27a91c7372bb382d1d5f8236d2",
+  "native_build": "GCC13 Debug-g0,vendoredSQLite,shared,test+CLI+server,WERROR;125 verified old object artifacts available,5fallback;test/server/CLI fresh",
+  "ctest": {
+    "command": "ctest --test-dir loom/build/dev --output-on-failure -j1",
+    "result": "108/108 PASS",
+    "elapsed_seconds": 246.06,
+    "ctest_entries": 108,
+    "passed": 108,
+    "native_cases": 659,
+    "native_assertions": 24465,
+    "python_cases": 1276,
+    "python_skips": 0,
+    "zero_native_case_entries": [
+      "unit.test_catalog_scale"
+    ],
+    "tool_completion_exit_status": "not returned by resumed session; complete CTest summary and all108 Test Passed blocks captured"
+  },
+  "web_build": {
+    "result": "TypeScript+Vite PASS",
+    "elapsed_vite_seconds": 1.83,
+    "warning": "existing bundle larger than500kB; warning threshold unchanged"
+  },
+  "new_fixture_groups": 84,
+  "native_ui_groups": 20,
+  "paid_calls": 0,
+  "source_hash_count": 323,
+  "binary_sha256": {
+    "loom/build/dev/loom_tests": "d327a7aaa72425fae92f7bbc609e690b7f841fe13888478e930d6717aab3c71c",
+    "loom/build/dev/server/loom-server": "7900da2614086d8baac8c86e3e3285c234cf8c516882819f32eda6271aabb0d6",
+    "loom/build/dev/libloom.so": "982c1ce48deb6c53ff6a3bb8667675b56bc4ce75f259e7e2d177f21a3cf69ded",
+    "loom/web/dist/index.html": "b26294aff8c840fa32071381ececfdbd3e87aaf7702a45aef6441bc25fd98004"
+  },
+  "files_sha256": {
+    "01-interface-2-native.txt": "b3f6693aa49f4edd81c4e5123bf5f230e907f4c9076fd7b7da157b91ebd60dd7",
+    "02-e2e.txt": "3e7d392e5ab4b6f4eb9bdbe56914288b46a5c928e324604b77e887137f7f16d0",
+    "03-chat-context.txt": "5caa447b3b82bc0229d2989f3cd9bbd018dd2b0cb2e885d02e93ce24f3c319ab",
+    "04-application-profiles-browser.txt": "c5eacb806219304d05994767e4565ad9d443a5061c337503b6080d86017c1890",
+    "05-application-profile-graph.txt": "8260a03757c4cd3bfc8d84f99c58c85f2699d617fa977e30e1b600c1fd043e52",
+    "06-imported-message-content-native.txt": "272abc3f525ce43629fc06059613fd8d29b42e935dfd512e47d3a4508e4128f7",
+    "07-workspace.txt": "32fac607c18b0a6a5aca767bc8fa18a7a8f09ba45b0fb7116f908217dec0d8ca",
+    "08-interface-2-fixtures.txt": "a87fbf7a80c3b8d09bdb99352c4000c21fc8b876b0b27caf9b70799014ba5ee1",
+    "09-web-build.txt": "cff91158651099400b60ee778bb13d198ba804e28466678ffcafe73022290a20",
+    "10-native-build.txt": "3de6074b34b0450dfab22331a4d4d7f076c83df9cea87da9dd71c0bef21bf432",
+    "11-ctest.txt": "f59e9ad2f9bc3ea9d269f92ec02ff01f53a98af0e8fcb72f4b16951bc5a516a0",
+    "12-LastTest.txt.gz": "cfbd023efcebfe02862f2bfbc628109d07d3b4ff459bc4cd169191b49951c3ce",
+    "CMakeCache.txt.gz": "461086c45dd14eed13396f69cc92345d07079666296fe67ff98775546bb16294",
+    "ctest-execution.json": "fde7e6305bddf97d08d4fcc924664fe4fea952123911da1e22d8be3cc17fcc15",
+    "source-hashes.json.gz": "2414d1adaa0619f98cd1f8aff8761a08c32742925dbca7ed7399c77b36650755",
+    "ui-summary.json": "2d38c34322c2531ec4ffe40bc9457bb94734a24e80ecccb819914b4f237fcbe2"
+  }
+}
