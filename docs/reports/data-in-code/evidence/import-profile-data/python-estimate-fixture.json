@@ -1,0 +1,58 @@
+{
+  "conversations": 2,
+  "chars_active": 24,
+  "chars_versions": 12,
+  "chars_unknown_status": 8,
+  "message_groups": [
+    {
+      "status_class": "active",
+      "tool": false,
+      "messages": 1,
+      "chars": 24
+    },
+    {
+      "status_class": "version",
+      "tool": false,
+      "messages": 1,
+      "chars": 12
+    },
+    {
+      "status_class": "unknown",
+      "tool": true,
+      "messages": 1,
+      "chars": 8
+    },
+    {
+      "status_class": "excluded",
+      "tool": false,
+      "messages": 1,
+      "chars": 4
+    },
+    {
+      "status_class": "deleted",
+      "tool": false,
+      "messages": 1,
+      "chars": 4
+    }
+  ],
+  "conversation_scope_groups": [
+    {
+      "non_tool_statuses": [
+        "active",
+        "version",
+        "excluded"
+      ],
+      "tool_statuses": [],
+      "conversations": 1
+    },
+    {
+      "non_tool_statuses": [
+        "deleted"
+      ],
+      "tool_statuses": [
+        "unknown"
+      ],
+      "conversations": 1
+    }
+  ]
+}

@@ -1,0 +1,150 @@
+{
+  "schema": "loom.import_profile_data_receipt/1",
+  "source_commit": "4e8c3dec29bb3aa1e343e09bee00b7768f0fc0f2",
+  "latest_handoff_commit": "5f0abd20dd83e5c0e7f43e84c333d5e23a5e681f",
+  "commands": [
+    "python loom/tests/compat/test_import_profile_data.py -v",
+    "read-only: gen_runtime_profiles.read_document(path); validate_definition(document,domain) (no generation)",
+    "frozen public archive_cost.py estimate(synthetic aggregate); estimate(synthetic aggregate,**profile_recipe)"
+  ],
+  "portable_tests": {
+    "cases": 11,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": true
+  },
+  "captured_sources": {
+    "files": 14,
+    "bytes": 279748,
+    "git_blob_oid_and_sha256_verified": true
+  },
+  "profiles": [
+    {
+      "domain": "import_formats",
+      "definition_bytes": 30021,
+      "definition_sha256": "294ebc7ce789c079662ec322d4517935f57270296841dc3737e625164de5d8c3",
+      "source_defaults_sha256": "2e53c09b6c6ccbe7d16b171d4e54719b0b9c522080ca3d55ea713d2ac4ebce99",
+      "profile_defaults_sha256": "2e53c09b6c6ccbe7d16b171d4e54719b0b9c522080ca3d55ea713d2ac4ebce99",
+      "default_byte_parity": true,
+      "counts": {
+        "objects": 22,
+        "arrays": 30,
+        "scalars": 123
+      },
+      "engine_wired": false
+    },
+    {
+      "domain": "import",
+      "definition_bytes": 7654,
+      "definition_sha256": "0640988c7d9ff76afa9d64481280b939a1f93cc47a9b0235675446db90771af3",
+      "source_defaults_sha256": "8c4529721bb5cecf1a9aab3b60ec2ea866d32c3b4da9ae25000361747632a480",
+      "profile_defaults_sha256": "8c4529721bb5cecf1a9aab3b60ec2ea866d32c3b4da9ae25000361747632a480",
+      "default_byte_parity": true,
+      "counts": {
+        "objects": 3,
+        "arrays": 0,
+        "scalars": 15
+      },
+      "engine_wired": false
+    },
+    {
+      "domain": "import_audit",
+      "definition_bytes": 11562,
+      "definition_sha256": "7e3abefa4c8dff5e0d696b24c1a4c65b89003a146ce708d2e9148f97fc912c26",
+      "source_defaults_sha256": "fe3422a84ebb7e28ff0a39cf5be55063074669bc679c98e0a9d411dd84543559",
+      "profile_defaults_sha256": "fe3422a84ebb7e28ff0a39cf5be55063074669bc679c98e0a9d411dd84543559",
+      "default_byte_parity": true,
+      "counts": {
+        "objects": 6,
+        "arrays": 2,
+        "scalars": 27
+      },
+      "engine_wired": false
+    }
+  ],
+  "definition_validation": [
+    {
+      "domain": "import_formats",
+      "passed": true
+    },
+    {
+      "domain": "import",
+      "passed": true
+    },
+    {
+      "domain": "import_audit",
+      "passed": true
+    }
+  ],
+  "python_estimator": {
+    "source_snapshot": "sources/loom_tools_eval_archive_cost.py.txt",
+    "network_calls": 0,
+    "model_calls": 0,
+    "same_function_same_fixture_default_argument_vs_data_argument_output_byte_parity": true,
+    "before_sha256": "8c6d2e6abd706a1f4fd9eec6b8e8480c99ec2176c5f731a6de1ae5b3aac1b32d",
+    "after_sha256": "8c6d2e6abd706a1f4fd9eec6b8e8480c99ec2176c5f731a6de1ae5b3aac1b32d",
+    "prefix_zero_variant_changes_output": true
+  },
+  "limitations": [
+    "No native import, CLI or audit engine binding is implemented.",
+    "No native Runtime was created; native end-to-end parity must be executed by W5 after wiring.",
+    "Supported schema subset does not express strict positivity, cross-field chars/token ordering or paired prices; existing native/Python semantic validators remain mandatory.",
+    "No parser version, CAS, source-byte/hash or checkpoint invariant is made mutable.",
+    "No archive parser is replaced by W5 Loader in this change."
+  ],
+  "provider_calls": 0,
+  "paid_cost": 0,
+  "engine_binding": {
+    "import": false,
+    "audit": false,
+    "archive_shared_scanner": false
+  },
+  "commands_kind": "Reproduction commands; portable suite was executed through unittest.TextTestRunner over the same ImportProfileData class, read-only generator functions and retained Python function execution.",
+  "test_source": {
+    "path": "loom/tests/compat/test_import_profile_data.py",
+    "sha256": "c9f862002e021622b037497364ab0250c440f2a9bca799ad558c99c73ed952a1"
+  },
+  "evidence_files": [
+    {
+      "path": "definition-validation.log",
+      "bytes": 229,
+      "sha256": "7b1c137c017a9ac71fb1e6868d67a10b25d33b601e1a619563ed119009648683"
+    },
+    {
+      "path": "portable-test.log",
+      "bytes": 1635,
+      "sha256": "870747e75a250073d33e652926760b98bfbfd40b67918a3fd1fcf23619ce2cce"
+    },
+    {
+      "path": "python-estimate-after.json",
+      "bytes": 1320,
+      "sha256": "8c6d2e6abd706a1f4fd9eec6b8e8480c99ec2176c5f731a6de1ae5b3aac1b32d"
+    },
+    {
+      "path": "python-estimate-before.json",
+      "bytes": 1320,
+      "sha256": "8c6d2e6abd706a1f4fd9eec6b8e8480c99ec2176c5f731a6de1ae5b3aac1b32d"
+    },
+    {
+      "path": "python-estimate-fixture.json",
+      "bytes": 994,
+      "sha256": "03494cf28977e890cac4be988497e21ba42b6ce7fe37686ebbb04fb9267eee88"
+    },
+    {
+      "path": "python-estimate-prefix-zero-variant.json",
+      "bytes": 1313,
+      "sha256": "8312019b5f7e979b808daef90010f96365b49d1de699b73da170dfe0aab1a207"
+    },
+    {
+      "path": "source-defaults.json",
+      "bytes": 6276,
+      "sha256": "93c04acdc15c510976dfeccc2961892def7964db8339901d415967f930dc9871"
+    },
+    {
+      "path": "source-manifest.json",
+      "bytes": 6176,
+      "sha256": "7830b8581da57c23e208ad0be0f4621b381ac990083105789f7a5b11e45b3627"
+    }
+  ]
+}

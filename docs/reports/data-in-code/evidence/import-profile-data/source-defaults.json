@@ -1,0 +1,293 @@
+{
+  "import_formats": {
+    "detection": {
+      "extension_rules": [
+        {
+          "extensions": [
+            ".zip"
+          ],
+          "format": "zip"
+        },
+        {
+          "extensions": [
+            ".db"
+          ],
+          "format": "sqlite"
+        },
+        {
+          "extensions": [
+            ".json"
+          ],
+          "format": "json"
+        },
+        {
+          "extensions": [
+            ".jsonl",
+            ".ndjson"
+          ],
+          "format": "jsonl"
+        },
+        {
+          "extensions": [
+            ".html",
+            ".htm"
+          ],
+          "format": "html"
+        },
+        {
+          "extensions": [
+            ".mht",
+            ".mhtml"
+          ],
+          "format": "mht"
+        },
+        {
+          "extensions": [
+            ".png",
+            ".jpg",
+            ".jpeg",
+            ".webp"
+          ],
+          "format": "screenshot"
+        },
+        {
+          "extensions": [
+            ".md"
+          ],
+          "format": "markdown"
+        },
+        {
+          "extensions": [
+            ".txt",
+            ".log"
+          ],
+          "format": "text"
+        }
+      ],
+      "sniff_bytes": 200,
+      "zip_prefix": "PK\u0003\u0004",
+      "sqlite_contains": "SQLite format",
+      "json_first_non_whitespace": [
+        "{",
+        "["
+      ],
+      "html_contains_case_insensitive": [
+        "<html",
+        "<!doctype"
+      ],
+      "fallback_format": "unknown"
+    },
+    "mime_by_format": {
+      "zip": "application/zip",
+      "sqlite": "application/vnd.sqlite3",
+      "json": "application/json",
+      "jsonl": "application/x-ndjson",
+      "html": "text/html",
+      "mht": "message/rfc822",
+      "markdown": "text/markdown",
+      "text": "text/plain",
+      "screenshot": "image/*"
+    },
+    "fallback_mime": "application/octet-stream",
+    "export_mode_names": [
+      "auto",
+      "off",
+      "on"
+    ],
+    "legacy_json_roles": {
+      "field_priority": [
+        "role",
+        "sender"
+      ],
+      "absent_role": "user",
+      "user_inputs": [
+        "user",
+        "human"
+      ],
+      "excluded_roles": [
+        "system"
+      ],
+      "other_role": "assistant"
+    },
+    "legacy_sqlite_roles": {
+      "user_inputs": [
+        "user",
+        "human"
+      ],
+      "other_role": "assistant"
+    },
+    "provider_exports": {
+      "openai": {
+        "source": "import:openai",
+        "conversation_field": "mapping",
+        "absent_role": "unknown"
+      },
+      "anthropic": {
+        "source": "import:anthropic",
+        "conversation_field": "chat_messages",
+        "role_map": {
+          "human": "user"
+        },
+        "absent_role": "assistant"
+      },
+      "generic_message_wrappers": [
+        "messages",
+        "chat_messages",
+        "items",
+        "data"
+      ],
+      "streamed_conversations_wrapper": "conversations"
+    },
+    "text_formats": {
+      "markdown": {
+        "user_prefixes": [
+          "## human",
+          "## user",
+          "**human**",
+          "**user**"
+        ],
+        "assistant_prefixes": [
+          "## assistant",
+          "## claude",
+          "**assistant**",
+          "**claude**"
+        ],
+        "separators": [
+          "---",
+          "***"
+        ],
+        "fallback_role": "assistant"
+      },
+      "plain_text": {
+        "user_labels": [
+          "Human",
+          "User",
+          "You"
+        ],
+        "assistant_labels": [
+          "Assistant",
+          "AI",
+          "Claude"
+        ],
+        "label_order": [
+          "Human",
+          "User",
+          "You",
+          "Assistant",
+          "AI",
+          "Claude"
+        ],
+        "fallback_role": "assistant"
+      },
+      "screenshot": {
+        "user_words": [
+          "You",
+          "Human",
+          "User",
+          "Ja",
+          "Ty"
+        ],
+        "assistant_words": [
+          "Claude",
+          "Assistant",
+          "AI",
+          "ChatGPT",
+          "GPT",
+          "Gemini",
+          "Bot"
+        ],
+        "user_arrows": [
+          "►",
+          "▶",
+          "→",
+          ">"
+        ],
+        "assistant_arrows": [
+          "◄",
+          "◀",
+          "←",
+          "<"
+        ],
+        "user_sidebar_labels": [
+          "h",
+          "human"
+        ],
+        "assistant_sidebar_labels": [
+          "a",
+          "assistant"
+        ],
+        "block_length_exclusive_minimum": 3,
+        "unlabelled_user_length_exclusive_maximum": 50,
+        "unlabelled_user_question_suffix": "?",
+        "ocr_text_minimum_codepoints": 10,
+        "fallback_role": "assistant",
+        "title_prefix": "Screenshot ",
+        "title_time_format": "%Y-%m-%d %H:%M"
+      }
+    }
+  },
+  "import": {
+    "library": {
+      "record_provenance": true,
+      "stream_threshold_bytes": 5000000,
+      "force": false,
+      "resume": false,
+      "include_result_metadata": true,
+      "json_read_chunk_bytes": 65536,
+      "json_max_depth": 512,
+      "json_inline_threshold_bytes": 1000000,
+      "generic_inference_max_bytes": 64000000,
+      "title": null,
+      "expected_source_hash": null,
+      "expected_source_bytes": null,
+      "export_mode": "auto"
+    },
+    "cli_overrides": {
+      "resume": true,
+      "include_result_metadata": false
+    }
+  },
+  "import_audit": {
+    "estimator": {
+      "chars_per_token_low": 4.0,
+      "chars_per_token_high": 3.0,
+      "output_ratio": 0.4,
+      "input_price": null,
+      "output_price": null
+    },
+    "native_scope": {
+      "active_only": false
+    },
+    "python_estimate": {
+      "fraction": 1.0,
+      "prefix_tokens": 8000,
+      "include_versions": true,
+      "include_unknown_status": true,
+      "include_active": true,
+      "include_excluded": false,
+      "include_deleted": false,
+      "include_tools": true
+    },
+    "python_cli": {
+      "scope": "all",
+      "prefix_tokens": 0,
+      "sqlite_cache_kib": 4096,
+      "include_excluded": null,
+      "include_deleted": null
+    },
+    "status_classes": [
+      "active",
+      "version",
+      "excluded",
+      "deleted",
+      "unknown"
+    ],
+    "tool_roles": [
+      "tool",
+      "function"
+    ],
+    "python_inventory": {
+      "sqlite_cache_kib": 4096
+    }
+  }
+}
