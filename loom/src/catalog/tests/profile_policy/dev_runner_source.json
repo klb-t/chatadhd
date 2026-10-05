@@ -1,0 +1,19 @@
+{
+  "source_commit": "d9b29c502bafd3b4cb17f187e3e74f32cfff72ee",
+  "source_git_blob_sha": "d5076ac62f41a973f652d7fbc1223e494defe1ac",
+  "source_path": "loom/src/catalog/tests/evaluate_dev.py",
+  "source_sha256": "af169b567028e1ebaedeb91a66aa76fc6b7a31fc641c9cea38eed8b992d39b63",
+  "derived_path": "loom/src/catalog/tests/profile_policy/evaluate_dev.py",
+  "derived_sha256": "0458b6b1887094222d6de6643f0bb5e9e7685464eda9ceb6e3083c9325e6df0e",
+  "corpus": "synthetic_dev only; 65 labeled conversations + 3 auxiliary records",
+  "provider_calls": 0,
+  "changes": [
+    "LOOM uses parents[4] at planned location",
+    "removed semantic replay and relevance overlay CLI, loading and runtime patch",
+    "removed shadow, AUC and ranking diagnostics; full native feature maps retained",
+    "full native unit/preview/decision JSON added to each row",
+    "requires exactly 68 records including 3 auxiliary documents",
+    "retained aliases-only profile input, complete profiles and hash receipts",
+    "reduced Native bindings to functions actually called"
+  ]
+}
