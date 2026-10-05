@@ -1,0 +1,10 @@
+{
+  "zip": "native-full-negative-boundaries-20261005.zip",
+  "bytes": 414165,
+  "sha256": "a15fafd9ce9b6dc23c6f833ae72adeb03412ee68d0665bac2e851205375ca7d7",
+  "contents_files": 46,
+  "entry_sha256_verified": true,
+  "zip_crc_verified": true,
+  "exact_affected_source_snapshots": 8,
+  "private_artifacts_included": false
+}
