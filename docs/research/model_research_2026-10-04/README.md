@@ -1,56 +1,68 @@
-# Workstream 7 — model research
+# Workstream 7 — model research, closing handoff
 
-Updated 2026-10-05 after completed stages 1 and 2. Branch:
-`gpt/model-research-2026-10-04`, rebased onto `main` `30ad7d3`.
-Published increments and archived first failures survived the restart.
-The owner authorized a separate **5 EUR** programme and supplied an encrypted
-credential on 2026-10-05. Stage 1 completed **432 first attempts** for
-**USD 0.052296100**; stage 2 completed **60** for **USD 0.1639080**. Completed
-stages total **USD 0.216204100**; stage 3 is in progress. Original first responses,
-stops and delayed-generation captures remain immutable, with GET-only billing
-resolution and no repeated POST. The provider cap remains **USD 5**, within
-the owner's 5 EUR authorization at the captured ECB rate. See
-[the current budget and actual-cost boundary](BUDGET.md).
+Closed 2026-10-05 on `gpt/model-research-2026-10-04`. The owner's latest
+instruction stops new work and paid calls: finish stage 3, publish the existing
+data and provide a handoff. There have been **no new paid calls after that
+stop**. The ready commit, final gate evidence and exact continuation order are
+in [the closing report](../../reports/model-research-2026-10-04.md).
 
-| Work | Evidence and boundary |
+The separate programme retains **720 unique physical first attempts** with
+verified actual charges of **USD 0.873216500**, no pending charges and no
+unresolved reservations. The provider limit remains **USD 5**, leaving
+**USD 4.126783500**. The owner's authorization was EUR 5; the two currencies
+are not interchangeable. See [BUDGET.md](BUDGET.md) and the machine-readable
+[closing accounting data](stage5/CLOSE_ACCOUNTING_20261005.json).
+
+Stage 3's original 12 calls cost **USD 0.317069000**. Eight scientific
+repetitions on the same known cases cost **USD 0.148910200**: **USD 0.465979200**
+combined. The source-relative manual review is separate from mechanical
+acceptance, which remains **0/12** and **0/8**, respectively. The selected
+GPT pattern and Gemini completion recipes are qualified observations about
+this small inspected DEV population, not production presets or a new
+independent population. The closing report records the review's conclusions
+and unfinished peer checks.
+
+Stage 4's original 12 calls and four old-case scientific repetitions had
+already completed **before** the latest stop, for **USD 0.183834400** combined.
+Those existing data are retained. No additional stage-4 experiment is started.
+
+| Existing work | Evidence and boundary |
 |---|---|
-| [Billing](BILLING.md) | 992 historical ledger rows reduce to 631 unique attempts. The old $1.098135722 gap requires old-key proof; fresh-key reconciliation cannot assign it. |
-| [432 paired requests and Jev recipes](STUDY_AND_RECIPES.md) | Complete first-response study on 12 authored DEV cases, four queries each: eight scored arms of 48 judgments, with 96 physical calls in split. Historical 42/48 and 45/48 remain separate; current Jev arms score 40/48 or 43/48. |
-| [W1 measured recipe data](stage1-measured-recipes-for-w1-v1.json) | Eight task-scoped recipes with exact consumed bodies, parameters and observed/requested identities; no production or native-extraction adoption. |
-| [Native semantic variants](STAGE2_NATIVE_SEMANTICS.md) | 60 completed first responses on fifteen synthetic DEV branches: 41 invalid responses and 19 native rejections, 0 mechanically accepted. Semantic accuracy remains unmeasured; no winner. |
-| [Extraction](EXTRACTION.md) | Original 6/60 reproduced; separate historical decoder projection 38/60. No new model-quality improvement claimed. |
-| [Original frontier mechanics](FRONTIER.md) | 36 scripted request/result events, not provider measurements; historical pricing duplicate is not another population. |
-| [Smaller frontier and answer-format comparison](FOLLOWUP_FRONTIER_REPLY.md) | Stages 3 and 4 each prepare twelve calls, with declared transformation lineage and unchanged source bytes. |
-| [Stage5 default and exploratory selection](stage5/stage1-exploratory-v1/README.md) | Default five-criterion protocol unchanged and stage1 ineligible. Separate post-stage1 three-criterion Pareto preset retains j_active/j_directed without backfilled dimensions, quotas or thresholds. No new corpus before all selection groups freeze. |
-| [Method-graph claims](METHOD_GRAPH.md) | Concrete version/parameter/prompt identities, actual versus planned producers and dated evidence; existing ModelProfile metric vocabulary. |
-| [Ordered spending plan](BUDGET.md) | 516 prepared calls before repeats; historical $3.1804544 is not a bill. Completed stages1–2 cost $0.216204100; stage3 upper projection $1.965986350 is not actual spend. |
+| [432-query study and Jev recipes](STUDY_AND_RECIPES.md) | Stage 1: 432 first attempts, USD 0.052296100. Twelve authored DEV families, four queries each; eight scored arms. Current Jev scores are 40/48 or 43/48; older 42/48 and 45/48 remain separate historical measurements. |
+| [Measured recipes for workstream 1](stage1-measured-recipes-for-w1-v1.json) | Exact request, prompt, parameter and observed/requested identities; recipe data carry no native-extraction or production adoption. |
+| [Native semantic variants](STAGE2_NATIVE_SEMANTICS.md) | Stage 2: 60 first attempts, USD 0.163908000. Forty-one invalid responses and 19 native rejections; 0/60 native acceptance. Semantic accuracy remains unmeasured, with no winner. |
+| [Original extraction](EXTRACTION.md) | Original 6/60 reproduced. The separate historical decoder projection of 38/60 uses the same old responses and is not a measured model-quality gain. |
+| [Frontier and answer formats](FOLLOWUP_FRONTIER_REPLY.md) | Original stage-3 and stage-4 protocols and transformation lineage; actual cost and closing status are in this report and accounting table. |
+| [Measured method graph](followup-results/source-measured-graph-v1/README.md) | Existing dated ModelProfile metric vocabulary and concrete method/prompt/parameter versions, with `produced_by` provenance. Source-relative evidence remains qualified; no CABI or canonical-store write. |
+| [Old-label repetitions](stage5/label-repetition-measured-v1/README.md) | 192 scientific first attempts, USD 0.007198800. `j_active`: 80/96; `j_directed`: 89/96. Same old DEV population; no holdout or semantic-adequacy score. |
+| [Historical billing](BILLING.md) | Old-key USD 1.098135722 remains unassigned and requires old-key proof; fresh-key reconciliation cannot assign it. |
 
-Full rejected source/input/output proofs stay on
-[the independent-review archive](https://github.com/klb-t/chatadhd/tree/f14a4035eaad896a9905439fc3a60e46c6b0f1ba/docs/research/model_research_2026-10-04).
-The V3 ZIP includes seven reproductions and nested unchanged predecessors;
-SHA-256 `ec7020cbdd32a69a2ab7c41e1874375882837541f534add8c6c3f7c67764639d`.
-Earlier frontier drafts remain on
-`archive/gpt/model-research-prefreeze-2026-10-04`. Negative results are preserved
-and are not promoted as successful model research.
+The old-label capsule's existing clean-extraction receipt records a byte-exact
+packet rebuild, 105 preserved payloads and all 192 request hashes. Closing
+read-only checks confirmed ZIP CRC, all payload hashes and sizes, the original
+SCORING_INPUT and separate SCORE hashes, and gzip raw-packet hash and size.
+The graph contains 384 overlapping event views of **192** physical attempts;
+cost is counted once per attempt. Full private HTTP/GEN envelope bytes cannot
+be reconstructed from this public projection; their hashes and declared loss
+remain explicit. No exporter, model or semantic scorer was rerun for this
+closing integrity check.
 
-The complete compact stage-1 result snapshot was published at `43ed079` and
-the additional stage-1 exploratory stage5 freeze at `cb647034`. The reduced
-selection measures explicit source-commitment label agreement on inspected,
-dependent DEV controls; it adds no semantic adequacy, rationale, reasoning
-mechanism, source-evidence or world-truth score. Stage 2's failed native outputs
-do not become semantic accuracy zero.
+The **210 new-case calls remain unexecuted**: 192 label calls, 12 frontier
+calls and six reply calls. Frozen synthetic inputs, reviewed source data,
+preparations and recorded quotes are retained only as handoff data. The new
+label scorer is unfinished. The frontier master reservation of
+USD 4.161656950 exceeds the remaining provider capacity by USD 0.034873450;
+its paired child partition and aggregate recovery are unfinished. Prices,
+currency evidence and budget admission must be refreshed before any later
+execution, and a new owner instruction must first supersede the stop.
 
-The runner's later portable before/fix proofs remain separate on
-`archive/gpt/model-research-runner-review-2026-10-05`; original first attempts,
-negative inputs and stop witnesses are retained. The unrecovered old V1 generic
-source SHA still limits reproduction of that historical full orchestration;
-the new frozen runner and current public projections do not retroactively
-recover the old producer. Public functional code `1259d475` (adapter SHA-256 `f92da5c4…`) passed the latest
-108/108 native gate; its immutable [verification package](verification/native-adapter-full-20261005/receipt.json) was published at `82e1d448`.
+Full rejected inputs, first responses and portable before/fix proofs remain
+on `archive/gpt/model-research-runner-review-2026-10-05`; earlier frontier
+drafts remain on `archive/gpt/model-research-prefreeze-2026-10-04`. See the
+closing report for exact archive commits, capsule hashes and restoration
+steps. Historical verification packages keep their original tested source
+and base; the closing report identifies the fresh rebase gate separately.
 
-Production method contracts and graph-store integration belong to workstreams
-3/4. This research exports observations and claims, not an assertion that a
-production selector accepted or executed those methods. Default recipes are
-handed to workstream 1 as data; no production prompts or UI files are changed.
-Final verification and remaining handoffs are recorded in
-`docs/reports/model-research-2026-10-04.md`.
+Production method definitions and graph-store integration belong to
+workstreams 1/3/4. This branch supplies research data and qualified claims;
+it does not change production prompts, UI files, `STATE.md` or the root README.

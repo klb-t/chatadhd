@@ -1,130 +1,98 @@
-# Separate 5 EUR research programme
+# Separate research programme — actual close, 2026-10-05
 
-Updated 2026-10-05. The owner's latest instruction authorizes paid research on
-a separate OpenRouter credential capped within **5 EUR**. The old USD 2 key,
-its liabilities and historical receipts are a different programme. Consent is
-already given; the configured expected ×10 usage-growth rule is the additional
-confirmation condition. Model, provider, prompts, sampling and output allowances
-remain editable presets.
+The owner's latest instruction is to close stage 3 and the existing work,
+publish its data and handoff, and start no new work or paid calls. **Execution
+is stopped.** Earlier EUR 5 authorization does not override this later stop.
+No further stage-4 call is started. Ready preparations remain data only.
 
-## Ordered stages
+All **720 unique physical first attempts** are complete and their actual
+charges are verified. Cumulative actual spend is **USD 0.873216500**; pending
+attempts, unknown costs and unresolved reservations are zero. The provider
+limit remains **USD 5**, leaving **USD 4.126783500**. The ready commit, final
+gates, archive pointers and first continuation steps are in
+[the closing report](../../reports/model-research-2026-10-04.md). Exact decimal
+accounting is also available in
+[CLOSE_ACCOUNTING_20261005.json](stage5/CLOSE_ACCOUNTING_20261005.json).
 
-| Stage | Purpose | Prepared calls | Historical USD reservation | Actual new spend |
-|---|---|---:|---:|---:|
-| 1 | Jev and cheap-model paired analysis; nine execution arms/eight scored combinations | 432 | 0.5638576 | **0.052296100**, complete |
-| 2 | Native occurrence-graph prompt and temperature variants on fifteen actual synthetic DEV branches | 60 | 0.3852768 | **0.1639080**, complete |
-| 3 | Small frontier panel: graph completion versus pattern discovery | 12 | 1.227694 | In progress; final cost not yet reported |
-| 4 | Answer as graph versus text plus JSON | 12 | 1.003626 | 0 |
-| Subtotal | Stages 1–4 | **516** | **3.1804544** | **0.216204100** for completed stages 1–2 only |
-| 5 | Repeat selected nondominated configurations and compare independently authored new data | Depends on frozen selections | Quote after selection | Not executed |
+| Completed cohort | Unique physical first attempts | Actual USD |
+|---|---:|---:|
+| Stage 1: 432-query Jev and cheap-model study | 432 | 0.052296100 |
+| Stage 2: native semantic variants on synthetic DEV | 60 | 0.163908000 |
+| Stage 3: original frontier panel | 12 | 0.317069000 |
+| Stage 4: original answer-format panel, completed before the stop | 12 | 0.163190000 |
+| Stage 5: old-label scientific repetitions | 192 | 0.007198800 |
+| Stage 5: old-stage-3 scientific repetitions | 8 | 0.148910200 |
+| Stage 5: old-stage-4 scientific repetitions, completed before the stop | 4 | 0.020644400 |
+| **Total, each physical attempt counted once** | **720** | **0.873216500** |
 
-The completed stages retain **492 physical first attempts**, including all
-96 split-component calls in stage 1. Stage 1 has **12 authored DEV cases** and
-four judgments per case: 48 planned judgments in each of eight scored arms,
-384 decisions overall. Stage 2 retains all 60 responses and charges: 41 fail
-strict response decoding and 19 reach native validation, where all are rejected.
-**0 mechanically accepted out of 60 is not semantic accuracy 0**; semantic
-accuracy remains unmeasured, and stage 2 has no selected quality winner.
+Stage 3's original panel plus its eight old-case scientific repetitions cost
+**USD 0.465979200** for 20 unique attempts. Their reused known cases are not
+an independent population. Stage 4's original panel plus four old-case
+scientific repetitions cost **USD 0.183834400** for 16 unique attempts; these
+paid calls were completed before the latest owner stop. Their retention and
+review during close do not start another experiment.
 
-These are saved historical quote calculations, not current prices, tokenized
-usage, a promise of EUR fit or a bill. Stage 1 goes first. Before each stage,
-capture current selected model/provider prices, all applicable charge
-components, dated EUR/USD evidence, exact manifest hash and cumulative account
-usage. Report the actual charge and unresolved reservations afterwards. A
-missing response or cost does not become zero, and a retry cannot replace a
-first planned attempt. Never assume EUR and USD are interchangeable.
+Immutable first attempts and responses were retained during delayed provider
+billing. Matching generation receipts and GET-only reconciliation resolved
+those pending states; paid POSTs were not repeated to replace an answer or
+charge. Scientific repetitions are explicitly planned new attempts on reused
+cases, not recovery retries. Public normalized receipt attestations remain
+projections: complete original private HTTP/GEN envelopes are retained by the
+execution owner and cannot be reconstructed from public result capsules.
 
-The configured output allowances are research presets. They can be changed
-through a new, explicitly versioned manifest; frozen requests and their first
-responses stay immutable. Unknown costs retain their reservations. Dispatch
-does not continue after an ambiguous attempt until it is resolved with exact
-provider evidence.
+The old-label result graph contains 384 event occurrence views across pooled
+and repetition cohorts, representing **192** unique physical attempts. Its
+USD 0.007198800 total counts each attempt once; overlapping graph aggregates
+must not be added together. The existing clean-extraction replay receipt is
+complete. Closing read-only checks confirmed ZIP CRC, all 105 payload hashes
+and sizes, SCORING_INPUT and the separate SCORE hashes, and the raw packet
+hash and size. No new model, export or semantic scoring was performed.
 
-## Different historical populations
+## Unexecuted handoff data
 
-The old 36-request frontier mechanics panel at 8,192 output tokens had a
-historical reservation of $8.180672. It is preserved as offline research, not
-automatically included in this programme. Its differently priced duplicate
-uses the same inputs and is not 72 independent observations.
+| Prepared future cohort | Planned calls | Saved USD reservation | State at stop |
+|---|---:|---:|---|
+| New synthetic label families, two selected methods | 192 | 0.192000000 | No calls; input and manifest prepared, first-only scorer handoff incomplete |
+| Six new frontier cases, two task-scoped methods | 12 | 4.161656950 | No calls; paired child partition and aggregate recovery unfinished |
+| Six new reply contexts | 6 | 1.918786800 | No calls; further stage-4 execution stopped |
+| **Total** | **210** | **6.272443750** | **Zero actual calls and zero actual spend** |
 
-The separate source-only extraction preparation contains 72 requests with a
-historical reservation of $0.3781824. Its 48 revised requests are $0.2619776.
-Neither is silently added to the 516-call sequence above. Source-replayed
-extraction remains 6/60 for the original decoder; 38/60 describes a preserved
-historical decoder projection of the same responses, not a newly measured model.
+These are saved quote and reservation calculations, **not actual charges or
+an admitted programme**. The entire frontier master reservation exceeds
+remaining provider capacity by **USD 0.034873450**. Its saved moving-baseline
+ratio is approximately 4.612946329; being below the configurable ×10
+confirmation trigger does not waive either the provider budget or the owner's
+stop. Do not dispatch that master manifest or any of these prepared cohorts.
 
-The old key's three unresolved attempts retain $0.00738793 in reservations;
-this is not known spend and is not a debit against the new separate key.
-The old $1.098135722 discrepancy remains unassigned and still requires evidence
-bound to the **old key**. A reconciled fresh-key counter cannot resolve it.
-See [BILLING.md](BILLING.md) for exact deduplication and the unverified identity
-of the final old-key checkpoint.
+If the owner later directs a resumption, begin with the closing report,
+restore and verify the frozen data, complete the pending offline reviews and
+unfinished preparation, and refresh provider prices, applicable charge
+components, currency evidence, exact manifest hashes and cumulative account
+usage before admission. Preserve old request IDs, first-response records and
+quoted manifests; any changed preset requires its own explicit version.
+Model, provider, prompt, sampling and output allowances remain editable
+presets. Missing charges retain their reservations rather than becoming zero.
 
-## Execution boundary
+## Currency and separate old-key boundary
 
-The owner supplied the separate encrypted credential on 2026-10-05. Authenticated
-metadata established an initially unused **USD 5** provider limit, within the
-EUR 5 authorization at the captured ECB rate of **1.1225 USD/EUR** (rate date
-2026-10-02), whose converted authorization is **USD 5.6125**. The provider limit
-stays **USD 5** and has not been raised. The original stage-1 admission projected
-an upper **USD 0.426851432**, with **USD 0.6300764** reserved after retaining
-older per-request floors. Stage 2's fresh admission bound was **USD 0.443196**.
-Stage 3 is in progress under a fresh **USD 1.965986350** upper projection.
-These bounds are not actual charges; the table reports only completed-stage
-actuals, without inventing a final total for the active stage.
+The owner authorized **EUR 5** on a separate key. Authenticated provider
+metadata established an initially unused **USD 5** key limit. The captured
+ECB reference was **1.1225 USD/EUR** dated 2026-10-02, corresponding to
+USD 5.6125 for EUR 5. The provider limit was **not raised** and remains USD 5;
+the remaining-capacity calculation above uses that stricter actual limit.
+These dated values must be refreshed for any later execution.
 
-The first Jev operation completed with independently matching response and
-generation charge **USD 0.000032928** (784 input and 40 output tokens). The key
-counter initially remained zero, so the original strict executor stopped.
-That first response and immutable stop receipt remain preserved. A subsequent
-GET-only reconciliation observed the matching account charge and resolved the
-active stop without a paid call, retry or response adoption.
+The old key is a different programme. Its **USD 1.098135722** counter gap
+remains unassigned; the identity of the final old-key checkpoint remains
+unverified, and resolving it requires evidence bound to the old key. Three
+old unresolved attempts retain **USD 0.007387930** in reservations, which is
+not known spend and is not a debit against this new key. Fresh-key receipts
+cannot assign either the old gap or those old liabilities. See
+[BILLING.md](BILLING.md) for deduplication and its evidence boundary.
 
-The second first response also survived its pending-generation stop. A later
-GET returned the matching generation charge **USD 0.000037086**; the receipt
-verifier reproduced that match. This original two-response checkpoint was
-**USD 0.000070014**, not the completed-stage total. Append-only captured-attempt
-proofs subsequently resolved the pending charges while preserving the original
-reservation fields and three HTTP 404 captures. The paid POSTs were not repeated.
-
-All **432** stage-1 and **60** stage-2 first attempts now have unique verified
-credit-generation receipts and complete costs. Their public results are
-[stage 1](programme-actual/stage1-final-20261005-v2/VERIFICATION.json) and
-[stage 2](programme-actual/stage2-final-20261005-v1/NATIVE_RECEIPTS.json).
-Stage 1's compact public snapshot was published at `43ed079`; its eight-arm
-[W1 recipe handoff](stage1-measured-recipes-for-w1-v1.json) is task-scoped data,
-not adoption of native extraction or a production selector.
-
-The selected `stage_end`/`unknown_cost_policy: reserve` run policy keeps unknown
-charges null and fully reserved. Every new model/provider/route pair requires
-its first real credit-generation proof. Each further paid dispatch checks fresh
-limits and the strict account-usage interval against verified actuals plus
-pending reservations. Late billing resolution uses GET only and preserves the
-original first response and earlier GET captures.
-
-For final accounting with no further paid dispatch, the explicit lower-counter
-lag policy may admit an asynchronous counter only when every saved generation
-is replay-verified, unique, completed and paid from credit. It preserves the
-observed counter and failed strict equality witness; available funds use the
-minimum of provider remaining credit and the cap minus proven actuals and
-unresolved reservations. Higher or unknown usage stops execution. Public
-defaults still reconcile each operation and stop on uncertainty.
-
-The normalized gate is
-`loom/tools/structure/new_budget5eur_gate.py`; its supplied-record validation
-does not itself authenticate a transport. The successor executor must bind the
-actual loaded credential, reserve durably before POST, retain first response
-bytes and reevaluate the cumulative ledger before each subsequent operation.
-Private credentials, account records and raw owner envelopes stay outside Git.
-
-Stage 5 is defined in [STAGE5.md](STAGE5.md). Offline scripted validity cannot
-select a quality winner. Missing quality dimensions or incomplete billing
-exclude all stage-1 candidates under the unchanged default five-criterion
-protocol. The additional [stage-1 exploratory preset](stage5/stage1-exploratory-v1/README.md),
-published at `cb647034`, uses only measured correctness, availability and
-complete first-attempt cost; it retains `j_active` and `j_directed` by Pareto
-selection, with no quota, threshold or imputed semantic/grounding counts.
-This is a disclosed post-stage1 exploratory choice. **No new corpus may be
-authored until all applicable selection groups are frozen.** New data remains
-separate from inspected DEV and the sealed `eval/real-holdout-key`, which this
-workstream never reads.
+Historical reservation tables in earlier protocols are preserved historical
+quotes. The scripted 36-event frontier mechanics panel, its pricing duplicate
+and source-only extraction preparations are different populations and are
+not added to the 720-attempt actual bill. Original extraction remains 6/60;
+the 38/60 historical decoder projection is not a new measured model-quality
+gain or new programme spend.

@@ -1,0 +1,219 @@
+{
+  "schema": "loom.research_close_accounting/1",
+  "closed_on": "2026-10-05",
+  "programme_id": "thread7-new-key-2026-10-04-eur5",
+  "branch": "gpt/model-research-2026-10-04",
+  "owner_instruction": {
+    "state": "stopped",
+    "scope": "Finish stage 3 and publish the existing data and handoff; no new work or paid calls; do not start further stage 4",
+    "new_paid_calls_after_stop": 0,
+    "resume_requires_new_owner_direction": true
+  },
+  "actual_cost_currency": "USD",
+  "actual_cohorts": [
+    {
+      "cohort_id": "stage1-original",
+      "stage": 1,
+      "purpose": "432-query Jev and cheap-model study",
+      "first_attempts": 432,
+      "actual_cost_usd": "0.052296100",
+      "execution_state": "complete",
+      "billing_state": "verified",
+      "unknown_cost_attempts": 0,
+      "scientific_repetition_is_retry": false
+    },
+    {
+      "cohort_id": "stage2-original",
+      "stage": 2,
+      "purpose": "Synthetic DEV native-semantic variants",
+      "first_attempts": 60,
+      "actual_cost_usd": "0.163908000",
+      "execution_state": "complete",
+      "billing_state": "verified",
+      "unknown_cost_attempts": 0,
+      "scientific_repetition_is_retry": false
+    },
+    {
+      "cohort_id": "stage3-original",
+      "stage": 3,
+      "purpose": "Small frontier completion and pattern panel",
+      "first_attempts": 12,
+      "actual_cost_usd": "0.317069000",
+      "execution_state": "complete",
+      "billing_state": "verified",
+      "unknown_cost_attempts": 0,
+      "scientific_repetition_is_retry": false
+    },
+    {
+      "cohort_id": "stage4-original-before-stop",
+      "stage": 4,
+      "purpose": "Graph-only versus text-plus-JSON comparison completed before owner stop",
+      "first_attempts": 12,
+      "actual_cost_usd": "0.163190000",
+      "execution_state": "complete",
+      "billing_state": "verified",
+      "unknown_cost_attempts": 0,
+      "scientific_repetition_is_retry": false
+    },
+    {
+      "cohort_id": "stage5-old-label-repetitions",
+      "stage": 5,
+      "purpose": "Two scientific repetitions of the two selected recipes on the same known DEV queries",
+      "first_attempts": 192,
+      "actual_cost_usd": "0.007198800",
+      "execution_state": "complete",
+      "billing_state": "verified",
+      "unknown_cost_attempts": 0,
+      "scientific_repetition_is_retry": false
+    },
+    {
+      "cohort_id": "stage5-old-stage3-repetitions",
+      "stage": 5,
+      "purpose": "Eight scientific repetitions of selected stage-3 methods on the same known cases",
+      "first_attempts": 8,
+      "actual_cost_usd": "0.148910200",
+      "execution_state": "complete",
+      "billing_state": "verified",
+      "unknown_cost_attempts": 0,
+      "scientific_repetition_is_retry": false
+    },
+    {
+      "cohort_id": "stage5-old-stage4-repetitions-before-stop",
+      "stage": 5,
+      "purpose": "Four scientific repetitions of the selected stage-4 format completed before owner stop",
+      "first_attempts": 4,
+      "actual_cost_usd": "0.020644400",
+      "execution_state": "complete",
+      "billing_state": "verified",
+      "unknown_cost_attempts": 0,
+      "scientific_repetition_is_retry": false
+    }
+  ],
+  "totals": {
+    "unique_physical_first_attempts": 720,
+    "verified_actual_cost_usd": "0.873216500",
+    "unknown_cost_attempts": 0,
+    "pending_attempts": 0,
+    "unresolved_reservation_usd": "0.000000000",
+    "active_stop": null,
+    "provider_cap_usd": "5.000000000",
+    "remaining_provider_capacity_usd": "4.126783500"
+  },
+  "stage3_close": {
+    "original_first_attempts": 12,
+    "original_actual_cost_usd": "0.317069000",
+    "scientific_repeat_first_attempts": 8,
+    "scientific_repeat_actual_cost_usd": "0.148910200",
+    "combined_unique_first_attempts": 20,
+    "combined_actual_cost_usd": "0.465979200",
+    "independent_population": false,
+    "mechanical_acceptance_original": "0/12",
+    "mechanical_acceptance_repeats": "0/8",
+    "semantic_review_and_qualifications": "See the closing handoff report; source-relative manual judgments do not establish native acceptance or production quality"
+  },
+  "stage4_chronology": {
+    "original_first_attempts": 12,
+    "scientific_repeat_first_attempts": 4,
+    "combined_actual_cost_usd": "0.183834400",
+    "paid_calls_completed_before_latest_owner_stop": true,
+    "new_stage4_calls_after_latest_owner_stop": 0
+  },
+  "unexecuted_preparations": [
+    {
+      "cohort_id": "new-label-cases",
+      "planned_first_attempts": 192,
+      "source_population": "24 newly authored synthetic families; 96 questions; two selected label methods",
+      "execution_state": "unexecuted",
+      "actual_first_attempts": 0,
+      "actual_cost_usd": "0.000000000",
+      "quoted_reservation_usd": "0.192000000",
+      "preparation_state": "frozen inputs and prepared manifest; first-only scorer handoff incomplete",
+      "quote_state": "saved 2026-10-05; refresh before any renewed dispatch"
+    },
+    {
+      "cohort_id": "new-frontier-cases",
+      "planned_first_attempts": 12,
+      "source_population": "Six newly authored synthetic cases; two distinct task-scoped methods",
+      "execution_state": "unexecuted",
+      "actual_first_attempts": 0,
+      "actual_cost_usd": "0.000000000",
+      "quoted_reservation_usd": "4.161656950",
+      "preparation_state": "frozen inputs and master manifest; paired child partition and aggregate recovery not finished",
+      "budget_admissible_at_close": false,
+      "reservation_above_available_usd": "0.034873450",
+      "quote_state": "saved 2026-10-05; refresh before any renewed dispatch"
+    },
+    {
+      "cohort_id": "new-reply-cases",
+      "planned_first_attempts": 6,
+      "source_population": "Six newly authored synthetic reply contexts",
+      "execution_state": "unexecuted",
+      "actual_first_attempts": 0,
+      "actual_cost_usd": "0.000000000",
+      "quoted_reservation_usd": "1.918786800",
+      "preparation_state": "frozen inputs and prepared manifest only",
+      "owner_instruction_state": "No further stage-4 execution under the closing stop",
+      "quote_state": "saved 2026-10-05; refresh before any renewed dispatch"
+    }
+  ],
+  "unexecuted_totals": {
+    "planned_first_attempts": 210,
+    "actual_first_attempts": 0,
+    "actual_cost_usd": "0.000000000",
+    "sum_saved_reservations_usd": "6.272443750",
+    "saved_reservations_are_actual_spend": false,
+    "do_not_dispatch_under_current_stop": true
+  },
+  "usage_guard": {
+    "new_frontier_saved_estimate_to_moving_baseline_ratio": "4.612946329",
+    "tenfold_rule_overrides_provider_budget": false,
+    "tenfold_rule_overrides_owner_stop": false,
+    "whole_frontier_master_cannot_be_admitted_at_close": true
+  },
+  "currency_boundary": {
+    "owner_authorization_eur": "5.00",
+    "provider_cap_usd": "5.00",
+    "captured_reference_usd_per_eur": "1.1225",
+    "reference_rate_date": "2026-10-02",
+    "converted_reference_authorization_usd": "5.6125",
+    "provider_limit_raised": false,
+    "refresh_currency_and_provider_quotes_before_any_resume": true
+  },
+  "old_key_separate_programme": {
+    "unassigned_counter_gap_usd": "1.098135722",
+    "gap_state": "Unassigned; final old-key counter identity remains unverified; old-key billing proof required",
+    "unknown_attempt_reservations_usd": "0.007387930",
+    "charged_to_this_programme": false
+  },
+  "label_repetition_capsule": {
+    "directory": "stage5/label-repetition-measured-v1",
+    "whitelist": [
+      "packet.json.gz",
+      "replay-inputs.zip",
+      "SCORE.json",
+      "VERIFICATION.json",
+      "README.md"
+    ],
+    "documented_clean_extraction_replay": true,
+    "documented_packet_rebuild_byte_exact": true,
+    "closing_read_only_checks": [
+      "ZIP CRC: PASS",
+      "105 ZIP payload SHA-256 and size entries: PASS",
+      "SCORING_INPUT SHA-256: PASS",
+      "separate SCORE.json SHA-256: PASS",
+      "gzip raw-packet SHA-256 and size: PASS"
+    ],
+    "closing_check_did_not_rerun_export_or_semantic_scoring": true,
+    "unique_physical_first_attempts": 192,
+    "overlapping_graph_event_occurrences": 384,
+    "actual_cost_usd": "0.007198800",
+    "source_input_sha256": "842feeee072fb6aced135795a451031ef532f35d411c05b0cc91a4324770b2a3",
+    "score_sha256": "4d64e9798be4f54b8659819e8c933dc0ca117bd9a704b80c467f8a946c7ffcfa",
+    "packet_gzip_sha256": "52088dac761b60c497380e6a3a65db0c5253e4d32b5a46dee66d15a06569666e",
+    "packet_raw_sha256": "ff948762ae99c6e1765a093713885677d60ede7d7bb252aa7a59543f044880a9",
+    "replay_zip_sha256": "e6eca028717841f4f727a9d8bb0a81989d72b7d106177819f69bf134bb5d526a",
+    "scope": "Same known authored DEV population; source-commitment labels only; no native grounding, semantic adequacy, independent holdout or world-truth measurement; full private HTTP/GEN envelopes are not reconstructible from public projections"
+  },
+  "handoff_report": "docs/reports/model-research-2026-10-04.md",
+  "accounting_evidence_boundary": "Aggregate actuals summarize the execution-owner reconciliation of immutable first attempts and provider generation receipts. The capsule preserves public normalized receipt attestations and projections; this close document does not independently replay private account or HTTP/GEN captures."
+}
