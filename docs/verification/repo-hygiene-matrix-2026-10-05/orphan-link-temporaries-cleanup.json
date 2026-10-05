@@ -1,0 +1,35 @@
+{
+  "reason": "No live W8 compiler/linker; leftover temporary outputs from recorded failed links, completed binaries preserved. Truncated to empty to release shared disk space.",
+  "files": [
+    {
+      "path": "loom/build/dev/.libloom_core.a.bkUeru",
+      "logical_bytes_before": 817102848,
+      "allocated_bytes_before": 817106944,
+      "mtime_ns": 1791207197390489933
+    },
+    {
+      "path": "loom/build/dev/.loom_tests.qnS2Ee",
+      "logical_bytes_before": 114819072,
+      "allocated_bytes_before": 114823168,
+      "mtime_ns": 1791208412463377869
+    },
+    {
+      "path": "loom/build/dev/.libloom_core.a.WTTVg5",
+      "logical_bytes_before": 66322432,
+      "allocated_bytes_before": 66322432,
+      "mtime_ns": 1791207161094834940
+    },
+    {
+      "path": "loom/build/asan/.libloom_core.a.2twfNz",
+      "logical_bytes_before": 219152384,
+      "allocated_bytes_before": 219156480,
+      "mtime_ns": 1791210432037602010
+    },
+    {
+      "path": "loom/build/asan/.loom_tests.Y8N0pU",
+      "logical_bytes_before": 141819904,
+      "allocated_bytes_before": 141828096,
+      "mtime_ns": 1791211458992503610
+    }
+  ]
+}

@@ -1,0 +1,1090 @@
+{
+  "reason": "Reclaim completed GCC build intermediates in shared 32GiB workspace; tested executables, shared library, CMake cache and all logs retained unchanged.",
+  "source_commit": "fedaf6b26d54a2d84f2a42e0c18fed6d8fa9828f",
+  "utc": "2026-10-05T14:01:57.876746+00:00",
+  "files": [
+    {
+      "path": "loom/build/dev/CMakeFiles/loom.dir/src/capi/shared_anchor.c.o",
+      "bytes": 3152
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_candidate_graph_native_tool.dir/tests/compat/candidate_graph_native_tool.cpp.o",
+      "bytes": 2519736
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_compat_tool.dir/tests/compat/main.cpp.o",
+      "bytes": 1418488
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_active_task.cpp.o",
+      "bytes": 3089848
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_chat.cpp.o",
+      "bytes": 4440552
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_core.cpp.o",
+      "bytes": 4706440
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_crypto.cpp.o",
+      "bytes": 3240848
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_db.cpp.o",
+      "bytes": 6505056
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_graph.cpp.o",
+      "bytes": 5313184
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_import.cpp.o",
+      "bytes": 3971456
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_memory.cpp.o",
+      "bytes": 3780448
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_selector.cpp.o",
+      "bytes": 2768952
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_semantic.cpp.o",
+      "bytes": 4512416
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/archive/cluster.cpp.o",
+      "bytes": 1021528
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/archive/ingest.cpp.o",
+      "bytes": 9165600
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/archive/ingest_parse.cpp.o",
+      "bytes": 6118048
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/archive/items.cpp.o",
+      "bytes": 5505696
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/archive/pipeline.cpp.o",
+      "bytes": 14689840
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/archive/synth.cpp.o",
+      "bytes": 8838280
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/archive/text.cpp.o",
+      "bytes": 1612360
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/archive/vocab.cpp.o",
+      "bytes": 5534232
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/capi/capi_archive.cpp.o",
+      "bytes": 5267416
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/capi/capi_catalog.cpp.o",
+      "bytes": 5138824
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/capi/capi_chat.cpp.o",
+      "bytes": 5742120
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/capi/capi_config.cpp.o",
+      "bytes": 5069768
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/capi/capi_context.cpp.o",
+      "bytes": 5239224
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/capi/capi_core.cpp.o",
+      "bytes": 7721680
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/capi/capi_extract.cpp.o",
+      "bytes": 5604552
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/capi/capi_generalize.cpp.o",
+      "bytes": 7246528
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/capi/capi_graph.cpp.o",
+      "bytes": 5222760
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/capi/capi_graph_packet_store.cpp.o",
+      "bytes": 4162976
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/capi/capi_http.cpp.o",
+      "bytes": 2576760
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/capi/capi_import.cpp.o",
+      "bytes": 4405696
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/capi/capi_knowledge.cpp.o",
+      "bytes": 8891656
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/capi/capi_media.cpp.o",
+      "bytes": 5124024
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/capi/capi_packet.cpp.o",
+      "bytes": 6456208
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/catalog/alias.cpp.o",
+      "bytes": 4061576
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/catalog/catalog.cpp.o",
+      "bytes": 6666784
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/catalog/extract_text.cpp.o",
+      "bytes": 1176224
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/catalog/import.cpp.o",
+      "bytes": 6169512
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/catalog/links.cpp.o",
+      "bytes": 5298208
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/catalog/profile.cpp.o",
+      "bytes": 5249648
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/catalog/query.cpp.o",
+      "bytes": 6414888
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/catalog/scan.cpp.o",
+      "bytes": 6428280
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/catalog/schema.cpp.o",
+      "bytes": 1453680
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/catalog/score.cpp.o",
+      "bytes": 9459296
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/catalog/select.cpp.o",
+      "bytes": 7327488
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/catalog/semantic.cpp.o",
+      "bytes": 2627512
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/catalog/sketch.cpp.o",
+      "bytes": 4956920
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/catalog/stream.cpp.o",
+      "bytes": 996704
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/chat/active_task_acceptance.cpp.o",
+      "bytes": 6775080
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/chat/active_task_spec.cpp.o",
+      "bytes": 4337280
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/chat/batch_api.cpp.o",
+      "bytes": 6219504
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/chat/chat_engine.cpp.o",
+      "bytes": 12837016
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/chat/graph_reply.cpp.o",
+      "bytes": 10394560
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/context/context_candidates.cpp.o",
+      "bytes": 6757320
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/context/context_diagnostics.cpp.o",
+      "bytes": 1048688
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/context/context_engine.cpp.o",
+      "bytes": 15757192
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/context/context_evidence.cpp.o",
+      "bytes": 5612512
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/context/context_plan.cpp.o",
+      "bytes": 8147944
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/context/context_request_ext.cpp.o",
+      "bytes": 3250488
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/context/ctx_common.cpp.o",
+      "bytes": 2575264
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/context/method_channels.cpp.o",
+      "bytes": 9203744
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/context/method_execution.cpp.o",
+      "bytes": 9165864
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/context/method_registry.cpp.o",
+      "bytes": 8719304
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/context/provider_vector.cpp.o",
+      "bytes": 11129920
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/context/retrieval.cpp.o",
+      "bytes": 5956744
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/context/unified_context.cpp.o",
+      "bytes": 9765376
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/core/config.cpp.o",
+      "bytes": 5710656
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/core/config_usage_policy.cpp.o",
+      "bytes": 4418168
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/core/event_bus.cpp.o",
+      "bytes": 3657008
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/core/provenance.cpp.o",
+      "bytes": 6219264
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/core/relations.cpp.o",
+      "bytes": 4963464
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/core/tasks.cpp.o",
+      "bytes": 6621688
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/crypto/crypto.cpp.o",
+      "bytes": 5016376
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/db/db.cpp.o",
+      "bytes": 8635688
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/db/fts.cpp.o",
+      "bytes": 4548312
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/db/sqlite.cpp.o",
+      "bytes": 1159392
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/extract/candidate_graph.cpp.o",
+      "bytes": 8384952
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/extract/extract.cpp.o",
+      "bytes": 8315144
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/extract/extractors.cpp.o",
+      "bytes": 12043608
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/extract/lexicon.cpp.o",
+      "bytes": 5251208
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/extract/semantic.cpp.o",
+      "bytes": 10694144
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/extract/sources.cpp.o",
+      "bytes": 4327736
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/extract/stage.cpp.o",
+      "bytes": 10145280
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/generalize/common.cpp.o",
+      "bytes": 12125448
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/generalize/evidence.cpp.o",
+      "bytes": 5559784
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/generalize/infer.cpp.o",
+      "bytes": 8429824
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/generalize/match.cpp.o",
+      "bytes": 10423592
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/generalize/operators.cpp.o",
+      "bytes": 7566208
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/generalize/principles.cpp.o",
+      "bytes": 8243752
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/generalize/stage.cpp.o",
+      "bytes": 9196712
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/github/github_sync.cpp.o",
+      "bytes": 9066944
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/graph/graph_engine.cpp.o",
+      "bytes": 5453336
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/graph/graph_memory.cpp.o",
+      "bytes": 5467576
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/import/export_anthropic.cpp.o",
+      "bytes": 6397008
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/import/export_archive.cpp.o",
+      "bytes": 8180040
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/import/export_common.cpp.o",
+      "bytes": 6803912
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/import/export_openai.cpp.o",
+      "bytes": 7213888
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/import/export_unknown.cpp.o",
+      "bytes": 4714848
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/import/exporter.cpp.o",
+      "bytes": 3589096
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/import/importer_common.cpp.o",
+      "bytes": 1150256
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/import/importer_core.cpp.o",
+      "bytes": 6909608
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/import/importer_html.cpp.o",
+      "bytes": 4402472
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/import/importer_json.cpp.o",
+      "bytes": 5110400
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/import/importer_sqlite.cpp.o",
+      "bytes": 4210176
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/import/importer_text.cpp.o",
+      "bytes": 4317656
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/import/importer_zip.cpp.o",
+      "bytes": 2794992
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/kb/candidates.cpp.o",
+      "bytes": 4263528
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/kb/evidence.cpp.o",
+      "bytes": 3122944
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/kb/graph_packet_store.cpp.o",
+      "bytes": 8738288
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/kb/normalize.cpp.o",
+      "bytes": 2486304
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/kb/pack.cpp.o",
+      "bytes": 10489560
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/kb/schema.cpp.o",
+      "bytes": 1953320
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/kb/store.cpp.o",
+      "bytes": 15367320
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/knowledge/engine.cpp.o",
+      "bytes": 8664872
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/materialize/materialize.cpp.o",
+      "bytes": 8353992
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/media/media_providers.cpp.o",
+      "bytes": 6843416
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/memory/memory_engine.cpp.o",
+      "bytes": 5818584
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/model/model_action.cpp.o",
+      "bytes": 9206368
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/model/model_core.cpp.o",
+      "bytes": 8256848
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/model/model_general.cpp.o",
+      "bytes": 9601880
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/model/model_pack.cpp.o",
+      "bytes": 4913456
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/net/http_common.cpp.o",
+      "bytes": 4256264
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/net/http_default.cpp.o",
+      "bytes": 11188840
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/net/sse.cpp.o",
+      "bytes": 226736
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/packet/packet.cpp.o",
+      "bytes": 11502776
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/packet/reply.cpp.o",
+      "bytes": 7227376
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/policy/usage_policy.cpp.o",
+      "bytes": 6615416
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/providers/embedding.cpp.o",
+      "bytes": 6086432
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/providers/providers.cpp.o",
+      "bytes": 5532424
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/re/regex.cpp.o",
+      "bytes": 1614816
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/resolve/assess.cpp.o",
+      "bytes": 4866576
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/resolve/attribution.cpp.o",
+      "bytes": 9365472
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/resolve/lineage.cpp.o",
+      "bytes": 6303400
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/resolve/resolver.cpp.o",
+      "bytes": 7955240
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/resolve/stage.cpp.o",
+      "bytes": 7730592
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/resolve/vectors.cpp.o",
+      "bytes": 4944216
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/runtime.cpp.o",
+      "bytes": 9169216
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/search/selector.cpp.o",
+      "bytes": 5192344
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/semantic/analyzer.cpp.o",
+      "bytes": 6145104
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/semantic/semantic_llm.cpp.o",
+      "bytes": 5064912
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/util/base64.cpp.o",
+      "bytes": 242480
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/util/fs.cpp.o",
+      "bytes": 1362256
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/util/json.cpp.o",
+      "bytes": 4206880
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/util/log.cpp.o",
+      "bytes": 829280
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/util/random_ids_time.cpp.o",
+      "bytes": 296536
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/util/result.cpp.o",
+      "bytes": 190736
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/util/sha256.cpp.o",
+      "bytes": 648120
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/util/unicode.cpp.o",
+      "bytes": 222528
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/util/utf8.cpp.o",
+      "bytes": 285592
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/worker/semantic_worker.cpp.o",
+      "bytes": 6150552
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_miniz.dir/third_party/miniz/miniz.c.o",
+      "bytes": 356888
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/main.cpp.o",
+      "bytes": 2592528
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_archive.cpp.o",
+      "bytes": 9595904
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_batch_api.cpp.o",
+      "bytes": 6663360
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_capi.cpp.o",
+      "bytes": 6817224
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_capi_knowledge.cpp.o",
+      "bytes": 3741360
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_capi_knowledge_latest_run.cpp.o",
+      "bytes": 4808688
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_catalog.cpp.o",
+      "bytes": 8219904
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_catalog_context.cpp.o",
+      "bytes": 7210368
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_catalog_eval.cpp.o",
+      "bytes": 5910344
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_catalog_links.cpp.o",
+      "bytes": 3306144
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_catalog_retention.cpp.o",
+      "bytes": 3903080
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_catalog_scale.cpp.o",
+      "bytes": 2342408
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_chat_active_task.cpp.o",
+      "bytes": 9544048
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_chat_active_task_acceptance_audit.cpp.o",
+      "bytes": 8409784
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_chat_active_task_acceptance_scale.cpp.o",
+      "bytes": 7095752
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_chat_active_task_acceptance_validation.cpp.o",
+      "bytes": 9254752
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_chat_active_task_concurrency.cpp.o",
+      "bytes": 10740416
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_chat_active_task_durability.cpp.o",
+      "bytes": 9542632
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_chat_active_task_durable_audit.cpp.o",
+      "bytes": 8195040
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_chat_active_task_exceptional.cpp.o",
+      "bytes": 7299904
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_chat_active_task_history_aba.cpp.o",
+      "bytes": 7866344
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_chat_active_task_reference.cpp.o",
+      "bytes": 6849776
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_chat_active_task_retention.cpp.o",
+      "bytes": 8924088
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_chat_active_task_revisions.cpp.o",
+      "bytes": 8865784
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_chat_active_task_scope_identity.cpp.o",
+      "bytes": 7449512
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_chat_engine.cpp.o",
+      "bytes": 6449664
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_chat_knowledge_context.cpp.o",
+      "bytes": 8758112
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_chat_retrieval_plan.cpp.o",
+      "bytes": 10117312
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_config.cpp.o",
+      "bytes": 4657408
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_context_channel_integration.cpp.o",
+      "bytes": 6331720
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_context_controls.cpp.o",
+      "bytes": 7336264
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_context_counter.cpp.o",
+      "bytes": 5997856
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_context_diagnostics.cpp.o",
+      "bytes": 7101352
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_context_engine.cpp.o",
+      "bytes": 8877144
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_context_eval.cpp.o",
+      "bytes": 7070536
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_context_native_consumer.cpp.o",
+      "bytes": 8544440
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_context_plan.cpp.o",
+      "bytes": 8404856
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_context_retrieval.cpp.o",
+      "bytes": 5688848
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_context_retrieval_dev.cpp.o",
+      "bytes": 8066592
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_context_tfidf_reuse.cpp.o",
+      "bytes": 9823304
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_crypto.cpp.o",
+      "bytes": 4496872
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_db.cpp.o",
+      "bytes": 8366040
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_event_bus.cpp.o",
+      "bytes": 4944272
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_extract.cpp.o",
+      "bytes": 9936736
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_extract_eval.cpp.o",
+      "bytes": 6187056
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_fts.cpp.o",
+      "bytes": 4198536
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_generalize.cpp.o",
+      "bytes": 11358392
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_generalize_eval.cpp.o",
+      "bytes": 8660752
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_github.cpp.o",
+      "bytes": 6863024
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_graph.cpp.o",
+      "bytes": 5555888
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_import.cpp.o",
+      "bytes": 5375464
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_import_export_fidelity.cpp.o",
+      "bytes": 8169184
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_import_exports.cpp.o",
+      "bytes": 8015072
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_import_source_materialization.cpp.o",
+      "bytes": 7408456
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_import_stream.cpp.o",
+      "bytes": 2232472
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_kb_pack.cpp.o",
+      "bytes": 7308216
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_knowledge.cpp.o",
+      "bytes": 8998960
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_knowledge_candidate_graph.cpp.o",
+      "bytes": 7085248
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_knowledge_candidates.cpp.o",
+      "bytes": 4552616
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_knowledge_flow.cpp.o",
+      "bytes": 7363688
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_knowledge_semantic.cpp.o",
+      "bytes": 8972056
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_knowledge_semantic_graph.cpp.o",
+      "bytes": 9439888
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_knowledge_store.cpp.o",
+      "bytes": 10137088
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_materialize.cpp.o",
+      "bytes": 8010144
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_media.cpp.o",
+      "bytes": 6172416
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_memory.cpp.o",
+      "bytes": 4398168
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_model.cpp.o",
+      "bytes": 9576336
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_net_sse.cpp.o",
+      "bytes": 577624
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_pack_model.cpp.o",
+      "bytes": 4873464
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_packet.cpp.o",
+      "bytes": 4798184
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_provenance.cpp.o",
+      "bytes": 5847496
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_providers.cpp.o",
+      "bytes": 5505240
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_regex.cpp.o",
+      "bytes": 876432
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_relations.cpp.o",
+      "bytes": 4078912
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_resolve.cpp.o",
+      "bytes": 6051120
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_resolve_attribution.cpp.o",
+      "bytes": 8458776
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_resolve_lineage.cpp.o",
+      "bytes": 4143592
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_runtime.cpp.o",
+      "bytes": 6914312
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_selector.cpp.o",
+      "bytes": 848712
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_semantic_llm.cpp.o",
+      "bytes": 6858504
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_semantic_worker.cpp.o",
+      "bytes": 5796744
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_tasks.cpp.o",
+      "bytes": 5772280
+    },
+    {
+      "path": "loom/build/dev/CMakeFiles/loom_tests.dir/tests/test_util.cpp.o",
+      "bytes": 9626560
+    },
+    {
+      "path": "loom/build/dev/cli/CMakeFiles/loom_cli.dir/main.cpp.o",
+      "bytes": 11294824
+    },
+    {
+      "path": "loom/build/dev/server/CMakeFiles/loom-server.dir/src/app.cpp.o",
+      "bytes": 15354520
+    },
+    {
+      "path": "loom/build/dev/server/CMakeFiles/loom-server.dir/src/main.cpp.o",
+      "bytes": 7666664
+    },
+    {
+      "path": "loom/build/dev/libloom_core.a",
+      "bytes": 908293874
+    }
+  ],
+  "bytes_reclaimed": 2395662594,
+  "followup": {
+    "reason": "Deletion of intermediates was not durable across managed execution snapshots; replace only completed-build intermediates by empty cache placeholders. Next native rebuild must clean/regenerate intermediates. Executables, FFI library and CMake cache untouched.",
+    "files": [
+      {
+        "path": "loom/build/dev/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_graph.cpp.o",
+        "bytes": 5313184
+      },
+      {
+        "path": "loom/build/dev/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_memory.cpp.o",
+        "bytes": 3780448
+      },
+      {
+        "path": "loom/build/dev/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_import.cpp.o",
+        "bytes": 3971456
+      },
+      {
+        "path": "loom/build/dev/CMakeFiles/loom_compat_tool.dir/tests/compat/main.cpp.o",
+        "bytes": 1418488
+      },
+      {
+        "path": "loom/build/dev/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_crypto.cpp.o",
+        "bytes": 3240848
+      },
+      {
+        "path": "loom/build/dev/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_core.cpp.o",
+        "bytes": 4706440
+      },
+      {
+        "path": "loom/build/dev/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_chat.cpp.o",
+        "bytes": 4440552
+      },
+      {
+        "path": "loom/build/dev/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_semantic.cpp.o",
+        "bytes": 4512416
+      },
+      {
+        "path": "loom/build/dev/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_db.cpp.o",
+        "bytes": 6505056
+      },
+      {
+        "path": "loom/build/dev/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_active_task.cpp.o",
+        "bytes": 3089848
+      },
+      {
+        "path": "loom/build/dev/CMakeFiles/loom_compat_tool.dir/tests/compat/tool_selector.cpp.o",
+        "bytes": 2768952
+      },
+      {
+        "path": "loom/build/dev/CMakeFiles/loom_candidate_graph_native_tool.dir/tests/compat/candidate_graph_native_tool.cpp.o",
+        "bytes": 2519736
+      },
+      {
+        "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/runtime.cpp.o",
+        "bytes": 9169216
+      },
+      {
+        "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/github/github_sync.cpp.o",
+        "bytes": 9066944
+      },
+      {
+        "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/capi/capi_archive.cpp.o",
+        "bytes": 5267416
+      },
+      {
+        "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/capi/capi_catalog.cpp.o",
+        "bytes": 5138824
+      },
+      {
+        "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/archive/text.cpp.o",
+        "bytes": 1612360
+      },
+      {
+        "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/archive/ingest.cpp.o",
+        "bytes": 9165600
+      },
+      {
+        "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/archive/ingest_parse.cpp.o",
+        "bytes": 6118048
+      },
+      {
+        "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/archive/cluster.cpp.o",
+        "bytes": 1021528
+      },
+      {
+        "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/archive/synth.cpp.o",
+        "bytes": 8838280
+      },
+      {
+        "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/archive/items.cpp.o",
+        "bytes": 5505696
+      },
+      {
+        "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/archive/vocab.cpp.o",
+        "bytes": 5534232
+      },
+      {
+        "path": "loom/build/dev/CMakeFiles/loom_core.dir/src/archive/pipeline.cpp.o",
+        "bytes": 14689840
+      },
+      {
+        "path": "loom/build/dev/CMakeFiles/loom.dir/src/capi/shared_anchor.c.o",
+        "bytes": 3152
+      },
+      {
+        "path": "loom/build/dev/server/CMakeFiles/loom-server.dir/src/app.cpp.o",
+        "bytes": 15354520
+      },
+      {
+        "path": "loom/build/dev/server/CMakeFiles/loom-server.dir/src/main.cpp.o",
+        "bytes": 7666664
+      },
+      {
+        "path": "loom/build/dev/cli/CMakeFiles/loom_cli.dir/main.cpp.o",
+        "bytes": 11294824
+      },
+      {
+        "path": "loom/build/dev/libloom_core.a",
+        "bytes": 908293874
+      }
+    ],
+    "bytes": 1070008442
+  }
+}

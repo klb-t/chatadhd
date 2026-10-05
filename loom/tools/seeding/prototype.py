@@ -287,7 +287,8 @@ def experiment(output: Path, policy_path: Path = POLICY, protocol_path: Path = P
                     "effective_sha256": sha256(effective_raw), "prediction_dimensions": list(tasks),
                     "property_key_encoding": "escaped-dimension-prefix-v1"},
                 "modules": {f"modules_frozen/{name}": sha256(raw) for name, raw in module_sources.items()},
-                "method_graph_bridge": {"status": "pending_agreed_contract"},
+                "method_graph_bridge": {"status": "available_opt_in", "schema": "loom.method_graph/1",
+                    "exporter": "loom.tools.seeding.method_graph", "projection_profile": "profiles/method_graph.json"},
                 "canonical_graph_mutated": False, "paid_api_calls": 0}
     predictions = {"manifest": manifest, "cases": cases}
     # Explicit prediction-before-score boundary. No answers are serialized here.

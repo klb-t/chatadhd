@@ -1,0 +1,5 @@
+-- loom: SQLite = vendored amalgamation 3.47.2
+-- loom: OpenSSL = ON
+-- Configuring done (0.3s)
+-- Generating done (0.1s)
+-- Build files have been written to: /workspace/scratch/2a6e71927cf3/w8-w10-validation/loom/build/vendored

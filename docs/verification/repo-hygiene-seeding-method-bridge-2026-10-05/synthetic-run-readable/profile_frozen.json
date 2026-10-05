@@ -1,0 +1,12 @@
+﻿
+{
+   "schema": "loom.seeding.recipe/1",
+   "version": "synthetic-only",
+   "dimensions": [],
+   "extensions": {
+      "marker": "first",
+      "opaque": {
+         "$op": "recorded-only"
+      }
+   }
+}
