@@ -1,6 +1,6 @@
 # Wątek 10 — kolejny przyrost UI/API, 2026-10-05
 
-Gałąź: `gpt/interface-2-2026-10-04`. Status: implementacja i bramki w toku; ten przyrost nie jest jeszcze gotowy do odbioru. Zero płatnych wywołań i danych prywatnych; tylko fixture/HTTP atrapy.
+Gałąź: `gpt/interface-2-2026-10-04`. Status: implementacja UI zakończona; ODBIÓR WSTRZYMANY — pełny CTest120/121, regresja mieszanej bazy W1/W3 w knowledge_semantic. Zero płatnych wywołań i danych prywatnych; tylko fixture/HTTP atrapy.
 
 ## Przypięte zależności
 
@@ -41,6 +41,12 @@ Dane presetów w `loom/web/src/profiles/presets/graph-chat.json`: trzy tryby gra
 
 GCC/vendored pełny build oraz web build PASS. Binarka końcowa `c65181cb064cf5326b0006bddf31f2244d369e1b6607e20cab6b559447475c2f`. Na niej graph chat14/14 PASS z identycznymi hashami źródeł przed/po oraz istniejące native E2E16/16 PASS. Wcześniejsze native UI20/20 PASS; pełne121 CTest trwa, consumer metod i pełna nawigacja pozostają w bramce końcowej.
 
+## Checkpoint 6 — natywny consumer metod i pełna bramka
+
+Methods14/14 PASS na końcowym c65181cb.37 pełnych real native HTTP responses. Zapis nowej wersji:22 entities/35 Claims/22 sources →23/39/24. Entire receipt_json identyczny przed/po odmowie immutable overwrite i po restarcie;3 stare wyniki nadal przypisane starej metodzie,0 wyników nowej. Obie ścieżki generic config PUT/PATCH zachowują raw profile i snapshot SHA.13 źródeł +binarka mają identyczne hashe przed/po.0 model dispatch,0 zdalnych wywołań,0 browser errors.
+
+Pełny CTest:120/121 PASS,677.13s. Negatyw unit.test_knowledge_semantic:13 przypadków,10PASS/3FAIL,125 assertions/8FAIL. Linie252,255,256,319,354,355,358,362 wymagają starej ścieżki retry; runtime zwraca blocked/0 accepted. Pełne stdout/JUnit/LastTest.log i źródła zachowane; trwa izolowane potwierdzenie. Nie zmieniono testów ani progów, nie edytujemy cudzych zakresów. Nowy przyrost NIE jest gotowy do integracji mimo zielonych bramek UI.
+
 ## W trakcie
 
 Most HTTP korzysta z tego samego statycznego Runtime i rzeczywistej deklaracji opaque context w `src/capi/context.h`. Nie odtwarza layoutu, nie tworzy drugiej DB/silnika i nie dodaje C ABI. To jawna zależność źródłowa serwera; stare JNI pozostaje bez nowej zdolności.
@@ -54,6 +60,10 @@ Most HTTP korzysta z tego samego statycznego Runtime i rzeczywistej deklaracji o
 
 Przed: zaakceptowany autorski przyrost10:108/108 CTest,659native/24465 assertions,1276Python0skip,84fixture,20nativeUI,16E2E,webPASS. To historyczny receipt pinnedfa7538d, nie wynik obecnej mieszanej bazy. Po: bramki jeszcze nie wykonane; bez deklaracji gotowości na podstawie samych kontrolek.
 
+## Do wątku 1
+
+Bloker mixed CTest: `loom/tests/test_knowledge_semantic.cpp`252/255/256/319/354/355/358/362, status blocked po poprzednim offline błędzie modelu. Pełny13-case suite:3FAIL/8assertions. Proszę uzgodnić właściwe retry/usage semantics z3 i dostarczyć poprawkę w swoim zakresie; W10 nie luzuje testów.
+
 ## Do wątku 3
 
 Publiczny per-call context_execution i immutable Chat PreparedRequest/resume nadal nie istnieją w przyjętym3. Obecny UI używa realnej globalnej konfiguracji; nie ponawia Chat.send po potwierdzeniu jako substytutu resume.
@@ -64,4 +74,4 @@ Most UI/HTTP korzysta z3c0bc36, zachowuje outer revision, stable layer keys, sou
 
 ## Do wątku 9
 
-Nie odbierać nowego przyrostu przed końcowymi mixed bramkami. Najpierw dokładnie1 i12, następnie10; deklaracje APIs nie zastępują bramek. Pierwotne źródła i wszystkie negatywy pozostają odtwarzalne na przypiętych gałęziach.
+Nie odbierać nowego przyrostu: pełny CTest120/121 ma bloker1/3. Najpierw dokładnie1 i12, następnie10; deklaracje APIs nie zastępują bramek. Pierwotne źródła i wszystkie negatywy pozostają odtwarzalne na przypiętych gałęziach.
