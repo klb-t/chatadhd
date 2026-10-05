@@ -1,0 +1,72 @@
+[
+  {
+    "id": "DIC-0055",
+    "status": "partial",
+    "destination": "loom/data/runtime/model.pack#/defaults/creation_defaults/principle",
+    "notes": "New checked normalize_creation API uses data creation priors and explicit invocation overrides, records applied_defaults pointers and effective profile hash, requires honest explicit producer origin where record carries it, preserves supplied evidence/provenance/identity/type. Historical DTO/from_json interpretation stays unchanged. Existing external direct constructors remain unconnected: handoff to threads1/4/9; data/API availability is not claimed as full migration.",
+    "current_evidence": [
+      "loom/include/loom/model_profile.h:13",
+      "loom/src/model/model_pack.cpp:33",
+      "loom/src/model/model_pack.cpp:56",
+      "loom/src/model/model_pack.cpp:155",
+      "loom/data/runtime/model.pack:27",
+      "loom/tests/test_model_creation_profile.cpp:42"
+    ]
+  },
+  {
+    "id": "DIC-0056",
+    "status": "partial",
+    "destination": "loom/data/runtime/model.pack#/defaults/creation_defaults/operator",
+    "notes": "New checked normalize_creation API uses data creation priors and explicit invocation overrides, records applied_defaults pointers and effective profile hash, requires honest explicit producer origin where record carries it, preserves supplied evidence/provenance/identity/type. Historical DTO/from_json interpretation stays unchanged. Existing external direct constructors remain unconnected: handoff to threads1/4/9; data/API availability is not claimed as full migration.",
+    "current_evidence": [
+      "loom/include/loom/model_profile.h:13",
+      "loom/src/model/model_pack.cpp:33",
+      "loom/src/model/model_pack.cpp:56",
+      "loom/src/model/model_pack.cpp:155",
+      "loom/data/runtime/model.pack:27",
+      "loom/tests/test_model_creation_profile.cpp:42"
+    ]
+  },
+  {
+    "id": "DIC-0057",
+    "status": "partial",
+    "destination": "loom/data/runtime/model.pack#/defaults/creation_defaults/morphism",
+    "notes": "New checked normalize_creation API uses data creation priors and explicit invocation overrides, records applied_defaults pointers and effective profile hash, requires honest explicit producer origin where record carries it, preserves supplied evidence/provenance/identity/type. Historical DTO/from_json interpretation stays unchanged. Existing external direct constructors remain unconnected: handoff to threads1/4/9; data/API availability is not claimed as full migration.",
+    "current_evidence": [
+      "loom/include/loom/model_profile.h:13",
+      "loom/src/model/model_pack.cpp:33",
+      "loom/src/model/model_pack.cpp:56",
+      "loom/src/model/model_pack.cpp:155",
+      "loom/data/runtime/model.pack:27",
+      "loom/tests/test_model_creation_profile.cpp:42"
+    ]
+  },
+  {
+    "id": "DIC-0058",
+    "status": "partial",
+    "destination": "loom/data/runtime/model.pack#/defaults/creation_defaults/slot; /defaults/creation_defaults/domain_kind; /defaults/creation_defaults/domain_relation",
+    "notes": "New checked normalize_creation API uses data creation priors and explicit invocation overrides, records applied_defaults pointers and effective profile hash, requires honest explicit producer origin where record carries it, preserves supplied evidence/provenance/identity/type. Historical DTO/from_json interpretation stays unchanged. Existing external direct constructors remain unconnected: handoff to threads1/4/9; data/API availability is not claimed as full migration.",
+    "current_evidence": [
+      "loom/include/loom/model_profile.h:13",
+      "loom/src/model/model_pack.cpp:33",
+      "loom/src/model/model_pack.cpp:56",
+      "loom/src/model/model_pack.cpp:155",
+      "loom/data/runtime/model.pack:27",
+      "loom/tests/test_model_creation_profile.cpp:42"
+    ]
+  },
+  {
+    "id": "DIC-0059",
+    "status": "partial",
+    "destination": "loom/data/runtime/model.pack#/defaults/creation_defaults/project_kind",
+    "notes": "New checked normalize_creation API uses data creation priors and explicit invocation overrides, records applied_defaults pointers and effective profile hash, requires honest explicit producer origin where record carries it, preserves supplied evidence/provenance/identity/type. Historical DTO/from_json interpretation stays unchanged. Existing external direct constructors remain unconnected: handoff to threads1/4/9; data/API availability is not claimed as full migration.",
+    "current_evidence": [
+      "loom/include/loom/model_profile.h:13",
+      "loom/src/model/model_pack.cpp:33",
+      "loom/src/model/model_pack.cpp:56",
+      "loom/src/model/model_pack.cpp:155",
+      "loom/data/runtime/model.pack:27",
+      "loom/tests/test_model_creation_profile.cpp:42"
+    ]
+  }
+]

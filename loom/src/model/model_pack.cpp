@@ -1,13 +1,98 @@
 // model.h: typed views over the data pack (kb::Pack keeps the validated
 // JSON; these parse it into model types).
 #include <algorithm>
+#include <array>
 
+#include "loom/model_profile.h"
 #include "model/model_json.h"
 #include "model/model_profile.h"
 
 namespace loom::model {
 
 namespace {
+
+template <class T>
+Status validate_creation(const Json& record) {
+  LOOM_TRY(T::from_json(record));
+  return {};
+}
+
+struct CreationChild {
+  std::string_view field;
+  std::string_view kind;
+};
+struct CreationCapability {
+  std::string_view kind;
+  Status (*validate)(const Json&);
+  bool explicit_origin;
+  std::vector<CreationChild> children;
+};
+
+// This is a registry of existing wire decoders and structural relationships,
+// not a source of mutable creation priors or domain policy.
+const std::array<CreationCapability, 7>& creation_registry() {
+  static const std::array<CreationCapability, 7> capabilities{{
+      {"principle", validate_creation<Principle>, true, {}},
+      {"operator", validate_creation<Operator>, true, {}},
+      {"morphism", validate_creation<Morphism>, true, {}},
+      {"slot", validate_creation<SlotSpec>, false, {}},
+      {"domain_relation", validate_creation<DomainRelation>, false, {}},
+      {"domain_kind", validate_creation<DomainKind>, false, {{"slots", "slot"}, {"relations", "domain_relation"}}},
+      {"project_kind", validate_creation<ProjectKind>, true, {{"domain_kinds", "domain_kind"}}},
+  }};
+  return capabilities;
+}
+
+std::string creation_pointer(std::string_view field) {
+  std::string out;
+  for (const char c : field) {
+    if (c == '~') out += "~0";
+    else if (c == '/') out += "~1";
+    else out += c;
+  }
+  return out;
+}
+
+Result<Json> normalize_creation_record(std::string_view kind, const Json& record,
+                                       const RuntimeProfile& profile, Json& applied,
+                                       const std::string& prefix) {
+  const auto& registry = creation_registry();
+  const auto found = std::find_if(registry.begin(), registry.end(),
+                                  [&](const auto& entry) { return entry.kind == kind; });
+  if (found == registry.end()) return Error(Errc::InvalidArgument, "unsupported model creation kind '" + std::string(kind) + "'");
+  if (!record.is_object()) return Error(Errc::InvalidArgument, "model creation record must be an object");
+  if (found->explicit_origin && (!record.contains("origin") || !record.at("origin").is_string() ||
+                                 record.at("origin").get_ref<const std::string&>().empty())) {
+    return Error(Errc::InvalidArgument, "model creation " + std::string(kind) + " requires explicit producer origin");
+  }
+
+  Json normalized = record;
+  const auto& defaults = profile.values().at("creation_defaults").at(std::string(kind));
+  // Validate explicit policy fields against the same checked schema as priors;
+  // null must not silently re-enter a historic decoder's missing-field branch.
+  Json effective = profile.values();
+  for (auto it = defaults.begin(); it != defaults.end(); ++it) {
+    if (!normalized.contains(it.key())) {
+      normalized[it.key()] = it.value();
+      applied[prefix + "/" + creation_pointer(it.key())] = it.value();
+    }
+    effective["creation_defaults"][std::string(kind)][it.key()] = normalized.at(it.key());
+  }
+  LOOM_TRY(profile.with_values(effective));
+
+  for (const auto& child : found->children) {
+    const std::string field(child.field);
+    if (!normalized.contains(field) || normalized.at(field).is_null()) continue;
+    if (!normalized.at(field).is_array()) return Error(Errc::InvalidArgument, "model creation " + field + " must be an array");
+    auto& values = normalized[field];
+    for (std::size_t i = 0; i < values.size(); ++i) {
+      LOOM_TRY_ASSIGN(values[i], normalize_creation_record(child.kind, values[i], profile, applied,
+                      prefix + "/" + creation_pointer(field) + "/" + std::to_string(i)));
+    }
+  }
+  LOOM_TRY(found->validate(normalized));
+  return normalized;
+}
 
 Result<const Json*> file_of(const kb::Pack& pack, const std::string& path, std::string_view what, std::string_view id) {
   const Json& d = pack.file(path);
@@ -50,6 +135,30 @@ Result<std::vector<T>> all_elements(const kb::Pack& pack, std::string_view schem
 }
 
 }  // namespace
+
+Json creation_capabilities() {
+  Json entries = Json::array();
+  for (const auto& capability : creation_registry()) {
+    Json children = Json::array();
+    for (const auto& child : capability.children) children.push_back(Json{{"field", child.field}, {"kind", child.kind}});
+    entries.push_back(Json{{"kind", capability.kind}, {"explicit_producer_origin", capability.explicit_origin},
+                          {"children", std::move(children)}});
+  }
+  return Json{{"schema", "loom.model_creation_capabilities/1"}, {"records", std::move(entries)}};
+}
+
+Result<CreationRecord> normalize_creation(std::string_view kind, const Json& record) {
+  LOOM_TRY_ASSIGN(auto profile, RuntimeProfile::builtin("model"));
+  return normalize_creation(kind, record, profile);
+}
+
+Result<CreationRecord> normalize_creation(std::string_view kind, const Json& record, const RuntimeProfile& profile) {
+  LOOM_TRY_ASSIGN(auto checked, detail::checked_model_profile(profile));
+  CreationRecord result;
+  result.profile_hash = checked.hash();
+  LOOM_TRY_ASSIGN(result.record, normalize_creation_record(kind, record, checked, result.applied_defaults, ""));
+  return result;
+}
 
 Result<ProjectKind> project_kind(const kb::Pack& pack, std::string_view id) {
   LOOM_TRY_ASSIGN(const Json* d, file_of(pack, "project_kinds/" + std::string(id) + ".json", "project kind", id));

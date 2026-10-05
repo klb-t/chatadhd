@@ -1178,7 +1178,27 @@
         "edge_vs": "vs",
         "message_count_suffix": " msg)"
       },
-      "json_indent": 1
+      "json_indent": 1,
+      "source_references": {
+        "lexical_extra_characters": "/_.-",
+        "trim_suffix_characters": "./",
+        "require_path_marker": true,
+        "path_markers": [
+          "/"
+        ],
+        "forbidden_sequences": [
+          "//",
+          ".."
+        ],
+        "forbidden_prefixes": [
+          "http"
+        ],
+        "excluded_absolute_prefixes": [
+          "/"
+        ],
+        "known_suffix_match": true,
+        "known_suffix_boundary_characters": "/"
+      }
     }
   },
   "value_schema": {
@@ -1271,7 +1291,7 @@
                 "remove": {
                   "type": "integer",
                   "minimum": 0,
-                  "x-setting": "/text/stem_rules/*/remove",
+                  "x-setting": "/text/stem_rules/<index>/remove",
                   "x-consumer": "archive",
                   "maximum": 2147483647
                 },
@@ -1788,7 +1808,7 @@
           },
           "parser_routes": {
             "title": "parser routes",
-            "x-setting": "code.parser_routes",
+            "x-setting": "/code/parser_routes",
             "x-consumer": "archive runtime",
             "type": "object",
             "additionalProperties": {
@@ -1803,19 +1823,19 @@
           },
           "function_declaration_languages": {
             "title": "function declaration languages",
-            "x-setting": "code.function_declaration_languages",
+            "x-setting": "/code/function_declaration_languages",
             "x-consumer": "archive runtime",
             "type": "array",
             "items": {
               "title": "function declaration languages[]",
-              "x-setting": "code.function_declaration_languages[]",
+              "x-setting": "/code/function_declaration_languages/<index>",
               "x-consumer": "archive runtime",
               "type": "string"
             }
           },
           "excluded_type_words": {
             "title": "excluded type words",
-            "x-setting": "code.excluded_type_words",
+            "x-setting": "/code/excluded_type_words",
             "x-consumer": "archive runtime",
             "type": "object",
             "additionalProperties": {
@@ -1827,43 +1847,43 @@
           },
           "non_component_type_words": {
             "title": "non component type words",
-            "x-setting": "code.non_component_type_words",
+            "x-setting": "/code/non_component_type_words",
             "x-consumer": "archive runtime",
             "type": "array",
             "items": {
               "title": "non component type words[]",
-              "x-setting": "code.non_component_type_words[]",
+              "x-setting": "/code/non_component_type_words/<index>",
               "x-consumer": "archive runtime",
               "type": "string"
             }
           },
           "excluded_symbol_names": {
             "title": "excluded symbol names",
-            "x-setting": "code.excluded_symbol_names",
+            "x-setting": "/code/excluded_symbol_names",
             "x-consumer": "archive runtime",
             "type": "array",
             "items": {
               "title": "excluded symbol names[]",
-              "x-setting": "code.excluded_symbol_names[]",
+              "x-setting": "/code/excluded_symbol_names/<index>",
               "x-consumer": "archive runtime",
               "type": "string"
             }
           },
           "excluded_special_prefixes": {
             "title": "excluded special prefixes",
-            "x-setting": "code.excluded_special_prefixes",
+            "x-setting": "/code/excluded_special_prefixes",
             "x-consumer": "archive runtime",
             "type": "array",
             "items": {
               "title": "excluded special prefixes[]",
-              "x-setting": "code.excluded_special_prefixes[]",
+              "x-setting": "/code/excluded_special_prefixes/<index>",
               "x-consumer": "archive runtime",
               "type": "string"
             }
           },
           "special_name_min_bytes_exclusive": {
             "title": "special name min bytes exclusive",
-            "x-setting": "code.special_name_min_bytes_exclusive",
+            "x-setting": "/code/special_name_min_bytes_exclusive",
             "x-consumer": "archive runtime",
             "type": "integer",
             "minimum": 0,
@@ -1872,31 +1892,31 @@
           },
           "allowed_special_names": {
             "title": "allowed special names",
-            "x-setting": "code.allowed_special_names",
+            "x-setting": "/code/allowed_special_names",
             "x-consumer": "archive runtime",
             "type": "array",
             "items": {
               "title": "allowed special names[]",
-              "x-setting": "code.allowed_special_names[]",
+              "x-setting": "/code/allowed_special_names/<index>",
               "x-consumer": "archive runtime",
               "type": "string"
             }
           },
           "excluded_class_methods": {
             "title": "excluded class methods",
-            "x-setting": "code.excluded_class_methods",
+            "x-setting": "/code/excluded_class_methods",
             "x-consumer": "archive runtime",
             "type": "array",
             "items": {
               "title": "excluded class methods[]",
-              "x-setting": "code.excluded_class_methods[]",
+              "x-setting": "/code/excluded_class_methods/<index>",
               "x-consumer": "archive runtime",
               "type": "string"
             }
           },
           "todo_text_max_codepoints": {
             "title": "todo text max codepoints",
-            "x-setting": "code.todo_text_max_codepoints",
+            "x-setting": "/code/todo_text_max_codepoints",
             "x-consumer": "archive runtime",
             "type": "integer",
             "minimum": 0,
@@ -1905,7 +1925,7 @@
           }
         },
         "additionalProperties": false,
-        "x-setting": "code",
+        "x-setting": "/code",
         "x-consumer": "archive runtime",
         "title": "code"
       },
@@ -2017,31 +2037,31 @@
           },
           "skip_dir_prefixes": {
             "title": "skip dir prefixes",
-            "x-setting": "scan.skip_dir_prefixes",
+            "x-setting": "/scan/skip_dir_prefixes",
             "x-consumer": "archive runtime",
             "type": "array",
             "items": {
               "title": "skip dir prefixes[]",
-              "x-setting": "scan.skip_dir_prefixes[]",
+              "x-setting": "/scan/skip_dir_prefixes/<index>",
               "x-consumer": "archive runtime",
               "type": "string"
             }
           },
           "skip_dir_sentinels": {
             "title": "skip dir sentinels",
-            "x-setting": "scan.skip_dir_sentinels",
+            "x-setting": "/scan/skip_dir_sentinels",
             "x-consumer": "archive runtime",
             "type": "array",
             "items": {
               "title": "skip dir sentinels[]",
-              "x-setting": "scan.skip_dir_sentinels[]",
+              "x-setting": "/scan/skip_dir_sentinels/<index>",
               "x-consumer": "archive runtime",
               "type": "string"
             }
           },
           "provenance_query_limit": {
             "title": "provenance query limit",
-            "x-setting": "scan.provenance_query_limit",
+            "x-setting": "/scan/provenance_query_limit",
             "x-consumer": "archive runtime",
             "type": "integer",
             "minimum": 0,
@@ -2050,7 +2070,7 @@
           },
           "json_chunk_bytes": {
             "title": "json chunk bytes",
-            "x-setting": "scan.json_chunk_bytes",
+            "x-setting": "/scan/json_chunk_bytes",
             "x-consumer": "archive runtime",
             "type": "integer",
             "minimum": 1,
@@ -2059,38 +2079,38 @@
           },
           "readme_name_prefixes": {
             "title": "readme name prefixes",
-            "x-setting": "scan.readme_name_prefixes",
+            "x-setting": "/scan/readme_name_prefixes",
             "x-consumer": "archive runtime",
             "type": "array",
             "items": {
               "title": "readme name prefixes[]",
-              "x-setting": "scan.readme_name_prefixes[]",
+              "x-setting": "/scan/readme_name_prefixes/<index>",
               "x-consumer": "archive runtime",
               "type": "string"
             }
           },
           "readme_kinds": {
             "title": "readme kinds",
-            "x-setting": "scan.readme_kinds",
+            "x-setting": "/scan/readme_kinds",
             "x-consumer": "archive runtime",
             "type": "array",
             "items": {
               "title": "readme kinds[]",
-              "x-setting": "scan.readme_kinds[]",
+              "x-setting": "/scan/readme_kinds/<index>",
               "x-consumer": "archive runtime",
               "type": "string"
             }
           },
           "readme_name_case_fold": {
             "title": "readme name case fold",
-            "x-setting": "scan.readme_name_case_fold",
+            "x-setting": "/scan/readme_name_case_fold",
             "x-consumer": "archive runtime",
             "type": "boolean",
             "x-unit": "count"
           }
         },
         "additionalProperties": false,
-        "x-setting": "scan",
+        "x-setting": "/scan",
         "x-consumer": "archive runtime",
         "title": "scan"
       },
@@ -2168,7 +2188,7 @@
                 "cap": {
                   "type": "integer",
                   "minimum": 0,
-                  "x-setting": "/synthesis/sections/*/cap",
+                  "x-setting": "/synthesis/sections/<index>/cap",
                   "x-consumer": "archive",
                   "maximum": 2147483647
                 },
@@ -2855,52 +2875,52 @@
           },
           "prose_excluded_kinds": {
             "title": "prose excluded kinds",
-            "x-setting": "pipeline.prose_excluded_kinds",
+            "x-setting": "/pipeline/prose_excluded_kinds",
             "x-consumer": "archive runtime",
             "type": "array",
             "items": {
               "title": "prose excluded kinds[]",
-              "x-setting": "pipeline.prose_excluded_kinds[]",
+              "x-setting": "/pipeline/prose_excluded_kinds/<index>",
               "x-consumer": "archive runtime",
               "type": "string"
             }
           },
           "materialize_excluded_types": {
             "title": "materialize excluded types",
-            "x-setting": "pipeline.materialize_excluded_types",
+            "x-setting": "/pipeline/materialize_excluded_types",
             "x-consumer": "archive runtime",
             "type": "array",
             "items": {
               "title": "materialize excluded types[]",
-              "x-setting": "pipeline.materialize_excluded_types[]",
+              "x-setting": "/pipeline/materialize_excluded_types/<index>",
               "x-consumer": "archive runtime",
               "type": "string"
             }
           },
           "derived_from_weight": {
             "title": "derived from weight",
-            "x-setting": "pipeline.derived_from_weight",
+            "x-setting": "/pipeline/derived_from_weight",
             "x-consumer": "archive runtime",
             "type": "number",
             "x-unit": "weight"
           },
           "item_relation_weight": {
             "title": "item relation weight",
-            "x-setting": "pipeline.item_relation_weight",
+            "x-setting": "/pipeline/item_relation_weight",
             "x-consumer": "archive runtime",
             "type": "number",
             "x-unit": "weight"
           },
           "initial_seed_weight": {
             "title": "initial seed weight",
-            "x-setting": "pipeline.initial_seed_weight",
+            "x-setting": "/pipeline/initial_seed_weight",
             "x-consumer": "archive runtime",
             "type": "number",
             "x-unit": "weight"
           },
           "standalone_max_new_terms": {
             "title": "standalone max new terms",
-            "x-setting": "pipeline.standalone_max_new_terms",
+            "x-setting": "/pipeline/standalone_max_new_terms",
             "x-consumer": "archive runtime",
             "type": "integer",
             "minimum": 0,
@@ -2909,7 +2929,7 @@
           },
           "item_node_label_max_codepoints": {
             "title": "item node label max codepoints",
-            "x-setting": "pipeline.item_node_label_max_codepoints",
+            "x-setting": "/pipeline/item_node_label_max_codepoints",
             "x-consumer": "archive runtime",
             "type": "integer",
             "minimum": 0,
@@ -2918,7 +2938,7 @@
           },
           "run_poll_interval_ms": {
             "title": "run poll interval ms",
-            "x-setting": "pipeline.run_poll_interval_ms",
+            "x-setting": "/pipeline/run_poll_interval_ms",
             "x-consumer": "archive runtime",
             "type": "integer",
             "minimum": 0,
@@ -2927,7 +2947,7 @@
           },
           "stage_attempts": {
             "title": "stage attempts",
-            "x-setting": "pipeline.stage_attempts",
+            "x-setting": "/pipeline/stage_attempts",
             "x-consumer": "archive runtime",
             "type": "integer",
             "minimum": 1,
@@ -2936,7 +2956,7 @@
           },
           "run_attempts": {
             "title": "run attempts",
-            "x-setting": "pipeline.run_attempts",
+            "x-setting": "/pipeline/run_attempts",
             "x-consumer": "archive runtime",
             "type": "integer",
             "minimum": 1,
@@ -2945,7 +2965,7 @@
           }
         },
         "additionalProperties": false,
-        "x-setting": "pipeline",
+        "x-setting": "/pipeline",
         "x-consumer": "archive runtime",
         "title": "pipeline"
       },
@@ -3255,7 +3275,7 @@
       },
       "config_defaults": {
         "title": "config defaults",
-        "x-setting": "config_defaults",
+        "x-setting": "/config_defaults",
         "x-consumer": "archive runtime",
         "type": "object",
         "required": [
@@ -3280,7 +3300,7 @@
         "properties": {
           "sources": {
             "title": "sources",
-            "x-setting": "config_defaults.sources",
+            "x-setting": "/config_defaults/sources",
             "x-consumer": "archive runtime",
             "type": "array",
             "items": {
@@ -3289,7 +3309,7 @@
           },
           "repo": {
             "title": "repo",
-            "x-setting": "config_defaults.repo",
+            "x-setting": "/config_defaults/repo",
             "x-consumer": "archive runtime",
             "type": [
               "string",
@@ -3298,21 +3318,21 @@
           },
           "code": {
             "title": "code",
-            "x-setting": "config_defaults.code",
+            "x-setting": "/config_defaults/code",
             "x-consumer": "archive runtime",
             "type": "boolean",
             "x-unit": "count"
           },
           "git": {
             "title": "git",
-            "x-setting": "config_defaults.git",
+            "x-setting": "/config_defaults/git",
             "x-consumer": "archive runtime",
             "type": "boolean",
             "x-unit": "count"
           },
           "seed_terms": {
             "title": "seed terms",
-            "x-setting": "config_defaults.seed_terms",
+            "x-setting": "/config_defaults/seed_terms",
             "x-consumer": "archive runtime",
             "type": "array",
             "items": {
@@ -3321,19 +3341,19 @@
           },
           "out_dir": {
             "title": "out dir",
-            "x-setting": "config_defaults.out_dir",
+            "x-setting": "/config_defaults/out_dir",
             "x-consumer": "archive runtime",
             "type": "string"
           },
           "project": {
             "title": "project",
-            "x-setting": "config_defaults.project",
+            "x-setting": "/config_defaults/project",
             "x-consumer": "archive runtime",
             "type": "string"
           },
           "max_passes": {
             "title": "max passes",
-            "x-setting": "config_defaults.max_passes",
+            "x-setting": "/config_defaults/max_passes",
             "x-consumer": "archive runtime",
             "type": "integer",
             "minimum": 0,
@@ -3342,7 +3362,7 @@
           },
           "max_new_terms": {
             "title": "max new terms",
-            "x-setting": "config_defaults.max_new_terms",
+            "x-setting": "/config_defaults/max_new_terms",
             "x-consumer": "archive runtime",
             "type": "integer",
             "minimum": 0,
@@ -3351,7 +3371,7 @@
           },
           "max_hits_per_term": {
             "title": "max hits per term",
-            "x-setting": "config_defaults.max_hits_per_term",
+            "x-setting": "/config_defaults/max_hits_per_term",
             "x-consumer": "archive runtime",
             "type": "integer",
             "minimum": 0,
@@ -3360,7 +3380,7 @@
           },
           "max_synthesis_rounds": {
             "title": "max synthesis rounds",
-            "x-setting": "config_defaults.max_synthesis_rounds",
+            "x-setting": "/config_defaults/max_synthesis_rounds",
             "x-consumer": "archive runtime",
             "type": "integer",
             "minimum": 0,
@@ -3369,7 +3389,7 @@
           },
           "llm": {
             "title": "llm",
-            "x-setting": "config_defaults.llm",
+            "x-setting": "/config_defaults/llm",
             "x-consumer": "archive runtime",
             "type": "string",
             "enum": [
@@ -3379,14 +3399,14 @@
           },
           "include_db": {
             "title": "include db",
-            "x-setting": "config_defaults.include_db",
+            "x-setting": "/config_defaults/include_db",
             "x-consumer": "archive runtime",
             "type": "boolean",
             "x-unit": "count"
           },
           "exclude": {
             "title": "exclude",
-            "x-setting": "config_defaults.exclude",
+            "x-setting": "/config_defaults/exclude",
             "x-consumer": "archive runtime",
             "type": "array",
             "items": {
@@ -3395,7 +3415,7 @@
           },
           "max_file_bytes": {
             "title": "max file bytes",
-            "x-setting": "config_defaults.max_file_bytes",
+            "x-setting": "/config_defaults/max_file_bytes",
             "x-consumer": "archive runtime",
             "type": "integer",
             "minimum": 0,
@@ -3404,7 +3424,7 @@
           },
           "force": {
             "title": "force",
-            "x-setting": "config_defaults.force",
+            "x-setting": "/config_defaults/force",
             "x-consumer": "archive runtime",
             "type": "boolean",
             "x-unit": "count"
@@ -3413,7 +3433,7 @@
       },
       "titles": {
         "title": "titles",
-        "x-setting": "titles",
+        "x-setting": "/titles",
         "x-consumer": "archive runtime",
         "type": "object",
         "required": [
@@ -3445,139 +3465,139 @@
         "properties": {
           "doc": {
             "title": "doc",
-            "x-setting": "titles.doc",
+            "x-setting": "/titles/doc",
             "x-consumer": "archive runtime",
             "type": "string"
           },
           "code": {
             "title": "code",
-            "x-setting": "titles.code",
+            "x-setting": "/titles/code",
             "x-consumer": "archive runtime",
             "type": "string"
           },
           "chat": {
             "title": "chat",
-            "x-setting": "titles.chat",
+            "x-setting": "/titles/chat",
             "x-consumer": "archive runtime",
             "type": "string"
           },
           "project": {
             "title": "project",
-            "x-setting": "titles.project",
+            "x-setting": "/titles/project",
             "x-consumer": "archive runtime",
             "type": "string"
           },
           "memory": {
             "title": "memory",
-            "x-setting": "titles.memory",
+            "x-setting": "/titles/memory",
             "x-consumer": "archive runtime",
             "type": "string"
           },
           "git": {
             "title": "git",
-            "x-setting": "titles.git",
+            "x-setting": "/titles/git",
             "x-consumer": "archive runtime",
             "type": "string"
           },
           "project_document": {
             "title": "project document",
-            "x-setting": "titles.project_document",
+            "x-setting": "/titles/project_document",
             "x-consumer": "archive runtime",
             "type": "string"
           },
           "memory_document": {
             "title": "memory document",
-            "x-setting": "titles.memory_document",
+            "x-setting": "/titles/memory_document",
             "x-consumer": "archive runtime",
             "type": "string"
           },
           "untitled_chat": {
             "title": "untitled chat",
-            "x-setting": "titles.untitled_chat",
+            "x-setting": "/titles/untitled_chat",
             "x-consumer": "archive runtime",
             "type": "string"
           },
           "untitled_project": {
             "title": "untitled project",
-            "x-setting": "titles.untitled_project",
+            "x-setting": "/titles/untitled_project",
             "x-consumer": "archive runtime",
             "type": "string"
           },
           "project_description_label": {
             "title": "project description label",
-            "x-setting": "titles.project_description_label",
+            "x-setting": "/titles/project_description_label",
             "x-consumer": "archive runtime",
             "type": "string"
           },
           "project_instructions_label": {
             "title": "project instructions label",
-            "x-setting": "titles.project_instructions_label",
+            "x-setting": "/titles/project_instructions_label",
             "x-consumer": "archive runtime",
             "type": "string"
           },
           "project_document_fallback": {
             "title": "project document fallback",
-            "x-setting": "titles.project_document_fallback",
+            "x-setting": "/titles/project_document_fallback",
             "x-consumer": "archive runtime",
             "type": "string"
           },
           "memory_conversations_label": {
             "title": "memory conversations label",
-            "x-setting": "titles.memory_conversations_label",
+            "x-setting": "/titles/memory_conversations_label",
             "x-consumer": "archive runtime",
             "type": "string"
           },
           "memory_project_label": {
             "title": "memory project label",
-            "x-setting": "titles.memory_project_label",
+            "x-setting": "/titles/memory_project_label",
             "x-consumer": "archive runtime",
             "type": "string"
           },
           "import_strip_prefix": {
             "title": "import strip prefix",
-            "x-setting": "titles.import_strip_prefix",
+            "x-setting": "/titles/import_strip_prefix",
             "x-consumer": "archive runtime",
             "type": "string"
           },
           "line_label": {
             "title": "line label",
-            "x-setting": "titles.line_label",
+            "x-setting": "/titles/line_label",
             "x-consumer": "archive runtime",
             "type": "string"
           },
           "chat_label": {
             "title": "chat label",
-            "x-setting": "titles.chat_label",
+            "x-setting": "/titles/chat_label",
             "x-consumer": "archive runtime",
             "type": "string"
           },
           "section_label": {
             "title": "section label",
-            "x-setting": "titles.section_label",
+            "x-setting": "/titles/section_label",
             "x-consumer": "archive runtime",
             "type": "string"
           },
           "commit_label": {
             "title": "commit label",
-            "x-setting": "titles.commit_label",
+            "x-setting": "/titles/commit_label",
             "x-consumer": "archive runtime",
             "type": "string"
           },
           "commit_more_files": {
             "title": "commit more files",
-            "x-setting": "titles.commit_more_files",
+            "x-setting": "/titles/commit_more_files",
             "x-consumer": "archive runtime",
             "type": "string"
           },
           "db_chat_label": {
             "title": "db chat label",
-            "x-setting": "titles.db_chat_label",
+            "x-setting": "/titles/db_chat_label",
             "x-consumer": "archive runtime",
             "type": "string"
           },
           "earlier_version_suffix": {
             "title": "earlier version suffix",
-            "x-setting": "titles.earlier_version_suffix",
+            "x-setting": "/titles/earlier_version_suffix",
             "x-consumer": "archive runtime",
             "type": "string"
           }
@@ -3585,7 +3605,7 @@
       },
       "projection": {
         "title": "projection",
-        "x-setting": "projection",
+        "x-setting": "/projection",
         "x-consumer": "archive runtime",
         "type": "object",
         "required": [
@@ -3601,7 +3621,7 @@
         "properties": {
           "doc_label_max_codepoints": {
             "title": "doc label max codepoints",
-            "x-setting": "projection.doc_label_max_codepoints",
+            "x-setting": "/projection/doc_label_max_codepoints",
             "x-consumer": "archive runtime",
             "type": "integer",
             "minimum": 0,
@@ -3610,7 +3630,7 @@
           },
           "section_label_max_codepoints": {
             "title": "section label max codepoints",
-            "x-setting": "projection.section_label_max_codepoints",
+            "x-setting": "/projection/section_label_max_codepoints",
             "x-consumer": "archive runtime",
             "type": "integer",
             "minimum": 0,
@@ -3619,7 +3639,7 @@
           },
           "git_hash_prefix_bytes": {
             "title": "git hash prefix bytes",
-            "x-setting": "projection.git_hash_prefix_bytes",
+            "x-setting": "/projection/git_hash_prefix_bytes",
             "x-consumer": "archive runtime",
             "type": "integer",
             "minimum": 0,
@@ -3628,7 +3648,7 @@
           },
           "git_subject_max_codepoints": {
             "title": "git subject max codepoints",
-            "x-setting": "projection.git_subject_max_codepoints",
+            "x-setting": "/projection/git_subject_max_codepoints",
             "x-consumer": "archive runtime",
             "type": "integer",
             "minimum": 0,
@@ -3637,7 +3657,7 @@
           },
           "git_text_files": {
             "title": "git text files",
-            "x-setting": "projection.git_text_files",
+            "x-setting": "/projection/git_text_files",
             "x-consumer": "archive runtime",
             "type": "integer",
             "minimum": 0,
@@ -3646,7 +3666,7 @@
           },
           "git_extra_files": {
             "title": "git extra files",
-            "x-setting": "projection.git_extra_files",
+            "x-setting": "/projection/git_extra_files",
             "x-consumer": "archive runtime",
             "type": "integer",
             "minimum": 0,
@@ -3655,7 +3675,7 @@
           },
           "memory_project_key_prefix_bytes": {
             "title": "memory project key prefix bytes",
-            "x-setting": "projection.memory_project_key_prefix_bytes",
+            "x-setting": "/projection/memory_project_key_prefix_bytes",
             "x-consumer": "archive runtime",
             "type": "integer",
             "minimum": 0,
@@ -3666,7 +3686,7 @@
       },
       "git": {
         "title": "git",
-        "x-setting": "git",
+        "x-setting": "/git",
         "x-consumer": "archive runtime",
         "type": "object",
         "required": [
@@ -3680,14 +3700,14 @@
         "properties": {
           "strip_trailers": {
             "title": "strip trailers",
-            "x-setting": "git.strip_trailers",
+            "x-setting": "/git/strip_trailers",
             "x-consumer": "archive runtime",
             "type": "boolean",
             "x-unit": "count"
           },
           "trailer_key_min_bytes": {
             "title": "trailer key min bytes",
-            "x-setting": "git.trailer_key_min_bytes",
+            "x-setting": "/git/trailer_key_min_bytes",
             "x-consumer": "archive runtime",
             "type": "integer",
             "minimum": 0,
@@ -3696,7 +3716,7 @@
           },
           "trailer_key_max_bytes_exclusive": {
             "title": "trailer key max bytes exclusive",
-            "x-setting": "git.trailer_key_max_bytes_exclusive",
+            "x-setting": "/git/trailer_key_max_bytes_exclusive",
             "x-consumer": "archive runtime",
             "type": "integer",
             "minimum": 0,
@@ -3705,24 +3725,24 @@
           },
           "trailer_forbidden_key_chars": {
             "title": "trailer forbidden key chars",
-            "x-setting": "git.trailer_forbidden_key_chars",
+            "x-setting": "/git/trailer_forbidden_key_chars",
             "x-consumer": "archive runtime",
             "type": "array",
             "items": {
               "title": "trailer forbidden key chars[]",
-              "x-setting": "git.trailer_forbidden_key_chars[]",
+              "x-setting": "/git/trailer_forbidden_key_chars/<index>",
               "x-consumer": "archive runtime",
               "type": "string"
             }
           },
           "trailer_required_key_fragments": {
             "title": "trailer required key fragments",
-            "x-setting": "git.trailer_required_key_fragments",
+            "x-setting": "/git/trailer_required_key_fragments",
             "x-consumer": "archive runtime",
             "type": "array",
             "items": {
               "title": "trailer required key fragments[]",
-              "x-setting": "git.trailer_required_key_fragments[]",
+              "x-setting": "/git/trailer_required_key_fragments/<index>",
               "x-consumer": "archive runtime",
               "type": "string"
             }
@@ -3731,7 +3751,7 @@
       },
       "markdown": {
         "title": "markdown",
-        "x-setting": "markdown",
+        "x-setting": "/markdown",
         "x-consumer": "archive runtime",
         "type": "object",
         "required": [
@@ -3741,7 +3761,7 @@
         "properties": {
           "section_max_bytes": {
             "title": "section max bytes",
-            "x-setting": "markdown.section_max_bytes",
+            "x-setting": "/markdown/section_max_bytes",
             "x-consumer": "archive runtime",
             "type": "integer",
             "minimum": 0,
@@ -3752,7 +3772,7 @@
       },
       "output": {
         "title": "output",
-        "x-setting": "output",
+        "x-setting": "/output",
         "x-consumer": "archive runtime",
         "type": "object",
         "required": [
@@ -3766,12 +3786,12 @@
         "properties": {
           "mime_rules": {
             "title": "mime rules",
-            "x-setting": "output.mime_rules",
+            "x-setting": "/output/mime_rules",
             "x-consumer": "archive runtime",
             "type": "array",
             "items": {
               "title": "mime rules[]",
-              "x-setting": "output.mime_rules[]",
+              "x-setting": "/output/mime_rules/<index>",
               "x-consumer": "archive runtime",
               "type": "object",
               "required": [
@@ -3783,19 +3803,19 @@
               "properties": {
                 "suffix": {
                   "title": "suffix",
-                  "x-setting": "output.mime_rules[].suffix",
+                  "x-setting": "/output/mime_rules/<index>/suffix",
                   "x-consumer": "archive runtime",
                   "type": "string"
                 },
                 "mime": {
                   "title": "mime",
-                  "x-setting": "output.mime_rules[].mime",
+                  "x-setting": "/output/mime_rules/<index>/mime",
                   "x-consumer": "archive runtime",
                   "type": "string"
                 },
                 "require_prefix": {
                   "title": "require prefix",
-                  "x-setting": "output.mime_rules[].require_prefix",
+                  "x-setting": "/output/mime_rules/<index>/require_prefix",
                   "x-consumer": "archive runtime",
                   "type": "boolean"
                 }
@@ -3804,25 +3824,25 @@
           },
           "default_mime": {
             "title": "default mime",
-            "x-setting": "output.default_mime",
+            "x-setting": "/output/default_mime",
             "x-consumer": "archive runtime",
             "type": "string"
           },
           "marker_file": {
             "title": "marker file",
-            "x-setting": "output.marker_file",
+            "x-setting": "/output/marker_file",
             "x-consumer": "archive runtime",
             "type": "string"
           },
           "marker_text": {
             "title": "marker text",
-            "x-setting": "output.marker_text",
+            "x-setting": "/output/marker_text",
             "x-consumer": "archive runtime",
             "type": "string"
           },
           "task_log_file": {
             "title": "task log file",
-            "x-setting": "output.task_log_file",
+            "x-setting": "/output/task_log_file",
             "x-consumer": "archive runtime",
             "type": "string"
           }
@@ -4145,7 +4165,8 @@
           "csv",
           "unknown_kind_label",
           "strings",
-          "json_indent"
+          "json_indent",
+          "source_references"
         ],
         "additionalProperties": false,
         "properties": {
@@ -4171,88 +4192,88 @@
                 "type": "integer",
                 "minimum": 0,
                 "maximum": 2147483647,
-                "x-setting": "/synthesis_rendering//display/item_codepoints",
+                "x-setting": "/synthesis_rendering/display/item_codepoints",
                 "x-consumer": "archive synthesis"
               },
               "dedup_codepoints": {
                 "type": "integer",
                 "minimum": 0,
                 "maximum": 2147483647,
-                "x-setting": "/synthesis_rendering//display/dedup_codepoints",
+                "x-setting": "/synthesis_rendering/display/dedup_codepoints",
                 "x-consumer": "archive synthesis"
               },
               "superseded_codepoints": {
                 "type": "integer",
                 "minimum": 0,
                 "maximum": 2147483647,
-                "x-setting": "/synthesis_rendering//display/superseded_codepoints",
+                "x-setting": "/synthesis_rendering/display/superseded_codepoints",
                 "x-consumer": "archive synthesis"
               },
               "section_heading_codepoints": {
                 "type": "integer",
                 "minimum": 0,
                 "maximum": 2147483647,
-                "x-setting": "/synthesis_rendering//display/section_heading_codepoints",
+                "x-setting": "/synthesis_rendering/display/section_heading_codepoints",
                 "x-consumer": "archive synthesis"
               },
               "feature_codepoints": {
                 "type": "integer",
                 "minimum": 0,
                 "maximum": 2147483647,
-                "x-setting": "/synthesis_rendering//display/feature_codepoints",
+                "x-setting": "/synthesis_rendering/display/feature_codepoints",
                 "x-consumer": "archive synthesis"
               },
               "evidence_feature_codepoints": {
                 "type": "integer",
                 "minimum": 0,
                 "maximum": 2147483647,
-                "x-setting": "/synthesis_rendering//display/evidence_feature_codepoints",
+                "x-setting": "/synthesis_rendering/display/evidence_feature_codepoints",
                 "x-consumer": "archive synthesis"
               },
               "todo_codepoints": {
                 "type": "integer",
                 "minimum": 0,
                 "maximum": 2147483647,
-                "x-setting": "/synthesis_rendering//display/todo_codepoints",
+                "x-setting": "/synthesis_rendering/display/todo_codepoints",
                 "x-consumer": "archive synthesis"
               },
               "fork_title_codepoints": {
                 "type": "integer",
                 "minimum": 0,
                 "maximum": 2147483647,
-                "x-setting": "/synthesis_rendering//display/fork_title_codepoints",
+                "x-setting": "/synthesis_rendering/display/fork_title_codepoints",
                 "x-consumer": "archive synthesis"
               },
               "edge_codepoints": {
                 "type": "integer",
                 "minimum": 0,
                 "maximum": 2147483647,
-                "x-setting": "/synthesis_rendering//display/edge_codepoints",
+                "x-setting": "/synthesis_rendering/display/edge_codepoints",
                 "x-consumer": "archive synthesis"
               },
               "missing_features_codepoints": {
                 "type": "integer",
                 "minimum": 0,
                 "maximum": 2147483647,
-                "x-setting": "/synthesis_rendering//display/missing_features_codepoints",
+                "x-setting": "/synthesis_rendering/display/missing_features_codepoints",
                 "x-consumer": "archive synthesis"
               },
               "manifest_item_codepoints": {
                 "type": "integer",
                 "minimum": 0,
                 "maximum": 2147483647,
-                "x-setting": "/synthesis_rendering//display/manifest_item_codepoints",
+                "x-setting": "/synthesis_rendering/display/manifest_item_codepoints",
                 "x-consumer": "archive synthesis"
               },
               "graph_item_codepoints": {
                 "type": "integer",
                 "minimum": 0,
                 "maximum": 2147483647,
-                "x-setting": "/synthesis_rendering//display/graph_item_codepoints",
+                "x-setting": "/synthesis_rendering/display/graph_item_codepoints",
                 "x-consumer": "archive synthesis"
               }
             },
-            "x-setting": "/synthesis_rendering//display",
+            "x-setting": "/synthesis_rendering/display",
             "x-consumer": "archive synthesis"
           },
           "identifiers": {
@@ -4269,34 +4290,34 @@
             "properties": {
               "require_uppercase_initial": {
                 "type": "boolean",
-                "x-setting": "/synthesis_rendering//identifiers/require_uppercase_initial",
+                "x-setting": "/synthesis_rendering/identifiers/require_uppercase_initial",
                 "x-consumer": "archive synthesis"
               },
               "exclude_plural_acronyms": {
                 "type": "boolean",
-                "x-setting": "/synthesis_rendering//identifiers/exclude_plural_acronyms",
+                "x-setting": "/synthesis_rendering/identifiers/exclude_plural_acronyms",
                 "x-consumer": "archive synthesis"
               },
               "plural_acronym_suffixes": {
                 "type": "array",
                 "items": {
                   "type": "string",
-                  "x-setting": "/synthesis_rendering//identifiers/plural_acronym_suffixes/*",
+                  "x-setting": "/synthesis_rendering/identifiers/plural_acronym_suffixes/<index>",
                   "x-consumer": "archive synthesis"
                 },
-                "x-setting": "/synthesis_rendering//identifiers/plural_acronym_suffixes",
+                "x-setting": "/synthesis_rendering/identifiers/plural_acronym_suffixes",
                 "x-consumer": "archive synthesis"
               },
               "inflection_min_base_bytes": {
                 "type": "integer",
                 "minimum": 0,
                 "maximum": 2147483647,
-                "x-setting": "/synthesis_rendering//identifiers/inflection_min_base_bytes",
+                "x-setting": "/synthesis_rendering/identifiers/inflection_min_base_bytes",
                 "x-consumer": "archive synthesis"
               },
               "inflection_require_lowercase_suffix": {
                 "type": "boolean",
-                "x-setting": "/synthesis_rendering//identifiers/inflection_require_lowercase_suffix",
+                "x-setting": "/synthesis_rendering/identifiers/inflection_require_lowercase_suffix",
                 "x-consumer": "archive synthesis"
               },
               "exclude_project_name": {
@@ -4305,7 +4326,7 @@
                 "x-consumer": "archive synthesis"
               }
             },
-            "x-setting": "/synthesis_rendering//identifiers",
+            "x-setting": "/synthesis_rendering/identifiers",
             "x-consumer": "archive synthesis"
           },
           "interfaces": {
@@ -4321,26 +4342,26 @@
                 "type": "array",
                 "items": {
                   "type": "string",
-                  "x-setting": "/synthesis_rendering//interfaces/prefixes/*",
+                  "x-setting": "/synthesis_rendering/interfaces/prefixes/<index>",
                   "x-consumer": "archive synthesis"
                 },
-                "x-setting": "/synthesis_rendering//interfaces/prefixes",
+                "x-setting": "/synthesis_rendering/interfaces/prefixes",
                 "x-consumer": "archive synthesis"
               },
               "minimum_bytes": {
                 "type": "integer",
                 "minimum": 0,
                 "maximum": 2147483647,
-                "x-setting": "/synthesis_rendering//interfaces/minimum_bytes",
+                "x-setting": "/synthesis_rendering/interfaces/minimum_bytes",
                 "x-consumer": "archive synthesis"
               },
               "require_uppercase_after_prefix": {
                 "type": "boolean",
-                "x-setting": "/synthesis_rendering//interfaces/require_uppercase_after_prefix",
+                "x-setting": "/synthesis_rendering/interfaces/require_uppercase_after_prefix",
                 "x-consumer": "archive synthesis"
               }
             },
-            "x-setting": "/synthesis_rendering//interfaces",
+            "x-setting": "/synthesis_rendering/interfaces",
             "x-consumer": "archive synthesis"
           },
           "component_evidence": {
@@ -4356,25 +4377,25 @@
                 "type": "integer",
                 "minimum": 0,
                 "maximum": 2147483647,
-                "x-setting": "/synthesis_rendering//component_evidence/declaration_files",
+                "x-setting": "/synthesis_rendering/component_evidence/declaration_files",
                 "x-consumer": "archive synthesis"
               },
               "used_files": {
                 "type": "integer",
                 "minimum": 0,
                 "maximum": 2147483647,
-                "x-setting": "/synthesis_rendering//component_evidence/used_files",
+                "x-setting": "/synthesis_rendering/component_evidence/used_files",
                 "x-consumer": "archive synthesis"
               },
               "comment_files": {
                 "type": "integer",
                 "minimum": 0,
                 "maximum": 2147483647,
-                "x-setting": "/synthesis_rendering//component_evidence/comment_files",
+                "x-setting": "/synthesis_rendering/component_evidence/comment_files",
                 "x-consumer": "archive synthesis"
               }
             },
-            "x-setting": "/synthesis_rendering//component_evidence",
+            "x-setting": "/synthesis_rendering/component_evidence",
             "x-consumer": "archive synthesis"
           },
           "feature_terms": {
@@ -4390,28 +4411,28 @@
                 "type": "array",
                 "items": {
                   "type": "string",
-                  "x-setting": "/synthesis_rendering//feature_terms/separators/*",
+                  "x-setting": "/synthesis_rendering/feature_terms/separators/<index>",
                   "x-consumer": "archive synthesis"
                 },
-                "x-setting": "/synthesis_rendering//feature_terms/separators",
+                "x-setting": "/synthesis_rendering/feature_terms/separators",
                 "x-consumer": "archive synthesis"
               },
               "minimum_tokens": {
                 "type": "integer",
                 "minimum": 0,
                 "maximum": 2147483647,
-                "x-setting": "/synthesis_rendering//feature_terms/minimum_tokens",
+                "x-setting": "/synthesis_rendering/feature_terms/minimum_tokens",
                 "x-consumer": "archive synthesis"
               },
               "maximum_tokens": {
                 "type": "integer",
                 "minimum": 0,
                 "maximum": 2147483647,
-                "x-setting": "/synthesis_rendering//feature_terms/maximum_tokens",
+                "x-setting": "/synthesis_rendering/feature_terms/maximum_tokens",
                 "x-consumer": "archive synthesis"
               }
             },
-            "x-setting": "/synthesis_rendering//feature_terms",
+            "x-setting": "/synthesis_rendering/feature_terms",
             "x-consumer": "archive synthesis"
           },
           "selection": {
@@ -4431,47 +4452,47 @@
                 "type": "array",
                 "items": {
                   "type": "string",
-                  "x-setting": "/synthesis_rendering//selection/active_statuses/*",
+                  "x-setting": "/synthesis_rendering/selection/active_statuses/<index>",
                   "x-consumer": "archive synthesis"
                 },
-                "x-setting": "/synthesis_rendering//selection/active_statuses",
+                "x-setting": "/synthesis_rendering/selection/active_statuses",
                 "x-consumer": "archive synthesis"
               },
               "deprioritized_doc_kinds": {
                 "type": "array",
                 "items": {
                   "type": "string",
-                  "x-setting": "/synthesis_rendering//selection/deprioritized_doc_kinds/*",
+                  "x-setting": "/synthesis_rendering/selection/deprioritized_doc_kinds/<index>",
                   "x-consumer": "archive synthesis"
                 },
-                "x-setting": "/synthesis_rendering//selection/deprioritized_doc_kinds",
+                "x-setting": "/synthesis_rendering/selection/deprioritized_doc_kinds",
                 "x-consumer": "archive synthesis"
               },
               "manifest_items": {
                 "type": "integer",
                 "minimum": 0,
                 "maximum": 2147483647,
-                "x-setting": "/synthesis_rendering//selection/manifest_items",
+                "x-setting": "/synthesis_rendering/selection/manifest_items",
                 "x-consumer": "archive synthesis"
               },
               "discovery_item_types": {
                 "type": "array",
                 "items": {
                   "type": "string",
-                  "x-setting": "/synthesis_rendering//selection/discovery_item_types/*",
+                  "x-setting": "/synthesis_rendering/selection/discovery_item_types/<index>",
                   "x-consumer": "archive synthesis"
                 },
-                "x-setting": "/synthesis_rendering//selection/discovery_item_types",
+                "x-setting": "/synthesis_rendering/selection/discovery_item_types",
                 "x-consumer": "archive synthesis"
               },
               "graph_excluded_item_types": {
                 "type": "array",
                 "items": {
                   "type": "string",
-                  "x-setting": "/synthesis_rendering//selection/graph_excluded_item_types/*",
+                  "x-setting": "/synthesis_rendering/selection/graph_excluded_item_types/<index>",
                   "x-consumer": "archive synthesis"
                 },
-                "x-setting": "/synthesis_rendering//selection/graph_excluded_item_types",
+                "x-setting": "/synthesis_rendering/selection/graph_excluded_item_types",
                 "x-consumer": "archive synthesis"
               },
               "question_summary_types": {
@@ -4491,7 +4512,7 @@
                 "x-consumer": "archive synthesis"
               }
             },
-            "x-setting": "/synthesis_rendering//selection",
+            "x-setting": "/synthesis_rendering/selection",
             "x-consumer": "archive synthesis"
           },
           "files": {
@@ -4509,41 +4530,41 @@
             "properties": {
               "master": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//files/master",
+                "x-setting": "/synthesis_rendering/files/master",
                 "x-consumer": "archive synthesis"
               },
               "gap": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//files/gap",
+                "x-setting": "/synthesis_rendering/files/gap",
                 "x-consumer": "archive synthesis"
               },
               "source_map": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//files/source_map",
+                "x-setting": "/synthesis_rendering/files/source_map",
                 "x-consumer": "archive synthesis"
               },
               "items": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//files/items",
+                "x-setting": "/synthesis_rendering/files/items",
                 "x-consumer": "archive synthesis"
               },
               "graph": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//files/graph",
+                "x-setting": "/synthesis_rendering/files/graph",
                 "x-consumer": "archive synthesis"
               },
               "timeline": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//files/timeline",
+                "x-setting": "/synthesis_rendering/files/timeline",
                 "x-consumer": "archive synthesis"
               },
               "manifest": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//files/manifest",
+                "x-setting": "/synthesis_rendering/files/manifest",
                 "x-consumer": "archive synthesis"
               }
             },
-            "x-setting": "/synthesis_rendering//files",
+            "x-setting": "/synthesis_rendering/files",
             "x-consumer": "archive synthesis"
           },
           "csv": {
@@ -4559,12 +4580,12 @@
                 "type": "integer",
                 "minimum": 0,
                 "maximum": 2147483647,
-                "x-setting": "/synthesis_rendering//csv/score_precision",
+                "x-setting": "/synthesis_rendering/csv/score_precision",
                 "x-consumer": "archive synthesis"
               },
               "term_separator": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//csv/term_separator",
+                "x-setting": "/synthesis_rendering/csv/term_separator",
                 "x-consumer": "archive synthesis"
               },
               "columns": {
@@ -4580,34 +4601,34 @@
                   "properties": {
                     "name": {
                       "type": "string",
-                      "x-setting": "/synthesis_rendering//csv/columns/*/name",
+                      "x-setting": "/synthesis_rendering/csv/columns/<index>/name",
                       "x-consumer": "archive synthesis"
                     },
                     "path": {
                       "type": "string",
-                      "x-setting": "/synthesis_rendering//csv/columns/*/path",
+                      "x-setting": "/synthesis_rendering/csv/columns/<index>/path",
                       "x-consumer": "archive synthesis",
                       "minLength": 1
                     },
                     "quote": {
                       "type": "boolean",
-                      "x-setting": "/synthesis_rendering//csv/columns/*/quote",
+                      "x-setting": "/synthesis_rendering/csv/columns/<index>/quote",
                       "x-consumer": "archive synthesis"
                     }
                   },
-                  "x-setting": "/synthesis_rendering//csv/columns/*",
+                  "x-setting": "/synthesis_rendering/csv/columns/<index>",
                   "x-consumer": "archive synthesis"
                 },
-                "x-setting": "/synthesis_rendering//csv/columns",
+                "x-setting": "/synthesis_rendering/csv/columns",
                 "x-consumer": "archive synthesis"
               }
             },
-            "x-setting": "/synthesis_rendering//csv",
+            "x-setting": "/synthesis_rendering/csv",
             "x-consumer": "archive synthesis"
           },
           "unknown_kind_label": {
             "type": "string",
-            "x-setting": "/synthesis_rendering//unknown_kind_label",
+            "x-setting": "/synthesis_rendering/unknown_kind_label",
             "x-consumer": "archive synthesis"
           },
           "strings": {
@@ -4723,522 +4744,522 @@
             "properties": {
               "superseded_by": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/superseded_by",
+                "x-setting": "/synthesis_rendering/strings/superseded_by",
                 "x-consumer": "archive synthesis"
               },
               "contested_see_11": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/contested_see_11",
+                "x-setting": "/synthesis_rendering/strings/contested_see_11",
                 "x-consumer": "archive synthesis"
               },
               "resolved_by": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/resolved_by",
+                "x-setting": "/synthesis_rendering/strings/resolved_by",
                 "x-consumer": "archive synthesis"
               },
               "gap_report_spec_repository": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/gap_report_spec_repository",
+                "x-setting": "/synthesis_rendering/strings/gap_report_spec_repository",
                 "x-consumer": "archive synthesis"
               },
               "generated_by_loom_archive_deterministic_spec_side": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/generated_by_loom_archive_deterministic_spec_side",
+                "x-setting": "/synthesis_rendering/strings/generated_by_loom_archive_deterministic_spec_side",
                 "x-consumer": "archive synthesis"
               },
               "document_sections_chat_messages_repository_side": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/document_sections_chat_messages_repository_side",
+                "x-setting": "/synthesis_rendering/strings/document_sections_chat_messages_repository_side",
                 "x-consumer": "archive synthesis"
               },
               "code_files": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/code_files",
+                "x-setting": "/synthesis_rendering/strings/code_files",
                 "x-consumer": "archive synthesis"
               },
               "evidence_levels_implemented_every_word_of_the_component_appears": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/evidence_levels_implemented_every_word_of_the_component_appears",
+                "x-setting": "/synthesis_rendering/strings/evidence_levels_implemented_every_word_of_the_component_appears",
                 "x-consumer": "archive synthesis"
               },
               "concrete": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/concrete",
+                "x-setting": "/synthesis_rendering/strings/concrete",
                 "x-consumer": "archive synthesis"
               },
               "exists_no": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/exists_no",
+                "x-setting": "/synthesis_rendering/strings/exists_no",
                 "x-consumer": "archive synthesis"
               },
               "interface": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/interface",
+                "x-setting": "/synthesis_rendering/strings/interface",
                 "x-consumer": "archive synthesis"
               },
               "no_declaration_only_named_in_code_comments": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/no_declaration_only_named_in_code_comments",
+                "x-setting": "/synthesis_rendering/strings/no_declaration_only_named_in_code_comments",
                 "x-consumer": "archive synthesis"
               },
               "with_code_evidence": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/with_code_evidence",
+                "x-setting": "/synthesis_rendering/strings/with_code_evidence",
                 "x-consumer": "archive synthesis"
               },
               "missing": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/missing",
+                "x-setting": "/synthesis_rendering/strings/missing",
                 "x-consumer": "archive synthesis"
               },
               "partial": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/partial",
+                "x-setting": "/synthesis_rendering/strings/partial",
                 "x-consumer": "archive synthesis"
               },
               "closest": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/closest",
+                "x-setting": "/synthesis_rendering/strings/closest",
                 "x-consumer": "archive synthesis"
               },
               "matches": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/matches",
+                "x-setting": "/synthesis_rendering/strings/matches",
                 "x-consumer": "archive synthesis"
               },
               "comment": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/comment",
+                "x-setting": "/synthesis_rendering/strings/comment",
                 "x-consumer": "archive synthesis"
               },
               "evidence": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/evidence",
+                "x-setting": "/synthesis_rendering/strings/evidence",
                 "x-consumer": "archive synthesis"
               },
               "source": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/source",
+                "x-setting": "/synthesis_rendering/strings/source",
                 "x-consumer": "archive synthesis"
               },
               "documents_no_code_file_in_the_theme": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/documents_no_code_file_in_the_theme",
+                "x-setting": "/synthesis_rendering/strings/documents_no_code_file_in_the_theme",
                 "x-consumer": "archive synthesis"
               },
               "summary_check_result": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/summary_check_result",
+                "x-setting": "/synthesis_rendering/strings/summary_check_result",
                 "x-consumer": "archive synthesis"
               },
               "named_components_interfaces_in_the_spec": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/named_components_interfaces_in_the_spec",
+                "x-setting": "/synthesis_rendering/strings/named_components_interfaces_in_the_spec",
                 "x-consumer": "archive synthesis"
               },
               "implemented": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/implemented",
+                "x-setting": "/synthesis_rendering/strings/implemented",
                 "x-consumer": "archive synthesis"
               },
               "partial_2": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/partial_2",
+                "x-setting": "/synthesis_rendering/strings/partial_2",
                 "x-consumer": "archive synthesis"
               },
               "missing_2": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/missing_2",
+                "x-setting": "/synthesis_rendering/strings/missing_2",
                 "x-consumer": "archive synthesis"
               },
               "named_technologies_products_capitalised_phrases": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/named_technologies_products_capitalised_phrases",
+                "x-setting": "/synthesis_rendering/strings/named_technologies_products_capitalised_phrases",
                 "x-consumer": "archive synthesis"
               },
               "with_code_evidence_2": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/with_code_evidence_2",
+                "x-setting": "/synthesis_rendering/strings/with_code_evidence_2",
                 "x-consumer": "archive synthesis"
               },
               "without": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/without",
+                "x-setting": "/synthesis_rendering/strings/without",
                 "x-consumer": "archive synthesis"
               },
               "spec_features_bullets_in": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/spec_features_bullets_in",
+                "x-setting": "/synthesis_rendering/strings/spec_features_bullets_in",
                 "x-consumer": "archive synthesis"
               },
               "sections": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/sections",
+                "x-setting": "/synthesis_rendering/strings/sections",
                 "x-consumer": "archive synthesis"
               },
               "with_evidence": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/with_evidence",
+                "x-setting": "/synthesis_rendering/strings/with_evidence",
                 "x-consumer": "archive synthesis"
               },
               "missing_of": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/missing_of",
+                "x-setting": "/synthesis_rendering/strings/missing_of",
                 "x-consumer": "archive synthesis"
               },
               "files_referenced_by_the_spec_but_absent": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/files_referenced_by_the_spec_but_absent",
+                "x-setting": "/synthesis_rendering/strings/files_referenced_by_the_spec_but_absent",
                 "x-consumer": "archive synthesis"
               },
               "themes_without_any_code": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/themes_without_any_code",
+                "x-setting": "/synthesis_rendering/strings/themes_without_any_code",
                 "x-consumer": "archive synthesis"
               },
               "todo_fixme_markers_in_code": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/todo_fixme_markers_in_code",
+                "x-setting": "/synthesis_rendering/strings/todo_fixme_markers_in_code",
                 "x-consumer": "archive synthesis"
               },
               "1_named_components_and_interfaces": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/1_named_components_and_interfaces",
+                "x-setting": "/synthesis_rendering/strings/1_named_components_and_interfaces",
                 "x-consumer": "archive synthesis"
               },
               "camelcase_names_used_in_documents_and_conversations_checked_against": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/camelcase_names_used_in_documents_and_conversations_checked_against",
+                "x-setting": "/synthesis_rendering/strings/camelcase_names_used_in_documents_and_conversations_checked_against",
                 "x-consumer": "archive synthesis"
               },
               "missing_or_partial_interfaces_first_name_status_evidence_mentioned": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/missing_or_partial_interfaces_first_name_status_evidence_mentioned",
+                "x-setting": "/synthesis_rendering/strings/missing_or_partial_interfaces_first_name_status_evidence_mentioned",
                 "x-consumer": "archive synthesis"
               },
               "external_apis_used_by_the_code_not_gaps": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/external_apis_used_by_the_code_not_gaps",
+                "x-setting": "/synthesis_rendering/strings/external_apis_used_by_the_code_not_gaps",
                 "x-consumer": "archive synthesis"
               },
               "implemented_name_status_evidence_mentioned_in": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/implemented_name_status_evidence_mentioned_in",
+                "x-setting": "/synthesis_rendering/strings/implemented_name_status_evidence_mentioned_in",
                 "x-consumer": "archive synthesis"
               },
               "named_technologies_without_code_evidence": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/named_technologies_without_code_evidence",
+                "x-setting": "/synthesis_rendering/strings/named_technologies_without_code_evidence",
                 "x-consumer": "archive synthesis"
               },
               "none": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/none",
+                "x-setting": "/synthesis_rendering/strings/none",
                 "x-consumer": "archive synthesis"
               },
               "with_evidence_2": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/with_evidence_2",
+                "x-setting": "/synthesis_rendering/strings/with_evidence_2",
                 "x-consumer": "archive synthesis"
               },
               "2_spec_sections_feature_coverage": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/2_spec_sections_feature_coverage",
+                "x-setting": "/synthesis_rendering/strings/2_spec_sections_feature_coverage",
                 "x-consumer": "archive synthesis"
               },
               "each_bullet_of_a_spec_section_is_treated_as": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/each_bullet_of_a_spec_section_is_treated_as",
+                "x-setting": "/synthesis_rendering/strings/each_bullet_of_a_spec_section_is_treated_as",
                 "x-consumer": "archive synthesis"
               },
               "3_files_referenced_but_not_present": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/3_files_referenced_but_not_present",
+                "x-setting": "/synthesis_rendering/strings/3_files_referenced_but_not_present",
                 "x-consumer": "archive synthesis"
               },
               "none_2": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/none_2",
+                "x-setting": "/synthesis_rendering/strings/none_2",
                 "x-consumer": "archive synthesis"
               },
               "4_themes_without_code": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/4_themes_without_code",
+                "x-setting": "/synthesis_rendering/strings/4_themes_without_code",
                 "x-consumer": "archive synthesis"
               },
               "5_open_work_in_code_todo_fixme": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/5_open_work_in_code_todo_fixme",
+                "x-setting": "/synthesis_rendering/strings/5_open_work_in_code_todo_fixme",
                 "x-consumer": "archive synthesis"
               },
               "more_in_files_items": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/more_in_files_items",
+                "x-setting": "/synthesis_rendering/strings/more_in_files_items",
                 "x-consumer": "archive synthesis"
               },
               "master_generated": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/master_generated",
+                "x-setting": "/synthesis_rendering/strings/master_generated",
                 "x-consumer": "archive synthesis"
               },
               "generated_by_loom_archive_pipeline_v": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/generated_by_loom_archive_pipeline_v",
+                "x-setting": "/synthesis_rendering/strings/generated_by_loom_archive_pipeline_v",
                 "x-consumer": "archive synthesis"
               },
               "synthesis_round": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/synthesis_round",
+                "x-setting": "/synthesis_rendering/strings/synthesis_round",
                 "x-consumer": "archive synthesis"
               },
               "from": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/from",
+                "x-setting": "/synthesis_rendering/strings/from",
                 "x-consumer": "archive synthesis"
               },
               "documents_in": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/documents_in",
+                "x-setting": "/synthesis_rendering/strings/documents_in",
                 "x-consumer": "archive synthesis"
               },
               "sources_deterministic_the_same_inputs_give_the_same_file": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/sources_deterministic_the_same_inputs_give_the_same_file",
+                "x-setting": "/synthesis_rendering/strings/sources_deterministic_the_same_inputs_give_the_same_file",
                 "x-consumer": "archive synthesis"
               },
               "1_corpus_kind_documents": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/1_corpus_kind_documents",
+                "x-setting": "/synthesis_rendering/strings/1_corpus_kind_documents",
                 "x-consumer": "archive synthesis"
               },
               "date_range": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/date_range",
+                "x-setting": "/synthesis_rendering/strings/date_range",
                 "x-consumer": "archive synthesis"
               },
               "unknown": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/unknown",
+                "x-setting": "/synthesis_rendering/strings/unknown",
                 "x-consumer": "archive synthesis"
               },
               "retrieved_relevant_documents": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/retrieved_relevant_documents",
+                "x-setting": "/synthesis_rendering/strings/retrieved_relevant_documents",
                 "x-consumer": "archive synthesis"
               },
               "forks_found": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/forks_found",
+                "x-setting": "/synthesis_rendering/strings/forks_found",
                 "x-consumer": "archive synthesis"
               },
               "2_retrieval_passes_and_vocabulary_pass_terms_hits_new": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/2_retrieval_passes_and_vocabulary_pass_terms_hits_new",
+                "x-setting": "/synthesis_rendering/strings/2_retrieval_passes_and_vocabulary_pass_terms_hits_new",
                 "x-consumer": "archive synthesis"
               },
               "seed_terms": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/seed_terms",
+                "x-setting": "/synthesis_rendering/strings/seed_terms",
                 "x-consumer": "archive synthesis"
               },
               "expansion_why_each_term_was_added": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/expansion_why_each_term_was_added",
+                "x-setting": "/synthesis_rendering/strings/expansion_why_each_term_was_added",
                 "x-consumer": "archive synthesis"
               },
               "pass": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/pass",
+                "x-setting": "/synthesis_rendering/strings/pass",
                 "x-consumer": "archive synthesis"
               },
               "e_g": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/e_g",
+                "x-setting": "/synthesis_rendering/strings/e_g",
                 "x-consumer": "archive synthesis"
               },
               "3_themes": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/3_themes",
+                "x-setting": "/synthesis_rendering/strings/3_themes",
                 "x-consumer": "archive synthesis"
               },
               "documents": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/documents",
+                "x-setting": "/synthesis_rendering/strings/documents",
                 "x-consumer": "archive synthesis"
               },
               "key_terms": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/key_terms",
+                "x-setting": "/synthesis_rendering/strings/key_terms",
                 "x-consumer": "archive synthesis"
               },
               "top_sources": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/top_sources",
+                "x-setting": "/synthesis_rendering/strings/top_sources",
                 "x-consumer": "archive synthesis"
               },
               "project_wide_terms_present_across_most_themes_not_clustered": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/project_wide_terms_present_across_most_themes_not_clustered",
+                "x-setting": "/synthesis_rendering/strings/project_wide_terms_present_across_most_themes_not_clustered",
                 "x-consumer": "archive synthesis"
               },
               "4_timeline_and_forks": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/4_timeline_and_forks",
+                "x-setting": "/synthesis_rendering/strings/4_timeline_and_forks",
                 "x-consumer": "archive synthesis"
               },
               "undated": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/undated",
+                "x-setting": "/synthesis_rendering/strings/undated",
                 "x-consumer": "archive synthesis"
               },
               "more_events_files_timeline": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/more_events_files_timeline",
+                "x-setting": "/synthesis_rendering/strings/more_events_files_timeline",
                 "x-consumer": "archive synthesis"
               },
               "forks": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/forks",
+                "x-setting": "/synthesis_rendering/strings/forks",
                 "x-consumer": "archive synthesis"
               },
               "fork_in": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/fork_in",
+                "x-setting": "/synthesis_rendering/strings/fork_in",
                 "x-consumer": "archive synthesis"
               },
               "after": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/after",
+                "x-setting": "/synthesis_rendering/strings/after",
                 "x-consumer": "archive synthesis"
               },
               "kept": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/kept",
+                "x-setting": "/synthesis_rendering/strings/kept",
                 "x-consumer": "archive synthesis"
               },
               "abandoned": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/abandoned",
+                "x-setting": "/synthesis_rendering/strings/abandoned",
                 "x-consumer": "archive synthesis"
               },
               "unresolved_questions": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/unresolved_questions",
+                "x-setting": "/synthesis_rendering/strings/unresolved_questions",
                 "x-consumer": "archive synthesis"
               },
               "earlier_questions_were_answered_by_later_decisions_and_are": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/earlier_questions_were_answered_by_later_decisions_and_are",
+                "x-setting": "/synthesis_rendering/strings/earlier_questions_were_answered_by_later_decisions_and_are",
                 "x-consumer": "archive synthesis"
               },
               "none_found": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/none_found",
+                "x-setting": "/synthesis_rendering/strings/none_found",
                 "x-consumer": "archive synthesis"
               },
               "11_supersessions_and_contradictions": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/11_supersessions_and_contradictions",
+                "x-setting": "/synthesis_rendering/strings/11_supersessions_and_contradictions",
                 "x-consumer": "archive synthesis"
               },
               "none_detected": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/none_detected",
+                "x-setting": "/synthesis_rendering/strings/none_detected",
                 "x-consumer": "archive synthesis"
               },
               "blank": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/blank",
+                "x-setting": "/synthesis_rendering/strings/blank",
                 "x-consumer": "archive synthesis"
               },
               "12_gaps_spec_code": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/12_gaps_spec_code",
+                "x-setting": "/synthesis_rendering/strings/12_gaps_spec_code",
                 "x-consumer": "archive synthesis"
               },
               "named_components_and_technologies": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/named_components_and_technologies",
+                "x-setting": "/synthesis_rendering/strings/named_components_and_technologies",
                 "x-consumer": "archive synthesis"
               },
               "missing_3": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/missing_3",
+                "x-setting": "/synthesis_rendering/strings/missing_3",
                 "x-consumer": "archive synthesis"
               },
               "spec_features": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/spec_features",
+                "x-setting": "/synthesis_rendering/strings/spec_features",
                 "x-consumer": "archive synthesis"
               },
               "have_code_evidence": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/have_code_evidence",
+                "x-setting": "/synthesis_rendering/strings/have_code_evidence",
                 "x-consumer": "archive synthesis"
               },
               "have_none": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/have_none",
+                "x-setting": "/synthesis_rendering/strings/have_none",
                 "x-consumer": "archive synthesis"
               },
               "more": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/more",
+                "x-setting": "/synthesis_rendering/strings/more",
                 "x-consumer": "archive synthesis"
               },
               "named_technologies_without_code_evidence_2": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/named_technologies_without_code_evidence_2",
+                "x-setting": "/synthesis_rendering/strings/named_technologies_without_code_evidence_2",
                 "x-consumer": "archive synthesis"
               },
               "spec_sections_with_the_least_code_evidence": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/spec_sections_with_the_least_code_evidence",
+                "x-setting": "/synthesis_rendering/strings/spec_sections_with_the_least_code_evidence",
                 "x-consumer": "archive synthesis"
               },
               "missing_4": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/missing_4",
+                "x-setting": "/synthesis_rendering/strings/missing_4",
                 "x-consumer": "archive synthesis"
               },
               "full_details_files_gap": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/full_details_files_gap",
+                "x-setting": "/synthesis_rendering/strings/full_details_files_gap",
                 "x-consumer": "archive synthesis"
               },
               "source_reference": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/source_reference",
+                "x-setting": "/synthesis_rendering/strings/source_reference",
                 "x-consumer": "archive synthesis"
               },
               "source_location": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/source_location",
+                "x-setting": "/synthesis_rendering/strings/source_location",
                 "x-consumer": "archive synthesis"
               },
               "source_date": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/source_date",
+                "x-setting": "/synthesis_rendering/strings/source_date",
                 "x-consumer": "archive synthesis"
               },
               "missing_source": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/missing_source",
+                "x-setting": "/synthesis_rendering/strings/missing_source",
                 "x-consumer": "archive synthesis"
               },
               "manifest_generated_by": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/manifest_generated_by",
+                "x-setting": "/synthesis_rendering/strings/manifest_generated_by",
                 "x-consumer": "archive synthesis"
               },
               "edge_over": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/edge_over",
+                "x-setting": "/synthesis_rendering/strings/edge_over",
                 "x-consumer": "archive synthesis"
               },
               "edge_vs": {
                 "type": "string",
-                "x-setting": "/synthesis_rendering//strings/edge_vs",
+                "x-setting": "/synthesis_rendering/strings/edge_vs",
                 "x-consumer": "archive synthesis"
               },
               "message_count_suffix": {
@@ -5247,7 +5268,7 @@
                 "x-consumer": "archive synthesis"
               }
             },
-            "x-setting": "/synthesis_rendering//strings",
+            "x-setting": "/synthesis_rendering/strings",
             "x-consumer": "archive synthesis"
           },
           "json_indent": {
@@ -5256,9 +5277,94 @@
             "maximum": 2147483647,
             "x-setting": "/synthesis_rendering/json_indent",
             "x-consumer": "archive synthesis"
+          },
+          "source_references": {
+            "type": "object",
+            "required": [
+              "lexical_extra_characters",
+              "trim_suffix_characters",
+              "require_path_marker",
+              "path_markers",
+              "forbidden_sequences",
+              "forbidden_prefixes",
+              "excluded_absolute_prefixes",
+              "known_suffix_match",
+              "known_suffix_boundary_characters"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "lexical_extra_characters": {
+                "type": "string",
+                "x-setting": "/synthesis_rendering/source_references/lexical_extra_characters",
+                "x-consumer": "archive synthesis missing-reference report"
+              },
+              "trim_suffix_characters": {
+                "type": "string",
+                "x-setting": "/synthesis_rendering/source_references/trim_suffix_characters",
+                "x-consumer": "archive synthesis missing-reference report"
+              },
+              "require_path_marker": {
+                "type": "boolean",
+                "x-setting": "/synthesis_rendering/source_references/require_path_marker",
+                "x-consumer": "archive synthesis missing-reference report"
+              },
+              "path_markers": {
+                "type": "array",
+                "x-setting": "/synthesis_rendering/source_references/path_markers",
+                "x-consumer": "archive synthesis missing-reference report",
+                "items": {
+                  "type": "string",
+                  "x-setting": "/synthesis_rendering/source_references/path_markers/<index>",
+                  "x-consumer": "archive synthesis missing-reference report"
+                }
+              },
+              "forbidden_sequences": {
+                "type": "array",
+                "x-setting": "/synthesis_rendering/source_references/forbidden_sequences",
+                "x-consumer": "archive synthesis missing-reference report",
+                "items": {
+                  "type": "string",
+                  "x-setting": "/synthesis_rendering/source_references/forbidden_sequences/<index>",
+                  "x-consumer": "archive synthesis missing-reference report"
+                }
+              },
+              "forbidden_prefixes": {
+                "type": "array",
+                "x-setting": "/synthesis_rendering/source_references/forbidden_prefixes",
+                "x-consumer": "archive synthesis missing-reference report",
+                "items": {
+                  "type": "string",
+                  "x-setting": "/synthesis_rendering/source_references/forbidden_prefixes/<index>",
+                  "x-consumer": "archive synthesis missing-reference report"
+                }
+              },
+              "excluded_absolute_prefixes": {
+                "type": "array",
+                "x-setting": "/synthesis_rendering/source_references/excluded_absolute_prefixes",
+                "x-consumer": "archive synthesis missing-reference report",
+                "items": {
+                  "type": "string",
+                  "x-setting": "/synthesis_rendering/source_references/excluded_absolute_prefixes/<index>",
+                  "x-consumer": "archive synthesis missing-reference report"
+                }
+              },
+              "known_suffix_match": {
+                "type": "boolean",
+                "x-setting": "/synthesis_rendering/source_references/known_suffix_match",
+                "x-consumer": "archive synthesis missing-reference report"
+              },
+              "known_suffix_boundary_characters": {
+                "type": "string",
+                "x-setting": "/synthesis_rendering/source_references/known_suffix_boundary_characters",
+                "x-consumer": "archive synthesis missing-reference report"
+              }
+            },
+            "x-setting": "/synthesis_rendering/source_references",
+            "x-consumer": "archive synthesis missing-reference report",
+            "description": "Lexical/reporting heuristics only: references are strings compared with known corpus URIs. No setting opens files, fetches URLs or changes source provenance. Alphanumeric byte classification and extension-suffix extraction remain universal scanner operations. Empty forbidden lists disable those exclusions; empty lexical/trim/boundary character sets match no characters. require_path_marker=false disables marker eligibility; true with an empty marker list selects no references."
           }
         },
-        "x-setting": "/synthesis_rendering/",
+        "x-setting": "/synthesis_rendering",
         "x-consumer": "archive synthesis"
       }
     },
