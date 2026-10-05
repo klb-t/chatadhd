@@ -1,0 +1,1260 @@
+{
+  "ctest_entries": 125,
+  "ctest_failures": 0,
+  "ctest_skipped_statuses": 0,
+  "ctest_elapsed_seconds": 306.35,
+  "native_source_entries": 95,
+  "native_executed_cases": 775,
+  "native_assertions": 29387,
+  "native_failed_cases": 0,
+  "native_failed_assertions": 0,
+  "native_unskipped_count_query": 775,
+  "native_zero_case_entries": [
+    "unit.test_catalog_scale"
+  ],
+  "native_opt_in_note": "The opt-in catalog scale source executes zero cases by default; the ~1 GB slow corpus case was not opted in.",
+  "onboarding_native_cases": 65,
+  "onboarding_native_assertions": 2988,
+  "onboarding_suites": [
+    {
+      "ctest_name": "unit.test_onboarding_presentation_store",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 4,
+      "passed_cases": 4,
+      "failed_cases": 0,
+      "assertions": 151,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_onboarding_graph",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 11,
+      "passed_cases": 11,
+      "failed_cases": 0,
+      "assertions": 2172,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_onboarding_presentation_layers",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 7,
+      "passed_cases": 7,
+      "failed_cases": 0,
+      "assertions": 81,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_onboarding",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 18,
+      "passed_cases": 18,
+      "failed_cases": 0,
+      "assertions": 228,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_onboarding_layers",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 8,
+      "passed_cases": 8,
+      "failed_cases": 0,
+      "assertions": 51,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_onboarding_presentation",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 3,
+      "passed_cases": 3,
+      "failed_cases": 0,
+      "assertions": 19,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_onboarding_store",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 14,
+      "passed_cases": 14,
+      "failed_cases": 0,
+      "assertions": 286,
+      "failed_assertions": 0
+    }
+  ],
+  "python_unittest_entries": 28,
+  "python_unittest_reported_cases": 1340,
+  "python_unittest_skipped_cases": 0,
+  "python_non_unittest_smoke_entries": [
+    "server.smoke",
+    "cli.smoke"
+  ],
+  "count_evidence": "Full untruncated Testing/Temporary/LastTest.log copied to ctest-full-final-LastTest.txt; JUnit stdout truncation is not used for case denominators.",
+  "entries": [
+    {
+      "ctest_name": "unit.test_onboarding_presentation_store",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 4,
+      "passed_cases": 4,
+      "failed_cases": 0,
+      "assertions": 151,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_onboarding_graph",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 11,
+      "passed_cases": 11,
+      "failed_cases": 0,
+      "assertions": 2172,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "compat.test_onboarding_pack_generation",
+      "passed": true,
+      "kind": "python_unittest",
+      "reported_cases": 18,
+      "skipped_cases": 0
+    },
+    {
+      "ctest_name": "unit.test_onboarding_presentation_layers",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 7,
+      "passed_cases": 7,
+      "failed_cases": 0,
+      "assertions": 81,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_onboarding",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 18,
+      "passed_cases": 18,
+      "failed_cases": 0,
+      "assertions": 228,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_onboarding_layers",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 8,
+      "passed_cases": 8,
+      "failed_cases": 0,
+      "assertions": 51,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_onboarding_presentation",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 3,
+      "passed_cases": 3,
+      "failed_cases": 0,
+      "assertions": 19,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_archive",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 18,
+      "passed_cases": 18,
+      "failed_cases": 0,
+      "assertions": 270,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_batch_api",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 8,
+      "passed_cases": 8,
+      "failed_cases": 0,
+      "assertions": 36,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_capi",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 12,
+      "passed_cases": 12,
+      "failed_cases": 0,
+      "assertions": 598,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_capi_knowledge",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 1,
+      "passed_cases": 1,
+      "failed_cases": 0,
+      "assertions": 55,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_capi_knowledge_latest_run",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 2,
+      "passed_cases": 2,
+      "failed_cases": 0,
+      "assertions": 73,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_catalog",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 13,
+      "passed_cases": 13,
+      "failed_cases": 0,
+      "assertions": 344,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_catalog_context",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 7,
+      "passed_cases": 7,
+      "failed_cases": 0,
+      "assertions": 81,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_catalog_eval",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 1,
+      "passed_cases": 1,
+      "failed_cases": 0,
+      "assertions": 76,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_catalog_links",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 4,
+      "passed_cases": 4,
+      "failed_cases": 0,
+      "assertions": 3136,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_onboarding_store",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 14,
+      "passed_cases": 14,
+      "failed_cases": 0,
+      "assertions": 286,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_catalog_scale",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 0,
+      "passed_cases": 0,
+      "failed_cases": 0,
+      "assertions": 0,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_catalog_retention",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 5,
+      "passed_cases": 5,
+      "failed_cases": 0,
+      "assertions": 179,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_chat_active_task_acceptance_audit",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 5,
+      "passed_cases": 5,
+      "failed_cases": 0,
+      "assertions": 40,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_chat_active_task",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 19,
+      "passed_cases": 19,
+      "failed_cases": 0,
+      "assertions": 197,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_chat_active_task_acceptance_validation",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 6,
+      "passed_cases": 6,
+      "failed_cases": 0,
+      "assertions": 151,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_chat_active_task_concurrency",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 4,
+      "passed_cases": 4,
+      "failed_cases": 0,
+      "assertions": 49,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_chat_active_task_durability",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 8,
+      "passed_cases": 8,
+      "failed_cases": 0,
+      "assertions": 106,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_chat_active_task_acceptance_scale",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 2,
+      "passed_cases": 2,
+      "failed_cases": 0,
+      "assertions": 2014,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_chat_active_task_exceptional",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 4,
+      "passed_cases": 4,
+      "failed_cases": 0,
+      "assertions": 45,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_chat_active_task_history_aba",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 1,
+      "passed_cases": 1,
+      "failed_cases": 0,
+      "assertions": 9,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_chat_active_task_reference",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 7,
+      "passed_cases": 7,
+      "failed_cases": 0,
+      "assertions": 49,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_chat_active_task_retention",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 11,
+      "passed_cases": 11,
+      "failed_cases": 0,
+      "assertions": 232,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_chat_active_task_revisions",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 10,
+      "passed_cases": 10,
+      "failed_cases": 0,
+      "assertions": 228,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_chat_active_task_scope_identity",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 2,
+      "passed_cases": 2,
+      "failed_cases": 0,
+      "assertions": 20,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_chat_engine",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 15,
+      "passed_cases": 15,
+      "failed_cases": 0,
+      "assertions": 67,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_chat_active_task_durable_audit",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 6,
+      "passed_cases": 6,
+      "failed_cases": 0,
+      "assertions": 76,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_chat_retrieval_plan",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 8,
+      "passed_cases": 8,
+      "failed_cases": 0,
+      "assertions": 244,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_config",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 5,
+      "passed_cases": 5,
+      "failed_cases": 0,
+      "assertions": 113,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_chat_knowledge_context",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 15,
+      "passed_cases": 15,
+      "failed_cases": 0,
+      "assertions": 212,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_context_channel_integration",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 5,
+      "passed_cases": 5,
+      "failed_cases": 0,
+      "assertions": 63,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_context_counter",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 4,
+      "passed_cases": 4,
+      "failed_cases": 0,
+      "assertions": 38,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_context_controls",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 9,
+      "passed_cases": 9,
+      "failed_cases": 0,
+      "assertions": 153,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_context_diagnostics",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 9,
+      "passed_cases": 9,
+      "failed_cases": 0,
+      "assertions": 335,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_context_engine",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 18,
+      "passed_cases": 18,
+      "failed_cases": 0,
+      "assertions": 1364,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_context_eval",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 2,
+      "passed_cases": 2,
+      "failed_cases": 0,
+      "assertions": 268,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_context_native_consumer",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 6,
+      "passed_cases": 6,
+      "failed_cases": 0,
+      "assertions": 105,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_context_retrieval",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 13,
+      "passed_cases": 13,
+      "failed_cases": 0,
+      "assertions": 130,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_context_retrieval_dev",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 1,
+      "passed_cases": 1,
+      "failed_cases": 0,
+      "assertions": 241,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_context_plan",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 15,
+      "passed_cases": 15,
+      "failed_cases": 0,
+      "assertions": 159,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_crypto",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 12,
+      "passed_cases": 12,
+      "failed_cases": 0,
+      "assertions": 66,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_db",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 13,
+      "passed_cases": 13,
+      "failed_cases": 0,
+      "assertions": 5178,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_db_annotations",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 11,
+      "passed_cases": 11,
+      "failed_cases": 0,
+      "assertions": 189,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_event_bus",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 5,
+      "passed_cases": 5,
+      "failed_cases": 0,
+      "assertions": 28,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_context_tfidf_reuse",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 9,
+      "passed_cases": 9,
+      "failed_cases": 0,
+      "assertions": 219,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_extract_eval",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 6,
+      "passed_cases": 6,
+      "failed_cases": 0,
+      "assertions": 27,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_fts",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 5,
+      "passed_cases": 5,
+      "failed_cases": 0,
+      "assertions": 53,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_extract",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 15,
+      "passed_cases": 15,
+      "failed_cases": 0,
+      "assertions": 241,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_generalize_eval",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 1,
+      "passed_cases": 1,
+      "failed_cases": 0,
+      "assertions": 173,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_github",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 19,
+      "passed_cases": 19,
+      "failed_cases": 0,
+      "assertions": 113,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_graph",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 8,
+      "passed_cases": 8,
+      "failed_cases": 0,
+      "assertions": 30,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_import",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 23,
+      "passed_cases": 23,
+      "failed_cases": 0,
+      "assertions": 223,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_import_audit",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 3,
+      "passed_cases": 3,
+      "failed_cases": 0,
+      "assertions": 28,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_import_aux_depth",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 2,
+      "passed_cases": 2,
+      "failed_cases": 0,
+      "assertions": 106,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_import_export_fidelity",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 5,
+      "passed_cases": 5,
+      "failed_cases": 0,
+      "assertions": 327,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_generalize",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 7,
+      "passed_cases": 7,
+      "failed_cases": 0,
+      "assertions": 199,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_import_exports",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 18,
+      "passed_cases": 18,
+      "failed_cases": 0,
+      "assertions": 2202,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_import_resume",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 23,
+      "passed_cases": 23,
+      "failed_cases": 0,
+      "assertions": 696,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_import_screenshot",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 6,
+      "passed_cases": 6,
+      "failed_cases": 0,
+      "assertions": 872,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_import_source_materialization",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 8,
+      "passed_cases": 8,
+      "failed_cases": 0,
+      "assertions": 592,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_import_usage",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 2,
+      "passed_cases": 2,
+      "failed_cases": 0,
+      "assertions": 19,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_kb_pack",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 14,
+      "passed_cases": 14,
+      "failed_cases": 0,
+      "assertions": 184,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_knowledge",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 18,
+      "passed_cases": 18,
+      "failed_cases": 0,
+      "assertions": 150,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_knowledge_candidate_graph",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 10,
+      "passed_cases": 10,
+      "failed_cases": 0,
+      "assertions": 114,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_knowledge_candidates",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 1,
+      "passed_cases": 1,
+      "failed_cases": 0,
+      "assertions": 14,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_knowledge_flow",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 2,
+      "passed_cases": 2,
+      "failed_cases": 0,
+      "assertions": 53,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_knowledge_semantic",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 13,
+      "passed_cases": 13,
+      "failed_cases": 0,
+      "assertions": 125,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_knowledge_semantic_graph",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 11,
+      "passed_cases": 11,
+      "failed_cases": 0,
+      "assertions": 100,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_knowledge_store",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 7,
+      "passed_cases": 7,
+      "failed_cases": 0,
+      "assertions": 124,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_materialize",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 6,
+      "passed_cases": 6,
+      "failed_cases": 0,
+      "assertions": 67,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_media",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 13,
+      "passed_cases": 13,
+      "failed_cases": 0,
+      "assertions": 81,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_memory",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 9,
+      "passed_cases": 9,
+      "failed_cases": 0,
+      "assertions": 40,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_model",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 10,
+      "passed_cases": 10,
+      "failed_cases": 0,
+      "assertions": 137,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_net_sse",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 10,
+      "passed_cases": 10,
+      "failed_cases": 0,
+      "assertions": 45,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_pack_model",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 6,
+      "passed_cases": 6,
+      "failed_cases": 0,
+      "assertions": 900,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_packet",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 4,
+      "passed_cases": 4,
+      "failed_cases": 0,
+      "assertions": 24,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_provenance",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 3,
+      "passed_cases": 3,
+      "failed_cases": 0,
+      "assertions": 49,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_providers",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 13,
+      "passed_cases": 13,
+      "failed_cases": 0,
+      "assertions": 61,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_regex",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 15,
+      "passed_cases": 15,
+      "failed_cases": 0,
+      "assertions": 89,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_relations",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 1,
+      "passed_cases": 1,
+      "failed_cases": 0,
+      "assertions": 39,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_resolve",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 8,
+      "passed_cases": 8,
+      "failed_cases": 0,
+      "assertions": 71,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_resolve_attribution",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 7,
+      "passed_cases": 7,
+      "failed_cases": 0,
+      "assertions": 420,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_import_stream",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 1,
+      "passed_cases": 1,
+      "failed_cases": 0,
+      "assertions": 13,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_runtime",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 4,
+      "passed_cases": 4,
+      "failed_cases": 0,
+      "assertions": 50,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_selector",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 5,
+      "passed_cases": 5,
+      "failed_cases": 0,
+      "assertions": 22,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_semantic_llm",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 11,
+      "passed_cases": 11,
+      "failed_cases": 0,
+      "assertions": 91,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_semantic_worker",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 9,
+      "passed_cases": 9,
+      "failed_cases": 0,
+      "assertions": 34,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_resolve_lineage",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 2,
+      "passed_cases": 2,
+      "failed_cases": 0,
+      "assertions": 15,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_tasks",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 5,
+      "passed_cases": 5,
+      "failed_cases": 0,
+      "assertions": 56,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "unit.test_util",
+      "passed": true,
+      "kind": "native_doctest",
+      "executed_cases": 10,
+      "passed_cases": 10,
+      "failed_cases": 0,
+      "assertions": 94,
+      "failed_assertions": 0
+    },
+    {
+      "ctest_name": "compat.test_abi_compat",
+      "passed": true,
+      "kind": "python_unittest",
+      "reported_cases": 3,
+      "skipped_cases": 0
+    },
+    {
+      "ctest_name": "compat.test_archive_cost",
+      "passed": true,
+      "kind": "python_unittest",
+      "reported_cases": 19,
+      "skipped_cases": 0
+    },
+    {
+      "ctest_name": "compat.test_active_task_compiler_compat",
+      "passed": true,
+      "kind": "python_unittest",
+      "reported_cases": 4,
+      "skipped_cases": 0
+    },
+    {
+      "ctest_name": "compat.test_candidate_graph_native",
+      "passed": true,
+      "kind": "python_unittest",
+      "reported_cases": 9,
+      "skipped_cases": 0
+    },
+    {
+      "ctest_name": "compat.test_chat_active_task_http",
+      "passed": true,
+      "kind": "python_unittest",
+      "reported_cases": 4,
+      "skipped_cases": 0
+    },
+    {
+      "ctest_name": "compat.test_config_compat",
+      "passed": true,
+      "kind": "python_unittest",
+      "reported_cases": 5,
+      "skipped_cases": 0
+    },
+    {
+      "ctest_name": "compat.test_chat_compat",
+      "passed": true,
+      "kind": "python_unittest",
+      "reported_cases": 2,
+      "skipped_cases": 0
+    },
+    {
+      "ctest_name": "compat.test_db_compat",
+      "passed": true,
+      "kind": "python_unittest",
+      "reported_cases": 7,
+      "skipped_cases": 0
+    },
+    {
+      "ctest_name": "compat.test_github_sync_defaults",
+      "passed": true,
+      "kind": "python_unittest",
+      "reported_cases": 2,
+      "skipped_cases": 0
+    },
+    {
+      "ctest_name": "compat.test_graph_compat",
+      "passed": true,
+      "kind": "python_unittest",
+      "reported_cases": 3,
+      "skipped_cases": 0
+    },
+    {
+      "ctest_name": "compat.test_crypto_compat",
+      "passed": true,
+      "kind": "python_unittest",
+      "reported_cases": 6,
+      "skipped_cases": 0
+    },
+    {
+      "ctest_name": "compat.test_import_compat",
+      "passed": true,
+      "kind": "python_unittest",
+      "reported_cases": 24,
+      "skipped_cases": 0
+    },
+    {
+      "ctest_name": "compat.test_memory_compat",
+      "passed": true,
+      "kind": "python_unittest",
+      "reported_cases": 4,
+      "skipped_cases": 0
+    },
+    {
+      "ctest_name": "compat.test_packet",
+      "passed": true,
+      "kind": "python_unittest",
+      "reported_cases": 16,
+      "skipped_cases": 0
+    },
+    {
+      "ctest_name": "compat.test_selector_compat",
+      "passed": true,
+      "kind": "python_unittest",
+      "reported_cases": 4,
+      "skipped_cases": 0
+    },
+    {
+      "ctest_name": "compat.test_semantic_compat",
+      "passed": true,
+      "kind": "python_unittest",
+      "reported_cases": 6,
+      "skipped_cases": 0
+    },
+    {
+      "ctest_name": "compat.test_semantic_recovery",
+      "passed": true,
+      "kind": "python_unittest",
+      "reported_cases": 8,
+      "skipped_cases": 0
+    },
+    {
+      "ctest_name": "compat.test_util_compat",
+      "passed": true,
+      "kind": "python_unittest",
+      "reported_cases": 6,
+      "skipped_cases": 0
+    },
+    {
+      "ctest_name": "research.structure",
+      "passed": true,
+      "kind": "python_unittest",
+      "reported_cases": 859,
+      "skipped_cases": 0
+    },
+    {
+      "ctest_name": "research.independent_protocol",
+      "passed": true,
+      "kind": "python_unittest",
+      "reported_cases": 10,
+      "skipped_cases": 0
+    },
+    {
+      "ctest_name": "research.graph_native_protocol",
+      "passed": true,
+      "kind": "python_unittest",
+      "reported_cases": 12,
+      "skipped_cases": 0
+    },
+    {
+      "ctest_name": "research.candidate_graph_protocol",
+      "passed": true,
+      "kind": "python_unittest",
+      "reported_cases": 15,
+      "skipped_cases": 0
+    },
+    {
+      "ctest_name": "research.contracts",
+      "passed": true,
+      "kind": "python_unittest",
+      "reported_cases": 209,
+      "skipped_cases": 0
+    },
+    {
+      "ctest_name": "research.seeding",
+      "passed": true,
+      "kind": "python_unittest",
+      "reported_cases": 36,
+      "skipped_cases": 0
+    },
+    {
+      "ctest_name": "server.smoke",
+      "passed": true,
+      "kind": "python_smoke_script",
+      "reported_cases": null,
+      "count_note": "Executed script success; no unittest case denominator."
+    },
+    {
+      "ctest_name": "server.chat_active_task",
+      "passed": true,
+      "kind": "python_unittest",
+      "reported_cases": 1,
+      "skipped_cases": 0
+    },
+    {
+      "ctest_name": "cli.smoke",
+      "passed": true,
+      "kind": "python_smoke_script",
+      "reported_cases": null,
+      "count_note": "Executed script success; no unittest case denominator."
+    },
+    {
+      "ctest_name": "eval.harness",
+      "passed": true,
+      "kind": "python_unittest",
+      "reported_cases": 19,
+      "skipped_cases": 0
+    },
+    {
+      "ctest_name": "compat.test_graph_packet_store",
+      "passed": true,
+      "kind": "python_unittest",
+      "reported_cases": 29,
+      "skipped_cases": 0
+    }
+  ]
+}
