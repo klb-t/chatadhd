@@ -42,6 +42,7 @@
 
 #include "loom/event_bus.h"
 #include "loom/result.h"
+#include "loom/runtime_profile.h"
 #include "loom/util/json.h"
 
 namespace loom {
@@ -58,13 +59,15 @@ class HttpTransport;
 }
 
 struct WorkerOptions {
-  int drain_batch = 50;                                  // _DRAIN_BATCH
-  std::chrono::milliseconds idle_poll{30000};            // _IDLE_POLL
-  double llm_rate_limit = 2.0;                           // _LLM_RATE_LIMIT (req/s)
-  std::chrono::milliseconds startup_delay{3000};         // time.sleep(3)
-  std::int64_t batch_threshold = 500;                    // pending count that switches to batch mode
-  int batch_max_messages = 10000;
-  std::string batch_endpoint = "https://api.anthropic.com/v1/messages/batches";
+  WorkerOptions();  // Builtin data preset; explicit values remain usable.
+  static Result<WorkerOptions> from_profile(const RuntimeProfile& profile);
+  int drain_batch = 0;
+  std::chrono::milliseconds idle_poll{0};
+  double llm_rate_limit = 0.0;  // zero disables throttling
+  std::chrono::milliseconds startup_delay{0};
+  std::int64_t batch_threshold = 0;
+  int batch_max_messages = 0;
+  std::string batch_endpoint;
 };
 
 struct WorkerStatus {
@@ -84,7 +87,7 @@ class SemanticWorker {
  public:
   SemanticWorker(Database& db, SemanticLLM& llm, GraphEngine& graph, const Config& cfg, const Secrets& secrets,
                  EventBus& bus, net::HttpTransport& http, const SemanticAnalyzer& regex, TaskEngine* tasks = nullptr,
-                 WorkerOptions opts = {});
+                 std::optional<WorkerOptions> opts = {}, const Json& profile_overrides = Json::object());
   ~SemanticWorker();  // stop()
   SemanticWorker(const SemanticWorker&) = delete;
   SemanticWorker& operator=(const SemanticWorker&) = delete;
@@ -98,6 +101,7 @@ class SemanticWorker {
 
   // One drain pass in the calling thread; returns processed count.
   Result<int> drain_once();
+  Result<Json> runtime_profile() const;
 
  private:
   void run();
@@ -111,6 +115,7 @@ class SemanticWorker {
   net::HttpTransport& http_;
   const SemanticAnalyzer& regex_;
   TaskEngine* tasks_;
+  Result<RuntimeProfile> profile_;
   WorkerOptions opts_;
 
   mutable std::mutex mu_;

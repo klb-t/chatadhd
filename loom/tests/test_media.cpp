@@ -18,6 +18,114 @@ std::string find_header(const net::Headers& h, std::string_view name) { return n
 }  // namespace
 
 TEST_SUITE("media") {
+  TEST_CASE("profile injection changes maps, transport, and compatibility priors") {
+    auto builtin = unwrap(RuntimeProfile::builtin("media"));
+    auto profile = unwrap(builtin.with_overrides(Json{{"providers", {
+      {"groq", {{"name", "local whisper"}, {"endpoint", "https://offline.invalid/asr"}, {"timeout_ms", 7},
+                {"model", "local-model"}, {"format_map", {{"custom", "opus"}}}, {"max_segments", 1},
+                {"placeholder_confidence", .42}, {"headers", {{"X-Test", "yes"}}}}},
+      {"google", {{"encoding_map", {{"custom", "CUSTOM"}}}, {"default_language", "pl-PL"},
+                  {"max_alternatives", 12}, {"word_confidence", false}}},
+      {"ocr.space", {{"language_map", {{"custom", "custom-language"}}}, {"engine", 4},
+                     {"text_placeholder_confidence", .37}}}
+    }}}));
+    net::ScriptedTransport http;
+    http.set_fallback(net::ScriptedTransport::Reply::json(200,
+      Json{{"text", "result"}, {"segments", Json::array({Json{{"text", "a"}}, Json{{"text", "b"}}})}}));
+    GroqAsr groq("fake", http, {}, profile);
+    auto result = unwrap(groq.transcribe_bytes("bytes", "custom", {}));
+    CHECK(groq.name() == "local whisper");
+    CHECK(result.confidence == .42);  // configurable placeholder, not measured confidence
+    CHECK(result.alternatives.size() == 1);
+    auto req = http.requests().back();
+    CHECK(req.url == "https://offline.invalid/asr");
+    CHECK(req.timeout_ms == 7);
+    CHECK(find_header(req.headers, "X-Test") == "yes");
+    CHECK(req.body.find("filename=\"audio.opus\"") != std::string::npos);
+    CHECK(req.body.find("local-model") != std::string::npos);
+
+    GoogleSpeechAsr google("fake", http, profile);
+    LOOM_REQUIRE_OK(google.transcribe_bytes("bytes", "custom", {}));
+    auto body = unwrap(json::parse(http.requests().back().body));
+    CHECK(body["config"]["encoding"] == "CUSTOM");
+    CHECK(body["config"]["languageCode"] == "pl-PL");
+    CHECK(body["config"]["maxAlternatives"] == 12);
+    CHECK(body["config"]["enableWordConfidence"] == false);
+
+    http.set_fallback(net::ScriptedTransport::Reply::json(200,
+      Json{{"ParsedResults", Json::array({Json{{"ParsedText", "ocr"}}})}}));
+    OcrSpaceProvider ocr("fake", http, {}, profile);
+    auto ocr_result = unwrap(ocr.recognize_bytes("image", "png", std::string("custom")));
+    CHECK(ocr_result.confidence == .37);
+    req = http.requests().back();
+    CHECK(req.body.find("language=custom-language") != std::string::npos);
+    CHECK(req.body.find("OCREngine=4") != std::string::npos);
+
+    auto removed = unwrap(builtin.with_patch(Json::array({
+      Json{{"op", "remove"}, {"path", "/providers/google/encoding_map/flac"}}})));
+    GoogleSpeechAsr without_flac("fake", http, removed);
+    LOOM_REQUIRE_OK(without_flac.transcribe_bytes("bytes", "flac", {}));
+    CHECK(unwrap(json::parse(http.requests().back().body))["config"]["encoding"] == "LINEAR16");
+
+    Json forged_definition = builtin.definition();
+    forged_definition["value_schema"] = Json{{"type", "object"}};
+    forged_definition["defaults"]["providers"]["google"]["max_alternatives"] = "invalid";
+    GoogleSpeechAsr invalid("fake", http, unwrap(RuntimeProfile::from_definition(forged_definition)));
+    const auto before = http.requests().size();
+    CHECK_FALSE(invalid.transcribe_bytes("bytes", "wav", {}));
+    CHECK(http.requests().size() == before);
+  }
+
+  TEST_CASE("overlay can add descriptors, reorder adapters, and disable them") {
+    fsutil::TempDir td;
+    Secrets secrets(td.path() / "secrets.json");
+    secrets.set("local_asr_key", "fake");
+    auto defaults = unwrap(RuntimeProfile::builtin("media")).values();
+    Json local = defaults["providers"]["groq"];
+    local["name"] = "my endpoint";
+    local["endpoint"] = "https://offline.invalid/local";
+    local["secret_key"] = "local_asr_key";
+    Json overlay{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "media"},
+                 {"overrides", {{"providers", {{"local", local}}}, {"asr_order", Json::array({"local"})},
+                                {"ocr_order", Json::array()}}}};
+    LOOM_REQUIRE_OK(fsutil::ensure_dir(td.path() / "profiles"));
+    LOOM_REQUIRE_OK(fsutil::write_file(td.path() / "profiles/media.pack", overlay.dump()));
+    net::ScriptedTransport http;
+    http.set_fallback(net::ScriptedTransport::Reply::json(200, Json{{"text", "custom"}}));
+    MediaProviders providers(secrets, http);
+    CHECK(providers.get_asr_providers() == std::vector<std::string>{"my endpoint"});
+    CHECK(providers.get_ocr_providers().empty());
+    CHECK(unwrap(providers.transcribe_bytes("bytes", "wav")).text == "custom");
+    CHECK(http.requests().back().url == "https://offline.invalid/local");
+    CHECK(unwrap(providers.runtime_profile())["is_builtin"] == false);
+
+    overlay["overrides"]["asr_order"] = Json::array();
+    LOOM_REQUIRE_OK(fsutil::write_file(td.path() / "profiles/media.pack", overlay.dump()));
+    providers.refresh();
+    CHECK(providers.get_asr_providers().empty());
+  }
+
+  TEST_CASE("invalid overlay or adapter fails before transport") {
+    fsutil::TempDir td;
+    Secrets secrets(td.path() / "secrets.json");
+    secrets.set("groq_api_key", "fake");
+    LOOM_REQUIRE_OK(fsutil::ensure_dir(td.path() / "profiles"));
+    LOOM_REQUIRE_OK(fsutil::write_file(td.path() / "profiles/media.pack", "not JSON"));
+    net::ScriptedTransport http;
+    MediaProviders providers(secrets, http);
+    CHECK_FALSE(providers.runtime_profile());
+    CHECK_FALSE(providers.transcribe_bytes("bytes", "wav"));
+    CHECK(http.requests().empty());
+    Json overlay{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "media"},
+                 {"overrides", {{"providers", {{"groq", {{"adapter", "unknown"}}}}}}}};
+    LOOM_REQUIRE_OK(fsutil::write_file(td.path() / "profiles/media.pack", overlay.dump()));
+    providers.refresh();
+    auto result = providers.transcribe_bytes("bytes", "wav");
+    REQUIRE_FALSE(result);
+    CHECK(result.error().code == Errc::Unsupported);
+    CHECK(http.requests().empty());
+  }
+
   TEST_CASE("GroqAsr: request shape and response parsing") {
     net::ScriptedTransport http;
     Json reply{{"text", " hello world "},

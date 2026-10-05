@@ -1,0 +1,143 @@
+23:30:24 [INFO ] loom.config: secrets.json not found - using defaults
+23:30:24 [ERROR] loom.github: Failed to list remote files: connection reset
+23:30:24 [ERROR] loom.github: Failed to fetch x.py: boom
+23:30:24 [WARN ] loom.github: Pull disabled in push_only mode
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_github.cpp:28:
+TEST SUITE: github_sync
+TEST CASE:  profile injection changes REST metadata and commit templates
+
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_github.cpp:28: ERROR: test case THREW exception: filesystem error: cannot create directories: Invalid argument []
+
+===============================================================================
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_github.cpp:62:
+TEST SUITE: github_sync
+TEST CASE:  manager overlay controls defaults and secret references; explicit values win
+
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_github.cpp:73: ERROR: CHECK( cfg.branch == "work" ) is NOT correct!
+  values: CHECK( main == work )
+
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_github.cpp:74: ERROR: CHECK( cfg.sync_direction == "pull_only" ) is NOT correct!
+  values: CHECK( bidirectional == pull_only )
+
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_github.cpp:75: ERROR: CHECK( cfg.include_patterns == std::vector<std::string>{"*.cpp"} ) is NOT correct!
+  values: CHECK( {?} == {?} )
+
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_github.cpp:76: ERROR: CHECK( cfg.exclude_patterns.empty() ) is NOT correct!
+  values: CHECK( false )
+
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_github.cpp:77: ERROR: CHECK( cfg.token == "fake-token" ) is NOT correct!
+  values: CHECK(  == fake-token )
+
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_github.cpp:84: ERROR: CHECK( sync->should_include("x.cpp") ) is NOT correct!
+  values: CHECK( false )
+
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_github.cpp:85: ERROR: CHECK_FALSE( sync->should_include("x.py") ) is NOT correct!
+  values: CHECK_FALSE( true )
+
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_github.cpp:86: ERROR: CHECK( unwrap(mgr.runtime_profile())["is_builtin"] == false ) is NOT correct!
+  values: CHECK( true == false )
+
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_github.cpp:89: ERROR: CHECK_FALSE( invalid.runtime_profile() ) is NOT correct!
+  values: CHECK_FALSE( {?} )
+
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_github.cpp:90: ERROR: CHECK_FALSE( invalid.add_config("new", "owner/repo", "/tmp") ) is NOT correct!
+  values: CHECK_FALSE( {?} )
+
+===============================================================================
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_github.cpp:227:
+TEST SUITE: github_sync
+TEST CASE:  list_local_files: recursive walk, relative posix paths, respects should_include
+
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_github.cpp:227: ERROR: test case THREW exception: filesystem error: cannot create directories: Invalid argument []
+
+===============================================================================
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_github.cpp:255:
+TEST SUITE: github_sync
+TEST CASE:  default push omits root and nested secrets; explicit patterns remain authoritative
+
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_github.cpp:255: ERROR: test case THREW exception: filesystem error: cannot create directories: Invalid argument []
+
+===============================================================================
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_github.cpp:311:
+TEST SUITE: github_sync
+TEST CASE:  get_sync_status: synced / modified / new_remote / new_local
+
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_github.cpp:311: ERROR: test case THREW exception: filesystem error: cannot create directories: Invalid argument []
+
+===============================================================================
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_github.cpp:376:
+TEST SUITE: github_sync
+TEST CASE:  pull_file: refused in push_only mode; writes local file otherwise
+
+/workspace/scratch/72fc60ad23:30:24 [INFO ] loom.config: secrets.json not found - using defaults
+23:30:24 [INFO ] loom.config: secrets.json not found - using defaults
+1cc5/chatadhd/loom/tests/test_github.cpp:396: FATAL ERROR: REQUIRE( static_cast<bool>(loom_t_r_) ) is NOT correct!
+  values: REQUIRE( false )
+  logged: io: mkdir : Invalid argument
+
+===============================================================================
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_github.cpp:405:
+TEST SUITE: github_sync
+TEST CASE:  push_file: refused in pull_only mode; PUTs base64 content with sha when updating
+
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_github.cpp:405: ERROR: test case THREW exception: filesystem error: cannot create directories: Invalid argument []
+
+===============================================================================
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_github.cpp:438:
+TEST SUITE: github_sync
+TEST CASE:  push_file: default commit message matches Python's 'Update {path} via ChatADHD'
+
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_github.cpp:438: ERROR: test case THREW exception: filesystem error: cannot create directories: Invalid argument []
+
+===============================================================================
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_github.cpp:455:
+TEST SUITE: github_sync
+TEST CASE:  pull_all / push_all: default selection and success/failed tally
+
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_github.cpp:455: ERROR: test case THREW exception: filesystem error: cannot create directories: Invalid argument []
+
+===============================================================================
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_github.cpp:489:
+TEST SUITE: github_sync
+TEST CASE:  sync: pulls new_remote, pushes new_local, reports modified as conflicts
+
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_github.cpp:489: ERROR: test case THREW exception: filesystem error: cannot create directories: Invalid argument []
+
+===============================================================================
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_github.cpp:516:
+TEST SUITE: github_sync
+TEST CASE:  GitHubSyncManager: add, persist, reload, get_syncer fills token from secrets, remove
+
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_github.cpp:525: ERROR: CHECK( mgr.list_configs().empty() ) is NOT correct!
+  values: CHECK( false )
+
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_github.cpp:536: ERROR: CHECK( mgr2.list_configs() == std::vector<std::string>{"main-repo"} ) is NOT correct!
+  values: CHECK( {?} == {?} )
+
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_github.cpp:547: ERROR: CHECK( mgr2.list_configs().empty() ) is NOT correct!
+  values: CHECK( false )
+
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_github.cpp:549: ERROR: CHECK( mgr3.list_configs().empty() ) is NOT correct!
+  values: CHECK( false )
+
+===============================================================================
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_media.cpp:65:
+TEST SUITE: media
+TEST CASE:  overlay can add descriptors, reorder adapters, and disable them
+
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_media.cpp:82: ERROR: CHECK( providers.get_asr_providers() == std::vector<std::string>{"my endpoint"} ) is NOT correct!
+  values: CHECK( {?} == {?} )
+
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_helpers.h:26: FATAL ERROR: unexpected error: unavailable: No ASR providers configured. Add groq_api_key or google_speech_api_key to secrets.
+
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_media.cpp:84: ERROR: CHECK( unwrap(providers.transcribe_bytes("bytes", "wav")).text == "custom" ) THREW exception: "unknown exception"
+
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_media.cpp:65: FATAL ERROR: test case CRASHED: SIGSEGV - Segmentation violation signal
+
+===============================================================================
+[doctest] test cases:  23 | 11 passed | 12 failed | 27 skipped
+[doctest] assertions: 106 | 88 passed | 18 failed |
+[doctest] Status: FAILURE!

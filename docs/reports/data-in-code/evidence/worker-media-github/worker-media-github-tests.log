@@ -1,0 +1,94 @@
+23:37:01 [INFO ] loom.github: Pushed: a.md
+23:37:01 [INFO ] loom.config: secrets.json not found - using defaults
+23:37:01 [ERROR] loom.github: Failed to list remote files: connection reset
+23:37:01 [INFO ] loom.github: Pushed: notes.json
+23:37:01 [INFO ] loom.github: Pushed: nested/deeper/secrets.json
+23:37:01 [INFO ] loom.github: Pushed: notes.json
+23:37:01 [INFO ] loom.github: Pushed: secrets.json
+23:37:01 [ERROR] loom.github: Failed to fetch x.py: boom
+23:37:01 [WARN ] loom.github: Pull disabled in push_only mode
+23:37:01 [INFO ] loom.github: Pulled: a.md
+23:37:01 [WARN ] loom.github: Push disabled in pull_only mode
+23:37:01 [INFO ] loom.github: Pushed: a.md
+23:37:01 [INFO ] loom.github: Pushed: n.md
+23:37:01 [INFO ] loom.github: Pulled: remote_only.py
+23:37:01 [INFO ] loom.github: Pushed: local_only.py
+23:37:01 [INFO ] loom.github: Pushed: local_only.py
+23:37:01 [INFO ] loom.github: Pulled: remote_only.py
+23:37:01 [INFO ] loom.config: secrets.json not found - using defaults
+23:37:01 [INFO ] loom.config: secrets.json not found - using defaults
+23:37:01 [INFO ] loom.config: secrets.json not found - using defaults
+23:37:01 [INFO ] loom.config: secrets.json not found - using defaults
+23:37:01 [INFO ] loom.config: secrets.json not found - using defaults
+23:37:01 [INFO ] loom.config: secrets.json not found - using defaults
+23:37:01 [WARN ] loom.media: provider groq failed: Groq ASR error: boom
+23:37:01 [INFO ] loom.config: secrets.json not found - using defaults
+23:37:01 [INFO ] loom.config: secrets.json not found - using defaults
+23:37:01 [INFO ] loom.config: config.json not found - using defaults
+23:37:01 [INFO ] loom.config: secrets.json not found - using defaults
+23:37:01 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:37:01 [INFO ] loom.db: Database opened: /tmp/loom_22e314515fab/test.db
+23:37:01 [INFO ] loom.semantic_worker: Semantic: 1 done (regex, 100.0/s, 2 left)
+23:37:01 [INFO ] loom.semantic_worker: Semantic: 2 done (regex, 159.4/s, 0 left)
+23:37:01 [INFO ] loom.db: Database closed
+23:37:01 [INFO ] loom.config: config.json not found - using defaults
+23:37:01 [INFO ] loom.config: secrets.json not found - using defaults
+23:37:01 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:37:01 [INFO ] loom.db: Database opened: /tmp/loom_0dbafc3e3857/test.db
+23:37:01 [INFO ] loom.semantic_worker: Batch submitted: offline-batch (1 msgs, ~$0.00)
+23:37:01 [INFO ] loom.db: Database closed
+23:37:01 [INFO ] loom.config: config.json not found - using defaults
+23:37:01 [INFO ] loom.config: secrets.json not found - using defaults
+23:37:01 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:37:01 [INFO ] loom.db: Database opened: /tmp/loom_11e20de121c9/test.db
+23:37:01 [INFO ] loom.db: Database closed
+23:37:01 [INFO ] loom.config: config.json not found - using defaults
+23:37:01 [INFO ] loom.config: secrets.json not found - using defaults
+23:37:01 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:37:01 [INFO ] loom.db: Database opened: /tmp/loom_e18d33800448/test.db
+23:37:01 [INFO ] loom.db: Database closed
+23:37:01 [INFO ] loom.config: config.json not found - using defaults
+23:37:01 [INFO ] loom.config: secrets.json not found - using defaults
+23:37:01 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:37:01 [INFO ] loom.db: Database opened: /tmp/loom_5913e6753c85/test.db
+23:37:01 [INFO ] loom.semantic_worker: Semantic: 2 done (regex, 185.6/s, 0 left)
+23:37:01 [INFO ] loom.db: Database closed
+23:37:01 [INFO ] loom.config: config.json not found - using defaults
+23:37:01 [INFO ] loom.config: secrets.json not found - using defaults
+23:37:01 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:37:01 [INFO ] loom.db: Database opened: /tmp/loom_c90f3a1538d1/test.db
+23:37:01 [INFO ] loom.db: Database closed
+23:37:01 [INFO ] loom.config: config.json not found - using defaults
+23:37:01 [INFO ] loom.config: secrets.json not found - using defaults
+23:37:01 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:37:01 [INFO ] loom.db: Database opened: /tmp/loom_fa9c7425dfe0/test.db
+23:37:02 [INFO ] loom.db: Database closed
+23:37:02 [INFO ] loom.config: config.json not found - using defaults
+23:37:02 [INFO ] loom.config: secrets.json not found - using defaults
+23:37:02 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:37:02 [INFO ] loom.db: Database opened: /tmp/loom_0bf1625f6654/test.db
+23:37:02 [INFO ] loom.semantic_worker: Semantic: 1 done (regex, 100.0/s, 0 left)
+23:37:02 [INFO ] loom.db: Database closed
+23:37:02 [INFO ] loom.config: config.json not found - using defaults
+23:37:02 [INFO ] loom.config: secrets.json not found - using defaults
+23:37:02 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:37:02 [INFO ] loom.db: Database opened: /tmp/loom_3a8c66222012/test.db
+23:37:02 [INFO ] loom.semantic_worker: Semantic: 1 done (regex, 100.0/s, 0 left)
+23:37:02 [INFO ] loom.db: Database closed
+23:37:02 [INFO ] loom.config: config.json not found - using defaults
+23:37:02 [INFO ] loom.config: secrets.json not found - using defaults
+23:37:02 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:37:02 [INFO ] loom.db: Database opened: /tmp/loom_39cfafa86de2/test.db
+23:37:02 [INFO ] loom.semantic_worker: Semantic: 1 done (regex, 87.4/s, 0 left)
+23:37:02 [INFO ] loom.db: Database closed
+23:37:02 [INFO ] loom.config: config.json not found - using defaults
+23:37:02 [INFO ] loom.config: secrets.json not found - using defaults
+23:37:02 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:37:02 [INFO ] loom.db: Database opened: /tmp/loom_cfa56ef71470/test.db
+23:37:02 [INFO ] loom.db: Database closed
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases:  50 |  50 passed | 0 failed | 0 skipped
+[doctest] assertions: 333 | 333 passed | 0 failed |
+[doctest] Status: SUCCESS!

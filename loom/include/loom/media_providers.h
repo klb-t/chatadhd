@@ -36,6 +36,7 @@
 #include <vector>
 
 #include "loom/result.h"
+#include "loom/runtime_profile.h"
 #include "loom/util/json.h"
 
 namespace loom {
@@ -85,8 +86,9 @@ class OcrProvider {
 
 class GroqAsr final : public AsrProvider {
  public:
-  GroqAsr(std::string api_key, net::HttpTransport& http, std::string model = "whisper-large-v3-turbo");
-  std::string name() const override { return "groq"; }
+  GroqAsr(std::string api_key, net::HttpTransport& http, std::optional<std::string> model = {},
+          std::optional<RuntimeProfile> profile = {}, std::string profile_id = "");
+  std::string name() const override;
   Result<AsrResult> transcribe_bytes(std::string_view audio, std::string_view format,
                                      const std::optional<std::string>& language) override;
   Result<AsrResult> transcribe(const std::filesystem::path& audio_path,
@@ -96,12 +98,15 @@ class GroqAsr final : public AsrProvider {
   std::string key_;
   net::HttpTransport& http_;
   std::string model_;
+  Result<RuntimeProfile> profile_;
+  std::string profile_id_;
 };
 
 class GoogleSpeechAsr final : public AsrProvider {
  public:
-  GoogleSpeechAsr(std::string api_key, net::HttpTransport& http);
-  std::string name() const override { return "google"; }
+  GoogleSpeechAsr(std::string api_key, net::HttpTransport& http,
+                  std::optional<RuntimeProfile> profile = {}, std::string profile_id = "");
+  std::string name() const override;
   Result<AsrResult> transcribe_bytes(std::string_view audio, std::string_view format,
                                      const std::optional<std::string>& language) override;
   Result<AsrResult> transcribe(const std::filesystem::path& audio_path,
@@ -110,12 +115,15 @@ class GoogleSpeechAsr final : public AsrProvider {
  private:
   std::string key_;
   net::HttpTransport& http_;
+  Result<RuntimeProfile> profile_;
+  std::string profile_id_;
 };
 
 class OcrSpaceProvider final : public OcrProvider {
  public:
-  OcrSpaceProvider(std::string api_key, net::HttpTransport& http, int engine = 2);
-  std::string name() const override { return "ocr.space"; }
+  OcrSpaceProvider(std::string api_key, net::HttpTransport& http, std::optional<int> engine = {},
+                   std::optional<RuntimeProfile> profile = {}, std::string profile_id = "");
+  std::string name() const override;
   Result<OcrResult> recognize_bytes(std::string_view image, std::string_view format,
                                     const std::optional<std::string>& language) override;
   Result<OcrResult> recognize(const std::filesystem::path& image_path,
@@ -125,12 +133,16 @@ class OcrSpaceProvider final : public OcrProvider {
   std::string key_;
   net::HttpTransport& http_;
   int engine_;
+  Result<RuntimeProfile> profile_;
+  std::string profile_id_;
 };
 
 // Python ProviderManager.
 class MediaProviders {
  public:
   MediaProviders(const Secrets& secrets, net::HttpTransport& http);
+  // Separate inspection keeps legacy result/status JSON byte-compatible.
+  Result<Json> runtime_profile() const;
   // Re-reads the secrets (call after loom_set_secret). Python built the
   // provider list once in __init__.
   void refresh();
@@ -156,6 +168,7 @@ class MediaProviders {
  private:
   const Secrets& secrets_;
   net::HttpTransport& http_;
+  Result<RuntimeProfile> profile_;
   mutable std::mutex mu_;
   std::vector<std::shared_ptr<AsrProvider>> asr_;  // preference order
   std::vector<std::shared_ptr<OcrProvider>> ocr_;

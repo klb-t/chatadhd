@@ -30,6 +30,24 @@ bool cfg_bool(const Config& cfg, std::string_view key, bool fallback) {
 
 Json regex_unified(const SemanticAnalyzer& regex, std::string_view text) { return SemanticAnalyzer::to_unified(regex.analyse(text)); }
 
+net::Headers batch_headers(const RuntimeProfile& profile, const Secrets& secrets) {
+  net::Headers out{{"x-api-key", secrets.get_string(profile.values().at("batch_secret_key").get<std::string>())}};
+  const auto& headers = profile.values().at("headers");
+  for (auto it = headers.begin(); it != headers.end(); ++it) out.push_back({it.key(), it.value().get<std::string>()});
+  return out;
+}
+
+void assign_worker_options(WorkerOptions& opts, const RuntimeProfile& profile) {
+  const auto& v = profile.values();
+  opts.drain_batch = v.at("drain_batch").get<int>();
+  opts.idle_poll = std::chrono::milliseconds(v.at("idle_poll_ms").get<std::int64_t>());
+  opts.llm_rate_limit = v.at("llm_rate_limit").get<double>();
+  opts.startup_delay = std::chrono::milliseconds(v.at("startup_delay_ms").get<std::int64_t>());
+  opts.batch_threshold = v.at("batch_threshold").get<std::int64_t>();
+  opts.batch_max_messages = v.at("batch_max_messages").get<int>();
+  opts.batch_endpoint = v.at("batch_endpoint").get<std::string>();
+}
+
 // ── Anthropic Message Batches (submit / poll / fetch) ───────────────────
 // Free helpers so no additional private members/methods are needed on
 // SemanticWorker; called from member functions with private state passed by
@@ -37,16 +55,16 @@ Json regex_unified(const SemanticAnalyzer& regex, std::string_view text) { retur
 
 void fetch_batch_results(Database& db, const Secrets& secrets, net::HttpTransport& http, EventBus& bus,
                          GraphEngine& graph, std::mutex& mu, std::string& mode, const std::string& batch_id,
-                         std::atomic<std::int64_t>& processed) {
+                         std::atomic<std::int64_t>& processed, const RuntimeProfile& profile) {
   {
     std::lock_guard lk(mu);
     mode = "batch_ingest";
   }
   net::HttpRequest req;
   req.method = "GET";
-  req.url = "https://api.anthropic.com/v1/messages/batches/" + batch_id + "/results";
-  req.headers = {{"x-api-key", secrets.get_string("anthropic_batch_key")}, {"anthropic-version", "2023-06-01"}};
-  req.timeout_ms = 300000;
+  req.url = profile.values().at("batch_endpoint").get<std::string>() + "/" + batch_id + "/results";
+  req.headers = batch_headers(profile, secrets);
+  req.timeout_ms = profile.values().at("results_timeout_ms").get<int>();
   req.stream = true;
 
   int count = 0, errors = 0;
@@ -112,7 +130,7 @@ void fetch_batch_results(Database& db, const Secrets& secrets, net::HttpTranspor
 
 void check_batch_status(Database& db, const Secrets& secrets, net::HttpTransport& http, EventBus& bus, GraphEngine& graph,
                         std::mutex& mu, std::string& mode, std::optional<std::string>& batch_id,
-                        std::int64_t& batch_submitted, std::atomic<std::int64_t>& processed) {
+                        std::int64_t& batch_submitted, std::atomic<std::int64_t>& processed, const RuntimeProfile& profile) {
   std::string bid;
   {
     std::lock_guard lk(mu);
@@ -123,9 +141,9 @@ void check_batch_status(Database& db, const Secrets& secrets, net::HttpTransport
 
   net::HttpRequest req;
   req.method = "GET";
-  req.url = "https://api.anthropic.com/v1/messages/batches/" + bid;
-  req.headers = {{"x-api-key", secrets.get_string("anthropic_batch_key")}, {"anthropic-version", "2023-06-01"}};
-  req.timeout_ms = 30000;
+  req.url = profile.values().at("batch_endpoint").get<std::string>() + "/" + bid;
+  req.headers = batch_headers(profile, secrets);
+  req.timeout_ms = profile.values().at("poll_timeout_ms").get<int>();
   auto resp = http.send(req);
   if (!resp || resp->status != 200) {
     log::warn("loom.semantic_worker", "Batch poll failed: {}", resp ? resp->status : -1);
@@ -139,11 +157,11 @@ void check_batch_status(Database& db, const Secrets& secrets, net::HttpTransport
            counts ? json::get_int(*counts, "succeeded", 0) : 0, counts ? json::get_int(*counts, "errored", 0) : 0);
 
   if (status == "ended") {
-    fetch_batch_results(db, secrets, http, bus, graph, mu, mode, bid, processed);
+    fetch_batch_results(db, secrets, http, bus, graph, mu, mode, bid, processed, profile);
     std::lock_guard lk(mu);
     batch_id.reset();
     batch_submitted = 0;
-  } else if (status == "failed" || status == "canceled" || status == "expired") {
+  } else if (std::find(profile.values().at("terminal_statuses").begin(), profile.values().at("terminal_statuses").end(), status) != profile.values().at("terminal_statuses").end()) {
     log::warn("loom.semantic_worker", "Batch {}: {}", bid, status);
     std::lock_guard lk(mu);
     batch_id.reset();
@@ -155,7 +173,7 @@ void check_batch_status(Database& db, const Secrets& secrets, net::HttpTransport
 // processed count on the submit path).
 int submit_batch_api(Database& db, const Config& cfg, const Secrets& secrets, net::HttpTransport& http, std::mutex& mu,
                      std::string& mode, std::optional<std::string>& batch_id, std::int64_t& batch_submitted,
-                     int batch_max_messages, const std::string& batch_endpoint) {
+                     int batch_max_messages, const std::string& batch_endpoint, const RuntimeProfile& profile) {
   {
     std::lock_guard lk(mu);
     if (batch_id) return 0;
@@ -165,26 +183,26 @@ int submit_batch_api(Database& db, const Config& cfg, const Secrets& secrets, ne
   if (!msgsr || msgsr->empty()) return 0;
 
   std::string model = cfg_string(cfg, "semantic_model");
-  if (auto p = model.find('/'); p != std::string::npos) model = model.substr(p + 1);
+  if (profile.values().at("strip_model_provider").get<bool>())
+    if (auto p = model.find('/'); p != std::string::npos) model = model.substr(p + 1);
 
   Json batch_requests = Json::array();
   for (const auto& m : *msgsr) {
     batch_requests.push_back(
         Json{{"custom_id", m.id},
             {"params", Json{{"model", model},
-                           {"max_tokens", 800},
+                           {"max_tokens", profile.values().at("batch_output_tokens")},
                            {"messages", Json::array({Json{{"role", "user"},
-                             {"content", std::string(kAnalysisPrompt) + std::string(utf8::prefix(m.text, 3000))}}})}}}});
+                             {"content", std::string(kAnalysisPrompt) + std::string(utf8::prefix(m.text, profile.values().at("batch_input_chars").get<std::size_t>()))}}})}}}});
   }
 
   net::HttpRequest req;
   req.method = "POST";
   req.url = batch_endpoint;
-  req.headers = {{"x-api-key", secrets.get_string("anthropic_batch_key")},
-                {"anthropic-version", "2023-06-01"},
-                {"content-type", "application/json"}};
+  req.headers = batch_headers(profile, secrets);
+  req.headers.push_back({"content-type", "application/json"});
   req.body = json::dump(Json{{"requests", batch_requests}});
-  req.timeout_ms = 120000;
+  req.timeout_ms = profile.values().at("submit_timeout_ms").get<int>();
 
   auto resp = http.send(req);
   if (!resp) {
@@ -195,7 +213,7 @@ int submit_batch_api(Database& db, const Config& cfg, const Secrets& secrets, ne
     auto j = resp->json();
     std::string id = j ? json::get_string(*j, "id") : std::string();
     std::int64_t submitted = static_cast<std::int64_t>(batch_requests.size());
-    double cost = static_cast<double>(submitted) * 0.000065;
+    double cost = static_cast<double>(submitted) * profile.values().at("batch_estimate_per_message").get<double>();
     {
       std::lock_guard lk(mu);
       batch_id = id;
@@ -205,11 +223,24 @@ int submit_batch_api(Database& db, const Config& cfg, const Secrets& secrets, ne
     log::info("loom.semantic_worker", "Batch submitted: {} ({} msgs, ~${:.2f})", id, submitted, cost);
     return 0;
   }
-  log::warn("loom.semantic_worker", "Batch submit failed {}: {}", resp->status, std::string(utf8::prefix(resp->body, 200)));
+  log::warn("loom.semantic_worker", "Batch submit failed {}: {}", resp->status, std::string(utf8::prefix(resp->body, profile.values().at("submit_error_body_chars").get<std::size_t>())));
   return 0;
 }
 
 }  // namespace
+
+WorkerOptions::WorkerOptions() {
+  if (auto profile = RuntimeProfile::builtin("worker")) assign_worker_options(*this, *profile);
+}
+
+Result<WorkerOptions> WorkerOptions::from_profile(const RuntimeProfile& profile) {
+  if (profile.domain() != "worker") return Error(Errc::InvalidArgument, "expected worker runtime profile");
+  LOOM_TRY_ASSIGN(auto builtin, RuntimeProfile::builtin("worker"));
+  LOOM_TRY_ASSIGN(auto checked, builtin.with_values(profile.values()));
+  WorkerOptions out;
+  assign_worker_options(out, checked);
+  return out;
+}
 
 Json WorkerStatus::to_json() const {
   char rate_buf[32];
@@ -227,7 +258,7 @@ Json WorkerStatus::to_json() const {
 
 SemanticWorker::SemanticWorker(Database& db, SemanticLLM& llm, GraphEngine& graph, const Config& cfg,
                                const Secrets& secrets, EventBus& bus, net::HttpTransport& http,
-                               const SemanticAnalyzer& regex, TaskEngine* tasks, WorkerOptions opts)
+                               const SemanticAnalyzer& regex, TaskEngine* tasks, std::optional<WorkerOptions> opts, const Json& profile_overrides)
     : db_(db),
       llm_(llm),
       graph_(graph),
@@ -237,7 +268,15 @@ SemanticWorker::SemanticWorker(Database& db, SemanticLLM& llm, GraphEngine& grap
       http_(http),
       regex_(regex),
       tasks_(tasks),
-      opts_(std::move(opts)) {
+      profile_(RuntimeProfile::load("worker", cfg.path().parent_path(), profile_overrides)),
+      opts_(opts ? std::move(*opts) : WorkerOptions()) {
+  if (opts && profile_) {
+    profile_ = profile_->with_overrides(Json{{"drain_batch", opts_.drain_batch},
+      {"idle_poll_ms", opts_.idle_poll.count()}, {"llm_rate_limit", opts_.llm_rate_limit},
+      {"startup_delay_ms", opts_.startup_delay.count()}, {"batch_threshold", opts_.batch_threshold},
+      {"batch_max_messages", opts_.batch_max_messages}, {"batch_endpoint", opts_.batch_endpoint}});
+  }
+  if (!opts && profile_) assign_worker_options(opts_, *profile_);
   import_sub_ = ScopedSubscription(bus_, bus_.on(events::kImportDone, [this](std::string_view, const Json&) { wake(); }));
 }
 
@@ -293,7 +332,10 @@ WorkerStatus SemanticWorker::status() const {
   return s;
 }
 
+Result<Json> SemanticWorker::runtime_profile() const { LOOM_TRY(profile_); return profile_->inspection(); }
+
 Result<int> SemanticWorker::drain_once() {
+  LOOM_TRY(profile_);
   auto msgsr = db_.get_unanalysed_msgs(opts_.drain_batch);
   if (!msgsr) return msgsr.error();
   auto& msgs = *msgsr;
@@ -303,11 +345,11 @@ Result<int> SemanticWorker::drain_once() {
 
   auto pending_r = db_.count_pending_semantic();
   std::int64_t pending_total = pending_r.value_or(0);
-  bool has_batch_key = !secrets_.get_string("anthropic_batch_key").empty();
+  bool has_batch_key = !secrets_.get_string(profile_->values().at("batch_secret_key").get<std::string>()).empty();
 
   if (pending_total > opts_.batch_threshold && use_llm && has_batch_key) {
     return submit_batch_api(db_, cfg_, secrets_, http_, mu_, mode_, batch_id_, batch_submitted_,
-                            opts_.batch_max_messages, opts_.batch_endpoint);
+                            opts_.batch_max_messages, opts_.batch_endpoint, *profile_);
   }
 
   {
@@ -325,7 +367,7 @@ Result<int> SemanticWorker::drain_once() {
     }
     try {
       Json analysis = use_llm ? llm_.analyse(m.text) : regex_unified(regex_, m.text);
-      if (use_llm) {
+      if (use_llm && opts_.llm_rate_limit > 0) {
         // Interruptible rate-limit wait: no blind sleep, so stop() is prompt.
         std::unique_lock lk(mu_);
         auto wait = std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -345,7 +387,8 @@ Result<int> SemanticWorker::drain_once() {
   }
 
   double elapsed = timeutil::monotonic_seconds() - t0;
-  double rate = count / std::max(elapsed, 0.01);
+  const double denominator = std::max(elapsed, profile_->values().at("rate_elapsed_floor").get<double>());
+  double rate = denominator > 0 ? count / denominator : 0;
   std::string mode_copy;
   {
     std::lock_guard lk(mu_);
@@ -362,6 +405,7 @@ Result<int> SemanticWorker::drain_once() {
 }
 
 void SemanticWorker::run() {
+  if (!profile_) { log::error("loom.semantic_worker", "{}", profile_.error().message); return; }
   {
     std::unique_lock lk(mu_);
     cv_.wait_for(lk, opts_.startup_delay, [this] { return stop_; });
@@ -375,7 +419,7 @@ void SemanticWorker::run() {
     }
     if (paused_.load()) {
       std::unique_lock lk(mu_);
-      cv_.wait_for(lk, std::chrono::seconds(5), [this] { return stop_ || wake_; });
+      cv_.wait_for(lk, std::chrono::milliseconds(profile_->values().at("pause_poll_ms").get<std::int64_t>()), [this] { return stop_ || wake_; });
       wake_ = false;
       if (stop_) return;
       continue;
@@ -385,12 +429,12 @@ void SemanticWorker::run() {
       if (!processed) {
         log::error("loom.semantic_worker", "SemanticWorker loop error: {}", processed.error().message);
         std::unique_lock lk(mu_);
-        cv_.wait_for(lk, std::chrono::seconds(5), [this] { return stop_; });
+        cv_.wait_for(lk, std::chrono::milliseconds(profile_->values().at("error_backoff_ms").get<std::int64_t>()), [this] { return stop_; });
         if (stop_) return;
         continue;
       }
       if (*processed == 0) {
-        check_batch_status(db_, secrets_, http_, bus_, graph_, mu_, mode_, batch_id_, batch_submitted_, processed_);
+        check_batch_status(db_, secrets_, http_, bus_, graph_, mu_, mode_, batch_id_, batch_submitted_, processed_, *profile_);
         {
           std::lock_guard lk(mu_);
           mode_ = "idle";
@@ -403,7 +447,7 @@ void SemanticWorker::run() {
     } catch (const std::exception& e) {
       log::error("loom.semantic_worker", "SemanticWorker loop error: {}", e.what());
       std::unique_lock lk(mu_);
-      cv_.wait_for(lk, std::chrono::seconds(5), [this] { return stop_; });
+      cv_.wait_for(lk, std::chrono::milliseconds(profile_->values().at("error_backoff_ms").get<std::int64_t>()), [this] { return stop_; });
       if (stop_) return;
     }
   }
