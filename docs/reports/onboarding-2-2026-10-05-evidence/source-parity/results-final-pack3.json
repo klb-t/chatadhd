@@ -1,0 +1,103 @@
+{
+  "accounting_tool": {
+    "corrections": "Use actual effective_privacy.resolution wrapper and assessment.basis.support DTO paths; metadata allowance remains narrowly scoped.",
+    "initial_negative_results_preserved": [
+      "comparison-initial-effective-privacy-wrapper-failure.json",
+      "comparison-initial-absent-claim-support-failure.json"
+    ],
+    "unit_checks": 25
+  },
+  "after_production_revision": "6adbf2ad00671da40a356b922a8c1a8091b1e5ea",
+  "baseline_production_revision": "3c0bc36552ef9851f1174946cfb108549aae3228",
+  "full_test_source_revision": "6ea0772654736ac08c34743295beef27d9115d58",
+  "kernel_manifests": {
+    "after-final-pack3": {
+      "libraries": {
+        "libloom_core.a": "cadc4d0e9e5337a882c8bbafaf81b1ec98676f339e9fb4b074b7598a5729a098",
+        "libloom_miniz.a": "bffec05ae6233f7f4ffbd98f9ddc5729bac01ea6341704c8779ec15c87b9adb6",
+        "libloom_sqlite3_amalgamation.a": "fa49de1205ad8353e9ad9299027730e91bf94149b449b010a243457f23da634b"
+      },
+      "probe_sha256": "5cf347eea7cb464dcf65c7f01d7170733604304b5f5d654083fab861ca4b4959",
+      "production_revision": "6adbf2ad00671da40a356b922a8c1a8091b1e5ea",
+      "trace_sha256": "63727e1613e53f7088f8e3fc56f5b08af512aca0435150fbf0175dd0565dd341"
+    },
+    "before": {
+      "libraries": {
+        "libloom_core.a": "c60a3834557239a1d4ee1d20a574c0f0a3720b6d5468a7fdcbcb6e7920784133",
+        "libloom_miniz.a": "583cebc03bfc7fb24cecef8fdf691692a092154dc6c8255e7615151b5a1b43f1",
+        "libloom_sqlite3_amalgamation.a": "fa49de1205ad8353e9ad9299027730e91bf94149b449b010a243457f23da634b"
+      },
+      "probe_sha256": "5cf347eea7cb464dcf65c7f01d7170733604304b5f5d654083fab861ca4b4959",
+      "production_revision": "3c0bc36552ef9851f1174946cfb108549aae3228",
+      "trace_sha256": "3de246edaa743b50da6b80206073df434f954f2564722370b99538279ffa81c3"
+    },
+    "migration-after-final-pack3": {
+      "libraries": {
+        "libloom_core.a": "cadc4d0e9e5337a882c8bbafaf81b1ec98676f339e9fb4b074b7598a5729a098",
+        "libloom_miniz.a": "bffec05ae6233f7f4ffbd98f9ddc5729bac01ea6341704c8779ec15c87b9adb6",
+        "libloom_sqlite3_amalgamation.a": "fa49de1205ad8353e9ad9299027730e91bf94149b449b010a243457f23da634b"
+      },
+      "probe_sha256": "99f95d97e4a10f6ce348d0ef73e3f45af502cfb9ca8e764067ebdecff23e637e",
+      "production_revision": "6adbf2ad00671da40a356b922a8c1a8091b1e5ea",
+      "trace_sha256": "944c7710d7045905d710efd64ed4a7f7423480e0f16b53b5b36130fbb912f40e"
+    },
+    "migration-before-final-pack3": {
+      "libraries": {
+        "libloom_core.a": "c60a3834557239a1d4ee1d20a574c0f0a3720b6d5468a7fdcbcb6e7920784133",
+        "libloom_miniz.a": "583cebc03bfc7fb24cecef8fdf691692a092154dc6c8255e7615151b5a1b43f1",
+        "libloom_sqlite3_amalgamation.a": "fa49de1205ad8353e9ad9299027730e91bf94149b449b010a243457f23da634b"
+      },
+      "probe_sha256": "99f95d97e4a10f6ce348d0ef73e3f45af502cfb9ca8e764067ebdecff23e637e",
+      "production_revision": "3c0bc36552ef9851f1174946cfb108549aae3228",
+      "trace_sha256": "f5f2fef3e8554132151f1680e9ba045296ef7eb5a0a1ca239c68c474514abbbd"
+    }
+  },
+  "migration": {
+    "actual_before_fixture_hashes": {
+      "synthetic.db": "d3f74be8cba0d8005ea64ecba863ee627212bce1c5a679c9716370cc7f5e5c32"
+    },
+    "all_consumer_invariants_pass": true,
+    "consumer_input_matches_actual_fixture": true,
+    "consumer_invariants": 15,
+    "explicit_update_target_revision": 3,
+    "installed_revision_before_and_after_open": 1,
+    "producer_invariants": 7,
+    "raw_sql_graph_hashes": {
+      "after_explicit_update": "e48db6aae1243815eb48f50d6990a56e3fad32c2610a0ed2376d9862fbf0684d",
+      "after_open": "3de9f09899a35ab4fadd223416fb35c3beac4708e45fc280d1d77dff23131429",
+      "before_open": "3de9f09899a35ab4fadd223416fb35c3beac4708e45fc280d1d77dff23131429"
+    },
+    "same_probe_source_sha256": "99f95d97e4a10f6ce348d0ef73e3f45af502cfb9ca8e764067ebdecff23e637e",
+    "source_matches_consumer": true
+  },
+  "model_calls": 0,
+  "network_calls": 0,
+  "primary": {
+    "additions_per_stage": {
+      "claims": 4,
+      "entities": 1,
+      "observations": 1
+    },
+    "all_old_rows_equal_after_scoped_lineage_transform": true,
+    "comparison_file": "comparison-final-pack3.json",
+    "comparison_sha256": "8f23acc2eee75b82a622e093024b8b337a612ccb8b7401eb05ce99259ac434cc",
+    "native_stages": 12,
+    "old_graph_rows": {
+      "claims": 2090,
+      "entities": 1560,
+      "observations": 352
+    },
+    "prepared_requests": 21,
+    "privacy_decisions": 120,
+    "raw_graphs_equal": false,
+    "session_stages": 9
+  },
+  "schema": "loom.onboarding_source_parity_result/1",
+  "scope": "Recorded deterministic offline traces and actual retained synthetic database. Full CTest and build-source closure are separate validator gates.",
+  "status": "PASS",
+  "test_only_delta": {
+    "description": "Two CHECK expressions use explicit RHS string extraction; equality assertions preserved, production source/include/data and kernel hashes unchanged.",
+    "path": "loom/tests/test_onboarding_presentation.cpp",
+    "validator_proof": "kernel-closure/test-only-fix-source-closure.json"
+  }
+}

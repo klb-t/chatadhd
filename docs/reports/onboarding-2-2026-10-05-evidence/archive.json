@@ -1,0 +1,11 @@
+{
+  "schema": "loom.onboarding.evidence_archive/1",
+  "production_commit": "6adbf2ad00671da40a356b922a8c1a8091b1e5ea",
+  "final_test_source_commit": "5115477fda183572acb901cfd2ea98979fb0f45d",
+  "archive": "verification.zip",
+  "archive_sha256": "7a2508068051c088c8940c5e91ceda5a64bf7f23349d7558d7e38e2db66332fb",
+  "archive_bytes": 4778048,
+  "file_count": 240,
+  "manifest_sha256": "705e626b3719430ec5730a1b46455c39cade92ed7b4a35f3a653bcba744c20f3",
+  "uncompressed_bytes": 88060707
+}

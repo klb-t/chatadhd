@@ -1,0 +1,18 @@
+{
+  "utc": "2026-10-05T14:25:14.642468+00:00",
+  "production_pin": "6adbf2ad00671da40a356b922a8c1a8091b1e5ea",
+  "final_source_test_pin": "5115477fda183572acb901cfd2ea98979fb0f45d",
+  "production_native_manifest_sha256": "46429f1e77228518979f12db80ab238748f6baf9928a24d2b9938aa6d5153915",
+  "final_native_manifest_sha256": "c49709798ed4035cdc619c21ebb08aea16323ccc8da779614029e59b8c180bb3",
+  "input_count": 375,
+  "changed_from_production": [
+    "loom/tests/test_onboarding_graph.cpp",
+    "loom/tests/test_onboarding_presentation.cpp"
+  ],
+  "added": [],
+  "missing": [],
+  "core_shared_dependency_artifact_changes": [],
+  "production_source_include_data_changed": false,
+  "assertions_unchanged": true,
+  "test_fixes": "Typed JSON RHS in two string equalities; relative revision increment in two pack-upgrade fixtures."
+}
