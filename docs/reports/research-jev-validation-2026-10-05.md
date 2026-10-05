@@ -7,7 +7,16 @@ opublikowanego `edcb32f` i pobraniu późniejszego commitu z checkoutu prowadzą
 Nie ponawiano wcześniejszych 720 wywołań. Nie czytano `eval/real-holdout-key`,
 prywatnych danych, klucza ani prywatnego ledgeru.
 
-**Commit gotowy do dispatch / odbioru: `957819e9e17da29603a6587cc9d543a455ccef8e`**
+**Commit gotowy do dispatch: `957819e9e17da29603a6587cc9d543a455ccef8e`**.
+**Commit do odbioru eksportera/bramek: `dee0923a593b9db3c6bb8340fd666a69c9330354`**
+(lokalny `4bf73e6`; dokładne drzewo `0e7b10df1cbccfe3c77ea83f1e7586e8527a2540`).
+Przekazanie do 7A: [draft PR13](https://github.com/klb-t/chatadhd/pull/13).
+Archiwum pełnych własnych kontroli:
+`archive/gpt/research-jev-validation-2026-10-05`, tip
+`254c2ec29146ddc309d8d8a9a37bdbdbf8e01d7a`; ZIP SHA256
+`11bf5411560c30a52bf1f3b7a6dadae7769706530196272ce63bfb8837413b4e`.
+
+Commit dispatch jest
 na `gpt/research-jev-validation-2026-10-05`. Drzewo SHA
 `beaf13c420c530f2a4085144a25500de3044af0a` jest identyczne z lokalnym `7c5cb10`.
 Przyrost odtworzenia: opublikowany `37a65efab8927f5fa3901b1db4237a7bbb69e141`
@@ -32,6 +41,18 @@ kierunku, mówcy i czasu, bez twierdzenia o prawdziwości świata.
 Mianowniki nowych danych pozostają 96/arm i 48/arm/język. Braki, niepoprawny
 protokół i konflikt nie są usuwane. Nie zmieniamy gold, etykiet, progu >0,5,
 przygotowanych body, ID ani odpowiedzi modeli. Nie naprawiamy JSON.
+
+Audyt konstrukcji przed odczytem wyników: gold ma 34 supported, 27 refuted,
+35 unknown; PL 17/13/18, EN 17/14/17. Kolejność pytań jest skorelowana z etykietą:
+modalna reguła pozycji `[supported, refuted, supported, unknown]` trafia 61/96.
+To **dopasowanie opisowe do tego samego gold**, nie ślepa predykcja ani wynik
+nowego konkurencyjnego przepisu. Nie dowodzi, że Jev korzysta z tej korelacji.
+Pokazuje ograniczenie szerokiej interpretacji wyniku; porównanie dwóch przepisów
+na identycznych źródłach pozostaje osobnym pomiarem. 21 rodzin ma pięć tur,
+trzy mają sześć; zbiór nie pokrywa pełnej różnorodności rozmów rzeczywistych.
+Wszystkie dane i instrument pozostają niezmienione. Reprodukcja:
+`python docs/research/model_research_2026-10-04/stage5/jev-validation-20261005/audit_corpus.py`;
+wynik `CORPUS_AUDIT.json` ma datę, hashe wejść i produced_by do skryptu.
 
 Planowana rezerwa: **0,192 USD**. Rzeczywisty koszt nowej populacji: **null** do
 otrzymania rachunków generacji. Własne płatne wywołania 7C: **0**. Historyczne
