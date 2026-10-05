@@ -31,7 +31,15 @@
     "sort_priorities": {
       "folder": 0
     },
-    "default_sort_priority": 1
+    "default_sort_priority": 1,
+    "show_weights": true,
+    "show_default_weight": false,
+    "sort_keys": [
+      {
+        "field": "created",
+        "direction": "ascending"
+      }
+    ]
   },
   "value_schema": {
     "type": "object",
@@ -56,7 +64,10 @@
       "auto_tag_node_types",
       "renderers",
       "sort_priorities",
-      "default_sort_priority"
+      "default_sort_priority",
+      "show_weights",
+      "show_default_weight",
+      "sort_keys"
     ],
     "properties": {
       "default_node_type": {
@@ -146,6 +157,50 @@
         "type": "integer",
         "minimum": -2147483648,
         "maximum": 2147483647
+      },
+      "show_weights": {
+        "type": "boolean",
+        "description": "Enable formatted weight annotation in the memory renderer independently from the creation default weight."
+      },
+      "show_default_weight": {
+        "type": "boolean",
+        "description": "Show weight annotation also when node weight equals default_weight; effective when show_weights is true."
+      },
+      "sort_keys": {
+        "type": "array",
+        "description": "Secondary ordered sort keys after node-type priority. Empty array retains insertion order for equal priorities. Node field values use deterministic JSON value ordering.",
+        "items": {
+          "type": "object",
+          "required": [
+            "field",
+            "direction"
+          ],
+          "properties": {
+            "field": {
+              "type": "string",
+              "enum": [
+                "id",
+                "content",
+                "parent_id",
+                "node_type",
+                "active",
+                "depth",
+                "weight",
+                "tags",
+                "created",
+                "metadata"
+              ]
+            },
+            "direction": {
+              "type": "string",
+              "enum": [
+                "ascending",
+                "descending"
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
       }
     },
     "additionalProperties": false

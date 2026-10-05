@@ -18,7 +18,8 @@
     },
     "ranking": {
       "minimum_score": 0.0,
-      "top_k": 5
+      "top_k": 5,
+      "threshold_inclusive": false
     },
     "tiers": {
       "with_embedding": 1,
@@ -98,7 +99,8 @@
         "type": "object",
         "required": [
           "minimum_score",
-          "top_k"
+          "top_k",
+          "threshold_inclusive"
         ],
         "properties": {
           "minimum_score": {
@@ -108,6 +110,10 @@
             "type": "integer",
             "minimum": 0,
             "maximum": 2147483647
+          },
+          "threshold_inclusive": {
+            "type": "boolean",
+            "description": "Include scores equal to minimum_score. False preserves the historical strict comparison for all implemented selector methods."
           }
         },
         "additionalProperties": false

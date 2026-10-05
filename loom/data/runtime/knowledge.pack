@@ -4,6 +4,7 @@
   "revision": 1,
   "description": "Knowledge orchestration defaults. File filters apply to directory-discovered source fingerprint files; explicitly supplied files remain inputs. Catalogue directory traversal keeps its shared protected-source contract. Query limits affect task discovery; completed stage IDs still reconstruct complete recorded runs. Retry presets never modify explicit stage parameters. Nonbuiltin effective profiles enter run and stage fingerprints.",
   "defaults": {
+    "config_defaults": {"priors": true, "llm": "off"},
     "query": {"latest_runs": 1, "stage_tasks": 100},
     "attempts": {"run": 1, "stage_default": 2, "stage_by_mode": {"auto": {"extract": 1}}},
     "poll_interval_ms": 20,
@@ -11,9 +12,18 @@
   },
   "value_schema": {
     "type": "object",
-    "required": ["query", "attempts", "poll_interval_ms", "source_filters"],
+    "required": ["config_defaults", "query", "attempts", "poll_interval_ms", "source_filters"],
     "additionalProperties": false,
     "properties": {
+      "config_defaults": {
+        "type": "object",
+        "required": ["priors", "llm"],
+        "additionalProperties": false,
+        "properties": {
+          "priors": {"type": "boolean", "x-setting": "config_defaults.priors", "x-consumer": "omitted KnowledgeConfig priors"},
+          "llm": {"type": "string", "enum": ["off", "auto"], "x-setting": "config_defaults.llm", "x-consumer": "omitted KnowledgeConfig llm; enum describes implemented pipeline capabilities"}
+        }
+      },
       "query": {
         "type": "object",
         "required": ["latest_runs", "stage_tasks"],

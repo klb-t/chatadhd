@@ -13,7 +13,8 @@ its working directory. Regenerate with `python3 loom/src/model/gen_runtime_profi
 `docs/contracts/runtime_profile_overlay.schema.json` describes an overlay.
 The generic interpreter supports only `type`, `required`, `properties`, `items`,
 `additionalProperties`, `minimum`, `maximum`, `minLength`, `minItems`, `enum`;
-unsupported assertions fail. UI annotations are `title`, `description`, `x-setting`
+`type` can also be a nonempty array of supported names (for example integer/null
+for a nullable bound); unsupported assertions fail. UI annotations are `title`, `description`, `x-setting`
 (RFC 6901 pointer), `x-unit`, `x-consumer`. Do not label an absent annotation as a
 measured quantity. Numeric validation compares integer/double values exactly;
 large unsigned integers do not wrap or round when checked against bounds.
