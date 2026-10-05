@@ -3,7 +3,7 @@
 Gałąź: `gpt/onboarding-2-2026-10-05`. Baza nowej gałęzi:
 `66da570d3b5379492e128d940ad474467082c59f` integratora (main e4109df + przyjęty W5).
 Poprzedni W12 `3c0bc36552ef9851f1174946cfb108549aae3228` pozostaje bez zmian i w kolejce.
-Ten checkpoint opisuje zakres, nie gotowość implementacji.
+Ten checkpoint opisuje zakres i zależności, nie gotowość implementacji.
 
 Inwentarz W11 powstał przed W12; brak `docs/reports/data-in-code/thread-12.md`.
 W12 przygotowuje osobny suplement swoich nowych plików, bez dopisywania grup
@@ -22,9 +22,15 @@ przedmiotem zmiany. Testy offline, zapisane syntetyczne odpowiedzi, zero modeli.
 
 Pierwszy W12 nadal wymaga przyjęcia. Drugi przyrost przygotowywany jest w
 odrębnym, odłączonym worktree do porównań; nie zmienia oryginalnej gałęzi.
-Nie kopiujemy do nowej gałęzi foundation czekającego w kolejce. Produkcyjny
-przyrost zostanie oparty na stanie integratora zawierającym przyjęty foundation.
-Dotychczasowe kolejka i progi obowiązują.
+Kolejka nie doszła jeszcze do W12. Aby przygotować kompletny przyrost i wykonać
+pełną bramkę na przyjętych kontraktach 3/4/5, odtworzono liniowo siedem
+niezmienionych commitów poprzedniego W12 jako jawną zależność. Odtworzenie
+kończy się na `aa8872421d7f0a727ae3b986592ab7c1c956d787`; nie zmienia starej
+gałęzi ani jej źródeł. Porównanie wszystkich własnych katalogów z `3c0bc36`
+jest puste. Nowe zmiany będą osobnymi commitami po tej zależności.
+Nie deklarujemy przyjęcia foundation przez 9 ani ponownego autorstwa tych grup.
+Dotychczasowe kolejka i progi obowiązują; 9 może odebrać sam diff następnego
+przyrostu po przyjęciu oryginalnego foundation.
 
 ## Do wątku 10
 
