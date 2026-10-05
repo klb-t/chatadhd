@@ -1,0 +1,3 @@
+# W5 — zachowane próby zasobów, 2026-10-05
+
+Pełne oryginalne przechwycone logi znajdują się w `archive-import-2-2026-10-05-build-attempts.zip` (90870 B; SHA256 b291b7721129119c6a4876e8b4ac16cf96af1e49b487b8b0f221134f3a3fa12b). Brak Ninja i przerwane kompilacje są historią narzędzi/zasobów; nie są negatywnym wynikiem funkcjonalnym. Adnotacje odróżniają fakt widoczny w logu od sygnału/exit zgłoszonego przez operatora lub nieznanego. Zachowano starszy manifest93180b i generator9, a także dokładne hashe przenoszonych własnych artefaktów. Końcowy pełny build exit0. Finalne bramki i wybrane źródła pozostają na `gpt/archive-import-2-2026-10-05`. Tego przyrostu archiwalnego nie przenosić na main.
