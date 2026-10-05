@@ -14,10 +14,10 @@ TEST_SUITE("onboarding presentation catalog") {
     CHECK(unwrap(presentation_text(catalog, "layer.missing")) ==
           "No current default or user value exists for this key.");
     CHECK(unwrap(presentation_text(catalog, "layer.missing", Json::object(), "pl")) ==
-          catalog["locales"]["pl"]["layer.missing"]);
+          catalog["locales"]["pl"]["layer.missing"].get<std::string>());
     catalog["default_locale"] = "pl";
     CHECK(unwrap(presentation_text(catalog, "layer.missing")) ==
-          catalog["locales"]["pl"]["layer.missing"]);
+          catalog["locales"]["pl"]["layer.missing"].get<std::string>());
     CHECK_FALSE(presentation_text(catalog, "missing.message"));
     CHECK_FALSE(presentation_text(catalog, "layer.missing", Json::object(), "missing.locale"));
   }
