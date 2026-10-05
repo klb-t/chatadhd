@@ -1,0 +1,27 @@
+{
+  "restored_exact": [
+    {
+      "path": "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/asan/loom_tests",
+      "sha256": "b93cd72c5d7179338b29d48c044ef3738863f811fb18d47fe3e25a1c1fae63a9",
+      "bytes": 998922672
+    },
+    {
+      "path": "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/asan/server/loom-server",
+      "sha256": "ed1b6cf008ba440af7e1616f55f62a5c9a4c249e13f54d4bf2a08cd8f1b41b29",
+      "bytes": 620706184
+    }
+  ],
+  "failure": {
+    "expected_compressed_bytes": 89467630,
+    "actual_compressed_bytes": 87088412,
+    "actual_partial_gzip_sha256": "9ed25c399b46d5d5681c36c46b1599fb5dd6229d05c640cbd2891b5f8961fbc5",
+    "original_binary_bytes": 561452344,
+    "original_binary_sha256": "427d3e4473683c2928bea3221ee237d46cfdda3a71d200f29066ae8d4c447581",
+    "observed_error": "EOFError: Compressed file ended before the end-of-stream marker was reached",
+    "partial_binary_bytes": 549453824,
+    "cause": "not established; disk exhaustion preceded backup operations",
+    "asan_full_ctest_executed": false,
+    "unsafe_partial_binary_rejected": true,
+    "next_step": "Clean/regenerate ASan build on a stable machine with sufficient disk; g1, original sanitizer flags/options, ordinary shared FFI companion; then full 110-case CTest + unchanged guard."
+  }
+}

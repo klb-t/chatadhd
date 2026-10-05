@@ -43,3 +43,11 @@ separate, so a later pass never overwrites a failed attempt.
 verifier tests were still being edited: NameError in relocated old CLI coverage.
 It is not final source or positive coverage. The test is retained and corrected
 before the next whole-suite execution.
+
+`gcc-metadata-sync-interrupted/` retains an explicitly interrupted execution
+whose source tree stayed identical but local commit metadata changed at start.
+It is not accepted coverage. Final stable snapshots have independent full passes.
+
+ASan full CTest was not executed. `asan-restoration-failure.json` records an
+incomplete compressed CLI backup rejected by the byte/digest check. Exact cause
+is unestablished; fresh clean build is the handoff step.

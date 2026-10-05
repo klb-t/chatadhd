@@ -1,0 +1,77 @@
+{
+  "source": "/workspace/scratch/2a6e71927cf3/chatadhd",
+  "preset": "dev",
+  "explicit_environment": {
+    "LD_LIBRARY_PATH": "/workspace/scratch/2a6e71927cf3/toolchain/usr/lib/x86_64-linux-gnu"
+  },
+  "commands": [
+    {
+      "argv": [
+        "python3",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/.github/scripts/write_build_receipt.py",
+        "--preset",
+        "dev",
+        "--cmake-cache",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/CMakeCache.txt",
+        "--output",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/docs/verification/repo-hygiene-matrix-2026-10-05/gcc-final/build-receipt.json",
+        "--cmake-field",
+        "CMAKE_GENERATOR",
+        "--cmake-field",
+        "CMAKE_BUILD_TYPE",
+        "--cmake-field",
+        "CMAKE_C_COMPILER",
+        "--cmake-field",
+        "CMAKE_CXX_COMPILER",
+        "--cmake-field",
+        "CMAKE_C_FLAGS",
+        "--cmake-field",
+        "CMAKE_C_FLAGS_DEBUG",
+        "--cmake-field",
+        "CMAKE_CXX_FLAGS",
+        "--cmake-field",
+        "CMAKE_CXX_FLAGS_DEBUG",
+        "--cmake-field",
+        "CMAKE_AR",
+        "--cmake-field",
+        "CMAKE_EXE_LINKER_FLAGS",
+        "--cmake-field",
+        "CMAKE_SHARED_LINKER_FLAGS",
+        "--cmake-field",
+        "LOOM_USE_SYSTEM_SQLITE",
+        "--cmake-field",
+        "LOOM_SHARED",
+        "--cmake-field",
+        "LOOM_WERROR",
+        "--cmake-field",
+        "LOOM_BUILD_SERVER",
+        "--binary",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/loom_tests",
+        "--binary",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/loom_compat_tool",
+        "--binary",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/loom_candidate_graph_native_tool",
+        "--binary",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/cli/loom",
+        "--binary",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/server/loom-server",
+        "--binary",
+        "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/libloom.so"
+      ],
+      "cwd": "/workspace/scratch/2a6e71927cf3/chatadhd",
+      "started_at_utc": "2026-10-05T15:06:45.871896+00:00",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "ctest",
+        "--preset",
+        "dev",
+        "--show-only=json-v1"
+      ],
+      "cwd": "/workspace/scratch/2a6e71927cf3/chatadhd/loom",
+      "started_at_utc": "2026-10-05T15:06:47.034690+00:00",
+      "exit_code": 0
+    }
+  ]
+}

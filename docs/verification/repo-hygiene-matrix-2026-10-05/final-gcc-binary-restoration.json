@@ -1,0 +1,20 @@
+{
+  "all_exact": true,
+  "after_completed_positive_tests": [
+    {
+      "path": "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/cli/loom",
+      "bytes": 174761288,
+      "sha256": "65f317836bd03058c91af3550b3cfec58cfb5ab64faee26776800a0b1dac242e"
+    },
+    {
+      "path": "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/loom_tests",
+      "bytes": 289616464,
+      "sha256": "e0b190f9b5e9933df1a312e8af3cdc65c64c0716fdb9982479f1dfda3fe6efec"
+    },
+    {
+      "path": "/workspace/scratch/2a6e71927cf3/chatadhd/loom/build/dev/server/loom-server",
+      "bytes": 190994176,
+      "sha256": "a49932a4813110647b77de570d7538b6b17c46b0832886fa0568d242df606e83"
+    }
+  ]
+}

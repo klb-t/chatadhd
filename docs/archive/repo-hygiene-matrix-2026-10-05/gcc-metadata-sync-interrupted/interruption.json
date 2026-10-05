@@ -1,0 +1,8 @@
+{
+  "reason": "Local commit metadata changed during connector fetch/sync; identical source tree but strict stable HEAD invariant invalidated. Interrupted rather than weaken evidence check.",
+  "before_commit": "2456903792596b9b43e23484cbd844f38d12ddce",
+  "after_commit": "57ad9bb20b5e21b4445d03abb7bcd2e616f63f2d",
+  "identical_tree": "6c61fa07b5f8583f76f8487003f2f2098265eb20",
+  "tool_exit_code": 130,
+  "positive_coverage_claimed": false
+}
