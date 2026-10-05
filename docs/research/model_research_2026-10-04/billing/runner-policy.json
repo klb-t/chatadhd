@@ -17,9 +17,14 @@
     "future_clock_skew": 300
   },
   "unknown_cost_policy": "stop",
+  "provider_usage_lag": {"mode": "strict", "authority_ref": null},
   "transport": {
     "base_url": "https://openrouter.ai",
     "proxy_mode": "disabled",
+    "backend": "urllib",
+    "pool_connections": 1,
+    "pool_maxsize": 1,
+    "pool_block": true,
     "timeout_seconds": 120,
     "routes": {
       "chat": {"method": "POST", "path": "/api/v1/chat/completions", "api_type": "completions"},
@@ -51,6 +56,12 @@
   "read_only_reconciliation": {
     "key": {"maximum_reads": 3, "delay_seconds": "0.5"},
     "generation": {"maximum_reads": 3, "delay_seconds": "0.5", "pending_http_statuses": [404, 503]}
+  },
+  "pause": {
+    "enabled": true,
+    "request_filename": "pause.request",
+    "signals": ["SIGUSR1", "SIGINT", "SIGTERM"],
+    "maximum_operations_per_invocation": null
   },
   "fx_snapshot": {
     "format": "ecb_xml",
