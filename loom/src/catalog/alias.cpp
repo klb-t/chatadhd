@@ -116,7 +116,6 @@ AliasIndex AliasIndex::from_profile(const SelfProfile& profile, int context_wind
     at.term_class = cls;
     at.ambiguous = json::get_bool(t, "ambiguous");
     at.prefix = json::get_bool(t, "prefix", cls == "principle");
-    at.weight = json::get_number(t, "weight", cls == "principle" ? 1.5 : 3.0);
     if (const Json* rc = json::find(t, "requires_context"); rc && rc->is_object()) {
       if (const Json* any = json::find(*rc, "any"); any && any->is_array()) {
         for (const auto& c : *any) at.requires_any.push_back(c.get<std::string>());

@@ -425,9 +425,9 @@ Status scan_zip_source(Database& db, const AliasIndex& idx, const kb::Normalizer
 }  // namespace
 
 Result<Json> Catalog::scan(const ScanConfig& cfg, const ProgressFn& progress, const CancelToken* cancel) {
-  LOOM_TRY(ensure_schema(rt_.db()));
   kb::Normalizer norm(*pack_);
-  AliasIndex idx = AliasIndex::from_pack(*pack_);
+  LOOM_TRY_ASSIGN(auto idx, AliasIndex::from_pack_checked(*pack_));
+  LOOM_TRY(ensure_schema(rt_.db()));
   Stats stats;
   stats.input_hash = Sha256::hex(json::canonical(Json{{"scanner_version", std::string(kScannerVersion)},
       {"pack_hash", pack_->hash()}, {"sketch", cfg.sketch.to_json()}}));

@@ -280,8 +280,6 @@ Catalog::Catalog(Runtime& rt, std::shared_ptr<const kb::Pack> pack) : rt_(rt), p
 // simply re-enters the same call on the next run.
 Result<Json> run_stage(knowledge::StageContext& ctx) {
   Catalog cat(ctx.rt, ctx.pack);
-  LOOM_TRY(Catalog::ensure_schema(ctx.rt.db()));
-
   ScanConfig scan_cfg;
   scan_cfg.sources = ctx.config.sources;
   if (ctx.config.repo) scan_cfg.sources.push_back(*ctx.config.repo);
