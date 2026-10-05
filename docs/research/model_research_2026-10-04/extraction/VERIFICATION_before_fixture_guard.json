@@ -1,0 +1,23 @@
+{
+  "schema": "loom.extraction_readiness.verification/1",
+  "mechanism_tests_passed": 8,
+  "mechanism_tests_run": 8,
+  "new_provider_calls": 0,
+  "new_cost_usd": "0",
+  "new_model_quality_gain": false,
+  "files_sha256": {
+    "loom/tools/structure/extraction_readiness_v1.py": "2fa346e9eedc8636beb8b22d9cee8c7396daacca5f0f91f5210131457861576a",
+    "loom/tools/structure/test_extraction_readiness_v1.py": "2f73e105ab2446ba27b536d1da7046b0769a29d5711131179bc2c9f3a661cb16",
+    "docs/research/model_research_2026-10-04/EXTRACTION.md": "c466afc429320d312b312f01efb49abe6501c91802e3bcf45dbdc338e5acdd08",
+    "docs/research/model_research_2026-10-04/extraction/prepared/PREPARATION.json": "e8b8ce0d9efe3e1d9318c63e5b81ec45e7f8ad13e9e768de1bce4b489d22b26a",
+    "docs/research/model_research_2026-10-04/extraction/prepared/requests_preview.json": "b2be2d6d14b783942f4e442fdd20537473a1fcd5d071dc0ee6c4c046d5def7ef",
+    "docs/research/model_research_2026-10-04/extraction/replay/ARCHIVE_RECEIPT.json": "d3a9a569eb8acc3d61dcae9e81d70cfb8438946fba464f3c2418c5c7bd5b0dbd",
+    "docs/research/model_research_2026-10-04/extraction/replay/PROVENANCE.json": "eb99144e0ce589a7ef447248e00229c8544358eed80753f12e5cde575b592027",
+    "docs/research/model_research_2026-10-04/extraction/replay/REPLAY.json": "944425bc9fe99487f8ab3e3d18a8c33db592d11cf8e1430a6facde07b3755532",
+    "docs/research/model_research_2026-10-04/extraction/replay/compiled_original_replay.json": "5442bb2664ff1325b34c4fd44321d81ebe571862b278ca8e2f5ec33ddf45b099",
+    "docs/research/model_research_2026-10-04/extraction/replay/compiled_projection_replay.json": "e2db940bbcda8046411ccb2b857e945ecea70ee0dd20be7e3a89719af992dd1f",
+    "docs/research/model_research_2026-10-04/extraction/replay/primary_score_replay.json": "74322742ea8699b51ebd4eecec6f5d5ee3a5ee3f38cc3fb958605ddfde1c6ba2",
+    "docs/research/model_research_2026-10-04/extraction/replay/projection_receipts_replay.json": "3e276c4116cefb8cb953a2b29af14ffa1ee54cdfef26c23096f742f444bb2690",
+    "docs/research/model_research_2026-10-04/extraction/replay/projection_score_replay.json": "2cc4613d6a1029b7c664a561e7b68315af95e784922b2478bfa7b7ae2b4aed71"
+  }
+}
