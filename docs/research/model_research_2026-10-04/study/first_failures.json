@@ -1,0 +1,1 @@
+{"failures":[{"error":"frozen_analysis_drift","exception":"ValueError","instrument":"432"},{"error":"frozen_plan_drift","exception":"ValueError","instrument":"W3"}],"new_model_calls":0,"old_freezes_preserved":true}
