@@ -1,0 +1,598 @@
+{
+  "schema": "loom.analysis_recipe/1",
+  "id": "jev.active_refute_v2",
+  "version": 2,
+  "title": "Historical Jev active refutation of a supplied source commitment",
+  "description": "Optional exact historical Decisions recipe. It judges an already supplied directed relation and attributed speaker in a temporal source view; it does not extract occurrences, generate relations, assert world truth or promote graph claims.",
+  "request_template": {
+    "method": "POST",
+    "origin": "https://openrouter.ai",
+    "path": "/api/alpha/decisions",
+    "timeout_ms": 30000,
+    "serialization": {
+      "format": "canonical_json",
+      "sort_keys": true,
+      "ensure_ascii": false,
+      "separators": [
+        ",",
+        ":"
+      ]
+    },
+    "body": {
+      "model": "typesafe/jev-1.13",
+      "provider": {
+        "allow_fallbacks": false,
+        "max_price": {
+          "completion": "0",
+          "prompt": "0.042"
+        },
+        "only": [
+          "typesafe"
+        ]
+      },
+      "questions": {
+        "$binding": "questions"
+      },
+      "state": {
+        "$binding": "state"
+      }
+    }
+  },
+  "inputs": {
+    "questions": {
+      "binding": "questions",
+      "default": {
+        "q01": {
+          "criteria": {
+            "false": "There is no such positive source support; silence, similar topic and reporting another speaker do not count.",
+            "true": "An active positive source assertion explicitly supports this exact relation, direction and attribution by as_of."
+          },
+          "instructions": "Is this exact directed relation explicitly supported by the requested attributed speaker in this temporal view?",
+          "type": "noul"
+        },
+        "q02": {
+          "criteria": {
+            "false": "There is no currently applicable explicit denial or positive withdrawal. A later affirmation by the SAME attributed speaker replaces that speaker's earlier denial. Explicit withdrawal of a negative commitment leaves unknown unless a positive statement exists; withdrawal never affirms by itself. Another speaker's reply does not withdraw this speaker's commitment. Silence, similar topic and absence of positive support are not refutation.",
+            "true": "This speaker's latest applicable commitment explicitly denies or withdraws this positive relation by as_of. Positive withdrawal refutes the source commitment only, not the relation's world truth."
+          },
+          "instructions": "In the requested temporal view, is the requested speaker's latest applicable commitment an explicit denial or withdrawal of this exact relation, rather than a merely historical denial?",
+          "type": "noul"
+        }
+      },
+      "description": "Exact measured q01 support and q02 active-refute noul questions. Overrides select a new recipe, whose quality is unmeasured."
+    },
+    "state": {
+      "binding": "state",
+      "schema": {
+        "type": "object",
+        "required": [
+          "text"
+        ],
+        "properties": {
+          "text": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      },
+      "description": "Preserve state.text exactly: source query payload canonical JSON as produced by graph_panel_live.query_payload/jev_judgment_inputs. Includes supplied relation/direction/attribution and temporal view, not a new free-form extraction question."
+    }
+  },
+  "output_schema": {
+    "type": "object",
+    "required": [
+      "id",
+      "model",
+      "provider",
+      "usage",
+      "answers"
+    ],
+    "properties": {
+      "id": {
+        "type": "string"
+      },
+      "model": {
+        "type": "string"
+      },
+      "provider": {
+        "type": "string"
+      },
+      "usage": {
+        "type": "object",
+        "required": [
+          "cost",
+          "input_tokens",
+          "output_tokens"
+        ],
+        "properties": {
+          "cost": {
+            "type": [
+              "number",
+              "string"
+            ]
+          },
+          "input_tokens": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "output_tokens": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "additionalProperties": true
+      },
+      "answers": {
+        "type": "object",
+        "required": [
+          "q01",
+          "q02"
+        ],
+        "properties": {
+          "q01": {
+            "type": "object",
+            "required": [
+              "type",
+              "noul"
+            ],
+            "properties": {
+              "type": {
+                "const": "noul"
+              },
+              "noul": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            },
+            "additionalProperties": true
+          },
+          "q02": {
+            "type": "object",
+            "required": [
+              "type",
+              "noul"
+            ],
+            "properties": {
+              "type": {
+                "const": "noul"
+              },
+              "noul": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            },
+            "additionalProperties": true
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "additionalProperties": true
+  },
+  "validation_mode": "adapter_required",
+  "preserve_unknown_fields": true,
+  "interpretation": {
+    "method": "graph_panel_live.compile_jev_judgment/jev_label",
+    "threshold": 0.5,
+    "comparison": "strictly_greater_than",
+    "q01": "support",
+    "q02": "refute",
+    "labels": {
+      "both_above_threshold": "conflicting",
+      "only_q01_above_threshold": "supported",
+      "only_q02_above_threshold": "refuted",
+      "neither_above_threshold": "unknown"
+    },
+    "metadata": "Frozen interpretation is part of the historical instrument; callers may choose another policy but that is not the measured45/48 configuration."
+  },
+  "provenance": {
+    "recipe_name": "active_refute_v2",
+    "evaluated_experiment_id": "source-view-active-refute-v2-20260930",
+    "source_remote_ref": "origin/gpt/model-research-2026-10-04",
+    "source_commit": "f8bf51bc8a317d3e3c73494edcd3860e9427e01d",
+    "questions_canonical_utf8": "{\"q01\":{\"criteria\":{\"false\":\"There is no such positive source support; silence, similar topic and reporting another speaker do not count.\",\"true\":\"An active positive source assertion explicitly supports this exact relation, direction and attribution by as_of.\"},\"instructions\":\"Is this exact directed relation explicitly supported by the requested attributed speaker in this temporal view?\",\"type\":\"noul\"},\"q02\":{\"criteria\":{\"false\":\"There is no currently applicable explicit denial or positive withdrawal. A later affirmation by the SAME attributed speaker replaces that speaker's earlier denial. Explicit withdrawal of a negative commitment leaves unknown unless a positive statement exists; withdrawal never affirms by itself. Another speaker's reply does not withdraw this speaker's commitment. Silence, similar topic and absence of positive support are not refutation.\",\"true\":\"This speaker's latest applicable commitment explicitly denies or withdraws this positive relation by as_of. Positive withdrawal refutes the source commitment only, not the relation's world truth.\"},\"instructions\":\"In the requested temporal view, is the requested speaker's latest applicable commitment an explicit denial or withdrawal of this exact relation, rather than a merely historical denial?\",\"type\":\"noul\"}}",
+    "questions_sha256": "eb17176af81e50b9e229fe8081c3983b986f7e1ebacb3344fe4506289019d4fe",
+    "active_refute_q02_sha256": "397febc959306048ce2e4e8890750a726841a983da5ab11499d0814bb2fbb957",
+    "source_files": [
+      {
+        "path": "docs/research/source_view_experiment_2026-09-30/active_refute_v2/prepared/manifest.json",
+        "sha256": "5983f3e1211c93b556eb60e8a08f8f22d37284baefdafb7e8aab7e8b814c8a73",
+        "bytes": 124573
+      },
+      {
+        "path": "docs/research/source_view_experiment_2026-09-30/active_refute_v2/prepared/inputs.json",
+        "sha256": "6e4d535412deb03f809bbc9ac1995e7200cf290bc054057456ab0dc3df24e459",
+        "bytes": 112106
+      },
+      {
+        "path": "docs/research/source_view_experiment_2026-09-30/prepared_specs/active_refute_v2_inputs.json",
+        "sha256": "6e4d535412deb03f809bbc9ac1995e7200cf290bc054057456ab0dc3df24e459",
+        "bytes": 112106
+      },
+      {
+        "path": "docs/research/source_view_experiment_2026-09-30/prepared_specs/active_refute_v2_request.json",
+        "sha256": "7576bca6114f6a39a413a86dac3e5df87866c907203dbfd0b12d542d8980388c",
+        "bytes": 195
+      },
+      {
+        "path": "docs/research/source_view_experiment_2026-09-30/active_refute_v2/first_score/score_first.json",
+        "sha256": "b5fca488e4bcab747a1c916a7c9685d5bd7fd74338bda0d7934243c054fab758",
+        "bytes": 1528
+      },
+      {
+        "path": "docs/research/source_view_experiment_2026-09-30/active_refute_v2/run/ledger.json",
+        "sha256": "d7867ce925a87b1174447edc4174a3a4bfa4550af8b32f61588c1fd8acfcb12d",
+        "bytes": 36487
+      },
+      {
+        "path": "loom/tools/structure/source_view_experiment.py",
+        "sha256": "47705931e935c411c6e62c8210f4bb6dd223c97e94d84296314abce0cb75d471",
+        "bytes": 7929
+      },
+      {
+        "path": "loom/tools/structure/graph_panel_live.py",
+        "sha256": "31ad2a56e69dc472ef686c257953297a28465a16aa4eb903e29aa829c0012c16",
+        "bytes": 21886
+      },
+      {
+        "path": "loom/tools/structure/jev_live_pilot.py",
+        "sha256": "a3036e372d30f93659e1933a956b61972a50a50a216ba0340dee1b38d191e805",
+        "bytes": 26945
+      },
+      {
+        "path": "docs/research/model_research_2026-10-04/study/recipes/historical_dev/active_refute_v2/inputs.json",
+        "sha256": "6e4d535412deb03f809bbc9ac1995e7200cf290bc054057456ab0dc3df24e459",
+        "bytes": 112106
+      },
+      {
+        "path": "loom/tools/structure/openrouter_runner.py",
+        "sha256": "2cd14424ca190f3d5fed47faf1e328993668a620b8202cfb7b196b363f971635",
+        "bytes": 34349
+      }
+    ],
+    "measured_population": {
+      "split": "historical_diagnostic_development",
+      "track": "supplied_edge_judgment",
+      "scope": "new diagnostic development; latest source commitment, never world truth",
+      "source_cases": 12,
+      "supplied_candidate_judgments": 48,
+      "noul_questions_per_judgment": 2,
+      "correct_judgments": 45,
+      "accuracy_all_queries": 0.9375,
+      "available": 48,
+      "coverage": 1.0,
+      "content_truth_accuracy": null,
+      "confusion": {
+        "refuted": {
+          "refuted": 14,
+          "supported": 0,
+          "unavailable": 0,
+          "unknown": 0
+        },
+        "supported": {
+          "refuted": 0,
+          "supported": 18,
+          "unavailable": 0,
+          "unknown": 0
+        },
+        "unknown": {
+          "refuted": 3,
+          "supported": 0,
+          "unavailable": 0,
+          "unknown": 13
+        }
+      },
+      "per_class": {
+        "refuted": {
+          "fn": 0,
+          "fp": 3,
+          "gold": 14,
+          "precision": 0.8235294117647058,
+          "predicted": 17,
+          "recall": 1.0,
+          "tp": 14
+        },
+        "supported": {
+          "fn": 0,
+          "fp": 0,
+          "gold": 18,
+          "precision": 1.0,
+          "predicted": 18,
+          "recall": 1.0,
+          "tp": 18
+        },
+        "unknown": {
+          "fn": 3,
+          "fp": 0,
+          "gold": 16,
+          "precision": 1.0,
+          "predicted": 13,
+          "recall": 0.8125,
+          "tp": 13
+        }
+      },
+      "failures": [
+        {
+          "gold": "unknown",
+          "predicted": "refuted",
+          "query_id": "svlv1_dev_003_q4",
+          "state": "completed"
+        },
+        {
+          "gold": "unknown",
+          "predicted": "refuted",
+          "query_id": "svlv1_dev_004_q4",
+          "state": "completed"
+        },
+        {
+          "gold": "unknown",
+          "predicted": "refuted",
+          "query_id": "svlv1_dev_012_q3",
+          "state": "completed"
+        }
+      ],
+      "fixture_manifest_sha256": "c47a87f62dd7724d50243c40494d70ae1a20ccd278d3bf3e3b12d3f28ef4072b",
+      "no_graph_promotion": true,
+      "independent_or_production_accuracy_established": false,
+      "new_recipe_variants_measured": false
+    },
+    "execution_record": {
+      "attempted_requests": 48,
+      "planned_requests": 48,
+      "post_elapsed_seconds_sum": 11.342718,
+      "reported_cost_usd": "0.001664292",
+      "stopped_reason": null,
+      "unknown_cost_attempts": 0,
+      "billing_evidence": "historical_response_reported_not_invoice_certified"
+    },
+    "reconstruction_checks": {
+      "request_body_hashes_verified": 48,
+      "distinct_questions_objects": 1,
+      "w7_historical_inputs_equal_measured": true,
+      "new_model_calls": 0,
+      "frozen_manifest_runner_code_matches": {
+        "jev_live_pilot.py": true,
+        "openrouter_runner.py": true
+      }
+    },
+    "evaluated_body_hashes": [
+      {
+        "id": "svlv1_dev_001_q1",
+        "sha256": "b8b304b9bbf5333e0ef04d777d3c6e2dbe3ebbda837595effb1b5e7a5e822edf"
+      },
+      {
+        "id": "svlv1_dev_001_q2",
+        "sha256": "7be0fed1e4495f79f9611b7aedfbd997ade079549bbe702e96efc7670026b819"
+      },
+      {
+        "id": "svlv1_dev_001_q3",
+        "sha256": "40bd941a6e8c67fa20de390058420a0ae2c051c1914c5da6c62abd77d0672d3a"
+      },
+      {
+        "id": "svlv1_dev_001_q4",
+        "sha256": "a8790ea6ba926d59abb80eceda790006cc3426ab35aa52d53e849a450e553fd9"
+      },
+      {
+        "id": "svlv1_dev_002_q1",
+        "sha256": "c474691312eaebec9f602f948898d5d9c40d89b459145b7da1dfb30df6a6341f"
+      },
+      {
+        "id": "svlv1_dev_002_q2",
+        "sha256": "aeebd4ef10d10ead31073eb23a4882c3f43cdee708881132161783ce67e7a378"
+      },
+      {
+        "id": "svlv1_dev_002_q3",
+        "sha256": "edd6f0ffee8612bae8c2524fedba98b03a51f0d0464d170bc0fe9d3a42d1bca7"
+      },
+      {
+        "id": "svlv1_dev_002_q4",
+        "sha256": "645e00f437b0964ebd635320e32cc62951a1a6d73d6a48463f4292ef0d7180b8"
+      },
+      {
+        "id": "svlv1_dev_003_q1",
+        "sha256": "005655f189bdb696b50929e80e652f6d616138f809904c580041f013a1e855a3"
+      },
+      {
+        "id": "svlv1_dev_003_q2",
+        "sha256": "751fdcb4e6158dc55d3e9e9186d349fca35ec9b608f3149b93f8ba387833c095"
+      },
+      {
+        "id": "svlv1_dev_003_q3",
+        "sha256": "e42b47258a2de43e52fba6b233868751c43f491004b31671e3fab834ca7bd7d7"
+      },
+      {
+        "id": "svlv1_dev_003_q4",
+        "sha256": "1083de1e79453a6bb7a30ffab20a0ace6b4476fcd8fab7d8a6fb553e3bebe486"
+      },
+      {
+        "id": "svlv1_dev_004_q1",
+        "sha256": "c023fac05c7a78dc1e96b1786cde8a0bebe80d536406d22f22b9970818dec6bb"
+      },
+      {
+        "id": "svlv1_dev_004_q2",
+        "sha256": "da44f86362d2daa7b37b15b686fbafd814aea31681fca0d4185314f593d74709"
+      },
+      {
+        "id": "svlv1_dev_004_q3",
+        "sha256": "c3b0807266e9f409786a67aedf7e563da6290f2a4059e69ae3c7eb09a4ed713b"
+      },
+      {
+        "id": "svlv1_dev_004_q4",
+        "sha256": "e8bbfddbefa6ce2d56ad662704504e3435579022e817a2ee5b2d2d97c9ad02cb"
+      },
+      {
+        "id": "svlv1_dev_005_q1",
+        "sha256": "8f252302f8a4fed6f5ca0f7ece1d01b460df70814a637f8b205a5d53d1e97435"
+      },
+      {
+        "id": "svlv1_dev_005_q2",
+        "sha256": "4ed6a57adf1a65a270b9ffafe47b26cd90e6f414c427a6a633d6625b19bd97ff"
+      },
+      {
+        "id": "svlv1_dev_005_q3",
+        "sha256": "b1992d0543cf0cb5a5c1059621424c20ec296dce8ca55c471a15afd20fd0861a"
+      },
+      {
+        "id": "svlv1_dev_005_q4",
+        "sha256": "d2fe9b12bdd2fb09aff47518f7f5019684cbc1edb8e7d642c865e5a19af7c82a"
+      },
+      {
+        "id": "svlv1_dev_006_q1",
+        "sha256": "86af4ae97259bddaa6eb0a2ad89c043a8d05060de16fefa427aae082b412ff05"
+      },
+      {
+        "id": "svlv1_dev_006_q2",
+        "sha256": "d9cb1ceb815238df10f58203c768456f21cf71ba548e4ad78f1dc32a669dad66"
+      },
+      {
+        "id": "svlv1_dev_006_q3",
+        "sha256": "2f6fd0a883dc0efa28274940a2c2fcfb23053989aec304491ed3f970383d793b"
+      },
+      {
+        "id": "svlv1_dev_006_q4",
+        "sha256": "4387ca21bd7c1a80304f30be2728574ae663586a5bc6bfa2e0afec7a5dfe1f5a"
+      },
+      {
+        "id": "svlv1_dev_007_q1",
+        "sha256": "8675f591336f46aac872b9c8a7f22106d3ac34d7bc49943a789a4501e8d12f5a"
+      },
+      {
+        "id": "svlv1_dev_007_q2",
+        "sha256": "c04457bed683e4e6c9843418c2fa1d4677cf3d105c6cfda40c6cdb963cf5924d"
+      },
+      {
+        "id": "svlv1_dev_007_q3",
+        "sha256": "f3d4f668c45794f41755643949b4b41aeac49dec568591406de90223f51c2000"
+      },
+      {
+        "id": "svlv1_dev_007_q4",
+        "sha256": "2780bc0744ef3da2f9fecdae49acdcfffb71777d0444cecbfdb4e7d37935f295"
+      },
+      {
+        "id": "svlv1_dev_008_q1",
+        "sha256": "cb376bb8670d0a504720a1a25982ffd5c03986dfbaf8c7537e8a057b27166bd5"
+      },
+      {
+        "id": "svlv1_dev_008_q2",
+        "sha256": "d259c4ba132a46cf4d9e50011b58eba6e1304fb9b47c75823977c8fd3892f1a2"
+      },
+      {
+        "id": "svlv1_dev_008_q3",
+        "sha256": "d9292c4b26ce31b8746b183e56594d47172388391b67c15ded1dbf5b48b0f8f9"
+      },
+      {
+        "id": "svlv1_dev_008_q4",
+        "sha256": "0540f159bd3789e2e2dc3a5d474957caf897825a752b958d1ee20d8d16377c92"
+      },
+      {
+        "id": "svlv1_dev_009_q1",
+        "sha256": "bdeee74962a8cc17315645eb06a0cf46b67a8011f5b18ae148071d0150cc39d6"
+      },
+      {
+        "id": "svlv1_dev_009_q2",
+        "sha256": "231c96957b803ebe29aec4ff206f124df40b67a6f310d7a73aaa88cd6491d304"
+      },
+      {
+        "id": "svlv1_dev_009_q3",
+        "sha256": "64d1a574ff54712725a6355c155c83f4765a8e48966c43519edba944e7edbc59"
+      },
+      {
+        "id": "svlv1_dev_009_q4",
+        "sha256": "eff120ead5ce62dfe0b78ced0cb3b4bd2c133b3b30bace5dd6dd090c4032e658"
+      },
+      {
+        "id": "svlv1_dev_010_q1",
+        "sha256": "0de4e7af5dcedd58513e52ad275c4c7e24f9998dbf205061d5891714cdecbc02"
+      },
+      {
+        "id": "svlv1_dev_010_q2",
+        "sha256": "44a6a169d39d3f498748bfb60ba6d37458509831126ce1608197d4492655b08c"
+      },
+      {
+        "id": "svlv1_dev_010_q3",
+        "sha256": "4a1e824e045835e51fd6aa9c15772bd0b8c449b2f77f278dee78efc4cc614d4c"
+      },
+      {
+        "id": "svlv1_dev_010_q4",
+        "sha256": "996a844fdc05e4fd8d82931e67c6dd84dcec963ce6f2b327ba513462e52a63cf"
+      },
+      {
+        "id": "svlv1_dev_011_q1",
+        "sha256": "e0f59fb1f009e5553d323e8949d89a8bdc5d620014b1adc01fbd5adb86f7e008"
+      },
+      {
+        "id": "svlv1_dev_011_q2",
+        "sha256": "cbae569110a78e8b37d1b9b6a6bac5b09855f6a7387a721bc51ed1b1f2a0096f"
+      },
+      {
+        "id": "svlv1_dev_011_q3",
+        "sha256": "1c616565865ac310bfdb5654bf205ee862a7f5070be257a995516975a29cfb68"
+      },
+      {
+        "id": "svlv1_dev_011_q4",
+        "sha256": "f0828120834843f56aeb93f816cb715baaeb9cce4c7dd10df8af5844516f007c"
+      },
+      {
+        "id": "svlv1_dev_012_q1",
+        "sha256": "d33035a21c846f318730826d2336ab01b3fecaa13e9ab23147d0b4643b37a6aa"
+      },
+      {
+        "id": "svlv1_dev_012_q2",
+        "sha256": "ed18902fb6483b36d82f7981033093bb439651e62d52b82c0bc5333440785b2e"
+      },
+      {
+        "id": "svlv1_dev_012_q3",
+        "sha256": "17e271bf9d85f33f847f1fa2edc09858a93cb92766a2fa4f705d74bcec820d56"
+      },
+      {
+        "id": "svlv1_dev_012_q4",
+        "sha256": "b2204981a9f5cb3c1bcc181752df1bd51bbb980a731866b1430eb9a6dd07a04d"
+      }
+    ],
+    "latest_review": {
+      "remote_commit": "68f7531329dd8fe5132327038b75c65b31e2626a",
+      "report_files": [
+        {
+          "path": "docs/research/model_research_2026-10-04/STUDY_AND_RECIPES.md",
+          "sha256": "6f6592c20c28cf70b95855dc0cfe40dca712a5eba8e6f06c75382e60cc6d671b",
+          "bytes": 11174
+        },
+        {
+          "path": "docs/research/model_research_2026-10-04/EXTRACTION.md",
+          "sha256": "941908a726530976c42192df2d54ccd84cae0c1d953f6ef2766287f77859e25d",
+          "bytes": 8487
+        },
+        {
+          "path": "docs/research/model_research_2026-10-04/FRONTIER.md",
+          "sha256": "07aa4b21b53f4d43367e3732ebd06e3d2c83d8a6173eedb884c42260c454d013",
+          "bytes": 10126
+        }
+      ],
+      "historical_recipe_source_blobs_unchanged": true,
+      "new_model_calls_in_latest_increment": 0,
+      "new_measured_recipe_winner": null,
+      "new_frontier_model_semantic_quality": null,
+      "directed_refute_v3_measured": false,
+      "extraction_projection_is_new_model_result": false,
+      "duplicate_future_study_W3_requests": 96,
+      "note": "Latest W7 adds matched scripted frontier mechanics, not a new measured prompt winner. Original adopted historical recipe source commit and question bytes remain unchanged."
+    }
+  },
+  "compatibility": {
+    "requires_decisions_adapter": true,
+    "registered_as_executable_prompt": false,
+    "native_exact_execution": "unavailable",
+    "typed_binding_notation": "Documentation of an unimplemented arbitrary JSON-body binder, not current message compiler syntax. Bindings replace whole JSON values; strings must not be wrapped into new chat messages.",
+    "chat_conversion_measured": false,
+    "occurrence_extraction_compatible": false,
+    "changes_extraction_defaults": false,
+    "execution_authorized_by_this_recipe": false,
+    "consumers": [
+      "W7 replay/research tooling",
+      "W3 future typed Decisions adapter"
+    ],
+    "required_integration": "Version universal typed request-body binding and Decisions response adapter; preserve exact state/questions/request/first-response hashes, usage and source-commitment semantics. Existing generic .prompt messages compiler must not execute this file."
+  }
+}
