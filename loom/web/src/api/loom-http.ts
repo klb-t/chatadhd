@@ -1,7 +1,7 @@
 // loom-http.ts — LoomApi implementation for the browser: plain fetch for
 // request/response endpoints, fetch + ReadableStream for SSE endpoints
 // (chat, import progress, live events). Talks to loom-server's /api/*.
-import type { LoomApi, ContextSelectRequest, SearchOptions, SearchResult, StreamHandlers, Unsubscribe } from "./loom-api";
+import type { LoomApi, NativeUiRequestOptions, ContextSelectRequest, SearchOptions, SearchResult, StreamHandlers, Unsubscribe } from "./loom-api";
 import { createOperationsApi } from "./operations";
 import type {
   ChatChunk,
@@ -37,6 +37,18 @@ class HttpError extends Error {
 
 export class LoomHttpApi implements LoomApi {
   private token: string | null = null;
+  onboarding(command: Record<string, unknown>, options?: NativeUiRequestOptions): Promise<Record<string, unknown>> {
+    return this.req("POST", "/api/onboarding", command, false, options?.signal);
+  }
+  methods(command: Record<string, unknown>, options?: NativeUiRequestOptions): Promise<Record<string, unknown>> {
+    return this.req("POST", "/api/methods", command, false, options?.signal);
+  }
+  analysis(command: Record<string, unknown>, options?: NativeUiRequestOptions): Promise<Record<string, unknown>> {
+    return this.req("POST", "/api/analysis", command, false, options?.signal);
+  }
+  graphReply(command: Record<string, unknown>, options?: NativeUiRequestOptions): Promise<Record<string, unknown>> {
+    return this.req("POST", "/api/graph-reply", command, false, options?.signal);
+  }
   readonly operations = createOperationsApi(
     <T,>(method: string, path: string, body?: unknown) => this.req<T>(method, path, body),
     async <T,>(path: string, body: FormData): Promise<T> => {
@@ -98,11 +110,12 @@ export class LoomHttpApi implements LoomApi {
     return h;
   }
 
-  private async req<T>(method: string, path: string, body?: unknown, keepError = false): Promise<T> {
+  private async req<T>(method: string, path: string, body?: unknown, keepError = false, signal?: AbortSignal): Promise<T> {
     const res = await fetch(path, {
       method,
       headers: body !== undefined ? this.headers({ "Content-Type": "application/json" }) : this.headers(),
       body: body !== undefined ? JSON.stringify(body) : undefined,
+      signal,
     });
     const text = await res.text();
     const parsed = text ? JSON.parse(text) : {};

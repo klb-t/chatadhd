@@ -1,0 +1,6 @@
+.user-profile-host { display: flex; flex-direction: column; gap: 12px; }
+.user-profile-selector { display: flex; flex-direction: column; gap: 6px; }
+.user-profile-actions, .user-profile-status { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.user-profile-status { justify-content: space-between; }
+.user-profile-selector input { min-width: 0; width: 100%; box-sizing: border-box; }
+.user-profile-host code { overflow-wrap: anywhere; }
