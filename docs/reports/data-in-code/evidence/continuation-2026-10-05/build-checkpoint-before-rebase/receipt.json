@@ -1,0 +1,22 @@
+{
+  "schema": "loom.verification_checkpoint/1",
+  "date": "2026-10-05",
+  "command": [
+    "/root/.local/bin/cmake",
+    "--build",
+    "/workspace/scratch/72fc60ad1cc5/current-build",
+    "-j3"
+  ],
+  "base_main": "30ad7d37337d6641cb7714b03e9feff0e6e25d25",
+  "current_source_commit": "26c1a4062137f74f84f3c8e82c47fdec7ca1c6c9",
+  "scope": "Initial whole build deliberately interrupted after complete core archive at step139 and partial test objects through148; no build/CTest PASS claim",
+  "exit_code": 130,
+  "reason": "Final gates must run after main accepted threads3/4; stop duplicate obsolete-base test compilation and resume after fresh rebase",
+  "stdout_sha256": "5f1a434e904addfd717dbacaf175dcc206a5adcced9c356cb23f9132fc232a5a",
+  "source_sha256": {
+    "loom/include/loom/runtime_profile.h": "ce3faf9179dc4bf8ca18d00f43a0bd93df038a5c6908589a136c7407d5fbb88d",
+    "loom/src/model/runtime_profile.cpp": "0aab7afb23b413fdc62e6cd51b852a5596b0e8fb7b029bd95583f71e8ee6cc93",
+    "loom/src/model/runtime_profiles_embedded.inc": "45670e3f6cadc150cc0483bd5870d685f55f785c06f60cf0ebf14b820e645e3f",
+    "loom/cli/main.cpp": "410b81ac0b5b85428f3a868e0f1faa0a2a4ff76f08c50728065255191b82ebd4"
+  }
+}

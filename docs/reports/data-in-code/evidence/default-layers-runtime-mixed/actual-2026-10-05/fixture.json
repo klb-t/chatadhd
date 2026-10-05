@@ -1,0 +1,24 @@
+{
+  "schema": "loom.runtime_layers_mixed_fixture/1",
+  "key_prefix": "evidence.runtime.",
+  "pack_prefix": "evidence.runtime_layers.",
+  "new_key_suffix": "/new-fixture-entry",
+  "known_at": "2026-10-05T00:00:00Z",
+  "provenance": {
+    "kind": "synthetic_fixture",
+    "actor": "independent_mixed_runtime_layers_probe"
+  },
+  "policy": {
+    "excluded_area_new_defaults": "proposal"
+  },
+  "opaque_state": {
+    "opaque_fixture_state": {
+      "source_bytes": "unchanged fixture metadata",
+      "future_member": [
+        1,
+        null,
+        true
+      ]
+    }
+  }
+}

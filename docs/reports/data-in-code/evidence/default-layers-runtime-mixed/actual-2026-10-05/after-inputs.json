@@ -1,0 +1,197 @@
+[
+  {
+    "path": "loom/third_party/nlohmann/nlohmann/json.hpp",
+    "bytes": 919975,
+    "sha256": "9bea4c8066ef4a1c206b2be5a36302f8926f7fdc6087af5d20b417d0cf103ea6",
+    "source": "working_tree",
+    "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+  },
+  {
+    "path": "loom/src/onboarding/runtime_adapter.h",
+    "bytes": 419,
+    "sha256": "7c9f8441ad5dcf3014dc71a83622469c7a4ba4b35dfce69a3119c24550b7e916",
+    "source": "git",
+    "commit": "3c0bc36552ef9851f1174946cfb108549aae3228"
+  },
+  {
+    "path": "loom/include/loom/onboarding_layers.h",
+    "bytes": 1868,
+    "sha256": "263d3724731b79c2c7e4e0fa995ce50901e804a671a15c683af4bc0ea6451ea0",
+    "source": "git",
+    "commit": "3c0bc36552ef9851f1174946cfb108549aae3228"
+  },
+  {
+    "path": "loom/include/loom/util/json.h",
+    "bytes": 2551,
+    "sha256": "38aebe6cf03b613b75290cf8ac09fa57ecd87d730032fdebb8cc4fcf162ca8de",
+    "source": "working_tree",
+    "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+  },
+  {
+    "path": "loom/include/loom/result.h",
+    "bytes": 5337,
+    "sha256": "a6f27a2b1c0de258d8452af3d25d16f23179825dfc07033521c3c1ace1643553",
+    "source": "working_tree",
+    "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+  },
+  {
+    "path": "loom/src/onboarding/runtime_adapter.cpp",
+    "bytes": 3439,
+    "sha256": "790b865280b41b2405f65bbe37a4508f158a620df7aec73a399d53e25c661bcd",
+    "source": "git",
+    "commit": "3c0bc36552ef9851f1174946cfb108549aae3228"
+  },
+  {
+    "path": "loom/include/loom/runtime_profile.h",
+    "bytes": 2799,
+    "sha256": "ce3faf9179dc4bf8ca18d00f43a0bd93df038a5c6908589a136c7407d5fbb88d",
+    "source": "working_tree",
+    "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+  },
+  {
+    "path": "loom/src/onboarding/layers.cpp",
+    "bytes": 14102,
+    "sha256": "066a1e41f960b69bc3440d97dfef41495907c6ef9964ba49d84b9cf3958f65b0",
+    "source": "git",
+    "commit": "3c0bc36552ef9851f1174946cfb108549aae3228"
+  },
+  {
+    "path": "loom/include/loom/util/sha256.h",
+    "bytes": 1746,
+    "sha256": "2723f226f5be04cb0fcca1e6ca0b63105b2c5b36178a6bf1701bee99031a127d",
+    "source": "working_tree",
+    "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+  },
+  {
+    "path": "loom/src/util/result.cpp",
+    "bytes": 1359,
+    "sha256": "1488f760d6b3959bf15cb8b6425c593b066e227ebd9edeb8209df0e37b32e018",
+    "source": "working_tree",
+    "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+  },
+  {
+    "path": "loom/src/util/unicode.cpp",
+    "bytes": 3274,
+    "sha256": "4780360568de8fae034cc070f27efa033eb5e991d77c6d8d3e1fda4070523165",
+    "source": "working_tree",
+    "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+  },
+  {
+    "path": "loom/src/util/unicode_tables.inc",
+    "bytes": 80225,
+    "sha256": "aa19c84617ed20d2d3eaab5bfab834a88d4287d277ea8e7c3f0ea82ecfdea240",
+    "source": "working_tree",
+    "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+  },
+  {
+    "path": "loom/include/loom/util/unicode.h",
+    "bytes": 1715,
+    "sha256": "a363672f385af55cd43fbdd1b80632dba0bf28d370b7392e26f65c3d74d724d0",
+    "source": "working_tree",
+    "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+  },
+  {
+    "path": "loom/src/util/utf8.cpp",
+    "bytes": 7174,
+    "sha256": "91f6786cf4d759768074a26cbae5b150284a241840f0f3761c867616831f3902",
+    "source": "working_tree",
+    "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+  },
+  {
+    "path": "loom/include/loom/util/utf8.h",
+    "bytes": 2142,
+    "sha256": "8b20f2da731065f9bd89aed76362e33ce53bc7abfad83fd5d4b4ef5c2907a196",
+    "source": "working_tree",
+    "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+  },
+  {
+    "path": "loom/src/util/sha256.cpp",
+    "bytes": 7173,
+    "sha256": "c8d783c4ebaa9d46703a65dc228931fe2e355c2be9ac1fc26dad089f6f0b031c",
+    "source": "working_tree",
+    "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+  },
+  {
+    "path": "loom/src/util/json.cpp",
+    "bytes": 8944,
+    "sha256": "49d882300afe82a764cca67b7a00f8dfd9c9ce5ed2318933312bdaafbeb9b89d",
+    "source": "working_tree",
+    "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+  },
+  {
+    "path": "loom/src/util/random_ids_time.cpp",
+    "bytes": 4512,
+    "sha256": "8918765710c94b7d9e667ae2923dfb78b3eb13b3c3239405aadb18e1b9ee6586",
+    "source": "working_tree",
+    "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+  },
+  {
+    "path": "loom/include/loom/util/time.h",
+    "bytes": 975,
+    "sha256": "51d2363cd0636810e4d73f0a718f8b245857e0c9e1cb4d6843276a270b71dece",
+    "source": "working_tree",
+    "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+  },
+  {
+    "path": "loom/include/loom/util/random.h",
+    "bytes": 443,
+    "sha256": "a49774652aad58f9937a1ccd45bf598ae4a109f950711041f4a5ab29470b67d3",
+    "source": "working_tree",
+    "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+  },
+  {
+    "path": "loom/include/loom/util/ids.h",
+    "bytes": 1343,
+    "sha256": "63162ffded704ad2b199f519e5ac9828c4a47281108dc3125379ee565a92c876",
+    "source": "working_tree",
+    "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+  },
+  {
+    "path": "loom/src/util/log.cpp",
+    "bytes": 7261,
+    "sha256": "5c63aeb87b5bfcf626b1cc68904d47532a767c57d8f49c5ec845c0ba75f03dfc",
+    "source": "working_tree",
+    "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+  },
+  {
+    "path": "loom/include/loom/log.h",
+    "bytes": 3965,
+    "sha256": "a098067534d2cbe558c1076fca4761300ff3eff137568a2ff0212aafbe30fa43",
+    "source": "working_tree",
+    "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+  },
+  {
+    "path": "loom/src/util/fs.cpp",
+    "bytes": 6483,
+    "sha256": "3a0202d4a38159c4ce28c8c141d2f9a86bccab18e9879c36cc7ea551364594aa",
+    "source": "working_tree",
+    "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+  },
+  {
+    "path": "loom/include/loom/util/fs.h",
+    "bytes": 2912,
+    "sha256": "117cc8d3cfba55fbfeff55f64a1696ee96c4da12aadb738989be4ca047503359",
+    "source": "working_tree",
+    "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+  },
+  {
+    "path": "loom/src/model/runtime_profile.cpp",
+    "bytes": 17898,
+    "sha256": "0aab7afb23b413fdc62e6cd51b852a5596b0e8fb7b029bd95583f71e8ee6cc93",
+    "source": "working_tree",
+    "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+  },
+  {
+    "path": "loom/src/model/runtime_profiles_embedded.inc",
+    "bytes": 245926,
+    "sha256": "45670e3f6cadc150cc0483bd5870d685f55f785c06f60cf0ebf14b820e645e3f",
+    "source": "working_tree",
+    "head": "9a89e3771d54b4b39d1126468d680f62aff7487e"
+  },
+  {
+    "path": "runner.cpp",
+    "bytes": 16533,
+    "sha256": "667bb72fbf1d196c5569b8d88e6a26d2ecdebfc646ef7274c7a2efbbcf5dc96b",
+    "source": "evidence_runner"
+  }
+]
