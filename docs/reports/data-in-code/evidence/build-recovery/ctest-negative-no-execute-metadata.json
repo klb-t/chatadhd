@@ -1,0 +1,19 @@
+{
+  "schema": "loom.negative_executable_mode/1",
+  "path": "/workspace/scratch/72fc60ad1cc5/current-build/loom_tests",
+  "bytes": 54783640,
+  "mode": "0o755",
+  "execute_allowed": true,
+  "magic_hex": "7f454c46",
+  "classification": "Independent readonly observations before and after execute bit recovery; this child performed no chmod or build mutation",
+  "observation_utc": "2026-10-04T16:58:43.551021+00:00",
+  "earlier_observation": {
+    "path": "/workspace/scratch/72fc60ad1cc5/current-build/loom_tests",
+    "bytes": 54783640,
+    "mode": "0o644",
+    "execute_allowed": false,
+    "magic_hex": "7f454c46",
+    "mtime_utc": "2026-10-04T16:50:36.798692+00:00",
+    "source": "Readonly exec_command stat output of this child before reporting failure to parent; capture of full log/xml occurred later, after parent restored execute bit."
+  }
+}

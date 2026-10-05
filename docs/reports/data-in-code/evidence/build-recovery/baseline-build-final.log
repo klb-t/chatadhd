@@ -1,0 +1,32 @@
+[0/2] Re-checking globbed directories...
+[1/105] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_graph_packet_store.cpp.o
+[2/105] Linking CXX static library libloom_core.a
+[3/105] Linking CXX shared library libloom.so.0.1.0
+[4/105] Building CXX object CMakeFiles/loom_tests.dir/tests/main.cpp.o
+[5/105] Building CXX object CMakeFiles/loom_tests.dir/tests/test_archive.cpp.o
+[6/105] Building CXX object CMakeFiles/loom_tests.dir/tests/test_batch_api.cpp.o
+[7/105] Building CXX object CMakeFiles/loom_tests.dir/tests/test_capi.cpp.o
+[8/105] Building CXX object CMakeFiles/loom_tests.dir/tests/test_capi_knowledge.cpp.o
+[9/105] Building CXX object CMakeFiles/loom_tests.dir/tests/test_capi_knowledge_latest_run.cpp.o
+[10/105] Building CXX object CMakeFiles/loom_tests.dir/tests/test_catalog.cpp.o
+[11/105] Building CXX object CMakeFiles/loom_tests.dir/tests/test_catalog_context.cpp.o
+[12/105] Building CXX object CMakeFiles/loom_tests.dir/tests/test_catalog_eval.cpp.o
+[13/105] Building CXX object CMakeFiles/loom_tests.dir/tests/test_catalog_links.cpp.o
+[14/105] Building CXX object CMakeFiles/loom_tests.dir/tests/test_catalog_retention.cpp.o
+[15/105] Building CXX object CMakeFiles/loom_tests.dir/tests/test_catalog_scale.cpp.o
+[16/105] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_active_task.cpp.o
+[17/105] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_active_task_acceptance_audit.cpp.o
+[18/105] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_active_task_acceptance_scale.cpp.o
+[19/105] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_active_task_acceptance_validation.cpp.o
+[20/105] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_active_task_concurrency.cpp.o
+[21/105] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_active_task_durability.cpp.o
+[22/105] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_active_task_durable_audit.cpp.o
+[23/105] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_active_task_exceptional.cpp.o
+[24/105] Building CXX object CMakeFiles/loom_tests.dir/tests/test_chat_active_task_history_aba.cpp.o
+FAILED: [code=1] CMakeFiles/loom_tests.dir/tests/test_chat_active_task_history_aba.cpp.o 
+/usr/bin/c++ -DJSON_USE_IMPLICIT_CONVERSIONS=1 -DLOOM_TEST_FIXTURES=\"/workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/tests/fixtures\" -DLOOM_VENDORED_SQLITE=1 -DLOOM_VERSION_STRING=\"0.1.0\" -I/workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/src -I/workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/tests -I/workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/include -isystem /workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/third_party/doctest -isystem /workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/third_party/nlohmann -isystem /workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/third_party/sqlite -g -std=c++20 -fPIE -fvisibility=hidden -fvisibility-inlines-hidden -Wall -Wextra -Wpedantic -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Woverloaded-virtual -Wnull-dereference -Wimplicit-fallthrough -Wno-unused-parameter -Werror -MD -MT CMakeFiles/loom_tests.dir/tests/test_chat_active_task_history_aba.cpp.o -MF CMakeFiles/loom_tests.dir/tests/test_chat_active_task_history_aba.cpp.o.d -o CMakeFiles/loom_tests.dir/tests/test_chat_active_task_history_aba.cpp.o -c /workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/tests/test_chat_active_task_history_aba.cpp
+/workspace/scratch/72fc60ad1cc5/chatadhd-baseline/loom/tests/test_chat_active_task_history_aba.cpp:223:1: fatal error: error writing to /tmp/ccKOMHcp.s: No space left on device
+  223 | }
+      | ^
+compilation terminated.
+ninja: build stopped: subcommand failed.

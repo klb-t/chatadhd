@@ -1,0 +1,6 @@
+23:47:07 [INFO ] loom.config: config.json not found - using defaults
+23:47:07 [INFO ] loom.config: secrets.json not found - using defaults
+23:47:07 [INFO ] loom.db: Schema upgraded: v0 -> v4
+23:47:07 [INFO ] loom.db: Database opened: /tmp/loom_2ef342216b62/probe.db
+23:47:07 [INFO ] loom.semantic_worker: Batch submitted: offline-batch (501 msgs, ~$0.03)
+23:47:07 [INFO ] loom.db: Database closed

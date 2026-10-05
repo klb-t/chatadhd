@@ -1,0 +1,73 @@
+[0/2] Re-checking globbed directories...
+[1/242] Building C object CMakeFiles/loom_sqlite3_amalgamation.dir/third_party/sqlite/sqlite3.c.o
+[2/242] Building C object CMakeFiles/loom_miniz.dir/third_party/miniz/miniz.c.o
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/third_party/miniz/miniz.c:3185:9: note: ‘#pragma message: Using fopen, ftello, fseeko, stat() etc. path for file I/O - this path may not support large files.’
+ 3185 | #pragma message("Using fopen, ftello, fseeko, stat() etc. path for file I/O - this path may not support large files.")
+      |         ^~~~~~~
+[3/242] Linking C static library libloom_sqlite3_amalgamation.a
+[4/242] Linking C static library libloom_miniz.a
+[5/242] Building CXX object CMakeFiles/loom_core.dir/src/archive/cluster.cpp.o
+[6/242] Building CXX object CMakeFiles/loom_core.dir/src/archive/ingest.cpp.o
+[7/242] Building CXX object CMakeFiles/loom_core.dir/src/archive/ingest_parse.cpp.o
+[8/242] Building CXX object CMakeFiles/loom_core.dir/src/archive/items.cpp.o
+[9/242] Building CXX object CMakeFiles/loom_core.dir/src/archive/pipeline.cpp.o
+[10/242] Building CXX object CMakeFiles/loom_core.dir/src/archive/profile.cpp.o
+[11/242] Building CXX object CMakeFiles/loom_core.dir/src/archive/synth.cpp.o
+[12/242] Building CXX object CMakeFiles/loom_core.dir/src/archive/text.cpp.o
+[13/242] Building CXX object CMakeFiles/loom_core.dir/src/archive/vocab.cpp.o
+[14/242] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_archive.cpp.o
+[15/242] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_catalog.cpp.o
+[16/242] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_chat.cpp.o
+[17/242] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_context.cpp.o
+[18/242] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_core.cpp.o
+[19/242] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_extract.cpp.o
+[20/242] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_generalize.cpp.o
+[21/242] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_graph.cpp.o
+[22/242] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_graph_packet_store.cpp.o
+[23/242] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_http.cpp.o
+[24/242] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_import.cpp.o
+[25/242] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_knowledge.cpp.o
+[26/242] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_media.cpp.o
+[27/242] Building CXX object CMakeFiles/loom_core.dir/src/catalog/alias.cpp.o
+[28/242] Building CXX object CMakeFiles/loom_core.dir/src/catalog/catalog.cpp.o
+[29/242] Building CXX object CMakeFiles/loom_core.dir/src/catalog/extract_text.cpp.o
+[30/242] Building CXX object CMakeFiles/loom_core.dir/src/catalog/import.cpp.o
+[31/242] Building CXX object CMakeFiles/loom_core.dir/src/catalog/links.cpp.o
+[32/242] Building CXX object CMakeFiles/loom_core.dir/src/catalog/profile.cpp.o
+[33/242] Building CXX object CMakeFiles/loom_core.dir/src/catalog/query.cpp.o
+[34/242] Building CXX object CMakeFiles/loom_core.dir/src/catalog/scan.cpp.o
+[35/242] Building CXX object CMakeFiles/loom_core.dir/src/catalog/schema.cpp.o
+[36/242] Building CXX object CMakeFiles/loom_core.dir/src/catalog/score.cpp.o
+[37/242] Building CXX object CMakeFiles/loom_core.dir/src/catalog/select.cpp.o
+[38/242] Building CXX object CMakeFiles/loom_core.dir/src/catalog/semantic.cpp.o
+[39/242] Building CXX object CMakeFiles/loom_core.dir/src/catalog/sketch.cpp.o
+[40/242] Building CXX object CMakeFiles/loom_core.dir/src/catalog/stream.cpp.o
+[41/242] Building CXX object CMakeFiles/loom_core.dir/src/chat/active_task_acceptance.cpp.o
+[42/242] Building CXX object CMakeFiles/loom_core.dir/src/chat/active_task_spec.cpp.o
+[43/242] Building CXX object CMakeFiles/loom_core.dir/src/chat/batch_api.cpp.o
+[44/242] Building CXX object CMakeFiles/loom_core.dir/src/chat/chat_engine.cpp.o
+[45/242] Building CXX object CMakeFiles/loom_core.dir/src/context/context_candidates.cpp.o
+[46/242] Building CXX object CMakeFiles/loom_core.dir/src/context/context_diagnostics.cpp.o
+[47/242] Building CXX object CMakeFiles/loom_core.dir/src/context/context_engine.cpp.o
+[48/242] Building CXX object CMakeFiles/loom_core.dir/src/context/context_evidence.cpp.o
+[49/242] Building CXX object CMakeFiles/loom_core.dir/src/context/context_plan.cpp.o
+[50/242] Building CXX object CMakeFiles/loom_core.dir/src/context/context_request_ext.cpp.o
+[51/242] Building CXX object CMakeFiles/loom_core.dir/src/context/ctx_common.cpp.o
+[52/242] Building CXX object CMakeFiles/loom_core.dir/src/context/retrieval.cpp.o
+[53/242] Building CXX object CMakeFiles/loom_core.dir/src/core/config.cpp.o
+[54/242] Building CXX object CMakeFiles/loom_core.dir/src/core/event_bus.cpp.o
+[55/242] Building CXX object CMakeFiles/loom_core.dir/src/core/provenance.cpp.o
+[56/242] Building CXX object CMakeFiles/loom_core.dir/src/core/relations.cpp.o
+[57/242] Building CXX object CMakeFiles/loom_core.dir/src/core/tasks.cpp.o
+[58/242] Building CXX object CMakeFiles/loom_core.dir/src/crypto/crypto.cpp.o
+[59/242] Building CXX object CMakeFiles/loom_core.dir/src/db/db.cpp.o
+[60/242] Building CXX object CMakeFiles/loom_core.dir/src/db/fts.cpp.o
+[61/242] Building CXX object CMakeFiles/loom_core.dir/src/db/sqlite.cpp.o
+[62/242] Building CXX object CMakeFiles/loom_core.dir/src/extract/candidate_graph.cpp.o
+FAILED: [code=1] CMakeFiles/loom_core.dir/src/extract/candidate_graph.cpp.o 
+/usr/bin/c++ -DCPPHTTPLIB_OPENSSL_SUPPORT=1 -DJSON_USE_IMPLICIT_CONVERSIONS=1 -DLOOM_BUILDING=1 -DLOOM_HAVE_OPENSSL=1 -DLOOM_VENDORED_SQLITE=1 -DLOOM_VERSION_STRING=\"0.1.0\" -I/workspace/scratch/72fc60ad1cc5/chatadhd/loom/include -I/workspace/scratch/72fc60ad1cc5/chatadhd/loom/src -isystem /workspace/scratch/72fc60ad1cc5/chatadhd/loom/third_party/nlohmann -isystem /workspace/scratch/72fc60ad1cc5/chatadhd/loom/third_party/cpp-httplib -isystem /workspace/scratch/72fc60ad1cc5/chatadhd/loom/third_party/sqlite -isystem /workspace/scratch/72fc60ad1cc5/chatadhd/loom/third_party/miniz -g0 -std=c++20 -fPIC -fvisibility=hidden -fvisibility-inlines-hidden -Wall -Wextra -Wpedantic -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Woverloaded-virtual -Wnull-dereference -Wimplicit-fallthrough -Wno-unused-parameter -Werror -MD -MT CMakeFiles/loom_core.dir/src/extract/candidate_graph.cpp.o -MF CMakeFiles/loom_core.dir/src/extract/candidate_graph.cpp.o.d -o CMakeFiles/loom_core.dir/src/extract/candidate_graph.cpp.o -c /workspace/scratch/72fc60ad1cc5/chatadhd/loom/src/extract/candidate_graph.cpp
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/src/extract/candidate_graph.cpp:539:1: fatal error: error writing to /tmp/ccNR7Gv8.s: No space left on device
+  539 | }  // namespace loom::extract
+      | ^
+compilation terminated.
+ninja: build stopped: subcommand failed.

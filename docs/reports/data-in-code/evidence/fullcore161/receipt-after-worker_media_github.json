@@ -1,0 +1,150 @@
+{
+  "schema": "loom.offline_fullcore_parity_receipt/1",
+  "created_at_utc": "2026-10-04T16:54:09.117843+00:00",
+  "variant": "after",
+  "baseline_commit": "161cc22dfb84fe863389d6b90323bd44516a68dc",
+  "workspace_paths": {
+    "repo_root": "/workspace/scratch/72fc60ad1cc5/chatadhd",
+    "baseline_root": "/workspace/scratch/72fc60ad1cc5/chatadhd-baseline",
+    "baseline_build": "/workspace/scratch/72fc60ad1cc5/baseline-build",
+    "current_build": "/workspace/scratch/72fc60ad1cc5/current-build",
+    "scratch_root": "/workspace/scratch/72fc60ad1cc5"
+  },
+  "library_mode": "actual whole libloom_core.a; no changed-object/older-library fallback",
+  "synthetic": true,
+  "network": "Offline fixtures/ScriptedTransport only; Runtime start_workers=false.",
+  "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "build": "/workspace/scratch/72fc60ad1cc5/current-build",
+  "libraries": [
+    {
+      "path": "/workspace/scratch/72fc60ad1cc5/current-build/libloom_core.a",
+      "bytes": 335691336,
+      "sha256": "e32c82f3fbc6eb62d60ed3074070c20a99e31fdb1a099dd2528d19bd7efdc5e9"
+    },
+    {
+      "path": "/workspace/scratch/72fc60ad1cc5/current-build/libloom_miniz.a",
+      "bytes": 360316,
+      "sha256": "66196aa00510a4af760b16f1bae96443f5cff4420cd6a4aa377c4e465cf18269"
+    },
+    {
+      "path": "/workspace/scratch/72fc60ad1cc5/current-build/libloom_sqlite3_amalgamation.a",
+      "bytes": 3509470,
+      "sha256": "aa0b173ac836a4302dff7ee58a251bdc347616cc8a3a008b05fc8a697b6bfeb6"
+    }
+  ],
+  "build_metadata": [
+    {
+      "path": "/workspace/scratch/72fc60ad1cc5/current-build/compile_commands.json",
+      "bytes": 299226,
+      "sha256": "0987ac59b9e7a29bd2c1329a86e07850f2341d7ea5168bca2ba68df85088132c"
+    },
+    {
+      "path": "/workspace/scratch/72fc60ad1cc5/current-build/CMakeCache.txt",
+      "bytes": 18619,
+      "sha256": "c651b8d6b0fe17e34a6cd0a94a9d07ef2de2718d31499e70ea2eb20a1c2afcad"
+    }
+  ],
+  "probe_receipts": [
+    {
+      "name": "worker_media_github",
+      "source": {
+        "path": "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/fullcore161/profile_worker_media_github_parity.cc",
+        "bytes": 4960,
+        "sha256": "7c3a1620c9fa0172d720a492cd726b3d6904f04f0fdcf75a833c15b02aa59492"
+      },
+      "compile_command": [
+        "c++",
+        "-DCPPHTTPLIB_OPENSSL_SUPPORT=1",
+        "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+        "-DLOOM_BUILDING=1",
+        "-DLOOM_HAVE_OPENSSL=1",
+        "-DLOOM_VENDORED_SQLITE=1",
+        "-DLOOM_VERSION_STRING=\"0.1.0\"",
+        "-I/workspace/scratch/72fc60ad1cc5/chatadhd/loom/include",
+        "-I/workspace/scratch/72fc60ad1cc5/chatadhd/loom/src",
+        "-isystem",
+        "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/third_party/nlohmann",
+        "-isystem",
+        "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/third_party/cpp-httplib",
+        "-isystem",
+        "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/third_party/sqlite",
+        "-isystem",
+        "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/third_party/miniz",
+        "-std=c++20",
+        "-O0",
+        "-g0",
+        "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/fullcore161/profile_worker_media_github_parity.cc",
+        "/workspace/scratch/72fc60ad1cc5/current-build/libloom_core.a",
+        "/workspace/scratch/72fc60ad1cc5/current-build/libloom_miniz.a",
+        "/workspace/scratch/72fc60ad1cc5/current-build/libloom_sqlite3_amalgamation.a",
+        "-pthread",
+        "-ldl",
+        "-lm",
+        "-lssl",
+        "-lcrypto",
+        "-o",
+        "/workspace/scratch/72fc60ad1cc5/fullcore161-worker_media_github-after-probe"
+      ],
+      "compile_cwd": "/workspace/scratch/72fc60ad1cc5/chatadhd",
+      "run_command": [
+        "/workspace/scratch/72fc60ad1cc5/fullcore161-worker_media_github-after-probe"
+      ],
+      "run_cwd": "/workspace/scratch/72fc60ad1cc5/fullcore161-worker_media_github-after-work",
+      "core_only": false,
+      "runtime_path": false,
+      "compile_exit": 0,
+      "run_exit": 0,
+      "stderr": {
+        "path": "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/fullcore161/worker_media_github.after.stderr.log",
+        "bytes": 397,
+        "sha256": "44eb0e93a98934205c767c76ad7b00661ce65e4c1f388dba5ae70cd8fd7a2638"
+      },
+      "stdout": {
+        "path": "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/fullcore161/worker_media_github.after.json",
+        "bytes": 604681,
+        "sha256": "d947a102fbdd04aa5d6343c8020755e1a63d22ff9ca80d80c5c05c5e50f1b7d2"
+      },
+      "valid": true,
+      "top_level_keys": [
+        "groq",
+        "google",
+        "ocr",
+        "github",
+        "worker_batch",
+        "worker"
+      ],
+      "before_stdout": {
+        "path": "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/fullcore161/worker_media_github.before.json",
+        "bytes": 604681,
+        "sha256": "d947a102fbdd04aa5d6343c8020755e1a63d22ff9ca80d80c5c05c5e50f1b7d2"
+      },
+      "byte_parity": true
+    }
+  ],
+  "baseline_three_receipt": "../baseline161/receipt.json",
+  "capture_script": {
+    "path": "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/fullcore161/capture_fullcore.py",
+    "bytes": 11409,
+    "sha256": "d01a9843072b47600cd6b9ec6e186d2e1513a94b7112a4743c42eae54f16f873"
+  },
+  "consumer_artifacts": [
+    {
+      "path": "/workspace/scratch/72fc60ad1cc5/current-build/cli/loom",
+      "bytes": 34806104,
+      "sha256": "c43d181c8865fe673ea7cf57003991641255a3c1241da6827b1261140a3688af"
+    },
+    {
+      "path": "/workspace/scratch/72fc60ad1cc5/current-build/server/loom-server",
+      "bytes": 37292848,
+      "sha256": "73bda1c082b387ed893c00e1d4383a31127e90a1db1a4534dc36be3b04373f56"
+    },
+    {
+      "path": "/workspace/scratch/72fc60ad1cc5/current-build/libloom.so.0.1.0",
+      "bytes": 36767072,
+      "sha256": "9ff144fb7455937100a8dd4ce35c8ed61159fb869bd7b97b90c3016e404f149c"
+    }
+  ],
+  "current_commit": "3cbc4b6e16e01fdeddb970bf3b866fb70e95a5dd",
+  "current_git_status_porcelain": " M docs/reports/data-in-code/README.md\n M docs/reports/data-in-code/RUNTIME_PROFILES.md\n M docs/reports/data-in-code/implementation-archive.md\n M docs/reports/data-in-code/implementation-semantics.md\n M docs/reports/data-in-code/inventory.json\n M docs/reports/data-in-code/thread-11.md\n M docs/reports/data-in-code/thread-8.md\n?? docs/reports/data-in-code/branch-supplement-thread-8.json\n?? docs/reports/data-in-code/branch-supplement-thread-8.md\n?? docs/reports/data-in-code/evidence/archive/whole-runtime-timing/\n?? docs/reports/data-in-code/evidence/baseline161/\n?? docs/reports/data-in-code/evidence/build-recovery/\n?? docs/reports/data-in-code/evidence/final-validation/\n?? docs/reports/data-in-code/evidence/fullcore161/\n?? docs/reports/data-in-code/migration-status.json\n?? docs/reports/data-in-code/migration-status.md\n?? docs/reports/data-profiles-2026-10-04.md\n",
+  "valid": true
+}

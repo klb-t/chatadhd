@@ -1,6 +1,6 @@
 # Wątek 11 — CLI: aktywny profil, podgląd i trwałe nakładki
 
-CLI korzysta z `loom/data/runtime/cli.pack` z nakładką użytkownika i udostępnia **profile list / inspect / validate / save**. Przegląd końcowy obejmuje działający kod i nowe asercje smoke, a nie wynik wykonania przyszłego buildu. Kontrola składni C++ z ostrzeżeniami projektu i `-Werror`, AST Pythona oraz whitespace diff są zielone; **wykonanie końcowego `cli.smoke` i pełnego `ctest` pozostaje do potwierdzenia po pełnym buildzie**. Ta część nie uruchamiała buildu ani płatnych wywołań.
+CLI korzysta z `loom/data/runtime/cli.pack` z nakładką użytkownika i udostępnia **profile list / inspect / validate / save**. Przegląd końcowy obejmuje działający kod i nowe asercje smoke, a nie wynik wykonania przyszłego buildu. Kontrola składni C++ z ostrzeżeniami projektu i `-Werror`, AST Pythona oraz whitespace diff są zielone. **Końcowy rzeczywisty cli.smoke PASS, 37,39s; pełny CTest122/122 zielony**, a [receipt końcowy](evidence/final-validation/receipt.json) rozlicza121 wykonanych wpisów,776 native/26 758 asercji i1 276 Python. Zachowano pełny raw log tego samego uruchomienia i jawnie pochodny nieucięty XML do kontroli przypadków. Ta część nie uruchamiała buildu ani płatnych wywołań.
 
 ## Włączona polityka i zgodność domyślna
 
@@ -47,7 +47,7 @@ Wykryto i poprawiono trzy konkretne problemy przed finalnym buildem:
 
 Nowe asercje w `test_cli_smoke.py` sprawdzają trzy polecenia informacyjne z nieistniejącym jawnym katalogiem oraz każde z nich przy syntetycznym HOME tylko do odczytu i HOME wskazującym zwykły plik. Sprawdzają brak tworzenia katalogu. Pozostałe nowe sprawdzenia obejmują: efektywną pomoc i flagi, aliasy wersji/conv/profile, nowy tytuł rozmowy, preset limitu i pierwszeństwo `--limit`, validate bez zapisu nakładki, niezmienność pliku przy odrzuconym save/scale0, zapis i ponowny odczyt natywnych maksymalnych rozmiarów i najmniejszej dodatniej skali, usunięcie `.cpp` z mapy materialize przez RFC6902 i zachowanie tego usunięcia przy dalszym nadpisaniu, jawny błąd istniejącej uszkodzonej nakładki także dla wczesnego `--help`.
 
-Te przypadki są gotowe do wykonania przez **rzeczywisty `cli.smoke` po finalnej regeneracji danych i buildzie**. Nie podano liczby „zaliczonych przypadków” na podstawie ich obecności w źródle. Wcześniejsze części smoke pozostały w całości; nie zmieniono progów ani limitu czasu testu.
+Te przypadki wykonał **rzeczywisty cli.smoke po finalnej regeneracji danych i buildzie; PASS**. Nie podano liczby „zaliczonych przypadków” na podstawie ich obecności w źródle. Wcześniejsze części smoke pozostały w całości; nie zmieniono progów ani limitu czasu testu.
 
 ## Status 42 pozycji i zakres CLI
 
@@ -75,4 +75,4 @@ Pozostałe klucze i etykiety zapisu, statusy historyczne, protokoły sekretów, 
 - **Do wątku 3:** nadal otwarte scalenie starego selektora/pamięci z ContextEngine, jednoznaczna semantyka pominiętego pola/jawnego zera oraz wspólny kontrakt requestów. Nie reinterpretować zapisanych historycznych wire/defaults przez bieżący profil; nie twierdzić, że CLI15 migrated zamyka tę integrację.
 - **Do wątku 5:** DIC-0515, schema/capabilities ImportOptions dla nazw export-mode i ich wspólnej walidacji CLI.
 - **Do wątku 10:** profile list/inspect/validate/save mogą stanowić bazę trybu eksperckiego; edytor ma respektować schema, RFC6902 removals, native kontrakty konsumentów i rozdział od zatwierdzania zużycia. Po zapisaniu aktywny profil ładuje następne wywołanie CLI.
-- **Do wątku 9:** zregenerować embedding `cli.pack`, wykonać finalny build i rzeczywisty cli.smoke/full ctest, zachować logs/receipts także przy wyniku negatywnym. Ten raport potwierdza tylko przegląd, porównanie pomocy/flag i składnię końcowych źródeł. Zmiany trzech plików CLI są gotowe; pełna bramka pozostaje integratorowi.
+- **Do wątku 9:** embedding i rzeczywisty cli.smoke/fullCTest tej gałęzi już zaliczone zgodnie z receipt powyżej. Powtórzyć bramki na własnej połączonej i rebazowanej wersji; zachować oryginalne logi, negatyw uprawnień oraz jawnie opisany pochodny XML. Nie traktować tego receipt jako dowodu innego drzewa integracji.

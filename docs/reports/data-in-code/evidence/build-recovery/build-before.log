@@ -1,0 +1,19 @@
+[0/2] Re-checking globbed directories...
+[1/235] Building C object CMakeFiles/loom_miniz.dir/third_party/miniz/miniz.c.o
+/workspace/scratch/72fc60ad1cc5/chatadhd/loom/third_party/miniz/miniz.c:3185:9: note: ‘#pragma message: Using fopen, ftello, fseeko, stat() etc. path for file I/O - this path may not support large files.’
+ 3185 | #pragma message("Using fopen, ftello, fseeko, stat() etc. path for file I/O - this path may not support large files.")
+      |         ^~~~~~~
+[2/235] Linking C static library libloom_miniz.a
+[3/235] Building CXX object CMakeFiles/loom_core.dir/src/archive/cluster.cpp.o
+[4/235] Building C object CMakeFiles/loom_sqlite3_amalgamation.dir/third_party/sqlite/sqlite3.c.o
+[5/235] Linking C static library libloom_sqlite3_amalgamation.a
+[6/235] Building CXX object CMakeFiles/loom_core.dir/src/archive/ingest.cpp.o
+[7/235] Building CXX object CMakeFiles/loom_core.dir/src/archive/items.cpp.o
+[8/235] Building CXX object CMakeFiles/loom_core.dir/src/archive/ingest_parse.cpp.o
+[9/235] Building CXX object CMakeFiles/loom_core.dir/src/archive/synth.cpp.o
+[10/235] Building CXX object CMakeFiles/loom_core.dir/src/archive/text.cpp.o
+[11/235] Building CXX object CMakeFiles/loom_core.dir/src/archive/pipeline.cpp.o
+[12/235] Building CXX object CMakeFiles/loom_core.dir/src/archive/vocab.cpp.o
+[13/235] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_archive.cpp.o
+[14/235] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_catalog.cpp.o
+[15/235] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_chat.cpp.o

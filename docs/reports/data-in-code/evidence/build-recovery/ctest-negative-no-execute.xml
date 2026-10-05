@@ -1,0 +1,790 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="(empty)"
+	tests="122"
+	failures="95"
+	disabled="0"
+	skipped="0"
+	hostname=""
+	time="219"
+	timestamp="2026-10-05T00:52:26"
+	>
+	<testcase name="unit.test_archive" classname="unit.test_archive" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_archive_profiles" classname="unit.test_archive_profiles" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_archive_runtime_policy" classname="unit.test_archive_runtime_policy" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_archive_synthesis_policy" classname="unit.test_archive_synthesis_policy" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_archive_text_policy" classname="unit.test_archive_text_policy" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_batch_api" classname="unit.test_batch_api" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_capi" classname="unit.test_capi" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_capi_knowledge" classname="unit.test_capi_knowledge" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_capi_knowledge_latest_run" classname="unit.test_capi_knowledge_latest_run" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_catalog" classname="unit.test_catalog" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_catalog_context" classname="unit.test_catalog_context" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_catalog_eval" classname="unit.test_catalog_eval" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_catalog_links" classname="unit.test_catalog_links" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_catalog_retention" classname="unit.test_catalog_retention" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_catalog_scale" classname="unit.test_catalog_scale" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task" classname="unit.test_chat_active_task" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_acceptance_audit" classname="unit.test_chat_active_task_acceptance_audit" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_acceptance_scale" classname="unit.test_chat_active_task_acceptance_scale" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_acceptance_validation" classname="unit.test_chat_active_task_acceptance_validation" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_concurrency" classname="unit.test_chat_active_task_concurrency" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_durability" classname="unit.test_chat_active_task_durability" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_durable_audit" classname="unit.test_chat_active_task_durable_audit" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_exceptional" classname="unit.test_chat_active_task_exceptional" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_history_aba" classname="unit.test_chat_active_task_history_aba" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_reference" classname="unit.test_chat_active_task_reference" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_retention" classname="unit.test_chat_active_task_retention" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_revisions" classname="unit.test_chat_active_task_revisions" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_scope_identity" classname="unit.test_chat_active_task_scope_identity" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_chat_engine" classname="unit.test_chat_engine" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_chat_knowledge_context" classname="unit.test_chat_knowledge_context" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_chat_retrieval_plan" classname="unit.test_chat_retrieval_plan" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_config" classname="unit.test_config" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_context_channel_integration" classname="unit.test_context_channel_integration" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_context_controls" classname="unit.test_context_controls" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_context_counter" classname="unit.test_context_counter" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_context_diagnostics" classname="unit.test_context_diagnostics" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_context_engine" classname="unit.test_context_engine" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_context_eval" classname="unit.test_context_eval" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_context_native_consumer" classname="unit.test_context_native_consumer" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_context_plan" classname="unit.test_context_plan" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_context_retrieval" classname="unit.test_context_retrieval" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_context_retrieval_dev" classname="unit.test_context_retrieval_dev" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_context_tfidf_reuse" classname="unit.test_context_tfidf_reuse" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_crypto" classname="unit.test_crypto" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_db" classname="unit.test_db" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_event_bus" classname="unit.test_event_bus" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_extract" classname="unit.test_extract" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_extract_eval" classname="unit.test_extract_eval" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_fts" classname="unit.test_fts" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_generalize" classname="unit.test_generalize" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_generalize_eval" classname="unit.test_generalize_eval" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_github" classname="unit.test_github" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_graph" classname="unit.test_graph" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_import" classname="unit.test_import" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_import_export_fidelity" classname="unit.test_import_export_fidelity" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_import_exports" classname="unit.test_import_exports" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_import_source_materialization" classname="unit.test_import_source_materialization" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_import_stream" classname="unit.test_import_stream" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_kb_pack" classname="unit.test_kb_pack" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_knowledge" classname="unit.test_knowledge" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_knowledge_candidate_graph" classname="unit.test_knowledge_candidate_graph" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_knowledge_candidates" classname="unit.test_knowledge_candidates" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_knowledge_flow" classname="unit.test_knowledge_flow" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_knowledge_profile" classname="unit.test_knowledge_profile" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_knowledge_semantic" classname="unit.test_knowledge_semantic" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_knowledge_semantic_graph" classname="unit.test_knowledge_semantic_graph" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_knowledge_store" classname="unit.test_knowledge_store" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_materialize" classname="unit.test_materialize" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_media" classname="unit.test_media" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_memory" classname="unit.test_memory" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_memory_sort_profiles" classname="unit.test_memory_sort_profiles" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_memory_visibility_profiles" classname="unit.test_memory_visibility_profiles" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_model" classname="unit.test_model" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_model_creation_profile" classname="unit.test_model_creation_profile" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_model_profile" classname="unit.test_model_profile" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_net_profile" classname="unit.test_net_profile" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_net_sse" classname="unit.test_net_sse" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_pack_model" classname="unit.test_pack_model" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_provenance" classname="unit.test_provenance" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_providers" classname="unit.test_providers" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_regex" classname="unit.test_regex" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_relations" classname="unit.test_relations" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_resolve" classname="unit.test_resolve" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_resolve_attribution" classname="unit.test_resolve_attribution" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_resolve_lineage" classname="unit.test_resolve_lineage" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_runtime" classname="unit.test_runtime" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_runtime_bootstrap_profiles" classname="unit.test_runtime_bootstrap_profiles" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_runtime_profile" classname="unit.test_runtime_profile" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_runtime_recipe_consumers" classname="unit.test_runtime_recipe_consumers" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_selector" classname="unit.test_selector" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_semantic_llm" classname="unit.test_semantic_llm" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_semantic_worker" classname="unit.test_semantic_worker" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_tasks" classname="unit.test_tasks" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_util" classname="unit.test_util" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="unit.test_util_profiles" classname="unit.test_util_profiles" time="0" status="fail">
+		<failure message="BAD_COMMAND"/>
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="compat.test_abi_compat" classname="compat.test_abi_compat" time="0.86974" status="run">
+		<properties/>
+		<system-out>test_ctypes_smoke (__main__.AbiTest.test_ctypes_smoke) ... ok
+test_original_spec_signatures_are_exact (__main__.AbiTest.test_original_spec_signatures_are_exact) ... ok
+test_shared_library_exports_exactly_the_declared_api (__main__.AbiTest.test_shared_library_exports_exactly_the_declared_api) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.761s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_active_task_compiler_compat" classname="compat.test_active_task_compiler_compat" time="7.79473" status="run">
+		<properties/>
+		<system-out>....
+----------------------------------------------------------------------
+Ran 4 tests in 7.596s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_candidate_graph_native" classname="compat.test_candidate_graph_native" time="0.980602" status="run">
+		<properties/>
+		<system-out>.........
+----------------------------------------------------------------------
+Ran 9 tests in 0.878s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_chat_active_task_http" classname="compat.test_chat_active_task_http" time="4.80414" status="run">
+		<properties/>
+		<system-out>test_compiled_instruction_reaches_local_provider_and_invalid_binding_does_not (__main__.ActiveTaskHttpTest.test_compiled_instruction_reaches_local_provider_and_invalid_binding_does_not) ... 00:52:36 [INFO ] loom.config: config.json not found - using defaults
+00:52:36 [INFO ] loom.config: secrets.json not found - using defaults
+00:52:36 [INFO ] loom.db: Schema upgraded: v0 -&gt; v4
+00:52:36 [INFO ] loom.db: Database opened: /tmp/loom-w1-http-cts3tq40/chatadhd.db
+00:52:36 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+00:52:36 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom-w1-http-cts3tq40)
+00:52:36 [INFO ] loom.db: Database closed
+00:52:36 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_native_source_edit_requires_explicit_new_id_hash_and_quote_rebinding (__main__.ActiveTaskRevisionHttpTest.test_native_source_edit_requires_explicit_new_id_hash_and_quote_rebinding) ... 00:52:37 [INFO ] loom.config: config.json not found - using defaults
+00:52:37 [INFO ] loom.config: secrets.json not found ...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="compat.test_chat_compat" classname="compat.test_chat_compat" time="4.79831" status="run">
+		<properties/>
+		<system-out>/workspace/scratch/72fc60ad1cc5/chatadhd/engine/db.py:304: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/72fc60ad1cc5/chatadhd/engine/db.py:360: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/72fc60ad1cc5/chatadhd/engine/db.py:328: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  kwargs["updated"] = datetime.utcnow().isoformat() + "Z"
+..
+----------------------------------------------------------------------
+Ran 2 tests in 1.2...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="compat.test_config_compat" classname="compat.test_config_compat" time="1.76888" status="run">
+		<properties/>
+		<system-out>test_corrupt_config_falls_back_to_defaults_like_python (__main__.ConfigCompatTest.test_corrupt_config_falls_back_to_defaults_like_python) ... ok
+test_data_dir_resolution_matches_python (__main__.ConfigCompatTest.test_data_dir_resolution_matches_python) ... ok
+test_loom_written_config_is_read_by_python_without_upgrade (__main__.ConfigCompatTest.test_loom_written_config_is_read_by_python_without_upgrade) ... ok
+test_python_written_config_is_read_by_loom (__main__.ConfigCompatTest.test_python_written_config_is_read_by_loom) ... ok
+test_user_model_preservation_is_identical (__main__.ConfigCompatTest.test_user_model_preservation_is_identical) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 1.681s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_crypto_compat" classname="compat.test_crypto_compat" time="18.0577" status="run">
+		<properties/>
+		<system-out>test_cpp_encrypts_python_decrypts (__main__.CryptoCompatTest.test_cpp_encrypts_python_decrypts) ... ok
+test_encrypted_blob_wire_format_is_byte_identical (__main__.CryptoCompatTest.test_encrypted_blob_wire_format_is_byte_identical)
+Loom's EncryptedBlob.to_dict() must use the same keys/order/defaults ... ok
+test_known_answer_vector (__main__.CryptoCompatTest.test_known_answer_vector) ... ok
+test_python_encrypts_cpp_decrypts (__main__.CryptoCompatTest.test_python_encrypts_cpp_decrypts) ... ok
+test_tampered_ciphertext_fails_on_both_sides (__main__.CryptoCompatTest.test_tampered_ciphertext_fails_on_both_sides) ... ok
+test_wrong_password_fails_on_both_sides (__main__.CryptoCompatTest.test_wrong_password_fails_on_both_sides) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 14.832s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_db_compat" classname="compat.test_db_compat" time="6.10609" status="run">
+		<properties/>
+		<system-out>test_a_python_created_db_is_read_identically_by_loom (__main__.DbCompatTest.test_a_python_created_db_is_read_identically_by_loom) ... /workspace/scratch/72fc60ad1cc5/chatadhd/engine/db.py:304: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/72fc60ad1cc5/chatadhd/engine/db.py:360: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/72fc60ad1cc5/chatadhd/engine/db.py:328: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  kwargs["update...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="compat.test_github_sync_defaults" classname="compat.test_github_sync_defaults" time="0.185788" status="run">
+		<properties/>
+		<system-out>..
+----------------------------------------------------------------------
+Ran 2 tests in 0.005s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_graph_compat" classname="compat.test_graph_compat" time="4.59722" status="run">
+		<properties/>
+		<system-out>test_empty_and_short_messages_produce_no_graph_writes (__main__.GraphCompat.test_empty_and_short_messages_produce_no_graph_writes) ... /workspace/scratch/72fc60ad1cc5/chatadhd/engine/db.py:304: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/72fc60ad1cc5/chatadhd/engine/db.py:360: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/72fc60ad1cc5/chatadhd/engine/db.py:328: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  kwargs["updat...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="compat.test_graph_packet_store" classname="compat.test_graph_packet_store" time="9.64091" status="run">
+		<properties/>
+		<system-out>test_cas_cannot_rewrite_immutable_source_or_entity_and_claim_identity (__main__.GraphPacketStoreTests.test_cas_cannot_rewrite_immutable_source_or_entity_and_claim_identity) ... 00:53:16 [INFO ] loom.config: config.json not found - using defaults
+00:53:16 [INFO ] loom.config: secrets.json not found - using defaults
+00:53:16 [INFO ] loom.db: Schema upgraded: v0 -&gt; v4
+00:53:16 [INFO ] loom.db: Database opened: /tmp/loom_compat_gejpk3xr/graph-store/chatadhd.db
+00:53:16 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+00:53:16 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom_compat_gejpk3xr/graph-store)
+00:53:17 [INFO ] loom.db: Database closed
+00:53:17 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_cas_mismatch_rolls_back_new_packet_and_receipt (__main__.GraphPacketStoreTests.test_cas_mismatch_rolls_back_new_packet_and_receipt) ... 00:53:17 [INFO ] loom.config: config.json not found - using defaults
+00:53:17 [INFO ] loom.config: secrets.json not found - using defaults
+00:53:17 [INFO ] loom.d...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="compat.test_import_compat" classname="compat.test_import_compat" time="7.78935" status="run">
+		<properties/>
+		<system-out>/workspace/scratch/72fc60ad1cc5/chatadhd/engine/db.py:304: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/72fc60ad1cc5/chatadhd/engine/db.py:405: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.utcnow().isoformat() + "Z"
+/workspace/scratch/72fc60ad1cc5/chatadhd/engine/db.py:328: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  kwargs["updated"] = datetime.utcnow().isoformat() + "Z"
+................./workspace/scratch/72fc60ad1cc5/chatadhd/engine/db.py:360: DeprecationWarni...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="compat.test_memory_compat" classname="compat.test_memory_compat" time="4.23334" status="run">
+		<properties/>
+		<system-out>test_cpp_builds_python_reads (__main__.MemoryCompat.test_cpp_builds_python_reads) ... ok
+test_get_active_context_identical_with_deep_nesting (__main__.MemoryCompat.test_get_active_context_identical_with_deep_nesting) ... ok
+test_python_builds_cpp_reads (__main__.MemoryCompat.test_python_builds_cpp_reads) ... /workspace/scratch/72fc60ad1cc5/chatadhd/engine/memory_engine.py:38: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  self.created = datetime.utcnow().isoformat() + "Z"
+ok
+test_recursive_delete_orphaning_matches (__main__.MemoryCompat.test_recursive_delete_orphaning_matches) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 3.943s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_selector_compat" classname="compat.test_selector_compat" time="0.91798" status="run">
+		<properties/>
+		<system-out>....
+----------------------------------------------------------------------
+Ran 4 tests in 0.797s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_semantic_compat" classname="compat.test_semantic_compat" time="13.1446" status="run">
+		<properties/>
+		<system-out>...../workspace/scratch/72fc60ad1cc5/chatadhd/core/semantic.py:189: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  "timestamp": datetime.utcnow().isoformat() + "Z",
+.
+----------------------------------------------------------------------
+Ran 6 tests in 8.994s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="compat.test_semantic_recovery" classname="compat.test_semantic_recovery" time="3.19506" status="run">
+		<properties/>
+		<system-out>test_config_identity_returning_to_old_value_still_rejects_old_completion (__main__.SemanticRecoveryTest.test_config_identity_returning_to_old_value_still_rejects_old_completion) ... /workspace/scratch/72fc60ad1cc5/chatadhd/core/semantic.py:189: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  "timestamp": datetime.utcnow().isoformat() + "Z",
+ok
+test_each_relevant_change_recovers_without_automatic_replay (__main__.SemanticRecoveryTest.test_each_relevant_change_recovers_without_automatic_replay) ... ok
+test_manual_reset_invalidates_old_request (__main__.SemanticRecoveryTest.test_manual_reset_invalidates_old_request) ... ok
+test_old_failure_cannot_affect_changed_settings_without_enabled_poll (__main__.SemanticRecoveryTest.test_old_failure_cannot_affect_changed_settings_without_enabled_poll) ... ok
+test_old_success_cannot_clear_new_generation_failures (__main_...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="compat.test_util_compat" classname="compat.test_util_compat" time="7.65548" status="run">
+		<properties/>
+		<system-out>test_embedded_contract_data_matches_python_sources (__main__.UtilCompatTest.test_embedded_contract_data_matches_python_sources) ... ok
+test_float_repr (__main__.UtilCompatTest.test_float_repr) ... ok
+test_generated_ids_have_python_shape (__main__.UtilCompatTest.test_generated_ids_have_python_shape) ... ok
+test_json_dumps_is_byte_identical (__main__.UtilCompatTest.test_json_dumps_is_byte_identical) ... ok
+test_timestamps_match_utcnow_isoformat (__main__.UtilCompatTest.test_timestamps_match_utcnow_isoformat) ... /workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/compat/test_util_compat.py:94: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  self.assertLess(abs((datetime.datetime.utcnow() - now).total_seconds()), 60)
+ok
+test_utf8_semantics_match_python_str (__main__.UtilCompatTest.test_utf8_semantics_match_python_str) ... ok
+
+--------------------------------...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="research.structure" classname="research.structure" time="38.4813" status="run">
+		<properties/>
+		<system-out>.............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................usage: round3_eval [-h] [--split {dev,validation}]
+                   [--policy {bounded,explicit_relations}]
+                   [--predictions PREDICTIONS] --output OUTPUT
+                   [--validation-release] [--freeze FREEZE]
+                   [--write-freeze WRITE_FREEZE]
+round3_eval: error: validation requires a...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="research.independent_protocol" classname="research.independent_protocol" time="0.132689" status="run">
+		<properties/>
+		<system-out>..........
+----------------------------------------------------------------------
+Ran 10 tests in 0.042s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="research.graph_native_protocol" classname="research.graph_native_protocol" time="0.457585" status="run">
+		<properties/>
+		<system-out>............
+----------------------------------------------------------------------
+Ran 12 tests in 0.376s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="research.candidate_graph_protocol" classname="research.candidate_graph_protocol" time="0.550444" status="run">
+		<properties/>
+		<system-out>...............
+----------------------------------------------------------------------
+Ran 15 tests in 0.470s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="research.contracts" classname="research.contracts" time="32.0316" status="run">
+		<properties/>
+		<system-out>.................................................................................................................................................................................................................
+----------------------------------------------------------------------
+Ran 209 tests in 31.796s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="research.seeding" classname="research.seeding" time="6.62719" status="run">
+		<properties/>
+		<system-out>....................................
+----------------------------------------------------------------------
+Ran 36 tests in 4.470s
+
+OK
+</system-out>
+	</testcase>
+	<testcase name="server.smoke" classname="server.smoke" time="3.75821" status="run">
+		<properties/>
+		<system-out>OK: loom-server knowledge/catalog/context checks passed
+OK: loom-server graph-packet profile acceptance/read/replay/CAS/drift checks passed
+OK: all loom-server smoke checks passed
+OK: loom-server auth checks passed
+</system-out>
+	</testcase>
+	<testcase name="server.chat_active_task" classname="server.chat_active_task" time="2.1862" status="run">
+		<properties/>
+		<system-out>test_revision_rejection_and_trace_off_failure_survive_server_restart (__main__.ActiveTaskServerTest.test_revision_rejection_and_trace_off_failure_survive_server_restart) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 2.086s
+
+OK
+W1 server transport: 1 scenario, 5 local provider calls, 0 remote; stale versions emit SSE error without start/persistence/transport; full server restart verified.
+Synthetic server fixture retained at /tmp/loom-w1-server-cwru5xp3
+</system-out>
+	</testcase>
+	<testcase name="cli.smoke" classname="cli.smoke" time="37.6022" status="run">
+		<properties/>
+		<system-out>cli smoke: ok
+</system-out>
+	</testcase>
+	<testcase name="eval.harness" classname="eval.harness" time="0.795348" status="run">
+		<properties/>
+		<system-out>.............no verifiable snapshot on HEAD's mainline exists on or before 2026-03-06 (UTC)
+......
+----------------------------------------------------------------------
+Ran 19 tests in 0.652s
+
+OK
+cut 2026-03-06: unavailable -&gt; /tmp/tmpfjv8whuz/nested/result.json
+</system-out>
+	</testcase>
+</testsuite>

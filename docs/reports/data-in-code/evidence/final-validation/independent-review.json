@@ -1,0 +1,29 @@
+{
+  "schema": "loom.ctest_output_restoration_review/1",
+  "reviewer": "independent agent /root/inventory_android",
+  "read_only": true,
+  "new_test_runs": 0,
+  "valid": true,
+  "checked": {
+    "receipt_artifact_hashes": 8,
+    "records": 122,
+    "original_exact_streams": 106,
+    "original_exact_truncated_prefixes": 16,
+    "truncated_prefix_bytes": 1024,
+    "decoded_streams_equal_raw_log_slices": 122,
+    "all_non_output_xml_bytes_and_metadata_identical": true,
+    "max_raw_junit_duration_delta_seconds": 0.00497
+  },
+  "coverage": {
+    "executed_entries": 121,
+    "unexecuted_entries": [
+      "unit.test_catalog_scale"
+    ],
+    "native_cases": 776,
+    "native_assertions": 26758,
+    "python_cases": 1276,
+    "python_skips": 0
+  },
+  "scope": "Verified raw offsets/hashes, names, order, commands, working directories, statuses and elapsed durations. Preserves raw start/end/elapsed; no timezone-conversion or full chronology claim.",
+  "guard": "Recorded invocation includes both --verifier and --guard-provenance and verifies the unchanged thread8 guard hash."
+}

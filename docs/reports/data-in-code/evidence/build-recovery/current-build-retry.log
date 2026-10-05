@@ -1,0 +1,33 @@
+[0/2] Re-checking globbed directories...
+-- GLOB mismatch!
+The following files were added:
+  +/workspace/scratch/72fc60ad1cc5/chatadhd/loom/tests/test_model_profile.cpp
+[1/2] Re-running CMake...
+-- loom: SQLite = vendored amalgamation 3.47.2
+-- loom: OpenSSL = ON
+-- Configuring done (0.3s)
+-- Generating done (0.0s)
+-- Build files have been written to: /workspace/scratch/72fc60ad1cc5/current-build
+[0/4] Re-checking globbed directories...
+[1/202] Building CXX object CMakeFiles/loom_core.dir/src/archive/cluster.cpp.o
+[2/202] Building CXX object CMakeFiles/loom_core.dir/src/archive/ingest.cpp.o
+[3/202] Building CXX object CMakeFiles/loom_core.dir/src/archive/ingest_parse.cpp.o
+[4/202] Building CXX object CMakeFiles/loom_core.dir/src/archive/items.cpp.o
+[5/202] Building CXX object CMakeFiles/loom_core.dir/src/archive/pipeline.cpp.o
+[6/202] Building CXX object CMakeFiles/loom_core.dir/src/archive/profile.cpp.o
+[7/202] Building CXX object CMakeFiles/loom_core.dir/src/archive/synth.cpp.o
+[8/202] Building CXX object CMakeFiles/loom_core.dir/src/archive/text.cpp.o
+[9/202] Building CXX object CMakeFiles/loom_core.dir/src/archive/vocab.cpp.o
+[10/202] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_archive.cpp.o
+[11/202] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_catalog.cpp.o
+[12/202] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_chat.cpp.o
+[13/202] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_context.cpp.o
+[14/202] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_core.cpp.o
+[15/202] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_extract.cpp.o
+[16/202] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_generalize.cpp.o
+[17/202] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_knowledge.cpp.o
+[18/202] Building CXX object CMakeFiles/loom_core.dir/src/catalog/catalog.cpp.o
+[19/202] Building CXX object CMakeFiles/loom_core.dir/src/extract/candidate_graph.cpp.o
+[20/202] Building CXX object CMakeFiles/loom_core.dir/src/extract/extract.cpp.o
+[21/202] Building CXX object CMakeFiles/loom_core.dir/src/extract/extractors.cpp.o
+[22/202] Building CXX object CMakeFiles/loom_core.dir/src/extract/lexicon.cpp.o
