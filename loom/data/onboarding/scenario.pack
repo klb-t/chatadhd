@@ -1,0 +1,298 @@
+{
+  "schema": "loom.onboarding.scenario/1",
+  "id": "onboarding.interview",
+  "version": "1",
+  "method_ref": {
+    "method_id": "onboarding.interview",
+    "version_id": "onboarding.interview/v1",
+    "recipe_hash": "9bd06de30a14b52a22a17caff6ff08dacf8f5c31e156bb469dd945aa84ea796b"
+  },
+  "prompt": "Interview the user using only supplied allowed questions and context. Ask actively and adapt follow-up questions to the user’s answers. Treat unknown as unknown; never ask declined fields; never ask or infer never fields. Do not invent personal facts. After each section, summarize what you understood and ask the user to confirm or correct it. A missing answer may be skipped, paused, resumed or repeated. Return only JSON matching reply_schema. Candidates are proposed interpretations, not committed facts. Use caller-supplied IDs, timestamps and source references. Infer only where the supplied privacy policy permits it; explicit statements stay separately identified.",
+  "fields": [
+    {
+      "id": "identity.description",
+      "section": "identity",
+      "category": "identity",
+      "detail": 1,
+      "sensitivity": 1
+    },
+    {
+      "id": "work.projects",
+      "section": "identity",
+      "category": "work",
+      "detail": 1,
+      "sensitivity": 1
+    },
+    {
+      "id": "communication.style",
+      "section": "communication",
+      "category": "communication",
+      "detail": 1,
+      "sensitivity": 1,
+      "default_key": "preference.style"
+    },
+    {
+      "id": "communication.length",
+      "section": "communication",
+      "category": "communication",
+      "detail": 1,
+      "sensitivity": 1,
+      "default_key": "preference.length"
+    },
+    {
+      "id": "communication.language",
+      "section": "communication",
+      "category": "communication",
+      "detail": 1,
+      "sensitivity": 1,
+      "default_key": "preference.language"
+    },
+    {
+      "id": "communication.attention",
+      "section": "communication",
+      "category": "communication",
+      "detail": 1,
+      "sensitivity": 2,
+      "default_key": "preference.adhd_needs"
+    },
+    {
+      "id": "knowledge.remember",
+      "section": "knowledge",
+      "category": "knowledge",
+      "detail": 1,
+      "sensitivity": 1
+    },
+    {
+      "id": "knowledge.avoid",
+      "section": "knowledge",
+      "category": "knowledge",
+      "detail": 1,
+      "sensitivity": 1
+    },
+    {
+      "id": "privacy.preferences",
+      "section": "privacy",
+      "category": "privacy",
+      "detail": 1,
+      "sensitivity": 1
+    }
+  ],
+  "sections": [
+    {
+      "id": "identity",
+      "title": "Identity and work",
+      "questions": [
+        {
+          "field": "identity.description",
+          "text": "Who are you, and what would you like the application to know about you?"
+        },
+        {
+          "field": "work.projects",
+          "text": "What are you working on and what do you want help with?"
+        }
+      ]
+    },
+    {
+      "id": "communication",
+      "title": "Communication",
+      "questions": [
+        {
+          "field": "communication.style",
+          "text": "How should the application speak to you?"
+        },
+        {
+          "field": "communication.length",
+          "text": "How much detail do you prefer?"
+        },
+        {
+          "field": "communication.language",
+          "text": "Which language or languages do you want to use?"
+        },
+        {
+          "field": "communication.attention",
+          "text": "Are there attention, organization or ADHD-related needs you want accommodated? You can leave this unanswered."
+        }
+      ]
+    },
+    {
+      "id": "knowledge",
+      "title": "What to remember",
+      "questions": [
+        {
+          "field": "knowledge.remember",
+          "text": "Give examples of things you want the application to remember."
+        },
+        {
+          "field": "knowledge.avoid",
+          "text": "Give examples of things the application should not know, ask about or infer."
+        }
+      ]
+    },
+    {
+      "id": "privacy",
+      "title": "Privacy",
+      "questions": [
+        {
+          "field": "privacy.preferences",
+          "text": "Which categories may be stored, at what detail and sensitivity, sent to which providers, inferred or kept only when stated explicitly? What retention do you choose?"
+        }
+      ]
+    }
+  ],
+  "reply_schema": {
+    "type": "object",
+    "required": [
+      "section",
+      "summary",
+      "questions",
+      "candidates"
+    ],
+    "properties": {
+      "section": {
+        "type": "string"
+      },
+      "summary": {
+        "type": "string"
+      },
+      "questions": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "field",
+            "text"
+          ]
+        }
+      },
+      "candidates": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "id",
+            "field",
+            "value",
+            "time",
+            "source_refs"
+          ]
+        }
+      }
+    }
+  },
+  "graph_method": {
+    "id": "onboarding.interview",
+    "revision": 1,
+    "prompt": {
+      "text": "Interview the user using only supplied allowed questions and context. Ask actively and adapt follow-up questions to the user’s answers. Treat unknown as unknown; never ask declined fields; never ask or infer never fields. Do not invent personal facts. After each section, summarize what you understood and ask the user to confirm or correct it. A missing answer may be skipped, paused, resumed or repeated. Return only JSON matching reply_schema. Candidates are proposed interpretations, not committed facts. Use caller-supplied IDs, timestamps and source references. Infer only where the supplied privacy policy permits it; explicit statements stay separately identified.",
+      "encoding": "utf-8"
+    },
+    "recipe": {
+      "sections": [
+        {
+          "id": "identity",
+          "title": "Identity and work",
+          "questions": [
+            {
+              "field": "identity.description",
+              "text": "Who are you, and what would you like the application to know about you?"
+            },
+            {
+              "field": "work.projects",
+              "text": "What are you working on and what do you want help with?"
+            }
+          ]
+        },
+        {
+          "id": "communication",
+          "title": "Communication",
+          "questions": [
+            {
+              "field": "communication.style",
+              "text": "How should the application speak to you?"
+            },
+            {
+              "field": "communication.length",
+              "text": "How much detail do you prefer?"
+            },
+            {
+              "field": "communication.language",
+              "text": "Which language or languages do you want to use?"
+            },
+            {
+              "field": "communication.attention",
+              "text": "Are there attention, organization or ADHD-related needs you want accommodated? You can leave this unanswered."
+            }
+          ]
+        },
+        {
+          "id": "knowledge",
+          "title": "What to remember",
+          "questions": [
+            {
+              "field": "knowledge.remember",
+              "text": "Give examples of things you want the application to remember."
+            },
+            {
+              "field": "knowledge.avoid",
+              "text": "Give examples of things the application should not know, ask about or infer."
+            }
+          ]
+        },
+        {
+          "id": "privacy",
+          "title": "Privacy",
+          "questions": [
+            {
+              "field": "privacy.preferences",
+              "text": "Which categories may be stored, at what detail and sensitivity, sent to which providers, inferred or kept only when stated explicitly? What retention do you choose?"
+            }
+          ]
+        }
+      ],
+      "reply_schema": {
+        "type": "object",
+        "required": [
+          "section",
+          "summary",
+          "questions",
+          "candidates"
+        ],
+        "properties": {
+          "section": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "questions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "field",
+                "text"
+              ]
+            }
+          },
+          "candidates": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "field",
+                "value",
+                "time",
+                "source_refs"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "parameters": {},
+    "execution_capability": "onboarding_interview",
+    "default_key": "method.onboarding",
+    "prompt_default_key": "prompt.onboarding"
+  }
+}
