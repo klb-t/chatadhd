@@ -1,0 +1,11 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "build"
+  ],
+  "cwd": "/workspace/scratch/4db3ee41b13b/chatadhd/loom/web",
+  "exit_code": 0,
+  "seconds": 10.693,
+  "log": "/tmp/onboarding-verification-2026-10-04/ui-final/web-build.log"
+}

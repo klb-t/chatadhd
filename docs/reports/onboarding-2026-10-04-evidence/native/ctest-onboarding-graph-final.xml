@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="(empty)"
+	tests="1"
+	failures="0"
+	disabled="0"
+	skipped="0"
+	hostname=""
+	time="5"
+	timestamp="2026-10-05T03:37:48"
+	>
+	<testcase name="unit.test_onboarding_graph" classname="unit.test_onboarding_graph" time="5.89331" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   11 |   11 passed | 0 failed | 700 skipped
+[doctest] assertions: 2139 | 2139 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+</testsuite>

@@ -1,0 +1,33 @@
+{
+  "captured_utc": "2026-10-04T19:36:33.862449+00:00",
+  "scope": "posthoc current input-source snapshot for previously compiled targeted RuntimeProfile adapter harness",
+  "input_sha256": {
+    "chatadhd/loom/include/loom/onboarding_layers.h": "263d3724731b79c2c7e4e0fa995ce50901e804a671a15c683af4bc0ea6451ea0",
+    "chatadhd/loom/src/onboarding/layers.cpp": "066a1e41f960b69bc3440d97dfef41495907c6ef9964ba49d84b9cf3958f65b0",
+    "chatadhd/loom/src/onboarding/runtime_adapter.cpp": "790b865280b41b2405f65bbe37a4508f158a620df7aec73a399d53e25c661bcd",
+    "chatadhd/loom/src/onboarding/runtime_adapter.h": "7c9f8441ad5dcf3014dc71a83622469c7a4ba4b35dfce69a3119c24550b7e916",
+    "chatadhd/loom/tests/test_onboarding_layers.cpp": "eeea157ed4f72e63aa80dacada8300c01e349bab6fb89838cae0eec81a5d392c",
+    "onboarding_layer_runner.cpp": "010cc5d71fa312cc2aef083c5a8ecbcfa076db95fd50a3761df2d3e5b29b12a5",
+    "w11-runtime/include/loom/runtime_profile.h": "f59642e1235b352d8782e4413680230bf2c08008b2d223f5f45f1135e0bd9060",
+    "w11-runtime/src/model/runtime_profile.cpp": "8eb961d633996a115f499e9b8d9ac9eb6d8eba06657d865efb9a5cbf1aa16faa",
+    "w11-runtime/src/model/runtime_profiles_embedded.inc": "7067a324a22d86bdae342712d96757bd6a54c79a6ec5cac91872e1e3be8a671e",
+    "chatadhd/loom/src/util/fs.cpp": "ed3412eb6e87589009e63c3bd974a7c5d63bf104806d74a550986c305099ebdd",
+    "chatadhd/loom/src/util/log.cpp": "dc44f67cbe6868f041998a122747713109a56196eb7502b65bf5d9be35fd9fa2",
+    "chatadhd/loom/src/util/random_ids_time.cpp": "8918765710c94b7d9e667ae2923dfb78b3eb13b3c3239405aadb18e1b9ee6586",
+    "chatadhd/loom/src/util/json.cpp": "49d882300afe82a764cca67b7a00f8dfd9c9ce5ed2318933312bdaafbeb9b89d",
+    "chatadhd/loom/src/util/sha256.cpp": "c8d783c4ebaa9d46703a65dc228931fe2e355c2be9ac1fc26dad089f6f0b031c",
+    "chatadhd/loom/src/util/utf8.cpp": "91f6786cf4d759768074a26cbae5b150284a241840f0f3761c867616831f3902",
+    "chatadhd/loom/src/util/unicode.cpp": "4780360568de8fae034cc070f27efa033eb5e991d77c6d8d3e1fda4070523165",
+    "chatadhd/loom/src/util/result.cpp": "1488f760d6b3959bf15cb8b6425c593b066e227ebd9edeb8209df0e37b32e018"
+  },
+  "binary_sha256": "1350082e5868acabed14bab0ae5b2d2522adccd7d2ce9286332caa2e7faeb550",
+  "binary_included": false,
+  "w11_source_ref": "origin/gpt/data-profiles-2026-10-04",
+  "w11_source_commit": "d3488a6bee016d1ea5e6e286dbc7d3a0249761fc",
+  "extracted_files_match_current_source_commit": {
+    "include/loom/runtime_profile.h": true,
+    "src/model/runtime_profile.cpp": true,
+    "src/model/runtime_profiles_embedded.inc": true
+  },
+  "build_time_source_manifest_available": false
+}

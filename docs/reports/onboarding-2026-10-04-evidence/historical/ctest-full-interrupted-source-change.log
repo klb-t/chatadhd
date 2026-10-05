@@ -1,0 +1,73 @@
+Test project /tmp/onboarding-build-2026-10-04
+        Start  71: unit.test_onboarding_store
+        Start  69: unit.test_onboarding_graph
+  1/112 Test  #69: unit.test_onboarding_graph .........................   Passed    5.77 sec
+        Start  68: unit.test_onboarding
+  2/112 Test  #68: unit.test_onboarding ...............................   Passed    0.41 sec
+        Start  70: unit.test_onboarding_layers
+  3/112 Test  #70: unit.test_onboarding_layers ........................   Passed    0.04 sec
+        Start   1: unit.test_archive
+  4/112 Test   #1: unit.test_archive ..................................   Passed    1.75 sec
+        Start   2: unit.test_batch_api
+  5/112 Test   #2: unit.test_batch_api ................................   Passed    0.12 sec
+        Start   3: unit.test_capi
+  6/112 Test   #3: unit.test_capi .....................................   Passed    3.76 sec
+        Start   4: unit.test_capi_knowledge
+  7/112 Test   #4: unit.test_capi_knowledge ...........................   Passed    0.62 sec
+        Start   5: unit.test_capi_knowledge_latest_run
+  8/112 Test   #5: unit.test_capi_knowledge_latest_run ................   Passed    1.21 sec
+        Start   6: unit.test_catalog
+  9/112 Test   #6: unit.test_catalog ..................................   Passed    2.71 sec
+        Start   7: unit.test_catalog_context
+ 10/112 Test   #7: unit.test_catalog_context ..........................   Passed    2.72 sec
+        Start   8: unit.test_catalog_eval
+ 11/112 Test   #8: unit.test_catalog_eval .............................   Passed    1.36 sec
+        Start   9: unit.test_catalog_links
+ 12/112 Test   #9: unit.test_catalog_links ............................   Passed    8.13 sec
+        Start  10: unit.test_catalog_retention
+ 13/112 Test  #10: unit.test_catalog_retention ........................   Passed    1.93 sec
+        Start  11: unit.test_catalog_scale
+ 14/112 Test  #11: unit.test_catalog_scale ............................   Passed    0.01 sec
+        Start  12: unit.test_chat_active_task
+ 15/112 Test  #12: unit.test_chat_active_task .........................   Passed    1.47 sec
+        Start  13: unit.test_chat_active_task_acceptance_audit
+ 16/112 Test  #13: unit.test_chat_active_task_acceptance_audit ........   Passed    0.72 sec
+        Start  14: unit.test_chat_active_task_acceptance_scale
+ 17/112 Test  #14: unit.test_chat_active_task_acceptance_scale ........   Passed    9.25 sec
+        Start  15: unit.test_chat_active_task_acceptance_validation
+ 18/112 Test  #15: unit.test_chat_active_task_acceptance_validation ...   Passed    1.66 sec
+        Start  16: unit.test_chat_active_task_concurrency
+ 19/112 Test  #16: unit.test_chat_active_task_concurrency .............   Passed    0.64 sec
+        Start  17: unit.test_chat_active_task_durability
+ 20/112 Test  #17: unit.test_chat_active_task_durability ..............   Passed    0.95 sec
+        Start  18: unit.test_chat_active_task_durable_audit
+ 21/112 Test  #71: unit.test_onboarding_store .........................   Passed   49.06 sec
+        Start  19: unit.test_chat_active_task_exceptional
+ 22/112 Test  #19: unit.test_chat_active_task_exceptional .............   Passed    0.35 sec
+        Start  20: unit.test_chat_active_task_history_aba
+ 23/112 Test  #20: unit.test_chat_active_task_history_aba .............   Passed    0.05 sec
+        Start  21: unit.test_chat_active_task_reference
+ 24/112 Test  #21: unit.test_chat_active_task_reference ...............   Passed    0.04 sec
+        Start  22: unit.test_chat_active_task_retention
+ 25/112 Test  #22: unit.test_chat_active_task_retention ...............   Passed    0.83 sec
+        Start  23: unit.test_chat_active_task_revisions
+ 26/112 Test  #23: unit.test_chat_active_task_revisions ...............   Passed    1.76 sec
+        Start  24: unit.test_chat_active_task_scope_identity
+ 27/112 Test  #24: unit.test_chat_active_task_scope_identity ..........   Passed    0.45 sec
+        Start  25: unit.test_chat_engine
+ 28/112 Test  #25: unit.test_chat_engine ..............................   Passed    0.23 sec
+        Start  26: unit.test_chat_knowledge_context
+ 29/112 Test  #18: unit.test_chat_active_task_durable_audit ...........   Passed   10.96 sec
+        Start  27: unit.test_chat_retrieval_plan
+ 30/112 Test  #26: unit.test_chat_knowledge_context ...................   Passed    5.73 sec
+        Start  28: unit.test_config
+ 31/112 Test  #28: unit.test_config ...................................   Passed    0.04 sec
+        Start  29: unit.test_context_channel_integration
+ 32/112 Test  #27: unit.test_chat_retrieval_plan ......................   Passed    2.57 sec
+        Start  30: unit.test_context_controls
+ 33/112 Test  #29: unit.test_context_channel_integration ..............   Passed    1.73 sec
+        Start  31: unit.test_context_counter
+ 34/112 Test  #31: unit.test_context_counter ..........................   Passed    1.01 sec
+        Start  32: unit.test_context_diagnostics
+ 35/112 Test  #30: unit.test_context_controls .........................   Passed    3.11 sec
+        Start  33: unit.test_context_engine

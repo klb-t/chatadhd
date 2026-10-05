@@ -1,0 +1,21 @@
+{
+  "status": "passed",
+  "return_code": 0,
+  "command": [
+    "/lib64/ld-linux-x86-64.so.2",
+    "/workspace/scratch/4db3ee41b13b/onboarding_layers_w11_tests",
+    "--no-intro=true"
+  ],
+  "test_cases": 8,
+  "assertions": 58,
+  "source": "actual W11 RuntimeProfile implementation and embedded definitions extracted from public git ref; no schema substitute",
+  "provider_calls": 0,
+  "scope": "DefaultLayers and runtime_profile_values standalone mixed-source harness only",
+  "not_verified": [
+    "full OnboardingStore with W11 integrated",
+    "whole repository with W11 branch integrated",
+    "original build-time source manifest unavailable; current source hashes are posthoc"
+  ],
+  "command_log": "run.log",
+  "current_input_manifest": "input_source_hashes.json"
+}

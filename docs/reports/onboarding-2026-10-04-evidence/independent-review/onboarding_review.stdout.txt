@@ -1,0 +1,4 @@
+deleted secret-value retained=0
+deleted secret summary retained=0
+stale-summary accepted=0
+skip privacy="active" communication="pending"

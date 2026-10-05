@@ -1,0 +1,4 @@
+03:25:16 [INFO ] loom.db: Schema upgraded: v0 -> v4
+03:25:16 [INFO ] loom.db: Database opened: /tmp/loom_1f7524134f2b/method-registry.db
+03:25:16 [INFO ] loom.db: Database closed
+PASS: actual W3 load/resolve accepted W12 definitions; missing capability unavailable, declared capability available; zero provider calls.

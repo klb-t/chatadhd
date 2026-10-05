@@ -1,0 +1,76 @@
+{
+  "reference_manifest": "../native/native-source-hashes-final.json",
+  "encoding": "historical sha256 maps reconstructed by copying final sha256 map, deleting missing_paths, then applying replacements; metadata replaces final top-level metadata",
+  "snapshots": [
+    {
+      "original_file": "native-source-hashes-before-last-source-change.json",
+      "original_file_sha256": "fa4a1a4bfbad18ed10968750c5edba189223cef68a90ecc7668db047915cea1f",
+      "original_metadata": {
+        "captured_utc": "2026-10-04T19:28:39.202123+00:00",
+        "head_at_capture": "306c6a763c8945402d80f490c183c3b04e51e91a",
+        "base_head": "30ad7d37337d6641cb7714b03e9feff0e6e25d25",
+        "input_count": 335,
+        "manifest_sha256": "9320175b6c196c8a020507549218253333deea186466f43370181dc2b86f8538"
+      },
+      "replacements": {
+        "loom/src/onboarding/graph.cpp": "0c3390f392abcab7c2c2a051a20a2203e983cacb1e0a413bcd6e55454359666d",
+        "loom/src/onboarding/store.cpp": "c3b6e7921a06e7f5b74b30f4a67d14b867684ec3a1ad91892ff76691f01227d1",
+        "loom/tests/test_onboarding_graph.cpp": "8e3f67fff86acf4ccf07f66c7d631c9c1166967f4bbe4ff73ce7ffd584393c5a",
+        "loom/tests/test_onboarding_store.cpp": "5fdf19188eeb0d09156b78fa5cc0524a14dea33b9698b3173ffbb72f3b677056"
+      },
+      "missing_paths": [],
+      "lossless_reconstruction_checked": true
+    },
+    {
+      "original_file": "native-source-hashes-before-method-version-fix.json",
+      "original_file_sha256": "4c1675ddcdf7a5d32c0576f39c57e6903eab855bfd2a36dd2793660f96ad4e32",
+      "original_metadata": {
+        "captured_utc": "2026-10-04T19:31:40.561363+00:00",
+        "head_at_capture": "306c6a763c8945402d80f490c183c3b04e51e91a",
+        "base_head": "30ad7d37337d6641cb7714b03e9feff0e6e25d25",
+        "input_count": 335,
+        "manifest_sha256": "05806ce7a5bc457d58e64dd033d33c028713bdc8362f659f46558972f5ede6a2"
+      },
+      "replacements": {
+        "loom/src/onboarding/graph.cpp": "0c3390f392abcab7c2c2a051a20a2203e983cacb1e0a413bcd6e55454359666d",
+        "loom/tests/test_onboarding_graph.cpp": "8e3f67fff86acf4ccf07f66c7d631c9c1166967f4bbe4ff73ce7ffd584393c5a",
+        "loom/tests/test_onboarding_store.cpp": "5fdf19188eeb0d09156b78fa5cc0524a14dea33b9698b3173ffbb72f3b677056"
+      },
+      "missing_paths": [],
+      "lossless_reconstruction_checked": true
+    },
+    {
+      "original_file": "native-source-hashes-before-multiversion-fixture-fix.json",
+      "original_file_sha256": "2fd6b26d6e7826352cf8b3c2991263a8f6a656b16fca8dacca384fc15e89dc37",
+      "original_metadata": {
+        "captured_utc": "2026-10-04T19:34:53.305502+00:00",
+        "head_at_capture": "8fd3cbcceb1b24f8d6a91ad14d53a2cf22ea5f93",
+        "base_head": "30ad7d37337d6641cb7714b03e9feff0e6e25d25",
+        "input_count": 335,
+        "manifest_sha256": "03acf054d0db4d7d9262b674dc96aaed44beaceb26a56f8e4cada68d0a11a6de"
+      },
+      "replacements": {
+        "loom/tests/test_onboarding_graph.cpp": "5fcb3e493f012d52223fd5e28ef57a58a2a7415c88865209bdb64dcb428ccfd9"
+      },
+      "missing_paths": [],
+      "lossless_reconstruction_checked": true
+    },
+    {
+      "original_file": "native-source-hashes-before-store-test-compile-fix.json",
+      "original_file_sha256": "6ee3f3863d0a26e08e9ec32ff5892315d679db72444a0102199fe2c5484604cc",
+      "original_metadata": {
+        "captured_utc": "2026-10-04T19:33:47.722025+00:00",
+        "head_at_capture": "306c6a763c8945402d80f490c183c3b04e51e91a",
+        "base_head": "30ad7d37337d6641cb7714b03e9feff0e6e25d25",
+        "input_count": 335,
+        "manifest_sha256": "c98b4c9a5c30563b58c23832b0a14366bc8e65476abd6ab4d5534d6dda4dbddd"
+      },
+      "replacements": {
+        "loom/tests/test_onboarding_graph.cpp": "5fcb3e493f012d52223fd5e28ef57a58a2a7415c88865209bdb64dcb428ccfd9",
+        "loom/tests/test_onboarding_store.cpp": "38ebf275cf1c2984c01cd54953b65e204b1fa8528689e2fa97c491b38ef1a778"
+      },
+      "missing_paths": [],
+      "lossless_reconstruction_checked": true
+    }
+  ]
+}

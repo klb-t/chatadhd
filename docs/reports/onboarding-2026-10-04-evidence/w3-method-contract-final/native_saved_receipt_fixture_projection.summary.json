@@ -1,0 +1,270 @@
+{
+  "fixture_type": "synthetic_saved_receipt_fixture_not_actual_producer_execution",
+  "actual_method_executions": 0,
+  "provider_calls": 0,
+  "original_file": "native_saved_receipt_fixture_projection.json",
+  "original_sha256": "efa20eb99224737e7bd2257c24fb9e11cd4d734fa8486b1373091570dbf5d3c3",
+  "original_bytes": 2315149,
+  "omission": "Full repeated built-in type/default definitions are omitted; exact output provenance edges and referenced entities/observations are retained. Reproduce the full synthetic fixture with runner.cpp.",
+  "counts": {
+    "entities": 132,
+    "claims": 179,
+    "observations": 32,
+    "method_profile": 6
+  },
+  "output_provenance_claims": [
+    {
+      "id": "cl_4a388a7ba3d33a74",
+      "subject": "e_3d4b58ec536d6c8d",
+      "predicate": "produced_by_method_version",
+      "object": "e_40ae692ee0482808",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "ob_31067191106b0077",
+              "locator": {
+                "source": "sha256:c2de23ac83e07f23c173c9800cdd95dd7cc64cee183225ea547839b908d1521a",
+                "member": "execution/e_offline_saved_receipt_fixture",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 334,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"method_version_id\":\"e_40ae692ee0482808\",\"provider\":\"offline_fixture\",\"request_token\":\"synthetic-receipt-request\",\"response_hash_scope\":\"canonical_received_reply\",\"response_sha256\":\"d602469f088f03e92639a23f425146c64cc9f00105600403cf5b4d31f62386e2\",\"result_candidate_ids\":[\"offline-result\"],\"run_id\":\"e_offline_saved_receipt_fixture\"}",
+              "extractor": "onboarding.project_graph@1",
+              "quality": 1.0
+            }
+          ],
+          "derivation": {
+            "operator": "onboarding.project_graph",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "cl_5b872d42d4e6b1c3",
+      "subject": "e_3d4b58ec536d6c8d",
+      "predicate": "produced_in_run",
+      "object": "e_offline_saved_receipt_fixture",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "",
+        "lang": "",
+        "extra": {
+          "confidence_scope": "structure_only"
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "ob_31067191106b0077",
+              "locator": {
+                "source": "sha256:c2de23ac83e07f23c173c9800cdd95dd7cc64cee183225ea547839b908d1521a",
+                "member": "execution/e_offline_saved_receipt_fixture",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 334,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"method_version_id\":\"e_40ae692ee0482808\",\"provider\":\"offline_fixture\",\"request_token\":\"synthetic-receipt-request\",\"response_hash_scope\":\"canonical_received_reply\",\"response_sha256\":\"d602469f088f03e92639a23f425146c64cc9f00105600403cf5b4d31f62386e2\",\"result_candidate_ids\":[\"offline-result\"],\"run_id\":\"e_offline_saved_receipt_fixture\"}",
+              "extractor": "onboarding.project_graph@1",
+              "quality": 1.0
+            }
+          ],
+          "derivation": {
+            "operator": "onboarding.project_graph",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    }
+  ],
+  "referenced_entities": [
+    {
+      "id": "e_3d4b58ec536d6c8d",
+      "kind": "field",
+      "canonical_key": "onboarding\u001foffline-contract-user\u001ffield\u001fcandidate/offline-result",
+      "label": "offline-result",
+      "labels": {},
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "inferred",
+      "origin": "model_knowledge",
+      "confidence": 1.0,
+      "status": "active",
+      "attrs": {
+        "field": "work.projects",
+        "review": "pending",
+        "provenance": "model_inferred",
+        "value": "synthetic proposition",
+        "role": "pending_candidate",
+        "semantic_value_asserted": false,
+        "content_verification": "unverified"
+      }
+    },
+    {
+      "id": "e_40ae692ee0482808",
+      "kind": "method_version",
+      "canonical_key": "onboarding\u001fmethod_version\u001fonboarding.interview\u001fd1661d91a167800c2c455c465bc24d5352f2d07272683683b80aeca2dc18ad08",
+      "label": "onboarding.interview version",
+      "labels": {},
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "derived",
+      "origin": "system",
+      "confidence": 1.0,
+      "status": "active",
+      "attrs": {
+        "definition": {
+          "execution_capability": "onboarding_interview",
+          "parameters": {},
+          "user_overrides": {},
+          "prompt_sha256": "9bd06de30a14b52a22a17caff6ff08dacf8f5c31e156bb469dd945aa84ea796b",
+          "recipe_sha256": "23494aee69cc5342ec79f3aebc13836b1b8bde847d7b2d0b58dc28cd74617acf",
+          "parameter_set_sha256": "fdb679794d034001d244725923387705c2bb6a341c50972243ce3e0ff2d93d21",
+          "revision": 1
+        },
+        "definition_sha256": "d1661d91a167800c2c455c465bc24d5352f2d07272683683b80aeca2dc18ad08",
+        "revision": 1
+      }
+    },
+    {
+      "id": "e_offline_saved_receipt_fixture",
+      "kind": "run",
+      "canonical_key": "e_offline_saved_receipt_fixture",
+      "label": "e_offline_saved_receipt_fixture",
+      "labels": {},
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "observed",
+      "origin": "system",
+      "confidence": 1.0,
+      "status": "active",
+      "attrs": {
+        "run_id": "e_offline_saved_receipt_fixture",
+        "method_version_id": "e_40ae692ee0482808",
+        "request_token": "synthetic-receipt-request",
+        "response_sha256": "d602469f088f03e92639a23f425146c64cc9f00105600403cf5b4d31f62386e2",
+        "response_hash_scope": "canonical_received_reply",
+        "provider": "offline_fixture",
+        "result_candidate_ids": [
+          "offline-result"
+        ],
+        "capture_scope": "host_execution_receipt",
+        "content_truth": "not_established"
+      }
+    }
+  ],
+  "referenced_observations": [
+    {
+      "id": "ob_31067191106b0077",
+      "unit": "un_64e00bf090f389b5",
+      "kind": "field",
+      "text": "{\"method_version_id\":\"e_40ae692ee0482808\",\"provider\":\"offline_fixture\",\"request_token\":\"synthetic-receipt-request\",\"response_hash_scope\":\"canonical_received_reply\",\"response_sha256\":\"d602469f088f03e92639a23f425146c64cc9f00105600403cf5b4d31f62386e2\",\"result_candidate_ids\":[\"offline-result\"],\"run_id\":\"e_offline_saved_receipt_fixture\"}",
+      "locator": {
+        "source": "sha256:c2de23ac83e07f23c173c9800cdd95dd7cc64cee183225ea547839b908d1521a",
+        "member": "execution/e_offline_saved_receipt_fixture",
+        "json_pointer": "",
+        "byte_start": 0,
+        "byte_len": 334,
+        "time_start": null,
+        "time_end": null,
+        "line": null
+      },
+      "lang": "",
+      "date": "",
+      "ordinal": 0,
+      "artifact_type": "",
+      "speaker": "",
+      "attrs": {
+        "capture_scope": "record_bytes_only",
+        "provenance": "host_execution_receipt"
+      }
+    }
+  ]
+}
