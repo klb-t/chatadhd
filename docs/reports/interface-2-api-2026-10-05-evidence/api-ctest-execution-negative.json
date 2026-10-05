@@ -1,0 +1,1106 @@
+{
+  "entries": 121,
+  "passed": 120,
+  "failed": [
+    "unit.test_knowledge_semantic"
+  ],
+  "native_cases": 761,
+  "native_assertions": 29103,
+  "python_tests": 1322,
+  "python_skips": 0,
+  "zero_case_entries": [
+    "unit.test_catalog_scale"
+  ],
+  "tests": [
+    {
+      "entry": 1,
+      "name": "unit.test_archive",
+      "native_cases": 18,
+      "native_assertions": 270,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 2,
+      "name": "unit.test_batch_api",
+      "native_cases": 8,
+      "native_assertions": 36,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 3,
+      "name": "unit.test_capi",
+      "native_cases": 12,
+      "native_assertions": 598,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 4,
+      "name": "unit.test_capi_knowledge",
+      "native_cases": 1,
+      "native_assertions": 55,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 5,
+      "name": "unit.test_capi_knowledge_latest_run",
+      "native_cases": 2,
+      "native_assertions": 73,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 6,
+      "name": "unit.test_catalog",
+      "native_cases": 13,
+      "native_assertions": 344,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 7,
+      "name": "unit.test_catalog_context",
+      "native_cases": 7,
+      "native_assertions": 81,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 8,
+      "name": "unit.test_catalog_eval",
+      "native_cases": 1,
+      "native_assertions": 76,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 9,
+      "name": "unit.test_catalog_links",
+      "native_cases": 4,
+      "native_assertions": 3136,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 10,
+      "name": "unit.test_catalog_retention",
+      "native_cases": 5,
+      "native_assertions": 179,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 11,
+      "name": "unit.test_catalog_scale",
+      "native_cases": 0,
+      "native_assertions": 0,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 12,
+      "name": "unit.test_chat_active_task",
+      "native_cases": 19,
+      "native_assertions": 197,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 13,
+      "name": "unit.test_chat_active_task_acceptance_audit",
+      "native_cases": 5,
+      "native_assertions": 40,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 14,
+      "name": "unit.test_chat_active_task_acceptance_scale",
+      "native_cases": 2,
+      "native_assertions": 2014,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 15,
+      "name": "unit.test_chat_active_task_acceptance_validation",
+      "native_cases": 6,
+      "native_assertions": 151,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 16,
+      "name": "unit.test_chat_active_task_concurrency",
+      "native_cases": 4,
+      "native_assertions": 49,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 17,
+      "name": "unit.test_chat_active_task_durability",
+      "native_cases": 8,
+      "native_assertions": 106,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 18,
+      "name": "unit.test_chat_active_task_durable_audit",
+      "native_cases": 6,
+      "native_assertions": 76,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 19,
+      "name": "unit.test_chat_active_task_exceptional",
+      "native_cases": 4,
+      "native_assertions": 45,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 20,
+      "name": "unit.test_chat_active_task_history_aba",
+      "native_cases": 1,
+      "native_assertions": 9,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 21,
+      "name": "unit.test_chat_active_task_reference",
+      "native_cases": 7,
+      "native_assertions": 49,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 22,
+      "name": "unit.test_chat_active_task_retention",
+      "native_cases": 11,
+      "native_assertions": 232,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 23,
+      "name": "unit.test_chat_active_task_revisions",
+      "native_cases": 10,
+      "native_assertions": 228,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 24,
+      "name": "unit.test_chat_active_task_scope_identity",
+      "native_cases": 2,
+      "native_assertions": 20,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 25,
+      "name": "unit.test_chat_engine",
+      "native_cases": 15,
+      "native_assertions": 67,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 26,
+      "name": "unit.test_chat_knowledge_context",
+      "native_cases": 15,
+      "native_assertions": 212,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 27,
+      "name": "unit.test_chat_retrieval_plan",
+      "native_cases": 8,
+      "native_assertions": 244,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 28,
+      "name": "unit.test_config",
+      "native_cases": 5,
+      "native_assertions": 113,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 29,
+      "name": "unit.test_context_channel_integration",
+      "native_cases": 5,
+      "native_assertions": 63,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 30,
+      "name": "unit.test_context_controls",
+      "native_cases": 9,
+      "native_assertions": 153,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 31,
+      "name": "unit.test_context_counter",
+      "native_cases": 4,
+      "native_assertions": 38,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 32,
+      "name": "unit.test_context_diagnostics",
+      "native_cases": 9,
+      "native_assertions": 335,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 33,
+      "name": "unit.test_context_engine",
+      "native_cases": 18,
+      "native_assertions": 1364,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 34,
+      "name": "unit.test_context_eval",
+      "native_cases": 2,
+      "native_assertions": 268,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 35,
+      "name": "unit.test_context_native_consumer",
+      "native_cases": 6,
+      "native_assertions": 105,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 36,
+      "name": "unit.test_context_plan",
+      "native_cases": 15,
+      "native_assertions": 159,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 37,
+      "name": "unit.test_context_retrieval",
+      "native_cases": 13,
+      "native_assertions": 130,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 38,
+      "name": "unit.test_context_retrieval_dev",
+      "native_cases": 1,
+      "native_assertions": 241,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 39,
+      "name": "unit.test_context_tfidf_reuse",
+      "native_cases": 9,
+      "native_assertions": 219,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 40,
+      "name": "unit.test_crypto",
+      "native_cases": 12,
+      "native_assertions": 66,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 41,
+      "name": "unit.test_db",
+      "native_cases": 13,
+      "native_assertions": 5178,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 42,
+      "name": "unit.test_db_annotations",
+      "native_cases": 11,
+      "native_assertions": 189,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 43,
+      "name": "unit.test_event_bus",
+      "native_cases": 5,
+      "native_assertions": 28,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 44,
+      "name": "unit.test_extract",
+      "native_cases": 15,
+      "native_assertions": 241,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 45,
+      "name": "unit.test_extract_eval",
+      "native_cases": 6,
+      "native_assertions": 27,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 46,
+      "name": "unit.test_fts",
+      "native_cases": 5,
+      "native_assertions": 53,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 47,
+      "name": "unit.test_generalize",
+      "native_cases": 7,
+      "native_assertions": 199,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 48,
+      "name": "unit.test_generalize_eval",
+      "native_cases": 1,
+      "native_assertions": 173,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 49,
+      "name": "unit.test_github",
+      "native_cases": 19,
+      "native_assertions": 113,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 50,
+      "name": "unit.test_graph",
+      "native_cases": 8,
+      "native_assertions": 30,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 51,
+      "name": "unit.test_import",
+      "native_cases": 23,
+      "native_assertions": 223,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 52,
+      "name": "unit.test_import_audit",
+      "native_cases": 3,
+      "native_assertions": 28,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 53,
+      "name": "unit.test_import_aux_depth",
+      "native_cases": 2,
+      "native_assertions": 106,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 54,
+      "name": "unit.test_import_export_fidelity",
+      "native_cases": 5,
+      "native_assertions": 327,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 55,
+      "name": "unit.test_import_exports",
+      "native_cases": 18,
+      "native_assertions": 2202,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 56,
+      "name": "unit.test_import_resume",
+      "native_cases": 23,
+      "native_assertions": 696,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 57,
+      "name": "unit.test_import_screenshot",
+      "native_cases": 6,
+      "native_assertions": 872,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 58,
+      "name": "unit.test_import_source_materialization",
+      "native_cases": 8,
+      "native_assertions": 592,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 59,
+      "name": "unit.test_import_stream",
+      "native_cases": 1,
+      "native_assertions": 13,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 60,
+      "name": "unit.test_import_usage",
+      "native_cases": 2,
+      "native_assertions": 19,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 61,
+      "name": "unit.test_kb_pack",
+      "native_cases": 14,
+      "native_assertions": 184,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 62,
+      "name": "unit.test_knowledge",
+      "native_cases": 18,
+      "native_assertions": 150,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 63,
+      "name": "unit.test_knowledge_candidate_graph",
+      "native_cases": 10,
+      "native_assertions": 114,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 64,
+      "name": "unit.test_knowledge_candidates",
+      "native_cases": 1,
+      "native_assertions": 14,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 65,
+      "name": "unit.test_knowledge_flow",
+      "native_cases": 2,
+      "native_assertions": 53,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 66,
+      "name": "unit.test_knowledge_semantic",
+      "native_cases": 13,
+      "native_assertions": 125,
+      "python_tests": null,
+      "passed": false,
+      "python_skips": 0
+    },
+    {
+      "entry": 67,
+      "name": "unit.test_knowledge_semantic_graph",
+      "native_cases": 11,
+      "native_assertions": 100,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 68,
+      "name": "unit.test_knowledge_store",
+      "native_cases": 7,
+      "native_assertions": 124,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 69,
+      "name": "unit.test_materialize",
+      "native_cases": 6,
+      "native_assertions": 67,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 70,
+      "name": "unit.test_media",
+      "native_cases": 13,
+      "native_assertions": 81,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 71,
+      "name": "unit.test_memory",
+      "native_cases": 9,
+      "native_assertions": 40,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 72,
+      "name": "unit.test_model",
+      "native_cases": 10,
+      "native_assertions": 137,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 73,
+      "name": "unit.test_net_sse",
+      "native_cases": 10,
+      "native_assertions": 45,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 74,
+      "name": "unit.test_onboarding",
+      "native_cases": 18,
+      "native_assertions": 228,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 75,
+      "name": "unit.test_onboarding_graph",
+      "native_cases": 11,
+      "native_assertions": 2139,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 76,
+      "name": "unit.test_onboarding_layers",
+      "native_cases": 8,
+      "native_assertions": 51,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 77,
+      "name": "unit.test_onboarding_store",
+      "native_cases": 14,
+      "native_assertions": 286,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 78,
+      "name": "unit.test_pack_model",
+      "native_cases": 6,
+      "native_assertions": 900,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 79,
+      "name": "unit.test_packet",
+      "native_cases": 4,
+      "native_assertions": 24,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 80,
+      "name": "unit.test_provenance",
+      "native_cases": 3,
+      "native_assertions": 49,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 81,
+      "name": "unit.test_providers",
+      "native_cases": 13,
+      "native_assertions": 61,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 82,
+      "name": "unit.test_regex",
+      "native_cases": 15,
+      "native_assertions": 89,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 83,
+      "name": "unit.test_relations",
+      "native_cases": 1,
+      "native_assertions": 39,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 84,
+      "name": "unit.test_resolve",
+      "native_cases": 8,
+      "native_assertions": 71,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 85,
+      "name": "unit.test_resolve_attribution",
+      "native_cases": 7,
+      "native_assertions": 420,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 86,
+      "name": "unit.test_resolve_lineage",
+      "native_cases": 2,
+      "native_assertions": 15,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 87,
+      "name": "unit.test_runtime",
+      "native_cases": 4,
+      "native_assertions": 50,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 88,
+      "name": "unit.test_selector",
+      "native_cases": 5,
+      "native_assertions": 22,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 89,
+      "name": "unit.test_semantic_llm",
+      "native_cases": 11,
+      "native_assertions": 91,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 90,
+      "name": "unit.test_semantic_worker",
+      "native_cases": 9,
+      "native_assertions": 34,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 91,
+      "name": "unit.test_tasks",
+      "native_cases": 5,
+      "native_assertions": 56,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 92,
+      "name": "unit.test_util",
+      "native_cases": 10,
+      "native_assertions": 94,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 93,
+      "name": "compat.test_abi_compat",
+      "native_cases": null,
+      "native_assertions": null,
+      "python_tests": 3,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 94,
+      "name": "compat.test_active_task_compiler_compat",
+      "native_cases": null,
+      "native_assertions": null,
+      "python_tests": 4,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 95,
+      "name": "compat.test_archive_cost",
+      "native_cases": null,
+      "native_assertions": null,
+      "python_tests": 19,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 96,
+      "name": "compat.test_candidate_graph_native",
+      "native_cases": null,
+      "native_assertions": null,
+      "python_tests": 9,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 97,
+      "name": "compat.test_chat_active_task_http",
+      "native_cases": null,
+      "native_assertions": null,
+      "python_tests": 4,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 98,
+      "name": "compat.test_chat_compat",
+      "native_cases": null,
+      "native_assertions": null,
+      "python_tests": 2,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 99,
+      "name": "compat.test_config_compat",
+      "native_cases": null,
+      "native_assertions": null,
+      "python_tests": 5,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 100,
+      "name": "compat.test_crypto_compat",
+      "native_cases": null,
+      "native_assertions": null,
+      "python_tests": 6,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 101,
+      "name": "compat.test_db_compat",
+      "native_cases": null,
+      "native_assertions": null,
+      "python_tests": 7,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 102,
+      "name": "compat.test_github_sync_defaults",
+      "native_cases": null,
+      "native_assertions": null,
+      "python_tests": 2,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 103,
+      "name": "compat.test_graph_compat",
+      "native_cases": null,
+      "native_assertions": null,
+      "python_tests": 3,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 104,
+      "name": "compat.test_graph_packet_store",
+      "native_cases": null,
+      "native_assertions": null,
+      "python_tests": 29,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 105,
+      "name": "compat.test_import_compat",
+      "native_cases": null,
+      "native_assertions": null,
+      "python_tests": 24,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 106,
+      "name": "compat.test_memory_compat",
+      "native_cases": null,
+      "native_assertions": null,
+      "python_tests": 4,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 107,
+      "name": "compat.test_packet",
+      "native_cases": null,
+      "native_assertions": null,
+      "python_tests": 16,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 108,
+      "name": "compat.test_selector_compat",
+      "native_cases": null,
+      "native_assertions": null,
+      "python_tests": 4,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 109,
+      "name": "compat.test_semantic_compat",
+      "native_cases": null,
+      "native_assertions": null,
+      "python_tests": 6,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 110,
+      "name": "compat.test_semantic_recovery",
+      "native_cases": null,
+      "native_assertions": null,
+      "python_tests": 8,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 111,
+      "name": "compat.test_util_compat",
+      "native_cases": null,
+      "native_assertions": null,
+      "python_tests": 6,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 112,
+      "name": "research.structure",
+      "native_cases": null,
+      "native_assertions": null,
+      "python_tests": 859,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 113,
+      "name": "research.independent_protocol",
+      "native_cases": null,
+      "native_assertions": null,
+      "python_tests": 10,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 114,
+      "name": "research.graph_native_protocol",
+      "native_cases": null,
+      "native_assertions": null,
+      "python_tests": 12,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 115,
+      "name": "research.candidate_graph_protocol",
+      "native_cases": null,
+      "native_assertions": null,
+      "python_tests": 15,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 116,
+      "name": "research.contracts",
+      "native_cases": null,
+      "native_assertions": null,
+      "python_tests": 209,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 117,
+      "name": "research.seeding",
+      "native_cases": null,
+      "native_assertions": null,
+      "python_tests": 36,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 118,
+      "name": "server.smoke",
+      "native_cases": null,
+      "native_assertions": null,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 119,
+      "name": "server.chat_active_task",
+      "native_cases": null,
+      "native_assertions": null,
+      "python_tests": 1,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 120,
+      "name": "cli.smoke",
+      "native_cases": null,
+      "native_assertions": null,
+      "python_tests": null,
+      "passed": true,
+      "python_skips": 0
+    },
+    {
+      "entry": 121,
+      "name": "eval.harness",
+      "native_cases": null,
+      "native_assertions": null,
+      "python_tests": 19,
+      "passed": true,
+      "python_skips": 0
+    }
+  ],
+  "scope": "Counts from retained full mixed121 execution; failed13-case suite included; doctest non-selected cases are filter exclusions, not executed skips."
+}

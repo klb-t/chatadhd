@@ -1,0 +1,46 @@
+{
+  "schema": "loom.interface2_api_receipt/1",
+  "status": "ui_complete_core_gate_blocked",
+  "source": "3807e31bc40cec155eef5038caee6caf77248170 plus final geometry CSS/test change",
+  "dependencies": {
+    "integrator": "66da570d3b5379492e128d940ad474467082c59f",
+    "main": "e4109df7e4af22b461def5f7d62e268d9b9a8825",
+    "thread1": "50e6bb9f80b0cd855e4dd1efedaf3399cac5e4e6",
+    "thread12": "3c0bc36552ef9851f1174946cfb108549aae3228"
+  },
+  "server_sha256": "c65181cb064cf5326b0006bddf31f2244d369e1b6607e20cab6b559447475c2f",
+  "gates": {
+    "ctest": {
+      "passed": 120,
+      "total": 121,
+      "blocked_by": "unit.test_knowledge_semantic",
+      "native_cases": 761,
+      "native_assertions": 29103,
+      "python_tests": 1322,
+      "python_skips": 0,
+      "zero_case_opt_in": "unit.test_catalog_scale"
+    },
+    "web_build": "pass",
+    "old_fixtures": 84,
+    "old_native_ui": 20,
+    "old_e2e": 16,
+    "methods_native": 14,
+    "graph_chat_native": 14,
+    "analysis": 5,
+    "onboarding_native": 8,
+    "onboarding_host": 21,
+    "whole_app_native": 8
+  },
+  "paid_calls": 0,
+  "negative_archive_branch": "archive/2026-10-05/interface-2-api-negatives",
+  "archives": {
+    "native-ui-positive.tar.xz": {
+      "bytes": 169420,
+      "sha256": "d929b7c64a6fd00a55debb952b5df735ca9f0c4b21c55e72609376b34a40ae8a"
+    },
+    "whole-app-positive.tar.xz": {
+      "bytes": 860632,
+      "sha256": "7cced43126e116a85fce9647a273c0017950239e1c6cfb022ff7eaf26c7f9936"
+    }
+  }
+}
