@@ -296,7 +296,8 @@ TEST_SUITE("kb_pack") {
       }
     }
     for (const char* key : {"mixed_min_fraction", "pl_min_fraction", "en_min_fraction"}) {
-      for (Json value : {Json(true), Json("0.25"), Json(-0.01), Json(1.01)}) {
+      for (Json value : {Json(true), Json("0.25"), Json(std::numeric_limits<double>::quiet_NaN()),
+                         Json(std::numeric_limits<double>::infinity()), Json(-std::numeric_limits<double>::infinity())}) {
         rejects([&](Json& s) { s["normalization"][key] = value; }, std::string("/normalization/") + key);
       }
     }
@@ -363,7 +364,7 @@ TEST_SUITE("kb_pack") {
     CHECK(zero_lengths.stem("a", kb::Lang::Pl).empty());
   }
 
-  TEST_CASE("representable cutoff and probability endpoints do not carry preset-sized ceilings") {
+  TEST_CASE("representable counts and finite comparison cutoffs do not carry preset-sized ceilings") {
     Json recipe = normalization_recipe();
     recipe["guess_min_tokens"] = std::numeric_limits<std::size_t>::max();
     auto large = normalization_overlay(recipe);
@@ -385,5 +386,38 @@ TEST_SUITE("kb_pack") {
 
     for (const char* key : {"mixed_min_fraction", "pl_min_fraction", "en_min_fraction"}) recipe[key] = 1.0;
     CHECK(normalization_overlay(recipe)->lexicon("stemming")["normalization"] == recipe);
+
+    for (const char* key : {"mixed_min_fraction", "pl_min_fraction", "en_min_fraction"}) {
+      recipe = normalization_recipe();
+      recipe[key] = 1.01;
+      auto above_one = normalization_overlay(recipe);
+      kb::Normalizer disabled_rule(*above_one);
+      const std::string field(key);
+      if (field == "mixed_min_fraction") {
+        CHECK(disabled_rule.guess_lang("the i zzqa") == kb::Lang::En);
+        CHECK(disabled_rule.guess_lang("i zzqa zzqb") == kb::Lang::Pl);
+      } else if (field == "pl_min_fraction") {
+        CHECK(disabled_rule.guess_lang("i zzqa zzqb") == kb::Lang::Unknown);
+        CHECK(disabled_rule.guess_lang("the zzqa zzqb") == kb::Lang::En);
+      } else {
+        CHECK(disabled_rule.guess_lang("the zzqa zzqb") == kb::Lang::Unknown);
+        CHECK(disabled_rule.guess_lang("i zzqa zzqb") == kb::Lang::Pl);
+      }
+
+      recipe[key] = -0.01;
+      auto below_zero = normalization_overlay(recipe);
+      kb::Normalizer negative_cutoff(*below_zero);
+      if (field == "mixed_min_fraction") {
+        CHECK(negative_cutoff.guess_lang("zzqa zzqb zzqc") == kb::Lang::Mixed);
+      } else if (field == "en_min_fraction") {
+        CHECK(negative_cutoff.guess_lang("zzqa zzqb zzqc") == kb::Lang::En);
+      } else {
+        CHECK(negative_cutoff.guess_lang("i zzqa zzqb") == kb::Lang::Pl);
+      }
+      recipe[key] = std::numeric_limits<double>::max();
+      CHECK(normalization_overlay(recipe)->lexicon("stemming")["normalization"] == recipe);
+      recipe[key] = std::numeric_limits<double>::lowest();
+      CHECK(normalization_overlay(recipe)->lexicon("stemming")["normalization"] == recipe);
+    }
   }
 }
