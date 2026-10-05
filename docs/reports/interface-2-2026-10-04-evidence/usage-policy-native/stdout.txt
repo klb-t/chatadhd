@@ -1,0 +1,5 @@
+[usage-policy-native] PASS embedded native settings and advisory override preview preserve config bytes and never open ledger
+[usage-policy-native] PASS native ×10 receipt approval and rejection preserve arbitrary finite resource dimensions
+[usage-policy-native] PASS native reservation change refuses stale approval and requires explicit original-estimate refresh plus a fresh owner reference
+[usage-policy-native] PASS native restart preserves owner override, decisions, measured baseline and unresolved reservation; UI reload inspects actual durable records
+[usage-policy-native] 4/4 groups passed; real native settings/receipts/SQLite restart; 0 model/import dispatches, 0 external browser requests

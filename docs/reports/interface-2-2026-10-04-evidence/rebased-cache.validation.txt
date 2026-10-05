@@ -1,0 +1,2 @@
+{"verified_core_objects": 130, "test_objects_enabled": 0, "manifest_sha256": "066537d09632bb7cb88a87126cf8c26656ba350dac054de1541e030ebf6904e6", "reference_commit": "30ad7d37337d6641cb7714b03e9feff0e6e25d25"}
+{"verified_core_objects": 130, "test_objects_enabled": 0, "manifest_sha256": "066537d09632bb7cb88a87126cf8c26656ba350dac054de1541e030ebf6904e6", "reference_commit": "30ad7d37337d6641cb7714b03e9feff0e6e25d25"}
