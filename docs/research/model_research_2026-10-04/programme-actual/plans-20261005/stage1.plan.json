@@ -1,0 +1,154 @@
+{
+  "authorization": {
+    "amount": "5",
+    "currency": "EUR",
+    "source_ref": "owner-followup-new-scope-thread7-2026-10-04",
+    "status": "owner_authorized_within_budget"
+  },
+  "bound_operation_units": [
+    {
+      "model_id": "typesafe/jev-1.13",
+      "provider_id": "typesafe",
+      "units_upper_bounds": {
+        "completion": "0",
+        "prompt": "875596",
+        "request": "240"
+      }
+    },
+    {
+      "model_id": "openai/gpt-4.1-mini",
+      "provider_id": "openai",
+      "units_upper_bounds": {
+        "completion": "36864",
+        "input_cache_read": "662188",
+        "prompt": "662188",
+        "request": "192",
+        "web_search": "0"
+      }
+    }
+  ],
+  "configured_cap_usd": "5",
+  "credentials_or_account_identifiers_exported": false,
+  "expected_upper_projection_usd": "0.426851432",
+  "fx": {
+    "base_currency": "EUR",
+    "checked_at": "2026-10-05T09:55:59.605000+00:00",
+    "quote_currency": "USD",
+    "rate_date": "2026-10-02",
+    "raw_sha256": "d16ef240d4d97a953b925cbf81451c812c559cd33f2ebe07b08b51e4085709e2",
+    "source_ref": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml",
+    "usd_per_eur": "1.1225"
+  },
+  "key_metadata_private": true,
+  "manifest_sha256": "02db057b3bd6a9f5d81d5f4e415070a1cd128fa77ae8a30d465de0d2b81ecf56",
+  "opening_usage_usd": "0",
+  "operator_limit_usd": "5",
+  "planned_operations": 432,
+  "preparation_metadata": {
+    "billing_bound_guaranteed": false,
+    "paid_calls": 0,
+    "request_bytes": "existing_transport_canonical_utf8",
+    "source_manifests": [
+      {
+        "file": "docs/research/model_research_2026-10-04/study/prepared/j_active/manifest.json",
+        "sha256": "fc7ad4f993868ef2a0bda08a793e0324a0ed469665bba35b0312f220f6e702c6"
+      },
+      {
+        "file": "docs/research/model_research_2026-10-04/study/prepared/j_directed/manifest.json",
+        "sha256": "591abdccc105779f8ad930294c1775d3bef84725f3d10d9beb90217b78063417"
+      },
+      {
+        "file": "docs/research/model_research_2026-10-04/study/prepared/j_roles/manifest.json",
+        "sha256": "885fc434c1d0bdcafcae422d8a5b88d538d75e12383ddbc4283a0da73b301f18"
+      },
+      {
+        "file": "docs/research/model_research_2026-10-04/study/prepared/j_split_q01/manifest.json",
+        "sha256": "d9003c7b7d781a52d628a784191bb5e0196dda7d3ee27e8d17980de8d58b4790"
+      },
+      {
+        "file": "docs/research/model_research_2026-10-04/study/prepared/j_split_q02/manifest.json",
+        "sha256": "5f2aee558be338eaff4bb9341c17065b365194a00999afce4251b40978bb788c"
+      },
+      {
+        "file": "docs/research/model_research_2026-10-04/study/prepared/g_brief_t0/manifest.json",
+        "sha256": "b7209f856bf2fd8e9e1413355b526c6b4886cf220372c5281ef18a2f33ce4d3a"
+      },
+      {
+        "file": "docs/research/model_research_2026-10-04/study/prepared/g_brief_t03/manifest.json",
+        "sha256": "d65d0fdd729aca62a3813bc9c0b9669ebcc1c110fb26f35a4e3090012c372878"
+      },
+      {
+        "file": "docs/research/model_research_2026-10-04/study/prepared/g_rules_t0/manifest.json",
+        "sha256": "f14f8c2217392fc776484d522e16b0efe4827981979b30c9b8edc5ce4146531d"
+      },
+      {
+        "file": "docs/research/model_research_2026-10-04/study/prepared/g_rules_t03/manifest.json",
+        "sha256": "716c90cbd90bd13461b44ff4d30cc7cc5433c4b86c0d211b10a93c5ba1401745"
+      }
+    ],
+    "units_policy": {
+      "chat": {
+        "prompt_fixed_allowance": 1024,
+        "prompt_per_message_allowance": 32,
+        "request": 1
+      },
+      "jev": {
+        "completion": 0,
+        "prompt_fixed_allowance": 1024,
+        "request": 1
+      }
+    },
+    "units_policy_sha256": "62f3788954ed88f2fd943b2d0405ccaace72e501a8c2a11eba09c1483d3b5008"
+  },
+  "pricing": [
+    {
+      "all_charge_components_accounted": true,
+      "checked_at": "2026-10-05T10:05:05.070048+00:00",
+      "component_prices_usd": {
+        "completion": "0",
+        "prompt": "4.2E-8",
+        "request": "0"
+      },
+      "currency": "USD",
+      "model_id": "typesafe/jev-1.13",
+      "provider_id": "typesafe",
+      "raw_sha256": "f710d8ee38394d43ac08826efbbf47ab6e23af22a2dfd2318d611d2e26a1c80f",
+      "source_ref": "https://openrouter.ai/api/v1/models/typesafe/jev-1.13/endpoints"
+    },
+    {
+      "all_charge_components_accounted": true,
+      "checked_at": "2026-10-05T10:05:12.778196+00:00",
+      "component_prices_usd": {
+        "completion": "0.0000016",
+        "input_cache_read": "1E-7",
+        "prompt": "4E-7",
+        "request": "0",
+        "web_search": "0.01"
+      },
+      "currency": "USD",
+      "model_id": "openai/gpt-4.1-mini",
+      "provider_id": "openai",
+      "raw_sha256": "31d22afe43dd21adf5a05e060d8871d255b68050e3b4022c455788600dfd221f",
+      "source_ref": "https://openrouter.ai/api/v1/models/openai/gpt-4.1-mini/endpoints"
+    }
+  ],
+  "programme_id": "thread7-new-key-2026-10-04-eur5",
+  "raw_public_sources": [
+    {
+      "file": "fx.raw",
+      "sha256": "d16ef240d4d97a953b925cbf81451c812c559cd33f2ebe07b08b51e4085709e2"
+    },
+    {
+      "file": "gpt41mini.raw",
+      "sha256": "31d22afe43dd21adf5a05e060d8871d255b68050e3b4022c455788600dfd221f"
+    },
+    {
+      "file": "jev113.raw",
+      "sha256": "f710d8ee38394d43ac08826efbbf47ab6e23af22a2dfd2318d611d2e26a1c80f"
+    }
+  ],
+  "reservation_usd": "0.6300764",
+  "schema": "loom.research_programme_public_plan/1",
+  "stage_id": "stage1-cheap-jev-432",
+  "status": "stage_in_progress"
+}
