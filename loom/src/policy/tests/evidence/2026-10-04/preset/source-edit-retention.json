@@ -1,0 +1,440 @@
+{
+  "canonical/data/config.json": {
+    "bytes": 645,
+    "sha256": "7e185b0422a0858bd8849e9ce9849b8472f898031b94655c4a2d4ee5757138f6",
+    "retention": "exact_bytes",
+    "stored": "source-edit/canonical/data/config.json"
+  },
+  "canonical/data/probe-overlay-policy.sqlite": {
+    "bytes": 36864,
+    "sha256": "8f81e729b87c765079c193fc964e63f77525694e5c6bace66d966fd75b480f50",
+    "retention": "hash_only",
+    "reason": "rebuildable binary/object or synthetic SQLite fixture"
+  },
+  "canonical/data/probe-policy.sqlite": {
+    "bytes": 36864,
+    "sha256": "8f81e729b87c765079c193fc964e63f77525694e5c6bace66d966fd75b480f50",
+    "retention": "hash_only",
+    "reason": "rebuildable binary/object or synthetic SQLite fixture"
+  },
+  "canonical/generate.stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retention": "exact_bytes",
+    "stored": "source-edit/canonical/generate.stderr.txt"
+  },
+  "canonical/generate.stdout.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retention": "exact_bytes",
+    "stored": "source-edit/canonical/generate.stdout.txt"
+  },
+  "canonical/generated-check.stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retention": "exact_bytes",
+    "stored": "source-edit/canonical/generated-check.stderr.txt"
+  },
+  "canonical/generated-check.stdout.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retention": "exact_bytes",
+    "stored": "source-edit/canonical/generated-check.stdout.txt"
+  },
+  "canonical/link-native-probe.stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retention": "exact_bytes",
+    "stored": "source-edit/canonical/link-native-probe.stderr.txt"
+  },
+  "canonical/link-native-probe.stdout.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retention": "exact_bytes",
+    "stored": "source-edit/canonical/link-native-probe.stdout.txt"
+  },
+  "canonical/probe": {
+    "bytes": 4101560,
+    "sha256": "533fba739a6cc5547c8ff72f9367a88350a3f2a4492df5327b415884e7a44111",
+    "retention": "hash_only",
+    "reason": "rebuildable binary/object or synthetic SQLite fixture"
+  },
+  "canonical/probe.cc": {
+    "bytes": 7100,
+    "sha256": "7e2992fa145de4d0eecfc7fdde12a83775989b09c1c2c67ac1ba2a6161bea742",
+    "retention": "exact_bytes",
+    "stored": "source-edit/canonical/probe.cc"
+  },
+  "canonical/result.json": {
+    "bytes": 4758,
+    "sha256": "895e24214f955469d01001c5d9f59b551dcb98392774328845f4b5fd04853aa6",
+    "retention": "exact_bytes",
+    "stored": "source-edit/canonical/result.json"
+  },
+  "canonical/run-native-probe.stderr.txt": {
+    "bytes": 128,
+    "sha256": "5df7ca895e826dd63b218300f9cee41daf9b15c23bd305d59ab55031e3790e53",
+    "retention": "exact_bytes",
+    "stored": "source-edit/canonical/run-native-probe.stderr.txt"
+  },
+  "canonical/run-native-probe.stdout.txt": {
+    "bytes": 4758,
+    "sha256": "895e24214f955469d01001c5d9f59b551dcb98392774328845f4b5fd04853aa6",
+    "retention": "exact_bytes",
+    "stored": "source-edit/canonical/run-native-probe.stdout.txt"
+  },
+  "canonical/src/core/config_usage_policy.cpp": {
+    "bytes": 6180,
+    "sha256": "70422d10d9a133326e99593b2c46b7d02cc97af3a1fc928c1be77c920210078d",
+    "retention": "exact_bytes",
+    "stored": "source-edit/canonical/src/core/config_usage_policy.cpp.txt"
+  },
+  "canonical/src/policy/usage_policy_preset.inc": {
+    "bytes": 1087,
+    "sha256": "c903963a1ea37c555ddf533739faded0ab3e279214176d2ccc910c1caaeafabf",
+    "retention": "exact_bytes",
+    "stored": "source-edit/canonical/src/policy/usage_policy_preset.inc"
+  },
+  "canonical/usage_policy.pack": {
+    "bytes": 182,
+    "sha256": "6a576acf69ccc3be7af2b8ccde641977bdb76b8b52e2c76e77895609d76e20df",
+    "retention": "exact_bytes",
+    "stored": "source-edit/canonical/usage_policy.pack"
+  },
+  "commands.json": {
+    "bytes": 18945,
+    "sha256": "e01c8b996fc8a2fdbcc0d9f7322a63be0afcaa510ac12f79be10a92f39272a5b",
+    "retention": "exact_bytes",
+    "stored": "source-edit/commands.json"
+  },
+  "invalid-growth-factor/compile-consumer.stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retention": "exact_bytes",
+    "stored": "source-edit/invalid-growth-factor/compile-consumer.stderr.txt"
+  },
+  "invalid-growth-factor/compile-consumer.stdout.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retention": "exact_bytes",
+    "stored": "source-edit/invalid-growth-factor/compile-consumer.stdout.txt"
+  },
+  "invalid-growth-factor/config_usage_policy.o": {
+    "bytes": 1653128,
+    "sha256": "fc085ce7cf44027c2b538b8e0d6890a9c22a5b12fc0a022f39e6280961c4155f",
+    "retention": "hash_only",
+    "reason": "rebuildable binary/object or synthetic SQLite fixture"
+  },
+  "invalid-growth-factor/generate.stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retention": "exact_bytes",
+    "stored": "source-edit/invalid-growth-factor/generate.stderr.txt"
+  },
+  "invalid-growth-factor/generate.stdout.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retention": "exact_bytes",
+    "stored": "source-edit/invalid-growth-factor/generate.stdout.txt"
+  },
+  "invalid-growth-factor/generated-check.stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retention": "exact_bytes",
+    "stored": "source-edit/invalid-growth-factor/generated-check.stderr.txt"
+  },
+  "invalid-growth-factor/generated-check.stdout.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retention": "exact_bytes",
+    "stored": "source-edit/invalid-growth-factor/generated-check.stdout.txt"
+  },
+  "invalid-growth-factor/link-native-probe.stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retention": "exact_bytes",
+    "stored": "source-edit/invalid-growth-factor/link-native-probe.stderr.txt"
+  },
+  "invalid-growth-factor/link-native-probe.stdout.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retention": "exact_bytes",
+    "stored": "source-edit/invalid-growth-factor/link-native-probe.stdout.txt"
+  },
+  "invalid-growth-factor/probe": {
+    "bytes": 4014184,
+    "sha256": "7efbf7429bd3fd9b22146fa72e3e2a2b6c0195afbde224d7cd5981d683da479c",
+    "retention": "hash_only",
+    "reason": "rebuildable binary/object or synthetic SQLite fixture"
+  },
+  "invalid-growth-factor/probe.cc": {
+    "bytes": 3302,
+    "sha256": "eff6cc5abd488dca809d9df9e8b107064afc07ddab9356ee05a5dcdf6affbd75",
+    "retention": "exact_bytes",
+    "stored": "source-edit/invalid-growth-factor/probe.cc"
+  },
+  "invalid-growth-factor/result.json": {
+    "bytes": 1215,
+    "sha256": "3af7a1c9e944bbbb2679f83483b8a963d193ff6ad64a01dc62c78bbfde3e2be4",
+    "retention": "exact_bytes",
+    "stored": "source-edit/invalid-growth-factor/result.json"
+  },
+  "invalid-growth-factor/run-native-probe.stderr.txt": {
+    "bytes": 69,
+    "sha256": "1ee2cf7855499c835024933fc352ecd9d194e1967cd944e93b138906e3a13642",
+    "retention": "exact_bytes",
+    "stored": "source-edit/invalid-growth-factor/run-native-probe.stderr.txt"
+  },
+  "invalid-growth-factor/run-native-probe.stdout.txt": {
+    "bytes": 1215,
+    "sha256": "3af7a1c9e944bbbb2679f83483b8a963d193ff6ad64a01dc62c78bbfde3e2be4",
+    "retention": "exact_bytes",
+    "stored": "source-edit/invalid-growth-factor/run-native-probe.stdout.txt"
+  },
+  "invalid-growth-factor/src/core/config_usage_policy.cpp": {
+    "bytes": 6180,
+    "sha256": "70422d10d9a133326e99593b2c46b7d02cc97af3a1fc928c1be77c920210078d",
+    "retention": "exact_bytes",
+    "stored": "source-edit/invalid-growth-factor/src/core/config_usage_policy.cpp.txt"
+  },
+  "invalid-growth-factor/src/policy/usage_policy_preset.inc": {
+    "bytes": 1883,
+    "sha256": "c709f560d11cc07fdf8d21976d91d3d95416f6045df6dd9c7d94b9201cd9df49",
+    "retention": "exact_bytes",
+    "stored": "source-edit/invalid-growth-factor/src/policy/usage_policy_preset.inc"
+  },
+  "invalid-growth-factor/usage_policy.pack": {
+    "bytes": 381,
+    "sha256": "8c46c3d7d14ab56e14488889d20538a5e24db8d581443cdbd6a66e2b4ced93a7",
+    "retention": "exact_bytes",
+    "stored": "source-edit/invalid-growth-factor/usage_policy.pack"
+  },
+  "invalid-missing-field/compile-consumer.stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retention": "exact_bytes",
+    "stored": "source-edit/invalid-missing-field/compile-consumer.stderr.txt"
+  },
+  "invalid-missing-field/compile-consumer.stdout.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retention": "exact_bytes",
+    "stored": "source-edit/invalid-missing-field/compile-consumer.stdout.txt"
+  },
+  "invalid-missing-field/config_usage_policy.o": {
+    "bytes": 1653096,
+    "sha256": "04e5a731dce8d294d098d09f521ed40623fdd849049af4669edacc307cdd3038",
+    "retention": "hash_only",
+    "reason": "rebuildable binary/object or synthetic SQLite fixture"
+  },
+  "invalid-missing-field/generate.stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retention": "exact_bytes",
+    "stored": "source-edit/invalid-missing-field/generate.stderr.txt"
+  },
+  "invalid-missing-field/generate.stdout.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retention": "exact_bytes",
+    "stored": "source-edit/invalid-missing-field/generate.stdout.txt"
+  },
+  "invalid-missing-field/generated-check.stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retention": "exact_bytes",
+    "stored": "source-edit/invalid-missing-field/generated-check.stderr.txt"
+  },
+  "invalid-missing-field/generated-check.stdout.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retention": "exact_bytes",
+    "stored": "source-edit/invalid-missing-field/generated-check.stdout.txt"
+  },
+  "invalid-missing-field/link-native-probe.stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retention": "exact_bytes",
+    "stored": "source-edit/invalid-missing-field/link-native-probe.stderr.txt"
+  },
+  "invalid-missing-field/link-native-probe.stdout.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retention": "exact_bytes",
+    "stored": "source-edit/invalid-missing-field/link-native-probe.stdout.txt"
+  },
+  "invalid-missing-field/probe": {
+    "bytes": 4014184,
+    "sha256": "37286b7fac63c826b39e27a1ae2574d27036a860f3d7e234852f709fea6c21cb",
+    "retention": "hash_only",
+    "reason": "rebuildable binary/object or synthetic SQLite fixture"
+  },
+  "invalid-missing-field/probe.cc": {
+    "bytes": 3302,
+    "sha256": "eff6cc5abd488dca809d9df9e8b107064afc07ddab9356ee05a5dcdf6affbd75",
+    "retention": "exact_bytes",
+    "stored": "source-edit/invalid-missing-field/probe.cc"
+  },
+  "invalid-missing-field/result.json": {
+    "bytes": 1208,
+    "sha256": "886d2a5dcc21177ff5d15140da8bef4f89ad677dc9949c85b25ea61cc9e1a0ae",
+    "retention": "exact_bytes",
+    "stored": "source-edit/invalid-missing-field/result.json"
+  },
+  "invalid-missing-field/run-native-probe.stderr.txt": {
+    "bytes": 69,
+    "sha256": "79a66ea3d738a7d1f9d3614a746953d816be5894b484cacbeeda64fda8316bad",
+    "retention": "exact_bytes",
+    "stored": "source-edit/invalid-missing-field/run-native-probe.stderr.txt"
+  },
+  "invalid-missing-field/run-native-probe.stdout.txt": {
+    "bytes": 1208,
+    "sha256": "886d2a5dcc21177ff5d15140da8bef4f89ad677dc9949c85b25ea61cc9e1a0ae",
+    "retention": "exact_bytes",
+    "stored": "source-edit/invalid-missing-field/run-native-probe.stdout.txt"
+  },
+  "invalid-missing-field/src/core/config_usage_policy.cpp": {
+    "bytes": 6180,
+    "sha256": "70422d10d9a133326e99593b2c46b7d02cc97af3a1fc928c1be77c920210078d",
+    "retention": "exact_bytes",
+    "stored": "source-edit/invalid-missing-field/src/core/config_usage_policy.cpp.txt"
+  },
+  "invalid-missing-field/src/policy/usage_policy_preset.inc": {
+    "bytes": 1755,
+    "sha256": "4a863c20217a8450a019c2e35f2c03ec6c2db6045b23e741539668150a00d45c",
+    "retention": "exact_bytes",
+    "stored": "source-edit/invalid-missing-field/src/policy/usage_policy_preset.inc"
+  },
+  "invalid-missing-field/usage_policy.pack": {
+    "bytes": 349,
+    "sha256": "2432c544115cfde718a3a6a4771fd9b87bd227526d63b6ae4b214b3584cf3fd4",
+    "retention": "exact_bytes",
+    "stored": "source-edit/invalid-missing-field/usage_policy.pack"
+  },
+  "manifest.json": {
+    "bytes": 36865,
+    "sha256": "96cf611d7f38275bc05ce19e0eccc66292f07e83c72e828e4dcfdc5e6e0aceea",
+    "retention": "exact_bytes",
+    "stored": "source-edit/manifest.json"
+  },
+  "source-edited/compile-consumer.stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retention": "exact_bytes",
+    "stored": "source-edit/source-edited/compile-consumer.stderr.txt"
+  },
+  "source-edited/compile-consumer.stdout.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retention": "exact_bytes",
+    "stored": "source-edit/source-edited/compile-consumer.stdout.txt"
+  },
+  "source-edited/config_usage_policy.o": {
+    "bytes": 1653128,
+    "sha256": "d45f173074d5ac4d91cedf026db3a59042972a2759b5d1de4bceaf66a5b00bc8",
+    "retention": "hash_only",
+    "reason": "rebuildable binary/object or synthetic SQLite fixture"
+  },
+  "source-edited/data/config.json": {
+    "bytes": 645,
+    "sha256": "fbbc0f0610d5408dfb25cba6282ff4804df90569df0a44947c0f9c9ee4ff157e",
+    "retention": "exact_bytes",
+    "stored": "source-edit/source-edited/data/config.json"
+  },
+  "source-edited/data/probe-overlay-policy.sqlite": {
+    "bytes": 36864,
+    "sha256": "8f81e729b87c765079c193fc964e63f77525694e5c6bace66d966fd75b480f50",
+    "retention": "hash_only",
+    "reason": "rebuildable binary/object or synthetic SQLite fixture"
+  },
+  "source-edited/data/probe-policy.sqlite": {
+    "bytes": 36864,
+    "sha256": "8f81e729b87c765079c193fc964e63f77525694e5c6bace66d966fd75b480f50",
+    "retention": "hash_only",
+    "reason": "rebuildable binary/object or synthetic SQLite fixture"
+  },
+  "source-edited/generate.stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retention": "exact_bytes",
+    "stored": "source-edit/source-edited/generate.stderr.txt"
+  },
+  "source-edited/generate.stdout.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retention": "exact_bytes",
+    "stored": "source-edit/source-edited/generate.stdout.txt"
+  },
+  "source-edited/generated-check.stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retention": "exact_bytes",
+    "stored": "source-edit/source-edited/generated-check.stderr.txt"
+  },
+  "source-edited/generated-check.stdout.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retention": "exact_bytes",
+    "stored": "source-edit/source-edited/generated-check.stdout.txt"
+  },
+  "source-edited/link-native-probe.stderr.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retention": "exact_bytes",
+    "stored": "source-edit/source-edited/link-native-probe.stderr.txt"
+  },
+  "source-edited/link-native-probe.stdout.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retention": "exact_bytes",
+    "stored": "source-edit/source-edited/link-native-probe.stdout.txt"
+  },
+  "source-edited/probe": {
+    "bytes": 4101560,
+    "sha256": "9b5fac9d23efccb67ab95133d09696d08a06b966d6f3d75ec019428cb87d48c2",
+    "retention": "hash_only",
+    "reason": "rebuildable binary/object or synthetic SQLite fixture"
+  },
+  "source-edited/probe.cc": {
+    "bytes": 7100,
+    "sha256": "7e2992fa145de4d0eecfc7fdde12a83775989b09c1c2c67ac1ba2a6161bea742",
+    "retention": "exact_bytes",
+    "stored": "source-edit/source-edited/probe.cc"
+  },
+  "source-edited/result.json": {
+    "bytes": 7054,
+    "sha256": "044977b6b6b562d982a2901123b492a3b6648549dd9b70358518d469bc4207a8",
+    "retention": "exact_bytes",
+    "stored": "source-edit/source-edited/result.json"
+  },
+  "source-edited/run-native-probe.stderr.txt": {
+    "bytes": 128,
+    "sha256": "7ef9de50d844ffca85af0efdbc28f29fce32e7d8abb5840c14585553e3bfc6b8",
+    "retention": "exact_bytes",
+    "stored": "source-edit/source-edited/run-native-probe.stderr.txt"
+  },
+  "source-edited/run-native-probe.stdout.txt": {
+    "bytes": 7054,
+    "sha256": "044977b6b6b562d982a2901123b492a3b6648549dd9b70358518d469bc4207a8",
+    "retention": "exact_bytes",
+    "stored": "source-edit/source-edited/run-native-probe.stdout.txt"
+  },
+  "source-edited/src/core/config_usage_policy.cpp": {
+    "bytes": 6180,
+    "sha256": "70422d10d9a133326e99593b2c46b7d02cc97af3a1fc928c1be77c920210078d",
+    "retention": "exact_bytes",
+    "stored": "source-edit/source-edited/src/core/config_usage_policy.cpp.txt"
+  },
+  "source-edited/src/policy/usage_policy_preset.inc": {
+    "bytes": 1887,
+    "sha256": "a79eee2615ed6d8118f067712e76cfdd9bb0fbc51a1abd24069d5407e6cf8b86",
+    "retention": "exact_bytes",
+    "stored": "source-edit/source-edited/src/policy/usage_policy_preset.inc"
+  },
+  "source-edited/usage_policy.pack": {
+    "bytes": 382,
+    "sha256": "1874e4d582c744da4ee8882da90a9a7f781d3cd61df68894e685fd79bf84dcd0",
+    "retention": "exact_bytes",
+    "stored": "source-edit/source-edited/usage_policy.pack"
+  }
+}

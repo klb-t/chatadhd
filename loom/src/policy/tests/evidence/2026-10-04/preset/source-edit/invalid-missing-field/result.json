@@ -1,0 +1,43 @@
+{
+  "results": {
+    "checked_preset": {
+      "ok": false,
+      "code": "invalid_argument",
+      "message": "missing usage preset field: include_reservations"
+    },
+    "effective": {
+      "ok": false,
+      "code": "invalid_argument",
+      "message": "missing usage preset field: include_reservations"
+    },
+    "settings": {
+      "ok": false,
+      "code": "invalid_argument",
+      "message": "missing usage preset field: include_reservations"
+    },
+    "default_open": {
+      "ok": false,
+      "code": "invalid_argument",
+      "message": "missing usage preset field: include_reservations"
+    }
+  },
+  "legacy": {
+    "compatibility_view": {
+      "threw": true,
+      "message": "invalid_argument: missing usage preset field: include_reservations"
+    },
+    "loom_config_defaults": {
+      "threw": true,
+      "message": "invalid_argument: missing usage preset field: include_reservations"
+    },
+    "config_get": {
+      "threw": true,
+      "message": "invalid_argument: missing usage preset field: include_reservations"
+    }
+  },
+  "ledger_created": false,
+  "ledger_parent_created": false,
+  "config_created": false,
+  "failed_closed": true,
+  "execution": "local_cpp_config_only"
+}

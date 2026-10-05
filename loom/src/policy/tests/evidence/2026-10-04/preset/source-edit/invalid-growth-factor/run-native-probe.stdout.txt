@@ -1,0 +1,43 @@
+{
+  "results": {
+    "checked_preset": {
+      "ok": false,
+      "code": "invalid_argument",
+      "message": "growth_factor must be finite and greater than one"
+    },
+    "effective": {
+      "ok": false,
+      "code": "invalid_argument",
+      "message": "growth_factor must be finite and greater than one"
+    },
+    "settings": {
+      "ok": false,
+      "code": "invalid_argument",
+      "message": "growth_factor must be finite and greater than one"
+    },
+    "default_open": {
+      "ok": false,
+      "code": "invalid_argument",
+      "message": "growth_factor must be finite and greater than one"
+    }
+  },
+  "legacy": {
+    "compatibility_view": {
+      "threw": true,
+      "message": "invalid_argument: growth_factor must be finite and greater than one"
+    },
+    "loom_config_defaults": {
+      "threw": true,
+      "message": "invalid_argument: growth_factor must be finite and greater than one"
+    },
+    "config_get": {
+      "threw": true,
+      "message": "invalid_argument: growth_factor must be finite and greater than one"
+    }
+  },
+  "ledger_created": false,
+  "ledger_parent_created": false,
+  "config_created": false,
+  "failed_closed": true,
+  "execution": "local_cpp_config_only"
+}

@@ -1,0 +1,294 @@
+{
+  "paths": {
+    "config_get": {
+      "schema": "loom.usage_policy/1",
+      "growth_factor": 12.5,
+      "baseline_window": 7,
+      "ledger_busy_timeout_ms": 123,
+      "include_reservations": false,
+      "initial_baselines": {
+        "synthetic/source-edit-v1": {
+          "bytes": 12345,
+          "tokens": null
+        }
+      },
+      "source_edit_extension": {
+        "kind": "synthetic",
+        "items": [
+          1,
+          null,
+          "opaque"
+        ]
+      }
+    },
+    "loom_config_defaults": {
+      "schema": "loom.usage_policy/1",
+      "growth_factor": 12.5,
+      "baseline_window": 7,
+      "ledger_busy_timeout_ms": 123,
+      "include_reservations": false,
+      "initial_baselines": {
+        "synthetic/source-edit-v1": {
+          "bytes": 12345,
+          "tokens": null
+        }
+      },
+      "source_edit_extension": {
+        "kind": "synthetic",
+        "items": [
+          1,
+          null,
+          "opaque"
+        ]
+      }
+    },
+    "effective": {
+      "schema": "loom.usage_policy/1",
+      "growth_factor": 12.5,
+      "baseline_window": 7,
+      "ledger_busy_timeout_ms": 123,
+      "include_reservations": false,
+      "initial_baselines": {
+        "synthetic/source-edit-v1": {
+          "bytes": 12345,
+          "tokens": null
+        }
+      },
+      "source_edit_extension": {
+        "kind": "synthetic",
+        "items": [
+          1,
+          null,
+          "opaque"
+        ]
+      }
+    },
+    "settings": {
+      "schema": "loom.usage_policy/1",
+      "growth_factor": 12.5,
+      "baseline_window": 7,
+      "ledger_busy_timeout_ms": 123,
+      "include_reservations": false,
+      "initial_baselines": {
+        "synthetic/source-edit-v1": {
+          "bytes": 12345,
+          "tokens": null
+        }
+      },
+      "source_edit_extension": {
+        "kind": "synthetic",
+        "items": [
+          1,
+          null,
+          "opaque"
+        ]
+      }
+    },
+    "default_open": {
+      "schema": "loom.usage_policy/1",
+      "growth_factor": 12.5,
+      "baseline_window": 7,
+      "ledger_busy_timeout_ms": 123,
+      "include_reservations": false,
+      "initial_baselines": {
+        "synthetic/source-edit-v1": {
+          "bytes": 12345,
+          "tokens": null
+        }
+      },
+      "source_edit_extension": {
+        "kind": "synthetic",
+        "items": [
+          1,
+          null,
+          "opaque"
+        ]
+      }
+    }
+  },
+  "checked_preset": {
+    "schema": "loom.usage_policy/1",
+    "growth_factor": 12.5,
+    "baseline_window": 7,
+    "ledger_busy_timeout_ms": 123,
+    "include_reservations": false,
+    "initial_baselines": {
+      "synthetic/source-edit-v1": {
+        "bytes": 12345,
+        "tokens": null
+      }
+    },
+    "source_edit_extension": {
+      "kind": "synthetic",
+      "items": [
+        1,
+        null,
+        "opaque"
+      ]
+    }
+  },
+  "compatibility_view": {
+    "schema": "loom.usage_policy/1",
+    "growth_factor": 12.5,
+    "baseline_window": 7,
+    "ledger_busy_timeout_ms": 123,
+    "include_reservations": false,
+    "initial_baselines": {
+      "synthetic/source-edit-v1": {
+        "bytes": 12345,
+        "tokens": null
+      }
+    },
+    "source_edit_extension": {
+      "kind": "synthetic",
+      "items": [
+        1,
+        null,
+        "opaque"
+      ]
+    }
+  },
+  "all_paths_equal": true,
+  "provenance": {
+    "preset_source": "embedded_data",
+    "preset_document": {
+      "path": "loom/data/policy/usage_policy.pack",
+      "schema": "loom.usage_policy/1",
+      "encoding": "utf8_json",
+      "source_sha256": "1874e4d582c744da4ee8882da90a9a7f781d3cd61df68894e685fd79bf84dcd0"
+    },
+    "hashes": {
+      "algorithm": "sha256",
+      "representation": "loom.canonical_json",
+      "preset": "b07b5309c43fb8b072d0dac237f0b7c39ef7ee7f4b8776cd273284d8b432eaf9",
+      "stored_override": null,
+      "effective": "b07b5309c43fb8b072d0dac237f0b7c39ef7ee7f4b8776cd273284d8b432eaf9"
+    }
+  },
+  "stored_override_present": false,
+  "preset_written_to_config": false,
+  "config_file_exists_before": false,
+  "config_file_exists_after_reads": false,
+  "config_file_unchanged": true,
+  "overlay": {
+    "override": {
+      "growth_factor": 13.5,
+      "initial_baselines": {
+        "probe-overlay": {
+          "probe:units": 12.5
+        }
+      },
+      "probe_extension": {
+        "caller": "isolated-source-edit-proof"
+      }
+    },
+    "expected_effective": {
+      "schema": "loom.usage_policy/1",
+      "growth_factor": 13.5,
+      "baseline_window": 7,
+      "ledger_busy_timeout_ms": 123,
+      "include_reservations": false,
+      "initial_baselines": {
+        "probe-overlay": {
+          "probe:units": 12.5
+        }
+      },
+      "source_edit_extension": {
+        "kind": "synthetic",
+        "items": [
+          1,
+          null,
+          "opaque"
+        ]
+      },
+      "probe_extension": {
+        "caller": "isolated-source-edit-proof"
+      }
+    },
+    "config_get_after_restart": {
+      "growth_factor": 13.5,
+      "initial_baselines": {
+        "probe-overlay": {
+          "probe:units": 12.5
+        }
+      },
+      "probe_extension": {
+        "caller": "isolated-source-edit-proof"
+      }
+    },
+    "effective_after_restart": {
+      "schema": "loom.usage_policy/1",
+      "growth_factor": 13.5,
+      "baseline_window": 7,
+      "ledger_busy_timeout_ms": 123,
+      "include_reservations": false,
+      "initial_baselines": {
+        "probe-overlay": {
+          "probe:units": 12.5
+        }
+      },
+      "source_edit_extension": {
+        "kind": "synthetic",
+        "items": [
+          1,
+          null,
+          "opaque"
+        ]
+      },
+      "probe_extension": {
+        "caller": "isolated-source-edit-proof"
+      }
+    },
+    "settings_effective_after_restart": {
+      "schema": "loom.usage_policy/1",
+      "growth_factor": 13.5,
+      "baseline_window": 7,
+      "ledger_busy_timeout_ms": 123,
+      "include_reservations": false,
+      "initial_baselines": {
+        "probe-overlay": {
+          "probe:units": 12.5
+        }
+      },
+      "source_edit_extension": {
+        "kind": "synthetic",
+        "items": [
+          1,
+          null,
+          "opaque"
+        ]
+      },
+      "probe_extension": {
+        "caller": "isolated-source-edit-proof"
+      }
+    },
+    "opened_options": {
+      "schema": "loom.usage_policy/1",
+      "growth_factor": 13.5,
+      "baseline_window": 7,
+      "ledger_busy_timeout_ms": 123,
+      "include_reservations": false,
+      "initial_baselines": {
+        "probe-overlay": {
+          "probe:units": 12.5
+        }
+      },
+      "source_edit_extension": {
+        "kind": "synthetic",
+        "items": [
+          1,
+          null,
+          "opaque"
+        ]
+      },
+      "probe_extension": {
+        "caller": "isolated-source-edit-proof"
+      }
+    },
+    "all_effective_paths_equal": true,
+    "shallow_initial_baselines_replaced": true,
+    "raw_override_preserved": true,
+    "config_file_unchanged_on_restart": true
+  },
+  "execution": "local_cpp_config_and_sqlite_only"
+}
