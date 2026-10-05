@@ -43,10 +43,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { preset: dev, cc: gcc, cxx: g++ }
-          - { preset: asan, cc: gcc, cxx: g++ }
+          - { preset: dev, cc: gcc, cxx: g++, debug_info: "-g" }
+          # Keep line tables/stack locations, omitting bulky local-variable DWARF.
+          - { preset: asan, cc: gcc, cxx: g++, debug_info: "-g1" }
           # Closest to the Android build: Clang + the vendored SQLite amalgamation.
-          - { preset: vendored, cc: clang, cxx: clang++ }
+          - { preset: vendored, cc: clang, cxx: clang++, debug_info: "-g" }
     env:
       CC: ${{ matrix.cc }}
       CXX: ${{ matrix.cxx }}
@@ -92,6 +93,8 @@ jobs:
         run: >-
           cmake --preset ${{ matrix.preset }} -DLOOM_BUILD_SERVER=ON
           -DLOOM_SHARED=${{ matrix.preset == 'asan' && 'OFF' || 'ON' }}
+          -DCMAKE_C_FLAGS_DEBUG=${{ matrix.debug_info }}
+          -DCMAKE_CXX_FLAGS_DEBUG=${{ matrix.debug_info }}
           -DPython3_EXECUTABLE="$(which python)"
 
       - name: Build
