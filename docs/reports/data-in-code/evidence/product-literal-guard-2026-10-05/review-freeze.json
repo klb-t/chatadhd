@@ -1,0 +1,38 @@
+{
+  "schema": "loom.product_literal_review_freeze/1",
+  "head": "1b7379c80e62e30e58e97c4ba84c490d9ddbc6f4",
+  "files": [
+    {
+      "path": "loom/src/util/product_literal_guard.py",
+      "bytes": 27978,
+      "sha256": "1e0768846130bc17ca252c309b19554435f6e61acd94c8dd0b1ad73e6c3abb72"
+    },
+    {
+      "path": "loom/data/validation/product_literals.pack",
+      "bytes": 16963,
+      "sha256": "637b44660a02d8cdcac472636bea034e407aa50b108c863a1e5efd9e16715650"
+    },
+    {
+      "path": "docs/contracts/product_literals.schema.json",
+      "bytes": 7822,
+      "sha256": "fbdffaf662c94af95731430f466238bb9eb53f499e0be010066f46e7cda1843d"
+    },
+    {
+      "path": "loom/tests/compat/test_product_literal_guard.py",
+      "bytes": 31633,
+      "sha256": "d543631015aac8474f43592cf6c5da49da8ce6f76052091b48ba65bd32ab3bca"
+    },
+    {
+      "path": "loom/src/model/gen_runtime_profiles.py",
+      "bytes": 16845,
+      "sha256": "3d8eb9be1ee1d5f491580d61caf35a9d69c08bb544e0fb0507ab195d2e1ea8fd"
+    },
+    {
+      "path": "loom/src/model/runtime_profiles_embedded.inc",
+      "bytes": 245926,
+      "sha256": "45670e3f6cadc150cc0483bd5870d685f55f785c06f60cf0ebf14b820e645e3f"
+    }
+  ],
+  "actual_repo_audit_executed": false,
+  "network_calls": 0
+}

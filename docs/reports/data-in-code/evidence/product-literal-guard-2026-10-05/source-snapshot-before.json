@@ -1,0 +1,1955 @@
+{
+  "schema": "loom.product_literal_source_snapshot/1",
+  "files": [
+    {
+      "path": "docs/contracts/product_literals.schema.json",
+      "bytes": 11091,
+      "sha256": "1299ed04ec7914aeff4a4c3fdcd3b17e7f04333a36242aaac51f2fc6dbffe4c1"
+    },
+    {
+      "path": "docs/reports/data-in-code/evidence/product-literal-guard-2026-10-05/capture_product_literals.py",
+      "bytes": 7547,
+      "sha256": "bf501e623ad783c8c95fce63ab50bba4a524a3bbb7601e3f33d77758c9be05cf"
+    },
+    {
+      "path": "loom/android/README.md",
+      "bytes": 22220,
+      "sha256": "84109fd535b9d0fdc5d6300221c87de758143fc1b0029c678b32caa026e33ff9"
+    },
+    {
+      "path": "loom/android/app/build.gradle.kts",
+      "bytes": 3800,
+      "sha256": "d653201e71cf3cba9289abf7679f3cc6c0588f10fddd44acda88a97125a1aab5"
+    },
+    {
+      "path": "loom/android/app/proguard-rules.pro",
+      "bytes": 450,
+      "sha256": "95633a87ac7b8bab9b56440eb12aa0ebcc5ebb083ee3a15e0da4b747c587bf99"
+    },
+    {
+      "path": "loom/android/app/src/main/AndroidManifest.xml",
+      "bytes": 2252,
+      "sha256": "f5b4af285b49de871899aa8b42f3be2b17c480481fc08816ba7b025e23fde690"
+    },
+    {
+      "path": "loom/android/app/src/main/assets/web/index.html",
+      "bytes": 1892,
+      "sha256": "f3f56b9b3eb1452b5c37950d6d8c198c1a6438e90ef22836aca89abadf9ad592"
+    },
+    {
+      "path": "loom/android/app/src/main/cpp/CMakeLists.txt",
+      "bytes": 1920,
+      "sha256": "39c5840d70f67c7e25ff5b9e319ad26c153f073843e80db9315e7ba863a69830"
+    },
+    {
+      "path": "loom/android/app/src/main/cpp/loom_jni.cpp",
+      "bytes": 41518,
+      "sha256": "6d0bc05cb46bf4b9cc4531045ded4ea60bf3b395df6f655acbf1cebe6981cde4"
+    },
+    {
+      "path": "loom/android/app/src/main/java/com/chatadhd/android/LoomBridge.kt",
+      "bytes": 17425,
+      "sha256": "5b0746328496c1c041685ed0bd5ef17d74dd132271fc5874180641d78f8023ed"
+    },
+    {
+      "path": "loom/android/app/src/main/java/com/chatadhd/android/LoomCallbacks.kt",
+      "bytes": 2362,
+      "sha256": "4cc447f68def4dbb0535bafb6ba05d5863b85c133650b500ab0e6c7db7b80e3f"
+    },
+    {
+      "path": "loom/android/app/src/main/java/com/chatadhd/android/LoomHttp.kt",
+      "bytes": 5287,
+      "sha256": "ccf48b5c60bab5c8a7b5bee9f454703b2df44fd3985d78dd3e3c755b84e3e0e1"
+    },
+    {
+      "path": "loom/android/app/src/main/java/com/chatadhd/android/LoomNative.kt",
+      "bytes": 4894,
+      "sha256": "fd9d5e6876a2e5915bdf8327e4290b16e4b39504cc6de98f4f158e8e7d6b0ffa"
+    },
+    {
+      "path": "loom/android/app/src/main/java/com/chatadhd/android/MainActivity.kt",
+      "bytes": 5764,
+      "sha256": "8310ad1c9abd3353368acfffb57860b7e54a9fadb408215ad5638e09edf35b87"
+    },
+    {
+      "path": "loom/android/app/src/main/res/drawable/ic_launcher_background.xml",
+      "bytes": 326,
+      "sha256": "39ebbdcc31914e044fc216c27463ae13f4fc5d90207f981694506df641aaa49e"
+    },
+    {
+      "path": "loom/android/app/src/main/res/drawable/ic_launcher_foreground.xml",
+      "bytes": 1123,
+      "sha256": "e4526f04470f85beba1dcdaeb121fe3b984345c2283aacbcb9af1fd7895f4b4a"
+    },
+    {
+      "path": "loom/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml",
+      "bytes": 273,
+      "sha256": "1c832bf194d8eecd439a92bcced0df144c9f566b934b3d7865e983d8ee8dbdeb"
+    },
+    {
+      "path": "loom/android/app/src/main/res/values/colors.xml",
+      "bytes": 387,
+      "sha256": "49bbde0453b23cc456bf06c44f2df81369811d25fea598265060f465c2b47000"
+    },
+    {
+      "path": "loom/android/app/src/main/res/values/strings.xml",
+      "bytes": 411,
+      "sha256": "8ca6102a191bb26a0a1b292e2ce452126b0c2c5c7af335638058d7a233ef5323"
+    },
+    {
+      "path": "loom/android/app/src/main/res/values/themes.xml",
+      "bytes": 516,
+      "sha256": "25937fec868370ae9aff5fb3fa7b5ec2950ba7e475be1cb7f57232c0162a09af"
+    },
+    {
+      "path": "loom/android/build.gradle.kts",
+      "bytes": 272,
+      "sha256": "c3d2824f070a1c896e8fda3276ae1b6d998bc31cb403a5f3f2e8d01430f5c289"
+    },
+    {
+      "path": "loom/android/gradle/wrapper/gradle-wrapper.jar",
+      "bytes": 43764,
+      "sha256": "7d3a4ac4de1c32b59bc6a4eb8ecb8e612ccd0cf1ae1e99f66902da64df296172"
+    },
+    {
+      "path": "loom/android/gradle/wrapper/gradle-wrapper.properties",
+      "bytes": 253,
+      "sha256": "7e0821d895908883350587c74476b717016ab416320c44dc82a10def916c6fb5"
+    },
+    {
+      "path": "loom/android/gradle.properties",
+      "bytes": 185,
+      "sha256": "9effa130ea7c7b9e9128f55245a336109c5a9c9c79bcf7362c5f96837f1a1251"
+    },
+    {
+      "path": "loom/android/gradlew",
+      "bytes": 8733,
+      "sha256": "b187b4c52e749f5760afdd6fadc31b2a98ad35fb249bf0dff03b72650f320409"
+    },
+    {
+      "path": "loom/android/gradlew.bat",
+      "bytes": 2937,
+      "sha256": "1d297e00bd21de3ace22b4d7f2de1f9dfa858883d66bbf7c1ccbecccec8f4f3b"
+    },
+    {
+      "path": "loom/android/settings.gradle.kts",
+      "bytes": 332,
+      "sha256": "64194e769ff385a4fb3cd7d648cb76e844fe995ddb4b42e04705c4ed3268a356"
+    },
+    {
+      "path": "loom/android/verify/CMakeLists.txt",
+      "bytes": 4489,
+      "sha256": "f4a6b680df26beeee78fd73d52603cbf6a47804dd026381c0f01fa5706bb6529"
+    },
+    {
+      "path": "loom/android/verify/java/com/chatadhd/android/JsonObj.java",
+      "bytes": 7488,
+      "sha256": "1d4f47bcb476451ce457ba86454fbbb22134a2745ade48d4962ff14c60b58cb4"
+    },
+    {
+      "path": "loom/android/verify/java/com/chatadhd/android/LoomCallbacks.java",
+      "bytes": 2013,
+      "sha256": "7f83ab2dbc4ba5e450119cac02e42124c4afab745fbfdc210aaf52ded2c6ff7a"
+    },
+    {
+      "path": "loom/android/verify/java/com/chatadhd/android/LoomHttp.java",
+      "bytes": 4936,
+      "sha256": "c2a0c99a93401734dd9c55893f6507b363af2be9c052f0d350726d6d7fee9140"
+    },
+    {
+      "path": "loom/android/verify/java/com/chatadhd/android/LoomNative.java",
+      "bytes": 1574,
+      "sha256": "ec98fbc70a98a9ef475594b16328d40f0012f12a5221c74f258942385dcf32db"
+    },
+    {
+      "path": "loom/android/verify/java/loomverify/HostSmokeTest.java",
+      "bytes": 17223,
+      "sha256": "913948e00381410b17c24a196d80010a3726f4fe9ca676d7841f9edf7da13fc4"
+    },
+    {
+      "path": "loom/cli/CMakeLists.txt",
+      "bytes": 926,
+      "sha256": "8f36ca27aed81f357d580bda23909b852c6f0a41944db912c498e5a399ebd432"
+    },
+    {
+      "path": "loom/cli/main.cpp",
+      "bytes": 56151,
+      "sha256": "410b81ac0b5b85428f3a868e0f1faa0a2a4ff76f08c50728065255191b82ebd4"
+    },
+    {
+      "path": "loom/cli/tests/test_cli_smoke.py",
+      "bytes": 22999,
+      "sha256": "5505b781c008e32012e563bc11da3a934face50542aacff0dc1e700a51bc3a72"
+    },
+    {
+      "path": "loom/data/policy/usage_policy.pack",
+      "bytes": 182,
+      "sha256": "6a576acf69ccc3be7af2b8ccde641977bdb76b8b52e2c76e77895609d76e20df"
+    },
+    {
+      "path": "loom/data/runtime/archive.pack",
+      "bytes": 181132,
+      "sha256": "c1d34a47b5f6a5a57bf2d969338bccf7a0065e45df268d896de6e85f49489c67"
+    },
+    {
+      "path": "loom/data/runtime/cli.pack",
+      "bytes": 47940,
+      "sha256": "56998afe641e43c8950c4520aef423bf8916e51aa2974f1a9b46a91ed5015a2b"
+    },
+    {
+      "path": "loom/data/runtime/config.pack",
+      "bytes": 5395,
+      "sha256": "6f7c11c5ad857e3e3936df7667fcc0c673ddf2e2f652ae5aef8c3d3f4d1c20cd"
+    },
+    {
+      "path": "loom/data/runtime/github.pack",
+      "bytes": 6944,
+      "sha256": "2f2d72f6fe94f57ebe11ab90883a530266188180bd803cc72a7697f336a108f3"
+    },
+    {
+      "path": "loom/data/runtime/graph_ingest.pack",
+      "bytes": 4486,
+      "sha256": "3860f807fb21dc150a09660d0d6ad452d0cd066e970462b2f4530a1a3c60e987"
+    },
+    {
+      "path": "loom/data/runtime/graph_memory.pack",
+      "bytes": 5892,
+      "sha256": "4224741a5014c5454ef0c24d36304d172fc74fe468afd4f0b0b1f541ca143a23"
+    },
+    {
+      "path": "loom/data/runtime/import.pack",
+      "bytes": 7654,
+      "sha256": "0640988c7d9ff76afa9d64481280b939a1f93cc47a9b0235675446db90771af3"
+    },
+    {
+      "path": "loom/data/runtime/import_audit.pack",
+      "bytes": 11562,
+      "sha256": "7e3abefa4c8dff5e0d696b24c1a4c65b89003a146ce708d2e9148f97fc912c26"
+    },
+    {
+      "path": "loom/data/runtime/import_formats.pack",
+      "bytes": 30021,
+      "sha256": "294ebc7ce789c079662ec322d4517935f57270296841dc3737e625164de5d8c3"
+    },
+    {
+      "path": "loom/data/runtime/knowledge.pack",
+      "bytes": 4778,
+      "sha256": "ce1516d9fde3aa2bb0145bb9c6c1261e3422628a898cce5273f185e558f912e7"
+    },
+    {
+      "path": "loom/data/runtime/materialize.pack",
+      "bytes": 13041,
+      "sha256": "4dbb1e4d99a6f2332b45cbb243361cb831bd021e6a744071b3cff8732012a8f3"
+    },
+    {
+      "path": "loom/data/runtime/media.pack",
+      "bytes": 10072,
+      "sha256": "f70e9c6fef0507a731da6074e764e115cf4cb84e3a81690d95258b06395ea0af"
+    },
+    {
+      "path": "loom/data/runtime/memory.pack",
+      "bytes": 5222,
+      "sha256": "a45496645536944f1f0b5069a4d143693878fa0cdb21c4e2440408058beeaf89"
+    },
+    {
+      "path": "loom/data/runtime/model.pack",
+      "bytes": 14564,
+      "sha256": "051e961438dc6c5723860492c4ea03c352c1a880caf6bfdeb30835e26612311b"
+    },
+    {
+      "path": "loom/data/runtime/net.pack",
+      "bytes": 2257,
+      "sha256": "cf27f54845174d961a05ca40aae5c54f9e2ca5f0387b6a06fb7ec4a424083389"
+    },
+    {
+      "path": "loom/data/runtime/re.pack",
+      "bytes": 718,
+      "sha256": "ed6152fd54a830cf20b831e9bb471bf9e52daf89a33c9a23a4d206bd427df508"
+    },
+    {
+      "path": "loom/data/runtime/runtime_paths.pack",
+      "bytes": 8148,
+      "sha256": "b796635d5661d960212045a8981c16b66e5e74e6c688e0eb5cdbc90faf2f3f22"
+    },
+    {
+      "path": "loom/data/runtime/selector.pack",
+      "bytes": 3606,
+      "sha256": "f0894d5359db0d7ee4b94a2e27b3d25381253696744f5d9254af5a094c9ebae2"
+    },
+    {
+      "path": "loom/data/runtime/semantic_analyzer.pack",
+      "bytes": 8762,
+      "sha256": "e1855a8646b51903d1b33da6a138773c233f163a5da8b501273f0aa003b08fcb"
+    },
+    {
+      "path": "loom/data/runtime/util.pack",
+      "bytes": 4899,
+      "sha256": "b1b11b72251aa5afa0b90c128e7fc5d6571cde81d964da2e8aa3a2aa0600181f"
+    },
+    {
+      "path": "loom/data/runtime/worker.pack",
+      "bytes": 6076,
+      "sha256": "569b54b601dcf8c64e97bddab8e6d99a6239bb831372fc31a9ea9a7bbbd12c8f"
+    },
+    {
+      "path": "loom/data/runtime_sources.pack",
+      "bytes": 3638,
+      "sha256": "781279229d42b12141dd19bdb6fe55de5142657a1c870e7517dc997964a42099"
+    },
+    {
+      "path": "loom/data/validation/product_literals.pack",
+      "bytes": 20682,
+      "sha256": "a32c3aec620dff8d68b71593e6fd192ab28904e791ec6aa612e39116b81a6c53"
+    },
+    {
+      "path": "loom/include/loom/archive.h",
+      "bytes": 7350,
+      "sha256": "4c9055798ece268d395a3bf9a35aff0a929ddf924e2fb43f94966df7d1f9f262"
+    },
+    {
+      "path": "loom/include/loom/batch_api.h",
+      "bytes": 3220,
+      "sha256": "7bba0b06df3e63966e096b4fef537b859568b1401817280df142db073638f3ca"
+    },
+    {
+      "path": "loom/include/loom/catalog.h",
+      "bytes": 14103,
+      "sha256": "6416e888195404d65f480a39ae2992df8e2e247eb39a0908c25a4aa044456a45"
+    },
+    {
+      "path": "loom/include/loom/chat_engine.h",
+      "bytes": 8780,
+      "sha256": "a0174bb6e29eb7dc4f73af94e8dc3b9cc0430f45ffaa1f7ce4b9ae181bc52c11"
+    },
+    {
+      "path": "loom/include/loom/config.h",
+      "bytes": 5104,
+      "sha256": "6b8a8cc22bec961e989d30e047b22efea3271f1b9803cd304d005737eaf3ae28"
+    },
+    {
+      "path": "loom/include/loom/context_engine.h",
+      "bytes": 8332,
+      "sha256": "354d10dc6d635a87ab021a85228bf37d0bd660ff2e9fdb87349fb6b1dcace3a1"
+    },
+    {
+      "path": "loom/include/loom/context_plan.h",
+      "bytes": 1407,
+      "sha256": "ffe0acc0b4250e984d20496f122012888d194d878ad47bc361a6ee49ee70a2c7"
+    },
+    {
+      "path": "loom/include/loom/context_retrieval.h",
+      "bytes": 3020,
+      "sha256": "71a62eac829ad5a79b3b1c780d694d82bad26dca8e75ad8a21fba1896d0bea68"
+    },
+    {
+      "path": "loom/include/loom/crypto.h",
+      "bytes": 3552,
+      "sha256": "f7a5cfa5752c70adbdcdbde1b65dd4330d67ab91ca5fdfe4d4811a8b605dac9d"
+    },
+    {
+      "path": "loom/include/loom/db.h",
+      "bytes": 15044,
+      "sha256": "8d9241941edf94c32a23739df40e737729214fb038d4d0979ccce7a6bfa2d396"
+    },
+    {
+      "path": "loom/include/loom/event_bus.h",
+      "bytes": 4348,
+      "sha256": "f420a2e960c766e90aef220fbe332d340da7b3964eaba1b8a5716b87cde82afb"
+    },
+    {
+      "path": "loom/include/loom/extract.h",
+      "bytes": 9679,
+      "sha256": "e4057e2c77aa09f0d490ed645902458ee68637c1e619c7e491beb0e016112780"
+    },
+    {
+      "path": "loom/include/loom/generalize.h",
+      "bytes": 7817,
+      "sha256": "74c942f108c54dbe93f52171cd9fff78f576e4443afc52cd6b3c11f28e6bbafb"
+    },
+    {
+      "path": "loom/include/loom/github_sync.h",
+      "bytes": 5311,
+      "sha256": "d1af08fad2256d9be5ae00187994104c1365d8be0445b6f417cb143441200f5f"
+    },
+    {
+      "path": "loom/include/loom/graph_engine.h",
+      "bytes": 3453,
+      "sha256": "392998720d72b34fb48a079c642515b10d4c54c93e0ce921bd32f4fc9dbcec45"
+    },
+    {
+      "path": "loom/include/loom/graph_memory.h",
+      "bytes": 5067,
+      "sha256": "5059c7c68e339a7529242be86f33d4186e205eab5b6a86f4bf74c4a3898d3b78"
+    },
+    {
+      "path": "loom/include/loom/graph_packet_store.h",
+      "bytes": 864,
+      "sha256": "54040432540358ac45479d4e19ce6fccbb757b2c89a926f684c408b3f59041fd"
+    },
+    {
+      "path": "loom/include/loom/importer.h",
+      "bytes": 18639,
+      "sha256": "23caf5b4bae7f59f02c10d5028bc7419e2a1c084bc9d3360dc5778586ea30c0d"
+    },
+    {
+      "path": "loom/include/loom/kb.h",
+      "bytes": 19478,
+      "sha256": "0f8891a45ff619524315218452e15b23a808079d6e6f3cb84b0358153d131645"
+    },
+    {
+      "path": "loom/include/loom/knowledge.h",
+      "bytes": 8962,
+      "sha256": "a9a9318e992645ab877d6c8ba8b50be6cd5e4336b5f4122c609c9f2406c64054"
+    },
+    {
+      "path": "loom/include/loom/knowledge_candidate_graph.h",
+      "bytes": 1932,
+      "sha256": "fca23892a95893e02b30fb40b4973f587280b8001ea946e7d02bb53f48b7f579"
+    },
+    {
+      "path": "loom/include/loom/knowledge_semantic.h",
+      "bytes": 1725,
+      "sha256": "9a6dbdb80a3e59a60826a7c2e43e5290c360e9f6882699e666f8064159da0c77"
+    },
+    {
+      "path": "loom/include/loom/knowledge_store.h",
+      "bytes": 14590,
+      "sha256": "8e756c97c54bf61aa4a91136da241c1230156bcc9ff78f312188d5deb3b5c430"
+    },
+    {
+      "path": "loom/include/loom/log.h",
+      "bytes": 3965,
+      "sha256": "a098067534d2cbe558c1076fca4761300ff3eff137568a2ff0212aafbe30fa43"
+    },
+    {
+      "path": "loom/include/loom/loom.h",
+      "bytes": 28388,
+      "sha256": "da65dbfdd3a460037ba841eb37c8c1897f8a3a484d1d6477cbb5a9ff77a05934"
+    },
+    {
+      "path": "loom/include/loom/materialize.h",
+      "bytes": 4136,
+      "sha256": "51768bbc6158709bda323e4b1a3cdb919deb5f0b87a7733c1f39f369121e5224"
+    },
+    {
+      "path": "loom/include/loom/media_providers.h",
+      "bytes": 7971,
+      "sha256": "749a062c1fe910b866753a1af7768a60b118aa2e5f92fa96f140ebc0de474287"
+    },
+    {
+      "path": "loom/include/loom/memory_engine.h",
+      "bytes": 5415,
+      "sha256": "752870eb21ad5a5834a8f668bdb39af062dc97a25200e07fd3de9af34810920f"
+    },
+    {
+      "path": "loom/include/loom/model.h",
+      "bytes": 58528,
+      "sha256": "5e7b3777fe52a3cab6d59b55d8e706162aa34306fd0aac5668a79d19c2f1cb6c"
+    },
+    {
+      "path": "loom/include/loom/model_profile.h",
+      "bytes": 1099,
+      "sha256": "388e716cfa32cf48f7ba23ef2f8a4ae33d591525386f7d868a057d2ed5bf805f"
+    },
+    {
+      "path": "loom/include/loom/net/http.h",
+      "bytes": 7569,
+      "sha256": "60c8655d24d556b83c2425484bf4f040f51967acb27b7f0e7a624b95c89a09ae"
+    },
+    {
+      "path": "loom/include/loom/net/sse.h",
+      "bytes": 1733,
+      "sha256": "50b4a396d410f4fc2a47707488a5885a8610c57cb2d5b334e4d04888a3ef392c"
+    },
+    {
+      "path": "loom/include/loom/provenance.h",
+      "bytes": 5993,
+      "sha256": "150d811ccd7d583a959bb274dd83866d8f0f6d84ad77b8e4eba6439fb2f9c8a2"
+    },
+    {
+      "path": "loom/include/loom/providers.h",
+      "bytes": 5856,
+      "sha256": "f79b0aef7fcb112f10559f11b6d13233eb1585726f64e386881cffabcea50123"
+    },
+    {
+      "path": "loom/include/loom/re/regex.h",
+      "bytes": 6680,
+      "sha256": "f98609de046df132f711207d27f2e5375f378cad9b6c2c6a1da06349c3076865"
+    },
+    {
+      "path": "loom/include/loom/relations.h",
+      "bytes": 2054,
+      "sha256": "bb650a1c535ceab1736e02678bb9930f78f45a1a1eb69a8c29e77a9d8d97d73b"
+    },
+    {
+      "path": "loom/include/loom/resolve.h",
+      "bytes": 17031,
+      "sha256": "636570070cdfc56dbd40c7422ca074375a4f4de73f1ec3ff4f8b6b38f43dcf98"
+    },
+    {
+      "path": "loom/include/loom/result.h",
+      "bytes": 5337,
+      "sha256": "a6f27a2b1c0de258d8452af3d25d16f23179825dfc07033521c3c1ace1643553"
+    },
+    {
+      "path": "loom/include/loom/runtime.h",
+      "bytes": 4776,
+      "sha256": "c92ac45952d8adbc5daebb267eae00746a9c00f36c5e9368418ff71d2ba8f9c7"
+    },
+    {
+      "path": "loom/include/loom/runtime_profile.h",
+      "bytes": 2799,
+      "sha256": "ce3faf9179dc4bf8ca18d00f43a0bd93df038a5c6908589a136c7407d5fbb88d"
+    },
+    {
+      "path": "loom/include/loom/selector.h",
+      "bytes": 3693,
+      "sha256": "30f19de462691a3cb4a17c788835a9b33414262335cff1bcdbc4b385cb162816"
+    },
+    {
+      "path": "loom/include/loom/semantic_analyzer.h",
+      "bytes": 6582,
+      "sha256": "dcd6ca7172af246f50f95f72a88fdda86c747d6e4bacff6e0119352c5d33650d"
+    },
+    {
+      "path": "loom/include/loom/semantic_llm.h",
+      "bytes": 4041,
+      "sha256": "3102ac6422549fafb5eaad941f75680fc184870ad9eda80293ae3d61596de055"
+    },
+    {
+      "path": "loom/include/loom/semantic_worker.h",
+      "bytes": 4978,
+      "sha256": "175ef3e0212be3ef18f1f3026be6f62e2855a3c3f8918f425d47eb61d906764c"
+    },
+    {
+      "path": "loom/include/loom/sqlite.h",
+      "bytes": 6003,
+      "sha256": "e5a62ad5f89030176f19b33c9419c9ad2da0d22883256b7f9f9a101c36b78685"
+    },
+    {
+      "path": "loom/include/loom/tasks.h",
+      "bytes": 6572,
+      "sha256": "329cacdcc83629483d9c0ebe89c81d4cec2aac5a2e37186449b8d075bf609254"
+    },
+    {
+      "path": "loom/include/loom/usage_policy.h",
+      "bytes": 4555,
+      "sha256": "9ab715b2b45cafcaf36b3cf7cee10e4300c99acd2731743ebd010c9954ed4a62"
+    },
+    {
+      "path": "loom/include/loom/util/base64.h",
+      "bytes": 554,
+      "sha256": "e783f5dda320a1d0ae272f5569817a029119b9c70de3ade6f35af3e78b02d51b"
+    },
+    {
+      "path": "loom/include/loom/util/cancel.h",
+      "bytes": 707,
+      "sha256": "99b188e7c57e23e3210c613c53c90d9f88168b9c70221842e5c247861f9b435b"
+    },
+    {
+      "path": "loom/include/loom/util/fs.h",
+      "bytes": 2912,
+      "sha256": "117cc8d3cfba55fbfeff55f64a1696ee96c4da12aadb738989be4ca047503359"
+    },
+    {
+      "path": "loom/include/loom/util/ids.h",
+      "bytes": 1343,
+      "sha256": "63162ffded704ad2b199f519e5ac9828c4a47281108dc3125379ee565a92c876"
+    },
+    {
+      "path": "loom/include/loom/util/json.h",
+      "bytes": 2551,
+      "sha256": "38aebe6cf03b613b75290cf8ac09fa57ecd87d730032fdebb8cc4fcf162ca8de"
+    },
+    {
+      "path": "loom/include/loom/util/random.h",
+      "bytes": 443,
+      "sha256": "a49774652aad58f9937a1ccd45bf598ae4a109f950711041f4a5ab29470b67d3"
+    },
+    {
+      "path": "loom/include/loom/util/sha256.h",
+      "bytes": 1746,
+      "sha256": "2723f226f5be04cb0fcca1e6ca0b63105b2c5b36178a6bf1701bee99031a127d"
+    },
+    {
+      "path": "loom/include/loom/util/time.h",
+      "bytes": 975,
+      "sha256": "51d2363cd0636810e4d73f0a718f8b245857e0c9e1cb4d6843276a270b71dece"
+    },
+    {
+      "path": "loom/include/loom/util/unicode.h",
+      "bytes": 1715,
+      "sha256": "a363672f385af55cd43fbdd1b80632dba0bf28d370b7392e26f65c3d74d724d0"
+    },
+    {
+      "path": "loom/include/loom/util/utf8.h",
+      "bytes": 2142,
+      "sha256": "8b20f2da731065f9bd89aed76362e33ce53bc7abfad83fd5d4b4ef5c2907a196"
+    },
+    {
+      "path": "loom/server/CMakeLists.txt",
+      "bytes": 979,
+      "sha256": "332795fd0e7b1a745a55f515f465ba64e46f729ef84afb835b36d9f0ab5482e4"
+    },
+    {
+      "path": "loom/server/KNOWLEDGE_API.md",
+      "bytes": 5302,
+      "sha256": "cc6b459126713b0b1118f019ab226ad683c250b0963fd1ec8017d20a858e864c"
+    },
+    {
+      "path": "loom/server/src/app.cpp",
+      "bytes": 47797,
+      "sha256": "4dccba1284b22ba9c2ae59a43dea51a506acce1c36a6c4b1d373629fc9ea4806"
+    },
+    {
+      "path": "loom/server/src/app.h",
+      "bytes": 2287,
+      "sha256": "8f08dd47ec9f31e7ec819974ceeb330e7a3f7e3b7dec1f6e0cdaef7b200553da"
+    },
+    {
+      "path": "loom/server/src/main.cpp",
+      "bytes": 2683,
+      "sha256": "29c57adc41270df5ae0d1d74e275e71da7c0ee0c848ebe294498628d706866d3"
+    },
+    {
+      "path": "loom/server/src/sse_stream.h",
+      "bytes": 2201,
+      "sha256": "7aa686155cfb1aa40cc530e7a01b1fd07675a63090dccf97c6ec06b048909e1f"
+    },
+    {
+      "path": "loom/server/tests/test_chat_active_task_server.py",
+      "bytes": 12789,
+      "sha256": "4b140e97dbb57f6f06ad7efd9d8aa4a0f9e89d949414d21fb054768454157802"
+    },
+    {
+      "path": "loom/server/tests/test_server_smoke.py",
+      "bytes": 27032,
+      "sha256": "8ebbbedfdf58d15d282ef33b9135fae9137f3d56a76709ae28e7b05274c4c9a7"
+    },
+    {
+      "path": "loom/src/archive/archive_internal.h",
+      "bytes": 11869,
+      "sha256": "eab61286e3ddd62b132b12edb0d0b3523da9243aba520f87a001caee82ec790c"
+    },
+    {
+      "path": "loom/src/archive/archive_runtime.h",
+      "bytes": 3621,
+      "sha256": "8db8d6934cceb9994379c05f9a3ad307512f43243dc4083cff12d43a4d91d4a5"
+    },
+    {
+      "path": "loom/src/archive/cluster.cpp",
+      "bytes": 3610,
+      "sha256": "645bfc57ff8fc55a443980b72d4a25c7969d96e5fd5e10728af091030c9ab419"
+    },
+    {
+      "path": "loom/src/archive/ingest.cpp",
+      "bytes": 47219,
+      "sha256": "bea0874c4ec65c155c0933f694b763d106a1cae578121c07b0485e8b64761cd6"
+    },
+    {
+      "path": "loom/src/archive/ingest_parse.cpp",
+      "bytes": 35125,
+      "sha256": "973a94a7d68c5348a5e15ccc936ba99a51ebe7a36c1d73127ed510ba54e05f6d"
+    },
+    {
+      "path": "loom/src/archive/items.cpp",
+      "bytes": 19210,
+      "sha256": "b9d6ce2d37e7e6763e8755f86abc83ce306a19a34f6b17aa1b68d2123a6723e8"
+    },
+    {
+      "path": "loom/src/archive/pipeline.cpp",
+      "bytes": 65082,
+      "sha256": "abde9b5d631c0453d8e54ed3e8b880b30408192a10bab794183fb760cbd5bb5e"
+    },
+    {
+      "path": "loom/src/archive/profile.cpp",
+      "bytes": 7160,
+      "sha256": "26af69c70e127704cd475b421a90df900732d592a5cb19c54ac72366ac20767a"
+    },
+    {
+      "path": "loom/src/archive/profile.h",
+      "bytes": 2198,
+      "sha256": "bda39bbdc50270895d6b374ae9f368068c10fb901f4044ec909aa5e648d1671c"
+    },
+    {
+      "path": "loom/src/archive/synth.cpp",
+      "bytes": 57285,
+      "sha256": "3ed3e49624db62eca55f79fac517806dec33181f8f49f244c9954aebc8f0a549"
+    },
+    {
+      "path": "loom/src/archive/text.cpp",
+      "bytes": 17288,
+      "sha256": "4ea36cbce7645821c9cbbd437bafbb70112f04956cfe4fc4395d38be6c62766a"
+    },
+    {
+      "path": "loom/src/archive/vocab.cpp",
+      "bytes": 12269,
+      "sha256": "5f3b06c75728f613651a24a8772f797698d04d058326d0f47a337cff5f4e7b9a"
+    },
+    {
+      "path": "loom/src/capi/capi_archive.cpp",
+      "bytes": 5706,
+      "sha256": "eea3277ae452112155a84b0580243b7e541cb3a16781f54cb7bb6b1f2a8bb858"
+    },
+    {
+      "path": "loom/src/capi/capi_catalog.cpp",
+      "bytes": 5746,
+      "sha256": "e284a244d70cfa7ac7c6daa9af41e70c4f675d7049c99ff5e1398e0c351df21e"
+    },
+    {
+      "path": "loom/src/capi/capi_chat.cpp",
+      "bytes": 8520,
+      "sha256": "e0efd3bb287c251da2fce394725042a98cbc2649700df76a21fac9a0f099f915"
+    },
+    {
+      "path": "loom/src/capi/capi_config.cpp",
+      "bytes": 3353,
+      "sha256": "566fed065b1115b96e325c54f4fa9bb3ee1d40275b40990f2610566cfd24f4f2"
+    },
+    {
+      "path": "loom/src/capi/capi_context.cpp",
+      "bytes": 2628,
+      "sha256": "896ba2a0cd8320b5ba4ba1156d6c5af7545ada5ce47ded3304813c8ac26a97cb"
+    },
+    {
+      "path": "loom/src/capi/capi_core.cpp",
+      "bytes": 21248,
+      "sha256": "3ff90b721f9d10d9f158a1a9acb4cecdede9130b944ed665c3143aabbeaaa31f"
+    },
+    {
+      "path": "loom/src/capi/capi_extract.cpp",
+      "bytes": 2580,
+      "sha256": "1466a955974ad522f73fbe2fbd2d070d2219c4e6c73e324d54c22634f8bbc263"
+    },
+    {
+      "path": "loom/src/capi/capi_generalize.cpp",
+      "bytes": 3640,
+      "sha256": "ee9d24f98dad7aded1bdb9f0a7fa525ab8eac64c1d31239787a83d5380968b6b"
+    },
+    {
+      "path": "loom/src/capi/capi_graph.cpp",
+      "bytes": 8021,
+      "sha256": "25e89506076776ec14363cdbedafc724976325d049fd2bc2a361018f30ed4408"
+    },
+    {
+      "path": "loom/src/capi/capi_graph_packet_store.cpp",
+      "bytes": 506,
+      "sha256": "345b219b1cd09eed62e97eed5045cd66e76724c588039ff52ea345fb0b7b2cbc"
+    },
+    {
+      "path": "loom/src/capi/capi_http.cpp",
+      "bytes": 4289,
+      "sha256": "b790158038a27259f9ab0a0a65027077ca4e658c3f8b9001fa83da16bfc230c2"
+    },
+    {
+      "path": "loom/src/capi/capi_import.cpp",
+      "bytes": 1984,
+      "sha256": "f06483a53e51322b3ce3cb0ce4d0de4e2aad83cf570081371e0e0a6abbc905ce"
+    },
+    {
+      "path": "loom/src/capi/capi_knowledge.cpp",
+      "bytes": 9496,
+      "sha256": "697ef9fb1984cd92ad08174b67f579bfa4ed9457afb7bff6e44b078911b90094"
+    },
+    {
+      "path": "loom/src/capi/capi_media.cpp",
+      "bytes": 6726,
+      "sha256": "856f9f4843c2d2a85c61e56ac880997db0e8ce62cb48fae87e1a6052c32e4e06"
+    },
+    {
+      "path": "loom/src/capi/capi_packet.cpp",
+      "bytes": 10387,
+      "sha256": "b11a970e8bcbdbcba910c3e1dc49d69c4ff843e0afbbb838f40c281bf9c4a00b"
+    },
+    {
+      "path": "loom/src/capi/context.h",
+      "bytes": 4509,
+      "sha256": "fcdcf7b498b561d226c7b769495e29cb08e875304ed530814ad0c573c7136a54"
+    },
+    {
+      "path": "loom/src/capi/shared_anchor.c",
+      "bytes": 238,
+      "sha256": "9637fc17fb42ec233ad0150e6e53d629a053843aae356e5b2f06ad457cd2aa82"
+    },
+    {
+      "path": "loom/src/catalog/alias.cpp",
+      "bytes": 13865,
+      "sha256": "2361dcc0ce04d9e7285ffb6a512d00e9925f6fb50a0c3aed76b7f646f65eee1f"
+    },
+    {
+      "path": "loom/src/catalog/catalog.cpp",
+      "bytes": 18343,
+      "sha256": "66fa590bdf47553b15b5484fcb451330d716fcc86950a79ec138c814fe1c3884"
+    },
+    {
+      "path": "loom/src/catalog/catalog_internal.h",
+      "bytes": 18645,
+      "sha256": "1d6c0a644ab563d01e90a1652be8b4c467ebc40a02fa81fc7e1cd40a4022b55e"
+    },
+    {
+      "path": "loom/src/catalog/extract_text.cpp",
+      "bytes": 4429,
+      "sha256": "784a7a829f09f9a20ea50f34c810471ba18a3a0d5b5dc0d758af3055194b59aa"
+    },
+    {
+      "path": "loom/src/catalog/import.cpp",
+      "bytes": 15687,
+      "sha256": "093ff1939ddd9b2b659cea1f6cb5f36c72ecd956a330e2385316ab350b778720"
+    },
+    {
+      "path": "loom/src/catalog/links.cpp",
+      "bytes": 12792,
+      "sha256": "a70e129d5589b1560e136b9cf84b4588c489102e28f2494f58f8db23de5d7cb8"
+    },
+    {
+      "path": "loom/src/catalog/profile.cpp",
+      "bytes": 7036,
+      "sha256": "1e925f037954739e7e3e2eb955b703645e92c2f9a014e91107bb30fd34af3fb6"
+    },
+    {
+      "path": "loom/src/catalog/query.cpp",
+      "bytes": 13017,
+      "sha256": "34f3856bfb63d76545b627e8462463368c96f56127042b1cdedce9f928a8d113"
+    },
+    {
+      "path": "loom/src/catalog/scan.cpp",
+      "bytes": 21245,
+      "sha256": "db56cba46246f8e642c50902450e14f9c1cb6c765f4e2ad896c2ff175bbbc8dc"
+    },
+    {
+      "path": "loom/src/catalog/schema.cpp",
+      "bytes": 8195,
+      "sha256": "0237637bf3fef5862dc4ae134bddcf8471f599d49c02d9563cdb097795257e7e"
+    },
+    {
+      "path": "loom/src/catalog/score.cpp",
+      "bytes": 39994,
+      "sha256": "92c930927647dbe91e4c610315f9f89ca622232ad4fd5782f3504ba26c172de5"
+    },
+    {
+      "path": "loom/src/catalog/select.cpp",
+      "bytes": 6485,
+      "sha256": "e7163c32a5d8758ce4efc00d15896a2f3899dc883c34955ae08a103ed9a57ca6"
+    },
+    {
+      "path": "loom/src/catalog/semantic.cpp",
+      "bytes": 8648,
+      "sha256": "d323ddc3ff0f82e9bd183df95871988f37d201df7d03eff5774f72d7476969f6"
+    },
+    {
+      "path": "loom/src/catalog/sketch.cpp",
+      "bytes": 10119,
+      "sha256": "583eb8890fa671e1fcf85e60b84e0fa0b5059f9e371fe57bb4d8d19bd1116e60"
+    },
+    {
+      "path": "loom/src/catalog/stream.cpp",
+      "bytes": 5352,
+      "sha256": "1ed5d484d7c8579b7d0f99b52c4dffeea7eeb53d4fc33a07f6ed8b774719f29c"
+    },
+    {
+      "path": "loom/src/chat/active_task_acceptance.cpp",
+      "bytes": 17114,
+      "sha256": "53d6eb1c8cd1fd8dd41331be2b1504763557a6ee7db51e6e28d91933e5ea5717"
+    },
+    {
+      "path": "loom/src/chat/active_task_acceptance.h",
+      "bytes": 1160,
+      "sha256": "665e9fe55f77b06a3c140e2a186a7a835f4155f11a76b7c50005a0c01f82a97e"
+    },
+    {
+      "path": "loom/src/chat/active_task_spec.cpp",
+      "bytes": 16658,
+      "sha256": "8c3ebe32cd04a9d63a609b5da0fe2beac6539543abc31631000137991e9876e6"
+    },
+    {
+      "path": "loom/src/chat/active_task_spec.h",
+      "bytes": 655,
+      "sha256": "e6ab83172115b2863aec6c944a4b95f1995705695b58f6d8444ad3f218d77229"
+    },
+    {
+      "path": "loom/src/chat/batch_api.cpp",
+      "bytes": 12001,
+      "sha256": "7a7e1fba5e2947e1297c06d74ddc023cfc82e80000be38f28e124d7743cf08fc"
+    },
+    {
+      "path": "loom/src/chat/chat_engine.cpp",
+      "bytes": 71886,
+      "sha256": "858bbff9c99be159f36d33952dbac1bbaff1e93edc94579df882ba33f619c168"
+    },
+    {
+      "path": "loom/src/chat/chat_graph_integration.verify.cc",
+      "bytes": 27189,
+      "sha256": "d831a5379d4c031d71706fad9de9efcd19cb5d6abc188541d8b01b3ba7ddd110"
+    },
+    {
+      "path": "loom/src/chat/graph_reply.cpp",
+      "bytes": 37308,
+      "sha256": "64c5f50e52d3b3bc178a9b10a8021c7a0c4f24866dec5d0057f25725f6c0e9e2"
+    },
+    {
+      "path": "loom/src/chat/graph_reply.h",
+      "bytes": 4795,
+      "sha256": "deea40a22d3ad29205bb4cc08385791ddca67f1586606385fc9720cc4ee403bd"
+    },
+    {
+      "path": "loom/src/chat/graph_reply.verify.cc",
+      "bytes": 29823,
+      "sha256": "1b77515c77370eeb78961f474a231e83b5cd503bf9fb91aa1e5e122686570324"
+    },
+    {
+      "path": "loom/src/chat/selector.verify.cc",
+      "bytes": 11954,
+      "sha256": "5e5a54c8728a4120826c1d5f4b919d92b6d88b893d5d0185b4d64d3f8b0bad8a"
+    },
+    {
+      "path": "loom/src/chat/verify_selector.py",
+      "bytes": 10417,
+      "sha256": "ba4e501441965c04bfbdd08ea5c34636385c1ca61fb559dbe2430739f79c64f3"
+    },
+    {
+      "path": "loom/src/context/context_candidates.cpp",
+      "bytes": 6583,
+      "sha256": "99514a62e75386167e31b261cadbb03923c7c3fef8ee20e006a9c5460b3a25eb"
+    },
+    {
+      "path": "loom/src/context/context_candidates.h",
+      "bytes": 590,
+      "sha256": "b017e199dac0a4d337eca41fdd64e125699dbb439282e36db377f5dcd57b9694"
+    },
+    {
+      "path": "loom/src/context/context_diagnostics.cpp",
+      "bytes": 3059,
+      "sha256": "ce0b4a2c3f1e99b94cb3c9bdc3582c47dc0f060d13c4aefb23ae60afed5c748f"
+    },
+    {
+      "path": "loom/src/context/context_diagnostics.h",
+      "bytes": 287,
+      "sha256": "9831ea4b0de8456e44a54f94438fd1ab3950bbd84f34c38c9f704d99bc83af3d"
+    },
+    {
+      "path": "loom/src/context/context_engine.cpp",
+      "bytes": 82429,
+      "sha256": "b7e696b60b0659f7ea3ea002c85eeb33f0ebfa3bfb8f79cd5f5af87ca4922bba"
+    },
+    {
+      "path": "loom/src/context/context_evidence.cpp",
+      "bytes": 4947,
+      "sha256": "c44cd5d0b6f561cd57da13c33936d0d08a06fc6bd63ba4a7ea0904b08e3e7a8e"
+    },
+    {
+      "path": "loom/src/context/context_evidence.h",
+      "bytes": 912,
+      "sha256": "665f776ba4d39e24032fa95ea49e402f886a39fd194c92093111bc938c400918"
+    },
+    {
+      "path": "loom/src/context/context_execution.h",
+      "bytes": 1919,
+      "sha256": "5fc4f9ad8e2452bdc6a072acaa28726fd1f08c13f9e4ece2c3321f7dea95fc5f"
+    },
+    {
+      "path": "loom/src/context/context_goal_usage.h",
+      "bytes": 8365,
+      "sha256": "0c8853593b3f4af094661d318620e5f8e8535aa885b1de82e953f979106eb442"
+    },
+    {
+      "path": "loom/src/context/context_goal_usage.verify.cc",
+      "bytes": 21735,
+      "sha256": "907a8fe8de3fa8fd2ff9edcb54773a5b6ffebf24da2cf957ab40b152aa7672dc"
+    },
+    {
+      "path": "loom/src/context/context_plan.cpp",
+      "bytes": 19238,
+      "sha256": "c4f34b68a6318fa1fd5c136b3f8469cd396460f20f157e3a009d130359bd2436"
+    },
+    {
+      "path": "loom/src/context/context_request_ext.cpp",
+      "bytes": 3050,
+      "sha256": "1ace8b95d52c5ad779653dd9fa34e35716a5b61c231610a159ad4dd30baebeb0"
+    },
+    {
+      "path": "loom/src/context/context_request_ext.h",
+      "bytes": 299,
+      "sha256": "ab072d83bc2c81d02766a8e6cc15820234eb5c217e09740d5f669f42dffc58d3"
+    },
+    {
+      "path": "loom/src/context/context_usage_claim.h",
+      "bytes": 3598,
+      "sha256": "75ff7731d55ed50209af74c0c4ce19aa8f4c5f0047289d5053fc614d270d240b"
+    },
+    {
+      "path": "loom/src/context/ctx_common.cpp",
+      "bytes": 5211,
+      "sha256": "27d0f04412cb37b26afc966aa4b304ef46a31d62527dfce0e657eb5204da5fb0"
+    },
+    {
+      "path": "loom/src/context/ctx_common.h",
+      "bytes": 2808,
+      "sha256": "daf291535068e411f05204a2c6ff8d8c70c17de2660c74e784332762a8c343f4"
+    },
+    {
+      "path": "loom/src/context/method_channels.cpp",
+      "bytes": 23130,
+      "sha256": "ababb06a0ce3bc02cd499e298db620bd4ed341bfbcf79e03ad2823fe282cb460"
+    },
+    {
+      "path": "loom/src/context/method_channels.h",
+      "bytes": 2321,
+      "sha256": "471a660c5bced599e1ace151607c8ed4a04cbfbc65c8b4b35036c3022eb19e75"
+    },
+    {
+      "path": "loom/src/context/method_channels.verify.cc",
+      "bytes": 12547,
+      "sha256": "a1f83c6b67a30cc4fee66bbcfd73d54de0c8ce9cb8793b073f9cd203770f6d0f"
+    },
+    {
+      "path": "loom/src/context/method_execution.cpp",
+      "bytes": 27282,
+      "sha256": "fcb3c0aa44ec248565685bc7dde4b3a31d2b51287462e95b72aac924c497e032"
+    },
+    {
+      "path": "loom/src/context/method_execution.h",
+      "bytes": 2277,
+      "sha256": "74060b92cf094dd235b6ffdc1ade17ce3c0157565047c1555b7ca1bb4e84bdd2"
+    },
+    {
+      "path": "loom/src/context/method_execution.verify.cc",
+      "bytes": 20754,
+      "sha256": "92e9d1dd7ccc1376971f305fc7aa0833b680d896daa7d04f069fe7a9fe875ba2"
+    },
+    {
+      "path": "loom/src/context/method_registry.cpp",
+      "bytes": 68424,
+      "sha256": "445e67cc02381392e23e348dda5b3d37f3dac47b4312d71c3b5ceab529c54188"
+    },
+    {
+      "path": "loom/src/context/method_registry.h",
+      "bytes": 5316,
+      "sha256": "894b99c3db59aafa1df152f29f982ec4e8675ba976d673561bfdb50b227559cc"
+    },
+    {
+      "path": "loom/src/context/method_registry.verify.cc",
+      "bytes": 55756,
+      "sha256": "c37d5a9b558c6dcb79abb4b97d25dc32c3659e47817a870ed7e41ba08d1de0d1"
+    },
+    {
+      "path": "loom/src/context/provider_vector.cpp",
+      "bytes": 39011,
+      "sha256": "2055184aa4b88801e1c427adfe21161a301dffe572492925f2644515b1a3d41b"
+    },
+    {
+      "path": "loom/src/context/provider_vector.h",
+      "bytes": 3394,
+      "sha256": "1d17927155625afcdb5bd6e1f7443c7c21782021a64fbac71fbc8a217a233d76"
+    },
+    {
+      "path": "loom/src/context/provider_vector.verify.cc",
+      "bytes": 35933,
+      "sha256": "0fb47d8bc460ae47b59c24fcedca411dbc2525f8bc39770dbc70278b3267b02f"
+    },
+    {
+      "path": "loom/src/context/retrieval.cpp",
+      "bytes": 13857,
+      "sha256": "78b328ee5082aa91273e5b3a75846b9611fa784737878e848e2596f35b20d16d"
+    },
+    {
+      "path": "loom/src/context/unified_context.cpp",
+      "bytes": 28544,
+      "sha256": "10a96a4beb8f86396276e10f0d5619d2e1bb0d3f897bd9f4201ae41e0270edbe"
+    },
+    {
+      "path": "loom/src/context/unified_context.h",
+      "bytes": 2106,
+      "sha256": "9d94da54da0b2b2b68e2168971a84ecaec3e37b23eb8d475481adbc77cdcf2e1"
+    },
+    {
+      "path": "loom/src/context/unified_context.verify.cc",
+      "bytes": 22114,
+      "sha256": "c468c3c0d6cc182ff75fa25365c290350bed70ba4fe1b69c941cd99f940c62e3"
+    },
+    {
+      "path": "loom/src/core/config.cpp",
+      "bytes": 9287,
+      "sha256": "42bbe385964814a555b6cd9399e019ed5df6f70bf92ea935dcf5ad74e753d4b7"
+    },
+    {
+      "path": "loom/src/core/config_usage_policy.cpp",
+      "bytes": 6180,
+      "sha256": "70422d10d9a133326e99593b2c46b7d02cc97af3a1fc928c1be77c920210078d"
+    },
+    {
+      "path": "loom/src/core/event_bus.cpp",
+      "bytes": 2616,
+      "sha256": "40222dce81535b3e09f44cef5eb65bf1a6e39c8cf16991d325a8470575ae8f73"
+    },
+    {
+      "path": "loom/src/core/provenance.cpp",
+      "bytes": 16708,
+      "sha256": "e0b48f891d61c28ac9f18c003c9c5e00efcbde06d82a73216936f1f05ba9faba"
+    },
+    {
+      "path": "loom/src/core/relations.cpp",
+      "bytes": 8281,
+      "sha256": "f91185de23439eb0f8ac7c9bdd336fa4fa3fef6f432126feaff1bd3e15002a10"
+    },
+    {
+      "path": "loom/src/core/tasks.cpp",
+      "bytes": 17362,
+      "sha256": "9d8bb9366c0e05b515b4f76d1c0f94253a3588cad9679ed521ee57633b612e0f"
+    },
+    {
+      "path": "loom/src/crypto/crypto.cpp",
+      "bytes": 12694,
+      "sha256": "4491571ebceeed7998c482171feb09a520070bfe57381d8ed7c5ea1524c6b6ad"
+    },
+    {
+      "path": "loom/src/db/db.cpp",
+      "bytes": 42910,
+      "sha256": "65ee18501ceaab19f8d81b00c759775b432cac83003c554ffdcf66b97436a93a"
+    },
+    {
+      "path": "loom/src/db/db_internal.h",
+      "bytes": 1605,
+      "sha256": "9638db2afa63d93608f1570ffa622415ab4d3b185476edf2a18f84101910f501"
+    },
+    {
+      "path": "loom/src/db/fts.cpp",
+      "bytes": 15183,
+      "sha256": "8e5d61ed79c0131e76ce92ba290f951812336f0d03668fbc6dd06efc0bb7640e"
+    },
+    {
+      "path": "loom/src/db/schema_sql.inc",
+      "bytes": 2640,
+      "sha256": "920f52f18a11b1241412beddcb93d5c51d74c28db517de5bd73cf8f8d6e26bb9"
+    },
+    {
+      "path": "loom/src/db/sqlite.cpp",
+      "bytes": 9289,
+      "sha256": "c293a4bdcd67365b07220ff09730ea1aa5c618f284610ebe61a209c88302bb2a"
+    },
+    {
+      "path": "loom/src/extract/candidate_graph.cpp",
+      "bytes": 36766,
+      "sha256": "5beca05fef288acbdd24afa8897a8408fe07288a47d622e6772180b167626f2e"
+    },
+    {
+      "path": "loom/src/extract/extract.cpp",
+      "bytes": 30552,
+      "sha256": "09aeca56f605ee1fd37e67ed123bb64f5e09c6d98dd195c6f9d05e7e8bad4c4d"
+    },
+    {
+      "path": "loom/src/extract/extract_internal.h",
+      "bytes": 2416,
+      "sha256": "486143b2b85b866516c99a27f763ea4e95f1e8a337cc490425d6a69b53533948"
+    },
+    {
+      "path": "loom/src/extract/extractors.cpp",
+      "bytes": 87467,
+      "sha256": "8479d16807c03160edd158db8b2ba373ea41302c2600c16bf88bd90fdaa9bfcb"
+    },
+    {
+      "path": "loom/src/extract/lexicon.cpp",
+      "bytes": 16827,
+      "sha256": "9d9b0cf26c1459602e6639c96b45b839ec31f35c0ea035d5a1707a9e25fc6638"
+    },
+    {
+      "path": "loom/src/extract/lexicon.h",
+      "bytes": 6541,
+      "sha256": "140f4b46e7faf721f2b6e857052c558db25a7156e30dffe175363cdc83d030c0"
+    },
+    {
+      "path": "loom/src/extract/semantic.cpp",
+      "bytes": 51778,
+      "sha256": "385aadb8905eac8c611d0743bbb6aa03cf54c4387ea5d03640eba44551908313"
+    },
+    {
+      "path": "loom/src/extract/sources.cpp",
+      "bytes": 9743,
+      "sha256": "11ba9f5a8b2edb644d0e126a4215682ec4313a532a722cb14881bc5bfb5ffa1f"
+    },
+    {
+      "path": "loom/src/extract/stage.cpp",
+      "bytes": 13215,
+      "sha256": "fdd7ffae2c959b15fc5de7eb48d299c1640085a622a29747447da042fe1b1347"
+    },
+    {
+      "path": "loom/src/generalize/common.cpp",
+      "bytes": 45426,
+      "sha256": "7b0bd75af952929b8af9a3208a4c75487b9dc497e635c09431d591c4c32eca57"
+    },
+    {
+      "path": "loom/src/generalize/evidence.cpp",
+      "bytes": 2541,
+      "sha256": "10cc6fb48f0caa4c6705169810f58f8d8100dab54f9e80919e8d3d2f0b034750"
+    },
+    {
+      "path": "loom/src/generalize/infer.cpp",
+      "bytes": 19735,
+      "sha256": "c403db51aea7f91391109bd3c42519159dd165f5741a2357cda80a8fc7ed492f"
+    },
+    {
+      "path": "loom/src/generalize/internal.h",
+      "bytes": 12048,
+      "sha256": "7a023bab382055172744c3a6b0ecbc826ba168cd4a1c2c52c38b4656c258d34e"
+    },
+    {
+      "path": "loom/src/generalize/match.cpp",
+      "bytes": 29638,
+      "sha256": "aa07954aa131db40eefa735da26e4d4767bea88303c9d53def9f86c07306627f"
+    },
+    {
+      "path": "loom/src/generalize/operators.cpp",
+      "bytes": 18676,
+      "sha256": "96b0eb0e09c9e3cf57cadebe08037b6d238f7d3d4b8103e01c499b24233f98cf"
+    },
+    {
+      "path": "loom/src/generalize/principles.cpp",
+      "bytes": 24920,
+      "sha256": "7ebe190a3433084d5f8330e18f03f7f42a0ce0e70d2ae4096298eb4a6eec0cd3"
+    },
+    {
+      "path": "loom/src/generalize/stage.cpp",
+      "bytes": 11137,
+      "sha256": "d55619a77b89911c6e0a51150750e6056c58cc7645e63c867257a27f224dcd12"
+    },
+    {
+      "path": "loom/src/github/github_sync.cpp",
+      "bytes": 22371,
+      "sha256": "b18dd8d5ec7d6a47b7de6baf4bf468e0f1d874b5a7e8e16ebe98f929a7a2d760"
+    },
+    {
+      "path": "loom/src/graph/graph_engine.cpp",
+      "bytes": 10474,
+      "sha256": "157e5e92c3d8fec46202be447d5e91d9d263a07b9a0341b3077b6fd8a8d27223"
+    },
+    {
+      "path": "loom/src/graph/graph_memory.cpp",
+      "bytes": 16717,
+      "sha256": "bfaa1f9ab0a47dec31baa076505e0e86ee090d8f58266a5d8ff538589aacbaf8"
+    },
+    {
+      "path": "loom/src/import/export_anthropic.cpp",
+      "bytes": 22490,
+      "sha256": "a5fb521cc9cefe6792db3fc4be58be7c6c01d84babe6c0c53252442628233776"
+    },
+    {
+      "path": "loom/src/import/export_archive.cpp",
+      "bytes": 26605,
+      "sha256": "f63fb1a6ad7e4bf0460105f97515e976dbc464089b050fdb06cefff73a21c607"
+    },
+    {
+      "path": "loom/src/import/export_common.cpp",
+      "bytes": 21167,
+      "sha256": "32f8c5cad004f78f48f45ecf0a6cadd2e855ada83f4fe67d6f4416e69a59a98d"
+    },
+    {
+      "path": "loom/src/import/export_internal.h",
+      "bytes": 11632,
+      "sha256": "ce9543c6426c3f0cae1aefe105e9959e345a035e267ec2a338fe48bfe90ac0f4"
+    },
+    {
+      "path": "loom/src/import/export_openai.cpp",
+      "bytes": 33774,
+      "sha256": "ba28fd694030303f047db2b1539cb43160f452d62896c662ebc94711913b8f76"
+    },
+    {
+      "path": "loom/src/import/export_unknown.cpp",
+      "bytes": 8739,
+      "sha256": "e44cc4edf311610a35a644566b634d906ba26387e27e049c9b0c07ec85fb8b80"
+    },
+    {
+      "path": "loom/src/import/exporter.cpp",
+      "bytes": 4263,
+      "sha256": "c0d3e97476fa04627085c7b9262e45f1ba91fdfc2ab54a5ebfe3bfb6b5d8a746"
+    },
+    {
+      "path": "loom/src/import/importer_common.cpp",
+      "bytes": 8213,
+      "sha256": "75dcbc391a918526c4621fde6768d73c971cc03597320215e232cc1bd2c833b2"
+    },
+    {
+      "path": "loom/src/import/importer_core.cpp",
+      "bytes": 20374,
+      "sha256": "e0fb616dc51081bdded27b0147d46d60339eb3357f9c604be762014579ddf647"
+    },
+    {
+      "path": "loom/src/import/importer_html.cpp",
+      "bytes": 14410,
+      "sha256": "4263d0cfaa37631f4364fce7d66a12b7f30489ac5743706cd410f7806c85f27e"
+    },
+    {
+      "path": "loom/src/import/importer_internal.h",
+      "bytes": 2912,
+      "sha256": "80e8e28de1036f6d4446e4f783649dcce18eb2be2db09f73549bbdf534d0726f"
+    },
+    {
+      "path": "loom/src/import/importer_json.cpp",
+      "bytes": 15905,
+      "sha256": "aff781bed3d5742bf4fccf491d5effeb6e0de0b5757521bdef245d19c7907570"
+    },
+    {
+      "path": "loom/src/import/importer_sqlite.cpp",
+      "bytes": 5403,
+      "sha256": "e387cfd5386a2977409f9775828706f6d259c0c5237a5596e053bba264fe4c76"
+    },
+    {
+      "path": "loom/src/import/importer_text.cpp",
+      "bytes": 13702,
+      "sha256": "1e8d732e6d8333245936d70b0b2417e69de6186be6687eee03f858b34954ee3c"
+    },
+    {
+      "path": "loom/src/import/importer_zip.cpp",
+      "bytes": 4070,
+      "sha256": "d3ff79531acfd31aaee00151bfc4707e8c9eab5ac02cb2fde9876699627ffb63"
+    },
+    {
+      "path": "loom/src/kb/candidates.cpp",
+      "bytes": 2202,
+      "sha256": "0e984ce4313ff9dcc1af5585d28689cf97b369a05f304d3f5e5e33509dd0dbd3"
+    },
+    {
+      "path": "loom/src/kb/evidence.cpp",
+      "bytes": 6084,
+      "sha256": "df1161f1cdc3e68eb760ccd9973e74e6b945170bc05d48d7e22a423a025deab1"
+    },
+    {
+      "path": "loom/src/kb/graph_packet_store.cpp",
+      "bytes": 22309,
+      "sha256": "904cb420a6264962a7d77805d8a69e2ca0193474bcfbee3550ed284a475bd466"
+    },
+    {
+      "path": "loom/src/kb/normalize.cpp",
+      "bytes": 12204,
+      "sha256": "02efccbef4d7f4f8902e8bd03c453bb9c992937339b1e8ab92338860f8b8fb37"
+    },
+    {
+      "path": "loom/src/kb/pack.cpp",
+      "bytes": 83683,
+      "sha256": "a9411f1ad48a5ecab29075611a02f4e27ed54508345ab0ed36c75ed5d293d4a2"
+    },
+    {
+      "path": "loom/src/kb/pack_embedded.inc",
+      "bytes": 350166,
+      "sha256": "b4ba1dafead0e8c587257eab135a50f9305d155ddca61e72d683077fa14536a4"
+    },
+    {
+      "path": "loom/src/kb/schema.cpp",
+      "bytes": 18112,
+      "sha256": "6a3bad10da6e3beb4fb6b78ab674eb73acac63319041990ab72440e869d72240"
+    },
+    {
+      "path": "loom/src/kb/stage_profile.h",
+      "bytes": 1200,
+      "sha256": "9963f202d8c7181b324526101ab68554372b9fc89d2d01d89531d30ac62200f2"
+    },
+    {
+      "path": "loom/src/kb/store.cpp",
+      "bytes": 45314,
+      "sha256": "a15552c07d6777cad9fe43d87432eb9251d7887d21afa058caa8073f19baee90"
+    },
+    {
+      "path": "loom/src/kb/tests/pack_window.verify.cc",
+      "bytes": 5738,
+      "sha256": "2b2f39b51f22503ebbf57348ddfdf40525f272272c146d17254a677fc66cea2b"
+    },
+    {
+      "path": "loom/src/knowledge/engine.cpp",
+      "bytes": 34280,
+      "sha256": "4000baf026c378bc2be4d1488c73d7d3d2307360445d6c1553403a84a671bc16"
+    },
+    {
+      "path": "loom/src/materialize/materialize.cpp",
+      "bytes": 33929,
+      "sha256": "7be9894a225e3e8969b5f7cb61cac3ee3ac7ee6a5993a600b424694a192e9753"
+    },
+    {
+      "path": "loom/src/media/media_providers.cpp",
+      "bytes": 23656,
+      "sha256": "592927c283ca413e76825e1479f8dbda023077121578fd6b4483bc0e698c5025"
+    },
+    {
+      "path": "loom/src/memory/memory_engine.cpp",
+      "bytes": 17794,
+      "sha256": "5654bd80060eda6aeaa147d16e57e546ce4896e0baa2f01a8bc3e0f1ad78a40b"
+    },
+    {
+      "path": "loom/src/model/__pycache__/gen_runtime_profiles.cpython-312.pyc",
+      "bytes": 24678,
+      "sha256": "83656dadfd62a62df9f07b5cdb7a2aef1dc9c7b14feba2e482ba5bddb566d0d8"
+    },
+    {
+      "path": "loom/src/model/gen_runtime_profiles.py",
+      "bytes": 16845,
+      "sha256": "3d8eb9be1ee1d5f491580d61caf35a9d69c08bb544e0fb0507ab195d2e1ea8fd"
+    },
+    {
+      "path": "loom/src/model/model_action.cpp",
+      "bytes": 19979,
+      "sha256": "9b41cf20e5317462c946f878d2ae9be222eb6c9b18b0e7ec9083c4885405bac9"
+    },
+    {
+      "path": "loom/src/model/model_core.cpp",
+      "bytes": 20575,
+      "sha256": "87ee8f1545aadeb7cafb09cf4dd2bffda4d49ce2a6f778ef146b980ccfea1a39"
+    },
+    {
+      "path": "loom/src/model/model_general.cpp",
+      "bytes": 24295,
+      "sha256": "03df74670f2afc1bddccbf004ab2c1f003fc61a4b3904e6d6f17742f3e8cf5d6"
+    },
+    {
+      "path": "loom/src/model/model_json.h",
+      "bytes": 8225,
+      "sha256": "6323f818e112201552ffc3ea434841d61383befeb61abe8093e34c6be1e9ddde"
+    },
+    {
+      "path": "loom/src/model/model_pack.cpp",
+      "bytes": 12510,
+      "sha256": "229a5bffd7da30d1f7df7ddbee663129c394f3b70a4ecf0c5f18617c30e86492"
+    },
+    {
+      "path": "loom/src/model/model_profile.h",
+      "bytes": 419,
+      "sha256": "0da71dfd18cb20ecd6115fb3d7825d5d4702bb08c76f2f2223225085ccfcdc2a"
+    },
+    {
+      "path": "loom/src/model/runtime_profile.cpp",
+      "bytes": 17898,
+      "sha256": "0aab7afb23b413fdc62e6cd51b852a5596b0e8fb7b029bd95583f71e8ee6cc93"
+    },
+    {
+      "path": "loom/src/model/runtime_profiles_embedded.inc",
+      "bytes": 245926,
+      "sha256": "45670e3f6cadc150cc0483bd5870d685f55f785c06f60cf0ebf14b820e645e3f"
+    },
+    {
+      "path": "loom/src/net/http_common.cpp",
+      "bytes": 12764,
+      "sha256": "9c81f0959b00624e60899f56f2797f9891cef5e56895207d1678107766a384c4"
+    },
+    {
+      "path": "loom/src/net/http_default.cpp",
+      "bytes": 6076,
+      "sha256": "767f3c5053d7f38996e3e9d4712be9a5c98a511355fffa85d0b99a5a69ec1694"
+    },
+    {
+      "path": "loom/src/net/sse.cpp",
+      "bytes": 3250,
+      "sha256": "9491adc32e7d182b5ba232eade12c37b639911d26ea45372e4d78446a59077b2"
+    },
+    {
+      "path": "loom/src/packet/METHOD_GRAPH.md",
+      "bytes": 23721,
+      "sha256": "ce7d81f2157a4767f8cd8211fb8b625e621ae4d67d9fa3f1d28dfc0d3dd041b8"
+    },
+    {
+      "path": "loom/src/packet/README.md",
+      "bytes": 12471,
+      "sha256": "c395c69ac27c4849333bab6cf04fb5dbd7fd14a4d88a59f6d87d8cfafbbb44b4"
+    },
+    {
+      "path": "loom/src/packet/method-graph.schema.json",
+      "bytes": 15178,
+      "sha256": "4ccb4b1c0c4a0468cb9d565f0917a0dc415dd34a7585e08ec8f16dabff4bc0cd"
+    },
+    {
+      "path": "loom/src/packet/packet.cpp",
+      "bytes": 34558,
+      "sha256": "f95574debd94ff675596807b7de7eff8a65b5aafc3360b9be2d513a335bfaf59"
+    },
+    {
+      "path": "loom/src/packet/packet.h",
+      "bytes": 993,
+      "sha256": "c1ffb4580ac99feb98bbc81006731b0bc8763ddb13c618e832aa675f30dc4bc7"
+    },
+    {
+      "path": "loom/src/packet/reply.cpp",
+      "bytes": 17489,
+      "sha256": "4575f44b4614888fa25166b6b3a2e58c59966b49021cb25b07c06aaf74fc091c"
+    },
+    {
+      "path": "loom/src/packet/tests/audit_regressions.py",
+      "bytes": 4711,
+      "sha256": "b514da4282d344474405a78e46caf29f0459810e344fe89d35798ee87aec70b0"
+    },
+    {
+      "path": "loom/src/packet/tests/check_method_graph.py",
+      "bytes": 3457,
+      "sha256": "2e56ae5644f8846daa78403e6dbefe95dd7e2eb5f58020a13ab14472c32d5e7c"
+    },
+    {
+      "path": "loom/src/packet/tests/method-graph-fixture.json",
+      "bytes": 147622,
+      "sha256": "eff380dce7b53d883eb0ed50fdda74c7254d33d2dc895e0e154618e5628ca10b"
+    },
+    {
+      "path": "loom/src/packet/tests/method-registry-variants/canonical-w3-export.json.gz",
+      "bytes": 54549,
+      "sha256": "ead6f775a2bc0bcf94deed3c9e3726c317565b8d8daa95447e09792ca23574a7"
+    },
+    {
+      "path": "loom/src/packet/tests/method-registry-variants/manifest.json",
+      "bytes": 969,
+      "sha256": "19581f199c3b1f23cf0ca10a1e5c52f7f525fa2e02849795e1896a88a44f6e0f"
+    },
+    {
+      "path": "loom/src/packet/tests/method-registry-variants/nested-combination-alias.json.gz",
+      "bytes": 47194,
+      "sha256": "efbc6585cd365925714a17c194cfa8c50f6280920c98526808cad5ccefdcef97"
+    },
+    {
+      "path": "loom/src/packet/tests/method-registry-variants/nested-combination.json.gz",
+      "bytes": 45451,
+      "sha256": "90869ba396f6c2eab46c3cf3687e45f58b4becf74d17bfedcb357b491a1fdc0c"
+    },
+    {
+      "path": "loom/src/packet/tests/method-registry-variants/observed-model-alias.json.gz",
+      "bytes": 38536,
+      "sha256": "79097b557ecf2d5c5c961a63beffce32d6eaf415cdf93fca129d6030a5259014"
+    },
+    {
+      "path": "loom/src/packet/tests/method_registry_variants.verify.cc",
+      "bytes": 18600,
+      "sha256": "8b7935d51e7f99369eb778f6bee4975ab25c85b55aa1d2bafc1f2565f516e248"
+    },
+    {
+      "path": "loom/src/packet/tests/policy_integration.cc",
+      "bytes": 14697,
+      "sha256": "927f43615e74e7dfcba0651a0339ed7123cb1ba98b2fedf23e02314fab204138"
+    },
+    {
+      "path": "loom/src/packet/tests/reply-fixtures.json",
+      "bytes": 111420,
+      "sha256": "4d810c09ca39d74c70e32ee4c78a9b55b27b894362e05a15cd482086ef0902c3"
+    },
+    {
+      "path": "loom/src/packet/tests/reproduce_method_registry_variants.py",
+      "bytes": 4395,
+      "sha256": "af6715892e1a1ecc65d352d7e28f92999dad80762cefbc18b0a7f283d9bb6ea1"
+    },
+    {
+      "path": "loom/src/packet/tests/reproduce_policy.py",
+      "bytes": 2452,
+      "sha256": "e3ebd45de0bf2bba9f66c9bb8e872e4b69b3137be135b75fc47ad240e186b541"
+    },
+    {
+      "path": "loom/src/packet/tests/test_http.py",
+      "bytes": 4578,
+      "sha256": "eeb11a2c7dd5fe393b2b6f877b820624235190218e485447fdcd6ba490c1c632"
+    },
+    {
+      "path": "loom/src/packet/tests/verify_method_graph_artifact.py",
+      "bytes": 27646,
+      "sha256": "4e7b03df0ade22a965c7206b763b03278baac9551a08e07b62e6951dcb30e26f"
+    },
+    {
+      "path": "loom/src/policy/PROFILE_HANDOFF.md",
+      "bytes": 14602,
+      "sha256": "3f477305af0b5a8a3574822d8312b7d48bed05fe8881267735ac6701ede4e456"
+    },
+    {
+      "path": "loom/src/policy/README.md",
+      "bytes": 22893,
+      "sha256": "7a677b755f61f69cbd08e6ec223ee0b1f4d68777c6acc1f6e34f2acd7c940edc"
+    },
+    {
+      "path": "loom/src/policy/gen_usage_policy.py",
+      "bytes": 3612,
+      "sha256": "26042dbe35495454a68e0dc828128d7701f5469d55470d8f6e0dada6bba856ef"
+    },
+    {
+      "path": "loom/src/policy/tests/negative_preset_probe.cc",
+      "bytes": 3302,
+      "sha256": "eff6cc5abd488dca809d9df9e8b107064afc07ddab9356ee05a5dcdf6affbd75"
+    },
+    {
+      "path": "loom/src/policy/tests/preset_paths_probe.cc",
+      "bytes": 7100,
+      "sha256": "7e2992fa145de4d0eecfc7fdde12a83775989b09c1c2c67ac1ba2a6161bea742"
+    },
+    {
+      "path": "loom/src/policy/tests/test_gen_usage_policy.py",
+      "bytes": 6039,
+      "sha256": "1a28714ab7261674bd979d5f54f804a4a36ffa015da4a9a3820a6ed37a4bc427"
+    },
+    {
+      "path": "loom/src/policy/tests/test_usage_policy.cc",
+      "bytes": 58268,
+      "sha256": "bdd443610077030b28e0ac95f8f10a394e60c2b1204a83a8eee659ddef0aa2ed"
+    },
+    {
+      "path": "loom/src/policy/tests/verify_preset_paths.py",
+      "bytes": 11091,
+      "sha256": "c5b864e4fcd0f13ce1d2848b2d4f9fa0d0f5a496abb88d7e2c323116e4756ad0"
+    },
+    {
+      "path": "loom/src/policy/usage_policy.cpp",
+      "bytes": 22804,
+      "sha256": "d128c9c1eb48294ec14b905ef713e3e13e94099fecf4e2aa4e57f188634a45cb"
+    },
+    {
+      "path": "loom/src/policy/usage_policy_preset.inc",
+      "bytes": 1087,
+      "sha256": "c903963a1ea37c555ddf533739faded0ab3e279214176d2ccc910c1caaeafabf"
+    },
+    {
+      "path": "loom/src/providers/embedding.cpp",
+      "bytes": 12463,
+      "sha256": "d66ddf3417f86b087e3513a878a04ae4795e578c0c41d5cb13bfa4c8faf1ee4f"
+    },
+    {
+      "path": "loom/src/providers/embedding.h",
+      "bytes": 2050,
+      "sha256": "e60e8f12c3b5351ba430735e3b79459ad260617ef2dbd7d2cc48f67d7d7bb5a3"
+    },
+    {
+      "path": "loom/src/providers/providers.cpp",
+      "bytes": 16709,
+      "sha256": "af3b60c34c1aadab8eec3052e2f7933074f09757a4f9999cb7f0f3b6481d6d4b"
+    },
+    {
+      "path": "loom/src/re/regex.cpp",
+      "bytes": 40890,
+      "sha256": "9cd9ca1bf75e2f299340fb15ece058298f7f27ac4fc476ebd0248e5a21b3b104"
+    },
+    {
+      "path": "loom/src/resolve/assess.cpp",
+      "bytes": 9516,
+      "sha256": "2349a70c689845bc4d52d3f8a50e45a5832f1a2a7345b9469b2842ae141407cd"
+    },
+    {
+      "path": "loom/src/resolve/attribution.cpp",
+      "bytes": 33735,
+      "sha256": "a680f9ebbd30a04c1f66fa948a33de5d7ad5f3fb2a0e22d39b04ee7b9aa165eb"
+    },
+    {
+      "path": "loom/src/resolve/lineage.cpp",
+      "bytes": 16765,
+      "sha256": "45d08d56e8c48b62a7c82a10685aac6e2243d798198b2e90b90a968a92178684"
+    },
+    {
+      "path": "loom/src/resolve/resolver.cpp",
+      "bytes": 18409,
+      "sha256": "d5e3b8317e0180fcf013c69b54480ce9bdb0192f418bffc435d8428d265208a0"
+    },
+    {
+      "path": "loom/src/resolve/stage.cpp",
+      "bytes": 12129,
+      "sha256": "67a972f48d6596c476abe5aa1504bb723ba4adb2ef18845fc9874acb3ec53843"
+    },
+    {
+      "path": "loom/src/resolve/vectors.cpp",
+      "bytes": 7449,
+      "sha256": "1541910de0bce8a2ee6e8661760ca0e7f03ecd9b62d806c3d60813330f4388e9"
+    },
+    {
+      "path": "loom/src/runtime.cpp",
+      "bytes": 14955,
+      "sha256": "b5c022c78e8ac145dc1347603493982bbe230454f186b896b9c34aba7f13c477"
+    },
+    {
+      "path": "loom/src/search/selector.cpp",
+      "bytes": 15656,
+      "sha256": "bb3154db769164177fa733cc13ab9b37f511028fd4eccb59f124c461e7a92719"
+    },
+    {
+      "path": "loom/src/semantic/analyzer.cpp",
+      "bytes": 12169,
+      "sha256": "aeda7ed011e0af9364d90c80fa7017de0fa08c6f50436e3c11ef2a1f228026b2"
+    },
+    {
+      "path": "loom/src/semantic/semantic_llm.cpp",
+      "bytes": 8070,
+      "sha256": "2b93b269fc2a0a9c5cdcf624ce61bff99571fbab374351f6251ef321965c235c"
+    },
+    {
+      "path": "loom/src/stub.h",
+      "bytes": 626,
+      "sha256": "4732f13e5a2d6ce1fdad97a074c041e9a008d6c8f9c636767f54c166048c8e08"
+    },
+    {
+      "path": "loom/src/util/base64.cpp",
+      "bytes": 2829,
+      "sha256": "b680121d37ef16623f62f06d6186db48b29a7d6f0024b75d84754a0d4d1c5b22"
+    },
+    {
+      "path": "loom/src/util/fs.cpp",
+      "bytes": 6483,
+      "sha256": "3a0202d4a38159c4ce28c8c141d2f9a86bccab18e9879c36cc7ea551364594aa"
+    },
+    {
+      "path": "loom/src/util/json.cpp",
+      "bytes": 8944,
+      "sha256": "49d882300afe82a764cca67b7a00f8dfd9c9ce5ed2318933312bdaafbeb9b89d"
+    },
+    {
+      "path": "loom/src/util/log.cpp",
+      "bytes": 7261,
+      "sha256": "5c63aeb87b5bfcf626b1cc68904d47532a767c57d8f49c5ec845c0ba75f03dfc"
+    },
+    {
+      "path": "loom/src/util/product_literal_guard.py",
+      "bytes": 32187,
+      "sha256": "d5d7e3db09b313e2ef84ad71e42f69a6b8b2fd6ce3234a8618ab183f5daa90ae"
+    },
+    {
+      "path": "loom/src/util/random_ids_time.cpp",
+      "bytes": 4512,
+      "sha256": "8918765710c94b7d9e667ae2923dfb78b3eb13b3c3239405aadb18e1b9ee6586"
+    },
+    {
+      "path": "loom/src/util/result.cpp",
+      "bytes": 1359,
+      "sha256": "1488f760d6b3959bf15cb8b6425c593b066e227ebd9edeb8209df0e37b32e018"
+    },
+    {
+      "path": "loom/src/util/sha256.cpp",
+      "bytes": 7173,
+      "sha256": "c8d783c4ebaa9d46703a65dc228931fe2e355c2be9ac1fc26dad089f6f0b031c"
+    },
+    {
+      "path": "loom/src/util/unicode.cpp",
+      "bytes": 3274,
+      "sha256": "4780360568de8fae034cc070f27efa033eb5e991d77c6d8d3e1fda4070523165"
+    },
+    {
+      "path": "loom/src/util/unicode_tables.inc",
+      "bytes": 80225,
+      "sha256": "aa19c84617ed20d2d3eaab5bfab834a88d4287d277ea8e7c3f0ea82ecfdea240"
+    },
+    {
+      "path": "loom/src/util/utf8.cpp",
+      "bytes": 7174,
+      "sha256": "91f6786cf4d759768074a26cbae5b150284a241840f0f3761c867616831f3902"
+    },
+    {
+      "path": "loom/src/worker/semantic_worker.cpp",
+      "bytes": 17298,
+      "sha256": "a83a4564253e6dce4a1277d6c7ba40756f8ce4d281a5a6e2fa7b2b71fda37f85"
+    },
+    {
+      "path": "loom/tests/compat/test_product_literal_guard.py",
+      "bytes": 41511,
+      "sha256": "8b80c6f44f46c83c2e8a4c51c7a4ee6b5e5120aa348459fcd2cd2925c7edbba2"
+    },
+    {
+      "path": "loom/web/src/App.tsx",
+      "bytes": 6656,
+      "sha256": "090598e3a97991f0b9290dcf4e7915b613ae04181718efaec035032beb334a5a"
+    },
+    {
+      "path": "loom/web/src/api/graph-packets.ts",
+      "bytes": 1187,
+      "sha256": "ada14291f6357d8ce893bcd478074e71e7b631aa4b6ceaf3801d740c54da356a"
+    },
+    {
+      "path": "loom/web/src/api/index.ts",
+      "bytes": 318,
+      "sha256": "404d6768ba7fc9d0fe0604d095bf28a1ef0a8d92d4792a37f4b30f45a37148be"
+    },
+    {
+      "path": "loom/web/src/api/knowledge.ts",
+      "bytes": 2712,
+      "sha256": "7e23d390012e8c1f31dadeceffeb488c122d7c32956e9cac0d88121d99698ab3"
+    },
+    {
+      "path": "loom/web/src/api/loom-api.ts",
+      "bytes": 5198,
+      "sha256": "7614e33afcb8c9981328e66b5de17a67eea6ababe0f95678132a7271e03adea7"
+    },
+    {
+      "path": "loom/web/src/api/loom-http.ts",
+      "bytes": 16631,
+      "sha256": "d5495e79efdff8a1e63b32dd3f3f89da19a66976467c33a45995c73a69497cd6"
+    },
+    {
+      "path": "loom/web/src/api/loom-jni.ts",
+      "bytes": 15137,
+      "sha256": "cca540602076c9cc46f6240353abcae4ae6f7e709449118c205654154231137b"
+    },
+    {
+      "path": "loom/web/src/api/types.ts",
+      "bytes": 5772,
+      "sha256": "c5d53bcc82cb04e3d0ab17cac461f01b06d6db9de66892d3aca956b797491429"
+    },
+    {
+      "path": "loom/web/src/components/ApplicationProfiles.tsx",
+      "bytes": 21387,
+      "sha256": "7d9bee2bd926f3f11f74194873af9e15690a729f4b3e38a8d6e7cf6d65862abd"
+    },
+    {
+      "path": "loom/web/src/components/ChatView.tsx",
+      "bytes": 26496,
+      "sha256": "4656f0490a88cc580a3d9865fb975ebb00bd3145f36b8ddff834f55bf7c23a7f"
+    },
+    {
+      "path": "loom/web/src/components/ContextPlanEditor.tsx",
+      "bytes": 5234,
+      "sha256": "23fc4ac00405121ffadc5b2d34a4c4b7ef77d90bd4e7efe1cff8624bf09a2003"
+    },
+    {
+      "path": "loom/web/src/components/ContextSlider.tsx",
+      "bytes": 3153,
+      "sha256": "6c90df73b22b417b3ed9f48926d2128aa410ff0f07aaeca0df46afb3fcc38154"
+    },
+    {
+      "path": "loom/web/src/components/ConversationList.tsx",
+      "bytes": 2937,
+      "sha256": "7c88d47ea51098721ad821c9aee3e5ceb42463fccf029a54403f1631dfbc0f3c"
+    },
+    {
+      "path": "loom/web/src/components/GraphView.tsx",
+      "bytes": 14400,
+      "sha256": "edb9e8170d97d91626121ea9dc78f5456870bafe20fa10f7e62fd6d4078efab2"
+    },
+    {
+      "path": "loom/web/src/components/ImportPanel.tsx",
+      "bytes": 3863,
+      "sha256": "b07a1cfc859f5bbb23387093908cd57a3aeff1d67848b05e8e06c0137f1ee096"
+    },
+    {
+      "path": "loom/web/src/components/ImportedMessageContent.tsx",
+      "bytes": 4945,
+      "sha256": "bceaaaec6154741cef674bc3d6c7b914269ca02155619dcf56197a3292941fc4"
+    },
+    {
+      "path": "loom/web/src/components/KnowledgeWorkbench.tsx",
+      "bytes": 61655,
+      "sha256": "249276a0196220890f02278b8bd05220bf7db7067aa2566c99fb8957060c5763"
+    },
+    {
+      "path": "loom/web/src/components/LogPanel.tsx",
+      "bytes": 1532,
+      "sha256": "ad57016107926bfe588c3602b4323bb1317716c65554ccc1b19d1bb6e98cb3e2"
+    },
+    {
+      "path": "loom/web/src/components/MemoryPanel.tsx",
+      "bytes": 4252,
+      "sha256": "c6e94262757a4cd4a87306c5b3cb6128b1a1e0ef0d5f7a9aa663d618cc0256bd"
+    },
+    {
+      "path": "loom/web/src/components/SemanticStatus.tsx",
+      "bytes": 1426,
+      "sha256": "1d588786db5b73363c63d9431a20c1188001d56192a464f66b73abf7812c18f1"
+    },
+    {
+      "path": "loom/web/src/components/SettingsPanel.tsx",
+      "bytes": 6395,
+      "sha256": "acee1fd0df386738ae83c3914a65346bdeb2f7a05a4ce0fbe8cf0cefb1b83b9f"
+    },
+    {
+      "path": "loom/web/src/components/application-profiles.css",
+      "bytes": 3296,
+      "sha256": "e83d1297ae8b3b8c9ead7497d996a998db4f99b23a54f9f9559527aa6a9e4f31"
+    },
+    {
+      "path": "loom/web/src/components/chat-context.css",
+      "bytes": 1712,
+      "sha256": "37ada891a467e5a5499998c9beea38ee666a30ad486a2808ff6364ba02040091"
+    },
+    {
+      "path": "loom/web/src/components/imported-message-content.css",
+      "bytes": 698,
+      "sha256": "39503b911140c86afa6ff74dbc758c0d08d729e3f5db0feac73eb8fffdba0e2e"
+    },
+    {
+      "path": "loom/web/src/components/knowledge.css",
+      "bytes": 7434,
+      "sha256": "588dc19a713cfcd8b1c4b6e076001861ffd4363858eff9249d9f43f710ca1f7d"
+    },
+    {
+      "path": "loom/web/src/content/imported-message.ts",
+      "bytes": 8869,
+      "sha256": "33a3ae7ed5eff08d28cbbbc788a9897e84f38e215274f756dab2697ebf14452d"
+    },
+    {
+      "path": "loom/web/src/context/retrieval-plan.ts",
+      "bytes": 2929,
+      "sha256": "18587d06380ab02a2ca54781f102b382abc4da7fd2fa88abeae5f25baa648ffc"
+    },
+    {
+      "path": "loom/web/src/main.tsx",
+      "bytes": 238,
+      "sha256": "41431cb94a112ca05f90ca6037229d09d4bb8ecc1c27ae3bb3740ace8f01d2a6"
+    },
+    {
+      "path": "loom/web/src/profiles/builtins.ts",
+      "bytes": 1487,
+      "sha256": "9ffaf333cbd2f9979aac99e1a1955d6643abaad9272765e16a4a77441daf345b"
+    },
+    {
+      "path": "loom/web/src/profiles/data/chatgpt-inspired-r2.json",
+      "bytes": 4282,
+      "sha256": "13769c06e5cf45a8e8acab7360012b312bf6d3cee9d348d964cee6e119914972"
+    },
+    {
+      "path": "loom/web/src/profiles/data/chatgpt-inspired.json",
+      "bytes": 3726,
+      "sha256": "6ed1494edacd39cb98d6fa45fc1fe1159cb73e207ab2860e838e1776b966eba4"
+    },
+    {
+      "path": "loom/web/src/profiles/data/claude-inspired-r2.json",
+      "bytes": 4383,
+      "sha256": "2a3a9bd0130e0d41fe72850091a0bdafdbb12b9698fcc2092effe8d2c4241d9b"
+    },
+    {
+      "path": "loom/web/src/profiles/data/claude-inspired.json",
+      "bytes": 3827,
+      "sha256": "ba0dc6d632e498f83736c6ca4b5d3cc2ffdeb281582221361c0c9d93cedd67ff"
+    },
+    {
+      "path": "loom/web/src/profiles/data/gemini-inspired-r2.json",
+      "bytes": 4238,
+      "sha256": "9edc02f9ecc89c10b26c60e2cfc4c7ff94220ac0c0a85145b1dd8d3656fccb19"
+    },
+    {
+      "path": "loom/web/src/profiles/data/gemini-inspired.json",
+      "bytes": 3682,
+      "sha256": "dfa93a94ec905a75a09f9da4049102cf48e5efbb434bd70e6e6e65f8a7a22cd2"
+    },
+    {
+      "path": "loom/web/src/profiles/data/librechat-0.8.8.json",
+      "bytes": 6063,
+      "sha256": "cc6d46c80686ee983ddf39046f058831e3b7a376145ec3150c8fbeff0babe265"
+    },
+    {
+      "path": "loom/web/src/profiles/data/loom-default-r2.json",
+      "bytes": 4145,
+      "sha256": "51672be65e2fe9c4c46c2dbd45696f56f863fa0f5fca7b99ce768156cc2a533a"
+    },
+    {
+      "path": "loom/web/src/profiles/data/loom-default.json",
+      "bytes": 3589,
+      "sha256": "85702129bc4e93092794c4402caa8a3017f63653cc9371ab93ac3316eb016dd2"
+    },
+    {
+      "path": "loom/web/src/profiles/data/nextchat-2.16.1.json",
+      "bytes": 6355,
+      "sha256": "170249f595684397ce6fddb2ca347deca653c7093517e56cd1871c44efd017d0"
+    },
+    {
+      "path": "loom/web/src/profiles/graph.ts",
+      "bytes": 10684,
+      "sha256": "b35b3bc78d67b0abd2fbd4001a3673ce83172fba952affecd3d5a7c0941e453b"
+    },
+    {
+      "path": "loom/web/src/profiles/loom-adapter.ts",
+      "bytes": 8803,
+      "sha256": "d939c1dee04d86ba230ad3fc5a8b201bf7e11c93484971d8f0bae3736f3fb304"
+    },
+    {
+      "path": "loom/web/src/profiles/runtime.ts",
+      "bytes": 33599,
+      "sha256": "acee394825f9f8050b7f6ba3dbdc752a8afa09f977a9ee9dbc7eeca8f50c809d"
+    },
+    {
+      "path": "loom/web/src/styles.css",
+      "bytes": 7309,
+      "sha256": "9e670eadb016322b8411cbcbe7fbf315a5b52313d1ba70d471b7f23d5dc4162e"
+    },
+    {
+      "path": "loom/web/src/workspace/state.ts",
+      "bytes": 8484,
+      "sha256": "68f3b1318950074ae86cdc44ef440bd7294cf5606c84ef45582e87738e67b6d3"
+    }
+  ]
+}

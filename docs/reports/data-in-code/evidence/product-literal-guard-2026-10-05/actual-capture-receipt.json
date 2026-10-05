@@ -1,0 +1,111 @@
+{
+  "schema": "loom.product_literal_actual_capture/1",
+  "source_head": "1b7379c80e62e30e58e97c4ba84c490d9ddbc6f4",
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "-B",
+    "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/src/util/product_literal_guard.py",
+    "--root",
+    "/workspace/scratch/72fc60ad1cc5/chatadhd",
+    "--pack",
+    "/workspace/scratch/72fc60ad1cc5/chatadhd/loom/data/validation/product_literals.pack",
+    "--schema",
+    "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/contracts/product_literals.schema.json",
+    "--check",
+    "--report",
+    "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/product-literal-guard-2026-10-05/strict-report.json",
+    "--manifest",
+    "/workspace/scratch/72fc60ad1cc5/chatadhd/docs/reports/data-in-code/evidence/product-literal-guard-2026-10-05/strict-manifest.json"
+  ],
+  "cwd": "/workspace/scratch/72fc60ad1cc5/chatadhd",
+  "exit_code": 1,
+  "expected_exit": 1,
+  "valid": false,
+  "counts": {
+    "files": 363,
+    "product_files": 339,
+    "excluded_test_fixture_files": 24,
+    "source_bytes": 4884696,
+    "unknown_size_files": 0,
+    "discovery_errors": 0,
+    "candidates": 56974,
+    "allowed": 6,
+    "unclassified": 56968,
+    "blocked_files": 85,
+    "stale_allowlist": 0,
+    "verified_generated_files": 1
+  },
+  "by_owner": {
+    "1": {
+      "files": 26,
+      "unclassified": 6088,
+      "allowed": 0,
+      "blocked_files": 0
+    },
+    "2": {
+      "files": 14,
+      "unclassified": 574,
+      "allowed": 1,
+      "blocked_files": 3
+    },
+    "3": {
+      "files": 52,
+      "unclassified": 13752,
+      "allowed": 0,
+      "blocked_files": 1
+    },
+    "4": {
+      "files": 33,
+      "unclassified": 4374,
+      "allowed": 0,
+      "blocked_files": 4
+    },
+    "5": {
+      "files": 23,
+      "unclassified": 3397,
+      "allowed": 0,
+      "blocked_files": 1
+    },
+    "6": {
+      "files": 16,
+      "unclassified": 1893,
+      "allowed": 0,
+      "blocked_files": 0
+    },
+    "9": {
+      "files": 61,
+      "unclassified": 2743,
+      "allowed": 0,
+      "blocked_files": 26
+    },
+    "10": {
+      "files": 52,
+      "unclassified": 4054,
+      "allowed": 0,
+      "blocked_files": 45
+    },
+    "11": {
+      "files": 86,
+      "unclassified": 20093,
+      "allowed": 5,
+      "blocked_files": 5
+    }
+  },
+  "source_snapshot_files": 390,
+  "source_snapshots_identical": true,
+  "source_snapshot_sha256": "bbb5a0e220bd1a986eb3c4cd6fbfe0d2bb13daf557a8b3e5430ad80c62225747",
+  "source_writes_measured": 0,
+  "uncompressed_report_sha256": "4daf06a29c397449add3b91aa5e161f66fe17d6ce34e8e618c663f0b62e397ee",
+  "uncompressed_report_bytes": 31468048,
+  "compressed_report_sha256": "52daa3bee3a2f302809ee9fb0454ae781ad5a16a3c362708b65229c53f027f10",
+  "compressed_report_bytes": 2635423,
+  "manifest_sha256": "f412e98ec9d90d3dddb89b91afc1e29d3dbc7f5b8e3530c7db3314264369dc95",
+  "guard_sha256": "d5d7e3db09b313e2ef84ad71e42f69a6b8b2fd6ce3234a8618ab183f5daa90ae",
+  "pack_sha256": "a32c3aec620dff8d68b71593e6fd192ab28904e791ec6aa612e39116b81a6c53",
+  "schema_sha256": "1299ed04ec7914aeff4a4c3fdcd3b17e7f04333a36242aaac51f2fc6dbffe4c1",
+  "capture_sha256": "bf501e623ad783c8c95fce63ab50bba4a524a3bbb7601e3f33d77758c9be05cf",
+  "test_source_sha256": "8b80c6f44f46c83c2e8a4c51c7a4ee6b5e5120aa348459fcd2cd2925c7edbba2",
+  "network_calls": 0,
+  "generator_output_writes": 0,
+  "acceptance": "Strict negative retained; no repository R42 acceptance claim."
+}

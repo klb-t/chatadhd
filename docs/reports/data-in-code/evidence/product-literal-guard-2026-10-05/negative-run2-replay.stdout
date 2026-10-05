@@ -1,0 +1,40 @@
+{
+  "schema": "loom.product_literal_negative_branch_replay/1",
+  "historical_full_guard_recovered": false,
+  "reproduction": "Exact source/invalid-reason fixture and retained pre-fix output branch; current validation mechanism.",
+  "guard_sha256": "d5d7e3db09b313e2ef84ad71e42f69a6b8b2fd6ce3234a8618ab183f5daa90ae",
+  "replay_sha256": "eee525c1f14e3dab00ee2e3ada5f31e7bd63294d51b10172f7f27932552c877e",
+  "fixture_files": [
+    {
+      "path": "policy-revision2.pack",
+      "sha256": "747c8f84a1f7c5f12716d17999f84d90bf50c6bc4696548ad937df383733ccf8"
+    },
+    {
+      "path": "policy.pack",
+      "sha256": "2654c74eada20142fec6eb2f6f9875c6207250596aac244505fdca6a69ed5ea8"
+    },
+    {
+      "path": "schema.json",
+      "sha256": "1299ed04ec7914aeff4a4c3fdcd3b17e7f04333a36242aaac51f2fc6dbffe4c1"
+    },
+    {
+      "path": "source.cpp",
+      "sha256": "693fc7576ab4ad7b1789d24bfae07200a5a23fdbb2485eeb8961c657d47464ab"
+    }
+  ],
+  "source_before_sha256": "693fc7576ab4ad7b1789d24bfae07200a5a23fdbb2485eeb8961c657d47464ab",
+  "pre_fix_exit": 2,
+  "pre_fix_source_overwritten": true,
+  "pre_fix_overwritten_sha256": "a4647d468ae09e73faf90c7292c2a98f0d9dc588e49c05061b3e73659c3bb15e",
+  "fixed_exit": 2,
+  "fixed_source_unchanged": true,
+  "fixed_stdout": "",
+  "fixed_stderr": "{\"event\": \"output_aliases_protected_input\"}\n",
+  "revision2_schema_rejected": false,
+  "revision2_empty_scope_exit": 1,
+  "revision2_issue_codes": [
+    "empty_product_scope"
+  ],
+  "network_calls": 0,
+  "repository_source_writes": 0
+}

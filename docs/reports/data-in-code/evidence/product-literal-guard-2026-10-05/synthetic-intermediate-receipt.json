@@ -1,0 +1,25 @@
+{
+  "schema": "loom.product_literal_synthetic_history/1",
+  "logs": [
+    {
+      "path": "docs/reports/data-in-code/evidence/product-literal-guard-2026-10-05/synthetic-run-2.log",
+      "bytes": 7284,
+      "sha256": "f66bc6e118d51bfe42a2c2f5cdcdb604b5ee95a3292e805ea99112bdfdd4fc9e"
+    },
+    {
+      "path": "docs/reports/data-in-code/evidence/product-literal-guard-2026-10-05/synthetic-run-3.log",
+      "bytes": 5201,
+      "sha256": "77c127ae003aac24edb901ccb678f9a9fbdd19ad066564807d175fac8e9646a4"
+    },
+    {
+      "path": "docs/reports/data-in-code/evidence/product-literal-guard-2026-10-05/synthetic-run-4.log",
+      "bytes": 5716,
+      "sha256": "92c317e5723230db623fc9bfaeb275d507f97e62bedf03965931c58b18f73507"
+    }
+  ],
+  "first_run": "Transient fixture/schema drift; raw only in tool transcript, not reconstructed.",
+  "run2": "33cases2failures: discovered configerror sourceoverwrite plus overlystrict testrevision assumption; preserved asnegative.",
+  "run3": "33cases passed after fixes.",
+  "run4": "36cases passed with hardlinkalias fixes.",
+  "actual_repo_audit_executed": false
+}

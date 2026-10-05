@@ -1,0 +1,463 @@
+{
+  "schema": "loom.product_literals/1",
+  "revision": 2,
+  "requirement": {
+    "id": "R42",
+    "source_commit": "3cd5848e7484d50d00f19f0855bc2cd228ad7f3b",
+    "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+    "section_sha256": "ae082e3275f57ad7f0ded968af4b92eb8387d280e1e6b6c69e4c40029bcf0aa6"
+  },
+  "categories": {
+    "contract": "Names/keys/schema versions and pack filenames of the code-data contract; changing them requires the matching implementation change.",
+    "external_standard": "Constants and parsing grammars fixed by an external standard, not domain recognition policy.",
+    "mechanism": "Lifecycle states, machine error/event codes and universal engine operation vocabulary.",
+    "serialization": "Date/number/serialization formats whose exact bytes are an existing compatibility contract.",
+    "bootstrap": "Minimal locators needed to discover the data before a pack can be loaded.",
+    "developer_diagnostic": "Developer diagnostics or assertions, never user-facing presentation, domain defaults or policy."
+  },
+  "scopes": [
+    "loom/src"
+  ],
+  "exclusions": [
+    {
+      "path_segment": "tests",
+      "reason": "Explicit synthetic fixture exclusion."
+    },
+    {
+      "path_segment": "fixtures",
+      "reason": "Explicit synthetic fixture exclusion."
+    }
+  ],
+  "scanners": [
+    {
+      "suffixes": [
+        ".cpp",
+        ".cc",
+        ".c",
+        ".h",
+        ".hpp",
+        ".inc"
+      ],
+      "backend": "cxx",
+      "keyword_literals": {
+        "true": "boolean",
+        "false": "boolean",
+        "nullptr": "null"
+      }
+    },
+    {
+      "suffixes": [
+        ".py"
+      ],
+      "backend": "python",
+      "keyword_literals": {
+        "True": "boolean",
+        "False": "boolean",
+        "None": "null"
+      }
+    },
+    {
+      "suffixes": [
+        ".ts",
+        ".tsx",
+        ".js",
+        ".jsx"
+      ],
+      "backend": "javascript",
+      "keyword_literals": {
+        "true": "boolean",
+        "false": "boolean",
+        "null": "null"
+      }
+    },
+    {
+      "suffixes": [
+        ".java"
+      ],
+      "backend": "java",
+      "keyword_literals": {
+        "true": "boolean",
+        "false": "boolean",
+        "null": "null"
+      }
+    },
+    {
+      "suffixes": [
+        ".kt",
+        ".kts"
+      ],
+      "backend": "kotlin",
+      "keyword_literals": {
+        "true": "boolean",
+        "false": "boolean",
+        "null": "null"
+      }
+    },
+    {
+      "suffixes": [
+        ".css",
+        ".html",
+        ".xml",
+        ".json",
+        ".md",
+        ".txt",
+        ".properties",
+        ".pro",
+        ".bat",
+        ".jar",
+        ".pyc",
+        ""
+      ],
+      "backend": "unsupported",
+      "keyword_literals": {}
+    }
+  ],
+  "owner_rules": [
+    {
+      "prefix": "loom/src/extract",
+      "thread": 1
+    },
+    {
+      "prefix": "loom/src/resolve",
+      "thread": 1
+    },
+    {
+      "prefix": "loom/src/generalize",
+      "thread": 1
+    },
+    {
+      "prefix": "loom/src/policy",
+      "thread": 2
+    },
+    {
+      "prefix": "loom/src/context",
+      "thread": 3
+    },
+    {
+      "prefix": "loom/src/chat",
+      "thread": 3
+    },
+    {
+      "prefix": "loom/src/providers",
+      "thread": 3
+    },
+    {
+      "prefix": "loom/src/packet",
+      "thread": 4
+    },
+    {
+      "prefix": "loom/src/kb",
+      "thread": 4
+    },
+    {
+      "prefix": "loom/src/import",
+      "thread": 5
+    },
+    {
+      "prefix": "loom/src/db",
+      "thread": 5
+    },
+    {
+      "prefix": "loom/src/catalog",
+      "thread": 6
+    },
+    {
+      "prefix": "loom/web/src",
+      "thread": 10
+    },
+    {
+      "prefix": "loom/server",
+      "thread": 10
+    },
+    {
+      "prefix": "loom/src/semantic",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/src/graph",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/src/archive",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/src/search",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/src/memory",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/src/materialize",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/src/knowledge",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/src/worker",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/src/media",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/src/github",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/src/net",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/src/re",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/src/model",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/src/util",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/cli",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/src/core/config_usage_policy.cpp",
+      "thread": 2
+    },
+    {
+      "prefix": "loom/src/core/config.cpp",
+      "thread": 2
+    },
+    {
+      "prefix": "loom/include/loom/extract.h",
+      "thread": 1
+    },
+    {
+      "prefix": "loom/include/loom/generalize.h",
+      "thread": 1
+    },
+    {
+      "prefix": "loom/include/loom/resolve.h",
+      "thread": 1
+    },
+    {
+      "prefix": "loom/include/loom/config.h",
+      "thread": 2
+    },
+    {
+      "prefix": "loom/include/loom/usage_policy.h",
+      "thread": 2
+    },
+    {
+      "prefix": "loom/include/loom/chat_engine.h",
+      "thread": 3
+    },
+    {
+      "prefix": "loom/include/loom/context_engine.h",
+      "thread": 3
+    },
+    {
+      "prefix": "loom/include/loom/context_plan.h",
+      "thread": 3
+    },
+    {
+      "prefix": "loom/include/loom/context_retrieval.h",
+      "thread": 3
+    },
+    {
+      "prefix": "loom/include/loom/providers.h",
+      "thread": 3
+    },
+    {
+      "prefix": "loom/include/loom/graph_packet_store.h",
+      "thread": 4
+    },
+    {
+      "prefix": "loom/include/loom/kb.h",
+      "thread": 4
+    },
+    {
+      "prefix": "loom/include/loom/db.h",
+      "thread": 5
+    },
+    {
+      "prefix": "loom/include/loom/importer.h",
+      "thread": 5
+    },
+    {
+      "prefix": "loom/include/loom/sqlite.h",
+      "thread": 5
+    },
+    {
+      "prefix": "loom/include/loom/catalog.h",
+      "thread": 6
+    },
+    {
+      "prefix": "loom/include/loom/archive.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/batch_api.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/crypto.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/github_sync.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/graph_engine.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/graph_memory.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/knowledge.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/knowledge_semantic.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/log.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/materialize.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/media_providers.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/memory_engine.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/model.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/model_profile.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/provenance.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/relations.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/result.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/runtime_profile.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/selector.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/semantic_analyzer.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/semantic_llm.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/semantic_worker.h",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/net",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/re",
+      "thread": 11
+    },
+    {
+      "prefix": "loom/include/loom/util",
+      "thread": 11
+    }
+  ],
+  "fallback_owner": 9,
+  "allowlist": [],
+  "generated_outputs": [],
+  "diagnostics": {
+    "ambiguous_scanner_suffix_registrations": "ambiguous scanner suffix registrations",
+    "duplicate_generated_output_registrations": "duplicate generated-output registrations",
+    "duplicate_generated_source_identities": "duplicate generated-source identities",
+    "duplicate_json_member": "duplicate JSON member: ",
+    "duplicate_literal_review_anchors": "duplicate literal review anchors",
+    "duplicate_owner_prefixes": "duplicate owner prefixes",
+    "empty_generated_source_identity_table": "empty generated source identity table",
+    "empty_reversed_literal_review_anchor": "empty/reversed literal review anchor",
+    "expected_a_nonempty_relative_posix_path": "expected a nonempty relative POSIX path",
+    "filesystem_link_escapes_declared_root": "filesystem link escapes declared root: ",
+    "generated_bytes_do_not_equal_the_current_trusted_in_memory_plan": "generated bytes do not equal the current trusted in-memory plan",
+    "generated_input_manifest_is_stale_incomplete": "generated input manifest is stale/incomplete",
+    "generated_metadata_disagrees_with_actual_source_bytes": "generated metadata disagrees with actual source bytes: ",
+    "generated_output_identity_is_stale_tampered": "generated output identity is stale/tampered",
+    "generator_output_has_no_source_identity_table": "generator output has no source identity table",
+    "generator_source_identity_is_stale": "generator source identity is stale",
+    "invalid_generated_source_identity_records": "invalid generated source identity records",
+    "jsonschema_dependency_is_unavailable_no_validation_fallback": "jsonschema dependency is unavailable; no validation fallback",
+    "malformed_raw_literal": "invalid C++ raw string delimiter",
+    "missing_generated_output": "registered generated output is absent/out of scope",
+    "nonfinite_json_number": "nonfinite JSON number: ",
+    "path_escapes_the_declared_root": "path escapes the declared root: ",
+    "stale_allowlist": "review anchor is absent, out of scope, or differs from source/literal identity",
+    "unclassified_literal": "No exact, source-bound reviewed R42 category",
+    "unexpected_product_literal_schema_identity": "unexpected product literal schema identity",
+    "unregistered_file_form": "file suffix has no scanner registration",
+    "unsupported_backtick": "backtick identifier/string syntax is not supported by this backend",
+    "unsupported_file_form": "no complete lexical scanner is implemented for this registered file form",
+    "unsupported_java_text_block": "Java text-block incidental whitespace/escapes are not interpreted",
+    "unsupported_javascript_markup": "lexical scan cannot establish JSX text/attribute coverage",
+    "unsupported_javascript_slash": "lexical scan cannot distinguish expression regex from division; file remains blocked",
+    "unsupported_kotlin_interpolation": "Kotlin string interpolation needs expression scanning",
+    "unsupported_nested_comment": "nested Kotlin block comments need a recursive scanner",
+    "unsupported_numeric_token": "Numeric literal form is not recognized by this lexical scanner",
+    "unsupported_python_interpolation": "f-string expression literals are not recursively tokenized; a lexical scan is incomplete",
+    "unsupported_python_token": "Python tokenizer reported an unsupported/error token",
+    "unsupported_template_expression": "JavaScript template expressions are not recursively scanned",
+    "unsupported_trusted_generation_operation": "unsupported trusted generation operation",
+    "unterminated_comment": "unterminated block comment",
+    "unterminated_quoted_literal": "newline in a non-multiline quoted literal",
+    "unterminated_raw_literal": "unterminated C++ raw string",
+    "missing_product_scope": "A required product scope is absent; coverage cannot be established.",
+    "empty_product_scope": "No source files were found in the declared product scopes.",
+    "schema_contract_identity_mismatch": "The supplied schema bytes differ from the canonical guard schema contract.",
+    "trusted_generator_contract_identity_mismatch": "The generator bytes differ from the canonical trusted operation implementation.",
+    "optional_scope_not_declared": "An optional scope was not listed among the declared product scopes.",
+    "unsupported_java_unicode_translation": "Java Unicode escapes require prelexical translation; complete coverage is blocked.",
+    "unsupported_cxx_line_translation": "C++ escaped newlines require preprocessing translation; complete coverage is blocked.",
+    "filesystem_discovery_error": "A filesystem entry could not be enumerated; coverage is blocked.",
+    "unsupported_filesystem_form": "The source entry is not a readable regular file.",
+    "unsupported_line_terminator": "A non-LF line terminator needs language-specific translation; complete lexical coverage is blocked."
+  },
+  "outside_scope": [],
+  "optional_scopes": []
+}

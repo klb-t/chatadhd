@@ -1,0 +1,14 @@
+{
+  "schema": "loom.product_literal_primary_source/1",
+  "commit": "3cd5848e7484d50d00f19f0855bc2cd228ad7f3b",
+  "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+  "line_start": 483,
+  "line_end": 515,
+  "file_sha256": "851f6d2000f7d013ec000c6e7694713ef7079b76c3db386111f989871775bed3",
+  "section_sha256": "ae082e3275f57ad7f0ded968af4b92eb8387d280e1e6b6c69e4c40029bcf0aa6",
+  "retrieval": [
+    "git",
+    "show",
+    "3cd5848e7484d50d00f19f0855bc2cd228ad7f3b:docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md"
+  ]
+}

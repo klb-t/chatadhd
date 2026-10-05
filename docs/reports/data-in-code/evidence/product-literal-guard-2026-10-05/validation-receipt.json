@@ -1,0 +1,27 @@
+{
+  "schema": "loom.product_literal_validation/1",
+  "focused_command": [
+    "python3",
+    "-B",
+    "loom/tests/compat/test_product_literal_guard.py",
+    "-v"
+  ],
+  "focused_exit": 0,
+  "focused_cases": 41,
+  "focused_seconds": 39.901,
+  "focused_raw_log": "synthetic-run-6.log",
+  "focused_raw_sha256": "220d2e3a341dde407cf81d5a0c9876416164a9608625ecb2b650bdcd30cafaf5",
+  "test_source_sha256": "8b80c6f44f46c83c2e8a4c51c7a4ee6b5e5120aa348459fcd2cd2925c7edbba2",
+  "independent_read_only_review": {
+    "agent": "/root/profile_framework_review",
+    "status": "PASS",
+    "executed_tests": false,
+    "edited_files": false,
+    "unresolved_findings": [],
+    "scope": "Mechanism only: strict schema/categories/sourceanchors, generatedidentity, unsupportedforms, error-awarediscovery, prelexgrammar, malformedinput/outputhardlinks."
+  },
+  "actual_repository_check": "FAIL exit1 preserved in actual-capture-receipt.json; not repository R42 acceptance",
+  "negative_log_retained": "synthetic-run-2.log",
+  "negative_replay": "replay_negative_run2.py + negative-run-2-fixture; historicalfullguardnotrecovered",
+  "network_calls": 0
+}

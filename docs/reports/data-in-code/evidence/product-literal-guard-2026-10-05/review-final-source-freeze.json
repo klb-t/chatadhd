@@ -1,0 +1,32 @@
+{
+  "schema": "loom.product_literal_final_source_freeze/1",
+  "head": "1b7379c80e62e30e58e97c4ba84c490d9ddbc6f4",
+  "files": [
+    {
+      "path": "loom/src/util/product_literal_guard.py",
+      "bytes": 32187,
+      "sha256": "d5d7e3db09b313e2ef84ad71e42f69a6b8b2fd6ce3234a8618ab183f5daa90ae"
+    },
+    {
+      "path": "loom/data/validation/product_literals.pack",
+      "bytes": 20682,
+      "sha256": "a32c3aec620dff8d68b71593e6fd192ab28904e791ec6aa612e39116b81a6c53"
+    },
+    {
+      "path": "docs/contracts/product_literals.schema.json",
+      "bytes": 11091,
+      "sha256": "1299ed04ec7914aeff4a4c3fdcd3b17e7f04333a36242aaac51f2fc6dbffe4c1"
+    },
+    {
+      "path": "loom/src/model/gen_runtime_profiles.py",
+      "bytes": 16845,
+      "sha256": "3d8eb9be1ee1d5f491580d61caf35a9d69c08bb544e0fb0507ab195d2e1ea8fd"
+    },
+    {
+      "path": "loom/src/model/runtime_profiles_embedded.inc",
+      "bytes": 245926,
+      "sha256": "45670e3f6cadc150cc0483bd5870d685f55f785c06f60cf0ebf14b820e645e3f"
+    }
+  ],
+  "actual_repo_audit_executed": false
+}
