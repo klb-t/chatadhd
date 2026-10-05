@@ -1,0 +1,198 @@
+{
+  "execution": {
+    "additional_stage_approval_required": false,
+    "owner_authorized_programme_budget_eur": 5,
+    "paid_calls_made": 0,
+    "projected_growth_confirmation_factor": 10,
+    "readiness": "The owner already authorized this sequence within a separate 5 EUR programme. No per-stage reapproval is required within that authorization. Freeze the selected configurable quantities, use the new dedicated key and programme ledger, reconcile live prices and exchange-rate evidence, and enforce the cumulative programme budget before execution. Apply the shared projected x10 usage-growth confirmation rule when triggered. Selection is an offline derived result, not a request to reconfirm the existing authorization.",
+    "tool_output_grants_authorization": false
+  },
+  "graph_export": {
+    "automatic_adoption": false,
+    "entity_kinds": [
+      "research_protocol",
+      "configuration",
+      "comparison_group",
+      "selection_result",
+      "corpus_manifest"
+    ],
+    "evidence_class": "derived",
+    "identities": "Bind protocol version plus exact protocol-file SHA-256, selector-file SHA-256, neutral-summary SHA-256 and selection payload SHA-256. Preserve source report, dataset, planned-query-set and rubric hashes on derived claims.",
+    "origin": "system"
+  },
+  "new_corpus": {
+    "author_or_custodian": null,
+    "case_manifest_sha256": null,
+    "existing_sealed_holdout": {
+      "policy": "This preparation neither opens nor reuses current sealed holdout or validation_cases. A genuinely blind external holdout requires a separate custodian and preregistration; do not label newly authored synthetic data blind merely because it is new.",
+      "read": false,
+      "used": false
+    },
+    "independence_checks": [
+      "Document authorship and source lineage; compare hashes and family-level overlap against inspected DEV.",
+      "Keep answer labels outside request inputs and selection summaries.",
+      "Record who saw cases and labels and when; author-visible synthetic data is not a blind sealed holdout.",
+      "Freeze new corpus, labels and rubric before collection; collect first responses before scoring.",
+      "After first scoring mark cases and labels as inspected and do not reuse them as unseen after tuning."
+    ],
+    "inspection_log": [],
+    "inspection_status": "not_yet_authored",
+    "label_manifest_sha256": null,
+    "languages": null,
+    "size": null,
+    "source": "New independently authored corpus created after selection and protocol freeze; not a slice of previously inspected DEV cases.",
+    "status": "not_created_not_inspected",
+    "task_families": null
+  },
+  "owner_sequence": [
+    {
+      "purpose": "Existing paired 432-request study; retain all first responses and its original planned denominators.",
+      "stage": 1
+    },
+    {
+      "purpose": "Synthetic semantic-analysis prompt and parameter comparisons, using their own frozen request population.",
+      "stage": 2
+    },
+    {
+      "purpose": "Small frontier comparison allocated within the currently authorized programme budget, with its own first-response ledger.",
+      "stage": 3
+    },
+    {
+      "purpose": "Compare graph_reply/2 with text JSON on the same semantic tasks and source evidence.",
+      "stage": 4
+    },
+    {
+      "purpose": "Repeat measured nondominated configurations and evaluate them on independently authored new data.",
+      "stage": 5
+    }
+  ],
+  "repeat_plan": {
+    "analysis": "Report each repetition and the pooled fixed denominator within each pinned corpus. Keep repeat-study and newly authored corpus groups separate. Uncertainty resampling is by independently authored conversation family, not by correlated query slot. Record paired changes against the selected source study only on the shared query population.",
+    "attempt_identity": "Each planned repetition receives a distinct preregistered ID. Its first attempt is retained even when it fails; later repetitions never replace an earlier response.",
+    "budget_usd": null,
+    "configuration_ids": null,
+    "execution_order": null,
+    "freeze_before_execution": [
+      "selected_configuration_ids",
+      "selection_output_sha256",
+      "protocol_sha256",
+      "prompts_and_parameters",
+      "provider_and_model_identity",
+      "planned_query_set",
+      "rubrics_and_scorer",
+      "repetitions",
+      "order_and_seed",
+      "prices_and_budget"
+    ],
+    "repetitions_per_configuration": null,
+    "retry_policy": "No retries or best-of substitution. Missing, uncertain and invalid first attempts remain visible in all-planned denominators and cost accounting.",
+    "seed": null
+  },
+  "schema": "loom.stage5.protocol/1",
+  "scientific_scope": {
+    "choice_timing": "Chosen after stage1 first responses and scores were inspected; exploratory selection. This does not retroactively preregister stage1.",
+    "comparison_population": "Eight scored arms on the same 48 planned judgments. The combined j_split arm uses 96 physical requests and both components charges. Individual split components are not candidates.",
+    "dataset_inspection_status": "author_independent_authored_dev_cases_and_labels_inspected_after_first_response_collection; not blind holdout",
+    "default_stage1_eligibility": "Ineligible: separately frozen semantic adequacy and source-grounding counts are absent; no imputation or aliases.",
+    "dependent_observations": "12 authored DEV cases, PL/EN family pairs and temporal/direction query prefixes; 48 judgments per arm are not 48 independent trials.",
+    "execution_boundary": "This freezes selection only. Repetitions, execution order/seed, budget and future corpus/rubric inventories remain unchosen and must be fixed before execution.",
+    "measured_criteria_only": [
+      "exact_source_commitment_label_agreement",
+      "usable_ternary_label_availability",
+      "complete_provider_reported_first_attempt_cost"
+    ],
+    "no_backfilled_aliases": true,
+    "parent_default_protocol_preserved_byte_for_byte": true,
+    "parent_default_protocol_sha256": "3810a869ea29a79334e2f889f6c36d980c5d7ec1a4c66d56407977be94fc3742",
+    "selection_new_corpus_boundary": "Freeze this protocol, neutral summary and exact derived selection before any new-corpus authoring. No new corpus has been authored or inspected by this preparation.",
+    "unmeasured_dimensions": [
+      "separate_semantic_adequacy",
+      "separate_source_evidence_grounding",
+      "model_rationale_quality",
+      "reasoning_mechanism",
+      "world_truth",
+      "heldout_generalization"
+    ]
+  },
+  "selection": {
+    "allowed_source_stages": [
+      1
+    ],
+    "billing_admission": {
+      "require_complete_actual_billing": true
+    },
+    "criteria": [
+      {
+        "denominator": "counts.planned",
+        "direction": "maximize",
+        "id": "correctness_all_planned",
+        "numerator": "counts.correct"
+      },
+      {
+        "denominator": "counts.planned",
+        "direction": "maximize",
+        "id": "availability_all_planned",
+        "numerator": "counts.available"
+      },
+      {
+        "denominator": "counts.planned",
+        "direction": "minimize",
+        "id": "reported_cost_per_planned_usd",
+        "numerator": "cost.total_usd"
+      }
+    ],
+    "eligibility_thresholds": [],
+    "group_fields": [
+      "task_id",
+      "dataset_sha256",
+      "planned_query_set_sha256",
+      "rubric_sha256"
+    ],
+    "missing_dimensions": "report_ineligible_without_imputation",
+    "number_of_selected_configurations": null,
+    "scope_of_winner_claim": "Nondominated observed configuration on one exact authored DEV source-commitment query population; exploratory post-stage1 selection, not universal ranking, independent confirmation, or a semantic/world-truth winner.",
+    "strategy": "pareto",
+    "ties": "retain_all"
+  },
+  "status": "post_stage1_exploratory_selection_frozen_before_new_corpus",
+  "summary_contract": {
+    "cost": {
+      "complete": "True only after every attempted request charge is known.",
+      "evidence_kind": "provider_reported or invoice_reconciled; these are not interchangeable.",
+      "total_usd": "All observed first-attempt charges, including failed and malformed answers; null when incomplete.",
+      "unknown_attempts": "Number of unresolved first-attempt charges."
+    },
+    "counts": {
+      "attempted_requests": "Retained first-attempt request count, including failed attempts; split-call tasks may have more requests than query slots. Zero attempts cannot establish measured model quality.",
+      "available": "Usable first responses; never merely HTTP success or a parseable envelope.",
+      "correct": "Usable first responses whose compiled supported/refuted/unknown label exactly agrees with the original frozen latest_active_commitment DEV gold. This is task-specific source classification, not world truth or a separate evidence/rationale adequacy score.",
+      "planned": "All preregistered query slots, including transport failures, malformed responses and missing outputs."
+    },
+    "evidence_kinds": [
+      "saved_provider_first_response",
+      "historical_provider_first_response_replay"
+    ],
+    "required_evidence_fields": [
+      "model_quality_measured",
+      "kind",
+      "first_response_only",
+      "source_report_sha256",
+      "dataset_inspection_status"
+    ],
+    "required_record_fields": [
+      "configuration_id",
+      "source_stage",
+      "task_id",
+      "dataset_sha256",
+      "planned_query_set_sha256",
+      "rubric_sha256",
+      "evidence",
+      "counts",
+      "cost"
+    ],
+    "schema": "loom.stage5.study_summary/1",
+    "source": "Neutral aggregate report authored after scoring retained first responses; no cases, prompts, labels or paths to labels.",
+    "validation_boundary": "The selector checks the supplied aggregate arithmetic and hashes' syntax, not the truth of raw scoring or an invoice. Raw responses, manifests and scorer hashes must remain independently auditable."
+  },
+  "version": "stage5-stage1-source-commitment-exploratory-three-criteria-2026-10-05-v1"
+}
