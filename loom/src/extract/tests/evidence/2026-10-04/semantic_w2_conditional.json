@@ -1,11 +1,11 @@
 {
   "schema": "loom.offline_conditional_integration_evidence/1",
   "status": "conditional_actual_W2_ledger_with_W1_semantic_source_offline",
-  "completed_utc": "2026-10-04T15:56:30.052261+00:00",
-  "passed": 5,
-  "total": 5,
+  "completed_utc": "2026-10-04T16:08:17.280192+00:00",
+  "passed": 6,
+  "total": 6,
   "paid_calls": 0,
-  "population": "five synthetic source fixtures; each uses ScriptedTransport and a real temporary W2 SQLite ledger",
+  "population": "six synthetic source fixtures; five original explicit-preset cases plus cold unset Config; all use ScriptedTransport and actual W2 SQLite ledger",
   "cases": [
     {
       "case": "cold ledger admission",
@@ -31,43 +31,49 @@
       "case": "configured cap stays provenance and actual unknown",
       "passed": true,
       "http_calls": 1
+    },
+    {
+      "case": "cold Config without artificial preset installation",
+      "passed": true,
+      "http_calls": 1
     }
   ],
   "limits_of_evidence": [
-    "W2 Config default getter and C ABI are not integrated into this root build; fixture installs exact W2 preset explicitly.",
+    "Latest W2 effective-options cold-config path is tested; W2 Config::get fallback implementation and C ABI are not merged into this root build.",
     "ScriptedTransport usage is fixture evidence, not observed provider expenditure.",
     "Production integration still needs merged W2 header/objects and normal complete CTest.",
     "Exactly-once claim is limited to the tested same-run checkpoint/cache path; ledger authorization is not a concurrent dispatcher lock.",
     "This source-level conditional link is not a merged W2 build and is not a full CTest result.",
     "Provider-reported usage and money values are scripted fixtures, not invoiced spending.",
-    "The output cap is provenance, not a forecast; the default output estimate and missing token/cost actual remain null."
+    "The output cap is provenance, not a forecast; the default output estimate and missing token/cost actual remain null.",
+    "W2 usage defaults remain legacy C++ pending authoritative profile migration; behavior tests do not establish readiness under the data/profile mandate."
   ],
   "raw_evidence": {
     "path": "loom/src/extract/tests/evidence/2026-10-04/semantic_w2_conditional_raw.json",
-    "sha256": "979b12936e9155b17f1983f9f7a7235917e69974cf392f04e433960a58db4014",
-    "bytes": 238581
+    "sha256": "aed867e772da45e8a25df8b9cb678b3b216193eec89ec516fa06b6b0b4aa54ea",
+    "bytes": 280131
   },
   "W2_external_sources": {
+    "commit": "bbc95f73672f3c9c4f2cd8153108da1513a80dc3",
     "remote_ref": "origin/gpt/usage-policy-2026-10-04",
-    "commit": "34cc920dd3cdb0c0fca0a514569b19111429583f",
     "files": [
       {
-        "path": "loom/include/loom/usage_policy.h",
-        "scratch_copy": "include/loom/usage_policy.h",
-        "sha256": "89dfad23470928a45900ff00c2cb6197fa183f9c2a7ab96f89bb832cb99273ca",
-        "bytes": 3485
+        "source": "loom/include/loom/usage_policy.h",
+        "scratch": "include/loom/usage_policy.h",
+        "sha256": "2c7f9e00556f729e835dba2b9fb0cdac124b7e7c7ccf90ef29adb794c983c129",
+        "bytes": 4308
       },
       {
-        "path": "loom/src/policy/usage_policy.cpp",
-        "scratch_copy": "usage_policy.cpp",
+        "source": "loom/src/policy/usage_policy.cpp",
+        "scratch": "usage_policy.cpp",
         "sha256": "790bca06403a46ee59894801e251e4fad6afe9e39d57d5f3b3a679f7486158b9",
         "bytes": 22755
       },
       {
-        "path": "loom/src/core/config_usage_policy.cpp",
-        "scratch_copy": "config_usage_policy.cpp",
-        "sha256": "ddc7fdb8e9215aa3e29b90af9c04eab42f421267ee1f9b493b6ad55a425456f4",
-        "bytes": 3360
+        "source": "loom/src/core/config_usage_policy.cpp",
+        "scratch": "config_usage_policy.cpp",
+        "sha256": "8e401b1a6504ed73ca10bfafe72bb664a5fd1cb8bda2da05e6696571855ecd04",
+        "bytes": 5258
       }
     ],
     "copies_are_exact_source_blobs": true,
@@ -86,39 +92,39 @@
     },
     {
       "path": "loom/src/extract/tests/semantic_w2_integration.cpp.fixture",
-      "sha256": "c01651bcd5b10f4111df9b4b8f6b0e8036c24ed68d951a6f9753a2b44317ba1c",
-      "bytes": 15528
+      "sha256": "833a4f510eaf0ef8bbe7b392ffd06f221fa2a509eb0e76ae0b4bed752351ea2c",
+      "bytes": 18282
     },
     {
       "path": "loom/src/extract/tests/semantic_w2_replay.py.fixture",
-      "sha256": "eb8e6d89b9d5f2ed7da04cf2688832cda72ab4d4e9e3aa03c7b9eab882cff6a9",
+      "sha256": "f582633926cf31a8bf54eb00582eab38d78fc84403521e08f13bac07ce3d1071",
       "bytes": 5442
     }
   ],
   "compiled_semantic": {
     "compiled_semantic_sha256": "c9e844ff65d87e3345ed51f2bdef5500724e7a781fa0912b19b1016143463db5",
-    "snapshot": "/workspace/scratch/98e6ad903811/precision-checks/semantic-w2-current/semantic_w1_c9e844ff65d87e3345ed51f2bdef5500724e7a781fa0912b19b1016143463db5.cpp",
+    "snapshot": "/workspace/scratch/98e6ad903811/precision-checks/semantic-w2-latest-six/semantic_w1_c9e844ff65d87e3345ed51f2bdef5500724e7a781fa0912b19b1016143463db5.cpp",
     "argv": [
       "c++",
       "-std=c++20",
       "-g0",
       "-O0",
-      "-I/workspace/scratch/98e6ad903811/precision-checks/semantic-w2-current/include",
+      "-I/workspace/scratch/98e6ad903811/precision-checks/semantic-w2-latest-six/include",
       "-Iloom/include",
       "-Iloom/src",
       "-isystem",
       "loom/third_party/nlohmann",
       "-c",
-      "/workspace/scratch/98e6ad903811/precision-checks/semantic-w2-current/semantic_w1_c9e844ff65d87e3345ed51f2bdef5500724e7a781fa0912b19b1016143463db5.cpp",
+      "/workspace/scratch/98e6ad903811/precision-checks/semantic-w2-latest-six/semantic_w1_c9e844ff65d87e3345ed51f2bdef5500724e7a781fa0912b19b1016143463db5.cpp",
       "-o",
-      "/workspace/scratch/98e6ad903811/precision-checks/semantic-w2-current/semantic_w2.o"
+      "/workspace/scratch/98e6ad903811/precision-checks/semantic-w2-latest-six/semantic_w2.o"
     ]
   },
   "objects": [
     {
       "path": "config_usage_policy.o",
-      "sha256": "04101edbd62f4603a343b2457489642592f8eaa0b5801e4bc2850f11b8580f0f",
-      "bytes": 1271864
+      "sha256": "ae704a9824cb317a9ccfd5732cf7c1486d74e0b461dd06788e6f0c050dd913f5",
+      "bytes": 1622664
     },
     {
       "path": "semantic_w2.o",
@@ -132,8 +138,8 @@
     },
     {
       "path": "fixture.o",
-      "sha256": "9fbb8a8d48929696684b6d2f29206b85484aa4ede2040c63d2ce277f3db121e9",
-      "bytes": 3197104
+      "sha256": "a8da846bb3bd45744d535ec341bc3cce36a5b68c3099e203cf621704a60a8d3d",
+      "bytes": 3256880
     }
   ],
   "core_archive": {
@@ -143,19 +149,19 @@
   },
   "executable": {
     "scratch_filename": "semantic_w2_probe",
-    "sha256": "7750d6c6b706752a7806adc37b4a9efdd17257571e7cde5fc1b3f7053e7cc907",
-    "bytes": 47822952
+    "sha256": "d5b66c22f9ac4cd5813848895c7918b7c43bf3a4618039eec8160868e09c4739",
+    "bytes": 47848296
   },
-  "root_head_at_test": "f407a7c79a17135f16a87fcfcb5a17565f06d561",
+  "root_head_at_test": "aed85b8d5b90db9c3055918e4864f8273bd3d411",
   "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0",
   "link_command": [
     "c++",
     "-g0",
     "-Wl,--no-keep-memory,--reduce-memory-overheads",
-    "/workspace/scratch/98e6ad903811/precision-checks/semantic-w2-current/fixture.o",
-    "/workspace/scratch/98e6ad903811/precision-checks/semantic-w2-current/semantic_w2.o",
-    "/workspace/scratch/98e6ad903811/precision-checks/semantic-w2-current/usage_policy.o",
-    "/workspace/scratch/98e6ad903811/precision-checks/semantic-w2-current/config_usage_policy.o",
+    "/workspace/scratch/98e6ad903811/precision-checks/semantic-w2-latest-six/fixture.o",
+    "/workspace/scratch/98e6ad903811/precision-checks/semantic-w2-latest-six/semantic_w2.o",
+    "/workspace/scratch/98e6ad903811/precision-checks/semantic-w2-latest-six/usage_policy.o",
+    "/workspace/scratch/98e6ad903811/precision-checks/semantic-w2-latest-six/config_usage_policy.o",
     "/workspace/scratch/98e6ad903811/chatadhd/loom/build/dev/libloom_core.a",
     "/workspace/scratch/98e6ad903811/chatadhd/loom/build/dev/libloom_sqlite3_amalgamation.a",
     "/workspace/scratch/98e6ad903811/chatadhd/loom/build/dev/libloom_miniz.a",
@@ -163,12 +169,13 @@
     "-lcrypto",
     "-lpthread",
     "-o",
-    "/workspace/scratch/98e6ad903811/precision-checks/semantic-w2-current/semantic_w2_probe.pending"
+    "/workspace/scratch/98e6ad903811/precision-checks/semantic-w2-latest-six/semantic_w2_probe.pending"
   ],
   "replay_commands": [
-    "python3 loom/src/extract/tests/semantic_w2_replay.py.fixture objects --scratch /tmp/loom-semantic-w2",
-    "python3 loom/src/extract/tests/semantic_w2_replay.py.fixture link --scratch /tmp/loom-semantic-w2 --core-dir loom/build/dev",
-    "python3 loom/src/extract/tests/semantic_w2_replay.py.fixture run --scratch /tmp/loom-semantic-w2 --output /tmp/loom-semantic-w2/result.json"
+    "TASK_SEMANTIC_W2_DIR=$(mktemp -d)",
+    "python3 loom/src/extract/tests/semantic_w2_replay.py.fixture objects --scratch \"$TASK_SEMANTIC_W2_DIR\"",
+    "python3 loom/src/extract/tests/semantic_w2_replay.py.fixture link --scratch \"$TASK_SEMANTIC_W2_DIR\" --core-dir loom/build/dev",
+    "python3 loom/src/extract/tests/semantic_w2_replay.py.fixture run --scratch \"$TASK_SEMANTIC_W2_DIR\" --output \"$TASK_SEMANTIC_W2_DIR/result.json\""
   ],
   "negative_infrastructure_history": [
     {
@@ -187,11 +194,12 @@
     "known_actual_for_prior_unknown_estimate": "Original W2 sets completion.overrun=true when a previously null token/cost estimate is settled to a known actual. This diagnostic does not establish an expected consumption increase or require confirmation in these cases; no W2 source was changed."
   },
   "rebuild_result": {
-    "status": "fresh_objects_link_and_run_succeeded",
+    "status": "latest_W2_sources_objects_link_and_six_case_run_succeeded",
     "source_includes_generated_legacy_export": true,
-    "prior_full_source_sha256": "0acd0996347917888d3e83939df9c3357bc6c63fb278ca731b29eef09f16d866",
-    "source_body_without_generated_prefix_sha256": "0acd0996347917888d3e83939df9c3357bc6c63fb278ca731b29eef09f16d866",
-    "prior_proof_retained": "scratch/semantic-w2/results-final.json plus previous_evidence copies"
+    "selected_W2_explicitly": "bbc95f73672f3c9c4f2cd8153108da1513a80dc3",
+    "default_pin_promoted_after_six_pass": true,
+    "semantic_production_source_unchanged": true,
+    "paid_calls": 0
   },
   "generator_check": {
     "command": "python3 loom/src/extract/gen_prompt_contracts.py --check",
@@ -199,15 +207,6 @@
     "export_bytes": 4208,
     "export_sha256": "7527ac8c051e53bc5d6cbd51ca92ac9ead6334381d03e4e6924582797df43a1a",
     "export_is_runtime_disabled": true
-  },
-  "final_archive_relink": {
-    "status": "link_and_run_succeeded",
-    "object_recompilation": false,
-    "objects_verified_unchanged": true,
-    "previous_archive_sha256": "a19f77b888c61948bc106da1cf3587d18e19189f5c2e6ec73541c386dbec0738",
-    "change": "semantic.analysis legacy public request headers; relation and occurrence contract unchanged",
-    "result_scratch_file": "semantic-w2-current/results-final-headers.json",
-    "previous_proof_preserved": "semantic-w2-current/previous_archive_semantic_w2_conditional{.json,_raw.json,.md}"
   },
   "linked_prompt_sources": [
     {
@@ -240,5 +239,110 @@
       "sha256": "cba2ebde93f9cc276fdf4f2305d04f1966b13f87f5367fc082c16728b252fe09",
       "bytes": 5963
     }
-  ]
+  ],
+  "compile_commands": [
+    [
+      "c++",
+      "-std=c++20",
+      "-g0",
+      "-O0",
+      "-I/workspace/scratch/98e6ad903811/precision-checks/semantic-w2-latest-six/include",
+      "-Iloom/include",
+      "-Iloom/src",
+      "-isystem",
+      "loom/third_party/nlohmann",
+      "-c",
+      "/workspace/scratch/98e6ad903811/precision-checks/semantic-w2-latest-six/usage_policy.cpp",
+      "-o",
+      "/workspace/scratch/98e6ad903811/precision-checks/semantic-w2-latest-six/usage_policy.o"
+    ],
+    [
+      "c++",
+      "-std=c++20",
+      "-g0",
+      "-O0",
+      "-I/workspace/scratch/98e6ad903811/precision-checks/semantic-w2-latest-six/include",
+      "-Iloom/include",
+      "-Iloom/src",
+      "-isystem",
+      "loom/third_party/nlohmann",
+      "-c",
+      "/workspace/scratch/98e6ad903811/precision-checks/semantic-w2-latest-six/config_usage_policy.cpp",
+      "-o",
+      "/workspace/scratch/98e6ad903811/precision-checks/semantic-w2-latest-six/config_usage_policy.o"
+    ],
+    [
+      "c++",
+      "-std=c++20",
+      "-g0",
+      "-O0",
+      "-I/workspace/scratch/98e6ad903811/precision-checks/semantic-w2-latest-six/include",
+      "-Iloom/include",
+      "-Iloom/src",
+      "-isystem",
+      "loom/third_party/nlohmann",
+      "-c",
+      "/workspace/scratch/98e6ad903811/precision-checks/semantic-w2-latest-six/semantic_w1_c9e844ff65d87e3345ed51f2bdef5500724e7a781fa0912b19b1016143463db5.cpp",
+      "-o",
+      "/workspace/scratch/98e6ad903811/precision-checks/semantic-w2-latest-six/semantic_w2.o"
+    ],
+    [
+      "c++",
+      "-std=c++20",
+      "-g0",
+      "-O0",
+      "-I/workspace/scratch/98e6ad903811/precision-checks/semantic-w2-latest-six/include",
+      "-Iloom/include",
+      "-Iloom/src",
+      "-isystem",
+      "loom/third_party/nlohmann",
+      "-x",
+      "c++",
+      "-c",
+      "/workspace/scratch/98e6ad903811/chatadhd/loom/src/extract/tests/semantic_w2_integration.cpp.fixture",
+      "-o",
+      "/workspace/scratch/98e6ad903811/precision-checks/semantic-w2-latest-six/fixture.o"
+    ]
+  ],
+  "historical_five_case_proof": {
+    "public_W1_commit": "aed85b8d5b90db9c3055918e4864f8273bd3d411",
+    "pinned_W2": "34cc920dd3cdb0c0fca0a514569b19111429583f",
+    "passed": 5,
+    "total": 5,
+    "scratch_retention": "precision-checks/semantic-w2-five-public-aed85b8",
+    "five_original_case_bodies_byte_identical": [
+      "cold_admission",
+      "tenfold_no_http",
+      "confirm_and_retry_same_run",
+      "provider_settles_actual",
+      "cap_stays_unknown_without_usage"
+    ]
+  },
+  "W2_policy_delta": {
+    "old_commit": "34cc920dd3cdb0c0fca0a514569b19111429583f",
+    "new_commit": "bbc95f73672f3c9c4f2cd8153108da1513a80dc3",
+    "path": "loom/src/policy/usage_policy.cpp",
+    "byte_identical": true,
+    "sha256": "790bca06403a46ee59894801e251e4fad6afe9e39d57d5f3b3a679f7486158b9",
+    "unchanged_semantics": [
+      "null forecasts",
+      "rolling baseline",
+      "admission",
+      "reservations",
+      "actuals",
+      "unforecasted overrun diagnostic",
+      "recovery"
+    ]
+  },
+  "cold_config_case": {
+    "stored_override": null,
+    "source": "preset",
+    "effective_options_match_actual_preset": true,
+    "effective_hash_verified": true,
+    "settings_opened_ledger": false,
+    "http_calls": 1,
+    "actual_output_token_baseline": 2,
+    "config_key_remained_absent": true,
+    "coverage": "actual latest W2 effective_usage_policy_options and usage_policy_settings through unchanged root Config::JsonStore API; not W2 Config::get fallback or C ABI"
+  }
 }
