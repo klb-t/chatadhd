@@ -1,0 +1,72 @@
+{
+  "schema": "loom.research_prompt_preferences.source_discovery/1",
+  "observed_on": "2026-10-05",
+  "repository": "klb-t/chatadhd",
+  "requested_paths": [
+    "docs/research/model_research_2026-10-04/stage5/UNEXECUTED_PREPARATIONS_20261005.zip",
+    "express20261005/prompt-parameters-v1"
+  ],
+  "base_complete_recursive_tree": {
+    "commit": "edcb32fb87116ac497f8eb3d59d53ecea0cfee3f",
+    "tree_sha": "aa2793abd8dc9ce4b2a89659efbbfc87535df664",
+    "entries": 2613,
+    "truncated": false,
+    "matching_paths": []
+  },
+  "direct_zip_read": {
+    "commit": "edcb32fb87116ac497f8eb3d59d53ecea0cfee3f",
+    "http_result": 404
+  },
+  "independent_reviewer_checked_refs": [
+    {
+      "ref": "archive/gpt/model-research-close-before-rebase-2026-10-05",
+      "commit": "b172b59fb595bab506371c7a1cb0a161db809673",
+      "found": false
+    },
+    {
+      "ref": "archive/gpt/model-research-before-rebase-2026-10-05",
+      "commit": "5753d2cf93dcba4edd5c35534b667f23b915c9b7",
+      "found": false
+    },
+    {
+      "ref": "archive/gpt/model-research-runner-review-2026-10-05",
+      "commit": "3e21a0499ffbcb5b2f8117c90df7d48f56d0a7b9",
+      "found": false
+    },
+    {
+      "ref": "main",
+      "commit": "283ad6afeee76165c2d3e7033ad2f3e989a57547",
+      "complete_tree_entries": 2238,
+      "truncated": false,
+      "found": false
+    },
+    {
+      "ref": "gpt/integrator-state-2026-10-04",
+      "commit": "b81f2732a8e9e1865b6fce327dea7e0e04723155",
+      "complete_tree_entries": 2182,
+      "truncated": false,
+      "found": false
+    }
+  ],
+  "discovery_boundary": "These observed ref trees and exact reads lack the requested paths. This does not prove that unpublished/private checkpoints do not exist.",
+  "crc_check": "NOT_RUN_ARCHIVE_UNAVAILABLE",
+  "sha256_check": "NOT_RUN_ARCHIVE_UNAVAILABLE",
+  "old_dev_not_substituted": true,
+  "first_answers_found": 0,
+  "credentials_read": false,
+  "paid_calls": 0,
+  "code_search": {
+    "queries": [
+      "UNEXECUTED_PREPARATIONS_20261005 repo:klb-t/chatadhd",
+      "express20261005 repo:klb-t/chatadhd"
+    ],
+    "total_counts": [
+      0,
+      0
+    ],
+    "incomplete_results": [
+      false,
+      false
+    ]
+  }
+}

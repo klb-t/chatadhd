@@ -1,0 +1,87 @@
+{
+  "schema": "loom.research_prompt_preferences.pending_rubric/1",
+  "version": "7b.source-relative-and-preference.2026-10-05/1",
+  "status": "PARTIAL_PROTOCOL_NOT_DISPATCH_READY",
+  "frozen_source_and_gold_sha256": null,
+  "first_responses_only": true,
+  "answer_repair": false,
+  "retries_for_quality": false,
+  "criteria_changes_after_outputs": false,
+  "availability": {
+    "fields": [
+      "http_2xx",
+      "valid_provider_envelope",
+      "nonempty_content"
+    ],
+    "separate_flags": true,
+    "denominator": "8 planned operations per configuration",
+    "missing": "No response => false availability, missing semantic result; not an observed wrong label."
+  },
+  "json": {
+    "rules": [
+      "One complete JSON object; no fences or external prose",
+      "Reject duplicate keys recursively",
+      "Reject NaN, Infinity and -Infinity",
+      "No repair or substring recovery"
+    ],
+    "schema_conformance": "Reported separately against the one shared final schema."
+  },
+  "label": {
+    "all_planned": "correct / 8, all eight planned slots retained",
+    "conditional": "correct / valid_schema_labels; denominator zero => null",
+    "missing": "Report unattempted, unavailable, malformed JSON, schema mismatch and observed wrong labels separately.",
+    "target": "Unchanged source gold; explicit source commitment, not world truth."
+  },
+  "grounding": {
+    "mechanical": "Each nonempty quote must be an exact unique substring of the identified source turn. Report literal quote count/total quoted items; counterargument quotes checked separately. Zero quotes => ratio null.",
+    "attribution_time": "Source attribution and exact source timestamp/as_of applicability checked separately. Timestamp unavailable => null, not invented.",
+    "manual_scale": {
+      "pass": "The cited material supports the source-relative decision at the queried time and attribution; material opposing statements are handled.",
+      "fail": "A citation is literal but irrelevant/misattributed/out of view, or the evidence does not establish the stated decision.",
+      "unknown": "Available output cannot be adequately assessed with the preserved source."
+    },
+    "unknown_label": "Do not require invented evidence for an absent assertion. A manual source-wide review may support unknown; no-citation coverage remains separately reported.",
+    "not_a_metric": "Exact matching alone is not semantic grounding."
+  },
+  "truncation": {
+    "observed": "finish_reason=length",
+    "other": "Retain all other finish reasons, refusal and content-filter outcomes separately.",
+    "incomplete_json": "Separate flag; not automatically proof of length truncation.",
+    "token_cap_comparison": "No repair or replacement of truncated first responses."
+  },
+  "cost": {
+    "actual": "Only attributable generation/provider billing evidence; USD decimal, unknown costs remain null.",
+    "separate_fields": [
+      "verified_actual_cost_usd",
+      "unknown_cost_operations",
+      "reserved_upper_usd",
+      "provider_reported_tokens",
+      "observed_model",
+      "observed_provider"
+    ],
+    "shared_ledger": "7A owns the one private ledger. Preparation spends zero."
+  },
+  "preference": {
+    "method": "Manual source-relative 0/1/2, assessed independently from labels and grounding; record assessor/version/date and cited output spans.",
+    "unscorable": "Null for unavailable, malformed/schema-invalid or uninterpretable output; report coverage and scored distribution, never coerce null to zero.",
+    "concise": {
+      "0": "Clear failure of the preference, such as an unnecessary full source replay.",
+      "1": "Focused but materially repetitive or includes source details not needed for this query.",
+      "2": "Focused decision with necessary decisive support; no redundant restatement of source or trace."
+    },
+    "full_trace_counterarguments": {
+      "0": "No usable requested trace or assessment of competing readings.",
+      "1": "Some requested material events/changes or competing-reading assessment omitted.",
+      "2": "All material source events/changes needed for this query, their as_of effect and grounded competing readings are addressed; if none is material, a source-relative explanation of that absence."
+    },
+    "not_length_score": true,
+    "empty_counterargument_array": "Does not itself fail; score the source-relative explanation and whether a material alternative was omitted.",
+    "correctness": "A stylistically compliant wrong answer can have high preference score and low label/grounding scores; never merge them."
+  },
+  "analysis": {
+    "per_configuration": "8 planned, attempted, available, JSON-valid, schema-valid, label-match counts, quote mechanical/manual, truncation, preference coverage/distribution, verified/unknown cost.",
+    "paired": "For each factor, compare the same eight query identities with other factors fixed. Show paired transitions and missingness. Two authored families are not eight independent samples.",
+    "no_aggregate_winner": "Keep the trade-offs by user preference; shorter is not automatically better.",
+    "method_claims": "After observed outputs, use existing loom.model_profiles/1 and exporter: dated claims with exact method/prompt/params/evidence/produced_by; no native write assertion."
+  }
+}
