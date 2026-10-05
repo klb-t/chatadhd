@@ -1,0 +1,25 @@
+{
+  "schema": "loom.followup_semantic_preregistration_verification/1",
+  "criteria_path": "docs/research/model_research_2026-10-04/followup-semantic-preregistration-v1.json",
+  "criteria_sha256": "9787f92838174075e34e1fa579153abbce6a28f02e57b3d653895d224163c9d8",
+  "version": "2026-10-05-v1",
+  "planned_requests_verified": 24,
+  "stage3_requests": 12,
+  "stage4_requests": 12,
+  "matched_pairs_verified": 12,
+  "cases_verified": 4,
+  "source_points_verified": 12,
+  "stage4_embedded_fixture_spans_verified": 4,
+  "all_request_and_input_hashes_verified": true,
+  "all_declared_code_hashes_verified": true,
+  "future_model_outputs_used": 0,
+  "results_or_responses_files_used": [],
+  "code_or_test_files_modified": false,
+  "new_model_calls": 0,
+  "independent_review": {
+    "scope": "criteria/input/reference/code hash and exact span review; no outputs/private/holdout",
+    "status": "final scoped pass, including both DATA clarifications",
+    "no_code_or_test_edits": true,
+    "final_criteria_sha256_verified": "9787f92838174075e34e1fa579153abbce6a28f02e57b3d653895d224163c9d8"
+  }
+}
