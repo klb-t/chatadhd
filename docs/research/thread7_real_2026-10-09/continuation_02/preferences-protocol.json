@@ -1,0 +1,19 @@
+{
+  "schema": "loom.research_preference_annotation_protocol/1",
+  "version": "continuation02-v1",
+  "scope": "12 frozen conversation families; exact literal user statements and speaker-aware exclusions",
+  "pass1": "Inspect source user turns, select exact evidence, preserve native pointer, hash, speaker, timestamp and statement kind.",
+  "pass2": "Check interpretation and delimit scope, uncertainty and relations. Both passes are assistant work in the same session; no independent adjudication or owner approval.",
+  "quotation_rule": "A user message containing a quoted external text does not make every embedded statement a user preference. Record external quotation exclusions. Do not claim semantic reading of an entire excluded quoted work.",
+  "coverage_rule": "Record every user node and source-message hash in the review inventory; nonuser text is surrounding context and never a declared user preference. A review is not a recall guarantee or independent semantic gold.",
+  "temporal_rule": "Use native timestamp and ancestry. Array position alone does not establish chronology, supersession or active branch. Exact prior statements remain preserved.",
+  "application_rule": "Annotations are historical scoped evidence for retrospective source inspection. They do not establish current preferences or permission to act, and do not change the selected profile engine.",
+  "view_rule": "Inject only evidence whose source node is in the actual context view. Annotated relations to hidden evidence do not disclose its contents or establish an answer from omitted material.",
+  "absence_rule": "A completed hash-bound review may yield an empty known-evidence set. This is not a claim that no preference exists. Uncertain candidates keep their individual reasons.",
+  "unresolved_rule": "No semantic inference, second extraction call, owner endorsement or independent judgement may be replaced by a placeholder.",
+  "preparation_rule": "Materialize only changed source_explicit arms and reference already prepared none/selected_profile arms unchanged from the previous release.",
+  "source_mutations": false,
+  "profile_adoption": false,
+  "model_calls": 0,
+  "actual_cost_usd": "0"
+}

@@ -1,0 +1,85 @@
+{
+  "annotation_projection_scope": "literal source utterance only; semantic scope, later supersession and posterior interpretation retained privately",
+  "candidate_records": 258,
+  "composition_sha256": "20ae0e08a3429fc5789040e007f4585a5880924f41f40fab6fdf56748e829f4a",
+  "decisions": {
+    "accept": 174,
+    "reject": 59,
+    "uncertain": 25
+  },
+  "evidence_sha256": "077213b170a31f34848a085147474b4c5241d43b31da0593850dfcb8ecbb7d25",
+  "families": 12,
+  "families_with_accepted": 10,
+  "independent_adjudication": false,
+  "legacy_compatibility": {
+    "compared_current_version": "experiment_context_preparation_v1/3",
+    "comparison": "legacy no-review source request body and lifecycle status unchanged; versioned provenance IDs intentionally differ",
+    "comparisons": 81,
+    "fixture_type": "authored_mechanics_only",
+    "new_model_calls": 0,
+    "passed": 81,
+    "pinned_producer_sha256": "575d701e071528571d2692360288110601a81b6c5bc72c035642b21db82c095b",
+    "pinned_producer_version": "experiment_context_preparation_v1/2",
+    "real_sources_reprepared": 0
+  },
+  "limitations": [
+    "Source review is same-session assistant annotation, not independent adjudication or owner approval.",
+    "No exhaustive preference recall claim. Unknown remains unknown; empty known evidence does not assert absence.",
+    "External quoted podcast excluded through boundary and attribution review, not semantically adjudicated in full.",
+    "Only source inspection preparation measured; model answer quality remains null."
+  ],
+  "new_api_calls": 0,
+  "new_cost_usd": "0",
+  "no_accepted_families": 2,
+  "preparation": {
+    "annotation_manifest_sha256": "ab39e351a5ba43e1414c4a829b5f947754d93805ec1b28374fae11f13aadb8e0",
+    "id": "thread7-cont02-context-composition-v3",
+    "independent_adjudication": false,
+    "new_calls": 0,
+    "new_cost_usd": "0",
+    "new_rows": 324,
+    "pending_second_phase": 324,
+    "previous_manifest_sha256": "5ee93a5b92bd94cf6951474e1ae7c5f7250481f4c258347fa7a0b4e140377f64",
+    "previous_rows_reused": 648,
+    "primary_body_count": 972,
+    "profile_adopted": false,
+    "ready_missing_annotation_rows": 0,
+    "replace_previous_filter": {
+      "preference_mode": [
+        "source_explicit"
+      ]
+    },
+    "retain_previous_filter": {
+      "preference_mode": [
+        "none",
+        "selected_profile"
+      ]
+    },
+    "schema": "loom.research_preparation_composition/1",
+    "semantics": "historical scoped literal source evidence only; no active personalization or model-quality validation",
+    "status_counts": {
+      "prepared": 648,
+      "primary_prepared_dependency_pending": 324
+    },
+    "total_rows": 972,
+    "updated_manifest_sha256": "8a2515a57dee96ef9662e3b84c3b0cb17b8c934e36a574cf4f973fb7948564e0",
+    "view_boundary_exclusion_slots": 162,
+    "view_filtered_empty_known_evidence_slots": 126,
+    "view_filtered_uncertain_evidence_slots": 72
+  },
+  "reference_status": "provisional_same_session_assistant_review",
+  "relations": 61,
+  "review_sha256": "882aa8033d4ac09e10c6ff3895fe33b27275c1c8cdb503f49eca58b49bbfcda7",
+  "reviewed_sources_sha256": "f8e04f2b66d5f0c98095f7237f10658a3c45b1d8d3ae2d2a5d0d5c5c3d16a19b",
+  "source_user_messages": 770,
+  "tests": {
+    "earlier_failure": "One mechanics fixture used items instead of existing list.values contract; full failed log retained, then corrected without changing gate.",
+    "existing_context_tests": 36,
+    "failed": 0,
+    "full_log_sha256": "a0365e570875000dab49d9364ad0f65725974603a804896fdb4fb647c703d461",
+    "new_annotation_tests": 23,
+    "passed": 59,
+    "skipped": 0
+  },
+  "user_settings_changed": false
+}

@@ -15,7 +15,7 @@ from pathlib import Path
 
 from loom.tools.structure.experiment_workflow_v1 import canonical, digest, require, strict_json, variants
 
-VERSION = 'experiment_context_preparation_v1/2'
+VERSION = 'experiment_context_preparation_v1/3'
 
 
 def text_projection(message):
@@ -207,12 +207,23 @@ def prepare_view(source, task, representation, resolution, policy):
             'loss': losses, 'augmentation': augmentation, 'semantic_inference_performed': False}
 
 
-def preference_context(source, mode, profiles, selected_profile):
+def preference_context(source, mode, profiles, selected_profile, visible_node_ids=None):
     if mode == 'none':
         return {'status': 'prepared', 'mode': mode, 'value': None, 'user_preference_claimed': False}
     if mode == 'source_explicit':
         annotations = source.get('explicit_preference_evidence', [])
-        if not annotations:
+        review = source.get('preference_review')
+        if review is not None:
+            require(review.get('schema') == 'loom.research_preference_source_review/1', 'invalid_preference_review_schema')
+            require(review.get('status') == 'completed', 'incomplete_preference_review')
+            require(review.get('source_sha256') == source['source_sha256'], 'preference_review_source_mismatch')
+            inventory = {n['node_id']: digest(n['native_message']) for n in source['nodes']}
+            require(review.get('source_message_inventory_sha256') == digest(inventory), 'preference_review_inventory_mismatch')
+            require(review.get('accepted_evidence_sha256') == digest(annotations), 'preference_review_evidence_mismatch')
+            require(review.get('profile_adoption') is False, 'preference_review_cannot_adopt_profile')
+            require(visible_node_ids is not None, 'reviewed_preference_visibility_required')
+            require(set(visible_node_ids) <= set(inventory), 'preference_visibility_unknown_node')
+        if not annotations and review is None:
             return {'status': 'pending', 'mode': mode, 'pending_reason': 'explicit_source_preference_annotations_missing'}
         by_id = {n['node_id']: n for n in source['nodes']}
         for evidence in annotations:
@@ -227,6 +238,39 @@ def preference_context(source, mode, profiles, selected_profile):
             require(evidence.get('annotation_authority') in ('owner_annotation', 'researcher_annotation'), 'preference_authority_missing')
             require(evidence.get('classification') == 'explicit_preference', 'preference_classification_missing')
             require(bool(evidence.get('scope')), 'preference_scope_missing')
+        if review is not None:
+            visible = set(visible_node_ids)
+            annotations = [e for e in annotations if e['node_id'] in visible]
+            # Preserve the full dossier privately. Do not leak later review
+            # judgements, hidden relations or supersession times into a bounded
+            # view merely because the original quote was visible.
+            annotations = [{k: deepcopy(e[k]) for k in (
+                'evidence_id', 'node_id', 'source_pointer', 'source_message_sha256',
+                'quote', 'quote_utf8_sha256', 'literal_field_pointer',
+                'quote_start_codepoints', 'quote_end_codepoints', 'role',
+                'source_time', 'classification', 'annotation_authority', 'application') if k in e}
+                           for e in annotations]
+            for evidence in annotations:
+                evidence['scope'] = {'source_node_id': evidence['node_id'],
+                                     'applicability': 'source_utterance_only_not_active_task_instruction',
+                                     'semantic_scope_interpretation': 'retained_privately_not_injected'}
+            # The original source hash still binds the reviewed inventory; only
+            # unresolved IDs, not posterior explanations, enter the view.
+            uncertain = [{'evidence_id': e['evidence_id'], 'node_id': e['node_id'],
+                          'reason': 'interpretation_uncertain_see_private_review'}
+                         for e in review['uncertain_candidates'] if e['node_id'] in visible]
+            return {'status': 'prepared', 'mode': mode, 'value': deepcopy(annotations),
+                    'annotation_status': 'two_pass_same_session_provisional',
+                    'evidence_use': 'historical_scoped_evidence_not_active_instruction',
+                    'empty_result': not annotations, 'known_evidence_only': True,
+                    'no_preference_exists_claimed': False,
+                    'uncertain_candidates': deepcopy(uncertain),
+                    'excluded_by_view_boundary_count': len(source.get('explicit_preference_evidence', [])) - len(annotations),
+                    'review_sha256': review['review_sha256'],
+                    'annotation_projection_loss': ['posterior_review_reason', 'relations_to_other_evidence',
+                                                   'supersession_and_current_applicability', 'semantic_scope_interpretation'],
+                    'temporal_resolution': 'unknown_not_injected_from_full_family_review',
+                    'user_preference_claimed': bool(annotations), 'profile_engine_mutation': False}
         return {'status': 'prepared', 'mode': mode, 'value': deepcopy(annotations),
                 'annotation_status': 'provisional_unless_owner_annotation',
                 'user_preference_claimed': True, 'interpretation': 'classification is attributed to the named annotator'}
@@ -246,7 +290,14 @@ def preference_context(source, mode, profiles, selected_profile):
 
 def prepare_variant(source, task, variant, plan, profiles):
     view = prepare_view(source, task, variant['context_representation'], variant['context_resolution'], plan['context_policy'])
-    pref = preference_context(source, variant['preference_mode'], profiles, plan.get('selected_profile'))
+    visible = None
+    if view['status'] == 'prepared':
+        omitted = set(view['loss']['omitted_node_ids'])
+        visible = [n['node_id'] for n in source['nodes'] if n['node_id'] not in omitted]
+    # A missing view is already a pending dependency; no source-wide annotation
+    # may enter as a substitute for unavailable context.
+    pref = preference_context(source, variant['preference_mode'], profiles, plan.get('selected_profile'),
+                              visible_node_ids=visible if visible is not None else [])
     identity = {'source_sha256': digest(source), 'task_sha256': digest(task), 'variant': variant,
                 'plan_sha256': digest(plan), 'profiles_sha256': digest(profiles), 'producer': VERSION}
     row = {'id': 'preparation:' + digest(identity), 'identity': identity, 'family_id': source['family_id'],
