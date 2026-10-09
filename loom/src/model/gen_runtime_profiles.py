@@ -225,16 +225,22 @@ def source_metadata(path, pointer, raw, target):
 
 
 def literal_entries(name, documents):
-    lines = [f'constexpr std::pair<std::string_view, std::string_view> {name}[] = {{']
-    for domain, doc in sorted(documents.items()):
+    lines, entries = [], []
+    for index, (domain, doc) in enumerate(sorted(documents.items())):
         text = json.dumps(doc, ensure_ascii=False, allow_nan=False, separators=(',', ':'))
         if ')LPROFILE"' in text:
             raise ValueError(f'raw-string delimiter in {domain}')
-        lines.append('  {"' + domain + '",')
-        # Adjacent literals concatenate; split Unicode characters, never bytes.
+        chunks = f'{name}Chunks{index}'
+        lines.append(f'constexpr std::string_view {chunks}[] = {{')
+        # Independent elements do not form an overlength concatenated literal.
+        # Split Unicode characters, never UTF-8 bytes (at most 16000 bytes each).
         for i in range(0, len(text), 4000):
-            lines.append('    R"LPROFILE(' + text[i:i + 4000] + ')LPROFILE"')
-        lines[-1] += '},'
+            lines.append('  R"LPROFILE(' + text[i:i + 4000] + ')LPROFILE",')
+        lines.append('};')
+        entries.append('  {"' + domain + '", ' + chunks + '},')
+    # Each span refers to a namespace-scope constexpr array with static lifetime.
+    lines.append(f'constexpr std::pair<std::string_view, std::span<const std::string_view>> {name}[] = {{')
+    lines.extend(entries)
     lines.append('};')
     return lines
 

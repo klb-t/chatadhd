@@ -340,16 +340,39 @@ def scan_source(raw, scanner):
 def generated_inputs(expected, root):
     text = expected.decode("utf-8")
     marker = "kRuntimeProfileSources[] = {"
-    if marker not in text:
+    if text.count(marker) != 1:
         raise ValueError('generator_output_has_no_source_identity_table')
     table = text.split(marker, 1)[1].split("\n};", 1)[0]
-    entries = list(re.finditer(r'^  \{"([a-z0-9_-]+)",\n', table, re.MULTILINE))
+    # Only the closed trusted generator's exact planned output reaches this
+    # reader. Each referenced chunk remains an independent C++ literal; do not
+    # mistake the span table for empty provenance or accept unreferenced arrays.
+    entry_pattern = r'\s*\{"([a-z0-9_-]+)", (kRuntimeProfileSourcesChunks[0-9]+)\},'
+    entries = list(re.finditer(entry_pattern, table))
+    if re.sub(entry_pattern, '', table).strip():
+        raise ValueError('invalid_generated_source_identity_table')
+    chunk_pattern = (r'^constexpr std::string_view (kRuntimeProfileSourcesChunks[0-9]+)\[\] = \{\n'
+                     r'(.*?)^\};$')
+    chunks = {}
+    for block in re.finditer(chunk_pattern, text, re.MULTILINE | re.DOTALL):
+        name, body = block.groups()
+        if name in chunks:
+            raise ValueError('duplicate_generated_source_chunks')
+        literal_pattern = r'\s*R"LPROFILE\((.*?)\)LPROFILE",'
+        parts = re.findall(literal_pattern, body, re.DOTALL)
+        if not parts or re.sub(literal_pattern, '', body, flags=re.DOTALL).strip():
+            raise ValueError('invalid_generated_source_chunks')
+        chunks[name] = ''.join(parts)
     paths = {"loom/data/runtime_sources.pack"}
     if not entries:
         raise ValueError('empty_generated_source_identity_table')
-    for index, entry in enumerate(entries):
-        end = entries[index + 1].start() if index + 1 < len(entries) else len(table)
-        raw = "".join(re.findall(r'R"LPROFILE\((.*?)\)LPROFILE"', table[entry.end():end], re.DOTALL))
+    domains, used = set(), set()
+    for entry in entries:
+        domain, name = entry.groups()
+        if domain in domains or name in used or name not in chunks:
+            raise ValueError('invalid_generated_source_chunk_reference')
+        domains.add(domain)
+        used.add(name)
+        raw = chunks[name]
         sources = json.loads(raw, object_pairs_hook=unique_object)
         if not isinstance(sources, list) or not sources:
             raise ValueError('invalid_generated_source_identity_records')
@@ -359,6 +382,8 @@ def generated_inputs(expected, root):
             if sha(actual) != source["raw_sha256"]:
                 raise ValueError('generated_metadata_disagrees_with_actual_source_bytes:' + path)
             paths.add(path)
+    if used != set(chunks):
+        raise ValueError('unreferenced_generated_source_chunks')
     return [{"path": path, "sha256": sha(inside(root, path).read_bytes())} for path in sorted(paths)]
 
 

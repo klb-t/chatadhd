@@ -740,6 +740,40 @@ class ProductLiteralGuardTests(unittest.TestCase):
         self.assertNotEqual(entries[0]['status'], 'BLOCKED')
         self.assertTrue(entries[0].get('reason'))
 
+    def test_chunked_provenance_reassembles_exact_source_bytes_and_rejects_ambiguous_tables(self):
+        fixture = self.runtime_embedding_fixture()
+        spec = importlib.util.spec_from_file_location('chunked_provenance_guard', GUARD)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        relative = fixture['profile'].relative_to(self.root).as_posix()
+        source = {'path': relative, 'raw_sha256': sha256(fixture['profile'].read_bytes())}
+        # A large provenance array split inside JSON tokens still identifies the
+        # exact same input bytes. This exercises the reader, not C++ parsing.
+        raw = json.dumps([source] * 600, separators=(',', ':'))
+        self.assertGreater(len(raw.encode()), 65536)
+        parts = [raw[offset:offset + 4000] for offset in range(0, len(raw), 4000)]
+        block = ('constexpr std::string_view kRuntimeProfileSourcesChunks0[] = {\n' +
+                 ''.join('  R"LPROFILE(' + part + ')LPROFILE",\n' for part in parts) + '};\n')
+        table = ('constexpr std::pair<std::string_view, std::span<const std::string_view>> '
+                 'kRuntimeProfileSources[] = {\n  {"x", kRuntimeProfileSourcesChunks0},\n};\n')
+        expected = self.policy['generated_outputs'][0]['inputs']
+        self.assertEqual(module.generated_inputs((block + table).encode(), self.root), expected)
+        altered_hash = block.replace(source['raw_sha256'], '0' * 64)
+        invalid = {
+            'unknown_reference': block + table.replace('Chunks0', 'Chunks1'),
+            'duplicate_domain': block + table.replace('\n};', '\n  {"x", kRuntimeProfileSourcesChunks0},\n};'),
+            'duplicate_chunks': block + block + table,
+            'unused_chunks': block + block.replace('Chunks0', 'Chunks1') + table,
+            'nonliteral': block.replace('R"LPROFILE(', 'arbitrary(R"LPROFILE(', 1) + table,
+            'unexpected_entry': block + table.replace('\n};', '\n  arbitrary(),\n};'),
+            'changed_source_hash': altered_hash + table,
+            'duplicate_table': block + table + table,
+        }
+        for label, text in invalid.items():
+            with self.subTest(label=label):
+                with self.assertRaises(ValueError):
+                    module.generated_inputs(text.encode(), self.root)
+
     def test_runtime_embedding_source_output_and_generator_changes_block(self):
         fixture = self.runtime_embedding_fixture()
         originals = {name: path.read_bytes() for name, path in fixture.items()}

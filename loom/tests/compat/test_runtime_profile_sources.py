@@ -6,6 +6,8 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import re
+import shlex
 import shutil
 import subprocess
 import sys
@@ -18,18 +20,19 @@ GEN = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(GEN)
 
 
-def unpack_table(text, name):
+def unpack_serialized_table(text, name):
     table = text.split(f'{name}[] = {{', 1)[1].split('\n};', 1)[0]
     result = {}
-    import re
-    entries = list(re.finditer(r'^  \{"([a-z0-9_-]+)",\n', table, re.M))
-    for index, entry in enumerate(entries):
-        domain = entry.group(1)
-        end = entries[index + 1].start() if index + 1 < len(entries) else len(table)
-        body = table[entry.end():end]
+    entries = re.findall(r'^  \{"([a-z0-9_-]+)", ([A-Za-z0-9_]+)\},$', table, re.M)
+    for domain, chunks in entries:
+        body = text.split(f'{chunks}[] = {{', 1)[1].split('\n};', 1)[0]
         raw = ''.join(re.findall(r'R"LPROFILE\((.*?)\)LPROFILE"', body, re.S))
-        result[domain] = json.loads(raw)
+        result[domain] = raw.encode('utf-8')
     return result
+
+
+def unpack_table(text, name):
+    return {domain: json.loads(raw) for domain, raw in unpack_serialized_table(text, name).items()}
 
 
 class RuntimeProfileSourceTests(unittest.TestCase):
@@ -50,6 +53,60 @@ class RuntimeProfileSourceTests(unittest.TestCase):
 
     def plan(self):
         return GEN.plan(self.data, self.output)
+
+    def assert_compiled_tables(self, generated, expected):
+        candidates = [shlex.split(os.environ.get('CXX', ''))]
+        candidates += [[name] for name in ['g++', 'clang++'] +
+                       [f'clang++-{version}' for version in range(21, 13, -1)]]
+        compilers, resolved = [], set()
+        for command in candidates:
+            executable = shutil.which(command[0]) if command else None
+            if executable and Path(executable).resolve() not in resolved:
+                resolved.add(Path(executable).resolve())
+                compilers.append([executable, *command[1:]])
+        self.assertTrue(compilers, 'a C++ compiler is required for embedded byte verification')
+        self.output.write_bytes(generated)
+        probe = self.root / 'probe.cpp'
+        probe.write_text(
+            '#include <cstdio>\n#include <span>\n#include <string>\n'
+            '#include <string_view>\n#include <utility>\n#include "generated.inc"\n'
+            'template <class T, std::size_t N> void write_table(const T (&table)[N]) {\n'
+            '  std::printf("%zu\\n", N);\n'
+            '  for (const auto& entry : table) {\n'
+            '    std::fwrite(entry.first.data(), 1, entry.first.size(), stdout);\n'
+            '    std::putchar(\'\\n\');\n'
+            '    std::string document;\n'
+            '    for (auto chunk : entry.second) document.append(chunk);\n'
+            '    std::printf("%zu\\n", document.size());\n'
+            '    std::fwrite(document.data(), 1, document.size(), stdout);\n'
+            '  }\n}\n'
+            'int main() {\n'
+            '  write_table(kRuntimeProfiles);\n'
+            '  write_table(kRuntimeProfileSources);\n'
+            '  return std::ferror(stdout) ? 1 : 0;\n}\n', encoding='utf-8')
+        for compiler in compilers:
+            with self.subTest(compiler=compiler):
+                binary = self.root / 'probe'
+                result = subprocess.run(
+                    [*compiler, '-std=c++20', '-Wall', '-Wextra', '-Wpedantic', '-Werror',
+                     '-Woverlength-strings', str(probe), '-o', str(binary)],
+                    capture_output=True, timeout=30)
+                self.assertEqual(result.returncode, 0, result.stderr.decode('utf-8', errors='replace'))
+                raw = subprocess.check_output([str(binary)], timeout=10)
+                actual = {}
+                for name in ('kRuntimeProfiles', 'kRuntimeProfileSources'):
+                    count, raw = raw.split(b'\n', 1)
+                    actual[name] = {}
+                    for _ in range(int(count)):
+                        domain, raw = raw.split(b'\n', 1)
+                        size, raw = raw.split(b'\n', 1)
+                        size = int(size)
+                        self.assertGreaterEqual(len(raw), size)
+                        self.assertNotIn(domain.decode(), actual[name])
+                        actual[name][domain.decode()] = raw[:size]
+                        raw = raw[size:]
+                self.assertEqual(raw, b'')
+                self.assertEqual(actual, expected)
 
     def run_generator(self, check=False):
         command = [sys.executable, str(LOOM / 'src/model/gen_runtime_profiles.py'),
@@ -89,6 +146,46 @@ class RuntimeProfileSourceTests(unittest.TestCase):
         definitions = unpack_table(shadow[self.output].decode(), 'kRuntimeProfiles')
         for path in (LOOM / 'data/runtime').glob('*.pack'):
             self.assertEqual(definitions[path.stem], json.loads(path.read_bytes()))
+
+    def test_current_definition_and_provenance_bytes_compile_without_overlength_literals(self):
+        generated = GEN.plan(LOOM / 'data', self.output)[self.output]
+        expected = {name: unpack_serialized_table(generated.decode('utf-8'), name)
+                    for name in ('kRuntimeProfiles', 'kRuntimeProfileSources')}
+        self.assertEqual(set(expected['kRuntimeProfiles']), set(expected['kRuntimeProfileSources']))
+        for path in (LOOM / 'data/runtime').glob('*.pack'):
+            definition, _ = GEN.read_document(path)
+            serialized = json.dumps(definition, ensure_ascii=False, allow_nan=False, separators=(',', ':'))
+            self.assertEqual(expected['kRuntimeProfiles'][path.stem], serialized.encode('utf-8'))
+        self.assert_compiled_tables(generated, expected)
+
+    def test_large_utf8_unknown_values_and_escaped_nul_survive_compiled_chunks(self):
+        source_path = self.data / 'policy/usage_policy.pack'
+        source = json.loads(source_path.read_bytes())
+        source['future_setting'] = {'text': 'zażółć 🧠 \0' * 9000,
+                                    'integer': 9007199254740993, 'fraction': 1.0,
+                                    'unknown': {'nullable': None, 'items': [False, True]}}
+        source_key = 'nested/' + 'ź🧠/' * 9000
+        source_path.write_text(json.dumps({source_key: source}, ensure_ascii=False), encoding='utf-8')
+        pointer = '/' + source_key.replace('~', '~0').replace('/', '~1')
+        self.manifest['recipes'][0]['projections'][0]['pointer'] = pointer
+        self.write_manifest()
+        outputs = self.plan()
+        generated = outputs[self.output]
+        expected = {name: unpack_serialized_table(generated.decode('utf-8'), name)
+                    for name in ('kRuntimeProfiles', 'kRuntimeProfileSources')}
+        definition = json.loads(outputs[self.data / 'runtime/usage_policy.pack'])
+        self.assertEqual(definition['defaults'], source)
+        serialized = json.dumps(definition, ensure_ascii=False, allow_nan=False, separators=(',', ':')).encode('utf-8')
+        self.assertGreater(len(serialized), 65536)
+        self.assertEqual(expected['kRuntimeProfiles']['usage_policy'], serialized)
+        self.assertIn(b'\\u0000', serialized)
+        self.assertNotIn(b'\0', serialized)
+        self.assertIn(b'9007199254740993', serialized)
+        self.assertIn(b'"fraction":1.0', serialized)
+        provenance = expected['kRuntimeProfileSources']['usage_policy']
+        self.assertGreater(len(provenance), 65536)
+        self.assertEqual(json.loads(provenance)[1]['pointer'], pointer)
+        self.assert_compiled_tables(generated, expected)
 
     def test_canonical_source_edit_updates_wrapper_and_embedding_without_copy(self):
         source_path = self.data / 'policy/usage_policy.pack'

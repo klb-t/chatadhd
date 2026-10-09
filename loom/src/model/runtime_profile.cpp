@@ -5,6 +5,7 @@
 #include <cmath>
 #include <cstdint>
 #include <set>
+#include <span>
 
 #include "loom/util/fs.h"
 #include "loom/util/sha256.h"
@@ -14,6 +15,12 @@ namespace loom {
 namespace {
 
 #include "runtime_profiles_embedded.inc"
+
+std::string embedded_document(std::span<const std::string_view> chunks) {
+  std::string out;
+  for (const auto chunk : chunks) out.append(chunk);
+  return out;
+}
 
 Error invalid(std::string_view pointer, std::string_view reason) {
   return Error(Errc::InvalidArgument, "runtime profile " + std::string(pointer) + ": " + std::string(reason));
@@ -254,13 +261,13 @@ Result<RuntimeProfile> RuntimeProfile::builtin(std::string_view domain) {
   static const auto profiles = [] {
     std::vector<std::pair<std::string_view, Result<RuntimeProfile>>> out;
     for (const auto& entry : kRuntimeProfiles) {
-      auto definition = json::parse(entry.second);
+      auto definition = json::parse(embedded_document(entry.second));
       auto profile = definition ? from_definition(*definition)
                                 : Result<RuntimeProfile>(definition.error());
       if (profile) {
         for (const auto& source : kRuntimeProfileSources) {
           if (source.first != entry.first) continue;
-          auto metadata = json::parse(source.second);
+          auto metadata = json::parse(embedded_document(source.second));
           if (!metadata) profile = metadata.error();
           else profile->source_provenance_ = std::move(*metadata);
           break;

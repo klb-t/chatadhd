@@ -142,6 +142,7 @@ replace) or **platform detail** (an adapter).
 
 | Decision | Class |
 |---|---|
+| Runtime profile embedding uses generated static chunks joined before the existing parser; definitions and provenance retain exact bytes, with no profile/storage migration or diagnostic suppression | platform detail |
 | Shared on-disk format with the Python app (schema v4 DDL, IDs, timestamps, `json.dumps` formatting, file names, data-dir resolution) | invariant |
 | Loom state only in `loom_*` tables; no triggers or virtual tables in the main DB | invariant |
 | Raw sources are immutable: content-addressed blobs (`blobs/ab/cd/<sha256>`, chmod 444), with sources and provenance rows for every import | invariant |

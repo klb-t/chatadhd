@@ -1,6 +1,6 @@
 {
   "schema": "loom.product_literals/1",
-  "revision": 3,
+  "revision": 4,
   "requirement": {
     "id": "R42",
     "source_commit": "3cd5848e7484d50d00f19f0855bc2cd228ad7f3b",
@@ -472,7 +472,7 @@
       "operation": "runtime_profiles_v1",
       "generator": {
         "path": "loom/src/model/gen_runtime_profiles.py",
-        "sha256": "3d8eb9be1ee1d5f491580d61caf35a9d69c08bb544e0fb0507ab195d2e1ea8fd"
+        "sha256": "608c6a44bd3e2530ab4c5ec053d7d77d67b9bfa8e248f353ed420806e25a9898"
       },
       "inputs": [
         {
@@ -588,7 +588,7 @@
           "sha256": "781279229d42b12141dd19bdb6fe55de5142657a1c870e7517dc997964a42099"
         }
       ],
-      "output_sha256": "eae28580360cbc7b9171b2a52591b0fc15910b458c5a46682dc5be0bff37fb50",
+      "output_sha256": "501f9d01293c7a906d44e48c9962596bf77973b839c2e690b4c56621f15f776b",
       "reason": "Only the exact current trusted in-memory generator result is non-literal product data. Generator bytes, every canonical input and complete output must match; no whole-file review waiver."
     }
   ],
