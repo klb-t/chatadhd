@@ -1,0 +1,186 @@
+{
+  "schema": "audit.test-index/1",
+  "module": "D-resources",
+  "executable": "tools/ecosystem-audit-2026-10-09/pass4/D-resources/run.py",
+  "arguments": [
+    "--repo",
+    "--sha",
+    "--library",
+    "--native-source",
+    "--native-sha",
+    "--output"
+  ],
+  "exit": "1 for any failed acceptance, ERROR or BLOCKED; reproduction PASS is separate",
+  "cases": [
+    {
+      "id": "D4-01",
+      "category": "contract",
+      "invariant": "Attaching unknown/unavailable source requires neither byte copy nor field materialization."
+    },
+    {
+      "id": "D4-02",
+      "category": "contract",
+      "invariant": "JSON key permutation, whitespace and BOM preserve structure and list order; raw versions need not match."
+    },
+    {
+      "id": "D4-03",
+      "category": "contract",
+      "invariant": "Message list order is semantic and must not be normalized away."
+    },
+    {
+      "id": "D4-04",
+      "category": "contract",
+      "invariant": "Selecting one field materializes only that graph field; current syntax adapter may parse whole bounded document."
+    },
+    {
+      "id": "D4-05",
+      "category": "contract",
+      "invariant": "Plain file, ZIP-in-ZIP member and explicit embedded bytes yield same source structure, ordered messages and parent values."
+    },
+    {
+      "id": "D4-06",
+      "category": "contract",
+      "invariant": "Explicit full-tree read versus selective read and warm cache preserve selected field semantics on unchanged source."
+    },
+    {
+      "id": "D4-07",
+      "category": "contract",
+      "invariant": "Empty, corrupt, unsupported, budget-partial and unavailable are distinguishable."
+    },
+    {
+      "id": "D4-08",
+      "category": "contract",
+      "invariant": "Failed fragment read does not erase prior index; later selected read resumes usable session, not durable cursor."
+    },
+    {
+      "id": "D4-09",
+      "category": "contract",
+      "invariant": "Injected interruption at descriptor opening reports unavailable and subsequent actual file read succeeds."
+    },
+    {
+      "id": "D4-10",
+      "category": "contract",
+      "invariant": "Snapshot reference detects source version drift and does not mutate earlier packet."
+    },
+    {
+      "id": "D4-11",
+      "category": "contract",
+      "invariant": "Unknown fields remain addressable without claiming domain interpretation."
+    },
+    {
+      "id": "D4-12",
+      "category": "contract",
+      "invariant": "Two plausible syntax interpretations remain alternatives; recognition neither activates another parser nor grants permissions."
+    },
+    {
+      "id": "D4-13",
+      "category": "contract",
+      "invariant": "Discovery-related recognition does not bypass transport or resource read authority."
+    },
+    {
+      "id": "D4-14",
+      "category": "contract",
+      "invariant": "Projection granularity changes retained graph fields, not source structure or future access."
+    },
+    {
+      "id": "D4-15",
+      "category": "integration",
+      "invariant": "Real D demanded projection→existing packet→native C ABI→SQLite→close/reopen/replay preserves structural parent fields."
+    },
+    {
+      "id": "D4-16",
+      "category": "integration",
+      "invariant": "Existing native store accepts an unknown unloaded reference without materializing source."
+    },
+    {
+      "id": "D4-17A",
+      "category": "reproduction",
+      "invariant": "Observe distinct CSV interpretation under identical generated method/revision identity.",
+      "finding_id": "A4-D-001"
+    },
+    {
+      "id": "D4-17B",
+      "category": "repair_acceptance",
+      "invariant": "Parser options affecting interpretation must be recorded and bound to method/result version.",
+      "finding_id": "A4-D-001"
+    },
+    {
+      "id": "D4-18A",
+      "category": "reproduction",
+      "invariant": "Swap authorized canonical local path to out-of-root symlink before actual descriptor open.",
+      "finding_id": "A4-D-002"
+    },
+    {
+      "id": "D4-18B",
+      "category": "repair_acceptance",
+      "invariant": "Authorization must apply to actual opened object; out-of-root symlink replacement is rejected before reading bytes.",
+      "finding_id": "A4-D-002"
+    },
+    {
+      "id": "D4-19",
+      "category": "behavior",
+      "invariant": "Record unrecognized policy retention without calling it supported eager behavior."
+    },
+    {
+      "id": "D4-20",
+      "category": "contract",
+      "invariant": "Declared adapter name does not imply implementation or successful execution."
+    },
+    {
+      "id": "D4-21",
+      "category": "contract",
+      "invariant": "Explicit captured snapshot works offline independently of cache and index."
+    },
+    {
+      "id": "D4-22",
+      "category": "contract",
+      "invariant": "An explicitly trusted registry extension reuses existing parser without core/renderer edit; descriptor version changes lineage."
+    },
+    {
+      "id": "D4-B01",
+      "category": "integration",
+      "invariant": "Full native conversation import equals D reference projection in domain records and relations."
+    },
+    {
+      "id": "D4-B02",
+      "category": "integration",
+      "invariant": "Native stored reference hydrates through B catalog and the same headless/UI resolver."
+    },
+    {
+      "id": "D4-B03",
+      "category": "integration",
+      "invariant": "Changing locator while preserving pinned logical version retains selector identity."
+    },
+    {
+      "id": "D4-B04",
+      "category": "integration",
+      "invariant": "Interrupted persistent index reopens at a durable checkpoint."
+    },
+    {
+      "id": "D4-B05",
+      "category": "integration",
+      "invariant": "Domain discovery preserves mapping alternatives with evidence and explicit activation policy."
+    },
+    {
+      "id": "D4-B06",
+      "category": "integration",
+      "invariant": "Two external profiles project into graph fields consumed by actual B resolver."
+    },
+    {
+      "id": "D4-B07",
+      "category": "integration",
+      "invariant": "Same resource selector consumed through E headless and actual E UI."
+    },
+    {
+      "id": "D4-B08",
+      "category": "integration",
+      "invariant": "Seekable on-demand parser performs bounded fragment IO without whole document read."
+    }
+  ],
+  "published_receipts": [
+    "receipt-main.json",
+    "receipt-B4.json"
+  ],
+  "artifact_generator": "export_packet.py --repo CHECKOUT --sha SHA --output-dir OUT",
+  "fixture": "fixtures/conversation.json"
+}

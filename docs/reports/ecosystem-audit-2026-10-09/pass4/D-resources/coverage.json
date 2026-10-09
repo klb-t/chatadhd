@@ -1,0 +1,358 @@
+{
+  "repo": "klb-t/chatadhd",
+  "sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+  "base_main": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "base_denominator_change": 0,
+  "base_new_files_with_named_ranges": 0,
+  "branch_extension_python_modules": 6,
+  "branch_extension_data_files": 3,
+  "rows": [
+    {
+      "file": "loom/tools/resource_graph/core.py",
+      "sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+      "kind": "new D branch product support/tool module; absent from pinned main denominator",
+      "ranges": [
+        {
+          "function": "select_value",
+          "lines": [
+            29,
+            47
+          ],
+          "review": "executed"
+        },
+        {
+          "function": "_SyntaxHandle",
+          "lines": [
+            58,
+            75
+          ],
+          "review": "executed"
+        },
+        {
+          "function": "SyntaxAdapter.open",
+          "lines": [
+            80,
+            108
+          ],
+          "review": "executed"
+        },
+        {
+          "function": "ResourceGraph attach/describe/reference",
+          "lines": [
+            112,
+            186
+          ],
+          "review": "executed"
+        },
+        {
+          "function": "cache/metadata/select/index",
+          "lines": [
+            188,
+            294
+          ],
+          "review": "executed"
+        },
+        {
+          "function": "capture",
+          "lines": [
+            296,
+            309
+          ],
+          "review": "executed"
+        },
+        {
+          "function": "export_reference",
+          "lines": [
+            311,
+            320
+          ],
+          "review": "source_review_only"
+        },
+        {
+          "function": "project",
+          "lines": [
+            322,
+            383
+          ],
+          "review": "executed"
+        },
+        {
+          "function": "recognize/select_format",
+          "lines": [
+            385,
+            404
+          ],
+          "review": "executed"
+        },
+        {
+          "function": "discover",
+          "lines": [
+            406,
+            410
+          ],
+          "review": "executed_missing_module"
+        },
+        {
+          "function": "overlay",
+          "lines": [
+            412,
+            415
+          ],
+          "review": "source_review_only"
+        }
+      ],
+      "not_proven": [
+        "all branches in file",
+        "all inputs/formats",
+        "OS/device races beyond synthetic deterministic case"
+      ]
+    },
+    {
+      "file": "loom/tools/resource_graph/access.py",
+      "sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+      "kind": "new D branch product support/tool module; absent from pinned main denominator",
+      "ranges": [
+        {
+          "function": "policy and budgets",
+          "lines": [
+            84,
+            109
+          ],
+          "review": "executed"
+        },
+        {
+          "function": "failure/base",
+          "lines": [
+            112,
+            123
+          ],
+          "review": "executed"
+        },
+        {
+          "function": "URL authorization",
+          "lines": [
+            125,
+            139
+          ],
+          "review": "executed"
+        },
+        {
+          "function": "HTTP built-in and redirects",
+          "lines": [
+            141,
+            210
+          ],
+          "review": "source_review_only_no_network"
+        },
+        {
+          "function": "local authorization and actual read",
+          "lines": [
+            212,
+            276
+          ],
+          "review": "executed_with_race_injection"
+        },
+        {
+          "function": "ZIP/container composition",
+          "lines": [
+            278,
+            393
+          ],
+          "review": "executed_nested_zip"
+        },
+        {
+          "function": "inventory and recursive eager validation",
+          "lines": [
+            395,
+            473
+          ],
+          "review": "source_review_only"
+        }
+      ],
+      "not_proven": [
+        "all branches in file",
+        "all inputs/formats",
+        "OS/device races beyond synthetic deterministic case"
+      ]
+    },
+    {
+      "file": "loom/tools/resource_graph/parsers.py",
+      "sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+      "kind": "new D branch product support/tool module; absent from pinned main denominator",
+      "ranges": [
+        {
+          "function": "registry/recognition/budgets/parse",
+          "lines": [
+            29,
+            125
+          ],
+          "review": "executed"
+        },
+        {
+          "function": "JSON parser",
+          "lines": [
+            128,
+            141
+          ],
+          "review": "executed"
+        },
+        {
+          "function": "YAML safe-node parser",
+          "lines": [
+            144,
+            207
+          ],
+          "review": "source_review_only"
+        },
+        {
+          "function": "XML parser",
+          "lines": [
+            210,
+            231
+          ],
+          "review": "source_review_only"
+        },
+        {
+          "function": "CSV parser",
+          "lines": [
+            234,
+            243
+          ],
+          "review": "executed"
+        }
+      ],
+      "not_proven": [
+        "all branches in file",
+        "all inputs/formats",
+        "OS/device races beyond synthetic deterministic case"
+      ]
+    },
+    {
+      "file": "loom/tools/resource_graph/projection.py",
+      "sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+      "kind": "new D branch product support/tool module; absent from pinned main denominator",
+      "ranges": [
+        {
+          "function": "profile/identity/entity/relation/observation/packet",
+          "lines": [
+            13,
+            54
+          ],
+          "review": "executed"
+        }
+      ],
+      "not_proven": [
+        "all branches in file",
+        "all inputs/formats",
+        "OS/device races beyond synthetic deterministic case"
+      ]
+    },
+    {
+      "file": "loom/tools/resource_graph/native.py",
+      "sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+      "kind": "new D branch product support/tool module; absent from pinned main denominator",
+      "ranges": [
+        {
+          "function": "roundtrip",
+          "lines": [
+            17,
+            57
+          ],
+          "review": "executed_main_and_B4"
+        }
+      ],
+      "not_proven": [
+        "all branches in file",
+        "all inputs/formats",
+        "OS/device races beyond synthetic deterministic case"
+      ]
+    },
+    {
+      "file": "loom/tools/resource_graph/__init__.py",
+      "sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+      "kind": "new D branch product support/tool module; absent from pinned main denominator",
+      "ranges": [
+        {
+          "function": "public module exports",
+          "lines": [
+            1,
+            4
+          ],
+          "review": "executed"
+        }
+      ],
+      "not_proven": [
+        "all branches in file",
+        "all inputs/formats",
+        "OS/device races beyond synthetic deterministic case"
+      ]
+    },
+    {
+      "file": "loom/data/resource_graph/access.json",
+      "sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+      "kind": "new D branch policy data",
+      "ranges": [
+        {
+          "function": "loaded policy/descriptor data",
+          "lines": [
+            1,
+            27
+          ],
+          "review": "executed_JSON_CSV_and_core_access_policy"
+        }
+      ]
+    },
+    {
+      "file": "loom/data/resource_graph/parsers.json",
+      "sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+      "kind": "new D branch policy data",
+      "ranges": [
+        {
+          "function": "loaded policy/descriptor data",
+          "lines": [
+            1,
+            17
+          ],
+          "review": "executed_JSON_CSV_and_core_access_policy"
+        }
+      ]
+    },
+    {
+      "file": "loom/data/resource_graph/projection.json",
+      "sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+      "kind": "new D branch policy data",
+      "ranges": [
+        {
+          "function": "loaded policy/descriptor data",
+          "lines": [
+            1,
+            9
+          ],
+          "review": "executed_JSON_CSV_and_core_access_policy"
+        }
+      ]
+    },
+    {
+      "file": "loom/tools/coordination/graph_store.py",
+      "sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+      "kind": "unchanged existing consumer, no new denominator credit",
+      "ranges": [
+        {
+          "function": "acceptance_request/NativeGraphStore",
+          "lines": [
+            21,
+            92
+          ],
+          "review": "executed actual C ABI accept/read/replay/close/reopen"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "No D UI/CLI entrypoint in this checkpoint",
+    "No new graph store/resolver/workflow engine: transient resources/cache/index and existing native packet wrapper",
+    "Whole bounded JSON/member read on demand, not seekable partial source IO",
+    "No domain discovery implementation at pinned SHA",
+    "No production workflow consumes D automatically yet"
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "conversation": {
+    "id": "synthetic-audit-conversation",
+    "messages": [
+      {
+        "id": "m1",
+        "role": "user",
+        "parent": null,
+        "text": "synthetic first"
+      },
+      {
+        "id": "m2",
+        "role": "assistant",
+        "parent": "m1",
+        "text": "synthetic reply"
+      }
+    ]
+  },
+  "unknown": {
+    "flag": true,
+    "empty": []
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+  "id": "D4-B05",
+  "category": "integration",
+  "evidence": {
+    "status": "BLOCKED_MISSING_IMPLEMENTATION",
+    "exception_type": "ModuleNotFoundError",
+    "missing_module": "loom.tools.resource_graph.discovery",
+    "source_unchanged": true
+  }
+}

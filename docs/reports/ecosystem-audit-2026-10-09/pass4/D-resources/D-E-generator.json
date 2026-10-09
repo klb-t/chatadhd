@@ -1,0 +1,13 @@
+{
+  "repo_sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+  "fixture_sha256": "885e337c0b36967c79c34b88f5b7c3675af2d78a406289d5d9f35788af818eb9",
+  "packet_id": "ef06ad0e972c76245d5d952a4b9804abedead14af858cbfbe3da50e94fc2b9b4",
+  "source": "synthetic fixture, no user content",
+  "actual_consumer": "ResourceGraph.attach \u2192 project(depth=5)",
+  "normalization": "none; local source stat metadata varies after relocation",
+  "counts": {
+    "entities": 19,
+    "claims": 34,
+    "sources": 10
+  }
+}

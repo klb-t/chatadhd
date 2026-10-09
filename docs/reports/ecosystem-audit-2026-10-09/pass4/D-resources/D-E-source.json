@@ -1,0 +1,61 @@
+{
+  "logical_id": "audit:resource:conversation",
+  "locator": "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/artifacts/tools/ecosystem-audit-2026-10-09/pass4/D-resources/fixtures/conversation.json",
+  "members": [],
+  "format": "json",
+  "adapter": "syntax",
+  "policy": {
+    "mode": "live",
+    "embedding": false,
+    "cache": false,
+    "retention_seconds": 0,
+    "index": false,
+    "max_projection_nodes": 1000,
+    "max_projection_depth": 16
+  },
+  "parser_options": {},
+  "permissions": {
+    "read": true,
+    "export_values": true,
+    "write_back": false
+  },
+  "status": "available",
+  "source_version": {
+    "kind": "local_stat",
+    "st_dev": 27,
+    "st_ino": 1719823,
+    "st_size": 390,
+    "st_mtime_ns": 1791533534069987055,
+    "st_ctime_ns": 1791533534069987055
+  },
+  "content_sha256": "885e337c0b36967c79c34b88f5b7c3675af2d78a406289d5d9f35788af818eb9",
+  "selector": "",
+  "parser_version": "python-json/1",
+  "mapping_version": null,
+  "history": [
+    {
+      "source_version": {
+        "kind": "local_stat",
+        "st_dev": 27,
+        "st_ino": 1719823,
+        "st_size": 390,
+        "st_mtime_ns": 1791533534069987055,
+        "st_ctime_ns": 1791533534069987055
+      },
+      "content_sha256": "885e337c0b36967c79c34b88f5b7c3675af2d78a406289d5d9f35788af818eb9",
+      "origin": "own_observation",
+      "observed_at": 1791533534.0761425
+    }
+  ],
+  "recognition": "syntax_only",
+  "embedded_bytes": false,
+  "capabilities": {
+    "read": true,
+    "select": true,
+    "project": true,
+    "write_back": false,
+    "overlay": true,
+    "native_persistence_required": false,
+    "renderer_required": false
+  }
+}
