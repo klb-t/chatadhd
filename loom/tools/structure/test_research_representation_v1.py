@@ -161,12 +161,13 @@ class RepresentationMetamorphicTests(unittest.TestCase):
         new = retrieval.ranked(records, new_scores["words"])
         self.assertEqual(old[0]["message_id"], "earlier")
         self.assertEqual(new[0]["message_id"], "correction")
+        evaluation = {"ranking_cutoffs": [1], "ndcg_cutoffs": [1]}
         selection = retrieval.select_context(new, max_bytes=1000, max_records=1)
-        metrics = retrieval.evaluate(corrected_task, new, selection)
+        metrics = retrieval.evaluate(corrected_task, new, selection, evaluation)
         self.assertEqual(metrics["context_evidence_recall"], 1)
-        self.assertEqual(metrics["wrong_version_selected"], 0)
+        self.assertEqual(metrics["annotated_version_distractors_selected"], 0)
         stale = retrieval.select_context(old, max_bytes=1000, max_records=1)
-        self.assertEqual(retrieval.evaluate(corrected_task, old, stale)["wrong_version_selected"], 1)
+        self.assertEqual(retrieval.evaluate(corrected_task, old, stale, evaluation)["annotated_version_distractors_selected"], 1)
         self.assertNotEqual(measurement.digest(original_task), measurement.digest(corrected_task))
 
 

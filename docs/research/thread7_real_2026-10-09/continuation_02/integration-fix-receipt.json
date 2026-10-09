@@ -1,0 +1,17 @@
+{
+  "schema": "loom.thread7_integration_fix/1",
+  "preceding_code_commit": "f37750f33b3d64bf25df8c1b6649adf733b25f13",
+  "failed_structure_cases": 1554,
+  "structure_error_count": 1,
+  "cause": "Representation metamorphic test retained old evaluate signature and old metric key after explicit evaluation parameters and annotated-distractor naming were introduced.",
+  "change": "Pass explicit ranking/ndcg cutoff data and assert the equivalent annotated_version_distractors_selected metric: current target 0, stale target 1. No production or research-output change.",
+  "targeted_tests": 45,
+  "passed": 45,
+  "skipped": 0,
+  "full_log_sha256": "23ab5e8fefe06ed77d251ad9f9c69ab3905ee74a353c39cca111bd75c92742e9",
+  "initial_incomplete_fix_log_preserved": true,
+  "new_rankings": 0,
+  "new_model_calls": 0,
+  "new_cost_usd": "0",
+  "test_code_sha256": "067d142f59af70b91de0d1d3f6cfba78cf3cd86f8bc8d9552e1b8c2219f692f9"
+}
