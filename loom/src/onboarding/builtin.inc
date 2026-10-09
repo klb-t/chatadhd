@@ -2,7 +2,7 @@
 static constexpr char kOnboardingPack[] = R"loom_onboard({
   "schema": "loom.default_layers_pack/1",
   "pack_id": "loom.onboarding.defaults",
-  "revision": 3,
+  "revision": 4,
   "policy": {
     "excluded_area_new_defaults": "proposal"
   },
@@ -127,7 +127,7 @@ static constexpr char kOnboardingPack[] = R"loom_onboard({
       "id": "onboarding.presentation/v1",
       "key": "presentation.onboarding",
       "area": "onboarding/presentation",
-      "revision": 2,
+      "revision": 3,
       "value": {
         "schema": "loom.onboarding.presentation/1",
         "default_locale": "en",
@@ -285,7 +285,15 @@ static constexpr char kOnboardingPack[] = R"loom_onboard({
             "error.template_syntax": "Invalid presentation template syntax.",
             "field.label_prefix": "{{label}} ",
             "field.state": "({{status}}{{suffix}})",
-            "error.template_parameters": "Template parameters must be an object."
+            "error.template_parameters": "Template parameters must be an object.",
+            "graph.prompt": "{{id}} prompt",
+            "graph.parameters": "{{id}} parameters",
+            "graph.recipe": "{{id}} recipe",
+            "graph.preset": "{{id}} preset",
+            "graph.version": "{{id}} version",
+            "graph.builtin": "Built-in defaults",
+            "graph.user": "User overrides",
+            "graph.types": "Type definitions"
           },
           "pl": {
             "field.questions_suffix": "; pytania: {{disposition}}",
@@ -440,7 +448,15 @@ static constexpr char kOnboardingPack[] = R"loom_onboard({
             "error.template_syntax": "Nieprawidłowa składnia szablonu prezentacji.",
             "field.label_prefix": "{{label}} ",
             "field.state": "({{status}}{{suffix}})",
-            "error.template_parameters": "Parametry szablonu muszą być obiektem."
+            "error.template_parameters": "Parametry szablonu muszą być obiektem.",
+            "graph.prompt": "{{id}} prompt",
+            "graph.parameters": "{{id}} parametry",
+            "graph.recipe": "{{id}} receptura",
+            "graph.preset": "{{id}} preset",
+            "graph.version": "{{id}} wersja",
+            "graph.builtin": "Wbudowane wartości domyślne",
+            "graph.user": "Nakładki użytkownika",
+            "graph.types": "Definicje typów"
           }
         },
         "defaults": {
@@ -1206,7 +1222,15 @@ static constexpr char kOnboardingPresentation[] = R"loom_onboard({
       "error.template_syntax": "Invalid presentation template syntax.",
       "field.label_prefix": "{{label}} ",
       "field.state": "({{status}}{{suffix}})",
-      "error.template_parameters": "Template parameters must be an object."
+      "error.template_parameters": "Template parameters must be an object.",
+      "graph.prompt": "{{id}} prompt",
+      "graph.parameters": "{{id}} parameters",
+      "graph.recipe": "{{id}} recipe",
+      "graph.preset": "{{id}} preset",
+      "graph.version": "{{id}} version",
+      "graph.builtin": "Built-in defaults",
+      "graph.user": "User overrides",
+      "graph.types": "Type definitions"
     },
     "pl": {
       "field.questions_suffix": "; pytania: {{disposition}}",
@@ -1361,7 +1385,15 @@ static constexpr char kOnboardingPresentation[] = R"loom_onboard({
       "error.template_syntax": "Nieprawidłowa składnia szablonu prezentacji.",
       "field.label_prefix": "{{label}} ",
       "field.state": "({{status}}{{suffix}})",
-      "error.template_parameters": "Parametry szablonu muszą być obiektem."
+      "error.template_parameters": "Parametry szablonu muszą być obiektem.",
+      "graph.prompt": "{{id}} prompt",
+      "graph.parameters": "{{id}} parametry",
+      "graph.recipe": "{{id}} receptura",
+      "graph.preset": "{{id}} preset",
+      "graph.version": "{{id}} wersja",
+      "graph.builtin": "Wbudowane wartości domyślne",
+      "graph.user": "Nakładki użytkownika",
+      "graph.types": "Definicje typów"
     }
   },
   "defaults": {

@@ -9,6 +9,7 @@
 #include "loom/kb.h"
 #include "loom/model.h"
 #include "loom/onboarding_layers.h"
+#include "loom/onboarding_presentation.h"
 #include "loom/util/sha256.h"
 
 namespace loom::onboarding {
@@ -34,8 +35,13 @@ std::string key(std::initializer_list<std::string_view> parts) {
 
 class Projection {
  public:
-  explicit Projection(const Json& vocabulary, std::string_view user)
-      : vocabulary_(vocabulary), user_(user) {}
+  explicit Projection(const Json& vocabulary, std::string_view user, const Json& presentation)
+      : vocabulary_(vocabulary), presentation_(presentation), user_(user) {}
+
+  Result<std::string> label(std::string_view message, const Json& parameters = Json::object()) const {
+    if (presentation_.is_null()) return std::string();
+    return presentation_text(presentation_, message, parameters);
+  }
 
   Status validate_vocabulary() const {
     if (!vocabulary_.is_object()) return invalid("vocabulary must be an object");
@@ -246,6 +252,7 @@ class Projection {
 
  private:
   Json vocabulary_;
+  Json presentation_;
   std::string user_;
   std::map<std::string, Json> entities_, claims_, observations_, method_entities_, method_claims_, method_sources_;
 };
@@ -264,14 +271,16 @@ Result<Json> project_method(Projection& graph, const Json& method) {
   const std::string prompt = method["prompt"]["text"];
   const auto prompt_hash = Sha256::hex(prompt);
   const auto prompt_source = graph.capture("method/prompt", prompt, "", "effective_definition", true);
-  LOOM_TRY_ASSIGN(auto prompt_id, graph.entity("prompt_version", key({id, prompt_hash}), id + " prompt",
+  LOOM_TRY_ASSIGN(auto prompt_label, graph.label("graph.prompt", {{"id", id}}));
+  LOOM_TRY_ASSIGN(auto prompt_id, graph.entity("prompt_version", key({id, prompt_hash}), prompt_label,
       Json{{"text", prompt}, {"text_sha256", prompt_hash}}, Origin::System, EvidenceClass::Derived, true, true));
 
   const Json parameters{{"effective_parameters", method["parameters"]},
       {"user_overrides", method.value("user_overrides", Json::object())}};
   const auto parameter_hash = hash(parameters);
   const auto parameter_source = graph.capture_json("method/parameters", parameters, "", "effective_definition", true);
-  LOOM_TRY_ASSIGN(auto parameter_id, graph.entity("parameter_set_version", key({id, parameter_hash}), id + " parameters",
+  LOOM_TRY_ASSIGN(auto parameter_label, graph.label("graph.parameters", {{"id", id}}));
+  LOOM_TRY_ASSIGN(auto parameter_id, graph.entity("parameter_set_version", key({id, parameter_hash}), parameter_label,
       Json{{"definition", parameters}, {"definition_sha256", parameter_hash}}, Origin::System, EvidenceClass::Derived, true, true));
 
   Json recipe = method["recipe"];
@@ -281,7 +290,8 @@ Result<Json> project_method(Projection& graph, const Json& method) {
   recipe["parameters"] = method["parameters"];
   const auto recipe_hash = hash(recipe);
   const auto recipe_source = graph.capture_json("method/recipe", recipe, "", "effective_definition", true);
-  LOOM_TRY_ASSIGN(auto recipe_id, graph.entity("recipe_version", key({id, recipe_hash}), id + " recipe",
+  LOOM_TRY_ASSIGN(auto recipe_label, graph.label("graph.recipe", {{"id", id}}));
+  LOOM_TRY_ASSIGN(auto recipe_id, graph.entity("recipe_version", key({id, recipe_hash}), recipe_label,
       Json{{"definition", recipe}, {"definition_sha256", recipe_hash}}, Origin::System, EvidenceClass::Derived, true, true));
 
   Json definition = method.value("definition", Json::object());
@@ -300,7 +310,8 @@ Result<Json> project_method(Projection& graph, const Json& method) {
     const auto preset_hash = hash(preset);
     const auto preset_source = graph.capture_json("method/preset", preset, "", "effective_definition", true);
     (void)preset_source;
-    LOOM_TRY_ASSIGN(preset_id, graph.entity("preset_version", key({id, preset_hash}), id + " preset",
+    LOOM_TRY_ASSIGN(auto preset_label, graph.label("graph.preset", {{"id", id}}));
+    LOOM_TRY_ASSIGN(preset_id, graph.entity("preset_version", key({id, preset_hash}), preset_label,
         Json{{"definition", preset}, {"definition_sha256", preset_hash}}, Origin::System, EvidenceClass::Derived, true, true));
     if (definition.contains("preset_sha256") && definition["preset_sha256"] != preset_hash) return conflict("method preset hash differs from exact preset");
     definition["preset_sha256"] = preset_hash;
@@ -309,7 +320,8 @@ Result<Json> project_method(Projection& graph, const Json& method) {
   const auto definition_source = graph.capture_json("method/definition", definition, "", "effective_definition", true);
   const auto identity_source = graph.capture_json("method/identity", Json{{"id", id}}, "", "effective_definition", true);
   LOOM_TRY_ASSIGN(auto method_id, graph.entity("method", id, id, Json{{"definition_id", id}}, Origin::System, EvidenceClass::Derived, true, true));
-  LOOM_TRY_ASSIGN(auto version_id, graph.entity("method_version", key({id, definition_hash}), id + " version",
+  LOOM_TRY_ASSIGN(auto version_label, graph.label("graph.version", {{"id", id}}));
+  LOOM_TRY_ASSIGN(auto version_id, graph.entity("method_version", key({id, definition_hash}), version_label,
       Json{{"definition", definition}, {"definition_sha256", definition_hash}, {"revision", revision}}, Origin::System, EvidenceClass::Derived, true, true));
   LOOM_TRY(graph.relation(version_id, "version_of", method_id, identity_source, Json::object(), true));
   LOOM_TRY(graph.relation(version_id, "uses_recipe", recipe_id, definition_source, Json::object(), true));
@@ -333,7 +345,7 @@ Result<Json> project_graph(const Json& pack, const Json& scenario, const Json& p
         !profile["privacy"].contains("rules") || !profile["privacy"]["rules"].is_array() ||
         !pack.contains("vocabulary")) return invalid("checked pack/scenario/profile and nonempty user are required");
     LOOM_TRY_ASSIGN(auto defaults, DefaultLayers::create(pack, layers));
-    Projection graph(pack["vocabulary"], user);
+    Projection graph(pack["vocabulary"], user, defaults.presentation());
     LOOM_TRY(graph.validate_vocabulary());
     const auto profile_source = graph.capture_json("profile/identity", Json{{"user", user}}, "", "system_initialisation");
     LOOM_TRY_ASSIGN(auto profile_id, graph.entity("profile", "user", user, Json{{"role", "user_profile"}, {"user", user},
@@ -398,9 +410,11 @@ Result<Json> project_graph(const Json& pack, const Json& scenario, const Json& p
       LOOM_TRY(graph.relation(profile_id, "has_rule", rule_id, source));
     }
 
-    LOOM_TRY_ASSIGN(auto builtin_layer, graph.entity("layer", "builtin", "Built-in defaults", Json{{"layer", "builtin"},
+    LOOM_TRY_ASSIGN(auto builtin_label, graph.label("graph.builtin"));
+    LOOM_TRY_ASSIGN(auto user_label, graph.label("graph.user"));
+    LOOM_TRY_ASSIGN(auto builtin_layer, graph.entity("layer", "builtin", builtin_label, Json{{"layer", "builtin"},
         {"pack_id", pack["pack_id"]}, {"pack_revision", pack["revision"]}}));
-    LOOM_TRY_ASSIGN(auto user_layer, graph.entity("layer", "user", "User overrides", Json{{"layer", "user"}}));
+    LOOM_TRY_ASSIGN(auto user_layer, graph.entity("layer", "user", user_label, Json{{"layer", "user"}}));
     std::set<std::string> keys;
     for (const auto& entry : pack["entries"]) keys.insert(entry["key"].get<std::string>());
     for (const auto& [entry_key, value] : defaults.snapshot()["overrides"].items()) { (void)value; keys.insert(entry_key); }
@@ -441,7 +455,8 @@ Result<Json> project_graph(const Json& pack, const Json& scenario, const Json& p
     LOOM_TRY_ASSIGN(auto kbpack, kb::Pack::load_builtin());
     const auto& types = kbpack->types();
     const auto types_source = graph.capture_json("schema/types.json", types, "", "builtin_definition");
-    LOOM_TRY_ASSIGN(auto type_document, graph.entity("pack_document", "schema/types.json/" + hash(types), "Type definitions",
+    LOOM_TRY_ASSIGN(auto types_label, graph.label("graph.types"));
+    LOOM_TRY_ASSIGN(auto type_document, graph.entity("pack_document", "schema/types.json/" + hash(types), types_label,
         Json{{"path", "schema/types.json"}, {"definition", types}, {"definition_sha256", hash(types)}}, Origin::Repo, EvidenceClass::Observed, true));
     for (const auto& descriptor : types["entity_kinds"]) {
       const auto kind = json::get_string(descriptor, "kind");

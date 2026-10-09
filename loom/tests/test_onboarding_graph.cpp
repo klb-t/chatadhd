@@ -44,6 +44,49 @@ Json action(DefaultLayers& layers, const Json& action) {
 }  // namespace
 
 TEST_SUITE("onboarding native graph projection") {
+  TEST_CASE("graph labels consume the effective catalog while method definitions keep their identity") {
+    GraphFixture fixture;
+    const auto baseline = fixture.project();
+    const auto& binding = baseline["method_profile"]["bindings"][0];
+    const std::string method = fixture.scenario["graph_method"]["id"];
+    const std::map<std::string, std::string> expected{
+        {binding["prompt_version_id"], method + " prompt"},
+        {binding["parameter_set_version_id"], method + " parameters"},
+        {binding["recipe_version_id"], method + " recipe"},
+        {binding["method_version_id"], method + " version"}};
+    for (const auto& entity : baseline["entities"]) {
+      const auto id = entity["id"].get<std::string>();
+      if (expected.contains(id)) CHECK(entity["label"] == expected.at(id));
+      if (entity["kind"] == fixture.pack["vocabulary"]["kinds"]["layer"]) {
+        if (entity["attrs"].value("layer", "") == "builtin") CHECK(entity["label"] == "Built-in defaults");
+        if (entity["attrs"].value("layer", "") == "user") CHECK(entity["label"] == "User overrides");
+      }
+      if (entity["attrs"].value("path", "") == "schema/types.json") CHECK(entity["label"] == "Type definitions");
+    }
+    auto catalog = unwrap(fixture.layers.resolve("presentation.onboarding"))["value"];
+    catalog["default_locale"] = "pl";
+    action(fixture.layers, Json{{"op", "override"}, {"key", "presentation.onboarding"}, {"value", catalog}});
+    const auto translated = fixture.project();
+    CHECK(translated["method_profile"]["bindings"] == baseline["method_profile"]["bindings"]);
+    bool changed = false;
+    for (const auto& entity : translated["method_profile"]["entities"]) {
+      for (const auto& original : baseline["method_profile"]["entities"]) {
+        if (entity["id"] != original["id"]) continue;
+        CHECK(entity["attrs"] == original["attrs"]);
+        changed = changed || entity["label"] != original["label"];
+      }
+    }
+    CHECK(changed);
+    catalog["locales"]["pl"].erase("graph.parameters");
+    action(fixture.layers, Json{{"op", "override"}, {"key", "presentation.onboarding"}, {"value", catalog}});
+    CHECK_FALSE(project_graph(fixture.pack, fixture.scenario, fixture.profile, fixture.layers.snapshot(), "synthetic-user"));
+    action(fixture.layers, Json{{"op", "exclude"}, {"key", "presentation.onboarding"}});
+    const auto suppressed = fixture.project();
+    CHECK(suppressed["method_profile"]["bindings"] == baseline["method_profile"]["bindings"]);
+    for (const auto& entity : suppressed["method_profile"]["entities"])
+      if (expected.contains(entity["id"].get<std::string>())) CHECK(entity["label"] == "");
+  }
+
   TEST_CASE("new user has native types defaults profile and declared methods without fictitious personal projects or execution") {
     GraphFixture fixture;
     const Json graph = fixture.project();

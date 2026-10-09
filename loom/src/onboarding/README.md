@@ -146,3 +146,14 @@ storage/reopen. Built-in result JSON remains unchanged. The legacy standalone
 `SemanticLLM::analyse(text)` keeps its constructor analyzer; callers which pin an
 operation use the explicit analyzer overload. This wiring does not change legacy
 prompt truncation, provider budgets or admission of inferred relations.
+
+### Graph presentation data (2026-10-09)
+
+Graph projection consumes eight `graph.*` messages from the effective existing
+presentation layer. EN keeps the original labels; PL or a user catalog changes
+labels through the same template renderer. Method IDs, bindings and definition
+hashes do not depend on display labels. Disabled/excluded presentation leaves
+those labels empty; it does not disable methods/privacy or restore English.
+Missing required messages in an active catalog return an explicit error. A
+complete older user catalog needs these keys added explicitly; its bytes are
+preserved. The generated builtin user pack is revision 4, presentation entry 3.

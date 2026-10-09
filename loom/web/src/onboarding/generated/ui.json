@@ -155,7 +155,15 @@
       "error.template_syntax": "Invalid presentation template syntax.",
       "field.label_prefix": "{{label}} ",
       "field.state": "({{status}}{{suffix}})",
-      "error.template_parameters": "Template parameters must be an object."
+      "error.template_parameters": "Template parameters must be an object.",
+      "graph.prompt": "{{id}} prompt",
+      "graph.parameters": "{{id}} parameters",
+      "graph.recipe": "{{id}} recipe",
+      "graph.preset": "{{id}} preset",
+      "graph.version": "{{id}} version",
+      "graph.builtin": "Built-in defaults",
+      "graph.user": "User overrides",
+      "graph.types": "Type definitions"
     },
     "pl": {
       "field.questions_suffix": "; pytania: {{disposition}}",
@@ -310,7 +318,15 @@
       "error.template_syntax": "Nieprawidłowa składnia szablonu prezentacji.",
       "field.label_prefix": "{{label}} ",
       "field.state": "({{status}}{{suffix}})",
-      "error.template_parameters": "Parametry szablonu muszą być obiektem."
+      "error.template_parameters": "Parametry szablonu muszą być obiektem.",
+      "graph.prompt": "{{id}} prompt",
+      "graph.parameters": "{{id}} parametry",
+      "graph.recipe": "{{id}} receptura",
+      "graph.preset": "{{id}} preset",
+      "graph.version": "{{id}} wersja",
+      "graph.builtin": "Wbudowane wartości domyślne",
+      "graph.user": "Nakładki użytkownika",
+      "graph.types": "Definicje typów"
     }
   },
   "defaults": {

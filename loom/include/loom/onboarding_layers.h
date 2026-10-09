@@ -16,6 +16,8 @@ class DefaultLayers {
   static Result<DefaultLayers> create(const Json& pack, const Json& state = Json::object());
   const Json& snapshot() const noexcept { return state_; }
   const Json& pack() const noexcept { return pack_; }
+  // Effective presentation from the same resolver; null means suppression.
+  const Json& presentation() const noexcept { return presentation_; }
 
   // Returns effective/disabled/excluded/proposal/missing plus source explanation.
   // Suppressed defaults never have an effective `value` in this result.
