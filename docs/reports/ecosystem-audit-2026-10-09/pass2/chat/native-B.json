@@ -6,8 +6,8 @@
   "scope": "actual native Runtime, OnboardingStore, MemoryEngine, ChatEngine, UsagePolicy, GraphEngine and SQLite. No browser. Profile-field identity copied to synthetic memory with explicit metadata; ordinary memory ignores that binding. No claim of an existing enforced memory policy API.",
   "external_network": "existing ScriptedTransport injected before Runtime construction; all workers off",
   "source_hashes": {
-    "native_run.py": "bb68c2a39bb092aca764e3b0601b3429f574b02ffa81f7b5dd2642a9ff8b4c5d",
-    "native_consumers.cpp": "a5c2fcfcdfd75215070e6ed268ec713cac2530cdc10527b105d4eb7ba3ddf48e"
+    "native_run.py": "8ec37f0ef9191c5f55141b3a4e1fe616299c3cc647941bc7ef387ce588865c13",
+    "native_consumers.cpp": "01799bbad57648a98623e919bda6243835ac527ff15a2df112e8c494025998db"
   },
   "library_sha256": "3c74f3f2e883d585bdb1723d9eb04ea1a9c784c82be56c16f4c430efa825edae",
   "build_source": "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/checkouts/B",
@@ -30,7 +30,7 @@
     "-lm",
     "-Wl,--no-keep-memory",
     "-o",
-    "/tmp/audit-chat-native-rg1ltpjj/driver"
+    "/tmp/audit-chat-native-rpnw7602/driver"
   ],
   "cases": [
     {
@@ -75,6 +75,16 @@
       "id": "CH-M4.actual-config-consumer",
       "phase": "acceptance",
       "status": "PASS"
+    },
+    {
+      "id": "CH-001.invalid-number-fallback",
+      "phase": "reproduction",
+      "status": "PASS"
+    },
+    {
+      "id": "CH-001.invalid-number-fallback",
+      "phase": "acceptance",
+      "status": "FAIL"
     }
   ],
   "observations": {
@@ -132,21 +142,27 @@
       "ingestion_ok": true,
       "links": [
         {
-          "id": "l_fb2981e89058",
-          "src": "n_96bb90c33ff2",
-          "dst": "n_6753cd51be0b",
+          "id": "l_1285be937e8b",
+          "src": "n_c6710e1f6dec",
+          "dst": "n_0fac11223f34",
           "link_type": "synthetic_infers",
           "weight": 0.7,
           "metadata": {},
-          "created": "2026-10-09T06:26:47.783124Z"
+          "created": "2026-10-09T06:50:22.135770Z"
         }
       ],
       "explicit_admission_supplied": false
+    },
+    "invalid_config": {
+      "rejected": false,
+      "transport_calls": 1,
+      "actual_temperature": 0.7,
+      "persisted_then_reloaded": true
     }
   },
   "counts": {
-    "PASS": 4,
-    "FAIL": 1,
+    "PASS": 5,
+    "FAIL": 2,
     "BLOCKED_MISSING_CONTRACT": 3
   }
 }

@@ -13,3 +13,5 @@ CH-006: rzeczywista materializacja relacji bez provenance; minimalna bramka meta
 Potwierdzone mechanizmy: jawne odrzucenie braku kryptografii, nieznanego providera i push przy pull_only; dwa snapshoty Config rzeczywiście zmieniają body HTTP. Nie utożsamiamy tego z pełnym roundtrip Basic/Advanced/Expert.
 
 Pokrycie jest zakresowe w coverage.json. Browser E2E blokuje faktyczny start Chromium (socket EPERM), nie brak pobrania ani kompilatora. Peer review narzędzi jest zachowany w ../watchdog/chat-peer-review.json; poprawiono słabe bramki, zamiast raportować pozorny PASS.
+
+Dodatkowy konsument CH-001: nieprawidłowy typ temperature zapisany i ponownie odczytany przez Config prowadzi do wysyłki z ręcznym fallbackiem0.7. Reprodukcja PASS i akceptacja FAIL są oddzielne; to aktualizacja istniejącego ID, nie nowy problem policzony drugi raz.

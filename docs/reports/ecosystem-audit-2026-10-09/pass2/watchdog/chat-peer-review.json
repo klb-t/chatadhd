@@ -1,0 +1,105 @@
+{
+  "schema": "klbt.audit.peer-review/1",
+  "reviewer": "a2_watchdog",
+  "scope": "read-only review of audit drivers and main/B receipts; no product edits; no own backlog expansion",
+  "reviewed": [
+    "python_consumers.py",
+    "native_consumers.cpp",
+    "native_run.py",
+    "python-main.json",
+    "python-B.json",
+    "native-main.json"
+  ],
+  "snapshot_note": "Root edits may occur after notification; comments refer to the initial expressions. Final root receipts must be regenerated for revised gates.",
+  "current_tool_hashes_at_note_write": {
+    "native_run.py": "b9e2aae0b3aaaff663736c8723a78a4d830bc21957b8e56f7ecacf472bce712a",
+    "native_consumers.cpp": "a5c2fcfcdfd75215070e6ed268ec713cac2530cdc10527b105d4eb7ba3ddf48e",
+    "python_consumers.py": "f4416a1ddde03dbb5c1f45a8b77ed3f294102a2ae5a258a3d95c88050c564c05"
+  },
+  "positives": [
+    "Drivers invoke actual imported Python modules / compiled native Runtime and SQLite, not audit copies of product algorithms.",
+    "Synthetic LLM timeout and ScriptedTransport are appropriate dependency seams; no paid calls are needed.",
+    "Main receipts keep reproduction and acceptance separate; observed red gates are not reported as fixes.",
+    "The native scope text already explicitly disclaims an enforced memory-policy API."
+  ],
+  "notes": [
+    {
+      "id": "PEER-CHAT-01",
+      "severity": "high",
+      "target": "native_run.py CH-004/005 acceptance",
+      "observation": "ordinary_sent = send_ok and transport_calls == 1; using not ordinary_sent makes two transport calls or an error after one real call appear blocked.",
+      "recommendation": "A pretransport refusal requires transport_calls==0. Inspect each request for profile marker; do not just inspect calls.back().",
+      "status": "root notified and fixing"
+    },
+    {
+      "id": "PEER-CHAT-02",
+      "severity": "scope",
+      "target": "native_consumers.cpp CH-004 lines22–40",
+      "observation": "The driver manually copies a profile marker into MemoryEngine and invents metadata profile_field/user_id. No actual producer nor contract binding those metadata to onboarding privacy is demonstrated.",
+      "supported_claim": "Scoped model_request refuses external use; ordinary memory sends the synthetic marker and ignores arbitrary metadata. This is an integration-gap probe.",
+      "unsupported_claim": "An actual OnboardingStore field automatically leaks in ordinary app use, or an established MemoryEngine policy API was bypassed.",
+      "recommendation": "Keep the scope explicit; label desired binding acceptance as missing contract/proposal until the real producer→binding→consumer flow exists.",
+      "status": "root notified"
+    },
+    {
+      "id": "PEER-CHAT-03",
+      "severity": "scope",
+      "target": "native_consumers.cpp CH-005 lines33–41 and native_run.py gate",
+      "observation": "initial_baselines requests=0 is a confirmation/growth baseline, not an enforceable budget=0 setting. The synthetic baseline_key is never bound into ChatOptions/send. Inspecting that key alone does not prove no operation exists under another key. bool(ledger.operations) would accept unrelated or unapproved operations.",
+      "recommendation": "State ordinary path wiring gap; for actual acceptance correlate the transmitted request with its real operation id, baseline key, reservation/confirmation and settled event. Do not claim budget enforcement from this fixture.",
+      "status": "root notified"
+    },
+    {
+      "id": "PEER-CHAT-04",
+      "severity": "scope",
+      "target": "python_consumers.py A2-CH-002 implicit-fallback acceptance",
+      "observation": "len(calls)<=1 prescribes no fallback as the only allowed default. The source confirms a fixed Groq→Google order; configured keys alone do not select a profile/strategy, but they also do not imply an explicit no-fallback preference. Explicit provider selection already disables fallback.",
+      "recommendation": "Reproduction of fixed policy remains valid. Desired configurable-order acceptance should be BLOCKED_MISSING_CONTRACT or test actual supported strategy contract, not require no-fallback globally.",
+      "status": "root agrees and is changing gate"
+    },
+    {
+      "id": "PEER-CHAT-05",
+      "severity": "scope",
+      "target": "python_consumers.py A2-CH-003 confidence acceptance",
+      "observation": "confidence is None selects one representation of unknown. A typed estimate carrying source/meaning can preserve epistemic distinction too.",
+      "recommendation": "Accept missing/null or explicit estimated/declared provenance that cannot be mistaken for provider-reported confidence; never accept unqualified0.9.",
+      "status": "root agrees and is broadening supported representations"
+    },
+    {
+      "id": "PEER-CHAT-06",
+      "severity": "low",
+      "target": "python_consumers.py CH-M3 sync-direction",
+      "observation": "Current requests.put blocker raises AssertionError, and current push_file catches only requests.RequestException, so the observed baseline PASS is justified; earlier suspicion of a swallowed blocker was withdrawn after source inspection. A future broad catch or unrelated early False would weaken the test.",
+      "recommendation": "Spy/counter with call_count==0 is a more direct before-transport assertion.",
+      "status": "root notified of correction; root adding spy"
+    },
+    {
+      "id": "PEER-CHAT-07",
+      "severity": "medium",
+      "target": "native_run.py reusable library provenance",
+      "observation": "The wrapper verifies source diffs and records libloom_core.a hash, but does not itself rebuild or prove the archive was built from those exact clean source bytes. A stale archive plus restored checkout can pass source checks.",
+      "recommendation": "For reusable acceptance require matching build receipt/source manifest or run cmake --build before linking. The root current build evidence can satisfy this separately; do not infer current results invalid without inspecting that evidence.",
+      "status": "recommendation; current build provenance not independently replayed in peer review"
+    },
+    {
+      "id": "PEER-CHAT-08",
+      "severity": "medium",
+      "target": "native_run.py CH-006 acceptance",
+      "observation": "Any truthy metadata.admission and metadata.method_ref passes; this does not establish accepted/candidate state, source recipe existence, approval status or graph references. It also fixes metadata key names rather than a demonstrated cross-version admission contract.",
+      "recommendation": "Call the actual policy/admission consumer and verify persisted state/reference lookup. Until then label this a minimal metadata gate, not complete inference-admission acceptance.",
+      "status": "root notified by peer artifact"
+    },
+    {
+      "id": "PEER-CHAT-09",
+      "severity": "low",
+      "target": "python_consumers.py A2-CH-001 unknown-field acceptance and SHA precondition",
+      "observation": "Checking only key presence can pass with a corrupted future_extension value. The Python wrapper pins HEAD but unlike native does not reject tracked modifications; source_hashes record actual bytes but not equality to commit.",
+      "recommendation": "Compare exact extension object and reject git diff for the tested source scope before importing.",
+      "status": "recommendation"
+    }
+  ],
+  "review_limitations": [
+    "No root test was rerun by this peer; runtime receipt observations are read evidence.",
+    "No finding about product source beyond the driver claims is added here."
+  ]
+}

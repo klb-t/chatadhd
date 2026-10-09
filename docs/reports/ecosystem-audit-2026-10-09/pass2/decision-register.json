@@ -1,0 +1,996 @@
+{
+  "schema": "klbt.audit.decisions/2",
+  "entries": [
+    {
+      "id": "A2-AG-001",
+      "classification": "naruszenie",
+      "observed": {
+        "receipt": "python.receipt.json",
+        "tests": [
+          "A2-AG-001.recipe_unknown_input",
+          "A2-AG-001.scan_unknown_input"
+        ],
+        "observation": "ASGI POST transcribe z JSON recipe daje200,payload{}; POST source-scans z limits.max_files1/2 daje200 i3/3 pliki, podczas gdy realny scan_sources daje1/2."
+      },
+      "alternatives": [
+        {
+          "name": "Reject unsupported inputs",
+          "status": "missing for observed inputs"
+        },
+        {
+          "name": "Persist and consume supported request configuration",
+          "status": "missing"
+        },
+        {
+          "name": "Ignore unknown additive metadata",
+          "status": "must be explicit and distinguished from operative configuration"
+        }
+      ],
+      "requirement": {
+        "source": "User continuation A 2026-10-09; chatadhd/docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+        "ids": [
+          "R15",
+          "R33",
+          "R39",
+          "R40",
+          "R41",
+          "R42"
+        ],
+        "interpretation_scope": "User explicitly applies philosophy audit to AGEDS; no claim that historical AGEDS already promised every ChatADHD feature."
+      },
+      "auditor_recommendation": "job recipe reference / scan policy plus explicit supported-field contract",
+      "sources": [
+        "ageds/findings.jsonl"
+      ],
+      "owner_quote": null
+    },
+    {
+      "id": "A2-AG-002",
+      "classification": "naruszenie",
+      "observed": {
+        "receipt": "python.receipt.json",
+        "tests": [
+          "A2-AG-002.whatsapp_date_policy"
+        ],
+        "observation": "02/03/2026 staje się2026-03-02; metadata jawnie oznacza ambiguity/day_first/parser_policy_not_source_locale. Próba realnego importera z date_order=month_first kończyTypeError."
+      },
+      "alternatives": [
+        {
+          "name": "day_first",
+          "status": "implemented fixed and disclosed"
+        },
+        {
+          "name": "month_first",
+          "status": "not selectable"
+        },
+        {
+          "name": "retain ambiguity without one timestamp",
+          "status": "not selectable for ambiguous four-digit year"
+        }
+      ],
+      "requirement": {
+        "source": "User continuation A 2026-10-09; chatadhd/docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+        "ids": [
+          "R15",
+          "R33",
+          "R39",
+          "R40",
+          "R41",
+          "R42"
+        ],
+        "interpretation_scope": "User explicitly applies philosophy audit to AGEDS; no claim that historical AGEDS already promised every ChatADHD feature."
+      },
+      "auditor_recommendation": "parser method profile/version and timestamp interpretation evidence",
+      "sources": [
+        "ageds/findings.jsonl"
+      ],
+      "owner_quote": null
+    },
+    {
+      "id": "A2-AG-003",
+      "classification": "naruszenie",
+      "observed": {
+        "receipt": "python.receipt.json",
+        "tests": [
+          "A2-AG-003.case_selection"
+        ],
+        "observation": "Dwie syntetyczne sprawy; upload z case_id drugiej daje200 i zapisuje artefakt/source w pierwszej. ensure_source bez case_id wybiera ORDER BY id LIMIT1; upload nie ma parametru case."
+      },
+      "alternatives": [
+        {
+          "name": "single configured case",
+          "status": "implicit earliest-row default"
+        },
+        {
+          "name": "explicit per-upload case",
+          "status": "ensure_source supports, HTTP caller not wired"
+        },
+        {
+          "name": "reject ambiguous missing case",
+          "status": "missing"
+        }
+      ],
+      "requirement": {
+        "source": "User continuation A 2026-10-09; chatadhd/docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+        "ids": [
+          "R15",
+          "R33",
+          "R39",
+          "R40",
+          "R41",
+          "R42"
+        ],
+        "interpretation_scope": "User explicitly applies philosophy audit to AGEDS; no claim that historical AGEDS already promised every ChatADHD feature."
+      },
+      "auditor_recommendation": "active case selection / acquisition intent with provenance",
+      "sources": [
+        "ageds/findings.jsonl"
+      ],
+      "owner_quote": null
+    },
+    {
+      "id": "A2-AG-004",
+      "classification": "naruszenie",
+      "observed": {
+        "receipt": "store.receipt.json",
+        "tests": [
+          "A2-AG-004.corpus_future_version"
+        ],
+        "observation": "Niezmieniony CorpusStore z prawdziwym Kotlinx codec zaimportował schemaVersion999, zapisał cache i po ponownym otwarciu zwrócił typed CorpusSeed999. Unknown raw extension zachowany w cache. SourceScanCache osobno waliduje version1."
+      },
+      "alternatives": [
+        {
+          "name": "reject unsupported schema",
+          "status": "present in SourceScanCache, absent in CorpusStore"
+        },
+        {
+          "name": "explicit migration with retained original",
+          "status": "missing"
+        },
+        {
+          "name": "inert/quarantined future-version import",
+          "status": "missing"
+        }
+      ],
+      "requirement": {
+        "source": "User continuation A 2026-10-09; chatadhd/docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+        "ids": [
+          "R15",
+          "R33",
+          "R39",
+          "R40",
+          "R41",
+          "R42"
+        ],
+        "interpretation_scope": "User explicitly applies philosophy audit to AGEDS; no claim that historical AGEDS already promised every ChatADHD feature."
+      },
+      "auditor_recommendation": "versioned corpus/source profile contract and migration evidence",
+      "sources": [
+        "ageds/findings.jsonl"
+      ],
+      "owner_quote": null
+    },
+    {
+      "id": "A2-AG-005",
+      "classification": "naruszenie",
+      "observed": {
+        "receipt": "scan.receipt.json",
+        "tests": [
+          "A2-AG-005.hidden_global_budget"
+        ],
+        "observation": "Prawdziwy parser czyta10002 wiersze; engine z maxRowsPerFile20000 zatrzymuje łączny wynik na10000. limits w wyniku nadal podaje20000; result_limit/row_limit ujawniają częściowość. Kodu globalne50000cells/10000rows/4000000chars nie da się ustawić w SourceScanLimits."
+      },
+      "alternatives": [
+        {
+          "name": "bounded aggregate retention",
+          "status": "implemented with compiled policy"
+        },
+        {
+          "name": "data-selected aggregate budget preserving guard",
+          "status": "not exposed"
+        },
+        {
+          "name": "unbounded retention",
+          "status": "not requested, not recommended"
+        }
+      ],
+      "requirement": {
+        "source": "User continuation A 2026-10-09; chatadhd/docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+        "ids": [
+          "R15",
+          "R33",
+          "R39",
+          "R40",
+          "R41",
+          "R42"
+        ],
+        "interpretation_scope": "User explicitly applies philosophy audit to AGEDS; no claim that historical AGEDS already promised every ChatADHD feature."
+      },
+      "auditor_recommendation": "scan resource profile with per-file and aggregate budgets, effective provenance",
+      "sources": [
+        "ageds/findings.jsonl"
+      ],
+      "owner_quote": null
+    },
+    {
+      "id": "A2-BSEM-001",
+      "classification": "naruszenie",
+      "observed": {
+        "kind": "executed_same_native_harness_against_main_and_B",
+        "receipts": [
+          "main-receipt.json",
+          "B-receipt.json"
+        ],
+        "tests": [
+          "CH003-reset-worker-regex-removed-overlay",
+          "CH003-reset-worker-regex-empty-overlay",
+          "CH003-reset-worker-fallback-removed-overlay",
+          "CH003-reset-worker-fallback-empty-overlay",
+          "CH003-reset-live-regex-removed-overlay",
+          "CH003-reset-live-regex-empty-overlay",
+          "CH003-reset-live-fallback-removed-overlay",
+          "CH003-reset-live-fallback-empty-overlay"
+        ],
+        "behavior": "Runtime rozpoczyna z nakładką A, która rozpoznaje syntetyczny marker. Po usunięciu pliku lub zapisaniu jawnego overrides={} resolver zwraca is_builtin=true i builtin hash; świeży SemanticAnalyzer z tych samych danych zwraca 0 encji. Działający Runtime B nadal tworzy 1 encję oraz mentions krawędź dla markera A. Wynik jest done i nie ma analyzer_profile_hash. Dotyczy live/worker oraz regex/LLM fallback. Nowy Runtime po restarcie daje 0 encji i brak krawędzi. Wszystkie osiem przypadków przechodzi na main i nie przechodzi na B.",
+        "external_calls": 0,
+        "synthetic_inputs_only": true,
+        "model_quality_test": false
+      },
+      "alternatives": [
+        {
+          "name": "Rozwiązać obiekt analyzer z efektywnego profilu także dla builtin",
+          "status": "recommendation"
+        },
+        {
+          "name": "Cache analizatorów po hash aktualnego profilu, z niezależną, faktycznie builtin instancją",
+          "status": "representable; wymaga tej samej akceptacji"
+        },
+        {
+          "name": "Jawny zamrożony snapshot na życie Runtime",
+          "status": "inna reprezentowalna strategia, ale wymaga deklaracji/UI; nie odpowiada obecnemu kontraktowi przeładowania na operację/drain"
+        }
+      ],
+      "requirement": [
+        "R40: efektywne warstwy są zmienialne i wyjaśnialne; wyłączenia nie mogą być cicho przywracane.",
+        "R41: wynik wskazuje rzeczywistą wersję metody/parametrów.",
+        "Etap 2 użytkownika 2026-10-09: rzeczywisty konsument konfiguracji; brak ukrytych fallbacków i dostępne uzasadnienie efektywnej konfiguracji.",
+        "loom/include/loom/runtime_profile.h: brak pliku oznacza defaults; is_builtin oznacza równość wartości, nie intencję override."
+      ],
+      "auditor_recommendation": "ResolvedSemanticAnalyzerSnapshot: efektywny profil, jego hash i faktyczna instancja konsumenta",
+      "sources": [
+        "c-review/B-semantic/findings.jsonl"
+      ],
+      "owner_quote": null
+    },
+    {
+      "id": "A2-C-003",
+      "classification": "naruszenie",
+      "observed": {
+        "receipt": "delta-receipt.json",
+        "tests": [
+          "C2-PAYER-01",
+          "C2-PAYER-02"
+        ],
+        "reproduction": "PASS",
+        "acceptance": "FAIL",
+        "observed": "A real fully validated fixture PrivateLedger is matched to a supported offline pending Queue by operation_id only. Different request hashes still yield captured + billing_verified true, with the queue hash stamped onto the ledger response. Correct-hash control passes. No database tampering.",
+        "scope": "Settlement/import/recovery boundary. Normal verified dispatch separately checks request hash; no proof that it can dispatch the wrong request."
+      },
+      "alternatives": [
+        {
+          "name": "Reject mismatched imported rows before projection",
+          "status": "recommended; absent at tested SHA"
+        },
+        {
+          "name": "Explicit audited legacy mapping proves operation/request/route/manifest and settlement identity",
+          "status": "representable; not implemented at this boundary"
+        }
+      ],
+      "requirement": null,
+      "auditor_recommendation": "Queue job -> immutable payer attempt -> exact request/response witness -> method_run/result provenance",
+      "sources": [
+        "c-review/C2/findings.jsonl"
+      ],
+      "owner_quote": null
+    },
+    {
+      "id": "A2-C-001",
+      "classification": "naruszenie",
+      "observed": {
+        "kind": "executed_real_consumer_synthetic_canary",
+        "receipt": "projection-receipt.json",
+        "tests": [
+          "C-PUBLIC-02",
+          "C-PUBLIC-03",
+          "C-PUBLIC-04",
+          "C-PUBLIC-05"
+        ],
+        "behavior": "Cztery syntetyczne wstrzyknięcia przechodzą build(): dodatkowe zagnieżdżone pole producer_sha256, nieliczbowy/niehashowy spec_sha256, pole pomocnicze planu i pole pomocnicze profilu projekcji. Canary można odzyskać z emitted JSON lub base64 źródeł. C-PUBLIC-01 poprawnie odrzuca dodatkowy klucz pierwszego poziomu i nie ujawnia go w błędzie/logu.",
+        "raw_canary_published": false,
+        "actual_private_disclosure_established": false
+      },
+      "alternatives": [
+        {
+          "name": "Rekurencyjny, typowany schemat publicznych receiptów i projekcja publicznych pól planu/profilu",
+          "status": "recommendation"
+        },
+        {
+          "name": "Jawny, walidowany publiczny snapshot z manifestem uprawnienia do publikacji; pełne źródła tylko prywatnie",
+          "status": "representable; absent automated verifier"
+        }
+      ],
+      "requirement": [
+        "Polecenie właściciela 2026-10-09, etap 5: publiczna projekcja bez sekretów/prywatnej treści w polach pomocniczych, metadanych, błędach i logach.",
+        "R15 opis pochodzenia/uprawnień; zachowanie źródeł R14 nie jest zgodą na publiczny eksport wszystkich bajtów."
+      ],
+      "auditor_recommendation": "PublicExportPolicy / public source snapshots; prywatny oryginał ma pozostać prywatny, bez utraty źródeł.",
+      "sources": [
+        "c-review/C2/findings.jsonl",
+        "c-review/findings.jsonl"
+      ],
+      "owner_quote": null
+    },
+    {
+      "id": "A2-C-004",
+      "classification": "naruszenie",
+      "observed": {
+        "receipt": "delta-receipt.json",
+        "tests": [
+          "C2-PUBLIC-02"
+        ],
+        "reproduction": "PASS",
+        "acceptance": "FAIL",
+        "observed": "Schema rejects an unknown presentation field and emits no artifact, but ValidationError string and standard Python sys.excepthook output contain the synthetic input canary. Runner captures this only in memory and publishes hashes/status."
+      },
+      "alternatives": [
+        {
+          "name": "Fixed public diagnostic code and field path, no rejected value",
+          "status": "recommended; absent"
+        },
+        {
+          "name": "Detailed errors retained only in explicitly private receipt",
+          "status": "optional strategy; not implemented by public CLI"
+        }
+      ],
+      "requirement": null,
+      "auditor_recommendation": "Public build error event with safe machine code; optional private diagnostic evidence reference",
+      "sources": [
+        "c-review/C2/findings.jsonl"
+      ],
+      "owner_quote": null
+    },
+    {
+      "id": "A2-C-002",
+      "classification": "naruszenie",
+      "observed": {
+        "kind": "executed_actual_result_record_and_queue",
+        "receipt": "projection-receipt.json",
+        "tests": [
+          "C-BIND-01"
+        ],
+        "behavior": "Dwa powtórzenia mają identyczny request_sha256 i różne operation_id. Oba zapisano jako pending z różnymi referencjami rezerwacji. result_record utworzony dla B został przyjęty przez capture_first(A,resultB). Snapshot A ma state=captured i result.operation_id=B.",
+        "synthetic_only": true,
+        "live_payer_authenticated": false
+      },
+      "alternatives": [
+        {
+          "name": "Weryfikacja operation_id wyniku oraz powiązania z referencją autorytatywnego payera przed capture",
+          "status": "required acceptance"
+        },
+        {
+          "name": "Odrębny jawnie niepowiązany rekord odpowiedzi do ręcznego reconciliation",
+          "status": "representable alternative; nie może liczyć jako captured dla innego slotu"
+        }
+      ],
+      "requirement": [
+        "R41: wynik wskazuje dokładną metodę i parametry; R33 konfiguracja i wiarygodne wyniki eksperymentu.",
+        "Właściciel etap 5: spec/queue → referencja payera → wynik → packet → native store."
+      ],
+      "auditor_recommendation": "ExperimentOccurrence → payer reservation/response reference → result",
+      "sources": [
+        "c-review/findings.jsonl"
+      ],
+      "owner_quote": null
+    },
+    {
+      "id": "A2-CH-001",
+      "classification": "naruszenie",
+      "observed": {
+        "kind": "actual_consumer_execution",
+        "receipt": "python-main.json",
+        "behavior": "MemoryEngine odrzuca unknown key; update zapisuje bez niego. Przy poprawnym wierszu, błędnym wierszu bez content i poprawnym dalszym wierszu _load loguje błąd, add_node zastępuje plik bez dalszego wiersza.",
+        "synthetic_only": true
+      },
+      "alternatives": [
+        {
+          "name": "strict reject/readonly on malformed input",
+          "status": "missing_here"
+        },
+        {
+          "name": "preserve extension bag",
+          "status": "missing_here"
+        },
+        {
+          "name": "explicit salvage with backup and loss receipt",
+          "status": "proposal"
+        }
+      ],
+      "requirement": {
+        "explicit": "Owner execution package A, 2026-10-09 stages1–3",
+        "recorded": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+        "rules": [
+          "R15",
+          "R39",
+          "R40",
+          "R42"
+        ]
+      },
+      "auditor_recommendation": "Memory record/schema/version + import/recovery policy + loss evidence",
+      "sources": [
+        "chat/findings.jsonl"
+      ],
+      "owner_quote": null
+    },
+    {
+      "id": "A2-CH-002",
+      "classification": "naruszenie",
+      "observed": {
+        "kind": "actual_consumer_execution",
+        "receipt": "python-main.json",
+        "behavior": "Real ProviderManager + GroqASR + GoogleSpeechASR: po przechwyconym HTTP503 kolejność wywołań to groq,google. Jawny provider=groq nie przechodzi do Google, nieznany provider jawnie odrzucony.",
+        "synthetic_only": true
+      },
+      "alternatives": [
+        {
+          "name": "explicit provider and no fallback",
+          "status": "implemented_verified"
+        },
+        {
+          "name": "groq then google",
+          "status": "hardcoded"
+        },
+        {
+          "name": "profile-defined ordering/failure strategy",
+          "status": "missing_contract"
+        }
+      ],
+      "requirement": {
+        "explicit": "Owner execution package A, 2026-10-09 stages1–3",
+        "recorded": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+        "rules": [
+          "R33",
+          "R40",
+          "R42"
+        ]
+      },
+      "auditor_recommendation": "Provider strategy/preset + allowed recipients + versioned effective plan",
+      "sources": [
+        "chat/findings.jsonl"
+      ],
+      "owner_quote": null
+    },
+    {
+      "id": "A2-CH-003",
+      "classification": "naruszenie",
+      "observed": {
+        "kind": "actual_consumer_execution",
+        "receipt": "python-main.json",
+        "behavior": "Przechwycona odpowiedź Groq zawiera tylko text; rzeczywisty GroqASR zwraca confidence=0.9.",
+        "synthetic_only": true
+      },
+      "alternatives": [
+        {
+          "name": "unknown confidence",
+          "status": "missing_here"
+        },
+        {
+          "name": "explicit declared/estimated confidence with method provenance",
+          "status": "proposal"
+        },
+        {
+          "name": "constant 0.9",
+          "status": "implemented_without_provenance"
+        }
+      ],
+      "requirement": {
+        "explicit": "Owner execution package A, 2026-10-09 stages1–3",
+        "recorded": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+        "rules": [
+          "R15",
+          "R39",
+          "R42"
+        ]
+      },
+      "auditor_recommendation": "Assessment/confidence value + epistemic status + method/version/source",
+      "sources": [
+        "chat/findings.jsonl"
+      ],
+      "owner_quote": null
+    },
+    {
+      "id": "A2-CH-004",
+      "classification": "naruszenie",
+      "observed": {
+        "kind": "actual_consumer_execution",
+        "receipt": "python-main.json",
+        "behavior": "Rzeczywisty list_remote_files otrzymuje remote git blob SHA pliku AAAA, lokalny x.txt=BBBB. get_sync_status zwraca synced; obie treści mają 4 bajty.",
+        "synthetic_only": true
+      },
+      "alternatives": [
+        {
+          "name": "content/hash comparison",
+          "status": "missing_here"
+        },
+        {
+          "name": "size heuristic marked uncertain",
+          "status": "proposal"
+        },
+        {
+          "name": "size equality means synced",
+          "status": "implemented"
+        }
+      ],
+      "requirement": {
+        "explicit": "Owner execution package A, 2026-10-09 stages1–3",
+        "recorded": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+        "rules": [
+          "R15",
+          "R39",
+          "R41",
+          "R42"
+        ]
+      },
+      "auditor_recommendation": "Sync comparison strategy + content/version refs + uncertainty/conflict",
+      "sources": [
+        "chat/findings.jsonl"
+      ],
+      "owner_quote": null
+    },
+    {
+      "id": "A2-CKP-001",
+      "classification": "naruszenie",
+      "observed": {
+        "kind": "JVM exact-method-slice execution",
+        "receipt": "host-receipt.json",
+        "reproduction": "A2-CKP-001.use.A PASS",
+        "acceptance": "A2-CKP-001.use.B FAIL",
+        "behavior": "Command.parse accepts use=nonexistent_audit_transform; actual names mapNotNull yields empty through; actual convert invokes Planner and execute for another route."
+      },
+      "alternatives": [
+        {
+          "option": "reject unknown required transform",
+          "status": "absent in checked path"
+        },
+        {
+          "option": "retain unresolved requirement and offer resolution",
+          "status": "not represented"
+        },
+        {
+          "option": "explicitly approved fallback",
+          "status": "not selected by current user request"
+        }
+      ],
+      "requirement": [
+        "AGENTS.md: do not encode choice in control flow; preserve target and focus; unknown privacy/cost stays unknown",
+        "Owner continuation A 2026-10-09 stages 1/2/3; R15/R33/R39–R42"
+      ],
+      "auditor_recommendation": [
+        "ConversionRequest.requiredTransformRefs",
+        "ResolutionFailure",
+        "effective route rationale"
+      ],
+      "sources": [
+        "ckp/findings.jsonl"
+      ],
+      "owner_quote": null
+    },
+    {
+      "id": "A2-CKP-002",
+      "classification": "dopuszczalny mechanizm",
+      "observed": {
+        "kind": "whole actual Kotlin sources + controlled Handler",
+        "receipt": "host-receipt.json",
+        "cases": [
+          "A2-CKP-NET.token.B PASS",
+          "A2-CKP-NET.revocation.B PASS"
+        ],
+        "behavior": "Wrong token/disabled command is rejected; deliver parses a valid command, stop invalidates session, draining queued Handler does not execute callback."
+      },
+      "alternatives": [
+        {
+          "option": "same configuration/new session",
+          "status": "new identity invalidates old work; source-confirmed"
+        },
+        {
+          "option": "same live session",
+          "status": "normal dispatch allowed"
+        }
+      ],
+      "requirement": [
+        "AGENTS.md: do not encode choice in control flow; preserve target and focus; unknown privacy/cost stays unknown",
+        "Owner continuation A 2026-10-09 stages 1/2/3; R15/R33/R39–R42"
+      ],
+      "auditor_recommendation": [
+        "NetworkSession identity",
+        "effective allowCommands"
+      ],
+      "sources": [
+        "ckp/findings.jsonl"
+      ],
+      "owner_quote": null
+    },
+    {
+      "id": "A2-CKP-003",
+      "classification": "dopuszczalny mechanizm",
+      "observed": {
+        "kind": "actual extracted SQL executed using SQLite; UI/transaction source traced",
+        "receipt": "sql-receipt.json",
+        "behavior": "v1 row survives 4 additive migrations; post-preview pin and newly inserted row survive clear; tombstone created; wrong undo batch cannot restore; correct batch restores; reopen retains row. Six PASS."
+      },
+      "alternatives": [
+        {
+          "option": "cancel preview",
+          "status": "implemented UI"
+        },
+        {
+          "option": "trash reviewed snapshot",
+          "status": "implemented"
+        },
+        {
+          "option": "undo exact batch",
+          "status": "SQL verified"
+        },
+        {
+          "option": "individual restore",
+          "status": "source traced"
+        }
+      ],
+      "requirement": [
+        "AGENTS.md: do not encode choice in control flow; preserve target and focus; unknown privacy/cost stays unknown",
+        "Owner continuation A 2026-10-09 stages 1/2/3; R15/R33/R39–R42"
+      ],
+      "auditor_recommendation": [
+        "ClipboardClearPlan ids",
+        "ClipboardTrashBatch id",
+        "durable deletion tombstone"
+      ],
+      "sources": [
+        "ckp/findings.jsonl"
+      ],
+      "owner_quote": null
+    },
+    {
+      "id": "A2-CKP-004",
+      "classification": "naruszenie",
+      "observed": {
+        "kind": "real Kotlin bytecode compiled by exact Android toolchain; no Settings replacement",
+        "receipt": "compiled-settings-receipt.json",
+        "reproduction": "A2-CKP-SETTING-UNKNOWN.A PASS",
+        "acceptance": "A2-CKP-SETTING-UNKNOWN.B FAIL",
+        "behavior": "setByKey(audit_unknown_key,true) leaves original state and returns successful Result<Unit>. withValue consumes validatedValue failure and returns original settings."
+      },
+      "alternatives": [
+        {
+          "option": "Result failure for invalid/unknown key",
+          "status": "not propagated by setByKey"
+        },
+        {
+          "option": "explicit unchanged/unsupported outcome",
+          "status": "not represented"
+        },
+        {
+          "option": "prior validation in caller",
+          "status": "implemented in observed UI and Performer"
+        }
+      ],
+      "requirement": [
+        "Owner continuation A stage2: ustawienie nieobsługiwane nie jest po cichu ignorowane",
+        "AGENTS.md: setting needs validation, consumer and explanation"
+      ],
+      "auditor_recommendation": [
+        "SettingMutation outcome",
+        "effective setting identity/version/source"
+      ],
+      "sources": [
+        "ckp/findings.jsonl"
+      ],
+      "owner_quote": null
+    },
+    {
+      "id": "LEM-009",
+      "classification": "naruszenie",
+      "observed": {
+        "kind": "executed actual Kotlin production consumer + strict independent JSON decoder",
+        "receipt": "receipts/results.json#LEM-009-JSON-CONTROL-CHAR",
+        "behavior": "30 of 32 U+0000..U+001F error characters produce rawMetrics rejected by Python json.loads; LF/CR are escaped. Actual status remains INSTRUMENT_FAILED.",
+        "source_file_sha256": "b2470fd5d3ede1e1a01167c7111ea728dc4555152cc64953aae04dd78d9c510e"
+      },
+      "alternatives": [
+        {
+          "name": "JSON library DTO/map serialization",
+          "status": "available dependency, not used for rawMetrics here"
+        },
+        {
+          "name": "complete standards-conformant custom encoder",
+          "status": "possible, current encoder incomplete"
+        }
+      ],
+      "requirement": [
+        "LEM-Workbench/ENGINEERING_RULES.md: failure is data, inspectable results",
+        "Task A continuation stages 2 and 3: failures, preservation, codec/runtime distinction",
+        "R42 exception 2/4 permits a correct standard JSON serialization mechanism"
+      ],
+      "auditor_recommendation": "Failed run evidence / metrics payload, with source error and exact recipe reference; no requirement to colocate artifact bytes in graph storage.",
+      "sources": [
+        "lem/findings.jsonl"
+      ],
+      "owner_quote": null
+    },
+    {
+      "id": "CH-P2-N001",
+      "classification": "dopuszczalny mechanizm",
+      "observed": {
+        "tests": [
+          "NATIVE-STORE-009-OPEN",
+          "NATIVE-STORE-009",
+          "NATIVE-STORE-009-CONTROL"
+        ],
+        "actual": "Przy additionalProperties=true ustawienie jest zachowywane zgodnie z kontraktem otwartego nośnika. Po rzeczywistym update_pack zamykającym settings.additionalProperties=false: nieznany klucz może zostać zapisany, lecz runtime_profile.available=false, error=unknown executable setting, a rzeczywiste model_request odrzuca wykonanie. preference_mode=candidate sprawdzono przez rzeczywiste propose; presentation=candidate. Wszystkie trzy bramki PASS na main i B.",
+        "kind": "executed_real_native_consumer",
+        "harness_review": "Pierwotna interpretacja i reject-only test były zbyt silne; wcześniejsze receipts zachowano w harness-review-history, nie liczyć jako aktualne ustalenie."
+      },
+      "alternatives": [
+        {
+          "name": "open_extension_carrier",
+          "status": "implemented; explicit open schema permits preservation, without promising that arbitrary keys implement behavior"
+        },
+        {
+          "name": "retain_unknown_as_explicitly_inactive",
+          "status": "implemented for closed declared contract; runtime unavailable and real request rejected"
+        },
+        {
+          "name": "reject_unsupported_write",
+          "status": "acceptable optional alternative, not required when preserved data cannot execute"
+        }
+      ],
+      "requirement": [
+        "User continuation 2026-10-09 Etap2: ustawienie nieobsługiwane nie jest po cichu ignorowane",
+        "R15/R40: konfiguracja efektywna i źródło muszą być sprawdzalne"
+      ],
+      "auditor_recommendation": "runtime_definition.value_schema + runtime_profile availability/error; profile.settings remains data carrier",
+      "sources": [
+        "native/findings.jsonl"
+      ],
+      "owner_quote": null
+    },
+    {
+      "id": "A2-CH-B2-001",
+      "classification": "niepewne",
+      "observed": {
+        "receipt": "receipt.json",
+        "reproduction": "B2-MIGRATION-001.old-default-write-blocked",
+        "native_error": "onboarding presentation: message is not declared: graph.builtin",
+        "prior_behavior": "Actual B native store created pack3 profile and accepted settings write; new native store reads same SQLite record successfully but settings write fails before commit. No user presentation overlay was installed for this user.",
+        "current_supported_repair": "Explicit update_pack to builtin pack4 then identical settings API succeeds. Existing excluded presentation also continues to write and survives update.",
+        "not_claimed": "No data loss, unauthorized operation, silent English fallback or requirement of automatic migration."
+      },
+      "alternatives": [
+        {
+          "choice": "Wersjonowana zgodność z zachowanym kompletnym pack3",
+          "status": "not implemented/verified"
+        },
+        {
+          "choice": "Jawny komunikat wymaganej migracji wraz z wywołaniem obsługiwanego update_pack",
+          "status": "update_pack works; native diagnostic and reviewed UI path do not guide upgrade"
+        },
+        {
+          "choice": "Ręczne uzupełnienie starej nakładki o graph.* i update_pack",
+          "status": "verified PASS; preserve prior user customization"
+        }
+      ],
+      "requirement": null,
+      "auditor_recommendation": "Versioned presentation.onboarding default and saved loom.onboarding_store/1 pack/layers metadata",
+      "sources": [
+        "watchdog/B2/findings.jsonl"
+      ],
+      "owner_quote": null
+    },
+    {
+      "id": "A2-WD-001",
+      "classification": "naruszenie",
+      "observed": {
+        "kind": "executed_real_consumer_with_intercepted_transport",
+        "receipt": "receipt-core.json",
+        "reproduction": "A2-WD-001-A",
+        "acceptance": "A2-WD-001-B",
+        "behavior": "A synthetic JSON provider with allowed_models=[permitted-model] and generation_params.model=disallowed-model is accepted by the real loader. Registry.defaultParams feeds it to the real generator, which emits disallowed-model and replacement messages after validating permitted-model. No live request."
+      },
+      "alternatives": [
+        {
+          "name": "Reject bound-field collisions with diagnostic",
+          "status": "not implemented in legacy loader; implemented separately in personal-provider loader"
+        },
+        {
+          "name": "Explicit layered merge with provenance; validate final effective request",
+          "status": "not implemented in legacy adapter"
+        }
+      ],
+      "requirement": [
+        "User continuation stages 1,2: configuration must reach actual consumers and hidden precedence must be explicit.",
+        "CLAUDE.md rule 4: No silent unit, provider or method substitution.",
+        "R42 data/configuration test: policy is in merge order despite existence of JSON."
+      ],
+      "auditor_recommendation": "Effective generation request / versioned provider profile and parameter-resolution receipt",
+      "sources": [
+        "watchdog/findings.jsonl"
+      ],
+      "owner_quote": null
+    },
+    {
+      "id": "A2-WD-002",
+      "classification": "dopuszczalny mechanizm",
+      "observed": {
+        "kind": "executed_actual_sqlite_blob_consumers_with_synthetic_data",
+        "tests": [
+          "WD-SETTINGS-RESTART-B",
+          "WD-SETTINGS-INVALID-B",
+          "WD-ASSISTANT-FAILURE-B"
+        ],
+        "receipt": "receipt-complete.json",
+        "behavior": "Unknown settings and corrupt stored JSON fail explicitly. Saved disabled/zero-budget settings survive changed defaults; a transport timeout persists FAILED_RESERVED, no automatic retry, with route/profile/catalog hashes."
+      },
+      "alternatives": [
+        {
+          "name": "Preserve existing versioned settings/profile and append changed revisions",
+          "status": "working in tested consumer"
+        }
+      ],
+      "requirement": [
+        "User continuation stages 2–3: durable disable, error distinct from done, exact historical references and no silent malformed-data fallback.",
+        "CLAUDE.md rules5–6: explicit missingness and immutable provenance."
+      ],
+      "auditor_recommendation": "Existing typed profile, immutable snapshots, access revision and artifact references",
+      "sources": [
+        "watchdog/findings.jsonl"
+      ],
+      "owner_quote": null
+    },
+    {
+      "id": "A2-WD-003",
+      "classification": "dopuszczalny mechanizm",
+      "observed": {
+        "kind": "executed_actual_sqlite_blob_consumers_with_synthetic_data",
+        "tests": [
+          "WD-FLOW-ACCESS-B",
+          "WD-FLOW-RECEIPTS-B"
+        ],
+        "receipt": "receipt-complete.json",
+        "behavior": "Saved deny + changed source profile becomes stale/held and prevents injected transport; timeout durable error, two identical bytes produce two events and one blob."
+      },
+      "alternatives": [
+        {
+          "name": "Preserve existing versioned settings/profile and append changed revisions",
+          "status": "working in tested consumer"
+        }
+      ],
+      "requirement": [
+        "User continuation stages 2–3: durable disable, error distinct from done, exact historical references and no silent malformed-data fallback.",
+        "CLAUDE.md rules5–6: explicit missingness and immutable provenance."
+      ],
+      "auditor_recommendation": "Existing typed profile, immutable snapshots, access revision and artifact references",
+      "sources": [
+        "watchdog/findings.jsonl"
+      ],
+      "owner_quote": null
+    },
+    {
+      "id": "A2-WD-004",
+      "classification": "dopuszczalny mechanizm",
+      "observed": {
+        "kind": "executed_actual_sqlite_blob_consumers_with_synthetic_data",
+        "tests": [
+          "WD-FLOW-WORKBENCH-ROUNDTRIP-B",
+          "WD-FLOW-WORKBENCH-INVALID-B",
+          "WD-FLOW-WORKBENCH-FAILURE-B"
+        ],
+        "receipt": "receipt-complete.json",
+        "behavior": "Actual SQLite/blob→ZIP→reimport retains exact dataset/profile/method references; a new DB does not manufacture method result or approval. Unknown fields/version and invalid identities rejected. Failed object write leaves FAILED without finalized manifest."
+      },
+      "alternatives": [
+        {
+          "name": "Preserve existing versioned settings/profile and append changed revisions",
+          "status": "working in tested consumer"
+        }
+      ],
+      "requirement": [
+        "User continuation stages 2–3: durable disable, error distinct from done, exact historical references and no silent malformed-data fallback.",
+        "CLAUDE.md rules5–6: explicit missingness and immutable provenance."
+      ],
+      "auditor_recommendation": "Existing typed profile, immutable snapshots, access revision and artifact references",
+      "sources": [
+        "watchdog/findings.jsonl"
+      ],
+      "owner_quote": null
+    },
+    {
+      "id": "A2-WD-005",
+      "classification": "naruszenie",
+      "observed": {
+        "kind": "actual_validated_profile_and_consumers",
+        "receipt": "receipt-complete.json",
+        "reproduction": "A2-WD-005-A",
+        "acceptance": "A2-WD-005-B",
+        "behavior": "Rename palette ids in a synthetic profile and recompute its valid contentHash. validateWorkbenchProfile accepts; defaultFigure still assigns accessible; real WorkbenchService.profileForFigure rejects this generated figure."
+      },
+      "alternatives": [
+        {
+          "name": "Versioned explicit newFigureDefaults in profile plus reference validation",
+          "status": "not implemented"
+        },
+        {
+          "name": "Explicit profile strategy selecting a supported default with provenance",
+          "status": "not implemented"
+        }
+      ],
+      "requirement": [
+        "User continuation stage1: detect policy hidden in helpers/read order after JSON extraction.",
+        "R42: user/domain display choices are data; a different palette does not change the renderer algorithm.",
+        "CLAUDE.md rule3: export defaults and UI labels live in versioned validated hashed configuration."
+      ],
+      "auditor_recommendation": "Versioned workbench initial-figure preset / complete selected profile",
+      "sources": [
+        "watchdog/findings.jsonl"
+      ],
+      "owner_quote": null
+    },
+    {
+      "id": "CH-M1",
+      "classification": "dopuszczalny mechanizm",
+      "observed": "missing dependency raises explicit RuntimeError; stale docstring about noop is not actual execution",
+      "alternatives": null,
+      "requirement": null,
+      "auditor_recommendation": null,
+      "sources": [
+        "chat/mechanisms.json"
+      ],
+      "owner_quote": null
+    },
+    {
+      "id": "CH-M2",
+      "classification": "dopuszczalny mechanizm",
+      "observed": "explicit provider refuses fallback, unknown provider errors before transport",
+      "alternatives": null,
+      "requirement": null,
+      "auditor_recommendation": null,
+      "sources": [
+        "chat/mechanisms.json"
+      ],
+      "owner_quote": null
+    },
+    {
+      "id": "CH-M3",
+      "classification": "dopuszczalny mechanizm",
+      "observed": "pull_only rejects push before requests.put; spy count zero",
+      "alternatives": null,
+      "requirement": null,
+      "auditor_recommendation": null,
+      "sources": [
+        "chat/mechanisms.json"
+      ],
+      "owner_quote": null
+    },
+    {
+      "id": "CH-M4",
+      "classification": "dopuszczalny mechanizm",
+      "observed": "two real Config snapshots change outgoing temperature/max_tokens to .2/123 and .8/456",
+      "alternatives": null,
+      "requirement": null,
+      "auditor_recommendation": null,
+      "sources": [
+        "chat/mechanisms.json"
+      ],
+      "owner_quote": null
+    }
+  ],
+  "note": "Original per-repo records retain observation/interpretation/requirement distinctions. No quote means no claimed owner quotation."
+}

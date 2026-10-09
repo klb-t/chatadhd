@@ -1,0 +1,120 @@
+{
+  "schema": "klbt.audit.executable-index/1",
+  "semantics": "Exact script arguments are passed as argv, never shell code. Every selected job runs even after earlier failure. Runner-specific flags are documented by --help and module REPRODUCE/README. Source files and first-pass receipts remain immutable.",
+  "suites": [
+    {
+      "id": "chat-python",
+      "script": "chat/python_consumers.py",
+      "repo": "klb-t/chatadhd",
+      "scope": "actual Python consumers, intercepted transport"
+    },
+    {
+      "id": "chat-native",
+      "script": "chat/native_run.py",
+      "repo": "klb-t/chatadhd",
+      "scope": "actual native core; build required"
+    },
+    {
+      "id": "native-store",
+      "script": "native/run.py",
+      "repo": "klb-t/chatadhd",
+      "scope": "actual native compatibility/store; build required"
+    },
+    {
+      "id": "b-semantic",
+      "script": "c-review/B-semantic/run.py",
+      "repo": "klb-t/chatadhd",
+      "scope": "actual Runtime analyzer main/B comparison"
+    },
+    {
+      "id": "c-boundary",
+      "script": "c-review/run.py",
+      "repo": "klb-t/chatadhd",
+      "scope": "C projection and native packet; use --phase"
+    },
+    {
+      "id": "watchdog",
+      "script": "watchdog/run.py",
+      "repo": "klb-t/Watchdog-JH16",
+      "scope": "actual TS consumers + SQLite/blob/ZIP"
+    },
+    {
+      "id": "ckp-host",
+      "script": "ckp/run.py",
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "scope": "JVM actual source and exact method slices"
+    },
+    {
+      "id": "ckp-sql",
+      "script": "ckp/sql_gate.py",
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "scope": "actual SQL queries, not Room/device"
+    },
+    {
+      "id": "ageds-all",
+      "script": "ageds/run_all.py",
+      "repo": "klb-t/AGEDS",
+      "scope": "four independent modules; continues on fail"
+    },
+    {
+      "id": "ageds-python",
+      "script": "ageds/run_python.py",
+      "repo": "klb-t/AGEDS",
+      "scope": "Python/FastAPI/SQLite"
+    },
+    {
+      "id": "ageds-kotlin",
+      "script": "ageds/run_kotlin.py",
+      "repo": "klb-t/AGEDS",
+      "scope": "actual Kotlin upload slices"
+    },
+    {
+      "id": "ageds-store",
+      "script": "ageds/run_store.py",
+      "repo": "klb-t/AGEDS",
+      "scope": "actual CorpusStore filesystem"
+    },
+    {
+      "id": "ageds-scan",
+      "script": "ageds/run_scan.py",
+      "repo": "klb-t/AGEDS",
+      "scope": "actual scanner slices"
+    },
+    {
+      "id": "lem-host",
+      "script": "lem/run.py",
+      "repo": "klb-t/LEM-Workbench",
+      "scope": "real Kotlin/Retrofit/Moshi; explicit Android seams"
+    },
+    {
+      "id": "ckp-compiled-settings",
+      "script": "ckp/compiled_settings_gate.py",
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "scope": "actual compiled Android Settings classes, host JVM"
+    },
+    {
+      "id": "ckp-android-audit",
+      "script": "ckp/android_gate.py",
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "scope": "actual Robolectric/AtomicFile; requires Android toolchain, bounded, no device"
+    },
+    {
+      "id": "lem-room",
+      "script": "lem/gradle_probe.py",
+      "repo": "klb-t/LEM-Workbench",
+      "scope": "pass --audit-room for actual Room/KSP/Robolectric migration/reopen; Android toolchain needed, no device"
+    },
+    {
+      "id": "c2-boundary",
+      "script": "c-review/C2/run.py",
+      "repo": "klb-t/chatadhd",
+      "scope": "latest C2 payer/request/public/native packet boundary; intercepted transport"
+    },
+    {
+      "id": "b2-labels",
+      "script": "watchdog/B2/run.py",
+      "repo": "klb-t/chatadhd",
+      "scope": "latest B2 graph presentation actual native consumer and persisted-profile upgrade; exact rebuilt dependency closure"
+    }
+  ]
+}

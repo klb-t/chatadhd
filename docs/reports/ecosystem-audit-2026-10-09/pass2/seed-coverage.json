@@ -1,0 +1,36 @@
+{
+  "schema": "klbt.audit.seed-coverage/1",
+  "required_seed_count": 19,
+  "modules": {
+    "chat": {
+      "CH-004": "actual split scoped-policy/ordinary transport reproduced; full binding BLOCKED_MISSING_CONTRACT",
+      "CH-005": "actual ordinary request and empty entire ledger; full admission binding BLOCKED_MISSING_CONTRACT",
+      "CH-006": "actual inferred SQLite relation with no provenance; minimum FAIL, full candidate/ask contract BLOCKED",
+      "CH-011": "actual timeout\u2192done after real SQLite reopen; acceptance FAIL"
+    },
+    "watchdog": {
+      "WD-001": "existing real consumer reproduced; acceptance FAIL; see suite and handoff-b",
+      "WD-002": "existing real consumer reproduced; acceptance FAIL; see suite and handoff-b",
+      "WD-003": "existing real consumer reproduced; acceptance FAIL; see suite and handoff-b",
+      "WD-011": "existing real consumer reproduced; acceptance FAIL; see suite and handoff-b"
+    },
+    "ckp": {
+      "CKP-A-001": "actual source/bytecode consumer tested; acceptance FAIL; precise host/device boundaries in receipts",
+      "CKP-A-002": "actual source/bytecode consumer tested; acceptance FAIL; precise host/device boundaries in receipts",
+      "CKP-A-003": "actual source/bytecode consumer tested; acceptance FAIL; precise host/device boundaries in receipts",
+      "CKP-A-012": "actual source/bytecode consumer tested; acceptance FAIL; precise host/device boundaries in receipts"
+    },
+    "ageds": {
+      "EA-AGEDS-002": "real server/JVM consumer targeted; acceptance FAIL or named missing contract in per-case receipt; no mock implementation",
+      "EA-AGEDS-003": "real server/JVM consumer targeted; acceptance FAIL or named missing contract in per-case receipt; no mock implementation",
+      "EA-AGEDS-005": "real server/JVM consumer targeted; acceptance FAIL or named missing contract in per-case receipt; no mock implementation"
+    },
+    "lem": {
+      "LEM-001": "actual Kotlin/Room consumer targeted; acceptance FAIL; artifacts resolver separate BLOCKED",
+      "LEM-003": "actual Kotlin/Room consumer targeted; acceptance FAIL; artifacts resolver separate BLOCKED",
+      "LEM-004": "actual Kotlin/Room consumer targeted; acceptance FAIL; artifacts resolver separate BLOCKED",
+      "LEM-005": "actual Kotlin/Room consumer targeted; acceptance FAIL; artifacts resolver separate BLOCKED"
+    }
+  },
+  "rule": "Each named seed has executable evidence or an explicit missing contract. Neither reproduction PASS nor BLOCKED means product PASS."
+}

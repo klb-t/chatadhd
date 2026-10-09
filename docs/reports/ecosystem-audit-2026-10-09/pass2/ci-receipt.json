@@ -1,0 +1,7 @@
+{
+  "checked_at": "2026-10-09T06:56:37.779623+00:00",
+  "query": "https://api.github.com/repos/klb-t/chatadhd/actions/runs?branch=gpt%2Fecosystem-audit-2026-10-09&per_page=100",
+  "total_count": 0,
+  "workflow_runs": [],
+  "authorization_boundary": "No PR, workflow dispatch, paid model or paid CI requested. Audit branch only; workflow push triggers main only."
+}

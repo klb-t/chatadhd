@@ -1,0 +1,1845 @@
+{
+  "schema": "klbt.audit.artifact-manifest/2",
+  "historical_base": "baa9e30c12a29ab7f14fc060a13676b1bd35b036",
+  "files": [
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/README.md",
+      "bytes": 840,
+      "sha256": "cd682fb0f64304219cfa2be59c407455e3b2e3a4270ad29cb0854fc86e6964dc",
+      "git_blob_oid": "b33fb7f96e73495ea30ec2540359aa476be74d79"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/REPORT.md",
+      "bytes": 10512,
+      "sha256": "f5d72f888fd71fa86ca9923f8cda804751d361d1162c01d2fd7bf68698ea3d11",
+      "git_blob_oid": "7af84243c4eb5b11570def237215d49047e5e595"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/REPRODUCE.md",
+      "bytes": 1389,
+      "sha256": "dcca0d4a11c1896b70a4ed50b7dfa26b9db9293db9dc1efed52a5ff5a05e8833",
+      "git_blob_oid": "e83fe3ecec40db5ed0a5e8e10adf576b9a41e5b1"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/RESUME.md",
+      "bytes": 3141,
+      "sha256": "4ad8c13866d873b3dd559289870a74ac162a980ae01a16568381d6486e2a57d1",
+      "git_blob_oid": "f5c04b5a23e1e0bf6f89772d754b6b160e490212"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/REPORT.md",
+      "bytes": 6268,
+      "sha256": "ebcfdb79121b4929c420e178df61f8b5683622fc2fc61354ec1584ed4fcd0dcd",
+      "git_blob_oid": "ef329c04954711f702d1992c4b8915ff5ca735e0"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/REPRODUCE.md",
+      "bytes": 4305,
+      "sha256": "dc49a3508898139db99b3987c637bbf38b50c698ab3a4224bec61136efe6e426",
+      "git_blob_oid": "2dc66e3f8a291e2d1c34c5557b0d349a887feb8e"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/backlog.json",
+      "bytes": 1667,
+      "sha256": "f73028b9652562f23ff6999495e8be7c11789087f470219170b9e2ddb4c331e3",
+      "git_blob_oid": "1295441e642e17d34ec669a3a01912c6841de45a"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/browser-attempt.log",
+      "bytes": 4688,
+      "sha256": "9555b73e4bd63e1ebecce5fd9a285e82754c4f2578d1ece1f1a38c4163b7fc88",
+      "git_blob_oid": "99467f703ce6187b9ae14370fe0ad20ef068d2ed"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/checkpoint.json",
+      "bytes": 591,
+      "sha256": "acdbf357f44972d77011c3fd980a0d304b4cb5d21a8068af0551788f7084003e",
+      "git_blob_oid": "6c76161b9830f237223d16f7fcf57a5fb8320e9a"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/coverage.json",
+      "bytes": 18301,
+      "sha256": "ff740f85543d4d6248dded3339949fd8cd1cf6f3bdcb89bd6ec164f2bc13fbd0",
+      "git_blob_oid": "bec8a8a157a24431af1d330913c5a5da5b59da43"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/decisions.json",
+      "bytes": 3190,
+      "sha256": "173dd5aae9a185a406ee67e61489296846bdacc35ca8fbf53a895e87367152a8",
+      "git_blob_oid": "f1b4dbe7b2e7e58433703e0ba561ccd8cdcb1786"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/environment-delta-1/README.md",
+      "bytes": 1358,
+      "sha256": "3c934abbecc2898f85ba2051d51b8c537d2dd78e1eec08a27b742883e7dfefff",
+      "git_blob_oid": "e480fbe73458ca31d4bc4c683e726c68f0072ff1"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/environment-delta-1/manifest.json",
+      "bytes": 1154,
+      "sha256": "320ee6adcf442d08359b7fee9c8bae47bcacf47323d851e23f87e2696efde187",
+      "git_blob_oid": "704e60aecd9a26d4a03d69c7c51c038bbc5b2aed"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/environment-delta-1/project_configuration.log",
+      "bytes": 1937,
+      "sha256": "ea4bc5495a65db2ceaef3f0d0ebb94c94bd4095adc497215642ad57e913f89a1",
+      "git_blob_oid": "89508a0792e0c009cbf2eaa67a067dcc00803901"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/environment-delta-1/receipt.json",
+      "bytes": 1739,
+      "sha256": "17ed236989808c77211e43d0a605f34c3a4e06287e00ab6b8fc04cd0157218b0",
+      "git_blob_oid": "ab9ead9dab23cabc93b5eb4f15964000119147a5"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/environment-delta-1/wrapper.log",
+      "bytes": 1143,
+      "sha256": "cd369f1bb753b8f65a8431bb7fbfb92c57b56aafbd6d521b4df867a0022d9b20",
+      "git_blob_oid": "c82453158a0d0a6c3bbbb90730acdf7580c7d810"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/environment.json",
+      "bytes": 827,
+      "sha256": "d34c294da14186927da16a7eb3c2289839ed230a8ed2b175d71b6346ab8596ec",
+      "git_blob_oid": "9f060487215bd090933275728332bcdf6a76718b"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/existing-backend.junit.xml",
+      "bytes": 67945,
+      "sha256": "9af963f0134f44b2c61486d24052b402263513a83c2f1ddcaaed3f5bd765a21c",
+      "git_blob_oid": "a918a9d698936f97aa1c40f832d78be2a15ae6d4"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/existing-js.log",
+      "bytes": 7893,
+      "sha256": "10c11b1f3adbeadc9097140fb52a1209e61a2c894dc997fac162fd778ac3d116",
+      "git_blob_oid": "bb42de92b7b0c2188f53dc58a1f73f7d91a5785b"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/findings.jsonl",
+      "bytes": 14437,
+      "sha256": "c53edec960129fdb0648f4b5a59cd9a49519ee5af1845c8342e81381a396fb56",
+      "git_blob_oid": "de85c693c4b1e671b22d9f93619b90e0db22d320"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/flow-map.json",
+      "bytes": 1963,
+      "sha256": "6d58b3d2e1e2b0faf4f5ec304f979f2a722fc903f99399c9adf281a4d158bd96",
+      "git_blob_oid": "84d66f4b6093f5dc412701b71682e4ed5d7f3131"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/gradle-attempt.log",
+      "bytes": 2529,
+      "sha256": "a81082174f23c4bf6e6ca4469c37b4e752a9309c514d5c7bec5b696777704043",
+      "git_blob_oid": "da316f8f2a76d5de8eab87c8fd1b50044d63d070"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/handoff-B.json",
+      "bytes": 20039,
+      "sha256": "e8613bfd04cb8181d0e0fa758686ba3ed9aa56412a6c785d71db55bfe169e81e",
+      "git_blob_oid": "7a4268314693cbaa291b839a7290644432ca3cd4"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/index.receipt.json",
+      "bytes": 642,
+      "sha256": "993314a036bc08b842669e235104a9e8a649cbe906dfbdf085a069579516473a",
+      "git_blob_oid": "d1a64f7bf7851f875aa64f1b2745acfce869aa8a"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/kotlin.receipt.json",
+      "bytes": 3529,
+      "sha256": "9951827adb618adbb5d68e2592656d168a1b0ddd50baa6797f26932ef0c0495e",
+      "git_blob_oid": "c58fdd3ab4fe4bda4000787d9e0337ab85153a8f"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/manifest.json",
+      "bytes": 6156,
+      "sha256": "b23d93565da70231c9e8199a57f8a88d01586172f6e07bedd175d62c9640174a",
+      "git_blob_oid": "57971c465665819b175377f002c31656e98e680c"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/python-dependencies.txt",
+      "bytes": 587,
+      "sha256": "6a5f893e6aa1c1730b032b249b110898fd04ca5789bfc00c0303f15b515c86c4",
+      "git_blob_oid": "cd287b8b8bd2b429f0c7c08b94c84f126ee5eff4"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/python.receipt.json",
+      "bytes": 7434,
+      "sha256": "e7fb763208d4c85467863fe25498a1f68b57ad3a80555f0b4abf194a98572070",
+      "git_blob_oid": "b4a48db07579f2b1c21514ee96101dcba0eac22f"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/scan.receipt.json",
+      "bytes": 2868,
+      "sha256": "41c011397135884ec45726677b023abf3e85295425ef77b61b1eea80cc211202",
+      "git_blob_oid": "c0c0d7ccf5478faf8d26b9bec72dba5d30565a05"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/serialization-dependencies.json",
+      "bytes": 824,
+      "sha256": "595a786e87aec333950d683b9291fb6c1ee574e3dad104eccb9cc36b59bc7ed7",
+      "git_blob_oid": "31e0d6a7e44716ae37020fe5be1f48691af89078"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/source-reference-validation.json",
+      "bytes": 112,
+      "sha256": "259f95df61cf5dd464f8eacef20d8aa43e42c4982bbbbda108525c45a1e8078c",
+      "git_blob_oid": "975af76eca5c0a4638dfb2337bc426ec2526fe28"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/store.receipt.json",
+      "bytes": 1963,
+      "sha256": "fb7f9f55ab519516222066b26db032b11e25c7ea6241604f3a9097bd32309d52",
+      "git_blob_oid": "036f9b45be63346392f6cbc5f20c9418a68671d5"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/test-index.json",
+      "bytes": 2167,
+      "sha256": "06c2f02cd1c07fe7b7a2bef5074d7a7fe10741f24a94f2066b9e6f2cdc879d36",
+      "git_blob_oid": "cdc90b8365cdd4c48cd79570358c042d37bb0c3c"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/backlog.json",
+      "bytes": 44050,
+      "sha256": "d584bfaca0070e97a904eb631d57d6cadb1079cc85c37654cfeaa9358bf9b2ec",
+      "git_blob_oid": "82a4c6c338aedb174dedb77b85014c765bec07db"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/baselines.json",
+      "bytes": 1256,
+      "sha256": "649401dc94325296d5155f0fb90e71effe46c3118fa5dbd4df5a28a4e070238f",
+      "git_blob_oid": "0dd18114b70c0a7c8fbb58955cceb44163d6280b"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/B-semantic/B-compile.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_blob_oid": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/B-semantic/B-receipt.json",
+      "bytes": 13797,
+      "sha256": "b4c7d6963e29afe0c8ebd17fecb32825f7ef78d3418e987de3b9b71de7b98ad0",
+      "git_blob_oid": "380fe168d651f8963b3ab574b9cfbaa1f2736aa0"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/B-semantic/B-runtime.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_blob_oid": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/B-semantic/REPORT.md",
+      "bytes": 4516,
+      "sha256": "75f8bc3c82f0b4c0447c995c05d5b5cb45dfd5fba92c9719466a19482095a75d",
+      "git_blob_oid": "e6301d7ed44b1d66c68017ddb2efb8947e01f86b"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/B-semantic/coverage.json",
+      "bytes": 3012,
+      "sha256": "2b2153efa12477ede71b473fed964c2b045662ec9728d4af2291d01076e6b1d5",
+      "git_blob_oid": "bf35013f3bafc8eb20cc075d273a8839dafa9396"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/B-semantic/findings.jsonl",
+      "bytes": 4997,
+      "sha256": "5d8d2dbace92ee77141610d3e9b9d61e9c81d87c8e14f5de7e155c2cd37c478c",
+      "git_blob_oid": "0619ad1586e57955fb21ee88ef64173df58baadb"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/B-semantic/increment-review.json",
+      "bytes": 1859,
+      "sha256": "831158104fd9871867a826155f23f5c7d632c72405214c6b7f750dcda284fc43",
+      "git_blob_oid": "865899c96700cedd96d6458ecaab7d1a05bc6668"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/B-semantic/main-compile.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_blob_oid": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/B-semantic/main-initial-check-receipt.json",
+      "bytes": 13129,
+      "sha256": "60d333a419021ad6749cf991f8eb204977f52c4928cae0fe048a90bbe9f491a0",
+      "git_blob_oid": "5efb4cb0a6f28096bb0dd35452e2600447a38565"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/B-semantic/main-receipt.json",
+      "bytes": 13129,
+      "sha256": "4eee0446544813d92e629edecab63758d0d61bd38acbea92c4ab45c99551c19a",
+      "git_blob_oid": "05022a84137de7feffce004bb0780eafc672cd7a"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/B-semantic/main-runtime.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_blob_oid": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/B-semantic/manifest.json",
+      "bytes": 3256,
+      "sha256": "d651cdbff4eb6b99d8427149de9f292979df6dc44d01accd932796418ac3c696",
+      "git_blob_oid": "0dd81ce89cdfb19dfb0baeafe4c24cd8ff8e325b"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/B-semantic/test-index.json",
+      "bytes": 545,
+      "sha256": "2caf50b54aae70ecc5fc6ac428c6791e8ce0900657e3df3cc5e777da48890044",
+      "git_blob_oid": "a3dc9ced82a204a73c9c66c377805ddeee76b9d8"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/C2/REPORT.md",
+      "bytes": 7928,
+      "sha256": "edba5aac5fcc12d58c7cb03208b53962f04b0f1e0a8a688cf62a42ea1a59b5cf",
+      "git_blob_oid": "9b7d689ef90315d1a079771c2b3058e2eb5c033e"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/C2/backlog.json",
+      "bytes": 5482,
+      "sha256": "df02ebbbc49d1bcaa371223745a7d78817c39525d90ed380b2ebf718b77a58f9",
+      "git_blob_oid": "2bbbce23ab1abbefaf75e464f8416e8b08277743"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/C2/coverage.json",
+      "bytes": 23811,
+      "sha256": "e82f066923c9a5325aa9cb032356e58f46badf6457da8bfa371a2ec488ca6c7f",
+      "git_blob_oid": "d42648dd5dd64d439b9b9c721f632917dff68d04"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/C2/data-graph-runtime-map.json",
+      "bytes": 1213,
+      "sha256": "977a12ead8ef11fd3a66812b703252502e0dfc4115898eae21a9b6f0b9adf362",
+      "git_blob_oid": "e43e1d5d98fb32d20f5d831871d00fde917a67e5"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/C2/decision-register.json",
+      "bytes": 1414,
+      "sha256": "8b388b245a629614d6b9f0df4188420239a0851a3e3861eaa7bb1297e9b3f8e4",
+      "git_blob_oid": "f294f41ab88b34b21cde96735781ddc8808ffd59"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/C2/delta-initial-receipt.json",
+      "bytes": 6214,
+      "sha256": "ccc4346e3c1f98d63b7d4123d08394a91b6adfffae22f18dcc629cb457cecf15",
+      "git_blob_oid": "4a3f94bf1f379e9a58c6bf2bd4e9612a72910aee"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/C2/delta-receipt.json",
+      "bytes": 7265,
+      "sha256": "ac2efc91d136bc7fa735bca405d8657192473d621fb79900bb38f756a775453c",
+      "git_blob_oid": "7bf14d5eb467a24438ad29def02508e14af24cae"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/C2/delta-run.log",
+      "bytes": 2172,
+      "sha256": "5fce429a1e2889e7bfd4c496b4ef7c33f0562ddf9ea0a5bbeb829df0eabf356c",
+      "git_blob_oid": "48368c2dd1dae781c6cc0edbc4ceb7f024b90bc1"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/C2/existing-native-receipt.json",
+      "bytes": 5942,
+      "sha256": "84b3581dc3b65b875b7d38daa56ba26851a138616be6e9586293c55cebe60f8c",
+      "git_blob_oid": "9459ed2f27c711631b2d2bdd5369f0bf8f91b734"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/C2/existing-projection-receipt.json",
+      "bytes": 5533,
+      "sha256": "9cec36a6f0519e236da36153d46b626ddff8add2c7a01de0554f749a6305167d",
+      "git_blob_oid": "b89735409605b60eff045e3f5d0b645d3433181f"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/C2/findings.jsonl",
+      "bytes": 9930,
+      "sha256": "32c42d563aeca564aa9bfbc10ac50360f1f66833261da0551b62724ddd20c890",
+      "git_blob_oid": "63d1a19711d562b75658648e04428316afef8b38"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/C2/increment-review.json",
+      "bytes": 2178,
+      "sha256": "98a175f8ff7630ec2a0a89d4d1066b8f1b86bde93bea72cc25f34dc3f0841b25",
+      "git_blob_oid": "1ae71b08e55f6e64f3f3f20143c6957b6442796c"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/C2/manifest.json",
+      "bytes": 2937,
+      "sha256": "b874a7d0471a6d8cbbec60a779751a1c571c9e19fe75cb5910077ef5f195d859",
+      "git_blob_oid": "4e45e35bcb0a7d2577794624d105c5e3d881028d"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/C2/test-index.json",
+      "bytes": 2401,
+      "sha256": "4212886702e23b70404353d6ff1f647a63a6295a683d1057bf1e196e9626414b",
+      "git_blob_oid": "4ad104bd53c90c21d34937f0488fa21a9b614611"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/REPORT.md",
+      "bytes": 6331,
+      "sha256": "84e24052e47a1d7dc5e3d8dc43432fda6f22b3e848574e9080353315813009de",
+      "git_blob_oid": "72a9dbbd0c75e0d213022dc206b2c5255fa6fc5d"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/coverage.json",
+      "bytes": 11623,
+      "sha256": "2b59d249f01c676de5551b0a987f157b60edb75a46f99732e4fb67e74666a6c5",
+      "git_blob_oid": "a3216cc120bbc9817d7a0239b3184ad22061927a"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/findings.jsonl",
+      "bytes": 6941,
+      "sha256": "a3088e175d853d9d145cf27270b10f8c8ad3ade3c21aff376a0131c74ba0e210",
+      "git_blob_oid": "99dd96d19e84cbc25ae1a545bddc1fcb760df751"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/increment-review.json",
+      "bytes": 2461,
+      "sha256": "5cc3da7466d3829d94b1a62c57e3f13cf5e9bf2ab8f87d978ae23b9179f9c717",
+      "git_blob_oid": "906fb804521c938bb79859dd7d17df6b3264552a"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/manifest.json",
+      "bytes": 2087,
+      "sha256": "239a417c4908600557c01b930f16e4663a57c9a7290b7370932c86c4950714a9",
+      "git_blob_oid": "21c1fbfa9ea26e5e49f2b97ca989f5206ebb61a0"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/native-receipt.json",
+      "bytes": 5942,
+      "sha256": "292b8280d0c76a13eecd14e03d7c317121c6ff2fca219327d1ff8707102d3c6c",
+      "git_blob_oid": "681f99306d8bf29a316603eb12672fc6389f00fb"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/native-run.log",
+      "bytes": 3759,
+      "sha256": "e6005c24c97afd2208b85bcaca2c320844c303db9b35d9f09d178658f670cf25",
+      "git_blob_oid": "223ec6e265e896f4b3d43a28d1fe69538363e2ca"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/projection-receipt.json",
+      "bytes": 5532,
+      "sha256": "78b523447053f84fd368b249e98244281b8840f54daae86c98fb3cbcac020cc3",
+      "git_blob_oid": "64d90c0ec4724634a2102f7828c1b6dea63fc922"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/test-index.json",
+      "bytes": 1238,
+      "sha256": "6f8b343ad11a8b46ad03f83909cf6b75f961e42457d95b75a99291c796a3910a",
+      "git_blob_oid": "558b7a845e48cd3801f971f4f2d0c77b1ac2f49c"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/chat/REPORT.md",
+      "bytes": 2580,
+      "sha256": "aa6820140f5ec65fbbe8c255cd942bfe06f79b76f7c5c77ce86be3036357750e",
+      "git_blob_oid": "1f92f398566c1870669d53b40cff61c5ea187a49"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/chat/coverage.json",
+      "bytes": 6961,
+      "sha256": "cd1c1e4a0de4040af528b897fb04dc81c489797d1076f6e37d096f61338f6e5a",
+      "git_blob_oid": "4833e441cca872a2ecf86c045d3879f799fd5c55"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/chat/data-graph-runtime-ui.json",
+      "bytes": 2362,
+      "sha256": "d7dcb8d8f7027fe6fee8021b8dfaa73fc8cf73fbdee972a07e0af9e29faaa7d9",
+      "git_blob_oid": "5c5ec22d9d0909ca8e112ce589e98d9bd4b1395c"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/chat/decisions.json",
+      "bytes": 2984,
+      "sha256": "18108d17dfbecdc0e732f65c6dc484f7c9400c4f255e3d4e562039fbf5fcaa0f",
+      "git_blob_oid": "b359ac0ed99c7c5529c7f51a561e8308767bfdf5"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/chat/finding-updates.json",
+      "bytes": 2883,
+      "sha256": "82354f7e0633d109bb1cc3ff171b42fb3f422e9365b0b9657cb528a25f17d2af",
+      "git_blob_oid": "b1174b57b3e4bcad0b276fa7c217d3cdd7b5589d"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/chat/findings.jsonl",
+      "bytes": 9726,
+      "sha256": "ae7f764b46c9b354211685239229a3fe5bdeeea3c3dddec1d6ffa6d58509ab84",
+      "git_blob_oid": "5fe44b0e0bf055172fc49b57ed6f5cde9a5b69c9"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/chat/mechanisms.json",
+      "bytes": 2398,
+      "sha256": "c5a3d43642a6eee5dda75719af3adb635da5c8a7cdbd88622de87859222e878b",
+      "git_blob_oid": "4b5fdc0bac561630ce24988ac08f2a1f0d28d500"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/chat/native-B.json",
+      "bytes": 5520,
+      "sha256": "086dac281ae2e9cbdb23ae91a6baa23ae38da24ed5965ccbebded4708897e5aa",
+      "git_blob_oid": "d04d7e6881590f133326f0fd97724f294693e4a5"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/chat/native-main.json",
+      "bytes": 5528,
+      "sha256": "be29ca2a656172781fff76184ed568b9f55c339e0f253ce5e361fec8f4dfd3e1",
+      "git_blob_oid": "a547b4d28c54afa8c3d8fb8c1123905ca798cdaf"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/chat/packages-for-B.json",
+      "bytes": 11831,
+      "sha256": "194bc0360cbf616016459451f50c2fc765a54c9151f76f6d9c440d1f8ef6b98f",
+      "git_blob_oid": "5b262240ae3e2d1b4d98ffbd6a608c6945be9978"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/chat/python-B.json",
+      "bytes": 4479,
+      "sha256": "f980eb025b4e2d4aa4254a141c52c48965db2e9d848a18efa9537c23558cfb15",
+      "git_blob_oid": "970bae57e96ede7eed81f8a8b97cd204379c6425"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/chat/python-main.json",
+      "bytes": 4479,
+      "sha256": "c109493cedf21140b3da1f059abb5d7c94983a0f6b82d10a480dec9b3a2719b0",
+      "git_blob_oid": "09e2a63b35ec2bc4a5e2c13d63038e784288959f"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/chat/test-index.json",
+      "bytes": 13103,
+      "sha256": "c1e755d1afaf9aab526c7f7243f24f08a18686f58b659ca366b0fe35925f1bf8",
+      "git_blob_oid": "adf7b3d286e30bfcba09b93e1d90be432ebe306a"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/checkpoint-log.json",
+      "bytes": 2124,
+      "sha256": "dc44fc233cc7debb6293afbea7012c0b96bc430b5bb47ddb112fdc075042f7b8",
+      "git_blob_oid": "91979de4ed67a99a5cbdb2fc8c85964f0fcc8e32"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ci-receipt.json",
+      "bytes": 365,
+      "sha256": "2b790b14a1216be6b2d494770a105bd8511e4dfe8eb3ff6539ea4fb2a04a43d2",
+      "git_blob_oid": "f98358a5ab8f65bb3133725f82d5626f6a596dd7"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/REPORT.md",
+      "bytes": 8035,
+      "sha256": "9d98dec86e3d0ff82aa8e53bf5ba686e99798b3bfd145581108801460b20d91c",
+      "git_blob_oid": "dd8c27398d07144d5eee36a150cce7d60967bf42"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/android-audit-tests-discovery-failure.log",
+      "bytes": 2980,
+      "sha256": "0ada8ad770c20b0f28987d4bf42ff3c7dadffffb2b9dc0d141626ced7b806ae4",
+      "git_blob_oid": "72f0839c2e4ba0bfc6b4f55530185e3afad20556"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/android-audit-tests-receipt.json",
+      "bytes": 1561,
+      "sha256": "e6682d32cce178b67b069e0c4e763ba30a4750462553c3a6ee3657320e1766d5",
+      "git_blob_oid": "9dfa99cd764ff08d31945a35eaf69f1de982e678"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/android-audit-tests.log",
+      "bytes": 3296,
+      "sha256": "0a9f69c640cabc85ea7ffcfb42cfc8cf2b38e6b851d259adfdd3c89f35f444cc",
+      "git_blob_oid": "97c59065266514d754237299fd815a10ca6020b9"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/android-existing-tests-receipt.json",
+      "bytes": 159723,
+      "sha256": "2ad331c25df8182e79fe95de017e8ef1a583420f00862beb2446f75156db3bbf",
+      "git_blob_oid": "d5faafe16e3e46bb620649692472bb1f15cdb269"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/android-gate-attempt1.log",
+      "bytes": 5705,
+      "sha256": "eacee9eb00d335aef7adb9109176ec6c63726dc8d7b28d8f3a85657079c94462",
+      "git_blob_oid": "189cfe226a40164760d2a2ffdb5119ed52c1379c"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/android-gate-attempt2.log",
+      "bytes": 4570,
+      "sha256": "ee153941450163c15ae199c2a7e8411256dd908e1142aba3be6ffee311c05e48",
+      "git_blob_oid": "282cc4756738dfa7aed34fab17ce660e06b45fc7"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/compile.log",
+      "bytes": 822,
+      "sha256": "115ff5f9a08ab3d813271a676cfe6898bff953b6af4d6ec3a97c331710468a5d",
+      "git_blob_oid": "d22933505da6c3dc7164386b755990f9d69ed289"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/compiled-settings-javac.log",
+      "bytes": 948,
+      "sha256": "cef21b87699419d8ee441331559f69b0139612f759b00bf0de744fd76abb0c5c",
+      "git_blob_oid": "615c755dbdb9590874588b5cf1a3b6a6fa966478"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/compiled-settings-receipt.json",
+      "bytes": 7362,
+      "sha256": "8d22f31c93194538a5aa95b85c14b71a6d46fa6cdd78177989de6fe5857536be",
+      "git_blob_oid": "21cebd1267d02711d5e0b97a317656fa3e37fca9"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/compiled-settings-stderr.log",
+      "bytes": 389,
+      "sha256": "1096942184bda6ae7f8a1304154c4c766c9c1d47185b572f49aec5050347016e",
+      "git_blob_oid": "4b85c43b85155ac64b98cee09c79e38f46b1ec0d"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/coverage.json",
+      "bytes": 30506,
+      "sha256": "d259b6a540dbdc65b8cde281ca78414cce514836e886be6dcc583df6ded0c0ed",
+      "git_blob_oid": "cdba25b53efebbebd253a6715d0437214dd26549"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/environment.json",
+      "bytes": 2436,
+      "sha256": "9caf4568bb5054957c8fe900d3730a549c24419b1c842c3c10d8460c8b07ef51",
+      "git_blob_oid": "0caff5dc6c5da5f2f81f2144732114e8159f8a23"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/findings.jsonl",
+      "bytes": 9937,
+      "sha256": "f4d4c03ab13810a0bf25f1dbd716051478246bc0a8a43ee1020d3d01862ff03a",
+      "git_blob_oid": "924992c7aecb7d7f5917d60331b424786bc9edcc"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/flow-map.json",
+      "bytes": 3788,
+      "sha256": "bc7e2b43bf6513ec1d78b253c00836643624cb7ff81eb065d14ab2584541fce2",
+      "git_blob_oid": "89011f6e0a7998931dcc7c553c13db8e033b312a"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/handoff-B.json",
+      "bytes": 4332,
+      "sha256": "29c01cc9032b06ce5ced892cbc524cc06de0d2e10f98f0b61aeb858337ae0579",
+      "git_blob_oid": "143e81bc57bc39174262456bc96e5e0a4b719d76"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/host-receipt.json",
+      "bytes": 5311,
+      "sha256": "e6a59c50b7a5b72f30b41c94ccb794b50e99ad20b4a5f9ba820e56c7aeebc4b6",
+      "git_blob_oid": "8717004eac5b2102ebbbb84b3ac309cab9847d0b"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/prior-finding-verification.json",
+      "bytes": 1527,
+      "sha256": "707bf60424c6de642eef29c08d79ef45f0eee3872ab4a3b0c4570dc076387a95",
+      "git_blob_oid": "24fe78b6d47d3edd61bc3c21fa8950c37d38393b"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/runtime-stderr.log",
+      "bytes": 369,
+      "sha256": "b6388b835034aec56ebb33b1be3161a669ac3fabe22a7457b44cba6bae148073",
+      "git_blob_oid": "ca794f9ff17ae5d0154b0ffade3a401075f28b7c"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/source-manifest.json",
+      "bytes": 3677,
+      "sha256": "91df6be2db26a3c6bb9b45f2431eb727794442ce6239202bdfd185cb2b9a1c0d",
+      "git_blob_oid": "59c4ccc9be22a84dd9926012f9f7618d50611f50"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/sql-receipt.json",
+      "bytes": 5921,
+      "sha256": "ab35fb86b90cbcb986955904292fef2b279b86da3b765ce79c009d7f4080e63f",
+      "git_blob_oid": "d1a6601f887dd2db26443946f48a335d0e4130c2"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/test-index.json",
+      "bytes": 2201,
+      "sha256": "297aa9b1d017ae6ea0da317e4aaaa3df64cb6b73556e7e3ff7dd2ac70f0f08c3",
+      "git_blob_oid": "d612fad87139c7366c6299f875bf33c02d33df76"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/validation.json",
+      "bytes": 9452,
+      "sha256": "3d358edc5017f8b45539f100ad3b0abb25df883e375037531bbf19c36ed84b67",
+      "git_blob_oid": "3a4871a0e416d6eda01d1c63b4cb04fa418e7f91"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/closure-baselines.json",
+      "bytes": 596,
+      "sha256": "4ae69ca9b6cfcd04fb5845454be5313c07ed83c1d9f2123ac4e74266ae6f5163",
+      "git_blob_oid": "c8aa242cefc1418b1b9d9ac87e5fe177962655b4"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/coverage-index.json",
+      "bytes": 45549,
+      "sha256": "6a6e508b63b2fe0e0b70f911a0ff0814a6b80442895a410a015666728a860265",
+      "git_blob_oid": "f8dc5404e223ed2554e37da9a9d64dae0531acc0"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/data-graph-runtime-ui.json",
+      "bytes": 3911,
+      "sha256": "11bf329ef66d3ca5f5a766cae26052eda7f758ea689655adefafadf423a02dcb",
+      "git_blob_oid": "b57e7ca97b25959a464e878709c3eadb42ca3b05"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/decision-register.json",
+      "bytes": 39785,
+      "sha256": "232d38593b3ccb9ffec184634d26fdcb0802470363b233ff26c62dbf9f9c8787",
+      "git_blob_oid": "117ca3094de4752079aa3aa16b53f6fe4f15f826"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/environment-matrix.json",
+      "bytes": 3079,
+      "sha256": "c21d56ad8ceafec040603739fb6978dcd21976e7fb2469bef87d130cde99047f",
+      "git_blob_oid": "e2c90d7ea4152a70c125fed0c21769b9c4e4f3f4"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/finding-index.json",
+      "bytes": 7629,
+      "sha256": "c90651f28a4276c8e7e0199fc9f1c1820b2a22f3aae3a7f38fd179f413384a1d",
+      "git_blob_oid": "258ccc1745ba6d9b60a2ba4f8afae725933f9454"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/findings.jsonl",
+      "bytes": 84769,
+      "sha256": "1b8a4cc7867857767a21b6b7cf785bae947b13336e07bbc8d0a235f841f048f5",
+      "git_blob_oid": "13229d8ba2df3d60bd3120db3cbb4583c8743ec5"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/index-execution/00-chat-python.log",
+      "bytes": 54,
+      "sha256": "ddbfdf1bcab18acc36dadef44fa512f4aa621edcacd139ab8bfa3d274b88f296",
+      "git_blob_oid": "957aaa5b696e7164af3f50796d9c78940bf8e890"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/index-execution/01-chat-python.log",
+      "bytes": 54,
+      "sha256": "2e8f10cdee389d09063d823f3e799128b566ae0f674d28e8416d5983da0b8256",
+      "git_blob_oid": "3fa9ca2a2b733f0ffec38d1048b825635a3e7f54"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/index-execution/receipt.json",
+      "bytes": 1780,
+      "sha256": "4c56e22a3e7767513a49ef4d0d857c59db9c94b9c107dee0efd9a34c219c7559",
+      "git_blob_oid": "c42778ccab37980889ab9a1356a39f7cb1ec3c28"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/index-validation.json",
+      "bytes": 245,
+      "sha256": "47221211b2eaf0d4e8318f3a8a88698e0bc28a18894caa8d3c3615a6cf97498f",
+      "git_blob_oid": "278391a8c35018695e990e4a93a961414261ef63"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem/REPORT.md",
+      "bytes": 7757,
+      "sha256": "e81f2c8d13d907cdf39a3f618034487b4c6e3150708aa72ea194d3634e932763",
+      "git_blob_oid": "43a1fd722bc9d63b56693d4fc66de952ae04b8e0"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem/coverage.json",
+      "bytes": 7711,
+      "sha256": "0247526a5c5338195280f6c8ac00c487cda669b9d25bd66ecbfb4676833b6e78",
+      "git_blob_oid": "92b31328cf7b364b3db85b96b172c546b2a776db"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem/finding-updates.json",
+      "bytes": 5107,
+      "sha256": "c986bb9be3af358a2c61d8bd9de16e6378dd82b79e2bc1d479ef3e843db50b14",
+      "git_blob_oid": "a929fec6b6323874071d1ed0711b846f1b1630f0"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem/findings.jsonl",
+      "bytes": 2919,
+      "sha256": "aaa8f43b8c9aa39dcc3772679d0a79d907f676731d54ebbae7475d046af0bc8a",
+      "git_blob_oid": "e97443b6ebdc74b8d531e4bd73000af69b3e5e52"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem/historical-schema.json",
+      "bytes": 1559,
+      "sha256": "769db29abea754aef94510d87b9955dab2445a7a99f48dd6d481bc8018c3e657",
+      "git_blob_oid": "8503544d7f8a124ad7fa9965e5c45ea2f71e271b"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem/packages-for-B.json",
+      "bytes": 5574,
+      "sha256": "238e3119397ab10d04bff6ff44af0b36a4ebfdcb4e82e68ec937048370792391",
+      "git_blob_oid": "31bd5947da4292cb852a49accbca8f148db8d18b"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem/receipts/compile.log",
+      "bytes": 1657,
+      "sha256": "a961974c9a2a42363b3d43626e23304c47f2bc274fa91178d7af6bed708600b8",
+      "git_blob_oid": "c26c744e1e396e78ea2dc9c330d97792f8ad3eb2"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem/receipts/environment/TEST-com.example.GeminiApiSerializationTest.xml",
+      "bytes": 611,
+      "sha256": "9c434d05ae8b2a30e9fbe3bb8cd91c4376fc4426a9681d7bb1a564b6fcd18952",
+      "git_blob_oid": "0d1285af30fdcdc979fe5a757a7795e3d3828946"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem/receipts/environment/TEST-com.example.RealOnlyPolicyTest.xml",
+      "bytes": 436,
+      "sha256": "ff00482cf5777425a0f92a5fc102a08ca01de21171d96db6524f787b248ef615",
+      "git_blob_oid": "e8b1f62886405f6a7d3bd17cefae84398424d98e"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem/receipts/environment/generated-room.json",
+      "bytes": 685,
+      "sha256": "1ac32591c4a5698552150950c2eb4d32ce7a57e8bdd5ba31e00cb428453e6d65",
+      "git_blob_oid": "8d07e909b3311893259684781503a9b86d8620eb"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem/receipts/environment/gradle-test-cached-receipt.json",
+      "bytes": 607,
+      "sha256": "9afc6c3ce8da64540f1f6e35704f6bcb42b17f3d6f14c48fb8cc5c63397e310e",
+      "git_blob_oid": "8c841779b19c0c7ce33c8c124791c6a89461eb7f"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem/receipts/environment/gradle-test-cached.log.gz",
+      "bytes": 87476,
+      "sha256": "ce67c2a148e2f11225e2ac9030d66917cb01d853aaa0eb37b113c555e5be5b4a",
+      "git_blob_oid": "a7a72ca7c9c7201690b0dc29e62ea0b413a59c64"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem/receipts/environment/gradle-test-current-proxy-receipt.json",
+      "bytes": 658,
+      "sha256": "aa613c1269cdfbc0827f927dd1235cb6c56c4e0eedecbf65bc0493e3ebe22fdf",
+      "git_blob_oid": "66d55a08af353253623cee78a04d5e07cf19a158"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem/receipts/environment/gradle-test-current-proxy.log.gz",
+      "bytes": 33165,
+      "sha256": "0b79137dfc1351bd686c3651019c7844a8597a33cf94b0fb9c117e2107a9c86c",
+      "git_blob_oid": "440214ad7c4a3f68c38bdcac7718405cba819629"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem/receipts/environment/gradle-test-jdk-sdk-receipt.json",
+      "bytes": 578,
+      "sha256": "2140ea4c6d795c66cfc1bc8eff22c4062f91392b5af338890defcebbf62516a1",
+      "git_blob_oid": "2de9bfd1c07743579143357fda30fd79a19b0c7e"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem/receipts/environment/gradle-test-jdk-sdk.log.gz",
+      "bytes": 1961,
+      "sha256": "e2e75b6dfd371d1431514ec5602079952dcb21001307285d0196c447ea2f0cbd",
+      "git_blob_oid": "7b181c200d3792a756a833bffe7cb80ad05674ca"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem/receipts/environment/gradle-test-receipt.json",
+      "bytes": 478,
+      "sha256": "c3c0226dcb25a5504c9a0c97a5f22285b2e7dbe875e3862bec397063f14ce5b8",
+      "git_blob_oid": "8b24a407edb275d15632b3a8e455c9d24fc611c1"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem/receipts/environment/gradle-test.log.gz",
+      "bytes": 3162,
+      "sha256": "1225a44e60f4752a5516639140ecd5a3d707a56a5a518573c363a222ebf38e4d",
+      "git_blob_oid": "22a9010669399f6075e2e39a235f23c7d4935c90"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem/receipts/environment/gradle-version.log.gz",
+      "bytes": 464,
+      "sha256": "76ae02726a849a4e7d7d019ecb0dc1b3925cc98c725a2551f53eae4ef56ffa88",
+      "git_blob_oid": "479f88dcbba2de144fbf78e0ea551e7b402c8f49"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem/receipts/environment/summary.json",
+      "bytes": 1315,
+      "sha256": "37d6a385d90ebbbd386289d02c9ed65a0bdc9cc6310081ed0505c15cee32fa3e",
+      "git_blob_oid": "2832ef97d38eeb679e33f22c0e93c456688ee381"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem/receipts/receipt.json",
+      "bytes": 5309,
+      "sha256": "eb53c9935508665d33a8760332bb55a3ae733a42dec76b64a9c9b20cfdaf1b44",
+      "git_blob_oid": "2eb62ca5dd3628148fd0f937ccd896324559055e"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem/receipts/results.json",
+      "bytes": 16424,
+      "sha256": "f7e41ef8813f05f66ebfb746680dc86bafbb435ef2e4fff198bf7018cd374588",
+      "git_blob_oid": "1c2761750526d448e8dd1b618abb789f382b9936"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem/receipts/room/TEST-audit.lem.room.RoomPersistenceAuditTest.xml",
+      "bytes": 8154,
+      "sha256": "a637fdf3d9c5890d241980b3a9a89e13a21c4b4c2aa6f4cfafb950de5902d4d5",
+      "git_blob_oid": "44b443f1217ab78d92a7d59cf40d63fc7540cdc3"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem/receipts/room/gradle.log.gz",
+      "bytes": 6232,
+      "sha256": "d7d3b191c8357b9e8677a8160bcabce612aaf370e9433a02dbb50cb7d730884a",
+      "git_blob_oid": "e55e5f28b2d43f3a75be08f73a39fd6867b073f2"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem/receipts/room/receipt.json",
+      "bytes": 1107,
+      "sha256": "1f956761908295c93a0c49b9f0489d8e758e91b802b84761b4f380ab39545c7b",
+      "git_blob_oid": "6e54038ed9513d5282a6c5b3e9258ec4ab8ad617"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem/receipts/room/results.json",
+      "bytes": 2078,
+      "sha256": "f78ff8417c5dcb2ac06f029c2413479a8b7378487f1a2414273930eae9deac97",
+      "git_blob_oid": "b3edaf5bd0361bef33f1e68f0d18b9908904ef10"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem/receipts/room-first/TEST-audit.lem.room.RoomPersistenceAuditTest.xml",
+      "bytes": 7856,
+      "sha256": "fb01db6950266a365c0b3f337660b5121a1a2545966e728d428129cdcb3a48f1",
+      "git_blob_oid": "9ff990ee8db897dddd744a89a147d42f3581d4fb"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem/receipts/room-first/TEST-com.example.GeminiApiSerializationTest.xml",
+      "bytes": 611,
+      "sha256": "9c434d05ae8b2a30e9fbe3bb8cd91c4376fc4426a9681d7bb1a564b6fcd18952",
+      "git_blob_oid": "0d1285af30fdcdc979fe5a757a7795e3d3828946"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem/receipts/room-first/TEST-com.example.RealOnlyPolicyTest.xml",
+      "bytes": 436,
+      "sha256": "ff00482cf5777425a0f92a5fc102a08ca01de21171d96db6524f787b248ef615",
+      "git_blob_oid": "e8b1f62886405f6a7d3bd17cefae84398424d98e"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem/receipts/room-first/gradle.log.gz",
+      "bytes": 6265,
+      "sha256": "9655296d1021fcf7e1ff66d6f128a5ab8aa0c69e2ed7dbcf019fc4bd290f4478",
+      "git_blob_oid": "4b8399aa7ad3fa2d6166972dc28fe3d0d7c4dd2c"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem/receipts/room-first/receipt.json",
+      "bytes": 1075,
+      "sha256": "47695cb58fc3f295a9d90db175f858f7559cef2b21ba876eb7cdd801f6430ec4",
+      "git_blob_oid": "029cd453e463855f4297cfa2fae4e2d027e80c50"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem/receipts/room-first/test-source.kt.txt",
+      "bytes": 4202,
+      "sha256": "e6c7d4c6644c6d9cbc017677c48e0b826ff187d3d7cdf07354a97826a116f438",
+      "git_blob_oid": "0ec38e1049354d41094e8b0054dfcc57b66d9011"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem/receipts/room-wrapper/TEST-audit.lem.room.RoomPersistenceAuditTest.xml",
+      "bytes": 7944,
+      "sha256": "117d5db2d90a7b1d8e9757810f9c4f8b04f53a33f45ccbabacf27bba1bd94d31",
+      "git_blob_oid": "e90e9a912bd2e206c27f8c64ddb1081fb1caa30f"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem/receipts/room-wrapper/gradle.log.gz",
+      "bytes": 15210,
+      "sha256": "b9cb68998deb2915c07d3f25c5f15dc085197034284a4cf0e5957839a1e6851d",
+      "git_blob_oid": "e5fbac8496ad9e7c25336915cf19e6c173bcb412"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem/receipts/room-wrapper/receipt.json",
+      "bytes": 1541,
+      "sha256": "538fd172d0d122fc711305a9a30dbc954ffcb692e1fe91b4ad7b9a6e123d50c2",
+      "git_blob_oid": "8953cea1c2292dd40eacb30db091a4f02043ed8d"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem/receipts/run.stderr.log",
+      "bytes": 416,
+      "sha256": "4cf2ee80837650be2aa9017c56c706f68aee69ffa9eadc158b08ca44f985dd2b",
+      "git_blob_oid": "e485a03b6913bf5516f287f91030242d93db6d20"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem/test-index.json",
+      "bytes": 4226,
+      "sha256": "6663580473061a59ca7fa65a65015564c94a3bac3d8d7894e77c98396dd224f0",
+      "git_blob_oid": "72cfd0a9256a7e3369771b4f52c7df884a2ff067"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem/validation.json",
+      "bytes": 2131,
+      "sha256": "316ea69a413a49c942cad091b65e820ed2986cc4d4991d695a7c1e16c6706349",
+      "git_blob_oid": "e7558234b2e38f1cd2c6f50d8a12f8cec5ba26ad"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/B-comparison.json",
+      "bytes": 6635,
+      "sha256": "fe78a0449dc040b9398da6616af2438baa4ebc3a1979e467e452fed82915bfe8",
+      "git_blob_oid": "e92d2343e3d3ca5c478d8555eb0ab45894a29550"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/B-receipt.json",
+      "bytes": 43177,
+      "sha256": "8c87401900a3991ba1f9c468245ce1f37a5c114d61c48c4dafa11c512f1fbf93",
+      "git_blob_oid": "e394a19963898a91d9faec3aa219a1c55faf545a"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/README.md",
+      "bytes": 5698,
+      "sha256": "75c0ecef6effd459d99f7f1727cd6b1c3d9bcc9b14305c9e578d75618ff04a49",
+      "git_blob_oid": "25269726c869b036d4474975b75dea860f0a53c6"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/build-B-corrupt-object.json",
+      "bytes": 153,
+      "sha256": "9a7520a3c4721a416e97d4debe6e0a21c4f6d7021fcafbfab21acae152da6a2d",
+      "git_blob_oid": "60653acea531bde02cc08b42ae6c3b486cfaafca"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/build-B-first-error.log",
+      "bytes": 22695,
+      "sha256": "a0cf219df57eaa900d24d768096d1552a91db8312b046fe5ae99946f64f7bc9c",
+      "git_blob_oid": "071257d1e8d87a734888af498649700a6c361ff1"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/build-B-recovery.log",
+      "bytes": 355,
+      "sha256": "5eaa7d8bc214604ef6de369e5777b9939ebd683c77324f2c321b1df7aba29c92",
+      "git_blob_oid": "8c16816b57da374eaa5252bcdcb723ae03deb65d"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/build-corrupt-object.json",
+      "bytes": 297,
+      "sha256": "a284fb657725a343c5be75f2a63114780557b62d3f0a6894ad9f3f133386c846",
+      "git_blob_oid": "f7589947f02ecb9ded0d794403111082dc5141d2"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/build-first-target-error.log",
+      "bytes": 107,
+      "sha256": "d9004babb62a3bf60a8b7f5482f777b0379dc4ef6e0d506a66f76ff6851b4254",
+      "git_blob_oid": "ec129cc86ab784701a20dd961ba4400a890945cb"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/build-link-oom.log",
+      "bytes": 18489,
+      "sha256": "43f53e9aacabecd9c80df448225de20f125d31408dbdf1a66bc8ba7d47a9dddd",
+      "git_blob_oid": "59ba9957f821b8ba5aaf8fd446b9a1db1713ab82"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/build-main-recovery.log",
+      "bytes": 275,
+      "sha256": "1fc9043606b292e5b0cf5feb40b472e7e97dc800820bc1095de1d8f18ba9d102",
+      "git_blob_oid": "a71b04ed28854458b7e4d78f62a15046d53a2c93"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/build-object-error.log",
+      "bytes": 15262,
+      "sha256": "73d2195951a5d47a5638c94ce9e015178b4d0cd262fb02ecd99f2aa3220931de",
+      "git_blob_oid": "6f44bc3d31509c06d80b687c6d96afa91824cfb9"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/configure-B.log",
+      "bytes": 862,
+      "sha256": "39fcde6c9b603478fe0989a976f326de5d84acaceb90fc7b00a5b35d8a7c1a77",
+      "git_blob_oid": "9ec31e34e4f7a093f3361e42b437b004f9ab098f"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/configure-asan.log",
+      "bytes": 865,
+      "sha256": "a81cbbe6b2345baa1f1e3dee2ae4db53d38eb5b72785b2055d1d55d0921dae4b",
+      "git_blob_oid": "2b23547c8995581cb4d482bbf5316d500af93e49"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/configure-main-link-memory.log",
+      "bytes": 241,
+      "sha256": "63121f9e5963fee421f8715f87722c0d43fbd483a4740e9646b826319894fbff",
+      "git_blob_oid": "a44df885e91488d973293abdf408cc52ac050734"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/configure-main.log",
+      "bytes": 1016,
+      "sha256": "aab5f3923ad3ae1330815c9f47f5644e8e1300822f6f129065fdc2e2abfdcce3",
+      "git_blob_oid": "c68cae110715692afb25ef7454d8680a540795cb"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/coverage.json",
+      "bytes": 6840,
+      "sha256": "452a2362a6af554d9b9c7a346dc37b2801cc0b795d1609fca188878ee7492d70",
+      "git_blob_oid": "aa412ce4b6cff0cdadd264b3d559a429fb72ca45"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/ctest-abi.log",
+      "bytes": 269,
+      "sha256": "a7e239e2cb86b6c7dbceee024e721b4639089cdf7bc7940c90052e8a70d09eca",
+      "git_blob_oid": "c6f54d67cec2bfb12f958a5a9aa6dc8ed9de4487"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/ctest-abi.xml",
+      "bytes": 750,
+      "sha256": "ff62976b46d2df2d26ed56d1f0eb5ec1f66775b948a93bd323fa23fd63822e3a",
+      "git_blob_oid": "1c969946f6e5265d06e84c7a2fb20b8cf34b8ded"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/ctest-unit.log",
+      "bytes": 15712,
+      "sha256": "64c272f9f14981b1db27b760b5fae1f01504d30cc9a2653008d7d7d31613cc39",
+      "git_blob_oid": "e711a27d60650016be50e0ec5ade1d59e5befa27"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/ctest-unit.xml",
+      "bytes": 52312,
+      "sha256": "b39dd3b12da4f5d11bf6ac1f88c1d63cddc6eb0f57abd95d8ba72cf61f27135a",
+      "git_blob_oid": "3396cf298d757439cf2c4ed2be90d116d6306452"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/environment.json",
+      "bytes": 2876,
+      "sha256": "33e777885deca1c7e2ee56398d6c22e75a2f77128085ec38510b224b74d54da5",
+      "git_blob_oid": "e744e1a738486743f823a2409f1188f746d26e31"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/findings.jsonl",
+      "bytes": 4556,
+      "sha256": "6f7ec66881d7f065c6e418cdceabb17a08a6c3375b9f80c028f9879e14a13883",
+      "git_blob_oid": "7614aa2ff875a62055d8730abe01c574cfe7269c"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/handoff-B.json",
+      "bytes": 3093,
+      "sha256": "b58ed105b71dd7ecea39db9b4ffdfcebbcfe804d25116526c048ce4b1a2fe9ea",
+      "git_blob_oid": "11b07fc0895ebff58316e9ff9dcf72184321f9b2"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/harness-review-history/README.md",
+      "bytes": 1349,
+      "sha256": "31b6577fd762ac45a7eff4695e849dac0b16caabb85295ce9f0900f458c305f3",
+      "git_blob_oid": "0f0cc320a812cfccd40d07fed1fd39d4c4c4a5e4"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/harness-review-history/v1-B-comparison.json",
+      "bytes": 6479,
+      "sha256": "bf5489400e86e0aaa675b94f78f9e3cd596016835f5af078b2f978eb844e978a",
+      "git_blob_oid": "af31058ed23c14ddec0ee0e25b8e5aaca245929c"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/harness-review-history/v1-B-receipt.json",
+      "bytes": 39847,
+      "sha256": "53d389fe403cb61e1363d9965e7f5fad3f1cc4edfda1dec4c424b699b8eeb2fe",
+      "git_blob_oid": "43049738f16ffaa468c62ea524a57ed243229fb8"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/harness-review-history/v1-README.md",
+      "bytes": 3725,
+      "sha256": "599553bc989c7c96ed31b55820a9c5068b0ca1856a7be6c1c0ba0dfb9f93ac07",
+      "git_blob_oid": "f9ed6ac15e87b5a46f2e8b483688f689c88c0fd3"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/harness-review-history/v1-findings.jsonl",
+      "bytes": 3847,
+      "sha256": "fe28c727565a2acaa3e30201f5bde82f69aa7ff115acf2fe83e4adce2f80803e",
+      "git_blob_oid": "e6165bf7e3dfdf4464bb7a5743df000015c98a2e"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/harness-review-history/v1-handoff-B.json",
+      "bytes": 2693,
+      "sha256": "7dcebe363ce8fbee805585cc8e363ecd77d5d2b6687064b8f61ccab50a5678d2",
+      "git_blob_oid": "0d8f82e482e252cd752db91a523fb6c83672f2f7"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/harness-review-history/v1-main-receipt.json",
+      "bytes": 39621,
+      "sha256": "20842aedff8f06726d7565087ad3862845d78998be06c1c4845f1627b02b061e",
+      "git_blob_oid": "d134e9a0707582a05be050af6321157d66f6f305"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/harness-review-history/v1-reject-only-runner.py",
+      "bytes": 20766,
+      "sha256": "610fbc87871bafce654888ffed3c148c4a86b02eb8253bbfcc35071fca61b3d3",
+      "git_blob_oid": "1feb1d31d67722a5bf0831039f5e4d045f195169"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/harness-review-history/v1-test-index.json",
+      "bytes": 7226,
+      "sha256": "424fae76a9c97f185dab248f4b8bfe5e5529a2437280ccecc08bb67a3ccda07a",
+      "git_blob_oid": "31aa320aab6e690b2427cdb906c7247742df1823"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/main-receipt.json",
+      "bytes": 42917,
+      "sha256": "a08520d032d3721dc72287e1225d60d9239889b7a074c8767716f0108fdb5419",
+      "git_blob_oid": "2f900fcb7ab6b001ec9ce14797f9b3f8f6ec5fb6"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/sanitizer-asan-ubsan-receipt.json",
+      "bytes": 43056,
+      "sha256": "ed55ed4055523781749bdbf4ef9c1e9566479cc585fc739f0a5ada465b56ca53",
+      "git_blob_oid": "0fbe7c773c83c79c12a2605912c6aea68afa84df"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/sanitizer-build-controller.log",
+      "bytes": 69,
+      "sha256": "59bffe20300d26ebd44fca8a56533756db69f07f125e82166f3e208f4f9994fb",
+      "git_blob_oid": "de01af45c7709258ccafbd68e30d80dcabdfca65"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/sanitizer-build.log",
+      "bytes": 2830,
+      "sha256": "2e043fb0962af75b7f55ab272f2e09a70e1af64f1fa70761c058e304385d45df",
+      "git_blob_oid": "afacfb9ced2f7b6fcb3784bd404b27f4ef64c2a8"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/sanitizer-closure-manifest.json",
+      "bytes": 57442,
+      "sha256": "223e064df5b01128caa6311d6c69470bf31dd848921ef771b74c0001bdea77ac",
+      "git_blob_oid": "42530f3647b3c0d4b2d4f344e0ca71d447db9a42"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/sanitizer-lsan-blocked-receipt.json",
+      "bytes": 26266,
+      "sha256": "1db4c71085ad9f85bdfff1ab98e5b90ffcf27ac9f3d70e2d5c8292a319f53a55",
+      "git_blob_oid": "ca84e30dbb58777390acbd0d06ce2dababb9020c"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/superseded-invalid-settings-fixture.json",
+      "bytes": 28685,
+      "sha256": "bf5c8f03f239d3081084975a444faad11df05b02a743d3e76c2852e11281f7c3",
+      "git_blob_oid": "2e463ef3dbd131faaa22b1494858f065ee7ac9b6"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/native/test-index.json",
+      "bytes": 7342,
+      "sha256": "b3d334d53fcc8a423b6a62089fa330ad9b0c6badb955eb39e4227d94efcd0e3e",
+      "git_blob_oid": "9846868d0507526b33bde0ea10ea5928cef323f8"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/public-projection-review.json",
+      "bytes": 577,
+      "sha256": "c950aee844b164ca55c7b2208b69ccfc07b9bbe221007027d1773d2b6c8f11ed",
+      "git_blob_oid": "a9aa7df0e07dafd93e26909b317befc92e3e44ae"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/requirements-matrix.json",
+      "bytes": 5089,
+      "sha256": "813cd8acf09a7e61c14017c7f374120f80947ce0dbf1233bc4df159948a74da1",
+      "git_blob_oid": "32221693a03a080f3fe3d1d257ff751fecb16b09"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/resume-queue.json",
+      "bytes": 8270,
+      "sha256": "5653845355cf8d625d40861d9316cdf4d4c7288a0382ce378b9309db204866e6",
+      "git_blob_oid": "68c716845654a998020d1693dc130692e16e6a1c"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/risk-queue.json",
+      "bytes": 3142,
+      "sha256": "d9a1feb267786beb270e2c19f65053a95f824696c0a45a5e8f73c73997bb29d6",
+      "git_blob_oid": "24017494114216cfc10c51e164e700484bb0ee3c"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/seed-coverage.json",
+      "bytes": 2528,
+      "sha256": "68c531827b0137e6e1a6a24db0e207d0134087ade60a9ea66ab9b18c7e9da513",
+      "git_blob_oid": "293523526428feec4a08fb6d64e4e52caaf74999"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/test-index.json",
+      "bytes": 3187,
+      "sha256": "4d1689e2a1663a3a0aba03e1afdbcb6551c9c2ff697352d3eac7a8c09bc61c64",
+      "git_blob_oid": "45ac0669553521a1d62e5f7df7c20a4f2ad2bb3d"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/validation-prepublication.json",
+      "bytes": 376,
+      "sha256": "4893d9e0c200e5bfdc8b683584611f07a6dda6b7ec4a14d31cee9afbe729a030",
+      "git_blob_oid": "14e1c5a3177368784170e55035353ece9178399d"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/watchdog/B2/REPORT.md",
+      "bytes": 4892,
+      "sha256": "aaabffd28c475e257953faad4b9e42c2006ec95b9838d931b9f2666de641eb2d",
+      "git_blob_oid": "0e8aef31aabc8fe3e5e62ee11880d688b7aa81fa"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/watchdog/B2/coverage.json",
+      "bytes": 4896,
+      "sha256": "d83726aca3e2bade8f9166bd93ed8343ab9a4666f8c28e1613c34a6beaa351ce",
+      "git_blob_oid": "951cf434326d139c40c3444613f2392d1858abe9"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/watchdog/B2/findings.jsonl",
+      "bytes": 4647,
+      "sha256": "c5f68ffc38d5315ff1f03c06416d774b16f3cff7f94ba5b0665627bfd3983502",
+      "git_blob_oid": "87936ec06a57906a102b8bf90b546c71df4b0503"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/watchdog/B2/generator-check.json",
+      "bytes": 288,
+      "sha256": "01e22a04ff67c4b874d493136facea5ce8a94a34605c24dc52b7099f56c79093",
+      "git_blob_oid": "e3b6e5a4dac1328088db028848a43e1c6614dee3"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/watchdog/B2/handoff-b.json",
+      "bytes": 1947,
+      "sha256": "d6b26fc0f4df6da655441097bcf0942a6e147ecfe4314e4f15641a0c925b480a",
+      "git_blob_oid": "5bc6aa37affa0fae1a9a86ea4ba5ff4ec9dde112"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/watchdog/B2/harness-history.json",
+      "bytes": 1303,
+      "sha256": "af8ae703527ce9b70c97a4a2b1a8e4fb6f3fc87071487ece069bbe22f3ad145d",
+      "git_blob_oid": "8706c5170512530035e35a59c384efc403930422"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/watchdog/B2/increment-review.json",
+      "bytes": 1591,
+      "sha256": "a83aa098d32b1081b456ba135fd4169b1df60a35940502abb31ed68c0e1e0018",
+      "git_blob_oid": "2019d4de8adeef91c3c7be46f285fcb30fe1894c"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/watchdog/B2/object-manifest.json",
+      "bytes": 12573,
+      "sha256": "939874edc28d7981afaf7ae3344d099a3cb2254c4f89cbbee7b823476e726a5d",
+      "git_blob_oid": "064881585032462914af5e2f92ee17677a3482d9"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/watchdog/B2/receipt-fixture-v1.json",
+      "bytes": 19217,
+      "sha256": "1c140ab23b1ebf84930be12caa4c16c5f7f008e43aa2bcf6954b784cf2244c8a",
+      "git_blob_oid": "2470a8bada41fc2192eaf041f6ba8730e42231ac"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/watchdog/B2/receipt-superseded-compatibility-oracle.json",
+      "bytes": 21181,
+      "sha256": "0dc45d65cdee0dffaeec7d6d505477a0b8feb52d74f5162d78105259704bb74a",
+      "git_blob_oid": "7c4a8f7d30d235e3cbef4b2ef125ec916a5ee488"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/watchdog/B2/receipt.json",
+      "bytes": 21815,
+      "sha256": "1fa3a4899182be4fba80f864086994c8d1eae5febf22c8124f5a652ef9633b8b",
+      "git_blob_oid": "eaf22ba0a3cfdff643c8b26e4b7404793ddc1da5"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/watchdog/B2/run-native-B2.log",
+      "bytes": 3411,
+      "sha256": "a35a2be81c46e265eaf04f84be585bb4c0d8d9ca3c2d4cff6aba6af0a8dcde7b",
+      "git_blob_oid": "b7ea4115845fa1e036671a93cde34f4196e3d6d9"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/watchdog/B2/seed-native-baseline.log",
+      "bytes": 484,
+      "sha256": "b149e6ee72f398309905124f15a375ed13473d05f961a511939b75c07932512a",
+      "git_blob_oid": "f28344b5b55d6e03e7ca36b5780528c87b905ad0"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/watchdog/B2/semantic-carry-forward.json",
+      "bytes": 3082,
+      "sha256": "d60cc67aeba8002510513e916c9a64d6c338b99244455bccc8fc9aa7bdb912b2",
+      "git_blob_oid": "028389f57cc2f6a079efd9c3eb8066fa316dee04"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/watchdog/B2/test-index.json",
+      "bytes": 2688,
+      "sha256": "86fdde8b3c75c7bcc1007a7e72f81659fe469bee5404e7fb27331e76a86e55ea",
+      "git_blob_oid": "7a61c4b9ac5f177d7b373ec5cec3d01344da5640"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/watchdog/CHECKPOINT-1.md",
+      "bytes": 1444,
+      "sha256": "583927e8e186fd10008b4d46cf28105efdfe375a8ec6026a77129e7cb943414b",
+      "git_blob_oid": "e2f0473391f2481479f1efb11bae12dd8e9e6594"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/watchdog/REPORT.md",
+      "bytes": 5692,
+      "sha256": "05e7d89262e8763f2f850b332d370c86acd4b85e26da07384a5632f76cd8b817",
+      "git_blob_oid": "559e0ef0d6b9ceccf65e404bc09957dba34d0df4"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/watchdog/browser-probe.log",
+      "bytes": 5082,
+      "sha256": "248a4144b4506d2362c22fea757e3e90dd8952cb3533d2d9b84be5a7d71a869e",
+      "git_blob_oid": "ebd6e0db5a7afb3ddf1b515876a9b4c7d9225a7e"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/watchdog/build.log",
+      "bytes": 2342,
+      "sha256": "e2a72adbfba63aca486721049dfcac4e392be2b96690c786ca04e536914e29a8",
+      "git_blob_oid": "90b630e69fbd826362bb39a317aa043e2c2aa7f4"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/watchdog/chat-peer-review.json",
+      "bytes": 7572,
+      "sha256": "f440adc958d21951f69887d2b20496d59b1f0cfc0b263feaf7ae002834941730",
+      "git_blob_oid": "f33371fa8e81c3bdbf266d6a1fb50fc590e46b1c"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/watchdog/coverage.json",
+      "bytes": 30589,
+      "sha256": "e3ac61744f9399d2719a686ccc52ed102526573245fc853aa2e152420195ce72",
+      "git_blob_oid": "270e80d860822cc49c6abcb5709a9a2ef84679e0"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/watchdog/decisions.json",
+      "bytes": 1063,
+      "sha256": "4393798eda177ebb31d1755460d40bdd30b45e05f353831339b8be1c5ea9a752",
+      "git_blob_oid": "403cd518f3c769ea7c12a0bcffc297651257c31b"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/watchdog/environment.json",
+      "bytes": 2465,
+      "sha256": "7a85678a1c1701e13c0a423a31dc021ac68115cea44790461d8718a9f16ff77d",
+      "git_blob_oid": "823464ef8a12b0a215c62e7b0e30e77618035b37"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/watchdog/existing-host-tests.log",
+      "bytes": 20975,
+      "sha256": "f01bdac27fbea439d4db56ea87185c95e987c006003bcc13e5351af568226f33",
+      "git_blob_oid": "5d5ae85150df2eb2756e7b66d7b0255b3ae687c2"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/watchdog/findings.jsonl",
+      "bytes": 12979,
+      "sha256": "a0a8c4c834a56c1962663c19431a3a6c90aca96fb42e08f4ba9b5a6edc5c2fb9",
+      "git_blob_oid": "69443caba6fe6aad497b52a8f4bc9d1eceb22171"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/watchdog/flow-map.json",
+      "bytes": 1585,
+      "sha256": "5f46ea6c00561237ae75c6d8b762dc00ffbe71c48fb7d200e674c4af640a8502",
+      "git_blob_oid": "c531eddf5b7360d610640caa93057e80ad0646ba"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/watchdog/handoff-b.json",
+      "bytes": 8851,
+      "sha256": "1ce394ef9eb9b3d25cd5eb233a188e9de64bff27315a12439671ace295c6c510",
+      "git_blob_oid": "af157b557b9847bea2e6e9d946b6afe76c06d0f9"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/watchdog/playwright-install.log",
+      "bytes": 4059,
+      "sha256": "a08abe6c83f862175fca423a907d006beffbca0a53c85a4a73a3a9dd7b90f2d7",
+      "git_blob_oid": "fb2ebbe3f93815a6fdf125ca1354861cd85a22d0"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/watchdog/receipt-complete.json",
+      "bytes": 8264,
+      "sha256": "e27448a03192017334b8b9c4d007e81f1eb2bb48dddf38d1d923ea8049c4af10",
+      "git_blob_oid": "9aa5a9b2890f0ef82eb5d2c99b6dafe775b8dec5"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/watchdog/receipt-core.json",
+      "bytes": 5253,
+      "sha256": "d180ce11ba1e9605093cbf3e076a6e463a4133a5ecb064ecfe044176eca66eca",
+      "git_blob_oid": "9a940fd16aefdc841f4071af9a67885322788594"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/watchdog/receipt-flow-attempt1.json",
+      "bytes": 3084,
+      "sha256": "f1d6e9187414cf526a03c57033d9054ebf6d7f86f9300eff8e82da67f421cae8",
+      "git_blob_oid": "4b26b185f1831cece7155a64b4910e198e6d7f71"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/watchdog/receipt-flow.json",
+      "bytes": 3076,
+      "sha256": "a5523d52f9e733dd12bd6ee1ed98ffde29025679d38680f8b5b38962d44355f4",
+      "git_blob_oid": "b4cb92472d29bd4ff98a4e21db6d0f3327af11c1"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/watchdog/risk-queue.json",
+      "bytes": 1486,
+      "sha256": "2b26b3990073f28e30a2800085e783c65a2bd4946ecd56cb7cd17927b70a590c",
+      "git_blob_oid": "03d1c34833042ec64bbc2dfd8da418e03d14d361"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/watchdog/test-index.json",
+      "bytes": 5172,
+      "sha256": "c447d87633645fa6346129319e9959cb1320b499d680d1909338f32ebf961fb3",
+      "git_blob_oid": "28a014724ea2374bb06dcf04687c9cd0f5c299e1"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/watchdog/typecheck.log",
+      "bytes": 143,
+      "sha256": "d55cafd4f47d8433cca41a93c2d028d0313e34ecc067544e061d2e17ab44405a",
+      "git_blob_oid": "2f42067751401f86211a1507ca007bd99902836e"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ageds/REPRODUCE.md",
+      "bytes": 4305,
+      "sha256": "dc49a3508898139db99b3987c637bbf38b50c698ab3a4224bec61136efe6e426",
+      "git_blob_oid": "2dc66e3f8a291e2d1c34c5557b0d349a887feb8e"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ageds/check_gradle_environment.py",
+      "bytes": 3537,
+      "sha256": "c3ef51d21f40b83170eb69da3be90abda3ebf94a4c7109486bf734a2c3d7bef3",
+      "git_blob_oid": "c8beec5da11091bdf7179a87122a82cc321b807c"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ageds/run_all.py",
+      "bytes": 1820,
+      "sha256": "15d860ad08e5cbf9f9d88e3335c4c0fd171f6018595ce7c27eb7b9e1b5ca78f1",
+      "git_blob_oid": "30620a429f12e8e10076fa550068a21ed3768478"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ageds/run_kotlin.py",
+      "bytes": 9316,
+      "sha256": "b8a05b99de312de25a8373f96d3a9e077023d0a5b3cdafa3684355e0d4126211",
+      "git_blob_oid": "9fc016f006162c777a47ed9bed4b52a8ff647406"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ageds/run_python.py",
+      "bytes": 18293,
+      "sha256": "30bef156012733333069929c7630a13c3ac4716faefee73f514e800fc50d69d8",
+      "git_blob_oid": "1ef8730f3a90ee6a2bd8c61403abc767b6349ea2"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ageds/run_scan.py",
+      "bytes": 4863,
+      "sha256": "3ada99464c0b91ae2d226ba96dd04f48d6d480190f852bad1c5cfeab9b0eaed7",
+      "git_blob_oid": "47764c9916dd23a379978856edbe31c8f3f9155c"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ageds/run_store.py",
+      "bytes": 5448,
+      "sha256": "eaf92f31936c125f86d7d5304dfef9cd9514622e367f94ab49f744e68e06231c",
+      "git_blob_oid": "bf0fe5a06d4c266054e31f650abc06b769e97825"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ageds/test-index.json",
+      "bytes": 2167,
+      "sha256": "06c2f02cd1c07fe7b7a2bef5074d7a7fe10741f24a94f2066b9e6f2cdc879d36",
+      "git_blob_oid": "cdc90b8365cdd4c48cd79570358c042d37bb0c3c"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/c-review/B-semantic/README.md",
+      "bytes": 2034,
+      "sha256": "df6b8b7d868c4980a006d456a263fa1361f6e5cdf4af03f63215ab67afff6c5f",
+      "git_blob_oid": "905e6741f53c3aa81c568109ed59789499e87a94"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/c-review/B-semantic/probe.cpp",
+      "bytes": 8045,
+      "sha256": "f3bd61fb8ac51bd8c802c2dab75332913cfbecd9c298133b261ef409cbcb277d",
+      "git_blob_oid": "8ebdf1f0a9569e77e945b1ac6368aed600444d80"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/c-review/B-semantic/run.py",
+      "bytes": 2690,
+      "sha256": "0cccf2dfb815fd8dbd071983c29ab6acec03da92e8be10cf03bcc8fc6a4ebb33",
+      "git_blob_oid": "5d511d71bfba87671909580880b6a6d690e3e2c2"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/c-review/C2/README.md",
+      "bytes": 2322,
+      "sha256": "f7ef245ba660adec5df4801ff535c36b6a17c4f6d211f05d1441f9191b3193a8",
+      "git_blob_oid": "1739ce919bf4493fe83ad5c15cbf0b251c022fe2"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/c-review/C2/run.py",
+      "bytes": 18077,
+      "sha256": "1778f33569c33a4e0e1d1e4efd924288897e3c57165677595ad036004ae5cf99",
+      "git_blob_oid": "1a7b32c1f5556c44d1c7876ee2886b9f2226924d"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/c-review/README.md",
+      "bytes": 2103,
+      "sha256": "d956a87572bd43fd5839bdc9266996a44eaf35862ce14b71c198917e819e867a",
+      "git_blob_oid": "099147af8a3535648869d7719596117b08bd2b10"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/c-review/run.py",
+      "bytes": 24286,
+      "sha256": "6db7f0c227784d555e41925532a4892c453f19d2fb3e6b680340ed5b91fac1db",
+      "git_blob_oid": "8e95dcb43514df6bf7ef3e21dd66885d4d70db9f"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/catalog.json",
+      "bytes": 3734,
+      "sha256": "66e7dc39a57202999c153544a8bdb98977b8f2cd39791e488618ef0c1806adf9",
+      "git_blob_oid": "e0ecedc868790f20825ead53bee6a04a3e382cba"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/chat/REPRODUCE.md",
+      "bytes": 1822,
+      "sha256": "9daebcc751655fd13be272a7c21f1809abc706818c2922bf1f14d9cd1e39b8da",
+      "git_blob_oid": "b46c4fe0c5b7fca947525f1bd8f385901fbc8a61"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/chat/native_consumers.cpp",
+      "bytes": 5884,
+      "sha256": "01799bbad57648a98623e919bda6243835ac527ff15a2df112e8c494025998db",
+      "git_blob_oid": "488b1950d425b01e43429552f87bf8739d854acc"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/chat/native_run.py",
+      "bytes": 6103,
+      "sha256": "8ec37f0ef9191c5f55141b3a4e1fe616299c3cc647941bc7ef387ce588865c13",
+      "git_blob_oid": "5b1bfb6143ce143851214438107b40a6878be138"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/chat/python_consumers.py",
+      "bytes": 8464,
+      "sha256": "c06f06561158da6e43f4811b170bb63feb1ac9e8a5e14e796d2925d03f915517",
+      "git_blob_oid": "b65367d25d96ecdaaee35ce56e36e3b6a601a325"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/AuditMain.kt",
+      "bytes": 7337,
+      "sha256": "d5dd8c187c04511294ca2a3bcbef50ad5e5b21e46f1df7eaf93c45bcced1d4b7",
+      "git_blob_oid": "aee89a833817ad81eaf65c16f55521b868e0e40f"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/CompiledSettingsProbe.java",
+      "bytes": 3029,
+      "sha256": "cbcc06376cee181b3d68a0056c4a2571e4acb3aba088317d4e7f360a4899dc00",
+      "git_blob_oid": "16bd1319dc9e4b03e194daa1301c5a9502c6bc6b"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/HostShells.kt.in",
+      "bytes": 2885,
+      "sha256": "dd60ce639331d3de3878aa3e9ed5090fd7dca318d9cef73ceb8ef6f269fb7f43",
+      "git_blob_oid": "233513e764b1df919116d046656d06def77f5994"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/README.md",
+      "bytes": 5787,
+      "sha256": "9c893940895aeba8a7c30617c864151929146125faa7d721b36000d28620c19a",
+      "git_blob_oid": "f5b0e1c7cde6c5dc502e4b9990511e66d1bbbd76"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/android-tests/EcosystemAuditConsumerTest.kt",
+      "bytes": 3060,
+      "sha256": "6bb99b5101f88504712cae40add8178bd5b4ba0d24cab81874885b96bd55ca42",
+      "git_blob_oid": "92254a97da4a98697b5c5f87c301829d183cd680"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/android-tests.gradle",
+      "bytes": 327,
+      "sha256": "cd5a0cd4dfc4e638391d899c91d104ca63bbb5161fe27472e4cfe57b1be4257b",
+      "git_blob_oid": "2c15a658e879388e9bc357bd2ec6f10f63d2753c"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/android_gate.py",
+      "bytes": 2507,
+      "sha256": "d1c17fc91e164c8364b61547f2bb760a1f692c0f295c2edeb317f404b9dab2ea",
+      "git_blob_oid": "3a27dcca9f03e956ac1b0721f7b8486dd13f92ba"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/bootstrap_deps.py",
+      "bytes": 888,
+      "sha256": "dc3a342a255ac519fddf81634524cf4d513d257887fdab81a1252cad618e839b",
+      "git_blob_oid": "1fd5548922f76d18c415dfb77667331ebdd0c315"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/compiled_settings_gate.py",
+      "bytes": 3004,
+      "sha256": "19779d46dac7bb006ff7aa39c5fd9ec879aaf7ed5f9985fbffef5a000d97b4d9",
+      "git_blob_oid": "99708f2f5d6469aa4df692622e8025563133b20f"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/dependencies.json",
+      "bytes": 2519,
+      "sha256": "6a6eaa2f20d2415f59e8bb6455c095f55028bfd94f95c3526d96f48da1f637e8",
+      "git_blob_oid": "2327ae857e4ea5e31cb6bce421dcf898ae5668a1"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/run.py",
+      "bytes": 4350,
+      "sha256": "18cd2759dd2dcef4f185ffcf25b79fcbf7eecf814005cd715e6ceb19c731d2eb",
+      "git_blob_oid": "4d7c52f412990fba5241fc220b19167824da9a6d"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/sql_gate.py",
+      "bytes": 4032,
+      "sha256": "2952a587a7d5b246587a20b0406f6354102504528d9c78d07897aac2bbc3ac9f",
+      "git_blob_oid": "4b4d19442997f04dfc1c42e8d2088176a48847b3"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/stubs/AiTransport.kt",
+      "bytes": 634,
+      "sha256": "05a3d95dfc9ef2a7bf0a3720839af19f803385036bd0ff5f8520c8549d5e4706",
+      "git_blob_oid": "bef20af627104af6969e71a2ba68cd7760443f90"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/stubs/Android.kt",
+      "bytes": 204,
+      "sha256": "3e28c6fc31a272bbbfa119d2c1c4f7c253454145b9699184686332fb11dafb91",
+      "git_blob_oid": "3f5eb280074ae25d4f4b64b24938827796c2c66c"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/stubs/Asr.kt",
+      "bytes": 105,
+      "sha256": "fec330c45b164ffccb03f619225c27428ba02718c47e3a700e6f2db7b13860d2",
+      "git_blob_oid": "44c7c837cb21fd2adb82fe3c9e479de5feba7d8d"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/stubs/Handler.kt",
+      "bytes": 299,
+      "sha256": "ca852f938e528a0c736f6b80d30a639fc424e2729cf1356ed6601e0651605cdd",
+      "git_blob_oid": "4950520e0579e154b67dee1e91c906fe836c4667"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/stubs/Infra.kt",
+      "bytes": 139,
+      "sha256": "4e70f589e8d6b16b9525a0764dec524f0d0a7d3af9d40e6de5566d3639ed6f5d",
+      "git_blob_oid": "2d7b55ffa7ea1a7d874ea41a4c1a61899fc57694"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/stubs/Layout.kt",
+      "bytes": 94,
+      "sha256": "124f845ab0a264d8ae064716aec38e291017251e310a800883524ff94ab0eff4",
+      "git_blob_oid": "0544c4850d2350b10b647dc6785f354589a296c2"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/stubs/Settings.kt",
+      "bytes": 542,
+      "sha256": "12972acec6eabf8c6a0966c9fc9db36547c3b54fc7591cb13dc59dd461ef73eb",
+      "git_blob_oid": "c11ac31bd3e8d7b1f3ff62edf9ab8a10cc551369"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/stubs/Verbs.kt",
+      "bytes": 243,
+      "sha256": "9cf4a3f9ba8a9286b9f89143eb129bdebd574ba101bb5a3fbf434913db2d82e4",
+      "git_blob_oid": "cd47c5085f765b66d2d4445bbf4396a607c9eda5"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/lem/HostHarness.kt",
+      "bytes": 12907,
+      "sha256": "7d011077cb93c8c4321710c6c4d9ba673704135f9256635a67e3fc52b698c731",
+      "git_blob_oid": "1dc2662a6654aca36ee092349f6dccde57400cf3"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/lem/README.md",
+      "bytes": 4549,
+      "sha256": "c5f47d868341e0444940bed2199ee7c2baef91a1002a9aeb8bbab5380d200004",
+      "git_blob_oid": "53a266bdfc275b00247a93650f9fd121c94c9a6c"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/lem/bootstrap.py",
+      "bytes": 1291,
+      "sha256": "2569ebf6e78533fe6e1cf7494f1ff33288b9f44ea53794269cd4ff245b772556",
+      "git_blob_oid": "075a8e6cae69ac7741325b91adadd0f9ca6819ce"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/lem/dependencies.json",
+      "bytes": 4546,
+      "sha256": "b8d867d986c45f5dd3e361fc0abae7dd0b3d4307c22ddf6d855bb3453dad154b",
+      "git_blob_oid": "8a9e3e3d59aec312f0a56591dcc575cc811243c7"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/lem/fixtures/Android.kt",
+      "bytes": 919,
+      "sha256": "77103dc62acd09ff657b43fd2269c06e808e329fdfc323f46df252d59ae98aa1",
+      "git_blob_oid": "54d5b1b086f020c744709b994090c19719574b04"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/lem/fixtures/Lifecycle.kt",
+      "bytes": 402,
+      "sha256": "059d29c3d024b201b30d2e74dc5b19d123a61bae52c5c22c5eb4640b47089878",
+      "git_blob_oid": "faca895f30b363858eb613d9d119d343fe14df87"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/lem/fixtures/Room.kt",
+      "bytes": 1165,
+      "sha256": "78f3ac537146050905a1e64834e99eaef2a46eb7d621681a4b82158890936902",
+      "git_blob_oid": "49b5309f1ea01aaf224d07cbec80048285a16a3b"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/lem/fixtures/Serialization.kt",
+      "bytes": 151,
+      "sha256": "66c4e16ba53edcbda75f5f8e6bfafaa303ebcb1133e25442439d5d1acca3c134",
+      "git_blob_oid": "d62c835bd2ae7b4310126358b3ebb245ea11d1aa"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/lem/gradle_probe.py",
+      "bytes": 4350,
+      "sha256": "4b10a5f15300cee292ae18b423515999816bbd6a8d8c4e122335ab1f3c32d3bb",
+      "git_blob_oid": "2df6bead6795ef014c5fe706387587ddd539b3c9"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/lem/room/RoomPersistenceAuditTest.kt",
+      "bytes": 5889,
+      "sha256": "0fb070bee18e9b23f1dc0e99c67bcacb42a7b8871598ce4fb9c7c549b1ed9f13",
+      "git_blob_oid": "4f914b409eb9236cf976129e9fdc687a61908bd3"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/lem/room-audit.init.gradle",
+      "bytes": 816,
+      "sha256": "751eee902e4dc473f278eeaebd68df63595a4535b202bcebffb9b6fb192d4f07",
+      "git_blob_oid": "a9a658f586b4a806df2603d5004cf96a0c02df9c"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/lem/run.py",
+      "bytes": 5659,
+      "sha256": "23540e07be48fa304bdf9db2027551cbea975ce611c23356c6e4a9c818eebd6a",
+      "git_blob_oid": "3e5910981207ab78a3abdab4b8c323cf1bfcab72"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/native/README.md",
+      "bytes": 5741,
+      "sha256": "75605f26512950d0a0af1f3302361ddb34f95eae51fb0dd2590236b0e7c2fa61",
+      "git_blob_oid": "f45333df16a76812235d222b42fabce0423061bd"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/native/build_sanitized_closure.py",
+      "bytes": 4373,
+      "sha256": "b9242e8d0a7596655b8a70eb21c03ea4951d3d7e5371a134e90c1a77d9485cab",
+      "git_blob_oid": "6c54af5fc8433a65b13974271abe95af41827175"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/native/fixtures/historical-stemming-1.json",
+      "bytes": 5808,
+      "sha256": "2c4720550ddec5d907c5d746d165787dfd2079b6ca4a22ef317d3323dadc776c",
+      "git_blob_oid": "b0910c23ae3e40507f3b318ba50f159a281b90a2"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/native/fixtures/historical-stemming-1.manifest.json",
+      "bytes": 375,
+      "sha256": "bb0eea25bfdd44b76a29c4669e2311301f0349cad2ea8e75792b0fbf0b25a473",
+      "git_blob_oid": "a13ab2e378a5ec90feb224cdc6618ead9da9c631"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/native/native_driver.cpp",
+      "bytes": 4235,
+      "sha256": "fdcc9771432036f3d45eb0c71355aeb9545e269adfc050e2707cc6e67b3dd750",
+      "git_blob_oid": "865577ca7736f243da707207ee285303a44b398d"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/native/run.py",
+      "bytes": 23045,
+      "sha256": "3bf063e7464ec79cb61b2ae41d9d143dd0cdd490ed015819d32959fe48eec2ac",
+      "git_blob_oid": "55bb2162d3b6eadd35934733c4daac79d9295772"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/run_index.py",
+      "bytes": 2832,
+      "sha256": "3b782a0c4d86612b73b0d6e579e6c186e3b4a7f1916955f3e0eed75b40368c0a",
+      "git_blob_oid": "a96c267c91ef2ced7a70776d11b04bb725aa617a"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/watchdog/B2/REPRODUCE.md",
+      "bytes": 1459,
+      "sha256": "01e2d3656f5c9c413549b3b1d2100167e5ca156d42dec5f9d719c950a0787ea7",
+      "git_blob_oid": "7f071a7047f990c9015e0b4b35afe9a2664f8081"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/watchdog/B2/consumer.cpp",
+      "bytes": 9381,
+      "sha256": "ab88d42283f6ef18ef78a95d0221a660f3f55d258a2af43ff1e82c845a6a4e7b",
+      "git_blob_oid": "51219e0c55e8aba49dd94036263225b49dad48f5"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/watchdog/B2/run.py",
+      "bytes": 7346,
+      "sha256": "96d998a5dea4724c7c8b33767348afbdbce2d28680a17fbd7d3b3f9ca1c7131c",
+      "git_blob_oid": "40e0da5a4b3a4e8ab01ee48ab50e3284686c4736"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/watchdog/REPRODUCE.md",
+      "bytes": 3460,
+      "sha256": "3b6d725cb1646614e62d8559110938b04e68bfb03abcabcc24e878305024f7ce",
+      "git_blob_oid": "5f0e3deeddfe91f1c52355423aec36ed9adb4b06"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/watchdog/loopback-guard.cjs",
+      "bytes": 972,
+      "sha256": "3ad23fabb9db01def63b38d8b5ace4da7735de68585bd13467f528f43a783fb0",
+      "git_blob_oid": "ea9e8b1284f66b5752301e2cc29aa4c80607db3e"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/watchdog/run.py",
+      "bytes": 1961,
+      "sha256": "f36a6383741be6e75e5158b16b026584e23a7f557c0fe98ac0aa44cf7f924b34",
+      "git_blob_oid": "51c0f7a068f39e66e9ec591745dec32e2d6e51aa"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/watchdog/suite.ts",
+      "bytes": 26435,
+      "sha256": "d71b8141f67778052c9e0808cb423b4a3eee9883722155c37b05d008f0e6a942",
+      "git_blob_oid": "c32bce51bf25f87746f62d412046edc04125d8d7"
+    }
+  ],
+  "count": 306,
+  "bytes": 2345157,
+  "excludes": "This manifest and later publication-receipt self-reference; scratch caches, binaries and generated SQLite databases. All are reproducible from retained source/receipts."
+}

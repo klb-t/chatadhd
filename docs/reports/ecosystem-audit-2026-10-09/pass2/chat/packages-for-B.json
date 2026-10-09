@@ -5,7 +5,7 @@
     "reproduction": {
       "kind": "actual_consumer_execution",
       "receipt": "python-main.json",
-      "behavior": "MemoryEngine odrzuca unknown key; update zapisuje bez niego. Przy poprawnym wierszu, błędnym wierszu bez content i poprawnym dalszym wierszu _load loguje błąd, add_node zastępuje plik bez dalszego wiersza.",
+      "behavior": "MemoryEngine odrzuca unknown key; update zapisuje bez niego. Przy poprawnym wierszu, b\u0142\u0119dnym wierszu bez content i poprawnym dalszym wierszu _load loguje b\u0142\u0105d, add_node zast\u0119puje plik bez dalszego wiersza.",
       "synthetic_only": true
     },
     "expected_behavior": [
@@ -14,10 +14,10 @@
     ],
     "executable": "tools/ecosystem-audit-2026-10-09/pass2/chat/python_consumers.py --repo CHECKOUT --sha SHA --phase acceptance --output RECEIPT",
     "consumers": [
-      "MemoryEngine.__init__→_load→update_node/add_node→_save→disk"
+      "MemoryEngine.__init__\u2192_load\u2192update_node/add_node\u2192_save\u2192disk"
     ],
-    "migration": "Nie usuwać źródłowego pliku; migracja/recovery musi zachować oryginał i wyraźnie oznaczyć stratę.",
-    "risk": "Potwierdzona utrata zapisanych pól i dalszego rekordu w rzeczywistym pliku. Nie uruchomiono GUI ani migracji natywnej pamięci.",
+    "migration": "Nie usuwa\u0107 \u017ar\u00f3d\u0142owego pliku; migracja/recovery musi zachowa\u0107 orygina\u0142 i wyra\u017anie oznaczy\u0107 strat\u0119.",
+    "risk": "Potwierdzona utrata zapisanych p\u00f3l i dalszego rekordu w rzeczywistym pliku. Nie uruchomiono GUI ani migracji natywnej pami\u0119ci.",
     "dependencies": [
       "B implementation of the existing consumer contract; auditor does not edit product"
     ]
@@ -28,19 +28,19 @@
     "reproduction": {
       "kind": "actual_consumer_execution",
       "receipt": "python-main.json",
-      "behavior": "Real ProviderManager + GroqASR + GoogleSpeechASR: po przechwyconym HTTP503 kolejność wywołań to groq,google. Jawny provider=groq nie przechodzi do Google, nieznany provider jawnie odrzucony.",
+      "behavior": "Real ProviderManager + GroqASR + GoogleSpeechASR: po przechwyconym HTTP503 kolejno\u015b\u0107 wywo\u0142a\u0144 to groq,google. Jawny provider=groq nie przechodzi do Google, nieznany provider jawnie odrzucony.",
       "synthetic_only": true
     },
     "expected_behavior": [
       "reproduction A2-CH-002.implicit-fallback PASS",
-      "acceptance data-defined-order BLOCKED_MISSING_CONTRACT: dwa profile muszą zmienić kolejność rzeczywistego konsumenta; zachować jawny no-fallback"
+      "acceptance data-defined-order BLOCKED_MISSING_CONTRACT: dwa profile musz\u0105 zmieni\u0107 kolejno\u015b\u0107 rzeczywistego konsumenta; zachowa\u0107 jawny no-fallback"
     ],
     "executable": "tools/ecosystem-audit-2026-10-09/pass2/chat/python_consumers.py --repo CHECKOUT --sha SHA --phase acceptance --output RECEIPT",
     "consumers": [
-      "ProviderManager.transcribe_bytes→GroqASR→requests.post→failure→GoogleSpeechASR→requests.post"
+      "ProviderManager.transcribe_bytes\u2192GroqASR\u2192requests.post\u2192failure\u2192GoogleSpeechASR\u2192requests.post"
     ],
-    "migration": "Sam wpisanie kluczy dostawców nie powinno migrować na szerszą, niewybraną trasę. Default groq/google może zostać presetem danych.",
-    "risk": "To naruszenie R42 dla kolejności, nie dowód naruszenia istniejącej zgody. Aktualny publiczny kontrakt reprezentuje no-fallback przez provider, lecz nie konfigurowalną listę kolejności. Nie ustalono aktywnego GUI konsumenta ASR tego modułu.",
+    "migration": "Sam wpisanie kluczy dostawc\u00f3w nie powinno migrowa\u0107 na szersz\u0105, niewybran\u0105 tras\u0119. Default groq/google mo\u017ce zosta\u0107 presetem danych.",
+    "risk": "To naruszenie R42 dla kolejno\u015bci, nie dow\u00f3d naruszenia istniej\u0105cej zgody. Aktualny publiczny kontrakt reprezentuje no-fallback przez provider, lecz nie konfigurowaln\u0105 list\u0119 kolejno\u015bci. Nie ustalono aktywnego GUI konsumenta ASR tego modu\u0142u.",
     "dependencies": [
       "B implementation of the existing consumer contract; auditor does not edit product"
     ]
@@ -51,18 +51,18 @@
     "reproduction": {
       "kind": "actual_consumer_execution",
       "receipt": "python-main.json",
-      "behavior": "Przechwycona odpowiedź Groq zawiera tylko text; rzeczywisty GroqASR zwraca confidence=0.9.",
+      "behavior": "Przechwycona odpowied\u017a Groq zawiera tylko text; rzeczywisty GroqASR zwraca confidence=0.9.",
       "synthetic_only": true
     },
     "expected_behavior": [
-      "A2-CH-003.unknown-confidence: brak pewności pozostaje None albo jawnie estimated/declared z provenance; actual response body has no confidence"
+      "A2-CH-003.unknown-confidence: brak pewno\u015bci pozostaje None albo jawnie estimated/declared z provenance; actual response body has no confidence"
     ],
     "executable": "tools/ecosystem-audit-2026-10-09/pass2/chat/python_consumers.py --repo CHECKOUT --sha SHA --phase acceptance --output RECEIPT",
     "consumers": [
-      "GroqASR.transcribe_bytes→ASRResult"
+      "GroqASR.transcribe_bytes\u2192ASRResult"
     ],
-    "migration": "Nie reinterpretować historycznego 0.9 jako zmierzonej pewności. Zachować unknown/provenance przy migracji.",
-    "risk": "Konsument otrzymuje liczbę bez rozróżnienia pomiaru, deklaracji i braku wiedzy. Brak dowodu na bieżący GUI ranking używający tej liczby.",
+    "migration": "Nie reinterpretowa\u0107 historycznego 0.9 jako zmierzonej pewno\u015bci. Zachowa\u0107 unknown/provenance przy migracji.",
+    "risk": "Konsument otrzymuje liczb\u0119 bez rozr\u00f3\u017cnienia pomiaru, deklaracji i braku wiedzy. Brak dowodu na bie\u017c\u0105cy GUI ranking u\u017cywaj\u0105cy tej liczby.",
     "dependencies": [
       "B implementation of the existing consumer contract; auditor does not edit product"
     ]
@@ -73,18 +73,18 @@
     "reproduction": {
       "kind": "actual_consumer_execution",
       "receipt": "python-main.json",
-      "behavior": "Rzeczywisty list_remote_files otrzymuje remote git blob SHA pliku AAAA, lokalny x.txt=BBBB. get_sync_status zwraca synced; obie treści mają 4 bajty.",
+      "behavior": "Rzeczywisty list_remote_files otrzymuje remote git blob SHA pliku AAAA, lokalny x.txt=BBBB. get_sync_status zwraca synced; obie tre\u015bci maj\u0105 4 bajty.",
       "synthetic_only": true
     },
     "expected_behavior": [
-      "A2-CH-004.same-size: różne hashe treści nigdy nie dają potwierdzonego synced, nawet przy równej liczbie bajtów"
+      "A2-CH-004.same-size: r\u00f3\u017cne hashe tre\u015bci nigdy nie daj\u0105 potwierdzonego synced, nawet przy r\u00f3wnej liczbie bajt\u00f3w"
     ],
     "executable": "tools/ecosystem-audit-2026-10-09/pass2/chat/python_consumers.py --repo CHECKOUT --sha SHA --phase acceptance --output RECEIPT",
     "consumers": [
-      "GitHubSync.list_remote_files + list_local_files→get_sync_status→sync/push_all/pull_all"
+      "GitHubSync.list_remote_files + list_local_files\u2192get_sync_status\u2192sync/push_all/pull_all"
     ],
-    "migration": "Nie nadpisywać żadnej strony na podstawie samego rozmiaru; zachować conflict/manual resolution i blob versions.",
-    "risk": "UI/konsumenci statusu mogą pominąć rzeczywistą zmianę. Wykonano status przez realny filesystem i przechwycony REST; nie wykonano rzeczywistego GitHub push/pull.",
+    "migration": "Nie nadpisywa\u0107 \u017cadnej strony na podstawie samego rozmiaru; zachowa\u0107 conflict/manual resolution i blob versions.",
+    "risk": "UI/konsumenci statusu mog\u0105 pomin\u0105\u0107 rzeczywist\u0105 zmian\u0119. Wykonano status przez realny filesystem i przechwycony REST; nie wykonano rzeczywistego GitHub push/pull.",
     "dependencies": [
       "B implementation of the existing consumer contract; auditor does not edit product"
     ]
@@ -175,6 +175,22 @@
     "risk": "Python worker gate; native error/fallback covered separately by c-review/B-semantic, no claim every C++ exception branch executed.",
     "dependencies": [
       "B integration; do not manufacture audit-side policy implementation"
+    ]
+  },
+  {
+    "finding_id": "CH-001",
+    "priority": "P1",
+    "reproduction": "native_run.py CH-001.invalid-number-fallback; actual Config.save\u2192reload\u2192ChatEngine.send\u2192capturedHTTP.temperature0.7",
+    "expected_behavior": "Known operative numeric field with malformed data produces explicit invalid configuration before dispatch; no hand-coded silent substitution",
+    "acceptance": "same native_run.py --phase acceptance; assert rejection and zero requests",
+    "consumers": [
+      "Config JsonStore",
+      "ChatEngine::send cfg_number at1088\u20131092"
+    ],
+    "migration": "Keep existing valid defaults as compatible data preset; reject or explicitly migrate invalid values, never silently overwrite evidence",
+    "risk": "hidden effective configuration after user/import error",
+    "dependencies": [
+      "B configuration validation/resolver"
     ]
   }
 ]

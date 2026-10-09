@@ -48,6 +48,10 @@ int main(int argc,char**argv) {
   auto ingested=rt->graph().ingest_analysis_checked(mid,conv.id,analysis);
   auto links=take(rt->db().get_links(std::nullopt,"synthetic_infers"));Json stored=Json::array();for(const auto& l:links)stored.push_back(l.to_json());
   observations["graph"]={{"ingestion_ok",bool(ingested)},{"links",stored},{"explicit_admission_supplied",false}};
+  const auto before_invalid=http->requests().size();bool invalid_rejected=false;
+  try {rt->config().set("temperature","synthetic-invalid-number");auto saved=rt->config().save();if(!saved)throw std::runtime_error(saved.error().message);rt->config().reload();auto invalid=rt->chat().send("synthetic malformed configuration",opts);invalid_rejected=!invalid;}catch(const std::exception&){invalid_rejected=true;}
+  const auto after_invalid=http->requests();Json invalid_temperature=nullptr;if(after_invalid.size()>before_invalid)invalid_temperature=take(json::parse(after_invalid.back().body)).value("temperature",Json());
+  observations["invalid_config"]={{"rejected",invalid_rejected},{"transport_calls",after_invalid.size()-before_invalid},{"actual_temperature",invalid_temperature},{"persisted_then_reloaded",true}};
   std::cout<<observations.dump()<<'\n'; return 0;
  }catch(const std::exception&e){std::cout<<Json{{"fixture_error",e.what()}}.dump()<<'\n';return 2;}
 }

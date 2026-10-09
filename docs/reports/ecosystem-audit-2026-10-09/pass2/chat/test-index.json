@@ -338,8 +338,8 @@
       "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
       "suite": "chat-native-consumers",
       "counts": {
-        "PASS": 4,
-        "FAIL": 1,
+        "PASS": 5,
+        "FAIL": 2,
         "BLOCKED_MISSING_CONTRACT": 3
       },
       "cases": [
@@ -385,6 +385,16 @@
           "id": "CH-M4.actual-config-consumer",
           "phase": "acceptance",
           "status": "PASS"
+        },
+        {
+          "id": "CH-001.invalid-number-fallback",
+          "phase": "reproduction",
+          "status": "PASS"
+        },
+        {
+          "id": "CH-001.invalid-number-fallback",
+          "phase": "acceptance",
+          "status": "FAIL"
         }
       ]
     },
@@ -393,8 +403,8 @@
       "sha": "ddcaeaf7a25b70f0d4dc2e0eed2466016233eeb8",
       "suite": "chat-native-consumers",
       "counts": {
-        "PASS": 4,
-        "FAIL": 1,
+        "PASS": 5,
+        "FAIL": 2,
         "BLOCKED_MISSING_CONTRACT": 3
       },
       "cases": [
@@ -440,6 +450,16 @@
           "id": "CH-M4.actual-config-consumer",
           "phase": "acceptance",
           "status": "PASS"
+        },
+        {
+          "id": "CH-001.invalid-number-fallback",
+          "phase": "reproduction",
+          "status": "PASS"
+        },
+        {
+          "id": "CH-001.invalid-number-fallback",
+          "phase": "acceptance",
+          "status": "FAIL"
         }
       ]
     }

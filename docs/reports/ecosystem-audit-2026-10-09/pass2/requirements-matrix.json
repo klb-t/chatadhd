@@ -1,0 +1,106 @@
+{
+  "schema": "klbt.audit.requirements-matrix/1",
+  "source": "klb-t/chatadhd:docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md at9e20f99ab27e7cd45e1892f83bf60fbe60db3de9 plus explicit owner continuation2026-10-09",
+  "quote_policy": "Rows are audit paraphrases/interpretations, not fabricated owner quotations or a new architecture.",
+  "rows": [
+    {
+      "requirement": "R15",
+      "criterion": "Profil, metoda, dane wejścia, wynik i dowód muszą pozostać powiązane; nie sklejać obserwacji z inferencją.",
+      "repo_evidence": {
+        "chat": "CH006 + CH011; native historical references PASS",
+        "watchdog": "Workbench graph recipe history/export/import PASS",
+        "ckp": "CKP-A012 focus/revision host FAIL",
+        "ageds": "case/recipe input binding FAIL",
+        "lem": "raw resolver BLOCKED, Room migration FAIL",
+        "C": "native packet roundtrip PASS; occurrence/payer reviewed separately"
+      }
+    },
+    {
+      "requirement": "R33",
+      "criterion": "Alternatywy są profilami/strategiami; default nie oznacza jedynej dozwolonej drogi.",
+      "repo_evidence": {
+        "chat": "A2CH002 order missing strategy, explicit provider already no-fallback",
+        "watchdog": "WD003 profile consumption and WD001 parameter overwrite FAIL",
+        "ckp": "AiTasks override/collision tests FAIL; unknown transform FAIL",
+        "ageds": "two scan limit values actual direct scanner differ, API discards",
+        "lem": "two profiles do not reach real requested model/parameters",
+        "C": "opt-in queue studied with intercepted payer; no live calls"
+      }
+    },
+    {
+      "requirement": "R39",
+      "criterion": "Unknown i inferencje zachowują status/pochodzenie, zgody odnoszą się do rzeczywistych danych.",
+      "repo_evidence": {
+        "chat": "B-POLICY001 fixed on ddca; ASR confidence .9 without evidence FAIL",
+        "watchdog": "timeout→FAILED_RESERVED and failed receipts persist PASS",
+        "ckp": "unknown cost/unsupported field cases in actual planner",
+        "ageds": "unsupported schema999 accepted FAIL",
+        "lem": "invented metrics and invalid error JSON FAIL",
+        "C": "billing_verified binding checked independently"
+      }
+    },
+    {
+      "requirement": "R40",
+      "criterion": "Warstwy/defaulty, override/disable/exclusion są tymi samymi danymi, także po restarcie i pack upgrade.",
+      "repo_evidence": {
+        "chat": "native disable/exclusion/pack/CAS PASS; full UI+backup contract open",
+        "watchdog": "deny/disabled + SQLite restart/pack update PASS",
+        "ckp": "real AtomicFile profile reopen PASS, device/Keystore open",
+        "ageds": "CorpusStore real reopen PASS for known schema; limits outside policy FAIL",
+        "lem": "current config real Room reopen PASS",
+        "C": "old recipe survives new packet/spec and native restart PASS"
+      }
+    },
+    {
+      "requirement": "R41",
+      "criterion": "Metody, kontekst, kolejki, wyniki i dowody mają sprawdzalne grafowe referencje.",
+      "repo_evidence": {
+        "chat": "CH006 legacy ingestion gap; B semantic hash/reset regression",
+        "watchdog": "real recipe and artifact refs after export/import PASS",
+        "ckp": "required transform references must not disappear",
+        "ageds": "fencing/citation history PASS, input recipe drop FAIL",
+        "lem": "raw artifact resolver missing; destructive migration confirmed",
+        "C": "C packets native store/restart PASS, payer/occurrence gaps separate"
+      }
+    },
+    {
+      "requirement": "R42",
+      "criterion": "Czy dane da się zmienić bez zmiany algorytmu? Jeżeli tak, powinny być w danych; stosować sześć wyjątków.",
+      "repo_evidence": {
+        "chat": "ASR order, confidence policy, memory recovery and sync comparison; no hunt for every literal",
+        "watchdog": "model/messages overwrite and hardcoded palette selection",
+        "ckp": "generic configuration / required conversion references",
+        "ageds": "domain day-first and hidden scanner budgets",
+        "lem": "real hardcoded profile/model/metrics consumers",
+        "C": "no claim research fixture literals are product violations"
+      }
+    }
+  ],
+  "R42_exceptions": [
+    {
+      "category": 1,
+      "scope": "code-data contract keys, schema/version identifiers and pack filenames"
+    },
+    {
+      "category": 2,
+      "scope": "constants fixed by external standards; standard parser syntax, not domain recognizers"
+    },
+    {
+      "category": 3,
+      "scope": "mechanism lifecycle/error/operation vocabulary; translating it is data"
+    },
+    {
+      "category": 4,
+      "scope": "contractual serialization formats"
+    },
+    {
+      "category": 5,
+      "scope": "minimal bootstrap to locate data"
+    },
+    {
+      "category": 6,
+      "scope": "developer diagnostics, without exposing protected contents"
+    }
+  ],
+  "exception_guard": "An exception for a key/state/logger does not excuse hidden routing, implicit final-success transitions, model lists, confidence estimates or public/private data leaks."
+}

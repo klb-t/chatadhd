@@ -30,5 +30,21 @@
     "observed": "real SQLite message done and no longer pending after timeout, also after reopen; errors=1 processed=0",
     "acceptance_status": "FAIL",
     "limit": "Python worker gate; native error/fallback covered separately by c-review/B-semantic, no claim every C++ exception branch executed."
+  },
+  {
+    "id": "CH-001",
+    "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+    "status": "naruszenie_potwierdzone_runtime_dodatkowy_konsument",
+    "locations": [
+      {
+        "file": "loom/src/chat/chat_engine.cpp",
+        "line_start": 1088,
+        "line_end": 1092
+      }
+    ],
+    "evidence": "native-main.json / CH-001.invalid-number-fallback",
+    "observed": "temperature=\"synthetic-invalid-number\" zapisane rzeczywistym Config.save i reload; ChatEngine wysyła request z ręcznym fallback0.7",
+    "acceptance_status": "FAIL",
+    "limit": "same numeric Config path; not proof that all invalid options/JSON recover identically. Onboarding settings extension handling is separately valid."
   }
 ]

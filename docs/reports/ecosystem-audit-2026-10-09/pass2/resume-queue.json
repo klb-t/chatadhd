@@ -1,0 +1,162 @@
+{
+  "schema": "klbt.audit.resume/1",
+  "status": "pass2 closed, not whole-ecosystem completeness",
+  "branch": "gpt/ecosystem-audit-2026-10-09",
+  "last_pins": "closure-baselines.json",
+  "order": "Known integration/identity/loss risk before remaining literal candidates; within each group close complete path.",
+  "items": [
+    {
+      "priority": 0,
+      "repo": "klb-t/chatadhd",
+      "sha": "384c5e1686cd3a58a7d89a8a6813a18c764f697d",
+      "scope": "known highest-risk execution gap",
+      "files": [
+        "loom/src/chat/chat_engine.cpp",
+        "loom/src/onboarding/store.cpp",
+        "loom/src/worker/semantic_worker.cpp"
+      ],
+      "task": "Once real B user/revision/category and operation/estimate/confirmation contract is available, bind CH004/005 acceptance through actual producer; audit remaining ordinary/batch/provider consumers independently in the meantime. Do not implement product schema in the auditor.",
+      "blocked": "full acceptance needs B contract; remaining consumer tracing does not"
+    },
+    {
+      "priority": 0,
+      "repo": "klb-t/chatadhd",
+      "sha": "b9b503f62bb8e8e00c94ab7401e1cd9579129af3",
+      "scope": "C2 remaining branch delta",
+      "files": [
+        "loom/tools/structure/experiment_context_preparation_v1.py",
+        "loom/tools/structure/experiment_corpus_v1.py",
+        "loom/tools/structure/jev_admission_v2.py"
+      ],
+      "task": "Review untraced C2 consumers against explicit request/version/privacy contracts, without rerunning author queue suite or live payer. Exact covered4/11 runtime files are in c-review/C2/coverage.json.",
+      "blocked": false
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "priority": 0,
+      "scope": "permissions/egress/expense/delete/migrate",
+      "files": [
+        "engine/importer.py",
+        "gui/import_panel.py",
+        "loom/include/loom/crypto.h",
+        "loom/include/loom/github_sync.h",
+        "loom/src/capi/capi_import.cpp",
+        "loom/src/catalog/import.cpp"
+      ],
+      "task": "Close input→effective config→decision→execution→persist→reopen→presentation; log function ranges and untraced callees, never count read-only file access as full behavior coverage.",
+      "output": "next pass named ranges + actual consumer A/B test + findings only when reproduced",
+      "blocked": false
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "priority": 1,
+      "scope": "profile/context/model/strategy",
+      "files": [
+        "engine/models.py",
+        "loom/include/loom/config.h",
+        "loom/include/loom/context_engine.h",
+        "loom/include/loom/context_plan.h",
+        "loom/include/loom/context_retrieval.h",
+        "loom/include/loom/media_providers.h"
+      ],
+      "task": "Close input→effective config→decision→execution→persist→reopen→presentation; log function ranges and untraced callees, never count read-only file access as full behavior coverage.",
+      "output": "next pass named ranges + actual consumer A/B test + findings only when reproduced",
+      "blocked": false
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "priority": 0,
+      "scope": "permissions/egress/expense/delete/migrate",
+      "files": [
+        "backend/watchdog_api/db/migrations/001_initial_schema.ts",
+        "backend/watchdog_api/db/migrations/002_assertions.ts",
+        "backend/watchdog_api/db/migrations/003_query_plan_identity.ts",
+        "backend/watchdog_api/db/migrations/004_principals.ts",
+        "backend/watchdog_api/db/migrations/005_role_profiles.ts",
+        "backend/watchdog_api/db/migrations/006_field_reference.ts"
+      ],
+      "task": "Close input→effective config→decision→execution→persist→reopen→presentation; log function ranges and untraced callees, never count read-only file access as full behavior coverage.",
+      "output": "next pass named ranges + actual consumer A/B test + findings only when reproduced",
+      "blocked": false
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "priority": 1,
+      "scope": "profile/context/model/strategy",
+      "files": [
+        "backend/watchdog_api/config/access_policy.ts",
+        "backend/watchdog_api/config/canonicalize.ts",
+        "backend/watchdog_api/config/collection.ts",
+        "backend/watchdog_api/config/evidence.ts",
+        "backend/watchdog_api/config/extraction_dataset.ts",
+        "backend/watchdog_api/config/field.ts"
+      ],
+      "task": "Close input→effective config→decision→execution→persist→reopen→presentation; log function ranges and untraced callees, never count read-only file access as full behavior coverage.",
+      "output": "next pass named ranges + actual consumer A/B test + findings only when reproduced",
+      "blocked": false
+    },
+    {
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "priority": 0,
+      "scope": "permissions/egress/expense/delete/migrate",
+      "files": [
+        "app/src/main/java/com/example/clipboard/ClipboardImportActivity.kt",
+        "app/src/main/java/com/example/core/capture/CaptureSession.kt",
+        "app/src/main/java/com/example/core/capture/ConversationCapture.kt",
+        "app/src/main/java/com/example/core/capture/TreeObservation.kt",
+        "app/src/main/java/com/example/core/layout/KeyboardViewportBudget.kt",
+        "app/src/main/java/com/example/core/sync/DriveSyncTransport.kt"
+      ],
+      "task": "Close input→effective config→decision→execution→persist→reopen→presentation; log function ranges and untraced callees, never count read-only file access as full behavior coverage.",
+      "output": "next pass named ranges + actual consumer A/B test + findings only when reproduced",
+      "blocked": false
+    },
+    {
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "priority": 1,
+      "scope": "profile/context/model/strategy",
+      "files": [
+        "app/src/main/java/com/example/core/config/Knobs.kt",
+        "app/src/main/java/com/example/core/config/ScopedSettingsCache.kt",
+        "app/src/main/java/com/example/core/config/SettingsDestinations.kt",
+        "app/src/main/java/com/example/core/config/SettingsSearch.kt",
+        "app/src/main/java/com/example/core/discovery/ModelDiscovery.kt",
+        "app/src/main/java/com/example/core/discovery/ModelFacts.kt"
+      ],
+      "task": "Close input→effective config→decision→execution→persist→reopen→presentation; log function ranges and untraced callees, never count read-only file access as full behavior coverage.",
+      "output": "next pass named ranges + actual consumer A/B test + findings only when reproduced",
+      "blocked": false
+    },
+    {
+      "repo": "klb-t/AGEDS",
+      "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+      "priority": 0,
+      "scope": "remaining device audio and citation entrypoints",
+      "files": [
+        "androidApp/src/main/AndroidManifest.xml",
+        "androidApp/src/main/java/dev/klbt/ageds/AndroidRangeAudio.kt",
+        "androidApp/src/main/java/dev/klbt/ageds/CitationDisplayProjection.kt",
+        "androidApp/src/main/java/dev/klbt/ageds/CitationUi.kt",
+        "androidApp/src/main/java/dev/klbt/ageds/CorpusActivity.kt",
+        "androidApp/src/main/java/dev/klbt/ageds/CorpusUi.kt",
+        "androidApp/src/main/java/dev/klbt/ageds/RangePlaybackController.kt",
+        "androidApp/src/main/java/dev/klbt/ageds/SourceAudioDisplay.kt"
+      ],
+      "task": "Trace active corpus/audio/citation target, permission and persistence across UI/service; use device only if available and distinguish host codec from actual storage.",
+      "blocked": false
+    }
+  ],
+  "environment_waits": [
+    "Browser socketEPERM; rerun only in capable environment",
+    "LSan /proc access; ASan+UBSan is already executed",
+    "AGEDS correct JDK21/SDK37 and valid pinned distribution cache",
+    "device IME/Keystore and OS process lifecycle"
+  ],
+  "all_remaining_file_manifest": "coverage-index.json"
+}

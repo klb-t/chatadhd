@@ -1,0 +1,76 @@
+{
+  "schema": "klbt.audit.data-graph-runtime-ui/1",
+  "principle": "References, versions, provenance and permission are required; large bytes need not share graph storage. No new architecture alongside R15/R33/R39–R42.",
+  "rows": [
+    {
+      "data": "user profile/settings/layers",
+      "graph_runtime_path": "native store + graph projection",
+      "evidence": "native/main-receipt.json",
+      "verified": "verified actual DB/restart/pack/exclusion/CAS",
+      "UI_or_boundary_gap": "full UI and full outer-state backup/import missing"
+    },
+    {
+      "data": "Basic/Advanced/Expert",
+      "graph_runtime_path": "CKP actual Settings snapshots/codec",
+      "evidence": "ckp/compiled-settings-receipt.json",
+      "verified": "same settings survive mode selection; AtomicFile profile persistence separate",
+      "UI_or_boundary_gap": "not device IME or chat browser"
+    },
+    {
+      "data": "workflow/method/model/recipe",
+      "graph_runtime_path": "Watchdog Workbench→SQLite/blob→ZIP→import",
+      "evidence": "watchdog/receipt-flow.json",
+      "verified": "historical recipe remains bound after edit, imported approval not forged",
+      "UI_or_boundary_gap": "other frontend workflows and full chat workflow backup open"
+    },
+    {
+      "data": "prompts/model parameters",
+      "graph_runtime_path": "real chat Config and Watchdog request adapter",
+      "evidence": "chat/native-main.json;watchdog/receipt-complete.json",
+      "verified": "two chat snapshots change outgoing parameters; Watchdog legacy params override validated model/messages",
+      "UI_or_boundary_gap": "scoped graph profile not ordinary Config integration"
+    },
+    {
+      "data": "context/analyzer recipe",
+      "graph_runtime_path": "B semantic Runtime live/worker/fallback",
+      "evidence": "c-review/B-semantic/B-receipt.json",
+      "verified": "ten formerly failing cases repaired, eight builtin-reset regression variants",
+      "UI_or_boundary_gap": "B2 unchanged-hash carry-forward is not rerun"
+    },
+    {
+      "data": "inference/assessment",
+      "graph_runtime_path": "legacy GraphEngine→SQLite relation",
+      "evidence": "chat/native-main.json",
+      "verified": "relation materialized with empty metadata",
+      "UI_or_boundary_gap": "candidate/ask binding and valid method/assessment refs absent in this path"
+    },
+    {
+      "data": "experiment/trigger/queue/payer/result",
+      "graph_runtime_path": "C2 queue→PrivateLedger→sync→packet",
+      "evidence": "c-review/C2/delta-receipt.json",
+      "verified": "valid bridge and native roundtrip pass; mismatched request accepted as verified fails",
+      "UI_or_boundary_gap": "no real provider spending; public projection/diagnostics failures retained"
+    },
+    {
+      "data": "results/evidence/versions",
+      "graph_runtime_path": "real native GraphPacketStore + source refs",
+      "evidence": "c-review/native-receipt.json; c-review/C2/delta-receipt.json",
+      "verified": "exact packet read/replay/restart, old recipe reference retained",
+      "UI_or_boundary_gap": "not assurance that billing, admission or public projection is semantically valid"
+    },
+    {
+      "data": "imports/configuration/source selection",
+      "graph_runtime_path": "AGEDS FastAPI→worker/SQLite; CorpusStore",
+      "evidence": "ageds/python.receipt.json;ageds/store.receipt.json",
+      "verified": "direct scanner limit consumed; API recipe/limits/case selection fail; schema999 accepted",
+      "UI_or_boundary_gap": "Android/device and full REST-to-device E2E not claimed"
+    },
+    {
+      "data": "migration/history",
+      "graph_runtime_path": "LEM real Room v1→v2 and version99",
+      "evidence": "lem/REPORT.md",
+      "verified": "actual ledger/result loss; config current-version reopen passes",
+      "UI_or_boundary_gap": "raw artifact resolver missing; process/device restart unverified"
+    }
+  ]
+}

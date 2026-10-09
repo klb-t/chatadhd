@@ -1,0 +1,45 @@
+{
+  "schema": "klbt.audit.index-execution/1",
+  "jobs": [
+    {
+      "job": 0,
+      "suite": "chat-python",
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/artifacts/tools/ecosystem-audit-2026-10-09/pass2/chat/python_consumers.py",
+        "--repo",
+        "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/checkouts/main",
+        "--sha",
+        "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+        "--phase",
+        "acceptance",
+        "--output",
+        "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/scratch/index-demo/main.json"
+      ],
+      "exit_code": 1,
+      "status": "NOT_PASS",
+      "script_sha256": "c06f06561158da6e43f4811b170bb63feb1ac9e8a5e14e796d2925d03f915517"
+    },
+    {
+      "job": 1,
+      "suite": "chat-python",
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/artifacts/tools/ecosystem-audit-2026-10-09/pass2/chat/python_consumers.py",
+        "--repo",
+        "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/checkouts/B",
+        "--sha",
+        "ddcaeaf7a25b70f0d4dc2e0eed2466016233eeb8",
+        "--phase",
+        "reproduction",
+        "--output",
+        "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/scratch/index-demo/B.json"
+      ],
+      "exit_code": 0,
+      "status": "RUNNER_PASS",
+      "script_sha256": "c06f06561158da6e43f4811b170bb63feb1ac9e8a5e14e796d2925d03f915517"
+    }
+  ],
+  "all_selected_runners_passed": false,
+  "caution": "Runner PASS for reproduction-only jobs means reproduced bug, not product acceptance. Inspect individual receipts."
+}

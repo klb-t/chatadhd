@@ -1,0 +1,9 @@
+{
+  "exit_code": 0,
+  "result": {
+    "status": "PASS",
+    "executable_scripts": 19,
+    "scope": "catalog paths and Python syntax, not product tests"
+  },
+  "script_sha256": "3b782a0c4d86612b73b0d6e579e6c186e3b4a7f1916955f3e0eed75b40368c0a"
+}

@@ -1,0 +1,317 @@
+{
+  "schema": "klbt.audit.finding-index/2",
+  "observation_rows": 31,
+  "unique_stable_ids": 30,
+  "classification_counts_unique_ids": {
+    "naruszenie": 19,
+    "dopuszczalny mechanizm": 10,
+    "niepewne": 1
+  },
+  "records": [
+    {
+      "id": "A2-AG-001",
+      "classification": "naruszenie",
+      "observations": [
+        {
+          "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+          "source": "ageds/findings.jsonl"
+        }
+      ]
+    },
+    {
+      "id": "A2-AG-002",
+      "classification": "naruszenie",
+      "observations": [
+        {
+          "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+          "source": "ageds/findings.jsonl"
+        }
+      ]
+    },
+    {
+      "id": "A2-AG-003",
+      "classification": "naruszenie",
+      "observations": [
+        {
+          "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+          "source": "ageds/findings.jsonl"
+        }
+      ]
+    },
+    {
+      "id": "A2-AG-004",
+      "classification": "naruszenie",
+      "observations": [
+        {
+          "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+          "source": "ageds/findings.jsonl"
+        }
+      ]
+    },
+    {
+      "id": "A2-AG-005",
+      "classification": "naruszenie",
+      "observations": [
+        {
+          "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+          "source": "ageds/findings.jsonl"
+        }
+      ]
+    },
+    {
+      "id": "A2-BSEM-001",
+      "classification": "naruszenie",
+      "observations": [
+        {
+          "sha": "ddcaeaf7a25b70f0d4dc2e0eed2466016233eeb8",
+          "source": "c-review/B-semantic/findings.jsonl"
+        }
+      ]
+    },
+    {
+      "id": "A2-C-003",
+      "classification": "naruszenie",
+      "observations": [
+        {
+          "sha": "b9b503f62bb8e8e00c94ab7401e1cd9579129af3",
+          "source": "c-review/C2/findings.jsonl"
+        }
+      ]
+    },
+    {
+      "id": "A2-C-001",
+      "classification": "naruszenie",
+      "observations": [
+        {
+          "sha": "b9b503f62bb8e8e00c94ab7401e1cd9579129af3",
+          "source": "c-review/C2/findings.jsonl"
+        },
+        {
+          "sha": "69880859802267f1b38b82eeaecd6fdc5522a47a",
+          "source": "c-review/findings.jsonl"
+        }
+      ]
+    },
+    {
+      "id": "A2-C-004",
+      "classification": "naruszenie",
+      "observations": [
+        {
+          "sha": "b9b503f62bb8e8e00c94ab7401e1cd9579129af3",
+          "source": "c-review/C2/findings.jsonl"
+        }
+      ]
+    },
+    {
+      "id": "A2-C-002",
+      "classification": "naruszenie",
+      "observations": [
+        {
+          "sha": "69880859802267f1b38b82eeaecd6fdc5522a47a",
+          "source": "c-review/findings.jsonl"
+        }
+      ]
+    },
+    {
+      "id": "A2-CH-001",
+      "classification": "naruszenie",
+      "observations": [
+        {
+          "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+          "source": "chat/findings.jsonl"
+        }
+      ]
+    },
+    {
+      "id": "A2-CH-002",
+      "classification": "naruszenie",
+      "observations": [
+        {
+          "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+          "source": "chat/findings.jsonl"
+        }
+      ]
+    },
+    {
+      "id": "A2-CH-003",
+      "classification": "naruszenie",
+      "observations": [
+        {
+          "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+          "source": "chat/findings.jsonl"
+        }
+      ]
+    },
+    {
+      "id": "A2-CH-004",
+      "classification": "naruszenie",
+      "observations": [
+        {
+          "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+          "source": "chat/findings.jsonl"
+        }
+      ]
+    },
+    {
+      "id": "A2-CKP-001",
+      "classification": "naruszenie",
+      "observations": [
+        {
+          "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+          "source": "ckp/findings.jsonl"
+        }
+      ]
+    },
+    {
+      "id": "A2-CKP-002",
+      "classification": "dopuszczalny mechanizm",
+      "observations": [
+        {
+          "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+          "source": "ckp/findings.jsonl"
+        }
+      ]
+    },
+    {
+      "id": "A2-CKP-003",
+      "classification": "dopuszczalny mechanizm",
+      "observations": [
+        {
+          "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+          "source": "ckp/findings.jsonl"
+        }
+      ]
+    },
+    {
+      "id": "A2-CKP-004",
+      "classification": "naruszenie",
+      "observations": [
+        {
+          "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+          "source": "ckp/findings.jsonl"
+        }
+      ]
+    },
+    {
+      "id": "LEM-009",
+      "classification": "naruszenie",
+      "observations": [
+        {
+          "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+          "source": "lem/findings.jsonl"
+        }
+      ]
+    },
+    {
+      "id": "CH-P2-N001",
+      "classification": "dopuszczalny mechanizm",
+      "observations": [
+        {
+          "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+          "source": "native/findings.jsonl"
+        }
+      ]
+    },
+    {
+      "id": "A2-CH-B2-001",
+      "classification": "niepewne",
+      "observations": [
+        {
+          "sha": "384c5e1686cd3a58a7d89a8a6813a18c764f697d",
+          "source": "watchdog/B2/findings.jsonl"
+        }
+      ]
+    },
+    {
+      "id": "A2-WD-001",
+      "classification": "naruszenie",
+      "observations": [
+        {
+          "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+          "source": "watchdog/findings.jsonl"
+        }
+      ]
+    },
+    {
+      "id": "A2-WD-002",
+      "classification": "dopuszczalny mechanizm",
+      "observations": [
+        {
+          "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+          "source": "watchdog/findings.jsonl"
+        }
+      ]
+    },
+    {
+      "id": "A2-WD-003",
+      "classification": "dopuszczalny mechanizm",
+      "observations": [
+        {
+          "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+          "source": "watchdog/findings.jsonl"
+        }
+      ]
+    },
+    {
+      "id": "A2-WD-004",
+      "classification": "dopuszczalny mechanizm",
+      "observations": [
+        {
+          "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+          "source": "watchdog/findings.jsonl"
+        }
+      ]
+    },
+    {
+      "id": "A2-WD-005",
+      "classification": "naruszenie",
+      "observations": [
+        {
+          "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+          "source": "watchdog/findings.jsonl"
+        }
+      ]
+    },
+    {
+      "id": "CH-M1",
+      "classification": "dopuszczalny mechanizm",
+      "observations": [
+        {
+          "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+          "source": "chat/mechanisms.json"
+        }
+      ]
+    },
+    {
+      "id": "CH-M2",
+      "classification": "dopuszczalny mechanizm",
+      "observations": [
+        {
+          "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+          "source": "chat/mechanisms.json"
+        }
+      ]
+    },
+    {
+      "id": "CH-M3",
+      "classification": "dopuszczalny mechanizm",
+      "observations": [
+        {
+          "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+          "source": "chat/mechanisms.json"
+        }
+      ]
+    },
+    {
+      "id": "CH-M4",
+      "classification": "dopuszczalny mechanizm",
+      "observations": [
+        {
+          "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+          "source": "chat/mechanisms.json"
+        }
+      ]
+    }
+  ],
+  "deduplication": "Same stable ID at a new SHA adds evidence, not a new bug. First-pass seed finding updates are kept separate; no stale backlog replay."
+}

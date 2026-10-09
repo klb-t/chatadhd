@@ -1,0 +1,871 @@
+{
+  "schema": "klbt.audit.backlog/2",
+  "ordering": "P0 data loss, target/billing/public boundary, binding; P1 confirmed configuration/persistence/epistemic problems. Order is auditor recommendation, not attributed owner priority.",
+  "items": [
+    {
+      "id": "A2-BSEM-001",
+      "priority": "P0",
+      "status": "open_confirmed_at_listed_sha",
+      "repo": "klb-t/chatadhd",
+      "evidence_shas": [
+        "ddcaeaf7a25b70f0d4dc2e0eed2466016233eeb8"
+      ],
+      "reproduction": {
+        "kind": "executed_same_native_harness_against_main_and_B",
+        "receipts": [
+          "main-receipt.json",
+          "B-receipt.json"
+        ],
+        "tests": [
+          "CH003-reset-worker-regex-removed-overlay",
+          "CH003-reset-worker-regex-empty-overlay",
+          "CH003-reset-worker-fallback-removed-overlay",
+          "CH003-reset-worker-fallback-empty-overlay",
+          "CH003-reset-live-regex-removed-overlay",
+          "CH003-reset-live-regex-empty-overlay",
+          "CH003-reset-live-fallback-removed-overlay",
+          "CH003-reset-live-fallback-empty-overlay"
+        ],
+        "behavior": "Runtime rozpoczyna z nakładką A, która rozpoznaje syntetyczny marker. Po usunięciu pliku lub zapisaniu jawnego overrides={} resolver zwraca is_builtin=true i builtin hash; świeży SemanticAnalyzer z tych samych danych zwraca 0 encji. Działający Runtime B nadal tworzy 1 encję oraz mentions krawędź dla markera A. Wynik jest done i nie ma analyzer_profile_hash. Dotyczy live/worker oraz regex/LLM fallback. Nowy Runtime po restarcie daje 0 encji i brak krawędzi. Wszystkie osiem przypadków przechodzi na main i nie przechodzi na B.",
+        "external_calls": 0,
+        "synthetic_inputs_only": true,
+        "model_quality_test": false
+      },
+      "expected_behavior": {
+        "runner": "tools/ecosystem-audit-2026-10-09/pass2/c-review/B-semantic/run.py",
+        "required": "32/32 acceptance PASS; w ośmiu CH003-reset-* nieaktywny marker nie tworzy nowej encji/krawędzi już przed restartem. Zachować 10 naprawionych bramek.",
+        "current": "B: bug reproduction PASS w 8/8 wariantach, acceptance FAIL w tych samych 8; main wszystkie 8 PASS"
+      },
+      "consumers": [
+        "Runtime::open→GraphEngine::on_message_checked→SemanticLLM::analyse(text,analyzer)",
+        "Runtime::open→SemanticWorker::drain_once→regex_unified/SemanticLLM fallback",
+        "Database::mark_analysed"
+      ],
+      "migration": "Już zapisane wyniki mogą nie mieć hasha użytej startowej nakładki. Nie zgadywać ich receptury i nie usuwać źródeł. Reanaliza wymaga wskazania zakresu i zachowania starego wyniku/proweniencji; nie wykonywać płatnych ponowień automatycznie.",
+      "risk": "Wybrany powrót do domyślnego profilu jest ignorowany do restartu. Dodatkowo wynik nie ujawnia, że nadal użyto niestandardowej reguły. Naprawa CH-003 usuwa wcześniejsze ominięcia, lecz tworzy stale-constructor fallback na granicy wartości builtin.",
+      "dependencies": [
+        "B: naprawa wyboru analyzer snapshot",
+        "utrzymać dotychczasowe testy B na dwie nakładki, invalid pack i batch snapshot"
+      ],
+      "full_package_sources": [
+        "c-review/B-semantic/findings.jsonl"
+      ]
+    },
+    {
+      "id": "A2-C-001",
+      "priority": "P0",
+      "status": "open_confirmed_at_listed_sha",
+      "repo": "klb-t/chatadhd",
+      "evidence_shas": [
+        "b9b503f62bb8e8e00c94ab7401e1cd9579129af3",
+        "69880859802267f1b38b82eeaecd6fdc5522a47a"
+      ],
+      "reproduction": {
+        "kind": "executed_real_consumer_synthetic_canary",
+        "receipt": "projection-receipt.json",
+        "tests": [
+          "C-PUBLIC-02",
+          "C-PUBLIC-03",
+          "C-PUBLIC-04",
+          "C-PUBLIC-05"
+        ],
+        "behavior": "Cztery syntetyczne wstrzyknięcia przechodzą build(): dodatkowe zagnieżdżone pole producer_sha256, nieliczbowy/niehashowy spec_sha256, pole pomocnicze planu i pole pomocnicze profilu projekcji. Canary można odzyskać z emitted JSON lub base64 źródeł. C-PUBLIC-01 poprawnie odrzuca dodatkowy klucz pierwszego poziomu i nie ujawnia go w błędzie/logu.",
+        "raw_canary_published": false,
+        "actual_private_disclosure_established": false
+      },
+      "expected_behavior": {
+        "command": "python3 tools/ecosystem-audit-2026-10-09/pass2/c-review/run.py --repo CHECKOUT_C --sha SHA --phase projection --output receipt.json",
+        "required": "C-PUBLIC-02..05 acceptance PASS: wyjście odrzucone bez publikacji albo syntetyczna treść nieosiągalna w żadnej warstwie JSON/base64; nie tylko brak widocznego tekstu w outer JSON.",
+        "current": "reproduction PASS; product acceptance FAIL"
+      },
+      "consumers": [
+        "docs/research/thread7_real_2026-10-09/build_public_artifact.py:build",
+        "loom/tools/seeding/method_graph.py:capture_run→build_artifact→recover_files"
+      ],
+      "migration": "Nie usuwać nieznanych pól z prywatnych źródeł. Jawnie wersjonować politykę publicznej projekcji; poprzednie artefakty/hash zachować. Potrzebna walidacja per source role, nie heurystyczne wycinanie wszystkich stringów.",
+      "risk": "Automatyczna ponowna publikacja z rozszerzonych/wadliwych receiptów lub planu może ujawnić prywatne metadane mimo przejścia deklarowanej allowlisty. Nie dowiedziono wycieku w już opublikowanym artefakcie C; jego źródła publiczne odtworzono zgodnie z plikami commita.",
+      "dependencies": [
+        "C: builder i własne artefakty",
+        "B: jeżeli generyczny eksporter zostanie częścią UI, ta sama jawna granica prywatności"
+      ],
+      "full_package_sources": [
+        "c-review/C2/findings.jsonl",
+        "c-review/findings.jsonl"
+      ]
+    },
+    {
+      "id": "A2-C-003",
+      "priority": "P0",
+      "status": "open_confirmed_at_listed_sha",
+      "repo": "klb-t/chatadhd",
+      "evidence_shas": [
+        "b9b503f62bb8e8e00c94ab7401e1cd9579129af3"
+      ],
+      "reproduction": {
+        "receipt": "delta-receipt.json",
+        "tests": [
+          "C2-PAYER-01",
+          "C2-PAYER-02"
+        ],
+        "reproduction": "PASS",
+        "acceptance": "FAIL",
+        "observed": "A real fully validated fixture PrivateLedger is matched to a supported offline pending Queue by operation_id only. Different request hashes still yield captured + billing_verified true, with the queue hash stamped onto the ledger response. Correct-hash control passes. No database tampering.",
+        "scope": "Settlement/import/recovery boundary. Normal verified dispatch separately checks request hash; no proof that it can dispatch the wrong request."
+      },
+      "expected_behavior": {
+        "runner": "tools/ecosystem-audit-2026-10-09/pass2/c-review/C2/run.py",
+        "case": "C2-PAYER-02",
+        "expected": "Reject request mismatch, remain pending, retain no result or settlement evidence, never resend. Preserve the valid control C2-PAYER-01 and verified bridge native roundtrip C2-NATIVE-02."
+      },
+      "consumers": [
+        "PayerBoundary.sync_verified",
+        "result_record",
+        "Queue.capture_first",
+        "graph.capture_run/build_artifact; downstream source/result consumers"
+      ],
+      "migration": "Historical captured results may already contain the queue hash rather than payer hash; blindly trusting those records preserves false attribution.",
+      "risk": "A recovered queue can falsely attribute paid/verified evidence to a different request, affecting later comparisons and graph provenance despite an intact payer ledger.",
+      "dependencies": [
+        "C owns research boundary; B owns product integration",
+        "Resolve before using recovered research results as production profile evidence"
+      ],
+      "full_package_sources": [
+        "c-review/C2/findings.jsonl"
+      ]
+    },
+    {
+      "id": "A2-C-004",
+      "priority": "P0",
+      "status": "open_confirmed_at_listed_sha",
+      "repo": "klb-t/chatadhd",
+      "evidence_shas": [
+        "b9b503f62bb8e8e00c94ab7401e1cd9579129af3"
+      ],
+      "reproduction": {
+        "receipt": "delta-receipt.json",
+        "tests": [
+          "C2-PUBLIC-02"
+        ],
+        "reproduction": "PASS",
+        "acceptance": "FAIL",
+        "observed": "Schema rejects an unknown presentation field and emits no artifact, but ValidationError string and standard Python sys.excepthook output contain the synthetic input canary. Runner captures this only in memory and publishes hashes/status."
+      },
+      "expected_behavior": {
+        "runner": "tools/ecosystem-audit-2026-10-09/pass2/c-review/C2/run.py",
+        "case": "C2-PUBLIC-02",
+        "expected": "Reject malformed presentation before output; no canary in public exception, stdout, stderr, or artifact; maintain valid-build C2-PUBLIC-01."
+      },
+      "consumers": [
+        "evaluation-build.main",
+        "jsonschema.Draft202012Validator.validate",
+        "Python uncaught exception handler"
+      ],
+      "migration": "Suppressing every error would impair debugging; preserve stable error code and safe path while withholding input values.",
+      "risk": "Diagnostic logs from an unsuccessful public artifact build can expose input even when the artifact gate correctly rejects it.",
+      "dependencies": [
+        "C public CLI or B wrapper error handler",
+        "R42 exception 6 permits diagnostics, not disclosure of private inputs"
+      ],
+      "full_package_sources": [
+        "c-review/C2/findings.jsonl"
+      ]
+    },
+    {
+      "id": "A2-CH-001",
+      "priority": "P0",
+      "status": "open_confirmed_at_listed_sha",
+      "repo": "klb-t/chatadhd",
+      "evidence_shas": [
+        "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9"
+      ],
+      "reproduction": {
+        "kind": "actual_consumer_execution",
+        "receipt": "python-main.json",
+        "behavior": "MemoryEngine odrzuca unknown key; update zapisuje bez niego. Przy poprawnym wierszu, błędnym wierszu bez content i poprawnym dalszym wierszu _load loguje błąd, add_node zastępuje plik bez dalszego wiersza.",
+        "synthetic_only": true
+      },
+      "expected_behavior": [
+        "python_consumers.py --phase reproduction: A2-CH-001.*",
+        "--phase acceptance: exact extension {revision:7} survives; malformed source remains untouched and write is refused; recovery must be explicit"
+      ],
+      "consumers": [
+        "MemoryEngine.__init__→_load→update_node/add_node→_save→disk"
+      ],
+      "migration": "Nie usuwać źródłowego pliku; migracja/recovery musi zachować oryginał i wyraźnie oznaczyć stratę.",
+      "risk": "Potwierdzona utrata zapisanych pól i dalszego rekordu w rzeczywistym pliku. Nie uruchomiono GUI ani migracji natywnej pamięci.",
+      "dependencies": [
+        "B implementation of the existing consumer contract; auditor does not edit product"
+      ],
+      "full_package_sources": [
+        "chat/findings.jsonl"
+      ]
+    },
+    {
+      "id": "A2-WD-001",
+      "priority": "P0",
+      "status": "open_confirmed_at_listed_sha",
+      "repo": "klb-t/Watchdog-JH16",
+      "evidence_shas": [
+        "58a0c93bd0135e3715dcbc4d92fb80e61bd31215"
+      ],
+      "reproduction": {
+        "kind": "executed_real_consumer_with_intercepted_transport",
+        "receipt": "receipt-core.json",
+        "reproduction": "A2-WD-001-A",
+        "acceptance": "A2-WD-001-B",
+        "behavior": "A synthetic JSON provider with allowed_models=[permitted-model] and generation_params.model=disallowed-model is accepted by the real loader. Registry.defaultParams feeds it to the real generator, which emits disallowed-model and replacement messages after validating permitted-model. No live request."
+      },
+      "expected_behavior": "run.py --repo CHECKOUT --sha SHA --out RECEIPT --scratch TMP --mode accept --filter A2-WD-001; reject reserved field collision before transport or preserve validated model/messages; exit0 only on compliance.",
+      "consumers": [
+        "loadTextGenerationConfig → TextGenerationRegistry.defaultParams/get → OpenAiCompatibleGenerator.generate → post",
+        "buildApiRouter /runs/:id/narrative/generate → generateNarrativeWithProvider → same registry adapter"
+      ],
+      "migration": "Existing legacy profiles using reserved keys require explicit review; never silently reinterpret model/messages overrides. Preserve old profile versions and record effective request identity.",
+      "risk": "The effective model/prompt can differ from the fields the adapter validates. The legacy narrative route consumes these defaultParams; the personal-provider loader separately protects bound fields, so that path is not claimed vulnerable. The configuration must be operator-authored/altered; no unprivileged remote exploit is claimed.",
+      "dependencies": [
+        "WD-003: define supported request/profile parameter precedence consistently without dropping legitimate generation parameters"
+      ],
+      "full_package_sources": [
+        "watchdog/findings.jsonl"
+      ]
+    },
+    {
+      "id": "CH-003",
+      "priority": "P0",
+      "status": "partial repair on ddca; A2-BSEM-001 regression; source hashes unchanged on384c5e1 (not rerun)",
+      "package": "c-review/B-semantic/REPORT.md",
+      "test_index": "c-review/B-semantic/test-index.json"
+    },
+    {
+      "id": "CH-004",
+      "priority": "P0",
+      "status": "actual split scoped-policy/ordinary transport reproduced; full binding BLOCKED_MISSING_CONTRACT",
+      "package": "chat/packages-for-B.json",
+      "test_index": "chat/test-index.json",
+      "first_pass_reference": "../findings.jsonl#CH-004",
+      "reason_in_current_backlog": "Explicit seed in owner continuation; independently exercised here, not copied historical task queue."
+    },
+    {
+      "id": "CH-005",
+      "priority": "P0",
+      "status": "actual ordinary request and empty entire ledger; full admission binding BLOCKED_MISSING_CONTRACT",
+      "package": "chat/packages-for-B.json",
+      "test_index": "chat/test-index.json",
+      "first_pass_reference": "../findings.jsonl#CH-005",
+      "reason_in_current_backlog": "Explicit seed in owner continuation; independently exercised here, not copied historical task queue."
+    },
+    {
+      "id": "CKP-A-012",
+      "priority": "P0",
+      "status": "actual source/bytecode consumer tested; acceptance FAIL; precise host/device boundaries in receipts",
+      "package": "ckp/handoff-B.json",
+      "test_index": "ckp/test-index.json",
+      "first_pass_reference": "../findings.jsonl#CKP-A-012",
+      "reason_in_current_backlog": "Explicit seed in owner continuation; independently exercised here, not copied historical task queue."
+    },
+    {
+      "id": "A2-AG-001",
+      "priority": "P1",
+      "status": "open_confirmed_at_listed_sha",
+      "repo": "klb-t/AGEDS",
+      "evidence_shas": [
+        "9c1d513bc19d177bd324d7506a21fbab98c2e268"
+      ],
+      "reproduction": {
+        "receipt": "python.receipt.json",
+        "tests": [
+          "A2-AG-001.recipe_unknown_input",
+          "A2-AG-001.scan_unknown_input"
+        ],
+        "observation": "ASGI POST transcribe z JSON recipe daje200,payload{}; POST source-scans z limits.max_files1/2 daje200 i3/3 pliki, podczas gdy realny scan_sources daje1/2."
+      },
+      "expected_behavior": {
+        "runner": "run_python.py",
+        "cases": [
+          "A2-AG-001.recipe_unknown_input",
+          "A2-AG-001.scan_unknown_input"
+        ],
+        "expected": "422 for unsupported operative input, or genuine persisted/consumed configuration. Plain200 with dropped fields fails."
+      },
+      "consumers": [
+        "FastAPI ScanIn",
+        "api_source_scan",
+        "api_queue_transcription",
+        "queue_transcription"
+      ],
+      "migration": "Version request contract; preserve compatibility only for declared inert metadata, not unknown policy fields.",
+      "risk": "Klient może uznać parametry za przyjęte. To odrębna granica walidacji poza już znanym brakiem podłączenia EA-AGEDS-002/003.",
+      "dependencies": [
+        "EA-AGEDS-002",
+        "EA-AGEDS-003"
+      ],
+      "full_package_sources": [
+        "ageds/findings.jsonl"
+      ]
+    },
+    {
+      "id": "A2-AG-002",
+      "priority": "P1",
+      "status": "open_confirmed_at_listed_sha",
+      "repo": "klb-t/AGEDS",
+      "evidence_shas": [
+        "9c1d513bc19d177bd324d7506a21fbab98c2e268"
+      ],
+      "reproduction": {
+        "receipt": "python.receipt.json",
+        "tests": [
+          "A2-AG-002.whatsapp_date_policy"
+        ],
+        "observation": "02/03/2026 staje się2026-03-02; metadata jawnie oznacza ambiguity/day_first/parser_policy_not_source_locale. Próba realnego importera z date_order=month_first kończyTypeError."
+      },
+      "expected_behavior": {
+        "runner": "run_python.py",
+        "cases": [
+          "A2-AG-002.whatsapp_date_policy"
+        ],
+        "expected": "Proposed date_order=month_first contract yields Feb3 and records selected policy; equivalent revised API requires adapting input glue, not expected value."
+      },
+      "consumers": [
+        "import_whatsapp_txt",
+        "_timestamp",
+        "add_event",
+        "timeline",
+        "export_metadata_package"
+      ],
+      "migration": "Never rewrite old event timestamps in place; retain old parser version/interpretation and add new run/version with explicit comparison.",
+      "risk": "Nie ma wyboru month-first lub zachowania nierozstrzygniętego czasu. Surowe bajty i ostrzeżenie pozostają; nie twierdzimy, że polityka jest ukryta w metadanych ani że dane źródłowe usunięto.",
+      "dependencies": [
+        "EA-AGEDS-006"
+      ],
+      "full_package_sources": [
+        "ageds/findings.jsonl"
+      ]
+    },
+    {
+      "id": "A2-AG-003",
+      "priority": "P1",
+      "status": "open_confirmed_at_listed_sha",
+      "repo": "klb-t/AGEDS",
+      "evidence_shas": [
+        "9c1d513bc19d177bd324d7506a21fbab98c2e268"
+      ],
+      "reproduction": {
+        "receipt": "python.receipt.json",
+        "tests": [
+          "A2-AG-003.case_selection"
+        ],
+        "observation": "Dwie syntetyczne sprawy; upload z case_id drugiej daje200 i zapisuje artefakt/source w pierwszej. ensure_source bez case_id wybiera ORDER BY id LIMIT1; upload nie ma parametru case."
+      },
+      "expected_behavior": {
+        "runner": "run_python.py",
+        "cases": [
+          "A2-AG-003.case_selection"
+        ],
+        "expected": "Proposed explicit case_id binds acquired source/artifact to selected existing case; absent/ambiguous case follows declared visible policy."
+      },
+      "consumers": [
+        "api_upload_artifact",
+        "upload",
+        "import_sms/import_wa",
+        "ensure_source",
+        "ingest_file"
+      ],
+      "migration": "Do not move existing evidence between cases automatically. Existing cross-case integrity guard must remain.",
+      "risk": "Backend ma encję i argument case_id, ale ścieżka uploadu nie daje wyboru. Nie opisujemy tego jako przełamania autoryzacji: API auth jest jawnie niewdrożone, a wdrożenie deklaruje trusted/private network.",
+      "dependencies": [
+        "EA-AGEDS-006"
+      ],
+      "full_package_sources": [
+        "ageds/findings.jsonl"
+      ]
+    },
+    {
+      "id": "A2-AG-004",
+      "priority": "P1",
+      "status": "open_confirmed_at_listed_sha",
+      "repo": "klb-t/AGEDS",
+      "evidence_shas": [
+        "9c1d513bc19d177bd324d7506a21fbab98c2e268"
+      ],
+      "reproduction": {
+        "receipt": "store.receipt.json",
+        "tests": [
+          "A2-AG-004.corpus_future_version"
+        ],
+        "observation": "Niezmieniony CorpusStore z prawdziwym Kotlinx codec zaimportował schemaVersion999, zapisał cache i po ponownym otwarciu zwrócił typed CorpusSeed999. Unknown raw extension zachowany w cache. SourceScanCache osobno waliduje version1."
+      },
+      "expected_behavior": {
+        "runner": "run_store.py",
+        "cases": [
+          "A2-AG-004.corpus_future_version"
+        ],
+        "expected": "Unrecognized version is rejected or explicitly quarantined/migrated before current CorpusVm interpretation; no silent success."
+      },
+      "consumers": [
+        "CorpusStore.import",
+        "CorpusStore.loadCached",
+        "CorpusVm.install",
+        "priorityPresetIds"
+      ],
+      "migration": "Keep cached raw JSON; on unsupported version expose retained source and do not overwrite with default.",
+      "risk": "Nowy lub obcy schemat trafia do współczesnych konsumentów tak, jakby bieżące pola miały znaną semantykę. Nie ma dowodu utraty surowego JSON; problemem jest dopuszczenie niezrozumianej wersji do runtime.",
+      "dependencies": [],
+      "full_package_sources": [
+        "ageds/findings.jsonl"
+      ]
+    },
+    {
+      "id": "A2-AG-005",
+      "priority": "P1",
+      "status": "open_confirmed_at_listed_sha",
+      "repo": "klb-t/AGEDS",
+      "evidence_shas": [
+        "9c1d513bc19d177bd324d7506a21fbab98c2e268"
+      ],
+      "reproduction": {
+        "receipt": "scan.receipt.json",
+        "tests": [
+          "A2-AG-005.hidden_global_budget"
+        ],
+        "observation": "Prawdziwy parser czyta10002 wiersze; engine z maxRowsPerFile20000 zatrzymuje łączny wynik na10000. limits w wyniku nadal podaje20000; result_limit/row_limit ujawniają częściowość. Kodu globalne50000cells/10000rows/4000000chars nie da się ustawić w SourceScanLimits."
+      },
+      "expected_behavior": {
+        "runner": "run_scan.py",
+        "cases": [
+          "A2-AG-005.hidden_global_budget"
+        ],
+        "expected": "B must expose selected effective aggregate budget as data; two profiles must change retained rows without removing safety guard. Current test records BLOCKED_MISSING_CONTRACT instead of a false green acceptance."
+      },
+      "consumers": [
+        "SourceScanEngine.scan",
+        "SourceDelimitedParser.parse",
+        "SourceWorkbookParser.parse",
+        "SourceXlsParser.parse",
+        "SourceScanResult.limits"
+      ],
+      "migration": "Preserve current effective budget as named legacy preset; keep partial coverage and all omission reasons.",
+      "risk": "Konfiguracja typu jest rzeczywiście konsumowana, lecz nie opisuje wszystkich skutecznych budżetów. To dodatkowy konsument EA-AGEDS-003, nie brak samego istnienia limitów ani ciche full-coverage.",
+      "dependencies": [
+        "EA-AGEDS-003",
+        "EA-AGEDS-006"
+      ],
+      "full_package_sources": [
+        "ageds/findings.jsonl"
+      ]
+    },
+    {
+      "id": "A2-C-002",
+      "priority": "P1",
+      "status": "open_confirmed_at_listed_sha",
+      "repo": "klb-t/chatadhd",
+      "evidence_shas": [
+        "69880859802267f1b38b82eeaecd6fdc5522a47a"
+      ],
+      "reproduction": {
+        "kind": "executed_actual_result_record_and_queue",
+        "receipt": "projection-receipt.json",
+        "tests": [
+          "C-BIND-01"
+        ],
+        "behavior": "Dwa powtórzenia mają identyczny request_sha256 i różne operation_id. Oba zapisano jako pending z różnymi referencjami rezerwacji. result_record utworzony dla B został przyjęty przez capture_first(A,resultB). Snapshot A ma state=captured i result.operation_id=B.",
+        "synthetic_only": true,
+        "live_payer_authenticated": false
+      },
+      "expected_behavior": {
+        "command": "python3 tools/ecosystem-audit-2026-10-09/pass2/c-review/run.py --repo CHECKOUT_C --sha SHA --phase projection --output receipt.json",
+        "required": "C-BIND-01 acceptance PASS: inny operation_id przy identycznym request_sha256 odrzucony albo zachowany wyłącznie jako jawny orphan; slot A pozostaje pending.",
+        "current": "reproduction PASS; product acceptance FAIL"
+      },
+      "consumers": [
+        "experiment_workflow_v1.result_record",
+        "Queue.capture_first",
+        "Queue.snapshot",
+        "przyszły bridge do method_graph"
+      ],
+      "migration": "Zachować istniejące rekordy append-only. Stare capture bez operation_id wymagają statusu binding_unknown; bez zgadywania powiązań i bez ponownego płatnego wykonania.",
+      "risk": "Asynchroniczne pomylenie odpowiedzi powtórzeń nie jest wykrywane w nowym dzienniku C; zapis może wiązać request, kolejność i referencję payera z niewłaściwym wystąpieniem. Nie dowodzi to błędu księgowania istniejącego PrivateLedger ani wykonania płatnego requestu.",
+      "dependencies": [
+        "C: walidacja research journal",
+        "B: dispatcher musi przekazywać verified payer evidence, a nie dowolny string"
+      ],
+      "full_package_sources": [
+        "c-review/findings.jsonl"
+      ]
+    },
+    {
+      "id": "A2-CH-002",
+      "priority": "P1",
+      "status": "open_confirmed_at_listed_sha",
+      "repo": "klb-t/chatadhd",
+      "evidence_shas": [
+        "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9"
+      ],
+      "reproduction": {
+        "kind": "actual_consumer_execution",
+        "receipt": "python-main.json",
+        "behavior": "Real ProviderManager + GroqASR + GoogleSpeechASR: po przechwyconym HTTP503 kolejność wywołań to groq,google. Jawny provider=groq nie przechodzi do Google, nieznany provider jawnie odrzucony.",
+        "synthetic_only": true
+      },
+      "expected_behavior": [
+        "reproduction A2-CH-002.implicit-fallback PASS",
+        "acceptance data-defined-order BLOCKED_MISSING_CONTRACT: dwa profile muszą zmienić kolejność rzeczywistego konsumenta; zachować jawny no-fallback"
+      ],
+      "consumers": [
+        "ProviderManager.transcribe_bytes→GroqASR→requests.post→failure→GoogleSpeechASR→requests.post"
+      ],
+      "migration": "Sam wpisanie kluczy dostawców nie powinno migrować na szerszą, niewybraną trasę. Default groq/google może zostać presetem danych.",
+      "risk": "To naruszenie R42 dla kolejności, nie dowód naruszenia istniejącej zgody. Aktualny publiczny kontrakt reprezentuje no-fallback przez provider, lecz nie konfigurowalną listę kolejności. Nie ustalono aktywnego GUI konsumenta ASR tego modułu.",
+      "dependencies": [
+        "B implementation of the existing consumer contract; auditor does not edit product"
+      ],
+      "full_package_sources": [
+        "chat/findings.jsonl"
+      ]
+    },
+    {
+      "id": "A2-CH-003",
+      "priority": "P1",
+      "status": "open_confirmed_at_listed_sha",
+      "repo": "klb-t/chatadhd",
+      "evidence_shas": [
+        "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9"
+      ],
+      "reproduction": {
+        "kind": "actual_consumer_execution",
+        "receipt": "python-main.json",
+        "behavior": "Przechwycona odpowiedź Groq zawiera tylko text; rzeczywisty GroqASR zwraca confidence=0.9.",
+        "synthetic_only": true
+      },
+      "expected_behavior": [
+        "A2-CH-003.unknown-confidence: brak pewności pozostaje None albo jawnie estimated/declared z provenance; actual response body has no confidence"
+      ],
+      "consumers": [
+        "GroqASR.transcribe_bytes→ASRResult"
+      ],
+      "migration": "Nie reinterpretować historycznego 0.9 jako zmierzonej pewności. Zachować unknown/provenance przy migracji.",
+      "risk": "Konsument otrzymuje liczbę bez rozróżnienia pomiaru, deklaracji i braku wiedzy. Brak dowodu na bieżący GUI ranking używający tej liczby.",
+      "dependencies": [
+        "B implementation of the existing consumer contract; auditor does not edit product"
+      ],
+      "full_package_sources": [
+        "chat/findings.jsonl"
+      ]
+    },
+    {
+      "id": "A2-CH-004",
+      "priority": "P1",
+      "status": "open_confirmed_at_listed_sha",
+      "repo": "klb-t/chatadhd",
+      "evidence_shas": [
+        "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9"
+      ],
+      "reproduction": {
+        "kind": "actual_consumer_execution",
+        "receipt": "python-main.json",
+        "behavior": "Rzeczywisty list_remote_files otrzymuje remote git blob SHA pliku AAAA, lokalny x.txt=BBBB. get_sync_status zwraca synced; obie treści mają 4 bajty.",
+        "synthetic_only": true
+      },
+      "expected_behavior": [
+        "A2-CH-004.same-size: różne hashe treści nigdy nie dają potwierdzonego synced, nawet przy równej liczbie bajtów"
+      ],
+      "consumers": [
+        "GitHubSync.list_remote_files + list_local_files→get_sync_status→sync/push_all/pull_all"
+      ],
+      "migration": "Nie nadpisywać żadnej strony na podstawie samego rozmiaru; zachować conflict/manual resolution i blob versions.",
+      "risk": "UI/konsumenci statusu mogą pominąć rzeczywistą zmianę. Wykonano status przez realny filesystem i przechwycony REST; nie wykonano rzeczywistego GitHub push/pull.",
+      "dependencies": [
+        "B implementation of the existing consumer contract; auditor does not edit product"
+      ],
+      "full_package_sources": [
+        "chat/findings.jsonl"
+      ]
+    },
+    {
+      "id": "A2-CKP-001",
+      "priority": "P1",
+      "status": "open_confirmed_at_listed_sha",
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "evidence_shas": [
+        "192f820f2d8c653768237e1bff3a1a6d950d69c0"
+      ],
+      "reproduction": {
+        "kind": "JVM exact-method-slice execution",
+        "receipt": "host-receipt.json",
+        "reproduction": "A2-CKP-001.use.A PASS",
+        "acceptance": "A2-CKP-001.use.B FAIL",
+        "behavior": "Command.parse accepts use=nonexistent_audit_transform; actual names mapNotNull yields empty through; actual convert invokes Planner and execute for another route."
+      },
+      "expected_behavior": {
+        "command": "run.py --repo CHECKOUT --sha SHA --deps DEPS --workdir WORK --out OUT --mode acceptance",
+        "case": "A2-CKP-001.use.B",
+        "expected": "No execute callback for unresolved required transform; explicit error/choice is available."
+      },
+      "consumers": [
+        "Command.parse",
+        "ConvertRunner.names/convert",
+        "Planner.plan",
+        "ConvertRunner.execute"
+      ],
+      "migration": "Previously tolerated mistyped aliases become visible errors; keep recognized aliases and compatible routes.",
+      "risk": "Użytkownik wymaga konkretnej transformacji, lecz wymaganie znika bez błędu. To może zmienić stratę informacji/interpretację; host test nie wysyła danych ani nie wykonuje multimediów.",
+      "dependencies": [
+        "B owns ConvertRunner/product validation"
+      ],
+      "full_package_sources": [
+        "ckp/findings.jsonl"
+      ]
+    },
+    {
+      "id": "A2-CKP-004",
+      "priority": "P1",
+      "status": "open_confirmed_at_listed_sha",
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "evidence_shas": [
+        "192f820f2d8c653768237e1bff3a1a6d950d69c0"
+      ],
+      "reproduction": {
+        "kind": "real Kotlin bytecode compiled by exact Android toolchain; no Settings replacement",
+        "receipt": "compiled-settings-receipt.json",
+        "reproduction": "A2-CKP-SETTING-UNKNOWN.A PASS",
+        "acceptance": "A2-CKP-SETTING-UNKNOWN.B FAIL",
+        "behavior": "setByKey(audit_unknown_key,true) leaves original state and returns successful Result<Unit>. withValue consumes validatedValue failure and returns original settings."
+      },
+      "expected_behavior": {
+        "tool": "compiled_settings_gate.py --repo CHECKOUT --sha SHA --checkout BUILT_CHECKOUT --toolchain TOOLCHAIN --deps DEPS --workdir WORK --out OUT",
+        "case": "A2-CKP-SETTING-UNKNOWN.B",
+        "expected": "Unknown key is surfaced as failure/explicit unsupported outcome; state unchanged."
+      },
+      "consumers": [
+        "SettingsStore.setByKey direct generic API",
+        "SettingsSchema.withValue",
+        "SettingControl.write (validates first)",
+        "Performer.setSetting (validates first)"
+      ],
+      "migration": "Callers relying on always-successful no-op need handle explicit rejection; preserve idempotent writes of already equal valid values.",
+      "risk": "Bezpośredni konsument generic API nie odróżnia odrzuconego ustawienia od poprawnego zapisu. Sprawdzone SettingControl i Performer walidują wcześniej: nie twierdzę, że to potwierdzone błędne zachowanie ich UI. Jest to lokalny kontrakt API i ryzyko dla nowych entrypointów.",
+      "dependencies": [
+        "B owns SettingsStore contract; update callers together"
+      ],
+      "full_package_sources": [
+        "ckp/findings.jsonl"
+      ]
+    },
+    {
+      "id": "A2-WD-005",
+      "priority": "P1",
+      "status": "open_confirmed_at_listed_sha",
+      "repo": "klb-t/Watchdog-JH16",
+      "evidence_shas": [
+        "58a0c93bd0135e3715dcbc4d92fb80e61bd31215"
+      ],
+      "reproduction": {
+        "kind": "actual_validated_profile_and_consumers",
+        "receipt": "receipt-complete.json",
+        "reproduction": "A2-WD-005-A",
+        "acceptance": "A2-WD-005-B",
+        "behavior": "Rename palette ids in a synthetic profile and recompute its valid contentHash. validateWorkbenchProfile accepts; defaultFigure still assigns accessible; real WorkbenchService.profileForFigure rejects this generated figure."
+      },
+      "expected_behavior": "run.py --repo CHECKOUT --sha SHA --out RECEIPT --scratch TMP --mode accept --filter A2-WD-005; a validated profile must produce a supported palette, or reject missing explicit default at profile-validation boundary. This minimal gate does not prove all other style defaults moved out of code.",
+      "consumers": [
+        "WorkbenchContent.selectDataset → defaultFigure",
+        "WorkbenchService.profileForFigure → checkFigureProfile → rendering/export/method preparation"
+      ],
+      "migration": "Preserve legacy appearance by explicit legacy default profile; adding defaults changes profile hashes, so never relabel historical figures/results with new hashes.",
+      "risk": "Moving available palettes into JSON does not make the new-figure default follow the profile. A valid supported custom palette registry produces unusable default state until another consumer manually corrects it. No claim that all custom profiles fail.",
+      "dependencies": [
+        "Profile schema change belongs to B; audit does not edit it."
+      ],
+      "full_package_sources": [
+        "watchdog/findings.jsonl"
+      ]
+    },
+    {
+      "id": "CH-001",
+      "priority": "P1",
+      "status": "existing finding independently confirmed on actual malformed config consumer",
+      "package": "chat/packages-for-B.json",
+      "test_index": "chat/test-index.json",
+      "first_pass_reference": "../findings.jsonl#CH-001"
+    },
+    {
+      "id": "CH-006",
+      "priority": "P1",
+      "status": "actual inferred SQLite relation with no provenance; minimum FAIL, full candidate/ask contract BLOCKED",
+      "package": "chat/packages-for-B.json",
+      "test_index": "chat/test-index.json",
+      "first_pass_reference": "../findings.jsonl#CH-006",
+      "reason_in_current_backlog": "Explicit seed in owner continuation; independently exercised here, not copied historical task queue."
+    },
+    {
+      "id": "CH-011",
+      "priority": "P1",
+      "status": "actual timeout→done after real SQLite reopen; acceptance FAIL",
+      "package": "chat/packages-for-B.json",
+      "test_index": "chat/test-index.json",
+      "first_pass_reference": "../findings.jsonl#CH-011",
+      "reason_in_current_backlog": "Explicit seed in owner continuation; independently exercised here, not copied historical task queue."
+    },
+    {
+      "id": "CKP-A-001",
+      "priority": "P1",
+      "status": "actual source/bytecode consumer tested; acceptance FAIL; precise host/device boundaries in receipts",
+      "package": "ckp/handoff-B.json",
+      "test_index": "ckp/test-index.json",
+      "first_pass_reference": "../findings.jsonl#CKP-A-001",
+      "reason_in_current_backlog": "Explicit seed in owner continuation; independently exercised here, not copied historical task queue."
+    },
+    {
+      "id": "CKP-A-002",
+      "priority": "P1",
+      "status": "actual source/bytecode consumer tested; acceptance FAIL; precise host/device boundaries in receipts",
+      "package": "ckp/handoff-B.json",
+      "test_index": "ckp/test-index.json",
+      "first_pass_reference": "../findings.jsonl#CKP-A-002",
+      "reason_in_current_backlog": "Explicit seed in owner continuation; independently exercised here, not copied historical task queue."
+    },
+    {
+      "id": "CKP-A-003",
+      "priority": "P1",
+      "status": "actual source/bytecode consumer tested; acceptance FAIL; precise host/device boundaries in receipts",
+      "package": "ckp/handoff-B.json",
+      "test_index": "ckp/test-index.json",
+      "first_pass_reference": "../findings.jsonl#CKP-A-003",
+      "reason_in_current_backlog": "Explicit seed in owner continuation; independently exercised here, not copied historical task queue."
+    },
+    {
+      "id": "EA-AGEDS-002",
+      "priority": "P1",
+      "status": "real server/JVM consumer targeted; acceptance FAIL or named missing contract in per-case receipt; no mock implementation",
+      "package": "ageds/handoff-B.json",
+      "test_index": "ageds/test-index.json",
+      "first_pass_reference": "../findings.jsonl#EA-AGEDS-002",
+      "reason_in_current_backlog": "Explicit seed in owner continuation; independently exercised here, not copied historical task queue."
+    },
+    {
+      "id": "EA-AGEDS-003",
+      "priority": "P1",
+      "status": "real server/JVM consumer targeted; acceptance FAIL or named missing contract in per-case receipt; no mock implementation",
+      "package": "ageds/handoff-B.json",
+      "test_index": "ageds/test-index.json",
+      "first_pass_reference": "../findings.jsonl#EA-AGEDS-003",
+      "reason_in_current_backlog": "Explicit seed in owner continuation; independently exercised here, not copied historical task queue."
+    },
+    {
+      "id": "EA-AGEDS-005",
+      "priority": "P1",
+      "status": "real server/JVM consumer targeted; acceptance FAIL or named missing contract in per-case receipt; no mock implementation",
+      "package": "ageds/handoff-B.json",
+      "test_index": "ageds/test-index.json",
+      "first_pass_reference": "../findings.jsonl#EA-AGEDS-005",
+      "reason_in_current_backlog": "Explicit seed in owner continuation; independently exercised here, not copied historical task queue."
+    },
+    {
+      "id": "LEM-001",
+      "priority": "P1",
+      "status": "actual Kotlin/Room consumer targeted; acceptance FAIL; artifacts resolver separate BLOCKED",
+      "package": "lem/packages-for-B.json",
+      "test_index": "lem/test-index.json",
+      "first_pass_reference": "../findings.jsonl#LEM-001",
+      "reason_in_current_backlog": "Explicit seed in owner continuation; independently exercised here, not copied historical task queue."
+    },
+    {
+      "id": "LEM-003",
+      "priority": "P1",
+      "status": "actual Kotlin/Room consumer targeted; acceptance FAIL; artifacts resolver separate BLOCKED",
+      "package": "lem/packages-for-B.json",
+      "test_index": "lem/test-index.json",
+      "first_pass_reference": "../findings.jsonl#LEM-003",
+      "reason_in_current_backlog": "Explicit seed in owner continuation; independently exercised here, not copied historical task queue."
+    },
+    {
+      "id": "LEM-004",
+      "priority": "P1",
+      "status": "actual Kotlin/Room consumer targeted; acceptance FAIL; artifacts resolver separate BLOCKED",
+      "package": "lem/packages-for-B.json",
+      "test_index": "lem/test-index.json",
+      "first_pass_reference": "../findings.jsonl#LEM-004",
+      "reason_in_current_backlog": "Explicit seed in owner continuation; independently exercised here, not copied historical task queue."
+    },
+    {
+      "id": "LEM-005",
+      "priority": "P1",
+      "status": "actual Kotlin/Room consumer targeted; acceptance FAIL; artifacts resolver separate BLOCKED",
+      "package": "lem/packages-for-B.json",
+      "test_index": "lem/test-index.json",
+      "first_pass_reference": "../findings.jsonl#LEM-005",
+      "reason_in_current_backlog": "Explicit seed in owner continuation; independently exercised here, not copied historical task queue."
+    },
+    {
+      "id": "LEM-009",
+      "priority": "P1",
+      "status": "open_confirmed_at_listed_sha",
+      "repo": "klb-t/LEM-Workbench",
+      "evidence_shas": [
+        "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456"
+      ],
+      "reproduction": {
+        "kind": "executed actual Kotlin production consumer + strict independent JSON decoder",
+        "receipt": "receipts/results.json#LEM-009-JSON-CONTROL-CHAR",
+        "behavior": "30 of 32 U+0000..U+001F error characters produce rawMetrics rejected by Python json.loads; LF/CR are escaped. Actual status remains INSTRUMENT_FAILED.",
+        "source_file_sha256": "b2470fd5d3ede1e1a01167c7111ea728dc4555152cc64953aae04dd78d9c510e"
+      },
+      "expected_behavior": "Run lem/run.py --phase acceptance; LEM-009-JSON-CONTROL-CHAR must preserve every U+0000..U+001F value through strict JSON decoding. Android storage/reload remains a separate gate.",
+      "consumers": [
+        "ExperimentRunner.failedInstrumentResult → ExperimentResult.rawMetrics",
+        "ResearchViewModel.runEmbeddingInstrument/runGenerationInstrument → ResearchRepository.insertExperiment → ExperimentDao",
+        "ExperimentsScreen/result consumers and future export/replay"
+      ],
+      "migration": "Old malformed records cannot be assumed valid; classify unreadable payload explicitly and preserve original bytes. Never silently rewrite unknown historic evidence.",
+      "risk": "Failure record reaches downstream consumers with invalid JSON; parsing/replay/export cannot reliably read failure evidence. No claim that a real user record was damaged.",
+      "dependencies": [
+        "LEM-003 evidence preservation",
+        "stable serialized metrics contract"
+      ],
+      "full_package_sources": [
+        "lem/findings.jsonl"
+      ]
+    },
+    {
+      "id": "WD-001",
+      "priority": "P1",
+      "status": "existing real consumer reproduced; acceptance FAIL; see suite and handoff-b",
+      "package": "watchdog/handoff-b.json",
+      "test_index": "watchdog/test-index.json",
+      "first_pass_reference": "../findings.jsonl#WD-001",
+      "reason_in_current_backlog": "Explicit seed in owner continuation; independently exercised here, not copied historical task queue."
+    },
+    {
+      "id": "WD-002",
+      "priority": "P1",
+      "status": "existing real consumer reproduced; acceptance FAIL; see suite and handoff-b",
+      "package": "watchdog/handoff-b.json",
+      "test_index": "watchdog/test-index.json",
+      "first_pass_reference": "../findings.jsonl#WD-002",
+      "reason_in_current_backlog": "Explicit seed in owner continuation; independently exercised here, not copied historical task queue."
+    },
+    {
+      "id": "WD-003",
+      "priority": "P1",
+      "status": "existing real consumer reproduced; acceptance FAIL; see suite and handoff-b",
+      "package": "watchdog/handoff-b.json",
+      "test_index": "watchdog/test-index.json",
+      "first_pass_reference": "../findings.jsonl#WD-003",
+      "reason_in_current_backlog": "Explicit seed in owner continuation; independently exercised here, not copied historical task queue."
+    },
+    {
+      "id": "WD-011",
+      "priority": "P1",
+      "status": "existing real consumer reproduced; acceptance FAIL; see suite and handoff-b",
+      "package": "watchdog/handoff-b.json",
+      "test_index": "watchdog/test-index.json",
+      "first_pass_reference": "../findings.jsonl#WD-011",
+      "reason_in_current_backlog": "Explicit seed in owner continuation; independently exercised here, not copied historical task queue."
+    }
+  ],
+  "excluded": [
+    "CH-P2-N001 rejected hypothesis: supported preserve+inactive semantics verified",
+    "A2-CH-B2-001 uncertain migration communication: see optional recommendation, not a confirmed owner-rule violation",
+    "standalone loom historical kernel replacement queue",
+    "first-pass tasks already integrated in October5 index"
+  ]
+}

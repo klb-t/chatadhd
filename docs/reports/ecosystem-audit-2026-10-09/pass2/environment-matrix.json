@@ -1,0 +1,78 @@
+{
+  "schema": "klbt.audit.environment-matrix/1",
+  "rows": [
+    {
+      "gate": "chatadhd native existing",
+      "result": "PASS",
+      "evidence": "native/environment.json",
+      "scope": "112 unit groups;897 cases;28601 assertions; ABI3/3; main9e20 only",
+      "remaining": "not browser/device/full B2 CTest"
+    },
+    {
+      "gate": "ASan+UBSan",
+      "result": "PASS execution; known logical failures unchanged",
+      "evidence": [
+        "native/sanitizer-asan-ubsan-receipt.json",
+        "native/sanitizer-closure-manifest.json"
+      ],
+      "scope": "37 linked real C++ units +SQLite/miniz+driver;50 processes,0 sanitizer diagnostics",
+      "remaining": "not entire core/source set"
+    },
+    {
+      "gate": "LeakSanitizer",
+      "result": "BLOCKED_ENVIRONMENT",
+      "evidence": "native/sanitizer-lsan-blocked-receipt.json",
+      "scope": "actual instrumented launch",
+      "remaining": "/proc/<pid>/task unavailable; no claim of product leak or leak-free product"
+    },
+    {
+      "gate": "CKP Android JVM",
+      "result": "existing974PASS; external audit4PASS2FAIL",
+      "evidence": "ckp/android-existing-tests-receipt.json; ckp/android-audit-tests-receipt.json",
+      "scope": "actual pinned toolchain, Kotlin/Javac, Robolectric, AtomicFile profile persistence",
+      "remaining": "device IME lifecycle/focus, Keystore process restart, interrupted sync/pack upgrade"
+    },
+    {
+      "gate": "LEM Gradle + Room",
+      "result": "existing3PASS; independent Room acceptance1PASS2FAIL",
+      "evidence": [
+        "lem/test-index.json",
+        "lem/REPORT.md"
+      ],
+      "scope": "actual24 product sources, KSP, RoomSQL, RobolectricSDK28; real close/reopen",
+      "remaining": "device/OS-process restart and raw artifact resolver"
+    },
+    {
+      "gate": "AGEDS Kotlin host",
+      "result": "EXECUTED",
+      "evidence": "ageds/test-index.json",
+      "scope": "actual Kotlin sources, serialization, CorpusStore filesystem",
+      "remaining": "full Android/device"
+    },
+    {
+      "gate": "AGEDS exact Gradle",
+      "result": "bootstrapPASS; projectconfigurationBLOCKED",
+      "evidence": "ageds/environment-delta-1/receipt.json",
+      "scope": "fresh proxy fixes earlier NetworkUnreachable; pinned9.7.0 --version executed",
+      "remaining": "distribution cache/empty download checksum; correct JDK21/SDK37 unavailable. No pin/checksum bypass."
+    },
+    {
+      "gate": "Watchdog existing host",
+      "result": "66PASS; typecheck/buildPASS",
+      "evidence": "watchdog/REPORT.md",
+      "scope": "host unit/integration only",
+      "remaining": "browser"
+    },
+    {
+      "gate": "Chromium E2E",
+      "result": "BLOCKED_ENVIRONMENT",
+      "evidence": [
+        "watchdog/REPORT.md",
+        "ageds/REPORT.md"
+      ],
+      "scope": "actual downloadedChromium141 build1194; actual launch SIGABRT socketEPERM",
+      "remaining": "0 browser assertions; download/compiler absence is not the reason"
+    }
+  ],
+  "payment_policy": "No paid models/services/CI; all model/provider transports intercepted or denied."
+}

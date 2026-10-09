@@ -1,0 +1,10 @@
+{
+  "json_files": 158,
+  "pinned_location_ranges": 65,
+  "problems": [],
+  "scope": "JSON parse, root links and pinned source bounds; not product acceptance",
+  "final_json_files": 163,
+  "final_python_syntax_files": 25,
+  "catalog_suites": 19,
+  "source_and_product_gate_note": "This validates audit payload syntax/integrity; product results remain in per-suite receipts."
+}

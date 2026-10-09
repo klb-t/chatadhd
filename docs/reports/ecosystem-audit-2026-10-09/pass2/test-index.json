@@ -1,0 +1,77 @@
+{
+  "schema": "klbt.audit.test-index/2",
+  "executable": "tools/ecosystem-audit-2026-10-09/pass2/run_index.py",
+  "catalog": "tools/ecosystem-audit-2026-10-09/pass2/catalog.json",
+  "suites": 19,
+  "modules": [
+    {
+      "module": "chat",
+      "test_index": "chat/test-index.json",
+      "report": "chat/REPORT.md",
+      "full_case_detail": "See canonical module receipts; earlier attempts/history are not added to final counts."
+    },
+    {
+      "module": "watchdog",
+      "test_index": "watchdog/test-index.json",
+      "report": "watchdog/REPORT.md",
+      "full_case_detail": "See canonical module receipts; earlier attempts/history are not added to final counts."
+    },
+    {
+      "module": "ckp",
+      "test_index": "ckp/test-index.json",
+      "report": "ckp/REPORT.md",
+      "full_case_detail": "See canonical module receipts; earlier attempts/history are not added to final counts."
+    },
+    {
+      "module": "ageds",
+      "test_index": "ageds/test-index.json",
+      "report": "ageds/REPORT.md",
+      "full_case_detail": "See canonical module receipts; earlier attempts/history are not added to final counts."
+    },
+    {
+      "module": "lem",
+      "test_index": "lem/test-index.json",
+      "report": "lem/REPORT.md",
+      "full_case_detail": "See canonical module receipts; earlier attempts/history are not added to final counts."
+    },
+    {
+      "module": "native",
+      "test_index": "native/test-index.json",
+      "report": "native/README.md",
+      "full_case_detail": "See canonical module receipts; earlier attempts/history are not added to final counts."
+    },
+    {
+      "module": "c-review",
+      "test_index": "c-review/test-index.json",
+      "report": "c-review/REPORT.md",
+      "full_case_detail": "See canonical module receipts; earlier attempts/history are not added to final counts."
+    },
+    {
+      "module": "c-review/B-semantic",
+      "test_index": "c-review/B-semantic/test-index.json",
+      "report": "c-review/B-semantic/REPORT.md",
+      "full_case_detail": "See canonical module receipts; earlier attempts/history are not added to final counts."
+    },
+    {
+      "module": "c-review/C2",
+      "test_index": "c-review/C2/test-index.json",
+      "report": "c-review/C2/REPORT.md",
+      "full_case_detail": "See canonical module receipts; earlier attempts/history are not added to final counts."
+    },
+    {
+      "module": "watchdog/B2",
+      "test_index": "watchdog/B2/test-index.json",
+      "report": "watchdog/B2/REPORT.md",
+      "full_case_detail": "See canonical module receipts; earlier attempts/history are not added to final counts."
+    }
+  ],
+  "index_execution": "index-execution/receipt.json",
+  "semantics": {
+    "A_PASS": "baseline bug reproduced; not product PASS",
+    "B_PASS": "only declared acceptance scope passed",
+    "B_FAIL": "actual failed acceptance, never masked by xfail",
+    "BLOCKED": "missing contract/environment, not product PASS",
+    "NOT_REPRODUCED": "historical bug absent on tested fix, with separate acceptance evidence"
+  },
+  "receipt_selection": "Final receipts per module. Historical erroneous fixture expectations retained and adjudicated, not silently deleted."
+}

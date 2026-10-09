@@ -1,0 +1,11 @@
+{
+  "schema": "klbt.audit.closure-pins/1",
+  "checked_at": "2026-10-09T06:32:42.351904+00:00",
+  "reason": "One fetch after closing primary audit modules; no idle branch polling",
+  "main": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "B_previous": "ddcaeaf7a25b70f0d4dc2e0eed2466016233eeb8",
+  "B_latest": "384c5e1686cd3a58a7d89a8a6813a18c764f697d",
+  "C_previous": "69880859802267f1b38b82eeaecd6fdc5522a47a",
+  "C_latest": "b9b503f62bb8e8e00c94ab7401e1cd9579129af3",
+  "status": "Both new deltas independently reviewed; exact scope in watchdog/B2 and c-review/C2. No later refresh/polling."
+}

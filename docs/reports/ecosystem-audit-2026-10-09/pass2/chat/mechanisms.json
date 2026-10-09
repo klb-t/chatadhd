@@ -52,10 +52,16 @@
     "classification": "dopuszczalny mechanizm",
     "test": "CH-M4.actual-config-consumer",
     "observation": "two real Config snapshots change outgoing temperature/max_tokens to .2/123 and .8/456",
-    "limit": "Config snapshots, not proof that Basic/Advanced/Expert share onboarding state",
+    "limit": "Config snapshots, not proof that Basic/Advanced/Expert share onboarding state; valid numeric inputs only; invalid-number fallback tested separately as CH-001",
     "r42_exception": {
       "category": 1,
       "reason": "temperature/max_tokens consumer keys are contractual"
+    },
+    "path": {
+      "file": "loom/src/chat/chat_engine.cpp",
+      "line_start": 1088,
+      "line_end": 1092,
+      "sha256": "ce8d45bcb152434e66d3932a98a6c0f1dc03db6ed1c19cb07c37995e28539762"
     }
   }
 ]

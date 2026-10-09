@@ -1,0 +1,67 @@
+{
+  "branch": "gpt/ecosystem-audit-2026-10-09",
+  "historical_first_pass": "baa9e30c12a29ab7f14fc060a13676b1bd35b036",
+  "published_checkpoints": [
+    {
+      "sha": "8870baaf2905a909a60516487b53641baf714796",
+      "module": "pins and watchdog core"
+    },
+    {
+      "sha": "2866646a211c605a1ba813eed4597320b977076f",
+      "module": "C boundary and native packet"
+    },
+    {
+      "sha": "2650062d6947687978aeb3df9324853a848b8829",
+      "module": "native historical pack/store checkpoint"
+    },
+    {
+      "sha": "8ef754673901e3da4dfac23014f15de5e9e6e4c4",
+      "module": "CKP host checkpoint"
+    },
+    {
+      "sha": "f05d96f50b519b6e9a6bcf574878f4447e343f66",
+      "module": "Watchdog completed flows"
+    },
+    {
+      "sha": "3cc17fd16754200a7f9f0c174cc2fd7ad2521416",
+      "module": "LEM host checkpoint"
+    },
+    {
+      "sha": "1298921cf9356939ff75a9548200ecac43d4a074",
+      "module": "AGEDS actual consumer/cache"
+    },
+    {
+      "sha": "046ecdbee23d6cadae45f491960d0557c8f11605",
+      "module": "B semantic fixes and regression"
+    },
+    {
+      "sha": "0bf34f0ab02e9ca4bdfd959291921ff8dd73a7f3",
+      "module": "chat actual consumers and precise contract gaps"
+    },
+    {
+      "sha": "85f3e764124efa44e5ebcd26cac60b5bf5b74242",
+      "module": "CKP final actual Android JVM/AtomicFile"
+    },
+    {
+      "sha": "c48d342b7f7622651a57201a306415d4a4263cd0",
+      "module": "LEM actual Room migration"
+    },
+    {
+      "sha": "58f005a9f9725e8b8ef91cf47658d4d08a548662",
+      "module": "AGEDS environment delta"
+    },
+    {
+      "sha": "65dcf34e6ae5d85080f01434652236660676948e",
+      "module": "native sanitizer and rejected hypothesis"
+    },
+    {
+      "sha": "623e79e0dd505ec2c995a15c7eb15f03679a019c",
+      "module": "C2 payer and public boundary"
+    },
+    {
+      "sha": "25c015cff23021131a287796f0e1f63049273a08",
+      "module": "B2 graph labels and qualified migration boundary"
+    }
+  ],
+  "note": "Checkpoint observations are historical. Later adjudication may reject a hypothesis; final aggregate must use final module report, not count earlier receipts twice."
+}

@@ -1,0 +1,11 @@
+{
+  "synthetic_boundary_tests": "c-review/projection-receipt.json and c-review/C2/delta-receipt.json",
+  "private_repo_contents_published": false,
+  "actual_private_conversation_fragments_published": false,
+  "auditor_public_payload": "source coordinates, hashes, minimal observations, synthetic values/canaries, build/test logs",
+  "pattern_navigation": {
+    "files_checked": 304,
+    "suspicious_hits": [],
+    "limitation": "Pattern check is only navigation; privacy claim scoped to deliberately synthetic audit fixtures and reviewed receipts, not all repo content."
+  }
+}
