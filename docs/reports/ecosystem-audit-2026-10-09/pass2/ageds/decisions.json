@@ -1,0 +1,97 @@
+[
+  {
+    "finding": "A2-AG-001",
+    "observed_choice": "HTTP przyjmuje nieobsługiwane receptury i limity, po czym je pomija",
+    "alternatives": [
+      {
+        "name": "Reject unsupported inputs",
+        "status": "missing for observed inputs"
+      },
+      {
+        "name": "Persist and consume supported request configuration",
+        "status": "missing"
+      },
+      {
+        "name": "Ignore unknown additive metadata",
+        "status": "must be explicit and distinguished from operative configuration"
+      }
+    ],
+    "requirement_vs_interpretation": "Auditor interpretation is limited to observed consumer behavior, separate from owner requirement."
+  },
+  {
+    "finding": "A2-AG-002",
+    "observed_choice": "Import WhatsApp wybiera day-first jako jedyną politykę dat",
+    "alternatives": [
+      {
+        "name": "day_first",
+        "status": "implemented fixed and disclosed"
+      },
+      {
+        "name": "month_first",
+        "status": "not selectable"
+      },
+      {
+        "name": "retain ambiguity without one timestamp",
+        "status": "not selectable for ambiguous four-digit year"
+      }
+    ],
+    "requirement_vs_interpretation": "Auditor interpretation is limited to observed consumer behavior, separate from owner requirement."
+  },
+  {
+    "finding": "A2-AG-003",
+    "observed_choice": "Upload wybiera pierwszy case bez przekazywanego wyboru sprawy",
+    "alternatives": [
+      {
+        "name": "single configured case",
+        "status": "implicit earliest-row default"
+      },
+      {
+        "name": "explicit per-upload case",
+        "status": "ensure_source supports, HTTP caller not wired"
+      },
+      {
+        "name": "reject ambiguous missing case",
+        "status": "missing"
+      }
+    ],
+    "requirement_vs_interpretation": "Auditor interpretation is limited to observed consumer behavior, separate from owner requirement."
+  },
+  {
+    "finding": "A2-AG-004",
+    "observed_choice": "CorpusStore interpretuje nieobsługiwaną wersję seeda bez bramki wersji",
+    "alternatives": [
+      {
+        "name": "reject unsupported schema",
+        "status": "present in SourceScanCache, absent in CorpusStore"
+      },
+      {
+        "name": "explicit migration with retained original",
+        "status": "missing"
+      },
+      {
+        "name": "inert/quarantined future-version import",
+        "status": "missing"
+      }
+    ],
+    "requirement_vs_interpretation": "Auditor interpretation is limited to observed consumer behavior, separate from owner requirement."
+  },
+  {
+    "finding": "A2-AG-005",
+    "observed_choice": "Silnik skanu nakłada dodatkowy globalny limit poza SourceScanLimits",
+    "alternatives": [
+      {
+        "name": "bounded aggregate retention",
+        "status": "implemented with compiled policy"
+      },
+      {
+        "name": "data-selected aggregate budget preserving guard",
+        "status": "not exposed"
+      },
+      {
+        "name": "unbounded retention",
+        "status": "not requested, not recommended"
+      }
+    ],
+    "requirement_vs_interpretation": "Auditor interpretation is limited to observed consumer behavior, separate from owner requirement."
+  }
+]

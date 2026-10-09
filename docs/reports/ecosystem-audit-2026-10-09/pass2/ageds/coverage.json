@@ -1,0 +1,685 @@
+{
+  "repo": "klb-t/AGEDS",
+  "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+  "tracked_files": 370,
+  "product_denominator": 63,
+  "first_pass_selected_product_files": 20,
+  "new_selected_product_files": 19,
+  "cumulative_selected_product_files": 39,
+  "still_without_semantic_ranges": [
+    "androidApp/src/main/AndroidManifest.xml",
+    "androidApp/src/main/java/dev/klbt/ageds/AndroidRangeAudio.kt",
+    "androidApp/src/main/java/dev/klbt/ageds/CitationDisplayProjection.kt",
+    "androidApp/src/main/java/dev/klbt/ageds/CitationUi.kt",
+    "androidApp/src/main/java/dev/klbt/ageds/CorpusActivity.kt",
+    "androidApp/src/main/java/dev/klbt/ageds/CorpusUi.kt",
+    "androidApp/src/main/java/dev/klbt/ageds/RangePlaybackController.kt",
+    "androidApp/src/main/java/dev/klbt/ageds/SourceAudioDisplay.kt",
+    "androidApp/src/main/java/dev/klbt/ageds/SourceScanUi.kt",
+    "androidApp/src/main/java/dev/klbt/ageds/SourceWavReader.kt",
+    "androidApp/src/main/java/dev/klbt/ageds/SourceWorkbookParser.kt",
+    "androidApp/src/main/java/dev/klbt/ageds/SourceXlsParser.kt",
+    "androidApp/src/main/res/values/styles.xml",
+    "core/src/commonMain/kotlin/dev/klbt/ageds/core/CitationSelection.kt",
+    "core/src/commonMain/kotlin/dev/klbt/ageds/core/WavHeaderObservation.kt",
+    "core/src/commonMain/kotlin/dev/klbt/ageds/core/WavHeaderProbe.kt",
+    "server/__init__.py",
+    "server/app/__init__.py",
+    "server/app/static/app.css",
+    "server/app/static/citations.mjs",
+    "server/app/static/range-player.mjs",
+    "server/app/templates/artifact.html",
+    "server/app/templates/index.html",
+    "server/app/wav_header.py"
+  ],
+  "reviewed_ranges": [
+    {
+      "file": "server/app/evidence.py",
+      "ranges": [
+        [
+          25,
+          188
+        ]
+      ],
+      "functions": [
+        "store_file",
+        "ensure_source",
+        "ingest_file",
+        "add_event",
+        "add_derived_text",
+        "append"
+      ],
+      "sha256": "fb503e2ef4bc00533cbdecb07e75a6b15e2cfbe3c9d1ab3c136b94a0011a36cd",
+      "claim": "selected functions/ranges traced; not proof of all behavior",
+      "new_file_vs_pass1": true
+    },
+    {
+      "file": "server/app/archive.py",
+      "ranges": [
+        [
+          30,
+          286
+        ]
+      ],
+      "functions": [
+        "ArchiveLimits",
+        "_verification_budget",
+        "_pairs",
+        "_constant",
+        "_check_shape",
+        "strict_json",
+        "read_regular",
+        "load_package",
+        "_verified",
+        "publish_new",
+        "_report",
+        "import_metadata_archive",
+        "_decode_archive",
+        "read_metadata_archive",
+        "export_metadata_archive",
+        "__post_init__",
+        "progress"
+      ],
+      "sha256": "7e81eda09acad99c2ee51ce5892f7be05c78de9a06e5af62a7a8011bd886c030",
+      "claim": "selected functions/ranges traced; not proof of all behavior",
+      "new_file_vs_pass1": true
+    },
+    {
+      "file": "server/app/citations.py",
+      "ranges": [
+        [
+          12,
+          209
+        ]
+      ],
+      "functions": [
+        "milliseconds",
+        "projection_from_segments",
+        "validated_segment_words",
+        "projection_from_words",
+        "projection_from_selector",
+        "loads_transcript_segments",
+        "anchor_payload",
+        "create_citation",
+        "object_without_duplicates"
+      ],
+      "sha256": "6a2780c9c7e18a62d425f9a413217ccfb84bd6091de300a3587a373fc44543bf",
+      "claim": "selected functions/ranges traced; not proof of all behavior",
+      "new_file_vs_pass1": true
+    },
+    {
+      "file": "server/app/exchange.py",
+      "ranges": [
+        [
+          86,
+          199
+        ]
+      ],
+      "functions": [
+        "_rows",
+        "export_citation_packet"
+      ],
+      "sha256": "f1f80e17c6e8697833d0e5b910807efe0e469aa22107ed1d5cc0e6fed1e061bc",
+      "claim": "selected functions/ranges traced; not proof of all behavior",
+      "new_file_vs_pass1": true
+    },
+    {
+      "file": "server/app/read_pages.py",
+      "ranges": [
+        [
+          106,
+          220
+        ]
+      ],
+      "functions": [
+        "_project",
+        "read_page",
+        "progress"
+      ],
+      "sha256": "fc5fbc7bd57d84bd1b384d01be810ad60120ad5747d2279120e3b3bff2785a5a",
+      "claim": "selected functions/ranges traced; not proof of all behavior",
+      "new_file_vs_pass1": true
+    },
+    {
+      "file": "server/app/importers/whatsapp.py",
+      "ranges": [
+        [
+          10,
+          135
+        ]
+      ],
+      "functions": [
+        "_timestamp",
+        "_stored_path",
+        "import_whatsapp_txt",
+        "flush"
+      ],
+      "sha256": "0cbc8cece79d878c1c7b8518f9c813b8e4a715dddff33573cda71a2c5ee5b815",
+      "claim": "selected functions/ranges traced; not proof of all behavior",
+      "new_file_vs_pass1": true
+    },
+    {
+      "file": "server/app/importers/sms_backup.py",
+      "ranges": [
+        [
+          10,
+          128
+        ]
+      ],
+      "functions": [
+        "ms_to_iso",
+        "_timestamp",
+        "_stored_path",
+        "import_sms_backup"
+      ],
+      "sha256": "4346ced5e605f22536577e0cbd6276e4611a24314d77c36a53c951d86235353c",
+      "claim": "selected functions/ranges traced; not proof of all behavior",
+      "new_file_vs_pass1": true
+    },
+    {
+      "file": "server/app/verified_reader.py",
+      "ranges": [
+        [
+          22,
+          172
+        ]
+      ],
+      "functions": [
+        "VerifiedReader",
+        "__init__",
+        "_require_open",
+        "readable",
+        "seekable",
+        "writable",
+        "fileno",
+        "tell",
+        "seek",
+        "read",
+        "_read",
+        "readall",
+        "readline",
+        "readlines",
+        "readinto",
+        "verify_unchanged",
+        "close"
+      ],
+      "sha256": "77c63e45521ce1f215627986d0b408c575d992d55a2d7442a65b57f20b06a231",
+      "claim": "selected functions/ranges traced; not proof of all behavior",
+      "new_file_vs_pass1": true
+    },
+    {
+      "file": "server/app/verified_media.py",
+      "ranges": [
+        [
+          35,
+          235
+        ]
+      ],
+      "functions": [
+        "_open",
+        "VerifiedMedia",
+        "_range",
+        "VerifiedMediaResponse",
+        "verified_media_response",
+        "__init__",
+        "_read_exact",
+        "read_chunk",
+        "close",
+        "__del__",
+        "__init__",
+        "_body",
+        "close",
+        "__call__"
+      ],
+      "sha256": "90308d9bc8061391c1f8772f027652fe45087f5fe80029d83d02b2a08590cd4d",
+      "claim": "selected functions/ranges traced; not proof of all behavior",
+      "new_file_vs_pass1": true
+    },
+    {
+      "file": "server/app/verification_budget.py",
+      "ranges": [
+        [
+          10,
+          129
+        ]
+      ],
+      "functions": [
+        "VerificationBudget",
+        "__init__",
+        "_active",
+        "_fail",
+        "_node",
+        "check_structure",
+        "preflight_json",
+        "decode_json",
+        "charge_projection",
+        "pairs"
+      ],
+      "sha256": "99427dff6253279ec8860243620a9ce7b2d73881a5b94d5b7f9bc46e9102604c",
+      "claim": "selected functions/ranges traced; not proof of all behavior",
+      "new_file_vs_pass1": true
+    },
+    {
+      "file": "server/app/exchange_consumer.py",
+      "ranges": [
+        [
+          304,
+          324
+        ],
+        [
+          331,
+          340
+        ]
+      ],
+      "functions": [
+        "report_json",
+        "inspect_path",
+        "main"
+      ],
+      "sha256": "95bff415061954ae8cce8ca998f06229c70cf5477c4b47e0dba2fc3b210c3049",
+      "claim": "selected functions/ranges traced; not proof of all behavior",
+      "new_file_vs_pass1": true
+    },
+    {
+      "file": "androidApp/src/main/java/dev/klbt/ageds/BoundedMetadataCache.kt",
+      "ranges": [
+        [
+          12,
+          68
+        ]
+      ],
+      "functions": [
+        "read",
+        "write",
+        "writeGuarded",
+        "writeStaged"
+      ],
+      "sha256": "42166153d4eccf433a953435dd64460c6cb3487d6753a136694a9e186f438603",
+      "claim": "selected functions/ranges traced; not proof of all behavior",
+      "new_file_vs_pass1": true
+    },
+    {
+      "file": "androidApp/src/main/java/dev/klbt/ageds/SourceScanPublicationGate.kt",
+      "ranges": [
+        [
+          7,
+          42
+        ]
+      ],
+      "functions": [
+        "begin",
+        "invalidate",
+        "isCurrent",
+        "publishIfCurrent"
+      ],
+      "sha256": "63df8e06bc439bd004035597b7ef91b324003ddb12d3249d16bc5d8c3e3ccaa6",
+      "claim": "selected functions/ranges traced; not proof of all behavior",
+      "new_file_vs_pass1": true
+    },
+    {
+      "file": "androidApp/src/main/java/dev/klbt/ageds/SourceScanCache.kt",
+      "ranges": [
+        [
+          10,
+          27
+        ]
+      ],
+      "functions": [
+        "read",
+        "write",
+        "writeGuarded"
+      ],
+      "sha256": "22460de7c8164d63d80585cc064345411312476a5c8a34fa6da32eac1f045e9a",
+      "claim": "selected functions/ranges traced; not proof of all behavior",
+      "new_file_vs_pass1": true
+    },
+    {
+      "file": "androidApp/src/main/java/dev/klbt/ageds/SourceScanEngine.kt",
+      "ranges": [
+        [
+          10,
+          198
+        ]
+      ],
+      "functions": [
+        "next",
+        "uri",
+        "children",
+        "openRead",
+        "scan"
+      ],
+      "sha256": "435c38eaaaad13cb8af74611362f2aa2456add0a322000b14aafafe8b885e6a8",
+      "claim": "selected functions/ranges traced; not proof of all behavior",
+      "new_file_vs_pass1": true
+    },
+    {
+      "file": "androidApp/src/main/java/dev/klbt/ageds/SourceDelimitedParser.kt",
+      "ranges": [
+        [
+          8,
+          65
+        ]
+      ],
+      "functions": [
+        "decode",
+        "prefix",
+        "parse"
+      ],
+      "sha256": "ac7a72bcee73a8663a257d018565b3b8bb4d10519183e87bbbcb5f86d41b2ed1",
+      "claim": "selected functions/ranges traced; not proof of all behavior",
+      "new_file_vs_pass1": true
+    },
+    {
+      "file": "androidApp/src/main/java/dev/klbt/ageds/PendingRecordings.kt",
+      "ranges": [
+        [
+          14,
+          34
+        ]
+      ],
+      "functions": [
+        "file",
+        "prepare",
+        "read"
+      ],
+      "sha256": "1130db7bb0341c752fb82ef22bb74eb6cddf6b3a5419a167cf86dc28792bedeb",
+      "claim": "selected functions/ranges traced; not proof of all behavior",
+      "new_file_vs_pass1": true
+    },
+    {
+      "file": "androidApp/src/main/java/dev/klbt/ageds/CitationWorkspace.kt",
+      "ranges": [
+        [
+          32,
+          256
+        ]
+      ],
+      "functions": [
+        "cancel",
+        "reset",
+        "load",
+        "stopAudio",
+        "tickAudio",
+        "cancelPages",
+        "resetPages",
+        "deactivate",
+        "clear",
+        "open",
+        "refresh",
+        "loadOlderVersions",
+        "loadOlderCitations",
+        "loadOlderAnnotations",
+        "load",
+        "readTranscript",
+        "select",
+        "clearSelection",
+        "save",
+        "addNote",
+        "play"
+      ],
+      "sha256": "c1bc975621ef2f0f093c2c381dd1b16dfb301a73d9d5a9608df8027e9fede705",
+      "claim": "selected functions/ranges traced; not proof of all behavior",
+      "new_file_vs_pass1": true
+    },
+    {
+      "file": "core/src/commonMain/kotlin/dev/klbt/ageds/core/ArtifactPageChain.kt",
+      "ranges": [
+        [
+          19,
+          116
+        ]
+      ],
+      "functions": [
+        "append"
+      ],
+      "sha256": "2fa38df99f0ee398d42ddbad9d990d450ce3dec6374af87e6f99627d2eb93f30",
+      "claim": "selected functions/ranges traced; not proof of all behavior",
+      "new_file_vs_pass1": true
+    },
+    {
+      "file": "server/app/main.py",
+      "ranges": [
+        [
+          116,
+          171
+        ],
+        [
+          204,
+          467
+        ]
+      ],
+      "functions": [
+        "upload",
+        "import_sms",
+        "import_wa",
+        "artifact",
+        "annotate",
+        "transcribe",
+        "transcribe_all",
+        "export_manifest",
+        "api_validate_package",
+        "AnnotationIn",
+        "WordReferenceIn",
+        "CitationIn",
+        "ScanIn",
+        "api_artifacts",
+        "api_upload_artifact",
+        "api_queue_transcription",
+        "api_transcript",
+        "_read_page_http",
+        "api_transcript_page",
+        "api_citation_page",
+        "api_annotation_page",
+        "api_transcript_versions",
+        "api_source_observations",
+        "api_artifact_content",
+        "api_citation_create",
+        "api_citations",
+        "api_citation_packet",
+        "api_source_roots",
+        "api_source_scan",
+        "api_job",
+        "api_annotations",
+        "api_annotation_create"
+      ],
+      "sha256": "0ae7735006c42773058c58b02bf156d6d2898c5ae0ee039e18a074523d878233",
+      "claim": "selected functions/ranges traced; not proof of all behavior",
+      "new_file_vs_pass1": false
+    },
+    {
+      "file": "server/app/db.py",
+      "ranges": [
+        [
+          164,
+          342
+        ]
+      ],
+      "functions": [
+        "connect",
+        "session",
+        "_add_column",
+        "migrate_db",
+        "init_db"
+      ],
+      "sha256": "776f0039102c91e7da63fa489b64ae6fcccd1bf925db02501d09d01ab822bdf9",
+      "claim": "selected functions/ranges traced; not proof of all behavior",
+      "new_file_vs_pass1": false
+    },
+    {
+      "file": "server/app/cli.py",
+      "ranges": [
+        [
+          16,
+          155
+        ]
+      ],
+      "functions": [
+        "_positive_integer",
+        "_parser",
+        "_emit",
+        "_write_new_json",
+        "_write_new_bytes",
+        "main"
+      ],
+      "sha256": "2081a974c17452e76f6a07f4ffc56a2f0f0b96fd0271a9cdc79a9996ffdf7e28",
+      "claim": "selected functions/ranges traced; not proof of all behavior",
+      "new_file_vs_pass1": false
+    },
+    {
+      "file": "server/app/worker.py",
+      "ranges": [
+        [
+          49,
+          186
+        ]
+      ],
+      "functions": [
+        "FasterWhisperAdapter",
+        "_heartbeat",
+        "run_transcribe",
+        "finish",
+        "process_job",
+        "describe",
+        "transcribe",
+        "beat"
+      ],
+      "sha256": "7bba0475bf2dd219dc82376c01b93049b17610a91baec10ea0b5ce2bb7b7261a",
+      "claim": "selected functions/ranges traced; not proof of all behavior",
+      "new_file_vs_pass1": false
+    },
+    {
+      "file": "server/app/jobs.py",
+      "ranges": [
+        [
+          38,
+          140
+        ]
+      ],
+      "functions": [
+        "_recover_expired",
+        "recover_expired_jobs",
+        "claim_job",
+        "_owned",
+        "renew_lease",
+        "update_run_metadata",
+        "publish_transcript",
+        "finish_job"
+      ],
+      "sha256": "20800c6e8e32967f5d35862c1beabfe36837c0914198f1f2e0ea4ec904b37b9d",
+      "claim": "selected functions/ranges traced; not proof of all behavior",
+      "new_file_vs_pass1": false
+    },
+    {
+      "file": "server/app/transcription.py",
+      "ranges": [
+        [
+          49,
+          72
+        ]
+      ],
+      "functions": [
+        "queue_transcription",
+        "queue_all_audio"
+      ],
+      "sha256": "ae664808431f51f7e41713d8eae2055ee0246bb40bff28ac8f16139ab3c2fcd7",
+      "claim": "selected functions/ranges traced; not proof of all behavior",
+      "new_file_vs_pass1": false
+    },
+    {
+      "file": "androidApp/src/main/java/dev/klbt/ageds/MainActivity.kt",
+      "ranges": [
+        [
+          60,
+          70
+        ],
+        [
+          93,
+          205
+        ]
+      ],
+      "functions": [
+        "api",
+        "stage",
+        "stageUris",
+        "refresh",
+        "fetchArtifacts",
+        "normalizedServerUrl",
+        "outcome",
+        "pendingCount",
+        "changeServerUrl",
+        "uploadAndQueue",
+        "open",
+        "closeArtifact"
+      ],
+      "sha256": "94d97a4293abccf1c107bdff06d7968f2dd80710049f302aaca37eaaac9603bb",
+      "claim": "selected functions/ranges traced; not proof of all behavior",
+      "new_file_vs_pass1": false
+    },
+    {
+      "file": "androidApp/src/main/java/dev/klbt/ageds/CorpusVm.kt",
+      "ranges": [
+        [
+          49,
+          145
+        ],
+        [
+          181,
+          215
+        ]
+      ],
+      "functions": [
+        "install",
+        "importCorpus",
+        "selectPriority",
+        "clearSelection",
+        "togglePreset",
+        "activePresets",
+        "presetPhones",
+        "selectedPhones",
+        "isPhoneSelected",
+        "togglePhone",
+        "keywords",
+        "shortSenders",
+        "selectedSms",
+        "selectedCalls",
+        "selectedRecordings",
+        "selectedEmails",
+        "emailDomains",
+        "labelFor",
+        "installScan",
+        "scanSources"
+      ],
+      "sha256": "e16d723b5f0faf230e1651ad838181a7602acc49227ab06768ede08f286a9600",
+      "claim": "selected functions/ranges traced; not proof of all behavior",
+      "new_file_vs_pass1": false
+    },
+    {
+      "file": "androidApp/src/main/java/dev/klbt/ageds/CorpusStore.kt",
+      "ranges": [
+        [
+          19,
+          50
+        ]
+      ],
+      "functions": [
+        "loadCached",
+        "import",
+        "saveRecordingTree",
+        "savedRecordingTree"
+      ],
+      "sha256": "00f3a231033cae5777acefe7882e51135b68c998260e08124bebb4e58e6601ea",
+      "claim": "selected functions/ranges traced; not proof of all behavior",
+      "new_file_vs_pass1": false
+    }
+  ],
+  "not_fully_traced_calls": [
+    "Android OS ContentResolver/SAF grants/lifecycle and UI rendering",
+    "HttpCitationService Ktor transport on real device",
+    "CitationSelection.requireMatchingCreated internal runtime (existing tests only)",
+    "SourceWorkbookParser/Xls/Wav full branch semantics: compiled as dependencies, not claimed reviewed",
+    "exchange_consumer.inspect_packet full independent parser; only public file-reading/formatting boundary traced here",
+    "scanner.py all import/CSV/XLS internal branches remain partially reviewed",
+    "Basic/Advanced/Expert common graph state is not implemented/exercised in these AGEDS paths"
+  ],
+  "classification_note": "63 uses reconciled pass1 denominator; no main source change. Compilation/import is not counted as semantic review."
+}

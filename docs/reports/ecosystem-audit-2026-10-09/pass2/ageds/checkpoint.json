@@ -1,0 +1,22 @@
+{
+  "repo": "klb-t/AGEDS",
+  "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+  "pass": 2,
+  "product_changes": false,
+  "pending": [
+    "Root publication of closed package"
+  ],
+  "closed_modules": [
+    "Python real consumers",
+    "Kotlin upload/selection slices and disk cache",
+    "Kotlin whole CorpusStore with codec",
+    "Kotlin whole scan engine",
+    "full existing backend+JS gates",
+    "environment attempts Gradle and browser",
+    "coverage and B handoffs"
+  ],
+  "new_findings": 5,
+  "semantic_new_files": 19,
+  "semantic_total_files": 39,
+  "semantic_denominator": 63
+}

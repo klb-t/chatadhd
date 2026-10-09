@@ -1,0 +1,83 @@
+{
+  "schema": "klbt.audit.test-index/1",
+  "repo": "klb-t/AGEDS",
+  "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+  "runners": [
+    {
+      "file": "run_python.py",
+      "arguments": [
+        "--checkout",
+        "<AGEDS>",
+        "--sha",
+        "<SHA>",
+        "--output",
+        "<new-receipt.json>"
+      ],
+      "exit_semantics": {
+        "0": "all selected acceptance gates PASS",
+        "1": "reproduced violation / acceptance failure or missing acceptance contract",
+        "2": "infrastructure failure"
+      },
+      "receipt": "python.receipt.json"
+    },
+    {
+      "file": "run_kotlin.py",
+      "arguments": [
+        "--checkout",
+        "<AGEDS>",
+        "--sha",
+        "<SHA>",
+        "--output",
+        "<new-receipt.json>",
+        "--compiler-dir",
+        "<Kotlin2.1.20 jars>"
+      ],
+      "exit_semantics": {
+        "0": "all selected acceptance gates PASS",
+        "1": "reproduced violation / acceptance failure or missing acceptance contract",
+        "2": "infrastructure failure"
+      },
+      "receipt": "kotlin.receipt.json"
+    },
+    {
+      "file": "run_store.py",
+      "arguments": [
+        "--checkout",
+        "<AGEDS>",
+        "--sha",
+        "<SHA>",
+        "--output",
+        "<new-receipt.json>",
+        "--compiler-dir",
+        "<Kotlin2.1.20 jars>",
+        "--serialization-dir",
+        "<serialization jars>"
+      ],
+      "exit_semantics": {
+        "0": "all selected acceptance gates PASS",
+        "1": "reproduced violation / acceptance failure or missing acceptance contract",
+        "2": "infrastructure failure"
+      },
+      "receipt": "store.receipt.json"
+    },
+    {
+      "file": "run_scan.py",
+      "arguments": [
+        "--checkout",
+        "<AGEDS>",
+        "--sha",
+        "<SHA>",
+        "--output",
+        "<new-receipt.json>",
+        "--compiler-dir",
+        "<Kotlin2.1.20 jars>"
+      ],
+      "exit_semantics": {
+        "0": "all selected acceptance gates PASS",
+        "1": "reproduced violation / acceptance failure or missing acceptance contract",
+        "2": "infrastructure failure"
+      },
+      "receipt": "scan.receipt.json"
+    }
+  ]
+}

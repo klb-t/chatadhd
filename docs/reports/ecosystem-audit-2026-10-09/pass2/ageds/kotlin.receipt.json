@@ -1,0 +1,85 @@
+{
+  "schema": "klbt.audit.ageds.kotlin/1",
+  "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+  "compiler": "Kotlin 2.1.20 / Java17 standalone, not repository pinned Gradle",
+  "source_slices": [
+    {
+      "file": "core/src/commonMain/kotlin/dev/klbt/ageds/core/Models.kt",
+      "line_start": 92,
+      "line_end": 119,
+      "sha256": "a52f1b7b674fa4662d654a171bc10f2c372c01c07e3280010f6bb47e19bf4226"
+    },
+    {
+      "file": "androidApp/src/main/java/dev/klbt/ageds/CorpusVm.kt",
+      "line_start": 70,
+      "line_end": 75,
+      "sha256": "fb26507817c70210e338ebd9a2071fb11cdf0d3aa57ff0bf1c9ec418961e4f5e"
+    },
+    {
+      "file": "androidApp/src/main/java/dev/klbt/ageds/CorpusVm.kt",
+      "line_start": 92,
+      "line_end": 115,
+      "sha256": "a02af2a4bcfa0969c8a4eca42d0a699bbe07112fba41d94046844c974ccabab8"
+    },
+    {
+      "file": "androidApp/src/main/java/dev/klbt/ageds/MainActivity.kt",
+      "line_start": 150,
+      "line_end": 192,
+      "sha256": "e04c1d8d57d53584a82a83e74111a18021a0d774b459a7972255f91fd0502923"
+    },
+    {
+      "file": "androidApp/src/main/java/dev/klbt/ageds/MainActivity.kt",
+      "line_start": 39,
+      "line_end": 43,
+      "sha256": "c4f1756787e7eeb01f9f73d415c0aab8f92508a4812f5224ef60689f6b676b17"
+    },
+    {
+      "file": "core/src/commonMain/kotlin/dev/klbt/ageds/core/CorpusModels.kt",
+      "line_start": 1,
+      "line_end": 118,
+      "sha256": "0f69327eccc3d41ced185438299b569f9d9c5c765d07205b026144521bc3a283"
+    },
+    {
+      "file": "androidApp/src/main/java/dev/klbt/ageds/BoundedMetadataCache.kt",
+      "line_start": 1,
+      "line_end": 68,
+      "sha256": "42166153d4eccf433a953435dd64460c6cb3487d6753a136694a9e186f438603"
+    },
+    {
+      "file": "androidApp/src/main/java/dev/klbt/ageds/SourceScanPublicationGate.kt",
+      "line_start": 1,
+      "line_end": 42,
+      "sha256": "63df8e06bc439bd004035597b7ef91b324003ddb12d3249d16bc5d8c3e3ccaa6"
+    }
+  ],
+  "compile_exit": 0,
+  "compile_log": "",
+  "scope": "Unmodified declarations and method bodies compiled against fake Android UI state, captured transport, synchronous coroutine infra; real production filesystem cache and publication gate.",
+  "run_exit": 0,
+  "stdout": "selection_excluded=true;seed_update_restores=true;host_restart_restores=true\npriorities=1000000,990000;uploads=synthetic:1,synthetic:2;outcome_urls=https://audit-a.invalid\nstale_published=false;old_cache_retained=true;oversize_rejected=true;cache_reopen=old\n",
+  "stderr": "",
+  "tests": [
+    {
+      "id": "EA-AGEDS-005.upload_priority",
+      "reproduction": "PASS",
+      "acceptance": "BLOCKED_MISSING_CONTRACT",
+      "criterion": "Two configurable queue profiles must change actual uploadAndQueue priority; baseline has no profile input. No forged acceptance PASS."
+    },
+    {
+      "id": "EA-AGEDS-007.selection_restart",
+      "reproduction": "PASS",
+      "acceptance": "FAIL",
+      "criterion": "Explicit persistent exclusion survives seed update/restart. Baseline has only temporary toggle and no persistent mode; host reset is not device restart."
+    },
+    {
+      "id": "AG-CROSS.upload_target_capture",
+      "acceptance": "PASS",
+      "criterion": "Deselected URI is not sent; in-flight endpoint change does not redirect frozen upload batch or misattribute outcomes."
+    },
+    {
+      "id": "AG-CROSS.cache_fencing_restart",
+      "acceptance": "PASS",
+      "criterion": "Superseded/oversized writes preserve old bytes; actual cache reopened from disk returns old value."
+    }
+  ]
+}

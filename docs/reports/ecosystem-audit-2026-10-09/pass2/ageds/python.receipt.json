@@ -1,0 +1,246 @@
+{
+  "schema": "klbt.audit.ageds.pass2/1",
+  "repo": "klb-t/AGEDS",
+  "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+  "network_calls": 0,
+  "network_policy": "socket connect/connect_ex/create_connection blocked; in-process ASGI; capture-only faster_whisper; no downloaded model",
+  "tests": [
+    {
+      "id": "EA-AGEDS-002.recipe_snapshot",
+      "observation": {
+        "status_codes": [
+          200,
+          200
+        ],
+        "job_ids": [
+          1,
+          1
+        ],
+        "payload": "{}",
+        "model_executed": "audit-B",
+        "recorded_run_model": "audit-B",
+        "recipe_requests_accepted": true
+      },
+      "reproduction": "PASS",
+      "acceptance": "FAIL",
+      "acceptance_criterion": "Distinct requested recipes produce distinct jobs; edit of global default does not rewrite queued A."
+    },
+    {
+      "id": "A2-AG-001.recipe_unknown_input",
+      "observation": {
+        "status": 200,
+        "ignored_body": true
+      },
+      "reproduction": "PASS",
+      "acceptance": "FAIL",
+      "acceptance_criterion": "Unsupported recipe input is rejected explicitly or persisted and consumed; never acknowledged and silently dropped."
+    },
+    {
+      "id": "AG-CROSS.profile_consumer",
+      "observation": {
+        "models": [
+          "audit-A",
+          "audit-B"
+        ],
+        "run_ids": [
+          1,
+          2
+        ]
+      },
+      "reproduction": "PASS",
+      "acceptance": "PASS",
+      "acceptance_criterion": "Two global model settings must change the real adapter and leave distinct run metadata."
+    },
+    {
+      "id": "AG-CROSS.error_not_done",
+      "observation": {
+        "failure_status": "failed",
+        "failed_transcripts": 0,
+        "retry_job_new": true,
+        "retry_run_new": true
+      },
+      "reproduction": "PASS",
+      "acceptance": "PASS",
+      "acceptance_criterion": "Timeout produces failed attempt without transcript; explicit retry retains old failed run."
+    },
+    {
+      "id": "AG-CROSS.lease_fencing",
+      "observation": {
+        "stale_rejected": true,
+        "new_transcript_id": 1,
+        "different_runs": true
+      },
+      "reproduction": "PASS",
+      "acceptance": "PASS",
+      "acceptance_criterion": "Expired owner cannot publish; new attempt has new run and valid owner can publish."
+    },
+    {
+      "id": "EA-AGEDS-003.http_limits",
+      "observation": {
+        "direct_files": [
+          1,
+          2
+        ],
+        "http_status": [
+          200,
+          200
+        ],
+        "http_files": [
+          3,
+          3
+        ]
+      },
+      "reproduction": "PASS",
+      "acceptance": "FAIL",
+      "acceptance_criterion": "Supported HTTP scan profile values 1 and 2 must reach scanner and result coverage."
+    },
+    {
+      "id": "A2-AG-001.scan_unknown_input",
+      "observation": {
+        "direct_files": [
+          1,
+          2
+        ],
+        "http_status": [
+          200,
+          200
+        ],
+        "http_files": [
+          3,
+          3
+        ]
+      },
+      "reproduction": "PASS",
+      "acceptance": "FAIL",
+      "acceptance_criterion": "Unsupported limit field must be rejected explicitly or consumed, not silently ignored."
+    },
+    {
+      "id": "AG-CROSS.scan_scope_guard",
+      "observation": {
+        "disabled": 403,
+        "escape": 422
+      },
+      "reproduction": "PASS",
+      "acceptance": "PASS",
+      "acceptance_criterion": "No configured source roots denies scan; path traversal cannot escape allowed root."
+    },
+    {
+      "id": "A2-AG-003.case_selection",
+      "observation": {
+        "requested_case": 2,
+        "stored_case": 1,
+        "http_status": 200
+      },
+      "reproduction": "PASS",
+      "acceptance": "FAIL",
+      "acceptance_criterion": "Explicit case_id at upload must bind source/artifact to that case; missing case requires declared selection policy, not implicit first row."
+    },
+    {
+      "id": "AG-CROSS.upload_contract",
+      "observation": {
+        "queued_without_transcribe": 0,
+        "stored_bytes_match": true,
+        "metadata_preserved": true,
+        "bad_metadata_status": 422
+      },
+      "reproduction": "PASS",
+      "acceptance": "PASS",
+      "acceptance_criterion": "Upload preserves bytes/client metadata and never queues ASR implicitly; malformed metadata is rejected rather than reset to default."
+    },
+    {
+      "id": "A2-AG-002.whatsapp_date_policy",
+      "observation": {
+        "timestamp": "2026-03-02T10:00:00",
+        "ambiguity_reported": true,
+        "raw_unchanged": true,
+        "month_first_profile_consumed": false
+      },
+      "reproduction": "PASS",
+      "acceptance": "FAIL",
+      "acceptance_criterion": "Proposed acceptance contract date_order=month_first changes the real importer to Feb 3 and pins policy metadata; baseline rejects this input. A coordinated alternative API needs a harness adapter, not weakened assertion."
+    },
+    {
+      "id": "AG-CROSS.event_collision",
+      "observation": {
+        "conflict_rejected": true
+      },
+      "reproduction": "PASS",
+      "acceptance": "PASS",
+      "acceptance_criterion": "Same source occurrence with different parsed payload must not overwrite or silently deduplicate."
+    },
+    {
+      "id": "AG-CROSS.inert_roundtrip",
+      "observation": {
+        "exact_canonical_roundtrip": true,
+        "extension_preserved": true,
+        "jobs_resumed": false,
+        "old_anchor_version": 1,
+        "new_version": 2
+      },
+      "reproduction": "PASS",
+      "acceptance": "PASS",
+      "acceptance_criterion": "Inert SQLite archive retains unknown fields exactly and never resumes jobs; old citation stays attached to old result version."
+    },
+    {
+      "id": "AG-CROSS.graph_rejections",
+      "observation": [
+        {
+          "mutation": "version",
+          "rejected": true,
+          "codes": [
+            "unsupported_schema"
+          ]
+        },
+        {
+          "mutation": "duplicate_id",
+          "rejected": true,
+          "codes": [
+            "duplicate_identity"
+          ]
+        },
+        {
+          "mutation": "missing_ref",
+          "rejected": true,
+          "codes": [
+            "anchor_version_mismatch",
+            "broken_reference",
+            "text_run_artifact_mismatch"
+          ]
+        }
+      ],
+      "reproduction": "PASS",
+      "acceptance": "PASS",
+      "acceptance_criterion": "Rehashed unsupported schema, duplicate IDs and missing references are rejected semantically, not merely by hash mismatch."
+    },
+    {
+      "id": "AG-CROSS.migration_delete_guards",
+      "observation": {
+        "second_init_rows_unchanged": true,
+        "append_only_delete_rejected": [
+          true,
+          true,
+          true
+        ]
+      },
+      "reproduction": "PASS",
+      "acceptance": "PASS",
+      "acceptance_criterion": "Repeated migration preserves rows; append-only acquisition/audit/citation deletes stay blocked."
+    }
+  ],
+  "counts": {
+    "reproduction": {
+      "PASS": 15,
+      "FAIL": 0
+    },
+    "acceptance": {
+      "PASS": 9,
+      "FAIL": 6
+    }
+  },
+  "limits": [
+    "ASGI is not browser/network deployment E2E",
+    "ASR stub verifies real adapter choice/options and real store/job consumers, not model accuracy",
+    "SQLite reopen is not full Android restart",
+    "WhatsApp profile acceptance remains missing capability and needs coordinated input contract"
+  ]
+}

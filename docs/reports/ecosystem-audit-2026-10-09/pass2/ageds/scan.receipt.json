@@ -1,0 +1,65 @@
+{
+  "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+  "compile_exit": 0,
+  "compile_log": "",
+  "source_files": [
+    {
+      "file": "core/src/commonMain/kotlin/dev/klbt/ageds/core/SourceScanModels.kt",
+      "sha256": "2ed6427bb6d7f7f8c001cc703d31b936552fdcdd8a8ada37a40a427b5d7e87a5"
+    },
+    {
+      "file": "core/src/commonMain/kotlin/dev/klbt/ageds/core/SourceTextParser.kt",
+      "sha256": "5e21ab51c93496b97bc7798aaa635aea19db08d07110d30a6b1938acc37db074"
+    },
+    {
+      "file": "core/src/commonMain/kotlin/dev/klbt/ageds/core/WavHeaderObservation.kt",
+      "sha256": "b0b9c8192676774c8162ee52309ca2a93adc30fbd9f40a5b90d5d5a0c9513e82"
+    },
+    {
+      "file": "core/src/commonMain/kotlin/dev/klbt/ageds/core/WavHeaderProbe.kt",
+      "sha256": "3ad9a1ada8db8ccec9c9190abb897159161745b61757397ce300150db604c8b2"
+    },
+    {
+      "file": "androidApp/src/main/java/dev/klbt/ageds/SourceScanEngine.kt",
+      "sha256": "435c38eaaaad13cb8af74611362f2aa2456add0a322000b14aafafe8b885e6a8"
+    },
+    {
+      "file": "androidApp/src/main/java/dev/klbt/ageds/SourceDelimitedParser.kt",
+      "sha256": "ac7a72bcee73a8663a257d018565b3b8bb4d10519183e87bbbcb5f86d41b2ed1"
+    },
+    {
+      "file": "androidApp/src/main/java/dev/klbt/ageds/SourceWorkbookParser.kt",
+      "sha256": "7e181b3a6ba34ae95ee70068f236792f48af7a167fca37d68c34ed102e29f1b0"
+    },
+    {
+      "file": "androidApp/src/main/java/dev/klbt/ageds/SourceXlsParser.kt",
+      "sha256": "51dbafb51f66ba44c5003170a59eda750ee13ca985214096a9059c5e973a948f"
+    },
+    {
+      "file": "androidApp/src/main/java/dev/klbt/ageds/SourceWavReader.kt",
+      "sha256": "e12024acd9a7c2f328b4c7fe650a1fafce0c49a0d45c1b2c571756b643986dde"
+    }
+  ],
+  "scope": "Full production scan engine and all parser sources compiled unchanged; synthetic read-only provider, annotation stub; Kotlin2.1.20 JVM, not pinned Android build.",
+  "run_exit": 0,
+  "stdout": "direct_rows=10002;engine_rows=10000;advertised_rows=20000;files_profiles=1,2;coverage=partial\nissue_codes=delimiter_undetermined,row_limit,result_limit\ncancellation_propagated=true;cancelled_reads=0\n",
+  "stderr": "",
+  "tests": [
+    {
+      "id": "EA-AGEDS-003.engine_limit_profiles",
+      "acceptance": "PASS",
+      "criterion": "maxFiles1/2 reaches real engine and changes retained file count."
+    },
+    {
+      "id": "A2-AG-005.hidden_global_budget",
+      "reproduction": "PASS",
+      "acceptance": "BLOCKED_MISSING_CONTRACT",
+      "criterion": "Effective global retained-row budget must be data/configuration with provenance and selected strategy; per-file limit may differ only with explicit effective global budget."
+    },
+    {
+      "id": "AG-CROSS.scan_cancellation",
+      "acceptance": "PASS",
+      "criterion": "Cancellation propagates without publication/read, rather than becoming successful partial scan."
+    }
+  ]
+}

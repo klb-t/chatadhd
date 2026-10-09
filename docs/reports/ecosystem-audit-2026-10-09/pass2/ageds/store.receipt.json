@@ -1,0 +1,46 @@
+{
+  "schema": "klbt.audit.ageds.store/1",
+  "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+  "compile_exit": 0,
+  "compile_log": "",
+  "environment": "Kotlin2.1.20/serialization1.8.0 host; repository pins2.4.20/1.11.0 unexecuted",
+  "source_files": [
+    {
+      "file": "core/src/commonMain/kotlin/dev/klbt/ageds/core/CorpusModels.kt",
+      "sha256": "0f69327eccc3d41ced185438299b569f9d9c5c765d07205b026144521bc3a283"
+    },
+    {
+      "file": "androidApp/src/main/java/dev/klbt/ageds/CorpusStore.kt",
+      "sha256": "00f3a231033cae5777acefe7882e51135b68c998260e08124bebb4e58e6601ea"
+    },
+    {
+      "file": "androidApp/src/main/java/dev/klbt/ageds/BoundedMetadataCache.kt",
+      "sha256": "42166153d4eccf433a953435dd64460c6cb3487d6753a136694a9e186f438603"
+    },
+    {
+      "file": "androidApp/src/main/java/dev/klbt/ageds/SourceScanPublicationGate.kt",
+      "sha256": "63df8e06bc439bd004035597b7ef91b324003ddb12d3249d16bc5d8c3e3ccaa6"
+    }
+  ],
+  "limits": [
+    "Android ContentResolver and Context are local-file stubs; no device grants/lifecycle",
+    "Actual production store/cache and real kotlinx.serialization codec run unmodified",
+    "Raw unknown fields preserved in cache does not imply typed runtime consumption"
+  ],
+  "run_exit": 0,
+  "stdout": "future_version_accepted=true;reopened_version=999;unknown_raw_preserved=true\nmalformed_rejected=true;cache_after_invalid_unchanged=true\n",
+  "stderr": "",
+  "tests": [
+    {
+      "id": "A2-AG-004.corpus_future_version",
+      "reproduction": "PASS",
+      "acceptance": "FAIL",
+      "criterion": "Unsupported corpus schema is rejected or explicit migration/quarantine occurs; it must not enter current typed runtime as understood."
+    },
+    {
+      "id": "AG-CROSS.corpus_invalid_and_extensions",
+      "acceptance": "PASS",
+      "criterion": "Unknown raw fields remain available after store reopen; malformed replacement does not reset or overwrite previous bytes."
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+  "modules": [
+    {
+      "name": "python",
+      "exit_code": 1,
+      "status": "ACCEPTANCE_NOT_PASS",
+      "receipt": "python.receipt.json"
+    },
+    {
+      "name": "kotlin",
+      "exit_code": 1,
+      "status": "ACCEPTANCE_NOT_PASS",
+      "receipt": "kotlin.receipt.json"
+    },
+    {
+      "name": "store",
+      "exit_code": 1,
+      "status": "ACCEPTANCE_NOT_PASS",
+      "receipt": "store.receipt.json"
+    },
+    {
+      "name": "scan",
+      "exit_code": 1,
+      "status": "ACCEPTANCE_NOT_PASS",
+      "receipt": "scan.receipt.json"
+    }
+  ],
+  "product_pass": false
+}

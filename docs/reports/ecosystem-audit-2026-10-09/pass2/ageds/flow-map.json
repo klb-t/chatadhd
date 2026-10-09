@@ -1,0 +1,49 @@
+[
+  {
+    "path": "HTTP upload→metadata validate→ensure_source→ingest_file→SQLite+content store→API list/export",
+    "graph": "Evidence relations persist; case selection/config reference incomplete",
+    "evidence": [
+      "A2-AG-003",
+      "AG-CROSS.upload_contract"
+    ],
+    "untraced": "Authentication remains absent by declared deployment boundary; actual deployment not inspected"
+  },
+  {
+    "path": "queue HTTP→queue_transcription→claim→run_transcribe→VerifiedReader→ASR capture→publish_transcript→API+inert archive",
+    "graph": "Actual run metadata and old-result reference retained; requested recipe not pinned",
+    "evidence": [
+      "EA-AGEDS-002.recipe_snapshot",
+      "AG-CROSS.error_not_done",
+      "AG-CROSS.lease_fencing",
+      "AG-CROSS.inert_roundtrip"
+    ]
+  },
+  {
+    "path": "CorpusStore import→real codec→cache disk→store reopen→CorpusVm install/select",
+    "graph": "Raw unknown fields retained but unsupported version interpreted and exclusions reset",
+    "evidence": [
+      "A2-AG-004.corpus_future_version",
+      "EA-AGEDS-007.selection_restart"
+    ],
+    "untraced": "Store host and selected VM method slices, no full Android restart"
+  },
+  {
+    "path": "source scan profile→engine→parser→SourceScanResult→cache publication gate→UI",
+    "graph": "Limits consumed, aggregate policy still outside typed limits",
+    "evidence": [
+      "EA-AGEDS-003.http_limits",
+      "EA-AGEDS-003.engine_limit_profiles",
+      "A2-AG-005.hidden_global_budget",
+      "AG-CROSS.cache_fencing_restart"
+    ],
+    "untraced": "SAF provider runtime/UI, some parser branch semantics"
+  },
+  {
+    "path": "WhatsApp source→preserved bytes→day-first parser→event+ambiguity metadata→timeline/export",
+    "graph": "Raw/evidence retained; alternative interpretation profile missing",
+    "evidence": [
+      "A2-AG-002.whatsapp_date_policy",
+      "AG-CROSS.event_collision"
+    ]
+  }
+]

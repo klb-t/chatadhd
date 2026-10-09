@@ -1,0 +1,156 @@
+{
+  "files": [
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/REPORT.md",
+      "sha256": "ebcfdb79121b4929c420e178df61f8b5683622fc2fc61354ec1584ed4fcd0dcd",
+      "bytes": 6268
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/REPRODUCE.md",
+      "sha256": "dc49a3508898139db99b3987c637bbf38b50c698ab3a4224bec61136efe6e426",
+      "bytes": 4305
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/backlog.json",
+      "sha256": "f73028b9652562f23ff6999495e8be7c11789087f470219170b9e2ddb4c331e3",
+      "bytes": 1667
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/browser-attempt.log",
+      "sha256": "9555b73e4bd63e1ebecce5fd9a285e82754c4f2578d1ece1f1a38c4163b7fc88",
+      "bytes": 4688
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/checkpoint.json",
+      "sha256": "acdbf357f44972d77011c3fd980a0d304b4cb5d21a8068af0551788f7084003e",
+      "bytes": 591
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/coverage.json",
+      "sha256": "ff740f85543d4d6248dded3339949fd8cd1cf6f3bdcb89bd6ec164f2bc13fbd0",
+      "bytes": 18301
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/decisions.json",
+      "sha256": "173dd5aae9a185a406ee67e61489296846bdacc35ca8fbf53a895e87367152a8",
+      "bytes": 3190
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/environment.json",
+      "sha256": "d34c294da14186927da16a7eb3c2289839ed230a8ed2b175d71b6346ab8596ec",
+      "bytes": 827
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/existing-backend.junit.xml",
+      "sha256": "9af963f0134f44b2c61486d24052b402263513a83c2f1ddcaaed3f5bd765a21c",
+      "bytes": 67945
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/existing-js.log",
+      "sha256": "10c11b1f3adbeadc9097140fb52a1209e61a2c894dc997fac162fd778ac3d116",
+      "bytes": 7893
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/findings.jsonl",
+      "sha256": "c53edec960129fdb0648f4b5a59cd9a49519ee5af1845c8342e81381a396fb56",
+      "bytes": 14437
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/flow-map.json",
+      "sha256": "6d58b3d2e1e2b0faf4f5ec304f979f2a722fc903f99399c9adf281a4d158bd96",
+      "bytes": 1963
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/gradle-attempt.log",
+      "sha256": "a81082174f23c4bf6e6ca4469c37b4e752a9309c514d5c7bec5b696777704043",
+      "bytes": 2529
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/handoff-B.json",
+      "sha256": "e8613bfd04cb8181d0e0fa758686ba3ed9aa56412a6c785d71db55bfe169e81e",
+      "bytes": 20039
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/index.receipt.json",
+      "sha256": "993314a036bc08b842669e235104a9e8a649cbe906dfbdf085a069579516473a",
+      "bytes": 642
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/kotlin.receipt.json",
+      "sha256": "9951827adb618adbb5d68e2592656d168a1b0ddd50baa6797f26932ef0c0495e",
+      "bytes": 3529
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/python-dependencies.txt",
+      "sha256": "6a5f893e6aa1c1730b032b249b110898fd04ca5789bfc00c0303f15b515c86c4",
+      "bytes": 587
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/python.receipt.json",
+      "sha256": "e7fb763208d4c85467863fe25498a1f68b57ad3a80555f0b4abf194a98572070",
+      "bytes": 7434
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/scan.receipt.json",
+      "sha256": "41c011397135884ec45726677b023abf3e85295425ef77b61b1eea80cc211202",
+      "bytes": 2868
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/serialization-dependencies.json",
+      "sha256": "595a786e87aec333950d683b9291fb6c1ee574e3dad104eccb9cc36b59bc7ed7",
+      "bytes": 824
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/source-reference-validation.json",
+      "sha256": "259f95df61cf5dd464f8eacef20d8aa43e42c4982bbbbda108525c45a1e8078c",
+      "bytes": 112
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/store.receipt.json",
+      "sha256": "fb7f9f55ab519516222066b26db032b11e25c7ea6241604f3a9097bd32309d52",
+      "bytes": 1963
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/test-index.json",
+      "sha256": "06c2f02cd1c07fe7b7a2bef5074d7a7fe10741f24a94f2066b9e6f2cdc879d36",
+      "bytes": 2167
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ageds/REPRODUCE.md",
+      "sha256": "dc49a3508898139db99b3987c637bbf38b50c698ab3a4224bec61136efe6e426",
+      "bytes": 4305
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ageds/run_all.py",
+      "sha256": "15d860ad08e5cbf9f9d88e3335c4c0fd171f6018595ce7c27eb7b9e1b5ca78f1",
+      "bytes": 1820
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ageds/run_kotlin.py",
+      "sha256": "b8a05b99de312de25a8373f96d3a9e077023d0a5b3cdafa3684355e0d4126211",
+      "bytes": 9316
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ageds/run_python.py",
+      "sha256": "30bef156012733333069929c7630a13c3ac4716faefee73f514e800fc50d69d8",
+      "bytes": 18293
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ageds/run_scan.py",
+      "sha256": "3ada99464c0b91ae2d226ba96dd04f48d6d480190f852bad1c5cfeab9b0eaed7",
+      "bytes": 4863
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ageds/run_store.py",
+      "sha256": "eaf92f31936c125f86d7d5304dfef9cd9514622e367f94ab49f744e68e06231c",
+      "bytes": 5448
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ageds/test-index.json",
+      "sha256": "06c2f02cd1c07fe7b7a2bef5074d7a7fe10741f24a94f2066b9e6f2cdc879d36",
+      "bytes": 2167
+    }
+  ],
+  "product_changes": false,
+  "source_sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268"
+}

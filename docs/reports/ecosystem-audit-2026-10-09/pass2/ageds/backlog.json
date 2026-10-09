@@ -1,0 +1,60 @@
+{
+  "repo": "klb-t/AGEDS",
+  "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+  "queue": [
+    {
+      "order": 1,
+      "finding_id": "A2-AG-004",
+      "package": "handoff-B.json",
+      "disposition": "Product owner B; independent audit probes retained"
+    },
+    {
+      "order": 2,
+      "finding_id": "A2-AG-001",
+      "package": "handoff-B.json",
+      "disposition": "Product owner B; independent audit probes retained"
+    },
+    {
+      "order": 3,
+      "finding_id": "EA-AGEDS-002",
+      "package": "handoff-B.json",
+      "disposition": "Product owner B; independent audit probes retained"
+    },
+    {
+      "order": 4,
+      "finding_id": "A2-AG-003",
+      "package": "handoff-B.json",
+      "disposition": "Product owner B; independent audit probes retained"
+    },
+    {
+      "order": 5,
+      "finding_id": "EA-AGEDS-003",
+      "package": "handoff-B.json",
+      "disposition": "Product owner B; independent audit probes retained"
+    },
+    {
+      "order": 6,
+      "finding_id": "EA-AGEDS-005",
+      "package": "handoff-B.json",
+      "disposition": "Product owner B; independent audit probes retained"
+    },
+    {
+      "order": 7,
+      "finding_id": "EA-AGEDS-007",
+      "package": "handoff-B.json",
+      "disposition": "Product owner B; independent audit probes retained"
+    },
+    {
+      "order": 8,
+      "finding_id": "A2-AG-002",
+      "package": "handoff-B.json",
+      "disposition": "Product owner B; independent audit probes retained"
+    },
+    {
+      "order": 9,
+      "finding_id": "A2-AG-005",
+      "package": "handoff-B.json",
+      "disposition": "Product owner B; independent audit probes retained"
+    }
+  ]
+}

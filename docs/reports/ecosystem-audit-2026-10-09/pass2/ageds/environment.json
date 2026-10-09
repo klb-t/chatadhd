@@ -1,0 +1,27 @@
+{
+  "python": "Python 3.12.14",
+  "java": "openjdk version \"17.0.20\" 2026-07-21\nOpenJDK Runtime Environment (build 17.0.20+8-1-24.04-Ubuntu)\nOpenJDK 64-Bit Server VM (build 17.0.20+8-1-24.04-Ubuntu, mixed mode, sharing)\n",
+  "gradle": {
+    "attempt": "bash ./gradlew --version",
+    "exit": 1,
+    "block": "services.gradle.org: Network is unreachable",
+    "receipt": "gradle-attempt.log"
+  },
+  "android_device": {
+    "adb": null,
+    "sdk": null,
+    "jdk21": null,
+    "status": "NOT_RUN"
+  },
+  "browser": {
+    "playwright": "1.56.1",
+    "chromium": "1194",
+    "exit": 1,
+    "block": "Chromium process_singleton_posix.cc socket() failed: Operation not permitted; SIGABRT",
+    "receipt": "browser-attempt.log"
+  },
+  "no_models_downloaded": true,
+  "paid_calls": 0,
+  "CI_runs": 0,
+  "product_git_status": ""
+}

@@ -1,0 +1,17 @@
+[
+  {
+    "url": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-serialization-compiler-plugin-embeddable/2.1.20/kotlin-serialization-compiler-plugin-embeddable-2.1.20.jar",
+    "sha256": "e696506710d2c48d017cc89ccc1ea49101799577092b7021feada95ff62fd57f",
+    "bytes": 556989
+  },
+  {
+    "url": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-core-jvm/1.8.0/kotlinx-serialization-core-jvm-1.8.0.jar",
+    "sha256": "d3c94e9d829bba6e0c4cd3ae478a40846dd49d5475d6707877be853976afe416",
+    "bytes": 391546
+  },
+  {
+    "url": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-json-jvm/1.8.0/kotlinx-serialization-json-jvm-1.8.0.jar",
+    "sha256": "7b7c445880cef94dc464f4733da1b33b94bee78805041ea08ae06e8507e4620e",
+    "bytes": 277121
+  }
+]
