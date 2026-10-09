@@ -812,7 +812,7 @@
   },
   "setup_gates": [
     {
-      "repository": "keyboard",
+      "repository": "klb-t/Custom-Keyboard-Pro",
       "head": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
       "status": "PASS",
       "tests": {
@@ -828,10 +828,12 @@
         "No physical device/account acceptance.",
         "Robolectric SDK36/JDK17 warning did not skip any of the 974 actual cases; no SDK36 coverage inferred."
       ],
-      "claim": "local setup/build gate; AR build-only, no device or live quality measurement"
+      "claim": "local setup/build gate; AR build-only, no device or live quality measurement",
+      "receipt_target": "keyboard",
+      "source_commit": "192f820f2d8c653768237e1bff3a1a6d950d69c0"
     },
     {
-      "repository": "lem",
+      "repository": "klb-t/LEM-Workbench",
       "head": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
       "status": "PASS",
       "tests": {
@@ -847,10 +849,12 @@
         "No physical device/account acceptance or paid model calls.",
         "Only the three existing local test cases were executed; no ExperimentConfig or evidence-migration coverage inferred."
       ],
-      "claim": "local setup/build gate; AR build-only, no device or live quality measurement"
+      "claim": "local setup/build gate; AR build-only, no device or live quality measurement",
+      "receipt_target": "lem",
+      "source_commit": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456"
     },
     {
-      "repository": "ageds",
+      "repository": "klb-t/AGEDS",
       "head": "3878b5378b2bb82a08903e760e0dcfe7ca233e53",
       "status": "PASS",
       "tests": {
@@ -866,10 +870,12 @@
         "This gate does not revalidate server-only B product changes or private corpus/model quality.",
         "No paid model calls, no keystore copied or published."
       ],
-      "claim": "local setup/build gate; AR build-only, no device or live quality measurement"
+      "claim": "local setup/build gate; AR build-only, no device or live quality measurement",
+      "receipt_target": "ageds",
+      "source_commit": "3878b5378b2bb82a08903e760e0dcfe7ca233e53"
     },
     {
-      "repository": "ar",
+      "repository": "klb-t/ar-drafty",
       "head": "d8af2dd022dacb2f068074158d83e566813592d6",
       "status": "PASS",
       "tests": {
@@ -885,7 +891,9 @@
         "A successful APK build does not establish ARCore tracking, stereo reconstruction or phone camera compatibility.",
         "No model calls, no keystore copied or published."
       ],
-      "claim": "local setup/build gate; AR build-only, no device or live quality measurement"
+      "claim": "local setup/build gate; AR build-only, no device or live quality measurement",
+      "receipt_target": "ar",
+      "source_commit": "d8af2dd022dacb2f068074158d83e566813592d6"
     }
   ],
   "R42": {
