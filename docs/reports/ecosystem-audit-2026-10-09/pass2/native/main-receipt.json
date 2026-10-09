@@ -1,0 +1,1040 @@
+{
+  "schema": "ecosystem-audit.native-conformance/1",
+  "repo": "klb-t/chatadhd",
+  "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "historical_fixture": {
+    "source_repository": "klb-t/chatadhd",
+    "source_sha": "b302df25e1a65f20c395eadc5ad5ef065d26e33d",
+    "source_path": "loom/data/lexicons/stemming.json",
+    "blob_oid": "b0910c23ae3e40507f3b318ba50f159a281b90a2",
+    "sha256": "2c4720550ddec5d907c5d746d165787dfd2079b6ca4a22ef317d3323dadc776c",
+    "bytes": 5808,
+    "status": "verbatim historical fixture, original untouched"
+  },
+  "scope": "REAL native Pack/Normalizer/OnboardingStore/DefaultLayers/KnowledgeStore; separate process per request. No models, no Runtime workers, no network path invoked. No browser/UI tier equivalence asserted.",
+  "compile_command": [
+    "c++",
+    "-std=c++20",
+    "-O0",
+    "-g",
+    "-I/workspace/scratch/1112e9e8a3c6/audit-work/repos/chatadhd/loom/include",
+    "-I/workspace/scratch/1112e9e8a3c6/audit-work/repos/chatadhd/loom/third_party/nlohmann",
+    "-I/workspace/scratch/1112e9e8a3c6/audit-work/repos/chatadhd/loom/third_party/sqlite",
+    "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/artifacts/tools/ecosystem-audit-2026-10-09/pass2/native/native_driver.cpp",
+    "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/scratch/native/main-build/libloom_core.a",
+    "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/scratch/native/main-build/libloom_sqlite3_amalgamation.a",
+    "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/scratch/native/main-build/libloom_miniz.a",
+    "-lssl",
+    "-lcrypto",
+    "-pthread",
+    "-ldl",
+    "-lm",
+    "-o",
+    "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/scratch/native/probe-main-final/native-driver"
+  ],
+  "library_sha256": "ead8af9a36519f78d46782d8ca5b19d7e44779cb5c495d5a09b4d2bc1b303cd7",
+  "build_source": "/workspace/scratch/1112e9e8a3c6/audit-work/repos/chatadhd",
+  "checks": [
+    {
+      "id": "NATIVE-PACK-001",
+      "kind": "behavior_probe",
+      "status": "PASS",
+      "requirement": "Explicit schema version handling; not proof of regression",
+      "observed": {
+        "valid": false,
+        "issues": [
+          {
+            "file": "lexicons/stemming.json",
+            "pointer": "/schema",
+            "message": "unknown schema id 'loom.kb.stemming/1'"
+          }
+        ]
+      }
+    },
+    {
+      "id": "NATIVE-PACK-002",
+      "kind": "behavior_probe",
+      "status": "PASS",
+      "requirement": "Historical full pack compatibility gate",
+      "observed": {
+        "code": "invalid_argument",
+        "message": "invalid kb pack (1 issue(s)):\n  lexicons/stemming.json#/schema: unknown schema id 'loom.kb.stemming/1'"
+      }
+    },
+    {
+      "id": "NATIVE-PACK-003",
+      "kind": "behavior_probe",
+      "status": "PASS",
+      "requirement": "R42 explicit invalid data failure",
+      "observed": {
+        "code": "invalid_argument",
+        "message": "invalid kb pack (2 issue(s)):\n  lexicons/stemming.json#/schema: expected 'loom.kb.stemming/2', found 'loom.kb.stemming/1'\n  lexicons/stemming.json#/schema: schema differs from pack.json ('loom.kb.stemming/2')"
+      }
+    },
+    {
+      "id": "NATIVE-PACK-004",
+      "kind": "acceptance",
+      "status": "PASS",
+      "requirement": "Candidate migration semantic sample equivalence, not exhaustive",
+      "observed": {
+        "converted": [
+          {
+            "text": "running stored created class status analysis",
+            "key": "run store create analysis",
+            "language": "en"
+          },
+          {
+            "text": "wersji wersjach grafu wiedzy",
+            "key": "wersj knowledge graph",
+            "language": "pl"
+          },
+          {
+            "text": "czat ADHD chat ADHD",
+            "key": "chat adhd chat adhd",
+            "language": "unknown"
+          },
+          {
+            "text": "good better best",
+            "key": "",
+            "language": "en"
+          },
+          {
+            "text": "Nie podejmuj decyzji za użytkownika",
+            "key": "podejmuj decision",
+            "language": "pl"
+          }
+        ],
+        "current": [
+          {
+            "text": "running stored created class status analysis",
+            "key": "run store create analysis",
+            "language": "en"
+          },
+          {
+            "text": "wersji wersjach grafu wiedzy",
+            "key": "wersj knowledge graph",
+            "language": "pl"
+          },
+          {
+            "text": "czat ADHD chat ADHD",
+            "key": "chat adhd chat adhd",
+            "language": "unknown"
+          },
+          {
+            "text": "good better best",
+            "key": "",
+            "language": "en"
+          },
+          {
+            "text": "Nie podejmuj decyzji za użytkownika",
+            "key": "podejmuj decision",
+            "language": "pl"
+          }
+        ],
+        "sample_count": 5,
+        "conversion": "schema/2 plus normalization copied from pinned current data; existing historical fields preserved"
+      }
+    },
+    {
+      "id": "NATIVE-PACK-005",
+      "kind": "acceptance",
+      "status": "PASS",
+      "requirement": "Preserve original bytes",
+      "observed": {
+        "original_sha256": "2c4720550ddec5d907c5d746d165787dfd2079b6ca4a22ef317d3323dadc776c",
+        "unchanged": true
+      }
+    },
+    {
+      "id": "NATIVE-PACK-006",
+      "kind": "acceptance",
+      "status": "PASS",
+      "requirement": "R42 invalid recipe never revives handwritten default",
+      "observed": {
+        "code": "invalid_argument",
+        "message": "invalid kb pack (1 issue(s)):\n  lexicons/stemming.json#/normalization: missing required key"
+      }
+    },
+    {
+      "id": "NATIVE-PACK-007",
+      "kind": "acceptance",
+      "status": "PASS",
+      "requirement": "Unsupported versions fail explicitly",
+      "observed": {
+        "code": "invalid_argument",
+        "message": "invalid kb pack (2 issue(s)):\n  lexicons/stemming.json#/schema: expected 'loom.kb.stemming/2', found 'loom.kb.stemming/999'\n  lexicons/stemming.json#/schema: schema differs from pack.json ('loom.kb.stemming/2')"
+      }
+    },
+    {
+      "id": "NATIVE-STORE-001",
+      "kind": "acceptance",
+      "status": "PASS",
+      "requirement": "Real native write, process exit, Database reopen, read",
+      "observed": {
+        "revision": 0,
+        "profile_extension": {
+          "raw": "  synthetic\nbytes  ",
+          "array": [
+            1,
+            null,
+            "ą"
+          ]
+        }
+      }
+    },
+    {
+      "id": "NATIVE-STORE-002",
+      "kind": "acceptance",
+      "status": "PASS",
+      "requirement": "R40 effective value source/reason after restart",
+      "observed": {
+        "resolution": {
+          "key": "preference.style",
+          "status": "effective",
+          "layer": "user",
+          "explanation": "An explicit user value overrides the built-in graph layer.",
+          "id": "preference.style/v1",
+          "area": "preferences/communication",
+          "revision": 1,
+          "entity": {
+            "id": "preference.style/v1",
+            "key": "preference.style",
+            "area": "preferences/communication",
+            "revision": 1
+          },
+          "value": "audit-detailed",
+          "source": {
+            "target": "layers",
+            "value": "audit-detailed",
+            "provenance": "form",
+            "source_refs": [
+              "synthetic/field"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "NATIVE-STORE-003",
+      "kind": "acceptance",
+      "status": "PASS",
+      "requirement": "Concurrent branch CAS must not overwrite state",
+      "observed": {
+        "code": "conflict",
+        "message": "onboarding snapshot revision changed; reload before editing"
+      }
+    },
+    {
+      "id": "NATIVE-STORE-004",
+      "kind": "acceptance",
+      "status": "PASS",
+      "requirement": "R40 disabled/excluded survive restart and actual pack update",
+      "observed": {
+        "excluded": {
+          "key": "preference.style",
+          "status": "excluded",
+          "layer": "user_exclusion",
+          "explanation": "A durable user exclusion blocks this stable id across pack updates.",
+          "id": "preference.style/v1",
+          "area": "preferences/communication",
+          "revision": 2,
+          "entity": {
+            "id": "preference.style/v1",
+            "key": "preference.style",
+            "area": "preferences/communication",
+            "revision": 2
+          },
+          "source": {
+            "key": "preference.style",
+            "area": "preferences/communication",
+            "pack_revision": 3
+          }
+        },
+        "disabled": {
+          "key": "preference.length",
+          "status": "disabled",
+          "layer": "user_disabled",
+          "explanation": "The user retained this default but disabled its use.",
+          "id": "preference.length/v1",
+          "area": "preferences/communication",
+          "revision": 1,
+          "entity": {
+            "id": "preference.length/v1",
+            "key": "preference.length",
+            "area": "preferences/communication",
+            "revision": 1
+          },
+          "source": {
+            "key": "preference.length",
+            "pack_revision": 3
+          }
+        }
+      }
+    },
+    {
+      "id": "NATIVE-STORE-005",
+      "kind": "acceptance",
+      "status": "PASS",
+      "requirement": "Unknown profile extension survives native DB and pack update",
+      "observed": {
+        "raw": "  synthetic\nbytes  ",
+        "array": [
+          1,
+          null,
+          "ą"
+        ]
+      }
+    },
+    {
+      "id": "NATIVE-STORE-006",
+      "kind": "acceptance",
+      "status": "PASS",
+      "requirement": "Divergent same pack revision fails atomically",
+      "observed": {
+        "code": "conflict",
+        "message": "default layers: pack content changed without a revision increment"
+      }
+    },
+    {
+      "id": "NATIVE-STORE-007",
+      "kind": "acceptance",
+      "status": "PASS",
+      "requirement": "Colliding identities fail atomically",
+      "observed": {
+        "code": "conflict",
+        "message": "default layers: duplicate default id or key"
+      }
+    },
+    {
+      "id": "NATIVE-STORE-008",
+      "kind": "acceptance",
+      "status": "PASS",
+      "requirement": "R40 permanent exclusion cannot be escaped by ID recycling",
+      "observed": {
+        "code": "conflict",
+        "message": "default layers: stable key reused by another id: preference.style"
+      }
+    },
+    {
+      "id": "NATIVE-STORE-009-CONTROL",
+      "kind": "acceptance",
+      "status": "PASS",
+      "requirement": "Valid operational settings action reaches consumer",
+      "observed": {
+        "preference_mode": "candidate"
+      }
+    },
+    {
+      "id": "NATIVE-STORE-009-REPRO",
+      "kind": "reproduction",
+      "status": "PASS",
+      "requirement": "CH-P2-N001 unsupported setting accepted and persisted",
+      "observed": {
+        "accepted": true,
+        "persisted": true,
+        "runtime_profile_available": null,
+        "profile_settings": {
+          "preference_mode": "candidate",
+          "audit_unsupported_setting": true
+        }
+      }
+    },
+    {
+      "id": "NATIVE-STORE-009",
+      "kind": "acceptance",
+      "status": "FAIL",
+      "requirement": "CH-P2-N001 reject unsupported operational setting",
+      "observed": {
+        "ok": true,
+        "error": null
+      }
+    },
+    {
+      "id": "NATIVE-STORE-010",
+      "kind": "acceptance",
+      "status": "PASS",
+      "requirement": "Native legacy-profile import then persistence; not full layers/workflow backup",
+      "observed": {
+        "unknown_preserved": true,
+        "field_count": 9,
+        "import_api": "OnboardingStore.open(user, legacy_profile)"
+      }
+    },
+    {
+      "id": "NATIVE-STORE-011",
+      "kind": "acceptance",
+      "status": "PASS",
+      "requirement": "Unsupported persisted version remains intact and rejects downgrade",
+      "observed": {
+        "code": "unsupported",
+        "message": "newer onboarding profile is not downgraded"
+      }
+    },
+    {
+      "id": "NATIVE-STORE-012",
+      "kind": "acceptance",
+      "status": "PASS",
+      "requirement": "R41 old native result retains exact prior method recipe after prompt edit and restart",
+      "observed": {
+        "old_version": "e_4fafd2eaea9800cd",
+        "new_version": "e_ef0f7c05859def6f",
+        "old_execution_unchanged": true,
+        "old_entity_present": true,
+        "old_produced_by_edge_present": true,
+        "claim_count": 188
+      }
+    },
+    {
+      "id": "NATIVE-STORE-013",
+      "kind": "acceptance",
+      "status": "PASS",
+      "requirement": "Two profile prompts alter actual model_request consumer",
+      "observed": {
+        "request_fields": [
+          "method_ref",
+          "prompt",
+          "provider",
+          "request_token",
+          "section",
+          "questions",
+          "context",
+          "candidates",
+          "policy",
+          "reply_schema",
+          "method_profile",
+          "snapshot_revision",
+          "graph_run_id",
+          "calls_authorized"
+        ],
+        "prior_method": "e_4fafd2eaea9800cd",
+        "next_method": "e_ef0f7c05859def6f"
+      }
+    },
+    {
+      "id": "B-POLICY001-CONTROL",
+      "kind": "acceptance",
+      "status": "PASS",
+      "requirement": "Explicit profile cap permits in-scope field",
+      "observed": {
+        "allowed": true,
+        "resolution_source": {
+          "target": "layers",
+          "value": {
+            "rules": [
+              {
+                "id": "local-explicit-preset",
+                "category": "*",
+                "store": true,
+                "infer": false,
+                "explicit_only": true,
+                "providers": [
+                  "synthetic/offline"
+                ],
+                "max_detail": 2,
+                "max_sensitivity": 2,
+                "retention": {
+                  "history": "full",
+                  "max_events": null,
+                  "metadata_keys": [
+                    "id",
+                    "op",
+                    "field",
+                    "category",
+                    "time",
+                    "provenance",
+                    "review",
+                    "review_time",
+                    "presentation",
+                    "detail",
+                    "sensitivity",
+                    "candidate",
+                    "decision",
+                    "status",
+                    "source_refs",
+                    "method_version_id",
+                    "method_run_id"
+                  ]
+                },
+                "provenance": "builtin_preset",
+                "consent_event": null
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "B-POLICY001-detail-understate-REPRO",
+      "kind": "reproduction",
+      "status": "PASS",
+      "requirement": "B-POLICY001 caller understates graph field classification",
+      "observed": {
+        "dimension": "detail",
+        "variant": "understate",
+        "field_declared": 1,
+        "rule_limit": 0.5,
+        "accepted": true,
+        "allowed": true,
+        "reason": "rule allows operation",
+        "error": null
+      }
+    },
+    {
+      "id": "B-POLICY001-detail-understate",
+      "kind": "acceptance",
+      "status": "FAIL",
+      "requirement": "B-POLICY001 graph field classification remains authoritative at policy consumer",
+      "observed": {
+        "dimension": "detail",
+        "variant": "understate",
+        "field_declared": 1,
+        "rule_limit": 0.5,
+        "accepted": true,
+        "allowed": true,
+        "reason": "rule allows operation",
+        "error": null
+      }
+    },
+    {
+      "id": "B-POLICY001-detail-omit-REPRO",
+      "kind": "reproduction",
+      "status": "PASS",
+      "requirement": "B-POLICY001 caller understates graph field classification",
+      "observed": {
+        "dimension": "detail",
+        "variant": "omit",
+        "field_declared": 1,
+        "rule_limit": 0.5,
+        "accepted": true,
+        "allowed": true,
+        "reason": "rule allows operation",
+        "error": null
+      }
+    },
+    {
+      "id": "B-POLICY001-detail-omit",
+      "kind": "acceptance",
+      "status": "FAIL",
+      "requirement": "B-POLICY001 graph field classification remains authoritative at policy consumer",
+      "observed": {
+        "dimension": "detail",
+        "variant": "omit",
+        "field_declared": 1,
+        "rule_limit": 0.5,
+        "accepted": true,
+        "allowed": true,
+        "reason": "rule allows operation",
+        "error": null
+      }
+    },
+    {
+      "id": "B-POLICY001-sensitivity-understate-REPRO",
+      "kind": "reproduction",
+      "status": "PASS",
+      "requirement": "B-POLICY001 caller understates graph field classification",
+      "observed": {
+        "dimension": "sensitivity",
+        "variant": "understate",
+        "field_declared": 1,
+        "rule_limit": 0.5,
+        "accepted": true,
+        "allowed": true,
+        "reason": "rule allows operation",
+        "error": null
+      }
+    },
+    {
+      "id": "B-POLICY001-sensitivity-understate",
+      "kind": "acceptance",
+      "status": "FAIL",
+      "requirement": "B-POLICY001 graph field classification remains authoritative at policy consumer",
+      "observed": {
+        "dimension": "sensitivity",
+        "variant": "understate",
+        "field_declared": 1,
+        "rule_limit": 0.5,
+        "accepted": true,
+        "allowed": true,
+        "reason": "rule allows operation",
+        "error": null
+      }
+    },
+    {
+      "id": "B-POLICY001-sensitivity-omit-REPRO",
+      "kind": "reproduction",
+      "status": "PASS",
+      "requirement": "B-POLICY001 caller understates graph field classification",
+      "observed": {
+        "dimension": "sensitivity",
+        "variant": "omit",
+        "field_declared": 1,
+        "rule_limit": 0.5,
+        "accepted": true,
+        "allowed": true,
+        "reason": "rule allows operation",
+        "error": null
+      }
+    },
+    {
+      "id": "B-POLICY001-sensitivity-omit",
+      "kind": "acceptance",
+      "status": "FAIL",
+      "requirement": "B-POLICY001 graph field classification remains authoritative at policy consumer",
+      "observed": {
+        "dimension": "sensitivity",
+        "variant": "omit",
+        "field_declared": 1,
+        "rule_limit": 0.5,
+        "accepted": true,
+        "allowed": true,
+        "reason": "rule allows operation",
+        "error": null
+      }
+    }
+  ],
+  "calls": [
+    {
+      "request_op": "pack_validate",
+      "request_sha256": "7d1e975a3e9898813cc55cd88d841ed45b49565a8d566b539cd32eea0cc7c55e",
+      "response_sha256": "0dfeec977d86cee84b3b136805ac42dbaec46aaeeeb3bfa864bdff416a4b5c8b",
+      "returncode": 0,
+      "ok": true,
+      "error": null,
+      "stderr": ""
+    },
+    {
+      "request_op": "pack_load",
+      "request_sha256": "ab772b5b430f5fa66829f9e6a9348044b34c90def369ff527739e1029201694e",
+      "response_sha256": "07bbb8cf1052506d4769e857fe6f67859439e495a9e212334f54aeeb1ff71bcc",
+      "returncode": 0,
+      "ok": false,
+      "error": {
+        "code": "invalid_argument",
+        "message": "invalid kb pack (1 issue(s)):\n  lexicons/stemming.json#/schema: unknown schema id 'loom.kb.stemming/1'"
+      },
+      "stderr": ""
+    },
+    {
+      "request_op": "pack_load",
+      "request_sha256": "476807d87ef7692b6cc8471c2dbde2bb34d634c0bf4e084d900bf311f0b73e95",
+      "response_sha256": "4e96b2126e289923aa6f9e702dde2c10a306eb86a912ecf3df7086d29c54d2f2",
+      "returncode": 0,
+      "ok": false,
+      "error": {
+        "code": "invalid_argument",
+        "message": "invalid kb pack (2 issue(s)):\n  lexicons/stemming.json#/schema: expected 'loom.kb.stemming/2', found 'loom.kb.stemming/1'\n  lexicons/stemming.json#/schema: schema differs from pack.json ('loom.kb.stemming/2')"
+      },
+      "stderr": ""
+    },
+    {
+      "request_op": "pack_load",
+      "request_sha256": "02d003ccc7ca2d546cebe95da9bf6fd2bc997819f1bd39432a14a36d2ff9f0de",
+      "response_sha256": "7d4b883eb5a839d52498d4d8740ac18f0b278b4896e4ced52f1910860fb23628",
+      "returncode": 0,
+      "ok": true,
+      "error": null,
+      "stderr": ""
+    },
+    {
+      "request_op": "pack_load",
+      "request_sha256": "e554f1882f71adea3cb00a1bb5ff6daea7b0bce1d0cea0f88d865e07e327565a",
+      "response_sha256": "7d4b883eb5a839d52498d4d8740ac18f0b278b4896e4ced52f1910860fb23628",
+      "returncode": 0,
+      "ok": true,
+      "error": null,
+      "stderr": ""
+    },
+    {
+      "request_op": "pack_load",
+      "request_sha256": "476807d87ef7692b6cc8471c2dbde2bb34d634c0bf4e084d900bf311f0b73e95",
+      "response_sha256": "f0d7d3c07eed1013af44d68c0da8a68b5f7e6189147270dd385b3620947db90a",
+      "returncode": 0,
+      "ok": false,
+      "error": {
+        "code": "invalid_argument",
+        "message": "invalid kb pack (1 issue(s)):\n  lexicons/stemming.json#/normalization: missing required key"
+      },
+      "stderr": ""
+    },
+    {
+      "request_op": "pack_load",
+      "request_sha256": "476807d87ef7692b6cc8471c2dbde2bb34d634c0bf4e084d900bf311f0b73e95",
+      "response_sha256": "5818c281351195ed369f3f6885ba94dbe9a0cad822aea7a42cfd19ecdcd1fda8",
+      "returncode": 0,
+      "ok": false,
+      "error": {
+        "code": "invalid_argument",
+        "message": "invalid kb pack (2 issue(s)):\n  lexicons/stemming.json#/schema: expected 'loom.kb.stemming/2', found 'loom.kb.stemming/999'\n  lexicons/stemming.json#/schema: schema differs from pack.json ('loom.kb.stemming/2')"
+      },
+      "stderr": ""
+    },
+    {
+      "request_op": "open",
+      "request_sha256": "a63aaddc44d155a44106f910f5a2f418108e99c490d7c23419707329d4736f57",
+      "response_sha256": "920265790c77ae57b103a55f126118201ed66c839deee0e5cde21185b7199c35",
+      "returncode": 0,
+      "ok": true,
+      "error": null,
+      "stderr": "14:14:55 [INFO ] loom.db: Schema upgraded: v0 -> v4\n14:14:55 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-n897c297/profile.db\n14:14:56 [INFO ] loom.db: Database closed\n"
+    },
+    {
+      "request_op": "read",
+      "request_sha256": "b41748757512e526ffae55f4351e4365ec2f65afeaa13d14057051c326bc136f",
+      "response_sha256": "920265790c77ae57b103a55f126118201ed66c839deee0e5cde21185b7199c35",
+      "returncode": 0,
+      "ok": true,
+      "error": null,
+      "stderr": "14:14:56 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-n897c297/profile.db\n14:14:56 [INFO ] loom.db: Database closed\n"
+    },
+    {
+      "request_op": "apply",
+      "request_sha256": "6835fbf4dcb9cd0e548262fad69ae5e6e69e394d6c8c750d35f79dd690056e9a",
+      "response_sha256": "ec8f03e8d97a2ccaae396b8dc80b0a11e7411f926e62e3e2cb8d25c66bc3682e",
+      "returncode": 0,
+      "ok": true,
+      "error": null,
+      "stderr": "14:14:56 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-n897c297/profile.db\n14:14:57 [INFO ] loom.db: Database closed\n"
+    },
+    {
+      "request_op": "read",
+      "request_sha256": "b41748757512e526ffae55f4351e4365ec2f65afeaa13d14057051c326bc136f",
+      "response_sha256": "ec8f03e8d97a2ccaae396b8dc80b0a11e7411f926e62e3e2cb8d25c66bc3682e",
+      "returncode": 0,
+      "ok": true,
+      "error": null,
+      "stderr": "14:14:57 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-n897c297/profile.db\n14:14:57 [INFO ] loom.db: Database closed\n"
+    },
+    {
+      "request_op": "apply",
+      "request_sha256": "00f9376de6eb5d2b088eebaae4fc18cf4ef860f27c897c9951f4b633db30ce99",
+      "response_sha256": "6c7402e9f9a33e9f162922b352d241400045b7a7ff5373d5418e9fc8fe0d497d",
+      "returncode": 0,
+      "ok": false,
+      "error": {
+        "code": "conflict",
+        "message": "onboarding snapshot revision changed; reload before editing"
+      },
+      "stderr": "14:14:57 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-n897c297/profile.db\n14:14:57 [INFO ] loom.db: Database closed\n"
+    },
+    {
+      "request_op": "read",
+      "request_sha256": "b41748757512e526ffae55f4351e4365ec2f65afeaa13d14057051c326bc136f",
+      "response_sha256": "ec8f03e8d97a2ccaae396b8dc80b0a11e7411f926e62e3e2cb8d25c66bc3682e",
+      "returncode": 0,
+      "ok": true,
+      "error": null,
+      "stderr": "14:14:57 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-n897c297/profile.db\n14:14:57 [INFO ] loom.db: Database closed\n"
+    },
+    {
+      "request_op": "apply",
+      "request_sha256": "8a6c428f6dec394056312c5a4ebdbbe6f862279bad56671eeafbd6701280f50b",
+      "response_sha256": "6b3b7d8fc748c7b8ce7f038e8a311600d32fbd3225c632d8c09658fcbdce750b",
+      "returncode": 0,
+      "ok": true,
+      "error": null,
+      "stderr": "14:14:58 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-n897c297/profile.db\n14:14:58 [INFO ] loom.db: Database closed\n"
+    },
+    {
+      "request_op": "apply",
+      "request_sha256": "1f6287a26ec51e414a08efa26447f14d2dd075d1bc4841edc243106a801e931f",
+      "response_sha256": "b402a84173fd0e1930c2eb22806ed0bd988860763d86f81437d567e6e99348d1",
+      "returncode": 0,
+      "ok": true,
+      "error": null,
+      "stderr": "14:14:58 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-n897c297/profile.db\n14:14:59 [INFO ] loom.db: Database closed\n"
+    },
+    {
+      "request_op": "update_pack",
+      "request_sha256": "2dd362018eecae99660e6e4a641b858d80ab973015d47971b47533d7b365a531",
+      "response_sha256": "efaade5a8991533586916b1db1d937cd9a500a62e718da1645a3e4ec291cb320",
+      "returncode": 0,
+      "ok": true,
+      "error": null,
+      "stderr": "14:14:59 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-n897c297/profile.db\n14:15:00 [INFO ] loom.db: Database closed\n"
+    },
+    {
+      "request_op": "read",
+      "request_sha256": "b41748757512e526ffae55f4351e4365ec2f65afeaa13d14057051c326bc136f",
+      "response_sha256": "efaade5a8991533586916b1db1d937cd9a500a62e718da1645a3e4ec291cb320",
+      "returncode": 0,
+      "ok": true,
+      "error": null,
+      "stderr": "14:15:00 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-n897c297/profile.db\n14:15:00 [INFO ] loom.db: Database closed\n"
+    },
+    {
+      "request_op": "update_pack",
+      "request_sha256": "8df181662d5f70882c42e978d50fe2637b44cea7204f513bd8b1f7e31ea3610f",
+      "response_sha256": "e748af3bc1773c8052a368db63e9bfab277d5842fe35a9ad6f138453adb578ec",
+      "returncode": 0,
+      "ok": false,
+      "error": {
+        "code": "conflict",
+        "message": "default layers: pack content changed without a revision increment"
+      },
+      "stderr": "14:15:00 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-n897c297/profile.db\n14:15:00 [INFO ] loom.db: Database closed\n"
+    },
+    {
+      "request_op": "read",
+      "request_sha256": "b41748757512e526ffae55f4351e4365ec2f65afeaa13d14057051c326bc136f",
+      "response_sha256": "efaade5a8991533586916b1db1d937cd9a500a62e718da1645a3e4ec291cb320",
+      "returncode": 0,
+      "ok": true,
+      "error": null,
+      "stderr": "14:15:00 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-n897c297/profile.db\n14:15:00 [INFO ] loom.db: Database closed\n"
+    },
+    {
+      "request_op": "update_pack",
+      "request_sha256": "4bd67982c0396838eca5be26008405183df30b1d6187f5c16621c07fbf77c2c2",
+      "response_sha256": "f9e773a746f099f462fb3f33063da56546f26e482882640bc33ffe14fb71b575",
+      "returncode": 0,
+      "ok": false,
+      "error": {
+        "code": "conflict",
+        "message": "default layers: duplicate default id or key"
+      },
+      "stderr": "14:15:01 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-n897c297/profile.db\n14:15:01 [INFO ] loom.db: Database closed\n"
+    },
+    {
+      "request_op": "read",
+      "request_sha256": "b41748757512e526ffae55f4351e4365ec2f65afeaa13d14057051c326bc136f",
+      "response_sha256": "efaade5a8991533586916b1db1d937cd9a500a62e718da1645a3e4ec291cb320",
+      "returncode": 0,
+      "ok": true,
+      "error": null,
+      "stderr": "14:15:01 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-n897c297/profile.db\n14:15:01 [INFO ] loom.db: Database closed\n"
+    },
+    {
+      "request_op": "update_pack",
+      "request_sha256": "0182f52ceb93450f2a902ec4faf036d46f0e910972033a2d9caeea1dcb149fbc",
+      "response_sha256": "10f34c8d12d87945231971449e5d3ca68a59a708a9c64d9915d8669bcd941422",
+      "returncode": 0,
+      "ok": false,
+      "error": {
+        "code": "conflict",
+        "message": "default layers: stable key reused by another id: preference.style"
+      },
+      "stderr": "14:15:01 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-n897c297/profile.db\n14:15:01 [INFO ] loom.db: Database closed\n"
+    },
+    {
+      "request_op": "read",
+      "request_sha256": "b41748757512e526ffae55f4351e4365ec2f65afeaa13d14057051c326bc136f",
+      "response_sha256": "efaade5a8991533586916b1db1d937cd9a500a62e718da1645a3e4ec291cb320",
+      "returncode": 0,
+      "ok": true,
+      "error": null,
+      "stderr": "14:15:01 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-n897c297/profile.db\n14:15:01 [INFO ] loom.db: Database closed\n"
+    },
+    {
+      "request_op": "apply",
+      "request_sha256": "b5a3ba03a9d5b206bdcf472674501f8aaba5846b5c58beb9b1b7d0d812ef2a6b",
+      "response_sha256": "b9caeeb5e01dc77d198542bb3a6b698af4a6e19d3ee5bef47f34051d05521af8",
+      "returncode": 0,
+      "ok": true,
+      "error": null,
+      "stderr": "14:15:01 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-n897c297/profile.db\n14:15:02 [INFO ] loom.db: Database closed\n"
+    },
+    {
+      "request_op": "apply",
+      "request_sha256": "bae6e52b67a69bdd1ba9851d06c958ad2e2bb9dd5aff3c9b8bee390d833a7f7e",
+      "response_sha256": "97861bc918ac221c2411d36fb3facecaa1ecff6ce6e7f58746959d2a39778033",
+      "returncode": 0,
+      "ok": true,
+      "error": null,
+      "stderr": "14:15:02 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-n897c297/profile.db\n14:15:03 [INFO ] loom.db: Database closed\n"
+    },
+    {
+      "request_op": "read",
+      "request_sha256": "b41748757512e526ffae55f4351e4365ec2f65afeaa13d14057051c326bc136f",
+      "response_sha256": "97861bc918ac221c2411d36fb3facecaa1ecff6ce6e7f58746959d2a39778033",
+      "returncode": 0,
+      "ok": true,
+      "error": null,
+      "stderr": "14:15:03 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-n897c297/profile.db\n14:15:03 [INFO ] loom.db: Database closed\n"
+    },
+    {
+      "request_op": "open",
+      "request_sha256": "eff36aa8d309d0161e29903ca3badaa609789c542a205035c2ec4b2daca1ccc5",
+      "response_sha256": "daa7c945a90a0aa5b84873f8c98c058e3a39cf13d6222f4f156b1e541742328c",
+      "returncode": 0,
+      "ok": true,
+      "error": null,
+      "stderr": "14:15:03 [INFO ] loom.db: Schema upgraded: v0 -> v4\n14:15:03 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-n897c297/legacy-import.db\n14:15:04 [INFO ] loom.db: Database closed\n"
+    },
+    {
+      "request_op": "open",
+      "request_sha256": "386ce64e5f911920b3657ac93d935880492a1b61acbb134fa6cf9c6bc214aaf4",
+      "response_sha256": "5a11f4d8beb9ccc84f9f4e831b604dff2da94d6dd2443628d1d881bf77feffdb",
+      "returncode": 0,
+      "ok": false,
+      "error": {
+        "code": "unsupported",
+        "message": "newer onboarding profile is not downgraded"
+      },
+      "stderr": "14:15:04 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-n897c297/profile.db\n14:15:04 [INFO ] loom.db: Database closed\n"
+    },
+    {
+      "request_op": "open",
+      "request_sha256": "d8610a0d143adec1eaeb3992ee8a1379c2fd36ab93e5988eb22674f352abdb4f",
+      "response_sha256": "a6f602c0783eb22c42f07db57bae602f30897bcb7c531e94fab7e72c90c0f72a",
+      "returncode": 0,
+      "ok": true,
+      "error": null,
+      "stderr": "14:15:04 [INFO ] loom.db: Schema upgraded: v0 -> v4\n14:15:04 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-n897c297/recipe.db\n14:15:05 [INFO ] loom.db: Database closed\n"
+    },
+    {
+      "request_op": "apply",
+      "request_sha256": "274907b18fa3dd19ad8c3946f5abb4d85f8de488a81e0659241a3502cc3500e1",
+      "response_sha256": "841d8b775e15528d4fd4eb875ee7f501095157d7c4f75b2df7917d27585babfe",
+      "returncode": 0,
+      "ok": true,
+      "error": null,
+      "stderr": "14:15:05 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-n897c297/recipe.db\n14:15:05 [INFO ] loom.db: Database closed\n"
+    },
+    {
+      "request_op": "request",
+      "request_sha256": "3a2654125caedacaa5f102c70da067171edd0c686dfb521a2d922dc49a791025",
+      "response_sha256": "b251c28b179d14beacd07a4b372b5feb268f474ee515f199b8876fffebe7f8ec",
+      "returncode": 0,
+      "ok": true,
+      "error": null,
+      "stderr": "14:15:06 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-n897c297/recipe.db\n14:15:06 [INFO ] loom.db: Database closed\n"
+    },
+    {
+      "request_op": "apply",
+      "request_sha256": "3d6c1e44f41ec525a2871e4be96eb52c949caf6c5f464080efc7f30d87beb8be",
+      "response_sha256": "7ba3a3f48474e2f5948b5ecf3b42132fd0a60f36aac38441ed806b67c73e09e5",
+      "returncode": 0,
+      "ok": true,
+      "error": null,
+      "stderr": "14:15:06 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-n897c297/recipe.db\n14:15:07 [INFO ] loom.db: Database closed\n"
+    },
+    {
+      "request_op": "apply",
+      "request_sha256": "cc3e30e334687c5b742a48c3010fa932b93ca30e53d03ebf64ba55cd7bf01dd7",
+      "response_sha256": "e688fa8a470b84c01cf3453abc7b3ce99d1c154742cd9bf88c106129683eb072",
+      "returncode": 0,
+      "ok": true,
+      "error": null,
+      "stderr": "14:15:07 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-n897c297/recipe.db\n14:15:08 [INFO ] loom.db: Database closed\n"
+    },
+    {
+      "request_op": "request",
+      "request_sha256": "3a2654125caedacaa5f102c70da067171edd0c686dfb521a2d922dc49a791025",
+      "response_sha256": "ae9f84405bfc551071d90a25607b5621daf3a5cdab57e0ccd3522fdff3559ab5",
+      "returncode": 0,
+      "ok": true,
+      "error": null,
+      "stderr": "14:15:08 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-n897c297/recipe.db\n14:15:08 [INFO ] loom.db: Database closed\n"
+    },
+    {
+      "request_op": "graph",
+      "request_sha256": "b5e30d6fb0ae030b89a8d93bd1b1969c0f8a4e563aaeb0f77a9d34ea0d083ca5",
+      "response_sha256": "5b66e2a89746d597668ea9335a6212ec228a19c29ff50c7fa75a9104da279bec",
+      "returncode": 0,
+      "ok": true,
+      "error": null,
+      "stderr": "14:15:09 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-n897c297/recipe.db\n14:15:09 [INFO ] loom.db: Database closed\n"
+    },
+    {
+      "request_op": "read",
+      "request_sha256": "b02782377b797b3145fe9d6ae968cef10753fb704c9134bf7e1d10d8443c678a",
+      "response_sha256": "e688fa8a470b84c01cf3453abc7b3ce99d1c154742cd9bf88c106129683eb072",
+      "returncode": 0,
+      "ok": true,
+      "error": null,
+      "stderr": "14:15:09 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-n897c297/recipe.db\n14:15:09 [INFO ] loom.db: Database closed\n"
+    },
+    {
+      "request_op": "open",
+      "request_sha256": "61528c619cd9853eeff4442b0d91f03d8f76defc8ad3108acb5154951655d98f",
+      "response_sha256": "b5be93ef69fcb7495d1fc7ecb50eadddb41b25bfa1d700e3bba61ba13510323a",
+      "returncode": 0,
+      "ok": true,
+      "error": null,
+      "stderr": "14:15:09 [INFO ] loom.db: Schema upgraded: v0 -> v4\n14:15:09 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-n897c297/privacy-caps.db\n14:15:10 [INFO ] loom.db: Database closed\n"
+    },
+    {
+      "request_op": "apply",
+      "request_sha256": "495d30b5293d910b85cc3a0ed5603beb1012304159efcfd112902f5df633f436",
+      "response_sha256": "b1aafba004a00089b62f69c3739322a98fee1b094a26998a2f206c07fd9cc667",
+      "returncode": 0,
+      "ok": true,
+      "error": null,
+      "stderr": "14:15:10 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-n897c297/privacy-caps.db\n14:15:11 [INFO ] loom.db: Database closed\n"
+    },
+    {
+      "request_op": "policy",
+      "request_sha256": "6d16f40749dd7823273dd706064c212defb6a505dc958197c1fb94ea83b95df1",
+      "response_sha256": "343f0872b341497cf00c0ca34671b0d2cc3f671113d8b9e8026e332b96bc9478",
+      "returncode": 0,
+      "ok": true,
+      "error": null,
+      "stderr": "14:15:11 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-n897c297/privacy-caps.db\n14:15:11 [INFO ] loom.db: Database closed\n"
+    },
+    {
+      "request_op": "apply",
+      "request_sha256": "50e5f6899c01303e20f8ee72dec442ca28fad7a7372c2fa867a91cd45b0765db",
+      "response_sha256": "4f74db0fdcd1855e7ea028b283aec25973008b5194b1e60689ad2012d3d6e968",
+      "returncode": 0,
+      "ok": true,
+      "error": null,
+      "stderr": "14:15:11 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-n897c297/privacy-caps.db\n14:15:12 [INFO ] loom.db: Database closed\n"
+    },
+    {
+      "request_op": "policy",
+      "request_sha256": "8491580e8da66227bd0a5c9ad68016ffb4b52ce0ac3253a9598a20ba985e9aea",
+      "response_sha256": "57e1d266c4e209925c6cee1880b7a4d2ac81d41b99c4b5eb34c8e5ab3dcb6be7",
+      "returncode": 0,
+      "ok": true,
+      "error": null,
+      "stderr": "14:15:12 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-n897c297/privacy-caps.db\n14:15:12 [INFO ] loom.db: Database closed\n"
+    },
+    {
+      "request_op": "policy",
+      "request_sha256": "1c6b341bd1dbda244dd830dc46c083f4aa3b37186dbf0bcdb025d8b5daa22fc1",
+      "response_sha256": "57e1d266c4e209925c6cee1880b7a4d2ac81d41b99c4b5eb34c8e5ab3dcb6be7",
+      "returncode": 0,
+      "ok": true,
+      "error": null,
+      "stderr": "14:15:12 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-n897c297/privacy-caps.db\n14:15:12 [INFO ] loom.db: Database closed\n"
+    },
+    {
+      "request_op": "apply",
+      "request_sha256": "c20a80436ccc7685d55d6bdb51f895c8a93d01ec6510295b59fe7380ab34964e",
+      "response_sha256": "25787ed3b7a91f7810faae2aa1b5999ea8a07b81dd1f604ada35e2d6445653e9",
+      "returncode": 0,
+      "ok": true,
+      "error": null,
+      "stderr": "14:15:12 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-n897c297/privacy-caps.db\n14:15:13 [INFO ] loom.db: Database closed\n"
+    },
+    {
+      "request_op": "policy",
+      "request_sha256": "8491580e8da66227bd0a5c9ad68016ffb4b52ce0ac3253a9598a20ba985e9aea",
+      "response_sha256": "1c50bb4b99680a7b09e8344ddf228c1ec14080731f0c421f1fcce8a3a4f2e650",
+      "returncode": 0,
+      "ok": true,
+      "error": null,
+      "stderr": "14:15:13 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-n897c297/privacy-caps.db\n14:15:13 [INFO ] loom.db: Database closed\n"
+    },
+    {
+      "request_op": "policy",
+      "request_sha256": "1c6b341bd1dbda244dd830dc46c083f4aa3b37186dbf0bcdb025d8b5daa22fc1",
+      "response_sha256": "1c50bb4b99680a7b09e8344ddf228c1ec14080731f0c421f1fcce8a3a4f2e650",
+      "returncode": 0,
+      "ok": true,
+      "error": null,
+      "stderr": "14:15:13 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-n897c297/privacy-caps.db\n14:15:13 [INFO ] loom.db: Database closed\n"
+    }
+  ],
+  "counts": {
+    "PASS": 26,
+    "FAIL": 5,
+    "BLOCKED": 0,
+    "NOT_REPRODUCED": 0
+  },
+  "limitations": [
+    "Only supplied synthetic values and 5 normalization samples; migration candidate is audit-only and not shipped.",
+    "Native legacy-profile import is not full backup of outer layers, exclusions, workflow or UI state.",
+    "Basic/Advanced/Expert browser paths are outside this native harness."
+  ]
+}

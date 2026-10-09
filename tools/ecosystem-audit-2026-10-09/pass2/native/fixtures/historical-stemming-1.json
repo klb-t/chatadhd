@@ -1,0 +1,270 @@
+{
+  "schema": "loom.kb.stemming/1",
+  "description": "Light stemmers for match keys (never for display). The algorithm is code (kb::Normalizer, documented in include/loom/kb.h); these are its tables. A token is Polish when it has a Polish diacritic, is a Polish stop word or exception form, or ends with one of pl.markers (checked only from pl.min_token code points); otherwise English. Stemming: exception form -> fixed key; tokens shorter than min_token are kept; the longest matching rewrite is applied; then the longest suffix whose removal keeps min_stem code points is stripped once, except a suffix that ends one of keep_endings when the token ends with that ending ('class', 'status', 'analysis' keep their 's'). After a verbal suffix the stem must keep a vowel ('string' stays), a doubled final consonant other than l/s/z is undoubled ('running' -> 'run'), a restore_e ending gets its 'e' back ('created' -> 'create') and a one-syllable consonant-vowel-consonant stem gets an 'e' ('stored' -> 'store'). Keys are then diacritic-folded. Exception values are the keys the algorithm itself gives the base form, so exception and regular forms agree ('wersji', 'wersjach' -> 'wersj').",
+  "fold": {
+    "ą": "a",
+    "ć": "c",
+    "ę": "e",
+    "ł": "l",
+    "ń": "n",
+    "ó": "o",
+    "ś": "s",
+    "ź": "z",
+    "ż": "z",
+    "á": "a",
+    "à": "a",
+    "â": "a",
+    "ä": "a",
+    "é": "e",
+    "è": "e",
+    "ê": "e",
+    "ë": "e",
+    "í": "i",
+    "ï": "i",
+    "ö": "o",
+    "ô": "o",
+    "ü": "u",
+    "ú": "u",
+    "ç": "c",
+    "ñ": "n",
+    "š": "s",
+    "č": "c",
+    "ř": "r",
+    "ž": "z"
+  },
+  "pl": {
+    "min_token": 5,
+    "min_stem": 4,
+    "markers": [
+      "cji",
+      "cja",
+      "cjach",
+      "cjami",
+      "cjom",
+      "zji",
+      "zja",
+      "zjach",
+      "sji",
+      "sja",
+      "sjach",
+      "ości",
+      "ością",
+      "ościami",
+      "owania",
+      "owanie",
+      "owaniu",
+      "owaniem",
+      "owie",
+      "ami",
+      "owi",
+      "ych",
+      "ymi",
+      "iej",
+      "ów"
+    ],
+    "rewrite": [
+      {
+        "suffix": "acji",
+        "to": "acja"
+      },
+      {
+        "suffix": "cji",
+        "to": "cja"
+      },
+      {
+        "suffix": "zji",
+        "to": "zja"
+      },
+      {
+        "suffix": "sji",
+        "to": "sja"
+      },
+      {
+        "suffix": "ń",
+        "to": "ni"
+      }
+    ],
+    "suffixes": [
+      "owaniem",
+      "owanie",
+      "owania",
+      "owaniu",
+      "ościami",
+      "ościach",
+      "ością",
+      "ości",
+      "ość",
+      "owie",
+      "ami",
+      "ach",
+      "owi",
+      "ów",
+      "om",
+      "ego",
+      "emu",
+      "ymi",
+      "ich",
+      "ych",
+      "iej",
+      "iem",
+      "ej",
+      "em",
+      "ym",
+      "im",
+      "ą",
+      "ę",
+      "y",
+      "i",
+      "a",
+      "u",
+      "e",
+      "o",
+      "ie"
+    ],
+    "exceptions": {
+      "dane": "dane",
+      "danych": "dane",
+      "danymi": "dane",
+      "danym": "dane",
+      "graf": "graf",
+      "grafu": "graf",
+      "grafie": "graf",
+      "grafem": "graf",
+      "grafy": "graf",
+      "grafów": "graf",
+      "czat": "czat",
+      "czatu": "czat",
+      "czacie": "czat",
+      "czatem": "czat",
+      "czaty": "czat",
+      "czatów": "czat",
+      "loomem": "loom",
+      "loomie": "loom",
+      "looma": "loom",
+      "loomu": "loom",
+      "androida": "android",
+      "androidzie": "android",
+      "androidem": "android",
+      "pamięci": "pamiec",
+      "pamięć": "pamiec",
+      "pamięcią": "pamiec",
+      "wersja": "wersj",
+      "wersji": "wersj",
+      "wersję": "wersj",
+      "wersją": "wersj",
+      "wersje": "wersj",
+      "wersjach": "wersj",
+      "wersjami": "wersj",
+      "potok": "potok",
+      "potoku": "potok",
+      "potoki": "potok",
+      "potoków": "potok",
+      "moduł": "modul",
+      "modułów": "modul",
+      "moduły": "modul",
+      "modułu": "modul",
+      "modułem": "modul",
+      "grafik": "grafik",
+      "grafika": "grafik",
+      "grafiki": "grafik",
+      "wiedzy": "wiedz",
+      "wiedza": "wiedz",
+      "wiedzę": "wiedz",
+      "wiedzą": "wiedz"
+    }
+  },
+  "en": {
+    "min_token": 4,
+    "min_stem": 3,
+    "rewrite": [
+      {
+        "suffix": "ies",
+        "to": "y"
+      },
+      {
+        "suffix": "ied",
+        "to": "y"
+      },
+      {
+        "suffix": "sses",
+        "to": "ss"
+      },
+      {
+        "suffix": "xes",
+        "to": "x"
+      },
+      {
+        "suffix": "ches",
+        "to": "ch"
+      },
+      {
+        "suffix": "shes",
+        "to": "sh"
+      },
+      {
+        "suffix": "zzes",
+        "to": "zz"
+      },
+      {
+        "suffix": "ational",
+        "to": "ate"
+      },
+      {
+        "suffix": "izations",
+        "to": "ize"
+      },
+      {
+        "suffix": "ization",
+        "to": "ize"
+      }
+    ],
+    "suffixes": [
+      "ing",
+      "ed",
+      "s"
+    ],
+    "keep_endings": [
+      "ss",
+      "us",
+      "is"
+    ],
+    "verbal": [
+      "ing",
+      "ed"
+    ],
+    "restore_e": [
+      "at",
+      "bl",
+      "iz"
+    ],
+    "markers": [],
+    "exceptions": {
+      "data": "data",
+      "status": "status",
+      "process": "process",
+      "analysis": "analysis",
+      "series": "series",
+      "news": "news",
+      "loss": "loss",
+      "class": "class",
+      "access": "access",
+      "address": "address",
+      "canvas": "canvas",
+      "alias": "alias",
+      "aliases": "alias",
+      "indices": "index",
+      "matrices": "matrix",
+      "movies": "movie",
+      "cookies": "cookie",
+      "speed": "speed",
+      "need": "need",
+      "feed": "feed",
+      "seed": "seed",
+      "indeed": "indeed",
+      "hundred": "hundred",
+      "embedded": "embed",
+      "treated": "treat",
+      "treating": "treat"
+    }
+  }
+}

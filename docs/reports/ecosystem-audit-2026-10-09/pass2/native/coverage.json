@@ -1,0 +1,245 @@
+{
+  "repo": "klb-t/chatadhd",
+  "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "kind": "selected function ranges plus real native path execution; not whole-file semantic audit",
+  "paths": [
+    {
+      "file": "loom/src/kb/pack.cpp",
+      "ranges": [
+        [
+          370,
+          410
+        ],
+        [
+          1200,
+          1260
+        ],
+        [
+          1677,
+          1708
+        ],
+        [
+          1752,
+          1880
+        ]
+      ],
+      "functions": [
+        "v_stemming",
+        "validate_document dispatch",
+        "validate_cross_references normalization refs",
+        "Pack::from_documents/load_builtin/load_dir/load_with_overlay"
+      ],
+      "untraced_calls": [
+        "other per-schema validators outside stemming",
+        "non-normalization cross references"
+      ]
+    },
+    {
+      "file": "loom/src/onboarding/store.cpp",
+      "ranges": [
+        [
+          19,
+          237
+        ],
+        [
+          245,
+          463
+        ]
+      ],
+      "functions": [
+        "effective_scenario",
+        "defaults_for",
+        "decorate",
+        "version_checked",
+        "apply_operational_defaults",
+        "sync_preferences",
+        "enforce_layer_retention",
+        "OnboardingStore all methods"
+      ],
+      "untraced_calls": [
+        "full runtime_profile_values schema vocabulary",
+        "all user retention category combinations"
+      ]
+    },
+    {
+      "file": "loom/src/onboarding/layers.cpp",
+      "ranges": [
+        [
+          10,
+          324
+        ]
+      ],
+      "functions": [
+        "validate_pack",
+        "initialise",
+        "migrate",
+        "create",
+        "resolve_raw",
+        "dispatch",
+        "update_pack"
+      ],
+      "untraced_calls": [
+        "all locale presentation values"
+      ]
+    },
+    {
+      "file": "loom/src/onboarding/profile.cpp",
+      "ranges": [
+        [
+          135,
+          155
+        ],
+        [
+          196,
+          287
+        ],
+        [
+          435,
+          445
+        ],
+        [
+          510,
+          644
+        ]
+      ],
+      "functions": [
+        "event_identity",
+        "privacy_decision",
+        "ProfileSession::create selected ranges",
+        "settings action",
+        "model_request",
+        "ingest_model_reply"
+      ],
+      "untraced_calls": [
+        "all answer/review/delete/privacy-retention branches outside listed ranges"
+      ]
+    },
+    {
+      "file": "loom/src/onboarding/graph.cpp",
+      "ranges": [
+        [
+          161,
+          241
+        ],
+        [
+          490,
+          552
+        ]
+      ],
+      "functions": [
+        "import_method_profile",
+        "actual_run",
+        "method binding projection and retained method_executions"
+      ],
+      "untraced_calls": [
+        "full profile-field projection outside listed ranges"
+      ]
+    },
+    {
+      "file": "loom/server/src/onboarding-ui-routes.h",
+      "ranges": [
+        [
+          18,
+          150
+        ]
+      ],
+      "functions": [
+        "fields",
+        "revision",
+        "envelope",
+        "dispatch",
+        "register_onboarding_ui_routes"
+      ],
+      "untraced_calls": [
+        "HTTP listener/auth transport",
+        "browser tier state outside native module"
+      ]
+    },
+    {
+      "file": "loom/src/kb/graph_packet_store.cpp",
+      "ranges": [
+        [
+          17,
+          234
+        ]
+      ],
+      "functions": [
+        "index_packet",
+        "select_rows",
+        "exact_projection",
+        "validate_rows"
+      ],
+      "untraced_calls": [
+        "remainder delegated to pass2/c-review native independent suite"
+      ]
+    },
+    {
+      "file": "loom/include/loom/kb.h",
+      "ranges": [
+        [
+          147,
+          290
+        ]
+      ],
+      "functions": [
+        "Pack/Normalizer contract"
+      ],
+      "untraced_calls": []
+    },
+    {
+      "file": "loom/include/loom/onboarding_store.h",
+      "ranges": [
+        [
+          1,
+          48
+        ]
+      ],
+      "functions": [
+        "native store contract"
+      ],
+      "untraced_calls": []
+    },
+    {
+      "file": "loom/include/loom/onboarding_layers.h",
+      "ranges": [
+        [
+          1,
+          53
+        ]
+      ],
+      "functions": [
+        "layer contract"
+      ],
+      "untraced_calls": []
+    },
+    {
+      "file": "loom/include/loom/graph_packet_store.h",
+      "ranges": [
+        [
+          1,
+          26
+        ]
+      ],
+      "functions": [
+        "graph store contract"
+      ],
+      "untraced_calls": []
+    }
+  ],
+  "runtime_paths_closed": [
+    "historical Pack.load_dir→validate_document→explicit error",
+    "historical overlay→Pack.load_with_overlay→explicit schema mismatch",
+    "audit candidate /2→actual Pack/Normalizer samples",
+    "open/apply→native graph projection→SQLite→process exit→read",
+    "exclude/disable→update_pack→new process read",
+    "candidate reply→method execution snapshot→prompt override→graph reproject→old result method edge retained",
+    "request lower/omitted detail or sensitivity→actual native policy_decision"
+  ],
+  "unverified": [
+    "Full profile+layers+workflow export/import protocol (legacy_profile import is narrower)",
+    "Basic/Advanced/Expert actual browser consumers",
+    "all normalization vocabulary/algorithm equivalence against historical executable",
+    "pack schema/1 automatic product migration (not present in traced path)",
+    "ASan/UBSan pending B build scheduling"
+  ]
+}
