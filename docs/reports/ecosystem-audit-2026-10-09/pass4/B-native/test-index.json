@@ -1,0 +1,87 @@
+{
+  "schema": "ecosystem-audit.test-index/1",
+  "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+  "commands": [
+    {
+      "id": "B4-NATIVE",
+      "tool": "tools/ecosystem-audit-2026-10-09/pass4/B-native/run.py",
+      "argv": [
+        "--repo",
+        "{checkout}",
+        "--sha",
+        "{sha}",
+        "--manifest",
+        "{native_object_manifest}",
+        "--out",
+        "{output}"
+      ],
+      "receipt": "receipt.json",
+      "categories": [
+        "repair",
+        "contract",
+        "integration",
+        "reproduction"
+      ],
+      "expected_current_exit": 1,
+      "checks": 23
+    },
+    {
+      "id": "B4-NATIVE-FRESH-BUILD",
+      "tool": "tools/ecosystem-audit-2026-10-09/pass4/B-native/run.py",
+      "argv": [
+        "--repo",
+        "{checkout}",
+        "--sha",
+        "{sha}",
+        "--build-dir",
+        "{fresh_build}",
+        "--build-receipt",
+        "{full_build_receipt}",
+        "--out",
+        "{output}"
+      ],
+      "prerequisite": "record_full_build.py executes configured current loom_core build and records complete source/command/archive provenance",
+      "status": "available wrapper; full alternate build not executed in pass4",
+      "categories": [
+        "repair",
+        "contract",
+        "integration",
+        "reproduction"
+      ]
+    },
+    {
+      "id": "B4-RELOCATION-MIN",
+      "tool": "tools/ecosystem-audit-2026-10-09/pass4/B-native/relocation.py",
+      "argv": [
+        "--repo",
+        "{checkout}",
+        "--sha",
+        "{sha}",
+        "--driver",
+        "{output}/driver",
+        "--out",
+        "{output}/relocation.json"
+      ],
+      "receipt": "relocation-gate.json",
+      "categories": [
+        "reproduction",
+        "contract"
+      ],
+      "acceptance_current": "FAIL",
+      "expected_current_exit": 1,
+      "phase": "both (default); --phase reproduction intentionally gates reproduction only"
+    },
+    {
+      "id": "B4-PROFILE-GENERATOR",
+      "cwd": "{checkout}",
+      "argv": [
+        "python",
+        "loom/src/model/gen_runtime_profiles.py",
+        "--check"
+      ],
+      "executed_exit": 0,
+      "category": "contract"
+    }
+  ],
+  "prerequisite": "Documented pinned selective native build or verified current equivalent; no stale library reuse permitted."
+}

@@ -1,0 +1,25 @@
+{
+  "phase": "pass4 B-native",
+  "status": "complete within named scope",
+  "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+  "checks": 23,
+  "PASS": 18,
+  "FAIL": 3,
+  "BLOCKED": 2,
+  "separate_minimal_relocation": {
+    "reproduction": "PASS",
+    "acceptance": "FAIL",
+    "calls": 7
+  },
+  "publication": "root pending",
+  "product_edits": false,
+  "paid_calls": 0,
+  "resume": "Use exact index against B repair; connect ordinary conversation/profile consumers, fix 7-byte relocation, then real interrupted indexing gate.",
+  "gate_hardening_rerun": {
+    "calls": 7,
+    "receipt": "relocation-gate.json",
+    "phase": "both",
+    "exit": 1,
+    "reason": "acceptance failure must not be masked by successful reproduction"
+  }
+}

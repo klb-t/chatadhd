@@ -1,0 +1,37 @@
+{
+  "prior_sha": "384c5e1686cd3a58a7d89a8a6813a18c764f697d",
+  "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+  "files": [
+    {
+      "path": "loom/src/context/method_registry.cpp",
+      "old_blob": "015e1a2f110c8b64803ebdfa2be0cde9f4fc78ac",
+      "current_blob": "015e1a2f110c8b64803ebdfa2be0cde9f4fc78ac",
+      "unchanged": true
+    },
+    {
+      "path": "loom/src/import/export_unknown.cpp",
+      "old_blob": "d5412411410cbf6c17d1d1e76216d2799dba0f3e",
+      "current_blob": "d5412411410cbf6c17d1d1e76216d2799dba0f3e",
+      "unchanged": true
+    },
+    {
+      "path": "loom/src/catalog/import.cpp",
+      "old_blob": "e341ee4ff073c6616ed010e75773f99bb7f621db",
+      "current_blob": "e341ee4ff073c6616ed010e75773f99bb7f621db",
+      "unchanged": true
+    },
+    {
+      "path": "loom/src/import/export_openai.cpp",
+      "old_blob": "4fbcd2a7230283924694190b27f9287e9c58767d",
+      "current_blob": "4fbcd2a7230283924694190b27f9287e9c58767d",
+      "unchanged": true
+    },
+    {
+      "path": "loom/src/import/export_anthropic.cpp",
+      "old_blob": "fbf62ffab71a62f36dfb7a686163bd9bae9e71ca",
+      "current_blob": "fbf62ffab71a62f36dfb7a686163bd9bae9e71ca",
+      "unchanged": true
+    }
+  ],
+  "interpretation": "No blind rerun of old discovery tests. C4 changed packet tested separately in C-boundary; native catalog paths retested because new shared resource consumer is added."
+}

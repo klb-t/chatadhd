@@ -1,0 +1,48 @@
+{
+  "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+  "prior_sha": "384c5e1686cd3a58a7d89a8a6813a18c764f697d",
+  "items": [
+    {
+      "id": "CH-RES-N001",
+      "status": "częściowo",
+      "test": "CH-RES-N001-ACCEPT FAIL; A4-B-RESOURCE-LINK PASS",
+      "scope": "new graph path passes; ordinary path remains placeholder"
+    },
+    {
+      "id": "CH-RES-N002",
+      "status": "częściowo",
+      "test": "CH-RES-N002-ACCEPT FAIL; A4-B-RESOURCE-COPY PASS",
+      "scope": "new graph path preserves parent; old copy consumer remains flat"
+    },
+    {
+      "id": "CH-RES-G001",
+      "status": "naprawione",
+      "test": "A4-B-VIEW-HEADLESS and A4-B-GRAPH-STORE PASS",
+      "scope": "native preview/registered task and actual Database only; browser separate"
+    },
+    {
+      "id": "CH-RES-G002",
+      "status": "częściowo",
+      "test": "A4-B-PROFILE-RUNTIME PASS; A4-B-GRAPH-FIELD-ACTIVATION BLOCKED",
+      "scope": "same explicit bound file; no graph-edit resolver activation"
+    },
+    {
+      "id": "CH-RES-G003",
+      "status": "niezweryfikowane",
+      "test": "A4-B-INDEPENDENT-POLICIES BLOCKED",
+      "scope": "lack public independent policy selection contract"
+    },
+    {
+      "id": "A3-DISC-001",
+      "status": "nadal wadliwe",
+      "test": "previous executed pass3 receipt plus unchanged native source; changed C4 packet execution in C-boundary",
+      "scope": "no new B registry fix, no new blind rerun claimed"
+    },
+    {
+      "id": "A3-DISC-002",
+      "status": "nadal wadliwe",
+      "test": "previous executed pass3 receipt plus unchanged export_unknown blob",
+      "scope": "no new B unknown-interpretation selection fix; not rerun"
+    }
+  ]
+}

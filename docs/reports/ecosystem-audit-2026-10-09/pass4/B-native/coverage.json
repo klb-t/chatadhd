@@ -1,0 +1,257 @@
+{
+  "repo": "klb-t/chatadhd",
+  "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+  "branch_scope": "B4 increment; baseline main denominator unchanged",
+  "named_files": 9,
+  "ranges": [
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "path": "loom/src/catalog/query.cpp",
+      "lines": [
+        169,
+        180
+      ],
+      "function": "Catalog::preview shared projection",
+      "range_sha256": "ef4b2d65c55d15273f1ad24d0a6ae6fdba72e419f1ef2d42baaae5a8484269b9",
+      "review": "source semantic path plus executed real consumer",
+      "untraced_calls": [
+        "No exhaustive error branch, concurrent mutation or device/browser run."
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "path": "loom/src/catalog/query.cpp",
+      "lines": [
+        182,
+        339
+      ],
+      "function": "Catalog::read_resource",
+      "range_sha256": "8907390fe587c79288709d3452519edfcd676138a8d8c88ff1ebe06f5ccc9bd6",
+      "review": "source semantic path plus executed real consumer",
+      "untraced_calls": [
+        "No exhaustive error branch, concurrent mutation or device/browser run."
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "path": "loom/src/catalog/query.cpp",
+      "lines": [
+        341,
+        425
+      ],
+      "function": "Catalog::read_unit verified locator",
+      "range_sha256": "f97ea7ce00843987ef5b8b73a081ac96ac1f87415461d42c90b3cd24930916e5",
+      "review": "source semantic path plus executed real consumer",
+      "untraced_calls": [
+        "No exhaustive error branch, concurrent mutation or device/browser run."
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "path": "loom/src/catalog/scan.cpp",
+      "lines": [
+        89,
+        104
+      ],
+      "function": "register_source/checkpoint_done",
+      "range_sha256": "89c09f5f756b8c1a503b482a7af12457034c5c62afbac2993e2249d4fa9ec833",
+      "review": "source semantic path plus executed real consumer",
+      "untraced_calls": [
+        "No exhaustive error branch, concurrent mutation or device/browser run."
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "path": "loom/src/catalog/scan.cpp",
+      "lines": [
+        130,
+        145
+      ],
+      "function": "ingest_unit dedup",
+      "range_sha256": "3f7b80bdb2e4a6d75752d9e05e20984a481860eef1227960d2f08f9b9434f033",
+      "review": "source semantic path plus executed real consumer",
+      "untraced_calls": [
+        "No exhaustive error branch, concurrent mutation or device/browser run."
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "path": "loom/src/catalog/scan.cpp",
+      "lines": [
+        395,
+        420
+      ],
+      "function": "scan_zip_source checkpoint",
+      "range_sha256": "42118b28459a737f6c96183afba8b89eeaec9c41df97eb221898421c55933616",
+      "review": "source semantic path plus executed real consumer",
+      "untraced_calls": [
+        "No exhaustive error branch, concurrent mutation or device/browser run."
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "path": "loom/src/catalog/scan.cpp",
+      "lines": [
+        429,
+        499
+      ],
+      "function": "Catalog::scan source binding",
+      "range_sha256": "4f3978b34ca1a76156159ad8f277540b5e2f9d3a2e2ed74c4a19683b23092f1d",
+      "review": "source semantic path plus executed real consumer",
+      "untraced_calls": [
+        "No exhaustive error branch, concurrent mutation or device/browser run."
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "path": "loom/src/catalog/import.cpp",
+      "lines": [
+        278,
+        365
+      ],
+      "function": "Catalog::import_selected link/copy consumers",
+      "range_sha256": "6f114053986acff54189f46ed5187b532f5ecc979f28de59ee9833e2a6832729",
+      "review": "source semantic path plus executed real consumer",
+      "untraced_calls": [
+        "No exhaustive error branch, concurrent mutation or device/browser run."
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "path": "loom/src/runtime.cpp",
+      "lines": [
+        229,
+        244
+      ],
+      "function": "Runtime::open task registration",
+      "range_sha256": "04a30d3ac6ccd232dc5e1836ebbc27fc91120586873e1a74929d174383ff4761",
+      "review": "source semantic path plus executed real consumer",
+      "untraced_calls": [
+        "No exhaustive error branch, concurrent mutation or device/browser run."
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "path": "loom/src/model/runtime_profile.cpp",
+      "lines": [
+        279,
+        338
+      ],
+      "function": "RuntimeProfile loader/overlay/inspection",
+      "range_sha256": "e821669b8947c3cfde064a3e9eb202d9900683fc15ce40f7d5897c6c46f61ab4",
+      "review": "source semantic path plus executed real consumer",
+      "untraced_calls": [
+        "No exhaustive error branch, concurrent mutation or device/browser run."
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "path": "loom/src/import/export_openai.cpp",
+      "lines": [
+        445,
+        666
+      ],
+      "function": "parse_openai_conversation topology/order/parent",
+      "range_sha256": "c4d58f952c970f7569a95d0985da7f71388458e4698755c36355715e7964a025",
+      "review": "source semantic path plus executed real consumer",
+      "untraced_calls": [
+        "No exhaustive error branch, concurrent mutation or device/browser run."
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "path": "loom/src/db/db.cpp",
+      "lines": [
+        864,
+        907
+      ],
+      "function": "Database::create_link/get_links",
+      "range_sha256": "bd5578a69817ee147c100dace5efd65823ae5fccdda751f0f3be02ce107b5510",
+      "review": "source semantic path plus executed real consumer",
+      "untraced_calls": [
+        "No exhaustive error branch, concurrent mutation or device/browser run."
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "path": "loom/src/db/db.cpp",
+      "lines": [
+        917,
+        954
+      ],
+      "function": "Database::create_node/get_node",
+      "range_sha256": "164087b0827d455eb4e387b8b7af1d7a004d4db826718c378cf170ff740d2724",
+      "review": "source semantic path plus executed real consumer",
+      "untraced_calls": [
+        "No exhaustive error branch, concurrent mutation or device/browser run."
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "path": "loom/src/core/tasks.cpp",
+      "lines": [
+        302,
+        319
+      ],
+      "function": "TaskEngine::run_sync",
+      "range_sha256": "3f3adb367106a16dfd9abda6f77eadf196a5ca16555f7a36625cc0cc1e322862",
+      "review": "source semantic path plus executed real consumer",
+      "untraced_calls": [
+        "No exhaustive error branch, concurrent mutation or device/browser run."
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "path": "loom/src/core/tasks.cpp",
+      "lines": [
+        371,
+        395
+      ],
+      "function": "TaskEngine::pause/resume",
+      "range_sha256": "12738a27d048367ea75135e363d4e1149322e91573d1c8d28b5793b04d093184",
+      "review": "source semantic path plus executed real consumer",
+      "untraced_calls": [
+        "No exhaustive error branch, concurrent mutation or device/browser run."
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "path": "loom/include/loom/catalog.h",
+      "lines": [
+        257,
+        269
+      ],
+      "function": "Catalog resource public API",
+      "range_sha256": "73f774d7b6ecff755d7ce1a01b142027c059f2887c7d9244ff82a67412b2b361",
+      "review": "source semantic path plus executed real consumer",
+      "untraced_calls": [
+        "No exhaustive error branch, concurrent mutation or device/browser run."
+      ]
+    }
+  ],
+  "definition": "Named ranges, not entirely verified files; root computes union with historical range coverage.",
+  "not_executed": [
+    "remote/nested archive",
+    "in-flight task/process crash",
+    "partial indexing resume",
+    "arbitrary graph-field activation",
+    "independent cache/live/writeback policy",
+    "browser UI"
+  ]
+}

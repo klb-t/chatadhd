@@ -1,0 +1,188 @@
+{
+  "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+  "fixture": "{\"x\":1}",
+  "fixture_bytes": 7,
+  "calls": [
+    {
+      "request": {
+        "op": "scan",
+        "data_dir": "/tmp/a4-relocation-idm72p0y/data",
+        "config": {
+          "sources": [
+            "/tmp/a4-relocation-idm72p0y/old.json"
+          ],
+          "retain_raw": "none"
+        }
+      },
+      "response": {
+        "ok": true,
+        "value": {
+          "units": 1,
+          "new": 1,
+          "unchanged": 0,
+          "refreshed": 0,
+          "input_hash": "383c84cf2827c31ceb3275e2399d044671931e399124ddc29790dcdc1a932bb8",
+          "versions": 0,
+          "bytes": 7,
+          "warnings": []
+        },
+        "blocked_transport_attempts": 0
+      },
+      "exit": 0
+    },
+    {
+      "request": {
+        "op": "query",
+        "data_dir": "/tmp/a4-relocation-idm72p0y/data"
+      },
+      "response": {
+        "ok": true,
+        "value": [
+          {
+            "unit": {
+              "id": "un_406edf3d6cf6840f",
+              "source": "sha256:5041bf1f713df204784353e82f6a4a535931cb64f1f4b4a5aeaffcb720918b22",
+              "kind": "record",
+              "locator": {
+                "source": "sha256:5041bf1f713df204784353e82f6a4a535931cb64f1f4b4a5aeaffcb720918b22",
+                "member": "",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 7,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "title": "",
+              "date": "",
+              "artifact_type": "",
+              "lang": "unknown",
+              "bytes": 7,
+              "attrs": {
+                "catalog_scan_fingerprint": "383c84cf2827c31ceb3275e2399d044671931e399124ddc29790dcdc1a932bb8"
+              }
+            },
+            "platform": "file",
+            "ext_id": "",
+            "content_hash": "5041bf1f713df204784353e82f6a4a535931cb64f1f4b4a5aeaffcb720918b22",
+            "n_msgs": 0,
+            "n_chars": 0,
+            "n_code_chars": 0,
+            "n_forks": 0,
+            "attachments": [],
+            "project_ext_id": "",
+            "head": "",
+            "prev_version": "",
+            "mentions": []
+          }
+        ],
+        "blocked_transport_attempts": 0
+      },
+      "exit": 0
+    },
+    {
+      "request": {
+        "op": "read",
+        "data_dir": "/tmp/a4-relocation-idm72p0y/data",
+        "id": "un_406edf3d6cf6840f"
+      },
+      "response": {
+        "ok": true,
+        "value": "{\"x\":1}",
+        "blocked_transport_attempts": 0
+      },
+      "exit": 0
+    },
+    {
+      "request": {
+        "op": "scan",
+        "data_dir": "/tmp/a4-relocation-idm72p0y/data",
+        "config": {
+          "sources": [
+            "/tmp/a4-relocation-idm72p0y/new.json"
+          ],
+          "retain_raw": "none"
+        }
+      },
+      "response": {
+        "ok": true,
+        "value": {
+          "units": 0,
+          "new": 0,
+          "unchanged": 0,
+          "refreshed": 0,
+          "input_hash": "383c84cf2827c31ceb3275e2399d044671931e399124ddc29790dcdc1a932bb8",
+          "versions": 0,
+          "bytes": 0,
+          "warnings": []
+        },
+        "blocked_transport_attempts": 0
+      },
+      "exit": 0
+    },
+    {
+      "request": {
+        "op": "read",
+        "data_dir": "/tmp/a4-relocation-idm72p0y/data",
+        "id": "un_406edf3d6cf6840f"
+      },
+      "response": {
+        "ok": false,
+        "code": "io",
+        "error": "cannot open /tmp/a4-relocation-idm72p0y/old.json",
+        "blocked_transport_attempts": 0
+      },
+      "exit": 0
+    },
+    {
+      "request": {
+        "op": "scan",
+        "data_dir": "/tmp/a4-relocation-idm72p0y/data",
+        "config": {
+          "sources": [
+            "/tmp/a4-relocation-idm72p0y/new.json"
+          ],
+          "retain_raw": "none",
+          "force": true
+        }
+      },
+      "response": {
+        "ok": true,
+        "value": {
+          "units": 0,
+          "new": 0,
+          "unchanged": 1,
+          "refreshed": 0,
+          "input_hash": "383c84cf2827c31ceb3275e2399d044671931e399124ddc29790dcdc1a932bb8",
+          "versions": 0,
+          "bytes": 0,
+          "warnings": []
+        },
+        "blocked_transport_attempts": 0
+      },
+      "exit": 0
+    },
+    {
+      "request": {
+        "op": "read",
+        "data_dir": "/tmp/a4-relocation-idm72p0y/data",
+        "id": "un_406edf3d6cf6840f"
+      },
+      "response": {
+        "ok": false,
+        "code": "io",
+        "error": "cannot open /tmp/a4-relocation-idm72p0y/old.json",
+        "blocked_transport_attempts": 0
+      },
+      "exit": 0
+    }
+  ],
+  "reproduction": {
+    "status": "PASS"
+  },
+  "acceptance": {
+    "status": "FAIL"
+  },
+  "driver_sha256": "8f45853e4de491e3332a16070e9bc4965b1e046bc6386a31a90b011b33ba8efe",
+  "limitation": "explicit rescan relocation; not unauthorized automatic remote fallback"
+}

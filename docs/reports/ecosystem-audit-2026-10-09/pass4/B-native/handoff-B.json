@@ -1,0 +1,71 @@
+{
+  "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+  "packages": [
+    {
+      "finding_id": "A4-B-RES001",
+      "reproduction": {
+        "receipt": "relocation.json",
+        "fixture_bytes": 7,
+        "fixture": "{\"x\":1}",
+        "steps": [
+          "scan old.json",
+          "read_unit succeeds",
+          "rename old.json→new.json without byte change",
+          "scan new.json succeeds with no warnings",
+          "read_unit existing unit returns Io for old.json",
+          "force=true scan new.json; read_unit still returns Io"
+        ],
+        "acceptance": "FAIL",
+        "reproduction": "PASS"
+      },
+      "expected": {
+        "tool": "relocation.py",
+        "expected": "both ordinary and force rescan let existing pinned unit read identical bytes from explicitly supplied reachable location; old data/version retained",
+        "transport": "local only; actual ScriptedTransport rejects HTTP"
+      },
+      "consumers": [
+        "Catalog::scan/register_source",
+        "Catalog::read_unit",
+        "Catalog::read_resource",
+        "Catalog::preview",
+        "TaskEngine catalog.read_resource"
+      ],
+      "migration": "Existing source_id content hashes and locators are referenced by units/results. Do not rewrite historical source version or merge differing permissions; preserve aliases/history and validate bytes.",
+      "dependencies": [
+        "existing source table/catalog locator contract",
+        "permission metadata for new location"
+      ]
+    },
+    {
+      "finding_id": "CH-RES-N001",
+      "status": "częściowo",
+      "reproduction": "run.py CH-RES-N001-REPRO PASS",
+      "expected": "same source conversation accessible through ordinary referenced conversation consumer, with source branch graph retained",
+      "acceptance": "CH-RES-N001-ACCEPT currently FAIL; keep A4-B-RESOURCE-LINK PASS",
+      "consumers": [
+        "Catalog.import_selected(link)",
+        "Database.get_msgs",
+        "ordinary conversation getMessages"
+      ],
+      "migration": "Do not duplicate placeholders/messages on upgrading existing catalogs; preserve source/version provenance and alternative display strategies.",
+      "dependencies": [
+        "existing read_resource projection to be connected"
+      ]
+    },
+    {
+      "finding_id": "CH-RES-N002",
+      "status": "częściowo",
+      "reproduction": "run.py CH-RES-N002-REPRO PASS",
+      "expected": "copy storage choice must preserve source parent edges in ordinary conversation representation",
+      "acceptance": "CH-RES-N002-ACCEPT currently FAIL; keep A4-B-RESOURCE-COPY PASS",
+      "consumers": [
+        "Catalog.import_selected(copy)",
+        "Database.get_msgs"
+      ],
+      "migration": "Keep explicitly flat projection as strategy, not implicit loss coupled to copy; legacy records need provenance-based re-projection.",
+      "dependencies": [
+        "shared source parser/projection"
+      ]
+    }
+  ]
+}

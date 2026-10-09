@@ -1,0 +1,29 @@
+{
+  "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+  "items": [
+    {
+      "id": "A4-B-DEC001",
+      "visibility": "hidden",
+      "decision": "content-hash duplicate keeps first source path permanently",
+      "consumer": "register_source INSERT OR IGNORE",
+      "effect": "explicit relocation inaccessible",
+      "finding": "A4-B-RES001"
+    },
+    {
+      "id": "A4-B-DEC002",
+      "visibility": "documented implementation subset",
+      "decision": "on-demand read persists complete derived projection",
+      "alternatives_status": "independent cache/retention policy not exposed",
+      "finding": "A4-B-M001",
+      "owner_intent_claimed": false
+    },
+    {
+      "id": "A4-B-DEC003",
+      "visibility": "explicit",
+      "decision": "reading unknown/invalid overlay never installs executable profile",
+      "consumer": "read_resource + RuntimeProfile.with_overlay",
+      "test": "A4-B-UNKNOWN-PROFILE PASS",
+      "scope": "local synthetic source; does not prove all discovery permission policies"
+    }
+  ]
+}

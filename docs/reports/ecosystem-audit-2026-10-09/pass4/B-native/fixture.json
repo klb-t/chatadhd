@@ -1,0 +1,85 @@
+{
+  "id": "synthetic-conversation",
+  "title": "Synthetic branch",
+  "create_time": 1700000000,
+  "current_node": "a",
+  "future_conversation": {
+    "unknown": null
+  },
+  "mapping": {
+    "root": {
+      "id": "root",
+      "parent": null,
+      "children": [
+        "u"
+      ],
+      "message": null
+    },
+    "u": {
+      "id": "u",
+      "parent": "root",
+      "children": [
+        "a",
+        "b"
+      ],
+      "message": {
+        "id": "u",
+        "author": {
+          "role": "user"
+        },
+        "content": {
+          "content_type": "text",
+          "parts": [
+            "Question"
+          ]
+        },
+        "create_time": 1700000001,
+        "metadata": {
+          "future": "synthetic-preserved"
+        }
+      }
+    },
+    "a": {
+      "id": "a",
+      "parent": "u",
+      "children": [],
+      "message": {
+        "id": "a",
+        "author": {
+          "role": "assistant"
+        },
+        "content": {
+          "content_type": "text",
+          "parts": [
+            "Answer A"
+          ]
+        },
+        "create_time": 1700000001,
+        "metadata": {
+          "future": "synthetic-preserved"
+        }
+      }
+    },
+    "b": {
+      "id": "b",
+      "parent": "u",
+      "children": [],
+      "message": {
+        "id": "b",
+        "author": {
+          "role": "assistant"
+        },
+        "content": {
+          "content_type": "text",
+          "parts": [
+            "Answer B"
+          ]
+        },
+        "create_time": 1700000001,
+        "metadata": {
+          "future": "synthetic-preserved"
+        }
+      }
+    }
+  }
+}
