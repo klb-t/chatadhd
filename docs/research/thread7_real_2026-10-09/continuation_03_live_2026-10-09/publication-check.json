@@ -1,0 +1,11 @@
+{
+  "schema": "loom.thread7_public_projection_scan/1",
+  "through_commit": "37d40d3d0759552a135ec6576a9065ba0e39bab2",
+  "base": "cb16b336ee0c59a1ff80b4899dadebce33aa7610",
+  "changed_files": 29,
+  "expanded_payloads": 36,
+  "secret_pattern_findings": [],
+  "manual_projection_review": "Changed reports and metadata reviewed; only public code, controlled fixture tests, hash/count/status receipts, public endpoint quote and source-free logs. Exact owner sources/requests/responses and receiver private material excluded.",
+  "limitations": "Pattern scan alone does not establish privacy; separate source/role review and mutation tests are required.",
+  "new_provider_calls": 0
+}

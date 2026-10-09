@@ -1,0 +1,46 @@
+{
+  "schema": "loom.thread7_live_unblock_manifest/1",
+  "base_commit": "cb16b336ee0c59a1ff80b4899dadebce33aa7610",
+  "code_commits": [
+    "a522ff1509c7b6dd733294a2c7b66c56b20c072b",
+    "37d40d3d0759552a135ec6576a9065ba0e39bab2"
+  ],
+  "tested_code_commit": "37d40d3d0759552a135ec6576a9065ba0e39bab2",
+  "previous_stage": "continuation_02",
+  "source_preparations_regenerated": false,
+  "new_quality_trials": 0,
+  "new_cost_usd": "0",
+  "current_key_usage_usd": null,
+  "current_authorized_available_usd": null,
+  "current_reservations_usd": null,
+  "handoff_status": "awaiting_encrypted_envelope",
+  "private_receiver_retained": true,
+  "files": {
+    "FINAL_TESTS.json": "c6eb7ddd0f78cc57f8df2c8b0e6c02fbd6ed4a8945034c871ca1411cd70bd885",
+    "HANDOFF_B.md": "7bcbe2bffa4624e8d9d2ae89d095764a609f745ac9b3ab5e901265a3f8d1768a",
+    "PRIVATE_CHECKPOINT.json": "ec8d3d46d873e03e45948520b63f4f7aa1f512833f0c89edfc0f05b0aebe1fb1",
+    "README.md": "19cb67c659e3edb9aea34ab41516db73286fe3e74df612d9074078e324b6b95f",
+    "START.json": "15d380470ea892e201a3be6ad4b005bb6471f7654df4b925e464bb192ef82272",
+    "archival-effective-ledger-inspection.json": "c4c66ca3e513b4a0795cd80b22bc11c84a48441e15eb33360442702c4060e0c4",
+    "audit-binding-evidence.zip": "8ad7f59ca9de5ce44334e30e4ec90b4e414efe50b7cb9067330b4168046970df",
+    "audit-binding-receipt.json": "e5d14445a95942a9f8c629fe86b4243dfffd985e8f627f8fffecd4654c84c520",
+    "audit-binding.md": "315db95aeba2550e4582068003516c15e28f4f6c46d10b39bccba037e4d41ee8",
+    "gate-evidence.zip": "fdc4858aa95e0ca85718452eba90d2dd5adfbf87459817f565350dc8c68f2c32",
+    "handoff-receipt.json": "1e2dfe2b56aef670ec6c47d5f3c9a1b1a6c7fdd93549fb64ecf1c51caee6de67",
+    "payer-binding-after-reproduction.json": "1ae13ce92a6a4e886b3931f6b5d0284382a6678519a47f76fd17b83554926226",
+    "payer-binding-before-reproduction.json": "7febd36d90775090d7dbd7400bd901c47c9602a56d0e6716b37be831f167cbc6",
+    "payer-binding-receipt.json": "2c0662bb905306a78ef2078bab5934ac5fd346e6049043010fc8f4de88423ba7",
+    "payer-binding-report.md": "8a4dd77a624e55c7f47c5afd736c2afa01e0fd7b9d09c3f469d55520eff6556b",
+    "payer-binding-tests.log.gz": "283fdb3a3b4a65e709684b07bab2e9b695175214576ef81e3880d2794ef6b3e7",
+    "public-input-review-v1.json": "f3cd81cec6c0fde00f0a591e53920ba74c55af811e9cfceb00831177933c8f05",
+    "public-price-quote.json": "3a5f72e45102b4aa3c723be0b122d49f629b881e9c5cd3c17b2c8ebc6fb43cd0",
+    "public-projection-recheck-v2.json": "aaa1dd913b56d238b064edd9f148edff9471a6413a10de525f8d98201996434f",
+    "public-projection-recheck.json": "cada2ace996cd87f14758d408eac3d2861889e824c454dd83050606074738870",
+    "public-projection-recheck.md": "a9101f4e27d660d8568e002a8927b75e0174ef8e9773fabe0d6c180fd8e8ac72",
+    "publication-check.json": "103b4255d03680659ecaaafa69ac47dc56473b5da87bb8368288ae0ac2bbaf17"
+  },
+  "final_report": {
+    "path": "docs/reports/thread7-real-live-unblock-2026-10-09.md",
+    "sha256": "fe20562340b670c48171c2fcb3279dae2bad4eb053423fefb174888cac618c5f"
+  }
+}

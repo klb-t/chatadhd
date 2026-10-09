@@ -1,0 +1,112 @@
+{
+  "schema": "loom.thread7_final_tests/3",
+  "tested_code_commit": "37d40d3d0759552a135ec6576a9065ba0e39bab2",
+  "structure": {
+    "entries": [
+      {
+        "cases": 1597,
+        "classification": "executed",
+        "discovered_cases": 1597,
+        "name": "research.structure",
+        "skipped_cases": 0
+      }
+    ],
+    "errors": [],
+    "executed_entries": 1,
+    "executed_native_assertions": 0,
+    "executed_native_cases": 0,
+    "executed_python_cases": 1597,
+    "input_sha256": {
+      "junit": "592db115a69a0fd04a6980b6b24658aee219e026df271731ac51d4380b572028",
+      "manifest": "519b9dd498fa3b56848d3584574ba77c904c7e2f770601f39532a67eae7cdf5b"
+    },
+    "junit_entries": 1,
+    "manifest_entries": 1,
+    "policy_provenance": {
+      "path": "/workspace/scratch/b258b858b122/chatadhd/.github/ctest-evidence-policy.json",
+      "revision": 1,
+      "schema": "loom.ctest_evidence_policy/1",
+      "schema_sha256": "29ff3cd357e02cd0fc8139cacb86293fcfab5803c9f0001eb8aec53b4f4be6e0",
+      "sha256": "1dc457125c40c0e225365e20c8839d9726d71dfa5872a8be1d890707666526a4"
+    },
+    "preset": "dev",
+    "schema": "loom.ctest_evidence/1",
+    "skipped_python_cases": 0,
+    "unexecuted_entries": [],
+    "valid": true
+  },
+  "ctest_elapsed_seconds": 46.86,
+  "unittest_elapsed_seconds": 45.909,
+  "scope": "isolated research.structure registration; not the entire runtime/B gate",
+  "stdout_capture_limit_bytes": 10485760,
+  "truncated_stdout": false,
+  "native_build": {
+    "sha": "37d40d3d0759552a135ec6576a9065ba0e39bab2",
+    "source_hashes": {
+      "loom/tests/compat/candidate_graph_native_tool.cpp": "1e245ec3c4a9eaa8fff32b3e23e917c44fd12f5d69a53d6a8f760447366f5601",
+      "loom/src/extract/candidate_graph.cpp": "5beca05fef288acbdd24afa8897a8408fe07288a47d622e6772180b167626f2e",
+      "loom/src/util/json.cpp": "49d882300afe82a764cca67b7a00f8dfd9c9ce5ed2318933312bdaafbeb9b89d",
+      "loom/src/util/sha256.cpp": "c8d783c4ebaa9d46703a65dc228931fe2e355c2be9ac1fc26dad089f6f0b031c",
+      "loom/src/util/utf8.cpp": "91f6786cf4d759768074a26cbae5b150284a241840f0f3761c867616831f3902",
+      "loom/src/util/unicode.cpp": "4780360568de8fae034cc070f27efa033eb5e991d77c6d8d3e1fda4070523165",
+      "loom/src/util/result.cpp": "1488f760d6b3959bf15cb8b6425c593b066e227ebd9edeb8209df0e37b32e018",
+      "loom/include/loom/knowledge_candidate_graph.h": "fca23892a95893e02b30fb40b4973f587280b8001ea946e7d02bb53f48b7f579",
+      "loom/include/loom/util/json.h": "38aebe6cf03b613b75290cf8ac09fa57ecd87d730032fdebb8cc4fcf162ca8de",
+      "loom/include/loom/util/sha256.h": "2723f226f5be04cb0fcca1e6ca0b63105b2c5b36178a6bf1701bee99031a127d",
+      "loom/include/loom/util/utf8.h": "8b20f2da731065f9bd89aed76362e33ce53bc7abfad83fd5d4b4ef5c2907a196",
+      "loom/include/loom/util/unicode.h": "a363672f385af55cd43fbdd1b80632dba0bf28d370b7392e26f65c3d74d724d0",
+      "loom/include/loom/result.h": "a6f27a2b1c0de258d8452af3d25d16f23179825dfc07033521c3c1ace1643553",
+      "loom/src/util/unicode_tables.inc": "aa19c84617ed20d2d3eaab5bfab834a88d4287d277ea8e7c3f0ea82ecfdea240",
+      "loom/third_party/nlohmann/nlohmann/json.hpp": "9bea4c8066ef4a1c206b2be5a36302f8926f7fdc6087af5d20b417d0cf103ea6"
+    },
+    "command": [
+      "g++",
+      "-std=c++20",
+      "-O0",
+      "-g",
+      "-Wall",
+      "-Wextra",
+      "-Wpedantic",
+      "-Wshadow",
+      "-Wnon-virtual-dtor",
+      "-Wold-style-cast",
+      "-Wcast-align",
+      "-Woverloaded-virtual",
+      "-Wnull-dereference",
+      "-Wimplicit-fallthrough",
+      "-Wno-unused-parameter",
+      "-Iloom/include",
+      "-Iloom/src",
+      "-isystem",
+      "loom/third_party/nlohmann",
+      "loom/tests/compat/candidate_graph_native_tool.cpp",
+      "loom/src/extract/candidate_graph.cpp",
+      "loom/src/util/json.cpp",
+      "loom/src/util/sha256.cpp",
+      "loom/src/util/utf8.cpp",
+      "loom/src/util/unicode.cpp",
+      "loom/src/util/result.cpp",
+      "-o",
+      "/var/tmp/thread7-live-unblock-2026-10-09/gate/native-build/loom_candidate_graph_native_tool"
+    ],
+    "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+    "scope": "Existing pure native candidate validation tool only; direct build, not full CMake/core target build.",
+    "exit_code": 0,
+    "build_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "executable_sha256": "5bb24864bdb017f52cab182f997a9c58e836eb2219952de35fbb4ed5fe9d1ced",
+    "tests": {
+      "command": "TMPDIR=/var/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=loom/tools/structure:. LOOM_CANDIDATE_GRAPH_NATIVE_TOOL=/var/tmp/thread7-live-unblock-2026-10-09/gate/native-build/loom_candidate_graph_native_tool python3 -m unittest -v loom.tools.structure.test_programme_native_results_v1.ExistingNativeBinaryTests",
+      "full_log_sha256": "fb6add126ba76d48260ea776e268b6e73546f5f17bbd61a414dc4c2369c539b6",
+      "passed": 4,
+      "skipped": 0,
+      "failed": 0
+    },
+    "checkout_status": ""
+  },
+  "bootstrap_issue": "Initial attempt did not run tests: ctest and prior native binary missing. Isolated CMake3.31.6 and original native tool restored; failed bootstrap evidence retained.",
+  "gate_evidence_zip_sha256": "fdc4858aa95e0ca85718452eba90d2dd5adfbf87459817f565350dc8c68f2c32",
+  "evidence_payloads": 19,
+  "new_paid_calls": 0,
+  "new_api_cost_usd": "0",
+  "rankings_or_preparations_rerun": false
+}
