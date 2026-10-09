@@ -1,0 +1,59 @@
+{
+  "removed_reproducible_temporaries": [
+    {
+      "path": "continuation/scratch/native/main-build/.libloom_core.a.qqoIbW",
+      "bytes": 39583744,
+      "reason": "abandoned compiler/archive temporary; final library and receipts retained"
+    },
+    {
+      "path": "continuation/scratch/native/main-build/.libloom_core.a.d9LPDE",
+      "bytes": 364118016,
+      "reason": "abandoned compiler/archive temporary; final library and receipts retained"
+    },
+    {
+      "path": "continuation/scratch/native/main-build/.libloom_core.a.ZYJgxC",
+      "bytes": 860356608,
+      "reason": "abandoned compiler/archive temporary; final library and receipts retained"
+    },
+    {
+      "path": "continuation/scratch/native/main-build/.loom_tests.UHJjxI",
+      "bytes": 332922880,
+      "reason": "abandoned compiler/archive temporary; final library and receipts retained"
+    },
+    {
+      "path": "continuation/scratch/native/main-build/.stj5giF5.5PJJza",
+      "bytes": 532676608,
+      "reason": "abandoned compiler/archive temporary; final library and receipts retained"
+    },
+    {
+      "path": "continuation/scratch/native/main-build/st0sVo3j",
+      "bytes": 48951296,
+      "reason": "abandoned compiler/archive temporary; final library and receipts retained"
+    },
+    {
+      "path": "continuation/scratch/native/B-build/.libloom_core.a.mSB6jg",
+      "bytes": 342622208,
+      "reason": "abandoned compiler/archive temporary; final library and receipts retained"
+    },
+    {
+      "path": "continuation/scratch/native/B-build/.libloom_core.a.0AVMIj",
+      "bytes": 375914496,
+      "reason": "abandoned compiler/archive temporary; final library and receipts retained"
+    },
+    {
+      "path": "continuation/scratch/native/B-build/stzLGGYq",
+      "bytes": 274726912,
+      "reason": "abandoned compiler/archive temporary; final library and receipts retained"
+    }
+  ],
+  "bytes_released": 3171872768,
+  "followup": {
+    "removed_reproducible_duplicate_objects": [
+      "scratch/native/main-build/CMakeFiles/loom_tests.dir",
+      "scratch/native/main-build/CMakeFiles/loom_core.dir",
+      "scratch/native/B-build/CMakeFiles/loom_core.dir"
+    ],
+    "preserved": "final archives and shared libraries, source manifests, all published receipts",
+    "available_bytes_after_followup": 3284275200
+  }
+}
