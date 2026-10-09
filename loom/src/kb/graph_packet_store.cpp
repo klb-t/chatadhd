@@ -1,12 +1,12 @@
 #include "loom/graph_packet_store.h"
 
-#include <cmath>
 #include <map>
 #include <set>
 
 #include "loom/sqlite.h"
 #include "loom/util/sha256.h"
 #include "packet/packet.h"
+#include "util/json_value.h"
 
 namespace loom::kb {
 namespace {
@@ -95,57 +95,10 @@ struct Rows {
   std::vector<model::Claim> claims;
 };
 
-bool same_json_number(const Json& left, const Json& right) {
-  if (left.is_number_float() && right.is_number_float())
-    return left.get<double>() == right.get<double>();
-  if (left.is_number_float() || right.is_number_float()) {
-    const auto& integer = left.is_number_float() ? right : left;
-    const double floating = (left.is_number_float() ? left : right).get<double>();
-    if (!std::isfinite(floating) || std::trunc(floating) != floating) return false;
-    // Half-open powers-of-two bounds are exactly representable in double.
-    // Check before conversion: a rounded integer must not compare equal to
-    // the original value, and out-of-range casts must never be attempted.
-    if (integer.is_number_unsigned()) {
-      if (floating < 0.0 || floating >= std::ldexp(1.0, 64)) return false;
-      return static_cast<std::uint64_t>(floating) == integer.get<std::uint64_t>();
-    }
-    if (floating < -std::ldexp(1.0, 63) || floating >= std::ldexp(1.0, 63)) return false;
-    return static_cast<std::int64_t>(floating) == integer.get<std::int64_t>();
-  }
-  if (left.is_number_unsigned() && right.is_number_unsigned())
-    return left.get<std::uint64_t>() == right.get<std::uint64_t>();
-  if (!left.is_number_unsigned() && !right.is_number_unsigned())
-    return left.get<std::int64_t>() == right.get<std::int64_t>();
-  const auto& signed_number = left.is_number_unsigned() ? right : left;
-  const auto& unsigned_number = left.is_number_unsigned() ? left : right;
-  const auto value = signed_number.get<std::int64_t>();
-  return value >= 0 && static_cast<std::uint64_t>(value) == unsigned_number.get<std::uint64_t>();
-}
-
-bool same_json_value(const Json& left, const Json& right) {
-  if (left.is_object() && right.is_object()) {
-    if (left.size() != right.size()) return false;
-    for (auto field = left.begin(); field != left.end(); ++field) {
-      auto other = right.find(field.key());
-      if (other == right.end() || !same_json_value(field.value(), other.value())) return false;
-    }
-    return true;
-  }
-  if (left.is_array() && right.is_array()) {
-    if (left.size() != right.size()) return false;
-    for (std::size_t index = 0; index < left.size(); ++index)
-      if (!same_json_value(left[index], right[index])) return false;
-    return true;
-  }
-  if (left.is_number() && right.is_number()) return same_json_number(left, right);
-  // Array order and nonnumeric scalar values remain meaningful.
-  return left == right;
-}
-
 Status exact_projection(const Json& input, const Json& output) {
   // Native serializers may normalize numeric representation (1 -> 1.0),
   // but silently discarded fields or changes to semantic content are rejected.
-  if (!same_json_value(input, output)) return invalid("graph store: native row projection would discard or change fields");
+  if (!json::equivalent(input, output)) return invalid("graph store: native row projection would discard or change fields");
   return {};
 }
 
@@ -196,9 +149,9 @@ Result<Rows> validate_rows(const Indices& selected) {
         return invalid("graph store: support quote mismatch");
       const Json located = support.locator.to_json();
       const auto& locator = original["locator"];
-      if (!same_json_value(located, locator)) {
+      if (!json::equivalent(located, locator)) {
         for (const char* field : {"source", "member", "json_pointer", "time_start", "time_end"})
-          if (!same_json_value(located[field], locator[field])) return invalid("graph store: support locator mismatch");
+          if (!json::equivalent(located[field], locator[field])) return invalid("graph store: support locator mismatch");
         if (!locator["byte_start"].is_number_integer() || !support.locator.byte_start || !support.locator.byte_len)
           return invalid("graph store: support subspan unverifiable");
         const auto base = locator["byte_start"].get<std::int64_t>();
@@ -287,14 +240,14 @@ Result<Json> drift(Database& db, const Json& receipt) {
 Status stable_record_identity(const std::string& collection, const Json& stored, const Json& selected) {
   if (stored.is_null()) return {};
   const Json& incoming = collection == "sources" ? selected["observation"] : selected;
-  if (collection == "sources" && !same_json_value(stored, incoming))
+  if (collection == "sources" && !json::equivalent(stored, incoming))
     return invalid("graph store: immutable observation changes require a new record identity");
   const std::vector<const char*> fields = collection == "entities"
       ? std::vector<const char*>{"kind", "canonical_key"}
       : std::vector<const char*>{"subject", "predicate", "object", "value", "qualifiers"};
   if (collection != "sources") {
     for (const char* field : fields) {
-      if (!same_json_value(stored[field], incoming[field])) return invalid("graph store: content changes require a new record identity");
+      if (!json::equivalent(stored[field], incoming[field])) return invalid("graph store: content changes require a new record identity");
     }
   }
   return {};

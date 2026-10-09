@@ -10,6 +10,7 @@
 #include "loom/knowledge_store.h"
 #include "loom/model.h"
 #include "loom/util/sha256.h"
+#include "util/json_value.h"
 
 namespace loom::context {
 namespace {
@@ -88,7 +89,7 @@ Status immutable(const Json& e, const Json& v) {
 Status immutable_attrs(const Json& old, const Json& current) {
   for (const char* key : {"definition", "definition_sha256", "text", "text_sha256"}) {
     const bool protected_field = std::string_view(key).starts_with("definition") ? old.contains("definition_sha256") : old.contains("text_sha256");
-    if (protected_field && (!old.contains(key) || !current.contains(key) || old[key] != current[key]))
+    if (protected_field && (!old.contains(key) || !current.contains(key) || !json::equivalent(old[key], current[key])))
       return conflict("immutable version definition/prompt bytes changed or stripped");
   }
   return {};
@@ -98,8 +99,8 @@ Status put(Json& index, const Json& row, bool source, bool overlay, const Json& 
   LOOM_TRY_ASSIGN(auto id, text(native, "id"));
   if (index.contains(id)) {
     const auto& old = index[id];
-    if (!overlay && old != row) return conflict("duplicate identity " + id);
-    if (source && old != row) return conflict("immutable source identity changed " + id);
+    if (!overlay && !json::equivalent(old, row)) return conflict("duplicate identity " + id);
+    if (source && !json::equivalent(old, row)) return conflict("immutable source identity changed " + id);
     if (!source && row.contains("attrs")) {
       const auto r = entity_role(row, v);
       if (r.ends_with("_version")) LOOM_TRY(immutable_attrs(old["attrs"], row["attrs"]));
@@ -111,16 +112,16 @@ Status put(Json& index, const Json& row, bool source, bool overlay, const Json& 
 Status dto(const Json& row, const char* collection) {
   if (std::string_view(collection) == "entities") {
     LOOM_TRY_ASSIGN(auto v, model::Entity::from_json(row));
-    if (v.to_json() != row) return invalid("entity DTO is not lossless");
+    if (!json::equivalent(v.to_json(), row)) return invalid("entity DTO is not lossless");
   } else if (std::string_view(collection) == "claims") {
     LOOM_TRY_ASSIGN(auto v, model::Claim::from_json(row));
     LOOM_TRY(v.validate());
-    if (v.to_json() != row) return invalid("claim DTO is not lossless");
+    if (!json::equivalent(v.to_json(), row)) return invalid("claim DTO is not lossless");
   } else {
     if (!row.is_object() || row.size() != 3 || !row.contains("observation") || !row.contains("known_at") || !row.contains("text_sha256"))
       return invalid("source DTO fields");
     LOOM_TRY_ASSIGN(auto v, model::Observation::from_json(row["observation"]));
-    if (v.to_json() != row["observation"] || !digest(row["text_sha256"]) || row["text_sha256"] != Sha256::hex(v.text))
+    if (!json::equivalent(v.to_json(), row["observation"]) || !digest(row["text_sha256"]) || row["text_sha256"] != Sha256::hex(v.text))
       return conflict("source bytes/hash drift");
   }
   return {};
@@ -168,9 +169,9 @@ Status closure(const Json& s) {
       if (quote.empty() || raw.find(quote) == std::string::npos) return invalid("support quote does not match native source");
       const auto& loc = support["locator"];
       const auto& original = o["locator"];
-      if (loc != original) {
+      if (!json::equivalent(loc, original)) {
         for (const char* key : {"source", "member", "json_pointer", "time_start", "time_end"})
-          if (loc[key] != original[key]) return invalid("support locator does not address native source");
+          if (!json::equivalent(loc[key], original[key])) return invalid("support locator does not address native source");
         if (!loc["byte_start"].is_number_integer() || !loc["byte_len"].is_number_integer() || !original["byte_start"].is_number_integer())
           return invalid("native support subspan unverifiable");
         const auto start = loc["byte_start"].get<std::int64_t>(), base = original["byte_start"].get<std::int64_t>(), length = loc["byte_len"].get<std::int64_t>();
@@ -268,8 +269,8 @@ Result<Json> expand(const Json& s, const Json& selection, const Json& c, const J
   if (!parameter_set.is_null()) {
     if (entity_role(parameter_set, s["vocabulary"]) != "parameter_set_version") return invalid("uses_parameter_set kind");
     const auto& pd = parameter_set["attrs"]["definition"];
-    if ((d.contains("parameters") && d["parameters"] != pd["effective_parameters"]) ||
-        (d.contains("user_overrides") && d["user_overrides"] != pd["user_overrides"]))
+    if ((d.contains("parameters") && !json::equivalent(d["parameters"], pd["effective_parameters"])) ||
+        (d.contains("user_overrides") && !json::equivalent(d["user_overrides"], pd["user_overrides"])))
       return conflict("method definition differs from its exact parameter-set definition");
   }
   Json prompt = nullptr;
@@ -385,8 +386,8 @@ Status add_row(Json& rows, const char* collection, const Json& row) {
   for (const auto& old : rows[collection]) {
     const auto old_id = std::string_view(collection) == "sources" ? old["observation"]["id"] : old["id"];
     if (old_id == id) {
-      if (std::string_view(collection) == "sources" && old["observation"] == row["observation"] && old["text_sha256"] == row["text_sha256"]) return {};
-      if (old != row) return conflict("record identity collision while preparing graph");
+      if (std::string_view(collection) == "sources" && json::equivalent(old["observation"], row["observation"]) && old["text_sha256"] == row["text_sha256"]) return {};
+      if (!json::equivalent(old, row)) return conflict("record identity collision while preparing graph");
       return {};
     }
   }
@@ -413,9 +414,9 @@ Result<Json> project(const Json& base, const Json& rows, const Json& origin, con
       if (old_id == id) { previous = &old; break; }
     }
     if (!previous) d[collection]["add"].push_back(row);
-    else if (*previous != row) {
+    else if (!json::equivalent(*previous, row)) {
       if (std::string_view(collection) == "sources") {
-        if ((*previous)["observation"] == row["observation"] && (*previous)["text_sha256"] == row["text_sha256"]) continue;
+        if (json::equivalent((*previous)["observation"], row["observation"]) && (*previous)["text_sha256"] == row["text_sha256"]) continue;
         return conflict("immutable source would be rewritten");
       }
       d[collection]["update"].push_back(Json{{"id", id}, {"before_sha256", hash(*previous)}, {"after", row}});
@@ -827,6 +828,8 @@ Result<Json> MethodRegistry::bind_results(const Json& candidate, const Json& ori
     // did not yet contain definition_records (ordered_json object storage).
     if (!had_definition_records) manifest["definition_records"] = Json::object();
     auto& trace = manifest["trace"];
+    if (rb.contains("input_sha256") && rb["input_sha256"] != trace["input_sha256"])
+      return conflict("result input identity differs from the prepared run");
     const auto& v = manifest["vocabulary"];
     const auto& b = manifest["bindings"];
     LOOM_TRY_ASSIGN(auto run_id, text(b, "run_id"));
@@ -858,7 +861,7 @@ Result<Json> MethodRegistry::bind_results(const Json& candidate, const Json& ori
       return conflict("bound method-version identity/hash mismatch");
     const auto& run_attrs = entities[run_id]["attrs"];
     for (const char* key : {"run_id", "method_identity_id", "method_version_id", "effective_parameters", "input_sha256"})
-      if (!run_attrs.contains(key) || run_attrs[key] != trace[key]) return conflict("manifest does not identify actual prepared run");
+      if (!run_attrs.contains(key) || !json::equivalent(run_attrs[key], trace[key])) return conflict("manifest does not identify actual prepared run");
     Json graph_snapshot{{"vocabulary", v}, {"entities", entities}, {"claims", Json::object()}};
     for (const auto& c : candidate["claims"]) graph_snapshot["claims"][c["id"].get<std::string>()] = c;
     if (!edge(graph_snapshot, run_id, version_id, "requests_method_version") ||
@@ -871,8 +874,8 @@ Result<Json> MethodRegistry::bind_results(const Json& candidate, const Json& ori
       LOOM_TRY(immutable(entities[pid], v));
       const auto& attrs = entities[pid]["attrs"];
       if (attrs["definition_sha256"] != manifest["definition_hashes"]["parameter_set"] ||
-          attrs["definition"]["effective_parameters"] != trace["effective_parameters"] ||
-          attrs["definition"]["user_overrides"] != trace.value("user_overrides", Json::object()) ||
+          !json::equivalent(attrs["definition"]["effective_parameters"], trace["effective_parameters"]) ||
+          !json::equivalent(attrs["definition"]["user_overrides"], trace.value("user_overrides", Json::object())) ||
           entities[version_id]["attrs"]["definition"].value("parameter_set_sha256", Json(nullptr)) != attrs["definition_sha256"])
         return conflict("bound parameter-set definition differs from method/run consumed parameters");
       if (!edge(graph_snapshot, run_id, pid, "uses_parameter_set") || !edge(graph_snapshot, version_id, pid, "uses_parameter_set"))
@@ -893,10 +896,14 @@ Result<Json> MethodRegistry::bind_results(const Json& candidate, const Json& ori
     }
     if (had_definition_records) {
       LOOM_TRY_ASSIGN(auto actual_records, bound_definition_records(b, entities));
-      if (manifest["definition_records"] != actual_records) return conflict("captured definition_records differ from actual bound native attrs");
+      if (!json::equivalent(manifest["definition_records"], actual_records)) return conflict("captured definition_records differ from actual bound native attrs");
     }
     for (const char* key : {"model_origin", "raw_response_source_ref", "raw_response_sha256", "response_text_sha256",
          "compilation_sha256", "response_provenance", "transform", "measurement_scope"}) if (rb.contains(key)) trace[key] = rb[key];
+    if (rb.contains("availability")) {
+      LOOM_TRY_ASSIGN(auto status, text(rb, "availability"));
+      trace["availability"] = std::move(status);
+    }
     if (rb.contains("instrumentation")) trace["instrumentation"] = rb["instrumentation"];
     if (rb.contains("measurements")) trace["measurements"] = rb["measurements"];
     LOOM_TRY(measurements(trace.value("measurements", Json::object())));
@@ -909,7 +916,7 @@ Result<Json> MethodRegistry::bind_results(const Json& candidate, const Json& ori
       if (!entities.contains(id)) return unavailable("actual result entity missing " + id);
       const auto& actual_attrs = entities[id]["attrs"];
       if (rb.contains("model_origin")) {
-        if (!actual_attrs.contains("model_origin") || actual_attrs["model_origin"] != rb["model_origin"])
+        if (!actual_attrs.contains("model_origin") || !json::equivalent(actual_attrs["model_origin"], rb["model_origin"]))
           return conflict("result model origin differs from actual native result record");
       }
       if (actual_attrs.contains("model_origin") && actual_attrs["model_origin"].is_object()) {
