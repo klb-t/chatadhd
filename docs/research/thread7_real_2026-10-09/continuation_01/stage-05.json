@@ -1,0 +1,30 @@
+{
+  "schema": "loom.thread7_stage_seal/1",
+  "stage": 5,
+  "name": "source_bound_analysis_and_family_comparisons",
+  "parent_commit": "8fe1fc8979068cfd82cc19a1e588c17d937f1db3",
+  "files": {
+    "docs/research/thread7_real_2026-10-09/continuation_01/evaluation-MANIFEST-v1.json": "a0e56aef6f8db000b810d5b1906e7a59b6535638bf3fb61eae0c02172dd55d96",
+    "docs/research/thread7_real_2026-10-09/continuation_01/evaluation-build.py": "9f336070c4f86c56998a204c5e87c551e764a6f3478fe4e964c834c6abc50866",
+    "docs/research/thread7_real_2026-10-09/continuation_01/evaluation-missing-receipt.json": "72d1b4e7d183b9e0d101f7f531f4f112d1042700e3f4ed31de7cdf9320d8f0dd",
+    "docs/research/thread7_real_2026-10-09/continuation_01/evaluation-protocol.json": "437240e208e2e1cf6b1711142cddcc4b617717de177150d098c8af7de2d4b6ff",
+    "docs/research/thread7_real_2026-10-09/continuation_01/evaluation-response-forms.json": "2a7be898c39599364f89b19d449187e41930890074a466f374b1256ec5c3faa6",
+    "docs/research/thread7_real_2026-10-09/continuation_01/evaluation-run-missing.py": "d2aed4163247d17ee687441d42bcecb4360ef03a9115baecc9c5320b8408ce94",
+    "docs/research/thread7_real_2026-10-09/continuation_01/evaluation-test-output.txt": "90d08b0923155122a279254628b0e9a36c710a6ccdf40192710ec05840c9566b",
+    "docs/research/thread7_real_2026-10-09/continuation_01/evaluation-tests.json": "741894152b57d6eed7d3904b0683df5f4ce446c5337f972317baac53ade9a567",
+    "docs/research/thread7_real_2026-10-09/continuation_01/handoff-B.md": "4eb0df152b5dc3704f61acf32e3e1e3c64571a15c75a4af8f4b7ca6e4e51f807",
+    "docs/research/thread7_real_2026-10-09/continuation_01/handoff-artifact-v2.json.gz": "ca53c593b0cc193c707dc9fbd39070ec72b698c82fc6e82b3c6b273fbab5349c",
+    "docs/research/thread7_real_2026-10-09/continuation_01/handoff-artifact-v2.json.receipt.json": "8b43c90a274b83ae1639cac047b894a3177e9eaff51e042aa46552808205d17e",
+    "docs/research/thread7_real_2026-10-09/continuation_01/handoff-contract.json": "a213580db43e6da51f1aafa7a7a0fac09b0493fdbff736f6ab90af4c787e4f3f",
+    "docs/research/thread7_real_2026-10-09/continuation_01/handoff-example.json": "de13e7277474df39329c7945a6f04e3aa5192bee08be8b7a8fd2e3341da51bb7",
+    "docs/research/thread7_real_2026-10-09/continuation_01/handoff-projection.json": "894f3c7d7edc8b260b91dafaa4712c328938faa6abffc10e6cb0b390ae0e3998",
+    "docs/research/thread7_real_2026-10-09/continuation_01/candidate-presets-v1.json": "0eae8cd1df41d58422b3d821660a7722ab0e6644b98057b9d96b1c6a090be712",
+    "loom/tools/structure/experiment_analysis_v1.py": "375f38d595b61efc3614f604caee4b1082548043664ab65b21d502de52e35fca",
+    "loom/tools/structure/test_experiment_analysis_v1.py": "2622c6d6e06ff6be59644c200ada428fb430f155ff4d16e003657aacc10b24e9"
+  },
+  "test_receipt": "evaluation-tests.json",
+  "new_calls": 0,
+  "new_cost_usd": "0",
+  "historical_attempts": 720,
+  "new_quality_measurements": 0
+}

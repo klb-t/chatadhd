@@ -1,0 +1,95 @@
+{
+  "schema": "loom.research_evaluation_response_forms/1",
+  "base_protocol": "evaluation-protocol.json",
+  "selection_creates_new_protocol_sha256": true,
+  "forms": {
+    "graph_direct": {
+      "format": {
+        "required_keys": [
+          "nodes",
+          "edges",
+          "evidence",
+          "limitations"
+        ],
+        "types": {
+          "/nodes": "array",
+          "/edges": "array",
+          "/evidence": "array",
+          "/limitations": "array"
+        }
+      },
+      "graph_pointer": "",
+      "calls": 1
+    },
+    "native_graph_packet": {
+      "format": {
+        "required_keys": [
+          "schema",
+          "entities",
+          "claims",
+          "sources"
+        ],
+        "types": {
+          "/entities": "array",
+          "/claims": "array",
+          "/sources": "array"
+        }
+      },
+      "graph_pointer": "",
+      "graph_format": "native_graph_packet",
+      "reference_paths": [],
+      "native_execution": "requires separate runtime evidence; shape/codec does not execute"
+    },
+    "text_plus_structure": {
+      "format": {
+        "required_keys": [
+          "text",
+          "structure"
+        ],
+        "types": {
+          "/text": "string",
+          "/structure": "object",
+          "/structure/nodes": "array",
+          "/structure/edges": "array",
+          "/structure/evidence": "array",
+          "/structure/limitations": "array"
+        }
+      },
+      "graph_pointer": "/structure",
+      "calls": 1
+    },
+    "text_then_structure": {
+      "stage_one": {
+        "format": "exact_text_bytes",
+        "graph_integrity": null,
+        "reason": "structure_not_yet_extracted"
+      },
+      "stage_two": {
+        "format": {
+          "required_keys": [
+            "nodes",
+            "edges",
+            "evidence",
+            "limitations"
+          ],
+          "types": {
+            "/nodes": "array",
+            "/edges": "array",
+            "/evidence": "array",
+            "/limitations": "array"
+          }
+        },
+        "graph_pointer": "",
+        "input_binds_first_response_sha256": true
+      },
+      "calls": 2,
+      "cost": "sum_verified_stage_costs_or_null; never compare stage_two_only_cost_with_one_call",
+      "error_layers": [
+        "generation",
+        "extraction",
+        "composition"
+      ],
+      "stage_two_without_inference": "pending_dependency"
+    }
+  }
+}

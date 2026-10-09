@@ -1,0 +1,224 @@
+{
+  "schema": "loom.research_evaluation_protocol/1",
+  "id": "thread7-real-source-evaluation-20261009-continuation-01",
+  "version": 1,
+  "frozen_before_model_evaluation": true,
+  "owner_approved": false,
+  "reference_status": "provisional",
+  "authorship": "assistant-authored research protocol; not independent adjudication",
+  "source_binding": {
+    "previous_checkpoint_sha256": "137c49ab13681d036b955039a580aff3cb86bc342b62981c484abcfe9363c28e",
+    "historical_panel_freeze_sha256": "5f976bbf9cee15dfe232e329dc2c85ebc40cae981af7ceedc56fc8e08719a832",
+    "historical_reference_annotations_sha256": "03cc531b892ebd5859b3e0a982ddf6a64e80bdc1772d4166ed736f0c25bdc833",
+    "required_per_record": [
+      "panel_id",
+      "family",
+      "question_id",
+      "source_sha256",
+      "view_sha256",
+      "request_sha256",
+      "response_sha256",
+      "protocol_sha256"
+    ],
+    "expanded_panels": "The 12-family expansion has its own freeze and provisional family split; do not pool with the historical panel or claim independent validation.",
+    "expanded_panel_freeze_sha256": "324d33a17ac09cc3b1c1dd11fb875b10d2a7ccf1f4c7b2fb06c313f9ba7e209f",
+    "expanded_panel_source_zip_sha256": "2bff52e83852efcd596bc5c717dd4e13840c4a6a36ef34daeb7356c2c4f17ec4"
+  },
+  "metrics": [
+    {
+      "id": "format",
+      "evaluator_classes": [
+        "mechanical"
+      ],
+      "meaning": "Exact declared reply envelope and required field types; not source fidelity."
+    },
+    {
+      "id": "source_references",
+      "evaluator_classes": [
+        "mechanical"
+      ],
+      "meaning": "Fraction of emitted references present in the frozen source ID set. No references => missing, never perfect attribution."
+    },
+    {
+      "id": "graph_integrity",
+      "evaluator_classes": [
+        "mechanical"
+      ],
+      "meaning": "Unique declared node IDs and endpoint resolution; or existing native GraphPacket codec when that output form is selected."
+    },
+    {
+      "id": "native_execution",
+      "evaluator_classes": [
+        "mechanical"
+      ],
+      "meaning": "Requires a separate authenticated native execution receipt; syntax cannot supply this metric."
+    },
+    {
+      "id": "source_fidelity",
+      "evaluator_classes": [
+        "assistant",
+        "model",
+        "independent_adjudicator"
+      ],
+      "meaning": "Explicit source-supported propositions, contradictions and unsupported additions, per atomic judgement with source locators."
+    },
+    {
+      "id": "goal_preservation",
+      "evaluator_classes": [
+        "assistant",
+        "model",
+        "independent_adjudicator"
+      ],
+      "meaning": "Preserve source-stated active objective, correction and unresolved goals at the selected checkpoint; historical superseded goals stay distinguished."
+    },
+    {
+      "id": "preference_preservation",
+      "evaluator_classes": [
+        "assistant",
+        "model",
+        "independent_adjudicator"
+      ],
+      "meaning": "Only user-declared source preferences or explicitly selected versioned profile; inferred preferences do not become user declarations."
+    },
+    {
+      "id": "cost_usd",
+      "evaluator_classes": [
+        "mechanical"
+      ],
+      "meaning": "Verified observed payer charge, independent of upper estimate. Missing/pending billing is null."
+    },
+    {
+      "id": "latency_seconds",
+      "evaluator_classes": [
+        "mechanical"
+      ],
+      "meaning": "Measured elapsed request time. Missing timing is null, including timeout without a measured duration."
+    }
+  ],
+  "mechanical": {
+    "format": {
+      "required_keys": [
+        "text",
+        "structure"
+      ],
+      "types": {
+        "/text": "string",
+        "/structure": "object",
+        "/structure/nodes": "array",
+        "/structure/edges": "array",
+        "/structure/evidence": "array",
+        "/structure/limitations": "array"
+      }
+    },
+    "graph": {
+      "format": "nodes_edges",
+      "pointer": "/structure",
+      "nodes_pointer": "/nodes",
+      "edges_pointer": "/edges",
+      "node_id_pointer": "/id",
+      "edge_source_pointer": "/source",
+      "edge_target_pointer": "/target",
+      "reference_paths": [
+        [
+          "nodes",
+          "*",
+          "source_refs",
+          "*"
+        ],
+        [
+          "edges",
+          "*",
+          "source_refs",
+          "*"
+        ]
+      ]
+    }
+  },
+  "semantic_rubric": {
+    "scale": {
+      "supported_and_preserved": 1,
+      "partially_supported_or_preserved": 0.5,
+      "contradicted_or_lost": 0,
+      "insufficient_evidence": null
+    },
+    "unit": "declared criterion or atomic proposition with immutable source and response locators",
+    "source_fidelity": [
+      "Check attribution against exact source bytes, including role and chronology.",
+      "Record unsupported addition separately from contradiction and omission.",
+      "Quoted falsehood remains a faithfully represented source claim only with its attribution preserved."
+    ],
+    "goal_preservation": [
+      "Use the goal active in the source view, not an assistant-invented task.",
+      "Distinguish requested work, completed work, open dependencies and user corrections."
+    ],
+    "preference_preservation": [
+      "Mark declared, inferred and selected-profile preferences separately.",
+      "Resolve source-stated revisions by explicit chronology; unresolved contradictions remain unresolved."
+    ],
+    "aggregation": "Freeze criterion denominator per source/question before responses. Never drop failed or missing criteria from intended coverage. Save atomic judgements privately; report observed mean and missing count separately.",
+    "reference_adjudication": "Existing reference annotations are provisional assistant labels. New labels are source-bound provisional judgements until an independently documented process creates a new reference version.",
+    "evaluator_disagreement": "Keep each evaluator class and version separately; never overwrite first judgements. Agreement is not ground truth.",
+    "independent_adjudication_required_evidence": [
+      "separate evaluator identity record",
+      "role/separation record",
+      "source and response locators",
+      "decision and disagreement log hash"
+    ]
+  },
+  "pairing": {
+    "keys": [
+      "panel_id",
+      "split",
+      "family",
+      "source_sha256",
+      "question_id",
+      "repetition"
+    ],
+    "unit": "conversation_family",
+    "weights": "equal repetitions within question, equal questions within family, equal observed families within panel/split",
+    "missing_policy": "retain planned slots; report incomplete pairs and families; observed-pair estimates may be biased by informative missingness",
+    "uncertainty": {
+      "method": "family_percentile_bootstrap",
+      "minimum_families": 6,
+      "bootstrap_samples": 2000,
+      "alpha": 0.05,
+      "seed": 20261009
+    },
+    "no_cross_pooling": [
+      "development_vs_validation",
+      "historical_vs_new_panel",
+      "evaluator_classes",
+      "historical_replay_vs_new_real_export_inference"
+    ]
+  },
+  "stability": {
+    "required": [
+      "same frozen variant/source/question",
+      "separate attempt IDs",
+      "response cache observed false"
+    ],
+    "exact_response_byte_agreement_is_semantic_stability": false,
+    "unknown_cache_observation_eligible": false,
+    "seed_guarantees_deterministic_inference": false,
+    "exactly_once_inference_guaranteed": false
+  },
+  "tradeoffs": {
+    "axes": [
+      "source_fidelity",
+      "goal_preservation",
+      "preference_preservation",
+      "cost_usd",
+      "latency_seconds"
+    ],
+    "composite_score": null,
+    "automatic_adoption": false,
+    "universal_winner": null
+  },
+  "publication": {
+    "raw_records_private": true,
+    "allowed_public_projection": "handoff-contract.json",
+    "exception_text_public": false,
+    "conversation_titles_public": false,
+    "source_locators_public": false
+  }
+}

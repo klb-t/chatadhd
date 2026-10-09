@@ -1,0 +1,23 @@
+{
+  "schema": "loom.thread7_analysis_contract_receipt/1",
+  "artifact_sha256": "f34458c84550cd383353a8959eb4af68296646723de6880e5717a2a69e6b9caf",
+  "compressed_sha256": "ca53c593b0cc193c707dc9fbd39070ec72b698c82fc6e82b3c6b273fbab5349c",
+  "protocol_sha256": "625290cd8dd739a56138a60dbaf982aa5fa8a079f44af3344518cd68b307ffe7",
+  "presentation_sha256": "479692beb27d78208e19da3cd1edf55f70961a0c4b722aef5ae768c9a19e3fe2",
+  "projection_sha256": "7afd659c8a8081edf6ea6e178ddfed33ad211dcc7c0d1a38d919a710ac064c87",
+  "producer_file_sha256": "375f38d595b61efc3614f604caee4b1082548043664ab65b21d502de52e35fca",
+  "contracts": [
+    "loom.method_graph/1",
+    "loom.method_run_trace/1"
+  ],
+  "python_schema_and_codec_verified": true,
+  "exact_source_and_result_recovery": true,
+  "native_execution": false,
+  "provider_calls": 0,
+  "new_cost_usd": "0",
+  "quality": null,
+  "entities": 13,
+  "claims": 22,
+  "sources": 12,
+  "result_entities": 4
+}

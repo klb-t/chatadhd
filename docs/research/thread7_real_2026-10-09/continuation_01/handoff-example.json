@@ -1,0 +1,126 @@
+{
+  "schema": "loom.thread7_result_presentation/1",
+  "version": 1,
+  "observed_on": "2026-10-09",
+  "validation_status": "unvalidated_on_real_exports",
+  "basic": {
+    "summary_pl": "Przygotowano badanie na rzeczywistych źródłach. Nowych odpowiedzi modeli i pomiarów ich jakości jeszcze nie ma; brak wybranego zwycięzcy.",
+    "details_ref": "docs/research/thread7_real_2026-10-09/continuation_01/handoff-B.md"
+  },
+  "expert": {
+    "historical_panel": {
+      "conversation_families": 3,
+      "messages": 44,
+      "dependent_questions": 8,
+      "period_start": "2026-02-11",
+      "period_end": "2026-04-17",
+      "status": "historical_development_panel"
+    },
+    "expanded_panel": {
+      "conversation_families": 12,
+      "messages": 2079,
+      "native_nodes": 2085,
+      "openai_families": 6,
+      "anthropic_families": 6,
+      "tuning_families": 8,
+      "provisional_validation_families": 4,
+      "period_start": "2026-01-23",
+      "period_end": "2026-09-09",
+      "status": "frozen_development_and_provisional_validation_panel",
+      "source_independence_verified": false,
+      "feature_semantics": "lexical_candidates_not_adjudicated",
+      "attachment_coverage": "partial"
+    },
+    "quality": null,
+    "format": null,
+    "source_references": null,
+    "graph_integrity": null,
+    "native_execution": null,
+    "goal_preservation": null,
+    "preference_preservation": null,
+    "stability": null,
+    "latency_seconds": null,
+    "independent_validation_families": 0,
+    "reference_status": "provisional_assistant_authored",
+    "new_model_calls": 0,
+    "new_cost_usd": "0",
+    "historical_campaign_attempts": 720,
+    "historical_campaign_cost_usd": "0.873216500",
+    "historical_remaining_usd": "4.126783500",
+    "nonrenewing_campaign_cap_usd": "5",
+    "current_provider_usage_usd": null,
+    "current_provider_reservations_usd": null,
+    "current_available_budget_usd": null,
+    "preparation_count": null,
+    "limitations": [
+      "historical_panel_three_dependent_families",
+      "no_new_real_export_model_inference",
+      "no_independent_adjudication",
+      "provider_state_unknown",
+      "native_runtime_not_executed_by_this_research_module",
+      "expanded_panel_validation_provisional",
+      "attachments_incomplete",
+      "semantic_feature_candidates_unadjudicated"
+    ]
+  },
+  "evidence": [
+    {
+      "role": "historical_source_freeze",
+      "sha256": "5f976bbf9cee15dfe232e329dc2c85ebc40cae981af7ceedc56fc8e08719a832",
+      "visibility": "private_bytes_public_digest"
+    },
+    {
+      "role": "previous_private_checkpoint",
+      "sha256": "137c49ab13681d036b955039a580aff3cb86bc342b62981c484abcfe9363c28e",
+      "visibility": "private_bytes_public_digest"
+    },
+    {
+      "role": "expanded_corpus_freeze",
+      "sha256": "324d33a17ac09cc3b1c1dd11fb875b10d2a7ccf1f4c7b2fb06c313f9ba7e209f",
+      "visibility": "private_bytes_public_digest"
+    }
+  ],
+  "pipeline": [
+    {
+      "stage": "sources",
+      "status": "frozen_historical"
+    },
+    {
+      "stage": "views",
+      "status": "preparation_receipt_required"
+    },
+    {
+      "stage": "spec",
+      "status": "preparation_receipt_required"
+    },
+    {
+      "stage": "variants",
+      "status": "preparation_receipt_required"
+    },
+    {
+      "stage": "queue",
+      "status": "mechanism_implemented"
+    },
+    {
+      "stage": "payer",
+      "status": "provider_preflight_pending"
+    },
+    {
+      "stage": "results",
+      "status": "not_measured"
+    },
+    {
+      "stage": "evaluations",
+      "status": "protocol_prepared"
+    },
+    {
+      "stage": "candidate_presets",
+      "status": "unvalidated"
+    }
+  ],
+  "adoption": {
+    "policy": "proposal_only",
+    "settings_changed": false,
+    "winner": null
+  }
+}

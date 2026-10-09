@@ -1,0 +1,20 @@
+{
+  "schema": "loom.thread7_research_candidates/1",
+  "version": "continuation-01",
+  "observed_on": "2026-10-09",
+  "prior_candidates_ref": "docs/research/thread7_real_2026-10-09/candidate-presets.json",
+  "profile_engine": "existing_project_profile_consumers; no new engine",
+  "evaluation_protocol_ref": "evaluation-protocol.json",
+  "presentation_ref": "handoff-example.json",
+  "automatic_adoption": false,
+  "user_settings_changed": false,
+  "universal_winner": null,
+  "candidates": [
+    {"id": "literal_evidence.concise", "validation_status": "unvalidated_on_real_exports", "quality": null, "adoption": "proposal_only"},
+    {"id": "commitment_ledger.concise", "validation_status": "unvalidated_on_real_exports", "quality": null, "adoption": "proposal_only"},
+    {"id": "literal_evidence.full_trace", "validation_status": "unvalidated_on_real_exports", "quality": null, "adoption": "proposal_only"},
+    {"id": "j_active", "validation_status": "unvalidated_on_real_exports", "quality": null, "adoption": "proposal_only"},
+    {"id": "j_directed", "validation_status": "unvalidated_on_real_exports", "quality": null, "adoption": "proposal_only"}
+  ],
+  "evidence_status": {"protocol_prepared": true, "analysis_mechanics_tested": true, "new_real_export_model_responses": 0, "new_model_spend_usd": "0", "independent_adjudication": false}
+}

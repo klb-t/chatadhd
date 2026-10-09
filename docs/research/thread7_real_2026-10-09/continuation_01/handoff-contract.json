@@ -1,0 +1,338 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "loom.thread7_result_presentation/1"
+    },
+    "version": {
+      "const": 1
+    },
+    "observed_on": {
+      "type": "string",
+      "format": "date"
+    },
+    "validation_status": {
+      "const": "unvalidated_on_real_exports"
+    },
+    "basic": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "summary_pl": {
+          "const": "Przygotowano badanie na rzeczywistych \u017ar\u00f3d\u0142ach. Nowych odpowiedzi modeli i pomiar\u00f3w ich jako\u015bci jeszcze nie ma; brak wybranego zwyci\u0119zcy."
+        },
+        "details_ref": {
+          "type": "string",
+          "pattern": "^docs/research/thread7_real_2026-10-09/continuation_01/[a-zA-Z0-9_.-]+$"
+        }
+      },
+      "required": [
+        "summary_pl",
+        "details_ref"
+      ]
+    },
+    "expert": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "historical_panel": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "conversation_families": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "messages": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "dependent_questions": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "period_start": {
+              "type": "string",
+              "format": "date"
+            },
+            "period_end": {
+              "type": "string",
+              "format": "date"
+            },
+            "status": {
+              "const": "historical_development_panel"
+            }
+          },
+          "required": [
+            "conversation_families",
+            "messages",
+            "dependent_questions",
+            "period_start",
+            "period_end",
+            "status"
+          ]
+        },
+        "expanded_panel": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "conversation_families": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "messages": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "native_nodes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "openai_families": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "anthropic_families": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "tuning_families": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "provisional_validation_families": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "period_start": {
+              "const": "2026-01-23"
+            },
+            "period_end": {
+              "const": "2026-09-09"
+            },
+            "status": {
+              "const": "frozen_development_and_provisional_validation_panel"
+            },
+            "source_independence_verified": {
+              "const": false
+            },
+            "feature_semantics": {
+              "const": "lexical_candidates_not_adjudicated"
+            },
+            "attachment_coverage": {
+              "const": "partial"
+            }
+          },
+          "required": [
+            "conversation_families",
+            "messages",
+            "native_nodes",
+            "openai_families",
+            "anthropic_families",
+            "tuning_families",
+            "provisional_validation_families",
+            "period_start",
+            "period_end",
+            "status",
+            "source_independence_verified",
+            "feature_semantics",
+            "attachment_coverage"
+          ]
+        },
+        "quality": {
+          "type": "null"
+        },
+        "format": {
+          "type": "null"
+        },
+        "source_references": {
+          "type": "null"
+        },
+        "graph_integrity": {
+          "type": "null"
+        },
+        "native_execution": {
+          "type": "null"
+        },
+        "goal_preservation": {
+          "type": "null"
+        },
+        "preference_preservation": {
+          "type": "null"
+        },
+        "stability": {
+          "type": "null"
+        },
+        "latency_seconds": {
+          "type": "null"
+        },
+        "independent_validation_families": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "reference_status": {
+          "const": "provisional_assistant_authored"
+        },
+        "new_model_calls": {
+          "const": 0
+        },
+        "new_cost_usd": {
+          "const": "0"
+        },
+        "historical_campaign_attempts": {
+          "const": 720
+        },
+        "historical_campaign_cost_usd": {
+          "const": "0.873216500"
+        },
+        "historical_remaining_usd": {
+          "const": "4.126783500"
+        },
+        "nonrenewing_campaign_cap_usd": {
+          "const": "5"
+        },
+        "current_provider_usage_usd": {
+          "type": "null"
+        },
+        "current_provider_reservations_usd": {
+          "type": "null"
+        },
+        "current_available_budget_usd": {
+          "type": "null"
+        },
+        "preparation_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+$"
+          }
+        }
+      },
+      "required": [
+        "historical_panel",
+        "expanded_panel",
+        "quality",
+        "format",
+        "source_references",
+        "graph_integrity",
+        "native_execution",
+        "goal_preservation",
+        "preference_preservation",
+        "stability",
+        "latency_seconds",
+        "independent_validation_families",
+        "reference_status",
+        "new_model_calls",
+        "new_cost_usd",
+        "historical_campaign_attempts",
+        "historical_campaign_cost_usd",
+        "historical_remaining_usd",
+        "nonrenewing_campaign_cap_usd",
+        "current_provider_usage_usd",
+        "current_provider_reservations_usd",
+        "current_available_budget_usd",
+        "preparation_count",
+        "limitations"
+      ]
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "role": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+$"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "visibility": {
+            "enum": [
+              "private_bytes_public_digest",
+              "public_safe_projection"
+            ]
+          }
+        },
+        "required": [
+          "role",
+          "sha256",
+          "visibility"
+        ]
+      }
+    },
+    "pipeline": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "stage": {
+            "enum": [
+              "sources",
+              "views",
+              "spec",
+              "variants",
+              "queue",
+              "payer",
+              "results",
+              "evaluations",
+              "candidate_presets"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+$"
+          }
+        },
+        "required": [
+          "stage",
+          "status"
+        ]
+      }
+    },
+    "adoption": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "policy": {
+          "const": "proposal_only"
+        },
+        "settings_changed": {
+          "const": false
+        },
+        "winner": {
+          "type": "null"
+        }
+      },
+      "required": [
+        "policy",
+        "settings_changed",
+        "winner"
+      ]
+    }
+  },
+  "required": [
+    "schema",
+    "version",
+    "observed_on",
+    "validation_status",
+    "basic",
+    "expert",
+    "evidence",
+    "pipeline",
+    "adoption"
+  ],
+  "description": "Public projection for this unmeasured offline stage only. A measured stage requires a new version; this schema is not a new shared runtime contract."
+}

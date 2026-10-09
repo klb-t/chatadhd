@@ -1,0 +1,32 @@
+{
+  "schema": "loom.thread7_analysis_test_receipt/1",
+  "base_commit": "69880859802267f1b38b82eeaecd6fdc5522a47a",
+  "tests_passed": 42,
+  "tests_failed": 0,
+  "command": "PYTHONPATH=/tmp/thread7-python-deps:loom/tools/structure:. python3 -m unittest loom.tools.structure.test_experiment_analysis_v1 -v",
+  "scope": "controlled mechanics fixtures, one actual context adapter integration fixture; no model quality tests",
+  "provider_calls": 0,
+  "new_cost_usd": "0",
+  "checks": [
+    "missing_null_not_zero",
+    "provisional_gold_evaluator_separation",
+    "8_questions_3_families",
+    "exact_arm_protocol_cross_form_pairing",
+    "pending_unrendered_denominator",
+    "two_stage_cost_and_dependency_binding",
+    "actual_context_nested_json_dependency",
+    "stability_request_view_protocol_drift",
+    "malformed_model_output_does_not_crash",
+    "existing_method_graph_trace_schema_codec_recovery"
+  ],
+  "files": {
+    "loom/tools/structure/experiment_analysis_v1.py": "375f38d595b61efc3614f604caee4b1082548043664ab65b21d502de52e35fca",
+    "loom/tools/structure/test_experiment_analysis_v1.py": "2622c6d6e06ff6be59644c200ada428fb430f155ff4d16e003657aacc10b24e9",
+    "docs/research/thread7_real_2026-10-09/continuation_01/evaluation-protocol.json": "437240e208e2e1cf6b1711142cddcc4b617717de177150d098c8af7de2d4b6ff",
+    "docs/research/thread7_real_2026-10-09/continuation_01/evaluation-response-forms.json": "2a7be898c39599364f89b19d449187e41930890074a466f374b1256ec5c3faa6",
+    "docs/research/thread7_real_2026-10-09/continuation_01/handoff-example.json": "de13e7277474df39329c7945a6f04e3aa5192bee08be8b7a8fd2e3341da51bb7",
+    "docs/research/thread7_real_2026-10-09/continuation_01/handoff-contract.json": "a213580db43e6da51f1aafa7a7a0fac09b0493fdbff736f6ab90af4c787e4f3f",
+    "docs/research/thread7_real_2026-10-09/continuation_01/handoff-projection.json": "894f3c7d7edc8b260b91dafaa4712c328938faa6abffc10e6cb0b390ae0e3998",
+    "docs/research/thread7_real_2026-10-09/continuation_01/evaluation-test-output.txt": "90d08b0923155122a279254628b0e9a36c710a6ccdf40192710ec05840c9566b"
+  }
+}
