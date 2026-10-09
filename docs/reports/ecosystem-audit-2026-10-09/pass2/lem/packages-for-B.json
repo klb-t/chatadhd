@@ -69,11 +69,14 @@
   },
   {
     "finding_id": "LEM-005",
-    "reproduction": "Compile actual AppDatabase and observe builder calls: fallbackToDestructiveMigration enabled, addMigrations0. Real upgrade is NOT simulated by spy.",
+    "reproduction": "The actual historical v1 Room fixture contains a ledger entry and an experiment result. AppDatabase opens v2 and both rows disappear. With user_version=99, opening returns without explicit refusal and the ledger disappears. A separate current-v2 ExperimentConfig survives actual Room close/reopen.",
     "expected": "Known v1→v2 keeps config/results/ledger, unknown unsupported version fails without deletion; explicit reset remains separately authorized.",
     "tests": [
       "LEM-005-DESTRUCTIVE-BUILDER",
-      "LEM-005-V1-V2-DATA-PRESERVATION"
+      "LEM-005-V1-V2-DATA-PRESERVATION",
+      "LEM-005-V1-V2-DELETION",
+      "LEM-005-UNKNOWN-VERSION",
+      "LEM-CONFIG-ROOM-CLOSE-REOPEN"
     ],
     "consumers": [
       "AppDatabase.getDatabase",
@@ -81,11 +84,11 @@
       "ConfigDao/ExperimentDao/LedgerDao"
     ],
     "migration": "Recover historical schemas from exact Git versions, seed real SQLite fixtures, test native Room open/reload.",
-    "risk": "Host builder assertion cannot prove DB persistence or migration. exportSchema=false increases reconstruction cost.",
+    "risk": "Executed on Robolectric SDK 28 with actual Room/KSP and SQLite operations; not a physical device or OS process restart. Historical entity sources are byte-identical. The fixture is not an old APK.",
     "dependencies": [
-      "working Android/Room toolchain",
-      "historical schemas",
-      "backup/export policy"
+      "migration implementation/version policy",
+      "backup/export policy",
+      "device verification after product fix"
     ]
   },
   {

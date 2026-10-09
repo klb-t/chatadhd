@@ -102,7 +102,9 @@
     {
       "id": "LEM-005-V1-V2-DATA-PRESERVATION",
       "phase": "B",
-      "baseline_status": "BLOCKED"
+      "baseline_status": "FAIL",
+      "supersedes": "Historical host receipt BLOCKED; now actual Room/KSP host-tested",
+      "receipt": "receipts/room/results.json"
     },
     {
       "id": "LEM-009-JSON-CONTROL-CHAR",
@@ -118,12 +120,64 @@
       "id": "LEM-008-NO-KEY-NO-SEND",
       "phase": "B",
       "baseline_status": "PASS"
+    },
+    {
+      "id": "LEM-CONFIG-ROOM-CLOSE-REOPEN",
+      "phase": "B",
+      "baseline_status": "PASS",
+      "receipt": "receipts/room/results.json"
+    },
+    {
+      "id": "LEM-005-UNKNOWN-VERSION",
+      "phase": "B",
+      "baseline_status": "FAIL",
+      "receipt": "receipts/room/results.json"
+    },
+    {
+      "id": "LEM-005-V1-V2-DELETION",
+      "phase": "A",
+      "baseline_status": "PASS",
+      "receipt": "receipts/room/results.json"
     }
   ],
   "product_gate_exit": 1,
   "A_semantics": "PASS means the existing bug was reproduced; never product PASS",
   "B_limitations": [
-    "raw artifact reference assertions necessary but not sufficient; resolver roundtrip BLOCKED",
-    "Room builder call spy does not test SQL migration; v1\u2192v2 BLOCKED"
-  ]
+    "raw artifact reference assertions necessary but not sufficient; resolver roundtrip remains BLOCKED",
+    "real Room close/reopen and migration now executed on Robolectric SDK28 host, not device or process restart"
+  ],
+  "additional_runner": {
+    "path": "tools/ecosystem-audit-2026-10-09/pass2/lem/gradle_probe.py",
+    "arguments": [
+      "--repo",
+      "<checkout>",
+      "--sha",
+      "<commit>",
+      "--out",
+      "<scratch>",
+      "--gradle",
+      "<gradle9.3.1/bin/gradle>",
+      "--jdk",
+      "<jdk17>",
+      "--sdk",
+      "<sdk36.1>",
+      "--audit-room",
+      "--phase",
+      "acceptance"
+    ],
+    "result_on_baseline": "Exit1 for executed failed assertions; exit2 for build/runtime block with no tests. Inspect JUnit/details."
+  },
+  "latest_counts": {
+    "A": {
+      "PASS": 8
+    },
+    "B": {
+      "FAIL": 10,
+      "BLOCKED": 1,
+      "PASS": 3
+    },
+    "control": {
+      "PASS": 1
+    }
+  }
 }

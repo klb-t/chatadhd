@@ -1,0 +1,51 @@
+{
+  "schema": "klbt.audit.lem-gradle/1",
+  "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+  "command": [
+    "/workspace/scratch/1112e9e8a3c6/continuation/scratch/lem/gradle-9.3.1/bin/gradle",
+    "--no-daemon",
+    "--gradle-user-home",
+    "/workspace/scratch/1112e9e8a3c6/continuation/scratch/lem/gradle-home",
+    "--console=plain",
+    "--max-workers=1",
+    "-Dorg.gradle.jvmargs=-Xmx1g -Dfile.encoding=UTF-8",
+    "testDebugUnitTest",
+    "--info",
+    "-I",
+    "/workspace/scratch/1112e9e8a3c6/continuation/artifacts/tools/ecosystem-audit-2026-10-09/pass2/lem/room-audit.init.gradle",
+    "-Dlem.audit.testSource=/workspace/scratch/1112e9e8a3c6/continuation/artifacts/tools/ecosystem-audit-2026-10-09/pass2/lem/room",
+    "--tests",
+    "audit.lem.room.RoomPersistenceAuditTest.B_*",
+    "--no-configuration-cache"
+  ],
+  "source_directory": "/workspace/scratch/1112e9e8a3c6/continuation/scratch/lem/source-kjzvluc4",
+  "status": "SELECTED_TEST_ASSERTIONS_FAILED",
+  "exit_code": 1,
+  "elapsed_seconds": 17.16,
+  "scope": "Independent external Room host tests",
+  "tests": [
+    {
+      "name": "B_configRoundtripThroughActualRoomAfterCloseReopen",
+      "phase": "B",
+      "status": "PASS"
+    },
+    {
+      "name": "B_unknownVersionFailsWithoutDeletingRows",
+      "phase": "B",
+      "status": "FAIL"
+    },
+    {
+      "name": "B_LEM005_preservesHistoricalLedger",
+      "phase": "B",
+      "status": "FAIL"
+    }
+  ],
+  "counts": {
+    "A": {},
+    "B": {
+      "PASS": 1,
+      "FAIL": 2
+    },
+    "existing": {}
+  }
+}

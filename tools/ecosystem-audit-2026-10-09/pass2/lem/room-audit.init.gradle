@@ -2,7 +2,7 @@
 allprojects { project ->
     project.afterEvaluate {
         if (project.name == "app") {
-            project.extensions.getByName("android").sourceSets.getByName("test").java.srcDir(System.getProperty("lem.audit.testSource"))
+            project.extensions.getByName("android").sourceSets.getByName("test").kotlin.srcDir(System.getProperty("lem.audit.testSource"))
             project.tasks.withType(Test).configureEach {
                 // Dependency downloads only; fixture tests never invoke a model endpoint.
                 systemProperty "robolectric.dependency.repo.url", "https://repo.maven.apache.org/maven2"

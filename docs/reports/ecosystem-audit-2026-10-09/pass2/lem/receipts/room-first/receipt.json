@@ -1,0 +1,27 @@
+{
+  "command": [
+    "/workspace/scratch/1112e9e8a3c6/continuation/scratch/lem/gradle-9.3.1/bin/gradle",
+    "--no-daemon",
+    "--no-configuration-cache",
+    "--gradle-user-home",
+    "/workspace/scratch/1112e9e8a3c6/continuation/scratch/lem/gradle-home",
+    "--console=plain",
+    "--max-workers=1",
+    "-Dorg.gradle.jvmargs=-Xmx1g -Dfile.encoding=UTF-8",
+    "testDebugUnitTest",
+    "-I",
+    "/workspace/scratch/1112e9e8a3c6/continuation/artifacts/tools/ecosystem-audit-2026-10-09/pass2/lem/room-audit.init.gradle",
+    "-Dlem.audit.testSource=/workspace/scratch/1112e9e8a3c6/continuation/artifacts/tools/ecosystem-audit-2026-10-09/pass2/lem/room",
+    "--tests",
+    "audit.lem.room.RoomPersistenceAuditTest",
+    "--info"
+  ],
+  "source_sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+  "scope": "external independent Room tests, actual generated Room/DAO + Robolectric host Android API",
+  "jdk": "17.0.20.1+1",
+  "sdk": "android36.1",
+  "proxy": "current HTTPS_PROXY host/port, no credentials",
+  "exit_code": 1,
+  "status": "EXIT",
+  "elapsed_seconds": 31.0
+}

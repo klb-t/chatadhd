@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/workspace/scratch/1112e9e8a3c6/continuation/scratch/lem/gradle-9.3.1/bin/gradle",
+    "--no-daemon",
+    "--gradle-user-home",
+    "/workspace/scratch/1112e9e8a3c6/continuation/scratch/lem/gradle-home",
+    "--console=plain",
+    "testDebugUnitTest",
+    "--stacktrace"
+  ],
+  "source_sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+  "cwd": "scratch immutable archive, not repository",
+  "exit_code": 1,
+  "status": "EXIT",
+  "elapsed_seconds": 34.8
+}

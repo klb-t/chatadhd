@@ -61,7 +61,7 @@ def main():
         (args.out/'receipt.json').write_text(json.dumps(receipt,indent=2)+'\n')
         print(c.stderr, file=sys.stderr)
         return 2
-    r = subprocess.run(['java','-Djava.security.manager=allow','-cp',str(args.out/'host.jar')+':'+cp,'audit.lem.HostHarnessKt'],capture_output=True,text=True,timeout=60)
+    r = subprocess.run(['java','-Djava.security.manager=allow','-cp',str((args.out/'host.jar').resolve())+':'+cp,'audit.lem.HostHarnessKt'],cwd=args.out.resolve(),capture_output=True,text=True,timeout=60)
     (args.out/'run.stderr.log').write_text(r.stderr)
     receipt['run_exit_code']=r.returncode
     if r.returncode:

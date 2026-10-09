@@ -83,7 +83,7 @@
   {
     "finding_id": "LEM-005",
     "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
-    "status": "not_repaired; additional independent evidence",
+    "status": "confirmed unrepaired by real Room/KSP + Robolectric host execution, no longer merely builder-spy evidence",
     "tests": [
       {
         "id": "LEM-005-DESTRUCTIVE-BUILDER",
@@ -100,7 +100,87 @@
         "phase": "B",
         "status": "BLOCKED"
       }
-    ]
+    ],
+    "independent_runtime_evidence": {
+      "schema": "klbt.audit.lem-room/1",
+      "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+      "tests": [
+        {
+          "id": "LEM-CONFIG-ROOM-CLOSE-REOPEN",
+          "phase": "B",
+          "status": "PASS",
+          "junit_name": "B_configRoundtripThroughActualRoomAfterCloseReopen",
+          "failure": null
+        },
+        {
+          "id": "LEM-005-UNKNOWN-VERSION",
+          "phase": "B",
+          "status": "FAIL",
+          "junit_name": "B_unknownVersionFailsWithoutDeletingRows",
+          "failure": "java.lang.AssertionError: Unsupported version must be refused explicitly"
+        },
+        {
+          "id": "LEM-005-V1-V2-DELETION",
+          "phase": "A",
+          "status": "PASS",
+          "junit_name": "A_LEM005_reproducesHistoricalLedgerDeletion",
+          "failure": null
+        },
+        {
+          "id": "LEM-005-V1-V2-DATA-PRESERVATION",
+          "phase": "B",
+          "status": "FAIL",
+          "junit_name": "B_LEM005_preservesHistoricalLedger",
+          "failure": "java.lang.AssertionError: Acceptance requires the historical row expected:<1> but was:<0>"
+        }
+      ],
+      "observations": [
+        {
+          "test": "CONFIG_CLOSE_REOPEN",
+          "equal": true
+        },
+        {
+          "test": "LEM005_UNKNOWN_VERSION",
+          "refused": false,
+          "ledgerRows": 0
+        },
+        {
+          "test": "LEM005_V1_V2_A",
+          "ledgerRows": 0,
+          "experimentPresent": false
+        },
+        {
+          "test": "LEM005_V1_V2_B",
+          "ledgerRows": 0,
+          "experimentPresent": false
+        }
+      ],
+      "real_components": [
+        "AppDatabase.getDatabase",
+        "Room2.7/KSP-generated AppDatabase_Impl and DAO implementations",
+        "SQLite operations through Robolectric Android API backend"
+      ],
+      "environment": {
+        "host_jdk": 17,
+        "test_sdk": 28,
+        "compile_sdk": "36.1",
+        "physical_device": false,
+        "process_restart": false,
+        "database_close_reopen": true,
+        "singleton_reset": true
+      },
+      "fixture_source_sha256": "0fb070bee18e9b23f1dc0e99c67bcacb42a7b8871598ce4fb9c7c549b1ed9f13",
+      "historical_schema_evidence": "../../historical-schema.json",
+      "counts": {
+        "A": {
+          "PASS": 1
+        },
+        "B": {
+          "PASS": 1,
+          "FAIL": 2
+        }
+      }
+    }
   },
   {
     "finding_id": "LEM-008",

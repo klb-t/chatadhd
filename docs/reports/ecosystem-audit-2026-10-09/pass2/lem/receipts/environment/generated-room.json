@@ -1,0 +1,16 @@
+{
+  "schema": "klbt.audit.generated-evidence/1",
+  "source_sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+  "file": "app/build/generated/ksp/debug/kotlin/com/example/data/local/AppDatabase_Impl.kt",
+  "sha256": "6550c4c9f748c256d81d78fa76b9dfe57101c6c79a5fc4ff9bcaca98593d7349",
+  "generator": "Room/KSP from unmodified product in Gradle testDebugUnitTest",
+  "lines": 297,
+  "selected_ranges": [
+    {
+      "start": 45,
+      "end": 56,
+      "meaning": "actual generated CREATE and DROP statements; proves generation, not execution of migration"
+    }
+  ],
+  "runtime_status": "Subsequently migration-tested; see ../room/results.json. This file records generation provenance."
+}

@@ -1,0 +1,19 @@
+{
+  "command": [
+    "/workspace/scratch/1112e9e8a3c6/continuation/scratch/lem/gradle-9.3.1/bin/gradle",
+    "--no-daemon",
+    "--gradle-user-home",
+    "/workspace/scratch/1112e9e8a3c6/continuation/scratch/lem/gradle-home",
+    "--console=plain",
+    "--max-workers=1",
+    "-Dorg.gradle.jvmargs=-Xmx2g -Dfile.encoding=UTF-8",
+    "testDebugUnitTest",
+    "--info"
+  ],
+  "source_sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+  "jdk": "17.0.20.1+1",
+  "sdk": "android36.1 (CKP bootstrap, read-only reuse)",
+  "exit_code": 1,
+  "status": "EXIT",
+  "elapsed_seconds": 7.5
+}

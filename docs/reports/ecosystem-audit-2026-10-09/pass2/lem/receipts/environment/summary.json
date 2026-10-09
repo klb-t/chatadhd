@@ -1,0 +1,43 @@
+{
+  "jdk": "17.0.20.1+1",
+  "sdk": "android36.1",
+  "gradle": "9.3.1",
+  "gradle_archive_sha256": "b266d5ff6b90eada6dc3b20cb090e3731302e553a27c5d3e4df1f0d76beaff06",
+  "official_gradle_archive_sha256": "b266d5ff6b90eada6dc3b20cb090e3731302e553a27c5d3e4df1f0d76beaff06",
+  "kotlin_host": "2.2.10",
+  "full_product_compile": true,
+  "generated_real_room_implementation": true,
+  "existing_jvm_tests": [
+    {
+      "name": "com.example.GeminiApiSerializationTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.example.RealOnlyPolicyTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "existing_jvm_gate_status": "PASS",
+  "android_device": "NOT_RUN",
+  "actual_room_independent_gate": "EXECUTED: A1PASS, B1PASS/2FAIL; see ../room/results.json",
+  "prior_errors": [
+    {
+      "name": "gradle-test-jdk-sdk",
+      "status": "network unreachable via inherited stale GRADLE_OPTS browser-proxy",
+      "resolved": "derive host/port from current HTTPS_PROXY"
+    },
+    {
+      "name": "gradle-test-current-proxy",
+      "status": "TIMEOUT180s downloading/compiling dependencies",
+      "resolved": "bounded cached rerun300s passed in255.6s"
+    }
+  ],
+  "test_runtime_sdk": 28,
+  "physical_device": "NOT_RUN"
+}

@@ -83,7 +83,7 @@
       "status": "PASS",
       "observed": {
         "artifactReferences": "[]",
-        "rawMetrics": "{\"success\":true,\"latencyMs\":43,\"responseChars\":21,\"contractMatched\":true,\"responseSha256\":\"a7decaaf2a74b0a991e5d67c0fc674b31bd7962f2cee4e24b69a5652036adeb3\"}",
+        "rawMetrics": "{\"success\":true,\"latencyMs\":26,\"responseChars\":21,\"contractMatched\":true,\"responseSha256\":\"a7decaaf2a74b0a991e5d67c0fc674b31bd7962f2cee4e24b69a5652036adeb3\"}",
         "responseCandidates": 2,
         "request": [
           {
@@ -202,7 +202,7 @@
         "strictDecoderInputs": [
           {
             "codepoint": 0,
-            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":2,\"error\":\"synthetic\u0000transport failure\"}",
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":7,\"error\":\"synthetic\u0000transport failure\"}",
             "strict_json": {
               "valid": false,
               "error": "Invalid control character at: line 1 column 50 (char 49)"
@@ -218,7 +218,7 @@
           },
           {
             "codepoint": 2,
-            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":8,\"error\":\"synthetic\u0002transport failure\"}",
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":2,\"error\":\"synthetic\u0002transport failure\"}",
             "strict_json": {
               "valid": false,
               "error": "Invalid control character at: line 1 column 50 (char 49)"
@@ -226,7 +226,7 @@
           },
           {
             "codepoint": 3,
-            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":6,\"error\":\"synthetic\u0003transport failure\"}",
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":2,\"error\":\"synthetic\u0003transport failure\"}",
             "strict_json": {
               "valid": false,
               "error": "Invalid control character at: line 1 column 50 (char 49)"
@@ -234,7 +234,7 @@
           },
           {
             "codepoint": 4,
-            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":3,\"error\":\"synthetic\u0004transport failure\"}",
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":1,\"error\":\"synthetic\u0004transport failure\"}",
             "strict_json": {
               "valid": false,
               "error": "Invalid control character at: line 1 column 50 (char 49)"
@@ -242,7 +242,7 @@
           },
           {
             "codepoint": 5,
-            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":5,\"error\":\"synthetic\u0005transport failure\"}",
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":2,\"error\":\"synthetic\u0005transport failure\"}",
             "strict_json": {
               "valid": false,
               "error": "Invalid control character at: line 1 column 50 (char 49)"
@@ -250,7 +250,7 @@
           },
           {
             "codepoint": 6,
-            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":8,\"error\":\"synthetic\u0006transport failure\"}",
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":1,\"error\":\"synthetic\u0006transport failure\"}",
             "strict_json": {
               "valid": false,
               "error": "Invalid control character at: line 1 column 50 (char 49)"
@@ -258,7 +258,7 @@
           },
           {
             "codepoint": 7,
-            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":2,\"error\":\"synthetic\u0007transport failure\"}",
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":1,\"error\":\"synthetic\u0007transport failure\"}",
             "strict_json": {
               "valid": false,
               "error": "Invalid control character at: line 1 column 50 (char 49)"
@@ -266,7 +266,7 @@
           },
           {
             "codepoint": 8,
-            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":2,\"error\":\"synthetic\btransport failure\"}",
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":1,\"error\":\"synthetic\btransport failure\"}",
             "strict_json": {
               "valid": false,
               "error": "Invalid control character at: line 1 column 50 (char 49)"
@@ -282,7 +282,7 @@
           },
           {
             "codepoint": 10,
-            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":1,\"error\":\"synthetic\\ntransport failure\"}",
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":4,\"error\":\"synthetic\\ntransport failure\"}",
             "strict_json": {
               "valid": true,
               "preserved": true
@@ -290,7 +290,7 @@
           },
           {
             "codepoint": 11,
-            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":4,\"error\":\"synthetic\u000btransport failure\"}",
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":2,\"error\":\"synthetic\u000btransport failure\"}",
             "strict_json": {
               "valid": false,
               "error": "Invalid control character at: line 1 column 50 (char 49)"
@@ -298,7 +298,7 @@
           },
           {
             "codepoint": 12,
-            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":7,\"error\":\"synthetic\ftransport failure\"}",
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":2,\"error\":\"synthetic\ftransport failure\"}",
             "strict_json": {
               "valid": false,
               "error": "Invalid control character at: line 1 column 50 (char 49)"
@@ -306,7 +306,7 @@
           },
           {
             "codepoint": 13,
-            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":2,\"error\":\"synthetic\\rtransport failure\"}",
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":1,\"error\":\"synthetic\\rtransport failure\"}",
             "strict_json": {
               "valid": true,
               "preserved": true
@@ -314,7 +314,7 @@
           },
           {
             "codepoint": 14,
-            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":2,\"error\":\"synthetic\u000etransport failure\"}",
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":3,\"error\":\"synthetic\u000etransport failure\"}",
             "strict_json": {
               "valid": false,
               "error": "Invalid control character at: line 1 column 50 (char 49)"
@@ -330,7 +330,7 @@
           },
           {
             "codepoint": 16,
-            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":3,\"error\":\"synthetic\u0010transport failure\"}",
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":2,\"error\":\"synthetic\u0010transport failure\"}",
             "strict_json": {
               "valid": false,
               "error": "Invalid control character at: line 1 column 50 (char 49)"
@@ -354,7 +354,7 @@
           },
           {
             "codepoint": 19,
-            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":1,\"error\":\"synthetic\u0013transport failure\"}",
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":2,\"error\":\"synthetic\u0013transport failure\"}",
             "strict_json": {
               "valid": false,
               "error": "Invalid control character at: line 1 column 50 (char 49)"
@@ -362,7 +362,7 @@
           },
           {
             "codepoint": 20,
-            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":1,\"error\":\"synthetic\u0014transport failure\"}",
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":3,\"error\":\"synthetic\u0014transport failure\"}",
             "strict_json": {
               "valid": false,
               "error": "Invalid control character at: line 1 column 50 (char 49)"
@@ -378,7 +378,7 @@
           },
           {
             "codepoint": 22,
-            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":1,\"error\":\"synthetic\u0016transport failure\"}",
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":2,\"error\":\"synthetic\u0016transport failure\"}",
             "strict_json": {
               "valid": false,
               "error": "Invalid control character at: line 1 column 50 (char 49)"
@@ -402,7 +402,7 @@
           },
           {
             "codepoint": 25,
-            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":1,\"error\":\"synthetic\u0019transport failure\"}",
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":2,\"error\":\"synthetic\u0019transport failure\"}",
             "strict_json": {
               "valid": false,
               "error": "Invalid control character at: line 1 column 50 (char 49)"
@@ -410,7 +410,7 @@
           },
           {
             "codepoint": 26,
-            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":1,\"error\":\"synthetic\u001atransport failure\"}",
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":2,\"error\":\"synthetic\u001atransport failure\"}",
             "strict_json": {
               "valid": false,
               "error": "Invalid control character at: line 1 column 50 (char 49)"
@@ -426,7 +426,7 @@
           },
           {
             "codepoint": 28,
-            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":2,\"error\":\"synthetic\u001ctransport failure\"}",
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":1,\"error\":\"synthetic\u001ctransport failure\"}",
             "strict_json": {
               "valid": false,
               "error": "Invalid control character at: line 1 column 50 (char 49)"
@@ -450,7 +450,7 @@
           },
           {
             "codepoint": 31,
-            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":2,\"error\":\"synthetic\u001ftransport failure\"}",
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":1,\"error\":\"synthetic\u001ftransport failure\"}",
             "strict_json": {
               "valid": false,
               "error": "Invalid control character at: line 1 column 50 (char 49)"

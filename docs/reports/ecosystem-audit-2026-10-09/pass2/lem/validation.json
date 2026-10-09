@@ -1,0 +1,46 @@
+{
+  "python_syntax_files": [
+    "run.py",
+    "gradle_probe.py",
+    "bootstrap.py"
+  ],
+  "json_files": [
+    "historical-schema.json",
+    "finding-updates.json",
+    "coverage.json",
+    "packages-for-B.json",
+    "test-index.json",
+    "receipts/receipt.json",
+    "receipts/results.json",
+    "receipts/room-first/receipt.json",
+    "receipts/room/receipt.json",
+    "receipts/room/results.json",
+    "receipts/environment/gradle-test-jdk-sdk-receipt.json",
+    "receipts/environment/generated-room.json",
+    "receipts/environment/gradle-test-cached-receipt.json",
+    "receipts/environment/gradle-test-receipt.json",
+    "receipts/environment/gradle-test-current-proxy-receipt.json",
+    "receipts/environment/summary.json",
+    "receipts/room-wrapper/receipt.json"
+  ],
+  "range_errors": [],
+  "repo_status": "",
+  "product_unchanged": true,
+  "source_sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+  "host_acceptance_exit_code": 1,
+  "room_acceptance_wrapper_exit_code": 1,
+  "tool_sha256": {
+    "HostHarness.kt": "7d011077cb93c8c4321710c6c4d9ba673704135f9256635a67e3fc52b698c731",
+    "README.md": "c5f47d868341e0444940bed2199ee7c2baef91a1002a9aeb8bbab5380d200004",
+    "bootstrap.py": "2569ebf6e78533fe6e1cf7494f1ff33288b9f44ea53794269cd4ff245b772556",
+    "dependencies.json": "b8d867d986c45f5dd3e361fc0abae7dd0b3d4307c22ddf6d855bb3453dad154b",
+    "fixtures/Android.kt": "77103dc62acd09ff657b43fd2269c06e808e329fdfc323f46df252d59ae98aa1",
+    "fixtures/Lifecycle.kt": "059d29c3d024b201b30d2e74dc5b19d123a61bae52c5c22c5eb4640b47089878",
+    "fixtures/Room.kt": "78f3ac537146050905a1e64834e99eaef2a46eb7d621681a4b82158890936902",
+    "fixtures/Serialization.kt": "66c4e16ba53edcbda75f5f8e6bfafaa303ebcb1133e25442439d5d1acca3c134",
+    "gradle_probe.py": "4b10a5f15300cee292ae18b423515999816bbd6a8d8c4e122335ab1f3c32d3bb",
+    "room/RoomPersistenceAuditTest.kt": "0fb070bee18e9b23f1dc0e99c67bcacb42a7b8871598ce4fb9c7c549b1ed9f13",
+    "room-audit.init.gradle": "751eee902e4dc473f278eeaebd68df63595a4535b202bcebffb9b6fb192d4f07",
+    "run.py": "23540e07be48fa304bdf9db2027551cbea975ce611c23356c6e4a9c818eebd6a"
+  }
+}

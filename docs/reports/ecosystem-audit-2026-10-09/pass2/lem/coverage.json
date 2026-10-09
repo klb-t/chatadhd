@@ -132,8 +132,8 @@
       "functions": [
         "getDatabase"
       ],
-      "verified": "actual builder invocation observed by call spy",
-      "untraced": "real Room migrations/generated AppDatabase_Impl/SQLite"
+      "verified": "real builder + generated Room open, v1→v2 actual SQL, unknown99→2 actual SQL, close/reopen",
+      "untraced": "device lifecycle, process restart, backup/export"
     },
     {
       "path": "app/src/main/java/com/example/data/local/ConfigDao.kt",
@@ -143,8 +143,8 @@
         "getAllConfigs",
         "insertConfig declaration"
       ],
-      "verified": "compiled production declaration; implementation is a test double",
-      "untraced": "all actual Room queries"
+      "verified": "real KSP-generated insertion and query through Room, close/reopen equality",
+      "untraced": "deleteConfigById and concurrency/conflict history"
     },
     {
       "path": "app/src/main/java/com/example/data/local/ExperimentDao.kt",
@@ -154,8 +154,8 @@
         "getAllExperiments",
         "insertExperiment declaration"
       ],
-      "verified": "compiled production declaration; implementation is a test double",
-      "untraced": "all actual Room queries"
+      "verified": "real KSP-generated insert/getExperimentById on historical v1 and after v2 open",
+      "untraced": "list/delete queries and app UI"
     },
     {
       "path": "app/src/main/java/com/example/data/local/LedgerDao.kt",
@@ -164,8 +164,8 @@
       "functions": [
         "getAllEntries declaration"
       ],
-      "verified": "compiled production declaration; implementation is a test double",
-      "untraced": "all actual Room queries"
+      "verified": "real KSP-generated insert/getAllEntries on historical v1 and after v2/unknown99 open",
+      "untraced": "ledger UI/history presentation"
     },
     {
       "path": "app/src/main/java/com/example/data/model/ExperimentConfig.kt",
@@ -174,8 +174,8 @@
       "functions": [
         "constructor/defaults"
       ],
-      "verified": "real DTO used by repository test",
-      "untraced": "Room persistence and serialization-plugin codec"
+      "verified": "actual Room complete DTO close/reopen equality",
+      "untraced": "kotlinx serialization/export codec and active profile selection"
     },
     {
       "path": "app/src/main/java/com/example/data/model/ExperimentResult.kt",
@@ -184,8 +184,8 @@
       "functions": [
         "constructor"
       ],
-      "verified": "real returned DTO inspected",
-      "untraced": "Room persistence/reload"
+      "verified": "actual Room historical fixture write/read then destructive upgrade observation",
+      "untraced": "full scientific evidence raw artifact payload"
     },
     {
       "path": "app/src/main/java/com/example/data/model/LedgerEntry.kt",
@@ -194,8 +194,8 @@
       "functions": [
         "constructor declaration"
       ],
-      "verified": "compiled only",
-      "untraced": "ledger workflow not executed"
+      "verified": "actual Room historical fixture write/read then destructive upgrade observation",
+      "untraced": "ledger app workflow/UI"
     }
   ],
   "full_android_runtime": false,
@@ -212,5 +212,43 @@
     "control": {
       "PASS": 1
     }
-  }
+  },
+  "host_compiled_product_sources": 13,
+  "full_gradle_compiled_product_sources": 24,
+  "full_gradle_existing_tests": {
+    "tests": 3,
+    "failures": 0,
+    "errors": 0,
+    "classes": 2
+  },
+  "real_room_host_runtime": true,
+  "room_tests": {
+    "A": {
+      "PASS": 1
+    },
+    "B": {
+      "PASS": 1,
+      "FAIL": 2
+    }
+  },
+  "latest_combined_counts": {
+    "A": {
+      "PASS": 8
+    },
+    "B": {
+      "FAIL": 10,
+      "BLOCKED": 1,
+      "PASS": 3
+    },
+    "control": {
+      "PASS": 1
+    }
+  },
+  "remaining_runtime_limits": [
+    "Physical Android device/emulator",
+    "UI/Compose event path",
+    "OS process restart",
+    "artifact-store resolver/bytes roundtrip",
+    "existing result recipe version binding"
+  ]
 }
