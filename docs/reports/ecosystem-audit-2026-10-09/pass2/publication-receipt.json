@@ -1,0 +1,14 @@
+{
+  "schema": "klbt.audit.publication/1",
+  "payload_commit": "a91c4a56684626f6fcaff9172231d20e5f1a53ef",
+  "historical_base": "baa9e30c12a29ab7f14fc060a13676b1bd35b036",
+  "manifest_entries_verified": 306,
+  "manifest_self_blob_verified": true,
+  "changed_paths": 307,
+  "outside_owned_pass2_paths": [],
+  "integrity_errors": [],
+  "first_pass_files_unchanged": true,
+  "verification": "Git fetch then ls-tree blob identity and local SHA256 for each manifest member; diff entire payload against historical audit commit.",
+  "main_sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "ci_runs": 0
+}
