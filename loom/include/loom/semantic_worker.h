@@ -40,6 +40,7 @@
 #include <string>
 #include <thread>
 
+#include "loom/analyzer_binding.h"
 #include "loom/event_bus.h"
 #include "loom/result.h"
 #include "loom/runtime_profile.h"
@@ -85,9 +86,12 @@ struct WorkerStatus {
 
 class SemanticWorker {
  public:
+  // Direct clients retain their supplied default analyzer. Runtime binds the
+  // current resolved profile explicitly; each drain uses one profile snapshot.
   SemanticWorker(Database& db, SemanticLLM& llm, GraphEngine& graph, const Config& cfg, const Secrets& secrets,
                  EventBus& bus, net::HttpTransport& http, const SemanticAnalyzer& regex, TaskEngine* tasks = nullptr,
-                 std::optional<WorkerOptions> opts = {}, const Json& profile_overrides = Json::object());
+                 std::optional<WorkerOptions> opts = {}, const Json& profile_overrides = Json::object(),
+                 AnalyzerBinding analyzer_binding = AnalyzerBinding::ConstructorDefault);
   ~SemanticWorker();  // stop()
   SemanticWorker(const SemanticWorker&) = delete;
   SemanticWorker& operator=(const SemanticWorker&) = delete;
@@ -114,6 +118,7 @@ class SemanticWorker {
   EventBus& bus_;
   net::HttpTransport& http_;
   const SemanticAnalyzer& regex_;
+  AnalyzerBinding analyzer_binding_;
   TaskEngine* tasks_;
   Result<RuntimeProfile> profile_;
   WorkerOptions opts_;

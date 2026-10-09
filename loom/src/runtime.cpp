@@ -193,14 +193,14 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
   impl->context =
       std::make_unique<ContextSelector>(*impl->db, *impl->config, *impl->graph_memory, impl->memory.get());
   impl->graph = std::make_unique<GraphEngine>(*impl->db, *impl->bus, *impl->analyzer, impl->semantic_llm.get(),
-                                              impl->relations.get());
+                                              impl->relations.get(), AnalyzerBinding::RuntimeProfile);
   impl->chat = std::make_unique<ChatEngine>(*impl->config, *impl->secrets, *impl->db, *impl->bus, *impl->http,
                                             *impl->analyzer, impl->memory.get(), impl->graph_memory.get());
   impl->batch = std::make_unique<SemanticBatchAPI>(*impl->config, *impl->secrets, *impl->db, *impl->http,
                                                    *impl->analyzer, impl->tasks.get());
   impl->worker = std::make_unique<SemanticWorker>(*impl->db, *impl->semantic_llm, *impl->graph, *impl->config,
                                                   *impl->secrets, *impl->bus, *impl->http, *impl->analyzer,
-                                                  impl->tasks.get());
+                                                  impl->tasks.get(), std::nullopt, Json::object(), AnalyzerBinding::RuntimeProfile);
   impl->media = std::make_unique<MediaProviders>(*impl->secrets, *impl->http);
   impl->importer = std::make_unique<ConversationImporter>(*impl->db, *impl->bus, impl->blobs.get(),
                                                           impl->provenance.get(), impl->media.get());

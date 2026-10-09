@@ -33,6 +33,7 @@
 #include <string>
 #include <string_view>
 
+#include "loom/analyzer_binding.h"
 #include "loom/event_bus.h"
 #include "loom/result.h"
 #include "loom/util/json.h"
@@ -46,8 +47,10 @@ class RelationRegistry;
 
 class GraphEngine {
  public:
+  // Direct clients retain their supplied default analyzer. Runtime binds the
+  // current resolved profile explicitly, so overlay reset/removal also applies.
   GraphEngine(Database& db, EventBus& bus, const SemanticAnalyzer& regex, SemanticLLM* llm = nullptr,
-              RelationRegistry* relations = nullptr);
+              RelationRegistry* relations = nullptr, AnalyzerBinding analyzer_binding = AnalyzerBinding::ConstructorDefault);
   ~GraphEngine();
   GraphEngine(const GraphEngine&) = delete;
   GraphEngine& operator=(const GraphEngine&) = delete;
@@ -70,6 +73,7 @@ class GraphEngine {
   Database& db_;
   EventBus& bus_;
   const SemanticAnalyzer& regex_;
+  AnalyzerBinding analyzer_binding_;
   SemanticLLM* llm_;
   RelationRegistry* relations_;
   std::atomic<bool> active_{false};

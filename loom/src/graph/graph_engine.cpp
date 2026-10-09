@@ -93,8 +93,8 @@ bool ingest_common(Database& db, std::string_view msg_id, std::string_view conv_
 }  // namespace
 
 GraphEngine::GraphEngine(Database& db, EventBus& bus, const SemanticAnalyzer& regex, SemanticLLM* llm,
-                         RelationRegistry* relations)
-    : db_(db), bus_(bus), regex_(regex), llm_(llm), relations_(relations) {}
+                         RelationRegistry* relations, AnalyzerBinding analyzer_binding)
+    : db_(db), bus_(bus), regex_(regex), analyzer_binding_(analyzer_binding), llm_(llm), relations_(relations) {}
 
 GraphEngine::~GraphEngine() { stop(); }
 
@@ -127,11 +127,12 @@ Status GraphEngine::on_message_checked(const Json& data, const Json& overrides) 
     if (mid.empty() || utf8::length(text) < policy.at("min_input_codepoints").get<std::size_t>()) return {};
 
     Json analysis;
-    bool used_analyzer_overlay = false;
+    const bool used_analyzer_overlay = !semantic_profile.is_builtin();
+    // Reset/removal must use the current builtin recipe, even when the
+    // constructor's analyzer was created from a former overlay.
     std::unique_ptr<SemanticAnalyzer> effective_analyzer;
-    if (!semantic_profile.is_builtin()) {
+    if (analyzer_binding_ == AnalyzerBinding::RuntimeProfile || !semantic_profile.is_builtin()) {
       LOOM_TRY_ASSIGN(effective_analyzer, SemanticAnalyzer::create_with_profile(semantic_profile));
-      used_analyzer_overlay = true;
     }
     const auto& analyzer = effective_analyzer ? *effective_analyzer : regex_;
     if (llm_ && llm_->enabled()) {

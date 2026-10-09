@@ -1,5 +1,7 @@
 #include <doctest/doctest.h>
 
+#include <algorithm>
+
 #include "loom/db.h"
 #include "loom/config.h"
 #include "loom/event_bus.h"
@@ -19,6 +21,127 @@ using namespace loom;
 using loom::test::unwrap;
 
 TEST_SUITE("runtime") {
+  TEST_CASE("direct graph and worker retain constructor analyzer and explicit overlay strategies") {
+    fsutil::TempDir td;
+    auto db = loom::test::open_db(td.path() / "direct.db");
+    Config config(td.path() / "config.json");
+    Secrets secrets(td.path() / "secrets.json");
+    EventBus bus;
+    net::ScriptedTransport transport;
+    auto rules = AnalyzerRules::builtin();
+    rules.entity_patterns = {EntityPattern{"concept", "SYNTHETIC_CONSTRUCTOR_MARKER", 0, 1.0}};
+    auto analyzer = unwrap(SemanticAnalyzer::create(rules));
+    SemanticLLM llm(config, secrets, transport, *analyzer);
+    GraphEngine graph(*db, bus, *analyzer);
+    SemanticWorker worker(*db, llm, graph, config, secrets, bus, transport, *analyzer);
+    graph.start();
+    const auto conversation = unwrap(db->create_conv("direct analyzer strategies"));
+    const std::string text = "Synthetic source direct@example.invalid SYNTHETIC_CONSTRUCTOR_MARKER SYNTHETIC_OVERLAY_MARKER";
+    for (const char* expected : {"SYNTHETIC_CONSTRUCTOR_MARKER", "SYNTHETIC_OVERLAY_MARKER"}) {
+      if (std::string_view(expected) == "SYNTHETIC_OVERLAY_MARKER") {
+        LOOM_REQUIRE_OK(fsutil::ensure_dir(td.path() / "profiles"));
+        const Json pattern{{"entity_type", "concept"}, {"pattern", expected}, {"flags", Json::array()}, {"confidence", 1.0}};
+        LOOM_REQUIRE_OK(fsutil::write_file(td.path() / "profiles/semantic_analyzer.pack",
+          Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "semantic_analyzer"},
+               {"overrides", {{"rules", {{"entity_patterns", Json::array({pattern})}}}}}}.dump()));
+      }
+      NewMessage message; message.conv_id = conversation.id; message.role = "user"; message.text = text;
+      const auto live = unwrap(db->create_msg(message));
+      LOOM_REQUIRE_OK(graph.on_message_checked(Json{{"id", live}, {"text", text}, {"conv_id", conversation.id}}));
+      const auto queued = unwrap(db->create_msg(message));
+      CHECK(unwrap(worker.drain_once()) == 1);
+      const auto expected_node = unwrap(db->find_node(expected, "concept"));
+      REQUIRE(expected_node.has_value());
+      for (const auto& id : {live, queued}) {
+        const auto row = *unwrap(db->get_msg(id));
+        CHECK(row.semantic_status == "done");
+        CHECK(row.metadata["entity_count"] == 1);
+        const auto links = unwrap(db->get_links(id));
+        CHECK(std::any_of(links.begin(), links.end(), [&](const Link& link) { return link.dst == expected_node->id; }));
+      }
+    }
+    CHECK_FALSE(unwrap(db->find_node("direct@example.invalid", "email")).has_value());
+    CHECK(transport.requests().empty());
+  }
+
+  TEST_CASE("A2-BSEM-001 reset and removal reach current builtin in live worker and LLM fallback") {
+    for (bool remove_overlay : {false, true}) for (bool use_llm : {false, true}) {
+      CAPTURE(remove_overlay);
+      CAPTURE(use_llm);
+      fsutil::TempDir td;
+      const auto root = td.path() / "data";
+      const auto overlay_path = root / "profiles/semantic_analyzer.pack";
+      LOOM_REQUIRE_OK(fsutil::ensure_dir(overlay_path.parent_path()));
+      const std::string marker = "SYNTHETIC_REMOVED_OVERLAY_MARKER";
+      const Json pattern{{"entity_type", "concept"}, {"pattern", marker},
+                         {"flags", Json::array()}, {"confidence", 1.0}};
+      const Json overlay{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "semantic_analyzer"},
+          {"overrides", {{"rules", {{"entity_patterns", Json::array({pattern})}}}}}};
+      LOOM_REQUIRE_OK(fsutil::write_file(overlay_path, overlay.dump()));
+      const auto initial_hash = unwrap(RuntimeProfile::load("semantic_analyzer", root)).hash();
+      auto transport = std::make_shared<net::ScriptedTransport>();
+      transport->set_fallback(net::ScriptedTransport::Reply::fail(Errc::Unavailable, "synthetic offline failure"));
+      RuntimeOptions options;
+      options.data_dir = root.string(); options.start_workers = false; options.http = transport;
+      auto runtime = unwrap(Runtime::open(options));
+      if (use_llm) {
+        runtime->config().set("semantic_model", "synthetic/offline-model");
+        runtime->secrets().set("api_key", "synthetic-not-a-credential");
+      }
+      const auto conversation = unwrap(runtime->db().create_conv("synthetic builtin reset"));
+      const std::string text = "Synthetic source reset@example.invalid " + marker;
+      auto pending = [&] {
+        NewMessage message; message.conv_id = conversation.id; message.role = "user"; message.text = text;
+        return unwrap(runtime->db().create_msg(message));
+      };
+      auto live = [&](const std::string& id) {
+        return runtime->graph().on_message_checked(Json{{"id", id}, {"text", text}, {"conv_id", conversation.id}});
+      };
+      const auto prior = pending();
+      LOOM_REQUIRE_OK(live(prior));
+      const auto historical = unwrap(runtime->db().get_msg(prior))->to_json();
+      CHECK(historical["metadata"]["analyzer_profile_hash"] == initial_hash);
+      CHECK(historical["metadata"]["entity_count"] == 1);
+      if (remove_overlay) {
+        CHECK(std::filesystem::remove(overlay_path));
+      } else {
+        LOOM_REQUIRE_OK(fsutil::write_file(overlay_path,
+          Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "semantic_analyzer"},
+               {"overrides", Json::object()}}.dump()));
+      }
+      CHECK(unwrap(RuntimeProfile::load("semantic_analyzer", root)).is_builtin());
+      const auto current_live = pending();
+      LOOM_REQUIRE_OK(live(current_live));
+      const auto current_worker = pending();
+      CHECK(unwrap(runtime->worker().drain_once()) == 1);
+      const auto email = unwrap(runtime->db().find_node("reset@example.invalid", "email"));
+      const auto old_concept = unwrap(runtime->db().find_node(marker, "concept"));
+      REQUIRE(email.has_value()); REQUIRE(old_concept.has_value());
+      for (const auto& id : {current_live, current_worker}) {
+        const auto message = *unwrap(runtime->db().get_msg(id));
+        CHECK(message.semantic_status == "done");
+        CHECK(message.metadata["semantic_source"] == "regex");
+        CHECK(message.metadata["entity_count"] == 2); // builtin email and mention
+        CHECK_FALSE(message.metadata.contains("analyzer_profile_hash"));
+        const auto links = unwrap(runtime->db().get_links(id));
+        CHECK(std::any_of(links.begin(), links.end(), [&](const Link& link) { return link.dst == email->id; }));
+        CHECK(std::none_of(links.begin(), links.end(), [&](const Link& link) { return link.dst == old_concept->id; }));
+      }
+      // The explicit constructor-bound public API retains its original recipe.
+      const auto explicit_analysis = runtime->semantic_llm().analyse(text);
+      REQUIRE(explicit_analysis["entities"].size() == 1);
+      CHECK(explicit_analysis["entities"][0]["name"] == marker);
+      CHECK(runtime->analyzer().profile_hash() == initial_hash);
+      CHECK(transport->requests().size() == (use_llm ? 4 : 0));
+      CHECK(unwrap(runtime->db().get_msg(prior))->to_json() == historical);
+      runtime->shutdown();
+      auto reopened = unwrap(Runtime::open(options));
+      CHECK(unwrap(reopened->db().get_msg(prior))->to_json() == historical);
+      CHECK(unwrap(reopened->db().get_msg(current_worker))->metadata["entity_count"] == 2);
+      CHECK(unwrap(reopened->db().count_pending_semantic()) == 0);
+    }
+  }
+
   TEST_CASE("effective analyzer data reaches live graph worker and LLM fallback without hidden defaults") {
     fsutil::TempDir td;
     const auto root = td.path() / "data";

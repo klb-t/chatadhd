@@ -258,7 +258,8 @@ Json WorkerStatus::to_json() const {
 
 SemanticWorker::SemanticWorker(Database& db, SemanticLLM& llm, GraphEngine& graph, const Config& cfg,
                                const Secrets& secrets, EventBus& bus, net::HttpTransport& http,
-                               const SemanticAnalyzer& regex, TaskEngine* tasks, std::optional<WorkerOptions> opts, const Json& profile_overrides)
+                               const SemanticAnalyzer& regex, TaskEngine* tasks, std::optional<WorkerOptions> opts,
+                               const Json& profile_overrides, AnalyzerBinding analyzer_binding)
     : db_(db),
       llm_(llm),
       graph_(graph),
@@ -267,6 +268,7 @@ SemanticWorker::SemanticWorker(Database& db, SemanticLLM& llm, GraphEngine& grap
       bus_(bus),
       http_(http),
       regex_(regex),
+      analyzer_binding_(analyzer_binding),
       tasks_(tasks),
       profile_(RuntimeProfile::load("worker", cfg.path().parent_path(), profile_overrides)),
       opts_(opts ? std::move(*opts) : WorkerOptions()) {
@@ -344,8 +346,10 @@ Result<int> SemanticWorker::drain_once() {
   // Resolve once before any transport or write. A malformed overlay is an
   // operation error, never a reason to silently use the built-in analyzer.
   LOOM_TRY_ASSIGN(auto analyzer_profile, RuntimeProfile::load("semantic_analyzer", db_.path().parent_path()));
+  // Builtin equality describes the current values, not the analyzer retained
+  // by the constructor (which may have been built from a removed overlay).
   std::unique_ptr<SemanticAnalyzer> effective_analyzer;
-  if (!analyzer_profile.is_builtin()) {
+  if (analyzer_binding_ == AnalyzerBinding::RuntimeProfile || !analyzer_profile.is_builtin()) {
     LOOM_TRY_ASSIGN(effective_analyzer, SemanticAnalyzer::create_with_profile(analyzer_profile));
   }
   const auto& analyzer = effective_analyzer ? *effective_analyzer : regex_;
