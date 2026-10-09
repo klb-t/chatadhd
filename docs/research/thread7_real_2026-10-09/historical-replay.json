@@ -1,0 +1,20 @@
+[
+  {
+    "population": "programme-actual/stage1-final-20261005-v2",
+    "byte_identical": true,
+    "packet_sha256": "c84c4c225956e0b409482ce3240c1638b26f6d1ff7734b16e42d773234101d32",
+    "new_calls": 0
+  },
+  {
+    "population": "followup-results/source-measured-graph-v1",
+    "byte_identical": true,
+    "packet_sha256": "e9611da0c46b6af2acb88f68bea8bf8ef886e2b7b8994f8d197f5dbaf81846c9",
+    "new_calls": 0
+  },
+  {
+    "population": "stage5/label-repetition-measured-v1",
+    "byte_identical": true,
+    "packet_sha256": "ff948762ae99c6e1765a093713885677d60ede7d7bb252aa7a59543f044880a9",
+    "new_calls": 0
+  }
+]

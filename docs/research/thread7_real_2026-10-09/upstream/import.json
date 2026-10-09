@@ -1,0 +1,80 @@
+{
+  "source_commit": "ffe6443e82d71adde07ee899c650925e7afc37b3",
+  "files": [
+    {
+      "path": "docs/research/thread7_real_2026-10-09/upstream/real-prompt-recovery-20261005/README.md",
+      "source_path": "docs/research/model_research_2026-10-04/express20261005/real-prompt-recovery-20261005/README.md",
+      "git_blob": "57055adeaee1996fea31a0f3a461f3b22e0debf5"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/upstream/real-prompt-recovery-20261005/REAL_PREPARATION_RECEIPT.json",
+      "source_path": "docs/research/model_research_2026-10-04/express20261005/real-prompt-recovery-20261005/REAL_PREPARATION_RECEIPT.json",
+      "git_blob": "ea234e9a96d3963603623081e1d11b9cb4da8cf2"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/upstream/real-prompt-recovery-20261005/VERIFICATION.json",
+      "source_path": "docs/research/model_research_2026-10-04/express20261005/real-prompt-recovery-20261005/VERIFICATION.json",
+      "git_blob": "ab81bba7e7326a1ebe8b30c79cbc4964fdc59c95"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/upstream/real-prompt-recovery-20261005/dependencies.json",
+      "source_path": "docs/research/model_research_2026-10-04/express20261005/real-prompt-recovery-20261005/dependencies.json",
+      "git_blob": "0c03e164b89db052767e14b69c49fd9e7dca512e"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/upstream/real-prompt-recovery-20261005/prepare_real.py",
+      "source_path": "docs/research/model_research_2026-10-04/express20261005/real-prompt-recovery-20261005/prepare_real.py",
+      "git_blob": "7950e9ebdae9e1ce3ddc77c20ee5e56d6a2dc24f"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/upstream/real-prompt-recovery-20261005/protocol.json",
+      "source_path": "docs/research/model_research_2026-10-04/express20261005/real-prompt-recovery-20261005/protocol.json",
+      "git_blob": "499f44a36ec980e60a65271aa7f1ccf56f344ed7"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/upstream/real-prompt-recovery-20261005/test_prepare_real.py",
+      "source_path": "docs/research/model_research_2026-10-04/express20261005/real-prompt-recovery-20261005/test_prepare_real.py",
+      "git_blob": "418d64501fb8ce6c9084498ee31d4223434bbc93"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/upstream/real-prompt-recovery-20261005/upstream-7b/design.json",
+      "source_path": "docs/research/model_research_2026-10-04/express20261005/real-prompt-recovery-20261005/upstream-7b/design.json",
+      "git_blob": "204e652647ad395042e8959af64a76d0c3fbe1a0"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/upstream/real-prompt-recovery-20261005/upstream-7b/prepare.py",
+      "source_path": "docs/research/model_research_2026-10-04/express20261005/real-prompt-recovery-20261005/upstream-7b/prepare.py",
+      "git_blob": "2e4823b52df897800896fd13fde40faf0f202fac"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/upstream/real-source-recovery-20261005/README.md",
+      "source_path": "docs/research/model_research_2026-10-04/express20261005/real-source-recovery-20261005/README.md",
+      "git_blob": "6e3710554e64e002d27a7ecf9df63000a8bae8f6"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/upstream/real-source-recovery-20261005/REAL_SOURCE_RECEIPT.json",
+      "source_path": "docs/research/model_research_2026-10-04/express20261005/real-source-recovery-20261005/REAL_SOURCE_RECEIPT.json",
+      "git_blob": "89e7c93c6cac1890738186e56575a57d91b97071"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/upstream/real-source-recovery-20261005/VERIFICATION.json",
+      "source_path": "docs/research/model_research_2026-10-04/express20261005/real-source-recovery-20261005/VERIFICATION.json",
+      "git_blob": "8eb2ebbf3f5b117790d988d656938ee1f0ad5598"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/upstream/real-source-recovery-20261005/intake.py",
+      "source_path": "docs/research/model_research_2026-10-04/express20261005/real-source-recovery-20261005/intake.py",
+      "git_blob": "22fac145bd617389b27d71db22c88bc1cb7562b6"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/upstream/real-source-recovery-20261005/layout.json",
+      "source_path": "docs/research/model_research_2026-10-04/express20261005/real-source-recovery-20261005/layout.json",
+      "git_blob": "8c5678c6ca5a765f9f3bb1dae0cb5ec434654746"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/upstream/real-source-recovery-20261005/test_intake.py",
+      "source_path": "docs/research/model_research_2026-10-04/express20261005/real-source-recovery-20261005/test_intake.py",
+      "git_blob": "bc9641116703d3edc5449420385b4dfd1d397b14"
+    }
+  ]
+}
