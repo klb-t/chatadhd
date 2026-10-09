@@ -1,0 +1,83 @@
+{
+  "schema": "loom.retrieval_task_protocol/1",
+  "revision": "thread7-continuation02-v1",
+  "purpose": "Offline retrieval and preservation of evidence from real exported conversations; no LLM answer quality measurement",
+  "unit_of_dependence": "conversation_family",
+  "sources": {
+    "family_count": 12,
+    "messages": 2079,
+    "provider_families": {
+      "openai": 6,
+      "anthropic": 6
+    },
+    "source_freeze_sha256": "324d33a17ac09cc3b1c1dd11fb875b10d2a7ccf1f4c7b2fb06c313f9ba7e209f"
+  },
+  "family_split": {
+    "tuning": 8,
+    "provisional_validation": 4,
+    "independent_holdout": false,
+    "historical_blind_read": false
+  },
+  "task_authoring": {
+    "task_count": 48,
+    "per_family": 4,
+    "query": "researcher-authored paraphrase, not authentic new user utterance",
+    "judgments": "provisional source-grounded annotations",
+    "pass_1": "source evidence identification by author",
+    "pass_2": "interpretation review by another agent in the same session; not independent adjudication",
+    "researcher_exposure": "all benchmark families read for task construction; no independent or blind validation claim",
+    "selection_bias": "purposive availability sample drawn from previously selected 12-family panel; not archive-wide population estimate",
+    "query_distribution_limitation": "Queries deliberately reference known conversation topics and often share distinctive vocabulary with evidence. This is not a natural independent query distribution."
+  },
+  "candidate_policy": {
+    "unit": "whole exported message with all preserved literal text fields",
+    "default": "entire family, identical for all methods",
+    "prefix_exceptions": "two unresolved-conflict tasks use explicitly listed messages through an observed boundary before subsequent resolution; later messages are unavailable to every method",
+    "native_relations": "only preserved parent/child edges; no inferred semantic relation",
+    "oversize": "skip whole message if it cannot fit budget; record missing evidence; never silently truncate",
+    "byte_budgets": [
+      8192,
+      32768
+    ],
+    "maximum_records": 10,
+    "token_counts": "only when an identified versioned local tokenizer is available; otherwise null, never bytes divided by a heuristic",
+    "branch_coverage": "One task tests an actual native sibling; one retrieves an instruction to transfer a side topic, which is not treated as native branch navigation."
+  },
+  "evidence_policy": {
+    "expected_evidence": "Essential direct source messages. evidence_sets lists alternative sufficient sets; retain every message in any one set. expected_evidence is their union and required=false denotes alternatives, not waived evidence.",
+    "source_attribution": "user claims, assistant proposals, and quoted external text remain distinguished",
+    "answers": "admissible_answer describes evidence content without certifying factual allegations or advice",
+    "forbidden_evidence": "Annotated wrong-version/branch distractors for this query. Selection/inclusion is reported separately; selecting old and new together does not prove a model followed the wrong instruction.",
+    "absence": "two bounded absence tasks have zero positive evidence, explicit absence-support pointers and full-family reviewed scope; retrieving no record is abstention, not semantic proof that answer is absent",
+    "graph": "native structural traversal measures navigation, never semantic understanding"
+  },
+  "evaluation": {
+    "paired": "same task and same candidate pool under each budget",
+    "metrics": [
+      "evidence_message_precision",
+      "evidence_message_recall",
+      "reciprocal_rank",
+      "ndcg",
+      "all_required_evidence_retained",
+      "wrong_version_selection",
+      "wrong_branch_selection",
+      "selected_bytes",
+      "selected_records",
+      "tokens_or_null",
+      "query_time",
+      "index_time",
+      "memory"
+    ],
+    "aggregation": "per-task output and paired within-family averages; family-level summaries and uncertainty with explicit n=12/8/4",
+    "missing": "undefined metrics remain null; absent-answer cases excluded from positive recall/ranking denominator and reported separately",
+    "tuning": "all method settings frozen before results; any later tuning must use tuning families only and have a new frozen revision",
+    "no_winner_policy": "no automatic preset adoption or universal winner claim",
+    "precision_denominators": {
+      "precision_at_k": "relevant selected count divided by fixed k; shorter byte-constrained returns incur empty ranks",
+      "selected_record_precision": "relevant selected count divided by actual selected records; undefined when empty",
+      "recall": "best covered fraction among alternative sufficient evidence sets"
+    }
+  },
+  "new_api_calls": 0,
+  "new_cost_usd": "0"
+}

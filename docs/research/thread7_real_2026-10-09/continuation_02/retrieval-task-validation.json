@@ -1,0 +1,39 @@
+{
+  "schema": "loom.retrieval_task_validation/1",
+  "tasks_sha256": "9c596a7f4feca7ebd65d7deb0008631cf986a55bc34a2b4763b2cae8f64b2985",
+  "tasks": 48,
+  "families": 12,
+  "evidence_spans_checked": 67,
+  "family_split_counts": {
+    "provisional_validation": 4,
+    "tuning": 8
+  },
+  "provider_family_counts": {
+    "openai": 6,
+    "anthropic": 6
+  },
+  "task_category_counts": {
+    "current_instruction": 10,
+    "decision_rationale": 6,
+    "earlier_requirement": 5,
+    "bounded_absence": 2,
+    "current_clarification": 6,
+    "earlier_version": 2,
+    "continuation_context": 6,
+    "topic_transition": 1,
+    "source_explanation": 1,
+    "research_instruction": 1,
+    "hypothesis_rationale": 1,
+    "branch_evidence": 1,
+    "quoted_source": 1,
+    "unresolved_conflict": 2,
+    "checkpoint_requirement": 1,
+    "hypothesis_revision": 1,
+    "branch_transfer_instruction": 1
+  },
+  "source_hashes_verified": 12,
+  "status": "pass",
+  "semantic_judgment_validation": "separate_same_session_review_not_proven_by_this_validator",
+  "new_api_calls": 0,
+  "new_cost_usd": "0"
+}

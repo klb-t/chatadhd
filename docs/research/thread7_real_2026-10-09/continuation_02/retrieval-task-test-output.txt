@@ -1,0 +1,15 @@
+test_accepts_alternative_evidence (__main__.TaskValidationTests.test_accepts_alternative_evidence) ... ok
+test_rejects_absence_with_positive_target (__main__.TaskValidationTests.test_rejects_absence_with_positive_target) ... ok
+test_rejects_answerable_without_evidence (__main__.TaskValidationTests.test_rejects_answerable_without_evidence) ... ok
+test_rejects_changed_source (__main__.TaskValidationTests.test_rejects_changed_source) ... ok
+test_rejects_edited_quote (__main__.TaskValidationTests.test_rejects_edited_quote) ... ok
+test_rejects_false_independent_holdout_claim (__main__.TaskValidationTests.test_rejects_false_independent_holdout_claim) ... ok
+test_rejects_future_messages_in_prefix (__main__.TaskValidationTests.test_rejects_future_messages_in_prefix) ... ok
+test_rejects_interpretation_as_wrong_speaker (__main__.TaskValidationTests.test_rejects_interpretation_as_wrong_speaker) ... ok
+test_rejects_misbound_pointer (__main__.TaskValidationTests.test_rejects_misbound_pointer) ... ok
+test_rejects_positive_evidence_marked_forbidden (__main__.TaskValidationTests.test_rejects_positive_evidence_marked_forbidden) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.009s
+
+OK

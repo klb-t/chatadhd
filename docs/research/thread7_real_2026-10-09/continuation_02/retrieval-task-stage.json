@@ -1,0 +1,55 @@
+{
+  "schema": "loom.retrieval_task_stage/1",
+  "stage": "continuation02-retrieval-task-freeze",
+  "created_at_utc": "2026-10-09T07:51:44.459852+00:00",
+  "freeze_sha256": "867526d7269646c561858473dd1aabac850d04c4f7a6fa0127b223b057f5b0ec",
+  "public_files": [
+    {
+      "path": "retrieval-task-protocol.json",
+      "sha256": "925e6a128bf0c2f8255640d144f04084112d8a11c7c966b260b5d02a947b8df6",
+      "bytes": 4825
+    },
+    {
+      "path": "retrieval-task-receipt.json",
+      "sha256": "32ee19459e907b20c06704950e88e93e0ce6194b4c7e50e144717b0b274712c1",
+      "bytes": 1035
+    },
+    {
+      "path": "retrieval-task-validation.json",
+      "sha256": "cf28732a6e660acce12423f5eb03f781f4200b5e4dc3f8ea688ef28ddd16d9f4",
+      "bytes": 1082
+    },
+    {
+      "path": "retrieval-task-validate.py",
+      "sha256": "2ff21588b39d4b86b6239d9f6281fd66818ad6b30dff320a24975a0ef48ad2e4",
+      "bytes": 3963
+    },
+    {
+      "path": "retrieval-task-tests.py",
+      "sha256": "0ca3895a23f85fdda1cc5231cc95efcaf9391648ee0d33c2a92cd565ea9cb81f",
+      "bytes": 3615
+    },
+    {
+      "path": "retrieval-task-test-output.txt",
+      "sha256": "311819b131676381ab7433699374308cf8339a7ddbf42125d151bc91ab8c405f",
+      "bytes": 1235
+    }
+  ],
+  "mechanics_tests": {
+    "run": 10,
+    "passed": 10,
+    "failed": 0,
+    "skipped": 0,
+    "command": "TMPDIR=/var/tmp python3 docs/research/thread7_real_2026-10-09/continuation_02/retrieval-task-tests.py"
+  },
+  "actual_evidence_verification": {
+    "sources": 12,
+    "spans": 67,
+    "tasks": 48,
+    "status": "pass"
+  },
+  "new_model_calls": 0,
+  "new_cost_usd": "0",
+  "private_content_in_public_projection": false,
+  "privacy_projection": "aggregatecounts,hashes,genericprotocol and mechanics-onlyfixture; rawqueries/excerpts/nativeIDs retained privately"
+}
