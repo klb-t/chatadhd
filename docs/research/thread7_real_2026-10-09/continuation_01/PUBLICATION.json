@@ -1,0 +1,82 @@
+{
+  "archival_remaining_usd": "4.126783500",
+  "branch": "gpt/thread7-real-2026-10-09",
+  "changed_code_scope_verified": true,
+  "code_commit": "a77b36bc02f2468c5f14afd28fc660850f38ecce",
+  "code_tree": "7a038ff7d7171617f2452bc8ead8cf73ab144f1f",
+  "current_prices": null,
+  "current_provider_identity": null,
+  "current_provider_usage": null,
+  "current_reservations": null,
+  "date": "2026-10-09",
+  "final_tests": {
+    "errors": 0,
+    "failures": 0,
+    "log_sha256": "de290c694ab0566703732ac3d271d6afcea44f6a051824be7ee384f35c2f39df",
+    "mechanical_fixtures_are_model_quality": false,
+    "native_runtime_tested": false,
+    "new_cost_usd": "0",
+    "new_live_calls": 0,
+    "passed": 336,
+    "real_jev_preparation_tests_enabled": true,
+    "skipped": 0,
+    "tests_run": 336
+  },
+  "historical_calls": 720,
+  "historical_cost_usd": "0.873216500",
+  "new_actual_cost_usd": "0",
+  "new_actual_paid_calls": 0,
+  "previous_tip": "69880859802267f1b38b82eeaecd6fdc5522a47a",
+  "private_checkpoint": {
+    "bytes": 244087751,
+    "durable_private_save": "succeeded",
+    "filename": "PRIVATE_Thread7_continuation01_2026-10-09.zip",
+    "manifest_sha256": "b2e9512387ace77c2b8b06e7502d2349cac8dd660b0d926f4b4febedc130f315",
+    "new_paid_calls": 0,
+    "new_paid_cost_usd": "0",
+    "new_public_delta_contains_raw_sources": false,
+    "payloads_verified": 1712,
+    "prior_checkpoint_unchanged": true,
+    "schema": "loom.thread7_checkpoint_receipt/1",
+    "scope": "explicit prior ZIP, recovered larger source ZIP/audit/report, continuation sources/views/requests/queues/analysis, superseded versions and failed preparation evidence; no home or credential directories",
+    "sha256": "fca71d513aa44ddcf1960c325c9f38f89a458ef5feedb3de3b9c114b4f1ddf50",
+    "source_archives_unchanged": true
+  },
+  "public_projection_check": {
+    "canaries": 8409,
+    "decoded_parts_checked": 104,
+    "hits": 0,
+    "native_source_families": 15,
+    "receipt": "public-projection-final-check.json",
+    "scope_limitation": "finite canary/key-pattern scan plus aggregate/code review; not a universal PII proof",
+    "sha256": "9f3f9dd6f35957c43106c90102d960475cc7a4746df7c463c62081489f411f56"
+  },
+  "public_report": {
+    "path": "docs/reports/thread7-real-continuation-2026-10-09.md",
+    "sha256": "cef2b56481d68cbf9bfeae477e89b5bdb50baad689e2f0d82433498531cb813c"
+  },
+  "quality_measured_on_new_panel": false,
+  "resume": {
+    "ambiguous_reserved_attempt": "preserve reservation and first evidence; attributable external reconciliation; no blind retry",
+    "context": "continuation/context/expanded-v2",
+    "corpus": "continuation/corpus",
+    "dependent_extraction": "requires actual complete primary response, then separately planned/reserved second phase",
+    "next_gate": "trusted current payer preflight; no automatic paid dispatch",
+    "queue_and_payer_manifests": "continuation/connected-v2",
+    "small_alternative_operations": [
+      6,
+      10
+    ]
+  },
+  "schema": "loom.thread7_continuation_publication/1",
+  "self_reference": "This outer receipt follows the immutable code commit and ZIP; its own commit hash is intentionally resolved through git history.",
+  "stage_commits": {
+    "1": "cbaffe58ce6b462de6a8815b18b47c211a1eec38",
+    "1_guard": "804b783d680988517027333e500e26b588657416",
+    "2": "8fe1fc8979068cfd82cc19a1e588c17d937f1db3",
+    "3": "9416d6f3f573542b299deb77772418154e7806d0",
+    "4": "8f1480804ac437db09aeaa96693eb144006e7df0",
+    "5": "b9b503f62bb8e8e00c94ab7401e1cd9579129af3",
+    "6": "a77b36bc02f2468c5f14afd28fc660850f38ecce"
+  }
+}
