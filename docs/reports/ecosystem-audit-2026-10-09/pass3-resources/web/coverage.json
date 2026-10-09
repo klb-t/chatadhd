@@ -1,0 +1,190 @@
+{
+  "repo": "klb-t/chatadhd",
+  "sha": "384c5e1686cd3a58a7d89a8a6813a18c764f697d",
+  "equivalent_main_sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "paths": [
+    {
+      "file": "loom/web/src/profiles/graph.ts",
+      "ranges": [
+        [
+          7,
+          11
+        ],
+        [
+          60,
+          109
+        ],
+        [
+          113,
+          150
+        ]
+      ],
+      "functions": [
+        "parseApplicationProfileSource",
+        "makeApplicationProfileGraphAcceptance",
+        "readProfileFromReceipt"
+      ],
+      "untraced_calls": [
+        "Graph field query and resource transport absent from this path"
+      ],
+      "sha256": "b35b3bc78d67b0abd2fbd4001a3673ce83172fba952affecd3d5a7c0941e453b",
+      "execution": "selected actual functions executed; ranges include adjacent semantic review"
+    },
+    {
+      "file": "loom/web/src/profiles/runtime.ts",
+      "ranges": [
+        [
+          64,
+          110
+        ],
+        [
+          184,
+          211
+        ],
+        [
+          237,
+          275
+        ],
+        [
+          284,
+          348
+        ],
+        [
+          367,
+          425
+        ]
+      ],
+      "functions": [
+        "registerProfile",
+        "profileAvailability",
+        "createProfileSession",
+        "executeProfileAction"
+      ],
+      "untraced_calls": [
+        "Other expression alternatives not exhaustive",
+        "Browser React host not mounted"
+      ],
+      "sha256": "acee394825f9f8050b7f6ba3dbdc752a8afa09f977a9ee9dbc7eeca8f50c809d",
+      "execution": "selected actual functions executed; ranges include adjacent semantic review"
+    },
+    {
+      "file": "loom/web/src/profiles/loom-adapter.ts",
+      "ranges": [
+        [
+          45,
+          47
+        ],
+        [
+          149,
+          154
+        ]
+      ],
+      "functions": [
+        "createLoomProfileRegistry",
+        "chat.create adapter"
+      ],
+      "untraced_calls": [
+        "chat.send actual model execution outside this module"
+      ],
+      "sha256": "d939c1dee04d86ba230ad3fc5a8b201bf7e11c93484971d8f0bae3736f3fb304",
+      "execution": "selected actual functions executed; ranges include adjacent semantic review"
+    },
+    {
+      "file": "loom/web/src/profiles/capability-graph.ts",
+      "ranges": [
+        [
+          29,
+          87
+        ]
+      ],
+      "functions": [
+        "makeCapabilityGraphAcceptance"
+      ],
+      "untraced_calls": [
+        "Optional OperationsPanel handler read only, not mounted"
+      ],
+      "sha256": "54f11842b40651a17a293e1b0dc8af803c2bf697b3d0ff1e17210cd4cefe8e06",
+      "execution": "selected actual functions executed; ranges include adjacent semantic review"
+    },
+    {
+      "file": "loom/web/src/api/loom-http.ts",
+      "ranges": [
+        [
+          89,
+          96
+        ],
+        [
+          108,
+          129
+        ],
+        [
+          198,
+          204
+        ]
+      ],
+      "functions": [
+        "constructor",
+        "req",
+        "createConversation"
+      ],
+      "untraced_calls": [
+        "Request captured before socket; server create operation not executed"
+      ],
+      "sha256": "ea8b6601f749704413053de62002e59b0b2d50e3b1d558981072cd8bf80c859f",
+      "execution": "selected actual functions executed; ranges include adjacent semantic review"
+    },
+    {
+      "file": "loom/web/src/components/ApplicationProfiles.tsx",
+      "ranges": [
+        [
+          56,
+          85
+        ],
+        [
+          109,
+          116
+        ],
+        [
+          140,
+          184
+        ]
+      ],
+      "functions": [
+        "initial restore",
+        "persist",
+        "retainProfile",
+        "importProfile",
+        "loadReceipt",
+        "findNativeProfiles"
+      ],
+      "untraced_calls": [
+        "React mounted integration/browser E2E blocked in environment; semantic review only"
+      ],
+      "sha256": "48c383643aeb743fc984601caf324c3da03d27b0d7c07587488953c42311ef49",
+      "execution": "semantic review only"
+    },
+    {
+      "file": "loom/tools/coordination/graph_store.py",
+      "ranges": [
+        [
+          34,
+          92
+        ]
+      ],
+      "functions": [
+        "NativeGraphStore.__init__",
+        "execute",
+        "read",
+        "replay",
+        "close"
+      ],
+      "untraced_calls": [
+        "Loaded .so from main or B declared SHA; not full B2 rebuild"
+      ],
+      "sha256": "5409db2624335b0984ddd95a63a99906648f6d6acaf72f7951ddc7eff9ca758c",
+      "execution": "selected actual functions executed; ranges include adjacent semantic review"
+    }
+  ],
+  "count": 7,
+  "not_complete_file_review": true
+}

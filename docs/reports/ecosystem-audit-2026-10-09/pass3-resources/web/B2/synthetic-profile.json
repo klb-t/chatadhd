@@ -1,0 +1,79 @@
+﻿{
+  "schema": "loom.application_profile/1",
+  "id": "audit.external-profile",
+  "profile_revision": 1,
+  "label": "Synthetic profile",
+  "target": {
+    "application_id": "audit",
+    "version": "1",
+    "platform": "web"
+  },
+  "evidence": {
+    "status": "partial",
+    "sources": [],
+    "gaps": [
+      "Synthetic; no service parity asserted."
+    ]
+  },
+  "presentation": {
+    "renderer": "chat",
+    "tokens": {
+      "background": "#111",
+      "surface": "#222",
+      "text": "#fff",
+      "muted": "#aaa",
+      "accent": "#bbb",
+      "border": "#333"
+    },
+    "sidebar": {
+      "side": "left",
+      "width": 240
+    },
+    "content_width": 720,
+    "message_style": "plain"
+  },
+  "composer": {
+    "submit": "enter",
+    "placeholder": "Synthetic input"
+  },
+  "actions": [
+    {
+      "id": "create",
+      "label": "Create",
+      "operation": "chat.create",
+      "capability": "chat.create",
+      "required": true
+    }
+  ],
+  "workflows": [
+    {
+      "id": "create-flow",
+      "initial": "ready",
+      "states": [
+        "ready",
+        "done"
+      ],
+      "transitions": [
+        {
+          "from": "ready",
+          "event": "go",
+          "action": "create",
+          "to": "done",
+          "payload": {
+            "object": {
+              "title": {
+                "literal": "Synthetic Alpha"
+              }
+            }
+          },
+          "save": {
+            "conversation_id": {
+              "from": "result",
+              "pointer": "/id"
+            }
+          }
+        }
+      ]
+    }
+  ]
+} 

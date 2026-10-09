@@ -1,0 +1,14 @@
+{
+  "runner": "tools/ecosystem-audit-2026-10-09/pass3-resources/web/run.py",
+  "receipt_main": "main/receipt.json",
+  "receipt_B2": "B2/receipt.json",
+  "per_sha": {
+    "PASS": 9,
+    "FAIL": 0,
+    "BLOCKED": 3
+  },
+  "acceptance_pass": 8,
+  "reproduction_pass": 1,
+  "not_browser_e2e": true,
+  "full_vertical_status": "BLOCKED"
+}

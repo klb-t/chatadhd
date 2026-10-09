@@ -1,0 +1,81 @@
+{
+  "schema": "klbt.audit.web-resource-probe/1",
+  "cases": [
+    {
+      "id": "WEB-01",
+      "phase": "acceptance",
+      "status": "PASS",
+      "evidence": {
+        "exact_source_retained": true,
+        "entities": 1,
+        "claims": 0
+      }
+    },
+    {
+      "id": "WEB-02",
+      "phase": "reproduction",
+      "status": "PASS",
+      "evidence": {
+        "finding": "A3-WEB-001",
+        "structure_available_only_inside_raw_source": true
+      }
+    },
+    {
+      "id": "WEB-03",
+      "phase": "acceptance",
+      "status": "BLOCKED",
+      "reason": "No existing structured resource-field query and runtime resolver binding in this serializer. Requires B contract; raw JSON reparse is not a graph-field query."
+    },
+    {
+      "id": "WEB-04",
+      "phase": "acceptance",
+      "status": "PASS",
+      "evidence": {
+        "closed_schema_rejects_explicitly": true,
+        "caller_source_unmodified": true,
+        "not_a_graph_preservation_claim": true
+      }
+    },
+    {
+      "id": "WEB-05",
+      "phase": "acceptance",
+      "status": "PASS",
+      "evidence": {
+        "declaration_does_not_install_execution": true
+      }
+    },
+    {
+      "id": "WEB-06",
+      "phase": "acceptance",
+      "status": "PASS",
+      "evidence": {
+        "capability_has_graph_entity": true,
+        "permission_or_discovery_execution_not_asserted": true
+      }
+    },
+    {
+      "id": "WEB-07",
+      "phase": "acceptance",
+      "status": "BLOCKED",
+      "reason": "Unknown-field retention plus uncertain mapping in a graph resource needs a separate ingestion contract; strict executable-profile rejection alone does not implement it."
+    }
+  ],
+  "transport": {
+    "real_external_calls": 0,
+    "attempts_blocked": 0,
+    "captured_requests": []
+  },
+  "loaded_modules": [
+    "loom/web/src/profiles/runtime.ts",
+    "loom/web/src/profiles/graph.ts",
+    "loom/web/src/profiles/capability-graph.ts",
+    "loom/web/src/profiles/loom-adapter.ts",
+    "loom/web/src/api/operations.ts",
+    "loom/web/src/api/types.ts",
+    "loom/web/src/api/loom-http.ts"
+  ],
+  "limits": [
+    "Node host, no mounted React/browser E2E.",
+    "Only final fetch is substituted; actual parser, registry, graph serializer, workflow, adapter and HTTP encoder run."
+  ]
+}
