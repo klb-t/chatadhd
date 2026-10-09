@@ -1,0 +1,24 @@
+{
+  "schema": "loom.integration_manifest/1",
+  "branch": "gpt/data-graph-engine-2026-10-09",
+  "continuation_base": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+  "accepted": [
+    {
+      "source": "a6481d11a05158977a87dd55f3a4d6896a190dad",
+      "adopted": "82800d56de22f846542961ca83286aac3f7172af",
+      "dependencies": [
+        "existing main structure credential implementation"
+      ],
+      "handoff": "4e46ae87c5cd31967269f5fb28d1bb9400429019",
+      "gates": {
+        "credential_cases": 10,
+        "structure_cases": 1273,
+        "full_dev_ctest": 146,
+        "full_dev_executed_entries": 145,
+        "guard": "PASS",
+        "receipt": "data-graph-integration-c-full-dev-build-receipt.json"
+      },
+      "readiness": "scoped integration verified; broader product work open"
+    }
+  ]
+}

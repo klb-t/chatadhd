@@ -1,5 +1,16 @@
 # Zadanie B — DATA / GRAPH / ENGINE — 2026-10-09
 
+## Aktualny punkt kontynuacji — integracja B, 2026-10-09
+
+Stan tej sekcji zastępuje historyczne „następne kroki” niżej. Kontynuacja zaczęła się z czystego `387afe08587f179d47c013a2ea518ff4b68e36bc`, bez resetu ani zmiany main. Fresh fetch wszystkich siedmiu main: bazowe SHA w tabeli pozostają aktualne. Lokalna praca Chat/Watchdog/AGEDS zachowana. Źródła współpracy pobrane jawnie: A `43cc61e09475446c12040e53965ea83526a6cf73`, C `c525d0e942be95c8b3a79b670e621d50e0b31a1a`, D `6ed509a482d343288cd9ebd20553ccdcd0f3096b`, E `3eaac2953c3ee0d01d085e595d68edc091c284f2`.
+
+Priorytet 0 zamknięty zakresowo: C `a6481d11a05158977a87dd55f3a4d6896a190dad` przyjęty przez cherry-pick -x jako `82800d56de22f846542961ca83286aac3f7172af`, autor zachowany. Handoff `4e46ae87` przeczytany, pozostałe badania C nieprzyjęte. Testy credential 10/10 PASS; research.structure 1273/1273, 0 skips, guard PASS. Pełny dev na tym SHA: CTest 146/146 PASS, 252,52 s; guard PASS: 145 wykonanych wejść, `unit.test_catalog_scale` jawnie opt-in/niewykonany; 928 native / 32953 asercje, 1878 Python / 0 skips. Receipt source/config/bin przed testem, pełne stdout/JUnit 10 MiB. Vendored SQLite, GCC13 Debug-g1 WERROR, bez konkurującego ASan. Pierwsza próba scoped receipt miała brakujący argument cache; log pozostał, scoped test powtórzono z poprawnym receipt przed startem. Markery Git i testy negatywne zachowane.
+
+Aktualne reprodukcje A nadal FAIL: A3-DISC-001; CH-RES-N002 copy gubi parents, CH-RES-N001 ordinary link zwraca placeholder; A3-IMP-CH003/004/006 w legacy importerze. Logi bezpiecznych reprodukcji: `.onboarding/logs/b-audit-repros-20261009/`. B-RESOURCE-001/002 naprawiły preview, nie te konsumenty. Następny krok: poprawki registry/importer/copy oraz sprawdzona integracja D/E, oddzielnie od źródłowych commitów autorów. P2 operator/ordinary chat/no-payload oraz pełna macierz po złożeniu pozostają otwarte. Żaden historyczny PASS nie jest odbiorem przyszłego drzewa.
+
+Manifest integracji: [data-graph-engine-2026-10-09-integration.json](data-graph-engine-2026-10-09-integration.json). Logi bieżącej bramki: `.onboarding/logs/data-graph-integration-c-*`. Zero płatnych modeli i CI, main do odbioru Claude’a.
+
+
 ## Baseline i checkpoint
 
 Świeży `git fetch --prune origin` zakończył się poprawnie dla wszystkich siedmiu repo. Checkouty były czyste; HEAD = origin/main. Gałąź produktu: `gpt/data-graph-engine-2026-10-09`. Integracja main pozostaje u Claude’a.
