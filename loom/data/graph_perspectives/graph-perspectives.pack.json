@@ -1,0 +1,184 @@
+{
+  "schema": "loom.default_layers_pack/1",
+  "pack_id": "loom.graph-perspectives.demo",
+  "revision": 1,
+  "policy": {
+    "excluded_area_new_defaults": "proposal"
+  },
+  "entries": [
+    {
+      "id": "gp.structure",
+      "key": "graph.perspective.structure",
+      "area": "graph.perspectives",
+      "revision": 1,
+      "label": "Struktura",
+      "value": "computational"
+    },
+    {
+      "id": "gp.resolution",
+      "key": "graph.perspective.resolution",
+      "area": "graph.perspectives",
+      "revision": 1,
+      "label": "Rozdzielczość",
+      "value": "summary"
+    },
+    {
+      "id": "gp.traversal",
+      "key": "graph.perspective.traversal",
+      "area": "graph.perspectives",
+      "revision": 1,
+      "label": "Relacje i zasięg",
+      "value": {
+        "relations": [
+          "has_formula",
+          "uses",
+          "produces",
+          "justified_by",
+          "informs"
+        ],
+        "direction": "both",
+        "hops": 4
+      }
+    },
+    {
+      "id": "gp.temporal",
+      "key": "graph.perspective.temporal",
+      "area": "graph.perspectives",
+      "revision": 1,
+      "label": "Czas i wersje",
+      "value": {
+        "compareSnapshots": []
+      }
+    },
+    {
+      "id": "gp.evidence",
+      "key": "graph.perspective.evidence",
+      "area": "graph.perspectives",
+      "revision": 1,
+      "label": "Status epistemiczny",
+      "value": [
+        "source",
+        "computed",
+        "inferred",
+        "unknown"
+      ]
+    },
+    {
+      "id": "gp.visual",
+      "key": "graph.perspective.visual",
+      "area": "graph.perspectives",
+      "revision": 1,
+      "label": "Mapowania prezentacji",
+      "value": [
+        {
+          "id": "peripheral",
+          "dimension": "relevance",
+          "match": {
+            "distance": 3
+          },
+          "style": {
+            "opacity": 0.6
+          },
+          "explanation": "Relacja poboczna: odległość grafowa co najmniej 3."
+        },
+        {
+          "id": "past-version",
+          "dimension": "time",
+          "match": {
+            "snapshot": "v1"
+          },
+          "style": {
+            "opacity": 0.45
+          },
+          "explanation": "Wersja historyczna v1 według wybranego profilu czasu."
+        },
+        {
+          "id": "unmeasured",
+          "dimension": "uncertainty",
+          "match": {
+            "evidence": "unknown"
+          },
+          "style": {
+            "blur": 0.35
+          },
+          "explanation": "Status rozpoznania nieznany; pewność nie została zmierzona."
+        },
+        {
+          "id": "active",
+          "dimension": "relevance",
+          "match": {
+            "focus": true
+          },
+          "style": {
+            "color": "#89e2cc"
+          },
+          "explanation": "Aktualny punkt skupienia."
+        }
+      ]
+    },
+    {
+      "id": "gp.budget",
+      "key": "graph.perspective.budget",
+      "area": "graph.perspectives",
+      "revision": 1,
+      "label": "Budżet widoku",
+      "value": {
+        "query": 600,
+        "render": 80,
+        "page": 64
+      }
+    },
+    {
+      "id": "gp.localResolution",
+      "key": "graph.perspective.localResolution",
+      "area": "graph.perspectives",
+      "revision": 1,
+      "label": "Lokalne wyjątki rozdzielczości",
+      "value": [
+        {
+          "id": "active-detail",
+          "match": {
+            "focus": true
+          },
+          "resolution": "full"
+        },
+        {
+          "id": "inputs",
+          "match": {
+            "kind": "input"
+          },
+          "resolution": "summary"
+        },
+        {
+          "id": "table-context",
+          "match": {
+            "kind": "record"
+          },
+          "resolution": "aggregate",
+          "aggregate": {
+            "id": "table-context",
+            "label": "Pozostałe rekordy"
+          }
+        },
+        {
+          "id": "other-containers",
+          "match": {
+            "kind": "container"
+          },
+          "resolution": "label"
+        }
+      ]
+    },
+    {
+      "id": "gp.goal",
+      "key": "graph.perspective.goal",
+      "area": "graph.perspectives",
+      "revision": 1,
+      "label": "Cel",
+      "value": {
+        "id": "inspect",
+        "description": "Przejrzyj źródło i zapisane zależności bez uruchamiania analizy."
+      }
+    }
+  ]
+}

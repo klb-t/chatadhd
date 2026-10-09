@@ -1,0 +1,3559 @@
+{
+  "schema": "loom.graph_packet/1",
+  "definitions": [],
+  "entities": [
+    {
+      "id": "e_file",
+      "kind": "container",
+      "canonical_key": "e_file",
+      "label": "Pakiet źródłowy",
+      "labels": {
+        "pl": "Pakiet źródłowy"
+      },
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "user",
+      "origin": "user",
+      "confidence": 0,
+      "status": "active",
+      "attrs": {
+        "perspective": {
+          "ref": {
+            "source": "demo-source",
+            "selector": "/objects/e_file",
+            "canonicalId": "e_file",
+            "representation": "e_file"
+          },
+          "status": "available",
+          "evidence": "source",
+          "confidence": null,
+          "confidence_status": "uncalibrated"
+        },
+        "fixture": "safe-authored-example"
+      }
+    },
+    {
+      "id": "e_table",
+      "kind": "table",
+      "canonical_key": "e_table",
+      "label": "Zbiór rekordów",
+      "labels": {
+        "pl": "Zbiór rekordów"
+      },
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "user",
+      "origin": "user",
+      "confidence": 0,
+      "status": "active",
+      "attrs": {
+        "perspective": {
+          "ref": {
+            "source": "demo-source",
+            "selector": "/objects/e_table",
+            "canonicalId": "e_table",
+            "representation": "e_table"
+          },
+          "status": "available",
+          "evidence": "source",
+          "confidence": null,
+          "confidence_status": "uncalibrated"
+        },
+        "fixture": "safe-authored-example"
+      }
+    },
+    {
+      "id": "e_record",
+      "kind": "record",
+      "canonical_key": "e_record",
+      "label": "Rekord logiczny",
+      "labels": {
+        "pl": "Rekord logiczny"
+      },
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "user",
+      "origin": "user",
+      "confidence": 0,
+      "status": "active",
+      "attrs": {
+        "perspective": {
+          "ref": {
+            "source": "demo-source",
+            "selector": "/objects/e_record",
+            "canonicalId": "e_record",
+            "representation": "e_record"
+          },
+          "status": "available",
+          "evidence": "source",
+          "confidence": null,
+          "confidence_status": "uncalibrated"
+        },
+        "fixture": "safe-authored-example"
+      }
+    },
+    {
+      "id": "e_cell",
+      "kind": "field",
+      "canonical_key": "e_cell",
+      "label": "Wartość: 7",
+      "labels": {
+        "pl": "Wartość: 7"
+      },
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "user",
+      "origin": "user",
+      "confidence": 0,
+      "status": "active",
+      "attrs": {
+        "perspective": {
+          "ref": {
+            "source": "demo-source",
+            "selector": "/objects/e_cell",
+            "canonicalId": "e_cell",
+            "representation": "e_cell",
+            "snapshot": "v2"
+          },
+          "status": "available",
+          "evidence": "source",
+          "confidence": null,
+          "confidence_status": "uncalibrated",
+          "value": 7
+        },
+        "fixture": "safe-authored-example"
+      }
+    },
+    {
+      "id": "e_cell_logic",
+      "kind": "field",
+      "canonical_key": "e_cell",
+      "label": "Pole rekordu: 7",
+      "labels": {
+        "pl": "Pole rekordu: 7"
+      },
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "user",
+      "origin": "user",
+      "confidence": 0,
+      "status": "active",
+      "attrs": {
+        "perspective": {
+          "ref": {
+            "source": "demo-source",
+            "selector": "/objects/e_cell_logic",
+            "canonicalId": "e_cell",
+            "representation": "e_cell_logic",
+            "snapshot": "v2"
+          },
+          "status": "available",
+          "evidence": "source",
+          "confidence": null,
+          "confidence_status": "uncalibrated",
+          "value": 7
+        },
+        "fixture": "safe-authored-example"
+      }
+    },
+    {
+      "id": "e_formula",
+      "kind": "operation",
+      "canonical_key": "e_formula",
+      "label": "Suma: 3 + 4",
+      "labels": {
+        "pl": "Suma: 3 + 4"
+      },
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "user",
+      "origin": "user",
+      "confidence": 0,
+      "status": "active",
+      "attrs": {
+        "perspective": {
+          "ref": {
+            "source": "demo-source",
+            "selector": "/objects/e_formula",
+            "canonicalId": "e_formula",
+            "representation": "e_formula"
+          },
+          "status": "available",
+          "evidence": "computed",
+          "confidence": null,
+          "confidence_status": "uncalibrated",
+          "expression": "sum(inputs)"
+        },
+        "fixture": "safe-authored-example"
+      }
+    },
+    {
+      "id": "e_input_a",
+      "kind": "input",
+      "canonical_key": "e_input_a",
+      "label": "Wejście A: 3",
+      "labels": {
+        "pl": "Wejście A: 3"
+      },
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "user",
+      "origin": "user",
+      "confidence": 0,
+      "status": "active",
+      "attrs": {
+        "perspective": {
+          "ref": {
+            "source": "demo-source",
+            "selector": "/objects/e_input_a",
+            "canonicalId": "e_input_a",
+            "representation": "e_input_a"
+          },
+          "status": "available",
+          "evidence": "source",
+          "confidence": null,
+          "confidence_status": "uncalibrated",
+          "value": 3
+        },
+        "fixture": "safe-authored-example"
+      }
+    },
+    {
+      "id": "e_input_b",
+      "kind": "input",
+      "canonical_key": "e_input_b",
+      "label": "Wejście B: 4",
+      "labels": {
+        "pl": "Wejście B: 4"
+      },
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "user",
+      "origin": "user",
+      "confidence": 0,
+      "status": "active",
+      "attrs": {
+        "perspective": {
+          "ref": {
+            "source": "demo-source",
+            "selector": "/objects/e_input_b",
+            "canonicalId": "e_input_b",
+            "representation": "e_input_b"
+          },
+          "status": "available",
+          "evidence": "source",
+          "confidence": null,
+          "confidence_status": "uncalibrated",
+          "value": 4
+        },
+        "fixture": "safe-authored-example"
+      }
+    },
+    {
+      "id": "e_result",
+      "kind": "result",
+      "canonical_key": "e_result",
+      "label": "Wynik: 7",
+      "labels": {
+        "pl": "Wynik: 7"
+      },
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "user",
+      "origin": "user",
+      "confidence": 0,
+      "status": "active",
+      "attrs": {
+        "perspective": {
+          "ref": {
+            "source": "demo-source",
+            "selector": "/objects/e_result",
+            "canonicalId": "e_result",
+            "representation": "e_result"
+          },
+          "status": "available",
+          "evidence": "computed",
+          "confidence": null,
+          "confidence_status": "uncalibrated",
+          "value": 7
+        },
+        "fixture": "safe-authored-example"
+      }
+    },
+    {
+      "id": "e_justification",
+      "kind": "rationale",
+      "canonical_key": "e_justification",
+      "label": "Zapisane uzasadnienie: suma wejść",
+      "labels": {
+        "pl": "Zapisane uzasadnienie: suma wejść"
+      },
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "user",
+      "origin": "user",
+      "confidence": 0,
+      "status": "active",
+      "attrs": {
+        "perspective": {
+          "ref": {
+            "source": "demo-source",
+            "selector": "/objects/e_justification",
+            "canonicalId": "e_justification",
+            "representation": "e_justification"
+          },
+          "status": "available",
+          "evidence": "source",
+          "confidence": null,
+          "confidence_status": "uncalibrated",
+          "text": "W demonstracji wybrano sumę dwóch jawnych wartości wejściowych."
+        },
+        "fixture": "safe-authored-example"
+      }
+    },
+    {
+      "id": "e_decision",
+      "kind": "decision",
+      "canonical_key": "e_decision",
+      "label": "Zapisana decyzja demonstracyjna",
+      "labels": {
+        "pl": "Zapisana decyzja demonstracyjna"
+      },
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "user",
+      "origin": "user",
+      "confidence": 0,
+      "status": "active",
+      "attrs": {
+        "perspective": {
+          "ref": {
+            "source": "demo-source",
+            "selector": "/objects/e_decision",
+            "canonicalId": "e_decision",
+            "representation": "e_decision"
+          },
+          "status": "available",
+          "evidence": "source",
+          "confidence": null,
+          "confidence_status": "uncalibrated",
+          "text": "Przyjęto wynik 7 w tym autorskim przykładzie; relacja jest zapisana w źródle."
+        },
+        "fixture": "safe-authored-example"
+      }
+    },
+    {
+      "id": "e_comment",
+      "kind": "comment",
+      "canonical_key": "e_comment",
+      "label": "Komentarz: sprawdź źródło wejść",
+      "labels": {
+        "pl": "Komentarz: sprawdź źródło wejść"
+      },
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "user",
+      "origin": "user",
+      "confidence": 0,
+      "status": "active",
+      "attrs": {
+        "perspective": {
+          "ref": {
+            "source": "demo-source",
+            "selector": "/objects/e_comment",
+            "canonicalId": "e_comment",
+            "representation": "e_comment"
+          },
+          "status": "available",
+          "evidence": "source",
+          "confidence": null,
+          "confidence_status": "uncalibrated"
+        },
+        "fixture": "safe-authored-example"
+      }
+    },
+    {
+      "id": "e_version_v1",
+      "kind": "field",
+      "canonical_key": "e_cell",
+      "label": "Wersja v1: 5",
+      "labels": {
+        "pl": "Wersja v1: 5"
+      },
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "user",
+      "origin": "user",
+      "confidence": 0,
+      "status": "active",
+      "attrs": {
+        "perspective": {
+          "ref": {
+            "source": "demo-source",
+            "selector": "/objects/e_version_v1",
+            "canonicalId": "e_cell",
+            "representation": "e_version_v1",
+            "snapshot": "v1"
+          },
+          "status": "available",
+          "evidence": "source",
+          "confidence": null,
+          "confidence_status": "uncalibrated",
+          "value": 5
+        },
+        "fixture": "safe-authored-example"
+      }
+    },
+    {
+      "id": "e_profile",
+      "kind": "profile",
+      "canonical_key": "e_profile",
+      "label": "Zewnętrzny profil",
+      "labels": {
+        "pl": "Zewnętrzny profil"
+      },
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "user",
+      "origin": "user",
+      "confidence": 0,
+      "status": "active",
+      "attrs": {
+        "perspective": {
+          "ref": {
+            "source": "demo-source",
+            "selector": "/objects/e_profile",
+            "canonicalId": "e_profile",
+            "representation": "e_profile"
+          },
+          "status": "available",
+          "evidence": "source",
+          "confidence": null,
+          "confidence_status": "uncalibrated"
+        },
+        "fixture": "safe-authored-example"
+      }
+    },
+    {
+      "id": "e_profile_field",
+      "kind": "setting",
+      "canonical_key": "e_profile_field",
+      "label": "Pole budżetu prezentacji: 80",
+      "labels": {
+        "pl": "Pole budżetu prezentacji: 80"
+      },
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "user",
+      "origin": "user",
+      "confidence": 0,
+      "status": "active",
+      "attrs": {
+        "perspective": {
+          "ref": {
+            "source": "demo-source",
+            "selector": "/objects/e_profile_field",
+            "canonicalId": "e_profile_field",
+            "representation": "e_profile_field"
+          },
+          "status": "available",
+          "evidence": "source",
+          "confidence": null,
+          "confidence_status": "uncalibrated",
+          "value": 80
+        },
+        "fixture": "safe-authored-example"
+      }
+    },
+    {
+      "id": "e_effective",
+      "kind": "setting",
+      "canonical_key": "e_effective",
+      "label": "Efektywny budżet prezentacji: 24",
+      "labels": {
+        "pl": "Efektywny budżet prezentacji: 24"
+      },
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "user",
+      "origin": "user",
+      "confidence": 0,
+      "status": "active",
+      "attrs": {
+        "perspective": {
+          "ref": {
+            "source": "demo-source",
+            "selector": "/objects/e_effective",
+            "canonicalId": "e_effective",
+            "representation": "e_effective"
+          },
+          "status": "available",
+          "evidence": "computed",
+          "confidence": null,
+          "confidence_status": "uncalibrated",
+          "value": 24
+        },
+        "fixture": "safe-authored-example"
+      }
+    },
+    {
+      "id": "e_override",
+      "kind": "override",
+      "canonical_key": "e_override",
+      "label": "Jawne nadpisanie użytkownika: 24",
+      "labels": {
+        "pl": "Jawne nadpisanie użytkownika: 24"
+      },
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "user",
+      "origin": "user",
+      "confidence": 0,
+      "status": "active",
+      "attrs": {
+        "perspective": {
+          "ref": {
+            "source": "demo-source",
+            "selector": "/objects/e_override",
+            "canonicalId": "e_override",
+            "representation": "e_override"
+          },
+          "status": "available",
+          "evidence": "source",
+          "confidence": null,
+          "confidence_status": "uncalibrated",
+          "value": 24,
+          "source_refs": [
+            "demo-source#/profile/overrides/budget"
+          ]
+        },
+        "fixture": "safe-authored-example"
+      }
+    },
+    {
+      "id": "e_conversation",
+      "kind": "conversation",
+      "canonical_key": "e_conversation",
+      "label": "Rozmowa demonstracyjna",
+      "labels": {
+        "pl": "Rozmowa demonstracyjna"
+      },
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "user",
+      "origin": "user",
+      "confidence": 0,
+      "status": "active",
+      "attrs": {
+        "perspective": {
+          "ref": {
+            "source": "demo-source",
+            "selector": "/objects/e_conversation",
+            "canonicalId": "e_conversation",
+            "representation": "e_conversation"
+          },
+          "status": "available",
+          "evidence": "source",
+          "confidence": null,
+          "confidence_status": "uncalibrated"
+        },
+        "fixture": "safe-authored-example"
+      }
+    },
+    {
+      "id": "e_message",
+      "kind": "message",
+      "canonical_key": "e_message",
+      "label": "Wiadomość źródłowa: użyj skrótów",
+      "labels": {
+        "pl": "Wiadomość źródłowa: użyj skrótów"
+      },
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "user",
+      "origin": "user",
+      "confidence": 0,
+      "status": "active",
+      "attrs": {
+        "perspective": {
+          "ref": {
+            "source": "demo-source",
+            "selector": "/objects/e_message",
+            "canonicalId": "e_message",
+            "representation": "e_message"
+          },
+          "status": "available",
+          "evidence": "source",
+          "confidence": null,
+          "confidence_status": "uncalibrated",
+          "text": "Używaj skróconych objaśnień."
+        },
+        "fixture": "safe-authored-example"
+      }
+    },
+    {
+      "id": "e_correction",
+      "kind": "message",
+      "canonical_key": "e_correction",
+      "label": "Korekta: objaśniaj symbole",
+      "labels": {
+        "pl": "Korekta: objaśniaj symbole"
+      },
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "user",
+      "origin": "user",
+      "confidence": 0,
+      "status": "active",
+      "attrs": {
+        "perspective": {
+          "ref": {
+            "source": "demo-source",
+            "selector": "/objects/e_correction",
+            "canonicalId": "e_correction",
+            "representation": "e_correction"
+          },
+          "status": "available",
+          "evidence": "source",
+          "confidence": null,
+          "confidence_status": "uncalibrated",
+          "text": "Korekta: objaśniaj symbole, zachowując zwięzłość."
+        },
+        "fixture": "safe-authored-example"
+      }
+    },
+    {
+      "id": "e_instruction",
+      "kind": "instruction",
+      "canonical_key": "e_instruction",
+      "label": "Aktualna instrukcja: objaśniaj symbole zwięźle",
+      "labels": {
+        "pl": "Aktualna instrukcja: objaśniaj symbole zwięźle"
+      },
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "user",
+      "origin": "user",
+      "confidence": 0,
+      "status": "active",
+      "attrs": {
+        "perspective": {
+          "ref": {
+            "source": "demo-source",
+            "selector": "/objects/e_instruction",
+            "canonicalId": "e_instruction",
+            "representation": "e_instruction"
+          },
+          "status": "available",
+          "evidence": "source",
+          "confidence": null,
+          "confidence_status": "uncalibrated",
+          "text": "Objaśniaj symbole zwięźle."
+        },
+        "fixture": "safe-authored-example"
+      }
+    },
+    {
+      "id": "e_unloaded",
+      "kind": "resource",
+      "canonical_key": "e_unloaded",
+      "label": "Dołączone źródło, jeszcze nieotwarte",
+      "labels": {
+        "pl": "Dołączone źródło, jeszcze nieotwarte"
+      },
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "user",
+      "origin": "user",
+      "confidence": 0,
+      "status": "active",
+      "attrs": {
+        "perspective": {
+          "ref": {
+            "source": "demo-source",
+            "selector": "/objects/e_unloaded",
+            "canonicalId": "e_unloaded",
+            "representation": "e_unloaded"
+          },
+          "status": "unloaded",
+          "evidence": "source",
+          "confidence": null,
+          "confidence_status": "uncalibrated",
+          "reason": "Referencja zachowana; projektowanie wnętrza wymaga resolvera źródła."
+        },
+        "fixture": "safe-authored-example"
+      }
+    },
+    {
+      "id": "e_unavailable",
+      "kind": "resource",
+      "canonical_key": "e_unavailable",
+      "label": "Źródło czasowo niedostępne",
+      "labels": {
+        "pl": "Źródło czasowo niedostępne"
+      },
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "user",
+      "origin": "user",
+      "confidence": 0,
+      "status": "active",
+      "attrs": {
+        "perspective": {
+          "ref": {
+            "source": "demo-source",
+            "selector": "/objects/e_unavailable",
+            "canonicalId": "e_unavailable",
+            "representation": "e_unavailable"
+          },
+          "status": "unavailable",
+          "evidence": "source",
+          "confidence": null,
+          "confidence_status": "uncalibrated",
+          "reason": "Demonstracyjny adapter zgłasza niedostępność transportu."
+        },
+        "fixture": "safe-authored-example"
+      }
+    },
+    {
+      "id": "e_unknown",
+      "kind": "extension",
+      "canonical_key": "e_unknown",
+      "label": "Nieznana struktura: retained-extension",
+      "labels": {
+        "pl": "Nieznana struktura: retained-extension"
+      },
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "user",
+      "origin": "user",
+      "confidence": 0,
+      "status": "active",
+      "attrs": {
+        "perspective": {
+          "ref": {
+            "source": "demo-source",
+            "selector": "/objects/e_unknown",
+            "canonicalId": "e_unknown",
+            "representation": "e_unknown"
+          },
+          "status": "unknown",
+          "evidence": "unknown",
+          "confidence": null,
+          "confidence_status": "uncalibrated",
+          "recognition": {
+            "status": "unknown",
+            "known_paths": [],
+            "unknown_paths": [
+              "/objects/e_unknown/payload"
+            ],
+            "alternatives": [
+              {
+                "interpretation": "candidate-A",
+                "status": "unverified"
+              },
+              {
+                "interpretation": "candidate-B",
+                "status": "unverified"
+              }
+            ]
+          },
+          "payload": {
+            "retained-extension": {
+              "sequence": [
+                2,
+                3,
+                5
+              ]
+            }
+          }
+        },
+        "fixture": "safe-authored-example"
+      }
+    },
+    {
+      "id": "e_other",
+      "kind": "container",
+      "canonical_key": "e_other",
+      "label": "Inny kontener jako węzeł zbiorczy",
+      "labels": {
+        "pl": "Inny kontener jako węzeł zbiorczy"
+      },
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "user",
+      "origin": "user",
+      "confidence": 0,
+      "status": "active",
+      "attrs": {
+        "perspective": {
+          "ref": {
+            "source": "demo-source",
+            "selector": "/objects/e_other",
+            "canonicalId": "e_other",
+            "representation": "e_other"
+          },
+          "status": "available",
+          "evidence": "source",
+          "confidence": null,
+          "confidence_status": "uncalibrated"
+        },
+        "fixture": "safe-authored-example"
+      }
+    },
+    {
+      "id": "e_record_other",
+      "kind": "record",
+      "canonical_key": "e_record_other",
+      "label": "Pozostały rekord A",
+      "labels": {
+        "pl": "Pozostały rekord A"
+      },
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "user",
+      "origin": "user",
+      "confidence": 0,
+      "status": "active",
+      "attrs": {
+        "perspective": {
+          "ref": {
+            "source": "demo-source",
+            "selector": "/objects/e_record_other",
+            "canonicalId": "e_record_other",
+            "representation": "e_record_other"
+          },
+          "status": "available",
+          "evidence": "source",
+          "confidence": null,
+          "confidence_status": "uncalibrated",
+          "value": 12
+        },
+        "fixture": "safe-authored-example"
+      }
+    },
+    {
+      "id": "e_record_other2",
+      "kind": "record",
+      "canonical_key": "e_record_other2",
+      "label": "Pozostały rekord B",
+      "labels": {
+        "pl": "Pozostały rekord B"
+      },
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "user",
+      "origin": "user",
+      "confidence": 0,
+      "status": "active",
+      "attrs": {
+        "perspective": {
+          "ref": {
+            "source": "demo-source",
+            "selector": "/objects/e_record_other2",
+            "canonicalId": "e_record_other2",
+            "representation": "e_record_other2"
+          },
+          "status": "available",
+          "evidence": "source",
+          "confidence": null,
+          "confidence_status": "uncalibrated",
+          "value": 16
+        },
+        "fixture": "safe-authored-example"
+      }
+    }
+  ],
+  "claims": [
+    {
+      "id": "cl_demo_0",
+      "subject": "e_file",
+      "predicate": "parts",
+      "object": "e_table",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "safe-authored-example",
+        "lang": "pl",
+        "extra": {
+          "perspective": {
+            "structures": [
+              "physical"
+            ],
+            "evidence": "source",
+            "confidence": null,
+            "evidence_status": "explicit_source_relation"
+          }
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "ob_demo_source",
+              "locator": {
+                "source": "demo-source",
+                "member": "demo.source.json",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 11116,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"from\":\"e_file\",\"kind\":\"parts\",\"structures\":[\"physical\"],\"to\":\"e_table\"}",
+              "extractor": "safe-fixture-projection/1",
+              "quality": 0
+            }
+          ],
+          "derivation": null
+        },
+        "evidence_class": "observed",
+        "origin": "user",
+        "confidence": 0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "cl_demo_1",
+      "subject": "e_table",
+      "predicate": "parts",
+      "object": "e_cell",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "safe-authored-example",
+        "lang": "pl",
+        "extra": {
+          "perspective": {
+            "structures": [
+              "physical"
+            ],
+            "evidence": "source",
+            "confidence": null,
+            "evidence_status": "explicit_source_relation"
+          }
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "ob_demo_source",
+              "locator": {
+                "source": "demo-source",
+                "member": "demo.source.json",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 11116,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"from\":\"e_table\",\"kind\":\"parts\",\"structures\":[\"physical\"],\"to\":\"e_cell\"}",
+              "extractor": "safe-fixture-projection/1",
+              "quality": 0
+            }
+          ],
+          "derivation": null
+        },
+        "evidence_class": "observed",
+        "origin": "user",
+        "confidence": 0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "cl_demo_2",
+      "subject": "e_table",
+      "predicate": "parts",
+      "object": "e_other",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "safe-authored-example",
+        "lang": "pl",
+        "extra": {
+          "perspective": {
+            "structures": [
+              "physical"
+            ],
+            "evidence": "source",
+            "confidence": null,
+            "evidence_status": "explicit_source_relation"
+          }
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "ob_demo_source",
+              "locator": {
+                "source": "demo-source",
+                "member": "demo.source.json",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 11116,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"from\":\"e_table\",\"kind\":\"parts\",\"structures\":[\"physical\"],\"to\":\"e_other\"}",
+              "extractor": "safe-fixture-projection/1",
+              "quality": 0
+            }
+          ],
+          "derivation": null
+        },
+        "evidence_class": "observed",
+        "origin": "user",
+        "confidence": 0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "cl_demo_3",
+      "subject": "e_table",
+      "predicate": "logical",
+      "object": "e_record",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "safe-authored-example",
+        "lang": "pl",
+        "extra": {
+          "perspective": {
+            "structures": [
+              "logical"
+            ],
+            "evidence": "source",
+            "confidence": null,
+            "evidence_status": "explicit_source_relation"
+          }
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "ob_demo_source",
+              "locator": {
+                "source": "demo-source",
+                "member": "demo.source.json",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 11116,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"from\":\"e_table\",\"kind\":\"logical\",\"structures\":[\"logical\"],\"to\":\"e_record\"}",
+              "extractor": "safe-fixture-projection/1",
+              "quality": 0
+            }
+          ],
+          "derivation": null
+        },
+        "evidence_class": "observed",
+        "origin": "user",
+        "confidence": 0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "cl_demo_4",
+      "subject": "e_record",
+      "predicate": "logical",
+      "object": "e_cell_logic",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "safe-authored-example",
+        "lang": "pl",
+        "extra": {
+          "perspective": {
+            "structures": [
+              "logical"
+            ],
+            "evidence": "source",
+            "confidence": null,
+            "evidence_status": "explicit_source_relation"
+          }
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "ob_demo_source",
+              "locator": {
+                "source": "demo-source",
+                "member": "demo.source.json",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 11116,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"from\":\"e_record\",\"kind\":\"logical\",\"structures\":[\"logical\"],\"to\":\"e_cell_logic\"}",
+              "extractor": "safe-fixture-projection/1",
+              "quality": 0
+            }
+          ],
+          "derivation": null
+        },
+        "evidence_class": "observed",
+        "origin": "user",
+        "confidence": 0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "cl_demo_5",
+      "subject": "e_cell",
+      "predicate": "represents",
+      "object": "e_cell_logic",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "safe-authored-example",
+        "lang": "pl",
+        "extra": {
+          "perspective": {
+            "structures": [
+              "logical"
+            ],
+            "evidence": "source",
+            "confidence": null,
+            "evidence_status": "explicit_source_relation"
+          }
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "ob_demo_source",
+              "locator": {
+                "source": "demo-source",
+                "member": "demo.source.json",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 11116,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"from\":\"e_cell\",\"kind\":\"represents\",\"structures\":[\"logical\"],\"to\":\"e_cell_logic\"}",
+              "extractor": "safe-fixture-projection/1",
+              "quality": 0
+            }
+          ],
+          "derivation": null
+        },
+        "evidence_class": "observed",
+        "origin": "user",
+        "confidence": 0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "cl_demo_6",
+      "subject": "e_cell",
+      "predicate": "has_formula",
+      "object": "e_formula",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "safe-authored-example",
+        "lang": "pl",
+        "extra": {
+          "perspective": {
+            "structures": [
+              "physical",
+              "computational"
+            ],
+            "evidence": "source",
+            "confidence": null,
+            "evidence_status": "explicit_source_relation"
+          }
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "ob_demo_source",
+              "locator": {
+                "source": "demo-source",
+                "member": "demo.source.json",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 11116,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"from\":\"e_cell\",\"kind\":\"has_formula\",\"structures\":[\"physical\",\"computational\"],\"to\":\"e_formula\"}",
+              "extractor": "safe-fixture-projection/1",
+              "quality": 0
+            }
+          ],
+          "derivation": null
+        },
+        "evidence_class": "observed",
+        "origin": "user",
+        "confidence": 0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "cl_demo_7",
+      "subject": "e_formula",
+      "predicate": "uses",
+      "object": "e_input_a",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "safe-authored-example",
+        "lang": "pl",
+        "extra": {
+          "perspective": {
+            "structures": [
+              "computational"
+            ],
+            "evidence": "source",
+            "confidence": null,
+            "evidence_status": "explicit_source_relation"
+          }
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "ob_demo_source",
+              "locator": {
+                "source": "demo-source",
+                "member": "demo.source.json",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 11116,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"from\":\"e_formula\",\"kind\":\"uses\",\"structures\":[\"computational\"],\"to\":\"e_input_a\"}",
+              "extractor": "safe-fixture-projection/1",
+              "quality": 0
+            }
+          ],
+          "derivation": null
+        },
+        "evidence_class": "observed",
+        "origin": "user",
+        "confidence": 0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "cl_demo_8",
+      "subject": "e_formula",
+      "predicate": "uses",
+      "object": "e_input_b",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "safe-authored-example",
+        "lang": "pl",
+        "extra": {
+          "perspective": {
+            "structures": [
+              "computational"
+            ],
+            "evidence": "source",
+            "confidence": null,
+            "evidence_status": "explicit_source_relation"
+          }
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "ob_demo_source",
+              "locator": {
+                "source": "demo-source",
+                "member": "demo.source.json",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 11116,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"from\":\"e_formula\",\"kind\":\"uses\",\"structures\":[\"computational\"],\"to\":\"e_input_b\"}",
+              "extractor": "safe-fixture-projection/1",
+              "quality": 0
+            }
+          ],
+          "derivation": null
+        },
+        "evidence_class": "observed",
+        "origin": "user",
+        "confidence": 0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "cl_demo_9",
+      "subject": "e_formula",
+      "predicate": "produces",
+      "object": "e_result",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "safe-authored-example",
+        "lang": "pl",
+        "extra": {
+          "perspective": {
+            "structures": [
+              "computational"
+            ],
+            "evidence": "source",
+            "confidence": null,
+            "evidence_status": "explicit_source_relation"
+          }
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "ob_demo_source",
+              "locator": {
+                "source": "demo-source",
+                "member": "demo.source.json",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 11116,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"from\":\"e_formula\",\"kind\":\"produces\",\"structures\":[\"computational\"],\"to\":\"e_result\"}",
+              "extractor": "safe-fixture-projection/1",
+              "quality": 0
+            }
+          ],
+          "derivation": null
+        },
+        "evidence_class": "observed",
+        "origin": "user",
+        "confidence": 0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "cl_demo_10",
+      "subject": "e_result",
+      "predicate": "justified_by",
+      "object": "e_justification",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "safe-authored-example",
+        "lang": "pl",
+        "extra": {
+          "perspective": {
+            "structures": [
+              "computational",
+              "provenance"
+            ],
+            "evidence": "source",
+            "confidence": null,
+            "evidence_status": "explicit_source_relation"
+          }
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "ob_demo_source",
+              "locator": {
+                "source": "demo-source",
+                "member": "demo.source.json",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 11116,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"from\":\"e_result\",\"kind\":\"justified_by\",\"structures\":[\"computational\",\"provenance\"],\"to\":\"e_justification\"}",
+              "extractor": "safe-fixture-projection/1",
+              "quality": 0
+            }
+          ],
+          "derivation": null
+        },
+        "evidence_class": "observed",
+        "origin": "user",
+        "confidence": 0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "cl_demo_11",
+      "subject": "e_justification",
+      "predicate": "informs",
+      "object": "e_decision",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "safe-authored-example",
+        "lang": "pl",
+        "extra": {
+          "perspective": {
+            "structures": [
+              "computational"
+            ],
+            "evidence": "source",
+            "confidence": null,
+            "evidence_status": "explicit_source_relation"
+          }
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "ob_demo_source",
+              "locator": {
+                "source": "demo-source",
+                "member": "demo.source.json",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 11116,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"from\":\"e_justification\",\"kind\":\"informs\",\"structures\":[\"computational\"],\"to\":\"e_decision\"}",
+              "extractor": "safe-fixture-projection/1",
+              "quality": 0
+            }
+          ],
+          "derivation": null
+        },
+        "evidence_class": "observed",
+        "origin": "user",
+        "confidence": 0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "cl_demo_12",
+      "subject": "e_cell",
+      "predicate": "comments",
+      "object": "e_comment",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "safe-authored-example",
+        "lang": "pl",
+        "extra": {
+          "perspective": {
+            "structures": [
+              "history"
+            ],
+            "evidence": "source",
+            "confidence": null,
+            "evidence_status": "explicit_source_relation"
+          }
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "ob_demo_source",
+              "locator": {
+                "source": "demo-source",
+                "member": "demo.source.json",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 11116,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"from\":\"e_cell\",\"kind\":\"comments\",\"structures\":[\"history\"],\"to\":\"e_comment\"}",
+              "extractor": "safe-fixture-projection/1",
+              "quality": 0
+            }
+          ],
+          "derivation": null
+        },
+        "evidence_class": "observed",
+        "origin": "user",
+        "confidence": 0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "cl_demo_13",
+      "subject": "e_cell",
+      "predicate": "versions",
+      "object": "e_version_v1",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "safe-authored-example",
+        "lang": "pl",
+        "extra": {
+          "perspective": {
+            "structures": [
+              "history"
+            ],
+            "evidence": "source",
+            "confidence": null,
+            "evidence_status": "explicit_source_relation"
+          }
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "ob_demo_source",
+              "locator": {
+                "source": "demo-source",
+                "member": "demo.source.json",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 11116,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"from\":\"e_cell\",\"kind\":\"versions\",\"structures\":[\"history\"],\"to\":\"e_version_v1\"}",
+              "extractor": "safe-fixture-projection/1",
+              "quality": 0
+            }
+          ],
+          "derivation": null
+        },
+        "evidence_class": "observed",
+        "origin": "user",
+        "confidence": 0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "cl_demo_14",
+      "subject": "e_file",
+      "predicate": "parts",
+      "object": "e_unloaded",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "safe-authored-example",
+        "lang": "pl",
+        "extra": {
+          "perspective": {
+            "structures": [
+              "physical"
+            ],
+            "evidence": "source",
+            "confidence": null,
+            "evidence_status": "explicit_source_relation"
+          }
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "ob_demo_source",
+              "locator": {
+                "source": "demo-source",
+                "member": "demo.source.json",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 11116,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"from\":\"e_file\",\"kind\":\"parts\",\"structures\":[\"physical\"],\"to\":\"e_unloaded\"}",
+              "extractor": "safe-fixture-projection/1",
+              "quality": 0
+            }
+          ],
+          "derivation": null
+        },
+        "evidence_class": "observed",
+        "origin": "user",
+        "confidence": 0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "cl_demo_15",
+      "subject": "e_file",
+      "predicate": "parts",
+      "object": "e_unavailable",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "safe-authored-example",
+        "lang": "pl",
+        "extra": {
+          "perspective": {
+            "structures": [
+              "physical"
+            ],
+            "evidence": "source",
+            "confidence": null,
+            "evidence_status": "explicit_source_relation"
+          }
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "ob_demo_source",
+              "locator": {
+                "source": "demo-source",
+                "member": "demo.source.json",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 11116,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"from\":\"e_file\",\"kind\":\"parts\",\"structures\":[\"physical\"],\"to\":\"e_unavailable\"}",
+              "extractor": "safe-fixture-projection/1",
+              "quality": 0
+            }
+          ],
+          "derivation": null
+        },
+        "evidence_class": "observed",
+        "origin": "user",
+        "confidence": 0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "cl_demo_16",
+      "subject": "e_file",
+      "predicate": "parts",
+      "object": "e_unknown",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "safe-authored-example",
+        "lang": "pl",
+        "extra": {
+          "perspective": {
+            "structures": [
+              "physical"
+            ],
+            "evidence": "source",
+            "confidence": null,
+            "evidence_status": "explicit_source_relation"
+          }
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "ob_demo_source",
+              "locator": {
+                "source": "demo-source",
+                "member": "demo.source.json",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 11116,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"from\":\"e_file\",\"kind\":\"parts\",\"structures\":[\"physical\"],\"to\":\"e_unknown\"}",
+              "extractor": "safe-fixture-projection/1",
+              "quality": 0
+            }
+          ],
+          "derivation": null
+        },
+        "evidence_class": "observed",
+        "origin": "user",
+        "confidence": 0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "cl_demo_17",
+      "subject": "e_profile",
+      "predicate": "parts",
+      "object": "e_profile_field",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "safe-authored-example",
+        "lang": "pl",
+        "extra": {
+          "perspective": {
+            "structures": [
+              "physical"
+            ],
+            "evidence": "source",
+            "confidence": null,
+            "evidence_status": "explicit_source_relation"
+          }
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "ob_demo_source",
+              "locator": {
+                "source": "demo-source",
+                "member": "demo.source.json",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 11116,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"from\":\"e_profile\",\"kind\":\"parts\",\"structures\":[\"physical\"],\"to\":\"e_profile_field\"}",
+              "extractor": "safe-fixture-projection/1",
+              "quality": 0
+            }
+          ],
+          "derivation": null
+        },
+        "evidence_class": "observed",
+        "origin": "user",
+        "confidence": 0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "cl_demo_18",
+      "subject": "e_effective",
+      "predicate": "derived_from",
+      "object": "e_profile_field",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "safe-authored-example",
+        "lang": "pl",
+        "extra": {
+          "perspective": {
+            "structures": [
+              "provenance"
+            ],
+            "evidence": "source",
+            "confidence": null,
+            "evidence_status": "explicit_source_relation"
+          }
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "ob_demo_source",
+              "locator": {
+                "source": "demo-source",
+                "member": "demo.source.json",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 11116,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"from\":\"e_effective\",\"kind\":\"derived_from\",\"structures\":[\"provenance\"],\"to\":\"e_profile_field\"}",
+              "extractor": "safe-fixture-projection/1",
+              "quality": 0
+            }
+          ],
+          "derivation": null
+        },
+        "evidence_class": "observed",
+        "origin": "user",
+        "confidence": 0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "cl_demo_19",
+      "subject": "e_effective",
+      "predicate": "overridden_by",
+      "object": "e_override",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "safe-authored-example",
+        "lang": "pl",
+        "extra": {
+          "perspective": {
+            "structures": [
+              "provenance"
+            ],
+            "evidence": "source",
+            "confidence": null,
+            "evidence_status": "explicit_source_relation"
+          }
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "ob_demo_source",
+              "locator": {
+                "source": "demo-source",
+                "member": "demo.source.json",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 11116,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"from\":\"e_effective\",\"kind\":\"overridden_by\",\"structures\":[\"provenance\"],\"to\":\"e_override\"}",
+              "extractor": "safe-fixture-projection/1",
+              "quality": 0
+            }
+          ],
+          "derivation": null
+        },
+        "evidence_class": "observed",
+        "origin": "user",
+        "confidence": 0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "cl_demo_20",
+      "subject": "e_conversation",
+      "predicate": "parts",
+      "object": "e_message",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "safe-authored-example",
+        "lang": "pl",
+        "extra": {
+          "perspective": {
+            "structures": [
+              "conversation"
+            ],
+            "evidence": "source",
+            "confidence": null,
+            "evidence_status": "explicit_source_relation"
+          }
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "ob_demo_source",
+              "locator": {
+                "source": "demo-source",
+                "member": "demo.source.json",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 11116,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"from\":\"e_conversation\",\"kind\":\"parts\",\"structures\":[\"conversation\"],\"to\":\"e_message\"}",
+              "extractor": "safe-fixture-projection/1",
+              "quality": 0
+            }
+          ],
+          "derivation": null
+        },
+        "evidence_class": "observed",
+        "origin": "user",
+        "confidence": 0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "cl_demo_21",
+      "subject": "e_correction",
+      "predicate": "corrects",
+      "object": "e_message",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "safe-authored-example",
+        "lang": "pl",
+        "extra": {
+          "perspective": {
+            "structures": [
+              "conversation",
+              "history"
+            ],
+            "evidence": "source",
+            "confidence": null,
+            "evidence_status": "explicit_source_relation"
+          }
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "ob_demo_source",
+              "locator": {
+                "source": "demo-source",
+                "member": "demo.source.json",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 11116,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"from\":\"e_correction\",\"kind\":\"corrects\",\"structures\":[\"conversation\",\"history\"],\"to\":\"e_message\"}",
+              "extractor": "safe-fixture-projection/1",
+              "quality": 0
+            }
+          ],
+          "derivation": null
+        },
+        "evidence_class": "observed",
+        "origin": "user",
+        "confidence": 0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "cl_demo_22",
+      "subject": "e_instruction",
+      "predicate": "supersedes",
+      "object": "e_message",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "safe-authored-example",
+        "lang": "pl",
+        "extra": {
+          "perspective": {
+            "structures": [
+              "conversation",
+              "history"
+            ],
+            "evidence": "source",
+            "confidence": null,
+            "evidence_status": "explicit_source_relation"
+          }
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "ob_demo_source",
+              "locator": {
+                "source": "demo-source",
+                "member": "demo.source.json",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 11116,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"from\":\"e_instruction\",\"kind\":\"supersedes\",\"structures\":[\"conversation\",\"history\"],\"to\":\"e_message\"}",
+              "extractor": "safe-fixture-projection/1",
+              "quality": 0
+            }
+          ],
+          "derivation": null
+        },
+        "evidence_class": "observed",
+        "origin": "user",
+        "confidence": 0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "cl_demo_23",
+      "subject": "e_instruction",
+      "predicate": "derived_from",
+      "object": "e_correction",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "safe-authored-example",
+        "lang": "pl",
+        "extra": {
+          "perspective": {
+            "structures": [
+              "conversation",
+              "provenance"
+            ],
+            "evidence": "source",
+            "confidence": null,
+            "evidence_status": "explicit_source_relation"
+          }
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "ob_demo_source",
+              "locator": {
+                "source": "demo-source",
+                "member": "demo.source.json",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 11116,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"from\":\"e_instruction\",\"kind\":\"derived_from\",\"structures\":[\"conversation\",\"provenance\"],\"to\":\"e_correction\"}",
+              "extractor": "safe-fixture-projection/1",
+              "quality": 0
+            }
+          ],
+          "derivation": null
+        },
+        "evidence_class": "observed",
+        "origin": "user",
+        "confidence": 0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "cl_demo_24",
+      "subject": "e_table",
+      "predicate": "parts",
+      "object": "e_record_other",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "safe-authored-example",
+        "lang": "pl",
+        "extra": {
+          "perspective": {
+            "structures": [
+              "physical"
+            ],
+            "evidence": "source",
+            "confidence": null,
+            "evidence_status": "explicit_source_relation"
+          }
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "ob_demo_source",
+              "locator": {
+                "source": "demo-source",
+                "member": "demo.source.json",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 11116,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"from\":\"e_table\",\"kind\":\"parts\",\"structures\":[\"physical\"],\"to\":\"e_record_other\"}",
+              "extractor": "safe-fixture-projection/1",
+              "quality": 0
+            }
+          ],
+          "derivation": null
+        },
+        "evidence_class": "observed",
+        "origin": "user",
+        "confidence": 0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "cl_demo_25",
+      "subject": "e_table",
+      "predicate": "parts",
+      "object": "e_record_other2",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "safe-authored-example",
+        "lang": "pl",
+        "extra": {
+          "perspective": {
+            "structures": [
+              "physical"
+            ],
+            "evidence": "source",
+            "confidence": null,
+            "evidence_status": "explicit_source_relation"
+          }
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "ob_demo_source",
+              "locator": {
+                "source": "demo-source",
+                "member": "demo.source.json",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 11116,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"from\":\"e_table\",\"kind\":\"parts\",\"structures\":[\"physical\"],\"to\":\"e_record_other2\"}",
+              "extractor": "safe-fixture-projection/1",
+              "quality": 0
+            }
+          ],
+          "derivation": null
+        },
+        "evidence_class": "observed",
+        "origin": "user",
+        "confidence": 0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    }
+  ],
+  "sources": [
+    {
+      "observation": {
+        "id": "ob_demo_source",
+        "unit": "unit_demo_source",
+        "kind": "code_block",
+        "text": "{\"notice\":\"Fictional safe data; no private source exports. Domain labels are replaceable by another adapter.\",\"objects\":{\"e_cell\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"field\",\"label\":\"Wartość: 7\",\"ref\":{\"canonicalId\":\"e_cell\",\"representation\":\"e_cell\",\"selector\":\"/objects/e_cell\",\"snapshot\":\"v2\",\"source\":\"demo-source\"},\"status\":\"available\",\"value\":7},\"e_cell_logic\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"field\",\"label\":\"Pole rekordu: 7\",\"ref\":{\"canonicalId\":\"e_cell\",\"representation\":\"e_cell_logic\",\"selector\":\"/objects/e_cell_logic\",\"snapshot\":\"v2\",\"source\":\"demo-source\"},\"status\":\"available\",\"value\":7},\"e_comment\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"comment\",\"label\":\"Komentarz: sprawdź źródło wejść\",\"ref\":{\"canonicalId\":\"e_comment\",\"representation\":\"e_comment\",\"selector\":\"/objects/e_comment\",\"source\":\"demo-source\"},\"status\":\"available\"},\"e_conversation\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"conversation\",\"label\":\"Rozmowa demonstracyjna\",\"ref\":{\"canonicalId\":\"e_conversation\",\"representation\":\"e_conversation\",\"selector\":\"/objects/e_conversation\",\"source\":\"demo-source\"},\"status\":\"available\"},\"e_correction\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"message\",\"label\":\"Korekta: objaśniaj symbole\",\"ref\":{\"canonicalId\":\"e_correction\",\"representation\":\"e_correction\",\"selector\":\"/objects/e_correction\",\"source\":\"demo-source\"},\"status\":\"available\",\"text\":\"Korekta: objaśniaj symbole, zachowując zwięzłość.\"},\"e_decision\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"decision\",\"label\":\"Zapisana decyzja demonstracyjna\",\"ref\":{\"canonicalId\":\"e_decision\",\"representation\":\"e_decision\",\"selector\":\"/objects/e_decision\",\"source\":\"demo-source\"},\"status\":\"available\",\"text\":\"Przyjęto wynik 7 w tym autorskim przykładzie; relacja jest zapisana w źródle.\"},\"e_effective\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"computed\",\"kind\":\"setting\",\"label\":\"Efektywny budżet prezentacji: 24\",\"ref\":{\"canonicalId\":\"e_effective\",\"representation\":\"e_effective\",\"selector\":\"/objects/e_effective\",\"source\":\"demo-source\"},\"status\":\"available\",\"value\":24},\"e_file\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"container\",\"label\":\"Pakiet źródłowy\",\"ref\":{\"canonicalId\":\"e_file\",\"representation\":\"e_file\",\"selector\":\"/objects/e_file\",\"source\":\"demo-source\"},\"status\":\"available\"},\"e_formula\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"computed\",\"expression\":\"sum(inputs)\",\"kind\":\"operation\",\"label\":\"Suma: 3 + 4\",\"ref\":{\"canonicalId\":\"e_formula\",\"representation\":\"e_formula\",\"selector\":\"/objects/e_formula\",\"source\":\"demo-source\"},\"status\":\"available\"},\"e_input_a\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"input\",\"label\":\"Wejście A: 3\",\"ref\":{\"canonicalId\":\"e_input_a\",\"representation\":\"e_input_a\",\"selector\":\"/objects/e_input_a\",\"source\":\"demo-source\"},\"status\":\"available\",\"value\":3},\"e_input_b\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"input\",\"label\":\"Wejście B: 4\",\"ref\":{\"canonicalId\":\"e_input_b\",\"representation\":\"e_input_b\",\"selector\":\"/objects/e_input_b\",\"source\":\"demo-source\"},\"status\":\"available\",\"value\":4},\"e_instruction\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"instruction\",\"label\":\"Aktualna instrukcja: objaśniaj symbole zwięźle\",\"ref\":{\"canonicalId\":\"e_instruction\",\"representation\":\"e_instruction\",\"selector\":\"/objects/e_instruction\",\"source\":\"demo-source\"},\"status\":\"available\",\"text\":\"Objaśniaj symbole zwięźle.\"},\"e_justification\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"rationale\",\"label\":\"Zapisane uzasadnienie: suma wejść\",\"ref\":{\"canonicalId\":\"e_justification\",\"representation\":\"e_justification\",\"selector\":\"/objects/e_justification\",\"source\":\"demo-source\"},\"status\":\"available\",\"text\":\"W demonstracji wybrano sumę dwóch jawnych wartości wejściowych.\"},\"e_message\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"message\",\"label\":\"Wiadomość źródłowa: użyj skrótów\",\"ref\":{\"canonicalId\":\"e_message\",\"representation\":\"e_message\",\"selector\":\"/objects/e_message\",\"source\":\"demo-source\"},\"status\":\"available\",\"text\":\"Używaj skróconych objaśnień.\"},\"e_other\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"container\",\"label\":\"Inny kontener jako węzeł zbiorczy\",\"ref\":{\"canonicalId\":\"e_other\",\"representation\":\"e_other\",\"selector\":\"/objects/e_other\",\"source\":\"demo-source\"},\"status\":\"available\"},\"e_override\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"override\",\"label\":\"Jawne nadpisanie użytkownika: 24\",\"ref\":{\"canonicalId\":\"e_override\",\"representation\":\"e_override\",\"selector\":\"/objects/e_override\",\"source\":\"demo-source\"},\"source_refs\":[\"demo-source#/profile/overrides/budget\"],\"status\":\"available\",\"value\":24},\"e_profile\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"profile\",\"label\":\"Zewnętrzny profil\",\"ref\":{\"canonicalId\":\"e_profile\",\"representation\":\"e_profile\",\"selector\":\"/objects/e_profile\",\"source\":\"demo-source\"},\"status\":\"available\"},\"e_profile_field\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"setting\",\"label\":\"Pole budżetu prezentacji: 80\",\"ref\":{\"canonicalId\":\"e_profile_field\",\"representation\":\"e_profile_field\",\"selector\":\"/objects/e_profile_field\",\"source\":\"demo-source\"},\"status\":\"available\",\"value\":80},\"e_record\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"record\",\"label\":\"Rekord logiczny\",\"ref\":{\"canonicalId\":\"e_record\",\"representation\":\"e_record\",\"selector\":\"/objects/e_record\",\"source\":\"demo-source\"},\"status\":\"available\"},\"e_record_other\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"record\",\"label\":\"Pozostały rekord A\",\"ref\":{\"canonicalId\":\"e_record_other\",\"representation\":\"e_record_other\",\"selector\":\"/objects/e_record_other\",\"source\":\"demo-source\"},\"status\":\"available\",\"value\":12},\"e_record_other2\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"record\",\"label\":\"Pozostały rekord B\",\"ref\":{\"canonicalId\":\"e_record_other2\",\"representation\":\"e_record_other2\",\"selector\":\"/objects/e_record_other2\",\"source\":\"demo-source\"},\"status\":\"available\",\"value\":16},\"e_result\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"computed\",\"kind\":\"result\",\"label\":\"Wynik: 7\",\"ref\":{\"canonicalId\":\"e_result\",\"representation\":\"e_result\",\"selector\":\"/objects/e_result\",\"source\":\"demo-source\"},\"status\":\"available\",\"value\":7},\"e_table\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"table\",\"label\":\"Zbiór rekordów\",\"ref\":{\"canonicalId\":\"e_table\",\"representation\":\"e_table\",\"selector\":\"/objects/e_table\",\"source\":\"demo-source\"},\"status\":\"available\"},\"e_unavailable\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"resource\",\"label\":\"Źródło czasowo niedostępne\",\"reason\":\"Demonstracyjny adapter zgłasza niedostępność transportu.\",\"ref\":{\"canonicalId\":\"e_unavailable\",\"representation\":\"e_unavailable\",\"selector\":\"/objects/e_unavailable\",\"source\":\"demo-source\"},\"status\":\"unavailable\"},\"e_unknown\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"unknown\",\"kind\":\"extension\",\"label\":\"Nieznana struktura: retained-extension\",\"payload\":{\"retained-extension\":{\"sequence\":[2,3,5]}},\"recognition\":{\"alternatives\":[{\"interpretation\":\"candidate-A\",\"status\":\"unverified\"},{\"interpretation\":\"candidate-B\",\"status\":\"unverified\"}],\"known_paths\":[],\"status\":\"unknown\",\"unknown_paths\":[\"/objects/e_unknown/payload\"]},\"ref\":{\"canonicalId\":\"e_unknown\",\"representation\":\"e_unknown\",\"selector\":\"/objects/e_unknown\",\"source\":\"demo-source\"},\"status\":\"unknown\"},\"e_unloaded\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"resource\",\"label\":\"Dołączone źródło, jeszcze nieotwarte\",\"reason\":\"Referencja zachowana; projektowanie wnętrza wymaga resolvera źródła.\",\"ref\":{\"canonicalId\":\"e_unloaded\",\"representation\":\"e_unloaded\",\"selector\":\"/objects/e_unloaded\",\"source\":\"demo-source\"},\"status\":\"unloaded\"},\"e_version_v1\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"field\",\"label\":\"Wersja v1: 5\",\"ref\":{\"canonicalId\":\"e_cell\",\"representation\":\"e_version_v1\",\"selector\":\"/objects/e_version_v1\",\"snapshot\":\"v1\",\"source\":\"demo-source\"},\"status\":\"available\",\"value\":5}},\"relationships\":[{\"from\":\"e_file\",\"kind\":\"parts\",\"structures\":[\"physical\"],\"to\":\"e_table\"},{\"from\":\"e_table\",\"kind\":\"parts\",\"structures\":[\"physical\"],\"to\":\"e_cell\"},{\"from\":\"e_table\",\"kind\":\"parts\",\"structures\":[\"physical\"],\"to\":\"e_other\"},{\"from\":\"e_table\",\"kind\":\"logical\",\"structures\":[\"logical\"],\"to\":\"e_record\"},{\"from\":\"e_record\",\"kind\":\"logical\",\"structures\":[\"logical\"],\"to\":\"e_cell_logic\"},{\"from\":\"e_cell\",\"kind\":\"represents\",\"structures\":[\"logical\"],\"to\":\"e_cell_logic\"},{\"from\":\"e_cell\",\"kind\":\"has_formula\",\"structures\":[\"physical\",\"computational\"],\"to\":\"e_formula\"},{\"from\":\"e_formula\",\"kind\":\"uses\",\"structures\":[\"computational\"],\"to\":\"e_input_a\"},{\"from\":\"e_formula\",\"kind\":\"uses\",\"structures\":[\"computational\"],\"to\":\"e_input_b\"},{\"from\":\"e_formula\",\"kind\":\"produces\",\"structures\":[\"computational\"],\"to\":\"e_result\"},{\"from\":\"e_result\",\"kind\":\"justified_by\",\"structures\":[\"computational\",\"provenance\"],\"to\":\"e_justification\"},{\"from\":\"e_justification\",\"kind\":\"informs\",\"structures\":[\"computational\"],\"to\":\"e_decision\"},{\"from\":\"e_cell\",\"kind\":\"comments\",\"structures\":[\"history\"],\"to\":\"e_comment\"},{\"from\":\"e_cell\",\"kind\":\"versions\",\"structures\":[\"history\"],\"to\":\"e_version_v1\"},{\"from\":\"e_file\",\"kind\":\"parts\",\"structures\":[\"physical\"],\"to\":\"e_unloaded\"},{\"from\":\"e_file\",\"kind\":\"parts\",\"structures\":[\"physical\"],\"to\":\"e_unavailable\"},{\"from\":\"e_file\",\"kind\":\"parts\",\"structures\":[\"physical\"],\"to\":\"e_unknown\"},{\"from\":\"e_profile\",\"kind\":\"parts\",\"structures\":[\"physical\"],\"to\":\"e_profile_field\"},{\"from\":\"e_effective\",\"kind\":\"derived_from\",\"structures\":[\"provenance\"],\"to\":\"e_profile_field\"},{\"from\":\"e_effective\",\"kind\":\"overridden_by\",\"structures\":[\"provenance\"],\"to\":\"e_override\"},{\"from\":\"e_conversation\",\"kind\":\"parts\",\"structures\":[\"conversation\"],\"to\":\"e_message\"},{\"from\":\"e_correction\",\"kind\":\"corrects\",\"structures\":[\"conversation\",\"history\"],\"to\":\"e_message\"},{\"from\":\"e_instruction\",\"kind\":\"supersedes\",\"structures\":[\"conversation\",\"history\"],\"to\":\"e_message\"},{\"from\":\"e_instruction\",\"kind\":\"derived_from\",\"structures\":[\"conversation\",\"provenance\"],\"to\":\"e_correction\"},{\"from\":\"e_table\",\"kind\":\"parts\",\"structures\":[\"physical\"],\"to\":\"e_record_other\"},{\"from\":\"e_table\",\"kind\":\"parts\",\"structures\":[\"physical\"],\"to\":\"e_record_other2\"}],\"schema\":\"loom.graph-perspectives.authored-example/1\"}",
+        "locator": {
+          "source": "demo-source",
+          "member": "demo.source.json",
+          "json_pointer": "",
+          "byte_start": 0,
+          "byte_len": 11116,
+          "time_start": null,
+          "time_end": null,
+          "line": null
+        },
+        "lang": "pl",
+        "date": "2026-10-09",
+        "ordinal": 0,
+        "artifact_type": "authored_safe_json",
+        "speaker": "fixture-author",
+        "attrs": {
+          "raw_sha256": "2ef74bfb622c7dd5398084ed8511aa92975e4dda59d66464a60773e08eb25a31"
+        }
+      },
+      "known_at": "2026-10-09T07:00:00Z",
+      "text_sha256": "2ef74bfb622c7dd5398084ed8511aa92975e4dda59d66464a60773e08eb25a31"
+    }
+  ],
+  "task": {
+    "operation": "graph.perspectives.demonstrate",
+    "source_descriptor": {
+      "id": "demo-source",
+      "label": "Bezpieczne dane autorskie",
+      "structures": [
+        {
+          "id": "physical",
+          "label": "Części źródła",
+          "relations": [
+            "parts",
+            "has_formula"
+          ],
+          "description": "Kontener i jego adresowalne części."
+        },
+        {
+          "id": "logical",
+          "label": "Struktura logiczna",
+          "relations": [
+            "logical",
+            "represents"
+          ],
+          "description": "Rekordy, pola i alternatywne reprezentacje tej samej tożsamości."
+        },
+        {
+          "id": "computational",
+          "label": "Zależności obliczeniowe",
+          "relations": [
+            "has_formula",
+            "uses",
+            "produces",
+            "justified_by",
+            "informs"
+          ],
+          "description": "Wejścia, operacja, wynik i zapisane uzasadnienie."
+        },
+        {
+          "id": "history",
+          "label": "Komentarze i wersje",
+          "relations": [
+            "comments",
+            "versions",
+            "corrects",
+            "supersedes"
+          ],
+          "description": "Odrębne wersje i komentarze; bez zmiany rozdzielczości."
+        },
+        {
+          "id": "provenance",
+          "label": "Pochodzenie i nadpisania",
+          "relations": [
+            "derived_from",
+            "overridden_by",
+            "justified_by"
+          ],
+          "description": "Ślad pochodzenia i jawne źródło zmiany."
+        },
+        {
+          "id": "conversation",
+          "label": "Rozmowa i instrukcje",
+          "relations": [
+            "parts",
+            "corrects",
+            "supersedes",
+            "derived_from"
+          ],
+          "description": "Wiadomość źródłowa, korekta i aktualna instrukcja."
+        }
+      ]
+    },
+    "confidence_policy": "uncalibrated; numeric zero only satisfies native DTO; attrs confidence null is authoritative for presentation"
+  },
+  "provenance": {
+    "definitions": {},
+    "entities": {
+      "e_file": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "4fcdb269e1cdd1377194d31470139be94ecc0ec9a1ac3b01789ae4a1956cfd11"
+      },
+      "e_table": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "dc468e280c33c2cbdc8754967eb957308a50dc817a9c10a70d02878016c6093d"
+      },
+      "e_record": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "421600ece66b06c4084be256c88af64a583dfcd5a7a24dd862ae4d935d781d27"
+      },
+      "e_cell": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "b510cd92dfcd68f87f65ee0c79a4c03b885084803d5133e6aff2b352a5879259"
+      },
+      "e_cell_logic": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "dc6d68fb85f44ab44238a5e007880b29b2e5c62bbd816aad337bd5125f4c5189"
+      },
+      "e_formula": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "38d317144283ec0022c26a6f35fafda41c521319fdd10f32d49035e7d2c4b0a5"
+      },
+      "e_input_a": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "955de1978e1220010003ff24d81ce5b9805fecb41823c270e111cddb671e4a34"
+      },
+      "e_input_b": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "51cfda6148c47343b06d2038f02840b4b23e362e328f25303d5dc651ebc7fd76"
+      },
+      "e_result": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "f184704850dfc06ad306191085e7a6d14d724198552f1e44882e8c30e7aca02e"
+      },
+      "e_justification": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "a3017044cc61925dfd1f7cdc1c761311adc1d3cb7fbfdf03391ac839a1840fe5"
+      },
+      "e_decision": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "c2e7c391fdef605d471b46ed09213b318f4bea1ab2e30923cc4a9358e42a79a5"
+      },
+      "e_comment": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "f2dc0a8dd2500b8fec343eca74c2834e35eb1ea243f7df0705ea2f3493b6fcc8"
+      },
+      "e_version_v1": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "3e370407ecb794cba052b53b5d6b12ad494cc65944e3c1ae26c0461196c3caf0"
+      },
+      "e_profile": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "170004a2e7c1217d7ba7396a4f1d0001f5ccac3e6a8400916bffe2caf91af3fa"
+      },
+      "e_profile_field": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "fed50d42c9bfef411b65fc04866da550db057222be1ee66242362c955c083ffc"
+      },
+      "e_effective": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "7defc14de07008e52d71ddca412d02b34b27143491672c8bd26106861713e20e"
+      },
+      "e_override": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "49f76a603859874b64b47e6c988fbfd8153d2ca3b4bccc66725e130cd7143c0a"
+      },
+      "e_conversation": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "fa9593f3b8e73d5a252994c54cc03a929e8286110b16a696f89230e7085a46ed"
+      },
+      "e_message": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "035bfeb1b1c60ebb9aaec72a927d282e9605bf9cfea3001e7b9e2f98414c9ff8"
+      },
+      "e_correction": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "a6241e410d47ba3f782de49058a18fc7aa692b0a316846473a56774d33876791"
+      },
+      "e_instruction": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "23a24c85552ac60ae3a6e636789974a32e79c3d9d3f6c6e8f2a36b9b6e592bb8"
+      },
+      "e_unloaded": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "0077a9057a748b51d4aabbe1b1be480b6497de18ead4bb033490be22e373ddbb"
+      },
+      "e_unavailable": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "b35ebb6e231410c15df8de5e5814c313e99f0e9ae6e5b9ccfccbc106abd03397"
+      },
+      "e_unknown": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "236300d0381ab10d98a9666f8390fccc84d8cb24bc6cdbf5979cc6c13c49bcdc"
+      },
+      "e_other": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "b852407c095d49f8e464197b7d7e699a187496bf4c8a32dfda7c9b62b29ba48e"
+      },
+      "e_record_other": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "e7a2a8f4d9e1138d81172896b478e0c6fff6e639eefee6a5cb40a2027d0e5a4b"
+      },
+      "e_record_other2": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "42d2bed824ccf4b7671ac24f6f798a755ed3c99f63160c24e3b6c765b0d29c22"
+      }
+    },
+    "claims": {
+      "cl_demo_0": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "c3a06bd3455757675783921a82cfcab36a0c516fcccbf8cae7ed0cc30832d1bf"
+      },
+      "cl_demo_1": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "7661e643e41dc6de400e56378c871432932e29c7ee6389c6eb7514c303474897"
+      },
+      "cl_demo_2": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "ba72b7c074074db5160cf5760b7391f09e5a32f04de4598882e540b7cdf1bf88"
+      },
+      "cl_demo_3": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "25086e1e98aecf54630dd4d1df39c60c246283fdf334cef7d9d7935fa04e9df0"
+      },
+      "cl_demo_4": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "427afdd1ed9993b0c887e01cdbdaea734537b851f685d8e83f2a0561cb270031"
+      },
+      "cl_demo_5": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "9f9ea6b2ecfee6dfb1a76f065f79f79a99ec1af09a271bc01c337031bf769375"
+      },
+      "cl_demo_6": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "4da4d1e6281242331064a00f8b7fd22ea933da92a6dc7f6b1e4c388ebe4acc95"
+      },
+      "cl_demo_7": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "716094f1024a60308b1f5f895ea58bfc28fd6b6aee3a8aa60190456cb1eb1af8"
+      },
+      "cl_demo_8": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "8d1df1f2e74ca036e277a43cc3cdec5e63872fb439ba039e5e850a5def71cabf"
+      },
+      "cl_demo_9": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "9070906a43b49adc11bea4c299c8a0f8d6d1a423999e0e80dd49b3d16fd0bd9a"
+      },
+      "cl_demo_10": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "a20ed7f4339a06c8ccbe461391eab40145fe2b46142290a37bfe1e2cd59731c2"
+      },
+      "cl_demo_11": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "0b6893f40b51da6bd87706d0cabb0fe1445d8363bee41b4454b455ba6cb4050d"
+      },
+      "cl_demo_12": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "6e31830741d2a923468990331bcf375d4e20e5d0d3eb094ba889287e30367745"
+      },
+      "cl_demo_13": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "42f2845dde2f7e57ea9ba17159a73c0451a51df527a734e1bf7f0ba3f9424e1c"
+      },
+      "cl_demo_14": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "1f926317eec6d48487df41d6a66776313c149e6aed20767697697ee6e42063ed"
+      },
+      "cl_demo_15": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "31759e77eed0236765f611a8df8bb057ccf9638ce0888c3d8d915bec104d489d"
+      },
+      "cl_demo_16": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "363288f439a8ec546d1ba9001360f7667bd99b529a73faa9966f3e78f2f579f7"
+      },
+      "cl_demo_17": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "150774998829638121237e1112c92185b3c458be77746ac1739539808b25da69"
+      },
+      "cl_demo_18": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "fc96a4de1527e19ca0a6811b97b8c1b55334d12793368ebb86f63bec92aef3dd"
+      },
+      "cl_demo_19": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "db02a337ad3e88a0414df68dea06a8d96073bca5f7e68002fffde50170d24009"
+      },
+      "cl_demo_20": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "0d799dc0f0176b5429e1000708ba10b5f7059c7be7cfe21a65a67eb9c36718e3"
+      },
+      "cl_demo_21": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "34ed45c56cd24ea87a48ef629647c2fb45e6050da88cff788baf7b408bdc46f3"
+      },
+      "cl_demo_22": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "023dc61df6d17e964b44e80462248e70ead00e2fc74c96cc9d8e40587eeaa522"
+      },
+      "cl_demo_23": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "15a521a28a4b5e791b67ec3c612e930826fa0c8545251ef3701e5e126c37ddbb"
+      },
+      "cl_demo_24": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "4eb43a6901c2bc074d3b777c5b7137d25e03143dcdab62d235bef35b2271dd25"
+      },
+      "cl_demo_25": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "fbb1e200639a888d1293fa90d37b022997a6a950258f5a7bed621a1a88eb6a03"
+      }
+    },
+    "sources": {
+      "ob_demo_source": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "a5357e27bae28154b5fd9777127fafe8ba55e008405b78f3911c1a06773f1cf0"
+      }
+    }
+  },
+  "history": [],
+  "packet_id": "2a08c08e06ff6651b46bb040932c72f6aac8debd088306706bcec9cf9b45c34c"
+}
