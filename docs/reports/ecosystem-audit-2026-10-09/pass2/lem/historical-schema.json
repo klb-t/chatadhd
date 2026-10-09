@@ -1,0 +1,34 @@
+{
+  "schema": "klbt.audit.lem-historical-schema/1",
+  "historical_sha": "0c6ea26abecd7c401dd9cb452309741216533c30",
+  "target_sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+  "historical_database_version": 1,
+  "target_database_version": 2,
+  "entities": [
+    "ExperimentResult",
+    "LedgerEntry"
+  ],
+  "new_target_entity": "ExperimentConfig",
+  "evidence": [
+    {
+      "path": "app/src/main/java/com/example/data/local/AppDatabase.kt",
+      "historical_sha256": "db7588b1462fb1d329c695950fefe3685dafeef9d799c9faf25c92f6f863ae96",
+      "main_sha256": "69bf1888e4fe997875aa6343f9cc2f8559cc45710daec5b0b2f0a4180841d42f",
+      "identical": false
+    },
+    {
+      "path": "app/src/main/java/com/example/data/model/ExperimentResult.kt",
+      "historical_sha256": "c960abc8abec8ea5c7a417f21edc4dc8a68d02288c957a942779deea157c0d2f",
+      "main_sha256": "c960abc8abec8ea5c7a417f21edc4dc8a68d02288c957a942779deea157c0d2f",
+      "identical": true
+    },
+    {
+      "path": "app/src/main/java/com/example/data/model/LedgerEntry.kt",
+      "historical_sha256": "12ec3ad908d69b4e6a5f09a5ae0c29ae5a10c4c29c67ad1f32abef8b71f7bf4d",
+      "main_sha256": "12ec3ad908d69b4e6a5f09a5ae0c29ae5a10c4c29c67ad1f32abef8b71f7bf4d",
+      "identical": true
+    }
+  ],
+  "fixture": "tools/ecosystem-audit-2026-10-09/pass2/lem/room/RoomPersistenceAuditTest.kt",
+  "construction": "Historical @Database entity/version declaration with byte-identical entity sources; actual Room/KSP generates SQL. Fixture is not an old APK and does not copy a migration implementation."
+}

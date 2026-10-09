@@ -1,0 +1,122 @@
+[
+  {
+    "finding_id": "LEM-001",
+    "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+    "status": "not_repaired; additional independent evidence",
+    "tests": [
+      {
+        "id": "LEM-001-PROFILES",
+        "phase": "A",
+        "status": "PASS"
+      },
+      {
+        "id": "LEM-001-PROFILES",
+        "phase": "B",
+        "status": "FAIL"
+      },
+      {
+        "id": "LEM-001-UNSUPPORTED",
+        "phase": "A",
+        "status": "PASS"
+      },
+      {
+        "id": "LEM-001-UNSUPPORTED",
+        "phase": "B",
+        "status": "FAIL"
+      },
+      {
+        "id": "LEM-001-CONFIG-PROVENANCE",
+        "phase": "B",
+        "status": "FAIL"
+      }
+    ]
+  },
+  {
+    "finding_id": "LEM-003",
+    "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+    "status": "not_repaired; additional independent evidence",
+    "tests": [
+      {
+        "id": "LEM-003-RAW",
+        "phase": "A",
+        "status": "PASS"
+      },
+      {
+        "id": "LEM-003-RAW",
+        "phase": "B",
+        "status": "FAIL"
+      },
+      {
+        "id": "LEM-003-ARTIFACT-ROUNDTRIP",
+        "phase": "B",
+        "status": "BLOCKED"
+      },
+      {
+        "id": "LEM-003-PARTIAL",
+        "phase": "A",
+        "status": "PASS"
+      },
+      {
+        "id": "LEM-003-PARTIAL",
+        "phase": "B",
+        "status": "FAIL"
+      }
+    ]
+  },
+  {
+    "finding_id": "LEM-004",
+    "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+    "status": "not_repaired; additional independent evidence",
+    "tests": [
+      {
+        "id": "LEM-004-PAGINATION",
+        "phase": "A",
+        "status": "PASS"
+      },
+      {
+        "id": "LEM-004-PAGINATION",
+        "phase": "B",
+        "status": "FAIL"
+      }
+    ]
+  },
+  {
+    "finding_id": "LEM-005",
+    "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+    "status": "not_repaired; additional independent evidence",
+    "tests": [
+      {
+        "id": "LEM-005-DESTRUCTIVE-BUILDER",
+        "phase": "A",
+        "status": "PASS"
+      },
+      {
+        "id": "LEM-005-DESTRUCTIVE-BUILDER",
+        "phase": "B",
+        "status": "FAIL"
+      },
+      {
+        "id": "LEM-005-V1-V2-DATA-PRESERVATION",
+        "phase": "B",
+        "status": "BLOCKED"
+      }
+    ]
+  },
+  {
+    "finding_id": "LEM-008",
+    "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+    "status": "mechanism confirmed within host boundary",
+    "tests": [
+      {
+        "id": "LEM-008-FAILURE-STATUS",
+        "phase": "B",
+        "status": "PASS"
+      },
+      {
+        "id": "LEM-008-NO-KEY-NO-SEND",
+        "phase": "B",
+        "status": "PASS"
+      }
+    ]
+  }
+]

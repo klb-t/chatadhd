@@ -1,0 +1,482 @@
+{
+  "schema": "klbt.audit.lem-host/1",
+  "tests": [
+    {
+      "id": "LEM-HOST-NETWORK-DENY",
+      "phase": "control",
+      "status": "PASS",
+      "observed": {}
+    },
+    {
+      "id": "LEM-001-PROFILES",
+      "phase": "A",
+      "status": "PASS",
+      "observed": {
+        "savedProfileA": {
+          "dimension": 256,
+          "taskType": "RETRIEVAL_QUERY",
+          "epochs": 3
+        },
+        "savedProfileB": {
+          "dimension": 1024,
+          "taskType": "CLASSIFICATION",
+          "epochs": 91
+        },
+        "requestA": {
+          "model": "models/gemini-embedding-2-preview",
+          "content": {
+            "parts": [
+              {
+                "text": "Safety matters because it protects people from preventable harm."
+              }
+            ]
+          },
+          "outputDimensionality": 768.0
+        },
+        "requestB": {
+          "model": "models/gemini-embedding-2-preview",
+          "content": {
+            "parts": [
+              {
+                "text": "Safety matters because it protects people from preventable harm."
+              }
+            ]
+          },
+          "outputDimensionality": 768.0
+        },
+        "resultAStatus": "INSTRUMENT_OK",
+        "resultBStatus": "INSTRUMENT_OK"
+      }
+    },
+    {
+      "id": "LEM-001-PROFILES",
+      "phase": "B",
+      "status": "FAIL",
+      "observed": {}
+    },
+    {
+      "id": "LEM-001-UNSUPPORTED",
+      "phase": "A",
+      "status": "PASS",
+      "observed": {
+        "unsupportedField": "epochs",
+        "observableDisposition": "absent"
+      }
+    },
+    {
+      "id": "LEM-001-UNSUPPORTED",
+      "phase": "B",
+      "status": "FAIL",
+      "observed": {}
+    },
+    {
+      "id": "LEM-001-CONFIG-PROVENANCE",
+      "phase": "B",
+      "status": "FAIL",
+      "observed": {
+        "profileIdInPersistedResult": false
+      }
+    },
+    {
+      "id": "LEM-003-RAW",
+      "phase": "A",
+      "status": "PASS",
+      "observed": {
+        "artifactReferences": "[]",
+        "rawMetrics": "{\"success\":true,\"latencyMs\":43,\"responseChars\":21,\"contractMatched\":true,\"responseSha256\":\"a7decaaf2a74b0a991e5d67c0fc674b31bd7962f2cee4e24b69a5652036adeb3\"}",
+        "responseCandidates": 2,
+        "request": [
+          {
+            "method": "POST",
+            "path": "/v1beta/models/audit-generation:generateContent",
+            "body": {
+              "contents": [
+                {
+                  "parts": [
+                    {
+                      "text": "Return exactly this token and nothing else: LEM_LAB_GENERATION_OK"
+                    }
+                  ]
+                }
+              ],
+              "generationConfig": {
+                "temperature": 0.0
+              },
+              "systemInstruction": {
+                "parts": [
+                  {
+                    "text": "This is an API instrument check. Follow the requested exact-output contract."
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "LEM-003-RAW",
+      "phase": "B",
+      "status": "FAIL",
+      "observed": {}
+    },
+    {
+      "id": "LEM-003-ARTIFACT-ROUNDTRIP",
+      "phase": "B",
+      "status": "BLOCKED",
+      "reason": "No artifact store/resolver contract in baseline; nonempty references are only a necessary gate, never proof of retrievable raw bytes"
+    },
+    {
+      "id": "LEM-003-PARTIAL",
+      "phase": "A",
+      "status": "PASS",
+      "observed": {
+        "transportCalls": 2,
+        "artifactReferences": "[]",
+        "hyperparameters": "{}",
+        "status": "INSTRUMENT_FAILED"
+      }
+    },
+    {
+      "id": "LEM-003-PARTIAL",
+      "phase": "B",
+      "status": "FAIL",
+      "observed": {}
+    },
+    {
+      "id": "LEM-008-FAILURE-STATUS",
+      "phase": "B",
+      "status": "PASS",
+      "observed": {}
+    },
+    {
+      "id": "LEM-004-PAGINATION",
+      "phase": "A",
+      "status": "PASS",
+      "observed": {
+        "models": [
+          "models/page-1"
+        ],
+        "requests": [
+          {
+            "method": "GET",
+            "path": "/v1beta/models"
+          }
+        ],
+        "serverNextPageToken": "audit-page-2"
+      }
+    },
+    {
+      "id": "LEM-004-PAGINATION",
+      "phase": "B",
+      "status": "FAIL",
+      "observed": {}
+    },
+    {
+      "id": "LEM-005-DESTRUCTIVE-BUILDER",
+      "phase": "A",
+      "status": "PASS",
+      "observed": {
+        "fallbackToDestructiveMigrationCalled": true,
+        "addMigrationsCalls": 0,
+        "scope": "real AppDatabase against Room call spy; no database migration executed"
+      }
+    },
+    {
+      "id": "LEM-005-DESTRUCTIVE-BUILDER",
+      "phase": "B",
+      "status": "FAIL",
+      "observed": {}
+    },
+    {
+      "id": "LEM-005-V1-V2-DATA-PRESERVATION",
+      "phase": "B",
+      "status": "BLOCKED",
+      "reason": "Requires real Room generated implementation + Android SQLite; not represented by Room call spy"
+    },
+    {
+      "id": "LEM-009-JSON-CONTROL-CHAR",
+      "phase": "A",
+      "status": "PASS",
+      "observed": {
+        "strictDecoderInputs": [
+          {
+            "codepoint": 0,
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":2,\"error\":\"synthetic\u0000transport failure\"}",
+            "strict_json": {
+              "valid": false,
+              "error": "Invalid control character at: line 1 column 50 (char 49)"
+            }
+          },
+          {
+            "codepoint": 1,
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":2,\"error\":\"synthetic\u0001transport failure\"}",
+            "strict_json": {
+              "valid": false,
+              "error": "Invalid control character at: line 1 column 50 (char 49)"
+            }
+          },
+          {
+            "codepoint": 2,
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":8,\"error\":\"synthetic\u0002transport failure\"}",
+            "strict_json": {
+              "valid": false,
+              "error": "Invalid control character at: line 1 column 50 (char 49)"
+            }
+          },
+          {
+            "codepoint": 3,
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":6,\"error\":\"synthetic\u0003transport failure\"}",
+            "strict_json": {
+              "valid": false,
+              "error": "Invalid control character at: line 1 column 50 (char 49)"
+            }
+          },
+          {
+            "codepoint": 4,
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":3,\"error\":\"synthetic\u0004transport failure\"}",
+            "strict_json": {
+              "valid": false,
+              "error": "Invalid control character at: line 1 column 50 (char 49)"
+            }
+          },
+          {
+            "codepoint": 5,
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":5,\"error\":\"synthetic\u0005transport failure\"}",
+            "strict_json": {
+              "valid": false,
+              "error": "Invalid control character at: line 1 column 50 (char 49)"
+            }
+          },
+          {
+            "codepoint": 6,
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":8,\"error\":\"synthetic\u0006transport failure\"}",
+            "strict_json": {
+              "valid": false,
+              "error": "Invalid control character at: line 1 column 50 (char 49)"
+            }
+          },
+          {
+            "codepoint": 7,
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":2,\"error\":\"synthetic\u0007transport failure\"}",
+            "strict_json": {
+              "valid": false,
+              "error": "Invalid control character at: line 1 column 50 (char 49)"
+            }
+          },
+          {
+            "codepoint": 8,
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":2,\"error\":\"synthetic\btransport failure\"}",
+            "strict_json": {
+              "valid": false,
+              "error": "Invalid control character at: line 1 column 50 (char 49)"
+            }
+          },
+          {
+            "codepoint": 9,
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":2,\"error\":\"synthetic\ttransport failure\"}",
+            "strict_json": {
+              "valid": false,
+              "error": "Invalid control character at: line 1 column 50 (char 49)"
+            }
+          },
+          {
+            "codepoint": 10,
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":1,\"error\":\"synthetic\\ntransport failure\"}",
+            "strict_json": {
+              "valid": true,
+              "preserved": true
+            }
+          },
+          {
+            "codepoint": 11,
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":4,\"error\":\"synthetic\u000btransport failure\"}",
+            "strict_json": {
+              "valid": false,
+              "error": "Invalid control character at: line 1 column 50 (char 49)"
+            }
+          },
+          {
+            "codepoint": 12,
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":7,\"error\":\"synthetic\ftransport failure\"}",
+            "strict_json": {
+              "valid": false,
+              "error": "Invalid control character at: line 1 column 50 (char 49)"
+            }
+          },
+          {
+            "codepoint": 13,
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":2,\"error\":\"synthetic\\rtransport failure\"}",
+            "strict_json": {
+              "valid": true,
+              "preserved": true
+            }
+          },
+          {
+            "codepoint": 14,
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":2,\"error\":\"synthetic\u000etransport failure\"}",
+            "strict_json": {
+              "valid": false,
+              "error": "Invalid control character at: line 1 column 50 (char 49)"
+            }
+          },
+          {
+            "codepoint": 15,
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":2,\"error\":\"synthetic\u000ftransport failure\"}",
+            "strict_json": {
+              "valid": false,
+              "error": "Invalid control character at: line 1 column 50 (char 49)"
+            }
+          },
+          {
+            "codepoint": 16,
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":3,\"error\":\"synthetic\u0010transport failure\"}",
+            "strict_json": {
+              "valid": false,
+              "error": "Invalid control character at: line 1 column 50 (char 49)"
+            }
+          },
+          {
+            "codepoint": 17,
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":1,\"error\":\"synthetic\u0011transport failure\"}",
+            "strict_json": {
+              "valid": false,
+              "error": "Invalid control character at: line 1 column 50 (char 49)"
+            }
+          },
+          {
+            "codepoint": 18,
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":1,\"error\":\"synthetic\u0012transport failure\"}",
+            "strict_json": {
+              "valid": false,
+              "error": "Invalid control character at: line 1 column 50 (char 49)"
+            }
+          },
+          {
+            "codepoint": 19,
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":1,\"error\":\"synthetic\u0013transport failure\"}",
+            "strict_json": {
+              "valid": false,
+              "error": "Invalid control character at: line 1 column 50 (char 49)"
+            }
+          },
+          {
+            "codepoint": 20,
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":1,\"error\":\"synthetic\u0014transport failure\"}",
+            "strict_json": {
+              "valid": false,
+              "error": "Invalid control character at: line 1 column 50 (char 49)"
+            }
+          },
+          {
+            "codepoint": 21,
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":1,\"error\":\"synthetic\u0015transport failure\"}",
+            "strict_json": {
+              "valid": false,
+              "error": "Invalid control character at: line 1 column 50 (char 49)"
+            }
+          },
+          {
+            "codepoint": 22,
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":1,\"error\":\"synthetic\u0016transport failure\"}",
+            "strict_json": {
+              "valid": false,
+              "error": "Invalid control character at: line 1 column 50 (char 49)"
+            }
+          },
+          {
+            "codepoint": 23,
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":1,\"error\":\"synthetic\u0017transport failure\"}",
+            "strict_json": {
+              "valid": false,
+              "error": "Invalid control character at: line 1 column 50 (char 49)"
+            }
+          },
+          {
+            "codepoint": 24,
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":1,\"error\":\"synthetic\u0018transport failure\"}",
+            "strict_json": {
+              "valid": false,
+              "error": "Invalid control character at: line 1 column 50 (char 49)"
+            }
+          },
+          {
+            "codepoint": 25,
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":1,\"error\":\"synthetic\u0019transport failure\"}",
+            "strict_json": {
+              "valid": false,
+              "error": "Invalid control character at: line 1 column 50 (char 49)"
+            }
+          },
+          {
+            "codepoint": 26,
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":1,\"error\":\"synthetic\u001atransport failure\"}",
+            "strict_json": {
+              "valid": false,
+              "error": "Invalid control character at: line 1 column 50 (char 49)"
+            }
+          },
+          {
+            "codepoint": 27,
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":1,\"error\":\"synthetic\u001btransport failure\"}",
+            "strict_json": {
+              "valid": false,
+              "error": "Invalid control character at: line 1 column 50 (char 49)"
+            }
+          },
+          {
+            "codepoint": 28,
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":2,\"error\":\"synthetic\u001ctransport failure\"}",
+            "strict_json": {
+              "valid": false,
+              "error": "Invalid control character at: line 1 column 50 (char 49)"
+            }
+          },
+          {
+            "codepoint": 29,
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":1,\"error\":\"synthetic\u001dtransport failure\"}",
+            "strict_json": {
+              "valid": false,
+              "error": "Invalid control character at: line 1 column 50 (char 49)"
+            }
+          },
+          {
+            "codepoint": 30,
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":1,\"error\":\"synthetic\u001etransport failure\"}",
+            "strict_json": {
+              "valid": false,
+              "error": "Invalid control character at: line 1 column 50 (char 49)"
+            }
+          },
+          {
+            "codepoint": 31,
+            "syntheticRawMetrics": "{\"success\":false,\"latencyMs\":2,\"error\":\"synthetic\u001ftransport failure\"}",
+            "strict_json": {
+              "valid": false,
+              "error": "Invalid control character at: line 1 column 50 (char 49)"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "LEM-009-JSON-CONTROL-CHAR",
+      "phase": "B",
+      "status": "FAIL",
+      "observed": {}
+    },
+    {
+      "id": "LEM-008-NO-KEY-NO-SEND",
+      "phase": "B",
+      "status": "PASS",
+      "observed": {}
+    }
+  ],
+  "boundaries": {
+    "productionSources": "ExperimentRunner, ResearchAgent, GeminiApiService, ApiKeyStore, ResearchRepository, ResearchViewModel, AppDatabase, three models and DAOs",
+    "realLibraries": "Kotlin/coroutines/Flow/Retrofit/Moshi/OkHttp",
+    "testSeams": "Android Context/SharedPreferences, lifecycle scope, Room call spy, in-memory DAOs, serialization annotation",
+    "network": "application interceptor never calls proceed; JVM SecurityManager denies all socket connects",
+    "notTested": "Room persistence/migration, Android scheduling/lifecycle, Compose UI, device and APK"
+  }
+}

@@ -1,0 +1,107 @@
+[
+  {
+    "url": "https://repo.maven.apache.org/maven2/com/squareup/retrofit2/retrofit/2.12.0/retrofit-2.12.0.jar",
+    "filename": "retrofit-2.12.0.jar",
+    "sha256": "3b2dfb82bb99cd33df95d92ad6fcd78ba7f17ac81e67904eb991fe404015d1d8",
+    "bytes": 131218,
+    "bucket": "deps"
+  },
+  {
+    "url": "https://repo.maven.apache.org/maven2/com/squareup/retrofit2/converter-moshi/2.12.0/converter-moshi-2.12.0.jar",
+    "filename": "converter-moshi-2.12.0.jar",
+    "sha256": "19b7a35fa164093607f9a63ed810b4b1c1fbe9c7d45e3196277c1e6be1317f2e",
+    "bytes": 6312,
+    "bucket": "deps"
+  },
+  {
+    "url": "https://repo.maven.apache.org/maven2/com/squareup/moshi/moshi/1.15.2/moshi-1.15.2.jar",
+    "filename": "moshi-1.15.2.jar",
+    "sha256": "767f7592c6c61eb693549a26d333c121f5383826bd287b899867aa326dae55e4",
+    "bytes": 162258,
+    "bucket": "deps"
+  },
+  {
+    "url": "https://repo.maven.apache.org/maven2/com/squareup/moshi/moshi-kotlin/1.15.2/moshi-kotlin-1.15.2.jar",
+    "filename": "moshi-kotlin-1.15.2.jar",
+    "sha256": "5c39cd77e83b111af9c54708173af96a89fd3b09d15019a11da355e83e97d75a",
+    "bytes": 19519,
+    "bucket": "deps"
+  },
+  {
+    "url": "https://repo.maven.apache.org/maven2/com/squareup/okhttp3/okhttp/4.10.0/okhttp-4.10.0.jar",
+    "filename": "okhttp-4.10.0.jar",
+    "sha256": "7580f14fa1691206e37081ad3f92063b1603b328da0bb316f2fef02e0562e7ec",
+    "bytes": 782603,
+    "bucket": "deps"
+  },
+  {
+    "url": "https://repo.maven.apache.org/maven2/com/squareup/okio/okio-jvm/3.7.0/okio-jvm-3.7.0.jar",
+    "filename": "okio-jvm-3.7.0.jar",
+    "sha256": "d8b35adc28768f43ae5afe6a7d1aa2a878ba51e0b96a4f308811f3b1f5b13e55",
+    "bytes": 360630,
+    "bucket": "deps"
+  },
+  {
+    "url": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-reflect/2.1.20/kotlin-reflect-2.1.20.jar",
+    "filename": "kotlin-reflect-2.1.20.jar",
+    "sha256": "419778f2b7a826bad6ee2ca1e4bdebe639ab306d2904fa3ef2a308ecfaab3811",
+    "bytes": 3081304,
+    "bucket": "deps"
+  },
+  {
+    "url": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core-jvm/1.10.2/kotlinx-coroutines-core-jvm-1.10.2.jar",
+    "filename": "kotlinx-coroutines-core-jvm-1.10.2.jar",
+    "sha256": "5ca175b38df331fd64155b35cd8cae1251fa9ee369709b36d42e0a288ccce3fd",
+    "bytes": 1479317,
+    "bucket": "deps"
+  },
+  {
+    "bucket": "compiler",
+    "url": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-compiler-embeddable/2.2.10/kotlin-compiler-embeddable-2.2.10.jar",
+    "filename": "kotlin-compiler-embeddable-2.2.10.jar",
+    "sha256": "79628fd5d64b4692a62f98962baab00e9076a37e2cffd6ace33cd0b7be7d1cdf",
+    "bytes": 56259401
+  },
+  {
+    "bucket": "compiler",
+    "url": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/2.2.10/kotlin-daemon-embeddable-2.2.10.jar",
+    "filename": "kotlin-daemon-embeddable-2.2.10.jar",
+    "sha256": "b31573d418961fa080760fedcfc90d68ad67a85eafa245c73fe3d551476777ba",
+    "bytes": 345724
+  },
+  {
+    "bucket": "compiler",
+    "url": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-script-runtime/2.2.10/kotlin-script-runtime-2.2.10.jar",
+    "filename": "kotlin-script-runtime-2.2.10.jar",
+    "sha256": "c304a67dba6a61dde560e6310920bed746307c3854f6675c29ac29114731b6b0",
+    "bytes": 44759
+  },
+  {
+    "bucket": "compiler",
+    "url": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/2.2.10/kotlin-stdlib-2.2.10.jar",
+    "filename": "kotlin-stdlib-2.2.10.jar",
+    "sha256": "9c67cc79efd6b9215b49d2a4308f5f3433537376c7c88e89bdd6729bd096e61a",
+    "bytes": 1750374
+  },
+  {
+    "bucket": "compiler",
+    "url": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-reflect/1.6.10/kotlin-reflect-1.6.10.jar",
+    "filename": "kotlin-reflect-1.6.10.jar",
+    "sha256": "3277ac102ae17aad10a55abec75ff5696c8d109790396434b496e75087854203",
+    "bytes": 3038560
+  },
+  {
+    "bucket": "compiler",
+    "url": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core-jvm/1.8.0/kotlinx-coroutines-core-jvm-1.8.0.jar",
+    "filename": "kotlinx-coroutines-core-jvm-1.8.0.jar",
+    "sha256": "9860906a1937490bf5f3b06d2f0e10ef451e65b95b269f22daf68a3d1f5065c5",
+    "bytes": 1548360
+  },
+  {
+    "bucket": "compiler",
+    "url": "https://repo.maven.apache.org/maven2/org/jetbrains/annotations/13.0/annotations-13.0.jar",
+    "filename": "annotations-13.0.jar",
+    "sha256": "ace2a10dc8e2d5fd34925ecac03e4988b2c0f851650c94b8cef49ba1bd111478",
+    "bytes": 17536
+  }
+]

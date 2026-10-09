@@ -1,0 +1,109 @@
+[
+  {
+    "finding_id": "LEM-001",
+    "reproduction": "Save a sole ExperimentConfig per repository with dimension256/query versus1024/classification; reconstruct actual ViewModel; invoke existing runEmbeddingInstrument(model). Both actual serialized requests use768 and omit taskType. Unsupported epochs is stored without disposition; result lacks configID.",
+    "expected": "Expose and consume an explicit selected profile; supported parameters change actual request; unsupported parameters receive explicit capability/disposition; result pins exact config version/hash.",
+    "tests": [
+      "LEM-001-PROFILES",
+      "LEM-001-UNSUPPORTED",
+      "LEM-001-CONFIG-PROVENANCE"
+    ],
+    "consumers": [
+      "ModelsScreen",
+      "ResearchViewModel.runEmbeddingInstrument",
+      "ResearchRepository",
+      "ExperimentRunner.runEncoderSmokeTest",
+      "ResearchAgent.getEmbedding"
+    ],
+    "migration": "Existing saved configs remain unexecuted; do not infer retrospectively that old runs used them.",
+    "risk": "Profile API absent at baseline; independent thin input adapter required for new API, never copy resolver logic.",
+    "dependencies": [
+      "profile selection/capability contract",
+      "LEM-003 exact run recipe preservation"
+    ]
+  },
+  {
+    "finding_id": "LEM-003",
+    "reproduction": "Interceptor returns two candidates with whitespace or succeeds first embedding then throws. Actual result stores hash of trimmed response/no raw artifact refs; partial failure stores empty hyperparameters/artifacts.",
+    "expected": "Persist each request/response step before aggregation, preserve raw bytes or resolvable hashed artifact refs, preserve first successful step and exact recipe on partial failure; keep failed status.",
+    "tests": [
+      "LEM-003-RAW",
+      "LEM-003-PARTIAL",
+      "LEM-003-ARTIFACT-ROUNDTRIP",
+      "LEM-008-FAILURE-STATUS"
+    ],
+    "consumers": [
+      "ResearchAgent response decoding",
+      "ExperimentRunner",
+      "ResearchViewModel",
+      "ResearchRepository/ExperimentDao",
+      "ExperimentsScreen"
+    ],
+    "migration": "Old missing raw evidence marked missing, never reconstructed as observation.",
+    "risk": "Nonempty references are necessary only; full B gate must load bytes from real artifact store after restart. Synthetic fixtures are test inputs, not research outputs.",
+    "dependencies": [
+      "artifact resolver/store contract",
+      "retention/access policy",
+      "LEM-001 config snapshot"
+    ]
+  },
+  {
+    "finding_id": "LEM-004",
+    "reproduction": "Two-page intercepted registry, first response nextPageToken. Actual agent makes one HTTP request and returns only first model.",
+    "expected": "Consume continuation token until complete or expose explicit incomplete registry; preserve unsupported model capability status without implying automatic selection.",
+    "tests": [
+      "LEM-004-PAGINATION"
+    ],
+    "consumers": [
+      "GeminiApiService.listModels",
+      "ResearchAgent.listModels",
+      "ResearchViewModel.refreshModels",
+      "ModelsScreen"
+    ],
+    "migration": "Avoid duplicate IDs across pages and avoid silently changing selected model.",
+    "risk": "Only synthetic pagination fixture tested, no claim that a current account needs multiple pages.",
+    "dependencies": [
+      "request pageToken capability",
+      "registry completeness/status contract"
+    ]
+  },
+  {
+    "finding_id": "LEM-005",
+    "reproduction": "Compile actual AppDatabase and observe builder calls: fallbackToDestructiveMigration enabled, addMigrations0. Real upgrade is NOT simulated by spy.",
+    "expected": "Known v1→v2 keeps config/results/ledger, unknown unsupported version fails without deletion; explicit reset remains separately authorized.",
+    "tests": [
+      "LEM-005-DESTRUCTIVE-BUILDER",
+      "LEM-005-V1-V2-DATA-PRESERVATION"
+    ],
+    "consumers": [
+      "AppDatabase.getDatabase",
+      "Room generated AppDatabase_Impl",
+      "ConfigDao/ExperimentDao/LedgerDao"
+    ],
+    "migration": "Recover historical schemas from exact Git versions, seed real SQLite fixtures, test native Room open/reload.",
+    "risk": "Host builder assertion cannot prove DB persistence or migration. exportSchema=false increases reconstruction cost.",
+    "dependencies": [
+      "working Android/Room toolchain",
+      "historical schemas",
+      "backup/export policy"
+    ]
+  },
+  {
+    "finding_id": "LEM-009",
+    "reproduction": "32 actual runner failures containing U+0000..U+001F; strict decoder rejects30 JSON metrics payloads.",
+    "expected": "All control characters roundtrip under standard JSON; error remains failed and inspectable.",
+    "tests": [
+      "LEM-009-JSON-CONTROL-CHAR"
+    ],
+    "consumers": [
+      "ExperimentRunner.failedInstrumentResult/jsonEscape",
+      "ResearchViewModel → Repository → DAO",
+      "rawMetrics decoder/export"
+    ],
+    "migration": "Preserve original unreadable records and mark decoding error; do not fabricate corrected evidence.",
+    "risk": "Library serialization can change formatting/hash; hash raw and canonical representations separately if contract needs both.",
+    "dependencies": [
+      "LEM-003 evidence preservation"
+    ]
+  }
+]

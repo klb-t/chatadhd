@@ -1,0 +1,129 @@
+{
+  "schema": "klbt.audit.test-index/1",
+  "repo": "klb-t/LEM-Workbench",
+  "baseline_sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+  "runner": "tools/ecosystem-audit-2026-10-09/pass2/lem/run.py",
+  "arguments": [
+    "--repo",
+    "<checkout>",
+    "--sha",
+    "<commit>",
+    "--compiler-dir",
+    "<deps>/compiler",
+    "--deps-dir",
+    "<deps>/deps",
+    "--out",
+    "<scratch>",
+    "--phase",
+    "acceptance"
+  ],
+  "dependencies": "tools/ecosystem-audit-2026-10-09/pass2/lem/dependencies.json",
+  "tests": [
+    {
+      "id": "LEM-HOST-NETWORK-DENY",
+      "phase": "control",
+      "baseline_status": "PASS"
+    },
+    {
+      "id": "LEM-001-PROFILES",
+      "phase": "A",
+      "baseline_status": "PASS"
+    },
+    {
+      "id": "LEM-001-PROFILES",
+      "phase": "B",
+      "baseline_status": "FAIL"
+    },
+    {
+      "id": "LEM-001-UNSUPPORTED",
+      "phase": "A",
+      "baseline_status": "PASS"
+    },
+    {
+      "id": "LEM-001-UNSUPPORTED",
+      "phase": "B",
+      "baseline_status": "FAIL"
+    },
+    {
+      "id": "LEM-001-CONFIG-PROVENANCE",
+      "phase": "B",
+      "baseline_status": "FAIL"
+    },
+    {
+      "id": "LEM-003-RAW",
+      "phase": "A",
+      "baseline_status": "PASS"
+    },
+    {
+      "id": "LEM-003-RAW",
+      "phase": "B",
+      "baseline_status": "FAIL"
+    },
+    {
+      "id": "LEM-003-ARTIFACT-ROUNDTRIP",
+      "phase": "B",
+      "baseline_status": "BLOCKED"
+    },
+    {
+      "id": "LEM-003-PARTIAL",
+      "phase": "A",
+      "baseline_status": "PASS"
+    },
+    {
+      "id": "LEM-003-PARTIAL",
+      "phase": "B",
+      "baseline_status": "FAIL"
+    },
+    {
+      "id": "LEM-008-FAILURE-STATUS",
+      "phase": "B",
+      "baseline_status": "PASS"
+    },
+    {
+      "id": "LEM-004-PAGINATION",
+      "phase": "A",
+      "baseline_status": "PASS"
+    },
+    {
+      "id": "LEM-004-PAGINATION",
+      "phase": "B",
+      "baseline_status": "FAIL"
+    },
+    {
+      "id": "LEM-005-DESTRUCTIVE-BUILDER",
+      "phase": "A",
+      "baseline_status": "PASS"
+    },
+    {
+      "id": "LEM-005-DESTRUCTIVE-BUILDER",
+      "phase": "B",
+      "baseline_status": "FAIL"
+    },
+    {
+      "id": "LEM-005-V1-V2-DATA-PRESERVATION",
+      "phase": "B",
+      "baseline_status": "BLOCKED"
+    },
+    {
+      "id": "LEM-009-JSON-CONTROL-CHAR",
+      "phase": "A",
+      "baseline_status": "PASS"
+    },
+    {
+      "id": "LEM-009-JSON-CONTROL-CHAR",
+      "phase": "B",
+      "baseline_status": "FAIL"
+    },
+    {
+      "id": "LEM-008-NO-KEY-NO-SEND",
+      "phase": "B",
+      "baseline_status": "PASS"
+    }
+  ],
+  "product_gate_exit": 1,
+  "A_semantics": "PASS means the existing bug was reproduced; never product PASS",
+  "B_limitations": [
+    "raw artifact reference assertions necessary but not sufficient; resolver roundtrip BLOCKED",
+    "Room builder call spy does not test SQL migration; v1\u2192v2 BLOCKED"
+  ]
+}

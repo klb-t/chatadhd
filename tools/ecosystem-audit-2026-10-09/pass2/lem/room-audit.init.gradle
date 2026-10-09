@@ -1,0 +1,15 @@
+// Add external independent test sources; never edit product/build files.
+allprojects { project ->
+    project.afterEvaluate {
+        if (project.name == "app") {
+            project.extensions.getByName("android").sourceSets.getByName("test").java.srcDir(System.getProperty("lem.audit.testSource"))
+            project.tasks.withType(Test).configureEach {
+                // Dependency downloads only; fixture tests never invoke a model endpoint.
+                systemProperty "robolectric.dependency.repo.url", "https://repo.maven.apache.org/maven2"
+                ["http.proxyHost", "http.proxyPort", "https.proxyHost", "https.proxyPort"].each { name ->
+                    if (System.getProperty(name) != null) systemProperty name, System.getProperty(name)
+                }
+            }
+        }
+    }
+}

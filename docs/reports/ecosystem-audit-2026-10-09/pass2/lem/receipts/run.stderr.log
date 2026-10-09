@@ -1,0 +1,4 @@
+WARNING: A terminally deprecated method in java.lang.System has been called
+WARNING: System::setSecurityManager has been called by audit.lem.HostHarnessKt$main$1 (file:/workspace/scratch/1112e9e8a3c6/continuation/scratch/lem/host-pinned/host.jar)
+WARNING: Please consider reporting this to the maintainers of audit.lem.HostHarnessKt$main$1
+WARNING: System::setSecurityManager will be removed in a future release
