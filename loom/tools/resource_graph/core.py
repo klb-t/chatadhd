@@ -283,6 +283,16 @@ class ResourceGraph:
             self._update_metadata(logical_id, handle.metadata())
             return rows
 
+    def _child_page(self, handle, pointer, offset, limit, page_size):
+        rows = []
+        while len(rows) < limit:
+            requested = min(page_size, limit - len(rows))
+            chunk = handle.children(pointer, offset + len(rows), requested)
+            rows.extend(chunk)
+            if len(chunk) < requested:
+                break
+        return rows
+
     def _record_index(self, logical_id, pointer, value):
         if logical_id in self._index:
             self._index[logical_id]['entries'][pointer] = json.dumps(value, ensure_ascii=False, sort_keys=True)
@@ -293,6 +303,58 @@ class ResourceGraph:
         return {'status': 'unloaded' if index is None else 'partial', 'coverage': 'requested_fragments_only',
                 'source_version': None if index is None else deepcopy(index['source_version']),
                 'selectors': [] if index is None else [key for key, value in index['entries'].items() if text in value]}
+
+    def search(self, logical_id, text, *, pointer='', limit=None, case_sensitive=True, include_values=False):
+        """Search source structure on demand; no graph nodes or native store required.
+
+        The budget counts inspected logical fields, independently of matches.
+        Coverage is explicit; reaching a budget never becomes a complete empty result.
+        """
+        resource = self.resources[logical_id]
+        if not isinstance(text, str):
+            raise TypeError('search_text_required')
+        if include_values and not resource['permissions']['export_values']:
+            raise ResourceError('unavailable', 'export_permission_denied')
+        limit = resource['policy']['max_projection_nodes'] if limit is None else limit
+        if type(limit) is not int or limit < 1 or limit > resource['policy']['max_projection_nodes']:
+            raise ValueError('search_policy_boundary')
+        query = text if case_sensitive else text.casefold()
+        with self._using_handle(logical_id) as handle:
+            metadata = handle.metadata()
+            pending, matches, inspected, truncated = [pointer], [], 0, False
+            while pending and inspected < limit:
+                selector = pending.pop(0)
+                if hasattr(handle, 'node'):
+                    node = handle.node(selector)
+                else:
+                    value = handle.select(selector)
+                    compound = isinstance(value, (dict, list))
+                    node = {'is_container': compound, 'value': None if compound else value}
+                inspected += 1
+                if not node['is_container']:
+                    value = node['value']
+                    haystack = value if isinstance(value, str) else json.dumps(value, ensure_ascii=False)
+                    haystack = haystack if case_sensitive else haystack.casefold()
+                    if query in haystack:
+                        match = {'logical_id': logical_id, 'selector': selector,
+                                 'source_version': metadata.get('source_version'), 'content_sha256': metadata.get('content_sha256')}
+                        if include_values:
+                            match['value'] = deepcopy(value)
+                        matches.append(match)
+                else:
+                    remaining = limit - inspected - len(pending)
+                    rows = self._child_page(handle, selector, 0, max(1, remaining + 1), resource['policy']['page_size'])
+                    if len(rows) > remaining:
+                        truncated = True
+                    pending.extend(selector + '/' + _escape(key) for key, _ in rows[:max(0, remaining)])
+            final = handle.metadata()
+            if any(final.get(key) != metadata.get(key) for key in ('source_version','content_sha256')):
+                raise ResourceError('partial', 'source_changed_during_search')
+            self._update_metadata(logical_id, final)
+            complete = not pending and not truncated
+            return {'status': 'available' if complete else 'partial', 'matches': matches,
+                    'coverage': {'selector': pointer, 'inspected_fields': inspected, 'complete': complete, 'limit': limit},
+                    'source_version': metadata.get('source_version'), 'graph_nodes_created': 0}
 
     def capture(self, logical_id):
         """Explicitly retain bytes, independent of snapshot/cache/index. Never writes source."""
@@ -391,7 +453,7 @@ class ResourceGraph:
                                relation(node_id, self.profile['predicates']['produced_by'], method_id, version=revision)])
                 count += 1
                 if compound and level < depth:
-                    rows = handle.children(selector, offset if level == 0 else 0, limit + 1)
+                    rows = self._child_page(handle, selector, offset if level == 0 else 0, limit + 1, policy['page_size'])
                     if len(rows) > limit:
                         partial = True
                     pending.extend((selector + '/' + _escape(key), level + 1, node_id) for key, _ in rows[:limit])

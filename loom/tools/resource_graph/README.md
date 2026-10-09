@@ -12,6 +12,7 @@ python -m loom.tools.resource_graph describe /path/to/source --id source-1
 python -m loom.tools.resource_graph project /path/to/profile.json --selector /settings --depth 2
 python -m loom.tools.resource_graph project /path/to/archive.zip --member nested.zip --member profile.json
 python -m loom.tools.resource_graph recognize /path/to/unknown.extension
+python -m loom.tools.resource_graph search /path/to/archive.zip --member conversations.json --query target
 python -m loom.tools.resource_graph demo --output /tmp/resource-graph-demo
 python -m unittest discover -s loom/tests/resource_graph -v
 ```
@@ -70,7 +71,10 @@ History contains only this session's own dated observations, never invented edit
 `loom/data/resource_graph`. Separate deployment safety ceilings are in access policy;
 user overrides cannot raise those ceilings. Parser options are caller data. Changes
 in a requested live source invalidate its fragment index. Index coverage is always
-explicit: only requested fragments, not a search promise over unread content.
+explicit: only requested fragments. `search()` separately traverses the requested
+source structure on demand without importing or creating graph nodes; it reports
+inspected fields and incomplete coverage on budget exhaustion. Search and projection
+use bounded pages from the same adapter protocol.
 
 A snapshot without retained bytes fails if the observed source changes. `capture()`
 explicitly retains bytes; snapshot+embedding can work after source removal. Live+

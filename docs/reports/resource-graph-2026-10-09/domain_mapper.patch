@@ -1,0 +1,107 @@
+--- a/loom/src/import/export_internal.h
++++ b/loom/src/import/export_internal.h
+@@ -225,6 +225,9 @@
+ // member is not an OpenAI root member.
+ bool import_openai_member(Env& env, OpenAiCtx& cx, const std::string& rel, const fs::path& abs, Report& rep);
+
++// DB-free overload; the Env-taking importer API forwards to this same parser.
++void parse_anthropic_conversation(const Json& conv, int index, const std::string& member, ConvModel& out,
++                                  Counts& counts);
+ void parse_anthropic_conversation(const Json& conv, int index, const std::string& member, Env& env, ConvModel& out,
+                                   Counts& counts);
+ struct AnthropicCtx {
+--- a/loom/src/import/export_anthropic.cpp
++++ b/loom/src/import/export_anthropic.cpp
+@@ -62,6 +62,11 @@
+ void parse_anthropic_conversation(const Json& conv, int index, const std::string& member, Env& env, ConvModel& out,
+                                   Counts& counts) {
+   (void)env;
++  parse_anthropic_conversation(conv, index, member, out, counts);
++}
++
++void parse_anthropic_conversation(const Json& conv, int index, const std::string& member, ConvModel& out,
++                                  Counts& counts) {
+   counts.conversation += 1;
+   out.source = "import:anthropic";
+   out.leaves_total = json_leaves(conv);
+--- /dev/null
++++ b/loom/include/loom/export_mapping.h
+@@ -0,0 +1,18 @@
++// Optional public DB-free view of the existing lossless conversation mappers.
++#pragma once
++#include <string>
++#include "loom/result.h"
++#include "loom/util/json.h"
++
++namespace loom {
++// Input is one already parsed and caller-bounded provider conversation object.
++// No Database, Runtime, BlobStore, transport, renderer or asset fetch is created.
++// Raw input and native export metadata are retained. Normalized timestamps are
++// omitted because the existing importer may default missing times to its clock;
++// source timestamps remain verbatim in raw/export metadata, never invented history.
++// Asset references are preserved but availability is not evaluated by this hook.
++Result<Json> map_openai_export_conversation(const Json& conversation,
++                                          const std::string& member = "", int index = 0);
++Result<Json> map_anthropic_export_conversation(const Json& conversation,
++                                             const std::string& member = "", int index = 0);
++}  // namespace loom
+--- /dev/null
++++ b/loom/src/import/export_mapping.cpp
+@@ -0,0 +1,57 @@
++// Thin projection of existing provider parser models: no duplicated mapping rules.
++#include "loom/export_mapping.h"
++#include "export_internal.h"
++
++namespace loom {
++namespace {
++Json view(const Json& raw, const xport::ConvModel& conversation, const xport::Counts& counts) {
++  Json messages = Json::array();
++  for (const auto& row : conversation.msgs) {
++    messages.push_back(Json{{"key", row.key}, {"parent_index", row.parent},
++        {"role", row.role}, {"text", row.text},
++        {"model", row.model ? Json(*row.model) : Json(nullptr)},
++        {"weight", row.weight}, {"status", row.status}, {"group", row.group},
++        {"version_num", row.version_num}, {"attachments", row.attachments},
++        {"export", row.export_meta}});
++  }
++  return Json{{"schema", "loom.export_mapping/1"}, {"parser_version", kExportParserVersion},
++      {"raw", raw}, {"key", conversation.key}, {"title", conversation.title},
++      {"source", conversation.source}, {"export", conversation.export_meta},
++      {"messages", messages}, {"groups", conversation.groups}, {"counts", counts.to_json()},
++      {"leaves_total", conversation.leaves_total}, {"leaves_kept", conversation.leaves_kept},
++      {"asset_resolution", "not_evaluated"}, {"database_required", false},
++      {"representation_changes", Json::array({"normalized_timestamp_fields_omitted_source_values_in_raw",
++          "database_ids_not_generated_parent_and_version_groups_use_model_indices",
++          "document_wrapper_and_archive_source_selectors_are_callers_responsibility"})}};
++}
++}  // namespace
++
++Result<Json> map_openai_export_conversation(const Json& conversation, const std::string& member, int index) {
++  if (!conversation.is_object() || !conversation.contains("mapping") ||
++      !conversation["mapping"].is_object() || index < 0)
++    return Error(Errc::InvalidArgument, "openai_export_conversation_shape_invalid");
++  try {
++    xport::OpenAiCtx context;  // no AssetIndex/Env: retain pointers without reading files
++    xport::ConvModel model;
++    xport::Counts counts;
++    xport::parse_openai_conversation(conversation, index, member, context, model, counts);
++    return view(conversation, model, counts);
++  } catch (const std::exception&) {
++    return Error(Errc::Parse, "export_mapping_parse_failed");
++  }
++}
++
++Result<Json> map_anthropic_export_conversation(const Json& conversation, const std::string& member, int index) {
++  if (!conversation.is_object() || !conversation.contains("chat_messages") ||
++      !conversation["chat_messages"].is_array() || index < 0)
++    return Error(Errc::InvalidArgument, "anthropic_export_conversation_shape_invalid");
++  try {
++    xport::ConvModel model;
++    xport::Counts counts;
++    xport::parse_anthropic_conversation(conversation, index, member, model, counts);
++    return view(conversation, model, counts);
++  } catch (const std::exception&) {
++    return Error(Errc::Parse, "export_mapping_parse_failed");
++  }
++}
++}  // namespace loom
