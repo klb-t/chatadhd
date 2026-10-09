@@ -1,0 +1,1392 @@
+{
+  "meaning": "Case categories retained. No global product PASS percentage. D criteria counted once, second native build is corroboration. C credential10 author cases nested in one repair gate; minimal B relocation is reduction of existing failure. Browser environment and index-unit checks separate.",
+  "cases": [
+    {
+      "receipt": "B-native/receipt.json",
+      "id": "A4-B-RESOURCE-LINK",
+      "category": "repair",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "B-native/receipt.json",
+      "id": "A4-B-RESOURCE-COPY",
+      "category": "repair",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "B-native/receipt.json",
+      "id": "CH-RES-N001-REPRO",
+      "category": "reproduction",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "B-native/receipt.json",
+      "id": "CH-RES-N001-ACCEPT",
+      "category": "repair",
+      "status": "FAIL",
+      "current": true
+    },
+    {
+      "receipt": "B-native/receipt.json",
+      "id": "CH-RES-N002-REPRO",
+      "category": "reproduction",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "B-native/receipt.json",
+      "id": "CH-RES-N002-ACCEPT",
+      "category": "repair",
+      "status": "FAIL",
+      "current": true
+    },
+    {
+      "receipt": "B-native/receipt.json",
+      "id": "A4-B-VIEW-HEADLESS",
+      "category": "integration",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "B-native/receipt.json",
+      "id": "A4-B-GRAPH-STORE",
+      "category": "integration",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "B-native/receipt.json",
+      "id": "A4-B-COLD-WARM",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "B-native/receipt.json",
+      "id": "A4-B-EQUIVALENCE-REORDERED",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "B-native/receipt.json",
+      "id": "A4-B-EQUIVALENCE-WHITESPACE",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "B-native/receipt.json",
+      "id": "A4-B-EQUIVALENCE-PLAIN",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "B-native/receipt.json",
+      "id": "A4-B-RELOCATION-REPRO",
+      "category": "reproduction",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "B-native/receipt.json",
+      "id": "A4-B-RELOCATION",
+      "category": "contract",
+      "status": "FAIL",
+      "current": true
+    },
+    {
+      "receipt": "B-native/receipt.json",
+      "id": "A4-B-RETAIN-UNAVAILABLE",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "B-native/receipt.json",
+      "id": "A4-B-COPY-OFFLINE",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "B-native/receipt.json",
+      "id": "A4-B-RESUME",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "B-native/receipt.json",
+      "id": "A4-B-UNKNOWN",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "B-native/receipt.json",
+      "id": "A4-B-PROFILE-RUNTIME",
+      "category": "integration",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "B-native/receipt.json",
+      "id": "A4-B-UNKNOWN-PROFILE",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "B-native/receipt.json",
+      "id": "A4-B-INDEPENDENT-POLICIES",
+      "category": "contract",
+      "status": "BLOCKED",
+      "current": true
+    },
+    {
+      "receipt": "B-native/receipt.json",
+      "id": "A4-B-GRAPH-FIELD-ACTIVATION",
+      "category": "contract",
+      "status": "BLOCKED",
+      "current": true
+    },
+    {
+      "receipt": "B-native/receipt.json",
+      "id": "A4-B-NETWORK",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "C-boundary/receipt-verified.json",
+      "id": "C4-CREDENTIAL-01",
+      "category": "repair_acceptance",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "C-boundary/receipt-verified.json",
+      "id": "C4-CREDENTIAL-02",
+      "category": "bug_reproduction",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "C-boundary/receipt-verified.json",
+      "id": "C4-CREDENTIAL-03-git-directory",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "C-boundary/receipt-verified.json",
+      "id": "C4-CREDENTIAL-03-git-file",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "C-boundary/receipt-verified.json",
+      "id": "C4-CREDENTIAL-03-symlink",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "C-boundary/receipt-verified.json",
+      "id": "C4-CONNECTION-01-original",
+      "category": "integration",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "C-boundary/receipt-verified.json",
+      "id": "C4-CONNECTION-01-equivalent",
+      "category": "integration",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "C-boundary/receipt-verified.json",
+      "id": "C4-CONNECTION-02",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "C-boundary/receipt-verified.json",
+      "id": "C4-CONNECTION-05",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "C-boundary/receipt-verified.json",
+      "id": "C4-CONNECTION-06-A",
+      "category": "bug_reproduction",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "C-boundary/receipt-verified.json",
+      "id": "C4-CONNECTION-06-B",
+      "category": "acceptance",
+      "status": "FAIL",
+      "current": true
+    },
+    {
+      "receipt": "C-boundary/receipt-verified.json",
+      "id": "C4-CONNECTION-03-A",
+      "category": "bug_reproduction",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "C-boundary/receipt-verified.json",
+      "id": "C4-CONNECTION-03-B",
+      "category": "acceptance",
+      "status": "FAIL",
+      "current": true
+    },
+    {
+      "receipt": "C-boundary/receipt-verified.json",
+      "id": "C4-CONNECTION-04",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "C-boundary/receipt-verified.json",
+      "id": "C4-PUBLIC-control",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "C-boundary/receipt-verified.json",
+      "id": "C4-PUBLIC-handoff-example-A",
+      "category": "bug_reproduction",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "C-boundary/receipt-verified.json",
+      "id": "C4-PUBLIC-handoff-example-B",
+      "category": "acceptance",
+      "status": "FAIL",
+      "current": true
+    },
+    {
+      "receipt": "C-boundary/receipt-verified.json",
+      "id": "C4-PUBLIC-evaluation-protocol-A",
+      "category": "bug_reproduction",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "C-boundary/receipt-verified.json",
+      "id": "C4-PUBLIC-evaluation-protocol-B",
+      "category": "acceptance",
+      "status": "FAIL",
+      "current": true
+    },
+    {
+      "receipt": "C-boundary/receipt-verified.json",
+      "id": "C4-PUBLIC-handoff-projection-A",
+      "category": "bug_reproduction",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "C-boundary/receipt-verified.json",
+      "id": "C4-PUBLIC-handoff-projection-B",
+      "category": "acceptance",
+      "status": "FAIL",
+      "current": true
+    },
+    {
+      "receipt": "C-boundary/receipt-verified.json",
+      "id": "C4-NATIVE-01",
+      "category": "integration",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "C-boundary/registry-receipt-final.json",
+      "id": "C4-REGISTRY-01",
+      "category": "integration",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "C-boundary/registry-receipt-final.json",
+      "id": "C4-REGISTRY-02-A",
+      "category": "bug_reproduction",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "C-boundary/registry-receipt-final.json",
+      "id": "C4-REGISTRY-02-B",
+      "category": "acceptance",
+      "status": "FAIL",
+      "current": true
+    },
+    {
+      "receipt": "C-boundary/registry-receipt-final.json",
+      "id": "C4-REGISTRY-05",
+      "category": "integration",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "C-boundary/registry-receipt-final.json",
+      "id": "C4-REGISTRY-03",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "C-boundary/registry-receipt-final.json",
+      "id": "C4-REGISTRY-04",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "D-resources/receipt-B4.json",
+      "id": "D4-01",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "D-resources/receipt-B4.json",
+      "id": "D4-02",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "D-resources/receipt-B4.json",
+      "id": "D4-03",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "D-resources/receipt-B4.json",
+      "id": "D4-04",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "D-resources/receipt-B4.json",
+      "id": "D4-05",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "D-resources/receipt-B4.json",
+      "id": "D4-06",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "D-resources/receipt-B4.json",
+      "id": "D4-07",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "D-resources/receipt-B4.json",
+      "id": "D4-08",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "D-resources/receipt-B4.json",
+      "id": "D4-09",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "D-resources/receipt-B4.json",
+      "id": "D4-10",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "D-resources/receipt-B4.json",
+      "id": "D4-11",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "D-resources/receipt-B4.json",
+      "id": "D4-12",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "D-resources/receipt-B4.json",
+      "id": "D4-13",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "D-resources/receipt-B4.json",
+      "id": "D4-14",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "D-resources/receipt-B4.json",
+      "id": "D4-15",
+      "category": "integration",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "D-resources/receipt-B4.json",
+      "id": "D4-16",
+      "category": "integration",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "D-resources/receipt-B4.json",
+      "id": "D4-17A",
+      "category": "reproduction",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "D-resources/receipt-B4.json",
+      "id": "D4-17B",
+      "category": "repair_acceptance",
+      "status": "FAIL",
+      "current": true
+    },
+    {
+      "receipt": "D-resources/receipt-B4.json",
+      "id": "D4-18A",
+      "category": "reproduction",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "D-resources/receipt-B4.json",
+      "id": "D4-18B",
+      "category": "repair_acceptance",
+      "status": "FAIL",
+      "current": true
+    },
+    {
+      "receipt": "D-resources/receipt-B4.json",
+      "id": "D4-19",
+      "category": "behavior",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "D-resources/receipt-B4.json",
+      "id": "D4-20",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "D-resources/receipt-B4.json",
+      "id": "D4-21",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "D-resources/receipt-B4.json",
+      "id": "D4-22",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "D-resources/receipt-B4.json",
+      "id": "D4-B01",
+      "category": "integration",
+      "status": "BLOCKED",
+      "current": true
+    },
+    {
+      "receipt": "D-resources/receipt-B4.json",
+      "id": "D4-B02",
+      "category": "integration",
+      "status": "BLOCKED",
+      "current": true
+    },
+    {
+      "receipt": "D-resources/receipt-B4.json",
+      "id": "D4-B03",
+      "category": "integration",
+      "status": "BLOCKED",
+      "current": true
+    },
+    {
+      "receipt": "D-resources/receipt-B4.json",
+      "id": "D4-B04",
+      "category": "integration",
+      "status": "BLOCKED",
+      "current": true
+    },
+    {
+      "receipt": "D-resources/receipt-B4.json",
+      "id": "D4-B05",
+      "category": "integration",
+      "status": "BLOCKED",
+      "current": true
+    },
+    {
+      "receipt": "D-resources/receipt-B4.json",
+      "id": "D4-B06",
+      "category": "integration",
+      "status": "BLOCKED",
+      "current": true
+    },
+    {
+      "receipt": "D-resources/receipt-B4.json",
+      "id": "D4-B07",
+      "category": "integration",
+      "status": "BLOCKED",
+      "current": true
+    },
+    {
+      "receipt": "D-resources/receipt-B4.json",
+      "id": "D4-B08",
+      "category": "integration",
+      "status": "BLOCKED",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/E4-results.json",
+      "id": "E4-01.native-resolver-to-real-selector",
+      "category": "integration",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/E4-results.json",
+      "id": "E4-02.two-native-profiles",
+      "category": "integration",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/E4-results.json",
+      "id": "E4-03a.pack-entry-version-guard",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/E4-results.json",
+      "id": "E4-03.exclusion-process-and-pack-update",
+      "category": "integration",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/E4-results.json",
+      "id": "E4-04.keys-cold-warm",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/E4-results.json",
+      "id": "E4-05.resume-budgeted-pages",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/E4-results.json",
+      "id": "E4-06.visibility-analysis-permission",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/E4-results.json",
+      "id": "E4-06a.permission-without-filter",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/E4-results.json",
+      "id": "E4-06b.denied-focus-placeholder",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/E4-results.json",
+      "id": "E4-07.perspective-unknown-roundtrip",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/E4-results.json",
+      "id": "A4-E-001.unrelated-capability-reproduction",
+      "category": "reproduction",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/E4-results.json",
+      "id": "A4-E-001.capability-source-invariance",
+      "category": "acceptance",
+      "status": "FAIL",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/E4-results.json",
+      "id": "E4-08.profile-known-field-headless",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/E4-results.json",
+      "id": "A3-WEB-001.E-unknown-field-reproduction",
+      "category": "reproduction",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/E4-results.json",
+      "id": "A3-WEB-001.E-unknown-field-preservation",
+      "category": "acceptance",
+      "status": "FAIL",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/E4-results.json",
+      "id": "E4-09.D-native-E-ID-path",
+      "category": "integration",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/E4-results.json",
+      "id": "E4-10.D-typed-selector-version",
+      "category": "integration",
+      "status": "BLOCKED",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/E4-results.json",
+      "id": "E4-11.production-UI-hook",
+      "category": "integration",
+      "status": "BLOCKED",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/E4-results.json",
+      "id": "E4-12.profile-field-runtime",
+      "category": "integration",
+      "status": "BLOCKED",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/E4-results.json",
+      "id": "E4-13.network-denied",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/python-main.json",
+      "id": "A4-IMP-01.object-key-permutation",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/python-main.json",
+      "id": "A4-IMP-02.unicode-escaping",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/python-main.json",
+      "id": "A4-IMP-03.whitespace-small",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/python-main.json",
+      "id": "A3-IMP-CH004.pass4-whitespace-reproduction",
+      "category": "reproduction",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/python-main.json",
+      "id": "A3-IMP-CH004.pass4-whitespace-invariance",
+      "category": "acceptance",
+      "status": "FAIL",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/python-main.json",
+      "id": "A4-IMP-04.streaming-array-positive",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/python-main.json",
+      "id": "A4-IMP-05.list-order-significant",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/python-main.json",
+      "id": "A4-IMP-06.container-encoding",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/python-main.json",
+      "id": "A4-IMP-07.retry-incomplete-json",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/python-main.json",
+      "id": "A4-CH-MOD001.wrapped-cache-loss",
+      "category": "reproduction",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/python-main.json",
+      "id": "A4-CH-MOD001.supported-wrapper-invariance",
+      "category": "acceptance",
+      "status": "FAIL",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/python-main.json",
+      "id": "A4-CH-MOD001.corrupt-cache-deletion",
+      "category": "reproduction",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/python-main.json",
+      "id": "A4-CH-MOD001.failed-load-preserves-source",
+      "category": "acceptance",
+      "status": "FAIL",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/python-main.json",
+      "id": "A4-IMP-08.network-denied",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/perspectives-main-corrected.json",
+      "id": "A4-E-01.headless-selection",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/perspectives-main-corrected.json",
+      "id": "A4-E-02.object-order-serialization",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/perspectives-main-corrected.json",
+      "id": "A4-E-03.historical-reference",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/perspectives-main-corrected.json",
+      "id": "A4-E-04.real-projection-identity",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/perspectives-main-corrected.json",
+      "id": "A4-E-05.detail-does-not-write",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/perspectives-main-corrected.json",
+      "id": "A4-E-06.visibility-local",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/perspectives-main-corrected.json",
+      "id": "A4-E-07.loaded-prefix-disclosure",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/perspectives-main-corrected.json",
+      "id": "A4-E-08.conversation-view-target",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/perspectives-main-corrected.json",
+      "id": "A4-CH-VIEW001.domain-filter-reproduction",
+      "category": "reproduction",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/perspectives-main-corrected.json",
+      "id": "A4-CH-VIEW001.configurable-visibility",
+      "category": "acceptance",
+      "status": "BLOCKED",
+      "current": true
+    },
+    {
+      "receipt": "E-perspectives/perspectives-main-corrected.json",
+      "id": "A4-E-09.native-perspective-selector-integration",
+      "category": "integration",
+      "status": "BLOCKED",
+      "current": false,
+      "superseded_by": "E4-01.native-resolver-to-real-selector",
+      "reason": "initial missing E branch no longer current"
+    },
+    {
+      "receipt": "E-perspectives/perspectives-main-corrected.json",
+      "id": "A4-WEB-001.graph-field-to-profile-runtime",
+      "category": "integration",
+      "status": "BLOCKED",
+      "current": true
+    },
+    {
+      "receipt": "ckp/host-receipt.json",
+      "id": "CKP4-CAP-01",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ckp/host-receipt.json",
+      "id": "CKP4-CAP-02A",
+      "category": "reproduction",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ckp/host-receipt.json",
+      "id": "CKP4-CAP-02B",
+      "category": "acceptance",
+      "status": "FAIL",
+      "current": true
+    },
+    {
+      "receipt": "ckp/host-receipt.json",
+      "id": "CKP4-CAP-03A",
+      "category": "reproduction",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ckp/host-receipt.json",
+      "id": "CKP4-CAP-03B",
+      "category": "acceptance",
+      "status": "FAIL",
+      "current": true
+    },
+    {
+      "receipt": "ckp/host-receipt.json",
+      "id": "CKP4-CAP-04",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ckp/host-receipt.json",
+      "id": "CKP4-CAP-05A",
+      "category": "reproduction",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ckp/host-receipt.json",
+      "id": "CKP4-CAP-05B",
+      "category": "acceptance",
+      "status": "FAIL",
+      "current": true
+    },
+    {
+      "receipt": "ckp/host-receipt.json",
+      "id": "CKP4-CAP-06",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ckp/host-receipt.json",
+      "id": "CKP4-CAP-07",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ckp/host-receipt.json",
+      "id": "CKP4-CAP-08",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ckp/host-receipt.json",
+      "id": "CKP4-CAP-09",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ckp/host-receipt.json",
+      "id": "CKP4-CAP-10",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ckp/host-receipt.json",
+      "id": "CKP4-CAP-11",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ckp/host-receipt.json",
+      "id": "CKP4-CAP-12",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ckp/host-receipt.json",
+      "id": "CKP4-PASTE-success-A",
+      "category": "reproduction",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ckp/host-receipt.json",
+      "id": "CKP4-PASTE-success-B",
+      "category": "acceptance",
+      "status": "FAIL",
+      "current": true
+    },
+    {
+      "receipt": "ckp/host-receipt.json",
+      "id": "CKP4-PASTE-failure-A",
+      "category": "reproduction",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ckp/host-receipt.json",
+      "id": "CKP4-PASTE-failure-B",
+      "category": "acceptance",
+      "status": "FAIL",
+      "current": true
+    },
+    {
+      "receipt": "ckp/host-receipt.json",
+      "id": "CKP4-PASTE-sensitive-A",
+      "category": "reproduction",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ckp/host-receipt.json",
+      "id": "CKP4-PASTE-sensitive-B",
+      "category": "acceptance",
+      "status": "FAIL",
+      "current": true
+    },
+    {
+      "receipt": "ckp/host-receipt.json",
+      "id": "CKP4-PASTE-STABLE",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ckp/host-receipt.json",
+      "id": "CKP4-NETWORK-GUARD",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ageds-lem/receipts/ageds-js/results.json",
+      "id": "A4-AG-WEB-SNAPSHOT",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ageds-lem/receipts/ageds-js/results.json",
+      "id": "A4-AG-WEB-OBJECT-ORDER",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ageds-lem/receipts/ageds-js/results.json",
+      "id": "A4-AG-WEB-LIST-ORDER",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ageds-lem/receipts/ageds-js/results.json",
+      "id": "A4-AG-WEB-WRONG-VERSION",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ageds-lem/receipts/ageds-js/results.json",
+      "id": "A4-AG-WEB-EXACT-ID",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ageds-lem/receipts/ageds-js/results.json",
+      "id": "A4-AG-HISTORY-RESUME",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ageds-lem/receipts/ageds-js/results.json",
+      "id": "A4-AG-HISTORY-STALE",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ageds-lem/receipts/ageds-js/results.json",
+      "id": "A4-AG-HISTORY-ATOMIC-INVALID",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ageds-lem/receipts/ageds-js/results.json",
+      "id": "A4-AG-HISTORY-RETRY",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ageds-lem/receipts/ageds-js/results.json",
+      "id": "A4-AG-HISTORY-CLOSED",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ageds-lem/receipts/ageds-js/results.json",
+      "id": "A4-AG-HISTORY-PARTIAL",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ageds-lem/receipts/ageds-js/results.json",
+      "id": "A4-AG-WEB-AUDIO-EPOCH",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ageds-lem/receipts/ageds-js/results.json",
+      "id": "A4-AG-WEB-AUDIO-END",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ageds-lem/receipts/ageds-kotlin/results.json",
+      "id": "A4-AG-CIT-FROZEN",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ageds-lem/receipts/ageds-kotlin/results.json",
+      "id": "A4-AG-CIT-OBJECT-ORDER",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ageds-lem/receipts/ageds-kotlin/results.json",
+      "id": "A4-AG-CIT-NUMERIC",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ageds-lem/receipts/ageds-kotlin/results.json",
+      "id": "A4-AG-CIT-WRONG-OCCURRENCE",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ageds-lem/receipts/ageds-kotlin/results.json",
+      "id": "A4-AG-CIT-WRONG-VERSION",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ageds-lem/receipts/ageds-kotlin/results.json",
+      "id": "A4-AG-CIT-LIST-ORDER",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ageds-lem/receipts/ageds-kotlin/results.json",
+      "id": "A4-AG-CIT-UNSUPPORTED-SELECTOR",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ageds-lem/receipts/ageds-kotlin/results.json",
+      "id": "A4-AG-DISPLAY-PARTIAL",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ageds-lem/receipts/ageds-kotlin/results.json",
+      "id": "A4-AG-DISPLAY-EMPTY",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ageds-lem/receipts/ageds-kotlin/results.json",
+      "id": "A4-AG-AUDIO-EPOCH",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ageds-lem/receipts/ageds-kotlin/results.json",
+      "id": "A4-AG-AUDIO-END",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ageds-lem/receipts/ageds-kotlin/results.json",
+      "id": "A4-AG-AUDIO-TIMEOUT",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ageds-lem/receipts/lem/results.json",
+      "id": "A4-LEM-NETWORK-DENY",
+      "category": "control",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ageds-lem/receipts/lem/results.json",
+      "id": "A4-LEM-CREDENTIAL-STABLE",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ageds-lem/receipts/lem/results.json",
+      "id": "A4-LEM-001",
+      "category": "A",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ageds-lem/receipts/lem/results.json",
+      "id": "A4-LEM-001",
+      "category": "B",
+      "status": "FAIL",
+      "current": true
+    },
+    {
+      "receipt": "ageds-lem/receipts/lem/results.json",
+      "id": "A4-LEM-REVOCATION",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ageds-lem/receipts/lem/results.json",
+      "id": "A4-LEM-002-CLEAR",
+      "category": "A",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ageds-lem/receipts/lem/results.json",
+      "id": "A4-LEM-002-CLEAR",
+      "category": "B",
+      "status": "FAIL",
+      "current": true
+    },
+    {
+      "receipt": "ageds-lem/receipts/lem/results.json",
+      "id": "A4-LEM-002-REKEY",
+      "category": "A",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "ageds-lem/receipts/lem/results.json",
+      "id": "A4-LEM-002-REKEY",
+      "category": "B",
+      "status": "FAIL",
+      "current": true
+    },
+    {
+      "receipt": "watchdog/receipt-reviewed.json",
+      "id": "A4-WD-001.A.schema-drops-method-pin",
+      "category": "reproduction",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "watchdog/receipt-reviewed.json",
+      "id": "A4-WD-001.B.reject-or-preserve-unsupported-setting",
+      "category": "acceptance",
+      "status": "FAIL",
+      "current": true
+    },
+    {
+      "receipt": "watchdog/receipt-reviewed.json",
+      "id": "A4-WD-002.A.reused-source-disclosures-lost",
+      "category": "reproduction",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "watchdog/receipt-reviewed.json",
+      "id": "A4-WD-002.B.manifest-retains-reused-input-missingness",
+      "category": "acceptance",
+      "status": "FAIL",
+      "current": true
+    },
+    {
+      "receipt": "watchdog/receipt-reviewed.json",
+      "id": "A4-WD-M01.object-key-order",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "watchdog/receipt-reviewed.json",
+      "id": "A4-WD-M02.unique-observation-order",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "watchdog/receipt-reviewed.json",
+      "id": "A4-WD-003.A.ambiguous-input-silent-last-wins",
+      "category": "reproduction",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "watchdog/receipt-reviewed.json",
+      "id": "A4-WD-003.B.ambiguity-explicit-or-policy",
+      "category": "acceptance",
+      "status": "FAIL",
+      "current": true
+    },
+    {
+      "receipt": "watchdog/receipt-reviewed.json",
+      "id": "A4-WD-M03.failed-fetch-not-completed",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "watchdog/receipt-reviewed.json",
+      "id": "A4-WD-M04.completed-run-restart",
+      "category": "integration",
+      "status": "PASS",
+      "current": true
+    },
+    {
+      "receipt": "watchdog/receipt-reviewed.json",
+      "id": "A4-WD-M05.network-denied",
+      "category": "contract",
+      "status": "PASS",
+      "current": true
+    }
+  ],
+  "corroboration": [
+    "D-resources/receipt-main.json",
+    "B-native/relocation-gate.json"
+  ],
+  "environment": "E-perspectives/browser-environment.json",
+  "index_harness": "watchdog/harness-review.json"
+}

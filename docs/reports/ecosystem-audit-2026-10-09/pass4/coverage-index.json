@@ -1,0 +1,2857 @@
+{
+  "schema": "klbt.audit.pass4.coverage/1",
+  "baseline": "../pass3-resources/coverage-index.json",
+  "meaning": "Named semantic/function ranges, not whole-file behavior verification. Credit to unchanged main only when exact reviewed file bytes match baseline. New D/E files and research support are separate.",
+  "module_ranges": [
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "file": "loom/src/catalog/query.cpp",
+      "ranges": [
+        [
+          169,
+          180
+        ]
+      ],
+      "module": "B-native",
+      "detail": "B-native/coverage.json",
+      "source_sha256": "4aa3e1297deba70a332d8b873f1ada6ce1a24a1dc38b735d283e3f61c2255ad3"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "file": "loom/src/catalog/query.cpp",
+      "ranges": [
+        [
+          182,
+          339
+        ]
+      ],
+      "module": "B-native",
+      "detail": "B-native/coverage.json",
+      "source_sha256": "4aa3e1297deba70a332d8b873f1ada6ce1a24a1dc38b735d283e3f61c2255ad3"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "file": "loom/src/catalog/query.cpp",
+      "ranges": [
+        [
+          341,
+          425
+        ]
+      ],
+      "module": "B-native",
+      "detail": "B-native/coverage.json",
+      "source_sha256": "4aa3e1297deba70a332d8b873f1ada6ce1a24a1dc38b735d283e3f61c2255ad3"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "file": "loom/src/catalog/scan.cpp",
+      "ranges": [
+        [
+          89,
+          104
+        ]
+      ],
+      "module": "B-native",
+      "detail": "B-native/coverage.json",
+      "source_sha256": "9dcbf4063de156856eecdf3759d12bd5e64340dfb0835b9225483e107162fe31"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "file": "loom/src/catalog/scan.cpp",
+      "ranges": [
+        [
+          130,
+          145
+        ]
+      ],
+      "module": "B-native",
+      "detail": "B-native/coverage.json",
+      "source_sha256": "9dcbf4063de156856eecdf3759d12bd5e64340dfb0835b9225483e107162fe31"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "file": "loom/src/catalog/scan.cpp",
+      "ranges": [
+        [
+          395,
+          420
+        ]
+      ],
+      "module": "B-native",
+      "detail": "B-native/coverage.json",
+      "source_sha256": "9dcbf4063de156856eecdf3759d12bd5e64340dfb0835b9225483e107162fe31"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "file": "loom/src/catalog/scan.cpp",
+      "ranges": [
+        [
+          429,
+          499
+        ]
+      ],
+      "module": "B-native",
+      "detail": "B-native/coverage.json",
+      "source_sha256": "9dcbf4063de156856eecdf3759d12bd5e64340dfb0835b9225483e107162fe31"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "file": "loom/src/catalog/import.cpp",
+      "ranges": [
+        [
+          278,
+          365
+        ]
+      ],
+      "module": "B-native",
+      "detail": "B-native/coverage.json",
+      "source_sha256": "093ff1939ddd9b2b659cea1f6cb5f36c72ecd956a330e2385316ab350b778720"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "file": "loom/src/runtime.cpp",
+      "ranges": [
+        [
+          229,
+          244
+        ]
+      ],
+      "module": "B-native",
+      "detail": "B-native/coverage.json",
+      "source_sha256": "cc638663cd8cde4f6a4ddffeb070ca73bfc4f4f40479ffeaca3e10731a3a2ca6"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "file": "loom/src/model/runtime_profile.cpp",
+      "ranges": [
+        [
+          279,
+          338
+        ]
+      ],
+      "module": "B-native",
+      "detail": "B-native/coverage.json",
+      "source_sha256": "0aab7afb23b413fdc62e6cd51b852a5596b0e8fb7b029bd95583f71e8ee6cc93"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "file": "loom/src/import/export_openai.cpp",
+      "ranges": [
+        [
+          445,
+          666
+        ]
+      ],
+      "module": "B-native",
+      "detail": "B-native/coverage.json",
+      "source_sha256": "7bd5a680ce50bcb4ae3030e8caea37c5376a939fffaafcfb97d095970710d465"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "file": "loom/src/db/db.cpp",
+      "ranges": [
+        [
+          864,
+          907
+        ]
+      ],
+      "module": "B-native",
+      "detail": "B-native/coverage.json",
+      "source_sha256": "1ba70b3b5a03f21d602ca58de11d1b919a8f4ec1dc431ec3023f5f71659e6c6d"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "file": "loom/src/db/db.cpp",
+      "ranges": [
+        [
+          917,
+          954
+        ]
+      ],
+      "module": "B-native",
+      "detail": "B-native/coverage.json",
+      "source_sha256": "1ba70b3b5a03f21d602ca58de11d1b919a8f4ec1dc431ec3023f5f71659e6c6d"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "file": "loom/src/core/tasks.cpp",
+      "ranges": [
+        [
+          302,
+          319
+        ]
+      ],
+      "module": "B-native",
+      "detail": "B-native/coverage.json",
+      "source_sha256": "9d8bb9366c0e05b515b4f76d1c0f94253a3588cad9679ed521ee57633b612e0f"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "file": "loom/src/core/tasks.cpp",
+      "ranges": [
+        [
+          371,
+          395
+        ]
+      ],
+      "module": "B-native",
+      "detail": "B-native/coverage.json",
+      "source_sha256": "9d8bb9366c0e05b515b4f76d1c0f94253a3588cad9679ed521ee57633b612e0f"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "file": "loom/include/loom/catalog.h",
+      "ranges": [
+        [
+          257,
+          269
+        ]
+      ],
+      "module": "B-native",
+      "detail": "B-native/coverage.json",
+      "source_sha256": "13d440fb7f726c219800c1f98a01dd8b5ce4acb4038a07938dd95cdb2a561c05"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "file": "docs/research/thread7_real_2026-10-09/continuation_01/connect_prepared.py",
+      "ranges": [
+        [
+          39,
+          145
+        ]
+      ],
+      "module": "C-boundary",
+      "detail": "C-boundary/coverage.json",
+      "source_sha256": "13d8d29c8e02a280c333dfb24726e34f58a5df9dadee7e0436c08db1fe5b8074"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "file": "docs/research/thread7_real_2026-10-09/continuation_01/build_final_handoff.py",
+      "ranges": [
+        [
+          16,
+          71
+        ]
+      ],
+      "module": "C-boundary",
+      "detail": "C-boundary/coverage.json",
+      "source_sha256": "3bee2515ddbb3934497c3d33eaf4e0b2b266b3fe47b20d0d47d7a695360de23c"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "file": "docs/research/thread7_real_2026-10-09/continuation_01/check_public_projection.py",
+      "ranges": [
+        [
+          19,
+          116
+        ]
+      ],
+      "module": "C-boundary",
+      "detail": "C-boundary/coverage.json",
+      "source_sha256": "44f36bf0de28076ff25ac579d7493f2139234c6ffb1788aac368c59117151f19"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "file": "loom/tools/structure/test_credential_handoff_v2.py",
+      "ranges": [
+        [
+          17,
+          136
+        ]
+      ],
+      "module": "C-boundary",
+      "detail": "C-boundary/coverage.json",
+      "source_sha256": "6685a544f4e92a95f8e6b6e58ce606c1ee9bf42e66663def8e2833e0f484fb37"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "file": "loom/tools/structure/credential_handoff.py",
+      "ranges": [
+        [
+          27,
+          63
+        ]
+      ],
+      "module": "C-boundary",
+      "detail": "C-boundary/coverage.json",
+      "source_sha256": "f46f0919645e5023747f8fb8c95d4e8279615d82277c6a728cafe010cebbcc05"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "file": "loom/tools/structure/credential_handoff_v2.py",
+      "ranges": [
+        [
+          99,
+          117
+        ]
+      ],
+      "module": "C-boundary",
+      "detail": "C-boundary/coverage.json",
+      "source_sha256": "e2684b74ca70a3c0eb6fa7d6b0d7b11d6d77e21ee72fe1000a03d830b11d2a3c"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "file": "loom/tools/structure/experiment_workflow_v1.py",
+      "ranges": [
+        [
+          56,
+          102
+        ]
+      ],
+      "module": "C-boundary",
+      "detail": "C-boundary/coverage.json",
+      "source_sha256": "9d67e21da33733aefb5a410e6da65d92cd6a81341cd7c87466fce47b64ba287b"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "file": "loom/tools/structure/experiment_workflow_v1.py",
+      "ranges": [
+        [
+          106,
+          137
+        ]
+      ],
+      "module": "C-boundary",
+      "detail": "C-boundary/coverage.json",
+      "source_sha256": "9d67e21da33733aefb5a410e6da65d92cd6a81341cd7c87466fce47b64ba287b"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "file": "loom/tools/structure/experiment_workflow_v1.py",
+      "ranges": [
+        [
+          277,
+          298
+        ]
+      ],
+      "module": "C-boundary",
+      "detail": "C-boundary/coverage.json",
+      "source_sha256": "9d67e21da33733aefb5a410e6da65d92cd6a81341cd7c87466fce47b64ba287b"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "file": "loom/tools/structure/experiment_workflow_v1.py",
+      "ranges": [
+        [
+          410,
+          413
+        ]
+      ],
+      "module": "C-boundary",
+      "detail": "C-boundary/coverage.json",
+      "source_sha256": "9d67e21da33733aefb5a410e6da65d92cd6a81341cd7c87466fce47b64ba287b"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "file": "loom/tools/structure/experiment_analysis_v1.py",
+      "ranges": [
+        [
+          513,
+          540
+        ]
+      ],
+      "module": "C-boundary",
+      "detail": "C-boundary/coverage.json",
+      "source_sha256": "375f38d595b61efc3614f604caee4b1082548043664ab65b21d502de52e35fca"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "file": "loom/tools/coordination/graph_store.py",
+      "ranges": [
+        [
+          32,
+          90
+        ]
+      ],
+      "module": "C-boundary",
+      "detail": "C-boundary/coverage.json",
+      "source_sha256": "5409db2624335b0984ddd95a63a99906648f6d6acaf72f7951ddc7eff9ca758c"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "file": "loom/src/context/method_registry.cpp",
+      "ranges": [
+        [
+          111,
+          128
+        ]
+      ],
+      "module": "C-boundary",
+      "detail": "C-boundary/coverage.json",
+      "source_sha256": "445e67cc02381392e23e348dda5b3d37f3dac47b4312d71c3b5ceab529c54188"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "file": "loom/src/context/method_registry.cpp",
+      "ranges": [
+        [
+          516,
+          600
+        ]
+      ],
+      "module": "C-boundary",
+      "detail": "C-boundary/coverage.json",
+      "source_sha256": "445e67cc02381392e23e348dda5b3d37f3dac47b4312d71c3b5ceab529c54188"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+      "file": "loom/tools/resource_graph/core.py",
+      "ranges": [
+        [
+          29,
+          47
+        ],
+        [
+          58,
+          75
+        ],
+        [
+          80,
+          108
+        ],
+        [
+          112,
+          186
+        ],
+        [
+          188,
+          294
+        ],
+        [
+          296,
+          309
+        ],
+        [
+          311,
+          320
+        ],
+        [
+          322,
+          383
+        ],
+        [
+          385,
+          404
+        ],
+        [
+          406,
+          410
+        ],
+        [
+          412,
+          415
+        ]
+      ],
+      "module": "D-resources",
+      "detail": "D-resources/coverage.json",
+      "source_sha256": "4454ac27b2998ba946e49a3fbdc3bf0f8c033ab96020191281552d7496cc41e5"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+      "file": "loom/tools/resource_graph/access.py",
+      "ranges": [
+        [
+          84,
+          109
+        ],
+        [
+          112,
+          123
+        ],
+        [
+          125,
+          139
+        ],
+        [
+          141,
+          210
+        ],
+        [
+          212,
+          276
+        ],
+        [
+          278,
+          393
+        ],
+        [
+          395,
+          473
+        ]
+      ],
+      "module": "D-resources",
+      "detail": "D-resources/coverage.json",
+      "source_sha256": "a7b5aae4e806677ef67a9d9d983ede0218d9b9221c3ea50910a89d290c0c7c5e"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+      "file": "loom/tools/resource_graph/parsers.py",
+      "ranges": [
+        [
+          29,
+          125
+        ],
+        [
+          128,
+          141
+        ],
+        [
+          144,
+          207
+        ],
+        [
+          210,
+          231
+        ],
+        [
+          234,
+          243
+        ]
+      ],
+      "module": "D-resources",
+      "detail": "D-resources/coverage.json",
+      "source_sha256": "9147dd9ce7924cae19974a36fb3aec9c7983d3e2aadbafb24c699f658d3e3df3"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+      "file": "loom/tools/resource_graph/projection.py",
+      "ranges": [
+        [
+          13,
+          54
+        ]
+      ],
+      "module": "D-resources",
+      "detail": "D-resources/coverage.json",
+      "source_sha256": "961d4de16293b1158b15fe210f04912c75249763ddb8ffe5be9d1b5bc0b8a3e1"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+      "file": "loom/tools/resource_graph/native.py",
+      "ranges": [
+        [
+          17,
+          57
+        ]
+      ],
+      "module": "D-resources",
+      "detail": "D-resources/coverage.json",
+      "source_sha256": "d2630521f2100d745e646518803eaa035b9aab0126d3e536c1330332209f367f"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+      "file": "loom/tools/resource_graph/__init__.py",
+      "ranges": [
+        [
+          1,
+          4
+        ]
+      ],
+      "module": "D-resources",
+      "detail": "D-resources/coverage.json",
+      "source_sha256": "d613ec73e8725a1b9f18d8c9848fe72856a4b99433852dea8f57802516d49c70"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+      "file": "loom/data/resource_graph/access.json",
+      "ranges": [
+        [
+          1,
+          27
+        ]
+      ],
+      "module": "D-resources",
+      "detail": "D-resources/coverage.json",
+      "source_sha256": "c6595cc214b9974fbabc247e5ad4b07f9c88a0ecea03dafe3acf07c08ded2643"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+      "file": "loom/data/resource_graph/parsers.json",
+      "ranges": [
+        [
+          1,
+          17
+        ]
+      ],
+      "module": "D-resources",
+      "detail": "D-resources/coverage.json",
+      "source_sha256": "aae178e8200692ee8025aaabdd8babc3eedce98cc215fcd9390c74581d6a3960"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+      "file": "loom/data/resource_graph/projection.json",
+      "ranges": [
+        [
+          1,
+          9
+        ]
+      ],
+      "module": "D-resources",
+      "detail": "D-resources/coverage.json",
+      "source_sha256": "c49039fdb3e4a8c20f2a438cf260cf46928ba712e88dfc8d188c06ebf9c744b7"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+      "file": "loom/tools/coordination/graph_store.py",
+      "ranges": [
+        [
+          21,
+          92
+        ]
+      ],
+      "module": "D-resources",
+      "detail": "D-resources/coverage.json",
+      "source_sha256": "5409db2624335b0984ddd95a63a99906648f6d6acaf72f7951ddc7eff9ca758c"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "file": "engine/models.py",
+      "ranges": [
+        [
+          21,
+          81
+        ],
+        [
+          121,
+          153
+        ]
+      ],
+      "module": "E-perspectives",
+      "detail": "E-perspectives/coverage.json",
+      "source_sha256": "300ad6eb271a205ae5b34835a28921868f6045f689677f09b913b2759c6071a9"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "file": "gui/dialogs.py",
+      "ranges": [
+        [
+          503,
+          579
+        ]
+      ],
+      "module": "E-perspectives",
+      "detail": "E-perspectives/coverage.json",
+      "source_sha256": "6232a3c60f0bc27789feedd01520d106f76e3c72e715f5247035a180eb2fe3df"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "file": "main.py",
+      "ranges": [
+        [
+          82,
+          96
+        ]
+      ],
+      "module": "E-perspectives",
+      "detail": "E-perspectives/coverage.json",
+      "source_sha256": "732d393483d25f5b569ed14a494bfc9287110b529432e63428ce87dc469797eb"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "file": "engine/importer.py",
+      "ranges": [
+        [
+          44,
+          152
+        ],
+        [
+          274,
+          452
+        ]
+      ],
+      "module": "E-perspectives",
+      "detail": "E-perspectives/coverage.json",
+      "source_sha256": "60200262d5ac4ef04319415bce3dfd067ee8152a71fc7e29355a3c8d4da6210c"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "file": "loom/web/src/components/GraphView.tsx",
+      "ranges": [
+        [
+          29,
+          129
+        ]
+      ],
+      "module": "E-perspectives",
+      "detail": "E-perspectives/coverage.json",
+      "source_sha256": "edb9e8170d97d91626121ea9dc78f5456870bafe20fa10f7e62fd6d4078efab2"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "file": "loom/web/src/workspace/state.ts",
+      "ranges": [
+        [
+          30,
+          126
+        ]
+      ],
+      "module": "E-perspectives",
+      "detail": "E-perspectives/coverage.json",
+      "source_sha256": "68f3b1318950074ae86cdc44ef440bd7294cf5606c84ef45582e87738e67b6d3"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "file": "loom/web/src/components/KnowledgeWorkbench.tsx",
+      "ranges": [
+        [
+          122,
+          201
+        ],
+        [
+          337,
+          442
+        ]
+      ],
+      "module": "E-perspectives",
+      "detail": "E-perspectives/coverage.json",
+      "source_sha256": "33ce8ed3c2e0abc4388e075d4b76b56097bbd056585d5593d5636f88e3bcbe68"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "file": "loom/web/src/profiles/view-state.ts",
+      "ranges": [
+        [
+          13,
+          50
+        ]
+      ],
+      "module": "E-perspectives",
+      "detail": "E-perspectives/coverage.json",
+      "source_sha256": "a2da37c00c2178da0e68dcbb208d5a2b2299198ece4627cd476f14b60b94df08"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+      "file": "loom/web/src/profiles/runtime.ts",
+      "ranges": [
+        [
+          63,
+          73
+        ],
+        [
+          185,
+          211
+        ]
+      ],
+      "module": "E-perspectives",
+      "detail": "E-perspectives/coverage.json",
+      "source_sha256": "acee394825f9f8050b7f6ba3dbdc752a8afa09f977a9ee9dbc7eeca8f50c809d"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+      "file": "loom/web/src/profiles/graph.ts",
+      "ranges": [
+        [
+          8,
+          11
+        ]
+      ],
+      "module": "E-perspectives",
+      "detail": "E-perspectives/coverage.json",
+      "source_sha256": "b35b3bc78d67b0abd2fbd4001a3673ce83172fba952affecd3d5a7c0941e453b"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+      "file": "loom/web/src/graph-perspectives/types.ts",
+      "ranges": [
+        [
+          1,
+          191
+        ]
+      ],
+      "module": "E-perspectives",
+      "detail": "E-perspectives/coverage.json",
+      "source_sha256": "2a91905b8ff1b3d6b356ac473ad264d4b952a01ecda5a083f31b136d8ad155df"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+      "file": "loom/web/src/graph-perspectives/plan.ts",
+      "ranges": [
+        [
+          1,
+          83
+        ]
+      ],
+      "module": "E-perspectives",
+      "detail": "E-perspectives/coverage.json",
+      "source_sha256": "4da09cd4fee7d1c09156d1e735d2d941780248d809a7e091128f089ddaf0d7d1"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+      "file": "loom/web/src/graph-perspectives/select.ts",
+      "ranges": [
+        [
+          1,
+          188
+        ]
+      ],
+      "module": "E-perspectives",
+      "detail": "E-perspectives/coverage.json",
+      "source_sha256": "a8e019a12cba5de565c12674772935584bd97d4f6c2c3cdd921623733de79fd6"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+      "file": "loom/web/src/graph-perspectives/adapters.ts",
+      "ranges": [
+        [
+          27,
+          280
+        ]
+      ],
+      "module": "E-perspectives",
+      "detail": "E-perspectives/coverage.json",
+      "source_sha256": "2b56ae8fe25441c4ed8e65e8a9f7de70b44fae55c3f0098ba667b6f10493e772"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+      "file": "loom/web/src/graph-perspectives/native-layers.ts",
+      "ranges": [
+        [
+          6,
+          60
+        ]
+      ],
+      "module": "E-perspectives",
+      "detail": "E-perspectives/coverage.json",
+      "source_sha256": "371be34173a323dd6a3d23be9644f27e3834f3177d276a059c9a51f1f0da5096"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+      "file": "loom/web/src/graph-perspectives/navigation.ts",
+      "ranges": [
+        [
+          3,
+          30
+        ]
+      ],
+      "module": "E-perspectives",
+      "detail": "E-perspectives/coverage.json",
+      "source_sha256": "4d4b653751c22f12b3d31f06d1313f188c0a9b9be85a4f0900bb35b32083aaed"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+      "file": "loom/web/src/graph-perspectives/persistence.ts",
+      "ranges": [
+        [
+          6,
+          36
+        ]
+      ],
+      "module": "E-perspectives",
+      "detail": "E-perspectives/coverage.json",
+      "source_sha256": "bee0ce2be7f8ff7eee0305afc656d77129c4a81997ae743a1e8a7eb648ba2e6e"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+      "file": "loom/tools/resource_graph/native.py",
+      "ranges": [
+        [
+          17,
+          56
+        ]
+      ],
+      "module": "E-perspectives",
+      "detail": "E-perspectives/coverage.json",
+      "source_sha256": "d2630521f2100d745e646518803eaa035b9aab0126d3e536c1330332209f367f"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "file": "loom/tools/coordination/graph_store.py",
+      "ranges": [
+        [
+          20,
+          35
+        ],
+        [
+          38,
+          92
+        ]
+      ],
+      "module": "E-perspectives",
+      "detail": "E-perspectives/coverage.json",
+      "source_sha256": "5409db2624335b0984ddd95a63a99906648f6d6acaf72f7951ddc7eff9ca758c"
+    },
+    {
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "file": "app/src/main/java/com/example/core/capture/ConversationCapture.kt",
+      "ranges": [
+        [
+          6,
+          54
+        ],
+        [
+          121,
+          196
+        ],
+        [
+          199,
+          235
+        ]
+      ],
+      "module": "ckp",
+      "detail": "ckp/coverage.json",
+      "source_sha256": "42f9ad8a8f6b8ab08f916a26fa91efbb9da27d7f794a1c68dcfe3a19e67121ca"
+    },
+    {
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "file": "app/src/main/java/com/example/core/capture/CaptureSession.kt",
+      "ranges": [
+        [
+          3,
+          111
+        ]
+      ],
+      "module": "ckp",
+      "detail": "ckp/coverage.json",
+      "source_sha256": "e393a8f21644774c415fd92ed907b7da6d8e89d2be86a284aa3f92622ba2e9a8"
+    },
+    {
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "file": "app/src/main/java/com/example/core/capture/TreeObservation.kt",
+      "ranges": [
+        [
+          4,
+          98
+        ],
+        [
+          101,
+          111
+        ],
+        [
+          113,
+          146
+        ]
+      ],
+      "module": "ckp",
+      "detail": "ckp/coverage.json",
+      "source_sha256": "c219f0d510b59ab55e7b923d0b0e294681f55d72b91df1de931d6d23bcc6c245"
+    },
+    {
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "file": "app/src/main/java/com/example/io/capture/AccessibilityCaptureSource.kt",
+      "ranges": [
+        [
+          17,
+          236
+        ]
+      ],
+      "module": "ckp",
+      "detail": "ckp/coverage.json",
+      "source_sha256": "588ac1662e691b7252a0acd87d332f7782c9543da6497cdb7c22ace6aab98eb9"
+    },
+    {
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "file": "app/src/main/java/com/example/io/capture/ConversationCaptureUi.kt",
+      "ranges": [
+        [
+          38,
+          100
+        ],
+        [
+          190,
+          299
+        ]
+      ],
+      "module": "ckp",
+      "detail": "ckp/coverage.json",
+      "source_sha256": "5412caca0a0e5025a405e8a2d6ce7a525438ba457e8f27dda352edcbc63cd2d3"
+    },
+    {
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "file": "app/src/main/java/com/example/io/capture/ConversationCaptureReviewActivity.kt",
+      "ranges": [
+        [
+          27,
+          138
+        ]
+      ],
+      "module": "ckp",
+      "detail": "ckp/coverage.json",
+      "source_sha256": "c2ef7da0892adbd157372733d79aa4d4f21f0e6ea8b5c5dc6d7a6958ffae41d9"
+    },
+    {
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "file": "app/src/main/java/com/example/core/convert/PasteConversion.kt",
+      "ranges": [
+        [
+          67,
+          160
+        ],
+        [
+          202,
+          281
+        ]
+      ],
+      "module": "ckp",
+      "detail": "ckp/coverage.json",
+      "source_sha256": "41c6cc139a19b5909e81ae8310f9b3318c942aaa3d2f8331d763c2ce67a11825"
+    },
+    {
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "file": "app/src/main/java/com/example/core/discovery/CallEngine.kt",
+      "ranges": [
+        [
+          26,
+          159
+        ],
+        [
+          177,
+          244
+        ]
+      ],
+      "module": "ckp",
+      "detail": "ckp/coverage.json",
+      "source_sha256": "7157ca5723a6a5b34f94c9e605fa2432facca10152f9929fdb30c43938b1d4bc"
+    },
+    {
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "file": "app/src/main/java/com/example/core/asr/Transcription.kt",
+      "ranges": [
+        [
+          32,
+          124
+        ]
+      ],
+      "module": "ckp",
+      "detail": "ckp/coverage.json",
+      "source_sha256": "7b23b1b066e9917064e95390272564dec409bedd58ba3fa21c51ec980fe894d8"
+    },
+    {
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "file": "app/src/main/java/com/example/ime/CustomKeyboardIme.kt",
+      "ranges": [
+        [
+          473,
+          543
+        ],
+        [
+          2129,
+          2169
+        ],
+        [
+          2178,
+          2183
+        ]
+      ],
+      "module": "ckp",
+      "detail": "ckp/coverage.json",
+      "source_sha256": "2fb56d95aa466945b392a444f7d1ac8c38f702dc61d2afe3eb7d6fa6429c1868"
+    },
+    {
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "file": "app/src/main/java/com/example/ime/EditorController.kt",
+      "ranges": [
+        [
+          23,
+          27
+        ],
+        [
+          128,
+          141
+        ],
+        [
+          190,
+          247
+        ],
+        [
+          529,
+          564
+        ]
+      ],
+      "module": "ckp",
+      "detail": "ckp/coverage.json",
+      "source_sha256": "92ac56dd77bfe843473c8325f5b3696b4820419edeaaec61247fc16636d22213"
+    },
+    {
+      "repo": "klb-t/AGEDS",
+      "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+      "file": "core/src/commonMain/kotlin/dev/klbt/ageds/core/CitationSelection.kt",
+      "ranges": [
+        [
+          12,
+          71
+        ],
+        [
+          133,
+          139
+        ],
+        [
+          156,
+          214
+        ]
+      ],
+      "module": "ageds-lem",
+      "detail": "ageds-lem/coverage.json",
+      "source_sha256": "ea2e5af363f3d933d28391db0e75c837e78dc9be87f2f03e1b432ae46c17e7bf"
+    },
+    {
+      "repo": "klb-t/AGEDS",
+      "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+      "file": "androidApp/src/main/java/dev/klbt/ageds/CitationDisplayProjection.kt",
+      "ranges": [
+        [
+          7,
+          17
+        ]
+      ],
+      "module": "ageds-lem",
+      "detail": "ageds-lem/coverage.json",
+      "source_sha256": "12e88bfcf6d71e5179e80a539ad736c4b1d568fd873e676c460c63ca7af8393e"
+    },
+    {
+      "repo": "klb-t/AGEDS",
+      "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+      "file": "androidApp/src/main/java/dev/klbt/ageds/RangePlaybackController.kt",
+      "ranges": [
+        [
+          4,
+          88
+        ]
+      ],
+      "module": "ageds-lem",
+      "detail": "ageds-lem/coverage.json",
+      "source_sha256": "ae3bb7ac2a5ded6b4a89a28bacdc512b51ce8a7158f58c1c9705b7a16804239a"
+    },
+    {
+      "repo": "klb-t/AGEDS",
+      "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+      "file": "androidApp/src/main/java/dev/klbt/ageds/CitationUi.kt",
+      "ranges": [
+        [
+          21,
+          50
+        ],
+        [
+          65,
+          104
+        ],
+        [
+          114,
+          118
+        ]
+      ],
+      "module": "ageds-lem",
+      "detail": "ageds-lem/coverage.json",
+      "source_sha256": "4dadf7e6b9da7e205db66b1ef367bbe34ef114ba3dc86ececc1c826e70c028a5"
+    },
+    {
+      "repo": "klb-t/AGEDS",
+      "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+      "file": "server/app/static/citations.mjs",
+      "ranges": [
+        [
+          5,
+          110
+        ],
+        [
+          128,
+          223
+        ],
+        [
+          233,
+          235
+        ]
+      ],
+      "module": "ageds-lem",
+      "detail": "ageds-lem/coverage.json",
+      "source_sha256": "190d34fd5979e2f7273edd2162c92a490892e3af197e7b10aede15e4173a6885"
+    },
+    {
+      "repo": "klb-t/AGEDS",
+      "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+      "file": "server/app/static/range-player.mjs",
+      "ranges": [
+        [
+          2,
+          81
+        ]
+      ],
+      "module": "ageds-lem",
+      "detail": "ageds-lem/coverage.json",
+      "source_sha256": "f451e2f333cf480100d29dafa9181c8c6ebae748dda03092c0bc03c0664b901c"
+    },
+    {
+      "repo": "klb-t/LEM-Workbench",
+      "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+      "file": "app/src/main/java/com/example/api/ApiKeyStore.kt",
+      "ranges": [
+        [
+          12,
+          38
+        ]
+      ],
+      "module": "ageds-lem",
+      "detail": "ageds-lem/coverage.json",
+      "source_sha256": "0de81eafcec1448359d71f409d2434740dd7e34f7b292e33f7c3483bae80475b"
+    },
+    {
+      "repo": "klb-t/LEM-Workbench",
+      "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+      "file": "app/src/main/java/com/example/api/ResearchAgent.kt",
+      "ranges": [
+        [
+          10,
+          12
+        ],
+        [
+          39,
+          58
+        ]
+      ],
+      "module": "ageds-lem",
+      "detail": "ageds-lem/coverage.json",
+      "source_sha256": "e2a6d8ce5ce91152ed1feb0d16c496882fd0145b2e7a9cbc62c0b038505ac8dc"
+    },
+    {
+      "repo": "klb-t/LEM-Workbench",
+      "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+      "file": "app/src/main/java/com/example/api/GeminiApiService.kt",
+      "ranges": [
+        [
+          48,
+          92
+        ]
+      ],
+      "module": "ageds-lem",
+      "detail": "ageds-lem/coverage.json",
+      "source_sha256": "6883571883743bcb8a92397430f6fee06c026298d51160a008d3ce83a632ed36"
+    },
+    {
+      "repo": "klb-t/LEM-Workbench",
+      "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+      "file": "app/src/main/java/com/example/research/ExperimentRunner.kt",
+      "ranges": [
+        [
+          13,
+          68
+        ]
+      ],
+      "module": "ageds-lem",
+      "detail": "ageds-lem/coverage.json",
+      "source_sha256": "b2470fd5d3ede1e1a01167c7111ea728dc4555152cc64953aae04dd78d9c510e"
+    },
+    {
+      "repo": "klb-t/LEM-Workbench",
+      "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+      "file": "app/src/main/java/com/example/viewmodel/ResearchViewModel.kt",
+      "ranges": [
+        [
+          35,
+          85
+        ]
+      ],
+      "module": "ageds-lem",
+      "detail": "ageds-lem/coverage.json",
+      "source_sha256": "18811b6a1c70339936938b03f76208da10af8a9b5061f096c32d5a1ea29d0f4d"
+    },
+    {
+      "repo": "klb-t/LEM-Workbench",
+      "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+      "file": "app/src/main/java/com/example/data/repository/ResearchRepository.kt",
+      "ranges": [
+        [
+          16,
+          23
+        ]
+      ],
+      "module": "ageds-lem",
+      "detail": "ageds-lem/coverage.json",
+      "source_sha256": "cf66d8603a05768fbfc511a49640f362b76a80570d495632ff8b920c781d110f"
+    },
+    {
+      "repo": "klb-t/LEM-Workbench",
+      "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+      "file": "app/src/main/java/com/example/ui/screens/SettingsScreen.kt",
+      "ranges": [
+        [
+          17,
+          20
+        ],
+        [
+          54,
+          84
+        ]
+      ],
+      "module": "ageds-lem",
+      "detail": "ageds-lem/coverage.json",
+      "source_sha256": "4f414c99b07d9dd53897ffcc10f82813d73ae4ce58b6b6030e34e90a7855063f"
+    },
+    {
+      "repo": "klb-t/LEM-Workbench",
+      "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+      "file": "app/src/main/java/com/example/ui/screens/ModelsScreen.kt",
+      "ranges": [
+        [
+          19,
+          31
+        ],
+        [
+          40,
+          57
+        ],
+        [
+          74,
+          101
+        ],
+        [
+          178,
+          192
+        ]
+      ],
+      "module": "ageds-lem",
+      "detail": "ageds-lem/coverage.json",
+      "source_sha256": "d4471672601a40409c038958d06305340a86695a62a28c9bbe944d481469d08b"
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "file": "backend/watchdog_api/api/schemas.ts",
+      "ranges": [
+        [
+          3,
+          20
+        ]
+      ],
+      "module": "watchdog",
+      "detail": "watchdog/coverage.json",
+      "source_sha256": "dfa2bc95e3ffc9115ae4596526a4679809b21a5244aa3e7dc0309e0ec5d7f55d"
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "file": "backend/watchdog_api/api/routes.ts",
+      "ranges": [
+        [
+          30,
+          113
+        ],
+        [
+          205,
+          235
+        ]
+      ],
+      "module": "watchdog",
+      "detail": "watchdog/coverage.json",
+      "source_sha256": "52d337d1e674d47896498f10b452bcf9cb3a18235edc6a57d09501c25cdf03af"
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "file": "backend/watchdog_api/services/run_orchestrator.ts",
+      "ranges": [
+        [
+          48,
+          236
+        ],
+        [
+          243,
+          349
+        ]
+      ],
+      "module": "watchdog",
+      "detail": "watchdog/coverage.json",
+      "source_sha256": "ade345e8d6f3f1a20554dca93d4cadf8dac4f595658d737f3d06c2ebc3b7dbbc"
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "file": "backend/watchdog_api/db/repositories/runs.ts",
+      "ranges": [
+        [
+          29,
+          115
+        ]
+      ],
+      "module": "watchdog",
+      "detail": "watchdog/coverage.json",
+      "source_sha256": "53d098606f4a3a4a75e4158ae6e76b44fed641346dafe0fd894efb12df4a8a53"
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "file": "backend/watchdog_api/db/repositories/data.ts",
+      "ranges": [
+        [
+          22,
+          190
+        ]
+      ],
+      "module": "watchdog",
+      "detail": "watchdog/coverage.json",
+      "source_sha256": "8be19fe069b75a828ce021543fa4213f89bb70d65f568bf5d72c3241756d3d62"
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "file": "backend/watchdog_api/db/repositories/artifacts.ts",
+      "ranges": [
+        [
+          20,
+          70
+        ]
+      ],
+      "module": "watchdog",
+      "detail": "watchdog/coverage.json",
+      "source_sha256": "bbe9576f15f57667b53fdcaee73e6badebc7cd63f498ee51a754f2deb95ae8a5"
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "file": "backend/watchdog_api/analytics/jh16.ts",
+      "ranges": [
+        [
+          13,
+          103
+        ]
+      ],
+      "module": "watchdog",
+      "detail": "watchdog/coverage.json",
+      "source_sha256": "e39176f84b8232ed13a4496bce1dae912b5310a73b5d3a43b481343c29847356"
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "file": "backend/watchdog_api/analytics/registry.ts",
+      "ranges": [
+        [
+          4,
+          28
+        ]
+      ],
+      "module": "watchdog",
+      "detail": "watchdog/coverage.json",
+      "source_sha256": "6510981bec1a7a7d1f5993876b999cd501ffcaef353cf7f1db721641116605e2"
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "file": "backend/watchdog_api/services/manifest.ts",
+      "ranges": [
+        [
+          119,
+          207
+        ]
+      ],
+      "module": "watchdog",
+      "detail": "watchdog/coverage.json",
+      "source_sha256": "82025abccfc808fa231b1f51f765c13666db915e6e5f36c222d3397a9feb2d7e"
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "file": "backend/watchdog_api/services/export.ts",
+      "ranges": [
+        [
+          43,
+          124
+        ]
+      ],
+      "module": "watchdog",
+      "detail": "watchdog/coverage.json",
+      "source_sha256": "a9254732c977a620402b91badae34b4ad8574994e55329afb53a1c38ad523802"
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "file": "backend/watchdog_api/domain/run_state.ts",
+      "ranges": [
+        [
+          15,
+          73
+        ]
+      ],
+      "module": "watchdog",
+      "detail": "watchdog/coverage.json",
+      "source_sha256": "aaec275bd02b1e7ab2888f2e8905e9c2dddfe14512975e6ca61517ffe3471797"
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "file": "backend/watchdog_api/storage/object_store/index.ts",
+      "ranges": [
+        [
+          23,
+          58
+        ]
+      ],
+      "module": "watchdog",
+      "detail": "watchdog/coverage.json",
+      "source_sha256": "52955d1bdc401c36c15754b4a972f77c9f39d3b80a4d4e830d07c55443f62e24"
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "file": "backend/watchdog_api/domain/observation.ts",
+      "ranges": [
+        [
+          107,
+          113
+        ]
+      ],
+      "module": "watchdog",
+      "detail": "watchdog/coverage.json",
+      "source_sha256": "c3068c1c3004464a686efacfa92342009763f9961bfcc416872485570123b93f"
+    }
+  ],
+  "repositories": [
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "product_denominator": 432,
+      "prior_files_with_ranges": 94,
+      "new_files_with_ranges": [
+        "engine/models.py",
+        "gui/dialogs.py",
+        "loom/src/core/tasks.cpp",
+        "loom/web/src/components/GraphView.tsx",
+        "loom/web/src/profiles/view-state.ts",
+        "main.py"
+      ],
+      "additional_files_with_ranges": 6,
+      "union_files_with_ranges": 100,
+      "still_without_ranges": [
+        "core/__init__.py",
+        "core/selector.py",
+        "core/semantic.py",
+        "engine/__init__.py",
+        "engine/batch_api.py",
+        "engine/chat_engine.py",
+        "engine/events.py",
+        "engine/graph_memory.py",
+        "engine/paths.py",
+        "gui/__init__.py",
+        "gui/base.py",
+        "gui/chat_panel.py",
+        "gui/conv_panel.py",
+        "gui/github_panel.py",
+        "gui/graph_viz.py",
+        "gui/memory_panel.py",
+        "gui/voice_panel.py",
+        "loom/android/app/src/main/assets/web/index.html",
+        "loom/android/app/src/main/cpp/loom_jni.cpp",
+        "loom/android/app/src/main/java/com/chatadhd/android/LoomBridge.kt",
+        "loom/android/app/src/main/java/com/chatadhd/android/LoomCallbacks.kt",
+        "loom/android/app/src/main/java/com/chatadhd/android/LoomHttp.kt",
+        "loom/android/app/src/main/java/com/chatadhd/android/LoomNative.kt",
+        "loom/android/app/src/main/java/com/chatadhd/android/MainActivity.kt",
+        "loom/android/verify/java/com/chatadhd/android/JsonObj.java",
+        "loom/android/verify/java/com/chatadhd/android/LoomCallbacks.java",
+        "loom/android/verify/java/com/chatadhd/android/LoomHttp.java",
+        "loom/android/verify/java/com/chatadhd/android/LoomNative.java",
+        "loom/deploy/build-android.sh",
+        "loom/deploy/build-linux.sh",
+        "loom/deploy/ec2-setup.sh",
+        "loom/include/loom/archive.h",
+        "loom/include/loom/batch_api.h",
+        "loom/include/loom/config.h",
+        "loom/include/loom/context_plan.h",
+        "loom/include/loom/crypto.h",
+        "loom/include/loom/db.h",
+        "loom/include/loom/event_bus.h",
+        "loom/include/loom/extract.h",
+        "loom/include/loom/generalize.h",
+        "loom/include/loom/github_sync.h",
+        "loom/include/loom/graph_engine.h",
+        "loom/include/loom/graph_memory.h",
+        "loom/include/loom/knowledge.h",
+        "loom/include/loom/knowledge_candidate_graph.h",
+        "loom/include/loom/knowledge_semantic.h",
+        "loom/include/loom/knowledge_store.h",
+        "loom/include/loom/log.h",
+        "loom/include/loom/loom.h",
+        "loom/include/loom/materialize.h",
+        "loom/include/loom/media_providers.h",
+        "loom/include/loom/memory_engine.h",
+        "loom/include/loom/model_profile.h",
+        "loom/include/loom/net/sse.h",
+        "loom/include/loom/onboarding.h",
+        "loom/include/loom/onboarding_presentation.h",
+        "loom/include/loom/re/regex.h",
+        "loom/include/loom/relations.h",
+        "loom/include/loom/resolve.h",
+        "loom/include/loom/result.h",
+        "loom/include/loom/runtime_profile.h",
+        "loom/include/loom/selector.h",
+        "loom/include/loom/semantic_analyzer.h",
+        "loom/include/loom/semantic_worker.h",
+        "loom/include/loom/sqlite.h",
+        "loom/include/loom/usage_policy.h",
+        "loom/include/loom/util/base64.h",
+        "loom/include/loom/util/cancel.h",
+        "loom/include/loom/util/fs.h",
+        "loom/include/loom/util/ids.h",
+        "loom/include/loom/util/random.h",
+        "loom/include/loom/util/sha256.h",
+        "loom/include/loom/util/time.h",
+        "loom/include/loom/util/unicode.h",
+        "loom/include/loom/util/utf8.h",
+        "loom/server/src/analysis-ui-routes.h",
+        "loom/server/src/app.h",
+        "loom/server/src/main.cpp",
+        "loom/server/src/native-ui-common.h",
+        "loom/server/src/sse_stream.h",
+        "loom/src/capi/capi_archive.cpp",
+        "loom/src/capi/capi_context.cpp",
+        "loom/src/capi/capi_extract.cpp",
+        "loom/src/capi/capi_generalize.cpp",
+        "loom/src/capi/capi_graph.cpp",
+        "loom/src/capi/capi_http.cpp",
+        "loom/src/capi/capi_import.cpp",
+        "loom/src/capi/capi_knowledge.cpp",
+        "loom/src/capi/capi_media.cpp",
+        "loom/src/capi/capi_packet.cpp",
+        "loom/src/capi/context.h",
+        "loom/src/capi/shared_anchor.c",
+        "loom/src/catalog/alias.cpp",
+        "loom/src/catalog/catalog_internal.h",
+        "loom/src/catalog/extract_text.cpp",
+        "loom/src/catalog/links.cpp",
+        "loom/src/catalog/profile.cpp",
+        "loom/src/catalog/relevance_recipe.cpp",
+        "loom/src/catalog/relevance_recipe.h",
+        "loom/src/catalog/schema.cpp",
+        "loom/src/catalog/score.cpp",
+        "loom/src/catalog/select.cpp",
+        "loom/src/catalog/semantic.cpp",
+        "loom/src/catalog/semantic_candidates.cpp",
+        "loom/src/catalog/semantic_candidates.h",
+        "loom/src/catalog/sketch.cpp",
+        "loom/src/catalog/stream.cpp",
+        "loom/src/chat/active_task_acceptance.cpp",
+        "loom/src/chat/active_task_acceptance.h",
+        "loom/src/chat/active_task_spec.cpp",
+        "loom/src/chat/active_task_spec.h",
+        "loom/src/chat/batch_api.cpp",
+        "loom/src/chat/chat_graph_integration.verify.cc",
+        "loom/src/chat/graph_reply.cpp",
+        "loom/src/chat/graph_reply.verify.cc",
+        "loom/src/chat/reasoning_profile.h",
+        "loom/src/chat/selector.verify.cc",
+        "loom/src/chat/verify_selector.py",
+        "loom/src/context/context_candidates.cpp",
+        "loom/src/context/context_candidates.h",
+        "loom/src/context/context_diagnostics.cpp",
+        "loom/src/context/context_diagnostics.h",
+        "loom/src/context/context_evidence.cpp",
+        "loom/src/context/context_evidence.h",
+        "loom/src/context/context_goal_usage.h",
+        "loom/src/context/context_goal_usage.verify.cc",
+        "loom/src/context/context_plan.cpp",
+        "loom/src/context/context_request_ext.cpp",
+        "loom/src/context/context_request_ext.h",
+        "loom/src/context/context_usage_claim.h",
+        "loom/src/context/ctx_common.cpp",
+        "loom/src/context/ctx_common.h",
+        "loom/src/context/gen_runtime_presets.py",
+        "loom/src/context/method_channels.h",
+        "loom/src/context/method_channels.verify.cc",
+        "loom/src/context/method_execution.verify.cc",
+        "loom/src/context/method_registry.verify.cc",
+        "loom/src/context/provider_vector.h",
+        "loom/src/context/provider_vector.verify.cc",
+        "loom/src/context/retrieval.cpp",
+        "loom/src/context/unified_context.cpp",
+        "loom/src/context/unified_context.h",
+        "loom/src/context/unified_context.verify.cc",
+        "loom/src/core/config_usage_policy.cpp",
+        "loom/src/core/event_bus.cpp",
+        "loom/src/core/relations.cpp",
+        "loom/src/crypto/crypto.cpp",
+        "loom/src/db/annotations.cpp",
+        "loom/src/db/db_internal.h",
+        "loom/src/db/fts.cpp",
+        "loom/src/db/sqlite.cpp",
+        "loom/src/extract/candidate_graph.cpp",
+        "loom/src/extract/extract.cpp",
+        "loom/src/extract/extract_internal.h",
+        "loom/src/extract/extractors.cpp",
+        "loom/src/extract/gen_prompt_contracts.py",
+        "loom/src/extract/lexicon.cpp",
+        "loom/src/extract/lexicon.h",
+        "loom/src/extract/prompt_contract.cpp",
+        "loom/src/extract/prompt_contract.h",
+        "loom/src/extract/semantic_usage.h",
+        "loom/src/extract/sources.cpp",
+        "loom/src/generalize/common.cpp",
+        "loom/src/generalize/evidence.cpp",
+        "loom/src/generalize/infer.cpp",
+        "loom/src/generalize/internal.h",
+        "loom/src/generalize/match.cpp",
+        "loom/src/generalize/operators.cpp",
+        "loom/src/generalize/principles.cpp",
+        "loom/src/generalize/stage.cpp",
+        "loom/src/github/github_sync.cpp",
+        "loom/src/import/export_anthropic.cpp",
+        "loom/src/import/export_checkpoint.cpp",
+        "loom/src/import/exporter.cpp",
+        "loom/src/import/gen_import_presets.py",
+        "loom/src/import/import_preset.cpp",
+        "loom/src/import/import_preset.h",
+        "loom/src/import/import_preset_identity.cpp",
+        "loom/src/import/import_preset_identity.h",
+        "loom/src/import/import_usage.h",
+        "loom/src/import/importer_common.cpp",
+        "loom/src/import/importer_html.cpp",
+        "loom/src/import/importer_internal.h",
+        "loom/src/import/importer_json.cpp",
+        "loom/src/import/importer_sqlite.cpp",
+        "loom/src/import/importer_text.cpp",
+        "loom/src/import/importer_zip.cpp",
+        "loom/src/kb/candidates.cpp",
+        "loom/src/kb/evidence.cpp",
+        "loom/src/kb/normalize.cpp",
+        "loom/src/kb/schema.cpp",
+        "loom/src/kb/stage_profile.h",
+        "loom/src/kb/store.cpp",
+        "loom/src/knowledge/engine.cpp",
+        "loom/src/materialize/materialize.cpp",
+        "loom/src/media/media_providers.cpp",
+        "loom/src/memory/memory_engine.cpp",
+        "loom/src/model/gen_runtime_profiles.py",
+        "loom/src/model/model_action.cpp",
+        "loom/src/model/model_core.cpp",
+        "loom/src/model/model_general.cpp",
+        "loom/src/model/model_json.h",
+        "loom/src/model/model_pack.cpp",
+        "loom/src/model/model_profile.h",
+        "loom/src/net/http_default.cpp",
+        "loom/src/net/sse.cpp",
+        "loom/src/onboarding/gen_onboarding_pack.py",
+        "loom/src/onboarding/presentation.cpp",
+        "loom/src/onboarding/runtime_adapter.cpp",
+        "loom/src/onboarding/runtime_adapter.h",
+        "loom/src/packet/packet.cpp",
+        "loom/src/packet/packet.h",
+        "loom/src/packet/reply.cpp",
+        "loom/src/policy/gen_usage_policy.py",
+        "loom/src/re/regex.cpp",
+        "loom/src/resolve/assess.cpp",
+        "loom/src/resolve/attribution.cpp",
+        "loom/src/resolve/lineage.cpp",
+        "loom/src/resolve/resolver.cpp",
+        "loom/src/resolve/stage.cpp",
+        "loom/src/resolve/vectors.cpp",
+        "loom/src/search/selector.cpp",
+        "loom/src/stub.h",
+        "loom/src/util/base64.cpp",
+        "loom/src/util/fs.cpp",
+        "loom/src/util/json.cpp",
+        "loom/src/util/log.cpp",
+        "loom/src/util/product_literal_guard.py",
+        "loom/src/util/random_ids_time.cpp",
+        "loom/src/util/result.cpp",
+        "loom/src/util/sha256.cpp",
+        "loom/src/util/unicode.cpp",
+        "loom/src/util/utf8.cpp",
+        "loom/web/e2e/analysis-ui.mjs",
+        "loom/web/e2e/app-native-navigation.mjs",
+        "loom/web/e2e/application-profile-adapter.mjs",
+        "loom/web/e2e/application-profile-graph.mjs",
+        "loom/web/e2e/application-profile-state.mjs",
+        "loom/web/e2e/application-profiles.mjs",
+        "loom/web/e2e/chat-context.mjs",
+        "loom/web/e2e/chat-settings-state.mjs",
+        "loom/web/e2e/graph-chat-ui.mjs",
+        "loom/web/e2e/graph-reply-ui.mjs",
+        "loom/web/e2e/harness-lifecycle-test.mjs",
+        "loom/web/e2e/harness-lifecycle.mjs",
+        "loom/web/e2e/imported-message-content-browser.mjs",
+        "loom/web/e2e/imported-message-content-native.mjs",
+        "loom/web/e2e/imported-message-content-state.mjs",
+        "loom/web/e2e/interface-2-native-runner.mjs",
+        "loom/web/e2e/interface-2-native.mjs",
+        "loom/web/e2e/methods-ui.mjs",
+        "loom/web/e2e/mock_llm_server.py",
+        "loom/web/e2e/native-contract.mjs",
+        "loom/web/e2e/onboarding-host.mjs",
+        "loom/web/e2e/onboarding-native.mjs",
+        "loom/web/e2e/operations-panel.mjs",
+        "loom/web/e2e/profile-view-geometry.mjs",
+        "loom/web/e2e/resource-controls.mjs",
+        "loom/web/e2e/retrieval-plan-state.mjs",
+        "loom/web/e2e/run.mjs",
+        "loom/web/e2e/semantic-controls.mjs",
+        "loom/web/e2e/source-views.mjs",
+        "loom/web/e2e/usage-policy-native.mjs",
+        "loom/web/e2e/usage-policy-ui.mjs",
+        "loom/web/e2e/workflow-checkpoint.mjs",
+        "loom/web/e2e/workflow-snapshot.mjs",
+        "loom/web/e2e/workspace-state.mjs",
+        "loom/web/e2e/workspace.mjs",
+        "loom/web/index.html",
+        "loom/web/src/App.tsx",
+        "loom/web/src/api/analysis.ts",
+        "loom/web/src/api/graph-packets.ts",
+        "loom/web/src/api/index.ts",
+        "loom/web/src/api/knowledge.ts",
+        "loom/web/src/api/loom-api.ts",
+        "loom/web/src/api/loom-jni.ts",
+        "loom/web/src/api/onboarding-host.ts",
+        "loom/web/src/api/operations.ts",
+        "loom/web/src/api/types.ts",
+        "loom/web/src/components/AnalysisPanel.tsx",
+        "loom/web/src/components/ChatView.tsx",
+        "loom/web/src/components/ContextPlanEditor.tsx",
+        "loom/web/src/components/ContextSlider.tsx",
+        "loom/web/src/components/ConversationBranches.tsx",
+        "loom/web/src/components/ConversationList.tsx",
+        "loom/web/src/components/GraphReplyWorkbench.tsx",
+        "loom/web/src/components/ImportPanel.tsx",
+        "loom/web/src/components/ImportedMessageContent.tsx",
+        "loom/web/src/components/LogPanel.tsx",
+        "loom/web/src/components/MemoryPanel.tsx",
+        "loom/web/src/components/MethodsPanel.tsx",
+        "loom/web/src/components/OperationsPanel.tsx",
+        "loom/web/src/components/ResourcePresetEditor.tsx",
+        "loom/web/src/components/SemanticStatus.tsx",
+        "loom/web/src/components/SettingsPanel.tsx",
+        "loom/web/src/components/UsagePolicyPanel.tsx",
+        "loom/web/src/components/UserProfilePanel.tsx",
+        "loom/web/src/components/WorkflowRecoveryPanel.tsx",
+        "loom/web/src/components/analysis-panel.css",
+        "loom/web/src/components/application-profiles.css",
+        "loom/web/src/components/chat-context.css",
+        "loom/web/src/components/conversation-branches.css",
+        "loom/web/src/components/graph-reply-workbench.css",
+        "loom/web/src/components/imported-message-content.css",
+        "loom/web/src/components/knowledge.css",
+        "loom/web/src/components/methods-panel.css",
+        "loom/web/src/components/operations-panel.css",
+        "loom/web/src/components/usage-policy.css",
+        "loom/web/src/components/user-profile-panel.css",
+        "loom/web/src/content/imported-message.ts",
+        "loom/web/src/context/chat-settings.ts",
+        "loom/web/src/context/resource-controls.ts",
+        "loom/web/src/context/retrieval-plan.ts",
+        "loom/web/src/graph/GraphChatSettings.tsx",
+        "loom/web/src/graph/chat-graph-presets.ts",
+        "loom/web/src/graph/chat-graph.ts",
+        "loom/web/src/graph/native-json.ts",
+        "loom/web/src/graph/reply-inspection.ts",
+        "loom/web/src/main.tsx",
+        "loom/web/src/methods/graph-methods.ts",
+        "loom/web/src/onboarding/OnboardingPanel.tsx",
+        "loom/web/src/onboarding/WhatAppKnows.tsx",
+        "loom/web/src/onboarding/controller.ts",
+        "loom/web/src/onboarding/index.ts",
+        "loom/web/src/onboarding/native-snapshot.ts",
+        "loom/web/src/onboarding/onboarding.css",
+        "loom/web/src/onboarding/presentation-context.tsx",
+        "loom/web/src/onboarding/presentation.mjs",
+        "loom/web/src/onboarding/types.ts",
+        "loom/web/src/profiles/builtins.ts",
+        "loom/web/src/styles.css",
+        "loom/web/vite.config.ts"
+      ]
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "product_denominator": 266,
+      "prior_files_with_ranges": 54,
+      "new_files_with_ranges": [
+        "backend/watchdog_api/analytics/jh16.ts",
+        "backend/watchdog_api/analytics/registry.ts",
+        "backend/watchdog_api/api/schemas.ts",
+        "backend/watchdog_api/db/repositories/artifacts.ts",
+        "backend/watchdog_api/db/repositories/data.ts",
+        "backend/watchdog_api/db/repositories/runs.ts",
+        "backend/watchdog_api/domain/observation.ts",
+        "backend/watchdog_api/domain/run_state.ts",
+        "backend/watchdog_api/services/export.ts",
+        "backend/watchdog_api/services/manifest.ts",
+        "backend/watchdog_api/services/run_orchestrator.ts"
+      ],
+      "additional_files_with_ranges": 11,
+      "union_files_with_ranges": 65,
+      "still_without_ranges": [
+        "backend/watchdog_api/analytics/base.ts",
+        "backend/watchdog_api/api/access_routes.ts",
+        "backend/watchdog_api/api/accounts_auth_routes.ts",
+        "backend/watchdog_api/api/admission_gate.ts",
+        "backend/watchdog_api/api/auth_routes.ts",
+        "backend/watchdog_api/api/automation_routes.ts",
+        "backend/watchdog_api/api/diagnostic_routes.ts",
+        "backend/watchdog_api/api/field_routes.ts",
+        "backend/watchdog_api/api/middleware.ts",
+        "backend/watchdog_api/api/rate_limit.ts",
+        "backend/watchdog_api/api/request_security.ts",
+        "backend/watchdog_api/api/research_project_routes.ts",
+        "backend/watchdog_api/api/research_routes.ts",
+        "backend/watchdog_api/api/search_routes.ts",
+        "backend/watchdog_api/clinical_demo/executor.ts",
+        "backend/watchdog_api/clinical_demo/executor_manifest.ts",
+        "backend/watchdog_api/config/access_policy.ts",
+        "backend/watchdog_api/config/canonicalize.ts",
+        "backend/watchdog_api/config/collection.ts",
+        "backend/watchdog_api/config/evidence.ts",
+        "backend/watchdog_api/config/extraction_dataset.ts",
+        "backend/watchdog_api/config/field.ts",
+        "backend/watchdog_api/config/geography.ts",
+        "backend/watchdog_api/config/research_projects.ts",
+        "backend/watchdog_api/config/schemas.ts",
+        "backend/watchdog_api/config/search.ts",
+        "backend/watchdog_api/config/source_history.ts",
+        "backend/watchdog_api/config/source_watch.ts",
+        "backend/watchdog_api/db/client.ts",
+        "backend/watchdog_api/db/migrations/001_initial_schema.ts",
+        "backend/watchdog_api/db/migrations/002_assertions.ts",
+        "backend/watchdog_api/db/migrations/003_query_plan_identity.ts",
+        "backend/watchdog_api/db/migrations/004_principals.ts",
+        "backend/watchdog_api/db/migrations/005_role_profiles.ts",
+        "backend/watchdog_api/db/migrations/006_field_reference.ts",
+        "backend/watchdog_api/db/migrations/007_workbench.ts",
+        "backend/watchdog_api/db/migrations/008_workbench_profiles.ts",
+        "backend/watchdog_api/db/migrations/009_geometry_layers.ts",
+        "backend/watchdog_api/db/migrations/010_automation.ts",
+        "backend/watchdog_api/db/migrations/011_personal_settings.ts",
+        "backend/watchdog_api/db/migrations/012_assistant_profiles.ts",
+        "backend/watchdog_api/db/migrations/013_research_intake.ts",
+        "backend/watchdog_api/db/migrations/014_extraction_mapping_templates.ts",
+        "backend/watchdog_api/db/migrations/015_paper_operations.ts",
+        "backend/watchdog_api/db/migrations/016_reference_observations.ts",
+        "backend/watchdog_api/db/migrations/017_collection_context.ts",
+        "backend/watchdog_api/db/migrations/018_source_watches.ts",
+        "backend/watchdog_api/db/migrations/019_source_access.ts",
+        "backend/watchdog_api/db/migrations/020_admission.ts",
+        "backend/watchdog_api/db/migrations/021_research_projects.ts",
+        "backend/watchdog_api/db/migrations/022_paper_comparisons.ts",
+        "backend/watchdog_api/db/migrations/023_accounts.ts",
+        "backend/watchdog_api/db/repositories/acquisition.ts",
+        "backend/watchdog_api/db/repositories/admission.ts",
+        "backend/watchdog_api/db/repositories/audit.ts",
+        "backend/watchdog_api/db/repositories/field_reference.ts",
+        "backend/watchdog_api/db/repositories/geography.ts",
+        "backend/watchdog_api/db/repositories/method_specs.ts",
+        "backend/watchdog_api/db/repositories/paper_comparisons.ts",
+        "backend/watchdog_api/db/repositories/paper_operations.ts",
+        "backend/watchdog_api/db/repositories/principals.ts",
+        "backend/watchdog_api/db/repositories/reference_history.ts",
+        "backend/watchdog_api/db/repositories/search.ts",
+        "backend/watchdog_api/db/repositories/source_watches.ts",
+        "backend/watchdog_api/db/repositories/workbench_error.ts",
+        "backend/watchdog_api/db/schema.ts",
+        "backend/watchdog_api/diag/bundle.ts",
+        "backend/watchdog_api/diag/view.ts",
+        "backend/watchdog_api/domain/approval.ts",
+        "backend/watchdog_api/domain/canonical.ts",
+        "backend/watchdog_api/domain/error_taxonomy.ts",
+        "backend/watchdog_api/domain/evidence_tier.ts",
+        "backend/watchdog_api/domain/index.ts",
+        "backend/watchdog_api/domain/method_spec.ts",
+        "backend/watchdog_api/domain/principal.ts",
+        "backend/watchdog_api/field/service.ts",
+        "backend/watchdog_api/field/validation.ts",
+        "backend/watchdog_api/identity/account_sessions.ts",
+        "backend/watchdog_api/identity/accounts_identity.ts",
+        "backend/watchdog_api/identity/admission.ts",
+        "backend/watchdog_api/identity/index.ts",
+        "backend/watchdog_api/identity/oidc.ts",
+        "backend/watchdog_api/identity/roles.ts",
+        "backend/watchdog_api/identity/sign_in.ts",
+        "backend/watchdog_api/llm/base.ts",
+        "backend/watchdog_api/mail/index.ts",
+        "backend/watchdog_api/research/project_verifier.ts",
+        "backend/watchdog_api/secrets/index.ts",
+        "backend/watchdog_api/secrets/user_vault.ts",
+        "backend/watchdog_api/services/charts.ts",
+        "backend/watchdog_api/services/discontinuity.ts",
+        "backend/watchdog_api/services/extraction_dataset.ts",
+        "backend/watchdog_api/services/extraction_workshop.ts",
+        "backend/watchdog_api/services/paper_comparisons.ts",
+        "backend/watchdog_api/services/personal_search.ts",
+        "backend/watchdog_api/services/replication.ts",
+        "backend/watchdog_api/services/search.ts",
+        "backend/watchdog_api/services/source_comparison.ts",
+        "backend/watchdog_api/sources/atom.ts",
+        "backend/watchdog_api/sources/base.ts",
+        "backend/watchdog_api/sources/count_parser.ts",
+        "backend/watchdog_api/sources/fixture_source.ts",
+        "backend/watchdog_api/sources/google_trends.ts",
+        "backend/watchdog_api/sources/offline_fixture.ts",
+        "backend/watchdog_api/sources/provider_registry.ts",
+        "backend/watchdog_api/sources/public_reference.ts",
+        "backend/watchdog_api/sources/registry.ts",
+        "backend/watchdog_api/sources/search_providers.ts",
+        "backend/watchdog_api/sources/serp.ts",
+        "backend/watchdog_api/sources/serpapi.ts",
+        "backend/watchdog_api/storage/client.ts",
+        "backend/watchdog_api/storage/durability.ts",
+        "backend/watchdog_api/storage/gcs.ts",
+        "backend/watchdog_api/utils/collection_context.ts",
+        "backend/watchdog_api/utils/errors.ts",
+        "backend/watchdog_api/utils/redaction.ts",
+        "backend/watchdog_api/utils/tracer.ts",
+        "backend/watchdog_api/workbench/extraction_data.ts",
+        "server.ts",
+        "shared/admission.ts",
+        "shared/authorization.ts",
+        "shared/canonical_json.ts",
+        "shared/clinical_demo.ts",
+        "shared/clinical_demo_profile.ts",
+        "shared/clinical_demo_selector.ts",
+        "shared/clinical_demo_validation.ts",
+        "shared/collection.ts",
+        "shared/extraction_dataset_profile.ts",
+        "shared/field.ts",
+        "shared/field_lookup.ts",
+        "shared/field_snapshot.ts",
+        "shared/field_validation.ts",
+        "shared/figure_geometry.ts",
+        "shared/geography.ts",
+        "shared/goal_navigation.ts",
+        "shared/paper_comparison.ts",
+        "shared/paper_operation.ts",
+        "shared/region_renderer.tsx",
+        "shared/research_dataset.ts",
+        "shared/research_projects.ts",
+        "shared/search.ts",
+        "shared/source_access.ts",
+        "shared/source_copy.ts",
+        "shared/source_history.ts",
+        "shared/source_watch.ts",
+        "shared/workspace_navigation.ts",
+        "src/App.tsx",
+        "src/components/AccessShell.tsx",
+        "src/components/AdmissionGate.tsx",
+        "src/components/DatasetImport.tsx",
+        "src/components/ExtractionDatasetForm.tsx",
+        "src/components/FieldEvidence.tsx",
+        "src/components/FieldLinkedReference.tsx",
+        "src/components/FieldResults.tsx",
+        "src/components/GeometryLayers.tsx",
+        "src/components/GoalNavigator.tsx",
+        "src/components/Layout.tsx",
+        "src/components/ModelProfilesPanel.tsx",
+        "src/components/PaperOperations.tsx",
+        "src/components/RegionControls.tsx",
+        "src/components/ResearchControls.tsx",
+        "src/components/SignInPanel.tsx",
+        "src/components/SourceComparisonView.tsx",
+        "src/components/SourceHistory.tsx",
+        "src/components/SourceWatchButton.tsx",
+        "src/components/SourceWatchInbox.tsx",
+        "src/components/WorkspaceNavigation.tsx",
+        "src/index.css",
+        "src/lib/access.tsx",
+        "src/lib/access_i18n.ts",
+        "src/lib/api.ts",
+        "src/lib/automation_client.ts",
+        "src/lib/client_diagnostics.ts",
+        "src/lib/field_client.ts",
+        "src/lib/research_projects_client.ts",
+        "src/lib/search_client.ts",
+        "src/lib/utils.ts",
+        "src/main.tsx",
+        "src/pages/AccessAdmin.tsx",
+        "src/pages/Analyzers.tsx",
+        "src/pages/Apply.tsx",
+        "src/pages/Automation.tsx",
+        "src/pages/Dashboard.tsx",
+        "src/pages/Diagnostics.tsx",
+        "src/pages/EvidenceReview.tsx",
+        "src/pages/Join.tsx",
+        "src/pages/Login.tsx",
+        "src/pages/MethodReview.tsx",
+        "src/pages/PeopleAccess.tsx",
+        "src/pages/Research.tsx",
+        "src/pages/ResearchProjects.tsx",
+        "src/pages/Responder.tsx",
+        "src/pages/RunDetails.tsx",
+        "src/pages/Runs.tsx",
+        "src/pages/Search.tsx",
+        "src/pages/SourceAccess.tsx",
+        "src/pages/Sources.tsx",
+        "src/pages/Study.tsx",
+        "src/pages/SubstanceMemory.tsx",
+        "src/types.ts",
+        "src/vite-env.d.ts"
+      ]
+    },
+    {
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "product_denominator": 233,
+      "prior_files_with_ranges": 47,
+      "new_files_with_ranges": [
+        "app/src/main/java/com/example/core/asr/Transcription.kt",
+        "app/src/main/java/com/example/core/capture/CaptureSession.kt",
+        "app/src/main/java/com/example/core/capture/ConversationCapture.kt",
+        "app/src/main/java/com/example/core/capture/TreeObservation.kt",
+        "app/src/main/java/com/example/core/convert/PasteConversion.kt",
+        "app/src/main/java/com/example/core/discovery/CallEngine.kt",
+        "app/src/main/java/com/example/io/capture/AccessibilityCaptureSource.kt",
+        "app/src/main/java/com/example/io/capture/ConversationCaptureReviewActivity.kt",
+        "app/src/main/java/com/example/io/capture/ConversationCaptureUi.kt"
+      ],
+      "additional_files_with_ranges": 9,
+      "union_files_with_ranges": 56,
+      "still_without_ranges": [
+        "app/src/main/java/com/example/KeyboardApp.kt",
+        "app/src/main/java/com/example/MainActivity.kt",
+        "app/src/main/java/com/example/assistant/AssistantSessionVisibility.kt",
+        "app/src/main/java/com/example/assistant/ColourOrganActivity.kt",
+        "app/src/main/java/com/example/assistant/ForegroundSpeech.kt",
+        "app/src/main/java/com/example/assistant/GoalDispatchPolicy.kt",
+        "app/src/main/java/com/example/assistant/GoalJson.kt",
+        "app/src/main/java/com/example/assistant/GoalRecognitionService.kt",
+        "app/src/main/java/com/example/assistant/GoalVoiceInteractionService.kt",
+        "app/src/main/java/com/example/assistant/GoalVoiceSession.kt",
+        "app/src/main/java/com/example/assistant/GoalVoiceSessionService.kt",
+        "app/src/main/java/com/example/assistant/OnDeviceSpeechTurn.kt",
+        "app/src/main/java/com/example/clipboard/ClipboardImportActivity.kt",
+        "app/src/main/java/com/example/clipboard/ScreenshotClipboard.kt",
+        "app/src/main/java/com/example/core/asr/AndroidAsr.kt",
+        "app/src/main/java/com/example/core/asr/Asr.kt",
+        "app/src/main/java/com/example/core/asr/RemoteAsr.kt",
+        "app/src/main/java/com/example/core/asr/VoiceController.kt",
+        "app/src/main/java/com/example/core/assistant/GoalPlan.kt",
+        "app/src/main/java/com/example/core/caps/Abilities.kt",
+        "app/src/main/java/com/example/core/config/Knobs.kt",
+        "app/src/main/java/com/example/core/config/ScopedSettingsCache.kt",
+        "app/src/main/java/com/example/core/config/SettingsDestinations.kt",
+        "app/src/main/java/com/example/core/config/SettingsSearch.kt",
+        "app/src/main/java/com/example/core/convert/Containers.kt",
+        "app/src/main/java/com/example/core/convert/Music.kt",
+        "app/src/main/java/com/example/core/convert/Spectro.kt",
+        "app/src/main/java/com/example/core/data/BundledDictionary.kt",
+        "app/src/main/java/com/example/core/data/Entities.kt",
+        "app/src/main/java/com/example/core/data/WordListSource.kt",
+        "app/src/main/java/com/example/core/debug/RuntimeVariables.kt",
+        "app/src/main/java/com/example/core/devices/ReactiveLight.kt",
+        "app/src/main/java/com/example/core/devices/YeelightConnection.kt",
+        "app/src/main/java/com/example/core/devices/YeelightProtocol.kt",
+        "app/src/main/java/com/example/core/discovery/ApiKeys.kt",
+        "app/src/main/java/com/example/core/discovery/Capabilities.kt",
+        "app/src/main/java/com/example/core/discovery/JsonPath.kt",
+        "app/src/main/java/com/example/core/discovery/ModelDiscovery.kt",
+        "app/src/main/java/com/example/core/discovery/ModelFacts.kt",
+        "app/src/main/java/com/example/core/discovery/ProviderProfile.kt",
+        "app/src/main/java/com/example/core/discovery/Sse.kt",
+        "app/src/main/java/com/example/core/engine/Motion.kt",
+        "app/src/main/java/com/example/core/engine/Phrases.kt",
+        "app/src/main/java/com/example/core/engine/VolumeGestures.kt",
+        "app/src/main/java/com/example/core/engine/Wires.kt",
+        "app/src/main/java/com/example/core/hitmap/HitmapExtractor.kt",
+        "app/src/main/java/com/example/core/hitmap/LongPressTuner.kt",
+        "app/src/main/java/com/example/core/hitmap/TouchLearner.kt",
+        "app/src/main/java/com/example/core/io/ActionProfiles.kt",
+        "app/src/main/java/com/example/core/io/Macros.kt",
+        "app/src/main/java/com/example/core/io/NodeQuery.kt",
+        "app/src/main/java/com/example/core/io/PocketLock.kt",
+        "app/src/main/java/com/example/core/io/PocketLockPolicy.kt",
+        "app/src/main/java/com/example/core/io/Verbs.kt",
+        "app/src/main/java/com/example/core/json/JsonFields.kt",
+        "app/src/main/java/com/example/core/layout/AutomaticShift.kt",
+        "app/src/main/java/com/example/core/layout/BuiltinLayouts.kt",
+        "app/src/main/java/com/example/core/layout/ControlDeckLayout.kt",
+        "app/src/main/java/com/example/core/layout/Controls.kt",
+        "app/src/main/java/com/example/core/layout/ElementGeometry.kt",
+        "app/src/main/java/com/example/core/layout/FreeKeyPins.kt",
+        "app/src/main/java/com/example/core/layout/KeyCodes.kt",
+        "app/src/main/java/com/example/core/layout/KeyPlacement.kt",
+        "app/src/main/java/com/example/core/layout/KeyboardViewportBudget.kt",
+        "app/src/main/java/com/example/core/layout/LanguageKeys.kt",
+        "app/src/main/java/com/example/core/layout/LayerTransforms.kt",
+        "app/src/main/java/com/example/core/layout/LayoutAuthoring.kt",
+        "app/src/main/java/com/example/core/layout/LayoutDoctor.kt",
+        "app/src/main/java/com/example/core/layout/LayoutGenerator.kt",
+        "app/src/main/java/com/example/core/layout/LayoutGeometry.kt",
+        "app/src/main/java/com/example/core/layout/LayoutJson.kt",
+        "app/src/main/java/com/example/core/layout/LayoutModel.kt",
+        "app/src/main/java/com/example/core/layout/LayoutRepository.kt",
+        "app/src/main/java/com/example/core/layout/ScienceLayout.kt",
+        "app/src/main/java/com/example/core/layout/ToolbarRows.kt",
+        "app/src/main/java/com/example/core/layout/WorkbenchLayout.kt",
+        "app/src/main/java/com/example/core/media/MediaHubRepository.kt",
+        "app/src/main/java/com/example/core/media/MediaProfiles.kt",
+        "app/src/main/java/com/example/core/panels/PanelGenerator.kt",
+        "app/src/main/java/com/example/core/panels/PanelSpec.kt",
+        "app/src/main/java/com/example/core/phone/PhoneCatalogue.kt",
+        "app/src/main/java/com/example/core/phone/RotationMapping.kt",
+        "app/src/main/java/com/example/core/phone/SensorSessionPolicy.kt",
+        "app/src/main/java/com/example/core/predict/ActionStats.kt",
+        "app/src/main/java/com/example/core/predict/Completions.kt",
+        "app/src/main/java/com/example/core/predict/Decision.kt",
+        "app/src/main/java/com/example/core/predict/Modifiers.kt",
+        "app/src/main/java/com/example/core/predict/Slices.kt",
+        "app/src/main/java/com/example/core/security/PasswordEnvelope.kt",
+        "app/src/main/java/com/example/core/security/PrivateInputContract.kt",
+        "app/src/main/java/com/example/core/setup/CapabilitySetup.kt",
+        "app/src/main/java/com/example/core/setup/CatalogUpdate.kt",
+        "app/src/main/java/com/example/core/setup/SetupAdvisor.kt",
+        "app/src/main/java/com/example/core/speech/SpeechText.kt",
+        "app/src/main/java/com/example/core/suggest/Correction.kt",
+        "app/src/main/java/com/example/core/sync/DriveSyncTransport.kt",
+        "app/src/main/java/com/example/core/sync/SyncClip.kt",
+        "app/src/main/java/com/example/core/text/Capitalisation.kt",
+        "app/src/main/java/com/example/core/text/CursorMagnet.kt",
+        "app/src/main/java/com/example/core/text/ProperNouns.kt",
+        "app/src/main/java/com/example/core/text/TextOps.kt",
+        "app/src/main/java/com/example/core/vault/VaultModels.kt",
+        "app/src/main/java/com/example/core/vault/VaultStore.kt",
+        "app/src/main/java/com/example/engine/SensorHub.kt",
+        "app/src/main/java/com/example/engine/StreamRunner.kt",
+        "app/src/main/java/com/example/engine/UdpSender.kt",
+        "app/src/main/java/com/example/engine/VoiceTrigger.kt",
+        "app/src/main/java/com/example/ime/ComposeInputMethodService.kt",
+        "app/src/main/java/com/example/ime/ComposeSequences.kt",
+        "app/src/main/java/com/example/ime/CursorWorkspace.kt",
+        "app/src/main/java/com/example/ime/FeedbackController.kt",
+        "app/src/main/java/com/example/ime/KeyboardState.kt",
+        "app/src/main/java/com/example/ime/KeyboardTile.kt",
+        "app/src/main/java/com/example/io/AccessibilityNodeData.kt",
+        "app/src/main/java/com/example/io/CloudVoice.kt",
+        "app/src/main/java/com/example/io/ImageReencoder.kt",
+        "app/src/main/java/com/example/io/IoAccessibilityService.kt",
+        "app/src/main/java/com/example/io/PageReader.kt",
+        "app/src/main/java/com/example/io/PocketLockOverlay.kt",
+        "app/src/main/java/com/example/io/PocketLockTile.kt",
+        "app/src/main/java/com/example/io/PointerOverlay.kt",
+        "app/src/main/java/com/example/io/Speaker.kt",
+        "app/src/main/java/com/example/io/TileActions.kt",
+        "app/src/main/java/com/example/phone/ForegroundSensorMonitor.kt",
+        "app/src/main/java/com/example/phone/PhoneInventory.kt",
+        "app/src/main/java/com/example/phone/PhoneRuntime.kt",
+        "app/src/main/java/com/example/phone/PhoneToolsActivity.kt",
+        "app/src/main/java/com/example/sync/DeviceSyncActivity.kt",
+        "app/src/main/java/com/example/ui/PrivateTextField.kt",
+        "app/src/main/java/com/example/ui/kb/BoardMemory.kt",
+        "app/src/main/java/com/example/ui/kb/ClipboardImagePreview.kt",
+        "app/src/main/java/com/example/ui/kb/CompletionRow.kt",
+        "app/src/main/java/com/example/ui/kb/ControlView.kt",
+        "app/src/main/java/com/example/ui/kb/DebugOverlay.kt",
+        "app/src/main/java/com/example/ui/kb/EmojiData.kt",
+        "app/src/main/java/com/example/ui/kb/IoPanel.kt",
+        "app/src/main/java/com/example/ui/kb/KeyIcons.kt",
+        "app/src/main/java/com/example/ui/kb/KeySurface.kt",
+        "app/src/main/java/com/example/ui/kb/KeyboardConfigurationButton.kt",
+        "app/src/main/java/com/example/ui/kb/KeyboardHost.kt",
+        "app/src/main/java/com/example/ui/kb/KeyboardRoot.kt",
+        "app/src/main/java/com/example/ui/kb/KeyboardTheme.kt",
+        "app/src/main/java/com/example/ui/kb/KeyboardViewport.kt",
+        "app/src/main/java/com/example/ui/kb/Notices.kt",
+        "app/src/main/java/com/example/ui/kb/SymbolBoard.kt",
+        "app/src/main/java/com/example/ui/kb/ThemeStore.kt",
+        "app/src/main/java/com/example/ui/kb/TouchAreas.kt",
+        "app/src/main/java/com/example/ui/settings/AboutScreen.kt",
+        "app/src/main/java/com/example/ui/settings/AllSettingsScreen.kt",
+        "app/src/main/java/com/example/ui/settings/AppearanceScreen.kt",
+        "app/src/main/java/com/example/ui/settings/CapabilitiesScreen.kt",
+        "app/src/main/java/com/example/ui/settings/CapabilitySetupSection.kt",
+        "app/src/main/java/com/example/ui/settings/DiagnosticsScreen.kt",
+        "app/src/main/java/com/example/ui/settings/DictionaryScreen.kt",
+        "app/src/main/java/com/example/ui/settings/HomeScreen.kt",
+        "app/src/main/java/com/example/ui/settings/KeyEditor.kt",
+        "app/src/main/java/com/example/ui/settings/KeyboardPreview.kt",
+        "app/src/main/java/com/example/ui/settings/LayoutGeometryEditor.kt",
+        "app/src/main/java/com/example/ui/settings/LayoutStudioScreen.kt",
+        "app/src/main/java/com/example/ui/settings/MediaHubScreen.kt",
+        "app/src/main/java/com/example/ui/settings/RequestPanelScreen.kt",
+        "app/src/main/java/com/example/ui/settings/RuntimeDebuggerScreen.kt",
+        "app/src/main/java/com/example/ui/settings/SettingsLevelSelector.kt",
+        "app/src/main/java/com/example/ui/settings/SettingsNavigation.kt",
+        "app/src/main/java/com/example/ui/settings/SetupWizardScreen.kt",
+        "app/src/main/java/com/example/ui/settings/ThemeEditorScreen.kt",
+        "app/src/main/java/com/example/ui/settings/ToolbarRowsEditor.kt",
+        "app/src/main/java/com/example/ui/settings/TypingSettingsScreen.kt",
+        "app/src/main/java/com/example/ui/settings/VaultScreen.kt",
+        "app/src/main/java/com/example/ui/settings/VoiceSettingsScreen.kt",
+        "app/src/main/java/com/example/ui/settings/Widgets.kt",
+        "app/src/main/java/com/example/ui/theme/Color.kt",
+        "app/src/main/java/com/example/ui/theme/Theme.kt",
+        "app/src/main/java/com/example/ui/theme/Type.kt",
+        "app/src/main/java/com/example/util/AppLogger.kt",
+        "app/src/main/java/com/example/vault/MatrixAutofillService.kt",
+        "app/src/main/java/com/example/vault/VaultActivity.kt"
+      ]
+    },
+    {
+      "repo": "klb-t/AGEDS",
+      "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+      "product_denominator": 63,
+      "prior_files_with_ranges": 39,
+      "new_files_with_ranges": [
+        "androidApp/src/main/java/dev/klbt/ageds/CitationDisplayProjection.kt",
+        "androidApp/src/main/java/dev/klbt/ageds/CitationUi.kt",
+        "androidApp/src/main/java/dev/klbt/ageds/RangePlaybackController.kt",
+        "core/src/commonMain/kotlin/dev/klbt/ageds/core/CitationSelection.kt",
+        "server/app/static/citations.mjs",
+        "server/app/static/range-player.mjs"
+      ],
+      "additional_files_with_ranges": 6,
+      "union_files_with_ranges": 45,
+      "still_without_ranges": [
+        "androidApp/src/main/AndroidManifest.xml",
+        "androidApp/src/main/java/dev/klbt/ageds/AndroidRangeAudio.kt",
+        "androidApp/src/main/java/dev/klbt/ageds/CorpusActivity.kt",
+        "androidApp/src/main/java/dev/klbt/ageds/CorpusUi.kt",
+        "androidApp/src/main/java/dev/klbt/ageds/SourceAudioDisplay.kt",
+        "androidApp/src/main/java/dev/klbt/ageds/SourceScanUi.kt",
+        "androidApp/src/main/java/dev/klbt/ageds/SourceWavReader.kt",
+        "androidApp/src/main/java/dev/klbt/ageds/SourceWorkbookParser.kt",
+        "androidApp/src/main/java/dev/klbt/ageds/SourceXlsParser.kt",
+        "androidApp/src/main/res/values/styles.xml",
+        "core/src/commonMain/kotlin/dev/klbt/ageds/core/WavHeaderObservation.kt",
+        "core/src/commonMain/kotlin/dev/klbt/ageds/core/WavHeaderProbe.kt",
+        "server/__init__.py",
+        "server/app/__init__.py",
+        "server/app/static/app.css",
+        "server/app/templates/artifact.html",
+        "server/app/templates/index.html",
+        "server/app/wav_header.py"
+      ]
+    },
+    {
+      "repo": "klb-t/LEM-Workbench",
+      "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+      "product_denominator": 24,
+      "prior_files_with_ranges": 24,
+      "new_files_with_ranges": [],
+      "additional_files_with_ranges": 0,
+      "union_files_with_ranges": 24,
+      "still_without_ranges": []
+    },
+    {
+      "repo": "klb-t/loom",
+      "sha": "0b23fa64c1de955c947349feef7bb67c05763f97",
+      "product_denominator": 9,
+      "prior_files_with_ranges": 9,
+      "new_files_with_ranges": [],
+      "additional_files_with_ranges": 0,
+      "union_files_with_ranges": 9,
+      "still_without_ranges": []
+    }
+  ],
+  "supplemental_branch_ranges": [
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "file": "docs/research/thread7_real_2026-10-09/continuation_01/connect_prepared.py",
+      "ranges": [
+        [
+          39,
+          145
+        ]
+      ],
+      "module": "C-boundary",
+      "detail": "C-boundary/coverage.json",
+      "source_sha256": "13d8d29c8e02a280c333dfb24726e34f58a5df9dadee7e0436c08db1fe5b8074",
+      "reason": "branch addition outside unchanged main denominator"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "file": "docs/research/thread7_real_2026-10-09/continuation_01/build_final_handoff.py",
+      "ranges": [
+        [
+          16,
+          71
+        ]
+      ],
+      "module": "C-boundary",
+      "detail": "C-boundary/coverage.json",
+      "source_sha256": "3bee2515ddbb3934497c3d33eaf4e0b2b266b3fe47b20d0d47d7a695360de23c",
+      "reason": "branch addition outside unchanged main denominator"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "file": "docs/research/thread7_real_2026-10-09/continuation_01/check_public_projection.py",
+      "ranges": [
+        [
+          19,
+          116
+        ]
+      ],
+      "module": "C-boundary",
+      "detail": "C-boundary/coverage.json",
+      "source_sha256": "44f36bf0de28076ff25ac579d7493f2139234c6ffb1788aac368c59117151f19",
+      "reason": "branch addition outside unchanged main denominator"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "file": "loom/tools/structure/experiment_workflow_v1.py",
+      "ranges": [
+        [
+          56,
+          102
+        ]
+      ],
+      "module": "C-boundary",
+      "detail": "C-boundary/coverage.json",
+      "source_sha256": "9d67e21da33733aefb5a410e6da65d92cd6a81341cd7c87466fce47b64ba287b",
+      "reason": "branch addition outside unchanged main denominator"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "file": "loom/tools/structure/experiment_workflow_v1.py",
+      "ranges": [
+        [
+          106,
+          137
+        ]
+      ],
+      "module": "C-boundary",
+      "detail": "C-boundary/coverage.json",
+      "source_sha256": "9d67e21da33733aefb5a410e6da65d92cd6a81341cd7c87466fce47b64ba287b",
+      "reason": "branch addition outside unchanged main denominator"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "file": "loom/tools/structure/experiment_workflow_v1.py",
+      "ranges": [
+        [
+          277,
+          298
+        ]
+      ],
+      "module": "C-boundary",
+      "detail": "C-boundary/coverage.json",
+      "source_sha256": "9d67e21da33733aefb5a410e6da65d92cd6a81341cd7c87466fce47b64ba287b",
+      "reason": "branch addition outside unchanged main denominator"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "file": "loom/tools/structure/experiment_workflow_v1.py",
+      "ranges": [
+        [
+          410,
+          413
+        ]
+      ],
+      "module": "C-boundary",
+      "detail": "C-boundary/coverage.json",
+      "source_sha256": "9d67e21da33733aefb5a410e6da65d92cd6a81341cd7c87466fce47b64ba287b",
+      "reason": "branch addition outside unchanged main denominator"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "file": "loom/tools/structure/experiment_analysis_v1.py",
+      "ranges": [
+        [
+          513,
+          540
+        ]
+      ],
+      "module": "C-boundary",
+      "detail": "C-boundary/coverage.json",
+      "source_sha256": "375f38d595b61efc3614f604caee4b1082548043664ab65b21d502de52e35fca",
+      "reason": "branch addition outside unchanged main denominator"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+      "file": "loom/tools/resource_graph/core.py",
+      "ranges": [
+        [
+          29,
+          47
+        ],
+        [
+          58,
+          75
+        ],
+        [
+          80,
+          108
+        ],
+        [
+          112,
+          186
+        ],
+        [
+          188,
+          294
+        ],
+        [
+          296,
+          309
+        ],
+        [
+          311,
+          320
+        ],
+        [
+          322,
+          383
+        ],
+        [
+          385,
+          404
+        ],
+        [
+          406,
+          410
+        ],
+        [
+          412,
+          415
+        ]
+      ],
+      "module": "D-resources",
+      "detail": "D-resources/coverage.json",
+      "source_sha256": "4454ac27b2998ba946e49a3fbdc3bf0f8c033ab96020191281552d7496cc41e5",
+      "reason": "branch addition outside unchanged main denominator"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+      "file": "loom/tools/resource_graph/access.py",
+      "ranges": [
+        [
+          84,
+          109
+        ],
+        [
+          112,
+          123
+        ],
+        [
+          125,
+          139
+        ],
+        [
+          141,
+          210
+        ],
+        [
+          212,
+          276
+        ],
+        [
+          278,
+          393
+        ],
+        [
+          395,
+          473
+        ]
+      ],
+      "module": "D-resources",
+      "detail": "D-resources/coverage.json",
+      "source_sha256": "a7b5aae4e806677ef67a9d9d983ede0218d9b9221c3ea50910a89d290c0c7c5e",
+      "reason": "branch addition outside unchanged main denominator"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+      "file": "loom/tools/resource_graph/parsers.py",
+      "ranges": [
+        [
+          29,
+          125
+        ],
+        [
+          128,
+          141
+        ],
+        [
+          144,
+          207
+        ],
+        [
+          210,
+          231
+        ],
+        [
+          234,
+          243
+        ]
+      ],
+      "module": "D-resources",
+      "detail": "D-resources/coverage.json",
+      "source_sha256": "9147dd9ce7924cae19974a36fb3aec9c7983d3e2aadbafb24c699f658d3e3df3",
+      "reason": "branch addition outside unchanged main denominator"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+      "file": "loom/tools/resource_graph/projection.py",
+      "ranges": [
+        [
+          13,
+          54
+        ]
+      ],
+      "module": "D-resources",
+      "detail": "D-resources/coverage.json",
+      "source_sha256": "961d4de16293b1158b15fe210f04912c75249763ddb8ffe5be9d1b5bc0b8a3e1",
+      "reason": "branch addition outside unchanged main denominator"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+      "file": "loom/tools/resource_graph/native.py",
+      "ranges": [
+        [
+          17,
+          57
+        ]
+      ],
+      "module": "D-resources",
+      "detail": "D-resources/coverage.json",
+      "source_sha256": "d2630521f2100d745e646518803eaa035b9aab0126d3e536c1330332209f367f",
+      "reason": "branch addition outside unchanged main denominator"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+      "file": "loom/tools/resource_graph/__init__.py",
+      "ranges": [
+        [
+          1,
+          4
+        ]
+      ],
+      "module": "D-resources",
+      "detail": "D-resources/coverage.json",
+      "source_sha256": "d613ec73e8725a1b9f18d8c9848fe72856a4b99433852dea8f57802516d49c70",
+      "reason": "branch addition outside unchanged main denominator"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+      "file": "loom/data/resource_graph/access.json",
+      "ranges": [
+        [
+          1,
+          27
+        ]
+      ],
+      "module": "D-resources",
+      "detail": "D-resources/coverage.json",
+      "source_sha256": "c6595cc214b9974fbabc247e5ad4b07f9c88a0ecea03dafe3acf07c08ded2643",
+      "reason": "branch addition outside unchanged main denominator"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+      "file": "loom/data/resource_graph/parsers.json",
+      "ranges": [
+        [
+          1,
+          17
+        ]
+      ],
+      "module": "D-resources",
+      "detail": "D-resources/coverage.json",
+      "source_sha256": "aae178e8200692ee8025aaabdd8babc3eedce98cc215fcd9390c74581d6a3960",
+      "reason": "branch addition outside unchanged main denominator"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+      "file": "loom/data/resource_graph/projection.json",
+      "ranges": [
+        [
+          1,
+          9
+        ]
+      ],
+      "module": "D-resources",
+      "detail": "D-resources/coverage.json",
+      "source_sha256": "c49039fdb3e4a8c20f2a438cf260cf46928ba712e88dfc8d188c06ebf9c744b7",
+      "reason": "branch addition outside unchanged main denominator"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+      "file": "loom/web/src/graph-perspectives/types.ts",
+      "ranges": [
+        [
+          1,
+          191
+        ]
+      ],
+      "module": "E-perspectives",
+      "detail": "E-perspectives/coverage.json",
+      "source_sha256": "2a91905b8ff1b3d6b356ac473ad264d4b952a01ecda5a083f31b136d8ad155df",
+      "reason": "branch addition outside unchanged main denominator"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+      "file": "loom/web/src/graph-perspectives/plan.ts",
+      "ranges": [
+        [
+          1,
+          83
+        ]
+      ],
+      "module": "E-perspectives",
+      "detail": "E-perspectives/coverage.json",
+      "source_sha256": "4da09cd4fee7d1c09156d1e735d2d941780248d809a7e091128f089ddaf0d7d1",
+      "reason": "branch addition outside unchanged main denominator"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+      "file": "loom/web/src/graph-perspectives/select.ts",
+      "ranges": [
+        [
+          1,
+          188
+        ]
+      ],
+      "module": "E-perspectives",
+      "detail": "E-perspectives/coverage.json",
+      "source_sha256": "a8e019a12cba5de565c12674772935584bd97d4f6c2c3cdd921623733de79fd6",
+      "reason": "branch addition outside unchanged main denominator"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+      "file": "loom/web/src/graph-perspectives/adapters.ts",
+      "ranges": [
+        [
+          27,
+          280
+        ]
+      ],
+      "module": "E-perspectives",
+      "detail": "E-perspectives/coverage.json",
+      "source_sha256": "2b56ae8fe25441c4ed8e65e8a9f7de70b44fae55c3f0098ba667b6f10493e772",
+      "reason": "branch addition outside unchanged main denominator"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+      "file": "loom/web/src/graph-perspectives/native-layers.ts",
+      "ranges": [
+        [
+          6,
+          60
+        ]
+      ],
+      "module": "E-perspectives",
+      "detail": "E-perspectives/coverage.json",
+      "source_sha256": "371be34173a323dd6a3d23be9644f27e3834f3177d276a059c9a51f1f0da5096",
+      "reason": "branch addition outside unchanged main denominator"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+      "file": "loom/web/src/graph-perspectives/navigation.ts",
+      "ranges": [
+        [
+          3,
+          30
+        ]
+      ],
+      "module": "E-perspectives",
+      "detail": "E-perspectives/coverage.json",
+      "source_sha256": "4d4b653751c22f12b3d31f06d1313f188c0a9b9be85a4f0900bb35b32083aaed",
+      "reason": "branch addition outside unchanged main denominator"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+      "file": "loom/web/src/graph-perspectives/persistence.ts",
+      "ranges": [
+        [
+          6,
+          36
+        ]
+      ],
+      "module": "E-perspectives",
+      "detail": "E-perspectives/coverage.json",
+      "source_sha256": "bee0ce2be7f8ff7eee0305afc656d77129c4a81997ae743a1e8a7eb648ba2e6e",
+      "reason": "branch addition outside unchanged main denominator"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+      "file": "loom/tools/resource_graph/native.py",
+      "ranges": [
+        [
+          17,
+          56
+        ]
+      ],
+      "module": "E-perspectives",
+      "detail": "E-perspectives/coverage.json",
+      "source_sha256": "d2630521f2100d745e646518803eaa035b9aab0126d3e536c1330332209f367f",
+      "reason": "branch addition outside unchanged main denominator"
+    }
+  ],
+  "total_prior": 267,
+  "total_additional": 32,
+  "total_with_ranges": 299,
+  "total_denominator": 1027,
+  "total_still_without_ranges": 728
+}

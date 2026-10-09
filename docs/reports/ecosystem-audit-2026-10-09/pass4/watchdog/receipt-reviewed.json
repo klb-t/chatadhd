@@ -1,6 +1,8 @@
 {
-  "command": "python tools/ecosystem-audit-2026-10-09/pass4/watchdog/run.py --repo CHECKOUT --sha SHA --out RECEIPT.json",
-  "receipt": "receipt-reviewed.json",
+  "schema": "klbt.audit.pass4-receipt/1",
+  "repo": "klb-t/Watchdog-JH16",
+  "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+  "categories": "PASS reproduction proves bug, never product correctness",
   "cases": [
     {
       "id": "A4-WD-001.A.schema-drops-method-pin",
@@ -102,5 +104,34 @@
         "attemptedExternalConnections": 0
       }
     }
-  ]
+  ],
+  "evidence": {
+    "schema": {
+      "rejectedAtSchema": false,
+      "stripped": [
+        "method_spec_id",
+        "method_spec_hash",
+        "personal_credentials",
+        "plan"
+      ],
+      "apiPathStatus": "COMPLETED",
+      "directPathStatus": "FAILED",
+      "apiResultCount": 2
+    },
+    "reuse": {
+      "sourceMissing": 1,
+      "manifestMissing": 0,
+      "manifestFlags": [],
+      "manifestInputHashes": [
+        []
+      ],
+      "exportMissing": 0,
+      "sourceReferencePresent": true,
+      "resultMissing": 1
+    },
+    "duplicate": {
+      "forwardHi": 25,
+      "reverseHi": 50
+    }
+  }
 }

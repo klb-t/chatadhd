@@ -1,0 +1,1025 @@
+{
+  "schema": "klbt.audit.pass4.artifact-manifest/1",
+  "entries": [
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/B-native/CHECKPOINT.json",
+      "size": 737,
+      "sha256": "6232801151fc84bf3f4214a87273170fc320953d157eb89b2610258abdf6c7da",
+      "git_blob_sha": "5ab1a607f634cd81898c25226903c15b5d03a901"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/B-native/REPORT.md",
+      "size": 7147,
+      "sha256": "8c4b17ea1bff9b9c5371a4f4081a4e002438c964f57d8f01a2f29b7218fa7f73",
+      "git_blob_sha": "d1053de4405bd33212d57095a62b26499baf90bf"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/B-native/acceptance.json",
+      "size": 1698,
+      "sha256": "505cdfb1a44cccd845bb9c8b46f6ab4c08cbc63d2a5e505fdab0c52036c4a8b7",
+      "git_blob_sha": "2b1678f45bd95e9911e6669b659eda4766b6e05e"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/B-native/compile.log",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_blob_sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/B-native/coverage.json",
+      "size": 8875,
+      "sha256": "acbb23c2a698a6d916408cbb55d262de8fcc323b4a2ab9b99928ef24b5e5e8cc",
+      "git_blob_sha": "5abaeb9b7dc32c992e087e0dfd63acbf71515e9e"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/B-native/decisions.json",
+      "size": 1031,
+      "sha256": "0a86853be25c70ca87c9ad3c519fe2404ba669920dd0c1fe4e412622fdb36e56",
+      "git_blob_sha": "b36435b76789a1d86807d8eb491ff27700698b7e"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/B-native/findings.jsonl",
+      "size": 7475,
+      "sha256": "c15bbe9d79c0ad0beade0f8fe582d4ec2af8b4319f162de6e57a27c9d31b7cc1",
+      "git_blob_sha": "334a2e6f68de0035d6cc2e138307ef3e49da880a"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/B-native/fixture.json",
+      "size": 1595,
+      "sha256": "33d8ea92353b68483ae1e5f6b20bc7067c2b43949729cfaf85a960041ecdc27a",
+      "git_blob_sha": "f4ed2557aa8f1e9815cfa9d8873d4f84b6173083"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/B-native/handoff-B.json",
+      "size": 2939,
+      "sha256": "830d23f3f77da9627bd8235aba91e9a3c2b0cc9c84c2be0e284cc1abaff27705",
+      "git_blob_sha": "772e9b3b91784e7f51334bb2fd77324ea75d41a1"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/B-native/link-closure.txt",
+      "size": 64404,
+      "sha256": "6a5eb846e1a7171cf86f43fa8ea2901c03116a93243a11a058d455cbbce95120",
+      "git_blob_sha": "ccc92146923d347bfe64c036c3af757a42038519"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/B-native/link.log",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_blob_sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/B-native/object-manifest.json",
+      "size": 24820,
+      "sha256": "25352ec3f4cae847709bf256d1a2d0be7c09ab2f73e47b9c155856ca3f1bd0fe",
+      "git_blob_sha": "712f09c15c592f08e5dda9b70e72ccabddd04163"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/B-native/receipt.json",
+      "size": 935862,
+      "sha256": "c26ce84689949e9a8b9a4b2e10085ca3e461b8c795b4c3702af7b0c023b5d9fb",
+      "git_blob_sha": "d91994bead49a75f80aa64be59bc27e7c5791c46"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/B-native/relocation-gate.json",
+      "size": 4959,
+      "sha256": "3615bafb414c112f7f375d33ee76bd99418e1de687648afb37fa72bf02883c8b",
+      "git_blob_sha": "588158387760cb78d908f15baa655a1e9250e2ba"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/B-native/relocation.json",
+      "size": 4959,
+      "sha256": "15e64ceac1ab4aadef3c8af09655ad184e479b9a9a6a02897a65fd1fc2425d0d",
+      "git_blob_sha": "865756e4c4dc311f1e6f45c1c589ea6c059f6ad0"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/B-native/shared-exports.json",
+      "size": 3067,
+      "sha256": "63902220ad4d88ab1808b45e6e373c14203825eeb3ff32a4c8e448b0fcdc0235",
+      "git_blob_sha": "7c9fcb055c323a5b67e8440f1a3caa38a2514c47"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/B-native/test-index.json",
+      "size": 2298,
+      "sha256": "47ec264dfb573a1b058d7fbd17391b79d428b5028756bcf2f8b47c4f58994239",
+      "git_blob_sha": "3aa87b95a76833012f6221c3060ca7c24efae5df"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/B-native/unchanged-consumers.json",
+      "size": 1403,
+      "sha256": "134345d15eec001b1299856e33913921fbef3364101138275b3bb56961d84be7",
+      "git_blob_sha": "956ca5c89f1a709b0e268c72854b03ed0a2bca7f"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/REPORT.md",
+      "size": 8209,
+      "sha256": "59ee5b3c6859d6fa565a01877ab88225f50568aad99b9dd2c616019d2821cb58",
+      "git_blob_sha": "f37075bf74e5371cc2a49a76e5c216029fb79024"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/acceptance-queue.json",
+      "size": 3412,
+      "sha256": "493ec98d83089d37cf6db4e1dffd8189f5d80510861a3aec3863749afecd141e",
+      "git_blob_sha": "ffc424ba9738b53b21676114747cae365124d0f2"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/coverage.json",
+      "size": 14875,
+      "sha256": "c1a0be1c77a50e4f62f5a02648236b485acb47a3ddd8dd760eafacce252f7c85",
+      "git_blob_sha": "ad307ed4cb1f1049c9ef5380e9b6d9b26ee54af5"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/credential-author-tests.log",
+      "size": 98,
+      "sha256": "429713d745f94fcff7de16bd66a69491334c535b0db47029a0acd6f51523e232",
+      "git_blob_sha": "53eb4c7291549e662a406e8d191b8e2d5034fe43"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/data-graph-runtime-map.json",
+      "size": 1223,
+      "sha256": "6337232bed8d15137bedc3983b8e0748e48220e117a0e84c3851995820476db9",
+      "git_blob_sha": "f815f412185ae6ea7d0012e78c5f5aa0ab92f938"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/findings.jsonl",
+      "size": 12384,
+      "sha256": "a7f0abb54315c78f9b5e59ed55701ad9882f0a827dff133f18d31a6b9d0f3c99",
+      "git_blob_sha": "6488ca5ff81be682478d25eb40c703cedb765ef5"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/harness-history.json",
+      "size": 1022,
+      "sha256": "df88e0ce700f502feb3f2744e6062ee5fd88bf93d7fba3862f571b02909441be",
+      "git_blob_sha": "ce2eba9b87b0008d04c49473b1c030b92a56b920"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/manifest.json",
+      "size": 4960,
+      "sha256": "510821013f381968a9c0649d198f9b6ff09ffa4b55758c8496ca29cdbef6f73c",
+      "git_blob_sha": "0218af7aca3cc299f81ddc1ae6d9dc32b8aec42e"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/packages-for-owners.json",
+      "size": 6130,
+      "sha256": "b4dcddd74f7fa72f80fed332f52ef972d96666effc8ed0871c17aaa999c92972",
+      "git_blob_sha": "bb8d5cd490fa317fe2580b275aec119329ee0471"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/receipt-final.json",
+      "size": 11642,
+      "sha256": "8ef2436be0e056d9c93260f2da19bcb9b373828b41b537552ea461b44dd32b87",
+      "git_blob_sha": "9ba305a70df7c32a692eb730fc233e97a066622c"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/receipt-initial.json",
+      "size": 7141,
+      "sha256": "81cdbd72108ae2eaeaa1355d3e520a557c937f602fd2d9bb0f02f963453e1af6",
+      "git_blob_sha": "9a989fb6d0ef712c7443773c9dc8c355f85355be"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/receipt-verified.json",
+      "size": 13581,
+      "sha256": "1b71972748fdf5831c2fc760773a3a97f284176aabac7cdd7cc85def59e45e11",
+      "git_blob_sha": "3fd69656c7409f27726298c8bad3b0539460a018"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/receipt.json",
+      "size": 10947,
+      "sha256": "4d4806df555d3f31470f3c3bd6b8cfa80ec44df9968e0a53f712dbb97aea2792",
+      "git_blob_sha": "00b953e2c2c93814e6264f76b366a7bb2bbe5c34"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/registry-receipt-final.compile.log",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_blob_sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/registry-receipt-final.json",
+      "size": 3224,
+      "sha256": "e8eaefebc6642916f54fa1be8ac35d5ba7ab3ccb9beb09e97c8ee390579ead3d",
+      "git_blob_sha": "151678f5e4a1c89ae587577adf15b40378f87f6c"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/registry-receipt-final.runtime.log",
+      "size": 511,
+      "sha256": "53fe2880a15037fc74c442dfd14916441995f1685de53450e9f088dab5ab72dc",
+      "git_blob_sha": "5d1efb28d4c701a67256ac7e965598cfa8413afe"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/registry-receipt.compile.log",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_blob_sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/registry-receipt.json",
+      "size": 2862,
+      "sha256": "b374e9a1ed35a51b595585a4472d57da51f99f70a7013647cbdadc3a1498d2c5",
+      "git_blob_sha": "6eccd594b080a3605729f14d159543e4a7c1b7f5"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/registry-receipt.runtime.log",
+      "size": 511,
+      "sha256": "2c4097e7dc3f21941604ba7df99dfd13a074bd49182709cc0ce00bd9bb17d5d2",
+      "git_blob_sha": "fa026fa052827c233884711511782f09cb31173c"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/source-equivalence.json",
+      "size": 2131,
+      "sha256": "a6bad024c936d70c604c41989afe8fb5be4f51d442e8f46603bc43379780444c",
+      "git_blob_sha": "c27d363ed802f25db39ecb47edb418fd99a53571"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/test-index.json",
+      "size": 1872,
+      "sha256": "f8cabfbce587c0a8234e4480156cbd430364f7dd04b0224bceef1b187a60ee01",
+      "git_blob_sha": "5973201b5932f45ca860908b20c0ab24544532cd"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/validation.json",
+      "size": 306,
+      "sha256": "ba03d454f04f3be2ede5f1cb281a57e70ea835abfcd8cca29ebfec2645532e0e",
+      "git_blob_sha": "ca4a9e738fd6eee146795a28c39beff60a34e37d"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/CHECKPOINT.md",
+      "size": 834,
+      "sha256": "ec65c65f79e56cc922409d4dfb867888b4144ce23579f91e524caee31781ac81",
+      "git_blob_sha": "d3593aa9969f27ed7b46def117174279445484e7"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/D-resources/D-E-generator.json",
+      "size": 505,
+      "sha256": "d33f7adf9193895ee50ff4d61a411332a3c74fa4865f9eb419fbc8adfb085a19",
+      "git_blob_sha": "77102b5dffc54ff5163ac361b505a1b50a841bbd"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/D-resources/D-E-packet.json",
+      "size": 110069,
+      "sha256": "2014e2de410fbb4e5792d6bd781cfe254553ac685f6b81f96d636909f88e27a9",
+      "git_blob_sha": "cdec6215b06ba644bbe593448825da40e5bbfe1d"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/D-resources/D-E-source.json",
+      "size": 1657,
+      "sha256": "a10d63634f6aad673d3d2a4e5c57dc78ab621d3e8dd8d4e3b7388d6723328b63",
+      "git_blob_sha": "e4dee1c8f592e166e17685a30bf91dff41852aed"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/D-resources/REPORT.md",
+      "size": 8352,
+      "sha256": "d2408aecfd6be466f3db905f3e3b70966e121cbb2a1b9c5178135448789d47f9",
+      "git_blob_sha": "792b05ee390f68bc58d455584bc4f86eebf62244"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/D-resources/REPRODUCE.md",
+      "size": 2730,
+      "sha256": "f77d8c4cc81e066faa4d425cc1386315dd217932c28ea40971af1fc17a5e48c4",
+      "git_blob_sha": "744487b0fa50223d56149a80f717f18a7317ca86"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/D-resources/coverage.json",
+      "size": 9121,
+      "sha256": "27354ee5db44e4258840f4088a5ce3c00f93b11dfd9ccfc4ad74041b865bed2c",
+      "git_blob_sha": "6a68e58c9d5aa6471eb6378500ab3d8f6be7721f"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/D-resources/discovery-probe.json",
+      "size": 307,
+      "sha256": "c9aaa234099873d48e7747b7af90304dbc9eb3aebb463140061be9b1356c07b1",
+      "git_blob_sha": "aa8eb37b3902a7bb54bafff5b9f749dc0b7821d1"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/D-resources/findings.jsonl",
+      "size": 9546,
+      "sha256": "be73ba3a8be87b83ae277f46ecdcb76983189909e2358bdaff8d3e547295d078",
+      "git_blob_sha": "f69db30c20ad582b5b47b3a5e2999f25ad755264"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/D-resources/handoff.json",
+      "size": 8804,
+      "sha256": "91135a5c1fbddb83e1ffacaf6cd0592d9a72688fb6534e5234e994a8d9eaf713",
+      "git_blob_sha": "b76f91acf45a0b29493fe0d9bccde234c0e12eb9"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/D-resources/receipt-B4.json",
+      "size": 18149,
+      "sha256": "e4e4c662b3530f45f3b2606c93dfc55e57cd9cf54bfb09efc617dd1aad63fdcb",
+      "git_blob_sha": "00db933606a332ea52713226357637490a8df4b9"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/D-resources/receipt-main.json",
+      "size": 18149,
+      "sha256": "105d8641a63721407ae7f22519dd1cf3713c622ddf9d168aa984b7156122da41",
+      "git_blob_sha": "46f97ae3025eff33265baa14a6edb83355b6246d"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/D-resources/test-index.json",
+      "size": 6489,
+      "sha256": "2ebc0b2f7c624a2f1a2bfd05e4543be568a055e51883c584b33505f25ed5d1d0",
+      "git_blob_sha": "429641f46fe3251f2ba94f3eb1dc63616d13f5d3"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/E-perspectives/E4-initial-invalid-pack.log",
+      "size": 725,
+      "sha256": "27d3b32267cd36e361b16be4ae9b0689481a1d396c7848c3072ce53df3f57cdb",
+      "git_blob_sha": "23713dd1aef855cd574c411ed0530e599467bff5"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/E-perspectives/E4-results-initial.json",
+      "size": 13558,
+      "sha256": "47f864cbc063f3272e7b6085490cbaa5f51bba7558fb1c9c58a49bbc68b00b0a",
+      "git_blob_sha": "ece962b50da83d3e77b60fe348b32e6f6512b1fd"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/E-perspectives/E4-results.json",
+      "size": 14963,
+      "sha256": "b60334d89a3835d9bc491fdde59145ac28b06747d45308c6455543d6402d43f1",
+      "git_blob_sha": "cf5b751687d48dfbca0b6ff54a4f1acb55eb0d97"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/E-perspectives/E4-run-initial.log",
+      "size": 33,
+      "sha256": "5a2ceb2e0e981ad936e2530378e036d288b260781f12e76fda56ad87b6d8ae45",
+      "git_blob_sha": "1f26cce89ae2aa52985cd9b20319b7612dacd0b5"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/E-perspectives/E4-run.log",
+      "size": 33,
+      "sha256": "853b74e3b6ea70c96a81ca533baeeb517c0189ab223e6ee8f3c7e9485635657a",
+      "git_blob_sha": "a54ce1ce0d5f01b025f957cbd1212adb952e71a0"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/E-perspectives/REPORT.md",
+      "size": 7416,
+      "sha256": "e0233ccaf3438789ed023025eedc71591e0f4766d6dc31ce92237d874a67ef79",
+      "git_blob_sha": "9ba2ed62891094ee46c421600b1e2fe284693c15"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/E-perspectives/REPRODUCE.md",
+      "size": 3817,
+      "sha256": "c8c315b7da7f711c851098448b0fb8a1ba0066daa5156a78b4b0947853faa0ea",
+      "git_blob_sha": "b25415bbb35bbc793b7b45a6de552c5679d3075d"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/E-perspectives/acceptance-queue.json",
+      "size": 2029,
+      "sha256": "19b2f2f1aa2c15ef646e9a718952399faa9ed49cc6ed5432f2ee886a250aca9d",
+      "git_blob_sha": "31b5f9b81717d8f2cc3a717790781f492c240666"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/E-perspectives/browser-environment.json",
+      "size": 159,
+      "sha256": "b9ad7e7a4d160ea9b32788a2788889bb43e3995d2021ba90971aa2e0896645a5",
+      "git_blob_sha": "0c8ee7fc4d2f4a20528d7472e17919198c563b40"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/E-perspectives/coverage.json",
+      "size": 16393,
+      "sha256": "0614c40cf502090e98072ba56f2bc07c0fad1b604427a2487f5d3e85f89ac9bb",
+      "git_blob_sha": "ea410e936a358b9b58d6a6e05c2038886ee33455"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/E-perspectives/d-native-packet.json",
+      "size": 118152,
+      "sha256": "d612d9b5ad222fadd26b634be5123b425feed75b2b2dc4f8f795b7eb315f0d60",
+      "git_blob_sha": "531edcfa3cba683f5c5979dfa2189578ca0b8d43"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/E-perspectives/delta-review.json",
+      "size": 2098,
+      "sha256": "3e20a061b1e0367f30b040d7da78d428caaa91e08d581f3000ac911354afc3e6",
+      "git_blob_sha": "a5779136e188d0710032416e178e013c9f1ae1eb"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/E-perspectives/findings.jsonl",
+      "size": 19593,
+      "sha256": "786bd699b47216a7da8ad3f46fd0b29128b861a2c22a89c564ca7cab52c8c55e",
+      "git_blob_sha": "0e42fc09be6a04d503e324409d5019484d09817c"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/E-perspectives/handoff.json",
+      "size": 10458,
+      "sha256": "1726c748a49b550a0622a5cd5cd8e918a172cad115a332a39091be29809fd247",
+      "git_blob_sha": "25defbbea8343d904a78e4507af792dbc247dd86"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/E-perspectives/harness-review.json",
+      "size": 1654,
+      "sha256": "fb07c03fd3fcb4d38a20b523df6fbea9b6b861c05fa5c321794b4dfe43452a27",
+      "git_blob_sha": "80fd8060368045b9baec1e4fbd414a93aaa6f197"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/E-perspectives/perspectives-main-corrected.json",
+      "size": 6456,
+      "sha256": "5873ffa1d915ff41797934c48febdce05527b20a667160d24d4c333cacb9256b",
+      "git_blob_sha": "74eac740c3ed27080913a888d69eb528cf2dde73"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/E-perspectives/perspectives-main.json",
+      "size": 6456,
+      "sha256": "f4fc11e3daa86eef8158e2340560d08ecc0e43608c48c386addfbcae5deee5dd",
+      "git_blob_sha": "2fa9a7d0ae92235cabed3da1045543bae3436d32"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/E-perspectives/python-main.json",
+      "size": 7252,
+      "sha256": "a74c56a9534681158fcf5724de2ec78feac7a4d350f0c54b31101ca61e6bf12c",
+      "git_blob_sha": "8c8e4b69cf05c512fa9d7aedaf8bf2b3e514b843"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/E-perspectives/ssr-main.log",
+      "size": 2232,
+      "sha256": "6b0f3b6e73df5dcd0080ceb368b4441be414170cabd7c1d9e8baceecbb6b3a2c",
+      "git_blob_sha": "e027ee2e2823486523162a021ef0ed903ebe1972"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/E-perspectives/test-index.json",
+      "size": 9584,
+      "sha256": "6d8f13a65897500923e662d3bc06f28ec437cac3b414653dabf8cf6c1f5906d0",
+      "git_blob_sha": "47e8cdead53a6bc12b12eee8348c083ee82f9966"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/REPORT.md",
+      "size": 10955,
+      "sha256": "27565a2c974800b0cb423d7875d08f645eb207549246f37cf3d1c6fc171ab8ef",
+      "git_blob_sha": "2eaee304d8f14753280932a95b59df539a2a7c4c"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/REPRODUCE.md",
+      "size": 2834,
+      "sha256": "5878c17d40ccda3d6903714497f8a336a32203985429e4f0fc8a4b87787e70f2",
+      "git_blob_sha": "e7307040a85ec20aa00883254a1bc740ea67d8c8"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/RESUME.md",
+      "size": 2848,
+      "sha256": "ac87f6e2731837f20def824f0ba1b0539a27ff96da39d8a9b31fbc8344ea64a0",
+      "git_blob_sha": "e154b359a362488c6b6991cc2e710ef58e0044e0"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/TASK.md",
+      "size": 4396,
+      "sha256": "b1755fe65b9b7e1531e04ea6c7259ce0fdf368fe2ce5687da49b6e728206b4e0",
+      "git_blob_sha": "32175837225d48689fc69e7d0db6a835076d02c0"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/acceptance-queue.json",
+      "size": 8655,
+      "sha256": "da4e07b3f377f44e26cf6486dafd455c8fa17fe7c2634ba1906f097db02506a4",
+      "git_blob_sha": "3e0ddac183c9049e84ae1911ef8adb09512cd54b"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/ageds-lem/REPORT.md",
+      "size": 5261,
+      "sha256": "3c6046c09d14a774bb25eeac2cf6299937d63694bba07197ea777f8dbd72afa3",
+      "git_blob_sha": "82a6c6f5948ccd61a313435db33711934690a2dd"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/ageds-lem/RESUME.md",
+      "size": 1232,
+      "sha256": "8a46ad805bc6d57a8036c30efc58a50b6b29f8f19c048148581c6a9637faea89",
+      "git_blob_sha": "5867af618d0ebb70dfa7b29c6ab2fc3ccd8cfa9c"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/ageds-lem/coverage.json",
+      "size": 13155,
+      "sha256": "6a43f7bbe25db10d56a9dd7810c0500a4bd1a9514a578f0129067b7e06f9b25d",
+      "git_blob_sha": "8e269e6f50b5c86e5cbc0cd3a8d86a02b5c1969f"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/ageds-lem/findings.jsonl",
+      "size": 11067,
+      "sha256": "7f2ed4592debdab1f53ed0886113ecc35fb6bedb83e37308a08be57158f6b466",
+      "git_blob_sha": "40d88255ef7067f45da521d2e3e6ab8e716a3fd5"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/ageds-lem/handoff-B.json",
+      "size": 4204,
+      "sha256": "f29eb6fbb312846a59640939cda0bfd8a33e48d671f550f75a8e51832101dcbd",
+      "git_blob_sha": "09d8c55ed17719744dc87f85c865edb21a12bb9d"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/ageds-lem/receipts/ageds-js/receipt.json",
+      "size": 581,
+      "sha256": "9ddae1d086b6cd55d231fcfe71fe3dc353a6f6cc6c3cb2e767e64f142c0a2e83",
+      "git_blob_sha": "7a3474810daed045b13d9bcae57b919b0089e611"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/ageds-lem/receipts/ageds-js/results.json",
+      "size": 2591,
+      "sha256": "6b5aab5ee3fdf0d6f2e15a2efc94fa319126fd99a616e64e9d7c7adf1d9a483e",
+      "git_blob_sha": "9455b10e431659342b5cf3973ba55e76fd64078d"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/ageds-lem/receipts/ageds-js/run.stderr.log",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_blob_sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/ageds-lem/receipts/ageds-kotlin/compile.log",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_blob_sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/ageds-lem/receipts/ageds-kotlin/receipt.json",
+      "size": 2663,
+      "sha256": "9260ce2907f0295df8ad45e81ce40f8b439b1d8e4c6ec10ef1d8cc589f2c03d9",
+      "git_blob_sha": "cda04d7d5692dd3490c2c8cf3b87965e53a0fcfd"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/ageds-lem/receipts/ageds-kotlin/results.json",
+      "size": 2449,
+      "sha256": "5e14bdbe595f003cc92f93dc85ec4dd6766f413939b84844955106a6b938d23a",
+      "git_blob_sha": "16656f5ac83b15984d9c569f9be0213d3601b62e"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/ageds-lem/receipts/ageds-kotlin/run.stderr.log",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_blob_sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/ageds-lem/receipts/lem/compile.log",
+      "size": 1807,
+      "sha256": "a3e31096c097f670feeb8b170fad47d96f538853d19943677e33e03c93edd3c3",
+      "git_blob_sha": "4cd76ed9c1ef099c0c581a68d480879815d853f6"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/ageds-lem/receipts/lem/receipt.json",
+      "size": 5000,
+      "sha256": "b0b06b03eebd1ad2e7bc894950478d7e31229c5183c6e985d19c07843b66f7fa",
+      "git_blob_sha": "6816f5c0329d9d87f147d9eb869e623cdb93eeff"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/ageds-lem/receipts/lem/results.json",
+      "size": 4766,
+      "sha256": "4951e847dd5d9dc4c811991996d1e1c594c245549a2b4dd4cf318fb7842949ed",
+      "git_blob_sha": "b5aaa61b0e49450d69946d2a9434be6b7983048c"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/ageds-lem/receipts/lem/run.stderr.log",
+      "size": 434,
+      "sha256": "66166edb231d78d39180a6c30d847854af6483eef2a13e4c6489d4c78ef28b02",
+      "git_blob_sha": "f9698c4aba522235e702bd117719ea4aebddea6d"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/ageds-lem/test-index.json",
+      "size": 2391,
+      "sha256": "376b454635dbde464609dee61478cbf81c326a17f86d71428adb303c119ba286",
+      "git_blob_sha": "f73b6c917a1dffa36657b9e87b6798cb6de63832"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/ageds-lem/tool-manifest.json",
+      "size": 913,
+      "sha256": "8f8ab4eace418fd3f9c701f52d4eb817a3a3385d39985e4de0f43b3e6cb046a7",
+      "git_blob_sha": "ec18f462d3c43b3f40f6a24d9f9ccfb80037ac9e"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/ageds-lem/validation.json",
+      "size": 881,
+      "sha256": "99f4badec457ba74da61f80d450939b91d03ae7ae53db2733d6b3e375463f2c6",
+      "git_blob_sha": "5e1ef7953b5c05d580afbda794ae796d22e55b97"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/backlog.json",
+      "size": 7449,
+      "sha256": "d64119884eff0b036aec4d7bd8fffb26c42fb25b3e2f71a4a96f9e028c5bf278",
+      "git_blob_sha": "a2c09fb2843fca9489fea9209bd3c9bd8e1a869e"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/baselines.json",
+      "size": 1330,
+      "sha256": "5eeae294d325f7aea18dcdb142f163817ad328346e927c1461085a3fe9ddf7a7",
+      "git_blob_sha": "52e915696cb42042ab45012213293805abebd5d4"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/checkpoints.json",
+      "size": 1098,
+      "sha256": "62bded6efa5fbc3fe33214fbe45ae27c855f0209c8921c5187aba2f557117370",
+      "git_blob_sha": "6d2a6ce94c138f37e2db20ed0f6491831509bdde"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/ckp/REPORT.md",
+      "size": 4637,
+      "sha256": "6029e552d49540f05ed80cc505fe655a30062f8c8680122d96f6e59c163a528e",
+      "git_blob_sha": "08899a441a026eae8b8fb01a4b33eead42b3829e"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/ckp/checkpoint.json",
+      "size": 549,
+      "sha256": "f59942435578e3aedf7967ecc3b5489a14f864015f176ee63f458c6298f1e29d",
+      "git_blob_sha": "a1acde2b7194a7f15847484ea4290207dd3a2c1d"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/ckp/compile.log",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_blob_sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/ckp/coverage.json",
+      "size": 19660,
+      "sha256": "3b2d10e629ad985e13ef7c4627e014f83091092ebf51a10b4d93b3a693711580",
+      "git_blob_sha": "10c4095a172c8d5658fbc1dfc67e0c1204a906d7"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/ckp/decision-register.json",
+      "size": 1593,
+      "sha256": "0ab4c43a1e76b23117fafc23ae4cbc65ec13f516cf22e7fa564ad52938556edc",
+      "git_blob_sha": "e1f52f04cbb39a578cc30a02700cacff97f95ee1"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/ckp/findings.jsonl",
+      "size": 15734,
+      "sha256": "d9e1f912f1e03b66ec1b1c6de450282cd0a362340cc4d3616fc633135acb6acf",
+      "git_blob_sha": "3b853da5d42f20762d857c1762bae078ea8d4d39"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/ckp/flow-map.json",
+      "size": 1795,
+      "sha256": "6b445a4abb9b0a4572f2bafb36685a8d8f99afc1f4971180aca8563513799be0",
+      "git_blob_sha": "fdea585f83fe653503242dea348d45c7d5dea173"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/ckp/handoff-B.json",
+      "size": 4624,
+      "sha256": "8c42044e92b19cdb94c20018d4e1944e43811c81e8f08d098e46dfdd355081cf",
+      "git_blob_sha": "e7dd2168f0671cea8f290f395678f79eac715d26"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/ckp/host-receipt.json",
+      "size": 10538,
+      "sha256": "c8fd7984d1e260be5c922d641f161748042560f503beae90c294346bd509e20a",
+      "git_blob_sha": "b5656ade0daca2260780919565798cb76a871716"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/ckp/peer-review-watchdog.md",
+      "size": 4778,
+      "sha256": "f0e10bead4e012a5dd701a3c3bc91f22f915034f2a995a614d4c090996eba4b9",
+      "git_blob_sha": "12810694781cb45227a4bfb2ba2c7d812f2c8ea7"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/ckp/resume-queue.json",
+      "size": 1389,
+      "sha256": "b24f8e4e315b1238c1b3240e7a8619bc2e3ee2e828466504b6c889dc3090cda6",
+      "git_blob_sha": "0a02a9190e69004b694151b80e957d680fb3dc93"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/ckp/runtime-stderr.log",
+      "size": 378,
+      "sha256": "464758a068d9e70f9a9d24ff88c5753020c0c6b22e534762db8f588451d13924",
+      "git_blob_sha": "03d35c3d70900e68e2c062401556c6141ab34a00"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/ckp/test-index.json",
+      "size": 1406,
+      "sha256": "ef921775b251cb760f683350bb0eb1d16d7e1a0d68280ce9be304ed0103f49b9",
+      "git_blob_sha": "b910b4cacc3321125fb8e39fa558c98cb94b117a"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/coverage-index.json",
+      "size": 96762,
+      "sha256": "a5b3d22f3936f49da07aa22c4197e562aded13199986b56b332084be8c2dc860",
+      "git_blob_sha": "20376fc5519d8b1b9c664f7ed289287ff6e0467a"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/coverage-validation.json",
+      "size": 53,
+      "sha256": "f93570ae38093abba004386065a5e68bb36a0b37ea9a12d45400fadf67c32c55",
+      "git_blob_sha": "5d1d6bfd7613559e8d5d17b86f062262d72f344a"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/data-graph-runtime-ui.json",
+      "size": 2873,
+      "sha256": "d7b943bb1b37188d43c1074e4eb0188b4a38901cdf8a773c09b6b52e0edadf7d",
+      "git_blob_sha": "88b7c309a87f614a20bb1ec0d70134ee6d2fc57d"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/decision-register.json",
+      "size": 2004,
+      "sha256": "9f9a64d20ed5d785872064f4052b6fdb481f378959bbfd6d2aadb4662be925c6",
+      "git_blob_sha": "b1b90c2cdc4e482b94e5c5d0e9ecf02d3f560519"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/environment-cleanup.json",
+      "size": 2320,
+      "sha256": "8073a4d08ead5bce9a86f015881e47a29f073ede617624fb96696cde53cb1842",
+      "git_blob_sha": "f3967e9dd9d271da0427f3491225e9aea6872b70"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/findings.jsonl",
+      "size": 84347,
+      "sha256": "85e28cc1c4c4c01a75bcf89442322e9044714fbaeefb9ec2523ed6bf3d2ceef7",
+      "git_blob_sha": "f083fa2a7eb8bd483f6cc4d4945d979da737d7c9"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/requirements-matrix.json",
+      "size": 2374,
+      "sha256": "e228388794bb21555e025952a5f8439826567a129d411cf57fbd948e225bcb26",
+      "git_blob_sha": "29884a6e9e083ffb84886709b67b8a3ebf552a0f"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/results-index.json",
+      "size": 35898,
+      "sha256": "0ebb83edeaa9e3ff721f77088406d6c6ce513a3c047a391c688662b76df414e9",
+      "git_blob_sha": "daf7b6dbc016dea377ac641f88365702d64908c9"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/review/peer-review.json",
+      "size": 15614,
+      "sha256": "7d466283347c3b2a0eba724595c695bea7953ec750920ab1372dc5f6d2f26050",
+      "git_blob_sha": "a41d54cabceea29b81bad1ad42a6b164646e5970"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/review/peer-review.md",
+      "size": 4921,
+      "sha256": "77feb019eb19c7beff2de9a875239e6b339a6097c737190af433b9c08d8338c7",
+      "git_blob_sha": "2a7aa712ff1174e1bd8b53aec0889452fb78e92b"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/source-state.json",
+      "size": 1739,
+      "sha256": "269016dc8a1d6ad83541d3399a649eda29a723d22493feba81ad88a56d136988",
+      "git_blob_sha": "495698fb412bc936ca7fb71cac6559ec6e5fa426"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/validation.json",
+      "size": 300,
+      "sha256": "48ca99dc124799ddb3fc1006d993a148afbc78603eee7428886f9ec9798ae1aa",
+      "git_blob_sha": "24df136df80c0e098d109e1f80b9787a357234c8"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/watchdog/REPORT.md",
+      "size": 2390,
+      "sha256": "6b29e7160516aa6e481780cb30136a52ba492ad74df7d620dcaca44c280af87b",
+      "git_blob_sha": "8345f7e3633f086cd334f884c25cfbb72f482235"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/watchdog/REPRODUCE.md",
+      "size": 549,
+      "sha256": "4ad3c223b596c0df9b7241037796f1e7ac43713761dd8bab1cd0bb5b5e7df80d",
+      "git_blob_sha": "6173ea7d72cb1b9d8233871b87e5cd887c056fb0"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/watchdog/coverage.json",
+      "size": 7652,
+      "sha256": "87df4f19b388902c31e76f6663f90516403c8c349fd8a40334b66d952755cad2",
+      "git_blob_sha": "3a2f8431f52367b3dc76a582c9a4b7c6135c7b47"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/watchdog/findings.jsonl",
+      "size": 7748,
+      "sha256": "d19e778f7bb0bb18400aea5ee1e725d7ad7ecef01416657551a906aa97f7274f",
+      "git_blob_sha": "4748fd9eb1a7f45b6fbd9fead9e6304b2b3b2abb"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/watchdog/handoff.json",
+      "size": 8618,
+      "sha256": "7d599aa879607df183e348ab516ba37458207cd776ecfe4c7e6f3f897ab9f2d2",
+      "git_blob_sha": "9869889dc00d12a39dbb3c0f51e1704d1690221f"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/watchdog/harness-review.json",
+      "size": 508,
+      "sha256": "3c351484ef5780510b66841b41ee71363ea62c1212eb30347b102eded58feff1",
+      "git_blob_sha": "74f4ca59ddd19e573e0c0ac988f390c2b99344cb"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/watchdog/receipt-reviewed.json",
+      "size": 3891,
+      "sha256": "b5052a0e4a2e4441e3d22560d6d123e7b6064af14bfbfd1a5ea1210d64dffa71",
+      "git_blob_sha": "43db1b72aa8ac1ee48b7e0d333b466b61953c713"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/watchdog/receipt.json",
+      "size": 3891,
+      "sha256": "b5052a0e4a2e4441e3d22560d6d123e7b6064af14bfbfd1a5ea1210d64dffa71",
+      "git_blob_sha": "43db1b72aa8ac1ee48b7e0d333b466b61953c713"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/watchdog/test-index.json",
+      "size": 3231,
+      "sha256": "f07650b2b09c29d10f9e1a424d2ef63faf4689593ae2d5ecf4c1db026c4c8f81",
+      "git_blob_sha": "37ccd93e7f1f9de0686a33642b9084d785869822"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass4/B-native/README.md",
+      "size": 3543,
+      "sha256": "b9e5ea45e4015936439a0d27d88399ef5c785b4825a2dc1f001766b069fbc22f",
+      "git_blob_sha": "6799ad7deaacc3cde7ed05a4e27197a8b0bf90ea"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass4/B-native/build.py",
+      "size": 5210,
+      "sha256": "b13f63ad27cc0df9264e592640bc36b4969d2402bc9ed9a13e4bcfd0e8cb7b5b",
+      "git_blob_sha": "609d8453f24680811b12ee819f29daf72310d0ba"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass4/B-native/driver.cpp",
+      "size": 5249,
+      "sha256": "42e96b51d6f508b57bb2772423842744a80a763f3349867353a19805751de39e",
+      "git_blob_sha": "432b4f76a9b9bd428d331d473b62bf2e3936dabf"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass4/B-native/record_full_build.py",
+      "size": 2731,
+      "sha256": "2260d4d52ad8f5a834452d326579d2457ec0503beb387724f33639c6000aff30",
+      "git_blob_sha": "32b92ce7a12ea3778bdb36dbbc09ec14d40f9512"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass4/B-native/relocation.py",
+      "size": 2193,
+      "sha256": "c7bfb09c904af02378bce0da67ec3cb4383915688ac717ea4284cd20112a3614",
+      "git_blob_sha": "f5e51e147fdadbdee835e5adb816d537f0d5057d"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass4/B-native/run.py",
+      "size": 15065,
+      "sha256": "d8b82086645695a2afb2595f546676ecaad63c5790d9a890715c34c685aeb43b",
+      "git_blob_sha": "bdc167b53db7f8dfe2473ec55532548ec78f4eb8"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass4/C-boundary/README.md",
+      "size": 2175,
+      "sha256": "5d7b939b3de2196487837c1b87743af0d31c8b761b428ad43f90b1dbd5ef79f2",
+      "git_blob_sha": "f1e5f2dc587e07ec1e562361c89ec2259eca088a"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass4/C-boundary/registry_probe.cpp",
+      "size": 5496,
+      "sha256": "7653481932e7c3fe710e0d7d901dadc5958ad33c7cc7010b8c05f65436609691",
+      "git_blob_sha": "785c4ed612b029fd11ad520d722fb0c0c4eca1bb"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass4/C-boundary/run.py",
+      "size": 26062,
+      "sha256": "f4a06bf988ee55bd65845f0d768f683f40d94c7d3e4e21e538ad33f4df386337",
+      "git_blob_sha": "d763fe9b8d48b402fccd49f1203c3ef42b32fc24"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass4/C-boundary/run_registry.py",
+      "size": 4292,
+      "sha256": "7260db48c00d949f204bc9ae16bf536f9a3510f758ef884eca3edac10a098a98",
+      "git_blob_sha": "30bd9808efc905ff669f03e8065e4ba84da57ba0"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass4/D-resources/export_packet.py",
+      "size": 1597,
+      "sha256": "ac3d8ba53d4bd439a2c7156db75f72666e08386321505335dcda0730735c6fde",
+      "git_blob_sha": "6c0b30085ee886b874157f364a154882267a9c92"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass4/D-resources/fixtures/conversation.json",
+      "size": 390,
+      "sha256": "885e337c0b36967c79c34b88f5b7c3675af2d78a406289d5d9f35788af818eb9",
+      "git_blob_sha": "ee4ed9e215a788886608e5b00c9ecc6344fbb1c9"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass4/D-resources/probe_discovery.py",
+      "size": 1519,
+      "sha256": "60d5603f75dcbc064570a96462c046ca3ecb66024c6aacf9c87b716202d794a1",
+      "git_blob_sha": "6183a04104fd3438919890d72dcd6e747d3ff9f6"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass4/D-resources/run.py",
+      "size": 29059,
+      "sha256": "5048afc75a158a694694a5c9e2fd2cb1c38619ef204c7955172c348c6b35ab0a",
+      "git_blob_sha": "8ca79996d7dec5c294e0d08f9449cac8031ad5b5"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass4/E-perspectives/browser_probe.mjs",
+      "size": 1148,
+      "sha256": "e9494022ca73be058338840063c63b7950e2e171d0432ce1ca28af196697bbb7",
+      "git_blob_sha": "fdaeb89139ac11b31d6eb79744648662acd54ce3"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass4/E-perspectives/e_acceptance.mjs",
+      "size": 19813,
+      "sha256": "d5b26fadcd4d8b9ace7533e71a558c959ec6e05da618d075150dd0553d6dd048",
+      "git_blob_sha": "d0c8a7c432cb3b44d7f9a092ed850f55b46661f5"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass4/E-perspectives/native_packet.py",
+      "size": 1673,
+      "sha256": "5219c601113f11b7e0d94466d7f84dcb0e147ffc151b897be97a08035b656498",
+      "git_blob_sha": "47b962b2cc75073fac39470a6efeac160487ecbf"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass4/E-perspectives/perspectives.mjs",
+      "size": 11380,
+      "sha256": "f4599c0c3110f0e20833d75ff01320f9c40eea6e3b09d072e1f911ebaa5fe9c0",
+      "git_blob_sha": "e0f6237e96695fa2e9c8f5e015eced2edb071f49"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass4/E-perspectives/python_consumers.py",
+      "size": 9023,
+      "sha256": "aedb4deaa16745026527c5c9c3414420d8789242c7467269bb374b608cbe0f90",
+      "git_blob_sha": "bf5ac880b554e25f89d7cace2011e8e794079f05"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass4/ageds-lem/AgedsHarness.kt",
+      "size": 4747,
+      "sha256": "ccfdbe392f9329a997cb639b32af31813224f73d4c131b6c512606da74fb6343",
+      "git_blob_sha": "5fcff0ec0869cc3241af1faaa654c00e0d6cba60"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass4/ageds-lem/LemHarness.kt",
+      "size": 9254,
+      "sha256": "9f030f68448c854a6a9c65fca22bc16f35b6f9dd1d4c710a834eef0b4502c18c",
+      "git_blob_sha": "5638a148a06f9eb3037ab165048210c992f2451d"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass4/ageds-lem/README.md",
+      "size": 2836,
+      "sha256": "3130b9392a3a0f542a2bb1140987f28f5aeb33c092bd2a17d7aeb25705ff3d7b",
+      "git_blob_sha": "a0f0bb30ff9ec2b23a0059f85ae6118591a445ba"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass4/ageds-lem/ageds.mjs",
+      "size": 4824,
+      "sha256": "dd980bac585f5919c5ba4f86b51b40f19dc396ddbe3489f788e2e3306d3e659a",
+      "git_blob_sha": "89816e9838e80b850428c6b5688b40ec7db49579"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass4/ageds-lem/run.py",
+      "size": 4890,
+      "sha256": "3a2aec9d5a31308feff8f349cf5420c1e1e0b53e075c84299f09465ffb45ce06",
+      "git_blob_sha": "140024b7187f7194821d518f3d752e6af3847053"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass4/ageds-lem/test-index.json",
+      "size": 2391,
+      "sha256": "376b454635dbde464609dee61478cbf81c326a17f86d71428adb303c119ba286",
+      "git_blob_sha": "f73b6c917a1dffa36657b9e87b6798cb6de63832"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass4/ckp/PasteHost.kt.in",
+      "size": 2923,
+      "sha256": "7da3a43c552fe4128f65c7523b0540f0d76821cdc7261d04b25e7a6fc188ebe9",
+      "git_blob_sha": "652af55cf55358f08232593e2e5cc663435a7e76"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass4/ckp/Probe.kt",
+      "size": 10229,
+      "sha256": "2367f9acc886543969dcb6724ab1d3404d65ee6c9f7ff4d74125a5546ef03ffb",
+      "git_blob_sha": "c6711e763713e20e8481be91d759c068684d63fb"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass4/ckp/README.md",
+      "size": 3175,
+      "sha256": "d1f59c9534b339208b14180afd3f5c36ec600427dbedd63a4b3b247e730d5a54",
+      "git_blob_sha": "9225e228c4661b242c9b742b7a983a2ea87a58d7"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass4/ckp/run.py",
+      "size": 3848,
+      "sha256": "ccf485b4d0e0b898d00dc869d7e167ddf835310989957c13277e3084a6089208",
+      "git_blob_sha": "94c72e3467e9c6003f1bd18c5c793cda924a0f63"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass4/run_index.py",
+      "size": 2857,
+      "sha256": "12dbb6507ba1260c7b16aec818988b803ae86fbd1cfddbcfc7dceea45498ddc1",
+      "git_blob_sha": "31ec8267fa4b5ec00186957d618c2fe06051128f"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass4/test-index.json",
+      "size": 7561,
+      "sha256": "139cb110860ce16d93c24102f93267f781187d020870d058b2a00e5692671831",
+      "git_blob_sha": "17de269c57b2d29e928ed1c58454388f336d3843"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass4/test_run_index.py",
+      "size": 785,
+      "sha256": "c93a2c055cc1bf917be9959245fe741a6fb7a3871600f1d1d6df75e0349f4500",
+      "git_blob_sha": "561e040f3cacb148ed637c6f3fa7f6c423339aca"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass4/validate_bundle.py",
+      "size": 3182,
+      "sha256": "c3b83e6ed421392310a0cf320346a1b86ca23d649d1c00df503343716b2685d0",
+      "git_blob_sha": "0d3de240a4c3401555217bf0bd28ccb13f745211"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass4/watchdog/probe.ts",
+      "size": 11523,
+      "sha256": "5398d54993c2dfd7c02a932f4bd8bc14aaf46f318c9885789cf0af155da7da45",
+      "git_blob_sha": "155b2d99b33074d30ab407421125740fbc28bbba"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass4/watchdog/run.py",
+      "size": 1074,
+      "sha256": "d3fde168f3bb119949c47966197d084128b4910609ef12e8331b996cd3249771",
+      "git_blob_sha": "d4b8a78c466d89a5ba74485698360eda9512bc41"
+    }
+  ],
+  "count": 169,
+  "excluded": [
+    "this manifest itself",
+    "post-publication PUBLICATION.json"
+  ],
+  "privacy_scope": "No new private sources. Safe synthetic tests and already public source-derived metadata. Not a claim of a universal secret detector."
+}

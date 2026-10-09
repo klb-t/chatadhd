@@ -1,0 +1,206 @@
+{
+  "composition": {
+    "B": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+    "C": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+    "D": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+    "E": "3eaac2953c3ee0d01d085e595d68edc091c284f2"
+  },
+  "meaning": "Independent pinned receipt, never author-report-only closure. No product merge or main modification. Published packages are not external session messages.",
+  "items": [
+    {
+      "owner": "B",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "finding_ids": [
+        "CH-RES-N001",
+        "CH-RES-N002"
+      ],
+      "status": "częściowo",
+      "test": "B-native/receipt.json: A4-B-RESOURCE-LINK/COPY + CH-RES-N001/N002-ACCEPT",
+      "verified_scope": "Nowa projekcja zachowuje wiadomości/relacje; istniejące zwykłe wejścia rozmów wciąż różne.",
+      "missing_gate": "Podłączyć istniejącego konsumenta rozmowy do projekcji/referencji, bez narzucania pełnej materializacji; zachować dawne dodatnie wejście direct import."
+    },
+    {
+      "owner": "B",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "finding_ids": [
+        "CH-RES-G001"
+      ],
+      "status": "naprawione",
+      "test": "B-native/receipt.json: A4-B-PREVIEW/TASK/STORE",
+      "verified_scope": "Native preview i zadanie używają tego samego odczytu, istniejący DB po reopen.",
+      "missing_gate": "UI browser i crash podczas indeksowania poza tym dowodem."
+    },
+    {
+      "owner": "B",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "finding_ids": [
+        "CH-RES-G002",
+        "CH-RES-G003"
+      ],
+      "status": "częściowo",
+      "test": "B-native/receipt.json: A4-B-PROFILE-RUNTIME",
+      "verified_scope": "Dwa jawnie związane pliki profilu zmieniają grafowe pola i realny SemanticAnalyzer.",
+      "missing_gate": "Edycja pola grafu→resolver→workflow runtime; niezależne osie polityk."
+    },
+    {
+      "owner": "B",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "finding_ids": [
+        "A4-B-RES001"
+      ],
+      "status": "nadal wadliwe",
+      "test": "B-native/relocation-gate.json",
+      "verified_scope": "7 bajtów, jawny rescan i force nie naprawiają starej lokalizacji.",
+      "missing_gate": "Ta sama wersja/selektor dostępne po jawnej relokacji; uprawnienia nadal egzekwowane."
+    },
+    {
+      "owner": "B",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "finding_ids": [
+        "A3-DISC-001"
+      ],
+      "status": "częściowo",
+      "test": "C-boundary/registry-receipt-final.json",
+      "verified_scope": "Receipt-backed store→registry działa; raw profile load nadal odrzuca równoważne DTO.",
+      "missing_gate": "Oba rzeczywiste wejścia przechodzą; gate unknown-field nie może być usunięty."
+    },
+    {
+      "owner": "B",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "finding_ids": [
+        "A3-DISC-002"
+      ],
+      "status": "nadal wadliwe",
+      "test": "B-native/unchanged-consumers.json",
+      "verified_scope": "Ścieżka export_unknown bajtowo niezmieniona; pass3 pozostaje historycznym dowodem.",
+      "missing_gate": "Nowa wersja parsera musi zachować alternatywy i nie wybierać po kolejności kluczy."
+    },
+    {
+      "owner": "B",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "finding_ids": [
+        "A3-IMP-CH001",
+        "A3-IMP-CH003",
+        "A3-IMP-CH006"
+      ],
+      "status": "nadal wadliwe",
+      "test": "E-perspectives/delta-review.json + ../pass3-resources/importers",
+      "verified_scope": "Legacy Python konsument nie zmienił się; brak bezcelowego powtarzania tych samych przypadków.",
+      "missing_gate": "Role/relacje, unknown-vs-empty i porządek HTML w dawnych akceptacjach muszą przejść na poprawce."
+    },
+    {
+      "owner": "B",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "finding_ids": [
+        "A3-IMP-CH004"
+      ],
+      "status": "nadal wadliwe",
+      "test": "E-perspectives/python-main.json",
+      "verified_scope": "Nowa minimalna transformacja wyłącznie whitespace przekracza próg i gubi rozmowę; poprawny array sentinel zachowany.",
+      "missing_gate": "Te same domenowe dane po przejściu progu wyboru strategii."
+    },
+    {
+      "owner": "C",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "finding_ids": [
+        "test_credential_handoff_v2"
+      ],
+      "status": "naprawione",
+      "test": "C-boundary/receipt-verified.json",
+      "verified_scope": "10 testów autora w jednej bramce oraz niezależne negatywy Git/symlink; właściwe TMPDIR bez osłabienia guardu.",
+      "missing_gate": "Brak w tym zakresie; nie oznacza audytu całego credential system."
+    },
+    {
+      "owner": "C",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "finding_ids": [
+        "A4-C-001",
+        "A4-C-002"
+      ],
+      "status": "nadal wadliwe",
+      "test": "C-boundary/receipt-verified.json",
+      "verified_scope": "Nowy connector ma niespójność źródłowej wersji i kolejności pól planu; Queue nie wykonuje duplikatu.",
+      "missing_gate": "Związać prepared row z dokładną wersją corpus; zachować semantyczną tożsamość planu bez normalizacji list wiadomości."
+    },
+    {
+      "owner": "C",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "finding_ids": [
+        "A2-C-001",
+        "A2-C-004"
+      ],
+      "status": "nadal wadliwe",
+      "test": "C-boundary/receipt-verified.json",
+      "verified_scope": "Nowy public builder/diagnostyka przepuszczają syntetyczne pomocnicze canaries.",
+      "missing_gate": "Publiczna projekcja i błędy bez treści spoza uprawnionego zestawu. Brak twierdzenia o realnym wycieku w artefakcie C."
+    },
+    {
+      "owner": "C",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "finding_ids": [
+        "C-store-registry-executor"
+      ],
+      "status": "naprawione",
+      "test": "C-boundary/registry-receipt-final.json",
+      "verified_scope": "Rzeczywisty packet→store→reopen→registry; unavailable właściwe przy braku implementacji.",
+      "missing_gate": "Import danych nie jest instalacją executora ani zgodą na transport."
+    },
+    {
+      "owner": "D",
+      "sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+      "finding_ids": [
+        "A4-D-001",
+        "A4-D-002"
+      ],
+      "status": "nadal wadliwe",
+      "test": "D-resources/receipt-B4.json",
+      "verified_scope": "Rzeczywiste parser options oraz deterministyczny wyścig local_roots.",
+      "missing_gate": "Unikalna wersja receptury; zgodność autoryzacji z rzeczywiście otwartym obiektem."
+    },
+    {
+      "owner": "D",
+      "sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+      "finding_ids": [
+        "D-demand-reference-native"
+      ],
+      "status": "częściowo",
+      "test": "D-resources/receipt-main.json + receipt-B4.json",
+      "verified_scope": "Zero-read attach i wybrane pola w istniejącym native store; partial/empty/unavailable rozróżnione.",
+      "missing_gate": "Domenowy pełny import↔referencja D, public discovery, native dispatch B, durable rehydration/resume resolvera."
+    },
+    {
+      "owner": "E",
+      "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+      "finding_ids": [
+        "A4-E-001"
+      ],
+      "status": "nadal wadliwe",
+      "test": "E-perspectives/E4-results.json",
+      "verified_scope": "Nieużywany adapter innego źródła usuwa ostrzeżenie o capability; brak dowodu wywołania/uprawnień.",
+      "missing_gate": "Capability musi odnosić się do rzeczywistego konsumenta/źródła, implementacji i dowodu."
+    },
+    {
+      "owner": "E",
+      "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+      "finding_ids": [
+        "A3-WEB-001"
+      ],
+      "status": "częściowo",
+      "test": "E-perspectives/E4-results.json",
+      "verified_scope": "Znane pole zewnętrznego profilu czytane bez UI; unknown field blokuje także znane pola.",
+      "missing_gate": "Oddzielić odczyt struktury od walidacji aktywacji; pole→runtime nadal bez kontraktu."
+    },
+    {
+      "owner": "E",
+      "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+      "finding_ids": [
+        "D-E-selector",
+        "E-production-UI"
+      ],
+      "status": "niezweryfikowane",
+      "test": "E-perspectives/E4-results.json",
+      "verified_scope": "D→native B→E działa po ID; brak mapowania attrs.selector/source_version i produkcyjnego UI hooka.",
+      "missing_gate": "Sprawdzić istniejący nowy kontrakt selektora/wersji oraz prawdziwy komponent; nie dopisywać atrapy. Chromium działa."
+    }
+  ]
+}

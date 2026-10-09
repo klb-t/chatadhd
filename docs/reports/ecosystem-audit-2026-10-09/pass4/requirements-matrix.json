@@ -1,0 +1,50 @@
+{
+  "authority": "Existing R15/R20/R21/R33/R39–R42 and explicit user PASS4 refinement; no competing architecture or invented owner intent.",
+  "rows": [
+    {
+      "requirement": "R15/R20/R21 + pass4 reference clarification",
+      "evidence": "D4-01/04/15/16, E4-09",
+      "coverage": "Scope-limited PASS: attach without read, selected fields through existing store; domain/runtime seams open."
+    },
+    {
+      "requirement": "Independent cache/index/embed/snapshot/access axes",
+      "evidence": "D4-06/08/10/14; B-native policy blockers",
+      "coverage": "Covered configurations preserve separation; no universal support claim."
+    },
+    {
+      "requirement": "Mapping/version/provenance; R41",
+      "evidence": "A4-D-001/A4-C-001/A4-WD-002",
+      "coverage": "Confirmed violations and executable acceptance."
+    },
+    {
+      "requirement": "Capability vs implementation vs evidence vs authorization",
+      "evidence": "C4-REGISTRY03/05; A4-E-001; D4blocked discovery",
+      "coverage": "Correct missing executor; E warning mismatch; D discovery module absent."
+    },
+    {
+      "requirement": "R39/R40 effective profiles/exclusion",
+      "evidence": "E4-02/03; B profile-runtime",
+      "coverage": "Existing DefaultLayers reused; two profiles and persistent exclusion tested; graph edit→runtime missing."
+    },
+    {
+      "requirement": "R42 exact test and six exceptions",
+      "evidence": "Module findings/decisions; A4-CH-VIEW001",
+      "coverage": "Mechanism/contract/standards/bootstrap/serialization/diagnostics kept; runtime policy/data issues classified semantically."
+    },
+    {
+      "requirement": "Invariant meaning; source-based oracle",
+      "evidence": "B/C/D/E/CKP/AGEDS metamorphic tests",
+      "coverage": "Object order is separate from list order, lexical/source/domain equality; no blanket numeric normalization."
+    },
+    {
+      "requirement": "Privacy and public projection",
+      "evidence": "A4-D-002; A2-C-001/004; LEM credential generation",
+      "coverage": "Synthetic controlled proofs, zero real external sends; no claim of real private leak."
+    },
+    {
+      "requirement": "R33 opt-in experiments and payer boundary",
+      "evidence": "C4 preparation/queue/registry controls",
+      "coverage": "prepared is not dispatched or paid; unavailable executor does not authorize execution."
+    }
+  ]
+}

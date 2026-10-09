@@ -1,0 +1,60 @@
+{
+  "rows": [
+    {
+      "data": "External source descriptor/selected fragment",
+      "graph": "D resource/resource_field + source_revision/method",
+      "runtime": "D SyntaxAdapter→GraphPacket→existing NativeGraphStore",
+      "ui": "E ObjectRef by graph ID passes; typed source selector and UI blocked",
+      "proof": "D-resources/receipt-B4.json; E-perspectives/E4-results.json"
+    },
+    {
+      "data": "External runtime overlay pack",
+      "graph": "B source-pointer fields/value_ref + profile hash",
+      "runtime": "existing RuntimeProfile→SemanticAnalyzer with two explicit file bindings",
+      "ui": "native preview shares read; graph edits and workflow binding not proved",
+      "proof": "B-native/receipt.json"
+    },
+    {
+      "data": "Prepared C inputs and exact request bodies",
+      "graph": "C final result/method/evidence GraphPacket",
+      "runtime": "real B native store→receipt-backed MethodRegistry; executor unavailable correct",
+      "ui": "not tested; no generated executor assumed",
+      "proof": "C-boundary/receipt-verified.json; registry-receipt-final.json"
+    },
+    {
+      "data": "Perspective profile/default exclusion",
+      "graph": "existing DefaultLayers canonical resolution",
+      "runtime": "E compilePerspective→packet adapter→headless selector",
+      "ui": "old renderers SSR tested separately; new E hook absent at pinned SHA",
+      "proof": "E-perspectives/E4-results.json; perspectives-main-corrected.json"
+    },
+    {
+      "data": "Watchdog submitted method + reused observations",
+      "graph": "typed SQL run/config/analysis/input references",
+      "runtime": "schema stripping and current-run manifest query lose selected meaning",
+      "ui": "real export handler executed; browser/auth middleware not claimed",
+      "proof": "watchdog/receipt-reviewed.json"
+    },
+    {
+      "data": "Capture source + settings",
+      "graph": "CKP archive/source semantics and capture options",
+      "runtime": "actual CaptureSession and delayed paste methods on host",
+      "ui": "Android/accessibility/editor OS boundary controlled, no device claim",
+      "proof": "ckp/host-receipt.json"
+    },
+    {
+      "data": "AGEDS selected citation/history/audio intent",
+      "graph": "versioned ordered references and snapshots",
+      "runtime": "actual Kotlin and ES headless consumers preserve identity/explicit partial state",
+      "ui": "CitationUi source trace; DOM/device audio not tested",
+      "proof": "ageds-lem/REPORT.md"
+    },
+    {
+      "data": "LEM active credential/model registry",
+      "graph": "run result and repository provenance",
+      "runtime": "real VM/runner/Retrofit; key generation changes and stale registry result",
+      "ui": "SettingsScreen source trace; lifecycle/DAO infrastructure fixtures",
+      "proof": "ageds-lem/receipts/lem/receipt.json"
+    }
+  ]
+}

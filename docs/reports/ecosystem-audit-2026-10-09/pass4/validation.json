@@ -1,0 +1,9 @@
+{
+  "schema": "klbt.audit.pass4.bundle-validation/1",
+  "status": "PASS",
+  "text_files": 166,
+  "source_range_rows_checked": 97,
+  "executable_entries": 17,
+  "errors": [],
+  "meaning": "Syntax, paths and pinned source bounds only; no claim of product correctness or exhaustive privacy scanning."
+}

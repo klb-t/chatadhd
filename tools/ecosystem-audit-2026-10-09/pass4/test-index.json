@@ -1,0 +1,314 @@
+{
+  "schema": "klbt.audit.pass4.executable-index/1",
+  "policy": "No shell execution. Requested SHA must match clean tracked checkout. Supplies paths to existing test dependencies; never activates CI/models. Per-case receipts distinguish reproduction from acceptance.",
+  "suites": [
+    {
+      "id": "watchdog",
+      "scope": "Actual schema/orchestrator/SQLite/manifest and controlled transport seam",
+      "argv": [
+        "{python}",
+        "{audit_root}/watchdog/run.py",
+        "--repo",
+        "{repo}",
+        "--sha",
+        "{sha}",
+        "--out",
+        "{output}"
+      ]
+    },
+    {
+      "id": "B-native",
+      "scope": "Actual Catalog/read_resource/TaskEngine/RuntimeProfile using verified native build",
+      "argv": [
+        "{python}",
+        "{audit_root}/B-native/run.py",
+        "--repo",
+        "{repo}",
+        "--sha",
+        "{sha}",
+        "--manifest",
+        "{manifest}",
+        "--out",
+        "{output}"
+      ]
+    },
+    {
+      "id": "B-native-full",
+      "scope": "Same native consumer suite on a fresh attested full build; not executed as a new full build in pass4",
+      "argv": [
+        "{python}",
+        "{audit_root}/B-native/run.py",
+        "--repo",
+        "{repo}",
+        "--sha",
+        "{sha}",
+        "--build-dir",
+        "{build_dir}",
+        "--build-receipt",
+        "{build_receipt}",
+        "--out",
+        "{output}"
+      ]
+    },
+    {
+      "id": "B-build",
+      "scope": "Prepare selective native build; full dependency constraints are enforced",
+      "argv": [
+        "{python}",
+        "{audit_root}/B-native/build.py",
+        "--repo",
+        "{repo}",
+        "--sha",
+        "{sha}",
+        "--base-build",
+        "{base_build}",
+        "--prior-manifest",
+        "{prior_manifest}",
+        "--out",
+        "{output}"
+      ]
+    },
+    {
+      "id": "C-boundary",
+      "scope": "Credential guards and new frozen preparation/queue/public packet boundaries",
+      "argv": [
+        "{python}",
+        "{audit_root}/C-boundary/run.py",
+        "--repo",
+        "{repo}",
+        "--sha",
+        "{sha}",
+        "--prior-repo",
+        "{prior_repo}",
+        "--prior-sha",
+        "{prior_sha}",
+        "--native-lib",
+        "{native_lib}",
+        "--native-source",
+        "{native_repo}",
+        "--native-sha",
+        "{native_sha}",
+        "--output",
+        "{output}"
+      ]
+    },
+    {
+      "id": "C-registry",
+      "scope": "Final C packet through actual B native GraphPacketStore and MethodRegistry",
+      "argv": [
+        "{python}",
+        "{audit_root}/C-boundary/run_registry.py",
+        "--repo",
+        "{repo}",
+        "--sha",
+        "{sha}",
+        "--research-repo",
+        "{research_repo}",
+        "--research-sha",
+        "{research_sha}",
+        "--object-manifest",
+        "{manifest}",
+        "--output",
+        "{output}"
+      ]
+    },
+    {
+      "id": "D-resources",
+      "scope": "Demand source/projection plus existing native store, synthetic transport boundaries",
+      "argv": [
+        "{python}",
+        "{audit_root}/D-resources/run.py",
+        "--repo",
+        "{repo}",
+        "--sha",
+        "{sha}",
+        "--library",
+        "{native_lib}",
+        "--native-source",
+        "{native_repo}",
+        "--native-sha",
+        "{native_sha}",
+        "--output",
+        "{output}"
+      ]
+    },
+    {
+      "id": "D-export",
+      "scope": "Produce safe synthetic resource packet with actual D producer for E boundary",
+      "argv": [
+        "{python}",
+        "{audit_root}/D-resources/export_packet.py",
+        "--repo",
+        "{repo}",
+        "--sha",
+        "{sha}",
+        "--output-dir",
+        "{output}"
+      ]
+    },
+    {
+      "id": "chat-python",
+      "scope": "New parser metamorphic variants and actual model-cache consumers",
+      "argv": [
+        "{python}",
+        "{audit_root}/E-perspectives/python_consumers.py",
+        "--repo",
+        "{repo}",
+        "--sha",
+        "{sha}",
+        "--out",
+        "{output}"
+      ]
+    },
+    {
+      "id": "ckp",
+      "scope": "Actual Kotlin capture and extracted original paste methods; platform boundaries explicit",
+      "argv": [
+        "{python}",
+        "{audit_root}/ckp/run.py",
+        "--repo",
+        "{repo}",
+        "--sha",
+        "{sha}",
+        "--deps",
+        "{deps}",
+        "--workdir",
+        "{scratch}",
+        "--out",
+        "{output}",
+        "--phase",
+        "{phase}"
+      ]
+    },
+    {
+      "id": "ageds-js",
+      "scope": "Actual host consumers; category-specific acceptance, not device E2E",
+      "argv": [
+        "{python}",
+        "{audit_root}/ageds-lem/run.py",
+        "--repo",
+        "{repo}",
+        "--sha",
+        "{sha}",
+        "--suite",
+        "ageds-js",
+        "--out",
+        "{output}",
+        "--phase",
+        "{phase}"
+      ]
+    },
+    {
+      "id": "ageds-kotlin",
+      "scope": "Actual host consumers; category-specific acceptance, not device E2E",
+      "argv": [
+        "{python}",
+        "{audit_root}/ageds-lem/run.py",
+        "--repo",
+        "{repo}",
+        "--sha",
+        "{sha}",
+        "--suite",
+        "ageds-kotlin",
+        "--out",
+        "{output}",
+        "--phase",
+        "{phase}",
+        "--compiler-dir",
+        "{compiler_dir}",
+        "--deps-dir",
+        "{deps}"
+      ]
+    },
+    {
+      "id": "lem",
+      "scope": "Actual host consumers; category-specific acceptance, not device E2E",
+      "argv": [
+        "{python}",
+        "{audit_root}/ageds-lem/run.py",
+        "--repo",
+        "{repo}",
+        "--sha",
+        "{sha}",
+        "--suite",
+        "lem",
+        "--out",
+        "{output}",
+        "--phase",
+        "{phase}",
+        "--compiler-dir",
+        "{compiler_dir}",
+        "--deps-dir",
+        "{deps}"
+      ]
+    },
+    {
+      "id": "E-main-components",
+      "scope": "Actual existing reducer and private renderers exported in memory; SSR only",
+      "argv": [
+        "{node}",
+        "{audit_root}/E-perspectives/perspectives.mjs",
+        "--repo",
+        "{repo}",
+        "--sha",
+        "{sha}",
+        "--node-modules",
+        "{node_modules}",
+        "--out",
+        "{output}"
+      ]
+    },
+    {
+      "id": "E-acceptance",
+      "scope": "Actual E with native DefaultLayers, isolated permission adapter controls and native-replayed D packet",
+      "argv": [
+        "{node}",
+        "{audit_root}/E-perspectives/e_acceptance.mjs",
+        "--repo",
+        "{repo}",
+        "--sha",
+        "{sha}",
+        "--node-modules",
+        "{node_modules}",
+        "--native-temp",
+        "{scratch}",
+        "--native-packet",
+        "{native_packet}",
+        "--out",
+        "{output}"
+      ]
+    },
+    {
+      "id": "D-native-E",
+      "scope": "Original D native close/reopen/replay supplies actual E packet",
+      "argv": [
+        "{python}",
+        "{audit_root}/E-perspectives/native_packet.py",
+        "--d-repo",
+        "{repo}",
+        "--d-sha",
+        "{sha}",
+        "--packet",
+        "{packet}",
+        "--native-source",
+        "{native_repo}",
+        "--native-sha",
+        "{native_sha}",
+        "--library",
+        "{native_lib}",
+        "--out",
+        "{output}"
+      ]
+    },
+    {
+      "id": "browser-environment",
+      "scope": "Environment gate only; not product E browser end-to-end",
+      "argv": [
+        "{node}",
+        "{audit_root}/E-perspectives/browser_probe.mjs",
+        "{node_modules}",
+        "{output}"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "review": "../ckp/peer-review-watchdog.md",
+  "corrections": [
+    "Independent valid run for provenance controls after method-pin check",
+    "Actual bound Express export handler instead of test-composed export input",
+    "Schema rejection accepted as legitimate repair; method_spec_id guard only"
+  ],
+  "final_receipt": "receipt-reviewed.json",
+  "initial_preserved": "receipt.json",
+  "index_runner_exercised": true,
+  "index_run_exit": 1,
+  "index_unit_tests": {
+    "PASS": 3,
+    "FAIL": 0
+  }
+}

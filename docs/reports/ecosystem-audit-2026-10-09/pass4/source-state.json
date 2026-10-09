@@ -1,0 +1,54 @@
+{
+  "checkouts": [
+    {
+      "checkout": "audit-work/continuation/checkouts/main",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "tracked_and_untracked_status": ""
+    },
+    {
+      "checkout": "audit-work/continuation/checkouts/B4",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "tracked_and_untracked_status": ""
+    },
+    {
+      "checkout": "audit-work/continuation/checkouts/C4",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "tracked_and_untracked_status": ""
+    },
+    {
+      "checkout": "audit-work/continuation/checkouts/D4",
+      "sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+      "tracked_and_untracked_status": ""
+    },
+    {
+      "checkout": "audit-work/continuation/checkouts/E4",
+      "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+      "tracked_and_untracked_status": ""
+    },
+    {
+      "checkout": "audit-work/repos/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "tracked_and_untracked_status": ""
+    },
+    {
+      "checkout": "audit-work/repos/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "tracked_and_untracked_status": ""
+    },
+    {
+      "checkout": "audit-work/repos/AGEDS",
+      "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+      "tracked_and_untracked_status": ""
+    },
+    {
+      "checkout": "audit-work/repos/LEM-Workbench",
+      "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+      "tracked_and_untracked_status": ""
+    }
+  ],
+  "all_clean": true,
+  "paid_calls_by_audit": 0,
+  "github_actions_runs_for_audit_branch": 0,
+  "workflow_query": "GET actions/runs?branch=gpt/ecosystem-audit-2026-10-09&per_page=100",
+  "private_sources_used": false
+}

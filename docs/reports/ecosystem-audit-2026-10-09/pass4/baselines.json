@@ -17,5 +17,10 @@
     "AGEDS": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
     "LEM-Workbench": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456"
   },
-  "other_public_main_observation": "git ls-remote --heads origin main: all four unchanged"
+  "other_public_main_observation": "git ls-remote --heads origin main: all four unchanged",
+  "E_after_start": {
+    "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+    "status": "published at purposeful post-start acceptance check",
+    "checkout": "E4"
+  }
 }

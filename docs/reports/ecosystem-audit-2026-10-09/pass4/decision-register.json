@@ -1,0 +1,49 @@
+{
+  "entries": [
+    {
+      "decision": "Treat reference plus demand projection as first-class",
+      "authority": "explicit owner correction",
+      "status": "applied in D/B acceptance; no mandatory materialization oracle"
+    },
+    {
+      "decision": "Keep syntax/structure/domain equivalence separate",
+      "authority": "explicit PASS4",
+      "status": "source oracles identify preserved invariants per test; lists retain order"
+    },
+    {
+      "decision": "Do not repeat unchanged consumers without new conditions",
+      "authority": "explicit PASS4",
+      "status": "source hashes carry forward old importer/discovery findings; new C packet and whitespace variant are new conditions"
+    },
+    {
+      "decision": "No installed executor after importing method metadata",
+      "authority": "existing contract and owner refinement",
+      "status": "correct unavailable; no fake regression"
+    },
+    {
+      "decision": "Named ranges are not full-file verification",
+      "authority": "explicit coverage requirement",
+      "status": "32 new unchanged-main paths; D/E/research additions separate"
+    },
+    {
+      "decision": "Partial B repair does not require copying all conversation rows",
+      "authority": "explicit reference-first refinement",
+      "status": "remaining issue is ordinary consumer wiring, not storage representation"
+    },
+    {
+      "decision": "No product modifications by A",
+      "authority": "task ownership",
+      "status": "only audit docs/tools published; native compositions via pinned existing API, no product merge"
+    },
+    {
+      "decision": "No pay/CI/private archives",
+      "authority": "explicit task boundary",
+      "status": "test transport blocked/intercepted; synthetic fixtures; local builds only"
+    },
+    {
+      "decision": "Do not infer permission enforcement from filtered visibility",
+      "authority": "independent peer review",
+      "status": "isolated E permission test required; no native ACL claim"
+    }
+  ]
+}

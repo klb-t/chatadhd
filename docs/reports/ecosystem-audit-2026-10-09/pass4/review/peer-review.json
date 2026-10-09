@@ -1,0 +1,266 @@
+{
+  "schema": "klbt.audit.pass4.peer-review/1",
+  "scope": "Read-only semantic claims vs recorded evidence for B/C/D/E; no consumer tests repeated, no product edits, no independent full binary attestation",
+  "reviewed_branches": {
+    "B": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+    "C": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+    "D": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+    "E": "3eaac2953c3ee0d01d085e595d68edc091c284f2"
+  },
+  "overall": "No observed false closure of product repair or fabricated integration in reviewed reports. The initially identified permission-oracle gap is resolved by isolated E4-06a/b; scope remains explicit host permission, not native ACL.",
+  "issues": [
+    {
+      "id": "A4-REVIEW-001",
+      "kind": "audit_oracle_gap_not_product_violation",
+      "severity": "low",
+      "status": "resolved_in_audit_harness",
+      "location": {
+        "file": "tools/ecosystem-audit-2026-10-09/pass4/E-perspectives/e_acceptance.mjs",
+        "line_start": 65,
+        "line_end": 66
+      },
+      "affected_test": "E4-06.visibility-analysis-permission",
+      "finding": "Permission denial is combined with unmatched evidence filtering and renderBudget=1. The assertion !visible(a) does not isolate non-disclosure caused by permission: the evidence filter hides otherwise available non-focus a as well. complete=false checks a recorded incomplete result but does not independently establish protection of the field value.",
+      "evidence": "e_acceptance.mjs:65–66 combines renderBudget=1/evidence=[unmatched] with canRead(ref)=selector!=a; assertions preserve analysis, permissionId, !visible(a), complete=false and unchanged packet. select.ts:135 filters otherwise available non-focus objects by evidence; :185 marks incomplete for permission/source_status/query/render budgets, not for evidence_filter. No isolated allow-vs-deny non-disclosure comparison is part of this case.",
+      "impact": "This gate supports scope separation/immutability under the combined scenario; it must not be promoted to an independent runtime proof of authorization enforcement. No observed authorization bypass is alleged. Product source has canRead guards. complete excludes evidence_filter as an incompleteness reason, so this review does NOT assert that removing every guard would necessarily leave the test green.",
+      "required_followup": "Add an isolated host contract case: same unfettered render/evidence plan with allow shows a and its value; deny-a must not expose a value and must expose permission omission/status. Preserve denial placeholders if contract permits them. Separately test visibility-only filter with allow leaves analysis membership and canonical data unchanged. No need to repeat unchanged unrelated suites.",
+      "requirement": "Owner PASS4 separates UI visibility, analysis scope and permissions; metamorphic changes should isolate the claimed invariant.",
+      "test_execution_in_this_review": "none",
+      "message_status": "Communicated only to root audit coordinator, not product session E.",
+      "initial_status": "followup_required_before_claiming_independent_permission_enforcement",
+      "resolution": {
+        "followup_id": "A4-REVIEW-001-FOLLOWUP",
+        "result": "resolved",
+        "product_sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+        "repair_scope": "audit oracle only; no product repair or native ACL certification",
+        "evidence_tests": [
+          "E4-06.visibility-analysis-permission",
+          "E4-06a.permission-without-filter",
+          "E4-06b.denied-focus-placeholder"
+        ],
+        "evidence_status": "three PASS records; independently reviewed harness assertions and receipts, no test rerun by reviewer"
+      }
+    }
+  ],
+  "checks": [
+    {
+      "id": "QA-B-N001-N002",
+      "status": "supported_with_scope",
+      "evidence": [
+        "B-native/REPORT.md",
+        "B-native/receipt.json",
+        "B-native/handoff-B.json"
+      ],
+      "conclusion": "Partial repair is supported: new resource projection passes, ordinary get_msgs consumer retains placeholder/loses parent. C ABI and chat history source actually call get_msgs. Do not require materialized copies as the solution: connect real resolver/consumer; future acceptance may need a thin adapter to a legitimate virtual read."
+    },
+    {
+      "id": "QA-B-PROFILE",
+      "status": "supported_with_scope",
+      "conclusion": "Shared external-file graph/analyzer parity is explicitly separated from graph-edit→resolver BLOCKED. Native preview/task parity is not promoted to browser UI integration."
+    },
+    {
+      "id": "QA-C-CREDENTIAL",
+      "status": "supported_with_scope",
+      "conclusion": "Author 10 tests form one repair gate; real guard denied synthetic Git directory/file/symlink cases. Simulated prior /tmp condition is explicit, not represented as an untouched original environment run."
+    },
+    {
+      "id": "QA-C-METHOD",
+      "status": "supported_with_scope",
+      "conclusion": "Receipt-backed MethodRegistry PASS is separate from raw-profile serialization FAIL. Correct executor unavailable is not mislabeled as missing implementation defect. Store roundtrip does not claim method execution or scientific truth."
+    },
+    {
+      "id": "QA-C-PRIVACY",
+      "status": "supported_with_scope",
+      "conclusion": "Canary leak through auxiliary public projection/error proves a tested channel, not an actual private-data exposure in C publication. No secret bytes are required in receipts."
+    },
+    {
+      "id": "QA-D-SYNTAX",
+      "status": "supported_with_scope",
+      "conclusion": "D declares syntax-only equality, not domain conversation import; whole bounded read vs selected materialization is explicit. Native packet replay is not restoration of unmaterialized source. Missing .discovery is independently recorded, not confused with correct adapter_unavailable."
+    },
+    {
+      "id": "QA-E-INTEGRATION",
+      "status": "supported_with_scope",
+      "conclusion": "D→native→E PASS only by entity ID; typed source selector/snapshot BLOCKED. Host JSON transfer to new native process is not durable device settings restart. Browser environment PASS is not E UI E2E. Permission oracle gap is separately recorded."
+    },
+    {
+      "id": "QA-COUNTS",
+      "status": "PASS",
+      "conclusion": "Recomputed receipt row/status/category totals match reports. D main/B4 are 32 unique criteria under two conditions, not 64 distinct cases. C credentials10 are not added twice. Superseded missing-E gate from early SSR receipt must not remain a current absence blocker."
+    }
+  ],
+  "read_files": [
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/B-native/REPORT.md",
+      "read_scope": "full prose report",
+      "sha256": "8c4b17ea1bff9b9c5371a4f4081a4e002438c964f57d8f01a2f29b7218fa7f73"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/REPORT.md",
+      "read_scope": "full prose report",
+      "sha256": "59ee5b3c6859d6fa565a01877ab88225f50568aad99b9dd2c616019d2821cb58"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/D-resources/REPORT.md",
+      "read_scope": "full prose report",
+      "sha256": "d2408aecfd6be466f3db905f3e3b70966e121cbb2a1b9c5178135448789d47f9"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/E-perspectives/REPORT.md",
+      "read_scope": "full prose report",
+      "sha256": "6352aa1071f1dc81e3d5414a12eee96fe1b5861f1b0cae51afb3b0d5a37bea4d"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/B-native/receipt.json",
+      "read_scope": "parsed JSON; all result rows/counts reviewed (large B call transcript not exhaustively inspected)",
+      "sha256": "c26ce84689949e9a8b9a4b2e10085ca3e461b8c795b4c3702af7b0c023b5d9fb"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/B-native/handoff-B.json",
+      "read_scope": "parsed JSON; all result rows/counts reviewed (large B call transcript not exhaustively inspected)",
+      "sha256": "830d23f3f77da9627bd8235aba91e9a3c2b0cc9c84c2be0e284cc1abaff27705"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/B-native/test-index.json",
+      "read_scope": "parsed JSON; all result rows/counts reviewed (large B call transcript not exhaustively inspected)",
+      "sha256": "47ec264dfb573a1b058d7fbd17391b79d428b5028756bcf2f8b47c4f58994239"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/receipt-verified.json",
+      "read_scope": "parsed JSON; all result rows/counts reviewed (large B call transcript not exhaustively inspected)",
+      "sha256": "1b71972748fdf5831c2fc760773a3a97f284176aabac7cdd7cc85def59e45e11"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/registry-receipt-final.json",
+      "read_scope": "parsed JSON; all result rows/counts reviewed (large B call transcript not exhaustively inspected)",
+      "sha256": "e8eaefebc6642916f54fa1be8ac35d5ba7ab3ccb9beb09e97c8ee390579ead3d"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/harness-history.json",
+      "read_scope": "parsed JSON; all result rows/counts reviewed (large B call transcript not exhaustively inspected)",
+      "sha256": "df88e0ce700f502feb3f2744e6062ee5fd88bf93d7fba3862f571b02909441be"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/D-resources/receipt-main.json",
+      "read_scope": "parsed JSON; all result rows/counts reviewed (large B call transcript not exhaustively inspected)",
+      "sha256": "105d8641a63721407ae7f22519dd1cf3713c622ddf9d168aa984b7156122da41"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/D-resources/receipt-B4.json",
+      "read_scope": "parsed JSON; all result rows/counts reviewed (large B call transcript not exhaustively inspected)",
+      "sha256": "e4e4c662b3530f45f3b2606c93dfc55e57cd9cf54bfb09efc617dd1aad63fdcb"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/D-resources/discovery-probe.json",
+      "read_scope": "parsed JSON; all result rows/counts reviewed (large B call transcript not exhaustively inspected)",
+      "sha256": "c9aaa234099873d48e7747b7af90304dbc9eb3aebb463140061be9b1356c07b1"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/D-resources/test-index.json",
+      "read_scope": "parsed JSON; all result rows/counts reviewed (large B call transcript not exhaustively inspected)",
+      "sha256": "2ebc0b2f7c624a2f1a2bfd05e4543be568a055e51883c584b33505f25ed5d1d0"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/E-perspectives/E4-results.json",
+      "read_scope": "parsed JSON; all result rows/counts reviewed (large B call transcript not exhaustively inspected)",
+      "sha256": "47f864cbc063f3272e7b6085490cbaa5f51bba7558fb1c9c58a49bbc68b00b0a"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass4/B-native/run.py",
+      "read_scope": "lines 38–105: oracles, real process calls, shared-file vs graph activation distinction",
+      "sha256": "d8b82086645695a2afb2595f546676ecaad63c5790d9a890715c34c685aeb43b"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass4/E-perspectives/e_acceptance.mjs",
+      "read_scope": "lines 50–93: identity/policy/permissions/profile/typed-address oracles",
+      "sha256": "453911d0f813ed80d363d54ae677e46c20a1ea83bd573ee69b685ccc82d26a01"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass4/E-perspectives/perspectives.mjs",
+      "read_scope": "lines 67 and 77: visibility oracle and SSR source instrumentation boundary",
+      "sha256": "f4599c0c3110f0e20833d75ff01320f9c40eea6e3b09d072e1f911ebaa5fe9c0"
+    },
+    {
+      "path": "audit-work/continuation/checkouts/B4/loom/src/capi/capi_core.cpp",
+      "read_scope": "lines 242–257",
+      "sha256": "3ff90b721f9d10d9f158a1a9acb4cecdede9130b944ed665c3143aabbeaaa31f"
+    },
+    {
+      "path": "audit-work/continuation/checkouts/B4/loom/src/db/db.cpp",
+      "read_scope": "lines 738–751",
+      "sha256": "1ba70b3b5a03f21d602ca58de11d1b919a8f4ec1dc431ec3023f5f71659e6c6d"
+    },
+    {
+      "path": "audit-work/continuation/checkouts/B4/loom/src/chat/chat_engine.cpp",
+      "read_scope": "lines 790–803",
+      "sha256": "808494db6c016dc7d9742ad0f5a3f4523edbef0e3d0918af96e1dbd369ac8852"
+    },
+    {
+      "path": "audit-work/continuation/checkouts/E4/loom/web/src/graph-perspectives/select.ts",
+      "read_scope": "canRead/evidence/complete-related lines 76–85, 135, 184–185",
+      "sha256": "a8e019a12cba5de565c12674772935584bd97d4f6c2c3cdd921623733de79fd6"
+    },
+    {
+      "path": "audit-work/continuation/checkouts/E4/loom/web/src/graph-perspectives/adapters.ts",
+      "read_scope": "canRead guards at 42,145,175,203,216–218",
+      "sha256": "2b56ae8fe25441c4ed8e65e8a9f7de70b44fae55c3f0098ba667b6f10493e772"
+    }
+  ],
+  "limits": [
+    "Not a repeat of runtime tests",
+    "Not exhaustive inspection of every native call or all fixture branches",
+    "Review applies to recorded file hashes; later changes require delta review"
+  ],
+  "followups": [
+    {
+      "id": "A4-REVIEW-001-FOLLOWUP",
+      "date": "2026-10-09",
+      "status": "resolved",
+      "counts": {
+        "PASS": 15,
+        "FAIL": 2,
+        "BLOCKED": 3
+      },
+      "case_count": 20,
+      "unchanged_other_cases": 17,
+      "new_cases": [
+        "E4-06a.permission-without-filter",
+        "E4-06b.denied-focus-placeholder"
+      ],
+      "modified_cases": [
+        "E4-06.visibility-analysis-permission"
+      ],
+      "review": "E4-06 now changes visibility only under allow-all. E4-06a uses the unchanged full plan with allow vs deny: positive control actually includes a and its raw value, denial removes object/incident edges and exposes permission_filtered incompleteness. E4-06b denies focus a with no properties and zero adapter resolutions. The source contains these assertions; recorded final rows pass. No normalization of a denied placeholder into empty success.",
+      "historical_receipt_preserved": true,
+      "initial_receipt_matches_pre_review_sha256": true,
+      "not_claimed": [
+        "Native ACL integration",
+        "Real credentials/provider authorization",
+        "Device/browser E2E",
+        "Reviewer reran the consumer tests"
+      ],
+      "read_files": [
+        {
+          "path": "tools/ecosystem-audit-2026-10-09/pass4/E-perspectives/e_acceptance.mjs",
+          "read_scope": "lines29–102; same full plan has query/render100, evidence[], allow control then isolated deny",
+          "sha256": "d5b26fadcd4d8b9ace7533e71a558c959ec6e05da618d075150dd0553d6dd048"
+        },
+        {
+          "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/E-perspectives/E4-results.json",
+          "read_scope": "full case table and counts",
+          "sha256": "b60334d89a3835d9bc491fdde59145ac28b06747d45308c6455543d6402d43f1"
+        },
+        {
+          "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/E-perspectives/E4-results-initial.json",
+          "read_scope": "full case table compared with final; exact hash matches first review",
+          "sha256": "47f864cbc063f3272e7b6085490cbaa5f51bba7558fb1c9c58a49bbc68b00b0a"
+        },
+        {
+          "path": "docs/reports/ecosystem-audit-2026-10-09/pass4/E-perspectives/REPORT.md",
+          "read_scope": "lines1–23; revised counts and oracle correction disclosure",
+          "sha256": "e0233ccaf3438789ed023025eedc71591e0f4766d6dc31ce92237d874a67ef79"
+        }
+      ]
+    }
+  ]
+}
