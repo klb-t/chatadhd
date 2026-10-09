@@ -1829,8 +1829,83 @@ Result<std::map<std::string, Json>> read_dir_docs(const fs::path& dir, bool requ
 }
 }  // namespace
 
+namespace {
+// A shared physical data root may contain other independently validated
+// domains. This exact inventory establishes ownership/integrity only: it never
+// activates external documents as KB policy, facts or a second configuration
+// engine. from_documents and overlays deliberately do not use this boundary.
+Status separate_data_domains(const fs::path& dir, std::map<std::string, Json>& docs) {
+  const auto inventory_path = dir / "data_domains.pack";
+  std::error_code ec;
+  const auto inventory_status = fs::symlink_status(inventory_path, ec);
+  if (ec == std::errc::no_such_file_or_directory || inventory_status.type() == fs::file_type::not_found) return {};
+  if (ec) return Error(Errc::Io, "cannot inspect data-domain inventory: " + ec.message());
+  if (!fs::is_regular_file(inventory_status))
+    return Error(Errc::InvalidArgument, "data-domain inventory must be a regular file");
+  LOOM_TRY_ASSIGN(auto bytes, fsutil::read_file(inventory_path));
+  LOOM_TRY_ASSIGN(auto inventory, json::parse(bytes));
+  auto invalid = [](const std::string& detail) -> Status {
+    return Error(Errc::InvalidArgument, "invalid data-domain inventory: " + detail);
+  };
+  if (!inventory.is_object() || json::get_string(inventory, "schema") != "loom.data_domains/1" ||
+      !inventory.contains("revision") || !inventory["revision"].is_number_integer() ||
+      inventory["revision"].is_boolean() || inventory["revision"].get<std::int64_t>() < 1 ||
+      !inventory.contains("files") || !inventory["files"].is_array())
+    return invalid("schema, revision and files are required");
+  std::set<std::string> kb_paths{"pack.json"};
+  if (const auto manifest = docs.find("pack.json"); manifest != docs.end()) {
+    if (const auto* files = json::find(manifest->second, "files"); files && files->is_array())
+      for (const auto& file : *files) kb_paths.insert(json::get_string(file, "path"));
+  }
+  std::set<std::string> external_paths;
+  for (const auto& entry : inventory["files"]) {
+    if (!entry.is_object()) return invalid("file entry must be an object");
+    for (const char* field : {"path", "schema", "sha256", "domain", "role"})
+      if (!entry.contains(field) || !entry[field].is_string() || entry[field].get<std::string>().empty())
+        return invalid(std::string("missing file ") + field);
+    if (!entry.contains("validation_refs") || !entry["validation_refs"].is_array() || entry["validation_refs"].empty())
+      return invalid("file validation_refs are required; integrity is not semantic validation");
+    for (const auto& ref : entry["validation_refs"])
+      if (!ref.is_string() || ref.get<std::string>().empty()) return invalid("invalid validation reference");
+    const auto path = entry["path"].get<std::string>();
+    const fs::path relative(path);
+    if (relative.is_absolute() || relative.has_root_name() || relative.extension() != ".json" ||
+        relative.lexically_normal().generic_string() != path || path.find('\\') != std::string::npos)
+      return invalid("unsafe file path: " + path);
+    for (const auto& component : relative)
+      if (component == ".." || component == ".") return invalid("unsafe file path: " + path);
+    if (kb_paths.count(path)) return invalid("file overlaps KB pack: " + path);
+    if (!external_paths.insert(path).second) return invalid("duplicate file: " + path);
+    const auto found = docs.find(path);
+    if (found == docs.end()) return invalid("declared file is missing: " + path);
+    if (!found->second.is_object() || json::get_string(found->second, "schema") != entry["schema"].get<std::string>())
+      return invalid("schema mismatch: " + path);
+    const auto expected = entry["sha256"].get<std::string>();
+    if (expected.size() != 64 || !std::all_of(expected.begin(), expected.end(), [](char c) {
+          return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f');
+        })) return invalid("invalid sha256: " + path);
+    const auto canonical_root = fs::canonical(dir, ec);
+    if (ec) return Error(Errc::Io, "cannot resolve data root: " + ec.message());
+    const auto canonical_file = fs::canonical(dir / relative, ec);
+    if (ec) return Error(Errc::Io, "cannot resolve data-domain file: " + ec.message());
+    const auto confined = canonical_file.lexically_relative(canonical_root);
+    if (confined.empty() || confined.is_absolute()) return invalid("file is outside data root: " + path);
+    for (const auto& component : confined)
+      if (component == "..") return invalid("file is outside data root: " + path);
+    LOOM_TRY_ASSIGN(auto raw, fsutil::read_file(dir / relative));
+    if (Sha256::hex(raw) != expected) return invalid("sha256 mismatch: " + path);
+    LOOM_TRY_ASSIGN(auto observed, json::parse(raw));
+    if (json::canonical(observed) != json::canonical(found->second))
+      return invalid("file changed while loading: " + path);
+  }
+  for (const auto& path : external_paths) docs.erase(path);
+  return {};
+}
+}  // namespace
+
 Result<std::shared_ptr<const Pack>> Pack::load_dir(const fs::path& dir) {
   LOOM_TRY_ASSIGN(auto docs, read_dir_docs(dir, true));
+  LOOM_TRY(separate_data_domains(dir, docs));
   return from_documents(std::move(docs));
 }
 

@@ -37,19 +37,29 @@ std::string error_of(std::map<std::string, Json> docs) {
 #include "kb/tests/normalizer_data.verify.cc"
 
 TEST_SUITE("kb_pack") {
-  TEST_CASE("every file under loom/data loads and validates (schema + cross references)") {
+  TEST_CASE("physical data root partitions exact external domains and validates every KB document") {
     auto r = kb::Pack::load_dir(data_dir());
     INFO((r ? std::string("ok") : r.error().message));
     REQUIRE(static_cast<bool>(r));
     const auto& pack = **r;
     CHECK(pack.id() == "builtin");
     CHECK(pack.hash().size() == 64);
-    // Every JSON file on disk is listed (loaded) and every listed file exists.
+    // The physical data root also carries independent D/E domains. Every JSON
+    // file is either a KB document or exactly inventoried by schema and bytes;
+    // these external documents never become active KB policy or observations.
+    const auto domains = unwrap(json::parse(unwrap(fsutil::read_file(data_dir() / "data_domains.pack"))));
+    REQUIRE(domains["schema"] == "loom.data_domains/1");
+    for (const auto& external : domains["files"]) {
+      CHECK(pack.file(external["path"].get<std::string>()).is_null());
+      const auto bytes = unwrap(fsutil::read_file(data_dir() / external["path"].get<std::string>()));
+      CHECK(Sha256::hex(bytes) == external["sha256"].get<std::string>());
+      CHECK(unwrap(json::parse(bytes))["schema"] == external["schema"]);
+    }
     std::size_t on_disk = 0;
     for (const auto& e : std::filesystem::recursive_directory_iterator(data_dir())) {
       on_disk += e.is_regular_file() && e.path().extension() == ".json";
     }
-    CHECK(pack.files().size() == on_disk);
+    CHECK(pack.files().size() + domains["files"].size() == on_disk);
     CHECK(pack.ids("project_kinds") == std::vector<std::string>{"film", "legal_case", "music", "research", "software_app"});
     CHECK(pack.ids("facets") == std::vector<std::string>{"agent", "multiplatform", "staged_transformation"});
     CHECK(pack.ids("artifact_types") ==
@@ -66,7 +76,7 @@ TEST_SUITE("kb_pack") {
     CHECK(!std::filesystem::exists(data_dir() / "paradigms"));  // the draft layout is gone (model §3.5)
   }
 
-  TEST_CASE("the embedded pack is byte-for-byte the loom/data directory (run tools/gen_kb_pack.py)") {
+  TEST_CASE("the embedded KB pack equals the declared KB documents (run tools/gen_kb_pack.py)") {
     auto builtin = unwrap(kb::Pack::load_builtin());
     auto dir = unwrap(kb::Pack::load_dir(data_dir()));
     CHECK(builtin->files() == dir->files());

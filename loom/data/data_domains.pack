@@ -1,0 +1,107 @@
+{
+  "schema": "loom.data_domains/1",
+  "revision": 1,
+  "description": "Exact physical source inventory for non-KB domains sharing loom/data. Digests and schema identities verify domain ownership, not semantic validity or activation; referenced owner suites validate their contracts. These files never become KnowledgeStore observations or KB policy by loading this inventory.",
+  "files": [
+    {
+      "path": "resource_graph/access.json",
+      "schema": "loom.resource_access_policy/1",
+      "sha256": "c6595cc214b9974fbabc247e5ad4b07f9c88a0ecea03dafe3acf07c08ded2643",
+      "domain": "resource_graph",
+      "role": "configuration",
+      "validation_refs": [
+        "loom/tests/resource_graph"
+      ]
+    },
+    {
+      "path": "resource_graph/discovery.json",
+      "schema": "loom.resource_discovery_registry/1",
+      "sha256": "6494aa966971fe4e1c823f348249bae4f04f1c46e4fa4ef873506c8edd3bd523",
+      "domain": "resource_graph",
+      "role": "configuration",
+      "validation_refs": [
+        "loom/tests/resource_graph"
+      ]
+    },
+    {
+      "path": "resource_graph/line_adapter.json",
+      "schema": "loom.resource_adapter/1",
+      "sha256": "39345035e7c84d230fcb16cdc5bacda1705bdd38636df89e579b894720543da2",
+      "domain": "resource_graph",
+      "role": "configuration",
+      "validation_refs": [
+        "loom/tests/resource_graph"
+      ]
+    },
+    {
+      "path": "resource_graph/parsers.json",
+      "schema": "loom.resource_graph.parsers/1",
+      "sha256": "aae178e8200692ee8025aaabdd8babc3eedce98cc215fcd9390c74581d6a3960",
+      "domain": "resource_graph",
+      "role": "configuration",
+      "validation_refs": [
+        "loom/tests/resource_graph"
+      ]
+    },
+    {
+      "path": "resource_graph/projection.json",
+      "schema": "loom.resource_projection_policy/1",
+      "sha256": "f69d861d497cdcf4efc3dee0fd4491c429b941b853657da0c8a756a6b22831d9",
+      "domain": "resource_graph",
+      "role": "configuration",
+      "validation_refs": [
+        "loom/tests/resource_graph"
+      ]
+    },
+    {
+      "path": "graph_perspectives/catalog.json",
+      "schema": "loom.graph_perspectives_catalog/1",
+      "sha256": "b3c3a4f367776d72824d8f89800f0895a87ffe067bb2269b8e2437ef55a7739d",
+      "domain": "graph_perspectives",
+      "role": "configuration",
+      "validation_refs": [
+        "loom/web/tests/graph-perspectives"
+      ]
+    },
+    {
+      "path": "graph_perspectives/demo.packet.json",
+      "schema": "loom.graph_packet/1",
+      "sha256": "610f2f64bb0f0fe4ee363f17faa9fbae6eaf1fe0aae3a51e4ce6aadad6670124",
+      "domain": "graph_perspectives",
+      "role": "example",
+      "validation_refs": [
+        "loom/web/tests/graph-perspectives"
+      ]
+    },
+    {
+      "path": "graph_perspectives/demo.source.json",
+      "schema": "loom.graph-perspectives.authored-example/1",
+      "sha256": "2ef74bfb622c7dd5398084ed8511aa92975e4dda59d66464a60773e08eb25a31",
+      "domain": "graph_perspectives",
+      "role": "example",
+      "validation_refs": [
+        "loom/web/tests/graph-perspectives"
+      ]
+    },
+    {
+      "path": "graph_perspectives/external-profile.json",
+      "schema": "loom.application_profile/1",
+      "sha256": "580130aff3b608cea227bd9c02c9589b9ec9fee501a18f7374c67ee06a7d4ff1",
+      "domain": "graph_perspectives",
+      "role": "example",
+      "validation_refs": [
+        "loom/web/tests/graph-perspectives"
+      ]
+    },
+    {
+      "path": "graph_perspectives/graph-perspectives.pack.json",
+      "schema": "loom.default_layers_pack/1",
+      "sha256": "e1df154bdc61d7ae3f007f1aac0a1bbe7d02c5d464ce3e8d672ee82f0b53db82",
+      "domain": "graph_perspectives",
+      "role": "configuration",
+      "validation_refs": [
+        "loom/web/tests/graph-perspectives"
+      ]
+    }
+  ]
+}
