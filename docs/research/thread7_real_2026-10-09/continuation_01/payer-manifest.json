@@ -1,0 +1,75 @@
+{
+  "schema": "loom.research_stage_evidence/1",
+  "stage": "continuation_01.queue_payer_order",
+  "previous_branch_tip": "69880859802267f1b38b82eeaecd6fdc5522a47a",
+  "historical_campaign": {
+    "attempts": 720,
+    "actual_usd": "0.873216500",
+    "archival_remaining_usd": "4.126783500",
+    "nonrenewing_cap_usd": "5",
+    "current_provider_usage": null
+  },
+  "new_actual_provider_calls": 0,
+  "new_campaign_cost_usd": "0",
+  "kind": "mechanism_only",
+  "tests": [
+    {
+      "suite": "experiment_workflow_v1",
+      "passed": 28
+    },
+    {
+      "suite": "experiment_payer_boundary_v1",
+      "passed": 22,
+      "six_crash_boundaries_in_one_parameterized_test": true
+    },
+    {
+      "suite": "existing_research_programme",
+      "passed": 135
+    }
+  ],
+  "files": [
+    {
+      "path": "loom/tools/structure/experiment_workflow_v1.py",
+      "sha256": "9d67e21da33733aefb5a410e6da65d92cd6a81341cd7c87466fce47b64ba287b",
+      "bytes": 26079
+    },
+    {
+      "path": "loom/tools/structure/experiment_payer_boundary_v1.py",
+      "sha256": "da04d31bdf118a8fbd0d91bf61fde0b01fc2d82349d511ed3dac7544cc4e0970",
+      "bytes": 12191
+    },
+    {
+      "path": "loom/tools/structure/test_experiment_payer_boundary_v1.py",
+      "sha256": "4e1c9f9af3eb626d58ce667cdf6bcb750cc725f29c8909319abc5c682167b300",
+      "bytes": 18283
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/queue-benchmark.py",
+      "sha256": "44bb5884f7ec29a2165bb2b2fa3c172010233bf25f25892a51aaae9229bd54ba",
+      "bytes": 2582
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/queue-benchmark.json",
+      "sha256": "c14a7faa8a7ba945ab51771b0e7defbb0a1e872ade7560951c74b82fd2dd1f04",
+      "bytes": 1850
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/payer-boundary.md",
+      "sha256": "15d0a0b6763adf565704365c566e3819e8110960bfd3bf8505c24edcb7d5a242",
+      "bytes": 7493
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/payer-test-logs.zip",
+      "sha256": "f7070498f2a5bd4e25d3971388777cf1fffe081b4e1bc16f16970a2230c5ae53",
+      "bytes": 5625
+    }
+  ],
+  "limitations": [
+    "No actual provider dispatch or current key preflight",
+    "No exactly-once remote inference guarantee",
+    "Unknown/reserved crash states remain blocked unless the existing payer supports attributable read-only resolution",
+    "No model-quality measurement",
+    "Cache-aware groups only bounded windows",
+    "Benchmark Python peak excludes native allocations"
+  ]
+}

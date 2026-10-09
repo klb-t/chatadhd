@@ -1,0 +1,24 @@
+{
+  "schema": "loom.thread7_stage_seal/1",
+  "stage": 4,
+  "name": "queue_payer_faults_and_ordering",
+  "parent_commit": "804b783d680988517027333e500e26b588657416",
+  "files": {
+    "docs/research/thread7_real_2026-10-09/continuation_01/payer-boundary.md": "15d0a0b6763adf565704365c566e3819e8110960bfd3bf8505c24edcb7d5a242",
+    "docs/research/thread7_real_2026-10-09/continuation_01/payer-manifest.json": "4f67c2f0b7034f70d1ca01a7e5fdfad9fcef17a8028b45650a7ab77b39173445",
+    "docs/research/thread7_real_2026-10-09/continuation_01/payer-test-logs.zip": "f7070498f2a5bd4e25d3971388777cf1fffe081b4e1bc16f16970a2230c5ae53",
+    "docs/research/thread7_real_2026-10-09/continuation_01/queue-benchmark.json": "c14a7faa8a7ba945ab51771b0e7defbb0a1e872ade7560951c74b82fd2dd1f04",
+    "docs/research/thread7_real_2026-10-09/continuation_01/queue-benchmark.py": "44bb5884f7ec29a2165bb2b2fa3c172010233bf25f25892a51aaae9229bd54ba",
+    "docs/research/thread7_real_2026-10-09/continuation_01/provider-documentation.json": "320892ee6059e5ea32577bbe8f483586048dfd5d76aac4262ea3b064814e93c0",
+    "loom/tools/structure/experiment_workflow_v1.py": "9d67e21da33733aefb5a410e6da65d92cd6a81341cd7c87466fce47b64ba287b",
+    "loom/tools/structure/experiment_payer_boundary_v1.py": "da04d31bdf118a8fbd0d91bf61fde0b01fc2d82349d511ed3dac7544cc4e0970",
+    "loom/tools/structure/test_experiment_payer_boundary_v1.py": "4e1c9f9af3eb626d58ce667cdf6bcb750cc725f29c8909319abc5c682167b300"
+  },
+  "test_receipt": "payer-manifest.json",
+  "new_calls": 0,
+  "new_cost_usd": "0",
+  "historical_attempts": 720,
+  "current_provider_usage": null,
+  "current_provider_reservations": null,
+  "exactly_once_inference_promised": false
+}

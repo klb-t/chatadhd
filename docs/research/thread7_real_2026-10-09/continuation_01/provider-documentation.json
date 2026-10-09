@@ -1,0 +1,22 @@
+{
+  "schema": "loom.thread7_provider_documentation/1",
+  "reviewed_at": "2026-10-09",
+  "scope": "research preparation; recheck documentation and live endpoint capabilities before real dispatch",
+  "sources": [
+    {"url": "https://openrouter.ai/docs/guides/features/response-caching", "claims": ["X-OpenRouter-Cache:false disables response caching including an enabled preset", "X-OpenRouter-Cache-Status is the observed response header", "A cache HIT has a new generation ID and does not establish independent model inference", "Concurrent identical misses can both be billed; request coalescing is not promised"]},
+    {"url": "https://openrouter.ai/docs/guides/best-practices/prompt-caching", "claims": ["Provider prompt-prefix caching is distinct from OpenRouter response caching", "Caching depends on model and provider; routing and cache read/write usage must be observed rather than inferred"]},
+    {"url": "https://openrouter.ai/docs/guides/routing/provider-selection", "claims": ["Parameter support and actual provider routing require endpoint-specific checks; require_parameters can constrain routing"]}
+  ],
+  "study_rules": {"response_cache_reuse_for_independent_repeat": false, "cross_model_prompt_cache_assumed": false, "prompt_semantics_changed_to_create_cache_hit": false, "seed_implies_deterministic_inference": false, "requested_and_observed_route_separate": true},
+  "current_prices_verified": false,
+  "provider_capabilities_verified": false,
+  "key_identity_verified": false,
+  "current_usage_verified": false,
+  "current_reservations_verified": false,
+  "live_dispatch_allowed": false,
+  "historical_calls": 720,
+  "historical_cost_usd": "0.873216500",
+  "historical_remaining_usd": "4.126783500",
+  "new_paid_calls": 0,
+  "new_cost_usd": "0"
+}

@@ -1,0 +1,53 @@
+{
+  "schema": "loom.research_queue_benchmark/1",
+  "kind": "synthetic_mechanism_only",
+  "python": "3.12.14",
+  "combinations_including_repetitions": "400000000000000000000",
+  "sample_jobs": 1000,
+  "live_provider_calls": 0,
+  "owner_campaign_new_cost_usd": "0",
+  "strategies": [
+    {
+      "mode": "blocked",
+      "seed": 1709,
+      "window_size": null,
+      "prepared": 1000,
+      "elapsed_seconds": 1.0153474599992478,
+      "python_traced_peak_bytes": 40273,
+      "sqlite_bytes": 2207744,
+      "restart_content_equal": true,
+      "duplicate_insertions": 0,
+      "sample_snapshot_sha256": "7461e386325d7bc76061e3ef53a51405a8769013b5e121fed92842bdd3ca1a3f"
+    },
+    {
+      "mode": "controlled_random",
+      "seed": 1709,
+      "window_size": null,
+      "prepared": 1000,
+      "elapsed_seconds": 1.3058580300003086,
+      "python_traced_peak_bytes": 32195,
+      "sqlite_bytes": 2207744,
+      "restart_content_equal": true,
+      "duplicate_insertions": 0,
+      "sample_snapshot_sha256": "f18b78927e323b28c2b34f3bb25d2dda3288f6106b914a72fe1270f317f13e63"
+    },
+    {
+      "mode": "cache_aware",
+      "seed": 1709,
+      "window_size": 64,
+      "prepared": 1000,
+      "elapsed_seconds": 0.9378856790008285,
+      "python_traced_peak_bytes": 349436,
+      "sqlite_bytes": 2207744,
+      "restart_content_equal": true,
+      "duplicate_insertions": 0,
+      "sample_snapshot_sha256": "219c4e209a40305a476a0cd65ddc4bb41f7f9456965d32ef09ecf45e2680dda3"
+    }
+  ],
+  "limits": [
+    "tracemalloc measures Python allocations, not total RSS or SQLite native memory",
+    "finite sample only; does not certify disk capacity for the full matrix",
+    "timings depend on host load; no model quality or provider admission measured",
+    "cache-aware is bounded window sorting; prefix_grouped remains legacy global materialization"
+  ]
+}
