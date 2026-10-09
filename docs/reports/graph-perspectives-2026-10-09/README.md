@@ -3,6 +3,7 @@
 Branch: `gpt/graph-perspectives-2026-10-09`.
 Pinned main: `9e20f99ab27e7cd45e1892f83bf60fbe60db3de9`.
 Published core checkpoint E1: `3eaac2953c3ee0d01d085e595d68edc091c284f2`.
+Published implemented checkpoint E2: `67c0051239179a577d8537a18c591f8ca0bb405d`.
 The final publication receipt is `checkpoint.json`; it identifies the implemented
 commit separately from the later documentation receipt. `gates.json` records exact
 SHA-256 hashes of tested source, test and data files, independent of commit metadata.
@@ -105,7 +106,7 @@ verified IDs and explicit access. See [contracts.md](contracts.md).
 
 ## Reproduce
 
-Requirements: Node/npm, Python 3 with `jsonschema`, a C++17 compiler and Playwright
+Requirements: Node/npm, Python 3 with `jsonschema`, a C++20 compiler and Playwright
 Chromium. From a checkout of this branch:
 
 ```sh

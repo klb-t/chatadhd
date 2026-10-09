@@ -1,0 +1,146 @@
+{
+  "schema": "loom.graph_perspectives_checkpoint/1",
+  "recordedAt": "2026-10-09T10:57:03.338526+00:00",
+  "repository": "klb-t/chatadhd",
+  "branch": "gpt/graph-perspectives-2026-10-09",
+  "baseSha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "coreCheckpointSha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+  "implementedSha": "67c0051239179a577d8537a18c591f8ca0bb405d",
+  "implementedTreeSha": "87a83e7689800c79b431adf085e75caefa7f0065",
+  "receiptSemantics": "This documentation-only receipt follows the implemented commit; its own commit cannot contain its own SHA. The branch tip identifies the receipt commit.",
+  "publication": {
+    "verifiedRemoteHead": "67c0051239179a577d8537a18c591f8ca0bb405d",
+    "treeMatchesLocal": true,
+    "method": "GitHub connector; ordinary git push lacked local credentials",
+    "force": false,
+    "ciInvoked": false
+  },
+  "completed": [
+    "Executable native-resolved perspective contract and renderer-free API",
+    "Descriptor-driven demand selectors and stable reversible navigation",
+    "Independent local detail, relation structures and explained visual mappings",
+    "Interactive real module using existing KnowledgeGraph and actual native R40 transport",
+    "Basic/Advanced/Expert, serialization, unknown-field retention and explicit access/analysis separation",
+    "Unit/integration/browser gates and bounded sparse performance measurements",
+    "Perspective comparison, selective workspace bindings, visibility inspector, explicit workflow-plan preparation",
+    "Pinned actual D producer compatibility and existing safe research exporter compatibility"
+  ],
+  "verification": {
+    "measuredAt": "2026-10-09T08:16:46.763Z",
+    "gateCount": 11,
+    "allGatesPassed": true,
+    "testedSourceHashCount": 38,
+    "testedSourcesUnchangedAtReceipt": true,
+    "counts": {
+      "native": 14,
+      "headless": 28,
+      "adapters": 11,
+      "workspace": 11,
+      "browserGroups": 13,
+      "existingWorkspace": 8,
+      "existingProfileState": 19,
+      "existingProfileAdapter": 9,
+      "benchmarkCases": 12
+    },
+    "browserPageErrors": 0,
+    "canonicalGraphUnchanged": true,
+    "screenshots": 6,
+    "details": "gates.json, browser-evidence.json, benchmark.json and individual .txt logs"
+  },
+  "measurements": {
+    "conditions": "Synthetic lazy chain/star spaces: 10k and100k objects, three focus positions, query256/render80/page32. One local run, not a production SLA.",
+    "headless": {
+      "selectionMs": {
+        "min": 0.3346129999999903,
+        "max": 6.890256000000022
+      },
+      "resolvedObjects": {
+        "min": 9,
+        "max": 256
+      },
+      "heapDeltaBytes": {
+        "min": 146720,
+        "max": 4131488
+      },
+      "rssDeltaBytes": {
+        "min": 0,
+        "max": 0
+      }
+    },
+    "browserSelection": {
+      "selectionMs": {
+        "min": 0.2807919999995647,
+        "max": 6.8592700000008335
+      }
+    },
+    "presentation": {
+      "layoutMs": {
+        "min": 0,
+        "max": 0.19999999925494194
+      },
+      "reactRenderMs": {
+        "min": 1,
+        "max": 14.100000001490116
+      },
+      "renderExcludingMeasuredLayoutMs": {
+        "min": 1,
+        "max": 13.900000002235174
+      },
+      "updateThroughTwoAnimationFramesMs": {
+        "min": 15.600000001490116,
+        "max": 35.5
+      }
+    },
+    "memoryCaveat": "Signed process heap/RSS deltas include GC/JIT/allocator effects and do not measure exact retained bytes.",
+    "packetIndexSeparate": "10,001-entity packet hub query plus lazy index:70.28ms in final adapters.txt; page3 clones3relations and0objects. Not included in lazy-source benchmark selection."
+  },
+  "dependencies": {
+    "BInspectedSha": "362cb8b951de23bdea989f37e67d014e62861342",
+    "DExecutedSha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+    "DResult": {
+      "zeroReadsOnAttach": true,
+      "selector": "/instrument/samples/1",
+      "value": 8,
+      "entities": 9,
+      "claims": 14,
+      "demandReads": 2,
+      "nativeImport": false,
+      "embedding": false,
+      "cache": false
+    },
+    "CCompatibility": "Existing method_graph_export_v1 at main base, safe authored fixture,8entities/10claims. No claim of current private research packet integration."
+  },
+  "remainingHostWork": [
+    {
+      "owner": "B",
+      "task": "Review/apply or rebase integration.patch against pinned main; mount PerspectiveView in existing workspace with native resolver ownership and live source adapters."
+    },
+    {
+      "owner": "B",
+      "task": "Persist perspective envelope beside workspace; provide verified native-store anchors for optional analysis-plan preparation."
+    },
+    {
+      "owner": "B/D",
+      "task": "Connect persistent demand resource transport; producer compatibility is executed but this transport is not installed by E."
+    }
+  ],
+  "explicitLimitations": [
+    "Production application mount is not installed; the exact proposed renderer patch executes in isolated harness memory.",
+    "Exact-membership workflow export is blocked because existing ChatContextPlan anchors do not enforce a whitelist.",
+    "The harness blocks anchor workflow export without verified native-store membership; raw perspective query-plan export works.",
+    "Historical native settings need a host snapshot reader; fixture snapshot comparison works.",
+    "No automatic online discovery or model parsing is dispatched by the perspective view."
+  ],
+  "resume": "E scope is delivered. B can resume from integration.md and the tested patch. No unresolved local gate failures. Test reruns are unnecessary for this receipt-only change;38 tested source/test/data hashes were verified unchanged.",
+  "ownership": {
+    "allowedNewFilesOnly": [
+      "loom/web/src/graph-perspectives/",
+      "loom/web/tests/graph-perspectives/",
+      "loom/data/graph_perspectives/",
+      "docs/reports/graph-perspectives-2026-10-09/"
+    ],
+    "existingFilesModified": false,
+    "mainModified": false,
+    "otherBranchesModified": false
+  }
+}
