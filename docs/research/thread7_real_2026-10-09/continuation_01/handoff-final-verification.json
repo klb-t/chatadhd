@@ -1,0 +1,15 @@
+{
+  "schema": "loom.thread7_final_contract_receipt/1",
+  "contracts": [
+    "loom.method_graph/1",
+    "loom.method_run_trace/1"
+  ],
+  "schema_and_python_codec_verified": true,
+  "source_and_result_bytes_recoverable": true,
+  "artifact_sha256": "93a6d6eb4a6cef0249ea45182118d797668b0a2a2686dba5ec70a4ce0ed026c0",
+  "compressed_sha256": "2e96dd1af159d167d8c78bc38978f7ade4e88bbbbe58e4803f7cba39935ee577",
+  "presentation_sha256": "2610fd6f7a706670df83f41a19411fd3a0f63f2ea6646a2d486d3c238ce69321",
+  "native_execution": false,
+  "new_calls": 0,
+  "new_cost_usd": "0"
+}

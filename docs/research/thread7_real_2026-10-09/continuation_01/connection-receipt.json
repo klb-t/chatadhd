@@ -1,0 +1,48 @@
+{
+  "schema": "loom.thread7_connected_preparation/1",
+  "current_version": "connected-v2",
+  "superseded_version_preserved": "connected-v1",
+  "scopes": [
+    {
+      "body_bytes_preserved": true,
+      "current_phase_upper_usd": null,
+      "dispatch_ready": false,
+      "families": 2,
+      "freeze_sha256": "36dd9f5e68aacfb6ab268200f1e4d334be717977c5af1e8a9484440977711c7c",
+      "new_calls": 0,
+      "new_cost_usd": "0",
+      "payer_manifest_sha256": "2cf6cf590ae41d4dddf842a673be15397d69100541260735cdea2383df0b189c",
+      "quality": null,
+      "queued_operations": 6,
+      "scope": "thread7-cont01-context-small3-v2",
+      "spec_sha256": "b8730a545eca6240a93958ebd8e3ace32394616a8d5c8b2a0809fa40105e8f80",
+      "variants": 3
+    },
+    {
+      "body_bytes_preserved": true,
+      "current_phase_upper_usd": null,
+      "dispatch_ready": false,
+      "families": 2,
+      "freeze_sha256": "7767488ed3712509bb8d941b280fa8535a3c33c29dbe5367174e7935ff38e420",
+      "new_calls": 0,
+      "new_cost_usd": "0",
+      "payer_manifest_sha256": "5cba7db774e03edf0a8328b700da5158f711b2469716fd84f05f79795a6f8457",
+      "quality": null,
+      "queued_operations": 10,
+      "scope": "thread7-cont01-context-small5-v2",
+      "spec_sha256": "3a782972cc2dacfe45d6c485add795f89697952855c9184c241b495fb3c7bed7",
+      "variants": 5
+    }
+  ],
+  "frozen_payloads_verified": 26,
+  "payer_manifest_preserves_queue_order": true,
+  "dependent_variants_rejected_by_single_call_connector": true,
+  "mechanics_tests": 7,
+  "test_log_sha256": "71a5b499486c598f439e1b27db5a903baee6202851a187fb642d908af5dd6652",
+  "actual_order_entries": 0,
+  "new_calls": 0,
+  "new_cost_usd": "0",
+  "current_provider_usage": null,
+  "current_provider_reservations": null,
+  "independent_quality_validation": false
+}

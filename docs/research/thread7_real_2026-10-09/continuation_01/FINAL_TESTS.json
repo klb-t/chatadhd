@@ -1,0 +1,13 @@
+{
+  "tests_run": 336,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "passed": 336,
+  "log_sha256": "de290c694ab0566703732ac3d271d6afcea44f6a051824be7ee384f35c2f39df",
+  "new_live_calls": 0,
+  "new_cost_usd": "0",
+  "native_runtime_tested": false,
+  "real_jev_preparation_tests_enabled": true,
+  "mechanical_fixtures_are_model_quality": false
+}

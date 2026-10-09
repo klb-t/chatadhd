@@ -1,0 +1,131 @@
+{
+  "schema": "loom.thread7_context_queue_plan/1",
+  "campaign_id": "thread7-new-key-2026-10-04-eur5",
+  "preparation_manifest_sha256": "5ee93a5b92bd94cf6951474e1ae7c5f7250481f4c258347fa7a0b4e140377f64",
+  "corpus_panel_sha256": "3c6530189ec1917e0a4019e5ad834bab3f062ceeb5046c053667e203c1dc0835",
+  "provider_order": [
+    "openai",
+    "anthropic"
+  ],
+  "requested_provider_id": "openai",
+  "prompt_units_fixed_allowance": 1024,
+  "spec_common": {
+    "schema": "loom.experiment_spec/1",
+    "repetitions": 1,
+    "request_template": {
+      "$select": {
+        "table": "case",
+        "key": "configuration_id"
+      }
+    },
+    "response_cache": false,
+    "prompt_cache_policy": "observe_provider_cache_without_prompt_rewrite",
+    "cache_prefix_messages": 1,
+    "route_id": "chat",
+    "endpoint_identity": "requested-openai-chat-endpoint-not-live-verified",
+    "ordering": {
+      "mode": "blocked",
+      "seed": 20261009
+    },
+    "adoption_policy": "proposal",
+    "metrics": [
+      "format",
+      "graph_integrity",
+      "source_reference_validity",
+      "source_fidelity",
+      "goal_preservation",
+      "preference_preservation",
+      "stability",
+      "cost_usd",
+      "latency_seconds"
+    ],
+    "evaluators": [
+      "evaluation-protocol.json"
+    ],
+    "budget": {
+      "campaign_reset": false,
+      "nonrenewing_cap_usd": "5",
+      "current_usage_usd": null,
+      "pending_reservations_usd": null,
+      "estimated_phase_upper_usd": null,
+      "executor": "existing_research_programme_runner"
+    },
+    "triggers": {
+      "opt_in": false,
+      "events": [
+        "conversation_checkpoint"
+      ],
+      "frequency_seconds": 3600
+    },
+    "scope_status": "two_tuning_families_one_per_provider_not_independent_validation"
+  },
+  "scopes": [
+    {
+      "id": "thread7-cont01-context-small3-v2",
+      "variants": [
+        {
+          "context_representation": "exact_text",
+          "context_resolution": "full",
+          "response_form": "graph_direct",
+          "preference_mode": "none"
+        },
+        {
+          "context_representation": "explicit_fields",
+          "context_resolution": "full",
+          "response_form": "graph_direct",
+          "preference_mode": "none"
+        },
+        {
+          "context_representation": "source_graph",
+          "context_resolution": "full",
+          "response_form": "graph_direct",
+          "preference_mode": "none"
+        }
+      ]
+    },
+    {
+      "id": "thread7-cont01-context-small5-v2",
+      "variants": [
+        {
+          "context_representation": "exact_text",
+          "context_resolution": "full",
+          "response_form": "graph_direct",
+          "preference_mode": "none"
+        },
+        {
+          "context_representation": "explicit_fields",
+          "context_resolution": "full",
+          "response_form": "graph_direct",
+          "preference_mode": "none"
+        },
+        {
+          "context_representation": "source_graph",
+          "context_resolution": "full",
+          "response_form": "graph_direct",
+          "preference_mode": "none"
+        },
+        {
+          "context_representation": "exact_text",
+          "context_resolution": "checkpoint",
+          "response_form": "graph_direct",
+          "preference_mode": "none"
+        },
+        {
+          "context_representation": "exact_text",
+          "context_resolution": "selected_subgraph",
+          "response_form": "graph_direct",
+          "preference_mode": "none"
+        }
+      ]
+    }
+  ],
+  "adoption_policy": "proposal_only_no_settings_effect",
+  "dispatch_policy": "Alternative small scopes, not both by default. Freeze current price upper bound, remaining authorization, and existing-payer reservations before any dispatch. Unknown state blocks live execution.",
+  "new_calls": 0,
+  "new_cost_usd": "0",
+  "single_call_response_forms": [
+    "graph_direct",
+    "text_plus_structure"
+  ],
+  "superseded_connection": "connected-v1: prepared manifest used identity-sort rather than scheduler order; zero dispatch; preserved privately"
+}
