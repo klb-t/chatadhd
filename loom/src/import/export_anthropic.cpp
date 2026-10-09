@@ -62,6 +62,11 @@ Json artifact_tags(const std::string& text) {
 void parse_anthropic_conversation(const Json& conv, int index, const std::string& member, Env& env, ConvModel& out,
                                   Counts& counts) {
   (void)env;
+  parse_anthropic_conversation(conv, index, member, out, counts);
+}
+
+void parse_anthropic_conversation(const Json& conv, int index, const std::string& member, ConvModel& out,
+                                  Counts& counts) {
   counts.conversation += 1;
   out.source = "import:anthropic";
   out.leaves_total = json_leaves(conv);

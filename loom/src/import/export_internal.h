@@ -225,6 +225,9 @@ void parse_openai_conversation(const Json& conv, int index, const std::string& m
 // member is not an OpenAI root member.
 bool import_openai_member(Env& env, OpenAiCtx& cx, const std::string& rel, const fs::path& abs, Report& rep);
 
+// DB-free overload; the Env-taking importer API forwards to this same parser.
+void parse_anthropic_conversation(const Json& conv, int index, const std::string& member, ConvModel& out,
+                                  Counts& counts);
 void parse_anthropic_conversation(const Json& conv, int index, const std::string& member, Env& env, ConvModel& out,
                                   Counts& counts);
 struct AnthropicCtx {

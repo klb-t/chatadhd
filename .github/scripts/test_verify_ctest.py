@@ -51,6 +51,16 @@ class EvidenceGateTests(unittest.TestCase):
                 self.assertFalse(result["valid"])
                 self.assertIn("positive cases and assertions", " ".join(result["errors"]))
 
+    def test_resource_contract_requires_executed_inner_cases_without_skips(self):
+        m, x = fixture([("resource_graph.contract", python(7))])
+        result = verify(m, x, "dev")
+        self.assertTrue(result["valid"], result["errors"])
+        self.assertEqual(result["executed_python_cases"], 7)
+        for output in (python(0), python(7, 1), "", "resource checks passed"):
+            with self.subTest(output=output):
+                m, x = fixture([("resource_graph.contract", output)])
+                self.assertFalse(verify(m, x, "dev")["valid"])
+
     def test_positive_cases_with_no_assertions_do_not_establish_verification(self):
         m, x = fixture([("unit.test_resolve_lineage", native(2, 0))])
         self.assertFalse(verify(m, x, "dev")["valid"])
@@ -213,7 +223,7 @@ class PolicyLoaderTests(unittest.TestCase):
         m, x = fixture([("unit.test_db", native())])
         first = verify(m, x, "dev", policy)
         first["policy_provenance"]["revision"] = 999
-        self.assertEqual(verify(m, x, "dev", policy)["policy_provenance"]["revision"], 1)
+        self.assertEqual(verify(m, x, "dev", policy)["policy_provenance"]["revision"], self.defaults["revision"])
 
     def test_new_declared_preset_and_runner_need_no_code_branch(self):
         data = copy.deepcopy(self.defaults)

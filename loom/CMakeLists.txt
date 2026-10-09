@@ -212,6 +212,15 @@ if(LOOM_BUILD_TESTS)
       add_test(NAME compat.${_name} COMMAND ${Python3_EXECUTABLE} ${_py})
       set_tests_properties(compat.${_name} PROPERTIES ENVIRONMENT "${_loom_compat_env}" TIMEOUT 600)
     endforeach()
+    # External-resource mechanisms use the public packet/native-store boundary.
+    if(LOOM_SHARED)
+      add_test(NAME resource_graph.contract
+        COMMAND ${Python3_EXECUTABLE} -m unittest discover
+          -s ${LOOM_ROOT}/tests/resource_graph -p "test_*.py")
+      set_tests_properties(resource_graph.contract PROPERTIES
+        ENVIRONMENT "${_loom_python_env};LOOM_LIBRARY=$<TARGET_FILE:loom>"
+        TIMEOUT 600)
+    endif()
     # Offline research mechanism/protocol checks, separate from quality gates.
     # These exercise no model service and never open the real holdout key.
     add_test(NAME research.structure
