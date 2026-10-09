@@ -19,6 +19,7 @@ GENERATOR = LOOM_ROOT / "src/onboarding/gen_onboarding_pack.py"
 CANONICAL_FILES = (
     "profiles/user.pack",
     "profiles/graph_perspective.pack",
+    "profiles/conversation_view.pack",
     "onboarding/scenario.pack",
     "onboarding/ui.pack",
 )
@@ -70,6 +71,8 @@ class OnboardingPackGenerationTests(unittest.TestCase):
             shutil.copyfile(LOOM_ROOT / "data" / relative, target)
         self.native = self.script.with_name("builtin.inc")
         self.web = self.root / "web/src/onboarding/generated/ui.json"
+        self.feature_web = self.root / "web/src/onboarding/generated/conversation-view.json"
+        self.outputs = {"native": self.native, "web": self.web, "feature_web": self.feature_web}
         self.caller = self.workspace / "unrelated-cwd"
         self.caller.mkdir()
 
@@ -90,12 +93,12 @@ class OnboardingPackGenerationTests(unittest.TestCase):
     def generate(self):
         result = self.invoke()
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertTrue(self.native.is_file())
-        self.assertTrue(self.web.is_file())
+        for path in self.outputs.values():
+            self.assertTrue(path.is_file(), f"missing generated artifact: {path.relative_to(self.root)}")
         return self.artifact_bytes()
 
     def artifact_bytes(self):
-        return {"native": self.native.read_bytes(), "web": self.web.read_bytes()}
+        return {name: path.read_bytes() for name, path in self.outputs.items()}
 
     def embedded(self, name):
         text = self.native.read_text(encoding="utf-8")
@@ -160,6 +163,49 @@ class OnboardingPackGenerationTests(unittest.TestCase):
         self.assertEqual(next(row for row in pack["entries"] if row["key"] == budget["key"])["value"]["render"], 17)
         self.assertEqual(pack["runtime_definition"]["defaults"], BASELINE_DEFAULTS)
 
+    def test_conversation_view_feature_uses_same_source_in_native_and_web(self):
+        self.valid_artifacts = self.generate()
+        source = self.read_document("profiles/conversation_view.pack")
+        pack = self.embedded("kOnboardingPack")
+        self.assertEqual(json.loads(self.feature_web.read_text(encoding="utf-8")), source)
+        self.assertEqual(next(row for row in pack["entry_packs"]
+                              if row["pack_id"] == source["pack_id"]), source)
+        for entry in source["entries"]:
+            self.assertEqual(next(row for row in pack["entries"] if row["id"] == entry["id"]), entry)
+        source["entries"][0]["id"] = "onboarding.settings/v1"
+        self.write_document("profiles/conversation_view.pack", source)
+        self.invalid_preserves_artifacts("duplicate default layer key or id")
+
+    def test_feature_catalog_edit_changes_consumers_without_base_ui_or_runtime_policy_drift(self):
+        original = self.generate()
+        pack_source = (self.data / "profiles/user.pack").read_bytes()
+        base_ui = self.read_document("onboarding/ui.pack")
+        original_pack = self.embedded("kOnboardingPack")
+        source = self.read_document("profiles/conversation_view.pack")
+        entry = next(row for row in source["entries"] if row["key"] == "presentation.conversation_view")
+        entry["value"]["locales"]["en"]["local_read"] = "Żółć – synthetic local read action"
+        self.write_document("profiles/conversation_view.pack", source)
+        stale = self.invoke("--check")
+        self.assertNotEqual(stale.returncode, 0)
+        self.assertIn("stale: " + self.native.relative_to(self.root).as_posix(), stale.stderr)
+        self.assertEqual(self.artifact_bytes(), original)
+        changed = self.generate()
+        self.assertNotEqual(changed["native"], original["native"])
+        self.assertNotEqual(changed["feature_web"], original["feature_web"])
+        self.assertEqual(changed["web"], original["web"])
+        self.assertEqual(json.loads(changed["feature_web"].decode("utf-8")), source)
+        pack = self.embedded("kOnboardingPack")
+        self.assertEqual(next(row for row in pack["entry_packs"]
+                              if row["pack_id"] == source["pack_id"]), source)
+        self.assertEqual(next(row for row in pack["entries"] if row["id"] == entry["id"]), entry)
+        self.assertEqual([row for row in pack["entries"] if row["id"] != entry["id"]],
+                         [row for row in original_pack["entries"] if row["id"] != entry["id"]])
+        self.assertEqual(self.embedded("kOnboardingPresentation"), base_ui)
+        self.assertEqual(pack["runtime_definition"], original_pack["runtime_definition"])
+        self.assertEqual(pack["runtime_definition"]["defaults"], BASELINE_DEFAULTS)
+        self.assertEqual((self.data / "profiles/user.pack").read_bytes(), pack_source)
+        self.assertEqual(self.invoke("--check").returncode, 0)
+
     def test_canonical_ui_edit_changes_both_consumers_and_native_presentation_layer(self):
         original = self.generate()
         pack_source = (self.data / "profiles/user.pack").read_bytes()
@@ -174,6 +220,7 @@ class OnboardingPackGenerationTests(unittest.TestCase):
         changed = self.generate()
         self.assertNotEqual(changed["native"], original["native"])
         self.assertNotEqual(changed["web"], original["web"])
+        self.assertEqual(changed["feature_web"], original["feature_web"])
         self.assertEqual(self.embedded("kOnboardingPresentation"), ui)
         self.assertEqual(json.loads(changed["web"].decode("utf-8")), ui)
         presentation = next(entry for entry in self.embedded("kOnboardingPack")["entries"]
@@ -321,10 +368,10 @@ class OnboardingPackGenerationTests(unittest.TestCase):
         self.write_document("onboarding/scenario.pack", scenario)
         self.invalid_preserves_artifacts("raw string delimiter collision")
 
-    def test_check_detects_stale_native_and_web_outputs_without_rewriting_them(self):
+    def test_check_detects_each_stale_output_without_rewriting_any_artifact(self):
         self.generate()
-        for path, relative in ((self.native, "src/onboarding/builtin.inc"),
-                               (self.web, "web/src/onboarding/generated/ui.json")):
+        for path in self.outputs.values():
+            relative = path.relative_to(self.root).as_posix()
             with self.subTest(output=relative):
                 self.generate()
                 path.write_bytes(path.read_bytes() + b"\nsynthetic stale artifact\n")
@@ -332,21 +379,21 @@ class OnboardingPackGenerationTests(unittest.TestCase):
                 result = self.invoke("--check")
                 self.assertNotEqual(result.returncode, 0)
                 self.assertIn("stale: " + relative, result.stderr)
-                self.assertEqual(self.artifact_bytes(), stale, "--check must not repair or rewrite either artifact")
+                self.assertEqual(self.artifact_bytes(), stale, "--check must not repair or rewrite any artifact")
 
-    def test_check_detects_either_missing_output_without_recreating_it(self):
-        for path, relative in ((self.native, "src/onboarding/builtin.inc"),
-                               (self.web, "web/src/onboarding/generated/ui.json")):
+    def test_check_detects_each_missing_output_without_recreating_it(self):
+        for path in self.outputs.values():
+            relative = path.relative_to(self.root).as_posix()
             with self.subTest(output=relative):
                 self.generate()
                 path.unlink()
-                remaining = self.web if path == self.native else self.native
-                remaining_bytes = remaining.read_bytes()
+                remaining = [other for other in self.outputs.values() if other != path]
+                remaining_bytes = {other: other.read_bytes() for other in remaining}
                 result = self.invoke("--check")
                 self.assertNotEqual(result.returncode, 0)
                 self.assertIn("stale: " + relative, result.stderr)
                 self.assertFalse(path.exists())
-                self.assertEqual(remaining.read_bytes(), remaining_bytes)
+                self.assertEqual({other: other.read_bytes() for other in remaining}, remaining_bytes)
 
 
 if __name__ == "__main__":
