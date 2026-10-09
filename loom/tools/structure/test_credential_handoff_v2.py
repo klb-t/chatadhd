@@ -16,7 +16,7 @@ import credential_handoff_v2 as handoff
 
 class HybridHandoffTests(unittest.TestCase):
     def setUp(self):
-        self.temporary = tempfile.TemporaryDirectory(dir="/tmp")
+        self.temporary = tempfile.TemporaryDirectory()
         self.addCleanup(self.temporary.cleanup)
         self.root = Path(self.temporary.name)
         self.session, self.html = self.root / "session", self.root / "public.html"
@@ -36,6 +36,20 @@ class HybridHandoffTests(unittest.TestCase):
     def decrypt(self, envelope, **kwargs):
         path = self.root / "envelope.json"; path.write_text(json.dumps(envelope))
         return handoff.decrypt(self.session, path, now=1100, **kwargs)
+
+    def test_fixture_uses_configured_temporary_root(self):
+        self.assertEqual(self.root.parent, Path(tempfile.gettempdir()).resolve())
+
+    def test_git_root_session_is_rejected_before_private_material_is_written(self):
+        # This deliberately unsafe location is separate from the valid fixture.
+        repository = self.root / "forbidden-repository"
+        repository.mkdir()
+        (repository / ".git").mkdir()
+        session, html = repository / "session", self.root / "forbidden.html"
+        with self.assertRaisesRegex(ValueError, "private_path_inside_git"):
+            handoff.generate(session, html, "fixture-separate-programme", now=1000)
+        self.assertFalse(session.exists())
+        self.assertFalse(html.exists())
 
     def test_real_webcrypto_javascript_roundtrip_consumes_private_session(self):
         # Execute the exact delivered script with DOM stubs, using Node's real
