@@ -81,3 +81,32 @@ Pełny dev z TMPDIR=/var/tmp i stdout 10 MiB: 145/146, 249,35 s. research.struct
 Finalny Chromium E2E: 16/16 PASS; screenshoty przywrócone do śledzonych oryginałów. Log data-graph-final-e2e.log, receipt chat-browser-38veoqd6.
 
 Przed długą operacją ASan: dev ukończony, build ASan wznowiony osobno, GCC13 + ASan/UBSan + vendored SQLite + server ON + shared OFF zgodnie z presetem. Log data-graph-asan-final-build.log. Po buildzie zapisać receipt, manifest, uruchomić pełny CTest z limitem 10 MiB i guard asan. Pozostałe release/tsan/vendored nie są wykonane w tej sesji; dev używa vendored SQLite, co nie zastępuje oddzielnego presetu. Kosztowne bramki nigdy nie są przedstawiane jako historyczny PASS.
+
+## AGEDS — niezależny przyrost opublikowany
+
+Produkt `157d88f`, dokumentacja/ledger f2e6d2c i 55b23a8, push PASS. Wersjonowana
+lokalna receptura ASR ze źródła server/profiles/asr/default.json podłączona przez
+walidację/istniejące Settings do rzeczywistego verified worker; pełny snapshot/hash
+w istniejących run/result metadata i inertnym eksporcie grafu. Domyślne small/CPU/
+int8/VAD/timings zachowane. Model overlay i opcje niezależne; brak model revision
+pozostaje unknown. Błędne dane nie uruchamiają dekodera, źródło pozostaje, naprawa
+i nowy run zachowują historię. Backend dekodera syntetyczny, nie pomiar jakości ASR.
+
+Świeża baza w oddzielnym detached worktree: 429 testów + 588 subtestów PASS (9,46 s).
+Finalny Python 432 + 588 PASS (9,81 s), Node 85 PASS, verifier PASS, scoped 19 PASS.
+EA-AGEDS-001 zamknięty w zakresie istniejącego local adaptera; dalsze opcje/provider
+unsupported jawnie. EA-AGEDS-002 (pin do queued job i recipe-aware dedup) otwarty,
+EA-AGEDS-006 (całość konfiguracji w grafie) otwarty. Bez migracji żywego storage,
+bez płatnych modeli/CI, bez zmian Android. Szczegóły w raporcie tego repo.
+
+## ASan — punkt wznowienia przed pełnym testem
+
+Build GCC13 WERROR ASan+UBSan ukończony PASS, log data-graph-asan-final-build.log.
+Instrumentowane executables mają shared OFF i SQLite vendored (jawna lokalna
+adaptacja presetu, którego standardowy SQLite jest systemowy). Sanitizery zachowane:
+address,undefined; no recovery; detect_leaks=1, strict_string_checks=1.
+FFI companion to identyczny kod produktu z istniejącego dev/libloom.so; jego cache
+i SHA zapisane osobno jako asan-ffi-companion-reused-dev. Receipts obu buildów
+zapisano przed tym testem. Full CTest/guard asan uruchomione skryptem
+/workspace/.onboarding/run-data-graph-asan.sh, TMPDIR=/var/tmp, stdout 10 MiB.
+Wynik jest jeszcze oczekiwany.
