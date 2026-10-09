@@ -1,0 +1,710 @@
+{
+  "schema": "loom.graph_perspectives_catalog/1",
+  "capabilities": [
+    {
+      "id": "graph.perspective.structure",
+      "label": "Struktura",
+      "target": "structure",
+      "status": "supported"
+    },
+    {
+      "id": "graph.perspective.resolution",
+      "label": "Rozdzielczość",
+      "target": "resolution",
+      "status": "supported"
+    },
+    {
+      "id": "graph.perspective.traversal",
+      "label": "Relacje i zasięg",
+      "target": "traversal",
+      "status": "supported"
+    },
+    {
+      "id": "graph.perspective.temporal",
+      "label": "Czas i wersje",
+      "target": "temporal",
+      "status": "supported"
+    },
+    {
+      "id": "graph.perspective.evidence",
+      "label": "Status epistemiczny",
+      "target": "evidence",
+      "status": "supported"
+    },
+    {
+      "id": "graph.perspective.visual",
+      "label": "Mapowania prezentacji",
+      "target": "visual",
+      "status": "supported"
+    },
+    {
+      "id": "graph.perspective.budget",
+      "label": "Budżet widoku",
+      "target": "budget",
+      "status": "supported"
+    },
+    {
+      "id": "graph.perspective.localResolution",
+      "label": "Lokalne wyjątki rozdzielczości",
+      "target": "localResolution",
+      "status": "supported"
+    },
+    {
+      "id": "graph.perspective.goal",
+      "label": "Cel",
+      "target": "goal",
+      "status": "supported"
+    },
+    {
+      "id": "graph.perspective.futureTexture",
+      "label": "Przyszły renderer tekstury",
+      "target": "futureTexture",
+      "status": "unsupported",
+      "reason": "Bieżący renderer nie implementuje tej możliwości. Dane pozostają zachowane."
+    }
+  ],
+  "structures": [
+    {
+      "id": "physical",
+      "label": "Części źródła",
+      "relations": [
+        "parts",
+        "has_formula"
+      ],
+      "description": "Kontener i jego adresowalne części."
+    },
+    {
+      "id": "logical",
+      "label": "Struktura logiczna",
+      "relations": [
+        "logical",
+        "represents"
+      ],
+      "description": "Rekordy, pola i alternatywne reprezentacje tej samej tożsamości."
+    },
+    {
+      "id": "computational",
+      "label": "Zależności obliczeniowe",
+      "relations": [
+        "has_formula",
+        "uses",
+        "produces",
+        "justified_by",
+        "informs"
+      ],
+      "description": "Wejścia, operacja, wynik i zapisane uzasadnienie."
+    },
+    {
+      "id": "history",
+      "label": "Komentarze i wersje",
+      "relations": [
+        "comments",
+        "versions",
+        "corrects",
+        "supersedes"
+      ],
+      "description": "Odrębne wersje i komentarze; bez zmiany rozdzielczości."
+    },
+    {
+      "id": "provenance",
+      "label": "Pochodzenie i nadpisania",
+      "relations": [
+        "derived_from",
+        "overridden_by",
+        "justified_by"
+      ],
+      "description": "Ślad pochodzenia i jawne źródło zmiany."
+    },
+    {
+      "id": "conversation",
+      "label": "Rozmowa i instrukcje",
+      "relations": [
+        "parts",
+        "corrects",
+        "supersedes",
+        "derived_from"
+      ],
+      "description": "Wiadomość źródłowa, korekta i aktualna instrukcja."
+    }
+  ],
+  "presets": [
+    {
+      "id": "physical",
+      "label": "Części źródła",
+      "description": "Kontener i jego adresowalne części.",
+      "focus": {
+        "source": "demo-source",
+        "selector": "/objects/e_cell",
+        "canonicalId": "e_cell",
+        "representation": "e_cell",
+        "snapshot": "v2"
+      },
+      "actions": [
+        {
+          "op": "override",
+          "key": "graph.perspective.structure",
+          "value": "physical"
+        },
+        {
+          "op": "override",
+          "key": "graph.perspective.traversal",
+          "value": {
+            "relations": [
+              "parts",
+              "has_formula"
+            ],
+            "direction": "both",
+            "hops": 4
+          }
+        }
+      ]
+    },
+    {
+      "id": "logical",
+      "label": "Struktura logiczna",
+      "description": "Rekordy, pola i alternatywne reprezentacje tej samej tożsamości.",
+      "focus": {
+        "source": "demo-source",
+        "selector": "/objects/e_cell",
+        "canonicalId": "e_cell",
+        "representation": "e_cell",
+        "snapshot": "v2"
+      },
+      "actions": [
+        {
+          "op": "override",
+          "key": "graph.perspective.structure",
+          "value": "logical"
+        },
+        {
+          "op": "override",
+          "key": "graph.perspective.traversal",
+          "value": {
+            "relations": [
+              "logical",
+              "represents"
+            ],
+            "direction": "both",
+            "hops": 4
+          }
+        }
+      ]
+    },
+    {
+      "id": "computational",
+      "label": "Zależności obliczeniowe",
+      "description": "Wejścia, operacja, wynik i zapisane uzasadnienie.",
+      "focus": {
+        "source": "demo-source",
+        "selector": "/objects/e_cell",
+        "canonicalId": "e_cell",
+        "representation": "e_cell",
+        "snapshot": "v2"
+      },
+      "actions": [
+        {
+          "op": "override",
+          "key": "graph.perspective.structure",
+          "value": "computational"
+        },
+        {
+          "op": "override",
+          "key": "graph.perspective.traversal",
+          "value": {
+            "relations": [
+              "has_formula",
+              "uses",
+              "produces",
+              "justified_by",
+              "informs"
+            ],
+            "direction": "both",
+            "hops": 4
+          }
+        }
+      ]
+    },
+    {
+      "id": "history",
+      "label": "Komentarze i wersje",
+      "description": "Odrębne wersje i komentarze; bez zmiany rozdzielczości.",
+      "focus": {
+        "source": "demo-source",
+        "selector": "/objects/e_cell",
+        "canonicalId": "e_cell",
+        "representation": "e_cell",
+        "snapshot": "v2"
+      },
+      "actions": [
+        {
+          "op": "override",
+          "key": "graph.perspective.structure",
+          "value": "history"
+        },
+        {
+          "op": "override",
+          "key": "graph.perspective.traversal",
+          "value": {
+            "relations": [
+              "comments",
+              "versions",
+              "corrects",
+              "supersedes"
+            ],
+            "direction": "both",
+            "hops": 4
+          }
+        }
+      ]
+    },
+    {
+      "id": "provenance",
+      "label": "Pochodzenie i nadpisania",
+      "description": "Ślad pochodzenia i jawne źródło zmiany.",
+      "focus": {
+        "source": "demo-source",
+        "selector": "/objects/e_effective",
+        "canonicalId": "e_effective",
+        "representation": "e_effective"
+      },
+      "actions": [
+        {
+          "op": "override",
+          "key": "graph.perspective.structure",
+          "value": "provenance"
+        },
+        {
+          "op": "override",
+          "key": "graph.perspective.traversal",
+          "value": {
+            "relations": [
+              "derived_from",
+              "overridden_by",
+              "justified_by"
+            ],
+            "direction": "both",
+            "hops": 4
+          }
+        }
+      ]
+    },
+    {
+      "id": "conversation",
+      "label": "Rozmowa i instrukcje",
+      "description": "Wiadomość źródłowa, korekta i aktualna instrukcja.",
+      "focus": {
+        "source": "demo-source",
+        "selector": "/objects/e_conversation",
+        "canonicalId": "e_conversation",
+        "representation": "e_conversation"
+      },
+      "actions": [
+        {
+          "op": "override",
+          "key": "graph.perspective.structure",
+          "value": "conversation"
+        },
+        {
+          "op": "override",
+          "key": "graph.perspective.traversal",
+          "value": {
+            "relations": [
+              "parts",
+              "corrects",
+              "supersedes",
+              "derived_from"
+            ],
+            "direction": "both",
+            "hops": 4
+          }
+        }
+      ]
+    }
+  ],
+  "ui": {
+    "title": "Perspektywy grafu",
+    "subtitle": "Jedno źródło, przecinające się struktury i jawny plan przejścia.",
+    "preset": "Perspektywa",
+    "interfaceLevel": "Poziom interfejsu",
+    "basic": "Basic",
+    "advanced": "Advanced",
+    "expert": "Expert",
+    "focus": "Punkt skupienia",
+    "focusAction": "Przejdź do obiektu",
+    "back": "Wstecz",
+    "forward": "Dalej",
+    "navigation": "Nawigacja",
+    "snapshot": "Snapshot",
+    "compareSnapshot": "Porównaj z wersją",
+    "none": "Brak",
+    "visible": "Widoczne",
+    "analysis": "Wybrane do analizy",
+    "permitted": "Dostępne według uprawnień",
+    "why": "Dlaczego to widzę?",
+    "whyHidden": "Dlaczego tego nie widzę?",
+    "configuration": "Składniki perspektywy",
+    "import": "Importuj",
+    "export": "Eksportuj",
+    "applyJson": "Zastosuj JSON",
+    "save": "Zapisz",
+    "restore": "Odtwórz",
+    "saved": "Zapisano perspektywę",
+    "restored": "Odtworzono perspektywę",
+    "loading": "Ładowanie",
+    "error": "Błąd",
+    "unsupported": "Nieobsługiwana możliwość",
+    "unavailable": "Źródło niedostępne",
+    "budget": "Budżet",
+    "selectionTime": "Czas selekcji",
+    "renderTime": "Czas aktualizacji widoku",
+    "canonicalIdentity": "Tożsamość obiektu",
+    "representation": "Reprezentacja",
+    "related": "Powiązany obiekt",
+    "details": "Szczegóły",
+    "plan": "Plan zapytania",
+    "raw": "Dane źródłowe",
+    "localOnly": "Zmiana perspektywy nie uruchamia analizy ani nie rozszerza uprawnień.",
+    "sourceStatus": "Status źródła",
+    "relation": "Rodzaje relacji",
+    "direction": "Kierunek",
+    "depth": "Zasięg",
+    "capabilities": "Możliwości adaptera",
+    "analysisExport": "Eksportuj plan analizy",
+    "analysisNotice": "Plan wymaga jawnego uruchomienia przez istniejący workflow analizy.",
+    "profileDiff": "Różnice perspektyw",
+    "disable": "Wyłącz",
+    "exclude": "Wyklucz trwale",
+    "reenable": "Włącz ponownie",
+    "override": "Nadpisz",
+    "clearOverride": "Usuń nadpisanie",
+    "effective": "Efektywne",
+    "disabled": "Wyłączone",
+    "excluded": "Wykluczone",
+    "proposal": "Propozycja",
+    "missing": "Brak wartości",
+    "source": "Źródłowe",
+    "computed": "Obliczone",
+    "inferred": "Wywnioskowane",
+    "unknown": "Nieznane",
+    "available": "Dostępne",
+    "unloaded": "Niezaładowane",
+    "denied": "Brak uprawnień",
+    "incoming": "Przychodzące",
+    "outgoing": "Wychodzące",
+    "both": "Oba kierunki",
+    "component": "Składnik",
+    "applyComponent": "Zastosuj składnik",
+    "scenario": "Scenariusz",
+    "graph": "Graf",
+    "inspectRelation": "Sprawdź relację",
+    "partial": "Częściowy wynik",
+    "complete": "Pełny wynik",
+    "permissionsNotice": "Uprawnienia pochodzą z hosta; perspektywa ich nie zmienia.",
+    "selected": "Wybrane",
+    "restoreError": "Nie można odtworzyć zapisu",
+    "download": "Pobierz",
+    "importFile": "Importuj plik",
+    "label": "Etykieta",
+    "summary": "Podsumowanie",
+    "full": "Pełna treść",
+    "aggregate": "Agregat",
+    "native": "Natywny resolver R40"
+  },
+  "controls": {
+    "level": "basic",
+    "storageKey": "loom.graph-perspectives.demo.v1",
+    "defaultPreset": "computational"
+  },
+  "snapshots": [
+    {
+      "id": "v1",
+      "label": "v1: wartość 5"
+    },
+    {
+      "id": "v2",
+      "label": "v2: wartość 7"
+    }
+  ],
+  "targets": [
+    {
+      "id": "e_cell",
+      "label": "Komórka/pole",
+      "ref": {
+        "source": "demo-source",
+        "selector": "/objects/e_cell",
+        "canonicalId": "e_cell",
+        "representation": "e_cell",
+        "snapshot": "v2"
+      }
+    },
+    {
+      "id": "e_formula",
+      "label": "Operacja",
+      "ref": {
+        "source": "demo-source",
+        "selector": "/objects/e_formula",
+        "canonicalId": "e_formula",
+        "representation": "e_formula"
+      }
+    },
+    {
+      "id": "e_result",
+      "label": "Wynik",
+      "ref": {
+        "source": "demo-source",
+        "selector": "/objects/e_result",
+        "canonicalId": "e_result",
+        "representation": "e_result"
+      }
+    },
+    {
+      "id": "e_effective",
+      "label": "Efektywne ustawienie",
+      "ref": {
+        "source": "demo-source",
+        "selector": "/objects/e_effective",
+        "canonicalId": "e_effective",
+        "representation": "e_effective"
+      }
+    },
+    {
+      "id": "e_conversation",
+      "label": "Rozmowa",
+      "ref": {
+        "source": "demo-source",
+        "selector": "/objects/e_conversation",
+        "canonicalId": "e_conversation",
+        "representation": "e_conversation"
+      }
+    },
+    {
+      "id": "e_unloaded",
+      "label": "Nieotwarte źródło",
+      "ref": {
+        "source": "demo-source",
+        "selector": "/objects/e_unloaded",
+        "canonicalId": "e_unloaded",
+        "representation": "e_unloaded"
+      }
+    },
+    {
+      "id": "e_unavailable",
+      "label": "Niedostępne źródło",
+      "ref": {
+        "source": "demo-source",
+        "selector": "/objects/e_unavailable",
+        "canonicalId": "e_unavailable",
+        "representation": "e_unavailable"
+      }
+    },
+    {
+      "id": "e_unknown",
+      "label": "Nieznana struktura",
+      "ref": {
+        "source": "demo-source",
+        "selector": "/objects/e_unknown",
+        "canonicalId": "e_unknown",
+        "representation": "e_unknown"
+      }
+    }
+  ],
+  "sourceDescriptor": {
+    "id": "demo-source",
+    "label": "Bezpieczny pakiet demonstracyjny",
+    "structures": [
+      {
+        "id": "physical",
+        "label": "Części źródła",
+        "relations": [
+          "parts",
+          "has_formula"
+        ],
+        "description": "Kontener i jego adresowalne części."
+      },
+      {
+        "id": "logical",
+        "label": "Struktura logiczna",
+        "relations": [
+          "logical",
+          "represents"
+        ],
+        "description": "Rekordy, pola i alternatywne reprezentacje tej samej tożsamości."
+      },
+      {
+        "id": "computational",
+        "label": "Zależności obliczeniowe",
+        "relations": [
+          "has_formula",
+          "uses",
+          "produces",
+          "justified_by",
+          "informs"
+        ],
+        "description": "Wejścia, operacja, wynik i zapisane uzasadnienie."
+      },
+      {
+        "id": "history",
+        "label": "Komentarze i wersje",
+        "relations": [
+          "comments",
+          "versions",
+          "corrects",
+          "supersedes"
+        ],
+        "description": "Odrębne wersje i komentarze; bez zmiany rozdzielczości."
+      },
+      {
+        "id": "provenance",
+        "label": "Pochodzenie i nadpisania",
+        "relations": [
+          "derived_from",
+          "overridden_by",
+          "justified_by"
+        ],
+        "description": "Ślad pochodzenia i jawne źródło zmiany."
+      },
+      {
+        "id": "conversation",
+        "label": "Rozmowa i instrukcje",
+        "relations": [
+          "parts",
+          "corrects",
+          "supersedes",
+          "derived_from"
+        ],
+        "description": "Wiadomość źródłowa, korekta i aktualna instrukcja."
+      }
+    ],
+    "capabilities": [
+      {
+        "id": "graph.perspective.structure",
+        "label": "Struktura",
+        "target": "structure",
+        "status": "supported"
+      },
+      {
+        "id": "graph.perspective.resolution",
+        "label": "Rozdzielczość",
+        "target": "resolution",
+        "status": "supported"
+      },
+      {
+        "id": "graph.perspective.traversal",
+        "label": "Relacje i zasięg",
+        "target": "traversal",
+        "status": "supported"
+      },
+      {
+        "id": "graph.perspective.temporal",
+        "label": "Czas i wersje",
+        "target": "temporal",
+        "status": "supported"
+      },
+      {
+        "id": "graph.perspective.evidence",
+        "label": "Status epistemiczny",
+        "target": "evidence",
+        "status": "supported"
+      },
+      {
+        "id": "graph.perspective.visual",
+        "label": "Mapowania prezentacji",
+        "target": "visual",
+        "status": "supported"
+      },
+      {
+        "id": "graph.perspective.budget",
+        "label": "Budżet widoku",
+        "target": "budget",
+        "status": "supported"
+      },
+      {
+        "id": "graph.perspective.localResolution",
+        "label": "Lokalne wyjątki rozdzielczości",
+        "target": "localResolution",
+        "status": "supported"
+      },
+      {
+        "id": "graph.perspective.goal",
+        "label": "Cel",
+        "target": "goal",
+        "status": "supported"
+      },
+      {
+        "id": "graph.perspective.futureTexture",
+        "label": "Przyszły renderer tekstury",
+        "target": "futureTexture",
+        "status": "unsupported",
+        "reason": "Bieżący renderer nie implementuje tej możliwości. Dane pozostają zachowane."
+      }
+    ],
+    "status": "available"
+  },
+  "navigation": [
+    {
+      "id": "physical",
+      "label": "Części źródła",
+      "structure": "physical",
+      "relations": [
+        "parts",
+        "has_formula"
+      ]
+    },
+    {
+      "id": "logical",
+      "label": "Struktura logiczna",
+      "structure": "logical",
+      "relations": [
+        "logical",
+        "represents"
+      ]
+    },
+    {
+      "id": "computational",
+      "label": "Zależności obliczeniowe",
+      "structure": "computational",
+      "relations": [
+        "has_formula",
+        "uses",
+        "produces",
+        "justified_by",
+        "informs"
+      ]
+    },
+    {
+      "id": "history",
+      "label": "Komentarze i wersje",
+      "structure": "history",
+      "relations": [
+        "comments",
+        "versions",
+        "corrects",
+        "supersedes"
+      ]
+    },
+    {
+      "id": "provenance",
+      "label": "Pochodzenie i nadpisania",
+      "structure": "provenance",
+      "relations": [
+        "derived_from",
+        "overridden_by",
+        "justified_by"
+      ]
+    },
+    {
+      "id": "conversation",
+      "label": "Rozmowa i instrukcje",
+      "structure": "conversation",
+      "relations": [
+        "parts",
+        "corrects",
+        "supersedes",
+        "derived_from"
+      ]
+    }
+  ],
+  "evidenceNotes": {
+    "confidence": "Brak skalibrowanej oceny. Wymagane numeryczne pole native confidence=0 jest wyłącznie wartością transportową; publiczna pewność pozostaje null."
+  }
+}
