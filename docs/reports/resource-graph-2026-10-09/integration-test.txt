@@ -1,0 +1,12 @@
+patch applies: 9e20f99ab27e7cd45e1892f83bf60fbe60db3de9
+patch applies: b20c0d8ac37934e1600c3b9216492fd524220941
+-- Configuring done (0.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: /tmp/resource-graph-hook-dk8pf019/registration/build
+Test project /tmp/resource-graph-hook-dk8pf019/registration/build
+    Start 1: resource_graph.contract
+1/1 Test #1: resource_graph.contract ..........   Passed   13.70 sec
+
+100% tests passed out of 1
+
+Total Test time (real) =  13.70 sec

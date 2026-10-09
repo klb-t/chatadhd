@@ -1,0 +1,33 @@
+{
+  "schema": "loom.resource_discovery_registry/1",
+  "version": "1",
+  "strategies": [
+    {"id": "local", "operator": "local_registry"},
+    {"id": "schema", "operator": "declared_schema"},
+    {"id": "sample", "operator": "sample_structure"},
+    {"id": "documentation", "operator": "online_documentation"},
+    {"id": "model", "operator": "optional_model"}
+  ],
+  "adapters": [],
+  "policy": {
+    "allow_declarative": true,
+    "allow_online_documentation": false,
+    "allow_model": false,
+    "executable_test_sha256": [],
+    "executable_activate_sha256": []
+  },
+  "inspection": {"max_nodes": 10000, "max_depth": 40, "max_records_per_validation": 1000},
+  "test_resources": {"timeout_seconds": 2, "cpu_seconds": 2, "memory_bytes": 268435456, "output_bytes": 1048576},
+  "vocabulary": {
+    "record_kind": "resource_record",
+    "value_kind": "resource_value",
+    "method_kind": "research_method",
+    "run_kind": "research_run",
+    "adapter_kind": "resource_adapter",
+    "mapping_kind": "resource_mapping",
+    "evidence_kind": "research_evaluation",
+    "produced_by": "produced_by",
+    "uses_mapping": "uses_mapping",
+    "evaluates_adapter": "evaluates_adapter"
+  }
+}
