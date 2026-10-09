@@ -1,0 +1,24 @@
+{
+  "schema": "loom.research_corpus_policy/1",
+  "version": "thread7-expansion-20261009-v1",
+  "source_zip_sha256": "2bff52e83852efcd596bc5c717dd4e13840c4a6a36ef34daeb7356c2c4f17ec4",
+  "previous_private_checkpoint_sha256": "137c49ab13681d036b955039a580aff3cb86bc342b62981c484abcfe9363c28e",
+  "previous_public_commit": "69880859802267f1b38b82eeaecd6fdc5522a47a",
+  "provider_quota": {"openai": 6, "anthropic": 6},
+  "provisional_validation_per_provider": 2,
+  "length_bins": ["short", "medium", "long"],
+  "substantial_exact_text_overlap_min_chars": 200,
+  "cue_rules": {
+    "correction_candidate": "(?i)\\b(nie o to|nie tak|popraw|sprost|korekt|correction|actually|not what|I meant|nie migrujemy)\\b",
+    "preference_change_candidate": "(?i)\\b(wolę|wole|prefer|zamiast|od teraz|chcę|chce|nie chcę|nie chce|rather|from now on|instead)\\b",
+    "topic_change_candidate": "(?i)\\b(inny temat|zmian[aę] tematu|a teraz|wróćmy|wrocmy|by the way|another topic|back to|next question)\\b",
+    "multistep_candidate": "(?i)\\b(najpierw|następnie|nastepnie|potem|krok|etap|first|then|step|phase)\\b",
+    "checkpoint_candidate": "(?i)\\b(checkpoint|punkt wznowienia|stan prac|kontynuujemy|wznów|wznow|resume|continuing|kontynuuj)\\b"
+  },
+  "cue_evidence_class": "lexical_candidate_not_semantic_annotation",
+  "selection": "Within provider and text-length tertile, select two whole families greedily for uncovered structural/cue features, then bounded cue diversity, tie by canonical source hash. Prefer at least two unexposed candidates for provisional validation; known prior exposure and family unions prevent validation assignment. All selection is DEV/exploratory, never sealed blind.",
+  "structural_features": ["branching", "tool_calls"],
+  "split_policy": "Whole connected family components only; union same provider conversation ID, canonical object, shared native node/message ID, or exact role-bound text >= configured threshold. Exclude components overlapping historical panel. Mark known prior model/retrieval evaluation exposure tuning. Provisional validation is not certified independent.",
+  "attachments": "Retain original archive unchanged; copy available binaries linked by prior attachment manifest to selected conversations, retain all embedded records and unresolved-reference entries privately.",
+  "transformation": "No inference; exact native object and fields retained. Normalized text is an explicitly lossy projection for cues and views; source graph and raw remain authoritative. No synthetic phenomena or assistant-authored new checkpoints."
+}

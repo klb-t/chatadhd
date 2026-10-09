@@ -1,0 +1,27 @@
+{
+  "schema": "loom.thread7_stage_seal/1",
+  "stage": 1,
+  "name": "real_corpus_expansion",
+  "parent_commit": "69880859802267f1b38b82eeaecd6fdc5522a47a",
+  "previous_checkpoint_sha256": "137c49ab13681d036b955039a580aff3cb86bc342b62981c484abcfe9363c28e",
+  "files": {
+    "docs/research/thread7_real_2026-10-09/continuation_01/corpus-actual-qa.json": "6db2a078bf18a6c713e6c749cc75a904dfb0109d8658c61d479444b7542590f6",
+    "docs/research/thread7_real_2026-10-09/continuation_01/corpus-methodology.md": "9556e5473e3c6b6e6cdf2ee4c737ce22774626047b9d200e94f92b76d4492746",
+    "docs/research/thread7_real_2026-10-09/continuation_01/corpus-policy.json": "3cc34abab065bd1bc45e0b72a248e85efc4a6e1dfb27b0b7b6f7db5b529fa180",
+    "docs/research/thread7_real_2026-10-09/continuation_01/corpus-receipt.json": "4e1e8f9c9a0eb696c454f6fddc9d6e93ecda8c3d205472f3ab6010b7ea52ef96",
+    "docs/research/thread7_real_2026-10-09/continuation_01/corpus-test-output.txt": "16f64fde08662efd4af13eae47bca23b55524f4fc2df3ec04fb64c0adc2d37f6",
+    "docs/research/thread7_real_2026-10-09/continuation_01/corpus-tests.json": "7c4588edea48f7a6e1d4c059da1be580fa3b18b4c8963d24c3431ff61549ad1e",
+    "docs/research/thread7_real_2026-10-09/continuation_01/corpus-verify.py": "67db89bbf2770f258fe59f9ffa616b5f7cbd1ccdf63b0d4ac64deedf6ce26c31",
+    "loom/tools/structure/experiment_corpus_v1.py": "a8d783e42a74817e96331ad069ac734c0e6473914588745fe62b4d8394d5abec",
+    "loom/tools/structure/test_experiment_corpus_v1.py": "533640193daf50e7582cb3f4b33772843264619d4c915dd3d5e3d330c3c8f8b1",
+    "docs/research/thread7_real_2026-10-09/continuation_01/START.json": "e31ff9c4972b844fd4df265ec2640096d44bc078f872de6e7a7b32edab5daf4e"
+  },
+  "mechanics_tests_passed": 20,
+  "real_source_qa": "corpus-actual-qa.json",
+  "new_calls": 0,
+  "new_cost_usd": "0",
+  "historical_attempts": 720,
+  "historical_cost_usd": "0.873216500",
+  "current_provider_usage": null,
+  "current_provider_reservations": null
+}

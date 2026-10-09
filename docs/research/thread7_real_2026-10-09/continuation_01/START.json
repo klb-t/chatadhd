@@ -1,0 +1,42 @@
+{
+  "schema": "loom.thread7_continuation/1",
+  "stage_id": "thread7-real-continuation01-2026-10-09",
+  "date": "2026-10-09",
+  "branch": "gpt/thread7-real-2026-10-09",
+  "previous_tip": "69880859802267f1b38b82eeaecd6fdc5522a47a",
+  "previous_tree": "610557f575fff8f80d5753378dda8353aa719a12",
+  "previous_private_checkpoint_sha256": "137c49ab13681d036b955039a580aff3cb86bc342b62981c484abcfe9363c28e",
+  "previous_checkpoint_payloads_verified": 291,
+  "instructions": {
+    "AGENTS.md": "1f51965b01c2d267a3714e28dd52ad2439cae85ec7e7059321cd2f31769b28e8",
+    "docs/STATE.md": "8e75030f6e8b63dbdae6d3338d3e8822083dd98e9bc2c40a30997070a9a38e24",
+    "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md": "851f6d2000f7d013ec000c6e7694713ef7079b76c3db386111f989871775bed3",
+    "docs/architecture/LOOM_CONCEPTUAL_MODEL.md": "d124c0b5772fd9dad1586b369d39cbdd0c228ca61ed96dfe7e699e6c6703f37e",
+    "CLAUDE.md": "abcfe797520d136644e7515aa84cc8e589454c4bcfed5f8ed7be9432d8469101",
+    "loom/README.md": "9b5caab98fb3ef8c5d662f6614af2d3607a353f1697a2c4fd2d0ceb84b46a8cd",
+    "docs/reports/thread7-real-2026-10-09.md": "5191488371601a9b8a48e356678c844f4b1cbc8d654478329ece4ebd72b515fa",
+    "docs/research/thread7_real_2026-10-09/HANDOFF_B.md": "d8f04622f4a7e4426423d1d645b9f0b82348f8b1870eb0888fb08416632c243f",
+    "docs/research/thread7_real_2026-10-09/remaining-design.json": "73ef0499fcd459a826821a168c19db136608f22c2f9036a415ff6313f0fc4a1e"
+  },
+  "history_immutable": true,
+  "historical_calls": 720,
+  "historical_cost_usd": "0.873216500",
+  "historical_remaining_usd": "4.126783500",
+  "nonrenewing_key_cap_usd": "5",
+  "current_provider_usage_usd": null,
+  "current_reservations_usd": null,
+  "current_key_identity": null,
+  "new_live_calls": 0,
+  "new_cost_usd": "0",
+  "new_secret_source_present": false,
+  "old_credential_free_checkpoints_researched": false,
+  "independent_validation_complete": false,
+  "stages": [
+    "corpus",
+    "context",
+    "jev",
+    "payer",
+    "analysis",
+    "handoff"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "schema": "loom.research_mechanics_test_receipt/1",
+  "test_count": 20,
+  "passed": 20,
+  "synthetic_fixtures_for_mechanics_only": true,
+  "new_calls": 0,
+  "new_cost_usd": "0",
+  "code_sha256": "a8d783e42a74817e96331ad069ac734c0e6473914588745fe62b4d8394d5abec",
+  "tests_sha256": "533640193daf50e7582cb3f4b33772843264619d4c915dd3d5e3d330c3c8f8b1",
+  "log_sha256": "16f64fde08662efd4af13eae47bca23b55524f4fc2df3ec04fb64c0adc2d37f6",
+  "actual_source_integrity_receipt": "corpus-actual-qa.json"
+}

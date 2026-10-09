@@ -1,0 +1,25 @@
+test_anthropic_native_parent_only (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_anthropic_native_parent_only) ... ok
+test_bad_timestamp_remains_unknown (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_bad_timestamp_remains_unknown) ... ok
+test_branching_evidence_is_structural (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_branching_evidence_is_structural) ... ok
+test_deterministic_selection (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_deterministic_selection) ... ok
+test_duplicate_id_union (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_duplicate_id_union) ... ok
+test_exact_substantial_overlap_union (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_exact_substantial_overlap_union) ... ok
+test_exposed_never_validation (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_exposed_never_validation) ... ok
+test_family_not_in_both_splits (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_family_not_in_both_splits) ... ok
+test_family_transitivity (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_family_transitivity) ... ok
+test_historical_overlap_excluded (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_historical_overlap_excluded) ... ok
+test_mixed_timestamp_formats (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_mixed_timestamp_formats) ... ok
+test_null_message_nodes_retained (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_null_message_nodes_retained) ... ok
+test_only_user_cues (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_only_user_cues) ... ok
+test_output_git_guard (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_output_git_guard) ... ok
+test_output_is_immutable_new_directory (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_output_is_immutable_new_directory) ... ok
+test_raw_object_and_all_metadata_preserved (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_raw_object_and_all_metadata_preserved) ... ok
+test_role_bound_overlap (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_role_bound_overlap) ... ok
+test_short_common_text_does_not_union (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_short_common_text_does_not_union) ... ok
+test_text_is_explicit_projection (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_text_is_explicit_projection) ... ok
+test_tool_evidence_is_native (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_tool_evidence_is_native) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 0.004s
+
+OK
