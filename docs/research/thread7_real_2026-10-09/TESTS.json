@@ -1,0 +1,38 @@
+{
+  "suites": [
+    {
+      "suite": "intake-tests.log",
+      "tests": 37,
+      "pass": true,
+      "log_sha256": "8937506abebcd3b280dad326cb6dd14d6300de7f2771941df64025e76386fdd1"
+    },
+    {
+      "suite": "preparation-tests.log",
+      "tests": 43,
+      "pass": true,
+      "log_sha256": "8635e21839bc8dc1ade27235b06a02dc0c9564a60425c53c001f78b1eb00cd31"
+    },
+    {
+      "suite": "workflow-tests.log",
+      "tests": 28,
+      "pass": true,
+      "log_sha256": "1e39127cdc64df4277e7e4a99e245248159d5991ac153d6396f6f727d16c622c"
+    },
+    {
+      "suite": "runner-tests.log",
+      "tests": 135,
+      "pass": true,
+      "log_sha256": "6885bf134ea1f100b1a0581dfebb66254920cf0b28338cb119cf5b47a93f1c82"
+    },
+    {
+      "suite": "graph-export-tests.log",
+      "tests": 14,
+      "pass": true,
+      "log_sha256": "50a5b815433aefac13628334e63ff98fa99ecd5123418b7763984ac7581004f2"
+    }
+  ],
+  "total": 257,
+  "new_paid_calls": 0,
+  "native_cpp_test_run": false,
+  "negative_log": "runner-tests-missing-dependency.log"
+}

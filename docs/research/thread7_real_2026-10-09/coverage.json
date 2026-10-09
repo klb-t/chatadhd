@@ -1,0 +1,24 @@
+{
+  "corpus": "Three selected OpenAI export conversations",
+  "conversation_families": 3,
+  "messages": 44,
+  "native_nodes": 47,
+  "source_period_utc_dates": {
+    "first": "2026-02-11",
+    "last": "2026-04-17"
+  },
+  "roles": {
+    "user": 22,
+    "assistant": 22
+  },
+  "anthropic_conversations": 0,
+  "independent_validation_families": 0,
+  "nontext_parts_uninterpreted": 6,
+  "attachment_bytes_in_capsule": 0,
+  "attachment_completeness": "unknown: references preserved; source attachment files absent from selected capsule",
+  "branches_saved": 3,
+  "branch_note": "Three single-leaf saved graphs; full source retained, no branching-population coverage",
+  "reference_status": "assistant-authored provisional; no independent reference adjudication",
+  "quality": null,
+  "new_model_calls": 0
+}

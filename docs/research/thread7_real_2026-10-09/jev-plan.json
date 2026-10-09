@@ -1,0 +1,18 @@
+{
+  "stage_id": "thread7-real-jev2-v1",
+  "nonrenewing_cap_usd": "5",
+  "arms": [
+    {
+      "id": "j_active",
+      "stage_identity": "thread7-real-j_active-v1",
+      "legacy_manifest": "docs/research/analysis_optimization_2026-10-02/prepared/j_active/manifest.json",
+      "legacy_manifest_sha256": "fc7ad4f993868ef2a0bda08a793e0324a0ed469665bba35b0312f220f6e702c6"
+    },
+    {
+      "id": "j_directed",
+      "stage_identity": "thread7-real-j_directed-v1",
+      "legacy_manifest": "docs/research/analysis_optimization_2026-10-02/prepared/j_directed/manifest.json",
+      "legacy_manifest_sha256": "591abdccc105779f8ad930294c1775d3bef84725f3d10d9beb90217b78063417"
+    }
+  ]
+}

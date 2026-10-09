@@ -1,0 +1,19 @@
+{
+  "schema": "loom.thread7_contract_verification/1",
+  "manifest_contract": "loom.method_graph/1",
+  "run_contract": "loom.method_run_trace/1",
+  "artifact_sha256": "65c4fd5a3a801f700b83d8a1fc55c9ad707711ae331273937bd467a83cafcce9",
+  "compressed_sha256": "91fe792847d4d55d7aca006799f6a79cb6c35309cfa4f4b05d9a029cb308d850",
+  "entities": 15,
+  "claims": 30,
+  "sources": 12,
+  "result_entities": 6,
+  "shape_schema_validation": true,
+  "existing_python_packet_codec_validation": true,
+  "source_byte_recovery": true,
+  "result_recovery": true,
+  "native_cpp_execution": false,
+  "canonical_store_written": false,
+  "provider_calls": 0,
+  "quality": null
+}

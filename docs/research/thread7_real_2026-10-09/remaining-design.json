@@ -1,0 +1,59 @@
+{
+  "schema": "loom.thread7_remaining_design/1",
+  "status": "preparation_design_only_not_dispatchable",
+  "selection": "No universal winner hypothesis is imposed.",
+  "dimensions": [
+    {
+      "name": "context_representation",
+      "values": [
+        "exact_corrected_source",
+        "semantic_fields_only",
+        "source_graph"
+      ],
+      "availability": "semantic projection/graph prompt not yet validated"
+    },
+    {
+      "name": "context_resolution",
+      "values": [
+        "full",
+        "checkpoint_summary",
+        "selected_subgraph"
+      ],
+      "availability": "summaries/subgraph extraction require new versioned source-bound derivation"
+    },
+    {
+      "name": "response_form",
+      "values": [
+        "graph_direct",
+        "text_plus_structure"
+      ],
+      "availability": "historical authored DEV comparison only; real request protocol pending"
+    },
+    {
+      "name": "corpus",
+      "values": [
+        "selected_OpenAI",
+        "Anthropic"
+      ],
+      "availability": "selected OpenAI recovered; Anthropic not in capsule"
+    },
+    {
+      "name": "repetition",
+      "values": [
+        1,
+        2,
+        3
+      ],
+      "availability": "scheduler supports repeated occurrence identities; no real inference repeats"
+    }
+  ],
+  "evaluation_rules": {
+    "family_split": true,
+    "tuning_validation_separate": true,
+    "used_blind_reused": false,
+    "missing_metrics": null,
+    "llm_judge_is_ground_truth": false,
+    "negative_results_retained": true
+  },
+  "admission": "Use a small frozen matched comparison first, retain full configured matrix as alternative; price and authorize through existing payer."
+}

@@ -1,0 +1,245 @@
+{
+  "spec_common": {
+    "schema": "loom.experiment_spec/1",
+    "repetitions": 1,
+    "request_template": {
+      "$select": {
+        "table": "case",
+        "key": "configuration_id"
+      }
+    },
+    "response_cache": false,
+    "prompt_cache_policy": "observe_provider_cache_without_prompt_rewrite",
+    "cache_prefix_messages": 1,
+    "route_id": "chat",
+    "endpoint_identity": "openai-endpoint-unverified-2026-10-09",
+    "ordering": {
+      "mode": "balanced_blocks",
+      "seed": 20261009
+    },
+    "adoption_policy": "proposal",
+    "metrics": [
+      "format_validity",
+      "native_execution",
+      "source_agreement",
+      "goal_preservation",
+      "preference_preservation",
+      "cost_usd",
+      "latency_seconds",
+      "availability",
+      "stability"
+    ],
+    "evaluators": [
+      "existing_source_bound_scorer",
+      "human_review_required_for_goal_and_preference"
+    ],
+    "budget": {
+      "campaign_reset": false,
+      "nonrenewing_cap_usd": "5",
+      "current_usage_usd": null,
+      "pending_reservations_usd": null,
+      "estimated_phase_upper_usd": null,
+      "executor": "existing_research_programme_runner"
+    },
+    "triggers": {
+      "opt_in": false,
+      "events": [
+        "conversation_checkpoint"
+      ],
+      "frequency_seconds": 3600
+    },
+    "scope_status": "development_selected_visible_sources_not_independent_validation"
+  },
+  "panels": [
+    {
+      "id": "thread7-real-small3-v1",
+      "selectors": [
+        {
+          "strategy_id": "literal_evidence",
+          "max_tokens": 256,
+          "temperature": 0,
+          "preference_id": "concise"
+        },
+        {
+          "strategy_id": "commitment_ledger",
+          "max_tokens": 256,
+          "temperature": 0,
+          "preference_id": "concise"
+        },
+        {
+          "strategy_id": "literal_evidence",
+          "max_tokens": 256,
+          "temperature": 0,
+          "preference_id": "full_trace"
+        }
+      ]
+    },
+    {
+      "id": "thread7-real-small5-v1",
+      "selectors": [
+        {
+          "strategy_id": "literal_evidence",
+          "max_tokens": 256,
+          "temperature": 0,
+          "preference_id": "concise"
+        },
+        {
+          "strategy_id": "commitment_ledger",
+          "max_tokens": 256,
+          "temperature": 0,
+          "preference_id": "concise"
+        },
+        {
+          "strategy_id": "literal_evidence",
+          "max_tokens": 256,
+          "temperature": 0,
+          "preference_id": "full_trace"
+        },
+        {
+          "strategy_id": "literal_evidence",
+          "max_tokens": 256,
+          "temperature": 0.7,
+          "preference_id": "concise"
+        },
+        {
+          "strategy_id": "literal_evidence",
+          "max_tokens": 1024,
+          "temperature": 0,
+          "preference_id": "concise"
+        }
+      ]
+    },
+    {
+      "id": "thread7-real-full-matrix16-v2",
+      "selectors": [
+        {
+          "strategy_id": "literal_evidence",
+          "max_tokens": 256,
+          "temperature": 0,
+          "preference_id": "concise"
+        },
+        {
+          "strategy_id": "literal_evidence",
+          "max_tokens": 256,
+          "temperature": 0,
+          "preference_id": "full_trace"
+        },
+        {
+          "strategy_id": "literal_evidence",
+          "max_tokens": 256,
+          "temperature": 0.7,
+          "preference_id": "concise"
+        },
+        {
+          "strategy_id": "literal_evidence",
+          "max_tokens": 256,
+          "temperature": 0.7,
+          "preference_id": "full_trace"
+        },
+        {
+          "strategy_id": "literal_evidence",
+          "max_tokens": 1024,
+          "temperature": 0,
+          "preference_id": "concise"
+        },
+        {
+          "strategy_id": "literal_evidence",
+          "max_tokens": 1024,
+          "temperature": 0,
+          "preference_id": "full_trace"
+        },
+        {
+          "strategy_id": "literal_evidence",
+          "max_tokens": 1024,
+          "temperature": 0.7,
+          "preference_id": "concise"
+        },
+        {
+          "strategy_id": "literal_evidence",
+          "max_tokens": 1024,
+          "temperature": 0.7,
+          "preference_id": "full_trace"
+        },
+        {
+          "strategy_id": "commitment_ledger",
+          "max_tokens": 256,
+          "temperature": 0,
+          "preference_id": "concise"
+        },
+        {
+          "strategy_id": "commitment_ledger",
+          "max_tokens": 256,
+          "temperature": 0,
+          "preference_id": "full_trace"
+        },
+        {
+          "strategy_id": "commitment_ledger",
+          "max_tokens": 256,
+          "temperature": 0.7,
+          "preference_id": "concise"
+        },
+        {
+          "strategy_id": "commitment_ledger",
+          "max_tokens": 256,
+          "temperature": 0.7,
+          "preference_id": "full_trace"
+        },
+        {
+          "strategy_id": "commitment_ledger",
+          "max_tokens": 1024,
+          "temperature": 0,
+          "preference_id": "concise"
+        },
+        {
+          "strategy_id": "commitment_ledger",
+          "max_tokens": 1024,
+          "temperature": 0,
+          "preference_id": "full_trace"
+        },
+        {
+          "strategy_id": "commitment_ledger",
+          "max_tokens": 1024,
+          "temperature": 0.7,
+          "preference_id": "concise"
+        },
+        {
+          "strategy_id": "commitment_ledger",
+          "max_tokens": 1024,
+          "temperature": 0.7,
+          "preference_id": "full_trace"
+        }
+      ],
+      "axes": [
+        {
+          "name": "strategy_id",
+          "values": [
+            "literal_evidence",
+            "commitment_ledger"
+          ]
+        },
+        {
+          "name": "temperature",
+          "values": [
+            0,
+            0.7
+          ]
+        },
+        {
+          "name": "max_tokens",
+          "values": [
+            256,
+            1024
+          ]
+        },
+        {
+          "name": "preference_id",
+          "values": [
+            "concise",
+            "full_trace"
+          ]
+        }
+      ]
+    }
+  ],
+  "dispatch_policy": "Mutually exclusive alternative scopes. Prefer small3 only after live preflight; do not execute all three by default."
+}

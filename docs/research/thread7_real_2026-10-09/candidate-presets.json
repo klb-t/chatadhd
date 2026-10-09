@@ -1,0 +1,63 @@
+{
+  "schema": "loom.thread7_research_candidates/1",
+  "observed_on": "2026-10-09",
+  "automatic_adoption": false,
+  "corpus": {
+    "conversations": 3,
+    "messages": 44,
+    "query_count": 8,
+    "period": "2026-02-11/2026-04-17",
+    "reference_status": "provisional"
+  },
+  "basic": {
+    "summary_pl": "Na rzeczywistych eksportach właściciela nie wykonano jeszcze pomiaru jakości modeli. Przygotowano małe porównanie; brak potwierdzonego zwycięzcy.",
+    "details_ref": "docs/reports/thread7-real-2026-10-09.md"
+  },
+  "expert": {
+    "quality": null,
+    "new_calls": 0,
+    "new_spend_usd": "0",
+    "archived_campaign_calls": 720,
+    "archived_campaign_usd": "0.873216500",
+    "current_available_budget_usd": null,
+    "evidence": [
+      "source-receipt.json",
+      "campaign-replay.json",
+      "coverage.json",
+      "workflow-preparation-receipt.json",
+      "historical-replay.json"
+    ]
+  },
+  "candidates": [
+    {
+      "id": "literal_evidence.concise",
+      "validation_status": "unvalidated_on_real_exports",
+      "quality": null,
+      "adoption": "proposal_only"
+    },
+    {
+      "id": "commitment_ledger.concise",
+      "validation_status": "unvalidated_on_real_exports",
+      "quality": null,
+      "adoption": "proposal_only"
+    },
+    {
+      "id": "literal_evidence.full_trace",
+      "validation_status": "unvalidated_on_real_exports",
+      "quality": null,
+      "adoption": "proposal_only"
+    },
+    {
+      "id": "j_active",
+      "validation_status": "unvalidated_on_real_exports",
+      "quality": null,
+      "adoption": "proposal_only"
+    },
+    {
+      "id": "j_directed",
+      "validation_status": "unvalidated_on_real_exports",
+      "quality": null,
+      "adoption": "proposal_only"
+    }
+  ]
+}
