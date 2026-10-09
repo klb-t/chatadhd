@@ -1,0 +1,30 @@
+{
+  "files": [
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/environment-delta-1/receipt.json",
+      "bytes": 1739,
+      "sha256": "17ed236989808c77211e43d0a605f34c3a4e06287e00ab6b8fc04cd0157218b0"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/environment-delta-1/README.md",
+      "bytes": 1358,
+      "sha256": "3c934abbecc2898f85ba2051d51b8c537d2dd78e1eec08a27b742883e7dfefff"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/environment-delta-1/project_configuration.log",
+      "bytes": 1937,
+      "sha256": "ea4bc5495a65db2ceaef3f0d0ebb94c94bd4095adc497215642ad57e913f89a1"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds/environment-delta-1/wrapper.log",
+      "bytes": 1143,
+      "sha256": "cd369f1bb753b8f65a8431bb7fbfb92c57b56aafbd6d521b4df867a0022d9b20"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ageds/check_gradle_environment.py",
+      "bytes": 3537,
+      "sha256": "c3ef51d21f40b83170eb69da3be90abda3ebf94a4c7109486bf734a2c3d7bef3"
+    }
+  ],
+  "prior_pass2_manifest_unchanged": true
+}

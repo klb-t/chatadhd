@@ -1,0 +1,42 @@
+{
+  "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+  "scope": "Wrapper bootstrap and project task discovery only; no compilation or emulator",
+  "started_epoch": 1791526925.7093418,
+  "current_proxy_configured": true,
+  "old_GRADLE_OPTS_replaced": true,
+  "jdk_used": "jdk-17.0.20.1+1",
+  "sdk_platforms": [
+    "android-36.1"
+  ],
+  "required_by_AGEDS": "JDK21 / SDK37 / Gradle9.7.0 / Kotlin2.4.20 / AGP9.4; no pin substitution",
+  "checks": [
+    {
+      "name": "wrapper",
+      "exit_code": 0,
+      "timed_out": false,
+      "log": "wrapper.log",
+      "sha256": "cd369f1bb753b8f65a8431bb7fbfb92c57b56aafbd6d521b4df867a0022d9b20"
+    },
+    {
+      "name": "project_configuration",
+      "exit_code": 1,
+      "timed_out": false,
+      "log": "project_configuration.log",
+      "sha256": "ea4bc5495a65db2ceaef3f0d0ebb94c94bd4095adc497215642ad57e913f89a1"
+    }
+  ],
+  "elapsed_seconds": 39.91,
+  "product_tests_executed": 0,
+  "device_tests_executed": 0,
+  "pins_unchanged": true,
+  "assessment": {
+    "previous_network_unreachable": "superseded as sole blocker: current proxy allowed pinned9.7.0 download and --version PASS",
+    "remaining_observed_blocker": "second wrapper invocation detected too many directories in distribution cache; redownload checksum equals SHA256(empty bytes), expected pinned checksum84fbba45...; project task discovery did not execute",
+    "not_concluded": [
+      "No claim that upstream checksum is wrong or distribution was tampered with",
+      "No product test or configuration PASS",
+      "JDK17/SDK36.1 are not substitutes for requiredJDK21/SDK37"
+    ],
+    "stopped_after": "one bounded bootstrap/configuration attempt,39.91s; no checksum bypass, no pin edits, no compile/emulator"
+  }
+}

@@ -1,0 +1,20 @@
+Gradle distribution '/workspace/scratch/1112e9e8a3c6/continuation/scratch/ageds/environment-delta-1/gradle-home/wrapper/dists/gradle-9.7.0-bin/d4tj7w02tcgubx9zk9hbippn6' contains too many directories. Expected to find exactly 1 directory.
+Fetching distribution.
+Downloading https://services.gradle.org/distributions/gradle-9.7.0-bin.zip
+..............10%..............20%..............30%...............40%..............50%...............60%..............70%..............80%...............90%..............100%
+Deleting directory /workspace/scratch/1112e9e8a3c6/continuation/scratch/ageds/environment-delta-1/gradle-home/wrapper/dists/gradle-9.7.0-bin/d4tj7w02tcgubx9zk9hbippn6/gradle-9.7.0
+Exception in thread "main" java.lang.RuntimeException: Verification of Gradle distribution failed!
+
+Your Gradle distribution may have been tampered with.
+Confirm that the 'distributionSha256Sum' property in your gradle-wrapper.properties file is correct and you are downloading the wrapper from a trusted source.
+
+Distribution Url: https://services.gradle.org/distributions/gradle-9.7.0-bin.zip
+Download Location: /workspace/scratch/1112e9e8a3c6/continuation/scratch/ageds/environment-delta-1/gradle-home/wrapper/dists/gradle-9.7.0-bin/d4tj7w02tcgubx9zk9hbippn6/gradle-9.7.0-bin.zip
+Expected checksum: '84fbba45c7f4c64abc77460e1c00f541e9f960e3c7ed2538f1ede19eacd873ae'
+Actual checksum:   'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
+Visit https://gradle.org/release-checksums/ to verify the checksums of official distributions. If your build uses a custom distribution, see with its provider.
+	at org.gradle.wrapper.Install.verifyDownloadChecksum(SourceFile:2)
+	at org.gradle.wrapper.Install.lambda$createDist$0(SourceFile:13)
+	at org.gradle.wrapper.Install.createDist(SourceFile:24)
+	at org.gradle.wrapper.GradleWrapperMain.lambda$prepareWrapper$0(SourceFile:2)
+	at org.gradle.wrapper.GradleWrapperMain.main(SourceFile:2)
