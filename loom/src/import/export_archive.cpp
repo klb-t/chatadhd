@@ -710,6 +710,20 @@ Result<std::vector<Conversation>> ConversationImporter::export_zip_body(const fs
         mo.progress = nullptr;
         auto r = import_file_as(m->abs, mo, "zip_member", m->rel, m->archive_index);
         if (!r) {
+          if (r.error().code == Errc::Unsupported && (fmt == "json" || fmt == "jsonl")) {
+            // The legacy reader reports an unknown mapping explicitly. The
+            // archive can still complete its existing raw-retention path;
+            // this does not claim that a conversation was recognized.
+            disp(*m, "unrecognized", Json{{"code", std::string(errc_name(r.error().code))},
+                                           {"message", r.error().message}});
+            auto kept = run.unknown_member(*m);
+            if (!kept) {
+              rep.partial = true;
+              rep.errors.push_back(Json{{"member", m->rel}, {"code", "raw_retention_failed"},
+                                        {"message", kept.error().message}});
+            }
+            continue;
+          }
           log::warn(kLog, "Failed to import {} from ZIP: {}", m->rel, r.error().message);
           disp(*m, "import_failed", Json{{"message", r.error().message}});
           rep.errors.push_back(Json{{"member", m->rel}, {"code", "import_failed"}, {"message", r.error().message}});

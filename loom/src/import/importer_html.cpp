@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <cctype>
 #include <unordered_map>
+#include <utility>
 
 #include "importer_internal.h"
 #include "loom/importer.h"
@@ -245,9 +246,9 @@ bool is_ws(char c) { return c == ' ' || c == '\t' || c == '\r' || c == '\n' || c
 // One `for match in re.finditer(pattern, html, DOTALL|IGNORECASE)` pass:
 // captures the span from just after each `own` label's ":" (plus the
 // whitespace `\s*` eats) up to the next `stop` label or end of string.
-std::vector<std::string> scan_labelled_blocks(std::string_view html, const std::vector<std::string>& own,
-                                              const std::vector<std::string>& stop) {
-  std::vector<std::string> out;
+std::vector<std::pair<std::size_t, std::string>> scan_labelled_blocks(
+    std::string_view html, const std::vector<std::string>& own, const std::vector<std::string>& stop) {
+  std::vector<std::pair<std::size_t, std::string>> out;
   std::size_t pos = 0;
   while (pos <= html.size()) {
     auto hit = nearest_label(html, own, pos);
@@ -256,7 +257,7 @@ std::vector<std::string> scan_labelled_blocks(std::string_view html, const std::
     while (content_start < html.size() && is_ws(html[content_start])) ++content_start;
     auto stop_hit = nearest_label(html, stop, content_start);
     std::size_t end = stop_hit ? stop_hit->pos : html.size();
-    out.emplace_back(html.substr(content_start, end - content_start));
+    out.emplace_back(hit->pos, html.substr(content_start, end - content_start));
     pos = end;
   }
   return out;
@@ -275,14 +276,23 @@ const std::vector<std::string>& assistant_labels() {
 
 Json ConversationImporter::extract_messages_regex(std::string_view html) {
   std::string stripped = strip_script_and_style(html);
-  Json out = Json::array();
-  for (const auto& raw : scan_labelled_blocks(stripped, user_labels(), assistant_labels())) {
+  std::vector<std::pair<std::size_t, Json>> messages;
+  for (const auto& [pos, raw] : scan_labelled_blocks(stripped, user_labels(), assistant_labels())) {
     std::string text = strip_html(raw);
-    if (!text.empty() && utf8::length(text) > 10) out.push_back(Json{{"role", "user"}, {"content", text}});
+    if (!text.empty() && utf8::length(text) > 10)
+      messages.emplace_back(pos, Json{{"role", "user"}, {"content", text}});
   }
-  for (const auto& raw : scan_labelled_blocks(stripped, assistant_labels(), user_labels())) {
+  for (const auto& [pos, raw] : scan_labelled_blocks(stripped, assistant_labels(), user_labels())) {
     std::string text = strip_html(raw);
-    if (!text.empty() && utf8::length(text) > 10) out.push_back(Json{{"role", "assistant"}, {"content", text}});
+    if (!text.empty() && utf8::length(text) > 10)
+      messages.emplace_back(pos, Json{{"role", "assistant"}, {"content", text}});
+  }
+  std::stable_sort(messages.begin(), messages.end(),
+                   [](const auto& a, const auto& b) { return a.first < b.first; });
+  Json out = Json::array();
+  for (auto& [pos, message] : messages) {
+    (void)pos;
+    out.push_back(std::move(message));
   }
   return out;
 }

@@ -150,11 +150,36 @@ TEST_SUITE("import_presets_binding") {
     CHECK(changed.source_id != legacy.source_id);
     CHECK(changed.conversations.empty());
     CHECK(changed.export_report["inferred"] == false);
+    CHECK(changed.export_report["partial"] == false);
+    CHECK(changed.export_report["errors"].empty());
+    CHECK(changed.export_report["unknown_members"] == Json::array({"unknown.json"}));
+    REQUIRE(changed.export_report["members"].size() == 1);
+    CHECK(changed.export_report["members"][0]["disposition"] == "unrecognized");
+    CHECK(changed.export_report["members"][0]["code"] == "unsupported");
+    CHECK(unwrap(fixture.db->conn().query_text("SELECT content FROM nodes WHERE kind='export:member' AND label='unknown.json'")) ==
+      std::optional<std::string>(generic.dump()));
     CHECK(fixture.source_metadata(changed.source_id)["import_projection_hash"] == import_projection_hash(bounded));
     const auto cached = unwrap(fixture.importer.import_file(path, bounded));
     CHECK(cached.already_imported);
     CHECK(cached.source_id == changed.source_id);
     CHECK(cached.conversations.empty());
+    CHECK(cached.export_report == changed.export_report);
+  }
+
+  TEST_CASE("retaining an unsupported mapping does not hide a malformed archive member") {
+    BindingFixture fixture;
+    auto bounded = fixture.options;
+    bounded.generic_inference_max_bytes = 1;
+    const auto path = fixture.zip({{"unknown.json", R"({"alien_turns":[]})"},
+                                  {"broken.json", "{broken"}});
+    const auto result = unwrap(fixture.importer.import_file(path, bounded));
+    CHECK(result.conversations.empty());
+    CHECK(result.export_report["partial"] == true);
+    REQUIRE(result.export_report["errors"].size() == 1);
+    CHECK(result.export_report["errors"][0]["member"] == "broken.json");
+    CHECK(result.export_report["errors"][0]["code"] == "import_failed");
+    CHECK(result.export_report["unknown_members"] == Json::array({"unknown.json"}));
+    CHECK_FALSE(unwrap(fixture.importer.import_file(path, bounded)).already_imported);
   }
 
   TEST_CASE("partial journals resume across resources but not across semantic projections") {

@@ -95,6 +95,7 @@ bool JsonArrayStreamer::feed(std::string_view chunk, const ElementFn& on_element
       buf_.push_back(ch);
     } else if (ch == '}' || ch == ']') {
       if (depth_ == 0) {
+        flush();  // A final scalar still belongs to this array.
         done_ = true;
         return true;  // end of the top-level array; ignore trailing bytes
       }

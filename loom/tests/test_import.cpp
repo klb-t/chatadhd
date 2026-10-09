@@ -108,7 +108,7 @@ TEST_SUITE("import") {
     CHECK(msgs[1].text == "It is the architecture constitution & roadmap.");
   }
 
-  TEST_CASE("import_file: HTML label fallback groups by pattern, not chronologically") {
+  TEST_CASE("import_file: HTML label fallback preserves source order across roles") {
     fsutil::TempDir td;
     auto db = open_db(td.path() / "d.db");
     EventBus bus;
@@ -119,9 +119,13 @@ TEST_SUITE("import") {
     auto msgs = unwrap(db->get_msgs(r.conversations[0].id, true));
     REQUIRE(msgs.size() == 4);
     CHECK(msgs[0].role == "user");
-    CHECK(msgs[1].role == "user");
-    CHECK(msgs[2].role == "assistant");
+    CHECK(msgs[1].role == "assistant");
+    CHECK(msgs[2].role == "user");
     CHECK(msgs[3].role == "assistant");
+    CHECK(msgs[0].text == "first question about kernels and graphs");
+    CHECK(msgs[1].text == "first answer, fairly detailed and long");
+    CHECK(msgs[2].text == "second question please");
+    CHECK(msgs[3].text == "second answer from Claude here");
     // The script tag's "Human: not this" must never surface.
     for (const auto& m : msgs) CHECK(m.text.find("not this") == std::string::npos);
   }
@@ -250,6 +254,182 @@ TEST_SUITE("import") {
     CHECK(r.error().code == Errc::Unsupported);
   }
 
+  TEST_CASE("legacy JSON distinguishes unsupported mappings from recognized empty exports") {
+    fsutil::TempDir td;
+    auto db = open_db(td.path() / "d.db");
+    EventBus bus;
+    BlobStore blobs(td.path() / "blobs", *db);
+    ProvenanceStore prov(*db);
+    ConversationImporter imp(*db, bus, &blobs, &prov);
+    std::vector<Json> events;
+    bus.on(loom::events::kImportDone, [&](std::string_view, const Json& event) { events.push_back(event); });
+    const std::vector<std::string> unknown{
+        R"({"alien_turns":{"message":"SYNTHETIC_UNKNOWN"}})",
+        R"([{"alien_turns":{"message":"SYNTHETIC_UNKNOWN"}}])", R"("unknown")", "42", "[42]", "[null]"};
+    const std::vector<std::string> empty{
+        "[]", R"({"messages":[]})", R"({"mapping":{}})", R"({"chat_messages":[]})",
+        R"({"conversations":[]})", R"({"data":[]})", R"({"items":[]})"};
+    for (const auto threshold : {default_import_preset().stream_threshold_bytes, std::int64_t{1}}) {
+      ImportOptions opts;
+      opts.stream_threshold_bytes = threshold;
+      for (const auto& source : unknown) {
+        LOOM_REQUIRE_OK(fsutil::write_file(td.path() / "unknown.json", source));
+        auto result = imp.import_file(td.path() / "unknown.json", opts);
+        REQUIRE(!result);
+        CHECK(result.error().code == Errc::Unsupported);
+        CHECK(unwrap(fsutil::read_file(td.path() / "unknown.json")) == source);
+        // Even an unsupported mapping retains the immutable bytes in the
+        // existing source store, independently of conversation projection.
+        const auto records = unwrap(prov.list_sources());
+        REQUIRE(!records.empty());
+        bool retained = false;
+        for (const auto& record : records)
+          retained = retained || unwrap(blobs.read(record.blob_hash)) == source;
+        CHECK(retained);
+      }
+      for (const auto& source : empty) {
+        LOOM_REQUIRE_OK(fsutil::write_file(td.path() / "empty.json", source));
+        CHECK(unwrap(imp.import_file(td.path() / "empty.json", opts)).conversations.empty());
+      }
+    }
+    CHECK(unwrap(db->list_convs()).empty());
+    CHECK(events.empty());
+  }
+
+  TEST_CASE("legacy JSON stream threshold preserves object and direct-message mappings after reopen") {
+    fsutil::TempDir td;
+    const auto db_path = td.path() / "d.db";
+    const std::vector<std::string> sources{
+        R"({"title":"Synthetic","messages":[{"role":"user","content":"First"},{"role":"assistant","content":"Second"}],"unknown_source_field":{"marker":"preserved"}})",
+        R"([{"role":"user","content":"First","unknown_source_field":{"marker":"preserved"}},{"role":"assistant","content":"Second"}])"};
+    std::vector<std::string> ids;
+    {
+      auto db = open_db(db_path);
+      EventBus bus;
+      BlobStore blobs(td.path() / "blobs", *db);
+      ProvenanceStore prov(*db);
+      ConversationImporter imp(*db, bus, &blobs, &prov);
+      for (const auto& source : sources) {
+        LOOM_REQUIRE_OK(fsutil::write_file(td.path() / "conversation.json", source));
+        for (const auto threshold : {default_import_preset().stream_threshold_bytes, std::int64_t{1}}) {
+          ImportOptions opts;
+          opts.stream_threshold_bytes = threshold;
+          opts.force = true;
+          auto result = unwrap(imp.import_file(td.path() / "conversation.json", opts));
+          REQUIRE(result.conversations.size() == 1);
+          CHECK(result.messages == 2);
+          CHECK(unwrap(blobs.read(result.blob_hash)) == source);
+          auto record = unwrap(prov.get_source(result.source_id));
+          REQUIRE(record);
+          CHECK(record->parser_version == "2");
+          ids.push_back(result.conversations.front().id);
+        }
+      }
+    }
+    auto reopened = open_db(db_path);
+    for (const auto& id : ids) {
+      const auto messages = unwrap(reopened->get_msgs(id, true));
+      REQUIRE(messages.size() == 2);
+      CHECK(messages[0].role == "user");
+      CHECK(messages[0].text == "First");
+      CHECK(messages[1].role == "assistant");
+      CHECK(messages[1].text == "Second");
+      ProvenanceStore prov(*reopened);
+      const auto records = unwrap(prov.for_subject(id));
+      REQUIRE(records.size() == 1);
+      CHECK(records.front().transform == "import.message_list@2");
+    }
+  }
+
+  TEST_CASE("legacy parser v2 retains v1 source history and creates a separately identified interpretation") {
+    fsutil::TempDir td;
+    const auto db_path = td.path() / "d.db";
+    std::string old_id, new_id, old_source_id;
+    {
+      auto db = open_db(db_path);
+      EventBus bus;
+      BlobStore blobs(td.path() / "blobs", *db);
+      ProvenanceStore prov(*db);
+      const auto blob = unwrap(blobs.put_file(fixture("chat_labels.htm")));
+      SourceRecord source;
+      source.kind = "file";
+      source.uri = fixture("chat_labels.htm").string();
+      source.blob_hash = blob.hash;
+      source.size = blob.size;
+      source.format = "html";
+      source.parser = "loom.importer.html";
+      source.parser_version = "1";
+      old_source_id = unwrap(prov.add_source(source));
+      old_id = unwrap(db->create_conv("Synthetic historical v1 projection")).id;
+      auto add_old_message = [&](std::string text, std::string role) {
+        NewMessage message;
+        message.conv_id = old_id;
+        message.text = std::move(text);
+        message.role = std::move(role);
+        unwrap(db->create_msg(message));
+      };
+      add_old_message("first question about kernels and graphs", "user");
+      add_old_message("second question please", "user");
+      add_old_message("first answer, fairly detailed and long", "assistant");
+      add_old_message("second answer from Claude here", "assistant");
+      ProvenanceRecord record;
+      record.subject_id = old_id;
+      record.subject_kind = "conversation";
+      record.source_id = old_source_id;
+      record.transform = "import.message_list@1";
+      unwrap(prov.add(record));
+      ConversationImporter imp(*db, bus, &blobs, &prov);
+      const auto result = unwrap(imp.import_file(fixture("chat_labels.htm")));
+      REQUIRE(result.conversations.size() == 1);
+      CHECK_FALSE(result.already_imported);
+      CHECK(result.source_id != old_source_id);
+      new_id = result.conversations.front().id;
+      CHECK(new_id != old_id);
+      const auto duplicate = unwrap(imp.import_file(fixture("chat_labels.htm")));
+      CHECK(duplicate.already_imported);
+      REQUIRE(duplicate.conversations.size() == 1);
+      CHECK(duplicate.conversations.front().id == new_id);
+    }
+    auto reopened = open_db(db_path);
+    const auto old_messages = unwrap(reopened->get_msgs(old_id, true));
+    const auto new_messages = unwrap(reopened->get_msgs(new_id, true));
+    REQUIRE(old_messages.size() == 4);
+    REQUIRE(new_messages.size() == 4);
+    CHECK(old_messages[1].role == "user");
+    CHECK(new_messages[1].role == "assistant");
+    CHECK(new_messages[2].role == "user");
+    ProvenanceStore prov(*reopened);
+    const auto source = unwrap(prov.get_source(old_source_id));
+    REQUIRE(source);
+    CHECK(source->parser_version == "1");
+    CHECK(unwrap(prov.for_subject(old_id)).front().transform == "import.message_list@1");
+  }
+
+  TEST_CASE("cancelled legacy message-array read can be retried without a partial conversation") {
+    fsutil::TempDir td;
+    auto db = open_db(td.path() / "d.db");
+    EventBus bus;
+    ConversationImporter imp(*db, bus);
+    const auto source = td.path() / "messages.json";
+    LOOM_REQUIRE_OK(fsutil::write_file(source,
+        R"([{"role":"user","content":"First"},{"role":"assistant","content":"Second"}])"));
+    CancelToken cancel;
+    ImportOptions opts;
+    opts.stream_threshold_bytes = 1;
+    opts.cancel = &cancel;
+    opts.progress = [&](std::int64_t, std::int64_t, std::string_view) { cancel.cancel(); };
+    const auto interrupted = unwrap(imp.import_file(source, opts));
+    CHECK(interrupted.cancelled);
+    CHECK(interrupted.conversations.empty());
+    CHECK(unwrap(db->list_convs()).empty());
+    opts.cancel = nullptr;
+    opts.progress = {};
+    const auto resumed = unwrap(imp.import_file(source, opts));
+    CHECK_FALSE(resumed.cancelled);
+    REQUIRE(resumed.conversations.size() == 1);
+    CHECK(resumed.messages == 2);
+  }
+
   TEST_CASE("import_file: explicit title overrides any title found in the source") {
     fsutil::TempDir td;
     auto db = open_db(td.path() / "d.db");
@@ -322,7 +502,7 @@ TEST_SUITE("import") {
     // All JSON handlers funnel through import_message_list(), which is
     // where provenance is actually recorded (see importer.h's own comment:
     // "All paths converge on import_message_list()").
-    CHECK(conv_prov[0].transform == "import.message_list@1");
+    CHECK(conv_prov[0].transform == "import.message_list@2");
 
     auto msgs = unwrap(db->get_msgs(r1.conversations[0].id, true));
     for (const auto& m : msgs) {
@@ -369,12 +549,13 @@ TEST_SUITE("import") {
         REQUIRE(ok);
       }
       INFO("chunk_size=" << chunk_size);
-      REQUIRE(elements.size() == 2);  // the trailing bare "bare" scalar has no following comma, so it is dropped
+      REQUIRE(elements.size() == 3);
       auto e0 = unwrap(json::parse(elements[0]));
       CHECK(e0["a"] == 1);
       CHECK(e0["s"] == "x,y]}");
       auto e1 = unwrap(json::parse(elements[1]));
       CHECK(e1["b"][2]["c"] == 3);
+      CHECK(unwrap(json::parse(elements[2])) == "bare");
       CHECK(streamer.finished());
     }
   }

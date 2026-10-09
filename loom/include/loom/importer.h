@@ -36,8 +36,10 @@
 //     role heuristics), Markdown (## Human/## User/**Human**/**User** and
 //     ## Assistant/## Claude/**Assistant**/**Claude** headers, ---/*** split),
 //     text (Human|User|You: / Assistant|AI|Claude: blocks, DOTALL|IGNORECASE).
-//   JSON files > 5 MB are stream-parsed element by element (JsonArrayStreamer)
-//     so memory stays bounded; non-arrays fall back to a full parse.
+//   JSON conversation arrays > 5 MB are stream-parsed element by element
+//     (JsonArrayStreamer). Direct message arrays use one conversation batch;
+//     non-arrays fall back to a full parse. Unknown mappings are Unsupported,
+//     distinct from recognized empty exports.
 //   ZIP: members extracted to a temp dir (miniz), sorted, recursively
 //     imported with the member's relative path as title hint; failures of one
 //     member are logged and skipped.
@@ -73,7 +75,7 @@ class BlobStore;
 class ProvenanceStore;
 class MediaProviders;
 
-inline constexpr std::string_view kImporterParserVersion = "1";
+inline constexpr std::string_view kImporterParserVersion = "2";
 inline constexpr std::string_view kExportParserVersion = "export-3";
 
 // (current, total, status). Units depend on status: export conversations,

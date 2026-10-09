@@ -19,6 +19,10 @@ namespace idt = importer_detail;
 namespace {
 constexpr std::string_view kLog = "loom.import";
 
+Error unrecognized_structure() {
+  return Error(Errc::Unsupported, "Unrecognized JSON conversation structure");
+}
+
 // `title or conv_data.get(k1, conv_data.get(k2, ..., fallback))`: a truthy
 // caller title wins outright; otherwise the first `keys` entry present in
 // `conv_data` (by key, not truthiness) wins; else `fallback`.
@@ -153,17 +157,22 @@ Result<std::optional<Conversation>> ConversationImporter::import_claude_export(
 // ── Generic conversation objects (messages | chat_messages | items | data) ─
 Result<std::optional<Conversation>> ConversationImporter::import_conversation_obj(
     const Json& conv_data, const std::optional<std::string>& title) {
-  if (!conv_data.is_object()) return std::optional<Conversation>{};
+  if (!conv_data.is_object()) return unrecognized_structure();
   std::string conv_title =
       resolve_title(title, conv_data, {"title", "name", "conversation_name"}, "Import " + timeutil::local_now_format("%H:%M"));
 
   Json messages = Json::array();
+  bool recognized = false;
   for (const char* key : {"messages", "chat_messages", "items", "data"}) {
-    if (const Json* v = json::find(conv_data, key); v && json::truthy(*v)) {
-      messages = *v;
-      break;
+    if (const Json* v = json::find(conv_data, key)) {
+      recognized = true;
+      if (json::truthy(*v)) {
+        messages = *v;
+        break;
+      }
     }
   }
+  if (!recognized) return unrecognized_structure();
   if (messages.is_object()) {
     Json arr = Json::array();
     for (auto it = messages.begin(); it != messages.end(); ++it) arr.push_back(it.value());
@@ -178,7 +187,7 @@ Result<std::optional<Conversation>> ConversationImporter::import_conversation_ob
 // ── Single-element + full-document routing ──────────────────────────
 Result<std::optional<Conversation>> ConversationImporter::import_single_element(
     const Json& element, const std::optional<std::string>& title) {
-  if (!element.is_object()) return std::optional<Conversation>{};
+  if (!element.is_object()) return unrecognized_structure();
   if (json::find(element, "mapping")) return import_chatgpt_mapping(element, title);
   if (json::find(element, "chat_messages")) return import_claude_export(element, title);
   return import_conversation_obj(element, title);
@@ -212,13 +221,12 @@ Result<std::vector<Conversation>> ConversationImporter::import_json_data(const J
         }
       } else {
         for (const auto& item : data) {
-          auto r = import_conversation_obj(item, title);
-          if (r && *r) results.push_back(std::move(**r));
-          // Python swallows per-item exceptions here (log.debug + continue);
-          // import_conversation_obj never hard-fails on a malformed item
-          // (non-dict -> nullopt), so there is nothing to swallow.
+          LOOM_TRY_ASSIGN(auto r, import_conversation_obj(item, title));
+          if (r) results.push_back(std::move(*r));
         }
       }
+    } else {
+      return unrecognized_structure();
     }
   } else if (data.is_object()) {
     if (json::find(data, "mapping")) {
@@ -243,9 +251,11 @@ Result<std::vector<Conversation>> ConversationImporter::import_json_data(const J
     } else if (const Json* d = json::find(data, "data"); d && d->is_array()) {
       return import_json_data(*d, title);
     } else {
-      auto r = import_conversation_obj(data, title);
-      if (r && *r) results.push_back(std::move(**r));
+      LOOM_TRY_ASSIGN(auto r, import_conversation_obj(data, title));
+      if (r) results.push_back(std::move(*r));
     }
+  } else {
+    return unrecognized_structure();
   }
   return results;
 }
@@ -272,15 +282,33 @@ Result<std::vector<Conversation>> stream_json_array(ConversationImporter& self, 
   std::vector<Conversation> results;
   bool not_array = false;
   std::size_t conv_count = 0;
+  std::optional<Error> stream_error;
+  bool first_element = true;
+  bool message_array = false;
+  Json messages = Json::array();
 
   auto on_element = [&](std::string_view raw) {
+    if (stream_error) return;
     auto parsed = json::parse(raw);
     if (!parsed) {
-      log::debug(kLog, "stream: invalid JSON element (len={})", raw.size());
+      stream_error = parsed.error();
+      return;
+    }
+    if (first_element) {
+      first_element = false;
+      message_array = parsed->is_object() && !json::find(*parsed, "mapping") &&
+          (json::find(*parsed, "role") || json::find(*parsed, "content"));
+    }
+    if (message_array) {
+      messages.push_back(std::move(*parsed));
       return;
     }
     auto r = self.import_single_element(*parsed, opts.title);
-    if (r && *r) {
+    if (!r) {
+      stream_error = r.error();
+      return;
+    }
+    if (*r) {
       results.push_back(std::move(**r));
       ++conv_count;
       if (conv_count % 50 == 0) log::info(kLog, "Stream import: {} conversations processed", conv_count);
@@ -299,6 +327,7 @@ Result<std::vector<Conversation>> stream_json_array(ConversationImporter& self, 
       not_array = true;
       break;
     }
+    if (stream_error) return *stream_error;
     if (streamer.finished()) break;
     if (opts.cancel && opts.cancel->cancelled()) break;
   }
@@ -307,7 +336,14 @@ Result<std::vector<Conversation>> stream_json_array(ConversationImporter& self, 
     log::warn(kLog, "Stream: not a JSON array, falling back to a full parse");
     return parse_whole_file(self, path, opts.title);
   }
-  log::info(kLog, "Stream import complete: {} conversations from {}", conv_count, path.filename().string());
+  if (message_array) {
+    if (opts.cancel && opts.cancel->cancelled()) return results;
+    // Direct message arrays describe one conversation on both sides of the
+    // size threshold; the existing batch writer retains its mapping rules.
+    LOOM_TRY_ASSIGN(auto conversation, self.import_message_list(messages, opts.title));
+    results.push_back(std::move(conversation));
+  }
+  log::info(kLog, "Stream import complete: {} conversations from {}", results.size(), path.filename().string());
   return results;
 }
 

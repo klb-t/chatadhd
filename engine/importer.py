@@ -26,6 +26,7 @@ import zipfile
 import tempfile
 import shutil
 from pathlib import Path
+from itertools import chain
 from datetime import datetime
 from html.parser import HTMLParser
 import logging
@@ -33,6 +34,16 @@ import logging
 from engine.events import bus, MSG_CREATED, IMPORT_DONE
 
 log = logging.getLogger('importer')
+
+
+class UnrecognizedConversationStructure(ValueError):
+    """JSON was readable, but no supported conversation mapping was found.
+
+    An empty recognized export still returns an empty list. This exception
+    deliberately follows the existing import error path in headless and UI
+    consumers; it never changes or discards the source file.
+    """
+    status = "unknown"
 
 
 class ConversationImporter:
@@ -293,19 +304,29 @@ class ConversationImporter:
         conv_count = 0
 
         with open(path, 'r', encoding='utf-8', buffering=8192) as f:
-            # Skip to first '['.
-            ch = ''
-            while ch != '[':
+            # Only a top-level array can use the array streaming path. A '['
+            # inside an object value is not the document's container boundary.
+            ch = f.read(1)
+            while ch and ch.isspace():
                 ch = f.read(1)
-                if not ch:
-                    # Not an array — fall back to full load.
-                    log.warning("Stream: not a JSON array, falling back")
-                    f.seek(0)
-                    data = json.load(f)
-                    return self._import_json_data(data, title, source_path=path)
+            if ch != '[':
+                f.seek(0)
+                data = json.load(f)
+                return self._import_json_data(data, title, source_path=path)
 
-            # Parse elements one by one.
-            for element in self._iter_json_elements(f):
+            elements = iter(self._iter_json_elements(f))
+            try:
+                first = next(elements)
+            except StopIteration:
+                return results
+            if (isinstance(first, dict) and 'mapping' not in first
+                    and ('role' in first or 'content' in first)):
+                # A message array is one conversation, just as below the size
+                # threshold; reuse the existing batch writer and mapping.
+                return [self._import_message_list(list(chain((first,), elements)), title)]
+
+            # Parse conversation elements one by one.
+            for element in chain((first,), elements):
                 try:
                     r = self._import_single_element(element, title)
                     if r:
@@ -313,6 +334,8 @@ class ConversationImporter:
                         conv_count += 1
                         if conv_count % 50 == 0:
                             log.info("Stream import: %d conversations processed", conv_count)
+                except UnrecognizedConversationStructure:
+                    raise
                 except Exception:
                     log.debug("Stream: skipped one element", exc_info=True)
 
@@ -360,6 +383,9 @@ class ConversationImporter:
             elif ch in ('}', ']'):
                 if depth == 0:
                     # End of top-level array.
+                    raw = ''.join(buf).strip()
+                    if raw:
+                        yield json.loads(raw)
                     break
                 depth -= 1
                 buf.append(ch)
@@ -388,7 +414,7 @@ class ConversationImporter:
     def _import_single_element(self, element, title=None):
         """Import a single conversation element (from streaming or normal)."""
         if not isinstance(element, dict):
-            return None
+            raise UnrecognizedConversationStructure("Unrecognized JSON conversation structure")
         if 'mapping' in element:
             return self._import_chatgpt_mapping(element, title)
         elif 'chat_messages' in element:
@@ -433,8 +459,12 @@ class ConversationImporter:
                             r = self._import_conversation_obj(item, title)
                             if r:
                                 results.append(r)
+                        except UnrecognizedConversationStructure:
+                            raise
                         except Exception:
                             log.debug("Skipped unrecognized list item")
+            else:
+                raise UnrecognizedConversationStructure("Unrecognized JSON conversation structure")
         
         elif isinstance(data, dict):
             if 'mapping' in data:
@@ -459,10 +489,9 @@ class ConversationImporter:
                 return self._import_json_data(data['data'], title, source_path)
             else:
                 # Last resort: try as conversation
-                try:
-                    results.append(self._import_conversation_obj(data, title))
-                except Exception:
-                    log.warning("Unrecognized JSON structure in %s", source_path)
+                results.append(self._import_conversation_obj(data, title))
+        else:
+            raise UnrecognizedConversationStructure("Unrecognized JSON conversation structure")
         
         return results
     
@@ -603,8 +632,9 @@ class ConversationImporter:
     
     def _import_conversation_obj(self, conv_data, title):
         """Import conversation object with messages. Handles multiple key names."""
-        if not isinstance(conv_data, dict):
-            return None
+        if not isinstance(conv_data, dict) or not any(
+                key in conv_data for key in ('messages', 'chat_messages', 'items', 'data')):
+            raise UnrecognizedConversationStructure("Unrecognized JSON conversation structure")
         
         conv_title = title or conv_data.get('title',
                          conv_data.get('name',
@@ -691,10 +721,11 @@ class ConversationImporter:
             for match in re.finditer(pattern, html, re.DOTALL | re.IGNORECASE):
                 text = self._strip_html(match.group(1))
                 if text and len(text) > 10:
-                    messages.append({'role': role, 'content': text})
+                    messages.append((match.start(), {'role': role, 'content': text}))
         
-        # Sort by position in original text
-        return messages
+        # Preserve document order across speaker patterns (A3-IMP-CH006).
+        messages.sort(key=lambda item: item[0])
+        return [message for _, message in messages]
     
     def _strip_html(self, html):
         """Remove HTML tags and clean up text."""
