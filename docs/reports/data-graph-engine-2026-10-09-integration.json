@@ -135,6 +135,33 @@
         "guard": "PASS",
         "receipt_prefix": "data-graph-integration-final-scope-r2"
       }
+    },
+    {
+      "commit": "4eda95e36d160a1831e54a7e49335390f50d278e",
+      "scope": "E perspectives in actual App via native R40/additive exact pack installation",
+      "dependencies": [
+        "4c190de76f1a52256c45797fd3e6558c7ffd5d7b"
+      ],
+      "gates": {
+        "product_headless_cases": 8,
+        "host_browser_cases": 21,
+        "App_E2E_steps": 17,
+        "receipt": "chat-browser-7llz48l0",
+        "web_build": "PASS"
+      }
+    },
+    {
+      "commit": "9b3b2a6b9f533c357c2aae367e8e512b369aec45",
+      "scope": "Exact physical domain inventory, preserve KB identity and strict overlay rules",
+      "dependencies": [
+        "8b8496d3d8615b37b9d1d83771059fc73060861e",
+        "4c190de76f1a52256c45797fd3e6558c7ffd5d7b"
+      ],
+      "gates": {
+        "scope_ctest": 3,
+        "scope_guard": "PASS",
+        "receipt_prefix": "data-graph-integration-data-domains"
+      }
     }
   ],
   "open": [
@@ -143,6 +170,43 @@
     "P5 complete workflow/ExperimentSpec opt-in/adoption",
     "D generic discovery and external resource-to-E workspace connection",
     "R42 unclassified inventory and lexer coverage",
-    "Full composed dev/ASan/web gates pending at this checkpoint"
+    "Current ASan/Clang full gates pending; retention transition regression discovered after dev9b3b2a6b"
+  ],
+  "composed_gates": [
+    {
+      "source_commit": "9b3b2a6b9f533c357c2aae367e8e512b369aec45",
+      "preset": "dev",
+      "actual_compiler": "GCC13",
+      "sqlite": "vendored",
+      "ctest_entries": 156,
+      "executed_entries": 155,
+      "native_cases": 964,
+      "native_assertions": 35348,
+      "python_cases": 2022,
+      "python_skips": 0,
+      "explicitly_unexecuted": [
+        "unit.test_catalog_scale"
+      ],
+      "guard": "PASS",
+      "duration_seconds": 281.74,
+      "receipt_prefix": "data-graph-integration-composed-r2-full-dev"
+    }
+  ],
+  "ecosystem": [
+    {
+      "repository": "klb-t/Watchdog-JH16",
+      "baseline": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "continuation_base": "61ae2463541a9c8ce438b9d44265b3dd35ba8b97",
+      "product_commit": "263c8ab1b5ef02dc8e4b1f48914dfc1bbb18bc59",
+      "scope": "WD-003 validated generation parameters",
+      "gates": {
+        "lint": "PASS",
+        "build": "PASS",
+        "tests": 624,
+        "skips": 0,
+        "receipt_prefix": "data-graph-watchdog-params-full"
+      },
+      "push": "PASS"
+    }
   ]
 }

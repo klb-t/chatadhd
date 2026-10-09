@@ -38,6 +38,10 @@ bool internal::skip_source_directory(const fs::path& path, const fs::path& activ
 
 namespace {
 
+// Evidence about catalog index history only. Earlier scanners could relabel a
+// retained sketch as "none"; their rows cannot establish payload absence.
+constexpr std::string_view kIndexRetentionContract = "catalog.index_retention/1";
+
 struct Stats {
   bool index_content = false; // assigned from the validated profile before scanning
   std::int64_t units = 0;
@@ -140,11 +144,21 @@ Status ingest_unit(Database& db, const AliasIndex& alias_idx, const kb::Normaliz
   if (*existing) {
     LOOM_TRY_ASSIGN(auto body, json::parse(**existing));
     LOOM_TRY_ASSIGN(auto cu, CatalogUnit::from_json(body));
-    if (json::get_string(cu.unit.attrs, "catalog_scan_fingerprint") == stats.input_hash) {
-      ++stats.unchanged;
-      return {};
-    }
     existing_unit = std::move(cu);
+  }
+
+  // Check retained history before the unchanged-input shortcut, including
+  // forced scans. A policy change cannot remove old SQLite/WAL payload.
+  if (!stats.index_content && existing_unit) {
+    if (json::get_string(existing_unit->unit.attrs, "content_index") != "none")
+      return Error(Errc::Conflict, "catalog index already contains a snapshot; transient policy does not purge history");
+    if (json::get_string(existing_unit->unit.attrs, "index_retention_contract") != kIndexRetentionContract)
+      return Error(Errc::Conflict,
+          "catalog index retention history is unknown; use a fresh catalog store to establish no-index history");
+  }
+  if (existing_unit && json::get_string(existing_unit->unit.attrs, "catalog_scan_fingerprint") == stats.input_hash) {
+    ++stats.unchanged;
+    return {};
   }
 
   const auto prose_size = static_cast<std::int64_t>(pu.text.prose.size());
@@ -152,8 +166,6 @@ Status ingest_unit(Database& db, const AliasIndex& alias_idx, const kb::Normaliz
   if (!stats.index_content) {
     // Retention is independent from recognition. Preserve identity/counts while
     // keeping conversation content out of the index and its SQLite journal.
-    if (existing_unit && json::get_string(existing_unit->unit.attrs, "content_index") != "none")
-      return Error(Errc::Conflict, "catalog index already contains a snapshot; transient policy does not purge history");
     pu.text.prose.clear(); pu.text.code.clear(); pu.text.head.clear(); pu.text.title.clear();
     pu.text.attachments.clear(); pu.title_hint.clear();
   }
@@ -178,14 +190,24 @@ Status ingest_unit(Database& db, const AliasIndex& alias_idx, const kb::Normaliz
     // Rebuild derived retrieval evidence only. Keep the original source,
     // locator, content identity, lineage, creation time and retained bytes.
     auto& cu = *existing_unit;
+    if (stats.index_content && json::get_string(cu.unit.attrs, "content_index") == "none") {
+      // The host explicitly enabled indexing of these same source bytes.
+      // Restore fields withheld by the earlier no-index policy as well as
+      // the sketch; otherwise query/preview would expose stale empty data.
+      cu.unit.title = !pu.text.title.empty() ? pu.text.title : pu.title_hint;
+      cu.head = pu.text.head;
+      cu.attachments = pu.text.attachments;
+    }
     cu.mentions = mentions_j;
     cu.n_chars = sketch.n_chars;
     cu.n_code_chars = sketch.n_code_chars;
     cu.unit.lang = sketch.lang;
     cu.unit.attrs["catalog_scan_fingerprint"] = stats.input_hash;
+    cu.unit.attrs["content_index"] = stats.index_content ? "sketch" : "none";
+    cu.unit.attrs["index_retention_contract"] = std::string(kIndexRetentionContract);
     if (pu.source_index) cu.unit.attrs["source_index"] = *pu.source_index;
-    LOOM_TRY(c.run("UPDATE loom_cat_units SET sketch = ?, body = ?, lang = ? WHERE id = ?",
-                    json::dump(sketch.to_json()), json::dump(cu.to_json()), cu.unit.lang, cu.unit.id));
+    LOOM_TRY(c.run("UPDATE loom_cat_units SET sketch = ?, body = ?, lang = ?, title = ? WHERE id = ?",
+                    json::dump(sketch.to_json()), json::dump(cu.to_json()), cu.unit.lang, cu.unit.title, cu.unit.id));
     ++stats.units;
     ++stats.refreshed;
     stats.bytes += pu.bytes;
@@ -203,7 +225,8 @@ Status ingest_unit(Database& db, const AliasIndex& alias_idx, const kb::Normaliz
   unit.id = model::Unit::make_id(source_id, pu.locator);
   unit.attrs["catalog_scan_fingerprint"] = stats.input_hash;
   if (pu.source_index) unit.attrs["source_index"] = *pu.source_index;
-  if (!stats.index_content) unit.attrs["content_index"] = "none";
+  unit.attrs["content_index"] = stats.index_content ? "sketch" : "none";
+  unit.attrs["index_retention_contract"] = std::string(kIndexRetentionContract);
 
   std::string prev_version;
   if (!pu.ext_id.empty()) {
@@ -432,14 +455,18 @@ Status scan_zip_source(Database& db, const AliasIndex& idx, const kb::Normalizer
     auto reader = [&](const std::function<void(std::string_view)>& on_chunk) {
       return stream_zip_member(zip_path, e.index, on_chunk);
     };
+    const auto warnings_before = stats.warnings.size();
     Status st = (ext == ".json" || ext == ".jsonl")
                     ? scan_json_stream(db, idx, norm, params, source_id, e.name, reader, stats)
                     : scan_whole(db, idx, norm, params, source_id, e.name, reader, stats);
     if (!st) {
       stats.warnings.push_back(e.name + ": " + st.error().message);
+      LOOM_TRY(mark_checkpoint(db, source_id, e.name, false, stats.input_hash));
       continue;
     }
-    LOOM_TRY(mark_checkpoint(db, source_id, e.name, true, stats.input_hash));
+    // JSON ingestion can retain successful units while reporting rejected or
+    // malformed elements. Such a member is incomplete and must remain retryable.
+    LOOM_TRY(mark_checkpoint(db, source_id, e.name, stats.warnings.size() == warnings_before, stats.input_hash));
   }
   return {};
 }
@@ -454,7 +481,8 @@ Result<Json> Catalog::scan(const ScanConfig& cfg, const ProgressFn& progress, co
   Stats stats;
   stats.index_content = read_profile.values().at("content_index") == "sketch";
   stats.input_hash = Sha256::hex(json::canonical(Json{{"scanner_version", std::string(kScannerVersion)},
-      {"pack_hash", pack_->hash()}, {"sketch", cfg.sketch.to_json()}, {"source_index_contract", "catalog.source_index/1"}}));
+      {"pack_hash", pack_->hash()}, {"sketch", cfg.sketch.to_json()}, {"source_index_contract", "catalog.source_index/1"},
+      {"index_retention_contract", std::string(kIndexRetentionContract)}}));
   if (!stats.index_content) stats.input_hash = Sha256::hex(json::canonical(
       Json{{"base", stats.input_hash}, {"content_index", "none"}}));
 
@@ -510,15 +538,17 @@ Result<Json> Catalog::scan(const ScanConfig& cfg, const ProgressFn& progress, co
         if (done) continue;
       }
       auto reader = [&](const std::function<void(std::string_view)>& on_chunk) { return stream_file_chunks(file, on_chunk); };
+      const auto warnings_before = stats.warnings.size();
       Status st = (ext == ".json" || ext == ".jsonl")
                       ? scan_json_stream(rt_.db(), idx, norm, cfg.sketch, source_id, "", reader, stats)
                       : scan_whole(rt_.db(), idx, norm, cfg.sketch, source_id, "", reader, stats,
                                    fs::is_directory(p) ? file.lexically_relative(p).generic_string() : file.filename().string());
       if (!st) {
         stats.warnings.push_back(file.string() + ": " + st.error().message);
+        LOOM_TRY(mark_checkpoint(rt_.db(), source_id, "", false, stats.input_hash));
         continue;
       }
-      LOOM_TRY(mark_checkpoint(rt_.db(), source_id, "", true, stats.input_hash));
+      LOOM_TRY(mark_checkpoint(rt_.db(), source_id, "", stats.warnings.size() == warnings_before, stats.input_hash));
     }
   }
   return stats.to_json();

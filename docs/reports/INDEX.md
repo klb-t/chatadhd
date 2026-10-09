@@ -137,3 +137,8 @@ tylko fast-forward. Nie czytamy `eval/real-holdout-key`; blind użyty raz.
 ### B: external resources — 2026-10-09
 
 [Raport B](data-graph-engine-2026-10-09.md): ad6269a5/b20c0d8a na gałęzi produktu; ZIP resource graph wspólne dla widoku i zadania, external profile w real runtime, uncertain syntax/value_ref. Aktualne scoped ASan7/7 i E2E16/16; full dev145/146, guard REJECT przez 8 fixture errors C. R42 inventory checkoutu pozostaje otwarte; generator proof dokładny, allowlist unchanged. Nie jest to przyjęcie na main ani zakończenie całego R15/R20/R21.
+
+
+## 2026-10-09 — kontynuacja B: integracja C/D/E i produktu
+
+Aktualny stan zastępuje historyczne wpisy B powyżej: [raport B](data-graph-engine-2026-10-09.md), [manifest źródło→przyjęcie→zależności](data-graph-engine-2026-10-09-integration.json). Opublikowane poprawki rejestru/importera/copy, rzeczywisty operator metod zasobów, D mapper, E w App przez R40, dokładny inventory domen fizycznych. Pełny dev9b3b2a6b156/156 guard PASS, App17/17; późniejsza naprawa retencji i pełne ASan/Clang wymagają świeżych bramek. Ordinary link/context/adoption nadal otwarte. Watchdog WD-003624/624 opublikowany; main niezmieniony.

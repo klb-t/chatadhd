@@ -24,7 +24,9 @@
 #include "loom/loom.h"
 #include "loom/net/http.h"
 #include "loom/runtime.h"
+#include "loom/tasks.h"
 #include "loom/util/fs.h"
+#include "loom/util/sha256.h"
 #include "test_helpers.h"
 #include "../third_party/miniz/miniz.h"
 
@@ -322,6 +324,280 @@ TEST_SUITE("catalog_resource_transient") {
       REQUIRE(unwrap(unindexed->db().get_node("resource:" + none.unit.id)).has_value());
       check_same_graph(transient.at("last_successful"), persisted.at("last_successful"));
     }
+    CHECK(transport->requests().empty());
+  }
+
+  TEST_CASE("index policy transitions preserve truthful metadata and reject removal of retained history") {
+    fsutil::TempDir workspace;
+    const auto source = workspace.path() / "safe.zip";
+    const auto data = workspace.path() / "data";
+    write_zip(source, conversations());
+    auto transport = std::make_shared<net::ScriptedTransport>();
+    auto reference = open_runtime(workspace.path() / "reference", transport);
+    Catalog reference_catalog(*reference, unwrap(reference->knowledge().pack()));
+    const auto expected = scan_units(reference_catalog, source);
+    set_policy(data, "transient", "none");
+    auto runtime = open_runtime(data, transport);
+    ScanConfig scan;
+    scan.sources = {source.string()};
+    scan.retain_raw = "none";
+    UnitQuery query;
+    query.sort = "id";
+    std::vector<std::string> retained_bodies, retained_sketches;
+    {
+      Catalog catalog(*runtime, unwrap(runtime->knowledge().pack()));
+      const auto original = scan_units(catalog, source);
+      REQUIRE(original.size() == expected.size());
+      check_no_payload(data);
+      set_policy(data, "transient", "sketch");
+      const auto refreshed = unwrap(catalog.scan(scan));
+      CHECK(refreshed.at("warnings").empty());
+      CHECK(refreshed.at("refreshed") == original.size());
+      const auto indexed = unwrap(catalog.query(query));
+      REQUIRE(indexed.size() == original.size());
+      for (std::size_t i = 0; i < indexed.size(); ++i) {
+        CHECK(indexed[i].unit.id == original[i].unit.id);
+        CHECK(indexed[i].unit.source == original[i].unit.source);
+        CHECK(indexed[i].unit.locator.to_json() == original[i].unit.locator.to_json());
+        CHECK(indexed[i].content_hash == original[i].content_hash);
+        CHECK(indexed[i].prev_version == original[i].prev_version);
+        CHECK(indexed[i].unit.attrs.value("content_index", "") == "sketch");
+        CHECK(indexed[i].unit.title == expected[i].unit.title);
+        CHECK(indexed[i].head == expected[i].head);
+        CHECK(indexed[i].attachments == expected[i].attachments);
+        CHECK(indexed[i].n_msgs == expected[i].n_msgs);
+        CHECK(indexed[i].n_chars == expected[i].n_chars);
+        CHECK(indexed[i].mentions == expected[i].mentions);
+        auto& db = runtime->db().conn();
+        CHECK(unwrap(db.query_text("SELECT title FROM loom_cat_units WHERE id = ?", indexed[i].unit.id)) ==
+              std::optional<std::string>(expected[i].unit.title));
+        retained_bodies.push_back(*unwrap(db.query_text("SELECT body FROM loom_cat_units WHERE id = ?", indexed[i].unit.id)));
+        retained_sketches.push_back(*unwrap(db.query_text("SELECT sketch FROM loom_cat_units WHERE id = ?", indexed[i].unit.id)));
+        CHECK(retained_sketches.back() == *unwrap(reference->db().conn().query_text(
+            "SELECT sketch FROM loom_cat_units WHERE id = ?", indexed[i].unit.id)));
+      }
+    }
+    // Turning indexing off cannot erase the previous DB/WAL snapshot. Reject
+    // this transition explicitly, including after a retry and store reopen.
+    set_policy(data, "transient", "none");
+    for (int attempt = 0; attempt < 3; ++attempt) {
+      if (attempt == 2) {
+        runtime.reset();
+        runtime = open_runtime(data, transport);
+      }
+      Catalog catalog(*runtime, unwrap(runtime->knowledge().pack()));
+      const auto rejected = unwrap(catalog.scan(scan));
+      INFO("transition attempt ", attempt);
+      CHECK_FALSE(rejected.at("warnings").empty());
+      CHECK(rejected.at("warnings").dump().find("transient policy does not purge history") != std::string::npos);
+      CHECK(rejected.at("refreshed") == 0);
+      const auto retained = unwrap(catalog.query(query));
+      REQUIRE(retained.size() == expected.size());
+      for (std::size_t i = 0; i < retained.size(); ++i) {
+        CHECK(retained[i].unit.attrs.value("content_index", "") == "sketch");
+        CHECK(unwrap(runtime->db().conn().query_text("SELECT body FROM loom_cat_units WHERE id = ?", retained[i].unit.id)) ==
+              std::optional<std::string>(retained_bodies[i]));
+        CHECK(unwrap(runtime->db().conn().query_text("SELECT sketch FROM loom_cat_units WHERE id = ?", retained[i].unit.id)) ==
+              std::optional<std::string>(retained_sketches[i]));
+      }
+    }
+    CHECK(transport->requests().empty());
+  }
+
+  TEST_CASE("unindexed malformed JSON diagnostics do not retain source payload in results or task storage") {
+    fsutil::TempDir workspace;
+    const auto source = workspace.path() / "malformed.json";
+    const auto data = workspace.path() / "data";
+    const std::string malformed = R"({"text":"qqtransientbody7391" : 0})";
+    const auto raw_error = json::parse(malformed);
+    REQUIRE_FALSE(raw_error);
+    // The shared parser already suppresses third-party source excerpts. Keep
+    // that contract through catalog warnings and durable task results.
+    CHECK(raw_error.error().code == Errc::Parse);
+    CHECK(raw_error.error().message == "invalid JSON");
+    CHECK(raw_error.error().message.find(payload_markers[1]) == std::string::npos);
+    LOOM_REQUIRE_OK(fsutil::write_file(source, "[" + malformed + "]"));
+    set_policy(data, "transient", "none");
+    auto transport = std::make_shared<net::ScriptedTransport>();
+    CapturedLogs logs;
+    auto runtime = open_runtime(data, transport);
+    ScanConfig scan;
+    scan.sources = {source.string()};
+    scan.retain_raw = "none";
+    scan.force = true;
+    {
+      Catalog catalog(*runtime, unwrap(runtime->knowledge().pack()));
+      const auto result = unwrap(catalog.scan(scan));
+      CHECK(result.at("units") == 0);
+      CHECK_FALSE(result.at("warnings").empty());
+      CHECK(result.at("warnings").dump().find("malformed JSON element skipped") != std::string::npos);
+      CHECK(result.at("warnings").dump().find("invalid JSON") != std::string::npos);
+      CHECK(result.dump().find(payload_markers[1]) == std::string::npos);
+      CHECK(unwrap(catalog.query(UnitQuery{})).empty());
+    }
+    // Exercise the real queue/result persistence boundary with the actual
+    // Catalog scanner as a test-owned handler, without a model transport.
+    runtime->tasks().register_handler("fixture.catalog.scan", [&](TaskContext& task) -> Status {
+      Catalog catalog(*runtime, unwrap(runtime->knowledge().pack()));
+      LOOM_TRY_ASSIGN(auto result, catalog.scan(scan));
+      task.set_result(result);
+      return {};
+    });
+    const auto task_id = unwrap(runtime->tasks().submit("fixture.catalog.scan", Json::object()));
+    const auto completed = unwrap(runtime->tasks().run_sync(task_id));
+    REQUIRE(completed.status == "done");
+    REQUIRE(completed.result.has_value());
+    CHECK_FALSE(completed.result->at("warnings").empty());
+    CHECK(completed.to_json().dump().find(payload_markers[1]) == std::string::npos);
+    runtime.reset();
+    check_no_payload(data);
+    runtime = open_runtime(data, transport);
+    const auto restored = unwrap(runtime->tasks().get(task_id));
+    REQUIRE(restored.has_value());
+    CHECK(restored->to_json() == completed.to_json());
+    CHECK(restored->to_json().dump().find(payload_markers[1]) == std::string::npos);
+    check_no_payload(data);
+    logs.check();
+    CHECK(transport->requests().empty());
+  }
+
+  TEST_CASE("legacy no-index labels cannot certify retention history or bypass checks on resume") {
+    fsutil::TempDir workspace;
+    const auto source = workspace.path() / "safe.zip";
+    const auto data = workspace.path() / "data";
+    write_zip(source, conversations());
+    set_policy(data, "transient", "none");
+    auto transport = std::make_shared<net::ScriptedTransport>();
+    auto runtime = open_runtime(data, transport);
+    const auto pack = unwrap(runtime->knowledge().pack());
+    ScanConfig scan;
+    scan.sources = {source.string()};
+    scan.retain_raw = "none";
+    std::vector<CatalogUnit> original;
+    {
+      Catalog catalog(*runtime, pack);
+      original = scan_units(catalog, source);
+    }
+    REQUIRE(original.size() == 2);
+    std::string fingerprint;
+    SUBCASE("legacy completed checkpoint is invalidated by the retention contract") {
+      const auto base = Sha256::hex(json::canonical(Json{{"scanner_version", std::string(kScannerVersion)},
+          {"pack_hash", pack->hash()}, {"sketch", scan.sketch.to_json()},
+          {"source_index_contract", "catalog.source_index/1"}}));
+      fingerprint = Sha256::hex(json::canonical(Json{{"base", base}, {"content_index", "none"}}));
+    }
+    SUBCASE("forced identical-input scan validates provenance before its unchanged shortcut") {
+      fingerprint = original[0].unit.attrs.at("catalog_scan_fingerprint").get<std::string>();
+      scan.force = true;
+    }
+    std::vector<std::string> legacy_bodies, legacy_sketches;
+    for (auto unit : original) {
+      CHECK(unit.unit.attrs.at("index_retention_contract") == "catalog.index_retention/1");
+      // A legacy 'none' label may follow a formerly indexed snapshot. Even
+      // empty current fields cannot prove what old WAL pages retained.
+      unit.unit.attrs.erase("index_retention_contract");
+      unit.unit.attrs["catalog_scan_fingerprint"] = fingerprint;
+      legacy_bodies.push_back(json::dump(unit.to_json()));
+      auto& db = runtime->db().conn();
+      legacy_sketches.push_back(*unwrap(db.query_text("SELECT sketch FROM loom_cat_units WHERE id = ?", unit.unit.id)));
+      LOOM_REQUIRE_OK(db.run("UPDATE loom_cat_units SET body = ? WHERE id = ?", legacy_bodies.back(), unit.unit.id));
+    }
+    LOOM_REQUIRE_OK(runtime->db().conn().run("UPDATE loom_cat_checkpoint SET input_hash = ?, done = 1", fingerprint));
+    for (int attempt = 0; attempt < 3; ++attempt) {
+      if (attempt == 2) {
+        runtime.reset();
+        runtime = open_runtime(data, transport);
+      }
+      Catalog catalog(*runtime, unwrap(runtime->knowledge().pack()));
+      const auto result = unwrap(catalog.scan(scan));
+      INFO("legacy retention attempt ", attempt);
+      CHECK(result.at("warnings").dump().find("retention history is unknown") != std::string::npos);
+      CHECK(result.at("warnings").dump().find("fresh catalog store") != std::string::npos);
+      CHECK(result.at("refreshed") == 0);
+      CHECK(result.at("unchanged") == 0);
+      CHECK(unwrap(runtime->db().conn().query_int("SELECT COUNT(*) FROM loom_cat_checkpoint WHERE done != 0")) ==
+            std::optional<std::int64_t>(0));
+      for (std::size_t i = 0; i < original.size(); ++i) {
+        CHECK(unwrap(runtime->db().conn().query_text("SELECT body FROM loom_cat_units WHERE id = ?", original[i].unit.id)) ==
+              std::optional<std::string>(legacy_bodies[i]));
+        CHECK(unwrap(runtime->db().conn().query_text("SELECT sketch FROM loom_cat_units WHERE id = ?", original[i].unit.id)) ==
+              std::optional<std::string>(legacy_sketches[i]));
+      }
+      scan.force = false;
+    }
+    // Explicitly enabling retained indexing is still available for legacy
+    // rows; the system does not silently adopt it on the owner's behalf.
+    set_policy(data, "transient", "sketch");
+    Catalog catalog(*runtime, unwrap(runtime->knowledge().pack()));
+    const auto enabled = unwrap(catalog.scan(scan));
+    CHECK(enabled.at("warnings").empty());
+    CHECK(enabled.at("refreshed") == original.size());
+    const auto indexed = unwrap(catalog.query(UnitQuery{}));
+    REQUIRE(indexed.size() == original.size());
+    for (const auto& unit : indexed) {
+      CHECK(unit.unit.attrs.at("content_index") == "sketch");
+      CHECK(unit.unit.attrs.at("index_retention_contract") == "catalog.index_retention/1");
+      CHECK_FALSE(unit.unit.title.empty());
+    }
+    CHECK(transport->requests().empty());
+  }
+
+  TEST_CASE("whole-source retention refusal invalidates completed checkpoints for plain and ZIP sources") {
+    bool archived = false;
+    SUBCASE("plain text source") {}
+    SUBCASE("text member in ZIP source") { archived = true; }
+    fsutil::TempDir workspace;
+    const auto source = workspace.path() / (archived ? "safe.zip" : "notes.txt");
+    const auto data = workspace.path() / "data";
+    const std::string contents = "Safe synthetic text qqtransientbody7391";
+    if (archived) {
+      mz_zip_archive zip{};
+      REQUIRE(mz_zip_writer_init_file(&zip, source.string().c_str(), 0));
+      REQUIRE(mz_zip_writer_add_mem(&zip, "notes.txt", contents.data(), contents.size(), 0));
+      REQUIRE(mz_zip_writer_finalize_archive(&zip));
+      REQUIRE(mz_zip_writer_end(&zip));
+    } else {
+      LOOM_REQUIRE_OK(fsutil::write_file(source, contents));
+    }
+    set_policy(data, "transient", "none");
+    auto transport = std::make_shared<net::ScriptedTransport>();
+    auto runtime = open_runtime(data, transport);
+    CatalogUnit legacy;
+    {
+      Catalog catalog(*runtime, unwrap(runtime->knowledge().pack()));
+      const auto units = scan_units(catalog, source);
+      REQUIRE(units.size() == 1);
+      legacy = units[0];
+    }
+    // Same current input fingerprint and completed checkpoint, but absent
+    // provenance: a forced scan must invalidate the old completion on refusal.
+    legacy.unit.attrs.erase("index_retention_contract");
+    const auto retained_body = json::dump(legacy.to_json());
+    const auto retained_sketch = unwrap(runtime->db().conn().query_text(
+        "SELECT sketch FROM loom_cat_units WHERE id = ?", legacy.unit.id));
+    LOOM_REQUIRE_OK(runtime->db().conn().run("UPDATE loom_cat_units SET body = ? WHERE id = ?", retained_body, legacy.unit.id));
+    CHECK(unwrap(runtime->db().conn().query_int("SELECT done FROM loom_cat_checkpoint")) == std::optional<std::int64_t>(1));
+    ScanConfig scan;
+    scan.sources = {source.string()};
+    scan.retain_raw = "none";
+    scan.force = true;
+    for (int attempt = 0; attempt < 3; ++attempt) {
+      if (attempt == 2) {
+        runtime.reset();
+        runtime = open_runtime(data, transport);
+      }
+      Catalog catalog(*runtime, unwrap(runtime->knowledge().pack()));
+      const auto result = unwrap(catalog.scan(scan));
+      INFO("whole-source retention attempt ", attempt);
+      CHECK(result.at("warnings").dump().find("retention history is unknown") != std::string::npos);
+      CHECK(result.at("refreshed") == 0);
+      CHECK(unwrap(runtime->db().conn().query_int("SELECT done FROM loom_cat_checkpoint")) == std::optional<std::int64_t>(0));
+      CHECK(unwrap(runtime->db().conn().query_text("SELECT body FROM loom_cat_units WHERE id = ?", legacy.unit.id)) ==
+            std::optional<std::string>(retained_body));
+      CHECK(unwrap(runtime->db().conn().query_text("SELECT sketch FROM loom_cat_units WHERE id = ?", legacy.unit.id)) == retained_sketch);
+      scan.force = false;
+    }
+    check_no_payload(data);
     CHECK(transport->requests().empty());
   }
 }

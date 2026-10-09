@@ -1,10 +1,10 @@
 # STATE — ChatADHD / Loom
 ## 2026-10-09 — zadanie B na gałęzi produktu
 
-Gałąź `gpt/data-graph-engine-2026-10-09`, bez integracji main: privacy caps (d92d7cc), wspólny snapshot analizatora (ddcaeaf), etykiety z packa (24c9fc3), naprawa historycznego UAF testu (600cef90), współdzielony odczyt grafu ZIP (ad6269a5) i zewnętrzny RuntimeProfile + unknown syntax/value_ref + vocabulary z danych (b20c0d8a). Aktualny full dev produktu 145/146: 8 środowiskowych błędów fixture C w research.structure; guard REJECT, 928 native / 32953 asercje, 605 Python / 0 skips. Resource/profile scoped ASan7/7 i E2E16/16 PASS. Rzeczywisty inventory R42 nadal REJECT (nierozliczone literały/lexer); dokładny generator proof odświeżony bez zmian allowlisty. Discovery/method provenance, permission-aware context i pozostała macierz są otwarte. Szczegóły oraz następny krok: [raport B](reports/data-graph-engine-2026-10-09.md). Integracja main pozostaje u Claude’a.
+Gałąź `gpt/data-graph-engine-2026-10-09`, bez integracji main. C TMPDIR przyjęty jako `82800d56`; D/E jako ograniczone stosy z pochodzeniem. Produkt: A3-DISC-001 (`d5b4236a`), importer (`a4b26a55`), wspólny mapper D (`4b8c0e2b`), traced resource operator / independent retention / faithful copy (`3dc0ebf2`), perspektywy E w App przez native R40 (`4eda95e3`), dokładna granica danych KB/D/E (`9b3b2a6b`). Pełny dev na czystym 9b3b2a6b:156/156, guard PASS; 155 wykonanych wpisów + catalog_scale jawnie niewykonany; 964 native/35348 asercji, 2022 Python/0 skips. App17/17 i host21/21 PASS po integracji E. Nowa naprawa retencji/checkpointu wymaga kolejnej pełnej bramki; pełne aktualne ASan/Clang jeszcze niewykonane. R42 inventory nadal otwarte. CH-RES-N001 ordinary chat, egress-aware source context/trace, generic discovery i pełny workflow/ExperimentSpec są otwarte. Watchdog WD-003 opublikowany,624/624 PASS. Szczegóły i aktualny punkt wznowienia: [raport B](reports/data-graph-engine-2026-10-09.md), [manifest](reports/data-graph-engine-2026-10-09-integration.json). Integracja main pozostaje u Claude’a.
 
 
-## 2026-10-05 wieczór — Claude przejmuje integrację (najnowsze; czytaj najpierw)
+## 2026-10-05 wieczór — historyczna integracja Claude’a na main
 
 Wątki GPT skończyły tokeny; właściciel: „przyjmij jego wyniki”. Na `main`
 weszła cała gotowa i wstrzymana kolejka po rebase oraz trzy poprawki
