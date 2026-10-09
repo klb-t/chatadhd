@@ -17,6 +17,7 @@
 #include "catalog_internal.h"
 #include "loom/db.h"
 #include "loom/runtime.h"
+#include "loom/runtime_profile.h"
 #include "loom/sqlite.h"
 #include "loom/util/fs.h"
 #include "loom/util/sha256.h"
@@ -38,6 +39,7 @@ bool internal::skip_source_directory(const fs::path& path, const fs::path& activ
 namespace {
 
 struct Stats {
+  bool index_content = false; // assigned from the validated profile before scanning
   std::int64_t units = 0;
   std::int64_t units_new = 0;
   std::int64_t unchanged = 0;
@@ -125,6 +127,7 @@ struct PendingUnit {
   ExtractedText text;   // prose/code/n_msgs/... already extracted
   std::string title_hint;
   std::string date_hint;
+  std::optional<std::int64_t> source_index;
 };
 
 Status ingest_unit(Database& db, const AliasIndex& alias_idx, const kb::Normalizer& norm, const SketchParams& params,
@@ -144,7 +147,19 @@ Status ingest_unit(Database& db, const AliasIndex& alias_idx, const kb::Normaliz
     existing_unit = std::move(cu);
   }
 
+  const auto prose_size = static_cast<std::int64_t>(pu.text.prose.size());
+  const auto code_size = static_cast<std::int64_t>(pu.text.code.size());
+  if (!stats.index_content) {
+    // Retention is independent from recognition. Preserve identity/counts while
+    // keeping conversation content out of the index and its SQLite journal.
+    if (existing_unit && json::get_string(existing_unit->unit.attrs, "content_index") != "none")
+      return Error(Errc::Conflict, "catalog index already contains a snapshot; transient policy does not purge history");
+    pu.text.prose.clear(); pu.text.code.clear(); pu.text.head.clear(); pu.text.title.clear();
+    pu.text.attachments.clear(); pu.title_hint.clear();
+  }
   Sketch sketch = Sketch::build(pu.text.prose, pu.text.code, params, norm);
+  sketch.n_chars = prose_size;
+  sketch.n_code_chars = code_size;
   std::string folded = norm.fold(pu.text.prose.substr(0, static_cast<std::size_t>(std::min<std::int64_t>(
                                     kSketchByteCap, static_cast<std::int64_t>(pu.text.prose.size())))));
   auto mentions = alias_idx.find(folded, params.max_mentions);
@@ -168,6 +183,7 @@ Status ingest_unit(Database& db, const AliasIndex& alias_idx, const kb::Normaliz
     cu.n_code_chars = sketch.n_code_chars;
     cu.unit.lang = sketch.lang;
     cu.unit.attrs["catalog_scan_fingerprint"] = stats.input_hash;
+    if (pu.source_index) cu.unit.attrs["source_index"] = *pu.source_index;
     LOOM_TRY(c.run("UPDATE loom_cat_units SET sketch = ?, body = ?, lang = ? WHERE id = ?",
                     json::dump(sketch.to_json()), json::dump(cu.to_json()), cu.unit.lang, cu.unit.id));
     ++stats.units;
@@ -186,6 +202,8 @@ Status ingest_unit(Database& db, const AliasIndex& alias_idx, const kb::Normaliz
   unit.bytes = pu.bytes;
   unit.id = model::Unit::make_id(source_id, pu.locator);
   unit.attrs["catalog_scan_fingerprint"] = stats.input_hash;
+  if (pu.source_index) unit.attrs["source_index"] = *pu.source_index;
+  if (!stats.index_content) unit.attrs["content_index"] = "none";
 
   std::string prev_version;
   if (!pu.ext_id.empty()) {
@@ -249,9 +267,11 @@ Status scan_json_stream(Database& db, const AliasIndex& idx, const kb::Normalize
   std::int64_t stream_offset = 0;
   std::int64_t tail_start = 0;
   bool capturing_tail = true;
+  std::int64_t ordinal = 0;
   auto on_chunk = [&](std::string_view chunk) {
     if (!scanner.finished()) {
       scanner.feed(chunk, [&](std::string_view elem, std::int64_t begin, std::int64_t end) {
+        const auto source_ordinal = ordinal++;
         if (static_cast<std::int64_t>(elem.size()) > kElementByteCap) {
           stats.warnings.push_back(member + ": element too large (" + std::to_string(elem.size()) + " bytes), skipped");
           return true;
@@ -263,6 +283,7 @@ Status scan_json_stream(Database& db, const AliasIndex& idx, const kb::Normalize
         }
         std::string kind = archive::sniff_export_element(*parsed);
         PendingUnit pu;
+        pu.source_index = source_ordinal;
         pu.platform = platform_of(kind);
         pu.kind = kind.empty() ? "record" : kind;
         pu.locator.source = source_id;
@@ -317,6 +338,7 @@ Status scan_json_stream(Database& db, const AliasIndex& idx, const kb::Normalize
     for (const auto* ep : elements) {
       std::string kind = archive::sniff_export_element(*ep);
       PendingUnit pu;
+      pu.source_index = ord;
       pu.platform = platform_of(kind);
       pu.kind = kind.empty() ? "record" : kind;
       pu.locator.source = source_id;
@@ -428,9 +450,13 @@ Result<Json> Catalog::scan(const ScanConfig& cfg, const ProgressFn& progress, co
   kb::Normalizer norm(*pack_);
   LOOM_TRY_ASSIGN(auto idx, AliasIndex::from_pack_checked(*pack_));
   LOOM_TRY(ensure_schema(rt_.db()));
+  LOOM_TRY_ASSIGN(auto read_profile, RuntimeProfile::load("resource_read", rt_.paths().root));
   Stats stats;
+  stats.index_content = read_profile.values().at("content_index") == "sketch";
   stats.input_hash = Sha256::hex(json::canonical(Json{{"scanner_version", std::string(kScannerVersion)},
-      {"pack_hash", pack_->hash()}, {"sketch", cfg.sketch.to_json()}}));
+      {"pack_hash", pack_->hash()}, {"sketch", cfg.sketch.to_json()}, {"source_index_contract", "catalog.source_index/1"}}));
+  if (!stats.index_content) stats.input_hash = Sha256::hex(json::canonical(
+      Json{{"base", stats.input_hash}, {"content_index", "none"}}));
 
   std::int64_t src_i = 0;
   std::int64_t total_src = static_cast<std::int64_t>(cfg.sources.size());

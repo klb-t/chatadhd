@@ -6,7 +6,9 @@
 
 #include "catalog_internal.h"
 #include "relevance_recipe.h"
-#include "import/export_internal.h"
+#include "source_index.h"
+#include "loom/export_mapping.h"
+#include "loom/importer.h"
 #include "loom/db.h"
 #include "loom/provenance.h"
 #include "loom/runtime.h"
@@ -180,7 +182,9 @@ Result<Json> Catalog::preview(std::string_view unit_id) {
               {"cost_estimate", Json{{"bytes", cu.unit.bytes}, {"messages", cu.n_msgs}}}};
 }
 
-Result<Json> Catalog::read_resource(std::string_view unit_id) {
+Result<Json> Catalog::read_resource(std::string_view unit_id, const Json& read_options) {
+  LOOM_TRY_ASSIGN(auto read_profile, RuntimeProfile::load("resource_read", rt_.paths().root, read_options));
+  const bool persist = read_profile.values().at("projection_storage") == "snapshot";
   LOOM_TRY(ensure_schema(rt_.db()));
   Json unit;
   {
@@ -204,7 +208,7 @@ Result<Json> Catalog::read_resource(std::string_view unit_id) {
       NodePatch patch;
       retained["availability"] = Json{{"status", result["status"]}, {"current", false}, {"error", result["error"]}};
       patch.metadata = std::move(retained);
-      LOOM_TRY(rt_.db().update_node(root_id, patch));
+      if (persist) LOOM_TRY(rt_.db().update_node(root_id, patch));
     }
     return result;
   };
@@ -215,22 +219,19 @@ Result<Json> Catalog::read_resource(std::string_view unit_id) {
 
   // Domain interpretation is shared with lossless export import. No writes,
   // attachment fetches, HTTP requests or inferred adapter activation here.
-  xport::ConvModel model;
-  xport::Counts counts;
-  loom::ImportOptions options;
-  xport::Env env{rt_.db(), nullptr, options, {}, ""};
+  LOOM_TRY_ASSIGN(auto index, source_index(cu));
+  Json model;
   bool recognized = false;
   std::optional<RuntimeProfile> profile;
   std::optional<Error> mapping_error;
   if (parsed->is_object() && parsed->contains("mapping") && (*parsed)["mapping"].is_object()) {
-    xport::OpenAiCtx context;
-    context.env = &env;
-    xport::parse_openai_conversation(*parsed, 0, cu.unit.locator.member, context, model, counts);
+    LOOM_TRY_ASSIGN(model, map_openai_export_conversation(*parsed, cu.unit.locator.member, index.value_or(0)));
     recognized = true;
   } else if (parsed->is_object() && parsed->contains("chat_messages") && (*parsed)["chat_messages"].is_array()) {
-    xport::parse_anthropic_conversation(*parsed, 0, cu.unit.locator.member, env, model, counts);
+    LOOM_TRY_ASSIGN(model, map_anthropic_export_conversation(*parsed, cu.unit.locator.member, index.value_or(0)));
     recognized = true;
   }
+  if (recognized) model["export"]["mapping_index_scope"] = index ? "source_array" : "unit_relative";
   const bool profile_declared = json::get_string(*parsed, "schema") == "loom.runtime_profile_overlay/1";
   if (profile_declared) {
     auto base = RuntimeProfile::builtin(json::get_string(*parsed, "domain"));
@@ -245,8 +246,11 @@ Result<Json> Catalog::read_resource(std::string_view unit_id) {
   const auto& kinds = projection.values().at("kinds");
   const auto& predicates = projection.values().at("predicates");
   auto graph_lock = rt_.db().lock();
-  sql::Txn transaction(rt_.db().conn());
-  LOOM_TRY(transaction.begin_status());
+  std::unique_ptr<sql::Txn> transaction;
+  if (persist) {
+    transaction = std::make_unique<sql::Txn>(rt_.db().conn());
+    LOOM_TRY(transaction->begin_status());
+  }
   Json nodes = Json::array(), edges = Json::array();
   auto add_node = [&](const std::string& id, std::string_view kind, const std::string& label,
                       const std::string& content, Json metadata) -> Status {
@@ -254,13 +258,13 @@ Result<Json> Catalog::read_resource(std::string_view unit_id) {
     node.node_id = id;
     node.content = content;
     node.metadata = metadata;
-    LOOM_TRY(rt_.db().create_node(label, kind, node));
+    if (persist) LOOM_TRY(rt_.db().create_node(label, kind, node));
     nodes.push_back(Json{{"id", id}, {"kind", kind}, {"label", label},
                          {"content", content}, {"metadata", std::move(metadata)}});
     return {};
   };
   auto add_edge = [&](const std::string& src, const std::string& dst, std::string_view kind) -> Status {
-    LOOM_TRY(rt_.db().create_link(src, dst, kind));
+    if (persist) LOOM_TRY(rt_.db().create_link(src, dst, kind));
     edges.push_back(Json{{"src", src}, {"dst", dst}, {"link_type", kind}});
     return {};
   };
@@ -268,16 +272,16 @@ Result<Json> Catalog::read_resource(std::string_view unit_id) {
   // reference. Provider parent/status/raw fields retain alternative branches.
   const std::string conversation_id = "resource-conversation:" + std::string(kExportParserVersion) + ":" + projection.hash() + ":" + cu.content_hash;
   if (recognized) {
-    LOOM_TRY(add_node(conversation_id, kinds.at("conversation").get<std::string>(), model.title, "", model.export_meta));
-    for (std::size_t i = 0; i < model.msgs.size(); ++i) {
-      const auto& message = model.msgs[i];
+    LOOM_TRY(add_node(conversation_id, kinds.at("conversation").get<std::string>(), model.at("title").get<std::string>(), "", model.at("export")));
+    for (std::size_t i = 0; i < model.at("messages").size(); ++i) {
+      const auto& message = model.at("messages")[i];
       const std::string id = conversation_id + ":" + std::to_string(i);
-      Json metadata{{"export", message.export_meta}, {"role", message.role}, {"status", message.status},
-                    {"source_key", message.key}, {"version_group", message.group}, {"version_num", message.version_num}};
-      LOOM_TRY(add_node(id, kinds.at("message").get<std::string>(), message.role, message.text, std::move(metadata)));
+      Json metadata{{"export", message.at("export")}, {"role", message.at("role")}, {"status", message.at("status")},
+                    {"source_key", message.at("key")}, {"version_group", message.at("group")}, {"version_num", message.at("version_num")}};
+      LOOM_TRY(add_node(id, kinds.at("message").get<std::string>(), message.at("role").get<std::string>(), message.at("text").get<std::string>(), std::move(metadata)));
       LOOM_TRY(add_edge(conversation_id, id, predicates.at("contains").get<std::string>()));
-      if (message.parent >= 0)
-        LOOM_TRY(add_edge(conversation_id + ":" + std::to_string(message.parent), id, predicates.at("parent").get<std::string>()));
+      if (message.at("parent_index").get<int>() >= 0)
+        LOOM_TRY(add_edge(conversation_id + ":" + std::to_string(message.at("parent_index").get<int>()), id, predicates.at("parent").get<std::string>()));
     }
   }
   std::string profile_id;
@@ -315,6 +319,11 @@ Result<Json> Catalog::read_resource(std::string_view unit_id) {
   }
   Json snapshot{{"source", cu.unit.source}, {"selector", cu.unit.locator.to_json()},
                 {"content_hash", cu.content_hash}, {"projection_profile", projection.inspection()},
+                {"read_configuration", read_profile.inspection()},
+                {"read_scope", {{"unit_bytes", raw->size()}, {"projection", "complete_unit"},
+                                {"container_io", "not_instrumented"}}},
+                {"source_index", index ? Json(*index) : Json(nullptr)},
+                {"mapping_index_scope", index ? "source_array" : "unit_relative"},
                 {"mapping_version", profile_declared ? "loom.runtime_profile_overlay/1" : std::string(kExportParserVersion)},
                 {"mapping_status", recognized || profile ? "recognized" : "uncertain"},
                 {"coverage", recognized ? "provider_conversation" : profile ? "runtime_profile" : profile_declared ? "syntax_only" : "not_implemented"},
@@ -328,13 +337,13 @@ Result<Json> Catalog::read_resource(std::string_view unit_id) {
   root.node_id = root_id;
   root.metadata = snapshot;
   root.metadata["availability"] = Json{{"status", "available"}, {"current", true}};
-  LOOM_TRY(rt_.db().create_node(std::string(unit_id), kinds.at("resource").get<std::string>(), root));
+  if (persist) LOOM_TRY(rt_.db().create_node(std::string(unit_id), kinds.at("resource").get<std::string>(), root));
   NodePatch patch;
   patch.metadata = root.metadata;
-  LOOM_TRY(rt_.db().update_node(root_id, patch));
+  if (persist) LOOM_TRY(rt_.db().update_node(root_id, patch));
   if (recognized) LOOM_TRY(add_edge(root_id, conversation_id, predicates.at("projects").get<std::string>()));
   if (profile_declared) LOOM_TRY(add_edge(root_id, profile_id, predicates.at("projects").get<std::string>()));
-  LOOM_TRY(transaction.commit());
+  if (transaction) LOOM_TRY(transaction->commit());
   return Json{{"status", "available"}, {"current", true}, {"last_successful", snapshot}};
 }
 

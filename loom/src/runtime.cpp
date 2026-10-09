@@ -231,13 +231,32 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
   rt->impl_->knowledge = std::make_unique<knowledge::KnowledgeEngine>(*rt);
   rt->tasks().register_handler("catalog.read_resource", [runtime = rt.get()](TaskContext& task) -> Status {
     const auto& params = task.params();
-    if (!params.is_object() || params.size() != 1 || !params.contains("unit_id") ||
+    if (!params.is_object() || !params.contains("unit_id") ||
         !params["unit_id"].is_string() || params["unit_id"].get<std::string>().empty())
-      return Error(Errc::InvalidArgument, "catalog.read_resource requires only a nonempty unit_id");
+      return Error(Errc::InvalidArgument, "catalog.read_resource requires a nonempty unit_id");
+    for (const auto& [key, value] : params.items()) {
+      (void)value;
+      if (key != "unit_id" && key != "read_options" && key != "read_authorized")
+        return Error(Errc::InvalidArgument, "catalog.read_resource has an unknown argument");
+    }
+    if (params.contains("read_authorized") && !params["read_authorized"].is_boolean())
+      return Error(Errc::InvalidArgument, "catalog.read_resource authorization must be boolean");
     if (task.cancelled()) return Error(Errc::Cancelled, "resource read cancelled");
     LOOM_TRY_ASSIGN(auto pack, runtime->knowledge().pack());
     catalog::Catalog catalog(*runtime, pack);
-    LOOM_TRY_ASSIGN(auto result, catalog.read_resource(params["unit_id"].get<std::string>()));
+    // Task submission is the existing authenticated host read request. Source
+    // bytes and discovered descriptions are never interpreted as task grants.
+    LOOM_TRY_ASSIGN(auto result, catalog.execute_resource(params["unit_id"].get<std::string>(),
+        params.value("read_options", Json::object()), params.value("read_authorized", true)));
+    const auto& effective = result.at("method_manifest").at("trace").at("effective_parameters");
+    if (effective.at("read_options").at("projection_storage") == "transient") {
+      // The durable queue stores a reference/receipt. Persisting set_result's
+      // in-memory graph here would defeat the selected retention policy.
+      result.erase("last_successful");
+      result["resource_ref"] = effective.at("resource");
+      result["payload_status"] = "reference_only";
+      if (result.contains("error") && result["error"].is_object()) result["error"].erase("message");
+    }
     task.set_result(std::move(result));
     return {};
   });
@@ -247,7 +266,7 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
     auto& store = runtime->knowledge().store();
     auto resolved = request;
     if (resolved.run.empty()) {
-      auto runs = store.list_runs(1, "done");
+      auto runs = store.list_context_runs(1, "done");
       if (!runs) return runs.error();
       for (const auto& run : *runs) {
         if (run.status == "done") { resolved.run = run.id; break; }

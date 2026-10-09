@@ -168,6 +168,12 @@ class KnowledgeStore {
   Result<std::optional<KnowledgeRun>> get_run(std::string_view run_id);
   // Newest first (created, then id); a nonempty status filters before LIMIT.
   Result<std::vector<KnowledgeRun>> list_runs(int limit = 50, std::string_view status = "");
+  // Implicit context selection only. summary.implicit_context_eligible is a
+  // strict boolean when present: true opts in, false excludes. Unmarked legacy
+  // runs retain their previous eligibility without rewriting historical rows.
+  // Invalid stored flags/JSON are excluded, not treated as a missing preference.
+  // Eligibility and status filter before LIMIT; explicit list/get remain intact.
+  Result<std::vector<KnowledgeRun>> list_context_runs(int limit = 50, std::string_view status = "");
   // Deletes every derived row of the run (not the run row, not judgements).
   Status clear_run(std::string_view run_id);
 
@@ -240,6 +246,7 @@ class KnowledgeStore {
   Result<ReplayReport> replay_judgements(std::string_view run);
 
  private:
+  Result<std::vector<KnowledgeRun>> list_runs_impl(int limit, std::string_view status, bool context_only);
   Database& db_;
 };
 

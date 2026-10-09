@@ -149,6 +149,9 @@ Result<KnowledgeRun> KnowledgeStore::begin_run(std::string_view pack_hash, const
 }
 
 Status KnowledgeStore::finish_run(std::string_view run_id, std::string_view status, const Json& summary) {
+  if (summary.is_object() && summary.contains("implicit_context_eligible") &&
+      !summary["implicit_context_eligible"].is_boolean())
+    return Error(Errc::InvalidArgument, "knowledge run implicit_context_eligible must be a boolean");
   LOOM_TRY(ensure_schema());
   auto lk = db_.lock();
   LOOM_TRY(db_.conn().run("UPDATE loom_kb_runs SET status = ?, summary = ? WHERE run_id = ?", status,
@@ -177,6 +180,14 @@ Result<std::optional<KnowledgeRun>> KnowledgeStore::get_run(std::string_view run
 }
 
 Result<std::vector<KnowledgeRun>> KnowledgeStore::list_runs(int limit, std::string_view status) {
+  return list_runs_impl(limit, status, false);
+}
+
+Result<std::vector<KnowledgeRun>> KnowledgeStore::list_context_runs(int limit, std::string_view status) {
+  return list_runs_impl(limit, status, true);
+}
+
+Result<std::vector<KnowledgeRun>> KnowledgeStore::list_runs_impl(int limit, std::string_view status, bool context_only) {
   std::vector<KnowledgeRun> out;
   if (!has_schema()) return out;
   std::vector<std::string> ids;
@@ -184,6 +195,15 @@ Result<std::vector<KnowledgeRun>> KnowledgeStore::list_runs(int limit, std::stri
     auto lk = db_.lock();
     std::string query = "SELECT run_id FROM loom_kb_runs";
     if (!status.empty()) query += " WHERE status = ?";
+    if (context_only) {
+      query += status.empty() ? " WHERE " : " AND ";
+      // The missing-field branch is the explicit compatibility contract for
+      // pre-eligibility runs. JSON booleans are not interchangeable with 0/1 or
+      // strings; malformed persisted data never silently becomes eligible.
+      query += "CASE WHEN json_valid(summary) THEN "
+               "(json_type(summary, '$.implicit_context_eligible') IS NULL OR "
+               "json_type(summary, '$.implicit_context_eligible') = 'true') ELSE 0 END";
+    }
     query += " ORDER BY created DESC, run_id LIMIT ?";
     LOOM_TRY_ASSIGN(sql::Stmt st, db_.conn().prepare(query));
     int index = 1;

@@ -263,7 +263,10 @@ class Catalog {
   // Read-only graph projection through the same verified locator and provider
   // parsers as import. A failed refresh reports its error and retains the last
   // successful projection; retained data is never presented as current.
-  Result<Json> read_resource(std::string_view unit_id);
+  Result<Json> read_resource(std::string_view unit_id, const Json& read_options = Json::object());
+  // Trusted caller grant is separate from source/adapter metadata. The trace
+  // uses the existing method registry and GraphPacket store, never a second engine.
+  Result<Json> execute_resource(std::string_view unit_id, const Json& read_options, bool read_authorized);
   // Imports the selected units by locator. -> {"imported","skipped","bytes","conversations":[...]}
   Result<Json> import_selected(const ImportOptions& opts, const ProgressFn& progress = {},
                                const CancelToken* cancel = nullptr);

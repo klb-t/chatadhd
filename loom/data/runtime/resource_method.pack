@@ -1,0 +1,215 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "resource_method",
+  "revision": 1,
+  "description": "Native catalog.read_resource method declaration and result vocabulary. Registration is not an executor installation, proof of domain correctness, source-read permission or consent to model egress. The native host supplies permission separately. Read policy resolves through the existing resource_read runtime profile. Implicit context selection of resulting receipt runs is a separate explicit setting and defaults to false; explicit inspection remains available.",
+  "defaults": {
+    "profile": {
+      "vocabulary": {
+        "kinds": {
+          "method": "method:method",
+          "method_version": "method:method_version",
+          "parameter_set_version": "method:parameter_set_version",
+          "run": "method:run"
+        },
+        "predicates": {
+          "version_of": "method:version_of",
+          "uses_parameter_set": "method:uses_parameter_set",
+          "requests_method_version": "method:requests_method_version",
+          "produced_in_run": "method:produced_in_run",
+          "produced_by_method_version": "method:produced_by_method_version"
+        }
+      },
+      "entities": [
+        {
+          "id": "method:catalog.read_resource",
+          "kind": "method:method",
+          "canonical_key": "method:catalog.read_resource",
+          "label": "method:catalog.read_resource",
+          "labels": {},
+          "aliases": [],
+          "parent": "",
+          "first_seen": "",
+          "last_seen": "",
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "status": "active",
+          "attrs": {}
+        },
+        {
+          "id": "method:catalog.read_resource:e3d94fed66c86f0ace46adbdcf726a9c8c22c672c03c83a7bd00208f8c5c9819",
+          "kind": "method:method_version",
+          "canonical_key": "method:catalog.read_resource:e3d94fed66c86f0ace46adbdcf726a9c8c22c672c03c83a7bd00208f8c5c9819",
+          "label": "method:catalog.read_resource:e3d94fed66c86f0ace46adbdcf726a9c8c22c672c03c83a7bd00208f8c5c9819",
+          "labels": {},
+          "aliases": [],
+          "parent": "",
+          "first_seen": "",
+          "last_seen": "",
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "status": "active",
+          "attrs": {
+            "definition": {
+              "execution_capability": "catalog.read_resource",
+              "implementation_contract": "loom.method_graph/1",
+              "parameters": {
+                "read_options": {}
+              },
+              "declaration": {
+                "operation": "catalog.read_resource",
+                "source_access": "verified_catalog_locator",
+                "domain_mapping": "existing_resource_projection"
+              },
+              "validation_evidence": [],
+              "permission_required": "host_source_read"
+            },
+            "definition_sha256": "e3d94fed66c86f0ace46adbdcf726a9c8c22c672c03c83a7bd00208f8c5c9819"
+          }
+        }
+      ],
+      "claims": [
+        {
+          "id": "resource-method-version-of:e3d94fed66c86f0ace46adbdcf726a9c8c22c672c03c83a7bd00208f8c5c9819",
+          "subject": "method:catalog.read_resource:e3d94fed66c86f0ace46adbdcf726a9c8c22c672c03c83a7bd00208f8c5c9819",
+          "predicate": "method:version_of",
+          "object": "method:catalog.read_resource",
+          "value": null,
+          "qualifiers": {
+            "valid_from": "",
+            "valid_to": "",
+            "version": "",
+            "branch": "",
+            "scope": "loom.method_graph/1",
+            "lang": "",
+            "extra": {
+              "confidence_scope": "structure_only"
+            }
+          },
+          "assessment": {
+            "basis": {
+              "support": [
+                {
+                  "observation": "resource-method-definition:e3d94fed66c86f0ace46adbdcf726a9c8c22c672c03c83a7bd00208f8c5c9819",
+                  "locator": {
+                    "source": "sha256:e3d94fed66c86f0ace46adbdcf726a9c8c22c672c03c83a7bd00208f8c5c9819",
+                    "member": "runtime/resource_method.pack",
+                    "json_pointer": "",
+                    "byte_start": 0,
+                    "byte_len": 338,
+                    "time_start": null,
+                    "time_end": null,
+                    "line": null
+                  },
+                  "quote": "{\"declaration\":{\"domain_mapping\":\"existing_resource_projection\",\"operation\":\"catalog.read_resource\",\"source_access\":\"verified_catalog_locator\"},\"execution_capability\":\"catalog.read_resource\",\"implementation_contract\":\"loom.method_graph/1\",\"parameters\":{\"read_options\":{}},\"permission_required\":\"host_source_read\",\"validation_evidence\":[]}",
+                  "extractor": "runtime.profile",
+                  "quality": 1.0
+                }
+              ],
+              "derivation": {
+                "operator": "runtime.profile",
+                "operator_version": 1,
+                "morphism": "",
+                "depth": 0
+              }
+            },
+            "evidence_class": "derived",
+            "origin": "system",
+            "confidence": 1.0,
+            "premises": {
+              "claims": [],
+              "principles": [],
+              "assumptions": []
+            },
+            "counter": {
+              "observations": [],
+              "claims": []
+            },
+            "status": "active",
+            "consequences": {
+              "claims": [],
+              "predictions": [],
+              "checks": []
+            },
+            "open": {
+              "slots": [],
+              "questions": [],
+              "fill_query": null
+            },
+            "expected_property": null,
+            "check_state": "n/a",
+            "alternatives": []
+          }
+        }
+      ],
+      "sources": [
+        {
+          "observation": {
+            "id": "resource-method-definition:e3d94fed66c86f0ace46adbdcf726a9c8c22c672c03c83a7bd00208f8c5c9819",
+            "unit": "runtime:resource_method",
+            "kind": "field",
+            "text": "{\"declaration\":{\"domain_mapping\":\"existing_resource_projection\",\"operation\":\"catalog.read_resource\",\"source_access\":\"verified_catalog_locator\"},\"execution_capability\":\"catalog.read_resource\",\"implementation_contract\":\"loom.method_graph/1\",\"parameters\":{\"read_options\":{}},\"permission_required\":\"host_source_read\",\"validation_evidence\":[]}",
+            "locator": {
+              "source": "sha256:e3d94fed66c86f0ace46adbdcf726a9c8c22c672c03c83a7bd00208f8c5c9819",
+              "member": "runtime/resource_method.pack",
+              "json_pointer": "",
+              "byte_start": 0,
+              "byte_len": 338,
+              "time_start": null,
+              "time_end": null,
+              "line": null
+            },
+            "lang": "",
+            "date": "",
+            "ordinal": 0,
+            "artifact_type": "loom.method_graph/1",
+            "speaker": "",
+            "attrs": {
+              "content_truth": "not_established"
+            }
+          },
+          "known_at": null,
+          "text_sha256": "e3d94fed66c86f0ace46adbdcf726a9c8c22c672c03c83a7bd00208f8c5c9819"
+        }
+      ],
+      "selection": {
+        "members": [
+          {
+            "method_version_id": "method:catalog.read_resource:e3d94fed66c86f0ace46adbdcf726a9c8c22c672c03c83a7bd00208f8c5c9819"
+          }
+        ],
+        "parameter_layers": [
+          "method",
+          "member",
+          "selection",
+          "user"
+        ]
+      }
+    },
+    "result_kind": "external:resource_read_result",
+    "implicit_context_eligible": false
+  },
+  "value_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "profile",
+      "result_kind",
+      "implicit_context_eligible"
+    ],
+    "properties": {
+      "profile": {
+        "type": "object"
+      },
+      "result_kind": {
+        "type": "string",
+        "minLength": 1
+      },
+      "implicit_context_eligible": {
+        "type": "boolean"
+      }
+    }
+  }
+}

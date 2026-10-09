@@ -605,7 +605,11 @@ TEST_SUITE("catalog_pipeline") {
     CHECK(msgs.size() == 2);
     auto prov = unwrap(rt->provenance().for_subject(conv_id));
     REQUIRE(!prov.empty());
-    CHECK(prov[0].transform == "catalog.import@1");
+    CHECK(prov[0].transform == "catalog.import.export@export-3");
+    const auto imported_source = unwrap(rt->provenance().get_source(prov[0].source_id));
+    REQUIRE(imported_source.has_value());
+    CHECK(imported_source->parser == "loom.catalog.import.export");
+    CHECK(imported_source->parser_version == "export-3");
 
     // Re-importing is idempotent (loom_cat_imports dedup).
     auto imp2 = unwrap(cat.import_selected(iopts));

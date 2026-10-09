@@ -1,7 +1,7 @@
 // catalog.h: Catalog::import_selected — targeted import of the units
 // `select()` marked selected, by locator (never a full re-scan): re-reads
 // exactly those units' bytes (read_unit(), verified against content_hash),
-// parses conversations with the same walkers the archive area uses, and
+// parses conversations with the lossless provider-export parsers, and
 // writes conversations/messages plus one loom_provenance row per message
 // (transform "catalog.import@1"). Idempotent by unit id (loom_cat_imports).
 #include "loom/catalog.h"
@@ -9,8 +9,9 @@
 #include <chrono>
 #include <set>
 
-#include "archive/archive_internal.h"
 #include "catalog_internal.h"
+#include "source_index.h"
+#include "import/export_internal.h"
 #include "loom/db.h"
 #include "loom/provenance.h"
 #include "loom/runtime.h"
@@ -22,6 +23,62 @@ namespace loom::catalog {
 using namespace loom::catalog::internal;
 
 namespace {
+Result<std::string> copy_conversation(Runtime& runtime, const CatalogUnit& unit, const Json& document,
+                                      const std::string& source_id, const CancelToken* cancel) {
+  xport::ConvModel model;
+  xport::Counts counts;
+  loom::ImportOptions options;
+  options.cancel = cancel;
+  xport::Env env{runtime.db(), nullptr, options, {}, ""};
+  LOOM_TRY_ASSIGN(auto observed_index, internal::source_index(unit));
+  const int mapping_index = observed_index.value_or(0);
+  if (unit.platform == "chatgpt" && document.is_object() && document.contains("mapping") &&
+      document["mapping"].is_object()) {
+    xport::OpenAiCtx context;
+    context.env = &env;
+    xport::parse_openai_conversation(document, mapping_index, unit.unit.locator.member, context, model, counts);
+  } else if (unit.platform == "claude" && document.is_object() && document.contains("chat_messages") &&
+             document["chat_messages"].is_array()) {
+    xport::parse_anthropic_conversation(document, mapping_index, unit.unit.locator.member, env, model, counts);
+  } else {
+    return Error(Errc::NotImplemented, "catalog conversation has no supported lossless provider mapping");
+  }
+  // Older catalog rows have no observed ordinal. Their local parser index
+  // must not masquerade as an original source array index.
+  model.export_meta["mapping_index_scope"] = observed_index ? "source_array" : "unit_relative";
+  if (observed_index) model.export_meta["source_index"] = mapping_index;
+  if (!unit.unit.locator.json_pointer.empty())
+    model.export_meta["json_pointer"] = unit.unit.locator.json_pointer;
+  model.export_meta["catalog_unit"] = unit.unit.id;
+  model.export_meta["selector"] = unit.unit.locator.to_json();
+  model.export_meta["mapping_version"] = std::string(kExportParserVersion);
+  if (cancel && cancel->cancelled()) return Error(Errc::Cancelled, "catalog import cancelled");
+  LOOM_TRY_ASSIGN(auto conversation, xport::write_conversation(env, model));
+  const std::string transform = "catalog.import.export@" + std::string(kExportParserVersion);
+  std::vector<ProvenanceRecord> records;
+  ProvenanceRecord conversation_record;
+  conversation_record.subject_id = conversation.id;
+  conversation_record.subject_kind = "conversation";
+  conversation_record.source_id = source_id;
+  conversation_record.locator = unit.unit.locator.to_json();
+  conversation_record.locator["unit_id"] = unit.unit.id;
+  if (observed_index) conversation_record.locator["source_conversation_index"] = mapping_index;
+  conversation_record.transform = transform;
+  records.push_back(conversation_record);
+  LOOM_TRY_ASSIGN(auto messages, runtime.db().get_msgs(conversation.id, true));
+  for (const auto& message : messages) {
+    ProvenanceRecord record = conversation_record;
+    record.subject_id = message.id;
+    record.subject_kind = "message";
+    const auto& metadata = message.metadata.at("export");
+    record.locator["source_key"] = metadata.at("key");
+    if (const auto* index = json::find(metadata, "source_index")) record.locator["message_index"] = *index;
+    records.push_back(std::move(record));
+  }
+  LOOM_TRY(runtime.provenance().add_many(std::move(records)));
+  return conversation.id;
+}
+
 Result<std::string> latest_decisions_run(sql::Connection& c) {
   auto r = c.query_text("SELECT run_id FROM loom_cat_decisions ORDER BY rowid DESC LIMIT 1");
   if (!r) return r.error();
@@ -255,6 +312,15 @@ Result<Json> Catalog::import_selected(const ImportOptions& opts, const ProgressF
       LOOM_TRY(rt_.blobs().verify(blob.hash));
       raw_blob = blob.hash;
     }
+    // Keep copied projection, per-record provenance and resume journal atomic.
+    // The lossless writer uses a nested SAVEPOINT. Immutable blobs already
+    // retained above may be reused after any interrupted database transaction.
+    auto unit_lock = rt_.db().lock();
+    std::unique_ptr<sql::Txn> copy_transaction;
+    if (opts.store_mode == "copy") {
+      copy_transaction = std::make_unique<sql::Txn>(c);
+      LOOM_TRY(copy_transaction->begin_status());
+    }
     SourceRecord src;
     src.kind = "catalog_unit";
     src.uri = cu.unit.source + (cu.unit.locator.member.empty() ? "" : ("!" + cu.unit.locator.member));
@@ -262,6 +328,10 @@ Result<Json> Catalog::import_selected(const ImportOptions& opts, const ProgressF
     src.title = cu.unit.title;
     src.parser = "loom.catalog.import";
     src.parser_version = std::string(kScannerVersion);
+    if (opts.store_mode == "copy" && opts.import_messages && cu.unit.kind == "conversation") {
+      src.parser = "loom.catalog.import.export";
+      src.parser_version = std::string(kExportParserVersion);
+    }
     src.blob_hash = raw_blob;
     src.size = static_cast<std::int64_t>(raw.size());
     src.metadata = src_meta;
@@ -309,14 +379,14 @@ Result<Json> Catalog::import_selected(const ImportOptions& opts, const ProgressF
       conv_pr.transform = "catalog.import.link@1";
       LOOM_TRY(rt_.provenance().add(conv_pr));
       conversations.push_back(conv_id);
-    } else if (opts.import_messages && conv_id.empty() && (cu.unit.kind == "conversation" || cu.unit.kind == "project" || cu.unit.kind == "memory")) {
+    } else if (opts.import_messages && conv_id.empty() && cu.unit.kind == "conversation") {
+      LOOM_TRY_ASSIGN(auto parsed, json::parse(raw));
+      LOOM_TRY_ASSIGN(conv_id, copy_conversation(rt_, cu, parsed, source_id, cancel));
+      conversations.push_back(conv_id);
+    } else if (opts.import_messages && conv_id.empty() && (cu.unit.kind == "project" || cu.unit.kind == "memory")) {
       auto parsed = json::parse(raw);
       Json messages_j = Json::array();
-      if (parsed && cu.unit.kind == "conversation") {
-        std::string kind = cu.platform == "chatgpt" ? "chatgpt" : "claude";
-        archive::ChatWalk w = kind == "chatgpt" ? archive::walk_chatgpt(*parsed) : archive::walk_claude(*parsed);
-        messages_j = w.messages;
-      } else if (parsed) {
+      if (parsed) {
         ExtractedText et = extract_text(*parsed, cu.unit.kind == "project" ? "claude_projects" : "claude_memories");
         if (!et.prose.empty()) messages_j.push_back(Json{{"role", "document"}, {"text", et.prose}});
       }
@@ -367,6 +437,7 @@ Result<Json> Catalog::import_selected(const ImportOptions& opts, const ProgressF
           "VALUES (?,?,?,?,?,?)",
           uid, conv_id, raw_blob, source_id, std::string(), timeutil::utc_now_iso()));
     }
+    if (copy_transaction) LOOM_TRY(copy_transaction->commit());
     ++imported;
     bytes += cu.unit.bytes;
   }

@@ -16,8 +16,9 @@
 
 namespace loom::ctx {
 
-// "" = latest run with status "done" (KnowledgeStore::list_runs is newest
-// first). NotFound when `run` is empty and no run has finished yet, or when
+// "" = latest eligible run with status "done" (KnowledgeStore::list_context_runs
+// filters eligibility before limiting). NotFound when `run` is empty and no
+// eligible run has finished yet, or when
 // a given run id does not exist.
 Result<std::string> resolve_run(kb::KnowledgeStore& store, std::string_view run);
 
