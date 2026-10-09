@@ -728,6 +728,9 @@ Status Database::mark_analysed(std::string_view msg_id, const Json& analysis) {
                                               : std::string();
   const Json* sent = json::find(analysis, "sentiment");
   meta["sentiment"] = sent ? *sent : Json("neutral");
+  if (const Json* fingerprint = json::find(analysis, "analyzer_profile_hash"))
+    meta["analyzer_profile_hash"] = *fingerprint;
+  else meta.erase("analyzer_profile_hash");
   return conn_.run("UPDATE messages SET metadata = ?, semantic_status = 'done' WHERE id = ?", json::py_dumps(meta),
                    msg_id);
 }

@@ -58,6 +58,9 @@ class SemanticLLM {
   // Never fails: falls back to the regex analysis (unified dict, see
   // SemanticAnalyzer::to_unified). Thread-safe.
   Json analyse(std::string_view text);
+  // The caller may pin the effective analyzer for one operation/batch. This
+  // same snapshot supplies lexical supplementation and every regex fallback.
+  Json analyse(std::string_view text, const SemanticAnalyzer& analyzer);
 
   // One LLM call. nullopt when config is incomplete, status != 200, or the
   // content is not JSON. Transport errors are returned as errors.

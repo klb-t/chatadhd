@@ -128,14 +128,16 @@ Status GraphEngine::on_message_checked(const Json& data, const Json& overrides) 
 
     Json analysis;
     bool used_analyzer_overlay = false;
-    if (llm_ && llm_->enabled()) {
-      analysis = llm_->analyse(text);
-    } else if (!semantic_profile.is_builtin()) {
-      LOOM_TRY_ASSIGN(auto analyzer, SemanticAnalyzer::create_with_profile(semantic_profile));
-      analysis = analyzer->to_unified_profile(analyzer->analyse(text));
+    std::unique_ptr<SemanticAnalyzer> effective_analyzer;
+    if (!semantic_profile.is_builtin()) {
+      LOOM_TRY_ASSIGN(effective_analyzer, SemanticAnalyzer::create_with_profile(semantic_profile));
       used_analyzer_overlay = true;
+    }
+    const auto& analyzer = effective_analyzer ? *effective_analyzer : regex_;
+    if (llm_ && llm_->enabled()) {
+      analysis = llm_->analyse(text, analyzer);
     } else {
-      analysis = regex_.to_unified_profile(regex_.analyse(text));
+      analysis = analyzer.to_unified_profile(analyzer.analyse(text));
     }
     if (!profile.is_builtin()) analysis["runtime_profile_hash"] = profile.hash();
     if (used_analyzer_overlay) analysis["analyzer_profile_hash"] = semantic_profile.hash();

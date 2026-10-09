@@ -164,7 +164,11 @@ Result<std::optional<Json>> SemanticLLM::call_llm(std::string_view text, const S
 }
 
 Json SemanticLLM::analyse(std::string_view text) {
-  Analysis regex_result = regex_.analyse(text);
+  return analyse(text, regex_);
+}
+
+Json SemanticLLM::analyse(std::string_view text, const SemanticAnalyzer& analyzer) {
+  Analysis regex_result = analyzer.analyse(text);
 
   Settings settings;
   std::uint64_t generation;
@@ -173,7 +177,7 @@ Json SemanticLLM::analyse(std::string_view text) {
     settings = settings_locked();
     refresh_identity_locked(settings);
     if (disabled_.load() || !settings.active || settings.model.empty() || settings.key.empty() || utf8::length(text) < 20)
-      return convert_regex(regex_result);
+      return analyzer.to_unified_profile(regex_result);
     generation = config_generation_;
   }
 
@@ -189,7 +193,7 @@ Json SemanticLLM::analyse(std::string_view text) {
 
   record_result(generation, false);
 
-  return convert_regex(regex_result);
+  return analyzer.to_unified_profile(regex_result);
 }
 
 Json SemanticLLM::convert_regex(const Analysis& regex) { return SemanticAnalyzer::to_unified(regex); }

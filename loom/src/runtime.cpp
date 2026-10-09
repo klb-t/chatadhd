@@ -178,7 +178,7 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
   impl->relations = std::make_unique<RelationRegistry>(*impl->db);
   LOOM_TRY(impl->relations->seed_builtin());
 
-  LOOM_TRY_ASSIGN(impl->analyzer, SemanticAnalyzer::create());
+  LOOM_TRY_ASSIGN(impl->analyzer, SemanticAnalyzer::create_from_data_dir(p.root));
   impl->http = std::make_shared<ForwardingTransport>(opts.http ? opts.http : net::make_default_transport());
 
   impl->models = std::make_unique<ModelRegistry>(p.models, *impl->config, *impl->secrets, *impl->http);

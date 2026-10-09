@@ -132,3 +132,17 @@ classification returns `InvalidArgument`, rather than authorization. Uncapped
 rules keep their existing behavior. `policy_decision` still returns the effective
 R40 resolution/revision; `model_request` uses the same check before including
 profile values. This does not extend policy coverage to ordinary chat transport.
+
+### Runtime analyzer consumer snapshot (2026-10-09)
+
+The existing `semantic_analyzer` RuntimeProfile is also consumed at Runtime
+startup and before each live graph operation / complete worker drain. A worker
+drain pins one analyzer even if the source overlay changes during ingestion;
+the next drain reads the newer data. Lexical supplementation and SemanticLLM
+fallback receive that same object. An invalid overlay fails before transport or
+marking queued messages done, so repair and resume can process the pending input.
+Changed profiles retain `analyzer_profile_hash` in message metadata across
+storage/reopen. Built-in result JSON remains unchanged. The legacy standalone
+`SemanticLLM::analyse(text)` keeps its constructor analyzer; callers which pin an
+operation use the explicit analyzer overload. This wiring does not change legacy
+prompt truncation, provider budgets or admission of inferred relations.

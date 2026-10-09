@@ -28,7 +28,7 @@ bool cfg_bool(const Config& cfg, std::string_view key, bool fallback) {
   return json::truthy(cfg.get(key, fallback));
 }
 
-Json regex_unified(const SemanticAnalyzer& regex, std::string_view text) { return SemanticAnalyzer::to_unified(regex.analyse(text)); }
+Json regex_unified(const SemanticAnalyzer& regex, std::string_view text) { return regex.to_unified_profile(regex.analyse(text)); }
 
 net::Headers batch_headers(const RuntimeProfile& profile, const Secrets& secrets) {
   net::Headers out{{"x-api-key", secrets.get_string(profile.values().at("batch_secret_key").get<std::string>())}};
@@ -341,6 +341,15 @@ Result<int> SemanticWorker::drain_once() {
   auto& msgs = *msgsr;
   if (msgs.empty()) return 0;
 
+  // Resolve once before any transport or write. A malformed overlay is an
+  // operation error, never a reason to silently use the built-in analyzer.
+  LOOM_TRY_ASSIGN(auto analyzer_profile, RuntimeProfile::load("semantic_analyzer", db_.path().parent_path()));
+  std::unique_ptr<SemanticAnalyzer> effective_analyzer;
+  if (!analyzer_profile.is_builtin()) {
+    LOOM_TRY_ASSIGN(effective_analyzer, SemanticAnalyzer::create_with_profile(analyzer_profile));
+  }
+  const auto& analyzer = effective_analyzer ? *effective_analyzer : regex_;
+
   bool use_llm = llm_.enabled() && cfg_bool(cfg_, "semantic_analysis", true);
 
   auto pending_r = db_.count_pending_semantic();
@@ -366,7 +375,8 @@ Result<int> SemanticWorker::drain_once() {
       if (stop_ || paused_.load()) break;
     }
     try {
-      Json analysis = use_llm ? llm_.analyse(m.text) : regex_unified(regex_, m.text);
+      Json analysis = use_llm ? llm_.analyse(m.text, analyzer) : regex_unified(analyzer, m.text);
+      if (!analyzer_profile.is_builtin()) analysis["analyzer_profile_hash"] = analyzer_profile.hash();
       if (use_llm && opts_.llm_rate_limit > 0) {
         // Interruptible rate-limit wait: no blind sleep, so stop() is prompt.
         std::unique_lock lk(mu_);
