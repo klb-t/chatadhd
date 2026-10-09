@@ -1,0 +1,26 @@
+{
+  "schema": "loom.thread7_stage_seal/1",
+  "stage": 2,
+  "name": "real_context_dimension_preparations",
+  "parent_commit": "8f1480804ac437db09aeaa96693eb144006e7df0",
+  "files": {
+    "docs/research/thread7_real_2026-10-09/continuation_01/context-README.md": "ff08ed0e41932db243ff41a13f5a329d501e9e54ae64af6cdc31edf9490ff8ed",
+    "docs/research/thread7_real_2026-10-09/continuation_01/context-build-release.py": "705c52fe1bb7a7b4333c95e8f46337ff7f2fafbab914e57491c9f874041084b1",
+    "docs/research/thread7_real_2026-10-09/continuation_01/context-expanded-v1-receipt.json": "39702bf08f12b3412b68d1e169709f49da6f5849464cc2b66f2bbfcd9d9edfc5",
+    "docs/research/thread7_real_2026-10-09/continuation_01/context-expanded-v2-receipt.json": "49a50374495e8fe21705740cf5a800dfb2586b3a2bb4977cb2a2ddf9ec3bcdb8",
+    "docs/research/thread7_real_2026-10-09/continuation_01/context-plan.json": "6aa27a82f642285834c8dc87f88fd7d5b20ac505575e9e5b74010ce16311a403",
+    "docs/research/thread7_real_2026-10-09/continuation_01/context-profiles.json": "9dec535332e8e2565cf2c5b51a8a9386298915d8f0562445e8f63ac1acd96428",
+    "docs/research/thread7_real_2026-10-09/continuation_01/context-task-policy.json": "a422c9829d787abc3e6679921b45bcaaf541476ac782153b738547909b858f8f",
+    "docs/research/thread7_real_2026-10-09/continuation_01/context-verification.json": "01b5f94d18ec2221df643e34c9c4ecfa236cee31a9a92a875c326afeb42ee5c0",
+    "loom/tools/structure/experiment_context_preparation_v1.py": "575d701e071528571d2692360288110601a81b6c5bc72c035642b21db82c095b",
+    "loom/tools/structure/test_experiment_context_preparation_v1.py": "6545752e9e67ae645cba7f4d9cff49c9b246fc402d4ce327455a690c889aa1ab"
+  },
+  "test_receipt": "context-verification.json",
+  "current_release": "expanded-v2",
+  "superseded_release_preserved": "expanded-v1",
+  "new_calls": 0,
+  "new_cost_usd": "0",
+  "historical_attempts": 720,
+  "current_provider_usage": null,
+  "current_provider_reservations": null
+}

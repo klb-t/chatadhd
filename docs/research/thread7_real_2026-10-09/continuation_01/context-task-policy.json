@@ -1,0 +1,12 @@
+{
+  "schema": "loom.retrospective_context_task_policy/1",
+  "version": "source-inspection-v1",
+  "query": {
+    "instruction": "Inspect the supplied real source context retrospectively. Identify the visible goals, explicit user corrections or preference changes, unresolved requests, and multi-step work state. Cite exact source node references for every claimed observation. Separate user statements, assistant statements and your interpretation. Do not infer that a phenomenon exists when absent. Treat nodes outside a checkpoint/subgraph as unavailable, and state what cannot be established from this view. This is source inspection, not generating or grading the historical next assistant answer.",
+    "reference_status": "no_independent_gold",
+    "scope": "exact supplied context; preserve source boundary/branch limitations"
+  },
+  "selection": "last observed user in source export array; native ancestry if available, otherwise explicitly labelled array prefix",
+  "classification_authority": "research_protocol",
+  "annotation_and_adjudication_status": "pending"
+}

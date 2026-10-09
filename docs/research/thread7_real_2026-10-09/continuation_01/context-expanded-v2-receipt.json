@@ -1,0 +1,25 @@
+{
+  "schema": "loom.context_preparation_receipt/1",
+  "producer": "experiment_context_preparation_v1/2",
+  "source_families": 12,
+  "tasks": 12,
+  "slots": 972,
+  "slot_status_counts": {
+    "prepared": 450,
+    "pending": 297,
+    "primary_prepared_dependency_pending": 225
+  },
+  "call_status_counts": {
+    "prepared": 675,
+    "pending": 225
+  },
+  "unique_prepared_request_bodies": 675,
+  "new_paid_calls": 0,
+  "new_cost_usd": "0",
+  "quality": null,
+  "current_provider_admission": "unknown",
+  "dispatch_ready": false,
+  "preceding_checkpoint_sha256": "137c49ab13681d036b955039a580aff3cb86bc342b62981c484abcfe9363c28e",
+  "source_family_dependence": true,
+  "manifest_sha256": "5ee93a5b92bd94cf6951474e1ae7c5f7250481f4c258347fa7a0b4e140377f64"
+}

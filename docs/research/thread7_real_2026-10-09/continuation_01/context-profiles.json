@@ -1,0 +1,13 @@
+{
+  "existing_full_trace_research_selection": {
+    "source_reference": "docs/research/thread7_real_2026-10-09/upstream/real-prompt-recovery-20261005/upstream-7b/design.json#/user_preferences/full_trace",
+    "source_sha256": "56325b385d4ffcdc840f4b1a05b29d2742baf6166cb87194f5da8ce394a0dede",
+    "version": "frozen-7b-design-in-ffe6443e",
+    "value": {
+      "id": "full_trace",
+      "instructions": "The user prefers an auditable answer with alternatives: explain relevant speaker and temporal changes, cite relevant supporting and opposing turns, and state source-grounded counterarguments or limitations, including why a tempting reversed relation or historical statement does not establish the queried commitment. Keep all JSON fields."
+    },
+    "selection_authority": "research_protocol",
+    "interpretation": "Existing experimental preference manipulation. Historical text asserting user preference is quoted as profile data, not evidence of an actual user declaration. User settings are not changed."
+  }
+}
