@@ -2,6 +2,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
 import { api } from "../api";
+import type { UserProfileHost } from "../api/onboarding-host";
+import { conversationViewMessages, messageCan, sourceHistorySendUnavailable, type ConversationView } from "../api/conversation-view";
+import ConversationSourceView, { useConversationSourcePresentation } from "./ConversationSourceView";
+import { featureMessage } from "../onboarding/presentation.mjs";
 import type { ChatChunk, ChatContextTrace, ChatKnowledgeContextRequest, ChatRequest, Message, ModelInfo } from "../api/types";
 import "./chat-context.css";
 import ContextPlanEditor from "./ContextPlanEditor";
@@ -45,6 +49,7 @@ function renderMarkdown(text: string): { __html: string } {
 }
 
 interface Props {
+  profileHost?: UserProfileHost;
   settingsKey?: string;
   convId: string | null;
   onConversationCreated: (id: string) => void;
@@ -79,7 +84,7 @@ function ContextTrace({ trace }: { trace: ChatContextTrace }) {
   );
 }
 
-export default function ChatView({ settingsKey = "default", convId, onConversationCreated, profile, runProfileOperation, availableOperations, refreshKey, onMessagesChanged }: Props) {
+export default function ChatView({ profileHost, settingsKey = "default", convId, onConversationCreated, profile, runProfileOperation, availableOperations, refreshKey, onMessagesChanged }: Props) {
   const [stored] = useState(() => readChatSettings(settingsKey));
   const storedString = (key: string, fallback: string) => typeof stored.value[key] === "string" ? stored.value[key] as string : fallback;
   const storedBool = (key: string, fallback: boolean) => typeof stored.value[key] === "boolean" ? stored.value[key] as boolean : fallback;
@@ -87,6 +92,13 @@ export default function ChatView({ settingsKey = "default", convId, onConversati
   const [branchLeaf, setBranchLeaf] = useState<string | null>(null);
   const [showBranches, setShowBranches] = useState(false);
   const [branchMessages, setBranchMessages] = useState<Message[]>([]);
+  const [conversationView, setConversationView] = useState<ConversationView | null>(null);
+  const metadataViewRef = useRef<ConversationView | null>(null);
+  const [sourceBusy, setSourceBusy] = useState(false);
+  const sourceCatalog = useConversationSourcePresentation(profileHost);
+  const sourceSendBlocked = sourceHistorySendUnavailable(conversationView);
+  const viewPending = Boolean(convId && api.readConversationView && conversationView?.conversation_id !== convId);
+  const sourceDiagnostic = sourceCatalog.feature ? featureMessage(sourceCatalog.feature, "egress_unavailable") : "source_egress_not_bound";
   const [channels, setChannels] = useState(() => storedString("channels", "[]"));
   const [scanLimit, setScanLimit] = useState(() => storedString("scanLimit", "10000"));
   const [counterEvidence, setCounterEvidence] = useState(() => storedBool("counterEvidence", false));
@@ -94,8 +106,6 @@ export default function ChatView({ settingsKey = "default", convId, onConversati
   const [requestOverride, setRequestOverride] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [showAllMessages, setShowAllMessages] = useState(false);
-  const allMessagesRef = useRef(showAllMessages);
-  allMessagesRef.current = showAllMessages;
   const [input, setInput] = useState("");
   const [models, setModels] = useState<ModelInfo[]>([]);
   const [model, setModel] = useState<string>(() => storedString("model", ""));
@@ -151,14 +161,7 @@ export default function ChatView({ settingsKey = "default", convId, onConversati
     contextLanguage, contextBudget, contextHops, contextDetail, includeMemory, includeGraphMemory, includeHistory,
     traceContext, channels, scanLimit, counterEvidence, lexicalShadow, usePlan, planDraft]);
 
-  useEffect(() => {
-    setBranchLeaf(null); setBranchMessages([]);
-    if (!showBranches || !convId) return;
-    let cancelled = false;
-    api.getMessages(convId, true).then(rows => { if (!cancelled) setBranchMessages(rows); })
-      .catch(err => { if (!cancelled) setError(String(err)); });
-    return () => { cancelled = true; };
-  }, [convId, refreshKey, showBranches]);
+  useEffect(() => { setBranchLeaf(null); }, [convId, refreshKey]);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -181,17 +184,46 @@ export default function ChatView({ settingsKey = "default", convId, onConversati
     if (!mountedRef.current || selectedConvRef.current !== id) return;
     const epoch = ++fetchEpochRef.current;
     try {
-      const list = await api.getMessages(id, allMessagesRef.current);
-      if (mountedRef.current && selectedConvRef.current === id && epoch === fetchEpochRef.current) setMessages(list);
+      const view = api.readConversationView ? await api.readConversationView(id, { sourceAccess: "metadata" }) : null;
+      const list = view ? view.messages : await api.getMessages(id, true);
+      if (mountedRef.current && selectedConvRef.current === id && epoch === fetchEpochRef.current) {
+        metadataViewRef.current = view;
+        setConversationView(view); setMessages(list); setBranchMessages(list); setSourceBusy(false);
+      }
     } catch (err) {
       if (mountedRef.current && selectedConvRef.current === id && epoch === fetchEpochRef.current) {
+        // Do not continue showing a successful transient read after a failed refresh.
+        setMessages(current => current.filter(row => row.storage !== "reference"));
+        setBranchMessages(current => current.filter(row => row.storage !== "reference"));
+        setConversationView(null); setSourceBusy(false);
         setError(err instanceof Error ? err.message : String(err));
       }
     }
   }, []);
 
+  const readSources = useCallback(async (options: Record<string, unknown>) => {
+    if (!convId || !api.readConversationView || sourceBusy || !sourceCatalog.feature) return;
+    const id = convId, epoch = ++fetchEpochRef.current;
+    setSourceBusy(true); setError(null);
+    // A new read invalidates the preceding transient display before dispatch.
+    const metadata = metadataViewRef.current?.conversation_id === id ? metadataViewRef.current : null;
+    setConversationView(metadata); setMessages(metadata?.messages ?? []); setBranchMessages(metadata?.messages ?? []);
+    setBranchLeaf(null); setEditingId(null); setVersionsById({});
+    try {
+      const view = await api.readConversationView(id, { sourceAccess: "local_read", readOptions: options });
+      if (mountedRef.current && selectedConvRef.current === id && epoch === fetchEpochRef.current) {
+        setConversationView(view); setMessages(view.messages); setBranchMessages(view.messages);
+      }
+    } catch (cause) {
+      if (mountedRef.current && selectedConvRef.current === id && epoch === fetchEpochRef.current)
+        setError(cause instanceof Error ? cause.message : String(cause));
+    } finally {
+      if (mountedRef.current && selectedConvRef.current === id && epoch === fetchEpochRef.current) setSourceBusy(false);
+    }
+  }, [convId, sourceBusy, sourceCatalog.feature]);
+
   useEffect(() => {
-    setMessages([]);
+    setMessages([]); setBranchMessages([]); setConversationView(null); metadataViewRef.current = null; setSourceBusy(false);
     setEditingId(null);
     setVersionsById({});
     setError(null);
@@ -201,7 +233,7 @@ export default function ChatView({ settingsKey = "default", convId, onConversati
   useEffect(() => {
     if (convId) refreshMessages(convId);
     else setMessages([]);
-  }, [convId, refreshMessages, refreshKey, showAllMessages]);
+  }, [convId, refreshMessages, refreshKey]);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
@@ -209,6 +241,7 @@ export default function ChatView({ settingsKey = "default", convId, onConversati
 
   const send = useCallback((mode: "send" | "preview" = "send") => {
     const text = input.trim();
+    if (sourceSendBlocked || viewPending || sourceBusy) { setError(sourceDiagnostic); return; }
     if (branchLeaf) { setError("Return to current conversation before sending from a branch projection."); return; }
     if (stream || !supports("chat.send")) return;
     if (!text && !(mode === "send" && requestOverride !== null)) return;
@@ -337,7 +370,7 @@ export default function ChatView({ settingsKey = "default", convId, onConversati
     }
   }, [input, stream, convId, model, onConversationCreated, refreshMessages,
     useKnowledge, contextQuery, contextProject, contextTargets, contextRun,
-    contextLanguage, contextBudget, contextHops, contextDetail, usePlan, planDraft, includeMemory, includeGraphMemory, includeHistory, traceContext, runProfileOperation, onMessagesChanged, supports, channels, scanLimit, counterEvidence, lexicalShadow, branchLeaf, requestOverride]);
+    contextLanguage, contextBudget, contextHops, contextDetail, usePlan, planDraft, includeMemory, includeGraphMemory, includeHistory, traceContext, runProfileOperation, onMessagesChanged, supports, channels, scanLimit, counterEvidence, lexicalShadow, branchLeaf, requestOverride, sourceSendBlocked, viewPending, sourceBusy, sourceDiagnostic]);
 
   const cancelStreaming = useCallback(() => {
     const epoch = ++sendEpochRef.current;
@@ -365,14 +398,14 @@ export default function ChatView({ settingsKey = "default", convId, onConversati
   }, [stream, runProfileOperation, supports, refreshMessages, onMessagesChanged]);
 
   const startEdit = useCallback((m: Message) => {
-    if (!supports("message.edit")) return;
+    if (!supports("message.edit") || !messageCan(m, "edit")) return;
     setEditingId(m.id);
     setEditText(m.text);
   }, [supports]);
 
   const saveEdit = useCallback(
     async (id: string) => {
-      if (!supports("message.edit")) return;
+      if (!supports("message.edit") || !messageCan(messages.find(row => row.id === id), "edit")) return;
       try {
         if (runProfileOperation) await runProfileOperation("message.edit", { id, text: editText });
         else await api.editMessage(id, editText);
@@ -383,12 +416,12 @@ export default function ChatView({ settingsKey = "default", convId, onConversati
         if (mountedRef.current && selectedConvRef.current === convId) setError(err instanceof Error ? err.message : String(err));
       }
     },
-    [editText, convId, refreshMessages, runProfileOperation, onMessagesChanged, supports],
+    [editText, convId, refreshMessages, runProfileOperation, onMessagesChanged, supports, messages],
   );
 
   const toggleExclude = useCallback(
     async (m: Message) => {
-      if (!supports("message.exclude")) return;
+      if (!supports("message.exclude") || !messageCan(m, "set_status")) return;
       try {
         const status = m.status === "excluded" ? "active" : "excluded";
         if (runProfileOperation) await runProfileOperation("message.exclude", { id: m.id, status });
@@ -405,6 +438,11 @@ export default function ChatView({ settingsKey = "default", convId, onConversati
   const loadVersions = useCallback(
     async (m: Message) => {
       if (!m.version_group_id) return;
+      if (m.storage === "reference") {
+        setVersionsById(prev => ({ ...prev, [m.version_group_id!]: messages.filter(row => row.storage === "reference" && row.version_group_id === m.version_group_id) }));
+        return;
+      }
+      if (!messageCan(m, "native_lookup")) return;
       try {
         const vs = await api.getVersions(m.version_group_id);
         if (mountedRef.current && selectedConvRef.current === m.conv_id) setVersionsById((prev) => ({ ...prev, [m.version_group_id as string]: vs }));
@@ -412,12 +450,14 @@ export default function ChatView({ settingsKey = "default", convId, onConversati
         if (mountedRef.current && selectedConvRef.current === m.conv_id) setError(err instanceof Error ? err.message : String(err));
       }
     },
-    [],
+    [messages],
   );
 
   const switchVersion = useCallback(
     async (targetId: string) => {
-      if (!supports("message.restore")) return;
+      const target = messages.find(row => row.id === targetId) ?? Object.values(versionsById).flat().find(row => row.id === targetId);
+      if (target?.storage === "reference") { setBranchLeaf(targetId); setShowBranches(true); return; }
+      if (!supports("message.restore") || !messageCan(target, "restore")) return;
       try {
         if (runProfileOperation) await runProfileOperation("message.restore", { id: targetId });
         else await api.restoreVersion(targetId);
@@ -427,12 +467,13 @@ export default function ChatView({ settingsKey = "default", convId, onConversati
         if (mountedRef.current && selectedConvRef.current === convId) setError(err instanceof Error ? err.message : String(err));
       }
     },
-    [convId, refreshMessages, runProfileOperation, onMessagesChanged, supports],
+    [convId, refreshMessages, runProfileOperation, onMessagesChanged, supports, messages, versionsById],
   );
 
   const visibleMessages = useMemo(() => branchLeaf
     ? conversationBranchPath(branchMessages, branchLeaf).messages
-    : messages.filter(message => message.conv_id === convId), [messages, convId, branchLeaf, branchMessages]);
+    : (conversationView ? conversationViewMessages(conversationView, showAllMessages) : messages.filter(row => showAllMessages || row.status === "active"))
+      .filter(message => message.conv_id === convId), [messages, convId, branchLeaf, branchMessages, conversationView, showAllMessages]);
   const displayedStream = stream?.convId === convId ? stream : null;
   const displayedPending = pendingUserText?.convId === convId ? pendingUserText : null;
 
@@ -443,8 +484,13 @@ export default function ChatView({ settingsKey = "default", convId, onConversati
       {showBranches && <ConversationBranches messages={branchMessages} selectedId={branchLeaf} onSelect={message => setBranchLeaf(message.id)} />}
       {branchLeaf && <p role="status">Ancestor path projection <button onClick={() => setBranchLeaf(null)} data-testid="return-current-branch">Return to current conversation</button></p>}
       {settingsError && <p role="alert">{settingsError}</p>}
+      {convId && !api.readConversationView && sourceCatalog.feature && <p role="status" data-testid="conversation-view-host-unavailable">
+        {featureMessage(sourceCatalog.feature, "host_unavailable")}
+      </p>}
+      {conversationView && conversationView.resources.length > 0 && <ConversationSourceView key={convId} view={conversationView}
+        profileHost={profileHost} catalog={sourceCatalog} busy={sourceBusy} onRead={readSources} onReload={() => { if (convId) void refreshMessages(convId); }} />}
       <div className="chat-scroll" ref={scrollRef}>
-        {visibleMessages.length === 0 && !displayedPending && !displayedStream && (
+        {visibleMessages.length === 0 && !displayedPending && !displayedStream && !viewPending && !conversationView?.resources.length && (
           <div className="empty-state">Say something to start the conversation.</div>
         )}
         {visibleMessages.map((m) => {
@@ -452,7 +498,7 @@ export default function ChatView({ settingsKey = "default", convId, onConversati
           const trace = recordedContext(m.metadata?.context_trace);
           const graphReply = recordedGraphReply(m.metadata);
           return (
-            <div key={m.id} className={`msg ${m.role}`} data-testid="message" data-role={m.role} data-status={m.status}>
+            <div key={m.id} className={`msg ${m.role}`} data-testid="message" data-role={m.role} data-status={m.status} data-storage={m.storage ?? "native"}>
               <div className="meta">
                 <span>{m.role}</span>
                 {m.model && <span>· {m.model}</span>}
@@ -467,7 +513,7 @@ export default function ChatView({ settingsKey = "default", convId, onConversati
                         {versions.map((v) => (
                           <button
                             key={v.id}
-                            disabled={v.id === m.id || !supports("message.restore")}
+                            disabled={v.id === m.id || (v.storage !== "reference" && (!supports("message.restore") || !messageCan(v, "restore")))}
                             onClick={() => switchVersion(v.id)}
                             data-testid="switch-version"
                           >
@@ -483,29 +529,38 @@ export default function ChatView({ settingsKey = "default", convId, onConversati
                 <div>
                   <textarea value={editText} onChange={(e) => setEditText(e.target.value)} rows={3} />
                   <div className="actions">
-                    <button className="primary" onClick={() => saveEdit(m.id)} data-testid="save-edit" disabled={!supports("message.edit")}>
+                    <button className="primary" onClick={() => saveEdit(m.id)} data-testid="save-edit" disabled={!supports("message.edit") || !messageCan(m, "edit")}>
                       Save (new version)
                     </button>
                     <button onClick={() => setEditingId(null)}>Cancel</button>
                   </div>
                 </div>
               ) : projectImportedMessage(m) ? (
-                <ImportedMessageContent message={m} />
+                <ImportedMessageContent message={m} opaqueSourceEvidence={m.storage === "reference" ? {
+                  description: sourceCatalog.feature ? featureMessage(sourceCatalog.feature, "decoded_projection") : "source_wire_evidence_required",
+                } : undefined} />
+              ) : m.storage === "reference" ? (
+                <pre className="body">{m.text}</pre>
               ) : (
                 <div className="body" dangerouslySetInnerHTML={renderMarkdown(m.role === "assistant" ? nativeGraphDisplayText(graphReply, m.text) : m.text)} />
               )}
               <div className="actions">
                 {m.role === "user" && editingId !== m.id && (
-                  <button onClick={() => startEdit(m)} data-testid="edit-message" disabled={!supports("message.edit")}>
+                  <button onClick={() => startEdit(m)} data-testid="edit-message" disabled={!supports("message.edit") || !messageCan(m, "edit")}>
                     Edit
                   </button>
                 )}
-                <button onClick={() => toggleExclude(m)} data-testid="toggle-exclude" disabled={!supports("message.exclude") || m.status === "version" || m.status === "deleted"}>
+                <button onClick={() => toggleExclude(m)} data-testid="toggle-exclude" disabled={!supports("message.exclude") || !messageCan(m, "set_status") || m.status === "version" || m.status === "deleted"}>
                   {m.status === "excluded" ? "Restore" : "Exclude"}
                 </button>
               </div>
+              {m.storage === "reference" && sourceCatalog.feature && <details data-testid="source-message-reference">
+                <summary>{featureMessage(sourceCatalog.feature, "source_message")}</summary>
+                <p>{featureMessage(sourceCatalog.feature, "readonly")}</p>
+                <pre>{JSON.stringify({ source_ref: m.source_ref, capabilities: m.capabilities }, null, sourceCatalog.base?.defaults.json_indent)}</pre>
+              </details>}
               {trace && <ContextTrace trace={trace} />}
-              {(m.role === "assistant" || graphReply) && <details className="chat-context-controls"><summary>Graph reply · inspect and address fragments</summary>
+              {m.storage !== "reference" && (m.role === "assistant" || graphReply) && <details className="chat-context-controls"><summary>Graph reply · inspect and address fragments</summary>
                 <GraphReplyWorkbench packet={api.packet?.bind(api)} usagePolicy={api.usagePolicy?.bind(api)}
                   responseText={m.role === "assistant" ? m.text : typeof graphReply?.retained_text === "string" ? graphReply.retained_text : ""} recordedReply={graphReply} graphReply={api.graphReply?.bind(api)}
                   onNativeAddressFragment={(action, fragment) => { setInput(nativeFragmentPrompt(action, fragment)); setRequestOverride(null); }}
@@ -598,7 +653,7 @@ export default function ChatView({ settingsKey = "default", convId, onConversati
 
       <details className="chat-context-controls" data-testid="expert-chat-request"><summary>Expert · inspect or edit one request</summary>
         <p>This is the client request sent to Loom. Compiled provider messages are inspected in the recorded context after execution.</p>
-        <button onClick={() => send("preview")} disabled={!!stream || !!branchLeaf || !input.trim()} data-testid="preview-chat-request">Prepare client request</button>
+        <button onClick={() => send("preview")} disabled={!!stream || !!branchLeaf || sourceSendBlocked || viewPending || sourceBusy || !input.trim()} data-testid="preview-chat-request">Prepare client request</button>
         {requestOverride !== null && <>
           <textarea aria-label="One-call client request JSON" data-testid="one-call-request" rows={9} value={requestOverride} onChange={event => setRequestOverride(event.target.value)} disabled={!!stream} />
           <p>The next Send uses this exact JSON once. Profile, saved context and later calls keep their settings.</p>
@@ -639,7 +694,7 @@ export default function ChatView({ settingsKey = "default", convId, onConversati
             Stop
           </button>
         ) : (
-          <button className="primary" onClick={() => send()} data-testid="send-chat" disabled={!!branchLeaf || (requestOverride === null && !input.trim()) || !supports("chat.send")}>
+          <button className="primary" onClick={() => send()} data-testid="send-chat" disabled={!!branchLeaf || sourceSendBlocked || viewPending || sourceBusy || (requestOverride === null && !input.trim()) || !supports("chat.send")}>
             Send
           </button>
         )}

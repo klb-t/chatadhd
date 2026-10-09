@@ -1,3 +1,4 @@
+import conversationViewPack from "./generated/conversation-view.json" with { type: "json" };
 import embedded from "./generated/ui.json" with { type: "json" };
 
 function canonical(value) {
@@ -147,4 +148,29 @@ export function layerExplanation(presentation, entry) {
     entry.layer === "user" ? "layer.user" : entry.layer === "builtin" ? "layer.builtin" : null;
   const parameters = { ...(entry.resolution ?? Object.fromEntries(Object.entries({ key: entry.key, id: entry.id, area: entry.area, status: entry.status, layer: entry.layer, value: entry.value }).filter(([, value]) => value !== undefined))), explanation: null };
   return id ? message(presentation, id, parameters) : entry.reason;
+}
+
+/** Optional feature catalogs consume native effective values, never re-resolve layers.
+ * undefined is reserved for bootstrap without a selected user. null means missing. */
+export function resolvePresentationFeature(presentation, feature, effective) {
+  let value;
+  if (effective === undefined) {
+    value = conversationViewPack.entries.find(entry => entry.key === `presentation.${feature}`)?.value;
+  } else {
+    if (!record(effective) || effective.status !== "effective" || effective.enabled !== true || effective.excluded !== false)
+      throw new PresentationError("error.presentation", { reason: effective?.status ?? "missing" }, true);
+    value = effective.value;
+  }
+  if (!record(value) || value.schema !== "loom.presentation_feature/1" || value.feature !== feature || !record(value.locales) ||
+      !record(value.locales[presentation.locale])) throw new PresentationError("error.presentation", { reason: "feature_catalog_unavailable" }, true);
+  const declared = conversationViewPack.entries.find(entry => entry.key === `presentation.${feature}`)?.value;
+  if (!declared || Object.keys(declared.locales[Object.keys(declared.locales)[0]]).some(key =>
+      typeof value.locales[presentation.locale][key] !== "string"))
+    throw new PresentationError("error.presentation", { reason: "feature_catalog_incomplete" }, true);
+  return { feature, locale: presentation.locale, catalog: value.locales[presentation.locale] };
+}
+export function featureMessage(feature, id, parameters = {}) {
+  const template = feature.catalog[id];
+  if (typeof template !== "string") throw new PresentationError("error.presentation_message", { id });
+  return formatTemplate(template, parameters);
 }

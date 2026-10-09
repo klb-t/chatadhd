@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import { api } from "../api";
+import type { UserProfileHost } from "../api/onboarding-host";
 import ChatView from "./ChatView";
 import ConversationList from "./ConversationList";
 import { BUILTIN_PROFILE_DOCUMENTS, builtinProfileSource } from "../profiles/builtins";
@@ -41,6 +42,7 @@ export function profileStyle(profile: ApplicationProfile): CSSProperties {
 }
 
 interface Props {
+  profileHost?: UserProfileHost;
   convId: string | null; onConversationCreated: (id: string) => void;
   refreshKey: number; onMessagesChanged: () => void; ui: LoomProfileUi;
   onPrimaryProfile: (profile: ApplicationProfile) => void;
@@ -424,7 +426,7 @@ function ApplicationView({ profile: inputProfile, profiles: inputProfiles, viewI
         <ConversationList key={props.refreshKey} activeConvId={props.convId} onSelect={selectConversation} onCreated={props.onConversationCreated} onActivity={operationActivity} />
       </aside>}
       <div className="application-profile-chat">
-        <ChatView settingsKey={viewId} convId={props.convId} onConversationCreated={props.onConversationCreated} profile={profile}
+        <ChatView profileHost={props.profileHost} settingsKey={viewId} convId={props.convId} onConversationCreated={props.onConversationCreated} profile={profile}
           runProfileOperation={runOperation} refreshKey={props.refreshKey} onMessagesChanged={props.onMessagesChanged}
           availableOperations={profile.actions.filter(a => ![...availability.requiredGaps, ...availability.optionalGaps].some(g => g.action_id === a.id)).map(a => a.operation)} />
       </div>

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { createContext, useContext, useMemo, useState } from "react";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
 import type { Message } from "../api/types";
@@ -35,8 +35,12 @@ function importedHtml(html: string): { __html: string } {
   return { __html: container.innerHTML };
 }
 
+const OpaqueSourceEvidence = createContext(false);
+
 function SourceJson({ title, value, testId }: { title: string; value: unknown; testId?: string }) {
   const [open, setOpen] = useState(false);
+  const opaqueEvidence = useContext(OpaqueSourceEvidence);
+  if (opaqueEvidence) return null;
   return <details className="imported-source-json" onToggle={event => setOpen(event.currentTarget.open)}>
     <summary>{title}</summary>
     {open && <pre data-testid={testId}>{importedJson(value)}</pre>}
@@ -49,7 +53,12 @@ export interface ImportedSourceView {
   references: boolean;
   wrapCode: boolean;
 }
-interface Props { message: Message; includeVisibleText?: boolean; initialView?: Partial<ImportedSourceView> }
+interface Props {
+  message: Message; includeVisibleText?: boolean; initialView?: Partial<ImportedSourceView>;
+  /** Source views expose authoritative JSON at their native response boundary.
+   * Keep existing stored-message inspection unchanged unless this is supplied. */
+  opaqueSourceEvidence?: { description: string };
+}
 
 function MediaBlock({ block }: { block: ImportedBlock }) {
   const [preview, setPreview] = useState(false);
@@ -74,6 +83,7 @@ function MediaBlock({ block }: { block: ImportedBlock }) {
 
 function Artifact({ artifact, wrapCode }: { artifact: ImportedArtifact; wrapCode: boolean }) {
   const [mode, setMode] = useState("source");
+  const opaqueEvidence = useContext(OpaqueSourceEvidence);
   const isHtml = artifact.type === "text/html";
   const isMarkdown = artifact.type === "text/markdown" || artifact.type === "document";
   const supportsPreview = isHtml || isMarkdown;
@@ -85,10 +95,10 @@ function Artifact({ artifact, wrapCode }: { artifact: ImportedArtifact; wrapCode
     {artifact.parsedFromText && <p>Display derivative parsed from the retained source text.</p>}
     {!artifact.resolved && <p>The declared artifact payload is not located in retained source.</p>}
     <label>Artifact view <select value={mode} onChange={event => setMode(event.target.value)}>
-      <option value="source">Source</option><option value="json">Artifact fields</option>
+      <option value="source">Source</option>{!opaqueEvidence && <option value="json">Artifact fields</option>}
       {supportsPreview && <option value="preview">Document preview</option>}
     </select></label>
-    {mode === "json" && <pre>{importedJson(artifact.raw)}</pre>}
+    {mode === "json" && !opaqueEvidence && <pre>{importedJson(artifact.raw)}</pre>}
     {mode === "source" && artifact.content !== null && <pre className={`imported-source-code${wrapCode ? " wrap" : ""}`}><code data-language={artifact.language ?? ""}>{artifact.content}</code></pre>}
     {mode === "preview" && artifact.content !== null && <>
       <p className="imported-preview-note">Document projection: scripts, styling and embedded resources are omitted. Source remains available.</p>
@@ -100,11 +110,12 @@ function Artifact({ artifact, wrapCode }: { artifact: ImportedArtifact; wrapCode
 }
 
 /** Pure source display: text/JSON and user-clicked citations; no tools, code or media fetches. */
-export default function ImportedMessageContent({ message, includeVisibleText = true, initialView }: Props) {
+export default function ImportedMessageContent({ message, includeVisibleText = true, initialView, opaqueSourceEvidence }: Props) {
   const source = useMemo(() => projectImportedMessage(message), [message]);
   const [view, setView] = useState<ImportedSourceView>({ blocks: true, artifacts: true, references: true, wrapCode: false, ...initialView });
   if (!source) return null;
-  return <div className="imported-message-content" data-testid="imported-message-content">
+  return <OpaqueSourceEvidence.Provider value={Boolean(opaqueSourceEvidence)}><div className="imported-message-content" data-testid="imported-message-content">
+    {opaqueSourceEvidence && <p>{opaqueSourceEvidence.description}</p>}
     {includeVisibleText && <div className="body" dangerouslySetInnerHTML={importedMarkdown(message.text)} />}
     <details className="imported-source-details" data-testid="imported-source-details">
       <summary>Imported source · {source.provider} · {source.blocks.length} blocks · {source.references.length} references · {source.artifacts.length} artifacts</summary>
@@ -139,5 +150,5 @@ export default function ImportedMessageContent({ message, includeVisibleText = t
       <SourceJson title="Complete preserved source message" value={source.raw} testId="imported-source-raw" />
       <SourceJson title="Complete native export metadata" value={source.metadata} testId="imported-source-metadata" />
     </details>
-  </div>;
+  </div></OpaqueSourceEvidence.Provider>;
 }

@@ -29,3 +29,7 @@ export function controlOrder(presentation: Presentation, group: string, register
 export function errorPresentation(error: unknown, presentation?: Presentation): { text: string; details: string };
 
 export function layerExplanation(presentation: Presentation, entry: EffectiveDefault): string | null;
+
+export interface PresentationFeature { feature: string; locale: string; catalog: Record<string, string> }
+export function resolvePresentationFeature(presentation: Presentation, feature: string, effective?: EffectiveDefault | null): PresentationFeature;
+export function featureMessage(feature: PresentationFeature, id: string, parameters?: Record<string, JsonValue>): string;

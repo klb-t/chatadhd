@@ -1,0 +1,93 @@
+{
+  "schema": "loom.default_layers_pack/1",
+  "pack_id": "loom.product.conversation_view",
+  "revision": 1,
+  "policy": {
+    "excluded_area_new_defaults": "proposal"
+  },
+  "entries": [
+    {
+      "id": "presentation.conversation_view/v1",
+      "key": "presentation.conversation_view",
+      "area": "presentation/conversation_view",
+      "revision": 1,
+      "label": "Local source view labels; local reading does not authorize model disclosure",
+      "value": {
+        "schema": "loom.presentation_feature/1",
+        "feature": "conversation_view",
+        "locales": {
+          "en": {
+            "title": "Referenced conversation sources",
+            "local_read": "Read linked sources locally",
+            "reading": "Reading linked sources…",
+            "read_scope": "This action reads the attached source for this local view. It does not authorize sending source content to a model or another service. The adapter may read the whole container.",
+            "readonly": "This source message is a version-pinned, read-only view. Editing, restoring a stored version and source-history sending are unavailable.",
+            "egress_unavailable": "Source-history sending is unavailable: local read has no model-disclosure binding.",
+            "details": "Source versions, access results and read evidence",
+            "unavailable": "The source view is unavailable. Stored messages and explicit source statuses remain visible.",
+            "complete": "Source view complete",
+            "partial": "Source view partial",
+            "configuration": "Local read configuration",
+            "projection_storage": "Derived projection retention",
+            "content_index": "Source content index",
+            "snapshot": "Retain a derived snapshot",
+            "transient": "Keep this read in memory",
+            "sketch": "Retain a content sketch",
+            "none": "Do not create a content index",
+            "retention": "These are the currently resolved resource-read settings. A transient read does not remove earlier snapshots or certify absence of historical payload.",
+            "configuration_unavailable": "Read configuration is unavailable; inspect diagnostics before reading.",
+            "source_message": "Reference and capabilities",
+            "reload": "Reload source metadata (without reading content)",
+            "empty": "The recognized source has no messages.",
+            "install": "Install local-source view labels in this profile",
+            "feature_missing": "This profile has no accepted local-source view catalog. Installing its declaration preserves existing settings and exclusions.",
+            "source_status": "Source status: {{status}}; mapping: {{mapping}}; current: {{current}}",
+            "status_unavailable": "unavailable",
+            "status_unknown": "unknown",
+            "status_partial": "partial",
+            "status_complete": "complete",
+            "host_unavailable": "This host exposes stored messages only. Reading linked source history is unavailable.",
+            "exact_wire": "Exact native view JSON",
+            "decoded_projection": "Text and summaries are decoded display projections. Numeric tokens in unknown fields may be rounded here. Inspect the exact native response in source evidence.",
+            "wire_unavailable": "Exact native response evidence is unavailable for this host response."
+          },
+          "pl": {
+            "title": "Źródła rozmowy referencyjnej",
+            "local_read": "Odczytaj źródła lokalnie",
+            "reading": "Odczytywanie źródeł…",
+            "read_scope": "Ta czynność odczytuje dołączone źródło na potrzeby lokalnego widoku. Nie udziela zgody na wysłanie treści do modelu ani innej usługi. Adapter może odczytać cały kontener.",
+            "readonly": "Ta wiadomość jest widokiem źródła przypiętym do wersji, tylko do odczytu. Edycja, odtwarzanie zapisanej wersji i wysyłanie historii źródła są niedostępne.",
+            "egress_unavailable": "Wysyłanie historii źródła jest niedostępne: lokalny odczyt nie ustanawia zgody na ujawnienie modelowi.",
+            "details": "Wersje źródeł, wyniki dostępu i dowody odczytu",
+            "unavailable": "Widok źródła jest niedostępny. Zapisane wiadomości i jawne statusy źródeł pozostają widoczne.",
+            "complete": "Widok źródła kompletny",
+            "partial": "Widok źródła częściowy",
+            "configuration": "Konfiguracja lokalnego odczytu",
+            "projection_storage": "Przechowywanie projekcji pochodnej",
+            "content_index": "Indeks treści źródła",
+            "snapshot": "Zachowaj migawkę pochodną",
+            "transient": "Przechowuj ten odczyt w pamięci",
+            "sketch": "Zachowaj szkic treści",
+            "none": "Nie twórz indeksu treści",
+            "retention": "To aktualnie rozwiązane ustawienia odczytu zasobu. Odczyt przejściowy nie usuwa wcześniejszych migawek ani nie potwierdza braku historycznej treści.",
+            "configuration_unavailable": "Konfiguracja odczytu jest niedostępna; sprawdź diagnostykę przed odczytem.",
+            "source_message": "Referencja i możliwości",
+            "reload": "Odśwież metadane źródła (bez odczytu treści)",
+            "empty": "Rozpoznane źródło nie zawiera wiadomości.",
+            "install": "Zainstaluj opisy lokalnego widoku źródła w tym profilu",
+            "feature_missing": "Ten profil nie ma zaakceptowanego katalogu lokalnego widoku źródła. Instalacja deklaracji zachowuje istniejące ustawienia i wykluczenia.",
+            "source_status": "Status źródła: {{status}}; mapowanie: {{mapping}}; aktualne: {{current}}",
+            "status_unavailable": "niedostępne",
+            "status_unknown": "nieznane",
+            "status_partial": "częściowe",
+            "status_complete": "kompletne",
+            "host_unavailable": "Ten host udostępnia tylko zapisane wiadomości. Odczyt historii źródła referencyjnego jest niedostępny.",
+            "exact_wire": "Dokładny JSON natywnego widoku",
+            "decoded_projection": "Tekst i podsumowania są zdekodowaną projekcją widoku. Liczby w nieznanych polach mogą być tu zaokrąglone. Dokładna odpowiedź natywna jest dostępna w dowodach źródła.",
+            "wire_unavailable": "Dokładna odpowiedź natywna jest niedostępna dla tej odpowiedzi hosta."
+          }
+        }
+      }
+    }
+  ]
+}

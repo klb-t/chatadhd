@@ -20,7 +20,8 @@
     "test:imported-message-content-native": "node e2e/imported-message-content-native.mjs",
     "test:application-profile-graph": "node e2e/application-profile-graph.mjs",
     "test:interface-2": "node e2e/harness-lifecycle-test.mjs && node e2e/source-views.mjs && node e2e/chat-settings-state.mjs && node e2e/profile-view-geometry.mjs && node e2e/workflow-snapshot.mjs --browser && node e2e/workflow-checkpoint.mjs && node e2e/operations-panel.mjs && node e2e/usage-policy-ui.mjs && node e2e/graph-reply-ui.mjs && node e2e/resource-controls.mjs",
-    "test:interface-2-native": "node e2e/interface-2-native-runner.mjs"
+    "test:interface-2-native": "node e2e/interface-2-native-runner.mjs",
+    "test:product-integration": "node tests/graph-perspectives/headless.test.mjs && node tests/graph-perspectives/native-layers.test.mjs && node tests/graph-perspectives/adapters.test.mjs && node tests/graph-perspectives/compatibility.test.mjs && node tests/product-perspective/headless.test.mjs && node e2e/onboarding-host.mjs && node e2e/semantic-status.mjs && node tests/conversation-view/headless.test.mjs && node e2e/conversation-view-native.mjs"
   },
   "dependencies": {
     "dompurify": "^3.2.4",

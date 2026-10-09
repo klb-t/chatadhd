@@ -81,6 +81,9 @@ export interface LoomApi {
   updateConversation(id: string, patch: Partial<Conversation>): Promise<Conversation>;
   deleteConversation(id: string): Promise<void>;
 
+  // Metadata GET never grants source access; local_read requires an explicit host action.
+  readConversationView?(convId: string, request: import("./conversation-view").ConversationReadRequest, options?: NativeUiRequestOptions): Promise<import("./conversation-view").ConversationView>;
+
   // Messages
   getMessages(convId: string, all?: boolean): Promise<Message[]>;
   getMessage(id: string): Promise<Message>;

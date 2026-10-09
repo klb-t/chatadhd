@@ -144,7 +144,7 @@ export default function App() {
 
         <div className={`main-panel${knowledgeOpen ? " with-workbench" : ""}`}>
           <div className={`chat-host${knowledgeOpen ? " beside-workbench" : ""}`} hidden={knowledgeOpen && !chatVisible}>
-            <ApplicationProfiles convId={activeConvId} onConversationCreated={onConversationCreated}
+            <ApplicationProfiles profileHost={userProfileHost} convId={activeConvId} onConversationCreated={onConversationCreated}
               refreshKey={convRefreshKey} onMessagesChanged={onMessagesChanged} ui={profileUi}
               onPrimaryProfile={setPrimaryProfile} onSharedConversationRestored={setActiveConvId}
               canRestoreWorkspace={canRestoreWorkspace} />

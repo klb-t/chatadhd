@@ -25,6 +25,8 @@ import { isLoomError } from "./types";
 import type { KnowledgeApi } from "./knowledge";
 import type { GraphPacketStoreRequest, GraphPacketStoreResult } from "./graph-packets";
 
+import { readConversationView, type ConversationReadRequest, type ConversationView } from "./conversation-view";
+
 const TOKEN_KEY = "loom.auth_token";
 
 class HttpError extends Error {
@@ -114,20 +116,27 @@ export class LoomHttpApi implements LoomApi {
     return h;
   }
 
-  private async req<T>(method: string, path: string, body?: unknown, keepError = false, signal?: AbortSignal): Promise<T> {
+  private async req<T>(method: string, path: string, body?: unknown, keepError = false, signal?: AbortSignal, cache?: RequestCache, captureWire?: (text: string) => void): Promise<T> {
     const res = await fetch(path, {
       method,
       headers: body !== undefined ? this.headers({ "Content-Type": "application/json" }) : this.headers(),
       body: body !== undefined ? JSON.stringify(body) : undefined,
-      signal,
+      signal, cache,
     });
     const text = await res.text();
-    const parsed = text ? JSON.parse(text) : {};
+    let parsed: unknown;
+    try { parsed = text ? JSON.parse(text) : {}; }
+    catch (cause) {
+      // Source-view parse diagnostics must not echo snippets of its payload.
+      if (captureWire) throw new HttpError(res.status, "native_response_json_invalid");
+      throw cause;
+    }
     if (keepError && isLoomError(parsed)) return parsed as T;
     if (!res.ok || isLoomError(parsed)) {
       const msg = isLoomError(parsed) ? parsed.error.message : `HTTP ${res.status}`;
       throw new HttpError(res.status, msg);
     }
+    captureWire?.(text);
     return parsed as T;
   }
 
@@ -138,6 +147,17 @@ export class LoomHttpApi implements LoomApi {
       parts.push(`${encodeURIComponent(k)}=${encodeURIComponent(String(v))}`);
     }
     return parts.length ? `?${parts.join("&")}` : "";
+  }
+
+  async readConversationView(convId: string, request: ConversationReadRequest, options?: NativeUiRequestOptions): Promise<ConversationView> {
+    if (request.sourceAccess !== "metadata" && request.sourceAccess !== "local_read") throw new Error("conversation_view_access_invalid");
+    if (request.sourceAccess === "metadata" && request.readOptions !== undefined) throw new Error("conversation_view_metadata_options_invalid");
+    const localRead = request.sourceAccess === "local_read";
+    let nativeWire: string | undefined;
+    const result = await this.req<unknown>(localRead ? "POST" : "GET", `/api/conversations/${encodeURIComponent(convId)}/view`,
+      localRead ? { ...(request.readOptions === undefined ? {} : { read_options: request.readOptions }) } : undefined,
+      false, options?.signal, "no-store", text => { nativeWire = text; });
+    return readConversationView(result, convId, nativeWire);
   }
 
   // Generic SSE reader shared by chat/import/events. Returns an unsubscribe

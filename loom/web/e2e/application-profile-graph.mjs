@@ -26,7 +26,8 @@ const typesUrl = moduleUrl(transpile("../src/api/types.ts"));
 const operationsUrl = moduleUrl(transpile("../src/api/operations.ts"));
 const runtime = await import(runtimeUrl);
 const graph = await import(moduleUrl(transpile("../src/profiles/graph.ts").replaceAll('from "./runtime"', `from "${runtimeUrl}"`)));
-const { LoomHttpApi } = await import(moduleUrl(transpile("../src/api/loom-http.ts")
+const conversationViewUrl = moduleUrl(transpile("../src/api/conversation-view.ts"));
+const { LoomHttpApi } = await import(moduleUrl(transpile("../src/api/loom-http.ts").replaceAll('from "./conversation-view"', `from "${conversationViewUrl}"`)
   .replaceAll('from "./types"', `from "${typesUrl}"`)
   .replaceAll('from "./operations"', `from "${operationsUrl}"`)));
 const { LoomJniApi } = await import(moduleUrl(transpile("../src/api/loom-jni.ts").replaceAll('from "./types"', `from "${typesUrl}"`)));

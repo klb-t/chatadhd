@@ -64,6 +64,15 @@ const server = createServer(async (req, res) => {
     const row = { id: `created-${++created}`, title: body.title || "Untitled", created: timestamp, updated: timestamp };
     conversations.push(row); messages.set(row.id, []); return json(row);
   }
+  // Authored native-only additive view; does not emulate external source I/O.
+  const viewMatch = /^\/api\/conversations\/([^/]+)\/view$/.exec(url.pathname);
+  if (viewMatch && req.method === "GET") {
+    const id = decodeURIComponent(viewMatch[1]);
+    return json({ schema: "loom.conversation_view/1", conversation_id: id, view_id: `authored:${id}`,
+      status: "complete", messages: (messages.get(id) ?? []).map(message => ({ ...message, storage: "native",
+        capabilities: { edit: true, set_status: true, restore: true, native_lookup: true } })),
+      resources: [], omissions: [], capabilities: { source_history_send: { available: false, reason: "not_applicable" } } });
+  }
   const messageMatch = /^\/api\/conversations\/([^/]+)\/messages$/.exec(url.pathname);
   if (messageMatch) return json(messages.get(decodeURIComponent(messageMatch[1])) ?? []);
   if (url.pathname === "/api/models") return json([{ id: "fixture/one", name: "Fixture one" }, { id: "fixture/two", name: "Fixture two" }]);

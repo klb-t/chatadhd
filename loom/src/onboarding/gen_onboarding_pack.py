@@ -14,6 +14,7 @@ FILES = {
 }
 OUT = Path(__file__).with_name("builtin.inc")
 WEB_OUT = ROOT / "web/src/onboarding/generated/ui.json"
+WEB_CONVERSATION_VIEW_OUT = ROOT / "web/src/onboarding/generated/conversation-view.json"
 
 
 def read_document(path, trail=()):
@@ -142,7 +143,8 @@ def generated():
             raise ValueError("raw string delimiter collision")
         lines.append(f'static constexpr char {name}[] = R"loom_onboard({raw})loom_onboard";\n')
     ui = serialized(docs["kOnboardingPresentation"])
-    return {OUT: "".join(lines), WEB_OUT: ui}
+    return {OUT: "".join(lines), WEB_OUT: ui,
+            WEB_CONVERSATION_VIEW_OUT: serialized(read_document(DATA / "profiles/conversation_view.pack"))}
 
 
 def main():

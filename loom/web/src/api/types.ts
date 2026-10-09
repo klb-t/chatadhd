@@ -31,16 +31,19 @@ export interface Message {
   id: string;
   conv_id: string;
   parent_id?: string | null;
-  role: "user" | "assistant" | "system";
+  role: string;
   text: string;
   model?: string | null;
   status: MessageStatus;
   version_group_id?: string | null;
   version_num?: number;
   weight?: number;
-  attachments?: string[];
+  attachments?: unknown;
   metadata?: Record<string, unknown>;
-  created: string;
+  created: string | null;
+  storage?: "native" | "reference";
+  capabilities?: { edit: boolean; set_status: boolean; restore: boolean; native_lookup: boolean };
+  source_ref?: Record<string, unknown>;
   semantic_status?: "pending" | "executing" | "failed" | "done";
 }
 
