@@ -1,0 +1,409 @@
+{
+  "repo": "klb-t/chatadhd",
+  "sha": "384c5e1686cd3a58a7d89a8a6813a18c764f697d",
+  "baseline_sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "denominator": "20 explicitly listed files with selected ranges, not entire repo or all functions",
+  "selected_files": 20,
+  "new_files_relative_to_pass2_native_only": [
+    "loom/include/loom/catalog.h",
+    "loom/include/loom/provenance.h",
+    "loom/include/loom/model.h",
+    "loom/include/loom/runtime.h",
+    "loom/src/catalog/catalog.cpp",
+    "loom/src/catalog/import.cpp",
+    "loom/src/catalog/query.cpp",
+    "loom/src/catalog/scan.cpp",
+    "loom/src/core/provenance.cpp",
+    "loom/src/net/http_common.cpp",
+    "loom/src/import/export_openai.cpp",
+    "loom/src/import/export_common.cpp",
+    "loom/src/extract/stage.cpp",
+    "loom/src/extract/semantic.cpp",
+    "loom/src/capi/capi_catalog.cpp",
+    "loom/server/src/app.cpp",
+    "loom/web/src/api/loom-http.ts",
+    "loom/src/capi/capi_core.cpp",
+    "loom/src/chat/chat_engine.cpp"
+  ],
+  "note": "Root must union with other modules; new relative to native alone is not ecosystem coverage delta. Headers/source separate from generated/vendored build dependencies.",
+  "paths": [
+    {
+      "file": "loom/include/loom/catalog.h",
+      "file_sha256": "6416e888195404d65f480a39ae2992df8e2e247eb39a0908c25a4aa044456a45",
+      "ranges": [
+        [
+          1,
+          47
+        ],
+        [
+          87,
+          105
+        ],
+        [
+          220,
+          283
+        ]
+      ],
+      "functions": [
+        "ScanConfig/ImportOptions/Catalog contracts"
+      ],
+      "untraced_calls": [
+        "all profile/scoring strategies"
+      ],
+      "kind": "product"
+    },
+    {
+      "file": "loom/include/loom/provenance.h",
+      "file_sha256": "150d811ccd7d583a959bb274dd83866d8f0f6d84ad77b8e4eba6439fb2f9c8a2",
+      "ranges": [
+        [
+          20,
+          112
+        ]
+      ],
+      "functions": [
+        "BlobStore, SourceRecord, ProvenanceRecord"
+      ],
+      "untraced_calls": [
+        "event log and artifact lifecycle"
+      ],
+      "kind": "product"
+    },
+    {
+      "file": "loom/include/loom/model.h",
+      "file_sha256": "5e7b3777fe52a3cab6d59b55d8e706162aa34306fd0aac5668a79d19c2f1cb6c",
+      "ranges": [
+        [
+          296,
+          346
+        ]
+      ],
+      "functions": [
+        "Locator/Unit/Observation"
+      ],
+      "untraced_calls": [
+        "other model DTO types"
+      ],
+      "kind": "product"
+    },
+    {
+      "file": "loom/include/loom/runtime.h",
+      "file_sha256": "c92ac45952d8adbc5daebb267eae00746a9c00f36c5e9368418ff71d2ba8f9c7",
+      "ranges": [
+        [
+          1,
+          88
+        ]
+      ],
+      "functions": [
+        "RuntimeOptions worker/http isolation"
+      ],
+      "untraced_calls": [
+        "remaining construction/destruction"
+      ],
+      "kind": "product"
+    },
+    {
+      "file": "loom/src/catalog/catalog.cpp",
+      "file_sha256": "590825afeab590ebb2915eeee0e5772326e5741ed8e8a559eaa44e27fff5fd74",
+      "ranges": [
+        [
+          247,
+          274
+        ]
+      ],
+      "functions": [
+        "ImportOptions parse/serialization"
+      ],
+      "untraced_calls": [
+        "other DTO parsing"
+      ],
+      "kind": "product"
+    },
+    {
+      "file": "loom/src/catalog/import.cpp",
+      "file_sha256": "093ff1939ddd9b2b659cea1f6cb5f36c72ecd956a330e2385316ab350b778720",
+      "ranges": [
+        [
+          130,
+          378
+        ]
+      ],
+      "functions": [
+        "full/selective branch; copy/link projections"
+      ],
+      "untraced_calls": [
+        "earlier sibling/time filters; every format"
+      ],
+      "kind": "product"
+    },
+    {
+      "file": "loom/src/catalog/query.cpp",
+      "file_sha256": "1b023775d201a6d41d8d6807ceba47fe84efb6a0982cd0e246c8d1f800186a1c",
+      "ranges": [
+        [
+          127,
+          282
+        ]
+      ],
+      "functions": [
+        "preview/read_unit/status"
+      ],
+      "untraced_calls": [
+        "query score/filter logic"
+      ],
+      "kind": "product"
+    },
+    {
+      "file": "loom/src/catalog/scan.cpp",
+      "file_sha256": "9dcbf4063de156856eecdf3759d12bd5e64340dfb0835b9225483e107162fe31",
+      "ranges": [
+        [
+          89,
+          145
+        ],
+        [
+          395,
+          485
+        ]
+      ],
+      "functions": [
+        "source registration, changed content version observations, ZIP/source dispatch"
+      ],
+      "untraced_calls": [
+        "dedup internals outside listed ranges; nested ZIP not executed"
+      ],
+      "kind": "product"
+    },
+    {
+      "file": "loom/src/core/provenance.cpp",
+      "file_sha256": "e0b48f891d61c28ac9f18c003c9c5e00efcbde06d82a73216936f1f05ba9faba",
+      "ranges": [
+        [
+          158,
+          172
+        ]
+      ],
+      "functions": [
+        "BlobStore read/verify"
+      ],
+      "untraced_calls": [
+        "put/register algorithms not newly semantically traced"
+      ],
+      "kind": "product"
+    },
+    {
+      "file": "loom/src/model/runtime_profile.cpp",
+      "file_sha256": "0aab7afb23b413fdc62e6cd51b852a5596b0e8fb7b029bd95583f71e8ee6cc93",
+      "ranges": [
+        [
+          279,
+          338
+        ]
+      ],
+      "functions": [
+        "local overlay load/validate/inspection"
+      ],
+      "untraced_calls": [
+        "all domain-specific consumers"
+      ],
+      "kind": "product"
+    },
+    {
+      "file": "loom/src/net/http_common.cpp",
+      "file_sha256": "9c81f0959b00624e60899f56f2797f9891cef5e56895207d1678107766a384c4",
+      "ranges": [
+        [
+          63,
+          123
+        ]
+      ],
+      "functions": [
+        "profile-aware request parse + transport policy"
+      ],
+      "untraced_calls": [
+        "actual HTTP/TLS transport"
+      ],
+      "kind": "product"
+    },
+    {
+      "file": "loom/src/import/export_openai.cpp",
+      "file_sha256": "7bd5a680ce50bcb4ae3030e8caea37c5376a939fffaafcfb97d095970710d465",
+      "ranges": [
+        [
+          614,
+          665
+        ]
+      ],
+      "functions": [
+        "nearest-parent/sibling projection"
+      ],
+      "untraced_calls": [
+        "all other provider fields"
+      ],
+      "kind": "product"
+    },
+    {
+      "file": "loom/src/import/export_common.cpp",
+      "file_sha256": "192998d1a8efb6f3b9ead684e5fe6f0a16661d24ce0100e357e234b7467c31ae",
+      "ranges": [
+        [
+          543,
+          599
+        ]
+      ],
+      "functions": [
+        "persist relation-aware ConvModel"
+      ],
+      "untraced_calls": [
+        "attachments and unknown mapping discovery delegated"
+      ],
+      "kind": "product"
+    },
+    {
+      "file": "loom/src/extract/stage.cpp",
+      "file_sha256": "fdd7ffae2c959b15fc5de7eb48d299c1640085a622a29747447da042fe1b1347",
+      "ranges": [
+        [
+          161,
+          185
+        ],
+        [
+          231,
+          336
+        ]
+      ],
+      "functions": [
+        "catalog structured unit read + real extraction/persist"
+      ],
+      "untraced_calls": [
+        "all Extractor language rules"
+      ],
+      "kind": "product"
+    },
+    {
+      "file": "loom/src/extract/semantic.cpp",
+      "file_sha256": "ce6e685886c40f885dcc8eca320e1a9fcf9acb4b68e000dc48bb17544f28ad32",
+      "ranges": [
+        [
+          521,
+          559
+        ]
+      ],
+      "functions": [
+        "explicit llm off guard"
+      ],
+      "untraced_calls": [
+        "model path deliberately not executed"
+      ],
+      "kind": "product"
+    },
+    {
+      "file": "loom/src/capi/capi_catalog.cpp",
+      "file_sha256": "e284a244d70cfa7ac7c6daa9af41e70c4f675d7049c99ff5e1398e0c351df21e",
+      "ranges": [
+        [
+          1,
+          154
+        ]
+      ],
+      "functions": [
+        "thin scan/query/preview/import wrappers"
+      ],
+      "untraced_calls": [
+        "CAPI itself static trace only"
+      ],
+      "kind": "product"
+    },
+    {
+      "file": "loom/server/src/app.cpp",
+      "file_sha256": "3ffc188f0f5babf8ee1ca75d8ef4c11397d7cae0262fbdf0bb6eaf83321e0f4c",
+      "ranges": [
+        [
+          1134,
+          1136
+        ],
+        [
+          345,
+          350
+        ]
+      ],
+      "functions": [
+        "preview route",
+        "conversation messages route delegates to CAPI DB read"
+      ],
+      "untraced_calls": [
+        "browser execution"
+      ],
+      "kind": "product"
+    },
+    {
+      "file": "loom/web/src/api/loom-http.ts",
+      "file_sha256": "ea8b6601f749704413053de62002e59b0b2d50e3b1d558981072cd8bf80c859f",
+      "ranges": [
+        [
+          88,
+          88
+        ],
+        [
+          216,
+          218
+        ]
+      ],
+      "functions": [
+        "catalogPreview client route",
+        "getMessages HTTP client route"
+      ],
+      "untraced_calls": [
+        "all browser presentation"
+      ],
+      "kind": "product"
+    },
+    {
+      "file": "loom/src/capi/capi_core.cpp",
+      "file_sha256": "3ff90b721f9d10d9f158a1a9acb4cecdede9130b944ed665c3143aabbeaaa31f",
+      "ranges": [
+        [
+          244,
+          257
+        ]
+      ],
+      "functions": [
+        "loom_get_messages/ex delegates to Database.get_msgs"
+      ],
+      "untraced_calls": [
+        "remaining CAPI methods"
+      ],
+      "kind": "product"
+    },
+    {
+      "file": "loom/src/chat/chat_engine.cpp",
+      "file_sha256": "808494db6c016dc7d9742ad0f5a3f4523edbef0e3d0918af96e1dbd369ac8852",
+      "ranges": [
+        [
+          790,
+          806
+        ]
+      ],
+      "functions": [
+        "history loop consumes Database.get_msgs text"
+      ],
+      "untraced_calls": [
+        "actual Chat send not executed in this package"
+      ],
+      "kind": "product"
+    }
+  ],
+  "runtime_closed": [
+    "flat ZIP catalog link/copy→read_unit→actual extract→KnowledgeStore restart",
+    "source changed/missing→read error→stored conversation/observations retained",
+    "net external file→RuntimeProfile→HttpRequest→HttpTransportPolicy without send"
+  ],
+  "unverified": [
+    "nested ZIP and remote transports",
+    "actual browser equality",
+    "generic external profile resource_ref→graph→runtime",
+    "orthogonal resource-policy activation/writeback",
+    "all unknown mapping alternatives (C discovery module)"
+  ]
+}

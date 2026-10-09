@@ -1,0 +1,35 @@
+{
+  "decisions": [
+    {
+      "id": "RES-D001",
+      "choice": "copy versus link also selects parsed messages versus placeholders",
+      "visibility": "explicit storage setting; semantic consequence in consumer code",
+      "evidence": "catalog/import.cpp278–365",
+      "alternatives": "independent storage and graph/presentation policies",
+      "finding": "CH-RES-N001"
+    },
+    {
+      "id": "RES-D002",
+      "choice": "catalog copy writer flattens parent/version topology",
+      "visibility": "implicit entrypoint consequence",
+      "evidence": "copy direct-import signature mismatch",
+      "alternatives": "reuse lossless projection, retain flat derived strategy explicitly",
+      "finding": "CH-RES-N002"
+    },
+    {
+      "id": "RES-D003",
+      "choice": "missing optional local profile uses builtin",
+      "visibility": "existing optional-loader contract",
+      "evidence": "RuntimeProfile.load and RES-NATIVE-013",
+      "alternatives": "bound external resource needs availability/version policy; do not silently treat this loader as its implementation",
+      "finding": "CH-RES-G002"
+    },
+    {
+      "id": "RES-D004",
+      "choice": "bad source read aborts before old extraction graph is cleared",
+      "visibility": "explicit LOOM_TRY failure propagation",
+      "evidence": "RES-NATIVE-017;4 old observations survive",
+      "classification": "dopuszczalny mechanizm"
+    }
+  ]
+}

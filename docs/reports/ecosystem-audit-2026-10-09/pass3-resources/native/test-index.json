@@ -1,0 +1,150 @@
+{
+  "schema": "ecosystem-audit.test-index/1",
+  "suite": "native external resources",
+  "command": "python3 tools/ecosystem-audit-2026-10-09/pass3-resources/native/run.py --repo CHECKOUT --sha SHA --build-dir BUILD --output OUT",
+  "optional_B2_manifest": "docs/reports/ecosystem-audit-2026-10-09/pass2/watchdog/B2/object-manifest.json",
+  "main_sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "B2_sha": "384c5e1686cd3a58a7d89a8a6813a18c764f697d",
+  "counts": {
+    "main": {
+      "PASS": 16,
+      "FAIL": 2,
+      "BLOCKED": 3,
+      "NOT_REPRODUCED": 0
+    },
+    "B2": {
+      "PASS": 16,
+      "FAIL": 2,
+      "BLOCKED": 3,
+      "NOT_REPRODUCED": 0
+    }
+  },
+  "tests": [
+    {
+      "id": "RES-NATIVE-COPY-SCAN",
+      "kind": "behavior_probe",
+      "main": "PASS",
+      "B2": "PASS"
+    },
+    {
+      "id": "RES-NATIVE-LINK-SCAN",
+      "kind": "behavior_probe",
+      "main": "PASS",
+      "B2": "PASS"
+    },
+    {
+      "id": "RES-NATIVE-001-REPRO",
+      "kind": "reproduction",
+      "main": "PASS",
+      "B2": "PASS"
+    },
+    {
+      "id": "RES-NATIVE-001",
+      "kind": "acceptance",
+      "main": "FAIL",
+      "B2": "FAIL"
+    },
+    {
+      "id": "RES-NATIVE-002",
+      "kind": "acceptance",
+      "main": "FAIL",
+      "B2": "FAIL"
+    },
+    {
+      "id": "RES-NATIVE-003",
+      "kind": "acceptance",
+      "main": "PASS",
+      "B2": "PASS"
+    },
+    {
+      "id": "RES-NATIVE-004",
+      "kind": "behavior_probe",
+      "main": "PASS",
+      "B2": "PASS"
+    },
+    {
+      "id": "RES-NATIVE-016",
+      "kind": "acceptance",
+      "main": "PASS",
+      "B2": "PASS"
+    },
+    {
+      "id": "RES-NATIVE-005",
+      "kind": "missing_contract",
+      "main": "BLOCKED",
+      "B2": "BLOCKED"
+    },
+    {
+      "id": "RES-NATIVE-006",
+      "kind": "acceptance",
+      "main": "PASS",
+      "B2": "PASS"
+    },
+    {
+      "id": "RES-NATIVE-007",
+      "kind": "acceptance",
+      "main": "PASS",
+      "B2": "PASS"
+    },
+    {
+      "id": "RES-NATIVE-008",
+      "kind": "acceptance",
+      "main": "PASS",
+      "B2": "PASS"
+    },
+    {
+      "id": "RES-NATIVE-017",
+      "kind": "acceptance",
+      "main": "PASS",
+      "B2": "PASS"
+    },
+    {
+      "id": "RES-NATIVE-009",
+      "kind": "acceptance",
+      "main": "PASS",
+      "B2": "PASS"
+    },
+    {
+      "id": "RES-NATIVE-010",
+      "kind": "behavior_probe",
+      "main": "PASS",
+      "B2": "PASS"
+    },
+    {
+      "id": "RES-NATIVE-011",
+      "kind": "acceptance",
+      "main": "PASS",
+      "B2": "PASS"
+    },
+    {
+      "id": "RES-NATIVE-012",
+      "kind": "acceptance",
+      "main": "PASS",
+      "B2": "PASS"
+    },
+    {
+      "id": "RES-NATIVE-013",
+      "kind": "behavior_probe",
+      "main": "PASS",
+      "B2": "PASS"
+    },
+    {
+      "id": "RES-NATIVE-014",
+      "kind": "missing_contract",
+      "main": "BLOCKED",
+      "B2": "BLOCKED"
+    },
+    {
+      "id": "RES-NATIVE-015",
+      "kind": "missing_contract",
+      "main": "BLOCKED",
+      "B2": "BLOCKED"
+    },
+    {
+      "id": "RES-NATIVE-NETWORK",
+      "kind": "acceptance",
+      "main": "PASS",
+      "B2": "PASS"
+    }
+  ]
+}

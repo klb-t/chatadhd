@@ -1,0 +1,37 @@
+{
+  "paths": [
+    {
+      "data": "ZIP original or copy snapshot",
+      "graph": [
+        "source hash",
+        "Locator member+JSON pointer",
+        "CatalogUnit",
+        "extract-generated Observation node/parent/branch/current"
+      ],
+      "runtime": "read_unit→units_from_catalog→Extractor→KnowledgeStore; actually executed",
+      "ui": "Catalog preview route shares read_unit but presents verification/snippets",
+      "status": "partial shared mechanism; conversation projection differs"
+    },
+    {
+      "data": "catalog full-link unit",
+      "graph": "SourceRecord+locator; placeholder in core messages",
+      "runtime": "Database.get_msgs returns document placeholder; headless graph access uses separate Extractor path",
+      "ui": "conversation read consumer receives placeholder",
+      "status": "CH-RES-N001"
+    },
+    {
+      "data": "catalog full-copy raw unit",
+      "graph": "raw snapshot retained; messages lack parent edges",
+      "runtime": "NewMessage copies role/text only; direct importer preserves parent",
+      "ui": "conversation topology differs by entrypoint",
+      "status": "CH-RES-N002"
+    },
+    {
+      "data": "profiles/net.pack",
+      "graph": "no demonstrated external-profile resource_ref→graph binding",
+      "runtime": "RuntimeProfile.load→HttpRequest→HttpTransportPolicy;701/1701 verified",
+      "ui": "not exercised",
+      "status": "local runtime pass; generic graph binding BLOCKED"
+    }
+  ]
+}

@@ -1,0 +1,5024 @@
+{
+  "schema": "ecosystem-audit.native-resources/1",
+  "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "repo": "klb-t/chatadhd",
+  "core_archive": "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/scratch/native/main-build/libloom_core.a",
+  "core_sha256": "ead8af9a36519f78d46782d8ca5b19d7e44779cb5c495d5a09b4d2bc1b303cd7",
+  "compile_command": [
+    "c++",
+    "-Wl,--no-keep-memory",
+    "-std=c++20",
+    "-O0",
+    "-g",
+    "-I/workspace/scratch/1112e9e8a3c6/audit-work/continuation/checkouts/main/loom/include",
+    "-I/workspace/scratch/1112e9e8a3c6/audit-work/continuation/checkouts/main/loom/third_party/nlohmann",
+    "-I/workspace/scratch/1112e9e8a3c6/audit-work/continuation/checkouts/main/loom/third_party/sqlite",
+    "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/artifacts/tools/ecosystem-audit-2026-10-09/pass3-resources/native/driver.cpp",
+    "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/scratch/native/main-build/libloom_core.a",
+    "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/scratch/native/main-build/libloom_sqlite3_amalgamation.a",
+    "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/scratch/native/main-build/libloom_miniz.a",
+    "-lssl",
+    "-lcrypto",
+    "-pthread",
+    "-ldl",
+    "-lm",
+    "-Wl,-Map=/tmp/native-resources-audit-bi2po263/driver.map",
+    "-o",
+    "/tmp/native-resources-audit-bi2po263/driver"
+  ],
+  "build_manifest": null,
+  "fixture_zip_sha256": "28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+  "checks": [
+    {
+      "id": "RES-NATIVE-COPY-SCAN",
+      "kind": "behavior_probe",
+      "status": "PASS",
+      "observed": {
+        "scan": {
+          "units": 3,
+          "new": 3,
+          "unchanged": 0,
+          "refreshed": 0,
+          "input_hash": "383c84cf2827c31ceb3275e2399d044671931e399124ddc29790dcdc1a932bb8",
+          "versions": 0,
+          "bytes": 1546,
+          "warnings": []
+        },
+        "conversation_units": 2,
+        "import": {
+          "imported": 3,
+          "skipped": 0,
+          "bytes": 1546,
+          "conversations": [
+            "c_68a6be43cb31",
+            "c_7af07cfd8156"
+          ],
+          "units": [
+            "un_91efd907e2ec0e9f",
+            "un_9a01a13852a6b7e5",
+            "un_b27396d1974dd694"
+          ],
+          "retained_sources": [
+            {
+              "source_id": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+              "blob_hash": "28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "RES-NATIVE-LINK-SCAN",
+      "kind": "behavior_probe",
+      "status": "PASS",
+      "observed": {
+        "scan": {
+          "units": 3,
+          "new": 3,
+          "unchanged": 0,
+          "refreshed": 0,
+          "input_hash": "383c84cf2827c31ceb3275e2399d044671931e399124ddc29790dcdc1a932bb8",
+          "versions": 0,
+          "bytes": 1546,
+          "warnings": []
+        },
+        "conversation_units": 2,
+        "import": {
+          "imported": 3,
+          "skipped": 0,
+          "bytes": 1546,
+          "conversations": [
+            "c_f8d5bd1fea03",
+            "c_2efaa8099dc6",
+            "c_34ea632f012b"
+          ],
+          "units": [
+            "un_91efd907e2ec0e9f",
+            "un_9a01a13852a6b7e5",
+            "un_b27396d1974dd694"
+          ],
+          "retained_sources": []
+        }
+      }
+    },
+    {
+      "id": "RES-NATIVE-001-REPRO",
+      "kind": "reproduction",
+      "status": "PASS",
+      "observed": {
+        "copy": [
+          {
+            "title": "Synthetic branch",
+            "messages": [
+              [
+                "assistant",
+                "Synthetic alternate answer",
+                null
+              ],
+              [
+                "assistant",
+                "Synthetic first answer",
+                null
+              ],
+              [
+                "user",
+                "Synthetic question",
+                null
+              ]
+            ]
+          },
+          {
+            "title": "Synthetic second",
+            "messages": [
+              [
+                "user",
+                "Synthetic second conversation",
+                null
+              ]
+            ]
+          }
+        ],
+        "link": [
+          {
+            "title": "Synthetic branch",
+            "messages": [
+              [
+                "document",
+                "[linked to catalog unit un_b27396d1974dd694, 3 message(s)] Synthetic question",
+                null
+              ]
+            ]
+          },
+          {
+            "title": "Synthetic second",
+            "messages": [
+              [
+                "document",
+                "[linked to catalog unit un_91efd907e2ec0e9f, 1 message(s)] Synthetic second conversation",
+                null
+              ]
+            ]
+          },
+          {
+            "title": "[Import] ",
+            "messages": [
+              [
+                "document",
+                "[linked to catalog unit un_9a01a13852a6b7e5, 0 message(s)] ",
+                null
+              ]
+            ]
+          }
+        ],
+        "direct": [
+          {
+            "title": "Synthetic branch",
+            "messages": [
+              [
+                "assistant",
+                "Synthetic alternate answer",
+                "Synthetic question"
+              ],
+              [
+                "assistant",
+                "Synthetic first answer",
+                "Synthetic question"
+              ],
+              [
+                "user",
+                "Synthetic question",
+                null
+              ]
+            ]
+          },
+          {
+            "title": "Synthetic second",
+            "messages": [
+              [
+                "user",
+                "Synthetic second conversation",
+                null
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "RES-NATIVE-001",
+      "kind": "acceptance",
+      "status": "FAIL",
+      "observed": {
+        "copy": [
+          {
+            "title": "Synthetic branch",
+            "messages": [
+              [
+                "assistant",
+                "Synthetic alternate answer",
+                null
+              ],
+              [
+                "assistant",
+                "Synthetic first answer",
+                null
+              ],
+              [
+                "user",
+                "Synthetic question",
+                null
+              ]
+            ]
+          },
+          {
+            "title": "Synthetic second",
+            "messages": [
+              [
+                "user",
+                "Synthetic second conversation",
+                null
+              ]
+            ]
+          }
+        ],
+        "link": [
+          {
+            "title": "Synthetic branch",
+            "messages": [
+              [
+                "document",
+                "[linked to catalog unit un_b27396d1974dd694, 3 message(s)] Synthetic question",
+                null
+              ]
+            ]
+          },
+          {
+            "title": "Synthetic second",
+            "messages": [
+              [
+                "document",
+                "[linked to catalog unit un_91efd907e2ec0e9f, 1 message(s)] Synthetic second conversation",
+                null
+              ]
+            ]
+          },
+          {
+            "title": "[Import] ",
+            "messages": [
+              [
+                "document",
+                "[linked to catalog unit un_9a01a13852a6b7e5, 0 message(s)] ",
+                null
+              ]
+            ]
+          }
+        ],
+        "direct": [
+          {
+            "title": "Synthetic branch",
+            "messages": [
+              [
+                "assistant",
+                "Synthetic alternate answer",
+                "Synthetic question"
+              ],
+              [
+                "assistant",
+                "Synthetic first answer",
+                "Synthetic question"
+              ],
+              [
+                "user",
+                "Synthetic question",
+                null
+              ]
+            ]
+          },
+          {
+            "title": "Synthetic second",
+            "messages": [
+              [
+                "user",
+                "Synthetic second conversation",
+                null
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "RES-NATIVE-002",
+      "kind": "acceptance",
+      "status": "FAIL",
+      "observed": {
+        "copy": [
+          {
+            "title": "Synthetic branch",
+            "messages": [
+              [
+                "assistant",
+                "Synthetic alternate answer",
+                null
+              ],
+              [
+                "assistant",
+                "Synthetic first answer",
+                null
+              ],
+              [
+                "user",
+                "Synthetic question",
+                null
+              ]
+            ]
+          },
+          {
+            "title": "Synthetic second",
+            "messages": [
+              [
+                "user",
+                "Synthetic second conversation",
+                null
+              ]
+            ]
+          }
+        ],
+        "link": [
+          {
+            "title": "Synthetic branch",
+            "messages": [
+              [
+                "document",
+                "[linked to catalog unit un_b27396d1974dd694, 3 message(s)] Synthetic question",
+                null
+              ]
+            ]
+          },
+          {
+            "title": "Synthetic second",
+            "messages": [
+              [
+                "document",
+                "[linked to catalog unit un_91efd907e2ec0e9f, 1 message(s)] Synthetic second conversation",
+                null
+              ]
+            ]
+          },
+          {
+            "title": "[Import] ",
+            "messages": [
+              [
+                "document",
+                "[linked to catalog unit un_9a01a13852a6b7e5, 0 message(s)] ",
+                null
+              ]
+            ]
+          }
+        ],
+        "direct": [
+          {
+            "title": "Synthetic branch",
+            "messages": [
+              [
+                "assistant",
+                "Synthetic alternate answer",
+                "Synthetic question"
+              ],
+              [
+                "assistant",
+                "Synthetic first answer",
+                "Synthetic question"
+              ],
+              [
+                "user",
+                "Synthetic question",
+                null
+              ]
+            ]
+          },
+          {
+            "title": "Synthetic second",
+            "messages": [
+              [
+                "user",
+                "Synthetic second conversation",
+                null
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "RES-NATIVE-003",
+      "kind": "acceptance",
+      "status": "PASS",
+      "observed": {
+        "raw_units_equal": true,
+        "raw_sha256": [
+          "21966402ea851bd52d4dc68fd125bec37f6849e935939c30fa11cb7418397c84",
+          "453f9f358ce3e79f9c5098eac77056f743b640fc81e6347de704d18d9a097181"
+        ]
+      }
+    },
+    {
+      "id": "RES-NATIVE-004",
+      "kind": "behavior_probe",
+      "status": "PASS",
+      "observed": {
+        "preview_verified": [
+          true,
+          true
+        ],
+        "read_unit_success": true
+      }
+    },
+    {
+      "id": "RES-NATIVE-016",
+      "kind": "acceptance",
+      "status": "PASS",
+      "observed": {
+        "copy": {
+          "ok": true,
+          "value": {
+            "output": "a2224f18b66c0bf7d6f5fd9640d443c364a58754abd6dd421585bf291d9e8814",
+            "stats": {
+              "from": "catalog",
+              "units": 2,
+              "failed": 0,
+              "names": 0,
+              "observations": 4,
+              "entities": 2,
+              "claims": 0,
+              "areas": 0,
+              "principles": 0,
+              "decisions": 0,
+              "forks": 1,
+              "statuses": 0,
+              "semantic": {
+                "status": "off",
+                "candidate_ids": [],
+                "rejections": [],
+                "skipped": [],
+                "requests": 0,
+                "cache_hits": 0,
+                "accepted": 0,
+                "rejected": 0,
+                "failed": 0,
+                "input_bytes": 0,
+                "chunks": 0,
+                "omitted_observations": 0,
+                "failed_chunk_observations": 0,
+                "selected_chunks": [],
+                "identity": {
+                  "version": "2",
+                  "requested": false,
+                  "limits": {
+                    "max_requests": 4,
+                    "max_observations": 16,
+                    "max_chunk_bytes": 16000,
+                    "max_input_bytes": 64000,
+                    "max_output_tokens": 1600,
+                    "max_proposals": 16,
+                    "max_response_bytes": 128000,
+                    "timeout_ms": 30000
+                  },
+                  "representation": "relation_v1"
+                },
+                "requests_spent": 0,
+                "input_bytes_spent": 0,
+                "retry_required": false,
+                "representation": "relation_v1",
+                "accepted_bundles": 0,
+                "entity_drafts": 0,
+                "claim_drafts": 0,
+                "abstentions": 0,
+                "response_outcomes": [],
+                "output": "497ffcd6abfb43c9ff830263cd31933c77590d2c6e0deed4d908dd9b7b3dda62"
+              }
+            },
+            "names": []
+          },
+          "run": "kr_6cbaafa5204e6120",
+          "persisted_observations": [
+            {
+              "id": "ob_a155b68f666c7ca7",
+              "unit": "un_91efd907e2ec0e9f",
+              "kind": "utterance",
+              "text": "Synthetic second conversation",
+              "locator": {
+                "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+                "member": "conversations.json",
+                "json_pointer": "/mapping/z/message/content/parts/0",
+                "byte_start": 0,
+                "byte_len": 29,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "lang": "en",
+              "date": "2023-11-14T22:13:21Z",
+              "ordinal": 0,
+              "artifact_type": "conversation",
+              "speaker": "user",
+              "attrs": {
+                "node": "z",
+                "parent": "",
+                "branch": "",
+                "current": true,
+                "seq": 0,
+                "leaf": true
+              }
+            },
+            {
+              "id": "ob_e3381787e6ec8a44",
+              "unit": "un_b27396d1974dd694",
+              "kind": "utterance",
+              "text": "Synthetic question",
+              "locator": {
+                "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+                "member": "conversations.json",
+                "json_pointer": "/mapping/u/message/content/parts/0",
+                "byte_start": 0,
+                "byte_len": 18,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "lang": "",
+              "date": "2023-11-14T22:13:21Z",
+              "ordinal": 0,
+              "artifact_type": "conversation",
+              "speaker": "user",
+              "attrs": {
+                "node": "u",
+                "parent": "",
+                "branch": "",
+                "current": true,
+                "seq": 0,
+                "leaf": true
+              }
+            },
+            {
+              "id": "ob_04c137124e20cdd7",
+              "unit": "un_b27396d1974dd694",
+              "kind": "utterance",
+              "text": "Synthetic first answer",
+              "locator": {
+                "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+                "member": "conversations.json",
+                "json_pointer": "/mapping/a/message/content/parts/0",
+                "byte_start": 0,
+                "byte_len": 22,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "lang": "en",
+              "date": "2023-11-14T22:13:21Z",
+              "ordinal": 2,
+              "artifact_type": "conversation",
+              "speaker": "assistant",
+              "attrs": {
+                "node": "a",
+                "parent": "u",
+                "branch": "/0",
+                "current": true,
+                "seq": 1,
+                "leaf": true
+              }
+            },
+            {
+              "id": "ob_0d3c036c157621f9",
+              "unit": "un_b27396d1974dd694",
+              "kind": "utterance",
+              "text": "Synthetic alternate answer",
+              "locator": {
+                "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+                "member": "conversations.json",
+                "json_pointer": "/mapping/b/message/content/parts/0",
+                "byte_start": 0,
+                "byte_len": 26,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "lang": "",
+              "date": "2023-11-14T22:13:21Z",
+              "ordinal": 4,
+              "artifact_type": "conversation",
+              "speaker": "assistant",
+              "attrs": {
+                "node": "b",
+                "parent": "u",
+                "branch": "/1",
+                "current": false,
+                "seq": 2,
+                "leaf": true
+              }
+            }
+          ],
+          "blocked_transport_attempts": 0
+        },
+        "link": {
+          "ok": true,
+          "value": {
+            "output": "a2224f18b66c0bf7d6f5fd9640d443c364a58754abd6dd421585bf291d9e8814",
+            "stats": {
+              "from": "catalog",
+              "units": 2,
+              "failed": 0,
+              "names": 0,
+              "observations": 4,
+              "entities": 2,
+              "claims": 0,
+              "areas": 0,
+              "principles": 0,
+              "decisions": 0,
+              "forks": 1,
+              "statuses": 0,
+              "semantic": {
+                "status": "off",
+                "candidate_ids": [],
+                "rejections": [],
+                "skipped": [],
+                "requests": 0,
+                "cache_hits": 0,
+                "accepted": 0,
+                "rejected": 0,
+                "failed": 0,
+                "input_bytes": 0,
+                "chunks": 0,
+                "omitted_observations": 0,
+                "failed_chunk_observations": 0,
+                "selected_chunks": [],
+                "identity": {
+                  "version": "2",
+                  "requested": false,
+                  "limits": {
+                    "max_requests": 4,
+                    "max_observations": 16,
+                    "max_chunk_bytes": 16000,
+                    "max_input_bytes": 64000,
+                    "max_output_tokens": 1600,
+                    "max_proposals": 16,
+                    "max_response_bytes": 128000,
+                    "timeout_ms": 30000
+                  },
+                  "representation": "relation_v1"
+                },
+                "requests_spent": 0,
+                "input_bytes_spent": 0,
+                "retry_required": false,
+                "representation": "relation_v1",
+                "accepted_bundles": 0,
+                "entity_drafts": 0,
+                "claim_drafts": 0,
+                "abstentions": 0,
+                "response_outcomes": [],
+                "output": "497ffcd6abfb43c9ff830263cd31933c77590d2c6e0deed4d908dd9b7b3dda62"
+              }
+            },
+            "names": []
+          },
+          "run": "kr_6cbaafa5204e6120",
+          "persisted_observations": [
+            {
+              "id": "ob_a155b68f666c7ca7",
+              "unit": "un_91efd907e2ec0e9f",
+              "kind": "utterance",
+              "text": "Synthetic second conversation",
+              "locator": {
+                "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+                "member": "conversations.json",
+                "json_pointer": "/mapping/z/message/content/parts/0",
+                "byte_start": 0,
+                "byte_len": 29,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "lang": "en",
+              "date": "2023-11-14T22:13:21Z",
+              "ordinal": 0,
+              "artifact_type": "conversation",
+              "speaker": "user",
+              "attrs": {
+                "node": "z",
+                "parent": "",
+                "branch": "",
+                "current": true,
+                "seq": 0,
+                "leaf": true
+              }
+            },
+            {
+              "id": "ob_e3381787e6ec8a44",
+              "unit": "un_b27396d1974dd694",
+              "kind": "utterance",
+              "text": "Synthetic question",
+              "locator": {
+                "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+                "member": "conversations.json",
+                "json_pointer": "/mapping/u/message/content/parts/0",
+                "byte_start": 0,
+                "byte_len": 18,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "lang": "",
+              "date": "2023-11-14T22:13:21Z",
+              "ordinal": 0,
+              "artifact_type": "conversation",
+              "speaker": "user",
+              "attrs": {
+                "node": "u",
+                "parent": "",
+                "branch": "",
+                "current": true,
+                "seq": 0,
+                "leaf": true
+              }
+            },
+            {
+              "id": "ob_04c137124e20cdd7",
+              "unit": "un_b27396d1974dd694",
+              "kind": "utterance",
+              "text": "Synthetic first answer",
+              "locator": {
+                "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+                "member": "conversations.json",
+                "json_pointer": "/mapping/a/message/content/parts/0",
+                "byte_start": 0,
+                "byte_len": 22,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "lang": "en",
+              "date": "2023-11-14T22:13:21Z",
+              "ordinal": 2,
+              "artifact_type": "conversation",
+              "speaker": "assistant",
+              "attrs": {
+                "node": "a",
+                "parent": "u",
+                "branch": "/0",
+                "current": true,
+                "seq": 1,
+                "leaf": true
+              }
+            },
+            {
+              "id": "ob_0d3c036c157621f9",
+              "unit": "un_b27396d1974dd694",
+              "kind": "utterance",
+              "text": "Synthetic alternate answer",
+              "locator": {
+                "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+                "member": "conversations.json",
+                "json_pointer": "/mapping/b/message/content/parts/0",
+                "byte_start": 0,
+                "byte_len": 26,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "lang": "",
+              "date": "2023-11-14T22:13:21Z",
+              "ordinal": 4,
+              "artifact_type": "conversation",
+              "speaker": "assistant",
+              "attrs": {
+                "node": "b",
+                "parent": "u",
+                "branch": "/1",
+                "current": false,
+                "seq": 2,
+                "leaf": true
+              }
+            }
+          ],
+          "blocked_transport_attempts": 0
+        }
+      }
+    },
+    {
+      "id": "RES-NATIVE-005",
+      "kind": "missing_contract",
+      "status": "BLOCKED",
+      "reason": "Catalog preview and read_unit share verified raw access, but no parsed linked-conversation resolver is exposed to both conversation view and headless workflow. Source-read parity does not establish graph/conversation parity."
+    },
+    {
+      "id": "RES-NATIVE-006",
+      "kind": "acceptance",
+      "status": "PASS",
+      "observed": {
+        "direct_full_import_retains_unknown_fields_in_conversation_or_message_metadata": true
+      }
+    },
+    {
+      "id": "RES-NATIVE-007",
+      "kind": "acceptance",
+      "status": "PASS",
+      "observed": {
+        "read": {
+          "ok": false,
+          "code": "conflict",
+          "error": "content hash mismatch for un_91efd907e2ec0e9f: source bytes changed",
+          "blocked_transport_attempts": 0
+        },
+        "state_unchanged": true
+      }
+    },
+    {
+      "id": "RES-NATIVE-008",
+      "kind": "acceptance",
+      "status": "PASS",
+      "observed": {
+        "read": {
+          "ok": false,
+          "code": "io",
+          "error": "not a readable zip: /tmp/native-resources-audit-bi2po263/source.zip",
+          "blocked_transport_attempts": 0
+        },
+        "state_unchanged": true,
+        "preview_verified": false
+      }
+    },
+    {
+      "id": "RES-NATIVE-017",
+      "kind": "acceptance",
+      "status": "PASS",
+      "observed": {
+        "unavailable_error": "not a readable zip: /tmp/native-resources-audit-bi2po263/source.zip",
+        "observation_count_before": 4,
+        "observation_count_after": 4,
+        "preserved": true
+      }
+    },
+    {
+      "id": "RES-NATIVE-009",
+      "kind": "acceptance",
+      "status": "PASS",
+      "observed": {
+        "copy_snapshot_survives_missing_source": true
+      }
+    },
+    {
+      "id": "RES-NATIVE-010",
+      "kind": "behavior_probe",
+      "status": "PASS",
+      "observed": {
+        "scan": {
+          "units": 2,
+          "new": 2,
+          "unchanged": 1,
+          "refreshed": 0,
+          "input_hash": "383c84cf2827c31ceb3275e2399d044671931e399124ddc29790dcdc1a932bb8",
+          "versions": 2,
+          "bytes": 1479,
+          "warnings": []
+        },
+        "old_units_retained": true,
+        "version_links": [
+          {
+            "id": "un_0b1e20da9d76d452",
+            "prev_version": "un_b27396d1974dd694",
+            "source": "sha256:94f3a5d1a2c113c2f0001579e1e5ec01a4d61148bed616ffc27613a03d87e973"
+          },
+          {
+            "id": "un_6362f37cbd47be98",
+            "prev_version": "un_91efd907e2ec0e9f",
+            "source": "sha256:94f3a5d1a2c113c2f0001579e1e5ec01a4d61148bed616ffc27613a03d87e973"
+          },
+          {
+            "id": "un_91efd907e2ec0e9f",
+            "prev_version": "",
+            "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a"
+          },
+          {
+            "id": "un_9a01a13852a6b7e5",
+            "prev_version": "",
+            "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a"
+          },
+          {
+            "id": "un_b27396d1974dd694",
+            "prev_version": "",
+            "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a"
+          }
+        ]
+      }
+    },
+    {
+      "id": "RES-NATIVE-011",
+      "kind": "acceptance",
+      "status": "PASS",
+      "observed": {
+        "profiles": [
+          {
+            "inspection": {
+              "schema": "loom.runtime_profile_effective/1",
+              "domain": "net",
+              "revision": 1,
+              "hash": "ad8464ce36a5fb2762cf63b59c61a453683c51774b22bcd7002a4f24ec3ab763",
+              "is_builtin": false,
+              "values": {
+                "default_timeout_ms": 701,
+                "follow_redirects": false,
+                "keep_alive": false,
+                "ca_environment": [
+                  "SSL_CERT_FILE",
+                  "REQUESTS_CA_BUNDLE"
+                ],
+                "proxy_environment": {
+                  "https": [
+                    "HTTPS_PROXY"
+                  ]
+                }
+              },
+              "value_schema": {
+                "type": "object",
+                "required": [
+                  "default_timeout_ms",
+                  "follow_redirects",
+                  "keep_alive",
+                  "ca_environment",
+                  "proxy_environment"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "default_timeout_ms": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "x-setting": "/default_timeout_ms",
+                    "x-unit": "milliseconds",
+                    "x-consumer": "HttpRequest and default transport"
+                  },
+                  "follow_redirects": {
+                    "type": "boolean",
+                    "x-setting": "/follow_redirects",
+                    "x-consumer": "default transport"
+                  },
+                  "keep_alive": {
+                    "type": "boolean",
+                    "x-setting": "/keep_alive",
+                    "x-consumer": "default transport"
+                  },
+                  "ca_environment": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "x-setting": "/ca_environment",
+                    "x-consumer": "default TLS adapter"
+                  },
+                  "proxy_environment": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    },
+                    "x-setting": "/proxy_environment",
+                    "x-consumer": "default transport"
+                  }
+                }
+              },
+              "definition": {
+                "schema": "loom.runtime_profile/1",
+                "domain": "net",
+                "revision": 1,
+                "description": "HTTP transport recipe. TLS certificate verification is an engine invariant. Positive request timeouts are explicit; nonpositive requests use default_timeout_ms. Profile-aware JSON parsing uses this timeout when omitted. The legacy aggregate initializer uses the immutable builtin recipe. Environment lists choose the first nonempty value. Proxy sources are keyed by URI scheme; builtin HTTP has no proxy mapping, retaining historical behavior. A configured zero timeout is passed to the native HTTP adapter without claiming an unbounded connection timeout.",
+                "defaults": {
+                  "default_timeout_ms": 30000,
+                  "follow_redirects": true,
+                  "keep_alive": false,
+                  "ca_environment": [
+                    "SSL_CERT_FILE",
+                    "REQUESTS_CA_BUNDLE"
+                  ],
+                  "proxy_environment": {
+                    "https": [
+                      "HTTPS_PROXY"
+                    ]
+                  }
+                },
+                "value_schema": {
+                  "type": "object",
+                  "required": [
+                    "default_timeout_ms",
+                    "follow_redirects",
+                    "keep_alive",
+                    "ca_environment",
+                    "proxy_environment"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "default_timeout_ms": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 2147483647,
+                      "x-setting": "/default_timeout_ms",
+                      "x-unit": "milliseconds",
+                      "x-consumer": "HttpRequest and default transport"
+                    },
+                    "follow_redirects": {
+                      "type": "boolean",
+                      "x-setting": "/follow_redirects",
+                      "x-consumer": "default transport"
+                    },
+                    "keep_alive": {
+                      "type": "boolean",
+                      "x-setting": "/keep_alive",
+                      "x-consumer": "default transport"
+                    },
+                    "ca_environment": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "x-setting": "/ca_environment",
+                      "x-consumer": "default TLS adapter"
+                    },
+                    "proxy_environment": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "x-setting": "/proxy_environment",
+                      "x-consumer": "default transport"
+                    }
+                  }
+                }
+              },
+              "defaults": {
+                "default_timeout_ms": 30000,
+                "follow_redirects": true,
+                "keep_alive": false,
+                "ca_environment": [
+                  "SSL_CERT_FILE",
+                  "REQUESTS_CA_BUNDLE"
+                ],
+                "proxy_environment": {
+                  "https": [
+                    "HTTPS_PROXY"
+                  ]
+                }
+              },
+              "source_provenance": [
+                {
+                  "path": "loom/data/runtime/net.pack",
+                  "pointer": "",
+                  "raw_sha256": "cf27f54845174d961a05ca40aae5c54f9e2ca5f0387b6a06fb7ec4a424083389",
+                  "target": ""
+                }
+              ]
+            },
+            "request": {
+              "method": "GET",
+              "url": "https://synthetic.invalid/offline",
+              "headers": {},
+              "timeout_ms": 701,
+              "stream": false,
+              "body": ""
+            },
+            "policy": {
+              "timeout_ms": 701,
+              "follow_redirects": false,
+              "profile_hash": "ad8464ce36a5fb2762cf63b59c61a453683c51774b22bcd7002a4f24ec3ab763"
+            }
+          },
+          {
+            "inspection": {
+              "schema": "loom.runtime_profile_effective/1",
+              "domain": "net",
+              "revision": 1,
+              "hash": "23c8f556296c0e7281ec0261483d81104d4faf44a144b13f6e5a1fa0cacd1db4",
+              "is_builtin": false,
+              "values": {
+                "default_timeout_ms": 1701,
+                "follow_redirects": false,
+                "keep_alive": false,
+                "ca_environment": [
+                  "SSL_CERT_FILE",
+                  "REQUESTS_CA_BUNDLE"
+                ],
+                "proxy_environment": {
+                  "https": [
+                    "HTTPS_PROXY"
+                  ]
+                }
+              },
+              "value_schema": {
+                "type": "object",
+                "required": [
+                  "default_timeout_ms",
+                  "follow_redirects",
+                  "keep_alive",
+                  "ca_environment",
+                  "proxy_environment"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "default_timeout_ms": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "x-setting": "/default_timeout_ms",
+                    "x-unit": "milliseconds",
+                    "x-consumer": "HttpRequest and default transport"
+                  },
+                  "follow_redirects": {
+                    "type": "boolean",
+                    "x-setting": "/follow_redirects",
+                    "x-consumer": "default transport"
+                  },
+                  "keep_alive": {
+                    "type": "boolean",
+                    "x-setting": "/keep_alive",
+                    "x-consumer": "default transport"
+                  },
+                  "ca_environment": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "x-setting": "/ca_environment",
+                    "x-consumer": "default TLS adapter"
+                  },
+                  "proxy_environment": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    },
+                    "x-setting": "/proxy_environment",
+                    "x-consumer": "default transport"
+                  }
+                }
+              },
+              "definition": {
+                "schema": "loom.runtime_profile/1",
+                "domain": "net",
+                "revision": 1,
+                "description": "HTTP transport recipe. TLS certificate verification is an engine invariant. Positive request timeouts are explicit; nonpositive requests use default_timeout_ms. Profile-aware JSON parsing uses this timeout when omitted. The legacy aggregate initializer uses the immutable builtin recipe. Environment lists choose the first nonempty value. Proxy sources are keyed by URI scheme; builtin HTTP has no proxy mapping, retaining historical behavior. A configured zero timeout is passed to the native HTTP adapter without claiming an unbounded connection timeout.",
+                "defaults": {
+                  "default_timeout_ms": 30000,
+                  "follow_redirects": true,
+                  "keep_alive": false,
+                  "ca_environment": [
+                    "SSL_CERT_FILE",
+                    "REQUESTS_CA_BUNDLE"
+                  ],
+                  "proxy_environment": {
+                    "https": [
+                      "HTTPS_PROXY"
+                    ]
+                  }
+                },
+                "value_schema": {
+                  "type": "object",
+                  "required": [
+                    "default_timeout_ms",
+                    "follow_redirects",
+                    "keep_alive",
+                    "ca_environment",
+                    "proxy_environment"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "default_timeout_ms": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 2147483647,
+                      "x-setting": "/default_timeout_ms",
+                      "x-unit": "milliseconds",
+                      "x-consumer": "HttpRequest and default transport"
+                    },
+                    "follow_redirects": {
+                      "type": "boolean",
+                      "x-setting": "/follow_redirects",
+                      "x-consumer": "default transport"
+                    },
+                    "keep_alive": {
+                      "type": "boolean",
+                      "x-setting": "/keep_alive",
+                      "x-consumer": "default transport"
+                    },
+                    "ca_environment": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "x-setting": "/ca_environment",
+                      "x-consumer": "default TLS adapter"
+                    },
+                    "proxy_environment": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "x-setting": "/proxy_environment",
+                      "x-consumer": "default transport"
+                    }
+                  }
+                }
+              },
+              "defaults": {
+                "default_timeout_ms": 30000,
+                "follow_redirects": true,
+                "keep_alive": false,
+                "ca_environment": [
+                  "SSL_CERT_FILE",
+                  "REQUESTS_CA_BUNDLE"
+                ],
+                "proxy_environment": {
+                  "https": [
+                    "HTTPS_PROXY"
+                  ]
+                }
+              },
+              "source_provenance": [
+                {
+                  "path": "loom/data/runtime/net.pack",
+                  "pointer": "",
+                  "raw_sha256": "cf27f54845174d961a05ca40aae5c54f9e2ca5f0387b6a06fb7ec4a424083389",
+                  "target": ""
+                }
+              ]
+            },
+            "request": {
+              "method": "GET",
+              "url": "https://synthetic.invalid/offline",
+              "headers": {},
+              "timeout_ms": 1701,
+              "stream": false,
+              "body": ""
+            },
+            "policy": {
+              "timeout_ms": 1701,
+              "follow_redirects": false,
+              "profile_hash": "23c8f556296c0e7281ec0261483d81104d4faf44a144b13f6e5a1fa0cacd1db4"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "RES-NATIVE-012",
+      "kind": "acceptance",
+      "status": "PASS",
+      "observed": {
+        "response": {
+          "ok": false,
+          "code": "invalid_argument",
+          "error": "runtime profile /values/unknown_future_setting: unknown executable setting"
+        },
+        "source_bytes_unchanged": true
+      }
+    },
+    {
+      "id": "RES-NATIVE-013",
+      "kind": "behavior_probe",
+      "status": "PASS",
+      "observed": {
+        "is_builtin": true,
+        "contract": "existing optional fixed-path overlay; not a bound external-resource snapshot"
+      }
+    },
+    {
+      "id": "RES-NATIVE-014",
+      "kind": "missing_contract",
+      "status": "BLOCKED",
+      "reason": "RuntimeProfile.load(domain,data_dir) supports builtin + fixed local profiles/<domain>.pack overlay. No resource_ref/selector/version/mapping contract connects an arbitrary external profile graph entity to this loader; do not fabricate one or count raw profile loading as graph→runtime."
+    },
+    {
+      "id": "RES-NATIVE-015",
+      "kind": "missing_contract",
+      "status": "BLOCKED",
+      "reason": "No inspected common resource descriptor exposes independent retain/reference/both, eager/lazy, cache/index, snapshot/live, readonly/overlay/writeback and mapping alternatives to existing native consumers. Catalog copy/link plus fixed overlay loading are narrower existing contracts."
+    },
+    {
+      "id": "RES-NATIVE-NETWORK",
+      "kind": "acceptance",
+      "status": "PASS",
+      "observed": {
+        "blocked_attempts": 0,
+        "real_transport": "injected ScriptedTransport rejects every call; workers off"
+      }
+    }
+  ],
+  "calls": [
+    {
+      "op": "scan",
+      "request": {
+        "op": "scan",
+        "data_dir": "/tmp/native-resources-audit-bi2po263/copy",
+        "config": {
+          "sources": [
+            "/tmp/native-resources-audit-bi2po263/source.zip"
+          ],
+          "threads": 1,
+          "retain_raw": "none"
+        }
+      },
+      "response": {
+        "ok": true,
+        "value": {
+          "units": 3,
+          "new": 3,
+          "unchanged": 0,
+          "refreshed": 0,
+          "input_hash": "383c84cf2827c31ceb3275e2399d044671931e399124ddc29790dcdc1a932bb8",
+          "versions": 0,
+          "bytes": 1546,
+          "warnings": []
+        },
+        "blocked_transport_attempts": 0
+      },
+      "returncode": 0,
+      "stderr": "15:11:28 [INFO ] loom.config: config.json not found - using defaults\n15:11:28 [INFO ] loom.config: secrets.json not found - using defaults\n15:11:28 [INFO ] loom.db: Schema upgraded: v0 -> v4\n15:11:28 [INFO ] loom.db: Database opened: /tmp/native-resources-audit-bi2po263/copy/chatadhd.db\n15:11:28 [INFO ] loom.graph: GraphEngine started (LLM=yes)\n15:11:28 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/native-resources-audit-bi2po263/copy)\n15:11:29 [INFO ] loom.db: Database closed\n15:11:29 [INFO ] loom.runtime: Loom runtime shut down\n"
+    },
+    {
+      "op": "query",
+      "request": {
+        "op": "query",
+        "data_dir": "/tmp/native-resources-audit-bi2po263/copy"
+      },
+      "response": {
+        "ok": true,
+        "value": [
+          {
+            "unit": {
+              "id": "un_91efd907e2ec0e9f",
+              "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+              "kind": "conversation",
+              "locator": {
+                "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+                "member": "conversations.json",
+                "json_pointer": "",
+                "byte_start": 1065,
+                "byte_len": 385,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "title": "Synthetic second",
+              "date": "2023-11-14T22:15:00Z",
+              "artifact_type": "",
+              "lang": "en",
+              "bytes": 385,
+              "attrs": {
+                "catalog_scan_fingerprint": "383c84cf2827c31ceb3275e2399d044671931e399124ddc29790dcdc1a932bb8"
+              }
+            },
+            "platform": "chatgpt",
+            "ext_id": "synthetic-two",
+            "content_hash": "21966402ea851bd52d4dc68fd125bec37f6849e935939c30fa11cb7418397c84",
+            "n_msgs": 1,
+            "n_chars": 35,
+            "n_code_chars": 0,
+            "n_forks": 0,
+            "attachments": [],
+            "project_ext_id": "",
+            "head": "Synthetic second conversation",
+            "prev_version": "",
+            "mentions": []
+          },
+          {
+            "unit": {
+              "id": "un_9a01a13852a6b7e5",
+              "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+              "kind": "record",
+              "locator": {
+                "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+                "member": "unknown-record.json",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 99,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "title": "",
+              "date": "",
+              "artifact_type": "",
+              "lang": "en",
+              "bytes": 99,
+              "attrs": {
+                "catalog_scan_fingerprint": "383c84cf2827c31ceb3275e2399d044671931e399124ddc29790dcdc1a932bb8"
+              }
+            },
+            "platform": "file",
+            "ext_id": "",
+            "content_hash": "c7b4d7842a49802b1514d95c3c7b3f3dd0380214b8f2af6530141e7d185c461d",
+            "n_msgs": 0,
+            "n_chars": 49,
+            "n_code_chars": 0,
+            "n_forks": 0,
+            "attachments": [],
+            "project_ext_id": "",
+            "head": "",
+            "prev_version": "",
+            "mentions": []
+          },
+          {
+            "unit": {
+              "id": "un_b27396d1974dd694",
+              "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+              "kind": "conversation",
+              "locator": {
+                "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+                "member": "conversations.json",
+                "json_pointer": "",
+                "byte_start": 1,
+                "byte_len": 1062,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "title": "Synthetic branch",
+              "date": "2023-11-14T22:13:20Z",
+              "artifact_type": "",
+              "lang": "en",
+              "bytes": 1062,
+              "attrs": {
+                "catalog_scan_fingerprint": "383c84cf2827c31ceb3275e2399d044671931e399124ddc29790dcdc1a932bb8"
+              }
+            },
+            "platform": "chatgpt",
+            "ext_id": "synthetic-one",
+            "content_hash": "453f9f358ce3e79f9c5098eac77056f743b640fc81e6347de704d18d9a097181",
+            "n_msgs": 3,
+            "n_chars": 94,
+            "n_code_chars": 0,
+            "n_forks": 1,
+            "attachments": [],
+            "project_ext_id": "",
+            "head": "Synthetic question",
+            "prev_version": "",
+            "mentions": []
+          }
+        ],
+        "blocked_transport_attempts": 0
+      },
+      "returncode": 0,
+      "stderr": "15:11:29 [INFO ] loom.config: config.json not found - using defaults\n15:11:29 [INFO ] loom.config: secrets.json not found - using defaults\n15:11:29 [INFO ] loom.db: Database opened: /tmp/native-resources-audit-bi2po263/copy/chatadhd.db\n15:11:29 [INFO ] loom.graph: GraphEngine started (LLM=yes)\n15:11:29 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/native-resources-audit-bi2po263/copy)\n15:11:30 [INFO ] loom.db: Database closed\n15:11:30 [INFO ] loom.runtime: Loom runtime shut down\n"
+    },
+    {
+      "op": "read",
+      "request": {
+        "op": "read",
+        "data_dir": "/tmp/native-resources-audit-bi2po263/copy",
+        "id": "un_91efd907e2ec0e9f"
+      },
+      "response": {
+        "ok": true,
+        "value": "{\"id\": \"synthetic-two\", \"title\": \"Synthetic second\", \"create_time\": 1700000100, \"current_node\": \"z\", \"mapping\": {\"z\": {\"id\": \"z\", \"parent\": null, \"children\": [], \"message\": {\"id\": \"z\", \"author\": {\"role\": \"user\"}, \"content\": {\"content_type\": \"text\", \"parts\": [\"Synthetic second conversation\"]}, \"create_time\": 1700000001, \"metadata\": {\"synthetic_unknown_message\": \"retained-canary\"}}}}}",
+        "blocked_transport_attempts": 0
+      },
+      "returncode": 0,
+      "stderr": "15:11:30 [INFO ] loom.config: config.json not found - using defaults\n15:11:30 [INFO ] loom.config: secrets.json not found - using defaults\n15:11:30 [INFO ] loom.db: Database opened: /tmp/native-resources-audit-bi2po263/copy/chatadhd.db\n15:11:30 [INFO ] loom.graph: GraphEngine started (LLM=yes)\n15:11:30 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/native-resources-audit-bi2po263/copy)\n15:11:31 [INFO ] loom.db: Database closed\n15:11:31 [INFO ] loom.runtime: Loom runtime shut down\n"
+    },
+    {
+      "op": "read",
+      "request": {
+        "op": "read",
+        "data_dir": "/tmp/native-resources-audit-bi2po263/copy",
+        "id": "un_b27396d1974dd694"
+      },
+      "response": {
+        "ok": true,
+        "value": "{\"id\": \"synthetic-one\", \"title\": \"Synthetic branch\", \"create_time\": 1700000000, \"current_node\": \"a\", \"synthetic_unknown_conversation\": {\"retained\": [\"canary\", null, 7]}, \"mapping\": {\"r\": {\"id\": \"r\", \"parent\": null, \"children\": [\"u\"], \"message\": null}, \"u\": {\"id\": \"u\", \"parent\": \"r\", \"children\": [\"a\", \"b\"], \"message\": {\"id\": \"u\", \"author\": {\"role\": \"user\"}, \"content\": {\"content_type\": \"text\", \"parts\": [\"Synthetic question\"]}, \"create_time\": 1700000001, \"metadata\": {\"synthetic_unknown_message\": \"retained-canary\"}}}, \"a\": {\"id\": \"a\", \"parent\": \"u\", \"children\": [], \"message\": {\"id\": \"a\", \"author\": {\"role\": \"assistant\"}, \"content\": {\"content_type\": \"text\", \"parts\": [\"Synthetic first answer\"]}, \"create_time\": 1700000001, \"metadata\": {\"synthetic_unknown_message\": \"retained-canary\"}}}, \"b\": {\"id\": \"b\", \"parent\": \"u\", \"children\": [], \"message\": {\"id\": \"b\", \"author\": {\"role\": \"assistant\"}, \"content\": {\"content_type\": \"text\", \"parts\": [\"Synthetic alternate answer\"]}, \"create_time\": 1700000001, \"metadata\": {\"synthetic_unknown_message\": \"retained-canary\"}}}}}",
+        "blocked_transport_attempts": 0
+      },
+      "returncode": 0,
+      "stderr": "15:11:31 [INFO ] loom.config: config.json not found - using defaults\n15:11:31 [INFO ] loom.config: secrets.json not found - using defaults\n15:11:31 [INFO ] loom.db: Database opened: /tmp/native-resources-audit-bi2po263/copy/chatadhd.db\n15:11:31 [INFO ] loom.graph: GraphEngine started (LLM=yes)\n15:11:31 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/native-resources-audit-bi2po263/copy)\n15:11:31 [INFO ] loom.db: Database closed\n15:11:31 [INFO ] loom.runtime: Loom runtime shut down\n"
+    },
+    {
+      "op": "catalog_import",
+      "request": {
+        "op": "catalog_import",
+        "data_dir": "/tmp/native-resources-audit-bi2po263/copy",
+        "options": {
+          "mode": "full",
+          "store_mode": "copy",
+          "import_messages": true
+        }
+      },
+      "response": {
+        "ok": true,
+        "value": {
+          "imported": 3,
+          "skipped": 0,
+          "bytes": 1546,
+          "conversations": [
+            "c_68a6be43cb31",
+            "c_7af07cfd8156"
+          ],
+          "units": [
+            "un_91efd907e2ec0e9f",
+            "un_9a01a13852a6b7e5",
+            "un_b27396d1974dd694"
+          ],
+          "retained_sources": [
+            {
+              "source_id": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+              "blob_hash": "28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a"
+            }
+          ]
+        },
+        "blocked_transport_attempts": 0
+      },
+      "returncode": 0,
+      "stderr": "15:11:32 [INFO ] loom.config: config.json not found - using defaults\n15:11:32 [INFO ] loom.config: secrets.json not found - using defaults\n15:11:32 [INFO ] loom.db: Database opened: /tmp/native-resources-audit-bi2po263/copy/chatadhd.db\n15:11:32 [INFO ] loom.graph: GraphEngine started (LLM=yes)\n15:11:32 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/native-resources-audit-bi2po263/copy)\n15:11:32 [INFO ] loom.db: Database closed\n15:11:32 [INFO ] loom.runtime: Loom runtime shut down\n"
+    },
+    {
+      "op": "state",
+      "request": {
+        "op": "state",
+        "data_dir": "/tmp/native-resources-audit-bi2po263/copy"
+      },
+      "response": {
+        "ok": true,
+        "value": {
+          "conversations": [
+            {
+              "conversation": {
+                "id": "c_7af07cfd8156",
+                "title": "Synthetic branch",
+                "created": "2026-10-09T07:11:32.798088Z",
+                "updated": "2026-10-09T07:11:32.798549Z",
+                "source": "user",
+                "metadata": {}
+              },
+              "messages": [
+                {
+                  "id": "m_91abc8db086a",
+                  "conv_id": "c_7af07cfd8156",
+                  "parent_id": null,
+                  "role": "user",
+                  "text": "Synthetic question",
+                  "model": null,
+                  "status": "active",
+                  "version_group_id": "vg_3990f9977d59",
+                  "version_num": 1,
+                  "weight": 1.0,
+                  "attachments": [],
+                  "metadata": {
+                    "catalog_unit": "un_b27396d1974dd694",
+                    "message_index": 0
+                  },
+                  "created": "2026-10-09T07:11:32.798143Z",
+                  "semantic_status": "pending"
+                },
+                {
+                  "id": "m_5d2cfd5ba235",
+                  "conv_id": "c_7af07cfd8156",
+                  "parent_id": null,
+                  "role": "assistant",
+                  "text": "Synthetic first answer",
+                  "model": null,
+                  "status": "active",
+                  "version_group_id": "vg_5ec07f432acf",
+                  "version_num": 1,
+                  "weight": 1.0,
+                  "attachments": [],
+                  "metadata": {
+                    "catalog_unit": "un_b27396d1974dd694",
+                    "message_index": 1
+                  },
+                  "created": "2026-10-09T07:11:32.798348Z",
+                  "semantic_status": "pending"
+                },
+                {
+                  "id": "m_24d4ee36f633",
+                  "conv_id": "c_7af07cfd8156",
+                  "parent_id": null,
+                  "role": "assistant",
+                  "text": "Synthetic alternate answer",
+                  "model": null,
+                  "status": "active",
+                  "version_group_id": "vg_9a13c5b28a9f",
+                  "version_num": 1,
+                  "weight": 1.0,
+                  "attachments": [],
+                  "metadata": {
+                    "catalog_unit": "un_b27396d1974dd694",
+                    "message_index": 2
+                  },
+                  "created": "2026-10-09T07:11:32.798514Z",
+                  "semantic_status": "pending"
+                }
+              ]
+            },
+            {
+              "conversation": {
+                "id": "c_68a6be43cb31",
+                "title": "Synthetic second",
+                "created": "2026-10-09T07:11:32.794774Z",
+                "updated": "2026-10-09T07:11:32.795011Z",
+                "source": "user",
+                "metadata": {}
+              },
+              "messages": [
+                {
+                  "id": "m_3ba75bb16ab7",
+                  "conv_id": "c_68a6be43cb31",
+                  "parent_id": null,
+                  "role": "user",
+                  "text": "Synthetic second conversation",
+                  "model": null,
+                  "status": "active",
+                  "version_group_id": "vg_7533ce2704e6",
+                  "version_num": 1,
+                  "weight": 1.0,
+                  "attachments": [],
+                  "metadata": {
+                    "catalog_unit": "un_91efd907e2ec0e9f",
+                    "message_index": 0
+                  },
+                  "created": "2026-10-09T07:11:32.794933Z",
+                  "semantic_status": "pending"
+                }
+              ]
+            }
+          ],
+          "sources": [
+            {
+              "id": "src_3de29b907e00",
+              "kind": "catalog_unit",
+              "uri": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a!conversations.json",
+              "blob_hash": "453f9f358ce3e79f9c5098eac77056f743b640fc81e6347de704d18d9a097181",
+              "size": 1062,
+              "mime": "",
+              "format": "chatgpt",
+              "title": "Synthetic branch",
+              "parser": "loom.catalog.import",
+              "parser_version": "4",
+              "imported_at": "2026-10-09T07:11:32.797665Z",
+              "metadata": {
+                "unit_id": "un_b27396d1974dd694",
+                "platform": "chatgpt",
+                "ext_id": "synthetic-one"
+              }
+            },
+            {
+              "id": "src_9ebd2e2721f6",
+              "kind": "catalog_unit",
+              "uri": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a!unknown-record.json",
+              "blob_hash": "c7b4d7842a49802b1514d95c3c7b3f3dd0380214b8f2af6530141e7d185c461d",
+              "size": 99,
+              "mime": "",
+              "format": "file",
+              "title": "",
+              "parser": "loom.catalog.import",
+              "parser_version": "4",
+              "imported_at": "2026-10-09T07:11:32.796531Z",
+              "metadata": {
+                "unit_id": "un_9a01a13852a6b7e5",
+                "platform": "file",
+                "ext_id": ""
+              }
+            },
+            {
+              "id": "src_4baba8187e43",
+              "kind": "catalog_unit",
+              "uri": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a!conversations.json",
+              "blob_hash": "21966402ea851bd52d4dc68fd125bec37f6849e935939c30fa11cb7418397c84",
+              "size": 385,
+              "mime": "",
+              "format": "chatgpt",
+              "title": "Synthetic second",
+              "parser": "loom.catalog.import",
+              "parser_version": "4",
+              "imported_at": "2026-10-09T07:11:32.600376Z",
+              "metadata": {
+                "unit_id": "un_91efd907e2ec0e9f",
+                "platform": "chatgpt",
+                "ext_id": "synthetic-two"
+              }
+            },
+            {
+              "id": "catalog_raw_28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+              "kind": "catalog_source",
+              "uri": "/tmp/native-resources-audit-bi2po263/source.zip",
+              "blob_hash": "28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+              "size": 682,
+              "mime": "",
+              "format": "",
+              "title": "",
+              "parser": "loom.catalog.import",
+              "parser_version": "4",
+              "imported_at": "2026-10-09T07:11:32.598869Z",
+              "metadata": {
+                "catalog_source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+                "store_mode": "copy",
+                "scope": "full"
+              }
+            }
+          ],
+          "catalog": {
+            "units": 3,
+            "sources": 1,
+            "profiles": 0,
+            "score_runs": 0,
+            "selected": 0,
+            "imported": 3
+          }
+        },
+        "blocked_transport_attempts": 0
+      },
+      "returncode": 0,
+      "stderr": "15:11:32 [INFO ] loom.config: config.json not found - using defaults\n15:11:32 [INFO ] loom.config: secrets.json not found - using defaults\n15:11:32 [INFO ] loom.db: Database opened: /tmp/native-resources-audit-bi2po263/copy/chatadhd.db\n15:11:32 [INFO ] loom.graph: GraphEngine started (LLM=yes)\n15:11:32 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/native-resources-audit-bi2po263/copy)\n15:11:33 [INFO ] loom.db: Database closed\n15:11:33 [INFO ] loom.runtime: Loom runtime shut down\n"
+    },
+    {
+      "op": "scan",
+      "request": {
+        "op": "scan",
+        "data_dir": "/tmp/native-resources-audit-bi2po263/link",
+        "config": {
+          "sources": [
+            "/tmp/native-resources-audit-bi2po263/source.zip"
+          ],
+          "threads": 1,
+          "retain_raw": "none"
+        }
+      },
+      "response": {
+        "ok": true,
+        "value": {
+          "units": 3,
+          "new": 3,
+          "unchanged": 0,
+          "refreshed": 0,
+          "input_hash": "383c84cf2827c31ceb3275e2399d044671931e399124ddc29790dcdc1a932bb8",
+          "versions": 0,
+          "bytes": 1546,
+          "warnings": []
+        },
+        "blocked_transport_attempts": 0
+      },
+      "returncode": 0,
+      "stderr": "15:11:33 [INFO ] loom.config: config.json not found - using defaults\n15:11:33 [INFO ] loom.config: secrets.json not found - using defaults\n15:11:33 [INFO ] loom.db: Schema upgraded: v0 -> v4\n15:11:33 [INFO ] loom.db: Database opened: /tmp/native-resources-audit-bi2po263/link/chatadhd.db\n15:11:33 [INFO ] loom.graph: GraphEngine started (LLM=yes)\n15:11:33 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/native-resources-audit-bi2po263/link)\n15:11:34 [INFO ] loom.db: Database closed\n15:11:34 [INFO ] loom.runtime: Loom runtime shut down\n"
+    },
+    {
+      "op": "query",
+      "request": {
+        "op": "query",
+        "data_dir": "/tmp/native-resources-audit-bi2po263/link"
+      },
+      "response": {
+        "ok": true,
+        "value": [
+          {
+            "unit": {
+              "id": "un_91efd907e2ec0e9f",
+              "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+              "kind": "conversation",
+              "locator": {
+                "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+                "member": "conversations.json",
+                "json_pointer": "",
+                "byte_start": 1065,
+                "byte_len": 385,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "title": "Synthetic second",
+              "date": "2023-11-14T22:15:00Z",
+              "artifact_type": "",
+              "lang": "en",
+              "bytes": 385,
+              "attrs": {
+                "catalog_scan_fingerprint": "383c84cf2827c31ceb3275e2399d044671931e399124ddc29790dcdc1a932bb8"
+              }
+            },
+            "platform": "chatgpt",
+            "ext_id": "synthetic-two",
+            "content_hash": "21966402ea851bd52d4dc68fd125bec37f6849e935939c30fa11cb7418397c84",
+            "n_msgs": 1,
+            "n_chars": 35,
+            "n_code_chars": 0,
+            "n_forks": 0,
+            "attachments": [],
+            "project_ext_id": "",
+            "head": "Synthetic second conversation",
+            "prev_version": "",
+            "mentions": []
+          },
+          {
+            "unit": {
+              "id": "un_9a01a13852a6b7e5",
+              "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+              "kind": "record",
+              "locator": {
+                "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+                "member": "unknown-record.json",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 99,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "title": "",
+              "date": "",
+              "artifact_type": "",
+              "lang": "en",
+              "bytes": 99,
+              "attrs": {
+                "catalog_scan_fingerprint": "383c84cf2827c31ceb3275e2399d044671931e399124ddc29790dcdc1a932bb8"
+              }
+            },
+            "platform": "file",
+            "ext_id": "",
+            "content_hash": "c7b4d7842a49802b1514d95c3c7b3f3dd0380214b8f2af6530141e7d185c461d",
+            "n_msgs": 0,
+            "n_chars": 49,
+            "n_code_chars": 0,
+            "n_forks": 0,
+            "attachments": [],
+            "project_ext_id": "",
+            "head": "",
+            "prev_version": "",
+            "mentions": []
+          },
+          {
+            "unit": {
+              "id": "un_b27396d1974dd694",
+              "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+              "kind": "conversation",
+              "locator": {
+                "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+                "member": "conversations.json",
+                "json_pointer": "",
+                "byte_start": 1,
+                "byte_len": 1062,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "title": "Synthetic branch",
+              "date": "2023-11-14T22:13:20Z",
+              "artifact_type": "",
+              "lang": "en",
+              "bytes": 1062,
+              "attrs": {
+                "catalog_scan_fingerprint": "383c84cf2827c31ceb3275e2399d044671931e399124ddc29790dcdc1a932bb8"
+              }
+            },
+            "platform": "chatgpt",
+            "ext_id": "synthetic-one",
+            "content_hash": "453f9f358ce3e79f9c5098eac77056f743b640fc81e6347de704d18d9a097181",
+            "n_msgs": 3,
+            "n_chars": 94,
+            "n_code_chars": 0,
+            "n_forks": 1,
+            "attachments": [],
+            "project_ext_id": "",
+            "head": "Synthetic question",
+            "prev_version": "",
+            "mentions": []
+          }
+        ],
+        "blocked_transport_attempts": 0
+      },
+      "returncode": 0,
+      "stderr": "15:11:34 [INFO ] loom.config: config.json not found - using defaults\n15:11:34 [INFO ] loom.config: secrets.json not found - using defaults\n15:11:34 [INFO ] loom.db: Database opened: /tmp/native-resources-audit-bi2po263/link/chatadhd.db\n15:11:34 [INFO ] loom.graph: GraphEngine started (LLM=yes)\n15:11:34 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/native-resources-audit-bi2po263/link)\n15:11:35 [INFO ] loom.db: Database closed\n15:11:35 [INFO ] loom.runtime: Loom runtime shut down\n"
+    },
+    {
+      "op": "read",
+      "request": {
+        "op": "read",
+        "data_dir": "/tmp/native-resources-audit-bi2po263/link",
+        "id": "un_91efd907e2ec0e9f"
+      },
+      "response": {
+        "ok": true,
+        "value": "{\"id\": \"synthetic-two\", \"title\": \"Synthetic second\", \"create_time\": 1700000100, \"current_node\": \"z\", \"mapping\": {\"z\": {\"id\": \"z\", \"parent\": null, \"children\": [], \"message\": {\"id\": \"z\", \"author\": {\"role\": \"user\"}, \"content\": {\"content_type\": \"text\", \"parts\": [\"Synthetic second conversation\"]}, \"create_time\": 1700000001, \"metadata\": {\"synthetic_unknown_message\": \"retained-canary\"}}}}}",
+        "blocked_transport_attempts": 0
+      },
+      "returncode": 0,
+      "stderr": "15:11:35 [INFO ] loom.config: config.json not found - using defaults\n15:11:35 [INFO ] loom.config: secrets.json not found - using defaults\n15:11:35 [INFO ] loom.db: Database opened: /tmp/native-resources-audit-bi2po263/link/chatadhd.db\n15:11:35 [INFO ] loom.graph: GraphEngine started (LLM=yes)\n15:11:35 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/native-resources-audit-bi2po263/link)\n15:11:36 [INFO ] loom.db: Database closed\n15:11:36 [INFO ] loom.runtime: Loom runtime shut down\n"
+    },
+    {
+      "op": "read",
+      "request": {
+        "op": "read",
+        "data_dir": "/tmp/native-resources-audit-bi2po263/link",
+        "id": "un_b27396d1974dd694"
+      },
+      "response": {
+        "ok": true,
+        "value": "{\"id\": \"synthetic-one\", \"title\": \"Synthetic branch\", \"create_time\": 1700000000, \"current_node\": \"a\", \"synthetic_unknown_conversation\": {\"retained\": [\"canary\", null, 7]}, \"mapping\": {\"r\": {\"id\": \"r\", \"parent\": null, \"children\": [\"u\"], \"message\": null}, \"u\": {\"id\": \"u\", \"parent\": \"r\", \"children\": [\"a\", \"b\"], \"message\": {\"id\": \"u\", \"author\": {\"role\": \"user\"}, \"content\": {\"content_type\": \"text\", \"parts\": [\"Synthetic question\"]}, \"create_time\": 1700000001, \"metadata\": {\"synthetic_unknown_message\": \"retained-canary\"}}}, \"a\": {\"id\": \"a\", \"parent\": \"u\", \"children\": [], \"message\": {\"id\": \"a\", \"author\": {\"role\": \"assistant\"}, \"content\": {\"content_type\": \"text\", \"parts\": [\"Synthetic first answer\"]}, \"create_time\": 1700000001, \"metadata\": {\"synthetic_unknown_message\": \"retained-canary\"}}}, \"b\": {\"id\": \"b\", \"parent\": \"u\", \"children\": [], \"message\": {\"id\": \"b\", \"author\": {\"role\": \"assistant\"}, \"content\": {\"content_type\": \"text\", \"parts\": [\"Synthetic alternate answer\"]}, \"create_time\": 1700000001, \"metadata\": {\"synthetic_unknown_message\": \"retained-canary\"}}}}}",
+        "blocked_transport_attempts": 0
+      },
+      "returncode": 0,
+      "stderr": "15:11:36 [INFO ] loom.config: config.json not found - using defaults\n15:11:36 [INFO ] loom.config: secrets.json not found - using defaults\n15:11:36 [INFO ] loom.db: Database opened: /tmp/native-resources-audit-bi2po263/link/chatadhd.db\n15:11:36 [INFO ] loom.graph: GraphEngine started (LLM=yes)\n15:11:36 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/native-resources-audit-bi2po263/link)\n15:11:36 [INFO ] loom.db: Database closed\n15:11:36 [INFO ] loom.runtime: Loom runtime shut down\n"
+    },
+    {
+      "op": "catalog_import",
+      "request": {
+        "op": "catalog_import",
+        "data_dir": "/tmp/native-resources-audit-bi2po263/link",
+        "options": {
+          "mode": "full",
+          "store_mode": "link",
+          "import_messages": true
+        }
+      },
+      "response": {
+        "ok": true,
+        "value": {
+          "imported": 3,
+          "skipped": 0,
+          "bytes": 1546,
+          "conversations": [
+            "c_f8d5bd1fea03",
+            "c_2efaa8099dc6",
+            "c_34ea632f012b"
+          ],
+          "units": [
+            "un_91efd907e2ec0e9f",
+            "un_9a01a13852a6b7e5",
+            "un_b27396d1974dd694"
+          ],
+          "retained_sources": []
+        },
+        "blocked_transport_attempts": 0
+      },
+      "returncode": 0,
+      "stderr": "15:11:37 [INFO ] loom.config: config.json not found - using defaults\n15:11:37 [INFO ] loom.config: secrets.json not found - using defaults\n15:11:37 [INFO ] loom.db: Database opened: /tmp/native-resources-audit-bi2po263/link/chatadhd.db\n15:11:37 [INFO ] loom.graph: GraphEngine started (LLM=yes)\n15:11:37 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/native-resources-audit-bi2po263/link)\n15:11:37 [INFO ] loom.db: Database closed\n15:11:37 [INFO ] loom.runtime: Loom runtime shut down\n"
+    },
+    {
+      "op": "state",
+      "request": {
+        "op": "state",
+        "data_dir": "/tmp/native-resources-audit-bi2po263/link"
+      },
+      "response": {
+        "ok": true,
+        "value": {
+          "conversations": [
+            {
+              "conversation": {
+                "id": "c_34ea632f012b",
+                "title": "Synthetic branch",
+                "created": "2026-10-09T07:11:37.725586Z",
+                "updated": "2026-10-09T07:11:37.725693Z",
+                "source": "user",
+                "metadata": {}
+              },
+              "messages": [
+                {
+                  "id": "m_aec8dd7d7c65",
+                  "conv_id": "c_34ea632f012b",
+                  "parent_id": null,
+                  "role": "document",
+                  "text": "[linked to catalog unit un_b27396d1974dd694, 3 message(s)] Synthetic question",
+                  "model": null,
+                  "status": "active",
+                  "version_group_id": "vg_02f892645c3b",
+                  "version_num": 1,
+                  "weight": 1.0,
+                  "attachments": [],
+                  "metadata": {
+                    "catalog_unit": "un_b27396d1974dd694",
+                    "locator": {
+                      "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+                      "member": "conversations.json",
+                      "json_pointer": "",
+                      "byte_start": 1,
+                      "byte_len": 1062,
+                      "time_start": null,
+                      "time_end": null,
+                      "line": null
+                    },
+                    "content_hash": "453f9f358ce3e79f9c5098eac77056f743b640fc81e6347de704d18d9a097181",
+                    "store_mode": "link"
+                  },
+                  "created": "2026-10-09T07:11:37.725643Z",
+                  "semantic_status": "pending"
+                }
+              ]
+            },
+            {
+              "conversation": {
+                "id": "c_2efaa8099dc6",
+                "title": "[Import] ",
+                "created": "2026-10-09T07:11:37.724868Z",
+                "updated": "2026-10-09T07:11:37.724977Z",
+                "source": "user",
+                "metadata": {}
+              },
+              "messages": [
+                {
+                  "id": "m_eec22b70cd51",
+                  "conv_id": "c_2efaa8099dc6",
+                  "parent_id": null,
+                  "role": "document",
+                  "text": "[linked to catalog unit un_9a01a13852a6b7e5, 0 message(s)] ",
+                  "model": null,
+                  "status": "active",
+                  "version_group_id": "vg_2739a52f7825",
+                  "version_num": 1,
+                  "weight": 1.0,
+                  "attachments": [],
+                  "metadata": {
+                    "catalog_unit": "un_9a01a13852a6b7e5",
+                    "locator": {
+                      "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+                      "member": "unknown-record.json",
+                      "json_pointer": "",
+                      "byte_start": 0,
+                      "byte_len": 99,
+                      "time_start": null,
+                      "time_end": null,
+                      "line": null
+                    },
+                    "content_hash": "c7b4d7842a49802b1514d95c3c7b3f3dd0380214b8f2af6530141e7d185c461d",
+                    "store_mode": "link"
+                  },
+                  "created": "2026-10-09T07:11:37.724927Z",
+                  "semantic_status": "pending"
+                }
+              ]
+            },
+            {
+              "conversation": {
+                "id": "c_f8d5bd1fea03",
+                "title": "Synthetic second",
+                "created": "2026-10-09T07:11:37.724120Z",
+                "updated": "2026-10-09T07:11:37.724305Z",
+                "source": "user",
+                "metadata": {}
+              },
+              "messages": [
+                {
+                  "id": "m_9487a855ff8f",
+                  "conv_id": "c_f8d5bd1fea03",
+                  "parent_id": null,
+                  "role": "document",
+                  "text": "[linked to catalog unit un_91efd907e2ec0e9f, 1 message(s)] Synthetic second conversation",
+                  "model": null,
+                  "status": "active",
+                  "version_group_id": "vg_3f210d6b26df",
+                  "version_num": 1,
+                  "weight": 1.0,
+                  "attachments": [],
+                  "metadata": {
+                    "catalog_unit": "un_91efd907e2ec0e9f",
+                    "locator": {
+                      "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+                      "member": "conversations.json",
+                      "json_pointer": "",
+                      "byte_start": 1065,
+                      "byte_len": 385,
+                      "time_start": null,
+                      "time_end": null,
+                      "line": null
+                    },
+                    "content_hash": "21966402ea851bd52d4dc68fd125bec37f6849e935939c30fa11cb7418397c84",
+                    "store_mode": "link"
+                  },
+                  "created": "2026-10-09T07:11:37.724221Z",
+                  "semantic_status": "pending"
+                }
+              ]
+            }
+          ],
+          "sources": [
+            {
+              "id": "src_23a86d9d251c",
+              "kind": "catalog_unit",
+              "uri": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a!conversations.json",
+              "blob_hash": "",
+              "size": 0,
+              "mime": "",
+              "format": "chatgpt",
+              "title": "Synthetic branch",
+              "parser": "loom.catalog.import",
+              "parser_version": "4",
+              "imported_at": "2026-10-09T07:11:37.725531Z",
+              "metadata": {
+                "unit_id": "un_b27396d1974dd694",
+                "platform": "chatgpt",
+                "ext_id": "synthetic-one"
+              }
+            },
+            {
+              "id": "src_9dd88dd52b8f",
+              "kind": "catalog_unit",
+              "uri": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a!unknown-record.json",
+              "blob_hash": "",
+              "size": 0,
+              "mime": "",
+              "format": "file",
+              "title": "",
+              "parser": "loom.catalog.import",
+              "parser_version": "4",
+              "imported_at": "2026-10-09T07:11:37.724816Z",
+              "metadata": {
+                "unit_id": "un_9a01a13852a6b7e5",
+                "platform": "file",
+                "ext_id": ""
+              }
+            },
+            {
+              "id": "src_7fbc0047bc1a",
+              "kind": "catalog_unit",
+              "uri": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a!conversations.json",
+              "blob_hash": "",
+              "size": 0,
+              "mime": "",
+              "format": "chatgpt",
+              "title": "Synthetic second",
+              "parser": "loom.catalog.import",
+              "parser_version": "4",
+              "imported_at": "2026-10-09T07:11:37.724017Z",
+              "metadata": {
+                "unit_id": "un_91efd907e2ec0e9f",
+                "platform": "chatgpt",
+                "ext_id": "synthetic-two"
+              }
+            }
+          ],
+          "catalog": {
+            "units": 3,
+            "sources": 1,
+            "profiles": 0,
+            "score_runs": 0,
+            "selected": 0,
+            "imported": 3
+          }
+        },
+        "blocked_transport_attempts": 0
+      },
+      "returncode": 0,
+      "stderr": "15:11:37 [INFO ] loom.config: config.json not found - using defaults\n15:11:37 [INFO ] loom.config: secrets.json not found - using defaults\n15:11:37 [INFO ] loom.db: Database opened: /tmp/native-resources-audit-bi2po263/link/chatadhd.db\n15:11:37 [INFO ] loom.graph: GraphEngine started (LLM=yes)\n15:11:37 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/native-resources-audit-bi2po263/link)\n15:11:38 [INFO ] loom.db: Database closed\n15:11:38 [INFO ] loom.runtime: Loom runtime shut down\n"
+    },
+    {
+      "op": "direct_import",
+      "request": {
+        "op": "direct_import",
+        "data_dir": "/tmp/native-resources-audit-bi2po263/direct",
+        "path": "/tmp/native-resources-audit-bi2po263/source.zip"
+      },
+      "response": {
+        "ok": true,
+        "value": {
+          "conversations": [
+            {
+              "id": "c_606645fe096b",
+              "title": "Synthetic branch",
+              "created": "2023-11-14T22:13:20Z",
+              "updated": "2023-11-14T22:13:20Z",
+              "source": "import:openai",
+              "metadata": {
+                "export": {
+                  "provider": "openai",
+                  "schema": "loom.export.v1",
+                  "member": "conversations.json",
+                  "index": 0,
+                  "key": "synthetic-one",
+                  "title_original": "Synthetic branch",
+                  "title_source": "export",
+                  "current_node": "a",
+                  "current_node_resolved": true,
+                  "current_path_inferred": false,
+                  "has_mapping": true,
+                  "fields": {
+                    "id": "synthetic-one",
+                    "title": "Synthetic branch",
+                    "create_time": 1700000000,
+                    "current_node": "a",
+                    "synthetic_unknown_conversation": {
+                      "retained": [
+                        "canary",
+                        null,
+                        7
+                      ]
+                    }
+                  },
+                  "null_nodes": [
+                    {
+                      "i": 0,
+                      "id": "r",
+                      "node": {
+                        "id": "r",
+                        "parent": null,
+                        "children": [
+                          "u"
+                        ],
+                        "message": null
+                      }
+                    }
+                  ],
+                  "graph": {
+                    "nodes": 4,
+                    "messages": 3,
+                    "fork_points": 1,
+                    "leaves": 2,
+                    "roots": 1,
+                    "current_path_messages": 2,
+                    "unreachable_nodes": 0,
+                    "version_groups": 1
+                  },
+                  "source_index": 0,
+                  "source_container": "array",
+                  "json_pointer": "/0",
+                  "archive_index": 0
+                }
+              }
+            },
+            {
+              "id": "c_e114812c5d43",
+              "title": "Synthetic second",
+              "created": "2023-11-14T22:15:00Z",
+              "updated": "2023-11-14T22:15:00Z",
+              "source": "import:openai",
+              "metadata": {
+                "export": {
+                  "provider": "openai",
+                  "schema": "loom.export.v1",
+                  "member": "conversations.json",
+                  "index": 1,
+                  "key": "synthetic-two",
+                  "title_original": "Synthetic second",
+                  "title_source": "export",
+                  "current_node": "z",
+                  "current_node_resolved": true,
+                  "current_path_inferred": false,
+                  "has_mapping": true,
+                  "fields": {
+                    "id": "synthetic-two",
+                    "title": "Synthetic second",
+                    "create_time": 1700000100,
+                    "current_node": "z"
+                  },
+                  "null_nodes": [],
+                  "graph": {
+                    "nodes": 1,
+                    "messages": 1,
+                    "fork_points": 0,
+                    "leaves": 1,
+                    "roots": 1,
+                    "current_path_messages": 1,
+                    "unreachable_nodes": 0,
+                    "version_groups": 0
+                  },
+                  "source_index": 1,
+                  "source_container": "array",
+                  "json_pointer": "/1",
+                  "archive_index": 0
+                }
+              }
+            }
+          ],
+          "format": "zip",
+          "source_id": "src_a73e954c4503",
+          "blob_hash": "28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+          "messages": 4,
+          "cancelled": false,
+          "already_imported": false,
+          "resumed": false,
+          "include_result_metadata": true,
+          "warnings": [],
+          "retained_conversation_count": 2,
+          "export_report": {
+            "schema": "loom.export_report.v1",
+            "provider": "openai",
+            "counts": {
+              "account": 0,
+              "artifact": 0,
+              "attachment": 0,
+              "block": 4,
+              "block_kind": {
+                "text": 4
+              },
+              "branch": 3,
+              "citation": 0,
+              "citation_group": 0,
+              "conversation": 2,
+              "current_path_messages": 3,
+              "custom_instruction": 0,
+              "feedback": 0,
+              "fork_points": 1,
+              "memory": 0,
+              "message": 4,
+              "project": 0,
+              "project_doc": 0,
+              "record": 0,
+              "shared_link": 0
+            },
+            "members": [
+              {
+                "wrapper": false,
+                "source_id": "src_f46ccc6f4d96",
+                "blob_hash": "5484f7db3ccc92787c366117360ecf32cc77ba7adf6cfd1312e9864a0b625d26",
+                "locator": {
+                  "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+                  "member": "conversations.json",
+                  "archive_index": 0
+                },
+                "archive_index": 0,
+                "name": "conversations.json",
+                "size": 1451,
+                "disposition": "conversations"
+              },
+              {
+                "source_id": "src_38727f6a792f",
+                "blob_hash": "c7b4d7842a49802b1514d95c3c7b3f3dd0380214b8f2af6530141e7d185c461d",
+                "locator": {
+                  "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+                  "member": "unknown-record.json",
+                  "archive_index": 1
+                },
+                "archive_index": 1,
+                "name": "unknown-record.json",
+                "size": 99,
+                "disposition": "unknown"
+              }
+            ],
+            "member_count": 2,
+            "errors": [],
+            "warnings": [],
+            "partial": false,
+            "include_result_metadata": true,
+            "inferred": false,
+            "resumed_conversations": 0,
+            "resumed_members": 0,
+            "largest_json_value_bytes": 1062,
+            "scanner_buffer_bytes": 65536,
+            "repairs": {},
+            "json_leaves": 52,
+            "leaves_preserved": 52,
+            "asset_members": [],
+            "unreferenced_members": [],
+            "unresolved_keys": [],
+            "pointer_links": {},
+            "duplicate_groups": [],
+            "unknown_members": [
+              "unknown-record.json"
+            ],
+            "parts": []
+          }
+        },
+        "blocked_transport_attempts": 0
+      },
+      "returncode": 0,
+      "stderr": "15:11:38 [INFO ] loom.config: config.json not found - using defaults\n15:11:38 [INFO ] loom.config: secrets.json not found - using defaults\n15:11:38 [INFO ] loom.db: Schema upgraded: v0 -> v4\n15:11:38 [INFO ] loom.db: Database opened: /tmp/native-resources-audit-bi2po263/direct/chatadhd.db\n15:11:38 [INFO ] loom.graph: GraphEngine started (LLM=yes)\n15:11:38 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/native-resources-audit-bi2po263/direct)\n15:11:39 [INFO ] loom.db: Database closed\n15:11:39 [INFO ] loom.runtime: Loom runtime shut down\n"
+    },
+    {
+      "op": "state",
+      "request": {
+        "op": "state",
+        "data_dir": "/tmp/native-resources-audit-bi2po263/direct"
+      },
+      "response": {
+        "ok": true,
+        "value": {
+          "conversations": [
+            {
+              "conversation": {
+                "id": "c_e114812c5d43",
+                "title": "Synthetic second",
+                "created": "2023-11-14T22:15:00Z",
+                "updated": "2023-11-14T22:15:00Z",
+                "source": "import:openai",
+                "metadata": {
+                  "export": {
+                    "provider": "openai",
+                    "schema": "loom.export.v1",
+                    "member": "conversations.json",
+                    "index": 1,
+                    "key": "synthetic-two",
+                    "title_original": "Synthetic second",
+                    "title_source": "export",
+                    "current_node": "z",
+                    "current_node_resolved": true,
+                    "current_path_inferred": false,
+                    "has_mapping": true,
+                    "fields": {
+                      "id": "synthetic-two",
+                      "title": "Synthetic second",
+                      "create_time": 1700000100,
+                      "current_node": "z"
+                    },
+                    "null_nodes": [],
+                    "graph": {
+                      "nodes": 1,
+                      "messages": 1,
+                      "fork_points": 0,
+                      "leaves": 1,
+                      "roots": 1,
+                      "current_path_messages": 1,
+                      "unreachable_nodes": 0,
+                      "version_groups": 0
+                    },
+                    "source_index": 1,
+                    "source_container": "array",
+                    "json_pointer": "/1",
+                    "archive_index": 0
+                  }
+                }
+              },
+              "messages": [
+                {
+                  "id": "m_a0ff7efc10af",
+                  "conv_id": "c_e114812c5d43",
+                  "parent_id": null,
+                  "role": "user",
+                  "text": "Synthetic second conversation",
+                  "model": null,
+                  "status": "active",
+                  "version_group_id": "vg_5a4b00bbb5d3",
+                  "version_num": 1,
+                  "weight": 1.0,
+                  "attachments": [],
+                  "metadata": {
+                    "export": {
+                      "role_raw": "user",
+                      "author_name": null,
+                      "recipient": null,
+                      "channel": null,
+                      "content_type": "text",
+                      "blocks": [
+                        {
+                          "kind": "text",
+                          "type": "text",
+                          "part": 0,
+                          "chars": 29
+                        }
+                      ],
+                      "attachments": [],
+                      "pointers": [],
+                      "citations": [],
+                      "citation_groups": [],
+                      "custom_instruction": 0,
+                      "memory": false,
+                      "artifact": null,
+                      "provider": "openai",
+                      "kind": "message",
+                      "key": "z",
+                      "message_id": "z",
+                      "node": {
+                        "id": "z",
+                        "parent": null,
+                        "children": []
+                      },
+                      "node_index": 0,
+                      "raw": {
+                        "id": "z",
+                        "author": {
+                          "role": "user"
+                        },
+                        "content": {
+                          "content_type": "text",
+                          "parts": [
+                            "Synthetic second conversation"
+                          ]
+                        },
+                        "create_time": 1700000001,
+                        "metadata": {
+                          "synthetic_unknown_message": "retained-canary"
+                        }
+                      },
+                      "hidden": false,
+                      "hidden_reasons": [],
+                      "on_current_path": true,
+                      "on_active_path": true,
+                      "reachable": true,
+                      "leaf": true,
+                      "fork": false,
+                      "sibling_index": 0,
+                      "sibling_count": 1,
+                      "created_inferred": false,
+                      "member": "conversations.json",
+                      "source_conversation_index": 1,
+                      "source_key": "z",
+                      "traversal_index": 0,
+                      "json_pointer": "/1/mapping/z/message"
+                    }
+                  },
+                  "created": "2023-11-14T22:13:21Z",
+                  "semantic_status": "pending"
+                }
+              ]
+            },
+            {
+              "conversation": {
+                "id": "c_606645fe096b",
+                "title": "Synthetic branch",
+                "created": "2023-11-14T22:13:20Z",
+                "updated": "2023-11-14T22:13:20Z",
+                "source": "import:openai",
+                "metadata": {
+                  "export": {
+                    "provider": "openai",
+                    "schema": "loom.export.v1",
+                    "member": "conversations.json",
+                    "index": 0,
+                    "key": "synthetic-one",
+                    "title_original": "Synthetic branch",
+                    "title_source": "export",
+                    "current_node": "a",
+                    "current_node_resolved": true,
+                    "current_path_inferred": false,
+                    "has_mapping": true,
+                    "fields": {
+                      "id": "synthetic-one",
+                      "title": "Synthetic branch",
+                      "create_time": 1700000000,
+                      "current_node": "a",
+                      "synthetic_unknown_conversation": {
+                        "retained": [
+                          "canary",
+                          null,
+                          7
+                        ]
+                      }
+                    },
+                    "null_nodes": [
+                      {
+                        "i": 0,
+                        "id": "r",
+                        "node": {
+                          "id": "r",
+                          "parent": null,
+                          "children": [
+                            "u"
+                          ],
+                          "message": null
+                        }
+                      }
+                    ],
+                    "graph": {
+                      "nodes": 4,
+                      "messages": 3,
+                      "fork_points": 1,
+                      "leaves": 2,
+                      "roots": 1,
+                      "current_path_messages": 2,
+                      "unreachable_nodes": 0,
+                      "version_groups": 1
+                    },
+                    "source_index": 0,
+                    "source_container": "array",
+                    "json_pointer": "/0",
+                    "archive_index": 0
+                  }
+                }
+              },
+              "messages": [
+                {
+                  "id": "m_c484236efc0e",
+                  "conv_id": "c_606645fe096b",
+                  "parent_id": null,
+                  "role": "user",
+                  "text": "Synthetic question",
+                  "model": null,
+                  "status": "active",
+                  "version_group_id": "vg_e489f77094a2",
+                  "version_num": 1,
+                  "weight": 1.0,
+                  "attachments": [],
+                  "metadata": {
+                    "export": {
+                      "role_raw": "user",
+                      "author_name": null,
+                      "recipient": null,
+                      "channel": null,
+                      "content_type": "text",
+                      "blocks": [
+                        {
+                          "kind": "text",
+                          "type": "text",
+                          "part": 0,
+                          "chars": 18
+                        }
+                      ],
+                      "attachments": [],
+                      "pointers": [],
+                      "citations": [],
+                      "citation_groups": [],
+                      "custom_instruction": 0,
+                      "memory": false,
+                      "artifact": null,
+                      "provider": "openai",
+                      "kind": "message",
+                      "key": "u",
+                      "message_id": "u",
+                      "node": {
+                        "id": "u",
+                        "parent": "r",
+                        "children": [
+                          "a",
+                          "b"
+                        ]
+                      },
+                      "node_index": 1,
+                      "raw": {
+                        "id": "u",
+                        "author": {
+                          "role": "user"
+                        },
+                        "content": {
+                          "content_type": "text",
+                          "parts": [
+                            "Synthetic question"
+                          ]
+                        },
+                        "create_time": 1700000001,
+                        "metadata": {
+                          "synthetic_unknown_message": "retained-canary"
+                        }
+                      },
+                      "hidden": false,
+                      "hidden_reasons": [],
+                      "on_current_path": true,
+                      "on_active_path": true,
+                      "reachable": true,
+                      "leaf": false,
+                      "fork": true,
+                      "sibling_index": 0,
+                      "sibling_count": 1,
+                      "created_inferred": false,
+                      "member": "conversations.json",
+                      "source_conversation_index": 0,
+                      "source_key": "u",
+                      "traversal_index": 0,
+                      "json_pointer": "/0/mapping/u/message"
+                    }
+                  },
+                  "created": "2023-11-14T22:13:21Z",
+                  "semantic_status": "pending"
+                },
+                {
+                  "id": "m_3d968615f364",
+                  "conv_id": "c_606645fe096b",
+                  "parent_id": "m_c484236efc0e",
+                  "role": "assistant",
+                  "text": "Synthetic first answer",
+                  "model": null,
+                  "status": "active",
+                  "version_group_id": "vg_a256d7e95303",
+                  "version_num": 1,
+                  "weight": 1.0,
+                  "attachments": [],
+                  "metadata": {
+                    "export": {
+                      "role_raw": "assistant",
+                      "author_name": null,
+                      "recipient": null,
+                      "channel": null,
+                      "content_type": "text",
+                      "blocks": [
+                        {
+                          "kind": "text",
+                          "type": "text",
+                          "part": 0,
+                          "chars": 22
+                        }
+                      ],
+                      "attachments": [],
+                      "pointers": [],
+                      "citations": [],
+                      "citation_groups": [],
+                      "custom_instruction": 0,
+                      "memory": false,
+                      "artifact": null,
+                      "provider": "openai",
+                      "kind": "message",
+                      "key": "a",
+                      "message_id": "a",
+                      "node": {
+                        "id": "a",
+                        "parent": "u",
+                        "children": []
+                      },
+                      "node_index": 2,
+                      "raw": {
+                        "id": "a",
+                        "author": {
+                          "role": "assistant"
+                        },
+                        "content": {
+                          "content_type": "text",
+                          "parts": [
+                            "Synthetic first answer"
+                          ]
+                        },
+                        "create_time": 1700000001,
+                        "metadata": {
+                          "synthetic_unknown_message": "retained-canary"
+                        }
+                      },
+                      "hidden": false,
+                      "hidden_reasons": [],
+                      "on_current_path": true,
+                      "on_active_path": true,
+                      "reachable": true,
+                      "leaf": true,
+                      "fork": false,
+                      "sibling_index": 0,
+                      "sibling_count": 2,
+                      "created_inferred": false,
+                      "member": "conversations.json",
+                      "source_conversation_index": 0,
+                      "source_key": "a",
+                      "traversal_index": 1,
+                      "json_pointer": "/0/mapping/a/message"
+                    }
+                  },
+                  "created": "2023-11-14T22:13:21Z",
+                  "semantic_status": "pending"
+                },
+                {
+                  "id": "m_cda6faffdd6e",
+                  "conv_id": "c_606645fe096b",
+                  "parent_id": "m_c484236efc0e",
+                  "role": "assistant",
+                  "text": "Synthetic alternate answer",
+                  "model": null,
+                  "status": "version",
+                  "version_group_id": "vg_a256d7e95303",
+                  "version_num": 2,
+                  "weight": 1.0,
+                  "attachments": [],
+                  "metadata": {
+                    "export": {
+                      "role_raw": "assistant",
+                      "author_name": null,
+                      "recipient": null,
+                      "channel": null,
+                      "content_type": "text",
+                      "blocks": [
+                        {
+                          "kind": "text",
+                          "type": "text",
+                          "part": 0,
+                          "chars": 26
+                        }
+                      ],
+                      "attachments": [],
+                      "pointers": [],
+                      "citations": [],
+                      "citation_groups": [],
+                      "custom_instruction": 0,
+                      "memory": false,
+                      "artifact": null,
+                      "provider": "openai",
+                      "kind": "message",
+                      "key": "b",
+                      "message_id": "b",
+                      "node": {
+                        "id": "b",
+                        "parent": "u",
+                        "children": []
+                      },
+                      "node_index": 3,
+                      "raw": {
+                        "id": "b",
+                        "author": {
+                          "role": "assistant"
+                        },
+                        "content": {
+                          "content_type": "text",
+                          "parts": [
+                            "Synthetic alternate answer"
+                          ]
+                        },
+                        "create_time": 1700000001,
+                        "metadata": {
+                          "synthetic_unknown_message": "retained-canary"
+                        }
+                      },
+                      "hidden": false,
+                      "hidden_reasons": [],
+                      "on_current_path": false,
+                      "on_active_path": false,
+                      "reachable": true,
+                      "leaf": true,
+                      "fork": false,
+                      "sibling_index": 1,
+                      "sibling_count": 2,
+                      "created_inferred": false,
+                      "member": "conversations.json",
+                      "source_conversation_index": 0,
+                      "source_key": "b",
+                      "traversal_index": 2,
+                      "json_pointer": "/0/mapping/b/message"
+                    }
+                  },
+                  "created": "2023-11-14T22:13:21Z",
+                  "semantic_status": "pending"
+                }
+              ]
+            }
+          ],
+          "sources": [
+            {
+              "id": "src_38727f6a792f",
+              "kind": "zip_member",
+              "uri": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a!unknown-record.json",
+              "blob_hash": "c7b4d7842a49802b1514d95c3c7b3f3dd0380214b8f2af6530141e7d185c461d",
+              "size": 99,
+              "mime": "",
+              "format": "json",
+              "title": "",
+              "parser": "loom.importer.zip.member",
+              "parser_version": "export-3",
+              "imported_at": "2026-10-09T07:11:39.194539Z",
+              "metadata": {
+                "parent_source_id": "src_a73e954c4503",
+                "locator": {
+                  "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+                  "member": "unknown-record.json",
+                  "archive_index": 1
+                }
+              }
+            },
+            {
+              "id": "src_f46ccc6f4d96",
+              "kind": "zip_member",
+              "uri": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a!conversations.json",
+              "blob_hash": "5484f7db3ccc92787c366117360ecf32cc77ba7adf6cfd1312e9864a0b625d26",
+              "size": 1451,
+              "mime": "",
+              "format": "json",
+              "title": "",
+              "parser": "loom.importer.zip.member",
+              "parser_version": "export-3",
+              "imported_at": "2026-10-09T07:11:39.193798Z",
+              "metadata": {
+                "parent_source_id": "src_a73e954c4503",
+                "locator": {
+                  "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+                  "member": "conversations.json",
+                  "archive_index": 0
+                }
+              }
+            },
+            {
+              "id": "src_a73e954c4503",
+              "kind": "file",
+              "uri": "/tmp/native-resources-audit-bi2po263/source.zip",
+              "blob_hash": "28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+              "size": 682,
+              "mime": "",
+              "format": "zip",
+              "title": "",
+              "parser": "loom.importer.zip.export",
+              "parser_version": "export-3",
+              "imported_at": "2026-10-09T07:11:39.192294Z",
+              "metadata": {
+                "import_status": "complete",
+                "conversation_ids": [
+                  "c_606645fe096b",
+                  "c_e114812c5d43"
+                ],
+                "export_report": {
+                  "schema": "loom.export_report.v1",
+                  "provider": "openai",
+                  "counts": {
+                    "account": 0,
+                    "artifact": 0,
+                    "attachment": 0,
+                    "block": 4,
+                    "block_kind": {
+                      "text": 4
+                    },
+                    "branch": 3,
+                    "citation": 0,
+                    "citation_group": 0,
+                    "conversation": 2,
+                    "current_path_messages": 3,
+                    "custom_instruction": 0,
+                    "feedback": 0,
+                    "fork_points": 1,
+                    "memory": 0,
+                    "message": 4,
+                    "project": 0,
+                    "project_doc": 0,
+                    "record": 0,
+                    "shared_link": 0
+                  },
+                  "members": [
+                    {
+                      "wrapper": false,
+                      "source_id": "src_f46ccc6f4d96",
+                      "blob_hash": "5484f7db3ccc92787c366117360ecf32cc77ba7adf6cfd1312e9864a0b625d26",
+                      "locator": {
+                        "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+                        "member": "conversations.json",
+                        "archive_index": 0
+                      },
+                      "archive_index": 0,
+                      "name": "conversations.json",
+                      "size": 1451,
+                      "disposition": "conversations"
+                    },
+                    {
+                      "source_id": "src_38727f6a792f",
+                      "blob_hash": "c7b4d7842a49802b1514d95c3c7b3f3dd0380214b8f2af6530141e7d185c461d",
+                      "locator": {
+                        "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+                        "member": "unknown-record.json",
+                        "archive_index": 1
+                      },
+                      "archive_index": 1,
+                      "name": "unknown-record.json",
+                      "size": 99,
+                      "disposition": "unknown"
+                    }
+                  ],
+                  "member_count": 2,
+                  "errors": [],
+                  "warnings": [],
+                  "partial": false,
+                  "include_result_metadata": true,
+                  "inferred": false,
+                  "resumed_conversations": 0,
+                  "resumed_members": 0,
+                  "largest_json_value_bytes": 1062,
+                  "scanner_buffer_bytes": 65536,
+                  "repairs": {},
+                  "json_leaves": 52,
+                  "leaves_preserved": 52,
+                  "asset_members": [],
+                  "unreferenced_members": [],
+                  "unresolved_keys": [],
+                  "pointer_links": {},
+                  "duplicate_groups": [],
+                  "unknown_members": [
+                    "unknown-record.json"
+                  ],
+                  "parts": []
+                }
+              }
+            }
+          ],
+          "catalog": {
+            "units": 0,
+            "sources": 0,
+            "profiles": 0,
+            "score_runs": 0,
+            "selected": 0,
+            "imported": 0
+          }
+        },
+        "blocked_transport_attempts": 0
+      },
+      "returncode": 0,
+      "stderr": "15:11:39 [INFO ] loom.config: config.json not found - using defaults\n15:11:39 [INFO ] loom.config: secrets.json not found - using defaults\n15:11:39 [INFO ] loom.db: Database opened: /tmp/native-resources-audit-bi2po263/direct/chatadhd.db\n15:11:39 [INFO ] loom.graph: GraphEngine started (LLM=yes)\n15:11:39 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/native-resources-audit-bi2po263/direct)\n15:11:39 [INFO ] loom.db: Database closed\n15:11:39 [INFO ] loom.runtime: Loom runtime shut down\n"
+    },
+    {
+      "op": "preview",
+      "request": {
+        "op": "preview",
+        "data_dir": "/tmp/native-resources-audit-bi2po263/link",
+        "id": "un_91efd907e2ec0e9f"
+      },
+      "response": {
+        "ok": true,
+        "value": {
+          "unit": {
+            "unit": {
+              "id": "un_91efd907e2ec0e9f",
+              "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+              "kind": "conversation",
+              "locator": {
+                "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+                "member": "conversations.json",
+                "json_pointer": "",
+                "byte_start": 1065,
+                "byte_len": 385,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "title": "Synthetic second",
+              "date": "2023-11-14T22:15:00Z",
+              "artifact_type": "",
+              "lang": "en",
+              "bytes": 385,
+              "attrs": {
+                "catalog_scan_fingerprint": "383c84cf2827c31ceb3275e2399d044671931e399124ddc29790dcdc1a932bb8"
+              }
+            },
+            "platform": "chatgpt",
+            "ext_id": "synthetic-two",
+            "content_hash": "21966402ea851bd52d4dc68fd125bec37f6849e935939c30fa11cb7418397c84",
+            "n_msgs": 1,
+            "n_chars": 35,
+            "n_code_chars": 0,
+            "n_forks": 0,
+            "attachments": [],
+            "project_ext_id": "",
+            "head": "Synthetic second conversation",
+            "prev_version": "",
+            "mentions": []
+          },
+          "score": null,
+          "verified": true,
+          "verified_snippets": [],
+          "neighbours": [],
+          "cost_estimate": {
+            "bytes": 385,
+            "messages": 1
+          }
+        },
+        "blocked_transport_attempts": 0
+      },
+      "returncode": 0,
+      "stderr": "15:11:40 [INFO ] loom.config: config.json not found - using defaults\n15:11:40 [INFO ] loom.config: secrets.json not found - using defaults\n15:11:40 [INFO ] loom.db: Database opened: /tmp/native-resources-audit-bi2po263/link/chatadhd.db\n15:11:40 [INFO ] loom.graph: GraphEngine started (LLM=yes)\n15:11:40 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/native-resources-audit-bi2po263/link)\n15:11:40 [INFO ] loom.db: Database closed\n15:11:40 [INFO ] loom.runtime: Loom runtime shut down\n"
+    },
+    {
+      "op": "preview",
+      "request": {
+        "op": "preview",
+        "data_dir": "/tmp/native-resources-audit-bi2po263/link",
+        "id": "un_b27396d1974dd694"
+      },
+      "response": {
+        "ok": true,
+        "value": {
+          "unit": {
+            "unit": {
+              "id": "un_b27396d1974dd694",
+              "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+              "kind": "conversation",
+              "locator": {
+                "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+                "member": "conversations.json",
+                "json_pointer": "",
+                "byte_start": 1,
+                "byte_len": 1062,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "title": "Synthetic branch",
+              "date": "2023-11-14T22:13:20Z",
+              "artifact_type": "",
+              "lang": "en",
+              "bytes": 1062,
+              "attrs": {
+                "catalog_scan_fingerprint": "383c84cf2827c31ceb3275e2399d044671931e399124ddc29790dcdc1a932bb8"
+              }
+            },
+            "platform": "chatgpt",
+            "ext_id": "synthetic-one",
+            "content_hash": "453f9f358ce3e79f9c5098eac77056f743b640fc81e6347de704d18d9a097181",
+            "n_msgs": 3,
+            "n_chars": 94,
+            "n_code_chars": 0,
+            "n_forks": 1,
+            "attachments": [],
+            "project_ext_id": "",
+            "head": "Synthetic question",
+            "prev_version": "",
+            "mentions": []
+          },
+          "score": null,
+          "verified": true,
+          "verified_snippets": [],
+          "neighbours": [],
+          "cost_estimate": {
+            "bytes": 1062,
+            "messages": 3
+          }
+        },
+        "blocked_transport_attempts": 0
+      },
+      "returncode": 0,
+      "stderr": "15:11:40 [INFO ] loom.config: config.json not found - using defaults\n15:11:40 [INFO ] loom.config: secrets.json not found - using defaults\n15:11:40 [INFO ] loom.db: Database opened: /tmp/native-resources-audit-bi2po263/link/chatadhd.db\n15:11:40 [INFO ] loom.graph: GraphEngine started (LLM=yes)\n15:11:40 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/native-resources-audit-bi2po263/link)\n15:11:41 [INFO ] loom.db: Database closed\n15:11:41 [INFO ] loom.runtime: Loom runtime shut down\n"
+    },
+    {
+      "op": "extract",
+      "request": {
+        "op": "extract",
+        "data_dir": "/tmp/native-resources-audit-bi2po263/copy",
+        "units": [
+          "un_91efd907e2ec0e9f",
+          "un_b27396d1974dd694"
+        ]
+      },
+      "response": {
+        "ok": true,
+        "value": {
+          "output": "a2224f18b66c0bf7d6f5fd9640d443c364a58754abd6dd421585bf291d9e8814",
+          "stats": {
+            "from": "catalog",
+            "units": 2,
+            "failed": 0,
+            "names": 0,
+            "observations": 4,
+            "entities": 2,
+            "claims": 0,
+            "areas": 0,
+            "principles": 0,
+            "decisions": 0,
+            "forks": 1,
+            "statuses": 0,
+            "semantic": {
+              "status": "off",
+              "candidate_ids": [],
+              "rejections": [],
+              "skipped": [],
+              "requests": 0,
+              "cache_hits": 0,
+              "accepted": 0,
+              "rejected": 0,
+              "failed": 0,
+              "input_bytes": 0,
+              "chunks": 0,
+              "omitted_observations": 0,
+              "failed_chunk_observations": 0,
+              "selected_chunks": [],
+              "identity": {
+                "version": "2",
+                "requested": false,
+                "limits": {
+                  "max_requests": 4,
+                  "max_observations": 16,
+                  "max_chunk_bytes": 16000,
+                  "max_input_bytes": 64000,
+                  "max_output_tokens": 1600,
+                  "max_proposals": 16,
+                  "max_response_bytes": 128000,
+                  "timeout_ms": 30000
+                },
+                "representation": "relation_v1"
+              },
+              "requests_spent": 0,
+              "input_bytes_spent": 0,
+              "retry_required": false,
+              "representation": "relation_v1",
+              "accepted_bundles": 0,
+              "entity_drafts": 0,
+              "claim_drafts": 0,
+              "abstentions": 0,
+              "response_outcomes": [],
+              "output": "497ffcd6abfb43c9ff830263cd31933c77590d2c6e0deed4d908dd9b7b3dda62"
+            }
+          },
+          "names": []
+        },
+        "run": "kr_6cbaafa5204e6120",
+        "persisted_observations": [
+          {
+            "id": "ob_a155b68f666c7ca7",
+            "unit": "un_91efd907e2ec0e9f",
+            "kind": "utterance",
+            "text": "Synthetic second conversation",
+            "locator": {
+              "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+              "member": "conversations.json",
+              "json_pointer": "/mapping/z/message/content/parts/0",
+              "byte_start": 0,
+              "byte_len": 29,
+              "time_start": null,
+              "time_end": null,
+              "line": null
+            },
+            "lang": "en",
+            "date": "2023-11-14T22:13:21Z",
+            "ordinal": 0,
+            "artifact_type": "conversation",
+            "speaker": "user",
+            "attrs": {
+              "node": "z",
+              "parent": "",
+              "branch": "",
+              "current": true,
+              "seq": 0,
+              "leaf": true
+            }
+          },
+          {
+            "id": "ob_e3381787e6ec8a44",
+            "unit": "un_b27396d1974dd694",
+            "kind": "utterance",
+            "text": "Synthetic question",
+            "locator": {
+              "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+              "member": "conversations.json",
+              "json_pointer": "/mapping/u/message/content/parts/0",
+              "byte_start": 0,
+              "byte_len": 18,
+              "time_start": null,
+              "time_end": null,
+              "line": null
+            },
+            "lang": "",
+            "date": "2023-11-14T22:13:21Z",
+            "ordinal": 0,
+            "artifact_type": "conversation",
+            "speaker": "user",
+            "attrs": {
+              "node": "u",
+              "parent": "",
+              "branch": "",
+              "current": true,
+              "seq": 0,
+              "leaf": true
+            }
+          },
+          {
+            "id": "ob_04c137124e20cdd7",
+            "unit": "un_b27396d1974dd694",
+            "kind": "utterance",
+            "text": "Synthetic first answer",
+            "locator": {
+              "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+              "member": "conversations.json",
+              "json_pointer": "/mapping/a/message/content/parts/0",
+              "byte_start": 0,
+              "byte_len": 22,
+              "time_start": null,
+              "time_end": null,
+              "line": null
+            },
+            "lang": "en",
+            "date": "2023-11-14T22:13:21Z",
+            "ordinal": 2,
+            "artifact_type": "conversation",
+            "speaker": "assistant",
+            "attrs": {
+              "node": "a",
+              "parent": "u",
+              "branch": "/0",
+              "current": true,
+              "seq": 1,
+              "leaf": true
+            }
+          },
+          {
+            "id": "ob_0d3c036c157621f9",
+            "unit": "un_b27396d1974dd694",
+            "kind": "utterance",
+            "text": "Synthetic alternate answer",
+            "locator": {
+              "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+              "member": "conversations.json",
+              "json_pointer": "/mapping/b/message/content/parts/0",
+              "byte_start": 0,
+              "byte_len": 26,
+              "time_start": null,
+              "time_end": null,
+              "line": null
+            },
+            "lang": "",
+            "date": "2023-11-14T22:13:21Z",
+            "ordinal": 4,
+            "artifact_type": "conversation",
+            "speaker": "assistant",
+            "attrs": {
+              "node": "b",
+              "parent": "u",
+              "branch": "/1",
+              "current": false,
+              "seq": 2,
+              "leaf": true
+            }
+          }
+        ],
+        "blocked_transport_attempts": 0
+      },
+      "returncode": 0,
+      "stderr": "15:11:41 [INFO ] loom.config: config.json not found - using defaults\n15:11:41 [INFO ] loom.config: secrets.json not found - using defaults\n15:11:41 [INFO ] loom.db: Database opened: /tmp/native-resources-audit-bi2po263/copy/chatadhd.db\n15:11:41 [INFO ] loom.graph: GraphEngine started (LLM=yes)\n15:11:41 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/native-resources-audit-bi2po263/copy)\n15:11:42 [INFO ] loom.db: Database closed\n15:11:42 [INFO ] loom.runtime: Loom runtime shut down\n"
+    },
+    {
+      "op": "extract",
+      "request": {
+        "op": "extract",
+        "data_dir": "/tmp/native-resources-audit-bi2po263/link",
+        "units": [
+          "un_91efd907e2ec0e9f",
+          "un_b27396d1974dd694"
+        ]
+      },
+      "response": {
+        "ok": true,
+        "value": {
+          "output": "a2224f18b66c0bf7d6f5fd9640d443c364a58754abd6dd421585bf291d9e8814",
+          "stats": {
+            "from": "catalog",
+            "units": 2,
+            "failed": 0,
+            "names": 0,
+            "observations": 4,
+            "entities": 2,
+            "claims": 0,
+            "areas": 0,
+            "principles": 0,
+            "decisions": 0,
+            "forks": 1,
+            "statuses": 0,
+            "semantic": {
+              "status": "off",
+              "candidate_ids": [],
+              "rejections": [],
+              "skipped": [],
+              "requests": 0,
+              "cache_hits": 0,
+              "accepted": 0,
+              "rejected": 0,
+              "failed": 0,
+              "input_bytes": 0,
+              "chunks": 0,
+              "omitted_observations": 0,
+              "failed_chunk_observations": 0,
+              "selected_chunks": [],
+              "identity": {
+                "version": "2",
+                "requested": false,
+                "limits": {
+                  "max_requests": 4,
+                  "max_observations": 16,
+                  "max_chunk_bytes": 16000,
+                  "max_input_bytes": 64000,
+                  "max_output_tokens": 1600,
+                  "max_proposals": 16,
+                  "max_response_bytes": 128000,
+                  "timeout_ms": 30000
+                },
+                "representation": "relation_v1"
+              },
+              "requests_spent": 0,
+              "input_bytes_spent": 0,
+              "retry_required": false,
+              "representation": "relation_v1",
+              "accepted_bundles": 0,
+              "entity_drafts": 0,
+              "claim_drafts": 0,
+              "abstentions": 0,
+              "response_outcomes": [],
+              "output": "497ffcd6abfb43c9ff830263cd31933c77590d2c6e0deed4d908dd9b7b3dda62"
+            }
+          },
+          "names": []
+        },
+        "run": "kr_6cbaafa5204e6120",
+        "persisted_observations": [
+          {
+            "id": "ob_a155b68f666c7ca7",
+            "unit": "un_91efd907e2ec0e9f",
+            "kind": "utterance",
+            "text": "Synthetic second conversation",
+            "locator": {
+              "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+              "member": "conversations.json",
+              "json_pointer": "/mapping/z/message/content/parts/0",
+              "byte_start": 0,
+              "byte_len": 29,
+              "time_start": null,
+              "time_end": null,
+              "line": null
+            },
+            "lang": "en",
+            "date": "2023-11-14T22:13:21Z",
+            "ordinal": 0,
+            "artifact_type": "conversation",
+            "speaker": "user",
+            "attrs": {
+              "node": "z",
+              "parent": "",
+              "branch": "",
+              "current": true,
+              "seq": 0,
+              "leaf": true
+            }
+          },
+          {
+            "id": "ob_e3381787e6ec8a44",
+            "unit": "un_b27396d1974dd694",
+            "kind": "utterance",
+            "text": "Synthetic question",
+            "locator": {
+              "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+              "member": "conversations.json",
+              "json_pointer": "/mapping/u/message/content/parts/0",
+              "byte_start": 0,
+              "byte_len": 18,
+              "time_start": null,
+              "time_end": null,
+              "line": null
+            },
+            "lang": "",
+            "date": "2023-11-14T22:13:21Z",
+            "ordinal": 0,
+            "artifact_type": "conversation",
+            "speaker": "user",
+            "attrs": {
+              "node": "u",
+              "parent": "",
+              "branch": "",
+              "current": true,
+              "seq": 0,
+              "leaf": true
+            }
+          },
+          {
+            "id": "ob_04c137124e20cdd7",
+            "unit": "un_b27396d1974dd694",
+            "kind": "utterance",
+            "text": "Synthetic first answer",
+            "locator": {
+              "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+              "member": "conversations.json",
+              "json_pointer": "/mapping/a/message/content/parts/0",
+              "byte_start": 0,
+              "byte_len": 22,
+              "time_start": null,
+              "time_end": null,
+              "line": null
+            },
+            "lang": "en",
+            "date": "2023-11-14T22:13:21Z",
+            "ordinal": 2,
+            "artifact_type": "conversation",
+            "speaker": "assistant",
+            "attrs": {
+              "node": "a",
+              "parent": "u",
+              "branch": "/0",
+              "current": true,
+              "seq": 1,
+              "leaf": true
+            }
+          },
+          {
+            "id": "ob_0d3c036c157621f9",
+            "unit": "un_b27396d1974dd694",
+            "kind": "utterance",
+            "text": "Synthetic alternate answer",
+            "locator": {
+              "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+              "member": "conversations.json",
+              "json_pointer": "/mapping/b/message/content/parts/0",
+              "byte_start": 0,
+              "byte_len": 26,
+              "time_start": null,
+              "time_end": null,
+              "line": null
+            },
+            "lang": "",
+            "date": "2023-11-14T22:13:21Z",
+            "ordinal": 4,
+            "artifact_type": "conversation",
+            "speaker": "assistant",
+            "attrs": {
+              "node": "b",
+              "parent": "u",
+              "branch": "/1",
+              "current": false,
+              "seq": 2,
+              "leaf": true
+            }
+          }
+        ],
+        "blocked_transport_attempts": 0
+      },
+      "returncode": 0,
+      "stderr": "15:11:42 [INFO ] loom.config: config.json not found - using defaults\n15:11:42 [INFO ] loom.config: secrets.json not found - using defaults\n15:11:42 [INFO ] loom.db: Database opened: /tmp/native-resources-audit-bi2po263/link/chatadhd.db\n15:11:42 [INFO ] loom.graph: GraphEngine started (LLM=yes)\n15:11:42 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/native-resources-audit-bi2po263/link)\n15:11:43 [INFO ] loom.db: Database closed\n15:11:43 [INFO ] loom.runtime: Loom runtime shut down\n"
+    },
+    {
+      "op": "read",
+      "request": {
+        "op": "read",
+        "data_dir": "/tmp/native-resources-audit-bi2po263/link",
+        "id": "un_91efd907e2ec0e9f"
+      },
+      "response": {
+        "ok": false,
+        "code": "conflict",
+        "error": "content hash mismatch for un_91efd907e2ec0e9f: source bytes changed",
+        "blocked_transport_attempts": 0
+      },
+      "returncode": 0,
+      "stderr": "15:11:43 [INFO ] loom.config: config.json not found - using defaults\n15:11:43 [INFO ] loom.config: secrets.json not found - using defaults\n15:11:43 [INFO ] loom.db: Database opened: /tmp/native-resources-audit-bi2po263/link/chatadhd.db\n15:11:43 [INFO ] loom.graph: GraphEngine started (LLM=yes)\n15:11:43 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/native-resources-audit-bi2po263/link)\n15:11:44 [INFO ] loom.db: Database closed\n15:11:44 [INFO ] loom.runtime: Loom runtime shut down\n"
+    },
+    {
+      "op": "state",
+      "request": {
+        "op": "state",
+        "data_dir": "/tmp/native-resources-audit-bi2po263/link"
+      },
+      "response": {
+        "ok": true,
+        "value": {
+          "conversations": [
+            {
+              "conversation": {
+                "id": "c_34ea632f012b",
+                "title": "Synthetic branch",
+                "created": "2026-10-09T07:11:37.725586Z",
+                "updated": "2026-10-09T07:11:37.725693Z",
+                "source": "user",
+                "metadata": {}
+              },
+              "messages": [
+                {
+                  "id": "m_aec8dd7d7c65",
+                  "conv_id": "c_34ea632f012b",
+                  "parent_id": null,
+                  "role": "document",
+                  "text": "[linked to catalog unit un_b27396d1974dd694, 3 message(s)] Synthetic question",
+                  "model": null,
+                  "status": "active",
+                  "version_group_id": "vg_02f892645c3b",
+                  "version_num": 1,
+                  "weight": 1.0,
+                  "attachments": [],
+                  "metadata": {
+                    "catalog_unit": "un_b27396d1974dd694",
+                    "locator": {
+                      "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+                      "member": "conversations.json",
+                      "json_pointer": "",
+                      "byte_start": 1,
+                      "byte_len": 1062,
+                      "time_start": null,
+                      "time_end": null,
+                      "line": null
+                    },
+                    "content_hash": "453f9f358ce3e79f9c5098eac77056f743b640fc81e6347de704d18d9a097181",
+                    "store_mode": "link"
+                  },
+                  "created": "2026-10-09T07:11:37.725643Z",
+                  "semantic_status": "pending"
+                }
+              ]
+            },
+            {
+              "conversation": {
+                "id": "c_2efaa8099dc6",
+                "title": "[Import] ",
+                "created": "2026-10-09T07:11:37.724868Z",
+                "updated": "2026-10-09T07:11:37.724977Z",
+                "source": "user",
+                "metadata": {}
+              },
+              "messages": [
+                {
+                  "id": "m_eec22b70cd51",
+                  "conv_id": "c_2efaa8099dc6",
+                  "parent_id": null,
+                  "role": "document",
+                  "text": "[linked to catalog unit un_9a01a13852a6b7e5, 0 message(s)] ",
+                  "model": null,
+                  "status": "active",
+                  "version_group_id": "vg_2739a52f7825",
+                  "version_num": 1,
+                  "weight": 1.0,
+                  "attachments": [],
+                  "metadata": {
+                    "catalog_unit": "un_9a01a13852a6b7e5",
+                    "locator": {
+                      "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+                      "member": "unknown-record.json",
+                      "json_pointer": "",
+                      "byte_start": 0,
+                      "byte_len": 99,
+                      "time_start": null,
+                      "time_end": null,
+                      "line": null
+                    },
+                    "content_hash": "c7b4d7842a49802b1514d95c3c7b3f3dd0380214b8f2af6530141e7d185c461d",
+                    "store_mode": "link"
+                  },
+                  "created": "2026-10-09T07:11:37.724927Z",
+                  "semantic_status": "pending"
+                }
+              ]
+            },
+            {
+              "conversation": {
+                "id": "c_f8d5bd1fea03",
+                "title": "Synthetic second",
+                "created": "2026-10-09T07:11:37.724120Z",
+                "updated": "2026-10-09T07:11:37.724305Z",
+                "source": "user",
+                "metadata": {}
+              },
+              "messages": [
+                {
+                  "id": "m_9487a855ff8f",
+                  "conv_id": "c_f8d5bd1fea03",
+                  "parent_id": null,
+                  "role": "document",
+                  "text": "[linked to catalog unit un_91efd907e2ec0e9f, 1 message(s)] Synthetic second conversation",
+                  "model": null,
+                  "status": "active",
+                  "version_group_id": "vg_3f210d6b26df",
+                  "version_num": 1,
+                  "weight": 1.0,
+                  "attachments": [],
+                  "metadata": {
+                    "catalog_unit": "un_91efd907e2ec0e9f",
+                    "locator": {
+                      "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+                      "member": "conversations.json",
+                      "json_pointer": "",
+                      "byte_start": 1065,
+                      "byte_len": 385,
+                      "time_start": null,
+                      "time_end": null,
+                      "line": null
+                    },
+                    "content_hash": "21966402ea851bd52d4dc68fd125bec37f6849e935939c30fa11cb7418397c84",
+                    "store_mode": "link"
+                  },
+                  "created": "2026-10-09T07:11:37.724221Z",
+                  "semantic_status": "pending"
+                }
+              ]
+            }
+          ],
+          "sources": [
+            {
+              "id": "src_23a86d9d251c",
+              "kind": "catalog_unit",
+              "uri": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a!conversations.json",
+              "blob_hash": "",
+              "size": 0,
+              "mime": "",
+              "format": "chatgpt",
+              "title": "Synthetic branch",
+              "parser": "loom.catalog.import",
+              "parser_version": "4",
+              "imported_at": "2026-10-09T07:11:37.725531Z",
+              "metadata": {
+                "unit_id": "un_b27396d1974dd694",
+                "platform": "chatgpt",
+                "ext_id": "synthetic-one"
+              }
+            },
+            {
+              "id": "src_9dd88dd52b8f",
+              "kind": "catalog_unit",
+              "uri": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a!unknown-record.json",
+              "blob_hash": "",
+              "size": 0,
+              "mime": "",
+              "format": "file",
+              "title": "",
+              "parser": "loom.catalog.import",
+              "parser_version": "4",
+              "imported_at": "2026-10-09T07:11:37.724816Z",
+              "metadata": {
+                "unit_id": "un_9a01a13852a6b7e5",
+                "platform": "file",
+                "ext_id": ""
+              }
+            },
+            {
+              "id": "src_7fbc0047bc1a",
+              "kind": "catalog_unit",
+              "uri": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a!conversations.json",
+              "blob_hash": "",
+              "size": 0,
+              "mime": "",
+              "format": "chatgpt",
+              "title": "Synthetic second",
+              "parser": "loom.catalog.import",
+              "parser_version": "4",
+              "imported_at": "2026-10-09T07:11:37.724017Z",
+              "metadata": {
+                "unit_id": "un_91efd907e2ec0e9f",
+                "platform": "chatgpt",
+                "ext_id": "synthetic-two"
+              }
+            }
+          ],
+          "catalog": {
+            "units": 3,
+            "sources": 1,
+            "profiles": 0,
+            "score_runs": 0,
+            "selected": 0,
+            "imported": 3
+          }
+        },
+        "blocked_transport_attempts": 0
+      },
+      "returncode": 0,
+      "stderr": "15:11:44 [INFO ] loom.config: config.json not found - using defaults\n15:11:44 [INFO ] loom.config: secrets.json not found - using defaults\n15:11:44 [INFO ] loom.db: Database opened: /tmp/native-resources-audit-bi2po263/link/chatadhd.db\n15:11:44 [INFO ] loom.graph: GraphEngine started (LLM=yes)\n15:11:44 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/native-resources-audit-bi2po263/link)\n15:11:44 [INFO ] loom.db: Database closed\n15:11:44 [INFO ] loom.runtime: Loom runtime shut down\n"
+    },
+    {
+      "op": "read",
+      "request": {
+        "op": "read",
+        "data_dir": "/tmp/native-resources-audit-bi2po263/link",
+        "id": "un_91efd907e2ec0e9f"
+      },
+      "response": {
+        "ok": false,
+        "code": "io",
+        "error": "not a readable zip: /tmp/native-resources-audit-bi2po263/source.zip",
+        "blocked_transport_attempts": 0
+      },
+      "returncode": 0,
+      "stderr": "15:11:45 [INFO ] loom.config: config.json not found - using defaults\n15:11:45 [INFO ] loom.config: secrets.json not found - using defaults\n15:11:45 [INFO ] loom.db: Database opened: /tmp/native-resources-audit-bi2po263/link/chatadhd.db\n15:11:45 [INFO ] loom.graph: GraphEngine started (LLM=yes)\n15:11:45 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/native-resources-audit-bi2po263/link)\n15:11:45 [INFO ] loom.db: Database closed\n15:11:45 [INFO ] loom.runtime: Loom runtime shut down\n"
+    },
+    {
+      "op": "state",
+      "request": {
+        "op": "state",
+        "data_dir": "/tmp/native-resources-audit-bi2po263/link"
+      },
+      "response": {
+        "ok": true,
+        "value": {
+          "conversations": [
+            {
+              "conversation": {
+                "id": "c_34ea632f012b",
+                "title": "Synthetic branch",
+                "created": "2026-10-09T07:11:37.725586Z",
+                "updated": "2026-10-09T07:11:37.725693Z",
+                "source": "user",
+                "metadata": {}
+              },
+              "messages": [
+                {
+                  "id": "m_aec8dd7d7c65",
+                  "conv_id": "c_34ea632f012b",
+                  "parent_id": null,
+                  "role": "document",
+                  "text": "[linked to catalog unit un_b27396d1974dd694, 3 message(s)] Synthetic question",
+                  "model": null,
+                  "status": "active",
+                  "version_group_id": "vg_02f892645c3b",
+                  "version_num": 1,
+                  "weight": 1.0,
+                  "attachments": [],
+                  "metadata": {
+                    "catalog_unit": "un_b27396d1974dd694",
+                    "locator": {
+                      "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+                      "member": "conversations.json",
+                      "json_pointer": "",
+                      "byte_start": 1,
+                      "byte_len": 1062,
+                      "time_start": null,
+                      "time_end": null,
+                      "line": null
+                    },
+                    "content_hash": "453f9f358ce3e79f9c5098eac77056f743b640fc81e6347de704d18d9a097181",
+                    "store_mode": "link"
+                  },
+                  "created": "2026-10-09T07:11:37.725643Z",
+                  "semantic_status": "pending"
+                }
+              ]
+            },
+            {
+              "conversation": {
+                "id": "c_2efaa8099dc6",
+                "title": "[Import] ",
+                "created": "2026-10-09T07:11:37.724868Z",
+                "updated": "2026-10-09T07:11:37.724977Z",
+                "source": "user",
+                "metadata": {}
+              },
+              "messages": [
+                {
+                  "id": "m_eec22b70cd51",
+                  "conv_id": "c_2efaa8099dc6",
+                  "parent_id": null,
+                  "role": "document",
+                  "text": "[linked to catalog unit un_9a01a13852a6b7e5, 0 message(s)] ",
+                  "model": null,
+                  "status": "active",
+                  "version_group_id": "vg_2739a52f7825",
+                  "version_num": 1,
+                  "weight": 1.0,
+                  "attachments": [],
+                  "metadata": {
+                    "catalog_unit": "un_9a01a13852a6b7e5",
+                    "locator": {
+                      "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+                      "member": "unknown-record.json",
+                      "json_pointer": "",
+                      "byte_start": 0,
+                      "byte_len": 99,
+                      "time_start": null,
+                      "time_end": null,
+                      "line": null
+                    },
+                    "content_hash": "c7b4d7842a49802b1514d95c3c7b3f3dd0380214b8f2af6530141e7d185c461d",
+                    "store_mode": "link"
+                  },
+                  "created": "2026-10-09T07:11:37.724927Z",
+                  "semantic_status": "pending"
+                }
+              ]
+            },
+            {
+              "conversation": {
+                "id": "c_f8d5bd1fea03",
+                "title": "Synthetic second",
+                "created": "2026-10-09T07:11:37.724120Z",
+                "updated": "2026-10-09T07:11:37.724305Z",
+                "source": "user",
+                "metadata": {}
+              },
+              "messages": [
+                {
+                  "id": "m_9487a855ff8f",
+                  "conv_id": "c_f8d5bd1fea03",
+                  "parent_id": null,
+                  "role": "document",
+                  "text": "[linked to catalog unit un_91efd907e2ec0e9f, 1 message(s)] Synthetic second conversation",
+                  "model": null,
+                  "status": "active",
+                  "version_group_id": "vg_3f210d6b26df",
+                  "version_num": 1,
+                  "weight": 1.0,
+                  "attachments": [],
+                  "metadata": {
+                    "catalog_unit": "un_91efd907e2ec0e9f",
+                    "locator": {
+                      "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+                      "member": "conversations.json",
+                      "json_pointer": "",
+                      "byte_start": 1065,
+                      "byte_len": 385,
+                      "time_start": null,
+                      "time_end": null,
+                      "line": null
+                    },
+                    "content_hash": "21966402ea851bd52d4dc68fd125bec37f6849e935939c30fa11cb7418397c84",
+                    "store_mode": "link"
+                  },
+                  "created": "2026-10-09T07:11:37.724221Z",
+                  "semantic_status": "pending"
+                }
+              ]
+            }
+          ],
+          "sources": [
+            {
+              "id": "src_23a86d9d251c",
+              "kind": "catalog_unit",
+              "uri": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a!conversations.json",
+              "blob_hash": "",
+              "size": 0,
+              "mime": "",
+              "format": "chatgpt",
+              "title": "Synthetic branch",
+              "parser": "loom.catalog.import",
+              "parser_version": "4",
+              "imported_at": "2026-10-09T07:11:37.725531Z",
+              "metadata": {
+                "unit_id": "un_b27396d1974dd694",
+                "platform": "chatgpt",
+                "ext_id": "synthetic-one"
+              }
+            },
+            {
+              "id": "src_9dd88dd52b8f",
+              "kind": "catalog_unit",
+              "uri": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a!unknown-record.json",
+              "blob_hash": "",
+              "size": 0,
+              "mime": "",
+              "format": "file",
+              "title": "",
+              "parser": "loom.catalog.import",
+              "parser_version": "4",
+              "imported_at": "2026-10-09T07:11:37.724816Z",
+              "metadata": {
+                "unit_id": "un_9a01a13852a6b7e5",
+                "platform": "file",
+                "ext_id": ""
+              }
+            },
+            {
+              "id": "src_7fbc0047bc1a",
+              "kind": "catalog_unit",
+              "uri": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a!conversations.json",
+              "blob_hash": "",
+              "size": 0,
+              "mime": "",
+              "format": "chatgpt",
+              "title": "Synthetic second",
+              "parser": "loom.catalog.import",
+              "parser_version": "4",
+              "imported_at": "2026-10-09T07:11:37.724017Z",
+              "metadata": {
+                "unit_id": "un_91efd907e2ec0e9f",
+                "platform": "chatgpt",
+                "ext_id": "synthetic-two"
+              }
+            }
+          ],
+          "catalog": {
+            "units": 3,
+            "sources": 1,
+            "profiles": 0,
+            "score_runs": 0,
+            "selected": 0,
+            "imported": 3
+          }
+        },
+        "blocked_transport_attempts": 0
+      },
+      "returncode": 0,
+      "stderr": "15:11:45 [INFO ] loom.config: config.json not found - using defaults\n15:11:45 [INFO ] loom.config: secrets.json not found - using defaults\n15:11:45 [INFO ] loom.db: Database opened: /tmp/native-resources-audit-bi2po263/link/chatadhd.db\n15:11:45 [INFO ] loom.graph: GraphEngine started (LLM=yes)\n15:11:45 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/native-resources-audit-bi2po263/link)\n15:11:46 [INFO ] loom.db: Database closed\n15:11:46 [INFO ] loom.runtime: Loom runtime shut down\n"
+    },
+    {
+      "op": "preview",
+      "request": {
+        "op": "preview",
+        "data_dir": "/tmp/native-resources-audit-bi2po263/link",
+        "id": "un_91efd907e2ec0e9f"
+      },
+      "response": {
+        "ok": true,
+        "value": {
+          "unit": {
+            "unit": {
+              "id": "un_91efd907e2ec0e9f",
+              "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+              "kind": "conversation",
+              "locator": {
+                "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+                "member": "conversations.json",
+                "json_pointer": "",
+                "byte_start": 1065,
+                "byte_len": 385,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "title": "Synthetic second",
+              "date": "2023-11-14T22:15:00Z",
+              "artifact_type": "",
+              "lang": "en",
+              "bytes": 385,
+              "attrs": {
+                "catalog_scan_fingerprint": "383c84cf2827c31ceb3275e2399d044671931e399124ddc29790dcdc1a932bb8"
+              }
+            },
+            "platform": "chatgpt",
+            "ext_id": "synthetic-two",
+            "content_hash": "21966402ea851bd52d4dc68fd125bec37f6849e935939c30fa11cb7418397c84",
+            "n_msgs": 1,
+            "n_chars": 35,
+            "n_code_chars": 0,
+            "n_forks": 0,
+            "attachments": [],
+            "project_ext_id": "",
+            "head": "Synthetic second conversation",
+            "prev_version": "",
+            "mentions": []
+          },
+          "score": null,
+          "verified": false,
+          "verified_snippets": [],
+          "neighbours": [],
+          "cost_estimate": {
+            "bytes": 385,
+            "messages": 1
+          }
+        },
+        "blocked_transport_attempts": 0
+      },
+      "returncode": 0,
+      "stderr": "15:11:46 [INFO ] loom.config: config.json not found - using defaults\n15:11:46 [INFO ] loom.config: secrets.json not found - using defaults\n15:11:46 [INFO ] loom.db: Database opened: /tmp/native-resources-audit-bi2po263/link/chatadhd.db\n15:11:46 [INFO ] loom.graph: GraphEngine started (LLM=yes)\n15:11:46 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/native-resources-audit-bi2po263/link)\n15:11:46 [INFO ] loom.db: Database closed\n15:11:46 [INFO ] loom.runtime: Loom runtime shut down\n"
+    },
+    {
+      "op": "extract",
+      "request": {
+        "op": "extract",
+        "data_dir": "/tmp/native-resources-audit-bi2po263/link",
+        "units": [
+          "un_91efd907e2ec0e9f",
+          "un_b27396d1974dd694"
+        ]
+      },
+      "response": {
+        "ok": false,
+        "code": "io",
+        "error": "not a readable zip: /tmp/native-resources-audit-bi2po263/source.zip",
+        "run": "kr_6cbaafa5204e6120",
+        "persisted_observations": [
+          {
+            "id": "ob_a155b68f666c7ca7",
+            "unit": "un_91efd907e2ec0e9f",
+            "kind": "utterance",
+            "text": "Synthetic second conversation",
+            "locator": {
+              "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+              "member": "conversations.json",
+              "json_pointer": "/mapping/z/message/content/parts/0",
+              "byte_start": 0,
+              "byte_len": 29,
+              "time_start": null,
+              "time_end": null,
+              "line": null
+            },
+            "lang": "en",
+            "date": "2023-11-14T22:13:21Z",
+            "ordinal": 0,
+            "artifact_type": "conversation",
+            "speaker": "user",
+            "attrs": {
+              "node": "z",
+              "parent": "",
+              "branch": "",
+              "current": true,
+              "seq": 0,
+              "leaf": true
+            }
+          },
+          {
+            "id": "ob_e3381787e6ec8a44",
+            "unit": "un_b27396d1974dd694",
+            "kind": "utterance",
+            "text": "Synthetic question",
+            "locator": {
+              "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+              "member": "conversations.json",
+              "json_pointer": "/mapping/u/message/content/parts/0",
+              "byte_start": 0,
+              "byte_len": 18,
+              "time_start": null,
+              "time_end": null,
+              "line": null
+            },
+            "lang": "",
+            "date": "2023-11-14T22:13:21Z",
+            "ordinal": 0,
+            "artifact_type": "conversation",
+            "speaker": "user",
+            "attrs": {
+              "node": "u",
+              "parent": "",
+              "branch": "",
+              "current": true,
+              "seq": 0,
+              "leaf": true
+            }
+          },
+          {
+            "id": "ob_04c137124e20cdd7",
+            "unit": "un_b27396d1974dd694",
+            "kind": "utterance",
+            "text": "Synthetic first answer",
+            "locator": {
+              "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+              "member": "conversations.json",
+              "json_pointer": "/mapping/a/message/content/parts/0",
+              "byte_start": 0,
+              "byte_len": 22,
+              "time_start": null,
+              "time_end": null,
+              "line": null
+            },
+            "lang": "en",
+            "date": "2023-11-14T22:13:21Z",
+            "ordinal": 2,
+            "artifact_type": "conversation",
+            "speaker": "assistant",
+            "attrs": {
+              "node": "a",
+              "parent": "u",
+              "branch": "/0",
+              "current": true,
+              "seq": 1,
+              "leaf": true
+            }
+          },
+          {
+            "id": "ob_0d3c036c157621f9",
+            "unit": "un_b27396d1974dd694",
+            "kind": "utterance",
+            "text": "Synthetic alternate answer",
+            "locator": {
+              "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+              "member": "conversations.json",
+              "json_pointer": "/mapping/b/message/content/parts/0",
+              "byte_start": 0,
+              "byte_len": 26,
+              "time_start": null,
+              "time_end": null,
+              "line": null
+            },
+            "lang": "",
+            "date": "2023-11-14T22:13:21Z",
+            "ordinal": 4,
+            "artifact_type": "conversation",
+            "speaker": "assistant",
+            "attrs": {
+              "node": "b",
+              "parent": "u",
+              "branch": "/1",
+              "current": false,
+              "seq": 2,
+              "leaf": true
+            }
+          }
+        ],
+        "blocked_transport_attempts": 0
+      },
+      "returncode": 0,
+      "stderr": "15:11:47 [INFO ] loom.config: config.json not found - using defaults\n15:11:47 [INFO ] loom.config: secrets.json not found - using defaults\n15:11:47 [INFO ] loom.db: Database opened: /tmp/native-resources-audit-bi2po263/link/chatadhd.db\n15:11:47 [INFO ] loom.graph: GraphEngine started (LLM=yes)\n15:11:47 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/native-resources-audit-bi2po263/link)\n15:11:47 [INFO ] loom.db: Database closed\n15:11:47 [INFO ] loom.runtime: Loom runtime shut down\n"
+    },
+    {
+      "op": "read",
+      "request": {
+        "op": "read",
+        "data_dir": "/tmp/native-resources-audit-bi2po263/copy",
+        "id": "un_91efd907e2ec0e9f"
+      },
+      "response": {
+        "ok": true,
+        "value": "{\"id\": \"synthetic-two\", \"title\": \"Synthetic second\", \"create_time\": 1700000100, \"current_node\": \"z\", \"mapping\": {\"z\": {\"id\": \"z\", \"parent\": null, \"children\": [], \"message\": {\"id\": \"z\", \"author\": {\"role\": \"user\"}, \"content\": {\"content_type\": \"text\", \"parts\": [\"Synthetic second conversation\"]}, \"create_time\": 1700000001, \"metadata\": {\"synthetic_unknown_message\": \"retained-canary\"}}}}}",
+        "blocked_transport_attempts": 0
+      },
+      "returncode": 0,
+      "stderr": "15:11:47 [INFO ] loom.config: config.json not found - using defaults\n15:11:47 [INFO ] loom.config: secrets.json not found - using defaults\n15:11:47 [INFO ] loom.db: Database opened: /tmp/native-resources-audit-bi2po263/copy/chatadhd.db\n15:11:47 [INFO ] loom.graph: GraphEngine started (LLM=yes)\n15:11:47 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/native-resources-audit-bi2po263/copy)\n15:11:48 [INFO ] loom.db: Database closed\n15:11:48 [INFO ] loom.runtime: Loom runtime shut down\n"
+    },
+    {
+      "op": "read",
+      "request": {
+        "op": "read",
+        "data_dir": "/tmp/native-resources-audit-bi2po263/copy",
+        "id": "un_b27396d1974dd694"
+      },
+      "response": {
+        "ok": true,
+        "value": "{\"id\": \"synthetic-one\", \"title\": \"Synthetic branch\", \"create_time\": 1700000000, \"current_node\": \"a\", \"synthetic_unknown_conversation\": {\"retained\": [\"canary\", null, 7]}, \"mapping\": {\"r\": {\"id\": \"r\", \"parent\": null, \"children\": [\"u\"], \"message\": null}, \"u\": {\"id\": \"u\", \"parent\": \"r\", \"children\": [\"a\", \"b\"], \"message\": {\"id\": \"u\", \"author\": {\"role\": \"user\"}, \"content\": {\"content_type\": \"text\", \"parts\": [\"Synthetic question\"]}, \"create_time\": 1700000001, \"metadata\": {\"synthetic_unknown_message\": \"retained-canary\"}}}, \"a\": {\"id\": \"a\", \"parent\": \"u\", \"children\": [], \"message\": {\"id\": \"a\", \"author\": {\"role\": \"assistant\"}, \"content\": {\"content_type\": \"text\", \"parts\": [\"Synthetic first answer\"]}, \"create_time\": 1700000001, \"metadata\": {\"synthetic_unknown_message\": \"retained-canary\"}}}, \"b\": {\"id\": \"b\", \"parent\": \"u\", \"children\": [], \"message\": {\"id\": \"b\", \"author\": {\"role\": \"assistant\"}, \"content\": {\"content_type\": \"text\", \"parts\": [\"Synthetic alternate answer\"]}, \"create_time\": 1700000001, \"metadata\": {\"synthetic_unknown_message\": \"retained-canary\"}}}}}",
+        "blocked_transport_attempts": 0
+      },
+      "returncode": 0,
+      "stderr": "15:11:48 [INFO ] loom.config: config.json not found - using defaults\n15:11:48 [INFO ] loom.config: secrets.json not found - using defaults\n15:11:48 [INFO ] loom.db: Database opened: /tmp/native-resources-audit-bi2po263/copy/chatadhd.db\n15:11:48 [INFO ] loom.graph: GraphEngine started (LLM=yes)\n15:11:48 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/native-resources-audit-bi2po263/copy)\n15:11:48 [INFO ] loom.db: Database closed\n15:11:48 [INFO ] loom.runtime: Loom runtime shut down\n"
+    },
+    {
+      "op": "scan",
+      "request": {
+        "op": "scan",
+        "data_dir": "/tmp/native-resources-audit-bi2po263/link",
+        "config": {
+          "sources": [
+            "/tmp/native-resources-audit-bi2po263/source.zip"
+          ],
+          "threads": 1,
+          "retain_raw": "none"
+        }
+      },
+      "response": {
+        "ok": true,
+        "value": {
+          "units": 2,
+          "new": 2,
+          "unchanged": 1,
+          "refreshed": 0,
+          "input_hash": "383c84cf2827c31ceb3275e2399d044671931e399124ddc29790dcdc1a932bb8",
+          "versions": 2,
+          "bytes": 1479,
+          "warnings": []
+        },
+        "blocked_transport_attempts": 0
+      },
+      "returncode": 0,
+      "stderr": "15:11:49 [INFO ] loom.config: config.json not found - using defaults\n15:11:49 [INFO ] loom.config: secrets.json not found - using defaults\n15:11:49 [INFO ] loom.db: Database opened: /tmp/native-resources-audit-bi2po263/link/chatadhd.db\n15:11:49 [INFO ] loom.graph: GraphEngine started (LLM=yes)\n15:11:49 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/native-resources-audit-bi2po263/link)\n15:11:49 [INFO ] loom.db: Database closed\n15:11:49 [INFO ] loom.runtime: Loom runtime shut down\n"
+    },
+    {
+      "op": "query",
+      "request": {
+        "op": "query",
+        "data_dir": "/tmp/native-resources-audit-bi2po263/link"
+      },
+      "response": {
+        "ok": true,
+        "value": [
+          {
+            "unit": {
+              "id": "un_0b1e20da9d76d452",
+              "source": "sha256:94f3a5d1a2c113c2f0001579e1e5ec01a4d61148bed616ffc27613a03d87e973",
+              "kind": "conversation",
+              "locator": {
+                "source": "sha256:94f3a5d1a2c113c2f0001579e1e5ec01a4d61148bed616ffc27613a03d87e973",
+                "member": "conversations.json",
+                "json_pointer": "",
+                "byte_start": 1,
+                "byte_len": 1086,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "title": "Synthetic branch",
+              "date": "2023-11-14T22:13:20Z",
+              "artifact_type": "",
+              "lang": "en",
+              "bytes": 1086,
+              "attrs": {
+                "catalog_scan_fingerprint": "383c84cf2827c31ceb3275e2399d044671931e399124ddc29790dcdc1a932bb8"
+              }
+            },
+            "platform": "chatgpt",
+            "ext_id": "synthetic-one",
+            "content_hash": "c65d71393a61aaba0aa7dc1ec3edd5a60cf60e126eeb376ce9d46d38a04c59ea",
+            "n_msgs": 3,
+            "n_chars": 118,
+            "n_code_chars": 0,
+            "n_forks": 1,
+            "attachments": [],
+            "project_ext_id": "",
+            "head": "Synthetic question changed",
+            "prev_version": "un_b27396d1974dd694",
+            "mentions": []
+          },
+          {
+            "unit": {
+              "id": "un_6362f37cbd47be98",
+              "source": "sha256:94f3a5d1a2c113c2f0001579e1e5ec01a4d61148bed616ffc27613a03d87e973",
+              "kind": "conversation",
+              "locator": {
+                "source": "sha256:94f3a5d1a2c113c2f0001579e1e5ec01a4d61148bed616ffc27613a03d87e973",
+                "member": "conversations.json",
+                "json_pointer": "",
+                "byte_start": 1089,
+                "byte_len": 393,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "title": "Synthetic second",
+              "date": "2023-11-14T22:15:00Z",
+              "artifact_type": "",
+              "lang": "en",
+              "bytes": 393,
+              "attrs": {
+                "catalog_scan_fingerprint": "383c84cf2827c31ceb3275e2399d044671931e399124ddc29790dcdc1a932bb8"
+              }
+            },
+            "platform": "chatgpt",
+            "ext_id": "synthetic-two",
+            "content_hash": "32776578d0260285ef33e662db544982dd4a9d638c57662e9ebcad195f46158a",
+            "n_msgs": 1,
+            "n_chars": 43,
+            "n_code_chars": 0,
+            "n_forks": 0,
+            "attachments": [],
+            "project_ext_id": "",
+            "head": "Synthetic second conversation changed",
+            "prev_version": "un_91efd907e2ec0e9f",
+            "mentions": []
+          },
+          {
+            "unit": {
+              "id": "un_91efd907e2ec0e9f",
+              "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+              "kind": "conversation",
+              "locator": {
+                "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+                "member": "conversations.json",
+                "json_pointer": "",
+                "byte_start": 1065,
+                "byte_len": 385,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "title": "Synthetic second",
+              "date": "2023-11-14T22:15:00Z",
+              "artifact_type": "",
+              "lang": "en",
+              "bytes": 385,
+              "attrs": {
+                "catalog_scan_fingerprint": "383c84cf2827c31ceb3275e2399d044671931e399124ddc29790dcdc1a932bb8"
+              }
+            },
+            "platform": "chatgpt",
+            "ext_id": "synthetic-two",
+            "content_hash": "21966402ea851bd52d4dc68fd125bec37f6849e935939c30fa11cb7418397c84",
+            "n_msgs": 1,
+            "n_chars": 35,
+            "n_code_chars": 0,
+            "n_forks": 0,
+            "attachments": [],
+            "project_ext_id": "",
+            "head": "Synthetic second conversation",
+            "prev_version": "",
+            "mentions": []
+          },
+          {
+            "unit": {
+              "id": "un_9a01a13852a6b7e5",
+              "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+              "kind": "record",
+              "locator": {
+                "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+                "member": "unknown-record.json",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 99,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "title": "",
+              "date": "",
+              "artifact_type": "",
+              "lang": "en",
+              "bytes": 99,
+              "attrs": {
+                "catalog_scan_fingerprint": "383c84cf2827c31ceb3275e2399d044671931e399124ddc29790dcdc1a932bb8"
+              }
+            },
+            "platform": "file",
+            "ext_id": "",
+            "content_hash": "c7b4d7842a49802b1514d95c3c7b3f3dd0380214b8f2af6530141e7d185c461d",
+            "n_msgs": 0,
+            "n_chars": 49,
+            "n_code_chars": 0,
+            "n_forks": 0,
+            "attachments": [],
+            "project_ext_id": "",
+            "head": "",
+            "prev_version": "",
+            "mentions": []
+          },
+          {
+            "unit": {
+              "id": "un_b27396d1974dd694",
+              "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+              "kind": "conversation",
+              "locator": {
+                "source": "sha256:28d158c4879621abff365ab77f4f192b2d462a01885dad5f7bd2f408c96f144a",
+                "member": "conversations.json",
+                "json_pointer": "",
+                "byte_start": 1,
+                "byte_len": 1062,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "title": "Synthetic branch",
+              "date": "2023-11-14T22:13:20Z",
+              "artifact_type": "",
+              "lang": "en",
+              "bytes": 1062,
+              "attrs": {
+                "catalog_scan_fingerprint": "383c84cf2827c31ceb3275e2399d044671931e399124ddc29790dcdc1a932bb8"
+              }
+            },
+            "platform": "chatgpt",
+            "ext_id": "synthetic-one",
+            "content_hash": "453f9f358ce3e79f9c5098eac77056f743b640fc81e6347de704d18d9a097181",
+            "n_msgs": 3,
+            "n_chars": 94,
+            "n_code_chars": 0,
+            "n_forks": 1,
+            "attachments": [],
+            "project_ext_id": "",
+            "head": "Synthetic question",
+            "prev_version": "",
+            "mentions": []
+          }
+        ],
+        "blocked_transport_attempts": 0
+      },
+      "returncode": 0,
+      "stderr": "15:11:50 [INFO ] loom.config: config.json not found - using defaults\n15:11:50 [INFO ] loom.config: secrets.json not found - using defaults\n15:11:50 [INFO ] loom.db: Database opened: /tmp/native-resources-audit-bi2po263/link/chatadhd.db\n15:11:50 [INFO ] loom.graph: GraphEngine started (LLM=yes)\n15:11:50 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/native-resources-audit-bi2po263/link)\n15:11:50 [INFO ] loom.db: Database closed\n15:11:50 [INFO ] loom.runtime: Loom runtime shut down\n"
+    },
+    {
+      "op": "profile",
+      "request": {
+        "op": "profile",
+        "data_dir": "/tmp/native-resources-audit-bi2po263/profile"
+      },
+      "response": {
+        "ok": true,
+        "value": {
+          "inspection": {
+            "schema": "loom.runtime_profile_effective/1",
+            "domain": "net",
+            "revision": 1,
+            "hash": "ad8464ce36a5fb2762cf63b59c61a453683c51774b22bcd7002a4f24ec3ab763",
+            "is_builtin": false,
+            "values": {
+              "default_timeout_ms": 701,
+              "follow_redirects": false,
+              "keep_alive": false,
+              "ca_environment": [
+                "SSL_CERT_FILE",
+                "REQUESTS_CA_BUNDLE"
+              ],
+              "proxy_environment": {
+                "https": [
+                  "HTTPS_PROXY"
+                ]
+              }
+            },
+            "value_schema": {
+              "type": "object",
+              "required": [
+                "default_timeout_ms",
+                "follow_redirects",
+                "keep_alive",
+                "ca_environment",
+                "proxy_environment"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "default_timeout_ms": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 2147483647,
+                  "x-setting": "/default_timeout_ms",
+                  "x-unit": "milliseconds",
+                  "x-consumer": "HttpRequest and default transport"
+                },
+                "follow_redirects": {
+                  "type": "boolean",
+                  "x-setting": "/follow_redirects",
+                  "x-consumer": "default transport"
+                },
+                "keep_alive": {
+                  "type": "boolean",
+                  "x-setting": "/keep_alive",
+                  "x-consumer": "default transport"
+                },
+                "ca_environment": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "x-setting": "/ca_environment",
+                  "x-consumer": "default TLS adapter"
+                },
+                "proxy_environment": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "x-setting": "/proxy_environment",
+                  "x-consumer": "default transport"
+                }
+              }
+            },
+            "definition": {
+              "schema": "loom.runtime_profile/1",
+              "domain": "net",
+              "revision": 1,
+              "description": "HTTP transport recipe. TLS certificate verification is an engine invariant. Positive request timeouts are explicit; nonpositive requests use default_timeout_ms. Profile-aware JSON parsing uses this timeout when omitted. The legacy aggregate initializer uses the immutable builtin recipe. Environment lists choose the first nonempty value. Proxy sources are keyed by URI scheme; builtin HTTP has no proxy mapping, retaining historical behavior. A configured zero timeout is passed to the native HTTP adapter without claiming an unbounded connection timeout.",
+              "defaults": {
+                "default_timeout_ms": 30000,
+                "follow_redirects": true,
+                "keep_alive": false,
+                "ca_environment": [
+                  "SSL_CERT_FILE",
+                  "REQUESTS_CA_BUNDLE"
+                ],
+                "proxy_environment": {
+                  "https": [
+                    "HTTPS_PROXY"
+                  ]
+                }
+              },
+              "value_schema": {
+                "type": "object",
+                "required": [
+                  "default_timeout_ms",
+                  "follow_redirects",
+                  "keep_alive",
+                  "ca_environment",
+                  "proxy_environment"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "default_timeout_ms": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "x-setting": "/default_timeout_ms",
+                    "x-unit": "milliseconds",
+                    "x-consumer": "HttpRequest and default transport"
+                  },
+                  "follow_redirects": {
+                    "type": "boolean",
+                    "x-setting": "/follow_redirects",
+                    "x-consumer": "default transport"
+                  },
+                  "keep_alive": {
+                    "type": "boolean",
+                    "x-setting": "/keep_alive",
+                    "x-consumer": "default transport"
+                  },
+                  "ca_environment": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "x-setting": "/ca_environment",
+                    "x-consumer": "default TLS adapter"
+                  },
+                  "proxy_environment": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    },
+                    "x-setting": "/proxy_environment",
+                    "x-consumer": "default transport"
+                  }
+                }
+              }
+            },
+            "defaults": {
+              "default_timeout_ms": 30000,
+              "follow_redirects": true,
+              "keep_alive": false,
+              "ca_environment": [
+                "SSL_CERT_FILE",
+                "REQUESTS_CA_BUNDLE"
+              ],
+              "proxy_environment": {
+                "https": [
+                  "HTTPS_PROXY"
+                ]
+              }
+            },
+            "source_provenance": [
+              {
+                "path": "loom/data/runtime/net.pack",
+                "pointer": "",
+                "raw_sha256": "cf27f54845174d961a05ca40aae5c54f9e2ca5f0387b6a06fb7ec4a424083389",
+                "target": ""
+              }
+            ]
+          },
+          "request": {
+            "method": "GET",
+            "url": "https://synthetic.invalid/offline",
+            "headers": {},
+            "timeout_ms": 701,
+            "stream": false,
+            "body": ""
+          },
+          "policy": {
+            "timeout_ms": 701,
+            "follow_redirects": false,
+            "profile_hash": "ad8464ce36a5fb2762cf63b59c61a453683c51774b22bcd7002a4f24ec3ab763"
+          }
+        }
+      },
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "op": "profile",
+      "request": {
+        "op": "profile",
+        "data_dir": "/tmp/native-resources-audit-bi2po263/profile"
+      },
+      "response": {
+        "ok": true,
+        "value": {
+          "inspection": {
+            "schema": "loom.runtime_profile_effective/1",
+            "domain": "net",
+            "revision": 1,
+            "hash": "23c8f556296c0e7281ec0261483d81104d4faf44a144b13f6e5a1fa0cacd1db4",
+            "is_builtin": false,
+            "values": {
+              "default_timeout_ms": 1701,
+              "follow_redirects": false,
+              "keep_alive": false,
+              "ca_environment": [
+                "SSL_CERT_FILE",
+                "REQUESTS_CA_BUNDLE"
+              ],
+              "proxy_environment": {
+                "https": [
+                  "HTTPS_PROXY"
+                ]
+              }
+            },
+            "value_schema": {
+              "type": "object",
+              "required": [
+                "default_timeout_ms",
+                "follow_redirects",
+                "keep_alive",
+                "ca_environment",
+                "proxy_environment"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "default_timeout_ms": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 2147483647,
+                  "x-setting": "/default_timeout_ms",
+                  "x-unit": "milliseconds",
+                  "x-consumer": "HttpRequest and default transport"
+                },
+                "follow_redirects": {
+                  "type": "boolean",
+                  "x-setting": "/follow_redirects",
+                  "x-consumer": "default transport"
+                },
+                "keep_alive": {
+                  "type": "boolean",
+                  "x-setting": "/keep_alive",
+                  "x-consumer": "default transport"
+                },
+                "ca_environment": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "x-setting": "/ca_environment",
+                  "x-consumer": "default TLS adapter"
+                },
+                "proxy_environment": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "x-setting": "/proxy_environment",
+                  "x-consumer": "default transport"
+                }
+              }
+            },
+            "definition": {
+              "schema": "loom.runtime_profile/1",
+              "domain": "net",
+              "revision": 1,
+              "description": "HTTP transport recipe. TLS certificate verification is an engine invariant. Positive request timeouts are explicit; nonpositive requests use default_timeout_ms. Profile-aware JSON parsing uses this timeout when omitted. The legacy aggregate initializer uses the immutable builtin recipe. Environment lists choose the first nonempty value. Proxy sources are keyed by URI scheme; builtin HTTP has no proxy mapping, retaining historical behavior. A configured zero timeout is passed to the native HTTP adapter without claiming an unbounded connection timeout.",
+              "defaults": {
+                "default_timeout_ms": 30000,
+                "follow_redirects": true,
+                "keep_alive": false,
+                "ca_environment": [
+                  "SSL_CERT_FILE",
+                  "REQUESTS_CA_BUNDLE"
+                ],
+                "proxy_environment": {
+                  "https": [
+                    "HTTPS_PROXY"
+                  ]
+                }
+              },
+              "value_schema": {
+                "type": "object",
+                "required": [
+                  "default_timeout_ms",
+                  "follow_redirects",
+                  "keep_alive",
+                  "ca_environment",
+                  "proxy_environment"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "default_timeout_ms": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "x-setting": "/default_timeout_ms",
+                    "x-unit": "milliseconds",
+                    "x-consumer": "HttpRequest and default transport"
+                  },
+                  "follow_redirects": {
+                    "type": "boolean",
+                    "x-setting": "/follow_redirects",
+                    "x-consumer": "default transport"
+                  },
+                  "keep_alive": {
+                    "type": "boolean",
+                    "x-setting": "/keep_alive",
+                    "x-consumer": "default transport"
+                  },
+                  "ca_environment": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "x-setting": "/ca_environment",
+                    "x-consumer": "default TLS adapter"
+                  },
+                  "proxy_environment": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    },
+                    "x-setting": "/proxy_environment",
+                    "x-consumer": "default transport"
+                  }
+                }
+              }
+            },
+            "defaults": {
+              "default_timeout_ms": 30000,
+              "follow_redirects": true,
+              "keep_alive": false,
+              "ca_environment": [
+                "SSL_CERT_FILE",
+                "REQUESTS_CA_BUNDLE"
+              ],
+              "proxy_environment": {
+                "https": [
+                  "HTTPS_PROXY"
+                ]
+              }
+            },
+            "source_provenance": [
+              {
+                "path": "loom/data/runtime/net.pack",
+                "pointer": "",
+                "raw_sha256": "cf27f54845174d961a05ca40aae5c54f9e2ca5f0387b6a06fb7ec4a424083389",
+                "target": ""
+              }
+            ]
+          },
+          "request": {
+            "method": "GET",
+            "url": "https://synthetic.invalid/offline",
+            "headers": {},
+            "timeout_ms": 1701,
+            "stream": false,
+            "body": ""
+          },
+          "policy": {
+            "timeout_ms": 1701,
+            "follow_redirects": false,
+            "profile_hash": "23c8f556296c0e7281ec0261483d81104d4faf44a144b13f6e5a1fa0cacd1db4"
+          }
+        }
+      },
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "op": "profile",
+      "request": {
+        "op": "profile",
+        "data_dir": "/tmp/native-resources-audit-bi2po263/profile"
+      },
+      "response": {
+        "ok": false,
+        "code": "invalid_argument",
+        "error": "runtime profile /values/unknown_future_setting: unknown executable setting"
+      },
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "op": "profile",
+      "request": {
+        "op": "profile",
+        "data_dir": "/tmp/native-resources-audit-bi2po263/profile"
+      },
+      "response": {
+        "ok": true,
+        "value": {
+          "inspection": {
+            "schema": "loom.runtime_profile_effective/1",
+            "domain": "net",
+            "revision": 1,
+            "hash": "af35eeae915e1ee46030e1b10fa2cc37ba16b38665b5ad48e06dd6e8ed4e6346",
+            "is_builtin": true,
+            "values": {
+              "default_timeout_ms": 30000,
+              "follow_redirects": true,
+              "keep_alive": false,
+              "ca_environment": [
+                "SSL_CERT_FILE",
+                "REQUESTS_CA_BUNDLE"
+              ],
+              "proxy_environment": {
+                "https": [
+                  "HTTPS_PROXY"
+                ]
+              }
+            },
+            "value_schema": {
+              "type": "object",
+              "required": [
+                "default_timeout_ms",
+                "follow_redirects",
+                "keep_alive",
+                "ca_environment",
+                "proxy_environment"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "default_timeout_ms": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 2147483647,
+                  "x-setting": "/default_timeout_ms",
+                  "x-unit": "milliseconds",
+                  "x-consumer": "HttpRequest and default transport"
+                },
+                "follow_redirects": {
+                  "type": "boolean",
+                  "x-setting": "/follow_redirects",
+                  "x-consumer": "default transport"
+                },
+                "keep_alive": {
+                  "type": "boolean",
+                  "x-setting": "/keep_alive",
+                  "x-consumer": "default transport"
+                },
+                "ca_environment": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "x-setting": "/ca_environment",
+                  "x-consumer": "default TLS adapter"
+                },
+                "proxy_environment": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "x-setting": "/proxy_environment",
+                  "x-consumer": "default transport"
+                }
+              }
+            },
+            "definition": {
+              "schema": "loom.runtime_profile/1",
+              "domain": "net",
+              "revision": 1,
+              "description": "HTTP transport recipe. TLS certificate verification is an engine invariant. Positive request timeouts are explicit; nonpositive requests use default_timeout_ms. Profile-aware JSON parsing uses this timeout when omitted. The legacy aggregate initializer uses the immutable builtin recipe. Environment lists choose the first nonempty value. Proxy sources are keyed by URI scheme; builtin HTTP has no proxy mapping, retaining historical behavior. A configured zero timeout is passed to the native HTTP adapter without claiming an unbounded connection timeout.",
+              "defaults": {
+                "default_timeout_ms": 30000,
+                "follow_redirects": true,
+                "keep_alive": false,
+                "ca_environment": [
+                  "SSL_CERT_FILE",
+                  "REQUESTS_CA_BUNDLE"
+                ],
+                "proxy_environment": {
+                  "https": [
+                    "HTTPS_PROXY"
+                  ]
+                }
+              },
+              "value_schema": {
+                "type": "object",
+                "required": [
+                  "default_timeout_ms",
+                  "follow_redirects",
+                  "keep_alive",
+                  "ca_environment",
+                  "proxy_environment"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "default_timeout_ms": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "x-setting": "/default_timeout_ms",
+                    "x-unit": "milliseconds",
+                    "x-consumer": "HttpRequest and default transport"
+                  },
+                  "follow_redirects": {
+                    "type": "boolean",
+                    "x-setting": "/follow_redirects",
+                    "x-consumer": "default transport"
+                  },
+                  "keep_alive": {
+                    "type": "boolean",
+                    "x-setting": "/keep_alive",
+                    "x-consumer": "default transport"
+                  },
+                  "ca_environment": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "x-setting": "/ca_environment",
+                    "x-consumer": "default TLS adapter"
+                  },
+                  "proxy_environment": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    },
+                    "x-setting": "/proxy_environment",
+                    "x-consumer": "default transport"
+                  }
+                }
+              }
+            },
+            "defaults": {
+              "default_timeout_ms": 30000,
+              "follow_redirects": true,
+              "keep_alive": false,
+              "ca_environment": [
+                "SSL_CERT_FILE",
+                "REQUESTS_CA_BUNDLE"
+              ],
+              "proxy_environment": {
+                "https": [
+                  "HTTPS_PROXY"
+                ]
+              }
+            },
+            "source_provenance": [
+              {
+                "path": "loom/data/runtime/net.pack",
+                "pointer": "",
+                "raw_sha256": "cf27f54845174d961a05ca40aae5c54f9e2ca5f0387b6a06fb7ec4a424083389",
+                "target": ""
+              }
+            ]
+          },
+          "request": {
+            "method": "GET",
+            "url": "https://synthetic.invalid/offline",
+            "headers": {},
+            "timeout_ms": 30000,
+            "stream": false,
+            "body": ""
+          },
+          "policy": {
+            "timeout_ms": 30000,
+            "follow_redirects": true,
+            "profile_hash": "af35eeae915e1ee46030e1b10fa2cc37ba16b38665b5ad48e06dd6e8ed4e6346"
+          }
+        }
+      },
+      "returncode": 0,
+      "stderr": ""
+    }
+  ],
+  "counts": {
+    "PASS": 16,
+    "FAIL": 2,
+    "BLOCKED": 3,
+    "NOT_REPRODUCED": 0
+  },
+  "limitations": [
+    "Synthetic two conversations/one branch, one flat ZIP; not all formats or nested/remote sources.",
+    "No browser execution: native preview backing the route, plus static route wiring only.",
+    "Missing generic resource contracts are BLOCKED, not failed fake resolver tests."
+  ]
+}
