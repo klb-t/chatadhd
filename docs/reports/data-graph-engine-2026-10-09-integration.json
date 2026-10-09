@@ -162,6 +162,66 @@
         "scope_guard": "PASS",
         "receipt_prefix": "data-graph-integration-data-domains"
       }
+    },
+    {
+      "commit": "bb4dbf50d0e28318aa191fdc578b4f3a976a2dae",
+      "scope": "B-RESOURCE-004 index retention evidence, metadata restoration, retryable failed checkpoints",
+      "dependencies": [
+        "3dc0ebf247af30b41c718a335aaa6885a03b359a"
+      ],
+      "gates": {
+        "scope_ctest_entries": 11,
+        "executed_entries": 10,
+        "guard": "PASS",
+        "receipt_prefix": "data-graph-integration-retention-final",
+        "independent_C_API_after": "6/6 plain and ZIP retries/reopen, unchanged historical body"
+      }
+    },
+    {
+      "commit": "24625e5118686afa50b0cbc315fb9ec1e0fbca34",
+      "scope": "A2-BSEM-001 current builtin reset while preserving explicit constructor strategy",
+      "dependencies": [
+        "ddcaeaf7a25b70f0d4dc2e0eed2466016233eeb8"
+      ],
+      "gates": {
+        "ctest_entries": 11,
+        "executed_entries": 11,
+        "guard": "PASS",
+        "receipt_prefix": "data-graph-integration-A2-final",
+        "independent_C_API": "reset/remove equal fresh builtin; HTTP0; distinct CH-011 still FAIL",
+        "assessment_sha256": "66efd06cb792d11b16f98ac60e8d1874720b4237df52c301a3c2f5dbc1dbeb30"
+      }
+    },
+    {
+      "commit": "5c432e107f608d321732a90de0a2f2c566effe63",
+      "scope": "CH-011-PY visible exception and batch failure outcomes; legacy atomicity/CAS open",
+      "dependencies": [],
+      "gates": {
+        "new_python_cases": 9,
+        "semantic_recovery_cases": 8,
+        "skips": 0,
+        "receipt": "b-worker-python-20261009/root-before-receipt.json",
+        "results": "b-worker-python-20261009/root-after-results.json"
+      }
+    },
+    {
+      "commit": "373f077489717302826057cf638d9401e452a811",
+      "scope": "CH-011 native per-message durable claims, atomic graph completion and truthful App status",
+      "dependencies": [
+        "24625e5118686afa50b0cbc315fb9ec1e0fbca34",
+        "5c432e107f608d321732a90de0a2f2c566effe63"
+      ],
+      "gates": {
+        "ctest_entries": 9,
+        "executed_entries": 9,
+        "guard": "PASS",
+        "receipt_prefix": "data-graph-integration-CH011-final",
+        "focused_browser_groups": 12,
+        "web_build": "PASS",
+        "independent_C_API_checks": 24,
+        "A2_ordering_checks": 2,
+        "assessment": "b-worker-triage-20261009/ch011-after-assessment.json"
+      }
     }
   ],
   "open": [
@@ -170,7 +230,8 @@
     "P5 complete workflow/ExperimentSpec opt-in/adoption",
     "D generic discovery and external resource-to-E workspace connection",
     "R42 unclassified inventory and lexer coverage",
-    "Current ASan/Clang full gates pending; retention transition regression discovered after dev9b3b2a6b"
+    "Current ASan/Clang/web/JNI full gates pending on frozen product373f0774",
+    "CH-011 separate native batch consumers and legacy Python atomicity/CAS remain open"
   ],
   "composed_gates": [
     {
@@ -190,6 +251,42 @@
       "guard": "PASS",
       "duration_seconds": 281.74,
       "receipt_prefix": "data-graph-integration-composed-r2-full-dev"
+    },
+    {
+      "source_commit": "bb4dbf50d0e28318aa191fdc578b4f3a976a2dae",
+      "preset": "dev",
+      "actual_compiler": "GCC13",
+      "sqlite": "vendored",
+      "ctest_entries": 156,
+      "executed_entries": 155,
+      "native_cases": 968,
+      "native_assertions": 36166,
+      "python_cases": 2022,
+      "python_skips": 0,
+      "explicitly_unexecuted": [
+        "unit.test_catalog_scale"
+      ],
+      "guard": "PASS",
+      "duration_seconds": 265.61,
+      "receipt_prefix": "data-graph-integration-composed-r3-full-dev"
+    },
+    {
+      "source_commit": "373f077489717302826057cf638d9401e452a811",
+      "preset": "dev",
+      "actual_compiler": "GCC13",
+      "sqlite": "vendored",
+      "ctest_entries": 157,
+      "executed_entries": 156,
+      "native_cases": 981,
+      "native_assertions": 36585,
+      "python_cases": 2031,
+      "python_skips": 0,
+      "explicitly_unexecuted": [
+        "unit.test_catalog_scale"
+      ],
+      "guard": "PASS",
+      "duration_seconds": 281.75,
+      "receipt_prefix": "data-graph-integration-composed-r4-full-dev"
     }
   ],
   "ecosystem": [
@@ -208,5 +305,13 @@
       },
       "push": "PASS"
     }
-  ]
+  ],
+  "readiness": {
+    "product_head": "373f077489717302826057cf638d9401e452a811",
+    "candidate_for": "A audit and Claude integration review; main unchanged",
+    "complete_owner_scope": false,
+    "current_full_dev": "PASS",
+    "remaining_matrix": "ASan/Clang/web/JNI pending",
+    "setup_config": "draft revision6 saved; requires user Publish; fresh instance not validated"
+  }
 }
