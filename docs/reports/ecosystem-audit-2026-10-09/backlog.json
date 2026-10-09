@@ -1,0 +1,1324 @@
+{
+  "ordering": "Audit recommendations: hypotheses require reproduction, confirmed paths require effective consumer tests; preserved baseline separate. Priorities are auditor judgments, not owner decisions. Detailed dependency strings are not proof of an existing schema.",
+  "items": [
+    {
+      "id": "AUD-B-EA-AGEDS-001",
+      "finding_id": "EA-AGEDS-001",
+      "repo": "klb-t/AGEDS",
+      "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+      "priority": "P1",
+      "status": "confirmed_open",
+      "task": "Zachować działające domyślne zachowanie, wynieść zmienne dane i podłączyć wskazane ścieżki; nie osłabiać integralności źródeł.",
+      "target_data_graph_object": {
+        "proposed": "method recipe + model/provider profile + immutable version/hash",
+        "current": "environment Settings + metadane runu"
+      },
+      "consuming_paths": [
+        "FasterWhisperAdapter.describe",
+        "FasterWhisperAdapter.transcribe",
+        "run_transcribe"
+      ],
+      "acceptance_tests": [
+        "Dwa profile VAD on/off muszą dać różne przechwycone parametry bez zmiany źródeł; run przypina pełny efektywny profil i jego hash."
+      ],
+      "migration_risk": "Zachować word timestamps dla cytatów; profil bez timings musi jawnie ograniczać selektor słowny.",
+      "dependencies": [],
+      "product_changed": false,
+      "audit_sort_order": 1
+    },
+    {
+      "id": "AUD-B-EA-AGEDS-002",
+      "finding_id": "EA-AGEDS-002",
+      "repo": "klb-t/AGEDS",
+      "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+      "priority": "P1",
+      "status": "confirmed_open",
+      "task": "Zachować działające domyślne zachowanie, wynieść zmienne dane i podłączyć wskazane ścieżki; nie osłabiać integralności źródeł.",
+      "target_data_graph_object": {
+        "proposed": "job → requested recipe version; experiment → variants; dedup policy",
+        "current": "jobs.payload_json unused by enqueue/worker for recipe"
+      },
+      "consuming_paths": [
+        "queue_transcription",
+        "claim_job",
+        "run_transcribe"
+      ],
+      "acceptance_tests": [
+        "Zlecenia tego samego artefaktu z dwoma hashami receptury tworzą dwa jawne jobs; identyczny hash podlega wybranej polityce; zmiana defaultu nie zmienia już przypiętego joba."
+      ],
+      "migration_risk": "Migracja istniejących pustych payloadów jako legacy/unknown, bez wymyślania historycznej receptury.",
+      "dependencies": [
+        "EA-AGEDS-001"
+      ],
+      "product_changed": false,
+      "audit_sort_order": 2
+    },
+    {
+      "id": "AUD-B-EA-AGEDS-003",
+      "finding_id": "EA-AGEDS-003",
+      "repo": "klb-t/AGEDS",
+      "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+      "priority": "P1",
+      "status": "confirmed_open",
+      "task": "Zachować działające domyślne zachowanie, wynieść zmienne dane i podłączyć wskazane ścieżki; nie osłabiać integralności źródeł.",
+      "target_data_graph_object": {
+        "proposed": "scan resource-policy/profile w danych, effective budget w wyniku",
+        "current": "typed limits + serialized snapshot, no graph selection"
+      },
+      "consuming_paths": [
+        "CorpusVm.scanSources",
+        "SourceScanner.scan",
+        "api_source_scan",
+        "cli.main"
+      ],
+      "acceptance_tests": [
+        "Zmiana profilu maxFiles z 1 na 2 przez każdy obsługiwany interfejs trafia do engine i receipt; przekroczenia nadal dają jawne częściowe pokrycie."
+      ],
+      "migration_risk": "Nie usuwać ochrony pamięci i limitów odczytu; oddzielić politykę zasobów od walidacji poprawności.",
+      "dependencies": [],
+      "product_changed": false,
+      "audit_sort_order": 3
+    },
+    {
+      "id": "AUD-B-EA-AGEDS-005",
+      "finding_id": "EA-AGEDS-005",
+      "repo": "klb-t/AGEDS",
+      "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+      "priority": "P1",
+      "status": "confirmed_open",
+      "task": "Zachować działające domyślne zachowanie, wynieść zmienne dane i podłączyć wskazane ścieżki; nie osłabiać integralności źródeł.",
+      "target_data_graph_object": {
+        "proposed": "queue scheduling profile with weights and tie-breaker",
+        "current": "code heuristic and scalar persisted priority"
+      },
+      "consuming_paths": [
+        "EvidenceVm.uploadAndQueue",
+        "TranscriptionPriority.score",
+        "claim_job"
+      ],
+      "acceptance_tests": [
+        "Dwa profile kolejki odwracają kolejność dwóch synthetic jobs bez edycji kodu; UI pokazuje wybrany profil i wynik efektywny."
+      ],
+      "migration_risk": "Zachować kolejność już kolejkowanych zadań, chyba że użytkownik jawnie zleci repriorytetyzację.",
+      "dependencies": [],
+      "product_changed": false,
+      "audit_sort_order": 4
+    },
+    {
+      "id": "AUD-B-EA-AGEDS-006",
+      "finding_id": "EA-AGEDS-006",
+      "repo": "klb-t/AGEDS",
+      "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+      "priority": "P1",
+      "status": "confirmed_open",
+      "task": "Zachować działające domyślne zachowanie, wynieść zmienne dane i podłączyć wskazane ścieżki; nie osłabiać integralności źródeł.",
+      "target_data_graph_object": {
+        "proposed": "lokalne encje ustawień/profili/metod/job intents i jawne mapowanie; nie narzuca konkretnego backendu",
+        "current": "evidence links + SQLite tables + disconnected Settings/SharedPreferences"
+      },
+      "consuming_paths": [
+        "Settings",
+        "EvidenceVm.api",
+        "CorpusVm",
+        "FasterWhisperAdapter",
+        "export_metadata_package"
+      ],
+      "acceptance_tests": [
+        "Dla każdego efektywnego parametru wskazanego w flow-map runtime zwraca graph locator, wersję i źródło warstwy; eksport konfiguracji zachowuje te referencje bez ujawniania sekretów."
+      ],
+      "migration_risk": "Nie mieszać konfiguracji z oryginalnym materiałem; oddzielić scope prywatnych danych i identyfikatorów dostawców.",
+      "dependencies": [],
+      "product_changed": false,
+      "audit_sort_order": 5
+    },
+    {
+      "id": "AUD-B-CKP-A-001",
+      "finding_id": "CKP-A-001",
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "priority": "P1",
+      "status": "confirmed_open",
+      "task": "Rekomendacja audytora: przenieść wbudowane receptury do danych i podłączyć jeden resolver warstw oraz wykluczeń do byId i UI; zachować dotychczasowe ID i obecny preset.",
+      "target_data_graph_object": [
+        "wersjonowany TaskRecipe + PromptTemplate",
+        "warstwy default/user + exclusion tombstone",
+        "effective task ID/version/hash"
+      ],
+      "consuming_paths": [
+        "app/src/main/java/com/example/core/ai/AiTasks.kt:all/byId",
+        "app/src/main/java/com/example/ime/CustomKeyboardIme.kt:runAiTask",
+        "app/src/main/java/com/example/ui/kb/Panels.kt:AiPanel"
+      ],
+      "acceptance_tests": [
+        "Utwórz custom id=fix o odmiennym promptcie i sprawdź request body; ma użyć wybranej warstwy.",
+        "Wyklucz fix, zaktualizuj pack i potwierdź brak przywrócenia.",
+        "Błędny custom JSON ma dać jawny błąd, nie pusty sukces."
+      ],
+      "migration_risk": "Zachować istniejące ID i kolejność UI; migracja kolizji wymaga jawnej reguły i zapisania skutecznego źródła.",
+      "dependencies": [],
+      "product_changed": false,
+      "audit_sort_order": 6
+    },
+    {
+      "id": "AUD-B-CKP-A-002",
+      "finding_id": "CKP-A-002",
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "priority": "P1",
+      "status": "confirmed_open",
+      "task": "Rekomendacja audytora: zapisać compatibility provider preset w danych lub generowanym embedded packu, jawnie określić obsługę błędu katalogu i podłączyć wykluczenia do wszystkich fallbacków; utrzymać wiązanie klucza do providera.",
+      "target_data_graph_object": [
+        "ProviderCatalogue version",
+        "compatibility preset generated from same data",
+        "failure policy + exclusions + resolution provenance"
+      ],
+      "consuming_paths": [
+        "app/src/main/java/com/example/core/discovery/ProviderCatalog.kt:all/byId",
+        "app/src/main/java/com/example/core/ai/AiClient.kt:AiConfig.from/effectiveBaseUrl"
+      ],
+      "acceptance_tests": [
+        "Podmień bundled katalog na malformed JSON: bez jawnego fallback preset nie może powstać gotowa konfiguracja do sieci.",
+        "Zmiana default endpoint/model w danych zmienia request bez modyfikacji Kotlin.",
+        "Wyklucz provider i sprawdź, że LEGACY go nie wskrzesza."
+      ],
+      "migration_risk": "Stare instalacje muszą dostać jawny compatibility preset; nie usuwać wsparcia legacy ani wiązania klucza do providera.",
+      "dependencies": [],
+      "product_changed": false,
+      "audit_sort_order": 7
+    },
+    {
+      "id": "AUD-B-CKP-A-003",
+      "finding_id": "CKP-A-003",
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "priority": "P1",
+      "status": "confirmed_open",
+      "task": "Rekomendacja audytora: podłączyć istniejący Policy do ustawień/profili i opisu grafowego, zachować obecny ranking jako preset oraz wystawić uzasadnienie wyboru i stan nieznanego kosztu; nie tworzyć równoległego plannera.",
+      "target_data_graph_object": [
+        "ConversionPolicy version",
+        "cost assessment incl. unknown",
+        "route candidates and selected reason",
+        "UI presentation policy"
+      ],
+      "consuming_paths": [
+        "app/src/main/java/com/example/core/matrix/Planner.kt:price/search/plan",
+        "app/src/main/java/com/example/io/ConvertRunner.kt:convert"
+      ],
+      "acceptance_tests": [
+        "Zmień wyłącznie profil wag i uzyskaj inne uporządkowanie kontrolowanych tras.",
+        "Przetestuj unknown-cost jako osobne strategie: ask/penalty/interval/deny; zachowaj unknown w śladzie.",
+        "Pokaż wszystkie trasy w wybranym zakresie; wybór trasy wpływa na execute.",
+        "Zmień maxSteps w danych i wykryj trasę sześciu kroków."
+      ],
+      "migration_risk": "Zmiana wag bez zachowania starego presetu zmieni trasę i możliwy koszt/prywatność; zachować bieżący profil jako kompatybilny.",
+      "dependencies": [],
+      "product_changed": false,
+      "audit_sort_order": 8
+    },
+    {
+      "id": "AUD-B-CKP-A-004",
+      "finding_id": "CKP-A-004",
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "priority": "P1",
+      "status": "confirmed_open",
+      "task": "Rekomendacja audytora: przenieść zmienne defaulty i metadane prezentacji do wersjonowanych danych; pozostawić w kodzie typy i klucze kontraktu, a obecny SettingsSchema zachować jako konsumenta tego opisu.",
+      "target_data_graph_object": [
+        "SettingDefinition + localized presentation",
+        "DefaultLayer + exclusion/provenance",
+        "Application/WorkflowPreset"
+      ],
+      "consuming_paths": [
+        "app/src/main/java/com/example/core/config/SettingsSchema.kt:derive",
+        "app/src/main/java/com/example/core/config/SettingsStore.kt:read/resetToDefaults",
+        "app/src/main/java/com/example/ui/settings/AllSettingsScreen.kt"
+      ],
+      "acceptance_tests": [
+        "Zmień etykietę i default w packu bez kompilacji; generic kontrolka i fresh settings mają tę samą wersję.",
+        "Przełącz Basic/Expert bez zmiany skutecznych wartości.",
+        "Wyklucz default, odśwież pack: nie może wrócić."
+      ],
+      "migration_risk": "Typy mechanizmu i nazwy kontraktu pozostają w kodzie; migracja istniejących wartości nie może zamienić ich na nowe defaulty.",
+      "dependencies": [],
+      "product_changed": false,
+      "audit_sort_order": 9
+    },
+    {
+      "id": "AUD-B-CKP-A-005",
+      "finding_id": "CKP-A-005",
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "priority": "P1",
+      "status": "confirmed_open",
+      "task": "Rekomendacja audytora: wydzielić wybór priorytetów, deduplikację, selekcję kontekstu i obróbkę odpowiedzi do wersjonowanych polityk, zachowując obecne zachowanie jako preset oraz raportując zmianę/utratę danych.",
+      "target_data_graph_object": [
+        "SuggestionPolicy",
+        "ContextSelectionRecipe",
+        "PostprocessRecipe + loss record",
+        "ranking evidence"
+      ],
+      "consuming_paths": [
+        "app/src/main/java/com/example/core/suggest/SuggestionEngine.kt:collectLocal/mergeAi/cleanCompletion"
+      ],
+      "acceptance_tests": [
+        "Ustaw profile AI-first/local-first/score and verify exact source order for identical candidates.",
+        "Dla wieloliniowego raw wyniku przechowaj raw plus observed loss i sprawdź profile keep/truncate.",
+        "Kolizja text z kilku źródeł zachowuje provenance wszystkich, a representative wynika z wybranej polityki."
+      ],
+      "migration_risk": "Domyślny profil ma zachować aktualne wyniki; zmiana kolejności może psuć pamięć ruchową; testować opóźnione wyniki i brak wysyłki z sensitive.",
+      "dependencies": [],
+      "product_changed": false,
+      "audit_sort_order": 10
+    },
+    {
+      "id": "AUD-B-CKP-A-006",
+      "finding_id": "CKP-A-006",
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "priority": "P1",
+      "status": "confirmed_open",
+      "task": "Rekomendacja audytora: dodać do istniejących prześledzonych ścieżek adresowalne deskryptory użytych ustawień, recipe, kontekstu i wykonania z wersją/proweniencją; zachować native semantykę Matrix i lokalne referencje do sekretów.",
+      "target_data_graph_object": [
+        "adresowalne Setting/Task/Prompt/Context/Execution/Evidence, native IO semantics",
+        "bezpieczne references do device-bound sekretów",
+        "wersjonowane powiązania użycia i generacji"
+      ],
+      "consuming_paths": [
+        "app/src/main/java/com/example/core/config/SettingsStore.kt",
+        "app/src/main/java/com/example/core/ai/AiClient.kt",
+        "app/src/main/java/com/example/core/assistant/GoalAgent.kt"
+      ],
+      "acceptance_tests": [
+        "Dla kontrolowanej operacji odtwórz z graph refs skuteczne ustawienia, prompt hash, metodę kontekstu, wynik i provenance; bytes sekretu nie trafiają do przenośnego grafu.",
+        "UI edycja i aplikacyjna/półautomatyczna edycja mają ten sam identyfikator danych.",
+        "Zachować native Matrix provenance podczas mapowania do graph descriptors."
+      ],
+      "migration_risk": "Wymóg audytu stosowany do obecnego repo; nie ustanawia centralnej bazy. Retencja prywatnych tekstów musi respektować politykę, a descriptors mogą wskazywać dane poza grafem.",
+      "dependencies": [],
+      "product_changed": false,
+      "audit_sort_order": 11
+    },
+    {
+      "id": "AUD-B-CKP-A-007",
+      "finding_id": "CKP-A-007",
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "priority": "P1",
+      "status": "confirmed_open",
+      "task": "Rekomendacja audytora: przenieść prompt recipe i zmienne limity do danych, podłączyć tę samą zatwierdzoną politykę do promptu i walidatorów oraz utrzymać autoryzację executora niezależną od tekstu promptu.",
+      "target_data_graph_object": [
+        "GoalPlanningRecipe version/hash",
+        "validated ResourcePolicy",
+        "PromptInput catalogue projection"
+      ],
+      "consuming_paths": [
+        "app/src/main/java/com/example/assistant/GoalAssistantActivity.kt:modelPlan",
+        "app/src/main/java/com/example/core/assistant/GoalAgent.kt:checkedPlans",
+        "app/src/main/java/com/example/core/assistant/GoalPrompt.kt"
+      ],
+      "acceptance_tests": [
+        "Dwa wersjonowane prompty z tym samym schematem dają dwa udokumentowane requesty bez rekompilacji.",
+        "Uzgodniony limit alternatyw odczytywany przez prompt, parser i GoalAgent; brak rozbieżnych limitów.",
+        "Prompt nie może zmienić autoryzacji lokalnego executora."
+      ],
+      "migration_risk": "Nie zmieniać niezależnych mechanizmów uprawnień i walidacji przez edycję tekstu promptu; contract keys pozostają w kodzie.",
+      "dependencies": [],
+      "product_changed": false,
+      "audit_sort_order": 12
+    },
+    {
+      "id": "AUD-B-CKP-A-011",
+      "finding_id": "CKP-A-011",
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "priority": "P1",
+      "status": "verify_hypothesis",
+      "task": "Rekomendacja audytora: jawnie oznaczyć te pliki jako referencyjne albo wskazać ich operacyjnego konsumenta i test wpływu zmiany profilu na request; walidację obecności pól opisywać wyłącznie jako strukturalną.",
+      "target_data_graph_object": [
+        "wyraźny status reference_only albo operacyjny ProviderProfile",
+        "consumer registry"
+      ],
+      "consuming_paths": [
+        "validate_profiles.py; production consumer unresolved"
+      ],
+      "acceptance_tests": [
+        "Oznaczyć role pliku; jeśli operacyjny, zmienić pole w profilu i wykazać różnicę request body; jeśli referencyjny, test nie może reklamować runtime coverage."
+      ],
+      "migration_risk": "Nie podłączać automatycznie samej dokumentacji do sieci ani nie przenosić credential authority.",
+      "dependencies": [],
+      "product_changed": false,
+      "audit_sort_order": 13
+    },
+    {
+      "id": "AUD-B-CKP-A-012",
+      "finding_id": "CKP-A-012",
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "priority": "P1",
+      "status": "verify_hypothesis",
+      "task": "Rekomendacja audytora: najpierw odtworzyć opóźnioną odpowiedź przy zmianie pola lub jego treści; dopiero po reprodukcji wiązać aplikację wyniku z celem/rewizją albo kierować stary wynik do jawnego podglądu.",
+      "target_data_graph_object": [
+        "EditRequest target/revision + result application policy",
+        "request receipt"
+      ],
+      "consuming_paths": [
+        "app/src/main/java/com/example/ime/CustomKeyboardIme.kt:runAiTask",
+        "app/src/main/java/com/example/ime/EditorController.kt:replaceSelectionOrAll"
+      ],
+      "acceptance_tests": [
+        "Fake delayed AiClient: request w polu A, zmiana fokus do B, późna odpowiedź; B musi pozostać bez zmian.",
+        "Zmiana treści w A podczas requestu: wynik trafia do podglądu lub jest ponownie zatwierdzany.",
+        "Sensitive state po wysłaniu musi blokować późniejszą automatyczną aplikację."
+      ],
+      "migration_risk": "Wiązanie revision musi działać z selection i whole-field bez czytania zawartości sensitive; zachować explicit task action UX.",
+      "dependencies": [],
+      "product_changed": false,
+      "audit_sort_order": 14
+    },
+    {
+      "id": "AUD-B-LEM-001",
+      "finding_id": "LEM-001",
+      "repo": "klb-t/LEM-Workbench",
+      "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+      "priority": "P1",
+      "status": "confirmed_open",
+      "task": "Podłączyć wykonywalne pola do runnera i transportu, a nieobsługiwane zachować z jawnym statusem; doprecyzować twierdzenie README o konfigurowaniu eksperymentów.",
+      "target_data_graph_object": "Węzeł preset/method_version z obsługiwanymi polami, referencją do snapshotu config i statusem capabilities; zgodnie z R15/R41",
+      "consuming_paths": [
+        "ModelsScreen.ModelCard",
+        "ResearchViewModel.runEmbeddingInstrument",
+        "ExperimentRunner.runEncoderSmokeTest",
+        "ResearchAgent.getEmbedding"
+      ],
+      "acceptance_tests": [
+        "Wprowadzić dwa presety różniące się wymiarem i taskType; fake transport w teście przechwytuje różne requesty i result zawiera ID/hash skutecznego presetu. Pole nieobsługiwane jest odrzucane/oznaczane, nigdy cicho ignorowane."
+      ],
+      "migration_risk": "Zachować stare rekordy konfiguracji jako niewykonane; nie przypisywać im retrospektywnie pomiarów.",
+      "dependencies": [
+        "Profil metody i capabilities",
+        "Migracja encji i wyniku"
+      ],
+      "product_changed": false,
+      "audit_sort_order": 15
+    },
+    {
+      "id": "AUD-B-LEM-002",
+      "finding_id": "LEM-002",
+      "repo": "klb-t/LEM-Workbench",
+      "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+      "priority": "P1",
+      "status": "confirmed_open",
+      "task": "Wyprowadzić recepty, parametry i profil transportu do danych; pozostawić implementację Gemini jako adapter mechanizmu.",
+      "target_data_graph_object": "Wersjonowany instrument preset + provider/transport profile + response_selection policy",
+      "consuming_paths": [
+        "ExperimentRunner",
+        "ResearchAgent.generateText",
+        "ResearchAgent.getEmbedding",
+        "RetrofitClient"
+      ],
+      "acceptance_tests": [
+        "Bez zmiany kodu wczytać wariant promptu, wymiaru i timeoutu; przechwycone requesty i run snapshot odzwierciedlają dane; brak konfiguracji daje jawny błąd albo pack wygenerowany z danych."
+      ],
+      "migration_risk": "Zachować obecną receptę jako nazwany preset kompatybilności; hash powinien obejmować teksty oraz wszystkie parametry.",
+      "dependencies": [
+        "LEM-001",
+        "Źródło danych domyślnych"
+      ],
+      "product_changed": false,
+      "audit_sort_order": 16
+    },
+    {
+      "id": "AUD-B-LEM-003",
+      "finding_id": "LEM-003",
+      "repo": "klb-t/LEM-Workbench",
+      "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+      "priority": "P1",
+      "status": "confirmed_open",
+      "task": "Dodać utrwalenie requestu i outputu każdego kroku przed agregacją; utratę lub pominięcie przechowywania uczynić jawną polityką.",
+      "target_data_graph_object": "Run/step/evidence nodes z raw artifact reference, request/config hashes, retention policy i kosztami oznaczonymi unknown gdy API ich nie dostarcza",
+      "consuming_paths": [
+        "ResearchAgent response decoder",
+        "ExperimentRunner",
+        "ResearchViewModel→ResearchRepository.insertExperiment",
+        "ExperimentsScreen"
+      ],
+      "acceptance_tests": [
+        "Transport testowy zwraca znane wektory/odpowiedź; wynik wskazuje ich zachowany hash/artifact i dokładny request. Drugi embedding rzuca: pierwszy krok i jego output pozostają, drugi jest failed, koszt nie jest zmyślany."
+      ],
+      "migration_risk": "Odzyskanie starych raw danych jest niemożliwe; oznaczyć missing, nie rekonstruować ich z interpretacji.",
+      "dependencies": [
+        "LEM-001",
+        "Polityka retencji",
+        "Repozytorium artefaktów"
+      ],
+      "product_changed": false,
+      "audit_sort_order": 17
+    },
+    {
+      "id": "AUD-B-LEM-004",
+      "finding_id": "LEM-004",
+      "repo": "klb-t/LEM-Workbench",
+      "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+      "priority": "P1",
+      "status": "confirmed_open",
+      "task": "Obsłużyć nextPageToken, oddzielić kompletność rejestru od filtra i sortowania widoku.",
+      "target_data_graph_object": "Model registry snapshot z pagination completeness oraz filtrem widoku/method-capability binding",
+      "consuming_paths": [
+        "GeminiApiService.listModels",
+        "ResearchAgent.listModels",
+        "ResearchViewModel.refreshModels",
+        "ModelsScreen"
+      ],
+      "acceptance_tests": [
+        "Dwustronicowy fake registry: pobrane obie strony, zachowany snapshot; pusty/unknown capability nie znika bez informacji. Porządek/filtrowanie w danych nie wpływa na samą kompletność rejestru."
+      ],
+      "migration_risk": "Unikać duplikatów nazw pomiędzy stronami; nie wybierać automatycznie nowego modelu po rozszerzeniu rejestru.",
+      "dependencies": [
+        "Adapter paginacji",
+        "Profil filtrowania UI"
+      ],
+      "product_changed": false,
+      "audit_sort_order": 18
+    },
+    {
+      "id": "AUD-B-LEM-005",
+      "finding_id": "LEM-005",
+      "repo": "klb-t/LEM-Workbench",
+      "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+      "priority": "P1",
+      "status": "confirmed_open",
+      "task": "Zastąpić niejawną destrukcję jawną migracją lub bezpiecznym błędem, a reset przechowywać jako oddzielną świadomą operację.",
+      "target_data_graph_object": "Migration/retention policy z planem wersji, backupem i potwierdzonym wynikiem; sekrety poza payloadem grafu, referencje do chronionego store",
+      "consuming_paths": [
+        "AppDatabase.getDatabase",
+        "Room DAO dla configs/results/ledger"
+      ],
+      "acceptance_tests": [
+        "Przygotować bazę wersji 1 z rekordami i przejść do 2: dane zachowane; dla nieznanej wersji otwarcie odmawia zamiast kasować, a jawny reset testowany osobno."
+      ],
+      "migration_risk": "Wymaga prawdziwych fixture starych schematów; brak exportSchema utrudnia pełne odtworzenie poprzednich wersji.",
+      "dependencies": [
+        "Schematy historyczne Room",
+        "LEM-003"
+      ],
+      "product_changed": false,
+      "audit_sort_order": 19
+    },
+    {
+      "id": "AUD-B-WD-001",
+      "finding_id": "WD-001",
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "priority": "P1",
+      "status": "confirmed_open",
+      "task": "Versioned NarrativeRecipe + PromptTemplate + RankingPolicy, grafowe odniesienia produced_by; ochrona niezmiennych wartości pozostaje mechanizmem.",
+      "target_data_graph_object": "Versioned NarrativeRecipe + PromptTemplate + RankingPolicy, grafowe odniesienia produced_by; ochrona niezmiennych wartości pozostaje mechanizmem.",
+      "consuming_paths": [
+        "services/narrative.ts:generateNarrative/generateNarrativeWithProvider",
+        "services/run_orchestrator.ts",
+        "services/export.ts"
+      ],
+      "acceptance_tests": [
+        "Przełączenie dwóch rzeczywistych recipe ID zmienia treść, hash i provenance zgodnie z danymi.",
+        "Zmiana topK oraz locale bez rekompilacji; niezdefiniowany template ID wywołuje jawny błąd.",
+        "Ochrona wartości i PROPOSED zachowana."
+      ],
+      "migration_risk": "Nie zmieniać historycznych treści i hashy; dotychczasowa receptura wymaga wersji danych zgodnej bajtowo.",
+      "dependencies": [],
+      "product_changed": false,
+      "audit_sort_order": 20
+    },
+    {
+      "id": "AUD-B-WD-002",
+      "finding_id": "WD-002",
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "priority": "P1",
+      "status": "confirmed_open",
+      "task": "MethodStep.missingPolicy konsumowane przez ratio; w razie innej zamierzonej semantyki kontrakt musi jawnie odróżnić null-preserving policy od exclude.",
+      "target_data_graph_object": "MethodStep.missingPolicy konsumowane przez ratio; w razie innej zamierzonej semantyki kontrakt musi jawnie odróżnić null-preserving policy od exclude.",
+      "consuming_paths": [
+        "analysis/method_spec_validation.ts:validateMethodSpec",
+        "analysis/executor.ts:85–88",
+        "analysis/primitives.ts:ratioPrimitive"
+      ],
+      "acceptance_tests": [
+        "Dla [null,4]/2 exclude zwraca wyłącznie entity b=2, propagate zachowuje a=null,b=2, fail odmawia.",
+        "Albo validator jawnie odrzuca exclude i dokumentuje brak tej zdolności.",
+        "Sprawdzić dalsze łączenie szeregów i przechowywać maskę/trace wykluczeń."
+      ],
+      "migration_risk": "Zmiana liczby wierszy wpływa na dalsze kroki i hash wyników; nowa wersja executor/primitive, bez zmiany locked JH16.",
+      "dependencies": [
+        "method_spec_validation"
+      ],
+      "product_changed": false,
+      "audit_sort_order": 21
+    },
+    {
+      "id": "AUD-B-WD-003",
+      "finding_id": "WD-003",
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "priority": "P1",
+      "status": "confirmed_open",
+      "task": "EffectiveGenerationParameters z jawną kolejnością warstw, pochodzeniem i hash; request-specific overrides dozwolone przez capability schema.",
+      "target_data_graph_object": "EffectiveGenerationParameters z jawną kolejnością warstw, pochodzeniem i hash; request-specific overrides dozwolone przez capability schema.",
+      "consuming_paths": [
+        "services/assistant.ts:generateRequest",
+        "llm/profile_generator.ts:generate",
+        "llm/openai_compatible.ts:generate"
+      ],
+      "acceptance_tests": [
+        "Mock transport potwierdza efektywny temperature i seed dla wspieranego dostawcy.",
+        "Próba nadpisania model/messages/output budget jest odrzucona lub jawnie zablokowana.",
+        "Zapis runu odzwierciedla faktyczne body bez sekretów."
+      ],
+      "migration_risk": "Udostępnienie parametrów może zmienić koszt; pola budżetu/modelu/narzędzi zachować pod kontrolą mechanizmu rezerwacji.",
+      "dependencies": [
+        "provider capability schema"
+      ],
+      "product_changed": false,
+      "audit_sort_order": 22
+    },
+    {
+      "id": "AUD-B-WD-004",
+      "finding_id": "WD-004",
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "priority": "P1",
+      "status": "confirmed_open",
+      "task": "WorkspacePreference/EffectiveSetting jako ten sam obiekt co ustawienia użytkownika; localStorage jako jawny cache, z regułą konfliktu i informacją o fallback.",
+      "target_data_graph_object": "WorkspacePreference/EffectiveSetting jako ten sam obiekt co ustawienia użytkownika; localStorage jako jawny cache, z regułą konfliktu i informacją o fallback.",
+      "consuming_paths": [
+        "src/lib/workspace_preferences.tsx:WorkspacePreferencesProvider",
+        "shared/workspace_preferences.ts:resolveWorkspace",
+        "db/repositories/settings.ts:get/save",
+        "src/components/ConfigurationWizard.tsx"
+      ],
+      "acceptance_tests": [
+        "Zmiana preset/language widoczna w trwałym obiekcie z source-layer i runtime UI.",
+        "Błąd cache nie kasuje ustawienia; decyzja o default ma reason.",
+        "Wykluczony preset nie wraca po aktualizacji paczki."
+      ],
+      "migration_risk": "Rozstrzygnięcie konfliktu między istniejącym cache i ustawieniami konta bez utraty wyborów.",
+      "dependencies": [
+        "storage/graph identity mapping"
+      ],
+      "product_changed": false,
+      "audit_sort_order": 23
+    },
+    {
+      "id": "AUD-B-WD-009",
+      "finding_id": "WD-009",
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "priority": "P1",
+      "status": "confirmed_open",
+      "task": "ContextConstructionPolicy + PaperAssessmentPrompt z wersją/hash, zakresem źródeł, śladem pominięć i zgodą na wysyłanie wybranego materiału.",
+      "target_data_graph_object": "ContextConstructionPolicy + PaperAssessmentPrompt z wersją/hash, zakresem źródeł, śladem pominięć i zgodą na wysyłanie wybranego materiału.",
+      "consuming_paths": [
+        "services/paper_intake.ts:assess",
+        "services/assistant.ts:propose",
+        "db/repositories/research.ts:finishAssessment",
+        "src/pages/Research.tsx"
+      ],
+      "acceptance_tests": [
+        "Dwa profile wybierają różne znane fragmenty długiego dokumentu, z hash i źródłowymi offsetami.",
+        "W żadnym wariancie limit nie zmienia się niejawnie po zmianie modelu; pełne źródło pozostaje niezmienne.",
+        "Prompt/limit zmienialne w danych; brak profilu daje jawny błąd."
+      ],
+      "migration_risk": "Zmiana kontekstu zmienia wynik i koszt; potrzebna nowa wersja assessment profile, ponowny review, bez przepisywania starych prób.",
+      "dependencies": [
+        "context policy schema"
+      ],
+      "product_changed": false,
+      "audit_sort_order": 24
+    },
+    {
+      "id": "AUD-B-WD-011",
+      "finding_id": "WD-011",
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "priority": "P1",
+      "status": "confirmed_open",
+      "task": "Wersjonowana polityka renderowania i wiązania wartości; parser jest mechanizmem, zasady dopuszczanych formatów i odwołania do wartości są danymi.",
+      "target_data_graph_object": "Wersjonowana polityka renderowania i wiązania wartości; parser jest mechanizmem, zasady dopuszczanych formatów i odwołania do wartości są danymi.",
+      "consuming_paths": [
+        "services/narrative.ts:assertNoNovelNumbers",
+        "services/narrative.ts:generateNarrativeWithProvider",
+        "services/export.ts:approval gate"
+      ],
+      "acceptance_tests": [
+        "15→-15 i -15→15 muszą być odrzucone; zgodne liczby z dozwolonym formatem dopuszczone.",
+        "Znaki Unicode, wykładniki i separator dziesiętny mają jawny kontrakt; bez niejawnego zaokrąglania.",
+        "Próba nadal PROPOSED do review."
+      ],
+      "migration_risk": "Stricter guard może odrzucić wcześniej dopuszczone szkice; nie nadpisywać historycznych aprobat ani źródeł.",
+      "dependencies": [
+        "numeric token contract"
+      ],
+      "product_changed": false,
+      "audit_sort_order": 25
+    },
+    {
+      "id": "AUD-B-CH-001",
+      "finding_id": "CH-001",
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "priority": "P1",
+      "status": "confirmed_open",
+      "task": "Istniejący RuntimeProfile/DefaultLayers: startowy preset konfiguracji z jawnym pochodzeniem; migracja legacy jako dane.",
+      "target_data_graph_object": "Istniejący RuntimeProfile/DefaultLayers: startowy preset konfiguracji z jawnym pochodzeniem; migracja legacy jako dane.",
+      "consuming_paths": [
+        "Runtime::open → Config",
+        "Config::get → ChatEngine/SemanticLLM",
+        "main.py → engine.config.Config"
+      ],
+      "acceptance_tests": [
+        "Zmiana domyślnego modelu/promptu w packu działa w nowym katalogu bez edycji C++/Python.",
+        "Błędny pack daje jawny błąd; dopuszczalny embedded pack jest generowany z tych samych danych.",
+        "Wykluczenie nie wraca przez Config fallback po restarcie."
+      ],
+      "migration_risk": "Zachować istniejące jawne ustawienia i znaczenie braku; nie wykasować modeli użytkownika.",
+      "dependencies": [],
+      "product_changed": false,
+      "audit_sort_order": 26
+    },
+    {
+      "id": "AUD-B-CH-002",
+      "finding_id": "CH-002",
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "priority": "P1",
+      "status": "confirmed_open",
+      "task": "Istniejąca metoda/wersja/receptura z jawnie wybraną strategią prefix/chunks/full oraz śladem pominiętych zakresów.",
+      "target_data_graph_object": "Istniejąca metoda/wersja/receptura z jawnie wybraną strategią prefix/chunks/full oraz śladem pominiętych zakresów.",
+      "consuming_paths": [
+        "Runtime → SemanticLLM::analyse/call_llm",
+        "SemanticWorker → SemanticLLM",
+        "engine.semantic_llm._call_llm"
+      ],
+      "acceptance_tests": [
+        "Dwie wersje promptu i limitów zmieniają dokładny mock request i produced_by hash.",
+        "Tekst z kluczową treścią po znaku 3000: full/chunks zachowuje ją; prefix jawnie raportuje utratę.",
+        "Chat max_tokens nie musi sterować analizą: ma istnieć osobny rzeczywiście konsumowany parametr analizy."
+      ],
+      "migration_risk": "Zmiana ekstrakcji może zmienić cały graf i jakość; dotychczasowy preset zachować jako wersję.",
+      "dependencies": [],
+      "product_changed": false,
+      "audit_sort_order": 27
+    },
+    {
+      "id": "AUD-B-CH-003",
+      "finding_id": "CH-003",
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "priority": "P1",
+      "status": "confirmed_open",
+      "task": "Jeden efektywny snapshot metody analizy w obrębie zadania, przekazany każdemu konsumentowi i zapisany w provenance.",
+      "target_data_graph_object": "Jeden efektywny snapshot metody analizy w obrębie zadania, przekazany każdemu konsumentowi i zapisany w provenance.",
+      "consuming_paths": [
+        "Runtime::open → SemanticWorker::drain_once → regex_unified",
+        "Runtime::open → SemanticLLM fallback",
+        "GraphEngine::on_message_checked (pozytywny kontrprzykład)"
+      ],
+      "acceptance_tests": [
+        "Pack dodaje unikalny wzorzec: real-time, worker i fallback LLM wykrywają go z tym samym hashem.",
+        "Uszkodzona nakładka ma ten sam jawny status w każdej ścieżce; nie podstawia builtinu."
+      ],
+      "migration_risk": "Należy ustalić zamrożenie per zadanie kontra dynamiczne przeładowanie; nie zmieniać danych w połowie analizy.",
+      "dependencies": [],
+      "product_changed": false,
+      "audit_sort_order": 28
+    },
+    {
+      "id": "AUD-B-CH-004",
+      "finding_id": "CH-004",
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "priority": "P1",
+      "status": "confirmed_open",
+      "task": "Podłączyć istniejący profil i DefaultLayers do konstrukcji kontekstu i transportu z user_id, revision oraz decyzją dla używanych danych; bez równoległej architektury.",
+      "target_data_graph_object": "Podłączyć istniejący profil i DefaultLayers do konstrukcji kontekstu i transportu z user_id, revision oraz decyzją dla używanych danych; bez równoległej architektury.",
+      "consuming_paths": [
+        "OnboardingStore → UI /api/onboarding",
+        "ChatEngine::build_messages → memory/history",
+        "ContextEngine::type_goal → Config.context_goal_cues",
+        "ChatEngine::send → Config.chat_reasoning"
+      ],
+      "acceptance_tests": [
+        "Ustawienie deny/send dla kategorii blokuje ją w dokładnym request body zwykłego czatu przy mock transporcie.",
+        "Zmiana default/exclusion w UI zmienia efekt w czacie lub jawnie blokuje brak ustawienia; receipt zawiera revision.",
+        "Test równoczesnej zmiany profilu nie miesza wersji."
+      ],
+      "migration_risk": "Nie rozszerzać zakresu zgód domyślnie; trzeba odwzorować dane wejścia na kategorie, zachować jawne zgody i migrację.",
+      "dependencies": [],
+      "product_changed": false,
+      "audit_sort_order": 29
+    },
+    {
+      "id": "AUD-B-CH-005",
+      "finding_id": "CH-005",
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "priority": "P1",
+      "status": "confirmed_open",
+      "task": "Istniejący UsagePolicy i wersjonowany wybór trybu worker realtime/batch/local, konsumowane przed każdym odpowiednim transportem.",
+      "target_data_graph_object": "Istniejący UsagePolicy i wersjonowany wybór trybu worker realtime/batch/local, konsumowane przed każdym odpowiednim transportem.",
+      "consuming_paths": [
+        "ChatEngine::send → http_.send",
+        "SemanticWorker::drain_once → submit_batch_api → http.send",
+        "loom_usage_policy_json"
+      ],
+      "acceptance_tests": [
+        "Ustawiony budget=0 daje zero mock requests we wszystkich wymienionych ścieżkach.",
+        "Tryb online/batch pozostaje oddzielnym ustawieniem także przy obecności batch key i długiej kolejce.",
+        "Zwiększenie ×10 korzysta z istniejącej decyzji/pokwitowania, a replay nie wysyła ponownie."
+      ],
+      "migration_risk": "Należy ujednolicić ledger i uniknąć podwójnych rezerwacji; domyślna migracja nie może sama przyznać nowych zgód.",
+      "dependencies": [],
+      "product_changed": false,
+      "audit_sort_order": 30
+    },
+    {
+      "id": "AUD-B-CH-006",
+      "finding_id": "CH-006",
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "priority": "P1",
+      "status": "confirmed_open",
+      "task": "Istniejąca polityka admission oraz method/result/provenance powiązane z wynikowymi relacjami; zachować oddzielnie obserwacje i inferencje.",
+      "target_data_graph_object": "Istniejąca polityka admission oraz method/result/provenance powiązane z wynikowymi relacjami; zachować oddzielnie obserwacje i inferencje.",
+      "consuming_paths": [
+        "MSG_CREATED → GraphEngine::on_message_checked → ingest_common",
+        "SemanticWorker → ingest_analysis"
+      ],
+      "acceptance_tests": [
+        "To samo syntetyczne LLM output daje candidate bez canon write, ask bez akceptacji i automatic z jawnie wybraną polityką.",
+        "Każda wynikowa relacja wskazuje metodę/wersję/parametry i pochodzenie; nie tylko wiadomość zbiorczo."
+      ],
+      "migration_risk": "Migracja istniejących nieoznaczonych relacji nie może dopisać nieznanej pewności/pochodzenia jako faktu.",
+      "dependencies": [],
+      "product_changed": false,
+      "audit_sort_order": 31
+    },
+    {
+      "id": "AUD-B-CH-009",
+      "finding_id": "CH-009",
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "priority": "P1",
+      "status": "confirmed_open",
+      "task": "Perspektywa, instancja workflow, stan/wyzwalacz/receipt jako obiekty istniejącego grafu; lokalny cache jako jawna projekcja.",
+      "target_data_graph_object": "Perspektywa, instancja workflow, stan/wyzwalacz/receipt jako obiekty istniejącego grafu; lokalny cache jako jawna projekcja.",
+      "consuming_paths": [
+        "workflow-checkpoint → localStorage",
+        "WorkflowSnapshot → config key",
+        "ApplicationProfile → GraphPacket",
+        "KnowledgeWorkbench → browser perspective"
+      ],
+      "acceptance_tests": [
+        "Po utracie localStorage można odzyskać konkretną perspektywę i sesję po ID z grafu, bez ponownego dispatch.",
+        "Grafowy snapshot nie udaje dowodu wykonania: powiązanie z faktycznym native receipt ma osobny status."
+      ],
+      "migration_risk": "Brak CAS w starym config, nieznany outcome zdalnych operacji i konflikty między urządzeniami.",
+      "dependencies": [],
+      "product_changed": false,
+      "audit_sort_order": 32
+    },
+    {
+      "id": "AUD-B-CH-010",
+      "finding_id": "CH-010",
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "priority": "P1",
+      "status": "confirmed_open",
+      "task": "MergePolicy z kluczem tożsamości, konfliktem typów i parametrami kanałów; wynik zachowuje oba świadectwa lub jawny powód wyboru.",
+      "target_data_graph_object": "MergePolicy z kluczem tożsamości, konfliktem typów i parametrami kanałów; wynik zachowuje oba świadectwa lub jawny powód wyboru.",
+      "consuming_paths": [
+        "SemanticLLM::analyse/_merge → GraphEngine"
+      ],
+      "acceptance_tests": [
+        "Kolizja tej samej nazwy przy różnych typach zachowuje oba wyniki/konflikt zgodnie z wybraną strategią.",
+        "Waga pomocniczego kanału i polityka dedup zmieniają się przez dane."
+      ],
+      "migration_risk": "Więcej encji/zmiana tożsamości; wymaga replay zamiast niejawnego merge istniejących danych.",
+      "dependencies": [],
+      "product_changed": false,
+      "audit_sort_order": 33
+    },
+    {
+      "id": "AUD-B-CH-011",
+      "finding_id": "CH-011",
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "priority": "P1",
+      "status": "confirmed_open",
+      "task": "FailurePolicy zadania: retry/backoff/pause/dead-letter/mark-final z jawną przyczyną i historią prób.",
+      "target_data_graph_object": "FailurePolicy zadania: retry/backoff/pause/dead-letter/mark-final z jawną przyczyną i historią prób.",
+      "consuming_paths": [
+        "SemanticWorker._drain_batch/::drain_once → Database::mark_analysed"
+      ],
+      "acceptance_tests": [
+        "Syntetyczny błąd tymczasowy nie jest sukcesem; wybrana retry policy pozostawia zadanie możliwe do ponowienia.",
+        "Final-error pozostaje dostępną jawną strategią; bez podwójnego płatnego wywołania przy unknown outcome."
+      ],
+      "migration_risk": "Automatyczne retry może powielić koszt/skutek; zachować first response i attempt identity.",
+      "dependencies": [],
+      "product_changed": false,
+      "audit_sort_order": 34
+    },
+    {
+      "id": "AUD-B-CH-015",
+      "finding_id": "CH-015",
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "priority": "P1",
+      "status": "verify_hypothesis",
+      "task": "Uzupełnić istniejące obiekty experiment/workflow/trigger/queue/result/evidence, z Basic/Advanced/Expert jako edycją tych samych danych.",
+      "target_data_graph_object": "Uzupełnić istniejące obiekty experiment/workflow/trigger/queue/result/evidence, z Basic/Advanced/Expert jako edycją tych samych danych.",
+      "consuming_paths": [
+        "TaskEngine",
+        "Runtime/ChatEngine checkpoint events",
+        "loom.tools.structure (separate research tooling)",
+        "UI basic/workflow selection"
+      ],
+      "acceptance_tests": [
+        "Opt-in=false i checkpoint daje zero zadań/transportów.",
+        "Opt-in=true + 3/5 wariantów lub N-wymiarowy plan respektuje zakres/częstotliwość/wolumen/budget i zapisuje wybrany sampling.",
+        "Basic preset ma link do liczbowego evidence; Advanced edytuje te same IDs i dane, bez osobnego silnika."
+      ],
+      "migration_risk": "Nie uruchamiać automatycznych eksperymentów przy migracji i nie awansować słabych badań na default.",
+      "dependencies": [],
+      "product_changed": false,
+      "audit_sort_order": 35
+    },
+    {
+      "id": "AUD-B-EA-AGEDS-004",
+      "finding_id": "EA-AGEDS-004",
+      "repo": "klb-t/AGEDS",
+      "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+      "priority": "P2",
+      "status": "confirmed_open",
+      "task": "Zachować działające domyślne zachowanie, wynieść zmienne dane i podłączyć wskazane ścieżki; nie osłabiać integralności źródeł.",
+      "target_data_graph_object": {
+        "proposed": "parser method + domain vocabulary + format profile; produced_by per observation",
+        "current": "scanner_version + basis, without exact recipe/hash"
+      },
+      "consuming_paths": [
+        "_kind_for_header",
+        "_phone",
+        "filename_observations",
+        "_Scan.observe"
+      ],
+      "acceptance_tests": [
+        "Dodanie telefono w pliku metody zmienia interpretację bez zmiany algorytmu; raw_value pozostaje identyczne, nowy wynik przypina wersję metody."
+      ],
+      "migration_risk": "Zmiana parsera może zmienić kandydatów i ID; zachować stare wyniki oraz pokazać różnice.",
+      "dependencies": [],
+      "product_changed": false,
+      "audit_sort_order": 36
+    },
+    {
+      "id": "AUD-B-EA-AGEDS-007",
+      "finding_id": "EA-AGEDS-007",
+      "repo": "klb-t/AGEDS",
+      "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+      "priority": "P2",
+      "status": "confirmed_open",
+      "task": "Zachować działające domyślne zachowanie, wynieść zmienne dane i podłączyć wskazane ścieżki; nie osłabiać integralności źródeł.",
+      "target_data_graph_object": {
+        "proposed": "selection profile + user override/exclusion node with provenance",
+        "current": "in-memory lists + seed default"
+      },
+      "consuming_paths": [
+        "CorpusVm.install",
+        "selectPriority",
+        "togglePhone",
+        "selectedPhones"
+      ],
+      "acceptance_tests": [
+        "Po wykluczeniu forever restart i nowy seed nie przywracają wyboru; zwykłe chwilowe odznaczenie zachowuje odrębną semantykę."
+      ],
+      "migration_risk": "Nie interpretować istniejących chwilowych wyborów jako trwałej zgody/odmowy; jawna migracja unknown.",
+      "dependencies": [
+        "EA-AGEDS-006"
+      ],
+      "product_changed": false,
+      "audit_sort_order": 37
+    },
+    {
+      "id": "AUD-B-EA-AGEDS-008",
+      "finding_id": "EA-AGEDS-008",
+      "repo": "klb-t/AGEDS",
+      "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+      "priority": "P2",
+      "status": "confirmed_open",
+      "task": "Zachować działające domyślne zachowanie, wynieść zmienne dane i podłączyć wskazane ścieżki; nie osłabiać integralności źródeł.",
+      "target_data_graph_object": {
+        "proposed": "localized UI profile + endpoint/provider setting; no secret values in public report",
+        "current": "Compose literals + SharedPreferences"
+      },
+      "consuming_paths": [
+        "EvidenceApp",
+        "PendingPane",
+        "EvidenceVm.api"
+      ],
+      "acceptance_tests": [
+        "Zmiana języka/presetu endpointu z danych aktualizuje UI i żądania bez buildu; nazwy kluczy kontraktu pozostają stabilne."
+      ],
+      "migration_risk": "Zachować komunikat świadomego wysłania i walidację adresu; nie uznać HTTP/HTTPS nazw za zakazane dane domenowe.",
+      "dependencies": [],
+      "product_changed": false,
+      "audit_sort_order": 38
+    },
+    {
+      "id": "AUD-B-EA-AGEDS-009",
+      "finding_id": "EA-AGEDS-009",
+      "repo": "klb-t/AGEDS",
+      "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+      "priority": "P2",
+      "status": "confirmed_open",
+      "task": "Zachować działające domyślne zachowanie, wynieść zmienne dane i podłączyć wskazane ścieżki; nie osłabiać integralności źródeł.",
+      "target_data_graph_object": {
+        "proposed": "search method profile + resource policy + index config/version",
+        "current": "code constants and SQL"
+      },
+      "consuming_paths": [
+        "validate_query",
+        "search_page",
+        "api_search",
+        "home",
+        "db.init_db"
+      ],
+      "acceptance_tests": [
+        "Zmiana dozwolonego profilu wyniku i rankingu wpływa na synthetic query bez edycji algorytmu; migracja tokenizera wymaga jawnego reindex i zachowania wersji."
+      ],
+      "migration_risk": "Konfiguracja nie może umożliwiać SQL injection ani wyłączać integralności; koszt reindeksacji trzeba ujawnić.",
+      "dependencies": [],
+      "product_changed": false,
+      "audit_sort_order": 39
+    },
+    {
+      "id": "AUD-B-LEM-006",
+      "finding_id": "LEM-006",
+      "repo": "klb-t/LEM-Workbench",
+      "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+      "priority": "P2",
+      "status": "confirmed_open",
+      "task": "Przenieść teksty, paletę i checkpoint do danych; podłączyć parametry do renderera albo usunąć pozorną obsługę ze stabilnego API.",
+      "target_data_graph_object": "UI profile + locale text catalog + referenced research checkpoint/claim with provenance",
+      "consuming_paths": [
+        "MyApplicationTheme",
+        "LemLabApp",
+        "Screen enum",
+        "DashboardScreen",
+        "ExperimentsScreen"
+      ],
+      "acceptance_tests": [
+        "Zmiana danych profilu rzeczywiście zmienia motyw i etykiety; status maszynowy renderowany poprzez katalog; klik checkpointu prowadzi do źródła i daty, nie tekstu w kodzie."
+      ],
+      "migration_risk": "Zachować obecny wygląd jako domyślny preset; nie nadać istniejącym twierdzeniom fikcyjnego źródła akceptacji.",
+      "dependencies": [
+        "Katalog i profile UI",
+        "Graf/ledger claim refs"
+      ],
+      "product_changed": false,
+      "audit_sort_order": 40
+    },
+    {
+      "id": "AUD-B-LEM-007",
+      "finding_id": "LEM-007",
+      "repo": "klb-t/LEM-Workbench",
+      "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+      "priority": "P2",
+      "status": "confirmed_open",
+      "task": "Opisać istniejące obiekty i powiązania w grafie przy zachowaniu Room; dopiero po kontrakcie podłączyć resolver danych i UI.",
+      "target_data_graph_object": "Config/profile/method/model/run/evidence/provider/trigger/queue graph descriptions, z referencjami do zewnętrznych artifact/secret stores",
+      "consuming_paths": [
+        "ResearchRepository",
+        "ResearchViewModel",
+        "ExperimentRunner",
+        "Compose screens"
+      ],
+      "acceptance_tests": [
+        "Od wyniku przejść do config, modelu, promptu i raw dowodu; zmiana warstwy presetu zmienia request i ma wyjaśnienie; permanent exclusion nie wraca po aktualizacji packa."
+      ],
+      "migration_risk": "Nie narzucać ontologii ChatADHD na semantykę badawczą; mapować jawnie typy i straty, zachować nieznane pola.",
+      "dependencies": [
+        "LEM-001",
+        "LEM-003",
+        "Kontrakt interoperacyjności ustalony przez aktywny silnik"
+      ],
+      "product_changed": false,
+      "audit_sort_order": 41
+    },
+    {
+      "id": "AUD-B-WD-005",
+      "finding_id": "WD-005",
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "priority": "P2",
+      "status": "confirmed_open",
+      "task": "RoutingStrategy, SuiteSelectionPolicy, ConfidenceParameters; zachować obecny wybór jako wersjonowany preset i opis rzeczywistego effective quantile.",
+      "target_data_graph_object": "RoutingStrategy, SuiteSelectionPolicy, ConfidenceParameters; zachować obecny wybór jako wersjonowany preset i opis rzeczywistego effective quantile.",
+      "consuming_paths": [
+        "llm/routing.ts:routeModel",
+        "services/assistant.ts:preview/generateRequest",
+        "db/repositories/settings.ts:routingEvidence",
+        "config/assistant.json:routingEvidence"
+      ],
+      "acceptance_tests": [
+        "Dwa profile polityki przy identycznym katalogu dają przewidywalne różne wybory i hash.",
+        "Test q=0.5 dokumentuje obecne q² lub nową jawną funkcję, bez cichej zmiany.",
+        "Zmiana poziomu ufności następuje przez dane i ma ślad."
+      ],
+      "migration_risk": "Wybór droższego modelu/zmiana reprodukowalności; nigdy nie przekraczać tego samego budżetu.",
+      "dependencies": [
+        "routing profile schema"
+      ],
+      "product_changed": false,
+      "audit_sort_order": 42
+    },
+    {
+      "id": "AUD-B-WD-006",
+      "finding_id": "WD-006",
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "priority": "P2",
+      "status": "confirmed_open",
+      "task": "UIStrings/MessageCatalog, w tym a11y, konsumowane przez to samo effective locale.",
+      "target_data_graph_object": "UIStrings/MessageCatalog, w tym a11y, konsumowane przez to samo effective locale.",
+      "consuming_paths": [
+        "src/pages/Setup.tsx",
+        "config/workspace-preferences.json",
+        "src/lib/workspace_preferences.tsx"
+      ],
+      "acceptance_tests": [
+        "Przełączenie PL/EN zmienia nagłówki, opisy, statusy i etykiety a11y; brak key daje jawny błąd w walidacji."
+      ],
+      "migration_risk": "Zmiany snapshotów/e2e; zachować semantyczne role i stabilne test-id.",
+      "dependencies": [
+        "UI catalog"
+      ],
+      "product_changed": false,
+      "audit_sort_order": 43
+    },
+    {
+      "id": "AUD-B-WD-010",
+      "finding_id": "WD-010",
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "priority": "P2",
+      "status": "confirmed_open",
+      "task": "SchedulePolicy.misfirePolicy i catchUpMax, limit budżetu/wolumenu, trace pominiętych/coalesced slots jako obiekty danych.",
+      "target_data_graph_object": "SchedulePolicy.misfirePolicy i catchUpMax, limit budżetu/wolumenu, trace pominiętych/coalesced slots jako obiekty danych.",
+      "consuming_paths": [
+        "shared/automation.ts:nextOccurrence",
+        "db/repositories/automation.ts:dispatchDue",
+        "services/automation.ts:tick/state",
+        "src/pages/Automation.tsx"
+      ],
+      "acceptance_tests": [
+        "Zamrożony zegar i trzy sloty zaległości: coalesce tworzy najwyżej jedno zadanie, bounded catch-up respektuje jawny limit i budżet, skip zapisuje przyczyny."
+      ],
+      "migration_risk": "Catch-up może zwiększać koszty; default coalesce zachować, alternatywy tylko po opt-in i z ograniczeniami.",
+      "dependencies": [
+        "job budget policy"
+      ],
+      "product_changed": false,
+      "audit_sort_order": 44
+    },
+    {
+      "id": "AUD-B-CH-007",
+      "finding_id": "CH-007",
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "priority": "P2",
+      "status": "confirmed_open",
+      "task": "Versioned ContextRenderer/HistoryWeightRecipe w istniejącej metodzie budowania kontekstu.",
+      "target_data_graph_object": "Versioned ContextRenderer/HistoryWeightRecipe w istniejącej metodzie budowania kontekstu.",
+      "consuming_paths": [
+        "ChatEngine::build_messages → provider messages"
+      ],
+      "acceptance_tests": [
+        "Dwa presety progów/renderera zmieniają tylko właściwe wiadomości i hash context recipe.",
+        "Obecne zachowanie pozostaje reprodukowalnym presetem; active task provenance zachowana."
+      ],
+      "migration_risk": "Wpływ na prompty i cache providerów; nie zmieniać historii źródłowej.",
+      "dependencies": [],
+      "product_changed": false,
+      "audit_sort_order": 45
+    },
+    {
+      "id": "AUD-B-CH-008",
+      "finding_id": "CH-008",
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "priority": "P2",
+      "status": "confirmed_open",
+      "task": "Istniejący profil UI/perspektywy z katalogiem etykiet, default controls i początkową kompozycją.",
+      "target_data_graph_object": "Istniejący profil UI/perspektywy z katalogiem etykiet, default controls i początkową kompozycją.",
+      "consuming_paths": [
+        "newPane/initialWorkspace → KnowledgeWorkbench"
+      ],
+      "acceptance_tests": [
+        "Zmiana locale i początkowego układu w danych zmienia UI bez kompilacji.",
+        "Advanced edytuje identyczne dane użyte przez Basic, bez drugich defaultów."
+      ],
+      "migration_risk": "Migracja zapisanych workspace schema v1/v2; zachować indywidualne parametry.",
+      "dependencies": [],
+      "product_changed": false,
+      "audit_sort_order": 46
+    },
+    {
+      "id": "AUD-B-LOOM-001",
+      "finding_id": "LOOM-001",
+      "repo": "klb-t/loom",
+      "sha": "0b23fa64c1de955c947349feef7bb67c05763f97",
+      "priority": "P1",
+      "status": "preserved_baseline_only; verify active successor before implementation",
+      "task": "Opisać stary predykat jako legacy policy; w aktywnym silniku sprawdzić i ujednolicić policzalne eligible jobs.",
+      "target_data_graph_object": "Semantic queue policy/method parameters z jednolitym eligible predicate i osobnymi licznikami total/eligible",
+      "consuming_paths": [
+        "Database.get_unanalysed_messages",
+        "Database.count_pending_semantic",
+        "zewnętrzny klient C++"
+      ],
+      "acceptance_tests": [
+        "Dla długości 0/1/19/20 i statusów active/excluded/version count eligible==selectable; polityka progu=1 dopuszcza krótkie aktywne; total pending może pozostać osobnym jawnie opisanym licznikiem."
+      ],
+      "migration_risk": "Zachować threshold=20 jako profil legacy; zmiana domyślnej kolejki może zwiększyć wolumen i koszt przyszłego konsumenta.",
+      "dependencies": [
+        "Weryfikacja odpowiednika w aktywnym chatadhd/loom",
+        "Wersjonowany profil kolejki"
+      ],
+      "product_changed": false,
+      "audit_sort_order": 47
+    },
+    {
+      "id": "AUD-B-LOOM-002",
+      "finding_id": "LOOM-002",
+      "repo": "klb-t/loom",
+      "sha": "0b23fa64c1de955c947349feef7bb67c05763f97",
+      "priority": "P1",
+      "status": "preserved_baseline_only; verify active successor before implementation",
+      "task": "Zweryfikować aktywny kernel testami konfliktów; utrzymać legacy jako nazwany tryb i dodać wynik operacji created/unchanged/conflict/updated.",
+      "target_data_graph_object": "Identity/dedup/conflict policy oraz relation assertion/evidence nodes lub równoważna bogata reprezentacja grafowa",
+      "consuming_paths": [
+        "Database.create_node",
+        "Database.find_node",
+        "Database.get_or_create_node",
+        "Database.create_link"
+      ],
+      "acceptance_tests": [
+        "Dwie deklaracje tej samej relacji z odrębnymi źródłami zachowują oba źródła albo jawnie odrzucają konflikt; kolizja node_id nie zwraca nieodróżnialnego sukcesu; label+kind nie scala bez wybranej polityki."
+      ],
+      "migration_risk": "Nie zmieniać po cichu kompatybilności starego ABI/v4; oferować jawny adapter legacy i raport utraty wcześniejszych metadanych.",
+      "dependencies": [
+        "Aktywny odpowiednik grafu",
+        "Kontrakt tożsamości i evidence"
+      ],
+      "product_changed": false,
+      "audit_sort_order": 48
+    },
+    {
+      "id": "AUD-B-LOOM-005",
+      "finding_id": "LOOM-005",
+      "repo": "klb-t/loom",
+      "sha": "0b23fa64c1de955c947349feef7bb67c05763f97",
+      "priority": "P1",
+      "status": "preserved_baseline_only; verify active successor before implementation",
+      "task": "Oznaczyć standalone jako nieprzeznaczony do otwierania przyszłych formatów i dodać guard w razie wznowienia/wykorzystania komponentu.",
+      "target_data_graph_object": "Schema migration plan z from/to version i migration result evidence",
+      "consuming_paths": [
+        "Database.open",
+        "Database.migrate_unlocked",
+        "Database.schema_version"
+      ],
+      "acceptance_tests": [
+        "Fixture zawierający schema_version=999: open odmawia bez modyfikacji znacznika i danych; zaakceptowane legacy wersje migrują z zachowaniem zawartości i jawnego journalu."
+      ],
+      "migration_risk": "Nie otwierać realnych baz użytkownika testowo; użyć fixture i kontrolowanego snapshotu.",
+      "dependencies": [
+        "Inwentaryzacja formatów aktywnego ChatADHD",
+        "Zgodność lub jawny brak zgodności"
+      ],
+      "product_changed": false,
+      "audit_sort_order": 49
+    },
+    {
+      "id": "AUD-B-LOOM-003",
+      "finding_id": "LOOM-003",
+      "repo": "klb-t/loom",
+      "sha": "0b23fa64c1de955c947349feef7bb67c05763f97",
+      "priority": "P2",
+      "status": "preserved_baseline_only; verify active successor before implementation",
+      "task": "Zachować możliwość starej walidacji jako profil; nie używać prymitywu legacy jako dowodu bezstratnego importu.",
+      "target_data_graph_object": "Ingestion policy + typed message payload + import outcome/loss trace",
+      "consuming_paths": [
+        "Database.batch_create_messages",
+        "Database.create_message",
+        "przyszły lub zewnętrzny importer"
+      ],
+      "acceptance_tests": [
+        "W batchu wiadomość attachment-only zostaje zachowana lub jawnie odrzucona z pozycją i powodem; return report rozlicza każde wejście. Single i batch mają tę samą jawną politykę."
+      ],
+      "migration_risk": "Zmiana starych liczników i interfejsu wyniku; nie rekonstruować odrzuconych dawniej załączników bez źródła.",
+      "dependencies": [
+        "Kontrakt message payload w aktywnym kernelu",
+        "Adapter legacy"
+      ],
+      "product_changed": false,
+      "audit_sort_order": 50
+    },
+    {
+      "id": "AUD-B-LOOM-004",
+      "finding_id": "LOOM-004",
+      "repo": "klb-t/loom",
+      "sha": "0b23fa64c1de955c947349feef7bb67c05763f97",
+      "priority": "P2",
+      "status": "preserved_baseline_only; verify active successor before implementation",
+      "task": "Sprawdzić odpowiadające ścieżki aktywnego silnika; opisać legacy defaults w danych, zachowując opcjonalne argumenty jako mechanizm override.",
+      "target_data_graph_object": "Legacy defaults preset + storage durability/timeout profile; resolve value z provenance warstwy",
+      "consuming_paths": [
+        "Database API",
+        "Database.open",
+        "init_schema_unlocked/migrate_unlocked"
+      ],
+      "acceptance_tests": [
+        "Zmień limit i tytuł przez preset, bez rekompilacji; jawny override wygrywa; zapytanie limit=1000 zwraca >200 węzłów; zmiana timeoutu/trwałości przechodzi walidację i zapisuje effective profile."
+      ],
+      "migration_risk": "Bez zmiany historycznych wyników domyślnych; ważna granica nowego profilu vs kompatybilność istniejącej bazy v4.",
+      "dependencies": [
+        "Aktywny resolver defaultów",
+        "Adapter storage policy"
+      ],
+      "product_changed": false,
+      "audit_sort_order": 51
+    },
+    {
+      "id": "AUD-B-LOOM-006",
+      "finding_id": "LOOM-006",
+      "repo": "klb-t/loom",
+      "sha": "0b23fa64c1de955c947349feef7bb67c05763f97",
+      "priority": "P3",
+      "status": "preserved_baseline_only; verify active successor before implementation",
+      "task": "Zachować repo jako oznaczony baseline, a naprawy wymagające aplikacji kierować do aktywnego kernela po porównaniu kodu.",
+      "target_data_graph_object": "Mapa zdolności baseline→aktywna implementacja; nie nowa architektura obok R15/R40/R41",
+      "consuming_paths": [
+        "C++ Database API",
+        "C ABI bez definicji poza deklaracją"
+      ],
+      "acceptance_tests": [
+        "Każdy deklarowany capability w raporcie ma test linkowania/wykonania i realnego konsumenta albo jawny status unsupported; nie wystarcza nagłówek."
+      ],
+      "migration_risk": "Fałszywe utożsamienie repo grozi backportowaniem starej semantyki do rozwiniętego kernela.",
+      "dependencies": [
+        "Odrębny audyt chatadhd/loom"
+      ],
+      "product_changed": false,
+      "audit_sort_order": 52
+    }
+  ]
+}

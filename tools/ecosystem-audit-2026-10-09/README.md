@@ -113,3 +113,7 @@ conservative and can miss language-specific suffixes (`0.5f`, `1UL`) or leading-
 floats (`.5`); Python default AST nodes still expose their containing defaults.
 Classifications and limits are data;
 review the inventory before claiming a product/module denominator.
+
+## Report integrity and behavioral probes
+
+Use `validate_reports.py --repos-root /clones --reports-root /audit/reports --output /audit/results` for the public report gate. Each clone is named after the repository and contains its recorded SHA. This validator checks declared evidence locations and fields; it is not a semantic verdict engine. See `docs/reports/ecosystem-audit-2026-10-09/REPRODUCE.md` for the executed offline product probes, scope, dependencies and receipts. No model or CI calls are necessary.

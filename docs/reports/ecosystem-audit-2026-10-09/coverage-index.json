@@ -1,0 +1,804 @@
+{
+  "discovery": "discovery.json",
+  "public_repositories": [
+    {
+      "repo": "klb-t/chatadhd",
+      "base_branch": "main",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "visibility": "public",
+      "tracked_entries": 3158,
+      "automatic": {
+        "by_category": {
+          "assets": 11,
+          "build": 9,
+          "data": 108,
+          "docs": 1420,
+          "generated": 3,
+          "history": 196,
+          "other": 17,
+          "product": 432,
+          "research": 2,
+          "tests": 587,
+          "tooling": 357,
+          "vendor": 16
+        },
+        "definition": "All recursive tracked tree entries at the stated commit, including blobs, symlinks and gitlinks; git history and untracked working files excluded. Manifest mode instead uses the explicit supplied list, whose completeness is not independently verified.",
+        "eligible_code_entries": 621,
+        "scanned_code_entries": 619,
+        "scanned_lines": 157964,
+        "semantic_reviewed_entries": 0,
+        "tracked_entries": 3158
+      },
+      "categories": {
+        "assets": {
+          "eligible_code_entries": 0,
+          "scanned_code_entries": 0,
+          "scanned_lines": 0,
+          "statuses": {
+            "out_of_scan_scope": 11
+          },
+          "tracked_entries": 11
+        },
+        "build": {
+          "eligible_code_entries": 3,
+          "scanned_code_entries": 3,
+          "scanned_lines": 134,
+          "statuses": {
+            "out_of_scan_scope": 6,
+            "scanned": 3
+          },
+          "tracked_entries": 9
+        },
+        "data": {
+          "eligible_code_entries": 0,
+          "scanned_code_entries": 0,
+          "scanned_lines": 0,
+          "statuses": {
+            "out_of_scan_scope": 108
+          },
+          "tracked_entries": 108
+        },
+        "docs": {
+          "eligible_code_entries": 0,
+          "scanned_code_entries": 0,
+          "scanned_lines": 0,
+          "statuses": {
+            "out_of_scan_scope": 1420
+          },
+          "tracked_entries": 1420
+        },
+        "generated": {
+          "eligible_code_entries": 0,
+          "scanned_code_entries": 0,
+          "scanned_lines": 0,
+          "statuses": {
+            "out_of_scan_scope": 3
+          },
+          "tracked_entries": 3
+        },
+        "history": {
+          "eligible_code_entries": 0,
+          "scanned_code_entries": 0,
+          "scanned_lines": 0,
+          "statuses": {
+            "out_of_scan_scope": 196
+          },
+          "tracked_entries": 196
+        },
+        "other": {
+          "eligible_code_entries": 0,
+          "scanned_code_entries": 0,
+          "scanned_lines": 0,
+          "statuses": {
+            "content_excluded_by_path": 1,
+            "out_of_scan_scope": 16
+          },
+          "tracked_entries": 17
+        },
+        "product": {
+          "eligible_code_entries": 432,
+          "scanned_code_entries": 432,
+          "scanned_lines": 109475,
+          "statuses": {
+            "scanned": 432
+          },
+          "tracked_entries": 432
+        },
+        "research": {
+          "eligible_code_entries": 2,
+          "scanned_code_entries": 2,
+          "scanned_lines": 434,
+          "statuses": {
+            "scanned": 2
+          },
+          "tracked_entries": 2
+        },
+        "tests": {
+          "eligible_code_entries": 0,
+          "scanned_code_entries": 0,
+          "scanned_lines": 0,
+          "statuses": {
+            "content_excluded_by_path": 8,
+            "out_of_scan_scope": 579
+          },
+          "tracked_entries": 587
+        },
+        "tooling": {
+          "eligible_code_entries": 184,
+          "scanned_code_entries": 182,
+          "scanned_lines": 47921,
+          "statuses": {
+            "content_excluded_by_path": 2,
+            "out_of_scan_scope": 173,
+            "scanned": 182
+          },
+          "tracked_entries": 357
+        },
+        "vendor": {
+          "eligible_code_entries": 0,
+          "scanned_code_entries": 0,
+          "scanned_lines": 0,
+          "statuses": {
+            "out_of_scan_scope": 16
+          },
+          "tracked_entries": 16
+        }
+      },
+      "candidates": 209711,
+      "semantic_product_files_with_reviewed_ranges": 24,
+      "semantic_product_denominator": 432,
+      "semantic_extent": "selected paths/ranges; LEM and standalone loom cover their full listed product source files",
+      "coverage_source": "chatadhd/coverage.json",
+      "inventory": "chatadhd/scan/inventory.jsonl.gz",
+      "scanner_sha256": "88b6f460b471347a937a88bd11ebc7b0a504b022014a9ca0693f56835e4489d8",
+      "rules_sha256": "b35034619f42b0199bd9a3c26245dcd6be0dd83ecffa8beb7bb4c01731e4e963",
+      "classification_counts": {
+        "naruszenie": 11,
+        "już naprawione": 2,
+        "dopuszczalny mechanizm": 1,
+        "niepewne": 1
+      },
+      "access_and_test_limitations": [
+        "No paid models/CI",
+        "Blind/holdout content deliberately not read",
+        "Full CMake/CTest/Kivy/browser E2E not run; focused actual native helper and Python probes run"
+      ]
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "base_branch": "main",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "visibility": "public",
+      "tracked_entries": 603,
+      "automatic": {
+        "by_category": {
+          "build": 1,
+          "data": 31,
+          "docs": 114,
+          "generated": 1,
+          "history": 41,
+          "other": 5,
+          "product": 268,
+          "research": 1,
+          "tests": 125,
+          "tooling": 16
+        },
+        "definition": "All recursive tracked tree entries at the stated commit, including blobs, symlinks and gitlinks; git history and untracked working files excluded. Manifest mode instead uses the explicit supplied list, whose completeness is not independently verified.",
+        "eligible_code_entries": 284,
+        "scanned_code_entries": 282,
+        "scanned_lines": 26906,
+        "semantic_reviewed_entries": 0,
+        "tracked_entries": 603
+      },
+      "categories": {
+        "build": {
+          "eligible_code_entries": 0,
+          "scanned_code_entries": 0,
+          "scanned_lines": 0,
+          "statuses": {
+            "out_of_scan_scope": 1
+          },
+          "tracked_entries": 1
+        },
+        "data": {
+          "eligible_code_entries": 0,
+          "scanned_code_entries": 0,
+          "scanned_lines": 0,
+          "statuses": {
+            "out_of_scan_scope": 31
+          },
+          "tracked_entries": 31
+        },
+        "docs": {
+          "eligible_code_entries": 0,
+          "scanned_code_entries": 0,
+          "scanned_lines": 0,
+          "statuses": {
+            "out_of_scan_scope": 114
+          },
+          "tracked_entries": 114
+        },
+        "generated": {
+          "eligible_code_entries": 0,
+          "scanned_code_entries": 0,
+          "scanned_lines": 0,
+          "statuses": {
+            "out_of_scan_scope": 1
+          },
+          "tracked_entries": 1
+        },
+        "history": {
+          "eligible_code_entries": 0,
+          "scanned_code_entries": 0,
+          "scanned_lines": 0,
+          "statuses": {
+            "out_of_scan_scope": 41
+          },
+          "tracked_entries": 41
+        },
+        "other": {
+          "eligible_code_entries": 0,
+          "scanned_code_entries": 0,
+          "scanned_lines": 0,
+          "statuses": {
+            "content_excluded_by_path": 1,
+            "out_of_scan_scope": 4
+          },
+          "tracked_entries": 5
+        },
+        "product": {
+          "eligible_code_entries": 268,
+          "scanned_code_entries": 266,
+          "scanned_lines": 24922,
+          "statuses": {
+            "content_excluded_by_path": 2,
+            "scanned": 266
+          },
+          "tracked_entries": 268
+        },
+        "research": {
+          "eligible_code_entries": 1,
+          "scanned_code_entries": 1,
+          "scanned_lines": 34,
+          "statuses": {
+            "scanned": 1
+          },
+          "tracked_entries": 1
+        },
+        "tests": {
+          "eligible_code_entries": 0,
+          "scanned_code_entries": 0,
+          "scanned_lines": 0,
+          "statuses": {
+            "content_excluded_by_path": 1,
+            "out_of_scan_scope": 124
+          },
+          "tracked_entries": 125
+        },
+        "tooling": {
+          "eligible_code_entries": 15,
+          "scanned_code_entries": 15,
+          "scanned_lines": 1950,
+          "statuses": {
+            "out_of_scan_scope": 1,
+            "scanned": 15
+          },
+          "tracked_entries": 16
+        }
+      },
+      "candidates": 31119,
+      "semantic_product_files_with_reviewed_ranges": 25,
+      "semantic_product_denominator": 266,
+      "semantic_extent": "selected paths/ranges; LEM and standalone loom cover their full listed product source files",
+      "coverage_source": "Watchdog-JH16/coverage.json",
+      "inventory": "Watchdog-JH16/scan/inventory.jsonl.gz",
+      "scanner_sha256": "88b6f460b471347a937a88bd11ebc7b0a504b022014a9ca0693f56835e4489d8",
+      "rules_sha256": "b35034619f42b0199bd9a3c26245dcd6be0dd83ecffa8beb7bb4c01731e4e963",
+      "classification_counts": {
+        "naruszenie": 9,
+        "dopuszczalny mechanizm": 1,
+        "już naprawione": 1
+      },
+      "access_and_test_limitations": "See Watchdog-JH16/report.md and validation receipts"
+    },
+    {
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "base_branch": "main",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "visibility": "public",
+      "tracked_entries": 461,
+      "automatic": {
+        "by_category": {
+          "build": 3,
+          "data": 47,
+          "docs": 45,
+          "history": 4,
+          "other": 6,
+          "product": 234,
+          "tests": 105,
+          "tooling": 17
+        },
+        "definition": "All recursive tracked tree entries at the stated commit, including blobs, symlinks and gitlinks; git history and untracked working files excluded. Manifest mode instead uses the explicit supplied list, whose completeness is not independently verified.",
+        "eligible_code_entries": 252,
+        "scanned_code_entries": 252,
+        "scanned_lines": 49938,
+        "semantic_reviewed_entries": 0,
+        "tracked_entries": 461
+      },
+      "categories": {
+        "build": {
+          "eligible_code_entries": 3,
+          "scanned_code_entries": 3,
+          "scanned_lines": 148,
+          "statuses": {
+            "scanned": 3
+          },
+          "tracked_entries": 3
+        },
+        "data": {
+          "eligible_code_entries": 0,
+          "scanned_code_entries": 0,
+          "scanned_lines": 0,
+          "statuses": {
+            "out_of_scan_scope": 47
+          },
+          "tracked_entries": 47
+        },
+        "docs": {
+          "eligible_code_entries": 0,
+          "scanned_code_entries": 0,
+          "scanned_lines": 0,
+          "statuses": {
+            "out_of_scan_scope": 45
+          },
+          "tracked_entries": 45
+        },
+        "history": {
+          "eligible_code_entries": 0,
+          "scanned_code_entries": 0,
+          "scanned_lines": 0,
+          "statuses": {
+            "out_of_scan_scope": 4
+          },
+          "tracked_entries": 4
+        },
+        "other": {
+          "eligible_code_entries": 0,
+          "scanned_code_entries": 0,
+          "scanned_lines": 0,
+          "statuses": {
+            "out_of_scan_scope": 6
+          },
+          "tracked_entries": 6
+        },
+        "product": {
+          "eligible_code_entries": 234,
+          "scanned_code_entries": 234,
+          "scanned_lines": 47835,
+          "statuses": {
+            "scanned": 234
+          },
+          "tracked_entries": 234
+        },
+        "tests": {
+          "eligible_code_entries": 0,
+          "scanned_code_entries": 0,
+          "scanned_lines": 0,
+          "statuses": {
+            "out_of_scan_scope": 105
+          },
+          "tracked_entries": 105
+        },
+        "tooling": {
+          "eligible_code_entries": 15,
+          "scanned_code_entries": 15,
+          "scanned_lines": 1955,
+          "statuses": {
+            "out_of_scan_scope": 2,
+            "scanned": 15
+          },
+          "tracked_entries": 17
+        }
+      },
+      "candidates": 40530,
+      "semantic_product_files_with_reviewed_ranges": 28,
+      "semantic_product_denominator": 233,
+      "semantic_extent": "selected paths/ranges; LEM and standalone loom cover their full listed product source files",
+      "coverage_source": "Custom-Keyboard-Pro/coverage.json",
+      "inventory": "Custom-Keyboard-Pro/scan/inventory.jsonl.gz",
+      "scanner_sha256": "88b6f460b471347a937a88bd11ebc7b0a504b022014a9ca0693f56835e4489d8",
+      "rules_sha256": "b35034619f42b0199bd9a3c26245dcd6be0dd83ecffa8beb7bb4c01731e4e963",
+      "classification_counts": {
+        "naruszenie": 7,
+        "już naprawione": 1,
+        "dopuszczalny mechanizm": 2,
+        "niepewne": 2
+      },
+      "access_and_test_limitations": [
+        "Android runtime/unit suite not executed: no kotlinc or pinned Gradle compiler bundle; test-goal-core exited 1 with explicit bootstrap request.",
+        "No physical Android/permissions/touch/voice/provider account/light test, no paid model request, no CI.",
+        "Root profiles validation is structural only; not proof of runtime consumption.",
+        "History, tests/fixtures, validation evidence and vendor are not treated as product violations.",
+        "Automatic candidates are not findings. Kotlin analysis is lexical; semantic reasoning is in findings and reviewed spans.",
+        "No central-graph architecture is prescribed; graph gap is scoped to traced settings/AI/Goal paths.",
+        "Graph/experiment coverage for clipboard learning, media/vault, complete sensor streams and every provider remains semantic review backlog."
+      ]
+    },
+    {
+      "repo": "klb-t/AGEDS",
+      "base_branch": "main",
+      "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+      "visibility": "public",
+      "tracked_entries": 370,
+      "automatic": {
+        "by_category": {
+          "build": 5,
+          "data": 10,
+          "docs": 59,
+          "generated": 1,
+          "history": 112,
+          "other": 8,
+          "product": 61,
+          "research": 2,
+          "tests": 100,
+          "tooling": 12
+        },
+        "definition": "All recursive tracked tree entries at the stated commit, including blobs, symlinks and gitlinks; git history and untracked working files excluded. Manifest mode instead uses the explicit supplied list, whose completeness is not independently verified.",
+        "eligible_code_entries": 76,
+        "scanned_code_entries": 76,
+        "scanned_lines": 11113,
+        "semantic_reviewed_entries": 0,
+        "tracked_entries": 370
+      },
+      "categories": {
+        "build": {
+          "eligible_code_entries": 4,
+          "scanned_code_entries": 4,
+          "scanned_lines": 91,
+          "statuses": {
+            "out_of_scan_scope": 1,
+            "scanned": 4
+          },
+          "tracked_entries": 5
+        },
+        "data": {
+          "eligible_code_entries": 0,
+          "scanned_code_entries": 0,
+          "scanned_lines": 0,
+          "statuses": {
+            "out_of_scan_scope": 10
+          },
+          "tracked_entries": 10
+        },
+        "docs": {
+          "eligible_code_entries": 0,
+          "scanned_code_entries": 0,
+          "scanned_lines": 0,
+          "statuses": {
+            "out_of_scan_scope": 59
+          },
+          "tracked_entries": 59
+        },
+        "generated": {
+          "eligible_code_entries": 0,
+          "scanned_code_entries": 0,
+          "scanned_lines": 0,
+          "statuses": {
+            "out_of_scan_scope": 1
+          },
+          "tracked_entries": 1
+        },
+        "history": {
+          "eligible_code_entries": 0,
+          "scanned_code_entries": 0,
+          "scanned_lines": 0,
+          "statuses": {
+            "out_of_scan_scope": 112
+          },
+          "tracked_entries": 112
+        },
+        "other": {
+          "eligible_code_entries": 0,
+          "scanned_code_entries": 0,
+          "scanned_lines": 0,
+          "statuses": {
+            "content_excluded_by_path": 1,
+            "out_of_scan_scope": 7
+          },
+          "tracked_entries": 8
+        },
+        "product": {
+          "eligible_code_entries": 61,
+          "scanned_code_entries": 61,
+          "scanned_lines": 9657,
+          "statuses": {
+            "scanned": 61
+          },
+          "tracked_entries": 61
+        },
+        "research": {
+          "eligible_code_entries": 1,
+          "scanned_code_entries": 1,
+          "scanned_lines": 60,
+          "statuses": {
+            "out_of_scan_scope": 1,
+            "scanned": 1
+          },
+          "tracked_entries": 2
+        },
+        "tests": {
+          "eligible_code_entries": 0,
+          "scanned_code_entries": 0,
+          "scanned_lines": 0,
+          "statuses": {
+            "out_of_scan_scope": 100
+          },
+          "tracked_entries": 100
+        },
+        "tooling": {
+          "eligible_code_entries": 10,
+          "scanned_code_entries": 10,
+          "scanned_lines": 1305,
+          "statuses": {
+            "out_of_scan_scope": 2,
+            "scanned": 10
+          },
+          "tracked_entries": 12
+        }
+      },
+      "candidates": 16588,
+      "semantic_product_files_with_reviewed_ranges": 20,
+      "semantic_product_denominator": 63,
+      "semantic_extent": "selected paths/ranges; LEM and standalone loom cover their full listed product source files",
+      "coverage_source": "AGEDS/coverage.json",
+      "inventory": "AGEDS/scan/inventory.jsonl.gz",
+      "scanner_sha256": "88b6f460b471347a937a88bd11ebc7b0a504b022014a9ca0693f56835e4489d8",
+      "rules_sha256": "b35034619f42b0199bd9a3c26245dcd6be0dd83ecffa8beb7bb4c01731e4e963",
+      "classification_counts": {
+        "naruszenie": 9,
+        "dopuszczalny mechanizm": 2,
+        "już naprawione": 1
+      },
+      "access_and_test_limitations": "See AGEDS/report.md and validation receipts"
+    },
+    {
+      "repo": "klb-t/LEM-Workbench",
+      "base_branch": "main",
+      "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+      "visibility": "public",
+      "tracked_entries": 66,
+      "automatic": {
+        "by_category": {
+          "build": 3,
+          "data": 24,
+          "docs": 6,
+          "other": 4,
+          "product": 23,
+          "research": 1,
+          "tests": 4,
+          "tooling": 1
+        },
+        "definition": "All recursive tracked tree entries at the stated commit, including blobs, symlinks and gitlinks; git history and untracked working files excluded. Manifest mode instead uses the explicit supplied list, whose completeness is not independently verified.",
+        "eligible_code_entries": 27,
+        "scanned_code_entries": 27,
+        "scanned_lines": 1636,
+        "semantic_reviewed_entries": 0,
+        "tracked_entries": 66
+      },
+      "categories": {
+        "build": {
+          "eligible_code_entries": 3,
+          "scanned_code_entries": 3,
+          "scanned_lines": 123,
+          "statuses": {
+            "scanned": 3
+          },
+          "tracked_entries": 3
+        },
+        "data": {
+          "eligible_code_entries": 0,
+          "scanned_code_entries": 0,
+          "scanned_lines": 0,
+          "statuses": {
+            "out_of_scan_scope": 24
+          },
+          "tracked_entries": 24
+        },
+        "docs": {
+          "eligible_code_entries": 0,
+          "scanned_code_entries": 0,
+          "scanned_lines": 0,
+          "statuses": {
+            "out_of_scan_scope": 6
+          },
+          "tracked_entries": 6
+        },
+        "other": {
+          "eligible_code_entries": 0,
+          "scanned_code_entries": 0,
+          "scanned_lines": 0,
+          "statuses": {
+            "out_of_scan_scope": 4
+          },
+          "tracked_entries": 4
+        },
+        "product": {
+          "eligible_code_entries": 23,
+          "scanned_code_entries": 23,
+          "scanned_lines": 1314,
+          "statuses": {
+            "scanned": 23
+          },
+          "tracked_entries": 23
+        },
+        "research": {
+          "eligible_code_entries": 1,
+          "scanned_code_entries": 1,
+          "scanned_lines": 199,
+          "statuses": {
+            "scanned": 1
+          },
+          "tracked_entries": 1
+        },
+        "tests": {
+          "eligible_code_entries": 0,
+          "scanned_code_entries": 0,
+          "scanned_lines": 0,
+          "statuses": {
+            "out_of_scan_scope": 4
+          },
+          "tracked_entries": 4
+        },
+        "tooling": {
+          "eligible_code_entries": 0,
+          "scanned_code_entries": 0,
+          "scanned_lines": 0,
+          "statuses": {
+            "out_of_scan_scope": 1
+          },
+          "tracked_entries": 1
+        }
+      },
+      "candidates": 832,
+      "semantic_product_files_with_reviewed_ranges": 24,
+      "semantic_product_denominator": 24,
+      "semantic_extent": "selected paths/ranges; LEM and standalone loom cover their full listed product source files",
+      "coverage_source": "LEM-Workbench/coverage.json",
+      "inventory": "LEM-Workbench/scan/inventory.jsonl.gz",
+      "scanner_sha256": "88b6f460b471347a937a88bd11ebc7b0a504b022014a9ca0693f56835e4489d8",
+      "rules_sha256": "b35034619f42b0199bd9a3c26245dcd6be0dd83ecffa8beb7bb4c01731e4e963",
+      "classification_counts": {
+        "naruszenie": 7,
+        "dopuszczalny mechanizm": 1
+      },
+      "access_and_test_limitations": [
+        "Brak gradle, kotlinc i wrapper executable w repo/środowisku; testów Android/Room/Compose nie uruchomiono.",
+        "Nie wykonywano requestów Gemini ani płatnych wywołań. Realne zachowanie dostawcy/paginacja na koncie niezmierzone.",
+        "Przebadano 24 pliki Kotlin (dokładny mianownik w coverage.json), manifest i konfigurację zasobów; rastrowe ikony nie były renderowane.",
+        "Domyślna konfiguracja backup obejmuje Android allowBackup=true bez aktywnych exclusions; nie oceniano bezpieczeństwa backupu ani zachowania urządzenia, więc nie tworzymy potwierdzonego findingu o ujawnieniu klucza."
+      ]
+    },
+    {
+      "repo": "klb-t/loom",
+      "base_branch": "main",
+      "sha": "0b23fa64c1de955c947349feef7bb67c05763f97",
+      "visibility": "public",
+      "tracked_entries": 21,
+      "automatic": {
+        "by_category": {
+          "build": 1,
+          "docs": 6,
+          "other": 1,
+          "product": 9,
+          "tests": 2,
+          "tooling": 1,
+          "vendor": 1
+        },
+        "definition": "All recursive tracked tree entries at the stated commit, including blobs, symlinks and gitlinks; git history and untracked working files excluded. Manifest mode instead uses the explicit supplied list, whose completeness is not independently verified.",
+        "eligible_code_entries": 9,
+        "scanned_code_entries": 9,
+        "scanned_lines": 1068,
+        "semantic_reviewed_entries": 0,
+        "tracked_entries": 21
+      },
+      "categories": {
+        "build": {
+          "eligible_code_entries": 0,
+          "scanned_code_entries": 0,
+          "scanned_lines": 0,
+          "statuses": {
+            "out_of_scan_scope": 1
+          },
+          "tracked_entries": 1
+        },
+        "docs": {
+          "eligible_code_entries": 0,
+          "scanned_code_entries": 0,
+          "scanned_lines": 0,
+          "statuses": {
+            "out_of_scan_scope": 6
+          },
+          "tracked_entries": 6
+        },
+        "other": {
+          "eligible_code_entries": 0,
+          "scanned_code_entries": 0,
+          "scanned_lines": 0,
+          "statuses": {
+            "out_of_scan_scope": 1
+          },
+          "tracked_entries": 1
+        },
+        "product": {
+          "eligible_code_entries": 9,
+          "scanned_code_entries": 9,
+          "scanned_lines": 1068,
+          "statuses": {
+            "scanned": 9
+          },
+          "tracked_entries": 9
+        },
+        "tests": {
+          "eligible_code_entries": 0,
+          "scanned_code_entries": 0,
+          "scanned_lines": 0,
+          "statuses": {
+            "out_of_scan_scope": 2
+          },
+          "tracked_entries": 2
+        },
+        "tooling": {
+          "eligible_code_entries": 0,
+          "scanned_code_entries": 0,
+          "scanned_lines": 0,
+          "statuses": {
+            "out_of_scan_scope": 1
+          },
+          "tracked_entries": 1
+        },
+        "vendor": {
+          "eligible_code_entries": 0,
+          "scanned_code_entries": 0,
+          "scanned_lines": 0,
+          "statuses": {
+            "out_of_scan_scope": 1
+          },
+          "tracked_entries": 1
+        }
+      },
+      "candidates": 802,
+      "semantic_product_files_with_reviewed_ranges": 9,
+      "semantic_product_denominator": 9,
+      "semantic_extent": "selected paths/ranges; LEM and standalone loom cover their full listed product source files",
+      "coverage_source": "loom/coverage.json",
+      "inventory": "loom/scan/inventory.jsonl.gz",
+      "scanner_sha256": "88b6f460b471347a937a88bd11ebc7b0a504b022014a9ca0693f56835e4489d8",
+      "rules_sha256": "b35034619f42b0199bd9a3c26245dcd6be0dd83ecffa8beb7bb4c01731e4e963",
+      "classification_counts": {
+        "naruszenie": 5,
+        "niepewne": 1,
+        "dopuszczalny mechanizm": 1
+      },
+      "access_and_test_limitations": [
+        "Początkowa kompilacja z systemowym SQLite była zablokowana brakiem sqlite3.h. Znaleziono istniejący vendor w chatadhd@9e20f99; bez modyfikacji repo i bez pobierania zależności skompilowano pełne źródła. db_compat_test, event_bus_test i 6 natywnych audit checks PASS. CMake/CTest/sanitizery nieuruchomione.",
+        "EventBus skompilowany oddzielnie c++ -std=c++20 i event_bus_test: OK.",
+        "SQL probe uruchomiony Python sqlite3: 5 sprawdzeń, w tym 3 zachowania rzeczywistych SQL z kodu i 2 kontrole przepływu źródła. To nie pełny test C++/integracji.",
+        "Historia zachowana w git; przegląd bieżącego drzewa i ancestry gałęzi nie jest audytem wszystkich historycznych rewizji.",
+        "Brak UI/model requestów w implementacji tego repo. Obserwacje dotyczące brakującego pełnego grafu są sklasyfikowane niepewne z uwagi na jawną rolę zachowanego baseline."
+      ]
+    }
+  ],
+  "private_repository": {
+    "repo": "klb-t/ar-drafty",
+    "base_branch": "main",
+    "sha": "d8af2dd022dacb2f068074158d83e566813592d6",
+    "status": "audited and published privately",
+    "report": "https://github.com/klb-t/ar-drafty/blob/754aba77e6d3bbc3d6c8ddb8edfe75379378e147/docs/reports/ecosystem-audit-2026-10-09/report.md",
+    "content_in_public_report": false
+  },
+  "total_public_tracked_entries": 4679,
+  "total_public_scanned_code_entries": 1265,
+  "total_public_eligible_code_entries": 1269,
+  "total_public_candidates": 299582,
+  "limits": "No completeness claim outside accessible GitHub scope, listed tree entries, source suffixes and semantic ranges. Tests/vendor/generated/history/data/docs inventoried separately, not all semantically reviewed."
+}

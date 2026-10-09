@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-09",
+  "stage": "A complete for declared coverage",
+  "public_findings": 65,
+  "classification_counts": {
+    "naruszenie": 48,
+    "już naprawione": 5,
+    "dopuszczalny mechanizm": 8,
+    "niepewne": 4
+  },
+  "completed_public_reports": [
+    "chatadhd",
+    "Watchdog-JH16",
+    "Custom-Keyboard-Pro",
+    "AGEDS",
+    "LEM-Workbench",
+    "loom"
+  ],
+  "private_report_published": true,
+  "public_checkpoint_commits": [
+    "a393fce93ec0638f92ca15ca5a3505846934ec48",
+    "d8d0335b72c7a1986184c0a22a7c154fdb8dfe62",
+    "18c0eaad442115b958a921bc3f35590651d6ebad"
+  ],
+  "publication_method": "Authenticated GitHub API create tree/commit + expected-SHA non-force branch update; git push lacked local credential helper.",
+  "product_changed": false,
+  "main_state_index_changed": false,
+  "paid_model_calls": 0,
+  "paid_ci_runs": 0,
+  "next_step": "README exact resume; B/C absent at final scoped check; no polling dependency."
+}

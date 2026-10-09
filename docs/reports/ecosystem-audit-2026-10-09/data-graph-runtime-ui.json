@@ -1,0 +1,561 @@
+{
+  "schema": "klbt.audit-flow-map/1",
+  "note": "These are traced flows, not a claim of complete runtime graph coverage.",
+  "flows": [
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_report": "chatadhd/flow-map.json",
+      "data": "config.json + compiled defaults",
+      "graph": "not automatic",
+      "runtime": "Config → ChatEngine/SemanticLLM/worker",
+      "ui": "Settings",
+      "findings": [
+        "CH-001",
+        "CH-004",
+        "CH-005"
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_report": "chatadhd/flow-map.json",
+      "data": "profiles/semantic_analyzer.pack",
+      "graph": "method graph integration separate",
+      "runtime": "GraphEngine/GraphMemory yes; runtime analyzer/worker fallback no",
+      "ui": "incomplete",
+      "findings": [
+        "CH-003"
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_report": "chatadhd/flow-map.json",
+      "data": "onboarding profile/settings/privacy/default layers",
+      "graph": "OnboardingStore/project_graph implemented",
+      "runtime": "interview/policy endpoint yes; ordinary chat not wired",
+      "ui": "Onboarding/WhatAppKnows implemented",
+      "findings": [
+        "CH-004"
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_report": "chatadhd/flow-map.json",
+      "data": "chat_reasoning/context_goal_cues packs",
+      "graph": "explicit layer snapshot supported",
+      "runtime": "real consumer + helper tests",
+      "ui": "automatic binding unverified/missing in inspected path",
+      "findings": [
+        "CH-004",
+        "CH-013"
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_report": "chatadhd/flow-map.json",
+      "data": "application profile JSON",
+      "graph": "explicit GraphPacket receipt",
+      "runtime": "registered adapter/workflow",
+      "ui": "profile selection implemented",
+      "findings": [
+        "CH-009"
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_report": "chatadhd/flow-map.json",
+      "data": "perspective/workflow checkpoint",
+      "graph": "not complete; config snapshot != graph execution receipt",
+      "runtime": "browser restore/config",
+      "ui": "KnowledgeWorkbench/ApplicationProfiles",
+      "findings": [
+        "CH-008",
+        "CH-009"
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_report": "chatadhd/flow-map.json",
+      "data": "analysis results",
+      "graph": "legacy direct nodes/links; modern claims/method graph separate",
+      "runtime": "mixed admission paths",
+      "ui": "graph/analysis views",
+      "findings": [
+        "CH-002",
+        "CH-006",
+        "CH-010"
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_report": "chatadhd/flow-map.json",
+      "data": "experiments/triggers/queues/results/evidence",
+      "graph": "some types/research plans; end-to-end not verified",
+      "runtime": "TaskEngine + research tools separate",
+      "ui": "complete Basic/Advanced experiment workflow not verified",
+      "findings": [
+        "CH-015"
+      ]
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "source_report": "Watchdog-JH16/flow-map.json",
+      "id": "WD-F1",
+      "data": "config/assistant.json + config/providers/personal.json + personal_settings",
+      "graph": "Relacyjne snapshoty/hash istnieją; kompletna grafowa projekcja tych obiektów niepotwierdzona",
+      "runtime": "AssistantService → routeModel → ProfileGenerator → HTTP",
+      "ui": "ConfigurationWizard/ModelProfilesPanel",
+      "breaks": [
+        "WD-003",
+        "WD-005"
+      ]
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "source_report": "Watchdog-JH16/flow-map.json",
+      "id": "WD-F2",
+      "data": "MethodSpec missingPolicy + typed input series",
+      "graph": "MethodSpec DAG + approved hash + run result provenance",
+      "runtime": "validator → executor → ratioPrimitive",
+      "ui": "MethodReview/Workbench/PaperOperations",
+      "breaks": [
+        "WD-002"
+      ]
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "source_report": "Watchdog-JH16/flow-map.json",
+      "id": "WD-F3",
+      "data": "templateId/templateVersion + NarrativePayload",
+      "graph": "payload hash + content hash; receptura nieodzwierciedlona jako wybieralny obiekt",
+      "runtime": "generateNarrative → provider system prompt → approved export",
+      "ui": "RunDetails/Results",
+      "breaks": [
+        "WD-001"
+      ]
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "source_report": "Watchdog-JH16/flow-map.json",
+      "id": "WD-F4",
+      "data": "config/workspace-preferences.json + localStorage",
+      "graph": "brak zapisu aktywnego wyboru do modelu aplikacji w tym przepływie",
+      "runtime": "WorkspacePreferencesProvider → resolveWorkspace",
+      "ui": "WorkspaceControls/WorkspaceLanding",
+      "breaks": [
+        "WD-004",
+        "WD-006"
+      ]
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "source_report": "Watchdog-JH16/flow-map.json",
+      "id": "WD-F5",
+      "data": "config/automation.json + ResearchPlan body",
+      "graph": "profile hash, plan hash, job/schedule rows + receipts; nie pełen graf eksperymentów",
+      "runtime": "ResearchPlans.prepare → review hash → launch → AutomationService",
+      "ui": "ConfigurationWizard/Automation",
+      "breaks": [],
+      "limit": "Planowane rozszerzenia languages/geographies nie są deklaracją wykonanej analizy; current scope only"
+    },
+    {
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "source_report": "Custom-Keyboard-Pro/flow-map.json",
+      "id": "CKP-FLOW-SETTINGS",
+      "data": "Settings Kotlin defaults + assets/settings_profiles.json + encrypted persisted settings",
+      "graph": "No graph descriptors in traced path; local override provenance exists",
+      "runtime": "SettingsProfiles.apply -> SettingsStore.fromJson/state -> ScopedSettingsResolver snapshot -> IME keyboardSettings",
+      "ui": "SettingsSchema -> AllSettings/LayoutInstanceSettings; Basic/Expert same values",
+      "status": "wired native settings; graph/default pack coverage partial",
+      "findings": [
+        "CKP-A-004",
+        "CKP-A-006",
+        "CKP-A-010"
+      ]
+    },
+    {
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "source_report": "Custom-Keyboard-Pro/flow-map.json",
+      "id": "CKP-FLOW-AI-PARAMETERS",
+      "data": "aiTaskProfilesJson + provider profile + global defaults",
+      "graph": "No method/prompt version/hash nodes in path",
+      "runtime": "AiTaskProfiles.resolve -> AiConfig.from -> AiClient request.max_tokens/temperature",
+      "ui": "AiTaskProfileSection persists same setting, shows source",
+      "status": "wired; fixed enum limits/defaults remain",
+      "findings": [
+        "CKP-A-007",
+        "CKP-A-008"
+      ]
+    },
+    {
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "source_report": "Custom-Keyboard-Pro/flow-map.json",
+      "id": "CKP-FLOW-AI-RECIPE",
+      "data": "AiTasks.BUILT_IN + aiCustomTasksJson",
+      "graph": "No built-in/user layer/exclusion or versioned recipe nodes",
+      "runtime": "byId -> runAiTask -> AiClient -> immediate current-editor write",
+      "ui": "AiSettings custom JSON; Panels task list",
+      "status": "wired custom additions; builtin override shadowed; stale editor hypothesis",
+      "findings": [
+        "CKP-A-001",
+        "CKP-A-006",
+        "CKP-A-012"
+      ]
+    },
+    {
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "source_report": "Custom-Keyboard-Pro/flow-map.json",
+      "id": "CKP-FLOW-PROVIDER",
+      "data": "providers.json + custom/fetched catalogue + LEGACY Kotlin",
+      "graph": "No versioned resolution/exclusion in path",
+      "runtime": "ProviderCatalog.byId -> ProviderProfiles -> AiConfig -> HTTP",
+      "ui": "Provider setup/settings; malformed catalog may become empty",
+      "status": "wired; fallback policy/code violates data boundary",
+      "findings": [
+        "CKP-A-002"
+      ]
+    },
+    {
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "source_report": "Custom-Keyboard-Pro/flow-map.json",
+      "id": "CKP-FLOW-MATRIX",
+      "data": "Kotlin Transforms/Weights + command use/avoid + convertLocalOnly",
+      "graph": "Native transform graph and result Provenance (not all application data)",
+      "runtime": "Planner.plan -> ConvertRunner plan.best -> execute -> record -> encode/deliver",
+      "ui": "notice + two expert alternative summaries; use/avoid command",
+      "status": "partial policy wiring",
+      "findings": [
+        "CKP-A-003",
+        "CKP-A-006"
+      ]
+    },
+    {
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "source_report": "Custom-Keyboard-Pro/flow-map.json",
+      "id": "CKP-FLOW-GOAL",
+      "data": "text/voice goal + GoalPrompt + capability/action catalogue + proposed plans",
+      "graph": "Goal DAG + states in memory; no wider graph linkage traced",
+      "runtime": "consent -> AiClient -> strict GoalJson -> GoalAgent -> local GoalSession review/ticket -> existing performer",
+      "ui": "GoalAssistantActivity explicit plan and step review; effect confirmation distinct",
+      "status": "local authority lifecycle confirmed in source; prompt/limits still code",
+      "findings": [
+        "CKP-A-007",
+        "CKP-A-009"
+      ]
+    },
+    {
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "source_report": "Custom-Keyboard-Pro/flow-map.json",
+      "id": "CKP-FLOW-WIRES",
+      "data": "Settings.engineWiresJson/engineStreamsJson + params in stream line",
+      "graph": "Stream/Wire typed definitions; complete graph coverage not audited",
+      "runtime": "EngineRuntime state observer -> Inputs.parse -> sources conditional on live/configured consumers",
+      "ui": "canonical SettingsSchema generic controls",
+      "status": "representative consumer wiring confirmed; streams default data Kotlin candidate not full finding",
+      "findings": [
+        "CKP-A-010"
+      ]
+    },
+    {
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "source_report": "Custom-Keyboard-Pro/flow-map.json",
+      "id": "CKP-FLOW-REFERENCE",
+      "data": "root profiles/*.json",
+      "graph": "abstractionId/project manifest descriptors",
+      "runtime": "No production consumer found in app source/build; structural validation only",
+      "ui": "not identified",
+      "status": "reference-vs-runtime role unresolved",
+      "findings": [
+        "CKP-A-011"
+      ]
+    },
+    {
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "source_report": "Custom-Keyboard-Pro/flow-map.json",
+      "id": "CKP-FLOW-EXPERIMENTS",
+      "data": "tools/evaluate-goal-ai.py + documented historical paid evaluation",
+      "graph": "Not traced; missing raw ledger recorded in handoff",
+      "runtime": "No evidence of opt-in product experiment scheduler found in audited settings/AI/assistant paths",
+      "ui": "No experiment controls verified",
+      "status": "gap requiring scope/consumer inventory; not claim entire repo has no research",
+      "findings": []
+    },
+    {
+      "repo": "klb-t/AGEDS",
+      "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+      "source_report": "AGEDS/flow-map.json",
+      "id": "ASR",
+      "data": "EW_WHISPER_MODEL/device/compute_type",
+      "graph": "no configuration entity; processing_runs records post-selection metadata",
+      "runtime": "Settings → FasterWhisperAdapter → WhisperModel",
+      "ui": "no parameter editor in reviewed Android/browser paths",
+      "break": "recipe booleans forced in code",
+      "findings": [
+        "EA-AGEDS-001",
+        "EA-AGEDS-002",
+        "EA-AGEDS-006"
+      ]
+    },
+    {
+      "repo": "klb-t/AGEDS",
+      "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+      "source_report": "AGEDS/flow-map.json",
+      "id": "SEED",
+      "data": "private CorpusSeed.defaultPresetIds",
+      "graph": "no graph mapping",
+      "runtime": "priorityPresetIds → selectPriority → activePresets → filters",
+      "ui": "preset toggles and manual phones",
+      "break": "override/exclusion transient",
+      "findings": [
+        "EA-AGEDS-011",
+        "EA-AGEDS-007"
+      ]
+    },
+    {
+      "repo": "klb-t/AGEDS",
+      "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+      "source_report": "AGEDS/flow-map.json",
+      "id": "SCAN",
+      "data": "SourceScanLimits / ScanLimits",
+      "graph": "limits snapshot in result, no governing graph entity",
+      "runtime": "parameter consumed by engine; CLI wires subset; Android/API omit argument",
+      "ui": "display limits; no editor in reviewed call path",
+      "break": "configuration-to-consumer at Android/API boundary",
+      "findings": [
+        "EA-AGEDS-003"
+      ]
+    },
+    {
+      "repo": "klb-t/AGEDS",
+      "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+      "source_report": "AGEDS/flow-map.json",
+      "id": "QUEUE",
+      "data": "priority scalar + jobs.payload_json",
+      "graph": "job tables yes; requested recipe/strategy no",
+      "runtime": "Android index → score → queue_transcription → priority DESC,id",
+      "ui": "file selection and submit; no strategy editor",
+      "break": "index promoted to manual priority; no recipe identity",
+      "findings": [
+        "EA-AGEDS-002",
+        "EA-AGEDS-005"
+      ]
+    },
+    {
+      "repo": "klb-t/AGEDS",
+      "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+      "source_report": "AGEDS/flow-map.json",
+      "id": "ENDPOINT",
+      "data": "SharedPreferences.serverUrl",
+      "graph": "not mapped",
+      "runtime": "EvidenceVm.api → EvidenceApi(url)",
+      "ui": "editable server field",
+      "break": "literal default; no configuration provenance graph",
+      "findings": [
+        "EA-AGEDS-006",
+        "EA-AGEDS-008"
+      ]
+    },
+    {
+      "repo": "klb-t/AGEDS",
+      "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+      "source_report": "AGEDS/flow-map.json",
+      "id": "EVIDENCE",
+      "data": "source artifacts → runs → text → anchors",
+      "graph": "SQLite foreign keys/links; package structural verification",
+      "runtime": "verified reader + fenced publish + citation selectors",
+      "ui": "review and explicit upload selection",
+      "break": "no finding of automatic fact-promotion in reviewed scanner/upload path",
+      "findings": [
+        "EA-AGEDS-010",
+        "EA-AGEDS-012"
+      ]
+    },
+    {
+      "repo": "klb-t/AGEDS",
+      "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+      "source_report": "AGEDS/flow-map.json",
+      "id": "SEARCH",
+      "data": "FTS constants and SQL",
+      "graph": "no method configuration entity",
+      "runtime": "search_page BM25 + budgets",
+      "ui": "query + explicit incomplete/error indications",
+      "break": "method/policy not data-selectable",
+      "findings": [
+        "EA-AGEDS-009"
+      ]
+    },
+    {
+      "repo": "klb-t/LEM-Workbench",
+      "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+      "source_report": "LEM-Workbench/flow-map.json",
+      "id": "LEM-flow-key",
+      "data": "Gemini API key, SharedPreferences",
+      "graph": "brak referencji/polityki w grafie; sekret nie powinien trafiać do jawnego grafu",
+      "runtime": "Settings.save → ViewModel.saveApiKey → ApiKeyStore; refreshModels czyta klucz",
+      "ui": "SettingsScreen",
+      "status": "podłączone lokalnie, poza grafem"
+    },
+    {
+      "repo": "klb-t/LEM-Workbench",
+      "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+      "source_report": "LEM-Workbench/flow-map.json",
+      "id": "LEM-flow-config",
+      "data": "ExperimentConfig + ConfigDao",
+      "graph": "brak",
+      "runtime": "ResearchRepository allConfigs/insertConfig bez callerów UI/runnera",
+      "ui": "brak edytora konfiguracji w aktywnych 4 ekranach",
+      "status": "niepodłączone",
+      "finding_ids": [
+        "LEM-001",
+        "LEM-007"
+      ]
+    },
+    {
+      "repo": "klb-t/LEM-Workbench",
+      "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+      "source_report": "LEM-Workbench/flow-map.json",
+      "id": "LEM-flow-model",
+      "data": "Gemini models response",
+      "graph": "brak, tylko StateFlow",
+      "runtime": "single-page listModels → sortedBy name → capability substring",
+      "ui": "ModelsScreen → wybór modelName",
+      "status": "częściowo podłączone",
+      "finding_ids": [
+        "LEM-004"
+      ]
+    },
+    {
+      "repo": "klb-t/LEM-Workbench",
+      "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+      "source_report": "LEM-Workbench/flow-map.json",
+      "id": "LEM-flow-run",
+      "data": "modelName z UI + recepta w kodzie",
+      "graph": "brak method/config node i produced_by",
+      "runtime": "ExperimentRunner → ResearchAgent → GeminiApiService → aggregate metrics → Room",
+      "ui": "Dashboard/Experiments",
+      "status": "działająca ścieżka opisana kodem; bez uruchomienia API",
+      "finding_ids": [
+        "LEM-002",
+        "LEM-003"
+      ]
+    },
+    {
+      "repo": "klb-t/LEM-Workbench",
+      "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+      "source_report": "LEM-Workbench/flow-map.json",
+      "id": "LEM-flow-ledger",
+      "data": "LedgerEntry entity",
+      "graph": "brak",
+      "runtime": "ResearchRepository allLedgerEntries/insertLedgerEntry bez aktywnych konsumentów ekranu",
+      "ui": "RESEARCH LEDGER czyta allExperiments, nie LedgerEntry",
+      "status": "nazwa ekranu nie dowodzi podłączenia LedgerEntry"
+    },
+    {
+      "repo": "klb-t/LEM-Workbench",
+      "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+      "source_report": "LEM-Workbench/flow-map.json",
+      "id": "LEM-flow-theme",
+      "data": "darkTheme/dynamicColor parametry",
+      "graph": "brak",
+      "runtime": "ignorowane, zawsze DarkColorScheme",
+      "ui": "MyApplicationTheme",
+      "status": "niepodłączone",
+      "finding_ids": [
+        "LEM-006"
+      ]
+    },
+    {
+      "repo": "klb-t/loom",
+      "sha": "0b23fa64c1de955c947349feef7bb67c05763f97",
+      "source_report": "loom/flow-map.json",
+      "id": "LOOM-flow-message",
+      "data": "C++ NewMessage/argumenty → SQLite messages",
+      "graph": "osobna tabela od nodes/links; brak automatycznej projekcji wszystkich danych",
+      "runtime": "create_message/batch_create_messages → get_messages, semantic queue",
+      "ui": "brak w repo",
+      "status": "działający prymityw w kodzie; selekcja policy-coded",
+      "finding_ids": [
+        "LOOM-001",
+        "LOOM-003"
+      ]
+    },
+    {
+      "repo": "klb-t/loom",
+      "sha": "0b23fa64c1de955c947349feef7bb67c05763f97",
+      "source_report": "loom/flow-map.json",
+      "id": "LOOM-flow-graph",
+      "data": "kind/link_type/metadata JSON z klienta",
+      "graph": "nodes/links",
+      "runtime": "create/find/list; create_link upsert",
+      "ui": "brak",
+      "status": "typy otwarte, dedup/upsert utrata provenance",
+      "finding_ids": [
+        "LOOM-002"
+      ]
+    },
+    {
+      "repo": "klb-t/loom",
+      "sha": "0b23fa64c1de955c947349feef7bb67c05763f97",
+      "source_report": "loom/flow-map.json",
+      "id": "LOOM-flow-config",
+      "data": "nagłówek loom_get_config/set_config",
+      "graph": "brak implementacji",
+      "runtime": "brak symboli/consumerów",
+      "ui": "brak",
+      "status": "declared contract only",
+      "finding_ids": [
+        "LOOM-006"
+      ]
+    },
+    {
+      "repo": "klb-t/loom",
+      "sha": "0b23fa64c1de955c947349feef7bb67c05763f97",
+      "source_report": "loom/flow-map.json",
+      "id": "LOOM-flow-storage",
+      "data": "WAL/NORMAL/30s w kodzie",
+      "graph": "brak",
+      "runtime": "Database.open",
+      "ui": "brak",
+      "status": "polityki zaszyte",
+      "finding_ids": [
+        "LOOM-004",
+        "LOOM-005"
+      ]
+    },
+    {
+      "repo": "klb-t/loom",
+      "sha": "0b23fa64c1de955c947349feef7bb67c05763f97",
+      "source_report": "loom/flow-map.json",
+      "id": "LOOM-flow-event",
+      "data": "event.name + payload_json",
+      "graph": "nie każda ulotna operacja musi być osobnym node; brak tutaj mechanizmu persistent graph description",
+      "runtime": "EventBus subscription → synchronous snapshot dispatch",
+      "ui": "brak",
+      "status": "mechanizm przetestowany",
+      "finding_ids": [
+        "LOOM-007"
+      ]
+    }
+  ]
+}

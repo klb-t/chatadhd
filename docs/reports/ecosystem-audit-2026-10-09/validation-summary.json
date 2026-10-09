@@ -1,0 +1,3494 @@
+{
+  "schema": "klbt.audit-artifacts.validation/1",
+  "date": "2026-10-09",
+  "status": "PASS",
+  "scope": {
+    "repositories": [
+      "klb-t/chatadhd",
+      "klb-t/Watchdog-JH16",
+      "klb-t/Custom-Keyboard-Pro",
+      "klb-t/AGEDS",
+      "klb-t/LEM-Workbench",
+      "klb-t/loom"
+    ],
+    "files": "public/<repo>/findings.jsonl and scan/summary.json",
+    "source": "Only public files named by structured finding locators, read at each exact SHA for existence/line counts/hash; no product execution.",
+    "private_data_accessed": false,
+    "holdout_content_accessed": false,
+    "semantic_claims_reproven": false
+  },
+  "expected_scanner_sha256": "88b6f460b471347a937a88bd11ebc7b0a504b022014a9ca0693f56835e4489d8",
+  "expected_rules_sha256": "b35034619f42b0199bd9a3c26245dcd6be0dd83ecffa8beb7bb4c01731e4e963",
+  "finding_count": 65,
+  "unique_finding_ids": 65,
+  "classifications": {
+    "naruszenie": 48,
+    "dopuszczalny mechanizm": 8,
+    "niepewne": 4,
+    "już naprawione": 5
+  },
+  "structured_locations": 212,
+  "valid_structured_locations": 212,
+  "distinct_source_files_at_sha": 105,
+  "error_count": 0,
+  "warning_count": 0,
+  "repositories": [
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "findings_sha256": "cbfaa6e752af0fdf4d374c021a59975e475d96ccd04fd02ef215c6e812e2d4d4",
+      "scan_summary_sha256": "77616e541cdec5d138efcc00fcc1410f1b31e002402c0fff30d6f62b9ad58e7b",
+      "scanner_sha256": "88b6f460b471347a937a88bd11ebc7b0a504b022014a9ca0693f56835e4489d8",
+      "rules_sha256": "b35034619f42b0199bd9a3c26245dcd6be0dd83ecffa8beb7bb4c01731e4e963",
+      "finding_count": 15,
+      "classifications": {
+        "naruszenie": 11,
+        "dopuszczalny mechanizm": 1,
+        "niepewne": 1,
+        "już naprawione": 2
+      },
+      "location_count": 53,
+      "valid_location_count": 53,
+      "required_fields_pass_count": 15,
+      "inventory_denominator": {
+        "by_category": {
+          "assets": 11,
+          "build": 9,
+          "data": 108,
+          "docs": 1420,
+          "generated": 3,
+          "history": 196,
+          "other": 17,
+          "product": 432,
+          "research": 2,
+          "tests": 587,
+          "tooling": 357,
+          "vendor": 16
+        },
+        "definition": "All recursive tracked tree entries at the stated commit, including blobs, symlinks and gitlinks; git history and untracked working files excluded. Manifest mode instead uses the explicit supplied list, whose completeness is not independently verified.",
+        "eligible_code_entries": 621,
+        "scanned_code_entries": 619,
+        "scanned_lines": 157964,
+        "semantic_reviewed_entries": 0,
+        "tracked_entries": 3158
+      },
+      "finding_checks": [
+        {
+          "id": "CH-001",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph_object",
+            "consuming_paths": "consuming_paths",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "loom/src/core/config.cpp",
+              "start": 197,
+              "end": 224,
+              "json_pointer": "$",
+              "line_count": 277,
+              "source_sha256": "42bbe385964814a555b6cd9399e019ed5df6f70bf92ea935dcf5ad74e753d4b7",
+              "status": "valid"
+            },
+            {
+              "path": "engine/config.py",
+              "start": 15,
+              "end": 28,
+              "json_pointer": "$.related_locations[0]",
+              "line_count": 127,
+              "source_sha256": "4c0d6aac4aad5ec073c31af071fb2e9cb15a959edcda82614edd5fe6890e3876",
+              "status": "valid"
+            },
+            {
+              "path": "engine/config.py",
+              "start": 71,
+              "end": 83,
+              "json_pointer": "$.related_locations[1]",
+              "line_count": 127,
+              "source_sha256": "4c0d6aac4aad5ec073c31af071fb2e9cb15a959edcda82614edd5fe6890e3876",
+              "status": "valid"
+            },
+            {
+              "path": "loom/src/core/config.cpp",
+              "start": 110,
+              "end": 131,
+              "json_pointer": "$.related_locations[2]",
+              "line_count": 277,
+              "source_sha256": "42bbe385964814a555b6cd9399e019ed5df6f70bf92ea935dcf5ad74e753d4b7",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "CH-002",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph_object",
+            "consuming_paths": "consuming_paths",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "loom/src/semantic/semantic_llm.cpp",
+              "start": 23,
+              "end": 43,
+              "json_pointer": "$",
+              "line_count": 231,
+              "source_sha256": "2b93b269fc2a0a9c5cdcf624ce61bff99571fbab374351f6251ef321965c235c",
+              "status": "valid"
+            },
+            {
+              "path": "loom/src/semantic/semantic_llm.cpp",
+              "start": 114,
+              "end": 136,
+              "json_pointer": "$.related_locations[0]",
+              "line_count": 231,
+              "source_sha256": "2b93b269fc2a0a9c5cdcf624ce61bff99571fbab374351f6251ef321965c235c",
+              "status": "valid"
+            },
+            {
+              "path": "engine/semantic_llm.py",
+              "start": 142,
+              "end": 171,
+              "json_pointer": "$.related_locations[1]",
+              "line_count": 241,
+              "source_sha256": "8b9a6df59d3b0e67889138332dc887a91cc7fdda275ae98b9ce62200dd04c8fd",
+              "status": "valid"
+            },
+            {
+              "path": "loom/include/loom/semantic_llm.h",
+              "start": 48,
+              "end": 64,
+              "json_pointer": "$.related_locations[2]",
+              "line_count": 99,
+              "source_sha256": "3102ac6422549fafb5eaad941f75680fc184870ad9eda80293ae3d61596de055",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "CH-003",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph_object",
+            "consuming_paths": "consuming_paths",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "loom/src/runtime.cpp",
+              "start": 181,
+              "end": 202,
+              "json_pointer": "$",
+              "line_count": 342,
+              "source_sha256": "b5c022c78e8ac145dc1347603493982bbe230454f186b896b9c34aba7f13c477",
+              "status": "valid"
+            },
+            {
+              "path": "loom/src/semantic/analyzer.cpp",
+              "start": 166,
+              "end": 195,
+              "json_pointer": "$.related_locations[0]",
+              "line_count": 304,
+              "source_sha256": "aeda7ed011e0af9364d90c80fa7017de0fa08c6f50436e3c11ef2a1f228026b2",
+              "status": "valid"
+            },
+            {
+              "path": "loom/src/worker/semantic_worker.cpp",
+              "start": 31,
+              "end": 31,
+              "json_pointer": "$.related_locations[1]",
+              "line_count": 456,
+              "source_sha256": "a83a4564253e6dce4a1277d6c7ba40756f8ce4d281a5a6e2fa7b2b71fda37f85",
+              "status": "valid"
+            },
+            {
+              "path": "loom/src/worker/semantic_worker.cpp",
+              "start": 363,
+              "end": 379,
+              "json_pointer": "$.related_locations[2]",
+              "line_count": 456,
+              "source_sha256": "a83a4564253e6dce4a1277d6c7ba40756f8ce4d281a5a6e2fa7b2b71fda37f85",
+              "status": "valid"
+            },
+            {
+              "path": "loom/src/graph/graph_engine.cpp",
+              "start": 118,
+              "end": 141,
+              "json_pointer": "$.related_locations[3]",
+              "line_count": 224,
+              "source_sha256": "157e5e92c3d8fec46202be447d5e91d9d263a07b9a0341b3077b6fd8a8d27223",
+              "status": "valid"
+            },
+            {
+              "path": "loom/src/graph/graph_memory.cpp",
+              "start": 31,
+              "end": 64,
+              "json_pointer": "$.related_locations[4]",
+              "line_count": 364,
+              "source_sha256": "bfaa1f9ab0a47dec31baa076505e0e86ee090d8f58266a5d8ff538589aacbaf8",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "CH-004",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph_object",
+            "consuming_paths": "consuming_paths",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "loom/src/onboarding/store.cpp",
+              "start": 428,
+              "end": 460,
+              "json_pointer": "$",
+              "line_count": 463,
+              "source_sha256": "86428b024d956bdfd5ab422cbeb6ff5f8f43b43b50ce0ff9259b8a9da9053335",
+              "status": "valid"
+            },
+            {
+              "path": "loom/src/chat/chat_engine.cpp",
+              "start": 702,
+              "end": 731,
+              "json_pointer": "$.related_locations[0]",
+              "line_count": 1421,
+              "source_sha256": "808494db6c016dc7d9742ad0f5a3f4523edbef0e3d0918af96e1dbd369ac8852",
+              "status": "valid"
+            },
+            {
+              "path": "loom/src/chat/chat_engine.cpp",
+              "start": 790,
+              "end": 807,
+              "json_pointer": "$.related_locations[1]",
+              "line_count": 1421,
+              "source_sha256": "808494db6c016dc7d9742ad0f5a3f4523edbef0e3d0918af96e1dbd369ac8852",
+              "status": "valid"
+            },
+            {
+              "path": "loom/src/chat/chat_engine.cpp",
+              "start": 850,
+              "end": 855,
+              "json_pointer": "$.related_locations[2]",
+              "line_count": 1421,
+              "source_sha256": "808494db6c016dc7d9742ad0f5a3f4523edbef0e3d0918af96e1dbd369ac8852",
+              "status": "valid"
+            },
+            {
+              "path": "loom/src/context/context_engine.cpp",
+              "start": 536,
+              "end": 542,
+              "json_pointer": "$.related_locations[3]",
+              "line_count": 1701,
+              "source_sha256": "3739d976f05981a6e45c105f920aec717507c6fc05d5c8a3c1709712940a2fa3",
+              "status": "valid"
+            },
+            {
+              "path": "loom/src/context/runtime_preset.h",
+              "start": 47,
+              "end": 80,
+              "json_pointer": "$.related_locations[4]",
+              "line_count": 114,
+              "source_sha256": "b5d5eadbff178ac72719f1655dd62f933bc4d71b7fa4656016ea95616c363e0e",
+              "status": "valid"
+            },
+            {
+              "path": "loom/server/src/onboarding-ui-routes.h",
+              "start": 74,
+              "end": 115,
+              "json_pointer": "$.related_locations[5]",
+              "line_count": 134,
+              "source_sha256": "2081bfe800ca30c62052873ff7338e6ba17c1403e97a13a9ecb628262ac1dd5b",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "CH-005",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph_object",
+            "consuming_paths": "consuming_paths",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "loom/src/chat/chat_engine.cpp",
+              "start": 1148,
+              "end": 1171,
+              "json_pointer": "$",
+              "line_count": 1421,
+              "source_sha256": "808494db6c016dc7d9742ad0f5a3f4523edbef0e3d0918af96e1dbd369ac8852",
+              "status": "valid"
+            },
+            {
+              "path": "loom/src/chat/chat_engine.cpp",
+              "start": 1274,
+              "end": 1285,
+              "json_pointer": "$.related_locations[0]",
+              "line_count": 1421,
+              "source_sha256": "808494db6c016dc7d9742ad0f5a3f4523edbef0e3d0918af96e1dbd369ac8852",
+              "status": "valid"
+            },
+            {
+              "path": "loom/src/worker/semantic_worker.cpp",
+              "start": 344,
+              "end": 352,
+              "json_pointer": "$.related_locations[1]",
+              "line_count": 456,
+              "source_sha256": "a83a4564253e6dce4a1277d6c7ba40756f8ce4d281a5a6e2fa7b2b71fda37f85",
+              "status": "valid"
+            },
+            {
+              "path": "loom/src/worker/semantic_worker.cpp",
+              "start": 199,
+              "end": 207,
+              "json_pointer": "$.related_locations[2]",
+              "line_count": 456,
+              "source_sha256": "a83a4564253e6dce4a1277d6c7ba40756f8ce4d281a5a6e2fa7b2b71fda37f85",
+              "status": "valid"
+            },
+            {
+              "path": "loom/src/capi/capi_config.cpp",
+              "start": 24,
+              "end": 29,
+              "json_pointer": "$.related_locations[3]",
+              "line_count": 58,
+              "source_sha256": "566fed065b1115b96e325c54f4fa9bb3ee1d40275b40990f2610566cfd24f4f2",
+              "status": "valid"
+            },
+            {
+              "path": "engine/semantic_worker.py",
+              "start": 132,
+              "end": 140,
+              "json_pointer": "$.related_locations[4]",
+              "line_count": 379,
+              "source_sha256": "883b35545d13cd79daf7c52202eeee639f105fe7a92e013f605fec2745e7fc64",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "CH-006",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph_object",
+            "consuming_paths": "consuming_paths",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "loom/src/graph/graph_engine.cpp",
+              "start": 21,
+              "end": 88,
+              "json_pointer": "$",
+              "line_count": 224,
+              "source_sha256": "157e5e92c3d8fec46202be447d5e91d9d263a07b9a0341b3077b6fd8a8d27223",
+              "status": "valid"
+            },
+            {
+              "path": "loom/src/graph/graph_engine.cpp",
+              "start": 129,
+              "end": 163,
+              "json_pointer": "$.related_locations[0]",
+              "line_count": 224,
+              "source_sha256": "157e5e92c3d8fec46202be447d5e91d9d263a07b9a0341b3077b6fd8a8d27223",
+              "status": "valid"
+            },
+            {
+              "path": "loom/src/worker/semantic_worker.cpp",
+              "start": 368,
+              "end": 385,
+              "json_pointer": "$.related_locations[1]",
+              "line_count": 456,
+              "source_sha256": "a83a4564253e6dce4a1277d6c7ba40756f8ce4d281a5a6e2fa7b2b71fda37f85",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "CH-007",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph_object",
+            "consuming_paths": "consuming_paths",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "loom/src/chat/chat_engine.cpp",
+              "start": 801,
+              "end": 815,
+              "json_pointer": "$",
+              "line_count": 1421,
+              "source_sha256": "808494db6c016dc7d9742ad0f5a3f4523edbef0e3d0918af96e1dbd369ac8852",
+              "status": "valid"
+            },
+            {
+              "path": "loom/src/chat/chat_engine.cpp",
+              "start": 717,
+              "end": 721,
+              "json_pointer": "$.related_locations[0]",
+              "line_count": 1421,
+              "source_sha256": "808494db6c016dc7d9742ad0f5a3f4523edbef0e3d0918af96e1dbd369ac8852",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "CH-008",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph_object",
+            "consuming_paths": "consuming_paths",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "loom/web/src/workspace/state.ts",
+              "start": 4,
+              "end": 40,
+              "json_pointer": "$",
+              "line_count": 126,
+              "source_sha256": "68f3b1318950074ae86cdc44ef440bd7294cf5606c84ef45582e87738e67b6d3",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "CH-009",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph_object",
+            "consuming_paths": "consuming_paths",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "loom/web/src/profiles/workflow-checkpoint.ts",
+              "start": 10,
+              "end": 47,
+              "json_pointer": "$",
+              "line_count": 48,
+              "source_sha256": "7671b0600dea80932fd16c08e747837b6bd404af3934ce3be94d47107d9f3b0c",
+              "status": "valid"
+            },
+            {
+              "path": "loom/web/src/profiles/workflow-snapshot.ts",
+              "start": 7,
+              "end": 31,
+              "json_pointer": "$.related_locations[0]",
+              "line_count": 247,
+              "source_sha256": "237f49956a132575ae37b2c478b2f0dcd426a39cf67c4068559589529e86b57a",
+              "status": "valid"
+            },
+            {
+              "path": "loom/web/src/profiles/graph.ts",
+              "start": 45,
+              "end": 92,
+              "json_pointer": "$.related_locations[1]",
+              "line_count": 150,
+              "source_sha256": "b35b3bc78d67b0abd2fbd4001a3673ce83172fba952affecd3d5a7c0941e453b",
+              "status": "valid"
+            },
+            {
+              "path": "loom/web/src/components/KnowledgeWorkbench.tsx",
+              "start": 64,
+              "end": 82,
+              "json_pointer": "$.related_locations[2]",
+              "line_count": 642,
+              "source_sha256": "33ce8ed3c2e0abc4388e075d4b76b56097bbd056585d5593d5636f88e3bcbe68",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "CH-010",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph_object",
+            "consuming_paths": "consuming_paths",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "engine/semantic_llm.py",
+              "start": 223,
+              "end": 241,
+              "json_pointer": "$",
+              "line_count": 241,
+              "source_sha256": "8b9a6df59d3b0e67889138332dc887a91cc7fdda275ae98b9ce62200dd04c8fd",
+              "status": "valid"
+            },
+            {
+              "path": "loom/src/semantic/semantic_llm.cpp",
+              "start": 199,
+              "end": 230,
+              "json_pointer": "$.related_locations[0]",
+              "line_count": 231,
+              "source_sha256": "2b93b269fc2a0a9c5cdcf624ce61bff99571fbab374351f6251ef321965c235c",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "CH-011",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph_object",
+            "consuming_paths": "consuming_paths",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "engine/semantic_worker.py",
+              "start": 163,
+              "end": 169,
+              "json_pointer": "$",
+              "line_count": 379,
+              "source_sha256": "883b35545d13cd79daf7c52202eeee639f105fe7a92e013f605fec2745e7fc64",
+              "status": "valid"
+            },
+            {
+              "path": "loom/src/worker/semantic_worker.cpp",
+              "start": 378,
+              "end": 385,
+              "json_pointer": "$.related_locations[0]",
+              "line_count": 456,
+              "source_sha256": "a83a4564253e6dce4a1277d6c7ba40756f8ce4d281a5a6e2fa7b2b71fda37f85",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "CH-012",
+          "classification": "już naprawione",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph_object",
+            "consuming_paths": "consuming_paths",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "engine/config.py",
+              "start": 102,
+              "end": 117,
+              "json_pointer": "$",
+              "line_count": 127,
+              "source_sha256": "4c0d6aac4aad5ec073c31af071fb2e9cb15a959edcda82614edd5fe6890e3876",
+              "status": "valid"
+            },
+            {
+              "path": "engine/semantic_llm.py",
+              "start": 74,
+              "end": 111,
+              "json_pointer": "$.related_locations[0]",
+              "line_count": 241,
+              "source_sha256": "8b9a6df59d3b0e67889138332dc887a91cc7fdda275ae98b9ce62200dd04c8fd",
+              "status": "valid"
+            },
+            {
+              "path": "loom/src/core/config.cpp",
+              "start": 226,
+              "end": 252,
+              "json_pointer": "$.related_locations[1]",
+              "line_count": 277,
+              "source_sha256": "42bbe385964814a555b6cd9399e019ed5df6f70bf92ea935dcf5ad74e753d4b7",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "CH-013",
+          "classification": "już naprawione",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph_object",
+            "consuming_paths": "consuming_paths",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "loom/src/context/runtime_preset.h",
+              "start": 47,
+              "end": 107,
+              "json_pointer": "$",
+              "line_count": 114,
+              "source_sha256": "b5d5eadbff178ac72719f1655dd62f933bc4d71b7fa4656016ea95616c363e0e",
+              "status": "valid"
+            },
+            {
+              "path": "loom/src/context/context_engine.cpp",
+              "start": 536,
+              "end": 549,
+              "json_pointer": "$.related_locations[0]",
+              "line_count": 1701,
+              "source_sha256": "3739d976f05981a6e45c105f920aec717507c6fc05d5c8a3c1709712940a2fa3",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "CH-014",
+          "classification": "dopuszczalny mechanizm",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph_object",
+            "consuming_paths": "consuming_paths",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "structured_category_and_reason",
+          "locations": [
+            {
+              "path": "loom/src/model/runtime_profile.cpp",
+              "start": 22,
+              "end": 42,
+              "json_pointer": "$",
+              "line_count": 372,
+              "source_sha256": "0aab7afb23b413fdc62e6cd51b852a5596b0e8fb7b029bd95583f71e8ee6cc93",
+              "status": "valid"
+            },
+            {
+              "path": "loom/src/core/config.cpp",
+              "start": 23,
+              "end": 30,
+              "json_pointer": "$.related_locations[0]",
+              "line_count": 277,
+              "source_sha256": "42bbe385964814a555b6cd9399e019ed5df6f70bf92ea935dcf5ad74e753d4b7",
+              "status": "valid"
+            },
+            {
+              "path": "loom/src/model/runtime_profile.cpp",
+              "start": 45,
+              "end": 96,
+              "json_pointer": "$.related_locations[1]",
+              "line_count": 372,
+              "source_sha256": "0aab7afb23b413fdc62e6cd51b852a5596b0e8fb7b029bd95583f71e8ee6cc93",
+              "status": "valid"
+            },
+            {
+              "path": "loom/server/src/onboarding-ui-routes.h",
+              "start": 46,
+              "end": 58,
+              "json_pointer": "$.related_locations[2]",
+              "line_count": 134,
+              "source_sha256": "2081bfe800ca30c62052873ff7338e6ba17c1403e97a13a9ecb628262ac1dd5b",
+              "status": "valid"
+            },
+            {
+              "path": "loom/src/model/runtime_profile.cpp",
+              "start": 18,
+              "end": 19,
+              "json_pointer": "$.related_locations[3]",
+              "line_count": 372,
+              "source_sha256": "0aab7afb23b413fdc62e6cd51b852a5596b0e8fb7b029bd95583f71e8ee6cc93",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "CH-015",
+          "classification": "niepewne",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph_object",
+            "consuming_paths": "consuming_paths",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "loom/include/loom/tasks.h",
+              "start": 1,
+              "end": 17,
+              "json_pointer": "$",
+              "line_count": 176,
+              "source_sha256": "329cacdcc83629483d9c0ebe89c81d4cec2aac5a2e37186449b8d075bf609254",
+              "status": "valid"
+            },
+            {
+              "path": "loom/data/schema/types.json",
+              "start": 140,
+              "end": 152,
+              "json_pointer": "$.related_locations[0]",
+              "line_count": 1253,
+              "source_sha256": "7198c1c72571b1edb3ede3d49ff30332a6f3943eabbfb40d16d86f50b0753084",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        }
+      ],
+      "all_scan_hashes_expected": true
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "findings_sha256": "d1d72633567d31af9782617ad4c413254a4b82542d0edef7f9583a11329f76fc",
+      "scan_summary_sha256": "ce60cef6b3666b14d26bc9abde07fc33a322308d3039156e5bef1d01ce3b409f",
+      "scanner_sha256": "88b6f460b471347a937a88bd11ebc7b0a504b022014a9ca0693f56835e4489d8",
+      "rules_sha256": "b35034619f42b0199bd9a3c26245dcd6be0dd83ecffa8beb7bb4c01731e4e963",
+      "finding_count": 11,
+      "classifications": {
+        "naruszenie": 9,
+        "dopuszczalny mechanizm": 1,
+        "niepewne": 0,
+        "już naprawione": 1
+      },
+      "location_count": 11,
+      "valid_location_count": 11,
+      "required_fields_pass_count": 11,
+      "inventory_denominator": {
+        "by_category": {
+          "build": 1,
+          "data": 31,
+          "docs": 114,
+          "generated": 1,
+          "history": 41,
+          "other": 5,
+          "product": 268,
+          "research": 1,
+          "tests": 125,
+          "tooling": 16
+        },
+        "definition": "All recursive tracked tree entries at the stated commit, including blobs, symlinks and gitlinks; git history and untracked working files excluded. Manifest mode instead uses the explicit supplied list, whose completeness is not independently verified.",
+        "eligible_code_entries": 284,
+        "scanned_code_entries": 282,
+        "scanned_lines": 26906,
+        "semantic_reviewed_entries": 0,
+        "tracked_entries": 603
+      },
+      "finding_checks": [
+        {
+          "id": "WD-001",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph_object",
+            "consuming_paths": "consuming_paths",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "backend/watchdog_api/services/narrative.ts",
+              "start": 85,
+              "end": 122,
+              "json_pointer": "$",
+              "line_count": 249,
+              "source_sha256": "a526c487c12ad84776c10844ff624e34822185cde98a1201348b0ff5b6c1237c",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "WD-002",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph_object",
+            "consuming_paths": "consuming_paths",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "backend/watchdog_api/analysis/primitives.ts",
+              "start": 137,
+              "end": 180,
+              "json_pointer": "$",
+              "line_count": 368,
+              "source_sha256": "4dd8c8a81983608e298ee42ab49f2e2f0eac682942146044fdba8bab2dc8e913",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "WD-003",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph_object",
+            "consuming_paths": "consuming_paths",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "backend/watchdog_api/llm/profile_generator.ts",
+              "start": 11,
+              "end": 22,
+              "json_pointer": "$",
+              "line_count": 34,
+              "source_sha256": "1f3cd89f1bb912625f080680b15f40979d3b14879ce934be4354bf48982a36ce",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "WD-004",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph_object",
+            "consuming_paths": "consuming_paths",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "src/lib/workspace_preferences.tsx",
+              "start": 7,
+              "end": 18,
+              "json_pointer": "$",
+              "line_count": 50,
+              "source_sha256": "ff1fceb2c2991cfdb3670190b0454480dea9da5358c7a0981e941700b290b07a",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "WD-005",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph_object",
+            "consuming_paths": "consuming_paths",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "backend/watchdog_api/llm/routing.ts",
+              "start": 32,
+              "end": 67,
+              "json_pointer": "$",
+              "line_count": 70,
+              "source_sha256": "b116f55919ab9774c1d75d39ecadea3794b05d1af0d58619d17ca9ff2dde9360",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "WD-006",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph_object",
+            "consuming_paths": "consuming_paths",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "src/pages/Setup.tsx",
+              "start": 119,
+              "end": 147,
+              "json_pointer": "$",
+              "line_count": 219,
+              "source_sha256": "0d32c94cbfcb0adc4e5d7dab53be969f1de93b193ea2df7dc3b27230122b1e53",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "WD-007",
+          "classification": "dopuszczalny mechanizm",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph_object",
+            "consuming_paths": "consuming_paths",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "structured_category_and_reason",
+          "locations": [
+            {
+              "path": "backend/watchdog_api/analysis/executor.ts",
+              "start": 45,
+              "end": 95,
+              "json_pointer": "$",
+              "line_count": 203,
+              "source_sha256": "cc891ea87dbbff23c5fed3bbc67ee6edc9dc147ff2aaa54ab2fa36dea6647db0",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "WD-008",
+          "classification": "już naprawione",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph_object",
+            "consuming_paths": "consuming_paths",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "backend/watchdog_api/services/assistant.ts",
+              "start": 80,
+              "end": 118,
+              "json_pointer": "$",
+              "line_count": 134,
+              "source_sha256": "88ac0b6f74a56e21a9fd87e6f3d4d514fca52db178c677dc95caa51d90e8b1ee",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "WD-009",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph_object",
+            "consuming_paths": "consuming_paths",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "backend/watchdog_api/services/paper_intake.ts",
+              "start": 43,
+              "end": 67,
+              "json_pointer": "$",
+              "line_count": 86,
+              "source_sha256": "9413da870d5e9e1bd34ebfab205471f72b5d36c9fa4f3e6f500e345aca22f1c5",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "WD-010",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph_object",
+            "consuming_paths": "consuming_paths",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "shared/automation.ts",
+              "start": 17,
+              "end": 43,
+              "json_pointer": "$",
+              "line_count": 57,
+              "source_sha256": "71a279c3f270596d620d14b77dab4dd472ee97cf0dfbeef66a7c7b1efbd89038",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "WD-011",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph_object",
+            "consuming_paths": "consuming_paths",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "backend/watchdog_api/services/narrative.ts",
+              "start": 143,
+              "end": 175,
+              "json_pointer": "$",
+              "line_count": 249,
+              "source_sha256": "a526c487c12ad84776c10844ff624e34822185cde98a1201348b0ff5b6c1237c",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        }
+      ],
+      "all_scan_hashes_expected": true
+    },
+    {
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "findings_sha256": "c66487f06ffd173aa96f20ba4ea99ab7c55da653d735c1925aaa3525304952d7",
+      "scan_summary_sha256": "b4de34102a138514f1b0e73157bbbf80ec5803da38a232ee208e713d52f90c80",
+      "scanner_sha256": "88b6f460b471347a937a88bd11ebc7b0a504b022014a9ca0693f56835e4489d8",
+      "rules_sha256": "b35034619f42b0199bd9a3c26245dcd6be0dd83ecffa8beb7bb4c01731e4e963",
+      "finding_count": 12,
+      "classifications": {
+        "naruszenie": 7,
+        "dopuszczalny mechanizm": 2,
+        "niepewne": 2,
+        "już naprawione": 1
+      },
+      "location_count": 53,
+      "valid_location_count": 53,
+      "required_fields_pass_count": 12,
+      "inventory_denominator": {
+        "by_category": {
+          "build": 3,
+          "data": 47,
+          "docs": 45,
+          "history": 4,
+          "other": 6,
+          "product": 234,
+          "tests": 105,
+          "tooling": 17
+        },
+        "definition": "All recursive tracked tree entries at the stated commit, including blobs, symlinks and gitlinks; git history and untracked working files excluded. Manifest mode instead uses the explicit supplied list, whose completeness is not independently verified.",
+        "eligible_code_entries": 252,
+        "scanned_code_entries": 252,
+        "scanned_lines": 49938,
+        "semantic_reviewed_entries": 0,
+        "tracked_entries": 461
+      },
+      "finding_checks": [
+        {
+          "id": "CKP-A-001",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "app/src/main/java/com/example/core/ai/AiTasks.kt",
+              "start": 28,
+              "end": 177,
+              "json_pointer": "$",
+              "line_count": 178,
+              "source_sha256": "c45b4cdba2b7a0cbb19b38209fa0f6d6a7d27dc91c2991df69c78b3eb1cce8a5",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/core/ai/AiTasks.kt",
+              "start": 175,
+              "end": 177,
+              "json_pointer": "$.evidence[0].location",
+              "line_count": 178,
+              "source_sha256": "c45b4cdba2b7a0cbb19b38209fa0f6d6a7d27dc91c2991df69c78b3eb1cce8a5",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/ime/CustomKeyboardIme.kt",
+              "start": 2055,
+              "end": 2081,
+              "json_pointer": "$.evidence[1].location",
+              "line_count": 2370,
+              "source_sha256": "2fb56d95aa466945b392a444f7d1ac8c38f702dc61d2afe3eb7d6fa6429c1868",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/ui/settings/AiSettingsScreen.kt",
+              "start": 389,
+              "end": 409,
+              "json_pointer": "$.evidence[2].location",
+              "line_count": 431,
+              "source_sha256": "ff9ba8372c04432f7ba9239502ddd2631dc7f9df13775d92c37e1c391e0876c2",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "CKP-A-002",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "app/src/main/java/com/example/core/discovery/ProviderCatalog.kt",
+              "start": 246,
+              "end": 285,
+              "json_pointer": "$",
+              "line_count": 371,
+              "source_sha256": "e6d600837f63c87dbb41071a2155d12e7889822452db31d038073aac2c6871f2",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/core/discovery/ProviderCatalog.kt",
+              "start": 259,
+              "end": 264,
+              "json_pointer": "$.evidence[0].location",
+              "line_count": 371,
+              "source_sha256": "e6d600837f63c87dbb41071a2155d12e7889822452db31d038073aac2c6871f2",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/core/discovery/ProviderCatalog.kt",
+              "start": 343,
+              "end": 365,
+              "json_pointer": "$.evidence[1].location",
+              "line_count": 371,
+              "source_sha256": "e6d600837f63c87dbb41071a2155d12e7889822452db31d038073aac2c6871f2",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/core/config/Settings.kt",
+              "start": 641,
+              "end": 654,
+              "json_pointer": "$.evidence[2].location",
+              "line_count": 675,
+              "source_sha256": "c4cb5e421d76d4f78168ef1df5b68857b4e841ef87eadc3a936fa771f70f5fac",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/core/ai/AiClient.kt",
+              "start": 45,
+              "end": 70,
+              "json_pointer": "$.evidence[3].location",
+              "line_count": 302,
+              "source_sha256": "e61543fed71fbc3348afc2316047bf6d679e97f79f7c424f559b8f9bbf852288",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "CKP-A-003",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "app/src/main/java/com/example/core/matrix/Planner.kt",
+              "start": 4,
+              "end": 36,
+              "json_pointer": "$",
+              "line_count": 188,
+              "source_sha256": "412c0d995a128b696fe0110b5d75ed0d5a9045603caca90238cad9cc2daf5428",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/core/matrix/Planner.kt",
+              "start": 65,
+              "end": 79,
+              "json_pointer": "$.evidence[0].location",
+              "line_count": 188,
+              "source_sha256": "412c0d995a128b696fe0110b5d75ed0d5a9045603caca90238cad9cc2daf5428",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/core/matrix/Planner.kt",
+              "start": 119,
+              "end": 151,
+              "json_pointer": "$.evidence[1].location",
+              "line_count": 188,
+              "source_sha256": "412c0d995a128b696fe0110b5d75ed0d5a9045603caca90238cad9cc2daf5428",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/io/ConvertRunner.kt",
+              "start": 195,
+              "end": 231,
+              "json_pointer": "$.evidence[2].location",
+              "line_count": 924,
+              "source_sha256": "8b7382d52d96855e65d611d563a9e108587af9b8a511a705df0e2fe4ee26da7a",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/core/matrix/Transforms.kt",
+              "start": 49,
+              "end": 61,
+              "json_pointer": "$.evidence[3].location",
+              "line_count": 288,
+              "source_sha256": "6e17446af0e663c82e5ef15c663088407eb956d86cd2fe28f550586cb96f6ea4",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "CKP-A-004",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "app/src/main/java/com/example/core/config/SettingsSchema.kt",
+              "start": 223,
+              "end": 253,
+              "json_pointer": "$",
+              "line_count": 932,
+              "source_sha256": "262ebe80f1b48e8c9e6c70fa7b7e68b08a24623111a2b050978bf4b5042ec80f",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/core/config/SettingsSchema.kt",
+              "start": 223,
+              "end": 224,
+              "json_pointer": "$.evidence[0].location",
+              "line_count": 932,
+              "source_sha256": "262ebe80f1b48e8c9e6c70fa7b7e68b08a24623111a2b050978bf4b5042ec80f",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/core/config/SettingsSchema.kt",
+              "start": 374,
+              "end": 418,
+              "json_pointer": "$.evidence[1].location",
+              "line_count": 932,
+              "source_sha256": "262ebe80f1b48e8c9e6c70fa7b7e68b08a24623111a2b050978bf4b5042ec80f",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/core/config/Settings.kt",
+              "start": 420,
+              "end": 447,
+              "json_pointer": "$.evidence[2].location",
+              "line_count": 675,
+              "source_sha256": "c4cb5e421d76d4f78168ef1df5b68857b4e841ef87eadc3a936fa771f70f5fac",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/core/config/SettingsHierarchy.kt",
+              "start": 38,
+              "end": 85,
+              "json_pointer": "$.evidence[3].location",
+              "line_count": 118,
+              "source_sha256": "db15e1e29b4a34ba33f45161c534e6d62d04819cc519c86227708c6ad34a49ef",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "CKP-A-005",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "app/src/main/java/com/example/core/suggest/SuggestionEngine.kt",
+              "start": 131,
+              "end": 240,
+              "json_pointer": "$",
+              "line_count": 256,
+              "source_sha256": "315bad2697ca551a2b0bee1f1f28f85eac7c6619afd5efe40be83848289727eb",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/core/suggest/SuggestionEngine.kt",
+              "start": 136,
+              "end": 190,
+              "json_pointer": "$.evidence[0].location",
+              "line_count": 256,
+              "source_sha256": "315bad2697ca551a2b0bee1f1f28f85eac7c6619afd5efe40be83848289727eb",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/core/suggest/SuggestionEngine.kt",
+              "start": 207,
+              "end": 219,
+              "json_pointer": "$.evidence[1].location",
+              "line_count": 256,
+              "source_sha256": "315bad2697ca551a2b0bee1f1f28f85eac7c6619afd5efe40be83848289727eb",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/core/suggest/SuggestionEngine.kt",
+              "start": 225,
+              "end": 240,
+              "json_pointer": "$.evidence[2].location",
+              "line_count": 256,
+              "source_sha256": "315bad2697ca551a2b0bee1f1f28f85eac7c6619afd5efe40be83848289727eb",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "CKP-A-006",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "app/src/main/java/com/example/core/config/SettingsStore.kt",
+              "start": 29,
+              "end": 38,
+              "json_pointer": "$",
+              "line_count": 646,
+              "source_sha256": "41e3612c77381b1130062f9eb93d208d9af09ae917c95f6608043aecd66050a5",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/core/config/SettingsStore.kt",
+              "start": 141,
+              "end": 147,
+              "json_pointer": "$.evidence[0].location",
+              "line_count": 646,
+              "source_sha256": "41e3612c77381b1130062f9eb93d208d9af09ae917c95f6608043aecd66050a5",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/ime/CustomKeyboardIme.kt",
+              "start": 2067,
+              "end": 2082,
+              "json_pointer": "$.evidence[1].location",
+              "line_count": 2370,
+              "source_sha256": "2fb56d95aa466945b392a444f7d1ac8c38f702dc61d2afe3eb7d6fa6429c1868",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/core/assistant/GoalAgent.kt",
+              "start": 13,
+              "end": 27,
+              "json_pointer": "$.evidence[2].location",
+              "line_count": 115,
+              "source_sha256": "59cbc54a933051e102f3a6d122a94ae2c205d1c5b5a107961dd6c1bf52388770",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/core/matrix/Provenance.kt",
+              "start": 43,
+              "end": 79,
+              "json_pointer": "$.evidence[3].location",
+              "line_count": 228,
+              "source_sha256": "51c5e232d02eb030eb1e3f676fc596b0622ced11513d25309e9db208add08463",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "CKP-A-007",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "app/src/main/java/com/example/core/assistant/GoalPrompt.kt",
+              "start": 5,
+              "end": 44,
+              "json_pointer": "$",
+              "line_count": 66,
+              "source_sha256": "67dde22c1dfb836fd63b77dfa108d66d6e9ee1d907be250e00eac7d0aee28029",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/core/assistant/GoalPrompt.kt",
+              "start": 19,
+              "end": 23,
+              "json_pointer": "$.evidence[0].location",
+              "line_count": 66,
+              "source_sha256": "67dde22c1dfb836fd63b77dfa108d66d6e9ee1d907be250e00eac7d0aee28029",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/assistant/GoalAssistantActivity.kt",
+              "start": 199,
+              "end": 206,
+              "json_pointer": "$.evidence[1].location",
+              "line_count": 379,
+              "source_sha256": "d91b594f9f46ab2feb1d4b69db27e3c78d5feda3771d14a32722abafa47c1d97",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/core/assistant/GoalAgent.kt",
+              "start": 108,
+              "end": 113,
+              "json_pointer": "$.evidence[2].location",
+              "line_count": 115,
+              "source_sha256": "59cbc54a933051e102f3a6d122a94ae2c205d1c5b5a107961dd6c1bf52388770",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "CKP-A-008",
+          "classification": "już naprawione",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "app/src/main/java/com/example/core/ai/AiClient.kt",
+              "start": 52,
+              "end": 70,
+              "json_pointer": "$",
+              "line_count": 302,
+              "source_sha256": "e61543fed71fbc3348afc2316047bf6d679e97f79f7c424f559b8f9bbf852288",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/core/ai/AiTaskProfiles.kt",
+              "start": 74,
+              "end": 88,
+              "json_pointer": "$.evidence[0].location",
+              "line_count": 90,
+              "source_sha256": "24c1a24da748f1da3c41f90333de33f1b2d83b2c62e46f82b45937fcd35a5199",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/ui/settings/AiTaskProfileSection.kt",
+              "start": 28,
+              "end": 50,
+              "json_pointer": "$.evidence[1].location",
+              "line_count": 54,
+              "source_sha256": "16629dac449b459d5ff79107eefa0b55d0c660466ea19e8345d9e8672956fe00",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/core/ai/AiClient.kt",
+              "start": 176,
+              "end": 180,
+              "json_pointer": "$.evidence[2].location",
+              "line_count": 302,
+              "source_sha256": "e61543fed71fbc3348afc2316047bf6d679e97f79f7c424f559b8f9bbf852288",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "CKP-A-009",
+          "classification": "dopuszczalny mechanizm",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "structured_category_and_reason",
+          "locations": [
+            {
+              "path": "app/src/main/java/com/example/core/assistant/GoalAgent.kt",
+              "start": 43,
+              "end": 106,
+              "json_pointer": "$",
+              "line_count": 115,
+              "source_sha256": "59cbc54a933051e102f3a6d122a94ae2c205d1c5b5a107961dd6c1bf52388770",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/assistant/GoalAssistantActivity.kt",
+              "start": 185,
+              "end": 215,
+              "json_pointer": "$.evidence[0].location",
+              "line_count": 379,
+              "source_sha256": "d91b594f9f46ab2feb1d4b69db27e3c78d5feda3771d14a32722abafa47c1d97",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/core/assistant/GoalAgent.kt",
+              "start": 63,
+              "end": 99,
+              "json_pointer": "$.evidence[1].location",
+              "line_count": 115,
+              "source_sha256": "59cbc54a933051e102f3a6d122a94ae2c205d1c5b5a107961dd6c1bf52388770",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/core/assistant/GoalSession.kt",
+              "start": 77,
+              "end": 103,
+              "json_pointer": "$.evidence[2].location",
+              "line_count": 124,
+              "source_sha256": "6c65cdf65596270d916d6ae851abb5f36758b30616b8353202c7df78b00f5d88",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/assistant/GoalCatalogue.kt",
+              "start": 39,
+              "end": 66,
+              "json_pointer": "$.evidence[3].location",
+              "line_count": 95,
+              "source_sha256": "6c6b346e9e6e7c1c23f849e6d57b16902c74d8d29b86130fb5aa4cabd0eeadac",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "CKP-A-010",
+          "classification": "dopuszczalny mechanizm",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "structured_category_and_reason",
+          "locations": [
+            {
+              "path": "app/src/main/java/com/example/core/config/ScopedSettings.kt",
+              "start": 93,
+              "end": 158,
+              "json_pointer": "$",
+              "line_count": 198,
+              "source_sha256": "54d7b126369215a6b38c05da2c047f8d8fea9a760cda72bd95d7b6e1ef33b03a",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/core/config/ScopedSettings.kt",
+              "start": 115,
+              "end": 136,
+              "json_pointer": "$.evidence[0].location",
+              "line_count": 198,
+              "source_sha256": "54d7b126369215a6b38c05da2c047f8d8fea9a760cda72bd95d7b6e1ef33b03a",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/ime/CustomKeyboardIme.kt",
+              "start": 99,
+              "end": 104,
+              "json_pointer": "$.evidence[1].location",
+              "line_count": 2370,
+              "source_sha256": "2fb56d95aa466945b392a444f7d1ac8c38f702dc61d2afe3eb7d6fa6429c1868",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/ui/settings/LayoutInstanceSettings.kt",
+              "start": 130,
+              "end": 149,
+              "json_pointer": "$.evidence[2].location",
+              "line_count": 158,
+              "source_sha256": "114ee0b8b550b2adcc5b5be1e348cd6d3e2b958ce6b4dbe51985a72b407a189a",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/engine/EngineRuntime.kt",
+              "start": 131,
+              "end": 145,
+              "json_pointer": "$.evidence[3].location",
+              "line_count": 529,
+              "source_sha256": "0c67c603bd1ac17d1caeac3a1831b6a6754e81aa97bc1e2f53666380d008f7cb",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "CKP-A-011",
+          "classification": "niepewne",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "profiles/openrouter_inference.json",
+              "start": 1,
+              "end": 26,
+              "json_pointer": "$",
+              "line_count": 26,
+              "source_sha256": "4072c2fb1d5a322ce0dd82beca9dbf7657015d97d6ca97298e83085a435bf053",
+              "status": "valid"
+            },
+            {
+              "path": "validate_profiles.py",
+              "start": 1,
+              "end": 30,
+              "json_pointer": "$.evidence[0].location",
+              "line_count": 30,
+              "source_sha256": "7be5734f00520094b628fe47ecd72011ebf29af9fa4f2220b4df1e1a66c52e26",
+              "status": "valid"
+            },
+            {
+              "path": "app/build.gradle.kts",
+              "start": 1,
+              "end": 71,
+              "json_pointer": "$.evidence[1].location",
+              "line_count": 114,
+              "source_sha256": "4d7e6394daf55c7d46088da29488bd0ee3cf8c13d777d440636201f8399da67c",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "CKP-A-012",
+          "classification": "niepewne",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "app/src/main/java/com/example/ime/CustomKeyboardIme.kt",
+              "start": 2048,
+              "end": 2082,
+              "json_pointer": "$",
+              "line_count": 2370,
+              "source_sha256": "2fb56d95aa466945b392a444f7d1ac8c38f702dc61d2afe3eb7d6fa6429c1868",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/ime/CustomKeyboardIme.kt",
+              "start": 2048,
+              "end": 2064,
+              "json_pointer": "$.evidence[0].location",
+              "line_count": 2370,
+              "source_sha256": "2fb56d95aa466945b392a444f7d1ac8c38f702dc61d2afe3eb7d6fa6429c1868",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/ime/CustomKeyboardIme.kt",
+              "start": 529,
+              "end": 541,
+              "json_pointer": "$.evidence[1].location",
+              "line_count": 2370,
+              "source_sha256": "2fb56d95aa466945b392a444f7d1ac8c38f702dc61d2afe3eb7d6fa6429c1868",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/ime/EditorController.kt",
+              "start": 289,
+              "end": 303,
+              "json_pointer": "$.evidence[2].location",
+              "line_count": 815,
+              "source_sha256": "92ac56dd77bfe843473c8325f5b3696b4820419edeaaec61247fc16636d22213",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        }
+      ],
+      "all_scan_hashes_expected": true
+    },
+    {
+      "repo": "klb-t/AGEDS",
+      "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+      "findings_sha256": "4c40164eccc62878a6bf9b354ea41b5cf42ab9f6767d21384aa7282486ba9850",
+      "scan_summary_sha256": "1e076a22a2a74d55d547bbdc7e025bb27d99164088606ed6626541b36db47558",
+      "scanner_sha256": "88b6f460b471347a937a88bd11ebc7b0a504b022014a9ca0693f56835e4489d8",
+      "rules_sha256": "b35034619f42b0199bd9a3c26245dcd6be0dd83ecffa8beb7bb4c01731e4e963",
+      "finding_count": 12,
+      "classifications": {
+        "naruszenie": 9,
+        "dopuszczalny mechanizm": 2,
+        "niepewne": 0,
+        "już naprawione": 1
+      },
+      "location_count": 47,
+      "valid_location_count": 47,
+      "required_fields_pass_count": 12,
+      "inventory_denominator": {
+        "by_category": {
+          "build": 5,
+          "data": 10,
+          "docs": 59,
+          "generated": 1,
+          "history": 112,
+          "other": 8,
+          "product": 61,
+          "research": 2,
+          "tests": 100,
+          "tooling": 12
+        },
+        "definition": "All recursive tracked tree entries at the stated commit, including blobs, symlinks and gitlinks; git history and untracked working files excluded. Manifest mode instead uses the explicit supplied list, whose completeness is not independently verified.",
+        "eligible_code_entries": 76,
+        "scanned_code_entries": 76,
+        "scanned_lines": 11113,
+        "semantic_reviewed_entries": 0,
+        "tracked_entries": 370
+      },
+      "finding_checks": [
+        {
+          "id": "EA-AGEDS-001",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "runtime_consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "server/app/config.py",
+              "start": 11,
+              "end": 14,
+              "json_pointer": "$.locations[0]",
+              "line_count": 20,
+              "source_sha256": "231733307bf0493512b787eeecef08d8bf6e767012f7e1640fe1b907c48957fe",
+              "status": "valid"
+            },
+            {
+              "path": "server/app/worker.py",
+              "start": 49,
+              "end": 92,
+              "json_pointer": "$.locations[1]",
+              "line_count": 204,
+              "source_sha256": "7bba0475bf2dd219dc82376c01b93049b17610a91baec10ea0b5ce2bb7b7261a",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "EA-AGEDS-002",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "runtime_consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "server/app/transcription.py",
+              "start": 49,
+              "end": 65,
+              "json_pointer": "$.locations[0]",
+              "line_count": 72,
+              "source_sha256": "ae664808431f51f7e41713d8eae2055ee0246bb40bff28ac8f16139ab3c2fcd7",
+              "status": "valid"
+            },
+            {
+              "path": "server/app/jobs.py",
+              "start": 53,
+              "end": 74,
+              "json_pointer": "$.locations[1]",
+              "line_count": 140,
+              "source_sha256": "20800c6e8e32967f5d35862c1beabfe36837c0914198f1f2e0ea4ec904b37b9d",
+              "status": "valid"
+            },
+            {
+              "path": "server/app/worker.py",
+              "start": 117,
+              "end": 124,
+              "json_pointer": "$.locations[2]",
+              "line_count": 204,
+              "source_sha256": "7bba0475bf2dd219dc82376c01b93049b17610a91baec10ea0b5ce2bb7b7261a",
+              "status": "valid"
+            },
+            {
+              "path": "server/app/db.py",
+              "start": 123,
+              "end": 134,
+              "json_pointer": "$.locations[3]",
+              "line_count": 342,
+              "source_sha256": "776f0039102c91e7da63fa489b64ae6fcccd1bf925db02501d09d01ab822bdf9",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "EA-AGEDS-003",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "runtime_consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "core/src/commonMain/kotlin/dev/klbt/ageds/core/SourceScanModels.kt",
+              "start": 5,
+              "end": 24,
+              "json_pointer": "$.locations[0]",
+              "line_count": 82,
+              "source_sha256": "2ed6427bb6d7f7f8c001cc703d31b936552fdcdd8a8ada37a40a427b5d7e87a5",
+              "status": "valid"
+            },
+            {
+              "path": "androidApp/src/main/java/dev/klbt/ageds/SourceScanner.kt",
+              "start": 19,
+              "end": 56,
+              "json_pointer": "$.locations[1]",
+              "line_count": 58,
+              "source_sha256": "14a13b501be58915188988098ddb14faabaa332aa4ca2181e174afcac64f510d",
+              "status": "valid"
+            },
+            {
+              "path": "androidApp/src/main/java/dev/klbt/ageds/CorpusVm.kt",
+              "start": 181,
+              "end": 205,
+              "json_pointer": "$.locations[2]",
+              "line_count": 284,
+              "source_sha256": "e16d723b5f0faf230e1651ad838181a7602acc49227ab06768ede08f286a9600",
+              "status": "valid"
+            },
+            {
+              "path": "server/app/main.py",
+              "start": 428,
+              "end": 445,
+              "json_pointer": "$.locations[3]",
+              "line_count": 467,
+              "source_sha256": "0ae7735006c42773058c58b02bf156d6d2898c5ae0ee039e18a074523d878233",
+              "status": "valid"
+            },
+            {
+              "path": "server/app/cli.py",
+              "start": 16,
+              "end": 39,
+              "json_pointer": "$.locations[4]",
+              "line_count": 155,
+              "source_sha256": "2081a974c17452e76f6a07f4ffc56a2f0f0b96fd0271a9cdc79a9996ffdf7e28",
+              "status": "valid"
+            },
+            {
+              "path": "server/app/cli.py",
+              "start": 101,
+              "end": 104,
+              "json_pointer": "$.locations[5]",
+              "line_count": 155,
+              "source_sha256": "2081a974c17452e76f6a07f4ffc56a2f0f0b96fd0271a9cdc79a9996ffdf7e28",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "EA-AGEDS-004",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "runtime_consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "server/app/scanner.py",
+              "start": 65,
+              "end": 123,
+              "json_pointer": "$.locations[0]",
+              "line_count": 667,
+              "source_sha256": "711488e3e79f3dfc8f886f5a8a30da5865275677e55f6640ff90ca887d4dae95",
+              "status": "valid"
+            },
+            {
+              "path": "server/app/scanner.py",
+              "start": 138,
+              "end": 176,
+              "json_pointer": "$.locations[1]",
+              "line_count": 667,
+              "source_sha256": "711488e3e79f3dfc8f886f5a8a30da5865275677e55f6640ff90ca887d4dae95",
+              "status": "valid"
+            },
+            {
+              "path": "server/app/scanner.py",
+              "start": 189,
+              "end": 204,
+              "json_pointer": "$.locations[2]",
+              "line_count": 667,
+              "source_sha256": "711488e3e79f3dfc8f886f5a8a30da5865275677e55f6640ff90ca887d4dae95",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "EA-AGEDS-005",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "runtime_consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "core/src/commonMain/kotlin/dev/klbt/ageds/core/Models.kt",
+              "start": 87,
+              "end": 116,
+              "json_pointer": "$.locations[0]",
+              "line_count": 186,
+              "source_sha256": "2fac2ffd52d17a6706aa47d38e9efb105a2a6c416a8a15f885a91af2926f90a5",
+              "status": "valid"
+            },
+            {
+              "path": "androidApp/src/main/java/dev/klbt/ageds/MainActivity.kt",
+              "start": 150,
+              "end": 174,
+              "json_pointer": "$.locations[1]",
+              "line_count": 293,
+              "source_sha256": "94d97a4293abccf1c107bdff06d7968f2dd80710049f302aaca37eaaac9603bb",
+              "status": "valid"
+            },
+            {
+              "path": "server/app/jobs.py",
+              "start": 53,
+              "end": 62,
+              "json_pointer": "$.locations[2]",
+              "line_count": 140,
+              "source_sha256": "20800c6e8e32967f5d35862c1beabfe36837c0914198f1f2e0ea4ec904b37b9d",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "EA-AGEDS-006",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "runtime_consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "server/app/db.py",
+              "start": 111,
+              "end": 145,
+              "json_pointer": "$.locations[0]",
+              "line_count": 342,
+              "source_sha256": "776f0039102c91e7da63fa489b64ae6fcccd1bf925db02501d09d01ab822bdf9",
+              "status": "valid"
+            },
+            {
+              "path": "server/app/packages.py",
+              "start": 18,
+              "end": 34,
+              "json_pointer": "$.locations[1]",
+              "line_count": 421,
+              "source_sha256": "28f9425c4bd609e668b122cad3f9c16f45f0655c5afb04254b32401df8cd6ba7",
+              "status": "valid"
+            },
+            {
+              "path": "server/app/packages.py",
+              "start": 54,
+              "end": 84,
+              "json_pointer": "$.locations[2]",
+              "line_count": 421,
+              "source_sha256": "28f9425c4bd609e668b122cad3f9c16f45f0655c5afb04254b32401df8cd6ba7",
+              "status": "valid"
+            },
+            {
+              "path": "server/app/config.py",
+              "start": 6,
+              "end": 19,
+              "json_pointer": "$.locations[3]",
+              "line_count": 20,
+              "source_sha256": "231733307bf0493512b787eeecef08d8bf6e767012f7e1640fe1b907c48957fe",
+              "status": "valid"
+            },
+            {
+              "path": "androidApp/src/main/java/dev/klbt/ageds/MainActivity.kt",
+              "start": 43,
+              "end": 70,
+              "json_pointer": "$.locations[4]",
+              "line_count": 293,
+              "source_sha256": "94d97a4293abccf1c107bdff06d7968f2dd80710049f302aaca37eaaac9603bb",
+              "status": "valid"
+            },
+            {
+              "path": "androidApp/src/main/java/dev/klbt/ageds/CorpusStore.kt",
+              "start": 19,
+              "end": 24,
+              "json_pointer": "$.locations[5]",
+              "line_count": 51,
+              "source_sha256": "00f3a231033cae5777acefe7882e51135b68c998260e08124bebb4e58e6601ea",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "EA-AGEDS-007",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "runtime_consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "androidApp/src/main/java/dev/klbt/ageds/CorpusVm.kt",
+              "start": 40,
+              "end": 55,
+              "json_pointer": "$.locations[0]",
+              "line_count": 284,
+              "source_sha256": "e16d723b5f0faf230e1651ad838181a7602acc49227ab06768ede08f286a9600",
+              "status": "valid"
+            },
+            {
+              "path": "androidApp/src/main/java/dev/klbt/ageds/CorpusVm.kt",
+              "start": 70,
+              "end": 112,
+              "json_pointer": "$.locations[1]",
+              "line_count": 284,
+              "source_sha256": "e16d723b5f0faf230e1651ad838181a7602acc49227ab06768ede08f286a9600",
+              "status": "valid"
+            },
+            {
+              "path": "androidApp/src/main/java/dev/klbt/ageds/CorpusStore.kt",
+              "start": 19,
+              "end": 48,
+              "json_pointer": "$.locations[2]",
+              "line_count": 51,
+              "source_sha256": "00f3a231033cae5777acefe7882e51135b68c998260e08124bebb4e58e6601ea",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "EA-AGEDS-008",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "runtime_consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "androidApp/src/main/java/dev/klbt/ageds/MainActivity.kt",
+              "start": 43,
+              "end": 46,
+              "json_pointer": "$.locations[0]",
+              "line_count": 293,
+              "source_sha256": "94d97a4293abccf1c107bdff06d7968f2dd80710049f302aaca37eaaac9603bb",
+              "status": "valid"
+            },
+            {
+              "path": "androidApp/src/main/java/dev/klbt/ageds/MainActivity.kt",
+              "start": 224,
+              "end": 237,
+              "json_pointer": "$.locations[1]",
+              "line_count": 293,
+              "source_sha256": "94d97a4293abccf1c107bdff06d7968f2dd80710049f302aaca37eaaac9603bb",
+              "status": "valid"
+            },
+            {
+              "path": "androidApp/src/main/java/dev/klbt/ageds/MainActivity.kt",
+              "start": 253,
+              "end": 275,
+              "json_pointer": "$.locations[2]",
+              "line_count": 293,
+              "source_sha256": "94d97a4293abccf1c107bdff06d7968f2dd80710049f302aaca37eaaac9603bb",
+              "status": "valid"
+            },
+            {
+              "path": "androidApp/src/main/java/dev/klbt/ageds/CorpusVm.kt",
+              "start": 54,
+              "end": 64,
+              "json_pointer": "$.locations[3]",
+              "line_count": 284,
+              "source_sha256": "e16d723b5f0faf230e1651ad838181a7602acc49227ab06768ede08f286a9600",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "EA-AGEDS-009",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "runtime_consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "server/app/search.py",
+              "start": 7,
+              "end": 12,
+              "json_pointer": "$.locations[0]",
+              "line_count": 146,
+              "source_sha256": "14783b0a154050a09521f58a57e6600bdd14ffad5fe2f231f69d15620fbfc8cd",
+              "status": "valid"
+            },
+            {
+              "path": "server/app/search.py",
+              "start": 69,
+              "end": 95,
+              "json_pointer": "$.locations[1]",
+              "line_count": 146,
+              "source_sha256": "14783b0a154050a09521f58a57e6600bdd14ffad5fe2f231f69d15620fbfc8cd",
+              "status": "valid"
+            },
+            {
+              "path": "server/app/search.py",
+              "start": 106,
+              "end": 141,
+              "json_pointer": "$.locations[2]",
+              "line_count": 146,
+              "source_sha256": "14783b0a154050a09521f58a57e6600bdd14ffad5fe2f231f69d15620fbfc8cd",
+              "status": "valid"
+            },
+            {
+              "path": "server/app/main.py",
+              "start": 173,
+              "end": 184,
+              "json_pointer": "$.locations[3]",
+              "line_count": 467,
+              "source_sha256": "0ae7735006c42773058c58b02bf156d6d2898c5ae0ee039e18a074523d878233",
+              "status": "valid"
+            },
+            {
+              "path": "server/app/db.py",
+              "start": 147,
+              "end": 152,
+              "json_pointer": "$.locations[4]",
+              "line_count": 342,
+              "source_sha256": "776f0039102c91e7da63fa489b64ae6fcccd1bf925db02501d09d01ab822bdf9",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "EA-AGEDS-010",
+          "classification": "dopuszczalny mechanizm",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "runtime_consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "structured_category_and_reason",
+          "locations": [
+            {
+              "path": "server/app/jobs.py",
+              "start": 38,
+              "end": 75,
+              "json_pointer": "$.locations[0]",
+              "line_count": 140,
+              "source_sha256": "20800c6e8e32967f5d35862c1beabfe36837c0914198f1f2e0ea4ec904b37b9d",
+              "status": "valid"
+            },
+            {
+              "path": "server/app/jobs.py",
+              "start": 105,
+              "end": 124,
+              "json_pointer": "$.locations[1]",
+              "line_count": 140,
+              "source_sha256": "20800c6e8e32967f5d35862c1beabfe36837c0914198f1f2e0ea4ec904b37b9d",
+              "status": "valid"
+            },
+            {
+              "path": "server/app/packages.py",
+              "start": 16,
+              "end": 17,
+              "json_pointer": "$.locations[2]",
+              "line_count": 421,
+              "source_sha256": "28f9425c4bd609e668b122cad3f9c16f45f0655c5afb04254b32401df8cd6ba7",
+              "status": "valid"
+            },
+            {
+              "path": "server/app/packages.py",
+              "start": 37,
+              "end": 50,
+              "json_pointer": "$.locations[3]",
+              "line_count": 421,
+              "source_sha256": "28f9425c4bd609e668b122cad3f9c16f45f0655c5afb04254b32401df8cd6ba7",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "EA-AGEDS-011",
+          "classification": "już naprawione",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "runtime_consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "core/src/commonMain/kotlin/dev/klbt/ageds/core/CorpusModels.kt",
+              "start": 99,
+              "end": 118,
+              "json_pointer": "$.locations[0]",
+              "line_count": 118,
+              "source_sha256": "0f69327eccc3d41ced185438299b569f9d9c5c765d07205b026144521bc3a283",
+              "status": "valid"
+            },
+            {
+              "path": "androidApp/src/main/java/dev/klbt/ageds/CorpusVm.kt",
+              "start": 70,
+              "end": 102,
+              "json_pointer": "$.locations[1]",
+              "line_count": 284,
+              "source_sha256": "e16d723b5f0faf230e1651ad838181a7602acc49227ab06768ede08f286a9600",
+              "status": "valid"
+            },
+            {
+              "path": "HANDOFF.md",
+              "start": 27,
+              "end": 30,
+              "json_pointer": "$.locations[2]",
+              "line_count": 86,
+              "source_sha256": "ffc4ee25d3852fe9c81779a5bfd086f03d5c83712d3d4d887396cdc8e6305a36",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "EA-AGEDS-012",
+          "classification": "dopuszczalny mechanizm",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "runtime_consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "structured_category_and_reason",
+          "locations": [
+            {
+              "path": "androidApp/src/main/java/dev/klbt/ageds/MainActivity.kt",
+              "start": 93,
+              "end": 99,
+              "json_pointer": "$.locations[0]",
+              "line_count": 293,
+              "source_sha256": "94d97a4293abccf1c107bdff06d7968f2dd80710049f302aaca37eaaac9603bb",
+              "status": "valid"
+            },
+            {
+              "path": "androidApp/src/main/java/dev/klbt/ageds/MainActivity.kt",
+              "start": 150,
+              "end": 174,
+              "json_pointer": "$.locations[1]",
+              "line_count": 293,
+              "source_sha256": "94d97a4293abccf1c107bdff06d7968f2dd80710049f302aaca37eaaac9603bb",
+              "status": "valid"
+            },
+            {
+              "path": "androidApp/src/main/java/dev/klbt/ageds/MainActivity.kt",
+              "start": 253,
+              "end": 275,
+              "json_pointer": "$.locations[2]",
+              "line_count": 293,
+              "source_sha256": "94d97a4293abccf1c107bdff06d7968f2dd80710049f302aaca37eaaac9603bb",
+              "status": "valid"
+            },
+            {
+              "path": "androidApp/src/main/java/dev/klbt/ageds/CorpusVm.kt",
+              "start": 137,
+              "end": 145,
+              "json_pointer": "$.locations[3]",
+              "line_count": 284,
+              "source_sha256": "e16d723b5f0faf230e1651ad838181a7602acc49227ab06768ede08f286a9600",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        }
+      ],
+      "all_scan_hashes_expected": true
+    },
+    {
+      "repo": "klb-t/LEM-Workbench",
+      "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+      "findings_sha256": "3c2844417d333a6530526a101590b9345e8a6d28040cde5c87ec69cf82f2835c",
+      "scan_summary_sha256": "dfc359df4642e377f4f22f1a24a14fdb787dcb59d7c72def85a980c0d0b0bb31",
+      "scanner_sha256": "88b6f460b471347a937a88bd11ebc7b0a504b022014a9ca0693f56835e4489d8",
+      "rules_sha256": "b35034619f42b0199bd9a3c26245dcd6be0dd83ecffa8beb7bb4c01731e4e963",
+      "finding_count": 8,
+      "classifications": {
+        "naruszenie": 7,
+        "dopuszczalny mechanizm": 1,
+        "niepewne": 0,
+        "już naprawione": 0
+      },
+      "location_count": 31,
+      "valid_location_count": 31,
+      "required_fields_pass_count": 8,
+      "inventory_denominator": {
+        "by_category": {
+          "build": 3,
+          "data": 24,
+          "docs": 6,
+          "other": 4,
+          "product": 23,
+          "research": 1,
+          "tests": 4,
+          "tooling": 1
+        },
+        "definition": "All recursive tracked tree entries at the stated commit, including blobs, symlinks and gitlinks; git history and untracked working files excluded. Manifest mode instead uses the explicit supplied list, whose completeness is not independently verified.",
+        "eligible_code_entries": 27,
+        "scanned_code_entries": 27,
+        "scanned_lines": 1636,
+        "semantic_reviewed_entries": 0,
+        "tracked_entries": 66
+      },
+      "finding_checks": [
+        {
+          "id": "LEM-001",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "app/src/main/java/com/example/data/model/ExperimentConfig.kt",
+              "start": 9,
+              "end": 41,
+              "json_pointer": "$",
+              "line_count": 42,
+              "source_sha256": "b4b5211421f7099df3638b0fd16ddd41debb3927250db8975d19b79a320cad0d",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/viewmodel/ResearchViewModel.kt",
+              "start": 70,
+              "end": 95,
+              "json_pointer": "$.related_locations[0]",
+              "line_count": 101,
+              "source_sha256": "18811b6a1c70339936938b03f76208da10af8a9b5061f096c32d5a1ea29d0f4d",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/data/repository/ResearchRepository.kt",
+              "start": 16,
+              "end": 18,
+              "json_pointer": "$.related_locations[1]",
+              "line_count": 43,
+              "source_sha256": "cf66d8603a05768fbfc511a49640f362b76a80570d495632ff8b920c781d110f",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/api/ResearchAgent.kt",
+              "start": 39,
+              "end": 51,
+              "json_pointer": "$.related_locations[2]",
+              "line_count": 59,
+              "source_sha256": "e2a6d8ce5ce91152ed1feb0d16c496882fd0145b2e7a9cbc62c0b038505ac8dc",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "LEM-002",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "app/src/main/java/com/example/research/ExperimentRunner.kt",
+              "start": 13,
+              "end": 20,
+              "json_pointer": "$",
+              "line_count": 199,
+              "source_sha256": "b2470fd5d3ede1e1a01167c7111ea728dc4555152cc64953aae04dd78d9c510e",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/research/ExperimentRunner.kt",
+              "start": 71,
+              "end": 121,
+              "json_pointer": "$.related_locations[0]",
+              "line_count": 199,
+              "source_sha256": "b2470fd5d3ede1e1a01167c7111ea728dc4555152cc64953aae04dd78d9c510e",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/api/ResearchAgent.kt",
+              "start": 23,
+              "end": 36,
+              "json_pointer": "$.related_locations[1]",
+              "line_count": 59,
+              "source_sha256": "e2a6d8ce5ce91152ed1feb0d16c496882fd0145b2e7a9cbc62c0b038505ac8dc",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/api/GeminiApiService.kt",
+              "start": 94,
+              "end": 113,
+              "json_pointer": "$.related_locations[2]",
+              "line_count": 114,
+              "source_sha256": "6883571883743bcb8a92397430f6fee06c026298d51160a008d3ce83a632ed36",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "LEM-003",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "app/src/main/java/com/example/research/ExperimentRunner.kt",
+              "start": 22,
+              "end": 58,
+              "json_pointer": "$",
+              "line_count": 199,
+              "source_sha256": "b2470fd5d3ede1e1a01167c7111ea728dc4555152cc64953aae04dd78d9c510e",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/research/ExperimentRunner.kt",
+              "start": 77,
+              "end": 121,
+              "json_pointer": "$.related_locations[0]",
+              "line_count": 199,
+              "source_sha256": "b2470fd5d3ede1e1a01167c7111ea728dc4555152cc64953aae04dd78d9c510e",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/research/ExperimentRunner.kt",
+              "start": 134,
+              "end": 170,
+              "json_pointer": "$.related_locations[1]",
+              "line_count": 199,
+              "source_sha256": "b2470fd5d3ede1e1a01167c7111ea728dc4555152cc64953aae04dd78d9c510e",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/api/ResearchAgent.kt",
+              "start": 28,
+              "end": 36,
+              "json_pointer": "$.related_locations[2]",
+              "line_count": 59,
+              "source_sha256": "e2a6d8ce5ce91152ed1feb0d16c496882fd0145b2e7a9cbc62c0b038505ac8dc",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "LEM-004",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "app/src/main/java/com/example/api/ResearchAgent.kt",
+              "start": 56,
+              "end": 58,
+              "json_pointer": "$",
+              "line_count": 59,
+              "source_sha256": "e2a6d8ce5ce91152ed1feb0d16c496882fd0145b2e7a9cbc62c0b038505ac8dc",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/api/GeminiApiService.kt",
+              "start": 67,
+              "end": 77,
+              "json_pointer": "$.related_locations[0]",
+              "line_count": 114,
+              "source_sha256": "6883571883743bcb8a92397430f6fee06c026298d51160a008d3ce83a632ed36",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/ui/screens/ModelsScreen.kt",
+              "start": 26,
+              "end": 31,
+              "json_pointer": "$.related_locations[1]",
+              "line_count": 198,
+              "source_sha256": "d4471672601a40409c038958d06305340a86695a62a28c9bbe944d481469d08b",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/ui/screens/ModelsScreen.kt",
+              "start": 106,
+              "end": 107,
+              "json_pointer": "$.related_locations[2]",
+              "line_count": 198,
+              "source_sha256": "d4471672601a40409c038958d06305340a86695a62a28c9bbe944d481469d08b",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/viewmodel/ResearchViewModel.kt",
+              "start": 58,
+              "end": 60,
+              "json_pointer": "$.related_locations[3]",
+              "line_count": 101,
+              "source_sha256": "18811b6a1c70339936938b03f76208da10af8a9b5061f096c32d5a1ea29d0f4d",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "LEM-005",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "app/src/main/java/com/example/data/local/AppDatabase.kt",
+              "start": 11,
+              "end": 29,
+              "json_pointer": "$",
+              "line_count": 35,
+              "source_sha256": "69bf1888e4fe997875aa6343f9cc2f8559cc45710daec5b0b2f0a4180841d42f",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "LEM-006",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "app/src/main/java/com/example/ui/theme/Theme.kt",
+              "start": 30,
+              "end": 36,
+              "json_pointer": "$",
+              "line_count": 51,
+              "source_sha256": "95c683555468f01cc15e035829324fb096ad9b0d6ab55aa88e798a6320c9b3e3",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/ui/screens/DashboardScreen.kt",
+              "start": 74,
+              "end": 94,
+              "json_pointer": "$.related_locations[0]",
+              "line_count": 123,
+              "source_sha256": "e27c8af20afb0f29209353c8465681686e43f801f7a29d637d964dce485a16d8",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/ui/screens/ExperimentsScreen.kt",
+              "start": 65,
+              "end": 79,
+              "json_pointer": "$.related_locations[1]",
+              "line_count": 86,
+              "source_sha256": "826511ba7d5430cb88f58f71a2ffedbb2ee6b5d29fb1d90697e141b29feb0967",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/ui/navigation/Screen.kt",
+              "start": 3,
+              "end": 7,
+              "json_pointer": "$.related_locations[2]",
+              "line_count": 8,
+              "source_sha256": "961d6c64ce136928d2219eb9b60fa2312c54bba963d643ae8db68cb2fe41ac09",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "LEM-007",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "app/src/main/java/com/example/data/local/AppDatabase.kt",
+              "start": 11,
+              "end": 15,
+              "json_pointer": "$",
+              "line_count": 35,
+              "source_sha256": "69bf1888e4fe997875aa6343f9cc2f8559cc45710daec5b0b2f0a4180841d42f",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/data/model/ExperimentResult.kt",
+              "start": 9,
+              "end": 36,
+              "json_pointer": "$.related_locations[0]",
+              "line_count": 37,
+              "source_sha256": "c960abc8abec8ea5c7a417f21edc4dc8a68d02288c957a942779deea157c0d2f",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/data/model/LedgerEntry.kt",
+              "start": 9,
+              "end": 18,
+              "json_pointer": "$.related_locations[1]",
+              "line_count": 19,
+              "source_sha256": "12ec3ad908d69b4e6a5f09a5ae0c29ae5a10c4c29c67ad1f32abef8b71f7bf4d",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/api/ApiKeyStore.kt",
+              "start": 16,
+              "end": 38,
+              "json_pointer": "$.related_locations[2]",
+              "line_count": 39,
+              "source_sha256": "0de81eafcec1448359d71f409d2434740dd7e34f7b292e33f7c3483bae80475b",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/viewmodel/ResearchViewModel.kt",
+              "start": 22,
+              "end": 35,
+              "json_pointer": "$.related_locations[3]",
+              "line_count": 101,
+              "source_sha256": "18811b6a1c70339936938b03f76208da10af8a9b5061f096c32d5a1ea29d0f4d",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "LEM-008",
+          "classification": "dopuszczalny mechanizm",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "narrative_category_and_reason_requires_semantic_review",
+          "locations": [
+            {
+              "path": "app/src/main/java/com/example/research/ExperimentRunner.kt",
+              "start": 60,
+              "end": 68,
+              "json_pointer": "$",
+              "line_count": 199,
+              "source_sha256": "b2470fd5d3ede1e1a01167c7111ea728dc4555152cc64953aae04dd78d9c510e",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/ui/screens/ModelsScreen.kt",
+              "start": 178,
+              "end": 194,
+              "json_pointer": "$.related_locations[0]",
+              "line_count": 198,
+              "source_sha256": "d4471672601a40409c038958d06305340a86695a62a28c9bbe944d481469d08b",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/api/ResearchAgent.kt",
+              "start": 10,
+              "end": 12,
+              "json_pointer": "$.related_locations[1]",
+              "line_count": 59,
+              "source_sha256": "e2a6d8ce5ce91152ed1feb0d16c496882fd0145b2e7a9cbc62c0b038505ac8dc",
+              "status": "valid"
+            },
+            {
+              "path": "app/src/main/java/com/example/viewmodel/ResearchViewModel.kt",
+              "start": 70,
+              "end": 99,
+              "json_pointer": "$.related_locations[2]",
+              "line_count": 101,
+              "source_sha256": "18811b6a1c70339936938b03f76208da10af8a9b5061f096c32d5a1ea29d0f4d",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        }
+      ],
+      "all_scan_hashes_expected": true
+    },
+    {
+      "repo": "klb-t/loom",
+      "sha": "0b23fa64c1de955c947349feef7bb67c05763f97",
+      "findings_sha256": "91f5fbb51ab092002dcf0acf32cb4d7b7f92c1ac795eb0989126657ed16388e8",
+      "scan_summary_sha256": "ef1b5e2e64f046e1d6da0ead34cbd7e2ad5f6a5f15fee3f545dadb51bd7553ae",
+      "scanner_sha256": "88b6f460b471347a937a88bd11ebc7b0a504b022014a9ca0693f56835e4489d8",
+      "rules_sha256": "b35034619f42b0199bd9a3c26245dcd6be0dd83ecffa8beb7bb4c01731e4e963",
+      "finding_count": 7,
+      "classifications": {
+        "naruszenie": 5,
+        "dopuszczalny mechanizm": 1,
+        "niepewne": 1,
+        "już naprawione": 0
+      },
+      "location_count": 17,
+      "valid_location_count": 17,
+      "required_fields_pass_count": 7,
+      "inventory_denominator": {
+        "by_category": {
+          "build": 1,
+          "docs": 6,
+          "other": 1,
+          "product": 9,
+          "tests": 2,
+          "tooling": 1,
+          "vendor": 1
+        },
+        "definition": "All recursive tracked tree entries at the stated commit, including blobs, symlinks and gitlinks; git history and untracked working files excluded. Manifest mode instead uses the explicit supplied list, whose completeness is not independently verified.",
+        "eligible_code_entries": 9,
+        "scanned_code_entries": 9,
+        "scanned_lines": 1068,
+        "semantic_reviewed_entries": 0,
+        "tracked_entries": 21
+      },
+      "finding_checks": [
+        {
+          "id": "LOOM-001",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "src/db_messages.cpp",
+              "start": 156,
+              "end": 162,
+              "json_pointer": "$",
+              "line_count": 169,
+              "source_sha256": "fa24a8130fcba8ee866b9cd9302d52a69f194e9beb4045a5af2cfa1eda7263ae",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "LOOM-002",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "src/db_graph.cpp",
+              "start": 7,
+              "end": 20,
+              "json_pointer": "$",
+              "line_count": 62,
+              "source_sha256": "bb405c781ee01051b231e6d91558f89e440b955ccd767809b168dbbdd033b9d1",
+              "status": "valid"
+            },
+            {
+              "path": "src/db_graph.cpp",
+              "start": 49,
+              "end": 51,
+              "json_pointer": "$.related_locations[0]",
+              "line_count": 62,
+              "source_sha256": "bb405c781ee01051b231e6d91558f89e440b955ccd767809b168dbbdd033b9d1",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "LOOM-003",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "src/db_messages.cpp",
+              "start": 56,
+              "end": 91,
+              "json_pointer": "$",
+              "line_count": 169,
+              "source_sha256": "fa24a8130fcba8ee866b9cd9302d52a69f194e9beb4045a5af2cfa1eda7263ae",
+              "status": "valid"
+            },
+            {
+              "path": "src/db_messages.cpp",
+              "start": 7,
+              "end": 14,
+              "json_pointer": "$.related_locations[0]",
+              "line_count": 169,
+              "source_sha256": "fa24a8130fcba8ee866b9cd9302d52a69f194e9beb4045a5af2cfa1eda7263ae",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "LOOM-004",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "include/loom/db.h",
+              "start": 89,
+              "end": 142,
+              "json_pointer": "$",
+              "line_count": 164,
+              "source_sha256": "c406663155950a98489f9666e7ee4aab212b9c96f7a90c2d1435b405ecb3daed",
+              "status": "valid"
+            },
+            {
+              "path": "src/db.cpp",
+              "start": 27,
+              "end": 32,
+              "json_pointer": "$.related_locations[0]",
+              "line_count": 293,
+              "source_sha256": "8fc73145dcd9499675c1a72340234655deff48787bad6a3bb047e0d6990a05d7",
+              "status": "valid"
+            },
+            {
+              "path": "include/loom/db.h",
+              "start": 17,
+              "end": 70,
+              "json_pointer": "$.related_locations[1]",
+              "line_count": 164,
+              "source_sha256": "c406663155950a98489f9666e7ee4aab212b9c96f7a90c2d1435b405ecb3daed",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "LOOM-005",
+          "classification": "naruszenie",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "src/db.cpp",
+              "start": 153,
+              "end": 193,
+              "json_pointer": "$",
+              "line_count": 293,
+              "source_sha256": "8fc73145dcd9499675c1a72340234655deff48787bad6a3bb047e0d6990a05d7",
+              "status": "valid"
+            },
+            {
+              "path": "src/db.cpp",
+              "start": 40,
+              "end": 46,
+              "json_pointer": "$.related_locations[0]",
+              "line_count": 293,
+              "source_sha256": "8fc73145dcd9499675c1a72340234655deff48787bad6a3bb047e0d6990a05d7",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "LOOM-006",
+          "classification": "niepewne",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "not_claimed_as_allowed_mechanism",
+          "locations": [
+            {
+              "path": "include/loom/loom.h",
+              "start": 44,
+              "end": 48,
+              "json_pointer": "$",
+              "line_count": 55,
+              "source_sha256": "008a26d2743adeaa066aedc45d9685314ce8418a8be6d6b821a5f6a37544420a",
+              "status": "valid"
+            },
+            {
+              "path": "CMakeLists.txt",
+              "start": 11,
+              "end": 16,
+              "json_pointer": "$.related_locations[0]",
+              "line_count": 52,
+              "source_sha256": "527da8e6ff9b8b5f70f867a2ce1c2900eafb4399fbb8e7407f672f575d8cf142",
+              "status": "valid"
+            },
+            {
+              "path": "docs/PORT_AUDIT.md",
+              "start": 86,
+              "end": 97,
+              "json_pointer": "$.related_locations[1]",
+              "line_count": 97,
+              "source_sha256": "ff4f37a54f2ec7cf7b83cfb435ba05688c52f33de618e28d49527b9af45d7faf",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "id": "LOOM-007",
+          "classification": "dopuszczalny mechanizm",
+          "field_aliases": {
+            "evidence": "evidence",
+            "impact": "impact",
+            "requirement_source": "requirement_source",
+            "alternatives": "alternatives",
+            "target_data_graph_object": "target_data_graph",
+            "consuming_paths": "consumers",
+            "acceptance_test": "acceptance_test",
+            "migration_risk": "migration_risk"
+          },
+          "required_fields_valid": true,
+          "r42_justification": "narrative_category_and_reason_requires_semantic_review",
+          "locations": [
+            {
+              "path": "include/loom/event_bus.h",
+              "start": 14,
+              "end": 22,
+              "json_pointer": "$",
+              "line_count": 49,
+              "source_sha256": "a835fda5df33bb46a951efb517ccbc5c066c1e07698b249b1594c4d4f3aa9678",
+              "status": "valid"
+            },
+            {
+              "path": "src/db_messages.cpp",
+              "start": 151,
+              "end": 153,
+              "json_pointer": "$.related_locations[0]",
+              "line_count": 169,
+              "source_sha256": "fa24a8130fcba8ee866b9cd9302d52a69f194e9beb4045a5af2cfa1eda7263ae",
+              "status": "valid"
+            },
+            {
+              "path": "src/db_internal.h",
+              "start": 130,
+              "end": 153,
+              "json_pointer": "$.related_locations[1]",
+              "line_count": 172,
+              "source_sha256": "66c55d5876d739cdaf8d7e271e29bd5a5ac2e7e780f16d42ffb722a902edc9d1",
+              "status": "valid"
+            },
+            {
+              "path": "CMakeLists.txt",
+              "start": 25,
+              "end": 34,
+              "json_pointer": "$.related_locations[2]",
+              "line_count": 52,
+              "source_sha256": "527da8e6ff9b8b5f70f867a2ce1c2900eafb4399fbb8e7407f672f575d8cf142",
+              "status": "valid"
+            }
+          ],
+          "errors": [],
+          "warnings": []
+        }
+      ],
+      "all_scan_hashes_expected": true
+    }
+  ],
+  "issues": [],
+  "limitations": [
+    "Locators embedded only in free text are not parsed or validated.",
+    "Required-field validation proves presence and basic shape, not truth or completeness of semantic analysis.",
+    "Narrative R42 justifications remain narrative; no new exception approval is made.",
+    "No inference that a non-executed source-path analysis is a runtime experiment.",
+    "This validates inputs by recorded hashes; edits after this receipt require rerun."
+  ]
+}

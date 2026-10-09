@@ -1,0 +1,23 @@
+{
+  "checked_at_utc": "2026-10-09T04:46:03Z",
+  "method": "git ls-remote --heads https://github.com/klb-t/chatadhd.git refs/heads/gpt/data-graph-engine-2026-10-09 refs/heads/gpt/thread7-real-2026-10-09",
+  "exit_code": 0,
+  "stdout": "",
+  "branches": [
+    {
+      "session": "B",
+      "branch": "gpt/data-graph-engine-2026-10-09",
+      "sha": null,
+      "status": "not advertised at final scoped check"
+    },
+    {
+      "session": "C",
+      "branch": "gpt/thread7-real-2026-10-09",
+      "sha": null,
+      "status": "not advertised at final scoped check"
+    }
+  ],
+  "independently_verified_corrections": 0,
+  "conclusion": "No available B/C SHA to test. This does not prove absent unpublished work. Audit publication is not blocked.",
+  "resume": "On a future available SHA, compare source paths and rerun finding-specific acceptance tests with offline transport. Distinguish fix vs data relocation vs unused config vs narrowed scope. No idle refresh."
+}

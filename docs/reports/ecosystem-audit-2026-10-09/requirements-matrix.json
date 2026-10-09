@@ -1,0 +1,94 @@
+{
+  "requirement_sources": [
+    "https://github.com/klb-t/chatadhd/blob/9e20f99ab27e7cd45e1892f83bf60fbe60db3de9/docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+    "User task A, 2026-10-09"
+  ],
+  "interpretation": "A1–A7 są osiami tego audytu, nie nową architekturą obok R15/R33/R40/R41. Statusy dotyczą zakresów jawnie podanych w coverage-index.",
+  "rows": [
+    {
+      "id": "A1/R42",
+      "requirement": "Dane i polityki poza kodem; dokładny test R42 i sześć wyjątków",
+      "repositories": {
+        "chatadhd": "naruszenie CH-001/002/007/008; wyjątki CH-014",
+        "Watchdog-JH16": "naruszenie WD-001/005/006/009; wyjątki WD-007",
+        "Custom-Keyboard-Pro": "naruszenie CKP-A-001/002/004/005/007; wyjątki 009/010",
+        "AGEDS": "naruszenie EA-AGEDS-001/004/005/008/009; wyjątki 010/012",
+        "LEM-Workbench": "naruszenie LEM-002/006; mechanizm LEM-008",
+        "loom": "naruszenie LOOM-001/004; wyjątki LOOM-007 (baseline)"
+      }
+    },
+    {
+      "id": "A2/R33/R40",
+      "requirement": "Jawne decyzje, zgoda, źródło wniosku i lossy transforms",
+      "repositories": {
+        "chatadhd": "naruszenie CH-005/006/010/011; ścieżki legacy",
+        "Watchdog-JH16": "naruszenie WD-002/009/010/011; PROPOSED pozostaje",
+        "Custom-Keyboard-Pro": "naruszenie CKP-A-003/005; zgoda działa 009; hipoteza 012",
+        "AGEDS": "naruszenie EA-AGEDS-002/005/007; jawny upload 012",
+        "LEM-Workbench": "naruszenie LEM-003/004/005; ręczny start LEM-008",
+        "loom": "naruszenie LOOM-001/002/003/005 (baseline)"
+      }
+    },
+    {
+      "id": "A3/R40/R41",
+      "requirement": "Alternatywy reprezentowalne; default nie ogranicza domeny",
+      "repositories": {
+        "chatadhd": "naruszenie CH-001/002/003/010/011; naprawione CH-012/013",
+        "Watchdog-JH16": "naruszenie WD-001/002/003/005/009/010; naprawione WD-008",
+        "Custom-Keyboard-Pro": "naruszenie CKP-A-001/003/007; rzeczywista kaskada 010",
+        "AGEDS": "naruszenie EA-AGEDS-001/002/003/007/009; seed 011 działa",
+        "LEM-Workbench": "naruszenie LEM-001/002/004/005",
+        "loom": "naruszenie LOOM-001/002/004; limit można nadpisać (baseline)"
+      }
+    },
+    {
+      "id": "A4/R15/R33/R41",
+      "requirement": "Graf obejmuje wszystkie używane dane; statusy i dowody",
+      "repositories": {
+        "chatadhd": "częściowe: CH-004/006/009; domknięcie eksperymentów CH-015 niepewne",
+        "Watchdog-JH16": "częściowe relacje/snapshoty; WD-004 i flow-map, brak dowodu pełności",
+        "Custom-Keyboard-Pro": "naruszenie CKP-A-006 w Settings/AI/Goal; reszta poza analizą semantyczną",
+        "AGEDS": "naruszenie EA-AGEDS-006 w konfiguracji/wyborach, dowody eksportowane",
+        "LEM-Workbench": "naruszenie LEM-007 w całej małej implementacji",
+        "loom": "LOOM-006 niepewne: jawny compatibility baseline bez UI/modeli"
+      }
+    },
+    {
+      "id": "A5/R41",
+      "requirement": "Zmiana danych zmienia rzeczywistego konsumenta; JSON nie wystarcza",
+      "repositories": {
+        "chatadhd": "naruszenie CH-003/004/005; CH-013 działa na testowanym helperze",
+        "Watchdog-JH16": "naruszenie WD-001/002/003; WD-008 działa",
+        "Custom-Keyboard-Pro": "naruszenie CKP-A-003; CKP-A-008/010 działa; CKP-A-011 niepewne",
+        "AGEDS": "naruszenie EA-AGEDS-003; EA-AGEDS-011 działa",
+        "LEM-Workbench": "naruszenie LEM-001/002/006",
+        "loom": "parametr limit konsumowany; polityki zaszyte w metodach (baseline)"
+      }
+    },
+    {
+      "id": "A6/R40/R41",
+      "requirement": "Basic kompletny preset; Advanced/Expert edytują te same dane",
+      "repositories": {
+        "chatadhd": "częściowe CH-004/009/013, pełny E2E nieuruchomiony",
+        "Watchdog-JH16": "częściowa konfiguracja; pełne poziomy UI niezweryfikowane",
+        "Custom-Keyboard-Pro": "wspólne ustawienia i scope CKP-A-010; pełny graf brak 006",
+        "AGEDS": "seed działa 011; pełne profile i exclusion brak 003/007",
+        "LEM-Workbench": "brak konsumpcji pełnego presetu LEM-001",
+        "loom": "nie dotyczy obecnego API bez UI; nie jest dowodem pełnej aplikacji"
+      }
+    },
+    {
+      "id": "A7/R33/R41",
+      "requirement": "Eksperymenty opt-in; zakres/częstotliwość/wolumen/budżet/checkpoint",
+      "repositories": {
+        "chatadhd": "CH-005 naruszenie auto semantic batch; CH-015 hipoteza kompletnej macierzy",
+        "Watchdog-JH16": "WD-008 potwierdza tylko assistant opt-in/budget; WD-010 scheduler; nie całą macierz",
+        "Custom-Keyboard-Pro": "CKP-A-009 lokalna zgoda działa; pełny programme checkpoint poza pokryciem",
+        "AGEDS": "EA-AGEDS-012 jawne upload; recipe/run wymaga 001/002; nie dowód całej macierzy",
+        "LEM-Workbench": "LEM-008 ręczne instrument checks; brak cyklicznego programu nie udaje wykonania",
+        "loom": "brak eksperymentalnego runnera w baseline; nie nakładamy nowej roli historycznemu API"
+      }
+    }
+  ],
+  "private": "Separate private matrix/report; no private findings copied here."
+}

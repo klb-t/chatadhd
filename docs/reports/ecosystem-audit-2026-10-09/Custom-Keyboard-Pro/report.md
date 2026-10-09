@@ -41,13 +41,15 @@ Test właściciela: **czy ktoś może chcieć zmienić wartość bez zmiany algo
 
 **Źródło wymagania:** OWNER_REQUIREMENTS R40, R41, R42; bieżący prompt: alternatywy/profili i domyślne ≠ ograniczenie; AGENTS.md: choice as instance of shared model.
 
-**Interpretacja:** Ocena autora audytu wynika z powyższej ścieżki; nie przypisuje właścicielowi dodatkowego wymagania.
+**Interpretacja:** Interpretacja audytora: ponieważ byId wybiera pierwsze dopasowanie po połączeniu BUILT_IN + custom, edytowalne dane użytkownika nie mogą przesłonić wbudowanego zadania o identycznym ID. To częściowe naruszenie warstwowania R40, a nie twierdzenie, że custom tasks nie działają.
 
 **Alternatywy:** osobne custom ID — implemented; override built-in ID — shadowed by first entry; disable/exclude built-in persistently — not represented in AiTask.
 
 **Dane/graf i konsument:** wersjonowany TaskRecipe + PromptTemplate; warstwy default/user + exclusion tombstone; effective task ID/version/hash → app/src/main/java/com/example/core/ai/AiTasks.kt:all/byId; app/src/main/java/com/example/ime/CustomKeyboardIme.kt:runAiTask; app/src/main/java/com/example/ui/kb/Panels.kt:AiPanel.
 
 **Akceptacja:** Utwórz custom id=fix o odmiennym promptcie i sprawdź request body; ma użyć wybranej warstwy. Wyklucz fix, zaktualizuj pack i potwierdź brak przywrócenia. Błędny custom JSON ma dać jawny błąd, nie pusty sukces.
+
+**Rekomendacja:** Rekomendacja audytora: przenieść wbudowane receptury do danych i podłączyć jeden resolver warstw oraz wykluczeń do byId i UI; zachować dotychczasowe ID i obecny preset.
 
 **Ryzyko migracji:** Zachować istniejące ID i kolejność UI; migracja kolizji wymaga jawnej reguły i zapisania skutecznego źródła.
 
@@ -63,13 +65,15 @@ Test właściciela: **czy ktoś może chcieć zmienić wartość bez zmiany algo
 
 **Źródło wymagania:** R42: brak/uszkodzony pack → jawny błąd lub embedded pack generowany z danych; R40: trwałe wykluczenie; AGENTS.md: endpoints/model defaults as catalogue/profile data.
 
-**Interpretacja:** Ocena autora audytu wynika z powyższej ścieżki; nie przypisuje właścicielowi dodatkowego wymagania.
+**Interpretacja:** Interpretacja audytora: compatibility fallback przechowuje zmienne dane providerów w kodzie i może działać po błędzie katalogu. Uzasadnienie kompatybilnością nie spełnia wyjątku minimalnego bootstrapu R42; z samego fallbacku nie wynika samoczynna wysyłka.
 
 **Alternatywy:** custom > fetched > bundled — implemented, hard-coded precedence; legacy compatibility preset as data — not implemented; error vs verified embedded snapshot — no explicit policy in read path.
 
 **Dane/graf i konsument:** ProviderCatalogue version; compatibility preset generated from same data; failure policy + exclusions + resolution provenance → app/src/main/java/com/example/core/discovery/ProviderCatalog.kt:all/byId; app/src/main/java/com/example/core/ai/AiClient.kt:AiConfig.from/effectiveBaseUrl.
 
 **Akceptacja:** Podmień bundled katalog na malformed JSON: bez jawnego fallback preset nie może powstać gotowa konfiguracja do sieci. Zmiana default endpoint/model w danych zmienia request bez modyfikacji Kotlin. Wyklucz provider i sprawdź, że LEGACY go nie wskrzesza.
+
+**Rekomendacja:** Rekomendacja audytora: zapisać compatibility provider preset w danych lub generowanym embedded packu, jawnie określić obsługę błędu katalogu i podłączyć wykluczenia do wszystkich fallbacków; utrzymać wiązanie klucza do providera.
 
 **Ryzyko migracji:** Stare instalacje muszą dostać jawny compatibility preset; nie usuwać wsparcia legacy ani wiązania klucza do providera.
 
@@ -85,13 +89,15 @@ Test właściciela: **czy ktoś może chcieć zmienić wartość bez zmiany algo
 
 **Źródło wymagania:** R42: weights/limits as data; R15/R40/R41; AGENTS.md: separate mechanism/policy; unknown cost remains unknown.
 
-**Interpretacja:** Ocena autora audytu wynika z powyższej ścieżki; nie przypisuje właścicielowi dodatkowego wymagania.
+**Interpretacja:** Interpretacja audytora: reprezentowalność wag w klasie Policy nie oznacza ich konfigurowalności przez aplikację, skoro badany konsument konstruuje tylko trzy pola. use/avoid zachowują część wyboru tras; stwierdzenie dotyczy wag, braku kosztów i pozostałych parametrów wskazanej ścieżki.
 
 **Alternatywy:** localOnly/use/avoid — wired; weights/maxSteps/unknown-cost policy — engine parameters exist partly; not wired from Settings; explicit route selection — use/avoid constrains; no full route selector in ConvertRunner.
 
 **Dane/graf i konsument:** ConversionPolicy version; cost assessment incl. unknown; route candidates and selected reason; UI presentation policy → app/src/main/java/com/example/core/matrix/Planner.kt:price/search/plan; app/src/main/java/com/example/io/ConvertRunner.kt:convert.
 
 **Akceptacja:** Zmień wyłącznie profil wag i uzyskaj inne uporządkowanie kontrolowanych tras. Przetestuj unknown-cost jako osobne strategie: ask/penalty/interval/deny; zachowaj unknown w śladzie. Pokaż wszystkie trasy w wybranym zakresie; wybór trasy wpływa na execute. Zmień maxSteps w danych i wykryj trasę sześciu kroków.
+
+**Rekomendacja:** Rekomendacja audytora: podłączyć istniejący Policy do ustawień/profili i opisu grafowego, zachować obecny ranking jako preset oraz wystawić uzasadnienie wyboru i stan nieznanego kosztu; nie tworzyć równoległego plannera.
 
 **Ryzyko migracji:** Zmiana wag bez zachowania starego presetu zmieni trasę i możliwy koszt/prywatność; zachować bieżący profil jako kompatybilny.
 
@@ -107,13 +113,15 @@ Test właściciela: **czy ktoś może chcieć zmienić wartość bez zmiany algo
 
 **Źródło wymagania:** R42: UI text/defaults/limits are data; R40 default layers; AGENTS.md: expert UI projection of canonical settings.
 
-**Interpretacja:** Ocena autora audytu wynika z powyższej ścieżki; nie przypisuje właścicielowi dodatkowego wymagania.
+**Interpretacja:** Interpretacja audytora: generic UI odczytuje metadane, ale źródłem ich wartości pozostaje Kotlin. Istnienie uogólnionego renderera nie spełnia osobnego wymagania R42 dotyczącego zewnętrznych defaultów, etykiet, opisów i zakresów.
 
 **Alternatywy:** generic setting controls — implemented; translated data descriptions/default presets — not authoritative; Basic/Advanced/Expert same persisted values — implemented; Basic selects complete researched workflow — no such bundle in checked settings path.
 
 **Dane/graf i konsument:** SettingDefinition + localized presentation; DefaultLayer + exclusion/provenance; Application/WorkflowPreset → app/src/main/java/com/example/core/config/SettingsSchema.kt:derive; app/src/main/java/com/example/core/config/SettingsStore.kt:read/resetToDefaults; app/src/main/java/com/example/ui/settings/AllSettingsScreen.kt.
 
 **Akceptacja:** Zmień etykietę i default w packu bez kompilacji; generic kontrolka i fresh settings mają tę samą wersję. Przełącz Basic/Expert bez zmiany skutecznych wartości. Wyklucz default, odśwież pack: nie może wrócić.
+
+**Rekomendacja:** Rekomendacja audytora: przenieść zmienne defaulty i metadane prezentacji do wersjonowanych danych; pozostawić w kodzie typy i klucze kontraktu, a obecny SettingsSchema zachować jako konsumenta tego opisu.
 
 **Ryzyko migracji:** Typy mechanizmu i nazwy kontraktu pozostają w kodzie; migracja istniejących wartości nie może zamienić ich na nowe defaulty.
 
@@ -129,13 +137,15 @@ Test właściciela: **czy ktoś może chcieć zmienić wartość bez zmiany algo
 
 **Źródło wymagania:** R42: weights/thresholds/domain postprocessing as data; R41: analysis recipes/methods; AGENTS.md: explicit information loss/generated and choice as data.
 
-**Interpretacja:** Ocena autora audytu wynika z powyższej ścieżki; nie przypisuje właścicielowi dodatkowego wymagania.
+**Interpretacja:** Interpretacja audytora: opt-in do AI uruchamia źródło sugestii, lecz kod dodatkowo ustala jego pierwszeństwo oraz stratne reguły obróbki. Według przywołanego wymagania alternatywy tych reguł powinny być reprezentowalne jako dane; nie przypisuję właścicielowi preferowanej kolejności ani strategii obróbki.
 
 **Alternatywy:** AI off / minChars / debounce / context length — wired; AI priority/dedup representative/postprocess selection — fixed control flow; raw/multiline/quoted continuation — not preserved in suggestion value.
 
 **Dane/graf i konsument:** SuggestionPolicy; ContextSelectionRecipe; PostprocessRecipe + loss record; ranking evidence → app/src/main/java/com/example/core/suggest/SuggestionEngine.kt:collectLocal/mergeAi/cleanCompletion.
 
 **Akceptacja:** Ustaw profile AI-first/local-first/score and verify exact source order for identical candidates. Dla wieloliniowego raw wyniku przechowaj raw plus observed loss i sprawdź profile keep/truncate. Kolizja text z kilku źródeł zachowuje provenance wszystkich, a representative wynika z wybranej polityki.
+
+**Rekomendacja:** Rekomendacja audytora: wydzielić wybór priorytetów, deduplikację, selekcję kontekstu i obróbkę odpowiedzi do wersjonowanych polityk, zachowując obecne zachowanie jako preset oraz raportując zmianę/utratę danych.
 
 **Ryzyko migracji:** Domyślny profil ma zachować aktualne wyniki; zmiana kolejności może psuć pamięć ruchową; testować opóźnione wyniki i brak wysyłki z sensitive.
 
@@ -151,13 +161,15 @@ Test właściciela: **czy ktoś może chcieć zmienić wartość bez zmiany algo
 
 **Źródło wymagania:** R15/R40/R41 i bieżący audyt: all used data in graph; ECOSYSTEM.md: różne grafy mogą mieć różną semantykę; kierunki nie są historycznym zleceniem.
 
-**Interpretacja:** To stwierdzenie zakresowe dla prześledzonych ścieżek, nie dowód globalnej nieobecności jakiegokolwiek grafu w 233 plikach.
+**Interpretacja:** Interpretacja audytora: to stwierdzenie zakresowe dla prześledzonych ścieżek Settings/AI/Goal, nie dowód globalnej nieobecności grafu w 233 plikach. Istniejąca proweniencja Matrix nie dostarcza w tych ścieżkach powiązań wymaganych przez R15/R40/R41; nie wynika z tego nakaz wspólnej centralnej bazy.
 
 **Alternatywy:** per-conversion Provenance — implemented; graph descriptors of settings/prompts/requests/sessions — absent in traced paths; secret reference in graph without secret bytes — recommended design boundary.
 
 **Dane/graf i konsument:** adresowalne Setting/Task/Prompt/Context/Execution/Evidence, native IO semantics; bezpieczne references do device-bound sekretów; wersjonowane powiązania użycia i generacji → app/src/main/java/com/example/core/config/SettingsStore.kt; app/src/main/java/com/example/core/ai/AiClient.kt; app/src/main/java/com/example/core/assistant/GoalAgent.kt.
 
 **Akceptacja:** Dla kontrolowanej operacji odtwórz z graph refs skuteczne ustawienia, prompt hash, metodę kontekstu, wynik i provenance; bytes sekretu nie trafiają do przenośnego grafu. UI edycja i aplikacyjna/półautomatyczna edycja mają ten sam identyfikator danych. Zachować native Matrix provenance podczas mapowania do graph descriptors.
+
+**Rekomendacja:** Rekomendacja audytora: dodać do istniejących prześledzonych ścieżek adresowalne deskryptory użytych ustawień, recipe, kontekstu i wykonania z wersją/proweniencją; zachować native semantykę Matrix i lokalne referencje do sekretów.
 
 **Ryzyko migracji:** Wymóg audytu stosowany do obecnego repo; nie ustanawia centralnej bazy. Retencja prywatnych tekstów musi respektować politykę, a descriptors mogą wskazywać dane poza grafem.
 
@@ -173,13 +185,15 @@ Test właściciela: **czy ktoś może chcieć zmienić wartość bez zmiany algo
 
 **Źródło wymagania:** R42: prompts/recipes/limits as data; R33/R41: configurable experiment variants, methods; AGENTS.md: any goal and useful alternative routes.
 
-**Interpretacja:** Ocena autora audytu wynika z powyższej ścieżki; nie przypisuje właścicielowi dodatkowego wymagania.
+**Interpretacja:** Interpretacja audytora: wersjonowalny prompt i parametry wielkości planu są odrębne od stałych kluczy schematu oraz lokalnej autoryzacji. Wskazane dane pozostają w kodzie mimo możliwości zmiany recipe lub wartości limitu bez zmiany algorytmu.
 
 **Alternatywy:** task maxTokens/temperature — wired; prompt recipe variants — no setting in GoalPrompt; proposal-count policy — fixed 1..4.
 
 **Dane/graf i konsument:** GoalPlanningRecipe version/hash; validated ResourcePolicy; PromptInput catalogue projection → app/src/main/java/com/example/assistant/GoalAssistantActivity.kt:modelPlan; app/src/main/java/com/example/core/assistant/GoalAgent.kt:checkedPlans; app/src/main/java/com/example/core/assistant/GoalPrompt.kt.
 
 **Akceptacja:** Dwa wersjonowane prompty z tym samym schematem dają dwa udokumentowane requesty bez rekompilacji. Uzgodniony limit alternatyw odczytywany przez prompt, parser i GoalAgent; brak rozbieżnych limitów. Prompt nie może zmienić autoryzacji lokalnego executora.
+
+**Rekomendacja:** Rekomendacja audytora: przenieść prompt recipe i zmienne limity do danych, podłączyć tę samą zatwierdzoną politykę do promptu i walidatorów oraz utrzymać autoryzację executora niezależną od tekstu promptu.
 
 **Ryzyko migracji:** Nie zmieniać niezależnych mechanizmów uprawnień i walidacji przez edycję tekstu promptu; contract keys pozostają w kodzie.
 
@@ -195,13 +209,15 @@ Test właściciela: **czy ktoś może chcieć zmienić wartość bez zmiany algo
 
 **Źródło wymagania:** bieżący audyt: nie kopiować przyjętych przyrostów; R42 i real consumer requirement.
 
-**Interpretacja:** Ocena autora audytu wynika z powyższej ścieżki; nie przypisuje właścicielowi dodatkowego wymagania.
+**Interpretacja:** Interpretacja audytora: prześledzony łańcuch UI → resolver → AiConfig → request potwierdza przyjęcie naprawy wiring parametrów tasków. Nie potwierdza pełnej eksternalizacji danych ani wykonania testów Android w tym audycie.
 
 **Alternatywy:** task override — implemented; provider/global inheritance — implemented with source labels; invalid profile blocks request — implemented.
 
 **Dane/graf i konsument:** istniejące aiTaskProfilesJson -> docelowo TaskParameters node → app/src/main/java/com/example/ui/settings/AiTaskProfileSection.kt; app/src/main/java/com/example/core/ai/AiTaskProfiles.kt; app/src/main/java/com/example/core/ai/AiClient.kt.
 
 **Akceptacja:** Ustawić różne maxTokens dla GOAL_PLAN/INLINE i przechwycić obydwa request bodies. Wstrzyknąć invalid profile i potwierdzić zero transport calls.
+
+**Rekomendacja:** Rekomendacja audytora: oznaczyć dawny przyrost wiring jako przyjęty i zachować jego testy przy dalszej migracji defaultów; nie odtwarzać starego zadania jako nowej usterki.
 
 **Ryzyko migracji:** Zachować działające wiring i precedence; ten audyt niezależnie prześledził źródła, nie uruchomił Android testów.
 
@@ -217,13 +233,15 @@ Test właściciela: **czy ktoś może chcieć zmienić wartość bez zmiany algo
 
 **Źródło wymagania:** AGENTS.md: observations/user declarations/hypotheses/outcomes distinct; sharing does not transfer authority; R42 wyjątki 1/3; bieżący audyt: odróżnić mechanizm od naruszenia.
 
-**Interpretacja:** Ocena autora audytu wynika z powyższej ścieżki; nie przypisuje właścicielowi dodatkowego wymagania.
+**Interpretacja:** Interpretacja audytora: kontrola rewizji, review/ticket i oddzielne stany wyników realizują lokalny mechanizm autoryzacji oraz epistemicznego rozróżnienia. Nie są dodatkowym wyjątkiem od R42 ani dowodem działania wszystkich adapterów; dopuszczenie dotyczy wskazanych nazw kontraktu i słownika mechanizmu.
 
 **Alternatywy:** text/voice/import proposals — same local lifecycle; unimplemented host adapter — explicit missing capability; verified/user-confirmed outcome — distinct states.
 
 **Dane/graf i konsument:** Capability/Review/ExecutionReceipt descriptors; runtime authority stays local → app/src/main/java/com/example/core/assistant/GoalAgent.kt; app/src/main/java/com/example/core/assistant/GoalSession.kt; app/src/main/java/com/example/assistant/GoalAssistantActivity.kt.
 
 **Akceptacja:** Late response after edit/pause nie może zaakceptować ani uruchomić starego planu. Import proponowanego planu nie przywraca review/ticket. USER_CONFIRMED nie jest serializowany jako VERIFIED.
+
+**Rekomendacja:** Rekomendacja audytora: zachować rozdzielenie propozycji, zgody i wyniku oraz lokalne review/ticket podczas eksternalizacji metadanych; pozwolenia nie mogą wynikać z deklaracji w profilu ani odpowiedzi modelu.
 
 **Ryzyko migracji:** Przenoszenie metadata do danych nie może umożliwić deklaracją nadania realnych uprawnień lub wykonania niepodłączonego adaptera.
 
@@ -239,13 +257,15 @@ Test właściciela: **czy ktoś może chcieć zmienić wartość bez zmiany algo
 
 **Źródło wymagania:** AGENTS.md: same contextual/expert values and real consumer; R40 częściowa zgodność; brak pełnych warstw/exclusions opisany osobno.
 
-**Interpretacja:** Ocena autora audytu wynika z powyższej ścieżki; nie przypisuje właścicielowi dodatkowego wymagania.
+**Interpretacja:** Interpretacja audytora: wskazane odczyty snapshotu i zapis override dowodzą rzeczywistego podłączenia kaskady w zbadanych ścieżkach. Nie dowodzą kompletności wszystkich konsumentów, grafowych defaultów ani wykluczeń. Wyjątki R42 dotyczą nazw kontraktu i mechanizmu, nie całych plików ani zmiennych wartości polityki.
 
 **Alternatywy:** CASCADE/LAYOUT_ONLY/DEFAULTS_ONLY — wired; Basic/Expert visibility — separate from precedence; permanent default exclusion — not supplied by this mechanism.
 
 **Dane/graf i konsument:** istniejący SettingsOverrides/ResolvedSettings/provenance → app/src/main/java/com/example/ime/CustomKeyboardIme.kt:keyboardSettings; app/src/main/java/com/example/ui/settings/LayoutInstanceSettings.kt; app/src/main/java/com/example/engine/EngineRuntime.kt.
 
 **Akceptacja:** Zmiana scoped autoCapitalize wpływa tylko na wybraną instancję, a UI source wskazuje tę instancję. Zmiana poziomu UI nie zmienia snapshot. DEFAULTS_ONLY zachowuje overrides jako suppressed, umożliwiając powrót.
+
+**Rekomendacja:** Rekomendacja audytora: zachować istniejący resolver, jego proweniencję i wspólne dane UI/runtime; uzupełniać brakujące warstwy/defaulty bez budowania drugiego mechanizmu kaskady.
 
 **Ryzyko migracji:** Nie zastępować działających resolverów niesprawdzoną równoległą ścieżką.
 
@@ -261,13 +281,15 @@ Test właściciela: **czy ktoś może chcieć zmienić wartość bez zmiany algo
 
 **Źródło wymagania:** bieżący audyt: existence of JSON ≠ consumer; AGENTS.md: actual consumers.
 
-**Interpretacja:** Hipoteza brakującego wiring, nie ustalona obietnica właściciela.
+**Interpretacja:** Interpretacja audytora: brak znalezionego czytnika root profiles w podanym zakresie pozostawia hipotezę brakującego wiring; pliki mogą być referencją lub dokumentacją. Nie traktuję domniemanej roli operacyjnej jako wypowiedzianego wymagania właściciela.
 
 **Alternatywy:** documentation/reference profiles — consistent with observed usage; authoritative runtime profiles — no wiring evidence in audited build/source.
 
 **Dane/graf i konsument:** wyraźny status reference_only albo operacyjny ProviderProfile; consumer registry → validate_profiles.py; production consumer unresolved.
 
 **Akceptacja:** Oznaczyć role pliku; jeśli operacyjny, zmienić pole w profilu i wykazać różnicę request body; jeśli referencyjny, test nie może reklamować runtime coverage.
+
+**Rekomendacja:** Rekomendacja audytora: jawnie oznaczyć te pliki jako referencyjne albo wskazać ich operacyjnego konsumenta i test wpływu zmiany profilu na request; walidację obecności pól opisywać wyłącznie jako strukturalną.
 
 **Ryzyko migracji:** Nie podłączać automatycznie samej dokumentacji do sieci ani nie przenosić credential authority.
 
@@ -283,13 +305,15 @@ Test właściciela: **czy ktoś może chcieć zmienić wartość bez zmiany algo
 
 **Źródło wymagania:** AGENTS.md: preserve user target/focus and private input boundary; bieżący audyt: decyzje w kolejności i async.
 
-**Interpretacja:** Ocena autora audytu wynika z powyższej ścieżki; nie przypisuje właścicielowi dodatkowego wymagania.
+**Interpretacja:** Interpretacja audytora: brak powiązania callbacku z rewizją/celowym polem stanowi konkretną przesłankę hipotezy stale-result, ale bez testu Android nie potwierdza jej skutku użytkowego. Kategoria pozostaje niepewne.
 
 **Alternatywy:** immediate replace — current; target/revision-bound apply — not visible in callback; preview/explicit acceptance after stale result — not represented here.
 
 **Dane/graf i konsument:** EditRequest target/revision + result application policy; request receipt → app/src/main/java/com/example/ime/CustomKeyboardIme.kt:runAiTask; app/src/main/java/com/example/ime/EditorController.kt:replaceSelectionOrAll.
 
 **Akceptacja:** Fake delayed AiClient: request w polu A, zmiana fokus do B, późna odpowiedź; B musi pozostać bez zmian. Zmiana treści w A podczas requestu: wynik trafia do podglądu lub jest ponownie zatwierdzany. Sensitive state po wysłaniu musi blokować późniejszą automatyczną aplikację.
+
+**Rekomendacja:** Rekomendacja audytora: najpierw odtworzyć opóźnioną odpowiedź przy zmianie pola lub jego treści; dopiero po reprodukcji wiązać aplikację wyniku z celem/rewizją albo kierować stary wynik do jawnego podglądu.
 
 **Ryzyko migracji:** Wiązanie revision musi działać z selection i whole-field bez czytania zawartości sensitive; zachować explicit task action UX.
 

@@ -1,0 +1,71 @@
+[
+  {
+    "from": "klb-t/chatadhd",
+    "relation": "contains_active_component",
+    "to": "loom/ kernel + workbench",
+    "source": "chatadhd/loom/README.md; chatadhd/docs/STATE.md",
+    "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9"
+  },
+  {
+    "from": "klb-t/loom",
+    "relation": "preserved_compatibility_predecessor_of",
+    "to": "klb-t/chatadhd/loom",
+    "source": "loom/README.md; docs/PORT_AUDIT.md",
+    "sha": "0b23fa64c1de955c947349feef7bb67c05763f97",
+    "github_archived": false,
+    "same_repository": false
+  },
+  {
+    "from": "klb-t/Custom-Keyboard-Pro",
+    "relation": "current_product_name",
+    "to": "IO Matrix / iOmatrix",
+    "source": "README.md:1-9; ECOSYSTEM.md",
+    "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+    "notes": "Android keyboard is first host; Matrix planner and GoalAgent are separate components. Optional Loom proposal interoperability does not delegate phone execution authority."
+  },
+  {
+    "from": "klb-t/LEM-Workbench",
+    "relation": "research_instrument_for",
+    "to": "LEM programme",
+    "source": "README.md; ENGINEERING_RULES.md; ECOSYSTEM.md",
+    "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+    "notes": "Instrument checks/scaffold do not prove a complete LEM model or training implementation."
+  },
+  {
+    "from": "klb-t/AGEDS",
+    "relation": "distinct_product_with_components",
+    "to": "server + Android ingestion/ASR/evidence workflow",
+    "source": "README.md; AGENTS.md; branches.json",
+    "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+    "notes": "Standalone Android side branch was squash-integrated; not a second product backlog."
+  },
+  {
+    "from": "klb-t/Watchdog-JH16",
+    "relation": "distinct_product_with_components",
+    "to": "API + UI + research/method/automation services",
+    "source": "README.md; AGENTS.md; ECOSYSTEM.md",
+    "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215"
+  },
+  {
+    "from": "public ecosystem projects",
+    "relation": "possible_collaboration_only",
+    "to": "connections described in ECOSYSTEM.md",
+    "source": "ECOSYSTEM.md at separately pinned main SHAs",
+    "notes": "Brainstorm is not proof of dependency, identity, one central runtime, or completed integration."
+  },
+  {
+    "from": "chatadhd/history and archive/* refs",
+    "relation": "retained_history_not_current_product",
+    "to": "requirements/ideas/evidence sources",
+    "source": "OWNER_REQUIREMENTS decision rebuild, do not recover; INDEX; branches.json",
+    "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9"
+  },
+  {
+    "from": "klb-t/ar-drafty",
+    "relation": "separate_private_repository",
+    "to": "private report",
+    "source": "https://github.com/klb-t/ar-drafty/blob/754aba77e6d3bbc3d6c8ddb8edfe75379378e147/docs/reports/ecosystem-audit-2026-10-09/report.md",
+    "sha": "d8af2dd022dacb2f068074158d83e566813592d6",
+    "notes": "No private topology or findings included in public report."
+  }
+]
