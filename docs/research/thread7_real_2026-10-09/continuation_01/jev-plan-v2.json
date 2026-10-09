@@ -1,0 +1,47 @@
+{
+  "schema": "loom.thread7_jev_recovery_plan/2",
+  "programme_id": "thread7-new-key-2026-10-04-eur5",
+  "stage_id": "thread7-continuation-jevadmission-v2",
+  "prior_freeze_sha256": "18d5bcda5fea674b092ffa5e6176d3cb2001d629d766d0ea80baa35fe12d2c2d",
+  "prior_checkpoint_sha256": "137c49ab13681d036b955039a580aff3cb86bc342b62981c484abcfe9363c28e",
+  "prior_code_commit": "69880859802267f1b38b82eeaecd6fdc5522a47a",
+  "legacy_validator_sha256": "a3036e372d30f93659e1933a956b61972a50a50a216ba0340dee1b38d191e805",
+  "arms": ["j_active", "j_directed"],
+  "intentions_per_arm": 8,
+  "policy": {
+    "schema": "loom.jev_admission_policy/2",
+    "id": "thread7-full-intentions-65536-v2",
+    "model": "typesafe/jev-1.13",
+    "provider": {
+      "only": ["typesafe"],
+      "allow_fallbacks": false,
+      "max_price": {"prompt": "0.042", "completion": "0"}
+    },
+    "max_body_bytes": 65536,
+    "max_questions": 32,
+    "prompt_fixed_allowance": 1024,
+    "historical_prompt_unit_usd": "0.000000042",
+    "per_request_planning_allowance_usd": "0.003",
+    "price_status": "historical_unverified_for_live_dispatch"
+  },
+  "campaign": {
+    "nonrenewing_key_cap_usd": "5",
+    "historical_attempts": 720,
+    "historical_verified_cost_usd": "0.873216500",
+    "historical_remaining_usd": "4.126783500",
+    "current_provider_usage_usd": null,
+    "current_reservations_usd": null,
+    "current_key_identity": null,
+    "dispatch_ready": false
+  },
+  "design": {
+    "source_panel": "historical_three_OpenAI_families_44_messages_eight_dependent_queries",
+    "selection": "all_sixteen_frozen_intentions_including_twelve_previous_rejections",
+    "new_inference": false,
+    "quality": null,
+    "no_truncation": true,
+    "scope_renaming": false,
+    "payer": "research_programme_runner.PrivateLedger",
+    "legacy_profile": "jev_live_pilot.py_unchanged"
+  }
+}

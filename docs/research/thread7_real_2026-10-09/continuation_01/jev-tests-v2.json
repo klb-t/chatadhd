@@ -1,0 +1,20 @@
+{
+  "live_provider_eligibility": null,
+  "log_sha256": "0773cc2c78681c8ee7602ba9a8a64f43c92e07a3647aa9b2595bb7ed04a43812",
+  "mechanics_only_new_tests": 14,
+  "module_sha256": "0917ec7e817e147dff6d43a4de073476aacdb2eabf8c25648631c78470fba5f5",
+  "new_admission_tests": 24,
+  "new_paid_calls": 0,
+  "new_paid_cost_usd": "0",
+  "private_freeze_sha256": "ae7d21b780fb40aa318050270c4cff4dd1f468c5b7c0f4b3f573a2a0d7cf43ab",
+  "private_payload_files": 36,
+  "quality_measurement": null,
+  "real_frozen_preparation_tests": 10,
+  "schema": "loom.thread7_test_receipt/1",
+  "source_panel": "historical_three_OpenAI_families_eight_dependent_queries",
+  "stage": "jev-admission-v2",
+  "test_module_sha256": "5ab7c9f9b21cadbebd8e7677a0c07155873585614e194bc9d916ba55fc4c15d2",
+  "tests_failed": 0,
+  "tests_passed": 33,
+  "unchanged_legacy_tests": 9
+}

@@ -1,0 +1,24 @@
+{
+  "schema": "loom.thread7_stage_seal/1",
+  "stage": 3,
+  "name": "versioned_jev_admission",
+  "parent_commit": "cbaffe58ce6b462de6a8815b18b47c211a1eec38",
+  "start_manifest_sha256": "e31ff9c4972b844fd4df265ec2640096d44bc078f872de6e7a7b32edab5daf4e",
+  "files": {
+    "docs/research/thread7_real_2026-10-09/continuation_01/jev-admission-receipt-v2.json": "f30613c68c1d2f1237866f38be6256fe0dd7f594c5fc15d7e83243a51af2bab7",
+    "docs/research/thread7_real_2026-10-09/continuation_01/jev-admission-v2.md": "fdcc4d4cafc5a512355b840394a01654395a546e287b7e37d9fdb39457540e0c",
+    "docs/research/thread7_real_2026-10-09/continuation_01/jev-plan-v2.json": "419a2a322dae4d4172725743c45c159f0b4e9cdca9f0a9dd95e9bed2c3cb10bd",
+    "docs/research/thread7_real_2026-10-09/continuation_01/jev-tests-v2.json": "77e3f8f752d7587e8ae3700023d8ece034cb0e51781fb0216f175f75b479900d",
+    "docs/research/thread7_real_2026-10-09/continuation_01/jev-tests-v2.txt": "0773cc2c78681c8ee7602ba9a8a64f43c92e07a3647aa9b2595bb7ed04a43812",
+    "loom/tools/structure/jev_admission_v2.py": "0917ec7e817e147dff6d43a4de073476aacdb2eabf8c25648631c78470fba5f5",
+    "loom/tools/structure/test_jev_admission_v2.py": "5ab7c9f9b21cadbebd8e7677a0c07155873585614e194bc9d916ba55fc4c15d2"
+  },
+  "test_receipt": "jev-tests-v2.json",
+  "new_calls": 0,
+  "new_cost_usd": "0",
+  "historical_attempts": 720,
+  "historical_cost_usd": "0.873216500",
+  "current_provider_usage": null,
+  "current_provider_reservations": null,
+  "published_before_stage2": "Independent work completed in parallel; no dependency on new context preparation."
+}

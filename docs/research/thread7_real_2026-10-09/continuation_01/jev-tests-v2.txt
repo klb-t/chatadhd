@@ -1,0 +1,38 @@
+test_historical_tariff_cannot_claim_fresh (loom.tools.structure.test_jev_admission_v2.AdmissionMechanics.test_historical_tariff_cannot_claim_fresh) ... ok
+test_independent_byte_gate (loom.tools.structure.test_jev_admission_v2.AdmissionMechanics.test_independent_byte_gate) ... ok
+test_independent_planning_allowance_gate (loom.tools.structure.test_jev_admission_v2.AdmissionMechanics.test_independent_planning_allowance_gate) ... ok
+test_instrument_and_study_are_distinct (loom.tools.structure.test_jev_admission_v2.AdmissionMechanics.test_instrument_and_study_are_distinct) ... ok
+test_invalid_policy_integer_fails (loom.tools.structure.test_jev_admission_v2.AdmissionMechanics.test_invalid_policy_integer_fails) ... ok
+test_malformed_inputs_fixed_safe_codes (loom.tools.structure.test_jev_admission_v2.AdmissionMechanics.test_malformed_inputs_fixed_safe_codes) ... ok
+test_negative_or_nonfinite_policy_fails (loom.tools.structure.test_jev_admission_v2.AdmissionMechanics.test_negative_or_nonfinite_policy_fails) ... ok
+test_no_silent_parameter_drop (loom.tools.structure.test_jev_admission_v2.AdmissionMechanics.test_no_silent_parameter_drop) ... ok
+test_provider_fallback_rejected (loom.tools.structure.test_jev_admission_v2.AdmissionMechanics.test_provider_fallback_rejected) ... ok
+test_question_count_and_empty_text (loom.tools.structure.test_jev_admission_v2.AdmissionMechanics.test_question_count_and_empty_text) ... ok
+test_state_scope_not_renamed (loom.tools.structure.test_jev_admission_v2.AdmissionMechanics.test_state_scope_not_renamed) ... ok
+test_unsupported_question_type_not_executed (loom.tools.structure.test_jev_admission_v2.AdmissionMechanics.test_unsupported_question_type_not_executed) ... ok
+test_valid_stays_unexecuted_and_unknown (loom.tools.structure.test_jev_admission_v2.AdmissionMechanics.test_valid_stays_unexecuted_and_unknown) ... ok
+test_whitespace_counts_for_wire_units (loom.tools.structure.test_jev_admission_v2.AdmissionMechanics.test_whitespace_counts_for_wire_units) ... ok
+test_all16_have_explicit_admission (loom.tools.structure.test_jev_admission_v2.RecoveredRealPreparation.test_all16_have_explicit_admission) ... ok
+test_cannot_overwrite_previous_or_output (loom.tools.structure.test_jev_admission_v2.RecoveredRealPreparation.test_cannot_overwrite_previous_or_output) ... ok
+test_existing_campaign_identity_cannot_change (loom.tools.structure.test_jev_admission_v2.RecoveredRealPreparation.test_existing_campaign_identity_cannot_change) ... ok
+test_frozen_output_has_all_hashes (loom.tools.structure.test_jev_admission_v2.RecoveredRealPreparation.test_frozen_output_has_all_hashes) ... ok
+test_historical_validator_version_cannot_drift (loom.tools.structure.test_jev_admission_v2.RecoveredRealPreparation.test_historical_validator_version_cannot_drift) ... ok
+test_legacy_exactly4_of16 (loom.tools.structure.test_jev_admission_v2.RecoveredRealPreparation.test_legacy_exactly4_of16) ... ok
+test_no_reservation_or_inference (loom.tools.structure.test_jev_admission_v2.RecoveredRealPreparation.test_no_reservation_or_inference) ... ok
+test_prior_integrity_required (loom.tools.structure.test_jev_admission_v2.RecoveredRealPreparation.test_prior_integrity_required) ... ok
+test_raw_and_all_parameter_trees_unchanged (loom.tools.structure.test_jev_admission_v2.RecoveredRealPreparation.test_raw_and_all_parameter_trees_unchanged) ... ok
+test_tighter_study_policy_keeps_all_intentions_and_rejections (loom.tools.structure.test_jev_admission_v2.RecoveredRealPreparation.test_tighter_study_policy_keeps_all_intentions_and_rejections) ... ok
+test_byok_or_missing_billing_stops_after_one_and_survives_resume (loom.tools.structure.test_jev_live_pilot.JevTests.test_byok_or_missing_billing_stops_after_one_and_survives_resume) ... ok
+test_generation_404_retry_is_read_only_bounded (loom.tools.structure.test_jev_live_pilot.JevTests.test_generation_404_retry_is_read_only_bounded) ... ok
+test_interrupt_started_is_not_retried_or_advanced (loom.tools.structure.test_jev_live_pilot.JevTests.test_interrupt_started_is_not_retried_or_advanced) ... ok
+test_prepare_frozen_questions_no_gold_and_caps (loom.tools.structure.test_jev_live_pilot.JevTests.test_prepare_frozen_questions_no_gold_and_caps) ... ok
+test_price_body_and_question_invalid_before_paid_requests (loom.tools.structure.test_jev_live_pilot.JevTests.test_price_body_and_question_invalid_before_paid_requests) ... ok
+test_rejected_answers_keep_known_cost_and_over_reservation_stops_first (loom.tools.structure.test_jev_live_pilot.JevTests.test_rejected_answers_keep_known_cost_and_over_reservation_stops_first) ... ok
+test_score_known_probabilities_missing_denominator_and_tamper_detection (loom.tools.structure.test_jev_live_pilot.JevTests.test_score_known_probabilities_missing_denominator_and_tamper_detection) ... ok
+test_success_billing_each_call_and_no_sensitive_metadata (loom.tools.structure.test_jev_live_pilot.JevTests.test_success_billing_each_call_and_no_sensitive_metadata) ... ok
+test_transport_rejects_arbitrary_host_and_generation_injection (loom.tools.structure.test_jev_live_pilot.JevTests.test_transport_rejects_arbitrary_host_and_generation_injection) ... ok
+
+----------------------------------------------------------------------
+Ran 33 tests in 0.136s
+
+OK
