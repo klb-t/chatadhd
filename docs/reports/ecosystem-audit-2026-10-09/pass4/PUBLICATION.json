@@ -1,0 +1,25 @@
+{
+  "payload_commit": "d75cbbeb909cc2105c0919faeb71eb0368d72a20",
+  "payload_tree": "ca78c9cd0e9256fcab7dc50d8212eb0d3688c1fa",
+  "prior_audit": "e29109852e456dd66493b75193bc5882df65ffe2",
+  "manifest_entries_verified": 169,
+  "manifest_itself_verified": true,
+  "payload_files": 170,
+  "outside_allowed_paths": [],
+  "historical_evidence_changed": [],
+  "blob_mismatches": [],
+  "status": "PASS",
+  "branch": "gpt/ecosystem-audit-2026-10-09",
+  "publication": "published via connected GitHub with expected-head lease",
+  "main_verified": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "github_actions_run_count": 0,
+  "paid_calls": 0,
+  "public_files_only": true,
+  "notes": [
+    "169 exact manifest blobs plus manifest itself verified after git fetch of payload commit.",
+    "Only pass4 docs/tools changed versus published pass3 checkpoint; all older evidence and product paths unchanged.",
+    "This post-publication receipt is intentionally outside the payload manifest.",
+    "Nine source checkouts were clean. GitHub Actions branch query returned total_count=0.",
+    "Exact tested B/C/D/E SHAs and residual gates are in acceptance-queue.json; no claim about subsequent commits."
+  ]
+}
