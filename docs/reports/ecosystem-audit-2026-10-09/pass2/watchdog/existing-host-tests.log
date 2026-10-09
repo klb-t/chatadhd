@@ -1,0 +1,327 @@
+✔ E4.7: populated 022 upgrade retains ownership, request-only tokens and live grant overrides (123.128497ms)
+✔ E4.7: existing admin does not silently acquire bounded delegation (0.258519ms)
+✔ E4.7: revoked legacy override refuses redeem without consuming evidence (64.610986ms)
+✔ E4.7: revoked legacy override refuses approve without consuming evidence (55.690203ms)
+✔ E4.7: active legacy override refuses redeem without consuming evidence (81.805639ms)
+✔ E4.7: active legacy override refuses approve without consuming evidence (66.597393ms)
+✔ E4.7: legacy override committed after preflight blocks redeem before grant mutations (99.858887ms)
+✔ E4.7: legacy override committed after preflight blocks approve before grant mutations (63.649339ms)
+✔ E4.7: legacy override committed after preflight blocks operatorGrant before grant mutations (67.505936ms)
+[SPAN_START] workbench:analysis - ""
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:figure_save - ""
+[SPAN_END] workbench:figure_save - ""
+[SPAN_START] workbench:profile - ""
+[SPAN_END] workbench:profile - ""
+[SPAN_START] workbench:profile_restore - ""
+[SPAN_END] workbench:profile_restore - ""
+[SPAN_START] workbench:figure_export - ""
+[SPAN_END] workbench:figure_export - ""
+[SPAN_START] workbench:figure_export - ""
+[SPAN_END] workbench:figure_export - ""
+[SPAN_START] workbench:figure_export - ""
+[SPAN_END] workbench:figure_export - ""
+[SPAN_START] workbench:figure_restore - ""
+[SPAN_END] workbench:figure_restore - ""
+[SPAN_START] workbench:figure_export - ""
+[ERROR] workbench:figure_export The figure requires an owned result from this currently approved method and dataset.
+[SPAN_END] workbench:figure_export - ""
+[SPAN_START] workbench:figure_restore - ""
+[SPAN_END] workbench:figure_restore - ""
+[ERROR] workbench:figure_restore The figure requires an owned result from this currently approved method and dataset.
+[SPAN_START] workbench:figure_export - ""
+[SPAN_END] workbench:figure_export - ""
+[SPAN_START] workbench:figure_export - ""
+[ERROR] workbench:figure_export An accessible, currently approved dataset with the exact figure hash is required.
+[SPAN_END] workbench:figure_export - ""
+[SPAN_START] workbench:figure_restore - ""
+[ERROR] workbench:figure_restore An accessible, currently approved dataset with the exact figure hash is required.
+[SPAN_END] workbench:figure_restore - ""
+✔ E5 publication: historical profiles restore, archives are deterministic, independently verifiable and reproducible (1284.099706ms)
+[SPAN_START] workbench:figure_export - ""
+[ERROR] workbench:figure_export The pinned visualization profile is unavailable. Restore its verified configuration snapshot before opening this figure.
+[SPAN_END] workbench:figure_export - ""
+[SPAN_START] workbench:figure_restore - ""
+[ERROR] workbench:figure_restore Visualization profile integrity mismatch.
+[SPAN_END] workbench:figure_restore - ""
+[SPAN_START] workbench:figure_restore - ""
+[SPAN_END] workbench:figure_restore - ""
+[SPAN_START] workbench:figure_export - ""
+[SPAN_END] workbench:figure_export - ""
+[SPAN_START] workbench:figure_restore - ""
+[ERROR] workbench:figure_restore Renderer implementation 'not-implemented' is unavailable in this release.
+[SPAN_END] workbench:figure_restore - ""
+[SPAN_START] workbench:figure_export - ""
+[ERROR] workbench:figure_export SVG export supports up to 12 panels. Narrow the facet filter, or export the complete JSON/CSV.
+[SPAN_END] workbench:figure_export - ""
+[SPAN_START] workbench:figure_export - ""
+[SPAN_END] workbench:figure_export - ""
+✔ E5 publication: absent profiles can be restored only with a matching, executable snapshot and accessible data (140.969223ms)
+✔ all 16 personal provider profiles execute their real protocol adapter with isolated credentials and bounded requests (128.789742ms)
+✔ direct provider catalogs require their own reviewed prices, remain owner-scoped and route different tasks to different keys (115.451667ms)
+✔ task routing uses comparable benchmark evidence and operational statistics without treating unknown quality or another suite as measured (95.081893ms)
+✔ personal settings persist per owner, detect stale edits and keep language/geography and interface mode independent (43.590422ms)
+✔ personal vault: AES-GCM, separate protected key, no plaintext DB/status/logs, owner isolation, tamper and key rotation (71.372903ms)
+✔ dynamic routing: task-specific cost preference, conservative tier prices, pins, stale catalogs and context ceilings (43.216612ms)
+✔ assistant actually routes requests and archives provenance; budget/credentials prevent calls and failures keep reservations (124.256792ms)
+✔ concurrent budget reservations cannot overspend the configured daily allowance (59.569374ms)
+[SPAN_START] orchestrator:executeRun:81c17166-8d20-4b6b-902c-1226d717d6a9 - ""
+[SPAN_END] orchestrator:executeRun:81c17166-8d20-4b6b-902c-1226d717d6a9 - ""
+✔ wizard launches one owned JH16 fixture run through the approved MethodSpec executor and preserves independent dimensions (242.184944ms)
+✔ personal SERP uses only the owner key and a separate daily request counter (11240.012535ms)
+[SPAN_START] http_request:POST /api/settings/credentials - ""
+[SPAN_END] http_request:POST /api/settings/credentials - ""
+[SPAN_START] http_request:POST /api/settings/credentials - ""
+[SPAN_END] http_request:POST /api/settings/credentials - ""
+[SPAN_START] http_request:GET /api/settings - ""
+[SPAN_END] http_request:GET /api/settings - ""
+[SPAN_START] http_request:POST /api/settings/credentials - ""
+[ERROR] http_request:POST /api/settings/credentials Role(s) [responder] may not 'provider.view'.
+[SPAN_END] http_request:POST /api/settings/credentials - ""
+✔ credential API requires owner authorization, rejects cross-origin writes and never echoes malformed JSON key fragments (100.600963ms)
+[SPAN_START] automation:paper_scan - ""
+[ERROR] automation:paper_scan SOURCE_ACCESS_HELD:arxiv:expired
+[SPAN_END] automation:paper_scan - ""
+✔ source inventory derives implementations, keeps terms and access independent, and reports owner-scoped HTTP receipts without implied scientific data (223.379845ms)
+✔ access assessments pin exact source scope, expire, detect stale tabs and profile changes, and remain append-only through ownership transfer (87.707016ms)
+✔ permission request drafts copy supplied context, remain unsent and cannot mark a source permitted or requested (68.346803ms)
+✔ private candidates do not create network adapters or executable code and survive transfer (59.544282ms)
+✔ public acquisition respects holds before network access and rechecks after source pacing without creating fake HTTP receipts (68.679624ms)
+✔ scheduled public work fails explicitly on a source hold rather than collecting under an expired assessment (93.252928ms)
+✔ migrations after 018 preserve previous jobs and create no source assessments, candidates or drafts automatically (71.08814ms)
+✔ catalog HTTP surface enforces capability, private history, strict input, no-store and same-origin mutation (362.431535ms)
+✔ unified search observes shared-data revocation while provider status resolution is pending (364.286274ms)
+[SPAN_START] http_request:POST /wb/datasets - ""
+[SPAN_START] workbench:dataset_import - ""
+[SPAN_END] workbench:dataset_import - ""
+[SPAN_END] http_request:POST /wb/datasets - ""
+[SPAN_START] http_request:POST /wb/figures - ""
+[SPAN_START] workbench:figure_save - ""
+[ERROR] workbench:figure_save An accessible, currently approved dataset with the exact figure hash is required.
+[SPAN_END] workbench:figure_save - ""
+[SPAN_END] http_request:POST /wb/figures - ""
+[SPAN_START] http_request:GET /wb/datasets - ""
+[SPAN_START] workbench:datasets - ""
+[SPAN_END] workbench:datasets - ""
+[SPAN_END] http_request:GET /wb/datasets - ""
+[SPAN_START] http_request:POST /wb/datasets - ""
+[ERROR] http_request:POST /wb/datasets Role(s) [law_enforcement] may not 'dataset.import'.
+[SPAN_END] http_request:POST /wb/datasets - ""
+[SPAN_START] http_request:POST /wb/datasets/dataset-463326eea7cbc50d62dd4b5b81250e881a144b462128a5a97c99a7a95cc21c91-abc9fadd54/approve - ""
+[SPAN_START] workbench:dataset_approve - ""
+[ERROR] workbench:dataset_approve Dataset is unavailable or the review hash is stale.
+[SPAN_END] workbench:dataset_approve - ""
+[SPAN_END] http_request:POST /wb/datasets/dataset-463326eea7cbc50d62dd4b5b81250e881a144b462128a5a97c99a7a95cc21c91-abc9fadd54/approve - ""
+[SPAN_START] http_request:POST /wb/datasets/dataset-463326eea7cbc50d62dd4b5b81250e881a144b462128a5a97c99a7a95cc21c91-abc9fadd54/approve - ""
+[SPAN_START] workbench:dataset_approve - ""
+[ERROR] workbench:dataset_approve [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "actor"
+    ],
+    "path": [],
+    "message": "Unrecognized key: \"actor\""
+  }
+]
+[SPAN_END] workbench:dataset_approve - ""
+[ERROR] http_request:POST /wb/datasets/dataset-463326eea7cbc50d62dd4b5b81250e881a144b462128a5a97c99a7a95cc21c91-abc9fadd54/approve [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "actor"
+    ],
+    "path": [],
+    "message": "Unrecognized key: \"actor\""
+  }
+]
+[SPAN_END] http_request:POST /wb/datasets/dataset-463326eea7cbc50d62dd4b5b81250e881a144b462128a5a97c99a7a95cc21c91-abc9fadd54/approve - ""
+[SPAN_START] http_request:POST /wb/datasets/dataset-463326eea7cbc50d62dd4b5b81250e881a144b462128a5a97c99a7a95cc21c91-abc9fadd54/approve - ""
+[SPAN_START] workbench:dataset_approve - ""
+[SPAN_END] workbench:dataset_approve - ""
+[SPAN_END] http_request:POST /wb/datasets/dataset-463326eea7cbc50d62dd4b5b81250e881a144b462128a5a97c99a7a95cc21c91-abc9fadd54/approve - ""
+[SPAN_START] http_request:GET /wb/datasets - ""
+[SPAN_START] workbench:datasets - ""
+[SPAN_END] workbench:datasets - ""
+[SPAN_END] http_request:GET /wb/datasets - ""
+[SPAN_START] http_request:POST /wb/figures - ""
+[SPAN_START] workbench:figure_save - ""
+[SPAN_END] workbench:figure_save - ""
+[SPAN_END] http_request:POST /wb/figures - ""
+[SPAN_START] http_request:GET /wb/figures - ""
+[SPAN_START] workbench:figures - ""
+[SPAN_END] workbench:figures - ""
+[SPAN_END] http_request:GET /wb/figures - ""
+[SPAN_START] http_request:POST /wb/datasets/dataset-463326eea7cbc50d62dd4b5b81250e881a144b462128a5a97c99a7a95cc21c91-abc9fadd54/revoke - ""
+[ERROR] http_request:POST /wb/datasets/dataset-463326eea7cbc50d62dd4b5b81250e881a144b462128a5a97c99a7a95cc21c91-abc9fadd54/revoke Role(s) [institutional] may not 'dataset.approve'.
+[SPAN_END] http_request:POST /wb/datasets/dataset-463326eea7cbc50d62dd4b5b81250e881a144b462128a5a97c99a7a95cc21c91-abc9fadd54/revoke - ""
+[SPAN_START] http_request:POST /wb/datasets/dataset-463326eea7cbc50d62dd4b5b81250e881a144b462128a5a97c99a7a95cc21c91-abc9fadd54/revoke - ""
+[SPAN_START] workbench:dataset_revoke - ""
+[SPAN_END] workbench:dataset_revoke - ""
+[SPAN_END] http_request:POST /wb/datasets/dataset-463326eea7cbc50d62dd4b5b81250e881a144b462128a5a97c99a7a95cc21c91-abc9fadd54/revoke - ""
+[SPAN_START] http_request:POST /wb/export - ""
+[SPAN_START] workbench:figure_export - ""
+[SPAN_END] workbench:figure_export - ""
+[SPAN_END] http_request:POST /wb/export - ""
+[ERROR] workbench:figure_export An accessible, currently approved dataset with the exact figure hash is required.
+✔ E5: private/proposed data never reaches institutional users; explicit reviewed aggregate sharing does (532.489022ms)
+✔ E5: raw blobs deduplicate while imports and per-owner approval contexts remain separate (47.461862ms)
+[SPAN_START] http_request:POST /wb/figures - ""
+[SPAN_START] workbench:figure_save - ""
+[ERROR] workbench:figure_save Renderer implementation 'unregistered-renderer' is unavailable in this release.
+[SPAN_END] workbench:figure_save - ""
+[ERROR] http_request:POST /wb/figures Renderer implementation 'unregistered-renderer' is unavailable in this release.
+[SPAN_END] http_request:POST /wb/figures - ""
+✔ E5: exact figure settings, camera, extra dimensions and favourites persist across repository instances (70.955822ms)
+[SPAN_START] http_request:POST /wb/methods - ""
+[SPAN_START] workbench:method_prepare - ""
+[SPAN_END] workbench:method_prepare - ""
+[SPAN_END] http_request:POST /wb/methods - ""
+[SPAN_START] http_request:POST /wb/methods/wb-method-747f98fbeae61b63d214634d06bf065ebf6c2f2a2cbd9fd3f8d9bf2156d060fa/execute - ""
+[SPAN_START] workbench:method_execute - ""
+[ERROR] workbench:method_execute An individually approved method is required.
+[SPAN_END] workbench:method_execute - ""
+[SPAN_END] http_request:POST /wb/methods/wb-method-747f98fbeae61b63d214634d06bf065ebf6c2f2a2cbd9fd3f8d9bf2156d060fa/execute - ""
+[SPAN_START] http_request:POST /wb/methods/wb-method-747f98fbeae61b63d214634d06bf065ebf6c2f2a2cbd9fd3f8d9bf2156d060fa/approve - ""
+[SPAN_START] workbench:method_approve - ""
+[SPAN_END] workbench:method_approve - ""
+[SPAN_END] http_request:POST /wb/methods/wb-method-747f98fbeae61b63d214634d06bf065ebf6c2f2a2cbd9fd3f8d9bf2156d060fa/approve - ""
+[SPAN_START] http_request:POST /wb/methods/wb-method-747f98fbeae61b63d214634d06bf065ebf6c2f2a2cbd9fd3f8d9bf2156d060fa/execute - ""
+[SPAN_START] workbench:method_execute - ""
+[SPAN_START] workbench:analysis - ""
+[SPAN_END] workbench:analysis - ""
+[SPAN_END] workbench:method_execute - ""
+[SPAN_END] http_request:POST /wb/methods/wb-method-747f98fbeae61b63d214634d06bf065ebf6c2f2a2cbd9fd3f8d9bf2156d060fa/execute - ""
+[SPAN_START] workbench:analysis - ""
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] http_request:POST /wb/figures - ""
+[SPAN_START] workbench:figure_save - ""
+[SPAN_END] workbench:figure_save - ""
+[SPAN_END] http_request:POST /wb/figures - ""
+[SPAN_START] http_request:POST /wb/export - ""
+[SPAN_START] workbench:figure_export - ""
+[SPAN_END] workbench:figure_export - ""
+[SPAN_END] http_request:POST /wb/export - ""
+[SPAN_START] http_request:POST /wb/figures - ""
+[SPAN_START] workbench:figure_save - ""
+[ERROR] workbench:figure_save The figure requires an owned result from this currently approved method and dataset.
+[SPAN_END] workbench:figure_save - ""
+[SPAN_END] http_request:POST /wb/figures - ""
+[SPAN_START] http_request:POST /wb/figures - ""
+[SPAN_START] workbench:figure_save - ""
+[ERROR] workbench:figure_save Analysis result does not match the figure inputs and selection.
+[SPAN_END] workbench:figure_save - ""
+[SPAN_END] http_request:POST /wb/figures - ""
+[SPAN_START] http_request:POST /wb/export - ""
+[SPAN_START] workbench:figure_export - ""
+[ERROR] workbench:figure_export The figure requires an owned result from this currently approved method and dataset.
+[SPAN_END] workbench:figure_export - ""
+[SPAN_END] http_request:POST /wb/export - ""
+[SPAN_START] http_request:POST /wb/export - ""
+[SPAN_START] workbench:figure_export - ""
+[ERROR] workbench:figure_export An accessible, currently approved dataset with the exact figure hash is required.
+[SPAN_END] workbench:figure_export - ""
+[SPAN_END] http_request:POST /wb/export - ""
+✔ E5: approved statistical selection executes existing primitives, retains missingness, flags and reproducibility inputs (138.707218ms)
+[SPAN_START] http_request:POST /wb/datasets - ""
+[SPAN_START] workbench:dataset_import - ""
+[SPAN_END] workbench:dataset_import - ""
+[SPAN_END] http_request:POST /wb/datasets - ""
+[ERROR] workbench:dataset_import Dataset semantics do not satisfy the selected provider profile.
+[ERROR] http_request:POST /wb/datasets Dataset semantics do not satisfy the selected provider profile.
+[SPAN_START] http_request:POST /wb/datasets - ""
+[SPAN_START] workbench:dataset_import - ""
+[SPAN_END] workbench:dataset_import - ""
+[SPAN_END] http_request:POST /wb/datasets - ""
+[SPAN_START] http_request:POST /wb/figures - ""
+[SPAN_START] workbench:figure_save - ""
+[ERROR] workbench:figure_save Unknown figure column 'missing-column'.
+[SPAN_END] workbench:figure_save - ""
+[ERROR] http_request:POST /wb/figures Unknown figure column 'missing-column'.
+[SPAN_END] http_request:POST /wb/figures - ""
+✔ E5: provider/profile and data-shape validation preserves missingness and rejects silent context changes (44.249495ms)
+✔ E5: CSV export retains signed numbers, selected rows, missing reasons, provenance and spreadsheet safety (28.228538ms)
+[SPAN_START] http_request:GET /diag/state - ""
+[ERROR] http_request:GET /diag/state Role(s) [researcher] may not 'diagnostics.view'.
+[SPAN_END] http_request:GET /diag/state - ""
+[SPAN_START] http_request:GET /diag/state - ""
+[SPAN_END] http_request:GET /diag/state - ""
+[ERROR] http_request:GET /diag/state Role(s) [responder] may not 'diagnostics.view'.
+[SPAN_START] http_request:GET /diag/state - ""
+[ERROR] http_request:GET /diag/state Role(s) [institutional] may not 'diagnostics.view'.
+[SPAN_END] http_request:GET /diag/state - ""
+[SPAN_START] http_request:GET /diag/state - ""
+[SPAN_END] http_request:GET /diag/state - ""
+[SPAN_START] http_request:GET /diag/state - ""
+[SPAN_END] http_request:GET /diag/state - ""
+[ERROR] http_request:GET /diag/state Role(s) [law_enforcement] may not 'diagnostics.view'.
+[ERROR] http_request:GET /diag/state Role(s) [admin] may not 'diagnostics.view'.
+[SPAN_START] http_request:GET /diag/state - ""
+[SPAN_END] http_request:GET /diag/state - ""
+[SPAN_START] http_request:POST /diag/mode - ""
+✔ E4/E5: diagnostics are developer-only, trace IDs are path-safe, mode changes are audited (48.568078ms)
+[SPAN_START] workbench:datasets - ""
+[SPAN_END] workbench:datasets - ""
+[SPAN_START] workbench:method_read - ""
+[SPAN_END] workbench:method_read - ""
+[SPAN_START] workbench:dataset_revoke - ""
+[SPAN_END] workbench:dataset_revoke - ""
+[SPAN_START] workbench:datasets - ""
+[SPAN_END] workbench:datasets - ""
+[SPAN_START] workbench:datasets - ""
+[SPAN_END] workbench:datasets - ""
+[SPAN_START] workbench:datasets - ""
+[SPAN_END] workbench:datasets - ""
+[SPAN_START] workbench:datasets - ""
+[SPAN_END] workbench:datasets - ""
+[SPAN_START] workbench:method_read - ""
+[ERROR] workbench:method_read Owned method not found.
+[SPAN_END] workbench:method_read - ""
+[SPAN_START] workbench:datasets - ""
+[SPAN_END] workbench:datasets - ""
+[SPAN_START] workbench:datasets - ""
+[SPAN_END] workbench:datasets - ""
+[SPAN_START] workbench:dataset_approve - ""
+[SPAN_END] workbench:dataset_approve - ""
+[SPAN_START] workbench:datasets - ""
+[SPAN_END] workbench:datasets - ""
+[SPAN_START] workbench:method_read - ""
+[SPAN_END] workbench:method_read - ""
+✔ dataset review capability cannot reveal another owner’s revoked shared data through the API (499.897728ms)
+[SPAN_START] workbench:datasets - ""
+[SPAN_END] workbench:datasets - ""
+✔ revoking shared approval during source I/O blocks an in-flight researcher API read (77.711035ms)
+✔ E2.1: with no key OpenRouter is blocked, and the reason names the fix (15.761304ms)
+✔ E2.1: adding the key flips it to implemented with no invalidation step (0.541806ms)
+✔ E2.1: derived status publishes into the one gate every run passes through (5.873534ms)
+✔ E2.1: the manual OpenAI-compatible provider needs endpoint and model too (0.630229ms)
+✔ E2.1: the provider config holds pointers, never credentials (1.774362ms)
+✔ E2.1: each upstream failure maps to its own actionable kind (5.529156ms)
+✔ E2.1: a model outside allowed_models is refused rather than substituted (0.321294ms)
+✔ E2.1: the served model is recorded, not the requested one (0.243437ms)
+✔ E2.1: the API key never appears in the request body or an error (0.34573ms)
+✔ E2.1: a number absent from the source is rejected, including a rounded one (1.286648ms)
+✔ E2.1: a provider narrative is PROPOSED, marked generated and marked nondeterministic (1.329703ms)
+✔ E2.1: a fabricating provider is rejected outright, not footnoted (0.298219ms)
+✔ E2.1: a provider failure throws rather than silently serving template prose (2.718854ms)
+✔ E1.19: a golden run manifest contains every required field (10.05386ms)
+✔ E1.19: every quality flag and every missing observation reaches the manifest (0.946836ms)
+✔ E1.19: an incomplete manifest fails loudly rather than shipping (0.472982ms)
+✔ E1.19: manifests are deterministic — same input, same bytes (9.367196ms)
+✔ E1.17: the narrative service cannot alter a numeric value (0.633124ms)
+✔ E1.17: a payload that changed under its hash is refused (0.326461ms)
+✔ E1.17: the narrative uses precise status language, never "successful replication" (0.469016ms)
+✔ E1.18: exported values equal stored values, and missing is never zero (13.723997ms)
+✔ E1.18: an unapproved narrative cannot reach an export (4.499646ms)
+✔ E1.18: generated prose is distinguishable from computed results in JSON too (6.781442ms)
+✔ E1.16: a missing value renders as visibly missing, never as zero or a gap (0.636889ms)
+✔ E1.16: a series carrying PROVIDER_DISCONTINUITY shows it in the legend (0.214553ms)
+✔ E1.16: the Hi-versus-reference scatter marks incomparable points as missing (0.406713ms)
+ℹ tests 66
+ℹ suites 0
+ℹ pass 66
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 15934.88831

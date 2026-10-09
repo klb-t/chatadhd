@@ -1,0 +1,61 @@
+{
+  "repo_sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+  "node": "v24.19.0",
+  "sqlite": "3.53.4",
+  "independent_suite": {
+    "reproduction_pass": 6,
+    "acceptance_pass": 9,
+    "acceptance_fail": 6,
+    "actual_live_calls": 0,
+    "socket_guard": "all connect blocked; consumer transports are in-memory injected functions"
+  },
+  "build": {
+    "status": "PASS",
+    "command": "npm run build",
+    "isolated_checkout": true
+  },
+  "existing_host_tests": {
+    "status": "PASS",
+    "passed": 66,
+    "failed": 0,
+    "skipped": 0,
+    "command": "NODE_OPTIONS=\"--require /ABS/tools/ecosystem-audit-2026-10-09/pass2/watchdog/loopback-guard.cjs\" node --import tsx --test tests/integration/settings.test.ts tests/integration/source_access.test.ts tests/integration/research_package.test.ts tests/integration/workbench.test.ts tests/integration/workbench_access_revocation.test.ts tests/integration/unified_search_revocation.test.ts tests/integration/accounts_upgrade.test.ts tests/unit/output.test.ts tests/unit/llm.test.ts",
+    "dist_required": true,
+    "network": "loopback allowed; external socket/fetch blocked"
+  },
+  "browser": {
+    "status": "BLOCKED_ENVIRONMENT",
+    "browser_binary": "Chromium1194 supplied by root, no repeated download",
+    "probe": "Playwright from Watchdog package-lock attempted launch",
+    "reason": "FATAL process_singleton_posix.cc:292 socket() failed Operation not permitted; SIGABRT before page creation",
+    "independent_browser_assertions_executed": 0,
+    "prior_install_attempt": "One parallel local install attempt failed lock staleness before root shared browser; preserved log, no repeat."
+  },
+  "logs": {
+    "build.log": {
+      "sha256": "e2a72adbfba63aca486721049dfcac4e392be2b96690c786ca04e536914e29a8",
+      "bytes": 2342
+    },
+    "existing-host-tests.log": {
+      "sha256": "f01bdac27fbea439d4db56ea87185c95e987c006003bcc13e5351af568226f33",
+      "bytes": 20975
+    },
+    "playwright-install.log": {
+      "sha256": "a08abe6c83f862175fca423a907d006beffbca0a53c85a4a73a3a9dd7b90f2d7",
+      "bytes": 4059
+    },
+    "browser-probe.log": {
+      "sha256": "248a4144b4506d2362c22fea757e3e90dd8952cb3533d2d9b84be5a7d71a869e",
+      "bytes": 5082
+    },
+    "typecheck.log": {
+      "sha256": "d55cafd4f47d8433cca41a93c2d028d0313e34ecc067544e061d2e17ab44405a",
+      "bytes": 143
+    }
+  },
+  "typecheck": {
+    "status": "PASS",
+    "command": "npm run lint",
+    "isolated_checkout": true
+  }
+}

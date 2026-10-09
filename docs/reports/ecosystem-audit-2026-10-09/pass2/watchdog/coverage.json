@@ -1,0 +1,752 @@
+{
+  "repo": "klb-t/Watchdog-JH16",
+  "baseline_sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+  "current_sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+  "tracked_files": 603,
+  "manual_product_denominator": 266,
+  "previous_semantic_files": 25,
+  "pass2_files_with_named_ranges": 29,
+  "additional_semantic_range_files": 21,
+  "cumulative_semantic_range_files": 46,
+  "remaining_product_files_without_reported_semantic_range": [
+    "backend/watchdog_api/analytics/base.ts",
+    "backend/watchdog_api/analytics/jh16.ts",
+    "backend/watchdog_api/analytics/registry.ts",
+    "backend/watchdog_api/api/access_routes.ts",
+    "backend/watchdog_api/api/accounts_auth_routes.ts",
+    "backend/watchdog_api/api/admission_gate.ts",
+    "backend/watchdog_api/api/auth_routes.ts",
+    "backend/watchdog_api/api/automation_routes.ts",
+    "backend/watchdog_api/api/diagnostic_routes.ts",
+    "backend/watchdog_api/api/field_routes.ts",
+    "backend/watchdog_api/api/middleware.ts",
+    "backend/watchdog_api/api/rate_limit.ts",
+    "backend/watchdog_api/api/request_security.ts",
+    "backend/watchdog_api/api/research_project_routes.ts",
+    "backend/watchdog_api/api/research_routes.ts",
+    "backend/watchdog_api/api/schemas.ts",
+    "backend/watchdog_api/api/search_routes.ts",
+    "backend/watchdog_api/clinical_demo/executor.ts",
+    "backend/watchdog_api/clinical_demo/executor_manifest.ts",
+    "backend/watchdog_api/config/access_policy.ts",
+    "backend/watchdog_api/config/canonicalize.ts",
+    "backend/watchdog_api/config/collection.ts",
+    "backend/watchdog_api/config/evidence.ts",
+    "backend/watchdog_api/config/extraction_dataset.ts",
+    "backend/watchdog_api/config/field.ts",
+    "backend/watchdog_api/config/geography.ts",
+    "backend/watchdog_api/config/research_projects.ts",
+    "backend/watchdog_api/config/schemas.ts",
+    "backend/watchdog_api/config/search.ts",
+    "backend/watchdog_api/config/source_history.ts",
+    "backend/watchdog_api/config/source_watch.ts",
+    "backend/watchdog_api/db/client.ts",
+    "backend/watchdog_api/db/migrations/001_initial_schema.ts",
+    "backend/watchdog_api/db/migrations/002_assertions.ts",
+    "backend/watchdog_api/db/migrations/003_query_plan_identity.ts",
+    "backend/watchdog_api/db/migrations/004_principals.ts",
+    "backend/watchdog_api/db/migrations/005_role_profiles.ts",
+    "backend/watchdog_api/db/migrations/006_field_reference.ts",
+    "backend/watchdog_api/db/migrations/007_workbench.ts",
+    "backend/watchdog_api/db/migrations/008_workbench_profiles.ts",
+    "backend/watchdog_api/db/migrations/009_geometry_layers.ts",
+    "backend/watchdog_api/db/migrations/010_automation.ts",
+    "backend/watchdog_api/db/migrations/011_personal_settings.ts",
+    "backend/watchdog_api/db/migrations/012_assistant_profiles.ts",
+    "backend/watchdog_api/db/migrations/013_research_intake.ts",
+    "backend/watchdog_api/db/migrations/014_extraction_mapping_templates.ts",
+    "backend/watchdog_api/db/migrations/015_paper_operations.ts",
+    "backend/watchdog_api/db/migrations/016_reference_observations.ts",
+    "backend/watchdog_api/db/migrations/017_collection_context.ts",
+    "backend/watchdog_api/db/migrations/018_source_watches.ts",
+    "backend/watchdog_api/db/migrations/019_source_access.ts",
+    "backend/watchdog_api/db/migrations/020_admission.ts",
+    "backend/watchdog_api/db/migrations/021_research_projects.ts",
+    "backend/watchdog_api/db/migrations/022_paper_comparisons.ts",
+    "backend/watchdog_api/db/migrations/023_accounts.ts",
+    "backend/watchdog_api/db/repositories/acquisition.ts",
+    "backend/watchdog_api/db/repositories/admission.ts",
+    "backend/watchdog_api/db/repositories/artifacts.ts",
+    "backend/watchdog_api/db/repositories/audit.ts",
+    "backend/watchdog_api/db/repositories/data.ts",
+    "backend/watchdog_api/db/repositories/field_reference.ts",
+    "backend/watchdog_api/db/repositories/geography.ts",
+    "backend/watchdog_api/db/repositories/method_specs.ts",
+    "backend/watchdog_api/db/repositories/paper_comparisons.ts",
+    "backend/watchdog_api/db/repositories/paper_operations.ts",
+    "backend/watchdog_api/db/repositories/principals.ts",
+    "backend/watchdog_api/db/repositories/reference_history.ts",
+    "backend/watchdog_api/db/repositories/research_projects.ts",
+    "backend/watchdog_api/db/repositories/runs.ts",
+    "backend/watchdog_api/db/repositories/search.ts",
+    "backend/watchdog_api/db/repositories/source_watches.ts",
+    "backend/watchdog_api/db/repositories/workbench_error.ts",
+    "backend/watchdog_api/db/schema.ts",
+    "backend/watchdog_api/diag/bundle.ts",
+    "backend/watchdog_api/diag/view.ts",
+    "backend/watchdog_api/domain/approval.ts",
+    "backend/watchdog_api/domain/canonical.ts",
+    "backend/watchdog_api/domain/error_taxonomy.ts",
+    "backend/watchdog_api/domain/evidence_tier.ts",
+    "backend/watchdog_api/domain/index.ts",
+    "backend/watchdog_api/domain/method_spec.ts",
+    "backend/watchdog_api/domain/observation.ts",
+    "backend/watchdog_api/domain/principal.ts",
+    "backend/watchdog_api/domain/run_state.ts",
+    "backend/watchdog_api/field/service.ts",
+    "backend/watchdog_api/field/validation.ts",
+    "backend/watchdog_api/identity/account_sessions.ts",
+    "backend/watchdog_api/identity/accounts_identity.ts",
+    "backend/watchdog_api/identity/admission.ts",
+    "backend/watchdog_api/identity/index.ts",
+    "backend/watchdog_api/identity/oidc.ts",
+    "backend/watchdog_api/identity/roles.ts",
+    "backend/watchdog_api/identity/sign_in.ts",
+    "backend/watchdog_api/llm/base.ts",
+    "backend/watchdog_api/mail/index.ts",
+    "backend/watchdog_api/research/project_verifier.ts",
+    "backend/watchdog_api/secrets/index.ts",
+    "backend/watchdog_api/secrets/user_vault.ts",
+    "backend/watchdog_api/services/charts.ts",
+    "backend/watchdog_api/services/discontinuity.ts",
+    "backend/watchdog_api/services/export.ts",
+    "backend/watchdog_api/services/extraction_dataset.ts",
+    "backend/watchdog_api/services/extraction_workshop.ts",
+    "backend/watchdog_api/services/manifest.ts",
+    "backend/watchdog_api/services/paper_comparisons.ts",
+    "backend/watchdog_api/services/personal_search.ts",
+    "backend/watchdog_api/services/replication.ts",
+    "backend/watchdog_api/services/research_projects.ts",
+    "backend/watchdog_api/services/run_orchestrator.ts",
+    "backend/watchdog_api/services/search.ts",
+    "backend/watchdog_api/services/source_comparison.ts",
+    "backend/watchdog_api/sources/atom.ts",
+    "backend/watchdog_api/sources/base.ts",
+    "backend/watchdog_api/sources/copy_plan.ts",
+    "backend/watchdog_api/sources/count_parser.ts",
+    "backend/watchdog_api/sources/fixture_source.ts",
+    "backend/watchdog_api/sources/google_trends.ts",
+    "backend/watchdog_api/sources/offline_fixture.ts",
+    "backend/watchdog_api/sources/provider_registry.ts",
+    "backend/watchdog_api/sources/public_reference.ts",
+    "backend/watchdog_api/sources/registry.ts",
+    "backend/watchdog_api/sources/search_providers.ts",
+    "backend/watchdog_api/sources/serp.ts",
+    "backend/watchdog_api/sources/serpapi.ts",
+    "backend/watchdog_api/storage/client.ts",
+    "backend/watchdog_api/storage/durability.ts",
+    "backend/watchdog_api/storage/gcs.ts",
+    "backend/watchdog_api/storage/object_store/index.ts",
+    "backend/watchdog_api/utils/collection_context.ts",
+    "backend/watchdog_api/utils/errors.ts",
+    "backend/watchdog_api/utils/redaction.ts",
+    "backend/watchdog_api/utils/tracer.ts",
+    "backend/watchdog_api/utils/zip.ts",
+    "backend/watchdog_api/workbench/extraction_data.ts",
+    "server.ts",
+    "shared/admission.ts",
+    "shared/authorization.ts",
+    "shared/canonical_json.ts",
+    "shared/clinical_demo.ts",
+    "shared/clinical_demo_profile.ts",
+    "shared/clinical_demo_selector.ts",
+    "shared/clinical_demo_validation.ts",
+    "shared/collection.ts",
+    "shared/csv_import.ts",
+    "shared/extraction_dataset_profile.ts",
+    "shared/field.ts",
+    "shared/field_lookup.ts",
+    "shared/field_snapshot.ts",
+    "shared/field_validation.ts",
+    "shared/figure_geometry.ts",
+    "shared/figure_renderer.tsx",
+    "shared/geography.ts",
+    "shared/goal_navigation.ts",
+    "shared/paper_comparison.ts",
+    "shared/paper_operation.ts",
+    "shared/region_renderer.tsx",
+    "shared/research_dataset.ts",
+    "shared/research_projects.ts",
+    "shared/search.ts",
+    "shared/source_access.ts",
+    "shared/source_copy.ts",
+    "shared/source_history.ts",
+    "shared/source_watch.ts",
+    "shared/workspace_navigation.ts",
+    "src/App.tsx",
+    "src/components/AccessShell.tsx",
+    "src/components/AdmissionGate.tsx",
+    "src/components/DatasetImport.tsx",
+    "src/components/ExtractionDatasetForm.tsx",
+    "src/components/FieldEvidence.tsx",
+    "src/components/FieldLinkedReference.tsx",
+    "src/components/FieldResults.tsx",
+    "src/components/FigureCanvas.tsx",
+    "src/components/GeometryLayers.tsx",
+    "src/components/GoalNavigator.tsx",
+    "src/components/Layout.tsx",
+    "src/components/ModelProfilesPanel.tsx",
+    "src/components/PaperOperations.tsx",
+    "src/components/RegionControls.tsx",
+    "src/components/ResearchControls.tsx",
+    "src/components/SignInPanel.tsx",
+    "src/components/SourceComparisonView.tsx",
+    "src/components/SourceHistory.tsx",
+    "src/components/SourceWatchButton.tsx",
+    "src/components/SourceWatchInbox.tsx",
+    "src/components/WorkspaceNavigation.tsx",
+    "src/index.css",
+    "src/lib/access.tsx",
+    "src/lib/access_i18n.ts",
+    "src/lib/api.ts",
+    "src/lib/automation_client.ts",
+    "src/lib/client_diagnostics.ts",
+    "src/lib/field_client.ts",
+    "src/lib/research_projects_client.ts",
+    "src/lib/search_client.ts",
+    "src/lib/utils.ts",
+    "src/main.tsx",
+    "src/pages/AccessAdmin.tsx",
+    "src/pages/Analyzers.tsx",
+    "src/pages/Apply.tsx",
+    "src/pages/Automation.tsx",
+    "src/pages/Dashboard.tsx",
+    "src/pages/Diagnostics.tsx",
+    "src/pages/EvidenceReview.tsx",
+    "src/pages/Join.tsx",
+    "src/pages/Login.tsx",
+    "src/pages/MethodReview.tsx",
+    "src/pages/PeopleAccess.tsx",
+    "src/pages/Research.tsx",
+    "src/pages/ResearchProjects.tsx",
+    "src/pages/Responder.tsx",
+    "src/pages/RunDetails.tsx",
+    "src/pages/Runs.tsx",
+    "src/pages/Search.tsx",
+    "src/pages/SourceAccess.tsx",
+    "src/pages/Sources.tsx",
+    "src/pages/Study.tsx",
+    "src/pages/SubstanceMemory.tsx",
+    "src/types.ts",
+    "src/vite-env.d.ts"
+  ],
+  "remaining_count": 220,
+  "new_files": [
+    "backend/watchdog_api/api/routes.ts",
+    "backend/watchdog_api/api/settings_routes.ts",
+    "backend/watchdog_api/api/source_access_routes.ts",
+    "backend/watchdog_api/api/workbench_routes.ts",
+    "backend/watchdog_api/config/automation.ts",
+    "backend/watchdog_api/config/source_access.ts",
+    "backend/watchdog_api/config/workbench.ts",
+    "backend/watchdog_api/db/migrations/index.ts",
+    "backend/watchdog_api/db/repositories/source_access.ts",
+    "backend/watchdog_api/db/repositories/workbench.ts",
+    "backend/watchdog_api/llm/index.ts",
+    "backend/watchdog_api/llm/openai_compatible.ts",
+    "backend/watchdog_api/services/source_access.ts",
+    "backend/watchdog_api/sources/public_http.ts",
+    "backend/watchdog_api/workbench/publication.ts",
+    "backend/watchdog_api/workbench/service.ts",
+    "shared/workbench.ts",
+    "src/components/ConfigurationWizard.tsx",
+    "src/lib/workbench_client.ts",
+    "src/pages/Results.tsx",
+    "src/pages/Workbench.tsx"
+  ],
+  "reviewed_ranges": [
+    {
+      "path": "backend/watchdog_api/services/narrative.ts",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "line_start": 69,
+      "line_end": 249,
+      "functions": "generateNarrative; generateNarrativeWithProvider; assertNoNovelNumbers",
+      "source_range_sha256": "ba68432e45dd5e9751a98413f6ee452a593c171ab905aee7a2e9c6def5a5053a",
+      "verification": "independent_runtime",
+      "test_ids": [
+        "WD-001-A",
+        "WD-001-B",
+        "WD-011-A",
+        "WD-011-B"
+      ],
+      "untraced_calls_or_branches": [
+        "Alternative token spellings, exponent/locale parsing not covered"
+      ]
+    },
+    {
+      "path": "backend/watchdog_api/analysis/primitives.ts",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "line_start": 130,
+      "line_end": 181,
+      "functions": "ratioPrimitive.run",
+      "source_range_sha256": "f57b5d6f4f4cc84278231116dee35cd0de472ed9bbde8c27b90bc4da9d3be1c8",
+      "verification": "independent_runtime",
+      "test_ids": [
+        "WD-002-A",
+        "WD-002-B"
+      ],
+      "untraced_calls_or_branches": [
+        "Other seven primitives not newly traced"
+      ]
+    },
+    {
+      "path": "backend/watchdog_api/llm/profile_generator.ts",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "line_start": 10,
+      "line_end": 34,
+      "functions": "ProfileGenerator.generate",
+      "source_range_sha256": "c851d42afde79ce0e2f06c120f027363facf7aef3b0bce0920b007da4d4cff48",
+      "verification": "independent_runtime",
+      "test_ids": [
+        "WD-003-A",
+        "WD-003-B",
+        "WD-PROFILES-B"
+      ],
+      "untraced_calls_or_branches": [
+        "Anthropic path not independently retested; existing suite covers all16 profiles"
+      ]
+    },
+    {
+      "path": "backend/watchdog_api/llm/openai_compatible.ts",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "line_start": 23,
+      "line_end": 97,
+      "functions": "OpenAiCompatibleGenerator.generate",
+      "source_range_sha256": "52f64165d1690ad6b96b280c82328cd554ef041222eab6e1b42b2cd7bcc50033",
+      "verification": "independent_runtime",
+      "test_ids": [
+        "A2-WD-001-A",
+        "A2-WD-001-B",
+        "WD-003-A"
+      ],
+      "untraced_calls_or_branches": [
+        "Live provider behavior absent"
+      ]
+    },
+    {
+      "path": "backend/watchdog_api/llm/index.ts",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "line_start": 24,
+      "line_end": 196,
+      "functions": "loadTextGenerationConfig; registry availability/get/defaultParams",
+      "source_range_sha256": "9cddc5207d0cedd555de0c75d605931222396bdf3e30722024b6f7d8d707075d",
+      "verification": "independent_runtime",
+      "test_ids": [
+        "A2-WD-001-A",
+        "A2-WD-001-B"
+      ],
+      "untraced_calls_or_branches": [
+        "syncTo capability registry and real secret backends not newly tested"
+      ]
+    },
+    {
+      "path": "backend/watchdog_api/db/repositories/settings.ts",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "line_start": 13,
+      "line_end": 31,
+      "functions": "get/save immutable settings snapshots",
+      "source_range_sha256": "eb85ebb5bd31b75bd319d829c0e8671b3f39148429e40d544da11d7253e82020",
+      "verification": "independent_runtime",
+      "test_ids": [
+        "WD-SETTINGS-RESTART-B",
+        "WD-SETTINGS-INVALID-B"
+      ],
+      "untraced_calls_or_branches": [
+        "Other settings routes and full immutable archive export not covered"
+      ]
+    },
+    {
+      "path": "backend/watchdog_api/db/repositories/settings.ts",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "line_start": 99,
+      "line_end": 128,
+      "functions": "budget/reserve/settle/generations",
+      "source_range_sha256": "393bcebf25ab42ead84f3ba4bd8029370434c543278bd5be4e9f34368a52505a",
+      "verification": "independent_runtime",
+      "test_ids": [
+        "WD-ASSISTANT-FAILURE-B"
+      ],
+      "untraced_calls_or_branches": [
+        "Realtime bill reconciliation and multiple concurrent processes not independently tested"
+      ]
+    },
+    {
+      "path": "backend/watchdog_api/services/assistant.ts",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "line_start": 76,
+      "line_end": 134,
+      "functions": "generator/generateRequest/propose",
+      "source_range_sha256": "3553e03ef5b2400755e745b8f6bc4e44bb3f84af0d8e5f78840c52bbcecba9e3",
+      "verification": "independent_runtime",
+      "test_ids": [
+        "WD-ASSISTANT-FAILURE-B"
+      ],
+      "untraced_calls_or_branches": [
+        "Catalog discovery remote response not called"
+      ]
+    },
+    {
+      "path": "backend/watchdog_api/config/assistant.ts",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "line_start": 7,
+      "line_end": 19,
+      "functions": "loadAssistantProfile and settings schema",
+      "source_range_sha256": "a2e54f00965ab31644cc14c4792de5c32bbd44f9bdfaae227aa31812efa9ef47",
+      "verification": "independent_runtime",
+      "test_ids": [
+        "WD-SETTINGS-RESTART-B"
+      ],
+      "untraced_calls_or_branches": [
+        "All profile numeric bounds not exhausted"
+      ]
+    },
+    {
+      "path": "shared/settings.ts",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "line_start": 4,
+      "line_end": 20,
+      "functions": "SettingsSchema",
+      "source_range_sha256": "ff379824b3deae8a22b95bf0762f887bf161708c5c1cdf9064a1014c8f25e20c",
+      "verification": "independent_runtime",
+      "test_ids": [
+        "WD-SETTINGS-INVALID-B"
+      ],
+      "untraced_calls_or_branches": [
+        "All ResearchPlanInput variants not newly covered"
+      ]
+    },
+    {
+      "path": "backend/watchdog_api/db/migrations/index.ts",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "line_start": 79,
+      "line_end": 104,
+      "functions": "runMigrations",
+      "source_range_sha256": "d29d60783f00c2e07d3be7ed4e4f4ffd111f1740853fdbcf470954a5d833df38",
+      "verification": "independent_runtime",
+      "test_ids": [
+        "WD-SETTINGS-RESTART-B",
+        "WD-FLOW-WORKBENCH-ROUNDTRIP-B"
+      ],
+      "untraced_calls_or_branches": [
+        "Each SQL migration not manually reaudited; existing accounts upgrade tests run"
+      ]
+    },
+    {
+      "path": "backend/watchdog_api/services/source_access.ts",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "line_start": 7,
+      "line_end": 47,
+      "functions": "snapshot/overview/draft/assertAcquisition",
+      "source_range_sha256": "88149c21e10163464de6378aaa91a8bc783081632a0bf14b58100d1264f95066",
+      "verification": "independent_runtime",
+      "test_ids": [
+        "WD-FLOW-ACCESS-B"
+      ],
+      "untraced_calls_or_branches": [
+        "External permission verification is not implied by a saved assessment"
+      ]
+    },
+    {
+      "path": "backend/watchdog_api/db/repositories/source_access.ts",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "line_start": 9,
+      "line_end": 78,
+      "functions": "decode/decide/latest/activity/jobOwner",
+      "source_range_sha256": "b1e7184fdf737608da3dc8144ca7c14678197df291f018429b257b476654be88",
+      "verification": "independent_runtime",
+      "test_ids": [
+        "WD-FLOW-ACCESS-B",
+        "WD-FLOW-RECEIPTS-B"
+      ],
+      "untraced_calls_or_branches": [
+        "All candidate and draft limits not exhausted"
+      ]
+    },
+    {
+      "path": "backend/watchdog_api/sources/public_http.ts",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "line_start": 19,
+      "line_end": 65,
+      "functions": "checkAccess/get/json",
+      "source_range_sha256": "24b4f1a96c91a48ba8da67acc7065af1df4007c3aa7b9e980d2e44a56d8633b5",
+      "verification": "independent_runtime",
+      "test_ids": [
+        "WD-FLOW-ACCESS-B",
+        "WD-FLOW-RECEIPTS-B"
+      ],
+      "untraced_calls_or_branches": [
+        "Chunk-overflow, redirect rejection and cancellation midread not newly independently tested"
+      ]
+    },
+    {
+      "path": "backend/watchdog_api/config/source_access.ts",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "line_start": 7,
+      "line_end": 19,
+      "functions": "loadSourceAccessProfile/sourceSnapshot",
+      "source_range_sha256": "f2c4e37578086bcb32ab91730a6bb781ca3176c4cbf9e5a0fe848a4150b300e1",
+      "verification": "independent_runtime",
+      "test_ids": [
+        "WD-FLOW-ACCESS-B"
+      ],
+      "untraced_calls_or_branches": [
+        "Custom source expansion not tested"
+      ]
+    },
+    {
+      "path": "backend/watchdog_api/config/automation.ts",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "line_start": 6,
+      "line_end": 22,
+      "functions": "loadAutomationProfile",
+      "source_range_sha256": "99a9d620af6039c80597ad710230168e4a4349754e6fe55b6f174b9d2e7ac613",
+      "verification": "independent_runtime",
+      "test_ids": [
+        "WD-FLOW-ACCESS-B",
+        "WD-FLOW-RECEIPTS-B"
+      ],
+      "untraced_calls_or_branches": [
+        "All handler defaults not executed"
+      ]
+    },
+    {
+      "path": "backend/watchdog_api/db/repositories/automation.ts",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "line_start": 21,
+      "line_end": 62,
+      "functions": "constructor/archiveProfile/enqueue",
+      "source_range_sha256": "43e7b8c44279d4e9f50f3d625cf91510ba0879ce6cc699b9402e1569a7d3313a",
+      "verification": "independent_runtime",
+      "test_ids": [
+        "WD-FLOW-RECEIPTS-B"
+      ],
+      "untraced_calls_or_branches": [
+        "All scheduler claim/dispatch paths not newly traced"
+      ]
+    },
+    {
+      "path": "backend/watchdog_api/db/repositories/automation.ts",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "line_start": 151,
+      "line_end": 193,
+      "functions": "sourceLease/releaseSource/receipt/receipts/raw",
+      "source_range_sha256": "1ff22e87879478b7f9e02dc0843564464e7919be8ce1370d53c01f3198036df5",
+      "verification": "independent_runtime",
+      "test_ids": [
+        "WD-FLOW-RECEIPTS-B"
+      ],
+      "untraced_calls_or_branches": [
+        "Long-running multi-process lease interleavings not tested"
+      ]
+    },
+    {
+      "path": "backend/watchdog_api/db/repositories/workbench.ts",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "line_start": 22,
+      "line_end": 162,
+      "functions": "profile archive/get; import/approve/revoke/getDataset; requireFigure/resultForFigure/saveFigure/figures",
+      "source_range_sha256": "abf49c2352a733606785407a1f910e0bdb64c2648b5425e800bfd882cf57a598",
+      "verification": "independent_runtime",
+      "test_ids": [
+        "WD-FLOW-WORKBENCH-ROUNDTRIP-B",
+        "WD-FLOW-WORKBENCH-INVALID-B"
+      ],
+      "untraced_calls_or_branches": [
+        "Geometry and sourceCopy extraction dependencies not independently exercised"
+      ]
+    },
+    {
+      "path": "backend/watchdog_api/db/repositories/workbench.ts",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "line_start": 171,
+      "line_end": 259,
+      "functions": "method/approvalReceipts/createRun/transitionRun/persistResult",
+      "source_range_sha256": "87169cdd51d26486c0f5d8dc1a4de8517c0196a885f4f8969a65582c947b1d37",
+      "verification": "independent_runtime",
+      "test_ids": [
+        "WD-FLOW-WORKBENCH-FAILURE-B",
+        "WD-FLOW-WORKBENCH-ROUNDTRIP-B"
+      ],
+      "untraced_calls_or_branches": [
+        "Paper binding and comparison-envelope variants not independently exercised"
+      ]
+    },
+    {
+      "path": "backend/watchdog_api/workbench/service.ts",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "line_start": 14,
+      "line_end": 86,
+      "functions": "profileForFigure/prepare/execute",
+      "source_range_sha256": "123c14d74b94961000f3d24b369018853ece23069c17233458df2cef3dde9348",
+      "verification": "independent_runtime",
+      "test_ids": [
+        "WD-FLOW-WORKBENCH-ROUNDTRIP-B",
+        "WD-FLOW-WORKBENCH-FAILURE-B",
+        "A2-WD-005-A",
+        "A2-WD-005-B"
+      ],
+      "untraced_calls_or_branches": [
+        "Paper comparisons, alternative method selection missingPolicy context not tested"
+      ]
+    },
+    {
+      "path": "backend/watchdog_api/workbench/publication.ts",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "line_start": 14,
+      "line_end": 79,
+      "functions": "publicationSvg/researchPackage",
+      "source_range_sha256": "89795464f79edfe0df023961727b13666896eb585e8c7bfc276387887cc92200",
+      "verification": "independent_runtime",
+      "test_ids": [
+        "WD-FLOW-WORKBENCH-ROUNDTRIP-B"
+      ],
+      "untraced_calls_or_branches": [
+        "No browser rendering/visual QA; map, sourceCopy and paperComparison export branches remain untested"
+      ]
+    },
+    {
+      "path": "backend/watchdog_api/config/workbench.ts",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "line_start": 15,
+      "line_end": 35,
+      "functions": "validate/loadWorkbenchProfile/checkProviderProfile",
+      "source_range_sha256": "fc88ece0337f8e77bb53b307ab9ddee9e7cd687ff106ded957067a24e120d0b7",
+      "verification": "independent_runtime",
+      "test_ids": [
+        "A2-WD-005-A",
+        "A2-WD-005-B",
+        "WD-FLOW-WORKBENCH-ROUNDTRIP-B"
+      ],
+      "untraced_calls_or_branches": [
+        "Profile.version text is not treated as semantic schema-version proof"
+      ]
+    },
+    {
+      "path": "shared/workbench.ts",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "line_start": 1,
+      "line_end": 144,
+      "functions": "DatasetSchema/FigureSchema/validateDataset/defaultFigure/filterRows/checkFigureProfile/checkFigureBindings/csvExport",
+      "source_range_sha256": "cccb91538c1016303efecabd482e044b98d8f08b875618d91b566b95e4bec96a",
+      "verification": "independent_runtime",
+      "test_ids": [
+        "WD-FLOW-WORKBENCH-INVALID-B",
+        "A2-WD-005-A",
+        "A2-WD-005-B"
+      ],
+      "untraced_calls_or_branches": [
+        "Geo, SVG and CSV application-specific behavior remains outside independent acceptance"
+      ]
+    },
+    {
+      "path": "backend/watchdog_api/api/settings_routes.ts",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "line_start": 16,
+      "line_end": 67,
+      "functions": "settings/credentials/assistant/plans route consumption",
+      "source_range_sha256": "79a6d8cd9ff14e198a714f7229b4f9c363006020af5410dc849552fbc699d2ba",
+      "verification": "semantic_route_trace_not_browser_acceptance",
+      "test_ids": [],
+      "untraced_calls_or_branches": [
+        "HTTP route-specific guards rely on existing66-test evidence; independent suite invokes service/repository boundary"
+      ]
+    },
+    {
+      "path": "backend/watchdog_api/api/source_access_routes.ts",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "line_start": 9,
+      "line_end": 36,
+      "functions": "source overview/assessment/draft routes",
+      "source_range_sha256": "6598744b45d7edb3e38ae49eb42645f48793c9e9535adaf44184eae4563d7172",
+      "verification": "semantic_route_trace_not_browser_acceptance",
+      "test_ids": [],
+      "untraced_calls_or_branches": [
+        "Browser interaction not executed"
+      ]
+    },
+    {
+      "path": "backend/watchdog_api/api/workbench_routes.ts",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "line_start": 18,
+      "line_end": 110,
+      "functions": "dataset review/revoke/figure restore/export/method routes",
+      "source_range_sha256": "63da4d4985c2c2a6374f80e7247d2068aba0649daeab013419356c89d3046a89",
+      "verification": "semantic_route_trace_not_browser_acceptance",
+      "test_ids": [],
+      "untraced_calls_or_branches": [
+        "Independent suite executes downstream consumers; existing HTTP tests run"
+      ]
+    },
+    {
+      "path": "backend/watchdog_api/api/routes.ts",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "line_start": 282,
+      "line_end": 333,
+      "functions": "legacy and personal narrative generation entrypoints",
+      "source_range_sha256": "3c9f1494107cf013e712b043052853d963e64dd7d1cc123d75f8d61759da9147",
+      "verification": "semantic_route_trace_not_browser_acceptance",
+      "test_ids": [],
+      "untraced_calls_or_branches": [
+        "Legacy global credentials/API not invoked end-to-end; registry consumer independently tested"
+      ]
+    },
+    {
+      "path": "src/components/ConfigurationWizard.tsx",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "line_start": 8,
+      "line_end": 72,
+      "functions": "settings load/save; mode visibility; provider selection",
+      "source_range_sha256": "300169ab3e8db27cbb1f5ed12d2e85cfc4ca670cb2fc57cbab78a846606f91a4",
+      "verification": "semantic_route_trace_not_browser_acceptance",
+      "test_ids": [],
+      "untraced_calls_or_branches": [
+        "Browser mutation, principal-change races and model pin reset are not behaviorally accepted"
+      ]
+    },
+    {
+      "path": "src/pages/Workbench.tsx",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "line_start": 18,
+      "line_end": 122,
+      "functions": "profile resolution; restore/select; exportFigure/restoreFile",
+      "source_range_sha256": "1ef1b2bb22d8c79f02b50d3e8c04065b41b31e2a15c0dd4828fb866765db0923",
+      "verification": "semantic_route_trace_not_browser_acceptance",
+      "test_ids": [],
+      "untraced_calls_or_branches": [
+        "Browser events, visual rendering and region controls not executed"
+      ]
+    },
+    {
+      "path": "src/lib/workbench_client.ts",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "line_start": 1,
+      "line_end": 17,
+      "functions": "workbenchApi/downloadBlob",
+      "source_range_sha256": "a286a9b6438569d8a5ee9a043a8e62431a5c6fe064bcdb087759ca717ceac308",
+      "verification": "semantic_route_trace_not_browser_acceptance",
+      "test_ids": [],
+      "untraced_calls_or_branches": [
+        "Browser download/presentation boundary blocked by environment"
+      ]
+    },
+    {
+      "path": "src/pages/Results.tsx",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "line_start": 146,
+      "line_end": 179,
+      "functions": "narrative display/automatic button",
+      "source_range_sha256": "c105d26f9074240c3b589a3cdf73bb1e66ec4fdd3a571a2b2e7b106fd97cf130",
+      "verification": "semantic_route_trace_not_browser_acceptance",
+      "test_ids": [],
+      "untraced_calls_or_branches": [
+        "Actual browser click blocked"
+      ]
+    }
+  ],
+  "counts_mean": "File count means at least one named range traced, not all functions or behavior in each file. Runtime-backed and source-only routes are explicit. Previous artifacts are immutable; no broad scanner repeated.",
+  "scope_limits": [
+    "Full source coverage is incomplete; explicit remaining list retained.",
+    "Actual browser behavior remains blocked by Chromium process singleton socket permission.",
+    "Standalone loom is not in this Watchdog backlog."
+  ]
+}

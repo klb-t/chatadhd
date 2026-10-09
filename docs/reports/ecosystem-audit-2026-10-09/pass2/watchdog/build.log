@@ -1,0 +1,53 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> watchdog-jh16@0.0.0 build
+> vite build && node scripts/build_field_shell.mjs && node scripts/build_extraction_verifier.mjs && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs && esbuild scripts/watchdog_admin.ts --bundle --platform=node --format=cjs --packages=external --outfile=dist/watchdog-admin.cjs
+
+vite v6.4.3 building for production...
+transforming...
+✓ 1856 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.78 kB │ gzip:   0.39 kB
+dist/assets/index-BmoXfWS3.css   35.50 kB │ gzip:   7.63 kB
+dist/assets/index-eZOHiY1V.js   978.14 kB │ gzip: 295.07 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 3.45s
+▲ [WARNING] "import.meta" is not available with the "cjs" output format and will be empty [empty-import-meta]
+
+    server.ts:179:25:
+      179 │ const isESMMain = typeof import.meta !== 'undefined' && 
+          ╵                          ~~~~~~~~~~~
+
+  You need to set the output format to "esm" for "import.meta" to work correctly.
+
+▲ [WARNING] "import.meta" is not available with the "cjs" output format and will be empty [empty-import-meta]
+
+    server.ts:180:18:
+      180 │                   import.meta.url?.startsWith('file:') && 
+          ╵                   ~~~~~~~~~~~
+
+  You need to set the output format to "esm" for "import.meta" to work correctly.
+
+▲ [WARNING] "import.meta" is not available with the "cjs" output format and will be empty [empty-import-meta]
+
+    server.ts:181:56:
+      181 │ ...          process.argv[1] === url.fileURLToPath(import.meta.url);
+          ╵                                                    ~~~~~~~~~~~
+
+  You need to set the output format to "esm" for "import.meta" to work correctly.
+
+3 warnings
+
+  dist/server.cjs      1.0mb ⚠️
+  dist/server.cjs.map  1.9mb
+
+⚡ Done in 57ms
+
+  dist/watchdog-admin.cjs  133.9kb
+
+⚡ Done in 13ms

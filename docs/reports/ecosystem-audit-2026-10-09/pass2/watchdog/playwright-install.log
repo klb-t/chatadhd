@@ -1,0 +1,34 @@
+Downloading Chrome for Testing 151.0.7922.34 (playwright chromium v1234)[2m from https://cdn.playwright.dev/builds/cft/151.0.7922.34/linux64/chrome-linux64.zip[22m
+|■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 0 MiB
+Error: End of central directory record signature not found. Either not a zip file, or file is truncated.
+    at /workspace/scratch/1112e9e8a3c6/audit-work/repos/Watchdog-JH16/node_modules/playwright-core/lib/utilsBundle.js:38081:18
+    at /workspace/scratch/1112e9e8a3c6/audit-work/repos/Watchdog-JH16/node_modules/playwright-core/lib/utilsBundle.js:38607:9
+    at /workspace/scratch/1112e9e8a3c6/audit-work/repos/Watchdog-JH16/node_modules/playwright-core/lib/utilsBundle.js:37504:11
+    at FSReqCallback.wrapper [as oncomplete] (node:fs:731:5)
+Downloading Chrome for Testing 151.0.7922.34 (playwright chromium v1234)[2m from https://cdn.playwright.dev/builds/cft/151.0.7922.34/linux64/chrome-linux64.zip[22m
+|■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 0 MiB
+Error: End of central directory record signature not found. Either not a zip file, or file is truncated.
+    at /workspace/scratch/1112e9e8a3c6/audit-work/repos/Watchdog-JH16/node_modules/playwright-core/lib/utilsBundle.js:38081:18
+    at /workspace/scratch/1112e9e8a3c6/audit-work/repos/Watchdog-JH16/node_modules/playwright-core/lib/utilsBundle.js:38607:9
+    at /workspace/scratch/1112e9e8a3c6/audit-work/repos/Watchdog-JH16/node_modules/playwright-core/lib/utilsBundle.js:37504:11
+    at FSReqCallback.wrapper [as oncomplete] (node:fs:731:5)
+Downloading Chrome for Testing 151.0.7922.34 (playwright chromium v1234)[2m from https://cdn.playwright.dev/builds/cft/151.0.7922.34/linux64/chrome-linux64.zip[22m
+|■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 0 MiB
+Error: End of central directory record signature not found. Either not a zip file, or file is truncated.
+    at /workspace/scratch/1112e9e8a3c6/audit-work/repos/Watchdog-JH16/node_modules/playwright-core/lib/utilsBundle.js:38081:18
+    at /workspace/scratch/1112e9e8a3c6/audit-work/repos/Watchdog-JH16/node_modules/playwright-core/lib/utilsBundle.js:38607:9
+    at /workspace/scratch/1112e9e8a3c6/audit-work/repos/Watchdog-JH16/node_modules/playwright-core/lib/utilsBundle.js:37504:11
+    at FSReqCallback.wrapper [as oncomplete] (node:fs:731:5)
+Downloading Chrome for Testing 151.0.7922.34 (playwright chromium v1234)[2m from https://cdn.playwright.dev/builds/cft/151.0.7922.34/linux64/chrome-linux64.zip[22m
+/workspace/scratch/1112e9e8a3c6/audit-work/repos/Watchdog-JH16/node_modules/playwright-core/lib/coreBundle.js:33313
+              throw new Error(`${err.message} Path: ${lockfilePath}`);
+              ^
+
+Error: Unable to update lock within the stale threshold Path: /workspace/scratch/1112e9e8a3c6/audit-work/continuation/scratch/watchdog/browsers/__dirlock
+    at Object.onCompromised (/workspace/scratch/1112e9e8a3c6/audit-work/repos/Watchdog-JH16/node_modules/playwright-core/lib/coreBundle.js:33313:21)
+    at setLockAsCompromised (/workspace/scratch/1112e9e8a3c6/audit-work/repos/Watchdog-JH16/node_modules/playwright-core/lib/coreBundle.js:10425:17)
+    at /workspace/scratch/1112e9e8a3c6/audit-work/repos/Watchdog-JH16/node_modules/playwright-core/lib/coreBundle.js:10389:16
+    at callback (/workspace/scratch/1112e9e8a3c6/audit-work/repos/Watchdog-JH16/node_modules/playwright-core/lib/utilsBundle.js:39023:24)
+    at FSReqCallback.oncomplete (node:fs:200:5)
+
+Node.js v24.19.0

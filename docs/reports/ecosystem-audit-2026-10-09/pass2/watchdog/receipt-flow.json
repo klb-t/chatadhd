@@ -1,0 +1,97 @@
+{
+  "schema": "klbt.audit.watchdog.pass2/1",
+  "repo": "klb-t/Watchdog-JH16",
+  "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+  "startedAt": "2026-10-09T06:10:03.826Z",
+  "finishedAt": "2026-10-09T06:10:04.392Z",
+  "node": "v24.19.0",
+  "scope": "Host TypeScript consumers; file-backed SQLite migrations/restart; injected transports only. No browser/device/cloud/live provider execution.",
+  "network": {
+    "actualAttemptsBlocked": 0,
+    "liveCalls": 0,
+    "globalFetchBlocked": true,
+    "socketConnectBlocked": true
+  },
+  "summary": {
+    "reproduction": {
+      "pass": 0,
+      "fail": 0,
+      "meaning": "PASS means the baseline defect was reproduced, never product acceptance."
+    },
+    "acceptance": {
+      "pass": 5,
+      "fail": 0,
+      "meaning": "FAIL remains a failing product acceptance gate."
+    }
+  },
+  "results": [
+    {
+      "id": "WD-FLOW-ACCESS-B",
+      "finding": "A2-WD-003",
+      "category": "acceptance",
+      "consumer": "SourceAccessRepository.decide → restart → SourceAccessService → PublicHttp.get",
+      "status": "PASS",
+      "evidence": {
+        "denialSurvivesRestartAndPackChange": true,
+        "liveTransportCalls": 0,
+        "originalSourceSnapshotRetained": true
+      }
+    },
+    {
+      "id": "WD-FLOW-RECEIPTS-B",
+      "finding": "A2-WD-003",
+      "category": "acceptance",
+      "consumer": "PublicHttp.get → AutomationRepository.receipt → SQLite/blob restart",
+      "status": "PASS",
+      "evidence": {
+        "failedAttemptDurable": true,
+        "identicalPayloadsTwoEventsOneBlob": true,
+        "restartCounts": {
+          "failed": 1,
+          "successful": 2
+        }
+      }
+    },
+    {
+      "id": "WD-FLOW-WORKBENCH-ROUNDTRIP-B",
+      "finding": "A2-WD-004",
+      "category": "acceptance",
+      "consumer": "importDataset → prepare/approve → execute → persistResult → restart → requireFigure → researchPackage",
+      "status": "PASS",
+      "evidence": {
+        "sqliteRestart": true,
+        "zipCodecAndReimport": true,
+        "oldResultPinsOldProfile": true,
+        "profileEditedIndependently": true,
+        "reimportDoesNotApproveOrInventNativeResult": true,
+        "revocationBlocksExportInputs": true
+      }
+    },
+    {
+      "id": "WD-FLOW-WORKBENCH-INVALID-B",
+      "finding": "A2-WD-004",
+      "category": "acceptance",
+      "consumer": "validateDataset/FigureSchema → WorkbenchRepository.requireFigure",
+      "status": "PASS",
+      "evidence": {
+        "unknownFieldsRejected": true,
+        "unknownDatasetVersionRejected": true,
+        "duplicateRowIdRejected": true,
+        "missingReferenceRejected": true,
+        "foreignOwnerRejected": true
+      }
+    },
+    {
+      "id": "WD-FLOW-WORKBENCH-FAILURE-B",
+      "finding": "A2-WD-004",
+      "category": "acceptance",
+      "consumer": "WorkbenchService.execute → persistResult failure → transitionRun",
+      "status": "PASS",
+      "evidence": {
+        "failedIsNotCompleted": true,
+        "noFinalizedManifest": true,
+        "noResultArtifact": true
+      }
+    }
+  ]
+}

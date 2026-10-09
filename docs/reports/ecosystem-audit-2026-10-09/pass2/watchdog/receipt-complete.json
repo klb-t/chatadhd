@@ -1,0 +1,273 @@
+{
+  "schema": "klbt.audit.watchdog.pass2/1",
+  "repo": "klb-t/Watchdog-JH16",
+  "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+  "suiteSha256": "d71b8141f67778052c9e0808cb423b4a3eee9883722155c37b05d008f0e6a942",
+  "startedAt": "2026-10-09T06:14:34.091Z",
+  "finishedAt": "2026-10-09T06:14:34.943Z",
+  "node": "v24.19.0",
+  "scope": "Host TypeScript consumers; file-backed SQLite migrations/restart; injected transports only. No browser/device/cloud/live provider execution.",
+  "network": {
+    "actualAttemptsBlocked": 0,
+    "liveCalls": 0,
+    "globalFetchBlocked": true,
+    "socketConnectBlocked": true
+  },
+  "summary": {
+    "reproduction": {
+      "pass": 6,
+      "fail": 0,
+      "meaning": "PASS means the baseline defect was reproduced, never product acceptance."
+    },
+    "acceptance": {
+      "pass": 9,
+      "fail": 6,
+      "meaning": "FAIL remains a failing product acceptance gate."
+    }
+  },
+  "results": [
+    {
+      "id": "WD-001-A",
+      "finding": "WD-001",
+      "category": "reproduction",
+      "consumer": "generateNarrative",
+      "status": "PASS",
+      "evidence": {
+        "unknownTemplateAccepted": true
+      }
+    },
+    {
+      "id": "WD-001-B",
+      "finding": "WD-001",
+      "category": "acceptance",
+      "consumer": "generateNarrative",
+      "status": "FAIL",
+      "error": {
+        "name": "AssertionError",
+        "message": "Missing expected exception."
+      }
+    },
+    {
+      "id": "WD-002-A",
+      "finding": "WD-002",
+      "category": "reproduction",
+      "consumer": "ratio.run",
+      "status": "PASS",
+      "evidence": {
+        "missingRowRetained": true
+      }
+    },
+    {
+      "id": "WD-002-B",
+      "finding": "WD-002",
+      "category": "acceptance",
+      "consumer": "ratio.run",
+      "status": "FAIL",
+      "error": {
+        "name": "AssertionError",
+        "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n  [\n+   'absent',\n    'present'\n  ]\n"
+      }
+    },
+    {
+      "id": "WD-003-A",
+      "finding": "WD-003",
+      "category": "reproduction",
+      "consumer": "ProfileGenerator.generate → OpenAiCompatibleGenerator.generate",
+      "status": "PASS",
+      "evidence": {
+        "requestTemperatureIgnored": true,
+        "requestSeedIgnored": true
+      }
+    },
+    {
+      "id": "WD-003-B",
+      "finding": "WD-003",
+      "category": "acceptance",
+      "consumer": "ProfileGenerator.generate → OpenAiCompatibleGenerator.generate",
+      "status": "FAIL",
+      "error": {
+        "name": "AssertionError",
+        "message": "Expected values to be strictly equal:\n\n0.6 !== 0.125\n"
+      }
+    },
+    {
+      "id": "WD-011-A",
+      "finding": "WD-011",
+      "category": "reproduction",
+      "consumer": "generateNarrativeWithProvider → assertNoNovelNumbers",
+      "status": "PASS",
+      "evidence": {
+        "signChangeAccepted": true,
+        "approvalState": "PROPOSED"
+      }
+    },
+    {
+      "id": "WD-011-B",
+      "finding": "WD-011",
+      "category": "acceptance",
+      "consumer": "generateNarrativeWithProvider → assertNoNovelNumbers",
+      "status": "FAIL",
+      "error": {
+        "name": "AssertionError",
+        "message": "Missing expected rejection."
+      }
+    },
+    {
+      "id": "WD-PROFILES-B",
+      "finding": "WD-003",
+      "category": "acceptance",
+      "consumer": "ProfileGenerator.generate",
+      "status": "PASS",
+      "evidence": {
+        "providerProfilesReachTransport": true
+      }
+    },
+    {
+      "id": "A2-WD-001-A",
+      "finding": "A2-WD-001",
+      "category": "reproduction",
+      "consumer": "loadTextGenerationConfig → TextGenerationRegistry → OpenAiCompatibleGenerator",
+      "status": "PASS",
+      "evidence": {
+        "validatedModelOverwritten": true,
+        "validatedPromptOverwritten": true
+      }
+    },
+    {
+      "id": "A2-WD-001-B",
+      "finding": "A2-WD-001",
+      "category": "acceptance",
+      "consumer": "loadTextGenerationConfig → TextGenerationRegistry → OpenAiCompatibleGenerator",
+      "status": "FAIL",
+      "error": {
+        "name": "AssertionError",
+        "message": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'disallowed-model'\n- 'permitted-model'\n"
+      }
+    },
+    {
+      "id": "WD-SETTINGS-RESTART-B",
+      "finding": "A2-WD-002",
+      "category": "acceptance",
+      "consumer": "SettingsRepository.save/get + runMigrations",
+      "status": "PASS",
+      "evidence": {
+        "restartPreservesDisabled": true,
+        "changedPackDefaultsCannotOverrideSavedValue": true,
+        "immutableSnapshotAvailable": true
+      }
+    },
+    {
+      "id": "WD-SETTINGS-INVALID-B",
+      "finding": "A2-WD-002",
+      "category": "acceptance",
+      "consumer": "SettingsRepository.save/get",
+      "status": "PASS",
+      "evidence": {
+        "unknownFieldRejected": true,
+        "corruptionRaisesWithoutDefaultReset": true
+      }
+    },
+    {
+      "id": "WD-ASSISTANT-FAILURE-B",
+      "finding": "A2-WD-002",
+      "category": "acceptance",
+      "consumer": "AssistantService.propose → ProfileGenerator → SettingsRepository.settle",
+      "status": "PASS",
+      "evidence": {
+        "disabledCalls": 0,
+        "injectedTimeoutCalls": 1,
+        "storedStatus": "FAILED_RESERVED",
+        "routeHashesRetained": true
+      }
+    },
+    {
+      "id": "WD-FLOW-ACCESS-B",
+      "finding": "A2-WD-003",
+      "category": "acceptance",
+      "consumer": "SourceAccessRepository.decide → restart → SourceAccessService → PublicHttp.get",
+      "status": "PASS",
+      "evidence": {
+        "denialSurvivesRestartAndPackChange": true,
+        "liveTransportCalls": 0,
+        "originalSourceSnapshotRetained": true
+      }
+    },
+    {
+      "id": "WD-FLOW-RECEIPTS-B",
+      "finding": "A2-WD-003",
+      "category": "acceptance",
+      "consumer": "PublicHttp.get → AutomationRepository.receipt → SQLite/blob restart",
+      "status": "PASS",
+      "evidence": {
+        "failedAttemptDurable": true,
+        "identicalPayloadsTwoEventsOneBlob": true,
+        "restartCounts": {
+          "failed": 1,
+          "successful": 2
+        }
+      }
+    },
+    {
+      "id": "A2-WD-005-A",
+      "finding": "A2-WD-005",
+      "category": "reproduction",
+      "consumer": "validateWorkbenchProfile → defaultFigure → WorkbenchService.profileForFigure",
+      "status": "PASS",
+      "evidence": {
+        "validProfileCreatesInvalidDefaultFigure": true
+      }
+    },
+    {
+      "id": "A2-WD-005-B",
+      "finding": "A2-WD-005",
+      "category": "acceptance",
+      "consumer": "validateWorkbenchProfile → defaultFigure → WorkbenchService.profileForFigure",
+      "status": "FAIL",
+      "error": {
+        "name": "AssertionError",
+        "message": "Got unwanted exception.\nActual message: \"Unknown renderer or palette profile.\""
+      }
+    },
+    {
+      "id": "WD-FLOW-WORKBENCH-ROUNDTRIP-B",
+      "finding": "A2-WD-004",
+      "category": "acceptance",
+      "consumer": "importDataset → prepare/approve → execute → persistResult → restart → requireFigure → researchPackage",
+      "status": "PASS",
+      "evidence": {
+        "sqliteRestart": true,
+        "zipCodecAndReimport": true,
+        "oldResultPinsOldProfile": true,
+        "profileEditedIndependently": true,
+        "reimportDoesNotApproveOrInventNativeResult": true,
+        "revocationBlocksExportInputs": true
+      }
+    },
+    {
+      "id": "WD-FLOW-WORKBENCH-INVALID-B",
+      "finding": "A2-WD-004",
+      "category": "acceptance",
+      "consumer": "validateDataset/FigureSchema → WorkbenchRepository.requireFigure",
+      "status": "PASS",
+      "evidence": {
+        "unknownFieldsRejected": true,
+        "unknownDatasetVersionRejected": true,
+        "duplicateRowIdRejected": true,
+        "missingReferenceRejected": true,
+        "foreignOwnerRejected": true
+      }
+    },
+    {
+      "id": "WD-FLOW-WORKBENCH-FAILURE-B",
+      "finding": "A2-WD-004",
+      "category": "acceptance",
+      "consumer": "WorkbenchService.execute → persistResult failure → transitionRun",
+      "status": "PASS",
+      "evidence": {
+        "failedIsNotCompleted": true,
+        "noFinalizedManifest": true,
+        "noResultArtifact": true
+      }
+    }
+  ]
+}

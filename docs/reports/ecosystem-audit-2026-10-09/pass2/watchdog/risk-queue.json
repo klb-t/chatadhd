@@ -1,0 +1,34 @@
+{
+  "closed_modules": [
+    "generation consumers and parameter precedence",
+    "personal settings restart and failure provenance",
+    "source access deny after restart/pack update",
+    "workbench import/review/execute/persist/export/restore"
+  ],
+  "next": [
+    {
+      "priority": "P1",
+      "scope": "Closed-account API/browser state transition races and principal change while requests are pending",
+      "start": "src/components/ConfigurationWizard.tsx:15-25 + API guards",
+      "reason": "UI stale response guards are not full session-bound E2E; browser blocked."
+    },
+    {
+      "priority": "P1",
+      "scope": "Complete diagnostics export projection and private metadata provenance",
+      "start": "backend/watchdog_api/diag/bundle.ts → diagnostic_routes.ts",
+      "reason": "Sources inspected but public-safety claim not independently validated here; do not mark leak without proof."
+    },
+    {
+      "priority": "P1",
+      "scope": "Remaining source acquisition/cancellation/retention policies",
+      "start": "backend/watchdog_api/services/automation.ts, sources/public_reference.ts",
+      "reason": "Five new flow tests do not exercise every collector or in-flight cancellation."
+    },
+    {
+      "priority": "P2",
+      "scope": "Remaining266-file denominator listed in coverage.json",
+      "start": "coverage.json.remaining_product_files_without_reported_semantic_range",
+      "reason": "No full-ecosystem semantic completion claimed."
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Run the audit against real TypeScript consumers without writing to checkout."""
 import argparse
+import hashlib
 import os
 import pathlib
 import subprocess
@@ -27,8 +28,10 @@ if not loader.exists():
     sys.exit('Missing checkout tsx dependency. Install the pinned package-lock dependencies first.')
 env = os.environ.copy()
 env.update(WATCHDOG_AUDIT_REPO=str(repo), WATCHDOG_AUDIT_SHA=actual,
+           WATCHDOG_AUDIT_SUITE_HASH=hashlib.sha256(pathlib.Path(__file__).with_name('suite.ts').read_bytes()).hexdigest(),
            WATCHDOG_AUDIT_OUT=str(out), WATCHDOG_AUDIT_SCRATCH=str(scratch),
            WATCHDOG_AUDIT_MODE=a.mode, WATCHDOG_AUDIT_FILTER=a.filter,
-           DB_PATH=str(scratch / 'incidental-import.sqlite'))
+           DB_PATH=str(scratch / 'incidental-import.sqlite'),
+           WATCHDOG_DIAGNOSTICS_DIR=str(scratch / 'diagnostics'))
 cmd = ['node', '--import', str(loader), str(pathlib.Path(__file__).with_name('suite.ts'))]
 sys.exit(subprocess.run(cmd, cwd=repo, env=env).returncode)

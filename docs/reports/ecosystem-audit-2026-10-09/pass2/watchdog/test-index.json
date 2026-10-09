@@ -1,0 +1,169 @@
+{
+  "schema": "klbt.audit.test-index/1",
+  "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+  "entrypoint": "tools/ecosystem-audit-2026-10-09/pass2/watchdog/run.py",
+  "arguments": [
+    "--repo",
+    "CHECKOUT",
+    "--sha",
+    "COMMIT",
+    "--out",
+    "RECEIPT.json",
+    "--scratch",
+    "TMP",
+    "--mode",
+    "both"
+  ],
+  "expected_baseline_exit_code": 1,
+  "meaning": "Reproduction PASS confirms a bug. Acceptance FAIL is an actual failure, not xfail. The unchanged baseline has6 failures. Filter with --filter TEST-ID or finding prefix.",
+  "suite_sha256": "d71b8141f67778052c9e0808cb423b4a3eee9883722155c37b05d008f0e6a942",
+  "tests": [
+    {
+      "id": "WD-001-A",
+      "finding": "WD-001",
+      "category": "reproduction",
+      "consumer": "generateNarrative",
+      "baseline_status": "PASS"
+    },
+    {
+      "id": "WD-001-B",
+      "finding": "WD-001",
+      "category": "acceptance",
+      "consumer": "generateNarrative",
+      "baseline_status": "FAIL"
+    },
+    {
+      "id": "WD-002-A",
+      "finding": "WD-002",
+      "category": "reproduction",
+      "consumer": "ratio.run",
+      "baseline_status": "PASS"
+    },
+    {
+      "id": "WD-002-B",
+      "finding": "WD-002",
+      "category": "acceptance",
+      "consumer": "ratio.run",
+      "baseline_status": "FAIL"
+    },
+    {
+      "id": "WD-003-A",
+      "finding": "WD-003",
+      "category": "reproduction",
+      "consumer": "ProfileGenerator.generate → OpenAiCompatibleGenerator.generate",
+      "baseline_status": "PASS"
+    },
+    {
+      "id": "WD-003-B",
+      "finding": "WD-003",
+      "category": "acceptance",
+      "consumer": "ProfileGenerator.generate → OpenAiCompatibleGenerator.generate",
+      "baseline_status": "FAIL"
+    },
+    {
+      "id": "WD-011-A",
+      "finding": "WD-011",
+      "category": "reproduction",
+      "consumer": "generateNarrativeWithProvider → assertNoNovelNumbers",
+      "baseline_status": "PASS"
+    },
+    {
+      "id": "WD-011-B",
+      "finding": "WD-011",
+      "category": "acceptance",
+      "consumer": "generateNarrativeWithProvider → assertNoNovelNumbers",
+      "baseline_status": "FAIL"
+    },
+    {
+      "id": "WD-PROFILES-B",
+      "finding": "WD-003",
+      "category": "acceptance",
+      "consumer": "ProfileGenerator.generate",
+      "baseline_status": "PASS"
+    },
+    {
+      "id": "A2-WD-001-A",
+      "finding": "A2-WD-001",
+      "category": "reproduction",
+      "consumer": "loadTextGenerationConfig → TextGenerationRegistry → OpenAiCompatibleGenerator",
+      "baseline_status": "PASS"
+    },
+    {
+      "id": "A2-WD-001-B",
+      "finding": "A2-WD-001",
+      "category": "acceptance",
+      "consumer": "loadTextGenerationConfig → TextGenerationRegistry → OpenAiCompatibleGenerator",
+      "baseline_status": "FAIL"
+    },
+    {
+      "id": "WD-SETTINGS-RESTART-B",
+      "finding": "A2-WD-002",
+      "category": "acceptance",
+      "consumer": "SettingsRepository.save/get + runMigrations",
+      "baseline_status": "PASS"
+    },
+    {
+      "id": "WD-SETTINGS-INVALID-B",
+      "finding": "A2-WD-002",
+      "category": "acceptance",
+      "consumer": "SettingsRepository.save/get",
+      "baseline_status": "PASS"
+    },
+    {
+      "id": "WD-ASSISTANT-FAILURE-B",
+      "finding": "A2-WD-002",
+      "category": "acceptance",
+      "consumer": "AssistantService.propose → ProfileGenerator → SettingsRepository.settle",
+      "baseline_status": "PASS"
+    },
+    {
+      "id": "WD-FLOW-ACCESS-B",
+      "finding": "A2-WD-003",
+      "category": "acceptance",
+      "consumer": "SourceAccessRepository.decide → restart → SourceAccessService → PublicHttp.get",
+      "baseline_status": "PASS"
+    },
+    {
+      "id": "WD-FLOW-RECEIPTS-B",
+      "finding": "A2-WD-003",
+      "category": "acceptance",
+      "consumer": "PublicHttp.get → AutomationRepository.receipt → SQLite/blob restart",
+      "baseline_status": "PASS"
+    },
+    {
+      "id": "A2-WD-005-A",
+      "finding": "A2-WD-005",
+      "category": "reproduction",
+      "consumer": "validateWorkbenchProfile → defaultFigure → WorkbenchService.profileForFigure",
+      "baseline_status": "PASS"
+    },
+    {
+      "id": "A2-WD-005-B",
+      "finding": "A2-WD-005",
+      "category": "acceptance",
+      "consumer": "validateWorkbenchProfile → defaultFigure → WorkbenchService.profileForFigure",
+      "baseline_status": "FAIL"
+    },
+    {
+      "id": "WD-FLOW-WORKBENCH-ROUNDTRIP-B",
+      "finding": "A2-WD-004",
+      "category": "acceptance",
+      "consumer": "importDataset → prepare/approve → execute → persistResult → restart → requireFigure → researchPackage",
+      "baseline_status": "PASS"
+    },
+    {
+      "id": "WD-FLOW-WORKBENCH-INVALID-B",
+      "finding": "A2-WD-004",
+      "category": "acceptance",
+      "consumer": "validateDataset/FigureSchema → WorkbenchRepository.requireFigure",
+      "baseline_status": "PASS"
+    },
+    {
+      "id": "WD-FLOW-WORKBENCH-FAILURE-B",
+      "finding": "A2-WD-004",
+      "category": "acceptance",
+      "consumer": "WorkbenchService.execute → persistResult failure → transitionRun",
+      "baseline_status": "PASS"
+    }
+  ]
+}

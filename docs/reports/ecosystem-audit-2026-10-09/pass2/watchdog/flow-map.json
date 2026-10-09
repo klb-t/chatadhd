@@ -1,0 +1,29 @@
+[
+  {
+    "flow": "personal assistant",
+    "data": "SettingsRecord + profile/provider/catalog versions",
+    "graph_or_typed_reference": "settingsHash, routingProfileHash, providerProfileHash, catalogHash",
+    "runtime": "AssistantService → ProfileGenerator → transport → reserve/settle",
+    "storage": "personal_settings + immutable snapshots + assistant_reservations",
+    "ui": "ConfigurationWizard selects mode over same value; Results uses automatic endpoint",
+    "status": "host replay9 accepted gates incl failure; browser not verified; request.params defect persists"
+  },
+  {
+    "flow": "source exclusion",
+    "data": "owner access revision pins source snapshot",
+    "graph_or_typed_reference": "sourceHash/contentHash/previousId",
+    "runtime": "PublicHttp rechecks SourceAccessService before send",
+    "storage": "source_access_revisions + public_fetch_receipts + deduplicated raw_blobs",
+    "ui": "source access routes/UI not independently browser-tested",
+    "status": "restart and changed pack deny PASS"
+  },
+  {
+    "flow": "workbench",
+    "data": "DatasetDocument + FigureSpec + immutable profile/method",
+    "graph_or_typed_reference": "datasetHash/profileHash/methodHash/resultHash + manifests",
+    "runtime": "prepare → approve → deterministic execute → persistResult → requireFigure → researchPackage",
+    "storage": "SQLite metadata + real filesystem objects + ZIP",
+    "ui": "Workbench restore/export handlers traced; browser blocked",
+    "status": "roundtrip/old-version/review gates PASS; alternate palette default FAIL"
+  }
+]

@@ -1,0 +1,123 @@
+{
+  "repo": "klb-t/Watchdog-JH16",
+  "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+  "packages": [
+    {
+      "finding_id": "WD-011",
+      "priority": "P1",
+      "base_sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "reproduction": "WD-011-A",
+      "expected_behavior": "Reject generated sign changes as different quantities; preserve PROPOSED until content-bound human review.",
+      "acceptance": "WD-011-B",
+      "command": "python3 tools/ecosystem-audit-2026-10-09/pass2/watchdog/run.py --repo CHECKOUT --sha SHA --out receipt.json --scratch TMP --mode accept --filter WD-011",
+      "consumers": [
+        "services/narrative.ts:assertNoNovelNumbers",
+        "services/narrative.ts:generateNarrativeWithProvider",
+        "services/export.ts:approval gate"
+      ],
+      "migration": "Stricter guard może odrzucić wcześniej dopuszczone szkice; nie nadpisywać historycznych aprobat ani źródeł.",
+      "risk": "Guard nie gwarantuje deklarowanej odmowy nowych wartości; narracja ze zmienionym znakiem może dojść do PROPOSED. Nadal wymagany jest human approval — nie stwierdzono automatycznego zatwierdzenia ani wystąpienia błędu w prawdziwym wyniku.",
+      "dependencies": [
+        "numeric token contract"
+      ],
+      "acceptance_scope_limit": "WD001-B checks unknown template selection only; green does not prove complete template/prompt extraction. WD003 allows explicit rejection of unsupported/conflicting parameters. Each scope still needs full finding closure review."
+    },
+    {
+      "finding_id": "A2-WD-001",
+      "priority": "P1",
+      "base_sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "reproduction": "A2-WD-001-A",
+      "expected_behavior": "Validate effective model/prompt after merge or reject reserved fields before send.",
+      "acceptance": "A2-WD-001-B",
+      "command": "python3 tools/ecosystem-audit-2026-10-09/pass2/watchdog/run.py --repo CHECKOUT --sha SHA --out receipt.json --scratch TMP --mode accept --filter A2-WD-001",
+      "consumers": [
+        "loadTextGenerationConfig → TextGenerationRegistry.defaultParams/get → OpenAiCompatibleGenerator.generate → post",
+        "buildApiRouter /runs/:id/narrative/generate → generateNarrativeWithProvider → same registry adapter"
+      ],
+      "migration": "Existing legacy profiles using reserved keys require explicit review; never silently reinterpret model/messages overrides. Preserve old profile versions and record effective request identity.",
+      "risk": "The effective model/prompt can differ from the fields the adapter validates. The legacy narrative route consumes these defaultParams; the personal-provider loader separately protects bound fields, so that path is not claimed vulnerable. The configuration must be operator-authored/altered; no unprivileged remote exploit is claimed.",
+      "dependencies": [
+        "WD-003: define supported request/profile parameter precedence consistently without dropping legitimate generation parameters"
+      ],
+      "acceptance_scope_limit": "WD001-B checks unknown template selection only; green does not prove complete template/prompt extraction. WD003 allows explicit rejection of unsupported/conflicting parameters. Each scope still needs full finding closure review."
+    },
+    {
+      "finding_id": "WD-003",
+      "priority": "P1",
+      "base_sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "reproduction": "WD-003-A",
+      "expected_behavior": "Apply supported generation parameters or explicitly reject conflicts; never silently discard.",
+      "acceptance": "WD-003-B",
+      "command": "python3 tools/ecosystem-audit-2026-10-09/pass2/watchdog/run.py --repo CHECKOUT --sha SHA --out receipt.json --scratch TMP --mode accept --filter WD-003",
+      "consumers": [
+        "services/assistant.ts:generateRequest",
+        "llm/profile_generator.ts:generate",
+        "llm/openai_compatible.ts:generate"
+      ],
+      "migration": "Udostępnienie parametrów może zmienić koszt; pola budżetu/modelu/narzędzi zachować pod kontrolą mechanizmu rezerwacji.",
+      "risk": "Żądane parametry nie są efektywnymi parametrami. Runtime dostawcy używa własnych domyślnych, a kod wywołujący wygląda jakby ustalał temperature=0. Nie wykonano zdalnego wywołania.",
+      "dependencies": [
+        "provider capability schema"
+      ],
+      "acceptance_scope_limit": "WD001-B checks unknown template selection only; green does not prove complete template/prompt extraction. WD003 allows explicit rejection of unsupported/conflicting parameters. Each scope still needs full finding closure review."
+    },
+    {
+      "finding_id": "WD-002",
+      "priority": "P1",
+      "base_sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "reproduction": "WD-002-A",
+      "expected_behavior": "exclude must remove missing rows and preserve entity/value alignment.",
+      "acceptance": "WD-002-B",
+      "command": "python3 tools/ecosystem-audit-2026-10-09/pass2/watchdog/run.py --repo CHECKOUT --sha SHA --out receipt.json --scratch TMP --mode accept --filter WD-002",
+      "consumers": [
+        "analysis/method_spec_validation.ts:validateMethodSpec",
+        "analysis/executor.ts:85–88",
+        "analysis/primitives.ts:ratioPrimitive"
+      ],
+      "migration": "Zmiana liczby wierszy wpływa na dalsze kroki i hash wyników; nowa wersja executor/primitive, bez zmiany locked JH16.",
+      "risk": "Dwie deklarowane strategie zwracają ten sam rezultat; wybranie exclude nie wyklucza brakującego wiersza. Brak nie staje się zerem — problemem jest nieprawdziwa semantyka opcji.",
+      "dependencies": [
+        "method_spec_validation"
+      ],
+      "acceptance_scope_limit": "WD001-B checks unknown template selection only; green does not prove complete template/prompt extraction. WD003 allows explicit rejection of unsupported/conflicting parameters. Each scope still needs full finding closure review."
+    },
+    {
+      "finding_id": "WD-001",
+      "priority": "P1",
+      "base_sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "reproduction": "WD-001-A",
+      "expected_behavior": "Resolve actual versioned template; unknown identity cannot merely label the built-in template.",
+      "acceptance": "WD-001-B",
+      "command": "python3 tools/ecosystem-audit-2026-10-09/pass2/watchdog/run.py --repo CHECKOUT --sha SHA --out receipt.json --scratch TMP --mode accept --filter WD-001",
+      "consumers": [
+        "services/narrative.ts:generateNarrative/generateNarrativeWithProvider",
+        "services/run_orchestrator.ts",
+        "services/export.ts"
+      ],
+      "migration": "Nie zmieniać historycznych treści i hashy; dotychczasowa receptura wymaga wersji danych zgodnej bajtowo.",
+      "risk": "Zmiana szablonu w żądaniu zmienia opis tożsamości bez zmiany faktycznej receptury; zmiana języka, liczby pozycji i promptu wymaga edycji produktu.",
+      "dependencies": [],
+      "acceptance_scope_limit": "WD001-B checks unknown template selection only; green does not prove complete template/prompt extraction. WD003 allows explicit rejection of unsupported/conflicting parameters. Each scope still needs full finding closure review."
+    },
+    {
+      "finding_id": "A2-WD-005",
+      "priority": "P2",
+      "base_sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "reproduction": "A2-WD-005-A",
+      "expected_behavior": "A validated palette profile creates a valid default figure; defaults are explicit profile data.",
+      "acceptance": "A2-WD-005-B",
+      "command": "python3 tools/ecosystem-audit-2026-10-09/pass2/watchdog/run.py --repo CHECKOUT --sha SHA --out receipt.json --scratch TMP --mode accept --filter A2-WD-005",
+      "consumers": [
+        "WorkbenchContent.selectDataset → defaultFigure",
+        "WorkbenchService.profileForFigure → checkFigureProfile → rendering/export/method preparation"
+      ],
+      "migration": "Preserve legacy appearance by explicit legacy default profile; adding defaults changes profile hashes, so never relabel historical figures/results with new hashes.",
+      "risk": "Moving available palettes into JSON does not make the new-figure default follow the profile. A valid supported custom palette registry produces unusable default state until another consumer manually corrects it. No claim that all custom profiles fail.",
+      "dependencies": [
+        "Profile schema change belongs to B; audit does not edit it."
+      ],
+      "acceptance_scope_limit": "WD001-B checks unknown template selection only; green does not prove complete template/prompt extraction. WD003 allows explicit rejection of unsupported/conflicting parameters. Each scope still needs full finding closure review."
+    }
+  ],
+  "ownership": "All product/runtime/schema/UI changes belong to B or Watchdog product owner, not audit A."
+}

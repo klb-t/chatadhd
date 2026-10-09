@@ -1,0 +1,31 @@
+{
+  "explicit": [
+    {
+      "choice": "Reproduce and accept are separate test categories",
+      "effect": "Unchanged baseline remains exit1, six failed acceptance checks."
+    },
+    {
+      "choice": "Existing caller and actual SQLite/blob instead of reimplemented algorithms",
+      "effect": "No pretend schema-only/native equivalence."
+    },
+    {
+      "choice": "Unknown fields rejected rather than silently dropped in tested settings/dataset/figure paths",
+      "effect": "Positive scope-limited observed behavior."
+    }
+  ],
+  "hidden_confirmed": [
+    {
+      "finding": "A2-WD-001",
+      "choice": "Object spread order lets generation_params replace validated model/messages"
+    },
+    {
+      "finding": "A2-WD-005",
+      "choice": "defaultFigure chooses accessible independently from validated profile registry"
+    }
+  ],
+  "not_inferred": [
+    "No scientific approval inferred from software tests.",
+    "No supplier permission inferred from owner assessment.",
+    "No equivalence of Watchdog SQLite and Loom native graph claimed."
+  ]
+}
