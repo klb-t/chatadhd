@@ -3,9 +3,10 @@
 Base main: `9e20f99ab27e7cd45e1892f83bf60fbe60db3de9`.
 Branch: `gpt/resource-graph-2026-10-09`; main and other branches untouched.
 First published checkpoint: `1d3d133154f213733b7a69af863613cec2dd8ca2`.
-Previous published implementation SHA: `3b44a98298edb3d395d126a1a519eccd40cb5866`.
-The final source-search increment is this checkpoint; publication receipt follows
-with its exact remote SHA. Take complete branch HEAD including optional B patches.
+Ready SHA (code, tests, B patches and E packet):
+`e485c8f79c9de7ec248ab16c6c40043a98457a57`.
+This subsequent publication-receipt commit changes only STATE and manifest.
+Canonical branch HEAD includes it; implemented/tested code is unchanged.
 
 Owner correction governs scope: generic composable demand-driven resource access,
 not an Office feature programme. No native-store copy is required to attach,
@@ -57,3 +58,9 @@ No paid/model calls. All generated fixtures are synthetic and nonprivate.
 
 Publication verification: second local `2b716b94` and published `3b44a982` both
 have tree `ab86217129bf6c16975f16b370f8e5565c20c82a` (fetch verified).
+
+Final implementation publication: local `0130503d` and remote `e485c8f7` have
+identical tree `a14158882a41a2829a326a892a9ec47107eceb6a`, verified by fetch.
+All 54 changed paths are within the four owner-assigned directories. Unpublished
+local commit identities are retained on local `archive/local-resource-graph-2026-10-09`;
+the working branch is synchronized to the published canonical commits.
