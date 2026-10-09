@@ -217,6 +217,49 @@ int main(int argc,char** argv) {
  auto contract=must(extract::prompts::resolve("semantic.analysis"));
  contract.definition["validation_mode"]="strict"; contract.definition["output_schema"]=Json{{"type","object"},{"required",Json::array({"result"})},{"properties",{{"result",{{"type","boolean"}}}}}};
  contract=must(extract::prompts::from_snapshot(contract.definition));
+ // Portability regression: inspect the actual consumed native limit, not only
+ // the echoed execution JSON. Preparing every boundary stays dispatch/ledger-free.
+ {
+  loom_server::analysis_ui_detail::State limits_state;
+  auto definition=contract.definition;
+  definition["analysis_parameters"]["limits"]["max_response_bytes"]=4096;
+  Json limit_command{{"operation","prepare"},{"prompt_snapshot",definition},{"model","offline/test"},
+   {"provider","https://scripted.invalid"},{"bindings",{{"text","synthetic response limit boundary"}}}};
+  const auto maximum=std::numeric_limits<std::size_t>::max();
+  auto check_limit=[&](const Json& execution,std::size_t expected) {
+   limit_command["execution"]=execution;
+   const auto held=must(loom_server::analysis_ui_detail::dispatch(&context,limits_state,limit_command));
+   assert(held["attempted"]==false&&held["status"]=="prepared");
+   const auto id=held["prepared_id"].get<std::string>();
+   assert(limits_state.prepared.at(id)->max_response_bytes==expected);
+   assert(http->requests().empty()&&!std::filesystem::exists(dir.path()/"usage-policy.sqlite"));
+   must(loom_server::analysis_ui_detail::dispatch(&context,limits_state,Json{{"operation","discard"},{"prepared_id",id}}));
+   assert(limits_state.prepared.empty());
+  };
+  auto reject_limit=[&](const Json& value) {
+   limit_command["execution"]={{"max_response_bytes",value}};
+   auto rejected=loom_server::analysis_ui_detail::dispatch(&context,limits_state,limit_command);
+   assert(!rejected&&rejected.error().code==Errc::InvalidArgument);
+   assert(limits_state.prepared.empty()&&http->requests().empty()&&!std::filesystem::exists(dir.path()/"usage-policy.sqlite"));
+  };
+  check_limit(Json::object(),4096);
+  check_limit(Json{{"max_response_bytes",nullptr}},maximum);
+  check_limit(Json{{"max_response_bytes",std::int64_t{0}}},0);
+  check_limit(Json{{"max_response_bytes",std::int64_t{17}}},17);
+  for(const auto value:{std::uint64_t{9007199254740993ULL},std::numeric_limits<std::uint64_t>::max()}) {
+   if(value>maximum) reject_limit(Json(value));
+   else check_limit(Json{{"max_response_bytes",value}},static_cast<std::size_t>(value));
+  }
+  const auto signed_large=std::int64_t{9007199254740993LL};
+  if(static_cast<std::uint64_t>(signed_large)>maximum) reject_limit(Json(signed_large));
+  else check_limit(Json{{"max_response_bytes",signed_large}},static_cast<std::size_t>(signed_large));
+  check_limit(Json{{"max_response_bytes",maximum}},maximum);
+  for(const auto& invalid:Json::array({-1,std::numeric_limits<std::int64_t>::min(),1.0,1.5,"1",true,Json::array(),Json::object()})) reject_limit(invalid);
+  limit_command["prompt_snapshot"]["analysis_parameters"]["limits"]["max_response_bytes"]=nullptr;
+  check_limit(Json::object(),maximum);
+  limit_command["prompt_snapshot"]["analysis_parameters"]["limits"].erase("max_response_bytes");
+  check_limit(Json::object(),maximum);
+ }
  const std::string known="2026-10-05T00:00:00Z";
  const Json origin{{"kind","user"},{"actor","synthetic-test-owner"},{"model",nullptr},{"recipe_sha256",nullptr},{"response_sha256",nullptr}};
  // Install the actual owner-data graph-chat preset, including its real recipe
@@ -343,6 +386,12 @@ try {
   phase = "compiler";
   const compiled = await executeFile("c++", compilerArgs, { timeout: 180000, maxBuffer: 4 * 1024 * 1024 });
   await writeFile(join(evidence, "compiler.stdout.log"), compiled.stdout); await writeFile(join(evidence, "compiler.stderr.log"), compiled.stderr);
+  // Pin the generated native executable and its consumed inputs before it runs.
+  const receiptFiles = [source, binary, input, core, miniz, sqlite,
+    ...["analysis-ui-routes.h", "method-ui-routes.h", "native-ui-common.h"].map(name => join(loom, "server/src", name))];
+  const sha256 = Object.fromEntries(await Promise.all(receiptFiles.map(async file =>
+    [file, createHash("sha256").update(await readFile(file)).digest("hex")])));
+  await writeFile(join(evidence, "runtime-receipt.json"), JSON.stringify({ captured_at: new Date().toISOString(), sha256 }, null, 2));
   phase = "runtime";
   const outcome = await executeFile(binary, [input], { timeout: 30000, maxBuffer: 4 * 1024 * 1024 });
   await writeFile(join(evidence, "runtime.stdout.log"), outcome.stdout); await writeFile(join(evidence, "runtime.stderr.log"), outcome.stderr);

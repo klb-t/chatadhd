@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cctype>
+#include <cstdint>
 #include <limits>
 #include <map>
 #include <memory>
@@ -108,9 +109,12 @@ inline loom::Result<std::size_t> response_limit(const Json& execution, const Jso
   const auto limits = definition["analysis_parameters"].value("limits", Json::object());
   const Json value = execution.value("max_response_bytes", limits.value("max_response_bytes", Json(nullptr)));
   if (value.is_null()) return std::numeric_limits<std::size_t>::max();
-  if (!value.is_number_integer() || value.get<double>() < 0 || value.get<double>() > std::numeric_limits<std::size_t>::max())
+  if (!value.is_number_integer() || (!value.is_number_unsigned() && value.get<std::int64_t>() < 0))
     return invalid("max_response_bytes must be a nonnegative native size or null");
-  return value.get<std::size_t>();
+  const auto number = value.get<std::uint64_t>();
+  if (number > std::numeric_limits<std::size_t>::max())
+    return invalid("max_response_bytes must be a nonnegative native size or null");
+  return static_cast<std::size_t>(number);
 }
 
 inline loom::Result<prompts::Contract> effective_contract(loom::Runtime& runtime, const Json& body) {

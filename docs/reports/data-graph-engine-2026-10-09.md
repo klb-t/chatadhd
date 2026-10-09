@@ -390,3 +390,12 @@ Końcowy zakres konsumenta po GCC13/WERROR rebuild: **5/5 PASS**,15,18 s,guard5 
 
 
 Clang build2 po bb1a943b przeszedł generator/kod produktu, następnie zatrzymał się na CHECK_THROWS_AS w test_import_resume.cpp: ignorowany [[nodiscard]] Result, WERROR. Minimalna poprawka jawnie odrzuca wynik przez (void) wewnątrz tej samej asercji; oczekiwany std::runtime_error i wszystkie kontrole storage/wznowienia są identyczne. GCC13 rebuild PASS; nowy scope1/1 guard PASS,23 native/696 asercji,1,42 s, receipt przed testem i pełne dowody w .onboarding/import-resume-nodiscard-fix-20261009. Historyczny build2FAIL zachowany; pełny Clang wymaga kolejnego build3.
+
+
+## Dokładna granica rozmiaru odpowiedzi — portability serwera
+
+Clang build3 na02371b01: FAIL67/69 przez analysis_ui::response_limit, konwersja uint64 max do double w porównaniu z size_t max. Nie stwierdzono błędnego przyjęcia wartości na tym64bit hoście; wszystkie uint64 mieszczą się w size_t. Naprawa mechanizmu używa całkowitoliczbowego porównania po osobnym sprawdzeniu znaku. Null nadal oznacza natywną granicę; float1.0, ułamki, bool, string i ujemne wartości pozostają odrzucone. Bez zmiany danych/defaultów/storage, migracji lub wyciszenia WERROR.
+
+GCC13 rebuild PASS. Rzeczywisty server.chat_active_task:1/1 CTest,2/2 Python scenarios,guard PASS,3,16 s; prepare/inspect/admission HTTP bez dispatch i rezerwacji. Istniejący analysis-ui harness:5/5 groups PASS,28,204 s. Natywny bridge sprawdza faktyczne Prepared.max_response_bytes, w tym signed/unsigned ponad2^53 i UINT64max, nie tylko echo JSON; wszystkie wcześniejsze asercje zachowane. Host64, brak deklaracji wykonanego32bit. Receipt źródła/config/bin poprzedza testy, dodatkowy hash wygenerowanego executora poprzedza jego uruchomienie; źródła niezmienione. Dowody .onboarding/analysis-response-limit i wskazane tam scoped logs/JUnit.
+
+Próby konfiguracji browsera zachowane: brak spodziewanego pobranego slotu i późniejsze EROFS w /var/tmp dały brak wykonania native/0z5groups, nie PASS produktu. Nowy lokalny mapping wskazuje istniejący Chromium, browser TMPDIR jest zapisywalnym katalogiem pod /tmp; nie zmienia to oddzielnego TMPDIR=/var/tmp wymaganego przez credential fixtures w pełnej natywnej macierzy. Nie pobierano browsera ani nie pomijano testów. Kolejny etap to Clangbuild4 i pełne bramki zamrożonego drzewa.

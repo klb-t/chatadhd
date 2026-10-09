@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Synthetic HTTP facade -> C ABI -> native client -> loopback provider evidence."""
+import ctypes
 import hashlib
 import http.server
 import json
@@ -166,6 +167,54 @@ class ActiveTaskServerTest(unittest.TestCase):
         for marker in absent:
             self.assertNotIn(marker, text)
         self.assertEqual(sum(m["content"].startswith("[Active task specification;") for m in payload["messages"]), 1)
+
+    def test_analysis_response_limit_prepare_boundaries_never_dispatch(self):
+        # The native bridge separately inspects Prepared.max_response_bytes;
+        # this test covers actual HTTP parsing/admission and zero dispatch.
+        contract = {"schema": "loom.analysis_prompt/1", "id": "synthetic.limit", "version": 1,
+                    "messages": [{"role": "user", "content": [{"binding": "text"}]}],
+                    "request_parameters": {},
+                    "transport": {"method": "POST", "path": "/chat/completions", "timeout_ms": 30000,
+                                  "stream": False, "headers": {"Content-Type": "application/json"}},
+                    "analysis_parameters": {"limits": {"max_response_bytes": 4096}},
+                    "output_schema": {"type": "object"}, "validation_mode": "strict"}
+        command = {"operation": "prepare", "prompt_snapshot": contract, "model": "synthetic/local",
+                   "provider": f"http://127.0.0.1:{self.provider.server_port}",
+                   "bindings": {"text": "Public synthetic response limit boundary"}}
+        maximum = (1 << (8 * ctypes.sizeof(ctypes.c_size_t))) - 1
+        allowed = [{}, {"max_response_bytes": None}, {"max_response_bytes": 0},
+                   {"max_response_bytes": 17}, {"max_response_bytes": maximum}]
+        invalid = [-1, -(1 << 63), 1.0, 1.5, "1", True, [], {}]
+        for boundary in [(1 << 53) + 1, (1 << 64) - 1]:
+            if boundary <= maximum:
+                allowed.append({"max_response_bytes": boundary})
+            else:
+                invalid.append(boundary)
+        for execution in allowed:
+            with self.subTest(execution=execution):
+                prepared = self.request("POST", "/api/analysis", dict(command, execution=execution))
+                self.assertEqual(prepared["schema"], "loom.analysis_prepared/1")
+                self.assertEqual(prepared["status"], "prepared")
+                self.assertFalse(prepared["attempted"])
+                self.assertEqual(prepared["execution"], execution)
+                inspected = self.request("POST", "/api/analysis",
+                                         {"operation": "inspect", "prepared_id": prepared["prepared_id"]})
+                self.assertEqual(inspected["execution"], execution)
+                self.assertEqual(inspected["request_identity_hash"], prepared["request_identity_hash"])
+                self.request("POST", "/api/analysis",
+                             {"operation": "discard", "prepared_id": prepared["prepared_id"]})
+        for value in invalid:
+            with self.subTest(rejected=value):
+                with self.assertRaises(urllib.error.HTTPError) as caught:
+                    self.request("POST", "/api/analysis", dict(command, execution={"max_response_bytes": value}))
+                self.assertEqual(caught.exception.code, 400)
+                error = json.loads(caught.exception.read())
+                self.assertEqual(error["error"]["code"], "invalid_argument")
+        self.assertEqual(self.calls, [])
+        self.assertEqual(self.rows(), [])
+        self.assertFalse((self.directory / "usage-policy.sqlite").exists())
+        print("Analysis response limit HTTP admission: exact JSON integer boundaries, unchanged type rejection, "
+              "0 provider calls, no usage reservation. Effective size is checked separately in native bridge.")
 
     def test_revision_rejection_and_trace_off_failure_survive_server_restart(self):
         self.accepted(self.chat("SOURCE_SERVER_ORIGINAL: write the report."))
