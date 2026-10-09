@@ -1,0 +1,37 @@
+{
+  "corrections": [
+    {
+      "receipt": "perspectives-main.json",
+      "issue": "Oracle searched class=\"kb-record prefix and matched kb-records container.",
+      "correction": "Require word boundary: class=\"kb-record followed by space or closing quote.",
+      "final": "perspectives-main-corrected.json",
+      "product_failure": false
+    },
+    {
+      "receipt": "E4-initial-invalid-pack.log",
+      "issue": "Synthetic pack fixture incremented pack revision but not changed entry revision. Native correctly returned conflict.",
+      "correction": "Kept explicit rejection test E4-03a, then incremented changed entry revision before continuation.",
+      "final": "E4-results.json",
+      "product_failure": false
+    },
+    {
+      "receipt": "E4-results-initial.json",
+      "issue": "E4-06 combined evidence filter/render limit with permission denial, so its absence oracle could pass without permission enforcement.",
+      "correction": "Separate visibility-only allow-all from same-plan/full-budget permission-only test, plus denied-focus placeholder/no-read probe.",
+      "final": "E4-results.json E4-06 / E4-06a / E4-06b",
+      "product_failure": false
+    }
+  ],
+  "runtime_install": {
+    "requests": "2.34.2 installed in own scratch dependencies",
+    "react": "18.3.1 existing main web dependencies",
+    "typescript": "existing main dependencies",
+    "compiler": "native_build manifest in E4-results.json"
+  },
+  "not_claimed": [
+    "browser E2E for E product",
+    "runtime profile field edit integration",
+    "D source typed-address compatibility",
+    "full graph equivalence from legacy importer role/text tests"
+  ]
+}

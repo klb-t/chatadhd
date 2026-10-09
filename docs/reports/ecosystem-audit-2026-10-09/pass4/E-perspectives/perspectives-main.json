@@ -1,0 +1,125 @@
+{
+  "schema": "klbt.audit.pass4-perspectives/1",
+  "repo": "klb-t/chatadhd",
+  "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "source_hashes": {
+    "loom/web/src/workspace/state.ts": "68f3b1318950074ae86cdc44ef440bd7294cf5606c84ef45582e87738e67b6d3",
+    "loom/web/src/components/KnowledgeWorkbench.tsx": "33ce8ed3c2e0abc4388e075d4b76b56097bbd056585d5593d5636f88e3bcbe68",
+    "loom/web/src/api/index.ts": "404d6768ba7fc9d0fe0604d095bf28a1ef0a8d92d4792a37f4b30f45a37148be",
+    "loom/web/src/api/loom-http.ts": "ea8b6601f749704413053de62002e59b0b2d50e3b1d558981072cd8bf80c859f",
+    "loom/web/src/api/operations.ts": "52490424d491455df61c6ec84187ecf3b26e50ff809cc30b93ef44b73c711e59",
+    "loom/web/src/api/types.ts": "0130203ed885a34e4cafe3a94f60239d108ddc5a4a5b7d930c23a7af295714f5",
+    "loom/web/src/api/loom-jni.ts": "cca540602076c9cc46f6240353abcae4ae6f7e709449118c205654154231137b",
+    "loom/web/src/api/loom-api.ts": "75782c16baef633d8cfb7a2bab2920b2e57c08a0f07122d40f187c1fd65a16c8",
+    "loom/web/src/api/graph-packets.ts": "ada14291f6357d8ce893bcd478074e71e7b631aa4b6ceaf3801d740c54da356a",
+    "loom/web/src/api/knowledge.ts": "7e23d390012e8c1f31dadeceffeb488c122d7c32956e9cac0d88121d99698ab3",
+    "loom/web/src/context/resource-controls.ts": "040b060e8147ab8d7830aa023c6ee5647670c6e53094220de4fe25542f9cee00",
+    "loom/web/src/components/ResourcePresetEditor.tsx": "1057c54e3711b1a3d13172b892e1911964fa8cc0cd36a1105d7e47e0016108f7",
+    "loom/web/src/components/GraphView.tsx": "edb9e8170d97d91626121ea9dc78f5456870bafe20fa10f7e62fd6d4078efab2",
+    "loom/web/src/profiles/view-state.ts": "a2da37c00c2178da0e68dcbb208d5a2b2299198ece4627cd476f14b60b94df08"
+  },
+  "cases": [
+    {
+      "id": "A4-E-01.headless-selection",
+      "kind": "contract",
+      "status": "PASS",
+      "oracle": "Headless reducer sets the same typed ID/run/focus in linked list/graph/context views without rendering, and does not mutate its input.",
+      "evidence": {}
+    },
+    {
+      "id": "A4-E-02.object-order-serialization",
+      "kind": "contract",
+      "status": "PASS",
+      "oracle": "Reordering object keys and adding insignificant JSON whitespace preserves workspace identity, selection and parameters; arrays retain order.",
+      "evidence": {}
+    },
+    {
+      "id": "A4-E-03.historical-reference",
+      "kind": "contract",
+      "status": "PASS",
+      "oracle": "An explicitly unlinked historical view keeps its old run and selected ID while following views clear selection for a new run. This does not assert that a mutable server run is immutable.",
+      "evidence": {}
+    },
+    {
+      "id": "A4-E-04.real-projection-identity",
+      "kind": "contract",
+      "status": "PASS",
+      "oracle": "Both actual renderers consume the same selected source record/ID. Presentation labels may be shortened; identity is not inferred from label.",
+      "evidence": {}
+    },
+    {
+      "id": "A4-E-05.detail-does-not-write",
+      "kind": "contract",
+      "status": "PASS",
+      "oracle": "Changing depth/fade/node count changes real SSR presentation while every synthetic canonical input byte remains unchanged. No statement about untested server authorization.",
+      "evidence": {}
+    },
+    {
+      "id": "A4-E-06.visibility-local",
+      "kind": "contract",
+      "status": "FAIL",
+      "oracle": "View filtering hides rows locally without network requests, mutating canonical records or changing the separate saved selection. Analysis execution/permissions are outside this reducer contract.",
+      "evidence": {}
+    },
+    {
+      "id": "A4-E-07.loaded-prefix-disclosure",
+      "kind": "contract",
+      "status": "PASS",
+      "oracle": "The real list renderer explicitly labels a loaded prefix at the record limit; it does not claim a complete index.",
+      "evidence": {}
+    },
+    {
+      "id": "A4-E-08.conversation-view-target",
+      "kind": "contract",
+      "status": "PASS",
+      "oracle": "Existing provider-inspired application view detaches to the visible conversation ID and preserves its recipient when shared focus later changes. No execution dispatch is claimed.",
+      "evidence": {}
+    },
+    {
+      "id": "A4-CH-VIEW001.domain-filter-reproduction",
+      "kind": "reproduction",
+      "status": "PASS",
+      "oracle": "Actual legacy GraphView filter silently removes source-labelled AI and records plus incident edge via fixed length/domain list; this is a presentation policy, not canonical deletion.",
+      "evidence": {
+        "kept_ids": [
+          "synthetic:alpha"
+        ],
+        "edges": 0
+      }
+    },
+    {
+      "id": "A4-CH-VIEW001.configurable-visibility",
+      "kind": "acceptance",
+      "status": "BLOCKED",
+      "reason": "Legacy GraphView has no public filter-policy input: filterGraphNoise(nodes, edges) always applies the source-coded list/length rule. Bind this test to the implemented policy control; do not invent an accepted option parameter."
+    },
+    {
+      "id": "A4-E-09.native-perspective-selector-integration",
+      "kind": "integration",
+      "status": "BLOCKED",
+      "reason": "E branch absent at initial pass4 discovery. Existing browser workspace reducers are not a public native selector/authorization/index contract. The successful component tests cannot establish D→E/headless→mounted-UI integration."
+    },
+    {
+      "id": "A4-WEB-001.graph-field-to-profile-runtime",
+      "kind": "integration",
+      "status": "BLOCKED",
+      "reason": "B4 does not change reviewed TS workflow/presentation projection or raw_source restore consumers. Native catalog profile projection alone is not evidence that the existing ApplicationProfile runtime resolves these fields. Need a public connecting resolver contract."
+    }
+  ],
+  "dependencies": {
+    "react": "18.3.1",
+    "typescript": "5.9.3"
+  },
+  "network_attempts": 0,
+  "source_instrumentation": "Full original TS/TSX modules transpiled at runtime; export declarations appended for existing private renderer/filter functions only. No function body or implementation is copied or replaced.",
+  "boundaries": [
+    "React SSR and actual pure state reducers; not mounted browser/device E2E.",
+    "Storage object only supplies localStorage host plumbing; no graph store or permissions are mocked into passing integration.",
+    "All records and IDs are synthetic. No model call, publication or real transport."
+  ],
+  "counts": {
+    "PASS": 8,
+    "FAIL": 1,
+    "BLOCKED": 3
+  }
+}

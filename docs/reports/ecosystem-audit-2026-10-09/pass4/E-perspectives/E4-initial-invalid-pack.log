@@ -1,0 +1,9 @@
+/workspace/scratch/1112e9e8a3c6/audit-work/continuation/checkouts/E4/loom/web/src/graph-perspectives/native-layers.ts:51
+        throw new Error(`graph_perspectives.native_error:${JSON.stringify(response.error)}`);
+              ^
+
+Error: graph_perspectives.native_error:{"code":"conflict","message":"default layers: entry content changed without a revision increment: audit.traversal"}
+    at nativeResolutionFromResponse (/workspace/scratch/1112e9e8a3c6/audit-work/continuation/checkouts/E4/loom/web/src/graph-perspectives/native-layers.ts:51:15)
+    at file:///workspace/scratch/1112e9e8a3c6/audit-work/continuation/artifacts/tools/ecosystem-audit-2026-10-09/pass4/E-perspectives/e_acceptance.mjs:53:152
+
+Node.js v24.19.0

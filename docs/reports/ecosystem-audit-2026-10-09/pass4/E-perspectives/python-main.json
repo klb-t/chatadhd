@@ -1,0 +1,238 @@
+{
+  "schema": "klbt.audit.pass4-consumers/1",
+  "repo": "klb-t/chatadhd",
+  "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "synthetic_only": true,
+  "source_hashes": {
+    "engine/importer.py": "60200262d5ac4ef04319415bce3dfd067ee8152a71fc7e29355a3c8d4da6210c",
+    "engine/db.py": "75397fc9927a57819d8d8db7a76e7d93fcf29cf541df9a5bee63b8d059319fa3",
+    "engine/models.py": "300ad6eb271a205ae5b34835a28921868f6045f689677f09b913b2759c6071a9",
+    "gui/dialogs.py": "6232a3c60f0bc27789feedd01520d106f76e3c72e715f5247035a180eb2fe3df",
+    "main.py": "732d393483d25f5b569ed14a494bfc9287110b529432e63428ce87dc469797eb"
+  },
+  "cases": [
+    {
+      "id": "A4-IMP-01.object-key-permutation",
+      "kind": "contract",
+      "status": "PASS",
+      "oracle": "JSON object member order is irrelevant here; message array order and role/text remain identical.",
+      "evidence": {}
+    },
+    {
+      "id": "A4-IMP-02.unicode-escaping",
+      "kind": "contract",
+      "status": "PASS",
+      "oracle": "Literal UTF-8 and equivalent JSON unicode escapes decode to identical message strings.",
+      "evidence": {}
+    },
+    {
+      "id": "A4-IMP-03.whitespace-small",
+      "kind": "contract",
+      "status": "PASS",
+      "oracle": "Legal surrounding JSON whitespace must not change the parsed structure.",
+      "evidence": {}
+    },
+    {
+      "id": "A3-IMP-CH004.pass4-whitespace-reproduction",
+      "kind": "reproduction",
+      "status": "PASS",
+      "oracle": "Reproduce existing CH004 with semantically irrelevant whitespace, without adding any field.",
+      "evidence": {
+        "small_bytes": 193,
+        "large_bytes": 5000194,
+        "small_result": [
+          [
+            {
+              "role": "user",
+              "text": "Synthetic question α"
+            },
+            {
+              "role": "assistant",
+              "text": "Synthetic answer β"
+            }
+          ]
+        ],
+        "large_result": [],
+        "same_decoded_json": true
+      }
+    },
+    {
+      "id": "A3-IMP-CH004.pass4-whitespace-invariance",
+      "kind": "acceptance",
+      "status": "FAIL",
+      "oracle": "Crossing parser strategy threshold preserves conversation count and ordered role/text projection.",
+      "evidence": {}
+    },
+    {
+      "id": "A4-IMP-04.streaming-array-positive",
+      "kind": "contract",
+      "status": "PASS",
+      "oracle": "The valid top-level conversation-array path remains equivalent across parser threshold.",
+      "evidence": {}
+    },
+    {
+      "id": "A4-IMP-05.list-order-significant",
+      "kind": "contract",
+      "status": "PASS",
+      "oracle": "Reversing messages changes domain order; an equivalence oracle must detect this.",
+      "evidence": {}
+    },
+    {
+      "id": "A4-IMP-06.container-encoding",
+      "kind": "contract",
+      "status": "PASS",
+      "oracle": "ZIP storage versus deflate and plain-file access preserve ordered role/text. Does not claim source graph/ref equality.",
+      "evidence": {}
+    },
+    {
+      "id": "A4-IMP-07.retry-incomplete-json",
+      "kind": "contract",
+      "status": "PASS",
+      "oracle": "A failed short JSON read writes no partial conversation; explicit retry after completion recovers. Not checkpoint/index resume.",
+      "evidence": {}
+    },
+    {
+      "id": "A4-CH-MOD001.wrapped-cache-loss",
+      "kind": "reproduction",
+      "status": "PASS",
+      "oracle": "Reproduce support-shape normalization dropping pricing, description and extension fields then persisting the loss.",
+      "evidence": {
+        "list": [
+          {
+            "id": "synthetic/model",
+            "name": "Synthetic",
+            "context_length": 2048,
+            "pricing": {
+              "prompt": 2,
+              "completion": 3
+            },
+            "description": "SYNTHETIC_SEARCH_TOKEN",
+            "audit_extension": {
+              "provenance": "safe-fixture"
+            }
+          }
+        ],
+        "wrapped": [
+          {
+            "id": "synthetic/model",
+            "name": "Synthetic",
+            "context_length": 2048
+          }
+        ],
+        "wrapped_after_restart": [
+          {
+            "id": "synthetic/model",
+            "name": "Synthetic",
+            "context_length": 2048
+          }
+        ],
+        "wrapped_disk": [
+          {
+            "id": "synthetic/model",
+            "name": "Synthetic",
+            "context_length": 2048
+          }
+        ],
+        "description_search_token_in_grouped": false
+      }
+    },
+    {
+      "id": "A4-CH-MOD001.supported-wrapper-invariance",
+      "kind": "acceptance",
+      "status": "FAIL",
+      "oracle": "Both documented cache shapes preserve model fields during migration and restart; ModelPicker sees the same description/pricing.",
+      "evidence": {}
+    },
+    {
+      "id": "A4-CH-MOD001.corrupt-cache-deletion",
+      "kind": "reproduction",
+      "status": "PASS",
+      "oracle": "Reproduce destructive failed-load branch with safely synthetic bytes.",
+      "evidence": {}
+    },
+    {
+      "id": "A4-CH-MOD001.failed-load-preserves-source",
+      "kind": "acceptance",
+      "status": "FAIL",
+      "oracle": "Invalid cache remains available for explicit repair/recovery instead of being silently deleted.",
+      "evidence": {}
+    },
+    {
+      "id": "A4-IMP-08.network-denied",
+      "kind": "contract",
+      "status": "PASS",
+      "oracle": "All tested consumers execute locally; connect, connect_ex and create_connection are denied.",
+      "evidence": {}
+    }
+  ],
+  "observations": {
+    "threshold": {
+      "small_bytes": 193,
+      "large_bytes": 5000194,
+      "small_result": [
+        [
+          {
+            "role": "user",
+            "text": "Synthetic question α"
+          },
+          {
+            "role": "assistant",
+            "text": "Synthetic answer β"
+          }
+        ]
+      ],
+      "large_result": [],
+      "same_decoded_json": true
+    },
+    "model_cache": {
+      "list": [
+        {
+          "id": "synthetic/model",
+          "name": "Synthetic",
+          "context_length": 2048,
+          "pricing": {
+            "prompt": 2,
+            "completion": 3
+          },
+          "description": "SYNTHETIC_SEARCH_TOKEN",
+          "audit_extension": {
+            "provenance": "safe-fixture"
+          }
+        }
+      ],
+      "wrapped": [
+        {
+          "id": "synthetic/model",
+          "name": "Synthetic",
+          "context_length": 2048
+        }
+      ],
+      "wrapped_after_restart": [
+        {
+          "id": "synthetic/model",
+          "name": "Synthetic",
+          "context_length": 2048
+        }
+      ],
+      "wrapped_disk": [
+        {
+          "id": "synthetic/model",
+          "name": "Synthetic",
+          "context_length": 2048
+        }
+      ],
+      "description_search_token_in_grouped": false
+    }
+  },
+  "network_attempts": 0,
+  "boundaries": [
+    "Actual Python importer, Database and ModelRegistry, with real files and SQLite.",
+    "No native graph projection, paid model, UI mounting, external API or durable indexing-resume test.",
+    "Object/list oracles project ordered role/text only; no claim that metadata/full graph are preserved."
+  ],
+  "counts": {
+    "PASS": 11,
+    "FAIL": 3,
+    "BLOCKED": 0
+  }
+}

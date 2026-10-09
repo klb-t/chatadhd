@@ -1,0 +1,510 @@
+{
+  "schema": "klbt.audit.semantic-ranges/4",
+  "base_sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "base_denominator": 432,
+  "meaning": "Named reviewed/executed function ranges, not complete files. New E paths outside main denominator are kept separate.",
+  "files": [
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "file": "engine/models.py",
+      "ranges": [
+        {
+          "file": "engine/models.py",
+          "line_start": 21,
+          "line_end": 81,
+          "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+          "sha256": "59cba715abc984f4402b33962ba3b82506f63bb409328e584e1b7c83c192dd44"
+        },
+        {
+          "file": "engine/models.py",
+          "line_start": 121,
+          "line_end": 153,
+          "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+          "sha256": "ad6feb498582d6e587844330120d79182396ac06a91f486bdcf109f5c7a341b3"
+        }
+      ],
+      "functions": [
+        "__init__",
+        "_load",
+        "_save",
+        "all",
+        "grouped",
+        "get_pricing",
+        "get_description"
+      ],
+      "mode": "actual host consumer + filesystem restart",
+      "untraced_calls": [
+        "update_from_api transport",
+        "estimate_cost dollar arithmetic"
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "file": "gui/dialogs.py",
+      "ranges": [
+        {
+          "file": "gui/dialogs.py",
+          "line_start": 503,
+          "line_end": 579,
+          "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+          "sha256": "c158214c7f0530d8e7025b20f267789a33c0ebf58b2363ec1e9692f03673e1f6"
+        }
+      ],
+      "functions": [
+        "ModelPicker._build_list model fields→search/card"
+      ],
+      "mode": "semantic UI consumer path only",
+      "untraced_calls": [
+        "Kivy mount/canvas/touch callbacks"
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "file": "main.py",
+      "ranges": [
+        {
+          "file": "main.py",
+          "line_start": 82,
+          "line_end": 96,
+          "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+          "sha256": "d08b31823e0ec85685d274fb27bcf15d21f474ac15e806bc649294e8991b6c95"
+        }
+      ],
+      "functions": [
+        "ChatADHDApp.build ModelRegistry startup"
+      ],
+      "mode": "semantic call wiring only",
+      "untraced_calls": [
+        "other engine startup/runtime/UI and background jobs"
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "file": "engine/importer.py",
+      "ranges": [
+        {
+          "file": "engine/importer.py",
+          "line_start": 44,
+          "line_end": 152,
+          "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+          "sha256": "dc8b3f780c1df43b82e2e20a0808fb624a585f7d9295fbbdf6d009cbba6e332b"
+        },
+        {
+          "file": "engine/importer.py",
+          "line_start": 274,
+          "line_end": 452,
+          "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+          "sha256": "69f4be692a7addcc7d9746ba1bfafa2cb1da73f0625862e9929d72b29c6084b0"
+        }
+      ],
+      "functions": [
+        "detect_format",
+        "import_file",
+        "import_zip",
+        "import_json",
+        "_stream_json_array",
+        "_iter_json_elements",
+        "_import_single_element",
+        "_import_json_data"
+      ],
+      "mode": "actual importer and SQLite; role/text projections",
+      "untraced_calls": [
+        "OCR, network providers, mapping/domain interpretation outside selected shapes"
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "file": "loom/web/src/components/GraphView.tsx",
+      "ranges": [
+        {
+          "file": "loom/web/src/components/GraphView.tsx",
+          "line_start": 29,
+          "line_end": 129,
+          "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+          "sha256": "13cb120f7888cadf76ec934973b40c6df7805fdb97f670cef858b26f47e1d684"
+        }
+      ],
+      "functions": [
+        "isNoiseNode",
+        "filterGraphNoise",
+        "GraphView load callback"
+      ],
+      "mode": "actual private filter via whole-source in-memory export + semantic UI wiring",
+      "untraced_calls": [
+        "mounted canvas, force simulation, pointer handlers"
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "file": "loom/web/src/workspace/state.ts",
+      "ranges": [
+        {
+          "file": "loom/web/src/workspace/state.ts",
+          "line_start": 30,
+          "line_end": 126,
+          "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+          "sha256": "00940ef98caec74fa2969f6dd2451333f28c43a09dd0cab74f7476feb6af0ba3"
+        }
+      ],
+      "functions": [
+        "newPane",
+        "initialWorkspace",
+        "changeParameter",
+        "unlink",
+        "setWorkspaceRun",
+        "parseWorkspace"
+      ],
+      "mode": "actual headless reducers; selection/metamorphic persistence",
+      "untraced_calls": [
+        "localStorage browser autosave events"
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "file": "loom/web/src/components/KnowledgeWorkbench.tsx",
+      "ranges": [
+        {
+          "file": "loom/web/src/components/KnowledgeWorkbench.tsx",
+          "line_start": 122,
+          "line_end": 201,
+          "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+          "sha256": "5fda7a6c921eb2a33c0d53711f9a5d1da460f83b41bade6844c61b65713308a6"
+        },
+        {
+          "file": "loom/web/src/components/KnowledgeWorkbench.tsx",
+          "line_start": 337,
+          "line_end": 442,
+          "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+          "sha256": "148d366959debf839b9b4017332c92c6819883098e4c127fdab08778a912999e"
+        }
+      ],
+      "functions": [
+        "WorkspacePane collection loading/status/selection",
+        "CollectionPane",
+        "KnowledgeGraph"
+      ],
+      "mode": "semantic loading flow; actual React SSR list/graph",
+      "untraced_calls": [
+        "mounted effects/query backend",
+        "ContextPane analysis dispatch",
+        "CandidatePane",
+        "CatalogPane changes"
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "file": "loom/web/src/profiles/view-state.ts",
+      "ranges": [
+        {
+          "file": "loom/web/src/profiles/view-state.ts",
+          "line_start": 13,
+          "line_end": 50,
+          "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+          "sha256": "aba32b2bec5d1b6b18889fc552734811bc15f9d459a76e558d7b522710a26678"
+        }
+      ],
+      "functions": [
+        "readApplicationView",
+        "newApplicationView",
+        "viewConversationId",
+        "setConversationCoupling"
+      ],
+      "mode": "actual headless recipient selection",
+      "untraced_calls": [
+        "actual chat dispatch"
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+      "file": "loom/web/src/profiles/runtime.ts",
+      "ranges": [
+        {
+          "file": "loom/web/src/profiles/runtime.ts",
+          "line_start": 63,
+          "line_end": 73,
+          "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+          "sha256": "925ada5e12fcf5a942d952a158717075b654f61e855556dabc75cbbbcacf6065"
+        },
+        {
+          "file": "loom/web/src/profiles/runtime.ts",
+          "line_start": 185,
+          "line_end": 211,
+          "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+          "sha256": "b95206c2d3622a99f727e4de51b0690e6353e136f330f59f70d6274b9ab830b9"
+        }
+      ],
+      "functions": [
+        "object",
+        "createProfileRegistry",
+        "registerProfile entry"
+      ],
+      "mode": "actual E profile-adapter consumer",
+      "untraced_calls": [
+        "remaining workflow execution in E4 test; pass3 evidence separate"
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+      "file": "loom/web/src/profiles/graph.ts",
+      "ranges": [
+        {
+          "file": "loom/web/src/profiles/graph.ts",
+          "line_start": 8,
+          "line_end": 11,
+          "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+          "sha256": "54fc111c48e928f28be9baed8119c0093906e2487df0d02fdebfb30e84dfc1eb"
+        }
+      ],
+      "functions": [
+        "parseApplicationProfileSource"
+      ],
+      "mode": "actual source parser",
+      "untraced_calls": [
+        "GraphPacket serializer and graph-read revision restore already pass3, not rerun"
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+      "file": "loom/web/src/graph-perspectives/types.ts",
+      "ranges": [
+        {
+          "file": "loom/web/src/graph-perspectives/types.ts",
+          "line_start": 1,
+          "line_end": 191,
+          "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+          "sha256": "2a91905b8ff1b3d6b356ac473ad264d4b952a01ecda5a083f31b136d8ad155df"
+        }
+      ],
+      "functions": [
+        "ObjectRef",
+        "SourceAdapter",
+        "PermissionContext",
+        "QueryPlan",
+        "SelectionResult"
+      ],
+      "mode": "contract semantic review",
+      "untraced_calls": [
+        "arbitrary adapters/caller authorization implementations"
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+      "file": "loom/web/src/graph-perspectives/plan.ts",
+      "ranges": [
+        {
+          "file": "loom/web/src/graph-perspectives/plan.ts",
+          "line_start": 1,
+          "line_end": 83,
+          "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+          "sha256": "4da09cd4fee7d1c09156d1e735d2d941780248d809a7e091128f089ddaf0d7d1"
+        }
+      ],
+      "functions": [
+        "isObjectRef",
+        "compilePerspective"
+      ],
+      "mode": "actual E consumer",
+      "untraced_calls": [
+        "all possible descriptor/visual extensions"
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+      "file": "loom/web/src/graph-perspectives/select.ts",
+      "ranges": [
+        {
+          "file": "loom/web/src/graph-perspectives/select.ts",
+          "line_start": 1,
+          "line_end": 188,
+          "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+          "sha256": "a8e019a12cba5de565c12674772935584bd97d4f6c2c3cdd921623733de79fd6"
+        }
+      ],
+      "functions": [
+        "matches",
+        "project",
+        "selectPerspective"
+      ],
+      "mode": "actual E consumer",
+      "untraced_calls": [
+        "remote/cancelled network loader",
+        "all interrupted index/crash states"
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+      "file": "loom/web/src/graph-perspectives/adapters.ts",
+      "ranges": [
+        {
+          "file": "loom/web/src/graph-perspectives/adapters.ts",
+          "line_start": 27,
+          "line_end": 280,
+          "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+          "sha256": "b60f256f9606cdd268a6fa7f89e6179f5776d76633bb9af86541dddfb3123900"
+        }
+      ],
+      "functions": [
+        "gate",
+        "pagination",
+        "createPacketAdapter",
+        "createDemandAdapter",
+        "createApplicationProfileAdapter"
+      ],
+      "mode": "actual packet/profile consumers; demand loader source review",
+      "untraced_calls": [
+        "actual D lazy transport callback absent",
+        "arbitrary third-party demand implementations"
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+      "file": "loom/web/src/graph-perspectives/native-layers.ts",
+      "ranges": [
+        {
+          "file": "loom/web/src/graph-perspectives/native-layers.ts",
+          "line_start": 6,
+          "line_end": 60,
+          "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+          "sha256": "406632ca0e96922665f899828330e3a6aa4dfc6021cc644fb654d487beff15e5"
+        }
+      ],
+      "functions": [
+        "nativeResolutionFromDefaults",
+        "NativeLayerClient",
+        "nativeResolutionFromResponse"
+      ],
+      "mode": "actual native response normalization; facade source review",
+      "untraced_calls": [
+        "mounted OnboardingAdapter integration, device persistence"
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+      "file": "loom/web/src/graph-perspectives/navigation.ts",
+      "ranges": [
+        {
+          "file": "loom/web/src/graph-perspectives/navigation.ts",
+          "line_start": 3,
+          "line_end": 30,
+          "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+          "sha256": "83750018a0bdbef5e934088cd5f03f7ea9568f8bca39acfc675b8f9bccfd9bfc"
+        }
+      ],
+      "functions": [
+        "referenceKey",
+        "objectKey",
+        "sameObject",
+        "navigation history"
+      ],
+      "mode": "semantic contract + reference keys used in actual selector",
+      "untraced_calls": [
+        "new standalone navigation function suite not rerun"
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+      "file": "loom/web/src/graph-perspectives/persistence.ts",
+      "ranges": [
+        {
+          "file": "loom/web/src/graph-perspectives/persistence.ts",
+          "line_start": 6,
+          "line_end": 36,
+          "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+          "sha256": "29bf0e854e2e239eef95eecb71de2b50aac3add67eb7d1a8cdefd4ca2e07a58a"
+        }
+      ],
+      "functions": [
+        "exportPerspective",
+        "importPerspective"
+      ],
+      "mode": "actual unknown-field roundtrip",
+      "untraced_calls": [
+        "device/cross-browser persistence"
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+      "file": "loom/tools/resource_graph/native.py",
+      "ranges": [
+        {
+          "file": "loom/tools/resource_graph/native.py",
+          "line_start": 17,
+          "line_end": 56,
+          "sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+          "sha256": "165dd1ad3842ea48e8476ff4b4db9f5358415012a4820f43e1f9223ecc12d040"
+        }
+      ],
+      "functions": [
+        "roundtrip"
+      ],
+      "mode": "actual D packet→native B4 store close/reopen/replay",
+      "untraced_calls": [
+        "paid providers/workers disabled"
+      ]
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "file": "loom/tools/coordination/graph_store.py",
+      "ranges": [
+        {
+          "file": "loom/tools/coordination/graph_store.py",
+          "line_start": 20,
+          "line_end": 35,
+          "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+          "sha256": "c4f93c9960b7aaeefb274ba9b82298bba2cf21c06007a5a917cda27750583fce"
+        },
+        {
+          "file": "loom/tools/coordination/graph_store.py",
+          "line_start": 38,
+          "line_end": 92,
+          "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+          "sha256": "3897fa9b2185eefad398b5471efd1f8680523858cc429a399049117f2c666147"
+        }
+      ],
+      "functions": [
+        "acceptance_request",
+        "NativeGraphStore accept/read/replay/close"
+      ],
+      "mode": "actual original Python FFI consumer + native B4",
+      "untraced_calls": [
+        "other native API methods"
+      ]
+    }
+  ],
+  "new_main_files_with_ranges": [
+    "engine/models.py",
+    "gui/dialogs.py",
+    "loom/web/src/components/GraphView.tsx",
+    "loom/web/src/profiles/view-state.ts",
+    "main.py"
+  ],
+  "new_main_file_count": 5,
+  "new_branch_paths": [
+    "loom/web/src/graph-perspectives/types.ts",
+    "loom/web/src/graph-perspectives/plan.ts",
+    "loom/web/src/graph-perspectives/select.ts",
+    "loom/web/src/graph-perspectives/adapters.ts",
+    "loom/web/src/graph-perspectives/native-layers.ts",
+    "loom/web/src/graph-perspectives/navigation.ts",
+    "loom/web/src/graph-perspectives/persistence.ts"
+  ]
+}

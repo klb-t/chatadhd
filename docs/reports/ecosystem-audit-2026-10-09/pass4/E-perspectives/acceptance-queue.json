@@ -1,0 +1,63 @@
+{
+  "schema": "klbt.audit.acceptance-queue/4",
+  "reviews": [
+    {
+      "owner": "B",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "findings": [
+        "A3-IMP-CH001",
+        "A3-IMP-CH003",
+        "A3-IMP-CH004",
+        "A3-IMP-CH006"
+      ],
+      "status": "nadal wadliwe w niezmienionym alternatywnym Python consumerze",
+      "evidence": "delta-review.json; pass3 importers receipts; pass4 main whitespace-only CH004 acceptance FAIL",
+      "boundary": "No repeat of unchanged pass3 full suite; native B changes assessed by B-native module."
+    },
+    {
+      "owner": "B/E",
+      "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+      "finding": "A3-WEB-001",
+      "status": "częściowo",
+      "passed": [
+        "headless known-field read",
+        "actual native layers→compiler→selector"
+      ],
+      "missing": [
+        "unknown source fields do not block recognized fields",
+        "field edit→actual ApplicationProfile workflow consumer"
+      ]
+    },
+    {
+      "owner": "D/E",
+      "shas": [
+        "1d3d133154f213733b7a69af863613cec2dd8ca2",
+        "387afe08587f179d47c013a2ea518ff4b68e36bc",
+        "3eaac2953c3ee0d01d085e595d68edc091c284f2"
+      ],
+      "status": "częściowo",
+      "passed": [
+        "actual D packet→native B4 close/reopen/replay→E graph entity ID selection"
+      ],
+      "missing": [
+        "D source selector and source version→E ObjectRef mapping"
+      ]
+    },
+    {
+      "owner": "E",
+      "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+      "status": "nadal wadliwe",
+      "finding": "A4-E-001",
+      "test": "e_acceptance.mjs A4-E-001.capability-source-invariance"
+    },
+    {
+      "owner": "E",
+      "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+      "status": "niezweryfikowane",
+      "missing": [
+        "Production UI hook; Basic/Advanced/Expert shared-state mounted test"
+      ],
+      "environment": "Current Chromium starts successfully. Missing hook, not old environment failure."
+    }
+  ]
+}

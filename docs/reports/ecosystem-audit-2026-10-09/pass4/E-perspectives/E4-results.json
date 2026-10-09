@@ -1,0 +1,307 @@
+{
+  "schema": "klbt.audit.pass4-E-acceptance/1",
+  "repo": "klb-t/chatadhd",
+  "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+  "cases": [
+    {
+      "id": "E4-01.native-resolver-to-real-selector",
+      "kind": "integration",
+      "status": "PASS",
+      "oracle": "Real C++ DefaultLayers output passes original E native bridge/compiler and changes selection of actual PacketAdapter input; sources/explanations remain present.",
+      "evidence": {}
+    },
+    {
+      "id": "E4-02.two-native-profiles",
+      "kind": "integration",
+      "status": "PASS",
+      "oracle": "Two native effective profiles actually change selector traversal; the chosen provenance is retained. No modeled/native settings resolver is recreated.",
+      "evidence": {}
+    },
+    {
+      "id": "E4-03a.pack-entry-version-guard",
+      "kind": "contract",
+      "status": "PASS",
+      "oracle": "Changing a pack entry without its entry revision increment is explicitly rejected, not silently applied.",
+      "evidence": {}
+    },
+    {
+      "id": "E4-03.exclusion-process-and-pack-update",
+      "kind": "integration",
+      "status": "PASS",
+      "oracle": "Native exclusion survives JSON state transfer into a new native process with revised pack; E refuses to substitute a hidden traversal default. This is host state transfer, not a device persistence test.",
+      "evidence": {}
+    },
+    {
+      "id": "E4-04.keys-cold-warm",
+      "kind": "contract",
+      "status": "PASS",
+      "oracle": "Object member order and lazy-index cold/warm state preserve ordered selector output, unknown attrs and source data; metrics/timing are intentionally outside the oracle.",
+      "evidence": {}
+    },
+    {
+      "id": "E4-05.resume-budgeted-pages",
+      "kind": "contract",
+      "status": "PASS",
+      "oracle": "Union of explicit continuation batches recovers this four-object/three-edge source exactly, without treating the first partial batch as complete.",
+      "evidence": {
+        "batches": 3,
+        "object_count": 4,
+        "edge_count": 3
+      }
+    },
+    {
+      "id": "E4-06.visibility-analysis-permission",
+      "kind": "contract",
+      "status": "PASS",
+      "oracle": "Visibility-only change with fully allowed permissions does not rewrite explicit analysis membership or canonical input. This case does not assert access enforcement.",
+      "evidence": {}
+    },
+    {
+      "id": "E4-06a.permission-without-filter",
+      "kind": "contract",
+      "status": "PASS",
+      "oracle": "Changing only explicit host permission denies a previously returned object/value and edge, with permission_filtered omission and incomplete status. Same full-budget plan, no evidence/visibility filter. Does not prove native ACL.",
+      "evidence": {
+        "allowed_objects": [
+          "root",
+          "a",
+          "b",
+          "c"
+        ],
+        "denied_objects": [
+          "root",
+          "b",
+          "c"
+        ],
+        "omissions": [
+          {
+            "ref": {
+              "source": "synthetic",
+              "selector": "root",
+              "canonicalId": "root"
+            },
+            "reason": "source_status",
+            "detail": "permission_filtered"
+          },
+          {
+            "ref": {
+              "source": "synthetic",
+              "selector": "root",
+              "canonicalId": "root"
+            },
+            "reason": "source_status",
+            "detail": "permission_filtered"
+          }
+        ]
+      }
+    },
+    {
+      "id": "E4-06b.denied-focus-placeholder",
+      "kind": "contract",
+      "status": "PASS",
+      "oracle": "Directly focusing denied address preserves only a denied reference, with no source values and no adapter resolution. Explicit host permission, not a mock native ACL.",
+      "evidence": {}
+    },
+    {
+      "id": "E4-07.perspective-unknown-roundtrip",
+      "kind": "contract",
+      "status": "PASS",
+      "oracle": "Unknown perspective fields remain round-trippable with explicit warning; two alternatives are retained, not silently selected.",
+      "evidence": {}
+    },
+    {
+      "id": "A4-E-001.unrelated-capability-reproduction",
+      "kind": "reproduction",
+      "status": "PASS",
+      "oracle": "Reproduce: an unused unrelated adapter declaration removes the active plan capability warning.",
+      "evidence": {
+        "before": [
+          {
+            "id": "audit.future",
+            "reason": "adapter_capability_pending",
+            "value": {
+              "strategy": "x"
+            }
+          }
+        ],
+        "after": [],
+        "unrelatedResolveCalls": 0
+      }
+    },
+    {
+      "id": "A4-E-001.capability-source-invariance",
+      "kind": "acceptance",
+      "status": "FAIL",
+      "oracle": "Adding an unrelated, unqueried source adapter must not change the availability status of the active source capability. Declaration is not proof of active implementation.",
+      "evidence": {}
+    },
+    {
+      "id": "E4-08.profile-known-field-headless",
+      "kind": "contract",
+      "status": "PASS",
+      "oracle": "Existing strict application-profile adapter exposes a recognized source field on demand before UI; this is a positive component increment for A3-WEB-001.",
+      "evidence": {}
+    },
+    {
+      "id": "A3-WEB-001.E-unknown-field-reproduction",
+      "kind": "reproduction",
+      "status": "PASS",
+      "oracle": "The new graph reader invokes strict execution-profile registration before reading any field; adding a preserved-but-inactive unknown field prevents even known-field access.",
+      "evidence": {
+        "known_status": "unavailable",
+        "unknown_status": "unavailable",
+        "reason": "profile has unknown field audit_future."
+      }
+    },
+    {
+      "id": "A3-WEB-001.E-unknown-field-preservation",
+      "kind": "acceptance",
+      "status": "FAIL",
+      "oracle": "Graph/source read preserves unknown fields and still exposes previously recognized fields; runtime activation may separately reject unsupported execution fields.",
+      "evidence": {}
+    },
+    {
+      "id": "E4-09.D-native-E-ID-path",
+      "kind": "integration",
+      "status": "PASS",
+      "oracle": "Actual D ResourceGraph packet → actual native B4 store close/reopen → actual E PacketAdapter and selector retain the field and raw source/version metadata by graph entity ID.",
+      "evidence": {
+        "d_sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+        "native_sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+        "e_sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+        "field_id": "rg_608d1210b9b0c074d90f75ad38e10c79150809c096c7bb4e4cf3c3d7c7cc2d4b",
+        "selected_objects": 3,
+        "selected_relations": 2
+      }
+    },
+    {
+      "id": "E4-10.D-typed-selector-version",
+      "kind": "integration",
+      "status": "BLOCKED",
+      "reason": "No implemented mapping from D attrs.selector/source_version to E ObjectRef selector/snapshot. Entity-ID path works; typed D source address returns unknown:selector_not_found",
+      "evidence": {
+        "selector": "/conversation/messages/0/text",
+        "status": "unknown",
+        "reason": "selector_not_found",
+        "snapshot_mapping": "D attrs.source_version/content_sha256 are raw attrs; E refFor only reads attrs.perspective snapshot"
+      }
+    },
+    {
+      "id": "E4-11.production-UI-hook",
+      "kind": "integration",
+      "status": "BLOCKED",
+      "reason": "Pinned E1 adds no production component/UI hook. Author report explicitly says its proposed private-renderer export/selected-projection patch is not applied. Headless→UI and Basic/Advanced/Expert same-state acceptance remain unverified; audit does not install product patches."
+    },
+    {
+      "id": "E4-12.profile-field-runtime",
+      "kind": "integration",
+      "status": "BLOCKED",
+      "reason": "E exposes profile fields and separately calls existing strict registerProfile. No runtime resolver consumes a selected graph/profile-field edit in this branch. E4-08 proves graph-readable field, not bidirectional graph-field→existing workflow consumer binding."
+    },
+    {
+      "id": "E4-13.network-denied",
+      "kind": "contract",
+      "status": "PASS",
+      "oracle": "No model/transport invocation; network entrypoints denied in audit process. Native bridge reads JSON only.",
+      "evidence": {}
+    }
+  ],
+  "observations": {
+    "capability_scope": {
+      "before": [
+        {
+          "id": "audit.future",
+          "reason": "adapter_capability_pending",
+          "value": {
+            "strategy": "x"
+          }
+        }
+      ],
+      "after": [],
+      "unrelatedResolveCalls": 0
+    },
+    "D_typed_address": {
+      "selector": "/conversation/messages/0/text",
+      "status": "unknown",
+      "reason": "selector_not_found",
+      "snapshot_mapping": "D attrs.source_version/content_sha256 are raw attrs; E refFor only reads attrs.perspective snapshot"
+    }
+  },
+  "source_hashes": {
+    "loom/web/src/graph-perspectives/plan.ts": "4da09cd4fee7d1c09156d1e735d2d941780248d809a7e091128f089ddaf0d7d1",
+    "loom/web/src/graph-perspectives/select.ts": "a8e019a12cba5de565c12674772935584bd97d4f6c2c3cdd921623733de79fd6",
+    "loom/web/src/graph-perspectives/navigation.ts": "4d4b653751c22f12b3d31f06d1313f188c0a9b9be85a4f0900bb35b32083aaed",
+    "loom/web/src/graph-perspectives/adapters.ts": "2b56ae8fe25441c4ed8e65e8a9f7de70b44fae55c3f0098ba667b6f10493e772",
+    "loom/web/src/content/imported-message.ts": "6eb1d7674c4bf84b9da166024ab0fbc575b1c8e3c8a652b5ada22994c1730233",
+    "loom/web/src/profiles/graph.ts": "b35b3bc78d67b0abd2fbd4001a3673ce83172fba952affecd3d5a7c0941e453b",
+    "loom/web/src/profiles/runtime.ts": "acee394825f9f8050b7f6ba3dbdc752a8afa09f977a9ee9dbc7eeca8f50c809d",
+    "loom/web/src/graph-perspectives/native-layers.ts": "371be34173a323dd6a3d23be9644f27e3834f3177d276a059c9a51f1f0da5096",
+    "loom/web/src/graph-perspectives/persistence.ts": "bee0ce2be7f8ff7eee0305afc656d77129c4a81997ae743a1e8a7eb648ba2e6e",
+    "loom/web/src/workspace/state.ts": "68f3b1318950074ae86cdc44ef440bd7294cf5606c84ef45582e87738e67b6d3"
+  },
+  "native_build": {
+    "schema": "loom.graph_perspective_native_build/1",
+    "source_commit": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+    "compiler": "c++",
+    "compiler_version": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
+    "compile_flags": [
+      "-std=c++20",
+      "-O0",
+      "-ffunction-sections",
+      "-fdata-sections",
+      "-Iloom/include",
+      "-Iloom/third_party/nlohmann",
+      "-Iloom/third_party/sqlite"
+    ],
+    "link_flags": [
+      "-Wl,--gc-sections"
+    ],
+    "sources": {
+      "loom/include/loom/db.h": "cb99e2ffb90775b8fdf9f221a3720813f09c00164959985fa065dafa815261c2",
+      "loom/include/loom/kb.h": "f1d1d2890857337a0f00907e935d10311fcdb56827b36e28eb33fcab22b2eb52",
+      "loom/include/loom/knowledge_store.h": "8e756c97c54bf61aa4a91136da241c1230156bcc9ff78f312188d5deb3b5c430",
+      "loom/include/loom/model.h": "5e7b3777fe52a3cab6d59b55d8e706162aa34306fd0aac5668a79d19c2f1cb6c",
+      "loom/include/loom/onboarding.h": "bc9217f3aba2837cd14d78c28e9f1df65be0edcfa9d7a891717efd6fa5adaa7d",
+      "loom/include/loom/onboarding_layers.h": "2214cca918e515a763dbce0abe9294024385776a075054e06cd501cc2975d46d",
+      "loom/include/loom/onboarding_presentation.h": "a9182261b82467dd9bbbad3055dee9257e4cfe662e2d81ac94c0992b9d20b226",
+      "loom/include/loom/onboarding_store.h": "fd9ce5cc3b2e7734ef20af83a1f5284c8599e1f7d29f2555be98132ca793a074",
+      "loom/include/loom/result.h": "a6f27a2b1c0de258d8452af3d25d16f23179825dfc07033521c3c1ace1643553",
+      "loom/include/loom/sqlite.h": "e5a62ad5f89030176f19b33c9419c9ad2da0d22883256b7f9f9a101c36b78685",
+      "loom/include/loom/util/json.h": "38aebe6cf03b613b75290cf8ac09fa57ecd87d730032fdebb8cc4fcf162ca8de",
+      "loom/include/loom/util/sha256.h": "2723f226f5be04cb0fcca1e6ca0b63105b2c5b36178a6bf1701bee99031a127d",
+      "loom/include/loom/util/time.h": "51d2363cd0636810e4d73f0a718f8b245857e0c9e1cb4d6843276a270b71dece",
+      "loom/include/loom/util/unicode.h": "a363672f385af55cd43fbdd1b80632dba0bf28d370b7392e26f65c3d74d724d0",
+      "loom/include/loom/util/utf8.h": "8b20f2da731065f9bd89aed76362e33ce53bc7abfad83fd5d4b4ef5c2907a196",
+      "loom/src/onboarding/builtin.inc": "3727652427fd8f49c3f567ce71a8fbe21ac1911e3cdf760d188463c96dd536a4",
+      "loom/src/onboarding/layers.cpp": "c18730d8b0dc0ae6c5b8972d2ccd28adf9a609181786c22b411ec0748671a435",
+      "loom/src/onboarding/presentation.cpp": "4fdf513edbb41bcb3d1e54c42d378f41331bb8e5be6e9b7c760ede500b53683a",
+      "loom/src/onboarding/runtime_adapter.h": "7c9f8441ad5dcf3014dc71a83622469c7a4ba4b35dfce69a3119c24550b7e916",
+      "loom/src/onboarding/store.cpp": "86428b024d956bdfd5ab422cbeb6ff5f8f43b43b50ce0ff9259b8a9da9053335",
+      "loom/src/util/json.cpp": "49d882300afe82a764cca67b7a00f8dfd9c9ce5ed2318933312bdaafbeb9b89d",
+      "loom/src/util/result.cpp": "1488f760d6b3959bf15cb8b6425c593b066e227ebd9edeb8209df0e37b32e018",
+      "loom/src/util/sha256.cpp": "c8d783c4ebaa9d46703a65dc228931fe2e355c2be9ac1fc26dad089f6f0b031c",
+      "loom/src/util/utf8.cpp": "91f6786cf4d759768074a26cbae5b150284a241840f0f3761c867616831f3902",
+      "loom/third_party/nlohmann/nlohmann/json.hpp": "9bea4c8066ef4a1c206b2be5a36302f8926f7fdc6087af5d20b417d0cf103ea6",
+      "loom/web/tests/graph-perspectives/native-layers-bridge.cpp": "4e8484d65379d409578d8984dc654a80536f99c5095f0e139d28bd24f02295fe"
+    },
+    "fingerprint": "6e7ce5199604da64b9d7cb0054237c6253e524fad43f6c6b58a02d18e1a4c930",
+    "resolver": "loom::onboarding::DefaultLayers",
+    "runtime_source": "current_checkout",
+    "source_scope": "compiler-generated user-header dependency closure of linked translation units",
+    "binary": "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/scratch/pass4/E-perspectives/native/6e7ce5199604da64b9d7cb0054237c6253e524fad43f6c6b58a02d18e1a4c930/native-layers",
+    "binary_sha256": "de0ab17a6eb5cada379441470a8c7eae37fd44c99e1eb27a21f703862d5b081a"
+  },
+  "native_packet_receipt_sha256": "d612d9b5ad222fadd26b634be5123b425feed75b2b2dc4f8f795b7eb315f0d60",
+  "network_attempts": 0,
+  "boundaries": [
+    "Own fixtures and oracles exercise unchanged actual consumers.",
+    "Author native bridge is used only as transport/build wrapper around actual C++ DefaultLayers; its author tests are not copied as evidence.",
+    "No product patches, renderer hooks, native settings-store replacement or synthetic substitute for missing D→E typed-address bridge.",
+    "Query-plan component tests use native output; permission object is explicit host authorization input. This is not native ACL integration."
+  ],
+  "counts": {
+    "PASS": 15,
+    "FAIL": 2,
+    "BLOCKED": 3
+  }
+}

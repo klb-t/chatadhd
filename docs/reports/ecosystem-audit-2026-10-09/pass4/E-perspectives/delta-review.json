@@ -1,0 +1,57 @@
+{
+  "main": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "B2": "384c5e1686cd3a58a7d89a8a6813a18c764f697d",
+  "B4": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+  "E4": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+  "B_source_comparison": [
+    {
+      "file": "engine/importer.py",
+      "unchanged": true,
+      "sha256": "60200262d5ac4ef04319415bce3dfd067ee8152a71fc7e29355a3c8d4da6210c"
+    },
+    {
+      "file": "engine/db.py",
+      "unchanged": true,
+      "sha256": "75397fc9927a57819d8d8db7a76e7d93fcf29cf541df9a5bee63b8d059319fa3"
+    },
+    {
+      "file": "engine/models.py",
+      "unchanged": true,
+      "sha256": "300ad6eb271a205ae5b34835a28921868f6045f689677f09b913b2759c6071a9"
+    },
+    {
+      "file": "loom/web/src/profiles/graph.ts",
+      "unchanged": true,
+      "sha256": "b35b3bc78d67b0abd2fbd4001a3673ce83172fba952affecd3d5a7c0941e453b"
+    },
+    {
+      "file": "loom/web/src/profiles/runtime.ts",
+      "unchanged": true,
+      "sha256": "acee394825f9f8050b7f6ba3dbdc752a8afa09f977a9ee9dbc7eeca8f50c809d"
+    },
+    {
+      "file": "loom/web/src/profiles/loom-adapter.ts",
+      "unchanged": true,
+      "sha256": "d939c1dee04d86ba230ad3fc5a8b201bf7e11c93484971d8f0bae3736f3fb304"
+    },
+    {
+      "file": "loom/web/src/workspace/state.ts",
+      "unchanged": true,
+      "sha256": "68f3b1318950074ae86cdc44ef440bd7294cf5606c84ef45582e87738e67b6d3"
+    },
+    {
+      "file": "loom/web/src/components/KnowledgeWorkbench.tsx",
+      "unchanged": true,
+      "sha256": "33ce8ed3c2e0abc4388e075d4b76b56097bbd056585d5593d5636f88e3bcbe68"
+    },
+    {
+      "file": "loom/web/src/components/GraphView.tsx",
+      "unchanged": true,
+      "sha256": "edb9e8170d97d91626121ea9dc78f5456870bafe20fa10f7e62fd6d4078efab2"
+    }
+  ],
+  "decision": "No rerun of unchanged pass3 full web/importer suites. New main metamorphic hypotheses executed. E additions independently executed. CH001/003/006 Python causes remain unchanged; no repair claimed.",
+  "E_report": "docs/reports/graph-perspectives-2026-10-09/README.md",
+  "E_diff_file_count": 22,
+  "E_production_ui_hook": false
+}

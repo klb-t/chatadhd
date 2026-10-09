@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "kind": "environment",
+  "actual_text": "synthetic browser gate",
+  "browser_version": "141.0.7390.37",
+  "product_E_ui_test": false
+}

@@ -1,0 +1,285 @@
+{
+  "schema": "klbt.audit.acceptance-packages/4",
+  "packages": [
+    {
+      "finding": "A4-CH-MOD001",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "status": "nadal wadliwe",
+      "reproduction": {
+        "kind": "actual_consumer",
+        "receipt": "python-main.json",
+        "tests": [
+          "A4-CH-MOD001.wrapped-cache-loss",
+          "A4-CH-MOD001.supported-wrapper-invariance",
+          "A4-CH-MOD001.corrupt-cache-deletion",
+          "A4-CH-MOD001.failed-load-preserves-source"
+        ],
+        "synthetic_only": true
+      },
+      "expected": [
+        "python_consumers.py: A4-CH-MOD001.supported-wrapper-invariance",
+        "python_consumers.py: A4-CH-MOD001.failed-load-preserves-source"
+      ],
+      "consumers": [
+        "ChatADHDApp.build→ModelRegistry.__init__→_load→_save→restart",
+        "ModelRegistry.grouped→ModelPicker._build_list",
+        "get_pricing/get_description"
+      ],
+      "target": "Model catalog source/version + parsed model metadata + explicit migration/read status",
+      "migration": "Nie odtwarzać fikcyjnych cen; już utracone pola wymagają źródła/odświeżenia. Zachować nieudane wejście przed migracją.",
+      "dependencies": [
+        "B: existing Python alternative entrypoint ownership"
+      ],
+      "alternatives": [
+        {
+          "name": "normalizacja wspieranego wrappera z zachowaniem pól",
+          "status": "proposed"
+        },
+        {
+          "name": "jawny status uszkodzonego cache i zachowanie bajtów do naprawy",
+          "status": "proposed"
+        },
+        {
+          "name": "obecny cache-list",
+          "status": "implemented_preserves_fields"
+        }
+      ]
+    },
+    {
+      "finding": "A4-CH-VIEW001",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "status": "nadal wadliwe",
+      "reproduction": {
+        "kind": "actual_original_function",
+        "receipt": "perspectives-main-corrected.json",
+        "test": "A4-CH-VIEW001.domain-filter-reproduction"
+      },
+      "expected": [
+        "perspectives.mjs: reproduction runs; acceptance BLOCKED until actual policy input is exposed",
+        "Po podłączeniu policy: identyczny source + show-all zachowuje AI/records/edge; preset legacy odtwarza stary filtr; zmiana widoczności nie zmienia źródła ani analizy."
+      ],
+      "consumers": [
+        "api.getGraphData→filterGraphNoise→nodesRef/edgesRef→canvas"
+      ],
+      "target": "Perspective visibility/filter policy in profile data",
+      "migration": "Zachować dotychczasowy wygląd jako preset, bez usuwania poprzednich wyborów.",
+      "dependencies": [
+        "B/E: actual GraphView policy consumer contract"
+      ],
+      "alternatives": [
+        {
+          "name": "aktualny filtr jako domyślny preset",
+          "status": "possible_migration"
+        },
+        {
+          "name": "show-all lub własne filtry danych",
+          "status": "missing_in_consumer"
+        },
+        {
+          "name": "inne widoki KnowledgeWorkbench",
+          "status": "implemented_separate_consumer"
+        }
+      ]
+    },
+    {
+      "finding": "A4-E-001",
+      "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+      "status": "nadal wadliwe",
+      "reproduction": {
+        "kind": "actual_consumers",
+        "receipt": "E4-results.json",
+        "tests": [
+          "A4-E-001.unrelated-capability-reproduction",
+          "A4-E-001.capability-source-invariance"
+        ]
+      },
+      "expected": [
+        "e_acceptance.mjs: A4-E-001.capability-source-invariance"
+      ],
+      "consumers": [
+        "compilePerspective→selectPerspective resolvedPlan.unsupported→consumer inspection"
+      ],
+      "target": "Source-bound capability implementation and evidence references in QueryPlan explanation",
+      "migration": "Nie zmieniać poprawnego executor unavailable w rzekomy błąd; migracja capability IDs nie może fałszywie włączać implementacji.",
+      "dependencies": [
+        "E actual adapter capability binding; B/C method availability contracts"
+      ],
+      "alternatives": [
+        {
+          "name": "capability scoped to active/source-specific implementation",
+          "status": "required"
+        },
+        {
+          "name": "declaration / implementation / evidence / authorization separately",
+          "status": "required"
+        },
+        {
+          "name": "any adapter declaration clears pending",
+          "status": "implemented"
+        }
+      ]
+    },
+    {
+      "finding": "A3-WEB-001",
+      "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+      "status": "częściowo",
+      "reproduction": {
+        "kind": "actual_adapter_acceptance",
+        "receipt": "E4-results.json",
+        "tests": [
+          "E4-08.profile-known-field-headless",
+          "A3-WEB-001.E-unknown-field-preservation",
+          "E4-12.profile-field-runtime"
+        ],
+        "review_status": "częściowo"
+      },
+      "expected": [
+        "e_acceptance.mjs: A3-WEB-001.E-unknown-field-preservation",
+        "E4-12 remains BLOCKED until actual field→runtime contract is wired"
+      ],
+      "consumers": [
+        "createApplicationProfileAdapter→parseApplicationProfileSource→registerProfile→importedPointer",
+        "existing ApplicationProfile runtime (connection absent)"
+      ],
+      "target": "External profile source tree / selector / revision / uncertain domain mapping, separate execution profile validation",
+      "migration": "Nie aktywować unknown fields jako kodu/opcji wykonania. Zachować raw bytes i explicit uncertainty.",
+      "dependencies": [
+        "E graph/source adapter",
+        "B workflow/profile field resolver"
+      ],
+      "alternatives": [
+        {
+          "name": "strict execution validation",
+          "status": "allowed_and_existing"
+        },
+        {
+          "name": "syntax/source view with preserved unknown fields",
+          "status": "missing_in_profile_adapter"
+        },
+        {
+          "name": "on-demand known-field projection",
+          "status": "newly_verified"
+        }
+      ]
+    },
+    {
+      "finding": "A3-IMP-CH004",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "status": "nadal wadliwe",
+      "reproduction": {
+        "kind": "metamorphic_actual_consumer",
+        "receipt": "python-main.json",
+        "tests": [
+          "A3-IMP-CH004.pass4-whitespace-reproduction",
+          "A3-IMP-CH004.pass4-whitespace-invariance",
+          "A4-IMP-04.streaming-array-positive"
+        ]
+      },
+      "expected": [
+        "python_consumers.py: A3-IMP-CH004.pass4-whitespace-invariance"
+      ],
+      "consumers": [
+        "ConversationImporter.import_file→import_json→_stream_json_array→Database"
+      ],
+      "target": "Parser strategy/policy with shape and progress/coverage status",
+      "migration": "Utrzymać dodatni top-level array sentinel, kolejność wiadomości i ochronę przed częściowym zapisem.",
+      "dependencies": [
+        "B importer owner"
+      ],
+      "alternatives": [
+        {
+          "name": "shape-aware streaming preserving semantics",
+          "status": "required"
+        },
+        {
+          "name": "first bracket scan",
+          "status": "implemented"
+        }
+      ]
+    },
+    {
+      "finding": "A4-E-M001",
+      "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+      "status": "zweryfikowany mechanizm; nie zgłoszona naprawa wcześniejszego findingu",
+      "reproduction": {
+        "kind": "actual_native_and_component_integration",
+        "receipt": "E4-results.json",
+        "tests": [
+          "E4-01.native-resolver-to-real-selector",
+          "E4-02.two-native-profiles",
+          "E4-03.exclusion-process-and-pack-update",
+          "E4-04.keys-cold-warm",
+          "E4-05.resume-budgeted-pages",
+          "E4-09.D-native-E-ID-path"
+        ]
+      },
+      "expected": [
+        "E4-01/02/03/04/05/06/07/09"
+      ],
+      "consumers": [
+        "native DefaultLayers→nativeResolutionFromResponse→compilePerspective→selectPerspective",
+        "D packet→B4 native store→replay→E createPacketAdapter"
+      ],
+      "target": "Existing DefaultLayers + GraphPacket + typed reference/selection projection",
+      "migration": "Nie podmieniać source addresses na renderer IDs bez jawnego mapping; wyraźnie odróżniać wznowione porcje od kompletnego indeksu.",
+      "dependencies": [
+        "Production hook and D ObjectRef mapping outstanding"
+      ],
+      "alternatives": [
+        {
+          "name": "reference + on-demand projection",
+          "status": "verified_component"
+        },
+        {
+          "name": "whole materialization as mandatory condition",
+          "status": "not_required"
+        },
+        {
+          "name": "native production UI wiring",
+          "status": "not_yet_available"
+        }
+      ]
+    },
+    {
+      "finding": "A4-E-G001",
+      "sha": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+      "status": "niezweryfikowane",
+      "reproduction": {
+        "kind": "concrete_missing_contract",
+        "receipt": "E4-results.json",
+        "tests": [
+          "E4-10.D-typed-selector-version",
+          "E4-11.production-UI-hook"
+        ]
+      },
+      "expected": [
+        "E4-10 bind future actual D/E mapping and check ID/version equivalence",
+        "E4-11 once real production UI exists, compare its projection to headless result without a mock adapter"
+      ],
+      "consumers": [
+        "D attrs.selector/source_version→(missing mapping)→E ObjectRef",
+        "E SelectionResult→(missing production hook)→UI"
+      ],
+      "target": "Source selector/version mapping + existing renderer projection interface",
+      "migration": "Nie gubić historii, source permissions i partial status przy mapowaniu. Nie liczyć hipotetycznego patcha jako wdrożenia.",
+      "dependencies": [
+        "D and E shared mapping contract, B permitted renderer hook"
+      ],
+      "alternatives": [
+        {
+          "name": "existing graph entity ID addressing",
+          "status": "verified"
+        },
+        {
+          "name": "D typed source address/version binding",
+          "status": "missing_contract"
+        },
+        {
+          "name": "E mounted UI/headless parity",
+          "status": "missing_product_hook"
+        }
+      ]
+    }
+  ],
+  "notice": "Publication of this file is not a message sent to another external session."
+}

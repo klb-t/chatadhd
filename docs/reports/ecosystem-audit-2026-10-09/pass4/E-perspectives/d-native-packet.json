@@ -1,0 +1,3607 @@
+{
+  "native_executed": true,
+  "reopened": true,
+  "packet_id": "ef06ad0e972c76245d5d952a4b9804abedead14af858cbfbe3da50e94fc2b9b4",
+  "receipt_id": "gpr_4f281b1e30b1aca4551669584c4ab02752f09d8378ddd396cc270a04d0bb0d80",
+  "packet_equal": true,
+  "row_drift_matches": true,
+  "selected_counts": {
+    "entities": 19,
+    "claims": 34,
+    "sources": 10
+  },
+  "acceptance_establishes_content_truth": false,
+  "packet": {
+    "schema": "loom.graph_packet/1",
+    "definitions": [],
+    "entities": [
+      {
+        "id": "rg_294c8a10f9b6180ab3aa96f6c5561c2c457b379e5dc869bc84f27ecf2c7f9809",
+        "kind": "resource",
+        "canonical_key": "rg_294c8a10f9b6180ab3aa96f6c5561c2c457b379e5dc869bc84f27ecf2c7f9809",
+        "label": "audit:resource:conversation",
+        "labels": {},
+        "aliases": [],
+        "parent": "",
+        "first_seen": "",
+        "last_seen": "",
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "status": "active",
+        "attrs": {
+          "logical_id": "audit:resource:conversation",
+          "locator": "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/artifacts/tools/ecosystem-audit-2026-10-09/pass4/D-resources/fixtures/conversation.json",
+          "members": [],
+          "format": "json",
+          "adapter": "syntax",
+          "policy": {
+            "mode": "live",
+            "embedding": false,
+            "cache": false,
+            "retention_seconds": 0,
+            "index": false,
+            "max_projection_nodes": 1000,
+            "max_projection_depth": 16
+          },
+          "parser_options": {},
+          "permissions": {
+            "read": true,
+            "export_values": true,
+            "write_back": false
+          },
+          "status": "available",
+          "source_version": {
+            "kind": "local_stat",
+            "st_dev": 27,
+            "st_ino": 1719823,
+            "st_size": 390,
+            "st_mtime_ns": 1791533534069987055,
+            "st_ctime_ns": 1791533534069987055
+          },
+          "content_sha256": "885e337c0b36967c79c34b88f5b7c3675af2d78a406289d5d9f35788af818eb9",
+          "selector": "",
+          "parser_version": "python-json/1",
+          "mapping_version": null,
+          "history": [
+            {
+              "source_version": {
+                "kind": "local_stat",
+                "st_dev": 27,
+                "st_ino": 1719823,
+                "st_size": 390,
+                "st_mtime_ns": 1791533534069987055,
+                "st_ctime_ns": 1791533534069987055
+              },
+              "content_sha256": "885e337c0b36967c79c34b88f5b7c3675af2d78a406289d5d9f35788af818eb9",
+              "origin": "own_observation",
+              "observed_at": 1791533534.0761425
+            }
+          ],
+          "recognition": "syntax_only",
+          "embedded_bytes": false,
+          "capabilities": {
+            "read": true,
+            "select": true,
+            "project": true,
+            "write_back": false,
+            "overlay": true,
+            "native_persistence_required": false,
+            "renderer_required": false
+          }
+        }
+      },
+      {
+        "id": "rg_98791ccaf4c4a66c5ad7de1ec1161e4e7bd4e91035546947d6605017a9271284",
+        "kind": "analysis_method",
+        "canonical_key": "rg_98791ccaf4c4a66c5ad7de1ec1161e4e7bd4e91035546947d6605017a9271284",
+        "label": "syntax",
+        "labels": {},
+        "aliases": [],
+        "parent": "",
+        "first_seen": "",
+        "last_seen": "",
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "status": "active",
+        "attrs": {
+          "parser": {
+            "source_version": {
+              "kind": "local_stat",
+              "st_dev": 27,
+              "st_ino": 1719823,
+              "st_size": 390,
+              "st_mtime_ns": 1791533534069987055,
+              "st_ctime_ns": 1791533534069987055
+            },
+            "content_sha256": "885e337c0b36967c79c34b88f5b7c3675af2d78a406289d5d9f35788af818eb9",
+            "parser_id": "json",
+            "parser_version": "python-json/1",
+            "parser_descriptor": {
+              "id": "json",
+              "version": "python-json/1",
+              "syntax": "json",
+              "semantics": "unrecognized",
+              "addressing": "json_pointer",
+              "loss": [
+                "lexical formatting; original bytes remain at source"
+              ],
+              "media_types": [
+                "application/json"
+              ],
+              "extensions": [
+                ".json"
+              ]
+            },
+            "status": "available",
+            "recognition": "syntax_only",
+            "read_scope": "selected_container_member"
+          },
+          "projection_version": "1"
+        }
+      },
+      {
+        "id": "rg_0eb65b7ef31f8e820d54b35f6e7ddcef395d950d672b069e87e28af646c8861d",
+        "kind": "resource_field",
+        "canonical_key": "rg_0eb65b7ef31f8e820d54b35f6e7ddcef395d950d672b069e87e28af646c8861d",
+        "label": "",
+        "labels": {},
+        "aliases": [],
+        "parent": "",
+        "first_seen": "",
+        "last_seen": "",
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "status": "active",
+        "attrs": {
+          "logical_resource": "audit:resource:conversation",
+          "selector": "",
+          "source_version": {
+            "kind": "local_stat",
+            "st_dev": 27,
+            "st_ino": 1719823,
+            "st_size": 390,
+            "st_mtime_ns": 1791533534069987055,
+            "st_ctime_ns": 1791533534069987055
+          },
+          "content_sha256": "885e337c0b36967c79c34b88f5b7c3675af2d78a406289d5d9f35788af818eb9",
+          "parser_version": "python-json/1",
+          "mapping_version": null,
+          "mapping_id": null,
+          "value_type": "dict",
+          "size": 2
+        }
+      },
+      {
+        "id": "rg_c556b6ddb17a44e93baece311ed0198c1c5139b1113a741998eb60104290c042",
+        "kind": "resource_field",
+        "canonical_key": "rg_c556b6ddb17a44e93baece311ed0198c1c5139b1113a741998eb60104290c042",
+        "label": "/conversation",
+        "labels": {},
+        "aliases": [],
+        "parent": "",
+        "first_seen": "",
+        "last_seen": "",
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "status": "active",
+        "attrs": {
+          "logical_resource": "audit:resource:conversation",
+          "selector": "/conversation",
+          "source_version": {
+            "kind": "local_stat",
+            "st_dev": 27,
+            "st_ino": 1719823,
+            "st_size": 390,
+            "st_mtime_ns": 1791533534069987055,
+            "st_ctime_ns": 1791533534069987055
+          },
+          "content_sha256": "885e337c0b36967c79c34b88f5b7c3675af2d78a406289d5d9f35788af818eb9",
+          "parser_version": "python-json/1",
+          "mapping_version": null,
+          "mapping_id": null,
+          "value_type": "dict",
+          "size": 2
+        }
+      },
+      {
+        "id": "rg_40fd79a5242226b65fb0e162e1c34e5eb2a31fb491eac8e5028e115da7c133e8",
+        "kind": "resource_field",
+        "canonical_key": "rg_40fd79a5242226b65fb0e162e1c34e5eb2a31fb491eac8e5028e115da7c133e8",
+        "label": "/unknown",
+        "labels": {},
+        "aliases": [],
+        "parent": "",
+        "first_seen": "",
+        "last_seen": "",
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "status": "active",
+        "attrs": {
+          "logical_resource": "audit:resource:conversation",
+          "selector": "/unknown",
+          "source_version": {
+            "kind": "local_stat",
+            "st_dev": 27,
+            "st_ino": 1719823,
+            "st_size": 390,
+            "st_mtime_ns": 1791533534069987055,
+            "st_ctime_ns": 1791533534069987055
+          },
+          "content_sha256": "885e337c0b36967c79c34b88f5b7c3675af2d78a406289d5d9f35788af818eb9",
+          "parser_version": "python-json/1",
+          "mapping_version": null,
+          "mapping_id": null,
+          "value_type": "dict",
+          "size": 2
+        }
+      },
+      {
+        "id": "rg_928210dfc108e26e2ffc5ec1cc3c0188b943cf7e88bf7908360b886b133853f8",
+        "kind": "resource_field",
+        "canonical_key": "rg_928210dfc108e26e2ffc5ec1cc3c0188b943cf7e88bf7908360b886b133853f8",
+        "label": "/conversation/id",
+        "labels": {},
+        "aliases": [],
+        "parent": "",
+        "first_seen": "",
+        "last_seen": "",
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "status": "active",
+        "attrs": {
+          "logical_resource": "audit:resource:conversation",
+          "selector": "/conversation/id",
+          "source_version": {
+            "kind": "local_stat",
+            "st_dev": 27,
+            "st_ino": 1719823,
+            "st_size": 390,
+            "st_mtime_ns": 1791533534069987055,
+            "st_ctime_ns": 1791533534069987055
+          },
+          "content_sha256": "885e337c0b36967c79c34b88f5b7c3675af2d78a406289d5d9f35788af818eb9",
+          "parser_version": "python-json/1",
+          "mapping_version": null,
+          "mapping_id": null,
+          "value_type": "str",
+          "value": "synthetic-audit-conversation"
+        }
+      },
+      {
+        "id": "rg_473aad9c05815aa91e7de8b65bb67bfc03f784888894ef261222e898e67d2c6a",
+        "kind": "resource_field",
+        "canonical_key": "rg_473aad9c05815aa91e7de8b65bb67bfc03f784888894ef261222e898e67d2c6a",
+        "label": "/conversation/messages",
+        "labels": {},
+        "aliases": [],
+        "parent": "",
+        "first_seen": "",
+        "last_seen": "",
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "status": "active",
+        "attrs": {
+          "logical_resource": "audit:resource:conversation",
+          "selector": "/conversation/messages",
+          "source_version": {
+            "kind": "local_stat",
+            "st_dev": 27,
+            "st_ino": 1719823,
+            "st_size": 390,
+            "st_mtime_ns": 1791533534069987055,
+            "st_ctime_ns": 1791533534069987055
+          },
+          "content_sha256": "885e337c0b36967c79c34b88f5b7c3675af2d78a406289d5d9f35788af818eb9",
+          "parser_version": "python-json/1",
+          "mapping_version": null,
+          "mapping_id": null,
+          "value_type": "list",
+          "size": 2
+        }
+      },
+      {
+        "id": "rg_83326df2258ec164555ca002c7ad9045c37d71167a679e607b3ffdcf94f1fd5f",
+        "kind": "resource_field",
+        "canonical_key": "rg_83326df2258ec164555ca002c7ad9045c37d71167a679e607b3ffdcf94f1fd5f",
+        "label": "/unknown/flag",
+        "labels": {},
+        "aliases": [],
+        "parent": "",
+        "first_seen": "",
+        "last_seen": "",
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "status": "active",
+        "attrs": {
+          "logical_resource": "audit:resource:conversation",
+          "selector": "/unknown/flag",
+          "source_version": {
+            "kind": "local_stat",
+            "st_dev": 27,
+            "st_ino": 1719823,
+            "st_size": 390,
+            "st_mtime_ns": 1791533534069987055,
+            "st_ctime_ns": 1791533534069987055
+          },
+          "content_sha256": "885e337c0b36967c79c34b88f5b7c3675af2d78a406289d5d9f35788af818eb9",
+          "parser_version": "python-json/1",
+          "mapping_version": null,
+          "mapping_id": null,
+          "value_type": "bool",
+          "value": true
+        }
+      },
+      {
+        "id": "rg_4c521ddde793074f9ea1dd8e2626b92a6a531b771b7b6410ee6738055f35dc3e",
+        "kind": "resource_field",
+        "canonical_key": "rg_4c521ddde793074f9ea1dd8e2626b92a6a531b771b7b6410ee6738055f35dc3e",
+        "label": "/unknown/empty",
+        "labels": {},
+        "aliases": [],
+        "parent": "",
+        "first_seen": "",
+        "last_seen": "",
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "status": "active",
+        "attrs": {
+          "logical_resource": "audit:resource:conversation",
+          "selector": "/unknown/empty",
+          "source_version": {
+            "kind": "local_stat",
+            "st_dev": 27,
+            "st_ino": 1719823,
+            "st_size": 390,
+            "st_mtime_ns": 1791533534069987055,
+            "st_ctime_ns": 1791533534069987055
+          },
+          "content_sha256": "885e337c0b36967c79c34b88f5b7c3675af2d78a406289d5d9f35788af818eb9",
+          "parser_version": "python-json/1",
+          "mapping_version": null,
+          "mapping_id": null,
+          "value_type": "list",
+          "size": 0
+        }
+      },
+      {
+        "id": "rg_2090fb7f3e24838816815b76fd3aaf4428e31497a0f464f87d5961ae004b508d",
+        "kind": "resource_field",
+        "canonical_key": "rg_2090fb7f3e24838816815b76fd3aaf4428e31497a0f464f87d5961ae004b508d",
+        "label": "/conversation/messages/0",
+        "labels": {},
+        "aliases": [],
+        "parent": "",
+        "first_seen": "",
+        "last_seen": "",
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "status": "active",
+        "attrs": {
+          "logical_resource": "audit:resource:conversation",
+          "selector": "/conversation/messages/0",
+          "source_version": {
+            "kind": "local_stat",
+            "st_dev": 27,
+            "st_ino": 1719823,
+            "st_size": 390,
+            "st_mtime_ns": 1791533534069987055,
+            "st_ctime_ns": 1791533534069987055
+          },
+          "content_sha256": "885e337c0b36967c79c34b88f5b7c3675af2d78a406289d5d9f35788af818eb9",
+          "parser_version": "python-json/1",
+          "mapping_version": null,
+          "mapping_id": null,
+          "value_type": "dict",
+          "size": 4
+        }
+      },
+      {
+        "id": "rg_a837649f02fb6b678ed7489c1751dbe1eafb3ea433bc4273806102557f11d4b9",
+        "kind": "resource_field",
+        "canonical_key": "rg_a837649f02fb6b678ed7489c1751dbe1eafb3ea433bc4273806102557f11d4b9",
+        "label": "/conversation/messages/1",
+        "labels": {},
+        "aliases": [],
+        "parent": "",
+        "first_seen": "",
+        "last_seen": "",
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "status": "active",
+        "attrs": {
+          "logical_resource": "audit:resource:conversation",
+          "selector": "/conversation/messages/1",
+          "source_version": {
+            "kind": "local_stat",
+            "st_dev": 27,
+            "st_ino": 1719823,
+            "st_size": 390,
+            "st_mtime_ns": 1791533534069987055,
+            "st_ctime_ns": 1791533534069987055
+          },
+          "content_sha256": "885e337c0b36967c79c34b88f5b7c3675af2d78a406289d5d9f35788af818eb9",
+          "parser_version": "python-json/1",
+          "mapping_version": null,
+          "mapping_id": null,
+          "value_type": "dict",
+          "size": 4
+        }
+      },
+      {
+        "id": "rg_52615f4c0059f85b9117f94338921985d9238fb3353f00d9f0a17731d4f570a7",
+        "kind": "resource_field",
+        "canonical_key": "rg_52615f4c0059f85b9117f94338921985d9238fb3353f00d9f0a17731d4f570a7",
+        "label": "/conversation/messages/0/id",
+        "labels": {},
+        "aliases": [],
+        "parent": "",
+        "first_seen": "",
+        "last_seen": "",
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "status": "active",
+        "attrs": {
+          "logical_resource": "audit:resource:conversation",
+          "selector": "/conversation/messages/0/id",
+          "source_version": {
+            "kind": "local_stat",
+            "st_dev": 27,
+            "st_ino": 1719823,
+            "st_size": 390,
+            "st_mtime_ns": 1791533534069987055,
+            "st_ctime_ns": 1791533534069987055
+          },
+          "content_sha256": "885e337c0b36967c79c34b88f5b7c3675af2d78a406289d5d9f35788af818eb9",
+          "parser_version": "python-json/1",
+          "mapping_version": null,
+          "mapping_id": null,
+          "value_type": "str",
+          "value": "m1"
+        }
+      },
+      {
+        "id": "rg_f43167a68e4ada48aa7c60a7fb3fdb41ec3737702816e7f90a15475c85b6c822",
+        "kind": "resource_field",
+        "canonical_key": "rg_f43167a68e4ada48aa7c60a7fb3fdb41ec3737702816e7f90a15475c85b6c822",
+        "label": "/conversation/messages/0/role",
+        "labels": {},
+        "aliases": [],
+        "parent": "",
+        "first_seen": "",
+        "last_seen": "",
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "status": "active",
+        "attrs": {
+          "logical_resource": "audit:resource:conversation",
+          "selector": "/conversation/messages/0/role",
+          "source_version": {
+            "kind": "local_stat",
+            "st_dev": 27,
+            "st_ino": 1719823,
+            "st_size": 390,
+            "st_mtime_ns": 1791533534069987055,
+            "st_ctime_ns": 1791533534069987055
+          },
+          "content_sha256": "885e337c0b36967c79c34b88f5b7c3675af2d78a406289d5d9f35788af818eb9",
+          "parser_version": "python-json/1",
+          "mapping_version": null,
+          "mapping_id": null,
+          "value_type": "str",
+          "value": "user"
+        }
+      },
+      {
+        "id": "rg_436fd94ab6799bf2c365bb55eda5afe7c3c532f34ad68f0d2ca7acd103298089",
+        "kind": "resource_field",
+        "canonical_key": "rg_436fd94ab6799bf2c365bb55eda5afe7c3c532f34ad68f0d2ca7acd103298089",
+        "label": "/conversation/messages/0/parent",
+        "labels": {},
+        "aliases": [],
+        "parent": "",
+        "first_seen": "",
+        "last_seen": "",
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "status": "active",
+        "attrs": {
+          "logical_resource": "audit:resource:conversation",
+          "selector": "/conversation/messages/0/parent",
+          "source_version": {
+            "kind": "local_stat",
+            "st_dev": 27,
+            "st_ino": 1719823,
+            "st_size": 390,
+            "st_mtime_ns": 1791533534069987055,
+            "st_ctime_ns": 1791533534069987055
+          },
+          "content_sha256": "885e337c0b36967c79c34b88f5b7c3675af2d78a406289d5d9f35788af818eb9",
+          "parser_version": "python-json/1",
+          "mapping_version": null,
+          "mapping_id": null,
+          "value_type": "NoneType",
+          "value": null
+        }
+      },
+      {
+        "id": "rg_608d1210b9b0c074d90f75ad38e10c79150809c096c7bb4e4cf3c3d7c7cc2d4b",
+        "kind": "resource_field",
+        "canonical_key": "rg_608d1210b9b0c074d90f75ad38e10c79150809c096c7bb4e4cf3c3d7c7cc2d4b",
+        "label": "/conversation/messages/0/text",
+        "labels": {},
+        "aliases": [],
+        "parent": "",
+        "first_seen": "",
+        "last_seen": "",
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "status": "active",
+        "attrs": {
+          "logical_resource": "audit:resource:conversation",
+          "selector": "/conversation/messages/0/text",
+          "source_version": {
+            "kind": "local_stat",
+            "st_dev": 27,
+            "st_ino": 1719823,
+            "st_size": 390,
+            "st_mtime_ns": 1791533534069987055,
+            "st_ctime_ns": 1791533534069987055
+          },
+          "content_sha256": "885e337c0b36967c79c34b88f5b7c3675af2d78a406289d5d9f35788af818eb9",
+          "parser_version": "python-json/1",
+          "mapping_version": null,
+          "mapping_id": null,
+          "value_type": "str",
+          "value": "synthetic first"
+        }
+      },
+      {
+        "id": "rg_0635347f5aacc7d20af22835db46ffe0c848ce839500aaa192fda950f55d419b",
+        "kind": "resource_field",
+        "canonical_key": "rg_0635347f5aacc7d20af22835db46ffe0c848ce839500aaa192fda950f55d419b",
+        "label": "/conversation/messages/1/id",
+        "labels": {},
+        "aliases": [],
+        "parent": "",
+        "first_seen": "",
+        "last_seen": "",
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "status": "active",
+        "attrs": {
+          "logical_resource": "audit:resource:conversation",
+          "selector": "/conversation/messages/1/id",
+          "source_version": {
+            "kind": "local_stat",
+            "st_dev": 27,
+            "st_ino": 1719823,
+            "st_size": 390,
+            "st_mtime_ns": 1791533534069987055,
+            "st_ctime_ns": 1791533534069987055
+          },
+          "content_sha256": "885e337c0b36967c79c34b88f5b7c3675af2d78a406289d5d9f35788af818eb9",
+          "parser_version": "python-json/1",
+          "mapping_version": null,
+          "mapping_id": null,
+          "value_type": "str",
+          "value": "m2"
+        }
+      },
+      {
+        "id": "rg_fe98b436870e066f7f6af20b0566c29ea394afc59aaa663884688b69beaef1b3",
+        "kind": "resource_field",
+        "canonical_key": "rg_fe98b436870e066f7f6af20b0566c29ea394afc59aaa663884688b69beaef1b3",
+        "label": "/conversation/messages/1/role",
+        "labels": {},
+        "aliases": [],
+        "parent": "",
+        "first_seen": "",
+        "last_seen": "",
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "status": "active",
+        "attrs": {
+          "logical_resource": "audit:resource:conversation",
+          "selector": "/conversation/messages/1/role",
+          "source_version": {
+            "kind": "local_stat",
+            "st_dev": 27,
+            "st_ino": 1719823,
+            "st_size": 390,
+            "st_mtime_ns": 1791533534069987055,
+            "st_ctime_ns": 1791533534069987055
+          },
+          "content_sha256": "885e337c0b36967c79c34b88f5b7c3675af2d78a406289d5d9f35788af818eb9",
+          "parser_version": "python-json/1",
+          "mapping_version": null,
+          "mapping_id": null,
+          "value_type": "str",
+          "value": "assistant"
+        }
+      },
+      {
+        "id": "rg_c3040659a9c160826698438efc6110b311e4065732f87de80d10ee5b0e195935",
+        "kind": "resource_field",
+        "canonical_key": "rg_c3040659a9c160826698438efc6110b311e4065732f87de80d10ee5b0e195935",
+        "label": "/conversation/messages/1/parent",
+        "labels": {},
+        "aliases": [],
+        "parent": "",
+        "first_seen": "",
+        "last_seen": "",
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "status": "active",
+        "attrs": {
+          "logical_resource": "audit:resource:conversation",
+          "selector": "/conversation/messages/1/parent",
+          "source_version": {
+            "kind": "local_stat",
+            "st_dev": 27,
+            "st_ino": 1719823,
+            "st_size": 390,
+            "st_mtime_ns": 1791533534069987055,
+            "st_ctime_ns": 1791533534069987055
+          },
+          "content_sha256": "885e337c0b36967c79c34b88f5b7c3675af2d78a406289d5d9f35788af818eb9",
+          "parser_version": "python-json/1",
+          "mapping_version": null,
+          "mapping_id": null,
+          "value_type": "str",
+          "value": "m1"
+        }
+      },
+      {
+        "id": "rg_12d593ddb6f83e463c4d34c673619bf1a2ac4e8b6284a230763dc34438ea1f2a",
+        "kind": "resource_field",
+        "canonical_key": "rg_12d593ddb6f83e463c4d34c673619bf1a2ac4e8b6284a230763dc34438ea1f2a",
+        "label": "/conversation/messages/1/text",
+        "labels": {},
+        "aliases": [],
+        "parent": "",
+        "first_seen": "",
+        "last_seen": "",
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "status": "active",
+        "attrs": {
+          "logical_resource": "audit:resource:conversation",
+          "selector": "/conversation/messages/1/text",
+          "source_version": {
+            "kind": "local_stat",
+            "st_dev": 27,
+            "st_ino": 1719823,
+            "st_size": 390,
+            "st_mtime_ns": 1791533534069987055,
+            "st_ctime_ns": 1791533534069987055
+          },
+          "content_sha256": "885e337c0b36967c79c34b88f5b7c3675af2d78a406289d5d9f35788af818eb9",
+          "parser_version": "python-json/1",
+          "mapping_version": null,
+          "mapping_id": null,
+          "value_type": "str",
+          "value": "synthetic reply"
+        }
+      }
+    ],
+    "claims": [
+      {
+        "id": "rg_14d06c1fee4bde97cf51624465744a32d991097f997a9218334da3a5b417f659",
+        "subject": "rg_294c8a10f9b6180ab3aa96f6c5561c2c457b379e5dc869bc84f27ecf2c7f9809",
+        "predicate": "contains",
+        "object": "rg_0eb65b7ef31f8e820d54b35f6e7ddcef395d950d672b069e87e28af646c8861d",
+        "value": null,
+        "qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "rg_ca92b106404ab11e76500a5e2ca8ad77c60448390e4d1cfe245b417eea348416",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "assessment": {
+          "basis": {
+            "support": [],
+            "derivation": {
+              "operator": "resource_projection",
+              "operator_version": 1,
+              "morphism": "",
+              "depth": 0
+            }
+          },
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "premises": {
+            "claims": [],
+            "principles": [],
+            "assumptions": []
+          },
+          "counter": {
+            "observations": [],
+            "claims": []
+          },
+          "status": "active",
+          "consequences": {
+            "claims": [],
+            "predictions": [],
+            "checks": []
+          },
+          "open": {
+            "slots": [],
+            "questions": [],
+            "fill_query": null
+          },
+          "expected_property": null,
+          "check_state": "n/a",
+          "alternatives": []
+        }
+      },
+      {
+        "id": "rg_dfdb4410b783aa9cacf547d9986cc1c55f366e21d0cbe68ea4492974173dbe4b",
+        "subject": "rg_0eb65b7ef31f8e820d54b35f6e7ddcef395d950d672b069e87e28af646c8861d",
+        "predicate": "produced_by",
+        "object": "rg_98791ccaf4c4a66c5ad7de1ec1161e4e7bd4e91035546947d6605017a9271284",
+        "value": null,
+        "qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "rg_ca92b106404ab11e76500a5e2ca8ad77c60448390e4d1cfe245b417eea348416",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "assessment": {
+          "basis": {
+            "support": [],
+            "derivation": {
+              "operator": "resource_projection",
+              "operator_version": 1,
+              "morphism": "",
+              "depth": 0
+            }
+          },
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "premises": {
+            "claims": [],
+            "principles": [],
+            "assumptions": []
+          },
+          "counter": {
+            "observations": [],
+            "claims": []
+          },
+          "status": "active",
+          "consequences": {
+            "claims": [],
+            "predictions": [],
+            "checks": []
+          },
+          "open": {
+            "slots": [],
+            "questions": [],
+            "fill_query": null
+          },
+          "expected_property": null,
+          "check_state": "n/a",
+          "alternatives": []
+        }
+      },
+      {
+        "id": "rg_3322972851e9578bea08e26c4e27137bb4734dda9d5b930567022c32622c5d2b",
+        "subject": "rg_0eb65b7ef31f8e820d54b35f6e7ddcef395d950d672b069e87e28af646c8861d",
+        "predicate": "contains",
+        "object": "rg_c556b6ddb17a44e93baece311ed0198c1c5139b1113a741998eb60104290c042",
+        "value": null,
+        "qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "rg_ca92b106404ab11e76500a5e2ca8ad77c60448390e4d1cfe245b417eea348416",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "assessment": {
+          "basis": {
+            "support": [],
+            "derivation": {
+              "operator": "resource_projection",
+              "operator_version": 1,
+              "morphism": "",
+              "depth": 0
+            }
+          },
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "premises": {
+            "claims": [],
+            "principles": [],
+            "assumptions": []
+          },
+          "counter": {
+            "observations": [],
+            "claims": []
+          },
+          "status": "active",
+          "consequences": {
+            "claims": [],
+            "predictions": [],
+            "checks": []
+          },
+          "open": {
+            "slots": [],
+            "questions": [],
+            "fill_query": null
+          },
+          "expected_property": null,
+          "check_state": "n/a",
+          "alternatives": []
+        }
+      },
+      {
+        "id": "rg_680fb7a40963cae80785e6b90cfd081478cb6d5246c16c632ce470c8b8a93bb2",
+        "subject": "rg_c556b6ddb17a44e93baece311ed0198c1c5139b1113a741998eb60104290c042",
+        "predicate": "produced_by",
+        "object": "rg_98791ccaf4c4a66c5ad7de1ec1161e4e7bd4e91035546947d6605017a9271284",
+        "value": null,
+        "qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "rg_ca92b106404ab11e76500a5e2ca8ad77c60448390e4d1cfe245b417eea348416",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "assessment": {
+          "basis": {
+            "support": [],
+            "derivation": {
+              "operator": "resource_projection",
+              "operator_version": 1,
+              "morphism": "",
+              "depth": 0
+            }
+          },
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "premises": {
+            "claims": [],
+            "principles": [],
+            "assumptions": []
+          },
+          "counter": {
+            "observations": [],
+            "claims": []
+          },
+          "status": "active",
+          "consequences": {
+            "claims": [],
+            "predictions": [],
+            "checks": []
+          },
+          "open": {
+            "slots": [],
+            "questions": [],
+            "fill_query": null
+          },
+          "expected_property": null,
+          "check_state": "n/a",
+          "alternatives": []
+        }
+      },
+      {
+        "id": "rg_3ae0ef0f1f319ebfe620b94007f32691a0e3b51aa56d27e9c1bea17e12a31e7a",
+        "subject": "rg_0eb65b7ef31f8e820d54b35f6e7ddcef395d950d672b069e87e28af646c8861d",
+        "predicate": "contains",
+        "object": "rg_40fd79a5242226b65fb0e162e1c34e5eb2a31fb491eac8e5028e115da7c133e8",
+        "value": null,
+        "qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "rg_ca92b106404ab11e76500a5e2ca8ad77c60448390e4d1cfe245b417eea348416",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "assessment": {
+          "basis": {
+            "support": [],
+            "derivation": {
+              "operator": "resource_projection",
+              "operator_version": 1,
+              "morphism": "",
+              "depth": 0
+            }
+          },
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "premises": {
+            "claims": [],
+            "principles": [],
+            "assumptions": []
+          },
+          "counter": {
+            "observations": [],
+            "claims": []
+          },
+          "status": "active",
+          "consequences": {
+            "claims": [],
+            "predictions": [],
+            "checks": []
+          },
+          "open": {
+            "slots": [],
+            "questions": [],
+            "fill_query": null
+          },
+          "expected_property": null,
+          "check_state": "n/a",
+          "alternatives": []
+        }
+      },
+      {
+        "id": "rg_e0d851f69b773cdb74511bfdc77dc41c00726a9b479b8314d75b4dc1a59131e3",
+        "subject": "rg_40fd79a5242226b65fb0e162e1c34e5eb2a31fb491eac8e5028e115da7c133e8",
+        "predicate": "produced_by",
+        "object": "rg_98791ccaf4c4a66c5ad7de1ec1161e4e7bd4e91035546947d6605017a9271284",
+        "value": null,
+        "qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "rg_ca92b106404ab11e76500a5e2ca8ad77c60448390e4d1cfe245b417eea348416",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "assessment": {
+          "basis": {
+            "support": [],
+            "derivation": {
+              "operator": "resource_projection",
+              "operator_version": 1,
+              "morphism": "",
+              "depth": 0
+            }
+          },
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "premises": {
+            "claims": [],
+            "principles": [],
+            "assumptions": []
+          },
+          "counter": {
+            "observations": [],
+            "claims": []
+          },
+          "status": "active",
+          "consequences": {
+            "claims": [],
+            "predictions": [],
+            "checks": []
+          },
+          "open": {
+            "slots": [],
+            "questions": [],
+            "fill_query": null
+          },
+          "expected_property": null,
+          "check_state": "n/a",
+          "alternatives": []
+        }
+      },
+      {
+        "id": "rg_026ae719269016676c4572321c8accf0ed57a0df03069bef0d4d0fa899c94611",
+        "subject": "rg_c556b6ddb17a44e93baece311ed0198c1c5139b1113a741998eb60104290c042",
+        "predicate": "contains",
+        "object": "rg_928210dfc108e26e2ffc5ec1cc3c0188b943cf7e88bf7908360b886b133853f8",
+        "value": null,
+        "qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "rg_ca92b106404ab11e76500a5e2ca8ad77c60448390e4d1cfe245b417eea348416",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "assessment": {
+          "basis": {
+            "support": [],
+            "derivation": {
+              "operator": "resource_projection",
+              "operator_version": 1,
+              "morphism": "",
+              "depth": 0
+            }
+          },
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "premises": {
+            "claims": [],
+            "principles": [],
+            "assumptions": []
+          },
+          "counter": {
+            "observations": [],
+            "claims": []
+          },
+          "status": "active",
+          "consequences": {
+            "claims": [],
+            "predictions": [],
+            "checks": []
+          },
+          "open": {
+            "slots": [],
+            "questions": [],
+            "fill_query": null
+          },
+          "expected_property": null,
+          "check_state": "n/a",
+          "alternatives": []
+        }
+      },
+      {
+        "id": "rg_4fe28bf5f19da993ed4bc42ab473396e9c03ea11fe92561d5f1c1ae893c57601",
+        "subject": "rg_928210dfc108e26e2ffc5ec1cc3c0188b943cf7e88bf7908360b886b133853f8",
+        "predicate": "produced_by",
+        "object": "rg_98791ccaf4c4a66c5ad7de1ec1161e4e7bd4e91035546947d6605017a9271284",
+        "value": null,
+        "qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "rg_ca92b106404ab11e76500a5e2ca8ad77c60448390e4d1cfe245b417eea348416",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "assessment": {
+          "basis": {
+            "support": [],
+            "derivation": {
+              "operator": "resource_projection",
+              "operator_version": 1,
+              "morphism": "",
+              "depth": 0
+            }
+          },
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "premises": {
+            "claims": [],
+            "principles": [],
+            "assumptions": []
+          },
+          "counter": {
+            "observations": [],
+            "claims": []
+          },
+          "status": "active",
+          "consequences": {
+            "claims": [],
+            "predictions": [],
+            "checks": []
+          },
+          "open": {
+            "slots": [],
+            "questions": [],
+            "fill_query": null
+          },
+          "expected_property": null,
+          "check_state": "n/a",
+          "alternatives": []
+        }
+      },
+      {
+        "id": "rg_d309f3907dac67f77f3c728a5fe55c0fdfe6d6f0c9718f6838a81d03bd45d35a",
+        "subject": "rg_c556b6ddb17a44e93baece311ed0198c1c5139b1113a741998eb60104290c042",
+        "predicate": "contains",
+        "object": "rg_473aad9c05815aa91e7de8b65bb67bfc03f784888894ef261222e898e67d2c6a",
+        "value": null,
+        "qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "rg_ca92b106404ab11e76500a5e2ca8ad77c60448390e4d1cfe245b417eea348416",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "assessment": {
+          "basis": {
+            "support": [],
+            "derivation": {
+              "operator": "resource_projection",
+              "operator_version": 1,
+              "morphism": "",
+              "depth": 0
+            }
+          },
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "premises": {
+            "claims": [],
+            "principles": [],
+            "assumptions": []
+          },
+          "counter": {
+            "observations": [],
+            "claims": []
+          },
+          "status": "active",
+          "consequences": {
+            "claims": [],
+            "predictions": [],
+            "checks": []
+          },
+          "open": {
+            "slots": [],
+            "questions": [],
+            "fill_query": null
+          },
+          "expected_property": null,
+          "check_state": "n/a",
+          "alternatives": []
+        }
+      },
+      {
+        "id": "rg_bf5c88f6b4f685085d7456642d2003dce6c0e45bcfe819630b5e88a3b9eaffd9",
+        "subject": "rg_473aad9c05815aa91e7de8b65bb67bfc03f784888894ef261222e898e67d2c6a",
+        "predicate": "produced_by",
+        "object": "rg_98791ccaf4c4a66c5ad7de1ec1161e4e7bd4e91035546947d6605017a9271284",
+        "value": null,
+        "qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "rg_ca92b106404ab11e76500a5e2ca8ad77c60448390e4d1cfe245b417eea348416",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "assessment": {
+          "basis": {
+            "support": [],
+            "derivation": {
+              "operator": "resource_projection",
+              "operator_version": 1,
+              "morphism": "",
+              "depth": 0
+            }
+          },
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "premises": {
+            "claims": [],
+            "principles": [],
+            "assumptions": []
+          },
+          "counter": {
+            "observations": [],
+            "claims": []
+          },
+          "status": "active",
+          "consequences": {
+            "claims": [],
+            "predictions": [],
+            "checks": []
+          },
+          "open": {
+            "slots": [],
+            "questions": [],
+            "fill_query": null
+          },
+          "expected_property": null,
+          "check_state": "n/a",
+          "alternatives": []
+        }
+      },
+      {
+        "id": "rg_9825024f39be1571befba44c643c224a54cc41cc80598beb674a56404403d78d",
+        "subject": "rg_40fd79a5242226b65fb0e162e1c34e5eb2a31fb491eac8e5028e115da7c133e8",
+        "predicate": "contains",
+        "object": "rg_83326df2258ec164555ca002c7ad9045c37d71167a679e607b3ffdcf94f1fd5f",
+        "value": null,
+        "qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "rg_ca92b106404ab11e76500a5e2ca8ad77c60448390e4d1cfe245b417eea348416",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "assessment": {
+          "basis": {
+            "support": [],
+            "derivation": {
+              "operator": "resource_projection",
+              "operator_version": 1,
+              "morphism": "",
+              "depth": 0
+            }
+          },
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "premises": {
+            "claims": [],
+            "principles": [],
+            "assumptions": []
+          },
+          "counter": {
+            "observations": [],
+            "claims": []
+          },
+          "status": "active",
+          "consequences": {
+            "claims": [],
+            "predictions": [],
+            "checks": []
+          },
+          "open": {
+            "slots": [],
+            "questions": [],
+            "fill_query": null
+          },
+          "expected_property": null,
+          "check_state": "n/a",
+          "alternatives": []
+        }
+      },
+      {
+        "id": "rg_4ce106a5826752d681a15788dd2ec4ad16c8e724cc92f1d8e791b393e34a0368",
+        "subject": "rg_83326df2258ec164555ca002c7ad9045c37d71167a679e607b3ffdcf94f1fd5f",
+        "predicate": "produced_by",
+        "object": "rg_98791ccaf4c4a66c5ad7de1ec1161e4e7bd4e91035546947d6605017a9271284",
+        "value": null,
+        "qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "rg_ca92b106404ab11e76500a5e2ca8ad77c60448390e4d1cfe245b417eea348416",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "assessment": {
+          "basis": {
+            "support": [],
+            "derivation": {
+              "operator": "resource_projection",
+              "operator_version": 1,
+              "morphism": "",
+              "depth": 0
+            }
+          },
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "premises": {
+            "claims": [],
+            "principles": [],
+            "assumptions": []
+          },
+          "counter": {
+            "observations": [],
+            "claims": []
+          },
+          "status": "active",
+          "consequences": {
+            "claims": [],
+            "predictions": [],
+            "checks": []
+          },
+          "open": {
+            "slots": [],
+            "questions": [],
+            "fill_query": null
+          },
+          "expected_property": null,
+          "check_state": "n/a",
+          "alternatives": []
+        }
+      },
+      {
+        "id": "rg_5d6195b3305671f07702f1b9285add9ae3ca69bb4a40c39b3438535fa80fe76e",
+        "subject": "rg_40fd79a5242226b65fb0e162e1c34e5eb2a31fb491eac8e5028e115da7c133e8",
+        "predicate": "contains",
+        "object": "rg_4c521ddde793074f9ea1dd8e2626b92a6a531b771b7b6410ee6738055f35dc3e",
+        "value": null,
+        "qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "rg_ca92b106404ab11e76500a5e2ca8ad77c60448390e4d1cfe245b417eea348416",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "assessment": {
+          "basis": {
+            "support": [],
+            "derivation": {
+              "operator": "resource_projection",
+              "operator_version": 1,
+              "morphism": "",
+              "depth": 0
+            }
+          },
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "premises": {
+            "claims": [],
+            "principles": [],
+            "assumptions": []
+          },
+          "counter": {
+            "observations": [],
+            "claims": []
+          },
+          "status": "active",
+          "consequences": {
+            "claims": [],
+            "predictions": [],
+            "checks": []
+          },
+          "open": {
+            "slots": [],
+            "questions": [],
+            "fill_query": null
+          },
+          "expected_property": null,
+          "check_state": "n/a",
+          "alternatives": []
+        }
+      },
+      {
+        "id": "rg_229ac013192db724edc82c5a99e6059cc9acb699322224762904b44ba1d05bcf",
+        "subject": "rg_4c521ddde793074f9ea1dd8e2626b92a6a531b771b7b6410ee6738055f35dc3e",
+        "predicate": "produced_by",
+        "object": "rg_98791ccaf4c4a66c5ad7de1ec1161e4e7bd4e91035546947d6605017a9271284",
+        "value": null,
+        "qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "rg_ca92b106404ab11e76500a5e2ca8ad77c60448390e4d1cfe245b417eea348416",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "assessment": {
+          "basis": {
+            "support": [],
+            "derivation": {
+              "operator": "resource_projection",
+              "operator_version": 1,
+              "morphism": "",
+              "depth": 0
+            }
+          },
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "premises": {
+            "claims": [],
+            "principles": [],
+            "assumptions": []
+          },
+          "counter": {
+            "observations": [],
+            "claims": []
+          },
+          "status": "active",
+          "consequences": {
+            "claims": [],
+            "predictions": [],
+            "checks": []
+          },
+          "open": {
+            "slots": [],
+            "questions": [],
+            "fill_query": null
+          },
+          "expected_property": null,
+          "check_state": "n/a",
+          "alternatives": []
+        }
+      },
+      {
+        "id": "rg_2fcf755bdcf86c17f57967c0569a121db616ddb245ba8e6337282ae020759499",
+        "subject": "rg_473aad9c05815aa91e7de8b65bb67bfc03f784888894ef261222e898e67d2c6a",
+        "predicate": "contains",
+        "object": "rg_2090fb7f3e24838816815b76fd3aaf4428e31497a0f464f87d5961ae004b508d",
+        "value": null,
+        "qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "rg_ca92b106404ab11e76500a5e2ca8ad77c60448390e4d1cfe245b417eea348416",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "assessment": {
+          "basis": {
+            "support": [],
+            "derivation": {
+              "operator": "resource_projection",
+              "operator_version": 1,
+              "morphism": "",
+              "depth": 0
+            }
+          },
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "premises": {
+            "claims": [],
+            "principles": [],
+            "assumptions": []
+          },
+          "counter": {
+            "observations": [],
+            "claims": []
+          },
+          "status": "active",
+          "consequences": {
+            "claims": [],
+            "predictions": [],
+            "checks": []
+          },
+          "open": {
+            "slots": [],
+            "questions": [],
+            "fill_query": null
+          },
+          "expected_property": null,
+          "check_state": "n/a",
+          "alternatives": []
+        }
+      },
+      {
+        "id": "rg_d3785ec2634400bf3cf7fad57933c4ec305b2c0636494796fd0d8aef148efdf4",
+        "subject": "rg_2090fb7f3e24838816815b76fd3aaf4428e31497a0f464f87d5961ae004b508d",
+        "predicate": "produced_by",
+        "object": "rg_98791ccaf4c4a66c5ad7de1ec1161e4e7bd4e91035546947d6605017a9271284",
+        "value": null,
+        "qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "rg_ca92b106404ab11e76500a5e2ca8ad77c60448390e4d1cfe245b417eea348416",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "assessment": {
+          "basis": {
+            "support": [],
+            "derivation": {
+              "operator": "resource_projection",
+              "operator_version": 1,
+              "morphism": "",
+              "depth": 0
+            }
+          },
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "premises": {
+            "claims": [],
+            "principles": [],
+            "assumptions": []
+          },
+          "counter": {
+            "observations": [],
+            "claims": []
+          },
+          "status": "active",
+          "consequences": {
+            "claims": [],
+            "predictions": [],
+            "checks": []
+          },
+          "open": {
+            "slots": [],
+            "questions": [],
+            "fill_query": null
+          },
+          "expected_property": null,
+          "check_state": "n/a",
+          "alternatives": []
+        }
+      },
+      {
+        "id": "rg_a882e64230bda8990c78f3a669d5c58f8c572040efc4ccffe7117e2924c1bd68",
+        "subject": "rg_473aad9c05815aa91e7de8b65bb67bfc03f784888894ef261222e898e67d2c6a",
+        "predicate": "contains",
+        "object": "rg_a837649f02fb6b678ed7489c1751dbe1eafb3ea433bc4273806102557f11d4b9",
+        "value": null,
+        "qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "rg_ca92b106404ab11e76500a5e2ca8ad77c60448390e4d1cfe245b417eea348416",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "assessment": {
+          "basis": {
+            "support": [],
+            "derivation": {
+              "operator": "resource_projection",
+              "operator_version": 1,
+              "morphism": "",
+              "depth": 0
+            }
+          },
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "premises": {
+            "claims": [],
+            "principles": [],
+            "assumptions": []
+          },
+          "counter": {
+            "observations": [],
+            "claims": []
+          },
+          "status": "active",
+          "consequences": {
+            "claims": [],
+            "predictions": [],
+            "checks": []
+          },
+          "open": {
+            "slots": [],
+            "questions": [],
+            "fill_query": null
+          },
+          "expected_property": null,
+          "check_state": "n/a",
+          "alternatives": []
+        }
+      },
+      {
+        "id": "rg_80cb75d49c9336391e92dfd16f61e1a5bc713bca222206be70ed417237a7e262",
+        "subject": "rg_a837649f02fb6b678ed7489c1751dbe1eafb3ea433bc4273806102557f11d4b9",
+        "predicate": "produced_by",
+        "object": "rg_98791ccaf4c4a66c5ad7de1ec1161e4e7bd4e91035546947d6605017a9271284",
+        "value": null,
+        "qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "rg_ca92b106404ab11e76500a5e2ca8ad77c60448390e4d1cfe245b417eea348416",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "assessment": {
+          "basis": {
+            "support": [],
+            "derivation": {
+              "operator": "resource_projection",
+              "operator_version": 1,
+              "morphism": "",
+              "depth": 0
+            }
+          },
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "premises": {
+            "claims": [],
+            "principles": [],
+            "assumptions": []
+          },
+          "counter": {
+            "observations": [],
+            "claims": []
+          },
+          "status": "active",
+          "consequences": {
+            "claims": [],
+            "predictions": [],
+            "checks": []
+          },
+          "open": {
+            "slots": [],
+            "questions": [],
+            "fill_query": null
+          },
+          "expected_property": null,
+          "check_state": "n/a",
+          "alternatives": []
+        }
+      },
+      {
+        "id": "rg_6ea016d8d28f8e48ee77fd0a466cbc60d6536a1906d443eda1d09df538c54248",
+        "subject": "rg_2090fb7f3e24838816815b76fd3aaf4428e31497a0f464f87d5961ae004b508d",
+        "predicate": "contains",
+        "object": "rg_52615f4c0059f85b9117f94338921985d9238fb3353f00d9f0a17731d4f570a7",
+        "value": null,
+        "qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "rg_ca92b106404ab11e76500a5e2ca8ad77c60448390e4d1cfe245b417eea348416",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "assessment": {
+          "basis": {
+            "support": [],
+            "derivation": {
+              "operator": "resource_projection",
+              "operator_version": 1,
+              "morphism": "",
+              "depth": 0
+            }
+          },
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "premises": {
+            "claims": [],
+            "principles": [],
+            "assumptions": []
+          },
+          "counter": {
+            "observations": [],
+            "claims": []
+          },
+          "status": "active",
+          "consequences": {
+            "claims": [],
+            "predictions": [],
+            "checks": []
+          },
+          "open": {
+            "slots": [],
+            "questions": [],
+            "fill_query": null
+          },
+          "expected_property": null,
+          "check_state": "n/a",
+          "alternatives": []
+        }
+      },
+      {
+        "id": "rg_d4335ea9c81d53f051d942c3a3bc4faa66a17e3c97bfc141dcec49dd746b72be",
+        "subject": "rg_52615f4c0059f85b9117f94338921985d9238fb3353f00d9f0a17731d4f570a7",
+        "predicate": "produced_by",
+        "object": "rg_98791ccaf4c4a66c5ad7de1ec1161e4e7bd4e91035546947d6605017a9271284",
+        "value": null,
+        "qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "rg_ca92b106404ab11e76500a5e2ca8ad77c60448390e4d1cfe245b417eea348416",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "assessment": {
+          "basis": {
+            "support": [],
+            "derivation": {
+              "operator": "resource_projection",
+              "operator_version": 1,
+              "morphism": "",
+              "depth": 0
+            }
+          },
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "premises": {
+            "claims": [],
+            "principles": [],
+            "assumptions": []
+          },
+          "counter": {
+            "observations": [],
+            "claims": []
+          },
+          "status": "active",
+          "consequences": {
+            "claims": [],
+            "predictions": [],
+            "checks": []
+          },
+          "open": {
+            "slots": [],
+            "questions": [],
+            "fill_query": null
+          },
+          "expected_property": null,
+          "check_state": "n/a",
+          "alternatives": []
+        }
+      },
+      {
+        "id": "rg_6937fffe8d17ab194af24065f5cf01bb39a898da6e5344e7483e3b8fc11f41ea",
+        "subject": "rg_2090fb7f3e24838816815b76fd3aaf4428e31497a0f464f87d5961ae004b508d",
+        "predicate": "contains",
+        "object": "rg_f43167a68e4ada48aa7c60a7fb3fdb41ec3737702816e7f90a15475c85b6c822",
+        "value": null,
+        "qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "rg_ca92b106404ab11e76500a5e2ca8ad77c60448390e4d1cfe245b417eea348416",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "assessment": {
+          "basis": {
+            "support": [],
+            "derivation": {
+              "operator": "resource_projection",
+              "operator_version": 1,
+              "morphism": "",
+              "depth": 0
+            }
+          },
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "premises": {
+            "claims": [],
+            "principles": [],
+            "assumptions": []
+          },
+          "counter": {
+            "observations": [],
+            "claims": []
+          },
+          "status": "active",
+          "consequences": {
+            "claims": [],
+            "predictions": [],
+            "checks": []
+          },
+          "open": {
+            "slots": [],
+            "questions": [],
+            "fill_query": null
+          },
+          "expected_property": null,
+          "check_state": "n/a",
+          "alternatives": []
+        }
+      },
+      {
+        "id": "rg_93780e3c3f9a55b37996ae4b1e869523507a5941faaa6f026a99b55ea6c2d2d5",
+        "subject": "rg_f43167a68e4ada48aa7c60a7fb3fdb41ec3737702816e7f90a15475c85b6c822",
+        "predicate": "produced_by",
+        "object": "rg_98791ccaf4c4a66c5ad7de1ec1161e4e7bd4e91035546947d6605017a9271284",
+        "value": null,
+        "qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "rg_ca92b106404ab11e76500a5e2ca8ad77c60448390e4d1cfe245b417eea348416",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "assessment": {
+          "basis": {
+            "support": [],
+            "derivation": {
+              "operator": "resource_projection",
+              "operator_version": 1,
+              "morphism": "",
+              "depth": 0
+            }
+          },
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "premises": {
+            "claims": [],
+            "principles": [],
+            "assumptions": []
+          },
+          "counter": {
+            "observations": [],
+            "claims": []
+          },
+          "status": "active",
+          "consequences": {
+            "claims": [],
+            "predictions": [],
+            "checks": []
+          },
+          "open": {
+            "slots": [],
+            "questions": [],
+            "fill_query": null
+          },
+          "expected_property": null,
+          "check_state": "n/a",
+          "alternatives": []
+        }
+      },
+      {
+        "id": "rg_760ae64fc163a642d0752cc4afcb3c401f416f47fff5cd3c59c69d56858d4a21",
+        "subject": "rg_2090fb7f3e24838816815b76fd3aaf4428e31497a0f464f87d5961ae004b508d",
+        "predicate": "contains",
+        "object": "rg_436fd94ab6799bf2c365bb55eda5afe7c3c532f34ad68f0d2ca7acd103298089",
+        "value": null,
+        "qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "rg_ca92b106404ab11e76500a5e2ca8ad77c60448390e4d1cfe245b417eea348416",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "assessment": {
+          "basis": {
+            "support": [],
+            "derivation": {
+              "operator": "resource_projection",
+              "operator_version": 1,
+              "morphism": "",
+              "depth": 0
+            }
+          },
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "premises": {
+            "claims": [],
+            "principles": [],
+            "assumptions": []
+          },
+          "counter": {
+            "observations": [],
+            "claims": []
+          },
+          "status": "active",
+          "consequences": {
+            "claims": [],
+            "predictions": [],
+            "checks": []
+          },
+          "open": {
+            "slots": [],
+            "questions": [],
+            "fill_query": null
+          },
+          "expected_property": null,
+          "check_state": "n/a",
+          "alternatives": []
+        }
+      },
+      {
+        "id": "rg_a2e5b7e8f257f378b6a3107b024f9cee6ddd4e2d0beec152b1b31babe012b895",
+        "subject": "rg_436fd94ab6799bf2c365bb55eda5afe7c3c532f34ad68f0d2ca7acd103298089",
+        "predicate": "produced_by",
+        "object": "rg_98791ccaf4c4a66c5ad7de1ec1161e4e7bd4e91035546947d6605017a9271284",
+        "value": null,
+        "qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "rg_ca92b106404ab11e76500a5e2ca8ad77c60448390e4d1cfe245b417eea348416",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "assessment": {
+          "basis": {
+            "support": [],
+            "derivation": {
+              "operator": "resource_projection",
+              "operator_version": 1,
+              "morphism": "",
+              "depth": 0
+            }
+          },
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "premises": {
+            "claims": [],
+            "principles": [],
+            "assumptions": []
+          },
+          "counter": {
+            "observations": [],
+            "claims": []
+          },
+          "status": "active",
+          "consequences": {
+            "claims": [],
+            "predictions": [],
+            "checks": []
+          },
+          "open": {
+            "slots": [],
+            "questions": [],
+            "fill_query": null
+          },
+          "expected_property": null,
+          "check_state": "n/a",
+          "alternatives": []
+        }
+      },
+      {
+        "id": "rg_41c48e2c0bab27e086a5d170ff4729897114cb02d3d3fbdc0907d46c24b0d627",
+        "subject": "rg_2090fb7f3e24838816815b76fd3aaf4428e31497a0f464f87d5961ae004b508d",
+        "predicate": "contains",
+        "object": "rg_608d1210b9b0c074d90f75ad38e10c79150809c096c7bb4e4cf3c3d7c7cc2d4b",
+        "value": null,
+        "qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "rg_ca92b106404ab11e76500a5e2ca8ad77c60448390e4d1cfe245b417eea348416",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "assessment": {
+          "basis": {
+            "support": [],
+            "derivation": {
+              "operator": "resource_projection",
+              "operator_version": 1,
+              "morphism": "",
+              "depth": 0
+            }
+          },
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "premises": {
+            "claims": [],
+            "principles": [],
+            "assumptions": []
+          },
+          "counter": {
+            "observations": [],
+            "claims": []
+          },
+          "status": "active",
+          "consequences": {
+            "claims": [],
+            "predictions": [],
+            "checks": []
+          },
+          "open": {
+            "slots": [],
+            "questions": [],
+            "fill_query": null
+          },
+          "expected_property": null,
+          "check_state": "n/a",
+          "alternatives": []
+        }
+      },
+      {
+        "id": "rg_ff7856d170c537dedb666f45f866c0847f56204a61ceb00c870ad835cb694ee1",
+        "subject": "rg_608d1210b9b0c074d90f75ad38e10c79150809c096c7bb4e4cf3c3d7c7cc2d4b",
+        "predicate": "produced_by",
+        "object": "rg_98791ccaf4c4a66c5ad7de1ec1161e4e7bd4e91035546947d6605017a9271284",
+        "value": null,
+        "qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "rg_ca92b106404ab11e76500a5e2ca8ad77c60448390e4d1cfe245b417eea348416",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "assessment": {
+          "basis": {
+            "support": [],
+            "derivation": {
+              "operator": "resource_projection",
+              "operator_version": 1,
+              "morphism": "",
+              "depth": 0
+            }
+          },
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "premises": {
+            "claims": [],
+            "principles": [],
+            "assumptions": []
+          },
+          "counter": {
+            "observations": [],
+            "claims": []
+          },
+          "status": "active",
+          "consequences": {
+            "claims": [],
+            "predictions": [],
+            "checks": []
+          },
+          "open": {
+            "slots": [],
+            "questions": [],
+            "fill_query": null
+          },
+          "expected_property": null,
+          "check_state": "n/a",
+          "alternatives": []
+        }
+      },
+      {
+        "id": "rg_e1991d431a7485f9c898d4d4f536f1e8ab09face9f789ca59e91316d1e277b12",
+        "subject": "rg_a837649f02fb6b678ed7489c1751dbe1eafb3ea433bc4273806102557f11d4b9",
+        "predicate": "contains",
+        "object": "rg_0635347f5aacc7d20af22835db46ffe0c848ce839500aaa192fda950f55d419b",
+        "value": null,
+        "qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "rg_ca92b106404ab11e76500a5e2ca8ad77c60448390e4d1cfe245b417eea348416",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "assessment": {
+          "basis": {
+            "support": [],
+            "derivation": {
+              "operator": "resource_projection",
+              "operator_version": 1,
+              "morphism": "",
+              "depth": 0
+            }
+          },
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "premises": {
+            "claims": [],
+            "principles": [],
+            "assumptions": []
+          },
+          "counter": {
+            "observations": [],
+            "claims": []
+          },
+          "status": "active",
+          "consequences": {
+            "claims": [],
+            "predictions": [],
+            "checks": []
+          },
+          "open": {
+            "slots": [],
+            "questions": [],
+            "fill_query": null
+          },
+          "expected_property": null,
+          "check_state": "n/a",
+          "alternatives": []
+        }
+      },
+      {
+        "id": "rg_0e6fcf3e9f56d67f49c2714bf2c18480649fde806f491665b0d5709cb58fae91",
+        "subject": "rg_0635347f5aacc7d20af22835db46ffe0c848ce839500aaa192fda950f55d419b",
+        "predicate": "produced_by",
+        "object": "rg_98791ccaf4c4a66c5ad7de1ec1161e4e7bd4e91035546947d6605017a9271284",
+        "value": null,
+        "qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "rg_ca92b106404ab11e76500a5e2ca8ad77c60448390e4d1cfe245b417eea348416",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "assessment": {
+          "basis": {
+            "support": [],
+            "derivation": {
+              "operator": "resource_projection",
+              "operator_version": 1,
+              "morphism": "",
+              "depth": 0
+            }
+          },
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "premises": {
+            "claims": [],
+            "principles": [],
+            "assumptions": []
+          },
+          "counter": {
+            "observations": [],
+            "claims": []
+          },
+          "status": "active",
+          "consequences": {
+            "claims": [],
+            "predictions": [],
+            "checks": []
+          },
+          "open": {
+            "slots": [],
+            "questions": [],
+            "fill_query": null
+          },
+          "expected_property": null,
+          "check_state": "n/a",
+          "alternatives": []
+        }
+      },
+      {
+        "id": "rg_ddf0b027ef14bee148b53220962f434252ba796416f0691f7f78734446bb85b7",
+        "subject": "rg_a837649f02fb6b678ed7489c1751dbe1eafb3ea433bc4273806102557f11d4b9",
+        "predicate": "contains",
+        "object": "rg_fe98b436870e066f7f6af20b0566c29ea394afc59aaa663884688b69beaef1b3",
+        "value": null,
+        "qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "rg_ca92b106404ab11e76500a5e2ca8ad77c60448390e4d1cfe245b417eea348416",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "assessment": {
+          "basis": {
+            "support": [],
+            "derivation": {
+              "operator": "resource_projection",
+              "operator_version": 1,
+              "morphism": "",
+              "depth": 0
+            }
+          },
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "premises": {
+            "claims": [],
+            "principles": [],
+            "assumptions": []
+          },
+          "counter": {
+            "observations": [],
+            "claims": []
+          },
+          "status": "active",
+          "consequences": {
+            "claims": [],
+            "predictions": [],
+            "checks": []
+          },
+          "open": {
+            "slots": [],
+            "questions": [],
+            "fill_query": null
+          },
+          "expected_property": null,
+          "check_state": "n/a",
+          "alternatives": []
+        }
+      },
+      {
+        "id": "rg_6950c904f3d426d6ab88454eb56a94b73365e423ec41c0b47ee286ccfbf06b91",
+        "subject": "rg_fe98b436870e066f7f6af20b0566c29ea394afc59aaa663884688b69beaef1b3",
+        "predicate": "produced_by",
+        "object": "rg_98791ccaf4c4a66c5ad7de1ec1161e4e7bd4e91035546947d6605017a9271284",
+        "value": null,
+        "qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "rg_ca92b106404ab11e76500a5e2ca8ad77c60448390e4d1cfe245b417eea348416",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "assessment": {
+          "basis": {
+            "support": [],
+            "derivation": {
+              "operator": "resource_projection",
+              "operator_version": 1,
+              "morphism": "",
+              "depth": 0
+            }
+          },
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "premises": {
+            "claims": [],
+            "principles": [],
+            "assumptions": []
+          },
+          "counter": {
+            "observations": [],
+            "claims": []
+          },
+          "status": "active",
+          "consequences": {
+            "claims": [],
+            "predictions": [],
+            "checks": []
+          },
+          "open": {
+            "slots": [],
+            "questions": [],
+            "fill_query": null
+          },
+          "expected_property": null,
+          "check_state": "n/a",
+          "alternatives": []
+        }
+      },
+      {
+        "id": "rg_53f9475a1630360c479750a6783d1f1baeb15dc1267420b36c69a894cd54ddef",
+        "subject": "rg_a837649f02fb6b678ed7489c1751dbe1eafb3ea433bc4273806102557f11d4b9",
+        "predicate": "contains",
+        "object": "rg_c3040659a9c160826698438efc6110b311e4065732f87de80d10ee5b0e195935",
+        "value": null,
+        "qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "rg_ca92b106404ab11e76500a5e2ca8ad77c60448390e4d1cfe245b417eea348416",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "assessment": {
+          "basis": {
+            "support": [],
+            "derivation": {
+              "operator": "resource_projection",
+              "operator_version": 1,
+              "morphism": "",
+              "depth": 0
+            }
+          },
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "premises": {
+            "claims": [],
+            "principles": [],
+            "assumptions": []
+          },
+          "counter": {
+            "observations": [],
+            "claims": []
+          },
+          "status": "active",
+          "consequences": {
+            "claims": [],
+            "predictions": [],
+            "checks": []
+          },
+          "open": {
+            "slots": [],
+            "questions": [],
+            "fill_query": null
+          },
+          "expected_property": null,
+          "check_state": "n/a",
+          "alternatives": []
+        }
+      },
+      {
+        "id": "rg_64d4ba59ee99b0acbaf97f2d339acbdf611bbc24135cf7fc5b40c723ff74a504",
+        "subject": "rg_c3040659a9c160826698438efc6110b311e4065732f87de80d10ee5b0e195935",
+        "predicate": "produced_by",
+        "object": "rg_98791ccaf4c4a66c5ad7de1ec1161e4e7bd4e91035546947d6605017a9271284",
+        "value": null,
+        "qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "rg_ca92b106404ab11e76500a5e2ca8ad77c60448390e4d1cfe245b417eea348416",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "assessment": {
+          "basis": {
+            "support": [],
+            "derivation": {
+              "operator": "resource_projection",
+              "operator_version": 1,
+              "morphism": "",
+              "depth": 0
+            }
+          },
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "premises": {
+            "claims": [],
+            "principles": [],
+            "assumptions": []
+          },
+          "counter": {
+            "observations": [],
+            "claims": []
+          },
+          "status": "active",
+          "consequences": {
+            "claims": [],
+            "predictions": [],
+            "checks": []
+          },
+          "open": {
+            "slots": [],
+            "questions": [],
+            "fill_query": null
+          },
+          "expected_property": null,
+          "check_state": "n/a",
+          "alternatives": []
+        }
+      },
+      {
+        "id": "rg_33a8887d9ede3df24779a7eb3b15fe8bffcfb8e603916cb452f48d157c8d044f",
+        "subject": "rg_a837649f02fb6b678ed7489c1751dbe1eafb3ea433bc4273806102557f11d4b9",
+        "predicate": "contains",
+        "object": "rg_12d593ddb6f83e463c4d34c673619bf1a2ac4e8b6284a230763dc34438ea1f2a",
+        "value": null,
+        "qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "rg_ca92b106404ab11e76500a5e2ca8ad77c60448390e4d1cfe245b417eea348416",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "assessment": {
+          "basis": {
+            "support": [],
+            "derivation": {
+              "operator": "resource_projection",
+              "operator_version": 1,
+              "morphism": "",
+              "depth": 0
+            }
+          },
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "premises": {
+            "claims": [],
+            "principles": [],
+            "assumptions": []
+          },
+          "counter": {
+            "observations": [],
+            "claims": []
+          },
+          "status": "active",
+          "consequences": {
+            "claims": [],
+            "predictions": [],
+            "checks": []
+          },
+          "open": {
+            "slots": [],
+            "questions": [],
+            "fill_query": null
+          },
+          "expected_property": null,
+          "check_state": "n/a",
+          "alternatives": []
+        }
+      },
+      {
+        "id": "rg_b27fdc54c237939f0b3dfca05f9f1944a96279f4921dccc50d924ae96737d1c2",
+        "subject": "rg_12d593ddb6f83e463c4d34c673619bf1a2ac4e8b6284a230763dc34438ea1f2a",
+        "predicate": "produced_by",
+        "object": "rg_98791ccaf4c4a66c5ad7de1ec1161e4e7bd4e91035546947d6605017a9271284",
+        "value": null,
+        "qualifiers": {
+          "valid_from": "",
+          "valid_to": "",
+          "version": "rg_ca92b106404ab11e76500a5e2ca8ad77c60448390e4d1cfe245b417eea348416",
+          "branch": "",
+          "scope": "",
+          "lang": "",
+          "extra": {}
+        },
+        "assessment": {
+          "basis": {
+            "support": [],
+            "derivation": {
+              "operator": "resource_projection",
+              "operator_version": 1,
+              "morphism": "",
+              "depth": 0
+            }
+          },
+          "evidence_class": "derived",
+          "origin": "system",
+          "confidence": 1.0,
+          "premises": {
+            "claims": [],
+            "principles": [],
+            "assumptions": []
+          },
+          "counter": {
+            "observations": [],
+            "claims": []
+          },
+          "status": "active",
+          "consequences": {
+            "claims": [],
+            "predictions": [],
+            "checks": []
+          },
+          "open": {
+            "slots": [],
+            "questions": [],
+            "fill_query": null
+          },
+          "expected_property": null,
+          "check_state": "n/a",
+          "alternatives": []
+        }
+      }
+    ],
+    "sources": [
+      {
+        "observation": {
+          "id": "rg_540df0b9620a16157bdd719fd17526813d3def12cdb143b78b05f3e97021380e",
+          "unit": "audit:resource:conversation",
+          "kind": "field",
+          "text": "\"synthetic-audit-conversation\"",
+          "locator": {
+            "source": "audit:resource:conversation",
+            "member": "",
+            "json_pointer": "/conversation/id",
+            "byte_start": null,
+            "byte_len": null,
+            "time_start": null,
+            "time_end": null,
+            "line": null
+          },
+          "lang": "",
+          "date": "",
+          "ordinal": 3,
+          "artifact_type": "resource",
+          "speaker": "",
+          "attrs": {
+            "serialized_value": true,
+            "source_version": {
+              "kind": "local_stat",
+              "st_dev": 27,
+              "st_ino": 1719823,
+              "st_size": 390,
+              "st_mtime_ns": 1791533534069987055,
+              "st_ctime_ns": 1791533534069987055
+            },
+            "content_sha256": "885e337c0b36967c79c34b88f5b7c3675af2d78a406289d5d9f35788af818eb9"
+          }
+        },
+        "known_at": null,
+        "text_sha256": "53a84573aca9dc0004ee061a4d4f720702b48b3fa5f7563e34726ee049fde045"
+      },
+      {
+        "observation": {
+          "id": "rg_7af38f29382a0cd90a475115b11f7cda468b4b2f6fbe1d3992f885ef66c81ed4",
+          "unit": "audit:resource:conversation",
+          "kind": "field",
+          "text": "true",
+          "locator": {
+            "source": "audit:resource:conversation",
+            "member": "",
+            "json_pointer": "/unknown/flag",
+            "byte_start": null,
+            "byte_len": null,
+            "time_start": null,
+            "time_end": null,
+            "line": null
+          },
+          "lang": "",
+          "date": "",
+          "ordinal": 5,
+          "artifact_type": "resource",
+          "speaker": "",
+          "attrs": {
+            "serialized_value": true,
+            "source_version": {
+              "kind": "local_stat",
+              "st_dev": 27,
+              "st_ino": 1719823,
+              "st_size": 390,
+              "st_mtime_ns": 1791533534069987055,
+              "st_ctime_ns": 1791533534069987055
+            },
+            "content_sha256": "885e337c0b36967c79c34b88f5b7c3675af2d78a406289d5d9f35788af818eb9"
+          }
+        },
+        "known_at": null,
+        "text_sha256": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b"
+      },
+      {
+        "observation": {
+          "id": "rg_a00a3923bb170254f067dc88c050382c4efdfec51655bdbb91a5e1769de88839",
+          "unit": "audit:resource:conversation",
+          "kind": "field",
+          "text": "\"m1\"",
+          "locator": {
+            "source": "audit:resource:conversation",
+            "member": "",
+            "json_pointer": "/conversation/messages/0/id",
+            "byte_start": null,
+            "byte_len": null,
+            "time_start": null,
+            "time_end": null,
+            "line": null
+          },
+          "lang": "",
+          "date": "",
+          "ordinal": 9,
+          "artifact_type": "resource",
+          "speaker": "",
+          "attrs": {
+            "serialized_value": true,
+            "source_version": {
+              "kind": "local_stat",
+              "st_dev": 27,
+              "st_ino": 1719823,
+              "st_size": 390,
+              "st_mtime_ns": 1791533534069987055,
+              "st_ctime_ns": 1791533534069987055
+            },
+            "content_sha256": "885e337c0b36967c79c34b88f5b7c3675af2d78a406289d5d9f35788af818eb9"
+          }
+        },
+        "known_at": null,
+        "text_sha256": "1f39ecf72d9e8782f9a405fa49e1f1e29594ee601ddee5b52c4374bb6a911b8b"
+      },
+      {
+        "observation": {
+          "id": "rg_ca263b8802c69c5a70202ba918446cafea17262c3709a75fd31e5e76e2d54059",
+          "unit": "audit:resource:conversation",
+          "kind": "field",
+          "text": "\"user\"",
+          "locator": {
+            "source": "audit:resource:conversation",
+            "member": "",
+            "json_pointer": "/conversation/messages/0/role",
+            "byte_start": null,
+            "byte_len": null,
+            "time_start": null,
+            "time_end": null,
+            "line": null
+          },
+          "lang": "",
+          "date": "",
+          "ordinal": 10,
+          "artifact_type": "resource",
+          "speaker": "",
+          "attrs": {
+            "serialized_value": true,
+            "source_version": {
+              "kind": "local_stat",
+              "st_dev": 27,
+              "st_ino": 1719823,
+              "st_size": 390,
+              "st_mtime_ns": 1791533534069987055,
+              "st_ctime_ns": 1791533534069987055
+            },
+            "content_sha256": "885e337c0b36967c79c34b88f5b7c3675af2d78a406289d5d9f35788af818eb9"
+          }
+        },
+        "known_at": null,
+        "text_sha256": "3190d261d186aeead3a8deec202737c7775af5c8d455a9e5ba958c48b5fd3f59"
+      },
+      {
+        "observation": {
+          "id": "rg_fb8818bbc59e8e634185c271d9449692ab7af135e7d949f3540b732ff1a96795",
+          "unit": "audit:resource:conversation",
+          "kind": "field",
+          "text": "null",
+          "locator": {
+            "source": "audit:resource:conversation",
+            "member": "",
+            "json_pointer": "/conversation/messages/0/parent",
+            "byte_start": null,
+            "byte_len": null,
+            "time_start": null,
+            "time_end": null,
+            "line": null
+          },
+          "lang": "",
+          "date": "",
+          "ordinal": 11,
+          "artifact_type": "resource",
+          "speaker": "",
+          "attrs": {
+            "serialized_value": true,
+            "source_version": {
+              "kind": "local_stat",
+              "st_dev": 27,
+              "st_ino": 1719823,
+              "st_size": 390,
+              "st_mtime_ns": 1791533534069987055,
+              "st_ctime_ns": 1791533534069987055
+            },
+            "content_sha256": "885e337c0b36967c79c34b88f5b7c3675af2d78a406289d5d9f35788af818eb9"
+          }
+        },
+        "known_at": null,
+        "text_sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
+      },
+      {
+        "observation": {
+          "id": "rg_5e822f42f14763f3d6bd8a6a470299db5aa283c0b5cad771b5f7bd58766d55f2",
+          "unit": "audit:resource:conversation",
+          "kind": "field",
+          "text": "\"synthetic first\"",
+          "locator": {
+            "source": "audit:resource:conversation",
+            "member": "",
+            "json_pointer": "/conversation/messages/0/text",
+            "byte_start": null,
+            "byte_len": null,
+            "time_start": null,
+            "time_end": null,
+            "line": null
+          },
+          "lang": "",
+          "date": "",
+          "ordinal": 12,
+          "artifact_type": "resource",
+          "speaker": "",
+          "attrs": {
+            "serialized_value": true,
+            "source_version": {
+              "kind": "local_stat",
+              "st_dev": 27,
+              "st_ino": 1719823,
+              "st_size": 390,
+              "st_mtime_ns": 1791533534069987055,
+              "st_ctime_ns": 1791533534069987055
+            },
+            "content_sha256": "885e337c0b36967c79c34b88f5b7c3675af2d78a406289d5d9f35788af818eb9"
+          }
+        },
+        "known_at": null,
+        "text_sha256": "d85128fd367e3e24f09f9774468bab30a22fa5c3f5740a5dc916125a8154edb8"
+      },
+      {
+        "observation": {
+          "id": "rg_062ac8216687fa3f4cc1b3be11e9fb8bf8107bd8738c8b475f60feb694bc60e1",
+          "unit": "audit:resource:conversation",
+          "kind": "field",
+          "text": "\"m2\"",
+          "locator": {
+            "source": "audit:resource:conversation",
+            "member": "",
+            "json_pointer": "/conversation/messages/1/id",
+            "byte_start": null,
+            "byte_len": null,
+            "time_start": null,
+            "time_end": null,
+            "line": null
+          },
+          "lang": "",
+          "date": "",
+          "ordinal": 13,
+          "artifact_type": "resource",
+          "speaker": "",
+          "attrs": {
+            "serialized_value": true,
+            "source_version": {
+              "kind": "local_stat",
+              "st_dev": 27,
+              "st_ino": 1719823,
+              "st_size": 390,
+              "st_mtime_ns": 1791533534069987055,
+              "st_ctime_ns": 1791533534069987055
+            },
+            "content_sha256": "885e337c0b36967c79c34b88f5b7c3675af2d78a406289d5d9f35788af818eb9"
+          }
+        },
+        "known_at": null,
+        "text_sha256": "5a669488ee2070800f4b7c22ac37d09b913cf9201806773ef0a8d86b614f8d8c"
+      },
+      {
+        "observation": {
+          "id": "rg_a047833985858e177beea6f63dabc4206d2aca9cf0d29112e2c25a1ecdaf7631",
+          "unit": "audit:resource:conversation",
+          "kind": "field",
+          "text": "\"assistant\"",
+          "locator": {
+            "source": "audit:resource:conversation",
+            "member": "",
+            "json_pointer": "/conversation/messages/1/role",
+            "byte_start": null,
+            "byte_len": null,
+            "time_start": null,
+            "time_end": null,
+            "line": null
+          },
+          "lang": "",
+          "date": "",
+          "ordinal": 14,
+          "artifact_type": "resource",
+          "speaker": "",
+          "attrs": {
+            "serialized_value": true,
+            "source_version": {
+              "kind": "local_stat",
+              "st_dev": 27,
+              "st_ino": 1719823,
+              "st_size": 390,
+              "st_mtime_ns": 1791533534069987055,
+              "st_ctime_ns": 1791533534069987055
+            },
+            "content_sha256": "885e337c0b36967c79c34b88f5b7c3675af2d78a406289d5d9f35788af818eb9"
+          }
+        },
+        "known_at": null,
+        "text_sha256": "43f3a43f5a7fef31effcd812e256c8f245da366db65c225fcde611385a4df753"
+      },
+      {
+        "observation": {
+          "id": "rg_55fed0f665c2389327f6e642866bb15ed4770fe16e002ab612321f129371393c",
+          "unit": "audit:resource:conversation",
+          "kind": "field",
+          "text": "\"m1\"",
+          "locator": {
+            "source": "audit:resource:conversation",
+            "member": "",
+            "json_pointer": "/conversation/messages/1/parent",
+            "byte_start": null,
+            "byte_len": null,
+            "time_start": null,
+            "time_end": null,
+            "line": null
+          },
+          "lang": "",
+          "date": "",
+          "ordinal": 15,
+          "artifact_type": "resource",
+          "speaker": "",
+          "attrs": {
+            "serialized_value": true,
+            "source_version": {
+              "kind": "local_stat",
+              "st_dev": 27,
+              "st_ino": 1719823,
+              "st_size": 390,
+              "st_mtime_ns": 1791533534069987055,
+              "st_ctime_ns": 1791533534069987055
+            },
+            "content_sha256": "885e337c0b36967c79c34b88f5b7c3675af2d78a406289d5d9f35788af818eb9"
+          }
+        },
+        "known_at": null,
+        "text_sha256": "1f39ecf72d9e8782f9a405fa49e1f1e29594ee601ddee5b52c4374bb6a911b8b"
+      },
+      {
+        "observation": {
+          "id": "rg_78fabe742acd82680f392c9925b7d41c380b385bd7c7f4ba0edb7be87666767b",
+          "unit": "audit:resource:conversation",
+          "kind": "field",
+          "text": "\"synthetic reply\"",
+          "locator": {
+            "source": "audit:resource:conversation",
+            "member": "",
+            "json_pointer": "/conversation/messages/1/text",
+            "byte_start": null,
+            "byte_len": null,
+            "time_start": null,
+            "time_end": null,
+            "line": null
+          },
+          "lang": "",
+          "date": "",
+          "ordinal": 16,
+          "artifact_type": "resource",
+          "speaker": "",
+          "attrs": {
+            "serialized_value": true,
+            "source_version": {
+              "kind": "local_stat",
+              "st_dev": 27,
+              "st_ino": 1719823,
+              "st_size": 390,
+              "st_mtime_ns": 1791533534069987055,
+              "st_ctime_ns": 1791533534069987055
+            },
+            "content_sha256": "885e337c0b36967c79c34b88f5b7c3675af2d78a406289d5d9f35788af818eb9"
+          }
+        },
+        "known_at": null,
+        "text_sha256": "92db5a6616743bd9586a3258a3daec55653d4183375db23a6dd0f0934fcbe8f0"
+      }
+    ],
+    "task": {
+      "operation": "resource_projection",
+      "status": "available",
+      "selector": "",
+      "source_revision": "rg_ca92b106404ab11e76500a5e2ca8ad77c60448390e4d1cfe245b417eea348416",
+      "materialized_fields": 17,
+      "coverage": {
+        "depth": 5,
+        "offset": 0,
+        "limit": 1000
+      },
+      "native_store": false
+    },
+    "provenance": {
+      "definitions": {},
+      "entities": {
+        "rg_294c8a10f9b6180ab3aa96f6c5561c2c457b379e5dc869bc84f27ecf2c7f9809": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "46d24112788b53d969a105e08495f74839ec46ac88fbae28968f101405c49193"
+        },
+        "rg_98791ccaf4c4a66c5ad7de1ec1161e4e7bd4e91035546947d6605017a9271284": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "5286fe460b73711c96790e81416a87c10075d3569f9cb625ca819f8d8af35b19"
+        },
+        "rg_0eb65b7ef31f8e820d54b35f6e7ddcef395d950d672b069e87e28af646c8861d": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "09113c7e9396bfb3c54957afd829ba00b3ac868e4e712aed7b695234781f5a37"
+        },
+        "rg_c556b6ddb17a44e93baece311ed0198c1c5139b1113a741998eb60104290c042": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "55cfb05196ec69f5f5dff769cb200c9f4f4d86798f7e85ced8781a12cb0031e2"
+        },
+        "rg_40fd79a5242226b65fb0e162e1c34e5eb2a31fb491eac8e5028e115da7c133e8": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "391338770ca71861890ea82403946a78185440591524e3c3a966aa3a7d8cb052"
+        },
+        "rg_928210dfc108e26e2ffc5ec1cc3c0188b943cf7e88bf7908360b886b133853f8": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "3adbe55eae0e81c2726080eeec756d63b61a4eb4917122c06c2a7184cf9370e5"
+        },
+        "rg_473aad9c05815aa91e7de8b65bb67bfc03f784888894ef261222e898e67d2c6a": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "aca8543f1a468ddee6b31af8866434fdd58c49402df19629bce1456a4b2daf65"
+        },
+        "rg_83326df2258ec164555ca002c7ad9045c37d71167a679e607b3ffdcf94f1fd5f": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "e4b74fe502cdaf91e5d45e705b997e604dd453b91c61f5f1c7419093bc0c7b3f"
+        },
+        "rg_4c521ddde793074f9ea1dd8e2626b92a6a531b771b7b6410ee6738055f35dc3e": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "e3eaa7e0cca7277938fa3583e70254ab5cf57ee3641b341e87ada38073102e8b"
+        },
+        "rg_2090fb7f3e24838816815b76fd3aaf4428e31497a0f464f87d5961ae004b508d": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "3eb2a4feb336f020da11a5d71941ee861075de80dd9f674d892c1ade0fc36b8d"
+        },
+        "rg_a837649f02fb6b678ed7489c1751dbe1eafb3ea433bc4273806102557f11d4b9": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "5e4f33861a3a6c5b1e2d26e180abc3351057fb6644b40dbbb9da75e818e3739c"
+        },
+        "rg_52615f4c0059f85b9117f94338921985d9238fb3353f00d9f0a17731d4f570a7": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "52d47329082367ec44f44ec686c3dc1f2358676da83a7823de50d6b5be6b9711"
+        },
+        "rg_f43167a68e4ada48aa7c60a7fb3fdb41ec3737702816e7f90a15475c85b6c822": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "7fe82a996ad3ae2379eeb041fcb5d68f3feaf04279c5945046965b9a7ffa9786"
+        },
+        "rg_436fd94ab6799bf2c365bb55eda5afe7c3c532f34ad68f0d2ca7acd103298089": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "d4b67fe2693c740f46642540ca31bc627e00b187715b4eddd2d67ddb239cb178"
+        },
+        "rg_608d1210b9b0c074d90f75ad38e10c79150809c096c7bb4e4cf3c3d7c7cc2d4b": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "c5965d2062b698a0941e9d2474bd299754f0c59f5008d944f6a0d527d3b6c0a5"
+        },
+        "rg_0635347f5aacc7d20af22835db46ffe0c848ce839500aaa192fda950f55d419b": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "c44bb6cb985584939e41344924156f336fb2388e8716cdb3ee303f151460cf08"
+        },
+        "rg_fe98b436870e066f7f6af20b0566c29ea394afc59aaa663884688b69beaef1b3": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "b4c3972b982e32fb140443c3b39328ce51fcd0f98a3743df360c7393d5b71752"
+        },
+        "rg_c3040659a9c160826698438efc6110b311e4065732f87de80d10ee5b0e195935": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "ccee0f716142cc35de2c6a8a6ca4bd71d2bb971ae77331c3ad9f39a503131c13"
+        },
+        "rg_12d593ddb6f83e463c4d34c673619bf1a2ac4e8b6284a230763dc34438ea1f2a": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "7ba38db13a4864be20c1a81d71cb03d40587990a57c429a811123248965e6ba1"
+        }
+      },
+      "claims": {
+        "rg_14d06c1fee4bde97cf51624465744a32d991097f997a9218334da3a5b417f659": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "fbfe1300fb8b35048edfe1bda82a4a090d06d0c1da8aae6e25851bf8e7173384"
+        },
+        "rg_dfdb4410b783aa9cacf547d9986cc1c55f366e21d0cbe68ea4492974173dbe4b": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "55a84caf2886bdcbe09a0048bd8a5b3a01a981f680b2d1f6a573f8cce55b9b8c"
+        },
+        "rg_3322972851e9578bea08e26c4e27137bb4734dda9d5b930567022c32622c5d2b": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "68d82f95b6f58d863a98c13d3ddc8e705611cbbbf8d3d8070b7f8e34fdba6be3"
+        },
+        "rg_680fb7a40963cae80785e6b90cfd081478cb6d5246c16c632ce470c8b8a93bb2": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "a7591f30ee037f40dcd556d55d7f0a66e071e9f1cc291b4b5bbe321f21ca03ff"
+        },
+        "rg_3ae0ef0f1f319ebfe620b94007f32691a0e3b51aa56d27e9c1bea17e12a31e7a": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "8795cd3d435ea70dde56ac8cc36ea224b5e1c449a554709de16d54bfef3cfe4b"
+        },
+        "rg_e0d851f69b773cdb74511bfdc77dc41c00726a9b479b8314d75b4dc1a59131e3": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "b4aa9bd46acf4f177167bfa9faeb46166c4e73e00f3a9d5823f45cc63f36b073"
+        },
+        "rg_026ae719269016676c4572321c8accf0ed57a0df03069bef0d4d0fa899c94611": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "efbb5048565ad8bd9b023bce9fb7042ec0905e5a5182472a82ab650e6b161301"
+        },
+        "rg_4fe28bf5f19da993ed4bc42ab473396e9c03ea11fe92561d5f1c1ae893c57601": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "6cf7f7567051c4ca5d7e1552703d0c5cd5b9845c1cebfd2e7ec66844ae267a6a"
+        },
+        "rg_d309f3907dac67f77f3c728a5fe55c0fdfe6d6f0c9718f6838a81d03bd45d35a": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "207ea82623de6c9dd9de7c7a865a7454cd55f6005bde9b2da48b356c8505ae65"
+        },
+        "rg_bf5c88f6b4f685085d7456642d2003dce6c0e45bcfe819630b5e88a3b9eaffd9": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "928aeff4bfbeddb5f1a29b46662f99e2c9365acd45d6f8cd7586e82d580cff04"
+        },
+        "rg_9825024f39be1571befba44c643c224a54cc41cc80598beb674a56404403d78d": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "a2a5628724845d5cf89d486875fc928476bac24f122b517479f2447876230bc3"
+        },
+        "rg_4ce106a5826752d681a15788dd2ec4ad16c8e724cc92f1d8e791b393e34a0368": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "62bfbb6f3c797c5b8b5f46e0025066824e2a876dc558c5617316ee6abcec4dee"
+        },
+        "rg_5d6195b3305671f07702f1b9285add9ae3ca69bb4a40c39b3438535fa80fe76e": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "c026985d0492f9be39b938d522c6128a9ca91119f3ab821d26bd8f4ac2303abc"
+        },
+        "rg_229ac013192db724edc82c5a99e6059cc9acb699322224762904b44ba1d05bcf": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "9321c33ca7f237a816699f8e91fa00d313146b815d5093128b3818d3bc30431a"
+        },
+        "rg_2fcf755bdcf86c17f57967c0569a121db616ddb245ba8e6337282ae020759499": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "0c0ba240ab260945d260f2f64745331c3b7a50d84df93d42742631db94114218"
+        },
+        "rg_d3785ec2634400bf3cf7fad57933c4ec305b2c0636494796fd0d8aef148efdf4": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "9de1260cce6b7f2d66311d32034f0f98b28ec47643c704195776dd9d1f09821b"
+        },
+        "rg_a882e64230bda8990c78f3a669d5c58f8c572040efc4ccffe7117e2924c1bd68": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "c8576b269c2faa079eddd654816cc0ef464f2f52d4f10ebaaf7b28f0f6d27811"
+        },
+        "rg_80cb75d49c9336391e92dfd16f61e1a5bc713bca222206be70ed417237a7e262": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "8460dfe1e7c551bbef5f337930dce6e90917664d46a1d9be94d3ed16f32bdac7"
+        },
+        "rg_6ea016d8d28f8e48ee77fd0a466cbc60d6536a1906d443eda1d09df538c54248": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "0b5b80938552aabf60ddb78bfe5a7ca7db1c0582ea4ca966a6144ef6c70b40f7"
+        },
+        "rg_d4335ea9c81d53f051d942c3a3bc4faa66a17e3c97bfc141dcec49dd746b72be": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "df0fde438bb30086d26a47e5346dd8ce0f0512fe9524f47993e566adb28e7fa6"
+        },
+        "rg_6937fffe8d17ab194af24065f5cf01bb39a898da6e5344e7483e3b8fc11f41ea": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "1e3153c743805c995e43fe615c20b064e472633a1f6fb2c10c6dd0637a606fe1"
+        },
+        "rg_93780e3c3f9a55b37996ae4b1e869523507a5941faaa6f026a99b55ea6c2d2d5": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "7e9444a7b655d570ef2a8b10c44cc5c21f84d12f8982a9da2db40f236b21055c"
+        },
+        "rg_760ae64fc163a642d0752cc4afcb3c401f416f47fff5cd3c59c69d56858d4a21": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "8cfe0ac9ab9de1b3afa363d73447eb56f28f9d743adfe0ac305a9b184ade3dbc"
+        },
+        "rg_a2e5b7e8f257f378b6a3107b024f9cee6ddd4e2d0beec152b1b31babe012b895": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "58f7891a3911e270103a634b3d45ebe974f3e48db9db4346bf0958bba746fd80"
+        },
+        "rg_41c48e2c0bab27e086a5d170ff4729897114cb02d3d3fbdc0907d46c24b0d627": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "dbdb9367bdda6bbfc512d8426fa70e64de634d072d7630928a20c1d21e4ebab1"
+        },
+        "rg_ff7856d170c537dedb666f45f866c0847f56204a61ceb00c870ad835cb694ee1": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "bfdd2f728b9d0f490e36d7027f1aa40511db688d7c6aa179ff0166e0337f37d5"
+        },
+        "rg_e1991d431a7485f9c898d4d4f536f1e8ab09face9f789ca59e91316d1e277b12": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "3cc0971fbe3dafa26c998bdc0d85817f3ec89eb246ee94c61c2d47e693e61dae"
+        },
+        "rg_0e6fcf3e9f56d67f49c2714bf2c18480649fde806f491665b0d5709cb58fae91": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "28801f928c60352858e24b7f7ceb1c3a09e6ed246a398902d143c17db0da8cbc"
+        },
+        "rg_ddf0b027ef14bee148b53220962f434252ba796416f0691f7f78734446bb85b7": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "8e5f81087c4cac3af4aa298c48538fe20037bf4a30491a18111eed08428e8b49"
+        },
+        "rg_6950c904f3d426d6ab88454eb56a94b73365e423ec41c0b47ee286ccfbf06b91": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "d927ec3109f4f4073135549fdbef1ea11ab40bad0fa2e712c4e29883eb5f6592"
+        },
+        "rg_53f9475a1630360c479750a6783d1f1baeb15dc1267420b36c69a894cd54ddef": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "5eb963fb8db5db25ad73d6fcaf784345f3d0456a3d2eca72de499fa0b74d34ef"
+        },
+        "rg_64d4ba59ee99b0acbaf97f2d339acbdf611bbc24135cf7fc5b40c723ff74a504": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "8f4bf8288d0a3815bed0b2a1ae4c1201a6b5baa03360bb2f2c176e2fa4796348"
+        },
+        "rg_33a8887d9ede3df24779a7eb3b15fe8bffcfb8e603916cb452f48d157c8d044f": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "422b02a544cf2ea0f31bd31ac99cbdc758bc0393f22db3819b6d5b1312956464"
+        },
+        "rg_b27fdc54c237939f0b3dfca05f9f1944a96279f4921dccc50d924ae96737d1c2": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "127963970b87a1406a2e9465fcc0795d60963abbb297e2758db6ef1f3c843e93"
+        }
+      },
+      "sources": {
+        "rg_540df0b9620a16157bdd719fd17526813d3def12cdb143b78b05f3e97021380e": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "e4f52d0cacf5e5f603d032d90aa68b9e37fcd783ad49b871919d10e6f887fd8e"
+        },
+        "rg_7af38f29382a0cd90a475115b11f7cda468b4b2f6fbe1d3992f885ef66c81ed4": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "21a4db689ed4be722cb74d8d7baa1849b81945d264f46e0e5b4c7bcdfaeb4fcd"
+        },
+        "rg_a00a3923bb170254f067dc88c050382c4efdfec51655bdbb91a5e1769de88839": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "ce070d007f39cb7fc8fd8b073e637b366bd4f1ca6ec1072df3f7ac1bf574f564"
+        },
+        "rg_ca263b8802c69c5a70202ba918446cafea17262c3709a75fd31e5e76e2d54059": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "4551c9c6f39f67c593e0a714f797f2ccfc5402ba40219ff18e5f2d01c03bf056"
+        },
+        "rg_fb8818bbc59e8e634185c271d9449692ab7af135e7d949f3540b732ff1a96795": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "3443aafd3fb1e5f8a08a4566c3819a2b04ba4464746e8be47e7f9d752bfa9309"
+        },
+        "rg_5e822f42f14763f3d6bd8a6a470299db5aa283c0b5cad771b5f7bd58766d55f2": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "a435c528e5645b46b740408d9ea065efe44247ee9afee42ace30f00b563cc7d0"
+        },
+        "rg_062ac8216687fa3f4cc1b3be11e9fb8bf8107bd8738c8b475f60feb694bc60e1": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "0ffdf2ebd8120b6f00f87103303378f517466373f5c6c7f1e6ca2b9655e72bb1"
+        },
+        "rg_a047833985858e177beea6f63dabc4206d2aca9cf0d29112e2c25a1ecdaf7631": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "5b48cd45200e52c126b665bf2deaff60bb555836aab33cc39aefbe13c0053c29"
+        },
+        "rg_55fed0f665c2389327f6e642866bb15ed4770fe16e002ab612321f129371393c": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "f84aab41d6cf3aa67a110c26acf39b0f2c9ec4584beb45c0e3c56122ec5ab931"
+        },
+        "rg_78fabe742acd82680f392c9925b7d41c380b385bd7c7f4ba0edb7be87666767b": {
+          "known_at": null,
+          "origin": {
+            "kind": "system",
+            "actor": "resource_graph",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "add42ee3f778d7fe30c79b7b9caf886a114de3c73284f56a3df1c4dc3f06f6ec"
+        }
+      }
+    },
+    "history": [],
+    "packet_id": "ef06ad0e972c76245d5d952a4b9804abedead14af858cbfbe3da50e94fc2b9b4"
+  },
+  "schema": "klbt.audit.d-native-e/1",
+  "d_sha": "1d3d133154f213733b7a69af863613cec2dd8ca2",
+  "native_sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+  "native_library_sha256": "2578229aa002627317a68ffd7215f92d294df3e12b8972c77f514e37c4c0f6f4",
+  "input_packet_sha256": "2014e2de410fbb4e5792d6bd781cfe254553ac685f6b81f96d636909f88e27a9",
+  "network_calls": 0,
+  "limit": "Node/Python guards are not a native network sandbox. Only local NativeGraphStore methods called, workers disabled."
+}

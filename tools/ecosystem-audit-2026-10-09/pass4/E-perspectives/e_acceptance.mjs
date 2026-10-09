@@ -1,0 +1,99 @@
+#!/usr/bin/env node
+/** Independent E probes: actual native resolver, packet adapter and selector.
+ * Run with --repo --sha --node-modules --native-temp --native-packet --out.
+ * Private or paid data is never an input. No copied consumer implementation.
+ */
+import fs from 'node:fs';import path from 'node:path';import vm from 'node:vm';import cp from 'node:child_process';
+import {createRequire} from 'node:module';import {pathToFileURL} from 'node:url';import crypto from 'node:crypto';
+import net from 'node:net';import http from 'node:http';import https from 'node:https';
+const a=Object.fromEntries(process.argv.slice(2).reduce((r,v,i,x)=>i%2?r:[...r,[v.replace(/^--/,''),x[i+1]]],[]));
+for(const k of ['repo','sha','node-modules','native-temp','native-packet','out'])if(!a[k])throw Error('--'+k+' required');
+const repo=path.resolve(a.repo),out=path.resolve(a.out);if(fs.existsSync(out))throw Error('fresh output required');
+if(cp.execFileSync('git',['-C',repo,'rev-parse','HEAD'],{encoding:'utf8'}).trim()!==a.sha)throw Error('SHA mismatch');
+cp.execFileSync('git',['-C',repo,'diff','--exit-code',a.sha,'--','loom/web/src/graph-perspectives','loom/web/tests/graph-perspectives','loom/src/onboarding']);
+const dep=createRequire(path.join(path.resolve(a['node-modules']),'__audit_loader.cjs')),ts=dep('typescript');
+const loaded=new Map(),sourceHashes={};function load(file){
+ file=path.resolve(file);if(loaded.has(file))return loaded.get(file).exports;
+ if(file.endsWith('.json'))return JSON.parse(fs.readFileSync(file,'utf8'));
+ const src=fs.readFileSync(file,'utf8');sourceHashes[path.relative(repo,file)]=crypto.createHash('sha256').update(src).digest('hex');
+ const js=ts.transpileModule(src,{fileName:file,compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX,esModuleInterop:true}}).outputText;
+ const m={exports:{}};loaded.set(file,m);const req=name=>{
+  if(!name.startsWith('.'))return dep(name);
+  const base=path.resolve(path.dirname(file),name);for(const f of [base,...['.ts','.tsx','.json','.js','/index.ts'].map(e=>base+e)])if(fs.existsSync(f)&&fs.statSync(f).isFile())return load(f);
+  throw Error(`unresolved ${name}`);
+ };vm.runInThisContext(`(function(exports,require,module){${js}\n})`,{filename:file})(m.exports,req,m);return m.exports;
+}
+const attempts=[];const deny=()=>{attempts.push('denied');throw Error('audit network denied');};globalThis.fetch=deny;net.connect=deny;net.createConnection=deny;http.request=deny;http.get=deny;https.request=deny;https.get=deny;
+const {compilePerspective}=load(path.join(repo,'loom/web/src/graph-perspectives/plan.ts'));
+const {selectPerspective}=load(path.join(repo,'loom/web/src/graph-perspectives/select.ts'));
+const {createPacketAdapter,createDemandAdapter,createApplicationProfileAdapter}=load(path.join(repo,'loom/web/src/graph-perspectives/adapters.ts'));
+const {nativeResolutionFromResponse}=load(path.join(repo,'loom/web/src/graph-perspectives/native-layers.ts'));
+const {exportPerspective,importPerspective}=load(path.join(repo,'loom/web/src/graph-perspectives/persistence.ts'));
+process.env.LOOM_GRAPH_PERSPECTIVES_TMP=path.resolve(a['native-temp']);
+const {invokeNativeLayers,ensureNativeLayers}=await import(pathToFileURL(path.join(repo,'loom/web/tests/graph-perspectives/native-layers-runner.mjs')));
+const cases=[],observations={};function check(id,kind,ok,oracle,evidence={}){cases.push({id,kind,status:ok?'PASS':'FAIL',oracle,evidence});}
+const sorted=v=>Array.isArray(v)?v.map(sorted):v&&typeof v==='object'?Object.fromEntries(Object.keys(v).sort().map(k=>[k,sorted(v[k])])):v;
+const eq=(a,b)=>JSON.stringify(sorted(a))===JSON.stringify(sorted(b));
+const reverse=v=>Array.isArray(v)?v.map(reverse):v&&typeof v==='object'?Object.fromEntries(Object.entries(v).reverse().map(([k,w])=>[k,reverse(w)])):v;
+const allow={id:'synthetic-permission',canRead:()=>true};
+// Native values are resolved by original C++ DefaultLayers, not by the audit.
+const values={structure:'synthetic-tree',resolution:'raw',traversal:{relations:['contains'],direction:'outgoing',hops:2},budget:{query:100,render:100,page:1},evidence:[],temporal:{compareSnapshots:[]}};
+const pack={schema:'loom.default_layers_pack/1',pack_id:'audit.pass4.perspective',revision:1,policy:{excluded_area_new_defaults:'proposal'},entries:Object.entries(values).map(([key,value])=>({id:'audit.'+key,key:'audit.'+key,area:'audit-safe-perspective',revision:1,value}))};
+const caps=Object.keys(values).map(target=>({id:'audit.'+target,label:target,target,status:'supported'}));
+const perspective={schema:'loom.graph_perspective/1',id:'synthetic-headless',components:{},focus:{source:'synthetic',selector:'root'},analysis:{selected:[{source:'synthetic',selector:'analysis-only'}],linkedToPerspective:false},audit_unknown:{retained:['x']}};
+const native=await invokeNativeLayers({pack});const nativeResolution=nativeResolutionFromResponse(native);const plan=compilePerspective(perspective,nativeResolution,caps);
+const packet={schema:'loom.graph_packet/1',entities:['root','a','b','c'].map(id=>({id,canonical_key:id,label:'Synthetic '+id,kind:'sample',attrs:{audit_unknown:{id}}})),claims:['a','b','c'].map(id=>({id:'c-'+id,subject:'root',predicate:'contains',object:id,assessment:{evidence_class:'derived'}})),sources:[]};
+const descriptor={id:'synthetic',label:'Synthetic',structures:[{id:'synthetic-tree',label:'Synthetic tree',relations:['contains']}],evidenceMap:{derived:'computed'}};
+const adapter=createPacketAdapter(packet,descriptor),before=JSON.stringify(packet);const selected=await selectPerspective(plan,[adapter],allow);
+check('E4-01.native-resolver-to-real-selector','integration',plan.errors.length===0&&selected.objects.length===4&&selected.relations.length===3&&nativeResolution.components.every(c=>c.origin!==undefined),'Real C++ DefaultLayers output passes original E native bridge/compiler and changes selection of actual PacketAdapter input; sources/explanations remain present.');
+const different=await invokeNativeLayers({pack,actions:[{op:'override',key:'audit.traversal',value:{relations:['contains'],direction:'outgoing',hops:0},source_refs:['safe-fixture#/hops'],time:'2026-10-09T00:00:00Z'}]});
+const differentPlan=compilePerspective(perspective,nativeResolutionFromResponse(different),caps);const shallow=await selectPerspective(differentPlan,[adapter],allow);
+check('E4-02.two-native-profiles','integration',shallow.objects.length===1&&selected.objects.length===4&&differentPlan.explanation.find(c=>c.id==='audit.traversal').origin.source_refs[0]==='safe-fixture#/hops','Two native effective profiles actually change selector traversal; the chosen provenance is retained. No modeled/native settings resolver is recreated.');
+const excluded=await invokeNativeLayers({pack,actions:[{op:'exclude',key:'audit.traversal'}]});const updated=structuredClone(pack);updated.revision=2;updated.entries.find(e=>e.key==='audit.traversal').value.hops=6;
+const invalidRevision=await invokeNativeLayers({pack:updated,state:JSON.parse(JSON.stringify(excluded.layers))});
+check('E4-03a.pack-entry-version-guard','contract',invalidRevision.error?.code==='conflict','Changing a pack entry without its entry revision increment is explicitly rejected, not silently applied.');
+updated.entries.find(e=>e.key==='audit.traversal').revision=2;
+const reopened=await invokeNativeLayers({pack:updated,state:JSON.parse(JSON.stringify(excluded.layers))});const invalid=compilePerspective(perspective,nativeResolutionFromResponse(reopened),caps);
+let rejected=false;try{await selectPerspective(invalid,[adapter],allow);}catch{rejected=true;}
+check('E4-03.exclusion-process-and-pack-update','integration',reopened.effectiveDefaults.find(c=>c.key==='audit.traversal').status==='excluded'&&rejected,'Native exclusion survives JSON state transfer into a new native process with revised pack; E refuses to substitute a hidden traversal default. This is host state transfer, not a device persistence test.');
+const projection=r=>({objects:r.objects,relations:r.relations,analysis:r.analysis,complete:r.complete,graph:r.graph,omissions:r.omissions});
+const warm=await selectPerspective(plan,[adapter],allow);const reordered=createPacketAdapter(reverse(packet),reverse(descriptor));const orderResult=await selectPerspective(compilePerspective(reverse(perspective),reverse(nativeResolution),reverse(caps)),[reordered],allow);
+check('E4-04.keys-cold-warm','contract',eq(projection(selected),projection(warm))&&eq(projection(selected),projection(orderResult))&&JSON.stringify(packet)===before,'Object member order and lazy-index cold/warm state preserve ordered selector output, unknown attrs and source data; metrics/timing are intentionally outside the oracle.');
+const smallPlan={...plan,queryBudget:2,renderBudget:2,pageSize:1};const seen=new Set(),edges=new Set();let next,start,batches=0;
+do{next=await selectPerspective(smallPlan,[createPacketAdapter(packet,descriptor)],allow,start?{start}:{});next.objects.forEach(o=>seen.add(o.ref.selector));next.relations.forEach(r=>edges.add(r.id));start=next.continuation;batches++;}while(start.length&&batches<10);
+check('E4-05.resume-budgeted-pages','contract',eq([...seen].sort(),['a','b','c','root'])&&eq([...edges].sort(),['c-a','c-b','c-c'])&&start.length===0&&batches>1,'Union of explicit continuation batches recovers this four-object/three-edge source exactly, without treating the first partial batch as complete.',{batches,object_count:seen.size,edge_count:edges.size});
+const privateSelection={...plan,renderBudget:1,evidence:['unmatched']};const restricted={id:'synthetic-deny-a',canRead:r=>r.selector!=='a'};
+const hidden=await selectPerspective(privateSelection,[adapter],allow);
+check('E4-06.visibility-analysis-permission','contract',eq(hidden.analysis,perspective.analysis.selected)&&hidden.permissionId===allow.id&&hidden.objects.length===1&&JSON.stringify(packet)===before,'Visibility-only change with fully allowed permissions does not rewrite explicit analysis membership or canonical input. This case does not assert access enforcement.');
+const permissionOnly=await selectPerspective(plan,[adapter],restricted);
+check('E4-06a.permission-without-filter','contract',selected.objects.some(o=>o.ref.selector==='a'&&o.properties?.raw?.attrs?.audit_unknown?.id==='a')&&!permissionOnly.objects.some(o=>o.ref.selector==='a')&&!permissionOnly.relations.some(r=>r.from.selector==='a'||r.to.selector==='a')&&permissionOnly.omissions.some(o=>o.detail==='permission_filtered')&&permissionOnly.complete===false&&eq(permissionOnly.analysis,perspective.analysis.selected),'Changing only explicit host permission denies a previously returned object/value and edge, with permission_filtered omission and incomplete status. Same full-budget plan, no evidence/visibility filter. Does not prove native ACL.',{allowed_objects:selected.objects.map(o=>o.ref.selector),denied_objects:permissionOnly.objects.map(o=>o.ref.selector),omissions:permissionOnly.omissions});
+const deniedFocus=await selectPerspective({...plan,focus:{source:'synthetic',selector:'a'}},[adapter],restricted);
+check('E4-06b.denied-focus-placeholder','contract',deniedFocus.objects.length===1&&deniedFocus.objects[0].status==='denied'&&deniedFocus.objects[0].properties===undefined&&deniedFocus.metrics.resolvedObjects===0&&deniedFocus.omissions.some(o=>o.reason==='permission')&&!deniedFocus.complete,'Directly focusing denied address preserves only a denied reference, with no source values and no adapter resolution. Explicit host permission, not a mock native ACL.');
+const unknown={...perspective,components:{future:{meaning:['kept']}},futureEnvelope:{mappingAlternatives:['one','two']}};const imported=importPerspective(exportPerspective(reverse(unknown)));
+check('E4-07.perspective-unknown-roundtrip','contract',eq(imported.perspective,unknown)&&imported.warnings.includes('unknown_field_preserved:futureEnvelope'),'Unknown perspective fields remain round-trippable with explicit warning; two alternatives are retained, not silently selected.');
+const unsupportedCap={id:'audit.future',label:'Synthetic extension',target:'syntheticFuture',status:'supported'};const custom=compilePerspective(perspective,{components:[...nativeResolution.components,{id:'audit.future',status:'effective',value:{strategy:'x'}}]},[...caps,unsupportedCap]);
+const absent=await selectPerspective(custom,[adapter],allow);const unrelated=createPacketAdapter({schema:'loom.graph_packet/1',entities:[],claims:[],sources:[]},{id:'unrelated',label:'Unrelated',structures:[],capabilities:[unsupportedCap]});const falseAvailable=await selectPerspective(custom,[adapter,unrelated],allow);
+observations['capability_scope']={before:absent.plan.unsupported,after:falseAvailable.plan.unsupported,unrelatedResolveCalls:unrelated.metrics.resolveCalls};
+check('A4-E-001.unrelated-capability-reproduction','reproduction',absent.plan.unsupported.some(x=>x.id==='audit.future')&&!falseAvailable.plan.unsupported.some(x=>x.id==='audit.future')&&unrelated.metrics.resolveCalls===0,'Reproduce: an unused unrelated adapter declaration removes the active plan capability warning.',observations.capability_scope);
+check('A4-E-001.capability-source-invariance','acceptance',eq(absent.plan.unsupported,falseAvailable.plan.unsupported),'Adding an unrelated, unqueried source adapter must not change the availability status of the active source capability. Declaration is not proof of active implementation.');
+const profileText=fs.readFileSync(path.join(repo,'loom/data/graph_perspectives/external-profile.json'),'utf8');const profileData=JSON.parse(profileText);const profileDescriptor={id:'synthetic-profile',label:'Synthetic external profile',structures:[{id:'fields',label:'Fields',relations:['contains']}]};
+const profileAdapter=createApplicationProfileAdapter({sourceText:profileText,descriptor:profileDescriptor,childRelation:'contains'});const pref={source:profileDescriptor.id,selector:'/presentation/tokens/accent'};const valid=await profileAdapter.resolve(pref,{permission:allow});
+const expanded={...profileData,audit_future:{mapping:'uncertain',interpretations:['one','two']}};const unknownProfile=createApplicationProfileAdapter({sourceText:JSON.stringify(expanded),descriptor:profileDescriptor,childRelation:'contains'});const lost=await unknownProfile.resolve(pref,{permission:allow});const unknownField=await unknownProfile.resolve({...pref,selector:'/audit_future'},{permission:allow});
+check('E4-08.profile-known-field-headless','contract',valid.status==='available'&&valid.properties.value===profileData.presentation.tokens.accent,'Existing strict application-profile adapter exposes a recognized source field on demand before UI; this is a positive component increment for A3-WEB-001.');
+check('A3-WEB-001.E-unknown-field-reproduction','reproduction',lost.status==='unavailable'&&unknownField.status==='unavailable','The new graph reader invokes strict execution-profile registration before reading any field; adding a preserved-but-inactive unknown field prevents even known-field access.',{known_status:lost.status,unknown_status:unknownField.status,reason:lost.reason});
+check('A3-WEB-001.E-unknown-field-preservation','acceptance',lost.status==='available'&&lost.properties?.value===valid.properties?.value&&['available','unknown'].includes(unknownField.status)&&eq(unknownField.properties?.value,expanded.audit_future),'Graph/source read preserves unknown fields and still exposes previously recognized fields; runtime activation may separately reject unsupported execution fields.');
+// Real D projection has already been written, closed, reopened and replayed via native B4.
+const nativePacket=JSON.parse(fs.readFileSync(a['native-packet'],'utf8'));if(!nativePacket.native_executed||!nativePacket.reopened||!nativePacket.packet_equal)throw Error('actual native packet prerequisite failed');
+const dp=nativePacket.packet;const de=createPacketAdapter(dp,{id:'audit:resource:conversation',label:'D actual source',structures:[{id:'source-fields',label:'Source fields',relations:['contains','produced_by']}],evidenceMap:{derived:'computed'}});
+const field=dp.entities.find(e=>e.attrs?.selector==='/conversation/messages/0/text');if(!field)throw Error('D field fixture missing');
+const dref={source:de.descriptor.id,selector:field.id};const resolved=await de.resolve(dref,{permission:allow});
+const dplan={...plan,focus:dref,structure:'source-fields',relations:['contains','produced_by'],direction:'both',hops:1};const dout=await selectPerspective(dplan,[de],allow);
+check('E4-09.D-native-E-ID-path','integration',resolved.status==='available'&&resolved.properties.raw.attrs.value==='synthetic first'&&dout.objects.some(o=>o.ref.selector===field.id),'Actual D ResourceGraph packet → actual native B4 store close/reopen → actual E PacketAdapter and selector retain the field and raw source/version metadata by graph entity ID.',{d_sha:nativePacket.d_sha,native_sha:nativePacket.native_sha,e_sha:a.sha,field_id:field.id,selected_objects:dout.objects.length,selected_relations:dout.relations.length});
+const typed=await de.resolve({source:de.descriptor.id,selector:field.attrs.selector,snapshot:dp.entities[0].attrs.content_sha256},{permission:allow});
+observations['D_typed_address']={selector:field.attrs.selector,status:typed.status,reason:typed.reason,snapshot_mapping:'D attrs.source_version/content_sha256 are raw attrs; E refFor only reads attrs.perspective snapshot'};
+cases.push({id:'E4-10.D-typed-selector-version',kind:'integration',status:'BLOCKED',reason:'No implemented mapping from D attrs.selector/source_version to E ObjectRef selector/snapshot. Entity-ID path works; typed D source address returns '+typed.status+':'+typed.reason,evidence:observations.D_typed_address});
+cases.push({id:'E4-11.production-UI-hook',kind:'integration',status:'BLOCKED',reason:'Pinned E1 adds no production component/UI hook. Author report explicitly says its proposed private-renderer export/selected-projection patch is not applied. Headless→UI and Basic/Advanced/Expert same-state acceptance remain unverified; audit does not install product patches.'});
+cases.push({id:'E4-12.profile-field-runtime',kind:'integration',status:'BLOCKED',reason:'E exposes profile fields and separately calls existing strict registerProfile. No runtime resolver consumes a selected graph/profile-field edit in this branch. E4-08 proves graph-readable field, not bidirectional graph-field→existing workflow consumer binding.'});
+check('E4-13.network-denied','contract',attempts.length===0,'No model/transport invocation; network entrypoints denied in audit process. Native bridge reads JSON only.');
+const nativeBuild=await ensureNativeLayers();const result={schema:'klbt.audit.pass4-E-acceptance/1',repo:'klb-t/chatadhd',sha:a.sha,cases,observations,source_hashes:sourceHashes,native_build:nativeBuild,native_packet_receipt_sha256:crypto.createHash('sha256').update(fs.readFileSync(a['native-packet'])).digest('hex'),network_attempts:attempts.length,boundaries:['Own fixtures and oracles exercise unchanged actual consumers.','Author native bridge is used only as transport/build wrapper around actual C++ DefaultLayers; its author tests are not copied as evidence.','No product patches, renderer hooks, native settings-store replacement or synthetic substitute for missing D→E typed-address bridge.','Query-plan component tests use native output; permission object is explicit host authorization input. This is not native ACL integration.']};
+result.counts=Object.fromEntries(['PASS','FAIL','BLOCKED'].map(s=>[s,cases.filter(c=>c.status===s).length]));fs.mkdirSync(path.dirname(out),{recursive:true});fs.writeFileSync(out,JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result.counts));process.exitCode=result.counts.FAIL?1:result.counts.BLOCKED?2:0;
