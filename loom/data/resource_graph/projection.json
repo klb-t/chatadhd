@@ -1,0 +1,9 @@
+{
+  "schema": "loom.resource_projection_policy/1",
+  "version": "1",
+  "kinds": {"resource": "resource", "field": "resource_field", "method": "analysis_method"},
+  "predicates": {"contains": "contains", "produced_by": "produced_by"},
+  "defaults": {"mode": "live", "embedding": false, "cache": false, "retention_seconds": 0, "index": false, "max_projection_nodes": 1000, "max_projection_depth": 16},
+  "environment_limits": {"max_projection_nodes": 100000, "max_projection_depth": 128},
+  "formats": [{"suffixes": [".json"], "parser": "json"}, {"suffixes": [".yaml", ".yml"], "parser": "yaml"}, {"suffixes": [".xml"], "parser": "xml"}, {"suffixes": [".csv"], "parser": "csv"}]
+}

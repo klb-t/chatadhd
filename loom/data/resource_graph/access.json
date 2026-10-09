@@ -1,0 +1,27 @@
+{
+  "schema": "loom.resource_access_policy/1",
+  "user_policy": {
+    "allowed_origins": [],
+    "allow_local": true,
+    "local_roots": [],
+    "allow_redirects": false,
+    "max_redirects": 3,
+    "timeout_seconds": 15,
+    "max_source_bytes": 33554432,
+    "max_member_bytes": 33554432,
+    "max_expanded_bytes": 67108864,
+    "max_archive_entries": 10000,
+    "max_nesting_depth": 8,
+    "max_compression_ratio": 1000
+  },
+  "environment_limits": {
+    "max_redirects": 8,
+    "timeout_seconds": 60,
+    "max_source_bytes": 268435456,
+    "max_member_bytes": 268435456,
+    "max_expanded_bytes": 536870912,
+    "max_archive_entries": 100000,
+    "max_nesting_depth": 32,
+    "max_compression_ratio": 10000
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "schema": "loom.resource_graph.parsers/1",
+  "defaults": {
+    "encoding": "utf-8-sig",
+    "max_bytes": 16777216,
+    "max_depth": 128,
+    "max_nodes": 250000,
+    "max_aliases": 256,
+    "csv_delimiter": ","
+  },
+  "formats": {
+    "json": {"version": "python-json/1", "syntax": "json", "semantics": "unrecognized", "addressing": "json_pointer", "loss": ["lexical formatting; original bytes remain at source"], "media_types": ["application/json"], "extensions": [".json"]},
+    "yaml": {"version": "pyyaml-safe-nodes/1", "syntax": "yaml", "semantics": "unrecognized", "addressing": "json_pointer", "loss": ["comments and lexical formatting; original bytes remain at source"], "notes": ["aliases are explicit source pointers", "merge keys remain syntax, not resolved configuration", "unknown tags are retained without execution", "non-string mapping keys remain ordered key/value entries"], "media_types": ["application/yaml", "text/yaml"], "extensions": [".yaml", ".yml"]},
+    "xml": {"version": "defusedxml-tree/1", "syntax": "xml", "semantics": "unrecognized", "addressing": "json_pointer", "loss": ["namespace prefixes and lexical formatting; expanded names and source bytes retained"], "notes": ["DTD, entity declarations and external references forbidden", "XInclude remains data and is never expanded"], "media_types": ["application/xml", "text/xml"], "extensions": [".xml"]},
+    "csv": {"version": "python-csv/1", "syntax": "csv", "semantics": "unrecognized", "addressing": "json_pointer", "loss": ["quoting and lexical formatting; source bytes retained"], "notes": ["rows and fields only; no inferred header or type conversion"], "media_types": ["text/csv"], "extensions": [".csv"]}
+  }
+}

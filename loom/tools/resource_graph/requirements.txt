@@ -1,0 +1,4 @@
+# Syntax dependencies only. No model, GUI or native store required.
+PyYAML>=6.0,<7
+defusedxml>=0.7.1,<0.8
+jsonschema>=4.18,<5
