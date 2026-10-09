@@ -1,6 +1,6 @@
 {
   "schema": "loom.product_literals/1",
-  "revision": 4,
+  "revision": 5,
   "requirement": {
     "id": "R42",
     "source_commit": "3cd5848e7484d50d00f19f0855bc2cd228ad7f3b",
@@ -413,9 +413,9 @@
   "allowlist": [
     {
       "path": "loom/src/model/runtime_profile.cpp",
-      "source_sha256": "0aab7afb23b413fdc62e6cd51b852a5596b0e8fb7b029bd95583f71e8ee6cc93",
-      "byte_start": 10299,
-      "byte_end": 10323,
+      "source_sha256": "5e816a5124f5c9272017fdd8c3eec75497d4436a308e0b6c9ca79174ff25fdc4",
+      "byte_start": 10478,
+      "byte_end": 10502,
       "literal_sha256": "df8f714d0dceff33742a8a29ac739f33533cf66f715a67a059c1fd32737553cc",
       "category": "contract",
       "reason": "Exact version identifier of RuntimeProfile descriptor decoding; changing it changes the code-data contract."

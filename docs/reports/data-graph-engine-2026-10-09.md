@@ -399,3 +399,26 @@ Clang build3 na02371b01: FAIL67/69 przez analysis_ui::response_limit, konwersja 
 GCC13 rebuild PASS. Rzeczywisty server.chat_active_task:1/1 CTest,2/2 Python scenarios,guard PASS,3,16 s; prepare/inspect/admission HTTP bez dispatch i rezerwacji. Istniejący analysis-ui harness:5/5 groups PASS,28,204 s. Natywny bridge sprawdza faktyczne Prepared.max_response_bytes, w tym signed/unsigned ponad2^53 i UINT64max, nie tylko echo JSON; wszystkie wcześniejsze asercje zachowane. Host64, brak deklaracji wykonanego32bit. Receipt źródła/config/bin poprzedza testy, dodatkowy hash wygenerowanego executora poprzedza jego uruchomienie; źródła niezmienione. Dowody .onboarding/analysis-response-limit i wskazane tam scoped logs/JUnit.
 
 Próby konfiguracji browsera zachowane: brak spodziewanego pobranego slotu i późniejsze EROFS w /var/tmp dały brak wykonania native/0z5groups, nie PASS produktu. Nowy lokalny mapping wskazuje istniejący Chromium, browser TMPDIR jest zapisywalnym katalogiem pod /tmp; nie zmienia to oddzielnego TMPDIR=/var/tmp wymaganego przez credential fixtures w pełnej natywnej macierzy. Nie pobierano browsera ani nie pomijano testów. Kolejny etap to Clangbuild4 i pełne bramki zamrożonego drzewa.
+
+## B-R42-ANCHOR-001 — dokładny locator po przenośnym generatorze
+
+Po ukończeniu zamrożonej macierzy produktu `6d1231bd` zaktualizowano wyłącznie
+hash pliku i offsety jednego istniejącego wyjątku `"loom.runtime_profile/1"` w
+`runtime_profile.cpp`; literal, kategoria kontraktu i uzasadnienie są identyczne.
+Pack audytu ma revision 5. Nie rozszerzono allowlisty ani wyłączeń. To metadane
+przeglądu, bez zmiany runtime, generatora lub binariów sprawdzonych na `6d1231bd`.
+
+Aktualny scope `data-graph-integration-R42-anchor-final`: **1/1 PASS**, guard PASS,
+**42 Python / 0 skips**, 14,13 s; receipt kodu/konfiguracji/binariów i patch przed
+wykonaniem. Nowe inventory `data-graph-integration-final-r2-r42` pozostaje
+**REJECT / valid=false**: 583 pliki, 455 produktowych, 128 wyłączonych test/fixture,
+68 564 kandydaty, 6 dokładnych wyjątków, 68 558 nierozliczonych, 153 pliki z
+blokadami skanowania i 6547 issues; **0 stale allowlist, 0 discovery errors**.
+Jeden wygenerowany plik ma zweryfikowany plan/hashy. Nierozliczeni kandydaci i
+braki lexerów nie są automatycznie udowodnionymi naruszeniami R42. Inventory
+pozostaje oddzielne od bramek poprawności runtime.
+
+Review, pre/post hashe i wyniki: `.onboarding/R42-anchor-review/final-review.json`;
+pełny raport i manifest inventory zachowano poza repo. Wcześniejsze inventory z
+jednym stale anchor zachowano. Następny krok: aktualny zbiorczy checkpoint pełnej
+macierzy i sprawdzenie kolejnych pionowych przyrostów, bez masowej allowlisty.
