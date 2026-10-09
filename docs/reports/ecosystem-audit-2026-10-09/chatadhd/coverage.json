@@ -1,0 +1,297 @@
+{
+  "repo": "klb-t/chatadhd",
+  "base_branch": "main",
+  "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "tracked_entries": 3158,
+  "semantic_review": "selected ranges; not full-file review unless explicitly documented",
+  "semantic_review_files": 35,
+  "semantic_ranges": {
+    "loom/src/core/config.cpp": [
+      [
+        197,
+        224
+      ],
+      [
+        110,
+        131
+      ],
+      [
+        226,
+        252
+      ],
+      [
+        23,
+        30
+      ]
+    ],
+    "engine/config.py": [
+      [
+        15,
+        28
+      ],
+      [
+        71,
+        83
+      ],
+      [
+        102,
+        117
+      ]
+    ],
+    "loom/src/semantic/semantic_llm.cpp": [
+      [
+        23,
+        43
+      ],
+      [
+        114,
+        136
+      ],
+      [
+        199,
+        230
+      ]
+    ],
+    "engine/semantic_llm.py": [
+      [
+        142,
+        171
+      ],
+      [
+        223,
+        241
+      ],
+      [
+        74,
+        111
+      ]
+    ],
+    "loom/include/loom/semantic_llm.h": [
+      [
+        48,
+        64
+      ]
+    ],
+    "loom/src/runtime.cpp": [
+      [
+        181,
+        202
+      ]
+    ],
+    "loom/src/semantic/analyzer.cpp": [
+      [
+        166,
+        195
+      ]
+    ],
+    "loom/src/worker/semantic_worker.cpp": [
+      [
+        31,
+        31
+      ],
+      [
+        363,
+        379
+      ],
+      [
+        344,
+        352
+      ],
+      [
+        199,
+        207
+      ],
+      [
+        368,
+        385
+      ],
+      [
+        378,
+        385
+      ]
+    ],
+    "loom/src/graph/graph_engine.cpp": [
+      [
+        118,
+        141
+      ],
+      [
+        21,
+        88
+      ],
+      [
+        129,
+        163
+      ]
+    ],
+    "loom/src/graph/graph_memory.cpp": [
+      [
+        31,
+        64
+      ]
+    ],
+    "loom/src/onboarding/store.cpp": [
+      [
+        428,
+        460
+      ]
+    ],
+    "loom/src/chat/chat_engine.cpp": [
+      [
+        702,
+        731
+      ],
+      [
+        790,
+        807
+      ],
+      [
+        850,
+        855
+      ],
+      [
+        1148,
+        1171
+      ],
+      [
+        1274,
+        1285
+      ],
+      [
+        801,
+        815
+      ],
+      [
+        717,
+        721
+      ]
+    ],
+    "loom/src/context/context_engine.cpp": [
+      [
+        536,
+        542
+      ],
+      [
+        536,
+        549
+      ]
+    ],
+    "loom/src/context/runtime_preset.h": [
+      [
+        47,
+        80
+      ],
+      [
+        47,
+        107
+      ]
+    ],
+    "loom/server/src/onboarding-ui-routes.h": [
+      [
+        74,
+        115
+      ],
+      [
+        46,
+        58
+      ]
+    ],
+    "loom/src/capi/capi_config.cpp": [
+      [
+        24,
+        29
+      ]
+    ],
+    "engine/semantic_worker.py": [
+      [
+        132,
+        140
+      ],
+      [
+        163,
+        169
+      ]
+    ],
+    "loom/web/src/workspace/state.ts": [
+      [
+        4,
+        40
+      ]
+    ],
+    "loom/web/src/profiles/workflow-checkpoint.ts": [
+      [
+        10,
+        47
+      ]
+    ],
+    "loom/web/src/profiles/workflow-snapshot.ts": [
+      [
+        7,
+        31
+      ]
+    ],
+    "loom/web/src/profiles/graph.ts": [
+      [
+        45,
+        92
+      ]
+    ],
+    "loom/web/src/components/KnowledgeWorkbench.tsx": [
+      [
+        64,
+        82
+      ]
+    ],
+    "loom/src/model/runtime_profile.cpp": [
+      [
+        22,
+        42
+      ],
+      [
+        45,
+        96
+      ],
+      [
+        18,
+        19
+      ]
+    ],
+    "loom/include/loom/tasks.h": [
+      [
+        1,
+        17
+      ]
+    ],
+    "loom/data/schema/types.json": [
+      [
+        140,
+        152
+      ]
+    ],
+    "AGENTS.md": [],
+    "CLAUDE.md": [],
+    "docs/STATE.md": [],
+    "docs/reports/INDEX.md": [],
+    "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md": [],
+    "docs/architecture/LOOM_CONCEPTUAL_MODEL.md": [],
+    "docs/APPLICATION_PROFILES.md": [],
+    "docs/reports/data-in-code/thread-12.md": [],
+    "loom/src/context/RUNTIME_PRESETS.md": [],
+    "loom/src/packet/METHOD_GRAPH.md": []
+  },
+  "automatic_scan": "scan/summary.json and gz inventories; scanner immutable baseline",
+  "access_limitations": [
+    "No paid models/CI",
+    "Blind/holdout content deliberately not read",
+    "Full CMake/CTest/Kivy/browser E2E not run; focused actual native helper and Python probes run"
+  ],
+  "instructions": [
+    "AGENTS.md",
+    "CLAUDE.md"
+  ],
+  "state": [
+    "docs/STATE.md",
+    "docs/reports/INDEX.md"
+  ],
+  "historical_data_in_code": "current directory contains thread-12 plus preserved import evidence; old 695 groups are historical and not copied as current backlog"
+}

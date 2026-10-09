@@ -90,5 +90,51 @@
       "UI catalog"
     ],
     "status": "audit_only_product_unchanged"
+  },
+  {
+    "id": "WD-B-009",
+    "finding": "WD-009",
+    "priority": "P1",
+    "target": "ContextConstructionPolicy + PaperAssessmentPrompt z wersją/hash, zakresem źródeł, śladem pominięć i zgodą na wysyłanie wybranego materiału.",
+    "acceptance_tests": [
+      "Dwa profile wybierają różne znane fragmenty długiego dokumentu, z hash i źródłowymi offsetami.",
+      "W żadnym wariancie limit nie zmienia się niejawnie po zmianie modelu; pełne źródło pozostaje niezmienne.",
+      "Prompt/limit zmienialne w danych; brak profilu daje jawny błąd."
+    ],
+    "migration_risk": "Zmiana kontekstu zmienia wynik i koszt; potrzebna nowa wersja assessment profile, ponowny review, bez przepisywania starych prób.",
+    "dependencies": [
+      "context policy schema"
+    ],
+    "status": "audit_only_product_unchanged"
+  },
+  {
+    "id": "WD-B-010",
+    "finding": "WD-010",
+    "priority": "P2",
+    "target": "SchedulePolicy.misfirePolicy i catchUpMax, limit budżetu/wolumenu, trace pominiętych/coalesced slots jako obiekty danych.",
+    "acceptance_tests": [
+      "Zamrożony zegar i trzy sloty zaległości: coalesce tworzy najwyżej jedno zadanie, bounded catch-up respektuje jawny limit i budżet, skip zapisuje przyczyny."
+    ],
+    "migration_risk": "Catch-up może zwiększać koszty; default coalesce zachować, alternatywy tylko po opt-in i z ograniczeniami.",
+    "dependencies": [
+      "job budget policy"
+    ],
+    "status": "audit_only_product_unchanged"
+  },
+  {
+    "id": "WD-B-011",
+    "finding": "WD-011",
+    "priority": "P1",
+    "target": "Wersjonowana polityka renderowania i wiązania wartości; parser jest mechanizmem, zasady dopuszczanych formatów i odwołania do wartości są danymi.",
+    "acceptance_tests": [
+      "15→-15 i -15→15 muszą być odrzucone; zgodne liczby z dozwolonym formatem dopuszczone.",
+      "Znaki Unicode, wykładniki i separator dziesiętny mają jawny kontrakt; bez niejawnego zaokrąglania.",
+      "Próba nadal PROPOSED do review."
+    ],
+    "migration_risk": "Stricter guard może odrzucić wcześniej dopuszczone szkice; nie nadpisywać historycznych aprobat ani źródeł.",
+    "dependencies": [
+      "numeric token contract"
+    ],
+    "status": "audit_only_product_unchanged"
   }
 ]

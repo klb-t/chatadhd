@@ -1,0 +1,433 @@
+[
+  {
+    "id": "CH-001-D",
+    "finding": "CH-001",
+    "decision": "Domyślne ustawienia startowe pozostają ręcznym obiektem w Pythonie i C++",
+    "explicitness": "implicit_or_incomplete",
+    "actual": "config_defaults definiuje adres, model, prompt, temperaturę, tokeny i ustawienia grafu w C++; JsonStore zaczyna od tych danych także po błędzie odczytu. Python robi to samo.",
+    "alternatives": [
+      {
+        "name": "ręczne defaults",
+        "status": "implemented"
+      },
+      {
+        "name": "config.json overrides",
+        "status": "implemented"
+      },
+      {
+        "name": "preset z danych i trwałe exclusion",
+        "status": "not_wired_here"
+      }
+    ],
+    "evidence": {
+      "file": "loom/src/core/config.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "lines": [
+        197,
+        224
+      ]
+    }
+  },
+  {
+    "id": "CH-002-D",
+    "finding": "CH-002",
+    "decision": "Legacy SemanticLLM nadal składa literalny prompt i obcina wejście do 3000 znaków",
+    "explicitness": "implicit_or_incomplete",
+    "actual": "call_llm używa tego promptu, prefiksu kMaxAnalysisChars, temperature=.1 i max_tokens=800. Python _call_llm odtwarza to samo; sondą wysłano wyłącznie do mocka prefix 3000 bez TAIL_SENTINEL.",
+    "alternatives": [
+      {
+        "name": "prefix 3000 + fixed prompt",
+        "status": "implemented"
+      },
+      {
+        "name": "metody KnowledgeEngine",
+        "status": "implemented_separate_path"
+      },
+      {
+        "name": "chunks/full/versioned legacy recipe",
+        "status": "missing_here"
+      }
+    ],
+    "evidence": {
+      "file": "loom/src/semantic/semantic_llm.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "lines": [
+        23,
+        43
+      ]
+    }
+  },
+  {
+    "id": "CH-003-D",
+    "finding": "CH-003",
+    "decision": "Nakładka semantic_analyzer dociera do real-time grafu, ale nie do wspólnego analizatora workera",
+    "explicitness": "implicit_or_incomplete",
+    "actual": "Runtime buduje SemanticAnalyzer::create() z wbudowanymi regułami. Przekazuje go do SemanticLLM i SemanticWorker. Worker regex_unified korzysta z tego obiektu; create_from_data_dir istnieje, lecz tutaj nie jest wywoływane. GraphEngine i GraphMemory osobno wczytują nakładkę.",
+    "alternatives": [
+      {
+        "name": "builtin analyzer shared by runtime",
+        "status": "implemented"
+      },
+      {
+        "name": "on-message overlay reload",
+        "status": "implemented"
+      },
+      {
+        "name": "spójny snapshot workera/fallbacku",
+        "status": "missing_here"
+      }
+    ],
+    "evidence": {
+      "file": "loom/src/runtime.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "lines": [
+        181,
+        202
+      ]
+    }
+  },
+  {
+    "id": "CH-004-D",
+    "finding": "CH-004",
+    "decision": "Warstwy i prywatność onboardingu nie są automatycznie źródłem ordinary chat",
+    "explicitness": "implicit_or_incomplete",
+    "actual": "OnboardingStore ma user-bound model_request/policy_decision oraz grafową projekcję. Zwykły ChatEngine buduje pamięć i historię z Config/Memory/Database, bez user_id i wywołania tej polityki. Presety celu/czatu mają jawne layer_snapshot, lecz konsumenci domyślnie czytają oddzielne Config.",
+    "alternatives": [
+      {
+        "name": "onboarding scoped policy",
+        "status": "implemented"
+      },
+      {
+        "name": "manual layer_snapshot for presets",
+        "status": "implemented"
+      },
+      {
+        "name": "automatic runtime consumers of same user state",
+        "status": "not_wired_in_reviewed_paths"
+      }
+    ],
+    "evidence": {
+      "file": "loom/src/onboarding/store.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "lines": [
+        428,
+        460
+      ]
+    }
+  },
+  {
+    "id": "CH-005-D",
+    "finding": "CH-005",
+    "decision": "Usage policy nie obejmuje zwykłego transportu czatu ani starego workera",
+    "explicitness": "implicit_or_incomplete",
+    "actual": "ModelUsageGuard powstaje w gałęzi prepared graph reply. Non-graph send przechodzi bez tego guarda do http_.send. Worker batch wybiera się automatycznie po threshold i obecności klucza, a submit wywołuje http.send bez UsagePolicy. API uczciwie deklaruje scope explicit_callers.",
+    "alternatives": [
+      {
+        "name": "guarded graph reply",
+        "status": "implemented"
+      },
+      {
+        "name": "ordinary chat direct send",
+        "status": "implemented"
+      },
+      {
+        "name": "automatic batch by queue/key",
+        "status": "implemented"
+      },
+      {
+        "name": "explicit policy across all listed transports",
+        "status": "missing"
+      }
+    ],
+    "evidence": {
+      "file": "loom/src/chat/chat_engine.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "lines": [
+        1148,
+        1171
+      ]
+    }
+  },
+  {
+    "id": "CH-006-D",
+    "finding": "CH-006",
+    "decision": "Legacy graph ingestion automatycznie materializuje relacje modelu",
+    "explicitness": "implicit_or_incomplete",
+    "actual": "ingest_common zapisuje entities i links po filtrach profilu; on_message_checked wybiera LLM gdy enabled i od razu wywołuje ingest_common. Source=llm pozostaje w metadata wiadomości, ale ta ścieżka nie przechodzi przez candidate/ask/automatic admission GraphPacket.",
+    "alternatives": [
+      {
+        "name": "direct legacy materialization",
+        "status": "implemented"
+      },
+      {
+        "name": "candidate/automatic GraphPacket",
+        "status": "implemented_separate_path"
+      },
+      {
+        "name": "ask/candidate/automatic for legacy ingestion",
+        "status": "missing_here"
+      }
+    ],
+    "evidence": {
+      "file": "loom/src/graph/graph_engine.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "lines": [
+        21,
+        88
+      ]
+    }
+  },
+  {
+    "id": "CH-007-D",
+    "finding": "CH-007",
+    "decision": "Wagi historii i znaczniki instrukcji są nadal polityką w kodzie czatu",
+    "explicitness": "implicit_or_incomplete",
+    "actual": "weight>1.5 dopisuje IMPORTANT, weight<.5 dopisuje low priority; accepted task otrzymuje literalny nagłówek. Legacy memory również dopisuje literalny prefiks.",
+    "alternatives": [
+      {
+        "name": "label annotation by fixed thresholds",
+        "status": "implemented"
+      },
+      {
+        "name": "configurable rendering strategy including none",
+        "status": "missing_here"
+      }
+    ],
+    "evidence": {
+      "file": "loom/src/chat/chat_engine.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "lines": [
+        801,
+        815
+      ]
+    }
+  },
+  {
+    "id": "CH-008-D",
+    "finding": "CH-008",
+    "decision": "Workspace UI ma ręczne etykiety i wartości domyślne",
+    "explicitness": "implicit_or_incomplete",
+    "actual": "VIEWS zawiera angielskie etykiety, defaults limit=1000/maxNodes=60/budget=4000 oraz listę początkowych paneli. newPane i initialWorkspace konsumują te literały.",
+    "alternatives": [
+      {
+        "name": "literal default layout and text",
+        "status": "implemented"
+      },
+      {
+        "name": "onboarding message catalog",
+        "status": "implemented_other_scope"
+      },
+      {
+        "name": "workspace profile data",
+        "status": "missing_here"
+      }
+    ],
+    "evidence": {
+      "file": "loom/web/src/workspace/state.ts",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "lines": [
+        4,
+        40
+      ]
+    }
+  },
+  {
+    "id": "CH-009-D",
+    "finding": "CH-009",
+    "decision": "Perspektywy i sesje workflow nie mają kompletnego pokrycia grafowego",
+    "explicitness": "implicit_or_incomplete",
+    "actual": "Checkpoint sesji jest zapisem localStorage. Workflow snapshot ma też jawną drogę config application_workflow_snapshots_v1, bez CAS; application profile ma osobną projekcję GraphPacket zachowującą definicję. KnowledgeWorkbench zapisuje perspektywę w localStorage.",
+    "alternatives": [
+      {
+        "name": "local checkpoint",
+        "status": "implemented"
+      },
+      {
+        "name": "config snapshot",
+        "status": "implemented"
+      },
+      {
+        "name": "graph profile definition",
+        "status": "implemented"
+      },
+      {
+        "name": "queryable execution/perspective relations",
+        "status": "missing_in_reviewed_paths"
+      }
+    ],
+    "evidence": {
+      "file": "loom/web/src/profiles/workflow-checkpoint.ts",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "lines": [
+        10,
+        47
+      ]
+    }
+  },
+  {
+    "id": "CH-010-D",
+    "finding": "CH-010",
+    "decision": "Deduplikacja nazw odrzuca alternatywny typ encji i redukuje wagę regexu bez strategii danych",
+    "explicitness": "implicit_or_incomplete",
+    "actual": "_merge uznaje identyczny lowercase name za duplikat niezależnie od kind; dla nowych nazw skaluje confidence×.8. Sonda person same + regex code_ref Same zachowuje tylko person. C++ ma odpowiednik.",
+    "alternatives": [
+      {
+        "name": "casefold name-only + LLM wins",
+        "status": "implemented"
+      },
+      {
+        "name": "name+kind key",
+        "status": "recognized_not_implemented"
+      },
+      {
+        "name": "conflict-preserving candidates",
+        "status": "recognized_not_implemented"
+      }
+    ],
+    "evidence": {
+      "file": "engine/semantic_llm.py",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "lines": [
+        223,
+        241
+      ]
+    }
+  },
+  {
+    "id": "CH-011-D",
+    "finding": "CH-011",
+    "decision": "Błąd analizy workera staje się stanem analysed bez jawnej polityki ponowień",
+    "explicitness": "implicit_or_incomplete",
+    "actual": "Po wyjątku _drain_batch wywołuje db.mark_analysed(id,{source:error}); C++ catch robi to samo. Sonda potwierdziła tę zmianę stanu, więc zwykła kolejka pending już tego wpisu nie wybierze.",
+    "alternatives": [
+      {
+        "name": "mark analysed on exception",
+        "status": "implemented"
+      },
+      {
+        "name": "manual reindex",
+        "status": "implemented"
+      },
+      {
+        "name": "data-defined retry/dead-letter",
+        "status": "missing_here"
+      }
+    ],
+    "evidence": {
+      "file": "engine/semantic_worker.py",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "lines": [
+        163,
+        169
+      ]
+    }
+  },
+  {
+    "id": "CH-012-D",
+    "finding": "CH-012",
+    "decision": "Model użytkownika i reset awarii semantycznych są już naprawione",
+    "explicitness": "explicit_mechanism",
+    "actual": "Nie ma dawnego resetu identyfikatora semantic_model zawierającego haiku. Zmiana model/base/key/active resetuje licznik awarii. Sondy zachowały haiku ID i odblokowały po zmianie modelu.",
+    "alternatives": [
+      {
+        "name": "dowolne provider/model ID",
+        "status": "implemented"
+      },
+      {
+        "name": "zmiana modelu resetuje failures",
+        "status": "implemented"
+      }
+    ],
+    "evidence": {
+      "file": "engine/config.py",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "lines": [
+        102,
+        117
+      ]
+    }
+  },
+  {
+    "id": "CH-013-D",
+    "finding": "CH-013",
+    "decision": "Presety rozumowania i celu są danymi z działającą walidacją warstw",
+    "explicitness": "explicit_mechanism",
+    "actual": "Resolver przyjmuje complete effective_values lub layer_snapshot, wymaga binding każdego pola, używa DefaultLayers i RuntimeProfile. Native test layers na badanym SHA: 9/9 przypadków, 168/168 asercji; generator roundtrip 1/1, 13 trudnych stringów.",
+    "alternatives": [
+      {
+        "name": "generated builtin",
+        "status": "implemented"
+      },
+      {
+        "name": "complete caller values",
+        "status": "implemented"
+      },
+      {
+        "name": "complete layer snapshot",
+        "status": "implemented"
+      }
+    ],
+    "evidence": {
+      "file": "loom/src/context/runtime_preset.h",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "lines": [
+        47,
+        107
+      ]
+    }
+  },
+  {
+    "id": "CH-014-D",
+    "finding": "CH-014",
+    "decision": "Granice R42: kontrakt, standard, mechanizm, format, bootstrap i diagnostyka są dozwolone",
+    "explicitness": "explicit_mechanism",
+    "actual": "Nazwy JSON schema/types są kontraktem; escape ~0/~1 to RFC6901; dokładne porównanie IEEE binary64 ma znaczenie algorytmiczne. Parser revision i SQL/ABI/wire vocabulary nie stają się domenowym presetem.",
+    "alternatives": [
+      {
+        "name": "literal contract/standard mechanisms",
+        "status": "allowed"
+      },
+      {
+        "name": "manual policy defaults disguised as bootstrap",
+        "status": "not_allowed"
+      }
+    ],
+    "evidence": {
+      "file": "loom/src/model/runtime_profile.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "lines": [
+        22,
+        42
+      ]
+    }
+  },
+  {
+    "id": "CH-015-D",
+    "finding": "CH-015",
+    "decision": "Nie potwierdzono kompletnego Basic presetu i opt-in eksperymentów od checkpointu",
+    "explicitness": "implicit_or_incomplete",
+    "actual": "Istnieje TaskEngine, typ experiment w danych i odrębne narzędzia research. W zbadanych ścieżkach Runtime/chat/UI nie znaleziono przepływu checkpoint→wybrana macierz→kolejka→budget→wynik→evidence→Basic preset. Sama deklaracja typu nie dowodzi takiego wykonania.",
+    "alternatives": [
+      {
+        "name": "offline explicit research runners",
+        "status": "implemented"
+      },
+      {
+        "name": "TaskEngine generic jobs",
+        "status": "implemented"
+      },
+      {
+        "name": "checkpoint opt-in configurable matrix integration",
+        "status": "not_verified"
+      }
+    ],
+    "evidence": {
+      "file": "loom/include/loom/tasks.h",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "lines": [
+        1,
+        17
+      ]
+    }
+  }
+]

@@ -1,0 +1,16 @@
+{
+  "date": "2026-10-09",
+  "repo": "klb-t/chatadhd",
+  "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "candidate_jsonl_rows": 209711,
+  "duplicate_candidate_ids": 0,
+  "duplicate_path_rule_spans": 0,
+  "source_values_or_snippets_emitted_by_schema": false,
+  "scanned_source_executed_or_imported": false,
+  "raw_candidate_bytes": 124185392,
+  "method_counts": {
+    "lexical": 193168,
+    "python_ast": 16543
+  },
+  "checks": "Full candidates.jsonl JSON parse and uniqueness checks; source minimization validated by regression tests, not a semantic secrecy claim."
+}

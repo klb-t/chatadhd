@@ -1,0 +1,38 @@
+{
+  "native_db_compat": "PASS: db_compat_test: OK",
+  "native_event_bus": "PASS: event_bus_test: OK",
+  "native_audit_checks": {
+    "native_audit_checks_passed": 6,
+    "pending_count": 3,
+    "eligible_count": 1,
+    "duplicate_node_success_retains_old": true,
+    "link_metadata_replaced": true,
+    "attachment_only_batch_skipped": true,
+    "default_node_limit": 200,
+    "override_can_exceed_default": true,
+    "future_schema_999_relabelled_to": 4
+  },
+  "dependency": {
+    "repo": "klb-t/chatadhd",
+    "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+    "path": "loom/third_party/sqlite",
+    "version": "3.47.2",
+    "sha256": {
+      "sqlite3.c": "06c3bf23ecb30c91587e0f96d2fea71f3e5acc8305cda0bb8d23ee29d522745f",
+      "sqlite3.h": "b4b4cbcc2bd6dda8eaf348103c330c971676a59b3732cca068098f574de43994"
+    }
+  },
+  "reproduce": "python checks/run_native.py --repo <loom-checkout> --sqlite-dir <existing-sqlite-amalgamation-dir>",
+  "limits": [
+    "Direct cc/c++ compiler, not CMake/CTest",
+    "No sanitizer execution",
+    "No actual user DB opened",
+    "Initial missing system header resolved using already-present vendored dependency, no product or vendor edits"
+  ],
+  "sql_probe": "5 PASS, supplemental SQL/control-flow reproduction",
+  "packaged_reproducer_replay": {
+    "command": "python checks/run_native.py --repo <loom-checkout> --sqlite-dir <existing-sqlite-amalgamation-dir>",
+    "result": "PASS",
+    "output": "native-replay-result.json"
+  }
+}

@@ -1,0 +1,145 @@
+[
+  {
+    "id": "CKP-B-012",
+    "finding_id": "CKP-A-012",
+    "priority": 0,
+    "action_type": "verify_hypothesis",
+    "scope": "Asynchroniczna akcja rewrite nie wiąże wyniku z pierwotnym celem edycji",
+    "acceptance_test": [
+      "Fake delayed AiClient: request w polu A, zmiana fokus do B, późna odpowiedź; B musi pozostać bez zmian.",
+      "Zmiana treści w A podczas requestu: wynik trafia do podglądu lub jest ponownie zatwierdzany.",
+      "Sensitive state po wysłaniu musi blokować późniejszą automatyczną aplikację."
+    ],
+    "migration_risk": "Wiązanie revision musi działać z selection i whole-field bez czytania zawartości sensitive; zachować explicit task action UX.",
+    "dependencies": [],
+    "recommended_next_step": "Najpierw odtwarzalny failing test, potem zmiana danych/konsumenta w osobnej gałęzi implementacyjnej.",
+    "product_change_in_audit": false
+  },
+  {
+    "id": "CKP-B-001",
+    "finding_id": "CKP-A-001",
+    "priority": 1,
+    "action_type": "implement_data_and_consumer_migration",
+    "scope": "Wbudowane zadania AI pozostają literałami i wygrywają z personalnym zadaniem o tym samym ID",
+    "acceptance_test": [
+      "Utwórz custom id=fix o odmiennym promptcie i sprawdź request body; ma użyć wybranej warstwy.",
+      "Wyklucz fix, zaktualizuj pack i potwierdź brak przywrócenia.",
+      "Błędny custom JSON ma dać jawny błąd, nie pusty sukces."
+    ],
+    "migration_risk": "Zachować istniejące ID i kolejność UI; migracja kolizji wymaga jawnej reguły i zapisania skutecznego źródła.",
+    "dependencies": [],
+    "recommended_next_step": "Przenieść wbudowane receptury do danych i podłączyć jeden resolver do byId i UI.",
+    "product_change_in_audit": false
+  },
+  {
+    "id": "CKP-B-002",
+    "finding_id": "CKP-A-002",
+    "priority": 1,
+    "action_type": "implement_data_and_consumer_migration",
+    "scope": "Uszkodzony katalog providerów prowadzi do ręcznie zaszytych endpointów i modeli",
+    "acceptance_test": [
+      "Podmień bundled katalog na malformed JSON: bez jawnego fallback preset nie może powstać gotowa konfiguracja do sieci.",
+      "Zmiana default endpoint/model w danych zmienia request bez modyfikacji Kotlin.",
+      "Wyklucz provider i sprawdź, że LEGACY go nie wskrzesza."
+    ],
+    "migration_risk": "Stare instalacje muszą dostać jawny compatibility preset; nie usuwać wsparcia legacy ani wiązania klucza do providera.",
+    "dependencies": [],
+    "recommended_next_step": "Najpierw odtwarzalny failing test, potem zmiana danych/konsumenta w osobnej gałęzi implementacyjnej.",
+    "product_change_in_audit": false
+  },
+  {
+    "id": "CKP-B-003",
+    "finding_id": "CKP-A-003",
+    "priority": 1,
+    "action_type": "implement_data_and_consumer_migration",
+    "scope": "Policy Matrix nie dociera w całości do runtime: zaszyte wagi, koszt braku danych i automatyczne plan.best",
+    "acceptance_test": [
+      "Zmień wyłącznie profil wag i uzyskaj inne uporządkowanie kontrolowanych tras.",
+      "Przetestuj unknown-cost jako osobne strategie: ask/penalty/interval/deny; zachowaj unknown w śladzie.",
+      "Pokaż wszystkie trasy w wybranym zakresie; wybór trasy wpływa na execute.",
+      "Zmień maxSteps w danych i wykryj trasę sześciu kroków."
+    ],
+    "migration_risk": "Zmiana wag bez zachowania starego presetu zmieni trasę i możliwy koszt/prywatność; zachować bieżący profil jako kompatybilny.",
+    "dependencies": [],
+    "recommended_next_step": "Przewody od istniejącego Policy do canonical settings/grafu; nie zastępować planner mechanizmu nowym równoległym modułem.",
+    "product_change_in_audit": false
+  },
+  {
+    "id": "CKP-B-006",
+    "finding_id": "CKP-A-006",
+    "priority": 1,
+    "action_type": "implement_data_and_consumer_migration",
+    "scope": "Przepływy ustawień, AI i agenta nie mają wspólnego adresowalnego pokrycia w grafie",
+    "acceptance_test": [
+      "Dla kontrolowanej operacji odtwórz z graph refs skuteczne ustawienia, prompt hash, metodę kontekstu, wynik i provenance; bytes sekretu nie trafiają do przenośnego grafu.",
+      "UI edycja i aplikacyjna/półautomatyczna edycja mają ten sam identyfikator danych.",
+      "Zachować native Matrix provenance podczas mapowania do graph descriptors."
+    ],
+    "migration_risk": "Wymóg audytu stosowany do obecnego repo; nie ustanawia centralnej bazy. Retencja prywatnych tekstów musi respektować politykę, a descriptors mogą wskazywać dane poza grafem.",
+    "dependencies": [],
+    "recommended_next_step": "Najpierw odtwarzalny failing test, potem zmiana danych/konsumenta w osobnej gałęzi implementacyjnej.",
+    "product_change_in_audit": false
+  },
+  {
+    "id": "CKP-B-004",
+    "finding_id": "CKP-A-004",
+    "priority": 2,
+    "action_type": "implement_data_and_consumer_migration",
+    "scope": "Domyślne ustawienia i metadane UI są generowane z Kotlin, a nie z warstwy danych",
+    "acceptance_test": [
+      "Zmień etykietę i default w packu bez kompilacji; generic kontrolka i fresh settings mają tę samą wersję.",
+      "Przełącz Basic/Expert bez zmiany skutecznych wartości.",
+      "Wyklucz default, odśwież pack: nie może wrócić."
+    ],
+    "migration_risk": "Typy mechanizmu i nazwy kontraktu pozostają w kodzie; migracja istniejących wartości nie może zamienić ich na nowe defaulty.",
+    "dependencies": [],
+    "recommended_next_step": "Najpierw odtwarzalny failing test, potem zmiana danych/konsumenta w osobnej gałęzi implementacyjnej.",
+    "product_change_in_audit": false
+  },
+  {
+    "id": "CKP-B-005",
+    "finding_id": "CKP-A-005",
+    "priority": 2,
+    "action_type": "implement_data_and_consumer_migration",
+    "scope": "Sugestie zawierają niejawne pierwszeństwo źródeł i stratny postprocessing odpowiedzi",
+    "acceptance_test": [
+      "Ustaw profile AI-first/local-first/score and verify exact source order for identical candidates.",
+      "Dla wieloliniowego raw wyniku przechowaj raw plus observed loss i sprawdź profile keep/truncate.",
+      "Kolizja text z kilku źródeł zachowuje provenance wszystkich, a representative wynika z wybranej polityki."
+    ],
+    "migration_risk": "Domyślny profil ma zachować aktualne wyniki; zmiana kolejności może psuć pamięć ruchową; testować opóźnione wyniki i brak wysyłki z sensitive.",
+    "dependencies": [],
+    "recommended_next_step": "Najpierw odtwarzalny failing test, potem zmiana danych/konsumenta w osobnej gałęzi implementacyjnej.",
+    "product_change_in_audit": false
+  },
+  {
+    "id": "CKP-B-007",
+    "finding_id": "CKP-A-007",
+    "priority": 2,
+    "action_type": "implement_data_and_consumer_migration",
+    "scope": "Stały GoalPrompt i ograniczenia przestrzeni planów są częścią kodu",
+    "acceptance_test": [
+      "Dwa wersjonowane prompty z tym samym schematem dają dwa udokumentowane requesty bez rekompilacji.",
+      "Uzgodniony limit alternatyw odczytywany przez prompt, parser i GoalAgent; brak rozbieżnych limitów.",
+      "Prompt nie może zmienić autoryzacji lokalnego executora."
+    ],
+    "migration_risk": "Nie zmieniać niezależnych mechanizmów uprawnień i walidacji przez edycję tekstu promptu; contract keys pozostają w kodzie.",
+    "dependencies": [],
+    "recommended_next_step": "Najpierw odtwarzalny failing test, potem zmiana danych/konsumenta w osobnej gałęzi implementacyjnej.",
+    "product_change_in_audit": false
+  },
+  {
+    "id": "CKP-B-011",
+    "finding_id": "CKP-A-011",
+    "priority": 3,
+    "action_type": "verify_hypothesis",
+    "scope": "profiles/*.json są walidowanymi opisami, bez znalezionego podłączenia do app runtime",
+    "acceptance_test": [
+      "Oznaczyć role pliku; jeśli operacyjny, zmienić pole w profilu i wykazać różnicę request body; jeśli referencyjny, test nie może reklamować runtime coverage."
+    ],
+    "migration_risk": "Nie podłączać automatycznie samej dokumentacji do sieci ani nie przenosić credential authority.",
+    "dependencies": [],
+    "recommended_next_step": "Najpierw odtwarzalny failing test, potem zmiana danych/konsumenta w osobnej gałęzi implementacyjnej.",
+    "product_change_in_audit": false
+  }
+]

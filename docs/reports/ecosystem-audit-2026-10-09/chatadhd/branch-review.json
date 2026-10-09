@@ -1,0 +1,255 @@
+{
+  "schema": "klbt.audit.branch-review/1",
+  "repo": "klb-t/chatadhd",
+  "main_sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "index_source": {
+    "path": "docs/reports/INDEX.md",
+    "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9"
+  },
+  "review_date": "2026-10-09",
+  "branches": [
+    {
+      "branch": "gpt/research-jev-validation-2026-10-05",
+      "sha": "0f52ac5f262bf615560c7adf12d31af85eade6e5",
+      "merge_base": "e4109df7e4af22b461def5f7d62e268d9b9a8825",
+      "cherry_equivalent_commit_count": 47,
+      "non_equivalent_commits": [
+        "37a65efab8927f5fa3901b1db4237a7bbb69e141",
+        "957819e9e17da29603a6587cc9d543a455ccef8e",
+        "dee0923a593b9db3c6bb8340fd666a69c9330354",
+        "dbc4f4d6017e8210975d3b7c47e18f3f386e3c3a",
+        "abd2f33ae8f41171841b539dc4c27a096a8362d6",
+        "99bda03cac420f5f8fa3d3a2e5318c9ade74a983",
+        "9354a7a559a463e1447477427238d63cdf180540",
+        "0f52ac5f262bf615560c7adf12d31af85eade6e5"
+      ],
+      "all_branch_diff_file_count": 1058,
+      "conclusion": "Narzędzia badawcze offline i projekcja publicznych agregatów, nie zmiana runtime aplikacji. Ostatni commit 0f52ac5 dodaje allowlistowy eksporter z private validation commitments; nie stanowi wykonania nowej walidacji Jev.",
+      "status_vs_index": "INDEX poprawnie nie zalicza tego do nowych wyników modeli. Report na tip nadal wycofuje syntetyczny dispatch, wynik nowych rodzin null, 0 własnych paid calls. Najnowszy public projector rozszerza narzędzia względem wcześniejszego 7C reportu.",
+      "actual_improvement": "Eksporter buduje nowe publiczne pola z allowlist, wiąże private validation SHA i metody, opisuje stratę projekcji; to materialna ochrona na ścieżce eksportu badawczego, nie pełny publiczny replay.",
+      "not_fixed": "Brak nowych odpowiedzi/cost evidence; brak 7C dedicated real-source freeze. Brak podłączenia tej projekcji do native graph store/UI/preset selection; export grafu to artifact, nie dowód runtime consumption.",
+      "evidence": [
+        {
+          "file": "docs/reports/research-jev-validation-2026-10-05.md",
+          "lines": [
+            3,
+            21
+          ],
+          "type": "deklaracja statusu autorów"
+        },
+        {
+          "file": "loom/tools/structure/jev_public_projection_v1.py",
+          "lines": [
+            165,
+            256
+          ],
+          "type": "prześledzona konstrukcja allowlist i hash binding"
+        },
+        {
+          "file": "loom/tools/structure/jev_public_projection_v1.py",
+          "lines": [
+            259,
+            314
+          ],
+          "type": "prześledzony eksport packetu i evidence boundary"
+        },
+        {
+          "file": "loom/tools/structure/jev_dispatch_binding_v1.py",
+          "lines": [
+            1,
+            8
+          ],
+          "type": "offline binding; pełny moduł sparsowany AST"
+        }
+      ],
+      "recommendation": "Odbierać selektywnie narzędzia z unikalnych commitów po nowej bramce; nigdy nie uruchamiać wycofanego dispatchu ani nie uznawać eksportera za wyniki.",
+      "non_equivalent_changed_file_denominator": 441,
+      "non_equivalent_changed_groups": {
+        "docs/reports": 1,
+        "docs/research": 434,
+        "loom/tools": 6
+      },
+      "production_runtime_paths_changed": [],
+      "full_product_runtime_change": false,
+      "comparison_method": "git cherry -v main ref (patch-equivalent duplicates excluded); unique commits show --name-only, code/docs inspected read-only. main...ref diff alone is misleading after rebases.",
+      "verification": "Statyczna analiza zakresu zmian, wybranych entrypointów i publicznych raportów. Nie importowano modułów, nie uruchamiano generatorów/transportów/testów gałęzi ani nie odczytywano prywatnych data/ZIP."
+    },
+    {
+      "branch": "gpt/research-prompt-preferences-2026-10-05",
+      "sha": "8e9d31ad00d2f2c3e1efbabf48054203bdc9b2e5",
+      "merge_base": "e4109df7e4af22b461def5f7d62e268d9b9a8825",
+      "cherry_equivalent_commit_count": 46,
+      "non_equivalent_commits": [
+        "7b35923e1e74809bdc81353ba7dd833ffd65f72e",
+        "da3eb54f5dac455a2bd78660eabafbadb20589f3",
+        "1a81ebff6dfcb6ac6628daaa1663ab0600523037",
+        "8e9d31ad00d2f2c3e1efbabf48054203bdc9b2e5"
+      ],
+      "all_branch_diff_file_count": 558,
+      "conclusion": "Materializer/scorer i zachowane niewykonane przygotowanie. Nie zmienia kodu produktu i nie wykonuje real-data badania.",
+      "status_vs_index": "Zgodne z INDEX: poza main pozostają przygotowanie i narzędzia, 0 nowych odpowiedzi. Końcowy handoff czekał na źródła; późniejszy intake/real preparation w innych branchach częściowo zastępuje ten punkt wznowienia.",
+      "actual_improvement": "Strict first-response scoring, zachowanie mianowników i missing values oraz portable ModelProfile metric projection.",
+      "not_fixed": "Metryki profili są projekcją, native_graph_write=False. Stary syntetyczny panel wycofany, parametry jakości niezmierzone. Nie naprawia doboru presetów w produkcyjnej aplikacji.",
+      "evidence": [
+        {
+          "file": "docs/reports/research-prompt-preferences-2026-10-05.md",
+          "lines": [
+            1,
+            20
+          ],
+          "type": "deklaracja statusu autorów"
+        },
+        {
+          "file": "docs/research/model_research_2026-10-04/express20261005/prompt-parameters-v1/prepare.py",
+          "lines": [
+            238,
+            450
+          ],
+          "type": "prześledzony scorer"
+        },
+        {
+          "file": "docs/research/model_research_2026-10-04/express20261005/prompt-parameters-v1/prepare.py",
+          "lines": [
+            453,
+            510
+          ],
+          "type": "portable metric projection, nie zapis native"
+        }
+      ],
+      "recommendation": "Zachować scorer i jego testy; nie promować starego prepared manifest do aktywnej kolejki. Real adapter ffe6443 używa późniejszego materializera tej gałęzi.",
+      "non_equivalent_changed_file_denominator": 155,
+      "non_equivalent_changed_groups": {
+        "docs/reports": 1,
+        "docs/research": 154
+      },
+      "production_runtime_paths_changed": [],
+      "full_product_runtime_change": false,
+      "comparison_method": "git cherry -v main ref (patch-equivalent duplicates excluded); unique commits show --name-only, code/docs inspected read-only. main...ref diff alone is misleading after rebases.",
+      "verification": "Statyczna analiza zakresu zmian, wybranych entrypointów i publicznych raportów. Nie importowano modułów, nie uruchamiano generatorów/transportów/testów gałęzi ani nie odczytywano prywatnych data/ZIP."
+    },
+    {
+      "branch": "gpt/real-prompt-preparation-2026-10-05",
+      "sha": "ffe6443e82d71adde07ee899c650925e7afc37b3",
+      "merge_base": "e4109df7e4af22b461def5f7d62e268d9b9a8825",
+      "cherry_equivalent_commit_count": 47,
+      "non_equivalent_commits": [
+        "62d1b054657481e2a616144d4474cc9cc6a6dde9",
+        "a8ac2bbe603f3afea44b6035ec958f8d3b69cddf",
+        "59df6dd0b9159be7e5ebd195e32eea288980df2e",
+        "ffe6443e82d71adde07ee899c650925e7afc37b3"
+      ],
+      "all_branch_diff_file_count": 638,
+      "conclusion": "Rzeczywiste przygotowanie offline przyjmuje prywatne źródła i produkuje zamrożony panel; bez transportu dostawcy, bez eksperymentalnych odpowiedzi, bez native write.",
+      "status_vs_index": "Późniejszy od starego statusu źródłowego 7B; report deklaruje 3 rozmowy/44 wiadomości/128 request bodies przygotowane prywatnie. Nie odtworzono tych danych w tym audycie. Końcowy akapit o zaległej integracji W11/W6/attempt-identity jest przestarzały względem aktualnego INDEX 2026-10-05.",
+      "actual_improvement": "Odrębny prepare_real adapter konsumuje ancestry-preserving private graph view i provisional reference; freeze/operation hashes oddziela od historycznych ośmiu operacji.",
+      "not_fixed": "Referencja nie jest niezależnie adjudykowanym gold; adapter odrzuca branching/ambiguous clocks. Brak dedicated 7C real-data j_active/j_directed preparation, płatnego preflight/collection i nowych rankingów.",
+      "evidence": [
+        {
+          "file": "docs/reports/recovery-real-prompts-2026-10-05.md",
+          "lines": [
+            9,
+            27
+          ],
+          "type": "deklarowane liczby autorów; nie powtórzone prywatnie"
+        },
+        {
+          "file": "docs/reports/recovery-real-prompts-2026-10-05.md",
+          "lines": [
+            39,
+            64
+          ],
+          "type": "jawne pozostałe granice + przestarzały końcowy stan kolejki"
+        },
+        {
+          "file": "docs/research/model_research_2026-10-04/express20261005/real-prompt-recovery-20261005/prepare_real.py",
+          "lines": [
+            103,
+            204
+          ],
+          "type": "compile_sources z ancestry validation i jawną projekcją"
+        },
+        {
+          "file": "docs/research/model_research_2026-10-04/express20261005/real-prompt-recovery-20261005/prepare_real.py",
+          "lines": [
+            221,
+            300
+          ],
+          "type": "private bundle i dispatch_ready=False"
+        }
+      ],
+      "recommendation": "Punkt wznowienia: wykorzystać jawny adapter i prywatny checkpoint z tego SHA po weryfikacji źródeł oraz decyzji o provisional reference; nie wznawiać starej kolejki W11/W6 i nie robić drugiego intake równolegle.",
+      "non_equivalent_changed_file_denominator": 21,
+      "non_equivalent_changed_groups": {
+        "docs/reports": 2,
+        "docs/research": 19
+      },
+      "production_runtime_paths_changed": [],
+      "full_product_runtime_change": false,
+      "comparison_method": "git cherry -v main ref (patch-equivalent duplicates excluded); unique commits show --name-only, code/docs inspected read-only. main...ref diff alone is misleading after rebases.",
+      "verification": "Statyczna analiza zakresu zmian, wybranych entrypointów i publicznych raportów. Nie importowano modułów, nie uruchamiano generatorów/transportów/testów gałęzi ani nie odczytywano prywatnych data/ZIP."
+    },
+    {
+      "branch": "gpt/real-source-intake-2026-10-05",
+      "sha": "62d1b054657481e2a616144d4474cc9cc6a6dde9",
+      "merge_base": "e4109df7e4af22b461def5f7d62e268d9b9a8825",
+      "cherry_equivalent_commit_count": 47,
+      "non_equivalent_commits": [
+        "62d1b054657481e2a616144d4474cc9cc6a6dde9"
+      ],
+      "all_branch_diff_file_count": 626,
+      "conclusion": "Dodaje instrument weryfikacji prywatnej kapsuły i osobny graph view; to naprawa wejścia badawczego, nie zmiana importera ChatADHD/native GraphPacket store.",
+      "status_vs_index": "Źródłowy blok przygotowania jest nowszy niż stare statusy czekania na źródła; ten commit jest bezpośrednim przodkiem ffe6443, więc nie jest osobnym nieprzyjętym pakietem obok całej real-prompt-preparation.",
+      "actual_improvement": "intake.py sprawdza hash payloadów, parent coverage, cykle i deklarowane children; buduje topologiczny widok bez twierdzenia, że kolejność rodzeństwa jest chronologią. Public receipt konstruowany allowlistą.",
+      "not_fixed": "Nie podmienia dawnych requestów; samo istnienie graph view nie naprawia ich historycznej projekcji ani nie dowodzi skutku dla jakości modeli. Brak konsumującego tę projekcję kodu produktu w przyroście.",
+      "evidence": [
+        {
+          "file": "docs/research/model_research_2026-10-04/express20261005/real-source-recovery-20261005/README.md",
+          "lines": [
+            18,
+            36
+          ],
+          "type": "deklaracja defektu i jawnej addytywnej korekty"
+        },
+        {
+          "file": "docs/research/model_research_2026-10-04/express20261005/real-source-recovery-20261005/intake.py",
+          "lines": [
+            100,
+            221
+          ],
+          "type": "prześledzona projekcja grafu"
+        },
+        {
+          "file": "docs/research/model_research_2026-10-04/express20261005/real-source-recovery-20261005/intake.py",
+          "lines": [
+            224,
+            293
+          ],
+          "type": "verify_and_project/public allowlist"
+        }
+      ],
+      "recommendation": "Traktować jako część real-prompt-preparation; adaptera badawczego nie ogłaszać naprawą produkcyjnego importera. Ewentualne przeniesienie mechanizmu wymaga testu w real consumerze.",
+      "non_equivalent_changed_file_denominator": 9,
+      "non_equivalent_changed_groups": {
+        "docs/research": 9
+      },
+      "production_runtime_paths_changed": [],
+      "full_product_runtime_change": false,
+      "comparison_method": "git cherry -v main ref (patch-equivalent duplicates excluded); unique commits show --name-only, code/docs inspected read-only. main...ref diff alone is misleading after rebases.",
+      "verification": "Statyczna analiza zakresu zmian, wybranych entrypointów i publicznych raportów. Nie importowano modułów, nie uruchamiano generatorów/transportów/testów gałęzi ani nie odczytywano prywatnych data/ZIP."
+    }
+  ],
+  "cross_branch_relations": [
+    {
+      "source": "62d1b054657481e2a616144d4474cc9cc6a6dde9",
+      "target": "ffe6443e82d71adde07ee899c650925e7afc37b3",
+      "relation": "ancestor",
+      "verified": true
+    }
+  ],
+  "limits": [
+    "Nie czytano eval/real-holdout-key ani blind/holdout treści.",
+    "Nie otwierano prywatnych korpusów, prepared bodies ani archiwów. Publiczne raporty mogą referować liczniki/hashes; to deklaracje autorów, nie niezależnie odtworzone wyniki.",
+    "Nie sprawdzono jeszcze gałęzi sesji B/C 2026-10-09; root sprawdza je raz na końcu.",
+    "Patch-equivalence nie jest dowodem wszystkich semantycznych skutków; usuwa tylko jawne duplikaty commitów z zakresu nieprzyjętych zmian."
+  ]
+}

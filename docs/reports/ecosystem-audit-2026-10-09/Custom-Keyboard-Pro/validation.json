@@ -1,0 +1,16 @@
+{
+  "artifact_evidence_locations": "PASS: all finding/evidence ranges exist at pinned source paths",
+  "profile_validator": {
+    "command": "python3 validate_profiles.py",
+    "exit": 0,
+    "result": "3/3 profiles, only schemaVersion/profileId/abstractionId presence"
+  },
+  "goal_core": {
+    "command": "bash tools/test-goal-core.sh",
+    "exit": 1,
+    "result": "BLOCKED: Install kotlinc or run the pinned Android bootstrap; set IO_TOOLCHAIN_ROOT if needed. No tests executed."
+  },
+  "android_full_suite": "NOT RUN; 974/974 in docs/RESUME is prior 2026-10-02 evidence, not this audit result",
+  "paid_model_calls": 0,
+  "paid_ci_runs": 0
+}

@@ -1,0 +1,228 @@
+{
+  "schema": "klbt.audit-scanner.rules/1",
+  "max_blob_bytes": 2097152,
+  "excluded_content_path_regexes": [
+    "(?i)(^|/)[^/]*(blind|holdout|heldout|hold-out|held-out)[^/]*(/|$)",
+    "(?i)(^|/)(\\.env(?:\\.[^/]*)?|credentials?[^/]*|secrets?[^/]*|[^/]*private[-_]key[^/]*)(/|$)"
+  ],
+  "scanned_categories": [
+    "product",
+    "tooling",
+    "research",
+    "build"
+  ],
+  "code_extensions": [
+    ".py",
+    ".kt",
+    ".kts",
+    ".java",
+    ".cpp",
+    ".cc",
+    ".c",
+    ".h",
+    ".hpp",
+    ".cxx",
+    ".hxx",
+    ".js",
+    ".jsx",
+    ".ts",
+    ".tsx",
+    ".mjs",
+    ".cjs",
+    ".rs",
+    ".go",
+    ".swift",
+    ".sh",
+    ".bash",
+    ".ps1",
+    ".html",
+    ".css",
+    ".scss",
+    ".qml",
+    ".vue",
+    ".svelte",
+    ".gradle"
+  ],
+  "classification_rules": [
+    {
+      "category": "vendor",
+      "path_regex": "(^|/)(vendor|vendors|third_party|third-party|thirdparty|external|node_modules|vendored)(/|$)"
+    },
+    {
+      "category": "generated",
+      "path_regex": "(^|/)(generated|__pycache__|dist|build|\\.gradle|out|coverage)(/|$)|(^|/)(package-lock\\.json|yarn\\.lock|pnpm-lock\\.yaml|Cargo\\.lock|gradle-wrapper\\.jar)$|\\.(min\\.js|map|pyc)$"
+    },
+    {
+      "category": "history",
+      "path_regex": "(^|/)(history|historical|archive|archives|archived|legacy|attic|recovered|snapshots)(/|$)"
+    },
+    {
+      "category": "tests",
+      "path_regex": "(^|/)(tests?|testdata|fixtures?|__tests__|androidTest|jvmTest)(/|$)|(^|/)(test_[^/]*|[^/]*_test)\\.[^/]+$|[./](test|spec)\\.[^/]+$|Test\\.(kt|java)$"
+    },
+    {
+      "category": "docs",
+      "path_regex": "(^|/)(docs?|documentation)(/|$)|\\.(md|rst|adoc)$|(^|/)(LICENSE[^/]*|COPYING[^/]*)$"
+    },
+    {
+      "category": "research",
+      "path_regex": "(^|/)(research|experiments?|benchmarks?|notebooks?)(/|$)"
+    },
+    {
+      "category": "tooling",
+      "path_regex": "(^|/)(tools?|scripts?|\\.github|\\.codex|\\.claude)(/|$)"
+    },
+    {
+      "category": "build",
+      "path_regex": "(^|/)(CMakeLists\\.txt|Makefile|Dockerfile[^/]*|build\\.gradle(\\.kts)?|settings\\.gradle(\\.kts)?|setup\\.py|conanfile\\.py)$|\\.cmake$"
+    },
+    {
+      "category": "data",
+      "path_regex": "\\.(json|jsonl|yaml|yml|toml|xml|csv|tsv|ini|conf|cfg|properties|lock)$|(^|/)(data|packs?|profiles?|presets?|resources?|res)(/|$)"
+    },
+    {
+      "category": "assets",
+      "path_regex": "\\.(png|jpg|jpeg|webp|gif|svg|ico|pdf|mp3|wav|mp4|woff2?|ttf|zip|gz|apk|aab|jar|so|dll|bin)$"
+    }
+  ],
+  "signal_rules": [
+    {
+      "id": "endpoint.literal",
+      "target": "literal",
+      "regex": "(?i)https?://|wss?://|localhost(:|/)|127\\.0\\.0\\.1"
+    },
+    {
+      "id": "model.literal",
+      "target": "literal",
+      "regex": "(?i)\\b(gpt[-_]|claude[-_]|gemini[-_]|llama[-_]|mistral[-_]|deepseek[-_]|qwen[-_])"
+    },
+    {
+      "id": "prompt.literal",
+      "target": "literal",
+      "regex": "(?i)you are |respond (only|with)|return (only|a json|valid json)|system prompt"
+    },
+    {
+      "id": "prompt.context",
+      "target": "context",
+      "regex": "(?i)\\b(prompt|instruction|system_message|systemPrompt|recipe)\\w*\\b"
+    },
+    {
+      "id": "ui_text.context",
+      "target": "context",
+      "regex": "(?i)\\b(Text|label|placeholder|title|contentDescription|setText|textContent|innerHTML|toast|snackbar|aria-label)\\b"
+    },
+    {
+      "id": "policy_value.context",
+      "target": "context",
+      "regex": "(?i)(threshold|weight|limit|budget|timeout|temperature|top_k|top_p|max_tokens|confidence|frequency|volume|retention|retry|cap|penalty)"
+    },
+    {
+      "id": "regex.context",
+      "target": "context",
+      "regex": "\\b(re\\.(compile|search|match|findall|finditer|sub)|Regex|RegExp|Pattern\\.compile|regex|regex_match|regex_search)\\b"
+    },
+    {
+      "id": "branch.control",
+      "target": "code",
+      "regex": "\\b(if|else|elif|switch|when|case|match)\\b"
+    },
+    {
+      "id": "exception.control",
+      "target": "code",
+      "regex": "\\b(try|except|catch|throw|raise|finally)\\b"
+    },
+    {
+      "id": "fallback.control",
+      "target": "code",
+      "regex": "\\b(fallback|default|orElse|orElseGet|getOrDefault|getOrElse|value_or|unwrap_or|takeIf|takeUnless)\\w*\\b|\\?\\?|\\?:"
+    },
+    {
+      "id": "missing.control",
+      "target": "code",
+      "regex": "\\b(isEmpty|isNotEmpty|isNullOrEmpty|isNullOrBlank|None|null|undefined|has_value|isPresent)\\b"
+    },
+    {
+      "id": "selection.control",
+      "target": "code",
+      "regex": "\\b(filter|filterNot|filterIsInstance|select|choose|findFirst|findAny|firstOrNull|first|last|takeWhile|dropWhile)\\w*\\b"
+    },
+    {
+      "id": "truncation.control",
+      "target": "code",
+      "regex": "\\b(take|drop|slice|substring|substr|truncate|trim|clip)\\w*\\b"
+    },
+    {
+      "id": "dedup.control",
+      "target": "code",
+      "regex": "\\b(distinct|distinctBy|unique|dedup|toSet|set)\\w*\\b"
+    },
+    {
+      "id": "sorting.control",
+      "target": "code",
+      "regex": "\\b(sorted|sort|sortedBy|sortedByDescending|sortWith|reverse|reversed)\\w*\\b"
+    },
+    {
+      "id": "network.control",
+      "target": "code",
+      "regex": "\\b(fetch|requests|urlopen|httpx|aiohttp|HttpClient|OkHttpClient|Retrofit|Socket|sendRequest|post|upload)\\b"
+    },
+    {
+      "id": "inference_acceptance.control",
+      "target": "code",
+      "regex": "(?i)\\b(auto_?accept|auto_?approve|accept_?inferred|promote|confirmed|confirmation|model_inferred)\\w*\\b"
+    },
+    {
+      "id": "settings_inheritance.control",
+      "target": "code",
+      "regex": "(?i)\\b(inherit|overlay|override|merge|resolve|effective|precedence|excluded|exclusion)\\w*\\b"
+    },
+    {
+      "id": "call_sequence.control",
+      "target": "code",
+      "regex": "\\b(pipeline|strategies|handlers|fallbacks|steps|chain|then|andThen)\\w*\\b"
+    },
+    {
+      "id": "default_argument.lexical",
+      "target": "code",
+      "regex": "[,(]\\s*[A-Za-z_][A-Za-z0-9_]*(?:\\s*:\\s*[A-Za-z_][A-Za-z0-9_.<>?]*)?\\s*=\\s*[^=]"
+    },
+    {
+      "id": "boolean.literal",
+      "target": "code",
+      "regex": "\\b(true|false|True|False|TRUE|FALSE)\\b"
+    }
+  ],
+  "r42_exceptions": [
+    {
+      "id": "R42.1",
+      "name": "code_data_contract",
+      "reason": "Contract keys/schema IDs/pack filenames may remain only when changing them requires corresponding mechanism changes."
+    },
+    {
+      "id": "R42.2",
+      "name": "external_standard",
+      "reason": "Values fixed by an external standard, including its grammar, are mechanisms; domain-content regexes are data."
+    },
+    {
+      "id": "R42.3",
+      "name": "mechanism_vocabulary",
+      "reason": "Lifecycle states, machine errors and operation names are allowed internally; user-visible translations remain data."
+    },
+    {
+      "id": "R42.4",
+      "name": "contract_serialization",
+      "reason": "Serialization formats required for interoperability may remain; discretionary presentation formats require review."
+    },
+    {
+      "id": "R42.5",
+      "name": "minimal_bootstrap",
+      "reason": "Only the minimum required to locate data, such as the data-dir env key or sentinel, is bootstrap."
+    },
+    {
+      "id": "R42.6",
+      "name": "developer_diagnostics",
+      "reason": "Logs/assertions may remain, preferably event IDs and parameters; user-visible errors are not automatically exempt."
+    }
+  ],
+  "exception_assessments": []
+}

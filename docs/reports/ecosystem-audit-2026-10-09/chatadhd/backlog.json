@@ -1,0 +1,163 @@
+[
+  {
+    "id": "CH-001-B",
+    "finding": "CH-001",
+    "priority": "P1",
+    "status": "confirmed_open",
+    "task": "Istniejący RuntimeProfile/DefaultLayers: startowy preset konfiguracji z jawnym pochodzeniem; migracja legacy jako dane.",
+    "acceptance_test": [
+      "Zmiana domyślnego modelu/promptu w packu działa w nowym katalogu bez edycji C++/Python.",
+      "Błędny pack daje jawny błąd; dopuszczalny embedded pack jest generowany z tych samych danych.",
+      "Wykluczenie nie wraca przez Config fallback po restarcie."
+    ],
+    "migration_risk": "Zachować istniejące jawne ustawienia i znaczenie braku; nie wykasować modeli użytkownika.",
+    "dependencies": []
+  },
+  {
+    "id": "CH-002-B",
+    "finding": "CH-002",
+    "priority": "P1",
+    "status": "confirmed_open",
+    "task": "Istniejąca metoda/wersja/receptura z jawnie wybraną strategią prefix/chunks/full oraz śladem pominiętych zakresów.",
+    "acceptance_test": [
+      "Dwie wersje promptu i limitów zmieniają dokładny mock request i produced_by hash.",
+      "Tekst z kluczową treścią po znaku 3000: full/chunks zachowuje ją; prefix jawnie raportuje utratę.",
+      "Chat max_tokens nie musi sterować analizą: ma istnieć osobny rzeczywiście konsumowany parametr analizy."
+    ],
+    "migration_risk": "Zmiana ekstrakcji może zmienić cały graf i jakość; dotychczasowy preset zachować jako wersję.",
+    "dependencies": []
+  },
+  {
+    "id": "CH-003-B",
+    "finding": "CH-003",
+    "priority": "P1",
+    "status": "confirmed_open",
+    "task": "Jeden efektywny snapshot metody analizy w obrębie zadania, przekazany każdemu konsumentowi i zapisany w provenance.",
+    "acceptance_test": [
+      "Pack dodaje unikalny wzorzec: real-time, worker i fallback LLM wykrywają go z tym samym hashem.",
+      "Uszkodzona nakładka ma ten sam jawny status w każdej ścieżce; nie podstawia builtinu."
+    ],
+    "migration_risk": "Należy ustalić zamrożenie per zadanie kontra dynamiczne przeładowanie; nie zmieniać danych w połowie analizy.",
+    "dependencies": []
+  },
+  {
+    "id": "CH-004-B",
+    "finding": "CH-004",
+    "priority": "P1",
+    "status": "confirmed_open",
+    "task": "Podłączyć istniejący profil i DefaultLayers do konstrukcji kontekstu i transportu z user_id, revision oraz decyzją dla używanych danych; bez równoległej architektury.",
+    "acceptance_test": [
+      "Ustawienie deny/send dla kategorii blokuje ją w dokładnym request body zwykłego czatu przy mock transporcie.",
+      "Zmiana default/exclusion w UI zmienia efekt w czacie lub jawnie blokuje brak ustawienia; receipt zawiera revision.",
+      "Test równoczesnej zmiany profilu nie miesza wersji."
+    ],
+    "migration_risk": "Nie rozszerzać zakresu zgód domyślnie; trzeba odwzorować dane wejścia na kategorie, zachować jawne zgody i migrację.",
+    "dependencies": []
+  },
+  {
+    "id": "CH-005-B",
+    "finding": "CH-005",
+    "priority": "P1",
+    "status": "confirmed_open",
+    "task": "Istniejący UsagePolicy i wersjonowany wybór trybu worker realtime/batch/local, konsumowane przed każdym odpowiednim transportem.",
+    "acceptance_test": [
+      "Ustawiony budget=0 daje zero mock requests we wszystkich wymienionych ścieżkach.",
+      "Tryb online/batch pozostaje oddzielnym ustawieniem także przy obecności batch key i długiej kolejce.",
+      "Zwiększenie ×10 korzysta z istniejącej decyzji/pokwitowania, a replay nie wysyła ponownie."
+    ],
+    "migration_risk": "Należy ujednolicić ledger i uniknąć podwójnych rezerwacji; domyślna migracja nie może sama przyznać nowych zgód.",
+    "dependencies": []
+  },
+  {
+    "id": "CH-006-B",
+    "finding": "CH-006",
+    "priority": "P1",
+    "status": "confirmed_open",
+    "task": "Istniejąca polityka admission oraz method/result/provenance powiązane z wynikowymi relacjami; zachować oddzielnie obserwacje i inferencje.",
+    "acceptance_test": [
+      "To samo syntetyczne LLM output daje candidate bez canon write, ask bez akceptacji i automatic z jawnie wybraną polityką.",
+      "Każda wynikowa relacja wskazuje metodę/wersję/parametry i pochodzenie; nie tylko wiadomość zbiorczo."
+    ],
+    "migration_risk": "Migracja istniejących nieoznaczonych relacji nie może dopisać nieznanej pewności/pochodzenia jako faktu.",
+    "dependencies": []
+  },
+  {
+    "id": "CH-007-B",
+    "finding": "CH-007",
+    "priority": "P2",
+    "status": "confirmed_open",
+    "task": "Versioned ContextRenderer/HistoryWeightRecipe w istniejącej metodzie budowania kontekstu.",
+    "acceptance_test": [
+      "Dwa presety progów/renderera zmieniają tylko właściwe wiadomości i hash context recipe.",
+      "Obecne zachowanie pozostaje reprodukowalnym presetem; active task provenance zachowana."
+    ],
+    "migration_risk": "Wpływ na prompty i cache providerów; nie zmieniać historii źródłowej.",
+    "dependencies": []
+  },
+  {
+    "id": "CH-008-B",
+    "finding": "CH-008",
+    "priority": "P2",
+    "status": "confirmed_open",
+    "task": "Istniejący profil UI/perspektywy z katalogiem etykiet, default controls i początkową kompozycją.",
+    "acceptance_test": [
+      "Zmiana locale i początkowego układu w danych zmienia UI bez kompilacji.",
+      "Advanced edytuje identyczne dane użyte przez Basic, bez drugich defaultów."
+    ],
+    "migration_risk": "Migracja zapisanych workspace schema v1/v2; zachować indywidualne parametry.",
+    "dependencies": []
+  },
+  {
+    "id": "CH-009-B",
+    "finding": "CH-009",
+    "priority": "P1",
+    "status": "confirmed_open",
+    "task": "Perspektywa, instancja workflow, stan/wyzwalacz/receipt jako obiekty istniejącego grafu; lokalny cache jako jawna projekcja.",
+    "acceptance_test": [
+      "Po utracie localStorage można odzyskać konkretną perspektywę i sesję po ID z grafu, bez ponownego dispatch.",
+      "Grafowy snapshot nie udaje dowodu wykonania: powiązanie z faktycznym native receipt ma osobny status."
+    ],
+    "migration_risk": "Brak CAS w starym config, nieznany outcome zdalnych operacji i konflikty między urządzeniami.",
+    "dependencies": []
+  },
+  {
+    "id": "CH-010-B",
+    "finding": "CH-010",
+    "priority": "P1",
+    "status": "confirmed_open",
+    "task": "MergePolicy z kluczem tożsamości, konfliktem typów i parametrami kanałów; wynik zachowuje oba świadectwa lub jawny powód wyboru.",
+    "acceptance_test": [
+      "Kolizja tej samej nazwy przy różnych typach zachowuje oba wyniki/konflikt zgodnie z wybraną strategią.",
+      "Waga pomocniczego kanału i polityka dedup zmieniają się przez dane."
+    ],
+    "migration_risk": "Więcej encji/zmiana tożsamości; wymaga replay zamiast niejawnego merge istniejących danych.",
+    "dependencies": []
+  },
+  {
+    "id": "CH-011-B",
+    "finding": "CH-011",
+    "priority": "P1",
+    "status": "confirmed_open",
+    "task": "FailurePolicy zadania: retry/backoff/pause/dead-letter/mark-final z jawną przyczyną i historią prób.",
+    "acceptance_test": [
+      "Syntetyczny błąd tymczasowy nie jest sukcesem; wybrana retry policy pozostawia zadanie możliwe do ponowienia.",
+      "Final-error pozostaje dostępną jawną strategią; bez podwójnego płatnego wywołania przy unknown outcome."
+    ],
+    "migration_risk": "Automatyczne retry może powielić koszt/skutek; zachować first response i attempt identity.",
+    "dependencies": []
+  },
+  {
+    "id": "CH-015-B",
+    "finding": "CH-015",
+    "priority": "P1",
+    "status": "verification_needed",
+    "task": "Uzupełnić istniejące obiekty experiment/workflow/trigger/queue/result/evidence, z Basic/Advanced/Expert jako edycją tych samych danych.",
+    "acceptance_test": [
+      "Opt-in=false i checkpoint daje zero zadań/transportów.",
+      "Opt-in=true + 3/5 wariantów lub N-wymiarowy plan respektuje zakres/częstotliwość/wolumen/budget i zapisuje wybrany sampling.",
+      "Basic preset ma link do liczbowego evidence; Advanced edytuje te same IDs i dane, bez osobnego silnika."
+    ],
+    "migration_risk": "Nie uruchamiać automatycznych eksperymentów przy migracji i nie awansować słabych badań na default.",
+    "dependencies": []
+  }
+]

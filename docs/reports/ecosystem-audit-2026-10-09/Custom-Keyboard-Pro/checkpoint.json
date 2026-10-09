@@ -1,0 +1,25 @@
+{
+  "repo": "klb-t/Custom-Keyboard-Pro",
+  "branch": "main",
+  "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+  "date": "2026-10-09",
+  "stage": "repository-audit-closed",
+  "findings": 12,
+  "classifications": {
+    "naruszenie": 7,
+    "już naprawione": 1,
+    "dopuszczalny mechanizm": 2,
+    "niepewne": 2
+  },
+  "product_modified": false,
+  "push_owner": "root integrator",
+  "note": "Samodzielne wyniki gotowe; oczekiwanie na wspólny automatyczny skan nie blokuje checkpointu.",
+  "coverage": {
+    "tracked_entries": 461,
+    "automated_code_entries": 252,
+    "automatic_candidates": 40530,
+    "semantic_product_files_touched": 28,
+    "semantic_product_files_denominator": 233
+  },
+  "remaining": "Android tests blocked by missing Kotlin toolchain; CKP-A-011/012 remain hypotheses; 205 product files without semantic path review; B/C cross-review by root."
+}

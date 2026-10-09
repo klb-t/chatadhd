@@ -1,0 +1,8 @@
+{
+  "inventory_sha256": "1f25c24a9fdbdc36e882aa2ed48383d6bcd2f0dd8b2c9678b6b7ab5e54202357",
+  "inventory_entries": 603,
+  "candidate_bytes": 18421244,
+  "candidate_sha256": "3e04405365d97b4f2f6b8d2475f88b775cc00294d12f540e8ba65d86337288d0",
+  "candidate_publication": "regenerable intermediate; not committed",
+  "reproduce": "Run tools/ecosystem-audit-2026-10-09/scan.py at SHA and rules hashes from summary.json. IDs and file hashes retained; candidates are not violations."
+}

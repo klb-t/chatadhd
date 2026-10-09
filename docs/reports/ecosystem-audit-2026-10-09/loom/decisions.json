@@ -1,0 +1,220 @@
+[
+  {
+    "id": "DEC-LOOM-001",
+    "finding_id": "LOOM-001",
+    "repo": "klb-t/loom",
+    "sha": "0b23fa64c1de955c947349feef7bb67c05763f97",
+    "decision": "Próg 20 znaków blokuje analizę krótkich wiadomości; licznik ma inny predykat",
+    "visibility": "ukryta w kodzie",
+    "current_behavior": "Dla trzech pending (krótkiej aktywnej, długiej aktywnej, długiej excluded) licznik zwraca 3, selektor 1. Krótka aktywna wiadomość nie może być analizowana tą metodą nawet przy zwiększeniu limit.",
+    "alternatives": [
+      {
+        "name": "Długość >=20 + aktywne",
+        "status": "jedyna polityka selektora"
+      },
+      {
+        "name": "Wszystkie pending",
+        "status": "istnieje wyłącznie w liczniku"
+      },
+      {
+        "name": "Konfigurowalna kwalifikacja z powodem wykluczenia",
+        "status": "brak"
+      }
+    ],
+    "status": "naruszenie",
+    "source": {
+      "file": "src/db_messages.cpp",
+      "line_start": 156,
+      "line_end": 162
+    },
+    "user_intent": "Nie wywodzimy zamiaru właściciela z samej implementacji."
+  },
+  {
+    "id": "DEC-LOOM-002",
+    "finding_id": "LOOM-002",
+    "repo": "klb-t/loom",
+    "sha": "0b23fa64c1de955c947349feef7bb67c05763f97",
+    "decision": "Polityki kolizji i tożsamości cicho zachowują albo nadpisują dane",
+    "visibility": "ukryta w kodzie",
+    "current_behavior": "Wstawienie tego samego node_id z nową treścią zachowuje starą treść i sygnalizuje sukces. Dwa dowody relacji tego samego typu między tymi samymi węzłami kończą w jednym rekordzie z metadanymi drugiego. get_or_create utożsamia label+kind.",
+    "alternatives": [
+      {
+        "name": "Legacy keep-first node / replace-link metadata",
+        "status": "aktywne"
+      },
+      {
+        "name": "Reject collision z details",
+        "status": "brak"
+      },
+      {
+        "name": "Versioned evidence / multiedge",
+        "status": "brak"
+      },
+      {
+        "name": "Merge z provenance i rozstrzygnięciem",
+        "status": "brak"
+      }
+    ],
+    "status": "naruszenie",
+    "source": {
+      "file": "src/db_graph.cpp",
+      "line_start": 7,
+      "line_end": 20
+    },
+    "user_intent": "Nie wywodzimy zamiaru właściciela z samej implementacji."
+  },
+  {
+    "id": "DEC-LOOM-003",
+    "finding_id": "LOOM-003",
+    "repo": "klb-t/loom",
+    "sha": "0b23fa64c1de955c947349feef7bb67c05763f97",
+    "decision": "Batch pomija wiadomości bez tekstu, nawet z załącznikiem",
+    "visibility": "ukryta w kodzie",
+    "current_behavior": "Wiadomość reprezentowana samym załącznikiem nie trafia do DB w batchu; metoda zwraca tylko liczbę dodanych, bez listy pominiętych ID/powodów. Pojedyncza ścieżka zgłasza błąd, wsadowa przechodzi dalej.",
+    "alternatives": [
+      {
+        "name": "Batch skip empty text",
+        "status": "aktywne"
+      },
+      {
+        "name": "Reject invalid entry with reason",
+        "status": "tylko pojedynczy insert"
+      },
+      {
+        "name": "Payload z attachment bez tekstu",
+        "status": "nieobsługiwany"
+      },
+      {
+        "name": "Quarantine/report skipped items",
+        "status": "brak"
+      }
+    ],
+    "status": "naruszenie",
+    "source": {
+      "file": "src/db_messages.cpp",
+      "line_start": 56,
+      "line_end": 91
+    },
+    "user_intent": "Nie wywodzimy zamiaru właściciela z samej implementacji."
+  },
+  {
+    "id": "DEC-LOOM-004",
+    "finding_id": "LOOM-004",
+    "repo": "klb-t/loom",
+    "sha": "0b23fa64c1de955c947349feef7bb67c05763f97",
+    "decision": "Domyślne dane i polityki SQLite są literałami, choć większość nie jest twardym limitem",
+    "visibility": "ukryta w kodzie",
+    "current_behavior": "Wywołujący może nadpisać wiele argumentów (limit, typ, weight), ale nie politykę otwarcia bazy. Zmiana domyślnych wartości dla wszystkich klientów wymaga rekompilacji.",
+    "alternatives": [
+      {
+        "name": "Domyślne argumenty i jawne override call-site",
+        "status": "aktywne częściowo"
+      },
+      {
+        "name": "Warstwowy profil defaultów",
+        "status": "brak"
+      },
+      {
+        "name": "SQLite system/bundled",
+        "status": "jawne opcje CMake, bundled bez źródła daje błąd"
+      }
+    ],
+    "status": "naruszenie",
+    "source": {
+      "file": "include/loom/db.h",
+      "line_start": 89,
+      "line_end": 142
+    },
+    "user_intent": "Nie wywodzimy zamiaru właściciela z samej implementacji."
+  },
+  {
+    "id": "DEC-LOOM-005",
+    "finding_id": "LOOM-005",
+    "repo": "klb-t/loom",
+    "sha": "0b23fa64c1de955c947349feef7bb67c05763f97",
+    "decision": "Otwarcie bazy bezwarunkowo oznacza ją jako wersję 4",
+    "visibility": "ukryta w kodzie",
+    "current_behavior": "Baza ze znacznikiem schematu nowszego niż 4, ale kompatybilnymi tabelami, jest ponownie oznaczana jako 4 bez porównania wersji. Brak jawnej decyzji reject/adapter/migrate.",
+    "alternatives": [
+      {
+        "name": "Repair columns + force schema_version=4",
+        "status": "aktywne"
+      },
+      {
+        "name": "Reject future version",
+        "status": "brak"
+      },
+      {
+        "name": "Explicit known version adapter",
+        "status": "brak"
+      }
+    ],
+    "status": "naruszenie",
+    "source": {
+      "file": "src/db.cpp",
+      "line_start": 153,
+      "line_end": 193
+    },
+    "user_intent": "Nie wywodzimy zamiaru właściciela z samej implementacji."
+  },
+  {
+    "id": "DEC-LOOM-006",
+    "finding_id": "LOOM-006",
+    "repo": "klb-t/loom",
+    "sha": "0b23fa64c1de955c947349feef7bb67c05763f97",
+    "decision": "Graf to prymitywy przechowania, nie podłączony model całej aplikacji",
+    "visibility": "ukryta w kodzie",
+    "current_behavior": "Node.kind, link_type, metadata_json pozwalają zapisać dowolne etykiety/JSON. Nie ma wykonujących się profili, metod, modeli, promptów, eksperymentów, context buildera, UI ani warstw defaultów.",
+    "alternatives": [
+      {
+        "name": "Generyczne node/link metadata CRUD",
+        "status": "zaimplementowane"
+      },
+      {
+        "name": "Pełny C ABI i application graph",
+        "status": "deklarowany, niewdrożony tutaj"
+      },
+      {
+        "name": "Aktywny kernel w chatadhd/loom",
+        "status": "wskazany w README, odrębny zakres audytu"
+      }
+    ],
+    "status": "niepewne",
+    "source": {
+      "file": "include/loom/loom.h",
+      "line_start": 44,
+      "line_end": 48
+    },
+    "user_intent": "Nie wywodzimy zamiaru właściciela z samej implementacji."
+  },
+  {
+    "id": "DEC-LOOM-007",
+    "finding_id": "LOOM-007",
+    "repo": "klb-t/loom",
+    "sha": "0b23fa64c1de955c947349feef7bb67c05763f97",
+    "decision": "Słownictwo mechanizmu i formaty zgodności mieszczą się w wyjątkach R42",
+    "visibility": "ukryta w kodzie",
+    "current_behavior": "EventBus obsługuje dowolną nazwę zdarzenia, snapshot handlers i re-entrant callback; nie wymusza katalogu domenowego. create_node/link przyjmują dowolny kind/link_type, więc domyślne entity/related nie stanowią zamkniętej ontologii.",
+    "alternatives": [
+      {
+        "name": "Dowolne nazwy event/kind/relation jako parametry",
+        "status": "aktywnie reprezentowalne"
+      },
+      {
+        "name": "Zamknięty enum typów dziedzinowych",
+        "status": "nie narzucony"
+      },
+      {
+        "name": "System/bundled SQLite",
+        "status": "jawnie wybrane przy build, bez cichego substytutu"
+      }
+    ],
+    "status": "dopuszczalny mechanizm",
+    "source": {
+      "file": "include/loom/event_bus.h",
+      "line_start": 14,
+      "line_end": 22
+    },
+    "user_intent": "Nie wywodzimy zamiaru właściciela z samej implementacji."
+  }
+]

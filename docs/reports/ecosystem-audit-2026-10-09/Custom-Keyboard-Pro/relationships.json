@@ -1,0 +1,41 @@
+{
+  "identity": [
+    {
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "current_product": "IO Matrix / iOmatrix",
+      "relation": "same_repository_current_product_name",
+      "evidence": [
+        "README.md:1-9",
+        "ECOSYSTEM.md §2"
+      ]
+    },
+    {
+      "component": "Android IME",
+      "relation": "first_host_of_iOmatrix",
+      "status": "implemented"
+    },
+    {
+      "component": "Matrix transform planner",
+      "relation": "component_of_iOmatrix",
+      "not_same_as": "GoalAgent effect/session runtime"
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "component": "Loom AgentRuntime prototype",
+      "relation": "optional proposal interoperability",
+      "reference_sha": "157762ef60be8b14fe75c6a9c922d6df7ffe97a1",
+      "source": "docs/HANDOFF_2026-10-02_TO_CLAUDE.md",
+      "scope": "Python in-process Tool and explicit file plan exchange; no transferred phone execution authority; source reference not independently checked in this delegated audit"
+    },
+    {
+      "projects": [
+        "AGEDS",
+        "WatchDog",
+        "LEM/Workbench",
+        "PixelSpace AR"
+      ],
+      "relation": "possible ecosystem collaboration",
+      "status": "brainstorm direction in ECOSYSTEM.md, not inferred identity or implemented dependency"
+    }
+  ]
+}

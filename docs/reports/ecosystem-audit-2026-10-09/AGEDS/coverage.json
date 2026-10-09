@@ -6,17 +6,17 @@
   "access": "public HTTPS clone; all advertised branches fetched; no authenticated write attempted by subagent",
   "tracked_files": 370,
   "class_counts": {
-    "build_tooling_config": 29,
+    "build_tooling_config": 28,
     "documentation": 45,
     "tests_fixtures": 100,
-    "product": 62,
+    "product": 63,
     "preserved_history": 112,
     "coordination_receipts": 14,
     "vendor_generated_bootstrap": 4,
     "research_prototype": 4
   },
   "semantic_product_files": 20,
-  "semantic_product_denominator": 62,
+  "semantic_product_denominator": 63,
   "semantic_review_ranges": {
     "server/app/config.py": [
       [
@@ -150,6 +150,7 @@
   "automatic_scan": {
     "base_branch": "main",
     "by_signal": {
+      "boolean.literal": 630,
       "branch.ast": 704,
       "branch.control": 1665,
       "call_order.ast": 98,
@@ -176,7 +177,103 @@
       "truncation.control": 50,
       "ui_text.context": 619
     },
-    "candidate_count": 15958,
+    "candidate_count": 16588,
+    "coverage_by_category": {
+      "build": {
+        "eligible_code_entries": 4,
+        "scanned_code_entries": 4,
+        "scanned_lines": 91,
+        "statuses": {
+          "out_of_scan_scope": 1,
+          "scanned": 4
+        },
+        "tracked_entries": 5
+      },
+      "data": {
+        "eligible_code_entries": 0,
+        "scanned_code_entries": 0,
+        "scanned_lines": 0,
+        "statuses": {
+          "out_of_scan_scope": 10
+        },
+        "tracked_entries": 10
+      },
+      "docs": {
+        "eligible_code_entries": 0,
+        "scanned_code_entries": 0,
+        "scanned_lines": 0,
+        "statuses": {
+          "out_of_scan_scope": 59
+        },
+        "tracked_entries": 59
+      },
+      "generated": {
+        "eligible_code_entries": 0,
+        "scanned_code_entries": 0,
+        "scanned_lines": 0,
+        "statuses": {
+          "out_of_scan_scope": 1
+        },
+        "tracked_entries": 1
+      },
+      "history": {
+        "eligible_code_entries": 0,
+        "scanned_code_entries": 0,
+        "scanned_lines": 0,
+        "statuses": {
+          "out_of_scan_scope": 112
+        },
+        "tracked_entries": 112
+      },
+      "other": {
+        "eligible_code_entries": 0,
+        "scanned_code_entries": 0,
+        "scanned_lines": 0,
+        "statuses": {
+          "content_excluded_by_path": 1,
+          "out_of_scan_scope": 7
+        },
+        "tracked_entries": 8
+      },
+      "product": {
+        "eligible_code_entries": 61,
+        "scanned_code_entries": 61,
+        "scanned_lines": 9657,
+        "statuses": {
+          "scanned": 61
+        },
+        "tracked_entries": 61
+      },
+      "research": {
+        "eligible_code_entries": 1,
+        "scanned_code_entries": 1,
+        "scanned_lines": 60,
+        "statuses": {
+          "out_of_scan_scope": 1,
+          "scanned": 1
+        },
+        "tracked_entries": 2
+      },
+      "tests": {
+        "eligible_code_entries": 0,
+        "scanned_code_entries": 0,
+        "scanned_lines": 0,
+        "statuses": {
+          "out_of_scan_scope": 100
+        },
+        "tracked_entries": 100
+      },
+      "tooling": {
+        "eligible_code_entries": 10,
+        "scanned_code_entries": 10,
+        "scanned_lines": 1305,
+        "statuses": {
+          "out_of_scan_scope": 2,
+          "scanned": 10
+        },
+        "tracked_entries": 12
+      }
+    },
     "denominator": {
       "by_category": {
         "build": 5,
@@ -211,13 +308,13 @@
       "parsed": 31
     },
     "repo": "klb-t/AGEDS",
-    "rules_sha256": "82602bd0f7dfd597c5edfc87a8392b1d3d52496ccb61abffb0d10d467f5ad10b",
+    "rules_sha256": "b35034619f42b0199bd9a3c26245dcd6be0dd83ecffa8beb7bb4c01731e4e963",
     "scan_statuses": {
       "content_excluded_by_path": 1,
       "out_of_scan_scope": 293,
       "scanned": 76
     },
-    "scanner_sha256": "2fd742ca622b89fe0f3010e9361953ac24a205866fab7afe971470bbafb7433e",
+    "scanner_sha256": "88b6f460b471347a937a88bd11ebc7b0a504b022014a9ca0693f56835e4489d8",
     "scanner_version": "1.0.0",
     "schema": "klbt.audit-scanner.summary/1",
     "scope": {
@@ -324,5 +421,6 @@
     "naruszenie": 9,
     "dopuszczalny mechanizm": 2,
     "już naprawione": 1
-  }
+  },
+  "category_reconciliation": "Manual product surface includes 61 scanner product files plus AndroidManifest.xml and styles.xml categorized as data by scanner."
 }

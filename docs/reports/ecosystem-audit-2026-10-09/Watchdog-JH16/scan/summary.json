@@ -1,0 +1,221 @@
+{
+  "base_branch": "main",
+  "by_signal": {
+    "boolean.literal": 593,
+    "branch.ast": 36,
+    "branch.control": 1876,
+    "call_order.ast": 30,
+    "call_sequence.control": 110,
+    "dedup.control": 1602,
+    "default_argument.ast": 2,
+    "default_argument.lexical": 1496,
+    "endpoint.literal": 24,
+    "exception.ast": 8,
+    "exception.control": 1098,
+    "fallback.control": 1088,
+    "fallback_or_guard.ast": 38,
+    "inference_acceptance.control": 4,
+    "missing.control": 1695,
+    "network.control": 197,
+    "numeric.literal": 2724,
+    "policy_value.context": 1028,
+    "prompt.context": 19,
+    "prompt.literal": 3,
+    "regex.context": 5,
+    "selection.ast": 10,
+    "selection.control": 874,
+    "settings_inheritance.control": 191,
+    "sorting.control": 178,
+    "string.literal": 13172,
+    "truncation.control": 230,
+    "ui_text.context": 2788
+  },
+  "candidate_count": 31119,
+  "coverage_by_category": {
+    "build": {
+      "eligible_code_entries": 0,
+      "scanned_code_entries": 0,
+      "scanned_lines": 0,
+      "statuses": {
+        "out_of_scan_scope": 1
+      },
+      "tracked_entries": 1
+    },
+    "data": {
+      "eligible_code_entries": 0,
+      "scanned_code_entries": 0,
+      "scanned_lines": 0,
+      "statuses": {
+        "out_of_scan_scope": 31
+      },
+      "tracked_entries": 31
+    },
+    "docs": {
+      "eligible_code_entries": 0,
+      "scanned_code_entries": 0,
+      "scanned_lines": 0,
+      "statuses": {
+        "out_of_scan_scope": 114
+      },
+      "tracked_entries": 114
+    },
+    "generated": {
+      "eligible_code_entries": 0,
+      "scanned_code_entries": 0,
+      "scanned_lines": 0,
+      "statuses": {
+        "out_of_scan_scope": 1
+      },
+      "tracked_entries": 1
+    },
+    "history": {
+      "eligible_code_entries": 0,
+      "scanned_code_entries": 0,
+      "scanned_lines": 0,
+      "statuses": {
+        "out_of_scan_scope": 41
+      },
+      "tracked_entries": 41
+    },
+    "other": {
+      "eligible_code_entries": 0,
+      "scanned_code_entries": 0,
+      "scanned_lines": 0,
+      "statuses": {
+        "content_excluded_by_path": 1,
+        "out_of_scan_scope": 4
+      },
+      "tracked_entries": 5
+    },
+    "product": {
+      "eligible_code_entries": 268,
+      "scanned_code_entries": 266,
+      "scanned_lines": 24922,
+      "statuses": {
+        "content_excluded_by_path": 2,
+        "scanned": 266
+      },
+      "tracked_entries": 268
+    },
+    "research": {
+      "eligible_code_entries": 1,
+      "scanned_code_entries": 1,
+      "scanned_lines": 34,
+      "statuses": {
+        "scanned": 1
+      },
+      "tracked_entries": 1
+    },
+    "tests": {
+      "eligible_code_entries": 0,
+      "scanned_code_entries": 0,
+      "scanned_lines": 0,
+      "statuses": {
+        "content_excluded_by_path": 1,
+        "out_of_scan_scope": 124
+      },
+      "tracked_entries": 125
+    },
+    "tooling": {
+      "eligible_code_entries": 15,
+      "scanned_code_entries": 15,
+      "scanned_lines": 1950,
+      "statuses": {
+        "out_of_scan_scope": 1,
+        "scanned": 15
+      },
+      "tracked_entries": 16
+    }
+  },
+  "denominator": {
+    "by_category": {
+      "build": 1,
+      "data": 31,
+      "docs": 114,
+      "generated": 1,
+      "history": 41,
+      "other": 5,
+      "product": 268,
+      "research": 1,
+      "tests": 125,
+      "tooling": 16
+    },
+    "definition": "All recursive tracked tree entries at the stated commit, including blobs, symlinks and gitlinks; git history and untracked working files excluded. Manifest mode instead uses the explicit supplied list, whose completeness is not independently verified.",
+    "eligible_code_entries": 284,
+    "scanned_code_entries": 282,
+    "scanned_lines": 26906,
+    "semantic_reviewed_entries": 0,
+    "tracked_entries": 603
+  },
+  "limitations": [
+    "Candidates are not violations or proof of runtime consumption.",
+    "Classification is path-based and can misclassify product code; review inventory.",
+    "AST coverage is Python only; other languages use approximate lexical rules.",
+    "Lexical rules can miss raw strings, embedded expressions, dynamic dispatch and template content.",
+    "No call graph, reachability, consent, graph-to-runtime or UI validation is performed.",
+    "No private repository scanning, product execution, network or paid model calls.",
+    "Output includes paths/hashes/spans, never source excerpts or literal values; paths can still be sensitive."
+  ],
+  "parser_statuses": {
+    "not_python": 281,
+    "parsed": 1
+  },
+  "repo": "klb-t/Watchdog-JH16",
+  "rules_sha256": "b35034619f42b0199bd9a3c26245dcd6be0dd83ecffa8beb7bb4c01731e4e963",
+  "scan_statuses": {
+    "content_excluded_by_path": 4,
+    "out_of_scan_scope": 317,
+    "scanned": 282
+  },
+  "scanner_sha256": "88b6f460b471347a937a88bd11ebc7b0a504b022014a9ca0693f56835e4489d8",
+  "scanner_version": "1.0.0",
+  "schema": "klbt.audit-scanner.summary/1",
+  "scope": {
+    "categories": [
+      "build",
+      "product",
+      "research",
+      "tooling"
+    ],
+    "code_extensions": [
+      ".py",
+      ".kt",
+      ".kts",
+      ".java",
+      ".cpp",
+      ".cc",
+      ".c",
+      ".h",
+      ".hpp",
+      ".cxx",
+      ".hxx",
+      ".js",
+      ".jsx",
+      ".ts",
+      ".tsx",
+      ".mjs",
+      ".cjs",
+      ".rs",
+      ".go",
+      ".swift",
+      ".sh",
+      ".bash",
+      ".ps1",
+      ".html",
+      ".css",
+      ".scss",
+      ".qml",
+      ".vue",
+      ".svelte",
+      ".gradle"
+    ],
+    "excluded_content_path_regexes": [
+      "(?i)(^|/)[^/]*(blind|holdout|heldout|hold-out|held-out)[^/]*(/|$)",
+      "(?i)(^|/)(\\.env(?:\\.[^/]*)?|credentials?[^/]*|secrets?[^/]*|[^/]*private[-_]key[^/]*)(/|$)"
+    ],
+    "max_blob_bytes": 2097152
+  },
+  "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+  "source": "immutable_git_tree",
+  "visibility": "public"
+}

@@ -1,0 +1,63 @@
+{
+  "repo": "klb-t/loom",
+  "sha": "0b23fa64c1de955c947349feef7bb67c05763f97",
+  "flows": [
+    {
+      "id": "LOOM-flow-message",
+      "data": "C++ NewMessage/argumenty → SQLite messages",
+      "graph": "osobna tabela od nodes/links; brak automatycznej projekcji wszystkich danych",
+      "runtime": "create_message/batch_create_messages → get_messages, semantic queue",
+      "ui": "brak w repo",
+      "status": "działający prymityw w kodzie; selekcja policy-coded",
+      "finding_ids": [
+        "LOOM-001",
+        "LOOM-003"
+      ]
+    },
+    {
+      "id": "LOOM-flow-graph",
+      "data": "kind/link_type/metadata JSON z klienta",
+      "graph": "nodes/links",
+      "runtime": "create/find/list; create_link upsert",
+      "ui": "brak",
+      "status": "typy otwarte, dedup/upsert utrata provenance",
+      "finding_ids": [
+        "LOOM-002"
+      ]
+    },
+    {
+      "id": "LOOM-flow-config",
+      "data": "nagłówek loom_get_config/set_config",
+      "graph": "brak implementacji",
+      "runtime": "brak symboli/consumerów",
+      "ui": "brak",
+      "status": "declared contract only",
+      "finding_ids": [
+        "LOOM-006"
+      ]
+    },
+    {
+      "id": "LOOM-flow-storage",
+      "data": "WAL/NORMAL/30s w kodzie",
+      "graph": "brak",
+      "runtime": "Database.open",
+      "ui": "brak",
+      "status": "polityki zaszyte",
+      "finding_ids": [
+        "LOOM-004",
+        "LOOM-005"
+      ]
+    },
+    {
+      "id": "LOOM-flow-event",
+      "data": "event.name + payload_json",
+      "graph": "nie każda ulotna operacja musi być osobnym node; brak tutaj mechanizmu persistent graph description",
+      "runtime": "EventBus subscription → synchronous snapshot dispatch",
+      "ui": "brak",
+      "status": "mechanizm przetestowany",
+      "finding_ids": [
+        "LOOM-007"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+[
+  {
+    "data": "config.json + compiled defaults",
+    "graph": "not automatic",
+    "runtime": "Config → ChatEngine/SemanticLLM/worker",
+    "ui": "Settings",
+    "findings": [
+      "CH-001",
+      "CH-004",
+      "CH-005"
+    ]
+  },
+  {
+    "data": "profiles/semantic_analyzer.pack",
+    "graph": "method graph integration separate",
+    "runtime": "GraphEngine/GraphMemory yes; runtime analyzer/worker fallback no",
+    "ui": "incomplete",
+    "findings": [
+      "CH-003"
+    ]
+  },
+  {
+    "data": "onboarding profile/settings/privacy/default layers",
+    "graph": "OnboardingStore/project_graph implemented",
+    "runtime": "interview/policy endpoint yes; ordinary chat not wired",
+    "ui": "Onboarding/WhatAppKnows implemented",
+    "findings": [
+      "CH-004"
+    ]
+  },
+  {
+    "data": "chat_reasoning/context_goal_cues packs",
+    "graph": "explicit layer snapshot supported",
+    "runtime": "real consumer + helper tests",
+    "ui": "automatic binding unverified/missing in inspected path",
+    "findings": [
+      "CH-004",
+      "CH-013"
+    ]
+  },
+  {
+    "data": "application profile JSON",
+    "graph": "explicit GraphPacket receipt",
+    "runtime": "registered adapter/workflow",
+    "ui": "profile selection implemented",
+    "findings": [
+      "CH-009"
+    ]
+  },
+  {
+    "data": "perspective/workflow checkpoint",
+    "graph": "not complete; config snapshot != graph execution receipt",
+    "runtime": "browser restore/config",
+    "ui": "KnowledgeWorkbench/ApplicationProfiles",
+    "findings": [
+      "CH-008",
+      "CH-009"
+    ]
+  },
+  {
+    "data": "analysis results",
+    "graph": "legacy direct nodes/links; modern claims/method graph separate",
+    "runtime": "mixed admission paths",
+    "ui": "graph/analysis views",
+    "findings": [
+      "CH-002",
+      "CH-006",
+      "CH-010"
+    ]
+  },
+  {
+    "data": "experiments/triggers/queues/results/evidence",
+    "graph": "some types/research plans; end-to-end not verified",
+    "runtime": "TaskEngine + research tools separate",
+    "ui": "complete Basic/Advanced experiment workflow not verified",
+    "findings": [
+      "CH-015"
+    ]
+  }
+]

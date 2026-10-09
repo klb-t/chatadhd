@@ -1,0 +1,14 @@
+{
+  "date": "2026-10-09",
+  "base_sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "findings": 15,
+  "classification_counts": {
+    "naruszenie": 11,
+    "dopuszczalny mechanizm": 1,
+    "niepewne": 1,
+    "już naprawione": 2
+  },
+  "status": "closed_scoped_audit",
+  "publication": "pending_root",
+  "next": "scanner inventory + branch review + B/C checkpoint"
+}

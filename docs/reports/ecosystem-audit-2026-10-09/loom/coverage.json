@@ -1,0 +1,267 @@
+{
+  "repo": "klb-t/loom",
+  "base_branch": "main",
+  "sha": "0b23fa64c1de955c947349feef7bb67c05763f97",
+  "visibility": "public",
+  "github_archived": false,
+  "enumeration": "Git clone pełny refs/remotes/origin oraz git ls-files; widoczność z połączonego GitHub spisu root.",
+  "tracked_file_denominator": 21,
+  "file_classes": {
+    "build_ci_metadata": 3,
+    "documentation_license": 6,
+    "product_code": 9,
+    "tests_fixtures": 2,
+    "vendor_placeholder": 1
+  },
+  "semantic_product_files_reviewed": 9,
+  "semantic_product_file_denominator": 9,
+  "line_counts_by_class": {
+    "build_ci_metadata": 91,
+    "documentation_license": 253,
+    "product_code": 1068,
+    "tests_fixtures": 151,
+    "vendor_placeholder": 5
+  },
+  "file_manifest": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "category": "build_ci_metadata",
+      "binary": false,
+      "sha256": "2a85e61318acd6ec20fcf4590d361554d33fe1145d8944be4030310c0e4296e0",
+      "line_count": 32,
+      "semantic_review": false
+    },
+    {
+      "path": ".gitignore",
+      "category": "build_ci_metadata",
+      "binary": false,
+      "sha256": "3cb53cab05f1f50f90df2f3de33115fa8bb47fc3835994260ec17a5ddecd83d4",
+      "line_count": 7,
+      "semantic_review": false
+    },
+    {
+      "path": "CMakeLists.txt",
+      "category": "build_ci_metadata",
+      "binary": false,
+      "sha256": "527da8e6ff9b8b5f70f867a2ce1c2900eafb4399fbb8e7407f672f575d8cf142",
+      "line_count": 52,
+      "semantic_review": false
+    },
+    {
+      "path": "COMMERCIAL_LICENSE.md",
+      "category": "documentation_license",
+      "binary": false,
+      "sha256": "63d9d1755e8f8c1170681e14c66e37fd54935cd6cf1df98a363d6bb5925786c7",
+      "line_count": 11,
+      "semantic_review": false
+    },
+    {
+      "path": "ECOSYSTEM.md",
+      "category": "documentation_license",
+      "binary": false,
+      "sha256": "d91992b56ef02a645c7ad70e6e553412354e81ac37a1ee277f22849eab992d7f",
+      "line_count": 29,
+      "semantic_review": false
+    },
+    {
+      "path": "LICENSE",
+      "category": "documentation_license",
+      "binary": false,
+      "sha256": "ef5b6fabd020e1c1587a3ca9322f629843518201dd113078b1e4fd1dd993b707",
+      "line_count": 11,
+      "semantic_review": false
+    },
+    {
+      "path": "README.md",
+      "category": "documentation_license",
+      "binary": false,
+      "sha256": "ce03f7aa5333818b5cfd59d03ddc99288064167da7e648216d32a7c20ed35ecf",
+      "line_count": 58,
+      "semantic_review": false
+    },
+    {
+      "path": "docs/DECISION_POLICY.md",
+      "category": "documentation_license",
+      "binary": false,
+      "sha256": "72e3b41fd75b1e75a17693ea81766f1dc5693bfb2b7853304e6800b0fe5c7dd2",
+      "line_count": 47,
+      "semantic_review": false
+    },
+    {
+      "path": "docs/PORT_AUDIT.md",
+      "category": "documentation_license",
+      "binary": false,
+      "sha256": "ff4f37a54f2ec7cf7b83cfb435ba05688c52f33de618e28d49527b9af45d7faf",
+      "line_count": 97,
+      "semantic_review": false
+    },
+    {
+      "path": "include/loom/db.h",
+      "category": "product_code",
+      "binary": false,
+      "sha256": "c406663155950a98489f9666e7ee4aab212b9c96f7a90c2d1435b405ecb3daed",
+      "line_count": 164,
+      "semantic_review": true
+    },
+    {
+      "path": "include/loom/event_bus.h",
+      "category": "product_code",
+      "binary": false,
+      "sha256": "a835fda5df33bb46a951efb517ccbc5c066c1e07698b249b1594c4d4f3aa9678",
+      "line_count": 49,
+      "semantic_review": true
+    },
+    {
+      "path": "include/loom/loom.h",
+      "category": "product_code",
+      "binary": false,
+      "sha256": "008a26d2743adeaa066aedc45d9685314ce8418a8be6d6b821a5f6a37544420a",
+      "line_count": 55,
+      "semantic_review": true
+    },
+    {
+      "path": "include/loom/status.h",
+      "category": "product_code",
+      "binary": false,
+      "sha256": "d77c09f4bb3a1ad2b05a61ebe36e7107904fe1b2b6f9842470d6632565bd2d88",
+      "line_count": 55,
+      "semantic_review": true
+    },
+    {
+      "path": "src/db.cpp",
+      "category": "product_code",
+      "binary": false,
+      "sha256": "8fc73145dcd9499675c1a72340234655deff48787bad6a3bb047e0d6990a05d7",
+      "line_count": 293,
+      "semantic_review": true
+    },
+    {
+      "path": "src/db_graph.cpp",
+      "category": "product_code",
+      "binary": false,
+      "sha256": "bb405c781ee01051b231e6d91558f89e440b955ccd767809b168dbbdd033b9d1",
+      "line_count": 62,
+      "semantic_review": true
+    },
+    {
+      "path": "src/db_internal.h",
+      "category": "product_code",
+      "binary": false,
+      "sha256": "66c55d5876d739cdaf8d7e271e29bd5a5ac2e7e780f16d42ffb722a902edc9d1",
+      "line_count": 172,
+      "semantic_review": true
+    },
+    {
+      "path": "src/db_messages.cpp",
+      "category": "product_code",
+      "binary": false,
+      "sha256": "fa24a8130fcba8ee866b9cd9302d52a69f194e9beb4045a5af2cfa1eda7263ae",
+      "line_count": 169,
+      "semantic_review": true
+    },
+    {
+      "path": "src/event_bus.cpp",
+      "category": "product_code",
+      "binary": false,
+      "sha256": "df30da0c623c89563dc84b63429fe1649c4553e49d0db51867aed787ed390605",
+      "line_count": 49,
+      "semantic_review": true
+    },
+    {
+      "path": "tests/db_compat_test.cpp",
+      "category": "tests_fixtures",
+      "binary": false,
+      "sha256": "a80f59d315318165374b7f27bbad5cf0ad54934a46e292a4cd44df6f5ce08c2d",
+      "line_count": 123,
+      "semantic_review": false
+    },
+    {
+      "path": "tests/event_bus_test.cpp",
+      "category": "tests_fixtures",
+      "binary": false,
+      "sha256": "0f14003e8b0d32d49c089f54c190eace6f33fe859fd878e6052ab7a5de04f519",
+      "line_count": 28,
+      "semantic_review": false
+    },
+    {
+      "path": "third_party/README.md",
+      "category": "vendor_placeholder",
+      "binary": false,
+      "sha256": "c57fe4c4cd1212cbfb68a40b52594aa8328ab872716a19436814b3be7bc04ede",
+      "line_count": 5,
+      "semantic_review": false
+    }
+  ],
+  "instructions_present": [
+    "ECOSYSTEM.md",
+    "README.md",
+    "docs/DECISION_POLICY.md",
+    "docs/PORT_AUDIT.md"
+  ],
+  "instructions_absent": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "docs/STATE.md",
+    "docs/reports/INDEX.md"
+  ],
+  "branches": [
+    {
+      "ref": "origin/archive/2026-10-03/chore/repo-hygiene-2026-09",
+      "sha": "17ce3204cae7c03f7647f67c3f7d113f68026858",
+      "main_only_commits": 3,
+      "branch_only_commits": 0
+    },
+    {
+      "ref": "origin/archive/2026-10-03/port/chatadhd-v0710-core",
+      "sha": "8164783a623ec627449cdbcdac5512f07b941cb0",
+      "main_only_commits": 8,
+      "branch_only_commits": 0
+    },
+    {
+      "ref": "origin/main",
+      "sha": "0b23fa64c1de955c947349feef7bb67c05763f97",
+      "main_only_commits": 0,
+      "branch_only_commits": 0
+    }
+  ],
+  "unmerged_branch_commits": 0,
+  "relations": [
+    {
+      "type": "preserved_predecessor_baseline",
+      "target": "klb-t/chatadhd/loom",
+      "description": "README main w 0b23fa64 jawnie zachowuje wcześniejszy standalone compatibility baseline i kieruje bieżący kernel/workbench/reports do klb-t/chatadhd. Repo nie jest oznaczone archived przez GitHub, lecz rola kodu jest historyczna. To relacja lineage/aktualny następca, nie tożsamość repozytoriów."
+    },
+    {
+      "type": "extraction_from",
+      "target": "ChatADHD v0.07.10 SQLite v4 / event semantics",
+      "description": "docs/PORT_AUDIT.md opisuje wcześniejszy port i nieudawane API. Wcześniejsze obserwacje nie są dowodem bieżącego zachowania ChatADHD; findingi w tym raporcie potwierdzono tylko w SHA standalone."
+    },
+    {
+      "type": "possible_shared_component",
+      "target": "iOmatrix / AGEDS / WatchDog / LEM",
+      "description": "ECOSYSTEM.md to brainstorm potencjalnego współużycia; żaden build dependency na te produkty nie występuje."
+    }
+  ],
+  "limitations": [
+    "Początkowa kompilacja z systemowym SQLite była zablokowana brakiem sqlite3.h. Znaleziono istniejący vendor w chatadhd@9e20f99; bez modyfikacji repo i bez pobierania zależności skompilowano pełne źródła. db_compat_test, event_bus_test i 6 natywnych audit checks PASS. CMake/CTest/sanitizery nieuruchomione.",
+    "EventBus skompilowany oddzielnie c++ -std=c++20 i event_bus_test: OK.",
+    "SQL probe uruchomiony Python sqlite3: 5 sprawdzeń, w tym 3 zachowania rzeczywistych SQL z kodu i 2 kontrole przepływu źródła. To nie pełny test C++/integracji.",
+    "Historia zachowana w git; przegląd bieżącego drzewa i ancestry gałęzi nie jest audytem wszystkich historycznych rewizji.",
+    "Brak UI/model requestów w implementacji tego repo. Obserwacje dotyczące brakującego pełnego grafu są sklasyfikowane niepewne z uwagi na jawną rolę zachowanego baseline."
+  ],
+  "history_scope": "Historia git zachowana; sprawdzono ancestry wszystkich pobranych gałęzi. Nie audytowano semantycznie każdego dawnego commita. Brak history/ w drzewie main.",
+  "generated_scope": "Nie stwierdzono śledzonego wygenerowanego kodu produktu. Ikony/rasterowe zasoby sklasyfikowane jako zasoby, bez przypisywania im pochodzenia wygenerowanego.",
+  "automated_scan": {
+    "summary": "scan/summary.json",
+    "candidate_count": 802,
+    "scanned_code_entries": 9,
+    "scanned_lines": 1068,
+    "scanner_sha256": "88b6f460b471347a937a88bd11ebc7b0a504b022014a9ca0693f56835e4489d8",
+    "notes": "Skan generuje kandydatów, nie automatyczne werdykty; klasyfikacja semantyczna w tym coverage jest nadrzędna dla zakresu produktu."
+  },
+  "native_verification": {
+    "result": "PASS",
+    "details": "verification.json",
+    "audit_checks": "native-probe-result.json"
+  }
+}

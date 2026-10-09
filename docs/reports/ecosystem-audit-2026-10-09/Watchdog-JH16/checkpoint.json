@@ -1,9 +1,9 @@
 {
-  "stage": "first_closed_group",
+  "stage": "repo_audit_closed_with_explicit_gaps",
   "date": "2026-10-09",
   "base_sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
-  "findings": 8,
+  "findings": 11,
   "product_modified": false,
-  "next": "branch delta review, scanner integration, root publication",
-  "publication": "pending_root"
+  "next": "Semantic expansion of clinical/field/search/import and B/C SHA review by integrator; no product edits.",
+  "publication": "first_group_published_in_chatadhd_d8d0335b72c7a1986184c0a22a7c154fdb8dfe62; second_group_pending_root"
 }

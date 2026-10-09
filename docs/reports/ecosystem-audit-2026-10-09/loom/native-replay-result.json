@@ -1,0 +1,12 @@
+{
+  "results": {
+    "db_compat_test": "db_compat_test: OK",
+    "event_bus_test": "event_bus_test: OK",
+    "reproduce_native": "{\"native_audit_checks_passed\":6,\"pending_count\":3,\"eligible_count\":1,\"duplicate_node_success_retains_old\":true,\"link_metadata_replaced\":true,\"attachment_only_batch_skipped\":true,\"default_node_limit\":200,\"override_can_exceed_default\":true,\"future_schema_999_relabelled_to\":4}"
+  },
+  "sqlite_sha256": {
+    "sqlite3.c": "06c3bf23ecb30c91587e0f96d2fea71f3e5acc8305cda0bb8d23ee29d522745f",
+    "sqlite3.h": "b4b4cbcc2bd6dda8eaf348103c330c971676a59b3732cca068098f574de43994"
+  },
+  "scope": "Direct compiler build, not CMake/CTest or sanitizer execution"
+}

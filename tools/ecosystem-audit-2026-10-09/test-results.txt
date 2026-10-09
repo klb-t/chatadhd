@@ -1,0 +1,26 @@
+Date: 2026-10-09
+Python: 3.12.14
+Command run: python3 -m unittest discover -s audit-work/scanner/tests -v
+Published-layout equivalent: python3 -m unittest discover -s tools/ecosystem-audit-2026-10-09/tests -v
+scan.py sha256: 88b6f460b471347a937a88bd11ebc7b0a504b022014a9ca0693f56835e4489d8
+rules.json sha256: b35034619f42b0199bd9a3c26245dcd6be0dd83ecffa8beb7bb4c01731e4e963
+
+test_classification_denominator_categories (test_scan.ScannerTests.test_classification_denominator_categories) ... ok
+test_deterministic_ids_and_line_shift (test_scan.ScannerTests.test_deterministic_ids_and_line_shift) ... ok
+test_exception_catalog_never_auto_exempts (test_scan.ScannerTests.test_exception_catalog_never_auto_exempts) ... ok
+test_generic_comments_strings_not_control_flow (test_scan.ScannerTests.test_generic_comments_strings_not_control_flow) ... ok
+test_git_snapshot_inventory_exclusions_and_immutability (test_scan.ScannerTests.test_git_snapshot_inventory_exclusions_and_immutability) ... ok
+test_invalid_python_uses_lexical_fallback (test_scan.ScannerTests.test_invalid_python_uses_lexical_fallback) ... ok
+test_manifest_scope_and_metadata_content_minimization (test_scan.ScannerTests.test_manifest_scope_and_metadata_content_minimization) ... ok
+test_no_literal_values_or_source_snippets (test_scan.ScannerTests.test_no_literal_values_or_source_snippets) ... ok
+test_oversize_explicit_gap (test_scan.ScannerTests.test_oversize_explicit_gap) ... ok
+test_python_ast_decisions_defaults_order_and_slice (test_scan.ScannerTests.test_python_ast_decisions_defaults_order_and_slice) ... ok
+test_same_literal_occurrences_have_distinct_ids (test_scan.ScannerTests.test_same_literal_occurrences_have_distinct_ids) ... ok
+test_unicode_ast_spans_and_multiline_literal (test_scan.ScannerTests.test_unicode_ast_spans_and_multiline_literal) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.032s
+
+OK
+
+Exit code: 0

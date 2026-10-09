@@ -1,0 +1,683 @@
+{
+  "repo": "klb-t/Custom-Keyboard-Pro",
+  "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+  "base_branch": "main",
+  "visibility": "public",
+  "access": "HTTPS full git clone succeeded; no write attempted by delegated auditor",
+  "tracked_entries": 461,
+  "inventory_counts": {
+    "build_tooling": 16,
+    "docs_metadata_other": 44,
+    "tests_fixtures": 112,
+    "product_data_resources": 42,
+    "product_code": 233,
+    "preserved_history": 4,
+    "generated_validation_evidence": 5,
+    "profile_reference_data": 5
+  },
+  "inventory_definition": "All tracked entries at main SHA. Auditor classification assigns app/src/main/java to product code; generated validation receipts and preserved docs/history are separated. Full git history retained by clone but not scanned as current product. See file-inventory.json.",
+  "automated": {
+    "base_branch": "main",
+    "by_signal": {
+      "boolean.literal": 1567,
+      "branch.ast": 131,
+      "branch.control": 4343,
+      "call_order.ast": 64,
+      "call_sequence.control": 146,
+      "dedup.control": 1685,
+      "default_argument.ast": 10,
+      "default_argument.lexical": 5874,
+      "endpoint.literal": 34,
+      "exception.ast": 15,
+      "exception.control": 487,
+      "fallback.control": 1156,
+      "fallback_or_guard.ast": 51,
+      "inference_acceptance.control": 6,
+      "missing.control": 2035,
+      "model.literal": 6,
+      "network.control": 105,
+      "numeric.literal": 3493,
+      "policy_value.context": 1244,
+      "prompt.context": 79,
+      "prompt.literal": 17,
+      "regex.context": 82,
+      "selection.ast": 39,
+      "selection.control": 1016,
+      "settings_inheritance.control": 631,
+      "sorting.control": 95,
+      "string.literal": 13322,
+      "truncation.ast": 2,
+      "truncation.control": 841,
+      "ui_text.context": 1954
+    },
+    "candidate_count": 40530,
+    "coverage_by_category": {
+      "build": {
+        "eligible_code_entries": 3,
+        "scanned_code_entries": 3,
+        "scanned_lines": 148,
+        "statuses": {
+          "scanned": 3
+        },
+        "tracked_entries": 3
+      },
+      "data": {
+        "eligible_code_entries": 0,
+        "scanned_code_entries": 0,
+        "scanned_lines": 0,
+        "statuses": {
+          "out_of_scan_scope": 47
+        },
+        "tracked_entries": 47
+      },
+      "docs": {
+        "eligible_code_entries": 0,
+        "scanned_code_entries": 0,
+        "scanned_lines": 0,
+        "statuses": {
+          "out_of_scan_scope": 45
+        },
+        "tracked_entries": 45
+      },
+      "history": {
+        "eligible_code_entries": 0,
+        "scanned_code_entries": 0,
+        "scanned_lines": 0,
+        "statuses": {
+          "out_of_scan_scope": 4
+        },
+        "tracked_entries": 4
+      },
+      "other": {
+        "eligible_code_entries": 0,
+        "scanned_code_entries": 0,
+        "scanned_lines": 0,
+        "statuses": {
+          "out_of_scan_scope": 6
+        },
+        "tracked_entries": 6
+      },
+      "product": {
+        "eligible_code_entries": 234,
+        "scanned_code_entries": 234,
+        "scanned_lines": 47835,
+        "statuses": {
+          "scanned": 234
+        },
+        "tracked_entries": 234
+      },
+      "tests": {
+        "eligible_code_entries": 0,
+        "scanned_code_entries": 0,
+        "scanned_lines": 0,
+        "statuses": {
+          "out_of_scan_scope": 105
+        },
+        "tracked_entries": 105
+      },
+      "tooling": {
+        "eligible_code_entries": 15,
+        "scanned_code_entries": 15,
+        "scanned_lines": 1955,
+        "statuses": {
+          "out_of_scan_scope": 2,
+          "scanned": 15
+        },
+        "tracked_entries": 17
+      }
+    },
+    "denominator": {
+      "by_category": {
+        "build": 3,
+        "data": 47,
+        "docs": 45,
+        "history": 4,
+        "other": 6,
+        "product": 234,
+        "tests": 105,
+        "tooling": 17
+      },
+      "definition": "All recursive tracked tree entries at the stated commit, including blobs, symlinks and gitlinks; git history and untracked working files excluded. Manifest mode instead uses the explicit supplied list, whose completeness is not independently verified.",
+      "eligible_code_entries": 252,
+      "scanned_code_entries": 252,
+      "scanned_lines": 49938,
+      "semantic_reviewed_entries": 0,
+      "tracked_entries": 461
+    },
+    "limitations": [
+      "Candidates are not violations or proof of runtime consumption.",
+      "Classification is path-based and can misclassify product code; review inventory.",
+      "AST coverage is Python only; other languages use approximate lexical rules.",
+      "Lexical rules can miss raw strings, embedded expressions, dynamic dispatch and template content.",
+      "No call graph, reachability, consent, graph-to-runtime or UI validation is performed.",
+      "No private repository scanning, product execution, network or paid model calls.",
+      "Output includes paths/hashes/spans, never source excerpts or literal values; paths can still be sensitive."
+    ],
+    "parser_statuses": {
+      "not_python": 245,
+      "parsed": 7
+    },
+    "repo": "klb-t/Custom-Keyboard-Pro",
+    "rules_sha256": "b35034619f42b0199bd9a3c26245dcd6be0dd83ecffa8beb7bb4c01731e4e963",
+    "scan_statuses": {
+      "out_of_scan_scope": 209,
+      "scanned": 252
+    },
+    "scanner_sha256": "88b6f460b471347a937a88bd11ebc7b0a504b022014a9ca0693f56835e4489d8",
+    "scanner_version": "1.0.0",
+    "schema": "klbt.audit-scanner.summary/1",
+    "scope": {
+      "categories": [
+        "build",
+        "product",
+        "research",
+        "tooling"
+      ],
+      "code_extensions": [
+        ".py",
+        ".kt",
+        ".kts",
+        ".java",
+        ".cpp",
+        ".cc",
+        ".c",
+        ".h",
+        ".hpp",
+        ".cxx",
+        ".hxx",
+        ".js",
+        ".jsx",
+        ".ts",
+        ".tsx",
+        ".mjs",
+        ".cjs",
+        ".rs",
+        ".go",
+        ".swift",
+        ".sh",
+        ".bash",
+        ".ps1",
+        ".html",
+        ".css",
+        ".scss",
+        ".qml",
+        ".vue",
+        ".svelte",
+        ".gradle"
+      ],
+      "excluded_content_path_regexes": [
+        "(?i)(^|/)[^/]*(blind|holdout|heldout|hold-out|held-out)[^/]*(/|$)",
+        "(?i)(^|/)(\\.env(?:\\.[^/]*)?|credentials?[^/]*|secrets?[^/]*|[^/]*private[-_]key[^/]*)(/|$)"
+      ],
+      "max_blob_bytes": 2097152
+    },
+    "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+    "source": "immutable_git_tree",
+    "visibility": "public"
+  },
+  "semantic": {
+    "reviewed_files": 31,
+    "product_files_touched": 28,
+    "product_file_denominator": 233,
+    "reviewed_lines": 3467,
+    "description": "Counts mean read-and-traced ranges, not all methods verified. Primary scope configuration/AI/goals/Matrix; libraries, hardware and remaining product files unreviewed semantically.",
+    "manifest": [
+      {
+        "path": "app/build.gradle.kts",
+        "class": "build_tooling",
+        "reviewed_spans": [
+          [
+            1,
+            71
+          ]
+        ],
+        "reviewed_lines": 71,
+        "total_lines": 114,
+        "extent": "targeted_path_fragments"
+      },
+      {
+        "path": "app/src/main/java/com/example/assistant/GoalAssistantActivity.kt",
+        "class": "product_code",
+        "reviewed_spans": [
+          [
+            185,
+            215
+          ]
+        ],
+        "reviewed_lines": 31,
+        "total_lines": 379,
+        "extent": "targeted_path_fragments"
+      },
+      {
+        "path": "app/src/main/java/com/example/assistant/GoalCatalogue.kt",
+        "class": "product_code",
+        "reviewed_spans": [
+          [
+            1,
+            95
+          ]
+        ],
+        "reviewed_lines": 95,
+        "total_lines": 95,
+        "extent": "full"
+      },
+      {
+        "path": "app/src/main/java/com/example/core/ai/AiClient.kt",
+        "class": "product_code",
+        "reviewed_spans": [
+          [
+            1,
+            197
+          ]
+        ],
+        "reviewed_lines": 197,
+        "total_lines": 302,
+        "extent": "targeted_path_fragments"
+      },
+      {
+        "path": "app/src/main/java/com/example/core/ai/AiTaskProfiles.kt",
+        "class": "product_code",
+        "reviewed_spans": [
+          [
+            1,
+            90
+          ]
+        ],
+        "reviewed_lines": 90,
+        "total_lines": 90,
+        "extent": "full"
+      },
+      {
+        "path": "app/src/main/java/com/example/core/ai/AiTasks.kt",
+        "class": "product_code",
+        "reviewed_spans": [
+          [
+            1,
+            178
+          ]
+        ],
+        "reviewed_lines": 178,
+        "total_lines": 178,
+        "extent": "full"
+      },
+      {
+        "path": "app/src/main/java/com/example/core/assistant/GoalAgent.kt",
+        "class": "product_code",
+        "reviewed_spans": [
+          [
+            1,
+            115
+          ]
+        ],
+        "reviewed_lines": 115,
+        "total_lines": 115,
+        "extent": "full"
+      },
+      {
+        "path": "app/src/main/java/com/example/core/assistant/GoalPrompt.kt",
+        "class": "product_code",
+        "reviewed_spans": [
+          [
+            1,
+            66
+          ]
+        ],
+        "reviewed_lines": 66,
+        "total_lines": 66,
+        "extent": "full"
+      },
+      {
+        "path": "app/src/main/java/com/example/core/assistant/GoalSession.kt",
+        "class": "product_code",
+        "reviewed_spans": [
+          [
+            1,
+            124
+          ]
+        ],
+        "reviewed_lines": 124,
+        "total_lines": 124,
+        "extent": "full"
+      },
+      {
+        "path": "app/src/main/java/com/example/core/config/ScopedSettings.kt",
+        "class": "product_code",
+        "reviewed_spans": [
+          [
+            1,
+            198
+          ]
+        ],
+        "reviewed_lines": 198,
+        "total_lines": 198,
+        "extent": "full"
+      },
+      {
+        "path": "app/src/main/java/com/example/core/config/Settings.kt",
+        "class": "product_code",
+        "reviewed_spans": [
+          [
+            130,
+            160
+          ],
+          [
+            420,
+            550
+          ],
+          [
+            625,
+            675
+          ]
+        ],
+        "reviewed_lines": 213,
+        "total_lines": 675,
+        "extent": "targeted_path_fragments"
+      },
+      {
+        "path": "app/src/main/java/com/example/core/config/SettingsHierarchy.kt",
+        "class": "product_code",
+        "reviewed_spans": [
+          [
+            1,
+            118
+          ]
+        ],
+        "reviewed_lines": 118,
+        "total_lines": 118,
+        "extent": "full"
+      },
+      {
+        "path": "app/src/main/java/com/example/core/config/SettingsProfiles.kt",
+        "class": "product_code",
+        "reviewed_spans": [
+          [
+            1,
+            176
+          ]
+        ],
+        "reviewed_lines": 176,
+        "total_lines": 176,
+        "extent": "full"
+      },
+      {
+        "path": "app/src/main/java/com/example/core/config/SettingsSchema.kt",
+        "class": "product_code",
+        "reviewed_spans": [
+          [
+            1,
+            150
+          ],
+          [
+            220,
+            273
+          ],
+          [
+            365,
+            440
+          ]
+        ],
+        "reviewed_lines": 280,
+        "total_lines": 932,
+        "extent": "targeted_path_fragments"
+      },
+      {
+        "path": "app/src/main/java/com/example/core/config/SettingsStore.kt",
+        "class": "product_code",
+        "reviewed_spans": [
+          [
+            1,
+            175
+          ],
+          [
+            445,
+            462
+          ]
+        ],
+        "reviewed_lines": 193,
+        "total_lines": 646,
+        "extent": "targeted_path_fragments"
+      },
+      {
+        "path": "app/src/main/java/com/example/core/discovery/ProviderCatalog.kt",
+        "class": "product_code",
+        "reviewed_spans": [
+          [
+            246,
+            285
+          ],
+          [
+            343,
+            365
+          ]
+        ],
+        "reviewed_lines": 63,
+        "total_lines": 371,
+        "extent": "targeted_path_fragments"
+      },
+      {
+        "path": "app/src/main/java/com/example/core/matrix/Model.kt",
+        "class": "product_code",
+        "reviewed_spans": [
+          [
+            1,
+            125
+          ]
+        ],
+        "reviewed_lines": 125,
+        "total_lines": 175,
+        "extent": "targeted_path_fragments"
+      },
+      {
+        "path": "app/src/main/java/com/example/core/matrix/Planner.kt",
+        "class": "product_code",
+        "reviewed_spans": [
+          [
+            1,
+            188
+          ]
+        ],
+        "reviewed_lines": 188,
+        "total_lines": 188,
+        "extent": "full"
+      },
+      {
+        "path": "app/src/main/java/com/example/core/matrix/Provenance.kt",
+        "class": "product_code",
+        "reviewed_spans": [
+          [
+            1,
+            190
+          ]
+        ],
+        "reviewed_lines": 190,
+        "total_lines": 228,
+        "extent": "targeted_path_fragments"
+      },
+      {
+        "path": "app/src/main/java/com/example/core/matrix/Streams.kt",
+        "class": "product_code",
+        "reviewed_spans": [
+          [
+            1,
+            150
+          ]
+        ],
+        "reviewed_lines": 150,
+        "total_lines": 451,
+        "extent": "targeted_path_fragments"
+      },
+      {
+        "path": "app/src/main/java/com/example/core/matrix/Transforms.kt",
+        "class": "product_code",
+        "reviewed_spans": [
+          [
+            1,
+            120
+          ]
+        ],
+        "reviewed_lines": 120,
+        "total_lines": 288,
+        "extent": "targeted_path_fragments"
+      },
+      {
+        "path": "app/src/main/java/com/example/core/suggest/SuggestionEngine.kt",
+        "class": "product_code",
+        "reviewed_spans": [
+          [
+            1,
+            245
+          ]
+        ],
+        "reviewed_lines": 245,
+        "total_lines": 256,
+        "extent": "targeted_path_fragments"
+      },
+      {
+        "path": "app/src/main/java/com/example/engine/EngineRuntime.kt",
+        "class": "product_code",
+        "reviewed_spans": [
+          [
+            131,
+            145
+          ]
+        ],
+        "reviewed_lines": 15,
+        "total_lines": 529,
+        "extent": "targeted_path_fragments"
+      },
+      {
+        "path": "app/src/main/java/com/example/ime/CustomKeyboardIme.kt",
+        "class": "product_code",
+        "reviewed_spans": [
+          [
+            99,
+            104
+          ],
+          [
+            529,
+            541
+          ],
+          [
+            2048,
+            2082
+          ]
+        ],
+        "reviewed_lines": 54,
+        "total_lines": 2370,
+        "extent": "targeted_path_fragments"
+      },
+      {
+        "path": "app/src/main/java/com/example/ime/EditorController.kt",
+        "class": "product_code",
+        "reviewed_spans": [
+          [
+            289,
+            303
+          ]
+        ],
+        "reviewed_lines": 15,
+        "total_lines": 815,
+        "extent": "targeted_path_fragments"
+      },
+      {
+        "path": "app/src/main/java/com/example/io/ConvertRunner.kt",
+        "class": "product_code",
+        "reviewed_spans": [
+          [
+            195,
+            231
+          ]
+        ],
+        "reviewed_lines": 37,
+        "total_lines": 924,
+        "extent": "targeted_path_fragments"
+      },
+      {
+        "path": "app/src/main/java/com/example/ui/settings/AiSettingsScreen.kt",
+        "class": "product_code",
+        "reviewed_spans": [
+          [
+            389,
+            409
+          ]
+        ],
+        "reviewed_lines": 21,
+        "total_lines": 431,
+        "extent": "targeted_path_fragments"
+      },
+      {
+        "path": "app/src/main/java/com/example/ui/settings/AiTaskProfileSection.kt",
+        "class": "product_code",
+        "reviewed_spans": [
+          [
+            28,
+            50
+          ]
+        ],
+        "reviewed_lines": 23,
+        "total_lines": 54,
+        "extent": "targeted_path_fragments"
+      },
+      {
+        "path": "app/src/main/java/com/example/ui/settings/LayoutInstanceSettings.kt",
+        "class": "product_code",
+        "reviewed_spans": [
+          [
+            130,
+            149
+          ]
+        ],
+        "reviewed_lines": 20,
+        "total_lines": 158,
+        "extent": "targeted_path_fragments"
+      },
+      {
+        "path": "profiles/openrouter_inference.json",
+        "class": "profile_reference_data",
+        "reviewed_spans": [
+          [
+            1,
+            26
+          ]
+        ],
+        "reviewed_lines": 26,
+        "total_lines": 26,
+        "extent": "full"
+      },
+      {
+        "path": "validate_profiles.py",
+        "class": "tests_fixtures",
+        "reviewed_spans": [
+          [
+            1,
+            30
+          ]
+        ],
+        "reviewed_lines": 30,
+        "total_lines": 30,
+        "extent": "full"
+      }
+    ]
+  },
+  "instructions_and_state_read": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "docs/RESUME.md",
+    "docs/HANDOFF_2026-10-02_TO_CLAUDE.md",
+    "docs/ARCHITECTURE.md",
+    "ECOSYSTEM.md",
+    "README.md",
+    "docs/UNIVERSAL_ASSISTANT.md",
+    "docs/AI_TASK_PROFILES.md"
+  ],
+  "requirements_source": "chatadhd OWNER_REQUIREMENTS_2026-09-26.md R15/R33/R40/R41/R42 supplied by root; current user audit prompt; IO Matrix AGENTS + ECOSYSTEM at pinned SHA",
+  "limitations": [
+    "Android runtime/unit suite not executed: no kotlinc or pinned Gradle compiler bundle; test-goal-core exited 1 with explicit bootstrap request.",
+    "No physical Android/permissions/touch/voice/provider account/light test, no paid model request, no CI.",
+    "Root profiles validation is structural only; not proof of runtime consumption.",
+    "History, tests/fixtures, validation evidence and vendor are not treated as product violations.",
+    "Automatic candidates are not findings. Kotlin analysis is lexical; semantic reasoning is in findings and reviewed spans.",
+    "No central-graph architecture is prescribed; graph gap is scoped to traced settings/AI/Goal paths.",
+    "Graph/experiment coverage for clipboard learning, media/vault, complete sensor streams and every provider remains semantic review backlog."
+  ]
+}

@@ -211,3 +211,5 @@ Klasyfikacja: **dopuszczalny mechanizm**. Lokalizacja: `app/src/main/java/com/ex
 Najpierw LEM-001/002/003: fixture transportu, rzeczywisty preset instrumentu, pełny ślad request/output. Potem polityka migracji i projekcja do grafu. Nie wznawiać dawnych gałęzi: są już w main.
 
 Wymagania właściciela z zadania A stosujemy jako aktualne kryteria. Cytat właściciela jest null w rekordach: treści kodu/README nie są cytatami jego intencji. Interpretacje i rekomendacje są oddzielone od obserwacji. Nie edytowano produktu, schematów ani STATE/INDEX. Przegląd B/C jest zadaniem końcowej integracji audytu w chatadhd, nie twierdzeniem o ukończeniu w tej części.
+
+Skan automatyczny: 27 plików, 1636 linii, 832 kandydatów; patrz `scan/summary.json`. To sygnały do weryfikacji, nie liczba naruszeń. ExperimentRunner jest produktem, mimo heurystycznej etykiety research skanera.

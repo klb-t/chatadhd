@@ -1,0 +1,10 @@
+{
+  "method": "actual SQL strings extracted from source, executed on Python sqlite3; two control-flow assertions are source checks",
+  "tests_passed": 5,
+  "pending_count": 3,
+  "selectable_count": 1,
+  "duplicate_id_retains_old_node": true,
+  "link_upsert_replaces_prior_metadata": true,
+  "empty_batch_message_skip_source_confirmed": true,
+  "migration_version_overwrite_source_confirmed": true
+}

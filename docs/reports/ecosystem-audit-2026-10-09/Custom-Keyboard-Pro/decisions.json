@@ -1,0 +1,404 @@
+[
+  {
+    "id": "CKP-D-001",
+    "finding_id": "CKP-A-001",
+    "decision": "Dla custom task id=\"fix\" lista zawiera najpierw wbudowany fix; byId wybiera wbudowany prompt. parseCustom łapie każdy błąd i zwraca pustą listę. writeCustom pomija builtIn. Brak stanu disabled/excluded dla wbudowanego zadania w tym modelu.",
+    "visibility": "partly implicit/fixed",
+    "alternatives": [
+      {
+        "option": "osobne custom ID",
+        "status": "implemented"
+      },
+      {
+        "option": "override built-in ID",
+        "status": "shadowed by first entry"
+      },
+      {
+        "option": "disable/exclude built-in persistently",
+        "status": "not represented in AiTask"
+      }
+    ],
+    "classification": "naruszenie",
+    "requirement": [
+      "OWNER_REQUIREMENTS R40, R41, R42; bieżący prompt: alternatywy/profili i domyślne ≠ ograniczenie",
+      "AGENTS.md: choice as instance of shared model"
+    ],
+    "location": {
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "path": "app/src/main/java/com/example/core/ai/AiTasks.kt",
+      "line_start": 28,
+      "line_end": 177
+    },
+    "owner_intent": "Only the linked requirement is attributed to owner; diagnosis/recommendations are auditor interpretation."
+  },
+  {
+    "id": "CKP-D-002",
+    "finding_id": "CKP-A-002",
+    "decision": "parseList zwraca emptyList po błędzie. all dodaje LEGACY po custom/fetched/bundled. AiConfig dodatkowo pobiera fallback model/base URL z AiProviders. Przy niepoprawnym katalogu rozpoznany legacy ID nadal może dać używalny config, o ile jest klucz/model.",
+    "visibility": "partly implicit/fixed",
+    "alternatives": [
+      {
+        "option": "custom > fetched > bundled",
+        "status": "implemented, hard-coded precedence"
+      },
+      {
+        "option": "legacy compatibility preset as data",
+        "status": "not implemented"
+      },
+      {
+        "option": "error vs verified embedded snapshot",
+        "status": "no explicit policy in read path"
+      }
+    ],
+    "classification": "naruszenie",
+    "requirement": [
+      "R42: brak/uszkodzony pack → jawny błąd lub embedded pack generowany z danych",
+      "R40: trwałe wykluczenie",
+      "AGENTS.md: endpoints/model defaults as catalogue/profile data"
+    ],
+    "location": {
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "path": "app/src/main/java/com/example/core/discovery/ProviderCatalog.kt",
+      "line_start": 246,
+      "line_end": 285
+    },
+    "owner_intent": "Only the linked requirement is attributed to owner; diagnosis/recommendations are auditor interpretation."
+  },
+  {
+    "id": "CKP-D-003",
+    "finding_id": "CKP-A-003",
+    "decision": "ConvertRunner ustawia tylko allowLeavingDevice, through i avoid. Weights(), maxSteps=5, kara rank*2 i traktowanie kosztu null jako MEDIUM pozostają efektywnymi decyzjami w Kotlinie. Runner wybiera plan.best; inne trasy są komunikatem, w Expert tylko dwa skróty. Użytkownik może wymusić use/avoid, więc alternatywy nie są całkowicie usunięte.",
+    "visibility": "partly implicit/fixed",
+    "alternatives": [
+      {
+        "option": "localOnly/use/avoid",
+        "status": "wired"
+      },
+      {
+        "option": "weights/maxSteps/unknown-cost policy",
+        "status": "engine parameters exist partly; not wired from Settings"
+      },
+      {
+        "option": "explicit route selection",
+        "status": "use/avoid constrains; no full route selector in ConvertRunner"
+      }
+    ],
+    "classification": "naruszenie",
+    "requirement": [
+      "R42: weights/limits as data",
+      "R15/R40/R41",
+      "AGENTS.md: separate mechanism/policy; unknown cost remains unknown"
+    ],
+    "location": {
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "path": "app/src/main/java/com/example/core/matrix/Planner.kt",
+      "line_start": 4,
+      "line_end": 36
+    },
+    "owner_intent": "Only the linked requirement is attributed to owner; diagnosis/recommendations are auditor interpretation."
+  },
+  {
+    "id": "CKP-D-004",
+    "finding_id": "CKP-A-004",
+    "decision": "derive bierze istnienie, typ i default z serializacji Settings(). Label/help/range/grupy pochodzą z METADATA Kotlin, Basic keys i scopes z list Kotlin. Generic UI faktycznie zużywa ten opis, lecz poprawienie treści/tłumaczenia/default/range wymaga buildu.",
+    "visibility": "partly implicit/fixed",
+    "alternatives": [
+      {
+        "option": "generic setting controls",
+        "status": "implemented"
+      },
+      {
+        "option": "translated data descriptions/default presets",
+        "status": "not authoritative"
+      },
+      {
+        "option": "Basic/Advanced/Expert same persisted values",
+        "status": "implemented"
+      },
+      {
+        "option": "Basic selects complete researched workflow",
+        "status": "no such bundle in checked settings path"
+      }
+    ],
+    "classification": "naruszenie",
+    "requirement": [
+      "R42: UI text/defaults/limits are data",
+      "R40 default layers",
+      "AGENTS.md: expert UI projection of canonical settings"
+    ],
+    "location": {
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "path": "app/src/main/java/com/example/core/config/SettingsSchema.kt",
+      "line_start": 223,
+      "line_end": 253
+    },
+    "owner_intent": "Only the linked requirement is attributed to owner; diagnosis/recommendations are auditor interpretation."
+  },
+  {
+    "id": "CKP-D-005",
+    "finding_id": "CKP-A-005",
+    "decision": "Local scoring używa 2000/1000, bigram×10 oraz rank/1000; first getOrPut ustala reprezentanta duplikatu. AI zawsze trafia na początek niezależnie od score, choć opt-in nie wybierał priorytetu. cleanCompletion usuwa code fence/cudzysłowy/pierwszą linię i tnie do 80 znaków. aiContextChars jest realnym ustawieniem, ale strategia takeLast pozostaje stała.",
+    "visibility": "partly implicit/fixed",
+    "alternatives": [
+      {
+        "option": "AI off / minChars / debounce / context length",
+        "status": "wired"
+      },
+      {
+        "option": "AI priority/dedup representative/postprocess selection",
+        "status": "fixed control flow"
+      },
+      {
+        "option": "raw/multiline/quoted continuation",
+        "status": "not preserved in suggestion value"
+      }
+    ],
+    "classification": "naruszenie",
+    "requirement": [
+      "R42: weights/thresholds/domain postprocessing as data",
+      "R41: analysis recipes/methods",
+      "AGENTS.md: explicit information loss/generated and choice as data"
+    ],
+    "location": {
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "path": "app/src/main/java/com/example/core/suggest/SuggestionEngine.kt",
+      "line_start": 131,
+      "line_end": 240
+    },
+    "owner_intent": "Only the linked requirement is attributed to owner; diagnosis/recommendations are auditor interpretation."
+  },
+  {
+    "id": "CKP-D-006",
+    "finding_id": "CKP-A-006",
+    "decision": "W sprawdzonych ścieżkach Settings -> encrypted JSON -> StateFlow i AiConfig -> request nie są wiązane z węzłami wersji/proweniencji; GoalAgent przechowuje goal/proposals/session w pamięci obiektu. Matrix ma własny Provenance/Record dla transformacji, lecz to nie pokrywa tych trzech rodzin.",
+    "visibility": "partly implicit/fixed",
+    "alternatives": [
+      {
+        "option": "per-conversion Provenance",
+        "status": "implemented"
+      },
+      {
+        "option": "graph descriptors of settings/prompts/requests/sessions",
+        "status": "absent in traced paths"
+      },
+      {
+        "option": "secret reference in graph without secret bytes",
+        "status": "recommended design boundary"
+      }
+    ],
+    "classification": "naruszenie",
+    "requirement": [
+      "R15/R40/R41 i bieżący audyt: all used data in graph",
+      "ECOSYSTEM.md: różne grafy mogą mieć różną semantykę; kierunki nie są historycznym zleceniem"
+    ],
+    "location": {
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "path": "app/src/main/java/com/example/core/config/SettingsStore.kt",
+      "line_start": 29,
+      "line_end": 38
+    },
+    "owner_intent": "Only the linked requirement is attributed to owner; diagnosis/recommendations are auditor interpretation."
+  },
+  {
+    "id": "CKP-D-007",
+    "finding_id": "CKP-A-007",
+    "decision": "System prompt powstaje z Kotlin raw string i katalogu akcji; plan wymaga 1–4 alternatives. Brak wyboru wariantu promptu przez AiTaskProfiles: tam są tylko maxTokens/temperature. JSON shape keys są kontraktem; tekst polityki, przykłady i limit 4 nie stają się kontraktem przez umieszczenie obok schema.",
+    "visibility": "partly implicit/fixed",
+    "alternatives": [
+      {
+        "option": "task maxTokens/temperature",
+        "status": "wired"
+      },
+      {
+        "option": "prompt recipe variants",
+        "status": "no setting in GoalPrompt"
+      },
+      {
+        "option": "proposal-count policy",
+        "status": "fixed 1..4"
+      }
+    ],
+    "classification": "naruszenie",
+    "requirement": [
+      "R42: prompts/recipes/limits as data",
+      "R33/R41: configurable experiment variants, methods",
+      "AGENTS.md: any goal and useful alternative routes"
+    ],
+    "location": {
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "path": "app/src/main/java/com/example/core/assistant/GoalPrompt.kt",
+      "line_start": 5,
+      "line_end": 44
+    },
+    "owner_intent": "Only the linked requirement is attributed to owner; diagnosis/recommendations are auditor interpretation."
+  },
+  {
+    "id": "CKP-D-008",
+    "finding_id": "CKP-A-008",
+    "decision": "UI zapisuje aiTaskProfilesJson, resolve czyta go, AiConfig.from wypełnia maxTokens/temperature, request builder wysyła te pola. Goal host wybiera GOAL_PLAN, IME REWRITE, suggestions INLINE. Błąd profilu oznacza configurationProblem, a complete przerywa przed wysyłką.",
+    "visibility": "explicit mechanism or existing option",
+    "alternatives": [
+      {
+        "option": "task override",
+        "status": "implemented"
+      },
+      {
+        "option": "provider/global inheritance",
+        "status": "implemented with source labels"
+      },
+      {
+        "option": "invalid profile blocks request",
+        "status": "implemented"
+      }
+    ],
+    "classification": "już naprawione",
+    "requirement": [
+      "bieżący audyt: nie kopiować przyjętych przyrostów",
+      "R42 i real consumer requirement"
+    ],
+    "location": {
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "path": "app/src/main/java/com/example/core/ai/AiClient.kt",
+      "line_start": 52,
+      "line_end": 70
+    },
+    "owner_intent": "Only the linked requirement is attributed to owner; diagnosis/recommendations are auditor interpretation."
+  },
+  {
+    "id": "CKP-D-009",
+    "finding_id": "CKP-A-009",
+    "decision": "Speech/text są źródłami goal; model request ma osobną zgodę. finishPlanning przyjmuje tylko bieżącą rewizję/hosta; wybór planu tworzy GoalSession, begin potrzebuje review. USER_CONFIRMED i VERIFIED pozostają oddzielne. Katalog zaznacza runnable per host, a nie „niemożliwe”.",
+    "visibility": "explicit mechanism or existing option",
+    "alternatives": [
+      {
+        "option": "text/voice/import proposals",
+        "status": "same local lifecycle"
+      },
+      {
+        "option": "unimplemented host adapter",
+        "status": "explicit missing capability"
+      },
+      {
+        "option": "verified/user-confirmed outcome",
+        "status": "distinct states"
+      }
+    ],
+    "classification": "dopuszczalny mechanizm",
+    "requirement": [
+      "AGENTS.md: observations/user declarations/hypotheses/outcomes distinct; sharing does not transfer authority",
+      "R42 wyjątki 1/3",
+      "bieżący audyt: odróżnić mechanizm od naruszenia"
+    ],
+    "location": {
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "path": "app/src/main/java/com/example/core/assistant/GoalAgent.kt",
+      "line_start": 43,
+      "line_end": 106
+    },
+    "owner_intent": "Only the linked requirement is attributed to owner; diagnosis/recommendations are auditor interpretation."
+  },
+  {
+    "id": "CKP-D-010",
+    "finding_id": "CKP-A-010",
+    "decision": "Resolver stosuje layout/panel/key, zapamiętuje suppressedSources i zwraca snapshot. IME pobiera scoped snapshot; UI edytuje ten sam override i pokazuje effective/source. Poziom UI nie uczestniczy w cascade. EngineRuntime śledzi SettingsStore.state dla Wires/Streams.",
+    "visibility": "explicit mechanism or existing option",
+    "alternatives": [
+      {
+        "option": "CASCADE/LAYOUT_ONLY/DEFAULTS_ONLY",
+        "status": "wired"
+      },
+      {
+        "option": "Basic/Expert visibility",
+        "status": "separate from precedence"
+      },
+      {
+        "option": "permanent default exclusion",
+        "status": "not supplied by this mechanism"
+      }
+    ],
+    "classification": "dopuszczalny mechanizm",
+    "requirement": [
+      "AGENTS.md: same contextual/expert values and real consumer",
+      "R40 częściowa zgodność; brak pełnych warstw/exclusions opisany osobno"
+    ],
+    "location": {
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "path": "app/src/main/java/com/example/core/config/ScopedSettings.kt",
+      "line_start": 93,
+      "line_end": 158
+    },
+    "owner_intent": "Only the linked requirement is attributed to owner; diagnosis/recommendations are auditor interpretation."
+  },
+  {
+    "id": "CKP-D-011",
+    "finding_id": "CKP-A-011",
+    "decision": "Walidator sprawdza obecność 3 pól i kończy sukcesem. Domyślny Android assets to app/src/main/assets; build nie dodaje root profiles. Nie znaleziono konsumenta root profileId/abstractionId w app/src/main.",
+    "visibility": "unresolved hypothesis",
+    "alternatives": [
+      {
+        "option": "documentation/reference profiles",
+        "status": "consistent with observed usage"
+      },
+      {
+        "option": "authoritative runtime profiles",
+        "status": "no wiring evidence in audited build/source"
+      }
+    ],
+    "classification": "niepewne",
+    "requirement": [
+      "bieżący audyt: existence of JSON ≠ consumer",
+      "AGENTS.md: actual consumers"
+    ],
+    "location": {
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "path": "profiles/openrouter_inference.json",
+      "line_start": 1,
+      "line_end": 26
+    },
+    "owner_intent": "Only the linked requirement is attributed to owner; diagnosis/recommendations are auditor interpretation."
+  },
+  {
+    "id": "CKP-D-012",
+    "finding_id": "CKP-A-012",
+    "decision": "runAiTask sprawdza sensitive przed requestem, ale callback onSuccess czyta aktualny EditorController i robi replaceSelectionOrAll/commitText bez generation/current target check. onFinishInputView czyści suggestions/completions/voice, lecz nie ten job; serviceScope żyje do onDestroy. Wskazuje to na możliwość zastosowania starej odpowiedzi do nowego fokusu/tekstu.",
+    "visibility": "unresolved hypothesis",
+    "alternatives": [
+      {
+        "option": "immediate replace",
+        "status": "current"
+      },
+      {
+        "option": "target/revision-bound apply",
+        "status": "not visible in callback"
+      },
+      {
+        "option": "preview/explicit acceptance after stale result",
+        "status": "not represented here"
+      }
+    ],
+    "classification": "niepewne",
+    "requirement": [
+      "AGENTS.md: preserve user target/focus and private input boundary",
+      "bieżący audyt: decyzje w kolejności i async"
+    ],
+    "location": {
+      "repo": "klb-t/Custom-Keyboard-Pro",
+      "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "path": "app/src/main/java/com/example/ime/CustomKeyboardIme.kt",
+      "line_start": 2048,
+      "line_end": 2082
+    },
+    "owner_intent": "Only the linked requirement is attributed to owner; diagnosis/recommendations are auditor interpretation."
+  }
+]

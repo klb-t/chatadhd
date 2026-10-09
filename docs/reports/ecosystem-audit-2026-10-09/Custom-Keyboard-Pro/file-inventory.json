@@ -1,0 +1,3229 @@
+[
+  {
+    "path": ".github/workflows/build-debug.yml",
+    "class": "build_tooling",
+    "bytes": 7465,
+    "lines": 177,
+    "utf8": true
+  },
+  {
+    "path": ".gitignore",
+    "class": "docs_metadata_other",
+    "bytes": 553,
+    "lines": 23,
+    "utf8": true
+  },
+  {
+    "path": "AGENTS.md",
+    "class": "docs_metadata_other",
+    "bytes": 4886,
+    "lines": 80,
+    "utf8": true
+  },
+  {
+    "path": "CLAUDE.md",
+    "class": "docs_metadata_other",
+    "bytes": 884,
+    "lines": 15,
+    "utf8": true
+  },
+  {
+    "path": "COMMERCIAL_LICENSE.md",
+    "class": "docs_metadata_other",
+    "bytes": 700,
+    "lines": 11,
+    "utf8": true
+  },
+  {
+    "path": "ECOSYSTEM.md",
+    "class": "docs_metadata_other",
+    "bytes": 4617,
+    "lines": 29,
+    "utf8": true
+  },
+  {
+    "path": "LICENSE",
+    "class": "docs_metadata_other",
+    "bytes": 529,
+    "lines": 11,
+    "utf8": true
+  },
+  {
+    "path": "README.md",
+    "class": "docs_metadata_other",
+    "bytes": 8724,
+    "lines": 127,
+    "utf8": true
+  },
+  {
+    "path": "app/.gitignore",
+    "class": "docs_metadata_other",
+    "bytes": 7,
+    "lines": 1,
+    "utf8": true
+  },
+  {
+    "path": "app/build.gradle.kts",
+    "class": "build_tooling",
+    "bytes": 4067,
+    "lines": 114,
+    "utf8": true
+  },
+  {
+    "path": "app/proguard-rules.pro",
+    "class": "docs_metadata_other",
+    "bytes": 751,
+    "lines": 21,
+    "utf8": true
+  },
+  {
+    "path": "app/src/androidTest/java/com/example/ExampleInstrumentedTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 648,
+    "lines": 22,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/AndroidManifest.xml",
+    "class": "product_data_resources",
+    "bytes": 13223,
+    "lines": 250,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/assets/action_profiles.json",
+    "class": "product_data_resources",
+    "bytes": 7859,
+    "lines": 336,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/assets/dictionaries/en.txt",
+    "class": "product_data_resources",
+    "bytes": 391364,
+    "lines": 48423,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/assets/dictionaries/pl.txt",
+    "class": "product_data_resources",
+    "bytes": 456744,
+    "lines": 49731,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/assets/factsources.json",
+    "class": "product_data_resources",
+    "bytes": 2329,
+    "lines": 74,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/assets/media_view_profiles.json",
+    "class": "product_data_resources",
+    "bytes": 1123,
+    "lines": 13,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/assets/providers.json",
+    "class": "product_data_resources",
+    "bytes": 43053,
+    "lines": 1537,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/assets/settings_profiles.json",
+    "class": "product_data_resources",
+    "bytes": 5679,
+    "lines": 190,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/assets/settings_search_aliases.json",
+    "class": "product_data_resources",
+    "bytes": 1908,
+    "lines": 39,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/assets/wordlists.json",
+    "class": "product_data_resources",
+    "bytes": 2198,
+    "lines": 53,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/KeyboardApp.kt",
+    "class": "product_code",
+    "bytes": 1352,
+    "lines": 30,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/MainActivity.kt",
+    "class": "product_code",
+    "bytes": 18950,
+    "lines": 374,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/assistant/AssistantSessionVisibility.kt",
+    "class": "product_code",
+    "bytes": 1036,
+    "lines": 30,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/assistant/ColourOrganActivity.kt",
+    "class": "product_code",
+    "bytes": 13024,
+    "lines": 190,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/assistant/ForegroundSpeech.kt",
+    "class": "product_code",
+    "bytes": 1998,
+    "lines": 33,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/assistant/GoalAssistantActivity.kt",
+    "class": "product_code",
+    "bytes": 23943,
+    "lines": 379,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/assistant/GoalCatalogue.kt",
+    "class": "product_code",
+    "bytes": 7926,
+    "lines": 95,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/assistant/GoalDispatchPolicy.kt",
+    "class": "product_code",
+    "bytes": 558,
+    "lines": 15,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/assistant/GoalJson.kt",
+    "class": "product_code",
+    "bytes": 3417,
+    "lines": 62,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/assistant/GoalPerformer.kt",
+    "class": "product_code",
+    "bytes": 3930,
+    "lines": 67,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/assistant/GoalRecognitionService.kt",
+    "class": "product_code",
+    "bytes": 4009,
+    "lines": 72,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/assistant/GoalVoiceInteractionService.kt",
+    "class": "product_code",
+    "bytes": 756,
+    "lines": 16,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/assistant/GoalVoiceSession.kt",
+    "class": "product_code",
+    "bytes": 2288,
+    "lines": 51,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/assistant/GoalVoiceSessionService.kt",
+    "class": "product_code",
+    "bytes": 334,
+    "lines": 9,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/assistant/OnDeviceSpeechTurn.kt",
+    "class": "product_code",
+    "bytes": 7353,
+    "lines": 142,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/clipboard/ClipboardImportActivity.kt",
+    "class": "product_code",
+    "bytes": 5388,
+    "lines": 101,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/clipboard/ScreenshotClipboard.kt",
+    "class": "product_code",
+    "bytes": 6431,
+    "lines": 105,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/ai/AiClient.kt",
+    "class": "product_code",
+    "bytes": 12474,
+    "lines": 302,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/ai/AiTaskProfiles.kt",
+    "class": "product_code",
+    "bytes": 4538,
+    "lines": 90,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/ai/AiTasks.kt",
+    "class": "product_code",
+    "bytes": 6689,
+    "lines": 178,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/asr/AndroidAsr.kt",
+    "class": "product_code",
+    "bytes": 13711,
+    "lines": 331,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/asr/Asr.kt",
+    "class": "product_code",
+    "bytes": 1117,
+    "lines": 33,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/asr/RemoteAsr.kt",
+    "class": "product_code",
+    "bytes": 7587,
+    "lines": 207,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/asr/Transcription.kt",
+    "class": "product_code",
+    "bytes": 5014,
+    "lines": 124,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/asr/VoiceController.kt",
+    "class": "product_code",
+    "bytes": 7249,
+    "lines": 187,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/assistant/GoalAgent.kt",
+    "class": "product_code",
+    "bytes": 5453,
+    "lines": 115,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/assistant/GoalPlan.kt",
+    "class": "product_code",
+    "bytes": 10663,
+    "lines": 185,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/assistant/GoalPrompt.kt",
+    "class": "product_code",
+    "bytes": 4937,
+    "lines": 66,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/assistant/GoalSession.kt",
+    "class": "product_code",
+    "bytes": 7391,
+    "lines": 124,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/caps/Abilities.kt",
+    "class": "product_code",
+    "bytes": 15499,
+    "lines": 316,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/capture/CaptureSession.kt",
+    "class": "product_code",
+    "bytes": 5720,
+    "lines": 111,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/capture/ConversationCapture.kt",
+    "class": "product_code",
+    "bytes": 12304,
+    "lines": 235,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/capture/TreeObservation.kt",
+    "class": "product_code",
+    "bytes": 8743,
+    "lines": 146,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/clipboard/ClipStore.kt",
+    "class": "product_code",
+    "bytes": 10629,
+    "lines": 255,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/config/Knobs.kt",
+    "class": "product_code",
+    "bytes": 13198,
+    "lines": 187,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/config/ScopedSettings.kt",
+    "class": "product_code",
+    "bytes": 13282,
+    "lines": 198,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/config/ScopedSettingsCache.kt",
+    "class": "product_code",
+    "bytes": 1596,
+    "lines": 33,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/config/Settings.kt",
+    "class": "product_code",
+    "bytes": 31987,
+    "lines": 675,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/config/SettingsDestinations.kt",
+    "class": "product_code",
+    "bytes": 1141,
+    "lines": 28,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/config/SettingsHierarchy.kt",
+    "class": "product_code",
+    "bytes": 7789,
+    "lines": 118,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/config/SettingsProfiles.kt",
+    "class": "product_code",
+    "bytes": 8686,
+    "lines": 176,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/config/SettingsSchema.kt",
+    "class": "product_code",
+    "bytes": 59388,
+    "lines": 932,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/config/SettingsSearch.kt",
+    "class": "product_code",
+    "bytes": 2216,
+    "lines": 45,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/config/SettingsStore.kt",
+    "class": "product_code",
+    "bytes": 38351,
+    "lines": 646,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/convert/Containers.kt",
+    "class": "product_code",
+    "bytes": 3168,
+    "lines": 71,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/convert/Music.kt",
+    "class": "product_code",
+    "bytes": 21248,
+    "lines": 474,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/convert/PasteConversion.kt",
+    "class": "product_code",
+    "bytes": 12673,
+    "lines": 281,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/convert/Spectro.kt",
+    "class": "product_code",
+    "bytes": 30116,
+    "lines": 646,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/data/BundledDictionary.kt",
+    "class": "product_code",
+    "bytes": 8685,
+    "lines": 202,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/data/Daos.kt",
+    "class": "product_code",
+    "bytes": 8478,
+    "lines": 194,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/data/Entities.kt",
+    "class": "product_code",
+    "bytes": 4129,
+    "lines": 111,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/data/KeyboardDatabase.kt",
+    "class": "product_code",
+    "bytes": 5483,
+    "lines": 119,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/data/KeyboardRepository.kt",
+    "class": "product_code",
+    "bytes": 10660,
+    "lines": 236,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/data/WordListSource.kt",
+    "class": "product_code",
+    "bytes": 7216,
+    "lines": 178,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/debug/RuntimeVariables.kt",
+    "class": "product_code",
+    "bytes": 4429,
+    "lines": 101,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/devices/ReactiveLight.kt",
+    "class": "product_code",
+    "bytes": 3309,
+    "lines": 77,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/devices/YeelightConnection.kt",
+    "class": "product_code",
+    "bytes": 5247,
+    "lines": 94,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/devices/YeelightProtocol.kt",
+    "class": "product_code",
+    "bytes": 4454,
+    "lines": 76,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/discovery/ApiKeys.kt",
+    "class": "product_code",
+    "bytes": 4496,
+    "lines": 97,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/discovery/CallEngine.kt",
+    "class": "product_code",
+    "bytes": 19126,
+    "lines": 424,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/discovery/Capabilities.kt",
+    "class": "product_code",
+    "bytes": 14573,
+    "lines": 317,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/discovery/Discovery.kt",
+    "class": "product_code",
+    "bytes": 3028,
+    "lines": 77,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/discovery/JsonPath.kt",
+    "class": "product_code",
+    "bytes": 6546,
+    "lines": 158,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/discovery/ModelDiscovery.kt",
+    "class": "product_code",
+    "bytes": 7914,
+    "lines": 178,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/discovery/ModelFacts.kt",
+    "class": "product_code",
+    "bytes": 10418,
+    "lines": 237,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/discovery/ProviderCatalog.kt",
+    "class": "product_code",
+    "bytes": 16273,
+    "lines": 371,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/discovery/ProviderProfile.kt",
+    "class": "product_code",
+    "bytes": 9665,
+    "lines": 215,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/discovery/Sse.kt",
+    "class": "product_code",
+    "bytes": 3522,
+    "lines": 87,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/engine/Motion.kt",
+    "class": "product_code",
+    "bytes": 5370,
+    "lines": 131,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/engine/Phrases.kt",
+    "class": "product_code",
+    "bytes": 1943,
+    "lines": 50,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/engine/VolumeGestures.kt",
+    "class": "product_code",
+    "bytes": 4397,
+    "lines": 107,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/engine/Wires.kt",
+    "class": "product_code",
+    "bytes": 10709,
+    "lines": 220,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/hitmap/HitmapExtractor.kt",
+    "class": "product_code",
+    "bytes": 10766,
+    "lines": 275,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/hitmap/LongPressTuner.kt",
+    "class": "product_code",
+    "bytes": 2812,
+    "lines": 76,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/hitmap/TouchLearner.kt",
+    "class": "product_code",
+    "bytes": 4953,
+    "lines": 128,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/io/ActionProfiles.kt",
+    "class": "product_code",
+    "bytes": 3200,
+    "lines": 61,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/io/Command.kt",
+    "class": "product_code",
+    "bytes": 4564,
+    "lines": 110,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/io/Macros.kt",
+    "class": "product_code",
+    "bytes": 2902,
+    "lines": 77,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/io/NodeQuery.kt",
+    "class": "product_code",
+    "bytes": 5668,
+    "lines": 153,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/io/PocketLock.kt",
+    "class": "product_code",
+    "bytes": 5049,
+    "lines": 139,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/io/PocketLockPolicy.kt",
+    "class": "product_code",
+    "bytes": 1597,
+    "lines": 44,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/io/ShortcutSession.kt",
+    "class": "product_code",
+    "bytes": 916,
+    "lines": 34,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/io/Verbs.kt",
+    "class": "product_code",
+    "bytes": 22048,
+    "lines": 421,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/json/JsonFields.kt",
+    "class": "product_code",
+    "bytes": 1815,
+    "lines": 43,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/layout/AutomaticShift.kt",
+    "class": "product_code",
+    "bytes": 835,
+    "lines": 14,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/layout/BuiltinLayouts.kt",
+    "class": "product_code",
+    "bytes": 29054,
+    "lines": 681,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/layout/ControlDeckLayout.kt",
+    "class": "product_code",
+    "bytes": 2436,
+    "lines": 56,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/layout/Controls.kt",
+    "class": "product_code",
+    "bytes": 6562,
+    "lines": 159,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/layout/ElementGeometry.kt",
+    "class": "product_code",
+    "bytes": 7140,
+    "lines": 169,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/layout/FreeKeyPins.kt",
+    "class": "product_code",
+    "bytes": 2256,
+    "lines": 59,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/layout/KeyCodes.kt",
+    "class": "product_code",
+    "bytes": 4556,
+    "lines": 106,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/layout/KeyPlacement.kt",
+    "class": "product_code",
+    "bytes": 5110,
+    "lines": 136,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/layout/KeyboardViewportBudget.kt",
+    "class": "product_code",
+    "bytes": 1722,
+    "lines": 27,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/layout/LanguageKeys.kt",
+    "class": "product_code",
+    "bytes": 5507,
+    "lines": 113,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/layout/LayerTransforms.kt",
+    "class": "product_code",
+    "bytes": 10691,
+    "lines": 248,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/layout/LayoutAuthoring.kt",
+    "class": "product_code",
+    "bytes": 7419,
+    "lines": 175,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/layout/LayoutDoctor.kt",
+    "class": "product_code",
+    "bytes": 9563,
+    "lines": 220,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/layout/LayoutGenerator.kt",
+    "class": "product_code",
+    "bytes": 7602,
+    "lines": 158,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/layout/LayoutGeometry.kt",
+    "class": "product_code",
+    "bytes": 7453,
+    "lines": 131,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/layout/LayoutJson.kt",
+    "class": "product_code",
+    "bytes": 32554,
+    "lines": 673,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/layout/LayoutModel.kt",
+    "class": "product_code",
+    "bytes": 21066,
+    "lines": 529,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/layout/LayoutRepository.kt",
+    "class": "product_code",
+    "bytes": 5671,
+    "lines": 145,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/layout/ScienceLayout.kt",
+    "class": "product_code",
+    "bytes": 23091,
+    "lines": 488,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/layout/ToolbarRows.kt",
+    "class": "product_code",
+    "bytes": 6637,
+    "lines": 112,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/layout/WorkbenchLayout.kt",
+    "class": "product_code",
+    "bytes": 4395,
+    "lines": 114,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/matrix/Conversion.kt",
+    "class": "product_code",
+    "bytes": 4810,
+    "lines": 99,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/matrix/Model.kt",
+    "class": "product_code",
+    "bytes": 9061,
+    "lines": 175,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/matrix/NetLines.kt",
+    "class": "product_code",
+    "bytes": 2730,
+    "lines": 61,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/matrix/Planner.kt",
+    "class": "product_code",
+    "bytes": 9308,
+    "lines": 188,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/matrix/Provenance.kt",
+    "class": "product_code",
+    "bytes": 10449,
+    "lines": 228,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/matrix/Streams.kt",
+    "class": "product_code",
+    "bytes": 18669,
+    "lines": 451,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/matrix/Transforms.kt",
+    "class": "product_code",
+    "bytes": 13357,
+    "lines": 288,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/media/MediaHubRepository.kt",
+    "class": "product_code",
+    "bytes": 11765,
+    "lines": 219,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/media/MediaProfiles.kt",
+    "class": "product_code",
+    "bytes": 4966,
+    "lines": 110,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/panels/PanelGenerator.kt",
+    "class": "product_code",
+    "bytes": 5234,
+    "lines": 119,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/panels/PanelSpec.kt",
+    "class": "product_code",
+    "bytes": 5468,
+    "lines": 129,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/phone/PhoneCatalogue.kt",
+    "class": "product_code",
+    "bytes": 13833,
+    "lines": 128,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/phone/RotationMapping.kt",
+    "class": "product_code",
+    "bytes": 1176,
+    "lines": 20,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/phone/SensorSessionPolicy.kt",
+    "class": "product_code",
+    "bytes": 1732,
+    "lines": 33,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/predict/ActionStats.kt",
+    "class": "product_code",
+    "bytes": 12641,
+    "lines": 266,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/predict/Completions.kt",
+    "class": "product_code",
+    "bytes": 10402,
+    "lines": 238,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/predict/Decision.kt",
+    "class": "product_code",
+    "bytes": 4801,
+    "lines": 112,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/predict/Modifiers.kt",
+    "class": "product_code",
+    "bytes": 9918,
+    "lines": 257,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/predict/Slices.kt",
+    "class": "product_code",
+    "bytes": 9728,
+    "lines": 235,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/security/EncryptedSettingsPersistence.kt",
+    "class": "product_code",
+    "bytes": 4415,
+    "lines": 91,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/security/PasswordEnvelope.kt",
+    "class": "product_code",
+    "bytes": 3452,
+    "lines": 66,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/security/PrivateInputContract.kt",
+    "class": "product_code",
+    "bytes": 309,
+    "lines": 7,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/setup/CapabilitySetup.kt",
+    "class": "product_code",
+    "bytes": 10339,
+    "lines": 175,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/setup/CatalogUpdate.kt",
+    "class": "product_code",
+    "bytes": 9461,
+    "lines": 212,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/setup/SetupAdvisor.kt",
+    "class": "product_code",
+    "bytes": 9972,
+    "lines": 222,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/speech/SpeechText.kt",
+    "class": "product_code",
+    "bytes": 3285,
+    "lines": 76,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/suggest/Correction.kt",
+    "class": "product_code",
+    "bytes": 4282,
+    "lines": 105,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/suggest/SuggestionEngine.kt",
+    "class": "product_code",
+    "bytes": 10667,
+    "lines": 256,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/sync/DriveSyncTransport.kt",
+    "class": "product_code",
+    "bytes": 5287,
+    "lines": 82,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/sync/SyncClip.kt",
+    "class": "product_code",
+    "bytes": 1212,
+    "lines": 24,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/sync/SyncModel.kt",
+    "class": "product_code",
+    "bytes": 7399,
+    "lines": 125,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/sync/SyncRepository.kt",
+    "class": "product_code",
+    "bytes": 14053,
+    "lines": 202,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/text/Capitalisation.kt",
+    "class": "product_code",
+    "bytes": 10906,
+    "lines": 262,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/text/CursorMagnet.kt",
+    "class": "product_code",
+    "bytes": 6021,
+    "lines": 136,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/text/ProperNouns.kt",
+    "class": "product_code",
+    "bytes": 4310,
+    "lines": 105,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/text/TextOps.kt",
+    "class": "product_code",
+    "bytes": 9715,
+    "lines": 239,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/vault/VaultBackup.kt",
+    "class": "product_code",
+    "bytes": 2569,
+    "lines": 53,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/vault/VaultModels.kt",
+    "class": "product_code",
+    "bytes": 7405,
+    "lines": 154,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/vault/VaultStore.kt",
+    "class": "product_code",
+    "bytes": 8555,
+    "lines": 168,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/core/vault/VaultTargets.kt",
+    "class": "product_code",
+    "bytes": 1803,
+    "lines": 34,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/engine/EngineRuntime.kt",
+    "class": "product_code",
+    "bytes": 20210,
+    "lines": 529,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/engine/NetListener.kt",
+    "class": "product_code",
+    "bytes": 7080,
+    "lines": 172,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/engine/SensorHub.kt",
+    "class": "product_code",
+    "bytes": 4399,
+    "lines": 110,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/engine/StreamRunner.kt",
+    "class": "product_code",
+    "bytes": 3698,
+    "lines": 88,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/engine/UdpSender.kt",
+    "class": "product_code",
+    "bytes": 2411,
+    "lines": 64,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/engine/VoiceTrigger.kt",
+    "class": "product_code",
+    "bytes": 5433,
+    "lines": 140,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ime/ComposeInputMethodService.kt",
+    "class": "product_code",
+    "bytes": 5880,
+    "lines": 124,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ime/ComposeSequences.kt",
+    "class": "product_code",
+    "bytes": 2783,
+    "lines": 62,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ime/CursorWorkspace.kt",
+    "class": "product_code",
+    "bytes": 2102,
+    "lines": 42,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ime/CustomKeyboardIme.kt",
+    "class": "product_code",
+    "bytes": 112820,
+    "lines": 2370,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ime/EditorController.kt",
+    "class": "product_code",
+    "bytes": 35930,
+    "lines": 815,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ime/FeedbackController.kt",
+    "class": "product_code",
+    "bytes": 2766,
+    "lines": 78,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ime/KeyboardState.kt",
+    "class": "product_code",
+    "bytes": 13123,
+    "lines": 344,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ime/KeyboardTile.kt",
+    "class": "product_code",
+    "bytes": 1968,
+    "lines": 46,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/io/AccessibilityNodeData.kt",
+    "class": "product_code",
+    "bytes": 1727,
+    "lines": 44,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/io/CloudVoice.kt",
+    "class": "product_code",
+    "bytes": 6405,
+    "lines": 169,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/io/ConvertRunner.kt",
+    "class": "product_code",
+    "bytes": 48346,
+    "lines": 924,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/io/ImageReencoder.kt",
+    "class": "product_code",
+    "bytes": 3266,
+    "lines": 61,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/io/IoAccessibilityService.kt",
+    "class": "product_code",
+    "bytes": 16282,
+    "lines": 393,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/io/PageReader.kt",
+    "class": "product_code",
+    "bytes": 1706,
+    "lines": 48,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/io/Performer.kt",
+    "class": "product_code",
+    "bytes": 25593,
+    "lines": 573,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/io/PocketLockOverlay.kt",
+    "class": "product_code",
+    "bytes": 19709,
+    "lines": 451,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/io/PocketLockTile.kt",
+    "class": "product_code",
+    "bytes": 1517,
+    "lines": 38,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/io/PointerOverlay.kt",
+    "class": "product_code",
+    "bytes": 4692,
+    "lines": 132,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/io/Speaker.kt",
+    "class": "product_code",
+    "bytes": 15763,
+    "lines": 404,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/io/TileActions.kt",
+    "class": "product_code",
+    "bytes": 5421,
+    "lines": 130,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/io/capture/AccessibilityCaptureSource.kt",
+    "class": "product_code",
+    "bytes": 14710,
+    "lines": 236,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/io/capture/ConversationCaptureReviewActivity.kt",
+    "class": "product_code",
+    "bytes": 7285,
+    "lines": 138,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/io/capture/ConversationCaptureUi.kt",
+    "class": "product_code",
+    "bytes": 16532,
+    "lines": 299,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/phone/ForegroundSensorMonitor.kt",
+    "class": "product_code",
+    "bytes": 5603,
+    "lines": 88,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/phone/PhoneInventory.kt",
+    "class": "product_code",
+    "bytes": 10796,
+    "lines": 145,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/phone/PhoneRuntime.kt",
+    "class": "product_code",
+    "bytes": 12655,
+    "lines": 145,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/phone/PhoneToolsActivity.kt",
+    "class": "product_code",
+    "bytes": 14777,
+    "lines": 197,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/sync/DeviceSyncActivity.kt",
+    "class": "product_code",
+    "bytes": 15441,
+    "lines": 213,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/PrivateTextField.kt",
+    "class": "product_code",
+    "bytes": 3241,
+    "lines": 58,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/kb/BoardMemory.kt",
+    "class": "product_code",
+    "bytes": 2156,
+    "lines": 58,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/kb/ClipboardImagePreview.kt",
+    "class": "product_code",
+    "bytes": 1744,
+    "lines": 36,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/kb/CompletionRow.kt",
+    "class": "product_code",
+    "bytes": 6078,
+    "lines": 147,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/kb/ControlView.kt",
+    "class": "product_code",
+    "bytes": 7464,
+    "lines": 170,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/kb/DebugOverlay.kt",
+    "class": "product_code",
+    "bytes": 3424,
+    "lines": 92,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/kb/EmojiData.kt",
+    "class": "product_code",
+    "bytes": 9564,
+    "lines": 105,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/kb/IoPanel.kt",
+    "class": "product_code",
+    "bytes": 12623,
+    "lines": 273,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/kb/KeyIcons.kt",
+    "class": "product_code",
+    "bytes": 2306,
+    "lines": 61,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/kb/KeySurface.kt",
+    "class": "product_code",
+    "bytes": 45310,
+    "lines": 945,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/kb/KeyboardConfigurationButton.kt",
+    "class": "product_code",
+    "bytes": 3145,
+    "lines": 60,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/kb/KeyboardHost.kt",
+    "class": "product_code",
+    "bytes": 7064,
+    "lines": 167,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/kb/KeyboardRoot.kt",
+    "class": "product_code",
+    "bytes": 55753,
+    "lines": 1245,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/kb/KeyboardTheme.kt",
+    "class": "product_code",
+    "bytes": 10566,
+    "lines": 248,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/kb/KeyboardViewport.kt",
+    "class": "product_code",
+    "bytes": 1157,
+    "lines": 28,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/kb/Notices.kt",
+    "class": "product_code",
+    "bytes": 3956,
+    "lines": 106,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/kb/Panels.kt",
+    "class": "product_code",
+    "bytes": 48797,
+    "lines": 1060,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/kb/SymbolBoard.kt",
+    "class": "product_code",
+    "bytes": 8062,
+    "lines": 221,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/kb/ThemeStore.kt",
+    "class": "product_code",
+    "bytes": 7391,
+    "lines": 150,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/kb/TouchAreas.kt",
+    "class": "product_code",
+    "bytes": 2353,
+    "lines": 58,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/settings/AboutScreen.kt",
+    "class": "product_code",
+    "bytes": 6809,
+    "lines": 154,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/settings/AiSettingsScreen.kt",
+    "class": "product_code",
+    "bytes": 21831,
+    "lines": 431,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/settings/AiTaskProfileSection.kt",
+    "class": "product_code",
+    "bytes": 3363,
+    "lines": 54,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/settings/AllSettingsScreen.kt",
+    "class": "product_code",
+    "bytes": 12614,
+    "lines": 197,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/settings/AppearanceScreen.kt",
+    "class": "product_code",
+    "bytes": 15192,
+    "lines": 340,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/settings/CapabilitiesScreen.kt",
+    "class": "product_code",
+    "bytes": 4540,
+    "lines": 89,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/settings/CapabilitySetupSection.kt",
+    "class": "product_code",
+    "bytes": 18785,
+    "lines": 262,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/settings/DiagnosticsScreen.kt",
+    "class": "product_code",
+    "bytes": 9690,
+    "lines": 203,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/settings/DictionaryScreen.kt",
+    "class": "product_code",
+    "bytes": 12919,
+    "lines": 279,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/settings/HomeScreen.kt",
+    "class": "product_code",
+    "bytes": 7375,
+    "lines": 121,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/settings/KeyEditor.kt",
+    "class": "product_code",
+    "bytes": 13951,
+    "lines": 310,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/settings/KeyboardPreview.kt",
+    "class": "product_code",
+    "bytes": 6802,
+    "lines": 165,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/settings/LayoutGeometryEditor.kt",
+    "class": "product_code",
+    "bytes": 14927,
+    "lines": 232,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/settings/LayoutInstanceSettings.kt",
+    "class": "product_code",
+    "bytes": 12247,
+    "lines": 158,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/settings/LayoutStudioScreen.kt",
+    "class": "product_code",
+    "bytes": 21986,
+    "lines": 504,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/settings/MediaHubScreen.kt",
+    "class": "product_code",
+    "bytes": 18981,
+    "lines": 329,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/settings/RequestPanelScreen.kt",
+    "class": "product_code",
+    "bytes": 11006,
+    "lines": 230,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/settings/RuntimeDebuggerScreen.kt",
+    "class": "product_code",
+    "bytes": 4441,
+    "lines": 81,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/settings/SettingControl.kt",
+    "class": "product_code",
+    "bytes": 11376,
+    "lines": 275,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/settings/SettingsLevelSelector.kt",
+    "class": "product_code",
+    "bytes": 2910,
+    "lines": 41,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/settings/SettingsNavigation.kt",
+    "class": "product_code",
+    "bytes": 907,
+    "lines": 23,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/settings/SetupWizardScreen.kt",
+    "class": "product_code",
+    "bytes": 14477,
+    "lines": 324,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/settings/ThemeEditorScreen.kt",
+    "class": "product_code",
+    "bytes": 19190,
+    "lines": 489,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/settings/ToolbarRowsEditor.kt",
+    "class": "product_code",
+    "bytes": 4880,
+    "lines": 73,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/settings/TypingSettingsScreen.kt",
+    "class": "product_code",
+    "bytes": 16365,
+    "lines": 348,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/settings/VaultScreen.kt",
+    "class": "product_code",
+    "bytes": 3798,
+    "lines": 57,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/settings/VoiceSettingsScreen.kt",
+    "class": "product_code",
+    "bytes": 9242,
+    "lines": 193,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/settings/Widgets.kt",
+    "class": "product_code",
+    "bytes": 11877,
+    "lines": 323,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/theme/Color.kt",
+    "class": "product_code",
+    "bytes": 276,
+    "lines": 11,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/theme/Theme.kt",
+    "class": "product_code",
+    "bytes": 1605,
+    "lines": 52,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/ui/theme/Type.kt",
+    "class": "product_code",
+    "bytes": 994,
+    "lines": 36,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/util/AppLogger.kt",
+    "class": "product_code",
+    "bytes": 5363,
+    "lines": 123,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/vault/MatrixAutofillService.kt",
+    "class": "product_code",
+    "bytes": 7594,
+    "lines": 136,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/java/com/example/vault/VaultActivity.kt",
+    "class": "product_code",
+    "bytes": 30542,
+    "lines": 495,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/res/drawable/ic_conversation_capture.xml",
+    "class": "product_data_resources",
+    "bytes": 340,
+    "lines": 4,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/res/drawable/ic_keyboard_tile.xml",
+    "class": "product_data_resources",
+    "bytes": 568,
+    "lines": 10,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/res/drawable/ic_launcher_background.xml",
+    "class": "product_data_resources",
+    "bytes": 5606,
+    "lines": 170,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/res/drawable/ic_launcher_foreground.xml",
+    "class": "product_data_resources",
+    "bytes": 1703,
+    "lines": 30,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/res/drawable/ic_pocket_lock.xml",
+    "class": "product_data_resources",
+    "bytes": 630,
+    "lines": 10,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml",
+    "class": "product_data_resources",
+    "bytes": 344,
+    "lines": 6,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml",
+    "class": "product_data_resources",
+    "bytes": 344,
+    "lines": 6,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/res/mipmap-hdpi/ic_launcher.webp",
+    "class": "product_data_resources",
+    "bytes": 2096,
+    "lines": 45,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/res/mipmap-hdpi/ic_launcher_round.webp",
+    "class": "product_data_resources",
+    "bytes": 4305,
+    "lines": 102,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/res/mipmap-mdpi/ic_launcher.webp",
+    "class": "product_data_resources",
+    "bytes": 1485,
+    "lines": 31,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/res/mipmap-mdpi/ic_launcher_round.webp",
+    "class": "product_data_resources",
+    "bytes": 2634,
+    "lines": 50,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/res/mipmap-xhdpi/ic_launcher.webp",
+    "class": "product_data_resources",
+    "bytes": 2854,
+    "lines": 55,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/res/mipmap-xhdpi/ic_launcher_round.webp",
+    "class": "product_data_resources",
+    "bytes": 5934,
+    "lines": 103,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/res/mipmap-xxhdpi/ic_launcher.webp",
+    "class": "product_data_resources",
+    "bytes": 4360,
+    "lines": 82,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/res/mipmap-xxhdpi/ic_launcher_round.webp",
+    "class": "product_data_resources",
+    "bytes": 8887,
+    "lines": 163,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp",
+    "class": "product_data_resources",
+    "bytes": 5743,
+    "lines": 107,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp",
+    "class": "product_data_resources",
+    "bytes": 11709,
+    "lines": 243,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/res/values-v26/vault.xml",
+    "class": "product_data_resources",
+    "bytes": 112,
+    "lines": 2,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/res/values-v31/goal_voice.xml",
+    "class": "product_data_resources",
+    "bytes": 120,
+    "lines": 4,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/res/values/colors.xml",
+    "class": "product_data_resources",
+    "bytes": 379,
+    "lines": 10,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/res/values/goal_voice.xml",
+    "class": "product_data_resources",
+    "bytes": 216,
+    "lines": 5,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/res/values/strings.xml",
+    "class": "product_data_resources",
+    "bytes": 1008,
+    "lines": 10,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/res/values/themes.xml",
+    "class": "product_data_resources",
+    "bytes": 155,
+    "lines": 5,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/res/values/vault.xml",
+    "class": "product_data_resources",
+    "bytes": 113,
+    "lines": 2,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/res/xml/backup_rules.xml",
+    "class": "product_data_resources",
+    "bytes": 239,
+    "lines": 5,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/res/xml/clip_paths.xml",
+    "class": "product_data_resources",
+    "bytes": 381,
+    "lines": 11,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/res/xml/data_extraction_rules.xml",
+    "class": "product_data_resources",
+    "bytes": 310,
+    "lines": 9,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/res/xml/goal_recognition.xml",
+    "class": "product_data_resources",
+    "bytes": 293,
+    "lines": 4,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/res/xml/goal_voice_interaction.xml",
+    "class": "product_data_resources",
+    "bytes": 493,
+    "lines": 8,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/res/xml/io_access.xml",
+    "class": "product_data_resources",
+    "bytes": 1271,
+    "lines": 23,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/res/xml/matrix_autofill_service.xml",
+    "class": "product_data_resources",
+    "bytes": 175,
+    "lines": 3,
+    "utf8": true
+  },
+  {
+    "path": "app/src/main/res/xml/method.xml",
+    "class": "product_data_resources",
+    "bytes": 1050,
+    "lines": 26,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/ExampleRobolectricTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 587,
+    "lines": 21,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/ExampleUnitTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 325,
+    "lines": 16,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/assistant/AssistantSessionVisibilityTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 1559,
+    "lines": 31,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/assistant/EcosystemAgentBridgeTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 2227,
+    "lines": 47,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/assistant/GoalDispatchPolicyTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 1186,
+    "lines": 24,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/assistant/GoalEvaluationBridgeTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 8918,
+    "lines": 150,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/assistant/GoalJsonTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 4098,
+    "lines": 70,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/assistant/GoalPhoneCatalogueTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 4114,
+    "lines": 58,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/assistant/GoalSpeechInputTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 3157,
+    "lines": 54,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/assistant/OnDeviceSpeechTurnTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 7454,
+    "lines": 130,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/clipboard/ClipboardRecoveryTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 13185,
+    "lines": 219,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/AbilitiesTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 5716,
+    "lines": 134,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/ActionProfilesTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 2219,
+    "lines": 51,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/ActionStatsTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 3576,
+    "lines": 88,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/AiTaskProfilesTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 4252,
+    "lines": 80,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/AltGrTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 6131,
+    "lines": 145,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/ApiKeyTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 6582,
+    "lines": 157,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/CallSpecTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 6625,
+    "lines": 174,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/CapabilitySetupTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 13424,
+    "lines": 215,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/CapitalisationTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 10447,
+    "lines": 248,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/ClipStoreTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 9367,
+    "lines": 214,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/CompletionGateTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 3884,
+    "lines": 104,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/ComposeSequencesTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 1177,
+    "lines": 39,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/ControlsTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 3412,
+    "lines": 82,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/ConvertTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 14666,
+    "lines": 337,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/CorrectionTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 4590,
+    "lines": 123,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/CursorMagnetTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 4444,
+    "lines": 101,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/ElementGeometryTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 6162,
+    "lines": 139,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/EngineClosedTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 5680,
+    "lines": 131,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/EngineTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 4766,
+    "lines": 132,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/IoCommandTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 8758,
+    "lines": 220,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/KeyPlacementTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 5817,
+    "lines": 147,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/KeyboardViewportBudgetTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 1172,
+    "lines": 26,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/LanguageKeysTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 8862,
+    "lines": 188,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/LayoutDoctorTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 11300,
+    "lines": 295,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/LayoutGeometryTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 4264,
+    "lines": 81,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/LayoutInvariantsTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 8250,
+    "lines": 189,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/LayoutJsonTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 9927,
+    "lines": 239,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/LongPressTunerTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 1563,
+    "lines": 51,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/MacroTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 2239,
+    "lines": 64,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/MatrixTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 17964,
+    "lines": 367,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/MediaHubRepositoryTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 6699,
+    "lines": 129,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/MediaProfilesTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 5665,
+    "lines": 101,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/ModelFactsTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 6170,
+    "lines": 144,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/ModifierStateTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 5337,
+    "lines": 128,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/NetLinesTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 2458,
+    "lines": 59,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/PasteConversionTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 8175,
+    "lines": 198,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/PocketLockPolicyTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 1838,
+    "lines": 41,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/PocketLockTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 3017,
+    "lines": 84,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/PopupGeometryTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 6539,
+    "lines": 155,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/PredictTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 11229,
+    "lines": 279,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/PrivateInputTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 2547,
+    "lines": 59,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/ProperNounsTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 2970,
+    "lines": 82,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/ProvenanceTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 5607,
+    "lines": 112,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/ProviderCatalogTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 17470,
+    "lines": 386,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/ProviderProfileTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 6134,
+    "lines": 148,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/ScienceLayoutBehaviorTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 2027,
+    "lines": 32,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/ScopedSettingsCacheTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 2198,
+    "lines": 40,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/ScopedSettingsTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 18383,
+    "lines": 238,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/SelectionTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 8039,
+    "lines": 218,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/SettingsHierarchyTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 5602,
+    "lines": 91,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/SettingsProfilesTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 6196,
+    "lines": 122,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/SettingsSchemaTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 11577,
+    "lines": 275,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/SetupAdvisorTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 8240,
+    "lines": 196,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/SetupJourneyTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 6136,
+    "lines": 107,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/ShortcutSessionTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 1556,
+    "lines": 42,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/SlicerTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 8666,
+    "lines": 214,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/SpeechTextTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 2680,
+    "lines": 68,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/SseReaderTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 8281,
+    "lines": 209,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/StreamsTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 9178,
+    "lines": 183,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/TextOpsTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 5224,
+    "lines": 137,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/ToolbarRowsTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 2885,
+    "lines": 51,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/UndoTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 7867,
+    "lines": 237,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/VaultBackupTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 5267,
+    "lines": 85,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/VaultCodecTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 1248,
+    "lines": 27,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/VaultPolicyTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 4599,
+    "lines": 78,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/ViewportExpertSettingsTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 3433,
+    "lines": 54,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/WordListTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 7845,
+    "lines": 183,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/assistant/GoalAgentTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 7970,
+    "lines": 130,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/assistant/GoalPlanTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 12051,
+    "lines": 187,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/assistant/GoalSessionTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 8383,
+    "lines": 124,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/capture/ConversationCaptureTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 8660,
+    "lines": 132,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/capture/TreeObservationTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 12068,
+    "lines": 186,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/debug/RuntimeVariablesTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 2120,
+    "lines": 48,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/devices/ReactiveLightTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 6681,
+    "lines": 74,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/phone/PhoneCatalogueTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 3865,
+    "lines": 51,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/phone/PhoneRuntimeTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 4710,
+    "lines": 80,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/phone/RotationMappingTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 1316,
+    "lines": 25,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/phone/SensorSessionPolicyTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 2705,
+    "lines": 53,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/sync/SyncMergeTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 5627,
+    "lines": 86,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/core/sync/SyncRepositoryTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 6822,
+    "lines": 120,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/engine/NetListenerRevocationTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 2977,
+    "lines": 73,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/ime/CursorWorkspaceTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 2441,
+    "lines": 48,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/ime/RichClipboardPasteTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 3285,
+    "lines": 64,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/io/AccessibilityNodeDataTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 1755,
+    "lines": 45,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/io/ImageReencoderTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 3450,
+    "lines": 70,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/ui/KeySurfaceGestureTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 6845,
+    "lines": 132,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/ui/KeyboardViewportTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 3404,
+    "lines": 76,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/ui/SettingsSurfaceSmokeTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 7588,
+    "lines": 149,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/java/com/example/vault/VaultFormParserTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 4288,
+    "lines": 74,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/resources/agent-bridge/plan-v1.json",
+    "class": "tests_fixtures",
+    "bytes": 816,
+    "lines": 28,
+    "utf8": true
+  },
+  {
+    "path": "app/src/test/screenshots/greeting.png",
+    "class": "tests_fixtures",
+    "bytes": 2868,
+    "lines": 85,
+    "utf8": true
+  },
+  {
+    "path": "build.gradle.kts",
+    "class": "build_tooling",
+    "bytes": 289,
+    "lines": 7,
+    "utf8": true
+  },
+  {
+    "path": "debug.keystore",
+    "class": "docs_metadata_other",
+    "bytes": 2666,
+    "lines": null,
+    "utf8": false
+  },
+  {
+    "path": "docs/ACCESSIBILITY_TREE_CAPTURE.md",
+    "class": "docs_metadata_other",
+    "bytes": 9967,
+    "lines": 157,
+    "utf8": true
+  },
+  {
+    "path": "docs/AI_TASK_PROFILES.md",
+    "class": "docs_metadata_other",
+    "bytes": 2901,
+    "lines": 42,
+    "utf8": true
+  },
+  {
+    "path": "docs/ANDROID_PHONE_CAPABILITIES.md",
+    "class": "docs_metadata_other",
+    "bytes": 24048,
+    "lines": 233,
+    "utf8": true
+  },
+  {
+    "path": "docs/ARCHITECTURE.md",
+    "class": "docs_metadata_other",
+    "bytes": 14051,
+    "lines": 238,
+    "utf8": true
+  },
+  {
+    "path": "docs/CLIPBOARD_WORKSPACE.md",
+    "class": "docs_metadata_other",
+    "bytes": 3766,
+    "lines": 52,
+    "utf8": true
+  },
+  {
+    "path": "docs/CONVERSATION_CAPTURE.md",
+    "class": "docs_metadata_other",
+    "bytes": 10964,
+    "lines": 181,
+    "utf8": true
+  },
+  {
+    "path": "docs/DEVICE_SYNC.md",
+    "class": "docs_metadata_other",
+    "bytes": 6904,
+    "lines": 104,
+    "utf8": true
+  },
+  {
+    "path": "docs/ECOSYSTEM_ADAPTER_BOUNDARIES.md",
+    "class": "docs_metadata_other",
+    "bytes": 4033,
+    "lines": 40,
+    "utf8": true
+  },
+  {
+    "path": "docs/ECOSYSTEM_AGENT_BRIDGE.md",
+    "class": "docs_metadata_other",
+    "bytes": 6288,
+    "lines": 113,
+    "utf8": true
+  },
+  {
+    "path": "docs/EXPERT_SETTINGS_AND_PROFILES.md",
+    "class": "docs_metadata_other",
+    "bytes": 4047,
+    "lines": 82,
+    "utf8": true
+  },
+  {
+    "path": "docs/GOAL_AI_EVALUATION.md",
+    "class": "docs_metadata_other",
+    "bytes": 7096,
+    "lines": 123,
+    "utf8": true
+  },
+  {
+    "path": "docs/GOAL_ASSISTANT_IMPLEMENTATION.md",
+    "class": "docs_metadata_other",
+    "bytes": 13517,
+    "lines": 224,
+    "utf8": true
+  },
+  {
+    "path": "docs/HANDOFF_2026-10-02_TO_CLAUDE.md",
+    "class": "docs_metadata_other",
+    "bytes": 6820,
+    "lines": 112,
+    "utf8": true
+  },
+  {
+    "path": "docs/INTEGRATION_2026-10-02.md",
+    "class": "docs_metadata_other",
+    "bytes": 3071,
+    "lines": 50,
+    "utf8": true
+  },
+  {
+    "path": "docs/IO-MATRIX.md",
+    "class": "docs_metadata_other",
+    "bytes": 10126,
+    "lines": 175,
+    "utf8": true
+  },
+  {
+    "path": "docs/KEYBOARD_AUTHORING_TOOLBAR.md",
+    "class": "docs_metadata_other",
+    "bytes": 10583,
+    "lines": 92,
+    "utf8": true
+  },
+  {
+    "path": "docs/LAYOUT_FORMAT.md",
+    "class": "docs_metadata_other",
+    "bytes": 8192,
+    "lines": 197,
+    "utf8": true
+  },
+  {
+    "path": "docs/LICENSES.md",
+    "class": "docs_metadata_other",
+    "bytes": 2762,
+    "lines": 56,
+    "utf8": true
+  },
+  {
+    "path": "docs/LOCAL_ANDROID_BUILD.md",
+    "class": "docs_metadata_other",
+    "bytes": 6414,
+    "lines": 120,
+    "utf8": true
+  },
+  {
+    "path": "docs/MEDIA_HUB.md",
+    "class": "docs_metadata_other",
+    "bytes": 3934,
+    "lines": 66,
+    "utf8": true
+  },
+  {
+    "path": "docs/PHONE_TOOLS.md",
+    "class": "docs_metadata_other",
+    "bytes": 8945,
+    "lines": 125,
+    "utf8": true
+  },
+  {
+    "path": "docs/PREDICTION.md",
+    "class": "docs_metadata_other",
+    "bytes": 8550,
+    "lines": 181,
+    "utf8": true
+  },
+  {
+    "path": "docs/PROVIDERS.md",
+    "class": "docs_metadata_other",
+    "bytes": 7129,
+    "lines": 140,
+    "utf8": true
+  },
+  {
+    "path": "docs/PROVIDER_ONBOARDING.md",
+    "class": "docs_metadata_other",
+    "bytes": 7102,
+    "lines": 110,
+    "utf8": true
+  },
+  {
+    "path": "docs/README.md",
+    "class": "docs_metadata_other",
+    "bytes": 3373,
+    "lines": 43,
+    "utf8": true
+  },
+  {
+    "path": "docs/RESUME.md",
+    "class": "docs_metadata_other",
+    "bytes": 2270,
+    "lines": 36,
+    "utf8": true
+  },
+  {
+    "path": "docs/SETTINGS_SCOPE_AND_LEVELS.md",
+    "class": "docs_metadata_other",
+    "bytes": 6926,
+    "lines": 117,
+    "utf8": true
+  },
+  {
+    "path": "docs/SYSTEM_VOICE_ASSISTANT.md",
+    "class": "docs_metadata_other",
+    "bytes": 7352,
+    "lines": 110,
+    "utf8": true
+  },
+  {
+    "path": "docs/TILES-AND-LOCK.md",
+    "class": "docs_metadata_other",
+    "bytes": 6160,
+    "lines": 97,
+    "utf8": true
+  },
+  {
+    "path": "docs/UNIVERSAL_ASSISTANT.md",
+    "class": "docs_metadata_other",
+    "bytes": 9757,
+    "lines": 162,
+    "utf8": true
+  },
+  {
+    "path": "docs/USE-CASES.md",
+    "class": "docs_metadata_other",
+    "bytes": 11879,
+    "lines": 165,
+    "utf8": true
+  },
+  {
+    "path": "docs/VAULT_AND_AUTOFILL.md",
+    "class": "docs_metadata_other",
+    "bytes": 8675,
+    "lines": 109,
+    "utf8": true
+  },
+  {
+    "path": "docs/VAULT_BACKUP.md",
+    "class": "docs_metadata_other",
+    "bytes": 3280,
+    "lines": 56,
+    "utf8": true
+  },
+  {
+    "path": "docs/experiments/README.md",
+    "class": "docs_metadata_other",
+    "bytes": 2591,
+    "lines": 23,
+    "utf8": true
+  },
+  {
+    "path": "docs/history/HANDOFF_2026-09-27.md",
+    "class": "preserved_history",
+    "bytes": 8264,
+    "lines": 127,
+    "utf8": true
+  },
+  {
+    "path": "docs/history/README.md",
+    "class": "preserved_history",
+    "bytes": 1256,
+    "lines": 20,
+    "utf8": true
+  },
+  {
+    "path": "docs/history/RESUME_2026-09-30.md",
+    "class": "preserved_history",
+    "bytes": 20974,
+    "lines": 318,
+    "utf8": true
+  },
+  {
+    "path": "docs/history/SESSION_RECOVERY_2026-09-30.md",
+    "class": "preserved_history",
+    "bytes": 5141,
+    "lines": 36,
+    "utf8": true
+  },
+  {
+    "path": "docs/validation/2026-09-30-core-gate.json",
+    "class": "generated_validation_evidence",
+    "bytes": 1935,
+    "lines": 66,
+    "utf8": true
+  },
+  {
+    "path": "docs/validation/2026-10-02-integration-gate.json",
+    "class": "generated_validation_evidence",
+    "bytes": 3841,
+    "lines": 119,
+    "utf8": true
+  },
+  {
+    "path": "docs/validation/2026-10-02/integration-assemble-2026-10-02.log",
+    "class": "generated_validation_evidence",
+    "bytes": 2791,
+    "lines": 59,
+    "utf8": true
+  },
+  {
+    "path": "docs/validation/2026-10-02/integration-lint-2026-10-02.log",
+    "class": "generated_validation_evidence",
+    "bytes": 2472,
+    "lines": 50,
+    "utf8": true
+  },
+  {
+    "path": "docs/validation/2026-10-02/integration-unit-2026-10-02.log",
+    "class": "generated_validation_evidence",
+    "bytes": 2554,
+    "lines": 53,
+    "utf8": true
+  },
+  {
+    "path": "gradle.properties",
+    "class": "build_tooling",
+    "bytes": 1414,
+    "lines": 26,
+    "utf8": true
+  },
+  {
+    "path": "gradle/libs.versions.toml",
+    "class": "build_tooling",
+    "bytes": 6808,
+    "lines": 100,
+    "utf8": true
+  },
+  {
+    "path": "profiles/first_branch_manifest.json",
+    "class": "profile_reference_data",
+    "bytes": 464,
+    "lines": 15,
+    "utf8": true
+  },
+  {
+    "path": "profiles/first_branch_manifest.yaml",
+    "class": "profile_reference_data",
+    "bytes": 380,
+    "lines": 12,
+    "utf8": true
+  },
+  {
+    "path": "profiles/openrouter_inference.json",
+    "class": "profile_reference_data",
+    "bytes": 528,
+    "lines": 26,
+    "utf8": true
+  },
+  {
+    "path": "profiles/openrouter_inference.yaml",
+    "class": "profile_reference_data",
+    "bytes": 401,
+    "lines": 18,
+    "utf8": true
+  },
+  {
+    "path": "profiles/unified_media_browser.json",
+    "class": "profile_reference_data",
+    "bytes": 1147,
+    "lines": 18,
+    "utf8": true
+  },
+  {
+    "path": "settings.gradle.kts",
+    "class": "build_tooling",
+    "bytes": 559,
+    "lines": 27,
+    "utf8": true
+  },
+  {
+    "path": "tools/RunCaptureTests.kt",
+    "class": "tests_fixtures",
+    "bytes": 1298,
+    "lines": 23,
+    "utf8": true
+  },
+  {
+    "path": "tools/RunGoalTests.kt",
+    "class": "tests_fixtures",
+    "bytes": 1293,
+    "lines": 22,
+    "utf8": true
+  },
+  {
+    "path": "tools/agent_bridge.py",
+    "class": "build_tooling",
+    "bytes": 13439,
+    "lines": 280,
+    "utf8": true
+  },
+  {
+    "path": "tools/bootstrap-android.py",
+    "class": "build_tooling",
+    "bytes": 5533,
+    "lines": 116,
+    "utf8": true
+  },
+  {
+    "path": "tools/conversation-capture.browser.js",
+    "class": "build_tooling",
+    "bytes": 24004,
+    "lines": 360,
+    "utf8": true
+  },
+  {
+    "path": "tools/evaluate-goal-ai.py",
+    "class": "build_tooling",
+    "bytes": 23318,
+    "lines": 421,
+    "utf8": true
+  },
+  {
+    "path": "tools/goal-eval-bridge.sh",
+    "class": "build_tooling",
+    "bytes": 495,
+    "lines": 12,
+    "utf8": true
+  },
+  {
+    "path": "tools/goal-eval-cases.json",
+    "class": "build_tooling",
+    "bytes": 5972,
+    "lines": 95,
+    "utf8": true
+  },
+  {
+    "path": "tools/io_matrix_receiver.py",
+    "class": "build_tooling",
+    "bytes": 7397,
+    "lines": 195,
+    "utf8": true
+  },
+  {
+    "path": "tools/local-android-build.sh",
+    "class": "build_tooling",
+    "bytes": 679,
+    "lines": 12,
+    "utf8": true
+  },
+  {
+    "path": "tools/local-android-env.sh",
+    "class": "build_tooling",
+    "bytes": 2353,
+    "lines": 42,
+    "utf8": true
+  },
+  {
+    "path": "tools/run-standalone-kotlin.sh",
+    "class": "build_tooling",
+    "bytes": 1257,
+    "lines": 26,
+    "utf8": true
+  },
+  {
+    "path": "tools/test-capture-adapter.py",
+    "class": "tests_fixtures",
+    "bytes": 14652,
+    "lines": 272,
+    "utf8": true
+  },
+  {
+    "path": "tools/test-capture-core.sh",
+    "class": "tests_fixtures",
+    "bytes": 791,
+    "lines": 19,
+    "utf8": true
+  },
+  {
+    "path": "tools/test-goal-ai-evaluator.py",
+    "class": "tests_fixtures",
+    "bytes": 8010,
+    "lines": 139,
+    "utf8": true
+  },
+  {
+    "path": "tools/test-goal-core.sh",
+    "class": "tests_fixtures",
+    "bytes": 704,
+    "lines": 16,
+    "utf8": true
+  },
+  {
+    "path": "tools/test_agent_bridge.py",
+    "class": "tests_fixtures",
+    "bytes": 8017,
+    "lines": 163,
+    "utf8": true
+  },
+  {
+    "path": "tools/test_browser_capture.py",
+    "class": "tests_fixtures",
+    "bytes": 13451,
+    "lines": 152,
+    "utf8": true
+  },
+  {
+    "path": "validate_profiles.py",
+    "class": "tests_fixtures",
+    "bytes": 796,
+    "lines": 30,
+    "utf8": true
+  }
+]

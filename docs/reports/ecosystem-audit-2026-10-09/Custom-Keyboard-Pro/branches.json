@@ -1,0 +1,58 @@
+[
+  {
+    "ref": "origin/chore/repo-hygiene-2026-09",
+    "sha": "4da6fdcc7765da3b4502953c5bf2b39bf94a87e1",
+    "commits_only_main": 74,
+    "commits_only_branch": 0,
+    "status": "integrated_or_equal"
+  },
+  {
+    "ref": "origin/claude/keyboard-app-all-features-78fkrd",
+    "sha": "9b76a39b4fbbfb98e961eeeb225091381b7983eb",
+    "commits_only_main": 32,
+    "commits_only_branch": 0,
+    "status": "integrated_or_equal"
+  },
+  {
+    "ref": "origin/feat/ai-task-profiles-2026-10-01",
+    "sha": "654a4221725e205372f505014c045a90b47b3700",
+    "commits_only_main": 21,
+    "commits_only_branch": 0,
+    "status": "integrated_or_equal"
+  },
+  {
+    "ref": "origin/feat/conversation-capture-2026-09-29",
+    "sha": "b3db2c8663bb64e57429df92869f1a8231f6bac6",
+    "commits_only_main": 29,
+    "commits_only_branch": 0,
+    "status": "integrated_or_equal"
+  },
+  {
+    "ref": "origin/feat/goal-assistant-2026-09-29",
+    "sha": "badd2525b65fbacc5b593792251252c3f3dc577b",
+    "commits_only_main": 28,
+    "commits_only_branch": 0,
+    "status": "integrated_or_equal"
+  },
+  {
+    "ref": "origin/feat/phone-workspace-2026-09-30",
+    "sha": "dd739d1cae3ab55d95bc220b1c70a34a4a24fd76",
+    "commits_only_main": 18,
+    "commits_only_branch": 0,
+    "status": "integrated_or_equal"
+  },
+  {
+    "ref": "origin/integrate/2026-10-02",
+    "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+    "commits_only_main": 0,
+    "commits_only_branch": 0,
+    "status": "integrated_or_equal"
+  },
+  {
+    "ref": "origin/main",
+    "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+    "commits_only_main": 0,
+    "commits_only_branch": 0,
+    "status": "integrated_or_equal"
+  }
+]

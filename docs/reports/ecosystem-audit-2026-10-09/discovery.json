@@ -1,0 +1,34 @@
+{
+  "date": "2026-10-09",
+  "method": "connected GitHub list_repositories",
+  "pagination": [
+    {
+      "owner": "klb-t",
+      "offset": 0,
+      "size": 100,
+      "count": 7
+    },
+    {
+      "owner": "klb-t",
+      "offset": 100,
+      "size": 100,
+      "count": 0
+    },
+    {
+      "owner": null,
+      "offset": 0,
+      "size": 100,
+      "count": 7
+    },
+    {
+      "owner": null,
+      "offset": 100,
+      "size": 100,
+      "count": 0
+    }
+  ],
+  "complete_for_accessible_connection": true,
+  "not_claimed": "Repositories outside connected GitHub permission scope.",
+  "public_count": 6,
+  "private_count": 1
+}

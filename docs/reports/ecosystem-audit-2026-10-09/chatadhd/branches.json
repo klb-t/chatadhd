@@ -1,0 +1,944 @@
+{
+  "main_sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "branches": [
+    {
+      "ref": "origin",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "main_only": 0,
+      "branch_only": 0,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-01/handoff-source",
+      "sha": "af3c81a5ddce70bdf4346a2c8c808ce6cc97b4d0",
+      "main_only": 172,
+      "branch_only": 339,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-02/handoff-complete",
+      "sha": "2878a0c8f80800732f0ffcfff695a24f135748e0",
+      "main_only": 171,
+      "branch_only": 362,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-03/chore/repo-hygiene-2026-09",
+      "sha": "970ca2836177c561796d393e454dfb37f173809b",
+      "main_only": 173,
+      "branch_only": 0,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-03/claude/chataddhd-cpp-loom-core-IRGRN",
+      "sha": "46066308ac6306a1b30f65b98e19a40da6df7e9c",
+      "main_only": 172,
+      "branch_only": 233,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-03/claude/restore-lost-features-adK74",
+      "sha": "287bdc1dea06c266837f88041250a70a95521d85",
+      "main_only": 182,
+      "branch_only": 0,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-03/codex/handoff-recovery-2026-10-02",
+      "sha": "af3c81a5ddce70bdf4346a2c8c808ce6cc97b4d0",
+      "main_only": 172,
+      "branch_only": 339,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-03/codex/loom-handoff-2026-09-28",
+      "sha": "816406722257d70431cc2acadaac313f0503b48c",
+      "main_only": 172,
+      "branch_only": 180,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-03/gpt/continuity-audit-2026-09-30",
+      "sha": "6828216b23b465f59055ccd8ae3e665abf6bce97",
+      "main_only": 172,
+      "branch_only": 271,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-03/gpt/integration-w1-w6-2026-10-01",
+      "sha": "926072ce43b8de21a42a3abe439a7781598136f6",
+      "main_only": 172,
+      "branch_only": 317,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-03/gpt/night2-resources-2026-10-01",
+      "sha": "6c883f3665d1c0151c7b25f0e480817dfc40cc20",
+      "main_only": 172,
+      "branch_only": 319,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-03/gpt/offline-2026-09-29",
+      "sha": "31f130cd38f25a1d523194ddac93c2ba713bbd07",
+      "main_only": 172,
+      "branch_only": 213,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-03/gpt/research-2026-09-30",
+      "sha": "c19bac2918636a2a69e8b52cabc49b9cf3f7ec6f",
+      "main_only": 172,
+      "branch_only": 318,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-03/gpt/w1-active-task-2026-09-30",
+      "sha": "803eb78a8b49ece8b5d7e765f99fdd0f495caf4b",
+      "main_only": 172,
+      "branch_only": 282,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-03/gpt/w2-retrieval-2026-09-30",
+      "sha": "f6b44f6059777892474b45e54e7fae516bd1eb04",
+      "main_only": 172,
+      "branch_only": 274,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-03/gpt/w3-model-recipes-2026-09-30",
+      "sha": "078378d5fa65225b5978e2641dd1849cd4830536",
+      "main_only": 172,
+      "branch_only": 272,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-03/gpt/w4-graph-runtime-2026-09-30",
+      "sha": "e7000a9beda08769254f1893da5ed3a5097bfe58",
+      "main_only": 172,
+      "branch_only": 272,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-03/gpt/w5-workspace-2026-09-30",
+      "sha": "ecf6931bdde797799d2a1081ff898d3d0f1d3c8c",
+      "main_only": 172,
+      "branch_only": 275,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-03/gpt/w6-evidence-2026-09-30",
+      "sha": "84b5a83ccbdbb83d3b154545c3bd5e32213a8dcd",
+      "main_only": 172,
+      "branch_only": 275,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-03/wip/catalog-finish",
+      "sha": "89e40933e5d7ccbbd9868b533769194dc4716ae4",
+      "main_only": 172,
+      "branch_only": 194,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-03/wip/catalog-r3",
+      "sha": "bf057541a45b9c8fa2fbeac478b374ffdc5fbcc0",
+      "main_only": 172,
+      "branch_only": 224,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-03/wip/continuation-2026-09-30",
+      "sha": "a79862837c6726f534471f8dbcdccfe749dfb942",
+      "main_only": 172,
+      "branch_only": 269,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-03/wip/determinism-fix",
+      "sha": "3486fd2e69411d2932f7b1b98f6d4fa1fcbca7eb",
+      "main_only": 172,
+      "branch_only": 219,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-03/wip/export-finish",
+      "sha": "af6d3e898cce26fb4a6a5a98e3e4216162a83123",
+      "main_only": 172,
+      "branch_only": 209,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-03/wip/precision",
+      "sha": "de3b9203253ddfdf30e02ea26881a1bcba7077c8",
+      "main_only": 172,
+      "branch_only": 225,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-03/wip/resolve-finish",
+      "sha": "bcc77fb27861f093e2e0c48a19bb519e362a16da",
+      "main_only": 172,
+      "branch_only": 216,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-03/wip/worktree-agent-a06d7260ba8b658cc",
+      "sha": "2554bcc045ede3cc7f7014b37bf210d7e59c3681",
+      "main_only": 172,
+      "branch_only": 184,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-03/wip/worktree-agent-a382d0e063192b5ed",
+      "sha": "90113a906fe4180532eeadef3a2037b322472683",
+      "main_only": 172,
+      "branch_only": 190,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-03/wip/worktree-agent-a436abbcd1b794a18",
+      "sha": "819de58fbca5daed4c4ed840ef1b250230c22f0a",
+      "main_only": 172,
+      "branch_only": 184,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-03/wip/worktree-agent-a56d696101c89a58c",
+      "sha": "453207ae6142b0ada53af1dabebe54c82a8a842e",
+      "main_only": 172,
+      "branch_only": 188,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-03/wip/worktree-agent-a822af86e44b82241",
+      "sha": "eae85871269458753a850d05bab7eb44ff378425",
+      "main_only": 172,
+      "branch_only": 90,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-03/wip/worktree-agent-a8df74a3ca608a703",
+      "sha": "d14535a0a944324caf671fdd796b582e928a5882",
+      "main_only": 172,
+      "branch_only": 96,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-03/wip/worktree-agent-a90a2e07c062c7efc",
+      "sha": "dccaf9bdf1d981de2ddbb1184079bb954dc96990",
+      "main_only": 172,
+      "branch_only": 129,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-03/wip/worktree-agent-ab76c2dece93103a1",
+      "sha": "2d8826fec26331aa293a0c0110cc9912495b7671",
+      "main_only": 172,
+      "branch_only": 192,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-03/wip/worktree-agent-ac45c7e794faf4cb0",
+      "sha": "2de5d16f0b773055357dd4022b57c3c6aafbcc15",
+      "main_only": 172,
+      "branch_only": 130,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-03/wip/worktree-agent-ace3dd50eb645ccb0",
+      "sha": "da7b34f5714f76f7ddbffe689379d1847427742b",
+      "main_only": 172,
+      "branch_only": 118,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-04/archive-import-before-main-refresh",
+      "sha": "06eb8b301bd645f56eb351e074e37366f7df2acb",
+      "main_only": 162,
+      "branch_only": 19,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-04/archive-import-before-mixed-w2",
+      "sha": "03cd52e33e5902ffb90d33ec0084cea2bf60feaa",
+      "main_only": 159,
+      "branch_only": 37,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-04/catalog-dev-bias-negative",
+      "sha": "f61c94424b3f9953e07237beac0f1d2c8e77dd22",
+      "main_only": 148,
+      "branch_only": 6,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-04/catalog-nearest-seed-negative",
+      "sha": "464f67cbf854faeb86aa5f77ccb10c9de6ad1334",
+      "main_only": 162,
+      "branch_only": 1,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-04/catalog-selection-integration-held",
+      "sha": "e0caa3b7447a39c3c25c1226f7e3f0ff8ea77115",
+      "main_only": 162,
+      "branch_only": 5,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-04/integrator-baseline-timeouts",
+      "sha": "4df4c56926c49012b0cea85d42e8fb33d49262cf",
+      "main_only": 162,
+      "branch_only": 3,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-04/integrator-import-checkpoint-replay",
+      "sha": "d1ee988e454d378cc3a834593330688c5520ea63",
+      "main_only": 162,
+      "branch_only": 9,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-04/integrator-import-screenshot-replay",
+      "sha": "6e4bf03d6294719de8df4e9477e417d232c7b87b",
+      "main_only": 159,
+      "branch_only": 38,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-04/integrator-packet-unresolved-replay",
+      "sha": "ffab43375887fb82bf184680e90e3280630228e8",
+      "main_only": 162,
+      "branch_only": 4,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-04/integrator-readiness-orphan-response",
+      "sha": "ba22b2b1ed2a96c62ab827ea0e768a34c38eef6f",
+      "main_only": 162,
+      "branch_only": 4,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-04/integrator-usage-cli-permission",
+      "sha": "c1166c51e54ee71727fb74765d448f8ae88fa8a2",
+      "main_only": 150,
+      "branch_only": 2,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-04/integrator-usage-policy-before-data",
+      "sha": "125a043cbe03c3bce02a115d45dd648a37518e0e",
+      "main_only": 162,
+      "branch_only": 10,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-04/interface-2-before-usage-intake",
+      "sha": "121ebce8e79ed8525c90ed8ae514f834c70137be",
+      "main_only": 162,
+      "branch_only": 9,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-04/knowledge-precision-before-main-refresh",
+      "sha": "f8672a58a4b9d0814110466a02f33642615a6c65",
+      "main_only": 162,
+      "branch_only": 7,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-04/knowledge-precision-before-usage-intake",
+      "sha": "2d08797c18997149823b7ed50a43563775a3f79b",
+      "main_only": 159,
+      "branch_only": 8,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-04/knowledge-precision-inline-method-graph-negative",
+      "sha": "42a8ffa9466c6103b88daae1c89b69c91a5b188f",
+      "main_only": 148,
+      "branch_only": 10,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-04/knowledge-precision-local-only-negative",
+      "sha": "ede4c31703d6cd9951338b1762814fdd7d05d979",
+      "main_only": 167,
+      "branch_only": 3,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-04/knowledge-precision-prompt-negatives",
+      "sha": "3a4f8b6aa4ac467e9508f388b62b349066d889a8",
+      "main_only": 162,
+      "branch_only": 7,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-04/model-research-integration-held",
+      "sha": "37295148b9e10ba0d754e4521b671d635652a0ef",
+      "main_only": 162,
+      "branch_only": 6,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-04/native-graph-packet-before-main-refresh",
+      "sha": "b8f29bf79293a3ea0418c447b69b21c0c76bd49f",
+      "main_only": 162,
+      "branch_only": 6,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-04/native-graph-packet-before-usage-intake",
+      "sha": "1377e20c71f200b01416c7c87f06c3ffdafb02b6",
+      "main_only": 159,
+      "branch_only": 11,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-04/native-graph-packet-main-5893b1f",
+      "sha": "f450b89c2892b02f939e3acde746a4235a7e75de",
+      "main_only": 160,
+      "branch_only": 7,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-04/usage-policy-before-final-main-rebase",
+      "sha": "2b401d0043f12400151cf45b07dfdd514cc006f9",
+      "main_only": 159,
+      "branch_only": 10,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-04/usage-policy-before-intake",
+      "sha": "5a73a360f44626333ce6510f26261c32239de73c",
+      "main_only": 159,
+      "branch_only": 9,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-04/usage-policy-before-preset",
+      "sha": "910a1d6b3764f82c78e39c5b0adca796ba1168e5",
+      "main_only": 162,
+      "branch_only": 7,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-04/usage-policy-final-rebase-checkpoint",
+      "sha": "950bf2fe92b4ae98b3ec1b710b64ce055c477493",
+      "main_only": 158,
+      "branch_only": 10,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-04/usage-policy-rebase-checkpoint",
+      "sha": "17f34a1166d39872eb4d41c941ac2771365773bf",
+      "main_only": 159,
+      "branch_only": 7,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-05/archive-import-2-resource-attempts",
+      "sha": "ec18cdd3262fa850eb39dfe6d57f8d03fca507ea",
+      "main_only": 143,
+      "branch_only": 10,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-05/data-profiles-before-main-30ad7d3",
+      "sha": "d3488a6bee016d1ea5e6e286dbc7d3a0249761fc",
+      "main_only": 159,
+      "branch_only": 17,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-05/data-profiles-before-main-e4109df",
+      "sha": "5ff18d15e70c79dd35ef60a6872e444611d316ac",
+      "main_only": 148,
+      "branch_only": 21,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-05/data-profiles-current-blocked",
+      "sha": "9a89e3771d54b4b39d1126468d680f62aff7487e",
+      "main_only": 148,
+      "branch_only": 18,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-05/hygiene-before-intake",
+      "sha": "9c47124f56251b32b0fb16dc63f0730553ae55c0",
+      "main_only": 145,
+      "branch_only": 19,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-05/import-before-intake",
+      "sha": "5f0abd20dd83e5c0e7f43e84c333d5e23a5e681f",
+      "main_only": 148,
+      "branch_only": 46,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-05/integrator-runtime-negatives",
+      "sha": "424e5aee8fac2c660c609ea44023c8061d3c8cd5",
+      "main_only": 143,
+      "branch_only": 6,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-05/interface-2-api-negatives",
+      "sha": "51c4ae5ce053cf49e5e1447e7445a44cd8556116",
+      "main_only": 144,
+      "branch_only": 38,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-05/interface-2-before-api-intake",
+      "sha": "fa7538d650da2f4ad37f5ff9254b60a6ee72938f",
+      "main_only": 148,
+      "branch_only": 14,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-05/knowledge-precision-2-build-infrastructure-negative",
+      "sha": "d1c9c822fb7d8df7b2f80ce23e96404d53d3a4c8",
+      "main_only": 145,
+      "branch_only": 1,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-05/knowledge-precision-2-checkpoint",
+      "sha": "dee3e877341350bf0a9ca191ca8c389933c5b485",
+      "main_only": 145,
+      "branch_only": 2,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-05/native-graph-packet-2-before-final-selection",
+      "sha": "cb1efe18c86f353f53aced6c72f6aa35ef252690",
+      "main_only": 142,
+      "branch_only": 6,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-05/native-graph-packet-2-before-rebase",
+      "sha": "edf338b31903d3cfc780cac3047a0b37396c0fb7",
+      "main_only": 144,
+      "branch_only": 6,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-05/native-graph-packet-2-bounded-cutoffs",
+      "sha": "49f760277889b5a63f68d293cde55ed2fb0a56a6",
+      "main_only": 144,
+      "branch_only": 5,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-05/native-graph-packet-2-review-negatives",
+      "sha": "19d72fe19ee966cdfd0a88cf10d604523caf0783",
+      "main_only": 144,
+      "branch_only": 3,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-05/onboarding-before-intake",
+      "sha": "3c0bc36552ef9851f1174946cfb108549aae3228",
+      "main_only": 148,
+      "branch_only": 7,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-05/packet-before-intake",
+      "sha": "b302df25e1a65f20c395eadc5ad5ef065d26e33d",
+      "main_only": 148,
+      "branch_only": 14,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-05/precision-before-intake",
+      "sha": "50e6bb9f80b0cd855e4dd1efedaf3399cac5e4e6",
+      "main_only": 148,
+      "branch_only": 8,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-05/precision-intake-negative",
+      "sha": "b5e0e0db637f4e731b379dbaba2773a2c90c1e40",
+      "main_only": 142,
+      "branch_only": 3,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/2026-10-05/selector-before-intake",
+      "sha": "03c670caa6ee3d8ac2c478186548114f8e83927f",
+      "main_only": 158,
+      "branch_only": 20,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/gpt/chat-selector-2-helper-negative-2026-10-05",
+      "sha": "dbc4dd8deaf8a434aa660c98ea9bef57c636578f",
+      "main_only": 143,
+      "branch_only": 4,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/gpt/chat-selector-2-integrator-base-before-close-2026-10-05",
+      "sha": "da415cc7a802cd6e1af9a6382c2d8f708f40db9d",
+      "main_only": 142,
+      "branch_only": 7,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/gpt/chat-selector-2-positive-artifacts-2026-10-05",
+      "sha": "67b18934d59872e15959028922d7e815c6ca3872",
+      "main_only": 143,
+      "branch_only": 6,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/gpt/chat-selector-before-r39-rebase-2026-10-04",
+      "sha": "605b195f2356daa73a9d695248c502cfaabddd10",
+      "main_only": 159,
+      "branch_only": 18,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/gpt/chat-selector-methods-negative-2026-10-04",
+      "sha": "785dd52c9949eb78ee021da35113af71f6378fe9",
+      "main_only": 159,
+      "branch_only": 8,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/gpt/chat-selector-pre-methods-2026-10-04",
+      "sha": "1c4c8a1025be67f8794823df093a8f2508fedc25",
+      "main_only": 162,
+      "branch_only": 7,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/gpt/model-research-before-rebase-2026-10-05",
+      "sha": "5753d2cf93dcba4edd5c35534b667f23b915c9b7",
+      "main_only": 162,
+      "branch_only": 10,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/gpt/model-research-close-before-rebase-2026-10-05",
+      "sha": "b172b59fb595bab506371c7a1cb0a161db809673",
+      "main_only": 148,
+      "branch_only": 45,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/gpt/model-research-followup-review-2026-10-04",
+      "sha": "f14a4035eaad896a9905439fc3a60e46c6b0f1ba",
+      "main_only": 162,
+      "branch_only": 1,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/gpt/model-research-prefreeze-2026-10-04",
+      "sha": "19a65fea4d798cb9cabc6e144afc9f9ae44e666f",
+      "main_only": 162,
+      "branch_only": 4,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/gpt/model-research-runner-review-2026-10-05",
+      "sha": "3e21a0499ffbcb5b2f8117c90df7d48f56d0a7b9",
+      "main_only": 148,
+      "branch_only": 10,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/gpt/research-jev-validation-2026-10-05",
+      "sha": "254c2ec29146ddc309d8d8a9a37bdbdbf8e01d7a",
+      "main_only": 145,
+      "branch_only": 51,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/gpt/research-prompt-preferences-source-discovery-2026-10-05",
+      "sha": "7b35923e1e74809bdc81353ba7dd833ffd65f72e",
+      "main_only": 145,
+      "branch_only": 47,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/gpt/research-prompt-preferences-synthetic-unexecuted-2026-10-05",
+      "sha": "1a81ebff6dfcb6ac6628daaa1663ab0600523037",
+      "main_only": 145,
+      "branch_only": 49,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/repo-hygiene-before-main-rebase-2026-10-05",
+      "sha": "758aba648f0b2e848828c603b54cc3c2b8abfbcf",
+      "main_only": 158,
+      "branch_only": 16,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/repo-hygiene-before-rebase-2026-10-04",
+      "sha": "2544cf3a75c1477797213328f7279b3e8576579e",
+      "main_only": 162,
+      "branch_only": 9,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/repo-hygiene-before-requirements-rebase-2026-10-04",
+      "sha": "d75eaa04393fc007a686549aaa45cd2925f3c950",
+      "main_only": 159,
+      "branch_only": 15,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/repo-hygiene-clang-fix-validation-2026-10-05",
+      "sha": "20ddd8dfaebe00ee6deb9896bad184fb615924dc",
+      "main_only": 145,
+      "branch_only": 24,
+      "content_read": null
+    },
+    {
+      "ref": "origin/archive/repo-hygiene-w10-validation-2026-10-05",
+      "sha": "b31b4d439594bca0a051a2e95557a3fd06c39141",
+      "main_only": 145,
+      "branch_only": 18,
+      "content_read": null
+    },
+    {
+      "ref": "origin/claude/chataddhd-cpp-loom-core-IRGRN",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "main_only": 0,
+      "branch_only": 0,
+      "content_read": null
+    },
+    {
+      "ref": "origin/eval/real-holdout-key",
+      "sha": "0fcf2402f60fdf394c0c74c4eb128353d536db0b",
+      "main_only": 172,
+      "branch_only": 74,
+      "content_read": false
+    },
+    {
+      "ref": "origin/gpt/application-profiles-2026-10-04",
+      "sha": "161cc22dfb84fe863389d6b90323bd44516a68dc",
+      "main_only": 162,
+      "branch_only": 0,
+      "content_read": null
+    },
+    {
+      "ref": "origin/gpt/archive-import-2-2026-10-05",
+      "sha": "f494931dbf24c7debac588361d1d0098275bd47a",
+      "main_only": 143,
+      "branch_only": 10,
+      "content_read": null
+    },
+    {
+      "ref": "origin/gpt/archive-import-2026-10-04",
+      "sha": "5f0abd20dd83e5c0e7f43e84c333d5e23a5e681f",
+      "main_only": 148,
+      "branch_only": 46,
+      "content_read": null
+    },
+    {
+      "ref": "origin/gpt/catalog-selection-2-2026-10-05",
+      "sha": "dab76dfc5c2b9ac0cb71c434146fd71bd33bab65",
+      "main_only": 143,
+      "branch_only": 3,
+      "content_read": null
+    },
+    {
+      "ref": "origin/gpt/catalog-selection-2026-10-04",
+      "sha": "d9b29c502bafd3b4cb17f187e3e74f32cfff72ee",
+      "main_only": 148,
+      "branch_only": 10,
+      "content_read": null
+    },
+    {
+      "ref": "origin/gpt/chat-selector-2-2026-10-05",
+      "sha": "2312d2ccc8176b4d0ba5a9bc20be586a999812ed",
+      "main_only": 142,
+      "branch_only": 7,
+      "content_read": null
+    },
+    {
+      "ref": "origin/gpt/chat-selector-2026-10-04",
+      "sha": "03c670caa6ee3d8ac2c478186548114f8e83927f",
+      "main_only": 158,
+      "branch_only": 20,
+      "content_read": null
+    },
+    {
+      "ref": "origin/gpt/data-profiles-2026-10-04",
+      "sha": "22873e047abe6b56808dd2fbc4fe41188ee0e7a8",
+      "main_only": 145,
+      "branch_only": 25,
+      "content_read": null
+    },
+    {
+      "ref": "origin/gpt/ecosystem-agent-research-2026-10-01",
+      "sha": "157762ef60be8b14fe75c6a9c922d6df7ffe97a1",
+      "main_only": 172,
+      "branch_only": 342,
+      "content_read": null
+    },
+    {
+      "ref": "origin/gpt/graph-replies-2026-10-02",
+      "sha": "d49e05fd484e1a0af8432a5512762107ff633c1e",
+      "main_only": 172,
+      "branch_only": 341,
+      "content_read": null
+    },
+    {
+      "ref": "origin/gpt/integrator-2026-10-04",
+      "sha": "125a043cbe03c3bce02a115d45dd648a37518e0e",
+      "main_only": 162,
+      "branch_only": 10,
+      "content_read": null
+    },
+    {
+      "ref": "origin/gpt/integrator-queue-2026-10-05",
+      "sha": "215563c8fddca0187f99f16ce8c2894459dbc53e",
+      "main_only": 133,
+      "branch_only": 0,
+      "content_read": null
+    },
+    {
+      "ref": "origin/gpt/integrator-state-2026-10-04",
+      "sha": "b81f2732a8e9e1865b6fce327dea7e0e04723155",
+      "main_only": 142,
+      "branch_only": 2,
+      "content_read": null
+    },
+    {
+      "ref": "origin/gpt/interface-2-2026-10-04",
+      "sha": "2fcb8228c9667ac6a693d6789eefdf247978aca0",
+      "main_only": 144,
+      "branch_only": 38,
+      "content_read": null
+    },
+    {
+      "ref": "origin/gpt/knowledge-precision-2-2026-10-05",
+      "sha": "e4109df7e4af22b461def5f7d62e268d9b9a8825",
+      "main_only": 145,
+      "branch_only": 0,
+      "content_read": null
+    },
+    {
+      "ref": "origin/gpt/knowledge-precision-2026-10-04",
+      "sha": "50e6bb9f80b0cd855e4dd1efedaf3399cac5e4e6",
+      "main_only": 148,
+      "branch_only": 8,
+      "content_read": null
+    },
+    {
+      "ref": "origin/gpt/model-research-2026-10-04",
+      "sha": "ffe6443e82d71adde07ee899c650925e7afc37b3",
+      "main_only": 145,
+      "branch_only": 51,
+      "content_read": null
+    },
+    {
+      "ref": "origin/gpt/native-graph-packet-2-2026-10-05",
+      "sha": "097859af292bf2b28915e4684f9c085efabd66e2",
+      "main_only": 142,
+      "branch_only": 7,
+      "content_read": null
+    },
+    {
+      "ref": "origin/gpt/native-graph-packet-2026-10-04",
+      "sha": "b302df25e1a65f20c395eadc5ad5ef065d26e33d",
+      "main_only": 148,
+      "branch_only": 14,
+      "content_read": null
+    },
+    {
+      "ref": "origin/gpt/night-development-2026-10-01",
+      "sha": "33fb30a5e8c226b64e67ee6531304046392b6ad2",
+      "main_only": 172,
+      "branch_only": 338,
+      "content_read": null
+    },
+    {
+      "ref": "origin/gpt/onboarding-2-2026-10-05",
+      "sha": "374bab745ce3c8266d133dcf80877e828699450d",
+      "main_only": 144,
+      "branch_only": 19,
+      "content_read": null
+    },
+    {
+      "ref": "origin/gpt/onboarding-2026-10-04",
+      "sha": "3c0bc36552ef9851f1174946cfb108549aae3228",
+      "main_only": 148,
+      "branch_only": 7,
+      "content_read": null
+    },
+    {
+      "ref": "origin/gpt/real-prompt-preparation-2026-10-05",
+      "sha": "ffe6443e82d71adde07ee899c650925e7afc37b3",
+      "main_only": 145,
+      "branch_only": 51,
+      "content_read": null
+    },
+    {
+      "ref": "origin/gpt/real-source-intake-2026-10-05",
+      "sha": "62d1b054657481e2a616144d4474cc9cc6a6dde9",
+      "main_only": 145,
+      "branch_only": 48,
+      "content_read": null
+    },
+    {
+      "ref": "origin/gpt/repo-hygiene-2026-10-04",
+      "sha": "ced8f5a34bc140a4b4bd601a96a0ce773320f06d",
+      "main_only": 145,
+      "branch_only": 25,
+      "content_read": null
+    },
+    {
+      "ref": "origin/gpt/research-jev-validation-2026-10-05",
+      "sha": "0f52ac5f262bf615560c7adf12d31af85eade6e5",
+      "main_only": 145,
+      "branch_only": 55,
+      "content_read": null
+    },
+    {
+      "ref": "origin/gpt/research-prompt-preferences-2026-10-05",
+      "sha": "8e9d31ad00d2f2c3e1efbabf48054203bdc9b2e5",
+      "main_only": 145,
+      "branch_only": 50,
+      "content_read": null
+    },
+    {
+      "ref": "origin/gpt/usage-policy-2026-10-04",
+      "sha": "cc6a7587c4548cc455f69a6b8bfa3490cde94bb7",
+      "main_only": 158,
+      "branch_only": 11,
+      "content_read": null
+    },
+    {
+      "ref": "origin/main",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "main_only": 0,
+      "branch_only": 0,
+      "content_read": null
+    },
+    {
+      "ref": "origin/wip/worktree-agent-a342fccb481c4116c",
+      "sha": "5d85034e2353a3a6e2b2beacd1549b8cd0566584",
+      "main_only": 172,
+      "branch_only": 186,
+      "content_read": null
+    }
+  ],
+  "note": "All fetched refs at audit discovery; branch ancestry is not patch equivalence. Protected holdout ref content not read. Detailed safe pending research comparison: branch-review.json."
+}

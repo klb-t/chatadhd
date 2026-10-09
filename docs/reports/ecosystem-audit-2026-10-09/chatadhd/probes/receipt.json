@@ -1,0 +1,57 @@
+{
+  "suite": "chatadhd-offline-audit-behavior/1",
+  "cases": 10,
+  "passed": 10,
+  "network_calls": 0,
+  "paid_calls": 0,
+  "scope": "Executed actual Python units with stubbed DB/HTTP; not C++ or Kivy E2E",
+  "results": [
+    {
+      "name": "missing_config_uses_compiled_defaults",
+      "passed": true
+    },
+    {
+      "name": "model_choice_is_not_reset_already_fixed",
+      "passed": true
+    },
+    {
+      "name": "corrupt_config_continues_with_compiled_defaults",
+      "passed": true
+    },
+    {
+      "name": "semantic_input_is_fixed_3000_prefix",
+      "passed": true
+    },
+    {
+      "name": "semantic_generation_ignores_chat_sampling_controls",
+      "passed": true
+    },
+    {
+      "name": "queue_501_and_key_automatically_select_batch",
+      "passed": true
+    },
+    {
+      "name": "processing_error_is_marked_analysed",
+      "passed": true
+    },
+    {
+      "name": "entity_merge_name_only_hides_different_kind",
+      "passed": true
+    },
+    {
+      "name": "five_failures_disable_semantic_model",
+      "passed": true
+    },
+    {
+      "name": "model_change_resets_failures_already_fixed",
+      "passed": true
+    }
+  ],
+  "source_sha256": {
+    "engine/config.py": "4c0d6aac4aad5ec073c31af071fb2e9cb15a959edcda82614edd5fe6890e3876",
+    "engine/semantic_llm.py": "8b9a6df59d3b0e67889138332dc887a91cc7fdda275ae98b9ce62200dd04c8fd",
+    "engine/semantic_worker.py": "883b35545d13cd79daf7c52202eeee639f105fe7a92e013f605fec2745e7fc64",
+    "core/semantic.py": "e36097488d0cff1772686f4845a392ce506d923c294098b0379594be72782c77",
+    "engine/events.py": "9752f1e0158c1648ab65094e9811c02ffbc9d957e3644ed55040a8150f5b150c"
+  }
+}

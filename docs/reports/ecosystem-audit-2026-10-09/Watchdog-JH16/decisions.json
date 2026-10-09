@@ -162,5 +162,64 @@
       }
     ],
     "owner_intent_claimed": false
+  },
+  {
+    "id": "WD-D-009",
+    "finding": "WD-009",
+    "decision": "Kontekst metodologii to stały prefix 24000 znaków; instrukcja ekstrakcji jest literalna",
+    "visibility": "implicit_or_partially_effective",
+    "alternatives": [
+      {
+        "name": "pierwsze 24000 UTF-16 units",
+        "status": "implemented_literal"
+      },
+      {
+        "name": "jawny excerpt użytkownika/okna/chunks/sekcje metod",
+        "status": "not_selectable_in_assess"
+      }
+    ],
+    "owner_intent_claimed": false
+  },
+  {
+    "id": "WD-D-010",
+    "finding": "WD-010",
+    "decision": "Scheduler ma tylko politykę pomijania zaległych slotów przez coalesce",
+    "visibility": "implicit_or_partially_effective",
+    "alternatives": [
+      {
+        "name": "coalesce",
+        "status": "implemented"
+      },
+      {
+        "name": "bounded catch-up",
+        "status": "missing"
+      },
+      {
+        "name": "skip-all/pause-until-reviewed",
+        "status": "missing"
+      }
+    ],
+    "owner_intent_claimed": false
+  },
+  {
+    "id": "WD-D-011",
+    "finding": "WD-011",
+    "decision": "Strażnik nowych wartości liczbowych pomija znak liczby",
+    "visibility": "implicit_or_partially_effective",
+    "alternatives": [
+      {
+        "name": "digit-bearing token set",
+        "status": "implemented_insufficient"
+      },
+      {
+        "name": "jawny parser liczb ze znakiem/jednostką/formatem",
+        "status": "missing"
+      },
+      {
+        "name": "strukturalnie wiązane cytowanie wartości bez regenerowania liczb",
+        "status": "alternative"
+      }
+    ],
+    "owner_intent_claimed": false
   }
 ]

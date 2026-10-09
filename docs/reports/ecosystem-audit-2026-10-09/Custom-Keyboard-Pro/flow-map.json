@@ -1,0 +1,106 @@
+[
+  {
+    "id": "CKP-FLOW-SETTINGS",
+    "data": "Settings Kotlin defaults + assets/settings_profiles.json + encrypted persisted settings",
+    "graph": "No graph descriptors in traced path; local override provenance exists",
+    "runtime": "SettingsProfiles.apply -> SettingsStore.fromJson/state -> ScopedSettingsResolver snapshot -> IME keyboardSettings",
+    "ui": "SettingsSchema -> AllSettings/LayoutInstanceSettings; Basic/Expert same values",
+    "status": "wired native settings; graph/default pack coverage partial",
+    "findings": [
+      "CKP-A-004",
+      "CKP-A-006",
+      "CKP-A-010"
+    ]
+  },
+  {
+    "id": "CKP-FLOW-AI-PARAMETERS",
+    "data": "aiTaskProfilesJson + provider profile + global defaults",
+    "graph": "No method/prompt version/hash nodes in path",
+    "runtime": "AiTaskProfiles.resolve -> AiConfig.from -> AiClient request.max_tokens/temperature",
+    "ui": "AiTaskProfileSection persists same setting, shows source",
+    "status": "wired; fixed enum limits/defaults remain",
+    "findings": [
+      "CKP-A-007",
+      "CKP-A-008"
+    ]
+  },
+  {
+    "id": "CKP-FLOW-AI-RECIPE",
+    "data": "AiTasks.BUILT_IN + aiCustomTasksJson",
+    "graph": "No built-in/user layer/exclusion or versioned recipe nodes",
+    "runtime": "byId -> runAiTask -> AiClient -> immediate current-editor write",
+    "ui": "AiSettings custom JSON; Panels task list",
+    "status": "wired custom additions; builtin override shadowed; stale editor hypothesis",
+    "findings": [
+      "CKP-A-001",
+      "CKP-A-006",
+      "CKP-A-012"
+    ]
+  },
+  {
+    "id": "CKP-FLOW-PROVIDER",
+    "data": "providers.json + custom/fetched catalogue + LEGACY Kotlin",
+    "graph": "No versioned resolution/exclusion in path",
+    "runtime": "ProviderCatalog.byId -> ProviderProfiles -> AiConfig -> HTTP",
+    "ui": "Provider setup/settings; malformed catalog may become empty",
+    "status": "wired; fallback policy/code violates data boundary",
+    "findings": [
+      "CKP-A-002"
+    ]
+  },
+  {
+    "id": "CKP-FLOW-MATRIX",
+    "data": "Kotlin Transforms/Weights + command use/avoid + convertLocalOnly",
+    "graph": "Native transform graph and result Provenance (not all application data)",
+    "runtime": "Planner.plan -> ConvertRunner plan.best -> execute -> record -> encode/deliver",
+    "ui": "notice + two expert alternative summaries; use/avoid command",
+    "status": "partial policy wiring",
+    "findings": [
+      "CKP-A-003",
+      "CKP-A-006"
+    ]
+  },
+  {
+    "id": "CKP-FLOW-GOAL",
+    "data": "text/voice goal + GoalPrompt + capability/action catalogue + proposed plans",
+    "graph": "Goal DAG + states in memory; no wider graph linkage traced",
+    "runtime": "consent -> AiClient -> strict GoalJson -> GoalAgent -> local GoalSession review/ticket -> existing performer",
+    "ui": "GoalAssistantActivity explicit plan and step review; effect confirmation distinct",
+    "status": "local authority lifecycle confirmed in source; prompt/limits still code",
+    "findings": [
+      "CKP-A-007",
+      "CKP-A-009"
+    ]
+  },
+  {
+    "id": "CKP-FLOW-WIRES",
+    "data": "Settings.engineWiresJson/engineStreamsJson + params in stream line",
+    "graph": "Stream/Wire typed definitions; complete graph coverage not audited",
+    "runtime": "EngineRuntime state observer -> Inputs.parse -> sources conditional on live/configured consumers",
+    "ui": "canonical SettingsSchema generic controls",
+    "status": "representative consumer wiring confirmed; streams default data Kotlin candidate not full finding",
+    "findings": [
+      "CKP-A-010"
+    ]
+  },
+  {
+    "id": "CKP-FLOW-REFERENCE",
+    "data": "root profiles/*.json",
+    "graph": "abstractionId/project manifest descriptors",
+    "runtime": "No production consumer found in app source/build; structural validation only",
+    "ui": "not identified",
+    "status": "reference-vs-runtime role unresolved",
+    "findings": [
+      "CKP-A-011"
+    ]
+  },
+  {
+    "id": "CKP-FLOW-EXPERIMENTS",
+    "data": "tools/evaluate-goal-ai.py + documented historical paid evaluation",
+    "graph": "Not traced; missing raw ledger recorded in handoff",
+    "runtime": "No evidence of opt-in product experiment scheduler found in audited settings/AI/assistant paths",
+    "ui": "No experiment controls verified",
+    "status": "gap requiring scope/consumer inventory; not claim entire repo has no research",
+    "findings": []
+  }
+]

@@ -616,5 +616,19 @@
     "Domyślna konfiguracja backup obejmuje Android allowBackup=true bez aktywnych exclusions; nie oceniano bezpieczeństwa backupu ani zachowania urządzenia, więc nie tworzymy potwierdzonego findingu o ujawnieniu klucza."
   ],
   "history_scope": "Historia git zachowana; sprawdzono ancestry wszystkich pobranych gałęzi. Nie audytowano semantycznie każdego dawnego commita. Brak history/ w drzewie main.",
-  "generated_scope": "Nie stwierdzono śledzonego wygenerowanego kodu produktu. Ikony/rasterowe zasoby sklasyfikowane jako zasoby, bez przypisywania im pochodzenia wygenerowanego."
+  "generated_scope": "Nie stwierdzono śledzonego wygenerowanego kodu produktu. Ikony/rasterowe zasoby sklasyfikowane jako zasoby, bez przypisywania im pochodzenia wygenerowanego.",
+  "automated_scan": {
+    "summary": "scan/summary.json",
+    "candidate_count": 832,
+    "scanned_code_entries": 27,
+    "scanned_lines": 1636,
+    "scanner_sha256": "88b6f460b471347a937a88bd11ebc7b0a504b022014a9ca0693f56835e4489d8",
+    "notes": "Skan generuje kandydatów, nie automatyczne werdykty; klasyfikacja semantyczna w tym coverage jest nadrzędna dla zakresu produktu.",
+    "classification_override": {
+      "path": "app/src/main/java/com/example/research/ExperimentRunner.kt",
+      "scanner": "research",
+      "semantic": "product_code",
+      "reason": "Runner w app/src/main jest wywoływany przez produkcyjny ViewModel, nie jest odrębnym skryptem badawczym."
+    }
+  }
 }

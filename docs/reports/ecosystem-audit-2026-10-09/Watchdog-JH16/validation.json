@@ -20,7 +20,7 @@
     },
     {
       "command": "WATCHDOG_REPO=$PWD node --import tsx --test <audit>/probes/behavior.test.ts",
-      "result": "3 passed, 0 failed, 0 skipped"
+      "result": "6 passed, 0 failed, 0 skipped"
     }
   ],
   "interpretation": "Audit probes assert current defective behavior, not acceptance of a fix."

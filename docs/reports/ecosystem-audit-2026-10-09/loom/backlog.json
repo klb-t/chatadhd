@@ -1,0 +1,103 @@
+[
+  {
+    "id": "TODO-LOOM-001",
+    "finding_id": "LOOM-001",
+    "priority": "P1",
+    "task": "Opisać stary predykat jako legacy policy; w aktywnym silniku sprawdzić i ujednolicić policzalne eligible jobs.",
+    "target_data_graph": "Semantic queue policy/method parameters z jednolitym eligible predicate i osobnymi licznikami total/eligible",
+    "consumers": [
+      "Database.get_unanalysed_messages",
+      "Database.count_pending_semantic",
+      "zewnętrzny klient C++"
+    ],
+    "acceptance_test": "Dla długości 0/1/19/20 i statusów active/excluded/version count eligible==selectable; polityka progu=1 dopuszcza krótkie aktywne; total pending może pozostać osobnym jawnie opisanym licznikiem.",
+    "migration_risk": "Zachować threshold=20 jako profil legacy; zmiana domyślnej kolejki może zwiększyć wolumen i koszt przyszłego konsumenta.",
+    "dependencies": [
+      "Weryfikacja odpowiednika w aktywnym chatadhd/loom",
+      "Wersjonowany profil kolejki"
+    ],
+    "status": "rekomendacja audytu, niewdrożona",
+    "scope": "Przed naprawami porównać odpowiedniki LOOM-001…005 w bieżącym chatadhd/loom. Baseline pozostawić zachowany; ewentualny guard wersji lub adapter legacy tylko jako jawna decyzja maintenera. Brak nieprzyjętych przyrostów na dostępnych gałęziach tego repo."
+  },
+  {
+    "id": "TODO-LOOM-002",
+    "finding_id": "LOOM-002",
+    "priority": "P1",
+    "task": "Zweryfikować aktywny kernel testami konfliktów; utrzymać legacy jako nazwany tryb i dodać wynik operacji created/unchanged/conflict/updated.",
+    "target_data_graph": "Identity/dedup/conflict policy oraz relation assertion/evidence nodes lub równoważna bogata reprezentacja grafowa",
+    "consumers": [
+      "Database.create_node",
+      "Database.find_node",
+      "Database.get_or_create_node",
+      "Database.create_link"
+    ],
+    "acceptance_test": "Dwie deklaracje tej samej relacji z odrębnymi źródłami zachowują oba źródła albo jawnie odrzucają konflikt; kolizja node_id nie zwraca nieodróżnialnego sukcesu; label+kind nie scala bez wybranej polityki.",
+    "migration_risk": "Nie zmieniać po cichu kompatybilności starego ABI/v4; oferować jawny adapter legacy i raport utraty wcześniejszych metadanych.",
+    "dependencies": [
+      "Aktywny odpowiednik grafu",
+      "Kontrakt tożsamości i evidence"
+    ],
+    "status": "rekomendacja audytu, niewdrożona",
+    "scope": "Przed naprawami porównać odpowiedniki LOOM-001…005 w bieżącym chatadhd/loom. Baseline pozostawić zachowany; ewentualny guard wersji lub adapter legacy tylko jako jawna decyzja maintenera. Brak nieprzyjętych przyrostów na dostępnych gałęziach tego repo."
+  },
+  {
+    "id": "TODO-LOOM-003",
+    "finding_id": "LOOM-003",
+    "priority": "P2",
+    "task": "Zachować możliwość starej walidacji jako profil; nie używać prymitywu legacy jako dowodu bezstratnego importu.",
+    "target_data_graph": "Ingestion policy + typed message payload + import outcome/loss trace",
+    "consumers": [
+      "Database.batch_create_messages",
+      "Database.create_message",
+      "przyszły lub zewnętrzny importer"
+    ],
+    "acceptance_test": "W batchu wiadomość attachment-only zostaje zachowana lub jawnie odrzucona z pozycją i powodem; return report rozlicza każde wejście. Single i batch mają tę samą jawną politykę.",
+    "migration_risk": "Zmiana starych liczników i interfejsu wyniku; nie rekonstruować odrzuconych dawniej załączników bez źródła.",
+    "dependencies": [
+      "Kontrakt message payload w aktywnym kernelu",
+      "Adapter legacy"
+    ],
+    "status": "rekomendacja audytu, niewdrożona",
+    "scope": "Przed naprawami porównać odpowiedniki LOOM-001…005 w bieżącym chatadhd/loom. Baseline pozostawić zachowany; ewentualny guard wersji lub adapter legacy tylko jako jawna decyzja maintenera. Brak nieprzyjętych przyrostów na dostępnych gałęziach tego repo."
+  },
+  {
+    "id": "TODO-LOOM-004",
+    "finding_id": "LOOM-004",
+    "priority": "P2",
+    "task": "Sprawdzić odpowiadające ścieżki aktywnego silnika; opisać legacy defaults w danych, zachowując opcjonalne argumenty jako mechanizm override.",
+    "target_data_graph": "Legacy defaults preset + storage durability/timeout profile; resolve value z provenance warstwy",
+    "consumers": [
+      "Database API",
+      "Database.open",
+      "init_schema_unlocked/migrate_unlocked"
+    ],
+    "acceptance_test": "Zmień limit i tytuł przez preset, bez rekompilacji; jawny override wygrywa; zapytanie limit=1000 zwraca >200 węzłów; zmiana timeoutu/trwałości przechodzi walidację i zapisuje effective profile.",
+    "migration_risk": "Bez zmiany historycznych wyników domyślnych; ważna granica nowego profilu vs kompatybilność istniejącej bazy v4.",
+    "dependencies": [
+      "Aktywny resolver defaultów",
+      "Adapter storage policy"
+    ],
+    "status": "rekomendacja audytu, niewdrożona",
+    "scope": "Przed naprawami porównać odpowiedniki LOOM-001…005 w bieżącym chatadhd/loom. Baseline pozostawić zachowany; ewentualny guard wersji lub adapter legacy tylko jako jawna decyzja maintenera. Brak nieprzyjętych przyrostów na dostępnych gałęziach tego repo."
+  },
+  {
+    "id": "TODO-LOOM-005",
+    "finding_id": "LOOM-005",
+    "priority": "P1",
+    "task": "Oznaczyć standalone jako nieprzeznaczony do otwierania przyszłych formatów i dodać guard w razie wznowienia/wykorzystania komponentu.",
+    "target_data_graph": "Schema migration plan z from/to version i migration result evidence",
+    "consumers": [
+      "Database.open",
+      "Database.migrate_unlocked",
+      "Database.schema_version"
+    ],
+    "acceptance_test": "Fixture zawierający schema_version=999: open odmawia bez modyfikacji znacznika i danych; zaakceptowane legacy wersje migrują z zachowaniem zawartości i jawnego journalu.",
+    "migration_risk": "Nie otwierać realnych baz użytkownika testowo; użyć fixture i kontrolowanego snapshotu.",
+    "dependencies": [
+      "Inwentaryzacja formatów aktywnego ChatADHD",
+      "Zgodność lub jawny brak zgodności"
+    ],
+    "status": "rekomendacja audytu, niewdrożona",
+    "scope": "Przed naprawami porównać odpowiedniki LOOM-001…005 w bieżącym chatadhd/loom. Baseline pozostawić zachowany; ewentualny guard wersji lub adapter legacy tylko jako jawna decyzja maintenera. Brak nieprzyjętych przyrostów na dostępnych gałęziach tego repo."
+  }
+]

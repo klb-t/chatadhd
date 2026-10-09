@@ -1,0 +1,104 @@
+[
+  {
+    "requirement": "R42 / dane poza kodem",
+    "coverage": "partial",
+    "evidence": [
+      "WD-001",
+      "WD-005",
+      "WD-006",
+      "WD-009"
+    ],
+    "positive": [
+      "WD-008"
+    ],
+    "limits": "Nie wszystkie 266 plików produktu ocenione semantycznie."
+  },
+  {
+    "requirement": "R15 / pełny graf",
+    "coverage": "partial_concrete_gap",
+    "evidence": [
+      "WD-004"
+    ],
+    "positive": [
+      "MethodSpec DAG",
+      "relacyjny graf assertions"
+    ],
+    "limits": "Nie wywodzimy braku grafu z braku tabeli nodes; aktywny wybór workspace pozostaje poza backendem."
+  },
+  {
+    "requirement": "R33 / eksperymenty opt-in, zakres/częstotliwość/wolumen/budżet",
+    "coverage": "partial",
+    "positive": [
+      "AssistantService enabled default false",
+      "per-call/day reservations",
+      "explicit Schedule.enabled"
+    ],
+    "evidence": [
+      "WD-010"
+    ],
+    "limits": "To nie dowód obsługi pełnej macierzy eksperymentów/checkpoint-trigger."
+  },
+  {
+    "requirement": "R40 / wspólne warstwy default, override/disable/exclude",
+    "coverage": "partial",
+    "positive": [
+      "ConfigLoader ładuje warstwy",
+      "personal_settings snapshots"
+    ],
+    "evidence": [
+      "WD-004"
+    ],
+    "limits": "Nie potwierdzono ogólnego permanent-exclusion marker dla wszystkich danych."
+  },
+  {
+    "requirement": "R41 / metody, prompty, parametry, produced-by",
+    "coverage": "partial",
+    "positive": [
+      "MethodSpec version/hash/executor manifest"
+    ],
+    "evidence": [
+      "WD-001",
+      "WD-002",
+      "WD-003",
+      "WD-005",
+      "WD-009"
+    ]
+  },
+  {
+    "requirement": "Alternatywy jako profile/strategie",
+    "coverage": "partial",
+    "evidence": [
+      "WD-002",
+      "WD-005",
+      "WD-009",
+      "WD-010"
+    ],
+    "positive": [
+      "personal provider profiles",
+      "workspace navigation presets"
+    ]
+  },
+  {
+    "requirement": "data → runtime, nie sam JSON",
+    "coverage": "verified_selected_paths",
+    "evidence": [
+      "WD-002",
+      "WD-003",
+      "WD-008"
+    ],
+    "limits": "6 sond oraz 53 zastane testy punktowe; brak całości e2e."
+  },
+  {
+    "requirement": "Jawne braki/inferencje, brak milczącej aprobaty",
+    "coverage": "positive_with_guard_gap",
+    "evidence": [
+      "WD-007",
+      "WD-011"
+    ],
+    "positive": [
+      "PROPOSED narrativa",
+      "hash-bound method approval",
+      "explicit missing null"
+    ]
+  }
+]

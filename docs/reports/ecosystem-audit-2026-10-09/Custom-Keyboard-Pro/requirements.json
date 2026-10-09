@@ -1,0 +1,80 @@
+[
+  {
+    "requirement": "R42 data outside code",
+    "coverage": "noncompliant in 7 confirmed source-path findings; allowed contract/lifecycle parts separated",
+    "findings": [
+      "CKP-A-001",
+      "CKP-A-002",
+      "CKP-A-003",
+      "CKP-A-004",
+      "CKP-A-005",
+      "CKP-A-007"
+    ]
+  },
+  {
+    "requirement": "R15 all used information described in graph",
+    "coverage": "gap confirmed for traced Settings/AI/Goal paths; Matrix transform provenance exists",
+    "findings": [
+      "CKP-A-006"
+    ]
+  },
+  {
+    "requirement": "R40 layered defaults / override / disable / permanent exclusion",
+    "coverage": "scoped native override works; built-in tasks/provider/default layers lack exclusion semantics",
+    "findings": [
+      "CKP-A-001",
+      "CKP-A-002",
+      "CKP-A-004",
+      "CKP-A-010"
+    ]
+  },
+  {
+    "requirement": "R41 methods/prompts/versions/results",
+    "coverage": "task parameters wired, recipes remain code; no produced-by method version edge in AI path",
+    "findings": [
+      "CKP-A-001",
+      "CKP-A-005",
+      "CKP-A-006",
+      "CKP-A-007",
+      "CKP-A-008"
+    ]
+  },
+  {
+    "requirement": "R33 opt-in configurable experiments",
+    "coverage": "no product scheduler established in reviewed paths; historical CLI experiment exists in docs, missing ledger. Remaining audit gap; no paid calls performed",
+    "findings": []
+  },
+  {
+    "requirement": "Basic complete workflow; Advanced/Expert same objects",
+    "coverage": "same native setting store confirmed, levels currently visibility filter; complete evidence-based workflow preset not demonstrated",
+    "findings": [
+      "CKP-A-004",
+      "CKP-A-010"
+    ]
+  },
+  {
+    "requirement": "real data-to-consumer wiring",
+    "coverage": "parameters/scoped settings/Wires confirmed representative paths; root profiles role unresolved",
+    "findings": [
+      "CKP-A-008",
+      "CKP-A-010",
+      "CKP-A-011"
+    ]
+  },
+  {
+    "requirement": "alternatives remain selectable",
+    "coverage": "use/avoid and goal alternatives exist; weights/unknown costs/prompt recipe fixed",
+    "findings": [
+      "CKP-A-003",
+      "CKP-A-005",
+      "CKP-A-007"
+    ]
+  },
+  {
+    "requirement": "No stale integration backlog",
+    "coverage": "8 remote branch refs all ancestor/equal; no unmerged branch commits",
+    "findings": [
+      "CKP-A-008"
+    ]
+  }
+]

@@ -1,0 +1,167 @@
+{
+  "base_branch": "main",
+  "by_signal": {
+    "boolean.literal": 6,
+    "branch.control": 211,
+    "call_sequence.control": 7,
+    "dedup.control": 9,
+    "fallback.control": 4,
+    "numeric.literal": 123,
+    "policy_value.context": 79,
+    "selection.control": 2,
+    "string.literal": 281,
+    "ui_text.context": 80
+  },
+  "candidate_count": 802,
+  "coverage_by_category": {
+    "build": {
+      "eligible_code_entries": 0,
+      "scanned_code_entries": 0,
+      "scanned_lines": 0,
+      "statuses": {
+        "out_of_scan_scope": 1
+      },
+      "tracked_entries": 1
+    },
+    "docs": {
+      "eligible_code_entries": 0,
+      "scanned_code_entries": 0,
+      "scanned_lines": 0,
+      "statuses": {
+        "out_of_scan_scope": 6
+      },
+      "tracked_entries": 6
+    },
+    "other": {
+      "eligible_code_entries": 0,
+      "scanned_code_entries": 0,
+      "scanned_lines": 0,
+      "statuses": {
+        "out_of_scan_scope": 1
+      },
+      "tracked_entries": 1
+    },
+    "product": {
+      "eligible_code_entries": 9,
+      "scanned_code_entries": 9,
+      "scanned_lines": 1068,
+      "statuses": {
+        "scanned": 9
+      },
+      "tracked_entries": 9
+    },
+    "tests": {
+      "eligible_code_entries": 0,
+      "scanned_code_entries": 0,
+      "scanned_lines": 0,
+      "statuses": {
+        "out_of_scan_scope": 2
+      },
+      "tracked_entries": 2
+    },
+    "tooling": {
+      "eligible_code_entries": 0,
+      "scanned_code_entries": 0,
+      "scanned_lines": 0,
+      "statuses": {
+        "out_of_scan_scope": 1
+      },
+      "tracked_entries": 1
+    },
+    "vendor": {
+      "eligible_code_entries": 0,
+      "scanned_code_entries": 0,
+      "scanned_lines": 0,
+      "statuses": {
+        "out_of_scan_scope": 1
+      },
+      "tracked_entries": 1
+    }
+  },
+  "denominator": {
+    "by_category": {
+      "build": 1,
+      "docs": 6,
+      "other": 1,
+      "product": 9,
+      "tests": 2,
+      "tooling": 1,
+      "vendor": 1
+    },
+    "definition": "All recursive tracked tree entries at the stated commit, including blobs, symlinks and gitlinks; git history and untracked working files excluded. Manifest mode instead uses the explicit supplied list, whose completeness is not independently verified.",
+    "eligible_code_entries": 9,
+    "scanned_code_entries": 9,
+    "scanned_lines": 1068,
+    "semantic_reviewed_entries": 0,
+    "tracked_entries": 21
+  },
+  "limitations": [
+    "Candidates are not violations or proof of runtime consumption.",
+    "Classification is path-based and can misclassify product code; review inventory.",
+    "AST coverage is Python only; other languages use approximate lexical rules.",
+    "Lexical rules can miss raw strings, embedded expressions, dynamic dispatch and template content.",
+    "No call graph, reachability, consent, graph-to-runtime or UI validation is performed.",
+    "No private repository scanning, product execution, network or paid model calls.",
+    "Output includes paths/hashes/spans, never source excerpts or literal values; paths can still be sensitive."
+  ],
+  "parser_statuses": {
+    "not_python": 9
+  },
+  "repo": "klb-t/loom",
+  "rules_sha256": "b35034619f42b0199bd9a3c26245dcd6be0dd83ecffa8beb7bb4c01731e4e963",
+  "scan_statuses": {
+    "out_of_scan_scope": 12,
+    "scanned": 9
+  },
+  "scanner_sha256": "88b6f460b471347a937a88bd11ebc7b0a504b022014a9ca0693f56835e4489d8",
+  "scanner_version": "1.0.0",
+  "schema": "klbt.audit-scanner.summary/1",
+  "scope": {
+    "categories": [
+      "build",
+      "product",
+      "research",
+      "tooling"
+    ],
+    "code_extensions": [
+      ".py",
+      ".kt",
+      ".kts",
+      ".java",
+      ".cpp",
+      ".cc",
+      ".c",
+      ".h",
+      ".hpp",
+      ".cxx",
+      ".hxx",
+      ".js",
+      ".jsx",
+      ".ts",
+      ".tsx",
+      ".mjs",
+      ".cjs",
+      ".rs",
+      ".go",
+      ".swift",
+      ".sh",
+      ".bash",
+      ".ps1",
+      ".html",
+      ".css",
+      ".scss",
+      ".qml",
+      ".vue",
+      ".svelte",
+      ".gradle"
+    ],
+    "excluded_content_path_regexes": [
+      "(?i)(^|/)[^/]*(blind|holdout|heldout|hold-out|held-out)[^/]*(/|$)",
+      "(?i)(^|/)(\\.env(?:\\.[^/]*)?|credentials?[^/]*|secrets?[^/]*|[^/]*private[-_]key[^/]*)(/|$)"
+    ],
+    "max_blob_bytes": 2097152
+  },
+  "sha": "0b23fa64c1de955c947349feef7bb67c05763f97",
+  "source": "immutable_git_tree",
+  "visibility": "public"
+}
