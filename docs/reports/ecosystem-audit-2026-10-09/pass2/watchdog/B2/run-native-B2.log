@@ -1,0 +1,111 @@
+{
+  "cases": [
+    {
+      "id": "B2-LABELS-001.seven-instantiated-consumers",
+      "phase": "acceptance",
+      "status": "PASS",
+      "evidence": {
+        "builtin": 1,
+        "parameters": 1,
+        "preset": 0,
+        "prompt": 1,
+        "recipe": 1,
+        "types": 1,
+        "user": 1,
+        "version": 1
+      }
+    },
+    {
+      "id": "B2-LABELS-001b.preset-consumer",
+      "phase": "acceptance",
+      "status": "PASS",
+      "evidence": {
+        "scope": "explicit synthetic preset passed to actual project_graph; builtin scenario contains no preset"
+      }
+    },
+    {
+      "id": "B2-LABELS-002.method-identity",
+      "phase": "acceptance",
+      "status": "PASS",
+      "evidence": {}
+    },
+    {
+      "id": "B2-LABELS-003.native-write-read",
+      "phase": "acceptance",
+      "status": "PASS",
+      "evidence": {}
+    },
+    {
+      "id": "B2-LABELS-004.missing-key-atomic",
+      "phase": "acceptance",
+      "status": "PASS",
+      "evidence": {
+        "error": "onboarding presentation: message is not declared: graph.parameters"
+      }
+    },
+    {
+      "id": "B2-LABELS-005.invalid-template-atomic",
+      "phase": "acceptance",
+      "status": "PASS",
+      "evidence": {}
+    },
+    {
+      "id": "B2-MIGRATION-001.old-default-write-blocked",
+      "phase": "reproduction",
+      "status": "PASS",
+      "evidence": {
+        "retained_pack_revision": 3,
+        "error": "onboarding presentation: message is not declared: graph.builtin"
+      }
+    },
+    {
+      "id": "B2-MIGRATION-002.old-default-compatibility-or-guidance",
+      "phase": "acceptance",
+      "status": "FAIL",
+      "evidence": {
+        "criterion": "A previously valid settings action works, or the existing native diagnostic identifies a required pack migration/upgrade; automatic migration is not required.",
+        "native_diagnostic": "onboarding presentation: message is not declared: graph.builtin",
+        "oracle_boundary": "This probe uses the existing English native diagnostic contract. A future structured/localized migration contract needs its own adapter, not the same words."
+      }
+    },
+    {
+      "id": "B2-MIGRATION-003.explicit-pack-upgrade-repairs",
+      "phase": "acceptance",
+      "status": "PASS",
+      "evidence": {}
+    },
+    {
+      "id": "B2-MIGRATION-004.legacy-overlay-fails-atomically",
+      "phase": "acceptance",
+      "status": "PASS",
+      "evidence": {
+        "error": "onboarding presentation: message is not declared: graph.builtin"
+      }
+    },
+    {
+      "id": "B2-MIGRATION-005.explicit-overlay-repair",
+      "phase": "acceptance",
+      "status": "PASS",
+      "evidence": {}
+    },
+    {
+      "id": "B2-LABELS-006.exclusion-restart-pack-upgrade",
+      "phase": "acceptance",
+      "status": "PASS",
+      "evidence": {
+        "target_entities": 7,
+        "empty_labels": 7
+      }
+    },
+    {
+      "id": "B2-MIGRATION-006.old-exclusion-survives-upgrade",
+      "phase": "acceptance",
+      "status": "PASS",
+      "evidence": {}
+    }
+  ]
+}
+14:41:38 [INFO ] loom.db: Database opened: /workspace/scratch/1112e9e8a3c6/audit-work/continuation/scratch/watchdog/B2-consumer-closure/upgrade.sqlite
+14:41:46 [INFO ] loom.db: Database closed
+14:41:46 [INFO ] loom.db: Database opened: /workspace/scratch/1112e9e8a3c6/audit-work/continuation/scratch/watchdog/B2-consumer-closure/upgrade.sqlite
+14:41:46 [INFO ] loom.db: Database closed

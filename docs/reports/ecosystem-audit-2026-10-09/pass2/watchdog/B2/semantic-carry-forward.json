@@ -1,0 +1,74 @@
+{
+  "schema": "klbt.audit.source-carry-forward/1",
+  "base_sha": "ddcaeaf7a25b70f0d4dc2e0eed2466016233eeb8",
+  "sha": "384c5e1686cd3a58a7d89a8a6813a18c764f697d",
+  "related_finding": "A2-BSEM-001",
+  "classification": "regresja nadal obecna w niezmienionych źródłach; nie wykonano ponownie zestawu na B2",
+  "evidence_basis": "Independent actual-consumer B receipt in ../../c-review/B-semantic/B-receipt.json, plus complete-file equality below. This carries source evidence only; it is not a B2 runtime receipt.",
+  "rows": [
+    {
+      "file": "loom/src/runtime.cpp",
+      "line_start": 178,
+      "line_end": 202,
+      "identical_complete_file": true,
+      "B_sha256": "add4997b7d76abb10b42419de0bc62be9e7ca99da0f5a9f4f2dcf4d6b77c5251",
+      "B2_sha256": "add4997b7d76abb10b42419de0bc62be9e7ca99da0f5a9f4f2dcf4d6b77c5251"
+    },
+    {
+      "file": "loom/src/graph/graph_engine.cpp",
+      "line_start": 118,
+      "line_end": 168,
+      "identical_complete_file": true,
+      "B_sha256": "5fa7f6cddbcae54d23456804091a7b7e1404a60484fa93c78e6e6d5ce6fed46e",
+      "B2_sha256": "5fa7f6cddbcae54d23456804091a7b7e1404a60484fa93c78e6e6d5ce6fed46e"
+    },
+    {
+      "file": "loom/src/worker/semantic_worker.cpp",
+      "line_start": 337,
+      "line_end": 396,
+      "identical_complete_file": true,
+      "B_sha256": "5095400d7dfb26bea986297193d6d4f8b7cbc57f7f2131659aabc32635ec6e40",
+      "B2_sha256": "5095400d7dfb26bea986297193d6d4f8b7cbc57f7f2131659aabc32635ec6e40"
+    },
+    {
+      "file": "loom/src/semantic/semantic_llm.cpp",
+      "line_start": 164,
+      "line_end": 199,
+      "identical_complete_file": true,
+      "B_sha256": "199f27c677a1ea7c70101dcc575c1cfdbde5ec4af7e68ccab87d8de60c80c77b",
+      "B2_sha256": "199f27c677a1ea7c70101dcc575c1cfdbde5ec4af7e68ccab87d8de60c80c77b"
+    },
+    {
+      "file": "loom/src/semantic/analyzer.cpp",
+      "line_start": 111,
+      "line_end": 124,
+      "identical_complete_file": true,
+      "B_sha256": "aeda7ed011e0af9364d90c80fa7017de0fa08c6f50436e3c11ef2a1f228026b2",
+      "B2_sha256": "aeda7ed011e0af9364d90c80fa7017de0fa08c6f50436e3c11ef2a1f228026b2"
+    },
+    {
+      "file": "loom/src/db/db.cpp",
+      "line_start": 705,
+      "line_end": 735,
+      "identical_complete_file": true,
+      "B_sha256": "1ba70b3b5a03f21d602ca58de11d1b919a8f4ec1dc431ec3023f5f71659e6c6d",
+      "B2_sha256": "1ba70b3b5a03f21d602ca58de11d1b919a8f4ec1dc431ec3023f5f71659e6c6d"
+    },
+    {
+      "file": "loom/src/semantic/analyzer.cpp",
+      "line_start": 187,
+      "line_end": 198,
+      "identical_complete_file": true,
+      "B_sha256": "aeda7ed011e0af9364d90c80fa7017de0fa08c6f50436e3c11ef2a1f228026b2",
+      "B2_sha256": "aeda7ed011e0af9364d90c80fa7017de0fa08c6f50436e3c11ef2a1f228026b2"
+    },
+    {
+      "file": "loom/src/semantic/analyzer.cpp",
+      "line_start": 296,
+      "line_end": 302,
+      "identical_complete_file": true,
+      "B_sha256": "aeda7ed011e0af9364d90c80fa7017de0fa08c6f50436e3c11ef2a1f228026b2",
+      "B2_sha256": "aeda7ed011e0af9364d90c80fa7017de0fa08c6f50436e3c11ef2a1f228026b2"
+    }
+  ]
+}

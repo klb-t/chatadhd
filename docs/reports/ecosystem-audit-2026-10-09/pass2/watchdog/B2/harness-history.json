@@ -1,0 +1,11 @@
+{
+  "first_link_guard": "Guard initially confused the archive basename kb/store.cpp.o with onboarding/store.cpp.o. The linker-selection symbol namespace disambiguates them. This was a harness error, not a product failure.",
+  "receipt-fixture-v1.json": "Preserved 8 PASS/5 FAIL. Four false failures: builtin scenario instantiates no preset; comparing method IDs from direct original scenario to actual store effective_scenario was invalid. Final fixture explicitly supplies a valid preset to real project_graph and derives suppression IDs from actual KnowledgeStore output. Only legacy-pack compatibility failure remained.",
+  "receipt-superseded-compatibility-oracle.json": "Preserved 13 PASS/1 FAIL. Earlier acceptance mandated uninterrupted writing. Final oracle also accepts explicit native migration/upgrade guidance; it does not demand automatic migration or silently supply missing labels.",
+  "final_receipt": "receipt.json",
+  "final_counts": {
+    "PASS": 13,
+    "FAIL": 1
+  },
+  "classification_review": "Final recommended compatibility-or-guidance gate is not an established owner requirement. General README rule explicitly permits incomplete-catalog errors. Changed behavior plus verified update_pack is reported as migration boundary; contract-violation hypothesis remains uncertain."
+}

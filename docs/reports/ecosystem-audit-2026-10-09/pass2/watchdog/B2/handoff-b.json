@@ -1,0 +1,38 @@
+{
+  "sha": "384c5e1686cd3a58a7d89a8a6813a18c764f697d",
+  "packages": [
+    {
+      "finding_id": "A2-CH-B2-001",
+      "reproduction": "Seed actual B SQLite with default pack3; start B2; open old profile; apply settings preference_mode ask. Exact harness included.",
+      "expected_behavior": "Opcjonalnie rozwinąć wskazanie jawnej migracji pack3→4. Obecne explicit error + działające update_pack i zachowane bytes są dopuszczalne; nie wymaga się automigracji. Pełny UX migracji wymaga niezależnego sprawdzenia.",
+      "acceptance_test": "B2-MIGRATION-002.old-default-compatibility-or-guidance",
+      "affected_consumers": [
+        "OnboardingStore.open",
+        "OnboardingStore.apply -> save_locked -> project_graph",
+        "OnboardingStore.update_pack",
+        "NativeProfileSession.saveScenario (source only; retains raw.pack)"
+      ],
+      "migration": [
+        {
+          "choice": "Wersjonowana zgodność z zachowanym kompletnym pack3",
+          "status": "not implemented/verified"
+        },
+        {
+          "choice": "Jawny komunikat wymaganej migracji wraz z wywołaniem obsługiwanego update_pack",
+          "status": "update_pack works; native diagnostic and reviewed UI path do not guide upgrade"
+        },
+        {
+          "choice": "Ręczne uzupełnienie starej nakładki o graph.* i update_pack",
+          "status": "verified PASS; preserve prior user customization"
+        }
+      ],
+      "risk": "Custom full-catalog overrides need explicit key supplementation; default pack3 users can use explicit pack4 upgrade; exclusions must remain effective.",
+      "dependencies": [
+        "B migration/diagnostic contract",
+        "Canonical pack revision4 availability to host",
+        "Browser E2E blocked in this environment; current UI finding is source evidence only"
+      ],
+      "classification": "recommendation / migration communication boundary, not a confirmed violation"
+    }
+  ]
+}

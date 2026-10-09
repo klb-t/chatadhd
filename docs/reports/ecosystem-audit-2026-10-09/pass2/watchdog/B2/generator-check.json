@@ -1,0 +1,8 @@
+{
+  "sha": "384c5e1686cd3a58a7d89a8a6813a18c764f697d",
+  "command": "python3 loom/src/onboarding/gen_onboarding_pack.py --check",
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": "",
+  "scope": "canonical pack -> generated builtin.inc and web ui.json parity; not runtime or browser proof"
+}

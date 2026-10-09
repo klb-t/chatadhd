@@ -1,0 +1,16 @@
+{
+  "cases": [
+    {
+      "id": "B2.SEED.legacy-native-store",
+      "phase": "fixture",
+      "status": "PASS",
+      "evidence": {
+        "pack_revision": 3,
+        "settings_action_succeeded_before_upgrade": true
+      }
+    }
+  ]
+}
+14:41:35 [INFO ] loom.db: Schema upgraded: v0 -> v4
+14:41:35 [INFO ] loom.db: Database opened: /workspace/scratch/1112e9e8a3c6/audit-work/continuation/scratch/watchdog/B2-consumer-closure/upgrade.sqlite
+14:41:38 [INFO ] loom.db: Database closed

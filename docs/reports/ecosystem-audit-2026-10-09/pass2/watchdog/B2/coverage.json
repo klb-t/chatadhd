@@ -1,0 +1,129 @@
+{
+  "repo": "klb-t/chatadhd",
+  "sha": "384c5e1686cd3a58a7d89a8a6813a18c764f697d",
+  "baseline_sha": "ddcaeaf7a25b70f0d4dc2e0eed2466016233eeb8",
+  "diff_denominator": {
+    "changed_files": 12,
+    "handwritten_product_code_header": 2,
+    "canonical_data": 2,
+    "generated": 2,
+    "tests": 2,
+    "documentation": 4
+  },
+  "ranges": [
+    {
+      "file": "loom/src/onboarding/graph.cpp",
+      "function": "Projection::label",
+      "line_start": 35,
+      "line_end": 44,
+      "range_sha256": "c828dd41f1fb0bc3de1b618e5f7a421b919bdd84a5625cd3fb00660b82433348",
+      "evidence": "actual native consumer plus source"
+    },
+    {
+      "file": "loom/src/onboarding/graph.cpp",
+      "function": "project_method",
+      "line_start": 260,
+      "line_end": 338,
+      "range_sha256": "6b68c916f03ef8a7c6521847ea0830c8d0f7373589c15042abdc01585302cb2e",
+      "evidence": "actual native consumer plus source"
+    },
+    {
+      "file": "loom/src/onboarding/graph.cpp",
+      "function": "project_graph presentation binding",
+      "line_start": 339,
+      "line_end": 353,
+      "range_sha256": "7034b07dc3d7770d1cc9810a18eb2f6721399f94909c50ca7da180bfe034ee1d",
+      "evidence": "actual native consumer plus source"
+    },
+    {
+      "file": "loom/src/onboarding/graph.cpp",
+      "function": "project_graph layer labels",
+      "line_start": 410,
+      "line_end": 421,
+      "range_sha256": "41ee7a27724d44c18e947ce1b8498bfda5137d84539003e608c2c3b296e05d87",
+      "evidence": "actual native consumer plus source"
+    },
+    {
+      "file": "loom/src/onboarding/graph.cpp",
+      "function": "project_graph type-document label",
+      "line_start": 455,
+      "line_end": 462,
+      "range_sha256": "dea0cc148bfc3d4809eadf7d172914ff81dff797ffa083fee7183a89908aab23",
+      "evidence": "actual native consumer plus source"
+    },
+    {
+      "file": "loom/src/onboarding/store.cpp",
+      "function": "save_locked/open",
+      "line_start": 275,
+      "line_end": 329,
+      "range_sha256": "f6ac539fd4bbb4c5ba2af2424ef2e3fcb239511515263e45f54f6b274085d1e4",
+      "evidence": "actual native consumer plus source"
+    },
+    {
+      "file": "loom/src/onboarding/store.cpp",
+      "function": "apply/update_pack/model_request",
+      "line_start": 332,
+      "line_end": 445,
+      "range_sha256": "408bc7d3929a8a7a754ea8dea8ca61f89c74b1f8145b6d95d94c12dacacc80b1",
+      "evidence": "actual native consumer plus source"
+    },
+    {
+      "file": "loom/src/onboarding/layers.cpp",
+      "function": "DefaultLayers::create",
+      "line_start": 160,
+      "line_end": 178,
+      "range_sha256": "18adef3344e530b52ae15a58ff757fe560fcf2dd3c2152270ff0420e91033abd",
+      "evidence": "actual native consumer plus source"
+    },
+    {
+      "file": "loom/src/onboarding/presentation.cpp",
+      "function": "presentation_text",
+      "line_start": 26,
+      "line_end": 58,
+      "range_sha256": "694cd2a1109fedcba9eac9b871b4786080c91cfe9abefb0de6e1706d3d915da2",
+      "evidence": "actual native consumer plus source"
+    },
+    {
+      "file": "loom/web/src/api/onboarding-host.ts",
+      "function": "adapter.saveScenario",
+      "line_start": 120,
+      "line_end": 129,
+      "range_sha256": "dcab8a2d2150978ebf17522706d4a6ae0bade35d97d285eed23ea914680cf17b",
+      "evidence": "source only; browser/server transport not executed"
+    },
+    {
+      "file": "loom/web/src/api/onboarding-host.ts",
+      "function": "NativeProfileSession.mutate",
+      "line_start": 198,
+      "line_end": 232,
+      "range_sha256": "7b6a0f3efd69bcb04e2b1a84791a58fb03a3acbcaeb7d63ebe0daa7d09517e27",
+      "evidence": "source only; browser/server transport not executed"
+    },
+    {
+      "file": "loom/web/src/onboarding/presentation.mjs",
+      "function": "errorPresentation",
+      "line_start": 129,
+      "line_end": 142,
+      "range_sha256": "b0b33358c41d8d4faff70497b463c2069a0cc039d9589c5ca315344107a004c3",
+      "evidence": "source only; browser/server transport not executed"
+    },
+    {
+      "file": "loom/server/src/onboarding-ui-routes.h",
+      "function": "apply/update_pack dispatch",
+      "line_start": 90,
+      "line_end": 105,
+      "range_sha256": "789ba5806d04aaab87d651bbd2c1dd276c49ae6e3dddfc0a6b67e0b617a5c44f",
+      "evidence": "source only; browser/server transport not executed"
+    }
+  ],
+  "actual_execution": "14 cases: fixture1; reproduction1; acceptance12 (11 PASS/1 FAIL). Actual native SQLite seed under B, B2 open/apply/explicit pack update/reopen/KnowledgeStore query. Eight labels exercised: seven by installed scenario; preset by explicit valid synthetic scenario.",
+  "not_executed": [
+    "HTTP endpoint transport",
+    "React/browser interaction",
+    "full B2 CTest",
+    "ASan/UBSan for focused B2 assembly",
+    "CH003 B2 runtime replay; unchanged source proof only"
+  ],
+  "does_not_claim_full_files": true,
+  "changed_translation_units_compiled": 6
+}

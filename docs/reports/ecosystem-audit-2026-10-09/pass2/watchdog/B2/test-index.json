@@ -1,0 +1,98 @@
+{
+  "suite": "B2-presentation-consumers",
+  "sha": "384c5e1686cd3a58a7d89a8a6813a18c764f697d",
+  "runner": "tools/ecosystem-audit-2026-10-09/pass2/watchdog/B2/run.py",
+  "counts": {
+    "PASS": 13,
+    "FAIL": 1
+  },
+  "cases": [
+    {
+      "id": "B2.SEED.legacy-native-store",
+      "phase": "fixture",
+      "status": "PASS",
+      "receipt": "receipt.json"
+    },
+    {
+      "id": "B2-LABELS-001.seven-instantiated-consumers",
+      "phase": "acceptance",
+      "status": "PASS",
+      "receipt": "receipt.json"
+    },
+    {
+      "id": "B2-LABELS-001b.preset-consumer",
+      "phase": "acceptance",
+      "status": "PASS",
+      "receipt": "receipt.json"
+    },
+    {
+      "id": "B2-LABELS-002.method-identity",
+      "phase": "acceptance",
+      "status": "PASS",
+      "receipt": "receipt.json"
+    },
+    {
+      "id": "B2-LABELS-003.native-write-read",
+      "phase": "acceptance",
+      "status": "PASS",
+      "receipt": "receipt.json"
+    },
+    {
+      "id": "B2-LABELS-004.missing-key-atomic",
+      "phase": "acceptance",
+      "status": "PASS",
+      "receipt": "receipt.json"
+    },
+    {
+      "id": "B2-LABELS-005.invalid-template-atomic",
+      "phase": "acceptance",
+      "status": "PASS",
+      "receipt": "receipt.json"
+    },
+    {
+      "id": "B2-MIGRATION-001.old-default-write-blocked",
+      "phase": "reproduction",
+      "status": "PASS",
+      "receipt": "receipt.json"
+    },
+    {
+      "id": "B2-MIGRATION-002.old-default-compatibility-or-guidance",
+      "phase": "acceptance",
+      "status": "FAIL",
+      "receipt": "receipt.json"
+    },
+    {
+      "id": "B2-MIGRATION-003.explicit-pack-upgrade-repairs",
+      "phase": "acceptance",
+      "status": "PASS",
+      "receipt": "receipt.json"
+    },
+    {
+      "id": "B2-MIGRATION-004.legacy-overlay-fails-atomically",
+      "phase": "acceptance",
+      "status": "PASS",
+      "receipt": "receipt.json"
+    },
+    {
+      "id": "B2-MIGRATION-005.explicit-overlay-repair",
+      "phase": "acceptance",
+      "status": "PASS",
+      "receipt": "receipt.json"
+    },
+    {
+      "id": "B2-LABELS-006.exclusion-restart-pack-upgrade",
+      "phase": "acceptance",
+      "status": "PASS",
+      "receipt": "receipt.json"
+    },
+    {
+      "id": "B2-MIGRATION-006.old-exclusion-survives-upgrade",
+      "phase": "acceptance",
+      "status": "PASS",
+      "receipt": "receipt.json"
+    }
+  ],
+  "acceptance_authority": {
+    "B2-MIGRATION-002.old-default-compatibility-or-guidance": "Recommended migration communication gate; FAIL is not by itself proof of owner-requirement violation. Existing README explicitly permits rejection of incomplete active catalogs and explicit update_pack succeeds."
+  }
+}
