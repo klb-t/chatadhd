@@ -10,10 +10,13 @@ Persistent daemon thread that drains 'pending' messages.  Three modes:
 The worker sleeps when the queue is empty and wakes on new messages
 (event bus) or periodic poll.
 """
+import hashlib
 import json
 import logging
 import threading
 import time
+import uuid
+from datetime import datetime, timezone
 from typing import Any, Optional
 
 import requests
@@ -139,34 +142,47 @@ class SemanticWorker:
         if pending_total > 500 and use_llm and self._can_use_batch_api():
             return self._submit_batch_api()
 
-        self._mode = "llm" if use_llm else "regex"
+        mode = "llm" if use_llm else "regex"
+        self._mode = mode
         t0 = time.monotonic()
         count = 0
 
         for msg in msgs:
             if self._stop_event.is_set() or self._paused:
                 break
+            message = None
+            started = datetime.now(timezone.utc).isoformat()
             try:
+                message = self.db.get_msg(msg["id"])
+                if not message or message["semantic_status"] != "pending":
+                    continue
+                self._failure_metadata(message)
                 if use_llm:
-                    analysis = self.semantic_llm.analyse(msg["text"])
+                    analysis = self.semantic_llm.analyse(message["text"])
                     time.sleep(1.0 / _LLM_RATE_LIMIT)
                 else:
-                    analysis = self._regex_analyse(msg["text"])
+                    analysis = self._regex_analyse(message["text"])
 
                 self.graph_engine.ingest_analysis(
-                    msg["id"], msg["conv_id"], analysis
+                    message["id"], message["conv_id"], analysis
                 )
                 self.db.mark_analysed(msg["id"], analysis)
                 count += 1
                 self._processed += 1
 
-            except Exception:
+            except Exception as exc:
                 log.debug("Worker fail on %s", msg["id"], exc_info=True)
                 self._errors += 1
                 try:
-                    self.db.mark_analysed(msg["id"], {"source": "error"})
+                    if message is None:
+                        raise RuntimeError("Cannot record failure without a message snapshot") from exc
+                    self._record_failure(message, started, exc, mode)
                 except Exception:
-                    pass
+                    # Do not replay a possibly dispatched request when its
+                    # failure cannot be persisted. Existing pause/resume is
+                    # explicit; no retry or destructive metadata fallback.
+                    self.pause()
+                    log.exception("Cannot persist semantic failure for %s; worker paused", msg["id"])
 
         elapsed = time.monotonic() - t0
         self._rate = count / max(elapsed, 0.01)
@@ -178,6 +194,52 @@ class SemanticWorker:
                 "processed": count, "pending": remaining, "mode": self._mode,
             })
         return count
+
+    @staticmethod
+    def _failure_metadata(message: dict) -> dict:
+        metadata = message["metadata"]
+        if not isinstance(metadata, dict):
+            raise ValueError("Semantic failure evidence requires object message metadata")
+        if "loom_semantic_failures" in metadata and not isinstance(metadata["loom_semantic_failures"], list):
+            raise ValueError("Occupied loom_semantic_failures must be preserved as an array")
+        return metadata
+
+    def _record_failure(self, message: dict, started: str, error: Exception,
+                        mode: str, evidence: Optional[dict] = None) -> None:
+        """Preserve failure evidence; this is not native atomic attempt tracking.
+
+        Failed rows leave the pending queue. Only an explicit existing
+        update_msg(semantic_status="pending") selects them for another attempt.
+        GraphEngine's absorbed errors and partial graph writes remain a separate
+        legacy limitation; this records exceptions visible at the worker seam.
+        """
+        failure = {
+            "schema": "loom.semantic_failure/1",
+            "id": "sf_" + uuid.uuid4().hex,
+            "state": "failed",
+            "started": started,
+            "finished": datetime.now(timezone.utc).isoformat(),
+            "source": {
+                "message_id": message["id"], "conv_id": message["conv_id"],
+                "role": message["role"],
+                "text_sha256": hashlib.sha256(message["text"].encode("utf-8")).hexdigest(),
+                "version_num": message["version_num"],
+                "version_group_id": message["version_group_id"],
+            },
+            "provenance": {"consumer": "python.semantic_worker", "mode": mode},
+            "error": {"code": type(error).__name__, "message": str(error)},
+        }
+        if evidence is not None:
+            failure["evidence"] = evidence
+        # Re-read under the existing store lock so changes made during a request
+        # survive. Only this metadata/status update is atomic, not graph writes.
+        with self.db._lock:
+            current = self.db.get_msg(message["id"])
+            if not current or current["semantic_status"] != "pending":
+                return
+            metadata = self._failure_metadata(current)
+            metadata["loom_semantic_failures"] = metadata.get("loom_semantic_failures", []) + [failure]
+            self.db.update_msg(message["id"], metadata=metadata, semantic_status="failed")
 
     def _regex_analyse(self, text: str) -> dict:
         from core.semantic import analyzer as regex
@@ -330,10 +392,18 @@ class SemanticWorker:
             for line in resp.iter_lines(decode_unicode=True):
                 if not line:
                     continue
+                message = None
+                started = datetime.now(timezone.utc).isoformat()
+                evidence = {"batch_id": self._active_batch_id}
                 try:
                     item = json.loads(line)
                     msg_id = item.get("custom_id", "")
+                    message = self.db.get_msg(msg_id)
+                    if not message or message["semantic_status"] != "pending":
+                        continue
+                    self._failure_metadata(message)
                     result = item.get("result", {})
+                    evidence["batch_result"] = result
 
                     if result.get("type") == "succeeded":
                         raw = ""
@@ -350,24 +420,31 @@ class SemanticWorker:
                         analysis = json.loads(raw.strip())
                         analysis["source"] = "llm_batch"
 
-                        row = self.db._conn.execute(
-                            "SELECT conv_id FROM messages WHERE id = ?",
-                            (msg_id,),
-                        ).fetchone()
-                        conv_id = row["conv_id"] if row else ""
-
                         self.graph_engine.ingest_analysis(
-                            msg_id, conv_id, analysis
+                            msg_id, message["conv_id"], analysis
                         )
                         self.db.mark_analysed(msg_id, analysis)
                         count += 1
                         self._processed += 1
                     else:
-                        self.db.mark_analysed(msg_id, {"source": "batch_error"})
+                        self._record_failure(message, started,
+                            RuntimeError("Batch result did not succeed: " + str(result.get("type"))),
+                            "batch", evidence)
                         errors += 1
+                        self._errors += 1
 
-                except (json.JSONDecodeError, KeyError):
+                except Exception as exc:
                     errors += 1
+                    self._errors += 1
+                    if message is not None:
+                        try:
+                            self._record_failure(message, started, exc, "batch", evidence)
+                        except Exception:
+                            self.pause()
+                            log.exception("Cannot persist batch failure for %s; worker paused", message["id"])
+                            break
+                    else:
+                        log.warning("Cannot associate invalid batch result with a message", exc_info=True)
 
             log.info("Batch ingested: %d ok, %d errors", count, errors)
             bus.emit(SEMANTIC_PROGRESS, {
