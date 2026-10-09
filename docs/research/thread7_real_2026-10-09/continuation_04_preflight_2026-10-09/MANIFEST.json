@@ -1,0 +1,29 @@
+{
+  "schema": "loom.thread7_research_continuation_manifest/1",
+  "stage_id": "continuation_04_preflight_2026-10-09",
+  "predecessor": "continuation_03_live_2026-10-09",
+  "base_commit": "e18822487e991ba921d47b561eb87c92adf92e38",
+  "audit_sha": "9f931da3bb1d1001f9b7d865914ae195d9255b7e",
+  "runtime_sha": "ed4bd2fc444ff0c71148e1fdef6f747a1093edf4",
+  "status": "credential_available_budget_reconciliation_blocked",
+  "source_freezes_changed": false,
+  "model_request_bodies_regenerated": false,
+  "new_code": false,
+  "new_paid_calls": 0,
+  "new_api_cost_usd": "0",
+  "private_checkpoint": {
+    "archive_name": "PRIVATE_Thread7_live_preflight_2026-10-09.zip",
+    "sha256": "87fe4ff348da6f355b67c31d4eedc4412de60eb05725c4654c9fa252e6ae1584",
+    "bytes": 8639625,
+    "files": 7005,
+    "manifest_sha256": "790059d588f9dae96afbf254fffead47862a5ebc732cc41889fcdcc67438323e",
+    "credential_included": false,
+    "zip_crc_and_all_file_hashes_valid": true
+  },
+  "public_files_sha256": {
+    "docs/research/thread7_real_2026-10-09/continuation_04_preflight_2026-10-09/PREFLIGHT.json": "74aad76e7ca790377559803fc389ea3358c9aa7ece68db0adc30da5980c3fb8c",
+    "docs/reports/thread7-real-preflight-2026-10-09.md": "ccdde2a78b5e7047480d6cb82b2b202cfacd436f6c37e35c6c81bbcad37572fe",
+    "docs/research/thread7_real_2026-10-09/continuation_04_preflight_2026-10-09/VERIFICATION.json": "3ec160410a0669837cd62eeb8a57158aa3e7d84037cb16f93bb5367a5bdddfc9"
+  },
+  "resume": "Obtain missing campaign usage/receipt and current reservation evidence; reconcile the existing payer, then refresh all preflight gates before4 frozen jobs. No blind retry or reset."
+}

@@ -1,0 +1,100 @@
+{
+  "schema": "loom.thread7_live_preflight_public/1",
+  "base_commit": "e18822487e991ba921d47b561eb87c92adf92e38",
+  "audit_sha": "9f931da3bb1d1001f9b7d865914ae195d9255b7e",
+  "runtime_sha": "ed4bd2fc444ff0c71148e1fdef6f747a1093edf4",
+  "credential_received": true,
+  "one_time_receiver_consumed": true,
+  "historical_campaign_fingerprint_match": true,
+  "key_value_or_fingerprint_published": false,
+  "key_checked_at": "2026-10-09T11:33:13.492450+00:00",
+  "provider_usage_usd": "1.4504205",
+  "provider_remaining_usd": "3.5495795",
+  "nonrenewing_limit_usd": "5",
+  "limit_reset": null,
+  "archival_attempts": 720,
+  "archival_receipt_cost_usd": "0.873216500",
+  "archival_unresolved_reservations_usd": "0",
+  "unassigned_usage_difference_usd": "0.577204000",
+  "complete_current_reservation_inventory_known": false,
+  "status": "blocked",
+  "blocker": "budget_evidence_gate_blocked:provider_usage_reconciles_with_cumulative_actuals",
+  "budget_checks": {
+    "byok_usage_accounted": true,
+    "cumulative_attempt_receipts_valid": true,
+    "documented_usd_cap_within_eur_authority": true,
+    "fresh_bound_key_metadata": true,
+    "fresh_documented_fx": true,
+    "fresh_endpoint_price_evidence_for_every_stage_pair": true,
+    "frozen_stage_manifest": true,
+    "new_private_key_binding": true,
+    "owner_authorization_record": true,
+    "provider_currency_usd": true,
+    "provider_usage_reconciles_with_cumulative_actuals": false,
+    "separate_nonresetting_provider_cap": true,
+    "separate_programme_ledger": true,
+    "stage_fits_cumulative_budget": true,
+    "stage_reservation_covers_price_projection": true,
+    "unknown_cost_continuation_policy": true
+  },
+  "phase_upper_usd": "0.2546942",
+  "phase_reservation_booked_usd": "0",
+  "panel": {
+    "id": "thread7-live-form-small2-20261009-v1",
+    "families": 2,
+    "models": [
+      "openai/gpt-4.1-mini"
+    ],
+    "source_providers": [
+      "openai",
+      "anthropic"
+    ],
+    "split": "tuning/development; previously exposed research material",
+    "forms": [
+      "graph_direct",
+      "text_plus_structure_single_call"
+    ],
+    "request_count": 4,
+    "request_bytes": 495462,
+    "newly_prepared_model_request_bodies": 0,
+    "paired_context_and_task_bytes_equal": true,
+    "source_content_verified": true,
+    "queue_states": {
+      "prepared": 4
+    },
+    "prior_720_request_hash_overlap": 0,
+    "manifest_sha256": "714d423bc604f67d4d33ad829364b227459a46549b8f7a5311c0f0fb2bd2f67e",
+    "freeze_sha256": "caf2f6517c232a90d4b7f3dc84320050417fb79e635c33ece5581cf199ee0365",
+    "plan_sha256": "e32b4c8816dabc8109b6bcffe36333ee072630dcb7910638cf352faf7785de7a",
+    "spec_sha256": "3cc3d7eb76f33632916163317bb43d4eaa56fbc053830e87c61f2011f2642d84"
+  },
+  "historical_receipt_GET_sample": {
+    "selection": "first,last,highest_recorded_cost_per_model",
+    "count": 7,
+    "HTTP200": 7,
+    "same_verified_cost_and_identity": 7,
+    "full_720_refresh": false,
+    "new_inference": false
+  },
+  "control_flow": {
+    "single_existing_payer": true,
+    "ledger_relocated_with_all_evidence": true,
+    "archival_source_unchanged": true,
+    "empty_campaign_bootstrap": false,
+    "paid_dispatch_attempted": false,
+    "escalation_check_reached": false
+  },
+  "new_paid_calls": 0,
+  "new_api_cost_usd": "0",
+  "new_model_quality_metrics": null,
+  "raw_evidence_visibility": "private",
+  "evidence_sha256": {
+    "GET_ONLY_PREFLIGHT.json": "e29b2f7512561ee81e3391ef9cff0446268c1432e62b82f481aedc4d1eb74da4",
+    "key-preflight-initial.raw": "cd5ada72b4fbe39fbaf4ab72117f356b128b33e3068a8b6b2f8424343989c512",
+    "key-preflight-second.raw": "cd5ada72b4fbe39fbaf4ab72117f356b128b33e3068a8b6b2f8424343989c512",
+    "price-preflight.raw": "9b9fff712b5eeace3b52fe8f54c8c668ba7c771437d4ec306aa168eed9fd8294",
+    "fx-current.raw": "6da90670e413a205e55822c9f37b762d26dda9dee7ee5f7bfe18831bbbb79194",
+    "generation-recheck-results-v2.json": "06ebc8a5022a9ad6f7409f7daee4c3de1d5f301242a1524cf188259610ce1fd3",
+    "ledger-relocation.json": "8f83c1f79d2f9c7d6f8b3bfb4c32e0593d4fd538c94682f428885ec22f44b908"
+  }
+}

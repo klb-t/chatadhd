@@ -1,0 +1,28 @@
+{
+  "schema": "loom.thread7_preflight_verification/1",
+  "checked_at": "2026-10-09T11:41:37.396958+00:00",
+  "base_commit": "e18822487e991ba921d47b561eb87c92adf92e38",
+  "new_code_tests": 0,
+  "prior_structure_tests": {
+    "passed": 1597,
+    "skipped": 0,
+    "code_sha": "37d40d3d0759552a135ec6576a9065ba0e39bab2",
+    "rerun_this_stage": false
+  },
+  "new_verification": {
+    "exact_decimal_reconciliation": true,
+    "all_referenced_private_evidence_hashes_match": true,
+    "public_literal_secret_and_path_scan": true,
+    "same_session_public_projection_review": "no publication blocker; not independent adjudication",
+    "archive_crc_and_all_file_hashes_valid": true
+  },
+  "reviewed_public_files": {
+    "docs/research/thread7_real_2026-10-09/continuation_04_preflight_2026-10-09/PREFLIGHT.json": "74aad76e7ca790377559803fc389ea3358c9aa7ece68db0adc30da5980c3fb8c",
+    "docs/reports/thread7-real-preflight-2026-10-09.md": "ccdde2a78b5e7047480d6cb82b2b202cfacd436f6c37e35c6c81bbcad37572fe"
+  },
+  "limitations": [
+    "Literal scanning is not a universal privacy detector. Public fields and prose were also reviewed.",
+    "Seven refreshed receipts are not a full refresh of720.",
+    "Budget reconciliation blocked; escalation gate not reached."
+  ]
+}
