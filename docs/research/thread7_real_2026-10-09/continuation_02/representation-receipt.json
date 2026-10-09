@@ -1,0 +1,34 @@
+{
+  "schema": "loom.representation_measurement_receipt/1",
+  "measurement_rows": 108,
+  "source_families": 12,
+  "source_messages": 2079,
+  "source_nodes": 2085,
+  "technical_preparation_repeats_per_cell": 3,
+  "additional_memory_passes_per_cell": 1,
+  "all_rebuilds_equal_original_frozen_view": true,
+  "private_manifest_sha256": "1ebb342d2f7234723fdbc7faddae3e4dee4fa5fc78240b1c4fac88907d602d64",
+  "private_measurements_sha256": "1f86a9e16d0a851df1c61fc59654160fd5123d91ccc598ed963d79190f99813c",
+  "frozen_preparation_manifest_sha256": "5ee93a5b92bd94cf6951474e1ae7c5f7250481f4c258347fa7a0b4e140377f64",
+  "pinned_preparation_producer_sha256": "575d701e071528571d2692360288110601a81b6c5bc72c035642b21db82c095b",
+  "tests": {
+    "passed": 13,
+    "failed": 0,
+    "skipped": 0,
+    "full_log_sha256": "92e4677d534939fc8d2301bd192ea38da9128f282b18553df480ed88c078607c",
+    "command": "PYTHONPATH=/tmp/thread7-python-deps:. TMPDIR=/var/tmp python3 -m unittest loom.tools.structure.test_research_representation_v1 -v",
+    "controlled_fixtures_are_not_authentic_sources": true
+  },
+  "public_projection": {
+    "source_text": false,
+    "native_source_identifiers": false,
+    "only_aggregate_counts_and_safe_test_names": true
+  },
+  "model_calls": 0,
+  "cost_usd": "0",
+  "current_provider_preflight": "unknown",
+  "old_full_expanded_v2_retained": true,
+  "measurement_code_sha256": "af0803fcaa5e59523e98435d964f57079362c5cfc36650fa379de5374e2adc43",
+  "test_code_sha256": "26ecb55f40a648352d7a6e3c563d68562f72921adbad57fe6d7559e471fd114b",
+  "policy_sha256": "72f69133b1a9240a08e400d39cb051858d89c99915c6fff344e841ac5267ec72"
+}

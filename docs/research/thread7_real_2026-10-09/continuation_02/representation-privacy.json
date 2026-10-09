@@ -1,0 +1,9 @@
+{
+  "schema": "loom.scoped_projection_scan/1",
+  "scope": "representation code tests public policy aggregates reports only",
+  "canaries": 8136,
+  "files": 8,
+  "hits": [],
+  "exact_native_ids_and_128_character_source_fragments_checked": true,
+  "limit": "Finite canary comparison is not proof that every possible private-derived phrase is absent."
+}

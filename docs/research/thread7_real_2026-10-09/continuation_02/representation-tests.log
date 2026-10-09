@@ -1,0 +1,18 @@
+test_checkpoint_is_path_boundary_not_summary_or_sibling (loom.tools.structure.test_research_representation_v1.RepresentationMetamorphicTests.test_checkpoint_is_path_boundary_not_summary_or_sibling) ... ok
+test_controlled_correction_changes_target_and_marks_old_version_wrong (loom.tools.structure.test_research_representation_v1.RepresentationMetamorphicTests.test_controlled_correction_changes_target_and_marks_old_version_wrong) ... ok
+test_explicit_deletion_reduces_field_and_literal_coverage (loom.tools.structure.test_research_representation_v1.RepresentationMetamorphicTests.test_explicit_deletion_reduces_field_and_literal_coverage) ... ok
+test_explicit_fields_preserve_native_messages_without_claiming_missing_wrappers (loom.tools.structure.test_research_representation_v1.RepresentationMetamorphicTests.test_explicit_fields_preserve_native_messages_without_claiming_missing_wrappers) ... ok
+test_fabricated_node_is_rejected (loom.tools.structure.test_research_representation_v1.RepresentationMetamorphicTests.test_fabricated_node_is_rejected) ... ok
+test_graph_reconstructs_nodes_but_omits_conversation_wrapper_and_binary (loom.tools.structure.test_research_representation_v1.RepresentationMetamorphicTests.test_graph_reconstructs_nodes_but_omits_conversation_wrapper_and_binary) ... ok
+test_json_syntax_measure_does_not_confuse_bytes_with_tokens (loom.tools.structure.test_research_representation_v1.RepresentationMetamorphicTests.test_json_syntax_measure_does_not_confuse_bytes_with_tokens) ... ok
+test_location_change_preserves_source_version_and_view (loom.tools.structure.test_research_representation_v1.RepresentationMetamorphicTests.test_location_change_preserves_source_version_and_view) ... ok
+test_manifest_mutation_fails_closed (loom.tools.structure.test_research_representation_v1.RepresentationMetamorphicTests.test_manifest_mutation_fails_closed) ... ok
+test_modified_native_value_is_not_counted_as_preserved (loom.tools.structure.test_research_representation_v1.RepresentationMetamorphicTests.test_modified_native_value_is_not_counted_as_preserved) ... ok
+test_reserialization_and_technical_key_order_do_not_change_identity_or_coverage (loom.tools.structure.test_research_representation_v1.RepresentationMetamorphicTests.test_reserialization_and_technical_key_order_do_not_change_identity_or_coverage) ... ok
+test_subgraph_boundary_edge_remains_retained_not_invented (loom.tools.structure.test_research_representation_v1.RepresentationMetamorphicTests.test_subgraph_boundary_edge_remains_retained_not_invented) ... ok
+test_text_retains_literals_but_does_not_claim_metadata_or_parent_links (loom.tools.structure.test_research_representation_v1.RepresentationMetamorphicTests.test_text_retains_literals_but_does_not_claim_metadata_or_parent_links) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.015s
+
+OK

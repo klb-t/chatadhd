@@ -1,0 +1,25 @@
+{
+  "schema": "loom.representation_measurement_policy/1",
+  "source": "Immutable continuation01 expanded-v2, same 12 families and original 8/4 split for every comparison",
+  "representations": ["exact_text", "explicit_fields", "source_graph"],
+  "resolutions": ["full", "checkpoint", "selected_subgraph"],
+  "repeats": 3,
+  "timing": "perf_counter seconds around complete pinned prepare_view, including validation, canonical hashes and deep copies; no file IO or import; three runs, report median. Serialization measured separately and is already also included where producer hashes output.",
+  "memory": "One separate tracemalloc run per cell; additional peak Python allocation, not process RSS, excludes preloaded source corpus; memory instrumentation excluded from timing runs.",
+  "field_unit": "Exact JSON atomic leaf identified by node and JSON pointer, including empty containers; native-message fields separate from normalized wrapper fields. Duplicate copies under native_node are counted only in normalized-field measure.",
+  "text_unit": "Exact native literal text fields including equivalent aliases for field coverage; alias duplicates excluded from literal byte sum.",
+  "relation_unit": "Explicit native parent links including unresolved external references; source-wide denominator and selected-child denominator separately. Source structure is not semantic understanding.",
+  "serialization_unit": "Canonical UTF-8 JSON bytes. Syntax/key overhead excludes bytes of canonical scalar values. Bytes above literal text also include metadata and envelopes and are not called pure serialization overhead.",
+  "tokenizer": null,
+  "interpretation_limits": [
+    "No tokenizer or token estimate is used. Byte and record counts are not tokens.",
+    "All measurements are deterministic source accounting plus environment-specific time/allocation observations, not model answer quality.",
+    "Field micro-averages weight larger conversations; separate family macro values keep families as the dependence unit.",
+    "Checkpoint is the existing derived path or source-array boundary view, never a generated summary or a user-declared checkpoint.",
+    "All source data are available during retrospective measurement; this is not an independent holdout or prospective next-turn evaluation.",
+    "Exact native-message and normalized-node reconstruction refer to JSON values, not original export byte serialization.",
+    "No tested view reconstructs the whole conversation wrapper or embeds available attachment binaries.",
+    "Repeated time samples are technical repeats of a family, not independent sources; runtime noise is not controlled hardware benchmarking.",
+    "Only original expanded-v2 views are measured; later preference annotation revisions do not alter these preserved measurements."
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "schema": "loom.thread7_research_candidates/1",
+  "version": "continuation-02-representation",
+  "observed_on": "2026-10-09",
+  "prior_candidates_ref": "../continuation_01/candidate-presets-v1.json",
+  "profile_engine": "existing_project_profile_consumers; no new engine",
+  "evaluation_protocol_ref": "representation-policy.json",
+  "automatic_adoption": false,
+  "user_settings_changed": false,
+  "universal_winner": null,
+  "candidates": [
+    {
+      "id": "context.exact_text.full",
+      "configuration": {
+        "context_representation": "exact_text",
+        "context_resolution": "full"
+      },
+      "validation_status": "source_preservation_measured_on_12_families_model_quality_unvalidated",
+      "quality": null,
+      "adoption": "proposal_only",
+      "observed": {
+        "source_nodes": 2085,
+        "view_bytes_total": 2608478,
+        "literal_text_field_coverage_selected": 1.0,
+        "native_message_leaf_coverage": 0.05978177347471953,
+        "native_parent_link_coverage": 0.0,
+        "normalized_nodes_reconstructed": 0
+      },
+      "limits": [
+        "No complete conversation wrapper, original file bytes or binary attachments in view",
+        "No model answer or preference-quality evaluation",
+        "Full is retrospective scope and can include future or sibling nodes relative to a task boundary"
+      ]
+    },
+    {
+      "id": "context.explicit_fields.full",
+      "configuration": {
+        "context_representation": "explicit_fields",
+        "context_resolution": "full"
+      },
+      "validation_status": "source_preservation_measured_on_12_families_model_quality_unvalidated",
+      "quality": null,
+      "adoption": "proposal_only",
+      "observed": {
+        "source_nodes": 2085,
+        "view_bytes_total": 7797444,
+        "literal_text_field_coverage_selected": 1.0,
+        "native_message_leaf_coverage": 1.0,
+        "native_parent_link_coverage": 1.0,
+        "normalized_nodes_reconstructed": 0
+      },
+      "limits": [
+        "No complete conversation wrapper, original file bytes or binary attachments in view",
+        "No model answer or preference-quality evaluation",
+        "Full is retrospective scope and can include future or sibling nodes relative to a task boundary"
+      ]
+    },
+    {
+      "id": "context.source_graph.full",
+      "configuration": {
+        "context_representation": "source_graph",
+        "context_resolution": "full"
+      },
+      "validation_status": "source_preservation_measured_on_12_families_model_quality_unvalidated",
+      "quality": null,
+      "adoption": "proposal_only",
+      "observed": {
+        "source_nodes": 2085,
+        "view_bytes_total": 15618348,
+        "literal_text_field_coverage_selected": 1.0,
+        "native_message_leaf_coverage": 1.0,
+        "native_parent_link_coverage": 1.0,
+        "normalized_nodes_reconstructed": 2085
+      },
+      "limits": [
+        "No complete conversation wrapper, original file bytes or binary attachments in view",
+        "No model answer or preference-quality evaluation",
+        "Full is retrospective scope and can include future or sibling nodes relative to a task boundary"
+      ]
+    }
+  ],
+  "evidence_status": {
+    "real_families": 12,
+    "new_real_export_model_responses": 0,
+    "new_model_spend_usd": "0",
+    "independent_adjudication": false,
+    "evidence_ref": "representation-results.json",
+    "evidence_sha256": "17dcc0acc0ca6b54972053d992181588e14783ba3176276b97f79d95c765217d"
+  }
+}
