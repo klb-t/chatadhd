@@ -145,7 +145,7 @@
         }
       },
       "candidates": 209711,
-      "semantic_product_files_with_reviewed_ranges": 24,
+      "semantic_product_files_with_reviewed_ranges": 33,
       "semantic_product_denominator": 432,
       "semantic_extent": "selected paths/ranges; LEM and standalone loom cover their full listed product source files",
       "coverage_source": "chatadhd/coverage.json",

@@ -57,6 +57,8 @@ Nie odczytywano request bodies, korpusów, ZIP ani chronionej gałęzi. Dodatkow
 
 ## Konkretne różnice do ewentualnego wznowienia historii
 
+**Aktualizacja po tej macierzy:** 7/2/2 pliki pierwszych W5/W3/W4 sprawdzono następnie semantycznie w [branches-semantic-delta.md](branches-semantic-delta.md). Nie potwierdzono zgubionego przyrostu; pozostała luka migracji stemming/1→/2. Poniższe opisy zachowują punkt wyjścia metadata-pass.
+
 ### gpt/archive-import-2026-10-04
 
 INDEX jawnie przyjmuje drugi przyrost W5, ale ten metadata-pass nie dowodzi przyjęcia każdego z 46 nieekwiwalentnych commitów starej gałęzi.15/22 kodowych blobów identycznych; konkretnie 7 różnych wskazano w JSON. To kandydaci do porównania, nie 46 nowych zadań.

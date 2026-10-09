@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "main_sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "files": 11,
+  "main_evidence_ranges_checked": 30,
+  "source": "branches-semantic-delta.json",
+  "sha256": "b92dafa25c02ac99faef893ba14025cea4c4ace53ff67940139ba97f14a867d7",
+  "scope": "Location validity only; semantic conclusions static, no runtime test."
+}

@@ -4,7 +4,7 @@
   "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
   "tracked_entries": 3158,
   "semantic_review": "selected ranges; not full-file review unless explicitly documented",
-  "semantic_review_files": 35,
+  "semantic_review_files": 44,
   "semantic_ranges": {
     "loom/src/core/config.cpp": [
       [
@@ -164,6 +164,22 @@
       [
         717,
         721
+      ],
+      [
+        838,
+        857
+      ],
+      [
+        1011,
+        1024
+      ],
+      [
+        1103,
+        1104
+      ],
+      [
+        1364,
+        1367
       ]
     ],
     "loom/src/context/context_engine.cpp": [
@@ -174,6 +190,22 @@
       [
         536,
         549
+      ],
+      [
+        369,
+        400
+      ],
+      [
+        404,
+        474
+      ],
+      [
+        529,
+        552
+      ],
+      [
+        708,
+        714
       ]
     ],
     "loom/src/context/runtime_preset.h": [
@@ -277,7 +309,113 @@
     "docs/APPLICATION_PROFILES.md": [],
     "docs/reports/data-in-code/thread-12.md": [],
     "loom/src/context/RUNTIME_PRESETS.md": [],
-    "loom/src/packet/METHOD_GRAPH.md": []
+    "loom/src/packet/METHOD_GRAPH.md": [],
+    "loom/cli/main.cpp": [
+      [
+        62,
+        124
+      ],
+      [
+        422,
+        506
+      ],
+      [
+        876,
+        894
+      ],
+      [
+        963,
+        985
+      ],
+      [
+        1182,
+        1292
+      ],
+      [
+        1319,
+        1423
+      ]
+    ],
+    "loom/include/loom/importer.h": [
+      [
+        98,
+        148
+      ]
+    ],
+    "loom/src/import/export_internal.h": [
+      [
+        153,
+        163
+      ]
+    ],
+    "loom/src/import/import_audit.cpp": [
+      [
+        14,
+        76
+      ]
+    ],
+    "loom/src/import/import_audit.h": [
+      [
+        10,
+        35
+      ]
+    ],
+    "loom/src/import/import_usage.cpp": [
+      [
+        45,
+        72
+      ]
+    ],
+    "loom/src/import/importer_core.cpp": [
+      [
+        176,
+        204
+      ],
+      [
+        279,
+        305
+      ],
+      [
+        321,
+        345
+      ]
+    ],
+    "loom/server/src/app.cpp": [
+      [
+        300,
+        311
+      ],
+      [
+        461,
+        505
+      ],
+      [
+        520,
+        572
+      ]
+    ],
+    "loom/src/kb/pack.cpp": [
+      [
+        68,
+        76
+      ],
+      [
+        86,
+        96
+      ],
+      [
+        370,
+        408
+      ],
+      [
+        1222,
+        1227
+      ],
+      [
+        1677,
+        1708
+      ]
+    ]
   },
   "automatic_scan": "scan/summary.json and gz inventories; scanner immutable baseline",
   "access_limitations": [
@@ -293,5 +431,8 @@
     "docs/STATE.md",
     "docs/reports/INDEX.md"
   ],
-  "historical_data_in_code": "current directory contains thread-12 plus preserved import evidence; old 695 groups are historical and not copied as current backlog"
+  "historical_data_in_code": "current directory contains thread-12 plus preserved import evidence; old 695 groups are historical and not copied as current backlog",
+  "semantic_product_review_files": 33,
+  "semantic_product_denominator": 432,
+  "branch_semantic_delta": "branches-semantic-delta.json: 11 files, 9 newly listed product files; selected changed-function ranges, not entire files."
 }

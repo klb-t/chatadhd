@@ -1,0 +1,1225 @@
+{
+  "schema": "klb-t.ecosystem-audit.branch-semantic-delta/1",
+  "date": "2026-10-09",
+  "repo": "klb-t/chatadhd",
+  "main_sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "scope": {
+    "denominator_files": 11,
+    "reviewed_files": 11,
+    "groups": {
+      "W5": 7,
+      "W3": 2,
+      "W4": 2
+    },
+    "selection": "Wyłącznie 7/2/2 kodowe pliki pierwszych W5/W3/W4 z residual comparison branches-integration.json; pełne diffy plików i kontekst zmienionych funkcji.",
+    "base_shas": {
+      "W5": "5f0abd20dd83e5c0e7f43e84c333d5e23a5e681f",
+      "W3": "03c670caa6ee3d8ac2c478186548114f8e83927f",
+      "W4": "b302df25e1a65f20c395eadc5ad5ef065d26e33d"
+    },
+    "excluded": "Pozostałe pliki, wieloletnie linie night/eco, historie archive/*, eval/real-holdout-key, dane prywatne, request bodies i ZIP nie były czytane."
+  },
+  "conclusion": {
+    "confirmed_missing_first_increment_files": 0,
+    "statement": "W 11 ocenionych różnicach brak potwierdzonego zgubienia pierwszego przyrostu. Różne blob OID wynikają z późniejszych integracji, podłączenia profili oraz poprawek. Nie dodawać automatycznie tych 11 plików do backlogu nieprzyjętych prac.",
+    "uncertainty": "Kompatybilność/migracja paczek stemming/1 pozostaje niezweryfikowana; definicje nowych presetów i zewnętrzne zależności poza zakresem. Nie jest to certyfikat całego main ani R42."
+  },
+  "requirement_provenance": {
+    "user_requirement": "Zacząć od aktualnego main, porównać nieprzyjęte przyrosty, nie kopiować przyjętej starej kolejki. Potwierdzać rzeczywiste podłączenie konfiguracji.",
+    "current_index": {
+      "path": "docs/reports/INDEX.md",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "line_ranges": [
+        [
+          18,
+          23
+        ],
+        [
+          45,
+          49
+        ]
+      ],
+      "interpretation": "INDEX mapuje przyjęte drugie W5/W4/W3 i późniejsze odtworzenie presetów. Poniższa analiza niezależnie sprawdza semantykę pozostałych odmiennych blobów pierwszych przyrostów."
+    }
+  },
+  "method": {
+    "commands": [
+      "git diff --no-ext-diff --unified=0 <branch SHA> <main SHA> -- <jeden z 11 plików>",
+      "git show <main SHA>:<jeden z 11 plików>",
+      "git log -3 --format=%h %s <main SHA> -- <jeden z 11 plików>"
+    ],
+    "execution_tests": 0,
+    "paid_calls": 0,
+    "ci_runs": 0,
+    "product_edits": 0
+  },
+  "files": [
+    {
+      "id": "CHAT-BRSEM-W5-001",
+      "repo": "klb-t/chatadhd",
+      "wave": "W5",
+      "branch_sha": "5f0abd20dd83e5c0e7f43e84c333d5e23a5e681f",
+      "main_sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "path": "loom/cli/main.cpp",
+      "classification": "replaced-and-later-main-fix",
+      "confirmed_missing_increment": false,
+      "main_evidence_ranges": [
+        {
+          "start": 62,
+          "end": 124
+        },
+        {
+          "start": 422,
+          "end": 506
+        },
+        {
+          "start": 876,
+          "end": 894
+        },
+        {
+          "start": 963,
+          "end": 985
+        },
+        {
+          "start": 1182,
+          "end": 1292
+        },
+        {
+          "start": 1319,
+          "end": 1423
+        }
+      ],
+      "changed_hunks": [
+        {
+          "branch_start": 5,
+          "branch_count": 2,
+          "main_start": 5,
+          "main_count": 2
+        },
+        {
+          "branch_start": 11,
+          "branch_count": 0,
+          "main_start": 12,
+          "main_count": 1
+        },
+        {
+          "branch_start": 14,
+          "branch_count": 0,
+          "main_start": 16,
+          "main_count": 1
+        },
+        {
+          "branch_start": 18,
+          "branch_count": 0,
+          "main_start": 21,
+          "main_count": 1
+        },
+        {
+          "branch_start": 19,
+          "branch_count": 0,
+          "main_start": 23,
+          "main_count": 1
+        },
+        {
+          "branch_start": 25,
+          "branch_count": 0,
+          "main_start": 30,
+          "main_count": 1
+        },
+        {
+          "branch_start": 40,
+          "branch_count": 0,
+          "main_start": 46,
+          "main_count": 1
+        },
+        {
+          "branch_start": 42,
+          "branch_count": 0,
+          "main_start": 49,
+          "main_count": 1
+        },
+        {
+          "branch_start": 47,
+          "branch_count": 0,
+          "main_start": 55,
+          "main_count": 1
+        },
+        {
+          "branch_start": 54,
+          "branch_count": 88,
+          "main_start": 62,
+          "main_count": 8
+        },
+        {
+          "branch_start": 143,
+          "branch_count": 7,
+          "main_start": 71,
+          "main_count": 49
+        },
+        {
+          "branch_start": 151,
+          "branch_count": 0,
+          "main_start": 122,
+          "main_count": 2
+        },
+        {
+          "branch_start": 179,
+          "branch_count": 1,
+          "main_start": 151,
+          "main_count": 1
+        },
+        {
+          "branch_start": 192,
+          "branch_count": 1,
+          "main_start": 164,
+          "main_count": 1
+        },
+        {
+          "branch_start": 217,
+          "branch_count": 1,
+          "main_start": 189,
+          "main_count": 2
+        },
+        {
+          "branch_start": 220,
+          "branch_count": 1,
+          "main_start": 193,
+          "main_count": 2
+        },
+        {
+          "branch_start": 272,
+          "branch_count": 0,
+          "main_start": 247,
+          "main_count": 8
+        },
+        {
+          "branch_start": 277,
+          "branch_count": 1,
+          "main_start": 259,
+          "main_count": 6
+        },
+        {
+          "branch_start": 282,
+          "branch_count": 1,
+          "main_start": 269,
+          "main_count": 1
+        },
+        {
+          "branch_start": 286,
+          "branch_count": 1,
+          "main_start": 273,
+          "main_count": 1
+        },
+        {
+          "branch_start": 296,
+          "branch_count": 1,
+          "main_start": 283,
+          "main_count": 1
+        },
+        {
+          "branch_start": 305,
+          "branch_count": 1,
+          "main_start": 292,
+          "main_count": 1
+        },
+        {
+          "branch_start": 380,
+          "branch_count": 1,
+          "main_start": 367,
+          "main_count": 1
+        },
+        {
+          "branch_start": 437,
+          "branch_count": 0,
+          "main_start": 425,
+          "main_count": 14
+        },
+        {
+          "branch_start": 538,
+          "branch_count": 1,
+          "main_start": 539,
+          "main_count": 1
+        },
+        {
+          "branch_start": 556,
+          "branch_count": 1,
+          "main_start": 557,
+          "main_count": 1
+        },
+        {
+          "branch_start": 562,
+          "branch_count": 1,
+          "main_start": 563,
+          "main_count": 1
+        },
+        {
+          "branch_start": 578,
+          "branch_count": 1,
+          "main_start": 579,
+          "main_count": 1
+        },
+        {
+          "branch_start": 586,
+          "branch_count": 2,
+          "main_start": 587,
+          "main_count": 8
+        },
+        {
+          "branch_start": 608,
+          "branch_count": 2,
+          "main_start": 615,
+          "main_count": 2
+        },
+        {
+          "branch_start": 621,
+          "branch_count": 1,
+          "main_start": 628,
+          "main_count": 1
+        },
+        {
+          "branch_start": 630,
+          "branch_count": 2,
+          "main_start": 637,
+          "main_count": 2
+        },
+        {
+          "branch_start": 672,
+          "branch_count": 1,
+          "main_start": 679,
+          "main_count": 1
+        },
+        {
+          "branch_start": 678,
+          "branch_count": 1,
+          "main_start": 685,
+          "main_count": 1
+        },
+        {
+          "branch_start": 754,
+          "branch_count": 2,
+          "main_start": 761,
+          "main_count": 2
+        },
+        {
+          "branch_start": 765,
+          "branch_count": 1,
+          "main_start": 772,
+          "main_count": 1
+        },
+        {
+          "branch_start": 788,
+          "branch_count": 1,
+          "main_start": 795,
+          "main_count": 1
+        },
+        {
+          "branch_start": 818,
+          "branch_count": 1,
+          "main_start": 825,
+          "main_count": 1
+        },
+        {
+          "branch_start": 825,
+          "branch_count": 2,
+          "main_start": 832,
+          "main_count": 2
+        },
+        {
+          "branch_start": 836,
+          "branch_count": 1,
+          "main_start": 843,
+          "main_count": 1
+        },
+        {
+          "branch_start": 844,
+          "branch_count": 1,
+          "main_start": 851,
+          "main_count": 1
+        },
+        {
+          "branch_start": 869,
+          "branch_count": 1,
+          "main_start": 876,
+          "main_count": 2
+        },
+        {
+          "branch_start": 885,
+          "branch_count": 1,
+          "main_start": 893,
+          "main_count": 1
+        },
+        {
+          "branch_start": 955,
+          "branch_count": 1,
+          "main_start": 963,
+          "main_count": 2
+        },
+        {
+          "branch_start": 975,
+          "branch_count": 1,
+          "main_start": 984,
+          "main_count": 1
+        },
+        {
+          "branch_start": 987,
+          "branch_count": 1,
+          "main_start": 996,
+          "main_count": 1
+        },
+        {
+          "branch_start": 995,
+          "branch_count": 2,
+          "main_start": 1004,
+          "main_count": 2
+        },
+        {
+          "branch_start": 1010,
+          "branch_count": 1,
+          "main_start": 1019,
+          "main_count": 2
+        },
+        {
+          "branch_start": 1014,
+          "branch_count": 1,
+          "main_start": 1024,
+          "main_count": 1
+        },
+        {
+          "branch_start": 1036,
+          "branch_count": 1,
+          "main_start": 1046,
+          "main_count": 1
+        },
+        {
+          "branch_start": 1041,
+          "branch_count": 5,
+          "main_start": 1051,
+          "main_count": 5
+        },
+        {
+          "branch_start": 1097,
+          "branch_count": 1,
+          "main_start": 1107,
+          "main_count": 1
+        },
+        {
+          "branch_start": 1141,
+          "branch_count": 1,
+          "main_start": 1151,
+          "main_count": 1
+        },
+        {
+          "branch_start": 1155,
+          "branch_count": 1,
+          "main_start": 1165,
+          "main_count": 9
+        },
+        {
+          "branch_start": 1163,
+          "branch_count": 0,
+          "main_start": 1182,
+          "main_count": 111
+        },
+        {
+          "branch_start": 1190,
+          "branch_count": 1,
+          "main_start": 1319,
+          "main_count": 1
+        },
+        {
+          "branch_start": 1197,
+          "branch_count": 1,
+          "main_start": 1326,
+          "main_count": 3
+        },
+        {
+          "branch_start": 1210,
+          "branch_count": 0,
+          "main_start": 1342,
+          "main_count": 4
+        },
+        {
+          "branch_start": 1212,
+          "branch_count": 1,
+          "main_start": 1347,
+          "main_count": 1
+        },
+        {
+          "branch_start": 1215,
+          "branch_count": 1,
+          "main_start": 1350,
+          "main_count": 1
+        },
+        {
+          "branch_start": 1218,
+          "branch_count": 1,
+          "main_start": 1353,
+          "main_count": 2
+        },
+        {
+          "branch_start": 1226,
+          "branch_count": 1,
+          "main_start": 1362,
+          "main_count": 1
+        },
+        {
+          "branch_start": 1236,
+          "branch_count": 11,
+          "main_start": 1372,
+          "main_count": 6
+        },
+        {
+          "branch_start": 1248,
+          "branch_count": 0,
+          "main_start": 1380,
+          "main_count": 11
+        },
+        {
+          "branch_start": 1257,
+          "branch_count": 21,
+          "main_start": 1399,
+          "main_count": 24
+        }
+      ],
+      "observed": "Help, flagi, aliasy, wartości domyślne list, formatowanie i interwały czytają RuntimeProfile. cmd_import wczytuje pełne wartości import-preset/audit-preset, następnie jawne argumenty liczbowe nadpisują preset; walidacja poprzedza import. ArchiveProfile i profil knowledge są ponownie stosowane po nadpisaniach. cmd_profile umożliwia inspect/validate/save i w main kończy się przed Runtime::open.",
+      "preserved_or_replaced_behavior": "Handlery poleceń i ścieżka usage admission → import → audit pozostają; usunięte literały/pomoc mają konsumenta profilu. Brak dowodu zgubienia funkcji pierwszego W5 w tych zmianach.",
+      "limits_and_migration_risk": "Nie otwierano definicji profili ani ich generatorów w tej końcowej próbie; nie stwierdzono równości wszystkich historycznych wartości domyślnych ani kompletności UI. Zakres nie jest ponownym audytem wszystkich pozostałych literałów.",
+      "attribution_commits": [
+        {
+          "sha": "66da570d3b5379492e128d940ad474467082c59f",
+          "subject": "Integrate streaming archive import, forward-only annotations and OCR checkpoint fixes [skip ci]"
+        },
+        {
+          "sha": "215563c8fddca0187f99f16ce8c2894459dbc53e",
+          "subject": "Integrate rebased runtime profile foundation with canonical usage projection and positive source fixtures [skip ci]"
+        },
+        {
+          "sha": "0724b7821d3d7442b8b4a5be982531051088bc43",
+          "subject": "Use canonical native import presets and bind semantic cache plus admission identity [skip ci]"
+        }
+      ],
+      "validation": "Analiza statyczna pełnego diffu wskazanego pliku i kontekstu zmienionych funkcji; bez wywołań modeli, uruchomienia serwera lub testów produktu."
+    },
+    {
+      "id": "CHAT-BRSEM-W5-002",
+      "repo": "klb-t/chatadhd",
+      "wave": "W5",
+      "branch_sha": "5f0abd20dd83e5c0e7f43e84c333d5e23a5e681f",
+      "main_sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "path": "loom/include/loom/importer.h",
+      "classification": "replaced-by-canonical-preset",
+      "confirmed_missing_increment": false,
+      "main_evidence_ranges": [
+        {
+          "start": 98,
+          "end": 148
+        }
+      ],
+      "changed_hunks": [
+        {
+          "branch_start": 54,
+          "branch_count": 0,
+          "main_start": 55,
+          "main_count": 1
+        },
+        {
+          "branch_start": 96,
+          "branch_count": 0,
+          "main_start": 98,
+          "main_count": 12
+        },
+        {
+          "branch_start": 103,
+          "branch_count": 1,
+          "main_start": 116,
+          "main_count": 1
+        },
+        {
+          "branch_start": 127,
+          "branch_count": 4,
+          "main_start": 140,
+          "main_count": 4
+        }
+      ],
+      "observed": "ImportPresetValues/default_import_preset zastępują początkowe wartości stream_threshold_bytes, json_read_chunk_bytes, json_max_depth, json_inline_threshold_bytes i generic_inference_max_bytes.",
+      "preserved_or_replaced_behavior": "Pola pozostają parametrami ImportOptions; domyślne wartości pobiera ta sama konstrukcja opcji, a CLI nadal przyjmuje jawne nadpisania. Nie są nowym niezmiennym limitem.",
+      "limits_and_migration_risk": "Sprawdzenie samej deklaracji nie dowodzi walidacji dostawcy default_import_preset; dostawca poza 11 plikami.",
+      "attribution_commits": [
+        {
+          "sha": "66da570d3b5379492e128d940ad474467082c59f",
+          "subject": "Integrate streaming archive import, forward-only annotations and OCR checkpoint fixes [skip ci]"
+        },
+        {
+          "sha": "0724b7821d3d7442b8b4a5be982531051088bc43",
+          "subject": "Use canonical native import presets and bind semantic cache plus admission identity [skip ci]"
+        }
+      ],
+      "validation": "Analiza statyczna pełnego diffu wskazanego pliku i kontekstu zmienionych funkcji; bez wywołań modeli, uruchomienia serwera lub testów produktu."
+    },
+    {
+      "id": "CHAT-BRSEM-W5-003",
+      "repo": "klb-t/chatadhd",
+      "wave": "W5",
+      "branch_sha": "5f0abd20dd83e5c0e7f43e84c333d5e23a5e681f",
+      "main_sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "path": "loom/src/import/export_internal.h",
+      "classification": "replaced-by-canonical-preset",
+      "confirmed_missing_increment": false,
+      "main_evidence_ranges": [
+        {
+          "start": 153,
+          "end": 163
+        }
+      ],
+      "changed_hunks": [
+        {
+          "branch_start": 158,
+          "branch_count": 2,
+          "main_start": 158,
+          "main_count": 2
+        }
+      ],
+      "observed": "Loader pobiera domyślne chunk_bytes i max_depth z default_import_preset zamiast dwóch literałów.",
+      "preserved_or_replaced_behavior": "Parametry konstruktora i dalszy odczyt strumieniowy pozostają. To wymiana źródła domyślnej konfiguracji.",
+      "limits_and_migration_risk": "Nie uruchamiano parsera; nie porównywano danych presetu poza zakresem.",
+      "attribution_commits": [
+        {
+          "sha": "66da570d3b5379492e128d940ad474467082c59f",
+          "subject": "Integrate streaming archive import, forward-only annotations and OCR checkpoint fixes [skip ci]"
+        },
+        {
+          "sha": "0724b7821d3d7442b8b4a5be982531051088bc43",
+          "subject": "Use canonical native import presets and bind semantic cache plus admission identity [skip ci]"
+        }
+      ],
+      "validation": "Analiza statyczna pełnego diffu wskazanego pliku i kontekstu zmienionych funkcji; bez wywołań modeli, uruchomienia serwera lub testów produktu."
+    },
+    {
+      "id": "CHAT-BRSEM-W5-004",
+      "repo": "klb-t/chatadhd",
+      "wave": "W5",
+      "branch_sha": "5f0abd20dd83e5c0e7f43e84c333d5e23a5e681f",
+      "main_sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "path": "loom/src/import/import_audit.cpp",
+      "classification": "replaced-by-canonical-preset",
+      "confirmed_missing_increment": false,
+      "main_evidence_ranges": [
+        {
+          "start": 14,
+          "end": 76
+        }
+      ],
+      "changed_hunks": [
+        {
+          "branch_start": 5,
+          "branch_count": 0,
+          "main_start": 6,
+          "main_count": 1
+        },
+        {
+          "branch_start": 6,
+          "branch_count": 0,
+          "main_start": 8,
+          "main_count": 2
+        },
+        {
+          "branch_start": 10,
+          "branch_count": 0,
+          "main_start": 14,
+          "main_count": 63
+        }
+      ],
+      "observed": "Dodano parser kompletnego presetu audytu, kontrolę skończonych liczb i relacji low>=high>0, schema-check źródła compiled_import_preset_source, apply przez zwalidowany obiekt zastępczy oraz inspect z pochodzeniem i hashem.",
+      "preserved_or_replaced_behavior": "Pozostały algorytm audytu pierwszego W5 nie został usunięty; nowe funkcje zasilają istniejące opcje. apply nie pozostawia częściowo nadpisanych opcji przy błędzie.",
+      "limits_and_migration_risk": "Nie przeprowadzono testu z błędnym osadzonym presetem ani porównania starego/nowego wyniku liczbowego.",
+      "attribution_commits": [
+        {
+          "sha": "66da570d3b5379492e128d940ad474467082c59f",
+          "subject": "Integrate streaming archive import, forward-only annotations and OCR checkpoint fixes [skip ci]"
+        },
+        {
+          "sha": "0724b7821d3d7442b8b4a5be982531051088bc43",
+          "subject": "Use canonical native import presets and bind semantic cache plus admission identity [skip ci]"
+        }
+      ],
+      "validation": "Analiza statyczna pełnego diffu wskazanego pliku i kontekstu zmienionych funkcji; bez wywołań modeli, uruchomienia serwera lub testów produktu."
+    },
+    {
+      "id": "CHAT-BRSEM-W5-005",
+      "repo": "klb-t/chatadhd",
+      "wave": "W5",
+      "branch_sha": "5f0abd20dd83e5c0e7f43e84c333d5e23a5e681f",
+      "main_sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "path": "loom/src/import/import_audit.h",
+      "classification": "replaced-by-canonical-preset",
+      "confirmed_missing_increment": false,
+      "main_evidence_ranges": [
+        {
+          "start": 10,
+          "end": 35
+        }
+      ],
+      "changed_hunks": [
+        {
+          "branch_start": 9,
+          "branch_count": 0,
+          "main_start": 10,
+          "main_count": 8
+        },
+        {
+          "branch_start": 13,
+          "branch_count": 4,
+          "main_start": 21,
+          "main_count": 4
+        },
+        {
+          "branch_start": 20,
+          "branch_count": 0,
+          "main_start": 29,
+          "main_count": 6
+        }
+      ],
+      "observed": "ImportAuditPresetValues i funkcje parse/apply/inspect są nowym źródłem domyślnych active_only/chars_per_token_low/chars_per_token_high/output_ratio.",
+      "preserved_or_replaced_behavior": "Opcjonalne ceny wejścia/wyjścia i publiczny interfejs audytu pozostają. Parametry nie zostały utracone.",
+      "limits_and_migration_risk": "Definicje samego presetu poza zakresem; deklaracja oceniona wraz z import_audit.cpp i cmd_import.",
+      "attribution_commits": [
+        {
+          "sha": "66da570d3b5379492e128d940ad474467082c59f",
+          "subject": "Integrate streaming archive import, forward-only annotations and OCR checkpoint fixes [skip ci]"
+        },
+        {
+          "sha": "0724b7821d3d7442b8b4a5be982531051088bc43",
+          "subject": "Use canonical native import presets and bind semantic cache plus admission identity [skip ci]"
+        }
+      ],
+      "validation": "Analiza statyczna pełnego diffu wskazanego pliku i kontekstu zmienionych funkcji; bez wywołań modeli, uruchomienia serwera lub testów produktu."
+    },
+    {
+      "id": "CHAT-BRSEM-W5-006",
+      "repo": "klb-t/chatadhd",
+      "wave": "W5",
+      "branch_sha": "5f0abd20dd83e5c0e7f43e84c333d5e23a5e681f",
+      "main_sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "path": "loom/src/import/import_usage.cpp",
+      "classification": "later-main-fix",
+      "confirmed_missing_increment": false,
+      "main_evidence_ranges": [
+        {
+          "start": 45,
+          "end": 72
+        }
+      ],
+      "changed_hunks": [
+        {
+          "branch_start": 1,
+          "branch_count": 0,
+          "main_start": 2,
+          "main_count": 1
+        },
+        {
+          "branch_start": 50,
+          "branch_count": 1,
+          "main_start": 51,
+          "main_count": 1
+        },
+        {
+          "branch_start": 55,
+          "branch_count": 0,
+          "main_start": 57,
+          "main_count": 8
+        }
+      ],
+      "observed": "Dla niehistorycznej projekcji estimate przechowuje import_preset_values oraz identity/projection hash przed request_local_source_usage. Historyczna projekcja zachowuje stary estimate.",
+      "preserved_or_replaced_behavior": "Admission pozostaje w tej samej ścieżce; poprawka wiąże zgodę z semantyką importu, nie tylko bajtami wejścia.",
+      "limits_and_migration_risk": "Implementacja funkcji hash i pełna księga użycia poza zakresem; nie wykonano nowej próby autoryzacji.",
+      "attribution_commits": [
+        {
+          "sha": "66da570d3b5379492e128d940ad474467082c59f",
+          "subject": "Integrate streaming archive import, forward-only annotations and OCR checkpoint fixes [skip ci]"
+        },
+        {
+          "sha": "0724b7821d3d7442b8b4a5be982531051088bc43",
+          "subject": "Use canonical native import presets and bind semantic cache plus admission identity [skip ci]"
+        }
+      ],
+      "validation": "Analiza statyczna pełnego diffu wskazanego pliku i kontekstu zmienionych funkcji; bez wywołań modeli, uruchomienia serwera lub testów produktu."
+    },
+    {
+      "id": "CHAT-BRSEM-W5-007",
+      "repo": "klb-t/chatadhd",
+      "wave": "W5",
+      "branch_sha": "5f0abd20dd83e5c0e7f43e84c333d5e23a5e681f",
+      "main_sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "path": "loom/src/import/importer_core.cpp",
+      "classification": "later-main-fix",
+      "confirmed_missing_increment": false,
+      "main_evidence_ranges": [
+        {
+          "start": 176,
+          "end": 204
+        },
+        {
+          "start": 279,
+          "end": 305
+        },
+        {
+          "start": 321,
+          "end": 345
+        }
+      ],
+      "changed_hunks": [
+        {
+          "branch_start": 10,
+          "branch_count": 0,
+          "main_start": 11,
+          "main_count": 1
+        },
+        {
+          "branch_start": 180,
+          "branch_count": 0,
+          "main_start": 182,
+          "main_count": 8
+        },
+        {
+          "branch_start": 190,
+          "branch_count": 1,
+          "main_start": 199,
+          "main_count": 1
+        },
+        {
+          "branch_start": 275,
+          "branch_count": 1,
+          "main_start": 284,
+          "main_count": 1
+        },
+        {
+          "branch_start": 295,
+          "branch_count": 0,
+          "main_start": 305,
+          "main_count": 1
+        },
+        {
+          "branch_start": 325,
+          "branch_count": 0,
+          "main_start": 336,
+          "main_count": 1
+        }
+      ],
+      "observed": "Cache i resume wymagają zgodności import_projection_hash; jedynie brak pola umożliwia legacy zgodność. Nowe source oraz ZIPmember zachowują hash niehistorycznej projekcji; reuse ZIPmember porównuje pełne metadata.",
+      "preserved_or_replaced_behavior": "Resume, źródłowy blob, provenance i kontrole zgodności bajtów z admission pozostają. Stary cache po zmianie semantyki opcji nie jest bezwarunkowo używany.",
+      "limits_and_migration_risk": "Hash implementation poza zakresem. Zmiana może tworzyć nowy source zamiast ponownie użyć starego; to oczekiwane rozdzielenie tożsamości, wymagające testów migracji/objętości w implementacji.",
+      "attribution_commits": [
+        {
+          "sha": "66da570d3b5379492e128d940ad474467082c59f",
+          "subject": "Integrate streaming archive import, forward-only annotations and OCR checkpoint fixes [skip ci]"
+        },
+        {
+          "sha": "0724b7821d3d7442b8b4a5be982531051088bc43",
+          "subject": "Use canonical native import presets and bind semantic cache plus admission identity [skip ci]"
+        }
+      ],
+      "validation": "Analiza statyczna pełnego diffu wskazanego pliku i kontekstu zmienionych funkcji; bez wywołań modeli, uruchomienia serwera lub testów produktu."
+    },
+    {
+      "id": "CHAT-BRSEM-W3-001",
+      "repo": "klb-t/chatadhd",
+      "wave": "W3",
+      "branch_sha": "03c670caa6ee3d8ac2c478186548114f8e83927f",
+      "main_sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "path": "loom/src/chat/chat_engine.cpp",
+      "classification": "replaced-by-canonical-preset",
+      "confirmed_missing_increment": false,
+      "main_evidence_ranges": [
+        {
+          "start": 838,
+          "end": 857
+        },
+        {
+          "start": 1011,
+          "end": 1024
+        },
+        {
+          "start": 1103,
+          "end": 1104
+        },
+        {
+          "start": 1364,
+          "end": 1367
+        }
+      ],
+      "changed_hunks": [
+        {
+          "branch_start": 8,
+          "branch_count": 0,
+          "main_start": 9,
+          "main_count": 1
+        },
+        {
+          "branch_start": 33,
+          "branch_count": 0,
+          "main_start": 35,
+          "main_count": 1
+        },
+        {
+          "branch_start": 837,
+          "branch_count": 25,
+          "main_start": 839,
+          "main_count": 5
+        },
+        {
+          "branch_start": 872,
+          "branch_count": 0,
+          "main_start": 855,
+          "main_count": 3
+        },
+        {
+          "branch_start": 1027,
+          "branch_count": 1,
+          "main_start": 1012,
+          "main_count": 1
+        },
+        {
+          "branch_start": 1038,
+          "branch_count": 0,
+          "main_start": 1024,
+          "main_count": 1
+        },
+        {
+          "branch_start": 1117,
+          "branch_count": 1,
+          "main_start": 1103,
+          "main_count": 1
+        },
+        {
+          "branch_start": 1379,
+          "branch_count": 0,
+          "main_start": 1366,
+          "main_count": 2
+        }
+      ],
+      "observed": "configure_reasoning usuwa lokalną listę modeli i budżety, stosując reasoning_recipe/apply_reasoning_recipe. send rozwiązuje config chat_reasoning przed wykonaniem, stosuje tę receptę do payload i zachowuje jawny snapshot w metadata żądania oraz odpowiedzi, również przy record_context=false.",
+      "preserved_or_replaced_behavior": "Wywołanie konfiguracji reasoning nadal znajduje się w rzeczywistej ścieżce wysyłki. W hunks nie usunięto mechaniki metod/GraphPacket pierwszego W3.",
+      "limits_and_migration_risk": "Kod resolvera/provider mapping poza tym plikiem nie był w końcowym zakresie. To dowód podłączenia konsumenta, nie dowód kompletności całej strategii ani płatny test.",
+      "attribution_commits": [
+        {
+          "sha": "a1be689dc026367783473133de3c25cf5ae60971",
+          "subject": "Integrate graph method registry, chat selector and native GraphPacket contract [skip ci]"
+        },
+        {
+          "sha": "4aa9a3b4e75d6a7bf320124d6bd3250a6b35eed9",
+          "subject": "Consume configurable goal and chat reasoning snapshots"
+        }
+      ],
+      "validation": "Analiza statyczna pełnego diffu wskazanego pliku i kontekstu zmienionych funkcji; bez wywołań modeli, uruchomienia serwera lub testów produktu."
+    },
+    {
+      "id": "CHAT-BRSEM-W3-002",
+      "repo": "klb-t/chatadhd",
+      "wave": "W3",
+      "branch_sha": "03c670caa6ee3d8ac2c478186548114f8e83927f",
+      "main_sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "path": "loom/src/context/context_engine.cpp",
+      "classification": "replaced-by-canonical-preset",
+      "confirmed_missing_increment": false,
+      "main_evidence_ranges": [
+        {
+          "start": 369,
+          "end": 400
+        },
+        {
+          "start": 404,
+          "end": 474
+        },
+        {
+          "start": 529,
+          "end": 552
+        },
+        {
+          "start": 708,
+          "end": 714
+        }
+      ],
+      "changed_hunks": [
+        {
+          "branch_start": 28,
+          "branch_count": 0,
+          "main_start": 29,
+          "main_count": 1
+        },
+        {
+          "branch_start": 31,
+          "branch_count": 0,
+          "main_start": 33,
+          "main_count": 2
+        },
+        {
+          "branch_start": 366,
+          "branch_count": 2,
+          "main_start": 369,
+          "main_count": 37
+        },
+        {
+          "branch_start": 381,
+          "branch_count": 1,
+          "main_start": 419,
+          "main_count": 1
+        },
+        {
+          "branch_start": 387,
+          "branch_count": 0,
+          "main_start": 426,
+          "main_count": 2
+        },
+        {
+          "branch_start": 409,
+          "branch_count": 4,
+          "main_start": 449,
+          "main_count": 1
+        },
+        {
+          "branch_start": 414,
+          "branch_count": 1,
+          "main_start": 451,
+          "main_count": 11
+        },
+        {
+          "branch_start": 416,
+          "branch_count": 1,
+          "main_start": 463,
+          "main_count": 1
+        },
+        {
+          "branch_start": 420,
+          "branch_count": 1,
+          "main_start": 467,
+          "main_count": 6
+        },
+        {
+          "branch_start": 484,
+          "branch_count": 1,
+          "main_start": 536,
+          "main_count": 9
+        },
+        {
+          "branch_start": 488,
+          "branch_count": 0,
+          "main_start": 549,
+          "main_count": 4
+        },
+        {
+          "branch_start": 648,
+          "branch_count": 0,
+          "main_start": 713,
+          "main_count": 2
+        }
+      ],
+      "observed": "Wagi wskazówek, confidence bez wskazówki, offset mianownika i fallback goal type/strategy są konsumowane z GoalCuePolicy. Config context_goal_cues oraz nadpisanie execution_scope.goal_typing.goal_cues trafiają przez resolve_runtime_preset do classify_by_cues. Wariant error nie wybiera automatycznie pierwszego typu. Jawny/zmieniony preset zachowuje snapshot i wpływa na ID celu.",
+      "preserved_or_replaced_behavior": "Jawny req.goal_type nadal omija klasyfikację; mechanizm cue pozostaje. Poprzedni fallback pierwszego ID jest reprezentowalną operacją first_by_id. Offline preview/warunek autoryzacji nie zostały w tych zmianach usunięte.",
+      "limits_and_migration_risk": "Walidowane jest dokładnie sześć pól obsługiwanych przez tę operację, nie dowolny język strategii. Nie weryfikowano definicji presetów ani pełnej ścieżki UI; pozostałe niezmienione polityki nie są certyfikowane.",
+      "attribution_commits": [
+        {
+          "sha": "a1be689dc026367783473133de3c25cf5ae60971",
+          "subject": "Integrate graph method registry, chat selector and native GraphPacket contract [skip ci]"
+        },
+        {
+          "sha": "4aa9a3b4e75d6a7bf320124d6bd3250a6b35eed9",
+          "subject": "Consume configurable goal and chat reasoning snapshots"
+        }
+      ],
+      "validation": "Analiza statyczna pełnego diffu wskazanego pliku i kontekstu zmienionych funkcji; bez wywołań modeli, uruchomienia serwera lub testów produktu."
+    },
+    {
+      "id": "CHAT-BRSEM-W4-001",
+      "repo": "klb-t/chatadhd",
+      "wave": "W4",
+      "branch_sha": "b302df25e1a65f20c395eadc5ad5ef065d26e33d",
+      "main_sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "path": "loom/server/src/app.cpp",
+      "classification": "later-main-integration-and-fix",
+      "confirmed_missing_increment": false,
+      "main_evidence_ranges": [
+        {
+          "start": 300,
+          "end": 311
+        },
+        {
+          "start": 461,
+          "end": 505
+        },
+        {
+          "start": 520,
+          "end": 572
+        }
+      ],
+      "changed_hunks": [
+        {
+          "branch_start": 16,
+          "branch_count": 0,
+          "main_start": 17,
+          "main_count": 8
+        },
+        {
+          "branch_start": 300,
+          "branch_count": 0,
+          "main_start": 309,
+          "main_count": 3
+        },
+        {
+          "branch_start": 449,
+          "branch_count": 0,
+          "main_start": 461,
+          "main_count": 45
+        },
+        {
+          "branch_start": 463,
+          "branch_count": 0,
+          "main_start": 520,
+          "main_count": 15
+        },
+        {
+          "branch_start": 470,
+          "branch_count": 2,
+          "main_start": 541,
+          "main_count": 7
+        },
+        {
+          "branch_start": 481,
+          "branch_count": 5,
+          "main_start": 557,
+          "main_count": 14
+        },
+        {
+          "branch_start": 487,
+          "branch_count": 1,
+          "main_start": 571,
+          "main_count": 0
+        },
+        {
+          "branch_start": 768,
+          "branch_count": 1,
+          "main_start": 852,
+          "main_count": 1
+        },
+        {
+          "branch_start": 772,
+          "branch_count": 1,
+          "main_start": 856,
+          "main_count": 1
+        }
+      ],
+      "observed": "Dodano rejestrację natywnych tras onboarding/method/analysis, media status/transcribe i adapter wspólnego usage-policy. PATCH config przekazuje oryginalne bajty do ordered native reader pod mutexem; PUT wymaga value, zachowuje kolejność ordered_json i obsługuje odmowę native setter.",
+      "preserved_or_replaced_behavior": "Trasy grafu i kontekstu nadal są rejestrowane; wcześniejszy backend kontraktu nie został zastąpiony równoległym ledgerem. Zmiana config usuwa utratę kolejności przez parse/dump.",
+      "limits_and_migration_risk": "Są to punkty rejestracji i adaptery; implementacje wywołanych modułów UI poza 11 plikami. Build bez LOOM_SERVER_HAS_USAGE_POLICY jawnie zwraca unavailable. Nie wykonano HTTP/E2E.",
+      "attribution_commits": [
+        {
+          "sha": "a1be689dc026367783473133de3c25cf5ae60971",
+          "subject": "Integrate graph method registry, chat selector and native GraphPacket contract [skip ci]"
+        },
+        {
+          "sha": "e8fbb6d356247efe2943ff91cfea5a567f7eb3d3",
+          "subject": "Integrate rebased first interface increment preserving native packet routes [skip ci]"
+        },
+        {
+          "sha": "134024de3faf849c6cd05470516916cbe0dd4ad1",
+          "subject": "feat(ui): wire native method analysis and onboarding routes [skip ci]"
+        }
+      ],
+      "validation": "Analiza statyczna pełnego diffu wskazanego pliku i kontekstu zmienionych funkcji; bez wywołań modeli, uruchomienia serwera lub testów produktu."
+    },
+    {
+      "id": "CHAT-BRSEM-W4-002",
+      "repo": "klb-t/chatadhd",
+      "wave": "W4",
+      "branch_sha": "b302df25e1a65f20c395eadc5ad5ef065d26e33d",
+      "main_sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "path": "loom/src/kb/pack.cpp",
+      "classification": "replaced-schema-with-migration-unverified",
+      "confirmed_missing_increment": false,
+      "main_evidence_ranges": [
+        {
+          "start": 68,
+          "end": 76
+        },
+        {
+          "start": 86,
+          "end": 96
+        },
+        {
+          "start": 370,
+          "end": 408
+        },
+        {
+          "start": 1222,
+          "end": 1227
+        },
+        {
+          "start": 1677,
+          "end": 1708
+        }
+      ],
+      "changed_hunks": [
+        {
+          "branch_start": 5,
+          "branch_count": 0,
+          "main_start": 6,
+          "main_count": 1
+        },
+        {
+          "branch_start": 66,
+          "branch_count": 0,
+          "main_start": 68,
+          "main_count": 9
+        },
+        {
+          "branch_start": 75,
+          "branch_count": 0,
+          "main_start": 86,
+          "main_count": 11
+        },
+        {
+          "branch_start": 349,
+          "branch_count": 0,
+          "main_start": 371,
+          "main_count": 25
+        },
+        {
+          "branch_start": 359,
+          "branch_count": 2,
+          "main_start": 405,
+          "main_count": 2
+        },
+        {
+          "branch_start": 1179,
+          "branch_count": 1,
+          "main_start": 1225,
+          "main_count": 1
+        },
+        {
+          "branch_start": 1630,
+          "branch_count": 0,
+          "main_start": 1677,
+          "main_count": 32
+        }
+      ],
+      "observed": "Walidator stemming wymaga normalization recipe, typów/przekrojów referencji lexicon/fields i skończonych współczynników. min_token/min_stem tracą arbitralną górną granicę32 na rzecz reprezentowalnego size_t. Dispatch schematu zmienia loom.kb.stemming/1 na /2; dodane cross-reference checks obejmują źródła stopwords.",
+      "preserved_or_replaced_behavior": "Nie widać usunięcia metody/GraphPacket pierwszego W4; różnica dotyczy późniejszego przeniesienia polityki normalizacji do danych. Zamiana schematu jest realną zmianą kompatybilności, nie równoważnym blobem.",
+      "limits_and_migration_risk": "Zgodność lub migracja zewnętrznych paczek stemming/1 NIEPOTWIERDZONA: adaptera nie wykazano w ocenianych hunks. Nie nazywać tego udowodnionym brakiem pierwszego W4; osobny dokładny punkt wznowienia to native load/validation historycznej paczki i polityka migracji, bez nadpisywania oryginału.",
+      "attribution_commits": [
+        {
+          "sha": "a1be689dc026367783473133de3c25cf5ae60971",
+          "subject": "Integrate graph method registry, chat selector and native GraphPacket contract [skip ci]"
+        },
+        {
+          "sha": "00ea92469b02ff74857608759a05d4203f95afb9",
+          "subject": "Read native normalization recipe from validated KB pack data [skip ci]"
+        },
+        {
+          "sha": "5d1e7ddd8c5ee625f2d2ce4935d34b5a78204706",
+          "subject": "Accept finite normalization cutoffs without preset bounds [skip ci]"
+        }
+      ],
+      "validation": "Analiza statyczna pełnego diffu wskazanego pliku i kontekstu zmienionych funkcji; bez wywołań modeli, uruchomienia serwera lub testów produktu."
+    }
+  ],
+  "resume": "Jeżeli potrzebna jest gwarancja migracji, przygotować offline fixture paczki stemming/1 i sprawdzić aktualny native loader/validator + jawny kanał migracji. Nie poszerzać tej analizy do dawnych night/eco ani chronionych źródeł bez osobnego celu."
+}

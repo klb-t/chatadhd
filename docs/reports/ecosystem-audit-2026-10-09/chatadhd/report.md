@@ -2,7 +2,7 @@
 
 Baza: `main` `9e20f99ab27e7cd45e1892f83bf60fbe60db3de9`. Kod produktu, schematy i STATE/INDEX niezmienione.
 
-15 ustaleń: {'naruszenie': 11, 'dopuszczalny mechanizm': 1, 'niepewne': 1, 'już naprawione': 2}. Semantycznie prześledzono wybrane zakresy 35 plików; szczegóły i mianownik repo w `coverage.json`, szeroki skan w `scan/`.
+15 ustaleń: {'naruszenie': 11, 'dopuszczalny mechanizm': 1, 'niepewne': 1, 'już naprawione': 2}. Semantycznie prześledzono wybrane zakresy 44 plików (33 produktu, 1 danych, 10 dokumentów); szczegóły i mianownik repo w `coverage.json`, szeroki skan w `scan/`.
 
 Wykonano 10/10 sond rzeczywistych jednostek Python (DB i transport zastąpione stubami; zero sieci), 9/9 native helper tests (168 asercji) oraz 1/1 generator roundtrip z 13 stringami. Zielone sondy błędnego zachowania potwierdzają problem, nie naprawę. Brak pełnego CTest/E2E nie jest ukrywany.
 
@@ -43,3 +43,5 @@ Bieżący INDEX 2026-10-05 jest punktem odniesienia integracji. Stary reset mode
 Pełne dowody, alternatywy, odbiór migracji i źródła wymagań: `findings.jsonl`. Wymaganie, obserwacja, interpretacja i rekomendacja są osobnymi polami. Brak integracji programu eksperymentów CH-015 pozostaje hipotezą o zakresie zbadanym, nie twierdzeniem o całym drzewie.
 
 Punkt wznowienia: uruchomić end-to-end mock transport dla CH-003/004/005 na niezmiennym SHA, następnie rozliczyć pozostałe sygnały skanera per moduł. Nie czytać eval/real-holdout-key ani blind; nie wykonywać płatnych modeli.
+
+Końcowa analiza 11 plików różniących się w pierwszych W5/W3/W4 jest w [branches-semantic-delta.md](branches-semantic-delta.md). Nie stwierdzono zgubienia przyrostów w tych różnicach; migracja stemming/1 do /2 pozostaje niezweryfikowana.
