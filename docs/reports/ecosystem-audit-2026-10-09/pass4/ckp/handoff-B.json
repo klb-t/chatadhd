@@ -1,0 +1,90 @@
+{
+  "repo": "klb-t/Custom-Keyboard-Pro",
+  "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+  "packages": [
+    {
+      "finding": "A4-CKP-001",
+      "classification": "naruszenie",
+      "reproduction": {
+        "receipt": "host-receipt.json",
+        "tests": [
+          "CKP4-CAP-01",
+          "CKP4-CAP-02A",
+          "CKP4-CAP-02B",
+          "CKP4-CAP-03A",
+          "CKP4-CAP-03B",
+          "CKP4-CAP-04"
+        ],
+        "minimal_input": "One CapturedNode; two equal flags and numbers maps with reversed insertion order. Same list, field values, driver ticks and response to scroll.",
+        "observed": "Kotlin data equality true; fingerprints differ. Six fixed-order ticks request three scrolls; reordered maps request zero and record changing_content_no_actions."
+      },
+      "expected": "CKP4-CAP-02B/03B PASS while CKP4-CAP-04 still PASS: reorder only object/map keys and preserve stability/actions; swapping node-list entries remains a changed observation.",
+      "consumers": [
+        "CaptureSession.step candidate/seekLast/beforeScroll/lastSaved",
+        "AccessibilityCaptureSource.advanceDetails inner-scroll fingerprint"
+      ],
+      "migration": "Fingerprint values change. They are session-local, not persisted message IDs; do not reinterpret archived path strings as permanent identity. Never sort the node/message/action lists to get an easy PASS.",
+      "dependencies": [
+        "B product owner adjusts existing fingerprint mechanism",
+        "device test if claiming actual Android capture occurrence"
+      ],
+      "risk": "medium"
+    },
+    {
+      "finding": "A4-CKP-002",
+      "classification": "naruszenie",
+      "reproduction": {
+        "receipt": "host-receipt.json",
+        "tests": [
+          "CKP4-CAP-05A",
+          "CKP4-CAP-05B"
+        ],
+        "minimal_input": "Identical synthetic archive/frame, CaptureOptions.settleMillis=300 versus1700.",
+        "observed": "Both JSON documents are identical; options.settleMillis absent. Actual Android scheduler reads s.archive.options.settleMillis at UI line272."
+      },
+      "expected": "CKP4-CAP-05B exports effective1700. Vary only settleMillis: recipes remain distinguishable. If B replaces inline recipe with resolvable versioned reference, adapt test to that real reference consumer rather than accepting a truthy placeholder.",
+      "consumers": [
+        "CapturePanel.tick",
+        "ConversationArchive.json",
+        "ConversationCaptureReviewActivity.onActivityResult JSON save"
+      ],
+      "migration": "Old schemaVersion2 artifacts lack the field. Mark historical value unknown or inferred-from-version; do not fabricate a measured700. Additive field should preserve old-reader behavior, with explicit version policy.",
+      "dependencies": [
+        "B owns capture export/schema implementation",
+        "future importer policy for absent historical effective setting"
+      ],
+      "risk": "medium"
+    },
+    {
+      "finding": "CKP-A-012",
+      "classification": "naruszenie",
+      "reproduction": {
+        "receipt": "host-receipt.json",
+        "tests": [
+          "CKP4-PASTE-success-A",
+          "CKP4-PASTE-success-B",
+          "CKP4-PASTE-failure-A",
+          "CKP4-PASTE-failure-B",
+          "CKP4-PASTE-sensitive-A",
+          "CKP4-PASTE-sensitive-B",
+          "CKP4-PASTE-STABLE"
+        ],
+        "minimal_input": "Suspend conversion after paste; switch editor A→B, or mark original editor sensitive; complete successfully or with failure.",
+        "observed": "Success resolves current B and commits synthetic result through unchanged EditorController.commitText. Failure invokes pasteClip recording boundary for B. Sensitive change does not prevent commit. Unchanged-target control passes."
+      },
+      "expected": "CKP4-PASTE-*-B PASS, CKP4-PASTE-STABLE remains PASS. Device gate subsequently confirms InputConnection/window identity on IME lifecycle. Caller must pass true operation identity; harness must not invent a product connection.",
+      "consumers": [
+        "CustomKeyboardIme.pasteOrConvert success callback",
+        "CustomKeyboardIme.pasteNativeClip failure callback",
+        "EditorController.commitText",
+        "EditorController.pasteClip"
+      ],
+      "migration": "Pending operations need an explicit stale state and recoverable result. Do not silently reroute pending clipboard contents or reinterpret previous authorization.",
+      "dependencies": [
+        "B shares target-bound primitive with runAiTask existing CKP-A-012",
+        "Android/device verification remains open"
+      ],
+      "risk": "high"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "repo": "klb-t/Custom-Keyboard-Pro",
+  "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+  "next": [
+    {
+      "priority": 1,
+      "task": "After B adds target ticket, rerun same paste and old rewrite suites, then actual Android focus/IME lifecycle success+failure fallback",
+      "prerequisite": "product change/device for final device gate"
+    },
+    {
+      "priority": 2,
+      "task": "Failure injection SyncRepository DB commit → settings persistence → stateFile; inspect loss/retry idempotence",
+      "prerequisite": "existing Android JVM host/Room fixture, no paid transport"
+    },
+    {
+      "priority": 3,
+      "task": "Intercept real CallEngine.stream EOF, timeout, malformed SSE; determine completion status and actual downstream handling",
+      "prerequisite": "actual OkHttp call interception with socket guard; current source suspicion not a confirmed finding"
+    },
+    {
+      "priority": 4,
+      "task": "PasteConversion.readRecording → Transcription.via → request MIME/language: compare input audio formats",
+      "prerequisite": "actual transport interception, do not send fixture bytes"
+    },
+    {
+      "priority": 5,
+      "task": "Capture DisclosurePolicy and numeric limits: explicit data profiles and conservative security boundaries",
+      "prerequisite": "semantic path review; preserve deny-by-default unknown actions"
+    }
+  ]
+}

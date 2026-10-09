@@ -1,0 +1,20 @@
+{
+  "module": "pass4/ckp",
+  "repo": "klb-t/Custom-Keyboard-Pro",
+  "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+  "state": "ready for root commit/push",
+  "product_changes": false,
+  "test_receipt": "host-receipt.json",
+  "new_files_with_named_ranges": 9,
+  "prior_named_range_files": 47,
+  "current_named_range_files": 56,
+  "remaining_without_named_ranges": 177,
+  "new_findings": [
+    "A4-CKP-001",
+    "A4-CKP-002"
+  ],
+  "extended_finding": "CKP-A-012",
+  "allowed_mechanism": "A4-CKP-M001",
+  "transport_calls": 0,
+  "paid_calls": 0
+}

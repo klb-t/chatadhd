@@ -1,0 +1,4 @@
+WARNING: A terminally deprecated method in java.lang.System has been called
+WARNING: System::setSecurityManager has been called by ProbeKt (file:/workspace/scratch/1112e9e8a3c6/audit-work/continuation/scratch/pass4/ckp/build/audit.jar)
+WARNING: Please consider reporting this to the maintainers of ProbeKt
+WARNING: System::setSecurityManager will be removed in a future release

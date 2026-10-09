@@ -1,0 +1,353 @@
+{
+  "repo": "klb-t/Custom-Keyboard-Pro",
+  "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+  "phase": "all",
+  "level": "Kotlin/JVM host: whole real capture sources and verbatim paste consumer methods; platform/transport doubles; no Android/device E2E",
+  "source_manifest": [
+    {
+      "path": "app/src/main/java/com/example/core/capture/ConversationCapture.kt",
+      "line_start": 1,
+      "line_end": 235,
+      "kind": "unmodified_whole_source",
+      "sha256": "42f9ad8a8f6b8ab08f916a26fa91efbb9da27d7f794a1c68dcfe3a19e67121ca"
+    },
+    {
+      "path": "app/src/main/java/com/example/core/capture/CaptureSession.kt",
+      "line_start": 1,
+      "line_end": 111,
+      "kind": "unmodified_whole_source",
+      "sha256": "e393a8f21644774c415fd92ed907b7da6d8e89d2be86a284aa3f92622ba2e9a8"
+    },
+    {
+      "path": "app/src/main/java/com/example/core/capture/TreeObservation.kt",
+      "line_start": 1,
+      "line_end": 146,
+      "kind": "unmodified_whole_source",
+      "sha256": "c219f0d510b59ab55e7b923d0b0e294681f55d72b91df1de931d6d23bcc6c245"
+    },
+    {
+      "path": "app/src/main/java/com/example/ime/CustomKeyboardIme.kt",
+      "line_start": 2129,
+      "line_end": 2165,
+      "kind": "verbatim_method_in_platform_shell",
+      "sha256": "5298c4fd89cab8eee59e581d6a6c71a8663065d83e8b4eefc857df114091cb40"
+    },
+    {
+      "path": "app/src/main/java/com/example/ime/CustomKeyboardIme.kt",
+      "line_start": 2167,
+      "line_end": 2171,
+      "kind": "verbatim_method_in_platform_shell",
+      "sha256": "7e6815bea252f4075e239e4cee1125120a05d3902e03339c1e88470791a203e5"
+    },
+    {
+      "path": "app/src/main/java/com/example/ime/CustomKeyboardIme.kt",
+      "line_start": 2183,
+      "line_end": 2185,
+      "kind": "verbatim_method_in_platform_shell",
+      "sha256": "33a74a502cc605d3fd629e92822c48bf870f8a1093ac452a722b8bfe69355cdd"
+    },
+    {
+      "path": "app/src/main/java/com/example/ime/EditorController.kt",
+      "line_start": 190,
+      "line_end": 249,
+      "kind": "verbatim_method_in_platform_shell",
+      "sha256": "f0931c224e3dd2ee705d2f4f270701e08a4a1e1c84ef42e2e187ab4282e53a26"
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "annotations-13.0.jar",
+      "sha256": "ace2a10dc8e2d5fd34925ecac03e4988b2c0f851650c94b8cef49ba1bd111478"
+    },
+    {
+      "name": "json-20240303.jar",
+      "sha256": "3cf6cd6892e32e2b4c1c39e0f52f5248a2f5b37646fdfbb79a66b46b618414ed"
+    },
+    {
+      "name": "kotlin-compiler-embeddable-2.1.20.jar",
+      "sha256": "c54a00718c8c0e3ee858bf42771c7f401c5e3c1738861e18e9536371042fa1b3"
+    },
+    {
+      "name": "kotlin-daemon-embeddable-2.1.20.jar",
+      "sha256": "d9e83df1d847a201ba3c016a786ced091be9503997d09f6a9cf1796ee489f374"
+    },
+    {
+      "name": "kotlin-reflect-1.6.10.jar",
+      "sha256": "3277ac102ae17aad10a55abec75ff5696c8d109790396434b496e75087854203"
+    },
+    {
+      "name": "kotlin-script-runtime-2.1.20.jar",
+      "sha256": "ae4397fbb3aa2a1ada09290e753bba99a4114548977c3115526b9958f4cb1a04"
+    },
+    {
+      "name": "kotlin-stdlib-2.1.20.jar",
+      "sha256": "1bcc74e8ce84e2c25eaafde10f1248349cce3062b6e36978cbeec610db1e930a"
+    },
+    {
+      "name": "kotlinx-coroutines-core-jvm-1.8.0.jar",
+      "sha256": "9860906a1937490bf5f3b06d2f0e10ef451e65b95b269f22daf68a3d1f5065c5"
+    },
+    {
+      "name": "trove4j-1.0.20200330.jar",
+      "sha256": "c5fd725bffab51846bf3c77db1383c60aaaebfe1b7fe2f00d23fe1b7df0a439d"
+    }
+  ],
+  "transport": "SecurityManager rejects all connect/listen/accept; paste conversion suspended recording double",
+  "exit_code": 1,
+  "cases": [
+    {
+      "actual": true,
+      "expected": "permuted unordered flags/numbers maps remain structurally equal",
+      "id": "CKP4-CAP-01",
+      "category": "contract",
+      "finding": "A4-CKP-001",
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": "old fingerprint differs for equal maps",
+      "id": "CKP4-CAP-02A",
+      "category": "reproduction",
+      "finding": "A4-CKP-001",
+      "status": "PASS"
+    },
+    {
+      "actual": false,
+      "expected": "equal semantic maps yield equal fingerprint",
+      "id": "CKP4-CAP-02B",
+      "category": "acceptance",
+      "finding": "A4-CKP-001",
+      "status": "FAIL"
+    },
+    {
+      "actual": {
+        "fixedPhase": "collecting",
+        "fixedScrolls": 3,
+        "permutedScrolls": 0,
+        "permutedPhase": "changing_content_no_actions"
+      },
+      "expected": "baseline scrolls; equal-map permutations never settle",
+      "id": "CKP4-CAP-03A",
+      "category": "reproduction",
+      "finding": "A4-CKP-001",
+      "status": "PASS"
+    },
+    {
+      "actual": {
+        "fixedPhase": "collecting",
+        "fixedScrolls": 3,
+        "permutedScrolls": 0,
+        "permutedPhase": "changing_content_no_actions"
+      },
+      "expected": "only map insertion order changes: equal number of scroll requests and frame phases",
+      "id": "CKP4-CAP-03B",
+      "category": "acceptance",
+      "finding": "A4-CKP-001",
+      "status": "FAIL"
+    },
+    {
+      "actual": true,
+      "expected": "node list order remains meaningful",
+      "id": "CKP4-CAP-04",
+      "category": "contract",
+      "finding": "A4-CKP-001",
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": "different effective settle intervals export identical JSON",
+      "id": "CKP4-CAP-05A",
+      "category": "reproduction",
+      "finding": "A4-CKP-002",
+      "status": "PASS"
+    },
+    {
+      "actual": -1,
+      "expected": "effective settleMillis=1700 survives exported recipe",
+      "id": "CKP4-CAP-05B",
+      "category": "acceptance",
+      "finding": "A4-CKP-002",
+      "status": "FAIL"
+    },
+    {
+      "actual": {
+        "flags": {
+          "futureFlag": true
+        },
+        "numbers": {
+          "futureMetric": 7
+        },
+        "actions": [],
+        "uniqueId": ""
+      },
+      "expected": "unknown semantic facts survive export",
+      "id": "CKP4-CAP-06",
+      "category": "contract",
+      "finding": "A4-CKP-M001",
+      "status": "PASS"
+    },
+    {
+      "actual": {
+        "canaryAbsent": true,
+        "privateChildClosed": 1
+      },
+      "expected": "private subtree and aggregate ancestor text omitted; acquired children closed",
+      "id": "CKP4-CAP-07",
+      "category": "contract",
+      "finding": "A4-CKP-M001",
+      "status": "PASS"
+    },
+    {
+      "actual": {
+        "unavailable": 1,
+        "textOmitted": true
+      },
+      "expected": "missing child carries unavailability evidence and redacts aggregate",
+      "id": "CKP4-CAP-08",
+      "category": "contract",
+      "finding": "A4-CKP-M001",
+      "status": "PASS"
+    },
+    {
+      "actual": {
+        "excluded": true,
+        "included": "offscreen",
+        "visibleFlag": false
+      },
+      "expected": "offscreen selection changes text exposure without fabricating visibility",
+      "id": "CKP4-CAP-09",
+      "category": "contract",
+      "finding": "A4-CKP-M001",
+      "status": "PASS"
+    },
+    {
+      "actual": {
+        "reason": "target_changed_locked_service_unavailable_or_read_failed",
+        "frames": 1,
+        "completeness": "unverified"
+      },
+      "expected": "failed read preserves prior frame, generic reason, unverified completeness, no exception payload",
+      "id": "CKP4-CAP-10",
+      "category": "contract",
+      "finding": "A4-CKP-M001",
+      "status": "PASS"
+    },
+    {
+      "actual": {
+        "nodes": 0,
+        "truncated": true
+      },
+      "expected": "resource-limited empty projection is explicitly truncated, not complete",
+      "id": "CKP4-CAP-11",
+      "category": "contract",
+      "finding": "A4-CKP-M001",
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": "later producer map mutation does not edit stored observation",
+      "id": "CKP4-CAP-12",
+      "category": "contract",
+      "finding": "A4-CKP-M001",
+      "status": "PASS"
+    },
+    {
+      "actual": {
+        "changedRecipientModified": true,
+        "events": [
+          "resolve:B"
+        ]
+      },
+      "expected": "late result/fallback modifies current field after target/privacy change",
+      "id": "CKP4-PASTE-success-A",
+      "category": "reproduction",
+      "finding": "CKP-A-012",
+      "status": "PASS"
+    },
+    {
+      "actual": {
+        "changedRecipientModified": true,
+        "events": [
+          "resolve:B"
+        ]
+      },
+      "expected": "late operation is rejected or explicitly reauthorized after target/privacy change",
+      "id": "CKP4-PASTE-success-B",
+      "category": "acceptance",
+      "finding": "CKP-A-012",
+      "status": "FAIL"
+    },
+    {
+      "actual": {
+        "changedRecipientModified": true,
+        "events": [
+          "file:B"
+        ]
+      },
+      "expected": "late result/fallback modifies current field after target/privacy change",
+      "id": "CKP4-PASTE-failure-A",
+      "category": "reproduction",
+      "finding": "CKP-A-012",
+      "status": "PASS"
+    },
+    {
+      "actual": {
+        "changedRecipientModified": true,
+        "events": [
+          "file:B"
+        ]
+      },
+      "expected": "late operation is rejected or explicitly reauthorized after target/privacy change",
+      "id": "CKP4-PASTE-failure-B",
+      "category": "acceptance",
+      "finding": "CKP-A-012",
+      "status": "FAIL"
+    },
+    {
+      "actual": {
+        "changedRecipientModified": true,
+        "events": [
+          "resolve:A"
+        ]
+      },
+      "expected": "late result/fallback modifies current field after target/privacy change",
+      "id": "CKP4-PASTE-sensitive-A",
+      "category": "reproduction",
+      "finding": "CKP-A-012",
+      "status": "PASS"
+    },
+    {
+      "actual": {
+        "changedRecipientModified": true,
+        "events": [
+          "resolve:A"
+        ]
+      },
+      "expected": "late operation is rejected or explicitly reauthorized after target/privacy change",
+      "id": "CKP4-PASTE-sensitive-B",
+      "category": "acceptance",
+      "finding": "CKP-A-012",
+      "status": "FAIL"
+    },
+    {
+      "actual": "synthetic result",
+      "expected": "unchanged target receives successful result",
+      "id": "CKP4-PASTE-STABLE",
+      "category": "contract",
+      "finding": "CKP-A-012",
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "expected": "all real transport is blocked",
+      "id": "CKP4-NETWORK-GUARD",
+      "category": "contract",
+      "finding": "harness",
+      "status": "PASS"
+    }
+  ],
+  "counts": {
+    "PASS": 17,
+    "FAIL": 6
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "paths": [
+    {
+      "id": "CKP4-CAPTURE",
+      "input": "explicit capture/inspection controls",
+      "effective_configuration": "CaptureOptions; Android begin flag lease; pinned target",
+      "decision": "CaptureTreeReader private/offscreen/limit policy; CaptureSession fingerprint/settle; DetailPlanner action candidates",
+      "execution": "AccessibilityCaptureSource validates target before operations (source); host CaptureDriver recording boundary",
+      "write": "ConversationArchive.append defensive snapshot; json serializer (executed); document picker/write source only",
+      "restore": "no product capture importer/restart mechanism demonstrated; review explicitly reports missing in-memory archive after process termination",
+      "presentation": "text/tree/json share archive; unverified completeness; renderer source only",
+      "gaps": [
+        "real device action boundary",
+        "document-provider persistence",
+        "effective settleMillis export missing"
+      ]
+    },
+    {
+      "id": "CKP4-PASTE",
+      "input": "ClipboardOp.PASTE → pasteOrConvert",
+      "effective_configuration": "SettingsStore.current, canConvert and sensitive check before suspended operation",
+      "decision": "convert result success vs failure fallback",
+      "execution": "late success calls actual EditorController.commitText with current connection; late failure calls native paste boundary",
+      "write": "current field A/B recorded host side effect",
+      "restore": "not an artifact-import path; undo/history outside this pass",
+      "presentation": "busy indicator completion; notices on native refusal source traced",
+      "gaps": [
+        "target/revision/privacy completion guard missing",
+        "OS native acceptance not verified"
+      ]
+    }
+  ]
+}

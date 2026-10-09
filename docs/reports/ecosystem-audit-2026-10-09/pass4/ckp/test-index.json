@@ -1,0 +1,44 @@
+{
+  "repo": "klb-t/Custom-Keyboard-Pro",
+  "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+  "entries": [
+    {
+      "id": "ckp4-host",
+      "category": "mixed: reproduction / acceptance / contract individually labeled",
+      "command": "python3 tools/ecosystem-audit-2026-10-09/pass4/ckp/run.py --repo {repo} --sha {sha} --deps {kotlin_deps} --workdir {workdir} --out {out}/host-receipt.json --phase all",
+      "base_expected_exit": 1,
+      "test_denominator": 23,
+      "counts_by_category": {
+        "reproduction": {
+          "PASS": 6
+        },
+        "acceptance": {
+          "FAIL": 6
+        },
+        "contract": {
+          "PASS": 11
+        }
+      },
+      "level": "Kotlin/JVM host; platform and conversion boundary doubles, not device integration",
+      "phase_options": [
+        "reproduction",
+        "acceptance",
+        "contract",
+        "all"
+      ]
+    }
+  ],
+  "blocked_gates": [
+    {
+      "id": "CKP4-DEVICE-PASTE",
+      "kind": "environment",
+      "reason": "No Android device/emulator/InputConnection lifecycle exercised; host gate only."
+    },
+    {
+      "id": "CKP4-DOCUMENT-ROUNDTRIP",
+      "kind": "integration",
+      "reason": "JSON export exercised, real Android document-provider write/read/restart not executed. No importer attached to this capture artifact in audited path; do not fabricate one."
+    }
+  ],
+  "receipt": "host-receipt.json"
+}

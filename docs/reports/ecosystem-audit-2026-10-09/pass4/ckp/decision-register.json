@@ -1,0 +1,39 @@
+{
+  "decisions": [
+    {
+      "id": "CKP4-D01",
+      "decision": "Map insertion order implicitly contributes to capture stability",
+      "explicit": false,
+      "finding": "A4-CKP-001",
+      "alternatives": "canonical map structure/direct structural compare; preserve lists"
+    },
+    {
+      "id": "CKP4-D02",
+      "decision": "Effective sampling interval excluded from portable recipe",
+      "explicit": false,
+      "finding": "A4-CKP-002",
+      "alternatives": "inline value/versioned resolvable recipe"
+    },
+    {
+      "id": "CKP4-D03",
+      "decision": "Late paste result and fallback use current target",
+      "explicit": false,
+      "finding": "CKP-A-012",
+      "alternatives": "target-bound operation/cancel-and-recheck/explicit user reapply"
+    },
+    {
+      "id": "CKP4-D04",
+      "decision": "Unknown private/partial capture does not become complete successful empty",
+      "explicit": true,
+      "finding": "A4-CKP-M001",
+      "alternatives": "retain explicit evidence regardless of adapter"
+    },
+    {
+      "id": "CKP4-D05",
+      "decision": "CapturePanel exposes selected options but DisclosurePolicy domain labels, various limits and detail-order remain product-coded",
+      "explicit": "source-visible, not reviewed as a complete configurable-policy path",
+      "status": "remaining semantic/profile gate, not a new confirmed runtime finding in this module",
+      "r42": "domain labels/thresholds are not exempt under R42; not every denial/default is itself wrong. Keep conservative denial until a validated authorized policy exists."
+    }
+  ]
+}

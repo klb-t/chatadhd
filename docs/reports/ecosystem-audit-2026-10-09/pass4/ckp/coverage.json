@@ -1,0 +1,466 @@
+{
+  "repo": "klb-t/Custom-Keyboard-Pro",
+  "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+  "base_changed": false,
+  "product_denominator": 233,
+  "tracked_entries": 461,
+  "prior_files_with_named_ranges": 47,
+  "new_product_files_with_named_ranges": 9,
+  "union_files_with_named_ranges": 56,
+  "named_ranges_are_not_whole_file_verification": true,
+  "reviewed": [
+    {
+      "path": "app/src/main/java/com/example/core/capture/ConversationCapture.kt",
+      "ranges": [
+        [
+          6,
+          54
+        ],
+        [
+          121,
+          196
+        ],
+        [
+          199,
+          235
+        ]
+      ],
+      "functions": [
+        "CaptureOptions",
+        "CaptureFrame.fingerprint/textLines",
+        "ConversationArchive.append/json/text/treeText/overlap/quote"
+      ],
+      "review_level": "host real source",
+      "untraced_calls": [
+        "DisclosurePolicy profile policy/externalization not exercised in this pass"
+      ],
+      "source_sha256": "42f9ad8a8f6b8ab08f916a26fa91efbb9da27d7f794a1c68dcfe3a19e67121ca",
+      "new_since_pass3": true
+    },
+    {
+      "path": "app/src/main/java/com/example/core/capture/CaptureSession.kt",
+      "ranges": [
+        [
+          3,
+          111
+        ]
+      ],
+      "functions": [
+        "CaptureDriver",
+        "CaptureSession.stop/step"
+      ],
+      "review_level": "host real source",
+      "untraced_calls": [
+        "actual Handler scheduling",
+        "device scroll/expand success"
+      ],
+      "source_sha256": "e393a8f21644774c415fd92ed907b7da6d8e89d2be86a284aa3f92622ba2e9a8",
+      "new_since_pass3": true
+    },
+    {
+      "path": "app/src/main/java/com/example/core/capture/TreeObservation.kt",
+      "ranges": [
+        [
+          4,
+          98
+        ],
+        [
+          101,
+          111
+        ],
+        [
+          113,
+          146
+        ]
+      ],
+      "functions": [
+        "NodeSemantics",
+        "CaptureTreeReader.read",
+        "InnerScrollPolicy",
+        "DetailPlanner.candidates"
+      ],
+      "review_level": "reader executed; planner source reviewed",
+      "untraced_calls": [
+        "actual accessibility actions/private OS APIs",
+        "all DetailPlanner language-policy variants"
+      ],
+      "source_sha256": "c219f0d510b59ab55e7b923d0b0e294681f55d72b91df1de931d6d23bcc6c245",
+      "new_since_pass3": true
+    },
+    {
+      "path": "app/src/main/java/com/example/io/capture/AccessibilityCaptureSource.kt",
+      "ranges": [
+        [
+          17,
+          236
+        ]
+      ],
+      "functions": [
+        "begin/close/root/bind/scope/TreeNode.describe/frame/validate/move/scroll/atPath/advanceDetails/selectFocused"
+      ],
+      "review_level": "source trace only",
+      "untraced_calls": [
+        "Android refresh/window policy, OEM recycled-node identity, actual action effects not executed"
+      ],
+      "source_sha256": "588ac1662e691b7252a0acd87d332f7782c9543da6497cdb7c22ace6aab98eb9",
+      "new_since_pass3": true
+    },
+    {
+      "path": "app/src/main/java/com/example/io/capture/ConversationCaptureUi.kt",
+      "ranges": [
+        [
+          38,
+          100
+        ],
+        [
+          190,
+          299
+        ]
+      ],
+      "functions": [
+        "entry consent/open",
+        "show/options/start/inspect/tick/review/dispose"
+      ],
+      "review_level": "source trace only",
+      "untraced_calls": [
+        "WindowManager/Handler/device lifecycle/permission race"
+      ],
+      "source_sha256": "5412caca0a0e5025a405e8a2d6ce7a525438ba457e8f27dda352edcbc63cd2d3",
+      "new_since_pass3": true
+    },
+    {
+      "path": "app/src/main/java/com/example/io/capture/ConversationCaptureReviewActivity.kt",
+      "ranges": [
+        [
+          27,
+          138
+        ]
+      ],
+      "functions": [
+        "onCreate/render/copy/save/onActivityResult/onSaveInstanceState/onDestroy"
+      ],
+      "review_level": "source trace only",
+      "untraced_calls": [
+        "real document-provider stream, process death and rotation race"
+      ],
+      "source_sha256": "c2ef7da0892adbd157372733d79aa4d4f21f0e6ea8b5c5dc6d7a6958ffae41d9",
+      "new_since_pass3": true
+    },
+    {
+      "path": "app/src/main/java/com/example/core/convert/PasteConversion.kt",
+      "ranges": [
+        [
+          67,
+          160
+        ],
+        [
+          202,
+          281
+        ]
+      ],
+      "functions": [
+        "classify/mimeOf/providerFor/canConvert/convert/readPicture/readRecording"
+      ],
+      "review_level": "source trace only; conversion replaced by suspended boundary in paste test",
+      "untraced_calls": [
+        "CallEngine/AiClient/Transcription network paths; provider cost and MIME verification"
+      ],
+      "source_sha256": "41c6cc139a19b5909e81ae8310f9b3318c942aaa3d2f8331d763c2ce67a11825",
+      "new_since_pass3": true
+    },
+    {
+      "path": "app/src/main/java/com/example/core/discovery/CallEngine.kt",
+      "ranges": [
+        [
+          26,
+          159
+        ],
+        [
+          177,
+          244
+        ]
+      ],
+      "functions": [
+        "CallInput.values",
+        "run/prepareInput/execute/stream"
+      ],
+      "review_level": "source trace only",
+      "untraced_calls": [
+        "buildBody/poll/extract/send; real intercepted-response EOF/timeout test still needed"
+      ],
+      "source_sha256": "7157ca5723a6a5b34f94c9e605fa2432facca10152f9929fdb30c43938b1d4bc",
+      "new_since_pass3": true
+    },
+    {
+      "path": "app/src/main/java/com/example/core/asr/Transcription.kt",
+      "ranges": [
+        [
+          32,
+          124
+        ]
+      ],
+      "functions": [
+        "via/openAiAudio"
+      ],
+      "review_level": "source trace only",
+      "untraced_calls": [
+        "actual request MIME/language parameter propagation across paste vs microphone source still untested"
+      ],
+      "source_sha256": "7b23b1b066e9917064e95390272564dec409bedd58ba3fa21c51ec980fe894d8",
+      "new_since_pass3": true
+    },
+    {
+      "path": "app/src/main/java/com/example/ime/CustomKeyboardIme.kt",
+      "ranges": [
+        [
+          473,
+          543
+        ],
+        [
+          2129,
+          2169
+        ],
+        [
+          2178,
+          2183
+        ]
+      ],
+      "functions": [
+        "input lifecycle",
+        "pasteOrConvert/pasteNativeClip/refreshBusyLamp"
+      ],
+      "review_level": "verbatim async paste methods executed in host shell; lifecycle source reviewed",
+      "untraced_calls": [
+        "real Android input/session identity",
+        "real clipboard read and native paste OS acknowledgement"
+      ],
+      "source_sha256": "2fb56d95aa466945b392a444f7d1ac8c38f702dc61d2afe3eb7d6fa6429c1868",
+      "new_since_pass3": false
+    },
+    {
+      "path": "app/src/main/java/com/example/ime/EditorController.kt",
+      "ranges": [
+        [
+          23,
+          27
+        ],
+        [
+          128,
+          141
+        ],
+        [
+          190,
+          247
+        ],
+        [
+          529,
+          564
+        ]
+      ],
+      "functions": [
+        "constructor connection provider",
+        "isSensitive",
+        "commitText",
+        "contextMenu/pasteClip"
+      ],
+      "review_level": "verbatim commitText executed with applyConventions=false; pasteClip source reviewed",
+      "untraced_calls": [
+        "history/selection conventions not tested here",
+        "rich-content commitContent OS path is not runtime verified"
+      ],
+      "source_sha256": "92ac56dd77bfe843473c8325f5b3696b4820419edeaaec61247fc16636d22213",
+      "new_since_pass3": false
+    }
+  ],
+  "new_files": [
+    "app/src/main/java/com/example/core/asr/Transcription.kt",
+    "app/src/main/java/com/example/core/capture/CaptureSession.kt",
+    "app/src/main/java/com/example/core/capture/ConversationCapture.kt",
+    "app/src/main/java/com/example/core/capture/TreeObservation.kt",
+    "app/src/main/java/com/example/core/convert/PasteConversion.kt",
+    "app/src/main/java/com/example/core/discovery/CallEngine.kt",
+    "app/src/main/java/com/example/io/capture/AccessibilityCaptureSource.kt",
+    "app/src/main/java/com/example/io/capture/ConversationCaptureReviewActivity.kt",
+    "app/src/main/java/com/example/io/capture/ConversationCaptureUi.kt"
+  ],
+  "never_semantically_reviewed_files": [
+    "app/src/main/java/com/example/KeyboardApp.kt",
+    "app/src/main/java/com/example/MainActivity.kt",
+    "app/src/main/java/com/example/assistant/AssistantSessionVisibility.kt",
+    "app/src/main/java/com/example/assistant/ColourOrganActivity.kt",
+    "app/src/main/java/com/example/assistant/ForegroundSpeech.kt",
+    "app/src/main/java/com/example/assistant/GoalDispatchPolicy.kt",
+    "app/src/main/java/com/example/assistant/GoalJson.kt",
+    "app/src/main/java/com/example/assistant/GoalRecognitionService.kt",
+    "app/src/main/java/com/example/assistant/GoalVoiceInteractionService.kt",
+    "app/src/main/java/com/example/assistant/GoalVoiceSession.kt",
+    "app/src/main/java/com/example/assistant/GoalVoiceSessionService.kt",
+    "app/src/main/java/com/example/assistant/OnDeviceSpeechTurn.kt",
+    "app/src/main/java/com/example/clipboard/ClipboardImportActivity.kt",
+    "app/src/main/java/com/example/clipboard/ScreenshotClipboard.kt",
+    "app/src/main/java/com/example/core/asr/AndroidAsr.kt",
+    "app/src/main/java/com/example/core/asr/Asr.kt",
+    "app/src/main/java/com/example/core/asr/RemoteAsr.kt",
+    "app/src/main/java/com/example/core/asr/VoiceController.kt",
+    "app/src/main/java/com/example/core/assistant/GoalPlan.kt",
+    "app/src/main/java/com/example/core/caps/Abilities.kt",
+    "app/src/main/java/com/example/core/config/Knobs.kt",
+    "app/src/main/java/com/example/core/config/ScopedSettingsCache.kt",
+    "app/src/main/java/com/example/core/config/SettingsDestinations.kt",
+    "app/src/main/java/com/example/core/config/SettingsSearch.kt",
+    "app/src/main/java/com/example/core/convert/Containers.kt",
+    "app/src/main/java/com/example/core/convert/Music.kt",
+    "app/src/main/java/com/example/core/convert/Spectro.kt",
+    "app/src/main/java/com/example/core/data/BundledDictionary.kt",
+    "app/src/main/java/com/example/core/data/Entities.kt",
+    "app/src/main/java/com/example/core/data/WordListSource.kt",
+    "app/src/main/java/com/example/core/debug/RuntimeVariables.kt",
+    "app/src/main/java/com/example/core/devices/ReactiveLight.kt",
+    "app/src/main/java/com/example/core/devices/YeelightConnection.kt",
+    "app/src/main/java/com/example/core/devices/YeelightProtocol.kt",
+    "app/src/main/java/com/example/core/discovery/ApiKeys.kt",
+    "app/src/main/java/com/example/core/discovery/Capabilities.kt",
+    "app/src/main/java/com/example/core/discovery/JsonPath.kt",
+    "app/src/main/java/com/example/core/discovery/ModelDiscovery.kt",
+    "app/src/main/java/com/example/core/discovery/ModelFacts.kt",
+    "app/src/main/java/com/example/core/discovery/ProviderProfile.kt",
+    "app/src/main/java/com/example/core/discovery/Sse.kt",
+    "app/src/main/java/com/example/core/engine/Motion.kt",
+    "app/src/main/java/com/example/core/engine/Phrases.kt",
+    "app/src/main/java/com/example/core/engine/VolumeGestures.kt",
+    "app/src/main/java/com/example/core/engine/Wires.kt",
+    "app/src/main/java/com/example/core/hitmap/HitmapExtractor.kt",
+    "app/src/main/java/com/example/core/hitmap/LongPressTuner.kt",
+    "app/src/main/java/com/example/core/hitmap/TouchLearner.kt",
+    "app/src/main/java/com/example/core/io/ActionProfiles.kt",
+    "app/src/main/java/com/example/core/io/Macros.kt",
+    "app/src/main/java/com/example/core/io/NodeQuery.kt",
+    "app/src/main/java/com/example/core/io/PocketLock.kt",
+    "app/src/main/java/com/example/core/io/PocketLockPolicy.kt",
+    "app/src/main/java/com/example/core/io/Verbs.kt",
+    "app/src/main/java/com/example/core/json/JsonFields.kt",
+    "app/src/main/java/com/example/core/layout/AutomaticShift.kt",
+    "app/src/main/java/com/example/core/layout/BuiltinLayouts.kt",
+    "app/src/main/java/com/example/core/layout/ControlDeckLayout.kt",
+    "app/src/main/java/com/example/core/layout/Controls.kt",
+    "app/src/main/java/com/example/core/layout/ElementGeometry.kt",
+    "app/src/main/java/com/example/core/layout/FreeKeyPins.kt",
+    "app/src/main/java/com/example/core/layout/KeyCodes.kt",
+    "app/src/main/java/com/example/core/layout/KeyPlacement.kt",
+    "app/src/main/java/com/example/core/layout/KeyboardViewportBudget.kt",
+    "app/src/main/java/com/example/core/layout/LanguageKeys.kt",
+    "app/src/main/java/com/example/core/layout/LayerTransforms.kt",
+    "app/src/main/java/com/example/core/layout/LayoutAuthoring.kt",
+    "app/src/main/java/com/example/core/layout/LayoutDoctor.kt",
+    "app/src/main/java/com/example/core/layout/LayoutGenerator.kt",
+    "app/src/main/java/com/example/core/layout/LayoutGeometry.kt",
+    "app/src/main/java/com/example/core/layout/LayoutJson.kt",
+    "app/src/main/java/com/example/core/layout/LayoutModel.kt",
+    "app/src/main/java/com/example/core/layout/LayoutRepository.kt",
+    "app/src/main/java/com/example/core/layout/ScienceLayout.kt",
+    "app/src/main/java/com/example/core/layout/ToolbarRows.kt",
+    "app/src/main/java/com/example/core/layout/WorkbenchLayout.kt",
+    "app/src/main/java/com/example/core/media/MediaHubRepository.kt",
+    "app/src/main/java/com/example/core/media/MediaProfiles.kt",
+    "app/src/main/java/com/example/core/panels/PanelGenerator.kt",
+    "app/src/main/java/com/example/core/panels/PanelSpec.kt",
+    "app/src/main/java/com/example/core/phone/PhoneCatalogue.kt",
+    "app/src/main/java/com/example/core/phone/RotationMapping.kt",
+    "app/src/main/java/com/example/core/phone/SensorSessionPolicy.kt",
+    "app/src/main/java/com/example/core/predict/ActionStats.kt",
+    "app/src/main/java/com/example/core/predict/Completions.kt",
+    "app/src/main/java/com/example/core/predict/Decision.kt",
+    "app/src/main/java/com/example/core/predict/Modifiers.kt",
+    "app/src/main/java/com/example/core/predict/Slices.kt",
+    "app/src/main/java/com/example/core/security/PasswordEnvelope.kt",
+    "app/src/main/java/com/example/core/security/PrivateInputContract.kt",
+    "app/src/main/java/com/example/core/setup/CapabilitySetup.kt",
+    "app/src/main/java/com/example/core/setup/CatalogUpdate.kt",
+    "app/src/main/java/com/example/core/setup/SetupAdvisor.kt",
+    "app/src/main/java/com/example/core/speech/SpeechText.kt",
+    "app/src/main/java/com/example/core/suggest/Correction.kt",
+    "app/src/main/java/com/example/core/sync/DriveSyncTransport.kt",
+    "app/src/main/java/com/example/core/sync/SyncClip.kt",
+    "app/src/main/java/com/example/core/text/Capitalisation.kt",
+    "app/src/main/java/com/example/core/text/CursorMagnet.kt",
+    "app/src/main/java/com/example/core/text/ProperNouns.kt",
+    "app/src/main/java/com/example/core/text/TextOps.kt",
+    "app/src/main/java/com/example/core/vault/VaultModels.kt",
+    "app/src/main/java/com/example/core/vault/VaultStore.kt",
+    "app/src/main/java/com/example/engine/SensorHub.kt",
+    "app/src/main/java/com/example/engine/StreamRunner.kt",
+    "app/src/main/java/com/example/engine/UdpSender.kt",
+    "app/src/main/java/com/example/engine/VoiceTrigger.kt",
+    "app/src/main/java/com/example/ime/ComposeInputMethodService.kt",
+    "app/src/main/java/com/example/ime/ComposeSequences.kt",
+    "app/src/main/java/com/example/ime/CursorWorkspace.kt",
+    "app/src/main/java/com/example/ime/FeedbackController.kt",
+    "app/src/main/java/com/example/ime/KeyboardState.kt",
+    "app/src/main/java/com/example/ime/KeyboardTile.kt",
+    "app/src/main/java/com/example/io/AccessibilityNodeData.kt",
+    "app/src/main/java/com/example/io/CloudVoice.kt",
+    "app/src/main/java/com/example/io/ImageReencoder.kt",
+    "app/src/main/java/com/example/io/IoAccessibilityService.kt",
+    "app/src/main/java/com/example/io/PageReader.kt",
+    "app/src/main/java/com/example/io/PocketLockOverlay.kt",
+    "app/src/main/java/com/example/io/PocketLockTile.kt",
+    "app/src/main/java/com/example/io/PointerOverlay.kt",
+    "app/src/main/java/com/example/io/Speaker.kt",
+    "app/src/main/java/com/example/io/TileActions.kt",
+    "app/src/main/java/com/example/phone/ForegroundSensorMonitor.kt",
+    "app/src/main/java/com/example/phone/PhoneInventory.kt",
+    "app/src/main/java/com/example/phone/PhoneRuntime.kt",
+    "app/src/main/java/com/example/phone/PhoneToolsActivity.kt",
+    "app/src/main/java/com/example/sync/DeviceSyncActivity.kt",
+    "app/src/main/java/com/example/ui/PrivateTextField.kt",
+    "app/src/main/java/com/example/ui/kb/BoardMemory.kt",
+    "app/src/main/java/com/example/ui/kb/ClipboardImagePreview.kt",
+    "app/src/main/java/com/example/ui/kb/CompletionRow.kt",
+    "app/src/main/java/com/example/ui/kb/ControlView.kt",
+    "app/src/main/java/com/example/ui/kb/DebugOverlay.kt",
+    "app/src/main/java/com/example/ui/kb/EmojiData.kt",
+    "app/src/main/java/com/example/ui/kb/IoPanel.kt",
+    "app/src/main/java/com/example/ui/kb/KeyIcons.kt",
+    "app/src/main/java/com/example/ui/kb/KeySurface.kt",
+    "app/src/main/java/com/example/ui/kb/KeyboardConfigurationButton.kt",
+    "app/src/main/java/com/example/ui/kb/KeyboardHost.kt",
+    "app/src/main/java/com/example/ui/kb/KeyboardRoot.kt",
+    "app/src/main/java/com/example/ui/kb/KeyboardTheme.kt",
+    "app/src/main/java/com/example/ui/kb/KeyboardViewport.kt",
+    "app/src/main/java/com/example/ui/kb/Notices.kt",
+    "app/src/main/java/com/example/ui/kb/SymbolBoard.kt",
+    "app/src/main/java/com/example/ui/kb/ThemeStore.kt",
+    "app/src/main/java/com/example/ui/kb/TouchAreas.kt",
+    "app/src/main/java/com/example/ui/settings/AboutScreen.kt",
+    "app/src/main/java/com/example/ui/settings/AllSettingsScreen.kt",
+    "app/src/main/java/com/example/ui/settings/AppearanceScreen.kt",
+    "app/src/main/java/com/example/ui/settings/CapabilitiesScreen.kt",
+    "app/src/main/java/com/example/ui/settings/CapabilitySetupSection.kt",
+    "app/src/main/java/com/example/ui/settings/DiagnosticsScreen.kt",
+    "app/src/main/java/com/example/ui/settings/DictionaryScreen.kt",
+    "app/src/main/java/com/example/ui/settings/HomeScreen.kt",
+    "app/src/main/java/com/example/ui/settings/KeyEditor.kt",
+    "app/src/main/java/com/example/ui/settings/KeyboardPreview.kt",
+    "app/src/main/java/com/example/ui/settings/LayoutGeometryEditor.kt",
+    "app/src/main/java/com/example/ui/settings/LayoutStudioScreen.kt",
+    "app/src/main/java/com/example/ui/settings/MediaHubScreen.kt",
+    "app/src/main/java/com/example/ui/settings/RequestPanelScreen.kt",
+    "app/src/main/java/com/example/ui/settings/RuntimeDebuggerScreen.kt",
+    "app/src/main/java/com/example/ui/settings/SettingsLevelSelector.kt",
+    "app/src/main/java/com/example/ui/settings/SettingsNavigation.kt",
+    "app/src/main/java/com/example/ui/settings/SetupWizardScreen.kt",
+    "app/src/main/java/com/example/ui/settings/ThemeEditorScreen.kt",
+    "app/src/main/java/com/example/ui/settings/ToolbarRowsEditor.kt",
+    "app/src/main/java/com/example/ui/settings/TypingSettingsScreen.kt",
+    "app/src/main/java/com/example/ui/settings/VaultScreen.kt",
+    "app/src/main/java/com/example/ui/settings/VoiceSettingsScreen.kt",
+    "app/src/main/java/com/example/ui/settings/Widgets.kt",
+    "app/src/main/java/com/example/ui/theme/Color.kt",
+    "app/src/main/java/com/example/ui/theme/Theme.kt",
+    "app/src/main/java/com/example/ui/theme/Type.kt",
+    "app/src/main/java/com/example/util/AppLogger.kt",
+    "app/src/main/java/com/example/vault/MatrixAutofillService.kt",
+    "app/src/main/java/com/example/vault/VaultActivity.kt"
+  ],
+  "remaining": 177
+}

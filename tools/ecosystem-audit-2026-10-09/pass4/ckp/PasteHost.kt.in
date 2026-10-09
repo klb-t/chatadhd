@@ -1,0 +1,63 @@
+import kotlinx.coroutines.*
+// These are infrastructure/side-effect doubles, not copied product mechanisms.
+class ClipData(val value:String="synthetic-file") {
+ val itemCount=1
+ fun getItemAt(i:Int)=Item()
+ class Item { val uri:String?="synthetic://local" }
+}
+class ClipboardManager {val primaryClip=ClipData()}
+object SettingsStore {val current="synthetic-settings"}
+object PasteConversion {
+ var gate=CompletableDeferred<Result<String>>()
+ var calls=0
+ fun canConvert(context:Any,clip:ClipData?,settings:Any)=true
+ suspend fun convert(context:Any,clip:ClipData?,settings:Any,language:String):Result<String> {calls++;return gate.await()}
+}
+class Field(val id:String,var text:String="") {
+ fun beginBatchEdit(){};fun endBatchEdit(){}
+ fun deleteSurroundingText(a:Int,b:Int){error("unexpected text-convention branch")}
+ fun commitText(value:String,cursor:Int){text+=value}
+}
+class PasteEditor {
+ var active=Field("A");var isSensitive=false
+ val events=mutableListOf<String>()
+ fun connection():Field {events+="resolve:${active.id}";return active}
+ fun settings()=PasteSettings()
+ var hasSelection=false;var lastCommit="";val selectionStart=0
+ fun selectedText():String?=null
+ fun textBefore(n:Int):String=error("unexpected text-convention branch")
+ fun textAfter(n:Int):String=error("unexpected text-convention branch")
+ fun remember(removed:String,inserted:String){}
+ /*commitText*/
+ fun pasteClip(clip:ClipData?):Boolean {events+="file:${active.id}";active.text+="<file>";return true}
+}
+class Notices {fun post(s:String){}}
+class Layout {val locale:String?="en"}
+object IndicatorKeys {val AI_BUSY="AI_BUSY"}
+class UiState {fun setFlag(k:String,v:Boolean){}}
+class CustomKeyboardIme {
+ val clipboardManager:ClipboardManager?=ClipboardManager()
+ val editor=PasteEditor();val notices=Notices();val layout=Layout();val state=UiState()
+ val serviceScope=CoroutineScope(SupervisorJob()+Dispatchers.Unconfined)
+ private var convertingPaste=false
+ private var suggestionsBusy=false
+ fun refreshSuggestions(){}
+ fun run()=pasteOrConvert()
+ /*pasteOrConvert*/
+ /*pasteNativeClip*/
+ /*refreshBusyLamp*/
+}
+
+// Branches not executed when the real caller passes applyConventions=false fail closed.
+class PasteSettings {val doubleSpacePeriod=false;val smartQuotes=false;val autoCapitalize=false;val autoSpaceAfterPunctuation=false;val capitalisationRulesJson=""}
+object TextOps {
+ fun doubleSpaceReplacement(x:CharSequence):String?=error("unexpected convention branch")
+ fun smartQuote(c:Char,before:CharSequence):String=error("unexpected convention branch")
+ fun wantsTrailingSpace(c:Char):Boolean=error("unexpected convention branch")
+}
+enum class CapitalMoment {TYPING}
+enum class CapitalHow {SHIFT}
+object Capitalisation {
+ fun fromJson(s:String):String=error("unexpected convention branch")
+ fun decide(rules:String,before:CharSequence,atStartOfField:Boolean,moment:CapitalMoment):CapitalHow=error("unexpected convention branch")
+}
