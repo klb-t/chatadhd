@@ -11,12 +11,17 @@ ROOT=Path(__file__).resolve().parents[3]
 sys.path.insert(0,str(ROOT))
 from jsonschema import Draft202012Validator
 from loom.tools.seeding import method_graph as graph
+from loom.tools.structure import experiment_analysis_v1 as analysis
 
 
+@analysis.public_error_boundary
 def build(base):
     base=Path(base)
     profile=graph.load_projection(base/'graph-projection.json')
+    analysis.approve_public_input('workflow/graph-projection.json', profile)
+    analysis.approve_public_input('workflow/projection-bytes', profile.source_bytes)
     receipts=graph.strict_json((base/'workflow-preparation-receipt.json').read_bytes())
+    analysis.approve_public_input('workflow/workflow-preparation-receipt.json', receipts)
     # This input is an explicit public receipt projection, never raw requests.
     allowed={'panel','conversations','queries','configurations','operations','spec_sha256',
              'manifest_sha256','freeze_sha256','request_bytes_unchanged','current_cost_upper_bound_usd',
@@ -29,7 +34,10 @@ def build(base):
                    'protocol_frozen.md':base/'HANDOFF_B.md'}
         hashes={}
         for n,p in originals.items():
-            raw=p.read_bytes();(d/n).write_bytes(raw)
+            raw=p.read_bytes()
+            role='workflow/program' if n=='prototype_frozen.py' else 'workflow/'+p.name
+            analysis.approve_public_input(role,raw)
+            (d/n).write_bytes(raw)
         for role,name in [('policy','policy_frozen.json'),('code','prototype_frozen.py'),('protocol','protocol_frozen.md')]:
             hashes[role]=graph.sha256((d/name).read_bytes())
         when=datetime.now(timezone.utc).isoformat()

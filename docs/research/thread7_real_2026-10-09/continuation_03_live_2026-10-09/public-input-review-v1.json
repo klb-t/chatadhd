@@ -1,0 +1,210 @@
+{
+  "basis_commit": "cb16b336ee0c59a1ff80b4899dadebce33aa7610",
+  "review_status": "source_reviewed_public_snapshot",
+  "roles": {
+    "analysis_presentation": {
+      "encoding": "canonical_json",
+      "sha256": [
+        "479692beb27d78208e19da3cd1edf55f70961a0c4b722aef5ae768c9a19e3fe2",
+        "e4784d6b3cf508f9513ec3b1d6b7877fa6ac90313e151fa656f11d2959b73c99",
+        "81bd9f6637bcccb120d296da93a3ba7e1b5c11c23f0bb5f7ad808bc02364ffcb"
+      ]
+    },
+    "analysis_projection": {
+      "encoding": "canonical_json",
+      "sha256": [
+        "7afd659c8a8081edf6ea6e178ddfed33ad211dcc7c0d1a38d919a710ac064c87",
+        "886a5036859126ce4d29adab4e3cf06b6bad2f7a84b69cfbbb36a15ae5a24023"
+      ]
+    },
+    "analysis_projection_bytes": {
+      "encoding": "raw_bytes",
+      "sha256": [
+        "894f3c7d7edc8b260b91dafaa4712c328938faa6abffc10e6cb0b390ae0e3998"
+      ]
+    },
+    "analysis_protocol": {
+      "encoding": "canonical_json",
+      "sha256": [
+        "625290cd8dd739a56138a60dbaf982aa5fa8a079f44af3344518cd68b307ffe7"
+      ]
+    },
+    "continuation01/FINAL_TESTS.json": {
+      "encoding": "canonical_json",
+      "sha256": [
+        "0a1001e8740d9b350432cc8aa0abc6a18b321141fc48adc0e6f3f6651aa2472d"
+      ]
+    },
+    "continuation01/connection-receipt.json": {
+      "encoding": "canonical_json",
+      "sha256": [
+        "b4796cea751676e3f9a2fe9efdceeeec4d583d7a02f7f1d4fa6fb085805599ca"
+      ]
+    },
+    "continuation01/context-expanded-v2-receipt.json": {
+      "encoding": "canonical_json",
+      "sha256": [
+        "8bf7488fec6efdd469b73708139b8fc8439993066769a9328269e17e0e065326"
+      ]
+    },
+    "continuation01/evaluation-protocol.json": {
+      "encoding": "canonical_json",
+      "sha256": [
+        "625290cd8dd739a56138a60dbaf982aa5fa8a079f44af3344518cd68b307ffe7"
+      ]
+    },
+    "continuation01/handoff-contract.json": {
+      "encoding": "canonical_json",
+      "sha256": [
+        "aa957a7131b47514e9e5d4114c587ff9b7137c3039146c1bb8830d906b073480"
+      ]
+    },
+    "continuation01/handoff-example.json": {
+      "encoding": "canonical_json",
+      "sha256": [
+        "479692beb27d78208e19da3cd1edf55f70961a0c4b722aef5ae768c9a19e3fe2"
+      ]
+    },
+    "continuation01/handoff-projection.json": {
+      "encoding": "canonical_json",
+      "sha256": [
+        "7afd659c8a8081edf6ea6e178ddfed33ad211dcc7c0d1a38d919a710ac064c87"
+      ]
+    },
+    "continuation02/../continuation_01/evaluation-protocol.json": {
+      "encoding": "raw_bytes",
+      "sha256": [
+        "437240e208e2e1cf6b1711142cddcc4b617717de177150d098c8af7de2d4b6ff"
+      ]
+    },
+    "continuation02/../continuation_01/handoff-final-contract-v2.json": {
+      "encoding": "raw_bytes",
+      "sha256": [
+        "c7fbbec85e3f04026d2f6cf7bb36f25121b8aaf94bb6e5bc514f7d8ee204f9f4"
+      ]
+    },
+    "continuation02/../continuation_01/handoff-final-example-v2.json": {
+      "encoding": "raw_bytes",
+      "sha256": [
+        "2610fd6f7a706670df83f41a19411fd3a0f63f2ea6646a2d486d3c238ce69321"
+      ]
+    },
+    "continuation02/../continuation_01/handoff-projection.json": {
+      "encoding": "raw_bytes",
+      "sha256": [
+        "894f3c7d7edc8b260b91dafaa4712c328938faa6abffc10e6cb0b390ae0e3998"
+      ]
+    },
+    "continuation02/START.json": {
+      "encoding": "raw_bytes",
+      "sha256": [
+        "e9dbc06226f1b909093ef11ab54616b32fbba393c7c86e85213d19ea89f69b7a"
+      ]
+    },
+    "continuation02/delivery-policy.json": {
+      "encoding": "canonical_json",
+      "sha256": [
+        "07cedc2d33d0a9d9b9c60dc5d93b2153c0ab0c631d6c97e0da0fe4fc6e1f1a99"
+      ]
+    },
+    "continuation02/preferences-receipt.json": {
+      "encoding": "raw_bytes",
+      "sha256": [
+        "5bd6cfa301dfd662b21f3534821d86fb8df98f246ab589c0f9cfedc0046f89bc"
+      ]
+    },
+    "continuation02/recovery-tests.json": {
+      "encoding": "raw_bytes",
+      "sha256": [
+        "d5e9c4f7280f35f24b48f0250f4bf53b5bb122a6ad034b036a2858510f602b50"
+      ]
+    },
+    "continuation02/representation-candidates.json": {
+      "encoding": "raw_bytes",
+      "sha256": [
+        "7bda9525ad07abcc7020717711904013bf4d98cecc5d456050e411d9d937fc58"
+      ]
+    },
+    "continuation02/representation-results.json": {
+      "encoding": "raw_bytes",
+      "sha256": [
+        "17dcc0acc0ca6b54972053d992181588e14783ba3176276b97f79d95c765217d"
+      ]
+    },
+    "continuation02/retrieval-evaluation-v3.json": {
+      "encoding": "raw_bytes",
+      "sha256": [
+        "1caf124c85f25fe7e3e1a9bf44f97da3d193659c53031fcbcbb61e6b2da429e1"
+      ]
+    },
+    "continuation02/retrieval-presets-v3.json": {
+      "encoding": "raw_bytes",
+      "sha256": [
+        "d3f78f78408c63dee8cd357b78800e956d5247f3e38249c8e3b66d788ee51cc8"
+      ]
+    },
+    "continuation02/retrieval-results-native-reciprocal-receipt.json": {
+      "encoding": "raw_bytes",
+      "sha256": [
+        "3efaf683a0d9f68f18230f01c03f4dec91a5640f97e4d201fe1887e48b57aa3e"
+      ]
+    },
+    "continuation02/retrieval-results-native-reciprocal-v2.json": {
+      "encoding": "raw_bytes",
+      "sha256": [
+        "1a26690c267c5125d506c9e0fdcb2ab6679dbac8629e393ca859261ee1ac66a2"
+      ]
+    },
+    "continuation02/retrieval-task-protocol-erratum-v1.json": {
+      "encoding": "raw_bytes",
+      "sha256": [
+        "30ca03e94ae0ed3f89d5efdbc7d91d1d3545e5677d99f1945bab8b2536195b99"
+      ]
+    },
+    "continuation02/retrieval-task-protocol.json": {
+      "encoding": "raw_bytes",
+      "sha256": [
+        "925e6a128bf0c2f8255640d144f04084112d8a11c7c966b260b5d02a947b8df6"
+      ]
+    },
+    "workflow/HANDOFF_B.md": {
+      "encoding": "raw_bytes",
+      "sha256": [
+        "d8f04622f4a7e4426423d1d645b9f0b82348f8b1870eb0888fb08416632c243f"
+      ]
+    },
+    "workflow/graph-projection.json": {
+      "encoding": "canonical_json",
+      "sha256": [
+        "5256c2394b1b89f12286530f5429c6ea7aba574570256036aa30fb80c0d149f9"
+      ]
+    },
+    "workflow/program": {
+      "encoding": "raw_bytes",
+      "sha256": [
+        "9d67e21da33733aefb5a410e6da65d92cd6a81341cd7c87466fce47b64ba287b"
+      ]
+    },
+    "workflow/projection-bytes": {
+      "encoding": "raw_bytes",
+      "sha256": [
+        "3d0121434a47aa303ef0a4b9ba1bce9c87bf64f4d9b3f76207443ea09372177c"
+      ]
+    },
+    "workflow/workflow-plan.json": {
+      "encoding": "raw_bytes",
+      "sha256": [
+        "154906b0f78aec20bc96ffc0f491224546879c81b396ab7140b71406d6a7b7d6"
+      ]
+    },
+    "workflow/workflow-preparation-receipt.json": {
+      "encoding": "canonical_json",
+      "sha256": [
+        "b95e25b699ae77320c5d253c1267cde3cffa0c5d73e9f47813e7f12d2c34e4a2"
+      ]
+    }
+  },
+  "schema": "loom.thread7_public_input_review/1",
+  "scope": "Exact reviewed public projections only. A digest supplied by a caller is not publication approval. New data requires a separate reviewed revision; no owner or independent validation is implied.",
+  "version": 1
+}

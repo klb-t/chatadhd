@@ -29,10 +29,21 @@ def read(path):
     return graph.strict_json(path.read_bytes())
 
 
+@analysis.public_error_boundary
 def build(policy):
+    analysis.approve_public_input('continuation02/delivery-policy.json',policy)
+    approved_inputs = {}
     for item in policy['inputs']:
-        if digest((BASE / item['path']).read_bytes()) != item['sha256']:
+        path=(BASE / item['path']).resolve()
+        raw=path.read_bytes()
+        analysis.approve_public_input('continuation02/'+item['path'],raw)
+        if digest(raw) != item['sha256']:
             raise ValueError('public_input_digest_changed')
+        approved_inputs[path]=raw
+    # Consume the bytes actually approved; reopening would introduce a race
+    # for auxiliary contract fields absent from the presentation hash.
+    def read(path):
+        return graph.strict_json(approved_inputs[path.resolve()])
     presentation = read(PREVIOUS / 'handoff-final-example-v2.json')
     contract = read(PREVIOUS / 'handoff-final-contract-v2.json')
     preferences = read(BASE / 'preferences-receipt.json')
@@ -131,6 +142,7 @@ def build(policy):
     return presentation, contract, artifact
 
 
+@analysis.public_error_boundary
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, default=BASE)

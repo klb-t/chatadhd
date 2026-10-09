@@ -1,0 +1,191 @@
+{
+  "schema": "loom.thread7_public_projection_recheck/1",
+  "base_commit": "cb16b336ee0c59a1ff80b4899dadebce33aa7610",
+  "audit_commit": "9f931da3bb1d1001f9b7d865914ae195d9255b7e",
+  "findings": [
+    "A2-C-001",
+    "A2-C-004"
+  ],
+  "new_provider_calls": 0,
+  "new_cost_usd": "0",
+  "test_data": "controlled_mechanics_only",
+  "before_producers": [
+    {
+      "path": "loom/tools/structure/experiment_analysis_v1.py",
+      "sha256": "375f38d595b61efc3614f604caee4b1082548043664ab65b21d502de52e35fca"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/build_public_artifact.py",
+      "sha256": "9bf51070479d8981f936e9f0493ccc2ce0a65e2099325c81c32ede0065581dfc"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/evaluation-build.py",
+      "sha256": "9f336070c4f86c56998a204c5e87c551e764a6f3478fe4e964c834c6abc50866"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/build_final_handoff.py",
+      "sha256": "3bee2515ddbb3934497c3d33eaf4e0b2b266b3fe47b20d0d47d7a695360de23c"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_02/delivery-build.py",
+      "sha256": "32222b46920b89c5510703abfbe45f7f9cc5d3f45ff7b7eb35c80cf28adc9cd4"
+    }
+  ],
+  "after_files": [
+    {
+      "path": "loom/tools/structure/experiment_analysis_v1.py",
+      "sha256": "0b0734f99fa732d023bc129d4c5936306489d51fcf3ee950e8c834a0363c0acc"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/build_public_artifact.py",
+      "sha256": "1b865f4d0c02f62bdfb0bc19665086c5e2f3e7eabe63d2a5954998e2bf677782"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/evaluation-build.py",
+      "sha256": "215a7438f062c210a6168229ca0b9272a86bbf4a4235955c73e7d6849b71afb5"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/build_final_handoff.py",
+      "sha256": "785eb59288b9d20b9b0e2d5b0cdaf8b802fbb93f08929e1d90e85d1c2f701a33"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_02/delivery-build.py",
+      "sha256": "8cbca2297463f839097b052ab8e0c19a4c559fd034684152ea820e83dfeed323"
+    },
+    {
+      "path": "loom/tools/structure/test_experiment_public_projection_v1.py",
+      "sha256": "45ff5e877c0af4a0770831cd02913d9eabaf74c5cbe78f2e5805ddc81e177543"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_03_live_2026-10-09/public-input-review-v1.json",
+      "sha256": "f3cd81cec6c0fde00f0a591e53920ba74c55af811e9cfceb00831177933c8f05"
+    }
+  ],
+  "tests": {
+    "total": 59,
+    "new_publication_tests": 17,
+    "prior_analysis_tests": 42,
+    "failures": 0,
+    "skips": 0,
+    "full_log_sha256": "00974e9ae8a712575bfeea571f5c1ec6e1251f5c30cc3c94282b2aefe5049ae1"
+  },
+  "exact_a_functions": {
+    "audit_runner_sha256": "f4a06bf988ee55bd65845f0d768f683f40d94c7d3e4e21e538ad33f4df386337",
+    "ast_unmodified": true,
+    "before": [
+      {
+        "id": "C4-PUBLIC-control",
+        "category": "contract",
+        "status": "PASS"
+      },
+      {
+        "id": "C4-PUBLIC-handoff-example-A",
+        "category": "bug_reproduction",
+        "status": "PASS"
+      },
+      {
+        "id": "C4-PUBLIC-handoff-example-B",
+        "category": "acceptance",
+        "status": "FAIL"
+      },
+      {
+        "id": "C4-PUBLIC-evaluation-protocol-A",
+        "category": "bug_reproduction",
+        "status": "PASS"
+      },
+      {
+        "id": "C4-PUBLIC-evaluation-protocol-B",
+        "category": "acceptance",
+        "status": "FAIL"
+      },
+      {
+        "id": "C4-PUBLIC-handoff-projection-A",
+        "category": "bug_reproduction",
+        "status": "PASS"
+      },
+      {
+        "id": "C4-PUBLIC-handoff-projection-B",
+        "category": "acceptance",
+        "status": "FAIL"
+      }
+    ],
+    "after": [
+      {
+        "id": "C4-PUBLIC-control",
+        "category": "contract",
+        "status": "PASS"
+      },
+      {
+        "id": "C4-PUBLIC-handoff-example-A",
+        "category": "bug_reproduction",
+        "status": "FAIL"
+      },
+      {
+        "id": "C4-PUBLIC-handoff-example-B",
+        "category": "acceptance",
+        "status": "PASS"
+      },
+      {
+        "id": "C4-PUBLIC-evaluation-protocol-A",
+        "category": "bug_reproduction",
+        "status": "FAIL"
+      },
+      {
+        "id": "C4-PUBLIC-evaluation-protocol-B",
+        "category": "acceptance",
+        "status": "PASS"
+      },
+      {
+        "id": "C4-PUBLIC-handoff-projection-A",
+        "category": "bug_reproduction",
+        "status": "FAIL"
+      },
+      {
+        "id": "C4-PUBLIC-handoff-projection-B",
+        "category": "acceptance",
+        "status": "PASS"
+      }
+    ]
+  },
+  "entrypoint_matrix": {
+    "cases_each_version": 16,
+    "after_controls_produce": 4,
+    "after_mutations_rejected_without_artifact_or_diagnostic_canary": 12,
+    "before_defect_reproductions": 9,
+    "before_current_delivery_digest_rejections": 3
+  },
+  "current_delivery_changed_policy": [
+    {
+      "producer": "before",
+      "emitted": true,
+      "canary_in_recovered_results": true
+    },
+    {
+      "producer": "after",
+      "emitted": false,
+      "error": "public_projection_rejected",
+      "context": null
+    }
+  ],
+  "preservation": {
+    "generic_codec_changed": false,
+    "shared_schema_changed": false,
+    "old_results_rewritten": false,
+    "approved_exact_source_bytes_preserved": true,
+    "current_delivery_presentation_and_contract_unchanged": true,
+    "new_producer_hash_changes_artifact_identity": true
+  },
+  "private_evidence": {
+    "before_reproduction_sha256": "959cb8b299022de3ed8c5dfa6476f9b53870ac813b1a290379e55f380300dd3c",
+    "after_reproduction_sha256": "01d96cf8a38e8b52f6dc1edeef17375282b3eb4c07b120c2c37e40eb1f9280d7",
+    "exact_a_receipt_sha256": "8dbc9fc941fd489c21d7c0221fbef268fb0ce783f0cbf3a63c259b8b9b84de3a",
+    "reproducer_sha256": "22849a2cd0f610d1933f818399db0e7917dd4629922fcd532b8c51474a98c210",
+    "exact_a_reproducer_sha256": "4873524186dc4248c80bde380ecc7e4409a7063cef4f4c404fee7925802b99bc"
+  },
+  "limitations": [
+    "trusted_producer_configuration_is_a_trust_boundary",
+    "approved_public_snapshots_not_general_pii_classifier",
+    "not_an_independent_audit_of_our_own_fix",
+    "no_model_quality_or_paid_preflight_evidence"
+  ]
+}

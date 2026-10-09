@@ -13,9 +13,12 @@ from loom.tools.seeding import method_graph as graph
 from loom.tools.structure import experiment_analysis_v1 as analysis
 
 
+@analysis.public_error_boundary
 def main():
     base=Path(__file__).parent
-    read=lambda name:graph.strict_json((base/name).read_bytes())
+    def read(name):
+        value=graph.strict_json((base/name).read_bytes())
+        return analysis.approve_public_input('continuation01/'+name,value)
     presentation=read('handoff-example.json')
     contract=read('handoff-contract.json')
     context=read('context-expanded-v2-receipt.json')
@@ -53,10 +56,10 @@ def main():
     contract['properties']['expert']['required'].append('preparation_details')
     contract['properties']['evidence']['items']['properties']['visibility']={'enum':['private_bytes_public_digest','public_aggregate_receipt']}
     Draft202012Validator(contract).validate(presentation)
-    for name,value in [('handoff-final-example-v2.json',presentation),('handoff-final-contract-v2.json',contract)]:
-        with (base/name).open('xb') as stream:stream.write(graph.canonical(value)+b'\n')
     artifact=analysis.build_handoff_artifact(presentation,read('evaluation-protocol.json'),
         graph.load_projection(base/'handoff-projection.json'),projected_at=datetime.now(timezone.utc).isoformat())
+    for name,value in [('handoff-final-example-v2.json',presentation),('handoff-final-contract-v2.json',contract)]:
+        with (base/name).open('xb') as stream:stream.write(graph.canonical(value)+b'\n')
     raw=graph.canonical(artifact)+b'\n';compressed=gzip.compress(raw,mtime=0)
     with (base/'handoff-final-artifact-v3.json.gz').open('xb') as stream:stream.write(compressed)
     receipt={'schema':'loom.thread7_final_contract_receipt/1','contracts':['loom.method_graph/1','loom.method_run_trace/1'],

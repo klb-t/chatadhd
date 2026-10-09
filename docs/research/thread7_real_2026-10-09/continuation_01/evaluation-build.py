@@ -14,6 +14,7 @@ from loom.tools.seeding import method_graph
 from loom.tools.structure import experiment_analysis_v1 as analysis
 
 
+@analysis.public_error_boundary
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', required=True, type=Path)
@@ -21,7 +22,10 @@ def main():
     args = parser.parse_args()
     base = Path(__file__).parent
     example = method_graph.strict_json((base/'handoff-example.json').read_bytes())
-    Draft202012Validator(method_graph.strict_json((base/'handoff-contract.json').read_bytes())).validate(example)
+    analysis.approve_public_input('continuation01/handoff-example.json',example)
+    contract=method_graph.strict_json((base/'handoff-contract.json').read_bytes())
+    analysis.approve_public_input('continuation01/handoff-contract.json',contract)
+    Draft202012Validator(contract).validate(example)
     protocol = method_graph.strict_json((base/'evaluation-protocol.json').read_bytes())
     projection = method_graph.load_projection(base/'handoff-projection.json')
     artifact = analysis.build_handoff_artifact(example, protocol, projection,

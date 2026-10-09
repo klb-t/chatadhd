@@ -10,6 +10,8 @@ import argparse
 from collections import defaultdict
 from copy import deepcopy
 from decimal import Decimal
+from datetime import datetime
+from functools import wraps
 import gzip
 import hashlib
 import json
@@ -23,6 +25,68 @@ import tempfile
 from loom.tools.seeding import method_graph as graph
 
 ROOT = Path(__file__).resolve().parents[3]
+PUBLIC_INPUT_REVIEW = ROOT/"docs/research/thread7_real_2026-10-09/continuation_03_live_2026-10-09/public-input-review-v1.json"
+
+
+def public_error_boundary(function):
+    """Suppress private exception instances/context at the publication boundary.
+
+    Detailed rejection data is not a public log. No supplied value, filename,
+    schema instance or arbitrary downstream exception text is returned here.
+    """
+    @wraps(function)
+    def guarded(*args, **kwargs):
+        failed = False
+        try:
+            return function(*args, **kwargs)
+        except Exception:
+            failed = True
+        # Raise outside the handler, so even explicit context traversal cannot
+        # recover the original exception containing private input.
+        if failed:
+            raise ValueError("public_projection_rejected") from None
+    return guarded
+
+
+@public_error_boundary
+def validate_public_review(review):
+    """Strict role descriptor; approval is versioned data, never inferred input."""
+    require(type(review) is dict and set(review) == {
+        "schema", "version", "review_status", "basis_commit", "scope", "roles"}, "review_shape")
+    require(review["schema"] == "loom.thread7_public_input_review/1", "review_schema")
+    require(type(review["version"]) is int and review["version"] > 0, "review_version")
+    require(review["review_status"] == "source_reviewed_public_snapshot", "review_status")
+    require(isinstance(review["basis_commit"], str) and re.fullmatch(r"[a-f0-9]{40}", review["basis_commit"]) is not None, "review_commit")
+    require(isinstance(review["scope"], str) and bool(review["scope"]), "review_scope")
+    require(type(review["roles"]) is dict and bool(review["roles"]), "review_roles")
+    for role, rule in review["roles"].items():
+        require(isinstance(role, str) and re.fullmatch(r"[A-Za-z0-9_./-]+", role) is not None, "review_role")
+        require(type(rule) is dict and set(rule) == {"encoding", "sha256"}, "review_role_shape")
+        require(rule["encoding"] in ("canonical_json", "raw_bytes"), "review_encoding")
+        hashes = rule["sha256"]
+        require(type(hashes) is list and bool(hashes), "review_hashes")
+        require(all(isinstance(h, str) and re.fullmatch(r"[a-f0-9]{64}", h) is not None for h in hashes), "review_hash")
+        require(len(hashes) == len(set(hashes)), "review_duplicate_hash")
+    return review
+
+
+@public_error_boundary
+def approve_public_input(role, value):
+    """Require prior separate approval; never drop/replace unapproved fields.
+
+    This is the research caller's publication gate, not the generic graph codec.
+    The returned value and approved source bytes remain unchanged. The review
+    file belongs to trusted producer configuration, not caller-provided data.
+    """
+    review = validate_public_review(graph.strict_json(PUBLIC_INPUT_REVIEW.read_bytes()))
+    rule = review["roles"][role]
+    if rule["encoding"] == "raw_bytes":
+        require(type(value) is bytes, "public_bytes_required")
+        raw = value
+    else:
+        raw = graph.canonical(value)
+    require(hashlib.sha256(raw).hexdigest() in rule["sha256"], "public_input_not_reviewed")
+    return value
 
 
 def require(condition, code):
@@ -510,12 +574,23 @@ def tradeoff(planned, records, left, right, quality, evaluator, protocol, *, mea
             "limitations": ["evaluator_classes_not_pooled", "family_dependence_retained", "no_universal_winner"]}
 
 
+@public_error_boundary
 def build_handoff_artifact(presentation, protocol, projection, *, projected_at):
     """Existing canonical method exporter; no native persistence/execution claim.
 
-    This captures exactly what is supplied. Callers must pass only the separately
-    reviewed public projection; this routine is intentionally not a privacy scrubber.
+    Every caller-supplied source role requires separately reviewed approval.
+    Approved values are captured exactly; this routine is not a privacy scrubber.
     """
+    approve_public_input("analysis_presentation", presentation)
+    approve_public_input("analysis_protocol", protocol)
+    approve_public_input("analysis_projection", projection)
+    projection_bytes = getattr(projection, "source_bytes", None)
+    if projection_bytes is not None:
+        approve_public_input("analysis_projection_bytes", projection_bytes)
+        require(graph.canonical(graph.strict_json(projection_bytes)) == graph.canonical(projection), "projection_byte_value_mismatch")
+    require(isinstance(projected_at, str), "projection_timestamp")
+    timestamp = datetime.fromisoformat(projected_at.replace("Z", "+00:00"))
+    require(timestamp.tzinfo is not None, "projection_timestamp_timezone")
     validate_protocol(protocol)
     with tempfile.TemporaryDirectory(prefix="thread7-analysis-") as folder:
         base = Path(folder)
