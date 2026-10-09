@@ -1,0 +1,89 @@
+{
+  "corrections": [
+    {
+      "module": "web",
+      "file": "loom/web/src/components/KnowledgeWorkbench.tsx",
+      "old": [
+        566,
+        646
+      ],
+      "new": [
+        566,
+        642
+      ]
+    },
+    {
+      "module": "web",
+      "file": "loom/server/src/app.cpp",
+      "old": [
+        1134,
+        1140
+      ],
+      "new": [
+        1134,
+        1139
+      ]
+    },
+    {
+      "module": "discovery",
+      "file": "loom/include/loom/providers.h",
+      "old": [
+        64,
+        145
+      ],
+      "new": [
+        64,
+        128
+      ]
+    },
+    {
+      "module": "discovery",
+      "file": "loom/src/chat/graph_reply.h",
+      "old": [
+        1,
+        120
+      ],
+      "new": [
+        1,
+        118
+      ]
+    },
+    {
+      "module": "discovery",
+      "file": "loom/src/context/context_execution.h",
+      "old": [
+        1,
+        44
+      ],
+      "new": [
+        1,
+        42
+      ]
+    },
+    {
+      "module": "discovery",
+      "file": "loom/src/context/method_registry.h",
+      "old": [
+        1,
+        94
+      ],
+      "new": [
+        1,
+        89
+      ]
+    },
+    {
+      "module": "discovery",
+      "file": "loom/src/providers/embedding.h",
+      "old": [
+        1,
+        55
+      ],
+      "new": [
+        1,
+        52
+      ]
+    }
+  ],
+  "effect": "Only range ends beyond EOF corrected to actual pinned file end; no added coverage, no product edits, no test status changes."
+}

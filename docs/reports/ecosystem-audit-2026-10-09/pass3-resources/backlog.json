@@ -1,0 +1,453 @@
+{
+  "schema": "klbt.audit.resource-handoff/1",
+  "packages": [
+    {
+      "order": 1,
+      "finding_id": "CH-RES-N001",
+      "owner": "B",
+      "classification": "naruszenie",
+      "title": "Natywna referencja katalogu nie udostępnia tej samej rozmowy konsumentom core/UI",
+      "source_record": "native/findings.jsonl#CH-RES-N001",
+      "complete_package": "native/handoff-B.json",
+      "reproduction": {
+        "kind": "executed native consumer",
+        "tests": [
+          "RES-NATIVE-001-REPRO",
+          "RES-NATIVE-001",
+          "RES-NATIVE-016"
+        ],
+        "observed": "Pełny importer ZIP:2 rozmowy/4 wiadomości/2 parent edges. Catalog full-link:2 placeholdery rozmów +1 placeholder nieznanego pliku, bez rzeczywistych wiadomości. Osobno headless extract z tych samych linked units daje4 poprawne observations z attrs node/parent/branch/current.",
+        "not_claimed": "Nie twierdzimy, że cały link jest tylko metadanymi albo że brak parsowania headless; istniejący extract→KnowledgeStore przechodzi."
+      },
+      "expected_behavior": "RES-NATIVE-001: imported and referenced resources resolve same synthetic roles/texts/parent relations through the conversation consumer; retain RES-NATIVE-016 actual headless observation parity. Future shared resolver test RES-NATIVE-005 currently BLOCKED.",
+      "acceptance": "RES-NATIVE-001: imported and referenced resources resolve same synthetic roles/texts/parent relations through the conversation consumer; retain RES-NATIVE-016 actual headless observation parity. Future shared resolver test RES-NATIVE-005 currently BLOCKED.",
+      "consumers": [
+        "Catalog::import_selected(link)→Database.create_msg→get_msgs",
+        "Catalog::read_unit→extract::units_from_catalog→extract::run_stage→KnowledgeStore",
+        "Catalog::preview→read_unit; /api/catalog/units/{id} native backing",
+        "LoomHttpApi.getMessages→GET conversations/id/messages→loom_get_messages_ex→Database.get_msgs (static route trace)",
+        "ChatEngine history reads Database.get_msgs (source trace only; no send)"
+      ],
+      "migration": "Version the projection/mapping; retain current placeholder IDs/provenance and owner annotations, add lazily materialized view without losing external reference.",
+      "risk": "Consumers may currently treat placeholder as literal user content; avoid duplicate messages/relations or automatic analysis of synthetic placeholder.",
+      "dependencies": [
+        "B product/API/schema owner",
+        "Shared graph-backed conversation read contract; caller/UI work by B"
+      ],
+      "priority_note": "Order is auditor recommendation for the vertical increment, not a new owner-imposed restriction."
+    },
+    {
+      "order": 2,
+      "finding_id": "CH-RES-N002",
+      "owner": "B",
+      "classification": "naruszenie",
+      "title": "Catalog full-copy spłaszcza istniejące relacje rozmowy, mimo poprawnej ścieżki pełnego importera",
+      "source_record": "native/findings.jsonl#CH-RES-N002",
+      "complete_package": "native/handoff-B.json",
+      "reproduction": {
+        "kind": "executed native consumer",
+        "tests": [
+          "RES-NATIVE-002",
+          "RES-NATIVE-001-REPRO"
+        ],
+        "observed": "Na tej samej public-safe paczce copy oraz direct importer mają4 jednakowe teksty; copy zapisuje wszystkie parent_id=null, direct importer zachowuje oba answer→question parent_id.",
+        "not_claimed": "Nie utracono oryginalnych bajtów ZIP: copy snapshot i read_unit przechodzą. Problem dotyczy znormalizowanej relacyjnej projekcji dla rzeczywistych konsumentów."
+      },
+      "expected_behavior": "RES-NATIVE-002: compare exact role/text/parent-text signatures of direct full import and catalog full-copy on a branch fixture; raw snapshot test RES-NATIVE-009 stays PASS.",
+      "acceptance": "RES-NATIVE-002: compare exact role/text/parent-text signatures of direct full import and catalog full-copy on a branch fixture; raw snapshot test RES-NATIVE-009 stays PASS.",
+      "consumers": [
+        "Catalog::import_selected(copy)→archive::walk_chatgpt→NewMessage without parent_id",
+        "ConversationImporter→OpenAI ConvModel→write_conversation parent_id",
+        "Database.get_msgs(include_all=true)",
+        "LoomHttpApi.getMessages→GET conversations/id/messages→loom_get_messages_ex→Database.get_msgs (static route trace)",
+        "ChatEngine history reads Database.get_msgs (source trace only; no send)"
+      ],
+      "migration": "Reproject existing catalog imports from retained raw unit/hash; preserve user edits and annotation bindings; tag old flattened projection so migration does not silently rewrite history.",
+      "risk": "Duplicate imports, changed message IDs, historical references, fork/version identity.",
+      "dependencies": [
+        "B-owned shared parser/projection reuse; preserve optional flattened strategy"
+      ],
+      "priority_note": "Order is auditor recommendation for the vertical increment, not a new owner-imposed restriction."
+    },
+    {
+      "order": 3,
+      "finding_id": "A3-WEB-001",
+      "owner": "B",
+      "classification": "naruszenie",
+      "title": "Wnętrze workflows/presentation profilu pozostaje w raw_source; brak strukturalnej projekcji tych pól i wspólnego resolvera",
+      "source_record": "web/findings.jsonl#A3-WEB-001",
+      "complete_package": "web/handoff-B.json",
+      "reproduction": "Run web/run.py on either pinned checkout; WEB-02 is reproduction PASS, never product acceptance.",
+      "expected_behavior": "WEB-03 is BLOCKED until B exposes actual graph-resource field query. Then query the title literal and field selector/version from graph, execute the same referenced profile through current operation adapter, and assert captured request title changes across profile revisions without raw JSON reparsing in the test.",
+      "acceptance": "WEB-03 is BLOCKED until B exposes actual graph-resource field query. Then query the title literal and field selector/version from graph, execute the same referenced profile through current operation adapter, and assert captured request title changes across profile revisions without raw JSON reparsing in the test.",
+      "consumers": [
+        "makeApplicationProfileGraphAcceptance",
+        "NativeGraphStore.execute/read/replay",
+        "readProfileFromReceipt",
+        "executeProfileAction",
+        "createLoomProfileRegistry",
+        "LoomHttpApi.createConversation"
+      ],
+      "migration": "Add derived projection/ref binding without rewriting old raw source or immutable receipts. Existing profile receipt still restores its original revision.",
+      "risk": "Claiming opaque source storage as full graph coverage; stale field mappings after source update; dropping unknown extensions.",
+      "dependencies": [
+        "B resource resolver/projection contract",
+        "existing GraphPacket and profile/method contracts"
+      ],
+      "priority_note": "Order is auditor recommendation for the vertical increment, not a new owner-imposed restriction."
+    },
+    {
+      "order": 4,
+      "finding_id": "A3-DISC-001",
+      "owner": "B",
+      "classification": "naruszenie",
+      "title": "Equivalent object key order is rejected by MethodRegistry lossless DTO check",
+      "source_record": "discovery/findings.jsonl#A3-DISC-001",
+      "complete_package": "discovery/backlog.json",
+      "reproduction": {
+        "receipt": "native-receipt.json",
+        "tests": [
+          "DISC-NATIVE-07",
+          "DISC-NATIVE-09",
+          "DISC-NATIVE-10",
+          "DISC-NATIVE-08",
+          "DISC-C2-00",
+          "DISC-C2-01",
+          "DISC-C2-02"
+        ],
+        "reproduction": "PASS",
+        "acceptance": "FAIL",
+        "observed": "Native fixture permutations of entity-only and claim-only preserve exact canonical bytes but load rejects. Public C2 packet passes actual GraphPacketStore then fails registry. Actual DTO diagnostic roundtrip permits load while changing only object order and 57 exact 1->1.0 scalar representations; no field loss. Unknown DTO extra field control still rejects.",
+        "research_sha": "b9b503f62bb8e8e00c94ab7401e1cd9579129af3"
+      },
+      "expected_behavior": {
+        "runner": "tools/ecosystem-audit-2026-10-09/pass3-resources/discovery/run.py",
+        "cases": [
+          "DISC-NATIVE-07",
+          "DISC-NATIVE-09",
+          "DISC-NATIVE-10",
+          "DISC-C2-01"
+        ],
+        "expected": "Equivalent object order loads. Keep array ordering, unknown field rejection, integer range/precision and source/version identities strict. DISC-NATIVE-08 and native store lossless gates remain PASS."
+      },
+      "acceptance": {
+        "runner": "tools/ecosystem-audit-2026-10-09/pass3-resources/discovery/run.py",
+        "cases": [
+          "DISC-NATIVE-07",
+          "DISC-NATIVE-09",
+          "DISC-NATIVE-10",
+          "DISC-C2-01"
+        ],
+        "expected": "Equivalent object order loads. Keep array ordering, unknown field rejection, integer range/precision and source/version identities strict. DISC-NATIVE-08 and native store lossless gates remain PASS."
+      },
+      "consumers": [
+        "MethodRegistry.load",
+        "ContextEngine.gather_method_candidates",
+        "ChatGraphExecution.prepare",
+        "server methods profile preview and selection"
+      ],
+      "migration": "No rewriting raw research/profile sources or receipts. Repair comparator semantics at actual consumer, preserve historical hashes.",
+      "risk": "Permissive numeric equality can mask precision loss; dropping unknown fields to pass defeats lossless gate.",
+      "dependencies": [
+        "Existing native DTO/store exact-number contract",
+        "B product ownership; C data remains unchanged"
+      ],
+      "priority_note": "Order is auditor recommendation for the vertical increment, not a new owner-imposed restriction."
+    },
+    {
+      "order": 5,
+      "finding_id": "A3-DISC-002",
+      "owner": "B",
+      "classification": "naruszenie",
+      "title": "Unknown export inference chooses the first plausible message array without selectable alternative mappings",
+      "source_record": "discovery/findings.jsonl#A3-DISC-002",
+      "complete_package": "discovery/backlog.json",
+      "reproduction": {
+        "receipt": "native-receipt.json",
+        "tests": [
+          "DISC-IMPORT-01",
+          "DISC-IMPORT-02"
+        ],
+        "reproduction": "PASS",
+        "acceptance": "FAIL",
+        "observed": "Two equally plausible synthetic arrays alpha/beta in a ZIP. Reordering only object members changes the selected array and stored message. Both imports write conversations. inferred=true and unselected raw array are retained; explicit alternative mappings are absent."
+      },
+      "expected_behavior": {
+        "runner": "tools/ecosystem-audit-2026-10-09/pass3-resources/discovery/run.py",
+        "case": "DISC-IMPORT-01",
+        "expected": "Preserve both mappings as alternatives or select through explicit inspectable policy; mere key permutation must not silently determine an unrepresented choice. Keep raw and inferred markers DISC-IMPORT-02."
+      },
+      "acceptance": {
+        "runner": "tools/ecosystem-audit-2026-10-09/pass3-resources/discovery/run.py",
+        "case": "DISC-IMPORT-01",
+        "expected": "Preserve both mappings as alternatives or select through explicit inspectable policy; mere key permutation must not silently determine an unrepresented choice. Keep raw and inferred markers DISC-IMPORT-02."
+      },
+      "consumers": [
+        "generic_structure",
+        "infer_generic",
+        "export archive dispatch",
+        "write_conversation",
+        "downstream conversation analysis/context"
+      ],
+      "migration": "Keep old inferred provenance and old mapping version. Discover new alternatives against retained source without silently rewriting/reimporting historical conversations.",
+      "risk": "Duplicate conversations and false relabeling of inference as observation; autoactivation must follow selected policy and cannot widen transport rights.",
+      "dependencies": [
+        "Existing method contracts plus root discovery/resource contract",
+        "B importer integration; no second resolver"
+      ],
+      "priority_note": "Order is auditor recommendation for the vertical increment, not a new owner-imposed restriction."
+    },
+    {
+      "order": 6,
+      "finding_id": "A3-IMP-CH004",
+      "owner": "B",
+      "classification": "naruszenie",
+      "title": "Supported JSON object export becomes zero conversations above the hardwired streaming threshold",
+      "source_record": "importers/findings.jsonl#A3-IMP-CH004",
+      "complete_package": "importers/handoff-b.json",
+      "reproduction": {
+        "receipts": [
+          "chat-main.json",
+          "chat-B2.json"
+        ],
+        "observation": "stream_threshold",
+        "actual": "Small object {title,messages:[...]} imports one conversation; same supported message structure plus >5MB irrelevant padding imports zero. _stream_json_array seeks first [ anywhere, then treats message objects as top-level conversation objects."
+      },
+      "expected_behavior": {
+        "test_ids": [
+          "A3-IMP-CH004.size-dependent-object-loss",
+          "A3-IMP-CH004.streaming-preserves-supported-shape"
+        ],
+        "status": "Reproduction PASS; acceptance FAIL main/B2",
+        "runner": "chat_importers.py --repo <checkout> --sha <SHA> --out <receipt>"
+      },
+      "acceptance": {
+        "test_ids": [
+          "A3-IMP-CH004.size-dependent-object-loss",
+          "A3-IMP-CH004.streaming-preserves-supported-shape"
+        ],
+        "status": "Reproduction PASS; acceptance FAIL main/B2",
+        "runner": "chat_importers.py --repo <checkout> --sha <SHA> --out <receipt>"
+      },
+      "consumers": [
+        "ConversationImporter.import_json -> _stream_json_array -> _import_single_element -> _import_conversation_obj"
+      ],
+      "migration": "Old zero-result imports require reinspection of original source, not synthesis; large source processing needs bounded streaming without conflating parsing and domain routing.",
+      "risk": "Old zero-result imports require reinspection of original source, not synthesis; large source processing needs bounded streaming without conflating parsing and domain routing.",
+      "dependencies": [
+        "Existing JSON object/array routing",
+        "B parser strategy composition"
+      ],
+      "priority_note": "Order is auditor recommendation for the vertical increment, not a new owner-imposed restriction."
+    },
+    {
+      "order": 7,
+      "finding_id": "A3-IMP-CH003",
+      "owner": "B",
+      "classification": "naruszenie",
+      "title": "Unknown structure equals an empty import; partial archive lacks per-member mapping outcomes",
+      "source_record": "importers/findings.jsonl#A3-IMP-CH003",
+      "complete_package": "importers/handoff-b.json",
+      "reproduction": {
+        "receipts": [
+          "chat-main.json",
+          "chat-B2.json"
+        ],
+        "observations": [
+          "unknown_mapping",
+          "partial_archive"
+        ],
+        "actual": "Unknown JSON object and an empty JSON array both return []. A ZIP with one valid conversation, malformed JSON and unknown JSON returns one conversation; parse failure is in a warning log, not a structured member outcome in returned records or IMPORT_DONE events.",
+        "additional_locations": [
+          {
+            "file": "engine/importer.py",
+            "lines": [
+              401,
+              467
+            ]
+          },
+          {
+            "file": "gui/import_panel.py",
+            "lines": [
+              119,
+              141
+            ]
+          }
+        ]
+      },
+      "expected_behavior": {
+        "test_ids": [
+          "A3-IMP-CH003.unknown-equals-empty",
+          "A3-IMP-CH003.explicit-unknown-mapping",
+          "A3-IMP-CH003.partial-container-reported-only-as-success-list",
+          "A3-IMP-CH003.partial-container-outcomes"
+        ],
+        "status": "Reproductions PASS; explicit unknown acceptance FAIL; per-member outcome contract BLOCKED",
+        "runner": "chat_importers.py --repo <checkout> --sha <SHA> --out <receipt>"
+      },
+      "acceptance": {
+        "test_ids": [
+          "A3-IMP-CH003.unknown-equals-empty",
+          "A3-IMP-CH003.explicit-unknown-mapping",
+          "A3-IMP-CH003.partial-container-reported-only-as-success-list",
+          "A3-IMP-CH003.partial-container-outcomes"
+        ],
+        "status": "Reproductions PASS; explicit unknown acceptance FAIL; per-member outcome contract BLOCKED",
+        "runner": "chat_importers.py --repo <checkout> --sha <SHA> --out <receipt>"
+      },
+      "consumers": [
+        "ConversationImporter._import_json_data/import_file/import_zip",
+        "IMPORT_DONE event",
+        "ImportPanel._finish source-only"
+      ],
+      "migration": "Changing results/events needs compatibility adapter for GUI counters; preserve completed valid members and raw failed members without asserting complete success.",
+      "risk": "Changing results/events needs compatibility adapter for GUI counters; preserve completed valid members and raw failed members without asserting complete success.",
+      "dependencies": [
+        "Shared discovery mechanism (separate agent)",
+        "Existing import event/UI contract",
+        "B outcome schema; audit does not invent it"
+      ],
+      "priority_note": "Order is auditor recommendation for the vertical increment, not a new owner-imposed restriction."
+    },
+    {
+      "order": 8,
+      "finding_id": "A3-IMP-CH001",
+      "owner": "B",
+      "classification": "naruszenie",
+      "title": "Legacy Python chat import retains text but discards source tree, unknown fields and attachment linkage",
+      "source_record": "importers/findings.jsonl#A3-IMP-CH001",
+      "complete_package": "importers/handoff-b.json",
+      "reproduction": {
+        "receipts": [
+          "chat-main.json",
+          "chat-B2.json"
+        ],
+        "observation": "rich_import",
+        "actual": "Five source nodes (including system/tool) become three user/assistant message records. Parents, original IDs, model metadata, unknown message/conversation fields and attachment linkage are not retained in the imported records or explicit graph links. Original selected source file itself is not modified.",
+        "no_overclaim": "No claim about native archive import; no claim that original source bytes are physically deleted."
+      },
+      "expected_behavior": {
+        "test_ids": [
+          "A3-IMP-CH001.lossy-legacy-export",
+          "A3-IMP-CH001.lossless-resource-equality",
+          "A3-IMP-ZIP-REFERENCE-EQUALITY"
+        ],
+        "status": "Reproduction PASS on main/B2; full graph/reference equality BLOCKED_MISSING_CONTRACT",
+        "runner": "chat_importers.py --repo <checkout> --sha <SHA> --out <receipt>"
+      },
+      "acceptance": {
+        "test_ids": [
+          "A3-IMP-CH001.lossy-legacy-export",
+          "A3-IMP-CH001.lossless-resource-equality",
+          "A3-IMP-ZIP-REFERENCE-EQUALITY"
+        ],
+        "status": "Reproduction PASS on main/B2; full graph/reference equality BLOCKED_MISSING_CONTRACT",
+        "runner": "chat_importers.py --repo <checkout> --sha <SHA> --out <receipt>"
+      },
+      "consumers": [
+        "gui/import_panel.py:_import_thread",
+        "ConversationImporter.import_file/import_zip/_import_chatgpt_mapping/_import_message_list",
+        "Database.batch_create_msgs/get_msgs"
+      ],
+      "migration": "Do not fabricate missing branch IDs or attachment links from old flattened rows; recover from preserved original source and version the migration.",
+      "risk": "Do not fabricate missing branch IDs or attachment links from old flattened rows; recover from preserved original source and version the migration.",
+      "dependencies": [
+        "Native source/reference projection contract owned by B",
+        "Existing native catalog/import review from other agent",
+        "Projection query adapter for both materialized import and ZIP reference"
+      ],
+      "priority_note": "Order is auditor recommendation for the vertical increment, not a new owner-imposed restriction."
+    },
+    {
+      "order": 9,
+      "finding_id": "A3-IMP-CH006",
+      "owner": "B",
+      "classification": "naruszenie",
+      "title": "HTML fallback orders turns by role pattern rather than source sequence",
+      "source_record": "importers/findings.jsonl#A3-IMP-CH006",
+      "complete_package": "importers/handoff-b.json",
+      "reproduction": {
+        "receipts": [
+          "chat-main.json",
+          "chat-B2.json"
+        ],
+        "observation": "html",
+        "actual": "Actual import_html on four labelled paragraphs User/Assistant/User/Assistant stores user/user/assistant/assistant. Patterns are iterated by role and collected without offsets; the comment says sort by position but no sort occurs."
+      },
+      "expected_behavior": {
+        "test_ids": [
+          "A3-IMP-CH006.html-role-group-order",
+          "A3-IMP-CH006.html-source-order"
+        ],
+        "status": "Reproduction PASS; acceptance FAIL main/B2",
+        "runner": "chat_importers.py --repo <checkout> --sha <SHA> --out <receipt>"
+      },
+      "acceptance": {
+        "test_ids": [
+          "A3-IMP-CH006.html-role-group-order",
+          "A3-IMP-CH006.html-source-order"
+        ],
+        "status": "Reproduction PASS; acceptance FAIL main/B2",
+        "runner": "chat_importers.py --repo <checkout> --sha <SHA> --out <receipt>"
+      },
+      "consumers": [
+        "ConversationImporter.import_html/_parse_html_conversation/_extract_messages_regex/_import_message_list",
+        "Database.batch_create_msgs"
+      ],
+      "migration": "Do not rewrite historical conversation order without original source evidence; version mapping and retain prior projection.",
+      "risk": "Do not rewrite historical conversation order without original source evidence; version mapping and retain prior projection.",
+      "dependencies": [
+        "Existing HTML syntax parser and fallback mapping",
+        "B source span/order mapping"
+      ],
+      "priority_note": "Order is auditor recommendation for the vertical increment, not a new owner-imposed restriction."
+    }
+  ],
+  "missing_contracts": [
+    {
+      "finding_id": "CH-RES-G001",
+      "source_record": "native/findings.jsonl#CH-RES-G001",
+      "complete_package": "native/handoff-B.json",
+      "classification": "niepewne",
+      "status": "BLOCKED_MISSING_CONTRACT",
+      "note": "Integration boundary; not proof of permission bypass or a prescribed new schema."
+    },
+    {
+      "finding_id": "CH-RES-G002",
+      "source_record": "native/findings.jsonl#CH-RES-G002",
+      "complete_package": "native/handoff-B.json",
+      "classification": "niepewne",
+      "status": "BLOCKED_MISSING_CONTRACT",
+      "note": "Integration boundary; not proof of permission bypass or a prescribed new schema."
+    },
+    {
+      "finding_id": "CH-RES-G003",
+      "source_record": "native/findings.jsonl#CH-RES-G003",
+      "complete_package": "native/handoff-B.json",
+      "classification": "niepewne",
+      "status": "BLOCKED_MISSING_CONTRACT",
+      "note": "Integration boundary; not proof of permission bypass or a prescribed new schema."
+    },
+    {
+      "finding_id": "A3-DISC-003",
+      "source_record": "discovery/findings.jsonl#A3-DISC-003",
+      "complete_package": "discovery/backlog.json",
+      "classification": "niepewne",
+      "status": "BLOCKED_MISSING_CONTRACT",
+      "note": "Integration boundary; not proof of permission bypass or a prescribed new schema."
+    }
+  ],
+  "preserve_existing_mechanisms": [
+    "A3-WEB-002",
+    "A3-WEB-003",
+    "CH-RES-M001",
+    "A3-IMP-WD-M01"
+  ],
+  "constraints": [
+    "No product edits by A",
+    "Reuse existing Source/Unit/Locator, registry, GraphPacket, extraction and adapters",
+    "No forced code generation when profile suffices",
+    "No automatic privilege extension",
+    "No standalone historical loom backlog"
+  ]
+}

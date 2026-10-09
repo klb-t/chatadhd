@@ -1,0 +1,238 @@
+{
+  "receipt": {
+    "schema": "loom.graph_packet_store_receipt/1",
+    "id": "gpr_f84851da1c1c98969927259ad86a5111c91913cdac04a69ec95221ea7b8a806d",
+    "request_sha256": "f84851da1c1c98969927259ad86a5111c91913cdac04a69ec95221ea7b8a806d",
+    "target": "application_profile:930245016091d5e4deb0c72150c1d77f5e273135efc02d77a0a8889cf87cebca",
+    "run_id": "kr_829b741525c1ed4f",
+    "packet": {
+      "schema": "loom.graph_packet/1",
+      "definitions": [],
+      "entities": [
+        {
+          "id": "e_ap_930245016091d5e4deb0c72150c1d77f5e273135efc02d77a0a8889cf87cebca",
+          "kind": "application_profile",
+          "canonical_key": "application_profile:930245016091d5e4deb0c72150c1d77f5e273135efc02d77a0a8889cf87cebca",
+          "label": "Synthetic profile",
+          "labels": {},
+          "aliases": [],
+          "parent": "",
+          "first_seen": "",
+          "last_seen": "",
+          "evidence_class": "user",
+          "origin": "user",
+          "confidence": 1,
+          "status": "active",
+          "attrs": {
+            "serializer": "loom.application_profile_graph/1",
+            "profile_id": "audit.external-profile",
+            "profile_revision": 2,
+            "target": {
+              "application_id": "audit",
+              "version": "1",
+              "platform": "web"
+            },
+            "definition_sha256": "89db81797946591ce391eb11e57bcd11192a0046d858ef455aaa6beebf07c9c8",
+            "raw_source": "{\"schema\":\"loom.application_profile/1\",\"id\":\"audit.external-profile\",\"profile_revision\":2,\"label\":\"Synthetic profile\",\"target\":{\"application_id\":\"audit\",\"version\":\"1\",\"platform\":\"web\"},\"evidence\":{\"status\":\"partial\",\"sources\":[],\"gaps\":[\"Synthetic; no service parity asserted.\"]},\"presentation\":{\"renderer\":\"chat\",\"tokens\":{\"background\":\"#111\",\"surface\":\"#222\",\"text\":\"#fff\",\"muted\":\"#aaa\",\"accent\":\"#bbb\",\"border\":\"#333\"},\"sidebar\":{\"side\":\"left\",\"width\":240},\"content_width\":720,\"message_style\":\"plain\"},\"composer\":{\"submit\":\"enter\",\"placeholder\":\"Synthetic input\"},\"actions\":[{\"id\":\"create\",\"label\":\"Create\",\"operation\":\"chat.create\",\"capability\":\"chat.create\",\"required\":true}],\"workflows\":[{\"id\":\"create-flow\",\"initial\":\"ready\",\"states\":[\"ready\",\"done\"],\"transitions\":[{\"from\":\"ready\",\"event\":\"go\",\"action\":\"create\",\"to\":\"done\",\"payload\":{\"object\":{\"title\":{\"literal\":\"Synthetic Beta\"}}},\"save\":{\"conversation_id\":{\"from\":\"result\",\"pointer\":\"/id\"}}}]}]}",
+            "raw_sha256": "379107db408b3d54dfdeb959eba5b3662cbddd21355ef33a37ccbceed1ec9672",
+            "source_observation": "o_ap_bbd4b49aafa62b95c2d904dd9465793dcf66a49243fd6aa65f6170df2a4a306d"
+          }
+        }
+      ],
+      "claims": [],
+      "sources": [
+        {
+          "observation": {
+            "id": "o_ap_bbd4b49aafa62b95c2d904dd9465793dcf66a49243fd6aa65f6170df2a4a306d",
+            "unit": "u_ap_bbd4b49aafa62b95c2d904dd9465793dcf66a49243fd6aa65f6170df2a4a306d",
+            "kind": "code_block",
+            "text": "{\"schema\":\"loom.application_profile/1\",\"id\":\"audit.external-profile\",\"profile_revision\":2,\"label\":\"Synthetic profile\",\"target\":{\"application_id\":\"audit\",\"version\":\"1\",\"platform\":\"web\"},\"evidence\":{\"status\":\"partial\",\"sources\":[],\"gaps\":[\"Synthetic; no service parity asserted.\"]},\"presentation\":{\"renderer\":\"chat\",\"tokens\":{\"background\":\"#111\",\"surface\":\"#222\",\"text\":\"#fff\",\"muted\":\"#aaa\",\"accent\":\"#bbb\",\"border\":\"#333\"},\"sidebar\":{\"side\":\"left\",\"width\":240},\"content_width\":720,\"message_style\":\"plain\"},\"composer\":{\"submit\":\"enter\",\"placeholder\":\"Synthetic input\"},\"actions\":[{\"id\":\"create\",\"label\":\"Create\",\"operation\":\"chat.create\",\"capability\":\"chat.create\",\"required\":true}],\"workflows\":[{\"id\":\"create-flow\",\"initial\":\"ready\",\"states\":[\"ready\",\"done\"],\"transitions\":[{\"from\":\"ready\",\"event\":\"go\",\"action\":\"create\",\"to\":\"done\",\"payload\":{\"object\":{\"title\":{\"literal\":\"Synthetic Beta\"}}},\"save\":{\"conversation_id\":{\"from\":\"result\",\"pointer\":\"/id\"}}}]}]}",
+            "locator": {
+              "source": "synthetic:external-profile-revision2.json",
+              "member": "",
+              "json_pointer": "",
+              "byte_start": 0,
+              "byte_len": 958,
+              "time_start": null,
+              "time_end": null,
+              "line": null
+            },
+            "lang": "",
+            "date": "2026-10-09T00:00:00Z",
+            "ordinal": 0,
+            "artifact_type": "application_profile_json",
+            "speaker": "audit-synthetic",
+            "attrs": {
+              "serializer": "loom.application_profile_graph/1",
+              "raw_sha256": "379107db408b3d54dfdeb959eba5b3662cbddd21355ef33a37ccbceed1ec9672",
+              "profile_entity": "e_ap_930245016091d5e4deb0c72150c1d77f5e273135efc02d77a0a8889cf87cebca"
+            }
+          },
+          "known_at": "2026-10-09T00:00:00Z",
+          "text_sha256": "379107db408b3d54dfdeb959eba5b3662cbddd21355ef33a37ccbceed1ec9672"
+        }
+      ],
+      "task": {
+        "operation": "application.profile.persist",
+        "profile_identity": {
+          "id": "audit.external-profile",
+          "profile_revision": 2,
+          "target": {
+            "application_id": "audit",
+            "version": "1",
+            "platform": "web"
+          },
+          "definition_sha256": "89db81797946591ce391eb11e57bcd11192a0046d858ef455aaa6beebf07c9c8"
+        },
+        "raw_sha256": "379107db408b3d54dfdeb959eba5b3662cbddd21355ef33a37ccbceed1ec9672",
+        "source_ref": "synthetic:external-profile-revision2.json",
+        "transformation_history": "not_asserted"
+      },
+      "provenance": {
+        "definitions": {},
+        "entities": {
+          "e_ap_930245016091d5e4deb0c72150c1d77f5e273135efc02d77a0a8889cf87cebca": {
+            "known_at": "2026-10-09T00:00:00Z",
+            "origin": {
+              "kind": "recorded",
+              "actor": "audit-synthetic",
+              "model": null,
+              "recipe_sha256": null,
+              "response_sha256": null
+            },
+            "record_sha256": "623a2b636762747d5f2eaf3c4b416f23c679f17acec1635dbf95c2501dc07b87"
+          }
+        },
+        "claims": {},
+        "sources": {
+          "o_ap_bbd4b49aafa62b95c2d904dd9465793dcf66a49243fd6aa65f6170df2a4a306d": {
+            "known_at": "2026-10-09T00:00:00Z",
+            "origin": {
+              "kind": "recorded",
+              "actor": "audit-synthetic",
+              "model": null,
+              "recipe_sha256": null,
+              "response_sha256": null
+            },
+            "record_sha256": "5aecc78ef09a93aaa0dea607f367ff8093a81dcb0e761bb8a2090a23681cad2e"
+          }
+        }
+      },
+      "history": [],
+      "packet_id": "e202becefd70d9197f9cddcedd00cd7e2d2cb0204d6ce6e7d10be647521ca920"
+    },
+    "selection": {
+      "entities": [
+        "e_ap_930245016091d5e4deb0c72150c1d77f5e273135efc02d77a0a8889cf87cebca"
+      ],
+      "claims": [],
+      "sources": [
+        "o_ap_bbd4b49aafa62b95c2d904dd9465793dcf66a49243fd6aa65f6170df2a4a306d"
+      ]
+    },
+    "expected_rows": {
+      "entities": {
+        "e_ap_930245016091d5e4deb0c72150c1d77f5e273135efc02d77a0a8889cf87cebca": null
+      },
+      "claims": {},
+      "sources": {
+        "o_ap_bbd4b49aafa62b95c2d904dd9465793dcf66a49243fd6aa65f6170df2a4a306d": null
+      }
+    },
+    "stored_row_sha256": {
+      "entities": {
+        "e_ap_930245016091d5e4deb0c72150c1d77f5e273135efc02d77a0a8889cf87cebca": "0960afa11b0c89ade7644da4be988c2aded453939a1a9af7288c22cf4c77416f"
+      },
+      "claims": {},
+      "sources": {
+        "o_ap_bbd4b49aafa62b95c2d904dd9465793dcf66a49243fd6aa65f6170df2a4a306d": "08651192d39ac0ddbabfcae0b03dc36395b1689e52cbf80ae791727cd8d5faf3"
+      }
+    },
+    "row_snapshots": {
+      "entities": {
+        "e_ap_930245016091d5e4deb0c72150c1d77f5e273135efc02d77a0a8889cf87cebca": {
+          "row": [
+            {
+              "run_id": "kr_829b741525c1ed4f",
+              "id": "e_ap_930245016091d5e4deb0c72150c1d77f5e273135efc02d77a0a8889cf87cebca",
+              "kind": "application_profile",
+              "canonical_key": "application_profile:930245016091d5e4deb0c72150c1d77f5e273135efc02d77a0a8889cf87cebca",
+              "parent": "",
+              "status": "active",
+              "body": "{\"id\":\"e_ap_930245016091d5e4deb0c72150c1d77f5e273135efc02d77a0a8889cf87cebca\",\"kind\":\"application_profile\",\"canonical_key\":\"application_profile:930245016091d5e4deb0c72150c1d77f5e273135efc02d77a0a8889cf87cebca\",\"label\":\"Synthetic profile\",\"labels\":{},\"aliases\":[],\"parent\":\"\",\"first_seen\":\"\",\"last_seen\":\"\",\"evidence_class\":\"user\",\"origin\":\"user\",\"confidence\":1.0,\"status\":\"active\",\"attrs\":{\"serializer\":\"loom.application_profile_graph/1\",\"profile_id\":\"audit.external-profile\",\"profile_revision\":2,\"target\":{\"application_id\":\"audit\",\"version\":\"1\",\"platform\":\"web\"},\"definition_sha256\":\"89db81797946591ce391eb11e57bcd11192a0046d858ef455aaa6beebf07c9c8\",\"raw_source\":\"{\\\"schema\\\":\\\"loom.application_profile/1\\\",\\\"id\\\":\\\"audit.external-profile\\\",\\\"profile_revision\\\":2,\\\"label\\\":\\\"Synthetic profile\\\",\\\"target\\\":{\\\"application_id\\\":\\\"audit\\\",\\\"version\\\":\\\"1\\\",\\\"platform\\\":\\\"web\\\"},\\\"evidence\\\":{\\\"status\\\":\\\"partial\\\",\\\"sources\\\":[],\\\"gaps\\\":[\\\"Synthetic; no service parity asserted.\\\"]},\\\"presentation\\\":{\\\"renderer\\\":\\\"chat\\\",\\\"tokens\\\":{\\\"background\\\":\\\"#111\\\",\\\"surface\\\":\\\"#222\\\",\\\"text\\\":\\\"#fff\\\",\\\"muted\\\":\\\"#aaa\\\",\\\"accent\\\":\\\"#bbb\\\",\\\"border\\\":\\\"#333\\\"},\\\"sidebar\\\":{\\\"side\\\":\\\"left\\\",\\\"width\\\":240},\\\"content_width\\\":720,\\\"message_style\\\":\\\"plain\\\"},\\\"composer\\\":{\\\"submit\\\":\\\"enter\\\",\\\"placeholder\\\":\\\"Synthetic input\\\"},\\\"actions\\\":[{\\\"id\\\":\\\"create\\\",\\\"label\\\":\\\"Create\\\",\\\"operation\\\":\\\"chat.create\\\",\\\"capability\\\":\\\"chat.create\\\",\\\"required\\\":true}],\\\"workflows\\\":[{\\\"id\\\":\\\"create-flow\\\",\\\"initial\\\":\\\"ready\\\",\\\"states\\\":[\\\"ready\\\",\\\"done\\\"],\\\"transitions\\\":[{\\\"from\\\":\\\"ready\\\",\\\"event\\\":\\\"go\\\",\\\"action\\\":\\\"create\\\",\\\"to\\\":\\\"done\\\",\\\"payload\\\":{\\\"object\\\":{\\\"title\\\":{\\\"literal\\\":\\\"Synthetic Beta\\\"}}},\\\"save\\\":{\\\"conversation_id\\\":{\\\"from\\\":\\\"result\\\",\\\"pointer\\\":\\\"/id\\\"}}}]}]}\",\"raw_sha256\":\"379107db408b3d54dfdeb959eba5b3662cbddd21355ef33a37ccbceed1ec9672\",\"source_observation\":\"o_ap_bbd4b49aafa62b95c2d904dd9465793dcf66a49243fd6aa65f6170df2a4a306d\"}}"
+            }
+          ],
+          "related": []
+        }
+      },
+      "claims": {},
+      "sources": {
+        "o_ap_bbd4b49aafa62b95c2d904dd9465793dcf66a49243fd6aa65f6170df2a4a306d": {
+          "row": [
+            {
+              "run_id": "kr_829b741525c1ed4f",
+              "id": "o_ap_bbd4b49aafa62b95c2d904dd9465793dcf66a49243fd6aa65f6170df2a4a306d",
+              "unit": "u_ap_bbd4b49aafa62b95c2d904dd9465793dcf66a49243fd6aa65f6170df2a4a306d",
+              "kind": "code_block",
+              "date": "2026-10-09T00:00:00Z",
+              "body": "{\"id\":\"o_ap_bbd4b49aafa62b95c2d904dd9465793dcf66a49243fd6aa65f6170df2a4a306d\",\"unit\":\"u_ap_bbd4b49aafa62b95c2d904dd9465793dcf66a49243fd6aa65f6170df2a4a306d\",\"kind\":\"code_block\",\"text\":\"{\\\"schema\\\":\\\"loom.application_profile/1\\\",\\\"id\\\":\\\"audit.external-profile\\\",\\\"profile_revision\\\":2,\\\"label\\\":\\\"Synthetic profile\\\",\\\"target\\\":{\\\"application_id\\\":\\\"audit\\\",\\\"version\\\":\\\"1\\\",\\\"platform\\\":\\\"web\\\"},\\\"evidence\\\":{\\\"status\\\":\\\"partial\\\",\\\"sources\\\":[],\\\"gaps\\\":[\\\"Synthetic; no service parity asserted.\\\"]},\\\"presentation\\\":{\\\"renderer\\\":\\\"chat\\\",\\\"tokens\\\":{\\\"background\\\":\\\"#111\\\",\\\"surface\\\":\\\"#222\\\",\\\"text\\\":\\\"#fff\\\",\\\"muted\\\":\\\"#aaa\\\",\\\"accent\\\":\\\"#bbb\\\",\\\"border\\\":\\\"#333\\\"},\\\"sidebar\\\":{\\\"side\\\":\\\"left\\\",\\\"width\\\":240},\\\"content_width\\\":720,\\\"message_style\\\":\\\"plain\\\"},\\\"composer\\\":{\\\"submit\\\":\\\"enter\\\",\\\"placeholder\\\":\\\"Synthetic input\\\"},\\\"actions\\\":[{\\\"id\\\":\\\"create\\\",\\\"label\\\":\\\"Create\\\",\\\"operation\\\":\\\"chat.create\\\",\\\"capability\\\":\\\"chat.create\\\",\\\"required\\\":true}],\\\"workflows\\\":[{\\\"id\\\":\\\"create-flow\\\",\\\"initial\\\":\\\"ready\\\",\\\"states\\\":[\\\"ready\\\",\\\"done\\\"],\\\"transitions\\\":[{\\\"from\\\":\\\"ready\\\",\\\"event\\\":\\\"go\\\",\\\"action\\\":\\\"create\\\",\\\"to\\\":\\\"done\\\",\\\"payload\\\":{\\\"object\\\":{\\\"title\\\":{\\\"literal\\\":\\\"Synthetic Beta\\\"}}},\\\"save\\\":{\\\"conversation_id\\\":{\\\"from\\\":\\\"result\\\",\\\"pointer\\\":\\\"/id\\\"}}}]}]}\",\"locator\":{\"source\":\"synthetic:external-profile-revision2.json\",\"member\":\"\",\"json_pointer\":\"\",\"byte_start\":0,\"byte_len\":958,\"time_start\":null,\"time_end\":null,\"line\":null},\"lang\":\"\",\"date\":\"2026-10-09T00:00:00Z\",\"ordinal\":0,\"artifact_type\":\"application_profile_json\",\"speaker\":\"audit-synthetic\",\"attrs\":{\"serializer\":\"loom.application_profile_graph/1\",\"raw_sha256\":\"379107db408b3d54dfdeb959eba5b3662cbddd21355ef33a37ccbceed1ec9672\",\"profile_entity\":\"e_ap_930245016091d5e4deb0c72150c1d77f5e273135efc02d77a0a8889cf87cebca\"}}"
+            }
+          ],
+          "related": []
+        }
+      }
+    },
+    "explicitly_accepted": true,
+    "acceptance_establishes_content_truth": false,
+    "native_validation_scope": "full_packet_backwards_and_forwards_history_replay_and_selected_native_rows_entity_claim_observation_reference_closure_source_hashes_quotes_utf8_subspans",
+    "opaque_native_references": [],
+    "opaque_native_reference_validation": "principle_prediction_and_pack_check_ids_preserved_but_not_resolved_by_this_adapter",
+    "judgement_replay": {
+      "applied": 0,
+      "skipped": 0,
+      "details": []
+    },
+    "reversible_history_validation": "native_codec_backwards_and_forwards_history_replay",
+    "source_authenticity": "not_established_by_internal_content_hashes",
+    "receipt_sha256": "6dbf0d290f93738cb6b8fecd806dbd1a2a6f973013f8245c4e0864d126d62c10"
+  },
+  "row_drift": {
+    "matches": true,
+    "rows": [],
+    "current_row_snapshots": {
+      "entities": {
+        "e_ap_930245016091d5e4deb0c72150c1d77f5e273135efc02d77a0a8889cf87cebca": {
+          "row": [
+            {
+              "run_id": "kr_829b741525c1ed4f",
+              "id": "e_ap_930245016091d5e4deb0c72150c1d77f5e273135efc02d77a0a8889cf87cebca",
+              "kind": "application_profile",
+              "canonical_key": "application_profile:930245016091d5e4deb0c72150c1d77f5e273135efc02d77a0a8889cf87cebca",
+              "parent": "",
+              "status": "active",
+              "body": "{\"id\":\"e_ap_930245016091d5e4deb0c72150c1d77f5e273135efc02d77a0a8889cf87cebca\",\"kind\":\"application_profile\",\"canonical_key\":\"application_profile:930245016091d5e4deb0c72150c1d77f5e273135efc02d77a0a8889cf87cebca\",\"label\":\"Synthetic profile\",\"labels\":{},\"aliases\":[],\"parent\":\"\",\"first_seen\":\"\",\"last_seen\":\"\",\"evidence_class\":\"user\",\"origin\":\"user\",\"confidence\":1.0,\"status\":\"active\",\"attrs\":{\"serializer\":\"loom.application_profile_graph/1\",\"profile_id\":\"audit.external-profile\",\"profile_revision\":2,\"target\":{\"application_id\":\"audit\",\"version\":\"1\",\"platform\":\"web\"},\"definition_sha256\":\"89db81797946591ce391eb11e57bcd11192a0046d858ef455aaa6beebf07c9c8\",\"raw_source\":\"{\\\"schema\\\":\\\"loom.application_profile/1\\\",\\\"id\\\":\\\"audit.external-profile\\\",\\\"profile_revision\\\":2,\\\"label\\\":\\\"Synthetic profile\\\",\\\"target\\\":{\\\"application_id\\\":\\\"audit\\\",\\\"version\\\":\\\"1\\\",\\\"platform\\\":\\\"web\\\"},\\\"evidence\\\":{\\\"status\\\":\\\"partial\\\",\\\"sources\\\":[],\\\"gaps\\\":[\\\"Synthetic; no service parity asserted.\\\"]},\\\"presentation\\\":{\\\"renderer\\\":\\\"chat\\\",\\\"tokens\\\":{\\\"background\\\":\\\"#111\\\",\\\"surface\\\":\\\"#222\\\",\\\"text\\\":\\\"#fff\\\",\\\"muted\\\":\\\"#aaa\\\",\\\"accent\\\":\\\"#bbb\\\",\\\"border\\\":\\\"#333\\\"},\\\"sidebar\\\":{\\\"side\\\":\\\"left\\\",\\\"width\\\":240},\\\"content_width\\\":720,\\\"message_style\\\":\\\"plain\\\"},\\\"composer\\\":{\\\"submit\\\":\\\"enter\\\",\\\"placeholder\\\":\\\"Synthetic input\\\"},\\\"actions\\\":[{\\\"id\\\":\\\"create\\\",\\\"label\\\":\\\"Create\\\",\\\"operation\\\":\\\"chat.create\\\",\\\"capability\\\":\\\"chat.create\\\",\\\"required\\\":true}],\\\"workflows\\\":[{\\\"id\\\":\\\"create-flow\\\",\\\"initial\\\":\\\"ready\\\",\\\"states\\\":[\\\"ready\\\",\\\"done\\\"],\\\"transitions\\\":[{\\\"from\\\":\\\"ready\\\",\\\"event\\\":\\\"go\\\",\\\"action\\\":\\\"create\\\",\\\"to\\\":\\\"done\\\",\\\"payload\\\":{\\\"object\\\":{\\\"title\\\":{\\\"literal\\\":\\\"Synthetic Beta\\\"}}},\\\"save\\\":{\\\"conversation_id\\\":{\\\"from\\\":\\\"result\\\",\\\"pointer\\\":\\\"/id\\\"}}}]}]}\",\"raw_sha256\":\"379107db408b3d54dfdeb959eba5b3662cbddd21355ef33a37ccbceed1ec9672\",\"source_observation\":\"o_ap_bbd4b49aafa62b95c2d904dd9465793dcf66a49243fd6aa65f6170df2a4a306d\"}}"
+            }
+          ],
+          "related": []
+        }
+      },
+      "claims": {},
+      "sources": {
+        "o_ap_bbd4b49aafa62b95c2d904dd9465793dcf66a49243fd6aa65f6170df2a4a306d": {
+          "row": [
+            {
+              "run_id": "kr_829b741525c1ed4f",
+              "id": "o_ap_bbd4b49aafa62b95c2d904dd9465793dcf66a49243fd6aa65f6170df2a4a306d",
+              "unit": "u_ap_bbd4b49aafa62b95c2d904dd9465793dcf66a49243fd6aa65f6170df2a4a306d",
+              "kind": "code_block",
+              "date": "2026-10-09T00:00:00Z",
+              "body": "{\"id\":\"o_ap_bbd4b49aafa62b95c2d904dd9465793dcf66a49243fd6aa65f6170df2a4a306d\",\"unit\":\"u_ap_bbd4b49aafa62b95c2d904dd9465793dcf66a49243fd6aa65f6170df2a4a306d\",\"kind\":\"code_block\",\"text\":\"{\\\"schema\\\":\\\"loom.application_profile/1\\\",\\\"id\\\":\\\"audit.external-profile\\\",\\\"profile_revision\\\":2,\\\"label\\\":\\\"Synthetic profile\\\",\\\"target\\\":{\\\"application_id\\\":\\\"audit\\\",\\\"version\\\":\\\"1\\\",\\\"platform\\\":\\\"web\\\"},\\\"evidence\\\":{\\\"status\\\":\\\"partial\\\",\\\"sources\\\":[],\\\"gaps\\\":[\\\"Synthetic; no service parity asserted.\\\"]},\\\"presentation\\\":{\\\"renderer\\\":\\\"chat\\\",\\\"tokens\\\":{\\\"background\\\":\\\"#111\\\",\\\"surface\\\":\\\"#222\\\",\\\"text\\\":\\\"#fff\\\",\\\"muted\\\":\\\"#aaa\\\",\\\"accent\\\":\\\"#bbb\\\",\\\"border\\\":\\\"#333\\\"},\\\"sidebar\\\":{\\\"side\\\":\\\"left\\\",\\\"width\\\":240},\\\"content_width\\\":720,\\\"message_style\\\":\\\"plain\\\"},\\\"composer\\\":{\\\"submit\\\":\\\"enter\\\",\\\"placeholder\\\":\\\"Synthetic input\\\"},\\\"actions\\\":[{\\\"id\\\":\\\"create\\\",\\\"label\\\":\\\"Create\\\",\\\"operation\\\":\\\"chat.create\\\",\\\"capability\\\":\\\"chat.create\\\",\\\"required\\\":true}],\\\"workflows\\\":[{\\\"id\\\":\\\"create-flow\\\",\\\"initial\\\":\\\"ready\\\",\\\"states\\\":[\\\"ready\\\",\\\"done\\\"],\\\"transitions\\\":[{\\\"from\\\":\\\"ready\\\",\\\"event\\\":\\\"go\\\",\\\"action\\\":\\\"create\\\",\\\"to\\\":\\\"done\\\",\\\"payload\\\":{\\\"object\\\":{\\\"title\\\":{\\\"literal\\\":\\\"Synthetic Beta\\\"}}},\\\"save\\\":{\\\"conversation_id\\\":{\\\"from\\\":\\\"result\\\",\\\"pointer\\\":\\\"/id\\\"}}}]}]}\",\"locator\":{\"source\":\"synthetic:external-profile-revision2.json\",\"member\":\"\",\"json_pointer\":\"\",\"byte_start\":0,\"byte_len\":958,\"time_start\":null,\"time_end\":null,\"line\":null},\"lang\":\"\",\"date\":\"2026-10-09T00:00:00Z\",\"ordinal\":0,\"artifact_type\":\"application_profile_json\",\"speaker\":\"audit-synthetic\",\"attrs\":{\"serializer\":\"loom.application_profile_graph/1\",\"raw_sha256\":\"379107db408b3d54dfdeb959eba5b3662cbddd21355ef33a37ccbceed1ec9672\",\"profile_entity\":\"e_ap_930245016091d5e4deb0c72150c1d77f5e273135efc02d77a0a8889cf87cebca\"}}"
+            }
+          ],
+          "related": []
+        }
+      }
+    }
+  },
+  "replayed": false
+}

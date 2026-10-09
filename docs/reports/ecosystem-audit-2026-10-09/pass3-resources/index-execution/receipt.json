@@ -1,0 +1,41 @@
+{
+  "jobs": [
+    {
+      "suite": "python-import",
+      "exit_code": 1,
+      "status": "NOT_PASS",
+      "script_sha256": "6fc241359bc2c77610e2d8801c95ad50a7c45ed1b4caee560a72f1d2b48dfb5f",
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/artifacts/tools/ecosystem-audit-2026-10-09/pass3-resources/importers/chat_importers.py",
+        "--repo",
+        "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/checkouts/main",
+        "--sha",
+        "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+        "--phase",
+        "acceptance",
+        "--out",
+        "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/artifacts/docs/reports/ecosystem-audit-2026-10-09/pass3-resources/index-execution/acceptance.json"
+      ]
+    },
+    {
+      "suite": "python-import",
+      "exit_code": 1,
+      "status": "NOT_PASS",
+      "script_sha256": "6fc241359bc2c77610e2d8801c95ad50a7c45ed1b4caee560a72f1d2b48dfb5f",
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/artifacts/tools/ecosystem-audit-2026-10-09/pass3-resources/importers/chat_importers.py",
+        "--repo",
+        "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/checkouts/main",
+        "--sha",
+        "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+        "--phase",
+        "reproduction",
+        "--out",
+        "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/artifacts/docs/reports/ecosystem-audit-2026-10-09/pass3-resources/index-execution/reproduction.json"
+      ]
+    }
+  ],
+  "warning": "Reproduction PASS is not product PASS. BLOCKED is not repaired. Exact classifications are in module receipts."
+}

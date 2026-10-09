@@ -1,0 +1,19 @@
+{
+  "source_range_errors": [],
+  "module_range_rows": 76,
+  "finding_source_locations": 49,
+  "syntax": {
+    "json": 100,
+    "python": 6,
+    "files": 145
+  },
+  "credential_navigation_hits": [],
+  "privacy": "All fixture content synthetic or already-public C method descriptions; no private inputs. Pattern navigation complements semantic review, not blanket proof.",
+  "tracked_readonly_checkouts_clean": {
+    "main": true,
+    "B": true,
+    "B2": true,
+    "C2": true
+  },
+  "status": "PASS"
+}

@@ -1,0 +1,44 @@
+{
+  "explicit_policies": [
+    "retention copy/link",
+    "optional external profile overlay",
+    "method parameter layers",
+    "embedding calls_authorized",
+    "explicit graph packet acceptance",
+    "frozen project snapshot"
+  ],
+  "hidden_or_incomplete": [
+    {
+      "decision": "link materialization chooses placeholder conversation",
+      "finding": "CH-RES-N001"
+    },
+    {
+      "decision": "copy catalog conversation clears parent relations",
+      "finding": "CH-RES-N002"
+    },
+    {
+      "decision": "first credible unknown JSON array wins by object key order",
+      "finding": "A3-DISC-002"
+    },
+    {
+      "decision": "large JSON uses first-array scan independent of top-level document kind",
+      "finding": "A3-IMP-CH004"
+    },
+    {
+      "decision": "HTML role regex iteration dictates chronology",
+      "finding": "A3-IMP-CH006"
+    },
+    {
+      "decision": "unknown and empty source indistinguishable",
+      "finding": "A3-IMP-CH003"
+    }
+  ],
+  "not_conflated": [
+    "parse capability vs write-back fidelity",
+    "declared capability vs executor",
+    "credential presence vs consent",
+    "snapshot availability vs live availability",
+    "default profile vs hard restriction",
+    "source preservation vs full parsed graph"
+  ]
+}

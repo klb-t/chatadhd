@@ -1,0 +1,10 @@
+{
+  "catalog_scripts": 5,
+  "syntax_paths": "PASS",
+  "actual_launcher": "index-execution/receipt.json",
+  "continued_after_failure": true,
+  "acceptance_job": "3 PASS / 3 FAIL / 5 BLOCKED_MISSING_CONTRACT",
+  "reproduction_job": "5 PASS / 0 FAIL / 5 BLOCKED_MISSING_CONTRACT; blocked contracts remain explicit by runner design",
+  "overall_exit": 1,
+  "not_product_pass": true
+}

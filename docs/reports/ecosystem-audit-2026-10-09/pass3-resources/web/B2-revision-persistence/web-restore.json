@@ -1,0 +1,75 @@
+{
+  "schema": "klbt.audit.web-resource-probe/1",
+  "cases": [
+    {
+      "id": "WEB-08",
+      "phase": "acceptance",
+      "status": "PASS",
+      "evidence": {
+        "read_from_reopened_native_store": true,
+        "raw_source_exact": true
+      }
+    },
+    {
+      "id": "WEB-09",
+      "phase": "acceptance",
+      "status": "PASS",
+      "evidence": {
+        "actual_path": "readProfileFromReceipt→registerProfile→executeProfileAction→createLoomProfileRegistry→LoomHttpApi→captured fetch",
+        "titles": [
+          "Synthetic Alpha",
+          "Synthetic Beta"
+        ],
+        "native_chat_execution": false
+      }
+    },
+    {
+      "id": "WEB-10",
+      "phase": "acceptance",
+      "status": "PASS",
+      "evidence": {
+        "old_receipt_still_pins_old_revision": true,
+        "both_revisions_persisted_then_native_context_reopened": true
+      }
+    },
+    {
+      "id": "WEB-11",
+      "phase": "acceptance",
+      "status": "BLOCKED",
+      "reason": "sourceRef is provenance here, not a transport resolver. No source watch/live-change/unavailability graph status consumer; native snapshot roundtrip does not prove those paths."
+    }
+  ],
+  "transport": {
+    "real_external_calls": 0,
+    "attempts_blocked": 0,
+    "captured_requests": [
+      {
+        "path": "/api/conversations",
+        "method": "POST",
+        "body": {
+          "title": "Synthetic Alpha"
+        }
+      },
+      {
+        "path": "/api/conversations",
+        "method": "POST",
+        "body": {
+          "title": "Synthetic Beta"
+        }
+      }
+    ]
+  },
+  "loaded_modules": [
+    "loom/web/src/profiles/runtime.ts",
+    "loom/web/src/profiles/graph.ts",
+    "loom/web/src/profiles/capability-graph.ts",
+    "loom/web/src/profiles/loom-adapter.ts",
+    "loom/web/src/api/operations.ts",
+    "loom/web/src/api/types.ts",
+    "loom/web/src/api/loom-http.ts"
+  ],
+  "limits": [
+    "Node host, no mounted React/browser E2E.",
+    "Only final fetch is substituted; actual parser, registry, graph serializer, workflow, adapter and HTTP encoder run."
+  ]
+}

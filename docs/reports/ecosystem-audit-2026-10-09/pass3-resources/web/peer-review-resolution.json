@@ -1,0 +1,9 @@
+{
+  "metadata_projection_scope": "Narrowed A3-WEB-001 to workflow/presentation interior; identity/target attrs acknowledged.",
+  "WEB-10": "Strengthened actual native test rather than claiming in-memory read proves persistence after edit. Both revisions persisted before close/reopen; final receipts updated.",
+  "main": "9 PASS / 0 FAIL / 3 BLOCKED",
+  "B2": "9 PASS / 0 FAIL / 3 BLOCKED",
+  "history": "Earlier receipts kept, not relabelled as new persistence evidence.",
+  "WEB-09": "Both consumer inputs now come from actual reopened native receipts; direct revision2 registration removed in final run.",
+  "nonblocking": "packet.py hash added; BLOCKED explicitly manual missing-contract markers; native transport boundary explained."
+}

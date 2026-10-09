@@ -1,0 +1,15 @@
+{
+  "catalog": "../../../../tools/ecosystem-audit-2026-10-09/pass3-resources/catalog.json",
+  "runner": "../../../../tools/ecosystem-audit-2026-10-09/pass3-resources/run_index.py",
+  "module_indices": [
+    "web/test-index.json",
+    "native/test-index.json",
+    "importers/test-index.json",
+    "discovery/test-index.json"
+  ],
+  "distinct_selected_criteria": 82,
+  "primary_executions_across_pinned_SHA": 131,
+  "excludes": "superseded harness runs and index demonstration reruns",
+  "counts_not_quality_equivalent": "PASS includes separately labelled reproductions and behavior probes; use module receipts.",
+  "full_vertical": "NOT_ACCEPTED; scoped PASS, FAIL and missing-contract BLOCKED separated"
+}

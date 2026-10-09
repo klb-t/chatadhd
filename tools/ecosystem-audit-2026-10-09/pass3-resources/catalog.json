@@ -1,0 +1,64 @@
+{
+  "schema": "klbt.audit.resource-suite-catalog/1",
+  "suites": [
+    {
+      "id": "web-profile",
+      "script": "web/run.py",
+      "instructions": "web/REPRODUCE.md",
+      "requires": [
+        "--repo",
+        "--sha",
+        "--typescript",
+        "--native-lib",
+        "--native-source",
+        "--native-sha",
+        "--output"
+      ]
+    },
+    {
+      "id": "native-resources",
+      "script": "native/run.py",
+      "instructions": "native/README.md",
+      "requires": [
+        "--repo",
+        "--sha",
+        "--build-dir",
+        "--output"
+      ]
+    },
+    {
+      "id": "discovery",
+      "script": "discovery/run.py",
+      "instructions": "discovery/README.md",
+      "requires": [
+        "--repo",
+        "--sha",
+        "--build-dir",
+        "--research-repo",
+        "--research-sha",
+        "--output"
+      ]
+    },
+    {
+      "id": "python-import",
+      "script": "importers/chat_importers.py",
+      "instructions": "importers/REPRODUCE.md",
+      "requires": [
+        "--repo",
+        "--sha",
+        "--out"
+      ]
+    },
+    {
+      "id": "watchdog-resources",
+      "script": "importers/watchdog_run.py",
+      "instructions": "importers/REPRODUCE.md",
+      "requires": [
+        "--repo",
+        "--sha",
+        "--out"
+      ]
+    }
+  ],
+  "scope": "Each runner imports/calls actual consumer; no replacement resource engine. Missing-contract placeholders need binding after B implementation."
+}

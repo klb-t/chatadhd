@@ -1,7 +1,7 @@
 {
   "runner": "tools/ecosystem-audit-2026-10-09/pass3-resources/web/run.py",
-  "receipt_main": "main/receipt.json",
-  "receipt_B2": "B2/receipt.json",
+  "receipt_main": "main-final/receipt.json",
+  "receipt_B2": "B2-final/receipt.json",
   "per_sha": {
     "PASS": 9,
     "FAIL": 0,
@@ -10,5 +10,12 @@
   "acceptance_pass": 8,
   "reproduction_pass": 1,
   "not_browser_e2e": true,
-  "full_vertical_status": "BLOCKED"
+  "full_vertical_status": "BLOCKED",
+  "superseded_receipts": [
+    "main/receipt.json",
+    "B2/receipt.json",
+    "main-revision-persistence/receipt.json",
+    "B2-revision-persistence/receipt.json"
+  ],
+  "change": "Strengthened WEB-10: actually persists both revisions before closing and reading old+new receipts. Earlier receipts preserved; earlier WEB-10 proved only in-memory receipt reuse. Counts unchanged. Final WEB-09 now uses both profiles actually read from native receipts, not direct registration of revision2; codec hash included; BLOCKED placeholders and native transport guard boundary explicit."
 }

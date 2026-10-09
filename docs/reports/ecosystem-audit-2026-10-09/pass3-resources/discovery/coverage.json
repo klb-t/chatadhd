@@ -89,7 +89,7 @@
       "reviewed_ranges": [
         [
           64,
-          145
+          128
         ]
       ],
       "coverage": "selected_functions_and_calls",
@@ -189,7 +189,7 @@
       "reviewed_ranges": [
         [
           1,
-          120
+          118
         ]
       ],
       "coverage": "selected_functions_and_calls",
@@ -291,7 +291,7 @@
       "reviewed_ranges": [
         [
           1,
-          44
+          42
         ]
       ],
       "coverage": "selected_functions_and_calls",
@@ -471,7 +471,7 @@
       "reviewed_ranges": [
         [
           1,
-          94
+          89
         ]
       ],
       "coverage": "selected_functions_and_calls",
@@ -868,7 +868,7 @@
       "reviewed_ranges": [
         [
           1,
-          55
+          52
         ]
       ],
       "coverage": "selected_functions_and_calls",

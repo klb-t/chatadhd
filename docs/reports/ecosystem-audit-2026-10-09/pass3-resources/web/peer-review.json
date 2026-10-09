@@ -1,0 +1,135 @@
+{
+  "schema": "klbt.audit.peer-review/1",
+  "reviewer": "A independent peer / a2_ckp",
+  "date": "2026-10-09",
+  "scope": {
+    "mode": "read-only review of harness, source and existing receipts; no execution",
+    "sha_main": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+    "sha_B2": "384c5e1686cd3a58a7d89a8a6813a18c764f697d",
+    "artifacts": [
+      "REPORT.md",
+      "findings.jsonl",
+      "coverage.json",
+      "test-index.json",
+      "handoff-B.json",
+      "main/",
+      "B2/",
+      "tools/pass3-resources/web/run.py",
+      "tools/pass3-resources/web/profile_probe.mjs",
+      "tools/pass3-resources/web/REPRODUCE.md",
+      "../OWNER_CLARIFICATION.md",
+      "../CONTRACT.md"
+    ],
+    "not_performed": [
+      "browser interaction",
+      "test rerun",
+      "broader product audit",
+      "product edits"
+    ]
+  },
+  "verdict": "accept existing component evidence, with required scope corrections to prose; complete vertical acceptance remains BLOCKED",
+  "actual_consumers": {
+    "verdict": "yes",
+    "evidence": [
+      "profile_probe.mjs:19-29 transpiles and imports complete checkout modules; parser, registry, graph serializer, workflow runtime, operation adapter and LoomHttpApi encoder are actual product code.",
+      "run.py:32-41 invokes actual NativeGraphStore and C ABI; closes context, creates new context on the same temporary SQLite directory, reads and replays receipt.",
+      "profile_probe.mjs:63-67 restores through actual readProfileFromReceipt and runs actual workflow/adapter/HTTP encoding; only final fetch is synthetic."
+    ],
+    "limits": [
+      "Native reopen is a new context in the same process, not an operating-system process restart.",
+      "No mounted React/browser E2E, no native conversation creation, no model execution.",
+      "Second profile revision is registered directly from a fixture, not persisted and restored through native storage."
+    ]
+  },
+  "statuses": {
+    "verdict": "honest within declared component scope",
+    "per_sha": {
+      "PASS": 9,
+      "FAIL": 0,
+      "BLOCKED": 3,
+      "reproduction_PASS": 1,
+      "component_acceptance_PASS": 8
+    },
+    "notes": [
+      "WEB-02 is explicitly reproduction, not product acceptance.",
+      "WEB-03, WEB-07 and WEB-11 are manually declared missing-contract gates, not executed failing behavioral tests; they are not counted as PASS.",
+      "run.py exits 1 on FAIL, 2 on remaining BLOCKED and 0 only if both are absent."
+    ]
+  },
+  "required_corrections": [
+    {
+      "id": "PEER-WEB-01",
+      "severity": "claim_scope",
+      "targets": [
+        "findings.jsonl:A3-WEB-001.title/evidence",
+        "REPORT.md:A3-WEB-001 paragraph",
+        "profile_probe.mjs:55 evidence label"
+      ],
+      "problem": "The broad claim that parsed profile fields remain exclusively in raw_source is false for metadata. graph.ts:79-85 projects profile_id, profile_revision, target and hashes/source reference into attrs, and profile.label into the entity label. The absent projection is the workflow/presentation interior examined here.",
+      "evidence": "graph.ts:79-109 and 125-138; WEB-02 asserts absence of attrs.workflows, not absence of every possible parsed field or engine query.",
+      "requested_change": "Narrow A3-WEB-001 to workflow/presentation structure in this serializer and consumer path. Suggested title: Struktura workflowów i prezentacji nie ma projekcji pól w serializerze application_profile; runtime odtwarza ją z raw_source. State that raw source is retained as graph data and can be retrieved; this test does not establish impossibility of querying raw source through other existing consumers. Rename structure_available_only_inside_raw_source to tested_workflow_structure_only_inside_raw_source or equivalent. Preserve existing receipt as historical evidence; any clarification can be a new annotation.",
+      "classification_effect": "Confirmed scoped requirement gap under V03 remains supported; no basis here for a global claim that the engine cannot access/query raw source."
+    },
+    {
+      "id": "PEER-WEB-02",
+      "severity": "claim_scope",
+      "targets": [
+        "REPORT.md:Stara receptura pozostaje niezmienna",
+        "findings.jsonl:A3-WEB-002.evidence",
+        "profile_probe.mjs:66-67 interpretation"
+      ],
+      "problem": "WEB-10 reparses the previously loaded stored JavaScript object after registering revision2. No revision2 packet is written and no fresh native read after that write occurs. WEB-09 persists/restores revision1 only; revision2 is a direct fixture registration.",
+      "requested_change": "State precisely: revision1 survives native context reopen; direct registration of revision2 changes the actual request title; the previously loaded revision1 receipt still restores revision1 after registry replacement. Keep native historical-recipe retention across a second persisted revision/source change unverified under WEB-11/V05. Do not describe both profile revisions as having passed native roundtrip.",
+      "classification_effect": "Existing component PASS remains valid. Complete V05 and both-revision native roundtrip are not proven."
+    }
+  ],
+  "nonblocking_recommendations": [
+    {
+      "id": "PEER-WEB-03",
+      "target": "profile_probe.mjs:57,61,68",
+      "observation": "BLOCKED entries are unconditional. Rerunning the same script after B adds a contract will still report BLOCKED until harness integration is updated.",
+      "recommendation": "Label these manual contract review gates explicitly in the test index and reevaluate/bind to the actual API on the next candidate SHA; do not imply automatic detection of API absence."
+    },
+    {
+      "id": "PEER-WEB-04",
+      "target": "run.py:15-22 and receipt provenance",
+      "observation": "NativeGraphStore.read/replay also execute loom/tools/structure/agentic_graph_v1/packet.py, which is not included in the dirty-scope/source-hash manifest. B2 native provenance checks selected graph_packet C++ units against a B build, not full dependency/header equivalence or a full B2 rebuild. The report already states the latter limitation.",
+      "recommendation": "Include imported packet codec in the next source manifest/dirty check and retain the selected-unit-only qualification. A wider native claim needs corresponding build/dependency provenance."
+    },
+    {
+      "id": "PEER-WEB-05",
+      "target": "transport claims",
+      "observation": "Node intercepts the final HTTP call and common socket entrypoints. Python socket patches do not provide a process-wide C++ network sandbox. Actual C ABI operations here are graph-store only with start_workers:false.",
+      "recommendation": "Keep zero external/model-call statements scoped to the executed graph-store/workflow path. Do not present these patches as a general network confinement guarantee for arbitrary native runtime operations."
+    }
+  ],
+  "synthetic_publication": {
+    "verdict": "safe to publish inspected fixtures and receipts",
+    "evidence": [
+      "fixture() contains audit.external-profile, synthetic actor/source reference, synthetic Alpha/Beta titles and generic colors/layout; no owner archive is read.",
+      "Unknown-field fixture is a literal synthetic object. BOM/whitespace payload is deliberately generated test data.",
+      "Inspected acceptance/native receipts and captured requests contain the same synthetic profile plus identifiers/hashes. Inspected node logs are empty."
+    ],
+    "limit": "Assessment applies to the inspected main/B2 artifacts, not future arbitrary source inputs."
+  },
+  "contract_alignment": {
+    "supported": [
+      "V03 partial: exact source persistence and actual runtime parameter differential",
+      "V04 partial: explicit strict executable-schema rejection, without claiming graph preservation",
+      "V05 partial: native context reopen of revision1 and in-memory old-receipt reuse"
+    ],
+    "blocked": [
+      "V03 parsed graph-field query plus runtime binding",
+      "V04 preserved unknown fields and uncertain mappings through graph ingestion/restart",
+      "V05 changed/unavailable source and historical native state after a second write"
+    ],
+    "not_claimed": [
+      "V01 import/ZIP equivalence",
+      "full V02 UI/headless parity",
+      "complete resource policy/discovery implementation"
+    ]
+  },
+  "changes_made": [
+    "peer-review.json only"
+  ]
+}

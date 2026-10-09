@@ -1,0 +1,14 @@
+# Dokładny punkt wznowienia A / odbiór B
+
+Zamknięto audyt doprecyzowania R15/R20/R21 na przypiętych main `9e20f99ab27e7cd45e1892f83bf60fbe60db3de9`, B2 `384c5e1686cd3a58a7d89a8a6813a18c764f697d`, C2 `b9b503f62bb8e8e00c94ab7401e1cd9579129af3` i Watchdog `58a0c93bd0135e3715dcbc4d92fb80e61bd31215`. Nie czekano na nowy kod B; nie twierdzimy, że B2 zawiera implementację późniejszego doprecyzowania.
+
+1. Przy odbiorze nowego B przypnij SHA i różnicę względem B2. Uruchom istniejący native suite: N001 ma zachować tę samą rozmowę/relacje dla referencji, N002 obie relacje parent w catalog copy. Zachowaj PASS headless observations, hash mismatch, source unavailable i braku usuwania dawnych wyników.
+2. Powtórz discovery: równoważne kolejności entity/claim i publiczny C2 packet mają przejść ten sam MethodRegistry bez osłabienia kontroli nieznanych pól. Pozostaw executor unavailable, jeżeli nie ma implementacji; nie traktuj zapisu kodu jako autoryzacji.
+3. Po dostarczeniu przez B wspólnego publicznego kontraktu parsed resource przypnij do niego V01–V05 z `CONTRACT.md`. Nie zastępuj go własnym parserem. Wykorzystaj działające Source/Unit/Locator/read_unit, strukturalną ekstrakcję, profile i wersjonowane metody.
+4. Podłącz grafowe pola profilu do rzeczywistego runtime. Ponów web suite na dwóch profilach odczytanych z native store; odróżnij poprawny byte/receipt roundtrip od nowej projekcji wnętrza. Nie osłabiaj jawnego odrzucania nieobsługiwanej wersji wykonawczej, żeby ukryć brak katalogowania nieznanych danych.
+5. B może niezależnie naprawić cztery potwierdzone błędy starszego importera. Te same `chat_importers.py --phase acceptance` sprawdzają kształt dużego JSON, nieznane dane i kolejność HTML; brakujący pełny graph/reference kontrakt nadal wymaga podłączenia testów.
+6. Pozostające bramki środowiska i inne repo kontynuuj z `../pass2/RESUME.md`, nie ze starej kolejki sprzed integracji 2026-10-05. Browser E2E, urządzenie Android i LSan są nadal osobnymi lukami; nie powtarzaj bezczynnie znanych blokad. W tym etapie nie sprawdzono pełnego native nested ZIP, zdalnych źródeł, write-back, jednoczesnej mutacji ani wszystkich strategii discovery/modelu.
+
+Mianownik po tym etapie: **267/1027** publicznych plików produktu ma nazwane przejrzane zakresy (w tym 9 historycznego standalone loom przeniesione wyłącznie jako pokrycie). **760** plików pozostaje bez takich zakresów. To nie jest 267 całkowicie zweryfikowanych plików. Przyrost pass3: 43 chatadhd i 8 Watchdog. Pełny wykaz: `coverage-index.json`. Wcześniejsze prywatne dowody pozostają wyłącznie w prywatnym zakresie; nie otwieraj ich do publicznego podsumowania.
+
+Kolejne dowody zapisuj w nowym etapie. Nie nadpisuj pierwszego przebiegu, pass2 ani finalnych receipts pass3. Publikuj checkpoint własnej gałęzi po zamkniętym module, bez zmian produktu/main/B/C.

@@ -1,0 +1,139 @@
+{
+  "operation": "accept",
+  "target": "application_profile:b33f61e1e093a81af2a31b2f887e9f012b884d83ee73465938b258c3eb99b48f",
+  "packet": {
+    "schema": "loom.graph_packet/1",
+    "definitions": [],
+    "entities": [
+      {
+        "id": "e_ap_b33f61e1e093a81af2a31b2f887e9f012b884d83ee73465938b258c3eb99b48f",
+        "kind": "application_profile",
+        "canonical_key": "application_profile:b33f61e1e093a81af2a31b2f887e9f012b884d83ee73465938b258c3eb99b48f",
+        "label": "Synthetic profile",
+        "labels": {},
+        "aliases": [],
+        "parent": "",
+        "first_seen": "",
+        "last_seen": "",
+        "evidence_class": "user",
+        "origin": "user",
+        "confidence": 1,
+        "status": "active",
+        "attrs": {
+          "serializer": "loom.application_profile_graph/1",
+          "profile_id": "audit.external-profile",
+          "profile_revision": 1,
+          "target": {
+            "application_id": "audit",
+            "version": "1",
+            "platform": "web"
+          },
+          "definition_sha256": "8f3ab53cccf1230586f304f433c2c0ac368efaa0e6b632d4dddeeba715d39ce0",
+          "raw_source": "﻿{\n  \"schema\": \"loom.application_profile/1\",\n  \"id\": \"audit.external-profile\",\n  \"profile_revision\": 1,\n  \"label\": \"Synthetic profile\",\n  \"target\": {\n    \"application_id\": \"audit\",\n    \"version\": \"1\",\n    \"platform\": \"web\"\n  },\n  \"evidence\": {\n    \"status\": \"partial\",\n    \"sources\": [],\n    \"gaps\": [\n      \"Synthetic; no service parity asserted.\"\n    ]\n  },\n  \"presentation\": {\n    \"renderer\": \"chat\",\n    \"tokens\": {\n      \"background\": \"#111\",\n      \"surface\": \"#222\",\n      \"text\": \"#fff\",\n      \"muted\": \"#aaa\",\n      \"accent\": \"#bbb\",\n      \"border\": \"#333\"\n    },\n    \"sidebar\": {\n      \"side\": \"left\",\n      \"width\": 240\n    },\n    \"content_width\": 720,\n    \"message_style\": \"plain\"\n  },\n  \"composer\": {\n    \"submit\": \"enter\",\n    \"placeholder\": \"Synthetic input\"\n  },\n  \"actions\": [\n    {\n      \"id\": \"create\",\n      \"label\": \"Create\",\n      \"operation\": \"chat.create\",\n      \"capability\": \"chat.create\",\n      \"required\": true\n    }\n  ],\n  \"workflows\": [\n    {\n      \"id\": \"create-flow\",\n      \"initial\": \"ready\",\n      \"states\": [\n        \"ready\",\n        \"done\"\n      ],\n      \"transitions\": [\n        {\n          \"from\": \"ready\",\n          \"event\": \"go\",\n          \"action\": \"create\",\n          \"to\": \"done\",\n          \"payload\": {\n            \"object\": {\n              \"title\": {\n                \"literal\": \"Synthetic Alpha\"\n              }\n            }\n          },\n          \"save\": {\n            \"conversation_id\": {\n              \"from\": \"result\",\n              \"pointer\": \"/id\"\n            }\n          }\n        }\n      ]\n    }\n  ]\n} \r\n",
+          "raw_sha256": "feda567e5b70891463d4273a564ab33d590931e47f739a50d111a256b4c0b923",
+          "source_observation": "o_ap_cd1d98ffe7d6a565d85c8f054d586876b517cbf096b2dca3fb90d3885f943da5"
+        }
+      }
+    ],
+    "claims": [],
+    "sources": [
+      {
+        "observation": {
+          "id": "o_ap_cd1d98ffe7d6a565d85c8f054d586876b517cbf096b2dca3fb90d3885f943da5",
+          "unit": "u_ap_cd1d98ffe7d6a565d85c8f054d586876b517cbf096b2dca3fb90d3885f943da5",
+          "kind": "code_block",
+          "text": "﻿{\n  \"schema\": \"loom.application_profile/1\",\n  \"id\": \"audit.external-profile\",\n  \"profile_revision\": 1,\n  \"label\": \"Synthetic profile\",\n  \"target\": {\n    \"application_id\": \"audit\",\n    \"version\": \"1\",\n    \"platform\": \"web\"\n  },\n  \"evidence\": {\n    \"status\": \"partial\",\n    \"sources\": [],\n    \"gaps\": [\n      \"Synthetic; no service parity asserted.\"\n    ]\n  },\n  \"presentation\": {\n    \"renderer\": \"chat\",\n    \"tokens\": {\n      \"background\": \"#111\",\n      \"surface\": \"#222\",\n      \"text\": \"#fff\",\n      \"muted\": \"#aaa\",\n      \"accent\": \"#bbb\",\n      \"border\": \"#333\"\n    },\n    \"sidebar\": {\n      \"side\": \"left\",\n      \"width\": 240\n    },\n    \"content_width\": 720,\n    \"message_style\": \"plain\"\n  },\n  \"composer\": {\n    \"submit\": \"enter\",\n    \"placeholder\": \"Synthetic input\"\n  },\n  \"actions\": [\n    {\n      \"id\": \"create\",\n      \"label\": \"Create\",\n      \"operation\": \"chat.create\",\n      \"capability\": \"chat.create\",\n      \"required\": true\n    }\n  ],\n  \"workflows\": [\n    {\n      \"id\": \"create-flow\",\n      \"initial\": \"ready\",\n      \"states\": [\n        \"ready\",\n        \"done\"\n      ],\n      \"transitions\": [\n        {\n          \"from\": \"ready\",\n          \"event\": \"go\",\n          \"action\": \"create\",\n          \"to\": \"done\",\n          \"payload\": {\n            \"object\": {\n              \"title\": {\n                \"literal\": \"Synthetic Alpha\"\n              }\n            }\n          },\n          \"save\": {\n            \"conversation_id\": {\n              \"from\": \"result\",\n              \"pointer\": \"/id\"\n            }\n          }\n        }\n      ]\n    }\n  ]\n} \r\n",
+          "locator": {
+            "source": "synthetic:external-profile.json",
+            "member": "",
+            "json_pointer": "",
+            "byte_start": 0,
+            "byte_len": 1559,
+            "time_start": null,
+            "time_end": null,
+            "line": null
+          },
+          "lang": "",
+          "date": "2026-10-09T00:00:00Z",
+          "ordinal": 0,
+          "artifact_type": "application_profile_json",
+          "speaker": "audit-synthetic",
+          "attrs": {
+            "serializer": "loom.application_profile_graph/1",
+            "raw_sha256": "feda567e5b70891463d4273a564ab33d590931e47f739a50d111a256b4c0b923",
+            "profile_entity": "e_ap_b33f61e1e093a81af2a31b2f887e9f012b884d83ee73465938b258c3eb99b48f"
+          }
+        },
+        "known_at": "2026-10-09T00:00:00Z",
+        "text_sha256": "feda567e5b70891463d4273a564ab33d590931e47f739a50d111a256b4c0b923"
+      }
+    ],
+    "task": {
+      "operation": "application.profile.persist",
+      "profile_identity": {
+        "id": "audit.external-profile",
+        "profile_revision": 1,
+        "target": {
+          "application_id": "audit",
+          "version": "1",
+          "platform": "web"
+        },
+        "definition_sha256": "8f3ab53cccf1230586f304f433c2c0ac368efaa0e6b632d4dddeeba715d39ce0"
+      },
+      "raw_sha256": "feda567e5b70891463d4273a564ab33d590931e47f739a50d111a256b4c0b923",
+      "source_ref": "synthetic:external-profile.json",
+      "transformation_history": "not_asserted"
+    },
+    "provenance": {
+      "definitions": {},
+      "entities": {
+        "e_ap_b33f61e1e093a81af2a31b2f887e9f012b884d83ee73465938b258c3eb99b48f": {
+          "known_at": "2026-10-09T00:00:00Z",
+          "origin": {
+            "kind": "recorded",
+            "actor": "audit-synthetic",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "9d37212de623c3e23080a1e23f1d16cb40fc945b25e563c9785bd41d5c6427bb"
+        }
+      },
+      "claims": {},
+      "sources": {
+        "o_ap_cd1d98ffe7d6a565d85c8f054d586876b517cbf096b2dca3fb90d3885f943da5": {
+          "known_at": "2026-10-09T00:00:00Z",
+          "origin": {
+            "kind": "recorded",
+            "actor": "audit-synthetic",
+            "model": null,
+            "recipe_sha256": null,
+            "response_sha256": null
+          },
+          "record_sha256": "eaf599b1627f4278c4414b94747fda251de1832026e93af05b31b554dc331001"
+        }
+      }
+    },
+    "history": [],
+    "packet_id": "e41171b77a3cfab36217f8e3aad188da4d030f7ab8981d0b5b94723aa350a713"
+  },
+  "selection": {
+    "entities": [
+      "e_ap_b33f61e1e093a81af2a31b2f887e9f012b884d83ee73465938b258c3eb99b48f"
+    ],
+    "claims": [],
+    "sources": [
+      "o_ap_cd1d98ffe7d6a565d85c8f054d586876b517cbf096b2dca3fb90d3885f943da5"
+    ]
+  },
+  "expected_rows": {
+    "entities": {
+      "e_ap_b33f61e1e093a81af2a31b2f887e9f012b884d83ee73465938b258c3eb99b48f": null
+    },
+    "claims": {},
+    "sources": {
+      "o_ap_cd1d98ffe7d6a565d85c8f054d586876b517cbf096b2dca3fb90d3885f943da5": null
+    }
+  },
+  "explicitly_accepted": true
+}

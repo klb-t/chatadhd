@@ -1,0 +1,161 @@
+{
+  "schema": "klbt.audit.resource-web/1",
+  "repo": "klb-t/chatadhd",
+  "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "native_build_source_sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "native_library_sha256": "4ce4d06f2348c82f063893882a85ebc1c2efdec584e28f52dd90d87f64842771",
+  "native_graph_packet_units_equal": [
+    {
+      "path": "loom/src/capi/capi_graph_packet_store.cpp",
+      "sha256": "345b219b1cd09eed62e97eed5045cd66e76724c588039ff52ea345fb0b7b2cbc"
+    },
+    {
+      "path": "loom/src/kb/graph_packet_store.cpp",
+      "sha256": "904cb420a6264962a7d77805d8a69e2ca0193474bcfbee3550ed284a475bd466"
+    }
+  ],
+  "source_files": [
+    {
+      "path": "loom/web/src/profiles/runtime.ts",
+      "sha256": "acee394825f9f8050b7f6ba3dbdc752a8afa09f977a9ee9dbc7eeca8f50c809d"
+    },
+    {
+      "path": "loom/web/src/profiles/graph.ts",
+      "sha256": "b35b3bc78d67b0abd2fbd4001a3673ce83172fba952affecd3d5a7c0941e453b"
+    },
+    {
+      "path": "loom/web/src/profiles/capability-graph.ts",
+      "sha256": "54f11842b40651a17a293e1b0dc8af803c2bf697b3d0ff1e17210cd4cefe8e06"
+    },
+    {
+      "path": "loom/web/src/profiles/loom-adapter.ts",
+      "sha256": "d939c1dee04d86ba230ad3fc5a8b201bf7e11c93484971d8f0bae3736f3fb304"
+    },
+    {
+      "path": "loom/web/src/api/loom-http.ts",
+      "sha256": "ea8b6601f749704413053de62002e59b0b2d50e3b1d558981072cd8bf80c859f"
+    },
+    {
+      "path": "loom/web/src/api/operations.ts",
+      "sha256": "52490424d491455df61c6ec84187ecf3b26e50ff809cc30b93ef44b73c711e59"
+    },
+    {
+      "path": "loom/web/src/api/types.ts",
+      "sha256": "0130203ed885a34e4cafe3a94f60239d108ddc5a4a5b7d930c23a7af295714f5"
+    },
+    {
+      "path": "loom/tools/coordination/graph_store.py",
+      "sha256": "5409db2624335b0984ddd95a63a99906648f6d6acaf72f7951ddc7eff9ca758c"
+    }
+  ],
+  "cases": [
+    {
+      "id": "WEB-NATIVE-01",
+      "phase": "acceptance",
+      "status": "PASS",
+      "actual_native_write_close_reopen_read_replay": true
+    },
+    {
+      "id": "WEB-01",
+      "phase": "acceptance",
+      "status": "PASS",
+      "evidence": {
+        "exact_source_retained": true,
+        "entities": 1,
+        "claims": 0
+      }
+    },
+    {
+      "id": "WEB-02",
+      "phase": "reproduction",
+      "status": "PASS",
+      "evidence": {
+        "finding": "A3-WEB-001",
+        "structure_available_only_inside_raw_source": true
+      }
+    },
+    {
+      "id": "WEB-03",
+      "phase": "acceptance",
+      "status": "BLOCKED",
+      "reason": "No existing structured resource-field query and runtime resolver binding in this serializer. Requires B contract; raw JSON reparse is not a graph-field query."
+    },
+    {
+      "id": "WEB-04",
+      "phase": "acceptance",
+      "status": "PASS",
+      "evidence": {
+        "closed_schema_rejects_explicitly": true,
+        "caller_source_unmodified": true,
+        "not_a_graph_preservation_claim": true
+      }
+    },
+    {
+      "id": "WEB-05",
+      "phase": "acceptance",
+      "status": "PASS",
+      "evidence": {
+        "declaration_does_not_install_execution": true
+      }
+    },
+    {
+      "id": "WEB-06",
+      "phase": "acceptance",
+      "status": "PASS",
+      "evidence": {
+        "capability_has_graph_entity": true,
+        "permission_or_discovery_execution_not_asserted": true
+      }
+    },
+    {
+      "id": "WEB-07",
+      "phase": "acceptance",
+      "status": "BLOCKED",
+      "reason": "Unknown-field retention plus uncertain mapping in a graph resource needs a separate ingestion contract; strict executable-profile rejection alone does not implement it."
+    },
+    {
+      "id": "WEB-08",
+      "phase": "acceptance",
+      "status": "PASS",
+      "evidence": {
+        "read_from_reopened_native_store": true,
+        "raw_source_exact": true
+      }
+    },
+    {
+      "id": "WEB-09",
+      "phase": "acceptance",
+      "status": "PASS",
+      "evidence": {
+        "actual_path": "readProfileFromReceipt→registerProfile→executeProfileAction→createLoomProfileRegistry→LoomHttpApi→captured fetch",
+        "titles": [
+          "Synthetic Alpha",
+          "Synthetic Beta"
+        ],
+        "native_chat_execution": false
+      }
+    },
+    {
+      "id": "WEB-10",
+      "phase": "acceptance",
+      "status": "PASS",
+      "evidence": {
+        "old_receipt_still_pins_old_revision": true,
+        "both_revisions_persisted_then_native_context_reopened": true
+      }
+    },
+    {
+      "id": "WEB-11",
+      "phase": "acceptance",
+      "status": "BLOCKED",
+      "reason": "sourceRef is provenance here, not a transport resolver. No source watch/live-change/unavailability graph status consumer; native snapshot roundtrip does not prove those paths."
+    }
+  ],
+  "summary": {
+    "PASS": 9,
+    "FAIL": 0,
+    "BLOCKED": 3
+  },
+  "external_model_calls": 0,
+  "boundary": "Existing graph packet store native library from declared SHA; selected graph-packet implementation source checked equal. Not a full B2 rebuild or a mounted browser test."
+}

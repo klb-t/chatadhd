@@ -1,0 +1,25 @@
+{
+  "previous_package": "a91c4a56684626f6fcaff9172231d20e5f1a53ef",
+  "checkpoints": [
+    {
+      "sha": "e07b0cb6507119b462324a951a10f1c871e259bb",
+      "module": "owner clarification + pass2 verified publication"
+    },
+    {
+      "sha": "b5ebcc17eca83a57085dd9143c2156892610e0b8",
+      "module": "initial web actual consumer probes; later strengthened receipts retained separately"
+    },
+    {
+      "sha": "a2fed23eec98e827b19a4588af248b1c367af597",
+      "module": "importers"
+    },
+    {
+      "sha": "58b295155fed85c03e5b8768402a2b97aacff535",
+      "module": "native"
+    },
+    {
+      "sha": "eecce9f69a1d3df48cd8811fde51c1a6acf0149f",
+      "module": "discovery; final aggregate corrects range ends beyond EOF"
+    }
+  ]
+}

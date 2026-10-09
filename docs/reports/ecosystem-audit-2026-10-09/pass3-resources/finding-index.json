@@ -1,0 +1,112 @@
+{
+  "classification_counts": {
+    "dopuszczalny mechanizm": 4,
+    "naruszenie": 9,
+    "niepewne": 4
+  },
+  "ids": [
+    {
+      "id": "A3-WEB-001",
+      "classification": "naruszenie",
+      "module": "web",
+      "source_record": "web/findings.jsonl#A3-WEB-001"
+    },
+    {
+      "id": "A3-WEB-002",
+      "classification": "dopuszczalny mechanizm",
+      "module": "web",
+      "source_record": "web/findings.jsonl#A3-WEB-002"
+    },
+    {
+      "id": "A3-WEB-003",
+      "classification": "dopuszczalny mechanizm",
+      "module": "web",
+      "source_record": "web/findings.jsonl#A3-WEB-003"
+    },
+    {
+      "id": "CH-RES-N001",
+      "classification": "naruszenie",
+      "module": "native",
+      "source_record": "native/findings.jsonl#CH-RES-N001"
+    },
+    {
+      "id": "CH-RES-N002",
+      "classification": "naruszenie",
+      "module": "native",
+      "source_record": "native/findings.jsonl#CH-RES-N002"
+    },
+    {
+      "id": "CH-RES-G001",
+      "classification": "niepewne",
+      "module": "native",
+      "source_record": "native/findings.jsonl#CH-RES-G001"
+    },
+    {
+      "id": "CH-RES-G002",
+      "classification": "niepewne",
+      "module": "native",
+      "source_record": "native/findings.jsonl#CH-RES-G002"
+    },
+    {
+      "id": "CH-RES-G003",
+      "classification": "niepewne",
+      "module": "native",
+      "source_record": "native/findings.jsonl#CH-RES-G003"
+    },
+    {
+      "id": "CH-RES-M001",
+      "classification": "dopuszczalny mechanizm",
+      "module": "native",
+      "source_record": "native/findings.jsonl#CH-RES-M001"
+    },
+    {
+      "id": "A3-IMP-CH001",
+      "classification": "naruszenie",
+      "module": "importers",
+      "source_record": "importers/findings.jsonl#A3-IMP-CH001"
+    },
+    {
+      "id": "A3-IMP-CH003",
+      "classification": "naruszenie",
+      "module": "importers",
+      "source_record": "importers/findings.jsonl#A3-IMP-CH003"
+    },
+    {
+      "id": "A3-IMP-CH004",
+      "classification": "naruszenie",
+      "module": "importers",
+      "source_record": "importers/findings.jsonl#A3-IMP-CH004"
+    },
+    {
+      "id": "A3-IMP-CH006",
+      "classification": "naruszenie",
+      "module": "importers",
+      "source_record": "importers/findings.jsonl#A3-IMP-CH006"
+    },
+    {
+      "id": "A3-IMP-WD-M01",
+      "classification": "dopuszczalny mechanizm",
+      "module": "importers",
+      "source_record": "importers/findings.jsonl#A3-IMP-WD-M01"
+    },
+    {
+      "id": "A3-DISC-001",
+      "classification": "naruszenie",
+      "module": "discovery",
+      "source_record": "discovery/findings.jsonl#A3-DISC-001"
+    },
+    {
+      "id": "A3-DISC-002",
+      "classification": "naruszenie",
+      "module": "discovery",
+      "source_record": "discovery/findings.jsonl#A3-DISC-002"
+    },
+    {
+      "id": "A3-DISC-003",
+      "classification": "niepewne",
+      "module": "discovery",
+      "source_record": "discovery/findings.jsonl#A3-DISC-003"
+    }
+  ],
+  "no_private_inputs": true
+}

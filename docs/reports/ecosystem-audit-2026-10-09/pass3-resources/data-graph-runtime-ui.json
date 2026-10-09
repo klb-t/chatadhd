@@ -1,0 +1,37 @@
+[
+  {
+    "source": "Synthetic ZIP",
+    "graph": "Source/Unit/Locator and extracted observations",
+    "runtime": "Catalog.read_unit → units_from_catalog → extract.run_stage → KnowledgeStore",
+    "UI": "catalogPreview shares read_unit; conversation getMessages sees separate import projection",
+    "status": "Headless graph PASS; conversation equivalence FAIL"
+  },
+  {
+    "source": "net.pack local profile",
+    "graph": "No generic external-resource field projection bound in tested path",
+    "runtime": "effective profile → HttpRequest.from_json_with_profile → HttpTransportPolicy",
+    "UI": "not exercised",
+    "status": "two values actually consumed; full graph→runtime BLOCKED"
+  },
+  {
+    "source": "Application profile JSON",
+    "graph": "Identity attrs + exact raw Source/GraphPacket receipt; workflow/presentation not projected structurally",
+    "runtime": "native read → parser/register → workflow → existing adapter → HTTP encoding",
+    "UI": "same modules called by ApplicationProfiles; mounted browser not executed",
+    "status": "both persisted revisions consumed; structural graph-field contract BLOCKED"
+  },
+  {
+    "source": "C2 method graph / local method descriptions",
+    "graph": "NativeGraphStore accepts packet; MethodRegistry rejects equivalent DTO order",
+    "runtime": "ContextEngine uses registry; missing executor remains unavailable",
+    "UI": "host facets source traced only",
+    "status": "partial integration; comparison bug confirmed"
+  },
+  {
+    "source": "Watchdog source/dataset/project",
+    "graph": "typed source selectors and frozen domain references; no generic graph ZIP resolver",
+    "runtime": "mapping → repository/objectstore → project snapshots → export",
+    "UI": "FigureCanvas used by actual SSR and frontend source",
+    "status": "snapshot/render mechanism PASS; generic resource contract BLOCKED"
+  }
+]

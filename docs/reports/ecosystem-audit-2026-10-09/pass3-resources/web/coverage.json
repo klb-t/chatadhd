@@ -183,8 +183,59 @@
       ],
       "sha256": "5409db2624335b0984ddd95a63a99906648f6d6acaf72f7951ddc7eff9ca758c",
       "execution": "selected actual functions executed; ranges include adjacent semantic review"
+    },
+    {
+      "file": "loom/web/src/components/KnowledgeWorkbench.tsx",
+      "ranges": [
+        [
+          566,
+          642
+        ]
+      ],
+      "functions": [
+        "CatalogPane catalogPreview effect/import path"
+      ],
+      "untraced_calls": [
+        "Mounted React/browser not run; source field renderer expansion remains unproved"
+      ],
+      "execution": "semantic review only",
+      "sha256": "33ce8ed3c2e0abc4388e075d4b76b56097bbd056585d5593d5636f88e3bcbe68"
+    },
+    {
+      "file": "loom/src/capi/capi_catalog.cpp",
+      "ranges": [
+        [
+          102,
+          114
+        ]
+      ],
+      "functions": [
+        "loom_catalog_preview"
+      ],
+      "untraced_calls": [
+        "C ABI source trace; native companion tests Catalog directly"
+      ],
+      "execution": "semantic review only",
+      "sha256": "e284a244d70cfa7ac7c6daa9af41e70c4f675d7049c99ff5e1398e0c351df21e"
+    },
+    {
+      "file": "loom/server/src/app.cpp",
+      "ranges": [
+        [
+          1134,
+          1139
+        ]
+      ],
+      "functions": [
+        "GET /api/catalog/units/:id"
+      ],
+      "untraced_calls": [
+        "HTTP server not started in this module"
+      ],
+      "execution": "semantic review only",
+      "sha256": "3ffc188f0f5babf8ee1ca75d8ef4c11397d7cae0262fbdf0bb6eaf83321e0f4c"
     }
   ],
-  "count": 7,
+  "count": 10,
   "not_complete_file_review": true
 }

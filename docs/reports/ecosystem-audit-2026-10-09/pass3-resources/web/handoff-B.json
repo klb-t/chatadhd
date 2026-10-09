@@ -10,7 +10,7 @@
     "r42": "Contract field names and serializer IDs are permitted exception1; this audit concerns missing representation/consumer wiring, not literal removal.",
     "id": "A3-WEB-001",
     "classification": "naruszenie",
-    "title": "Sparsowane pola profilu pozostają wyłącznie w raw_source; brak grafowej projekcji i wspólnego resolvera pól",
+    "title": "Wnętrze workflows/presentation profilu pozostaje w raw_source; brak strukturalnej projekcji tych pól i wspólnego resolvera",
     "kind": "confirmed scoped requirement gap; known partial implementation, not a newly introduced regression",
     "locations": [
       {
@@ -30,8 +30,8 @@
     ],
     "evidence": {
       "test": "WEB-02",
-      "receipt": "B2/receipt.json",
-      "observation": "one application_profile entity, zero claims; workflows/presentation retained only in exact raw_source. Native read returns same packet; browser reparses raw_source."
+      "receipt": "B2-final/receipt.json",
+      "observation": "One application_profile entity, zero claims. Identity/target metadata ARE projected to attrs; workflows/presentation structure is retained only inside raw_source and restored by browser reparse."
     },
     "impact": "Source preservation and actual workflow execution work, but graph consumers cannot address the interior through this projection; sourceRef is provenance rather than live resolver.",
     "alternatives": [
