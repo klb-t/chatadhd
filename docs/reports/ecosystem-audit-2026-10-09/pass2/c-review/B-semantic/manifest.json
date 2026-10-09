@@ -1,0 +1,80 @@
+{
+  "schema": "klb.audit.manifest/1",
+  "files": [
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/B-semantic/B-compile.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/B-semantic/B-receipt.json",
+      "bytes": 13797,
+      "sha256": "b4c7d6963e29afe0c8ebd17fecb32825f7ef78d3418e987de3b9b71de7b98ad0"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/B-semantic/B-runtime.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/B-semantic/REPORT.md",
+      "bytes": 4516,
+      "sha256": "75f8bc3c82f0b4c0447c995c05d5b5cb45dfd5fba92c9719466a19482095a75d"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/B-semantic/coverage.json",
+      "bytes": 3012,
+      "sha256": "2b2153efa12477ede71b473fed964c2b045662ec9728d4af2291d01076e6b1d5"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/B-semantic/findings.jsonl",
+      "bytes": 4997,
+      "sha256": "5d8d2dbace92ee77141610d3e9b9d61e9c81d87c8e14f5de7e155c2cd37c478c"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/B-semantic/increment-review.json",
+      "bytes": 1859,
+      "sha256": "831158104fd9871867a826155f23f5c7d632c72405214c6b7f750dcda284fc43"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/B-semantic/main-compile.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/B-semantic/main-initial-check-receipt.json",
+      "bytes": 13129,
+      "sha256": "60d333a419021ad6749cf991f8eb204977f52c4928cae0fe048a90bbe9f491a0"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/B-semantic/main-receipt.json",
+      "bytes": 13129,
+      "sha256": "4eee0446544813d92e629edecab63758d0d61bd38acbea92c4ab45c99551c19a"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/B-semantic/main-runtime.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/B-semantic/test-index.json",
+      "bytes": 545,
+      "sha256": "2caf50b54aae70ecc5fc6ac428c6791e8ce0900657e3df3cc5e777da48890044"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/c-review/B-semantic/README.md",
+      "bytes": 2034,
+      "sha256": "df6b8b7d868c4980a006d456a263fa1361f6e5cdf4af03f63215ab67afff6c5f"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/c-review/B-semantic/probe.cpp",
+      "bytes": 8045,
+      "sha256": "f3bd61fb8ac51bd8c802c2dab75332913cfbecd9c298133b261ef409cbcb277d"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/c-review/B-semantic/run.py",
+      "bytes": 2690,
+      "sha256": "0cccf2dfb815fd8dbd071983c29ab6acec03da92e8be10cf03bcc8fc6a4ebb33"
+    }
+  ]
+}

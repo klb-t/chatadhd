@@ -1,0 +1,25 @@
+{
+  "schema": "klb.audit.test-index/1",
+  "module": "B-semantic",
+  "runner": "tools/ecosystem-audit-2026-10-09/pass2/c-review/B-semantic/run.py",
+  "args": [
+    "--repo",
+    "{repo}",
+    "--sha",
+    "{sha}",
+    "--build-dir",
+    "{build_dir}",
+    "--scratch",
+    "{scratch}",
+    "--output",
+    "{output}"
+  ],
+  "checks": 32,
+  "expected_main_exit": 1,
+  "expected_B_exit": 1,
+  "acceptance": "PASS only when each case passes; bug reproduction does not invert failures.",
+  "related_findings": [
+    "CH-003",
+    "A2-BSEM-001"
+  ]
+}

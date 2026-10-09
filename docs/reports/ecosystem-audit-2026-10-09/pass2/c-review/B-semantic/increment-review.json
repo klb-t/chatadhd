@@ -1,0 +1,48 @@
+{
+  "schema": "klb.audit.increment-review/1",
+  "baseline_sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "candidate_sha": "ddcaeaf7a25b70f0d4dc2e0eed2466016233eeb8",
+  "related_finding": "CH-003",
+  "classification": "częściowa naprawa",
+  "new_regression": "A2-BSEM-001",
+  "baseline_counts": {
+    "PASS": 22,
+    "FAIL": 10
+  },
+  "candidate_counts": {
+    "PASS": 24,
+    "FAIL": 8
+  },
+  "same_checks": 32,
+  "independently_fixed_checks": [
+    "CH003-two-profiles-worker-regex-AUDIT_STARTMARK",
+    "CH003-two-profiles-worker-regex-AUDIT_CHANGEDMARK",
+    "CH003-two-profiles-worker-fallback-AUDIT_STARTMARK",
+    "CH003-two-profiles-worker-fallback-AUDIT_CHANGEDMARK",
+    "CH003-startup-profile",
+    "CH003-two-profiles-live-fallback-AUDIT_STARTMARK",
+    "CH003-two-profiles-live-fallback-AUDIT_CHANGEDMARK",
+    "CH003-invalid-preserves-pending",
+    "CH003-invalid-startup",
+    "CH003-valid-recovery"
+  ],
+  "independently_regressed_checks": [
+    "CH003-reset-worker-regex-removed-overlay",
+    "CH003-reset-worker-regex-empty-overlay",
+    "CH003-reset-worker-fallback-removed-overlay",
+    "CH003-reset-worker-fallback-empty-overlay",
+    "CH003-reset-live-regex-removed-overlay",
+    "CH003-reset-live-regex-empty-overlay",
+    "CH003-reset-live-fallback-removed-overlay",
+    "CH003-reset-live-fallback-empty-overlay"
+  ],
+  "not_claimed": [
+    "CH-004/005/006 closure",
+    "All CH-011 failures fixed; only invalid semantic pack tested",
+    "Python component change",
+    "Anthropic batch path",
+    "Android/browser UI",
+    "Paid execution"
+  ],
+  "historical_harness_receipt": "main-initial-check-receipt.json preserves first run whose hash-location assertion required top-level metadata. Final assertion accepts the already supported semantic.analyzer_profile_hash; initial two live-regex failures are not product findings."
+}

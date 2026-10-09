@@ -1,0 +1,84 @@
+{
+  "schema": "klb.audit.coverage.increment/1",
+  "module": "B-semantic",
+  "repo": "klb-t/chatadhd",
+  "sha": "ddcaeaf7a25b70f0d4dc2e0eed2466016233eeb8",
+  "baseline_sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "reviewed_product_files_with_ranges": 6,
+  "files": [
+    {
+      "category": "product",
+      "full_file_behavior_claimed": false,
+      "file": "loom/src/runtime.cpp",
+      "line_start": 178,
+      "line_end": 202,
+      "source_range_sha256": "8b9b217ba27e56027b915fae824ed10543a7475da5da7ba2b4d65d6e98ccb5ec"
+    },
+    {
+      "category": "product",
+      "full_file_behavior_claimed": false,
+      "file": "loom/src/graph/graph_engine.cpp",
+      "line_start": 118,
+      "line_end": 168,
+      "source_range_sha256": "c3d1e772a3c7b94ab92061473c5ac6bcd83f0cc89c45800750188d023796b284"
+    },
+    {
+      "category": "product",
+      "full_file_behavior_claimed": false,
+      "file": "loom/src/worker/semantic_worker.cpp",
+      "line_start": 337,
+      "line_end": 396,
+      "source_range_sha256": "d5ce5ad8f162115c4bea4979f5ca9b9e1db76d3c1b953b9f79e1a83efcd3ee60"
+    },
+    {
+      "category": "product",
+      "full_file_behavior_claimed": false,
+      "file": "loom/src/semantic/semantic_llm.cpp",
+      "line_start": 164,
+      "line_end": 199,
+      "source_range_sha256": "7ee395640471bcc6ec5338a7ab39ac5a91fdf3f364e386e64bc414c46d5a2792"
+    },
+    {
+      "category": "product",
+      "full_file_behavior_claimed": false,
+      "file": "loom/src/semantic/analyzer.cpp",
+      "line_start": 111,
+      "line_end": 124,
+      "source_range_sha256": "d39a590ee7f2717181fcb2d71122b13b506eeb512f8f72789bf5532fdafd153b"
+    },
+    {
+      "category": "product",
+      "full_file_behavior_claimed": false,
+      "file": "loom/src/db/db.cpp",
+      "line_start": 705,
+      "line_end": 735,
+      "source_range_sha256": "aca7ab506b8d4cedc2430743cc6c8bcab4d4e6932d32bac4894a92a0228e6a28"
+    }
+  ],
+  "additional_ranges": [
+    {
+      "file": "loom/src/semantic/analyzer.cpp",
+      "line_start": 187,
+      "line_end": 198,
+      "source_range_sha256": "4ebb8ca3fbd04a30c25f52fc614739ff2524f52aef55c4747e800be1db272782"
+    },
+    {
+      "file": "loom/src/semantic/analyzer.cpp",
+      "line_start": 296,
+      "line_end": 302,
+      "source_range_sha256": "35233da19f5c28487ba4f6bc613b6bccb7b60dc2127f92cbf1c5984fd888ff04"
+    }
+  ],
+  "untraced_or_unexecuted": [
+    "Anthropic batch submit/poll paths, threshold transition, billing/admission",
+    "Runtime downstream ChatEngine/MemoryEngine/GraphMemory readers using constructor analyzer",
+    "B batch snapshot atomicity test read, not independently repeated",
+    "Actual pattern compiler internals and DB SQL implementation not fully rereviewed here"
+  ],
+  "boundaries": [
+    "Real Runtime/start_workers=false",
+    "Actual ScriptedTransport only",
+    "Actual DB writes/message→entity links and reopen",
+    "Fresh analyzer reference comes from existing SemanticAnalyzer::create_from_data_dir, not copied policy"
+  ]
+}
