@@ -246,6 +246,9 @@ Json WorkerStatus::to_json() const {
   char rate_buf[32];
   std::snprintf(rate_buf, sizeof rate_buf, "%.1f/s", rate);
   return Json{{"pending", pending},
+              {"failed", failed ? Json(*failed) : Json(nullptr)},
+              {"executing", executing ? Json(*executing) : Json(nullptr)},
+              {"counts_known", counts_known},
               {"processed", processed},
               {"errors", errors},
               {"mode", mode},
@@ -321,7 +324,24 @@ void SemanticWorker::resume() {
 
 WorkerStatus SemanticWorker::status() const {
   WorkerStatus s;
-  if (auto pending = db_.count_pending_semantic()) s.pending = *pending;
+  {
+    auto lock = db_.lock();
+    auto counts = db_.conn().prepare("SELECT "
+      "COUNT(CASE WHEN semantic_status='pending' THEN 1 END), "
+      "COUNT(CASE WHEN semantic_status='failed' THEN 1 END), "
+      "COUNT(CASE WHEN semantic_status='executing' THEN 1 END), "
+      "COUNT(CASE WHEN semantic_status NOT IN ('pending','failed','executing','done') "
+      "OR semantic_status IS NULL THEN 1 END) FROM messages");
+    if (counts) {
+      auto row = counts->step();
+      if (row && *row) {
+        s.pending = counts->get_int(0);
+        s.failed = counts->get_int(1);
+        s.executing = counts->get_int(2);
+        s.counts_known = counts->get_int(3) == 0;
+      }
+    }
+  }
   s.processed = processed_.load();
   s.errors = errors_.load();
   s.paused = paused_.load();
@@ -345,7 +365,11 @@ Result<int> SemanticWorker::drain_once() {
 
   // Resolve once before any transport or write. A malformed overlay is an
   // operation error, never a reason to silently use the built-in analyzer.
-  LOOM_TRY_ASSIGN(auto analyzer_profile, RuntimeProfile::load("semantic_analyzer", db_.path().parent_path()));
+  auto graph_profile = RuntimeProfile::load("graph_ingest", db_.path().parent_path());
+  if (!graph_profile) { errors_.fetch_add(1); return graph_profile.error(); }
+  auto analyzer_result = RuntimeProfile::load("semantic_analyzer", db_.path().parent_path());
+  if (!analyzer_result) { errors_.fetch_add(1); return analyzer_result.error(); }
+  const auto& analyzer_profile = *analyzer_result;
   // Builtin equality describes the current values, not the analyzer retained
   // by the constructor (which may have been built from a removed overlay).
   std::unique_ptr<SemanticAnalyzer> effective_analyzer;
@@ -378,25 +402,44 @@ Result<int> SemanticWorker::drain_once() {
       std::lock_guard lk(mu_);
       if (stop_ || paused_.load()) break;
     }
+    Json provenance{{"consumer", "semantic_worker"}, {"mode", use_llm ? "llm" : "regex"},
+                    {"worker_profile_hash", profile_->hash()}, {"llm_rate_limit", opts_.llm_rate_limit},
+                    {"failure_recovery", profile_->values().at("failure_recovery")},
+                    {"analyzer_profile_hash", analyzer.profile_hash()}};
+    auto claimed = graph_.begin_analysis(m.id, m.text, m.conv_id, *graph_profile, provenance, false, msg_status::kActive);
+    if (!claimed) {
+      errors_.fetch_add(1);
+      // No dispatch occurred. Surface the failure to the existing backoff;
+      // never create a synthetic done marker for a missing/stale source.
+      return claimed.error();
+    }
+    Json analysis = nullptr;
+    Status outcome;
     try {
-      Json analysis = use_llm ? llm_.analyse(m.text, analyzer) : regex_unified(analyzer, m.text);
+      analysis = use_llm ? llm_.analyse(claimed->text, analyzer) : regex_unified(analyzer, claimed->text);
       if (!analyzer_profile.is_builtin()) analysis["analyzer_profile_hash"] = analyzer_profile.hash();
-      if (use_llm && opts_.llm_rate_limit > 0) {
-        // Interruptible rate-limit wait: no blind sleep, so stop() is prompt.
-        std::unique_lock lk(mu_);
-        auto wait = std::chrono::duration_cast<std::chrono::milliseconds>(
-            std::chrono::duration<double>(1.0 / opts_.llm_rate_limit));
-        cv_.wait_for(lk, wait, [this] { return stop_; });
-        if (stop_) break;
-      }
-      graph_.ingest_analysis(m.id, m.conv_id, analysis);
-      (void)db_.mark_analysed(m.id, analysis);
+      auto complete = graph_.complete_analysis(*claimed, analysis);
+      if (!complete) outcome = complete.error();
+    } catch (const std::exception& e) {
+      outcome = Error(Errc::Internal, "semantic analysis: " + std::string(e.what()));
+    }
+    if (!outcome) {
+      errors_.fetch_add(1);
+      auto failed = graph_.fail_analysis(*claimed, outcome.error(), analysis);
+      if (!failed) log::error("loom.semantic_worker", "Failure state not written for {}: {}", m.id, failed.error().message);
+      log::debug("loom.semantic_worker", "Worker fail on {}: {}", m.id, outcome.error().message);
+    } else {
       ++count;
       processed_.fetch_add(1);
-    } catch (const std::exception& e) {
-      log::debug("loom.semantic_worker", "Worker fail on {}: {}", m.id, e.what());
-      errors_.fetch_add(1);
-      (void)db_.mark_analysed(m.id, Json{{"source", "error"}});
+    }
+    if (use_llm && opts_.llm_rate_limit > 0) {
+      // Resolve the durable outcome before waiting: stop must not discard an
+      // already received result or cause a new dispatch after restart.
+      std::unique_lock lk(mu_);
+      auto wait = std::chrono::duration_cast<std::chrono::milliseconds>(
+          std::chrono::duration<double>(1.0 / opts_.llm_rate_limit));
+      cv_.wait_for(lk, wait, [this] { return stop_; });
+      if (stop_) break;
     }
   }
 

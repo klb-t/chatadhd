@@ -41,7 +41,7 @@ export interface Message {
   attachments?: string[];
   metadata?: Record<string, unknown>;
   created: string;
-  semantic_status?: "pending" | "done";
+  semantic_status?: "pending" | "executing" | "failed" | "done";
 }
 
 export interface ChatRequest {
@@ -174,6 +174,10 @@ export interface ContextSet {
 
 export interface SemanticStatusInfo {
   pending: number;
+  /** Durable counts; absent on older hosts means unknown, not zero. */
+  executing?: number | null;
+  failed?: number | null;
+  counts_known?: boolean;
   processed: number;
   errors: number;
   mode: string;

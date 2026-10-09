@@ -64,8 +64,10 @@ Result<RelationType> RelationType::from_json(const Json& j) {
 RelationRegistry::RelationRegistry(Database& db) : db_(db) {}
 
 Status RelationRegistry::load_cache_locked() {
+  // Callers hold Database's recursive lock before the registry mutex.
+  // A transaction-local view must never survive a later outer rollback.
+  cache_loaded_ = false;
   cache_.clear();
-  auto lk = db_.lock();
   LOOM_TRY_ASSIGN(auto st, db_.conn().prepare(
                                "SELECT name, inverse, symmetric, transitive, category, description, metadata FROM "
                                "loom_relation_types"));
@@ -82,13 +84,14 @@ Status RelationRegistry::load_cache_locked() {
     t.metadata = json::parse_or(st.get_text(6), Json::object());
     cache_[t.name] = std::move(t);
   }
-  cache_loaded_ = true;
+  cache_loaded_ = !db_.conn().in_transaction();
   return {};
 }
 
 Status RelationRegistry::seed_builtin() {
-  std::lock_guard lk(mu_);
   auto dl = db_.lock();
+  std::lock_guard lk(mu_);
+  cache_loaded_ = false;
   sql::Txn txn(db_.conn());
   LOOM_TRY(txn.begin_status());
   for (const auto& j : builtin_relation_types()) {
@@ -105,16 +108,17 @@ Status RelationRegistry::seed_builtin() {
 
 Status RelationRegistry::upsert(const RelationType& t) {
   if (t.name.empty()) return Error(Errc::InvalidArgument, "relation type needs a name");
+  auto dl = db_.lock();
   std::lock_guard lk(mu_);
-  {
-    auto dl = db_.lock();
-    LOOM_TRY(db_.conn().run(
+  const bool was_loaded = cache_loaded_;
+  cache_loaded_ = false;  // Even a failed statement may have trigger side effects.
+  LOOM_TRY(db_.conn().run(
         "INSERT OR REPLACE INTO loom_relation_types (name, inverse, symmetric, transitive, category, description, "
         "metadata) VALUES (?, ?, ?, ?, ?, ?, ?)",
         t.name, t.inverse.empty() ? std::optional<std::string>() : std::optional<std::string>(t.inverse),
         t.symmetric ? 1 : 0, t.transitive ? 1 : 0, t.category, t.description, json::py_dumps(t.metadata)));
-  }
   cache_[t.name] = t;
+  cache_loaded_ = was_loaded && !db_.conn().in_transaction();
   return {};
 }
 
@@ -128,16 +132,18 @@ Status RelationRegistry::load(const Json& definitions) {
 }
 
 Result<std::optional<RelationType>> RelationRegistry::get(std::string_view name) {
+  auto dl = db_.lock();
   std::lock_guard lk(mu_);
-  if (!cache_loaded_) LOOM_TRY(load_cache_locked());
+  if (!cache_loaded_ || db_.conn().in_transaction()) LOOM_TRY(load_cache_locked());
   auto it = cache_.find(name);
   if (it == cache_.end()) return std::optional<RelationType>{};
   return std::optional<RelationType>(it->second);
 }
 
 Result<std::vector<RelationType>> RelationRegistry::list(std::optional<std::string_view> category) {
+  auto dl = db_.lock();
   std::lock_guard lk(mu_);
-  if (!cache_loaded_) LOOM_TRY(load_cache_locked());
+  if (!cache_loaded_ || db_.conn().in_transaction()) LOOM_TRY(load_cache_locked());
   std::vector<RelationType> out;
   for (const auto& [n, t] : cache_) {
     if (!category || t.category == *category) out.push_back(t);
@@ -146,6 +152,9 @@ Result<std::vector<RelationType>> RelationRegistry::list(std::optional<std::stri
 }
 
 Result<RelationType> RelationRegistry::ensure(std::string_view name) {
+  // Serialize the miss/upsert pair without taking the nonrecursive registry
+  // mutex around get()/upsert(), which already acquire it in DB-first order.
+  auto dl = db_.lock();
   LOOM_TRY_ASSIGN(auto existing, get(name));
   if (existing) return *existing;
   RelationType t;

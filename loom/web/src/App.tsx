@@ -111,7 +111,7 @@ export default function App() {
           ≡
         </button>
         <h1>Loom</h1>
-        <SemanticStatus />
+        <SemanticStatus profileHost={userProfileHost} />
         <div className="spacer" />
         <button data-testid="nav-knowledge" aria-pressed={knowledgeOpen} onClick={() => setKnowledgeOpen((value) => !value)}>Knowledge</button>
         {knowledgeOpen && <button aria-pressed={chatVisible} onClick={() => setChatVisible((value) => !value)}>{chatVisible ? "Hide chat" : "Show chat"}</button>}

@@ -1,8 +1,8 @@
 {
   "schema": "loom.runtime_profile/1",
   "domain": "worker",
-  "revision": 1,
-  "description": "Worker timing, batching and transport recipe. Input/output generation uses existing semantic prompt, owned by thread1. Cost/message is an estimate placeholder, not actual charge.",
+  "revision": 2,
+  "description": "Worker timing, batching and transport recipe. Input/output generation uses existing semantic prompt, owned by thread1. Cost/message is an estimate placeholder, not actual charge. Per-message failures and interrupted claims require explicit requeue; batch polling remains process-local.",
   "defaults": {
     "drain_batch": 50,
     "idle_poll_ms": 30000,
@@ -30,7 +30,8 @@
       "canceled",
       "expired"
     ],
-    "submit_error_body_chars": 200
+    "submit_error_body_chars": 200,
+    "failure_recovery": "explicit_requeue"
   },
   "value_schema": {
     "x-setting": "",
@@ -57,7 +58,8 @@
       "strip_model_provider",
       "batch_estimate_per_message",
       "terminal_statuses",
-      "submit_error_body_chars"
+      "submit_error_body_chars",
+      "failure_recovery"
     ],
     "properties": {
       "drain_batch": {
@@ -203,6 +205,15 @@
         "x-setting": "/submit_error_body_chars",
         "x-consumer": "worker",
         "x-unit": "Unicode codepoints"
+      },
+      "failure_recovery": {
+        "type": "string",
+        "enum": [
+          "explicit_requeue"
+        ],
+        "x-setting": "/failure_recovery",
+        "x-consumer": "semantic_worker",
+        "description": "Implemented recovery policy for per-message failed/interrupted claims. Resume only unpauses the worker; update_msg semantic_status=pending explicitly requeues."
       }
     },
     "additionalProperties": false

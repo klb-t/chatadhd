@@ -166,6 +166,7 @@ Deliberate differences from the Python behaviour (each is documented in its head
 - `update_msg` enforces the status whitelist.
 - Bad JSON in a column is returned as a string instead of raising.
 - `ChatEngine` no longer sends the new user message twice.
+- Native per-message live/worker semantic analysis records a durable source-bound attempt before dispatch and atomically commits graph + completion. Failed/interrupted attempts require explicit requeue (`worker.pack`); valid empty results still succeed. Legacy Python only records visible failure outcomes; its graph writes and separate native batch consumers are not covered by this lifecycle. No schema DDL change or rewrite of historical `done` rows (2026-10-09, CH-011).
 - `estimate_cost` parses string prices.
 - Native TF-IDF is always available, so the default selector tier is 2.
 - The C ABI returns parsed JSON for metadata columns.

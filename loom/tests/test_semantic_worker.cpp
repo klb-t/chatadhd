@@ -55,6 +55,230 @@ bool wait_until(const std::function<bool()>& pred, std::chrono::milliseconds tim
 }  // namespace
 
 TEST_SUITE("semantic_worker") {
+  TEST_CASE("CH-011 invalid graph preflight cannot dispatch or complete a pending message") {
+    Env env;
+    const auto conv = unwrap(env.db->create_conv("preflight"));
+    const auto mid = env.add_pending_msg(conv.id, "Synthetic contact preflight@example.invalid for analysis");
+    env.cfg.set("semantic_model", "synthetic/model");
+    env.secrets.set("api_key", "synthetic-not-a-credential");
+    LOOM_REQUIRE_OK(fsutil::ensure_dir(env.td.path() / "profiles"));
+    const auto path = env.td.path() / "profiles/graph_ingest.pack";
+    auto overlay = [](const Json& overrides) {
+      return Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "graph_ingest"}, {"overrides", overrides}};
+    };
+    LOOM_REQUIRE_OK(fsutil::write_file(path, overlay(Json{{"min_input_codepoints", "invalid"}}).dump()));
+    auto worker = env.worker();
+    const auto failed = worker->drain_once();
+    REQUIRE_FALSE(failed);
+    CHECK(worker->status().processed == 0);
+    CHECK(worker->status().errors == 1);
+    CHECK(unwrap(env.db->get_msg(mid))->semantic_status == "pending");
+    CHECK(env.transport.requests().empty());
+    CHECK(unwrap(env.db->list_nodes()).empty());
+    LOOM_REQUIRE_OK(fsutil::write_file(path, overlay(Json::object()).dump()));
+    // Controlled transport returns a real error; SemanticLLM's established
+    // successful regex fallback still completes, rather than becoming failed.
+    env.transport.set_fallback(net::ScriptedTransport::Reply::fail(Errc::Timeout, "synthetic timeout"));
+    CHECK(unwrap(worker->drain_once()) == 1);
+    CHECK(env.transport.requests().size() == 1);
+    CHECK(unwrap(env.db->get_msg(mid))->semantic_status == "done");
+    CHECK(unwrap(env.db->find_node("preflight@example.invalid")).has_value());
+    const auto state = worker->status();
+    REQUIRE(state.failed.has_value()); REQUIRE(state.executing.has_value());
+    CHECK(*state.failed == 0); CHECK(*state.executing == 0); CHECK(state.counts_known);
+  }
+
+  TEST_CASE("CH-011 storage failures roll back graph and completion; repair needs explicit requeue after reopen") {
+    for (const std::string target : {"nodes", "links", "done"}) {
+      CAPTURE(target);
+      Env env;
+      const auto path = env.db->path();
+      const auto conv = unwrap(env.db->create_conv("failed storage"));
+      const auto mid = env.add_pending_msg(conv.id, "Synthetic storage storage@example.invalid result");
+      {
+        auto lock = env.db->lock();
+        const std::string trigger = target == "done"
+          ? "CREATE TRIGGER reject_analysis BEFORE UPDATE OF semantic_status ON messages WHEN NEW.semantic_status='done' BEGIN SELECT RAISE(ABORT, 'synthetic done failure'); END"
+          : "CREATE TRIGGER reject_analysis BEFORE INSERT ON " + target + " BEGIN SELECT RAISE(ABORT, 'synthetic graph failure'); END";
+        LOOM_REQUIRE_OK(env.db->conn().exec(trigger));
+      }
+      int events = 0;
+      env.bus.on(events::kGraphChanged, [&](std::string_view, const Json&) { ++events; });
+      auto worker = env.worker();
+      CHECK(unwrap(worker->drain_once()) == 0);
+      CHECK(worker->status().processed == 0);
+      CHECK(worker->status().errors == 1);
+      REQUIRE(worker->status().failed.has_value());
+      CHECK(*worker->status().failed == 1);
+      const auto message = *unwrap(env.db->get_msg(mid));
+      CHECK(message.semantic_status == "failed");
+      const auto history = message.metadata.at("loom_semantic_attempts");
+      REQUIRE(history.size() == 1);
+      CHECK(history[0]["state"] == "failed");
+      CHECK(history[0]["error"]["code"] == "conflict");
+      CHECK(history[0]["result"]["source"] == "regex");
+      CHECK_FALSE(message.metadata.contains("semantic_source"));
+      CHECK(unwrap(env.db->list_nodes()).empty());
+      CHECK(unwrap(env.db->get_links()).empty());
+      CHECK(events == 0);
+      CHECK(env.transport.requests().empty());
+      worker.reset(); env.db.reset();
+      auto reopened = loom::test::open_db(path);
+      GraphEngine graph(*reopened, env.bus, *env.analyzer);
+      SemanticWorker resumed(*reopened, env.llm, graph, env.cfg, env.secrets, env.bus, env.transport, *env.analyzer);
+      CHECK(unwrap(reopened->get_msg(mid))->metadata.at("loom_semantic_attempts") == history);
+      CHECK(*resumed.status().failed == 1);
+      {
+        auto lock = reopened->lock();
+        LOOM_REQUIRE_OK(reopened->conn().exec("DROP TRIGGER reject_analysis"));
+      }
+      resumed.resume();
+      CHECK(unwrap(resumed.drain_once()) == 0); // unpause/repair alone is not retry
+      MsgPatch requeue; requeue.semantic_status = "pending";
+      LOOM_REQUIRE_OK(reopened->update_msg(mid, requeue));
+      CHECK(unwrap(resumed.drain_once()) == 1);
+      CHECK(unwrap(resumed.drain_once()) == 0);
+      const auto complete = *unwrap(reopened->get_msg(mid));
+      CHECK(complete.semantic_status == "done");
+      REQUIRE(complete.metadata.at("loom_semantic_attempts").size() == 2);
+      CHECK(complete.metadata.at("loom_semantic_attempts")[0] == history[0]);
+      CHECK(complete.metadata.at("loom_semantic_attempts")[1]["state"] == "done");
+      CHECK(unwrap(reopened->find_node("storage@example.invalid")).has_value());
+      CHECK(events == 1);
+    }
+  }
+
+  TEST_CASE("CH-011 unwritable failure bookkeeping retains durable executing and never dispatches after reopen") {
+    Env env;
+    const auto path = env.db->path();
+    const auto conv = unwrap(env.db->create_conv("interrupted"));
+    const auto mid = env.add_pending_msg(conv.id, "Synthetic incomplete held@example.invalid analysis");
+    env.cfg.set("semantic_model", "synthetic/model");
+    env.secrets.set("api_key", "synthetic-not-a-credential");
+    env.transport.set_fallback(net::ScriptedTransport::Reply::fail(Errc::Timeout, "synthetic offline timeout"));
+    {
+      auto lock = env.db->lock();
+      LOOM_REQUIRE_OK(env.db->conn().exec(
+        "CREATE TRIGGER reject_graph BEFORE INSERT ON links BEGIN SELECT RAISE(ABORT, 'synthetic link failure'); END;"
+        "CREATE TRIGGER reject_failure BEFORE UPDATE OF semantic_status ON messages WHEN NEW.semantic_status='failed' "
+        "BEGIN SELECT RAISE(ABORT, 'synthetic failure bookkeeping'); END"));
+    }
+    WorkerOptions options; options.llm_rate_limit = 0;
+    auto worker = env.worker(options);
+    CHECK(unwrap(worker->drain_once()) == 0);
+    CHECK(env.transport.requests().size() == 1);
+    CHECK(worker->status().processed == 0);
+    CHECK(worker->status().errors == 1);
+    CHECK(*worker->status().executing == 1);
+    const auto before = *unwrap(env.db->get_msg(mid));
+    CHECK(before.semantic_status == "executing");
+    CHECK(before.metadata.at("loom_semantic_attempts").back()["state"] == "executing");
+    CHECK(unwrap(env.db->list_nodes()).empty());
+    worker.reset(); env.db.reset();
+    auto reopened = loom::test::open_db(path);
+    GraphEngine graph(*reopened, env.bus, *env.analyzer);
+    SemanticWorker resumed(*reopened, env.llm, graph, env.cfg, env.secrets, env.bus, env.transport, *env.analyzer);
+    CHECK(unwrap(reopened->get_msg(mid))->metadata == before.metadata);
+    CHECK(unwrap(resumed.drain_once()) == 0);
+    CHECK(*resumed.status().executing == 1);
+    CHECK(env.transport.requests().size() == 1);
+  }
+
+  TEST_CASE("CH-011 successful empty analysis remains done; unknown stored states are not complete") {
+    Env env;
+    const auto conv = unwrap(env.db->create_conv("empty"));
+    const auto mid = env.add_pending_msg(conv.id, "Synthetic plain greeting without extracted entities");
+    auto worker = env.worker();
+    CHECK(unwrap(worker->drain_once()) == 1);
+    CHECK(unwrap(env.db->get_msg(mid))->semantic_status == "done");
+    CHECK(unwrap(env.db->list_nodes()).empty());
+    CHECK(worker->status().errors == 0);
+    CHECK(worker->status().counts_known);
+    MsgPatch unknown; unknown.semantic_status = "future_custom_state";
+    LOOM_REQUIRE_OK(env.db->update_msg(mid, unknown));
+    CHECK_FALSE(worker->status().counts_known);
+    CHECK_FALSE(worker->status().to_json()["counts_known"].get<bool>());
+    {
+      auto lock = env.db->lock();
+      LOOM_REQUIRE_OK(env.db->conn().exec("ALTER TABLE messages RENAME TO temporarily_unavailable_messages"));
+    }
+    const auto unavailable = worker->status().to_json();
+    CHECK_FALSE(unavailable["counts_known"].get<bool>());
+    CHECK(unavailable["failed"].is_null()); CHECK(unavailable["executing"].is_null());
+    {
+      auto lock = env.db->lock();
+      LOOM_REQUIRE_OK(env.db->conn().exec("ALTER TABLE temporarily_unavailable_messages RENAME TO messages"));
+    }
+  }
+
+  TEST_CASE("CH-011 transport observes durable claim and cannot change pinned graph recipe or overwrite newer source") {
+    for (const std::string mutation : {"profile", "text", "excluded", "requeue", "new_attempt"}) {
+      CAPTURE(mutation);
+      Env env;
+      const auto conv = unwrap(env.db->create_conv("controlled transport"));
+      const std::string source = "Synthetic original original@example.invalid analysis";
+      const auto mid = env.add_pending_msg(conv.id, source);
+      env.cfg.set("semantic_model", "synthetic/model");
+      env.cfg.set("base_url", "https://offline.invalid");
+      env.secrets.set("api_key", "synthetic-not-a-credential");
+      const auto pinned = unwrap(RuntimeProfile::builtin("graph_ingest"));
+      std::optional<SemanticAttempt> newer;
+      Json latest_metadata;
+      struct ControlledTransport final : net::HttpTransport {
+        std::function<void()> during;
+        int requests = 0;
+        Result<net::HttpResponse> send(const net::HttpRequest&, const net::StreamSink*, const CancelToken*) override {
+          ++requests; during();
+          const Json analysis{{"entities", Json::array()}, {"topics", Json::array()}, {"relations", Json::array()},
+                              {"summary", "synthetic result"}, {"sentiment", "neutral"}};
+          const Json response{{"choices", Json::array({Json{{"message", Json{{"content", analysis.dump()}}}}})}};
+          return net::HttpResponse{200, {}, response.dump()};
+        }
+        std::string name() const override { return "controlled semantic fixture"; }
+      } transport;
+      transport.during = [&] {
+        const auto claimed = *unwrap(env.db->get_msg(mid));
+        REQUIRE(claimed.semantic_status == "executing");
+        REQUIRE(claimed.metadata.at("loom_semantic_attempts").size() == 1);
+        if (mutation == "profile") {
+          LOOM_REQUIRE_OK(fsutil::ensure_dir(env.td.path() / "profiles"));
+          LOOM_REQUIRE_OK(fsutil::write_file(env.td.path() / "profiles/graph_ingest.pack",
+            Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "graph_ingest"},
+              {"overrides", {{"entities", {{"min_relevance", 2.0}}}}}}.dump()));
+        } else {
+          MsgPatch patch;
+          if (mutation == "text") patch.text = "Synthetic newer edit newer@example.invalid analysis";
+          else if (mutation == "excluded") patch.status = msg_status::kExcluded;
+          else patch.semantic_status = "pending";
+          LOOM_REQUIRE_OK(env.db->update_msg(mid, patch));
+          if (mutation == "new_attempt") {
+            newer = unwrap(env.graph.begin_analysis(mid, source, conv.id, pinned));
+          }
+          latest_metadata = unwrap(env.db->get_msg(mid))->metadata;
+        }
+      };
+      SemanticLLM llm(env.cfg, env.secrets, transport, *env.analyzer);
+      WorkerOptions options; options.llm_rate_limit = 0;
+      SemanticWorker worker(*env.db, llm, env.graph, env.cfg, env.secrets, env.bus, transport, *env.analyzer, nullptr, options);
+      CHECK(unwrap(worker.drain_once()) == (mutation == "profile" ? 1 : 0));
+      CHECK(transport.requests == 1);
+      const auto after = *unwrap(env.db->get_msg(mid));
+      if (mutation == "profile") {
+        CHECK(after.semantic_status == "done");
+        CHECK(after.metadata.at("loom_semantic_attempts").back()["graph_profile"]["hash"] == pinned.hash());
+        CHECK(unwrap(env.db->find_node("original@example.invalid")).has_value());
+        CHECK(unwrap(RuntimeProfile::load("graph_ingest", env.td.path())).hash() != pinned.hash());
+      } else {
+        CHECK(after.metadata == latest_metadata);
+        CHECK(after.semantic_status == (mutation == "requeue" ? "pending" : "executing"));
+        CHECK(unwrap(env.db->list_nodes()).empty());
+        CHECK(worker.status().errors == 1);
+        if (mutation == "text") CHECK(after.text != source);
+        if (mutation == "excluded") CHECK(after.status == msg_status::kExcluded);
+        if (newer) CHECK(after.metadata.at("loom_semantic_attempts").back()["id"] == newer->id);
+      }
+    }
+  }
   TEST_CASE("worker options are a preset; larger queues and zero waits are configurable") {
     auto builtin = unwrap(RuntimeProfile::builtin("worker"));
     auto profile = unwrap(builtin.with_overrides(Json{{"drain_batch", 750}, {"batch_max_messages", 20001},
@@ -69,6 +293,8 @@ TEST_SUITE("semantic_worker") {
     CHECK(opts.batch_endpoint == "https://offline.invalid/batches");
     CHECK_FALSE(WorkerOptions::from_profile(unwrap(RuntimeProfile::builtin("media"))));
     CHECK_FALSE(builtin.with_overrides(Json{{"idle_poll_ms", std::numeric_limits<std::uint64_t>::max()}}));
+    CHECK(builtin.values().at("failure_recovery") == "explicit_requeue");
+    CHECK_FALSE(builtin.with_overrides(Json{{"failure_recovery", "automatic_retry"}}));
     Json forged_definition = builtin.definition();
     forged_definition["value_schema"] = Json{{"type", "object"}};
     forged_definition["defaults"]["drain_batch"] = "invalid";

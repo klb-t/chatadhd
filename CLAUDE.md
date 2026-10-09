@@ -102,7 +102,7 @@ chatadhd/
 - **Tables:** `_meta`, `conversations`, `messages`, `nodes`, `links`
 - **Schema migrations** are forward-only, guarded by `has_column()` checks.
 - Message statuses: `active` | `excluded` | `version` | `deleted`
-- `semantic_status` column on messages: `pending` → `done` (drives the background worker)
+- `semantic_status` is a text column. Native per-message live/worker analysis now uses `pending` → durable `executing` → `done` or `failed`; explicit `pending` requeues failed/interrupted work. Legacy Python records visible failures as `failed` but does not implement the native atomic claim. Historical rows and separate batch consumers are not rewritten (see the 2026-10-09 B report).
 - IDs are prefixed hex strings: `c_`, `m_`, `vg_`, `n_`, `l_`
 - Batch insert via `batch_create_msgs()` for bulk imports (1000/transaction)
 

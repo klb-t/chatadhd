@@ -1,35 +1,13 @@
 // loom/semantic_worker.h — port of engine/semantic_worker.py. [OWNER: wave 2 net/chat/worker]
 //
 // Background thread draining messages with semantic_status='pending'.
-// Behaviour to preserve (defaults in WorkerOptions mirror the Python constants):
-//   loop (after startup_delay): paused -> wait on wake (5 s) ; else
-//     drain_once(); when it processed 0: poll an active batch, mode "idle",
-//     wait on wake up to idle_poll; exceptions logged, 5 s back-off.
-//   drain_once(): msgs = get_unanalysed_msgs(drain_batch); use_llm =
-//     llm.enabled() && config.semantic_analysis; if count_pending > 500 &&
-//     use_llm && secrets.anthropic_batch_key -> submit a Message Batch (one
-//     active at a time, up to 10000 msgs, model = semantic_model without the
-//     "provider/" prefix, POST https://api.anthropic.com/v1/messages/batches
-//     with x-api-key/anthropic-version 2023-06-01, timeout 120) and return 0;
-//     else per message (stop on stop/pause): analysis = llm.analyse (then
-//     sleep 1/llm_rate_limit) or the regex unified dict ->
-//     graph.ingest_analysis(id, conv_id, analysis) -> mark_analysed; errors
-//     -> ++errors and mark_analysed({"source":"error"}). Afterwards rate =
-//     count/elapsed, and when count > 0 emit semantic:progress {"processed":
-//     count, "pending": remaining, "mode"}.
-//   batch poll: GET .../batches/{id}; "ended" -> fetch JSONL results
-//     (succeeded -> concat text blocks, strip fences, JSON, source
-//     "llm_batch", ingest + mark; else mark {"source":"batch_error"}), emit
-//     semantic:progress {"processed","pending","mode":"batch"}; failed/
-//     canceled/expired -> forget batch.
-//   status(): {"pending","processed","errors","mode","rate":"<x.y>/s",
-//     "batch_id","batch_submitted"}; modes: idle | paused | regex | llm |
-//     batch_submit | batch_wait | batch_poll | batch_ingest.
-//   Wakes on import:done.
-// Loom additions: the active batch id is persisted (loom_tasks, kind
-// "semantic.anthropic_batch") so a restart resumes polling instead of
-// re-submitting; stop() is prompt (condition variable, no sleeps > 100 ms
-// between stop checks); drain_once() is public for deterministic tests.
+// Per-message analysis claims a durable executing state before dispatch and
+// atomically completes graph writes + done, or records failed with evidence.
+// Failed/interrupted attempts require explicit requeue through update_msg;
+// pause/resume is only worker scheduling, never permission to retry.
+// Existing batch helpers are separate: active batch identity is process-local,
+// and durable batch polling/recovery is not implemented by this worker.
+// stop() is interruptible; drain_once() permits deterministic runtime tests.
 #pragma once
 
 #include <atomic>
@@ -73,6 +51,9 @@ struct WorkerOptions {
 
 struct WorkerStatus {
   std::int64_t pending = 0;
+  std::optional<std::int64_t> failed;
+  std::optional<std::int64_t> executing;
+  bool counts_known = false;
   std::int64_t processed = 0;
   std::int64_t errors = 0;
   std::string mode = "idle";
