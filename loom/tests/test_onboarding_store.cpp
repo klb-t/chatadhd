@@ -313,6 +313,53 @@ TEST_SUITE("onboarding native persistence") {
     CHECK(unwrap(store.read(kSyntheticUser))["revision"] == 2);
   }
 
+  TEST_CASE("graph privacy caps cannot be bypassed by omitted or understated field classifications") {
+    fsutil::TempDir temp;
+    const auto path = temp.path() / "classification-policy.db";
+    {
+      auto db = open_db(path, offline_options());
+      OnboardingStore store(*db);
+      auto state = unwrap(store.open(kSyntheticUser));
+      state = known_preference(store, state, "identity.description", "synthetic/classification", "synthetic tester");
+      const auto descriptor = state["profile"]["fields"]["identity.description"];
+      Json request{{"op", "send"}, {"category", descriptor["category"]},
+                   {"field", "identity.description"}, {"provider", "offline/provider-a"}};
+      auto privacy = state["profile"]["privacy"];
+      privacy["rules"][0]["providers"] = Json::array({"offline/provider-a"});
+      auto overlay = profile_action("override", "synthetic/caps");
+      overlay["target"] = "layers"; overlay["key"] = "onboarding.privacy";
+      // Uncapped defaults still accept the same request through the real store.
+      overlay["value"] = privacy;
+      state = apply(store, state, overlay);
+      CHECK(unwrap(store.policy_decision(kSyntheticUser, request))["allowed"] == true);
+      for (const auto& [key, cap] : {std::pair{"detail", "max_detail"}, std::pair{"sensitivity", "max_sensitivity"}}) {
+        REQUIRE(descriptor[key].get<double>() > 0);
+        privacy["rules"][0][cap] = 0;
+        overlay["value"] = privacy;
+        state = apply(store, state, overlay);
+        auto decision = unwrap(store.policy_decision(kSyntheticUser, request));
+        CHECK(decision["allowed"] == false);
+        CHECK(decision["resolution"]["layer"] == "user");
+        request[key] = 0; // Caller cannot downgrade the saved classification.
+        CHECK(unwrap(store.policy_decision(kSyntheticUser, request))["allowed"] == false);
+        request.erase(key);
+        CHECK(unwrap(store.model_request(kSyntheticUser, "offline/provider-a"))["context"].empty());
+        auto unidentified = request; unidentified.erase("field");
+        CHECK_FALSE(store.policy_decision(kSyntheticUser, unidentified));
+        privacy["rules"][0][cap] = nullptr;
+      }
+      // The final sensitivity cap remains in the durable overlay.
+    }
+    auto db = open_db(path, offline_options());
+    OnboardingStore restored(*db);
+    const auto state = unwrap(restored.open(kSyntheticUser));
+    const auto descriptor = state["profile"]["fields"]["identity.description"];
+    CHECK(unwrap(restored.policy_decision(kSyntheticUser, Json{{"op", "send"},
+        {"category", descriptor["category"]}, {"field", "identity.description"},
+        {"provider", "offline/provider-a"}}))["allowed"] == false);
+    CHECK(unwrap(restored.model_request(kSyntheticUser, "offline/provider-a"))["context"].empty());
+  }
+
   TEST_CASE("privacy and settings layer overlays govern provider transmission and automatic preference storage") {
     fsutil::TempDir temp;
     auto db = open_db(temp.path() / "layer-policy.db", offline_options());

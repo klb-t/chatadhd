@@ -121,3 +121,14 @@ model callbacks. Expert scenario editing calls `update_pack(user, revision,
 pack, scenario)`; method hashes cover the effective prompt, questions, fields,
 categories and recipe through data-defined copy bindings. No arbitrary limit
 on methods, providers or user-defined keys is introduced.
+
+### Classification caps (2026-10-09)
+
+A request referring to a saved field cannot omit or understate that field's
+`detail` or `sensitivity` to bypass a selected category cap. Both the saved
+classification and any explicit request classification must satisfy the cap.
+Without a field, a capped dimension requires explicit classification; missing
+classification returns `InvalidArgument`, rather than authorization. Uncapped
+rules keep their existing behavior. `policy_decision` still returns the effective
+R40 resolution/revision; `model_request` uses the same check before including
+profile values. This does not extend policy coverage to ordinary chat transport.

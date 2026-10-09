@@ -232,9 +232,19 @@ Result<Json> privacy_decision(const Json& state, const Json& request) {
       return deny("provider is not allowed for category");
     for (const auto& [key, cap] : {std::pair{"detail", "max_detail"}, std::pair{"sensitivity", "max_sensitivity"}}) {
       const auto* value = json::find(request, key);
+      // A field's classification is authoritative graph data. Omitting or
+      // understating it in a caller request must not bypass the selected cap.
+      const auto* descriptor = id.empty() ? nullptr : field(state, id);
+      const auto* declared = descriptor ? json::find(*descriptor, key) : nullptr;
       if (value && (!value->is_number() || value->get<double>() < 0)) return invalid("detail and sensitivity must be nonnegative numbers");
-      if (value && !(*rule)[cap].is_null() && value->get<double>() > (*rule)[cap].get<double>())
-        return deny(std::string("requested ") + key + " exceeds category rule");
+      if (declared && (!declared->is_number() || declared->get<double>() < 0))
+        return invalid("profile detail and sensitivity must be nonnegative numbers");
+      if (!(*rule)[cap].is_null()) {
+        if (!value && !declared) return invalid(std::string("privacy request needs ") + key + " for a capped category");
+        const double limit = (*rule)[cap].get<double>();
+        if ((value && value->get<double>() > limit) || (declared && declared->get<double>() > limit))
+          return deny(std::string("requested ") + key + " exceeds category rule");
+      }
     }
     return result;
   } catch (const std::exception& e) { return invalid(std::string("malformed privacy state: ") + e.what()); }
