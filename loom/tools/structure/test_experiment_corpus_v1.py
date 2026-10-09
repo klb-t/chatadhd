@@ -1,7 +1,10 @@
 """Mechanical fixtures; no model-quality claims or paid inference."""
 import copy
+import io
 import json
 from pathlib import Path
+import subprocess
+import sys
 import tempfile
 import unittest
 import zipfile
@@ -107,6 +110,102 @@ class CorpusTests(unittest.TestCase):
     def test_bad_timestamp_remains_unknown(self):
         r = normal(); r["messages"][0]["created_at"] = None
         self.assertIsNone(corpus.time_range([r])["start"])
+
+class HistoricalGuardTests(unittest.TestCase):
+    def fixture(self, root):
+        root = Path(root); historical = root / "historical"; historical.mkdir()
+        source_buffer = io.BytesIO()
+        hashes = []
+        with zipfile.ZipFile(source_buffer, "w") as source:
+            for index in range(2):
+                obj = oa(str(index)); hashes.append(corpus.digest(obj))
+                name = str(index) + "/original-conversation.json"
+                source.writestr(name, corpus.canonical(obj))
+                local = historical / name; local.parent.mkdir(); local.write_bytes(corpus.canonical(obj))
+        source_bytes = source_buffer.getvalue()
+        manifest = {"files": {"source.zip": {"bytes": len(source_bytes), "sha256": corpus.digest(source_bytes)}}}
+        checkpoint = root / "checkpoint.zip"
+        with zipfile.ZipFile(checkpoint, "w") as archive:
+            archive.writestr("source.zip", source_bytes)
+            archive.writestr("manifest.json", corpus.canonical(manifest))
+        guard = {"expected_count": 2, "canonical_object_sha256": hashes,
+                 "checkpoint_sha256": corpus.digest(checkpoint.read_bytes()),
+                 "checkpoint_manifest_member": "manifest.json", "source_freeze_member": "source.zip",
+                 "source_freeze_sha256": corpus.digest(source_bytes)}
+        return historical, checkpoint, guard
+    def test_bound_historical_panel_passes(self):
+        with tempfile.TemporaryDirectory() as root:
+            historical, checkpoint, guard = self.fixture(root)
+            self.assertEqual(len(corpus.verify_historical_panel(historical, guard, checkpoint)), 2)
+    def test_missing_directory_fails_closed(self):
+        with tempfile.TemporaryDirectory() as root:
+            _, checkpoint, guard = self.fixture(root)
+            with self.assertRaisesRegex(ValueError, "historical_directory_missing"):
+                corpus.verify_historical_panel(Path(root) / "missing", guard, checkpoint)
+    def test_empty_directory_fails_closed(self):
+        with tempfile.TemporaryDirectory() as root:
+            _, checkpoint, guard = self.fixture(root); empty = Path(root) / "empty"; empty.mkdir()
+            with self.assertRaisesRegex(ValueError, "historical_count_mismatch"):
+                corpus.verify_historical_panel(empty, guard, checkpoint)
+    def test_wrong_count_fails_closed(self):
+        with tempfile.TemporaryDirectory() as root:
+            historical, checkpoint, guard = self.fixture(root)
+            (historical / "1/original-conversation.json").unlink()
+            with self.assertRaisesRegex(ValueError, "historical_count_mismatch"):
+                corpus.verify_historical_panel(historical, guard, checkpoint)
+    def test_changed_object_fails_closed(self):
+        with tempfile.TemporaryDirectory() as root:
+            historical, checkpoint, guard = self.fixture(root)
+            (historical / "1/original-conversation.json").write_bytes(corpus.canonical(oa("changed")))
+            with self.assertRaisesRegex(ValueError, "historical_object_hash_mismatch"):
+                corpus.verify_historical_panel(historical, guard, checkpoint)
+    def test_checkpoint_required(self):
+        with tempfile.TemporaryDirectory() as root:
+            historical, _, guard = self.fixture(root)
+            with self.assertRaisesRegex(ValueError, "historical_checkpoint_required"):
+                corpus.verify_historical_panel(historical, guard, None)
+    def test_changed_checkpoint_rejected(self):
+        with tempfile.TemporaryDirectory() as root:
+            historical, checkpoint, guard = self.fixture(root)
+            checkpoint.write_bytes(checkpoint.read_bytes() + b"unbound")
+            with self.assertRaisesRegex(ValueError, "historical_checkpoint_hash_mismatch"):
+                corpus.verify_historical_panel(historical, guard, checkpoint)
+    def test_checkpoint_member_binding_verified(self):
+        with tempfile.TemporaryDirectory() as root:
+            historical, checkpoint, guard = self.fixture(root)
+            guard["source_freeze_sha256"] = "0" * 64
+            with self.assertRaisesRegex(ValueError, "historical_checkpoint_member_binding_mismatch"):
+                corpus.verify_historical_panel(historical, guard, checkpoint)
+    def test_local_hash_list_must_match_checkpoint_objects(self):
+        with tempfile.TemporaryDirectory() as root:
+            historical, checkpoint, guard = self.fixture(root)
+            replacement = oa("replacement")
+            (historical / "1/original-conversation.json").write_bytes(corpus.canonical(replacement))
+            guard["canonical_object_sha256"][1] = corpus.digest(replacement)
+            with self.assertRaisesRegex(ValueError, "historical_checkpoint_object_binding_mismatch"):
+                corpus.verify_historical_panel(historical, guard, checkpoint)
+    def test_zero_expected_panel_forbidden(self):
+        with tempfile.TemporaryDirectory() as root:
+            historical, checkpoint, guard = self.fixture(root)
+            guard.update(expected_count=0, canonical_object_sha256=[])
+            with self.assertRaisesRegex(ValueError, "historical_guard_invalid_expectation"):
+                corpus.verify_historical_panel(historical, guard, checkpoint)
+    def test_legacy_policy_requires_explicit_upgrade(self):
+        with self.assertRaisesRegex(ValueError, "historical_guard_required"):
+            corpus.prepare("missing", "missing", "missing", {}, "missing")
+    def test_old_cli_without_checkpoint_fails_closed(self):
+        result = subprocess.run([sys.executable, corpus.__file__, "--source", "missing", "--audit", "missing",
+                                 "--historical", "missing", "--policy", "missing", "--output", "missing",
+                                 "--receipt", "missing"], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("--historical-checkpoint", result.stderr)
+    def test_prepare_missing_historical_creates_no_output(self):
+        with tempfile.TemporaryDirectory() as root:
+            _, checkpoint, guard = self.fixture(root); output = Path(root) / "output"
+            with self.assertRaisesRegex(ValueError, "historical_directory_missing"):
+                corpus.prepare("missing", "missing", Path(root) / "absent", {"historical_panel_guard": guard}, output,
+                               historical_checkpoint=checkpoint)
+            self.assertFalse(output.exists())
 
 if __name__ == "__main__":
     unittest.main()

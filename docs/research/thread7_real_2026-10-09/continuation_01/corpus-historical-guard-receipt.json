@@ -1,0 +1,13 @@
+{
+  "schema": "loom.research_corpus_historical_guard_receipt/1",
+  "status": "pass",
+  "policy_version": "thread7-expansion-20261009-v1.1",
+  "policy_sha256": "1b2d84dce554f06e9767d4c692f7b3a464f624a2718a967e4692d8bc143941fc",
+  "verified_historical_count": 3,
+  "checkpoint_sha256": "137c49ab13681d036b955039a580aff3cb86bc342b62981c484abcfe9363c28e",
+  "source_freeze_sha256": "5f976bbf9cee15dfe232e329dc2c85ebc40cae981af7ceedc56fc8e08719a832",
+  "preserved_previous_corpus_freeze_sha256": "324d33a17ac09cc3b1c1dd11fb875b10d2a7ccf1f4c7b2fb06c313f9ba7e209f",
+  "previous_freeze_not_regenerated": true,
+  "new_calls": 0,
+  "new_cost_usd": "0"
+}

@@ -1,0 +1,19 @@
+{
+  "schema": "loom.thread7_stage_seal/1",
+  "stage": "1.1",
+  "name": "historical_source_guard",
+  "parent_commit": "9416d6f3f573542b299deb77772418154e7806d0",
+  "files": {
+    "docs/research/thread7_real_2026-10-09/continuation_01/corpus-guard-test-output.txt": "ea5b8f648c12648fc225d58c0cd72b9908b3cee73384c92a6029870a86bcc3b7",
+    "docs/research/thread7_real_2026-10-09/continuation_01/corpus-guard-tests.json": "a971dc5aab818daa960b4be8dfc874b265717ff639740cc1d9697b6a02974f83",
+    "docs/research/thread7_real_2026-10-09/continuation_01/corpus-guard-v1_1.md": "c531b3cebee2b67952422f1f87d5c0cbb10b0bc497522f202d0cfd98cd373255",
+    "docs/research/thread7_real_2026-10-09/continuation_01/corpus-policy-v1_1.json": "f3349ce8e765809fc94c9c004e192203c60737a372e60830242a4daabcfca40d",
+    "docs/research/thread7_real_2026-10-09/continuation_01/corpus-historical-guard-receipt.json": "5de3db254ba9b7f3c5d4d2221b5cf09b9449bbec0eb1f1095f1a270ca0aa8817",
+    "loom/tools/structure/experiment_corpus_v1.py": "b1e62fb871479a89d9258c77c1754d28ba5752f54f0eed221105d9abe1dd702e",
+    "loom/tools/structure/test_experiment_corpus_v1.py": "1f3fbfde5e3402f2fc10c48325743a84a81a76ea8ea744d634fa21cc7c93d439"
+  },
+  "previous_corpus_freeze_unchanged": true,
+  "test_count": 33,
+  "new_calls": 0,
+  "new_cost_usd": "0"
+}

@@ -5,6 +5,7 @@ import argparse
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
 import hashlib
+import io
 import json
 from pathlib import Path
 import re
@@ -33,6 +34,61 @@ def private_directory(path):
 
 def native_id(obj, provider):
     return str(obj.get("conversation_id") or obj.get("id") or obj.get("uuid") or "")
+
+def verify_historical_panel(historical, guard, checkpoint):
+    """Authenticate both the expected panel and the local exclusion inputs.
+
+    The policy binds canonical object hashes to immutable checkpoint bytes.
+    A missing directory must never silently become an empty historical panel.
+    This verifies evidence without changing any previous freeze or manifest.
+    """
+    if not isinstance(guard, dict):
+        raise ValueError("historical_guard_required")
+    required = {"expected_count", "canonical_object_sha256", "checkpoint_sha256",
+                "checkpoint_manifest_member", "source_freeze_member", "source_freeze_sha256"}
+    if not required.issubset(guard):
+        raise ValueError("historical_guard_incomplete")
+    count = guard["expected_count"]
+    hashes = guard["canonical_object_sha256"]
+    if (type(count) is not int or count < 1 or not isinstance(hashes, list)
+            or len(hashes) != count
+            or any(not isinstance(value, str) or not re.fullmatch(r"[0-9a-f]{64}", value) for value in hashes)
+            or len(set(hashes)) != count):
+        raise ValueError("historical_guard_invalid_expectation")
+    path = Path(historical)
+    if not path.is_dir():
+        raise ValueError("historical_directory_missing")
+    paths = sorted(path.rglob("original-conversation.json"))
+    if len(paths) != count:
+        raise ValueError("historical_count_mismatch")
+    try:
+        local_objects = [(str(p), json.loads(p.read_bytes())) for p in paths]
+    except (OSError, ValueError):
+        raise ValueError("historical_object_unreadable") from None
+    if sorted(digest(obj) for _, obj in local_objects) != sorted(hashes):
+        raise ValueError("historical_object_hash_mismatch")
+    if checkpoint is None or not Path(checkpoint).is_file():
+        raise ValueError("historical_checkpoint_required")
+    checkpoint_bytes = Path(checkpoint).read_bytes()
+    if digest(checkpoint_bytes) != guard["checkpoint_sha256"]:
+        raise ValueError("historical_checkpoint_hash_mismatch")
+    try:
+        with zipfile.ZipFile(io.BytesIO(checkpoint_bytes)) as archive:
+            manifest = json.loads(archive.read(guard["checkpoint_manifest_member"]))
+            source_bytes = archive.read(guard["source_freeze_member"])
+            member_record = manifest["files"][guard["source_freeze_member"]]
+            if (digest(source_bytes) != guard["source_freeze_sha256"]
+                    or member_record["sha256"] != guard["source_freeze_sha256"]
+                    or member_record["bytes"] != len(source_bytes)):
+                raise ValueError("historical_checkpoint_member_binding_mismatch")
+        with zipfile.ZipFile(io.BytesIO(source_bytes)) as source_archive:
+            names = [name for name in source_archive.namelist() if name.endswith("/original-conversation.json")]
+            embedded_hashes = [digest(json.loads(source_archive.read(name))) for name in names]
+        if len(embedded_hashes) != count or sorted(embedded_hashes) != sorted(hashes):
+            raise ValueError("historical_checkpoint_object_binding_mismatch")
+    except (KeyError, TypeError, zipfile.BadZipFile, json.JSONDecodeError):
+        raise ValueError("historical_checkpoint_evidence_invalid") from None
+    return local_objects
 
 def extract_text(message, provider):
     """Only literal text: preserve raw beside this deliberate text projection."""
@@ -217,7 +273,10 @@ def time_range(records):
     return {"start": min(values) if values else None, "end": max(values) if values else None,
             "messages_with_valid_timestamp": len(values)}
 
-def prepare(source, audit_path, historical, policy, output):
+def prepare(source, audit_path, historical, policy, output, historical_checkpoint=None):
+    historical_objects = verify_historical_panel(historical, policy.get("historical_panel_guard"), historical_checkpoint)
+    if policy["historical_panel_guard"]["checkpoint_sha256"] != policy["previous_private_checkpoint_sha256"]:
+        raise ValueError("historical_predecessor_binding_mismatch")
     source = Path(source); audit_path = Path(audit_path)
     if digest(source.read_bytes()) != policy["source_zip_sha256"]:
         raise ValueError("source_zip_hash_mismatch")
@@ -255,8 +314,8 @@ def prepare(source, audit_path, historical, policy, output):
     if len(records) != len(selected_ids):
         raise ValueError("selector_count_mismatch")
     old = []
-    for path in sorted(Path(historical).rglob("original-conversation.json")):
-        record = normalized(json.loads(path.read_text()), "openai", str(path))
+    for path, obj in historical_objects:
+        record = normalized(obj, "openai", path)
         record["historical_panel"] = True
         old.append(record)
     combined = records + old
@@ -337,8 +396,10 @@ def main():
     p = argparse.ArgumentParser()
     for key in ("source", "audit", "historical", "policy", "output", "receipt"):
         p.add_argument("--" + key, required=True)
+    p.add_argument("--historical-checkpoint", required=True)
     a = p.parse_args()
-    receipt = prepare(a.source, a.audit, a.historical, json.loads(Path(a.policy).read_text()), a.output)
+    receipt = prepare(a.source, a.audit, a.historical, json.loads(Path(a.policy).read_text()), a.output,
+                      historical_checkpoint=a.historical_checkpoint)
     Path(a.receipt).write_bytes(canonical(receipt) + b"\n")
     print(json.dumps({"families": receipt["panel_families"], "messages": receipt["panel_messages"], "new_calls": 0}))
 

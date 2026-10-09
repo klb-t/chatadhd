@@ -1,0 +1,38 @@
+test_anthropic_native_parent_only (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_anthropic_native_parent_only) ... ok
+test_bad_timestamp_remains_unknown (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_bad_timestamp_remains_unknown) ... ok
+test_branching_evidence_is_structural (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_branching_evidence_is_structural) ... ok
+test_deterministic_selection (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_deterministic_selection) ... ok
+test_duplicate_id_union (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_duplicate_id_union) ... ok
+test_exact_substantial_overlap_union (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_exact_substantial_overlap_union) ... ok
+test_exposed_never_validation (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_exposed_never_validation) ... ok
+test_family_not_in_both_splits (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_family_not_in_both_splits) ... ok
+test_family_transitivity (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_family_transitivity) ... ok
+test_historical_overlap_excluded (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_historical_overlap_excluded) ... ok
+test_mixed_timestamp_formats (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_mixed_timestamp_formats) ... ok
+test_null_message_nodes_retained (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_null_message_nodes_retained) ... ok
+test_only_user_cues (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_only_user_cues) ... ok
+test_output_git_guard (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_output_git_guard) ... ok
+test_output_is_immutable_new_directory (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_output_is_immutable_new_directory) ... ok
+test_raw_object_and_all_metadata_preserved (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_raw_object_and_all_metadata_preserved) ... ok
+test_role_bound_overlap (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_role_bound_overlap) ... ok
+test_short_common_text_does_not_union (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_short_common_text_does_not_union) ... ok
+test_text_is_explicit_projection (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_text_is_explicit_projection) ... ok
+test_tool_evidence_is_native (loom.tools.structure.test_experiment_corpus_v1.CorpusTests.test_tool_evidence_is_native) ... ok
+test_bound_historical_panel_passes (loom.tools.structure.test_experiment_corpus_v1.HistoricalGuardTests.test_bound_historical_panel_passes) ... ok
+test_changed_checkpoint_rejected (loom.tools.structure.test_experiment_corpus_v1.HistoricalGuardTests.test_changed_checkpoint_rejected) ... ok
+test_changed_object_fails_closed (loom.tools.structure.test_experiment_corpus_v1.HistoricalGuardTests.test_changed_object_fails_closed) ... ok
+test_checkpoint_member_binding_verified (loom.tools.structure.test_experiment_corpus_v1.HistoricalGuardTests.test_checkpoint_member_binding_verified) ... ok
+test_checkpoint_required (loom.tools.structure.test_experiment_corpus_v1.HistoricalGuardTests.test_checkpoint_required) ... ok
+test_empty_directory_fails_closed (loom.tools.structure.test_experiment_corpus_v1.HistoricalGuardTests.test_empty_directory_fails_closed) ... ok
+test_legacy_policy_requires_explicit_upgrade (loom.tools.structure.test_experiment_corpus_v1.HistoricalGuardTests.test_legacy_policy_requires_explicit_upgrade) ... ok
+test_local_hash_list_must_match_checkpoint_objects (loom.tools.structure.test_experiment_corpus_v1.HistoricalGuardTests.test_local_hash_list_must_match_checkpoint_objects) ... ok
+test_missing_directory_fails_closed (loom.tools.structure.test_experiment_corpus_v1.HistoricalGuardTests.test_missing_directory_fails_closed) ... ok
+test_old_cli_without_checkpoint_fails_closed (loom.tools.structure.test_experiment_corpus_v1.HistoricalGuardTests.test_old_cli_without_checkpoint_fails_closed) ... ok
+test_prepare_missing_historical_creates_no_output (loom.tools.structure.test_experiment_corpus_v1.HistoricalGuardTests.test_prepare_missing_historical_creates_no_output) ... ok
+test_wrong_count_fails_closed (loom.tools.structure.test_experiment_corpus_v1.HistoricalGuardTests.test_wrong_count_fails_closed) ... ok
+test_zero_expected_panel_forbidden (loom.tools.structure.test_experiment_corpus_v1.HistoricalGuardTests.test_zero_expected_panel_forbidden) ... ok
+
+----------------------------------------------------------------------
+Ran 33 tests in 0.162s
+
+OK
