@@ -1,0 +1,65 @@
+{
+  "schema": "loom.research_programme_recovery_protocol/1",
+  "implementation": "loom/tools/structure/research_programme_recovery_v1.py",
+  "money_authority": "research_programme_runner.PrivateLedger",
+  "transport": {
+    "allowed_methods": [
+      "GET"
+    ],
+    "routes": [
+      "generation",
+      "key"
+    ],
+    "post_retries": 0
+  },
+  "capture_schema": "loom.research_programme_external_capture/1",
+  "capture_required_fields": [
+    "operation_id",
+    "programme_id",
+    "stage_id",
+    "manifest_sha256",
+    "key_fingerprint_sha256",
+    "request_sha256",
+    "route_id",
+    "request_base64",
+    "capture_origin",
+    "captured_at",
+    "response"
+  ],
+  "response_fields": [
+    "raw_base64",
+    "raw_sha256",
+    "http_status",
+    "latency_seconds",
+    "transport_error",
+    "response_cache_status",
+    "response_cache_disabled"
+  ],
+  "capture_review_fields": [
+    "external_capture_sha256",
+    "request_response_attribution_reviewed",
+    "reviewer_ref",
+    "basis_ref"
+  ],
+  "trust_boundary": "reviewed external request/first-response attribution; digest alone is not authentication",
+  "timestamp_rule": "started_at <= captured_at <= checked_at; timezone required; no implicit clock skew",
+  "proof_schema": "loom.research_programme_external_recovery/1",
+  "event_schema": "loom.research_programme_recovery_event/1",
+  "outcomes": {
+    "resolved": "verified billing projection appended; campaign dispatch not authorized",
+    "already_resolved": "same existing proof replayed; no additional network read",
+    "unknown": "null cost; full original reservation retained; append evidence and retry only GET recovery",
+    "blocked": "invalid private path/binding/orphan/ledger integrity; no automatic replacement"
+  },
+  "independence_claim": false,
+  "exactly_once_inference_claim": false,
+  "paid_calls": 0,
+  "new_campaign_cost_usd": "0",
+  "historical_campaign": {
+    "attempts": 720,
+    "spent_usd": "0.873216500",
+    "archival_remaining_usd": "4.126783500",
+    "current_provider_state": null
+  },
+  "capture_digest_rule": "sha256(payer.canonical(capture)); base64 fields retain exact request and first-response bytes"
+}

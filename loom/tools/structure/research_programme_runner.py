@@ -204,7 +204,7 @@ class PrivateLedger:
         self.db = None
 
     @contextmanager
-    def locked(self, *, allow_stopped=False, allow_captured_pending=False, allow_bound_pending=False):
+    def locked(self, *, allow_stopped=False, allow_captured_pending=False, allow_bound_pending=False, recovery_operation=None):
         lockpath = self.directory / "ledger.lock"
         if lockpath.exists():
             private_path(lockpath, self.repo_root)
@@ -230,6 +230,7 @@ class PrivateLedger:
             self.db.execute("CREATE TABLE IF NOT EXISTS attempt_resolutions (operation_id TEXT PRIMARY KEY, payload TEXT NOT NULL)")
             self.db.execute("CREATE TABLE IF NOT EXISTS verification_failures (operation_id TEXT PRIMARY KEY, payload TEXT NOT NULL)")
             self.db.execute("CREATE TABLE IF NOT EXISTS metadata_read_audits (capture_id TEXT PRIMARY KEY, payload TEXT NOT NULL)")
+            self.db.execute("CREATE TABLE IF NOT EXISTS recovery_events (event_id TEXT PRIMARY KEY, operation_id TEXT NOT NULL, payload TEXT NOT NULL)")
             bound = self.db.execute("SELECT * FROM binding").fetchall()
             if not bound:
                 self.db.execute("INSERT INTO binding VALUES (?, ?)", (self.programme_id, self.fingerprint))
@@ -238,7 +239,7 @@ class PrivateLedger:
             self.db.commit()
             if not allow_stopped and self.db.execute("SELECT value FROM programme_state WHERE name='stop_reason'").fetchone():
                 raise ProgrammeError("durable_programme_stop_requires_independent_reconciliation")
-            self.validate(allow_captured_pending=allow_captured_pending, allow_bound_pending=allow_bound_pending)
+            self.validate(allow_captured_pending=allow_captured_pending, allow_bound_pending=allow_bound_pending, recovery_operation=recovery_operation)
             yield self
         finally:
             if self.db is not None:
@@ -326,7 +327,7 @@ class PrivateLedger:
         except Exception:
             return False
 
-    def validate(self, *, allow_captured_pending=False, allow_bound_pending=False):
+    def validate(self, *, allow_captured_pending=False, allow_bound_pending=False, recovery_operation=None):
         self.validate_resolutions()
         failures = list(self.db.execute("SELECT payload FROM verification_failures"))
         failure_files = set()
@@ -347,6 +348,11 @@ class PrivateLedger:
         generations = set()
         originals = {row["operation_id"]: row for row in self.original_rows()}
         proofs = self.late_proofs()
+        try:
+            from . import research_programme_recovery_v1 as recovery
+        except ImportError:
+            import research_programme_recovery_v1 as recovery
+        recovery.validate_events(self, originals)
         for path in self.directory.glob("*.actual.json"):
             private_path(path, self.repo_root)
             receipt = read_json(path)
@@ -359,7 +365,7 @@ class PrivateLedger:
                 original = originals.get(witness["operation_id"])
                 if original is None or sha(canonical(original)) != witness["original_attempt_sha256"]:
                     raise ProgrammeError("saved_actual_attempt_history_missing_or_changed")
-        audit_files, late_files = set(), {read["file"] for proof in proofs.values() for read in proof["late_reads"]}
+        audit_files, late_files = set(), {read["file"] for proof in proofs.values() for read in proof.get("late_reads", [])}
         for saved in self.db.execute("SELECT payload FROM metadata_read_audits"):
             audit = json.loads(saved["payload"])
             filename = audit["capture_id"] + ".generation-audit.json"
@@ -396,6 +402,18 @@ class PrivateLedger:
             original = originals[row["operation_id"]]
             if row.get("programme_id") != self.programme_id or row.get("key_fingerprint_sha256") != self.fingerprint:
                 raise ProgrammeError("ledger_attempt_binding_mismatch")
+            proof = proofs.get(row["operation_id"], {})
+            if proof.get("schema") == recovery.PROOF_SCHEMA:
+                files = recovery.validate_proof(self, original, proof)
+                generation_id = row.get("generation_id")
+                if not generation_id or generation_id in generations:
+                    raise ProgrammeError("duplicate_or_missing_generation_identity")
+                generations.add(generation_id)
+                expected.update(files)
+                continue
+            if row["operation_id"] == recovery_operation and not proof:
+                expected.update(recovery.validate_incomplete(self, original))
+                continue
             token = sha(row["operation_id"].encode())
             expected.add(token + ".started.json")
             startedpath = self.records / (token + ".started.json")
@@ -504,6 +522,18 @@ class PrivateLedger:
             raise ProgrammeError("orphan_or_missing_evidence_with_ledger")
         if set(path.name for path in self.directory.glob("*.attempt-resolution.json")) != proof_files:
             raise ProgrammeError("orphan_attempt_resolution_evidence")
+
+    def response_bytes(self, row):
+        """Read a validated first response without rewriting recovered originals."""
+        proof = self.late_proofs().get(row["operation_id"], {})
+        if proof.get("schema") == "loom.research_programme_external_recovery/1":
+            try:
+                from . import research_programme_recovery_v1 as recovery
+            except ImportError:
+                import research_programme_recovery_v1 as recovery
+            recovery.validate_proof(self, next(x for x in self.original_rows() if x["operation_id"] == row["operation_id"]), proof)
+            return recovery.recovered_response(self, proof)["raw"]
+        return (self.records / (sha(row["operation_id"].encode()) + ".response.bin")).read_bytes()
 
     def exported(self):
         return {"schema": "loom.new_programme_billing_ledger/1", "programme_id": self.programme_id,

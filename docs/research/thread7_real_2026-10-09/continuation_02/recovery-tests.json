@@ -1,0 +1,33 @@
+{
+  "schema": "loom.thread7_recovery_verification/1",
+  "date": "2026-10-09",
+  "test_data": "fabricated transport fixtures only",
+  "new_recovery_tests": 28,
+  "existing_payer_and_boundary_tests": 157,
+  "tests_run": 185,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "real_provider_calls": 0,
+  "owner_campaign_cost_usd": "0",
+  "full_log": {
+    "file": "recovery-full-tests.log.gz",
+    "uncompressed_bytes": 34201,
+    "uncompressed_sha256": "4552a881fc63bd706c6ff3b7b8b2242ad70a5ab13b80335d117ac112ca9c5860",
+    "gzip_sha256": "9d37a96d7d317b8a51a65de16cddf41addd3f54302ec8b771df5a3d9571b86ae"
+  },
+  "code_sha256": {
+    "loom/tools/structure/research_programme_runner.py": "408a92fa175d5a3c54b0cb3dec4840ea124139101fca89200dd9166cee0f285d",
+    "loom/tools/structure/research_programme_recovery_v1.py": "b527950e420bf5c415e847fc4d34d2220f99158c8211d9f2f4e5f6193c549517",
+    "loom/tools/structure/test_research_programme_recovery_v1.py": "c9f2fe2c2ef205af4aa144ec0bee2a80a29eeaceb5148a33b63482ee5067e1ac",
+    "loom/tools/structure/experiment_payer_boundary_v1.py": "33cb290558f81d0c16bd49e05d16e419c84feb538493544cb98ffed7bc672c32"
+  },
+  "controlled_demo_manifest_sha256": "e99cccaaf8a8dd2f6e0570e6219a435ae6654e99c34b5fee1707dc70e6393afe",
+  "limits": [
+    "External request/response attribution is a reviewed trust boundary, not cryptographic authentication.",
+    "Only process exceptions and durable SQLite restart were tested, not hardware power failure.",
+    "Unknown or contradictory accounting remains blocked; no POST retry exists.",
+    "No owner provider attempt was recovered or charged."
+  ],
+  "post_test_change": "Module docstring and report wording only: claim narrowed to existing verifier, exact text diff verified; executable statements unchanged."
+}

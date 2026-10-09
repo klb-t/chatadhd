@@ -91,7 +91,11 @@ class PayerBoundary:
         with sqlite3.connect(path.as_uri() + '?mode=ro', uri=True) as db:
             binding = db.execute('SELECT programme_id,fingerprint FROM binding').fetchall()
             require(binding == [(self.programme_id,self.fingerprint)],'payer_campaign_or_key_mismatch')
-            return [strict_json(p) for p, in db.execute('SELECT payload FROM attempts ORDER BY rowid')]
+            proofs = {operation_id: strict_json(payload) for operation_id, payload in db.execute(
+                'SELECT operation_id,payload FROM attempt_resolutions')}
+            rows = [strict_json(p) for p, in db.execute('SELECT payload FROM attempts ORDER BY rowid')]
+            return [{**row, **proofs[row['operation_id']]['projection']} if row['operation_id'] in proofs else row
+                    for row in rows]
 
     def verify(self, operation_id, reference):
         require(reference == {'programme_id':self.programme_id,'operation_id':operation_id,
@@ -170,12 +174,14 @@ class PayerBoundary:
                     continue
                 require(row['manifest_sha256']==self.manifest,'sync_manifest_mismatch')
                 job = strict_json(queued[0])
-                raw = (ledger.records/(_sha(row['operation_id'].encode())+'.response.bin')).read_bytes()
+                raw = ledger.response_bytes(row)
                 # Receipt state/cost is reconstructed by PrivateLedger.validate.
                 observations=[x['payload'] for x in self.queue.evidence(row['operation_id'])
                               if x['kind']=='transport_response_metadata']
-                cache_status=observations[0].get('response_cache_status') if observations else None
-                require(cache_status!='HIT','cached_response_not_independent')
+                cache_status=observations[0].get('response_cache_status') if observations else row.get('response_cache_status')
+                require(cache_status!='HIT' and row.get('response_cache_status')!='HIT','cached_response_not_independent')
+                require(not (observations and row.get('response_cache_status') is not None and cache_status is not None
+                             and row.get('response_cache_status') != cache_status), 'recovered_cache_observation_conflict')
                 record = result_record(job,raw,{'observed_model':row.get('model'),
                     'response_cache_status':cache_status,
                     'observed_provider':row.get('provider'),'actual_cost_usd':row['actual_cost_usd'],
