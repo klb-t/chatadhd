@@ -14,10 +14,14 @@
 #include "loom/catalog.h"
 #include "loom/db.h"
 #include "loom/knowledge.h"
+#include "loom/importer.h"
+#include "loom/loom.h"
+#include "loom/tasks.h"
 #include "loom/provenance.h"
 #include "loom/runtime.h"
 #include "loom/util/fs.h"
 #include "test_helpers.h"
+#include "../third_party/miniz/miniz.h"
 
 using namespace loom;
 using namespace loom::catalog;
@@ -232,6 +236,111 @@ TEST_SUITE("catalog_offset_scanner") {
 }
 
 TEST_SUITE("catalog_pipeline") {
+  TEST_CASE("ZIP references expose lossless provider graph to headless and view consumers, retaining stale evidence") {
+    fsutil::TempDir source, linked_data, copied_data;
+    auto document = unwrap(json::parse(chatgpt_fixture()));
+    document[0]["future_field"] = Json{{"keep", Json::array({nullptr, 42, "unknown"})}};
+    auto branch = document[0]["mapping"]["n2"];
+    branch["id"] = "alternate";
+    branch["message"]["id"] = "alternate";
+    branch["message"]["content"]["parts"] = Json::array({"An alternative answer."});
+    document[0]["mapping"]["alternate"] = branch;
+    document[0]["mapping"]["n1"]["children"].push_back("alternate");
+    auto bytes = json::dump(document);
+    auto zip_path = source.path() / "safe-conversations.zip";
+    mz_zip_archive zip{};
+    REQUIRE(mz_zip_writer_init_file(&zip, zip_path.string().c_str(), 0));
+    REQUIRE(mz_zip_writer_add_mem(&zip, "conversations.json", bytes.data(), bytes.size(), MZ_DEFAULT_COMPRESSION));
+    REQUIRE(mz_zip_writer_finalize_archive(&zip));
+    REQUIRE(mz_zip_writer_end(&zip));
+
+    auto linked = open_rt(linked_data.path());
+    Catalog catalog(*linked, unwrap(linked->knowledge().pack()));
+    ScanConfig scan;
+    scan.sources = {zip_path.string()};
+    unwrap(catalog.scan(scan));
+    auto units = unwrap(catalog.query(UnitQuery{}));
+    REQUIRE(units.size() == 2);
+    auto first = std::find_if(units.begin(), units.end(), [](const auto& unit) { return unit.ext_id == "conv-a"; });
+    REQUIRE(first != units.end());
+    const auto id = first->unit.id;
+    auto resolved = unwrap(catalog.read_resource(id));
+    REQUIRE(resolved["current"] == true);
+    const auto snapshot = resolved["last_successful"];
+    CHECK(snapshot["raw"] == document[0]);
+    CHECK(snapshot["mapping_status"] == "recognized");
+    REQUIRE(snapshot["nodes"].size() == 4);
+    CHECK(snapshot["edges"].size() == 5); // three contains + two parent edges
+    CHECK(unwrap(linked->db().get_links(std::nullopt, "parent")).size() == 2);
+    auto task_id = unwrap(linked->tasks().submit("catalog.read_resource", Json{{"unit_id", id}}));
+    auto task = unwrap(linked->tasks().run_sync(task_id));
+    REQUIRE(task.status == "done");
+    REQUIRE(task.result.has_value());
+    CHECK((*task.result)["last_successful"] == snapshot);
+
+    // Real lossless importer, rather than a second expected-result parser.
+    auto copied = open_rt(copied_data.path());
+    loom::ImportOptions import_options;
+    import_options.export_mode = ExportMode::On;
+    auto imported = unwrap(copied->importer().import_file(zip_path, import_options));
+    REQUIRE(imported.conversations.size() == 2);
+    bool compared = false;
+    for (const auto& conversation : imported.conversations) {
+      auto stored = unwrap(copied->db().get_conv(conversation.id));
+      REQUIRE(stored.has_value());
+      if (stored->metadata["export"]["key"] != "conv-a") continue;
+      compared = true;
+      CHECK(snapshot["nodes"][0]["metadata"]["graph"] == stored->metadata["export"]["graph"]);
+      auto messages = unwrap(copied->db().get_msgs(conversation.id, true));
+      REQUIRE(messages.size() == 3);
+      for (const auto& message : messages) {
+        bool found = false;
+        for (const auto& node : snapshot["nodes"]) {
+          if (node["kind"] != "export:message" || node["metadata"]["export"]["key"] != message.metadata["export"]["key"]) continue;
+          found = true;
+          CHECK(node["content"] == message.text);
+          CHECK(node["metadata"]["status"] == message.status);
+          CHECK(node["metadata"]["export"]["raw"] == message.metadata["export"]["raw"]);
+        }
+        CHECK(found);
+      }
+    }
+    CHECK(compared);
+
+    // Existing endpoint used by CatalogPane resolves through the same API.
+    const auto opts = json::dump(Json{{"data_dir", linked_data.path().string()}, {"start_workers", false}});
+    const char* error = nullptr;
+    auto* context = loom_init_ex(opts.c_str(), &error);
+    REQUIRE(context != nullptr);
+    auto* response = loom_catalog_preview(context, id.c_str());
+    auto preview = json::parse(response);
+    loom_free_string(response);
+    loom_shutdown(context);
+    REQUIRE(preview.has_value());
+    CHECK((*preview)["resource"]["last_successful"] == snapshot);
+
+    fs::rename(zip_path, source.path() / "temporarily-unavailable.zip");
+    auto unavailable = unwrap(catalog.read_resource(id));
+    CHECK(unavailable["current"] == false);
+    CHECK(unavailable["status"] == "unavailable");
+    CHECK(unavailable["last_successful"] == snapshot);
+    linked.reset();
+    linked = open_rt(linked_data.path());
+    Catalog reopened(*linked, unwrap(linked->knowledge().pack()));
+    CHECK(unwrap(reopened.read_resource(id))["last_successful"] == snapshot);
+    fs::rename(source.path() / "temporarily-unavailable.zip", zip_path);
+    CHECK(unwrap(reopened.read_resource(id))["current"] == true);
+    // Replacing the container does not silently replace the pinned fragment.
+    bytes = "[{\"mapping\":{},\"id\":\"changed\"}]";
+    zip = {};
+    REQUIRE(mz_zip_writer_init_file(&zip, zip_path.string().c_str(), 0));
+    REQUIRE(mz_zip_writer_add_mem(&zip, "conversations.json", bytes.data(), bytes.size(), 0));
+    REQUIRE(mz_zip_writer_finalize_archive(&zip));
+    REQUIRE(mz_zip_writer_end(&zip));
+    auto changed = unwrap(reopened.read_resource(id));
+    CHECK(changed["current"] == false);
+    CHECK(changed["last_successful"] == snapshot);
+  }
   TEST_CASE("BM25 normalizes all profile terms and philosophy evidence permits bounded link support") {
     fsutil::TempDir data_dir;
     fsutil::TempDir src_dir;
@@ -348,7 +457,7 @@ TEST_SUITE("catalog_pipeline") {
     auto pv = unwrap(cat.preview(selected_unit));
     CHECK(pv["verified"] == true);
 
-    ImportOptions iopts;
+    catalog::ImportOptions iopts;
     iopts.run_id = run_id;
     auto imp = unwrap(cat.import_selected(iopts));
     CHECK(json::get_int(imp, "imported") == 1);
@@ -380,7 +489,7 @@ TEST_SUITE("catalog_pipeline") {
     unwrap(cat.build_profile(pcfg));
     auto sc = unwrap(cat.score(ScoreConfig{}));
     unwrap(cat.select(json::get_string(sc, "run_id")));
-    ImportOptions iopts;
+    catalog::ImportOptions iopts;
     iopts.dry_run = true;
     auto imp = unwrap(cat.import_selected(iopts));
     CHECK(json::get_int(imp, "imported") == 1);
@@ -398,7 +507,7 @@ TEST_SUITE("catalog_pipeline") {
     unwrap(cat.scan(scfg));
     // No profile/score/select at all: mode=full must still import everything.
 
-    ImportOptions full_opts;
+    catalog::ImportOptions full_opts;
     full_opts.mode = "full";
     auto imp = unwrap(cat.import_selected(full_opts));
     CHECK(json::get_int(imp, "imported") == 2);  // both conversations, lossless
@@ -411,7 +520,7 @@ TEST_SUITE("catalog_pipeline") {
     auto rt2 = open_rt(data_dir2.path());
     Catalog cat2(*rt2, unwrap(rt2->knowledge().pack()));
     unwrap(cat2.scan(scfg));
-    ImportOptions link_opts;
+    catalog::ImportOptions link_opts;
     link_opts.mode = "full";
     link_opts.store_mode = "link";
     auto imp2 = unwrap(cat2.import_selected(link_opts));

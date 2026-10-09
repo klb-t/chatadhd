@@ -169,3 +169,13 @@ Archiwum lokalnych dowodów, 69 plików sukcesów/negatywów z manifestem/hasham
 Manifest osobno: /workspace/data-graph-engine-2026-10-09-manifest.json. Zawiera
 piny kodu wykonanych testów, nie ten późniejszy commit raportu. Pełnego wyniku
 PASS całego zadania B, Basic→Advanced workflow ani ExperimentSpec nie deklarujemy.
+
+## Doprecyzowanie właściciela: zasoby zewnętrzne — punkt wznowienia
+
+Nowy priorytet: pełne wnętrze referencji w grafie i przekrojowe discovery (R15/R20/R21). Przed zmianą wykonano aktualną bramkę istniejących komponentów: catalog, catalog_retention, import_exports, import_export_fidelity 4/4 PASS, 9,61 s. Wykorzystano istniejący locator ZIP i lossless export-3; nie pisano nowego importera kombinacji format/transport. Kontrakt zakresu: docs/architecture/EXTERNAL_RESOURCE_VERTICAL_2026-10-09.md.
+
+Implementacja robocza: read_resource wspólne dla istniejącego catalogPreview i rzeczywiście zarejestrowanego zadania TaskEngine, transakcyjna projekcja do istniejących nodes/links, wersjonowane IDs i retencja ostatniej poprawnej projekcji. Syntetyczny ZIP testuje alternatywną gałąź, treści/statusy/raw i graf wobec rzeczywistego lossless importera, endpoint C ABI widoku, zadanie, brak źródła, reopen i wznowienie. Nie zmieniono prywatnych archiwów ani C/loom/tools/structure. Nie zamknięto całego wymaganego pierwszego przyrostu: profil/runtime, discovery, permission-aware context i nested/reference pozostają otwarte.
+
+Pierwszy build testu ujawnił kolizję ImportOptions (catalog vs importer); poprawiono kwalifikację bez zmiany oczekiwań. Dev 6/6 PASS (16,08 s); ASan 6/6 PASS (68,51 s), lecz ten zakres uruchomiono przez --test-dir, więc nie deklarujemy explicit sanitizer environment z presetu. Po doprecyzowaniu coverage unknown-domain końcowe dev i ASan z właściwym presetem są w toku. Przed dłuższą operacją zapisano ten punkt wznowienia. Logi baseline/build/negatywy i testy: .onboarding/logs/data-graph-resource-*.
+
+B-RESOURCE-001 bramki końcowe: build dev + CLI/server WERROR PASS; dev 6/6 PASS, 13,93 s; build ASan PASS; właściwy `ctest --preset asan` z detect_leaks/strict_string_checks/UBSan halt 6/6 PASS, 39,00 s (JUnit data-graph-resource-final-asan.xml). Bramka zakresowa, nie pełna macierz 146/146. UI korzysta z istniejącego inspector/All model fields i endpointu; nie dodano nowego katalogu etykiet w kodzie ani zmiany rendererowego parsera. Wcześniejszy web build wykonywał przejściowy, później usunięty blok renderera; nie liczymy go jako finalnego gate. Następny konkretny przyrost: external RuntimeProfile + runtime i jawna uncertain mapping.

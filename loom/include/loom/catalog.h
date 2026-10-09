@@ -260,6 +260,10 @@ class Catalog {
   Result<Json> preview(std::string_view unit_id);
   // The unit's exact bytes, read by locator (verified against content_hash).
   Result<std::string> read_unit(std::string_view unit_id);
+  // Read-only graph projection through the same verified locator and provider
+  // parsers as import. A failed refresh reports its error and retains the last
+  // successful projection; retained data is never presented as current.
+  Result<Json> read_resource(std::string_view unit_id);
   // Imports the selected units by locator. -> {"imported","skipped","bytes","conversations":[...]}
   Result<Json> import_selected(const ImportOptions& opts, const ProgressFn& progress = {},
                                const CancelToken* cancel = nullptr);

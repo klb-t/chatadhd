@@ -6,6 +6,7 @@
 
 #include "loom/archive.h"
 #include "loom/knowledge.h"
+#include "loom/catalog.h"
 #include "loom/batch_api.h"
 #include "loom/chat_engine.h"
 #include "loom/crypto.h"
@@ -228,6 +229,18 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
   // Registers the archive.* task handlers (resumable by the task workers).
   rt->impl_->archive = std::make_unique<archive::ArchiveIntelligence>(*rt);
   rt->impl_->knowledge = std::make_unique<knowledge::KnowledgeEngine>(*rt);
+  rt->tasks().register_handler("catalog.read_resource", [runtime = rt.get()](TaskContext& task) -> Status {
+    const auto& params = task.params();
+    if (!params.is_object() || params.size() != 1 || !params.contains("unit_id") ||
+        !params["unit_id"].is_string() || params["unit_id"].get<std::string>().empty())
+      return Error(Errc::InvalidArgument, "catalog.read_resource requires only a nonempty unit_id");
+    if (task.cancelled()) return Error(Errc::Cancelled, "resource read cancelled");
+    LOOM_TRY_ASSIGN(auto pack, runtime->knowledge().pack());
+    catalog::Catalog catalog(*runtime, pack);
+    LOOM_TRY_ASSIGN(auto result, catalog.read_resource(params["unit_id"].get<std::string>()));
+    task.set_result(std::move(result));
+    return {};
+  });
   rt->chat().set_knowledge_context_builder([runtime = rt.get()](const context::ContextRequest& request) -> Result<Json> {
     auto pack = runtime->knowledge().pack();
     if (!pack) return pack.error();

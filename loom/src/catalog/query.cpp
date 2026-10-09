@@ -6,6 +6,7 @@
 
 #include "catalog_internal.h"
 #include "relevance_recipe.h"
+#include "import/export_internal.h"
 #include "loom/db.h"
 #include "loom/provenance.h"
 #include "loom/runtime.h"
@@ -167,12 +168,113 @@ Result<Json> Catalog::preview(std::string_view unit_id) {
     }
   }
 
+  lk.unlock();
+  LOOM_TRY_ASSIGN(Json resource, read_resource(unit_id));
   return Json{{"unit", cu.to_json()},
+              {"resource", resource},
               {"score", score},
               {"verified", verified_ok},
               {"verified_snippets", verified},
               {"neighbours", Json::array()},
               {"cost_estimate", Json{{"bytes", cu.unit.bytes}, {"messages", cu.n_msgs}}}};
+}
+
+Result<Json> Catalog::read_resource(std::string_view unit_id) {
+  LOOM_TRY(ensure_schema(rt_.db()));
+  Json unit;
+  {
+    auto lk = rt_.db().lock();
+    LOOM_TRY_ASSIGN(auto body, rt_.db().conn().query_text(
+        "SELECT body FROM loom_cat_units WHERE id = ?", std::string(unit_id)));
+    if (!body) return Error(Errc::NotFound, "no such unit: " + std::string(unit_id));
+    LOOM_TRY_ASSIGN(unit, json::parse(*body));
+  }
+  LOOM_TRY_ASSIGN(CatalogUnit cu, CatalogUnit::from_json(unit));
+  const std::string root_id = "resource:" + std::string(unit_id);
+  LOOM_TRY_ASSIGN(auto previous, rt_.db().get_node(root_id));
+  auto unavailable = [&](const Error& error) -> Json {
+    Json result{{"status", error.code == Errc::Conflict ? "source_changed" : "unavailable"},
+                {"current", false}, {"error", {{"code", errc_name(error.code)}, {"message", error.message}}},
+                {"last_successful", nullptr}};
+    if (previous) result["last_successful"] = previous->metadata;
+    return result;
+  };
+  auto raw = read_unit(unit_id);
+  if (!raw) return unavailable(raw.error());
+  auto parsed = json::parse(*raw);
+  if (!parsed) return unavailable(parsed.error());
+
+  // Domain interpretation is shared with lossless export import. No writes,
+  // attachment fetches, HTTP requests or inferred adapter activation here.
+  xport::ConvModel model;
+  xport::Counts counts;
+  loom::ImportOptions options;
+  xport::Env env{rt_.db(), nullptr, options, {}, ""};
+  bool recognized = false;
+  if (parsed->is_object() && parsed->contains("mapping") && (*parsed)["mapping"].is_object()) {
+    xport::OpenAiCtx context;
+    context.env = &env;
+    xport::parse_openai_conversation(*parsed, 0, cu.unit.locator.member, context, model, counts);
+    recognized = true;
+  } else if (parsed->is_object() && parsed->contains("chat_messages") && (*parsed)["chat_messages"].is_array()) {
+    xport::parse_anthropic_conversation(*parsed, 0, cu.unit.locator.member, env, model, counts);
+    recognized = true;
+  }
+  auto graph_lock = rt_.db().lock();
+  sql::Txn transaction(rt_.db().conn());
+  LOOM_TRY(transaction.begin_status());
+  Json nodes = Json::array(), edges = Json::array();
+  auto add_node = [&](const std::string& id, std::string_view kind, const std::string& label,
+                      const std::string& content, Json metadata) -> Status {
+    NodeOptions node;
+    node.node_id = id;
+    node.content = content;
+    node.metadata = metadata;
+    LOOM_TRY(rt_.db().create_node(label, kind, node));
+    nodes.push_back(Json{{"id", id}, {"kind", kind}, {"label", label},
+                         {"content", content}, {"metadata", std::move(metadata)}});
+    return {};
+  };
+  auto add_edge = [&](const std::string& src, const std::string& dst, std::string_view kind) -> Status {
+    LOOM_TRY(rt_.db().create_link(src, dst, kind));
+    edges.push_back(Json{{"src", src}, {"dst", dst}, {"link_type", kind}});
+    return {};
+  };
+  // Stable content-versioned IDs keep the same logical graph for copy and
+  // reference. Provider parent/status/raw fields retain alternative branches.
+  const std::string conversation_id = "resource-conversation:" + std::string(kExportParserVersion) + ":" + cu.content_hash;
+  if (recognized) {
+    LOOM_TRY(add_node(conversation_id, "export:conversation", model.title, "", model.export_meta));
+    for (std::size_t i = 0; i < model.msgs.size(); ++i) {
+      const auto& message = model.msgs[i];
+      const std::string id = conversation_id + ":" + std::to_string(i);
+      Json metadata{{"export", message.export_meta}, {"role", message.role}, {"status", message.status},
+                    {"source_key", message.key}, {"version_group", message.group}, {"version_num", message.version_num}};
+      LOOM_TRY(add_node(id, "export:message", message.role, message.text, std::move(metadata)));
+      LOOM_TRY(add_edge(conversation_id, id, "contains"));
+      if (message.parent >= 0)
+        LOOM_TRY(add_edge(conversation_id + ":" + std::to_string(message.parent), id, "parent"));
+    }
+  }
+  Json snapshot{{"source", cu.unit.source}, {"selector", cu.unit.locator.to_json()},
+                {"content_hash", cu.content_hash}, {"mapping_version", kExportParserVersion},
+                {"mapping_status", recognized ? "recognized" : "uncertain"},
+                {"coverage", recognized ? "provider_conversation" : "not_implemented"},
+                {"nodes", nodes}, {"edges", edges},
+                {"permission", "readonly"}, {"activation", "not_requested"}};
+  // Unknown domains may contain credentials. Keep their verified source
+  // reference, not unclassified values in an exportable graph snapshot.
+  if (recognized) snapshot["raw"] = *parsed;
+  NodeOptions root;
+  root.node_id = root_id;
+  root.metadata = snapshot;
+  LOOM_TRY(rt_.db().create_node(std::string(unit_id), "external:resource", root));
+  NodePatch patch;
+  patch.metadata = snapshot;
+  LOOM_TRY(rt_.db().update_node(root_id, patch));
+  if (recognized) LOOM_TRY(add_edge(root_id, conversation_id, "projects"));
+  LOOM_TRY(transaction.commit());
+  return Json{{"status", "available"}, {"current", true}, {"last_successful", snapshot}};
 }
 
 Result<std::string> Catalog::read_unit(std::string_view unit_id) {
