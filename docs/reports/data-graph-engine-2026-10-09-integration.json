@@ -222,16 +222,58 @@
         "A2_ordering_checks": 2,
         "assessment": "b-worker-triage-20261009/ch011-after-assessment.json"
       }
+    },
+    {
+      "commit": "568c3f7ec8d12e2971574a0cce51516286262769",
+      "scope": "CH-RES-N001: native local ConversationView via existing Catalog/MethodRegistry, copy/link full mapper parity, source versions/capabilities/receipts",
+      "dependencies": [
+        "3dc0ebf2",
+        "bb4dbf50",
+        "d5b4236a"
+      ],
+      "gates": {
+        "prefix": "data-graph-integration-P4-final",
+        "ctest_entries": 17,
+        "guard": "PASS",
+        "native_cases": 77,
+        "native_assertions": 6294,
+        "python_cases": 153,
+        "python_skips": 0,
+        "duration_seconds": 36.86
+      },
+      "migration": "additive C ABI/view + provenance fingerprint; no SQL DDL or history rewrite; projection descriptor3/new snapshot2",
+      "readiness": "scoped local-read acceptance; full current matrix pending"
+    },
+    {
+      "commit": "ed4bd2fc444ff0c71148e1fdef6f747a1093edf4",
+      "scope": "ordinary ChatView shares native reference envelope; exact wire evidence, per-row capabilities, optional R40 feature catalog",
+      "dependencies": [
+        "568c3f7ec8d12e2971574a0cce51516286262769",
+        "4eda95e3"
+      ],
+      "gates": {
+        "web_build": "PASS",
+        "headless_cases": 9,
+        "actual_App_groups": 9,
+        "model_sends": 0,
+        "remote_media_requests": 0,
+        "receipt": "p4-app-20261009-3",
+        "prior_failed_runs_preserved": [
+          "p4-app-20261009-1",
+          "p4-app-20261009-2"
+        ]
+      },
+      "migration": "user.pack6 new profiles; existing profiles explicit native install_entries preserves old values/exclusions and appends inherited audit delta",
+      "readiness": "local read only; source-history egress refused; full current matrix pending"
     }
   ],
   "open": [
-    "CH-RES-N001 ordinary linked conversation hydration",
     "P4 authorized source-to-context-to-chat transient trace",
     "P5 complete workflow/ExperimentSpec opt-in/adoption",
     "D generic discovery and external resource-to-E workspace connection",
     "R42 unclassified inventory and lexer coverage",
-    "Current ASan/Clang/web/JNI full gates pending on frozen product373f0774",
-    "CH-011 separate native batch consumers and legacy Python atomicity/CAS remain open"
+    "CH-011 separate native batch consumers and legacy Python atomicity/CAS remain open",
+    "Full current P4 dev/ASan/Clang/web/JNI gates pending; prior CH-011 full ASan REJECT retained"
   ],
   "composed_gates": [
     {
@@ -287,6 +329,55 @@
       "guard": "PASS",
       "duration_seconds": 281.75,
       "receipt_prefix": "data-graph-integration-composed-r4-full-dev"
+    },
+    {
+      "source_commit": "373f077489717302826057cf638d9401e452a811",
+      "preset": "asan",
+      "actual_compiler": "GCC13",
+      "sqlite": "vendored",
+      "ctest_entries": 156,
+      "passed_entries": 155,
+      "guard": "REJECT",
+      "duration_seconds": 987.54,
+      "only_failure": "cli.smoke Timeout300.10",
+      "receipt_prefix": "data-graph-integration-composed-full-asan",
+      "claim": "historical CH-011 tree; not P4 acceptance"
+    },
+    {
+      "source_commit": "373f077489717302826057cf638d9401e452a811",
+      "preset": "asan",
+      "scope": "cli.smoke isolated same binaries/options/300s timeout",
+      "ctest_entries": 1,
+      "passed_entries": 1,
+      "guard": "PASS",
+      "duration_seconds": 234.21,
+      "receipt_prefix": "data-graph-integration-composed-asan-cli-isolated",
+      "claim": "diagnostic isolated acceptance; does not replace rejected full run"
+    },
+    {
+      "source_commit": "ed4bd2fc444ff0c71148e1fdef6f747a1093edf4",
+      "scope": "full web matrix with recorded working integration patch",
+      "status": "FAIL",
+      "test_commands_passed": 13,
+      "test_commands": 15,
+      "receipt_directory": "B-final-web-a2ly2pfl",
+      "failures": [
+        "workspace ambiguous receipt selector",
+        "resource-controls raw pack harness loader"
+      ],
+      "diagnostic_replays_retained": true
+    },
+    {
+      "source_commit": "ed4bd2fc444ff0c71148e1fdef6f747a1093edf4",
+      "scope": "full web matrix with exact corrected source hashes",
+      "status": "PASS",
+      "test_commands_passed": 15,
+      "test_commands": 15,
+      "build": "PASS",
+      "native_pretest_receipt": "PASS",
+      "receipt_directory": "B-final-web-obhyrddi",
+      "system_browser": "Chromium151",
+      "source_binary_dist_drift": false
     }
   ],
   "ecosystem": [
@@ -307,11 +398,11 @@
     }
   ],
   "readiness": {
-    "product_head": "373f077489717302826057cf638d9401e452a811",
+    "product_head": "ed4bd2fc444ff0c71148e1fdef6f747a1093edf4",
     "candidate_for": "A audit and Claude integration review; main unchanged",
     "complete_owner_scope": false,
-    "current_full_dev": "PASS",
-    "remaining_matrix": "ASan/Clang/web/JNI pending",
+    "current_full_dev": "Historical373 PASS; P4 full pending",
+    "remaining_matrix": "P4 full web PASS; dev/ASan/Clang/JNI pending",
     "setup_config": "draft revision6 saved; requires user Publish; fresh instance not validated"
   }
 }

@@ -28,6 +28,8 @@ const bundle = await build({
     createRoot(document.getElementById("root")).render(<><ContextSlider convId="conversation-fixture" /><KnowledgeWorkbench onClose={() => {}} /></>);
   `, resolveDir: root, loader: "tsx" },
   bundle: true, write: false, format: "iife", platform: "browser", outfile: "/tmp/resource-controls.js", jsx: "automatic",
+  // Match Vite raw canonical pack imports used by the actual workspace adapter.
+  loader: { ".pack": "text" },
 });
 const js = bundle.outputFiles.find(file => file.path.endsWith(".js")).text;
 const css = bundle.outputFiles.find(file => file.path.endsWith(".css"))?.text ?? "";

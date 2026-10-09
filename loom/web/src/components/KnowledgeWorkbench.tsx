@@ -43,8 +43,8 @@ function Evidence({ row }: { row: KnowledgeRecord }) {
     {!!(assessment.status || row.validation_status) && <span className="kb-badge">{displayText(assessment.status || row.validation_status)}</span>}
   </div>;
 }
-function JsonDetail({ label, value, open = false }: { label: string; value: unknown; open?: boolean }) {
-  return <details className="kb-detail" open={open || undefined}><summary>{label}</summary><pre>{JSON.stringify(value ?? null, null, 2)}</pre></details>;
+function JsonDetail({ label, value, open = false, testId }: { label: string; value: unknown; open?: boolean; testId?: string }) {
+  return <details className="kb-detail" open={open || undefined}><summary>{label}</summary><pre data-testid={testId}>{JSON.stringify(value ?? null, null, 2)}</pre></details>;
 }
 
 export default function KnowledgeWorkbench({ onClose, onDataChanged, profileHost }: { onClose: () => void; onDataChanged?: () => void; profileHost?: UserProfileHost }) {
@@ -188,7 +188,7 @@ function WorkspacePane({ pane, index, profileHost, workspace, setWorkspace, know
       <label>Parameter<select aria-label="Link parameter" value={linkParameter} onChange={(e) => setLinkParameter(e.target.value as Parameter)}>{(["selection", "filter", "depth", "confidence", "evidence", "fade", "maxNodes"] as Parameter[]).map((k) => <option key={k} value={k}>{k}</option>)}</select></label>
       <button disabled={!workspace.panes.some((v) => v.id === linkSource)} onClick={() => setWorkspace((w) => connect(w, linkSource, pane.id, linkParameter))}>Link parameter</button>
       {links.map((link) => <p className="kb-link" key={`${link.source}/${link.target}/${link.parameter}`}>{workspace.panes.findIndex((v) => v.id === link.source) + 1} → {workspace.panes.findIndex((v) => v.id === link.target) + 1} · {link.parameter} <button aria-label={`Detach ${link.parameter} link`} onClick={() => setWorkspace((w) => ({ ...w, bindings: w.bindings.filter((b) => b !== link) }))}>Detach</button></p>)}
-      <JsonDetail label="Data version and execution status" value={{ requested_run: p.run, run: run ?? null, retrieved_at: loaded?.key === key ? loaded.fetched : null, projection: pane.kind, status: busy ? "loading" : !usable ? "run unavailable" : errors.length ? "partial" : "loaded", saved_selection: p.selection, snapshot: "Run reference; immutable server snapshot not guaranteed" }} />
+      <JsonDetail label="Data version and execution status" testId="kb-data-version-receipt" value={{ requested_run: p.run, run: run ?? null, retrieved_at: loaded?.key === key ? loaded.fetched : null, projection: pane.kind, status: busy ? "loading" : !usable ? "run unavailable" : errors.length ? "partial" : "loaded", saved_selection: p.selection, snapshot: "Run reference; immutable server snapshot not guaranteed" }} />
     </details>
     <p className="kb-run-status" role="status">{pane.kind === "catalog" ? "Live catalog · not scoped to a knowledge run" : `Run: ${p.run || "none"} · ${!usable ? "unavailable" : busy ? "loading" : run.status}`}{focus && ` · focus: ${displayText(entities.get(focus)?.label || focus)}`}</p>
     {errors.map((e) => <p className="kb-warning" key={e}>{e}</p>)}

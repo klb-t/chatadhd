@@ -102,7 +102,11 @@ try {
     const snap=await snapshot(); assert.equal(snap.panes.find(p=>p.id===referenceId).parameters.run,run.run);
     assert.equal(snap.panes[0].parameters.run,second.run);
     await settings(graph().first()); await graph().first().getByText("Data version and execution status",{exact:true}).click();
-    assert.match(await graph().first().locator(".kb-detail pre").innerText(),new RegExp(second.run));
+    const provenance = await graph().first().getByTestId("kb-data-version-receipt").innerText();
+    assert.match(provenance,new RegExp(second.run));
+    const receipt = JSON.parse(provenance);
+    assert.equal(receipt.requested_run,second.run);
+    assert.equal(receipt.run.id,second.run);
   });
   await step("native context preview, persisted input and explicit non-delivery status",async()=>{
     await page.getByLabel("View type",{exact:true}).selectOption("context"); await page.getByTestId("kb-add-view").click();
