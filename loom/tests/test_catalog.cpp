@@ -17,6 +17,9 @@
 #include "loom/importer.h"
 #include "loom/loom.h"
 #include "loom/tasks.h"
+#include "loom/runtime_profile.h"
+#include "loom/semantic_analyzer.h"
+#include "loom/net/http.h"
 #include "loom/provenance.h"
 #include "loom/runtime.h"
 #include "loom/util/fs.h"
@@ -236,6 +239,106 @@ TEST_SUITE("catalog_offset_scanner") {
 }
 
 TEST_SUITE("catalog_pipeline") {
+  TEST_CASE("external profile graph fields match the actual runtime, while uncertain mapping and source loss remain explicit") {
+    fsutil::TempDir source, data;
+    const Json pattern{{"entity_type", "concept"}, {"pattern", "SYNTHETIC_EXTERNAL_PROFILE"},
+                       {"flags", Json::array()}, {"confidence", 1.0}};
+    const Json overlay{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "semantic_analyzer"},
+                       {"overrides", {{"rules", {{"entity_patterns", Json::array({pattern})}}}}}};
+    auto profile_path = source.path() / "semantic_analyzer.pack";
+    write_file(profile_path, overlay.dump());
+    fs::create_directories(data.path() / "profiles");
+    fs::create_symlink(profile_path, data.path() / "profiles/semantic_analyzer.pack");
+    auto transport = std::make_shared<net::ScriptedTransport>();
+    RuntimeOptions runtime_options;
+    runtime_options.data_dir = data.path().string(); runtime_options.start_workers = false;
+    runtime_options.http = transport;
+    auto runtime = unwrap(Runtime::open(runtime_options));
+    Catalog catalog(*runtime, unwrap(runtime->knowledge().pack()));
+    ScanConfig scan;
+    scan.sources = {profile_path.string()};
+    unwrap(catalog.scan(scan));
+    auto units = unwrap(catalog.query(UnitQuery{}));
+    REQUIRE(units.size() == 1);
+    const auto id = units[0].unit.id;
+    auto resource = unwrap(catalog.read_resource(id));
+    REQUIRE(resource["current"] == true);
+    const auto snapshot = resource["last_successful"];
+    CHECK(snapshot["mapping_status"] == "recognized");
+    CHECK(snapshot["coverage"] == "runtime_profile");
+    CHECK(snapshot["activation"] == "not_requested"); // reading never installs a profile
+    REQUIRE(!snapshot["nodes"].empty());
+    CHECK(snapshot["nodes"][0]["metadata"]["hash"] == runtime->analyzer().profile_hash());
+    CHECK(snapshot["nodes"][0]["metadata"]["hash"] == unwrap(RuntimeProfile::load("semantic_analyzer", data.path())).hash());
+    bool field_found = false;
+    for (const auto& node : snapshot["nodes"]) {
+      if (node["kind"] == "runtime:profile_field" && node["metadata"]["pointer"] == "/rules/entity_patterns/0/pattern") {
+        field_found = true;
+        CHECK(node["content"] == Json("SYNTHETIC_EXTERNAL_PROFILE").dump());
+        REQUIRE(unwrap(runtime->db().get_node(node["id"].get<std::string>())).has_value());
+      }
+    }
+    CHECK(field_found);
+    const auto analysis = runtime->analyzer().analyse("SYNTHETIC_EXTERNAL_PROFILE");
+    REQUIRE(analysis.entities.size() == 1);
+    CHECK(analysis.entities[0].entity_type == "concept");
+    CHECK(analysis.entities[0].text == "SYNTHETIC_EXTERNAL_PROFILE");
+
+    const auto task_id = unwrap(runtime->tasks().submit("catalog.read_resource", Json{{"unit_id", id}}));
+    LOOM_REQUIRE_OK(runtime->tasks().pause(task_id));
+    CHECK(unwrap(runtime->tasks().get(task_id))->status == "paused");
+    LOOM_REQUIRE_OK(runtime->tasks().resume(task_id));
+    CHECK(unwrap(runtime->tasks().run_sync(task_id)).status == "done");
+
+    auto unknown = overlay;
+    unknown["future_mapping"] = Json{{"preserve", "synthetic unknown field"}};
+    auto unknown_path = source.path() / "unknown.json";
+    const auto unknown_bytes = unknown.dump();
+    write_file(unknown_path, unknown_bytes);
+    scan.sources = {unknown_path.string()};
+    unwrap(catalog.scan(scan));
+    units = unwrap(catalog.query(UnitQuery{}));
+    REQUIRE(units.size() == 2);
+    for (const auto& unit : units) {
+      if (unit.unit.id == id) continue;
+      auto uncertain = unwrap(catalog.read_resource(unit.unit.id));
+      CHECK(uncertain["last_successful"]["mapping_status"] == "uncertain");
+      CHECK(uncertain["last_successful"]["mapping_version"] == "loom.runtime_profile_overlay/1");
+      CHECK(uncertain["last_successful"].contains("mapping_error"));
+      CHECK(uncertain["last_successful"]["activation"] == "not_requested");
+      CHECK(uncertain["last_successful"]["coverage"] == "syntax_only");
+      bool unknown_field_found = false;
+      for (const auto& node : uncertain["last_successful"]["nodes"]) {
+        CHECK(node["kind"] != "runtime:profile");
+        if (node["kind"] == "external:json_field" && node["metadata"]["pointer"] == "/future_mapping/preserve") {
+          unknown_field_found = true;
+          CHECK(node["content"] == ""); // unclassified values do not leak into graph exports
+          CHECK(node["metadata"]["value_ref"]["unit_id"] == unit.unit.id);
+          CHECK(unwrap(json::parse(unwrap(catalog.read_unit(unit.unit.id)))).at(Json::json_pointer("/future_mapping/preserve")) == "synthetic unknown field");
+        }
+      }
+      CHECK(unknown_field_found);
+      CHECK(unwrap(catalog.read_unit(unit.unit.id)) == unknown_bytes);
+      CHECK(unwrap(fsutil::read_file(unknown_path)) == unknown_bytes);
+    }
+    CHECK(runtime->analyzer().profile_hash() == snapshot["nodes"][0]["metadata"]["hash"].get<std::string>());
+
+    fs::rename(profile_path, source.path() / "unavailable.pack");
+    auto unavailable = unwrap(catalog.read_resource(id));
+    CHECK(unavailable["current"] == false);
+    CHECK(unavailable["last_successful"] == snapshot);
+    CHECK(unwrap(runtime->db().get_node("resource:" + id))->metadata["availability"]["current"] == false);
+    RuntimeOptions options;
+    options.data_dir = data.path().string(); options.start_workers = false;
+    auto rejected = Runtime::open(options);
+    CHECK_FALSE(rejected.has_value()); // dangling external reference is not absent preference/defaults
+    fs::rename(source.path() / "unavailable.pack", profile_path);
+    auto reopened = unwrap(Runtime::open(options));
+    Catalog restored(*reopened, unwrap(reopened->knowledge().pack()));
+    CHECK(unwrap(restored.read_resource(id))["last_successful"] == snapshot);
+    CHECK(reopened->analyzer().profile_hash() == runtime->analyzer().profile_hash());
+    CHECK(transport->requests().empty());
+  }
   TEST_CASE("ZIP references expose lossless provider graph to headless and view consumers, retaining stale evidence") {
     fsutil::TempDir source, linked_data, copied_data;
     auto document = unwrap(json::parse(chatgpt_fixture()));
@@ -284,18 +387,25 @@ TEST_SUITE("catalog_pipeline") {
     import_options.export_mode = ExportMode::On;
     auto imported = unwrap(copied->importer().import_file(zip_path, import_options));
     REQUIRE(imported.conversations.size() == 2);
-    bool compared = false;
+    Catalog copied_catalog(*copied, unwrap(copied->knowledge().pack()));
+    unwrap(copied_catalog.scan(scan));
+    int compared = 0;
     for (const auto& conversation : imported.conversations) {
       auto stored = unwrap(copied->db().get_conv(conversation.id));
       REQUIRE(stored.has_value());
-      if (stored->metadata["export"]["key"] != "conv-a") continue;
-      compared = true;
-      CHECK(snapshot["nodes"][0]["metadata"]["graph"] == stored->metadata["export"]["graph"]);
+      auto unit = std::find_if(units.begin(), units.end(), [&](const auto& candidate) {
+        return candidate.ext_id == stored->metadata["export"]["key"].get<std::string>();
+      });
+      REQUIRE(unit != units.end());
+      const auto reference_graph = unwrap(catalog.read_resource(unit->unit.id))["last_successful"];
+      CHECK(unwrap(copied_catalog.read_resource(unit->unit.id))["last_successful"] == reference_graph);
+      ++compared;
+      CHECK(reference_graph["nodes"][0]["metadata"]["graph"] == stored->metadata["export"]["graph"]);
       auto messages = unwrap(copied->db().get_msgs(conversation.id, true));
-      REQUIRE(messages.size() == 3);
+      REQUIRE(messages.size() == reference_graph["nodes"].size() - 1);
       for (const auto& message : messages) {
         bool found = false;
-        for (const auto& node : snapshot["nodes"]) {
+        for (const auto& node : reference_graph["nodes"]) {
           if (node["kind"] != "export:message" || node["metadata"]["export"]["key"] != message.metadata["export"]["key"]) continue;
           found = true;
           CHECK(node["content"] == message.text);
@@ -305,7 +415,7 @@ TEST_SUITE("catalog_pipeline") {
         CHECK(found);
       }
     }
-    CHECK(compared);
+    CHECK(compared == 2);
 
     // Existing endpoint used by CatalogPane resolves through the same API.
     const auto opts = json::dump(Json{{"data_dir", linked_data.path().string()}, {"start_workers", false}});
@@ -319,6 +429,32 @@ TEST_SUITE("catalog_pipeline") {
     REQUIRE(preview.has_value());
     CHECK((*preview)["resource"]["last_successful"] == snapshot);
 
+    // Projection vocabulary is data, while domain data and runtime are pinned.
+    const auto analyzer_hash = linked->analyzer().profile_hash();
+    const auto projection_path = linked_data.path() / "profiles/resource_projection.pack";
+    const Json vocabulary_overlay{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "resource_projection"},
+      {"overrides", {{"kinds", {{"message", "synthetic:resource_message"}}},
+                     {"predicates", {{"parent", "synthetic_resource_parent"}}}}}};
+    write_file(projection_path, vocabulary_overlay.dump());
+    auto alternative = unwrap(catalog.read_resource(id))["last_successful"];
+    CHECK(alternative["projection_profile"]["hash"] != snapshot["projection_profile"]["hash"]);
+    CHECK(alternative["nodes"][1]["kind"] == "synthetic:resource_message");
+    CHECK(alternative["raw"] == snapshot["raw"]);
+    CHECK(unwrap(linked->db().get_links(std::nullopt, "synthetic_resource_parent")).size() == 2);
+    CHECK(linked->analyzer().profile_hash() == analyzer_hash);
+    auto invalid_vocabulary = vocabulary_overlay;
+    invalid_vocabulary["overrides"]["kinds"]["message"] = "";
+    write_file(projection_path, invalid_vocabulary.dump());
+    CHECK_FALSE(catalog.read_resource(id).has_value());
+    invalid_vocabulary["overrides"] = Json::object();
+    invalid_vocabulary["patch"] = Json::array({Json{{"op", "remove"}, {"path", "/kinds/message"}}});
+    write_file(projection_path, invalid_vocabulary.dump());
+    CHECK_FALSE(catalog.read_resource(id).has_value());
+    CHECK(unwrap(linked->db().get_node("resource:" + id))->metadata["projection_profile"]["hash"] == alternative["projection_profile"]["hash"]);
+    write_file(projection_path, Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "resource_projection"},
+                                    {"overrides", Json::object()}}.dump());
+    CHECK(unwrap(catalog.read_resource(id))["last_successful"] == snapshot);
+
     fs::rename(zip_path, source.path() / "temporarily-unavailable.zip");
     auto unavailable = unwrap(catalog.read_resource(id));
     CHECK(unavailable["current"] == false);
@@ -331,7 +467,8 @@ TEST_SUITE("catalog_pipeline") {
     fs::rename(source.path() / "temporarily-unavailable.zip", zip_path);
     CHECK(unwrap(reopened.read_resource(id))["current"] == true);
     // Replacing the container does not silently replace the pinned fragment.
-    bytes = "[{\"mapping\":{},\"id\":\"changed\"}]";
+    document[0]["mapping"]["n1"]["message"]["content"]["parts"][0] = "Sorblex needs a new storage layer.";
+    bytes = json::dump(document);
     zip = {};
     REQUIRE(mz_zip_writer_init_file(&zip, zip_path.string().c_str(), 0));
     REQUIRE(mz_zip_writer_add_mem(&zip, "conversations.json", bytes.data(), bytes.size(), 0));
@@ -339,6 +476,7 @@ TEST_SUITE("catalog_pipeline") {
     REQUIRE(mz_zip_writer_end(&zip));
     auto changed = unwrap(reopened.read_resource(id));
     CHECK(changed["current"] == false);
+    CHECK(changed["status"] == "source_changed");
     CHECK(changed["last_successful"] == snapshot);
   }
   TEST_CASE("BM25 normalizes all profile terms and philosophy evidence permits bounded link support") {

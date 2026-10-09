@@ -1,0 +1,98 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "resource_projection",
+  "revision": 1,
+  "description": "Native resource graph kinds and predicates. A profile changes projection vocabulary, never source retention, transport, runtime activation, privacy or domain parser selection. Missing fields are errors; this is the canonical source for generated embedding.",
+  "defaults": {
+    "kinds": {
+      "resource": "external:resource",
+      "conversation": "export:conversation",
+      "message": "export:message",
+      "profile": "runtime:profile",
+      "profile_field": "runtime:profile_field",
+      "json": "external:json",
+      "json_field": "external:json_field"
+    },
+    "predicates": {
+      "contains": "contains",
+      "parent": "parent",
+      "projects": "projects"
+    }
+  },
+  "value_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "kinds",
+      "predicates"
+    ],
+    "properties": {
+      "kinds": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "resource",
+          "conversation",
+          "message",
+          "profile",
+          "profile_field",
+          "json",
+          "json_field"
+        ],
+        "properties": {
+          "resource": {
+            "type": "string",
+            "minLength": 1
+          },
+          "conversation": {
+            "type": "string",
+            "minLength": 1
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1
+          },
+          "profile": {
+            "type": "string",
+            "minLength": 1
+          },
+          "profile_field": {
+            "type": "string",
+            "minLength": 1
+          },
+          "json": {
+            "type": "string",
+            "minLength": 1
+          },
+          "json_field": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "predicates": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "contains",
+          "parent",
+          "projects"
+        ],
+        "properties": {
+          "contains": {
+            "type": "string",
+            "minLength": 1
+          },
+          "parent": {
+            "type": "string",
+            "minLength": 1
+          },
+          "projects": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}

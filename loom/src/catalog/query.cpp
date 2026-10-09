@@ -10,6 +10,7 @@
 #include "loom/db.h"
 #include "loom/provenance.h"
 #include "loom/runtime.h"
+#include "loom/runtime_profile.h"
 #include "loom/sqlite.h"
 #include "loom/util/fs.h"
 #include "loom/util/sha256.h"
@@ -192,11 +193,19 @@ Result<Json> Catalog::read_resource(std::string_view unit_id) {
   LOOM_TRY_ASSIGN(CatalogUnit cu, CatalogUnit::from_json(unit));
   const std::string root_id = "resource:" + std::string(unit_id);
   LOOM_TRY_ASSIGN(auto previous, rt_.db().get_node(root_id));
-  auto unavailable = [&](const Error& error) -> Json {
+  auto unavailable = [&](const Error& error) -> Result<Json> {
     Json result{{"status", error.code == Errc::Conflict ? "source_changed" : "unavailable"},
                 {"current", false}, {"error", {{"code", errc_name(error.code)}, {"message", error.message}}},
                 {"last_successful", nullptr}};
-    if (previous) result["last_successful"] = previous->metadata;
+    if (previous) {
+      Json retained = previous->metadata;
+      retained.erase("availability"); // observation is separate from the last successful projection
+      result["last_successful"] = retained;
+      NodePatch patch;
+      retained["availability"] = Json{{"status", result["status"]}, {"current", false}, {"error", result["error"]}};
+      patch.metadata = std::move(retained);
+      LOOM_TRY(rt_.db().update_node(root_id, patch));
+    }
     return result;
   };
   auto raw = read_unit(unit_id);
@@ -211,6 +220,8 @@ Result<Json> Catalog::read_resource(std::string_view unit_id) {
   loom::ImportOptions options;
   xport::Env env{rt_.db(), nullptr, options, {}, ""};
   bool recognized = false;
+  std::optional<RuntimeProfile> profile;
+  std::optional<Error> mapping_error;
   if (parsed->is_object() && parsed->contains("mapping") && (*parsed)["mapping"].is_object()) {
     xport::OpenAiCtx context;
     context.env = &env;
@@ -220,6 +231,19 @@ Result<Json> Catalog::read_resource(std::string_view unit_id) {
     xport::parse_anthropic_conversation(*parsed, 0, cu.unit.locator.member, env, model, counts);
     recognized = true;
   }
+  const bool profile_declared = json::get_string(*parsed, "schema") == "loom.runtime_profile_overlay/1";
+  if (profile_declared) {
+    auto base = RuntimeProfile::builtin(json::get_string(*parsed, "domain"));
+    if (!base) mapping_error = base.error();
+    else {
+      auto effective = base->with_overlay(*parsed);
+      if (!effective) mapping_error = effective.error();
+      else profile = std::move(*effective);
+    }
+  }
+  LOOM_TRY_ASSIGN(auto projection, RuntimeProfile::load("resource_projection", rt_.paths().root));
+  const auto& kinds = projection.values().at("kinds");
+  const auto& predicates = projection.values().at("predicates");
   auto graph_lock = rt_.db().lock();
   sql::Txn transaction(rt_.db().conn());
   LOOM_TRY(transaction.begin_status());
@@ -242,37 +266,74 @@ Result<Json> Catalog::read_resource(std::string_view unit_id) {
   };
   // Stable content-versioned IDs keep the same logical graph for copy and
   // reference. Provider parent/status/raw fields retain alternative branches.
-  const std::string conversation_id = "resource-conversation:" + std::string(kExportParserVersion) + ":" + cu.content_hash;
+  const std::string conversation_id = "resource-conversation:" + std::string(kExportParserVersion) + ":" + projection.hash() + ":" + cu.content_hash;
   if (recognized) {
-    LOOM_TRY(add_node(conversation_id, "export:conversation", model.title, "", model.export_meta));
+    LOOM_TRY(add_node(conversation_id, kinds.at("conversation").get<std::string>(), model.title, "", model.export_meta));
     for (std::size_t i = 0; i < model.msgs.size(); ++i) {
       const auto& message = model.msgs[i];
       const std::string id = conversation_id + ":" + std::to_string(i);
       Json metadata{{"export", message.export_meta}, {"role", message.role}, {"status", message.status},
                     {"source_key", message.key}, {"version_group", message.group}, {"version_num", message.version_num}};
-      LOOM_TRY(add_node(id, "export:message", message.role, message.text, std::move(metadata)));
-      LOOM_TRY(add_edge(conversation_id, id, "contains"));
+      LOOM_TRY(add_node(id, kinds.at("message").get<std::string>(), message.role, message.text, std::move(metadata)));
+      LOOM_TRY(add_edge(conversation_id, id, predicates.at("contains").get<std::string>()));
       if (message.parent >= 0)
-        LOOM_TRY(add_edge(conversation_id + ":" + std::to_string(message.parent), id, "parent"));
+        LOOM_TRY(add_edge(conversation_id + ":" + std::to_string(message.parent), id, predicates.at("parent").get<std::string>()));
     }
   }
+  std::string profile_id;
+  if (profile_declared) {
+    profile_id = profile ? "resource-profile:" + profile->hash() + ":" + projection.hash() + ":" + cu.content_hash
+                         : "resource-json:" + projection.hash() + ":" + cu.content_hash;
+    if (profile) LOOM_TRY(add_node(profile_id, kinds.at("profile").get<std::string>(), profile->domain(), "", profile->inspection()));
+    else LOOM_TRY(add_node(profile_id, kinds.at("json").get<std::string>(), std::string(unit_id), "",
+                           Json{{"declared_schema", "loom.runtime_profile_overlay/1"}, {"mapping_status", "uncertain"}}));
+    // Validated fields are real graph nodes, not a renderer-only JSON blob.
+    // Domain validation precedes projection; unknown executable fields never
+    // get silently dropped or activated. No changes to RuntimeProfile rules.
+    std::function<Status(const Json&, const std::string&, const std::string&)> fields;
+    fields = [&](const Json& value, const std::string& pointer, const std::string& parent) -> Status {
+      const std::string id = profile_id + ":field:" + pointer;
+      Json metadata{{"pointer", pointer}, {"value_type", value.type_name()}};
+      if (profile) metadata["profile_hash"] = profile->hash();
+      else metadata["value_ref"] = Json{{"unit_id", unit_id}, {"source", cu.unit.source},
+                                         {"content_hash", cu.content_hash}, {"pointer", pointer}};
+      LOOM_TRY(add_node(id, profile ? kinds.at("profile_field").get<std::string>() : kinds.at("json_field").get<std::string>(), pointer,
+                        profile && value.is_primitive() ? value.dump() : "", std::move(metadata)));
+      LOOM_TRY(add_edge(parent, id, predicates.at("contains").get<std::string>()));
+      if (value.is_object()) {
+        for (auto it = value.begin(); it != value.end(); ++it) {
+          std::string key;
+          for (char ch : it.key()) key += ch == '~' ? "~0" : ch == '/' ? "~1" : std::string(1, ch);
+          LOOM_TRY(fields(it.value(), pointer + "/" + key, id));
+        }
+      } else if (value.is_array()) {
+        for (std::size_t i = 0; i < value.size(); ++i) LOOM_TRY(fields(value[i], pointer + "/" + std::to_string(i), id));
+      }
+      return {};
+    };
+    LOOM_TRY(fields(profile ? profile->values() : *parsed, "", profile_id));
+  }
   Json snapshot{{"source", cu.unit.source}, {"selector", cu.unit.locator.to_json()},
-                {"content_hash", cu.content_hash}, {"mapping_version", kExportParserVersion},
-                {"mapping_status", recognized ? "recognized" : "uncertain"},
-                {"coverage", recognized ? "provider_conversation" : "not_implemented"},
+                {"content_hash", cu.content_hash}, {"projection_profile", projection.inspection()},
+                {"mapping_version", profile_declared ? "loom.runtime_profile_overlay/1" : std::string(kExportParserVersion)},
+                {"mapping_status", recognized || profile ? "recognized" : "uncertain"},
+                {"coverage", recognized ? "provider_conversation" : profile ? "runtime_profile" : profile_declared ? "syntax_only" : "not_implemented"},
                 {"nodes", nodes}, {"edges", edges},
                 {"permission", "readonly"}, {"activation", "not_requested"}};
   // Unknown domains may contain credentials. Keep their verified source
   // reference, not unclassified values in an exportable graph snapshot.
   if (recognized) snapshot["raw"] = *parsed;
+  if (mapping_error) snapshot["mapping_error"] = Json{{"code", errc_name(mapping_error->code)}, {"message", mapping_error->message}};
   NodeOptions root;
   root.node_id = root_id;
   root.metadata = snapshot;
-  LOOM_TRY(rt_.db().create_node(std::string(unit_id), "external:resource", root));
+  root.metadata["availability"] = Json{{"status", "available"}, {"current", true}};
+  LOOM_TRY(rt_.db().create_node(std::string(unit_id), kinds.at("resource").get<std::string>(), root));
   NodePatch patch;
-  patch.metadata = snapshot;
+  patch.metadata = root.metadata;
   LOOM_TRY(rt_.db().update_node(root_id, patch));
-  if (recognized) LOOM_TRY(add_edge(root_id, conversation_id, "projects"));
+  if (recognized) LOOM_TRY(add_edge(root_id, conversation_id, predicates.at("projects").get<std::string>()));
+  if (profile_declared) LOOM_TRY(add_edge(root_id, profile_id, predicates.at("projects").get<std::string>()));
   LOOM_TRY(transaction.commit());
   return Json{{"status", "available"}, {"current", true}, {"last_successful", snapshot}};
 }

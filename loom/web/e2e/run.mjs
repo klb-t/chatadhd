@@ -411,6 +411,19 @@ async function main() {
       await workbench.getByTestId("kb-add-view").click();
       const catalog = workbench.getByTestId("kb-pane-catalog");
       await catalog.locator(".kb-catalog-unit").first().waitFor();
+      const sourceUnit = catalog.locator(".kb-catalog-unit .kb-record").first();
+      await sourceUnit.focus();
+      await sourceUnit.press("Enter");
+      const sourceFields = workbench.getByTestId("kb-inspector").locator("details").filter({ has: page.getByText("All model fields", { exact: true }) });
+      await sourceFields.locator("summary").focus();
+      await sourceFields.locator("summary").press("Enter");
+      await page.waitForFunction(() => {
+        const inspector = document.querySelector('[data-testid="kb-inspector"]');
+        return [...(inspector?.querySelectorAll("pre") ?? [])].some((pre) => pre.textContent?.includes('"resource"'));
+      });
+      const inspected = JSON.parse(await sourceFields.locator("pre").innerText());
+      assert(inspected.preview.resource.current === true, "keyboard selection reads the verified external resource through the real endpoint");
+      assert(inspected.preview.resource.last_successful.nodes.some((node) => node.kind === "export:message"), "source interior exposes message graph nodes, not only a link or sketch");
       await catalog.getByText("Review and import catalog content", { exact: true }).click();
       assert(await catalog.getByRole("button", { name: "Import reviewed selection" }).isDisabled(), "import requires previewing the selected scope");
       await catalog.getByLabel("Catalog import scope").selectOption("full");
