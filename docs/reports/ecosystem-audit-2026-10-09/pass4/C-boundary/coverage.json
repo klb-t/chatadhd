@@ -1,0 +1,412 @@
+{
+  "repo": "klb-t/chatadhd",
+  "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+  "base_sha": "b9b503f62bb8e8e00c94ab7401e1cd9579129af3",
+  "native_sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+  "changed_files_denominator": 32,
+  "changed_files": [
+    "docs/reports/thread7-real-continuation-2026-10-09.md",
+    "docs/research/thread7_real_2026-10-09/continuation_01/FINAL_TESTS.json",
+    "docs/research/thread7_real_2026-10-09/continuation_01/HANDOFF_FINAL_B.md",
+    "docs/research/thread7_real_2026-10-09/continuation_01/PUBLICATION.json",
+    "docs/research/thread7_real_2026-10-09/continuation_01/build_final_handoff.py",
+    "docs/research/thread7_real_2026-10-09/continuation_01/check_public_projection.py",
+    "docs/research/thread7_real_2026-10-09/continuation_01/connect_prepared.py",
+    "docs/research/thread7_real_2026-10-09/continuation_01/connection-plan.json",
+    "docs/research/thread7_real_2026-10-09/continuation_01/connection-receipt.json",
+    "docs/research/thread7_real_2026-10-09/continuation_01/final-test-logs.zip",
+    "docs/research/thread7_real_2026-10-09/continuation_01/handoff-final-artifact-v3.json.gz",
+    "docs/research/thread7_real_2026-10-09/continuation_01/handoff-final-contract-v2.json",
+    "docs/research/thread7_real_2026-10-09/continuation_01/handoff-final-example-v2.json",
+    "docs/research/thread7_real_2026-10-09/continuation_01/handoff-final-verification.json",
+    "docs/research/thread7_real_2026-10-09/continuation_01/public-projection-check.json",
+    "docs/research/thread7_real_2026-10-09/continuation_01/public-projection-final-check.json",
+    "docs/research/thread7_real_2026-10-09/continuation_01/seal_checkpoint.py",
+    "docs/research/thread7_real_2026-10-09/continuation_01/stage-06.json",
+    "docs/research/thread7_real_2026-10-09/continuation_01/test_connect_prepared.py",
+    "docs/research/thread7_real_2026-10-09/continuation_02/HANDOFF_B.md",
+    "docs/research/thread7_real_2026-10-09/continuation_02/START.json",
+    "docs/research/thread7_real_2026-10-09/continuation_02/priority0-evidence.zip",
+    "docs/research/thread7_real_2026-10-09/continuation_02/priority0-receipt.json",
+    "docs/research/thread7_real_2026-10-09/continuation_02/retrieval-methods-v1.json",
+    "docs/research/thread7_real_2026-10-09/continuation_02/retrieval-task-protocol.json",
+    "docs/research/thread7_real_2026-10-09/continuation_02/retrieval-task-receipt.json",
+    "docs/research/thread7_real_2026-10-09/continuation_02/retrieval-task-stage.json",
+    "docs/research/thread7_real_2026-10-09/continuation_02/retrieval-task-test-output.txt",
+    "docs/research/thread7_real_2026-10-09/continuation_02/retrieval-task-tests.py",
+    "docs/research/thread7_real_2026-10-09/continuation_02/retrieval-task-validate.py",
+    "docs/research/thread7_real_2026-10-09/continuation_02/retrieval-task-validation.json",
+    "loom/tools/structure/test_credential_handoff_v2.py"
+  ],
+  "changed_non_test_python_denominator": 5,
+  "changed_non_test_python": [
+    "docs/research/thread7_real_2026-10-09/continuation_01/build_final_handoff.py",
+    "docs/research/thread7_real_2026-10-09/continuation_01/check_public_projection.py",
+    "docs/research/thread7_real_2026-10-09/continuation_01/connect_prepared.py",
+    "docs/research/thread7_real_2026-10-09/continuation_01/seal_checkpoint.py",
+    "docs/research/thread7_real_2026-10-09/continuation_02/retrieval-task-validate.py"
+  ],
+  "named_reviewed_new_execution_files": 3,
+  "new_execution_files_tested_runtime": 2,
+  "new_product_file_ranges_added": 0,
+  "main_denominator_unchanged": true,
+  "coverage_meaning": "Named functions/ranges, not complete behavior certification. C research docs/tools excluded from active product file denominator. Existing native registry range exercised with new input and receipt path.",
+  "files": [
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/connect_prepared.py",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "sha256": "13d8d29c8e02a280c333dfb24726e34f58a5df9dadee7e0436c08db1fe5b8074",
+      "ranges": [
+        {
+          "start_line": 39,
+          "end_line": 145,
+          "functions": [
+            "connect"
+          ],
+          "mode": "runtime",
+          "consumers": [
+            "Queue.add/snapshot/reopen",
+            "ordered_jobs",
+            "validate_manifest",
+            "write/dump"
+          ],
+          "untraced": [
+            "provider transport, private real prepared bodies, model execution"
+          ]
+        }
+      ],
+      "scope_type": "research_or_audit_support",
+      "new_product_file_coverage": false
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/build_final_handoff.py",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "sha256": "3bee2515ddbb3934497c3d33eaf4e0b2b266b3fe47b20d0d47d7a695360de23c",
+      "ranges": [
+        {
+          "start_line": 16,
+          "end_line": 71,
+          "functions": [
+            "main"
+          ],
+          "mode": "runtime",
+          "consumers": [
+            "Draft202012Validator",
+            "build_handoff_artifact",
+            "load_projection",
+            "recover_files"
+          ],
+          "untraced": [
+            "all possible secret/PII forms; real private inputs"
+          ]
+        }
+      ],
+      "scope_type": "research_or_audit_support",
+      "new_product_file_coverage": false
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/check_public_projection.py",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "sha256": "44f36bf0de28076ff25ac579d7493f2139234c6ffb1788aac368c59117151f19",
+      "ranges": [
+        {
+          "start_line": 19,
+          "end_line": 116,
+          "functions": [
+            "digest",
+            "strings",
+            "parts",
+            "main"
+          ],
+          "mode": "source",
+          "consumers": [
+            "gzip/ZIP decode",
+            "method_graph.recover_files",
+            "git diff"
+          ],
+          "untraced": "finite 160-byte canaries; no private source corpus accessed and no claim of whole-public-delta privacy certification"
+        }
+      ],
+      "scope_type": "research_or_audit_support",
+      "new_product_file_coverage": false
+    },
+    {
+      "path": "loom/tools/structure/test_credential_handoff_v2.py",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "sha256": "6685a544f4e92a95f8e6b6e58ce606c1ee9bf42e66663def8e2833e0f484fb37",
+      "ranges": [
+        {
+          "start_line": 17,
+          "end_line": 136,
+          "functions": [
+            "HybridHandoffTests"
+          ],
+          "mode": "author_test_executed",
+          "consumers": [
+            "actual generate/decrypt",
+            "Node WebCrypto"
+          ],
+          "untraced": [
+            "device browser"
+          ]
+        }
+      ],
+      "scope_type": "research_or_audit_support",
+      "new_product_file_coverage": false
+    },
+    {
+      "path": "loom/tools/structure/credential_handoff.py",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "sha256": "f46f0919645e5023747f8fb8c95d4e8279615d82277c6a728cafe010cebbcc05",
+      "ranges": [
+        {
+          "start_line": 27,
+          "end_line": 63,
+          "functions": [
+            "outside_git",
+            "private_directory",
+            "write_new",
+            "read_private"
+          ],
+          "mode": "runtime",
+          "consumers": [
+            "Path.resolve/lstat",
+            "O_NOFOLLOW"
+          ],
+          "untraced": [
+            "platform-wide hardlink/filesystem race behavior"
+          ]
+        }
+      ],
+      "scope_type": "research_or_audit_support",
+      "new_product_file_coverage": false
+    },
+    {
+      "path": "loom/tools/structure/credential_handoff_v2.py",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "sha256": "e2684b74ca70a3c0eb6fa7d6b0d7b11d6d77e21ee72fe1000a03d830b11d2a3c",
+      "ranges": [
+        {
+          "start_line": 99,
+          "end_line": 117,
+          "functions": [
+            "generate"
+          ],
+          "mode": "runtime",
+          "consumers": [
+            "storage.private_directory",
+            "RSA generation",
+            "storage.write_new"
+          ],
+          "untraced": [
+            "live credentials"
+          ]
+        }
+      ],
+      "scope_type": "research_or_audit_support",
+      "new_product_file_coverage": false
+    },
+    {
+      "path": "loom/tools/structure/experiment_workflow_v1.py",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "sha256": "9d67e21da33733aefb5a410e6da65d92cd6a81341cd7c87466fce47b64ba287b",
+      "ranges": [
+        {
+          "start_line": 56,
+          "end_line": 102,
+          "functions": [
+            "render",
+            "validate_spec"
+          ],
+          "mode": "runtime",
+          "consumers": [
+            "matching table",
+            "strict data validation"
+          ],
+          "untraced": [
+            "all variant design policies"
+          ]
+        }
+      ],
+      "scope_type": "research_or_audit_support",
+      "new_product_file_coverage": false
+    },
+    {
+      "path": "loom/tools/structure/experiment_workflow_v1.py",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "sha256": "9d67e21da33733aefb5a410e6da65d92cd6a81341cd7c87466fce47b64ba287b",
+      "ranges": [
+        {
+          "start_line": 106,
+          "end_line": 137,
+          "functions": [
+            "jobs"
+          ],
+          "mode": "runtime",
+          "consumers": [
+            "canonical/digest",
+            "request rendering",
+            "operation/comparison identity"
+          ],
+          "untraced": [
+            "provider dispatch"
+          ]
+        }
+      ],
+      "scope_type": "research_or_audit_support",
+      "new_product_file_coverage": false
+    },
+    {
+      "path": "loom/tools/structure/experiment_workflow_v1.py",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "sha256": "9d67e21da33733aefb5a410e6da65d92cd6a81341cd7c87466fce47b64ba287b",
+      "ranges": [
+        {
+          "start_line": 277,
+          "end_line": 298,
+          "functions": [
+            "Queue.add"
+          ],
+          "mode": "runtime",
+          "consumers": [
+            "SQLite transaction",
+            "spec/hash identity guard"
+          ],
+          "untraced": [
+            "power loss"
+          ]
+        }
+      ],
+      "scope_type": "research_or_audit_support",
+      "new_product_file_coverage": false
+    },
+    {
+      "path": "loom/tools/structure/experiment_workflow_v1.py",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "sha256": "9d67e21da33733aefb5a410e6da65d92cd6a81341cd7c87466fce47b64ba287b",
+      "ranges": [
+        {
+          "start_line": 410,
+          "end_line": 413,
+          "functions": [
+            "Queue.snapshot"
+          ],
+          "mode": "runtime",
+          "consumers": [
+            "actual SQLite reopen and read"
+          ],
+          "untraced": [
+            "parallel mutation"
+          ]
+        }
+      ],
+      "scope_type": "research_or_audit_support",
+      "new_product_file_coverage": false
+    },
+    {
+      "path": "loom/tools/structure/experiment_analysis_v1.py",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "sha256": "375f38d595b61efc3614f604caee4b1082548043664ab65b21d502de52e35fca",
+      "ranges": [
+        {
+          "start_line": 513,
+          "end_line": 540,
+          "functions": [
+            "build_handoff_artifact"
+          ],
+          "mode": "runtime",
+          "consumers": [
+            "method_graph.capture_run/build_artifact",
+            "codec validation"
+          ],
+          "untraced": "generic method graph deliberately preserves supplied bytes; public caller owns redaction"
+        }
+      ],
+      "scope_type": "research_or_audit_support",
+      "new_product_file_coverage": false
+    },
+    {
+      "path": "loom/tools/coordination/graph_store.py",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "sha256": "5409db2624335b0984ddd95a63a99906648f6d6acaf72f7951ddc7eff9ca758c",
+      "ranges": [
+        {
+          "start_line": 32,
+          "end_line": 90,
+          "functions": [
+            "NativeGraphStore.__init__",
+            "execute",
+            "accept",
+            "read",
+            "replay",
+            "close"
+          ],
+          "mode": "native_ffi",
+          "consumers": [
+            "loom_graph_packet_store",
+            "Runtime close/reopen"
+          ],
+          "untraced": [
+            "UI/Android/process crash"
+          ]
+        }
+      ],
+      "scope_type": "research_or_audit_support",
+      "new_product_file_coverage": false
+    },
+    {
+      "path": "loom/src/context/method_registry.cpp",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "sha256": "445e67cc02381392e23e348dda5b3d37f3dac47b4312d71c3b5ceab529c54188",
+      "ranges": [
+        {
+          "start_line": 111,
+          "end_line": 128,
+          "functions": [
+            "dto"
+          ],
+          "mode": "native_runtime",
+          "consumers": [
+            "Entity/Claim/Observation::from_json/to_json"
+          ],
+          "untraced": "same bytes on B4 and C4; raw DTO gate tested plus native normalization diagnostic"
+        }
+      ],
+      "scope_type": "native_product_existing_range",
+      "new_product_file_coverage": false
+    },
+    {
+      "path": "loom/src/context/method_registry.cpp",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "sha256": "445e67cc02381392e23e348dda5b3d37f3dac47b4312d71c3b5ceab529c54188",
+      "ranges": [
+        {
+          "start_line": 516,
+          "end_line": 600,
+          "functions": [
+            "MethodRegistry::load",
+            "MethodRegistry::resolve"
+          ],
+          "mode": "native_runtime",
+          "consumers": [
+            "GraphPacketStore.read",
+            "KnowledgeStore.get_entity/get_claim/get_observation",
+            "method_channel_capabilities"
+          ],
+          "untraced": "receipt-backed input works; no executor installation or transport permission inferred"
+        }
+      ],
+      "scope_type": "native_product_existing_range",
+      "new_product_file_coverage": false
+    }
+  ],
+  "unreviewed_execution_files": [
+    "docs/research/thread7_real_2026-10-09/continuation_01/seal_checkpoint.py",
+    "docs/research/thread7_real_2026-10-09/continuation_02/retrieval-task-validate.py"
+  ],
+  "other_gaps": [
+    "Private source corpus was not available/read in this public audit.",
+    "No live payer/model calls, source-quality evaluation, device browser or UI integration.",
+    "Interrupted preparation explicitly refuses same output; resumable in-place connector contract not available."
+  ]
+}

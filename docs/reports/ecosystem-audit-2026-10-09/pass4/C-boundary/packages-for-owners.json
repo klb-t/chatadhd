@@ -1,0 +1,154 @@
+{
+  "packages": [
+    {
+      "finding": "A4-C-001",
+      "owner": "C",
+      "priority": "P1",
+      "reproduction": {
+        "receipt": "receipt-verified.json",
+        "tests": [
+          "C4-CONNECTION-03-A",
+          "C4-CONNECTION-03-B"
+        ],
+        "observed": "Individually hash-verified corpus v2 and prepared row v1, same family_id: spec takes corpus hash while analysis-binding takes preparation hash; same operation and exact request bytes accepted."
+      },
+      "expected": {
+        "runner": "run.py",
+        "test": "C4-CONNECTION-03-B",
+        "expected": "Reject unmatched source revisions before a usable bundle is emitted; retain control C4-CONNECTION-01 passes."
+      },
+      "consumers": [
+        "connect_prepared.connect",
+        "experiment_workflow_v1.jobs/Queue",
+        "research_programme_manifest.validate_manifest",
+        "analysis-bindings.json downstream analysis"
+      ],
+      "migration": "Existing immutable prepared bundles must remain untouched. Quarantine mismatched bindings; do not rewrite historical evidence as if it originally used another source.",
+      "dependencies": [
+        "Source identity/version mapping contract",
+        "C research connector; B only consumes verified resulting artifacts"
+      ]
+    },
+    {
+      "finding": "A4-C-002",
+      "owner": "C",
+      "priority": "P1",
+      "reproduction": {
+        "receipt": "receipt-verified.json",
+        "tests": [
+          "C4-CONNECTION-06-A",
+          "C4-CONNECTION-06-B"
+        ],
+        "observed": "Saved/reloaded canonical PLAN.json has identical values and unchanged lists, but list(variant) changes generated $match.fields order, spec digest and operation IDs. Existing Queue rejects queue_spec_identity_reused."
+      },
+      "expected": {
+        "runner": "run.py",
+        "test": "C4-CONNECTION-06-B",
+        "expected": "Equivalent plan object-key order yields stable request/operation identities and re-add count 0; queue keeps 2 synthetic jobs. Relocation C4-CONNECTION-05 stays PASS."
+      },
+      "consumers": [
+        "connect_prepared.connect line86",
+        "experiment_workflow_v1.render $match",
+        "jobs digest(spec)",
+        "Queue.add identity check"
+      ],
+      "migration": "Changing emitted fields order can change old spec hashes. Preserve frozen old specs/IDs; version or map new producer behavior. Do not relax Queue identity guard.",
+      "dependencies": [
+        "Existing spec/hash identity contract",
+        "Canonical producer output policy"
+      ]
+    },
+    {
+      "finding": "A2-C-001",
+      "owner": "C",
+      "priority": "P1",
+      "reproduction": {
+        "receipt": "receipt-verified.json",
+        "tests": [
+          "C4-PUBLIC-evaluation-protocol-A",
+          "C4-PUBLIC-evaluation-protocol-B",
+          "C4-PUBLIC-handoff-projection-A",
+          "C4-PUBLIC-handoff-projection-B"
+        ],
+        "observed": "Synthetic unknown auxiliary canary reaches public artifact and recovered policy/projection-profile-bytes."
+      },
+      "expected": {
+        "runner": "run.py",
+        "tests": [
+          "C4-PUBLIC-evaluation-protocol-B",
+          "C4-PUBLIC-handoff-projection-B"
+        ],
+        "expected": "No canary in artifact/decoded source/diagnostic; reject unsupported public auxiliary input or explicitly safe projection."
+      },
+      "consumers": [
+        "build_final_handoff.main",
+        "experiment_analysis_v1.build_handoff_artifact",
+        "method_graph.build_artifact/recover_files"
+      ],
+      "migration": "Keep generic graph byte preservation. Fix public boundary, not shared codec by dropping unknown data. Old artifacts require explicit audit, never silent historical rewrite.",
+      "dependencies": [
+        "Public projection contract",
+        "Caller-controlled disclosure policy"
+      ]
+    },
+    {
+      "finding": "A2-C-004",
+      "owner": "C",
+      "priority": "P1",
+      "reproduction": {
+        "receipt": "receipt-verified.json",
+        "tests": [
+          "C4-PUBLIC-handoff-example-A",
+          "C4-PUBLIC-handoff-example-B"
+        ],
+        "observed": "Unknown presentation field correctly rejected; actual Python unhandled-exception renderer contains the synthetic canary."
+      },
+      "expected": {
+        "runner": "run.py",
+        "test": "C4-PUBLIC-handoff-example-B",
+        "expected": "Rejection persists but public diagnostic contains no canary."
+      },
+      "consumers": [
+        "Draft202012Validator.validate",
+        "build_final_handoff.__main__",
+        "sys.excepthook"
+      ],
+      "migration": "Do not weaken JSON schema acceptance. Retain useful event codes without serializing private instance values.",
+      "dependencies": [
+        "CLI public error boundary"
+      ]
+    },
+    {
+      "finding": "A3-DISC-001",
+      "owner": "B",
+      "priority": "P1",
+      "reproduction": {
+        "receipt": "registry-receipt-final.json",
+        "tests": [
+          "C4-REGISTRY-02-A",
+          "C4-REGISTRY-02-B",
+          "C4-REGISTRY-05"
+        ],
+        "observed": "Raw C4 packet DTOs fail lossless ordered comparison; same packet is accepted by native store and then loads through existing receipt_ids without caller normalization."
+      },
+      "expected": {
+        "runner": "run_registry.py",
+        "test": "C4-REGISTRY-02-B",
+        "expected": "Raw accepted DTO packet loads regardless of equivalent object serialization; receipt route and unknown-field rejection retain PASS."
+      },
+      "consumers": [
+        "MethodRegistry::load raw collections",
+        "GraphPacketStore::execute",
+        "MethodRegistry::load receipt_ids",
+        "KnowledgeStore get_entity/get_claim/get_observation",
+        "MethodRegistry::resolve"
+      ],
+      "migration": "Use exact semantic numeric comparison as applicable; preserve list order, unknown-field gate and immutable hashes. Never treat normalized fixture as repair.",
+      "dependencies": [
+        "B native MethodRegistry comparator",
+        "C method graph contract"
+      ]
+    }
+  ],
+  "publication_is_not_message_delivery": true
+}

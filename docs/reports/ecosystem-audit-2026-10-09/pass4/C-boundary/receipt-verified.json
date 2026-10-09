@@ -1,0 +1,424 @@
+{
+  "schema": "klb.audit.pass4.c-boundary/1",
+  "repo": "klb-t/chatadhd",
+  "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+  "prior_sha": "b9b503f62bb8e8e00c94ab7401e1cd9579129af3",
+  "test_source_sha256": "f4a06bf988ee55bd65845f0d768f683f40d94c7d3e4e21e538ad33f4df386337",
+  "tests": [
+    {
+      "id": "C4-CREDENTIAL-01",
+      "category": "repair_acceptance",
+      "status": "PASS",
+      "evidence": {
+        "actual_author_tests": 10,
+        "errors": 0,
+        "failures": 0,
+        "skipped": 0,
+        "configured_root_observed": true,
+        "configuration": "TMPDIR environment; tempfile cache reset before test import",
+        "log_sha256": "429713d745f94fcff7de16bd66a69491334c535b0db47029a0acd6f51523e232",
+        "uses_real_python_crypto_and_node_webcrypto": true
+      }
+    },
+    {
+      "id": "C4-CREDENTIAL-02",
+      "category": "bug_reproduction",
+      "status": "PASS",
+      "evidence": {
+        "prior_sha": "b9b503f62bb8e8e00c94ab7401e1cd9579129af3",
+        "explicit_tmp_routed_to_synthetic_git_root": true,
+        "real_storage_guard_error": "private_path_inside_git",
+        "changed_platform_git_metadata": false
+      }
+    },
+    {
+      "id": "C4-CREDENTIAL-03-git-directory",
+      "category": "contract",
+      "status": "PASS",
+      "evidence": {
+        "actual_guard_error": "private_path_inside_git",
+        "private_material_created": false,
+        "public_html_created": false
+      }
+    },
+    {
+      "id": "C4-CREDENTIAL-03-git-file",
+      "category": "contract",
+      "status": "PASS",
+      "evidence": {
+        "actual_guard_error": "private_path_inside_git",
+        "private_material_created": false,
+        "public_html_created": false
+      }
+    },
+    {
+      "id": "C4-CREDENTIAL-03-symlink",
+      "category": "contract",
+      "status": "PASS",
+      "evidence": {
+        "actual_guard_error": "private_path_not_allowed",
+        "private_material_created": false,
+        "public_html_created": false
+      }
+    },
+    {
+      "id": "C4-CONNECTION-01-original",
+      "category": "integration",
+      "status": "PASS",
+      "evidence": {
+        "checks": {
+          "exact_request_bytes": true,
+          "same_operation_and_request_bindings": true,
+          "queue_ordinals_preserved": true,
+          "no_dispatch": true,
+          "not_authorized_by_preparation": true,
+          "source_versions_match": true
+        },
+        "queued": 2,
+        "producer_reports_new_calls": 0,
+        "actual_consumers": [
+          "connect_prepared.connect",
+          "experiment_workflow_v1.Queue",
+          "research_programme_manifest.validate_manifest"
+        ]
+      }
+    },
+    {
+      "id": "C4-CONNECTION-01-equivalent",
+      "category": "integration",
+      "status": "PASS",
+      "evidence": {
+        "checks": {
+          "exact_request_bytes": true,
+          "same_operation_and_request_bindings": true,
+          "queue_ordinals_preserved": true,
+          "no_dispatch": true,
+          "not_authorized_by_preparation": true,
+          "source_versions_match": true
+        },
+        "queued": 2,
+        "producer_reports_new_calls": 0,
+        "actual_consumers": [
+          "connect_prepared.connect",
+          "experiment_workflow_v1.Queue",
+          "research_programme_manifest.validate_manifest"
+        ]
+      }
+    },
+    {
+      "id": "C4-CONNECTION-02",
+      "category": "contract",
+      "status": "PASS",
+      "evidence": {
+        "transformation": "reverse only object keys and change whitespace of wrapper manifest/index/panel; keep frozen request bytes identical",
+        "invariant": "operation identity, ordered exact request digests and scheduler ordinals",
+        "syntax_equivalence": true,
+        "array_order_changed": false,
+        "identities_equal": true
+      }
+    },
+    {
+      "id": "C4-CONNECTION-05",
+      "category": "contract",
+      "status": "PASS",
+      "evidence": {
+        "invariant": "same pinned manifest/panel/body versions, operation IDs and request order after local relocation",
+        "identical_versions": true,
+        "identities_equal": true,
+        "checks": {
+          "exact_request_bytes": true,
+          "same_operation_and_request_bindings": true,
+          "queue_ordinals_preserved": true,
+          "no_dispatch": true,
+          "not_authorized_by_preparation": true,
+          "source_versions_match": true
+        }
+      }
+    },
+    {
+      "id": "C4-CONNECTION-06-A",
+      "category": "bug_reproduction",
+      "status": "PASS",
+      "evidence": {
+        "finding": "A4-C-002",
+        "plan_values_equal": true,
+        "identical_pinned_input_bytes": true,
+        "generated_match_fields_original": [
+          "context_representation",
+          "context_resolution",
+          "response_form",
+          "preference_mode"
+        ],
+        "generated_match_fields_reloaded": [
+          "context_representation",
+          "context_resolution",
+          "preference_mode",
+          "response_form"
+        ],
+        "field_sets_equal": true,
+        "exact_requests_equal": true,
+        "operation_identities_equal": false,
+        "actual_queue_resume_error": "queue_spec_identity_reused",
+        "jobs_after_attempt": 2,
+        "invariant": "Equivalent JSON plan object key order must not create a different matching recipe/spec or prevent identity-preserving re-add."
+      }
+    },
+    {
+      "id": "C4-CONNECTION-06-B",
+      "category": "acceptance",
+      "status": "FAIL",
+      "evidence": {
+        "finding": "A4-C-002",
+        "plan_values_equal": true,
+        "identical_pinned_input_bytes": true,
+        "generated_match_fields_original": [
+          "context_representation",
+          "context_resolution",
+          "response_form",
+          "preference_mode"
+        ],
+        "generated_match_fields_reloaded": [
+          "context_representation",
+          "context_resolution",
+          "preference_mode",
+          "response_form"
+        ],
+        "field_sets_equal": true,
+        "exact_requests_equal": true,
+        "operation_identities_equal": false,
+        "actual_queue_resume_error": "queue_spec_identity_reused",
+        "jobs_after_attempt": 2,
+        "invariant": "Equivalent JSON plan object key order must not create a different matching recipe/spec or prevent identity-preserving re-add."
+      }
+    },
+    {
+      "id": "C4-CONNECTION-03-A",
+      "category": "bug_reproduction",
+      "status": "PASS",
+      "evidence": {
+        "finding": "A4-C-001",
+        "both_frozen_input_sets_validate": true,
+        "error": null,
+        "queue_spec_source_sha256": "7fdc9d7be699f03a6fe50a2f44535e2d91a68978ee89c883662e0304d7624e0a",
+        "analysis_source_sha256": "9d037427c8fda6033a5e1fa69da6e026cd13c9f5ccdd333f860380a07dd7cca4",
+        "same_operation_id": true,
+        "checks": {
+          "exact_request_bytes": true,
+          "same_operation_and_request_bindings": true,
+          "queue_ordinals_preserved": true,
+          "no_dispatch": true,
+          "not_authorized_by_preparation": true,
+          "source_versions_match": false
+        }
+      }
+    },
+    {
+      "id": "C4-CONNECTION-03-B",
+      "category": "acceptance",
+      "status": "FAIL",
+      "evidence": {
+        "finding": "A4-C-001",
+        "expected": "reject or explicitly reconcile preparation source version before queue/payer/analysis bindings are emitted",
+        "error": null
+      }
+    },
+    {
+      "id": "C4-CONNECTION-04",
+      "category": "contract",
+      "status": "PASS",
+      "evidence": {
+        "interruption": "write payer manifest after actual durable Queue has been created",
+        "queued": 2,
+        "complete_receipt_written": false,
+        "explicit_retry_error": "new_private_output_required",
+        "boundary": "Interrupted output is not reported as executed/completed; no resumable in-place connector contract is exposed."
+      }
+    },
+    {
+      "id": "C4-PUBLIC-control",
+      "category": "contract",
+      "status": "PASS",
+      "evidence": {
+        "input": null,
+        "artifact_emitted": true,
+        "source_roles_hit": [],
+        "raw_artifact_hit": false,
+        "diagnostic_canary_hit": false,
+        "error": null,
+        "canary_sha256": "6a0049b33776f33e93b8a3ea9339b8785b65f8312766dbe0402fc6ca0fb85699"
+      }
+    },
+    {
+      "id": "C4-PUBLIC-handoff-example-A",
+      "category": "bug_reproduction",
+      "status": "PASS",
+      "evidence": {
+        "finding": "A2-C-004",
+        "input": "handoff-example.json",
+        "artifact_emitted": false,
+        "source_roles_hit": [],
+        "raw_artifact_hit": false,
+        "diagnostic_canary_hit": true,
+        "error": {
+          "type": "ValidationError",
+          "message_sha256": "49a88c30b0d4994157bfd3a234ab87b8951e405bd483b03c90726533c8457e48",
+          "canary_in_exception": true
+        },
+        "canary_sha256": "3fb2ce0630fa92ec3c26ea30ab0b05b28834ff280e3b07c3141c1e82084dcace"
+      }
+    },
+    {
+      "id": "C4-PUBLIC-handoff-example-B",
+      "category": "acceptance",
+      "status": "FAIL",
+      "evidence": {
+        "finding": "A2-C-004",
+        "input": "handoff-example.json",
+        "artifact_emitted": false,
+        "source_roles_hit": [],
+        "raw_artifact_hit": false,
+        "diagnostic_canary_hit": true,
+        "error": {
+          "type": "ValidationError",
+          "message_sha256": "49a88c30b0d4994157bfd3a234ab87b8951e405bd483b03c90726533c8457e48",
+          "canary_in_exception": true
+        },
+        "canary_sha256": "3fb2ce0630fa92ec3c26ea30ab0b05b28834ff280e3b07c3141c1e82084dcace"
+      }
+    },
+    {
+      "id": "C4-PUBLIC-evaluation-protocol-A",
+      "category": "bug_reproduction",
+      "status": "PASS",
+      "evidence": {
+        "finding": "A2-C-001",
+        "input": "evaluation-protocol.json",
+        "artifact_emitted": true,
+        "source_roles_hit": [
+          "policy"
+        ],
+        "raw_artifact_hit": true,
+        "diagnostic_canary_hit": false,
+        "error": null,
+        "canary_sha256": "905129234aa6ac2dc5532782ad9276e3bce8cae707fb5ba4ed6043f0ea7e7b09"
+      }
+    },
+    {
+      "id": "C4-PUBLIC-evaluation-protocol-B",
+      "category": "acceptance",
+      "status": "FAIL",
+      "evidence": {
+        "finding": "A2-C-001",
+        "input": "evaluation-protocol.json",
+        "artifact_emitted": true,
+        "source_roles_hit": [
+          "policy"
+        ],
+        "raw_artifact_hit": true,
+        "diagnostic_canary_hit": false,
+        "error": null,
+        "canary_sha256": "905129234aa6ac2dc5532782ad9276e3bce8cae707fb5ba4ed6043f0ea7e7b09"
+      }
+    },
+    {
+      "id": "C4-PUBLIC-handoff-projection-A",
+      "category": "bug_reproduction",
+      "status": "PASS",
+      "evidence": {
+        "finding": "A2-C-001",
+        "input": "handoff-projection.json",
+        "artifact_emitted": true,
+        "source_roles_hit": [
+          "projection-profile-bytes"
+        ],
+        "raw_artifact_hit": true,
+        "diagnostic_canary_hit": false,
+        "error": null,
+        "canary_sha256": "81a0e11cc00479e978932e2470ceeda6b6cbbb98e8f96f3785674bdecdaeecf4"
+      }
+    },
+    {
+      "id": "C4-PUBLIC-handoff-projection-B",
+      "category": "acceptance",
+      "status": "FAIL",
+      "evidence": {
+        "finding": "A2-C-001",
+        "input": "handoff-projection.json",
+        "artifact_emitted": true,
+        "source_roles_hit": [
+          "projection-profile-bytes"
+        ],
+        "raw_artifact_hit": true,
+        "diagnostic_canary_hit": false,
+        "error": null,
+        "canary_sha256": "81a0e11cc00479e978932e2470ceeda6b6cbbb98e8f96f3785674bdecdaeecf4"
+      }
+    },
+    {
+      "id": "C4-NATIVE-01",
+      "category": "integration",
+      "status": "PASS",
+      "evidence": {
+        "checks": {
+          "packet_exact": true,
+          "receipt_immutable": true,
+          "rows_match": true,
+          "source_bytes_exact": true,
+          "results_exact": true,
+          "truth_not_established": true
+        },
+        "counts": {
+          "entities": 16,
+          "claims": 31,
+          "sources": 12
+        },
+        "result_count": 7,
+        "artifact_sha256": "2e96dd1af159d167d8c78bc38978f7ade4e88bbbbe58e4803f7cba39935ee577",
+        "native_sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+        "native_library_sha256": "2578229aa002627317a68ffd7215f92d294df3e12b8972c77f514e37c4c0f6f4",
+        "restart": "close actual native context then open a new Runtime on same files",
+        "scope": "store/read/replay only; MethodRegistry and executor availability are a separate gate"
+      }
+    }
+  ],
+  "counts": {
+    "PASS": 17,
+    "FAIL": 5,
+    "BLOCKED": 0
+  },
+  "counts_by_category": {
+    "acceptance": {
+      "PASS": 0,
+      "FAIL": 5,
+      "BLOCKED": 0
+    },
+    "bug_reproduction": {
+      "PASS": 6,
+      "FAIL": 0,
+      "BLOCKED": 0
+    },
+    "contract": {
+      "PASS": 7,
+      "FAIL": 0,
+      "BLOCKED": 0
+    },
+    "integration": {
+      "PASS": 3,
+      "FAIL": 0,
+      "BLOCKED": 0
+    },
+    "repair_acceptance": {
+      "PASS": 1,
+      "FAIL": 0,
+      "BLOCKED": 0
+    }
+  },
+  "private_inputs_read": false,
+  "real_network_calls": 0,
+  "paid_calls": 0,
+  "transport_guard": "Python connect/create_connection denied; all inputs public/synthetic; native workers disabled by existing wrapper; Node executes crypto in VM without network APIs",
+  "notes": [
+    "Bug reproduction PASS does not mean product PASS.",
+    "No author queue unit suite rerun. Credential suite specifically requested by owner."
+  ]
+}

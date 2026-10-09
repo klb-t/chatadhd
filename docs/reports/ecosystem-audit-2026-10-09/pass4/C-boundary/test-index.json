@@ -1,0 +1,66 @@
+{
+  "schema": "klb.audit.pass4.test-index/1",
+  "entries": [
+    {
+      "id": "C4-python-boundaries",
+      "command": [
+        "python3",
+        "tools/ecosystem-audit-2026-10-09/pass4/C-boundary/run.py",
+        "--repo",
+        "{C_CHECKOUT}",
+        "--sha",
+        "{C_SHA}",
+        "--prior-repo",
+        "{C2_CHECKOUT}",
+        "--prior-sha",
+        "b9b503f62bb8e8e00c94ab7401e1cd9579129af3",
+        "--native-lib",
+        "{NATIVE_LIBRARY}",
+        "--native-source",
+        "{NATIVE_CHECKOUT}",
+        "--native-sha",
+        "{NATIVE_SHA}",
+        "--output",
+        "{OUTPUT}/c-boundary.json"
+      ],
+      "receipt": "receipt-verified.json",
+      "expected_exit_on_current_code": 1,
+      "categories": [
+        "repair_acceptance",
+        "contract",
+        "integration",
+        "bug_reproduction",
+        "acceptance"
+      ]
+    },
+    {
+      "id": "C4-native-registry",
+      "command": [
+        "python3",
+        "tools/ecosystem-audit-2026-10-09/pass4/C-boundary/run_registry.py",
+        "--repo",
+        "{NATIVE_CHECKOUT}",
+        "--sha",
+        "{NATIVE_SHA}",
+        "--research-repo",
+        "{C_CHECKOUT}",
+        "--research-sha",
+        "{C_SHA}",
+        "--object-manifest",
+        "{NATIVE_OBJECT_MANIFEST}",
+        "--output",
+        "{OUTPUT}/c-registry.json"
+      ],
+      "ordinary_build_alternative": "Replace --object-manifest with --build-dir containing libloom_core.a, libloom_miniz.a, libloom_sqlite3_amalgamation.a",
+      "receipt": "registry-receipt-final.json",
+      "expected_exit_on_current_code": 1,
+      "categories": [
+        "integration",
+        "contract",
+        "bug_reproduction",
+        "acceptance"
+      ]
+    }
+  ],
+  "guards": "Synthetic/public inputs only; no payer/model/network dispatch. An exit1 for expected acceptance FAIL is preserved, not relabeled PASS."
+}

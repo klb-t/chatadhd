@@ -1,0 +1,96 @@
+{
+  "C_sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+  "B_sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+  "items": [
+    {
+      "scope": "credential temporary-root fixture",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "result": "naprawione",
+      "accepted_commit": "a6481d11a05158977a87dd55f3a4d6896a190dad",
+      "tests": [
+        "C4-CREDENTIAL-01",
+        "C4-CREDENTIAL-02",
+        "C4-CREDENTIAL-03-*"
+      ],
+      "limits": "10 author tests + independent real guard controls; not whole CTest/dev or browser-device certification"
+    },
+    {
+      "scope": "C final graph packet → B native store → receipt registry",
+      "result": "częściowo",
+      "meaning": "Store and receipt-backed registry integration verified; raw profile entry remains faulty, no new product repair claimed.",
+      "tests": [
+        "C4-NATIVE-01",
+        "C4-REGISTRY-01",
+        "C4-REGISTRY-05"
+      ]
+    },
+    {
+      "finding": "A4-C-001",
+      "result": "nadal wadliwe",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "test": {
+        "runner": "run.py",
+        "test": "C4-CONNECTION-03-B",
+        "expected": "Reject unmatched source revisions before a usable bundle is emitted; retain control C4-CONNECTION-01 passes."
+      }
+    },
+    {
+      "finding": "A4-C-002",
+      "result": "nadal wadliwe",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "test": {
+        "runner": "run.py",
+        "test": "C4-CONNECTION-06-B",
+        "expected": "Equivalent plan object-key order yields stable request/operation identities and re-add count 0; queue keeps 2 synthetic jobs. Relocation C4-CONNECTION-05 stays PASS."
+      }
+    },
+    {
+      "finding": "A2-C-001",
+      "result": "nadal wadliwe",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "test": {
+        "runner": "run.py",
+        "tests": [
+          "C4-PUBLIC-evaluation-protocol-B",
+          "C4-PUBLIC-handoff-projection-B"
+        ],
+        "expected": "No canary in artifact/decoded source/diagnostic; reject unsupported public auxiliary input or explicitly safe projection."
+      }
+    },
+    {
+      "finding": "A2-C-004",
+      "result": "nadal wadliwe",
+      "sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "test": {
+        "runner": "run.py",
+        "test": "C4-PUBLIC-handoff-example-B",
+        "expected": "Rejection persists but public diagnostic contains no canary."
+      }
+    },
+    {
+      "finding": "A3-DISC-001",
+      "result": "częściowo",
+      "sha": "387afe08587f179d47c013a2ea518ff4b68e36bc",
+      "test": {
+        "runner": "run_registry.py",
+        "test": "C4-REGISTRY-02-B",
+        "expected": "Raw accepted DTO packet loads regardless of equivalent object serialization; receipt route and unknown-field rejection retain PASS."
+      }
+    },
+    {
+      "finding": "A2-C-002",
+      "result": "nadal wadliwe",
+      "verification": "unchanged consumer, prior receipt carried forward, not rerun"
+    },
+    {
+      "finding": "A2-C-003",
+      "result": "nadal wadliwe",
+      "verification": "unchanged consumer, prior receipt carried forward, not rerun"
+    },
+    {
+      "scope": "executor for research Python method",
+      "result": "niezweryfikowane",
+      "reason": "Actual registry correctly reports execution_capability_not_advertised; not a product defect or authorization bypass."
+    }
+  ]
+}

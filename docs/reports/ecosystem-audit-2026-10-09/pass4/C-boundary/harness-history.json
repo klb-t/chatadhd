@@ -1,0 +1,24 @@
+{
+  "authoritative_receipts": [
+    "receipt-verified.json",
+    "registry-receipt-final.json"
+  ],
+  "superseded": [
+    {
+      "receipt": "receipt-initial.json",
+      "reason": "Harness used nonexistent snapshot.operation_id/job.source_sha256 and wrong FFI import. Fixed without changing consumer. Two harness errors are not product failures."
+    },
+    {
+      "receipt": "receipt.json",
+      "reason": "Successful initial boundary test; later added explicit TMPDIR environment and relocation conditions."
+    },
+    {
+      "receipt": "receipt-final.json",
+      "reason": "First relocation test also reloaded canonical PLAN, unintentionally changing object key order. Replaced by isolated relocation PASS and independent key-order A4-C-002 repro; earlier FAIL not classified as path relocation defect."
+    },
+    {
+      "receipt": "registry-receipt.json",
+      "reason": "Later added existing receipt-backed registry input, which succeeds. Raw input failure not generalized to all registry paths."
+    }
+  ]
+}

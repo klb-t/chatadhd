@@ -1,0 +1,49 @@
+{
+  "repo": "klb-t/chatadhd",
+  "from_sha": "b9b503f62bb8e8e00c94ab7401e1cd9579129af3",
+  "to_sha": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+  "files": [
+    {
+      "path": "loom/tools/structure/experiment_workflow_v1.py",
+      "old_sha256": "9d67e21da33733aefb5a410e6da65d92cd6a81341cd7c87466fce47b64ba287b",
+      "current_sha256": "9d67e21da33733aefb5a410e6da65d92cd6a81341cd7c87466fce47b64ba287b",
+      "byte_identical": true
+    },
+    {
+      "path": "loom/tools/structure/experiment_payer_boundary_v1.py",
+      "old_sha256": "da04d31bdf118a8fbd0d91bf61fde0b01fc2d82349d511ed3dac7544cc4e0970",
+      "current_sha256": "da04d31bdf118a8fbd0d91bf61fde0b01fc2d82349d511ed3dac7544cc4e0970",
+      "byte_identical": true
+    },
+    {
+      "path": "loom/tools/structure/experiment_analysis_v1.py",
+      "old_sha256": "375f38d595b61efc3614f604caee4b1082548043664ab65b21d502de52e35fca",
+      "current_sha256": "375f38d595b61efc3614f604caee4b1082548043664ab65b21d502de52e35fca",
+      "byte_identical": true
+    },
+    {
+      "path": "loom/tools/structure/credential_handoff.py",
+      "old_sha256": "f46f0919645e5023747f8fb8c95d4e8279615d82277c6a728cafe010cebbcc05",
+      "current_sha256": "f46f0919645e5023747f8fb8c95d4e8279615d82277c6a728cafe010cebbcc05",
+      "byte_identical": true
+    },
+    {
+      "path": "loom/tools/structure/credential_handoff_v2.py",
+      "old_sha256": "e2684b74ca70a3c0eb6fa7d6b0d7b11d6d77e21ee72fe1000a03d830b11d2a3c",
+      "current_sha256": "e2684b74ca70a3c0eb6fa7d6b0d7b11d6d77e21ee72fe1000a03d830b11d2a3c",
+      "byte_identical": true
+    },
+    {
+      "path": "loom/src/context/method_registry.cpp",
+      "old_sha256": "445e67cc02381392e23e348dda5b3d37f3dac47b4312d71c3b5ceab529c54188",
+      "current_sha256": "445e67cc02381392e23e348dda5b3d37f3dac47b4312d71c3b5ceab529c54188",
+      "byte_identical": true
+    }
+  ],
+  "native_diff_from_C2": [],
+  "carry_forward_only": [
+    "A2-C-002",
+    "A2-C-003"
+  ],
+  "rerun_reason": "New final artifact/new final public caller/new preparation connector plus explicit requested credential test; unchanged old queue suite not repeated."
+}

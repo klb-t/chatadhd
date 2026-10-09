@@ -1,0 +1,25 @@
+{
+  "routes": [
+    {
+      "data": "frozen prepared bodies + corpus panel",
+      "graph": "source versions retained as hashes/provenance; not native materialized by connector",
+      "runtime": "connect → actual Queue → payer manifest validator",
+      "UI": "no UI integration claimed",
+      "gap": "A4-C-001 conflicting source versions; A4-C-002 representation-sensitive recipe identity"
+    },
+    {
+      "data": "final public presentation/protocol/projection",
+      "graph": "existing method_graph/1 with 16 entities/31 claims/12 sources",
+      "runtime": "B4 native GraphPacketStore → close/reopen → read/replay → receipt-based MethodRegistry",
+      "UI": "C Basic/Expert public example is data, not proof of existing application UI consumer",
+      "gap": "raw profile DTO gate; executor not advertised and correctly unavailable"
+    },
+    {
+      "data": "credential handoff synthetic session",
+      "graph": "not a graph migration in this fixture-only patch",
+      "runtime": "configured TMPDIR → real outside_git → real generate/decrypt/WebCrypto",
+      "UI": "HTML with no external transport; device browser not tested",
+      "gap": "none for named temporary-root criterion"
+    }
+  ]
+}

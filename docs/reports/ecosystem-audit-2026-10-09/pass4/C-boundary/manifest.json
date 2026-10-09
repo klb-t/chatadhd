@@ -1,0 +1,110 @@
+{
+  "schema": "klb.audit.pass4.c-module-manifest/1",
+  "counts": {
+    "PASS": 22,
+    "FAIL": 6,
+    "BLOCKED": 0
+  },
+  "authoritative_receipts": [
+    "receipt-verified.json",
+    "registry-receipt-final.json"
+  ],
+  "files": {
+    "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/REPORT.md": {
+      "sha256": "59ee5b3c6859d6fa565a01877ab88225f50568aad99b9dd2c616019d2821cb58",
+      "bytes": 8209
+    },
+    "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/acceptance-queue.json": {
+      "sha256": "493ec98d83089d37cf6db4e1dffd8189f5d80510861a3aec3863749afecd141e",
+      "bytes": 3412
+    },
+    "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/coverage.json": {
+      "sha256": "c1a0be1c77a50e4f62f5a02648236b485acb47a3ddd8dd760eafacce252f7c85",
+      "bytes": 14875
+    },
+    "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/credential-author-tests.log": {
+      "sha256": "429713d745f94fcff7de16bd66a69491334c535b0db47029a0acd6f51523e232",
+      "bytes": 98
+    },
+    "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/data-graph-runtime-map.json": {
+      "sha256": "6337232bed8d15137bedc3983b8e0748e48220e117a0e84c3851995820476db9",
+      "bytes": 1223
+    },
+    "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/findings.jsonl": {
+      "sha256": "a7f0abb54315c78f9b5e59ed55701ad9882f0a827dff133f18d31a6b9d0f3c99",
+      "bytes": 12384
+    },
+    "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/harness-history.json": {
+      "sha256": "df88e0ce700f502feb3f2744e6062ee5fd88bf93d7fba3862f571b02909441be",
+      "bytes": 1022
+    },
+    "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/packages-for-owners.json": {
+      "sha256": "b4dcddd74f7fa72f80fed332f52ef972d96666effc8ed0871c17aaa999c92972",
+      "bytes": 6130
+    },
+    "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/receipt-final.json": {
+      "sha256": "8ef2436be0e056d9c93260f2da19bcb9b373828b41b537552ea461b44dd32b87",
+      "bytes": 11642
+    },
+    "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/receipt-initial.json": {
+      "sha256": "81cdbd72108ae2eaeaa1355d3e520a557c937f602fd2d9bb0f02f963453e1af6",
+      "bytes": 7141
+    },
+    "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/receipt-verified.json": {
+      "sha256": "1b71972748fdf5831c2fc760773a3a97f284176aabac7cdd7cc85def59e45e11",
+      "bytes": 13581
+    },
+    "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/receipt.json": {
+      "sha256": "4d4806df555d3f31470f3c3bd6b8cfa80ec44df9968e0a53f712dbb97aea2792",
+      "bytes": 10947
+    },
+    "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/registry-receipt-final.compile.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/registry-receipt-final.json": {
+      "sha256": "e8eaefebc6642916f54fa1be8ac35d5ba7ab3ccb9beb09e97c8ee390579ead3d",
+      "bytes": 3224
+    },
+    "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/registry-receipt-final.runtime.log": {
+      "sha256": "53fe2880a15037fc74c442dfd14916441995f1685de53450e9f088dab5ab72dc",
+      "bytes": 511
+    },
+    "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/registry-receipt.compile.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/registry-receipt.json": {
+      "sha256": "b374e9a1ed35a51b595585a4472d57da51f99f70a7013647cbdadc3a1498d2c5",
+      "bytes": 2862
+    },
+    "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/registry-receipt.runtime.log": {
+      "sha256": "2c4097e7dc3f21941604ba7df99dfd13a074bd49182709cc0ce00bd9bb17d5d2",
+      "bytes": 511
+    },
+    "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/source-equivalence.json": {
+      "sha256": "a6bad024c936d70c604c41989afe8fb5be4f51d442e8f46603bc43379780444c",
+      "bytes": 2131
+    },
+    "docs/reports/ecosystem-audit-2026-10-09/pass4/C-boundary/test-index.json": {
+      "sha256": "f8cabfbce587c0a8234e4480156cbd430364f7dd04b0224bceef1b187a60ee01",
+      "bytes": 1872
+    },
+    "tools/ecosystem-audit-2026-10-09/pass4/C-boundary/README.md": {
+      "sha256": "5d7b939b3de2196487837c1b87743af0d31c8b761b428ad43f90b1dbd5ef79f2",
+      "bytes": 2175
+    },
+    "tools/ecosystem-audit-2026-10-09/pass4/C-boundary/registry_probe.cpp": {
+      "sha256": "7653481932e7c3fe710e0d7d901dadc5958ad33c7cc7010b8c05f65436609691",
+      "bytes": 5496
+    },
+    "tools/ecosystem-audit-2026-10-09/pass4/C-boundary/run.py": {
+      "sha256": "f4a06bf988ee55bd65845f0d768f683f40d94c7d3e4e21e538ad33f4df386337",
+      "bytes": 26062
+    },
+    "tools/ecosystem-audit-2026-10-09/pass4/C-boundary/run_registry.py": {
+      "sha256": "7260db48c00d949f204bc9ae16bf536f9a3510f758ef884eca3edac10a098a98",
+      "bytes": 4292
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "json_and_python_syntax": "PASS",
+  "source_range_bounds": "PASS",
+  "final_receipt_counts": {
+    "PASS": 22,
+    "FAIL": 6,
+    "BLOCKED": 0
+  },
+  "findings": 5,
+  "C4_checkout_tracked_clean": true,
+  "product_edits": false,
+  "paid_calls": 0,
+  "reviewed_current_native_receipt_ids_loader": true
+}
