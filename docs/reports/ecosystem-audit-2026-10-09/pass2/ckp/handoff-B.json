@@ -1,0 +1,78 @@
+[
+  {
+    "finding_id": "CKP-A-012",
+    "priority": "P0",
+    "reproduction": "run.py: focus/revision/sensitive A PASS, B FAIL",
+    "expected_behavior": "Bind result to original target+revision and recheck sensitivity at apply; stale result preview/explicit confirmation, no write to changed target",
+    "acceptance": "See host-receipt case IDs and executable index; failures remain failures",
+    "consumers": [
+      "CustomKeyboardIme.runAiTask",
+      "EditorController.replaceSelectionOrAll",
+      "pasteOrConvert (source-only analogous risk)"
+    ],
+    "migration": "Preserve explicit task IDs and selection/whole-field UX; no reading sensitive bytes for revision",
+    "risk": "wrong target/data policy selection",
+    "dependencies": []
+  },
+  {
+    "finding_id": "A2-CKP-001",
+    "priority": "P1",
+    "reproduction": "run.py: unknown use A PASS/B FAIL",
+    "expected_behavior": "Do not discard unresolved required transform and execute unrelated route",
+    "acceptance": "See host-receipt case IDs and executable index; failures remain failures",
+    "consumers": [
+      "ConvertRunner.names",
+      "ConvertRunner.convert",
+      "Planner.plan"
+    ],
+    "migration": "Recognized aliases/legacy presets remain; unknown name yields explicit unresolved reference",
+    "risk": "compatibility and effective-source drift",
+    "dependencies": []
+  },
+  {
+    "finding_id": "CKP-A-001",
+    "priority": "P1",
+    "reproduction": "run.py: override/corrupt/unsupported A PASS/B FAIL",
+    "expected_behavior": "One effective recipe resolver; invalid config fails explicitly; unsupported fields cannot silently change intent",
+    "acceptance": "See host-receipt case IDs and executable index; failures remain failures",
+    "consumers": [
+      "AiTasks.byId",
+      "runAiTask",
+      "AiPanel"
+    ],
+    "migration": "Keep built-in task IDs; move current recipes to compatible data pack; define collisions/tombstones",
+    "risk": "compatibility and effective-source drift",
+    "dependencies": []
+  },
+  {
+    "finding_id": "CKP-A-002",
+    "priority": "P1",
+    "reproduction": "run.py: malformed bundled catalogue A PASS/B FAIL",
+    "expected_behavior": "Explicit catalogue failure or deliberately selected verified embedded data snapshot, no unselected coded endpoint",
+    "acceptance": "See host-receipt case IDs and executable index; failures remain failures",
+    "consumers": [
+      "ProviderCatalog.all/byId",
+      "AiConfig.from/effectiveBaseUrl (next transport test)"
+    ],
+    "migration": "Preserve older provider credential ownership; compatibility pack generated from data",
+    "risk": "compatibility and effective-source drift",
+    "dependencies": []
+  },
+  {
+    "finding_id": "CKP-A-003",
+    "priority": "P1",
+    "reproduction": "run.py: actual planner weights B PASS; runtime only three supplied Policy fields source traced",
+    "expected_behavior": "Expose profile weights/maxSteps/unknown strategy in current runner, then run same route fixtures against resolved config",
+    "acceptance": "See host-receipt case IDs and executable index; failures remain failures",
+    "consumers": [
+      "ConvertRunner.convert",
+      "Planner.plan/price",
+      "Settings→UI"
+    ],
+    "migration": "Keep current ranking as named compatibility preset; preserve null assessment provenance",
+    "risk": "compatibility and effective-source drift",
+    "dependencies": [
+      "B must expose stable profile resolver input"
+    ]
+  }
+]

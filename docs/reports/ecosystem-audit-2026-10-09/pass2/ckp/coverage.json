@@ -1,0 +1,870 @@
+{
+  "repo": "klb-t/Custom-Keyboard-Pro",
+  "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+  "previous_sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+  "tracked_entries": 461,
+  "product_denominator": 233,
+  "first_pass_product_files_with_reviewed_ranges": 28,
+  "this_pass_files_with_reviewed_ranges": 32,
+  "new_product_files_with_reviewed_ranges": 19,
+  "union_product_files_with_reviewed_ranges": 47,
+  "never_semantically_reviewed_files": [
+    "app/src/main/java/com/example/KeyboardApp.kt",
+    "app/src/main/java/com/example/MainActivity.kt",
+    "app/src/main/java/com/example/assistant/AssistantSessionVisibility.kt",
+    "app/src/main/java/com/example/assistant/ColourOrganActivity.kt",
+    "app/src/main/java/com/example/assistant/ForegroundSpeech.kt",
+    "app/src/main/java/com/example/assistant/GoalDispatchPolicy.kt",
+    "app/src/main/java/com/example/assistant/GoalJson.kt",
+    "app/src/main/java/com/example/assistant/GoalRecognitionService.kt",
+    "app/src/main/java/com/example/assistant/GoalVoiceInteractionService.kt",
+    "app/src/main/java/com/example/assistant/GoalVoiceSession.kt",
+    "app/src/main/java/com/example/assistant/GoalVoiceSessionService.kt",
+    "app/src/main/java/com/example/assistant/OnDeviceSpeechTurn.kt",
+    "app/src/main/java/com/example/clipboard/ClipboardImportActivity.kt",
+    "app/src/main/java/com/example/clipboard/ScreenshotClipboard.kt",
+    "app/src/main/java/com/example/core/asr/AndroidAsr.kt",
+    "app/src/main/java/com/example/core/asr/Asr.kt",
+    "app/src/main/java/com/example/core/asr/RemoteAsr.kt",
+    "app/src/main/java/com/example/core/asr/Transcription.kt",
+    "app/src/main/java/com/example/core/asr/VoiceController.kt",
+    "app/src/main/java/com/example/core/assistant/GoalPlan.kt",
+    "app/src/main/java/com/example/core/caps/Abilities.kt",
+    "app/src/main/java/com/example/core/capture/CaptureSession.kt",
+    "app/src/main/java/com/example/core/capture/ConversationCapture.kt",
+    "app/src/main/java/com/example/core/capture/TreeObservation.kt",
+    "app/src/main/java/com/example/core/config/Knobs.kt",
+    "app/src/main/java/com/example/core/config/ScopedSettingsCache.kt",
+    "app/src/main/java/com/example/core/config/SettingsDestinations.kt",
+    "app/src/main/java/com/example/core/config/SettingsSearch.kt",
+    "app/src/main/java/com/example/core/convert/Containers.kt",
+    "app/src/main/java/com/example/core/convert/Music.kt",
+    "app/src/main/java/com/example/core/convert/PasteConversion.kt",
+    "app/src/main/java/com/example/core/convert/Spectro.kt",
+    "app/src/main/java/com/example/core/data/BundledDictionary.kt",
+    "app/src/main/java/com/example/core/data/Entities.kt",
+    "app/src/main/java/com/example/core/data/WordListSource.kt",
+    "app/src/main/java/com/example/core/debug/RuntimeVariables.kt",
+    "app/src/main/java/com/example/core/devices/ReactiveLight.kt",
+    "app/src/main/java/com/example/core/devices/YeelightConnection.kt",
+    "app/src/main/java/com/example/core/devices/YeelightProtocol.kt",
+    "app/src/main/java/com/example/core/discovery/ApiKeys.kt",
+    "app/src/main/java/com/example/core/discovery/CallEngine.kt",
+    "app/src/main/java/com/example/core/discovery/Capabilities.kt",
+    "app/src/main/java/com/example/core/discovery/JsonPath.kt",
+    "app/src/main/java/com/example/core/discovery/ModelDiscovery.kt",
+    "app/src/main/java/com/example/core/discovery/ModelFacts.kt",
+    "app/src/main/java/com/example/core/discovery/ProviderProfile.kt",
+    "app/src/main/java/com/example/core/discovery/Sse.kt",
+    "app/src/main/java/com/example/core/engine/Motion.kt",
+    "app/src/main/java/com/example/core/engine/Phrases.kt",
+    "app/src/main/java/com/example/core/engine/VolumeGestures.kt",
+    "app/src/main/java/com/example/core/engine/Wires.kt",
+    "app/src/main/java/com/example/core/hitmap/HitmapExtractor.kt",
+    "app/src/main/java/com/example/core/hitmap/LongPressTuner.kt",
+    "app/src/main/java/com/example/core/hitmap/TouchLearner.kt",
+    "app/src/main/java/com/example/core/io/ActionProfiles.kt",
+    "app/src/main/java/com/example/core/io/Macros.kt",
+    "app/src/main/java/com/example/core/io/NodeQuery.kt",
+    "app/src/main/java/com/example/core/io/PocketLock.kt",
+    "app/src/main/java/com/example/core/io/PocketLockPolicy.kt",
+    "app/src/main/java/com/example/core/io/Verbs.kt",
+    "app/src/main/java/com/example/core/json/JsonFields.kt",
+    "app/src/main/java/com/example/core/layout/AutomaticShift.kt",
+    "app/src/main/java/com/example/core/layout/BuiltinLayouts.kt",
+    "app/src/main/java/com/example/core/layout/ControlDeckLayout.kt",
+    "app/src/main/java/com/example/core/layout/Controls.kt",
+    "app/src/main/java/com/example/core/layout/ElementGeometry.kt",
+    "app/src/main/java/com/example/core/layout/FreeKeyPins.kt",
+    "app/src/main/java/com/example/core/layout/KeyCodes.kt",
+    "app/src/main/java/com/example/core/layout/KeyPlacement.kt",
+    "app/src/main/java/com/example/core/layout/KeyboardViewportBudget.kt",
+    "app/src/main/java/com/example/core/layout/LanguageKeys.kt",
+    "app/src/main/java/com/example/core/layout/LayerTransforms.kt",
+    "app/src/main/java/com/example/core/layout/LayoutAuthoring.kt",
+    "app/src/main/java/com/example/core/layout/LayoutDoctor.kt",
+    "app/src/main/java/com/example/core/layout/LayoutGenerator.kt",
+    "app/src/main/java/com/example/core/layout/LayoutGeometry.kt",
+    "app/src/main/java/com/example/core/layout/LayoutJson.kt",
+    "app/src/main/java/com/example/core/layout/LayoutModel.kt",
+    "app/src/main/java/com/example/core/layout/LayoutRepository.kt",
+    "app/src/main/java/com/example/core/layout/ScienceLayout.kt",
+    "app/src/main/java/com/example/core/layout/ToolbarRows.kt",
+    "app/src/main/java/com/example/core/layout/WorkbenchLayout.kt",
+    "app/src/main/java/com/example/core/media/MediaHubRepository.kt",
+    "app/src/main/java/com/example/core/media/MediaProfiles.kt",
+    "app/src/main/java/com/example/core/panels/PanelGenerator.kt",
+    "app/src/main/java/com/example/core/panels/PanelSpec.kt",
+    "app/src/main/java/com/example/core/phone/PhoneCatalogue.kt",
+    "app/src/main/java/com/example/core/phone/RotationMapping.kt",
+    "app/src/main/java/com/example/core/phone/SensorSessionPolicy.kt",
+    "app/src/main/java/com/example/core/predict/ActionStats.kt",
+    "app/src/main/java/com/example/core/predict/Completions.kt",
+    "app/src/main/java/com/example/core/predict/Decision.kt",
+    "app/src/main/java/com/example/core/predict/Modifiers.kt",
+    "app/src/main/java/com/example/core/predict/Slices.kt",
+    "app/src/main/java/com/example/core/security/PasswordEnvelope.kt",
+    "app/src/main/java/com/example/core/security/PrivateInputContract.kt",
+    "app/src/main/java/com/example/core/setup/CapabilitySetup.kt",
+    "app/src/main/java/com/example/core/setup/CatalogUpdate.kt",
+    "app/src/main/java/com/example/core/setup/SetupAdvisor.kt",
+    "app/src/main/java/com/example/core/speech/SpeechText.kt",
+    "app/src/main/java/com/example/core/suggest/Correction.kt",
+    "app/src/main/java/com/example/core/sync/DriveSyncTransport.kt",
+    "app/src/main/java/com/example/core/sync/SyncClip.kt",
+    "app/src/main/java/com/example/core/text/Capitalisation.kt",
+    "app/src/main/java/com/example/core/text/CursorMagnet.kt",
+    "app/src/main/java/com/example/core/text/ProperNouns.kt",
+    "app/src/main/java/com/example/core/text/TextOps.kt",
+    "app/src/main/java/com/example/core/vault/VaultModels.kt",
+    "app/src/main/java/com/example/core/vault/VaultStore.kt",
+    "app/src/main/java/com/example/engine/SensorHub.kt",
+    "app/src/main/java/com/example/engine/StreamRunner.kt",
+    "app/src/main/java/com/example/engine/UdpSender.kt",
+    "app/src/main/java/com/example/engine/VoiceTrigger.kt",
+    "app/src/main/java/com/example/ime/ComposeInputMethodService.kt",
+    "app/src/main/java/com/example/ime/ComposeSequences.kt",
+    "app/src/main/java/com/example/ime/CursorWorkspace.kt",
+    "app/src/main/java/com/example/ime/FeedbackController.kt",
+    "app/src/main/java/com/example/ime/KeyboardState.kt",
+    "app/src/main/java/com/example/ime/KeyboardTile.kt",
+    "app/src/main/java/com/example/io/AccessibilityNodeData.kt",
+    "app/src/main/java/com/example/io/CloudVoice.kt",
+    "app/src/main/java/com/example/io/ImageReencoder.kt",
+    "app/src/main/java/com/example/io/IoAccessibilityService.kt",
+    "app/src/main/java/com/example/io/PageReader.kt",
+    "app/src/main/java/com/example/io/PocketLockOverlay.kt",
+    "app/src/main/java/com/example/io/PocketLockTile.kt",
+    "app/src/main/java/com/example/io/PointerOverlay.kt",
+    "app/src/main/java/com/example/io/Speaker.kt",
+    "app/src/main/java/com/example/io/TileActions.kt",
+    "app/src/main/java/com/example/io/capture/AccessibilityCaptureSource.kt",
+    "app/src/main/java/com/example/io/capture/ConversationCaptureReviewActivity.kt",
+    "app/src/main/java/com/example/io/capture/ConversationCaptureUi.kt",
+    "app/src/main/java/com/example/phone/ForegroundSensorMonitor.kt",
+    "app/src/main/java/com/example/phone/PhoneInventory.kt",
+    "app/src/main/java/com/example/phone/PhoneRuntime.kt",
+    "app/src/main/java/com/example/phone/PhoneToolsActivity.kt",
+    "app/src/main/java/com/example/sync/DeviceSyncActivity.kt",
+    "app/src/main/java/com/example/ui/PrivateTextField.kt",
+    "app/src/main/java/com/example/ui/kb/BoardMemory.kt",
+    "app/src/main/java/com/example/ui/kb/ClipboardImagePreview.kt",
+    "app/src/main/java/com/example/ui/kb/CompletionRow.kt",
+    "app/src/main/java/com/example/ui/kb/ControlView.kt",
+    "app/src/main/java/com/example/ui/kb/DebugOverlay.kt",
+    "app/src/main/java/com/example/ui/kb/EmojiData.kt",
+    "app/src/main/java/com/example/ui/kb/IoPanel.kt",
+    "app/src/main/java/com/example/ui/kb/KeyIcons.kt",
+    "app/src/main/java/com/example/ui/kb/KeySurface.kt",
+    "app/src/main/java/com/example/ui/kb/KeyboardConfigurationButton.kt",
+    "app/src/main/java/com/example/ui/kb/KeyboardHost.kt",
+    "app/src/main/java/com/example/ui/kb/KeyboardRoot.kt",
+    "app/src/main/java/com/example/ui/kb/KeyboardTheme.kt",
+    "app/src/main/java/com/example/ui/kb/KeyboardViewport.kt",
+    "app/src/main/java/com/example/ui/kb/Notices.kt",
+    "app/src/main/java/com/example/ui/kb/SymbolBoard.kt",
+    "app/src/main/java/com/example/ui/kb/ThemeStore.kt",
+    "app/src/main/java/com/example/ui/kb/TouchAreas.kt",
+    "app/src/main/java/com/example/ui/settings/AboutScreen.kt",
+    "app/src/main/java/com/example/ui/settings/AllSettingsScreen.kt",
+    "app/src/main/java/com/example/ui/settings/AppearanceScreen.kt",
+    "app/src/main/java/com/example/ui/settings/CapabilitiesScreen.kt",
+    "app/src/main/java/com/example/ui/settings/CapabilitySetupSection.kt",
+    "app/src/main/java/com/example/ui/settings/DiagnosticsScreen.kt",
+    "app/src/main/java/com/example/ui/settings/DictionaryScreen.kt",
+    "app/src/main/java/com/example/ui/settings/HomeScreen.kt",
+    "app/src/main/java/com/example/ui/settings/KeyEditor.kt",
+    "app/src/main/java/com/example/ui/settings/KeyboardPreview.kt",
+    "app/src/main/java/com/example/ui/settings/LayoutGeometryEditor.kt",
+    "app/src/main/java/com/example/ui/settings/LayoutStudioScreen.kt",
+    "app/src/main/java/com/example/ui/settings/MediaHubScreen.kt",
+    "app/src/main/java/com/example/ui/settings/RequestPanelScreen.kt",
+    "app/src/main/java/com/example/ui/settings/RuntimeDebuggerScreen.kt",
+    "app/src/main/java/com/example/ui/settings/SettingsLevelSelector.kt",
+    "app/src/main/java/com/example/ui/settings/SettingsNavigation.kt",
+    "app/src/main/java/com/example/ui/settings/SetupWizardScreen.kt",
+    "app/src/main/java/com/example/ui/settings/ThemeEditorScreen.kt",
+    "app/src/main/java/com/example/ui/settings/ToolbarRowsEditor.kt",
+    "app/src/main/java/com/example/ui/settings/TypingSettingsScreen.kt",
+    "app/src/main/java/com/example/ui/settings/VaultScreen.kt",
+    "app/src/main/java/com/example/ui/settings/VoiceSettingsScreen.kt",
+    "app/src/main/java/com/example/ui/settings/Widgets.kt",
+    "app/src/main/java/com/example/ui/theme/Color.kt",
+    "app/src/main/java/com/example/ui/theme/Theme.kt",
+    "app/src/main/java/com/example/ui/theme/Type.kt",
+    "app/src/main/java/com/example/util/AppLogger.kt",
+    "app/src/main/java/com/example/vault/MatrixAutofillService.kt",
+    "app/src/main/java/com/example/vault/VaultActivity.kt"
+  ],
+  "reviewed": [
+    {
+      "path": "app/src/main/java/com/example/core/ai/AiTasks.kt",
+      "ranges": [
+        [
+          145,
+          178
+        ]
+      ],
+      "functions": [
+        "parseCustom",
+        "writeCustom",
+        "all",
+        "byId"
+      ],
+      "untraced_calls": [
+        "Android task UI",
+        "AiConfig HTTP body"
+      ],
+      "source_sha256": "c45b4cdba2b7a0cbb19b38209fa0f6d6a7d27dc91c2991df69c78b3eb1cce8a5",
+      "coverage_meaning": "only named ranges/functions; not whole-file behavior certified"
+    },
+    {
+      "path": "app/src/main/java/com/example/core/discovery/ProviderCatalog.kt",
+      "ranges": [
+        [
+          193,
+          285
+        ],
+        [
+          329,
+          371
+        ]
+      ],
+      "functions": [
+        "fromJson",
+        "init",
+        "parseList",
+        "all",
+        "removeCustom"
+      ],
+      "untraced_calls": [
+        "runtime ASR availability",
+        "actual HTTP client"
+      ],
+      "source_sha256": "e6d600837f63c87dbb41071a2155d12e7889822452db31d038073aac2c6871f2",
+      "coverage_meaning": "only named ranges/functions; not whole-file behavior certified"
+    },
+    {
+      "path": "app/src/main/java/com/example/core/discovery/Discovery.kt",
+      "ranges": [
+        [
+          45,
+          77
+        ]
+      ],
+      "functions": [
+        "merge",
+        "fixed"
+      ],
+      "untraced_calls": [
+        "network discovery source implementations"
+      ],
+      "source_sha256": "f88dc8c610fdfcc8f6f6865a2222c44dc2e28dc629b6cfa8a14444e5fed5a0f5",
+      "coverage_meaning": "only named ranges/functions; not whole-file behavior certified"
+    },
+    {
+      "path": "app/src/main/java/com/example/core/config/Settings.kt",
+      "ranges": [
+        [
+          1,
+          80
+        ]
+      ],
+      "functions": [
+        "Settings constructor slots"
+      ],
+      "untraced_calls": [
+        "remaining defaults outside first-pass ranges"
+      ],
+      "source_sha256": "c4cb5e421d76d4f78168ef1df5b68857b4e841ef87eadc3a936fa771f70f5fac",
+      "coverage_meaning": "only named ranges/functions; not whole-file behavior certified"
+    },
+    {
+      "path": "app/src/main/java/com/example/core/config/SettingsStore.kt",
+      "ranges": [
+        [
+          28,
+          165
+        ]
+      ],
+      "functions": [
+        "writer",
+        "init",
+        "update",
+        "awaitPersistence",
+        "setByKey",
+        "read/write",
+        "importJson"
+      ],
+      "untraced_calls": [
+        "complete codec",
+        "Android process death during encrypted write"
+      ],
+      "source_sha256": "41e3612c77381b1130062f9eb93d208d9af09ae917c95f6608043aecd66050a5",
+      "coverage_meaning": "only named ranges/functions; not whole-file behavior certified"
+    },
+    {
+      "path": "app/src/main/java/com/example/core/config/SettingsSchema.kt",
+      "ranges": [
+        [
+          80,
+          184
+        ]
+      ],
+      "functions": [
+        "spec",
+        "withValue",
+        "validatedValue"
+      ],
+      "untraced_calls": [
+        "metadata and all widget branches"
+      ],
+      "source_sha256": "262ebe80f1b48e8c9e6c70fa7b7e68b08a24623111a2b050978bf4b5042ec80f",
+      "coverage_meaning": "only named ranges/functions; not whole-file behavior certified"
+    },
+    {
+      "path": "app/src/main/java/com/example/core/config/SettingsProfiles.kt",
+      "ranges": [
+        [
+          22,
+          176
+        ]
+      ],
+      "functions": [
+        "init",
+        "all",
+        "capture",
+        "portableValues",
+        "apply",
+        "validate",
+        "parseImport",
+        "encode/decode",
+        "save/delete/persist"
+      ],
+      "untraced_calls": [
+        "real AtomicFile interrupted-write test",
+        "profile pack refresh UI"
+      ],
+      "source_sha256": "387ed5f3de160c9e324226125bda92fb0b99455fc764f7ee1cecfcce9096c655",
+      "coverage_meaning": "only named ranges/functions; not whole-file behavior certified"
+    },
+    {
+      "path": "app/src/main/java/com/example/core/config/SettingsHierarchy.kt",
+      "ranges": [
+        [
+          95,
+          118
+        ]
+      ],
+      "functions": [
+        "selectLevel",
+        "level",
+        "reset"
+      ],
+      "untraced_calls": [
+        "Compose visibility details"
+      ],
+      "source_sha256": "db15e1e29b4a34ba33f45161c534e6d62d04819cc519c86227708c6ad34a49ef",
+      "coverage_meaning": "only named ranges/functions; not whole-file behavior certified"
+    },
+    {
+      "path": "app/src/main/java/com/example/core/security/EncryptedSettingsPersistence.kt",
+      "ranges": [
+        [
+          1,
+          91
+        ]
+      ],
+      "functions": [
+        "read",
+        "write",
+        "cleanupLegacy",
+        "key"
+      ],
+      "untraced_calls": [
+        "hardware Keystore authentication",
+        "device restore/migration"
+      ],
+      "source_sha256": "bada3f8ab0c67cfdc734e4cffb1c32002120125910e562a8ebba0c74e61ee29d",
+      "coverage_meaning": "only named ranges/functions; not whole-file behavior certified"
+    },
+    {
+      "path": "app/src/main/java/com/example/core/matrix/Planner.kt",
+      "ranges": [
+        [
+          65,
+          79
+        ],
+        [
+          109,
+          188
+        ]
+      ],
+      "functions": [
+        "price",
+        "search",
+        "plan"
+      ],
+      "untraced_calls": [
+        "per-provider execution"
+      ],
+      "source_sha256": "412c0d995a128b696fe0110b5d75ed0d5a9045603caca90238cad9cc2daf5428",
+      "coverage_meaning": "only named ranges/functions; not whole-file behavior certified"
+    },
+    {
+      "path": "app/src/main/java/com/example/core/matrix/Model.kt",
+      "ranges": [
+        [
+          1,
+          175
+        ]
+      ],
+      "functions": [
+        "Representations.ofMime",
+        "sniff",
+        "Interpretation"
+      ],
+      "untraced_calls": [
+        "remaining representations consumers"
+      ],
+      "source_sha256": "3dc1491e6793288ae48b18837aebbb8234284a2c589ae436305b682987b84436",
+      "coverage_meaning": "only named ranges/functions; not whole-file behavior certified"
+    },
+    {
+      "path": "app/src/main/java/com/example/core/matrix/Transforms.kt",
+      "ranges": [
+        [
+          1,
+          144
+        ]
+      ],
+      "functions": [
+        "Cost",
+        "TransformSpec",
+        "Implementation"
+      ],
+      "untraced_calls": [
+        "rest of transform catalogue and implementations"
+      ],
+      "source_sha256": "6e17446af0e663c82e5ef15c663088407eb956d86cd2fe28f550586cb96f6ea4",
+      "coverage_meaning": "only named ranges/functions; not whole-file behavior certified"
+    },
+    {
+      "path": "app/src/main/java/com/example/core/matrix/Conversion.kt",
+      "ranges": [
+        [
+          1,
+          99
+        ]
+      ],
+      "functions": [
+        "Goal/Goals.parse",
+        "Interpret.factsFrom",
+        "Params.resolve"
+      ],
+      "untraced_calls": [
+        "NoteText.parse and interpretation accuracy"
+      ],
+      "source_sha256": "b8719c73790adde4160fe4b1862c7f3e3455b1589351e3545eed2bc7ce7d77ae",
+      "coverage_meaning": "only named ranges/functions; not whole-file behavior certified"
+    },
+    {
+      "path": "app/src/main/java/com/example/core/matrix/NetLines.kt",
+      "ranges": [
+        [
+          1,
+          61
+        ]
+      ],
+      "functions": [
+        "tokenUsable",
+        "sameToken",
+        "parse"
+      ],
+      "untraced_calls": [
+        "real UDP/TCP peer behavior"
+      ],
+      "source_sha256": "affee194a3be4a9f752d299adf7a5621dff73d2fd2ecf9a3b388c92df2a65340",
+      "coverage_meaning": "only named ranges/functions; not whole-file behavior certified"
+    },
+    {
+      "path": "app/src/main/java/com/example/core/io/Command.kt",
+      "ranges": [
+        [
+          1,
+          110
+        ]
+      ],
+      "functions": [
+        "parse",
+        "tokenize",
+        "arg",
+        "write"
+      ],
+      "untraced_calls": [
+        "positional Verbs catalogue"
+      ],
+      "source_sha256": "bc6125d0b6895291039160eed5ea0c76ae78308f1ddd27a587b20be609f91eaf",
+      "coverage_meaning": "only named ranges/functions; not whole-file behavior certified"
+    },
+    {
+      "path": "app/src/main/java/com/example/core/io/ShortcutSession.kt",
+      "ranges": [
+        [
+          1,
+          34
+        ]
+      ],
+      "functions": [
+        "start",
+        "hidden",
+        "stop",
+        "shouldRestore"
+      ],
+      "untraced_calls": [
+        "Android hide/show policy"
+      ],
+      "source_sha256": "7b4ae9416193f1b0d600105554545d401e9476174f7e5f049ae81dc1331bfde7",
+      "coverage_meaning": "only named ranges/functions; not whole-file behavior certified"
+    },
+    {
+      "path": "app/src/main/java/com/example/core/data/KeyboardRepository.kt",
+      "ranges": [
+        [
+          17,
+          126
+        ]
+      ],
+      "functions": [
+        "prepareClipboardClear",
+        "trashClipboard",
+        "undoClipboardTrash",
+        "restoreClip",
+        "rememberClipEntry",
+        "sweepClipboard",
+        "releaseClipboardFiles"
+      ],
+      "untraced_calls": [
+        "remaining dictionary/shortcut flow",
+        "Room transaction concurrent observer tests"
+      ],
+      "source_sha256": "f5664b73b15538db12563b1610d7a7e624a8555cb04aeb9ea0e1ce9c7dc7decc",
+      "coverage_meaning": "only named ranges/functions; not whole-file behavior certified"
+    },
+    {
+      "path": "app/src/main/java/com/example/core/data/Daos.kt",
+      "ranges": [
+        [
+          1,
+          121
+        ]
+      ],
+      "functions": [
+        "clipboard query set"
+      ],
+      "untraced_calls": [
+        "Room generated bindings",
+        "dictionary query set"
+      ],
+      "source_sha256": "9de3940e152c8e4431b9a4785e01360066410c96f81dd225a0022c13d46fd787",
+      "coverage_meaning": "only named ranges/functions; not whole-file behavior certified"
+    },
+    {
+      "path": "app/src/main/java/com/example/core/data/KeyboardDatabase.kt",
+      "ranges": [
+        [
+          1,
+          119
+        ]
+      ],
+      "functions": [
+        "get",
+        "MIGRATION_1_2",
+        "MIGRATION_2_3",
+        "MIGRATION_3_4",
+        "MIGRATION_4_5"
+      ],
+      "untraced_calls": [
+        "actual Android old db full schema integrity"
+      ],
+      "source_sha256": "e4918a9bb1703b1991ef858082b55405d2a742fa9e8367dfde167cc6fdcff551",
+      "coverage_meaning": "only named ranges/functions; not whole-file behavior certified"
+    },
+    {
+      "path": "app/src/main/java/com/example/core/clipboard/ClipStore.kt",
+      "ranges": [
+        [
+          1,
+          208
+        ]
+      ],
+      "functions": [
+        "capture",
+        "fileFor",
+        "delete",
+        "sweepOrphans",
+        "compose",
+        "single"
+      ],
+      "untraced_calls": [
+        "FileProvider URI grant lifecycle",
+        "format/display tail"
+      ],
+      "source_sha256": "4f4592c9a65f20ad9879bcfe61c30eda3b2b7f57091ab8346d6e65178184b8a1",
+      "coverage_meaning": "only named ranges/functions; not whole-file behavior certified"
+    },
+    {
+      "path": "app/src/main/java/com/example/core/sync/SyncModel.kt",
+      "ranges": [
+        [
+          1,
+          125
+        ]
+      ],
+      "functions": [
+        "SyncMerge.merge/capture",
+        "SyncJson.encode/decode/seal/open"
+      ],
+      "untraced_calls": [
+        "password crypto",
+        "unknown provider dialect"
+      ],
+      "source_sha256": "f7dd22cb8428baf185d68954a6291faee95787a555337c791d6ad25ee82bb1d1",
+      "coverage_meaning": "only named ranges/functions; not whole-file behavior certified"
+    },
+    {
+      "path": "app/src/main/java/com/example/core/sync/SyncRepository.kt",
+      "ranges": [
+        [
+          1,
+          202
+        ]
+      ],
+      "functions": [
+        "local",
+        "prepare",
+        "apply",
+        "sameScope",
+        "write"
+      ],
+      "untraced_calls": [
+        "GoogleDrive transport",
+        "cross-store crash/failure injection",
+        "UI review and remote account consent"
+      ],
+      "source_sha256": "d8e7142599ad6424ed36adfe6059d94a6025e00193669e054ae972592419998f",
+      "coverage_meaning": "only named ranges/functions; not whole-file behavior certified"
+    },
+    {
+      "path": "app/src/main/java/com/example/core/vault/VaultTargets.kt",
+      "ranges": [
+        [
+          1,
+          34
+        ]
+      ],
+      "functions": [
+        "installedApps",
+        "origin"
+      ],
+      "untraced_calls": [
+        "OS certificate verification/device rotation"
+      ],
+      "source_sha256": "b45e103b9add6fd28ffd5f68d86feaf0bcbd7e9e6ba8fe1a6c9c22a286745545",
+      "coverage_meaning": "only named ranges/functions; not whole-file behavior certified"
+    },
+    {
+      "path": "app/src/main/java/com/example/core/vault/VaultBackup.kt",
+      "ranges": [
+        [
+          1,
+          53
+        ]
+      ],
+      "functions": [
+        "encrypt/decrypt",
+        "VaultImports.merge"
+      ],
+      "untraced_calls": [
+        "hardware vault store",
+        "PasswordEnvelope runtime"
+      ],
+      "source_sha256": "fa42c66a44b9ce8be14c4df8196f083e3f78b0ba54aefef374daa27aba39ce4a",
+      "coverage_meaning": "only named ranges/functions; not whole-file behavior certified"
+    },
+    {
+      "path": "app/src/main/java/com/example/engine/NetListener.kt",
+      "ranges": [
+        [
+          26,
+          165
+        ]
+      ],
+      "functions": [
+        "start",
+        "stop",
+        "deliver",
+        "receiveUdp",
+        "acceptTcp",
+        "serve"
+      ],
+      "untraced_calls": [
+        "real sockets and Android Looper delivery"
+      ],
+      "source_sha256": "24845b6c65d08daf66aa75d0f00f5e20dd9324fa5a7f0eae5e34d7a9a0a3dd84",
+      "coverage_meaning": "only named ranges/functions; not whole-file behavior certified"
+    },
+    {
+      "path": "app/src/main/java/com/example/ime/CustomKeyboardIme.kt",
+      "ranges": [
+        [
+          473,
+          543
+        ],
+        [
+          2048,
+          2087
+        ],
+        [
+          2129,
+          2169
+        ],
+        [
+          2187,
+          2211
+        ],
+        [
+          2250,
+          2363
+        ]
+      ],
+      "functions": [
+        "onStartInput/onFinishInputView",
+        "runAiTask",
+        "pasteOrConvert",
+        "performClipboard",
+        "clipboardListener",
+        "rememberFileClip"
+      ],
+      "untraced_calls": [
+        "real InputConnection/OEM lifecycle",
+        "delayed paste actual-runtime test",
+        "Room dispatch complete chain"
+      ],
+      "source_sha256": "2fb56d95aa466945b392a444f7d1ac8c38f702dc61d2afe3eb7d6fa6429c1868",
+      "coverage_meaning": "only named ranges/functions; not whole-file behavior certified"
+    },
+    {
+      "path": "app/src/main/java/com/example/ime/EditorController.kt",
+      "ranges": [
+        [
+          289,
+          305
+        ]
+      ],
+      "functions": [
+        "replaceSelectionOrAll"
+      ],
+      "untraced_calls": [
+        "real selectAll/currentInputConnection semantics"
+      ],
+      "source_sha256": "92ac56dd77bfe843473c8325f5b3696b4820419edeaaec61247fc16636d22213",
+      "coverage_meaning": "only named ranges/functions; not whole-file behavior certified"
+    },
+    {
+      "path": "app/src/main/java/com/example/io/ConvertRunner.kt",
+      "ranges": [
+        [
+          112,
+          246
+        ]
+      ],
+      "functions": [
+        "providerFor",
+        "ready",
+        "names",
+        "run",
+        "convert"
+      ],
+      "untraced_calls": [
+        "media execute/encode/deliver implementations",
+        "async cancellation"
+      ],
+      "source_sha256": "8b7382d52d96855e65d611d563a9e108587af9b8a511a705df0e2fe4ee26da7a",
+      "coverage_meaning": "only named ranges/functions; not whole-file behavior certified"
+    },
+    {
+      "path": "app/src/main/java/com/example/io/Performer.kt",
+      "ranges": [
+        [
+          468,
+          502
+        ]
+      ],
+      "functions": [
+        "setSetting",
+        "toggleSetting"
+      ],
+      "untraced_calls": [
+        "OS actions outside setting path"
+      ],
+      "source_sha256": "37483de9df8cefa5ed6660fdcf0f68cf1220a42df9fa64e48ea99e8d70e4d81b",
+      "coverage_meaning": "only named ranges/functions; not whole-file behavior certified"
+    },
+    {
+      "path": "app/src/main/java/com/example/assistant/GoalPerformer.kt",
+      "ranges": [
+        [
+          1,
+          67
+        ]
+      ],
+      "functions": [
+        "run"
+      ],
+      "untraced_calls": [
+        "GoalSession approval to executor integration",
+        "physical outcome verification"
+      ],
+      "source_sha256": "1b50426f8acdf48e48d319171419de873994ac8fb34915115696d3c56ea1b000",
+      "coverage_meaning": "only named ranges/functions; not whole-file behavior certified"
+    },
+    {
+      "path": "app/src/main/java/com/example/ui/kb/Panels.kt",
+      "ranges": [
+        [
+          345,
+          455
+        ]
+      ],
+      "functions": [
+        "ClipboardPanel clear/preview/confirm/undo"
+      ],
+      "untraced_calls": [
+        "Compose interaction E2E",
+        "all other panels"
+      ],
+      "source_sha256": "f1b118443518d7a75305389bd6d83223a8fc253f87222ed2f884cb23b2747d11",
+      "coverage_meaning": "only named ranges/functions; not whole-file behavior certified"
+    },
+    {
+      "path": "app/src/main/java/com/example/ui/settings/SettingControl.kt",
+      "ranges": [
+        [
+          33,
+          95
+        ]
+      ],
+      "functions": [
+        "SettingControl.write"
+      ],
+      "untraced_calls": [
+        "remaining control types and render branches"
+      ],
+      "source_sha256": "e92b94d3642c15194e2396b6ba3d84eae0723d0a06ec89ad08e05a6f2e8d0ebd",
+      "coverage_meaning": "only named ranges/functions; not whole-file behavior certified"
+    }
+  ],
+  "unverified_within_reviewed": "untraced_calls lists are not exhaustive callgraphs; imports/compiled files alone not counted",
+  "scan_repeated": false
+}

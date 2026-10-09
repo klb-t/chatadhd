@@ -1,0 +1,164 @@
+{
+  "repo": "klb-t/Custom-Keyboard-Pro",
+  "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+  "level": "SQLite executing SQL literals from actual pinned Room sources; not Room/KSP/device",
+  "cases": [
+    {
+      "id": "A2-CKP-MIGRATION-1-5",
+      "lane": "acceptance",
+      "status": "PASS"
+    },
+    {
+      "id": "A2-CKP-DELETE-SNAPSHOT",
+      "lane": "acceptance",
+      "status": "PASS"
+    },
+    {
+      "id": "A2-CKP-DELETE-TOMBSTONE",
+      "lane": "acceptance",
+      "status": "PASS"
+    },
+    {
+      "id": "A2-CKP-UNDO-OPERATION-BOUND",
+      "lane": "acceptance",
+      "status": "PASS"
+    },
+    {
+      "id": "A2-CKP-UNDO-RESTORE",
+      "lane": "acceptance",
+      "status": "PASS"
+    },
+    {
+      "id": "A2-CKP-SQL-REOPEN",
+      "lane": "acceptance",
+      "status": "PASS"
+    }
+  ],
+  "proof": [
+    {
+      "source": "app/src/main/java/com/example/core/data/KeyboardDatabase.kt",
+      "migration": "1_2",
+      "sql_sha256": "7b3495dbfbbf65e526e3b565041db75943c39303ff7954f300eab5dacb63aac7"
+    },
+    {
+      "source": "app/src/main/java/com/example/core/data/KeyboardDatabase.kt",
+      "migration": "1_2",
+      "sql_sha256": "dd861289c4e158b41585de07e633b76aa3d7fac7cfae08d96ce2aad29c40f031"
+    },
+    {
+      "source": "app/src/main/java/com/example/core/data/KeyboardDatabase.kt",
+      "migration": "1_2",
+      "sql_sha256": "0c582429b36b5172989d2d641a0ad987d9535acd161b12bb1aedba7fae081fa9"
+    },
+    {
+      "source": "app/src/main/java/com/example/core/data/KeyboardDatabase.kt",
+      "migration": "1_2",
+      "sql_sha256": "3bc7b022c92df90a74fb5d41b91b7f1ab147144c792444ecb6a0f58756a673c4"
+    },
+    {
+      "source": "app/src/main/java/com/example/core/data/KeyboardDatabase.kt",
+      "migration": "1_2",
+      "sql_sha256": "94471f0b9055e2f7870d5852320b556c204e190346a74d57d1f4ece822761192"
+    },
+    {
+      "source": "app/src/main/java/com/example/core/data/KeyboardDatabase.kt",
+      "migration": "1_2",
+      "sql_sha256": "ab20654de2401e3bd475139af5b5b9ec0b23cbe2c0446ca70ed7589a5f6ec40c"
+    },
+    {
+      "source": "app/src/main/java/com/example/core/data/KeyboardDatabase.kt",
+      "migration": "1_2",
+      "sql_sha256": "cbda0b40debd550194cf9959b821cd0f115c9c5c782fd584c66903054636f63a"
+    },
+    {
+      "source": "app/src/main/java/com/example/core/data/KeyboardDatabase.kt",
+      "migration": "2_3",
+      "sql_sha256": "58b591dfd26196a3100bd01b62852d4209116454797b3b28c93152dc5bc7264c"
+    },
+    {
+      "source": "app/src/main/java/com/example/core/data/KeyboardDatabase.kt",
+      "migration": "2_3",
+      "sql_sha256": "ed6dc3f1caf3d88b1567c0d15df78948629481bb8efb61d97471ba9908e6718b"
+    },
+    {
+      "source": "app/src/main/java/com/example/core/data/KeyboardDatabase.kt",
+      "migration": "2_3",
+      "sql_sha256": "52af92bbb26ad6c6416930370f082d59fbe917b3746fb63e3a9e82d5cbe052f7"
+    },
+    {
+      "source": "app/src/main/java/com/example/core/data/KeyboardDatabase.kt",
+      "migration": "2_3",
+      "sql_sha256": "4973bb6381f43ec4abba1eb1ef326daa7b1addf193ab99634e5f179da1f62e6f"
+    },
+    {
+      "source": "app/src/main/java/com/example/core/data/KeyboardDatabase.kt",
+      "migration": "2_3",
+      "sql_sha256": "5439c9515f6cf629b8bbe11e82cbbcbfb3754609cb0057c95c133f6f621c898f"
+    },
+    {
+      "source": "app/src/main/java/com/example/core/data/KeyboardDatabase.kt",
+      "migration": "3_4",
+      "sql_sha256": "d120554762f5fe1bf9b7402a6437b7e2bfa9b6ea09f0b48d504c0b5365a64e20"
+    },
+    {
+      "source": "app/src/main/java/com/example/core/data/KeyboardDatabase.kt",
+      "migration": "3_4",
+      "sql_sha256": "697fe7a0e0eb07b47fbf377713c93e1354fe55a1d16cc626f33fddac56189964"
+    },
+    {
+      "source": "app/src/main/java/com/example/core/data/KeyboardDatabase.kt",
+      "migration": "3_4",
+      "sql_sha256": "da6956e07b8a43dde44eb9c8ebadc14844c060b0a40306fe50fcbd629c1a691d"
+    },
+    {
+      "source": "app/src/main/java/com/example/core/data/KeyboardDatabase.kt",
+      "migration": "3_4",
+      "sql_sha256": "d2aff9cd4543265ccf04c3da1f2d02187a8fda2b554545aee2a3a862ccc431fd"
+    },
+    {
+      "source": "app/src/main/java/com/example/core/data/KeyboardDatabase.kt",
+      "migration": "3_4",
+      "sql_sha256": "22b9ae11e48d05cfc1925bf76ce371789fe7710a1dadbbc4d152fb5f91ef4975"
+    },
+    {
+      "source": "app/src/main/java/com/example/core/data/KeyboardDatabase.kt",
+      "migration": "4_5",
+      "sql_sha256": "e286dae242e56ed000acdca18237b07848be0f4d566c0454520cfd9771e9af14"
+    },
+    {
+      "source": "app/src/main/java/com/example/core/data/KeyboardDatabase.kt",
+      "migration": "4_5",
+      "sql_sha256": "ba304106d92d8a4409b875d640c0549744116907842d06098ba684cd3d42b8c1"
+    },
+    {
+      "source": "app/src/main/java/com/example/core/data/Daos.kt",
+      "method": "allUnpinned",
+      "sql_sha256": "e6a1d203d13454c8b153f6704dfe3741ac27e98df6e3302685becebed21fd3fe"
+    },
+    {
+      "source": "app/src/main/java/com/example/core/data/Daos.kt",
+      "method": "trash",
+      "sql_sha256": "3ea3b0770b04760ba361382da4294bc0e5fec8df51920202c312660f97fe76a4"
+    },
+    {
+      "source": "app/src/main/java/com/example/core/data/Daos.kt",
+      "method": "deletedBatch",
+      "sql_sha256": "bdf1ba43339aff652d16f5996a9b63dc089ec76af78ac98b10724cfddc58b57f"
+    },
+    {
+      "source": "app/src/main/java/com/example/core/data/Daos.kt",
+      "method": "recordDeletedBatch",
+      "sql_sha256": "34e32c2513d67c225be41c2e920a51de222304b2d5efd2a6914b067161a938ee"
+    },
+    {
+      "source": "app/src/main/java/com/example/core/data/Daos.kt",
+      "method": "syncDeletions",
+      "sql_sha256": "99079a6935308e88de3639213d7456d667b371834a82a1c41c8189cb0c6a5c00"
+    },
+    {
+      "source": "app/src/main/java/com/example/core/data/Daos.kt",
+      "method": "restoreBatch",
+      "sql_sha256": "7dc485281215f80d9b9c6235080ddc24247630f3f6eea837063eba9011b1023f"
+    }
+  ]
+}

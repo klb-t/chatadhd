@@ -1,0 +1,24 @@
+{
+  "repo": "klb-t/Custom-Keyboard-Pro",
+  "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+  "entries": [
+    {
+      "id": "ckp-host-A",
+      "command": "python3 tools/ecosystem-audit-2026-10-09/pass2/ckp/run.py --repo {repo} --sha {sha} --deps {deps} --workdir {workdir} --out {out}/host-A.json --mode reproduction",
+      "base_expected_exit": 0,
+      "meaning": "PASS reproduces baseline bugs; not product acceptance"
+    },
+    {
+      "id": "ckp-host-B",
+      "command": "python3 tools/ecosystem-audit-2026-10-09/pass2/ckp/run.py --repo {repo} --sha {sha} --deps {deps} --workdir {workdir} --out {out}/host-B.json --mode acceptance",
+      "base_expected_exit": 1,
+      "meaning": "8 acceptance failures at base, 7 acceptance passes"
+    },
+    {
+      "id": "ckp-sql",
+      "command": "python3 tools/ecosystem-audit-2026-10-09/pass2/ckp/sql_gate.py --repo {repo} --sha {sha} --out {out}/sql.json",
+      "base_expected_exit": 0,
+      "meaning": "6 actual SQL query/migration checks; not Room/device"
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+continuation/scratch/ckp/build/sources/AuditMain.kt:29:9: warning: 'static fun setSecurityManager(p0: SecurityManager!): Unit' is deprecated. Deprecated in Java.
+ System.setSecurityManager(object:SecurityManager(){override fun checkPermission(p:java.security.Permission){};override fun checkConnect(host:String,port:Int){throw SecurityException("External transport blocked by audit")}})
+        ^^^^^^^^^^^^^^^^^^
+continuation/scratch/ckp/build/sources/AuditMain.kt:29:35: warning: 'class SecurityManager : Any' is deprecated. Deprecated in Java.
+ System.setSecurityManager(object:SecurityManager(){override fun checkPermission(p:java.security.Permission){};override fun checkConnect(host:String,port:Int){throw SecurityException("External transport blocked by audit")}})
+                                  ^^^^^^^^^^^^^^^

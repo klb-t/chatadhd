@@ -1,0 +1,59 @@
+import com.example.core.ai.*
+import com.example.core.config.*
+import com.example.core.discovery.ProviderSpec
+import com.example.core.io.Command
+import com.example.core.matrix.*
+import com.example.util.AppLogger
+import android.content.Context
+import kotlinx.coroutines.*
+
+// All execution / platform outputs below are recording doubles. The four marked
+// mechanisms are injected unchanged from git --sha by run.py, never reimplemented.
+class InputConnection(var text:String) {
+ fun beginBatchEdit(){};fun endBatchEdit(){}
+ fun commitText(s:String,newCursorPosition:Int){text=s}
+}
+class EditorFixture {
+ var active=InputConnection("field-A")
+ var isSensitive=false
+ var hasSelection=false
+ fun connection()=active
+ fun selectedText():CharSequence?=null
+ fun selectAll(){}
+ fun remember(removed:String,inserted:String){}
+ fun forgetHistory(){}
+ fun commitText(text:String,applyConventions:Boolean){active.commitText(text,1)}
+ /*ACTUAL_REPLACE*/
+}
+object PanelId {const val AI_TOOLS="ai_tools"}
+object IndicatorKeys {const val AI_BUSY="ai_busy"}
+class UiState {var busy=false;fun setFlag(id:String,v:Boolean){busy=v}}
+class RewriteHost {
+ val editor=EditorFixture();val state=UiState()
+ val serviceScope=CoroutineScope(SupervisorJob()+Dispatchers.Unconfined)
+ val panels= mutableListOf<String>()
+ fun openPanel(id:String){panels+=id}
+ fun textForAi()=editor.active.text
+ fun freshScreenContext():String?=null
+ fun run(taskId:String)=runAiTask(taskId)
+ /*ACTUAL_RUN_AI_TASK*/
+}
+class Goal(val type:DataType,val representation:Representation?=null,val through:List<String> = emptyList())
+class Arrival(val interpretations:List<Interpretation>)
+class Datum(val value:String="fixture")
+interface PerformerHost {fun notice(s:String)}
+class ConvertHost {
+ val executed=mutableListOf<String>();val notices=mutableListOf<String>()
+ private fun ready(impl:Implementation,settings:Settings)=true
+ private fun providerFor(impl:Implementation,settings:Settings):ProviderSpec?=null
+ private fun start(arrival:Arrival,how:Interpretation,command:Command)=Datum()
+ private fun matches(value:String,representation:Representation)=true
+ private fun on(command:Command,name:String)=false
+ private fun execute(context:Context,choice:Choice,next:Choice?,datum:Datum,command:Command,settings:Settings):Datum {executed+=choice.implementation.id;return datum}
+ private fun withLyrics(context:Context,arrival:Arrival,datum:Datum,command:Command,settings:Settings)=datum
+ private fun encode(context:Context,datum:Datum,goal:Goal,command:Command)=datum
+ private fun deliver(context:Context,out:Datum,host:PerformerHost,expert:Boolean){}
+ suspend fun run(command:Command,settings:Settings){convert(Context(),Arrival(listOf(Interpretation(Types.TEXT,Representations.UTF8))),Goal(Types.PICTURE),command,settings,object:PerformerHost{override fun notice(s:String){notices+=s}})}
+ /*ACTUAL_NAMES*/
+ /*ACTUAL_CONVERT*/
+}

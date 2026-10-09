@@ -1,0 +1,104 @@
+{
+  "repo": "klb-t/Custom-Keyboard-Pro",
+  "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+  "sources": [
+    {
+      "path": "app/src/main/java/com/example/core/ai/AiTasks.kt",
+      "line_start": 1,
+      "line_end": 178,
+      "kind": "unmodified_whole_source",
+      "sha256": "c45b4cdba2b7a0cbb19b38209fa0f6d6a7d27dc91c2991df69c78b3eb1cce8a5"
+    },
+    {
+      "path": "app/src/main/java/com/example/core/discovery/ProviderCatalog.kt",
+      "line_start": 1,
+      "line_end": 371,
+      "kind": "unmodified_whole_source",
+      "sha256": "e6d600837f63c87dbb41071a2155d12e7889822452db31d038073aac2c6871f2"
+    },
+    {
+      "path": "app/src/main/java/com/example/core/discovery/Capabilities.kt",
+      "line_start": 1,
+      "line_end": 317,
+      "kind": "unmodified_whole_source",
+      "sha256": "ada72ff38d9449dedb67dd85577f363c0cc33f269abaadfe9b38290998d46997"
+    },
+    {
+      "path": "app/src/main/java/com/example/core/discovery/Discovery.kt",
+      "line_start": 1,
+      "line_end": 77,
+      "kind": "unmodified_whole_source",
+      "sha256": "f88dc8c610fdfcc8f6f6865a2222c44dc2e28dc629b6cfa8a14444e5fed5a0f5"
+    },
+    {
+      "path": "app/src/main/java/com/example/core/matrix/Model.kt",
+      "line_start": 1,
+      "line_end": 175,
+      "kind": "unmodified_whole_source",
+      "sha256": "3dc1491e6793288ae48b18837aebbb8234284a2c589ae436305b682987b84436"
+    },
+    {
+      "path": "app/src/main/java/com/example/core/matrix/Planner.kt",
+      "line_start": 1,
+      "line_end": 188,
+      "kind": "unmodified_whole_source",
+      "sha256": "412c0d995a128b696fe0110b5d75ed0d5a9045603caca90238cad9cc2daf5428"
+    },
+    {
+      "path": "app/src/main/java/com/example/core/matrix/Transforms.kt",
+      "line_start": 1,
+      "line_end": 288,
+      "kind": "unmodified_whole_source",
+      "sha256": "6e17446af0e663c82e5ef15c663088407eb956d86cd2fe28f550586cb96f6ea4"
+    },
+    {
+      "path": "app/src/main/java/com/example/core/io/Command.kt",
+      "line_start": 1,
+      "line_end": 110,
+      "kind": "unmodified_whole_source",
+      "sha256": "bc6125d0b6895291039160eed5ea0c76ae78308f1ddd27a587b20be609f91eaf"
+    },
+    {
+      "path": "app/src/main/java/com/example/core/matrix/NetLines.kt",
+      "line_start": 1,
+      "line_end": 61,
+      "kind": "unmodified_whole_source",
+      "sha256": "affee194a3be4a9f752d299adf7a5621dff73d2fd2ecf9a3b388c92df2a65340"
+    },
+    {
+      "path": "app/src/main/java/com/example/engine/NetListener.kt",
+      "line_start": 1,
+      "line_end": 172,
+      "kind": "unmodified_whole_source",
+      "sha256": "24845b6c65d08daf66aa75d0f00f5e20dd9324fa5a7f0eae5e34d7a9a0a3dd84"
+    },
+    {
+      "path": "app/src/main/java/com/example/ime/CustomKeyboardIme.kt",
+      "line_start": 2048,
+      "line_end": 2087,
+      "kind": "unmodified_method_slice",
+      "sha256": "e9bdfdc678242645f38477b08ec2b16403657e19569c917fd187946f68359249"
+    },
+    {
+      "path": "app/src/main/java/com/example/ime/EditorController.kt",
+      "line_start": 289,
+      "line_end": 304,
+      "kind": "unmodified_method_slice",
+      "sha256": "e667af69c9b817bad429846049c367e4b6ac9a0e3de49a3e631b940034068a51"
+    },
+    {
+      "path": "app/src/main/java/com/example/io/ConvertRunner.kt",
+      "line_start": 195,
+      "line_end": 236,
+      "kind": "unmodified_method_slice",
+      "sha256": "c7376cb59e7c4fb739ef20e09ab1640c61abbf85549c0d8378232fd81009f45b"
+    },
+    {
+      "path": "app/src/main/java/com/example/io/ConvertRunner.kt",
+      "line_start": 150,
+      "line_end": 153,
+      "kind": "unmodified_method_slice",
+      "sha256": "490b66db400c52b82860475292e89bcceb4c085ab2afde96d66177121ee05b44"
+    }
+  ]
+}

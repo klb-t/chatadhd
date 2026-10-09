@@ -1,0 +1,8 @@
+// Adds audit tests externally; no repository source/build configuration is changed.
+allprojects {
+    afterEvaluate { project ->
+        if (project.plugins.hasPlugin('com.android.application')) {
+            project.android.sourceSets.getByName('test').java.srcDir(System.getProperty('audit.testSource'))
+        }
+    }
+}

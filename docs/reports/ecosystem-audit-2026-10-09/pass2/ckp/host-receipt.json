@@ -1,0 +1,190 @@
+{
+  "repo": "klb-t/Custom-Keyboard-Pro",
+  "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+  "mode": "all",
+  "level": "JVM host; exact method slices and whole source files; NOT Android/device/E2E",
+  "transport": "SecurityManager blocks all connect; AiClient replaced only at suspended transport boundary",
+  "compiler": "Kotlin 2.1.20",
+  "exit_code": 1,
+  "cases": [
+    {
+      "error_type": null,
+      "id": "CKP-NET-GUARD",
+      "title": "real network sockets are blocked",
+      "lane": "acceptance",
+      "status": "PASS"
+    },
+    {
+      "error_type": null,
+      "id": "CKP-A-001.override.A",
+      "title": "built-in fix shadows custom fix",
+      "lane": "reproduction",
+      "status": "PASS"
+    },
+    {
+      "error_type": null,
+      "id": "CKP-A-001.override.B",
+      "title": "custom fix is effective consumer recipe",
+      "lane": "acceptance",
+      "status": "FAIL"
+    },
+    {
+      "error_type": null,
+      "id": "CKP-A-001.corrupt.A",
+      "title": "malformed custom list silently becomes empty",
+      "lane": "reproduction",
+      "status": "PASS"
+    },
+    {
+      "error_type": null,
+      "id": "CKP-A-001.corrupt.B",
+      "title": "malformed custom data returns explicit failure",
+      "lane": "acceptance",
+      "status": "FAIL"
+    },
+    {
+      "error_type": null,
+      "id": "CKP-A-001.unsupported.A",
+      "title": "unsupported disabled field is accepted and discarded",
+      "lane": "reproduction",
+      "status": "PASS"
+    },
+    {
+      "error_type": null,
+      "id": "CKP-A-001.unsupported.B",
+      "title": "unsupported task fields must not silently activate task",
+      "lane": "acceptance",
+      "status": "FAIL"
+    },
+    {
+      "error_type": null,
+      "id": "CKP-A-002.fallback.A",
+      "title": "broken bundled catalogue resolves code-owned legacy endpoint/model",
+      "lane": "reproduction",
+      "status": "PASS"
+    },
+    {
+      "error_type": null,
+      "id": "CKP-A-002.fallback.B",
+      "title": "broken catalogue is not replaced by unselected coded provider",
+      "lane": "acceptance",
+      "status": "FAIL"
+    },
+    {
+      "error_type": null,
+      "id": "CKP-A-002.profile.B",
+      "title": "two data profiles change actual catalogue consumer",
+      "lane": "acceptance",
+      "status": "PASS"
+    },
+    {
+      "error_type": null,
+      "id": "CKP-A-003.unknown.A",
+      "title": "unknown cost equals medium cost for all dimensions",
+      "lane": "reproduction",
+      "status": "PASS"
+    },
+    {
+      "error_type": null,
+      "id": "CKP-A-003.metadata.B",
+      "title": "unknown cost metadata survives scoring",
+      "lane": "acceptance",
+      "status": "PASS"
+    },
+    {
+      "error_type": null,
+      "id": "CKP-A-003.weights.B",
+      "title": "two policies alter real planner rank",
+      "lane": "acceptance",
+      "status": "PASS"
+    },
+    {
+      "error_type": null,
+      "id": "CKP-A-003.consumer.A",
+      "title": "actual ConvertRunner executes default-selected route",
+      "lane": "reproduction",
+      "status": "PASS"
+    },
+    {
+      "error_type": null,
+      "id": "A2-CKP-001.use.A",
+      "title": "unknown required transform is dropped and another transform executes",
+      "lane": "reproduction",
+      "status": "PASS"
+    },
+    {
+      "error_type": null,
+      "id": "A2-CKP-001.use.B",
+      "title": "unknown required transform must stop instead of execute unrelated route",
+      "lane": "acceptance",
+      "status": "FAIL"
+    },
+    {
+      "error_type": null,
+      "id": "CKP-A-012.focus.A",
+      "title": "late rewrite is applied after focus change",
+      "lane": "reproduction",
+      "status": "PASS"
+    },
+    {
+      "error_type": null,
+      "id": "CKP-A-012.focus.B",
+      "title": "late rewrite must not replace changed focus target",
+      "lane": "acceptance",
+      "status": "FAIL"
+    },
+    {
+      "error_type": null,
+      "id": "CKP-A-012.revision.A",
+      "title": "late rewrite is applied after revision change",
+      "lane": "reproduction",
+      "status": "PASS"
+    },
+    {
+      "error_type": null,
+      "id": "CKP-A-012.revision.B",
+      "title": "late rewrite must not replace changed revision target",
+      "lane": "acceptance",
+      "status": "FAIL"
+    },
+    {
+      "error_type": null,
+      "id": "CKP-A-012.sensitive.A",
+      "title": "late rewrite is applied after sensitive change",
+      "lane": "reproduction",
+      "status": "PASS"
+    },
+    {
+      "error_type": null,
+      "id": "CKP-A-012.sensitive.B",
+      "title": "late rewrite must not replace changed sensitive target",
+      "lane": "acceptance",
+      "status": "FAIL"
+    },
+    {
+      "error_type": null,
+      "id": "CKP-A-001.runtime-profile.B",
+      "title": "two custom task profiles alter actual runAiTask transport prompt",
+      "lane": "acceptance",
+      "status": "PASS"
+    },
+    {
+      "error_type": null,
+      "id": "A2-CKP-NET.token.B",
+      "title": "wrong token and disabled command gate reject before consumer",
+      "lane": "acceptance",
+      "status": "PASS"
+    },
+    {
+      "error_type": null,
+      "id": "A2-CKP-NET.revocation.B",
+      "title": "queued network action is invalidated by stop",
+      "lane": "acceptance",
+      "status": "PASS"
+    }
+  ],
+  "summary": {
+    "PASS": 17,
+    "FAIL": 8
+  }
+}

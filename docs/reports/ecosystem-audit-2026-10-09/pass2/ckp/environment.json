@@ -1,0 +1,38 @@
+[
+  {
+    "artifact": "gradle",
+    "url": "https://services.gradle.org/distributions/gradle-9.7.1-bin.zip",
+    "exit": 0,
+    "error": "",
+    "http_statuses": [
+      "HTTP/1.1 200 OK",
+      "HTTP/2 307 ",
+      "HTTP/1.1 200 OK",
+      "HTTP/2 302 ",
+      "HTTP/1.1 200 OK",
+      "HTTP/2 200 "
+    ]
+  },
+  {
+    "artifact": "jdk",
+    "url": "https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.20.1%2B1/OpenJDK17U-jdk_x64_linux_hotspot_17.0.20.1_1.tar.gz",
+    "exit": 0,
+    "error": "",
+    "http_statuses": [
+      "HTTP/1.1 200 OK",
+      "HTTP/2 302 ",
+      "HTTP/1.1 200 OK",
+      "HTTP/2 200 "
+    ]
+  },
+  {
+    "artifact": "android",
+    "url": "https://dl.google.com/android/repository/commandlinetools-linux-13114758_latest.zip",
+    "exit": 0,
+    "error": "",
+    "http_statuses": [
+      "HTTP/1.1 200 OK",
+      "HTTP/2 200 "
+    ]
+  }
+]

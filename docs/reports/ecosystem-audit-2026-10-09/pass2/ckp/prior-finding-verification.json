@@ -1,0 +1,50 @@
+[
+  {
+    "id": "CKP-A-001",
+    "status": "naruszenie nadal potwierdzone",
+    "tests": [
+      "override.A",
+      "override.B",
+      "corrupt.A",
+      "corrupt.B",
+      "unsupported.A",
+      "unsupported.B",
+      "runtime-profile.B"
+    ],
+    "limit": "Actual task resolver/runAiTask. Not AiConfig/HTTP serialization."
+  },
+  {
+    "id": "CKP-A-002",
+    "status": "naruszenie nadal potwierdzone",
+    "tests": [
+      "fallback.A",
+      "fallback.B",
+      "profile.B"
+    ],
+    "limit": "Catalogue resolver. Does not claim network request was automatically sent."
+  },
+  {
+    "id": "CKP-A-003",
+    "status": "częściowa weryfikacja",
+    "tests": [
+      "unknown.A",
+      "metadata.B",
+      "weights.B",
+      "consumer.A"
+    ],
+    "limit": "Planner accepts policy weights and preserves null metadata, but runner only supplies three fields. Full profile→runner acceptance blocked until B exposes binding. Equal numerical cost alone is not treated as a failed product gate."
+  },
+  {
+    "id": "CKP-A-012",
+    "status": "hipoteza potwierdzona w host test; Android nadal niezweryfikowany",
+    "tests": [
+      "focus.A",
+      "focus.B",
+      "revision.A",
+      "revision.B",
+      "sensitive.A",
+      "sensitive.B"
+    ],
+    "limit": "Exact runAiTask + replaceSelectionOrAll with mutable current InputConnection. No actual Android lifecycle/OEM/device scheduling."
+  }
+]
