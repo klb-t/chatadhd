@@ -1,0 +1,55 @@
+{
+  "schema": "klb.audit.manifest/1",
+  "files": [
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/REPORT.md",
+      "bytes": 6331,
+      "sha256": "84e24052e47a1d7dc5e3d8dc43432fda6f22b3e848574e9080353315813009de"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/coverage.json",
+      "bytes": 11623,
+      "sha256": "2b59d249f01c676de5551b0a987f157b60edb75a46f99732e4fb67e74666a6c5"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/findings.jsonl",
+      "bytes": 6941,
+      "sha256": "a3088e175d853d9d145cf27270b10f8c8ad3ade3c21aff376a0131c74ba0e210"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/increment-review.json",
+      "bytes": 2461,
+      "sha256": "5cc3da7466d3829d94b1a62c57e3f13cf5e9bf2ab8f87d978ae23b9179f9c717"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/native-receipt.json",
+      "bytes": 5942,
+      "sha256": "292b8280d0c76a13eecd14e03d7c317121c6ff2fca219327d1ff8707102d3c6c"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/native-run.log",
+      "bytes": 3759,
+      "sha256": "e6005c24c97afd2208b85bcaca2c320844c303db9b35d9f09d178658f670cf25"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/projection-receipt.json",
+      "bytes": 5532,
+      "sha256": "78b523447053f84fd368b249e98244281b8840f54daae86c98fb3cbcac020cc3"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/test-index.json",
+      "bytes": 1238,
+      "sha256": "6f8b343ad11a8b46ad03f83909cf6b75f961e42457d95b75a99291c796a3910a"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/c-review/README.md",
+      "bytes": 2103,
+      "sha256": "d956a87572bd43fd5839bdc9266996a44eaf35862ce14b71c198917e819e867a"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/c-review/run.py",
+      "bytes": 24286,
+      "sha256": "6db7f0c227784d555e41925532a4892c453f19d2fb3e6b680340ed5b91fac1db"
+    }
+  ]
+}

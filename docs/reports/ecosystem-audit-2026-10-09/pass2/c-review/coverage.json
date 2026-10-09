@@ -1,0 +1,345 @@
+{
+  "schema": "klb.audit.coverage.increment/1",
+  "module": "c-review",
+  "repo": "klb-t/chatadhd",
+  "research_sha": "69880859802267f1b38b82eeaecd6fdc5522a47a",
+  "native_sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "reviewed_files_with_ranges": 10,
+  "product_files_with_new_or_revisited_ranges": 2,
+  "research_files_with_ranges": 8,
+  "not_a_full_repo_coverage_counter": true,
+  "files": [
+    {
+      "file": "loom/tools/structure/experiment_workflow_v1.py",
+      "category": "research_tool",
+      "sha": "69880859802267f1b38b82eeaecd6fdc5522a47a",
+      "file_sha256": "be62bc13b2c57e3215774574a2537189ca67ba016e1d4a1ef1636784bbf3c516",
+      "ranges": [
+        {
+          "line_start": 33,
+          "line_end": 176,
+          "functions": [
+            "variants",
+            "render",
+            "validate_spec",
+            "jobs",
+            "ordered_jobs"
+          ],
+          "source_range_sha256": "dab70446d8a1d58e95634b34e80abacd10626ef067d6cb5bcb8ad99abec3b1e8"
+        },
+        {
+          "line_start": 179,
+          "line_end": 290,
+          "functions": [
+            "Queue.__init__",
+            "add",
+            "trigger",
+            "mark_dispatched",
+            "capture_first",
+            "snapshot",
+            "available_budget",
+            "result_record"
+          ],
+          "source_range_sha256": "d6e2f570688629d4a4975e130624df1ed5357ff3abc3d6bf7d831eb6eaf2b362"
+        },
+        {
+          "line_start": 293,
+          "line_end": 316,
+          "functions": [
+            "summary",
+            "main"
+          ],
+          "source_range_sha256": "b0a6b7ca3d4a48c57a196f419de83577aac1f1e5b9858cd50d2b39202dc70dee"
+        }
+      ],
+      "untraced_or_unexecuted": [
+        "Main CLI only read, not invoked; live payer not called."
+      ],
+      "full_file_behavior_claimed": false
+    },
+    {
+      "file": "docs/research/thread7_real_2026-10-09/prepare_workflow.py",
+      "category": "research_artifact_tool",
+      "sha": "69880859802267f1b38b82eeaecd6fdc5522a47a",
+      "file_sha256": "d7e3238dc4edf69102b85ba719a20b7f9247e83241ec414a55021eff843b176e",
+      "ranges": [
+        {
+          "line_start": 29,
+          "line_end": 130,
+          "functions": [
+            "prepare"
+          ],
+          "source_range_sha256": "dc2a6f9e93d7bfe27dee351bcfbca9d9e8a69b31bac92fa06f5460d8907494e6"
+        }
+      ],
+      "untraced_or_unexecuted": [
+        "Private checkpoint intake/body recovery not executed; source path and payer manifest projection reviewed."
+      ],
+      "full_file_behavior_claimed": false
+    },
+    {
+      "file": "docs/research/thread7_real_2026-10-09/build_public_artifact.py",
+      "category": "research_artifact_tool",
+      "sha": "69880859802267f1b38b82eeaecd6fdc5522a47a",
+      "file_sha256": "9bf51070479d8981f936e9f0493ccc2ce0a65e2099325c81c32ede0065581dfc",
+      "ranges": [
+        {
+          "line_start": 16,
+          "line_end": 56,
+          "functions": [
+            "build"
+          ],
+          "source_range_sha256": "82fe3b379b97f352b96c8acf3c0d6d974d7e3493c0345a5516b79ef8f1f9acce"
+        }
+      ],
+      "untraced_or_unexecuted": [],
+      "full_file_behavior_claimed": false
+    },
+    {
+      "file": "loom/tools/seeding/method_graph.py",
+      "category": "research_tool",
+      "sha": "69880859802267f1b38b82eeaecd6fdc5522a47a",
+      "file_sha256": "ad7b9b2fe87db2851652784acb161fa79a745617c34339a3c41658d066605386",
+      "ranges": [
+        {
+          "line_start": 109,
+          "line_end": 154,
+          "functions": [
+            "validate_projection"
+          ],
+          "source_range_sha256": "19e756f0975ac3ab53972b6eb7ff8d9452559943e44fd4983ab540f8564c8e28"
+        },
+        {
+          "line_start": 164,
+          "line_end": 231,
+          "functions": [
+            "capture_run",
+            "selected_records"
+          ],
+          "source_range_sha256": "50180da578ee81677d16465079aafd8b525b0cab77d941ef80bf78ea0c484f3a"
+        },
+        {
+          "line_start": 266,
+          "line_end": 450,
+          "functions": [
+            "build_artifact",
+            "recover_files",
+            "recover_results"
+          ],
+          "source_range_sha256": "26024df98dbe9a78a6d4ed5d7f659948ce35cf7bc7f0f95f9200ce54628fec80"
+        }
+      ],
+      "untraced_or_unexecuted": [
+        "CLI/estimate not executed; generic supported selectors outside fixture not exhaustively exercised."
+      ],
+      "full_file_behavior_claimed": false
+    },
+    {
+      "file": "loom/tools/structure/research_programme_transport.py",
+      "category": "research_tool",
+      "sha": "69880859802267f1b38b82eeaecd6fdc5522a47a",
+      "file_sha256": "6f0925ac5a976fdbc4e9ade01816187d8fe3214a4562756fb63530ec2cfa9241",
+      "ranges": [
+        {
+          "line_start": 146,
+          "line_end": 170,
+          "functions": [
+            "_method_headers"
+          ],
+          "source_range_sha256": "8e76f78a273d03ba9249f95b13a12f17c91e35722bbb7b979803cfadb8405b00"
+        },
+        {
+          "line_start": 173,
+          "line_end": 255,
+          "functions": [
+            "OpenRouterTransport.__init__",
+            "close",
+            "_headers"
+          ],
+          "source_range_sha256": "e4caf9b380c9706f6efef487a13c8ca2261b30774764600d05cb4726dc1783f1"
+        },
+        {
+          "line_start": 257,
+          "line_end": 340,
+          "functions": [
+            "_url",
+            "request"
+          ],
+          "source_range_sha256": "9ca2de1f402c4511529c2dfcfb9303ddaa12fbb42030f9a652acec2aa9b90408"
+        }
+      ],
+      "untraced_or_unexecuted": [
+        "requests_session, real HTTP, generation receipts and key reads not executed."
+      ],
+      "full_file_behavior_claimed": false
+    },
+    {
+      "file": "loom/tools/structure/research_programme_manifest.py",
+      "category": "research_tool",
+      "sha": "69880859802267f1b38b82eeaecd6fdc5522a47a",
+      "file_sha256": "1810ae8d1b97ae9403e969de3b0efe6ff52e31b7fa9b87f4a6a1be62b84cfbb4",
+      "ranges": [
+        {
+          "line_start": 79,
+          "line_end": 127,
+          "functions": [
+            "_body_pair",
+            "_body_route",
+            "_request_path",
+            "read_request"
+          ],
+          "source_range_sha256": "17ff1ad81164c14530b180af6d7277691862c305b40608b73225c61be696640c"
+        },
+        {
+          "line_start": 157,
+          "line_end": 187,
+          "functions": [
+            "validate_manifest"
+          ],
+          "source_range_sha256": "8354972fe768526359d77de5d241f486930668e75b9cd7613786436f38cc4c27"
+        }
+      ],
+      "untraced_or_unexecuted": [
+        "Manifest validation on original private files not rerun."
+      ],
+      "full_file_behavior_claimed": false
+    },
+    {
+      "file": "loom/tools/coordination/graph_store.py",
+      "category": "research_tool",
+      "sha": "69880859802267f1b38b82eeaecd6fdc5522a47a",
+      "file_sha256": "5409db2624335b0984ddd95a63a99906648f6d6acaf72f7951ddc7eff9ca758c",
+      "ranges": [
+        {
+          "line_start": 17,
+          "line_end": 92,
+          "functions": [
+            "acceptance_request",
+            "NativeGraphStore.__init__",
+            "_take",
+            "execute",
+            "accept",
+            "read",
+            "replay",
+            "close"
+          ],
+          "source_range_sha256": "bf3e86cd7c449543e4df9ca09346f0cd4158e23bd2dab46bcb2e98d661bd2249"
+        }
+      ],
+      "untraced_or_unexecuted": [],
+      "full_file_behavior_claimed": false
+    },
+    {
+      "file": "loom/tools/structure/agentic_graph_v1/packet.py",
+      "category": "research_tool",
+      "sha": "69880859802267f1b38b82eeaecd6fdc5522a47a",
+      "file_sha256": "1b949dad8319f21713b984367cba162d1330f188d26557b21b264ef10910bbc4",
+      "ranges": [
+        {
+          "line_start": 284,
+          "line_end": 366,
+          "functions": [
+            "record_id",
+            "_indexes",
+            "_packet_payload",
+            "_validate_packet_content"
+          ],
+          "source_range_sha256": "77f4010b12050d06636ae69a34fbe1959f0dd4777acf1ed15cc96139d8c445ee"
+        },
+        {
+          "line_start": 435,
+          "line_end": 446,
+          "functions": [
+            "make_packet"
+          ],
+          "source_range_sha256": "9824dd55f7db1b59bbe0afee1087b0856f5367ca57a1c93a916f8a4997360646"
+        }
+      ],
+      "untraced_or_unexecuted": [
+        "Full reversible-history algorithm was invoked by native/codec but not line-by-line rereviewed in this package."
+      ],
+      "full_file_behavior_claimed": false
+    },
+    {
+      "file": "loom/src/kb/graph_packet_store.cpp",
+      "category": "product",
+      "sha": "69880859802267f1b38b82eeaecd6fdc5522a47a",
+      "file_sha256": "904cb420a6264962a7d77805d8a69e2ca0193474bcfbee3550ed284a475bd466",
+      "ranges": [
+        {
+          "line_start": 21,
+          "line_end": 89,
+          "functions": [
+            "keys",
+            "identity",
+            "index_packet",
+            "select_rows"
+          ],
+          "source_range_sha256": "70dfbc5e39bc3116ef32c6bd5dcc6476f2cdd1aa89bc9182d2c8d21b84d45242"
+        },
+        {
+          "line_start": 98,
+          "line_end": 159,
+          "functions": [
+            "same_json_number",
+            "same_json_value",
+            "exact_projection",
+            "closed",
+            "required_reference"
+          ],
+          "source_range_sha256": "60e798b5e55df6dcd4285ce2d810b86aedd04a72aa537ff2fa0b2fec0d800525"
+        },
+        {
+          "line_start": 329,
+          "line_end": 419,
+          "functions": [
+            "GraphPacketStore::execute"
+          ],
+          "source_range_sha256": "84010c28fd2acd091d0bf22bacaaf264d4821df89cd18bf80925978ebe5117e3"
+        }
+      ],
+      "untraced_or_unexecuted": [
+        "validate_rows body, stable_record_identity, load_receipt, snapshot/drift, model serializers and KnowledgeStore methods executed but not fully line-by-line reviewed here."
+      ],
+      "full_file_behavior_claimed": false
+    },
+    {
+      "file": "loom/src/capi/capi_graph_packet_store.cpp",
+      "category": "product",
+      "sha": "69880859802267f1b38b82eeaecd6fdc5522a47a",
+      "file_sha256": "345b219b1cd09eed62e97eed5045cd66e76724c588039ff52ea345fb0b7b2cbc",
+      "ranges": [
+        {
+          "line_start": 7,
+          "line_end": 15,
+          "functions": [
+            "loom_graph_packet_store"
+          ],
+          "source_range_sha256": "b4266625954d42564d25fa5df50ebb65b6456afc7ec9d8317af0bf8b4318a5b0"
+        }
+      ],
+      "untraced_or_unexecuted": [
+        "guard_json/parse_arg firewall not independently rereviewed here."
+      ],
+      "full_file_behavior_claimed": false
+    }
+  ],
+  "source_instructions": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md:R15,R33,R39-R42",
+    "docs/reports/thread7-real-2026-10-09.md",
+    "docs/research/thread7_real_2026-10-09/HANDOFF_B.md"
+  ],
+  "dependency_boundaries": [
+    "Existing payer credential/authentication and paid execution absent; no claim of verified live accounting.",
+    "No Basic/Advanced/Expert UI execution in this package.",
+    "Private source checkpoints not opened; current public/private equivalence not certified."
+  ],
+  "runtime_checks": [
+    "C packet full native materialization + restart/read/replay",
+    "Synthetic queue/result projection + native roundtrip",
+    "Native unsupported field/version, identity/ref rejection, stale CAS",
+    "Historical recipe/result preserved after new profile and restart"
+  ]
+}

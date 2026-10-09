@@ -1,0 +1,52 @@
+{
+  "schema": "klb.audit.test-index/1",
+  "module": "c-review",
+  "runner": "tools/ecosystem-audit-2026-10-09/pass2/c-review/run.py",
+  "requirements": [
+    "Python 3.12+",
+    "jsonschema==4.26.0",
+    "native phase: compiled libloom at explicitly declared --native-sha"
+  ],
+  "suites": [
+    {
+      "id": "c-projection",
+      "args": [
+        "--repo",
+        "{repo}",
+        "--sha",
+        "{sha}",
+        "--phase",
+        "projection",
+        "--output",
+        "{output}"
+      ],
+      "receipt": "projection-receipt.json",
+      "expected_current_exit": 1,
+      "findings": [
+        "A2-C-001",
+        "A2-C-002"
+      ]
+    },
+    {
+      "id": "c-native",
+      "args": [
+        "--repo",
+        "{repo}",
+        "--sha",
+        "{sha}",
+        "--phase",
+        "native",
+        "--native-lib",
+        "{native_lib}",
+        "--native-sha",
+        "{native_sha}",
+        "--output",
+        "{output}"
+      ],
+      "receipt": "native-receipt.json",
+      "expected_current_exit": 0,
+      "findings": []
+    }
+  ],
+  "acceptance_rule": "Exit 1 remains product acceptance failure even when historical-bug reproduction passes; native PASS does not authenticate a payer or validate model quality."
+}

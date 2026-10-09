@@ -1,0 +1,178 @@
+{
+  "schema": "klb.audit.c-review/1",
+  "repo": "klb-t/chatadhd",
+  "sha": "69880859802267f1b38b82eeaecd6fdc5522a47a",
+  "native_sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "native_library_sha256": "4ce4d06f2348c82f063893882a85ebc1c2efdec584e28f52dd90d87f64842771",
+  "phase": "native",
+  "test_source_sha256": "6db7f0c227784d555e41925532a4892c453f19d2fb3e6b680340ed5b91fac1db",
+  "network_policy": "Python socket connect/create_connection denied; intercepted payer transport; native workers disabled",
+  "private_inputs_read": false,
+  "paid_calls": 0,
+  "tests": [
+    {
+      "id": "C-NATIVE-01",
+      "category": "native-write-restart-read-replay",
+      "reproduction": null,
+      "acceptance": "PASS",
+      "evidence": {
+        "checks": {
+          "exact_packet_after_native_restart": true,
+          "materialized_rows_match": true,
+          "receipt_immutable": true,
+          "source_bytes_recovered": true,
+          "results_recovered": true
+        },
+        "selected_counts": {
+          "entities": 15,
+          "claims": 30,
+          "sources": 12
+        },
+        "recovered_source_roles": 9,
+        "recovered_results": 6,
+        "packet_sha256": "c5c9eb0fe73530e74192bf39f5d8add2f1f83e66de4840bd04adbb84b74941be",
+        "receipt_id_sha256": "ec3e2bd164fa79162e4db29f243dc2717335748d0486fa67c3e54df7912aa39f",
+        "model_execution": false,
+        "external_calls": 0
+      }
+    },
+    {
+      "id": "C-NATIVE-02",
+      "category": "native-write-restart-read-replay",
+      "reproduction": null,
+      "acceptance": "PASS",
+      "evidence": {
+        "checks": {
+          "exact_packet_after_native_restart": true,
+          "materialized_rows_match": true,
+          "receipt_immutable": true,
+          "source_bytes_recovered": true,
+          "results_recovered": true
+        },
+        "selected_counts": {
+          "entities": 13,
+          "claims": 23,
+          "sources": 12
+        },
+        "recovered_source_roles": 9,
+        "recovered_results": 4,
+        "packet_sha256": "5c129bba655bc55928cc209bc01c72fe04cad8707fadc6fd1ae545e6fa4f0d1b",
+        "receipt_id_sha256": "26fd949320c7630a44996c9efef9e5b10e07ff415d72a2b7fa1048ca2f663e3b",
+        "model_execution": false,
+        "external_calls": 0
+      }
+    },
+    {
+      "id": "C-PAYER-BOUNDARY",
+      "category": "binding-not-authentication",
+      "reproduction": null,
+      "acceptance": "PASS",
+      "evidence": {
+        "payer_reference_present": true,
+        "unverified_billing_preserved": true,
+        "observed_model_unknown": true,
+        "raw_response_bound_by_hash": true,
+        "live_payer_authenticated": false,
+        "synthetic_response_reference": true,
+        "boundary": "No application dispatcher invokes this complete path; harness composes public existing APIs explicitly."
+      }
+    },
+    {
+      "id": "C-GRAPH-01",
+      "category": "direct-native-boundary",
+      "reproduction": null,
+      "acceptance": "PASS",
+      "evidence": {
+        "mutation": "unknown_native_entity_member",
+        "explicit_rejection": {
+          "class": "GraphStoreError",
+          "code": "invalid_argument",
+          "message_sha256": "2413545addaf1bd43300d8f42d29d767c33f402c815df0cc88f5bfe7d2399313"
+        },
+        "python_codec_bypassed": true,
+        "integrity_hashes_recomputed": true
+      }
+    },
+    {
+      "id": "C-GRAPH-02",
+      "category": "direct-native-boundary",
+      "reproduction": null,
+      "acceptance": "PASS",
+      "evidence": {
+        "mutation": "unsupported_packet_version",
+        "explicit_rejection": {
+          "class": "GraphStoreError",
+          "code": "invalid_argument",
+          "message_sha256": "b1e8480b2a6790e26a209c4755e5f5d9172af216c094392f60ad4273e4881f07"
+        },
+        "python_codec_bypassed": true,
+        "integrity_hashes_recomputed": true
+      }
+    },
+    {
+      "id": "C-GRAPH-03",
+      "category": "direct-native-boundary",
+      "reproduction": null,
+      "acceptance": "PASS",
+      "evidence": {
+        "mutation": "duplicate_entity_identity",
+        "explicit_rejection": {
+          "class": "GraphStoreError",
+          "code": "invalid_argument",
+          "message_sha256": "05cb8e993d6bcb6ed9e41575c5e8c44ece3627b6f60c315a6ddc416058af3700"
+        },
+        "python_codec_bypassed": true,
+        "integrity_hashes_recomputed": true
+      }
+    },
+    {
+      "id": "C-GRAPH-04",
+      "category": "direct-native-boundary",
+      "reproduction": null,
+      "acceptance": "PASS",
+      "evidence": {
+        "mutation": "unresolved_entity_parent",
+        "explicit_rejection": {
+          "class": "GraphStoreError",
+          "code": "invalid_argument",
+          "message_sha256": "6051959d72f12529ea98a9d4d7e4a49f40d8aad62001f33c5e1a7f064a6f8840"
+        },
+        "python_codec_bypassed": true,
+        "integrity_hashes_recomputed": true
+      }
+    },
+    {
+      "id": "C-GRAPH-05",
+      "category": "native-branch-cas",
+      "reproduction": null,
+      "acceptance": "PASS",
+      "evidence": {
+        "stale_branch_rejected": true,
+        "first_branch_remains_current": true
+      }
+    },
+    {
+      "id": "C-GRAPH-06",
+      "category": "native-old-recipe-after-new-profile",
+      "reproduction": null,
+      "acceptance": "PASS",
+      "evidence": {
+        "checks": {
+          "recipe_version_changed": true,
+          "old_receipt_unchanged": true,
+          "old_results_recover_exactly": true,
+          "old_binding_preserved": true,
+          "new_method_version_distinct": true
+        },
+        "old_recipe_sha256": "0b14a9bb689dbc2b9c61ade34dbd27151309af5279983d0d2f2adc2b215683d4",
+        "new_recipe_sha256": "54edcae4583c0f04f7a47e620aa5a760d86e08a02f78a2a101cc972965ac120a",
+        "scope": "Offline workflow projection only; no application Basic/Advanced/Expert UI claim."
+      }
+    }
+  ],
+  "counts": {
+    "PASS": 9,
+    "FAIL": 0,
+    "BLOCKED": 0
+  }
+}

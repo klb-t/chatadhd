@@ -1,0 +1,79 @@
+{
+  "schema": "klb.audit.increment-review/1",
+  "repo": "klb-t/chatadhd",
+  "branch": "gpt/thread7-real-2026-10-09",
+  "sha": "69880859802267f1b38b82eeaecd6fdc5522a47a",
+  "base_sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "overall": "częściowa naprawa",
+  "areas": [
+    {
+      "name": "request/profile data to actual transport",
+      "classification": "częściowa naprawa",
+      "evidence": [
+        "C-WIRE-01"
+      ],
+      "open": "No app dispatcher; explicit transport policy bridge required."
+    },
+    {
+      "name": "occurrence/payer reference/result journal",
+      "classification": "częściowa naprawa",
+      "evidence": [
+        "C-BIND-01"
+      ],
+      "findings": [
+        "A2-C-002"
+      ]
+    },
+    {
+      "name": "public artifact projection",
+      "classification": "częściowa naprawa",
+      "evidence": [
+        "C-PUBLIC-00",
+        "C-PUBLIC-01",
+        "C-PUBLIC-02",
+        "C-PUBLIC-03",
+        "C-PUBLIC-04",
+        "C-PUBLIC-05"
+      ],
+      "findings": [
+        "A2-C-001"
+      ]
+    },
+    {
+      "name": "GraphPacket compatibility/durable native acceptance",
+      "classification": "częściowa naprawa",
+      "evidence": [
+        "C-NATIVE-01",
+        "C-NATIVE-02",
+        "C-GRAPH-01",
+        "C-GRAPH-02",
+        "C-GRAPH-03",
+        "C-GRAPH-04",
+        "C-GRAPH-05",
+        "C-GRAPH-06"
+      ],
+      "independently_verified": "Native compatibility gate closed; does not represent a newly fixed native product bug. No app dispatch, payer authentication or UI adoption proven."
+    },
+    {
+      "name": "live payer authentication",
+      "classification": "nadal niezweryfikowane",
+      "evidence": [
+        "C-PAYER-BOUNDARY"
+      ],
+      "reason": "No paid calls/credentials authorized for A."
+    },
+    {
+      "name": "application Basic/Advanced/Expert/adoption",
+      "classification": "nadal niezweryfikowane",
+      "reason": "No C product consumer exists; harness API composition is explicit."
+    }
+  ],
+  "independently_rejected_hypotheses": [
+    "Public projection has no top-level unknown-key guard: rejected by C-PUBLIC-01.",
+    "Public C artifact cannot survive native store: rejected by C-NATIVE-01.",
+    "Profile/recipe edit silently rewrites prior result recipe: rejected for tested method_graph/native path by C-GRAPH-06."
+  ],
+  "not_tested": [
+    "Private source equivalence, live billing, model quality, native Android UI, browser UI."
+  ]
+}
