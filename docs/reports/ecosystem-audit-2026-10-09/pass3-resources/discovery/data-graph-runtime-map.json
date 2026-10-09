@@ -1,0 +1,56 @@
+{
+  "schema": "klb.audit.discovery-map/1",
+  "paths": [
+    {
+      "source": "Local method description fixture",
+      "discovery_representation": "method_version attrs.definition plus exact Observation; hypothesis metadata retained",
+      "selection": "MethodRegistry.resolve and explicit parameter_layers",
+      "runtime": "gather_method_candidates -> actual installed/native CandidateChannel -> recorded result graph",
+      "evidence": [
+        "DISC-NATIVE-01",
+        "DISC-NATIVE-06"
+      ],
+      "permission": "Native host capability; no network from descriptor"
+    },
+    {
+      "source": "Provider manifest",
+      "discovery_representation": "ProviderRegistry manifest; not a complete discovery/evidence graph by itself",
+      "selection": "explicit provider_id/model request",
+      "runtime": "embedding manifest_for -> implementation check -> calls_authorized -> ScriptedTransport",
+      "evidence": [
+        "DISC-PROVIDER-01",
+        "DISC-PROVIDER-02",
+        "DISC-PROVIDER-03"
+      ],
+      "permission": "Separate explicit caller request flag; credentials alone insufficient"
+    },
+    {
+      "source": "C2 public handoff artifact",
+      "discovery_representation": "existing loom.method_graph/1 + GraphPacket",
+      "runtime": "store accept PASS; direct MethodRegistry load FAIL; diagnostic actual DTO roundtrip loads but executor unavailable",
+      "evidence": [
+        "DISC-C2-00",
+        "DISC-C2-01",
+        "DISC-C2-02"
+      ],
+      "permission": "Graph import is neither installation nor permission"
+    },
+    {
+      "source": "Unknown export structure",
+      "discovery_representation": "inferred import metadata and retained raw; no explicit competing mapping versions",
+      "runtime": "message_array first-match -> infer_generic -> write_conversation",
+      "evidence": [
+        "DISC-IMPORT-01",
+        "DISC-IMPORT-02"
+      ],
+      "permission": "Import authority does not imply private data may be sent elsewhere"
+    },
+    {
+      "source": "Schema / online documentation / model inference",
+      "discovery_representation": "Can reuse method/source/recipe/results contracts; common strategy orchestration not found in traced APIs",
+      "runtime": "NOT_VERIFIED_NO_COMMON_CONSUMER_BOUND",
+      "evidence": [],
+      "permission": "Must use already authorized transport, no discovery-driven escalation"
+    }
+  ]
+}

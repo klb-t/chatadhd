@@ -1,0 +1,935 @@
+{
+  "schema": "klb.audit.discovery-coverage/1",
+  "pins": {
+    "main": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+    "B2": "384c5e1686cd3a58a7d89a8a6813a18c764f697d",
+    "C2": "b9b503f62bb8e8e00c94ab7401e1cd9579129af3"
+  },
+  "denominator": {
+    "definition": "Product .cpp/.h under src/context, src/providers, src/import plus explicitly listed consumed public/server/runtime/store headers and sources; tests/vendors/generated presets excluded. File read is not whole-file behavior coverage.",
+    "files": 66,
+    "files_with_selected_semantic_ranges": 25,
+    "files_not_semantically_traced": 41
+  },
+  "files": [
+    {
+      "file": "loom/include/loom/context_engine.h",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "354d10dc6d635a87ab021a85228bf37d0bd660ff2e9fdb87349fb6b1dcace3a1",
+      "lines_total": 152,
+      "category": "product",
+      "reviewed_ranges": [
+        [
+          100,
+          117
+        ]
+      ],
+      "coverage": "selected_functions_and_calls",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/include/loom/context_retrieval.h",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "71a62eac829ad5a79b3b1c780d694d82bad26dca8e75ad8a21fba1896d0bea68",
+      "lines_total": 76,
+      "category": "product",
+      "reviewed_ranges": [
+        [
+          1,
+          75
+        ]
+      ],
+      "coverage": "selected_functions_and_calls",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/include/loom/importer.h",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "40ccc8728ed2644759d3847b202b888368fc4d9abad45fa06c6e6710307d0989",
+      "lines_total": 359,
+      "category": "product",
+      "reviewed_ranges": [
+        [
+          75,
+          165
+        ],
+        [
+          197,
+          225
+        ]
+      ],
+      "coverage": "selected_functions_and_calls",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/include/loom/net/http.h",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "60c8655d24d556b83c2425484bf4f040f51967acb27b7f0e7a624b95c89a09ae",
+      "lines_total": 183,
+      "category": "product",
+      "reviewed_ranges": [
+        [
+          1,
+          158
+        ]
+      ],
+      "coverage": "selected_functions_and_calls",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/include/loom/providers.h",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "f79b0aef7fcb112f10559f11b6d13233eb1585726f64e386881cffabcea50123",
+      "lines_total": 128,
+      "category": "product",
+      "reviewed_ranges": [
+        [
+          64,
+          145
+        ]
+      ],
+      "coverage": "selected_functions_and_calls",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/include/loom/util/json.h",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "38aebe6cf03b613b75290cf8ac09fa57ecd87d730032fdebb8cc4fcf162ca8de",
+      "lines_total": 67,
+      "category": "product",
+      "reviewed_ranges": [
+        [
+          13,
+          20
+        ],
+        [
+          62,
+          66
+        ]
+      ],
+      "coverage": "selected_functions_and_calls",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/server/src/method-ui-routes.h",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "c17121a486a67c1060d7faaf034fde6911b217bca893added7fc637cbced6476",
+      "lines_total": 691,
+      "category": "product",
+      "reviewed_ranges": [
+        [
+          105,
+          159
+        ],
+        [
+          486,
+          590
+        ]
+      ],
+      "coverage": "selected_functions_and_calls",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/capi/capi_chat.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "e0efd3bb287c251da2fce394725042a98cbc2649700df76a21fac9a0f099f915",
+      "lines_total": 228,
+      "category": "product",
+      "reviewed_ranges": [
+        [
+          185,
+          201
+        ]
+      ],
+      "coverage": "selected_functions_and_calls",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/chat/chat_engine.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "808494db6c016dc7d9742ad0f5a3f4523edbef0e3d0918af96e1dbd369ac8852",
+      "lines_total": 1421,
+      "category": "product",
+      "reviewed_ranges": [
+        [
+          80,
+          118
+        ],
+        [
+          174,
+          206
+        ],
+        [
+          708,
+          716
+        ],
+        [
+          853,
+          865
+        ]
+      ],
+      "coverage": "selected_functions_and_calls",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/chat/graph_reply.h",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "deea40a22d3ad29205bb4cc08385791ddca67f1586606385fc9720cc4ee403bd",
+      "lines_total": 118,
+      "category": "product",
+      "reviewed_ranges": [
+        [
+          1,
+          120
+        ]
+      ],
+      "coverage": "selected_functions_and_calls",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/context/context_candidates.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "99514a62e75386167e31b261cadbb03923c7c3fef8ee20e006a9c5460b3a25eb",
+      "lines_total": 147,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/context/context_candidates.h",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "b017e199dac0a4d337eca41fdd64e125699dbb439282e36db377f5dcd57b9694",
+      "lines_total": 18,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/context/context_diagnostics.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "ce0b4a2c3f1e99b94cb3c9bdc3582c47dc0f060d13c4aefb23ae60afed5c748f",
+      "lines_total": 58,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/context/context_diagnostics.h",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "9831ea4b0de8456e44a54f94438fd1ab3950bbd84f34c38c9f704d99bc83af3d",
+      "lines_total": 9,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/context/context_engine.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "3739d976f05981a6e45c105f920aec717507c6fc05d5c8a3c1709712940a2fa3",
+      "lines_total": 1701,
+      "category": "product",
+      "reviewed_ranges": [
+        [
+          1,
+          104
+        ],
+        [
+          1115,
+          1134
+        ]
+      ],
+      "coverage": "selected_functions_and_calls",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/context/context_evidence.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "c44cd5d0b6f561cd57da13c33936d0d08a06fc6bd63ba4a7ea0904b08e3e7a8e",
+      "lines_total": 110,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/context/context_evidence.h",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "665f776ba4d39e24032fa95ea49e402f886a39fd194c92093111bc938c400918",
+      "lines_total": 24,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/context/context_execution.h",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "5fc4f9ad8e2452bdc6a072acaa28726fd1f08c13f9e4ece2c3321f7dea95fc5f",
+      "lines_total": 42,
+      "category": "product",
+      "reviewed_ranges": [
+        [
+          1,
+          44
+        ]
+      ],
+      "coverage": "selected_functions_and_calls",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/context/context_goal_usage.h",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "0c8853593b3f4af094661d318620e5f8e8535aa885b1de82e953f979106eb442",
+      "lines_total": 161,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/context/context_plan.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "c4f34b68a6318fa1fd5c136b3f8469cd396460f20f157e3a009d130359bd2436",
+      "lines_total": 361,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/context/context_request_ext.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "1ace8b95d52c5ad779653dd9fa34e35716a5b61c231610a159ad4dd30baebeb0",
+      "lines_total": 67,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/context/context_request_ext.h",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "ab072d83bc2c81d02766a8e6cc15820234eb5c217e09740d5f669f42dffc58d3",
+      "lines_total": 9,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/context/context_usage_claim.h",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "75ff7731d55ed50209af74c0c4ce19aa8f4c5f0047289d5053fc614d270d240b",
+      "lines_total": 75,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/context/ctx_common.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "27d0f04412cb37b26afc966aa4b304ef46a31d62527dfce0e657eb5204da5fb0",
+      "lines_total": 129,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/context/ctx_common.h",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "daf291535068e411f05204a2c6ff8d8c70c17de2660c74e784332762a8c343f4",
+      "lines_total": 59,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/context/method_channels.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "ababb06a0ce3bc02cd499e298db620bd4ed341bfbcf79e03ad2823fe282cb460",
+      "lines_total": 422,
+      "category": "product",
+      "reviewed_ranges": [
+        [
+          243,
+          335
+        ]
+      ],
+      "coverage": "selected_functions_and_calls",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/context/method_channels.h",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "471a660c5bced599e1ace151607c8ed4a04cbfbc65c8b4b35036c3022eb19e75",
+      "lines_total": 45,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/context/method_execution.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "fcb3c0aa44ec248565685bc7dde4b3a31d2b51287462e95b72aac924c497e032",
+      "lines_total": 483,
+      "category": "product",
+      "reviewed_ranges": [
+        [
+          1,
+          235
+        ],
+        [
+          296,
+          413
+        ]
+      ],
+      "coverage": "selected_functions_and_calls",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/context/method_execution.h",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "74060b92cf094dd235b6ffdc1ade17ce3c0157565047c1555b7ca1bb4e84bdd2",
+      "lines_total": 51,
+      "category": "product",
+      "reviewed_ranges": [
+        [
+          1,
+          50
+        ]
+      ],
+      "coverage": "selected_functions_and_calls",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/context/method_registry.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "445e67cc02381392e23e348dda5b3d37f3dac47b4312d71c3b5ceab529c54188",
+      "lines_total": 1042,
+      "category": "product",
+      "reviewed_ranges": [
+        [
+          1,
+          225
+        ],
+        [
+          275,
+          327
+        ],
+        [
+          516,
+          604
+        ]
+      ],
+      "coverage": "selected_functions_and_calls",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/context/method_registry.h",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "894b99c3db59aafa1df152f29f982ec4e8675ba976d673561bfdb50b227559cc",
+      "lines_total": 89,
+      "category": "product",
+      "reviewed_ranges": [
+        [
+          1,
+          94
+        ]
+      ],
+      "coverage": "selected_functions_and_calls",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/context/provider_vector.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "2055184aa4b88801e1c427adfe21161a301dffe572492925f2644515b1a3d41b",
+      "lines_total": 703,
+      "category": "product",
+      "reviewed_ranges": [
+        [
+          560,
+          624
+        ]
+      ],
+      "coverage": "selected_functions_and_calls",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/context/provider_vector.h",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "1d17927155625afcdb5bd6e1f7443c7c21782021a64fbac71fbc8a217a233d76",
+      "lines_total": 74,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/context/retrieval.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "78b328ee5082aa91273e5b3a75846b9611fa784737878e848e2596f35b20d16d",
+      "lines_total": 292,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/context/runtime_preset.h",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "b5d5eadbff178ac72719f1655dd62f933bc4d71b7fa4656016ea95616c363e0e",
+      "lines_total": 114,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/context/unified_context.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "10a96a4beb8f86396276e10f0d5619d2e1bb0d3f897bd9f4201ae41e0270edbe",
+      "lines_total": 537,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/context/unified_context.h",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "9d94da54da0b2b2b68e2168971a84ecaec3e37b23eb8d475481adbc77cdcf2e1",
+      "lines_total": 42,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/import/export_anthropic.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "3c10b6b398dce7e13cf09e00835346e58d13815fa766ae8ca49fd3c516a451b5",
+      "lines_total": 564,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/import/export_archive.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "983ccc46e1b9b83438c86e3a47f0abd248fc0b25ccc7b715921e03d3e75f3610",
+      "lines_total": 876,
+      "category": "product",
+      "reviewed_ranges": [
+        [
+          80,
+          96
+        ],
+        [
+          648,
+          738
+        ]
+      ],
+      "coverage": "selected_functions_and_calls",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/import/export_checkpoint.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "0a8ab50c9948cfae5e02ec2aabf907fead154cf453e3f46e854ab6a31176bb6c",
+      "lines_total": 27,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/import/export_common.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "192998d1a8efb6f3b9ead684e5fe6f0a16661d24ce0100e357e234b7467c31ae",
+      "lines_total": 728,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/import/export_internal.h",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "0c7b2bf3d2312e2e53accb2080e53f35cefa31ba73bba468623f42482389a3b5",
+      "lines_total": 257,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/import/export_openai.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "7bd5a680ce50bcb4ae3030e8caea37c5376a939fffaafcfb97d095970710d465",
+      "lines_total": 955,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/import/export_unknown.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "4bf29bdfb89aebe08306b7d89ec188719790aeec35dee8092136743a09beb7b6",
+      "lines_total": 257,
+      "category": "product",
+      "reviewed_ranges": [
+        [
+          1,
+          255
+        ]
+      ],
+      "coverage": "selected_functions_and_calls",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/import/exporter.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "c0d3e97476fa04627085c7b9262e45f1ba91fdfc2ab54a5ebfe3bfb6b5d8a746",
+      "lines_total": 133,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/import/import_audit.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "8305e4e3ff2fe3722dff13ab883b7c7609bb173d4f1503b58239031786ca82d7",
+      "lines_total": 170,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/import/import_audit.h",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "1c37a47b9a48c62c84eef48259981a87076727412c3b9f33c2f2080452ad3279",
+      "lines_total": 39,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/import/import_preset.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "893da4facb119fa1ee92c8c639c7a03c4e15e421b9b5481f7cbbe936932b3f25",
+      "lines_total": 131,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/import/import_preset.h",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "24ba74c200ffe0bcc72a866ad01aaee6a1091db88aebc5c20449c1321de8847b",
+      "lines_total": 25,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/import/import_preset_identity.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "bb6aa5413cc973acded1679bc1030561f1bc8de5f4c2ba5f68f7cfd8d25c43e4",
+      "lines_total": 67,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/import/import_preset_identity.h",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "7d778c135e501a7c10cf6e7483cbd23a74ddb39237200dfa615cd5e57fb3739e",
+      "lines_total": 18,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/import/import_usage.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "cf33a107213afb3d80599673357b10cdfff384c719532427ae298c84d9be2239",
+      "lines_total": 108,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/import/import_usage.h",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "b45f4d92e14e0b2f3aba0a052dec9f4df2b870248f6a382386b85680ca014144",
+      "lines_total": 27,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/import/importer_common.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "75dcbc391a918526c4621fde6768d73c971cc03597320215e232cc1bd2c833b2",
+      "lines_total": 248,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/import/importer_core.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "22dd3da6cb1afad97b45ecbf8594e146f7ba1c6fd88e78dc7adf11d3c7712ed9",
+      "lines_total": 620,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/import/importer_html.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "9c983460ae43918c2a1c915bde2e0dd405d6b260f61f9fb098c084388047ebca",
+      "lines_total": 383,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/import/importer_internal.h",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "80e8e28de1036f6d4446e4f783649dcce18eb2be2db09f73549bbdf534d0726f",
+      "lines_total": 62,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/import/importer_json.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "92703995941f4ce84ea4afded617bd9e9c8f5faa0c577bf8f201e82a506bb420",
+      "lines_total": 371,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/import/importer_sqlite.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "50da21eb83bc7917de0874c53a5d092f93b090eecd8800ed5e496f5a038bc00f",
+      "lines_total": 140,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/import/importer_text.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "c2ccb16be9f4426f2551b8b2009910937453f2b1f238abb8ded0080ddd4f2a50",
+      "lines_total": 370,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/import/importer_zip.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "ba3ef148d9fc05b070bbed1fa55c507883ef6e44046c590df80a8c11b7495991",
+      "lines_total": 110,
+      "category": "product",
+      "reviewed_ranges": [],
+      "coverage": "not_semantically_traced_in_this_package",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/kb/graph_packet_store.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "904cb420a6264962a7d77805d8a69e2ca0193474bcfbee3550ed284a475bd466",
+      "lines_total": 422,
+      "category": "product",
+      "reviewed_ranges": [
+        [
+          33,
+          150
+        ]
+      ],
+      "coverage": "selected_functions_and_calls",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/providers/embedding.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "d66ddf3417f86b087e3513a878a04ae4795e578c0c41d5cb13bfa4c8faf1ee4f",
+      "lines_total": 222,
+      "category": "product",
+      "reviewed_ranges": [
+        [
+          1,
+          130
+        ]
+      ],
+      "coverage": "selected_functions_and_calls",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/providers/embedding.h",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "e60e8f12c3b5351ba430735e3b79459ad260617ef2dbd7d2cc48f67d7d7bb5a3",
+      "lines_total": 52,
+      "category": "product",
+      "reviewed_ranges": [
+        [
+          1,
+          55
+        ]
+      ],
+      "coverage": "selected_functions_and_calls",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/providers/providers.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "af3b60c34c1aadab8eec3052e2f7933074f09757a4f9999cb7f0f3b6481d6d4b",
+      "lines_total": 488,
+      "category": "product",
+      "reviewed_ranges": [
+        [
+          319,
+          359
+        ],
+        [
+          399,
+          488
+        ]
+      ],
+      "coverage": "selected_functions_and_calls",
+      "B2_source_identical": true,
+      "C2_source_identical": true
+    },
+    {
+      "file": "loom/src/runtime.cpp",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "source_sha256": "b5c022c78e8ac145dc1347603493982bbe230454f186b896b9c34aba7f13c477",
+      "lines_total": 342,
+      "category": "product",
+      "reviewed_ranges": [
+        [
+          165,
+          205
+        ]
+      ],
+      "coverage": "selected_functions_and_calls",
+      "B2_source_identical": false,
+      "C2_source_identical": true
+    }
+  ],
+  "native_execution": "main build only; B2 and C2 source-equivalence review is not a full independent B2 run",
+  "research_artifact": {
+    "repo_sha": "b9b503f62bb8e8e00c94ab7401e1cd9579129af3",
+    "file": "docs/research/thread7_real_2026-10-09/continuation_01/handoff-artifact-v2.json.gz",
+    "source_sha256": "ca53c593b0cc193c707dc9fbd39070ec72b698c82fc6e82b3c6b273fbab5349c",
+    "actual_consumers": [
+      "Native GraphPacketStore",
+      "MethodRegistry.load/resolve"
+    ]
+  },
+  "untraced": [
+    "Shared online-doc/schema/model discovery orchestrator not found in selected contracts; no global absence claim",
+    "Full ChatGraphExecution transport and UI; source trace only",
+    "All import provider variants, nested ZIP and link/full parity owned by separate audit",
+    "Model quality and inference strategy correctness",
+    "All MethodRegistry prepare/bind_results branch errors; actual consumer paths executed but not exhaustive"
+  ],
+  "source_differences_in_selected_files": [
+    "loom/src/runtime.cpp"
+  ]
+}

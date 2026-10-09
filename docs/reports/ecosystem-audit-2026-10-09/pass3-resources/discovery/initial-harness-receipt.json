@@ -1,0 +1,33 @@
+{
+  "schema": "klb.audit.discovery-native/1",
+  "repo": "klb-t/chatadhd",
+  "native_sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "research_sha": "b9b503f62bb8e8e00c94ab7401e1cd9579129af3",
+  "native_archive_sha256": "ead8af9a36519f78d46782d8ca5b19d7e44779cb5c495d5a09b4d2bc1b303cd7",
+  "runner_sha256": "e2d821abf8d95bd325b8bb8c4ce52213c0bc94f18a4f721c03c3b99e8bec3c4a",
+  "probe_sha256": "330e94cb5f5ab7dbb58710a486733b287ba50fc49bb3c24fd0300f7477ffa4c6",
+  "research_artifact_sha256": "ca53c593b0cc193c707dc9fbd39070ec72b698c82fc6e82b3c6b273fbab5349c",
+  "fixture_projection_sha256": "533745eb26a2c0c383f6ffd43ad6533cbf3cac04b228ae6adf810a5aa56496ab",
+  "transport": "actual ScriptedTransport injected at Runtime creation; it has no socket backend; workers disabled",
+  "private_inputs_read": false,
+  "paid_calls": 0,
+  "compile_exit": 0,
+  "run_exit": 1,
+  "tests": [
+    {
+      "id": "DISC-HARNESS",
+      "acceptance": "FAIL",
+      "category": "acceptance",
+      "evidence": {
+        "error_sha256": "bd67bd080193daf0966fcd5f6c8bff9e7bb11f64d81b9c4f5df3984bc1cc288a",
+        "error_class": "std_exception"
+      }
+    }
+  ],
+  "failures": 1,
+  "real_network_calls": 0,
+  "counts": {
+    "PASS": 0,
+    "FAIL": 1
+  }
+}

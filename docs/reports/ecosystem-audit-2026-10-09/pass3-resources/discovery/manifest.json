@@ -1,0 +1,116 @@
+{
+  "schema": "klb.audit.discovery-manifest/1",
+  "files": [
+    {
+      "scope": "reports",
+      "file": "HANDOFF_B.md",
+      "bytes": 3148,
+      "sha256": "3862081b1190c48862a3df9c3fc51fcf3393bb73c23113e8d3f2e7b5e11f9a1e"
+    },
+    {
+      "scope": "reports",
+      "file": "REPORT.md",
+      "bytes": 8872,
+      "sha256": "6d2dac34bb332c0e243158f229e47a581bb4762edd7189c3de0fe73b0b558274"
+    },
+    {
+      "scope": "reports",
+      "file": "backlog.json",
+      "bytes": 6112,
+      "sha256": "51c70a5a8fd98a9f3dd9cadebe6732844c30e636c443679ac94920db75d348ca"
+    },
+    {
+      "scope": "reports",
+      "file": "coverage.json",
+      "bytes": 31475,
+      "sha256": "f452152aa3923917d6201051122d1fdf6f7e254c53d701eaf64652c7c9d324f8"
+    },
+    {
+      "scope": "reports",
+      "file": "data-graph-runtime-map.json",
+      "bytes": 2389,
+      "sha256": "8dbc5f59cacd73f510caaf5132791a470b4f808072cefb1fd168635424ca5bc7"
+    },
+    {
+      "scope": "reports",
+      "file": "decisions.json",
+      "bytes": 1186,
+      "sha256": "2b10167c4ef29c940b45fab3b97ded43c256ec28b7957058a5c93fb4cc6701e4"
+    },
+    {
+      "scope": "reports",
+      "file": "findings.jsonl",
+      "bytes": 10218,
+      "sha256": "78b22548a7f7dde59ad029b0c71579847746f8c5323b8f72842ba612d1511099"
+    },
+    {
+      "scope": "reports",
+      "file": "initial-boundary-receipt.json",
+      "bytes": 4764,
+      "sha256": "108b8a16af38b2676465d456b76533feac8527030d7c7fccf972ebb2f1cc5ea5"
+    },
+    {
+      "scope": "reports",
+      "file": "initial-harness-receipt.json",
+      "bytes": 1236,
+      "sha256": "2afe66f25433d7bc9eece51a834cf17a83a3403b6b6ddeec4e758d57c9f563e3"
+    },
+    {
+      "scope": "reports",
+      "file": "intermediate-boundary-receipt.json",
+      "bytes": 6676,
+      "sha256": "2cc066a93b2e17f9f44ee918ac941517ecea8f617be1ea23aee61c75bf5c48f5"
+    },
+    {
+      "scope": "reports",
+      "file": "native-receipt.compile.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "scope": "reports",
+      "file": "native-receipt.json",
+      "bytes": 21314,
+      "sha256": "3ca8007450f5f1473dd2f6f8aaef648dab3181680a03a01367487b00053e5abb"
+    },
+    {
+      "scope": "reports",
+      "file": "native-receipt.runtime.log",
+      "bytes": 511,
+      "sha256": "fe2c9f6ed4a108bf455ba99d92027ee6f6a8f8c5f9567f991659908966bab56a"
+    },
+    {
+      "scope": "reports",
+      "file": "pre-oracle-review-receipt.json",
+      "bytes": 20525,
+      "sha256": "69357e565757033edffbd583f3f5cbf261eb94e834900b9b8671a107aa62665b"
+    },
+    {
+      "scope": "reports",
+      "file": "test-index.json",
+      "bytes": 2263,
+      "sha256": "be0919ad7bec6c43230599d8c08b164891c38017dab40e9e4e71734b7b90ee77"
+    },
+    {
+      "scope": "tools",
+      "file": "README.md",
+      "bytes": 2067,
+      "sha256": "b9a59ec379e6b729fab0793e259abdfd33061e74d45fe679d00440c28a4f87a6"
+    },
+    {
+      "scope": "tools",
+      "file": "probe.cpp",
+      "bytes": 20044,
+      "sha256": "7ecb3931cf97e7d37d8260ec43b831efd90a4f89356f954cf99f9f24f4a736d0"
+    },
+    {
+      "scope": "tools",
+      "file": "run.py",
+      "bytes": 4016,
+      "sha256": "f29537a7cb90ba126c4900b52afb9930ec85d868e23134c162ccb4a20c7a6c7c"
+    }
+  ],
+  "published_by": "root A branch; subagent made no git mutations",
+  "product_modified": false,
+  "old_receipts_preserved": true
+}

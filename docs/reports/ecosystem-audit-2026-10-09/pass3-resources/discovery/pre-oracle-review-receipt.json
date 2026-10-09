@@ -1,0 +1,657 @@
+{
+  "schema": "klb.audit.discovery-native/1",
+  "repo": "klb-t/chatadhd",
+  "native_sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "research_sha": "b9b503f62bb8e8e00c94ab7401e1cd9579129af3",
+  "native_archive_sha256": "ead8af9a36519f78d46782d8ca5b19d7e44779cb5c495d5a09b4d2bc1b303cd7",
+  "runner_sha256": "21d23d543605a4c598ca63a48bd1bec8d31aa860f4c8c9cb4f313fbb7deddd5a",
+  "probe_sha256": "260d217d165e18c21065c0071c31939692348573ff47f37dbe492834d5391283",
+  "research_artifact_sha256": "ca53c593b0cc193c707dc9fbd39070ec72b698c82fc6e82b3c6b273fbab5349c",
+  "fixture_projection_sha256": "2944c5f75969c347e2bc8a7ab3e1fdb96bae3493cf23fa9be58dfb57c40543f6",
+  "transport": "actual ScriptedTransport injected at Runtime creation; it has no socket backend; workers disabled",
+  "private_inputs_read": false,
+  "paid_calls": 0,
+  "compile_exit": 0,
+  "run_exit": 1,
+  "tests": [
+    {
+      "id": "DISC-NATIVE-01",
+      "acceptance": "PASS",
+      "category": "acceptance",
+      "evidence": {
+        "first_profile_ref": "audit_claim_a",
+        "second_profile_ref": "audit_claim_b",
+        "actual_resolution_hashes_differ": true,
+        "canonical_graph_written": false
+      }
+    },
+    {
+      "id": "DISC-NATIVE-02",
+      "acceptance": "PASS",
+      "category": "acceptance",
+      "evidence": {
+        "error_code": "invalid_argument",
+        "error_sha256": "2f043aa2d682e2e990f2b464e7e9a6f13078f2945652c68a72c5706d4b7cf7d1"
+      }
+    },
+    {
+      "id": "DISC-NATIVE-03",
+      "acceptance": "PASS",
+      "category": "acceptance",
+      "evidence": {
+        "declared_capability": "audit_nonexistent_adapter",
+        "runtime_available": false,
+        "request_metadata_did_not_install_code": true,
+        "reasons": [
+          {
+            "kind": "execution",
+            "capability": "audit_nonexistent_adapter",
+            "detail": {
+              "available": false,
+              "reason": "execution_capability_not_advertised"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "DISC-NATIVE-04",
+      "acceptance": "PASS",
+      "category": "acceptance",
+      "evidence": {
+        "injected_calls": 0,
+        "binding_absent": true
+      }
+    },
+    {
+      "id": "DISC-NATIVE-05",
+      "acceptance": "PASS",
+      "category": "acceptance",
+      "evidence": {
+        "injected_calls": 1,
+        "actual_parameters_explicit": true,
+        "authorization_boundary": "trusted native caller, not discovered descriptor"
+      }
+    },
+    {
+      "id": "DISC-NATIVE-06",
+      "acceptance": "PASS",
+      "category": "acceptance",
+      "evidence": {
+        "hypothesis_metadata_preserved": true,
+        "automatic_validation_or_activation_claimed": false
+      }
+    },
+    {
+      "id": "DISC-NATIVE-07",
+      "acceptance": "FAIL",
+      "category": "acceptance",
+      "evidence": {
+        "canonical_bytes_equal": true,
+        "only_object_key_order_changed": true,
+        "error_code": "invalid_argument",
+        "error_sha256": "297bfb31e557e61bb3777b5105e8d0a61c570e1fe43abfa83979f0131a95963a",
+        "reproduction": "PASS"
+      }
+    },
+    {
+      "id": "DISC-NATIVE-09",
+      "acceptance": "FAIL",
+      "category": "acceptance",
+      "evidence": {
+        "only_collection_reordered": "entities",
+        "canonical_bytes_equal": true,
+        "error_code": "invalid_argument",
+        "error_sha256": "297bfb31e557e61bb3777b5105e8d0a61c570e1fe43abfa83979f0131a95963a",
+        "reproduction": "PASS"
+      }
+    },
+    {
+      "id": "DISC-NATIVE-10",
+      "acceptance": "FAIL",
+      "category": "acceptance",
+      "evidence": {
+        "only_collection_reordered": "claims",
+        "canonical_bytes_equal": true,
+        "error_code": "invalid_argument",
+        "error_sha256": "26613a2ead25c00d905df48df3ffc538384a60fc1b592add397d5f84c08b1892",
+        "reproduction": "PASS"
+      }
+    },
+    {
+      "id": "DISC-NATIVE-08",
+      "acceptance": "PASS",
+      "category": "acceptance",
+      "evidence": {
+        "unknown_dto_field_explicitly_rejected": true
+      }
+    },
+    {
+      "id": "DISC-NETWORK-00",
+      "acceptance": "PASS",
+      "category": "acceptance",
+      "evidence": {
+        "transport_calls": 0,
+        "live_network_possible": false
+      }
+    },
+    {
+      "id": "DISC-PROVIDER-01",
+      "acceptance": "PASS",
+      "category": "acceptance",
+      "evidence": {
+        "manifest_can": true,
+        "adapter_available": false,
+        "adapter_error_code": "unsupported",
+        "request_attempted": false,
+        "meaning": "ProviderRegistry.can is a declaration+credential match, not implementation or authorization."
+      }
+    },
+    {
+      "id": "DISC-PROVIDER-02",
+      "acceptance": "PASS",
+      "category": "acceptance",
+      "evidence": {
+        "readiness": "manifest_credential_adapter",
+        "live_verification": "not_performed",
+        "calls_authorized": false,
+        "request_attempted": false
+      }
+    },
+    {
+      "id": "DISC-PROVIDER-03",
+      "acceptance": "PASS",
+      "category": "acceptance",
+      "evidence": {
+        "scripted_transport_calls": 1,
+        "actual_manifest_endpoint_used": true,
+        "real_network_calls": 0,
+        "authorization_supplied_by_harness": true
+      }
+    },
+    {
+      "id": "DISC-PROVIDER-04",
+      "acceptance": "FAIL",
+      "category": "new_requirement_gap",
+      "evidence": {
+        "status_fields": {
+          "id": "audit_external",
+          "available": true,
+          "capabilities": [
+            "embed"
+          ]
+        },
+        "full_manifest_metadata_retained": true,
+        "scope": "New owner four-axis discovery status requirement; existing legacy status never promised authorization."
+      }
+    },
+    {
+      "id": "DISC-C2-00",
+      "acceptance": "PASS",
+      "category": "acceptance",
+      "evidence": {
+        "actual_native_lossless_store_acceptance": true,
+        "establishes_method_execution": false
+      }
+    },
+    {
+      "id": "DISC-C2-01",
+      "acceptance": "FAIL",
+      "category": "acceptance",
+      "evidence": {
+        "research_packet_registry_load": false,
+        "error_code": "invalid_argument",
+        "error_sha256": "297bfb31e557e61bb3777b5105e8d0a61c570e1fe43abfa83979f0131a95963a",
+        "reproduction": "PASS"
+      }
+    },
+    {
+      "id": "DISC-C2-02",
+      "acceptance": "PASS",
+      "category": "acceptance",
+      "evidence": {
+        "actual_dto_roundtrip": true,
+        "canonical_bytes_equal": false,
+        "semantic_values_equal": true,
+        "scalar_representation_changes": [
+          {
+            "path": "/entities/0/confidence",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/entities/1/confidence",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/entities/2/confidence",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/entities/3/confidence",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/entities/4/confidence",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/entities/5/confidence",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/entities/6/confidence",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/entities/7/confidence",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/entities/8/confidence",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/entities/9/confidence",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/entities/10/confidence",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/entities/11/confidence",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/entities/12/confidence",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/0/assessment/basis/support/0/quality",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/0/assessment/confidence",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/1/assessment/basis/support/0/quality",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/1/assessment/confidence",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/2/assessment/basis/support/0/quality",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/2/assessment/confidence",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/3/assessment/basis/support/0/quality",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/3/assessment/confidence",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/4/assessment/basis/support/0/quality",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/4/assessment/confidence",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/5/assessment/basis/support/0/quality",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/5/assessment/confidence",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/6/assessment/basis/support/0/quality",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/6/assessment/confidence",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/7/assessment/basis/support/0/quality",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/7/assessment/confidence",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/8/assessment/basis/support/0/quality",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/8/assessment/confidence",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/9/assessment/basis/support/0/quality",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/9/assessment/confidence",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/10/assessment/basis/support/0/quality",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/10/assessment/confidence",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/11/assessment/basis/support/0/quality",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/11/assessment/confidence",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/12/assessment/basis/support/0/quality",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/12/assessment/confidence",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/13/assessment/basis/support/0/quality",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/13/assessment/confidence",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/14/assessment/basis/support/0/quality",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/14/assessment/confidence",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/15/assessment/basis/support/0/quality",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/15/assessment/confidence",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/16/assessment/basis/support/0/quality",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/16/assessment/confidence",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/17/assessment/basis/support/0/quality",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/17/assessment/confidence",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/18/assessment/basis/support/0/quality",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/18/assessment/confidence",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/19/assessment/basis/support/0/quality",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/19/assessment/confidence",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/20/assessment/basis/support/0/quality",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/20/assessment/confidence",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/21/assessment/basis/support/0/quality",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          },
+          {
+            "path": "/claims/21/assessment/confidence",
+            "before_type": "unsigned",
+            "after_type": "float",
+            "before_numeric": 1,
+            "after_numeric": 1.0
+          }
+        ],
+        "native_store_lossless_gate_also_passes": true,
+        "research_packet_registry_load": true,
+        "leaves": 1,
+        "unsupported_execution_remains_unavailable": true,
+        "capability_name": "",
+        "hypotheses_and_evidence_import_is_not_code_install": true
+      }
+    },
+    {
+      "id": "DISC-IMPORT-01",
+      "acceptance": "FAIL",
+      "category": "acceptance",
+      "evidence": {
+        "source_object_key_order_only_changed": true,
+        "first_selected_array": "alpha",
+        "second_selected_array": "beta",
+        "effective_messages_differ": true,
+        "explicit_alternative_interpretations": false,
+        "reproduction": "PASS",
+        "both_conversations_written": true
+      }
+    },
+    {
+      "id": "DISC-IMPORT-02",
+      "acceptance": "PASS",
+      "category": "acceptance",
+      "evidence": {
+        "inference_marked": true,
+        "unselected_array_raw_bytes_structurally_retained": true,
+        "external_calls": 0,
+        "boundary": "Raw retention and inferred flag do not represent selectable alternative mappings."
+      }
+    }
+  ],
+  "failures": 6,
+  "real_network_calls": 0,
+  "counts": {
+    "PASS": 14,
+    "FAIL": 6
+  }
+}

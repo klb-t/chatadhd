@@ -1,0 +1,160 @@
+{
+  "schema": "klb.audit.discovery-native/1",
+  "repo": "klb-t/chatadhd",
+  "native_sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "research_sha": "b9b503f62bb8e8e00c94ab7401e1cd9579129af3",
+  "native_archive_sha256": "ead8af9a36519f78d46782d8ca5b19d7e44779cb5c495d5a09b4d2bc1b303cd7",
+  "runner_sha256": "e2d821abf8d95bd325b8bb8c4ce52213c0bc94f18a4f721c03c3b99e8bec3c4a",
+  "probe_sha256": "51bdba24ece31bdb607b77a73600dc354e071d0f6ba0f89bd1a604b6a062d1c2",
+  "research_artifact_sha256": "ca53c593b0cc193c707dc9fbd39070ec72b698c82fc6e82b3c6b273fbab5349c",
+  "fixture_projection_sha256": "533745eb26a2c0c383f6ffd43ad6533cbf3cac04b228ae6adf810a5aa56496ab",
+  "transport": "actual ScriptedTransport injected at Runtime creation; it has no socket backend; workers disabled",
+  "private_inputs_read": false,
+  "paid_calls": 0,
+  "compile_exit": 0,
+  "run_exit": 1,
+  "tests": [
+    {
+      "id": "DISC-NATIVE-01",
+      "acceptance": "PASS",
+      "category": "acceptance",
+      "evidence": {
+        "first_profile_ref": "audit_claim_a",
+        "second_profile_ref": "audit_claim_b",
+        "actual_resolution_hashes_differ": true,
+        "canonical_graph_written": false
+      }
+    },
+    {
+      "id": "DISC-NATIVE-02",
+      "acceptance": "PASS",
+      "category": "acceptance",
+      "evidence": {
+        "error_code": "invalid_argument",
+        "error_sha256": "2f043aa2d682e2e990f2b464e7e9a6f13078f2945652c68a72c5706d4b7cf7d1"
+      }
+    },
+    {
+      "id": "DISC-NATIVE-03",
+      "acceptance": "PASS",
+      "category": "acceptance",
+      "evidence": {
+        "declared_capability": "audit_nonexistent_adapter",
+        "runtime_available": false,
+        "request_metadata_did_not_install_code": true,
+        "reasons": [
+          {
+            "kind": "execution",
+            "capability": "audit_nonexistent_adapter",
+            "detail": {
+              "available": false,
+              "reason": "execution_capability_not_advertised"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "DISC-NATIVE-04",
+      "acceptance": "PASS",
+      "category": "acceptance",
+      "evidence": {
+        "injected_calls": 0,
+        "binding_absent": true
+      }
+    },
+    {
+      "id": "DISC-NATIVE-05",
+      "acceptance": "PASS",
+      "category": "acceptance",
+      "evidence": {
+        "injected_calls": 1,
+        "actual_parameters_explicit": true,
+        "authorization_boundary": "trusted native caller, not discovered descriptor"
+      }
+    },
+    {
+      "id": "DISC-NATIVE-06",
+      "acceptance": "PASS",
+      "category": "acceptance",
+      "evidence": {
+        "hypothesis_metadata_preserved": true,
+        "automatic_validation_or_activation_claimed": false
+      }
+    },
+    {
+      "id": "DISC-NETWORK-00",
+      "acceptance": "PASS",
+      "category": "acceptance",
+      "evidence": {
+        "transport_calls": 0,
+        "live_network_possible": false
+      }
+    },
+    {
+      "id": "DISC-PROVIDER-01",
+      "acceptance": "PASS",
+      "category": "acceptance",
+      "evidence": {
+        "manifest_can": true,
+        "adapter_available": false,
+        "adapter_error_code": "unsupported",
+        "request_attempted": false,
+        "meaning": "ProviderRegistry.can is a declaration+credential match, not implementation or authorization."
+      }
+    },
+    {
+      "id": "DISC-PROVIDER-02",
+      "acceptance": "PASS",
+      "category": "acceptance",
+      "evidence": {
+        "readiness": "manifest_credential_adapter",
+        "live_verification": "not_performed",
+        "calls_authorized": false,
+        "request_attempted": false
+      }
+    },
+    {
+      "id": "DISC-PROVIDER-03",
+      "acceptance": "PASS",
+      "category": "acceptance",
+      "evidence": {
+        "scripted_transport_calls": 1,
+        "actual_manifest_endpoint_used": true,
+        "real_network_calls": 0,
+        "authorization_supplied_by_harness": true
+      }
+    },
+    {
+      "id": "DISC-PROVIDER-04",
+      "acceptance": "FAIL",
+      "category": "new_requirement_gap",
+      "evidence": {
+        "status_fields": {
+          "id": "audit_external",
+          "available": true,
+          "capabilities": [
+            "embed"
+          ]
+        },
+        "full_manifest_metadata_retained": true,
+        "scope": "New owner four-axis discovery status requirement; existing legacy status never promised authorization."
+      }
+    },
+    {
+      "id": "DISC-C2-01",
+      "acceptance": "FAIL",
+      "category": "acceptance",
+      "evidence": {
+        "load_error": "invalid_argument",
+        "error_sha256": "297bfb31e557e61bb3777b5105e8d0a61c570e1fe43abfa83979f0131a95963a"
+      }
+    }
+  ],
+  "failures": 2,
+  "real_network_calls": 0,
+  "counts": {
+    "PASS": 10,
+    "FAIL": 2
+  }
+}

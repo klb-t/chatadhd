@@ -1,0 +1,56 @@
+{
+  "schema": "klb.audit.discovery-tests/1",
+  "command": "python3 tools/ecosystem-audit-2026-10-09/pass3-resources/discovery/run.py --repo /path/to/main --sha 9e20f99ab27e7cd45e1892f83bf60fbe60db3de9 --build-dir /path/to/main-build --research-repo /path/to/C2 --research-sha b9b503f62bb8e8e00c94ab7401e1cd9579129af3 --output /tmp/discovery-receipt.json",
+  "receipt": "native-receipt.json",
+  "expected_at_audited_sha": {
+    "PASS": 14,
+    "FAIL": 5,
+    "BLOCKED": 1
+  },
+  "groups": {
+    "actual_method_consumer": [
+      "DISC-NATIVE-01",
+      "DISC-NATIVE-02",
+      "DISC-NATIVE-03",
+      "DISC-NATIVE-04",
+      "DISC-NATIVE-05",
+      "DISC-NATIVE-06",
+      "DISC-NETWORK-00"
+    ],
+    "lossless_dto": [
+      "DISC-NATIVE-07",
+      "DISC-NATIVE-08",
+      "DISC-NATIVE-09",
+      "DISC-NATIVE-10"
+    ],
+    "provider_boundary": [
+      "DISC-PROVIDER-01",
+      "DISC-PROVIDER-02",
+      "DISC-PROVIDER-03"
+    ],
+    "unbound_new_contract": [
+      "DISC-PROVIDER-04"
+    ],
+    "C_research_boundary": [
+      "DISC-C2-00",
+      "DISC-C2-01",
+      "DISC-C2-02"
+    ],
+    "interpretation_alternatives": [
+      "DISC-IMPORT-01",
+      "DISC-IMPORT-02"
+    ]
+  },
+  "reproduction_is_not_acceptance": true,
+  "oracle_notes": {
+    "DISC-PROVIDER-04": "BLOCKED; no prescribed field names. Four semantic facets may be exposed through existing equivalent descriptors/explain. Root oracle review rejected initial shape assertion.",
+    "DISC-C2-02": "Diagnostic only: actual DTO serializers, scalar difference receipt, actual GraphPacketStore lossless proof; this does not repair raw registry rejection."
+  },
+  "historical_receipts": [
+    "initial-harness-receipt.json",
+    "initial-boundary-receipt.json",
+    "intermediate-boundary-receipt.json",
+    "pre-oracle-review-receipt.json"
+  ],
+  "history_explanation": "Initial harness omitted required fusion fixture. Intermediate byte-equality diagnostic was stronger than existing exact numeric-value contract (57 exact 1 to 1.0 representations). Final diagnostic records those differences and actual store gate. Initial discovery field-name assertion rejected by root review; final aggregate gate BLOCKED, not product FAIL. Raw DTO rejection and unknown-field acceptance criteria unchanged."
+}

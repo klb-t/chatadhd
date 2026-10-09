@@ -1,0 +1,32 @@
+{
+  "decisions": [
+    {
+      "id": "DISC-DEC-01",
+      "kind": "dopuszczalny mechanizm",
+      "decision": "A graph method declaration without host executor remains unavailable. Its code source is evidence, not installation authority."
+    },
+    {
+      "id": "DISC-DEC-02",
+      "kind": "naruszenie",
+      "decision": "First plausible message array wins by object order; competing mapping unrepresented.",
+      "finding_id": "A3-DISC-002"
+    },
+    {
+      "id": "DISC-DEC-03",
+      "kind": "dopuszczalny mechanizm",
+      "decision": "Provider can/status means manifest/credential availability; actual embedding consumer separately checks adapter and permission."
+    },
+    {
+      "id": "DISC-DEC-04",
+      "kind": "niepewne",
+      "decision": "Common discovery activation/validation contract not bound to actual consumer in this scope. Preserve explicit policy and four independent facets.",
+      "finding_id": "A3-DISC-003"
+    },
+    {
+      "id": "DISC-DEC-05",
+      "kind": "naruszenie",
+      "decision": "ordered_json equality is used as lossless DTO identity in registry despite order-insensitive store contract.",
+      "finding_id": "A3-DISC-001"
+    }
+  ]
+}
