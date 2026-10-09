@@ -1,0 +1,175 @@
+{
+  "schema": "klbt.audit.receipt/2",
+  "repo": "klb-t/chatadhd",
+  "sha": "ddcaeaf7a25b70f0d4dc2e0eed2466016233eeb8",
+  "suite": "chat-python-consumers",
+  "scope": "actual Python/SQLite/filesystem consumers; provider requests intercepted; LLM timeout injected at dependency seam; no UI/device",
+  "external_network": "blocked",
+  "source_hashes": {
+    "engine/db.py": "75397fc9927a57819d8d8db7a76e7d93fcf29cf541df9a5bee63b8d059319fa3",
+    "engine/semantic_worker.py": "883b35545d13cd79daf7c52202eeee639f105fe7a92e013f605fec2745e7fc64",
+    "engine/graph_engine.py": "fe4221595e5486c2f0c5e803e4639254861336c2ceaf40de893e11ffe81eb96b",
+    "engine/memory_engine.py": "4e852b713b31307da57f02cc286b6063a227bb6f6d9c5426b9ec1b3ea65eda97",
+    "engine/providers.py": "827405ef591db63a017a6d20580ac3ec96a1bcfb7c721817544a8dba46f7cdbb",
+    "engine/github_sync.py": "1fe8e137713b067ac15177b34303f2316b3769a4593ae5a45185e846433b9517",
+    "core/crypto.py": "6007c146e9b14af7baab5947b767aee3b5d95904c24506ccdc6160556b3115ab"
+  },
+  "cases": [
+    {
+      "id": "CH-011.timeout",
+      "phase": "reproduction",
+      "status": "PASS",
+      "observed": {
+        "status": "done",
+        "pending": 0,
+        "reopened": "done",
+        "errors": 1,
+        "processed": 0
+      }
+    },
+    {
+      "id": "CH-011.timeout",
+      "phase": "acceptance",
+      "status": "FAIL",
+      "observed": {
+        "status": "done",
+        "pending": 0,
+        "reopened": "done",
+        "errors": 1,
+        "processed": 0
+      }
+    },
+    {
+      "id": "A2-CH-001.unknown-field",
+      "phase": "reproduction",
+      "status": "PASS",
+      "observed": {
+        "unknown_field_preserved": false
+      }
+    },
+    {
+      "id": "A2-CH-001.unknown-field",
+      "phase": "acceptance",
+      "status": "FAIL",
+      "observed": {
+        "unknown_field_preserved": false
+      }
+    },
+    {
+      "id": "A2-CH-001.partial-load",
+      "phase": "reproduction",
+      "status": "PASS",
+      "observed": {
+        "write_rejected": false,
+        "later_original_row_lost": true
+      }
+    },
+    {
+      "id": "A2-CH-001.partial-load",
+      "phase": "acceptance",
+      "status": "FAIL",
+      "observed": {
+        "write_rejected": false,
+        "original_untouched": false
+      }
+    },
+    {
+      "id": "A2-CH-002.implicit-fallback",
+      "phase": "reproduction",
+      "status": "PASS",
+      "observed": {
+        "providers": [
+          "groq",
+          "google"
+        ]
+      }
+    },
+    {
+      "id": "A2-CH-002.data-defined-order",
+      "phase": "acceptance",
+      "status": "BLOCKED_MISSING_CONTRACT",
+      "observed": {
+        "public_strategy_input": false,
+        "required_test": "two profiles select different fallback order; explicit provider already supports no fallback"
+      }
+    },
+    {
+      "id": "CH-M2.explicit-provider",
+      "phase": "acceptance",
+      "status": "PASS",
+      "observed": {
+        "providers": [
+          "groq"
+        ],
+        "failure_explicit": true
+      }
+    },
+    {
+      "id": "CH-M2.unknown-provider",
+      "phase": "acceptance",
+      "status": "PASS",
+      "observed": {
+        "refused": true,
+        "calls": 0
+      }
+    },
+    {
+      "id": "A2-CH-003.unknown-confidence",
+      "phase": "reproduction",
+      "status": "PASS",
+      "observed": {
+        "provider_confidence_absent": true,
+        "reported": 0.9
+      }
+    },
+    {
+      "id": "A2-CH-003.unknown-confidence",
+      "phase": "acceptance",
+      "status": "FAIL",
+      "observed": {
+        "provider_confidence_absent": true,
+        "reported": 0.9
+      }
+    },
+    {
+      "id": "A2-CH-004.same-size",
+      "phase": "reproduction",
+      "status": "PASS",
+      "observed": {
+        "distinct_git_blob_hashes": true,
+        "status": "synced"
+      }
+    },
+    {
+      "id": "A2-CH-004.same-size",
+      "phase": "acceptance",
+      "status": "FAIL",
+      "observed": {
+        "distinct_git_blob_hashes": true,
+        "status": "synced"
+      }
+    },
+    {
+      "id": "CH-M3.sync-direction",
+      "phase": "acceptance",
+      "status": "PASS",
+      "observed": {
+        "push_refused_before_transport": true
+      }
+    },
+    {
+      "id": "CH-M1.missing-crypto",
+      "phase": "acceptance",
+      "status": "PASS",
+      "observed": {
+        "explicit_error": true,
+        "plaintext_returned": false
+      }
+    }
+  ],
+  "counts": {
+    "PASS": 10,
+    "FAIL": 5,
+    "BLOCKED_MISSING_CONTRACT": 1
+  }
+}

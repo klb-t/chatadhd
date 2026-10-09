@@ -1,0 +1,61 @@
+[
+  {
+    "id": "CH-M1",
+    "classification": "dopuszczalny mechanizm",
+    "path": {
+      "file": "core/crypto.py",
+      "line_start": 89,
+      "line_end": 154,
+      "sha256": "c88f2f0faaed9d071f984da48cecfd67382c0f8c7efdbf5c8e214367858a0a29"
+    },
+    "test": "CH-M1.missing-crypto",
+    "observation": "missing dependency raises explicit RuntimeError; stale docstring about noop is not actual execution",
+    "r42_exception": {
+      "category": 3,
+      "reason": "explicit failure is lifecycle/error mechanism; no blanket approval of KDF iteration count"
+    }
+  },
+  {
+    "id": "CH-M2",
+    "classification": "dopuszczalny mechanizm",
+    "path": {
+      "file": "engine/providers.py",
+      "line_start": 387,
+      "line_end": 406,
+      "sha256": "ed8010cfca3f14baada7e903c29629127afaa409f71741efabd48e21f88e381e"
+    },
+    "test": "CH-M2.explicit-provider and unknown-provider",
+    "observation": "explicit provider refuses fallback, unknown provider errors before transport",
+    "r42_exception": {
+      "category": 1,
+      "reason": "provider argument/name is code-data contract; actual ordering is separately a finding"
+    }
+  },
+  {
+    "id": "CH-M3",
+    "classification": "dopuszczalny mechanizm",
+    "path": {
+      "file": "engine/github_sync.py",
+      "line_start": 225,
+      "line_end": 254,
+      "sha256": "d467b37fd36c92f61af0ea77d1330ac9ddf5bbf3832315dcb9bd42dc4d5c4633"
+    },
+    "test": "CH-M3.sync-direction",
+    "observation": "pull_only rejects push before requests.put; spy count zero",
+    "r42_exception": {
+      "category": 3,
+      "reason": "enforcement of selected direction, not hidden choice of direction"
+    }
+  },
+  {
+    "id": "CH-M4",
+    "classification": "dopuszczalny mechanizm",
+    "test": "CH-M4.actual-config-consumer",
+    "observation": "two real Config snapshots change outgoing temperature/max_tokens to .2/123 and .8/456",
+    "limit": "Config snapshots, not proof that Basic/Advanced/Expert share onboarding state",
+    "r42_exception": {
+      "category": 1,
+      "reason": "temperature/max_tokens consumer keys are contractual"
+    }
+  }
+]

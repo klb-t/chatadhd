@@ -1,0 +1,447 @@
+{
+  "schema": "klbt.audit.test-index/1",
+  "runners": [
+    "tools/ecosystem-audit-2026-10-09/pass2/chat/python_consumers.py",
+    "tools/ecosystem-audit-2026-10-09/pass2/chat/native_run.py"
+  ],
+  "arguments": "--repo CHECKOUT --sha SHA --phase both --output RECEIPT; native also --build-dir BUILD",
+  "exit_semantics": "0 only all selected gates PASS; 1 FAIL or missing contract; A reproduction PASS is not product PASS",
+  "runs": [
+    {
+      "receipt": "python-main.json",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "suite": "chat-python-consumers",
+      "counts": {
+        "PASS": 10,
+        "FAIL": 5,
+        "BLOCKED_MISSING_CONTRACT": 1
+      },
+      "cases": [
+        {
+          "id": "CH-011.timeout",
+          "phase": "reproduction",
+          "status": "PASS",
+          "observed": {
+            "status": "done",
+            "pending": 0,
+            "reopened": "done",
+            "errors": 1,
+            "processed": 0
+          }
+        },
+        {
+          "id": "CH-011.timeout",
+          "phase": "acceptance",
+          "status": "FAIL",
+          "observed": {
+            "status": "done",
+            "pending": 0,
+            "reopened": "done",
+            "errors": 1,
+            "processed": 0
+          }
+        },
+        {
+          "id": "A2-CH-001.unknown-field",
+          "phase": "reproduction",
+          "status": "PASS",
+          "observed": {
+            "unknown_field_preserved": false
+          }
+        },
+        {
+          "id": "A2-CH-001.unknown-field",
+          "phase": "acceptance",
+          "status": "FAIL",
+          "observed": {
+            "unknown_field_preserved": false
+          }
+        },
+        {
+          "id": "A2-CH-001.partial-load",
+          "phase": "reproduction",
+          "status": "PASS",
+          "observed": {
+            "write_rejected": false,
+            "later_original_row_lost": true
+          }
+        },
+        {
+          "id": "A2-CH-001.partial-load",
+          "phase": "acceptance",
+          "status": "FAIL",
+          "observed": {
+            "write_rejected": false,
+            "original_untouched": false
+          }
+        },
+        {
+          "id": "A2-CH-002.implicit-fallback",
+          "phase": "reproduction",
+          "status": "PASS",
+          "observed": {
+            "providers": [
+              "groq",
+              "google"
+            ]
+          }
+        },
+        {
+          "id": "A2-CH-002.data-defined-order",
+          "phase": "acceptance",
+          "status": "BLOCKED_MISSING_CONTRACT",
+          "observed": {
+            "public_strategy_input": false,
+            "required_test": "two profiles select different fallback order; explicit provider already supports no fallback"
+          }
+        },
+        {
+          "id": "CH-M2.explicit-provider",
+          "phase": "acceptance",
+          "status": "PASS",
+          "observed": {
+            "providers": [
+              "groq"
+            ],
+            "failure_explicit": true
+          }
+        },
+        {
+          "id": "CH-M2.unknown-provider",
+          "phase": "acceptance",
+          "status": "PASS",
+          "observed": {
+            "refused": true,
+            "calls": 0
+          }
+        },
+        {
+          "id": "A2-CH-003.unknown-confidence",
+          "phase": "reproduction",
+          "status": "PASS",
+          "observed": {
+            "provider_confidence_absent": true,
+            "reported": 0.9
+          }
+        },
+        {
+          "id": "A2-CH-003.unknown-confidence",
+          "phase": "acceptance",
+          "status": "FAIL",
+          "observed": {
+            "provider_confidence_absent": true,
+            "reported": 0.9
+          }
+        },
+        {
+          "id": "A2-CH-004.same-size",
+          "phase": "reproduction",
+          "status": "PASS",
+          "observed": {
+            "distinct_git_blob_hashes": true,
+            "status": "synced"
+          }
+        },
+        {
+          "id": "A2-CH-004.same-size",
+          "phase": "acceptance",
+          "status": "FAIL",
+          "observed": {
+            "distinct_git_blob_hashes": true,
+            "status": "synced"
+          }
+        },
+        {
+          "id": "CH-M3.sync-direction",
+          "phase": "acceptance",
+          "status": "PASS",
+          "observed": {
+            "push_refused_before_transport": true
+          }
+        },
+        {
+          "id": "CH-M1.missing-crypto",
+          "phase": "acceptance",
+          "status": "PASS",
+          "observed": {
+            "explicit_error": true,
+            "plaintext_returned": false
+          }
+        }
+      ]
+    },
+    {
+      "receipt": "python-B.json",
+      "sha": "ddcaeaf7a25b70f0d4dc2e0eed2466016233eeb8",
+      "suite": "chat-python-consumers",
+      "counts": {
+        "PASS": 10,
+        "FAIL": 5,
+        "BLOCKED_MISSING_CONTRACT": 1
+      },
+      "cases": [
+        {
+          "id": "CH-011.timeout",
+          "phase": "reproduction",
+          "status": "PASS",
+          "observed": {
+            "status": "done",
+            "pending": 0,
+            "reopened": "done",
+            "errors": 1,
+            "processed": 0
+          }
+        },
+        {
+          "id": "CH-011.timeout",
+          "phase": "acceptance",
+          "status": "FAIL",
+          "observed": {
+            "status": "done",
+            "pending": 0,
+            "reopened": "done",
+            "errors": 1,
+            "processed": 0
+          }
+        },
+        {
+          "id": "A2-CH-001.unknown-field",
+          "phase": "reproduction",
+          "status": "PASS",
+          "observed": {
+            "unknown_field_preserved": false
+          }
+        },
+        {
+          "id": "A2-CH-001.unknown-field",
+          "phase": "acceptance",
+          "status": "FAIL",
+          "observed": {
+            "unknown_field_preserved": false
+          }
+        },
+        {
+          "id": "A2-CH-001.partial-load",
+          "phase": "reproduction",
+          "status": "PASS",
+          "observed": {
+            "write_rejected": false,
+            "later_original_row_lost": true
+          }
+        },
+        {
+          "id": "A2-CH-001.partial-load",
+          "phase": "acceptance",
+          "status": "FAIL",
+          "observed": {
+            "write_rejected": false,
+            "original_untouched": false
+          }
+        },
+        {
+          "id": "A2-CH-002.implicit-fallback",
+          "phase": "reproduction",
+          "status": "PASS",
+          "observed": {
+            "providers": [
+              "groq",
+              "google"
+            ]
+          }
+        },
+        {
+          "id": "A2-CH-002.data-defined-order",
+          "phase": "acceptance",
+          "status": "BLOCKED_MISSING_CONTRACT",
+          "observed": {
+            "public_strategy_input": false,
+            "required_test": "two profiles select different fallback order; explicit provider already supports no fallback"
+          }
+        },
+        {
+          "id": "CH-M2.explicit-provider",
+          "phase": "acceptance",
+          "status": "PASS",
+          "observed": {
+            "providers": [
+              "groq"
+            ],
+            "failure_explicit": true
+          }
+        },
+        {
+          "id": "CH-M2.unknown-provider",
+          "phase": "acceptance",
+          "status": "PASS",
+          "observed": {
+            "refused": true,
+            "calls": 0
+          }
+        },
+        {
+          "id": "A2-CH-003.unknown-confidence",
+          "phase": "reproduction",
+          "status": "PASS",
+          "observed": {
+            "provider_confidence_absent": true,
+            "reported": 0.9
+          }
+        },
+        {
+          "id": "A2-CH-003.unknown-confidence",
+          "phase": "acceptance",
+          "status": "FAIL",
+          "observed": {
+            "provider_confidence_absent": true,
+            "reported": 0.9
+          }
+        },
+        {
+          "id": "A2-CH-004.same-size",
+          "phase": "reproduction",
+          "status": "PASS",
+          "observed": {
+            "distinct_git_blob_hashes": true,
+            "status": "synced"
+          }
+        },
+        {
+          "id": "A2-CH-004.same-size",
+          "phase": "acceptance",
+          "status": "FAIL",
+          "observed": {
+            "distinct_git_blob_hashes": true,
+            "status": "synced"
+          }
+        },
+        {
+          "id": "CH-M3.sync-direction",
+          "phase": "acceptance",
+          "status": "PASS",
+          "observed": {
+            "push_refused_before_transport": true
+          }
+        },
+        {
+          "id": "CH-M1.missing-crypto",
+          "phase": "acceptance",
+          "status": "PASS",
+          "observed": {
+            "explicit_error": true,
+            "plaintext_returned": false
+          }
+        }
+      ]
+    },
+    {
+      "receipt": "native-main.json",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "suite": "chat-native-consumers",
+      "counts": {
+        "PASS": 4,
+        "FAIL": 1,
+        "BLOCKED_MISSING_CONTRACT": 3
+      },
+      "cases": [
+        {
+          "id": "CH-004.scoped-vs-ordinary",
+          "phase": "reproduction",
+          "status": "PASS"
+        },
+        {
+          "id": "CH-004.bound-policy",
+          "phase": "acceptance",
+          "status": "BLOCKED_MISSING_CONTRACT",
+          "reason": "ordinary chat has no user/revision/category binding contract; synthetic memory metadata is not an existing enforced policy API"
+        },
+        {
+          "id": "CH-005.ordinary-ledger",
+          "phase": "reproduction",
+          "status": "PASS"
+        },
+        {
+          "id": "CH-005.bound-admission",
+          "phase": "acceptance",
+          "status": "BLOCKED_MISSING_CONTRACT",
+          "reason": "ordinary chat has no operation/estimate/confirmation binding. Requires matching authorized receipt before transport; absence of a binding is not simulated budget=0."
+        },
+        {
+          "id": "CH-006.unreviewed-relation",
+          "phase": "reproduction",
+          "status": "PASS"
+        },
+        {
+          "id": "CH-006.provenance-minimum",
+          "phase": "acceptance",
+          "status": "FAIL"
+        },
+        {
+          "id": "CH-006.candidate-ask",
+          "phase": "acceptance",
+          "status": "BLOCKED_MISSING_CONTRACT",
+          "reason": "legacy ingestion has no candidate/ask selection contract; provenance-minimum is necessary only, never proof of valid references or admission"
+        },
+        {
+          "id": "CH-M4.actual-config-consumer",
+          "phase": "acceptance",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "receipt": "native-B.json",
+      "sha": "ddcaeaf7a25b70f0d4dc2e0eed2466016233eeb8",
+      "suite": "chat-native-consumers",
+      "counts": {
+        "PASS": 4,
+        "FAIL": 1,
+        "BLOCKED_MISSING_CONTRACT": 3
+      },
+      "cases": [
+        {
+          "id": "CH-004.scoped-vs-ordinary",
+          "phase": "reproduction",
+          "status": "PASS"
+        },
+        {
+          "id": "CH-004.bound-policy",
+          "phase": "acceptance",
+          "status": "BLOCKED_MISSING_CONTRACT",
+          "reason": "ordinary chat has no user/revision/category binding contract; synthetic memory metadata is not an existing enforced policy API"
+        },
+        {
+          "id": "CH-005.ordinary-ledger",
+          "phase": "reproduction",
+          "status": "PASS"
+        },
+        {
+          "id": "CH-005.bound-admission",
+          "phase": "acceptance",
+          "status": "BLOCKED_MISSING_CONTRACT",
+          "reason": "ordinary chat has no operation/estimate/confirmation binding. Requires matching authorized receipt before transport; absence of a binding is not simulated budget=0."
+        },
+        {
+          "id": "CH-006.unreviewed-relation",
+          "phase": "reproduction",
+          "status": "PASS"
+        },
+        {
+          "id": "CH-006.provenance-minimum",
+          "phase": "acceptance",
+          "status": "FAIL"
+        },
+        {
+          "id": "CH-006.candidate-ask",
+          "phase": "acceptance",
+          "status": "BLOCKED_MISSING_CONTRACT",
+          "reason": "legacy ingestion has no candidate/ask selection contract; provenance-minimum is necessary only, never proof of valid references or admission"
+        },
+        {
+          "id": "CH-M4.actual-config-consumer",
+          "phase": "acceptance",
+          "status": "PASS"
+        }
+      ]
+    }
+  ]
+}

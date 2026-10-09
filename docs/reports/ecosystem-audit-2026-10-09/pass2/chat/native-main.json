@@ -1,0 +1,152 @@
+{
+  "schema": "klbt.audit.receipt/2",
+  "repo": "klb-t/chatadhd",
+  "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "suite": "chat-native-consumers",
+  "scope": "actual native Runtime, OnboardingStore, MemoryEngine, ChatEngine, UsagePolicy, GraphEngine and SQLite. No browser. Profile-field identity copied to synthetic memory with explicit metadata; ordinary memory ignores that binding. No claim of an existing enforced memory policy API.",
+  "external_network": "existing ScriptedTransport injected before Runtime construction; all workers off",
+  "source_hashes": {
+    "native_run.py": "bb68c2a39bb092aca764e3b0601b3429f574b02ffa81f7b5dd2642a9ff8b4c5d",
+    "native_consumers.cpp": "a5c2fcfcdfd75215070e6ed268ec713cac2530cdc10527b105d4eb7ba3ddf48e"
+  },
+  "library_sha256": "ead8af9a36519f78d46782d8ca5b19d7e44779cb5c495d5a09b4d2bc1b303cd7",
+  "build_source": "/workspace/scratch/1112e9e8a3c6/audit-work/repos/chatadhd",
+  "compile_command": [
+    "c++",
+    "-std=c++20",
+    "-O0",
+    "-g",
+    "-I/workspace/scratch/1112e9e8a3c6/audit-work/continuation/checkouts/main/loom/include",
+    "-I/workspace/scratch/1112e9e8a3c6/audit-work/continuation/checkouts/main/loom/third_party/nlohmann",
+    "-I/workspace/scratch/1112e9e8a3c6/audit-work/continuation/checkouts/main/loom/third_party/sqlite",
+    "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/artifacts/tools/ecosystem-audit-2026-10-09/pass2/chat/native_consumers.cpp",
+    "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/scratch/native/main-build/libloom_core.a",
+    "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/scratch/native/main-build/libloom_sqlite3_amalgamation.a",
+    "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/scratch/native/main-build/libloom_miniz.a",
+    "-lssl",
+    "-lcrypto",
+    "-pthread",
+    "-ldl",
+    "-lm",
+    "-Wl,--no-keep-memory",
+    "-o",
+    "/tmp/audit-chat-native-nckarr34/driver"
+  ],
+  "cases": [
+    {
+      "id": "CH-004.scoped-vs-ordinary",
+      "phase": "reproduction",
+      "status": "PASS"
+    },
+    {
+      "id": "CH-004.bound-policy",
+      "phase": "acceptance",
+      "status": "BLOCKED_MISSING_CONTRACT",
+      "reason": "ordinary chat has no user/revision/category binding contract; synthetic memory metadata is not an existing enforced policy API"
+    },
+    {
+      "id": "CH-005.ordinary-ledger",
+      "phase": "reproduction",
+      "status": "PASS"
+    },
+    {
+      "id": "CH-005.bound-admission",
+      "phase": "acceptance",
+      "status": "BLOCKED_MISSING_CONTRACT",
+      "reason": "ordinary chat has no operation/estimate/confirmation binding. Requires matching authorized receipt before transport; absence of a binding is not simulated budget=0."
+    },
+    {
+      "id": "CH-006.unreviewed-relation",
+      "phase": "reproduction",
+      "status": "PASS"
+    },
+    {
+      "id": "CH-006.provenance-minimum",
+      "phase": "acceptance",
+      "status": "FAIL"
+    },
+    {
+      "id": "CH-006.candidate-ask",
+      "phase": "acceptance",
+      "status": "BLOCKED_MISSING_CONTRACT",
+      "reason": "legacy ingestion has no candidate/ask selection contract; provenance-minimum is necessary only, never proof of valid references or admission"
+    },
+    {
+      "id": "CH-M4.actual-config-consumer",
+      "phase": "acceptance",
+      "status": "PASS"
+    }
+  ],
+  "observations": {
+    "chat": {
+      "send_ok": true,
+      "transport_calls": 1,
+      "scoped_calls_authorized": false,
+      "scoped_context": {},
+      "body_contains_profile_marker": true,
+      "policy_preview_status": "requires_confirmation",
+      "ledger": {
+        "baseline_key": "audit/ordinary-chat",
+        "options": {
+          "schema": "loom.usage_policy/1",
+          "growth_factor": 10.0,
+          "baseline_window": 32,
+          "ledger_busy_timeout_ms": 30000,
+          "include_reservations": true,
+          "initial_baselines": {
+            "audit/ordinary-chat": {
+              "requests": 0
+            }
+          }
+        },
+        "baseline": {
+          "requests": {
+            "value": 0,
+            "samples": 0,
+            "source": "declared"
+          }
+        },
+        "reservations": {},
+        "operations": [],
+        "events": []
+      },
+      "all_usage_operations": 0
+    },
+    "config_consumption": [
+      {
+        "ok": true,
+        "requested_temperature": 0.2,
+        "actual_temperature": 0.2,
+        "requested_max_tokens": 123,
+        "actual_max_tokens": 123
+      },
+      {
+        "ok": true,
+        "requested_temperature": 0.8,
+        "actual_temperature": 0.8,
+        "requested_max_tokens": 456,
+        "actual_max_tokens": 456
+      }
+    ],
+    "graph": {
+      "ingestion_ok": true,
+      "links": [
+        {
+          "id": "l_7955c4a27503",
+          "src": "n_3c7a18075c5a",
+          "dst": "n_a4bc156c5762",
+          "link_type": "synthetic_infers",
+          "weight": 0.7,
+          "metadata": {},
+          "created": "2026-10-09T06:24:07.584209Z"
+        }
+      ],
+      "explicit_admission_supplied": false
+    }
+  },
+  "counts": {
+    "PASS": 4,
+    "FAIL": 1,
+    "BLOCKED_MISSING_CONTRACT": 3
+  }
+}

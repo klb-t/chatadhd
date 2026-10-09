@@ -1,0 +1,34 @@
+[
+  {
+    "id": "CH-004",
+    "status": "naruszenie_integracji_podtrzymane",
+    "evidence": "native-main.json / CH-004.scoped-vs-ordinary",
+    "observed": "scoped model_request denies, ordinary chat sends synthetic memory marker in 1 intercepted request",
+    "acceptance_status": "BLOCKED_MISSING_CONTRACT",
+    "limit": "Harness metadata profile_field/user_id is synthetic, not an existing enforced memory binding. This does NOT show native profile data leaking automatically. Need actual producer of user/revision/category binding."
+  },
+  {
+    "id": "CH-005",
+    "status": "naruszenie_integracji_podtrzymane",
+    "evidence": "native-main.json / CH-005.ordinary-ledger",
+    "observed": "ordinary send emits one request, real usage ledger has zero operations across all cohorts; explicit preview requires confirmation",
+    "acceptance_status": "BLOCKED_MISSING_CONTRACT",
+    "correction_to_first_pass_criterion": "budget=0 is not a supported option in current UsagePolicy. Fixture uses initial baseline requests=0, which is growth confirmation, not a ceiling. No estimate/cohort is wired into ordinary ChatOptions; this is the missing integration, not a simulated broken budget."
+  },
+  {
+    "id": "CH-006",
+    "status": "naruszenie_potwierdzone_runtime",
+    "evidence": "native-main.json / CH-006.unreviewed-relation",
+    "observed": "actual GraphEngine materializes inferred relation in SQLite with metadata={}; source=llm supplied to ingestion",
+    "acceptance_status": "FAIL minimal provenance gate; BLOCKED_MISSING_CONTRACT full candidate/ask gate",
+    "limit": "Nonempty reference strings alone would not prove admission correctness. The runnable minimum gate is necessary only, and full gate stays blocked."
+  },
+  {
+    "id": "CH-011",
+    "status": "naruszenie_potwierdzone_runtime",
+    "evidence": "python-main.json / CH-011.timeout",
+    "observed": "real SQLite message done and no longer pending after timeout, also after reopen; errors=1 processed=0",
+    "acceptance_status": "FAIL",
+    "limit": "Python worker gate; native error/fallback covered separately by c-review/B-semantic, no claim every C++ exception branch executed."
+  }
+]

@@ -1,0 +1,298 @@
+{
+  "repo": "klb-t/chatadhd",
+  "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "kind": "selected function ranges, not complete files",
+  "paths": [
+    {
+      "file": "engine/memory_engine.py",
+      "ranges": [
+        [
+          47,
+          149
+        ]
+      ],
+      "functions": [
+        "MemoryEngine.__init__",
+        "_load",
+        "_save",
+        "add_node",
+        "update_node",
+        "delete_node",
+        "get_node",
+        "get_children",
+        "get_all"
+      ],
+      "evidence": "actual execution for named test path; surrounding branches semantic review only",
+      "untraced_calls": [
+        "GUI edits/export; recursive deletion flow not executed; analyzer tagging"
+      ]
+    },
+    {
+      "file": "engine/providers.py",
+      "ranges": [
+        [
+          40,
+          209
+        ],
+        [
+          330,
+          407
+        ]
+      ],
+      "functions": [
+        "GroqASR.transcribe_bytes",
+        "GoogleSpeechASR.transcribe_bytes",
+        "ProviderManager._init_providers",
+        "transcribe",
+        "transcribe_bytes"
+      ],
+      "evidence": "actual execution for named test path; surrounding branches semantic review only",
+      "untraced_calls": [
+        "active GUI ASR caller not located",
+        "OCR consumer only located, not tested"
+      ]
+    },
+    {
+      "file": "engine/github_sync.py",
+      "ranges": [
+        [
+          21,
+          200
+        ],
+        [
+          225,
+          344
+        ]
+      ],
+      "functions": [
+        "SyncConfig",
+        "GitHubSync.list_remote_files",
+        "list_local_files",
+        "_should_include",
+        "get_sync_status",
+        "push_file",
+        "pull_file",
+        "push_all",
+        "pull_all",
+        "sync"
+      ],
+      "evidence": "actual execution for named test path; surrounding branches semantic review only",
+      "untraced_calls": [
+        "remote writes forbidden; UI consumer and manager persistence untraced"
+      ]
+    },
+    {
+      "file": "core/crypto.py",
+      "ranges": [
+        [
+          18,
+          121
+        ]
+      ],
+      "functions": [
+        "CryptoEngine.available",
+        "_derive_key",
+        "encrypt",
+        "decrypt"
+      ],
+      "evidence": "actual execution for named test path; surrounding branches semantic review only",
+      "untraced_calls": [
+        "actual encrypted bytes roundtrip not run; vault storage/UI untraced"
+      ]
+    },
+    {
+      "file": "engine/semantic_worker.py",
+      "ranges": [
+        [
+          32,
+          178
+        ]
+      ],
+      "functions": [
+        "SemanticWorker.__init__",
+        "status",
+        "_drain_batch"
+      ],
+      "evidence": "actual execution for named test path; surrounding branches semantic review only",
+      "untraced_calls": [
+        "batch upload/check status, thread scheduling"
+      ]
+    },
+    {
+      "file": "engine/db.py",
+      "ranges": [
+        [
+          302,
+          319
+        ],
+        [
+          347,
+          412
+        ],
+        [
+          443,
+          483
+        ],
+        [
+          501,
+          512
+        ],
+        [
+          780,
+          785
+        ]
+      ],
+      "functions": [
+        "Database.create_conv",
+        "create_msg",
+        "get_msg",
+        "mark_analysed",
+        "close"
+      ],
+      "evidence": "actual execution for named test path; surrounding branches semantic review only",
+      "untraced_calls": [
+        "all other CRUD/migrations outside tested setup"
+      ]
+    },
+    {
+      "file": "engine/graph_engine.py",
+      "ranges": [
+        [
+          1,
+          180
+        ]
+      ],
+      "functions": [
+        "GraphEngine.__init__",
+        "ingest_analysis"
+      ],
+      "evidence": "actual execution for named test path; surrounding branches semantic review only",
+      "untraced_calls": [
+        "Python graph direct inference test not executed; native path tested"
+      ]
+    },
+    {
+      "file": "loom/src/chat/chat_engine.cpp",
+      "ranges": [
+        [
+          702,
+          855
+        ],
+        [
+          980,
+          1175
+        ],
+        [
+          1274,
+          1300
+        ]
+      ],
+      "functions": [
+        "ChatEngine.build_messages",
+        "ChatEngine.send selected acceptance/construction/transport branches"
+      ],
+      "evidence": "actual execution for named test path; surrounding branches semantic review only",
+      "untraced_calls": [
+        "graph reply full execution",
+        "stream cancellation",
+        "attachments",
+        "active-task request races"
+      ]
+    },
+    {
+      "file": "loom/src/graph/graph_engine.cpp",
+      "ranges": [
+        [
+          21,
+          90
+        ],
+        [
+          129,
+          195
+        ]
+      ],
+      "functions": [
+        "ingest_common",
+        "on_message_checked",
+        "ingest_analysis_checked"
+      ],
+      "evidence": "actual execution for named test path; surrounding branches semantic review only",
+      "untraced_calls": [
+        "all graph querying/UI paths"
+      ]
+    },
+    {
+      "file": "loom/src/policy/usage_policy.cpp",
+      "ranges": [
+        [
+          1,
+          35
+        ],
+        [
+          106,
+          210
+        ],
+        [
+          391,
+          426
+        ]
+      ],
+      "functions": [
+        "quantity validation",
+        "baseline",
+        "preview",
+        "inspect"
+      ],
+      "evidence": "actual execution for named test path; surrounding branches semantic review only",
+      "untraced_calls": [
+        "full confirm/reservation race suite is existing tests only"
+      ]
+    },
+    {
+      "file": "loom/src/onboarding/store.cpp",
+      "ranges": [
+        [
+          428,
+          463
+        ]
+      ],
+      "functions": [
+        "OnboardingStore.model_request",
+        "policy_decision"
+      ],
+      "evidence": "actual execution for named test path; surrounding branches semantic review only",
+      "untraced_calls": [
+        "full data binding to ordinary chat absent"
+      ]
+    },
+    {
+      "file": "loom/include/loom/chat_engine.h",
+      "ranges": [
+        [
+          78,
+          128
+        ]
+      ],
+      "functions": [
+        "ChatOptions contract"
+      ],
+      "evidence": "actual execution for named test path; surrounding branches semantic review only",
+      "untraced_calls": [
+        "header is interface evidence only"
+      ]
+    }
+  ],
+  "runtime_paths_closed": [
+    "Python worker failure\u2192SQLite\u2192reopen",
+    "memory load\u2192edit/add\u2192disk loss",
+    "provider API\u2192captured HTTP fallback\u2192ASRResult",
+    "sync filesystem+captured remote listing\u2192status",
+    "native scoped policy vs independent ordinary chat transport",
+    "native graph inference\u2192SQLite links"
+  ],
+  "unverified": [
+    "GUI/provider entrypoint mapping",
+    "browser Basic/Advanced/Expert",
+    "full ordinary policy/admission contract"
+  ]
+}

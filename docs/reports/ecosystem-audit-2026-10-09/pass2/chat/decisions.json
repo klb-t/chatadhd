@@ -1,0 +1,86 @@
+[
+  {
+    "finding_id": "A2-CH-001",
+    "observed_decision": "MemoryEngine odrzuca unknown key; update zapisuje bez niego. Przy poprawnym wierszu, błędnym wierszu bez content i poprawnym dalszym wierszu _load loguje błąd, add_node zastępuje plik bez dalszego wiersza.",
+    "explicit_or_hidden": "hidden in consumer control flow",
+    "alternatives": [
+      {
+        "name": "strict reject/readonly on malformed input",
+        "status": "missing_here"
+      },
+      {
+        "name": "preserve extension bag",
+        "status": "missing_here"
+      },
+      {
+        "name": "explicit salvage with backup and loss receipt",
+        "status": "proposal"
+      }
+    ],
+    "recommendation": "Memory record/schema/version + import/recovery policy + loss evidence",
+    "owner_quote": null
+  },
+  {
+    "finding_id": "A2-CH-002",
+    "observed_decision": "Real ProviderManager + GroqASR + GoogleSpeechASR: po przechwyconym HTTP503 kolejność wywołań to groq,google. Jawny provider=groq nie przechodzi do Google, nieznany provider jawnie odrzucony.",
+    "explicit_or_hidden": "hidden in consumer control flow",
+    "alternatives": [
+      {
+        "name": "explicit provider and no fallback",
+        "status": "implemented_verified"
+      },
+      {
+        "name": "groq then google",
+        "status": "hardcoded"
+      },
+      {
+        "name": "profile-defined ordering/failure strategy",
+        "status": "missing_contract"
+      }
+    ],
+    "recommendation": "Provider strategy/preset + allowed recipients + versioned effective plan",
+    "owner_quote": null
+  },
+  {
+    "finding_id": "A2-CH-003",
+    "observed_decision": "Przechwycona odpowiedź Groq zawiera tylko text; rzeczywisty GroqASR zwraca confidence=0.9.",
+    "explicit_or_hidden": "hidden in consumer control flow",
+    "alternatives": [
+      {
+        "name": "unknown confidence",
+        "status": "missing_here"
+      },
+      {
+        "name": "explicit declared/estimated confidence with method provenance",
+        "status": "proposal"
+      },
+      {
+        "name": "constant 0.9",
+        "status": "implemented_without_provenance"
+      }
+    ],
+    "recommendation": "Assessment/confidence value + epistemic status + method/version/source",
+    "owner_quote": null
+  },
+  {
+    "finding_id": "A2-CH-004",
+    "observed_decision": "Rzeczywisty list_remote_files otrzymuje remote git blob SHA pliku AAAA, lokalny x.txt=BBBB. get_sync_status zwraca synced; obie treści mają 4 bajty.",
+    "explicit_or_hidden": "hidden in consumer control flow",
+    "alternatives": [
+      {
+        "name": "content/hash comparison",
+        "status": "missing_here"
+      },
+      {
+        "name": "size heuristic marked uncertain",
+        "status": "proposal"
+      },
+      {
+        "name": "size equality means synced",
+        "status": "implemented"
+      }
+    ],
+    "recommendation": "Sync comparison strategy + content/version refs + uncertainty/conflict",
+    "owner_quote": null
+  }
+]

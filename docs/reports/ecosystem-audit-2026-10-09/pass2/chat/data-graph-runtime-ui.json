@@ -1,0 +1,52 @@
+[
+  {
+    "finding_id": "A2-CH-001",
+    "data": "Memory record/schema/version + import/recovery policy + loss evidence",
+    "graph": "no complete policy/provenance binding observed on this Python path",
+    "runtime": [
+      "MemoryEngine.__init__→_load→update_node/add_node→_save→disk"
+    ],
+    "UI": "not exercised; do not infer connection from JSON existence",
+    "acceptance": [
+      "python_consumers.py --phase reproduction: A2-CH-001.*",
+      "--phase acceptance: exact extension {revision:7} survives; malformed source remains untouched and write is refused; recovery must be explicit"
+    ]
+  },
+  {
+    "finding_id": "A2-CH-002",
+    "data": "Provider strategy/preset + allowed recipients + versioned effective plan",
+    "graph": "no complete policy/provenance binding observed on this Python path",
+    "runtime": [
+      "ProviderManager.transcribe_bytes→GroqASR→requests.post→failure→GoogleSpeechASR→requests.post"
+    ],
+    "UI": "not exercised; do not infer connection from JSON existence",
+    "acceptance": [
+      "reproduction A2-CH-002.implicit-fallback PASS",
+      "acceptance data-defined-order BLOCKED_MISSING_CONTRACT: dwa profile muszą zmienić kolejność rzeczywistego konsumenta; zachować jawny no-fallback"
+    ]
+  },
+  {
+    "finding_id": "A2-CH-003",
+    "data": "Assessment/confidence value + epistemic status + method/version/source",
+    "graph": "no complete policy/provenance binding observed on this Python path",
+    "runtime": [
+      "GroqASR.transcribe_bytes→ASRResult"
+    ],
+    "UI": "not exercised; do not infer connection from JSON existence",
+    "acceptance": [
+      "A2-CH-003.unknown-confidence: brak pewności pozostaje None albo jawnie estimated/declared z provenance; actual response body has no confidence"
+    ]
+  },
+  {
+    "finding_id": "A2-CH-004",
+    "data": "Sync comparison strategy + content/version refs + uncertainty/conflict",
+    "graph": "no complete policy/provenance binding observed on this Python path",
+    "runtime": [
+      "GitHubSync.list_remote_files + list_local_files→get_sync_status→sync/push_all/pull_all"
+    ],
+    "UI": "not exercised; do not infer connection from JSON existence",
+    "acceptance": [
+      "A2-CH-004.same-size: różne hashe treści nigdy nie dają potwierdzonego synced, nawet przy równej liczbie bajtów"
+    ]
+  }
+]

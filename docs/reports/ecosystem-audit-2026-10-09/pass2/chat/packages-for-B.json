@@ -1,0 +1,180 @@
+[
+  {
+    "finding_id": "A2-CH-001",
+    "priority": "P1",
+    "reproduction": {
+      "kind": "actual_consumer_execution",
+      "receipt": "python-main.json",
+      "behavior": "MemoryEngine odrzuca unknown key; update zapisuje bez niego. Przy poprawnym wierszu, błędnym wierszu bez content i poprawnym dalszym wierszu _load loguje błąd, add_node zastępuje plik bez dalszego wiersza.",
+      "synthetic_only": true
+    },
+    "expected_behavior": [
+      "python_consumers.py --phase reproduction: A2-CH-001.*",
+      "--phase acceptance: exact extension {revision:7} survives; malformed source remains untouched and write is refused; recovery must be explicit"
+    ],
+    "executable": "tools/ecosystem-audit-2026-10-09/pass2/chat/python_consumers.py --repo CHECKOUT --sha SHA --phase acceptance --output RECEIPT",
+    "consumers": [
+      "MemoryEngine.__init__→_load→update_node/add_node→_save→disk"
+    ],
+    "migration": "Nie usuwać źródłowego pliku; migracja/recovery musi zachować oryginał i wyraźnie oznaczyć stratę.",
+    "risk": "Potwierdzona utrata zapisanych pól i dalszego rekordu w rzeczywistym pliku. Nie uruchomiono GUI ani migracji natywnej pamięci.",
+    "dependencies": [
+      "B implementation of the existing consumer contract; auditor does not edit product"
+    ]
+  },
+  {
+    "finding_id": "A2-CH-002",
+    "priority": "P1",
+    "reproduction": {
+      "kind": "actual_consumer_execution",
+      "receipt": "python-main.json",
+      "behavior": "Real ProviderManager + GroqASR + GoogleSpeechASR: po przechwyconym HTTP503 kolejność wywołań to groq,google. Jawny provider=groq nie przechodzi do Google, nieznany provider jawnie odrzucony.",
+      "synthetic_only": true
+    },
+    "expected_behavior": [
+      "reproduction A2-CH-002.implicit-fallback PASS",
+      "acceptance data-defined-order BLOCKED_MISSING_CONTRACT: dwa profile muszą zmienić kolejność rzeczywistego konsumenta; zachować jawny no-fallback"
+    ],
+    "executable": "tools/ecosystem-audit-2026-10-09/pass2/chat/python_consumers.py --repo CHECKOUT --sha SHA --phase acceptance --output RECEIPT",
+    "consumers": [
+      "ProviderManager.transcribe_bytes→GroqASR→requests.post→failure→GoogleSpeechASR→requests.post"
+    ],
+    "migration": "Sam wpisanie kluczy dostawców nie powinno migrować na szerszą, niewybraną trasę. Default groq/google może zostać presetem danych.",
+    "risk": "To naruszenie R42 dla kolejności, nie dowód naruszenia istniejącej zgody. Aktualny publiczny kontrakt reprezentuje no-fallback przez provider, lecz nie konfigurowalną listę kolejności. Nie ustalono aktywnego GUI konsumenta ASR tego modułu.",
+    "dependencies": [
+      "B implementation of the existing consumer contract; auditor does not edit product"
+    ]
+  },
+  {
+    "finding_id": "A2-CH-003",
+    "priority": "P1",
+    "reproduction": {
+      "kind": "actual_consumer_execution",
+      "receipt": "python-main.json",
+      "behavior": "Przechwycona odpowiedź Groq zawiera tylko text; rzeczywisty GroqASR zwraca confidence=0.9.",
+      "synthetic_only": true
+    },
+    "expected_behavior": [
+      "A2-CH-003.unknown-confidence: brak pewności pozostaje None albo jawnie estimated/declared z provenance; actual response body has no confidence"
+    ],
+    "executable": "tools/ecosystem-audit-2026-10-09/pass2/chat/python_consumers.py --repo CHECKOUT --sha SHA --phase acceptance --output RECEIPT",
+    "consumers": [
+      "GroqASR.transcribe_bytes→ASRResult"
+    ],
+    "migration": "Nie reinterpretować historycznego 0.9 jako zmierzonej pewności. Zachować unknown/provenance przy migracji.",
+    "risk": "Konsument otrzymuje liczbę bez rozróżnienia pomiaru, deklaracji i braku wiedzy. Brak dowodu na bieżący GUI ranking używający tej liczby.",
+    "dependencies": [
+      "B implementation of the existing consumer contract; auditor does not edit product"
+    ]
+  },
+  {
+    "finding_id": "A2-CH-004",
+    "priority": "P1",
+    "reproduction": {
+      "kind": "actual_consumer_execution",
+      "receipt": "python-main.json",
+      "behavior": "Rzeczywisty list_remote_files otrzymuje remote git blob SHA pliku AAAA, lokalny x.txt=BBBB. get_sync_status zwraca synced; obie treści mają 4 bajty.",
+      "synthetic_only": true
+    },
+    "expected_behavior": [
+      "A2-CH-004.same-size: różne hashe treści nigdy nie dają potwierdzonego synced, nawet przy równej liczbie bajtów"
+    ],
+    "executable": "tools/ecosystem-audit-2026-10-09/pass2/chat/python_consumers.py --repo CHECKOUT --sha SHA --phase acceptance --output RECEIPT",
+    "consumers": [
+      "GitHubSync.list_remote_files + list_local_files→get_sync_status→sync/push_all/pull_all"
+    ],
+    "migration": "Nie nadpisywać żadnej strony na podstawie samego rozmiaru; zachować conflict/manual resolution i blob versions.",
+    "risk": "UI/konsumenci statusu mogą pominąć rzeczywistą zmianę. Wykonano status przez realny filesystem i przechwycony REST; nie wykonano rzeczywistego GitHub push/pull.",
+    "dependencies": [
+      "B implementation of the existing consumer contract; auditor does not edit product"
+    ]
+  },
+  {
+    "finding_id": "CH-004",
+    "priority": "P0",
+    "reproduction": {
+      "id": "CH-004",
+      "status": "naruszenie_integracji_podtrzymane",
+      "evidence": "native-main.json / CH-004.scoped-vs-ordinary",
+      "observed": "scoped model_request denies, ordinary chat sends synthetic memory marker in 1 intercepted request",
+      "acceptance_status": "BLOCKED_MISSING_CONTRACT",
+      "limit": "Harness metadata profile_field/user_id is synthetic, not an existing enforced memory binding. This does NOT show native profile data leaking automatically. Need actual producer of user/revision/category binding."
+    },
+    "expected_behavior": "use first-pass acceptance with corrections/limits above; actual integration contract must precede full gate",
+    "executable": "python_consumers.py for CH-011; native_run.py for CH-004/005/006",
+    "consumers": [
+      "actual consumer detailed in original finding and receipts"
+    ],
+    "migration": "Preserve prior consent, explicit inference status, old result provenance and safe retry identity.",
+    "risk": "Harness metadata profile_field/user_id is synthetic, not an existing enforced memory binding. This does NOT show native profile data leaking automatically. Need actual producer of user/revision/category binding.",
+    "dependencies": [
+      "B integration; do not manufacture audit-side policy implementation"
+    ]
+  },
+  {
+    "finding_id": "CH-005",
+    "priority": "P0",
+    "reproduction": {
+      "id": "CH-005",
+      "status": "naruszenie_integracji_podtrzymane",
+      "evidence": "native-main.json / CH-005.ordinary-ledger",
+      "observed": "ordinary send emits one request, real usage ledger has zero operations across all cohorts; explicit preview requires confirmation",
+      "acceptance_status": "BLOCKED_MISSING_CONTRACT",
+      "correction_to_first_pass_criterion": "budget=0 is not a supported option in current UsagePolicy. Fixture uses initial baseline requests=0, which is growth confirmation, not a ceiling. No estimate/cohort is wired into ordinary ChatOptions; this is the missing integration, not a simulated broken budget."
+    },
+    "expected_behavior": "use first-pass acceptance with corrections/limits above; actual integration contract must precede full gate",
+    "executable": "python_consumers.py for CH-011; native_run.py for CH-004/005/006",
+    "consumers": [
+      "actual consumer detailed in original finding and receipts"
+    ],
+    "migration": "Preserve prior consent, explicit inference status, old result provenance and safe retry identity.",
+    "risk": "budget=0 is not a supported option in current UsagePolicy. Fixture uses initial baseline requests=0, which is growth confirmation, not a ceiling. No estimate/cohort is wired into ordinary ChatOptions; this is the missing integration, not a simulated broken budget.",
+    "dependencies": [
+      "B integration; do not manufacture audit-side policy implementation"
+    ]
+  },
+  {
+    "finding_id": "CH-006",
+    "priority": "P1",
+    "reproduction": {
+      "id": "CH-006",
+      "status": "naruszenie_potwierdzone_runtime",
+      "evidence": "native-main.json / CH-006.unreviewed-relation",
+      "observed": "actual GraphEngine materializes inferred relation in SQLite with metadata={}; source=llm supplied to ingestion",
+      "acceptance_status": "FAIL minimal provenance gate; BLOCKED_MISSING_CONTRACT full candidate/ask gate",
+      "limit": "Nonempty reference strings alone would not prove admission correctness. The runnable minimum gate is necessary only, and full gate stays blocked."
+    },
+    "expected_behavior": "use first-pass acceptance with corrections/limits above; actual integration contract must precede full gate",
+    "executable": "python_consumers.py for CH-011; native_run.py for CH-004/005/006",
+    "consumers": [
+      "actual consumer detailed in original finding and receipts"
+    ],
+    "migration": "Preserve prior consent, explicit inference status, old result provenance and safe retry identity.",
+    "risk": "Nonempty reference strings alone would not prove admission correctness. The runnable minimum gate is necessary only, and full gate stays blocked.",
+    "dependencies": [
+      "B integration; do not manufacture audit-side policy implementation"
+    ]
+  },
+  {
+    "finding_id": "CH-011",
+    "priority": "P1",
+    "reproduction": {
+      "id": "CH-011",
+      "status": "naruszenie_potwierdzone_runtime",
+      "evidence": "python-main.json / CH-011.timeout",
+      "observed": "real SQLite message done and no longer pending after timeout, also after reopen; errors=1 processed=0",
+      "acceptance_status": "FAIL",
+      "limit": "Python worker gate; native error/fallback covered separately by c-review/B-semantic, no claim every C++ exception branch executed."
+    },
+    "expected_behavior": "use first-pass acceptance with corrections/limits above; actual integration contract must precede full gate",
+    "executable": "python_consumers.py for CH-011; native_run.py for CH-004/005/006",
+    "consumers": [
+      "actual consumer detailed in original finding and receipts"
+    ],
+    "migration": "Preserve prior consent, explicit inference status, old result provenance and safe retry identity.",
+    "risk": "Python worker gate; native error/fallback covered separately by c-review/B-semantic, no claim every C++ exception branch executed.",
+    "dependencies": [
+      "B integration; do not manufacture audit-side policy implementation"
+    ]
+  }
+]
