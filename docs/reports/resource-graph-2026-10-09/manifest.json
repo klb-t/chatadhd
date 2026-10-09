@@ -1,6 +1,6 @@
 {
   "base_sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
-  "ready_implementation_sha": "3b44a98298edb3d395d126a1a519eccd40cb5866",
+  "ready_implementation_sha": "e485c8f79c9de7ec248ab16c6c40043a98457a57",
   "extension_tests": {
     "passed": 133,
     "skipped": 0
@@ -164,8 +164,8 @@
     },
     {
       "path": "docs/reports/resource-graph-2026-10-09/STATE.md",
-      "bytes": 3933,
-      "sha256": "93ea6ed0eb874e959e226e07c29f35302c00b95ea7242a296885148dce088a9a"
+      "bytes": 4325,
+      "sha256": "1fbf5c60c5b8d283d91840bbf1c8ae6bde7bb8009b17ef687ba4b8dbf0068dd5"
     },
     {
       "path": "docs/reports/resource-graph-2026-10-09/access.md",
@@ -277,5 +277,6 @@
       "bytes": 732,
       "sha256": "d1169a2963638918f695d4cc4d3eaa6eb4bff9e304f1bd1872422c26669f5c51"
     }
-  ]
+  ],
+  "implementation_tree_sha": "a14158882a41a2829a326a892a9ec47107eceb6a"
 }
