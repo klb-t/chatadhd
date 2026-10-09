@@ -675,7 +675,7 @@ TEST_SUITE("import_resume") {
     fixture.options.progress = [](auto, auto, std::string_view status) {
       if (status == "export") throw std::runtime_error("injected callback failure");
     };
-    CHECK_THROWS_AS(fixture.importer.import_file(path, fixture.options), std::runtime_error);
+    CHECK_THROWS_AS((void)fixture.importer.import_file(path, fixture.options), std::runtime_error);
     CHECK(fixture.count("conversations") == 1);
     CHECK(fixture.count("loom_import_checkpoints") == 1);
     fixture.options.progress = nullptr;
