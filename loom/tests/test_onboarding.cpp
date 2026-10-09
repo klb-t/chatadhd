@@ -226,7 +226,8 @@ TEST_SUITE("onboarding") {
     auto update = action("privacy", "policy"); update["rule"] = rule;
     LOOM_REQUIRE_OK(session.dispatch(update));
     std::size_t retained = 0;
-    for (const auto& event : session.snapshot()["history"]) if (event["category"] == "work") {
+    const auto retained_snapshot = session.snapshot();
+    for (const auto& event : retained_snapshot["history"]) if (event["category"] == "work") {
       ++retained; CHECK_FALSE(event.contains("before")); CHECK_FALSE(event.contains("after")); CHECK_FALSE(event.contains("value"));
     }
     CHECK(retained <= 2);
@@ -238,7 +239,8 @@ TEST_SUITE("onboarding") {
     CHECK(json::dump(session.snapshot()).find("synthetic secret") == std::string::npos);
     rule["retention"]["history"] = "none"; update["rule"] = rule; update["id"] = "none-policy";
     LOOM_REQUIRE_OK(session.dispatch(update));
-    for (const auto& event : session.snapshot()["history"]) CHECK(event["category"] != "work");
+    const auto no_history_snapshot = session.snapshot();
+    for (const auto& event : no_history_snapshot["history"]) CHECK(event["category"] != "work");
   }
 
   TEST_CASE("ordinary proposals honor ask candidate automatic settings without claiming user confirmation") {

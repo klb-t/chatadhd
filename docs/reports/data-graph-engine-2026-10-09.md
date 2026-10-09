@@ -112,3 +112,43 @@ zapisano przed tym testem. Full CTest/guard asan uruchomione skryptem
 Wynik jest jeszcze oczekiwany.
 
 Opis styku C: [synthetic temporary root contract](../architecture/DATA_GRAPH_ENGINE_RESEARCH_TEMP_CONTRACT_2026-10-09.md). Publikacja nie oznacza doręczenia ani akceptacji przez C; nie edytowano jego kodu.
+
+ASan pierwszy pełny przebieg znalazł heap-use-after-free w historycznym teście
+loom/tests/test_onboarding.cpp:229 (blame 1e63bcc93, obecny na bazie). Pętla
+odczytuje subobject tymczasowego session.snapshot(); ten sam wzorzec jest w :241.
+Poprawka zachowuje kopię snapshotu do końca każdej pętli, bez zmiany asercji ani
+produkcyjnego API. DefaultLayers.snapshot zwraca const reference i jego dwie
+pętle nie mają tej wady. Source testu poprawiony, obecny full CTest nadal używa
+oryginalnego instrumentowanego binary pinned w receipt; nie przebudowujemy go
+podczas przebiegu. Po zakończeniu: build obu binary testów, scoped dev/ASan,
+commit, nowy full ASan. Negatywny log i abort pozostają zachowane.
+
+## B-SAN-001 — poprawiona własność snapshotu w teście
+
+Dwa zakresy iteracji zachowują teraz kopie JSON do końca pętli. 0 usuniętych
+asercji, 0 zmian API produktu. Build dev/ASan WERROR PASS; bieżący test
+unit.test_onboarding PASS w dev (0,41 s) i ASan+UBSan (2,37 s), z oryginalnymi
+flagami detect_leaks/strict_string_checks/no-recovery. Logi i JUnit
+data-graph-snapshot-{dev,asan}; nie są pełnym CTest.
+
+Pełny ASan przed poprawką testu: 144/146 (1053,60 s); heap-use-after-free w
+unit.test_onboarding oraz 8 błędów C w research.structure. Guard REJECT: dwa
+niezielone wejścia; liczniki zaakceptowanych wejść 908 native / 32588 asercji,
+605 Python, 0 skips Python. Runtime, worker, fallback, storage oraz pozostałe
+onboarding suites przeszły instrumentowane. FFI jest zwykłym companion dev i
+ma osobny receipt, więc nie nazywamy jego wyników instrumentowanymi.
+
+Nie deklarujemy pełnego guard PASS po osobnej poprawce. Nowy pełny guard
+pozostaje otwarty; powtórka research.structure wymaga środowiskowej poprawki
+fixtures C opisanej w kontrakcie. Test-only fix nie zmienia danych produktu,
+więc wcześniejszy finalny E2E dotyczy tego samego produktu; nie nazywamy go
+nowym przebiegiem po zmianie testu. Release/TSan/oddzielny vendored nadal unrun.
+
+Odkrywanie repo: publiczna strona właściciela HTTP 200 pokazała sześć znanych
+repo (bez dodatkowych); wszystkie siedem podanych repo dostępne. API także
+bez uwierzytelnienia blokuje proxy CONNECT 403. Receipt
+data-graph-owner-discovery.json; nie jest pełnym spisem prywatnych repo.
+
+Aktualny backlog A ma 12 pozycji: CH-001–011-B oraz CH-015-B. Nie dodajemy
+ponownie CH-012–014 sklasyfikowanych poza tym backlogiem. CH-003-B zamknięty
+w opisanych ścieżkach native; W12-DIC-0013 zmniejsza CH-008-B. Pozostałe otwarte.

@@ -1,7 +1,7 @@
 # STATE — ChatADHD / Loom
 ## 2026-10-09 — zadanie B na gałęzi produktu
 
-Gałąź `gpt/data-graph-engine-2026-10-09`, bez integracji main: privacy caps, wspólny snapshot analizatora live/worker/fallback, etykiety grafu z packa. Commity d92d7cc, ddcaeaf, 24c9fc3. Scoped testy oraz finalny web/E2E PASS; pełny dev 145/146, guard odrzucony przez 8 środowiskowych błędów credential-handoff w research.structure. ASan wznowiony, bez deklaracji PASS. Szczegóły i checkpoint: [raport B](reports/data-graph-engine-2026-10-09.md). Integracja main pozostaje u Claude’a.
+Gałąź `gpt/data-graph-engine-2026-10-09`, bez integracji main: privacy caps, wspólny snapshot analizatora live/worker/fallback, etykiety grafu z packa. Commity d92d7cc, ddcaeaf, 24c9fc3. Scoped testy oraz finalny web/E2E PASS; pełny dev 145/146, guard odrzucony przez 8 środowiskowych błędów credential-handoff w research.structure. Pełny ASan 144/146: historyczny test miał UAF i zestaw C ma 8 błędów środowiska. UAF poprawiony z identycznymi asercjami; bieżący focused dev/ASan PASS. Pełny guard nadal bez PASS. Szczegóły i checkpoint: [raport B](reports/data-graph-engine-2026-10-09.md). Integracja main pozostaje u Claude’a.
 
 
 ## 2026-10-05 wieczór — Claude przejmuje integrację (najnowsze; czytaj najpierw)
