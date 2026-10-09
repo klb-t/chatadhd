@@ -1,23 +1,103 @@
 # Zadanie B — DATA / GRAPH / ENGINE — 2026-10-09
 
-## Aktualny punkt kontynuacji — integracja B, 2026-10-09
+## Aktualny punkt kontynuacji — sprawdzony produkt 6d1231bd, 2026-10-09
 
-Stan tej sekcji zastępuje historyczne „następne kroki” niżej. Kontynuacja zaczęła się z czystego `387afe08587f179d47c013a2ea518ff4b68e36bc`, bez resetu ani zmiany main. Fresh fetch wszystkich siedmiu main: bazowe SHA w tabeli pozostają aktualne. Lokalna praca Chat/Watchdog/AGEDS zachowana. Źródła współpracy pobrane jawnie: A `43cc61e09475446c12040e53965ea83526a6cf73`, C `c525d0e942be95c8b3a79b670e621d50e0b31a1a`, D `6ed509a482d343288cd9ebd20553ccdcd0f3096b`, E `3eaac2953c3ee0d01d085e595d68edc091c284f2`.
+Ta sekcja zastępuje historyczne „następne kroki” niżej. Gałąź pozostaje
+`gpt/data-graph-engine-2026-10-09`; main i cudze gałęzie bez zmian. Kontynuacja
+zachowała checkpoint `387afe08587f179d47c013a2ea518ff4b68e36bc` i późniejsze prace.
+Aktualny sprawdzony kod runtime: **6d1231bd9a20304564eb233f478d1ace33a5df31**.
+Późniejszy `02714d5b` aktualizuje dokładny locator audytu R42 i raport, bez zmiany
+tego runtime. Bazowe SHA i fetch są zachowane poniżej. Źródła/przyjęcia C/D/E,
+autorstwo, zależności i bramki wskazuje [manifest integracji](data-graph-engine-2026-10-09-integration.json).
+Integracja main pozostaje u Claude’a; ten checkpoint jest kandydatem do A/Claude’a,
+nie deklaracją ukończenia całego zakresu właściciela.
 
-Priorytet 0 zamknięty zakresowo: C `a6481d11a05158977a87dd55f3a4d6896a190dad` przyjęty przez cherry-pick -x jako `82800d56de22f846542961ca83286aac3f7172af`, autor zachowany. Handoff `4e46ae87` przeczytany, pozostałe badania C nieprzyjęte. Testy credential 10/10 PASS; research.structure 1273/1273, 0 skips, guard PASS. Pełny dev na tym SHA: CTest 146/146 PASS, 252,52 s; guard PASS: 145 wykonanych wejść, `unit.test_catalog_scale` jawnie opt-in/niewykonany; 928 native / 32953 asercje, 1878 Python / 0 skips. Receipt source/config/bin przed testem, pełne stdout/JUnit 10 MiB. Vendored SQLite, GCC13 Debug-g1 WERROR, bez konkurującego ASan. Pierwsza próba scoped receipt miała brakujący argument cache; log pozostał, scoped test powtórzono z poprawnym receipt przed startem. Markery Git i testy negatywne zachowane.
+P4a native `568c3f7e` + App `ed4bd2fc` jest wdrożone: rzeczywisty ChatView i zadanie
+bez UI odczytują referencję przez istniejący Catalog/MethodRegistry i pełny mapper.
+Są source/version/produced_by, copy/link message+parent+version-group parity,
+jawne niedostępności, zachowane lokalne edycje oraz obsługa klawiatury/focus/tap.
+Transient/none ma sprawdzony brak trwałej kopii payloadu w badanym fresh store;
+nie usuwa wcześniejszego indeksu/snapshotu i nie obiecuje częściowego I/O ZIP-a.
+Stare gettery pozostają storage-only. Lokalny odczyt nie uprawnia do model egress;
+ChatView odmawia source-history send do czasu wdrożenia P4b.
 
-Aktualne opublikowane przyrosty: `d5b4236a` A3-DISC-001, `a4b26a55` A3-IMP-CH004/006 i część CH003, `4b8c0e2b` wspólny mapper D, `3dc0ebf2` rzeczywisty operator zasobu/retencja/CH-RES-N002, `4eda95e3` E w rzeczywistej aplikacji przez native R40 oraz `9b3b2a6b` dokładne rozdzielenie fizycznych domen danych. D/E przyjęto przez cherry-pick -x w ograniczonym, przejrzanym stosie; autorstwo, źródła i zależności pozostają w manifeście.
+Po P4a opublikowano wiring/scheduling `9b6618d7`, fixture generatora `48977dd7`,
+przenośne wygenerowane chunki `bb1a943b`, test Clang/nodiscard `02371b01` oraz
+dokładne porównanie limitu odpowiedzi `6d1231bd`. Generator zachowuje identyczne
+bajty istniejących definicji/provenance, także duże liczby i nieznane pola;
+nie wyłączono WERROR ani ostrzeżenia o ponadlimitowym literale.
 
-Poprzedni pełny checkpoint produktu ChatADHD: **373f0774**, po A2-BSEM-001 (`24625e51`), Python CH-011 (`5c432e10`) i natywnym lifecycle/statusie App (`373f0774`). Pełny dev na tym produkcie: **157/157**,281,75 s, guard PASS:156 wykonanych wpisów + catalog_scale jawnie opt-in/niewykonany;981 native/36585 asercji,2031 Python/0 skips. Niezależne C API CH-01124/24 oraz uporządkowane A2 reset/removal2/2 PASS,0HTTP. Wcześniejsze błędy instrumentacji i historyczne negatywy zachowane.
+Aktualna pełna lokalna macierz na czystym, zamrożonym `6d1231bd`:
 
-Bieżący przyrost P4a: native ConversationView oraz rzeczywisty ChatView mają aktualny scope **17/17 PASS**,36,86 s,guard17 wykonanych,77 native/6294 asercji,153 Python/0skip; web build/headless9/9 i actual App/native9/9 PASS. Zakres: jawny lokalny odczyt linku tym samym operatorem z UI i headless, copy/link message+parent+version-group parity, source failure/reopen, dokładne dowody i transient/none bez trwałego payloadu w sprawdzanym fresh store. Pełny aktualny web PASS (15 commands + build/receipt); native dev/ASan/Clang/JNI nadal pending. Wcześniejszy pełny ASan373:155/156 REJECT przez timeout CLI, izolowany CLI1/1 PASS234,21 s; RUN_SERIAL zachowuje timeout300 i wszystkie kontrole, wymaga ponownego pełnego testu.
+| Bramka | Wynik i rzeczywisty zakres |
+|---|---|
+| dev/GCC13, r6 | **160/160 PASS**, guard PASS, 159 wykonanych + catalog_scale opt-in; 317,30 s |
+| vendored/Clang19 | **160/160 PASS**, guard PASS, 159 wykonanych + catalog_scale opt-in; 341,65 s |
+| ASan+UBSan/GCC13, r2 | **159/159 PASS**, guard PASS, 158 wykonanych + catalog_scale opt-in; 1287,51 s |
+| Świeży web/E2E | **15 komend testowych PASS** + build i pretest receipt; `B-final-web-_8sxv4h7`, bez driftu source/native/dist/cache; screenshoty odtworzone |
+| JNI host/JDK17 | **1/1 PASS**, 13 wewnętrznych kontroli, CTest 1,57 s; aktualna biblioteka dev |
+| Generatory runtime/onboarding | oba **--check PASS**, bez ręcznej edycji wyników |
 
-Punkt wznowienia po opublikowanym P4a568c3f7e/ed4bd2fc i wiring9b6618d7: aktualny devr5 miał159/160, guard REJECT wyłącznie przez fixture generatora. Poprawka48977dd7 ma scoped1/1 i22 unittest PASS. Pierwszy pełny build Clang zatrzymał się na ponadlimitowym literałe embedded; naprawa reprezentacji generatora przechodzi bieżącą bramkę zakresową. Następnie nowy pełny devr6/ASanr2/Clang/JNI, generatory i inventory R42. Historyczne wyniki nie są dowodem tego drzewa. Watchdog WD-003 jest wykonany/opublikowany (263c8ab, raport867f83b), pełne lint/build/test:all624/624 PASS; WD-00105e4f290 jest opublikowany z pełnym lint/build/test630/630 PASS; kolejny WD-011 ma potwierdzoną reprodukcję znaku/precyzji, scope25/25 i przechodzi pełną bramkę. Setup Android Keyboard974,LEM3,AGEDS411 bez błędów/pominięć oraz AR build-only4ABI; APK podpisane, źródła niezmienione. Nie powtarzać wykonanego AGEDS ani ratio.exclude.
+Dev i Clang: każdy 991 native / 36 947 asercji / 2038 Python / 0 pominięć Python.
+ASan: 991 native / 36 946 asercji / 1905 Python / 0 pominięć. Jego shared=OFF nie
+rejestruje `resource_graph.contract` (133 Python); tę bramkę D wykonały dev i Clang.
+ASan używa osobno przypiętego zwykłego dev FFI companion — nie jest to pokrycie
+instrumentowanej biblioteki współdzielonej. `catalog_scale` jest jawnie
+opt-in/niewykonany, nie zaliczony jako wykonany test. CLI ASan działał sam przez
+**242,83 s**, z niezmienionym timeout300 i wszystkimi sanitizerami. Ciężkie
+buildy/bramki były szeregowe. Source/config/bin receipts powstały przed testami;
+pełne logi/JUnit/guard i hashe wejść są zachowane. Liczb presetów nie sumujemy
+jako unikalnego pokrycia. Zbiorczy odczyt: `.onboarding/B-matrix-6d1231bd-metrics-r2.json`.
+Jego sekcja R42 zachowuje pierwsze inventory; bieżące liczby R42 poniżej pochodzą
+z `.onboarding/R42-anchor-review/final-review.json` i nie nadpisują tej historii.
 
-Otwarte: P4 źródło→kontekst→ordinary chat z osobną zgodą/trace bez payloadu, D generic discovery i external resource→E oraz P5 pełny workflow/ExperimentSpec/adoption. CH-RES-N001 zamyka się zakresowo przez nowy jawny local-read view; stare storage-only getters zachowują placeholdery i nie robią ukrytego I/O. Zawartość widoczna lokalnie nadal nie jest uprawniona do wysyłki. R42 inventory jest nierozliczone i odrębne od bramki runtime.
+R42: commit `02714d5b` przesuwa jeden dokładny locator niezmienionego literalnego
+identyfikatora kontraktu; scope **1/1 + 42 Python PASS**,14,13 s. Inventory r2 ma
+**valid=false**: 68 564 kandydaty, 6 dokładnych wyjątków, 68 558 nierozliczonych,
+153 pliki z blokadami lexerów, 6547 issues, 0 stale allowlist i 0 discovery errors.
+To otwarty przegląd kandydatów, odrębny od poprawności runtime; nie każdy kandydat
+jest udowodnionym naruszeniem. Nie dodano szerokiej allowlisty.
 
-Manifest integracji: [data-graph-engine-2026-10-09-integration.json](data-graph-engine-2026-10-09-integration.json). Receipty source/config/bin powstają przed testami; dla drzewa roboczego mają również hashe zmienionych plików i patch. Zero płatnych modeli i CI, main do odbioru Claude’a. Szkic setup odświeżony o zależności D, bezpieczny TMPDIR i lokalny Clang19; zapis potwierdzony. Publikacja konfiguracji nadal jest osobną czynnością użytkownika; nowa instancja nie została jeszcze sprawdzona.
+Historyczne negatywy zachowano: dev r5 159/160 REJECT, trzy kolejne błędy buildu
+Clang (literal, nodiscard w asercji, konwersja limitu do double), starszy pełny
+ASan 155/156 REJECT przez CLI timeout300,10 oraz wcześniejsze błędy harnessów web.
+Ich późniejsze naprawy mają osobne scope/receipty. Izolowany historyczny CLI PASS
+nie zastępuje nowego pełnego przebiegu. Release i TSan są oddzielnymi presetami,
+niewykonanymi tutaj; JNI/APK nie stanowią testu fizycznego urządzenia.
 
+Watchdog: WD-003 `263c8ab` / WD-001 `05e4f290` / WD-011 `bc2778e1` są opublikowane
+z pełnymi bramkami624/630/636. Nowe A4-WD-001 `6be9aed` odrzuca nieobsługiwane
+kontrole HTTP przed kolejką; A4-WD-003 `f2b6b89` odrzuca niejednoznaczne wejścia
+starszego JH16 przed pominięciem missing, zgodnie z istniejącym MethodSpec.
+Poprawne wyniki są zachowane, nowy executor1.1.1 ma jawne provenance. Po scopes20
+i35 oraz niezależnych review pełna złożona bramka lint/build/test na `f2b6b89`:
+**644/644 PASS**, 0 fail/skip/cancel, 65.637 s; receipty
+`data-graph-watchdog-submission-full-*`, bez driftu. A4-WD-002 pozostaje otwarte.
+Pełny log ma dokładną nazwę `data-graph-watchdog-submission-full.log`, bez
+przyrostka `-tests`. Dokumentacyjny checkpoint Watchdoga `8772114` zapisuje ten
+wynik; nie zmienia przetestowanego produktu `f2b6b89`.
+
+AGEDS ma rozbieżność publikacji request pinning: właściciel wskazuje wykonany
+przyrost, lecz jego SHA/handoff nie odnaleziono w sześciu dostępnych refs; lokalne
+i opublikowane B to `3878b537`. Należy odzyskać ten konkretny artefakt, bez
+ponownej implementacji na podstawie starego backlogu. Wykonanego ASR recipe ani
+ratio.exclude nie powtarzamy. Dowód: `.onboarding/ageds-publication-check/STATUS.md`.
+
+Setup cloud draft **revision8** zapisano i odczytano kontrolnie. Publikacja przez
+użytkownika i test nowej instancji pozostają pending. Lokalne setup gates:
+Keyboard974, LEM3, AGEDS411 bez fail/skip; AR build-only/APK4ABI. Podpisy APK
+sprawdzone, źródła przed/po identyczne; brak testu urządzenia/żywej jakości ASR/LLM.
+Zero płatnych modeli/CI, prywatne korpusy i sekrety nie są artefaktami publikacji.
+
+Następny odblokowany przyrost **P4b.1**: jawny native/headless fragment źródła przez
+wspólny ContextEngine na clean store, z rzeczywistym DefaultLayers/R40 i
+metadata-only receipt; przygotowany kontrakt/probe nie oznacza jeszcze wdrożenia.
+Kolejny P4b.2 musi połączyć ten sam MethodRegistry z trwałym śladem bez payloadu,
+autoryzacją źródła i dokładnego odbiorcy oraz zwykłym ChatEngine. Otwarte pozostają
+P4 ordinary-chat/egress, D generic discovery i external resource→E, P5 kompletny
+workflow/ExperimentSpec/opt-in/adoption, osobne ścieżki CH-011 batch/legacy CAS
+oraz nierozliczony inventory. Nie przedstawiamy lokalnego widoku jako ukończenia
+całego scenariusza źródło→kontekst→rozmowa.
 
 ## Baseline i checkpoint
 
@@ -37,7 +117,7 @@ Próba odkrycia dodatkowych repo: `gh repo list klb-t --limit 100 --json name,de
 
 Przeczytane instrukcje AGENTS/CLAUDE, STATE, INDEX i kontrakty R39–R42. Integracja 2026-10-05 zawiera już rejestr metod, profile runtime i prezentację W12. Historycznych bramek nie zaliczamy jako nowych. Nie edytujemy loom/tools/structure. Nie wywołujemy modeli, płatnego CI ani nowych usług.
 
-## Historyczny kolejny krok (wykonany później; patrz aktualny stan na początku)
+## Historyczny plan — nie traktować jako aktualnego backlogu
 
 Następny przyrost B: EA-AGEDS-002 — versioned request w payload kolejki, deduplikacja po intent/hash i rzeczywisty worker czytający przypięte dane. Przed implementacją rozdzielić jawnie requested model/decoder od placement/device workera, aby nie zastąpić jego istniejących ustawień zasobów defaultem serwera. Zachować puste legacy payloads jako unknown. WD-003 pozostaje następną niezależną grupą: capability-validated params, chronione model/messages/output bound, pełne provenance bez sekretów. Pełny nowy guard ChatADHD wymaga również kontraktu C o TMPDIR; poprzednie negatywy zachowane.
 

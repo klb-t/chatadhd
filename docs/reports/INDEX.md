@@ -141,4 +141,18 @@ tylko fast-forward. Nie czytamy `eval/real-holdout-key`; blind użyty raz.
 
 ## 2026-10-09 — kontynuacja B: integracja C/D/E i produktu
 
-Aktualny stan zastępuje historyczne wpisy B powyżej: [raport B](data-graph-engine-2026-10-09.md), [manifest źródło→przyjęcie→zależności](data-graph-engine-2026-10-09-integration.json). Native568c3f7e/Apped4bd2fc dodają lokalny odczyt referencji do istniejącego operatora i ChatView; scope17/17 guard PASS, headless9/App9, pełny web15/15 commands+build/receipt PASS. Poprzednie dev373157/157 i ASan373155/156 REJECT pozostają historią; izolowany CLI1/1 PASS bez zmiany300s. Aktualne pełne dev/ASan/Clang/JNI są kolejną serialną macierzą. Source context/egress/adoption, generic discovery i batch/legacy pozostają otwarte. WD-003624/624 opublikowany, WD-001 przechodzi pełną bramkę; Android setup gates wykonane. Main niezmieniony.
+Aktualny checkpoint osobnej gałęzi B: runtime **6d1231bd**, audit metadata
+`02714d5b`; main bez zmian. [Raport B](data-graph-engine-2026-10-09.md) i
+[manifest źródło→przyjęcie→zależności](data-graph-engine-2026-10-09-integration.json)
+zastępują historyczne wpisy B powyżej. P4a działa w rzeczywistym ChatView/headless
+przez istniejący operator; źródło→kontekst→ordinary chat/egress nadal jest otwarte.
+
+Pełne dev 160/160, Clang 160/160, ASan 159/159, guard PASS; catalog_scale jawnie
+opt-in/niewykonany. Świeży web: 15 komend + build/receipt, JNI 1/1 i generatory PASS.
+R42 inventory nadal nierozliczone (68558 unclassified, 153 blocked, 0 stale); nie jest
+bramką runtime. Watchdog A4-WD001/003: złożony lint/build/test 644/644
+PASS na `f2b6b89`, wcześniejsze 630/636 zachowane historycznie. AGEDS request pin
+wymaga odzyskania źródłowego SHA/handoff, bez ponownej implementacji. Setup
+draft revision 8 zapis/readback, publikacja/nowa instancja pending. Następnie P4b.1 shared
+ContextEngine/R40 preparation; P4b.2, P5 i generic discovery nadal otwarte.
+Release/TSan/device/live-quality niewykonane, płatnych modeli/CI zero.

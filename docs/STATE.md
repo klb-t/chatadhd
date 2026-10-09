@@ -1,9 +1,37 @@
 # STATE — ChatADHD / Loom
 ## 2026-10-09 — zadanie B na gałęzi produktu
 
-Gałąź `gpt/data-graph-engine-2026-10-09`, main bez zmian. C TMPDIR przyjęty z pochodzeniem; ograniczone stosy D/E podłączone przez istniejące metody, mapper i App/native R40. B naprawił rejestr/importer/copy/retencję, A2 reset oraz CH-011 native/Python/status UI. Nowe native **568c3f7e** + App **ed4bd2fc**: lokalny ConversationView referencji przez wspólny operator, source/version/receipt, copy/link message+parent+version-group parity, explicit read, per-row capabilities i transient/none bez trwałego payloadu w badanym fresh store. Scope17/17 guard PASS; headless9/App9 PASS; aktualny pełny web15/15 commands PASS + build/receipt. Starsze dwa błędy harnessów zostały odtworzone i poprawione bez osłabienia asercji.
+Gałąź `gpt/data-graph-engine-2026-10-09`, sprawdzony runtime **6d1231bd**;
+`02714d5b` to późniejszy dokładny locator audytu R42, bez zmiany runtime. Main
+niezmieniony, integracja należy do Claude’a. Ograniczone C/D/E zachowują źródła,
+autorstwo i zależności w manifeście. P4a native `568c3f7e` / App `ed4bd2fc` udostępnia
+jawny lokalny ConversationView przez wspólny Catalog/MethodRegistry/mapper,
+copy/link message+parent+version-group parity, source/version/produced_by,
+niedostępności i transient/none bez trwałego payloadu w badanym fresh store.
+Lokalny odczyt nie uprawnia do wysyłania; stare gettery pozostają storage-only.
 
-Pełny dev373f0774 historycznie157/157 guard PASS; jego pełny ASan155/156 REJECT przez CLI timeout300,10, izolowany1/1 PASS234,21. RUN_SERIAL zachowuje limit300 i sanitizery. Nowy pełny dev/ASan/Clang/JNI aktualnego P4 drzewa nadal pending. Otwarte P4 source-context/egress/transient trace, D generic discovery/external resource→E, P5 workflow/ExperimentSpec/adoption oraz batch/legacy atomowość/CAS. R42 inventory osobno nierozliczone. Watchdog WD-003624/624 opublikowany; WD-001 ma scoped/review, pełna bramka trwa. Android setup Keyboard974,LEM3,AGEDS411/0skip i AR4ABI build-only, APKs zweryfikowane. [Raport B](reports/data-graph-engine-2026-10-09.md) i [manifest](reports/data-graph-engine-2026-10-09-integration.json) zawierają dokładne granice/dowody. Integracja main należy do Claude’a.
+Aktualna pełna macierz na `6d1231bd`: **dev 160/160, Clang 160/160, ASan 159/159, guard PASS**.
+Wykonano odpowiednio 159/159/158 wpisów; po jednym catalog_scale jest jawnie
+opt-in/niewykonany. Dev/Clang: 991 native / 36947 asercji / 2038 Python; ASan: 991/36946/1905,
+0 Python skips. D shared contract jest w dev/Clang, FFI companion ASan zwykły dev.
+CLI ASan: 242,83 s przy timeout 300 s, RUN_SERIAL i niezmienionych sanitizerach.
+Świeży web: 15 komend + build/receipt PASS, JNI 1/1 PASS, oba generatory --check PASS.
+Wcześniejsze negatywy pozostają historią, nie były podmieniane na nowy PASS.
+Release/TSan/device/live-quality niewykonane. R42 scope: 42 Python PASS; inventory
+nadal valid=false, 68558 unclassified / 153 blocked, 0 stale, bez szerokiej allowlisty.
+
+Watchdog WD-003/001/011 mają pełne 624/630/636 PASS. Po A4-WD001 `6be9aed` i
+A4-WD003 `f2b6b89` aktualny złożony lint/build/test: **644/644 PASS**,
+0 skip/fail; A4-WD002 provenance otwarte. AGEDS request pin: odzyskać źródłowy
+SHA/handoff przy rozbieżności publikacji, nie implementować ponownie. Setup
+draft revision 8 zapis/readback; publikacja użytkownika i nowa instancja pending.
+
+Następnie P4b.1: checked source observations przez istniejący ContextEngine i
+R40, wyłącznie przygotowanie w pamięci. P4b.2 source-context/egress/retention,
+D generic discovery/external resource→E, P5 workflow/ExperimentSpec/adoption
+i batch/legacy pozostają otwarte. [Raport B](reports/data-graph-engine-2026-10-09.md)
+i [manifest](reports/data-graph-engine-2026-10-09-integration.json) podają dokładne
+bramki, migracje i granice. Zero płatnych modeli/CI.
 
 
 ## 2026-10-05 wieczór — historyczna integracja Claude’a na main

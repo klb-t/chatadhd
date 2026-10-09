@@ -242,7 +242,7 @@
         "duration_seconds": 36.86
       },
       "migration": "additive C ABI/view + provenance fingerprint; no SQL DDL or history rewrite; projection descriptor3/new snapshot2",
-      "readiness": "scoped local-read acceptance; full current matrix pending"
+      "readiness": "local read acceptance with current composed matrix; P4b egress/context remains open"
     },
     {
       "commit": "ed4bd2fc444ff0c71148e1fdef6f747a1093edf4",
@@ -264,7 +264,67 @@
         ]
       },
       "migration": "user.pack6 new profiles; existing profiles explicit native install_entries preserves old values/exclusions and appends inherited audit delta",
-      "readiness": "local read only; source-history egress refused; full current matrix pending"
+      "readiness": "local read acceptance with current composed matrix; P4b egress/context remains open"
+    },
+    {
+      "commit": "9b6618d7a2e755ff424585e90122e98097075468",
+      "scope": "Current web gate wiring and RUN_SERIAL CLI with unchanged timeout/sanitizers",
+      "dependencies": [
+        "ed4bd2fc444ff0c71148e1fdef6f747a1093edf4"
+      ],
+      "gates": {
+        "scope_evidence": "B-final-web-obhyrddi; later native full matrix at 6d1231bd",
+        "composed_product": "6d1231bd9a20304564eb233f478d1ace33a5df31"
+      },
+      "readiness": "candidate on B; main acceptance belongs to Claude"
+    },
+    {
+      "commit": "48977dd73c773a213c7e7c48e6336e352ced4bd5",
+      "scope": "Onboarding fixture covers all three generated artifacts and optional presentation pack",
+      "dependencies": [
+        "9b6618d7a2e755ff424585e90122e98097075468"
+      ],
+      "gates": {
+        "scope_evidence": "onboarding-generator-compat-fix-20261009; scope1/1 guard PASS22 Python",
+        "composed_product": "6d1231bd9a20304564eb233f478d1ace33a5df31"
+      },
+      "readiness": "candidate on B; main acceptance belongs to Claude"
+    },
+    {
+      "commit": "bb1a943b2329f10873a1f608fe789343436518cb",
+      "scope": "Portable generated profile chunks preserve exact descriptor/provenance bytes; exact R42 proof reader",
+      "dependencies": [
+        "48977dd73c773a213c7e7c48e6336e352ced4bd5"
+      ],
+      "gates": {
+        "scope_evidence": "runtime-profile-chunk-fix-20261009; combined scope5/5 guard PASS",
+        "composed_product": "6d1231bd9a20304564eb233f478d1ace33a5df31"
+      },
+      "readiness": "candidate on B; main acceptance belongs to Claude"
+    },
+    {
+      "commit": "02371b014a22308700af3439bbbfafdba38e8bbd",
+      "scope": "Explicit nodiscard cast inside unchanged expected-exception assertion for Clang WERROR",
+      "dependencies": [
+        "bb1a943b2329f10873a1f608fe789343436518cb"
+      ],
+      "gates": {
+        "scope_evidence": "import-resume-nodiscard-fix-20261009; scope1/1 guard PASS",
+        "composed_product": "6d1231bd9a20304564eb233f478d1ace33a5df31"
+      },
+      "readiness": "candidate on B; main acceptance belongs to Claude"
+    },
+    {
+      "commit": "6d1231bd9a20304564eb233f478d1ace33a5df31",
+      "scope": "Exact native response-limit integer validation without floating conversion",
+      "dependencies": [
+        "02371b014a22308700af3439bbbfafdba38e8bbd"
+      ],
+      "gates": {
+        "scope_evidence": "analysis-response-limit/HANDOFF.json; HTTP2/2 and native web5/5 PASS",
+        "composed_product": "6d1231bd9a20304564eb233f478d1ace33a5df31"
+      },
+      "readiness": "candidate on B; main acceptance belongs to Claude"
     }
   ],
   "open": [
@@ -273,7 +333,8 @@
     "D generic discovery and external resource-to-E workspace connection",
     "R42 unclassified inventory and lexer coverage",
     "CH-011 separate native batch consumers and legacy Python atomicity/CAS remain open",
-    "Full current P4 dev/ASan/Clang/web/JNI gates pending; prior CH-011 full ASan REJECT retained"
+    "Watchdog A4-WD-002 immutable consumed-input provenance remains open",
+    "AGEDS queued-request pin publication/source reference discrepancy"
   ],
   "composed_gates": [
     {
@@ -377,7 +438,202 @@
       "native_pretest_receipt": "PASS",
       "receipt_directory": "B-final-web-obhyrddi",
       "system_browser": "Chromium151",
-      "source_binary_dist_drift": false
+      "source_binary_dist_drift": false,
+      "claim": "historical pre-portability web PASS; superseded by current full web replay"
+    },
+    {
+      "source_commit": "6d1231bd9a20304564eb233f478d1ace33a5df31",
+      "preset": "dev",
+      "actual_compiler": "GCC13",
+      "sqlite": "vendored",
+      "guard": "PASS",
+      "manifest_entries": 160,
+      "junit_entries": 160,
+      "executed_entries": 159,
+      "executed_native_cases": 991,
+      "executed_native_assertions": 36947,
+      "executed_python_cases": 2038,
+      "skipped_python_cases": 0,
+      "unexecuted_entries": [
+        "unit.test_catalog_scale"
+      ],
+      "status": "PASS",
+      "duration_seconds": 317.3,
+      "receipt_prefix": "data-graph-integration-composed-r6-full-dev",
+      "guard_sha256": "a8ca5957cbe79d4fa85a876dd15ac5e3d5a7a9d421d537fcfc01489fdc548909",
+      "receipt_sha256": "fbbf62bf0e5069afb2f9fb34ebd478f008acfa3ee684e2ce2b527b7fefa1a197"
+    },
+    {
+      "source_commit": "6d1231bd9a20304564eb233f478d1ace33a5df31",
+      "preset": "vendored",
+      "actual_compiler": "Clang19",
+      "sqlite": "vendored",
+      "guard": "PASS",
+      "manifest_entries": 160,
+      "junit_entries": 160,
+      "executed_entries": 159,
+      "executed_native_cases": 991,
+      "executed_native_assertions": 36947,
+      "executed_python_cases": 2038,
+      "skipped_python_cases": 0,
+      "unexecuted_entries": [
+        "unit.test_catalog_scale"
+      ],
+      "status": "PASS",
+      "duration_seconds": 341.65,
+      "receipt_prefix": "data-graph-integration-composed-full-clang",
+      "guard_sha256": "c584c12320f1fcc5a3d75cf9b77a5dc454b472bd643a83699c23308af080f92d",
+      "receipt_sha256": "a1d1cf1d8c59272f67f9ec6da0ef795a93751477877c4d73fe15b4400791f4ec"
+    },
+    {
+      "source_commit": "6d1231bd9a20304564eb233f478d1ace33a5df31",
+      "preset": "asan",
+      "actual_compiler": "GCC13",
+      "sqlite": "vendored",
+      "guard": "PASS",
+      "manifest_entries": 159,
+      "junit_entries": 159,
+      "executed_entries": 158,
+      "executed_native_cases": 991,
+      "executed_native_assertions": 36946,
+      "executed_python_cases": 1905,
+      "skipped_python_cases": 0,
+      "unexecuted_entries": [
+        "unit.test_catalog_scale"
+      ],
+      "status": "PASS",
+      "duration_seconds": 1287.51,
+      "receipt_prefix": "data-graph-integration-composed-r2-full-asan",
+      "guard_sha256": "b72b772c0629e21ad40d806fc08624a5c7ab354b6a69ee5528edc39c0b082503",
+      "receipt_sha256": "cd87da19b881e778a4109d0bc464dff9c89af97f74f279b66b2f94b14d6406aa",
+      "ffi_companion": {
+        "receipt": "data-graph-integration-composed-r2-asan-ffi-receipt.json",
+        "receipt_sha256": "e99a94fcadcc543e87e67b8b407f8542f4e01ecdb7f995f03f7d96c0bd8ce378",
+        "claim": "ordinary dev library from the same source; FFI tests are not instrumented ASan coverage"
+      }
+    },
+    {
+      "source_commit": "6d1231bd9a20304564eb233f478d1ace33a5df31",
+      "scope": "full current web matrix and native bridge",
+      "status": "PASS",
+      "directory": "B-final-web-_8sxv4h7",
+      "commands": [
+        {
+          "id": "build",
+          "status": "pass",
+          "exit_code": 0,
+          "elapsed_seconds": 8.882
+        },
+        {
+          "id": "native-pretest-receipt",
+          "status": "pass",
+          "exit_code": 0,
+          "elapsed_seconds": 0.276
+        },
+        {
+          "id": "test-transport",
+          "status": "pass",
+          "exit_code": 0,
+          "elapsed_seconds": 0.524
+        },
+        {
+          "id": "test-workspace-state",
+          "status": "pass",
+          "exit_code": 0,
+          "elapsed_seconds": 0.504
+        },
+        {
+          "id": "test-context-plan",
+          "status": "pass",
+          "exit_code": 0,
+          "elapsed_seconds": 0.628
+        },
+        {
+          "id": "test-application-profiles",
+          "status": "pass",
+          "exit_code": 0,
+          "elapsed_seconds": 1.061
+        },
+        {
+          "id": "test-imported-message-content-state",
+          "status": "pass",
+          "exit_code": 0,
+          "elapsed_seconds": 0.488
+        },
+        {
+          "id": "app-e2e",
+          "status": "pass",
+          "exit_code": 0,
+          "elapsed_seconds": 37.6
+        },
+        {
+          "id": "test-workspace",
+          "status": "pass",
+          "exit_code": 0,
+          "elapsed_seconds": 11.364
+        },
+        {
+          "id": "test-chat-context",
+          "status": "pass",
+          "exit_code": 0,
+          "elapsed_seconds": 7.772
+        },
+        {
+          "id": "test-application-profiles-browser",
+          "status": "pass",
+          "exit_code": 0,
+          "elapsed_seconds": 12.128
+        },
+        {
+          "id": "test-imported-message-content-browser",
+          "status": "pass",
+          "exit_code": 0,
+          "elapsed_seconds": 1.441
+        },
+        {
+          "id": "test-imported-message-content-native",
+          "status": "pass",
+          "exit_code": 0,
+          "elapsed_seconds": 5.474
+        },
+        {
+          "id": "test-application-profile-graph",
+          "status": "pass",
+          "exit_code": 0,
+          "elapsed_seconds": 3.028
+        },
+        {
+          "id": "test-product-integration",
+          "status": "pass",
+          "exit_code": 0,
+          "elapsed_seconds": 23.496
+        },
+        {
+          "id": "test-interface-2",
+          "status": "pass",
+          "exit_code": 0,
+          "elapsed_seconds": 23.628
+        },
+        {
+          "id": "test-interface-2-native",
+          "status": "pass",
+          "exit_code": 0,
+          "elapsed_seconds": 14.049
+        }
+      ],
+      "receipt_sha256": "354689be927b5673dee179c5f30a059148452e86507eb3e749b1f2b113c4a5cc",
+      "post_receipt_sha256": "e4dfeb4d912635e421c4a3e50f7ecb70c9b61bf371e19a7c934df5ad7a67821c",
+      "source_binary_dist_drift": false,
+      "screenshot_restoration_sha256": "4b141ff22fd63df1390c7f2931065527c5962be319a34c0f6d2df17c3232b199"
+    },
+    {
+      "source_commit": "6d1231bd9a20304564eb233f478d1ace33a5df31",
+      "scope": "host JDK17 JNI against current dev library; not Android device acceptance",
+      "status": "PASS",
+      "tests": 1,
+      "duration_seconds": 1.57,
+      "junit_suite_time_seconds": 1.0,
+      "receipt_sha256": "4e42505c7de486b0aa65a5c9bb9fe681762f688123f382cbe0a56fc9b463e6d9"
     }
   ],
   "ecosystem": [
@@ -395,14 +651,331 @@
         "receipt_prefix": "data-graph-watchdog-params-full"
       },
       "push": "PASS"
+    },
+    {
+      "repository": "klb-t/Watchdog-JH16",
+      "product_commit": "05e4f290121e91ad516e4db70ee1973d6a4062b3",
+      "scope": "WD-001 selected template recipe, runtime, immutable proposal evidence",
+      "gates": {
+        "lint": "PASS",
+        "build": "PASS",
+        "tests": 630,
+        "pass": 630,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "receipt_prefix": "data-graph-watchdog-template-full",
+        "receipt_sha256": "a81fbeba03628e4c4757841f7450833434f019b0cf7472f44743c81baa873984",
+        "receipt_source_commit": "867f83b695e93ac29445489c4c5408b0d0308cd8",
+        "validated_composed_commit": "05e4f290121e91ad516e4db70ee1973d6a4062b3",
+        "source_worktree": {
+          "backend/watchdog_api/api/routes.ts": "1d147ffd4b3ac4b60f963708ab2284c581fb46a3da0e4d1b296ea571709352f5",
+          "backend/watchdog_api/config/narrative.ts": "899bec7d8745816d2f63df23a79560af3d45c1e0babbab50215b1bfa2f7270ea",
+          "backend/watchdog_api/services/export.ts": "fcd80535f0f689656d12740729db8ca7e20135ae1f14ddf56d9def75eecfee3c",
+          "backend/watchdog_api/services/narrative.ts": "b92fd232cc7278acd40e3d73d7bf4c097bf8989ff468b882253c1dd392d3fe89",
+          "config/narratives.json": "63548874d0ed3b349acf056c62e2f946feb6f1c978b5ba143883b4ba8a081fc1",
+          "docs/NARRATIVE_RECIPES.md": "178e0ac9490689f324f7366f94a1ba54acb116eabbda030075307f9402db9034",
+          "docs/reports/data-graph-engine-2026-10-09.md": "3ed85027d37464b3644c009fc2ef5ec44d6922149ef2e3b0d6836a69389f0ac4",
+          "docs/spec/00_STATE_AND_DECISIONS.md": "a6fdd5c87e04b1ba65540adbb087cd0162d57d3cf249c7da50d23a9aeb19d1dd",
+          "docs/spec/07_EPICS_AND_TASKS.md": "53ed2db8dc4b98d0637ac9743cb3b14dd3a646e06531c208c64509a22a106aa1",
+          "tests/fixtures/narrative-before.json": "84bf92effa462f17c18b0583a08b496c5df814b4ccc6492df5ce4337ff83186d",
+          "tests/integration/live_path.test.ts": "bd9eb728333cc2baae89a8928b91b60d06967fdf2ec84f8c590f31acbd4aa522",
+          "tests/integration/narrative_templates.test.ts": "545e6d193b6a827795077992292fc084f561fde0d8f0e6c0dfbb7f2c839d201d",
+          "tests/unit/llm.test.ts": "41ec70b58e94dccfec7d2ff9a4b586f3b3a2fd54bb3391e559357b79ad6831c1",
+          "tests/unit/narrative_templates.test.ts": "fb017a8f125f1984f549cb27bd895d12dfeb5b5ab14fba2d060adda5fc0545f7",
+          "tests/unit/output.test.ts": "c1805b08c6d9b55409d24856591983f4ee4f8cec12313ed7623c70ffed22aeae"
+        },
+        "post_gate_documentation_deltas": {
+          "docs/reports/data-graph-engine-2026-10-09.md": {
+            "pretest_sha256": "3ed85027d37464b3644c009fc2ef5ec44d6922149ef2e3b0d6836a69389f0ac4",
+            "published_sha256": "f54f14ffc3720eb99e837c9b80f9bac9edc43cbf88af854356807c83b739e789",
+            "scope": "post-gate results/ledger documentation; product and test bytes unchanged"
+          },
+          "docs/spec/00_STATE_AND_DECISIONS.md": {
+            "pretest_sha256": "a6fdd5c87e04b1ba65540adbb087cd0162d57d3cf249c7da50d23a9aeb19d1dd",
+            "published_sha256": "f94080717328f7b64b971023adae88491c771f2fb16d70059e13eb268bf9d9ca",
+            "scope": "post-gate results/ledger documentation; product and test bytes unchanged"
+          },
+          "docs/spec/07_EPICS_AND_TASKS.md": {
+            "pretest_sha256": "53ed2db8dc4b98d0637ac9743cb3b14dd3a646e06531c208c64509a22a106aa1",
+            "published_sha256": "ae94fb9d49ee7492f01897a0e3c8517f24c5f17ba04288f0871efc1c5cb6d802",
+            "scope": "post-gate results/ledger documentation; product and test bytes unchanged"
+          }
+        },
+        "claim": "Component accepted through the recorded composed gate; this is not a separate full run on each component commit. Historical pre-publication gates also bind their exact working files."
+      },
+      "push": "PASS"
+    },
+    {
+      "repository": "klb-t/Watchdog-JH16",
+      "product_commit": "bc2778e109d00602c124cabc1fad980b1007fa40",
+      "scope": "WD-011 exact numeric evidence admission including sign and exponent",
+      "gates": {
+        "lint": "PASS",
+        "build": "PASS",
+        "tests": 636,
+        "pass": 636,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "receipt_prefix": "data-graph-watchdog-numbers-r2-full",
+        "receipt_sha256": "7614580fd16e293086d6ed4ada5791791d0ec37404d22072aa8332a7673939d8",
+        "receipt_source_commit": "05e4f290121e91ad516e4db70ee1973d6a4062b3",
+        "validated_composed_commit": "bc2778e109d00602c124cabc1fad980b1007fa40",
+        "source_worktree": {
+          "backend/watchdog_api/services/narrative.ts": "b5b3a3cde0819060714a31fde30a02ef34490d4a73edbfa1b864d64fd01b322c",
+          "docs/NARRATIVE_RECIPES.md": "768e7a52b554eab3e157ff41913b6d3ccf5344ad7dbec69a6836d970ed98afdd",
+          "docs/reports/data-graph-engine-2026-10-09.md": "3390e65007e2aa33537ff28003f5e1b9b8c450cac783e3da732e2548f5e5b60e",
+          "docs/spec/00_STATE_AND_DECISIONS.md": "16a1f69d4b9c716a360a882f8a0de40d9e23f67fcc025a136d72ebbad1536ce8",
+          "docs/spec/07_EPICS_AND_TASKS.md": "3548e65d0aeae9442365b5140c9b8f53828acd66e53e69af1c9ff0d11da13076",
+          "tests/integration/narrative_templates.test.ts": "74aae9f8438b4755d3cffc138a9f379d625eedf6afdb9c1ecff0109241c9563f",
+          "tests/unit/llm.test.ts": "e98a6e1648aaf4c488679e39f4510d5c3ac0bf4d3ccb8d9f7c4f85cf09ff2a1d",
+          "tests/unit/narrative_numbers.test.ts": "6b4e9def21d4b85ebc0e8c8621156da2856c27552ffad88624fbca63ab9697db"
+        },
+        "post_gate_documentation_deltas": {
+          "docs/reports/data-graph-engine-2026-10-09.md": {
+            "pretest_sha256": "3390e65007e2aa33537ff28003f5e1b9b8c450cac783e3da732e2548f5e5b60e",
+            "published_sha256": "4ebd892fd9ba579d7d05018013f8f66bb55cff876e180e157ee2af92387d7ef3",
+            "scope": "post-gate results/ledger documentation; product and test bytes unchanged"
+          },
+          "docs/spec/00_STATE_AND_DECISIONS.md": {
+            "pretest_sha256": "16a1f69d4b9c716a360a882f8a0de40d9e23f67fcc025a136d72ebbad1536ce8",
+            "published_sha256": "06b6022f0bb4d79bd66defabab93d99eb2d217a33868e2336116bd51fbe14573",
+            "scope": "post-gate results/ledger documentation; product and test bytes unchanged"
+          },
+          "docs/spec/07_EPICS_AND_TASKS.md": {
+            "pretest_sha256": "3548e65d0aeae9442365b5140c9b8f53828acd66e53e69af1c9ff0d11da13076",
+            "published_sha256": "f659a4250717ebf3002afd8e7fd07b81995b2fe1821c891c6b09b9ac631430f7",
+            "scope": "post-gate results/ledger documentation; product and test bytes unchanged"
+          }
+        },
+        "claim": "Component accepted through the recorded composed gate; this is not a separate full run on each component commit. Historical pre-publication gates also bind their exact working files."
+      },
+      "push": "PASS"
+    },
+    {
+      "repository": "klb-t/Watchdog-JH16",
+      "product_commit": "6be9aedf833fce9d4ec7817b67d79169310e82e2",
+      "scope": "A4-WD-001 strict HTTP envelope/config with preserved reviewed internal path",
+      "gates": {
+        "lint": "PASS",
+        "build": "PASS",
+        "tests": 644,
+        "pass": 644,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "receipt_prefix": "data-graph-watchdog-submission-full",
+        "receipt_sha256": "4b8148dadf05860e90c49622cd0cc33f7824152c039108bb7907474c8054f99a",
+        "receipt_source_commit": "f2b6b8969b08eb36af36bf9a9a9323a65390bda7",
+        "validated_composed_commit": "f2b6b8969b08eb36af36bf9a9a9323a65390bda7",
+        "source_worktree": {},
+        "post_gate_documentation_deltas": {},
+        "claim": "Component accepted through the recorded composed gate; this is not a separate full run on each component commit. Historical pre-publication gates also bind their exact working files."
+      },
+      "push": "PASS"
+    },
+    {
+      "repository": "klb-t/Watchdog-JH16",
+      "product_commit": "f2b6b8969b08eb36af36bf9a9a9323a65390bda7",
+      "scope": "A4-WD-003 reject ambiguous legacy JH16 inputs before missingness; executor1.1.1",
+      "gates": {
+        "lint": "PASS",
+        "build": "PASS",
+        "tests": 644,
+        "pass": 644,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "receipt_prefix": "data-graph-watchdog-submission-full",
+        "receipt_sha256": "4b8148dadf05860e90c49622cd0cc33f7824152c039108bb7907474c8054f99a",
+        "receipt_source_commit": "f2b6b8969b08eb36af36bf9a9a9323a65390bda7",
+        "validated_composed_commit": "f2b6b8969b08eb36af36bf9a9a9323a65390bda7",
+        "source_worktree": {},
+        "post_gate_documentation_deltas": {},
+        "claim": "Component accepted through the recorded composed gate; this is not a separate full run on each component commit. Historical pre-publication gates also bind their exact working files."
+      },
+      "push": "PASS"
     }
   ],
   "readiness": {
-    "product_head": "ed4bd2fc444ff0c71148e1fdef6f747a1093edf4",
+    "product_head": "6d1231bd9a20304564eb233f478d1ace33a5df31",
     "candidate_for": "A audit and Claude integration review; main unchanged",
     "complete_owner_scope": false,
-    "current_full_dev": "Historical373 PASS; P4 full pending",
-    "remaining_matrix": "P4 full web PASS; dev/ASan/Clang/JNI pending",
-    "setup_config": "draft revision6 saved; requires user Publish; fresh instance not validated"
+    "current_full_dev": "PASS at product_head",
+    "current_full_asan": "PASS at product_head; native ASan+UBSan with ordinary dev FFI companion explicitly separate",
+    "current_full_clang": "PASS at product_head",
+    "current_full_web_jni": "PASS at product_head",
+    "remaining_matrix": "release, TSan, native Android device and real model-quality measurements not executed; no equivalent claim",
+    "setup_config": "draft revision8 saved and read back; requires user Publish; fresh instance not validated",
+    "next_product_step": "P4b checked source candidate through existing context selector with independent destination authorization and explicit transient retention; see boundary review"
+  },
+  "setup_gates": [
+    {
+      "repository": "keyboard",
+      "head": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+      "status": "PASS",
+      "tests": {
+        "tests": 974,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "duration_seconds": 887.238661852,
+      "receipt_directory": "keyboard-gate-20261009T094410216424Z",
+      "receipt_sha256": "95bd7f25db6a2753b019296802d96407f4b7d219e20ac6b108abd75f9ee74aa3",
+      "limitations": [
+        "No physical device/account acceptance.",
+        "Robolectric SDK36/JDK17 warning did not skip any of the 974 actual cases; no SDK36 coverage inferred."
+      ],
+      "claim": "local setup/build gate; AR build-only, no device or live quality measurement"
+    },
+    {
+      "repository": "lem",
+      "head": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+      "status": "PASS",
+      "tests": {
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "duration_seconds": 144.151466125,
+      "receipt_directory": "lem-gate-20261009T100704855719Z",
+      "receipt_sha256": "c260be32f9572e13d69a242c498b61e7fa963a10853262d5065cd3f1f9f8c4d0",
+      "limitations": [
+        "No physical device/account acceptance or paid model calls.",
+        "Only the three existing local test cases were executed; no ExperimentConfig or evidence-migration coverage inferred."
+      ],
+      "claim": "local setup/build gate; AR build-only, no device or live quality measurement"
+    },
+    {
+      "repository": "ageds",
+      "head": "3878b5378b2bb82a08903e760e0dcfe7ca233e53",
+      "status": "PASS",
+      "tests": {
+        "tests": 411,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "duration_seconds": 190.563478294,
+      "receipt_directory": "ageds-gate-20261009T101127817645Z",
+      "receipt_sha256": "ea54b7efe14ebaac9c1b7f6051545f34a03a7d8168352cc362034e9a16dc1467",
+      "limitations": [
+        "This gate does not revalidate server-only B product changes or private corpus/model quality.",
+        "No paid model calls, no keystore copied or published."
+      ],
+      "claim": "local setup/build gate; AR build-only, no device or live quality measurement"
+    },
+    {
+      "repository": "ar",
+      "head": "d8af2dd022dacb2f068074158d83e566813592d6",
+      "status": "PASS",
+      "tests": {
+        "tests": 0,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "duration_seconds": 121.880020476,
+      "receipt_directory": "ar-gate-20261009T101638342515Z",
+      "receipt_sha256": "7f3b1efeb86a18150a5128762dbc03b29a17be6847443e5f6f2fbc0fcb52d427",
+      "limitations": [
+        "A successful APK build does not establish ARCore tracking, stereo reconstruction or phone camera compatibility.",
+        "No model calls, no keystore copied or published."
+      ],
+      "claim": "local setup/build gate; AR build-only, no device or live quality measurement"
+    }
+  ],
+  "R42": {
+    "runtime_matrix_inventory": {
+      "valid": false,
+      "counts": {
+        "files": 583,
+        "product_files": 455,
+        "excluded_test_fixture_files": 128,
+        "source_bytes": 6192229,
+        "unknown_size_files": 0,
+        "discovery_errors": 0,
+        "candidates": 68564,
+        "allowed": 5,
+        "unclassified": 68559,
+        "blocked_files": 153,
+        "stale_allowlist": 1,
+        "verified_generated_files": 1
+      },
+      "issues": 6548,
+      "report_sha256": "a49767be5179593d868fb43a8b08d05772fe34230d215df0aff0bb07660b7e27",
+      "interpretation": "lexical inventory; unclassified candidates and lexer blockers are not all proven violations and are separate from runtime gates"
+    },
+    "exact_anchor_review": {
+      "captured_at": "2026-10-09T12:58:59.976135+00:00",
+      "product_head": "6d1231bd9a20304564eb233f478d1ace33a5df31",
+      "policy_revision": 5,
+      "policy_sha256": "e8248929a1b3773aad347e4c051d7224946967ee4c9dd5efc3c7233319e6aadb",
+      "review": "R42-anchor-review/review.json",
+      "scope_guard": {
+        "valid": true,
+        "executed_entries": 1,
+        "python_cases": 42,
+        "prefix": "data-graph-integration-R42-anchor-final"
+      },
+      "inventory": {
+        "valid": false,
+        "counts": {
+          "files": 583,
+          "product_files": 455,
+          "excluded_test_fixture_files": 128,
+          "source_bytes": 6192229,
+          "unknown_size_files": 0,
+          "discovery_errors": 0,
+          "candidates": 68564,
+          "allowed": 6,
+          "unclassified": 68558,
+          "blocked_files": 153,
+          "stale_allowlist": 0,
+          "verified_generated_files": 1
+        },
+        "issues": 6547,
+        "prefix": "data-graph-integration-final-r2-r42",
+        "sha256": "cb9ab14327e2eb33a4dadbfd7e7ae4504f8b0c112a3d01c2e4e5c15f142f024a"
+      },
+      "source_inputs_unchanged": true,
+      "claim": "exact unchanged contract literal locator updated; unclassified inventory and lexer blockers remain open; no allowlist expansion"
+    },
+    "claim": "runtime_matrix_inventory is the historical first inventory; exact_anchor_review contains current final-r2 counts. Lexical inventory and lexer blockers remain open; no broad allowlist or runtime PASS inference"
+  },
+  "audit_metadata": [
+    {
+      "commit": "02714d5b64c95b48d2317cc140b81f7ca3a0ce95",
+      "scope": "exact unchanged runtime-profile schema literal locator after chunking; validation policy revision5",
+      "runtime_product_unchanged_from": "6d1231bd9a20304564eb233f478d1ace33a5df31",
+      "gates": {
+        "valid": true,
+        "executed_entries": 1,
+        "python_cases": 42,
+        "prefix": "data-graph-integration-R42-anchor-final"
+      }
+    }
+  ],
+  "publication_discrepancies": [
+    {
+      "repository": "klb-t/AGEDS",
+      "local_and_remote_B": "3878b5378b2bb82a08903e760e0dcfe7ca233e53",
+      "scope": "Owner says queued-request pin completed; unavailable among current six advertised heads. No repeat implementation.",
+      "evidence": "ageds-publication-check/STATUS.md"
+    }
+  ],
+  "checkpoint": {
+    "id": "B-6d1231bd-matrix-2026-10-09",
+    "versioned_checkpoint": true,
+    "complete_owner_scope": false,
+    "runtime_product_commit": "6d1231bd9a20304564eb233f478d1ace33a5df31",
+    "audit_metadata_commit": "02714d5b64c95b48d2317cc140b81f7ca3a0ce95",
+    "Watchdog_product_commit": "f2b6b8969b08eb36af36bf9a9a9323a65390bda7",
+    "Watchdog_documentation_commit": "8772114c8cf0266e590ba33331279a045c1c3759",
+    "next_scope": "P4b.1; later source-context/model egress and full owner backlog remain open",
+    "evidence_pack": "Versioned public checkpoint archive prepared separately; excludes private corpora, caches, binaries/APKs/keystores and full R42 raw inventory."
   }
 }
