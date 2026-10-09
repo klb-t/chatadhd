@@ -1,0 +1,263 @@
+{
+  "schema": "klbt.audit.receipt/3",
+  "repo": "klb-t/chatadhd",
+  "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "suite": "Python conversation importer resources",
+  "source_hashes": {
+    "engine/importer.py": "60200262d5ac4ef04319415bce3dfd067ee8152a71fc7e29355a3c8d4da6210c",
+    "engine/db.py": "75397fc9927a57819d8d8db7a76e7d93fcf29cf541df9a5bee63b8d059319fa3",
+    "engine/events.py": "9752f1e0158c1648ab65094e9811c02ffbc9d957e3644ed55040a8150f5b150c",
+    "gui/import_panel.py": "40b998a03faa68b8e49d770817f578dc5ed6055b2069d21d6b4b922ae8e02902"
+  },
+  "tool_sha256": "cf4233a79ca9813dd046d58f792a50e3da380010cac522453b35664e3e6efac8",
+  "network_attempts": 0,
+  "observations": {
+    "rich_import": {
+      "rows": [
+        {
+          "role": "user",
+          "text": "AUDIT_USER",
+          "parent_id": null,
+          "attachments": [],
+          "metadata": {},
+          "model": null
+        },
+        {
+          "role": "assistant",
+          "text": "AUDIT_BRANCH_A",
+          "parent_id": null,
+          "attachments": [],
+          "metadata": {},
+          "model": null
+        },
+        {
+          "role": "assistant",
+          "text": "AUDIT_BRANCH_B",
+          "parent_id": null,
+          "attachments": [],
+          "metadata": {},
+          "model": null
+        }
+      ],
+      "source_sha256": "1c022f8d57bfbdca9002d52d2f5b496f7b0e1415dd9c9b8ef6322027e5de81a5",
+      "source_hash_reachable_from_stored_records": false,
+      "unknown_conversation_reachable": false,
+      "unknown_message_reachable": false,
+      "source_ids_reachable": false,
+      "graph_links": 0
+    },
+    "nested_archive": {
+      "conversations": 1,
+      "source_sha256": "eb402d4e828a52c62665410e63112c89e379327cdee6fa504895d8d638e006d6",
+      "text_rows": [
+        {
+          "role": "user",
+          "text": "AUDIT_USER",
+          "parent_id": null,
+          "attachments": [],
+          "metadata": {},
+          "model": null
+        },
+        {
+          "role": "assistant",
+          "text": "AUDIT_BRANCH_A",
+          "parent_id": null,
+          "attachments": [],
+          "metadata": {},
+          "model": null
+        },
+        {
+          "role": "assistant",
+          "text": "AUDIT_BRANCH_B",
+          "parent_id": null,
+          "attachments": [],
+          "metadata": {},
+          "model": null
+        }
+      ],
+      "temp_source_paths_retained": false
+    },
+    "unknown_mapping": {
+      "unknown_result": [],
+      "known_empty_result": [],
+      "exception_type": null
+    },
+    "stream_threshold": {
+      "small_conversations": 1,
+      "large_conversations": 0,
+      "large_bytes": 5000128
+    },
+    "partial_archive": {
+      "returned_conversations": 1,
+      "events": [
+        {
+          "conv_id": "c_f5e74ec24288",
+          "count": 1,
+          "title": "good.json"
+        },
+        {
+          "count": 1,
+          "source": "/tmp/chatadhd_import_7kxn_kyj/good.json",
+          "format": "json"
+        },
+        {
+          "count": 1,
+          "source": "/tmp/audit-resource-import-4dtxq3wv/partial.zip",
+          "format": "zip"
+        }
+      ],
+      "result_type": "list",
+      "members": 3,
+      "structured_member_outcomes": false
+    },
+    "html": {
+      "rows": [
+        {
+          "role": "user",
+          "text": "AUDIT_ONE question long",
+          "parent_id": null,
+          "attachments": [],
+          "metadata": {},
+          "model": null
+        },
+        {
+          "role": "user",
+          "text": "AUDIT_THREE question long",
+          "parent_id": null,
+          "attachments": [],
+          "metadata": {},
+          "model": null
+        },
+        {
+          "role": "assistant",
+          "text": "AUDIT_TWO reply long",
+          "parent_id": null,
+          "attachments": [],
+          "metadata": {},
+          "model": null
+        },
+        {
+          "role": "assistant",
+          "text": "AUDIT_FOUR reply long",
+          "parent_id": null,
+          "attachments": [],
+          "metadata": {},
+          "model": null
+        }
+      ],
+      "browser_started": false
+    }
+  },
+  "cases": [
+    {
+      "id": "A3-IMP-CH001.lossy-legacy-export",
+      "phase": "reproduction",
+      "status": "PASS",
+      "evidence": {}
+    },
+    {
+      "id": "A3-IMP-CH001.lossless-records-or-addressed-source",
+      "phase": "acceptance",
+      "status": "FAIL",
+      "evidence": {}
+    },
+    {
+      "id": "A3-IMP-CH002.nested-container-consumer",
+      "phase": "acceptance",
+      "status": "PASS",
+      "evidence": {}
+    },
+    {
+      "id": "A3-IMP-CH003.unknown-equals-empty",
+      "phase": "reproduction",
+      "status": "PASS",
+      "evidence": {}
+    },
+    {
+      "id": "A3-IMP-CH003.explicit-unknown-mapping",
+      "phase": "acceptance",
+      "status": "FAIL",
+      "evidence": {}
+    },
+    {
+      "id": "A3-IMP-CH004.size-dependent-object-loss",
+      "phase": "reproduction",
+      "status": "PASS",
+      "evidence": {}
+    },
+    {
+      "id": "A3-IMP-CH004.streaming-preserves-supported-shape",
+      "phase": "acceptance",
+      "status": "FAIL",
+      "evidence": {}
+    },
+    {
+      "id": "A3-IMP-CH003.partial-container-reported-only-as-success-list",
+      "phase": "reproduction",
+      "status": "PASS",
+      "evidence": {}
+    },
+    {
+      "id": "A3-IMP-CH003.partial-container-outcomes",
+      "phase": "acceptance",
+      "status": "FAIL",
+      "evidence": {}
+    },
+    {
+      "id": "A3-IMP-CH005.snapshot-survives-unavailable-source",
+      "phase": "acceptance",
+      "status": "PASS",
+      "evidence": {}
+    },
+    {
+      "id": "A3-IMP-CH006.html-role-group-order",
+      "phase": "reproduction",
+      "status": "PASS",
+      "evidence": {}
+    },
+    {
+      "id": "A3-IMP-CH006.html-source-order",
+      "phase": "acceptance",
+      "status": "FAIL",
+      "evidence": {}
+    },
+    {
+      "id": "A3-IMP-ZIP-REFERENCE-EQUALITY",
+      "phase": "acceptance",
+      "status": "BLOCKED_MISSING_CONTRACT",
+      "reason": "ConversationImporter has only materializing import_file/path; no binding/selector/version/policy graph-reference contract. Native catalog is audited separately; this probe must not invent that implementation."
+    },
+    {
+      "id": "A3-IMP-LIVE-REFRESH-WRITEBACK",
+      "phase": "acceptance",
+      "status": "BLOCKED_MISSING_CONTRACT",
+      "reason": "No existing Python importer public source refresh, reference read, lazy/eager/cache or writable projection contract identified. Snapshot persistence PASS does not prove live availability monitoring."
+    },
+    {
+      "id": "A3-IMP-UI-HEADLESS-RESOURCE-QUERY",
+      "phase": "acceptance",
+      "status": "BLOCKED_MISSING_CONTRACT",
+      "reason": "Headless import_file runs; GUI import_panel source calls the same importer. Actual rendered view→graph resource read and ZIP reference→task API are not implemented in this Python path and GUI was not launched."
+    },
+    {
+      "id": "A3-IMP-NETWORK-GUARD",
+      "phase": "acceptance",
+      "status": "PASS",
+      "evidence": {
+        "attempts": 0,
+        "block": "socket connect/connect_ex/create_connection"
+      }
+    }
+  ],
+  "boundaries": [
+    "Actual Database/ConversationImporter; no copied parser or stub database.",
+    "Actual SQLite reopen; only synthetic publishable fixtures.",
+    "GUI source wiring only; not browser/Kivy E2E.",
+    "Native import/catalog/graph kernel outside this probe."
+  ],
+  "counts": {
+    "PASS": 8,
+    "FAIL": 5,
+    "BLOCKED_MISSING_CONTRACT": 3
+  }
+}

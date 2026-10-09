@@ -1,0 +1,91 @@
+{
+  "schema": "klbt.audit.executable-index/1",
+  "suites": [
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "tool": "chat_importers.py",
+      "receipt": "chat-main.json",
+      "counts": {
+        "PASS": 8,
+        "FAIL": 3,
+        "BLOCKED_MISSING_CONTRACT": 5
+      }
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "384c5e1686cd3a58a7d89a8a6813a18c764f697d",
+      "tool": "chat_importers.py",
+      "receipt": "chat-B2.json",
+      "counts": {
+        "PASS": 8,
+        "FAIL": 3,
+        "BLOCKED_MISSING_CONTRACT": 5
+      }
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "tool": "watchdog_run.py",
+      "receipt": "watchdog-main.json",
+      "counts": {
+        "PASS": 10,
+        "FAIL": 0,
+        "BLOCKED_MISSING_CONTRACT": 3
+      }
+    }
+  ],
+  "case_count_executions": 45,
+  "distinct_case_ids": 29,
+  "counts_are_not_whole_product_acceptance": true,
+  "blocked_contracts": [
+    {
+      "id": "A3-IMP-CH001.lossless-resource-equality",
+      "phase": "acceptance",
+      "status": "BLOCKED_MISSING_CONTRACT",
+      "reason": "Actual legacy writes lose the tested fields/relations. The required full graph projection/reference resolver contract is absent here; a valid fix may retain bytes outside SQLite. Requiring every marker in database JSON would exclude that permitted implementation, so no invented full-graph acceptance adapter is supplied."
+    },
+    {
+      "id": "A3-IMP-CH003.partial-container-outcomes",
+      "phase": "acceptance",
+      "status": "BLOCKED_MISSING_CONTRACT",
+      "reason": "The current caller receives only successful conversation records; errors remain log entries. No per-member outcome/resource mapping contract exists. Future acceptance must consume that actual contract, not require a particular replacement of the list return type."
+    },
+    {
+      "id": "A3-IMP-ZIP-REFERENCE-EQUALITY",
+      "phase": "acceptance",
+      "status": "BLOCKED_MISSING_CONTRACT",
+      "reason": "ConversationImporter has only materializing import_file/path; no binding/selector/version/policy graph-reference contract. Native catalog is audited separately; this probe must not invent that implementation."
+    },
+    {
+      "id": "A3-IMP-LIVE-REFRESH-WRITEBACK",
+      "phase": "acceptance",
+      "status": "BLOCKED_MISSING_CONTRACT",
+      "reason": "No existing Python importer public source refresh, reference read, lazy/eager/cache or writable projection contract identified. Snapshot persistence PASS does not prove live availability monitoring."
+    },
+    {
+      "id": "A3-IMP-UI-HEADLESS-RESOURCE-QUERY",
+      "phase": "acceptance",
+      "status": "BLOCKED_MISSING_CONTRACT",
+      "reason": "Headless import_file runs; GUI import_panel source calls the same importer. Actual rendered view→graph resource read and ZIP reference→task API are not implemented in this Python path and GUI was not launched."
+    },
+    {
+      "id": "A3-IMP-WD-REFERENCE-GRAPH",
+      "phase": "acceptance",
+      "status": "BLOCKED_MISSING_CONTRACT",
+      "reason": "ResearchProjectsService pins typed domain resources and copies verified files. No generic ZIP-reference graph/query/selector API found in this path; creating one in the audit would be a copied implementation."
+    },
+    {
+      "id": "A3-IMP-WD-RESOURCE-POLICY-COMPOSITION",
+      "phase": "acceptance",
+      "status": "BLOCKED_MISSING_CONTRACT",
+      "reason": "No source policy contract exposes independent embed/reference/both, eager/lazy, cache/index, snapshot/live, readonly/overlay/writeback in these existing domain services. Existing frozen project semantics are not advertised as generic resource-policy implementation."
+    },
+    {
+      "id": "A3-IMP-WD-INTERACTIVE-SAME-READ",
+      "phase": "acceptance",
+      "status": "BLOCKED_MISSING_CONTRACT",
+      "reason": "Shared FigureCanvas is source-linked to frontend and actual headless SSR was executed. Browser E2E and view->same external resource resolver are not proven here."
+    }
+  ]
+}

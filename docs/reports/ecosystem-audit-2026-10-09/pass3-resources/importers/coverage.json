@@ -1,0 +1,255 @@
+{
+  "scope": "Selected import/resource paths only; not whole-repo completeness",
+  "manual_semantic_denominator": {
+    "chatadhd_selected_product_files": 3,
+    "watchdog_selected_product_files": 12,
+    "files_with_named_ranges": 15,
+    "ranges": 21,
+    "extra_hashed_dependency": "engine/events.py (not a full semantic audit)"
+  },
+  "files_and_functions": [
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "also_executed_sha": "384c5e1686cd3a58a7d89a8a6813a18c764f697d",
+      "file": "engine/importer.py",
+      "line_start": 78,
+      "line_end": 161,
+      "functions": "import_file/import_zip",
+      "range_sha256": "ce7ba9fc694de6701241fcc9cd91555885eef6d1043350d7492cf446d9aa3dfb",
+      "full_file_verified": false
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "also_executed_sha": "384c5e1686cd3a58a7d89a8a6813a18c764f697d",
+      "file": "engine/importer.py",
+      "line_start": 274,
+      "line_end": 399,
+      "functions": "import_json/_stream_json_array/_iter_json_elements/_import_single_element",
+      "range_sha256": "74695a978a343329957f54b3e0f47972cf7ad6366e98b59128341e2e628badee",
+      "full_file_verified": false
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "also_executed_sha": "384c5e1686cd3a58a7d89a8a6813a18c764f697d",
+      "file": "engine/importer.py",
+      "line_start": 401,
+      "line_end": 628,
+      "functions": "_import_json_data/_import_chatgpt_mapping/_import_message_list/_import_conversation_obj",
+      "range_sha256": "bd3711bf4fc48fb7f44165e48864589f060c9c0ebc30b80910e2b2a4fbfd2a40",
+      "full_file_verified": false
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "also_executed_sha": "384c5e1686cd3a58a7d89a8a6813a18c764f697d",
+      "file": "engine/importer.py",
+      "line_start": 630,
+      "line_end": 711,
+      "functions": "import_html/_parse_html_conversation/_extract_messages_regex/_strip_html",
+      "range_sha256": "e0eefd4fd3711707067c01c42a8b4259695010e646c508162566a97f9dd5bb62",
+      "full_file_verified": false
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "also_executed_sha": "384c5e1686cd3a58a7d89a8a6813a18c764f697d",
+      "file": "engine/importer.py",
+      "line_start": 1017,
+      "line_end": 1071,
+      "functions": "ConversationHTMLParser",
+      "range_sha256": "0575a08667899ad48c018d94bd2f44e2e018dcd0427d2436897eb847f1dbbe53",
+      "full_file_verified": false
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "also_executed_sha": "384c5e1686cd3a58a7d89a8a6813a18c764f697d",
+      "file": "engine/db.py",
+      "line_start": 302,
+      "line_end": 325,
+      "functions": "create_conv/list_convs/get_conv",
+      "range_sha256": "75c127c12da7609e652472beb6d018abdb5dd822a597b5191e7d4bd0e76a823c",
+      "full_file_verified": false
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "also_executed_sha": "384c5e1686cd3a58a7d89a8a6813a18c764f697d",
+      "file": "engine/db.py",
+      "line_start": 395,
+      "line_end": 440,
+      "functions": "batch_create_msgs",
+      "range_sha256": "5f82ec53934e96b48c031e515ebf52f8fe831f1e45eb3f6e203dc9827289f356",
+      "full_file_verified": false
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "also_executed_sha": "384c5e1686cd3a58a7d89a8a6813a18c764f697d",
+      "file": "engine/db.py",
+      "line_start": 484,
+      "line_end": 499,
+      "functions": "get_msgs",
+      "range_sha256": "21836ea324e1f760f8bf436463b1de0ed86292b08731395246716086e4ee3395",
+      "full_file_verified": false
+    },
+    {
+      "repo": "klb-t/chatadhd",
+      "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+      "also_executed_sha": "384c5e1686cd3a58a7d89a8a6813a18c764f697d",
+      "file": "gui/import_panel.py",
+      "line_start": 99,
+      "line_end": 143,
+      "functions": "_import_thread/_finish source only",
+      "range_sha256": "c6b6f863b23e9dd6fab8e4d4db6bc033e18d376bf59c310859e1344c507044ec",
+      "full_file_verified": false
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "also_executed_sha": null,
+      "file": "backend/watchdog_api/services/research_projects.ts",
+      "line_start": 28,
+      "line_end": 95,
+      "functions": "save/get/export",
+      "range_sha256": "464f7e5a87d16a0f51f60a67f31c18cfd0d8fc120e61ac09254d493b1e425b00",
+      "full_file_verified": false
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "also_executed_sha": null,
+      "file": "backend/watchdog_api/db/repositories/research_projects.ts",
+      "line_start": 28,
+      "line_end": 99,
+      "functions": "revision/current/save/files/resource(dataset)",
+      "range_sha256": "f6ac5cf3a770270bf158867983876fb4cdd30d8ac84c12413ce11317bcf445f1",
+      "full_file_verified": false
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "also_executed_sha": null,
+      "file": "backend/watchdog_api/db/repositories/workbench.ts",
+      "line_start": 36,
+      "line_end": 101,
+      "functions": "importDataset/getDataset/approveDataset/revokeDataset",
+      "range_sha256": "cd3f75b58e64b9ae7188cb97683aabb1ece5b4a9d25b523901f6aa91a7999f40",
+      "full_file_verified": false
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "also_executed_sha": null,
+      "file": "backend/watchdog_api/storage/object_store/index.ts",
+      "line_start": 22,
+      "line_end": 59,
+      "functions": "LocalFileSystemStore.put/get",
+      "range_sha256": "ac5a882e18322cd6b3a1d464edb1d1bd2b9a0613d3c4b42408661eb3ba60097a",
+      "full_file_verified": false
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "also_executed_sha": null,
+      "file": "backend/watchdog_api/workbench/publication.ts",
+      "line_start": 14,
+      "line_end": 80,
+      "functions": "publicationSvg/researchPackage",
+      "range_sha256": "fa244323a3e415d6a74f7b29e7acd5c0d620a4f05b6ef45e0df5644dcab2b3cb",
+      "full_file_verified": false
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "also_executed_sha": null,
+      "file": "backend/watchdog_api/utils/zip.ts",
+      "line_start": 51,
+      "line_end": 125,
+      "functions": "createZip/readZip store-only",
+      "range_sha256": "e8f2001575e5865bebb4588cefc3ae7c5958a5fcab8608d8a995023fa5cdb96a",
+      "full_file_verified": false
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "also_executed_sha": null,
+      "file": "backend/watchdog_api/sources/copy_plan.ts",
+      "line_start": 1,
+      "line_end": 81,
+      "functions": "jsonTree/copySource/sourceStructure",
+      "range_sha256": "c8b80da2eea69d27eb64af636250a434f8f0d7c64458ec505426cca5ccf7d90a",
+      "full_file_verified": false
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "also_executed_sha": null,
+      "file": "shared/csv_import.ts",
+      "line_start": 1,
+      "line_end": 24,
+      "functions": "parseCsv",
+      "range_sha256": "e0f7bae0e329b0b5a5d41ec0b6f7d025777617968b4d15fcc3b7503da86fe139",
+      "full_file_verified": false
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "also_executed_sha": null,
+      "file": "shared/workbench.ts",
+      "line_start": 10,
+      "line_end": 42,
+      "functions": "DatasetSchema/validateDataset",
+      "range_sha256": "d1b553ab021b600434cee37d3bedfd351fc6a6ed4e6783c71386e21ed3e7f923",
+      "full_file_verified": false
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "also_executed_sha": null,
+      "file": "shared/figure_renderer.tsx",
+      "line_start": 10,
+      "line_end": 76,
+      "functions": "FigureCanvas inputs/domain/metadata; rest executed via SSR but not fully semantically reviewed",
+      "range_sha256": "4c37e564a5babae64fe23fe0aaf37cc87d181db790438d8843eeaf76e40f55af",
+      "full_file_verified": false
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "file": "src/components/FigureCanvas.tsx",
+      "line_start": 1,
+      "line_end": 2,
+      "functions": "Frontend shared renderer wiring, source only; not browser execution",
+      "range_sha256": "f3dfe88633320ff6e44b762a20afbe33f50872da7842310563722dd4b874817d",
+      "full_file_verified": false
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "file": "src/pages/Workbench.tsx",
+      "line_start": 198,
+      "line_end": 205,
+      "functions": "Frontend shared renderer wiring, source only; not browser execution",
+      "range_sha256": "ba46238eb800d8c7187132da13ec5a17f421f4941b0c4bb622bcbf974bb4b44c",
+      "full_file_verified": false
+    }
+  ],
+  "untraced_or_unexecuted": [
+    "Python JSONL, SQLite exports, Claude-specific mapping, Markdown/MHT/OCR provider paths not executed in pass3",
+    "Native ChatADHD catalog and BlobStore delegated to native agent",
+    "Kivy UI/React browser interactions not executed",
+    "Generic ZIP reference -> same graph query/renderer/task consumer contract missing in selected Python/Watchdog APIs",
+    "Watchdog interactive filters/3D/geography complete behavior not semantically audited here",
+    "No model or external website/provider access; discovery owned by separate agent",
+    "copySource CSV branch read as source, not executed; JSON copySource exercised. Raw CSV was retained as user-supplied source, not claimed independently parsed into the submitted typed rows."
+  ],
+  "actual_consumer_receipts": [
+    "chat-main.json",
+    "chat-B2.json",
+    "watchdog-main.json"
+  ]
+}

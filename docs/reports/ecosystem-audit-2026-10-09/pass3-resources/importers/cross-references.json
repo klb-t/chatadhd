@@ -1,0 +1,146 @@
+{
+  "historical_index_sha256": "de9ca4446e408986a5a2fa410e802c5bcd9cf988131206397f6d7dabc94d0690",
+  "checked_old_ids": [
+    {
+      "id": "CH-001",
+      "file": "loom/src/core/config.cpp",
+      "title": "Domyślne ustawienia startowe pozostają ręcznym obiektem w Pythonie i C++"
+    },
+    {
+      "id": "CH-002",
+      "file": "loom/src/semantic/semantic_llm.cpp",
+      "title": "Legacy SemanticLLM nadal składa literalny prompt i obcina wejście do 3000 znaków"
+    },
+    {
+      "id": "CH-003",
+      "file": "loom/src/runtime.cpp",
+      "title": "Nakładka semantic_analyzer dociera do real-time grafu, ale nie do wspólnego analizatora workera"
+    },
+    {
+      "id": "CH-004",
+      "file": "loom/src/onboarding/store.cpp",
+      "title": "Warstwy i prywatność onboardingu nie są automatycznie źródłem ordinary chat"
+    },
+    {
+      "id": "CH-005",
+      "file": "loom/src/chat/chat_engine.cpp",
+      "title": "Usage policy nie obejmuje zwykłego transportu czatu ani starego workera"
+    },
+    {
+      "id": "CH-006",
+      "file": "loom/src/graph/graph_engine.cpp",
+      "title": "Legacy graph ingestion automatycznie materializuje relacje modelu"
+    },
+    {
+      "id": "CH-007",
+      "file": "loom/src/chat/chat_engine.cpp",
+      "title": "Wagi historii i znaczniki instrukcji są nadal polityką w kodzie czatu"
+    },
+    {
+      "id": "CH-008",
+      "file": "loom/web/src/workspace/state.ts",
+      "title": "Workspace UI ma ręczne etykiety i wartości domyślne"
+    },
+    {
+      "id": "CH-009",
+      "file": "loom/web/src/profiles/workflow-checkpoint.ts",
+      "title": "Perspektywy i sesje workflow nie mają kompletnego pokrycia grafowego"
+    },
+    {
+      "id": "CH-010",
+      "file": "engine/semantic_llm.py",
+      "title": "Deduplikacja nazw odrzuca alternatywny typ encji i redukuje wagę regexu bez strategii danych"
+    },
+    {
+      "id": "CH-011",
+      "file": "engine/semantic_worker.py",
+      "title": "Błąd analizy workera staje się stanem analysed bez jawnej polityki ponowień"
+    },
+    {
+      "id": "CH-012",
+      "file": "engine/config.py",
+      "title": "Model użytkownika i reset awarii semantycznych są już naprawione"
+    },
+    {
+      "id": "CH-013",
+      "file": "loom/src/context/runtime_preset.h",
+      "title": "Presety rozumowania i celu są danymi z działającą walidacją warstw"
+    },
+    {
+      "id": "CH-014",
+      "file": "loom/src/model/runtime_profile.cpp",
+      "title": "Granice R42: kontrakt, standard, mechanizm, format, bootstrap i diagnostyka są dozwolone"
+    },
+    {
+      "id": "CH-015",
+      "file": "loom/include/loom/tasks.h",
+      "title": "Nie potwierdzono kompletnego Basic presetu i opt-in eksperymentów od checkpointu"
+    },
+    {
+      "id": "WD-001",
+      "file": "backend/watchdog_api/services/narrative.ts",
+      "title": "Identyfikator szablonu narracji nie wybiera szablonu; prompt, język i top-3 są w kodzie"
+    },
+    {
+      "id": "WD-002",
+      "file": "backend/watchdog_api/analysis/primitives.ts",
+      "title": "ratio przyjmuje missingPolicy=exclude, lecz zachowuje brakujący wiersz jak propagate"
+    },
+    {
+      "id": "WD-003",
+      "file": "backend/watchdog_api/llm/profile_generator.ts",
+      "title": "Parametry żądania LLM są odrzucane w adapterze dostawcy"
+    },
+    {
+      "id": "WD-004",
+      "file": "src/lib/workspace_preferences.tsx",
+      "title": "Preferencje workspace żyją wyłącznie w localStorage i cicho wracają do default"
+    },
+    {
+      "id": "WD-005",
+      "file": "backend/watchdog_api/llm/routing.ts",
+      "title": "Routing wybiera politykę suite/kwantyla/Wilsona zaszytą w kodzie"
+    },
+    {
+      "id": "WD-006",
+      "file": "src/pages/Setup.tsx",
+      "title": "Ekran Setup ma teksty użytkowe w TSX mimo danych PL/EN nawigacji"
+    },
+    {
+      "id": "WD-007",
+      "file": "backend/watchdog_api/analysis/executor.ts",
+      "title": "Stałe operacji i strażnicy naukowi są uzasadnionym mechanizmem"
+    },
+    {
+      "id": "WD-008",
+      "file": "backend/watchdog_api/services/assistant.ts",
+      "title": "Dostawcy i budżet asystenta są rzeczywiście konfigurowalne, domyślnie opt-in"
+    },
+    {
+      "id": "WD-009",
+      "file": "backend/watchdog_api/services/paper_intake.ts",
+      "title": "Kontekst metodologii to stały prefix 24000 znaków; instrukcja ekstrakcji jest literalna"
+    },
+    {
+      "id": "WD-010",
+      "file": "shared/automation.ts",
+      "title": "Scheduler ma tylko politykę pomijania zaległych slotów przez coalesce"
+    },
+    {
+      "id": "WD-011",
+      "file": "backend/watchdog_api/services/narrative.ts",
+      "title": "Strażnik nowych wartości liczbowych pomija znak liczby"
+    }
+  ],
+  "new_findings": [
+    "A3-IMP-CH001",
+    "A3-IMP-CH003",
+    "A3-IMP-CH004",
+    "A3-IMP-CH006"
+  ],
+  "deduplication": "No old finding covers engine/importer.py or these four concrete behaviors. CH-009 remains the separate workflow/UI graph gap; CH-006 remains automatic inference admission. V01/V02/V04/V05/V12 are acceptance axes, not replacement backlog IDs.",
+  "mechanism_crossref": {
+    "A3-IMP-WD-M01": "Extends positive A2-WD-004 with ResearchProjects snapshots/statuses and real SSR; not a new product-fix backlog item."
+  },
+  "delegation_boundary": "Native import_unknown strategy handled by a2_c_review; native catalog/read_unit/structured handled by a2_native; no duplicate IDs here."
+}

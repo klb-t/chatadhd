@@ -1,0 +1,24 @@
+{
+  "paths": [
+    {
+      "path": "local JSON or ZIP -> detect_format/container extraction -> JSON syntax -> hardcoded conversation mapping -> SQLite messages -> get_msgs",
+      "actual_consumers": "ConversationImporter + Database",
+      "graph": "no lossless source/member/mapping reference retained by selected legacy path",
+      "UI": "GUI source calls same importer; no UI runtime test",
+      "status": "existing mechanism with confirmed fidelity gaps"
+    },
+    {
+      "path": "typed DatasetDocument with raw CSV -> validateDataset -> WorkbenchRepository -> immutable ObjectStore/SQLite -> pinned project snapshot -> research ZIP",
+      "actual_consumers": "ResearchProjectsService/Repository + WorkbenchRepository",
+      "graph": "typed project/resource links and descriptors, not generic external resource projection",
+      "UI": "shared FigureCanvas executed via headless SSR; frontend wiring source only",
+      "status": "verified domain path, generic reference contract blocked"
+    },
+    {
+      "path": "raw JSON/CSV -> explicit CopyPlan -> copySource -> exact lexical records+spans+rawHash",
+      "actual_consumers": "copySource/sourceStructure",
+      "graph": "source hash/selectors present in returned result; activation/persistence/workflow not executed in this narrow test",
+      "status": "real mechanism to compose, not a new audit parser"
+    }
+  ]
+}

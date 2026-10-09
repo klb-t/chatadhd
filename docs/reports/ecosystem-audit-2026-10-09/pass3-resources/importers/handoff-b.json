@@ -1,0 +1,223 @@
+{
+  "requirements": "../OWNER_CLARIFICATION.md, existing R14/R15/R20/R21",
+  "packages": [
+    {
+      "finding_id": "A3-IMP-CH001",
+      "classification": "naruszenie",
+      "reproduction": {
+        "receipts": [
+          "chat-main.json",
+          "chat-B2.json"
+        ],
+        "observation": "rich_import",
+        "actual": "Five source nodes (including system/tool) become three user/assistant message records. Parents, original IDs, model metadata, unknown message/conversation fields and attachment linkage are not retained in the imported records or explicit graph links. Original selected source file itself is not modified.",
+        "no_overclaim": "No claim about native archive import; no claim that original source bytes are physically deleted."
+      },
+      "expected_behavior": [
+        "Existing flattened text projection may remain a declared view",
+        "Lossless graph projection with immutable/checked external source and complete field selectors",
+        "Store source bytes externally plus graph-addressed versions/permissions; no all-bytes-in-SQLite requirement"
+      ],
+      "test_acceptance": {
+        "test_ids": [
+          "A3-IMP-CH001.lossy-legacy-export",
+          "A3-IMP-CH001.lossless-resource-equality",
+          "A3-IMP-ZIP-REFERENCE-EQUALITY"
+        ],
+        "status": "Reproduction PASS on main/B2; full graph/reference equality BLOCKED_MISSING_CONTRACT",
+        "runner": "chat_importers.py --repo <checkout> --sha <SHA> --out <receipt>"
+      },
+      "consumers": [
+        "gui/import_panel.py:_import_thread",
+        "ConversationImporter.import_file/import_zip/_import_chatgpt_mapping/_import_message_list",
+        "Database.batch_create_msgs/get_msgs"
+      ],
+      "migration": "Do not fabricate missing branch IDs or attachment links from old flattened rows; recover from preserved original source and version the migration.",
+      "dependencies": [
+        "Native source/reference projection contract owned by B",
+        "Existing native catalog/import review from other agent",
+        "Projection query adapter for both materialized import and ZIP reference"
+      ],
+      "risk": "High fidelity/identity risk for old imports; audit makes no product/schema edits."
+    },
+    {
+      "finding_id": "A3-IMP-CH003",
+      "classification": "naruszenie",
+      "reproduction": {
+        "receipts": [
+          "chat-main.json",
+          "chat-B2.json"
+        ],
+        "observations": [
+          "unknown_mapping",
+          "partial_archive"
+        ],
+        "actual": "Unknown JSON object and an empty JSON array both return []. A ZIP with one valid conversation, malformed JSON and unknown JSON returns one conversation; parse failure is in a warning log, not a structured member outcome in returned records or IMPORT_DONE events.",
+        "additional_locations": [
+          {
+            "file": "engine/importer.py",
+            "lines": [
+              401,
+              467
+            ]
+          },
+          {
+            "file": "gui/import_panel.py",
+            "lines": [
+              119,
+              141
+            ]
+          }
+        ]
+      },
+      "expected_behavior": [
+        "Explicit unsupported/uncertain mapping result with original source retained",
+        "Declared partial import with member outcomes and retry selectors",
+        "Alternative mappings remain candidates pending configured validation/activation"
+      ],
+      "test_acceptance": {
+        "test_ids": [
+          "A3-IMP-CH003.unknown-equals-empty",
+          "A3-IMP-CH003.explicit-unknown-mapping",
+          "A3-IMP-CH003.partial-container-reported-only-as-success-list",
+          "A3-IMP-CH003.partial-container-outcomes"
+        ],
+        "status": "Reproductions PASS; explicit unknown acceptance FAIL; per-member outcome contract BLOCKED",
+        "runner": "chat_importers.py --repo <checkout> --sha <SHA> --out <receipt>"
+      },
+      "consumers": [
+        "ConversationImporter._import_json_data/import_file/import_zip",
+        "IMPORT_DONE event",
+        "ImportPanel._finish source-only"
+      ],
+      "migration": "Changing results/events needs compatibility adapter for GUI counters; preserve completed valid members and raw failed members without asserting complete success.",
+      "dependencies": [
+        "Shared discovery mechanism (separate agent)",
+        "Existing import event/UI contract",
+        "B outcome schema; audit does not invent it"
+      ],
+      "risk": "High fidelity/identity risk for old imports; audit makes no product/schema edits."
+    },
+    {
+      "finding_id": "A3-IMP-CH004",
+      "classification": "naruszenie",
+      "reproduction": {
+        "receipts": [
+          "chat-main.json",
+          "chat-B2.json"
+        ],
+        "observation": "stream_threshold",
+        "actual": "Small object {title,messages:[...]} imports one conversation; same supported message structure plus >5MB irrelevant padding imports zero. _stream_json_array seeks first [ anywhere, then treats message objects as top-level conversation objects."
+      },
+      "expected_behavior": [
+        "Structural streaming that preserves top-level document kind",
+        "Declared unsupported-shape result retaining source for a chosen alternate parser",
+        "One syntax contract feeding the existing domain adapter regardless of access/container"
+      ],
+      "test_acceptance": {
+        "test_ids": [
+          "A3-IMP-CH004.size-dependent-object-loss",
+          "A3-IMP-CH004.streaming-preserves-supported-shape"
+        ],
+        "status": "Reproduction PASS; acceptance FAIL main/B2",
+        "runner": "chat_importers.py --repo <checkout> --sha <SHA> --out <receipt>"
+      },
+      "consumers": [
+        "ConversationImporter.import_json -> _stream_json_array -> _import_single_element -> _import_conversation_obj"
+      ],
+      "migration": "Old zero-result imports require reinspection of original source, not synthesis; large source processing needs bounded streaming without conflating parsing and domain routing.",
+      "dependencies": [
+        "Existing JSON object/array routing",
+        "B parser strategy composition"
+      ],
+      "risk": "High fidelity/identity risk for old imports; audit makes no product/schema edits."
+    },
+    {
+      "finding_id": "A3-IMP-CH006",
+      "classification": "naruszenie",
+      "reproduction": {
+        "receipts": [
+          "chat-main.json",
+          "chat-B2.json"
+        ],
+        "observation": "html",
+        "actual": "Actual import_html on four labelled paragraphs User/Assistant/User/Assistant stores user/user/assistant/assistant. Patterns are iterated by role and collected without offsets; the comment says sort by position but no sort occurs."
+      },
+      "expected_behavior": [
+        "Preserve source offsets and ordered turn relations",
+        "Keep grouped-by-role rendering as a selectable view over preserved source order",
+        "Declare uncertain speaker mapping when actual input is ambiguous"
+      ],
+      "test_acceptance": {
+        "test_ids": [
+          "A3-IMP-CH006.html-role-group-order",
+          "A3-IMP-CH006.html-source-order"
+        ],
+        "status": "Reproduction PASS; acceptance FAIL main/B2",
+        "runner": "chat_importers.py --repo <checkout> --sha <SHA> --out <receipt>"
+      },
+      "consumers": [
+        "ConversationImporter.import_html/_parse_html_conversation/_extract_messages_regex/_import_message_list",
+        "Database.batch_create_msgs"
+      ],
+      "migration": "Do not rewrite historical conversation order without original source evidence; version mapping and retain prior projection.",
+      "dependencies": [
+        "Existing HTML syntax parser and fallback mapping",
+        "B source span/order mapping"
+      ],
+      "risk": "High fidelity/identity risk for old imports; audit makes no product/schema edits."
+    },
+    {
+      "finding_id": "A3-IMP-WD-M01",
+      "classification": "dopuszczalny mechanizm",
+      "reproduction": {
+        "receipt": "watchdog-main.json",
+        "actual": "Real typed dataset -> WorkbenchRepository/ObjectStore -> ResearchProjectsService pins hash-checked copies. Source approval change reports CHANGED; simulated owner loss reports UNAVAILABLE; historical archive bytes remain equal. Missing original live blob gives actual read error while frozen export remains available. Native file-backed DB reopen preserves history. SSR calls shared FigureCanvas; exact raw CSV including unmapped column survives research ZIP.",
+        "important_boundary": "Project statuses inspect metadata/snapshot, not byte fetch availability. Missing original blob is a separate read failure; a CURRENT/CHANGED status is not evidence of a successful live fetch."
+      },
+      "expected_behavior": [
+        "Reuse immutable descriptors/hash checks and snapshot status",
+        "Compose typed mapping with independent generic access/container/source reference contract",
+        "Keep current frozen project backup as a named mode"
+      ],
+      "test_acceptance": {
+        "test_ids": [
+          "A3-IMP-WD001.frozen-source-exact-bytes",
+          "A3-IMP-WD002.changed-metadata-preserves-snapshot",
+          "A3-IMP-WD003.unavailable-owned-source-preserves-history",
+          "A3-IMP-WD004.missing-live-bytes-explicit-read-error",
+          "A3-IMP-WD005.native-reopen-frozen-source",
+          "A3-IMP-WD006.headless-renderer-consumes-same-typed-record",
+          "A3-IMP-WD007.unknown-domain-fields-explicit-rejection",
+          "A3-IMP-WD008.explicit-mapping-preserves-lexemes-and-missingness",
+          "A3-IMP-WD009.nested-container-bytes-preserved-without-fake-parse",
+          "A3-IMP-WD-NETWORK-GUARD"
+        ],
+        "status": "10 existing-consumer acceptance PASS; 3 generic-resource/UI contracts BLOCKED",
+        "runner": "watchdog_run.py --repo <checkout> --sha <SHA> --out <receipt>"
+      },
+      "consumers": [
+        "ResearchProjectsService.save/get/export",
+        "ResearchProjectsRepository.resource",
+        "WorkbenchRepository.getDataset",
+        "LocalFileSystemStore.get/put",
+        "publicationSvg -> FigureCanvas",
+        "copySource"
+      ],
+      "migration": "Retain source-owner permission checks and frozen revision semantics; do not present readonly domain copy as arbitrary writeback or live reference support.",
+      "dependencies": [
+        "B common resource contract",
+        "Native graph projection/source resolver",
+        "Browser E2E when environment permits"
+      ],
+      "risk": "High fidelity/identity risk for old imports; audit makes no product/schema edits."
+    }
+  ],
+  "priority_order": [
+    "A3-IMP-CH004",
+    "A3-IMP-CH001",
+    "A3-IMP-CH003",
+    "A3-IMP-CH006"
+  ],
+  "common_boundary": "Implement one real reference/materialization projection contract, then adapt blocked equality tests; do not replicate a parser or require source bytes in one database."
+}

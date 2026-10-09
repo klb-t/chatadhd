@@ -1,0 +1,182 @@
+{
+  "schema": "klbt.audit.receipt/3",
+  "repo": "klb-t/Watchdog-JH16",
+  "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+  "suite": "Watchdog pinned resources and headless consumers",
+  "source_hashes": {
+    "backend/watchdog_api/services/research_projects.ts": "82d6bef066e336988e9ad7222a519ec6cdaa14dcaa2d22520d535530e9a10b33",
+    "backend/watchdog_api/db/repositories/research_projects.ts": "afe1299b2d43185683b5d2581b8dbe797e21e2068b963d0f73209815dcadc51d",
+    "backend/watchdog_api/db/repositories/workbench.ts": "0b15e1c2f8879d860b6859b7bf89e782080a90a40f056c1b366ab38c2f4093bd",
+    "backend/watchdog_api/storage/object_store/index.ts": "52955d1bdc401c36c15754b4a972f77c9f39d3b80a4d4e830d07c55443f62e24",
+    "backend/watchdog_api/workbench/publication.ts": "18aad97695a95c9dc6324736dafb23c19f63c088126109c39952da81d5eedb9d",
+    "backend/watchdog_api/utils/zip.ts": "3479044e760f341eb74a9cc35dc2a4a35fd01fbc0364dabee9dcff531ff9b4df",
+    "backend/watchdog_api/sources/copy_plan.ts": "c8b80da2eea69d27eb64af636250a434f8f0d7c64458ec505426cca5ccf7d90a",
+    "shared/csv_import.ts": "e0f7bae0e329b0b5a5d41ec0b6f7d025777617968b4d15fcc3b7503da86fe139",
+    "shared/figure_renderer.tsx": "bacb4ab3e583e7a5fceaa51a256778167946a71a9b567f1f4bd6fd734c9e2e75",
+    "shared/workbench.ts": "cccb91538c1016303efecabd482e044b98d8f08b875618d91b566b95e4bec96a"
+  },
+  "tool_sha256": "0a8ef5d46badaeedf05483f82a1451fbc9f12822858cfbabdebc394a4cf73617",
+  "cases": [
+    {
+      "id": "A3-IMP-WD001.frozen-source-exact-bytes",
+      "phase": "acceptance",
+      "status": "PASS",
+      "evidence": {
+        "archiveSha": "181c2c91e493f06f245f88df8db05d83a83e6f89ee248ec774c0e34450603bcf",
+        "sourceFileSha": "05ff87b27bfa836fe3901ef3658246f01d362bbee6e2af426b1c67277020fe77",
+        "unselectedRawFieldRetained": true
+      }
+    },
+    {
+      "id": "A3-IMP-WD002.changed-metadata-preserves-snapshot",
+      "phase": "acceptance",
+      "status": "PASS",
+      "evidence": {
+        "status": "CHANGED",
+        "archiveUnchanged": true
+      }
+    },
+    {
+      "id": "A3-IMP-WD003.unavailable-owned-source-preserves-history",
+      "phase": "acceptance",
+      "status": "PASS",
+      "evidence": {
+        "boundary": "simulated ownership change in real database; no source deletion",
+        "status": "UNAVAILABLE",
+        "archiveUnchanged": true
+      }
+    },
+    {
+      "id": "A3-IMP-WD004.missing-live-bytes-explicit-read-error",
+      "phase": "acceptance",
+      "status": "PASS",
+      "evidence": {
+        "projectStatus": "CHANGED",
+        "statusScope": "Project status compares source metadata; byte-read availability is a separate real getDataset error.",
+        "frozenExportStillAvailable": true
+      }
+    },
+    {
+      "id": "A3-IMP-WD005.native-reopen-frozen-source",
+      "phase": "acceptance",
+      "status": "PASS",
+      "evidence": {
+        "fileBackedSQLiteReopen": true
+      }
+    },
+    {
+      "id": "A3-IMP-WD006.headless-renderer-consumes-same-typed-record",
+      "phase": "acceptance",
+      "status": "PASS",
+      "evidence": {
+        "svgSha": "c944165f1fdd5e0f9e1541b0dc4c97473b64a40034f3c0ead3e00a98099bbe0c",
+        "rawSourceSha": "cadcd5798b7271c8ac387478b58c997be043aa77e762eb7c2eb0a3c147bb684a",
+        "browserStarted": false,
+        "consumer": "publicationSvg -> real shared FigureCanvas -> React renderToStaticMarkup"
+      }
+    },
+    {
+      "id": "A3-IMP-WD007.unknown-domain-fields-explicit-rejection",
+      "phase": "acceptance",
+      "status": "PASS",
+      "evidence": {
+        "unknownDomainFieldRejected": true,
+        "unsupportedVersionRejected": true,
+        "note": "No generic archive retention or interpretation status implied."
+      }
+    },
+    {
+      "id": "A3-IMP-WD008.explicit-mapping-preserves-lexemes-and-missingness",
+      "phase": "acceptance",
+      "status": "PASS",
+      "evidence": {
+        "exactLexeme": true,
+        "rawHash": "ca91b19e5d1f6f0dd473e7b21476d06808e1440a110c68665d07f6bf20260579",
+        "unknownRowsPointerRejected": true,
+        "sourceStructure": {
+          "format": "json",
+          "paths": [
+            {
+              "pointer": "",
+              "type": "object"
+            },
+            {
+              "pointer": "/meta",
+              "type": "object"
+            },
+            {
+              "pointer": "/meta/unmapped",
+              "type": "string"
+            },
+            {
+              "pointer": "/rows",
+              "type": "array"
+            },
+            {
+              "pointer": "/rows/0",
+              "type": "object"
+            },
+            {
+              "pointer": "/rows/0/n",
+              "type": "literal"
+            },
+            {
+              "pointer": "/rows/0/none",
+              "type": "literal"
+            }
+          ],
+          "valuesIncluded": false,
+          "scope": "at most 500 paths; first array member for schema discovery"
+        }
+      }
+    },
+    {
+      "id": "A3-IMP-WD009.nested-container-bytes-preserved-without-fake-parse",
+      "phase": "acceptance",
+      "status": "PASS",
+      "evidence": {
+        "scope": "Two explicit calls to existing store-only inspection reader; no claim of recursive generic ZIP reference API or compressed ZIP support."
+      }
+    },
+    {
+      "id": "A3-IMP-WD-REFERENCE-GRAPH",
+      "phase": "acceptance",
+      "status": "BLOCKED_MISSING_CONTRACT",
+      "reason": "ResearchProjectsService pins typed domain resources and copies verified files. No generic ZIP-reference graph/query/selector API found in this path; creating one in the audit would be a copied implementation."
+    },
+    {
+      "id": "A3-IMP-WD-RESOURCE-POLICY-COMPOSITION",
+      "phase": "acceptance",
+      "status": "BLOCKED_MISSING_CONTRACT",
+      "reason": "No source policy contract exposes independent embed/reference/both, eager/lazy, cache/index, snapshot/live, readonly/overlay/writeback in these existing domain services. Existing frozen project semantics are not advertised as generic resource-policy implementation."
+    },
+    {
+      "id": "A3-IMP-WD-INTERACTIVE-SAME-READ",
+      "phase": "acceptance",
+      "status": "BLOCKED_MISSING_CONTRACT",
+      "reason": "Shared FigureCanvas is source-linked to frontend and actual headless SSR was executed. Browser E2E and view->same external resource resolver are not proven here."
+    },
+    {
+      "id": "A3-IMP-WD-NETWORK-GUARD",
+      "phase": "acceptance",
+      "status": "PASS",
+      "evidence": {
+        "attempts": 0,
+        "block": "fetch/http/https/net/dgram"
+      }
+    }
+  ],
+  "observations": {
+    "missing_live_blob": {
+      "projectStatus": "CHANGED",
+      "statusScope": "Project status compares source metadata; byte-read availability is a separate real getDataset error.",
+      "frozenExportStillAvailable": true
+    }
+  },
+  "counts": {
+    "PASS": 10,
+    "FAIL": 0,
+    "BLOCKED_MISSING_CONTRACT": 3
+  },
+  "network_attempts": 0
+}

@@ -1,0 +1,6 @@
+{
+  "preserved": "chat-main-superseded-oracle.json",
+  "correction": "Two acceptance oracles were too prescriptive: all metadata/IDs in existing DB JSON would exclude an externally stored graph-addressed source, and requiring a non-list return would prescribe one result serialization. Both are now BLOCKED_MISSING_CONTRACT pending actual full projection/per-member outcome contracts. Reproduction remains unchanged; no implementation copied.",
+  "final": "Same final suite executed on main and B2; exact source hashes and red/blocked outcomes retained.",
+  "no_automatic_architecture_inference": "A rejected typed Watchdog field is explicit unsupported data, not proof of generic unknown-field graph preservation. Two explicit store-only readZip calls are not recursive compressed-archive resource support."
+}

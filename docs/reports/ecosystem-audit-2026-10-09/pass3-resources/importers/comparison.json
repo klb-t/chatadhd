@@ -1,0 +1,18 @@
+{
+  "main_sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "B2_sha": "384c5e1686cd3a58a7d89a8a6813a18c764f697d",
+  "source_files_equal": true,
+  "independent_execution": "Same real-consumer Python suite was run separately on both checkout SHAs; this is not just hash carry-forward.",
+  "main_counts": {
+    "PASS": 8,
+    "FAIL": 3,
+    "BLOCKED_MISSING_CONTRACT": 5
+  },
+  "B2_counts": {
+    "PASS": 8,
+    "FAIL": 3,
+    "BLOCKED_MISSING_CONTRACT": 5
+  },
+  "case_statuses_equal": true,
+  "B2_importer_fix_classification": "nadal niezweryfikowane dla nowego pionu zasobów / brak przyrostu w badanych plikach; wcześniejsze zachowanie niezależnie odtworzone"
+}
