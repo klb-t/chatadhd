@@ -1,0 +1,220 @@
+{
+  "main_sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "B_sha": "ddcaeaf7a25b70f0d4dc2e0eed2466016233eeb8",
+  "classification": "naprawa",
+  "scope": "B-POLICY001: OnboardingStore.policy_decision→privacy_decision, four independently supplied understated/omitted classification variants; not all runtime callers",
+  "changes": [
+    {
+      "id": "B-POLICY001-detail-understate-REPRO",
+      "kind": "reproduction",
+      "main_status": "PASS",
+      "B_status": "NOT_REPRODUCED",
+      "main_observed": {
+        "dimension": "detail",
+        "variant": "understate",
+        "field_declared": 1,
+        "rule_limit": 0.5,
+        "accepted": true,
+        "allowed": true,
+        "reason": "rule allows operation",
+        "error": null
+      },
+      "B_observed": {
+        "dimension": "detail",
+        "variant": "understate",
+        "field_declared": 1,
+        "rule_limit": 0.5,
+        "accepted": true,
+        "allowed": false,
+        "reason": "requested detail exceeds category rule",
+        "error": null
+      }
+    },
+    {
+      "id": "B-POLICY001-detail-understate",
+      "kind": "acceptance",
+      "main_status": "FAIL",
+      "B_status": "PASS",
+      "main_observed": {
+        "dimension": "detail",
+        "variant": "understate",
+        "field_declared": 1,
+        "rule_limit": 0.5,
+        "accepted": true,
+        "allowed": true,
+        "reason": "rule allows operation",
+        "error": null
+      },
+      "B_observed": {
+        "dimension": "detail",
+        "variant": "understate",
+        "field_declared": 1,
+        "rule_limit": 0.5,
+        "accepted": true,
+        "allowed": false,
+        "reason": "requested detail exceeds category rule",
+        "error": null
+      }
+    },
+    {
+      "id": "B-POLICY001-detail-omit-REPRO",
+      "kind": "reproduction",
+      "main_status": "PASS",
+      "B_status": "NOT_REPRODUCED",
+      "main_observed": {
+        "dimension": "detail",
+        "variant": "omit",
+        "field_declared": 1,
+        "rule_limit": 0.5,
+        "accepted": true,
+        "allowed": true,
+        "reason": "rule allows operation",
+        "error": null
+      },
+      "B_observed": {
+        "dimension": "detail",
+        "variant": "omit",
+        "field_declared": 1,
+        "rule_limit": 0.5,
+        "accepted": true,
+        "allowed": false,
+        "reason": "requested detail exceeds category rule",
+        "error": null
+      }
+    },
+    {
+      "id": "B-POLICY001-detail-omit",
+      "kind": "acceptance",
+      "main_status": "FAIL",
+      "B_status": "PASS",
+      "main_observed": {
+        "dimension": "detail",
+        "variant": "omit",
+        "field_declared": 1,
+        "rule_limit": 0.5,
+        "accepted": true,
+        "allowed": true,
+        "reason": "rule allows operation",
+        "error": null
+      },
+      "B_observed": {
+        "dimension": "detail",
+        "variant": "omit",
+        "field_declared": 1,
+        "rule_limit": 0.5,
+        "accepted": true,
+        "allowed": false,
+        "reason": "requested detail exceeds category rule",
+        "error": null
+      }
+    },
+    {
+      "id": "B-POLICY001-sensitivity-understate-REPRO",
+      "kind": "reproduction",
+      "main_status": "PASS",
+      "B_status": "NOT_REPRODUCED",
+      "main_observed": {
+        "dimension": "sensitivity",
+        "variant": "understate",
+        "field_declared": 1,
+        "rule_limit": 0.5,
+        "accepted": true,
+        "allowed": true,
+        "reason": "rule allows operation",
+        "error": null
+      },
+      "B_observed": {
+        "dimension": "sensitivity",
+        "variant": "understate",
+        "field_declared": 1,
+        "rule_limit": 0.5,
+        "accepted": true,
+        "allowed": false,
+        "reason": "requested sensitivity exceeds category rule",
+        "error": null
+      }
+    },
+    {
+      "id": "B-POLICY001-sensitivity-understate",
+      "kind": "acceptance",
+      "main_status": "FAIL",
+      "B_status": "PASS",
+      "main_observed": {
+        "dimension": "sensitivity",
+        "variant": "understate",
+        "field_declared": 1,
+        "rule_limit": 0.5,
+        "accepted": true,
+        "allowed": true,
+        "reason": "rule allows operation",
+        "error": null
+      },
+      "B_observed": {
+        "dimension": "sensitivity",
+        "variant": "understate",
+        "field_declared": 1,
+        "rule_limit": 0.5,
+        "accepted": true,
+        "allowed": false,
+        "reason": "requested sensitivity exceeds category rule",
+        "error": null
+      }
+    },
+    {
+      "id": "B-POLICY001-sensitivity-omit-REPRO",
+      "kind": "reproduction",
+      "main_status": "PASS",
+      "B_status": "NOT_REPRODUCED",
+      "main_observed": {
+        "dimension": "sensitivity",
+        "variant": "omit",
+        "field_declared": 1,
+        "rule_limit": 0.5,
+        "accepted": true,
+        "allowed": true,
+        "reason": "rule allows operation",
+        "error": null
+      },
+      "B_observed": {
+        "dimension": "sensitivity",
+        "variant": "omit",
+        "field_declared": 1,
+        "rule_limit": 0.5,
+        "accepted": true,
+        "allowed": false,
+        "reason": "requested sensitivity exceeds category rule",
+        "error": null
+      }
+    },
+    {
+      "id": "B-POLICY001-sensitivity-omit",
+      "kind": "acceptance",
+      "main_status": "FAIL",
+      "B_status": "PASS",
+      "main_observed": {
+        "dimension": "sensitivity",
+        "variant": "omit",
+        "field_declared": 1,
+        "rule_limit": 0.5,
+        "accepted": true,
+        "allowed": true,
+        "reason": "rule allows operation",
+        "error": null
+      },
+      "B_observed": {
+        "dimension": "sensitivity",
+        "variant": "omit",
+        "field_declared": 1,
+        "rule_limit": 0.5,
+        "accepted": true,
+        "allowed": false,
+        "reason": "requested sensitivity exceeds category rule",
+        "error": null
+      }
+    }
+  ],
+  "positive_control": "B-POLICY001-CONTROL passes both: cap2 permits field1",
+  "historical_stemming": "Documented manual migration path, not newly found regression: loom/src/kb/NORMALIZER_RECIPE.md:37–47; docs/reports/native-graph-packet-2-2026-10-05.md:83–87. Audited authentic /1 failure and candidate conversion follows this path.",
+  "author_tests_used_as_proof": false,
+  "resolved_hypothesis": "CH-P2-N001: open extension is schema-permitted; explicit closed settings schema causes unavailable+unknown executable setting and actual model_request rejection on both SHA. Earlier reject-only criterion was invalid; see harness-review-history."
+}

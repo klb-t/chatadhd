@@ -1,0 +1,7 @@
+[0/2] Re-checking globbed directories...
+[1/7] Building CXX object CMakeFiles/loom_core.dir/src/archive/vocab.cpp.o
+[2/7] Linking CXX static library libloom_core.a
+[3/7] Linking CXX shared library libloom.so.0.1.0
+[4/7] Creating library symlink libloom.so.0 libloom.so
+[5/7] Linking CXX executable cli/loom
+[6/7] Linking CXX executable server/loom-server

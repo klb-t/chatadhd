@@ -14,6 +14,10 @@
   "scope": "REAL native Pack/Normalizer/OnboardingStore/DefaultLayers/KnowledgeStore; separate process per request. No models, no Runtime workers, no network path invoked. No browser/UI tier equivalence asserted.",
   "compile_command": [
     "c++",
+    "-fsanitize=address,undefined",
+    "-fno-omit-frame-pointer",
+    "-fno-sanitize-recover=undefined",
+    "-Wl,--no-keep-memory",
     "-std=c++20",
     "-O0",
     "-g",
@@ -21,18 +25,18 @@
     "-I/workspace/scratch/1112e9e8a3c6/audit-work/repos/chatadhd/loom/third_party/nlohmann",
     "-I/workspace/scratch/1112e9e8a3c6/audit-work/repos/chatadhd/loom/third_party/sqlite",
     "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/artifacts/tools/ecosystem-audit-2026-10-09/pass2/native/native_driver.cpp",
-    "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/scratch/native/main-build/libloom_core.a",
-    "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/scratch/native/main-build/libloom_sqlite3_amalgamation.a",
-    "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/scratch/native/main-build/libloom_miniz.a",
+    "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/scratch/native/asan-closure/libloom_core.a",
+    "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/scratch/native/asan-closure/libloom_sqlite3_amalgamation.a",
+    "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/scratch/native/asan-closure/libloom_miniz.a",
     "-lssl",
     "-lcrypto",
     "-pthread",
     "-ldl",
     "-lm",
     "-o",
-    "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/scratch/native/probe-main-reviewed/native-driver"
+    "/workspace/scratch/1112e9e8a3c6/audit-work/continuation/scratch/native/probe-asan-no-lsan/native-driver"
   ],
-  "library_sha256": "ead8af9a36519f78d46782d8ca5b19d7e44779cb5c495d5a09b4d2bc1b303cd7",
+  "library_sha256": "0e063ec6d4912fdd945487fa70ca76fa5140879d80ececa9c7c08a703674188f",
   "build_source": "/workspace/scratch/1112e9e8a3c6/audit-work/repos/chatadhd",
   "checks": [
     {
@@ -621,7 +625,7 @@
     },
     {
       "request_op": "pack_load",
-      "request_sha256": "affbd43eee379779e49d2e9ff933aea4b96e6c94c79ee3ac8d453e14a9bb8b1a",
+      "request_sha256": "dc9fbd0de3cb5ffc544296fc59991088765eba44591f61882341b7d6b8521c90",
       "response_sha256": "07bbb8cf1052506d4769e857fe6f67859439e495a9e212334f54aeeb1ff71bcc",
       "returncode": 0,
       "ok": false,
@@ -633,7 +637,7 @@
     },
     {
       "request_op": "pack_load",
-      "request_sha256": "f0443a53127e0806d06e9a8acda0ce644f4c6f89576893c99db778c542969161",
+      "request_sha256": "c2f8c8ecc8f6b25115adfeffe3db695065b799fe94354b13f7e110bb9a3acd59",
       "response_sha256": "4e96b2126e289923aa6f9e702dde2c10a306eb86a912ecf3df7086d29c54d2f2",
       "returncode": 0,
       "ok": false,
@@ -645,7 +649,7 @@
     },
     {
       "request_op": "pack_load",
-      "request_sha256": "f7a71e0219c2fe34bda64d75762bd588f0033ded1ededb19e9894e5bbc8bf7d5",
+      "request_sha256": "1110abf132a3a35cd239f760a65c1170023a73791576c1c16e2e6176edba46ea",
       "response_sha256": "7d4b883eb5a839d52498d4d8740ac18f0b278b4896e4ced52f1910860fb23628",
       "returncode": 0,
       "ok": true,
@@ -663,7 +667,7 @@
     },
     {
       "request_op": "pack_load",
-      "request_sha256": "f0443a53127e0806d06e9a8acda0ce644f4c6f89576893c99db778c542969161",
+      "request_sha256": "c2f8c8ecc8f6b25115adfeffe3db695065b799fe94354b13f7e110bb9a3acd59",
       "response_sha256": "f0d7d3c07eed1013af44d68c0da8a68b5f7e6189147270dd385b3620947db90a",
       "returncode": 0,
       "ok": false,
@@ -675,7 +679,7 @@
     },
     {
       "request_op": "pack_load",
-      "request_sha256": "f0443a53127e0806d06e9a8acda0ce644f4c6f89576893c99db778c542969161",
+      "request_sha256": "c2f8c8ecc8f6b25115adfeffe3db695065b799fe94354b13f7e110bb9a3acd59",
       "response_sha256": "5818c281351195ed369f3f6885ba94dbe9a0cad822aea7a42cfd19ecdcd1fda8",
       "returncode": 0,
       "ok": false,
@@ -687,43 +691,43 @@
     },
     {
       "request_op": "open",
-      "request_sha256": "5bc896c09d49f24f447aa39bc88f96afb0b28b380c4c66561aa453a750662cf8",
+      "request_sha256": "b922e2f8955a46960186fad7898454e6018b0f19695fde50294b77f60ba40fbd",
       "response_sha256": "920265790c77ae57b103a55f126118201ed66c839deee0e5cde21185b7199c35",
       "returncode": 0,
       "ok": true,
       "error": null,
-      "stderr": "14:27:45 [INFO ] loom.db: Schema upgraded: v0 -> v4\n14:27:45 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/profile.db\n14:27:46 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:36:05 [INFO ] loom.db: Schema upgraded: v0 -> v4\n14:36:05 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/profile.db\n14:36:07 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "read",
-      "request_sha256": "979d7803bdd31271636b713d08e1d2accf563568d8dc0f6c7b0d5c3ec8a4c2a0",
+      "request_sha256": "dc162cc2d76b3762979a73c4254014f24f9a2d7fc80c488f24730503061d9dc1",
       "response_sha256": "920265790c77ae57b103a55f126118201ed66c839deee0e5cde21185b7199c35",
       "returncode": 0,
       "ok": true,
       "error": null,
-      "stderr": "14:27:46 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/profile.db\n14:27:46 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:36:07 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/profile.db\n14:36:07 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "apply",
-      "request_sha256": "75d3747ced73939952056aaff42071eab31b6af1e82375d35e408faca4c5740f",
+      "request_sha256": "5125c42f8ea65431740a33d3c93af2941b1fcbc3e4dc4d428434b12e28edc7c9",
       "response_sha256": "ec8f03e8d97a2ccaae396b8dc80b0a11e7411f926e62e3e2cb8d25c66bc3682e",
       "returncode": 0,
       "ok": true,
       "error": null,
-      "stderr": "14:27:46 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/profile.db\n14:27:47 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:36:08 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/profile.db\n14:36:10 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "read",
-      "request_sha256": "979d7803bdd31271636b713d08e1d2accf563568d8dc0f6c7b0d5c3ec8a4c2a0",
+      "request_sha256": "dc162cc2d76b3762979a73c4254014f24f9a2d7fc80c488f24730503061d9dc1",
       "response_sha256": "ec8f03e8d97a2ccaae396b8dc80b0a11e7411f926e62e3e2cb8d25c66bc3682e",
       "returncode": 0,
       "ok": true,
       "error": null,
-      "stderr": "14:27:47 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/profile.db\n14:27:47 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:36:11 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/profile.db\n14:36:11 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "apply",
-      "request_sha256": "581a138c5cf01051feef2388b806cf2cb28bb7720510f0e62cb79e126d8f9400",
+      "request_sha256": "3117d7387b65522ba21a143791e90cf3a6ebc509334d7ece6fdd9349aaf5ef7f",
       "response_sha256": "6c7402e9f9a33e9f162922b352d241400045b7a7ff5373d5418e9fc8fe0d497d",
       "returncode": 0,
       "ok": false,
@@ -731,56 +735,56 @@
         "code": "conflict",
         "message": "onboarding snapshot revision changed; reload before editing"
       },
-      "stderr": "14:27:47 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/profile.db\n14:27:47 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:36:11 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/profile.db\n14:36:11 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "read",
-      "request_sha256": "979d7803bdd31271636b713d08e1d2accf563568d8dc0f6c7b0d5c3ec8a4c2a0",
+      "request_sha256": "dc162cc2d76b3762979a73c4254014f24f9a2d7fc80c488f24730503061d9dc1",
       "response_sha256": "ec8f03e8d97a2ccaae396b8dc80b0a11e7411f926e62e3e2cb8d25c66bc3682e",
       "returncode": 0,
       "ok": true,
       "error": null,
-      "stderr": "14:27:47 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/profile.db\n14:27:47 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:36:12 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/profile.db\n14:36:12 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "apply",
-      "request_sha256": "43b774cf367c317e0557ffd55131418a50b49488dbe21b4b2f5e819c61e84bc2",
+      "request_sha256": "21a6fa1f6ac5d4567b4903b1d010b5c62b538f4c1f25b57d0bc8142ce6053399",
       "response_sha256": "6b3b7d8fc748c7b8ce7f038e8a311600d32fbd3225c632d8c09658fcbdce750b",
       "returncode": 0,
       "ok": true,
       "error": null,
-      "stderr": "14:27:47 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/profile.db\n14:27:48 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:36:12 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/profile.db\n14:36:14 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "apply",
-      "request_sha256": "4d6c56a2fd2d4f79ad8d87af4643ebec81c434d8f18bdee7830947a9c11bf50a",
+      "request_sha256": "9cdb853467dc424af6c52e62fc6336894df5951a3b7dbbf54c4dafd3923d9986",
       "response_sha256": "b402a84173fd0e1930c2eb22806ed0bd988860763d86f81437d567e6e99348d1",
       "returncode": 0,
       "ok": true,
       "error": null,
-      "stderr": "14:27:48 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/profile.db\n14:27:49 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:36:15 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/profile.db\n14:36:17 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "update_pack",
-      "request_sha256": "de28f9d2ac9ab90d5926dbea891670258767e432793771e4d1def6f4e173203a",
-      "response_sha256": "adba2b3c7defe6fae6b765014e596b78c7e3b8f0934f9aa7ab80b2a658e718c4",
+      "request_sha256": "31d6a9a0d612d218beeabb78c86ff0e73a6c0ae86ea5c4e7b7bd066671fe63b9",
+      "response_sha256": "497196f117fd404cc4a078005a517520085feb69ae573f398d1a3ea135201a2b",
       "returncode": 0,
       "ok": true,
       "error": null,
-      "stderr": "14:27:49 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/profile.db\n14:27:49 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:36:17 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/profile.db\n14:36:19 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "read",
-      "request_sha256": "979d7803bdd31271636b713d08e1d2accf563568d8dc0f6c7b0d5c3ec8a4c2a0",
-      "response_sha256": "adba2b3c7defe6fae6b765014e596b78c7e3b8f0934f9aa7ab80b2a658e718c4",
+      "request_sha256": "dc162cc2d76b3762979a73c4254014f24f9a2d7fc80c488f24730503061d9dc1",
+      "response_sha256": "497196f117fd404cc4a078005a517520085feb69ae573f398d1a3ea135201a2b",
       "returncode": 0,
       "ok": true,
       "error": null,
-      "stderr": "14:27:49 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/profile.db\n14:27:49 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:36:20 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/profile.db\n14:36:20 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "update_pack",
-      "request_sha256": "6fbb0499de790cfd5065ebc8810cbae903dad2e7636fc6ecdd72e7758afe8b21",
+      "request_sha256": "67e36511764e778bd300a5ef367840d84bf9f0de0467e8e450e20b9c5c7974e2",
       "response_sha256": "e748af3bc1773c8052a368db63e9bfab277d5842fe35a9ad6f138453adb578ec",
       "returncode": 0,
       "ok": false,
@@ -788,20 +792,20 @@
         "code": "conflict",
         "message": "default layers: pack content changed without a revision increment"
       },
-      "stderr": "14:27:50 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/profile.db\n14:27:50 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:36:20 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/profile.db\n14:36:21 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "read",
-      "request_sha256": "979d7803bdd31271636b713d08e1d2accf563568d8dc0f6c7b0d5c3ec8a4c2a0",
-      "response_sha256": "adba2b3c7defe6fae6b765014e596b78c7e3b8f0934f9aa7ab80b2a658e718c4",
+      "request_sha256": "dc162cc2d76b3762979a73c4254014f24f9a2d7fc80c488f24730503061d9dc1",
+      "response_sha256": "497196f117fd404cc4a078005a517520085feb69ae573f398d1a3ea135201a2b",
       "returncode": 0,
       "ok": true,
       "error": null,
-      "stderr": "14:27:50 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/profile.db\n14:27:50 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:36:21 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/profile.db\n14:36:21 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "update_pack",
-      "request_sha256": "10b7863d808fb180db5f6676d874cb3dadc16124bc12f395bfc0229b62916d5d",
+      "request_sha256": "44bb8e062aabbeb65e9fa8a808faad93506ab1c83d42437bf0b631cc95572465",
       "response_sha256": "f9e773a746f099f462fb3f33063da56546f26e482882640bc33ffe14fb71b575",
       "returncode": 0,
       "ok": false,
@@ -809,20 +813,20 @@
         "code": "conflict",
         "message": "default layers: duplicate default id or key"
       },
-      "stderr": "14:27:50 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/profile.db\n14:27:50 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:36:22 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/profile.db\n14:36:22 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "read",
-      "request_sha256": "979d7803bdd31271636b713d08e1d2accf563568d8dc0f6c7b0d5c3ec8a4c2a0",
-      "response_sha256": "adba2b3c7defe6fae6b765014e596b78c7e3b8f0934f9aa7ab80b2a658e718c4",
+      "request_sha256": "dc162cc2d76b3762979a73c4254014f24f9a2d7fc80c488f24730503061d9dc1",
+      "response_sha256": "497196f117fd404cc4a078005a517520085feb69ae573f398d1a3ea135201a2b",
       "returncode": 0,
       "ok": true,
       "error": null,
-      "stderr": "14:27:50 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/profile.db\n14:27:50 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:36:22 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/profile.db\n14:36:22 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "update_pack",
-      "request_sha256": "daf6069f949612dad7d1c606c0610b5d56b174252289bb3482d9e0930e6b0341",
+      "request_sha256": "ddd2e52f3ba568726dd9380ba35e2035f337245ffb94ed7b2cde2f3efbb4d3f1",
       "response_sha256": "10f34c8d12d87945231971449e5d3ca68a59a708a9c64d9915d8669bcd941422",
       "returncode": 0,
       "ok": false,
@@ -830,65 +834,65 @@
         "code": "conflict",
         "message": "default layers: stable key reused by another id: preference.style"
       },
-      "stderr": "14:27:50 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/profile.db\n14:27:50 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:36:23 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/profile.db\n14:36:23 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "read",
-      "request_sha256": "979d7803bdd31271636b713d08e1d2accf563568d8dc0f6c7b0d5c3ec8a4c2a0",
-      "response_sha256": "adba2b3c7defe6fae6b765014e596b78c7e3b8f0934f9aa7ab80b2a658e718c4",
+      "request_sha256": "dc162cc2d76b3762979a73c4254014f24f9a2d7fc80c488f24730503061d9dc1",
+      "response_sha256": "497196f117fd404cc4a078005a517520085feb69ae573f398d1a3ea135201a2b",
       "returncode": 0,
       "ok": true,
       "error": null,
-      "stderr": "14:27:51 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/profile.db\n14:27:51 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:36:24 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/profile.db\n14:36:24 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "apply",
-      "request_sha256": "c6ada8a060f0d2f3714e359ae707881ff1c558489804d74f42dc68f6286d89e7",
-      "response_sha256": "084394e51285523656186b7a9b1a789c891bafbedda6223410730eb2c5cf2712",
+      "request_sha256": "747defe43c3ccde8e49f7a340ce4a21ef4e6eba9283daf4fcaadac08365bb0b2",
+      "response_sha256": "72a8d3f253d6b13351e038571d6132940de418957f7c4bda1f5df18fadc36f8e",
       "returncode": 0,
       "ok": true,
       "error": null,
-      "stderr": "14:27:51 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/profile.db\n14:27:51 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:36:24 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/profile.db\n14:36:26 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "apply",
-      "request_sha256": "85f682c0319648e01ecda47c0feb02e093419890917d0e236b58365a09340a62",
-      "response_sha256": "4b4d5da5ff9f9898aeb5316e026b3117b19dfef02950594bd815a2df40d2b9f4",
+      "request_sha256": "ce9f914c384d99d59de954c31d777b4c3b45778657e28ac88caa34b43681e2ff",
+      "response_sha256": "ec57cf4c4d05220a7c9098b785efccdbc144587b968de88c31db95a205b2b1ff",
       "returncode": 0,
       "ok": true,
       "error": null,
-      "stderr": "14:27:51 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/profile.db\n14:27:52 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:36:27 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/profile.db\n14:36:29 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "apply",
-      "request_sha256": "766e7d9a74e9eb71ea634c76b50aac4d1b2948a67fc7d198f11be2257bf2f44a",
-      "response_sha256": "49a1c8084e34468fd561e83e0e0d44e3ad136329a99e7994bf73ecdd7bb69063",
+      "request_sha256": "3eca4069617a6233e01bb1cb4a24bee2fadeffea872508645dbec4c383e8f19e",
+      "response_sha256": "2a68be55e16dff2ee17029c8b3940381f861162c496ea9d0a7cabaa20d54f0e0",
       "returncode": 0,
       "ok": true,
       "error": null,
-      "stderr": "14:27:52 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/profile.db\n14:27:53 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:36:29 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/profile.db\n14:36:31 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "read",
-      "request_sha256": "979d7803bdd31271636b713d08e1d2accf563568d8dc0f6c7b0d5c3ec8a4c2a0",
-      "response_sha256": "49a1c8084e34468fd561e83e0e0d44e3ad136329a99e7994bf73ecdd7bb69063",
+      "request_sha256": "dc162cc2d76b3762979a73c4254014f24f9a2d7fc80c488f24730503061d9dc1",
+      "response_sha256": "2a68be55e16dff2ee17029c8b3940381f861162c496ea9d0a7cabaa20d54f0e0",
       "returncode": 0,
       "ok": true,
       "error": null,
-      "stderr": "14:27:53 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/profile.db\n14:27:53 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:36:32 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/profile.db\n14:36:32 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "open",
-      "request_sha256": "89918f173039d9cc7d962898df8b5cd5c1b18899de54f799aab883f20c709926",
-      "response_sha256": "5230309532e18d9bfe09bd9e7cfc09fb37d086997bc0fb695980f954f3404b1e",
+      "request_sha256": "82c1228e4cb5de29d666d6739cbda975772b43365a11971eb505550b1645fbb3",
+      "response_sha256": "c89b9b46825fb90f3451e46863bf85ae7e89782a856c9aacb07be59e66b4a874",
       "returncode": 0,
       "ok": true,
       "error": null,
-      "stderr": "14:27:53 [INFO ] loom.db: Schema upgraded: v0 -> v4\n14:27:53 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/legacy-import.db\n14:27:54 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:36:33 [INFO ] loom.db: Schema upgraded: v0 -> v4\n14:36:33 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/legacy-import.db\n14:36:35 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "open",
-      "request_sha256": "8a31b2993aad4e979c7482ec9b293507cc1d2848137d8f0a18e5fde08f0b3a4e",
+      "request_sha256": "c4f31de49c35767555e2dabb168130a174a6689e0c759609baa07273726f4c14",
       "response_sha256": "5a11f4d8beb9ccc84f9f4e831b604dff2da94d6dd2443628d1d881bf77feffdb",
       "returncode": 0,
       "ok": false,
@@ -896,191 +900,191 @@
         "code": "unsupported",
         "message": "newer onboarding profile is not downgraded"
       },
-      "stderr": "14:27:54 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/profile.db\n14:27:54 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:36:35 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/profile.db\n14:36:35 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "open",
-      "request_sha256": "fc500dde17a1fa8c3a58b309d48dc356922e099e17caa88e9b41eda630d12882",
+      "request_sha256": "bf59a93bcca2135b5d09035874f68c87dc09325675665d0df39e0d64e8bb252a",
       "response_sha256": "a6f602c0783eb22c42f07db57bae602f30897bcb7c531e94fab7e72c90c0f72a",
       "returncode": 0,
       "ok": true,
       "error": null,
-      "stderr": "14:27:54 [INFO ] loom.db: Schema upgraded: v0 -> v4\n14:27:54 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/recipe.db\n14:27:54 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:36:36 [INFO ] loom.db: Schema upgraded: v0 -> v4\n14:36:36 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/recipe.db\n14:36:38 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "apply",
-      "request_sha256": "c3f23c317abd8d40e284975181f3c4150f36c0caf84a17233500eb197d678f75",
-      "response_sha256": "41f8d1cc25e67adaef47ba3b078351d00cb221c67a5a73a4f2728a77698a2b8e",
+      "request_sha256": "3410caee98c5a842862832bc08a57395c587e3795b3823145a8a871e4bc0106a",
+      "response_sha256": "db3cbd061d84ee66b11eb6c5f883cc73cb4c75a42afe5a15e0a253e421905157",
       "returncode": 0,
       "ok": true,
       "error": null,
-      "stderr": "14:27:55 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/recipe.db\n14:27:55 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:36:38 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/recipe.db\n14:36:40 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "request",
-      "request_sha256": "5b4828322c640705beefb60af95ee643473a8427e0f6ceb0b3d2700ab878a9ba",
-      "response_sha256": "b43a69d2400bc922177236fa5e44083b6d5da8f71fb62be22967c210106b96b3",
+      "request_sha256": "b66144c49a36a12514a97fbdc0101b750e2cd76d67d9f734bef2f6046c2eeaba",
+      "response_sha256": "88062c9a04b824d5e0d5643be0a1b2fb02e194454dc5f5fad80b9d800f19f2a0",
       "returncode": 0,
       "ok": true,
       "error": null,
-      "stderr": "14:27:55 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/recipe.db\n14:27:56 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:36:41 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/recipe.db\n14:36:42 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "apply",
-      "request_sha256": "ce734f92e78df39af01ee756c266520690ab46f68a7a11ab80c4d3faf429fdd9",
-      "response_sha256": "c3f26a44ca929f7e8a6e00b26012a32b3a42ee0f7b4d9e0e92bce6e5510422ea",
+      "request_sha256": "ce1c022f23fd9a305b2a4392a34018988e541b04f07294cbfef6ebe7577048ff",
+      "response_sha256": "ac49e14215e9a9a256613bfa6a82dc614935d6484093dea3299e959924dd2970",
       "returncode": 0,
       "ok": true,
       "error": null,
-      "stderr": "14:27:56 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/recipe.db\n14:27:57 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:36:42 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/recipe.db\n14:36:45 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "apply",
-      "request_sha256": "fbaa5493dc8195b9cc1f3fa24d67d13e1e713fe70a3c006fccbe92d8b741550a",
-      "response_sha256": "8ca8db66f0f2b5148624f66b4f42638f994be6fbd4b58c1e7efa80f7f1bc35f4",
+      "request_sha256": "b4a29fad56232c08cb29fa9b85bdda4f6b45a4cdbbb2b6438652a98609f6ac96",
+      "response_sha256": "039fa00b980f615f1d247d1c4f942a77c3b8366b91e782d87943d825d56fb8e5",
       "returncode": 0,
       "ok": true,
       "error": null,
-      "stderr": "14:27:57 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/recipe.db\n14:27:57 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:36:46 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/recipe.db\n14:36:48 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "request",
-      "request_sha256": "5b4828322c640705beefb60af95ee643473a8427e0f6ceb0b3d2700ab878a9ba",
-      "response_sha256": "9a2344f20b6a4ca99a7ffee60ebac4be04bd52f6c7184663f28e78a55735aa1e",
+      "request_sha256": "b66144c49a36a12514a97fbdc0101b750e2cd76d67d9f734bef2f6046c2eeaba",
+      "response_sha256": "fc69b93e10814ef808391756c9604affccdbf61eb6357910dd5d3b1d980ebff4",
       "returncode": 0,
       "ok": true,
       "error": null,
-      "stderr": "14:27:58 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/recipe.db\n14:27:58 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:36:49 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/recipe.db\n14:36:50 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "graph",
-      "request_sha256": "df2042dc19b7acd032fd4685e0829564174c14eb964782ef85289648aa885b1c",
-      "response_sha256": "7564bbfaf5fda92784699c1d15cc18ffc0a64b7aa85e99a824bcaa30465b5d7d",
+      "request_sha256": "cfd7fec744c1e07d391c51324e653a3a5e09018109bc9750553b456ab7c842bd",
+      "response_sha256": "27182c56fff410ebe0f511c5b15b8ed3088f18a37277c668001f43ecf6930da6",
       "returncode": 0,
       "ok": true,
       "error": null,
-      "stderr": "14:27:58 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/recipe.db\n14:27:59 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:36:50 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/recipe.db\n14:36:52 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "read",
-      "request_sha256": "a68c85ad10538affc821a7a5a14c7c33e9a96257b4a5f8b5d98f7202f8573411",
-      "response_sha256": "8ca8db66f0f2b5148624f66b4f42638f994be6fbd4b58c1e7efa80f7f1bc35f4",
+      "request_sha256": "ab67ff0b4104c679295fbe22fe6309abb1d49fd384cd7ab3437e1b0dbef8fc36",
+      "response_sha256": "039fa00b980f615f1d247d1c4f942a77c3b8366b91e782d87943d825d56fb8e5",
       "returncode": 0,
       "ok": true,
       "error": null,
-      "stderr": "14:27:59 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/recipe.db\n14:27:59 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:36:52 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/recipe.db\n14:36:52 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "open",
-      "request_sha256": "1c4e18b4398e7e33b501480573bf73a0272a24d503e91b94657738e967cfb540",
+      "request_sha256": "a5a4e199266dda6c6c2c7e428190f9d624169b9f979b30034d46bc9a0dc422a8",
       "response_sha256": "b5be93ef69fcb7495d1fc7ecb50eadddb41b25bfa1d700e3bba61ba13510323a",
       "returncode": 0,
       "ok": true,
       "error": null,
-      "stderr": "14:27:59 [INFO ] loom.db: Schema upgraded: v0 -> v4\n14:27:59 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/privacy-caps.db\n14:28:00 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:36:53 [INFO ] loom.db: Schema upgraded: v0 -> v4\n14:36:53 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/privacy-caps.db\n14:36:55 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "apply",
-      "request_sha256": "7cba7b9718f3659d2359e6d6331d992705d87cef55b6c319802193d1fa10a1ee",
-      "response_sha256": "d214059c1fbc99da3b7f3200d185793c351cc47d5c8e29a97250273db0e40040",
+      "request_sha256": "4ed142cdcac4dea20a6ff62159fb91f7a044182481f9c0c3ac66278251f19e84",
+      "response_sha256": "a9ab959cf885bbd3ef0a86ccd8f9beef1122d199a4dd5aa3edb3e1b9d9efb80e",
       "returncode": 0,
       "ok": true,
       "error": null,
-      "stderr": "14:28:00 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/privacy-caps.db\n14:28:00 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:36:56 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/privacy-caps.db\n14:36:58 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "policy",
-      "request_sha256": "fce4f1034f751cac3abb7a83f3b847d9bb9bdf04df7ed33a9d335a142403ffdb",
+      "request_sha256": "4fdf9b4678d44bc374c238d45780ed883b5a3fa03bdfb647b3002a425fa7ff13",
       "response_sha256": "343f0872b341497cf00c0ca34671b0d2cc3f671113d8b9e8026e332b96bc9478",
       "returncode": 0,
       "ok": true,
       "error": null,
-      "stderr": "14:28:01 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/privacy-caps.db\n14:28:01 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:36:58 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/privacy-caps.db\n14:36:58 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "apply",
-      "request_sha256": "64c01ba004be3f78e875cf5b8524412120740bd182d73fec49cbb67e107c666a",
-      "response_sha256": "233077cd8ed35611bdc48f833165e4daa35d056a8990ce220859958c6b6fecad",
+      "request_sha256": "d093f9e056d1da1b4be7257e6136c73f72feb02fb1cb37471e64ac6591148808",
+      "response_sha256": "ed026cbe52fc8de8a8fc83c51cd2e76a8fd00785fee003daa6f01abf64649854",
       "returncode": 0,
       "ok": true,
       "error": null,
-      "stderr": "14:28:01 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/privacy-caps.db\n14:28:01 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:36:59 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/privacy-caps.db\n14:37:01 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "policy",
-      "request_sha256": "45bd381385359ef0730deb14d5227d27f4ccc1a5fba3c222b04841976a9e6109",
+      "request_sha256": "bb16be3bf594147356395712dc3be94a075ba54a5140f1ea5fba9027a55c5440",
       "response_sha256": "57e1d266c4e209925c6cee1880b7a4d2ac81d41b99c4b5eb34c8e5ab3dcb6be7",
       "returncode": 0,
       "ok": true,
       "error": null,
-      "stderr": "14:28:02 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/privacy-caps.db\n14:28:02 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:37:01 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/privacy-caps.db\n14:37:01 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "policy",
-      "request_sha256": "a832283c96cffad984b026031b1d8d70a4be14a4aa8124eb422f21504e9e233f",
+      "request_sha256": "957ba828052a41a5c9ab855d2f45b48df9c775ca9952b7ef095ff145d8e759a6",
       "response_sha256": "57e1d266c4e209925c6cee1880b7a4d2ac81d41b99c4b5eb34c8e5ab3dcb6be7",
       "returncode": 0,
       "ok": true,
       "error": null,
-      "stderr": "14:28:02 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/privacy-caps.db\n14:28:02 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:37:02 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/privacy-caps.db\n14:37:02 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "apply",
-      "request_sha256": "36fe87bce727f50c277403ea9b1c6d19a9b7e294884ed11755e6f31132632fd0",
-      "response_sha256": "8f9e171b87e1472899e94e6585ff36cf965821494eb9b9f2d3486bb4e7420788",
+      "request_sha256": "c8ec91d49cf2420cddebc3d71868d615be10b2e65b1c06b7915140e16ce9df3d",
+      "response_sha256": "e459fcacb9adc3ae9fefc61d932ed4fe096041fe06ba6b7eaff9aaf0b39a6132",
       "returncode": 0,
       "ok": true,
       "error": null,
-      "stderr": "14:28:02 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/privacy-caps.db\n14:28:02 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:37:02 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/privacy-caps.db\n14:37:04 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "policy",
-      "request_sha256": "45bd381385359ef0730deb14d5227d27f4ccc1a5fba3c222b04841976a9e6109",
+      "request_sha256": "bb16be3bf594147356395712dc3be94a075ba54a5140f1ea5fba9027a55c5440",
       "response_sha256": "1c50bb4b99680a7b09e8344ddf228c1ec14080731f0c421f1fcce8a3a4f2e650",
       "returncode": 0,
       "ok": true,
       "error": null,
-      "stderr": "14:28:03 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/privacy-caps.db\n14:28:03 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:37:05 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/privacy-caps.db\n14:37:05 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "policy",
-      "request_sha256": "a832283c96cffad984b026031b1d8d70a4be14a4aa8124eb422f21504e9e233f",
+      "request_sha256": "957ba828052a41a5c9ab855d2f45b48df9c775ca9952b7ef095ff145d8e759a6",
       "response_sha256": "1c50bb4b99680a7b09e8344ddf228c1ec14080731f0c421f1fcce8a3a4f2e650",
       "returncode": 0,
       "ok": true,
       "error": null,
-      "stderr": "14:28:03 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/privacy-caps.db\n14:28:03 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:37:05 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/privacy-caps.db\n14:37:05 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "open",
-      "request_sha256": "dff605fef7918fa92073b5a467a4d6ea0f058bac836b1069090b50343db3d558",
+      "request_sha256": "a0f7813e931f8ce78713f66967969e47ac11df952b3e728393db389773a9a265",
       "response_sha256": "420c2a6733a5dfe9e9678f6292eec7b1b68ce4c55de921e8f870c6a2914ea89f",
       "returncode": 0,
       "ok": true,
       "error": null,
-      "stderr": "14:28:03 [INFO ] loom.db: Schema upgraded: v0 -> v4\n14:28:03 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/closed-settings.db\n14:28:04 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:37:06 [INFO ] loom.db: Schema upgraded: v0 -> v4\n14:37:06 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/closed-settings.db\n14:37:08 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "update_pack",
-      "request_sha256": "0385c2bb151ef3441431ab0a929c450019a3eeb8d3c0e8af1910d3ee6118c1ca",
-      "response_sha256": "caa6a61e73cebae6e65a6afb900949ffeb9a556fc67ae89ca674ae312f587208",
+      "request_sha256": "39255559b4b0c6a844342c35a640d54027a2bd8d30f553c548d6278bd58dcf32",
+      "response_sha256": "ace2b12881f387873da746d317361716c5296312ead7c091196e55da968a03fc",
       "returncode": 0,
       "ok": true,
       "error": null,
-      "stderr": "14:28:04 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/closed-settings.db\n14:28:04 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:37:09 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/closed-settings.db\n14:37:11 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "apply",
-      "request_sha256": "584aaf13f99e82ebd7112e4c7cda58c00ace9a39b680d127b79f6e4ec2ffae0f",
-      "response_sha256": "d785f78e0c1c0055562393aec7fd99d9cd0c5ce983fdab564045476ed8c3ede8",
+      "request_sha256": "78577ca3472f780340d39f5f0ce95559cdcd95d996900d7a7d0fa3d01f389e5a",
+      "response_sha256": "9b86951366acc95c1288012ea820dd44ebf72659be57d7801cd821cb1eab999b",
       "returncode": 0,
       "ok": true,
       "error": null,
-      "stderr": "14:28:05 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/closed-settings.db\n14:28:05 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:37:11 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/closed-settings.db\n14:37:13 [INFO ] loom.db: Database closed\n"
     },
     {
       "request_op": "request",
-      "request_sha256": "a172883261c82d6dda7eaaf870e6a2534aa75efb07a823cf7b3fb224ba159473",
+      "request_sha256": "4adaf1b0a1770a49a838c5f913aa6fb9261451c4c4aa481edfe713e77c0557d9",
       "response_sha256": "cf8497deab2c16eb87eb2cd021797e498d9cf87b9127eefd0b53daa901c00d80",
       "returncode": 0,
       "ok": false,
@@ -1088,7 +1092,7 @@
         "code": "invalid_argument",
         "message": "runtime profile /values/settings/audit_unsupported_setting: unknown executable setting"
       },
-      "stderr": "14:28:05 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-ztg09s_5/closed-settings.db\n14:28:05 [INFO ] loom.db: Database closed\n"
+      "stderr": "14:37:14 [INFO ] loom.db: Database opened: /tmp/loom-native-audit-cvav4i6y/closed-settings.db\n14:37:14 [INFO ] loom.db: Database closed\n"
     }
   ],
   "counts": {

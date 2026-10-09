@@ -1,0 +1,986 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="(empty)"
+	tests="112"
+	failures="0"
+	disabled="0"
+	skipped="0"
+	hostname=""
+	time="273"
+	timestamp="2026-10-09T14:16:03"
+	>
+	<testcase name="unit.test_archive" classname="unit.test_archive" time="6.71531" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  18 |  18 passed | 0 failed | 902 skipped
+[doctest] assertions: 270 | 270 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_archive_profiles" classname="unit.test_archive_profiles" time="10.2769" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  7 |  7 passed | 0 failed | 913 skipped
+[doctest] assertions: 98 | 98 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_archive_runtime_policy" classname="unit.test_archive_runtime_policy" time="1.13486" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  6 |  6 passed | 0 failed | 914 skipped
+[doctest] assertions: 78 | 78 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_archive_synthesis_policy" classname="unit.test_archive_synthesis_policy" time="1.97359" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   8 |   8 passed | 0 failed | 912 skipped
+[doctest] assertions: 235 | 235 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_archive_text_policy" classname="unit.test_archive_text_policy" time="0.790931" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  9 |  9 passed | 0 failed | 911 skipped
+[doctest] assertions: 94 | 94 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_batch_api" classname="unit.test_batch_api" time="0.219727" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  8 |  8 passed | 0 failed | 912 skipped
+[doctest] assertions: 36 | 36 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_capi" classname="unit.test_capi" time="7.02565" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  12 |  12 passed | 0 failed | 908 skipped
+[doctest] assertions: 598 | 598 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_capi_knowledge" classname="unit.test_capi_knowledge" time="1.00531" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  1 |  1 passed | 0 failed | 919 skipped
+[doctest] assertions: 55 | 55 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_capi_knowledge_latest_run" classname="unit.test_capi_knowledge_latest_run" time="3.13229" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  2 |  2 passed | 0 failed | 918 skipped
+[doctest] assertions: 73 | 73 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_catalog" classname="unit.test_catalog" time="5.80556" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  13 |  13 passed | 0 failed | 907 skipped
+[doctest] assertions: 344 | 344 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_catalog_context" classname="unit.test_catalog_context" time="4.1289" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  7 |  7 passed | 0 failed | 913 skipped
+[doctest] assertions: 81 | 81 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_catalog_eval" classname="unit.test_catalog_eval" time="1.88985" status="run">
+		<properties/>
+		<system-out>===============================================================================
+/workspace/scratch/1112e9e8a3c6/audit-work/repos/chatadhd/loom/tests/test_catalog_eval.cpp:118:
+TEST SUITE: catalog_eval
+TEST CASE:  synthetic_dev: recall/precision/noise-trap FP
+
+/workspace/scratch/1112e9e8a3c6/audit-work/repos/chatadhd/loom/tests/test_catalog_eval.cpp:249: MESSAGE: ranking AUC final=0.965556 lexical=0.777222 semantic=0.981111
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"383c84cf2827c31ceb3275e2399d044671931e399124ddc29790dcdc1a932bb8","versions":0,"bytes":93279,"warnings":[]}
+
+/workspace/scratch/1112e9e8a3c6/audit-work/repos/chatadhd/loom/tests/test_catalog_eval.cpp:250: MESSAGE: ranking hits@20=20/20 hits@45=42/45 (lexical hits@45=36, semantic hits@45=43)
+  logged: json::dump(scan_stats) := {"units":68,"new":68,"unchanged":0,"refreshed":0,"input_hash":"383c84cf2827c31ceb3275e2399d044671931e399124ddc29790dcdc1a932bb8","versions":0,"bytes":93279,"warnings":[]}...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="unit.test_catalog_links" classname="unit.test_catalog_links" time="6.38836" status="run">
+		<properties/>
+		<system-out>===============================================================================
+/workspace/scratch/1112e9e8a3c6/audit-work/repos/chatadhd/loom/tests/test_catalog_links.cpp:103:
+TEST SUITE: catalog_links
+TEST CASE:  candidate generation reproduces the exhaustive reference scan
+
+/workspace/scratch/1112e9e8a3c6/audit-work/repos/chatadhd/loom/tests/test_catalog_links.cpp:130: MESSAGE: continuation links: reference=164 candidates=164 recall=1
+
+===============================================================================
+/workspace/scratch/1112e9e8a3c6/audit-work/repos/chatadhd/loom/tests/test_catalog_links.cpp:166:
+TEST SUITE: catalog_links
+TEST CASE:  50k units: near-linear candidate generation, planted near-duplicates found
+
+/workspace/scratch/1112e9e8a3c6/audit-work/repos/chatadhd/loom/tests/test_catalog_links.cpp:203: MESSAGE: 50k units: 3.31206 s, {"mode":"candidates","units":50000,"links":143314,"project_groups_aggregated":0,"minhash_pairs_verified":499,"lsh_candidates":499,"rare_term_candidates":506472}
+
+...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="unit.test_catalog_retention" classname="unit.test_catalog_retention" time="3.92142" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   5 |   5 passed | 0 failed | 915 skipped
+[doctest] assertions: 179 | 179 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_catalog_scale" classname="unit.test_catalog_scale" time="0.149513" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases: 0 | 0 passed | 0 failed | 920 skipped
+[doctest] assertions: 0 | 0 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task" classname="unit.test_chat_active_task" time="9.4277" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  19 |  19 passed | 0 failed | 901 skipped
+[doctest] assertions: 197 | 197 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_acceptance_audit" classname="unit.test_chat_active_task_acceptance_audit" time="2.91131" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  5 |  5 passed | 0 failed | 915 skipped
+[doctest] assertions: 40 | 40 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_acceptance_scale" classname="unit.test_chat_active_task_acceptance_scale" time="5.64464" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:    2 |    2 passed | 0 failed | 918 skipped
+[doctest] assertions: 2014 | 2014 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_acceptance_validation" classname="unit.test_chat_active_task_acceptance_validation" time="12.4034" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   6 |   6 passed | 0 failed | 914 skipped
+[doctest] assertions: 151 | 151 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_concurrency" classname="unit.test_chat_active_task_concurrency" time="2.20666" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  4 |  4 passed | 0 failed | 916 skipped
+[doctest] assertions: 49 | 49 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_durability" classname="unit.test_chat_active_task_durability" time="9.83776" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   8 |   8 passed | 0 failed | 912 skipped
+[doctest] assertions: 106 | 106 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_durable_audit" classname="unit.test_chat_active_task_durable_audit" time="9.69288" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  6 |  6 passed | 0 failed | 914 skipped
+[doctest] assertions: 76 | 76 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_exceptional" classname="unit.test_chat_active_task_exceptional" time="2.34937" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  4 |  4 passed | 0 failed | 916 skipped
+[doctest] assertions: 45 | 45 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_history_aba" classname="unit.test_chat_active_task_history_aba" time="0.524084" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 919 skipped
+[doctest] assertions: 9 | 9 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_reference" classname="unit.test_chat_active_task_reference" time="0.153571" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  7 |  7 passed | 0 failed | 913 skipped
+[doctest] assertions: 49 | 49 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_retention" classname="unit.test_chat_active_task_retention" time="11.2777" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  11 |  11 passed | 0 failed | 909 skipped
+[doctest] assertions: 232 | 232 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_revisions" classname="unit.test_chat_active_task_revisions" time="5.36808" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  10 |  10 passed | 0 failed | 910 skipped
+[doctest] assertions: 228 | 228 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_active_task_scope_identity" classname="unit.test_chat_active_task_scope_identity" time="1.06051" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  2 |  2 passed | 0 failed | 918 skipped
+[doctest] assertions: 20 | 20 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_engine" classname="unit.test_chat_engine" time="0.272346" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases: 15 | 15 passed | 0 failed | 905 skipped
+[doctest] assertions: 67 | 67 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_knowledge_context" classname="unit.test_chat_knowledge_context" time="8.22346" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  15 |  15 passed | 0 failed | 905 skipped
+[doctest] assertions: 212 | 212 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_chat_retrieval_plan" classname="unit.test_chat_retrieval_plan" time="4.6973" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   8 |   8 passed | 0 failed | 912 skipped
+[doctest] assertions: 244 | 244 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_config" classname="unit.test_config" time="0.202579" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   5 |   5 passed | 0 failed | 915 skipped
+[doctest] assertions: 113 | 113 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_channel_integration" classname="unit.test_context_channel_integration" time="3.59261" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  5 |  5 passed | 0 failed | 915 skipped
+[doctest] assertions: 63 | 63 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_controls" classname="unit.test_context_controls" time="6.23926" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   9 |   9 passed | 0 failed | 911 skipped
+[doctest] assertions: 153 | 153 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_counter" classname="unit.test_context_counter" time="2.22762" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  4 |  4 passed | 0 failed | 916 skipped
+[doctest] assertions: 38 | 38 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_diagnostics" classname="unit.test_context_diagnostics" time="18.0465" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   9 |   9 passed | 0 failed | 911 skipped
+[doctest] assertions: 335 | 335 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_engine" classname="unit.test_context_engine" time="26.0567" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   18 |   18 passed | 0 failed | 902 skipped
+[doctest] assertions: 1364 | 1364 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_eval" classname="unit.test_context_eval" time="3.47206" status="run">
+		<properties/>
+		<system-out>===============================================================================
+/workspace/scratch/1112e9e8a3c6/audit-work/repos/chatadhd/loom/tests/test_context_eval.cpp:346:
+TEST SUITE: context_eval
+TEST CASE:  context efficiency vs naive full-history and flat-retrieval, coverage@budget, determinism
+
+/workspace/scratch/1112e9e8a3c6/audit-work/repos/chatadhd/loom/tests/test_context_eval.cpp:429: MESSAGE: naive=1040 flat_tokens=161 flat_coverage=1/1 selected=551
+  logged: scenario: implement checklist feature (PL)
+
+/workspace/scratch/1112e9e8a3c6/audit-work/repos/chatadhd/loom/tests/test_context_eval.cpp:429: MESSAGE: naive=1040 flat_tokens=161 flat_coverage=2/2 selected=667
+  logged: scenario: verify encryption claim
+
+===============================================================================
+[doctest] test cases:   2 |   2 passed | 0 failed | 918 skipped
+[doctest] assertions: 268 | 268 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_native_consumer" classname="unit.test_context_native_consumer" time="5.45432" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   6 |   6 passed | 0 failed | 914 skipped
+[doctest] assertions: 105 | 105 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_plan" classname="unit.test_context_plan" time="11.0893" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  15 |  15 passed | 0 failed | 905 skipped
+[doctest] assertions: 159 | 159 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_retrieval" classname="unit.test_context_retrieval" time="1.72817" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  13 |  13 passed | 0 failed | 907 skipped
+[doctest] assertions: 130 | 130 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_retrieval_dev" classname="unit.test_context_retrieval_dev" time="1.82991" status="run">
+		<properties/>
+		<system-out>===============================================================================
+/workspace/scratch/1112e9e8a3c6/audit-work/repos/chatadhd/loom/tests/test_context_retrieval_dev.cpp:223:
+TEST SUITE: context_retrieval_dev
+TEST CASE:  synthetic DEV compares native graph tfidf union and lexical shadow without quality gates
+
+/workspace/scratch/1112e9e8a3c6/audit-work/repos/chatadhd/loom/tests/test_context_retrieval_dev.cpp:289: MESSAGE: W2_RETRIEVAL_DEV_ROW {"protocol":"w2.synthetic_dev.v1","case":"checkpoint_union","mode":"graph","pack_hash":"9980afe40a487a4372861acf57d0f53b04df2764bc9638794832fd71f2b6a60e","request":{"text":"checkpoint","targets":["e_6dcaaa07327a560f"],"project":"","budget_tokens":4096,"goal_type":"answer_question","run":"kr_9f5029ea92d26dd5","lang":"en","detail_resolution":"full"},"gold":["cl.dev.offset","cl.dev.resume"],"candidate_metrics":{"gold_count":2,"retrieved_count":2,"relevant_count":1,"irrelevant_count":1,"recall":0.5,"precision":0.5,"first_relevant_rank":1,"reciprocal_rank":1.0,"hits_...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="unit.test_context_tfidf_reuse" classname="unit.test_context_tfidf_reuse" time="8.61088" status="run">
+		<properties/>
+		<system-out>N2_RETAINED_PAYLOAD {"schema":"loom.n2.logical_cache_payload/1","sizes":[{"claims":64,"copied_document_id_bytes":704,"copied_document_text_bytes":14124,"normalized_vector_entries":1152,"normalized_vector_key_bytes":8576,"vector_numeric_bytes":9216,"state_bytes":256},{"claims":256,"copied_document_id_bytes":2816,"copied_document_text_bytes":56868,"normalized_vector_entries":4608,"normalized_vector_key_bytes":34304,"vector_numeric_bytes":36864,"state_bytes":1024},{"claims":1024,"copied_document_id_bytes":11264,"copied_document_text_bytes":228180,"normalized_vector_entries":18432,"normalized_vector_key_bytes":137216,"vector_numeric_bytes":147456,"state_bytes":4096}],"excludes":"container nodes, string capacity, allocator overhead, query id, temporary cold-fit copies and result JSON"}
+===============================================================================
+[doctest] test cases:   9 |   9 passed | 0 failed | 911 skipped
+[doctest] assertions: 219 | 219 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_crypto" classname="unit.test_crypto" time="6.46806" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases: 12 | 12 passed | 0 failed | 908 skipped
+[doctest] assertions: 66 | 66 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_db" classname="unit.test_db" time="0.856958" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   13 |   13 passed | 0 failed | 907 skipped
+[doctest] assertions: 5178 | 5178 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_db_annotations" classname="unit.test_db_annotations" time="0.805588" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  11 |  11 passed | 0 failed | 909 skipped
+[doctest] assertions: 189 | 189 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_event_bus" classname="unit.test_event_bus" time="0.510579" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  5 |  5 passed | 0 failed | 915 skipped
+[doctest] assertions: 28 | 28 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_extract" classname="unit.test_extract" time="6.40953" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  15 |  15 passed | 0 failed | 905 skipped
+[doctest] assertions: 241 | 241 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_extract_eval" classname="unit.test_extract_eval" time="3.89799" status="run">
+		<properties/>
+		<system-out>===============================================================================
+/workspace/scratch/1112e9e8a3c6/audit-work/repos/chatadhd/loom/tests/test_extract_eval.cpp:92:
+TEST SUITE: extract_eval
+TEST CASE:  synthetic_dev: entities and aliases (after resolution)
+
+/workspace/scratch/1112e9e8a3c6/audit-work/repos/chatadhd/loom/tests/test_extract_eval.cpp:141: MESSAGE: project entity P/R/F1 = 0.833333 / 1 / 0.909091  (5 of 5, predicted 6)
+
+/workspace/scratch/1112e9e8a3c6/audit-work/repos/chatadhd/loom/tests/test_extract_eval.cpp:143: MESSAGE: alias P/R/F1 = 0.545455 / 0.230769 / 0.324324
+
+===============================================================================
+/workspace/scratch/1112e9e8a3c6/audit-work/repos/chatadhd/loom/tests/test_extract_eval.cpp:149:
+TEST SUITE: extract_eval
+TEST CASE:  synthetic_dev: versions
+
+/workspace/scratch/1112e9e8a3c6/audit-work/repos/chatadhd/loom/tests/test_extract_eval.cpp:191: MESSAGE: version precision/recall = 0.95 / 0.818182  (18/22)
+
+===============================...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="unit.test_fts" classname="unit.test_fts" time="0.189832" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  5 |  5 passed | 0 failed | 915 skipped
+[doctest] assertions: 53 | 53 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_generalize" classname="unit.test_generalize" time="4.70521" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   7 |   7 passed | 0 failed | 913 skipped
+[doctest] assertions: 199 | 199 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_generalize_eval" classname="unit.test_generalize_eval" time="2.35023" status="run">
+		<properties/>
+		<system-out>===============================================================================
+/workspace/scratch/1112e9e8a3c6/audit-work/repos/chatadhd/loom/tests/test_generalize_eval.cpp:68:
+TEST SUITE: generalize_eval
+TEST CASE:  synthetic_dev: principles, operators, predictions, false certainty, EP soundness
+
+/workspace/scratch/1112e9e8a3c6/audit-work/repos/chatadhd/loom/tests/test_generalize_eval.cpp:106: MESSAGE: principle pr.optionality_over_speed -&gt; p_4b48be69aa2f49d2 level value ok form invariant ok
+
+/workspace/scratch/1112e9e8a3c6/audit-work/repos/chatadhd/loom/tests/test_generalize_eval.cpp:106: MESSAGE: principle pr.honesty_over_comfort -&gt; p_e3a2d7988454a4aa level value ok form invariant ok
+
+/workspace/scratch/1112e9e8a3c6/audit-work/repos/chatadhd/loom/tests/test_generalize_eval.cpp:106: MESSAGE: principle pr.keep_both_branches -&gt; p_0c2b3b04100e4bd2 level epistemic ok form heuristic WRONG
+
+/workspace/scratch/1112e9e8a3c6/audit-work/repos/chatadhd/loom/tests/test_generalize_eval.cpp:106: MESSAGE: principle pr.da...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="unit.test_github" classname="unit.test_github" time="0.334576" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  22 |  22 passed | 0 failed | 898 skipped
+[doctest] assertions: 154 | 154 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_graph" classname="unit.test_graph" time="0.342447" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  8 |  8 passed | 0 failed | 912 skipped
+[doctest] assertions: 30 | 30 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_import" classname="unit.test_import" time="0.664328" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  23 |  23 passed | 0 failed | 897 skipped
+[doctest] assertions: 223 | 223 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_import_audit" classname="unit.test_import_audit" time="0.20194" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  3 |  3 passed | 0 failed | 917 skipped
+[doctest] assertions: 28 | 28 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_import_audit_presets" classname="unit.test_import_audit_presets" time="0.201153" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  4 |  4 passed | 0 failed | 916 skipped
+[doctest] assertions: 50 | 50 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_import_aux_depth" classname="unit.test_import_aux_depth" time="0.301186" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   2 |   2 passed | 0 failed | 918 skipped
+[doctest] assertions: 106 | 106 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_import_export_fidelity" classname="unit.test_import_export_fidelity" time="0.588073" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   5 |   5 passed | 0 failed | 915 skipped
+[doctest] assertions: 327 | 327 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_import_exports" classname="unit.test_import_exports" time="2.69083" status="run">
+		<properties/>
+		<system-out>===============================================================================
+/workspace/scratch/1112e9e8a3c6/audit-work/repos/chatadhd/loom/tests/test_import_exports.cpp:723:
+TEST SUITE: import_exports
+TEST CASE:  completeness: every JSON leaf path of every fixture conversation is stored verbatim (independent recount)
+
+/workspace/scratch/1112e9e8a3c6/audit-work/repos/chatadhd/loom/tests/test_import_exports.cpp:765: MESSAGE: completeness: 1604/1604 conversation JSON leaves preserved verbatim
+
+===============================================================================
+[doctest] test cases:   18 |   18 passed | 0 failed | 902 skipped
+[doctest] assertions: 2202 | 2202 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_import_presets" classname="unit.test_import_presets" time="0.291264" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   5 |   5 passed | 0 failed | 915 skipped
+[doctest] assertions: 221 | 221 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_import_presets_binding" classname="unit.test_import_presets_binding" time="0.490701" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   6 |   6 passed | 0 failed | 914 skipped
+[doctest] assertions: 171 | 171 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_import_resume" classname="unit.test_import_resume" time="1.78336" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  23 |  23 passed | 0 failed | 897 skipped
+[doctest] assertions: 696 | 696 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_import_screenshot" classname="unit.test_import_screenshot" time="0.58599" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   6 |   6 passed | 0 failed | 914 skipped
+[doctest] assertions: 872 | 872 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_import_source_materialization" classname="unit.test_import_source_materialization" time="0.529274" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   8 |   8 passed | 0 failed | 912 skipped
+[doctest] assertions: 592 | 592 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_import_stream" classname="unit.test_import_stream" time="38.8058" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  1 |  1 passed | 0 failed | 919 skipped
+[doctest] assertions: 13 | 13 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_import_usage" classname="unit.test_import_usage" time="1.38355" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  2 |  2 passed | 0 failed | 918 skipped
+[doctest] assertions: 19 | 19 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_kb_pack" classname="unit.test_kb_pack" time="67.8182" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  27 |  27 passed | 0 failed | 893 skipped
+[doctest] assertions: 569 | 569 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_knowledge" classname="unit.test_knowledge" time="28.3609" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  26 |  26 passed | 0 failed | 894 skipped
+[doctest] assertions: 277 | 277 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_knowledge_candidate_graph" classname="unit.test_knowledge_candidate_graph" time="0.399912" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  10 |  10 passed | 0 failed | 910 skipped
+[doctest] assertions: 114 | 114 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_knowledge_candidates" classname="unit.test_knowledge_candidates" time="0.137063" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  1 |  1 passed | 0 failed | 919 skipped
+[doctest] assertions: 14 | 14 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_knowledge_flow" classname="unit.test_knowledge_flow" time="2.62136" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  2 |  2 passed | 0 failed | 918 skipped
+[doctest] assertions: 53 | 53 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_knowledge_profile" classname="unit.test_knowledge_profile" time="0.138037" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  3 |  3 passed | 0 failed | 917 skipped
+[doctest] assertions: 24 | 24 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_knowledge_semantic" classname="unit.test_knowledge_semantic" time="8.61955" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  13 |  13 passed | 0 failed | 907 skipped
+[doctest] assertions: 125 | 125 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_knowledge_semantic_graph" classname="unit.test_knowledge_semantic_graph" time="10.0485" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  11 |  11 passed | 0 failed | 909 skipped
+[doctest] assertions: 100 | 100 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_knowledge_store" classname="unit.test_knowledge_store" time="0.274702" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   7 |   7 passed | 0 failed | 913 skipped
+[doctest] assertions: 124 | 124 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_materialize" classname="unit.test_materialize" time="4.19722" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  6 |  6 passed | 0 failed | 914 skipped
+[doctest] assertions: 67 | 67 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_media" classname="unit.test_media" time="0.202223" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  16 |  16 passed | 0 failed | 904 skipped
+[doctest] assertions: 119 | 119 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_memory" classname="unit.test_memory" time="0.203186" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases: 12 | 12 passed | 0 failed | 908 skipped
+[doctest] assertions: 72 | 72 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_memory_sort_profiles" classname="unit.test_memory_sort_profiles" time="0.184356" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  5 |  5 passed | 0 failed | 915 skipped
+[doctest] assertions: 45 | 45 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_memory_visibility_profiles" classname="unit.test_memory_visibility_profiles" time="0.133666" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  1 |  1 passed | 0 failed | 919 skipped
+[doctest] assertions: 10 | 10 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_model" classname="unit.test_model" time="0.136239" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  10 |  10 passed | 0 failed | 910 skipped
+[doctest] assertions: 137 | 137 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_model_creation_profile" classname="unit.test_model_creation_profile" time="0.347036" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  6 |  6 passed | 0 failed | 914 skipped
+[doctest] assertions: 99 | 99 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_model_profile" classname="unit.test_model_profile" time="0.711441" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   6 |   6 passed | 0 failed | 914 skipped
+[doctest] assertions: 805 | 805 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_net_profile" classname="unit.test_net_profile" time="0.175141" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  6 |  6 passed | 0 failed | 914 skipped
+[doctest] assertions: 45 | 45 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_net_sse" classname="unit.test_net_sse" time="0.130601" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases: 10 | 10 passed | 0 failed | 910 skipped
+[doctest] assertions: 45 | 45 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_onboarding" classname="unit.test_onboarding" time="0.441697" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  18 |  18 passed | 0 failed | 902 skipped
+[doctest] assertions: 228 | 228 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_onboarding_graph" classname="unit.test_onboarding_graph" time="7.94388" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   11 |   11 passed | 0 failed | 909 skipped
+[doctest] assertions: 2172 | 2172 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_onboarding_layers" classname="unit.test_onboarding_layers" time="0.268247" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  8 |  8 passed | 0 failed | 912 skipped
+[doctest] assertions: 58 | 58 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_onboarding_presentation" classname="unit.test_onboarding_presentation" time="0.137746" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  3 |  3 passed | 0 failed | 917 skipped
+[doctest] assertions: 19 | 19 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_onboarding_presentation_layers" classname="unit.test_onboarding_presentation_layers" time="0.41536" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  7 |  7 passed | 0 failed | 913 skipped
+[doctest] assertions: 81 | 81 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_onboarding_presentation_store" classname="unit.test_onboarding_presentation_store" time="17.7428" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   4 |   4 passed | 0 failed | 916 skipped
+[doctest] assertions: 151 | 151 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_onboarding_store" classname="unit.test_onboarding_store" time="50.3729" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  14 |  14 passed | 0 failed | 906 skipped
+[doctest] assertions: 286 | 286 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_pack_model" classname="unit.test_pack_model" time="1.27759" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:   6 |   6 passed | 0 failed | 914 skipped
+[doctest] assertions: 900 | 900 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_packet" classname="unit.test_packet" time="0.143982" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  4 |  4 passed | 0 failed | 916 skipped
+[doctest] assertions: 24 | 24 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_provenance" classname="unit.test_provenance" time="0.202507" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  3 |  3 passed | 0 failed | 917 skipped
+[doctest] assertions: 49 | 49 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_providers" classname="unit.test_providers" time="0.142949" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases: 13 | 13 passed | 0 failed | 907 skipped
+[doctest] assertions: 61 | 61 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_regex" classname="unit.test_regex" time="0.165775" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  18 |  18 passed | 0 failed | 902 skipped
+[doctest] assertions: 125 | 125 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_relations" classname="unit.test_relations" time="0.144224" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  1 |  1 passed | 0 failed | 919 skipped
+[doctest] assertions: 39 | 39 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_resolve" classname="unit.test_resolve" time="0.660502" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  8 |  8 passed | 0 failed | 912 skipped
+[doctest] assertions: 71 | 71 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_resolve_attribution" classname="unit.test_resolve_attribution" time="5.35615" status="run">
+		<properties/>
+		<system-out>===============================================================================
+/workspace/scratch/1112e9e8a3c6/audit-work/repos/chatadhd/loom/tests/test_resolve_attribution.cpp:327:
+TEST SUITE: resolve_attribution
+TEST CASE:  synthetic_dev: attribution of units that never name their project, before vs after
+
+/workspace/scratch/1112e9e8a3c6/audit-work/repos/chatadhd/loom/tests/test_resolve_attribution.cpp:413: MESSAGE: noise conversations attributed to a project: 1/20
+
+/workspace/scratch/1112e9e8a3c6/audit-work/repos/chatadhd/loom/tests/test_resolve_attribution.cpp:417: MESSAGE: method tfidf, stats {"method":"tfidf","units":68,"unattributed":56,"attributed":35,"ambiguous":2,"passes":17,"foundations":0,"inferred_aliases":0,"resubjected":91,"members":{"notatnik":["gdzie to trzymac@1","un_d92a70c431c9bf2b","notatki@2","un_f9cf3aaf24f1bdc9"],"Stroz":["un_4e5a46a0e672b6d3","watcher + restart dziala@4","ile razy w tym tygodniu recznie zabijalam zawieszony proces@1","podsumowania po restarcie@5","un_7b368a1dfb7f5866...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="unit.test_resolve_lineage" classname="unit.test_resolve_lineage" time="2.18811" status="run">
+		<properties/>
+		<system-out>===============================================================================
+/workspace/scratch/1112e9e8a3c6/audit-work/repos/chatadhd/loom/tests/test_resolve_lineage.cpp:42:
+TEST SUITE: resolve_lineage
+TEST CASE:  history/chatadhd_v0.8.3 forked from 0.7.9 (46d0ba7)
+
+/workspace/scratch/1112e9e8a3c6/audit-work/repos/chatadhd/loom/tests/test_resolve_lineage.cpp:49: MESSAGE: 0.8.3 base 46d0ba7 confidence 1 votes {"revision":"46d0ba7474a2ea3edae8f402ce57f51934b94d73","label":"0.7.9","date":"2026-02-11T20:11:51Z","files":34,"weight":13860.98,"similarity":0.8825} / {"revision":"1e3fa2b6ed746a2252cd83182c47b5d7ae257505","label":"0.7.10","date":"2026-02-11T20:22:53Z","files":31,"weight":13625.175,"similarity":0.8712}
+
+===============================================================================
+/workspace/scratch/1112e9e8a3c6/audit-work/repos/chatadhd/loom/tests/test_resolve_lineage.cpp:66:
+TEST SUITE: resolve_lineage
+TEST CASE:  history/chatadhd_v0.9.0 forked from 0.7.10 (1e3fa2b), before the abspath fix
+
+/work...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="unit.test_runtime" classname="unit.test_runtime" time="0.135716" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases: 0 | 0 passed | 0 failed | 920 skipped
+[doctest] assertions: 0 | 0 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_runtime_bootstrap_profiles" classname="unit.test_runtime_bootstrap_profiles" time="0.138217" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  6 |  6 passed | 0 failed | 914 skipped
+[doctest] assertions: 60 | 60 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_runtime_profile" classname="unit.test_runtime_profile" time="0.39796" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  11 |  11 passed | 0 failed | 909 skipped
+[doctest] assertions: 334 | 334 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_runtime_recipe_consumers" classname="unit.test_runtime_recipe_consumers" time="1.62522" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  10 |  10 passed | 0 failed | 910 skipped
+[doctest] assertions: 116 | 116 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_selector" classname="unit.test_selector" time="0.285113" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  12 |  12 passed | 0 failed | 908 skipped
+[doctest] assertions: 148 | 148 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_semantic_llm" classname="unit.test_semantic_llm" time="0.247925" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases: 11 | 11 passed | 0 failed | 909 skipped
+[doctest] assertions: 91 | 91 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_semantic_worker" classname="unit.test_semantic_worker" time="0.466696" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases: 13 | 13 passed | 0 failed | 907 skipped
+[doctest] assertions: 70 | 70 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_tasks" classname="unit.test_tasks" time="0.213314" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  5 |  5 passed | 0 failed | 915 skipped
+[doctest] assertions: 56 | 56 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_util" classname="unit.test_util" time="0.163544" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases: 10 | 10 passed | 0 failed | 910 skipped
+[doctest] assertions: 94 | 94 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+	<testcase name="unit.test_util_profiles" classname="unit.test_util_profiles" time="0.195289" status="run">
+		<properties/>
+		<system-out>===============================================================================
+[doctest] test cases:  5 |  5 passed | 0 failed | 915 skipped
+[doctest] assertions: 39 | 39 passed | 0 failed |
+[doctest] Status: SUCCESS!
+</system-out>
+	</testcase>
+</testsuite>

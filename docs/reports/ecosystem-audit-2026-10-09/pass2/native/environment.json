@@ -1,0 +1,76 @@
+{
+  "main_sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "B_sha": "ddcaeaf7a25b70f0d4dc2e0eed2466016233eeb8",
+  "build": "GCC13.3.0, Debug, WERROR, vendoredSQLite3.47.2, OpenSSL; local CMake/Ninja versions in test_tools_installed",
+  "unit_gates": {
+    "ctest_groups": 112,
+    "passed": 112,
+    "failures": 0,
+    "skipped": 0,
+    "native_cases": 897,
+    "assertions": 28601,
+    "seconds": 273.1,
+    "filter": "^unit\\."
+  },
+  "shared_libraries": {
+    "main": {
+      "file": "audit-work/continuation/scratch/native/main-build/libloom.so.0.1.0",
+      "sha256": "4ce4d06f2348c82f063893882a85ebc1c2efdec584e28f52dd90d87f64842771",
+      "bytes": 217495512
+    },
+    "B": {
+      "file": "audit-work/continuation/scratch/native/B-build/libloom.so.0.1.0",
+      "sha256": "78998233da9f98170db4a84d3a694fd0ee12a1fad38bb1c8ff96e4c96c2bd17d",
+      "bytes": 217527592
+    }
+  },
+  "sanitizers": {
+    "status": "selected native source closure built; ASan+UBSan execution complete without diagnostics; LSan environment BLOCKED",
+    "scope": "37 actual C++ source TUs selected from regular linker closure (conservative basename duplicate expansion), 2 vendored C units SQLite/miniz, instrumented audit transport. Not full core/full unit suite.",
+    "build_seconds": 113.56977103999998,
+    "sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+    "flags": "-fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=undefined",
+    "lsan": {
+      "status": "BLOCKED",
+      "receipt": "sanitizer-lsan-blocked-receipt.json",
+      "reason": "LeakSanitizer cannot open /proc/<pid>/task; runtime aborts. 5 blocked modules, no leak verdict.",
+      "environment": {
+        "ASAN_OPTIONS": "detect_leaks=1:abort_on_error=1:strict_string_checks=1",
+        "UBSAN_OPTIONS": "print_stacktrace=1:halt_on_error=1"
+      }
+    },
+    "asan_ubsan": {
+      "status": "PASS instrumentation/no diagnostics in exercised paths; conformance retains four known baseline acceptance failures",
+      "environment": {
+        "ASAN_OPTIONS": "detect_leaks=0:abort_on_error=1:strict_string_checks=1",
+        "UBSAN_OPTIONS": "print_stacktrace=1:halt_on_error=1"
+      },
+      "receipt": "sanitizer-asan-ubsan-receipt.json",
+      "native_processes": 50,
+      "nonzero_process_returncodes": 0,
+      "sanitizer_diagnostics": 0,
+      "conformance_counts": {
+        "PASS": 27,
+        "FAIL": 4,
+        "BLOCKED": 0,
+        "NOT_REPRODUCED": 0
+      }
+    }
+  },
+  "not_run": [
+    "Full combined CTest incl research (C-owned queue tests not duplicated)",
+    "Android/device",
+    "TSan",
+    "Clang build (compiler absent; GCC actual build closes original no native compiler gap)"
+  ],
+  "test_tools_installed": {
+    "cmake": "4.4.4",
+    "ninja": "1.13.2"
+  },
+  "abi_gate": {
+    "ctest_groups": 1,
+    "python_tests": 3,
+    "passed": 3,
+    "skipped": 0
+  }
+}

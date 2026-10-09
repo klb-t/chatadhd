@@ -8,7 +8,7 @@ HERE=pathlib.Path(__file__).resolve().parent
 HISTORICAL='b302df25e1a65f20c395eadc5ad5ef065d26e33d'
 def digest(v):return hashlib.sha256(json.dumps(v,sort_keys=True,ensure_ascii=False,separators=(',',':')).encode()).hexdigest()
 def main():
- p=argparse.ArgumentParser();p.add_argument('--repo',required=True,type=pathlib.Path);p.add_argument('--sha',required=True);p.add_argument('--build-dir',required=True,type=pathlib.Path);p.add_argument('--output',required=True,type=pathlib.Path);p.add_argument('--cxx',default='c++');p.add_argument('--sanitizer',action='store_true');p.add_argument('--link-map',type=pathlib.Path);a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('--repo',required=True,type=pathlib.Path);p.add_argument('--sha',required=True);p.add_argument('--build-dir',required=True,type=pathlib.Path);p.add_argument('--output',required=True,type=pathlib.Path);p.add_argument('--cxx',default='c++');p.add_argument('--sanitizer',action='store_true');a=p.parse_args()
  a.repo=a.repo.resolve();a.build_dir=a.build_dir.resolve();a.output=a.output.resolve();a.output.mkdir(parents=True,exist_ok=True)
  resolved=subprocess.check_output(['git','-C',str(a.repo),'rev-parse',a.sha],text=True).strip()
  # Builds must consume this product revision; audit/report additions are irrelevant.
@@ -21,18 +21,14 @@ def main():
  build_check=subprocess.run(['git','-C',str(build_repo),'diff','--exit-code',resolved,'--','loom/src','loom/include','loom/data','loom/third_party'],stdout=subprocess.PIPE,text=True)
  if build_check.returncode:raise SystemExit('Build source differs from --sha; refuse mislabeled probe')
  executable=a.output/'native-driver'
- command=[a.cxx,'-Wl,--no-keep-memory','-std=c++20','-O0','-g','-I'+str(a.repo/'loom/include'),'-I'+str(a.repo/'loom/third_party/nlohmann'),'-I'+str(a.repo/'loom/third_party/sqlite'),str(HERE/'native_driver.cpp'),str(a.build_dir/'libloom_core.a'),str(a.build_dir/'libloom_sqlite3_amalgamation.a'),str(a.build_dir/'libloom_miniz.a'),'-lssl','-lcrypto','-pthread','-ldl','-lm','-o',str(executable)]
+ command=[a.cxx,'-std=c++20','-O0','-g','-I'+str(a.repo/'loom/include'),'-I'+str(a.repo/'loom/third_party/nlohmann'),'-I'+str(a.repo/'loom/third_party/sqlite'),str(HERE/'native_driver.cpp'),str(a.build_dir/'libloom_core.a'),str(a.build_dir/'libloom_sqlite3_amalgamation.a'),str(a.build_dir/'libloom_miniz.a'),'-lssl','-lcrypto','-pthread','-ldl','-lm','-o',str(executable)]
  if a.sanitizer:command[1:1]=['-fsanitize=address,undefined','-fno-omit-frame-pointer','-fno-sanitize-recover=undefined']
- if a.link_map:command[1:1]=['-Wl,-Map='+str(a.link_map.resolve())]
  built=subprocess.run(command,capture_output=True,text=True);(a.output/'compile.log').write_text(built.stdout+built.stderr)
  if built.returncode:raise SystemExit('Audit transport compile failed; see compile.log')
  receipts=[];checks=[]
  def invoke(**request):
   result=subprocess.run([str(executable)],input=json.dumps(request,ensure_ascii=False),text=True,capture_output=True,timeout=60)
-  try:data=json.loads(result.stdout)
-  except json.JSONDecodeError:
-   receipts.append({'request_op':request.get('op'),'request_sha256':digest(request),'returncode':result.returncode,'stdout':result.stdout[:1000],'stderr':result.stderr[:12000]})
-   raise RuntimeError('Native process did not return JSON; returncode='+str(result.returncode)+'; stderr='+result.stderr[:3000])
+  data=json.loads(result.stdout)
   receipts.append({'request_op':request.get('op'),'request_sha256':digest(request),'response_sha256':digest(data),'returncode':result.returncode,'ok':data.get('ok'),'error':data.get('error'),'stderr':result.stderr[:1500]})
   if result.returncode and 'exception' not in data:raise RuntimeError(result.stderr)
   return data
@@ -110,10 +106,10 @@ def main():
    rejected=invoke(op='update_pack',revision=restored['revision'],pack=recycled,scenario=state['scenario_definition'],**args)
    check('NATIVE-STORE-008',not rejected['ok'] and value(op='read',**args)==restored,rejected.get('error'),requirement='R40 permanent exclusion cannot be escaped by ID recycling')
    supported=value(op='apply',revision=restored['revision'],action={'op':'settings','id':'synthetic/settings-control','time':'2000-01-01T00:00:00Z','settings':{'preference_mode':'candidate'}},**args)
-   supported=value(op='apply',revision=supported['revision'],action={'op':'propose','field':'work.projects','id':'synthetic/settings-proposal','time':'2000-01-01T00:00:00Z','provenance':'user_stated','value':'synthetic proposed work'},**args)
-   check('NATIVE-STORE-009-CONTROL',supported['profile']['candidates']['synthetic/settings-proposal']['presentation']=='candidate',{'preference_mode':supported['profile']['settings']['preference_mode'],'actual_proposal_presentation':supported['profile']['candidates']['synthetic/settings-proposal']['presentation']},requirement='Valid setting consumed by actual propose operation')
+   check('NATIVE-STORE-009-CONTROL',supported['profile']['settings']['preference_mode']=='candidate',{'preference_mode':supported['profile']['settings']['preference_mode']},requirement='Valid operational settings action reaches consumer')
    unsupported=invoke(op='apply',revision=supported['revision'],action={'op':'settings','id':'synthetic/settings-unsupported','time':'2000-01-01T00:00:00Z','settings':{'audit_unsupported_setting':True}},**args)
-   check('NATIVE-STORE-009-OPEN',unsupported.get('ok') and unsupported['value']['profile']['settings'].get('audit_unsupported_setting') is True,{'accepted':unsupported.get('ok'),'persisted':value(op='read',**args)['profile']['settings'].get('audit_unsupported_setting'),'runtime_profile_available':unsupported.get('value',{}).get('runtime_profile',{}).get('available'),'profile_settings':unsupported.get('value',{}).get('profile',{}).get('settings')},kind='behavior_probe',requirement='Schema-permitted open extension accepted and preserved; this alone is not a defect')
+   check('NATIVE-STORE-009-REPRO',unsupported.get('ok') and unsupported['value']['profile']['settings'].get('audit_unsupported_setting') is True,{'accepted':unsupported.get('ok'),'persisted':value(op='read',**args)['profile']['settings'].get('audit_unsupported_setting'),'runtime_profile_available':unsupported.get('value',{}).get('runtime_profile',{}).get('available'),'profile_settings':unsupported.get('value',{}).get('profile',{}).get('settings')},kind='reproduction',requirement='CH-P2-N001 unsupported setting accepted and persisted')
+   check('NATIVE-STORE-009',not unsupported['ok'],{'ok':unsupported.get('ok'),'error':unsupported.get('error')},requirement='CH-P2-N001 reject unsupported operational setting')
    # The shipped native legacy-import entrypoint consumes PROFILE, not outer layer snapshot.
    imported=value(op='open',database=str(tmp/'legacy-import.db'),user=args['user'],legacy=restored['profile'])
    check('NATIVE-STORE-010',imported['profile']['unknown_extension']==restored['profile']['unknown_extension'] and imported['profile']['fields']==restored['profile']['fields'],{'unknown_preserved':True,'field_count':len(imported['profile']['fields']),'import_api':'OnboardingStore.open(user, legacy_profile)'},requirement='Native legacy-profile import then persistence; not full layers/workflow backup')
@@ -158,19 +154,6 @@ def main():
      check('B-POLICY001-'+dimension+'-'+variant+'-REPRO',allowed,observation,kind='reproduction',requirement='B-POLICY001 caller understates graph field classification')
      check('B-POLICY001-'+dimension+'-'+variant,not allowed,observation,requirement='B-POLICY001 graph field classification remains authoritative at policy consumer')
   process('privacy-caps-module',privacy_caps)
-  def unsupported_by_contract():
-   local={'database':str(tmp/'closed-settings.db'),'user':'synthetic/closed-contract-user'}
-   state=value(op='open',**local);pack=copy.deepcopy(state['pack']);pack['revision']+=1;pack['runtime_definition']['revision']+=1
-   pack['runtime_definition']['value_schema']['properties']['settings']['additionalProperties']=False
-   state=value(op='update_pack',revision=state['revision'],pack=pack,scenario=state['scenario_definition'],**local)
-   changed=invoke(op='apply',revision=state['revision'],action={'op':'settings','id':'synthetic/unsupported-by-schema','time':'2000-01-01T00:00:00Z','settings':{'audit_unsupported_setting':True}},**local)
-   execution=invoke(op='request',**local)
-   explicit_reject=not changed.get('ok')
-   runtime=changed.get('value',{}).get('runtime_profile',{})
-   retained_inactive=changed.get('ok') and runtime.get('available') is False and bool(runtime.get('error')) and not execution.get('ok')
-   check('NATIVE-STORE-009',explicit_reject or retained_inactive,{'configured_additionalProperties':False,'write_accepted':changed.get('ok'),'runtime_profile':runtime,'consumer_request_ok':execution.get('ok'),'consumer_error':execution.get('error'),'acceptable_alternatives':['reject unsupported write','preserve data with explicit unavailable status and reject actual execution']},requirement='CH-P2-N001 discriminator: schema-declared unsupported setting is not silently executed; rejection is not the only compliant alternative')
-  process('unsupported-by-contract-module',unsupported_by_contract)
-
 
  report={'schema':'ecosystem-audit.native-conformance/1','repo':'klb-t/chatadhd','sha':resolved,'historical_fixture':fixture_manifest,'scope':'REAL native Pack/Normalizer/OnboardingStore/DefaultLayers/KnowledgeStore; separate process per request. No models, no Runtime workers, no network path invoked. No browser/UI tier equivalence asserted.','compile_command':command,'library_sha256':hashlib.sha256((a.build_dir/'libloom_core.a').read_bytes()).hexdigest(),'build_source':str(build_repo),'checks':checks,'calls':receipts,'counts':{s:sum(c['status']==s for c in checks) for s in ('PASS','FAIL','BLOCKED','NOT_REPRODUCED')},'limitations':['Only supplied synthetic values and 5 normalization samples; migration candidate is audit-only and not shipped.','Native legacy-profile import is not full backup of outer layers, exclusions, workflow or UI state.','Basic/Advanced/Expert browser paths are outside this native harness.']}
  (a.output/'receipt.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')

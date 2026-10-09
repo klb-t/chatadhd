@@ -1,0 +1,7 @@
+Test project /workspace/scratch/1112e9e8a3c6/audit-work/continuation/scratch/native/main-build
+    Start 113: compat.test_abi_compat
+1/1 Test #113: compat.test_abi_compat ...........   Passed    0.86 sec
+
+100% tests passed out of 1
+
+Total Test time (real) =   0.86 sec

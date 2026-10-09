@@ -1,0 +1,231 @@
+{
+  "schema": "ecosystem-audit.test-index/1",
+  "suite": "native",
+  "command": "python3 tools/ecosystem-audit-2026-10-09/pass2/native/run.py --repo CHECKOUT --sha SHA --build-dir BUILD --output OUT",
+  "requires": [
+    "C++20 compiler",
+    "real CMake loom_core + vendored sqlite/miniz build at requested SHA",
+    "OpenSSL libraries",
+    "Git history including b302df25e1a65f20c395eadc5ad5ef065d26e33d"
+  ],
+  "exit_semantics": "1 if acceptance FAIL or BLOCKED; reproduction PASS does not mean product PASS; NOT_REPRODUCED means old bug absent on tested variant",
+  "tests": [
+    {
+      "id": "NATIVE-PACK-001",
+      "kind": "behavior_probe",
+      "main_status": "PASS",
+      "B_status": "PASS",
+      "requirement": "Explicit schema version handling; not proof of regression"
+    },
+    {
+      "id": "NATIVE-PACK-002",
+      "kind": "behavior_probe",
+      "main_status": "PASS",
+      "B_status": "PASS",
+      "requirement": "Historical full pack compatibility gate"
+    },
+    {
+      "id": "NATIVE-PACK-003",
+      "kind": "behavior_probe",
+      "main_status": "PASS",
+      "B_status": "PASS",
+      "requirement": "R42 explicit invalid data failure"
+    },
+    {
+      "id": "NATIVE-PACK-004",
+      "kind": "acceptance",
+      "main_status": "PASS",
+      "B_status": "PASS",
+      "requirement": "Candidate migration semantic sample equivalence, not exhaustive"
+    },
+    {
+      "id": "NATIVE-PACK-005",
+      "kind": "acceptance",
+      "main_status": "PASS",
+      "B_status": "PASS",
+      "requirement": "Preserve original bytes"
+    },
+    {
+      "id": "NATIVE-PACK-006",
+      "kind": "acceptance",
+      "main_status": "PASS",
+      "B_status": "PASS",
+      "requirement": "R42 invalid recipe never revives handwritten default"
+    },
+    {
+      "id": "NATIVE-PACK-007",
+      "kind": "acceptance",
+      "main_status": "PASS",
+      "B_status": "PASS",
+      "requirement": "Unsupported versions fail explicitly"
+    },
+    {
+      "id": "NATIVE-STORE-001",
+      "kind": "acceptance",
+      "main_status": "PASS",
+      "B_status": "PASS",
+      "requirement": "Real native write, process exit, Database reopen, read"
+    },
+    {
+      "id": "NATIVE-STORE-002",
+      "kind": "acceptance",
+      "main_status": "PASS",
+      "B_status": "PASS",
+      "requirement": "R40 effective value source/reason after restart"
+    },
+    {
+      "id": "NATIVE-STORE-003",
+      "kind": "acceptance",
+      "main_status": "PASS",
+      "B_status": "PASS",
+      "requirement": "Concurrent branch CAS must not overwrite state"
+    },
+    {
+      "id": "NATIVE-STORE-004",
+      "kind": "acceptance",
+      "main_status": "PASS",
+      "B_status": "PASS",
+      "requirement": "R40 disabled/excluded survive restart and actual pack update"
+    },
+    {
+      "id": "NATIVE-STORE-005",
+      "kind": "acceptance",
+      "main_status": "PASS",
+      "B_status": "PASS",
+      "requirement": "Unknown profile extension survives native DB and pack update"
+    },
+    {
+      "id": "NATIVE-STORE-006",
+      "kind": "acceptance",
+      "main_status": "PASS",
+      "B_status": "PASS",
+      "requirement": "Divergent same pack revision fails atomically"
+    },
+    {
+      "id": "NATIVE-STORE-007",
+      "kind": "acceptance",
+      "main_status": "PASS",
+      "B_status": "PASS",
+      "requirement": "Colliding identities fail atomically"
+    },
+    {
+      "id": "NATIVE-STORE-008",
+      "kind": "acceptance",
+      "main_status": "PASS",
+      "B_status": "PASS",
+      "requirement": "R40 permanent exclusion cannot be escaped by ID recycling"
+    },
+    {
+      "id": "NATIVE-STORE-009-CONTROL",
+      "kind": "acceptance",
+      "main_status": "PASS",
+      "B_status": "PASS",
+      "requirement": "Valid operational settings action reaches consumer"
+    },
+    {
+      "id": "NATIVE-STORE-009-REPRO",
+      "kind": "reproduction",
+      "main_status": "PASS",
+      "B_status": "PASS",
+      "requirement": "CH-P2-N001 unsupported setting accepted and persisted"
+    },
+    {
+      "id": "NATIVE-STORE-009",
+      "kind": "acceptance",
+      "main_status": "FAIL",
+      "B_status": "FAIL",
+      "requirement": "CH-P2-N001 reject unsupported operational setting"
+    },
+    {
+      "id": "NATIVE-STORE-010",
+      "kind": "acceptance",
+      "main_status": "PASS",
+      "B_status": "PASS",
+      "requirement": "Native legacy-profile import then persistence; not full layers/workflow backup"
+    },
+    {
+      "id": "NATIVE-STORE-011",
+      "kind": "acceptance",
+      "main_status": "PASS",
+      "B_status": "PASS",
+      "requirement": "Unsupported persisted version remains intact and rejects downgrade"
+    },
+    {
+      "id": "NATIVE-STORE-012",
+      "kind": "acceptance",
+      "main_status": "PASS",
+      "B_status": "PASS",
+      "requirement": "R41 old native result retains exact prior method recipe after prompt edit and restart"
+    },
+    {
+      "id": "NATIVE-STORE-013",
+      "kind": "acceptance",
+      "main_status": "PASS",
+      "B_status": "PASS",
+      "requirement": "Two profile prompts alter actual model_request consumer"
+    },
+    {
+      "id": "B-POLICY001-CONTROL",
+      "kind": "acceptance",
+      "main_status": "PASS",
+      "B_status": "PASS",
+      "requirement": "Explicit profile cap permits in-scope field"
+    },
+    {
+      "id": "B-POLICY001-detail-understate-REPRO",
+      "kind": "reproduction",
+      "main_status": "PASS",
+      "B_status": "NOT_REPRODUCED",
+      "requirement": "B-POLICY001 caller understates graph field classification"
+    },
+    {
+      "id": "B-POLICY001-detail-understate",
+      "kind": "acceptance",
+      "main_status": "FAIL",
+      "B_status": "PASS",
+      "requirement": "B-POLICY001 graph field classification remains authoritative at policy consumer"
+    },
+    {
+      "id": "B-POLICY001-detail-omit-REPRO",
+      "kind": "reproduction",
+      "main_status": "PASS",
+      "B_status": "NOT_REPRODUCED",
+      "requirement": "B-POLICY001 caller understates graph field classification"
+    },
+    {
+      "id": "B-POLICY001-detail-omit",
+      "kind": "acceptance",
+      "main_status": "FAIL",
+      "B_status": "PASS",
+      "requirement": "B-POLICY001 graph field classification remains authoritative at policy consumer"
+    },
+    {
+      "id": "B-POLICY001-sensitivity-understate-REPRO",
+      "kind": "reproduction",
+      "main_status": "PASS",
+      "B_status": "NOT_REPRODUCED",
+      "requirement": "B-POLICY001 caller understates graph field classification"
+    },
+    {
+      "id": "B-POLICY001-sensitivity-understate",
+      "kind": "acceptance",
+      "main_status": "FAIL",
+      "B_status": "PASS",
+      "requirement": "B-POLICY001 graph field classification remains authoritative at policy consumer"
+    },
+    {
+      "id": "B-POLICY001-sensitivity-omit-REPRO",
+      "kind": "reproduction",
+      "main_status": "PASS",
+      "B_status": "NOT_REPRODUCED",
+      "requirement": "B-POLICY001 caller understates graph field classification"
+    },
+    {
+      "id": "B-POLICY001-sensitivity-omit",
+      "kind": "acceptance",
+      "main_status": "FAIL",
+      "B_status": "PASS",
+      "requirement": "B-POLICY001 graph field classification remains authoritative at policy consumer"
+    }
+  ]
+}

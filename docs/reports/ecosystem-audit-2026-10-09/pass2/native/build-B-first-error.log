@@ -1,0 +1,206 @@
+[0/2] Re-checking globbed directories...
+[1/175] Building C object CMakeFiles/loom_miniz.dir/third_party/miniz/miniz.c.o
+/workspace/scratch/1112e9e8a3c6/audit-work/continuation/checkouts/B/loom/third_party/miniz/miniz.c:3185:9: note: ‘#pragma message: Using fopen, ftello, fseeko, stat() etc. path for file I/O - this path may not support large files.’
+ 3185 | #pragma message("Using fopen, ftello, fseeko, stat() etc. path for file I/O - this path may not support large files.")
+      |         ^~~~~~~
+[2/175] Linking C static library libloom_miniz.a
+[3/175] Building CXX object CMakeFiles/loom_core.dir/src/archive/cluster.cpp.o
+[4/175] Building C object CMakeFiles/loom_sqlite3_amalgamation.dir/third_party/sqlite/sqlite3.c.o
+[5/175] Linking C static library libloom_sqlite3_amalgamation.a
+[6/175] Building CXX object CMakeFiles/loom_core.dir/src/archive/ingest_parse.cpp.o
+[7/175] Building CXX object CMakeFiles/loom_core.dir/src/archive/ingest.cpp.o
+[8/175] Building CXX object CMakeFiles/loom_core.dir/src/archive/items.cpp.o
+[9/175] Building CXX object CMakeFiles/loom_core.dir/src/archive/profile.cpp.o
+[10/175] Building CXX object CMakeFiles/loom_core.dir/src/archive/text.cpp.o
+[11/175] Building CXX object CMakeFiles/loom_core.dir/src/archive/synth.cpp.o
+[12/175] Building CXX object CMakeFiles/loom_core.dir/src/archive/pipeline.cpp.o
+[13/175] Building CXX object CMakeFiles/loom_core.dir/src/archive/vocab.cpp.o
+[14/175] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_archive.cpp.o
+[15/175] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_catalog.cpp.o
+[16/175] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_chat.cpp.o
+[17/175] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_config.cpp.o
+[18/175] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_context.cpp.o
+[19/175] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_extract.cpp.o
+[20/175] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_core.cpp.o
+[21/175] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_generalize.cpp.o
+[22/175] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_graph.cpp.o
+[23/175] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_graph_packet_store.cpp.o
+[24/175] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_http.cpp.o
+[25/175] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_import.cpp.o
+[26/175] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_media.cpp.o
+[27/175] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_knowledge.cpp.o
+[28/175] Building CXX object CMakeFiles/loom_core.dir/src/catalog/alias.cpp.o
+[29/175] Building CXX object CMakeFiles/loom_core.dir/src/capi/capi_packet.cpp.o
+[30/175] Building CXX object CMakeFiles/loom_core.dir/src/catalog/extract_text.cpp.o
+[31/175] Building CXX object CMakeFiles/loom_core.dir/src/catalog/catalog.cpp.o
+[32/175] Building CXX object CMakeFiles/loom_core.dir/src/catalog/import.cpp.o
+[33/175] Building CXX object CMakeFiles/loom_core.dir/src/catalog/links.cpp.o
+[34/175] Building CXX object CMakeFiles/loom_core.dir/src/catalog/profile.cpp.o
+[35/175] Building CXX object CMakeFiles/loom_core.dir/src/catalog/relevance_recipe.cpp.o
+[36/175] Building CXX object CMakeFiles/loom_core.dir/src/catalog/query.cpp.o
+[37/175] Building CXX object CMakeFiles/loom_core.dir/src/catalog/schema.cpp.o
+[38/175] Building CXX object CMakeFiles/loom_core.dir/src/catalog/scan.cpp.o
+[39/175] Building CXX object CMakeFiles/loom_core.dir/src/catalog/semantic.cpp.o
+[40/175] Building CXX object CMakeFiles/loom_core.dir/src/catalog/select.cpp.o
+[41/175] Building CXX object CMakeFiles/loom_core.dir/src/catalog/score.cpp.o
+[42/175] Building CXX object CMakeFiles/loom_core.dir/src/catalog/semantic_candidates.cpp.o
+[43/175] Building CXX object CMakeFiles/loom_core.dir/src/catalog/stream.cpp.o
+[44/175] Building CXX object CMakeFiles/loom_core.dir/src/catalog/sketch.cpp.o
+[45/175] Building CXX object CMakeFiles/loom_core.dir/src/chat/active_task_acceptance.cpp.o
+[46/175] Building CXX object CMakeFiles/loom_core.dir/src/chat/active_task_spec.cpp.o
+[47/175] Building CXX object CMakeFiles/loom_core.dir/src/chat/batch_api.cpp.o
+[48/175] Building CXX object CMakeFiles/loom_core.dir/src/chat/tests/chat_preset_parity.cpp.o
+[49/175] Building CXX object CMakeFiles/loom_core.dir/src/chat/tests/chat_reasoning_profile_test.cpp.o
+[50/175] Building CXX object CMakeFiles/loom_core.dir/src/context/context_candidates.cpp.o
+[51/175] Building CXX object CMakeFiles/loom_core.dir/src/chat/graph_reply.cpp.o
+[52/175] Building CXX object CMakeFiles/loom_core.dir/src/context/context_diagnostics.cpp.o
+[53/175] Building CXX object CMakeFiles/loom_core.dir/src/chat/chat_engine.cpp.o
+[54/175] Building CXX object CMakeFiles/loom_core.dir/src/context/context_evidence.cpp.o
+[55/175] Building CXX object CMakeFiles/loom_core.dir/src/context/context_plan.cpp.o
+[56/175] Building CXX object CMakeFiles/loom_core.dir/src/context/context_request_ext.cpp.o
+[57/175] Building CXX object CMakeFiles/loom_core.dir/src/context/ctx_common.cpp.o
+[58/175] Building CXX object CMakeFiles/loom_core.dir/src/context/context_engine.cpp.o
+[59/175] Building CXX object CMakeFiles/loom_core.dir/src/context/method_channels.cpp.o
+[60/175] Building CXX object CMakeFiles/loom_core.dir/src/context/method_execution.cpp.o
+[61/175] Building CXX object CMakeFiles/loom_core.dir/src/context/method_registry.cpp.o
+[62/175] Building CXX object CMakeFiles/loom_core.dir/src/context/tests/goal_cues_configuration.cpp.o
+[63/175] Building CXX object CMakeFiles/loom_core.dir/src/context/tests/goal_cues_parity.cpp.o
+[64/175] Building CXX object CMakeFiles/loom_core.dir/src/context/tests/runtime_preset_test.cpp.o
+[65/175] Building CXX object CMakeFiles/loom_core.dir/src/context/retrieval.cpp.o
+[66/175] Building CXX object CMakeFiles/loom_core.dir/src/context/provider_vector.cpp.o
+[67/175] Building CXX object CMakeFiles/loom_core.dir/src/core/config.cpp.o
+[68/175] Building CXX object CMakeFiles/loom_core.dir/src/context/unified_context.cpp.o
+[69/175] Building CXX object CMakeFiles/loom_core.dir/src/core/config_usage_policy.cpp.o
+[70/175] Building CXX object CMakeFiles/loom_core.dir/src/core/event_bus.cpp.o
+[71/175] Building CXX object CMakeFiles/loom_core.dir/src/core/relations.cpp.o
+[72/175] Building CXX object CMakeFiles/loom_core.dir/src/core/provenance.cpp.o
+[73/175] Building CXX object CMakeFiles/loom_core.dir/src/core/tasks.cpp.o
+[74/175] Building CXX object CMakeFiles/loom_core.dir/src/crypto/crypto.cpp.o
+[75/175] Building CXX object CMakeFiles/loom_core.dir/src/db/annotations.cpp.o
+[76/175] Building CXX object CMakeFiles/loom_core.dir/src/db/sqlite.cpp.o
+[77/175] Building CXX object CMakeFiles/loom_core.dir/src/db/fts.cpp.o
+[78/175] Building CXX object CMakeFiles/loom_core.dir/src/db/db.cpp.o
+[79/175] Building CXX object CMakeFiles/loom_core.dir/src/extract/candidate_graph.cpp.o
+[80/175] Building CXX object CMakeFiles/loom_core.dir/src/extract/extract.cpp.o
+[81/175] Building CXX object CMakeFiles/loom_core.dir/src/extract/lexicon.cpp.o
+[82/175] Building CXX object CMakeFiles/loom_core.dir/src/extract/prompt_contract.cpp.o
+[83/175] Building CXX object CMakeFiles/loom_core.dir/src/extract/extractors.cpp.o
+[84/175] Building CXX object CMakeFiles/loom_core.dir/src/extract/sources.cpp.o
+[85/175] Building CXX object CMakeFiles/loom_core.dir/src/extract/semantic.cpp.o
+[86/175] Building CXX object CMakeFiles/loom_core.dir/src/extract/stage.cpp.o
+[87/175] Building CXX object CMakeFiles/loom_core.dir/src/generalize/common.cpp.o
+[88/175] Building CXX object CMakeFiles/loom_core.dir/src/generalize/evidence.cpp.o
+[89/175] Building CXX object CMakeFiles/loom_core.dir/src/generalize/infer.cpp.o
+[90/175] Building CXX object CMakeFiles/loom_core.dir/src/generalize/operators.cpp.o
+[91/175] Building CXX object CMakeFiles/loom_core.dir/src/generalize/match.cpp.o
+[92/175] Building CXX object CMakeFiles/loom_core.dir/src/generalize/principles.cpp.o
+[93/175] Building CXX object CMakeFiles/loom_core.dir/src/generalize/stage.cpp.o
+[94/175] Building CXX object CMakeFiles/loom_core.dir/src/graph/graph_engine.cpp.o
+[95/175] Building CXX object CMakeFiles/loom_core.dir/src/github/github_sync.cpp.o
+[96/175] Building CXX object CMakeFiles/loom_core.dir/src/graph/graph_memory.cpp.o
+[97/175] Building CXX object CMakeFiles/loom_core.dir/src/import/export_anthropic.cpp.o
+[98/175] Building CXX object CMakeFiles/loom_core.dir/src/import/export_checkpoint.cpp.o
+[99/175] Building CXX object CMakeFiles/loom_core.dir/src/import/export_archive.cpp.o
+[100/175] Building CXX object CMakeFiles/loom_core.dir/src/import/export_common.cpp.o
+[101/175] Building CXX object CMakeFiles/loom_core.dir/src/import/export_openai.cpp.o
+[102/175] Building CXX object CMakeFiles/loom_core.dir/src/import/export_unknown.cpp.o
+[103/175] Building CXX object CMakeFiles/loom_core.dir/src/import/exporter.cpp.o
+[104/175] Building CXX object CMakeFiles/loom_core.dir/src/import/import_preset_identity.cpp.o
+[105/175] Building CXX object CMakeFiles/loom_core.dir/src/import/import_preset.cpp.o
+[106/175] Building CXX object CMakeFiles/loom_core.dir/src/import/import_audit.cpp.o
+[107/175] Building CXX object CMakeFiles/loom_core.dir/src/import/importer_common.cpp.o
+[108/175] Building CXX object CMakeFiles/loom_core.dir/src/import/import_usage.cpp.o
+[109/175] Building CXX object CMakeFiles/loom_core.dir/src/import/importer_html.cpp.o
+[110/175] Building CXX object CMakeFiles/loom_core.dir/src/import/importer_core.cpp.o
+[111/175] Building CXX object CMakeFiles/loom_core.dir/src/import/importer_json.cpp.o
+[112/175] Building CXX object CMakeFiles/loom_core.dir/src/import/importer_sqlite.cpp.o
+[113/175] Building CXX object CMakeFiles/loom_core.dir/src/import/importer_text.cpp.o
+[114/175] Building CXX object CMakeFiles/loom_core.dir/src/import/importer_zip.cpp.o
+[115/175] Building CXX object CMakeFiles/loom_core.dir/src/kb/candidates.cpp.o
+[116/175] Building CXX object CMakeFiles/loom_core.dir/src/kb/evidence.cpp.o
+[117/175] Building CXX object CMakeFiles/loom_core.dir/src/kb/graph_packet_store.cpp.o
+[118/175] Building CXX object CMakeFiles/loom_core.dir/src/kb/normalize.cpp.o
+[119/175] Building CXX object CMakeFiles/loom_core.dir/src/kb/schema.cpp.o
+[120/175] Building CXX object CMakeFiles/loom_core.dir/src/kb/pack.cpp.o
+[121/175] Building CXX object CMakeFiles/loom_core.dir/src/knowledge/engine.cpp.o
+[122/175] Building CXX object CMakeFiles/loom_core.dir/src/kb/store.cpp.o
+[123/175] Building CXX object CMakeFiles/loom_core.dir/src/materialize/materialize.cpp.o
+[124/175] Building CXX object CMakeFiles/loom_core.dir/src/media/media_providers.cpp.o
+[125/175] Building CXX object CMakeFiles/loom_core.dir/src/memory/memory_engine.cpp.o
+[126/175] Building CXX object CMakeFiles/loom_core.dir/src/model/model_core.cpp.o
+[127/175] Building CXX object CMakeFiles/loom_core.dir/src/model/model_general.cpp.o
+[128/175] Building CXX object CMakeFiles/loom_core.dir/src/model/model_action.cpp.o
+[129/175] Building CXX object CMakeFiles/loom_core.dir/src/model/model_pack.cpp.o
+[130/175] Building CXX object CMakeFiles/loom_core.dir/src/model/runtime_profile.cpp.o
+[131/175] Building CXX object CMakeFiles/loom_core.dir/src/net/sse.cpp.o
+[132/175] Building CXX object CMakeFiles/loom_core.dir/src/net/http_common.cpp.o
+[133/175] Building CXX object CMakeFiles/loom_core.dir/src/onboarding/layers.cpp.o
+[134/175] Building CXX object CMakeFiles/loom_core.dir/src/onboarding/graph.cpp.o
+[135/175] Building CXX object CMakeFiles/loom_core.dir/src/onboarding/presentation.cpp.o
+[136/175] Building CXX object CMakeFiles/loom_core.dir/src/net/http_default.cpp.o
+[137/175] Building CXX object CMakeFiles/loom_core.dir/src/onboarding/profile.cpp.o
+[138/175] Building CXX object CMakeFiles/loom_core.dir/src/onboarding/runtime_adapter.cpp.o
+[139/175] Building CXX object CMakeFiles/loom_core.dir/src/onboarding/store.cpp.o
+[140/175] Building CXX object CMakeFiles/loom_core.dir/src/packet/reply.cpp.o
+[141/175] Building CXX object CMakeFiles/loom_core.dir/src/packet/packet.cpp.o
+[142/175] Building CXX object CMakeFiles/loom_core.dir/src/policy/usage_policy.cpp.o
+[143/175] Building CXX object CMakeFiles/loom_core.dir/src/providers/providers.cpp.o
+[144/175] Building CXX object CMakeFiles/loom_core.dir/src/providers/embedding.cpp.o
+[145/175] Building CXX object CMakeFiles/loom_core.dir/src/re/regex.cpp.o
+[146/175] Building CXX object CMakeFiles/loom_core.dir/src/resolve/assess.cpp.o
+[147/175] Building CXX object CMakeFiles/loom_core.dir/src/resolve/lineage.cpp.o
+[148/175] Building CXX object CMakeFiles/loom_core.dir/src/resolve/attribution.cpp.o
+[149/175] Building CXX object CMakeFiles/loom_core.dir/src/resolve/resolver.cpp.o
+[150/175] Building CXX object CMakeFiles/loom_core.dir/src/resolve/vectors.cpp.o
+[151/175] Building CXX object CMakeFiles/loom_core.dir/src/resolve/stage.cpp.o
+[152/175] Building CXX object CMakeFiles/loom_core.dir/src/search/selector.cpp.o
+[153/175] Building CXX object CMakeFiles/loom_core.dir/src/runtime.cpp.o
+[154/175] Building CXX object CMakeFiles/loom_core.dir/src/util/base64.cpp.o
+[155/175] Building CXX object CMakeFiles/loom_core.dir/src/semantic/analyzer.cpp.o
+[156/175] Building CXX object CMakeFiles/loom_core.dir/src/util/fs.cpp.o
+[157/175] Building CXX object CMakeFiles/loom_core.dir/src/semantic/semantic_llm.cpp.o
+[158/175] Building CXX object CMakeFiles/loom_core.dir/src/util/json.cpp.o
+[159/175] Building CXX object CMakeFiles/loom_core.dir/src/util/random_ids_time.cpp.o
+[160/175] Building CXX object CMakeFiles/loom_core.dir/src/util/result.cpp.o
+[161/175] Building CXX object CMakeFiles/loom_core.dir/src/util/unicode.cpp.o
+[162/175] Building CXX object CMakeFiles/loom_core.dir/src/util/sha256.cpp.o
+[163/175] Building CXX object CMakeFiles/loom_core.dir/src/util/utf8.cpp.o
+[164/175] Building C object CMakeFiles/loom.dir/src/capi/shared_anchor.c.o
+[165/175] Building CXX object CMakeFiles/loom_core.dir/src/util/log.cpp.o
+[166/175] Building CXX object CMakeFiles/loom_core.dir/src/worker/semantic_worker.cpp.o
+[167/175] Building CXX object server/CMakeFiles/loom-server.dir/src/main.cpp.o
+[168/175] Building CXX object cli/CMakeFiles/loom_cli.dir/main.cpp.o
+[169/175] Linking CXX static library libloom_core.a
+[170/175] Linking CXX shared library libloom.so.0.1.0
+FAILED: [code=1] libloom.so.0.1.0 
+: && /usr/bin/c++ -fPIC -g  -shared -Wl,--no-undefined -Wl,--dependency-file=CMakeFiles/loom.dir/link.d -Wl,-soname,libloom.so.0 -o libloom.so.0.1.0 CMakeFiles/loom.dir/src/capi/shared_anchor.c.o  -Wl,--push-state,--whole-archive  libloom_core.a  -Wl,--pop-state  libloom_sqlite3_amalgamation.a  -ldl  -lm  libloom_miniz.a  /usr/lib/x86_64-linux-gnu/libssl.so  /usr/lib/x86_64-linux-gnu/libcrypto.so && :
+/usr/bin/ld: libloom_core.a: member libloom_core.a(vocab.cpp.o) in archive is not an object
+collect2: error: ld returned 1 exit status
+[171/175] Linking CXX executable cli/loom
+FAILED: [code=1] cli/loom 
+: && /usr/bin/c++ -g -Wl,--dependency-file=cli/CMakeFiles/loom_cli.dir/link.d cli/CMakeFiles/loom_cli.dir/main.cpp.o -o cli/loom  libloom_core.a  libloom_sqlite3_amalgamation.a  -ldl  -lm  libloom_miniz.a  /usr/lib/x86_64-linux-gnu/libssl.so  /usr/lib/x86_64-linux-gnu/libcrypto.so && :
+/usr/bin/ld: libloom_core.a(pipeline.cpp.o): in function `loom::archive::StageRunner::expand(nlohmann::json_abi_v3_11_3::basic_json<nlohmann::json_abi_v3_11_3::ordered_map, std::vector, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, bool, long, unsigned long, double, std::allocator, nlohmann::json_abi_v3_11_3::adl_serializer, std::vector<unsigned char, std::allocator<unsigned char> >, void> const&, loom::archive::StageControl&)':
+/workspace/scratch/1112e9e8a3c6/audit-work/continuation/checkouts/B/loom/src/archive/pipeline.cpp:498:(.text+0xc3d4): undefined reference to `loom::archive::expand_vocabulary(loom::archive::Corpus const&, loom::archive::CorpusStats const&, std::vector<unsigned long, std::allocator<unsigned long> > const&, std::set<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > const&, int, int, loom::SemanticAnalyzer const*, loom::archive::ArchiveProfile const*)'
+/usr/bin/ld: /workspace/scratch/1112e9e8a3c6/audit-work/continuation/checkouts/B/loom/src/archive/pipeline.cpp:500:(.text+0xc48d): undefined reference to `loom::archive::TermRecord::to_json[abi:cxx11](loom::archive::ArchiveProfile const*) const'
+/usr/bin/ld: libloom_core.a(pipeline.cpp.o): in function `loom::archive::StageRunner::graph(nlohmann::json_abi_v3_11_3::basic_json<nlohmann::json_abi_v3_11_3::ordered_map, std::vector, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, bool, long, unsigned long, double, std::allocator, nlohmann::json_abi_v3_11_3::adl_serializer, std::vector<unsigned char, std::allocator<unsigned char> >, void> const&, loom::archive::StageControl&)':
+/workspace/scratch/1112e9e8a3c6/audit-work/continuation/checkouts/B/loom/src/archive/pipeline.cpp:563:(.text+0xf107): undefined reference to `loom::archive::salient_terms[abi:cxx11](loom::archive::CorpusStats const&, unsigned long, int, loom::archive::ArchiveProfile const*)'
+/usr/bin/ld: libloom_core.a(pipeline.cpp.o): in function `loom::archive::StageRunner::synthesize_stage(nlohmann::json_abi_v3_11_3::basic_json<nlohmann::json_abi_v3_11_3::ordered_map, std::vector, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, bool, long, unsigned long, double, std::allocator, nlohmann::json_abi_v3_11_3::adl_serializer, std::vector<unsigned char, std::allocator<unsigned char> >, void> const&, loom::archive::StageControl&)':
+/workspace/scratch/1112e9e8a3c6/audit-work/continuation/checkouts/B/loom/src/archive/pipeline.cpp:849:(.text+0x1bd05): undefined reference to `loom::archive::TermRecord::from_json(nlohmann::json_abi_v3_11_3::basic_json<nlohmann::json_abi_v3_11_3::ordered_map, std::vector, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, bool, long, unsigned long, double, std::allocator, nlohmann::json_abi_v3_11_3::adl_serializer, std::vector<unsigned char, std::allocator<unsigned char> >, void> const&)'
+/usr/bin/ld: libloom_core.a(pipeline.cpp.o): in function `loom::archive::(anonymous namespace)::Orchestrator::run()':
+/workspace/scratch/1112e9e8a3c6/audit-work/continuation/checkouts/B/loom/src/archive/pipeline.cpp:1128:(.text+0x28169): undefined reference to `loom::archive::TermRecord::from_json(nlohmann::json_abi_v3_11_3::basic_json<nlohmann::json_abi_v3_11_3::ordered_map, std::vector, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, bool, long, unsigned long, double, std::allocator, nlohmann::json_abi_v3_11_3::adl_serializer, std::vector<unsigned char, std::allocator<unsigned char> >, void> const&)'
+/usr/bin/ld: /workspace/scratch/1112e9e8a3c6/audit-work/continuation/checkouts/B/loom/src/archive/pipeline.cpp:1137:(.text+0x28643): undefined reference to `loom::archive::TermRecord::to_json[abi:cxx11](loom::archive::ArchiveProfile const*) const'
+/usr/bin/ld: libloom_core.a(pipeline.cpp.o): in function `loom::archive::StageRunner::stats(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)':
+/workspace/scratch/1112e9e8a3c6/audit-work/continuation/checkouts/B/loom/src/archive/pipeline.cpp:354:(.text._ZN4loom7archive11StageRunner5statsERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE[_ZN4loom7archive11StageRunner5statsERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE]+0x1e3): undefined reference to `loom::archive::compute_stats(loom::archive::Corpus const&, loom::archive::ArchiveProfile const*)'
+/usr/bin/ld: libloom_core.a(synth.cpp.o): in function `loom::archive::(anonymous namespace)::build_code_index(loom::archive::Corpus const&, loom::archive::ArchiveProfile const&)':
+/workspace/scratch/1112e9e8a3c6/audit-work/continuation/checkouts/B/loom/src/archive/synth.cpp:133:(.text+0x25ba): undefined reference to `loom::archive::camel_identifiers[abi:cxx11](std::basic_string_view<char, std::char_traits<char> >, loom::archive::ArchiveProfile const*)'
+/usr/bin/ld: libloom_core.a(synth.cpp.o): in function `loom::archive::synthesize(loom::archive::SynthesisInput const&)':
+/workspace/scratch/1112e9e8a3c6/audit-work/continuation/checkouts/B/loom/src/archive/synth.cpp:342:(.text+0x8616): undefined reference to `loom::archive::camel_identifiers[abi:cxx11](std::basic_string_view<char, std::char_traits<char> >, loom::archive::ArchiveProfile const*)'
+/usr/bin/ld: /workspace/scratch/1112e9e8a3c6/audit-work/continuation/checkouts/B/loom/src/archive/synth.cpp:1145:(.text+0x1d480): undefined reference to `loom::archive::camel_identifiers[abi:cxx11](std::basic_string_view<char, std::char_traits<char> >, loom::archive::ArchiveProfile const*)'
+/usr/bin/ld: libloom_core.a(ingest_parse.cpp.o): in function `loom::archive::digest_code(std::basic_string_view<char, std::char_traits<char> >, std::basic_string_view<char, std::char_traits<char> >, std::basic_string_view<char, std::char_traits<char> >, loom::archive::ArchiveProfile const*)::{lambda(std::basic_string_view<char, std::char_traits<char> >)#1}::operator()(std::basic_string_view<char, std::char_traits<char> >) const':
+/workspace/scratch/1112e9e8a3c6/audit-work/continuation/checkouts/B/loom/src/archive/ingest_parse.cpp:309:(.text+0x4c3c): undefined reference to `loom::archive::camel_identifiers[abi:cxx11](std::basic_string_view<char, std::char_traits<char> >, loom::archive::ArchiveProfile const*)'
+/usr/bin/ld: libloom_core.a(extractors.cpp.o): in function `loom::extract::detail::(anonymous namespace)::Run::find_named_mentions()':
+/workspace/scratch/1112e9e8a3c6/audit-work/continuation/checkouts/B/loom/src/extract/extractors.cpp:668:(.text+0x9cb5): undefined reference to `loom::archive::camel_identifiers[abi:cxx11](std::basic_string_view<char, std::char_traits<char> >, loom::archive::ArchiveProfile const*)'
+/usr/bin/ld: libloom_core.a(extractors.cpp.o):/workspace/scratch/1112e9e8a3c6/audit-work/continuation/checkouts/B/loom/src/extract/extractors.cpp:1927: more undefined references to `loom::archive::camel_identifiers[abi:cxx11](std::basic_string_view<char, std::char_traits<char> >, loom::archive::ArchiveProfile const*)' follow
+collect2: error: ld returned 1 exit status
+[172/175] Building CXX object server/CMakeFiles/loom-server.dir/src/app.cpp.o
+ninja: build stopped: subcommand failed.

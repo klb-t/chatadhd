@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="(empty)"
+	tests="1"
+	failures="0"
+	disabled="0"
+	skipped="0"
+	hostname=""
+	time="0"
+	timestamp="2026-10-09T14:22:43"
+	>
+	<testcase name="compat.test_abi_compat" classname="compat.test_abi_compat" time="0.860197" status="run">
+		<properties/>
+		<system-out>test_ctypes_smoke (__main__.AbiTest.test_ctypes_smoke) ... ok
+test_original_spec_signatures_are_exact (__main__.AbiTest.test_original_spec_signatures_are_exact) ... ok
+test_shared_library_exports_exactly_the_declared_api (__main__.AbiTest.test_shared_library_exports_exactly_the_declared_api) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.792s
+
+OK
+</system-out>
+	</testcase>
+</testsuite>

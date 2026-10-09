@@ -2,36 +2,41 @@
   "packages": [
     {
       "finding_id": "CH-P2-N001",
-      "reproduction": "NATIVE-STORE-009-REPRO; main reproduces; see main-receipt.json",
+      "status": "rejected_hypothesis; no product fix requested",
+      "reproduction": "NATIVE-STORE-009-OPEN observes contract-permitted retention; this alone is not a defect. Historical incorrect rejection-only criterion is preserved separately.",
       "expected_behavior": [
         {
-          "name": "reject_unsupported_operational_keys",
-          "status": "not implemented; acceptance runner targets this migration-safe option for new writes"
+          "name": "open_extension_carrier",
+          "status": "implemented; explicit open schema permits preservation, without promising that arbitrary keys implement behavior"
         },
         {
-          "name": "retain_unknown_as_explicitly_inactive_extension",
-          "status": "not implemented in observed response; acceptable design alternative, requires explicit capability contract and matching acceptance assertion"
+          "name": "retain_unknown_as_explicitly_inactive",
+          "status": "implemented for closed declared contract; runtime unavailable and real request rejected"
+        },
+        {
+          "name": "reject_unsupported_write",
+          "status": "acceptable optional alternative, not required when preserved data cannot execute"
         }
       ],
       "acceptance_test": {
         "command": "python3 tools/ecosystem-audit-2026-10-09/pass2/native/run.py --repo CHECKOUT --sha SHA --build-dir BUILD --output OUT",
-        "criterion": "NATIVE-STORE-009 rejects unsupported operational key on valid action; supported candidate setting remains usable. NATIVE-STORE-005 continues preserving unknown document extensions."
+        "criterion": "NATIVE-STORE-009 accepts explicit rejection OR preservation with unavailable/error and actual request blocked; NATIVE-STORE-009-CONTROL proves supported setting in actual propose; OPEN/005 preserve allowed extensions."
       },
       "consumers": [
-        "OnboardingStore.apply → ProfileSession.dispatch(settings) → sync layer → save_locked → decorate",
-        "ProfileSession.apply(propose) reads settings.preference_mode"
+        "OnboardingStore.update_pack → runtime_definition.value_schema",
+        "OnboardingStore.apply → ProfileSession.dispatch(settings) → save/decorate → runtime_profile validation",
+        "OnboardingStore.model_request → rejects unavailable runtime profile",
+        "ProfileSession.apply(propose) → settings.preference_mode → candidate.presentation"
       ],
-      "migration": "Do not erase previously retained unknown fields or change supported preference_mode. Distinguish retained extension from effective supported setting.",
-      "risk": "medium correctness/compatibility, no paid call or outbound event observed",
-      "dependencies": [
-        "B owns product/runtime schema changes; auditor changes only external harness"
-      ]
+      "migration": "No product migration requested. Closing a contract is a data-policy choice; preserve retained extensions and supported settings.",
+      "risk": "Avoid breaking allowed extension preservation to satisfy invalid audit assertion.",
+      "dependencies": []
     },
     {
       "finding_id": "B-POLICY001",
       "reproduction": "4 independent variants: lower/omit detail/sensitivity against native persisted cap0.5 and field classification1; main allows. Control cap2 permits.",
       "expected_behavior": "Capped profile field cannot be reclassified lower by caller; omitted request classification resolves from authoritative field or errors if unavailable.",
-      "acceptance_test": "B-POLICY001-detail-understate/omit and sensitivity-understate/omit; main4FAIL; B pending",
+      "acceptance_test": "B-POLICY001-detail-understate/omit + sensitivity-understate/omit: main4FAIL → Bddcaeaf7 4PASS; positive permissive control PASSboth",
       "consumers": [
         "OnboardingStore.policy_decision",
         "onboarding.privacy_decision"
@@ -39,7 +44,7 @@
       "migration": "No data rewrite required for checked profile fields. Existing legitimate caps must continue to permit values.",
       "risk": "authorization boundary, independently check every caller still routes through this decision",
       "dependencies": [
-        "B ddcaeaf7 native build in progress; root CH004/005 caller wiring independent"
+        "B ddcaeaf7 independently verified in native persisted policy consumer; ordinary caller wiring remains root CH004/005 scope"
       ]
     }
   ]

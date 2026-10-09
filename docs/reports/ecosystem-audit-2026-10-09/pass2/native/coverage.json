@@ -66,7 +66,7 @@
       "ranges": [
         [
           10,
-          324
+          316
         ]
       ],
       "functions": [
@@ -99,7 +99,7 @@
         ],
         [
           510,
-          644
+          640
         ]
       ],
       "functions": [
@@ -108,7 +108,8 @@
         "ProfileSession::create selected ranges",
         "settings action",
         "model_request",
-        "ingest_model_reply"
+        "ingest_model_reply",
+        "propose presentation consumes settings.preference_mode (executed)"
       ],
       "untraced_calls": [
         "all answer/review/delete/privacy-retention branches outside listed ranges"
@@ -140,7 +141,7 @@
       "ranges": [
         [
           18,
-          150
+          134
         ]
       ],
       "functions": [
@@ -191,7 +192,7 @@
       "ranges": [
         [
           1,
-          48
+          44
         ]
       ],
       "functions": [
@@ -204,7 +205,7 @@
       "ranges": [
         [
           1,
-          53
+          47
         ]
       ],
       "functions": [
@@ -217,13 +218,48 @@
       "ranges": [
         [
           1,
-          26
+          25
         ]
       ],
       "functions": [
         "graph store contract"
       ],
       "untraced_calls": []
+    },
+    {
+      "file": "loom/src/kb/NORMALIZER_RECIPE.md",
+      "ranges": [
+        [
+          1,
+          70
+        ]
+      ],
+      "functions": [
+        "documented manual stemming/1→/2 migration and limits"
+      ],
+      "untraced_calls": []
+    },
+    {
+      "file": "loom/src/model/runtime_profile.cpp",
+      "ranges": [
+        [
+          122,
+          207
+        ],
+        [
+          218,
+          247
+        ]
+      ],
+      "functions": [
+        "validate_schema supported-keyword contract",
+        "validate_value additionalProperties open/closed dispatch",
+        "RuntimeProfile::from_definition validates defaults and effective override"
+      ],
+      "untraced_calls": [
+        "exact numeric comparison branches inspected but not independently enumerated",
+        "remaining external overlay discovery outside selected ranges"
+      ]
     }
   ],
   "runtime_paths_closed": [
@@ -233,13 +269,15 @@
     "open/apply→native graph projection→SQLite→process exit→read",
     "exclude/disable→update_pack→new process read",
     "candidate reply→method execution snapshot→prompt override→graph reproject→old result method edge retained",
-    "request lower/omitted detail or sensitivity→actual native policy_decision"
+    "request lower/omitted detail or sensitivity→actual native policy_decision",
+    "settings.preference_mode → actual propose → candidate.presentation",
+    "update_pack closed settings schema → preserve unsupported raw key → runtime unavailable/error → actual model_request rejection"
   ],
   "unverified": [
     "Full profile+layers+workflow export/import protocol (legacy_profile import is narrower)",
     "Basic/Advanced/Expert actual browser consumers",
     "all normalization vocabulary/algorithm equivalence against historical executable",
-    "pack schema/1 automatic product migration (not present in traced path)",
-    "ASan/UBSan pending B build scheduling"
+    "Automatic migration of pack schema/1 is not present; documented manual conversion was actually exercised",
+    "LeakSanitizer runtime blocked by /proc task access; separate ASan+UBSan result recorded in environment.json; neither covers all core modules"
   ]
 }

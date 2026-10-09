@@ -1,0 +1,229 @@
+Test project /workspace/scratch/1112e9e8a3c6/audit-work/continuation/scratch/native/main-build
+        Start   1: unit.test_archive
+        Start   2: unit.test_archive_profiles
+  1/112 Test   #1: unit.test_archive ..................................   Passed    6.72 sec
+        Start   3: unit.test_archive_runtime_policy
+  2/112 Test   #3: unit.test_archive_runtime_policy ...................   Passed    1.13 sec
+        Start   4: unit.test_archive_synthesis_policy
+  3/112 Test   #4: unit.test_archive_synthesis_policy .................   Passed    1.97 sec
+        Start   5: unit.test_archive_text_policy
+  4/112 Test   #2: unit.test_archive_profiles .........................   Passed   10.28 sec
+        Start   6: unit.test_batch_api
+  5/112 Test   #6: unit.test_batch_api ................................   Passed    0.22 sec
+        Start   7: unit.test_capi
+  6/112 Test   #5: unit.test_archive_text_policy ......................   Passed    0.79 sec
+        Start   8: unit.test_capi_knowledge
+  7/112 Test   #8: unit.test_capi_knowledge ...........................   Passed    1.01 sec
+        Start   9: unit.test_capi_knowledge_latest_run
+  8/112 Test   #9: unit.test_capi_knowledge_latest_run ................   Passed    3.13 sec
+        Start  10: unit.test_catalog
+  9/112 Test   #7: unit.test_capi .....................................   Passed    7.03 sec
+        Start  11: unit.test_catalog_context
+ 10/112 Test  #10: unit.test_catalog ..................................   Passed    5.81 sec
+        Start  12: unit.test_catalog_eval
+ 11/112 Test  #11: unit.test_catalog_context ..........................   Passed    4.13 sec
+        Start  13: unit.test_catalog_links
+ 12/112 Test  #12: unit.test_catalog_eval .............................   Passed    1.89 sec
+        Start  14: unit.test_catalog_retention
+ 13/112 Test  #14: unit.test_catalog_retention ........................   Passed    3.92 sec
+        Start  15: unit.test_catalog_scale
+ 14/112 Test  #15: unit.test_catalog_scale ............................   Passed    0.15 sec
+        Start  16: unit.test_chat_active_task
+ 15/112 Test  #13: unit.test_catalog_links ............................   Passed    6.39 sec
+        Start  17: unit.test_chat_active_task_acceptance_audit
+ 16/112 Test  #17: unit.test_chat_active_task_acceptance_audit ........   Passed    2.91 sec
+        Start  18: unit.test_chat_active_task_acceptance_scale
+ 17/112 Test  #16: unit.test_chat_active_task .........................   Passed    9.43 sec
+        Start  19: unit.test_chat_active_task_acceptance_validation
+ 18/112 Test  #18: unit.test_chat_active_task_acceptance_scale ........   Passed    5.64 sec
+        Start  20: unit.test_chat_active_task_concurrency
+ 19/112 Test  #20: unit.test_chat_active_task_concurrency .............   Passed    2.21 sec
+        Start  21: unit.test_chat_active_task_durability
+ 20/112 Test  #19: unit.test_chat_active_task_acceptance_validation ...   Passed   12.40 sec
+        Start  22: unit.test_chat_active_task_durable_audit
+ 21/112 Test  #21: unit.test_chat_active_task_durability ..............   Passed    9.84 sec
+        Start  23: unit.test_chat_active_task_exceptional
+ 22/112 Test  #23: unit.test_chat_active_task_exceptional .............   Passed    2.35 sec
+        Start  24: unit.test_chat_active_task_history_aba
+ 23/112 Test  #24: unit.test_chat_active_task_history_aba .............   Passed    0.52 sec
+        Start  25: unit.test_chat_active_task_reference
+ 24/112 Test  #25: unit.test_chat_active_task_reference ...............   Passed    0.15 sec
+        Start  26: unit.test_chat_active_task_retention
+ 25/112 Test  #22: unit.test_chat_active_task_durable_audit ...........   Passed    9.69 sec
+        Start  27: unit.test_chat_active_task_revisions
+ 26/112 Test  #26: unit.test_chat_active_task_retention ...............   Passed   11.28 sec
+        Start  28: unit.test_chat_active_task_scope_identity
+ 27/112 Test  #27: unit.test_chat_active_task_revisions ...............   Passed    5.37 sec
+        Start  29: unit.test_chat_engine
+ 28/112 Test  #29: unit.test_chat_engine ..............................   Passed    0.27 sec
+        Start  30: unit.test_chat_knowledge_context
+ 29/112 Test  #28: unit.test_chat_active_task_scope_identity ..........   Passed    1.06 sec
+        Start  31: unit.test_chat_retrieval_plan
+ 30/112 Test  #31: unit.test_chat_retrieval_plan ......................   Passed    4.70 sec
+        Start  32: unit.test_config
+ 31/112 Test  #32: unit.test_config ...................................   Passed    0.20 sec
+        Start  33: unit.test_context_channel_integration
+ 32/112 Test  #30: unit.test_chat_knowledge_context ...................   Passed    8.22 sec
+        Start  34: unit.test_context_controls
+ 33/112 Test  #33: unit.test_context_channel_integration ..............   Passed    3.59 sec
+        Start  35: unit.test_context_counter
+ 34/112 Test  #35: unit.test_context_counter ..........................   Passed    2.23 sec
+        Start  36: unit.test_context_diagnostics
+ 35/112 Test  #34: unit.test_context_controls .........................   Passed    6.24 sec
+        Start  37: unit.test_context_engine
+ 36/112 Test  #36: unit.test_context_diagnostics ......................   Passed   18.05 sec
+        Start  38: unit.test_context_eval
+ 37/112 Test  #38: unit.test_context_eval .............................   Passed    3.47 sec
+        Start  39: unit.test_context_native_consumer
+ 38/112 Test  #39: unit.test_context_native_consumer ..................   Passed    5.45 sec
+        Start  40: unit.test_context_plan
+ 39/112 Test  #37: unit.test_context_engine ...........................   Passed   26.06 sec
+        Start  41: unit.test_context_retrieval
+ 40/112 Test  #41: unit.test_context_retrieval ........................   Passed    1.73 sec
+        Start  42: unit.test_context_retrieval_dev
+ 41/112 Test  #42: unit.test_context_retrieval_dev ....................   Passed    1.83 sec
+        Start  43: unit.test_context_tfidf_reuse
+ 42/112 Test  #40: unit.test_context_plan .............................   Passed   11.09 sec
+        Start  44: unit.test_crypto
+ 43/112 Test  #43: unit.test_context_tfidf_reuse ......................   Passed    8.61 sec
+        Start  45: unit.test_db
+ 44/112 Test  #45: unit.test_db .......................................   Passed    0.86 sec
+        Start  46: unit.test_db_annotations
+ 45/112 Test  #46: unit.test_db_annotations ...........................   Passed    0.81 sec
+        Start  47: unit.test_event_bus
+ 46/112 Test  #47: unit.test_event_bus ................................   Passed    0.51 sec
+        Start  48: unit.test_extract
+ 47/112 Test  #44: unit.test_crypto ...................................   Passed    6.47 sec
+        Start  49: unit.test_extract_eval
+ 48/112 Test  #49: unit.test_extract_eval .............................   Passed    3.90 sec
+        Start  50: unit.test_fts
+ 49/112 Test  #50: unit.test_fts ......................................   Passed    0.19 sec
+        Start  51: unit.test_generalize
+ 50/112 Test  #48: unit.test_extract ..................................   Passed    6.41 sec
+        Start  52: unit.test_generalize_eval
+ 51/112 Test  #52: unit.test_generalize_eval ..........................   Passed    2.35 sec
+        Start  53: unit.test_github
+ 52/112 Test  #53: unit.test_github ...................................   Passed    0.33 sec
+        Start  54: unit.test_graph
+ 53/112 Test  #54: unit.test_graph ....................................   Passed    0.34 sec
+        Start  55: unit.test_import
+ 54/112 Test  #51: unit.test_generalize ...............................   Passed    4.71 sec
+        Start  56: unit.test_import_audit
+ 55/112 Test  #56: unit.test_import_audit .............................   Passed    0.20 sec
+        Start  57: unit.test_import_audit_presets
+ 56/112 Test  #57: unit.test_import_audit_presets .....................   Passed    0.20 sec
+        Start  58: unit.test_import_aux_depth
+ 57/112 Test  #55: unit.test_import ...................................   Passed    0.66 sec
+        Start  59: unit.test_import_export_fidelity
+ 58/112 Test  #58: unit.test_import_aux_depth .........................   Passed    0.30 sec
+        Start  60: unit.test_import_exports
+ 59/112 Test  #59: unit.test_import_export_fidelity ...................   Passed    0.59 sec
+        Start  61: unit.test_import_presets
+ 60/112 Test  #61: unit.test_import_presets ...........................   Passed    0.29 sec
+        Start  62: unit.test_import_presets_binding
+ 61/112 Test  #62: unit.test_import_presets_binding ...................   Passed    0.49 sec
+        Start  63: unit.test_import_resume
+ 62/112 Test  #60: unit.test_import_exports ...........................   Passed    2.69 sec
+        Start  64: unit.test_import_screenshot
+ 63/112 Test  #63: unit.test_import_resume ............................   Passed    1.78 sec
+        Start  65: unit.test_import_source_materialization
+ 64/112 Test  #64: unit.test_import_screenshot ........................   Passed    0.59 sec
+        Start  66: unit.test_import_stream
+ 65/112 Test  #65: unit.test_import_source_materialization ............   Passed    0.53 sec
+        Start  67: unit.test_import_usage
+ 66/112 Test  #67: unit.test_import_usage .............................   Passed    1.38 sec
+        Start  68: unit.test_kb_pack
+ 67/112 Test  #66: unit.test_import_stream ............................   Passed   38.81 sec
+        Start  69: unit.test_knowledge
+ 68/112 Test  #69: unit.test_knowledge ................................   Passed   28.36 sec
+        Start  70: unit.test_knowledge_candidate_graph
+ 69/112 Test  #70: unit.test_knowledge_candidate_graph ................   Passed    0.40 sec
+        Start  71: unit.test_knowledge_candidates
+ 70/112 Test  #71: unit.test_knowledge_candidates .....................   Passed    0.14 sec
+        Start  72: unit.test_knowledge_flow
+ 71/112 Test  #68: unit.test_kb_pack ..................................   Passed   67.82 sec
+        Start  73: unit.test_knowledge_profile
+ 72/112 Test  #73: unit.test_knowledge_profile ........................   Passed    0.14 sec
+        Start  74: unit.test_knowledge_semantic
+ 73/112 Test  #72: unit.test_knowledge_flow ...........................   Passed    2.62 sec
+        Start  75: unit.test_knowledge_semantic_graph
+ 74/112 Test  #74: unit.test_knowledge_semantic .......................   Passed    8.62 sec
+        Start  76: unit.test_knowledge_store
+ 75/112 Test  #76: unit.test_knowledge_store ..........................   Passed    0.27 sec
+        Start  77: unit.test_materialize
+ 76/112 Test  #75: unit.test_knowledge_semantic_graph .................   Passed   10.05 sec
+        Start  78: unit.test_media
+ 77/112 Test  #78: unit.test_media ....................................   Passed    0.20 sec
+        Start  79: unit.test_memory
+ 78/112 Test  #79: unit.test_memory ...................................   Passed    0.20 sec
+        Start  80: unit.test_memory_sort_profiles
+ 79/112 Test  #80: unit.test_memory_sort_profiles .....................   Passed    0.18 sec
+        Start  81: unit.test_memory_visibility_profiles
+ 80/112 Test  #81: unit.test_memory_visibility_profiles ...............   Passed    0.13 sec
+        Start  82: unit.test_model
+ 81/112 Test  #82: unit.test_model ....................................   Passed    0.14 sec
+        Start  83: unit.test_model_creation_profile
+ 82/112 Test  #83: unit.test_model_creation_profile ...................   Passed    0.35 sec
+        Start  84: unit.test_model_profile
+ 83/112 Test  #84: unit.test_model_profile ............................   Passed    0.71 sec
+        Start  85: unit.test_net_profile
+ 84/112 Test  #85: unit.test_net_profile ..............................   Passed    0.18 sec
+        Start  86: unit.test_net_sse
+ 85/112 Test  #86: unit.test_net_sse ..................................   Passed    0.13 sec
+        Start  87: unit.test_onboarding
+ 86/112 Test  #77: unit.test_materialize ..............................   Passed    4.20 sec
+        Start  88: unit.test_onboarding_graph
+ 87/112 Test  #87: unit.test_onboarding ...............................   Passed    0.44 sec
+        Start  89: unit.test_onboarding_layers
+ 88/112 Test  #89: unit.test_onboarding_layers ........................   Passed    0.27 sec
+        Start  90: unit.test_onboarding_presentation
+ 89/112 Test  #90: unit.test_onboarding_presentation ..................   Passed    0.14 sec
+        Start  91: unit.test_onboarding_presentation_layers
+ 90/112 Test  #91: unit.test_onboarding_presentation_layers ...........   Passed    0.42 sec
+        Start  92: unit.test_onboarding_presentation_store
+ 91/112 Test  #88: unit.test_onboarding_graph .........................   Passed    7.94 sec
+        Start  93: unit.test_onboarding_store
+ 92/112 Test  #92: unit.test_onboarding_presentation_store ............   Passed   17.74 sec
+        Start  94: unit.test_pack_model
+ 93/112 Test  #94: unit.test_pack_model ...............................   Passed    1.28 sec
+        Start  95: unit.test_packet
+ 94/112 Test  #95: unit.test_packet ...................................   Passed    0.14 sec
+        Start  96: unit.test_provenance
+ 95/112 Test  #96: unit.test_provenance ...............................   Passed    0.20 sec
+        Start  97: unit.test_providers
+ 96/112 Test  #97: unit.test_providers ................................   Passed    0.14 sec
+        Start  98: unit.test_regex
+ 97/112 Test  #98: unit.test_regex ....................................   Passed    0.17 sec
+        Start  99: unit.test_relations
+ 98/112 Test  #99: unit.test_relations ................................   Passed    0.14 sec
+        Start 100: unit.test_resolve
+ 99/112 Test #100: unit.test_resolve ..................................   Passed    0.66 sec
+        Start 101: unit.test_resolve_attribution
+100/112 Test #101: unit.test_resolve_attribution ......................   Passed    5.36 sec
+        Start 102: unit.test_resolve_lineage
+101/112 Test #102: unit.test_resolve_lineage ..........................   Passed    2.19 sec
+        Start 103: unit.test_runtime
+102/112 Test #103: unit.test_runtime ..................................   Passed    0.14 sec
+        Start 104: unit.test_runtime_bootstrap_profiles
+103/112 Test #104: unit.test_runtime_bootstrap_profiles ...............   Passed    0.14 sec
+        Start 105: unit.test_runtime_profile
+104/112 Test #105: unit.test_runtime_profile ..........................   Passed    0.40 sec
+        Start 106: unit.test_runtime_recipe_consumers
+105/112 Test #106: unit.test_runtime_recipe_consumers .................   Passed    1.63 sec
+        Start 107: unit.test_selector
+106/112 Test #107: unit.test_selector .................................   Passed    0.29 sec
+        Start 108: unit.test_semantic_llm
+107/112 Test #108: unit.test_semantic_llm .............................   Passed    0.25 sec
+        Start 109: unit.test_semantic_worker
+108/112 Test #109: unit.test_semantic_worker ..........................   Passed    0.47 sec
+        Start 110: unit.test_tasks
+109/112 Test #110: unit.test_tasks ....................................   Passed    0.21 sec
+        Start 111: unit.test_util
+110/112 Test #111: unit.test_util .....................................   Passed    0.16 sec
+        Start 112: unit.test_util_profiles
+111/112 Test #112: unit.test_util_profiles ............................   Passed    0.20 sec
+112/112 Test  #93: unit.test_onboarding_store .........................   Passed   50.37 sec
+
+100% tests passed out of 112
+
+Total Test time (real) = 273.10 sec
