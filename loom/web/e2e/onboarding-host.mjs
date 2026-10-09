@@ -14,7 +14,7 @@ import { closeHttpFixture, suiteCompletionGuard } from "./harness-lifecycle.mjs"
 
 const sourceFiles = ["onboarding-host.mjs", "harness-lifecycle.mjs", "../src/api/onboarding-host.ts", "../src/api/loom-http.ts", "../src/api/loom-api.ts",
   "../src/api/operations.ts", "../src/api/types.ts", "../src/components/UserProfilePanel.tsx", "../src/components/user-profile-panel.css",
-  ...["index.ts", "types.ts", "native-snapshot.ts", "controller.ts", "OnboardingPanel.tsx", "WhatAppKnows.tsx", "onboarding.css"].map(file => `../src/onboarding/${file}`),
+  ...["index.ts", "types.ts", "native-snapshot.ts", "presentation.mjs", "presentation-context.tsx", "generated/ui.json", "controller.ts", "OnboardingPanel.tsx", "WhatAppKnows.tsx", "onboarding.css"].map(file => `../src/onboarding/${file}`),
   "../../data/profiles/user.pack", "../../data/onboarding/scenario.pack"];
 const sourceSnapshot = () => Object.fromEntries(sourceFiles.map(file => [file,
   createHash("sha256").update(readFileSync(new URL(file, import.meta.url))).digest("hex")]));
@@ -27,7 +27,7 @@ function moduleUrl(file, replacements = []) {
   for (const [from, to] of replacements) source = source.replaceAll(`from "${from}"`, `from "${to}"`);
   return `data:text/javascript;base64,${Buffer.from(source).toString("base64")}`;
 }
-const nativeUrl = moduleUrl("../src/onboarding/native-snapshot.ts");
+const nativeUrl = moduleUrl("../src/onboarding/native-snapshot.ts", [["./presentation.mjs", new URL("../src/onboarding/presentation.mjs", import.meta.url).href]]);
 const { createUserProfileHost, NativeProfileSession, USER_PROFILE_IDENTITY_KEY } = await import(moduleUrl(
   "../src/api/onboarding-host.ts", [["../onboarding/native-snapshot", nativeUrl]],
 ));
@@ -95,9 +95,12 @@ const answer = (id, value = "authored synthetic value") => ({ op: "answer", fiel
 
 await check("explicit identity is the only persisted value; construction performs no native or model call", async () => {
   const f = fixture(), saved = storage(), host = createUserProfileHost(f.api, { storage: saved });
-  assert.equal(host.getState().userId, null); assert.equal(host.getAdapter(), null); assert.equal(f.calls.length, 0);
+  assert.equal(host.getState().userId, null); assert.equal(host.getAdapter(), null); assert.equal(host.currentSnapshot(), null); assert.equal(f.calls.length, 0);
   host.selectUser("authored-user"); assert.equal(f.calls.length, 0);
-  const adapter = host.getAdapter(); await adapter.getSnapshot();
+  const adapter = host.getAdapter(); const loaded = await adapter.getSnapshot();
+  const cached = host.currentSnapshot(); assert.deepEqual(cached, loaded);
+  cached.settings.preference_mode = "candidate";
+  assert.deepEqual(host.currentSnapshot(), loaded, "cached native projections are detached and do not dispatch");
   assert.equal(adapter.modelRequest, undefined); assert.equal(adapter.completeModelRequest, undefined); assert.equal(adapter.ingestModelReply, undefined);
   assert.deepEqual(JSON.parse(saved.records.get(USER_PROFILE_IDENTITY_KEY)), { schema: "loom.user_profile_identity/1", user_id: "authored-user" });
   assert.deepEqual([...saved.records.keys()], [USER_PROFILE_IDENTITY_KEY]);
@@ -195,8 +198,10 @@ await check("lost write response leaves an unknown outcome and never creates an 
   });
   await assert.rejects(session.adapter.dispatch(answer("lost")), /outcome is unknown/);
   assert.equal(session.state().outcomeUnknown, true); assert.equal(session.state().revision, null);
+  assert.equal(session.currentSnapshot(), null, "an uncertain outcome never exposes a current cached projection");
   const before = f.calls.length; await assert.rejects(session.adapter.dispatch(answer("blocked")), /Reload/); assert.equal(f.calls.length, before);
   f.setHandler(null); await session.adapter.getSnapshot(); assert.equal(session.state().revision, "1");
+  assert.notEqual(session.currentSnapshot(), null, "only an explicit native read restores the cached projection");
   assert.equal(session.state().outcomeUnknown, true); assert.equal(f.calls.at(-1).command.operation, "read");
 });
 
@@ -413,7 +418,10 @@ if (!pureOnly) {
       await page.getByTestId("user-profile-unknown-outcome").waitFor({ timeout: 3000 });
       const before = browserCommands.filter(command => command.operation === "apply").length;
       await submit("Authored blocked replacement");
-      await page.getByTestId("onboarding-panel").getByRole("alert").filter({ hasText: "Reload" }).waitFor();
+      const panel = page.getByTestId("onboarding-panel");
+      await panel.getByRole("alert").waitFor();
+      await panel.getByText("Diagnostic details", { exact: true }).click();
+      await panel.locator("pre").filter({ hasText: "Reload and inspect the native profile before another change." }).waitFor();
       assert.equal(browserCommands.filter(command => command.operation === "apply").length, before);
       await page.getByTestId("user-profile-reload").click(); await waitRevision("5");
       assert.equal(browserCommands.at(-1).operation, "read");

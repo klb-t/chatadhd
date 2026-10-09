@@ -96,8 +96,35 @@ def compile_layer_bindings(pack):
     return pack
 
 
+def compile_entry_packs(pack):
+    """Compose canonical entry definitions; native DefaultLayers owns resolution."""
+    sources = pack.get("entry_packs", [])
+    if not isinstance(sources, list):
+        raise ValueError("entry_packs must be an array")
+    entries = pack.get("entries")
+    if not isinstance(entries, list):
+        raise ValueError("default layer entries must be an array")
+    for source in sources:
+        if not isinstance(source, dict) or source.get("schema") != "loom.default_layers_pack/1" or not isinstance(source.get("entries"), list):
+            raise ValueError("entry pack needs a default layers pack")
+        if any(not isinstance(entry, dict) or not isinstance(entry.get("id"), str) for entry in source["entries"]):
+            raise ValueError("entry pack entry needs stable id")
+        entries.extend(deepcopy(source["entries"]))
+    keys, ids = set(), set()
+    for entry in entries:
+        if not isinstance(entry, dict) or not isinstance(entry.get("key"), str) or ("id" in entry and not isinstance(entry["id"], str)):
+            raise ValueError("default layer entry needs key and id")
+        if entry["key"] in keys or ("id" in entry and entry["id"] in ids):
+            raise ValueError("duplicate default layer key or id")
+        keys.add(entry["key"])
+        if "id" in entry:
+            ids.add(entry["id"])
+    return pack
+
+
 def documents():
     result = {name: read_document(path) for name, path in FILES.items()}
+    compile_entry_packs(result["kOnboardingPack"])
     compile_layer_bindings(result["kOnboardingPack"])
     return result
 

@@ -8,6 +8,10 @@ import {
 import "./knowledge.css";
 import { NATIVE_INT_MAX, SEMANTIC_BUDGET_KEY, nativeResourceInteger, useResourceParameters, useResourcePresets, validSemanticBudget } from "../context/resource-controls";
 import ResourcePresetEditor from "./ResourcePresetEditor";
+import type { UserProfileHost } from "../api/onboarding-host";
+import PerspectiveControls from "../workspace/PerspectiveControls";
+import { perspectiveDataset } from "../workspace/knowledge-perspective";
+import type { SelectionResult } from "../graph-perspectives/types";
 
 import { VIEWS, STORAGE_KEY, SAVED_KEY, loadWorkspace, parseWorkspace, addPane, changeParameter, connect, unlink, duplicatePane, setWorkspaceRun,
   type ViewKind, type Pane, type Parameters, type Parameter, type Workspace } from "../workspace/state";
@@ -43,7 +47,7 @@ function JsonDetail({ label, value, open = false }: { label: string; value: unkn
   return <details className="kb-detail" open={open || undefined}><summary>{label}</summary><pre>{JSON.stringify(value ?? null, null, 2)}</pre></details>;
 }
 
-export default function KnowledgeWorkbench({ onClose, onDataChanged }: { onClose: () => void; onDataChanged?: () => void }) {
+export default function KnowledgeWorkbench({ onClose, onDataChanged, profileHost }: { onClose: () => void; onDataChanged?: () => void; profileHost?: UserProfileHost }) {
   const knowledge = api.knowledge;
   const [loaded] = useState(loadWorkspace);
   const [workspace, setWorkspace] = useState(loaded.workspace);
@@ -109,7 +113,7 @@ export default function KnowledgeWorkbench({ onClose, onDataChanged }: { onClose
       {error && <p className="kb-error" role="alert">{error}</p>}
       <RunControls knowledge={knowledge} onDone={(nextRun) => { if (nextRun) setWorkspace((w) => setWorkspaceRun(w, nextRun)); setRefresh((key) => key + 1); onDataChanged?.(); }} />
       <div className="kb-workspace"><div className="kb-panels">
-        {panes.map((pane, index) => <WorkspacePane key={pane.id} pane={pane} index={index} workspace={workspace} setWorkspace={setWorkspace} knowledge={knowledge} runs={runs} refresh={refresh} onDataChanged={onDataChanged}
+        {panes.map((pane, index) => <WorkspacePane key={pane.id} pane={pane} index={index} profileHost={profileHost} workspace={workspace} setWorkspace={setWorkspace} knowledge={knowledge} runs={runs} refresh={refresh} onDataChanged={onDataChanged}
           onInspect={(selection, entities) => { setInspection({ pane: pane.id, run: pane.parameters.run, limit: pane.parameters.limit, refresh, selection, entities }); setWorkspace((w) => w.active === pane.id || !w.panes.some((p) => p.id === pane.id) ? w : ({ ...w, active: pane.id })); }} />)}
         {!panes.length && <div className="empty-state">Add a view to explore the knowledge model.</div>}
       </div><Inspector selection={currentInspection?.selection ?? null} entities={currentInspection?.entities ?? new Map()} /></div>
@@ -117,8 +121,8 @@ export default function KnowledgeWorkbench({ onClose, onDataChanged }: { onClose
   </section>;
 }
 
-function WorkspacePane({ pane, index, workspace, setWorkspace, knowledge, runs, refresh, onDataChanged, onInspect }: {
-  pane: Pane; index: number; workspace: Workspace; setWorkspace: React.Dispatch<React.SetStateAction<Workspace>>;
+function WorkspacePane({ pane, index, profileHost, workspace, setWorkspace, knowledge, runs, refresh, onDataChanged, onInspect }: {
+  pane: Pane; index: number; profileHost?: UserProfileHost; workspace: Workspace; setWorkspace: React.Dispatch<React.SetStateAction<Workspace>>;
   knowledge: KnowledgeApi; runs: KnowledgeRun[]; refresh: number; onDataChanged?: () => void;
   onInspect: (selection: Selection, entities: Map<string, KnowledgeRecord>) => void;
 }) {
@@ -192,7 +196,14 @@ function WorkspacePane({ pane, index, workspace, setWorkspace, knowledge, runs, 
     {pane.kind === "context" ? <ContextPane knowledge={knowledge} run={usable ? p.run : ""} focus={focus} entities={entities} onSelect={select} data={data} parameters={p} change={change} refresh={refresh} /> :
       pane.kind === "catalog" ? <CatalogPane knowledge={knowledge} onSelect={select} refresh={refresh} onImported={onDataChanged} parameters={p} change={change} onResolve={resolveSelection} /> :
       pane.kind === "candidates" ? <CandidatePane knowledge={knowledge} run={usable ? p.run : ""} refresh={refresh} onSelect={select} entities={entities} parameters={p} change={change} onResolve={resolveSelection} /> :
-      pane.kind === "graph" ? <KnowledgeGraph data={data} focus={focus} onSelect={select} parameters={p} change={change} /> :
+      pane.kind === "graph" ? profileHost ? <PerspectiveControls host={profileHost} knowledge={knowledge} run={p.run} limit={p.limit} focus={focus}
+        entities={data.entities ?? []} claims={data.claims ?? []} errors={errors} loaded={!busy && usable} onFocus={entity => select("entities", entity)}>
+        {(projection, active) => active ? projection && <KnowledgeGraph data={perspectiveDataset(projection)}
+          focus={projection.objects.find(item => item.ref.selector === focus)?.key ?? ""} projection={projection}
+          onSelect={(kind, record) => { const original = kind === "entities" ? asRecord(asRecord(asRecord(record.perspective).properties).raw) : asRecord(record.native_record);
+            select(kind, Object.keys(original).length ? original : record); }} parameters={p} change={change} />
+          : <KnowledgeGraph data={data} focus={focus} onSelect={select} parameters={p} change={change} />}
+      </PerspectiveControls> : <KnowledgeGraph data={data} focus={focus} onSelect={select} parameters={p} change={change} /> :
       <CollectionPane kind={pane.kind} rows={data[pane.kind] ?? []} entities={entities} focus={focus} selection={selection} onSelect={select} limit={p.limit} parameters={p} change={change} />}
   </section>;
 }
@@ -377,7 +388,7 @@ function CollectionPane({ kind, rows, entities, focus, selection, onSelect, limi
   </>;
 }
 
-function KnowledgeGraph({ data, focus, onSelect, parameters, change }: { data: Dataset; focus: string; onSelect: (kind: string, row: KnowledgeRecord) => void; parameters: Parameters; change: Change }) {
+export function KnowledgeGraph({ data, focus, onSelect, parameters, change, projection }: { data: Dataset; focus: string; onSelect: (kind: string, row: KnowledgeRecord) => void; parameters: Parameters; change: Change; projection?: SelectionResult }) {
   const marker = useId().replace(/:/g, "");
   const filter = parameters.filter;
   const setFilter = (value: string) => change("filter", value);
@@ -403,34 +414,35 @@ function KnowledgeGraph({ data, focus, onSelect, parameters, change }: { data: D
     }
     return visited;
   }, [claims, focus, depth]);
-  const matching = entities.filter((row) => (!filter || labelOf(row, new Map()).toLocaleLowerCase().includes(filter.toLocaleLowerCase())) && (confidence === 0 || Number(row.confidence ?? 0) >= confidence / 100));
-  const nodes = [...matching].sort((a, b) => Number(neighborhood.has(idOf(b))) - Number(neighborhood.has(idOf(a))) || idOf(a).localeCompare(idOf(b))).slice(0, maxNodes);
+  const matching = projection ? entities : entities.filter((row) => (!filter || labelOf(row, new Map()).toLocaleLowerCase().includes(filter.toLocaleLowerCase())) && (confidence === 0 || Number(row.confidence ?? 0) >= confidence / 100));
+  const nodes = projection ? matching : [...matching].sort((a, b) => Number(neighborhood.has(idOf(b))) - Number(neighborhood.has(idOf(a))) || idOf(a).localeCompare(idOf(b))).slice(0, maxNodes);
   const height = Math.max(320, Math.ceil(nodes.length / 5) * 76 + 40);
   const positions = new Map(nodes.map((row, index) => [idOf(row), { x: 68 + (index % 5) * 132, y: 44 + Math.floor(index / 5) * 76 }]));
   const edges = claims.filter((claim) => positions.has(displayText(claim.subject)) && positions.has(displayText(claim.object)));
   return <>
-    <div className="kb-pane-controls">
+    {!projection && <div className="kb-pane-controls">
       <input type="search" aria-label="Filter graph entities" placeholder="Filter graph entities…" value={filter} onChange={(event) => setFilter(event.target.value)} />
       <label>Focus depth: {depth}<input aria-label="Graph focus depth" type="range" min={0} max={5} value={depth} onChange={(event) => setDepth(Number(event.target.value))} /></label>
       <label>Background opacity: {fade}%<input aria-label="Graph background opacity" type="range" min={5} max={100} value={fade} onChange={(event) => setFade(Number(event.target.value))} /></label>
       <label>Minimum confidence: {confidence}%<input aria-label="Graph minimum confidence" type="range" min={0} max={100} value={confidence} onChange={(event) => setConfidence(Number(event.target.value))} /></label>
       <label>Node limit<select aria-label="Graph node limit" value={maxNodes} onChange={(event) => setMaxNodes(Number(event.target.value))}>{[30, 60, 120, 300].map((count) => <option key={count}>{count}</option>)}</select></label>
-    </div>
+    </div>}
     <div className="kb-count">{nodes.length} / {matching.length} matching entities · {edges.length} relations · select a node to focus linked views</div>
     <div className="kb-graph-scroll">
       {!nodes.length ? <p className="empty-state">Analyze sources to build a knowledge graph.</p> : <svg className="kb-graph" viewBox={`0 0 680 ${height}`} role="group" aria-label="Knowledge entities and claim relations">
         <defs><marker id={marker} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--dim)" /></marker></defs>
         {edges.map((claim) => { const a = positions.get(displayText(claim.subject))!; const b = positions.get(displayText(claim.object))!; const length = Math.hypot(b.x - a.x, b.y - a.y) || 1; const end = { x: b.x - (b.x - a.x) / length * 15, y: b.y - (b.y - a.y) / length * 15 };
-          return <g key={idOf(claim)} opacity={!focus || (neighborhood.has(displayText(claim.subject)) && neighborhood.has(displayText(claim.object))) ? 0.65 : fade / 100} className="kb-edge-target" role="button" tabIndex={0} aria-label={`Inspect relation ${displayText(claim.predicate)}`} onClick={() => onSelect("claims", claim)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); onSelect("claims", claim); } }}>
+          return <g key={idOf(claim)} opacity={projection ? undefined : !focus || (neighborhood.has(displayText(claim.subject)) && neighborhood.has(displayText(claim.object))) ? 0.65 : fade / 100} className="kb-edge-target" role="button" tabIndex={0} aria-label={`Inspect relation ${displayText(claim.predicate)}`} onClick={() => onSelect("claims", claim)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); onSelect("claims", claim); } }}>
             <title>{displayText(claim.predicate)} · {displayText(asRecord(claim.assessment).evidence_class)}</title>
             <line x1={a.x} y1={a.y} x2={end.x} y2={end.y} stroke="transparent" strokeWidth="10" />
             <line x1={a.x} y1={a.y} x2={end.x} y2={end.y} className="kb-edge" markerEnd={`url(#${marker})`} />
           </g>;
         })}
         {nodes.map((row) => { const id = idOf(row); const position = positions.get(id)!; const label = displayText(row.label || id); const evidence = displayText(row.evidence_class);
-          return <g key={id} className={`kb-node${id === focus ? " focused" : ""}`} transform={`translate(${position.x},${position.y})`} opacity={!focus || neighborhood.has(id) ? 1 : fade / 100} tabIndex={0} role="button" aria-label={`Focus ${label}`} onClick={() => onSelect("entities", row)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); onSelect("entities", row); } }}>
+          return <g key={id} className={`kb-node${id === focus ? " focused" : ""}`} transform={`translate(${position.x},${position.y})`} opacity={projection ? Number(asRecord(asRecord(row.perspective).visual).opacity) : !focus || neighborhood.has(id) ? 1 : fade / 100}
+            style={projection ? { filter: `blur(${Number(asRecord(asRecord(row.perspective).visual).blur)}px)`, color: displayText(asRecord(asRecord(row.perspective).visual).color) || undefined } : undefined} tabIndex={0} role="button" aria-label={`Focus ${label}`} onClick={() => onSelect("entities", row)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); onSelect("entities", row); } }}>
             <title>{label} · {displayText(row.kind)} · {evidence} · {displayText(row.origin)} · {typeof row.confidence === "number" ? `${Math.round(row.confidence * 100)}% confidence` : "confidence unavailable"}</title>
-            <circle r={id === focus ? 14 : 10} strokeDasharray={evidence === "inferred" || evidence === "extrapolated" ? "3 2" : undefined} />
+            <circle r={id === focus ? 14 : 10} style={projection ? { fill: displayText(asRecord(asRecord(row.perspective).visual).color) || undefined } : undefined} strokeDasharray={evidence === "inferred" || evidence === "extrapolated" ? "3 2" : undefined} />
             <text y={27} textAnchor="middle">{label.length > 19 ? `${label.slice(0, 18)}…` : label}</text>
             <text y={41} textAnchor="middle" className="kb-node-evidence">{evidence || "unclassified"}</text>
           </g>;

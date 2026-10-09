@@ -14,7 +14,7 @@
 // /opt/node22/lib/node_modules/playwright (bare "import playwright from
 // 'playwright'" can't see global node_modules under ESM resolution).
 import { spawn } from "node:child_process";
-import { mkdtempSync, rmSync, existsSync, mkdirSync } from "node:fs";
+import { mkdtempSync, rmSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import net from "node:net";
@@ -417,10 +417,10 @@ async function main() {
       const sourceFields = workbench.getByTestId("kb-inspector").locator("details").filter({ has: page.getByText("All model fields", { exact: true }) });
       await sourceFields.locator("summary").focus();
       await sourceFields.locator("summary").press("Enter");
-      await page.waitForFunction(() => {
-        const inspector = document.querySelector('[data-testid="kb-inspector"]');
-        return [...(inspector?.querySelectorAll("pre") ?? [])].some((pre) => pre.textContent?.includes('"resource"'));
-      });
+      await page.waitForFunction((fields) => {
+        try { return typeof JSON.parse(fields.querySelector("pre")?.textContent ?? "null")?.preview?.resource?.current === "boolean"; }
+        catch { return false; }
+      }, await sourceFields.elementHandle());
       const inspected = JSON.parse(await sourceFields.locator("pre").innerText());
       assert(inspected.preview.resource.current === true, "keyboard selection reads the verified external resource through the real endpoint");
       assert(inspected.preview.resource.last_successful.nodes.some((node) => node.kind === "export:message"), "source interior exposes message graph nodes, not only a link or sketch");
@@ -431,6 +431,122 @@ async function main() {
       await page.waitForFunction(() => [...document.querySelectorAll("button")].some((button) => button.textContent === "Import reviewed selection" && !button.disabled));
       await catalog.getByLabel("Catalog retention").selectOption("link");
       assert(await catalog.getByRole("button", { name: "Import reviewed selection" }).isDisabled(), "changing retention invalidates import review");
+    });
+
+    await step("native graph perspective reaches actual workspace, headless selection and touch", async () => {
+      const request = async (operation, body) => {
+        const response = await fetch(`${serverBase}/api/onboarding`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ operation, user_id: "synthetic/e2e-perspective", ...body }) });
+        const result = await response.json(); assert(response.ok, JSON.stringify(result)); return result;
+      };
+      const beforeConfig = await fetch(`${serverBase}/api/config`).then(response => response.json());
+      const initial = await request("open", {});
+      const beforePrivacy = initial.snapshot.profile.privacy;
+      // Exercise the explicit installer on a profile retaining the old pack shape.
+      const oldPack = structuredClone(initial.snapshot.pack);
+      oldPack.entries = oldPack.entries.filter(entry => !entry.key.startsWith("graph.perspective."));
+      delete oldPack.entry_packs; oldPack.revision += 1;
+      await request("update_pack", { expected_revision: initial.revision, pack: oldPack, scenario: initial.snapshot.scenario_definition });
+      const workspace = await page.evaluate(() => localStorage.getItem("loom.knowledge.workspace.v2"));
+      const touch = await browser.newContext({ viewport: { width: 1440, height: 1000 }, hasTouch: true });
+      const touchPage = await touch.newPage();
+      const writes = [], external = [], nativeCommands = [];
+      let loseNextPerspectiveWrite = false;
+      await touchPage.route("**/*", async route => {
+        const request = route.request(), url = new URL(request.url());
+        if (url.origin !== serverBase) { external.push(url.href); await route.abort(); return; }
+        if (request.method() !== "GET") writes.push(url.pathname);
+        if (url.pathname === "/api/onboarding") {
+          const command = request.postDataJSON(); nativeCommands.push(command);
+          if (loseNextPerspectiveWrite && command.operation === "apply") {
+            loseNextPerspectiveWrite = false;
+            await route.fetch(); // Actual native commit, deliberately lost response.
+            await route.abort(); return;
+          }
+        }
+        await route.continue();
+      });
+      await touch.addInitScript(({ workspace }) => {
+        localStorage.setItem("loom.user-profile.identity.v1", JSON.stringify({ schema: "loom.user_profile_identity/1", user_id: "synthetic/e2e-perspective" }));
+        if (workspace && !localStorage.getItem("loom.knowledge.workspace.v2")) localStorage.setItem("loom.knowledge.workspace.v2", workspace);
+      }, { workspace });
+      let loader;
+      try {
+        const open = async () => { await touchPage.getByTestId("nav-knowledge").click(); await touchPage.getByRole("button", { name: "Hide chat", exact: true }).click(); };
+        const graph = () => touchPage.getByTestId("kb-pane-graph").first();
+        const controls = () => graph().getByTestId("product-perspective");
+        const details = async label => { const summary = controls().getByText(label, { exact: true }); if (!await summary.evaluate(element => element.parentElement.open)) await summary.click(); };
+        const receipt = async () => JSON.parse(await controls().getByTestId("product-perspective-receipt").textContent());
+        await touchPage.goto(serverBase); await open();
+        await graph().locator(".kb-node").first().waitFor();
+        await details("Graph perspective");
+        await controls().getByRole("button", { name: "Install graph perspective defaults in this profile" }).click();
+        await controls().getByLabel("Use native graph perspective", { exact: true }).waitFor();
+        await touchPage.waitForFunction(() => { const input = document.querySelector('[aria-label="Use native graph perspective"]'); return input && !input.disabled; });
+        await graph().locator(".kb-node").first().locator("circle").hover();
+        await graph().locator(".kb-node").first().focus(); await touchPage.keyboard.press("Enter");
+        // Native settings acknowledge asynchronously; do not require an
+        // optimistic checkbox change before the real store confirms it.
+        await controls().getByLabel("Use native graph perspective", { exact: true }).click();
+        await touchPage.waitForFunction(() => { const raw = document.querySelector('[data-testid="product-perspective-receipt"]')?.textContent; return raw && JSON.parse(raw).selection?.visible.length; });
+        assert(await controls().getByLabel("Use native graph perspective", { exact: true }).isChecked(), "native acknowledgement activates the perspective checkbox");
+        const firstReceipt = await receipt();
+        const { createModuleLoader } = await import("../tests/product-perspective/loader.mjs"); loader = await createModuleLoader();
+        const module = await loader.load("src/workspace/knowledge-perspective.ts");
+        const { nativeResolutionFromDefaults } = await loader.load("src/graph-perspectives/native-layers.ts");
+        const { normalizeNativeSnapshot } = await loader.load("src/onboarding/native-snapshot.ts");
+        const current = await request("read", {});
+        const effective = nativeResolutionFromDefaults(normalizeNativeSnapshot(current.snapshot).defaults);
+        const run = firstReceipt.selection.plan.focus.snapshot;
+        const knowledge = { async query(what, filters) { const response = await fetch(`${serverBase}/api/knowledge/query`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ what, ...filters }) }); const body = await response.json(); assert(response.ok, JSON.stringify(body)); return body; } };
+        const source = module.createKnowledgePerspectiveSource(knowledge, run, firstReceipt.selection.plan.queryBudget);
+        const headless = await module.selectKnowledgePerspective(firstReceipt.selection.plan.sourcePerspective, effective, source, { id: `authenticated-local-view:${run}`, canRead: ref => ref.source === source.adapter.descriptor.id });
+        assert(JSON.stringify(headless.objects.map(item => item.ref)) === JSON.stringify(firstReceipt.selection.visible), "headless and rendered workspace select identical native references");
+        await graph().locator(".kb-node").first().locator("circle").tap();
+        await details("Advanced perspective components");
+        await controls().getByLabel("Component", { exact: true }).selectOption("graph.perspective.budget");
+        await controls().getByLabel("JSON value", { exact: true }).fill(JSON.stringify({ query: 1000, render: 1, page: 100 }));
+        await controls().getByRole("button", { name: "Apply override", exact: true }).click();
+        await touchPage.waitForFunction(() => { const raw = document.querySelector('[data-testid="product-perspective-receipt"]')?.textContent; return raw && JSON.parse(raw).selection?.plan.renderBudget === 1; });
+        assert(await graph().locator(".kb-node").count() === 1, "native override reaches the existing renderer");
+        await touchPage.reload(); await open(); await graph().locator(".kb-node").first().waitFor();
+        await details("Graph perspective"); await details("Advanced perspective components");
+        await controls().getByLabel("Component", { exact: true }).selectOption("graph.perspective.budget");
+        assert((await receipt()).selection.plan.renderBudget === 1, "native override survives application reload");
+        await touchPage.waitForFunction(() => JSON.parse(document.querySelector('[data-testid="product-perspective-receipt"]').textContent).profile_state?.active === 0);
+        const commandsBeforeLoss = nativeCommands.length;
+        loseNextPerspectiveWrite = true;
+        await controls().getByLabel("JSON value", { exact: true }).fill(JSON.stringify({ query: 1000, render: 2, page: 100 }));
+        await controls().getByRole("button", { name: "Apply override", exact: true }).click();
+        await touchPage.waitForFunction(() => JSON.parse(document.querySelector('[data-testid="product-perspective-receipt"]').textContent).profile_state?.reloadRequired === true);
+        await touchPage.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+        assert(nativeCommands.length === commandsBeforeLoss + 1, "uncertain write triggers neither automatic read nor replay");
+        assert(await controls().getByRole("button", { name: "Apply override", exact: true }).isDisabled(), "uncertain write requires explicit reload before another edit");
+        await controls().getByRole("button", { name: "Reload perspective settings", exact: true }).click();
+        await touchPage.waitForFunction(() => { const value = JSON.parse(document.querySelector('[data-testid="product-perspective-receipt"]').textContent); return value.selection?.plan.renderBudget === 2 && value.profile_state?.active === 0; });
+        await controls().getByRole("button", { name: "Exclude permanently", exact: true }).click();
+        await controls().getByRole("alert").filter({ hasText: "budget_query_invalid" }).waitFor();
+        assert(await graph().locator(".kb-node").count() === 0, "excluded required value is not replaced with a fallback graph");
+        const excluded = await request("read", {});
+        const pack = structuredClone(excluded.snapshot.pack); pack.revision += 1;
+        const budget = pack.entries.find(entry => entry.key === "graph.perspective.budget"); budget.revision += 1; budget.value.render = 42;
+        await request("update_pack", { expected_revision: excluded.revision, pack, scenario: excluded.snapshot.scenario_definition });
+        await controls().getByRole("button", { name: "Reload perspective settings", exact: true }).click();
+        await controls().getByRole("alert").filter({ hasText: "budget_query_invalid" }).waitFor();
+        assert((await receipt()).resolution.components.find(row => row.id === "graph.perspective.budget").status === "excluded", "pack update cannot restore excluded preference");
+        const after = await request("read", {});
+        assert(JSON.stringify(after.snapshot.profile.privacy) === JSON.stringify(beforePrivacy), "view operations do not change privacy consent");
+        assert(JSON.stringify(await fetch(`${serverBase}/api/config`).then(response => response.json())) === JSON.stringify(beforeConfig), "view operations preserve model and context configuration");
+        assert(!writes.some(path => ["/api/chat", "/api/config", "/api/analysis", "/api/knowledge/run"].includes(path)), "view operations never dispatch a model or analysis");
+        assert(external.length === 0, "perspective performs no external requests");
+      } catch (error) {
+        writeFileSync(path.join(SCREENSHOT_DIR, "perspective-failure.json"), JSON.stringify({
+          error: String(error), text: await touchPage.locator("body").innerText(),
+          receipts: await touchPage.getByTestId("product-perspective-receipt").allTextContents(),
+          nativeCommands, writes, external,
+        }, null, 2));
+        await touchPage.screenshot({ path: path.join(SCREENSHOT_DIR, "perspective-failure.png"), fullPage: true });
+        throw error;
+      } finally { if (loader) await loader.close(); await touch.close(); }
     });
 
     await desktop.close();

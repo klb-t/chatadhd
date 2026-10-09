@@ -425,6 +425,45 @@ Result<Json> OnboardingStore::update_pack(std::string_view user, std::int64_t ex
   } catch (const std::exception& e) { return invalid(std::string("onboarding pack update: ") + e.what()); }
 }
 
+Result<Json> OnboardingStore::install_entries(std::string_view user, std::int64_t expected_revision,
+                                             const Json& extension) {
+  try {
+    // Reuse the existing pack validator, including stable identities and duplicates.
+    LOOM_TRY_ASSIGN(auto checked, DefaultLayers::create(extension));
+    (void)checked;
+    LOOM_TRY_ASSIGN(auto prior, read(user));
+    if (expected_revision < 0 || prior.at("revision") != expected_revision)
+      return Error(Errc::Conflict, "onboarding snapshot revision changed; reload before editing");
+    Json pack = prior.at("pack");
+    if (pack.contains("entry_packs") && !pack.at("entry_packs").is_array())
+      return invalid("native entry pack sources have an unsupported representation");
+    for (const auto& entry : extension.at("entries")) {
+      bool exists = false;
+      for (const auto& current : pack.at("entries")) {
+        if (current.at("id") != entry.at("id") && current.at("key") != entry.at("key")) continue;
+        if (current.at("id") != entry.at("id") || current.at("key") != entry.at("key") || current.at("area") != entry.at("area"))
+          return Error(Errc::Conflict, "default entry identity collides with the native pack");
+        exists = true; break;
+      }
+      // Existing definitions, including unknown fields/numeric types, stay exact.
+      if (!exists) pack["entries"].push_back(entry);
+    }
+    if (pack.at("revision").is_number_unsigned()) {
+      const auto revision = pack.at("revision").get<std::uint64_t>();
+      if (revision == std::numeric_limits<std::uint64_t>::max()) return invalid("pack revision cannot be incremented");
+      pack["revision"] = revision + 1;
+    } else {
+      const auto revision = pack.at("revision").get<std::int64_t>();
+      if (revision == std::numeric_limits<std::int64_t>::max()) return invalid("pack revision cannot be incremented");
+      pack["revision"] = revision + 1;
+    }
+    if (!pack.contains("entry_packs")) pack["entry_packs"] = Json::array();
+    pack["entry_packs"].push_back(extension);
+    // A concurrent edit after read is rejected by the existing transactional CAS.
+    return update_pack(user, expected_revision, pack, prior.at("scenario_definition"));
+  } catch (const std::exception& e) { return invalid(std::string("onboarding entry installation: ") + e.what()); }
+}
+
 Result<Json> OnboardingStore::model_request(std::string_view user, std::string_view provider) {
   try {
     auto lock = db_.lock();

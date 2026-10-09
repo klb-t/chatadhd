@@ -1,10 +1,11 @@
 {
   "schema": "loom.default_layers_pack/1",
   "pack_id": "loom.onboarding.defaults",
-  "revision": 4,
+  "revision": 5,
   "policy": {
     "excluded_area_new_defaults": "proposal"
   },
+  "entry_packs": [{"$include": "profiles/graph_perspective.pack"}],
   "entries": [
     {
       "id": "onboarding.settings/v1",

@@ -149,7 +149,7 @@ export default function App() {
               onPrimaryProfile={setPrimaryProfile} onSharedConversationRestored={setActiveConvId}
               canRestoreWorkspace={canRestoreWorkspace} />
           </div>
-          {knowledgeOpen && <KnowledgeWorkbench onClose={() => setKnowledgeOpen(false)} onDataChanged={() => setConvRefreshKey((key) => key + 1)} />}
+          {knowledgeOpen && <KnowledgeWorkbench profileHost={userProfileHost} onClose={() => setKnowledgeOpen(false)} onDataChanged={() => setConvRefreshKey((key) => key + 1)} />}
         </div>
 
         {activePanel && (

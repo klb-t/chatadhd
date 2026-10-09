@@ -128,7 +128,19 @@ export class NativeProfileSession {
       },
     };
   }
+  /** Install definitions through the native CAS boundary. Existing pack values
+   * never round-trip through JavaScript numbers or a client-side merge. */
+  installDefaultEntries(extension: unknown): Promise<OnboardingSnapshot> {
+    if (!this.raw) return Promise.reject(failure("Reload the native profile before installing entries."));
+    return this.mutate("install_entries", { extension: copy(object(extension, "Default entry pack")) });
+  }
   state(): NativeProfileState { return this.current; }
+  /** A detached projection of the last acknowledged native snapshot. Reading
+   * it neither dispatches nor clears an uncertain outcome. */
+  currentSnapshot(): OnboardingSnapshot | null {
+    if (!this.raw || this.current.revision === null || this.current.reloadRequired) return null;
+    return checkedProjection(normalizeNativeSnapshot(copy(this.raw) as JsonValue));
+  }
   close(): void { this.closed = true; this.raw = null; }
   private publish(patch: Partial<NativeProfileState>): void {
     if (this.closed) return;
@@ -195,7 +207,7 @@ export class NativeProfileSession {
       }
     });
   }
-  private mutate(operation: "apply" | "update_pack", payload: Record<string, unknown>, options?: RequestOptions): Promise<OnboardingSnapshot> {
+  private mutate(operation: "apply" | "update_pack" | "install_entries", payload: Record<string, unknown>, options?: RequestOptions): Promise<OnboardingSnapshot> {
     const expected = this.current.revision;
     if (expected === null || this.current.reloadRequired) {
       return Promise.reject(failure("Reload and inspect the native profile before another change."));
@@ -257,6 +269,11 @@ export class UserProfileHost {
   readonly getState = (): UserProfileHostState => this.current;
   readonly subscribe = (listener: () => void): (() => void) => { this.listeners.add(listener); return () => { this.listeners.delete(listener); }; };
   getAdapter(): OnboardingAdapter | null { return this.session?.adapter ?? null; }
+  currentSnapshot(): OnboardingSnapshot | null { return this.session?.currentSnapshot() ?? null; }
+  installDefaultEntries(extension: unknown): Promise<OnboardingSnapshot> {
+    if (!this.session) return Promise.reject(failure("Select a native profile before installing entries."));
+    return this.session.installDefaultEntries(extension);
+  }
   private publish(patch: Partial<UserProfileHostState>): void {
     this.current = { ...this.current, ...patch };
     for (const listener of this.listeners) listener();

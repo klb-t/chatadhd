@@ -1,0 +1,156 @@
+{
+  "schema": "loom.default_layers_pack/1",
+  "pack_id": "loom.product.graph_perspective",
+  "revision": 1,
+  "policy": {
+    "excluded_area_new_defaults": "proposal"
+  },
+  "entries": [
+    {
+      "id": "graph.perspective.enabled/v1",
+      "key": "graph.perspective.enabled",
+      "area": "graph/perspectives",
+      "revision": 1,
+      "label": "Layered graph perspective",
+      "value": false
+    },
+    {
+      "id": "graph.perspective.structure/v1",
+      "key": "graph.perspective.structure",
+      "area": "graph/perspectives",
+      "revision": 1,
+      "label": "Relation structure",
+      "value": "knowledge"
+    },
+    {
+      "id": "graph.perspective.resolution/v1",
+      "key": "graph.perspective.resolution",
+      "area": "graph/perspectives",
+      "revision": 1,
+      "label": "Detail level",
+      "value": "summary"
+    },
+    {
+      "id": "graph.perspective.traversal/v1",
+      "key": "graph.perspective.traversal",
+      "area": "graph/perspectives",
+      "revision": 1,
+      "label": "Relations and reach",
+      "value": {
+        "relations": [
+          "*"
+        ],
+        "direction": "both",
+        "hops": 1
+      }
+    },
+    {
+      "id": "graph.perspective.temporal/v1",
+      "key": "graph.perspective.temporal",
+      "area": "graph/perspectives",
+      "revision": 1,
+      "label": "Source run",
+      "value": {
+        "compareSnapshots": []
+      }
+    },
+    {
+      "id": "graph.perspective.evidence/v1",
+      "key": "graph.perspective.evidence",
+      "area": "graph/perspectives",
+      "revision": 1,
+      "label": "Evidence classes",
+      "value": []
+    },
+    {
+      "id": "graph.perspective.visual/v1",
+      "key": "graph.perspective.visual",
+      "area": "graph/perspectives",
+      "revision": 1,
+      "label": "Visual mappings",
+      "value": []
+    },
+    {
+      "id": "graph.perspective.budget/v1",
+      "key": "graph.perspective.budget",
+      "area": "graph/perspectives",
+      "revision": 1,
+      "label": "Query and render budget",
+      "value": {
+        "query": 1000,
+        "render": 60,
+        "page": 100
+      }
+    },
+    {
+      "id": "graph.perspective.localResolution/v1",
+      "key": "graph.perspective.localResolution",
+      "area": "graph/perspectives",
+      "revision": 1,
+      "label": "Local detail rules",
+      "value": []
+    }
+  ],
+  "presentation": {
+    "locale": "en",
+    "locales": {
+      "en": {
+        "title": "Graph perspective",
+        "unavailable": "Choose a native user profile in What app knows to use layered perspectives.",
+        "install": "Install graph perspective defaults in this profile",
+        "missing": "This profile does not yet contain the perspective pack. Installation preserves its current settings and exclusions.",
+        "enable": "Use native graph perspective",
+        "reload": "Reload perspective settings",
+        "focus": "Perspective focus",
+        "choose": "Select an entity to focus",
+        "advanced": "Advanced perspective components",
+        "component": "Component",
+        "value": "JSON value",
+        "apply": "Apply override",
+        "disable": "Disable",
+        "exclude": "Exclude permanently",
+        "reenable": "Re-enable",
+        "clear": "Clear override",
+        "receipt": "Effective settings and selection evidence",
+        "loading": "Resolving graph perspective…",
+        "noFocus": "Select a focus before loading this perspective.",
+        "profile": "Native profile",
+        "limited": "This view reads the selected run through the existing bounded knowledge query. A loaded prefix is not complete source coverage.",
+        "localOnly": "Selection controls local presentation. It does not select context for a model or grant permission to send data.",
+        "unsupported": "Unsupported presentation option",
+        "partial": "Partial or unavailable source coverage",
+        "summary": "Summary",
+        "details": "Details",
+        "source": "Knowledge run",
+        "futurePack": "The profile uses incompatible perspective entry identities; inspect its native pack before installing.",
+        "accept_proposal": "Accept proposed default",
+        "detail_separator": " · "
+      }
+    }
+  },
+  "capability_ids": [
+    "graph.perspective.structure",
+    "graph.perspective.resolution",
+    "graph.perspective.traversal",
+    "graph.perspective.temporal",
+    "graph.perspective.evidence",
+    "graph.perspective.visual",
+    "graph.perspective.budget",
+    "graph.perspective.localResolution"
+  ],
+  "source": {
+    "structure": "knowledge",
+    "relations": [
+      "*"
+    ],
+    "directions": [
+      "incoming",
+      "outgoing",
+      "both"
+    ]
+  },
+  "supported_resolutions": [
+    "summary",
+    "details"
+  ]
+}

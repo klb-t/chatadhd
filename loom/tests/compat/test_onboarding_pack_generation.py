@@ -18,6 +18,7 @@ LOOM_ROOT = Path(__file__).resolve().parents[2]
 GENERATOR = LOOM_ROOT / "src/onboarding/gen_onboarding_pack.py"
 CANONICAL_FILES = (
     "profiles/user.pack",
+    "profiles/graph_perspective.pack",
     "onboarding/scenario.pack",
     "onboarding/ui.pack",
 )
@@ -137,6 +138,27 @@ class OnboardingPackGenerationTests(unittest.TestCase):
         self.assertEqual(presentation["value"], ui)
         self.assertNotIn("$include", presentation["value"])
         self.assertEqual(self.invoke("--check").returncode, 0)
+
+    def test_product_entry_pack_composes_same_source_and_rejects_collisions(self):
+        self.valid_artifacts = self.generate()
+        source = self.read_document("profiles/graph_perspective.pack")
+        embedded = self.embedded("kOnboardingPack")
+        for entry in source["entries"]:
+            self.assertEqual(next(row for row in embedded["entries"] if row["id"] == entry["id"]), entry)
+        source["entries"][0]["id"] = "onboarding.settings/v1"
+        self.write_document("profiles/graph_perspective.pack", source)
+        self.invalid_preserves_artifacts("duplicate default layer key or id")
+
+    def test_product_entry_pack_changes_native_default_without_runtime_policy_drift(self):
+        self.generate()
+        source = self.read_document("profiles/graph_perspective.pack")
+        budget = next(entry for entry in source["entries"] if entry["key"] == "graph.perspective.budget")
+        budget["value"]["render"] = 17
+        self.write_document("profiles/graph_perspective.pack", source)
+        self.generate()
+        pack = self.embedded("kOnboardingPack")
+        self.assertEqual(next(row for row in pack["entries"] if row["key"] == budget["key"])["value"]["render"], 17)
+        self.assertEqual(pack["runtime_definition"]["defaults"], BASELINE_DEFAULTS)
 
     def test_canonical_ui_edit_changes_both_consumers_and_native_presentation_layer(self):
         original = self.generate()

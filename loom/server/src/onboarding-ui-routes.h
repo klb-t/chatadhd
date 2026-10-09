@@ -103,6 +103,12 @@ inline loom::Result<Json> dispatch(LoomContext* ctx, const Json& body) {
     LOOM_TRY(required_object(body, "scenario"));
     return envelope(store.update_pack(user, expected, body.at("pack"), body.at("scenario")));
   }
+  if (operation == "install_entries") {
+    LOOM_TRY(fields(body, {"expected_revision", "extension"}));
+    LOOM_TRY_ASSIGN(auto expected, revision(body));
+    LOOM_TRY(required_object(body, "extension"));
+    return envelope(store.install_entries(user, expected, body.at("extension")));
+  }
   if (operation == "model_request") {
     LOOM_TRY(fields(body, {"provider"}));
     LOOM_TRY_ASSIGN(auto provider, required_string(body, "provider"));

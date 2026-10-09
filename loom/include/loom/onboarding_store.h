@@ -29,6 +29,10 @@ class OnboardingStore {
   // Updating installed defaults is explicit, atomic and forward-only.
   Result<Json> update_pack(std::string_view user, std::int64_t expected_revision,
                            const Json& pack, const Json& scenario);
+  // Install missing definitions natively so browser number conversion cannot
+  // rewrite existing opaque pack values. Resolution/migration stays update_pack.
+  Result<Json> install_entries(std::string_view user, std::int64_t expected_revision,
+                               const Json& extension);
   Result<Json> model_request(std::string_view user, std::string_view provider);
   // Selector/writer gate over EFFECTIVE policy, including disabled/excluded
   // privacy defaults. Raw retained profile rules are inspection, not authority.
