@@ -1,0 +1,3063 @@
+{
+  "repo": "klb-t/Watchdog-JH16",
+  "visibility": "public",
+  "base_branch": "main",
+  "base_sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+  "tracked_files": 603,
+  "file_classes": {
+    "other": 4,
+    "tooling_deployment_build": 23,
+    "documentation": 111,
+    "product": 266,
+    "configuration_data_or_bundled_helpers": 30,
+    "retained_history_or_evidence": 43,
+    "tests_fixtures": 125,
+    "generated_lockfile": 1
+  },
+  "product_files": 266,
+  "semantic_review_files": [
+    "backend/watchdog_api/services/narrative.ts",
+    "backend/watchdog_api/llm/routing.ts",
+    "backend/watchdog_api/llm/profile_generator.ts",
+    "backend/watchdog_api/services/assistant.ts",
+    "backend/watchdog_api/config/assistant.ts",
+    "backend/watchdog_api/config/personal_providers.ts",
+    "backend/watchdog_api/config/loader.ts",
+    "backend/watchdog_api/analysis/primitives.ts",
+    "backend/watchdog_api/analytics/stats.ts",
+    "backend/watchdog_api/analysis/executor.ts",
+    "backend/watchdog_api/analysis/method_spec_validation.ts",
+    "backend/watchdog_api/db/repositories/settings.ts",
+    "backend/watchdog_api/services/research_plans.ts",
+    "backend/watchdog_api/services/automation.ts",
+    "backend/watchdog_api/services/paper_operations.ts",
+    "src/lib/workspace_preferences.tsx",
+    "shared/workspace_preferences.ts",
+    "shared/settings.ts",
+    "src/pages/Setup.tsx"
+  ],
+  "semantic_review_count": 19,
+  "note": "Semantyczna analiza wskazanych ścieżek, nie każdego wiersza każdego pliku; osobny skaner root dostarcza szeroki wykaz kandydatów. Brak claimu całkowitego pokrycia.",
+  "files": [
+    {
+      "path": ".dockerignore",
+      "class": "other",
+      "lines": 16
+    },
+    {
+      "path": ".env.example",
+      "class": "other",
+      "lines": 80
+    },
+    {
+      "path": ".github/workflows/validation.yml",
+      "class": "tooling_deployment_build",
+      "lines": 41
+    },
+    {
+      "path": ".gitignore",
+      "class": "other",
+      "lines": 12
+    },
+    {
+      "path": "AGENTS.md",
+      "class": "documentation",
+      "lines": 34
+    },
+    {
+      "path": "CLAUDE.md",
+      "class": "documentation",
+      "lines": 170
+    },
+    {
+      "path": "COMMERCIAL_LICENSE.md",
+      "class": "documentation",
+      "lines": 11
+    },
+    {
+      "path": "Dockerfile",
+      "class": "tooling_deployment_build",
+      "lines": 55
+    },
+    {
+      "path": "ECOSYSTEM.md",
+      "class": "documentation",
+      "lines": 29
+    },
+    {
+      "path": "LICENSE",
+      "class": "other",
+      "lines": 11
+    },
+    {
+      "path": "README.md",
+      "class": "documentation",
+      "lines": 40
+    },
+    {
+      "path": "backend/watchdog_api/analysis/executor.ts",
+      "class": "product",
+      "lines": 203
+    },
+    {
+      "path": "backend/watchdog_api/analysis/method_spec_validation.ts",
+      "class": "product",
+      "lines": 199
+    },
+    {
+      "path": "backend/watchdog_api/analysis/primitives.ts",
+      "class": "product",
+      "lines": 368
+    },
+    {
+      "path": "backend/watchdog_api/analytics/base.ts",
+      "class": "product",
+      "lines": 20
+    },
+    {
+      "path": "backend/watchdog_api/analytics/jh16.ts",
+      "class": "product",
+      "lines": 103
+    },
+    {
+      "path": "backend/watchdog_api/analytics/registry.ts",
+      "class": "product",
+      "lines": 28
+    },
+    {
+      "path": "backend/watchdog_api/analytics/stats.ts",
+      "class": "product",
+      "lines": 65
+    },
+    {
+      "path": "backend/watchdog_api/api/access_routes.ts",
+      "class": "product",
+      "lines": 184
+    },
+    {
+      "path": "backend/watchdog_api/api/accounts_auth_routes.ts",
+      "class": "product",
+      "lines": 337
+    },
+    {
+      "path": "backend/watchdog_api/api/admission_gate.ts",
+      "class": "product",
+      "lines": 71
+    },
+    {
+      "path": "backend/watchdog_api/api/auth_routes.ts",
+      "class": "product",
+      "lines": 310
+    },
+    {
+      "path": "backend/watchdog_api/api/automation_routes.ts",
+      "class": "product",
+      "lines": 108
+    },
+    {
+      "path": "backend/watchdog_api/api/diagnostic_routes.ts",
+      "class": "product",
+      "lines": 32
+    },
+    {
+      "path": "backend/watchdog_api/api/field_routes.ts",
+      "class": "product",
+      "lines": 74
+    },
+    {
+      "path": "backend/watchdog_api/api/middleware.ts",
+      "class": "product",
+      "lines": 52
+    },
+    {
+      "path": "backend/watchdog_api/api/rate_limit.ts",
+      "class": "product",
+      "lines": 51
+    },
+    {
+      "path": "backend/watchdog_api/api/request_security.ts",
+      "class": "product",
+      "lines": 11
+    },
+    {
+      "path": "backend/watchdog_api/api/research_project_routes.ts",
+      "class": "product",
+      "lines": 39
+    },
+    {
+      "path": "backend/watchdog_api/api/research_routes.ts",
+      "class": "product",
+      "lines": 121
+    },
+    {
+      "path": "backend/watchdog_api/api/routes.ts",
+      "class": "product",
+      "lines": 338
+    },
+    {
+      "path": "backend/watchdog_api/api/schemas.ts",
+      "class": "product",
+      "lines": 20
+    },
+    {
+      "path": "backend/watchdog_api/api/search_routes.ts",
+      "class": "product",
+      "lines": 29
+    },
+    {
+      "path": "backend/watchdog_api/api/settings_routes.ts",
+      "class": "product",
+      "lines": 67
+    },
+    {
+      "path": "backend/watchdog_api/api/source_access_routes.ts",
+      "class": "product",
+      "lines": 37
+    },
+    {
+      "path": "backend/watchdog_api/api/workbench_routes.ts",
+      "class": "product",
+      "lines": 110
+    },
+    {
+      "path": "backend/watchdog_api/clinical_demo/executor.ts",
+      "class": "product",
+      "lines": 311
+    },
+    {
+      "path": "backend/watchdog_api/clinical_demo/executor_manifest.ts",
+      "class": "product",
+      "lines": 50
+    },
+    {
+      "path": "backend/watchdog_api/config/access_policy.ts",
+      "class": "product",
+      "lines": 17
+    },
+    {
+      "path": "backend/watchdog_api/config/assistant.ts",
+      "class": "product",
+      "lines": 20
+    },
+    {
+      "path": "backend/watchdog_api/config/automation.ts",
+      "class": "product",
+      "lines": 22
+    },
+    {
+      "path": "backend/watchdog_api/config/canonicalize.ts",
+      "class": "product",
+      "lines": 8
+    },
+    {
+      "path": "backend/watchdog_api/config/collection.ts",
+      "class": "product",
+      "lines": 7
+    },
+    {
+      "path": "backend/watchdog_api/config/evidence.ts",
+      "class": "product",
+      "lines": 5
+    },
+    {
+      "path": "backend/watchdog_api/config/extraction_dataset.ts",
+      "class": "product",
+      "lines": 7
+    },
+    {
+      "path": "backend/watchdog_api/config/field.ts",
+      "class": "product",
+      "lines": 13
+    },
+    {
+      "path": "backend/watchdog_api/config/geography.ts",
+      "class": "product",
+      "lines": 14
+    },
+    {
+      "path": "backend/watchdog_api/config/loader.ts",
+      "class": "product",
+      "lines": 75
+    },
+    {
+      "path": "backend/watchdog_api/config/personal_providers.ts",
+      "class": "product",
+      "lines": 19
+    },
+    {
+      "path": "backend/watchdog_api/config/research_projects.ts",
+      "class": "product",
+      "lines": 16
+    },
+    {
+      "path": "backend/watchdog_api/config/schemas.ts",
+      "class": "product",
+      "lines": 55
+    },
+    {
+      "path": "backend/watchdog_api/config/search.ts",
+      "class": "product",
+      "lines": 8
+    },
+    {
+      "path": "backend/watchdog_api/config/source_access.ts",
+      "class": "product",
+      "lines": 19
+    },
+    {
+      "path": "backend/watchdog_api/config/source_history.ts",
+      "class": "product",
+      "lines": 7
+    },
+    {
+      "path": "backend/watchdog_api/config/source_watch.ts",
+      "class": "product",
+      "lines": 7
+    },
+    {
+      "path": "backend/watchdog_api/config/workbench.ts",
+      "class": "product",
+      "lines": 35
+    },
+    {
+      "path": "backend/watchdog_api/db/client.ts",
+      "class": "product",
+      "lines": 31
+    },
+    {
+      "path": "backend/watchdog_api/db/migrations/001_initial_schema.ts",
+      "class": "product",
+      "lines": 554
+    },
+    {
+      "path": "backend/watchdog_api/db/migrations/002_assertions.ts",
+      "class": "product",
+      "lines": 130
+    },
+    {
+      "path": "backend/watchdog_api/db/migrations/003_query_plan_identity.ts",
+      "class": "product",
+      "lines": 16
+    },
+    {
+      "path": "backend/watchdog_api/db/migrations/004_principals.ts",
+      "class": "product",
+      "lines": 34
+    },
+    {
+      "path": "backend/watchdog_api/db/migrations/005_role_profiles.ts",
+      "class": "product",
+      "lines": 9
+    },
+    {
+      "path": "backend/watchdog_api/db/migrations/006_field_reference.ts",
+      "class": "product",
+      "lines": 29
+    },
+    {
+      "path": "backend/watchdog_api/db/migrations/007_workbench.ts",
+      "class": "product",
+      "lines": 12
+    },
+    {
+      "path": "backend/watchdog_api/db/migrations/008_workbench_profiles.ts",
+      "class": "product",
+      "lines": 12
+    },
+    {
+      "path": "backend/watchdog_api/db/migrations/009_geometry_layers.ts",
+      "class": "product",
+      "lines": 14
+    },
+    {
+      "path": "backend/watchdog_api/db/migrations/010_automation.ts",
+      "class": "product",
+      "lines": 48
+    },
+    {
+      "path": "backend/watchdog_api/db/migrations/011_personal_settings.ts",
+      "class": "product",
+      "lines": 20
+    },
+    {
+      "path": "backend/watchdog_api/db/migrations/012_assistant_profiles.ts",
+      "class": "product",
+      "lines": 14
+    },
+    {
+      "path": "backend/watchdog_api/db/migrations/013_research_intake.ts",
+      "class": "product",
+      "lines": 23
+    },
+    {
+      "path": "backend/watchdog_api/db/migrations/014_extraction_mapping_templates.ts",
+      "class": "product",
+      "lines": 11
+    },
+    {
+      "path": "backend/watchdog_api/db/migrations/015_paper_operations.ts",
+      "class": "product",
+      "lines": 12
+    },
+    {
+      "path": "backend/watchdog_api/db/migrations/016_reference_observations.ts",
+      "class": "product",
+      "lines": 28
+    },
+    {
+      "path": "backend/watchdog_api/db/migrations/017_collection_context.ts",
+      "class": "product",
+      "lines": 9
+    },
+    {
+      "path": "backend/watchdog_api/db/migrations/018_source_watches.ts",
+      "class": "product",
+      "lines": 20
+    },
+    {
+      "path": "backend/watchdog_api/db/migrations/019_source_access.ts",
+      "class": "product",
+      "lines": 27
+    },
+    {
+      "path": "backend/watchdog_api/db/migrations/020_admission.ts",
+      "class": "product",
+      "lines": 23
+    },
+    {
+      "path": "backend/watchdog_api/db/migrations/021_research_projects.ts",
+      "class": "product",
+      "lines": 25
+    },
+    {
+      "path": "backend/watchdog_api/db/migrations/022_paper_comparisons.ts",
+      "class": "product",
+      "lines": 28
+    },
+    {
+      "path": "backend/watchdog_api/db/migrations/023_accounts.ts",
+      "class": "product",
+      "lines": 137
+    },
+    {
+      "path": "backend/watchdog_api/db/migrations/index.ts",
+      "class": "product",
+      "lines": 112
+    },
+    {
+      "path": "backend/watchdog_api/db/repositories/acquisition.ts",
+      "class": "product",
+      "lines": 116
+    },
+    {
+      "path": "backend/watchdog_api/db/repositories/admission.ts",
+      "class": "product",
+      "lines": 355
+    },
+    {
+      "path": "backend/watchdog_api/db/repositories/artifacts.ts",
+      "class": "product",
+      "lines": 70
+    },
+    {
+      "path": "backend/watchdog_api/db/repositories/audit.ts",
+      "class": "product",
+      "lines": 15
+    },
+    {
+      "path": "backend/watchdog_api/db/repositories/automation.ts",
+      "class": "product",
+      "lines": 265
+    },
+    {
+      "path": "backend/watchdog_api/db/repositories/data.ts",
+      "class": "product",
+      "lines": 190
+    },
+    {
+      "path": "backend/watchdog_api/db/repositories/field_reference.ts",
+      "class": "product",
+      "lines": 211
+    },
+    {
+      "path": "backend/watchdog_api/db/repositories/geography.ts",
+      "class": "product",
+      "lines": 61
+    },
+    {
+      "path": "backend/watchdog_api/db/repositories/method_specs.ts",
+      "class": "product",
+      "lines": 69
+    },
+    {
+      "path": "backend/watchdog_api/db/repositories/paper_comparisons.ts",
+      "class": "product",
+      "lines": 97
+    },
+    {
+      "path": "backend/watchdog_api/db/repositories/paper_operations.ts",
+      "class": "product",
+      "lines": 40
+    },
+    {
+      "path": "backend/watchdog_api/db/repositories/principals.ts",
+      "class": "product",
+      "lines": 257
+    },
+    {
+      "path": "backend/watchdog_api/db/repositories/reference_history.ts",
+      "class": "product",
+      "lines": 134
+    },
+    {
+      "path": "backend/watchdog_api/db/repositories/research.ts",
+      "class": "product",
+      "lines": 144
+    },
+    {
+      "path": "backend/watchdog_api/db/repositories/research_projects.ts",
+      "class": "product",
+      "lines": 161
+    },
+    {
+      "path": "backend/watchdog_api/db/repositories/runs.ts",
+      "class": "product",
+      "lines": 115
+    },
+    {
+      "path": "backend/watchdog_api/db/repositories/search.ts",
+      "class": "product",
+      "lines": 146
+    },
+    {
+      "path": "backend/watchdog_api/db/repositories/settings.ts",
+      "class": "product",
+      "lines": 149
+    },
+    {
+      "path": "backend/watchdog_api/db/repositories/source_access.ts",
+      "class": "product",
+      "lines": 79
+    },
+    {
+      "path": "backend/watchdog_api/db/repositories/source_watches.ts",
+      "class": "product",
+      "lines": 67
+    },
+    {
+      "path": "backend/watchdog_api/db/repositories/workbench.ts",
+      "class": "product",
+      "lines": 259
+    },
+    {
+      "path": "backend/watchdog_api/db/repositories/workbench_error.ts",
+      "class": "product",
+      "lines": 4
+    },
+    {
+      "path": "backend/watchdog_api/db/schema.ts",
+      "class": "product",
+      "lines": 328
+    },
+    {
+      "path": "backend/watchdog_api/diag/bundle.ts",
+      "class": "product",
+      "lines": 112
+    },
+    {
+      "path": "backend/watchdog_api/diag/view.ts",
+      "class": "product",
+      "lines": 31
+    },
+    {
+      "path": "backend/watchdog_api/domain/approval.ts",
+      "class": "product",
+      "lines": 98
+    },
+    {
+      "path": "backend/watchdog_api/domain/canonical.ts",
+      "class": "product",
+      "lines": 31
+    },
+    {
+      "path": "backend/watchdog_api/domain/error_taxonomy.ts",
+      "class": "product",
+      "lines": 35
+    },
+    {
+      "path": "backend/watchdog_api/domain/evidence_tier.ts",
+      "class": "product",
+      "lines": 70
+    },
+    {
+      "path": "backend/watchdog_api/domain/index.ts",
+      "class": "product",
+      "lines": 16
+    },
+    {
+      "path": "backend/watchdog_api/domain/method_spec.ts",
+      "class": "product",
+      "lines": 109
+    },
+    {
+      "path": "backend/watchdog_api/domain/observation.ts",
+      "class": "product",
+      "lines": 113
+    },
+    {
+      "path": "backend/watchdog_api/domain/principal.ts",
+      "class": "product",
+      "lines": 41
+    },
+    {
+      "path": "backend/watchdog_api/domain/run_state.ts",
+      "class": "product",
+      "lines": 73
+    },
+    {
+      "path": "backend/watchdog_api/field/service.ts",
+      "class": "product",
+      "lines": 35
+    },
+    {
+      "path": "backend/watchdog_api/field/validation.ts",
+      "class": "product",
+      "lines": 1
+    },
+    {
+      "path": "backend/watchdog_api/identity/account_sessions.ts",
+      "class": "product",
+      "lines": 102
+    },
+    {
+      "path": "backend/watchdog_api/identity/accounts_identity.ts",
+      "class": "product",
+      "lines": 70
+    },
+    {
+      "path": "backend/watchdog_api/identity/admission.ts",
+      "class": "product",
+      "lines": 771
+    },
+    {
+      "path": "backend/watchdog_api/identity/index.ts",
+      "class": "product",
+      "lines": 196
+    },
+    {
+      "path": "backend/watchdog_api/identity/oidc.ts",
+      "class": "product",
+      "lines": 316
+    },
+    {
+      "path": "backend/watchdog_api/identity/roles.ts",
+      "class": "product",
+      "lines": 21
+    },
+    {
+      "path": "backend/watchdog_api/identity/sign_in.ts",
+      "class": "product",
+      "lines": 156
+    },
+    {
+      "path": "backend/watchdog_api/llm/base.ts",
+      "class": "product",
+      "lines": 73
+    },
+    {
+      "path": "backend/watchdog_api/llm/index.ts",
+      "class": "product",
+      "lines": 196
+    },
+    {
+      "path": "backend/watchdog_api/llm/openai_compatible.ts",
+      "class": "product",
+      "lines": 119
+    },
+    {
+      "path": "backend/watchdog_api/llm/profile_generator.ts",
+      "class": "product",
+      "lines": 34
+    },
+    {
+      "path": "backend/watchdog_api/llm/routing.ts",
+      "class": "product",
+      "lines": 70
+    },
+    {
+      "path": "backend/watchdog_api/mail/index.ts",
+      "class": "product",
+      "lines": 200
+    },
+    {
+      "path": "backend/watchdog_api/research/project_verifier.ts",
+      "class": "product",
+      "lines": 34
+    },
+    {
+      "path": "backend/watchdog_api/secrets/index.ts",
+      "class": "product",
+      "lines": 238
+    },
+    {
+      "path": "backend/watchdog_api/secrets/user_vault.ts",
+      "class": "product",
+      "lines": 63
+    },
+    {
+      "path": "backend/watchdog_api/services/assistant.ts",
+      "class": "product",
+      "lines": 134
+    },
+    {
+      "path": "backend/watchdog_api/services/automation.ts",
+      "class": "product",
+      "lines": 72
+    },
+    {
+      "path": "backend/watchdog_api/services/charts.ts",
+      "class": "product",
+      "lines": 150
+    },
+    {
+      "path": "backend/watchdog_api/services/discontinuity.ts",
+      "class": "product",
+      "lines": 199
+    },
+    {
+      "path": "backend/watchdog_api/services/export.ts",
+      "class": "product",
+      "lines": 124
+    },
+    {
+      "path": "backend/watchdog_api/services/extraction_dataset.ts",
+      "class": "product",
+      "lines": 48
+    },
+    {
+      "path": "backend/watchdog_api/services/extraction_workshop.ts",
+      "class": "product",
+      "lines": 31
+    },
+    {
+      "path": "backend/watchdog_api/services/manifest.ts",
+      "class": "product",
+      "lines": 207
+    },
+    {
+      "path": "backend/watchdog_api/services/narrative.ts",
+      "class": "product",
+      "lines": 249
+    },
+    {
+      "path": "backend/watchdog_api/services/paper_comparisons.ts",
+      "class": "product",
+      "lines": 106
+    },
+    {
+      "path": "backend/watchdog_api/services/paper_intake.ts",
+      "class": "product",
+      "lines": 86
+    },
+    {
+      "path": "backend/watchdog_api/services/paper_operations.ts",
+      "class": "product",
+      "lines": 132
+    },
+    {
+      "path": "backend/watchdog_api/services/personal_search.ts",
+      "class": "product",
+      "lines": 25
+    },
+    {
+      "path": "backend/watchdog_api/services/replication.ts",
+      "class": "product",
+      "lines": 175
+    },
+    {
+      "path": "backend/watchdog_api/services/research_plans.ts",
+      "class": "product",
+      "lines": 65
+    },
+    {
+      "path": "backend/watchdog_api/services/research_projects.ts",
+      "class": "product",
+      "lines": 97
+    },
+    {
+      "path": "backend/watchdog_api/services/run_orchestrator.ts",
+      "class": "product",
+      "lines": 349
+    },
+    {
+      "path": "backend/watchdog_api/services/search.ts",
+      "class": "product",
+      "lines": 14
+    },
+    {
+      "path": "backend/watchdog_api/services/source_access.ts",
+      "class": "product",
+      "lines": 49
+    },
+    {
+      "path": "backend/watchdog_api/services/source_comparison.ts",
+      "class": "product",
+      "lines": 32
+    },
+    {
+      "path": "backend/watchdog_api/sources/atom.ts",
+      "class": "product",
+      "lines": 64
+    },
+    {
+      "path": "backend/watchdog_api/sources/base.ts",
+      "class": "product",
+      "lines": 163
+    },
+    {
+      "path": "backend/watchdog_api/sources/copy_plan.ts",
+      "class": "product",
+      "lines": 81
+    },
+    {
+      "path": "backend/watchdog_api/sources/count_parser.ts",
+      "class": "product",
+      "lines": 49
+    },
+    {
+      "path": "backend/watchdog_api/sources/fixture_source.ts",
+      "class": "product",
+      "lines": 139
+    },
+    {
+      "path": "backend/watchdog_api/sources/google_trends.ts",
+      "class": "product",
+      "lines": 71
+    },
+    {
+      "path": "backend/watchdog_api/sources/offline_fixture.ts",
+      "class": "product",
+      "lines": 73
+    },
+    {
+      "path": "backend/watchdog_api/sources/provider_registry.ts",
+      "class": "product",
+      "lines": 230
+    },
+    {
+      "path": "backend/watchdog_api/sources/public_http.ts",
+      "class": "product",
+      "lines": 66
+    },
+    {
+      "path": "backend/watchdog_api/sources/public_literature.ts",
+      "class": "product",
+      "lines": 49
+    },
+    {
+      "path": "backend/watchdog_api/sources/public_reference.ts",
+      "class": "product",
+      "lines": 108
+    },
+    {
+      "path": "backend/watchdog_api/sources/registry.ts",
+      "class": "product",
+      "lines": 184
+    },
+    {
+      "path": "backend/watchdog_api/sources/search_providers.ts",
+      "class": "product",
+      "lines": 146
+    },
+    {
+      "path": "backend/watchdog_api/sources/serp.ts",
+      "class": "product",
+      "lines": 83
+    },
+    {
+      "path": "backend/watchdog_api/sources/serpapi.ts",
+      "class": "product",
+      "lines": 276
+    },
+    {
+      "path": "backend/watchdog_api/storage/client.ts",
+      "class": "product",
+      "lines": 31
+    },
+    {
+      "path": "backend/watchdog_api/storage/durability.ts",
+      "class": "product",
+      "lines": 99
+    },
+    {
+      "path": "backend/watchdog_api/storage/gcs.ts",
+      "class": "product",
+      "lines": 168
+    },
+    {
+      "path": "backend/watchdog_api/storage/object_store/index.ts",
+      "class": "product",
+      "lines": 59
+    },
+    {
+      "path": "backend/watchdog_api/utils/collection_context.ts",
+      "class": "product",
+      "lines": 15
+    },
+    {
+      "path": "backend/watchdog_api/utils/errors.ts",
+      "class": "product",
+      "lines": 110
+    },
+    {
+      "path": "backend/watchdog_api/utils/redaction.ts",
+      "class": "product",
+      "lines": 99
+    },
+    {
+      "path": "backend/watchdog_api/utils/tracer.ts",
+      "class": "product",
+      "lines": 220
+    },
+    {
+      "path": "backend/watchdog_api/utils/zip.ts",
+      "class": "product",
+      "lines": 125
+    },
+    {
+      "path": "backend/watchdog_api/workbench/extraction_data.ts",
+      "class": "product",
+      "lines": 58
+    },
+    {
+      "path": "backend/watchdog_api/workbench/publication.ts",
+      "class": "product",
+      "lines": 80
+    },
+    {
+      "path": "backend/watchdog_api/workbench/service.ts",
+      "class": "product",
+      "lines": 86
+    },
+    {
+      "path": "config/access/messages.json",
+      "class": "configuration_data_or_bundled_helpers",
+      "lines": 66
+    },
+    {
+      "path": "config/access/policy.json",
+      "class": "configuration_data_or_bundled_helpers",
+      "lines": 36
+    },
+    {
+      "path": "config/access/ui.json",
+      "class": "configuration_data_or_bundled_helpers",
+      "lines": 261
+    },
+    {
+      "path": "config/assistant.json",
+      "class": "configuration_data_or_bundled_helpers",
+      "lines": 192
+    },
+    {
+      "path": "config/automation.json",
+      "class": "configuration_data_or_bundled_helpers",
+      "lines": 29
+    },
+    {
+      "path": "config/collection-ui.json",
+      "class": "configuration_data_or_bundled_helpers",
+      "lines": 12
+    },
+    {
+      "path": "config/evidence/tier-display.json",
+      "class": "configuration_data_or_bundled_helpers",
+      "lines": 38
+    },
+    {
+      "path": "config/extraction-dataset-ui.json",
+      "class": "configuration_data_or_bundled_helpers",
+      "lines": 100
+    },
+    {
+      "path": "config/field/proposals.json",
+      "class": "configuration_data_or_bundled_helpers",
+      "lines": 315
+    },
+    {
+      "path": "config/field/responder.json",
+      "class": "configuration_data_or_bundled_helpers",
+      "lines": 173
+    },
+    {
+      "path": "config/goal-navigation.json",
+      "class": "configuration_data_or_bundled_helpers",
+      "lines": 18
+    },
+    {
+      "path": "config/methods/jh2016-faithful.methodspec.json",
+      "class": "configuration_data_or_bundled_helpers",
+      "lines": 61
+    },
+    {
+      "path": "config/paper-operation-ui.json",
+      "class": "configuration_data_or_bundled_helpers",
+      "lines": 165
+    },
+    {
+      "path": "config/presets/jh2016-faithful.json",
+      "class": "configuration_data_or_bundled_helpers",
+      "lines": 113
+    },
+    {
+      "path": "config/providers/personal.json",
+      "class": "configuration_data_or_bundled_helpers",
+      "lines": 238
+    },
+    {
+      "path": "config/providers/search_result_count.json",
+      "class": "configuration_data_or_bundled_helpers",
+      "lines": 29
+    },
+    {
+      "path": "config/providers/text_generation.json",
+      "class": "configuration_data_or_bundled_helpers",
+      "lines": 45
+    },
+    {
+      "path": "config/reference/nutt-2010.json",
+      "class": "configuration_data_or_bundled_helpers",
+      "lines": 62
+    },
+    {
+      "path": "config/replication/jh2016.json",
+      "class": "configuration_data_or_bundled_helpers",
+      "lines": 49
+    },
+    {
+      "path": "config/research-workbench.json",
+      "class": "configuration_data_or_bundled_helpers",
+      "lines": 10
+    },
+    {
+      "path": "config/research_projects/mvp.json",
+      "class": "configuration_data_or_bundled_helpers",
+      "lines": 18
+    },
+    {
+      "path": "config/search.json",
+      "class": "configuration_data_or_bundled_helpers",
+      "lines": 11
+    },
+    {
+      "path": "config/source-access.json",
+      "class": "configuration_data_or_bundled_helpers",
+      "lines": 688
+    },
+    {
+      "path": "config/source-history-ui.json",
+      "class": "configuration_data_or_bundled_helpers",
+      "lines": 30
+    },
+    {
+      "path": "config/source-watch-ui.json",
+      "class": "configuration_data_or_bundled_helpers",
+      "lines": 36
+    },
+    {
+      "path": "config/workbench/default.json",
+      "class": "configuration_data_or_bundled_helpers",
+      "lines": 155
+    },
+    {
+      "path": "config/workbench/export/verify.mjs",
+      "class": "configuration_data_or_bundled_helpers",
+      "lines": 255
+    },
+    {
+      "path": "config/workbench/world.json",
+      "class": "configuration_data_or_bundled_helpers",
+      "lines": 1
+    },
+    {
+      "path": "config/workspace-navigation.json",
+      "class": "configuration_data_or_bundled_helpers",
+      "lines": 42
+    },
+    {
+      "path": "config/workspace-preferences.json",
+      "class": "configuration_data_or_bundled_helpers",
+      "lines": 263
+    },
+    {
+      "path": "deploy/watchdog-proxy.service",
+      "class": "tooling_deployment_build",
+      "lines": 22
+    },
+    {
+      "path": "deploy/watchdog.service",
+      "class": "tooling_deployment_build",
+      "lines": 21
+    },
+    {
+      "path": "docs/ADMISSION.md",
+      "class": "documentation",
+      "lines": 40
+    },
+    {
+      "path": "docs/ASTRA_PROGRESS.md",
+      "class": "documentation",
+      "lines": 746
+    },
+    {
+      "path": "docs/AUDIT.md",
+      "class": "documentation",
+      "lines": 327
+    },
+    {
+      "path": "docs/AUTOMATION_AND_MEMORY.md",
+      "class": "documentation",
+      "lines": 98
+    },
+    {
+      "path": "docs/COLLECTION_CONTEXT.md",
+      "class": "documentation",
+      "lines": 73
+    },
+    {
+      "path": "docs/COMPLETENESS_REVIEW_2026-09-12.md",
+      "class": "documentation",
+      "lines": 156
+    },
+    {
+      "path": "docs/CONVERSATION_DELTA_2026-09-20.md",
+      "class": "documentation",
+      "lines": 71
+    },
+    {
+      "path": "docs/DEPLOY_GCP.md",
+      "class": "documentation",
+      "lines": 71
+    },
+    {
+      "path": "docs/DEPLOY_GCP_VM.md",
+      "class": "documentation",
+      "lines": 272
+    },
+    {
+      "path": "docs/DESIGN_RULES.md",
+      "class": "documentation",
+      "lines": 137
+    },
+    {
+      "path": "docs/FIELD_REFERENCE.md",
+      "class": "documentation",
+      "lines": 70
+    },
+    {
+      "path": "docs/HANDOFF_2026-09-22.md",
+      "class": "documentation",
+      "lines": 5
+    },
+    {
+      "path": "docs/HANDOFF_2026-09-30.md",
+      "class": "documentation",
+      "lines": 5
+    },
+    {
+      "path": "docs/HANDOFF_2026-09-30_WAVE1.md",
+      "class": "documentation",
+      "lines": 5
+    },
+    {
+      "path": "docs/HANDOFF_2026-10-01_INTEGRATION.md",
+      "class": "documentation",
+      "lines": 5
+    },
+    {
+      "path": "docs/HANDOFF_2026-10-01_TO_CLAUDE.md",
+      "class": "documentation",
+      "lines": 39
+    },
+    {
+      "path": "docs/HANDOFF_2026-10-02_TO_CLAUDE.md",
+      "class": "documentation",
+      "lines": 43
+    },
+    {
+      "path": "docs/HISTORY_POLICY.md",
+      "class": "documentation",
+      "lines": 25
+    },
+    {
+      "path": "docs/OVERVIEW.md",
+      "class": "documentation",
+      "lines": 38
+    },
+    {
+      "path": "docs/PAPER_ANALYSES.md",
+      "class": "documentation",
+      "lines": 172
+    },
+    {
+      "path": "docs/PARALLEL_RESEARCH_GPT.md",
+      "class": "documentation",
+      "lines": 42
+    },
+    {
+      "path": "docs/PERSONAL_PROVIDERS.md",
+      "class": "documentation",
+      "lines": 67
+    },
+    {
+      "path": "docs/PERSONAL_SETUP.md",
+      "class": "documentation",
+      "lines": 48
+    },
+    {
+      "path": "docs/PRINCIPLES.md",
+      "class": "documentation",
+      "lines": 22
+    },
+    {
+      "path": "docs/PRODUCT_PRINCIPLES_AND_NEXT.md",
+      "class": "documentation",
+      "lines": 48
+    },
+    {
+      "path": "docs/PROGRESS.md",
+      "class": "documentation",
+      "lines": 25
+    },
+    {
+      "path": "docs/README.md",
+      "class": "documentation",
+      "lines": 38
+    },
+    {
+      "path": "docs/REPORT_GPT_2026-10.md",
+      "class": "documentation",
+      "lines": 103
+    },
+    {
+      "path": "docs/RESEARCH_PROJECTS.md",
+      "class": "documentation",
+      "lines": 133
+    },
+    {
+      "path": "docs/RESEARCH_WORKSHOP.md",
+      "class": "documentation",
+      "lines": 186
+    },
+    {
+      "path": "docs/RESUME_2026-10-02.md",
+      "class": "documentation",
+      "lines": 15
+    },
+    {
+      "path": "docs/SOURCE_ACCESS.md",
+      "class": "documentation",
+      "lines": 99
+    },
+    {
+      "path": "docs/SOURCE_HISTORY.md",
+      "class": "documentation",
+      "lines": 99
+    },
+    {
+      "path": "docs/SOURCE_WATCHES.md",
+      "class": "documentation",
+      "lines": 85
+    },
+    {
+      "path": "docs/SPEC_RECONCILIATION_2026-09-30.md",
+      "class": "documentation",
+      "lines": 115
+    },
+    {
+      "path": "docs/TASK_ID_ALIASES.md",
+      "class": "documentation",
+      "lines": 21
+    },
+    {
+      "path": "docs/UNIFIED_SEARCH.md",
+      "class": "documentation",
+      "lines": 66
+    },
+    {
+      "path": "docs/WORKBENCH.md",
+      "class": "documentation",
+      "lines": 185
+    },
+    {
+      "path": "docs/WORK_COORDINATION.md",
+      "class": "documentation",
+      "lines": 21
+    },
+    {
+      "path": "docs/architecture/ADR-001-Tech-Stack-Adaptation.md",
+      "class": "documentation",
+      "lines": 34
+    },
+    {
+      "path": "docs/architecture/ADR-002-Local-Persistence-Sandbox.md",
+      "class": "documentation",
+      "lines": 21
+    },
+    {
+      "path": "docs/architecture/ADR-003-Autonomous-Replication-Agent.md",
+      "class": "documentation",
+      "lines": 19
+    },
+    {
+      "path": "docs/assets/README.md",
+      "class": "retained_history_or_evidence",
+      "lines": 5
+    },
+    {
+      "path": "docs/assets/source-watch-desktop.png",
+      "class": "retained_history_or_evidence",
+      "lines": 1134
+    },
+    {
+      "path": "docs/audit/2026-10-01/git-inventory.json",
+      "class": "documentation",
+      "lines": 2414
+    },
+    {
+      "path": "docs/audit/2026-10-01/github-evidence.json",
+      "class": "documentation",
+      "lines": 187
+    },
+    {
+      "path": "docs/audit/2026-10-01/merge-preview.txt",
+      "class": "documentation",
+      "lines": 116
+    },
+    {
+      "path": "docs/consolidation/admission.md",
+      "class": "documentation",
+      "lines": 39
+    },
+    {
+      "path": "docs/consolidation/deployment.md",
+      "class": "documentation",
+      "lines": 26
+    },
+    {
+      "path": "docs/consolidation/navigation.md",
+      "class": "documentation",
+      "lines": 27
+    },
+    {
+      "path": "docs/history/ADMISSION_BEFORE_CONSOLIDATION.md",
+      "class": "retained_history_or_evidence",
+      "lines": 58
+    },
+    {
+      "path": "docs/history/CLAUDE_14_INFORMATION_ARCHITECTURE_2026-09-24.md",
+      "class": "retained_history_or_evidence",
+      "lines": 69
+    },
+    {
+      "path": "docs/history/CLAUDE_HANDOFF_2026-10-01_TO_GPT.md",
+      "class": "retained_history_or_evidence",
+      "lines": 182
+    },
+    {
+      "path": "docs/history/EXPERIMENTS.md",
+      "class": "retained_history_or_evidence",
+      "lines": 58
+    },
+    {
+      "path": "docs/history/HANDOFF_2026-09-22.md",
+      "class": "retained_history_or_evidence",
+      "lines": 202
+    },
+    {
+      "path": "docs/history/HANDOFF_2026-09-30.md",
+      "class": "retained_history_or_evidence",
+      "lines": 112
+    },
+    {
+      "path": "docs/history/HANDOFF_2026-09-30_WAVE1.md",
+      "class": "retained_history_or_evidence",
+      "lines": 203
+    },
+    {
+      "path": "docs/history/HANDOFF_2026-10-01_INTEGRATION.md",
+      "class": "retained_history_or_evidence",
+      "lines": 91
+    },
+    {
+      "path": "docs/history/LEDGER_BLOCKERS_BEFORE_2026-10-01.md",
+      "class": "retained_history_or_evidence",
+      "lines": 69
+    },
+    {
+      "path": "docs/history/README.md",
+      "class": "retained_history_or_evidence",
+      "lines": 19
+    },
+    {
+      "path": "docs/history/README_BEFORE_2026-10-01.md",
+      "class": "retained_history_or_evidence",
+      "lines": 121
+    },
+    {
+      "path": "docs/history/WORK_COORDINATION_2026-09-30.md",
+      "class": "retained_history_or_evidence",
+      "lines": 194
+    },
+    {
+      "path": "docs/history/evidence/2026-10-01/baseline-failed.txt",
+      "class": "retained_history_or_evidence",
+      "lines": 1995
+    },
+    {
+      "path": "docs/history/evidence/2026-10-01/baseline-recovered.txt",
+      "class": "retained_history_or_evidence",
+      "lines": 1561
+    },
+    {
+      "path": "docs/history/evidence/2026-10-01/cli.json",
+      "class": "retained_history_or_evidence",
+      "lines": 21
+    },
+    {
+      "path": "docs/history/evidence/2026-10-01/clinical-case-a.json",
+      "class": "retained_history_or_evidence",
+      "lines": 1
+    },
+    {
+      "path": "docs/history/evidence/2026-10-01/consolidated-gate.txt",
+      "class": "retained_history_or_evidence",
+      "lines": 1617
+    },
+    {
+      "path": "docs/history/evidence/2026-10-01/jh16-run.tar.gz",
+      "class": "retained_history_or_evidence",
+      "lines": 473
+    },
+    {
+      "path": "docs/history/evidence/2026-10-01/jh16.txt",
+      "class": "retained_history_or_evidence",
+      "lines": 13
+    },
+    {
+      "path": "docs/history/evidence/2026-10-01/navigation-intermediate.txt",
+      "class": "retained_history_or_evidence",
+      "lines": 67
+    },
+    {
+      "path": "docs/history/evidence/2026-10-01/operations-intermediate.txt",
+      "class": "retained_history_or_evidence",
+      "lines": 95
+    },
+    {
+      "path": "docs/history/evidence/2026-10-01/publication.json",
+      "class": "retained_history_or_evidence",
+      "lines": 17
+    },
+    {
+      "path": "docs/history/evidence/2026-10-01/receipt.json",
+      "class": "retained_history_or_evidence",
+      "lines": 96
+    },
+    {
+      "path": "docs/history/evidence/2026-10-01/source-sha256.json",
+      "class": "retained_history_or_evidence",
+      "lines": 1610
+    },
+    {
+      "path": "docs/history/evidence/2026-10-02-completion/full-gate.txt",
+      "class": "retained_history_or_evidence",
+      "lines": 1631
+    },
+    {
+      "path": "docs/history/evidence/2026-10-02-completion/g1-replay.txt",
+      "class": "retained_history_or_evidence",
+      "lines": 12
+    },
+    {
+      "path": "docs/history/evidence/2026-10-02-completion/g2-replay.txt",
+      "class": "retained_history_or_evidence",
+      "lines": 2
+    },
+    {
+      "path": "docs/history/evidence/2026-10-02-completion/g3-replay.txt",
+      "class": "retained_history_or_evidence",
+      "lines": 1
+    },
+    {
+      "path": "docs/history/evidence/2026-10-02-completion/history.json",
+      "class": "retained_history_or_evidence",
+      "lines": 152
+    },
+    {
+      "path": "docs/history/evidence/2026-10-02-completion/publication.json",
+      "class": "retained_history_or_evidence",
+      "lines": 16
+    },
+    {
+      "path": "docs/history/evidence/2026-10-02-completion/receipt.json",
+      "class": "retained_history_or_evidence",
+      "lines": 50
+    },
+    {
+      "path": "docs/history/evidence/2026-10-02-completion/replay.json",
+      "class": "retained_history_or_evidence",
+      "lines": 33
+    },
+    {
+      "path": "docs/history/evidence/2026-10-02-completion/source-sha256.json",
+      "class": "retained_history_or_evidence",
+      "lines": 1610
+    },
+    {
+      "path": "docs/history/evidence/2026-10-02/auth-final-green.txt",
+      "class": "retained_history_or_evidence",
+      "lines": 57
+    },
+    {
+      "path": "docs/history/evidence/2026-10-02/auth-red.txt",
+      "class": "retained_history_or_evidence",
+      "lines": 105
+    },
+    {
+      "path": "docs/history/evidence/2026-10-02/full-gate.txt",
+      "class": "retained_history_or_evidence",
+      "lines": 1626
+    },
+    {
+      "path": "docs/history/evidence/2026-10-02/interleaving-red.txt",
+      "class": "retained_history_or_evidence",
+      "lines": 65
+    },
+    {
+      "path": "docs/history/evidence/2026-10-02/operations-green.txt",
+      "class": "retained_history_or_evidence",
+      "lines": 10
+    },
+    {
+      "path": "docs/history/evidence/2026-10-02/operations-red.txt",
+      "class": "retained_history_or_evidence",
+      "lines": 30
+    },
+    {
+      "path": "docs/history/evidence/2026-10-02/receipt.json",
+      "class": "retained_history_or_evidence",
+      "lines": 73
+    },
+    {
+      "path": "docs/history/evidence/2026-10-02/source-sha256.json",
+      "class": "retained_history_or_evidence",
+      "lines": 1610
+    },
+    {
+      "path": "docs/internal/LEGACY_AGENT_HANDOFF_2026-08-16.md",
+      "class": "documentation",
+      "lines": 91
+    },
+    {
+      "path": "docs/spec/00_STATE_AND_DECISIONS.md",
+      "class": "documentation",
+      "lines": 809
+    },
+    {
+      "path": "docs/spec/01_ARCHITECTURE.md",
+      "class": "documentation",
+      "lines": 201
+    },
+    {
+      "path": "docs/spec/02_DATA_MODEL.md",
+      "class": "documentation",
+      "lines": 347
+    },
+    {
+      "path": "docs/spec/03_JH2016_CONTRACT.md",
+      "class": "documentation",
+      "lines": 130
+    },
+    {
+      "path": "docs/spec/04_METHOD_COMPILER_AND_APPROVAL.md",
+      "class": "documentation",
+      "lines": 145
+    },
+    {
+      "path": "docs/spec/05_PROVIDERS_AND_CAPABILITIES.md",
+      "class": "documentation",
+      "lines": 123
+    },
+    {
+      "path": "docs/spec/06_DIAGNOSTICS.md",
+      "class": "documentation",
+      "lines": 146
+    },
+    {
+      "path": "docs/spec/07_EPICS_AND_TASKS.md",
+      "class": "documentation",
+      "lines": 692
+    },
+    {
+      "path": "docs/spec/08_REPLICATION_ENGINE.md",
+      "class": "documentation",
+      "lines": 105
+    },
+    {
+      "path": "docs/spec/09_TESTS.md",
+      "class": "documentation",
+      "lines": 143
+    },
+    {
+      "path": "docs/spec/10_EVIDENCE_TIER_AND_TRUST_UI.md",
+      "class": "documentation",
+      "lines": 168
+    },
+    {
+      "path": "docs/spec/11_FIELD_AND_CLINICAL_INTERFACES.md",
+      "class": "documentation",
+      "lines": 215
+    },
+    {
+      "path": "docs/spec/12_DRUG_DOMAIN_ONTOLOGY_AND_ASSERTIONS.md",
+      "class": "documentation",
+      "lines": 214
+    },
+    {
+      "path": "docs/spec/13_VISUAL_WORKBENCH.md",
+      "class": "documentation",
+      "lines": 69
+    },
+    {
+      "path": "docs/specifications/00_START_HERE.md",
+      "class": "documentation",
+      "lines": 83
+    },
+    {
+      "path": "docs/specifications/01_MASTER_PROMPT.md",
+      "class": "documentation",
+      "lines": 425
+    },
+    {
+      "path": "docs/specifications/02_PRODUCT_AND_SCOPE.md",
+      "class": "documentation",
+      "lines": 95
+    },
+    {
+      "path": "docs/specifications/03_REPOSITORY_AND_COMPONENT_TREE.md",
+      "class": "documentation",
+      "lines": 133
+    },
+    {
+      "path": "docs/specifications/04_FRONTEND_INTERFACE_SPEC.md",
+      "class": "documentation",
+      "lines": 96
+    },
+    {
+      "path": "docs/specifications/05_BACKEND_ARCHITECTURE.md",
+      "class": "documentation",
+      "lines": 114
+    },
+    {
+      "path": "docs/specifications/06_DATA_MODEL_AND_PROVENANCE.md",
+      "class": "documentation",
+      "lines": 98
+    },
+    {
+      "path": "docs/specifications/07_JH16_SCIENTIFIC_CONTRACT.md",
+      "class": "documentation",
+      "lines": 88
+    },
+    {
+      "path": "docs/specifications/08_API_AND_JOB_CONTRACTS.md",
+      "class": "documentation",
+      "lines": 71
+    },
+    {
+      "path": "docs/specifications/09_TEST_AND_VALIDATION_PLAN.md",
+      "class": "documentation",
+      "lines": 109
+    },
+    {
+      "path": "docs/specifications/10_SECURITY_PRIVACY_RBAC.md",
+      "class": "documentation",
+      "lines": 26
+    },
+    {
+      "path": "docs/specifications/11_IMPLEMENTATION_SEQUENCE.md",
+      "class": "documentation",
+      "lines": 58
+    },
+    {
+      "path": "docs/specifications/12_DEFINITION_OF_DONE.md",
+      "class": "documentation",
+      "lines": 148
+    },
+    {
+      "path": "docs/specifications/13_RECOVERED_DECISIONS.md",
+      "class": "documentation",
+      "lines": 34
+    },
+    {
+      "path": "docs/specifications/14_DEBUGGING_AND_TRACEABILITY.md",
+      "class": "documentation",
+      "lines": 535
+    },
+    {
+      "path": "docs/specifications/15_SOURCE_CATALOG_AND_PLUGIN_SEEDS.md",
+      "class": "documentation",
+      "lines": 153
+    },
+    {
+      "path": "docs/specifications/16_DATA_LIFECYCLE_STORAGE_AND_MEMORY.md",
+      "class": "documentation",
+      "lines": 208
+    },
+    {
+      "path": "docs/specifications/17_GENERIC_ANALYSIS_WORKBENCH.md",
+      "class": "documentation",
+      "lines": 228
+    },
+    {
+      "path": "docs/specifications/18_RESEARCH_METHOD_AND_PAPER_PIPELINE.md",
+      "class": "documentation",
+      "lines": 158
+    },
+    {
+      "path": "docs/specifications/19_RECOVERED_ARCHIVE_DECISIONS_V3.md",
+      "class": "documentation",
+      "lines": 83
+    },
+    {
+      "path": "docs/specifications/20_COMMUNITY_REPORT_AND_SEMANTIC_PIPELINE.md",
+      "class": "documentation",
+      "lines": 164
+    },
+    {
+      "path": "docs/specifications/21_INTUITIVE_RESEARCH_UI_AND_USER_FLOWS.md",
+      "class": "documentation",
+      "lines": 90
+    },
+    {
+      "path": "docs/specifications/22_ARCHIVE_SEARCH_INDEX.md",
+      "class": "documentation",
+      "lines": 18
+    },
+    {
+      "path": "docs/specifications/PACKAGE_CONTENTS.txt",
+      "class": "documentation",
+      "lines": 37
+    },
+    {
+      "path": "docs/specifications/config/analysis/method-registry.example.yaml",
+      "class": "documentation",
+      "lines": 56
+    },
+    {
+      "path": "docs/specifications/config/community/semantic-extraction.example.yaml",
+      "class": "documentation",
+      "lines": 25
+    },
+    {
+      "path": "docs/specifications/config/core/application.example.json",
+      "class": "documentation",
+      "lines": 43
+    },
+    {
+      "path": "docs/specifications/config/presets/jh16-faithful.example.json",
+      "class": "documentation",
+      "lines": 95
+    },
+    {
+      "path": "docs/specifications/config/research/paper-pipeline.example.yaml",
+      "class": "documentation",
+      "lines": 19
+    },
+    {
+      "path": "docs/specifications/config/research/research-project.example.yaml",
+      "class": "documentation",
+      "lines": 19
+    },
+    {
+      "path": "docs/specifications/config/sources/source-seeds.example.yaml",
+      "class": "documentation",
+      "lines": 100
+    },
+    {
+      "path": "docs/specifications/config/transforms/transform-registry.example.yaml",
+      "class": "documentation",
+      "lines": 40
+    },
+    {
+      "path": "docs/specifications/config/ui/navigation.example.json",
+      "class": "documentation",
+      "lines": 64
+    },
+    {
+      "path": "docs/specifications/config/visualizations/visualization-registry.example.yaml",
+      "class": "documentation",
+      "lines": 30
+    },
+    {
+      "path": "docs/specifications/contracts/openapi.stub.yaml",
+      "class": "documentation",
+      "lines": 59
+    },
+    {
+      "path": "docs/specifications/schemas/run-manifest.schema.json",
+      "class": "documentation",
+      "lines": 152
+    },
+    {
+      "path": "docs/specifications/schemas/source.schema.json",
+      "class": "documentation",
+      "lines": 50
+    },
+    {
+      "path": "docs/work_packages/CLINICAL.md",
+      "class": "documentation",
+      "lines": 297
+    },
+    {
+      "path": "docs/work_packages/CLINICAL_AUDIT_2026-09-30.md",
+      "class": "documentation",
+      "lines": 271
+    },
+    {
+      "path": "docs/work_packages/OPERATIONS.md",
+      "class": "documentation",
+      "lines": 222
+    },
+    {
+      "path": "docs/work_packages/README.md",
+      "class": "documentation",
+      "lines": 80
+    },
+    {
+      "path": "docs/work_packages/RESEARCH.md",
+      "class": "documentation",
+      "lines": 152
+    },
+    {
+      "path": "docs/work_packages/RESEARCH_CHECKPOINT_2026-09-30.md",
+      "class": "documentation",
+      "lines": 360
+    },
+    {
+      "path": "fixtures/jh2016/edge_cases/golden.json",
+      "class": "tests_fixtures",
+      "lines": 28
+    },
+    {
+      "path": "fixtures/jh2016/edge_cases/index.json",
+      "class": "tests_fixtures",
+      "lines": 32
+    },
+    {
+      "path": "fixtures/jh2016/edge_cases/queries/grouped_digits__popularity.json",
+      "class": "tests_fixtures",
+      "lines": 5
+    },
+    {
+      "path": "fixtures/jh2016/edge_cases/queries/missing_count__popularity.json",
+      "class": "tests_fixtures",
+      "lines": 5
+    },
+    {
+      "path": "fixtures/jh2016/edge_cases/queries/unparseable_count__popularity.json",
+      "class": "tests_fixtures",
+      "lines": 5
+    },
+    {
+      "path": "fixtures/jh2016/edge_cases/queries/zero_ni__popularity.json",
+      "class": "tests_fixtures",
+      "lines": 5
+    },
+    {
+      "path": "fixtures/jh2016/faithful_2014-06-20/golden.json",
+      "class": "tests_fixtures",
+      "lines": 234
+    },
+    {
+      "path": "fixtures/jh2016/faithful_2014-06-20/index.json",
+      "class": "tests_fixtures",
+      "lines": 234
+    },
+    {
+      "path": "fixtures/jh2016/faithful_2014-06-20/queries/alcohol__harm.json",
+      "class": "tests_fixtures",
+      "lines": 5
+    },
+    {
+      "path": "fixtures/jh2016/faithful_2014-06-20/queries/alcohol__popularity.json",
+      "class": "tests_fixtures",
+      "lines": 5
+    },
+    {
+      "path": "fixtures/jh2016/faithful_2014-06-20/queries/amphetamine__harm.json",
+      "class": "tests_fixtures",
+      "lines": 5
+    },
+    {
+      "path": "fixtures/jh2016/faithful_2014-06-20/queries/amphetamine__popularity.json",
+      "class": "tests_fixtures",
+      "lines": 5
+    },
+    {
+      "path": "fixtures/jh2016/faithful_2014-06-20/queries/benzodiazepines__harm.json",
+      "class": "tests_fixtures",
+      "lines": 5
+    },
+    {
+      "path": "fixtures/jh2016/faithful_2014-06-20/queries/benzodiazepines__popularity.json",
+      "class": "tests_fixtures",
+      "lines": 5
+    },
+    {
+      "path": "fixtures/jh2016/faithful_2014-06-20/queries/buprenorphine__harm.json",
+      "class": "tests_fixtures",
+      "lines": 5
+    },
+    {
+      "path": "fixtures/jh2016/faithful_2014-06-20/queries/buprenorphine__popularity.json",
+      "class": "tests_fixtures",
+      "lines": 5
+    },
+    {
+      "path": "fixtures/jh2016/faithful_2014-06-20/queries/butane__harm.json",
+      "class": "tests_fixtures",
+      "lines": 5
+    },
+    {
+      "path": "fixtures/jh2016/faithful_2014-06-20/queries/butane__popularity.json",
+      "class": "tests_fixtures",
+      "lines": 5
+    },
+    {
+      "path": "fixtures/jh2016/faithful_2014-06-20/queries/cannabis__harm.json",
+      "class": "tests_fixtures",
+      "lines": 5
+    },
+    {
+      "path": "fixtures/jh2016/faithful_2014-06-20/queries/cannabis__popularity.json",
+      "class": "tests_fixtures",
+      "lines": 5
+    },
+    {
+      "path": "fixtures/jh2016/faithful_2014-06-20/queries/cocaine__harm.json",
+      "class": "tests_fixtures",
+      "lines": 5
+    },
+    {
+      "path": "fixtures/jh2016/faithful_2014-06-20/queries/cocaine__popularity.json",
+      "class": "tests_fixtures",
+      "lines": 5
+    },
+    {
+      "path": "fixtures/jh2016/faithful_2014-06-20/queries/ecstasy__harm.json",
+      "class": "tests_fixtures",
+      "lines": 5
+    },
+    {
+      "path": "fixtures/jh2016/faithful_2014-06-20/queries/ecstasy__popularity.json",
+      "class": "tests_fixtures",
+      "lines": 5
+    },
+    {
+      "path": "fixtures/jh2016/faithful_2014-06-20/queries/gamma_hydroxybutyric_acid__harm.json",
+      "class": "tests_fixtures",
+      "lines": 5
+    },
+    {
+      "path": "fixtures/jh2016/faithful_2014-06-20/queries/gamma_hydroxybutyric_acid__popularity.json",
+      "class": "tests_fixtures",
+      "lines": 5
+    },
+    {
+      "path": "fixtures/jh2016/faithful_2014-06-20/queries/heroin__harm.json",
+      "class": "tests_fixtures",
+      "lines": 5
+    },
+    {
+      "path": "fixtures/jh2016/faithful_2014-06-20/queries/heroin__popularity.json",
+      "class": "tests_fixtures",
+      "lines": 5
+    },
+    {
+      "path": "fixtures/jh2016/faithful_2014-06-20/queries/ketamine__harm.json",
+      "class": "tests_fixtures",
+      "lines": 5
+    },
+    {
+      "path": "fixtures/jh2016/faithful_2014-06-20/queries/ketamine__popularity.json",
+      "class": "tests_fixtures",
+      "lines": 5
+    },
+    {
+      "path": "fixtures/jh2016/faithful_2014-06-20/queries/khat__harm.json",
+      "class": "tests_fixtures",
+      "lines": 5
+    },
+    {
+      "path": "fixtures/jh2016/faithful_2014-06-20/queries/khat__popularity.json",
+      "class": "tests_fixtures",
+      "lines": 5
+    },
+    {
+      "path": "fixtures/jh2016/faithful_2014-06-20/queries/lysergic_acid_diethylamide__harm.json",
+      "class": "tests_fixtures",
+      "lines": 5
+    },
+    {
+      "path": "fixtures/jh2016/faithful_2014-06-20/queries/lysergic_acid_diethylamide__popularity.json",
+      "class": "tests_fixtures",
+      "lines": 5
+    },
+    {
+      "path": "fixtures/jh2016/faithful_2014-06-20/queries/mephedrone__harm.json",
+      "class": "tests_fixtures",
+      "lines": 5
+    },
+    {
+      "path": "fixtures/jh2016/faithful_2014-06-20/queries/mephedrone__popularity.json",
+      "class": "tests_fixtures",
+      "lines": 5
+    },
+    {
+      "path": "fixtures/jh2016/faithful_2014-06-20/queries/methadone__harm.json",
+      "class": "tests_fixtures",
+      "lines": 5
+    },
+    {
+      "path": "fixtures/jh2016/faithful_2014-06-20/queries/methadone__popularity.json",
+      "class": "tests_fixtures",
+      "lines": 5
+    },
+    {
+      "path": "fixtures/jh2016/faithful_2014-06-20/queries/methamphetamine__harm.json",
+      "class": "tests_fixtures",
+      "lines": 5
+    },
+    {
+      "path": "fixtures/jh2016/faithful_2014-06-20/queries/methamphetamine__popularity.json",
+      "class": "tests_fixtures",
+      "lines": 5
+    },
+    {
+      "path": "fixtures/jh2016/paper_reported.json",
+      "class": "tests_fixtures",
+      "lines": 329
+    },
+    {
+      "path": "fixtures/research_comparison/claim.json",
+      "class": "tests_fixtures",
+      "lines": 12
+    },
+    {
+      "path": "index.html",
+      "class": "tooling_deployment_build",
+      "lines": 17
+    },
+    {
+      "path": "package-lock.json",
+      "class": "generated_lockfile",
+      "lines": 3795
+    },
+    {
+      "path": "package.json",
+      "class": "tooling_deployment_build",
+      "lines": 49
+    },
+    {
+      "path": "scripts/build_extraction_verifier.mjs",
+      "class": "tooling_deployment_build",
+      "lines": 5
+    },
+    {
+      "path": "scripts/build_field_shell.mjs",
+      "class": "tooling_deployment_build",
+      "lines": 2
+    },
+    {
+      "path": "scripts/check_container.sh",
+      "class": "tooling_deployment_build",
+      "lines": 41
+    },
+    {
+      "path": "scripts/demo_clinical.ts",
+      "class": "tooling_deployment_build",
+      "lines": 70
+    },
+    {
+      "path": "scripts/demo_jh16.ts",
+      "class": "tooling_deployment_build",
+      "lines": 452
+    },
+    {
+      "path": "scripts/deploy_cloudrun.sh",
+      "class": "tooling_deployment_build",
+      "lines": 89
+    },
+    {
+      "path": "scripts/deploy_gcp_vm.sh",
+      "class": "tooling_deployment_build",
+      "lines": 156
+    },
+    {
+      "path": "scripts/field_shell.mjs",
+      "class": "tooling_deployment_build",
+      "lines": 47
+    },
+    {
+      "path": "scripts/gcp_vm_bootstrap.sh",
+      "class": "tooling_deployment_build",
+      "lines": 208
+    },
+    {
+      "path": "scripts/populate_public.ts",
+      "class": "tooling_deployment_build",
+      "lines": 20
+    },
+    {
+      "path": "scripts/verify_source_comparison.ts",
+      "class": "tooling_deployment_build",
+      "lines": 10
+    },
+    {
+      "path": "scripts/watchdog_access.sh",
+      "class": "tooling_deployment_build",
+      "lines": 83
+    },
+    {
+      "path": "scripts/watchdog_admin.ts",
+      "class": "tooling_deployment_build",
+      "lines": 128
+    },
+    {
+      "path": "scripts/watchdog_backup.py",
+      "class": "tooling_deployment_build",
+      "lines": 542
+    },
+    {
+      "path": "scripts/watchdogctl.sh",
+      "class": "tooling_deployment_build",
+      "lines": 97
+    },
+    {
+      "path": "server.ts",
+      "class": "product",
+      "lines": 189
+    },
+    {
+      "path": "shared/admission.ts",
+      "class": "product",
+      "lines": 18
+    },
+    {
+      "path": "shared/authorization.ts",
+      "class": "product",
+      "lines": 81
+    },
+    {
+      "path": "shared/automation.ts",
+      "class": "product",
+      "lines": 57
+    },
+    {
+      "path": "shared/canonical_json.ts",
+      "class": "product",
+      "lines": 7
+    },
+    {
+      "path": "shared/clinical_demo.ts",
+      "class": "product",
+      "lines": 139
+    },
+    {
+      "path": "shared/clinical_demo_profile.ts",
+      "class": "product",
+      "lines": 56
+    },
+    {
+      "path": "shared/clinical_demo_selector.ts",
+      "class": "product",
+      "lines": 144
+    },
+    {
+      "path": "shared/clinical_demo_validation.ts",
+      "class": "product",
+      "lines": 112
+    },
+    {
+      "path": "shared/collection.ts",
+      "class": "product",
+      "lines": 21
+    },
+    {
+      "path": "shared/csv_import.ts",
+      "class": "product",
+      "lines": 24
+    },
+    {
+      "path": "shared/extraction_dataset_profile.ts",
+      "class": "product",
+      "lines": 13
+    },
+    {
+      "path": "shared/field.ts",
+      "class": "product",
+      "lines": 102
+    },
+    {
+      "path": "shared/field_lookup.ts",
+      "class": "product",
+      "lines": 156
+    },
+    {
+      "path": "shared/field_snapshot.ts",
+      "class": "product",
+      "lines": 41
+    },
+    {
+      "path": "shared/field_validation.ts",
+      "class": "product",
+      "lines": 129
+    },
+    {
+      "path": "shared/figure_geometry.ts",
+      "class": "product",
+      "lines": 17
+    },
+    {
+      "path": "shared/figure_renderer.tsx",
+      "class": "product",
+      "lines": 169
+    },
+    {
+      "path": "shared/geography.ts",
+      "class": "product",
+      "lines": 175
+    },
+    {
+      "path": "shared/goal_navigation.ts",
+      "class": "product",
+      "lines": 12
+    },
+    {
+      "path": "shared/paper_comparison.ts",
+      "class": "product",
+      "lines": 16
+    },
+    {
+      "path": "shared/paper_operation.ts",
+      "class": "product",
+      "lines": 82
+    },
+    {
+      "path": "shared/region_renderer.tsx",
+      "class": "product",
+      "lines": 132
+    },
+    {
+      "path": "shared/research.ts",
+      "class": "product",
+      "lines": 34
+    },
+    {
+      "path": "shared/research_dataset.ts",
+      "class": "product",
+      "lines": 29
+    },
+    {
+      "path": "shared/research_projects.ts",
+      "class": "product",
+      "lines": 45
+    },
+    {
+      "path": "shared/search.ts",
+      "class": "product",
+      "lines": 46
+    },
+    {
+      "path": "shared/settings.ts",
+      "class": "product",
+      "lines": 39
+    },
+    {
+      "path": "shared/source_access.ts",
+      "class": "product",
+      "lines": 78
+    },
+    {
+      "path": "shared/source_copy.ts",
+      "class": "product",
+      "lines": 10
+    },
+    {
+      "path": "shared/source_history.ts",
+      "class": "product",
+      "lines": 87
+    },
+    {
+      "path": "shared/source_watch.ts",
+      "class": "product",
+      "lines": 24
+    },
+    {
+      "path": "shared/workbench.ts",
+      "class": "product",
+      "lines": 144
+    },
+    {
+      "path": "shared/workspace_navigation.ts",
+      "class": "product",
+      "lines": 47
+    },
+    {
+      "path": "shared/workspace_preferences.ts",
+      "class": "product",
+      "lines": 38
+    },
+    {
+      "path": "src/App.tsx",
+      "class": "product",
+      "lines": 79
+    },
+    {
+      "path": "src/components/AccessShell.tsx",
+      "class": "product",
+      "lines": 34
+    },
+    {
+      "path": "src/components/AdmissionGate.tsx",
+      "class": "product",
+      "lines": 97
+    },
+    {
+      "path": "src/components/ConfigurationWizard.tsx",
+      "class": "product",
+      "lines": 117
+    },
+    {
+      "path": "src/components/DatasetImport.tsx",
+      "class": "product",
+      "lines": 66
+    },
+    {
+      "path": "src/components/ExtractionDatasetForm.tsx",
+      "class": "product",
+      "lines": 96
+    },
+    {
+      "path": "src/components/FieldEvidence.tsx",
+      "class": "product",
+      "lines": 73
+    },
+    {
+      "path": "src/components/FieldLinkedReference.tsx",
+      "class": "product",
+      "lines": 32
+    },
+    {
+      "path": "src/components/FieldResults.tsx",
+      "class": "product",
+      "lines": 55
+    },
+    {
+      "path": "src/components/FigureCanvas.tsx",
+      "class": "product",
+      "lines": 2
+    },
+    {
+      "path": "src/components/GeometryLayers.tsx",
+      "class": "product",
+      "lines": 83
+    },
+    {
+      "path": "src/components/GoalNavigator.tsx",
+      "class": "product",
+      "lines": 18
+    },
+    {
+      "path": "src/components/Layout.tsx",
+      "class": "product",
+      "lines": 36
+    },
+    {
+      "path": "src/components/ModelProfilesPanel.tsx",
+      "class": "product",
+      "lines": 42
+    },
+    {
+      "path": "src/components/PaperOperations.tsx",
+      "class": "product",
+      "lines": 200
+    },
+    {
+      "path": "src/components/RegionControls.tsx",
+      "class": "product",
+      "lines": 79
+    },
+    {
+      "path": "src/components/ResearchControls.tsx",
+      "class": "product",
+      "lines": 92
+    },
+    {
+      "path": "src/components/SignInPanel.tsx",
+      "class": "product",
+      "lines": 138
+    },
+    {
+      "path": "src/components/SourceComparisonView.tsx",
+      "class": "product",
+      "lines": 33
+    },
+    {
+      "path": "src/components/SourceHistory.tsx",
+      "class": "product",
+      "lines": 86
+    },
+    {
+      "path": "src/components/SourceWatchButton.tsx",
+      "class": "product",
+      "lines": 22
+    },
+    {
+      "path": "src/components/SourceWatchInbox.tsx",
+      "class": "product",
+      "lines": 79
+    },
+    {
+      "path": "src/components/WorkspaceNavigation.tsx",
+      "class": "product",
+      "lines": 65
+    },
+    {
+      "path": "src/index.css",
+      "class": "product",
+      "lines": 28
+    },
+    {
+      "path": "src/lib/access.tsx",
+      "class": "product",
+      "lines": 142
+    },
+    {
+      "path": "src/lib/access_i18n.ts",
+      "class": "product",
+      "lines": 45
+    },
+    {
+      "path": "src/lib/api.ts",
+      "class": "product",
+      "lines": 62
+    },
+    {
+      "path": "src/lib/automation_client.ts",
+      "class": "product",
+      "lines": 11
+    },
+    {
+      "path": "src/lib/client_diagnostics.ts",
+      "class": "product",
+      "lines": 25
+    },
+    {
+      "path": "src/lib/field_client.ts",
+      "class": "product",
+      "lines": 87
+    },
+    {
+      "path": "src/lib/research_projects_client.ts",
+      "class": "product",
+      "lines": 8
+    },
+    {
+      "path": "src/lib/search_client.ts",
+      "class": "product",
+      "lines": 8
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "class": "product",
+      "lines": 6
+    },
+    {
+      "path": "src/lib/workbench_client.ts",
+      "class": "product",
+      "lines": 17
+    },
+    {
+      "path": "src/lib/workspace_preferences.tsx",
+      "class": "product",
+      "lines": 50
+    },
+    {
+      "path": "src/main.tsx",
+      "class": "product",
+      "lines": 20
+    },
+    {
+      "path": "src/pages/AccessAdmin.tsx",
+      "class": "product",
+      "lines": 93
+    },
+    {
+      "path": "src/pages/Analyzers.tsx",
+      "class": "product",
+      "lines": 74
+    },
+    {
+      "path": "src/pages/Apply.tsx",
+      "class": "product",
+      "lines": 131
+    },
+    {
+      "path": "src/pages/Automation.tsx",
+      "class": "product",
+      "lines": 105
+    },
+    {
+      "path": "src/pages/Dashboard.tsx",
+      "class": "product",
+      "lines": 141
+    },
+    {
+      "path": "src/pages/Diagnostics.tsx",
+      "class": "product",
+      "lines": 28
+    },
+    {
+      "path": "src/pages/EvidenceReview.tsx",
+      "class": "product",
+      "lines": 61
+    },
+    {
+      "path": "src/pages/Join.tsx",
+      "class": "product",
+      "lines": 122
+    },
+    {
+      "path": "src/pages/Login.tsx",
+      "class": "product",
+      "lines": 73
+    },
+    {
+      "path": "src/pages/MethodReview.tsx",
+      "class": "product",
+      "lines": 146
+    },
+    {
+      "path": "src/pages/PeopleAccess.tsx",
+      "class": "product",
+      "lines": 380
+    },
+    {
+      "path": "src/pages/Research.tsx",
+      "class": "product",
+      "lines": 120
+    },
+    {
+      "path": "src/pages/ResearchProjects.tsx",
+      "class": "product",
+      "lines": 145
+    },
+    {
+      "path": "src/pages/Responder.tsx",
+      "class": "product",
+      "lines": 140
+    },
+    {
+      "path": "src/pages/Results.tsx",
+      "class": "product",
+      "lines": 181
+    },
+    {
+      "path": "src/pages/RunDetails.tsx",
+      "class": "product",
+      "lines": 218
+    },
+    {
+      "path": "src/pages/Runs.tsx",
+      "class": "product",
+      "lines": 76
+    },
+    {
+      "path": "src/pages/Search.tsx",
+      "class": "product",
+      "lines": 52
+    },
+    {
+      "path": "src/pages/Setup.tsx",
+      "class": "product",
+      "lines": 219
+    },
+    {
+      "path": "src/pages/SourceAccess.tsx",
+      "class": "product",
+      "lines": 76
+    },
+    {
+      "path": "src/pages/Sources.tsx",
+      "class": "product",
+      "lines": 99
+    },
+    {
+      "path": "src/pages/Study.tsx",
+      "class": "product",
+      "lines": 139
+    },
+    {
+      "path": "src/pages/SubstanceMemory.tsx",
+      "class": "product",
+      "lines": 69
+    },
+    {
+      "path": "src/pages/Workbench.tsx",
+      "class": "product",
+      "lines": 234
+    },
+    {
+      "path": "src/types.ts",
+      "class": "product",
+      "lines": 92
+    },
+    {
+      "path": "src/vite-env.d.ts",
+      "class": "product",
+      "lines": 1
+    },
+    {
+      "path": "tests/contract/providers.test.ts",
+      "class": "tests_fixtures",
+      "lines": 154
+    },
+    {
+      "path": "tests/contract/sources.test.ts",
+      "class": "tests_fixtures",
+      "lines": 155
+    },
+    {
+      "path": "tests/e2e/access_flow.test.ts",
+      "class": "tests_fixtures",
+      "lines": 218
+    },
+    {
+      "path": "tests/e2e/admission.test.ts",
+      "class": "tests_fixtures",
+      "lines": 91
+    },
+    {
+      "path": "tests/e2e/demo_determinism.test.ts",
+      "class": "tests_fixtures",
+      "lines": 165
+    },
+    {
+      "path": "tests/e2e/paper_comparisons.test.ts",
+      "class": "tests_fixtures",
+      "lines": 112
+    },
+    {
+      "path": "tests/e2e/research_projects.test.ts",
+      "class": "tests_fixtures",
+      "lines": 98
+    },
+    {
+      "path": "tests/e2e/ui_flow.test.ts",
+      "class": "tests_fixtures",
+      "lines": 760
+    },
+    {
+      "path": "tests/e2e/unified_search.test.ts",
+      "class": "tests_fixtures",
+      "lines": 109
+    },
+    {
+      "path": "tests/e2e/workbench_field.test.ts",
+      "class": "tests_fixtures",
+      "lines": 378
+    },
+    {
+      "path": "tests/e2e/workspace_navigation.test.ts",
+      "class": "tests_fixtures",
+      "lines": 102
+    },
+    {
+      "path": "tests/fixtures/source_history.ts",
+      "class": "tests_fixtures",
+      "lines": 27
+    },
+    {
+      "path": "tests/helpers/browser.ts",
+      "class": "tests_fixtures",
+      "lines": 32
+    },
+    {
+      "path": "tests/helpers/clinical_demo.ts",
+      "class": "tests_fixtures",
+      "lines": 66
+    },
+    {
+      "path": "tests/helpers/field.ts",
+      "class": "tests_fixtures",
+      "lines": 18
+    },
+    {
+      "path": "tests/helpers/geography.ts",
+      "class": "tests_fixtures",
+      "lines": 29
+    },
+    {
+      "path": "tests/helpers/smtp.ts",
+      "class": "tests_fixtures",
+      "lines": 78
+    },
+    {
+      "path": "tests/helpers/workbench.ts",
+      "class": "tests_fixtures",
+      "lines": 14
+    },
+    {
+      "path": "tests/integration/access_operations.test.ts",
+      "class": "tests_fixtures",
+      "lines": 62
+    },
+    {
+      "path": "tests/integration/accounts_admission.test.ts",
+      "class": "tests_fixtures",
+      "lines": 415
+    },
+    {
+      "path": "tests/integration/accounts_upgrade.test.ts",
+      "class": "tests_fixtures",
+      "lines": 158
+    },
+    {
+      "path": "tests/integration/admission.test.ts",
+      "class": "tests_fixtures",
+      "lines": 161
+    },
+    {
+      "path": "tests/integration/api.test.ts",
+      "class": "tests_fixtures",
+      "lines": 212
+    },
+    {
+      "path": "tests/integration/automation.test.ts",
+      "class": "tests_fixtures",
+      "lines": 188
+    },
+    {
+      "path": "tests/integration/capability_profiles.test.ts",
+      "class": "tests_fixtures",
+      "lines": 57
+    },
+    {
+      "path": "tests/integration/cloudrun_guard.test.ts",
+      "class": "tests_fixtures",
+      "lines": 49
+    },
+    {
+      "path": "tests/integration/collection.test.ts",
+      "class": "tests_fixtures",
+      "lines": 110
+    },
+    {
+      "path": "tests/integration/deployment.test.ts",
+      "class": "tests_fixtures",
+      "lines": 156
+    },
+    {
+      "path": "tests/integration/extraction_dataset.test.ts",
+      "class": "tests_fixtures",
+      "lines": 265
+    },
+    {
+      "path": "tests/integration/field_reference.test.ts",
+      "class": "tests_fixtures",
+      "lines": 306
+    },
+    {
+      "path": "tests/integration/field_shell.test.ts",
+      "class": "tests_fixtures",
+      "lines": 37
+    },
+    {
+      "path": "tests/integration/gcp_vm.test.ts",
+      "class": "tests_fixtures",
+      "lines": 182
+    },
+    {
+      "path": "tests/integration/geography.test.ts",
+      "class": "tests_fixtures",
+      "lines": 120
+    },
+    {
+      "path": "tests/integration/live_path.test.ts",
+      "class": "tests_fixtures",
+      "lines": 295
+    },
+    {
+      "path": "tests/integration/operations_backup.test.ts",
+      "class": "tests_fixtures",
+      "lines": 328
+    },
+    {
+      "path": "tests/integration/operations_update.test.ts",
+      "class": "tests_fixtures",
+      "lines": 96
+    },
+    {
+      "path": "tests/integration/orchestrator.test.ts",
+      "class": "tests_fixtures",
+      "lines": 133
+    },
+    {
+      "path": "tests/integration/paper_comparisons.test.ts",
+      "class": "tests_fixtures",
+      "lines": 381
+    },
+    {
+      "path": "tests/integration/paper_operations.test.ts",
+      "class": "tests_fixtures",
+      "lines": 220
+    },
+    {
+      "path": "tests/integration/persistence.test.ts",
+      "class": "tests_fixtures",
+      "lines": 317
+    },
+    {
+      "path": "tests/integration/private_installation.test.ts",
+      "class": "tests_fixtures",
+      "lines": 85
+    },
+    {
+      "path": "tests/integration/research_intake.test.ts",
+      "class": "tests_fixtures",
+      "lines": 222
+    },
+    {
+      "path": "tests/integration/research_package.test.ts",
+      "class": "tests_fixtures",
+      "lines": 124
+    },
+    {
+      "path": "tests/integration/research_projects.test.ts",
+      "class": "tests_fixtures",
+      "lines": 234
+    },
+    {
+      "path": "tests/integration/run_access.test.ts",
+      "class": "tests_fixtures",
+      "lines": 83
+    },
+    {
+      "path": "tests/integration/settings.test.ts",
+      "class": "tests_fixtures",
+      "lines": 243
+    },
+    {
+      "path": "tests/integration/source_access.test.ts",
+      "class": "tests_fixtures",
+      "lines": 155
+    },
+    {
+      "path": "tests/integration/source_history.test.ts",
+      "class": "tests_fixtures",
+      "lines": 172
+    },
+    {
+      "path": "tests/integration/source_watches.test.ts",
+      "class": "tests_fixtures",
+      "lines": 175
+    },
+    {
+      "path": "tests/integration/unified_search.test.ts",
+      "class": "tests_fixtures",
+      "lines": 174
+    },
+    {
+      "path": "tests/integration/unified_search_revocation.test.ts",
+      "class": "tests_fixtures",
+      "lines": 56
+    },
+    {
+      "path": "tests/integration/workbench.test.ts",
+      "class": "tests_fixtures",
+      "lines": 163
+    },
+    {
+      "path": "tests/integration/workbench_access_revocation.test.ts",
+      "class": "tests_fixtures",
+      "lines": 96
+    },
+    {
+      "path": "tests/scientific/fixtures.test.ts",
+      "class": "tests_fixtures",
+      "lines": 157
+    },
+    {
+      "path": "tests/scientific/jh16.test.ts",
+      "class": "tests_fixtures",
+      "lines": 165
+    },
+    {
+      "path": "tests/scientific/method_engine.test.ts",
+      "class": "tests_fixtures",
+      "lines": 312
+    },
+    {
+      "path": "tests/scientific/method_engine_integrity.test.ts",
+      "class": "tests_fixtures",
+      "lines": 105
+    },
+    {
+      "path": "tests/scientific/paper_comparison.test.ts",
+      "class": "tests_fixtures",
+      "lines": 89
+    },
+    {
+      "path": "tests/scientific/replication.test.ts",
+      "class": "tests_fixtures",
+      "lines": 157
+    },
+    {
+      "path": "tests/unit/admission.test.ts",
+      "class": "tests_fixtures",
+      "lines": 236
+    },
+    {
+      "path": "tests/unit/anti_fabrication.test.ts",
+      "class": "tests_fixtures",
+      "lines": 100
+    },
+    {
+      "path": "tests/unit/clinical_demo_case.test.ts",
+      "class": "tests_fixtures",
+      "lines": 263
+    },
+    {
+      "path": "tests/unit/clinical_demo_executor.test.ts",
+      "class": "tests_fixtures",
+      "lines": 379
+    },
+    {
+      "path": "tests/unit/clinical_demo_profile.test.ts",
+      "class": "tests_fixtures",
+      "lines": 333
+    },
+    {
+      "path": "tests/unit/config.test.ts",
+      "class": "tests_fixtures",
+      "lines": 138
+    },
+    {
+      "path": "tests/unit/diagnostic_view.test.ts",
+      "class": "tests_fixtures",
+      "lines": 24
+    },
+    {
+      "path": "tests/unit/diagnostics.test.ts",
+      "class": "tests_fixtures",
+      "lines": 297
+    },
+    {
+      "path": "tests/unit/discontinuity.test.ts",
+      "class": "tests_fixtures",
+      "lines": 169
+    },
+    {
+      "path": "tests/unit/domain.test.ts",
+      "class": "tests_fixtures",
+      "lines": 234
+    },
+    {
+      "path": "tests/unit/field_ui.test.ts",
+      "class": "tests_fixtures",
+      "lines": 163
+    },
+    {
+      "path": "tests/unit/geography.test.ts",
+      "class": "tests_fixtures",
+      "lines": 79
+    },
+    {
+      "path": "tests/unit/goal_navigation.test.ts",
+      "class": "tests_fixtures",
+      "lines": 12
+    },
+    {
+      "path": "tests/unit/identity.test.ts",
+      "class": "tests_fixtures",
+      "lines": 349
+    },
+    {
+      "path": "tests/unit/llm.test.ts",
+      "class": "tests_fixtures",
+      "lines": 261
+    },
+    {
+      "path": "tests/unit/output.test.ts",
+      "class": "tests_fixtures",
+      "lines": 241
+    },
+    {
+      "path": "tests/unit/secrets.test.ts",
+      "class": "tests_fixtures",
+      "lines": 175
+    },
+    {
+      "path": "tests/unit/serpapi.test.ts",
+      "class": "tests_fixtures",
+      "lines": 236
+    },
+    {
+      "path": "tests/unit/source_history.test.ts",
+      "class": "tests_fixtures",
+      "lines": 41
+    },
+    {
+      "path": "tests/unit/storage_backends.test.ts",
+      "class": "tests_fixtures",
+      "lines": 198
+    },
+    {
+      "path": "tests/unit/tracer.test.ts",
+      "class": "tests_fixtures",
+      "lines": 84
+    },
+    {
+      "path": "tests/unit/workbench_render.test.ts",
+      "class": "tests_fixtures",
+      "lines": 65
+    },
+    {
+      "path": "tests/unit/workspace_navigation.test.ts",
+      "class": "tests_fixtures",
+      "lines": 80
+    },
+    {
+      "path": "tests/unit/workspace_preferences.test.ts",
+      "class": "tests_fixtures",
+      "lines": 31
+    },
+    {
+      "path": "tsconfig.json",
+      "class": "tooling_deployment_build",
+      "lines": 26
+    },
+    {
+      "path": "vite.config.ts",
+      "class": "tooling_deployment_build",
+      "lines": 22
+    }
+  ],
+  "access_limits": [
+    "Full npm test:all initially stopped: dependencies absent; npm ci --ignore-scripts subsequently installed local dependencies.",
+    "No browser/DB/native build/full 613-test replay attempted; focused lint + 53 tests + 3 audit probes succeeded.",
+    "No live providers or paid calls; no deployment; remote branch ancestry uses shallow depth 30 and may be incomplete."
+  ]
+}

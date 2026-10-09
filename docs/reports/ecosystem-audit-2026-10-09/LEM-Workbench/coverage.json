@@ -1,0 +1,620 @@
+{
+  "repo": "klb-t/LEM-Workbench",
+  "base_branch": "main",
+  "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+  "visibility": "public",
+  "github_archived": false,
+  "enumeration": "Git clone pełny refs/remotes/origin oraz git ls-files; widoczność z połączonego GitHub spisu root.",
+  "tracked_file_denominator": 66,
+  "file_classes": {
+    "build_ci_metadata": 11,
+    "documentation_license": 6,
+    "tests_fixtures": 4,
+    "product_resources": 21,
+    "product_code": 24
+  },
+  "semantic_product_files_reviewed": 24,
+  "semantic_product_file_denominator": 24,
+  "line_counts_by_class": {
+    "build_ci_metadata": 382,
+    "documentation_license": 143,
+    "tests_fixtures": 98,
+    "product_resources": 109,
+    "product_code": 1513
+  },
+  "file_manifest": [
+    {
+      "path": ".github/workflows/android.yml",
+      "category": "build_ci_metadata",
+      "binary": false,
+      "sha256": "4272e87f87c2d1f8707bfac2e3f88ba918bf0edeb55bccf5fcca75975666f9c9",
+      "line_count": 70,
+      "semantic_review": false
+    },
+    {
+      "path": ".gitignore",
+      "category": "build_ci_metadata",
+      "binary": false,
+      "sha256": "da91b936c6f9f6050067712ab64aa13281d90717f8d1b9a596ef09170f1afdd6",
+      "line_count": 18,
+      "semantic_review": false
+    },
+    {
+      "path": "COMMERCIAL_LICENSE.md",
+      "category": "documentation_license",
+      "binary": false,
+      "sha256": "bfd9a24673db92a1d940e7f58229b9a11db0683d6e0892dfec13b9d59e4df19f",
+      "line_count": 11,
+      "semantic_review": false
+    },
+    {
+      "path": "ECOSYSTEM.md",
+      "category": "documentation_license",
+      "binary": false,
+      "sha256": "8cc1c744fe83b3ddf0cb35c265624fa54fa05ffea778ca2170f7e183cea4192d",
+      "line_count": 29,
+      "semantic_review": false
+    },
+    {
+      "path": "ENGINEERING_RULES.md",
+      "category": "documentation_license",
+      "binary": false,
+      "sha256": "a85f45f2f4b5b61c2faafeb3260de05e99f9ac9c7b92a036940b9262c58b3eb3",
+      "line_count": 15,
+      "semantic_review": false
+    },
+    {
+      "path": "LICENSE",
+      "category": "documentation_license",
+      "binary": false,
+      "sha256": "02d7329271c33661dafa91d9889cc1082e70c88e061f5b48cc60f4f620647075",
+      "line_count": 11,
+      "semantic_review": false
+    },
+    {
+      "path": "README.md",
+      "category": "documentation_license",
+      "binary": false,
+      "sha256": "5242f7d9e0464776deb91b35e8da132a260ce875704e22c157f745c4b653aca1",
+      "line_count": 74,
+      "semantic_review": false
+    },
+    {
+      "path": "REAL_ONLY_CHANGELOG.md",
+      "category": "documentation_license",
+      "binary": false,
+      "sha256": "3cfc4a11cb2c2c3f2d21b87b4b41563021dc52b0f4056cd8b3624dc8e9155473",
+      "line_count": 3,
+      "semantic_review": false
+    },
+    {
+      "path": "app/.gitignore",
+      "category": "build_ci_metadata",
+      "binary": false,
+      "sha256": "5b46eb48d96e8571e8c93e4ef4f6ffbe6807b6d7350664a36a064e1167a32718",
+      "line_count": 1,
+      "semantic_review": false
+    },
+    {
+      "path": "app/build.gradle.kts",
+      "category": "build_ci_metadata",
+      "binary": false,
+      "sha256": "70e0b053b99837c90cc7e62cf42989a382ebf1e5fd35c14a3cc2a17d78eafbcf",
+      "line_count": 86,
+      "semantic_review": false
+    },
+    {
+      "path": "app/proguard-rules.pro",
+      "category": "build_ci_metadata",
+      "binary": false,
+      "sha256": "1cf8c57e8f79c250b0af9c1a5a4edad71a5c348a79ab70243b6bae086c150ad2",
+      "line_count": 21,
+      "semantic_review": false
+    },
+    {
+      "path": "app/src/androidTest/java/com/example/ExampleInstrumentedTest.kt",
+      "category": "tests_fixtures",
+      "binary": false,
+      "sha256": "c6ef958cafb00dbec798a71f5be604e9cf56189676312bea40f63dd07ca0d674",
+      "line_count": 22,
+      "semantic_review": false
+    },
+    {
+      "path": "app/src/main/AndroidManifest.xml",
+      "category": "product_resources",
+      "binary": false,
+      "sha256": "db31fd3e68d0ae66293eb51fb5c3eb5901c920224a9adb76150bb8aa7f39c69d",
+      "line_count": 29,
+      "semantic_review": false
+    },
+    {
+      "path": "app/src/main/java/com/example/MainActivity.kt",
+      "category": "product_code",
+      "binary": false,
+      "sha256": "ca2767fcffc8fc655b7809e8ee6ddb0393398203df9627b9561221dda12da7fe",
+      "line_count": 33,
+      "semantic_review": true
+    },
+    {
+      "path": "app/src/main/java/com/example/api/ApiKeyStore.kt",
+      "category": "product_code",
+      "binary": false,
+      "sha256": "0de81eafcec1448359d71f409d2434740dd7e34f7b292e33f7c3483bae80475b",
+      "line_count": 39,
+      "semantic_review": true
+    },
+    {
+      "path": "app/src/main/java/com/example/api/GeminiApiService.kt",
+      "category": "product_code",
+      "binary": false,
+      "sha256": "6883571883743bcb8a92397430f6fee06c026298d51160a008d3ce83a632ed36",
+      "line_count": 114,
+      "semantic_review": true
+    },
+    {
+      "path": "app/src/main/java/com/example/api/ResearchAgent.kt",
+      "category": "product_code",
+      "binary": false,
+      "sha256": "e2a6d8ce5ce91152ed1feb0d16c496882fd0145b2e7a9cbc62c0b038505ac8dc",
+      "line_count": 59,
+      "semantic_review": true
+    },
+    {
+      "path": "app/src/main/java/com/example/data/local/AppDatabase.kt",
+      "category": "product_code",
+      "binary": false,
+      "sha256": "69bf1888e4fe997875aa6343f9cc2f8559cc45710daec5b0b2f0a4180841d42f",
+      "line_count": 35,
+      "semantic_review": true
+    },
+    {
+      "path": "app/src/main/java/com/example/data/local/ConfigDao.kt",
+      "category": "product_code",
+      "binary": false,
+      "sha256": "90b6a76cb2914aedfccb764430fcb896e8d7e5929d93297407f1e28a7dc213c0",
+      "line_count": 20,
+      "semantic_review": true
+    },
+    {
+      "path": "app/src/main/java/com/example/data/local/ExperimentDao.kt",
+      "category": "product_code",
+      "binary": false,
+      "sha256": "ff97c32db927f499567bfd4ac72a95c230995efa023eff004e7c2f5b89114bcc",
+      "line_count": 23,
+      "semantic_review": true
+    },
+    {
+      "path": "app/src/main/java/com/example/data/local/LedgerDao.kt",
+      "category": "product_code",
+      "binary": false,
+      "sha256": "6e9030f77852c4150ab93c4015318a1d5c167a72bfcb22b793b0b021c1bc0c81",
+      "line_count": 17,
+      "semantic_review": true
+    },
+    {
+      "path": "app/src/main/java/com/example/data/model/ExperimentConfig.kt",
+      "category": "product_code",
+      "binary": false,
+      "sha256": "b4b5211421f7099df3638b0fd16ddd41debb3927250db8975d19b79a320cad0d",
+      "line_count": 42,
+      "semantic_review": true
+    },
+    {
+      "path": "app/src/main/java/com/example/data/model/ExperimentResult.kt",
+      "category": "product_code",
+      "binary": false,
+      "sha256": "c960abc8abec8ea5c7a417f21edc4dc8a68d02288c957a942779deea157c0d2f",
+      "line_count": 37,
+      "semantic_review": true
+    },
+    {
+      "path": "app/src/main/java/com/example/data/model/LedgerEntry.kt",
+      "category": "product_code",
+      "binary": false,
+      "sha256": "12ec3ad908d69b4e6a5f09a5ae0c29ae5a10c4c29c67ad1f32abef8b71f7bf4d",
+      "line_count": 19,
+      "semantic_review": true
+    },
+    {
+      "path": "app/src/main/java/com/example/data/repository/ResearchRepository.kt",
+      "category": "product_code",
+      "binary": false,
+      "sha256": "cf66d8603a05768fbfc511a49640f362b76a80570d495632ff8b920c781d110f",
+      "line_count": 43,
+      "semantic_review": true
+    },
+    {
+      "path": "app/src/main/java/com/example/research/ExperimentRunner.kt",
+      "category": "product_code",
+      "binary": false,
+      "sha256": "b2470fd5d3ede1e1a01167c7111ea728dc4555152cc64953aae04dd78d9c510e",
+      "line_count": 199,
+      "semantic_review": true
+    },
+    {
+      "path": "app/src/main/java/com/example/ui/navigation/Screen.kt",
+      "category": "product_code",
+      "binary": false,
+      "sha256": "961d6c64ce136928d2219eb9b60fa2312c54bba963d643ae8db68cb2fe41ac09",
+      "line_count": 8,
+      "semantic_review": true
+    },
+    {
+      "path": "app/src/main/java/com/example/ui/screens/DashboardScreen.kt",
+      "category": "product_code",
+      "binary": false,
+      "sha256": "e27c8af20afb0f29209353c8465681686e43f801f7a29d637d964dce485a16d8",
+      "line_count": 123,
+      "semantic_review": true
+    },
+    {
+      "path": "app/src/main/java/com/example/ui/screens/ExperimentsScreen.kt",
+      "category": "product_code",
+      "binary": false,
+      "sha256": "826511ba7d5430cb88f58f71a2ffedbb2ee6b5d29fb1d90697e141b29feb0967",
+      "line_count": 86,
+      "semantic_review": true
+    },
+    {
+      "path": "app/src/main/java/com/example/ui/screens/LemLabApp.kt",
+      "category": "product_code",
+      "binary": false,
+      "sha256": "f1d4ba06b7ddecb10ae4212676d9b43303e7c05cc40e7fec988496131ae20510",
+      "line_count": 96,
+      "semantic_review": true
+    },
+    {
+      "path": "app/src/main/java/com/example/ui/screens/ModelsScreen.kt",
+      "category": "product_code",
+      "binary": false,
+      "sha256": "d4471672601a40409c038958d06305340a86695a62a28c9bbe944d481469d08b",
+      "line_count": 198,
+      "semantic_review": true
+    },
+    {
+      "path": "app/src/main/java/com/example/ui/screens/SettingsScreen.kt",
+      "category": "product_code",
+      "binary": false,
+      "sha256": "4f414c99b07d9dd53897ffcc10f82813d73ae4ce58b6b6030e34e90a7855063f",
+      "line_count": 98,
+      "semantic_review": true
+    },
+    {
+      "path": "app/src/main/java/com/example/ui/theme/Color.kt",
+      "category": "product_code",
+      "binary": false,
+      "sha256": "8a74bc9bb732079cca5fb58596ce934c26fc75b628b60a34e8d5a2b934a31f80",
+      "line_count": 19,
+      "semantic_review": true
+    },
+    {
+      "path": "app/src/main/java/com/example/ui/theme/Theme.kt",
+      "category": "product_code",
+      "binary": false,
+      "sha256": "95c683555468f01cc15e035829324fb096ad9b0d6ab55aa88e798a6320c9b3e3",
+      "line_count": 51,
+      "semantic_review": true
+    },
+    {
+      "path": "app/src/main/java/com/example/ui/theme/Type.kt",
+      "category": "product_code",
+      "binary": false,
+      "sha256": "4d1ed9437091dd4506aa51c0e040b7e0168bf90f3b0a1e7c266ac362e6c89d69",
+      "line_count": 36,
+      "semantic_review": true
+    },
+    {
+      "path": "app/src/main/java/com/example/viewmodel/ResearchViewModel.kt",
+      "category": "product_code",
+      "binary": false,
+      "sha256": "18811b6a1c70339936938b03f76208da10af8a9b5061f096c32d5a1ea29d0f4d",
+      "line_count": 101,
+      "semantic_review": true
+    },
+    {
+      "path": "app/src/main/java/com/example/viewmodel/ResearchViewModelFactory.kt",
+      "category": "product_code",
+      "binary": false,
+      "sha256": "5bcefbb4fad1a739a076954e8416deb901d2f372443589494ce6434488b65111",
+      "line_count": 17,
+      "semantic_review": true
+    },
+    {
+      "path": "app/src/main/res/drawable/ic_launcher_background.xml",
+      "category": "product_resources",
+      "binary": false,
+      "sha256": "0e8955c044ce3588bb0dff70f1651aef8ed0902f43a841b0e869dae8be5db1cd",
+      "line_count": 10,
+      "semantic_review": false
+    },
+    {
+      "path": "app/src/main/res/drawable/ic_launcher_foreground.xml",
+      "category": "product_resources",
+      "binary": false,
+      "sha256": "705ea9029af70e943bb4e952ea9a57772515a9e10ac0cbe7c4094345f6aa2fba",
+      "line_count": 8,
+      "semantic_review": false
+    },
+    {
+      "path": "app/src/main/res/drawable/lem_lab_icon_1788475612296.jpg",
+      "category": "product_resources",
+      "binary": true,
+      "sha256": "08b9ac8ad58cfd0a82233856c9153379f4cc55a0386feda3c262fa8e9dfc6a01",
+      "line_count": null,
+      "semantic_review": false
+    },
+    {
+      "path": "app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml",
+      "category": "product_resources",
+      "binary": false,
+      "sha256": "6d0988175971f41bdc83eadb144af3d84c40052fa125e90edbe7d89227be4b25",
+      "line_count": 6,
+      "semantic_review": false
+    },
+    {
+      "path": "app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml",
+      "category": "product_resources",
+      "binary": false,
+      "sha256": "6d0988175971f41bdc83eadb144af3d84c40052fa125e90edbe7d89227be4b25",
+      "line_count": 6,
+      "semantic_review": false
+    },
+    {
+      "path": "app/src/main/res/mipmap-hdpi/ic_launcher.webp",
+      "category": "product_resources",
+      "binary": true,
+      "sha256": "99221f2905af79868986b0dd1701ea91a5387146ba701c18b2ee2252a67be481",
+      "line_count": null,
+      "semantic_review": false
+    },
+    {
+      "path": "app/src/main/res/mipmap-hdpi/ic_launcher_round.webp",
+      "category": "product_resources",
+      "binary": true,
+      "sha256": "7c93f81de792b7216b0db55c1471abe5fccbbcde8278a25264d83ebf8464f498",
+      "line_count": null,
+      "semantic_review": false
+    },
+    {
+      "path": "app/src/main/res/mipmap-mdpi/ic_launcher.webp",
+      "category": "product_resources",
+      "binary": true,
+      "sha256": "b9089fe59f9049e993f92646161e0723496224a44436a2500087e2d05409e8f7",
+      "line_count": null,
+      "semantic_review": false
+    },
+    {
+      "path": "app/src/main/res/mipmap-mdpi/ic_launcher_round.webp",
+      "category": "product_resources",
+      "binary": true,
+      "sha256": "943bd647827e0e7f0fa51be8164f9f1835202d90af6d95ffae44dbb094f44060",
+      "line_count": null,
+      "semantic_review": false
+    },
+    {
+      "path": "app/src/main/res/mipmap-xhdpi/ic_launcher.webp",
+      "category": "product_resources",
+      "binary": true,
+      "sha256": "b3a0802c4fc82b3fd796cc2d57c0c1ea93e64fdfc46aab1e74a0bfa45fcef4f4",
+      "line_count": null,
+      "semantic_review": false
+    },
+    {
+      "path": "app/src/main/res/mipmap-xhdpi/ic_launcher_round.webp",
+      "category": "product_resources",
+      "binary": true,
+      "sha256": "2df674233ecc4e9fe6c8d4dfceb6c3257995e6613b0447b93c4a4893ff61c675",
+      "line_count": null,
+      "semantic_review": false
+    },
+    {
+      "path": "app/src/main/res/mipmap-xxhdpi/ic_launcher.webp",
+      "category": "product_resources",
+      "binary": true,
+      "sha256": "b479b07551ee8fd8ba4f96dc0e5d34ae675d485d8a341c369443b397a2defdbf",
+      "line_count": null,
+      "semantic_review": false
+    },
+    {
+      "path": "app/src/main/res/mipmap-xxhdpi/ic_launcher_round.webp",
+      "category": "product_resources",
+      "binary": true,
+      "sha256": "cb1b8197fa5009f511a5e9aea71e2eff952355cadaf776a83ab99db28fadb24f",
+      "line_count": null,
+      "semantic_review": false
+    },
+    {
+      "path": "app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp",
+      "category": "product_resources",
+      "binary": true,
+      "sha256": "fe039e8aff6718652748d5d2daa5743cbf38759392a7feb723e7c032349b6e81",
+      "line_count": null,
+      "semantic_review": false
+    },
+    {
+      "path": "app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp",
+      "category": "product_resources",
+      "binary": true,
+      "sha256": "4d95c8cb035a1827eef9c0cf065e4be0f8fc0b86d6c420e9f3bccc366fba921d",
+      "line_count": null,
+      "semantic_review": false
+    },
+    {
+      "path": "app/src/main/res/values/colors.xml",
+      "category": "product_resources",
+      "binary": false,
+      "sha256": "57681038afd005dcd260eabdd6d16619709c4a3fe20324362ea00e093e85b5fd",
+      "line_count": 10,
+      "semantic_review": false
+    },
+    {
+      "path": "app/src/main/res/values/strings.xml",
+      "category": "product_resources",
+      "binary": false,
+      "sha256": "c8f9acb1b5e0fb89d52076d5cd7790a0cb5d40a9c44c26b194cc861c147b5642",
+      "line_count": 3,
+      "semantic_review": false
+    },
+    {
+      "path": "app/src/main/res/values/themes.xml",
+      "category": "product_resources",
+      "binary": false,
+      "sha256": "e8288b65767f4f28854d168c7b19c308579d3703bdf3fc26c2b266e19148f465",
+      "line_count": 5,
+      "semantic_review": false
+    },
+    {
+      "path": "app/src/main/res/xml/backup_rules.xml",
+      "category": "product_resources",
+      "binary": false,
+      "sha256": "173c90cbeb773e6a65b430581a85720dc5c7ddba17d543cfefe3d2aed9b9a7a4",
+      "line_count": 13,
+      "semantic_review": false
+    },
+    {
+      "path": "app/src/main/res/xml/data_extraction_rules.xml",
+      "category": "product_resources",
+      "binary": false,
+      "sha256": "30ae995624fd57d839bf0d638900f8d2c17c703d6e7d6c8640708a8a7cac2402",
+      "line_count": 19,
+      "semantic_review": false
+    },
+    {
+      "path": "app/src/test/java/com/example/ExampleUnitTest.kt",
+      "category": "tests_fixtures",
+      "binary": false,
+      "sha256": "122e98116da7f9b80c595e3687fe1afa80d5e90318c97c5639d0234ab06d24a1",
+      "line_count": 46,
+      "semantic_review": false
+    },
+    {
+      "path": "app/src/test/java/com/example/RealOnlyPolicyTest.kt",
+      "category": "tests_fixtures",
+      "binary": false,
+      "sha256": "74c0183c5e8c1e645ed5182fffa3d5877a0b8ce6d5c35940a095ceaba4a76e38",
+      "line_count": 30,
+      "semantic_review": false
+    },
+    {
+      "path": "app/src/test/screenshots/greeting.png",
+      "category": "tests_fixtures",
+      "binary": true,
+      "sha256": "08b77a026d9f6bc52b9404021e164eaf16d033701ddc0cdb1caabe6f5e7ed01b",
+      "line_count": null,
+      "semantic_review": false
+    },
+    {
+      "path": "build.gradle.kts",
+      "category": "build_ci_metadata",
+      "binary": false,
+      "sha256": "e2a5d25034ee45bc2bddaabf3159b63441f80f0596d067d573a8b1de60f241bd",
+      "line_count": 10,
+      "semantic_review": false
+    },
+    {
+      "path": "gradle.properties",
+      "category": "build_ci_metadata",
+      "binary": false,
+      "sha256": "f46953b0506c51c9af9d2bba4e41d36a11f6b2e4e76cc064b73a794a61b248a5",
+      "line_count": 28,
+      "semantic_review": false
+    },
+    {
+      "path": "gradle/libs.versions.toml",
+      "category": "build_ci_metadata",
+      "binary": false,
+      "sha256": "39ca18a5b1dfe603085edc9c9195b0455975e420f9d8710da0a39f418b0ab835",
+      "line_count": 113,
+      "semantic_review": false
+    },
+    {
+      "path": "gradle/wrapper/gradle-wrapper.properties",
+      "category": "build_ci_metadata",
+      "binary": false,
+      "sha256": "a180163249c7252412ddaee1c7adcf59f6494b1183136f690fbd9a3b8aaed00e",
+      "line_count": 7,
+      "semantic_review": false
+    },
+    {
+      "path": "public/assets/aistudio/.gitignore",
+      "category": "build_ci_metadata",
+      "binary": false,
+      "sha256": "cdbcae15105d6b781e620813c79c7e868740d4e9cc53ce6f5fcbbc12387adf4b",
+      "line_count": 1,
+      "semantic_review": false
+    },
+    {
+      "path": "settings.gradle.kts",
+      "category": "build_ci_metadata",
+      "binary": false,
+      "sha256": "7e6eafa8346dce55f773726c049f5589e8379d8cf0ff13aa42dcf88a1bba9f68",
+      "line_count": 27,
+      "semantic_review": false
+    }
+  ],
+  "instructions_present": [
+    "ECOSYSTEM.md",
+    "ENGINEERING_RULES.md",
+    "README.md",
+    "REAL_ONLY_CHANGELOG.md"
+  ],
+  "instructions_absent": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "docs/STATE.md",
+    "docs/reports/INDEX.md"
+  ],
+  "branches": [
+    {
+      "ref": "origin/chore/repo-hygiene-2026-09",
+      "sha": "b36690e8b376a6225245c790b815714351ce5cc8",
+      "main_only_commits": 2,
+      "branch_only_commits": 0
+    },
+    {
+      "ref": "origin/main",
+      "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+      "main_only_commits": 0,
+      "branch_only_commits": 0
+    },
+    {
+      "ref": "origin/oai/no-stubs-real-only",
+      "sha": "9b150ba9e63d1b84575c20fa8698bb9238ba5b09",
+      "main_only_commits": 31,
+      "branch_only_commits": 0
+    },
+    {
+      "ref": "origin/oai/no-stubs-real-only-ci",
+      "sha": "8080c19f170307f572f5ea860f19788b14bc6eab",
+      "main_only_commits": 34,
+      "branch_only_commits": 0
+    },
+    {
+      "ref": "origin/oai/workbench-hardening",
+      "sha": "ba4bc1f46cf95f281774a7a4248a37ce35b90a1b",
+      "main_only_commits": 32,
+      "branch_only_commits": 0
+    }
+  ],
+  "unmerged_branch_commits": 0,
+  "relations": [
+    {
+      "type": "research_instrument_of",
+      "target": "LEM (program badawczy)",
+      "description": "README i ECOSYSTEM.md definiują LEM-Workbench jako Androidowy instrument programu LEM, nie implementację całej teorii LEM."
+    },
+    {
+      "type": "potential_collaboration",
+      "target": "ChatADHD/Loom, WatchDog, AGEDS, iOmatrix",
+      "description": "ECOSYSTEM.md jest jawnie brainstormem. Nie znaleziono runtime dependency na inne repozytoria; nie utożsamiamy postulowanego przepływu z gotową integracją."
+    }
+  ],
+  "limitations": [
+    "Brak gradle, kotlinc i wrapper executable w repo/środowisku; testów Android/Room/Compose nie uruchomiono.",
+    "Nie wykonywano requestów Gemini ani płatnych wywołań. Realne zachowanie dostawcy/paginacja na koncie niezmierzone.",
+    "Przebadano 24 pliki Kotlin (dokładny mianownik w coverage.json), manifest i konfigurację zasobów; rastrowe ikony nie były renderowane.",
+    "Domyślna konfiguracja backup obejmuje Android allowBackup=true bez aktywnych exclusions; nie oceniano bezpieczeństwa backupu ani zachowania urządzenia, więc nie tworzymy potwierdzonego findingu o ujawnieniu klucza."
+  ],
+  "history_scope": "Historia git zachowana; sprawdzono ancestry wszystkich pobranych gałęzi. Nie audytowano semantycznie każdego dawnego commita. Brak history/ w drzewie main.",
+  "generated_scope": "Nie stwierdzono śledzonego wygenerowanego kodu produktu. Ikony/rasterowe zasoby sklasyfikowane jako zasoby, bez przypisywania im pochodzenia wygenerowanego."
+}

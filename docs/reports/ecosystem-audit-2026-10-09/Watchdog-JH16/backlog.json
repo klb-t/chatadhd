@@ -1,0 +1,94 @@
+[
+  {
+    "id": "WD-B-001",
+    "finding": "WD-001",
+    "priority": "P1",
+    "target": "Versioned NarrativeRecipe + PromptTemplate + RankingPolicy, grafowe odniesienia produced_by; ochrona niezmiennych wartości pozostaje mechanizmem.",
+    "acceptance_tests": [
+      "Przełączenie dwóch rzeczywistych recipe ID zmienia treść, hash i provenance zgodnie z danymi.",
+      "Zmiana topK oraz locale bez rekompilacji; niezdefiniowany template ID wywołuje jawny błąd.",
+      "Ochrona wartości i PROPOSED zachowana."
+    ],
+    "migration_risk": "Nie zmieniać historycznych treści i hashy; dotychczasowa receptura wymaga wersji danych zgodnej bajtowo.",
+    "dependencies": [],
+    "status": "audit_only_product_unchanged"
+  },
+  {
+    "id": "WD-B-002",
+    "finding": "WD-002",
+    "priority": "P1",
+    "target": "MethodStep.missingPolicy konsumowane przez ratio; w razie innej zamierzonej semantyki kontrakt musi jawnie odróżnić null-preserving policy od exclude.",
+    "acceptance_tests": [
+      "Dla [null,4]/2 exclude zwraca wyłącznie entity b=2, propagate zachowuje a=null,b=2, fail odmawia.",
+      "Albo validator jawnie odrzuca exclude i dokumentuje brak tej zdolności.",
+      "Sprawdzić dalsze łączenie szeregów i przechowywać maskę/trace wykluczeń."
+    ],
+    "migration_risk": "Zmiana liczby wierszy wpływa na dalsze kroki i hash wyników; nowa wersja executor/primitive, bez zmiany locked JH16.",
+    "dependencies": [
+      "method_spec_validation"
+    ],
+    "status": "audit_only_product_unchanged"
+  },
+  {
+    "id": "WD-B-003",
+    "finding": "WD-003",
+    "priority": "P1",
+    "target": "EffectiveGenerationParameters z jawną kolejnością warstw, pochodzeniem i hash; request-specific overrides dozwolone przez capability schema.",
+    "acceptance_tests": [
+      "Mock transport potwierdza efektywny temperature i seed dla wspieranego dostawcy.",
+      "Próba nadpisania model/messages/output budget jest odrzucona lub jawnie zablokowana.",
+      "Zapis runu odzwierciedla faktyczne body bez sekretów."
+    ],
+    "migration_risk": "Udostępnienie parametrów może zmienić koszt; pola budżetu/modelu/narzędzi zachować pod kontrolą mechanizmu rezerwacji.",
+    "dependencies": [
+      "provider capability schema"
+    ],
+    "status": "audit_only_product_unchanged"
+  },
+  {
+    "id": "WD-B-004",
+    "finding": "WD-004",
+    "priority": "P1",
+    "target": "WorkspacePreference/EffectiveSetting jako ten sam obiekt co ustawienia użytkownika; localStorage jako jawny cache, z regułą konfliktu i informacją o fallback.",
+    "acceptance_tests": [
+      "Zmiana preset/language widoczna w trwałym obiekcie z source-layer i runtime UI.",
+      "Błąd cache nie kasuje ustawienia; decyzja o default ma reason.",
+      "Wykluczony preset nie wraca po aktualizacji paczki."
+    ],
+    "migration_risk": "Rozstrzygnięcie konfliktu między istniejącym cache i ustawieniami konta bez utraty wyborów.",
+    "dependencies": [
+      "storage/graph identity mapping"
+    ],
+    "status": "audit_only_product_unchanged"
+  },
+  {
+    "id": "WD-B-005",
+    "finding": "WD-005",
+    "priority": "P2",
+    "target": "RoutingStrategy, SuiteSelectionPolicy, ConfidenceParameters; zachować obecny wybór jako wersjonowany preset i opis rzeczywistego effective quantile.",
+    "acceptance_tests": [
+      "Dwa profile polityki przy identycznym katalogu dają przewidywalne różne wybory i hash.",
+      "Test q=0.5 dokumentuje obecne q² lub nową jawną funkcję, bez cichej zmiany.",
+      "Zmiana poziomu ufności następuje przez dane i ma ślad."
+    ],
+    "migration_risk": "Wybór droższego modelu/zmiana reprodukowalności; nigdy nie przekraczać tego samego budżetu.",
+    "dependencies": [
+      "routing profile schema"
+    ],
+    "status": "audit_only_product_unchanged"
+  },
+  {
+    "id": "WD-B-006",
+    "finding": "WD-006",
+    "priority": "P2",
+    "target": "UIStrings/MessageCatalog, w tym a11y, konsumowane przez to samo effective locale.",
+    "acceptance_tests": [
+      "Przełączenie PL/EN zmienia nagłówki, opisy, statusy i etykiety a11y; brak key daje jawny błąd w walidacji."
+    ],
+    "migration_risk": "Zmiany snapshotów/e2e; zachować semantyczne role i stabilne test-id.",
+    "dependencies": [
+      "UI catalog"
+    ],
+    "status": "audit_only_product_unchanged"
+  }
+]

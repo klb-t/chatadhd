@@ -1,0 +1,150 @@
+[
+  {
+    "id": "TODO-LEM-001",
+    "finding_id": "LEM-001",
+    "priority": "P1",
+    "task": "Podłączyć wykonywalne pola do runnera i transportu, a nieobsługiwane zachować z jawnym statusem; doprecyzować twierdzenie README o konfigurowaniu eksperymentów.",
+    "target_data_graph": "Węzeł preset/method_version z obsługiwanymi polami, referencją do snapshotu config i statusem capabilities; zgodnie z R15/R41",
+    "consumers": [
+      "ModelsScreen.ModelCard",
+      "ResearchViewModel.runEmbeddingInstrument",
+      "ExperimentRunner.runEncoderSmokeTest",
+      "ResearchAgent.getEmbedding"
+    ],
+    "acceptance_test": "Wprowadzić dwa presety różniące się wymiarem i taskType; fake transport w teście przechwytuje różne requesty i result zawiera ID/hash skutecznego presetu. Pole nieobsługiwane jest odrzucane/oznaczane, nigdy cicho ignorowane.",
+    "migration_risk": "Zachować stare rekordy konfiguracji jako niewykonane; nie przypisywać im retrospektywnie pomiarów.",
+    "dependencies": [
+      "Profil metody i capabilities",
+      "Migracja encji i wyniku"
+    ],
+    "status": "rekomendacja audytu, niewdrożona",
+    "scope": "Najpierw LEM-001/002/003: fixture transportu, rzeczywisty preset instrumentu, pełny ślad request/output. Potem polityka migracji i projekcja do grafu. Nie wznawiać dawnych gałęzi: są już w main."
+  },
+  {
+    "id": "TODO-LEM-002",
+    "finding_id": "LEM-002",
+    "priority": "P1",
+    "task": "Wyprowadzić recepty, parametry i profil transportu do danych; pozostawić implementację Gemini jako adapter mechanizmu.",
+    "target_data_graph": "Wersjonowany instrument preset + provider/transport profile + response_selection policy",
+    "consumers": [
+      "ExperimentRunner",
+      "ResearchAgent.generateText",
+      "ResearchAgent.getEmbedding",
+      "RetrofitClient"
+    ],
+    "acceptance_test": "Bez zmiany kodu wczytać wariant promptu, wymiaru i timeoutu; przechwycone requesty i run snapshot odzwierciedlają dane; brak konfiguracji daje jawny błąd albo pack wygenerowany z danych.",
+    "migration_risk": "Zachować obecną receptę jako nazwany preset kompatybilności; hash powinien obejmować teksty oraz wszystkie parametry.",
+    "dependencies": [
+      "LEM-001",
+      "Źródło danych domyślnych"
+    ],
+    "status": "rekomendacja audytu, niewdrożona",
+    "scope": "Najpierw LEM-001/002/003: fixture transportu, rzeczywisty preset instrumentu, pełny ślad request/output. Potem polityka migracji i projekcja do grafu. Nie wznawiać dawnych gałęzi: są już w main."
+  },
+  {
+    "id": "TODO-LEM-003",
+    "finding_id": "LEM-003",
+    "priority": "P1",
+    "task": "Dodać utrwalenie requestu i outputu każdego kroku przed agregacją; utratę lub pominięcie przechowywania uczynić jawną polityką.",
+    "target_data_graph": "Run/step/evidence nodes z raw artifact reference, request/config hashes, retention policy i kosztami oznaczonymi unknown gdy API ich nie dostarcza",
+    "consumers": [
+      "ResearchAgent response decoder",
+      "ExperimentRunner",
+      "ResearchViewModel→ResearchRepository.insertExperiment",
+      "ExperimentsScreen"
+    ],
+    "acceptance_test": "Transport testowy zwraca znane wektory/odpowiedź; wynik wskazuje ich zachowany hash/artifact i dokładny request. Drugi embedding rzuca: pierwszy krok i jego output pozostają, drugi jest failed, koszt nie jest zmyślany.",
+    "migration_risk": "Odzyskanie starych raw danych jest niemożliwe; oznaczyć missing, nie rekonstruować ich z interpretacji.",
+    "dependencies": [
+      "LEM-001",
+      "Polityka retencji",
+      "Repozytorium artefaktów"
+    ],
+    "status": "rekomendacja audytu, niewdrożona",
+    "scope": "Najpierw LEM-001/002/003: fixture transportu, rzeczywisty preset instrumentu, pełny ślad request/output. Potem polityka migracji i projekcja do grafu. Nie wznawiać dawnych gałęzi: są już w main."
+  },
+  {
+    "id": "TODO-LEM-004",
+    "finding_id": "LEM-004",
+    "priority": "P1",
+    "task": "Obsłużyć nextPageToken, oddzielić kompletność rejestru od filtra i sortowania widoku.",
+    "target_data_graph": "Model registry snapshot z pagination completeness oraz filtrem widoku/method-capability binding",
+    "consumers": [
+      "GeminiApiService.listModels",
+      "ResearchAgent.listModels",
+      "ResearchViewModel.refreshModels",
+      "ModelsScreen"
+    ],
+    "acceptance_test": "Dwustronicowy fake registry: pobrane obie strony, zachowany snapshot; pusty/unknown capability nie znika bez informacji. Porządek/filtrowanie w danych nie wpływa na samą kompletność rejestru.",
+    "migration_risk": "Unikać duplikatów nazw pomiędzy stronami; nie wybierać automatycznie nowego modelu po rozszerzeniu rejestru.",
+    "dependencies": [
+      "Adapter paginacji",
+      "Profil filtrowania UI"
+    ],
+    "status": "rekomendacja audytu, niewdrożona",
+    "scope": "Najpierw LEM-001/002/003: fixture transportu, rzeczywisty preset instrumentu, pełny ślad request/output. Potem polityka migracji i projekcja do grafu. Nie wznawiać dawnych gałęzi: są już w main."
+  },
+  {
+    "id": "TODO-LEM-005",
+    "finding_id": "LEM-005",
+    "priority": "P1",
+    "task": "Zastąpić niejawną destrukcję jawną migracją lub bezpiecznym błędem, a reset przechowywać jako oddzielną świadomą operację.",
+    "target_data_graph": "Migration/retention policy z planem wersji, backupem i potwierdzonym wynikiem; sekrety poza payloadem grafu, referencje do chronionego store",
+    "consumers": [
+      "AppDatabase.getDatabase",
+      "Room DAO dla configs/results/ledger"
+    ],
+    "acceptance_test": "Przygotować bazę wersji 1 z rekordami i przejść do 2: dane zachowane; dla nieznanej wersji otwarcie odmawia zamiast kasować, a jawny reset testowany osobno.",
+    "migration_risk": "Wymaga prawdziwych fixture starych schematów; brak exportSchema utrudnia pełne odtworzenie poprzednich wersji.",
+    "dependencies": [
+      "Schematy historyczne Room",
+      "LEM-003"
+    ],
+    "status": "rekomendacja audytu, niewdrożona",
+    "scope": "Najpierw LEM-001/002/003: fixture transportu, rzeczywisty preset instrumentu, pełny ślad request/output. Potem polityka migracji i projekcja do grafu. Nie wznawiać dawnych gałęzi: są już w main."
+  },
+  {
+    "id": "TODO-LEM-006",
+    "finding_id": "LEM-006",
+    "priority": "P2",
+    "task": "Przenieść teksty, paletę i checkpoint do danych; podłączyć parametry do renderera albo usunąć pozorną obsługę ze stabilnego API.",
+    "target_data_graph": "UI profile + locale text catalog + referenced research checkpoint/claim with provenance",
+    "consumers": [
+      "MyApplicationTheme",
+      "LemLabApp",
+      "Screen enum",
+      "DashboardScreen",
+      "ExperimentsScreen"
+    ],
+    "acceptance_test": "Zmiana danych profilu rzeczywiście zmienia motyw i etykiety; status maszynowy renderowany poprzez katalog; klik checkpointu prowadzi do źródła i daty, nie tekstu w kodzie.",
+    "migration_risk": "Zachować obecny wygląd jako domyślny preset; nie nadać istniejącym twierdzeniom fikcyjnego źródła akceptacji.",
+    "dependencies": [
+      "Katalog i profile UI",
+      "Graf/ledger claim refs"
+    ],
+    "status": "rekomendacja audytu, niewdrożona",
+    "scope": "Najpierw LEM-001/002/003: fixture transportu, rzeczywisty preset instrumentu, pełny ślad request/output. Potem polityka migracji i projekcja do grafu. Nie wznawiać dawnych gałęzi: są już w main."
+  },
+  {
+    "id": "TODO-LEM-007",
+    "finding_id": "LEM-007",
+    "priority": "P2",
+    "task": "Opisać istniejące obiekty i powiązania w grafie przy zachowaniu Room; dopiero po kontrakcie podłączyć resolver danych i UI.",
+    "target_data_graph": "Config/profile/method/model/run/evidence/provider/trigger/queue graph descriptions, z referencjami do zewnętrznych artifact/secret stores",
+    "consumers": [
+      "ResearchRepository",
+      "ResearchViewModel",
+      "ExperimentRunner",
+      "Compose screens"
+    ],
+    "acceptance_test": "Od wyniku przejść do config, modelu, promptu i raw dowodu; zmiana warstwy presetu zmienia request i ma wyjaśnienie; permanent exclusion nie wraca po aktualizacji packa.",
+    "migration_risk": "Nie narzucać ontologii ChatADHD na semantykę badawczą; mapować jawnie typy i straty, zachować nieznane pola.",
+    "dependencies": [
+      "LEM-001",
+      "LEM-003",
+      "Kontrakt interoperacyjności ustalony przez aktywny silnik"
+    ],
+    "status": "rekomendacja audytu, niewdrożona",
+    "scope": "Najpierw LEM-001/002/003: fixture transportu, rzeczywisty preset instrumentu, pełny ślad request/output. Potem polityka migracji i projekcja do grafu. Nie wznawiać dawnych gałęzi: są już w main."
+  }
+]

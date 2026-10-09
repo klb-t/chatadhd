@@ -1,0 +1,35 @@
+[
+  {
+    "branch": "origin/codex/ageds-completion-20261002",
+    "sha": "469b1fba3b3dd70df66805874827c9ae09e3237f",
+    "behind": 3,
+    "ahead": 0,
+    "patch_equivalence": []
+  },
+  {
+    "branch": "origin/codex/ageds-foundation-20260930",
+    "sha": "b22881eb5a60f662fb6e14153e1fbe338d6ab687",
+    "behind": 70,
+    "ahead": 0,
+    "patch_equivalence": []
+  },
+  {
+    "branch": "origin/codex/ageds-night-20261001",
+    "sha": "b6abe86ec1cdcd4ca8669be359ddb25422a51cc2",
+    "behind": 14,
+    "ahead": 0,
+    "patch_equivalence": []
+  },
+  {
+    "branch": "origin/fix/standalone-android",
+    "sha": "87a91627cf4f3c5ebd0aad886edd4a632cd50dc7",
+    "behind": 78,
+    "ahead": 4,
+    "patch_equivalence": [
+      "+ 74e482f11770eac700b5bada39f4aa046cea63bf",
+      "+ 5adaa9f6df2b70c4cb593421aaa12687cfb36770",
+      "+ aa6f45ecec3ff13f0e1a4da0517f1d3f82b8564b",
+      "+ 87a91627cf4f3c5ebd0aad886edd4a632cd50dc7"
+    ]
+  }
+]

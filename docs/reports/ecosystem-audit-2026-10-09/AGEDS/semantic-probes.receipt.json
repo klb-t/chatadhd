@@ -1,0 +1,18 @@
+{
+  "repo": "klb-t/AGEDS",
+  "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+  "tests_run": 6,
+  "failures": 0,
+  "errors": 0,
+  "passed": true,
+  "runtime": "Python stdlib; synthetic temporary SQLite/files; fake faster-whisper boundary",
+  "model_calls": 0,
+  "network_calls": 0,
+  "limitations": [
+    "No Android/JVM/device or browser execution",
+    "No real ASR or quality measurement",
+    "ASR probe executes unchanged adapter AST isolated from unavailable anyio/HTTP modules",
+    "Export omission probe proves tested snapshot, complemented by static consumer trace"
+  ],
+  "log": "test_asr_model_environment_consumed_but_vad_forced (__main__.SemanticProbes.test_asr_model_environment_consumed_but_vad_forced) ... ok\ntest_domain_header_dictionary_controls_recognition (__main__.SemanticProbes.test_domain_header_dictionary_controls_recognition) ... ok\ntest_metadata_export_has_no_live_configuration_entities (__main__.SemanticProbes.test_metadata_export_has_no_live_configuration_entities) ... ok\ntest_queue_deduplicates_by_artifact_not_recipe (__main__.SemanticProbes.test_queue_deduplicates_by_artifact_not_recipe) ... ok\ntest_scan_limits_are_consumed_and_reported (__main__.SemanticProbes.test_scan_limits_are_consumed_and_reported) ... ok\ntest_search_hard_ceiling_rejects_request (__main__.SemanticProbes.test_search_hard_ceiling_rejects_request) ... ok\n\n----------------------------------------------------------------------\nRan 6 tests in 0.024s\n\nOK\n"
+}

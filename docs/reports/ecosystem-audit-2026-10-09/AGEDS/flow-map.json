@@ -1,0 +1,85 @@
+[
+  {
+    "id": "ASR",
+    "data": "EW_WHISPER_MODEL/device/compute_type",
+    "graph": "no configuration entity; processing_runs records post-selection metadata",
+    "runtime": "Settings → FasterWhisperAdapter → WhisperModel",
+    "ui": "no parameter editor in reviewed Android/browser paths",
+    "break": "recipe booleans forced in code",
+    "findings": [
+      "EA-AGEDS-001",
+      "EA-AGEDS-002",
+      "EA-AGEDS-006"
+    ]
+  },
+  {
+    "id": "SEED",
+    "data": "private CorpusSeed.defaultPresetIds",
+    "graph": "no graph mapping",
+    "runtime": "priorityPresetIds → selectPriority → activePresets → filters",
+    "ui": "preset toggles and manual phones",
+    "break": "override/exclusion transient",
+    "findings": [
+      "EA-AGEDS-011",
+      "EA-AGEDS-007"
+    ]
+  },
+  {
+    "id": "SCAN",
+    "data": "SourceScanLimits / ScanLimits",
+    "graph": "limits snapshot in result, no governing graph entity",
+    "runtime": "parameter consumed by engine; CLI wires subset; Android/API omit argument",
+    "ui": "display limits; no editor in reviewed call path",
+    "break": "configuration-to-consumer at Android/API boundary",
+    "findings": [
+      "EA-AGEDS-003"
+    ]
+  },
+  {
+    "id": "QUEUE",
+    "data": "priority scalar + jobs.payload_json",
+    "graph": "job tables yes; requested recipe/strategy no",
+    "runtime": "Android index → score → queue_transcription → priority DESC,id",
+    "ui": "file selection and submit; no strategy editor",
+    "break": "index promoted to manual priority; no recipe identity",
+    "findings": [
+      "EA-AGEDS-002",
+      "EA-AGEDS-005"
+    ]
+  },
+  {
+    "id": "ENDPOINT",
+    "data": "SharedPreferences.serverUrl",
+    "graph": "not mapped",
+    "runtime": "EvidenceVm.api → EvidenceApi(url)",
+    "ui": "editable server field",
+    "break": "literal default; no configuration provenance graph",
+    "findings": [
+      "EA-AGEDS-006",
+      "EA-AGEDS-008"
+    ]
+  },
+  {
+    "id": "EVIDENCE",
+    "data": "source artifacts → runs → text → anchors",
+    "graph": "SQLite foreign keys/links; package structural verification",
+    "runtime": "verified reader + fenced publish + citation selectors",
+    "ui": "review and explicit upload selection",
+    "break": "no finding of automatic fact-promotion in reviewed scanner/upload path",
+    "findings": [
+      "EA-AGEDS-010",
+      "EA-AGEDS-012"
+    ]
+  },
+  {
+    "id": "SEARCH",
+    "data": "FTS constants and SQL",
+    "graph": "no method configuration entity",
+    "runtime": "search_page BM25 + budgets",
+    "ui": "query + explicit incomplete/error indications",
+    "break": "method/policy not data-selectable",
+    "findings": [
+      "EA-AGEDS-009"
+    ]
+  }
+]

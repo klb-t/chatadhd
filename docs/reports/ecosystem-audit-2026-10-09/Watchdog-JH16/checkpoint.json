@@ -1,0 +1,9 @@
+{
+  "stage": "first_closed_group",
+  "date": "2026-10-09",
+  "base_sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+  "findings": 8,
+  "product_modified": false,
+  "next": "branch delta review, scanner integration, root publication",
+  "publication": "pending_root"
+}

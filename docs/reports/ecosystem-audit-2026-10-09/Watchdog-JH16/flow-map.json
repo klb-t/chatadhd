@@ -1,0 +1,53 @@
+[
+  {
+    "id": "WD-F1",
+    "data": "config/assistant.json + config/providers/personal.json + personal_settings",
+    "graph": "Relacyjne snapshoty/hash istnieją; kompletna grafowa projekcja tych obiektów niepotwierdzona",
+    "runtime": "AssistantService → routeModel → ProfileGenerator → HTTP",
+    "ui": "ConfigurationWizard/ModelProfilesPanel",
+    "breaks": [
+      "WD-003",
+      "WD-005"
+    ]
+  },
+  {
+    "id": "WD-F2",
+    "data": "MethodSpec missingPolicy + typed input series",
+    "graph": "MethodSpec DAG + approved hash + run result provenance",
+    "runtime": "validator → executor → ratioPrimitive",
+    "ui": "MethodReview/Workbench/PaperOperations",
+    "breaks": [
+      "WD-002"
+    ]
+  },
+  {
+    "id": "WD-F3",
+    "data": "templateId/templateVersion + NarrativePayload",
+    "graph": "payload hash + content hash; receptura nieodzwierciedlona jako wybieralny obiekt",
+    "runtime": "generateNarrative → provider system prompt → approved export",
+    "ui": "RunDetails/Results",
+    "breaks": [
+      "WD-001"
+    ]
+  },
+  {
+    "id": "WD-F4",
+    "data": "config/workspace-preferences.json + localStorage",
+    "graph": "brak zapisu aktywnego wyboru do modelu aplikacji w tym przepływie",
+    "runtime": "WorkspacePreferencesProvider → resolveWorkspace",
+    "ui": "WorkspaceControls/WorkspaceLanding",
+    "breaks": [
+      "WD-004",
+      "WD-006"
+    ]
+  },
+  {
+    "id": "WD-F5",
+    "data": "config/automation.json + ResearchPlan body",
+    "graph": "profile hash, plan hash, job/schedule rows + receipts; nie pełen graf eksperymentów",
+    "runtime": "ResearchPlans.prepare → review hash → launch → AutomationService",
+    "ui": "ConfigurationWizard/Automation",
+    "breaks": [],
+    "limit": "Planowane rozszerzenia languages/geographies nie są deklaracją wykonanej analizy; current scope only"
+  }
+]

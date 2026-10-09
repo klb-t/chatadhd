@@ -1,0 +1,166 @@
+[
+  {
+    "id": "WD-D-001",
+    "finding": "WD-001",
+    "decision": "Identyfikator szablonu narracji nie wybiera szablonu; prompt, język i top-3 są w kodzie",
+    "visibility": "implicit_or_partially_effective",
+    "alternatives": [
+      {
+        "name": "obecna deterministyczna narracja",
+        "status": "implemented_literal"
+      },
+      {
+        "name": "provider-backed narrative",
+        "status": "implemented_literal_system_prompt"
+      },
+      {
+        "name": "szablon/prompt/polityka rankingu w danych",
+        "status": "missing"
+      }
+    ],
+    "owner_intent_claimed": false
+  },
+  {
+    "id": "WD-D-002",
+    "finding": "WD-002",
+    "decision": "ratio przyjmuje missingPolicy=exclude, lecz zachowuje brakujący wiersz jak propagate",
+    "visibility": "implicit_or_partially_effective",
+    "alternatives": [
+      {
+        "name": "propagate",
+        "status": "implemented"
+      },
+      {
+        "name": "fail",
+        "status": "implemented"
+      },
+      {
+        "name": "exclude",
+        "status": "accepted_but_not_honored"
+      }
+    ],
+    "owner_intent_claimed": false
+  },
+  {
+    "id": "WD-D-003",
+    "finding": "WD-003",
+    "decision": "Parametry żądania LLM są odrzucane w adapterze dostawcy",
+    "visibility": "implicit_or_partially_effective",
+    "alternatives": [
+      {
+        "name": "parametry profilu dostawcy",
+        "status": "implemented"
+      },
+      {
+        "name": "parametry konkretnego żądania",
+        "status": "ignored"
+      },
+      {
+        "name": "jawny resolver z walidacją whitelisty i chronionych pól",
+        "status": "missing"
+      }
+    ],
+    "owner_intent_claimed": false
+  },
+  {
+    "id": "WD-D-004",
+    "finding": "WD-004",
+    "decision": "Preferencje workspace żyją wyłącznie w localStorage i cicho wracają do default",
+    "visibility": "implicit_or_partially_effective",
+    "alternatives": [
+      {
+        "name": "localStorage cache",
+        "status": "implemented"
+      },
+      {
+        "name": "serwerowe personal_settings",
+        "status": "implemented_separate_path"
+      },
+      {
+        "name": "jeden grafowy effective preference z pochodzeniem",
+        "status": "missing_in_this_path"
+      }
+    ],
+    "owner_intent_claimed": false
+  },
+  {
+    "id": "WD-D-005",
+    "finding": "WD-005",
+    "decision": "Routing wybiera politykę suite/kwantyla/Wilsona zaszytą w kodzie",
+    "visibility": "implicit_or_partially_effective",
+    "alternatives": [
+      {
+        "name": "latest suite + Wilson lower bound",
+        "status": "implemented_literal"
+      },
+      {
+        "name": "wybrany suite + confidence parameter",
+        "status": "missing"
+      },
+      {
+        "name": "pin modelu",
+        "status": "implemented"
+      },
+      {
+        "name": "wyłącznie budżet/kwantyl kosztu",
+        "status": "implemented_fallback"
+      }
+    ],
+    "owner_intent_claimed": false
+  },
+  {
+    "id": "WD-D-006",
+    "finding": "WD-006",
+    "decision": "Ekran Setup ma teksty użytkowe w TSX mimo danych PL/EN nawigacji",
+    "visibility": "implicit_or_partially_effective",
+    "alternatives": [
+      {
+        "name": "teksty i a11y jako katalog tłumaczeń",
+        "status": "implemented_only_for_some_navigation"
+      },
+      {
+        "name": "literalny angielski Setup",
+        "status": "implemented"
+      }
+    ],
+    "owner_intent_claimed": false
+  },
+  {
+    "id": "WD-D-007",
+    "finding": "WD-007",
+    "decision": "Stałe operacji i strażnicy naukowi są uzasadnionym mechanizmem",
+    "visibility": "explicit",
+    "alternatives": [
+      {
+        "name": "fail on unresolved/mismatched approval",
+        "status": "implemented"
+      },
+      {
+        "name": "explicit missing null",
+        "status": "implemented"
+      }
+    ],
+    "owner_intent_claimed": false
+  },
+  {
+    "id": "WD-D-008",
+    "finding": "WD-008",
+    "decision": "Dostawcy i budżet asystenta są rzeczywiście konfigurowalne, domyślnie opt-in",
+    "visibility": "explicit",
+    "alternatives": [
+      {
+        "name": "16 profili dostawców",
+        "status": "implemented"
+      },
+      {
+        "name": "jawne model pins",
+        "status": "implemented"
+      },
+      {
+        "name": "model automatic routing",
+        "status": "implemented"
+      }
+    ],
+    "owner_intent_claimed": false
+  }
+]

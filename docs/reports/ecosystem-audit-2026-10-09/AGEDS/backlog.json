@@ -1,0 +1,96 @@
+[
+  {
+    "id": "TODO-EA-AGEDS-001",
+    "finding_id": "EA-AGEDS-001",
+    "priority": "P1",
+    "title": "Receptura ASR i fallback modelu pozostają w kodzie",
+    "acceptance_test": "Dwa profile VAD on/off muszą dać różne przechwycone parametry bez zmiany źródeł; run przypina pełny efektywny profil i jego hash.",
+    "dependencies": [],
+    "migration_risk": "Zachować word timestamps dla cytatów; profil bez timings musi jawnie ograniczać selektor słowny.",
+    "status": "proposed_by_audit; no product modification"
+  },
+  {
+    "id": "TODO-EA-AGEDS-002",
+    "finding_id": "EA-AGEDS-002",
+    "priority": "P1",
+    "title": "Kolejka nie przypina receptury do zadania; deduplikuje po artefakcie",
+    "acceptance_test": "Zlecenia tego samego artefaktu z dwoma hashami receptury tworzą dwa jawne jobs; identyczny hash podlega wybranej polityce; zmiana defaultu nie zmienia już przypiętego joba.",
+    "dependencies": [
+      "EA-AGEDS-001"
+    ],
+    "migration_risk": "Migracja istniejących pustych payloadów jako legacy/unknown, bez wymyślania historycznej receptury.",
+    "status": "proposed_by_audit; no product modification"
+  },
+  {
+    "id": "TODO-EA-AGEDS-003",
+    "finding_id": "EA-AGEDS-003",
+    "priority": "P1",
+    "title": "Limity skanu są konsumowane w silniku, ale Android i HTTP wymuszają default",
+    "acceptance_test": "Zmiana profilu maxFiles z 1 na 2 przez każdy obsługiwany interfejs trafia do engine i receipt; przekroczenia nadal dają jawne częściowe pokrycie.",
+    "dependencies": [],
+    "migration_risk": "Nie usuwać ochrony pamięci i limitów odczytu; oddzielić politykę zasobów od walidacji poprawności.",
+    "status": "proposed_by_audit; no product modification"
+  },
+  {
+    "id": "TODO-EA-AGEDS-004",
+    "finding_id": "EA-AGEDS-004",
+    "priority": "P2",
+    "title": "Domenowe słowniki i hipotezy parsera są w kodzie",
+    "acceptance_test": "Dodanie telefono w pliku metody zmienia interpretację bez zmiany algorytmu; raw_value pozostaje identyczne, nowy wynik przypina wersję metody.",
+    "dependencies": [],
+    "migration_risk": "Zmiana parsera może zmienić kandydatów i ID; zachować stare wyniki oraz pokazać różnice.",
+    "status": "proposed_by_audit; no product modification"
+  },
+  {
+    "id": "TODO-EA-AGEDS-005",
+    "finding_id": "EA-AGEDS-005",
+    "priority": "P1",
+    "title": "Priorytet wynika z kolejności wyboru i zaszytych wag",
+    "acceptance_test": "Dwa profile kolejki odwracają kolejność dwóch synthetic jobs bez edycji kodu; UI pokazuje wybrany profil i wynik efektywny.",
+    "dependencies": [],
+    "migration_risk": "Zachować kolejność już kolejkowanych zadań, chyba że użytkownik jawnie zleci repriorytetyzację.",
+    "status": "proposed_by_audit; no product modification"
+  },
+  {
+    "id": "TODO-EA-AGEDS-006",
+    "finding_id": "EA-AGEDS-006",
+    "priority": "P1",
+    "title": "Graf/eksport obejmuje dowody, lecz nie konfigurację używaną przez aplikację",
+    "acceptance_test": "Dla każdego efektywnego parametru wskazanego w flow-map runtime zwraca graph locator, wersję i źródło warstwy; eksport konfiguracji zachowuje te referencje bez ujawniania sekretów.",
+    "dependencies": [],
+    "migration_risk": "Nie mieszać konfiguracji z oryginalnym materiałem; oddzielić scope prywatnych danych i identyfikatorów dostawców.",
+    "status": "proposed_by_audit; no product modification"
+  },
+  {
+    "id": "TODO-EA-AGEDS-007",
+    "finding_id": "EA-AGEDS-007",
+    "priority": "P2",
+    "title": "Wykluczenia wyboru grup nie przeżywają ponownego załadowania seeda",
+    "acceptance_test": "Po wykluczeniu forever restart i nowy seed nie przywracają wyboru; zwykłe chwilowe odznaczenie zachowuje odrębną semantykę.",
+    "dependencies": [
+      "EA-AGEDS-006"
+    ],
+    "migration_risk": "Nie interpretować istniejących chwilowych wyborów jako trwałej zgody/odmowy; jawna migracja unknown.",
+    "status": "proposed_by_audit; no product modification"
+  },
+  {
+    "id": "TODO-EA-AGEDS-008",
+    "finding_id": "EA-AGEDS-008",
+    "priority": "P2",
+    "title": "Polskie napisy i fallback endpointu są skompilowane w Androidzie",
+    "acceptance_test": "Zmiana języka/presetu endpointu z danych aktualizuje UI i żądania bez buildu; nazwy kluczy kontraktu pozostają stabilne.",
+    "dependencies": [],
+    "migration_risk": "Zachować komunikat świadomego wysłania i walidację adresu; nie uznać HTTP/HTTPS nazw za zakazane dane domenowe.",
+    "status": "proposed_by_audit; no product modification"
+  },
+  {
+    "id": "TODO-EA-AGEDS-009",
+    "finding_id": "EA-AGEDS-009",
+    "priority": "P2",
+    "title": "Wyszukiwanie ma stałą politykę rankingu, tokenizacji i sufitów",
+    "acceptance_test": "Zmiana dozwolonego profilu wyniku i rankingu wpływa na synthetic query bez edycji algorytmu; migracja tokenizera wymaga jawnego reindex i zachowania wersji.",
+    "dependencies": [],
+    "migration_risk": "Konfiguracja nie może umożliwiać SQL injection ani wyłączać integralności; koszt reindeksacji trzeba ujawnić.",
+    "status": "proposed_by_audit; no product modification"
+  }
+]

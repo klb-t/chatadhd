@@ -1,0 +1,14 @@
+✔ WD-002: ratio declares exclude but returns the same missing row as propagate (3.241199ms)
+✔ WD-003: generation request temperature/seed do not reach HTTP body (2.522457ms)
+✔ WD-001: template id/version are metadata, not template selectors; output keeps literal top three (1.911738ms)
+✔ WD-009: paper context is the first 24000 UTF-16 units, even when material follows later (141.10793ms)
+✔ WD-010: scheduler always coalesces missed interval slots (1.464725ms)
+✔ WD-011: novel-number guard ignores the sign of a numeric value (0.589448ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 347.715113

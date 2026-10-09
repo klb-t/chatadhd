@@ -1,0 +1,250 @@
+[
+  {
+    "id": "DEC-LEM-001",
+    "finding_id": "LEM-001",
+    "repo": "klb-t/LEM-Workbench",
+    "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+    "decision": "ExperimentConfig istnieje, ale nie steruje wykonaniem",
+    "visibility": "ukryta w kodzie",
+    "current_behavior": "Kliknięcie embedding uruchamia runEncoderSmokeTest(modelName), czyli domyślny wymiar 768; embeddingTaskType z encji nie trafia do EmbedContentRequest. Żaden z zapisanych parametrów treningu nie uruchamia treningu.",
+    "alternatives": [
+      {
+        "name": "Pełny profil pomiaru endpointu",
+        "status": "częściowo: model wybrany w UI, reszta w kodzie"
+      },
+      {
+        "name": "Konfiguracje badawcze/treningowe",
+        "status": "zachowane jako encja, bez konsumenta"
+      },
+      {
+        "name": "Brak wsparcia jawny per pole",
+        "status": "niezrealizowany"
+      }
+    ],
+    "status": "naruszenie",
+    "source": {
+      "file": "app/src/main/java/com/example/data/model/ExperimentConfig.kt",
+      "line_start": 9,
+      "line_end": 41
+    },
+    "user_intent": "Nie wywodzimy zamiaru właściciela z samej implementacji."
+  },
+  {
+    "id": "DEC-LEM-002",
+    "finding_id": "LEM-002",
+    "repo": "klb-t/LEM-Workbench",
+    "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+    "decision": "Recepta pomiaru i polityka transportu zaszyte w Kotlinie",
+    "visibility": "ukryta w kodzie",
+    "current_behavior": "UI pozwala wybrać model z rejestru, ale nie korpus pomiaru, system prompt, temperaturę, liczbę kandydatów, wymiar, endpoint lub timeout. Wynik nie identyfikuje wersji promptu/korpusu.",
+    "alternatives": [
+      {
+        "name": "Obecny smoke test",
+        "status": "aktywny, stała recepta"
+      },
+      {
+        "name": "Inny korpus/prompt/wymiar/temperatura",
+        "status": "nieedytowalne w danych"
+      },
+      {
+        "name": "Inny endpoint lub timeout tego samego adaptera",
+        "status": "nieobsługiwane"
+      }
+    ],
+    "status": "naruszenie",
+    "source": {
+      "file": "app/src/main/java/com/example/research/ExperimentRunner.kt",
+      "line_start": 13,
+      "line_end": 20
+    },
+    "user_intent": "Nie wywodzimy zamiaru właściciela z samej implementacji."
+  },
+  {
+    "id": "DEC-LEM-003",
+    "finding_id": "LEM-003",
+    "repo": "klb-t/LEM-Workbench",
+    "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+    "decision": "Wyniki tracą surową odpowiedź i częściowo wykonane kroki",
+    "visibility": "ukryta w kodzie",
+    "current_behavior": "Po zakończeniu runnera nie da się odtworzyć wektorów, pierwszej odpowiedzi kandydata, pozostałych kandydatów ani surowego envelope API. Awaria drugiego kroku nadpisuje opis całej próby pojedynczym failed result. costTokenCounts pozostaje pusty.",
+    "alternatives": [
+      {
+        "name": "Zachować wyłącznie agregaty/hash",
+        "status": "obecne, nieopisane jako polityka retencji"
+      },
+      {
+        "name": "Raw artifacts + agregaty",
+        "status": "brak"
+      },
+      {
+        "name": "Ślad kroku i częściowych odpowiedzi",
+        "status": "brak"
+      }
+    ],
+    "status": "naruszenie",
+    "source": {
+      "file": "app/src/main/java/com/example/research/ExperimentRunner.kt",
+      "line_start": 22,
+      "line_end": 58
+    },
+    "user_intent": "Nie wywodzimy zamiaru właściciela z samej implementacji."
+  },
+  {
+    "id": "DEC-LEM-004",
+    "finding_id": "LEM-004",
+    "repo": "klb-t/LEM-Workbench",
+    "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+    "decision": "Odkrywanie modeli pomija kolejne strony i stosuje ukryty filtr",
+    "visibility": "ukryta w kodzie",
+    "current_behavior": "Przy odpowiedzi z nextPageToken aplikacja nie prosi o dalsze strony; modele o innych capability nie są pokazywane w żadnej sekcji.",
+    "alternatives": [
+      {
+        "name": "Pełne pobranie stron",
+        "status": "brak"
+      },
+      {
+        "name": "Jawny limit i incomplete status",
+        "status": "brak"
+      },
+      {
+        "name": "Wszystkie modele z capability status",
+        "status": "brak"
+      },
+      {
+        "name": "Aktualne dwa rodzaje pomiarów",
+        "status": "obecne"
+      }
+    ],
+    "status": "naruszenie",
+    "source": {
+      "file": "app/src/main/java/com/example/api/ResearchAgent.kt",
+      "line_start": 56,
+      "line_end": 58
+    },
+    "user_intent": "Nie wywodzimy zamiaru właściciela z samej implementacji."
+  },
+  {
+    "id": "DEC-LEM-005",
+    "finding_id": "LEM-005",
+    "repo": "klb-t/LEM-Workbench",
+    "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+    "decision": "Brak migracji Room wybiera automatyczne usunięcie danych",
+    "visibility": "ukryta w kodzie",
+    "current_behavior": "Gdy Room wymaga migracji i nie ma do niej ścieżki, skonfigurowany fallback pozwala odtworzyć bazę destrukcyjnie zamiast zatrzymać upgrade.",
+    "alternatives": [
+      {
+        "name": "Destrukcyjne odtworzenie",
+        "status": "ustawione bez pytania"
+      },
+      {
+        "name": "Jawna migracja z zachowaniem danych",
+        "status": "brak"
+      },
+      {
+        "name": "Zatrzymanie i eksport/backup",
+        "status": "brak"
+      }
+    ],
+    "status": "naruszenie",
+    "source": {
+      "file": "app/src/main/java/com/example/data/local/AppDatabase.kt",
+      "line_start": 11,
+      "line_end": 29
+    },
+    "user_intent": "Nie wywodzimy zamiaru właściciela z samej implementacji."
+  },
+  {
+    "id": "DEC-LEM-006",
+    "finding_id": "LEM-006",
+    "repo": "klb-t/LEM-Workbench",
+    "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+    "decision": "UI, historyczne twierdzenia i wygląd są kodem; parametry motywu ignorowane",
+    "visibility": "ukryta w kodzie",
+    "current_behavior": "Zmiana parametrów motywu nie wpływa na renderowanie. Zmiana języka, nawigacji albo checkpointu badawczego wymaga zmiany kodu; raw machine status INSTRUMENT_* jest pokazywany bez tłumaczenia.",
+    "alternatives": [
+      {
+        "name": "Obecny ciemny motyw",
+        "status": "aktywny"
+      },
+      {
+        "name": "Jasny/systemowy/dynamiczny",
+        "status": "parametry istnieją, ignorowane"
+      },
+      {
+        "name": "Lokalizacja i profile UI",
+        "status": "brak"
+      },
+      {
+        "name": "Checkpoint z ledger/evidence",
+        "status": "brak"
+      }
+    ],
+    "status": "naruszenie",
+    "source": {
+      "file": "app/src/main/java/com/example/ui/theme/Theme.kt",
+      "line_start": 30,
+      "line_end": 36
+    },
+    "user_intent": "Nie wywodzimy zamiaru właściciela z samej implementacji."
+  },
+  {
+    "id": "DEC-LEM-007",
+    "finding_id": "LEM-007",
+    "repo": "klb-t/LEM-Workbench",
+    "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+    "decision": "Graf nie obejmuje konfiguracji, modeli, metod i wyników",
+    "visibility": "ukryta w kodzie",
+    "current_behavior": "Wynik przechowuje nazwę modelu i JSON metryk, bez połączenia do dokładnej wersji config/metody. Brak wspólnego resolvera warstw, wykluczeń i ścieżki Basic/Advanced do tych samych danych.",
+    "alternatives": [
+      {
+        "name": "Room jako instrument store",
+        "status": "aktywne"
+      },
+      {
+        "name": "Projekcja/adaptacja Room → graf",
+        "status": "brak"
+      },
+      {
+        "name": "Natywne obiekty grafu z persystencją Room",
+        "status": "brak"
+      }
+    ],
+    "status": "naruszenie",
+    "source": {
+      "file": "app/src/main/java/com/example/data/local/AppDatabase.kt",
+      "line_start": 11,
+      "line_end": 15
+    },
+    "user_intent": "Nie wywodzimy zamiaru właściciela z samej implementacji."
+  },
+  {
+    "id": "DEC-LEM-008",
+    "finding_id": "LEM-008",
+    "repo": "klb-t/LEM-Workbench",
+    "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+    "decision": "Ręczne uruchomienie i jawna porażka są rzeczywistymi mechanizmami",
+    "visibility": "ukryta w kodzie",
+    "current_behavior": "Wejście na ekran modeli odświeża wyłącznie registry; embedding/generation wymaga kliknięcia. Błąd nie jest zastępowany wiarygodnym wektorem lub wynikiem.",
+    "alternatives": [
+      {
+        "name": "Pomiar ręczny",
+        "status": "aktywny"
+      },
+      {
+        "name": "Automatyka z opt-in, budget, scope i częstotliwością",
+        "status": "niezaimplementowana, nie odrzucona"
+      },
+      {
+        "name": "Fałszywy wynik zastępczy",
+        "status": "nieobecny"
+      }
+    ],
+    "status": "dopuszczalny mechanizm",
+    "source": {
+      "file": "app/src/main/java/com/example/research/ExperimentRunner.kt",
+      "line_start": 60,
+      "line_end": 68
+    },
+    "user_intent": "Nie wywodzimy zamiaru właściciela z samej implementacji."
+  }
+]

@@ -1,0 +1,2700 @@
+[
+  {
+    "file": ".github/workflows/android.yml",
+    "class": "build_tooling_config",
+    "bytes": 927,
+    "sha256": "7c13c39c76494220feb6581a751e6a1e1fbea63337ceeda82b2c47450de5d2db",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": ".gitignore",
+    "class": "build_tooling_config",
+    "bytes": 183,
+    "sha256": "dcdcac87dfd9a1d9694876fcf7f546cf9ea282b1b44f9366c918556446b907a1",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "AGENTS.md",
+    "class": "documentation",
+    "bytes": 4712,
+    "sha256": "9001f88210fb3f218ad97e05ffcbd5c2165830b1ec5e5c0992925d8d3af6290d",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "CHANGELOG.md",
+    "class": "documentation",
+    "bytes": 2298,
+    "sha256": "b8bbee06c7597e100c8517d90fe4f1fbd8390df03002983ee24fb82157d63095",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "CLAUDE.md",
+    "class": "documentation",
+    "bytes": 2785,
+    "sha256": "e53102b6ef8fa0caf844ff2e18ce95a91b80fccb81f216ec5ebbea6520ebdf81",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "ECOSYSTEM.md",
+    "class": "documentation",
+    "bytes": 4534,
+    "sha256": "3774f8e3d5c5c2cab6ca32850fa59a2c6bf0a26041271abe530947876952f4f3",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "HANDOFF.md",
+    "class": "documentation",
+    "bytes": 5741,
+    "sha256": "ffc4ee25d3852fe9c81779a5bfd086f03d5c83712d3d4d887396cdc8e6305a36",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "README.md",
+    "class": "documentation",
+    "bytes": 3335,
+    "sha256": "85f6d35f2f07e44a571a5bf15e190b376d1b5bb796dc23d0ee5116e550dc56d5",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/build.gradle.kts",
+    "class": "build_tooling_config",
+    "bytes": 1503,
+    "sha256": "fce128076bfa897fbcbaf17d12ccf676ec8eae919db9a3ca0fb12b4ec01411bd",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/androidTest/AndroidManifest.xml",
+    "class": "tests_fixtures",
+    "bytes": 661,
+    "sha256": "4dbf7f6bde07757dece14cf936e0f516a93ebc91d588e7f6700a92fe68334f72",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/androidTest/java/dev/klbt/ageds/SourceScannerProviderTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 5454,
+    "sha256": "2615a03186f8b787a7754be0858e838462230aaf7534381f947d582a9d3898a6",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/androidTest/java/dev/klbt/ageds/SyntheticDocumentsProvider.kt",
+    "class": "tests_fixtures",
+    "bytes": 5171,
+    "sha256": "36c3f2e8ccc90a0ab9c6a40c80d784d3f52590c1ed6cc6a760f81950c48bd1d4",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/debug/AndroidManifest.xml",
+    "class": "build_tooling_config",
+    "bytes": 317,
+    "sha256": "bf548047b3f213c426f010300b21a952d9c261f3a9459a57d1694daa17ff0a19",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/main/AndroidManifest.xml",
+    "class": "product",
+    "bytes": 625,
+    "sha256": "3312bc332bc3f6f77f8f2b9f89a57a561b96cfbbc457b744ef087e6d9f1e6fd6",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/main/java/dev/klbt/ageds/AndroidRangeAudio.kt",
+    "class": "product",
+    "bytes": 1200,
+    "sha256": "465a82c61a92a421984856662a70fcb3c19c511e00bc40a545a29455c45bce65",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/main/java/dev/klbt/ageds/Api.kt",
+    "class": "product",
+    "bytes": 6572,
+    "sha256": "1c84fee60dba27d3d79cb2c70d8d353743e3bbaa3c3f2aa4f5bb194bbc6dd9cb",
+    "semantic_review_ranges": [
+      [
+        1,
+        131
+      ]
+    ]
+  },
+  {
+    "file": "androidApp/src/main/java/dev/klbt/ageds/BoundedMetadataCache.kt",
+    "class": "product",
+    "bytes": 3122,
+    "sha256": "42166153d4eccf433a953435dd64460c6cb3487d6753a136694a9e186f438603",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/main/java/dev/klbt/ageds/CitationDisplayProjection.kt",
+    "class": "product",
+    "bytes": 756,
+    "sha256": "12e88bfcf6d71e5179e80a539ad736c4b1d568fd873e676c460c63ca7af8393e",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/main/java/dev/klbt/ageds/CitationUi.kt",
+    "class": "product",
+    "bytes": 9231,
+    "sha256": "4dadf7e6b9da7e205db66b1ef367bbe34ef114ba3dc86ececc1c826e70c028a5",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/main/java/dev/klbt/ageds/CitationWorkspace.kt",
+    "class": "product",
+    "bytes": 13494,
+    "sha256": "c1bc975621ef2f0f093c2c381dd1b16dfb301a73d9d5a9608df8027e9fede705",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/main/java/dev/klbt/ageds/CorpusActivity.kt",
+    "class": "product",
+    "bytes": 392,
+    "sha256": "0dc47d154855521f9d3658a0d7d484ec0f72c4e3629f54a8e14b57fb64a48e1c",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/main/java/dev/klbt/ageds/CorpusStore.kt",
+    "class": "product",
+    "bytes": 2064,
+    "sha256": "00f3a231033cae5777acefe7882e51135b68c998260e08124bebb4e58e6601ea",
+    "semantic_review_ranges": [
+      [
+        1,
+        50
+      ]
+    ]
+  },
+  {
+    "file": "androidApp/src/main/java/dev/klbt/ageds/CorpusUi.kt",
+    "class": "product",
+    "bytes": 14039,
+    "sha256": "b44645b323c9eb8c7edfd6d86cb7d9ad6fcb649cc34f800bb86b321c2d34e2f3",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/main/java/dev/klbt/ageds/CorpusVm.kt",
+    "class": "product",
+    "bytes": 14160,
+    "sha256": "e16d723b5f0faf230e1651ad838181a7602acc49227ab06768ede08f286a9600",
+    "semantic_review_ranges": [
+      [
+        1,
+        265
+      ]
+    ]
+  },
+  {
+    "file": "androidApp/src/main/java/dev/klbt/ageds/MainActivity.kt",
+    "class": "product",
+    "bytes": 14193,
+    "sha256": "94d97a4293abccf1c107bdff06d7968f2dd80710049f302aaca37eaaac9603bb",
+    "semantic_review_ranges": [
+      [
+        1,
+        280
+      ]
+    ]
+  },
+  {
+    "file": "androidApp/src/main/java/dev/klbt/ageds/PendingRecordings.kt",
+    "class": "product",
+    "bytes": 1442,
+    "sha256": "1130db7bb0341c752fb82ef22bb74eb6cddf6b3a5419a167cf86dc28792bedeb",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/main/java/dev/klbt/ageds/RangePlaybackController.kt",
+    "class": "product",
+    "bytes": 3746,
+    "sha256": "ae3bb7ac2a5ded6b4a89a28bacdc512b51ce8a7158f58c1c9705b7a16804239a",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/main/java/dev/klbt/ageds/SourceAudioDisplay.kt",
+    "class": "product",
+    "bytes": 3871,
+    "sha256": "98bc917523e9f4bf78f15d80e14ad1aa723fab7108dbe532db2b52d121e4ae1f",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/main/java/dev/klbt/ageds/SourceDelimitedParser.kt",
+    "class": "product",
+    "bytes": 4017,
+    "sha256": "ac7a72bcee73a8663a257d018565b3b8bb4d10519183e87bbbcb5f86d41b2ed1",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/main/java/dev/klbt/ageds/SourceScanCache.kt",
+    "class": "product",
+    "bytes": 1243,
+    "sha256": "22460de7c8164d63d80585cc064345411312476a5c8a34fa6da32eac1f045e9a",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/main/java/dev/klbt/ageds/SourceScanEngine.kt",
+    "class": "product",
+    "bytes": 12095,
+    "sha256": "435c38eaaaad13cb8af74611362f2aa2456add0a322000b14aafafe8b885e6a8",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/main/java/dev/klbt/ageds/SourceScanPublicationGate.kt",
+    "class": "product",
+    "bytes": 1514,
+    "sha256": "63df8e06bc439bd004035597b7ef91b324003ddb12d3249d16bc5d8c3e3ccaa6",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/main/java/dev/klbt/ageds/SourceScanUi.kt",
+    "class": "product",
+    "bytes": 13859,
+    "sha256": "df382c18c498b791a2f65b620e9918706e70b3e27c255151fda68ae0c1f0a975",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/main/java/dev/klbt/ageds/SourceScanner.kt",
+    "class": "product",
+    "bytes": 3198,
+    "sha256": "14a13b501be58915188988098ddb14faabaa332aa4ca2181e174afcac64f510d",
+    "semantic_review_ranges": [
+      [
+        1,
+        58
+      ]
+    ]
+  },
+  {
+    "file": "androidApp/src/main/java/dev/klbt/ageds/SourceWavReader.kt",
+    "class": "product",
+    "bytes": 4059,
+    "sha256": "e12024acd9a7c2f328b4c7fe650a1fafce0c49a0d45c1b2c571756b643986dde",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/main/java/dev/klbt/ageds/SourceWorkbookParser.kt",
+    "class": "product",
+    "bytes": 15478,
+    "sha256": "7e181b3a6ba34ae95ee70068f236792f48af7a167fca37d68c34ed102e29f1b0",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/main/java/dev/klbt/ageds/SourceXlsParser.kt",
+    "class": "product",
+    "bytes": 22232,
+    "sha256": "51dbafb51f66ba44c5003170a59eda750ee13ca985214096a9059c5e973a948f",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/main/res/values/styles.xml",
+    "class": "product",
+    "bytes": 362,
+    "sha256": "6a7531a6e7b821113cdaa407e9de407df7e5d281b85584991a91b35ecccb07c6",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/test/java/dev/klbt/ageds/BoundedMetadataCacheTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 2922,
+    "sha256": "db490f8468f8f4d88ee7e32ccb523fad8fecbb66305a36443bc6528566379563",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/test/java/dev/klbt/ageds/CitationDisplayProjectionTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 1679,
+    "sha256": "84c20e303eaf8581c96b613bc92a46157249c4574d09bdbd93d29ba1d723246d",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/test/java/dev/klbt/ageds/CitationPagingAdversarialTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 10208,
+    "sha256": "8cba71b754f6d48ca8d64038e69a8c25140d7ec91d8b1dabb0f61376e8995ad5",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/test/java/dev/klbt/ageds/CitationPayloadBudgetAdversarialTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 8253,
+    "sha256": "5f85bcc070440577322c029d671c183abcda0bb03523d570a81af31c93c2dd12",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/test/java/dev/klbt/ageds/CitationWorkspaceAdversarialTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 7064,
+    "sha256": "3a0420cbe81b61b1c7e5e368d99602c3d688e9a5355767eea169b4bf533d5e4e",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/test/java/dev/klbt/ageds/CitationWorkspaceCreatedResponseTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 8273,
+    "sha256": "1a10b78092449849da4320b58a92db8d07220e251681529f2ca90dbd432301c9",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/test/java/dev/klbt/ageds/CitationWorkspaceResponseAdversarialTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 8125,
+    "sha256": "616ae6e9e355e7d9bf2189a0ced204e82b2f9724c6d1cf350ff08b0a523d2a32",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/test/java/dev/klbt/ageds/GuardedMetadataCacheTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 3694,
+    "sha256": "dc3e4ebca66161113f3a692489141a52b35ca5081eaae3a4a327efa2ceb268f9",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/test/java/dev/klbt/ageds/GuardedScanCacheFlowTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 9423,
+    "sha256": "28ce96e9b91cd7d155486cc08d91fcb72850fcabec4ca824594a9796ea9fc4cc",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/test/java/dev/klbt/ageds/RangePlaybackAdversarialTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 5707,
+    "sha256": "54bba20000e397d2d13c54926053d6aea1606bc41cd2919c5a0f24df37b1c8bb",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/test/java/dev/klbt/ageds/SourceAdversarialFormatsTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 5657,
+    "sha256": "0ea0d784a49842b1dc2e2479923fa24b4fdf753f121fcd3034f4bcc8c50eca76",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/test/java/dev/klbt/ageds/SourceAdversarialXlsTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 6973,
+    "sha256": "3bd63577c1cfdf85a6e14d357594baa2948dbcc50e9380665ca4056f9a88c8f5",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/test/java/dev/klbt/ageds/SourceAudioDisplayTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 4810,
+    "sha256": "cda5145cff140c6ab1b79d633961259c1715116988889c602bb5c9cb9ed6e343",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/test/java/dev/klbt/ageds/SourceDelimitedFormatsTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 4532,
+    "sha256": "9b2ff79cc4761273ceff61f7068a48c882245c8780f8194be323dfb3a82478ce",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/test/java/dev/klbt/ageds/SourceScanEngineCacheFlowTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 12229,
+    "sha256": "5c3662ed0ba65b60d6cf9191a199e8654698a3c27f774499f706bbf530406006",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/test/java/dev/klbt/ageds/SourceScanEngineLifecycleTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 10707,
+    "sha256": "a78c01257f64e737ef24723ce6ee13a62afc6f280120132ccc29a9bf075f32ac",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/test/java/dev/klbt/ageds/SourceScanEngineMixedFormatsTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 11800,
+    "sha256": "85f6623f2c28c0df217e4b9f34cd24f483b27c991ec46973c086129f3d26c2fb",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/test/java/dev/klbt/ageds/SourceScanEnginePolicyAdversarialTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 11464,
+    "sha256": "c66c9f6dbc568f7961f5c6ddcdaaab236e80d38bc065278d4798d5661abdd113",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/test/java/dev/klbt/ageds/SourceScanEngineTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 5658,
+    "sha256": "e33471b0f4db47988da3876b6821b1925102cff6990d8eff56d768dcd2fcd566",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/test/java/dev/klbt/ageds/SourceScanPublicationFailureTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 2523,
+    "sha256": "257c6b61ec7508b5ed922af664d9a7f670a4e64c67ef27d31b4f549dd7a84e01",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/test/java/dev/klbt/ageds/SourceScanPublicationGateTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 3974,
+    "sha256": "c507e906692828d07d5d8663d3e6df091c3ed7853d7da7efce7242dc19961470",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/test/java/dev/klbt/ageds/SourceScanPublicationRaceAdversarialTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 6021,
+    "sha256": "3c255e31f06560799781dd90c4aaeb2b35bb8a2b85d6bc78ae1ee7f286e59a10",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/test/java/dev/klbt/ageds/SourceScanXlsxPhoneticCacheTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 6373,
+    "sha256": "c7b60c90e7be1b3025b88ac840a3a85a7f76327a4a09f11b8b310e5d7c8c4de6",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/test/java/dev/klbt/ageds/SourceWavReaderAdversarialTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 10689,
+    "sha256": "357cd4f800afe1d0b82a96bf0139415211bcadd0199e9bd53308edecbf970ae4",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/test/java/dev/klbt/ageds/SourceWavReaderTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 5852,
+    "sha256": "0746a31a06d3fd079ab48e57728a9a45f16a9f2d43be739aa79b98b6b893aa99",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/test/java/dev/klbt/ageds/SourceWorkbookEncodingTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 2778,
+    "sha256": "e65287a0dd7cea9d637d77adf30d2d734656c150156520009fe578982bf56780",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/test/java/dev/klbt/ageds/SourceWorkbookParserTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 5133,
+    "sha256": "3f0d5a7a2b1da4524fc89ce0acbb6892250ee59d45dea0943d252dea5005d58f",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/test/java/dev/klbt/ageds/SourceWorkbookPhoneticAdversarialTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 5750,
+    "sha256": "be244043808dfeedf58d4c409d2321228842db52ff30275c2a68dde7295a082d",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/test/java/dev/klbt/ageds/SourceWorkbookPhoneticTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 5331,
+    "sha256": "9b435f9fc34a43dcad3b2c75241223991c80286519b44efed07983429eb487c5",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/test/java/dev/klbt/ageds/SourceXlsContinuationAdversarialTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 6642,
+    "sha256": "3ce277397e52a83e39d1e278833cad135fe66b624ec376d505809df2e9d08fb8",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/test/java/dev/klbt/ageds/SourceXlsContinuationTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 5446,
+    "sha256": "ff8e8d06c84a1cb693ed8fc538739807725b2eda1a8bb7fd8b988a44a76c6155",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/test/java/dev/klbt/ageds/SourceXlsParserTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 11075,
+    "sha256": "ac09a3b62bcb1ee5e895bf9f4adaf2114955c0293fb84ce4a59a3004c9283d5f",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "androidApp/src/test/java/dev/klbt/ageds/WavMetadataCacheCompatibilityTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 6948,
+    "sha256": "7706f548f41d4998be42cd1859e003834fc8240c875ebbb8ce2e197900a553fa",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "build.gradle.kts",
+    "class": "build_tooling_config",
+    "bytes": 445,
+    "sha256": "2e08e0d90bf374556599ec6cb677a7ac89bf6edeb4d408629fd6eeabbdcc1cac",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "coordination/README.md",
+    "class": "documentation",
+    "bytes": 1299,
+    "sha256": "262b6c5e6c0901d13d4c1e9e8ba53d648b5bb8aeb06143de4039c78600ea645f",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "coordination/archive/2026-09-30_2026-10-01/2026-09-30.jsonl",
+    "class": "preserved_history",
+    "bytes": 1087,
+    "sha256": "7f37c023da5102910ff18df5c33d8f45771af5977faa0e369657c8d0821956e2",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "coordination/archive/2026-09-30_2026-10-01/AGENT_PROGRAM.md",
+    "class": "preserved_history",
+    "bytes": 8717,
+    "sha256": "a8b19b4664ef2e52aef292643ac2d416d66881f6626232e8e1039c549eddca93",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "coordination/archive/2026-09-30_2026-10-01/HANDOFF.md",
+    "class": "preserved_history",
+    "bytes": 12528,
+    "sha256": "dde22bed137a21460f737b087bb056140d5095a5ca668ebab0cb835bbcc13cbe",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "coordination/archive/2026-09-30_2026-10-01/NIGHT_WORK.md",
+    "class": "preserved_history",
+    "bytes": 2918,
+    "sha256": "5c5f102c03708b689c5a76f0e1bb065d4ae4f2cf3b0f4e6b9e1d420b0efc79f1",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "coordination/archive/2026-09-30_2026-10-01/README.md",
+    "class": "preserved_history",
+    "bytes": 596,
+    "sha256": "ae5f519063ea309f7f0ca5afccf386f2e09d4b9239295cb40b5a7169d13078e4",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "coordination/archive/2026-09-30_2026-10-01/manifest.json",
+    "class": "preserved_history",
+    "bytes": 1660,
+    "sha256": "3e2f6c3232c9d1e46b65209ad09cfa4163187277ff3c9250c5c4e25c070c3f02",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "coordination/archive/2026-09-30_2026-10-01/night-20261001.json",
+    "class": "preserved_history",
+    "bytes": 75254,
+    "sha256": "5408eb11f022bc40af6b551f0a3f45b96e2b2e70300ba90e8447bdca26186d93",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "coordination/archive/2026-09-30_2026-10-01/state.json",
+    "class": "preserved_history",
+    "bytes": 17314,
+    "sha256": "13c113bd77ec585fa0037792f1185c48812e13c416f5485c91001f5fc81e4c74",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "coordination/publication-20261002.json",
+    "class": "coordination_receipts",
+    "bytes": 2729,
+    "sha256": "7a6492a4ba3f849daf8463f92ca8e0cb49957f96b1461ada91cd92600660763d",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "coordination/state.json",
+    "class": "coordination_receipts",
+    "bytes": 5184,
+    "sha256": "a5c643915f43267831e5d02297bf953c5cb2de079a9af9ea4267497c3da88df7",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "core/build.gradle.kts",
+    "class": "build_tooling_config",
+    "bytes": 586,
+    "sha256": "83c6817f4ca4de6be58f87bcc4241ee64a0013fd0258c9111f9fcfc4570966be",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "core/src/commonMain/kotlin/dev/klbt/ageds/core/ArtifactPageChain.kt",
+    "class": "product",
+    "bytes": 5808,
+    "sha256": "2fa38df99f0ee398d42ddbad9d990d450ce3dec6374af87e6f99627d2eb93f30",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "core/src/commonMain/kotlin/dev/klbt/ageds/core/CitationSelection.kt",
+    "class": "product",
+    "bytes": 11193,
+    "sha256": "ea2e5af363f3d933d28391db0e75c837e78dc9be87f2f03e1b432ae46c17e7bf",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "core/src/commonMain/kotlin/dev/klbt/ageds/core/CorpusModels.kt",
+    "class": "product",
+    "bytes": 3526,
+    "sha256": "0f69327eccc3d41ced185438299b569f9d9c5c765d07205b026144521bc3a283",
+    "semantic_review_ranges": [
+      [
+        1,
+        118
+      ]
+    ]
+  },
+  {
+    "file": "core/src/commonMain/kotlin/dev/klbt/ageds/core/EvidenceInvariant.kt",
+    "class": "product",
+    "bytes": 416,
+    "sha256": "9854a1f7f352042b1f23991258ced7cfb828af39e549a37fd0c5a6e24a1348e7",
+    "semantic_review_ranges": [
+      [
+        1,
+        12
+      ]
+    ]
+  },
+  {
+    "file": "core/src/commonMain/kotlin/dev/klbt/ageds/core/Models.kt",
+    "class": "product",
+    "bytes": 5295,
+    "sha256": "2fac2ffd52d17a6706aa47d38e9efb105a2a6c416a8a15f885a91af2926f90a5",
+    "semantic_review_ranges": [
+      [
+        87,
+        186
+      ]
+    ]
+  },
+  {
+    "file": "core/src/commonMain/kotlin/dev/klbt/ageds/core/SourceScanModels.kt",
+    "class": "product",
+    "bytes": 2933,
+    "sha256": "2ed6427bb6d7f7f8c001cc703d31b936552fdcdd8a8ada37a40a427b5d7e87a5",
+    "semantic_review_ranges": [
+      [
+        1,
+        82
+      ]
+    ]
+  },
+  {
+    "file": "core/src/commonMain/kotlin/dev/klbt/ageds/core/SourceTextParser.kt",
+    "class": "product",
+    "bytes": 7021,
+    "sha256": "5e21ab51c93496b97bc7798aaa635aea19db08d07110d30a6b1938acc37db074",
+    "semantic_review_ranges": [
+      [
+        1,
+        126
+      ]
+    ]
+  },
+  {
+    "file": "core/src/commonMain/kotlin/dev/klbt/ageds/core/WavHeaderObservation.kt",
+    "class": "product",
+    "bytes": 912,
+    "sha256": "b0b9c8192676774c8162ee52309ca2a93adc30fbd9f40a5b90d5d5a0c9513e82",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "core/src/commonMain/kotlin/dev/klbt/ageds/core/WavHeaderProbe.kt",
+    "class": "product",
+    "bytes": 9117,
+    "sha256": "3ad9a1ada8db8ccec9c9190abb897159161745b61757397ce300150db604c8b2",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "core/src/commonTest/kotlin/dev/klbt/ageds/core/ArtifactPageAdversarialTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 6155,
+    "sha256": "71e6e1084eeb9c5fc16eb19ea02020c9b85c2233525b0bad6d303bdd6a4fbf80",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "core/src/commonTest/kotlin/dev/klbt/ageds/core/ArtifactPageChainTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 4003,
+    "sha256": "4d8369bb89b91d3c9e95df7cb28fc43360a3e49d0e619d0a29ce4e6b29bbebcd",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "core/src/commonTest/kotlin/dev/klbt/ageds/core/ArtifactPayloadBudgetAdversarialTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 5323,
+    "sha256": "fbd9e53212520cdf4157b605fa7efc71e856eb53a6bfe19e65a1c4cdbd7a965a",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "core/src/commonTest/kotlin/dev/klbt/ageds/core/ArtifactPayloadBudgetOwnerTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 2134,
+    "sha256": "570696d32b2857d6683bfcea63dce970e7902a4f74e7682428093ffde5849bd4",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "core/src/commonTest/kotlin/dev/klbt/ageds/core/CitationAdversarialTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 6222,
+    "sha256": "7ac0eb8c891c4ed87336befd2aa20e6fd5d44cf5be6e49b89a24979c0828684d",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "core/src/commonTest/kotlin/dev/klbt/ageds/core/CitationCreatedResponseTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 8599,
+    "sha256": "92e2c6dc083fafd89e45d8eb6af2c04d3ec12a652fae21b354b6432388ccc85a",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "core/src/commonTest/kotlin/dev/klbt/ageds/core/CitationResponseAdversarialTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 9416,
+    "sha256": "6ac1748e978d9537a8e32ab088f436bc9ce3ff1349c2f2e4cb388c0d1675636c",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "core/src/commonTest/kotlin/dev/klbt/ageds/core/CitationSelectionTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 4248,
+    "sha256": "54c829deaa482ab3ef8a1c170dd87d573a9c8f1fe9754ecf0b274974871e6193",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "core/src/commonTest/kotlin/dev/klbt/ageds/core/CitationSelectorWireCompatibilityTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 5175,
+    "sha256": "658f3bfc30641c754ce45b4f2ab4801420a36c1b357300546ef7bf1b756ae59b",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "core/src/commonTest/kotlin/dev/klbt/ageds/core/CorpusPrioritySelectionTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 1076,
+    "sha256": "bcabd737fc99c9c43bf96f58b2607c58ab3fb0fa0f932e7091bb6c1c256775a9",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "core/src/commonTest/kotlin/dev/klbt/ageds/core/PriorityTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 422,
+    "sha256": "8d34cdd20951399901ec43b0006ec6bbf25a3e5e8a49a6eed7e08635f675e61f",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "core/src/commonTest/kotlin/dev/klbt/ageds/core/SourceTextParserTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 3570,
+    "sha256": "32e556cced43c61388d88cbfdaf6bdeb7241f52e2567a45a0278e3f3fe7b3021",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "core/src/commonTest/kotlin/dev/klbt/ageds/core/WavHeaderCacheSerializationTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 7335,
+    "sha256": "fca78adff5528f0b0a31c4456a5c4340067544f8ad51b0f3b3b095ae90b5a0aa",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "core/src/commonTest/kotlin/dev/klbt/ageds/core/WavHeaderProbeAdversarialTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 10815,
+    "sha256": "25a39a95d855dcf6cc2ce37a56df6ae5668c09797caccf7c0e12b67d9468aa67",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "core/src/commonTest/kotlin/dev/klbt/ageds/core/WavHeaderProbeTest.kt",
+    "class": "tests_fixtures",
+    "bytes": 7401,
+    "sha256": "03118c4e52063347994d77b872b5f8a8d202a6e2619186fbb72f95c541fc29f0",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docker-compose.yml",
+    "class": "build_tooling_config",
+    "bytes": 216,
+    "sha256": "65b8cd4cef29914041500faff2585e1ade6732bdfdc73f27190d41686eb2a086",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/ANDROID_SAF_PROVIDER_ACCEPTANCE.md",
+    "class": "documentation",
+    "bytes": 4033,
+    "sha256": "47b04789c1fa8c14dce0fe13ae618b8a96921ec36c5c84dbabba5a76ba1fcc9b",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/ANDROID_SCAN_PUBLICATION_INTEGRATION.md",
+    "class": "documentation",
+    "bytes": 3355,
+    "sha256": "eaaffb014cdebfbb4a30463f26942a28313d2e331ee869244eb71c0f1ae63167",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/ANDROID_SOURCE_SCAN_ADAPTER.md",
+    "class": "documentation",
+    "bytes": 2744,
+    "sha256": "8a18529d0f018131aeaea939469d175b59d0e9df10ba0a85fa0e515c528e9ecb",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/ANDROID_WAV_HEADER_UI.md",
+    "class": "documentation",
+    "bytes": 2413,
+    "sha256": "f8897d2af1182010e507a90ffcf1cb805f0abb5d06f7bddb9ffec816e147ff11",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/ARCHITECTURE.md",
+    "class": "documentation",
+    "bytes": 2399,
+    "sha256": "5b955e1c1441a30d175e66e7d0626d7e3c79760be6cab5c3507a6fe4770b0246",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/ARCHITECTURE_RULES.md",
+    "class": "documentation",
+    "bytes": 13024,
+    "sha256": "f8ce7c35926441c7a5d0575b80a84806fcc606b764171c35b42d8572d9639c87",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/ARCHIVE_VERIFICATION_BUDGET.md",
+    "class": "documentation",
+    "bytes": 6505,
+    "sha256": "6a240324632c491257008fe9f148ffea5121ac03d4202382a00136aabe77738f",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/ARCHIVE_VERIFICATION_BUDGETS.md",
+    "class": "documentation",
+    "bytes": 4073,
+    "sha256": "10379a6f3bbda3ada9eea4686cab7190e3f4bd656d125471aba3bb017bb6d10a",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/CLIENT_HISTORY_PAYLOAD_BUDGET.md",
+    "class": "documentation",
+    "bytes": 5186,
+    "sha256": "c2c462030f218cdc0356343ee3386915a7ecb3ccf6425367c11d95a5c045c895",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/CORPUS_IMPORT.md",
+    "class": "documentation",
+    "bytes": 1615,
+    "sha256": "3d6af0bbd029ec451c9cf0a6688f9513723b75f5cba2b3e04befacc93db7f16b",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/DEVELOPMENT.md",
+    "class": "documentation",
+    "bytes": 5391,
+    "sha256": "fd62ab2de4c6401127c66540f48bcec385ee3a054ac318c106c93dceddaca04c",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/EVIDENCE_CONSUMER.md",
+    "class": "documentation",
+    "bytes": 4563,
+    "sha256": "dc310c7e5e5831e3ca13e0f96b1bbe914cd1e025b78b894944e51f0194eff517",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/EVIDENCE_EXCHANGE.md",
+    "class": "documentation",
+    "bytes": 7997,
+    "sha256": "a88486319eaa53a400af3d03d15ff618ba69412c0456ff5d64b7c330c64f6df3",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/FEATURES.md",
+    "class": "documentation",
+    "bytes": 4363,
+    "sha256": "e1024d2b3a9cb5f1d1b58a49701219509ac57c2cf472f9bfe15b9f3ce600e566",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/GETTING_STARTED.md",
+    "class": "documentation",
+    "bytes": 6026,
+    "sha256": "9a955b0362d00010ab76d75e16ca8b6b046a50f476c1a55bab6a95f952583d50",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/METADATA_ARCHIVE.md",
+    "class": "documentation",
+    "bytes": 5026,
+    "sha256": "3180583409f195681b9f32394063b8297592e9a70ab27f169ed840edc8dd0dd8",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/NATIVE_SOURCE_FORMATS.md",
+    "class": "documentation",
+    "bytes": 4663,
+    "sha256": "0f0f1bcaeffb53220f7cc9e350b39ada0550aab50a66581d32a32f53b530b9d6",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/NATIVE_XLS.md",
+    "class": "documentation",
+    "bytes": 8458,
+    "sha256": "3e29beed47360759ac967e3bdb5e53ada1b2055e620c6ec43be1fe21607b9d4b",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/README.md",
+    "class": "documentation",
+    "bytes": 2757,
+    "sha256": "d907e5673a51c0a29f769c45c1894cb45e2e13255dc824a2b13aedf000af9e4a",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/READ_PAGES.md",
+    "class": "documentation",
+    "bytes": 6064,
+    "sha256": "65ffa05b7dc9e35adafb33548a8aa1e8448186d87cd371ebc3d5cb15602d4ba5",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/SEARCH_CONTRACT.md",
+    "class": "documentation",
+    "bytes": 4421,
+    "sha256": "a9474850b6db8d1235472befbcd299ca514733638c14671794df39701745c069",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/SERVER_WAV_HEADER.md",
+    "class": "documentation",
+    "bytes": 6496,
+    "sha256": "2671dc297dc34890675b74411167c6de74f71c72ffa3ee6e4f6232811c5428d2",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/SERVER_WAV_HEADER_SCAN.md",
+    "class": "documentation",
+    "bytes": 4849,
+    "sha256": "50219ceba7f049effd467cd6d6d37974af2fd49105d37a3c9d5d97bf0236ac74",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/SOURCE_SCAN_CACHE_PUBLICATION.md",
+    "class": "documentation",
+    "bytes": 3108,
+    "sha256": "5740ae5195d9a94ba435f5f3d3b1800ee59880d6b02f61758cbc53368bd77978",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/SOURCE_SCAN_ENGINE.md",
+    "class": "documentation",
+    "bytes": 5413,
+    "sha256": "1ebd81ab15876ac303964256285941b0dc89368eba10e40c423d3e5a68809713",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/SOURCE_SCAN_PUBLICATION_GATE.md",
+    "class": "documentation",
+    "bytes": 3346,
+    "sha256": "94025e443457804af78ea713c44fb42ac419dc5845e36fd6c0b88300a7fab651",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/VERIFIED_MEDIA.md",
+    "class": "documentation",
+    "bytes": 5589,
+    "sha256": "a098312d2e9faab28bb6e03e78a4042e08b95746d5cceed04cf11f536cffbf58",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/VERIFIED_READER.md",
+    "class": "documentation",
+    "bytes": 5767,
+    "sha256": "127a3bbc51090ca2f4df6a99adceda08f288cca556762a99ff77d8204a1e0346",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/WAV_HEADER_PROBE.md",
+    "class": "documentation",
+    "bytes": 6094,
+    "sha256": "5a7e6d30dd4a05a928c71b9a4db1c3bb295236335a607396195311f016aa5133",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/XLSX_PHONETIC_PROJECTION.md",
+    "class": "documentation",
+    "bytes": 2982,
+    "sha256": "6f38bf4b55bfa6e77d7253eeb32762f487a5bc48f3e1d16d0915314b74d28a3e",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/ANDROID_BUILD.md",
+    "class": "preserved_history",
+    "bytes": 5820,
+    "sha256": "1bcf95c4b22ead5b557272c2ab0a59a2f7409a4d0b4683268459922eab586d69",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/ANDROID_NIGHT_BUILD.md",
+    "class": "preserved_history",
+    "bytes": 4167,
+    "sha256": "e5756b3224a2a6e5ffe45a0b6495f39ab0e27fe6cc1cc258a3cfb695e1df19df",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/ANDROID_NIGHT_BUILD_RECEIPT.json",
+    "class": "preserved_history",
+    "bytes": 6717,
+    "sha256": "90fbe946472ef258cefc7c3c59289e39d8bab3064871c6dcbc6a8b356423088a",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/ANDROID_SAF_PROVIDER_RECEIPT.json",
+    "class": "preserved_history",
+    "bytes": 5429,
+    "sha256": "6d26b09f5ed72755c2da12e3e3ed507f35b71d6e1c04aa647c3ed5b3f639d5a0",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/ANDROID_SOURCE_ENGINE_MIXED_FORMATS.md",
+    "class": "preserved_history",
+    "bytes": 3291,
+    "sha256": "17097f6c84b8a7cecb92fd701a0ff74f0391319bc21255ade36c9102e647cedc",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/ANDROID_WAVE11_BUILD.md",
+    "class": "preserved_history",
+    "bytes": 1406,
+    "sha256": "3ff977420982e6f4a45045ecf75fe8cd68ec0cdbb8dd2e5f9e2f4c75bf643fd0",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/ANDROID_WAVE11_BUILD_RECEIPT.json",
+    "class": "preserved_history",
+    "bytes": 23082,
+    "sha256": "9a721fccbc7037fe2d917349bf87e5cc29e5851715c347e518934a8330a3419e",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/ANDROID_WAVE11_SAF_COMPILE_RECEIPT.json",
+    "class": "preserved_history",
+    "bytes": 13015,
+    "sha256": "f88b661aa6f37fdc7da868accc812f37a94a4983ec915002407e4651e6cd6d77",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/ANDROID_WAVE12_BUILD.md",
+    "class": "preserved_history",
+    "bytes": 805,
+    "sha256": "4255f7ebff35bb5fb2ed130e94037d6844c85c4f04766d85fe6835b5b50feb84",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/ANDROID_WAVE12_BUILD_RECEIPT.json",
+    "class": "preserved_history",
+    "bytes": 24364,
+    "sha256": "4f4b308092d5cc85a12049e7962f6949be6a24b6f7978665658b462280dd19ab",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/ANDROID_WAVE2_BUILD.md",
+    "class": "preserved_history",
+    "bytes": 2367,
+    "sha256": "b2d32a1d4aacf0b8d8702cf27e5467c7b2516aa08db692e3f691b7befb5f68bb",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/ANDROID_WAVE2_BUILD_RECEIPT.json",
+    "class": "preserved_history",
+    "bytes": 8957,
+    "sha256": "6ed11ec268826796f20332b79aaea6daa9312ac73df06e428b995ecebd765a02",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/ANDROID_WAVE3_BUILD.md",
+    "class": "preserved_history",
+    "bytes": 1003,
+    "sha256": "5ec13c5b743764a2bb9a62df24aea3ec82940e82b72b6f150b20d923b23a7014",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/ANDROID_WAVE3_BUILD_RECEIPT.json",
+    "class": "preserved_history",
+    "bytes": 11656,
+    "sha256": "38a93b16888379c016c9c18248ee373c3b1fea447473e6bd09c97a87d09dbb58",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/ANDROID_WAVE4_BUILD.md",
+    "class": "preserved_history",
+    "bytes": 923,
+    "sha256": "a6e1ce9d48430c558fbb405dd99c6ac1dfb98ee64069ec0ac46864aa77f28cb6",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/ANDROID_WAVE4_BUILD_RECEIPT.json",
+    "class": "preserved_history",
+    "bytes": 12507,
+    "sha256": "9920e4ee6484914a0daa9df2cb8320c2efbb59f9d0cf114f90a36145fc9c1537",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/ANDROID_WAVE5_BUILD.md",
+    "class": "preserved_history",
+    "bytes": 1048,
+    "sha256": "b261b64ac7cddee408b20c0a26bf5adcf3faca34e2d5b72fc69fcaecf634d586",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/ANDROID_WAVE5_BUILD_RECEIPT.json",
+    "class": "preserved_history",
+    "bytes": 13870,
+    "sha256": "e40b740ce38ccadf3cf3a91df77044c0f5e0b1bfacebdb06ae328b95ec95e9c6",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/ANDROID_WAVE6_BUILD.md",
+    "class": "preserved_history",
+    "bytes": 835,
+    "sha256": "8f3fbe89584ab7bec8cf826cde1f84c082639bc36e2299f9c67f7321f6b844c6",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/ANDROID_WAVE6_BUILD_RECEIPT.json",
+    "class": "preserved_history",
+    "bytes": 15164,
+    "sha256": "0236dd65e2cb03f081239092d468bfece915d3afadb28fb8167eb40541e1c6cc",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/ANDROID_WAVE7_BUILD.md",
+    "class": "preserved_history",
+    "bytes": 776,
+    "sha256": "8300c208fbd4f6dd0206cdd436c396bd958c0ab2298edb822b308d246411001b",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/ANDROID_WAVE7_BUILD_RECEIPT.json",
+    "class": "preserved_history",
+    "bytes": 18583,
+    "sha256": "d1152ae9b69eabd9f2f84ff8c301e71d4d7ad7f4afbecef0e6f1d7c1efd449b9",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/ANDROID_WAVE9_BUILD.md",
+    "class": "preserved_history",
+    "bytes": 990,
+    "sha256": "38aa7db1336035c09c702f6d022565098b613bd1fd5a806b5ef73452c0c4eab7",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/ANDROID_WAVE9_BUILD_RECEIPT.json",
+    "class": "preserved_history",
+    "bytes": 20826,
+    "sha256": "7d94be74056c94c723b5eac6760ef14f9b1b953bd5489694b69c9aa5f12559e6",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/ANDROID_WAVE9_INITIAL_BUILD_RECEIPT.json",
+    "class": "preserved_history",
+    "bytes": 11729,
+    "sha256": "61fbd863762381d7fbe21dc93c732a24119bad08cb0d0cac9ce6c4d8ba763a10",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/ARCHIVE_BUDGET_CLI_SMOKE.md",
+    "class": "preserved_history",
+    "bytes": 4639,
+    "sha256": "8973932171933b481e15f9b4e0dbe4692b550b9735c9767e25ad0656cb0f47be",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/ARCHIVE_BUDGET_CLI_SMOKE_RECEIPT.json",
+    "class": "preserved_history",
+    "bytes": 13880,
+    "sha256": "eecfd8c1ead5406ad7fc8eb08717bc40347a0a8d7771adaf95bc198976955607",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/BROWSER_NIGHT_QA.md",
+    "class": "preserved_history",
+    "bytes": 2669,
+    "sha256": "084e1735f73147fd5a8ed449dcd7a1a1005fb20dba44ad3311f3517ec7a91ed3",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/BROWSER_NIGHT_RECEIPT.json",
+    "class": "preserved_history",
+    "bytes": 2498,
+    "sha256": "405345a3e1a3dae307f5187267bc207a84b37a5548f0bba531ccc8785b1dad67",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/FOUNDATION_QA.md",
+    "class": "preserved_history",
+    "bytes": 7560,
+    "sha256": "59ba224076f280ef64fd8bd9210bf45fea9b57ff12267efaa735187a217a0460",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/N15_ADVERSARIAL_QA.md",
+    "class": "preserved_history",
+    "bytes": 3532,
+    "sha256": "2f0f934fccaafe384e970446ebcbeeb06b30222dd6bc1bc970f85b8dc306dd68",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/N15_ADVERSARIAL_QA_RECEIPT.json",
+    "class": "preserved_history",
+    "bytes": 5895,
+    "sha256": "f3a2bf568ae6eb56b5974f484896edbd355d5fa256ebe3b1892c6070bbda7377",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/N15_ADVERSARIAL_TEST_LOG.txt",
+    "class": "preserved_history",
+    "bytes": 3324,
+    "sha256": "ea1ad330edc29464aa05cff7c1218a4d504f1d92706ffcaf487c0aeb54ac356c",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/NIGHT_QA.md",
+    "class": "preserved_history",
+    "bytes": 8822,
+    "sha256": "2e0c6d8fbac742a0d97ee6e5e9ba865c172f44b49eb53ae8a2503f0c7560512c",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/README.md",
+    "class": "preserved_history",
+    "bytes": 12909,
+    "sha256": "c51c5dcaa759296b82e3bb6a6a3c94e07a28dbdf770b4ae31a4545b37540f3e5",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/REAL_ASR_INITIAL_FAILURES.json",
+    "class": "preserved_history",
+    "bytes": 19748,
+    "sha256": "51d23769570473ce04d19f601c2a68d0dcfb169275517b95728b1d846b253d2c",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/REAL_ASR_SMOKE.md",
+    "class": "preserved_history",
+    "bytes": 6149,
+    "sha256": "9ec38781df91aa32ea8d943ac6f200ff41c781cc88647f986687127e7ef98a99",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/REAL_ASR_SMOKE_RECEIPT.json",
+    "class": "preserved_history",
+    "bytes": 11731,
+    "sha256": "a875739dfd586a122230e9d72e2882f76a8a672ab56314801360bd4f12e10127",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/SERVER_ARCHITECTURE.md",
+    "class": "preserved_history",
+    "bytes": 1802,
+    "sha256": "c54b1a4a053192035eab2a6db6e07528f6872fb1be6deddd6f658c32c83d2c05",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/SERVER_WAV_SCAN_SMOKE.md",
+    "class": "preserved_history",
+    "bytes": 4175,
+    "sha256": "7ce1299b7fa0ca9aef595237c40d42a3d01d63f8a7414ac7816c2a829282b1b4",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/SERVER_WAV_SCAN_SMOKE_RECEIPT.json",
+    "class": "preserved_history",
+    "bytes": 17239,
+    "sha256": "b28322032d66db23b26d6e070ba2ac6a0f0d9babfd1b742d12f70c4f46699782",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/VERIFIED_ASR_SMOKE.md",
+    "class": "preserved_history",
+    "bytes": 4810,
+    "sha256": "7023560ae18d5bcda575fa616af919b23faf190ded1feadc7be091cd68f5844a",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/VERIFIED_ASR_SMOKE_INITIAL_RECEIPT.json",
+    "class": "preserved_history",
+    "bytes": 21961,
+    "sha256": "709b43cf02e35b8104a789497f7cf10a2be28daeedf754c7f6501d8eca1e9b1d",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/VERIFIED_ASR_SMOKE_RECEIPT.json",
+    "class": "preserved_history",
+    "bytes": 21978,
+    "sha256": "83e64762a8a60f5ae115e854adc3b694f5709956d7b6d827e33a8ef667b72583",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE10_ARCHIVE_ROUNDTRIP_QA.md",
+    "class": "preserved_history",
+    "bytes": 4530,
+    "sha256": "20e50ba112e0a2879f2be0fdd001338a6b19392866d9e2664301b83975843def",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE10_ARCHIVE_SEMANTIC_QA.md",
+    "class": "preserved_history",
+    "bytes": 2986,
+    "sha256": "559a5ad621ba958dd43a2064d8c4a61e1efb7f3242711dec1de96ea4566eceeb",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE10_PROJECTION_WORK_QA.md",
+    "class": "preserved_history",
+    "bytes": 2659,
+    "sha256": "b1047573df77aebaeb8db34f6945f2cd3bbd72a7303705980034220bc8c44f00",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE10_QA.md",
+    "class": "preserved_history",
+    "bytes": 2681,
+    "sha256": "4ad276ec5661eaab7aceb39291a7d794312112979719c40cfe2529224c83554f",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE11_GUARDED_CACHE_QA.md",
+    "class": "preserved_history",
+    "bytes": 4110,
+    "sha256": "b9d89d0b1b02cf43b89ce3eb774a71b50704c569d91c891994612cb8ef91bee9",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE11_LIFECYCLE_QA.md",
+    "class": "preserved_history",
+    "bytes": 3861,
+    "sha256": "5af3ccd41812cea85227d730657a3aade0595600553c97d74f878e6a20ac88bd",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE11_PUBLICATION_RACE_QA.md",
+    "class": "preserved_history",
+    "bytes": 3696,
+    "sha256": "a3799e5f7af431e8d93dc8a1075b10a200338d42db382885f2299f288caf8ee0",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE11_QA.md",
+    "class": "preserved_history",
+    "bytes": 2712,
+    "sha256": "a4105bc4d3054b43b0019d68dce13f4e22cf4246dbd6f49c165cd32ac8304635",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE12_CSV_CLI_QA.md",
+    "class": "preserved_history",
+    "bytes": 3320,
+    "sha256": "ed78085171e929d96534360ebb3f9d3afcba7c81fc96b2d3e2bd193543cf0f29",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE12_CSV_CLI_RECEIPT.json",
+    "class": "preserved_history",
+    "bytes": 3503,
+    "sha256": "b9bb7b6d032b7e1b31f5563c5eaacdc8f120e3a75b9bcf9a445a6fdd84dcf327",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE12_CSV_PHYSICAL_LINES.md",
+    "class": "preserved_history",
+    "bytes": 2657,
+    "sha256": "3ae99eb8fe445d5c1ddc4a117d37f709acdfbc28b31c17fbfee06aa3785b3ece",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE12_CSV_QA.md",
+    "class": "preserved_history",
+    "bytes": 2343,
+    "sha256": "2b7fce1c3bf4cd4cc2f5edf85e234ca21d782216318da631ae11189ec5c1bb36",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE12_QA.md",
+    "class": "preserved_history",
+    "bytes": 2272,
+    "sha256": "bcc03e4d81b8ba7de6d5b6893c0007aaafa040ddffad472314e90019778862ec",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE12_XLSX_ENGINE_QA.md",
+    "class": "preserved_history",
+    "bytes": 2261,
+    "sha256": "7e7e51ae6db2fd97e42f9ae75e1da4bd0033e31576d4ef80d4f0c12f9de00954",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE12_XLSX_QA.md",
+    "class": "preserved_history",
+    "bytes": 2285,
+    "sha256": "863a7380999afe611395334e2eb0aec9c4903b7bd2eab8c82758314989a772dc",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE13_BROWSER_CONTRACT_QA.md",
+    "class": "preserved_history",
+    "bytes": 3322,
+    "sha256": "7fc759c871041ca6d367babc6a1053e92cea55a39dcd146ddab5960c6452899d",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE13_BROWSER_RECEIPT.json",
+    "class": "preserved_history",
+    "bytes": 2863,
+    "sha256": "ab2eb5916cca99c6b2f6342cad3de16fefb64a0664e108f1b7af2a2bf2e49a95",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE13_BROWSER_RUNTIME_QA.md",
+    "class": "preserved_history",
+    "bytes": 4059,
+    "sha256": "13949b85bc479fbb140ef14147fd5bef3f0ba8053930ded216fcc6de518f58fb",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE13_NATIVE_ADVERSARIAL_REVIEW.md",
+    "class": "preserved_history",
+    "bytes": 4562,
+    "sha256": "9eb8525e246f37d2f4a33a55565ceae68c34585bc2f29cb0dc0548024f3a25b4",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE13_NATIVE_CONTRACT_QA.md",
+    "class": "preserved_history",
+    "bytes": 1904,
+    "sha256": "060a165ab75418227e148ebe9ff0b8397dc9632345f9efe47529995fac1c0b06",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE13_NATIVE_QA.md",
+    "class": "preserved_history",
+    "bytes": 3006,
+    "sha256": "9f3cfc0bc636cbe0f8dbdf005ed9691e298d7d6687eac7e64d6f509932786007",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE13_NATIVE_WIRE_REVIEW.md",
+    "class": "preserved_history",
+    "bytes": 4010,
+    "sha256": "6fef68010694a04c2b05c9fd139e47eb7e8e67f4159135adb7464d752f72ce2b",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE13_NATIVE_WORKSPACE_QA.md",
+    "class": "preserved_history",
+    "bytes": 2681,
+    "sha256": "f8a21254bf84eadbdeb0cf402b1ee4291ef2bfce479e34cbc8d773d36f48f549",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE13_QA.md",
+    "class": "preserved_history",
+    "bytes": 3727,
+    "sha256": "bb6f5db8485a96ee49855ba72a821c598c789660601dfde821aa6c9a9702ee09",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE13_SAVE_REVIEW.md",
+    "class": "preserved_history",
+    "bytes": 2517,
+    "sha256": "d97aa591b6d35220286b2f9bac927e054efb09bcef4840c99593d0d7956fa4ea",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE2_QA.md",
+    "class": "preserved_history",
+    "bytes": 3076,
+    "sha256": "88146191efcc8cfae3a25301367ab9d3a24c84d5bdffba60a09d45399a9142a0",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE3_ANDROID_QA.md",
+    "class": "preserved_history",
+    "bytes": 4854,
+    "sha256": "68adbdc4d58d1982f97981fef80bdfb2dd5b458f3d365fae922f830ac3d30af2",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE3_BROWSER_QA.md",
+    "class": "preserved_history",
+    "bytes": 3416,
+    "sha256": "95a01a2fbf8a74996704e36689a5fb24231de37fbd7ed0ba6eeab7776e034f05",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE3_BROWSER_RECEIPT.json",
+    "class": "preserved_history",
+    "bytes": 4316,
+    "sha256": "f70ee17ed0260dd966144cbf1d290542c40ebb3aa3a4f69adc90e1a2555ddb9a",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE3_EXCHANGE_QA.md",
+    "class": "preserved_history",
+    "bytes": 4958,
+    "sha256": "5e78e32218bb2771f0f72c7b412ffcc46f06236b3450adac6cda6b51665343d7",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE4_BROWSER_IDS.md",
+    "class": "preserved_history",
+    "bytes": 3252,
+    "sha256": "fbed9bf96763852e864157a60c1a55ac094691866706d4959218a1be7f3a2566",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE4_BROWSER_QA.md",
+    "class": "preserved_history",
+    "bytes": 966,
+    "sha256": "a29a899437ba5b48e8f996409bd755361c99429b8bf8bc481f83718157612f89",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE4_BROWSER_RECEIPT.json",
+    "class": "preserved_history",
+    "bytes": 5215,
+    "sha256": "4baf0728cb83e4cd7e5bb42897dbe9e6427437c713651d9f9673f988d5bbf62e",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE4_MEDIA_QA.md",
+    "class": "preserved_history",
+    "bytes": 7555,
+    "sha256": "34a1579eeffa1ff8a1cba45364310f6290139d7089b3c9a2b1dfbd33b8a1a83b",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE4_QA.md",
+    "class": "preserved_history",
+    "bytes": 1860,
+    "sha256": "527380ea0172376c62d1f7de85fece1d44817f9df4a289b89a0f60d38d6c2db4",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE4_XLS_QA.md",
+    "class": "preserved_history",
+    "bytes": 3630,
+    "sha256": "91c4954b6795d72daf23fc7642ba52dea4b87ef018de232a2285a048bf49850f",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE5_ANDROID_QA.md",
+    "class": "preserved_history",
+    "bytes": 4383,
+    "sha256": "ac4c034b2fbf45d8fe55d89a256eb20244a11ae623cfb7a4ad13d32c9e966683",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE5_BROWSER_PAGES.md",
+    "class": "preserved_history",
+    "bytes": 4111,
+    "sha256": "eb32856020e3a39a84a1e8e1325e106b859e376c7976845629492794b4c683a7",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE5_BROWSER_RECEIPT.json",
+    "class": "preserved_history",
+    "bytes": 5816,
+    "sha256": "9cdb6f77e473b43662faa69daac64a63d198358518133e2361126a64bc85285d",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE5_PAGES_QA.md",
+    "class": "preserved_history",
+    "bytes": 7208,
+    "sha256": "c13a46b49550712897ea7c838287ee025b1f763de47173057a31094206833b39",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE5_QA.md",
+    "class": "preserved_history",
+    "bytes": 1358,
+    "sha256": "57d31c4250fe121fe7c3dc77ff52bbd6118c57b638c982b57da2e7994050d15b",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE6_ASR_QA.md",
+    "class": "preserved_history",
+    "bytes": 5339,
+    "sha256": "fe55fac272af6101059e83ce95df705b2c3f8e23575f01667254e94c212a5f3e",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE6_BROWSER_INITIAL_RECEIPT.json",
+    "class": "preserved_history",
+    "bytes": 6234,
+    "sha256": "8c0843f9dbd65a9ad969f31115785246571ff3456190be00e550c5099ec604c4",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE6_BROWSER_RECEIPT.json",
+    "class": "preserved_history",
+    "bytes": 6330,
+    "sha256": "70ca4143fe83e23795c9235b7a519adfd8a7ff191113626d410b9df4a31de7cd",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE6_CLIENT_BUDGET_QA.md",
+    "class": "preserved_history",
+    "bytes": 4540,
+    "sha256": "bc287002a7522220aca89e4d5b9ffc5a247df6925e2be4169673a680c83da4c2",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE6_QA.md",
+    "class": "preserved_history",
+    "bytes": 2616,
+    "sha256": "c9509acdb35f35eeebd86b0710479d084c478b551a2d79017649a4d76fb6f2eb",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE7_CACHE_QA.md",
+    "class": "preserved_history",
+    "bytes": 4536,
+    "sha256": "0ba34b821e8fba8e06cf840184477d70a9294b97a37ae343dcacc01858ef384f",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE7_QA.md",
+    "class": "preserved_history",
+    "bytes": 2329,
+    "sha256": "e86389aa4e5bf46cfab1a9e32e856956cdcdaa3b28165521f64e63d279c87d9e",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE7_STREAM_QA.md",
+    "class": "preserved_history",
+    "bytes": 4371,
+    "sha256": "cd1a703c2371ca845e270501d3c55cbf9f57f1c50b798cac431c761a5ffd4094",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE7_WAV_QA.md",
+    "class": "preserved_history",
+    "bytes": 4589,
+    "sha256": "6eca854f659f3885e050b410a2e37e549fb0824bf25e88c224d1e7f588c9667d",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE8_QA.md",
+    "class": "preserved_history",
+    "bytes": 2808,
+    "sha256": "04f7f043fd10541e3586ec2a8f619be619952d4ca672519f6485a2d308676e9a",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE8_STREAM_QA.md",
+    "class": "preserved_history",
+    "bytes": 4266,
+    "sha256": "193bf9dd5debe77ff62aa3a25a85d133d81adf24ccc2031de5c4a8ef34191437",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE8_WAV_PARITY.md",
+    "class": "preserved_history",
+    "bytes": 5491,
+    "sha256": "c9917c27ced0b2cbb98d268d880f51c77ec611c826ed7b45c4da4ec13fc89c98",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE8_WAV_PARITY_RECEIPT.json",
+    "class": "preserved_history",
+    "bytes": 52464,
+    "sha256": "01362c848abb432c259749e68bff797b6fc6c370fce1cf003246deec593673fb",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE8_WAV_QA.md",
+    "class": "preserved_history",
+    "bytes": 5306,
+    "sha256": "2ea375296ee168d45ab22663d3f28603bad781adf9dcdc0cdc1697d3ebf111b1",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE9_CACHE_FLOW_QA.md",
+    "class": "preserved_history",
+    "bytes": 4854,
+    "sha256": "1b097bc8a3a039d8acfa29237cfd33e3c15e48f22f51e976261cb98a1068b865",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE9_LIFECYCLE_QA.md",
+    "class": "preserved_history",
+    "bytes": 3661,
+    "sha256": "ccd3998273a55aa755b8e873eb3c1f6ebb62d0110b3f0e059b9754e5e519f2f5",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE9_QA.md",
+    "class": "preserved_history",
+    "bytes": 1827,
+    "sha256": "a5a3a6eab4480b82a8fa692bfadbc63fb47a2f48830d9cb5dc309f9ab9a7bb33",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/WAVE9_SCAN_POLICY_QA.md",
+    "class": "preserved_history",
+    "bytes": 4985,
+    "sha256": "c14321053a990364c77ca068219a8ccbd2095415a263085e63f094c2d7fefda8",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/archive/2026-09-30_2026-10-01/manifest.json",
+    "class": "preserved_history",
+    "bytes": 26744,
+    "sha256": "c4bb9d2bc55e5623d91441b2fecb5da356c0c29ee0a568370011b353481e3697",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/validation/ARCHIVE_CLI_2026-10-02.json",
+    "class": "coordination_receipts",
+    "bytes": 13276,
+    "sha256": "826eb8fc4d3c2f68c35ae5bfcee35be8a0dd7992b355fc813c28d1af05f305e5",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/validation/ASR_COMPLETION_2026-10-02.json",
+    "class": "coordination_receipts",
+    "bytes": 51829,
+    "sha256": "6675672135d7fd9567b1143c2a46c5916f55c3f9961a26b76ccdf58e555e6010",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/validation/ASR_COMPLETION_2026-10-02.md",
+    "class": "documentation",
+    "bytes": 4133,
+    "sha256": "84db011dc7e247cfeabcd08726d82664965608fc12976420b11419c80f1816fd",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/validation/BACKEND_COMPLETION_2026-10-02.json",
+    "class": "coordination_receipts",
+    "bytes": 10230,
+    "sha256": "218809df115fab316beef10b74c391b21104cad74425143a453294f965989eff",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/validation/BACKEND_COMPLETION_2026-10-02.md",
+    "class": "documentation",
+    "bytes": 1380,
+    "sha256": "d8cf433aa9a85d97bce7b7d0fd8a8cd96ce9584aaf395934e316a1b5c0c9f1de",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/validation/BROWSER_COMPLETION_2026-10-02.json",
+    "class": "coordination_receipts",
+    "bytes": 17059,
+    "sha256": "3afc13ef84de0e33a36174b6984b4d974cd0332288941996bb3ec64ae30348ea",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/validation/BROWSER_COMPLETION_2026-10-02.md",
+    "class": "documentation",
+    "bytes": 4199,
+    "sha256": "e3f2b82acbe8bfa904161f341c9c8b398619c56e46289135162074074e8d4414",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/validation/BROWSER_PRIVACY_2026-10-02.json",
+    "class": "coordination_receipts",
+    "bytes": 8740,
+    "sha256": "a389b56edc413dc835a7463253601b8beeccf36915a08f298b81e53b134996f7",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/validation/BROWSER_PRIVACY_2026-10-02.md",
+    "class": "documentation",
+    "bytes": 2227,
+    "sha256": "159754aff8b2072a1a001d2aecfaa71750de90ffd9d23f569a8a518c57e2ea7e",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/validation/CSV_CLI_2026-10-02.json",
+    "class": "coordination_receipts",
+    "bytes": 3467,
+    "sha256": "7d3ef75a9c6472e6c9257cbd51a5735dc1a2b96b03263baec54989731590a4f8",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/validation/NATIVE_BUILD_2026-10-02.json",
+    "class": "coordination_receipts",
+    "bytes": 27021,
+    "sha256": "0e32b99ee16493c8ec55a1fdc20a70c26a492da65a61bfdb8bc13baac6a667fa",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/validation/NATIVE_COMPLETION_2026-10-02.json",
+    "class": "coordination_receipts",
+    "bytes": 5446,
+    "sha256": "597500bc15788f1a1b22ce4278b9f943bf3674ac3c9775764f1bdb32880f21a6",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/validation/NATIVE_COMPLETION_2026-10-02.md",
+    "class": "documentation",
+    "bytes": 3911,
+    "sha256": "f41f567cfd31896ca00f30c6a8f0a544fa1c04d4df77faea97bc019ae97c6dce",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/validation/NATIVE_CORE_FALLBACK_2026-10-02.json",
+    "class": "coordination_receipts",
+    "bytes": 3798,
+    "sha256": "46b2880ae013e27c7baaf0c4a750cb4a70f73559bd341dd7e1ff79f8a57489e3",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/validation/NATIVE_FIRST_ATTEMPT_2026-10-02.json",
+    "class": "coordination_receipts",
+    "bytes": 18019,
+    "sha256": "6fe40c8dc439c8e07be7cca0fa99fabce4d6e203f25eef2d1a05036926bb9797",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/validation/README.md",
+    "class": "documentation",
+    "bytes": 1307,
+    "sha256": "8b35fe74d5f70ab033bc03eeb34dbd1f116e53c7b093c2c725422736f175a343",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/validation/REPOSITORY_REVIEW_2026-10-02.json",
+    "class": "coordination_receipts",
+    "bytes": 842,
+    "sha256": "ae88450e81c07925b5df5b0bdd5c09bbbcaa7e003215508ae7466ebc23090e9c",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "docs/validation/WAV_CLI_2026-10-02.json",
+    "class": "coordination_receipts",
+    "bytes": 17160,
+    "sha256": "9405b0c0381b6eb1db98cf2aa17e7ea93c84e1cdd7687edc776f338d2110b6ad",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "gradle.properties",
+    "class": "build_tooling_config",
+    "bytes": 150,
+    "sha256": "39fe86ddf046dbfa81ebd50aeafb8956e9351374c95b80e88dadf2f93a756157",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "gradle/wrapper/gradle-wrapper.jar",
+    "class": "vendor_generated_bootstrap",
+    "bytes": 47505,
+    "sha256": "7a9ce74cff467ca1bf60a4fcd9f05185acceda4d0f382434d393e17864262c5d",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "gradle/wrapper/gradle-wrapper.properties",
+    "class": "vendor_generated_bootstrap",
+    "bytes": 368,
+    "sha256": "2f32fe111c0de78ff9b4aa65d86855fbb1f32989d62c4818b817ec93d088b510",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "gradlew",
+    "class": "vendor_generated_bootstrap",
+    "bytes": 8656,
+    "sha256": "a5a5c199ba02189ae8c46a334223371a20599d9c298ef65e7540ede4a3f72d59",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "gradlew.bat",
+    "class": "vendor_generated_bootstrap",
+    "bytes": 2848,
+    "sha256": "d539676c48b596afda64c963ec8f7ee56c7b3fe7e3b81d1dbe2d1a1e3dd9e9f8",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "research/README.md",
+    "class": "research_prototype",
+    "bytes": 530,
+    "sha256": "10a121164f02e1755e161784dba229bc2be953d7001db439600cf2f368b25973",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "research/prototypes/on-device-asr/CMakeLists.txt",
+    "class": "research_prototype",
+    "bytes": 860,
+    "sha256": "839136a66c948c63ab388ad9d6c7c4d7584034d589fd7b548a8fb0d17ff177d8",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "research/prototypes/on-device-asr/README.md",
+    "class": "research_prototype",
+    "bytes": 859,
+    "sha256": "4d8b2016f748da32cdfba2b3656700238d4043e265110ebfe11c7e1ed4445acf",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "research/prototypes/on-device-asr/whisper_jni.cpp",
+    "class": "research_prototype",
+    "bytes": 2394,
+    "sha256": "a657b54a6f820136c19fc9a69b884a7a36304ef6d119d93f0a2152713c018da0",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "scripts/archive_budget_cli_smoke.py",
+    "class": "build_tooling_config",
+    "bytes": 13448,
+    "sha256": "50f5b9a4a81590cc016b198e48576318949df1d8217687f486ed878316e9b530",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "scripts/build_verify.sh",
+    "class": "build_tooling_config",
+    "bytes": 7258,
+    "sha256": "d01129f0a96f2b19bbbddb46b15f48a893d1c23f301dd59a2b65bee8b5b8e12c",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "scripts/compare_wav_headers.py",
+    "class": "build_tooling_config",
+    "bytes": 12219,
+    "sha256": "07b853c20a609daf7ae8d78fcb9d347b8a401707403900765c302e76da4f2e65",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "scripts/csv_cli_smoke.py",
+    "class": "build_tooling_config",
+    "bytes": 6704,
+    "sha256": "3a08a2e889368c1a5fcea2b8f87680a5d20993665a14998520cdbe5b7a703906",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "scripts/real_asr_smoke.py",
+    "class": "build_tooling_config",
+    "bytes": 8568,
+    "sha256": "c8f191ba6605c4ccfa38949656b7154cdb8b4f48a71856748cf6db0da377eb6b",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "scripts/server_wav_scan_smoke.py",
+    "class": "build_tooling_config",
+    "bytes": 9796,
+    "sha256": "85147d4b0487634f32fb9f8991694a0d8e1e5913eeb6c66ad62c02d0e15e5c59",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "scripts/verified_asr_smoke.py",
+    "class": "build_tooling_config",
+    "bytes": 14063,
+    "sha256": "37c05facbcd8d95495cd0b1b87445044feed7064d0ea1a5a5bfd4f211af8fe5d",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "scripts/verify_repository.py",
+    "class": "build_tooling_config",
+    "bytes": 2267,
+    "sha256": "f1c1727eedfb32c3791f523fe90c9dd124ee6d9efaec9c1e342aed541f178fea",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "scripts/verify_saf_provider.sh",
+    "class": "build_tooling_config",
+    "bytes": 5016,
+    "sha256": "d09898cd26378f9f553301a6642dc288de7647f7c032fb46d82cf4e4767d0c15",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "scripts/wav_parity/WavHeaderParityRunner.kt",
+    "class": "build_tooling_config",
+    "bytes": 1474,
+    "sha256": "b7e228c07cd3daa97b7bbe0850ad810a7f474e142312b71862adda8a4b375568",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "scripts/wav_parity/fixtures.json",
+    "class": "build_tooling_config",
+    "bytes": 6914,
+    "sha256": "9573f56ac78a17d86a9b66bd118ad6b2aeed9d10f383db71f178ef7be23757e5",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/.env.example",
+    "class": "build_tooling_config",
+    "bytes": 356,
+    "sha256": "1baf6771f31c58a972e73bb0de29e1f9a0e8c352f14a5eccdd4f9318f7f8e8f0",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/ARCHITECTURE.md",
+    "class": "documentation",
+    "bytes": 4689,
+    "sha256": "98ab987c1023685eeaf6f31b0dfc9bb9d3788971fc6993e4ec1f38931ae99144",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/Dockerfile",
+    "class": "build_tooling_config",
+    "bytes": 359,
+    "sha256": "1da350454997896ddef4d0625f9fd7fc07b747a56147c4a566c66625493ca96b",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/README.md",
+    "class": "documentation",
+    "bytes": 2672,
+    "sha256": "962fc59fff89f60016170f2b761f58f5fc9dc96685c0fe9bf1f5fc529674f482",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/__init__.py",
+    "class": "build_tooling_config",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/app/__init__.py",
+    "class": "product",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/app/archive.py",
+    "class": "product",
+    "bytes": 14101,
+    "sha256": "7e81eda09acad99c2ee51ce5892f7be05c78de9a06e5af62a7a8011bd886c030",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/app/citations.py",
+    "class": "product",
+    "bytes": 11152,
+    "sha256": "6a2780c9c7e18a62d425f9a413217ccfb84bd6091de300a3587a373fc44543bf",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/app/cli.py",
+    "class": "product",
+    "bytes": 8687,
+    "sha256": "2081a974c17452e76f6a07f4ffc56a2f0f0b96fd0271a9cdc79a9996ffdf7e28",
+    "semantic_review_ranges": [
+      [
+        1,
+        45
+      ],
+      [
+        101,
+        104
+      ]
+    ]
+  },
+  {
+    "file": "server/app/config.py",
+    "class": "product",
+    "bytes": 930,
+    "sha256": "231733307bf0493512b787eeecef08d8bf6e767012f7e1640fe1b907c48957fe",
+    "semantic_review_ranges": [
+      [
+        1,
+        20
+      ]
+    ]
+  },
+  {
+    "file": "server/app/db.py",
+    "class": "product",
+    "bytes": 12612,
+    "sha256": "776f0039102c91e7da63fa489b64ae6fcccd1bf925db02501d09d01ab822bdf9",
+    "semantic_review_ranges": [
+      [
+        1,
+        215
+      ]
+    ]
+  },
+  {
+    "file": "server/app/evidence.py",
+    "class": "product",
+    "bytes": 13515,
+    "sha256": "fb503e2ef4bc00533cbdecb07e75a6b15e2cfbe3c9d1ab3c136b94a0011a36cd",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/app/exchange.py",
+    "class": "product",
+    "bytes": 9991,
+    "sha256": "f1f80e17c6e8697833d0e5b910807efe0e469aa22107ed1d5cc0e6fed1e061bc",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/app/exchange_consumer.py",
+    "class": "product",
+    "bytes": 17294,
+    "sha256": "95bff415061954ae8cce8ca998f06229c70cf5477c4b47e0dba2fc3b210c3049",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/app/importers/sms_backup.py",
+    "class": "product",
+    "bytes": 5603,
+    "sha256": "4346ced5e605f22536577e0cbd6276e4611a24314d77c36a53c951d86235353c",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/app/importers/whatsapp.py",
+    "class": "product",
+    "bytes": 6016,
+    "sha256": "0cbc8cece79d878c1c7b8518f9c813b8e4a715dddff33573cda71a2c5ee5b815",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/app/jobs.py",
+    "class": "product",
+    "bytes": 8990,
+    "sha256": "20800c6e8e32967f5d35862c1beabfe36837c0914198f1f2e0ea4ec904b37b9d",
+    "semantic_review_ranges": [
+      [
+        1,
+        140
+      ]
+    ]
+  },
+  {
+    "file": "server/app/main.py",
+    "class": "product",
+    "bytes": 26789,
+    "sha256": "0ae7735006c42773058c58b02bf156d6d2898c5ae0ee039e18a074523d878233",
+    "semantic_review_ranges": [
+      [
+        1,
+        220
+      ],
+      [
+        408,
+        465
+      ]
+    ]
+  },
+  {
+    "file": "server/app/packages.py",
+    "class": "product",
+    "bytes": 22394,
+    "sha256": "28f9425c4bd609e668b122cad3f9c16f45f0655c5afb04254b32401df8cd6ba7",
+    "semantic_review_ranges": [
+      [
+        1,
+        100
+      ]
+    ]
+  },
+  {
+    "file": "server/app/read_pages.py",
+    "class": "product",
+    "bytes": 9562,
+    "sha256": "fc5fbc7bd57d84bd1b384d01be810ad60120ad5747d2279120e3b3bff2785a5a",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/app/scanner.py",
+    "class": "product",
+    "bytes": 39241,
+    "sha256": "711488e3e79f3dfc8f886f5a8a30da5865275677e55f6640ff90ca887d4dae95",
+    "semantic_review_ranges": [
+      [
+        1,
+        205
+      ]
+    ]
+  },
+  {
+    "file": "server/app/search.py",
+    "class": "product",
+    "bytes": 5915,
+    "sha256": "14783b0a154050a09521f58a57e6600bdd14ffad5fe2f231f69d15620fbfc8cd",
+    "semantic_review_ranges": [
+      [
+        1,
+        146
+      ]
+    ]
+  },
+  {
+    "file": "server/app/static/app.css",
+    "class": "product",
+    "bytes": 2183,
+    "sha256": "a672e3fe888c597b474286349886ac213f6100ca2f4406998efff9ca7f785127",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/app/static/citations.mjs",
+    "class": "product",
+    "bytes": 31257,
+    "sha256": "190d34fd5979e2f7273edd2162c92a490892e3af197e7b10aede15e4173a6885",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/app/static/range-player.mjs",
+    "class": "product",
+    "bytes": 3038,
+    "sha256": "f451e2f333cf480100d29dafa9181c8c6ebae748dda03092c0bc03c0664b901c",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/app/templates/artifact.html",
+    "class": "product",
+    "bytes": 6165,
+    "sha256": "04aeeb303579b8e6ef08f3d3f0c88c6d2503922f7c83fec509f43cf266a84025",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/app/templates/index.html",
+    "class": "product",
+    "bytes": 2753,
+    "sha256": "7949c2532a6063602ea4395e53661602698443a08fe343fa6aded864c7846661",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/app/transcription.py",
+    "class": "product",
+    "bytes": 3852,
+    "sha256": "ae664808431f51f7e41713d8eae2055ee0246bb40bff28ac8f16139ab3c2fcd7",
+    "semantic_review_ranges": [
+      [
+        1,
+        72
+      ]
+    ]
+  },
+  {
+    "file": "server/app/verification_budget.py",
+    "class": "product",
+    "bytes": 5191,
+    "sha256": "99427dff6253279ec8860243620a9ce7b2d73881a5b94d5b7f9bc46e9102604c",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/app/verified_media.py",
+    "class": "product",
+    "bytes": 10298,
+    "sha256": "90308d9bc8061391c1f8772f027652fe45087f5fe80029d83d02b2a08590cd4d",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/app/verified_reader.py",
+    "class": "product",
+    "bytes": 6474,
+    "sha256": "77c63e45521ce1f215627986d0b408c575d992d55a2d7442a65b57f20b06a231",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/app/wav_header.py",
+    "class": "product",
+    "bytes": 9503,
+    "sha256": "71f8187cd8dcce4b58148682bcdce1208b0d953213cfb72a30a675dff93b6231",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/app/worker.py",
+    "class": "product",
+    "bytes": 9664,
+    "sha256": "7bba0475bf2dd219dc82376c01b93049b17610a91baec10ea0b5ce2bb7b7261a",
+    "semantic_review_ranges": [
+      [
+        1,
+        204
+      ]
+    ]
+  },
+  {
+    "file": "server/data/.gitkeep",
+    "class": "build_tooling_config",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/docker-compose.yml",
+    "class": "build_tooling_config",
+    "bytes": 126,
+    "sha256": "30bd130a84e96fefef3b435266225888a9c13783e729ef26b1ec29dd5a95ea92",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/requirements-scanner.txt",
+    "class": "build_tooling_config",
+    "bytes": 111,
+    "sha256": "2537ea0ab69d0843317514fdbcceff5485abc2a49333bcb657c67d111096401f",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/requirements-test.txt",
+    "class": "build_tooling_config",
+    "bytes": 61,
+    "sha256": "b8bd5360e40b82a3275711f858ec7603527b38e1bb17f0b532cd588e3d315709",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/requirements-whisper.txt",
+    "class": "build_tooling_config",
+    "bytes": 218,
+    "sha256": "932e83adc48fcde8191e96c1e502ac3bf832425710448e82fa4552ba0ab22dab",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/requirements.txt",
+    "class": "build_tooling_config",
+    "bytes": 128,
+    "sha256": "c4d58be48f0811a6b7fdb50531711f14ba3bbaa9a93d18e238c9be02e87b1390",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/browser/acceptance.cjs",
+    "class": "tests_fixtures",
+    "bytes": 30689,
+    "sha256": "f1a33c8423725f6a7b0aa78a0830d87510541e83c326c7b9e15be85f9052464a",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/browser_fixture.py",
+    "class": "tests_fixtures",
+    "bytes": 4244,
+    "sha256": "59eadbefaeba6d7448f69ad7bdc24ea9e24a50cf35f69e8f1265ef884057d399",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/js/citation-python-parity.test.mjs",
+    "class": "tests_fixtures",
+    "bytes": 2964,
+    "sha256": "f48574eb0ff15489beb54a0b9c2ef8f2b0344cd62a97804233ad7edc63094a86",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/js/citation-save-contract.test.mjs",
+    "class": "tests_fixtures",
+    "bytes": 9297,
+    "sha256": "51a51376963759c7c33737ef73e031dc26d24368b9df69ca538ed883fed42bb5",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/js/citation-save-handler.test.mjs",
+    "class": "tests_fixtures",
+    "bytes": 8376,
+    "sha256": "f453b8bae6afe4f3d23a7b2563179394ab0caa8dfbec86d39c18ef4f487a1a03",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/js/citation-save-snapshot.test.mjs",
+    "class": "tests_fixtures",
+    "bytes": 2950,
+    "sha256": "09ab7a132b96250a330b7ab9cbfcc37ac12b04a4c92be52da81e64d48c16fc83",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/js/history-budget-adversarial.test.mjs",
+    "class": "tests_fixtures",
+    "bytes": 5705,
+    "sha256": "834fb3d730bdfa1306edd5be22daafb044b6be699715d0e5b02db39960f7c3f9",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/js/history-pages.test.mjs",
+    "class": "tests_fixtures",
+    "bytes": 6916,
+    "sha256": "c105347237cc971b33d86b27623db087bc8713c961db926de30fa0bf77d52f52",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/js/history-payload-owner.test.mjs",
+    "class": "tests_fixtures",
+    "bytes": 1653,
+    "sha256": "0c84b552047a6406176c9d6e9c8295f8f71cbf71f560576949aaae7c4e190a78",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/js/id-boundaries.test.mjs",
+    "class": "tests_fixtures",
+    "bytes": 4131,
+    "sha256": "88f59686cbc196156fb6a1931303853a4717bc94f82fca20b024face0b7e7cda",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/js/range-player.test.mjs",
+    "class": "tests_fixtures",
+    "bytes": 7396,
+    "sha256": "ffe91391c10083b379354541b9cdd2810d0dff81f40907966a6b24c876c87ad6",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/test_api.py",
+    "class": "tests_fixtures",
+    "bytes": 12297,
+    "sha256": "095dd624dcff2e17d52c93c50ab96bef84168ce453e3013adc0d895ed748c963",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/test_archive_projection_work.py",
+    "class": "tests_fixtures",
+    "bytes": 9014,
+    "sha256": "ac9707036c8d3273722a9ccca3e6dd471dd0c6b1b9f40f43ef323d129a0a20eb",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/test_archive_semantic_budget_adversarial.py",
+    "class": "tests_fixtures",
+    "bytes": 7982,
+    "sha256": "24a5bbc615b3e5adb4860c0ef4e7c72aa8df508797ed2256fcc891355fe671b4",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/test_archive_semantic_roundtrip.py",
+    "class": "tests_fixtures",
+    "bytes": 14035,
+    "sha256": "7bfad6898d2a74bc3484532eafea853a476eb75318d2c0b91cc44c1cf97912e4",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/test_archive_verification_budget.py",
+    "class": "tests_fixtures",
+    "bytes": 5917,
+    "sha256": "0249cdf3db2bcf4b435bcd9b06e8cf55e70bddd90664cc7d7e1c8535a4523b5e",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/test_citations.py",
+    "class": "tests_fixtures",
+    "bytes": 13668,
+    "sha256": "1d18f80d35ffa77ef13a84819b80f1eaf01d7aa267fa94251e05f53c0f3d2ec5",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/test_cli.py",
+    "class": "tests_fixtures",
+    "bytes": 9870,
+    "sha256": "af8873b826a0eb1ef7089cb252c8cb8af49617a5e788f1255e44f1b1bb7d4fd9",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/test_csv_raw_record_fidelity.py",
+    "class": "tests_fixtures",
+    "bytes": 5705,
+    "sha256": "c564d1d95d60d6227d80dd8ac69fc9221eb63ba91cc7575232b4639c7ba86173",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/test_db_startup_lifecycle.py",
+    "class": "tests_fixtures",
+    "bytes": 1691,
+    "sha256": "464fc47ab3b297edc592d9d49a6dd29ec4c6fd35a6458cb11b418809d7cb56a5",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/test_exchange_acceptance.py",
+    "class": "tests_fixtures",
+    "bytes": 19941,
+    "sha256": "4a85ff1f5a837e3828f76e2fcce601431f4eec9582536c902373bb03bcb07153",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/test_exchange_consumer.py",
+    "class": "tests_fixtures",
+    "bytes": 14516,
+    "sha256": "e3ded2921adbdda137ebac448b581cba2b18761c2a564e96ddc15bdc066cd569",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/test_exchange_producer.py",
+    "class": "tests_fixtures",
+    "bytes": 6914,
+    "sha256": "c6116caaa4fb30eec0864e39e45fbe5cd4305e16c1cf9baabdc03ad2ca8f3fe6",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/test_importers.py",
+    "class": "tests_fixtures",
+    "bytes": 10848,
+    "sha256": "8a367113604e00db3021da85c318f189dd2366255b0a0e47a35cce0301b2c9a1",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/test_integrity.py",
+    "class": "tests_fixtures",
+    "bytes": 16544,
+    "sha256": "6263b824ee65b9e393a762236438a0bac39e50bce7f7a49d91b119562974bf6c",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/test_jobs.py",
+    "class": "tests_fixtures",
+    "bytes": 15681,
+    "sha256": "e61ab558e585d66e2b440e37476405fdae5942d2d64c334f78c9f1a837554c83",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/test_metadata_archive.py",
+    "class": "tests_fixtures",
+    "bytes": 14951,
+    "sha256": "968364ce94df1d8e237cb01cb4c46d527ca0c202d94f8d4b30d759c42379f47a",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/test_night_integration.py",
+    "class": "tests_fixtures",
+    "bytes": 16638,
+    "sha256": "516293a33c788510eb8d1e26477fe31e9c12a07790d0e377e12829a5a4dd4e35",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/test_packages.py",
+    "class": "tests_fixtures",
+    "bytes": 18863,
+    "sha256": "ad5474bfc2e34d7bb831bf5f03f17e5894c753670b69d0fca6a4863377b0b309",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/test_read_pages.py",
+    "class": "tests_fixtures",
+    "bytes": 7044,
+    "sha256": "1c17335b01d22805204e81b7aabe9c1fb5e50e10326255de67766f709718cec4",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/test_read_pages_acceptance.py",
+    "class": "tests_fixtures",
+    "bytes": 15846,
+    "sha256": "cbc47af25eb33263f8c680ebeb333ba0270c8e2ed094ed4b7ab5577bc25d95b6",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/test_scanner.py",
+    "class": "tests_fixtures",
+    "bytes": 16352,
+    "sha256": "1b62a07c079d5ece0555d71f70ccebaff84831b0ec314927cdce67d0c08c740c",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/test_scanner_csv_physical_lines.py",
+    "class": "tests_fixtures",
+    "bytes": 4285,
+    "sha256": "4a3a281323572ced38457073c25d2e187f95e856aebdadf9701ce4dbac042794",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/test_search_http_contract.py",
+    "class": "tests_fixtures",
+    "bytes": 3415,
+    "sha256": "a484d10de2d383c4208a57bcf56f73b876eb43e3cc57e348a5c58963239ae456",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/test_search_rendering.py",
+    "class": "tests_fixtures",
+    "bytes": 3166,
+    "sha256": "8dce79df1434af2da4dffb7330ad4ba958877c135145bd39e1fc761fe52774ab",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/test_search_validation.py",
+    "class": "tests_fixtures",
+    "bytes": 7400,
+    "sha256": "ce612ca218bd56fafd7a5b9d172500f6032dd1df9960719f6944a1aa9a2ba6af",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/test_smoke.py",
+    "class": "tests_fixtures",
+    "bytes": 353,
+    "sha256": "9621fec7b512ea89ccc6f0ce266bcecb942568f97f3633802075ebdb7026d716",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/test_verification_budget.py",
+    "class": "tests_fixtures",
+    "bytes": 5783,
+    "sha256": "5bad1849193186ac42a7f6dadb6d3c559b2341f5885992f4bf30af6a0800330b",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/test_verified_asr_acceptance.py",
+    "class": "tests_fixtures",
+    "bytes": 11380,
+    "sha256": "1e1b8b0e00713a4a95eb9bf43fb80945ec2bc70983280067a86c5baecaf33924",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/test_verified_media.py",
+    "class": "tests_fixtures",
+    "bytes": 6450,
+    "sha256": "abace72fc1bb69edbd571bb8880ffba2f6abd7ae1139e0b0a917b725447a2f2d",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/test_verified_media_acceptance.py",
+    "class": "tests_fixtures",
+    "bytes": 16784,
+    "sha256": "1a751bfe4b422c547a02c77b4c9bcd398fc9e5c1d8ad11230c28701d60d6a8e1",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/test_verified_reader.py",
+    "class": "tests_fixtures",
+    "bytes": 5834,
+    "sha256": "f18fcc15404706a47560df05b14688464370579a998fd2b977311fb16f8327e2",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/test_verified_worker.py",
+    "class": "tests_fixtures",
+    "bytes": 8035,
+    "sha256": "6de41ed25be2e46a6ecbfdeb7ce24e50f4fec4a0b384bea763ad1637bf23a471",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/test_wav_header.py",
+    "class": "tests_fixtures",
+    "bytes": 7270,
+    "sha256": "98a6f2dd235736e45473d2fbc75ebbd8c7a697a959ad34fa504c92e775b72179",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/test_wav_scan_acceptance.py",
+    "class": "tests_fixtures",
+    "bytes": 12135,
+    "sha256": "1320b92d86fa9cb6bfaa4d0e835017b93784ff28289c91ee4d95e1e36edae8b6",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/test_wav_scanner_integration.py",
+    "class": "tests_fixtures",
+    "bytes": 4488,
+    "sha256": "945022cf1f92c4b68146fd339c3ed87d2a6be78f99f7523bdd12650686ccdf4b",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/test_wav_stream_acceptance.py",
+    "class": "tests_fixtures",
+    "bytes": 12534,
+    "sha256": "280599e15c8f3b7b8e5a9a57e512df4a6dfa9d47f9f60451f150a781aa0d39eb",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/test_word_citations.py",
+    "class": "tests_fixtures",
+    "bytes": 12347,
+    "sha256": "0419c98e446b4b08375a78b5581330f2a13b105562128551c45f6dccea14d779",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "server/tests/test_word_transcription.py",
+    "class": "tests_fixtures",
+    "bytes": 8295,
+    "sha256": "9c33cdff0fad8a0512830ae3a0248e1e761dd0ce3758ea28c40d633796ea87c5",
+    "semantic_review_ranges": []
+  },
+  {
+    "file": "settings.gradle.kts",
+    "class": "build_tooling_config",
+    "bytes": 340,
+    "sha256": "3b9cdf74adf2506f104110cd8c9dcc4f721f3a4958e8e6f2e24658825c898328",
+    "semantic_review_ranges": []
+  }
+]

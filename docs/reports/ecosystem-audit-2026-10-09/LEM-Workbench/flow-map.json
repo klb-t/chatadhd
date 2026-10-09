@@ -1,0 +1,68 @@
+{
+  "repo": "klb-t/LEM-Workbench",
+  "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+  "flows": [
+    {
+      "id": "LEM-flow-key",
+      "data": "Gemini API key, SharedPreferences",
+      "graph": "brak referencji/polityki w grafie; sekret nie powinien trafiać do jawnego grafu",
+      "runtime": "Settings.save → ViewModel.saveApiKey → ApiKeyStore; refreshModels czyta klucz",
+      "ui": "SettingsScreen",
+      "status": "podłączone lokalnie, poza grafem"
+    },
+    {
+      "id": "LEM-flow-config",
+      "data": "ExperimentConfig + ConfigDao",
+      "graph": "brak",
+      "runtime": "ResearchRepository allConfigs/insertConfig bez callerów UI/runnera",
+      "ui": "brak edytora konfiguracji w aktywnych 4 ekranach",
+      "status": "niepodłączone",
+      "finding_ids": [
+        "LEM-001",
+        "LEM-007"
+      ]
+    },
+    {
+      "id": "LEM-flow-model",
+      "data": "Gemini models response",
+      "graph": "brak, tylko StateFlow",
+      "runtime": "single-page listModels → sortedBy name → capability substring",
+      "ui": "ModelsScreen → wybór modelName",
+      "status": "częściowo podłączone",
+      "finding_ids": [
+        "LEM-004"
+      ]
+    },
+    {
+      "id": "LEM-flow-run",
+      "data": "modelName z UI + recepta w kodzie",
+      "graph": "brak method/config node i produced_by",
+      "runtime": "ExperimentRunner → ResearchAgent → GeminiApiService → aggregate metrics → Room",
+      "ui": "Dashboard/Experiments",
+      "status": "działająca ścieżka opisana kodem; bez uruchomienia API",
+      "finding_ids": [
+        "LEM-002",
+        "LEM-003"
+      ]
+    },
+    {
+      "id": "LEM-flow-ledger",
+      "data": "LedgerEntry entity",
+      "graph": "brak",
+      "runtime": "ResearchRepository allLedgerEntries/insertLedgerEntry bez aktywnych konsumentów ekranu",
+      "ui": "RESEARCH LEDGER czyta allExperiments, nie LedgerEntry",
+      "status": "nazwa ekranu nie dowodzi podłączenia LedgerEntry"
+    },
+    {
+      "id": "LEM-flow-theme",
+      "data": "darkTheme/dynamicColor parametry",
+      "graph": "brak",
+      "runtime": "ignorowane, zawsze DarkColorScheme",
+      "ui": "MyApplicationTheme",
+      "status": "niepodłączone",
+      "finding_ids": [
+        "LEM-006"
+      ]
+    }
+  ]
+}

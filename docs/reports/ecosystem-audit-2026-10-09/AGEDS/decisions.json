@@ -1,0 +1,339 @@
+[
+  {
+    "id": "DEC-EA-AGEDS-001",
+    "finding_id": "EA-AGEDS-001",
+    "current_decision": "Receptura ASR i fallback modelu pozostają w kodzie",
+    "visibility": "mixed: code policy, some documented or exposed",
+    "alternatives": [
+      {
+        "variant": "model/device/compute_type z env",
+        "status": "implemented_consumed"
+      },
+      {
+        "variant": "VAD off / ustawienia dekodera / inny provider",
+        "status": "not_data_configurable; adapter injection tylko dla wywołującego kod"
+      }
+    ],
+    "owner_requirement": {
+      "source": "Zlecenie właściciela A, 2026-10-09; chatadhd/docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+      "ids": [
+        "R42",
+        "R41",
+        "R15"
+      ],
+      "scope": "Bieżący audyt rozszerza ocenę na ekosystem; nie twierdzi, że wcześniejsze AGEDS miało już wszystkie reguły ChatADHD."
+    },
+    "auditor_interpretation": "Ocena audytora wynikająca z podanej ścieżki, odrębna od wymagania."
+  },
+  {
+    "id": "DEC-EA-AGEDS-002",
+    "finding_id": "EA-AGEDS-002",
+    "current_decision": "Kolejka nie przypina receptury do zadania; deduplikuje po artefakcie",
+    "visibility": "mixed: code policy, some documented or exposed",
+    "alternatives": [
+      {
+        "variant": "deduplikacja tylko identycznego input+recipe",
+        "status": "missing"
+      },
+      {
+        "variant": "force new run / compare profiles",
+        "status": "missing in queue API"
+      },
+      {
+        "variant": "kolejny run po zakończeniu",
+        "status": "implemented"
+      }
+    ],
+    "owner_requirement": {
+      "source": "Zlecenie właściciela A, 2026-10-09; chatadhd/docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+      "ids": [
+        "R15",
+        "R33",
+        "R41"
+      ],
+      "scope": "Bieżący audyt rozszerza ocenę na ekosystem; nie twierdzi, że wcześniejsze AGEDS miało już wszystkie reguły ChatADHD."
+    },
+    "auditor_interpretation": "Ocena audytora wynikająca z podanej ścieżki, odrębna od wymagania."
+  },
+  {
+    "id": "DEC-EA-AGEDS-003",
+    "finding_id": "EA-AGEDS-003",
+    "current_decision": "Limity skanu są konsumowane w silniku, ale Android i HTTP wymuszają default",
+    "visibility": "mixed: code policy, some documented or exposed",
+    "alternatives": [
+      {
+        "variant": "CLI parametry limitów",
+        "status": "implemented_subset"
+      },
+      {
+        "variant": "Android/API wybrany profil limitów",
+        "status": "not_wired"
+      },
+      {
+        "variant": "nieograniczony skan",
+        "status": "not_recommended; bezpieczeństwo pozostaje mechanizmem"
+      }
+    ],
+    "owner_requirement": {
+      "source": "Zlecenie właściciela A, 2026-10-09; chatadhd/docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+      "ids": [
+        "R42",
+        "R15",
+        "R40"
+      ],
+      "scope": "Bieżący audyt rozszerza ocenę na ekosystem; nie twierdzi, że wcześniejsze AGEDS miało już wszystkie reguły ChatADHD."
+    },
+    "auditor_interpretation": "Ocena audytora wynikająca z podanej ścieżki, odrębna od wymagania."
+  },
+  {
+    "id": "DEC-EA-AGEDS-004",
+    "finding_id": "EA-AGEDS-004",
+    "current_decision": "Domenowe słowniki i hipotezy parsera są w kodzie",
+    "visibility": "mixed: code policy, some documented or exposed",
+    "alternatives": [
+      {
+        "variant": "wersjonowane słowniki i metody per źródło/język",
+        "status": "missing"
+      },
+      {
+        "variant": "brak interpretacji nagłówka / raw-only",
+        "status": "raw preserved; explicit strategy missing"
+      },
+      {
+        "variant": "hipoteza zamiast faktu",
+        "status": "implemented"
+      }
+    ],
+    "owner_requirement": {
+      "source": "Zlecenie właściciela A, 2026-10-09; chatadhd/docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+      "ids": [
+        "R42",
+        "R41",
+        "R15"
+      ],
+      "scope": "Bieżący audyt rozszerza ocenę na ekosystem; nie twierdzi, że wcześniejsze AGEDS miało już wszystkie reguły ChatADHD."
+    },
+    "auditor_interpretation": "Ocena audytora wynikająca z podanej ścieżki, odrębna od wymagania."
+  },
+  {
+    "id": "DEC-EA-AGEDS-005",
+    "finding_id": "EA-AGEDS-005",
+    "current_decision": "Priorytet wynika z kolejności wyboru i zaszytych wag",
+    "visibility": "mixed: code policy, some documented or exposed",
+    "alternatives": [
+      {
+        "variant": "kolejność wyboru",
+        "status": "active_hardcoded"
+      },
+      {
+        "variant": "ręczny priorytet/FIFO/krótkie nagrania pierwsze",
+        "status": "not_exposed_by_this_UI"
+      },
+      {
+        "variant": "bonusy legal/conflict/duration",
+        "status": "implemented_function; inactive in observed caller"
+      }
+    ],
+    "owner_requirement": {
+      "source": "Zlecenie właściciela A, 2026-10-09; chatadhd/docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+      "ids": [
+        "R42",
+        "R15",
+        "R40"
+      ],
+      "scope": "Bieżący audyt rozszerza ocenę na ekosystem; nie twierdzi, że wcześniejsze AGEDS miało już wszystkie reguły ChatADHD."
+    },
+    "auditor_interpretation": "Ocena audytora wynikająca z podanej ścieżki, odrębna od wymagania."
+  },
+  {
+    "id": "DEC-EA-AGEDS-006",
+    "finding_id": "EA-AGEDS-006",
+    "current_decision": "Graf/eksport obejmuje dowody, lecz nie konfigurację używaną przez aplikację",
+    "visibility": "mixed: code policy, some documented or exposed",
+    "alternatives": [
+      {
+        "variant": "graf relacji dowodowych",
+        "status": "implemented"
+      },
+      {
+        "variant": "mapowanie konfiguracji do grafu i explainable resolution",
+        "status": "missing in reviewed paths"
+      },
+      {
+        "variant": "jedna wspólna baza z Loom",
+        "status": "not_required; not_assumed"
+      }
+    ],
+    "owner_requirement": {
+      "source": "Zlecenie właściciela A, 2026-10-09; chatadhd/docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+      "ids": [
+        "R15",
+        "R33",
+        "R40",
+        "R41"
+      ],
+      "scope": "Bieżący audyt rozszerza ocenę na ekosystem; nie twierdzi, że wcześniejsze AGEDS miało już wszystkie reguły ChatADHD."
+    },
+    "auditor_interpretation": "Ocena audytora wynikająca z podanej ścieżki, odrębna od wymagania."
+  },
+  {
+    "id": "DEC-EA-AGEDS-007",
+    "finding_id": "EA-AGEDS-007",
+    "current_decision": "Wykluczenia wyboru grup nie przeżywają ponownego załadowania seeda",
+    "visibility": "mixed: code policy, some documented or exposed",
+    "alternatives": [
+      {
+        "variant": "tymczasowe zaznaczenie/odznaczenie",
+        "status": "implemented"
+      },
+      {
+        "variant": "trwałe nadpisanie/wyłączenie/never marker",
+        "status": "missing"
+      }
+    ],
+    "owner_requirement": {
+      "source": "Zlecenie właściciela A, 2026-10-09; chatadhd/docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+      "ids": [
+        "R40",
+        "R15"
+      ],
+      "scope": "Bieżący audyt rozszerza ocenę na ekosystem; nie twierdzi, że wcześniejsze AGEDS miało już wszystkie reguły ChatADHD."
+    },
+    "auditor_interpretation": "Ocena audytora wynikająca z podanej ścieżki, odrębna od wymagania."
+  },
+  {
+    "id": "DEC-EA-AGEDS-008",
+    "finding_id": "EA-AGEDS-008",
+    "current_decision": "Polskie napisy i fallback endpointu są skompilowane w Androidzie",
+    "visibility": "mixed: code policy, some documented or exposed",
+    "alternatives": [
+      {
+        "variant": "runtime endpoint entered in UI",
+        "status": "implemented_consumed"
+      },
+      {
+        "variant": "locale/UI profile z danych",
+        "status": "missing"
+      },
+      {
+        "variant": "default endpoint from profile",
+        "status": "missing"
+      }
+    ],
+    "owner_requirement": {
+      "source": "Zlecenie właściciela A, 2026-10-09; chatadhd/docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+      "ids": [
+        "R42",
+        "R15",
+        "R40"
+      ],
+      "scope": "Bieżący audyt rozszerza ocenę na ekosystem; nie twierdzi, że wcześniejsze AGEDS miało już wszystkie reguły ChatADHD."
+    },
+    "auditor_interpretation": "Ocena audytora wynikająca z podanej ścieżki, odrębna od wymagania."
+  },
+  {
+    "id": "DEC-EA-AGEDS-009",
+    "finding_id": "EA-AGEDS-009",
+    "current_decision": "Wyszukiwanie ma stałą politykę rankingu, tokenizacji i sufitów",
+    "visibility": "mixed: code policy, some documented or exposed",
+    "alternatives": [
+      {
+        "variant": "FTS5 literal query BM25",
+        "status": "implemented_fixed_policy"
+      },
+      {
+        "variant": "sort by time / other supported tokenizer / budgets",
+        "status": "not_data_selectable"
+      }
+    ],
+    "owner_requirement": {
+      "source": "Zlecenie właściciela A, 2026-10-09; chatadhd/docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+      "ids": [
+        "R42",
+        "R41",
+        "R15"
+      ],
+      "scope": "Bieżący audyt rozszerza ocenę na ekosystem; nie twierdzi, że wcześniejsze AGEDS miało już wszystkie reguły ChatADHD."
+    },
+    "auditor_interpretation": "Ocena audytora wynikająca z podanej ścieżki, odrębna od wymagania."
+  },
+  {
+    "id": "DEC-EA-AGEDS-010",
+    "finding_id": "EA-AGEDS-010",
+    "current_decision": "Statusy lease, SHA-256 i schematy są dopuszczalnym mechanizmem",
+    "visibility": "explicit_consent_or_contract",
+    "alternatives": [
+      {
+        "variant": "inna strategia lease czasu",
+        "status": "policy values configurable separately"
+      },
+      {
+        "variant": "ominięcie fencing",
+        "status": "not_an_equivalent_safe_strategy"
+      }
+    ],
+    "owner_requirement": {
+      "source": "Zlecenie właściciela A, 2026-10-09; chatadhd/docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+      "ids": [
+        "R42 exceptions 1,2,3",
+        "AGEDS A01/A04/A05"
+      ],
+      "scope": "Bieżący audyt rozszerza ocenę na ekosystem; nie twierdzi, że wcześniejsze AGEDS miało już wszystkie reguły ChatADHD."
+    },
+    "auditor_interpretation": "Ocena audytora wynikająca z podanej ścieżki, odrębna od wymagania."
+  },
+  {
+    "id": "DEC-EA-AGEDS-011",
+    "finding_id": "EA-AGEDS-011",
+    "current_decision": "Defaulty grup korpusu są już danymi i mają rzeczywistego konsumenta",
+    "visibility": "explicit_consent_or_contract",
+    "alternatives": [
+      {
+        "variant": "seed-defined default groups",
+        "status": "implemented_consumed"
+      },
+      {
+        "variant": "ręczny wybór",
+        "status": "implemented"
+      },
+      {
+        "variant": "pusty legacy seed default",
+        "status": "implemented"
+      }
+    ],
+    "owner_requirement": {
+      "source": "Zlecenie właściciela A, 2026-10-09; chatadhd/docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+      "ids": [
+        "R42",
+        "R40"
+      ],
+      "scope": "Bieżący audyt rozszerza ocenę na ekosystem; nie twierdzi, że wcześniejsze AGEDS miało już wszystkie reguły ChatADHD."
+    },
+    "auditor_interpretation": "Ocena audytora wynikająca z podanej ścieżki, odrębna od wymagania."
+  },
+  {
+    "id": "DEC-EA-AGEDS-012",
+    "finding_id": "EA-AGEDS-012",
+    "current_decision": "Wysłanie plików ma jawny wybór; nie stwierdzono automatycznego wysyłania całego skanu",
+    "visibility": "explicit_consent_or_contract",
+    "alternatives": [
+      {
+        "variant": "odznacz konkretne pliki przed uploadem",
+        "status": "implemented"
+      },
+      {
+        "variant": "szczegółowy profil prywatności dostawcy",
+        "status": "not_in_reviewed_path"
+      }
+    ],
+    "owner_requirement": {
+      "source": "Zlecenie właściciela A, 2026-10-09; chatadhd/docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
+      "ids": [
+        "R15",
+        "AGEDS A01/A11"
+      ],
+      "scope": "Bieżący audyt rozszerza ocenę na ekosystem; nie twierdzi, że wcześniejsze AGEDS miało już wszystkie reguły ChatADHD."
+    },
+    "auditor_interpretation": "Ocena audytora wynikająca z podanej ścieżki, odrębna od wymagania."
+  }
+]

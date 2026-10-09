@@ -1,0 +1,27 @@
+{
+  "base_sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+  "product_modified": false,
+  "commands": [
+    {
+      "command": "npm run test:all",
+      "result": "initially blocked: tsc not found"
+    },
+    {
+      "command": "npm ci --ignore-scripts --no-audit --no-fund --fetch-retries=0 --fetch-timeout=20000",
+      "result": "190 local dependencies installed; no product tracked files changed"
+    },
+    {
+      "command": "npm run lint",
+      "result": "passed"
+    },
+    {
+      "command": "node --import tsx --test tests/scientific/method_engine.test.ts tests/scientific/method_engine_integrity.test.ts tests/unit/config.test.ts tests/unit/llm.test.ts tests/unit/output.test.ts",
+      "result": "53 passed, 0 failed, 0 skipped"
+    },
+    {
+      "command": "WATCHDOG_REPO=$PWD node --import tsx --test <audit>/probes/behavior.test.ts",
+      "result": "3 passed, 0 failed, 0 skipped"
+    }
+  ],
+  "interpretation": "Audit probes assert current defective behavior, not acceptance of a fix."
+}

@@ -1,0 +1,328 @@
+{
+  "repo": "klb-t/AGEDS",
+  "base_branch": "main",
+  "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+  "visibility": "public",
+  "access": "public HTTPS clone; all advertised branches fetched; no authenticated write attempted by subagent",
+  "tracked_files": 370,
+  "class_counts": {
+    "build_tooling_config": 29,
+    "documentation": 45,
+    "tests_fixtures": 100,
+    "product": 62,
+    "preserved_history": 112,
+    "coordination_receipts": 14,
+    "vendor_generated_bootstrap": 4,
+    "research_prototype": 4
+  },
+  "semantic_product_files": 20,
+  "semantic_product_denominator": 62,
+  "semantic_review_ranges": {
+    "server/app/config.py": [
+      [
+        1,
+        20
+      ]
+    ],
+    "server/app/worker.py": [
+      [
+        1,
+        204
+      ]
+    ],
+    "server/app/transcription.py": [
+      [
+        1,
+        72
+      ]
+    ],
+    "server/app/search.py": [
+      [
+        1,
+        146
+      ]
+    ],
+    "server/app/scanner.py": [
+      [
+        1,
+        205
+      ]
+    ],
+    "server/app/jobs.py": [
+      [
+        1,
+        140
+      ]
+    ],
+    "server/app/db.py": [
+      [
+        1,
+        215
+      ]
+    ],
+    "server/app/packages.py": [
+      [
+        1,
+        100
+      ]
+    ],
+    "server/app/main.py": [
+      [
+        1,
+        220
+      ],
+      [
+        408,
+        465
+      ]
+    ],
+    "server/app/cli.py": [
+      [
+        1,
+        45
+      ],
+      [
+        101,
+        104
+      ]
+    ],
+    "androidApp/src/main/java/dev/klbt/ageds/Api.kt": [
+      [
+        1,
+        131
+      ]
+    ],
+    "androidApp/src/main/java/dev/klbt/ageds/MainActivity.kt": [
+      [
+        1,
+        280
+      ]
+    ],
+    "androidApp/src/main/java/dev/klbt/ageds/CorpusVm.kt": [
+      [
+        1,
+        265
+      ]
+    ],
+    "androidApp/src/main/java/dev/klbt/ageds/CorpusStore.kt": [
+      [
+        1,
+        50
+      ]
+    ],
+    "androidApp/src/main/java/dev/klbt/ageds/SourceScanner.kt": [
+      [
+        1,
+        58
+      ]
+    ],
+    "core/src/commonMain/kotlin/dev/klbt/ageds/core/EvidenceInvariant.kt": [
+      [
+        1,
+        12
+      ]
+    ],
+    "core/src/commonMain/kotlin/dev/klbt/ageds/core/CorpusModels.kt": [
+      [
+        1,
+        118
+      ]
+    ],
+    "core/src/commonMain/kotlin/dev/klbt/ageds/core/SourceTextParser.kt": [
+      [
+        1,
+        126
+      ]
+    ],
+    "core/src/commonMain/kotlin/dev/klbt/ageds/core/Models.kt": [
+      [
+        87,
+        186
+      ]
+    ],
+    "core/src/commonMain/kotlin/dev/klbt/ageds/core/SourceScanModels.kt": [
+      [
+        1,
+        82
+      ]
+    ]
+  },
+  "automatic_scan": {
+    "base_branch": "main",
+    "by_signal": {
+      "branch.ast": 704,
+      "branch.control": 1665,
+      "call_order.ast": 98,
+      "call_sequence.control": 13,
+      "dedup.control": 120,
+      "default_argument.ast": 166,
+      "default_argument.lexical": 1295,
+      "endpoint.literal": 5,
+      "exception.ast": 196,
+      "exception.control": 748,
+      "fallback.control": 117,
+      "fallback_or_guard.ast": 283,
+      "missing.control": 912,
+      "network.control": 26,
+      "numeric.literal": 1587,
+      "policy_value.context": 652,
+      "regex.context": 14,
+      "selection.ast": 162,
+      "selection.control": 295,
+      "settings_inheritance.control": 88,
+      "sorting.control": 33,
+      "string.literal": 6073,
+      "truncation.ast": 37,
+      "truncation.control": 50,
+      "ui_text.context": 619
+    },
+    "candidate_count": 15958,
+    "denominator": {
+      "by_category": {
+        "build": 5,
+        "data": 10,
+        "docs": 59,
+        "generated": 1,
+        "history": 112,
+        "other": 8,
+        "product": 61,
+        "research": 2,
+        "tests": 100,
+        "tooling": 12
+      },
+      "definition": "All recursive tracked tree entries at the stated commit, including blobs, symlinks and gitlinks; git history and untracked working files excluded. Manifest mode instead uses the explicit supplied list, whose completeness is not independently verified.",
+      "eligible_code_entries": 76,
+      "scanned_code_entries": 76,
+      "scanned_lines": 11113,
+      "semantic_reviewed_entries": 0,
+      "tracked_entries": 370
+    },
+    "limitations": [
+      "Candidates are not violations or proof of runtime consumption.",
+      "Classification is path-based and can misclassify product code; review inventory.",
+      "AST coverage is Python only; other languages use approximate lexical rules.",
+      "Lexical rules can miss raw strings, embedded expressions, dynamic dispatch and template content.",
+      "No call graph, reachability, consent, graph-to-runtime or UI validation is performed.",
+      "No private repository scanning, product execution, network or paid model calls.",
+      "Output includes paths/hashes/spans, never source excerpts or literal values; paths can still be sensitive."
+    ],
+    "parser_statuses": {
+      "not_python": 45,
+      "parsed": 31
+    },
+    "repo": "klb-t/AGEDS",
+    "rules_sha256": "82602bd0f7dfd597c5edfc87a8392b1d3d52496ccb61abffb0d10d467f5ad10b",
+    "scan_statuses": {
+      "content_excluded_by_path": 1,
+      "out_of_scan_scope": 293,
+      "scanned": 76
+    },
+    "scanner_sha256": "2fd742ca622b89fe0f3010e9361953ac24a205866fab7afe971470bbafb7433e",
+    "scanner_version": "1.0.0",
+    "schema": "klbt.audit-scanner.summary/1",
+    "scope": {
+      "categories": [
+        "build",
+        "product",
+        "research",
+        "tooling"
+      ],
+      "code_extensions": [
+        ".py",
+        ".kt",
+        ".kts",
+        ".java",
+        ".cpp",
+        ".cc",
+        ".c",
+        ".h",
+        ".hpp",
+        ".cxx",
+        ".hxx",
+        ".js",
+        ".jsx",
+        ".ts",
+        ".tsx",
+        ".mjs",
+        ".cjs",
+        ".rs",
+        ".go",
+        ".swift",
+        ".sh",
+        ".bash",
+        ".ps1",
+        ".html",
+        ".css",
+        ".scss",
+        ".qml",
+        ".vue",
+        ".svelte",
+        ".gradle"
+      ],
+      "excluded_content_path_regexes": [
+        "(?i)(^|/)[^/]*(blind|holdout|heldout|hold-out|held-out)[^/]*(/|$)",
+        "(?i)(^|/)(\\.env(?:\\.[^/]*)?|credentials?[^/]*|secrets?[^/]*|[^/]*private[-_]key[^/]*)(/|$)"
+      ],
+      "max_blob_bytes": 2097152
+    },
+    "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+    "source": "immutable_git_tree",
+    "visibility": "public"
+  },
+  "instructions_read": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "HANDOFF.md",
+    "coordination/state.json",
+    "coordination/README.md",
+    "docs/ARCHITECTURE_RULES.md",
+    "ECOSYSTEM.md",
+    "docs/README.md"
+  ],
+  "runtime_probes": 6,
+  "runtime_probe_failures": 0,
+  "test_limitations": [
+    "pytest absent; historical 429 tests not re-claimed",
+    "initial probe blocked by anyio; preserved receipt; isolated original adapter AST then passed",
+    "No Android/JVM/device/build/browser/real ASR run",
+    "Remaining product modules not semantically audited; see inventory"
+  ],
+  "branch_review": "branches.json; standalone commits squash-integrated via 1e71cf8b0163ba194c81e3c713138eac725f7319; do not reopen as four active increments",
+  "bc_status": "No gpt/data-graph-engine-2026-10-09 or gpt/thread7-real-2026-10-09 refs advertised in AGEDS; coordinator handles chatadhd B/C SHA review",
+  "relations": [
+    {
+      "target": "chatadhd",
+      "relation": "planned_interface_partner",
+      "source": "ECOSYSTEM.md",
+      "implemented": false
+    },
+    {
+      "target": "Custom-Keyboard-Pro/iOmatrix",
+      "relation": "conceptual_bidirectional_partner",
+      "source": "ECOSYSTEM.md",
+      "implemented": false
+    },
+    {
+      "target": "loom / LEM-Workbench",
+      "relation": "conceptual_semantic_methods_partner",
+      "source": "ECOSYSTEM.md",
+      "implemented": false
+    },
+    {
+      "target": "Watchdog-JH16",
+      "relation": "conceptual_provenance_research_partner",
+      "source": "ECOSYSTEM.md",
+      "implemented": false
+    },
+    {
+      "target": "research/prototypes/on-device-asr",
+      "relation": "preserved_unconnected_component",
+      "implemented": false
+    }
+  ],
+  "findings_counts": {
+    "naruszenie": 9,
+    "dopuszczalny mechanizm": 2,
+    "już naprawione": 1
+  }
+}

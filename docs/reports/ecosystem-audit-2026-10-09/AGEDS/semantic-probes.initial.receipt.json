@@ -1,0 +1,17 @@
+{
+  "repo": "klb-t/AGEDS",
+  "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+  "tests_run": 6,
+  "failures": 0,
+  "errors": 1,
+  "passed": false,
+  "runtime": "Python stdlib; synthetic temporary SQLite/files; fake faster-whisper boundary",
+  "model_calls": 0,
+  "network_calls": 0,
+  "limitations": [
+    "No Android/JVM/device or browser execution",
+    "No real ASR or quality measurement",
+    "Export omission probe proves tested snapshot, complemented by static consumer trace"
+  ],
+  "log": "test_asr_model_environment_consumed_but_vad_forced (__main__.SemanticProbes.test_asr_model_environment_consumed_but_vad_forced) ... ERROR\ntest_domain_header_dictionary_controls_recognition (__main__.SemanticProbes.test_domain_header_dictionary_controls_recognition) ... ok\ntest_metadata_export_has_no_live_configuration_entities (__main__.SemanticProbes.test_metadata_export_has_no_live_configuration_entities) ... ok\ntest_queue_deduplicates_by_artifact_not_recipe (__main__.SemanticProbes.test_queue_deduplicates_by_artifact_not_recipe) ... ok\ntest_scan_limits_are_consumed_and_reported (__main__.SemanticProbes.test_scan_limits_are_consumed_and_reported) ... ok\ntest_search_hard_ceiling_rejects_request (__main__.SemanticProbes.test_search_hard_ceiling_rejects_request) ... ok\n\n======================================================================\nERROR: test_asr_model_environment_consumed_but_vad_forced (__main__.SemanticProbes.test_asr_model_environment_consumed_but_vad_forced)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/1112e9e8a3c6/audit-work/public/AGEDS/audit-tools/semantic_probes.py\", line 29, in test_asr_model_environment_consumed_but_vad_forced\n    from app.worker import FasterWhisperAdapter\n  File \"/workspace/scratch/1112e9e8a3c6/audit-work/repos/AGEDS/server/app/worker.py\", line 15, in <module>\n    from .verified_reader import CHUNK_SIZE, MAX_MEDIA_BYTES, MAX_READ_BYTES, VerifiedReader\n  File \"/workspace/scratch/1112e9e8a3c6/audit-work/repos/AGEDS/server/app/verified_reader.py\", line 14, in <module>\n    from .verified_media import (CHUNK_SIZE, MAX_CHUNKS, MAX_MEDIA_BYTES,\n  File \"/workspace/scratch/1112e9e8a3c6/audit-work/repos/AGEDS/server/app/verified_media.py\", line 15, in <module>\n    import anyio\nModuleNotFoundError: No module named 'anyio'\n\n----------------------------------------------------------------------\nRan 6 tests in 0.049s\n\nFAILED (errors=1)\n"
+}
