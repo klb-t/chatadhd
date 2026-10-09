@@ -10,7 +10,7 @@ p=argparse.ArgumentParser();p.add_argument('--repo',type=Path,required=True);p.a
 sha=subprocess.check_output(['git','-C',str(a.repo),'rev-parse',a.sha+'^{commit}'],text=True).strip();a.workdir.mkdir(parents=True,exist_ok=True);a.out.parent.mkdir(parents=True,exist_ok=True)
 snapshot=a.workdir/'checkout';snapshot.mkdir(exist_ok=True)
 with tarfile.open(fileobj=io.BytesIO(subprocess.check_output(['git','-C',str(a.repo),'archive',sha]))) as t:t.extractall(snapshot,filter='data')
-args=['bash','tools/local-android-build.sh',':app:compileDebugKotlin',':app:testDebugUnitTest','-Dorg.gradle.jvmargs=-Xmx2g -Dfile.encoding=UTF-8','--max-workers=1']
+args=['bash','tools/local-android-build.sh',':app:compileDebugKotlin',':app:testDebugUnitTest','-Dorg.gradle.jvmargs=-Xmx1g -Dfile.encoding=UTF-8','--max-workers=1']
 if a.audit_tests:args+=['--init-script',str(Path(__file__).with_name('android-tests.gradle').resolve()),'-Daudit.testSource='+str(Path(__file__).with_name('android-tests').resolve()),'--tests','com.example.audit.EcosystemAuditConsumerTest']
 env=os.environ.copy();env['IO_TOOLCHAIN_ROOT']=str(a.toolchain.resolve())
 log=a.out.with_suffix('.log')

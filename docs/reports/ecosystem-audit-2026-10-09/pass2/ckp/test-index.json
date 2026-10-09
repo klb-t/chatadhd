@@ -19,6 +19,24 @@
       "command": "python3 tools/ecosystem-audit-2026-10-09/pass2/ckp/sql_gate.py --repo {repo} --sha {sha} --out {out}/sql.json",
       "base_expected_exit": 0,
       "meaning": "6 actual SQL query/migration checks; not Room/device"
+    },
+    {
+      "id": "ckp-compiled-settings",
+      "command": "python3 tools/ecosystem-audit-2026-10-09/pass2/ckp/compiled_settings_gate.py --repo {repo} --sha {sha} --checkout {built_checkout} --toolchain {toolchain} --deps {deps} --workdir {workdir} --out {out}/compiled-settings.json",
+      "base_expected_exit": 1,
+      "meaning": "10 checks against actual built classes:9 PASS including2 behavior reproductions;1 acceptance FAIL; no codec stub, no storage restart"
+    },
+    {
+      "id": "ckp-android-existing",
+      "command": "python3 tools/ecosystem-audit-2026-10-09/pass2/ckp/android_gate.py --repo {repo} --sha {sha} --toolchain {toolchain} --workdir {workdir} --out {out}/android-existing.json",
+      "base_expected_exit": 0,
+      "meaning": "974 existing unit tests PASS"
+    },
+    {
+      "id": "ckp-android-audit",
+      "command": "python3 tools/ecosystem-audit-2026-10-09/pass2/ckp/android_gate.py --repo {repo} --sha {sha} --toolchain {toolchain} --workdir {workdir} --out {out}/android-audit.json --audit-tests",
+      "base_expected_exit": 1,
+      "meaning": "6 independent Android JVM/Robolectric checks:4PASS/2 acceptance FAIL. No phone."
     }
   ]
 }

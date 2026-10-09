@@ -11,7 +11,8 @@
       "unsupported.B",
       "runtime-profile.B"
     ],
-    "limit": "Actual task resolver/runAiTask. Not AiConfig/HTTP serialization."
+    "limit": "Actual task resolver/runAiTask. Not AiConfig/HTTP serialization.",
+    "android_confirmation": "Actual Android-build/Robolectric taskCollisionAcceptance FAIL in android-audit-tests-receipt.json"
   },
   {
     "id": "CKP-A-002",

@@ -74,5 +74,23 @@
     "dependencies": [
       "B must expose stable profile resolver input"
     ]
+  },
+  {
+    "finding_id": "A2-CKP-004",
+    "priority": "P2",
+    "reproduction": "compiled_settings_gate.py unknown setting A PASS, B FAIL",
+    "expected_behavior": "Generic mutation API returns unsupported/invalid outcome; valid unchanged value still succeeds",
+    "acceptance": "A2-CKP-SETTING-UNKNOWN.B",
+    "consumers": [
+      "SettingsStore.setByKey direct generic API",
+      "SettingsSchema.withValue",
+      "SettingControl.write (validates first)",
+      "Performer.setSetting (validates first)"
+    ],
+    "migration": "Callers relying on always-successful no-op need handle explicit rejection; preserve idempotent writes of already equal valid values.",
+    "risk": "false success for future direct generic callers; existing checked UI validates first",
+    "dependencies": [
+      "B owns SettingsStore contract; update callers together"
+    ]
   }
 ]

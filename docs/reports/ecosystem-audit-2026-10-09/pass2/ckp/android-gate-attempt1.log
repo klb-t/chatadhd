@@ -1,0 +1,72 @@
+
+Welcome to Gradle 9.7.1!
+
+Here are the highlights of this release:
+ - Isolated Projects graduates to incubating
+ - Broader Configuration Cache compatibility
+ - Resilient Sync helps you fix broken builds
+ - More source locations in problem reports
+
+For more details see https://docs.gradle.org/9.7.1/release-notes.html
+
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.7.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:generateDebugBuildConfig
+> Task :app:generateDebugResources
+> Task :app:packageDebugResources
+> Task :app:processDebugNavigationResources
+> Task :app:parseDebugLocalResources
+> Task :app:generateDebugRFile
+> Task :app:kspDebugKotlin
+> Task :app:compileDebugKotlin
+w: file://SCRATCH/ckp/android-checkout/app/src/main/java/com/example/io/AccessibilityNodeData.kt:38:28 'var isChecked: Boolean' is deprecated. Deprecated in Java.
+
+> Task :app:javaPreCompileDebug
+> Task :app:compileDebugJavaWithJavac
+> Task :app:checkDebugAarMetadata
+> Task :app:mapDebugSourceSetPaths
+> Task :app:compileDebugNavigationResources
+> Task :app:mergeDebugResources
+> Task :app:createDebugCompatibleScreenManifests
+> Task :app:extractDeepLinksDebug
+> Task :app:processDebugMainManifest
+> Task :app:processDebugManifest
+The message received from the daemon indicates that the daemon has disappeared.
+Build request sent: Build{id=dd53e984-d7d8-4022-a569-a1c76dc004fc, currentDir=SCRATCH/ckp/android-checkout}
+Attempting to read last messages from the daemon log...
+Daemon pid: 76
+  log file: SCRATCH/ckp/android-toolchain/gradle-home/daemon/9.7.1/daemon-76.out.log
+----- Last 20 lines from daemon log file - daemon-76.out.log -----
+2026-10-09T14:11:56.085+0800 [DEBUG] [org.gradle.launcher.daemon.server.DaemonStateCoordinator] Command execution: started DaemonCommandExecution[command = Build{id=dd53e984-d7d8-4022-a569-a1c76dc004fc, currentDir=SCRATCH/ckp/android-checkout}, connection = DefaultDaemonConnection: socket connection from /127.0.0.1:42175 to /127.0.0.1:60782] after 0.0015833333333333333 minutes of idle
+2026-10-09T14:11:56.086+0800 [INFO] [org.gradle.launcher.daemon.server.DaemonRegistryUpdater] Marking the daemon as busy, address: [d9d71e96-23ad-47c8-83b5-c1ab5a274445 port:42175, addresses:[localhost/127.0.0.1]]
+2026-10-09T14:11:56.086+0800 [DEBUG] [org.gradle.launcher.daemon.registry.PersistentDaemonRegistry] Marking busy by address: [d9d71e96-23ad-47c8-83b5-c1ab5a274445 port:42175, addresses:[localhost/127.0.0.1]]
+2026-10-09T14:11:56.087+0800 [DEBUG] [org.gradle.cache.internal.DefaultFileLockManager] Waiting to acquire exclusive lock on daemon addresses registry.
+2026-10-09T14:11:56.087+0800 [DEBUG] [org.gradle.cache.internal.DefaultFileLockManager] Lock acquired on daemon addresses registry.
+2026-10-09T14:11:56.095+0800 [DEBUG] [org.gradle.cache.internal.DefaultFileLockManager] Releasing lock on daemon addresses registry.
+2026-10-09T14:11:56.096+0800 [DEBUG] [org.gradle.launcher.daemon.server.DaemonStateCoordinator] resetting idle timer
+2026-10-09T14:11:56.096+0800 [DEBUG] [org.gradle.launcher.daemon.server.DaemonStateCoordinator] daemon is running. Sleeping until state changes.
+2026-10-09T14:11:56.097+0800 [INFO] [org.gradle.launcher.daemon.server.exec.StartBuildOrRespondWithBusy] Daemon is about to start building Build{id=dd53e984-d7d8-4022-a569-a1c76dc004fc, currentDir=SCRATCH/ckp/android-checkout}. Dispatching build started information...
+2026-10-09T14:11:56.098+0800 [DEBUG] [org.gradle.launcher.daemon.server.SynchronizedDispatchConnection] thread 23: dispatching org.gradle.launcher.daemon.protocol.BuildStarted@62aa4be3
+2026-10-09T14:11:56.103+0800 [DEBUG] [org.gradle.launcher.daemon.server.exec.LogToClient] About to start relaying all logs to the client via the connection.
+2026-10-09T14:11:56.106+0800 [INFO] [org.gradle.launcher.daemon.server.exec.LogToClient] The client will now receive all logging from the daemon (pid: 76). The daemon log file: SCRATCH/ckp/android-toolchain/gradle-home/daemon/9.7.1/daemon-76.out.log
+2026-10-09T14:11:56.112+0800 [DEBUG] [org.gradle.launcher.daemon.server.exec.RequestStopIfSingleUsedDaemon] Requesting daemon stop after processing Build{id=dd53e984-d7d8-4022-a569-a1c76dc004fc, currentDir=SCRATCH/ckp/android-checkout}
+2026-10-09T14:11:56.113+0800 [LIFECYCLE] [org.gradle.launcher.daemon.server.DaemonStateCoordinator] Daemon will be stopped at the end of the build 
+2026-10-09T14:11:56.113+0800 [DEBUG] [org.gradle.launcher.daemon.server.DaemonStateCoordinator] Stop as soon as idle requested. The daemon is busy
+2026-10-09T14:11:56.114+0800 [DEBUG] [org.gradle.launcher.daemon.server.DaemonStateCoordinator] daemon stop has been requested. Sleeping until state changes.
+2026-10-09T14:11:56.119+0800 [DEBUG] [org.gradle.launcher.daemon.server.exec.ExecuteBuild] The daemon has started executing the build.
+w: file://SCRATCH/ckp/android-checkout/app/src/main/java/com/example/io/AccessibilityNodeData.kt:38:28 'var isChecked: Boolean' is deprecated. Deprecated in Java.----- End of the daemon log -----
+
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Gradle build daemon disappeared unexpectedly (it may have been killed or may have crashed)
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+> Task :app:processDebugManifestForPackage

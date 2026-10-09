@@ -1,0 +1,239 @@
+{
+  "location_count": 12,
+  "location_errors": [],
+  "python_syntax": "PASS",
+  "json_parse": "PASS",
+  "source_repo_status": "clean; git status --short empty",
+  "files": [
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/REPORT.md",
+      "bytes": 8035,
+      "sha256": "9d98dec86e3d0ff82aa8e53bf5ba686e99798b3bfd145581108801460b20d91c"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/android-audit-tests-discovery-failure.log",
+      "bytes": 2980,
+      "sha256": "0ada8ad770c20b0f28987d4bf42ff3c7dadffffb2b9dc0d141626ced7b806ae4"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/android-audit-tests-receipt.json",
+      "bytes": 1561,
+      "sha256": "e6682d32cce178b67b069e0c4e763ba30a4750462553c3a6ee3657320e1766d5"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/android-audit-tests.log",
+      "bytes": 3296,
+      "sha256": "0a9f69c640cabc85ea7ffcfb42cfc8cf2b38e6b851d259adfdd3c89f35f444cc"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/android-existing-tests-receipt.json",
+      "bytes": 159723,
+      "sha256": "2ad331c25df8182e79fe95de017e8ef1a583420f00862beb2446f75156db3bbf"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/android-gate-attempt1.log",
+      "bytes": 5705,
+      "sha256": "eacee9eb00d335aef7adb9109176ec6c63726dc8d7b28d8f3a85657079c94462"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/android-gate-attempt2.log",
+      "bytes": 4570,
+      "sha256": "ee153941450163c15ae199c2a7e8411256dd908e1142aba3be6ffee311c05e48"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/compile.log",
+      "bytes": 822,
+      "sha256": "115ff5f9a08ab3d813271a676cfe6898bff953b6af4d6ec3a97c331710468a5d"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/compiled-settings-javac.log",
+      "bytes": 948,
+      "sha256": "cef21b87699419d8ee441331559f69b0139612f759b00bf0de744fd76abb0c5c"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/compiled-settings-receipt.json",
+      "bytes": 7362,
+      "sha256": "8d22f31c93194538a5aa95b85c14b71a6d46fa6cdd78177989de6fe5857536be"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/compiled-settings-stderr.log",
+      "bytes": 389,
+      "sha256": "1096942184bda6ae7f8a1304154c4c766c9c1d47185b572f49aec5050347016e"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/coverage.json",
+      "bytes": 30506,
+      "sha256": "d259b6a540dbdc65b8cde281ca78414cce514836e886be6dcc583df6ded0c0ed"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/environment.json",
+      "bytes": 2436,
+      "sha256": "9caf4568bb5054957c8fe900d3730a549c24419b1c842c3c10d8460c8b07ef51"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/findings.jsonl",
+      "bytes": 9937,
+      "sha256": "f4d4c03ab13810a0bf25f1dbd716051478246bc0a8a43ee1020d3d01862ff03a"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/flow-map.json",
+      "bytes": 3788,
+      "sha256": "bc7e2b43bf6513ec1d78b253c00836643624cb7ff81eb065d14ab2584541fce2"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/handoff-B.json",
+      "bytes": 4332,
+      "sha256": "29c01cc9032b06ce5ced892cbc524cc06de0d2e10f98f0b61aeb858337ae0579"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/host-receipt.json",
+      "bytes": 5311,
+      "sha256": "e6a59c50b7a5b72f30b41c94ccb794b50e99ad20b4a5f9ba820e56c7aeebc4b6"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/prior-finding-verification.json",
+      "bytes": 1527,
+      "sha256": "707bf60424c6de642eef29c08d79ef45f0eee3872ab4a3b0c4570dc076387a95"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/runtime-stderr.log",
+      "bytes": 369,
+      "sha256": "b6388b835034aec56ebb33b1be3161a669ac3fabe22a7457b44cba6bae148073"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/source-manifest.json",
+      "bytes": 3677,
+      "sha256": "91df6be2db26a3c6bb9b45f2431eb727794442ce6239202bdfd185cb2b9a1c0d"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/sql-receipt.json",
+      "bytes": 5921,
+      "sha256": "ab35fb86b90cbcb986955904292fef2b279b86da3b765ce79c009d7f4080e63f"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/sql-receipt.sqlite",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp/test-index.json",
+      "bytes": 2201,
+      "sha256": "297aa9b1d017ae6ea0da317e4aaaa3df64cb6b73556e7e3ff7dd2ac70f0f08c3"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/AuditMain.kt",
+      "bytes": 7337,
+      "sha256": "d5dd8c187c04511294ca2a3bcbef50ad5e5b21e46f1df7eaf93c45bcced1d4b7"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/CompiledSettingsProbe.java",
+      "bytes": 3029,
+      "sha256": "cbcc06376cee181b3d68a0056c4a2571e4acb3aba088317d4e7f360a4899dc00"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/HostShells.kt.in",
+      "bytes": 2885,
+      "sha256": "dd60ce639331d3de3878aa3e9ed5090fd7dca318d9cef73ceb8ef6f269fb7f43"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/README.md",
+      "bytes": 5787,
+      "sha256": "9c893940895aeba8a7c30617c864151929146125faa7d721b36000d28620c19a"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/__pycache__/android_gate.cpython-312.pyc",
+      "bytes": 5706,
+      "sha256": "5751e19567cd5a1a718a338ac7531d6fd1874ab44b764e86a4ef837b997c270d"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/__pycache__/run.cpython-312.pyc",
+      "bytes": 10162,
+      "sha256": "61c2c3693bbb66494dc792111d318c51bf7c5a2da69e7e5bbf7cdbd7f9f785b5"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/__pycache__/sql_gate.cpython-312.pyc",
+      "bytes": 8998,
+      "sha256": "de66616e4a7e62276821111f0bdfd3858e2722ce347d0f1723101527757fcf3f"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/android-tests/EcosystemAuditConsumerTest.kt",
+      "bytes": 3060,
+      "sha256": "6bb99b5101f88504712cae40add8178bd5b4ba0d24cab81874885b96bd55ca42"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/android-tests.gradle",
+      "bytes": 327,
+      "sha256": "cd5a0cd4dfc4e638391d899c91d104ca63bbb5161fe27472e4cfe57b1be4257b"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/android_gate.py",
+      "bytes": 2507,
+      "sha256": "d1c17fc91e164c8364b61547f2bb760a1f692c0f295c2edeb317f404b9dab2ea"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/bootstrap_deps.py",
+      "bytes": 888,
+      "sha256": "dc3a342a255ac519fddf81634524cf4d513d257887fdab81a1252cad618e839b"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/compiled_settings_gate.py",
+      "bytes": 3004,
+      "sha256": "19779d46dac7bb006ff7aa39c5fd9ec879aaf7ed5f9985fbffef5a000d97b4d9"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/dependencies.json",
+      "bytes": 2519,
+      "sha256": "6a6eaa2f20d2415f59e8bb6455c095f55028bfd94f95c3526d96f48da1f637e8"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/run.py",
+      "bytes": 4350,
+      "sha256": "18cd2759dd2dcef4f185ffcf25b79fcbf7eecf814005cd715e6ceb19c731d2eb"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/sql_gate.py",
+      "bytes": 4032,
+      "sha256": "2952a587a7d5b246587a20b0406f6354102504528d9c78d07897aac2bbc3ac9f"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/stubs/AiTransport.kt",
+      "bytes": 634,
+      "sha256": "05a3d95dfc9ef2a7bf0a3720839af19f803385036bd0ff5f8520c8549d5e4706"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/stubs/Android.kt",
+      "bytes": 204,
+      "sha256": "3e28c6fc31a272bbbfa119d2c1c4f7c253454145b9699184686332fb11dafb91"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/stubs/Asr.kt",
+      "bytes": 105,
+      "sha256": "fec330c45b164ffccb03f619225c27428ba02718c47e3a700e6f2db7b13860d2"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/stubs/Handler.kt",
+      "bytes": 299,
+      "sha256": "ca852f938e528a0c736f6b80d30a639fc424e2729cf1356ed6601e0651605cdd"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/stubs/Infra.kt",
+      "bytes": 139,
+      "sha256": "4e70f589e8d6b16b9525a0764dec524f0d0a7d3af9d40e6de5566d3639ed6f5d"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/stubs/Layout.kt",
+      "bytes": 94,
+      "sha256": "124f845ab0a264d8ae064716aec38e291017251e310a800883524ff94ab0eff4"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/stubs/Settings.kt",
+      "bytes": 542,
+      "sha256": "12972acec6eabf8c6a0966c9fc9db36547c3b54fc7591cb13dc59dd461ef73eb"
+    },
+    {
+      "path": "tools/ecosystem-audit-2026-10-09/pass2/ckp/stubs/Verbs.kt",
+      "bytes": 243,
+      "sha256": "9cf4a3f9ba8a9286b9f89143eb129bdebd574ba101bb5a3fbf434913db2d82e4"
+    }
+  ]
+}

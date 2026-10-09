@@ -1,38 +1,72 @@
-[
-  {
-    "artifact": "gradle",
-    "url": "https://services.gradle.org/distributions/gradle-9.7.1-bin.zip",
-    "exit": 0,
-    "error": "",
-    "http_statuses": [
-      "HTTP/1.1 200 OK",
-      "HTTP/2 307 ",
-      "HTTP/1.1 200 OK",
-      "HTTP/2 302 ",
-      "HTTP/1.1 200 OK",
-      "HTTP/2 200 "
+{
+  "download_probe": [
+    {
+      "artifact": "gradle",
+      "url": "https://services.gradle.org/distributions/gradle-9.7.1-bin.zip",
+      "exit": 0,
+      "error": "",
+      "http_statuses": [
+        "HTTP/1.1 200 OK",
+        "HTTP/2 307 ",
+        "HTTP/1.1 200 OK",
+        "HTTP/2 302 ",
+        "HTTP/1.1 200 OK",
+        "HTTP/2 200 "
+      ]
+    },
+    {
+      "artifact": "jdk",
+      "url": "https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.20.1%2B1/OpenJDK17U-jdk_x64_linux_hotspot_17.0.20.1_1.tar.gz",
+      "exit": 0,
+      "error": "",
+      "http_statuses": [
+        "HTTP/1.1 200 OK",
+        "HTTP/2 302 ",
+        "HTTP/1.1 200 OK",
+        "HTTP/2 200 "
+      ]
+    },
+    {
+      "artifact": "android",
+      "url": "https://dl.google.com/android/repository/commandlinetools-linux-13114758_latest.zip",
+      "exit": 0,
+      "error": "",
+      "http_statuses": [
+        "HTTP/1.1 200 OK",
+        "HTTP/2 200 "
+      ]
+    }
+  ],
+  "compiler": {
+    "command": "java -cp DEPS/* org.jetbrains.kotlin.cli.jvm.K2JVMCompiler -version",
+    "result": "kotlinc-jvm 2.1.20 (JRE17.0.20); PASS"
+  },
+  "android_bootstrap": {
+    "command": "python3 tools/bootstrap-android.py --root SCRATCH/android-toolchain --accept-licenses",
+    "result": "PASS",
+    "pinned_artifacts_verified": {
+      "jdk.tar.gz": "3808d1d15e3ec6bd5b84057fb5d84c33d8a1536a258146bcea2e603fc726e08e",
+      "gradle.zip": "acd53f1edaf02f1a8ff99879f8a34b302661a057d9b063ae9e35b552f804d20a",
+      "cmdline.zip_sha1": "5fdcc763663eefb86a5b8879697aa6088b041e70"
+    },
+    "installed": [
+      "Temurin JDK17.0.20.1+1",
+      "Gradle9.7.1",
+      "Android SDK36.1",
+      "build-tools36.0.0",
+      "build-tools36.1.0",
+      "platform-tools"
     ]
   },
-  {
-    "artifact": "jdk",
-    "url": "https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.20.1%2B1/OpenJDK17U-jdk_x64_linux_hotspot_17.0.20.1_1.tar.gz",
-    "exit": 0,
-    "error": "",
-    "http_statuses": [
-      "HTTP/1.1 200 OK",
-      "HTTP/2 302 ",
-      "HTTP/1.1 200 OK",
-      "HTTP/2 200 "
-    ]
+  "android_gate": {
+    "attempt1": "compile Kotlin/Javac done; daemon disappeared before unit tests; exit1; no XML",
+    "memory": {
+      "cgroup_limit_bytes": 8589934592,
+      "oom_kill_counter_observed": 2,
+      "attribution": "Counter observed; not proof this particular daemon was OOM-killed"
+    },
+    "attempt2": "PASS BUILD SUCCESSFUL 2m43s;32tasks; Xmx1g; existing unit tests actualreceipt",
+    "acceptance_JUnit": "EXECUTED:6tests,4PASS/2FAIL. These are genuine product acceptance failures, not infrastructure. First source discovery failure retained separately."
   },
-  {
-    "artifact": "android",
-    "url": "https://dl.google.com/android/repository/commandlinetools-linux-13114758_latest.zip",
-    "exit": 0,
-    "error": "",
-    "http_statuses": [
-      "HTTP/1.1 200 OK",
-      "HTTP/2 200 "
-    ]
-  }
-]
+  "device": "No physical device or emulator connected; not required for host tests"
+}

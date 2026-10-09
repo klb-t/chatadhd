@@ -59,3 +59,40 @@ clear, pin protection, durable tombstone query, operation-bound undo. They do no
 execute Room/KSP, the Kotlin transaction coordinator, Android FileProvider, or
 real filesystem cleanup. Existing repository tests cover those different layers;
 new full Android gate outcome is recorded separately.
+
+## Actual compiled Settings classes
+
+After the exact Android `compileDebugKotlin` gate, use:
+
+```sh
+python3 tools/ecosystem-audit-2026-10-09/pass2/ckp/compiled_settings_gate.py \
+  --repo /path/to/Custom-Keyboard-Pro --sha SHA \
+  --checkout /tmp/pinned-android-checkout --toolchain /tmp/android-toolchain \
+  --deps /tmp/ckp-audit-deps --workdir /tmp/ckp-compiled-probe \
+  --out /tmp/ckp-audit-results/compiled-settings.json
+```
+
+This verifies product/build input bytes against SHA and calls actual compiled
+SettingsStore/SettingsProfiles/SettingsSchema/SettingsHierarchy with Java reflection
+only for Kotlin Result-mangled method names. No consumer class is replaced. The
+Android SDK jar supplies signatures; Context/init/storage operations are not
+called. 10 checks: 2 reproductions PASS, 7 acceptance PASS, 1 acceptance FAIL for
+generic setByKey returning success on an unknown key. Profile-level unknown values
+and unsupported version are rejected; presentation levels preserve the same
+state. Raw persistent codec drops an unknown future field: this is recorded as
+behavior, not automatically scored as a violation without an extension contract.
+
+`android_gate.py --repo REPO --sha SHA --workdir WORK --toolchain TOOLCHAIN --out OUT`
+creates a separate SHA snapshot and runs the existing Android compile/unit gate.
+Adding `--audit-tests` adds external audit JUnit source through an init script;
+product sources/configuration are untouched. These classes are not claimed as
+executed until a dedicated Android receipt exists. Compilation/toolchain setup
+alone is never a test PASS. Encrypted storage and real process restart remain
+separate from the codec checks above.
+
+Independent Android JUnit is now executed: 6 checks, 4 PASS / 2 acceptance FAIL.
+The initial external source-set discovery failure is retained separately; the
+correct AGP built-in Kotlin adapter uses `.kotlin.srcDir`, not `.java.srcDir`.
+The existing untouched suite also ran: 974 PASS, 0 FAIL/SKIP. Profile save/reopen
+uses actual SettingsProfiles and Android AtomicFile under Robolectric; resetting
+the Context reference is not an OS process restart or hardware Keystore proof.

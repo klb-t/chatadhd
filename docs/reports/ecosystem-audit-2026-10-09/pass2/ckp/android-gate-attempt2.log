@@ -1,0 +1,84 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.7.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:generateDebugBuildConfig UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:processDebugNavigationResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:generateDebugRFile UP-TO-DATE
+> Task :app:kspDebugKotlin UP-TO-DATE
+> Task :app:compileDebugKotlin UP-TO-DATE
+> Task :app:javaPreCompileDebug UP-TO-DATE
+
+> Task :app:compileDebugJavaWithJavac UP-TO-DATE
+The contents of the immutable workspace 'SCRATCH/ckp/android-toolchain/gradle-home/caches/9.7.1/transforms/bf456f4a62bc7440c171b5b127799807' have been modified. These workspace directories are not supposed to be modified once they are created. The modification might have been caused by an external process, or could be the result of disk corruption.
+outputDirectory:
+ - transformed (Directory, 86aaeab3e4cdb4e73b24a624450e0514)
+   - output (Directory, 508a58cb54c484ba1bc6a006052f24e7)
+     - jdkImage (Directory, dd4143b759cc4747f340c98cd65a2223)
+       - lib (Directory, 7b825d6412e6dd66d7088fb7e723ae17)
+         - jrt-fs.jar (RegularFile, 4544abf77c3711732490250d2e9b54c2)
+         - modules (RegularFile, b06c3cc1398deceedf06377b8b7972a1)
+       - release (RegularFile, 6c68c7fcbfe60e7300c9caf71f87155e)
+     - temp (Directory, 5987ca2acbec5c28a72413b1a3ea42ab)
+       - jmod (Directory, 4fd5bfd658339311850833b13545918d)
+
+resultsFile:
+ - results.bin (RegularFile, 4dc685bf3410bd9882e4b35f2d519ebb)
+
+The contents of the immutable workspace 'SCRATCH/ckp/android-toolchain/gradle-home/caches/9.7.1/transforms/bf456f4a62bc7440c171b5b127799807' have been modified. These workspace directories are not supposed to be modified once they are created. The modification might have been caused by an external process, or could be the result of disk corruption.
+outputDirectory:
+ - transformed (Directory, 86aaeab3e4cdb4e73b24a624450e0514)
+   - output (Directory, 508a58cb54c484ba1bc6a006052f24e7)
+     - jdkImage (Directory, dd4143b759cc4747f340c98cd65a2223)
+       - lib (Directory, 7b825d6412e6dd66d7088fb7e723ae17)
+         - jrt-fs.jar (RegularFile, 4544abf77c3711732490250d2e9b54c2)
+         - modules (RegularFile, b06c3cc1398deceedf06377b8b7972a1)
+       - release (RegularFile, 6c68c7fcbfe60e7300c9caf71f87155e)
+     - temp (Directory, 5987ca2acbec5c28a72413b1a3ea42ab)
+       - jmod (Directory, 4fd5bfd658339311850833b13545918d)
+
+resultsFile:
+ - results.bin (RegularFile, 4dc685bf3410bd9882e4b35f2d519ebb)
+
+
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:compileDebugNavigationResources UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :app:processDebugMainManifest UP-TO-DATE
+> Task :app:processDebugManifest UP-TO-DATE
+> Task :app:processDebugManifestForPackage
+> Task :app:processDebugResources
+> Task :app:bundleDebugClassesToRuntimeJar
+> Task :app:bundleDebugClassesToCompileJar
+> Task :app:kspDebugUnitTestKotlin
+> Task :app:preDebugUnitTestBuild UP-TO-DATE
+> Task :app:compileDebugUnitTestKotlin
+> Task :app:javaPreCompileDebugUnitTest
+> Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :app:mergeDebugAssets
+> Task :app:packageDebugUnitTestForUnitTest
+> Task :app:processDebugUnitTestManifest
+> Task :app:generateDebugUnitTestConfig
+> Task :app:processDebugJavaRes
+> Task :app:processDebugUnitTestJavaRes
+> Task :app:testDebugUnitTest
+> Task :app:finalizeTestRoborazziDebug SKIPPED
+w: Detected multiple Kotlin daemon sessions at 
+
+[Incubating] Problems report is available at: file://SCRATCH/ckp/android-checkout/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.7.1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 43s
+32 actionable tasks: 14 executed, 18 up-to-date

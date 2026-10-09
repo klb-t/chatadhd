@@ -1,0 +1,7 @@
+/workspace/scratch/1112e9e8a3c6/continuation/artifacts/tools/ecosystem-audit-2026-10-09/pass2/ckp/CompiledSettingsProbe.java:16: warning: [removal] SecurityManager in java.lang has been deprecated and marked for removal
+  System.setSecurityManager(new SecurityManager(){public void checkPermission(java.security.Permission p){};public void checkConnect(String h,int p){throw new SecurityException("audit external transport blocked");}});
+                                ^
+/workspace/scratch/1112e9e8a3c6/continuation/artifacts/tools/ecosystem-audit-2026-10-09/pass2/ckp/CompiledSettingsProbe.java:16: warning: [removal] setSecurityManager(SecurityManager) in System has been deprecated and marked for removal
+  System.setSecurityManager(new SecurityManager(){public void checkPermission(java.security.Permission p){};public void checkConnect(String h,int p){throw new SecurityException("audit external transport blocked");}});
+        ^
+2 warnings

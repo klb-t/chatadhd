@@ -62,8 +62,8 @@ reprezentacji nie przenosi uprawnień do aplikacji na nowym urządzeniu.
 Dawne „brak kompilatora” zostało usunięte. Kotlin 2.1.20 na JRE 17 wykonuje host
 próby. Pobranie oficjalnego, przypiętego Android toolchain zakończyło się sukcesem:
 Temurin 17.0.20.1+1, Gradle 9.7.1, SDK 36.1, build-tools 36.0.0/36.1.0; skrypt repo
-sprawdził przypięte hashe. Pełna bramka Android jest zapisana osobno, gdy zakończona;
-jej sukces nie jest wnioskowany z instalacji narzędzi.
+sprawdził przypięte hashe. Bramka istniejących testów Android JVM przeszła 974/974; oddzielny audytowy
+JUnit zakończył się 4 PASS / 2 acceptance FAIL. Szczegóły poniżej.
 
 Pakiety dla B: `handoff-B.json`. Uruchamialny indeks: `test-index.json`.
 Szczegóły wykonania i atrapy infrastruktury: README narzędzi CKP.
@@ -71,3 +71,53 @@ Najpierw B powinien zamknąć target/revision-bound apply CKP-A-012, następnie 
 odrzucać nierozpoznane wymagane transformacje A2-CKP-001. Następna niezależna bramka:
 opóźniony rewrite na pełnym IME/Android; potem delayed paste oraz przerwanie sync
 między DB commit a utrwaleniem settings/stateFile.
+
+## Dodatkowy pakiet rzeczywistych klas Settings
+
+Po `compileDebugKotlin` i `compileDebugJavaWithJavac` uruchomiono niezależny Java
+harness przeciw faktycznie zbudowanym klasom aplikacji (żaden Settings/Schema/Profile
+nie jest atrapą). `compiled-settings-receipt.json`: **10 kontroli,9PASS/1FAIL**;
+2PASS to obserwacje/reprodukcje,7PASS to akceptacja,1FAIL akceptacji. Sprawdzono
+zgodność wejść buildu z przypiętym SHA; hashe klas są w receipt.
+
+Profile import odrzuca nieznane klucze i wersję999; wyłączenie `clipboardEnabled`
+przechodzi przez codec profilu i trwały codec Settings; Basic/Advanced/Expert
+zachowują tę samą wartość. To codec, **nie zaszyfrowany zapis ani restart procesu**.
+Surowy codec ignoruje i gubi nieznane pole: zachowanie obserwowane, bez przypisania
+mu automatycznie intencji/przyszłej semantyki właściciela.
+
+**A2-CKP-004:** generic `setByKey` dla nieznanego klucza zwraca sukces bez zmiany.
+To naruszenie lokalnego kontraktu wymaganego w etapie2. Sprawdzone kontrolki UI i
+Performer walidują wcześniej; nie rozszerzam tego wyniku na ich zachowanie.
+
+## Domknięta bramka istniejących testów Android JVM
+
+Instalacja narzędzi wystarczyła do uruchomienia dokładnego buildu repo. Pierwszy
+Gradle daemon zniknął po kompilacji Kotlin/Javac, przed testami; ten brak wyniku
+zachowano w `android-gate-attempt1.log`. Zmniejszenie heap do1GiB i uruchomienie
+po zwolnieniu konkurencyjnego buildu dało `BUILD SUCCESSFUL` w2m43s.
+**974/974 istniejących testów PASS,0FAIL,0SKIP**,101 plików XML, bez zmiany bramek
+lub źródeł. Dokładny licznik XML i lista testów są w
+`android-existing-tests-receipt.json`. To Android JVM/Robolectric, nie telefon,
+emulator, ponowny lint ani assembleDebug. Nie przypisuję wyniku pass testom
+bezpieczeństwa, których te istniejące przypadki nie obejmują.
+
+## Domknięte niezależne testy Android JVM
+
+Zewnętrzne audytowe JUnit zostały podłączone przez init script do Kotlin test
+source set, bez zmian plików produktu. Pierwszy adapter źródeł wskazywał java
+source set: Gradle nie znalazł testów; zachowano tę porażkę infrastruktury osobno.
+Po korekcie wyłącznie skryptu audytowego wykonano **6 testów:4PASS/2FAIL** w35s.
+FAIL to rzeczywiste akceptacje: custom `fix` nadal przegrywa z wbudowanym oraz
+generic `setByKey` nadal raportuje sukces dla nieznanego klucza. Nie są skip/xfail.
+
+PASS obejmuje: odrzucenie nieznanej wartości/wersji profilu, zachowanie tego samego
+stanu przez poziomy UI, codec z zachowaniem disabled i granicy importu sekretów,
+oraz **rzeczywiste save/AtomicFile/reopen SettingsProfiles w Robolectric**.
+Ostatni test resetuje referencję Context i ponownie otwiera magazyn w tym samym
+procesie; nie nazywam go restartem procesu ani testem Android Keystore.
+
+Wznowienie bramki Android nie jest już blokowane brakiem toolchain. Pozostałe
+konkretne luki: fizyczny IME target/focus; realny restart z Keystore; pack update
+po wyłączeniu; crash między DB/settings/sync state; trace/history receptury po
+edycji. Nie otwierano płatnego CI ani wywołań modeli.

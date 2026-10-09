@@ -1,0 +1,112 @@
+{
+  "repo": "klb-t/Custom-Keyboard-Pro",
+  "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+  "level": "JVM calls to actual Android-build Kotlin bytecode; no consumer stubs; codec not encrypted persistence or restart",
+  "build_inputs_verified": 280,
+  "classes": {
+    "com/example/core/config/SettingsSource.class": "97017959a64ff3c6666cd32b3d5d5c9885cf5da4964a2f6ccb87a36220426603",
+    "com/example/core/config/KnobsKt.class": "10e102b252ef3fb9e853699a3c9ad553d635f56911e985835d172c81f6245bc2",
+    "com/example/core/config/SettingsStore$awaitPersistence$2$1.class": "6480d328bc9296a3e2f681ad068cdfcf005f16cf3a0a73777431eefee653046a",
+    "com/example/core/config/SettingsProfile.class": "958aed14e0525f6e06de9a7611a46c3139194ff9e782219e7286ffaa20c42c17",
+    "com/example/core/config/SettingsOwner.class": "8429fc9ef57ca3b0ac6e61a157c43bfa0e6b791670352069931bd498cc9f1b34",
+    "com/example/core/config/SettingsSearch$matches$$inlined$sortedByDescending$1.class": "df2b6fa2c4c71d439f50c5dc307851fe7557717ec5b8f9b37a41a1210cdc630e",
+    "com/example/core/config/AsrEngines.class": "1275c811707d2998165d7611b0366f7c15c25c9d1de9b68b2e9f1ff2cff8716b",
+    "com/example/core/config/SettingOverrideValue.class": "376396c1ec325335e7ded1683edfbfd0d6be5d22021e1a5918933e888ffe9022",
+    "com/example/core/config/ScopedSettingsResolver.class": "85ee72eff1198f656f3b099c2cc92ec16ea7dd9f9f3306427e6ee5c14f2d8cfe",
+    "com/example/core/config/SettingsProfiles$delete$2.class": "d6f6e1a75879598bec37a7640845311abd07b099c207eb2144398dddda683e4f",
+    "com/example/core/config/SettingOverrideValue$IntValue.class": "8704048d755892c641f50ef4f58e7a21441e1a078c934fdfd9f900b3c68db7aa",
+    "com/example/core/config/SettingsLevel.class": "eb7a261bbaf7833871e8a552f6b363e2df625e8a4e40f6f6ac557be67b8063bb",
+    "com/example/core/config/SettingsScope.class": "a6367afbb192a3180af073c4471065e0b058bdc9cc4c719895ff983b3b79ff98",
+    "com/example/core/config/SettingsSchema$Meta.class": "5c1074a100702ab51b53afade289efc8d64075c8e7f1995799010f5337e33659",
+    "com/example/core/config/SettingOverrideValue$TextValue.class": "5a3a630880e137a5da4b9fbca5290dc2dc20520124d52d662ffaa8dd1c118916",
+    "com/example/core/config/SettingsDestinations.class": "11780097956cb48d89244156c96d10b3e133e244926add4149c0c96a68fbf543",
+    "com/example/core/config/ScopedSettingsCache$Address.class": "5dbb41658f6ed44a943d703f5e51034f7534ec7f5a9eceea0b529033ad72ae84",
+    "com/example/core/config/SettingsStore$awaitPersistence$1.class": "e25c54dfbb0fcf741a573cec5ebb074c8789b7783b1dc9b8b26e6d35e626d944",
+    "com/example/core/config/SettingOverrideValue$ListValue.class": "6df5a165b1a5c73e9094269d3cf1992c4863764cc2f25775c59d379e08bb4a2b",
+    "com/example/core/config/SettingsStore$awaitPersistence$2$1$1.class": "e125ef0a6f4a650d4a2ef673d36bdebf114897224d0242e84c487947745e8e1f",
+    "com/example/core/config/ScopedSettingsResolver$WhenMappings.class": "f6761c43822df33035bada4b60b37a94972965a48830d0644d854eabaa9bd224",
+    "com/example/core/config/SettingsSchema.class": "f4b79d5dd74ba96edd4a3208a3fecce7f05659090c4c22d84e9c40eb7cc43846",
+    "com/example/core/config/EffectiveSetting.class": "83cc3408a2adcaf12a002e24cfb3fe6e90ca3f4925c2c5fd94518a94d7c9f026",
+    "com/example/core/config/SettingKind.class": "91c729d7f9bd81889437b8dd2efc9508a4c3f7a65954e843ac220dc3b85e1284",
+    "com/example/core/config/SettingsProfiles$save$2.class": "40c7bbc677f84a6b1f6cd3e53cac6e3d963a793dbfe44e6f2b21bf542c4f111e",
+    "com/example/core/config/SettingsOverrides$Companion.class": "4a98aa74bc3f33bc5ccccd07f2dcedb35ba430c1bcb6ef67f995c049341946b2",
+    "com/example/core/config/Knobs.class": "23e3e73e20c7d9f1aa9a588ec3117a8ea14012cba2b5066ac84cfc493c5b0c55",
+    "com/example/core/config/AiProviders.class": "376485b4d31b7a12116186595ec8d070a4e44cdc6608d5f083cfa7c860875ca0",
+    "com/example/core/config/SettingOverrideValue$DecimalValue.class": "effa1778d8dda3458b112d86522739bf42b796015fa91f35babb3bfc3f57f46d",
+    "com/example/core/config/SettingsOverridePolicy.class": "11d94f1653de838c3160df4803bf4ca02942ac58bc8af99f15e974d80b2c83cd",
+    "com/example/core/config/SettingsHierarchy.class": "4634caf550181e169dfcd32ac50c73fca151c2daad9a290b0171a02edffad125",
+    "com/example/core/config/Knob.class": "8b753333aad424ceda45c5fce502e513b677c9c72edf0e304ca635f47d5007fd",
+    "com/example/core/config/SettingsSchema$WhenMappings.class": "918c68937f26fdc44fae52e4296914060ec2893d3c98272738f08add6db9ab82",
+    "com/example/core/config/ScopedSettingsCache.class": "c091f47c3bfc4d2d432ff36b518eeda451a8954a1d80ea4c2cdd7d6ad1809dfb",
+    "com/example/core/config/SettingOverrideValue$BooleanValue.class": "2da3d8a120f9f73e5a7d8c19e28435e15cc6f52fa83cb6e9c119f8f98cfd9371",
+    "com/example/core/config/SettingsOverrides$Companion$WhenMappings.class": "a0a892eea80d6a8314e1f51a2add859d55d62e724f77250cd63f8e82d6564cbf",
+    "com/example/core/config/Settings.class": "7959c03ac99948848a5e02717c39cc04eb3de27f434e76e9664e507fabc93b15",
+    "com/example/core/config/SettingsProfiles.class": "7bf5533345d70cbde5e73677200e31acbcb7c5322da787dfd4a83364b3d50efa",
+    "com/example/core/config/SettingsStore$WriteRequest.class": "2130bb6e704d2078cbb675048e31c07920d6c932de2eb96c9a5bcbf4b8d3c64f",
+    "com/example/core/config/SettingSpec.class": "de9c5da60d9aa804879b7354c2d53deee57568ccabb6b04b2b5e5b68864bcd99",
+    "com/example/core/config/SettingsAddress.class": "c04e45685f15b2bccdacc1a97cd8a237decc65a222b043c10695ff4b3989afe9",
+    "com/example/core/config/SettingOverrideValue$LongValue.class": "84fe213640c37fee9a70e8b9f4411523f3e6661ac4fc9a18ccb86aa57b71de1d",
+    "com/example/core/config/ResolvedSettings.class": "6a122f5b6048be751f662300ade57c377181a5169e932280ed99d44f18eb95d3",
+    "com/example/core/config/SettingsOverrides.class": "b21fa1d542261101ba5ffebe98b2c5ac08d0a0262eb6cc76fd224e9d11f237c1",
+    "com/example/core/config/SettingsSearch.class": "ca1fb51bcf7822b019a45d19f37b7eed7f62de77f2d097a359fb43b9e8be87d8",
+    "com/example/core/config/SettingsStore.class": "8d19c76d79f23b3d9a8926f5cf9d99cd1ba5295fbffd558b4d2b45695a934e8e",
+    "com/example/core/config/SettingsStore$1.class": "f32df83d22a1021ccacd65e4fa2efb6b7f264c0f5478b4f9c1efa779d0cf0589"
+  },
+  "cases": [
+    {
+      "id": "A2-CKP-SETTING-UNKNOWN.A",
+      "lane": "reproduction",
+      "status": "PASS"
+    },
+    {
+      "id": "A2-CKP-SETTING-UNKNOWN.B",
+      "lane": "acceptance",
+      "status": "FAIL"
+    },
+    {
+      "id": "A2-CKP-PROFILE-UNKNOWN.B",
+      "lane": "acceptance",
+      "status": "PASS"
+    },
+    {
+      "id": "A2-CKP-PROFILE-CODEC.B",
+      "lane": "acceptance",
+      "status": "PASS"
+    },
+    {
+      "id": "A2-CKP-SAME-STATE-BASIC.B",
+      "lane": "acceptance",
+      "status": "PASS"
+    },
+    {
+      "id": "A2-CKP-SAME-STATE-ADVANCED.B",
+      "lane": "acceptance",
+      "status": "PASS"
+    },
+    {
+      "id": "A2-CKP-SAME-STATE-EXPERT.B",
+      "lane": "acceptance",
+      "status": "PASS"
+    },
+    {
+      "id": "A2-CKP-PROFILE-VERSION.B",
+      "lane": "acceptance",
+      "status": "PASS"
+    },
+    {
+      "id": "A2-CKP-STATE-UNKNOWN.A",
+      "lane": "reproduction",
+      "status": "PASS"
+    },
+    {
+      "id": "A2-CKP-STATE-DISABLED.B",
+      "lane": "acceptance",
+      "status": "PASS"
+    }
+  ],
+  "exit_code": 1,
+  "counts": {
+    "PASS": 9,
+    "FAIL": 1
+  }
+}

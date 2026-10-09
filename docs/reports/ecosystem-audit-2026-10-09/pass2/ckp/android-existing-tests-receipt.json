@@ -1,0 +1,4885 @@
+{
+  "repo": "klb-t/Custom-Keyboard-Pro",
+  "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+  "gate": "actual existing Gradle :app:testDebugUnitTest; unchanged repository tests",
+  "level": "Android JVM/Robolectric; not hardware/device",
+  "exit_code": 0,
+  "xml_files": 101,
+  "counts": {
+    "PASS": 974,
+    "FAIL": 0,
+    "SKIP": 0
+  },
+  "tests": [
+    {
+      "classname": "com.example.ExampleRobolectricTest",
+      "name": "read string from context",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.ExampleUnitTest",
+      "name": "addition_isCorrect",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.assistant.AssistantSessionVisibilityTest",
+      "name": "oldActivityDetachCannotRemoveCurrentInvocationsCancellation",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.assistant.AssistantSessionVisibilityTest",
+      "name": "externalOrMissingTokenCannotAttachToAVisibleSession",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.assistant.AssistantSessionVisibilityTest",
+      "name": "aNewInvocationCancelsOldWorkAndIgnoresLateHideFromOldSession",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.assistant.AssistantSessionVisibilityTest",
+      "name": "hiddenSessionInvalidatesAndNotifiesOnce",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.assistant.EcosystemAgentBridgeTest",
+      "name": "proposalContentCannotOverwriteTheLocalGoalOrRestoreAuthority",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.assistant.EcosystemAgentBridgeTest",
+      "name": "runtimeProposalEntersTheSameVoiceGoalReviewPathWithoutGrants",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.assistant.EcosystemAgentBridgeTest",
+      "name": "exportedDefinitionsRemainCompatibleWithTheRuntimeProjection",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.assistant.GoalDispatchPolicyTest",
+      "name": "launchCaptureSetupAndMutationBindingsStayOnMain",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.assistant.GoalDispatchPolicyTest",
+      "name": "localReadOnlyBindingsUseAWorker",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.assistant.GoalEvaluationBridgeTest",
+      "name": "exportProductionPromptAndValidateResponses",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.assistant.GoalJsonTest",
+      "name": "argumentsAreStringsNotExecutableObjects",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.assistant.GoalJsonTest",
+      "name": "executionStateAndPermissionClaimsCannotBeImported",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.assistant.GoalJsonTest",
+      "name": "roundTripBindsTheActualGoalNotAnImportedAuthority",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.assistant.GoalJsonTest",
+      "name": "duplicateFieldsCannotChangePlanMeaning",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.assistant.GoalJsonTest",
+      "name": "repeatedNamesInDifferentObjectsAreValidButNonJsonSyntaxIsNot",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.assistant.GoalJsonTest",
+      "name": "exportContainsNoGoalOrRuntimeAuthorizationFields",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.assistant.GoalJsonTest",
+      "name": "malformedCyclicOrOversizedPlansAreRejected",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.assistant.GoalJsonTest",
+      "name": "versionIsAnIntegerAndSupported",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.assistant.GoalJsonTest",
+      "name": "noAlternativeIsNotAnExecutablePlan",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.assistant.GoalJsonTest",
+      "name": "unknownOperationsRemainGapsNotParserErrors",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.assistant.GoalPhoneCatalogueTest",
+      "name": "rotationConstraintsAreAssessedBeforeApproval",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.assistant.GoalPhoneCatalogueTest",
+      "name": "diagnosticVariantsRequireOnlyTheirActualPrerequisites",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.assistant.GoalPhoneCatalogueTest",
+      "name": "schemasRejectGuessedOrInjectedIdentitiesAndUnknownSystemRoutes",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.assistant.GoalPhoneCatalogueTest",
+      "name": "phoneBindingsRemainCanonicalAndDistinguishSetupFromEffects",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.assistant.GoalSpeechInputTest",
+      "name": "malformedScalarPreferencesHaveSafeDefaults",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.assistant.GoalSpeechInputTest",
+      "name": "externalIntentCannotAddAudioRoutingContextOrExecutionAuthority",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.assistant.GoalSpeechInputTest",
+      "name": "resultCountTextAndConfidenceAreBoundedAndUntypedFieldsAreDropped",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.assistant.OnDeviceSpeechTurnTest",
+      "name": "timeoutReleasesTheMicAndReportsOneTerminalError",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.assistant.OnDeviceSpeechTurnTest",
+      "name": "fileOrSegmentedRequestNeverFallsBackToOpeningTheMic",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.assistant.OnDeviceSpeechTurnTest",
+      "name": "oneTurnCannotRestartOrCreateConcurrentRecording",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.assistant.OnDeviceSpeechTurnTest",
+      "name": "rawAudioAndProviderEventBundlesDoNotCrossTheTranscriptBoundary",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.assistant.OnDeviceSpeechTurnTest",
+      "name": "cancellationDestroysExactlyOnceAndRejectsLateOrSynchronousCallbacks",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.assistant.OnDeviceSpeechTurnTest",
+      "name": "unavailableEngineNeverCreatesOrStartsACloudFallback",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.assistant.OnDeviceSpeechTurnTest",
+      "name": "finalTranscriptIsDeliveredOnlyAfterDelegateRelease",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.assistant.OnDeviceSpeechTurnTest",
+      "name": "hiddenHostDropsTheTranscriptAndClosesTheDelegate",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.assistant.OnDeviceSpeechTurnTest",
+      "name": "stopRequestsFinalRecognitionAndRetainsTheBoundedDeadline",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.clipboard.ClipboardRecoveryTest",
+      "name": "migration retains old manual deletion intent separately from trash",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.clipboard.ClipboardRecoveryTest",
+      "name": "copies within the same millisecond still paste and trim in insertion order",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.clipboard.ClipboardRecoveryTest",
+      "name": "replacing repeated text keeps one active copy and records superseded identity",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.clipboard.ClipboardRecoveryTest",
+      "name": "single deletion undo is bound to its operation including pinned entries",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.clipboard.ClipboardRecoveryTest",
+      "name": "trash expiry removes only expired deleted entries and their bytes",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.clipboard.ClipboardRecoveryTest",
+      "name": "review is read only and confirm cannot delete later copies or pins",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.clipboard.ClipboardRecoveryTest",
+      "name": "image bytes survive deleting reopening and restoring history",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.clipboard.ClipboardRecoveryTest",
+      "name": "share ingress rejects file paths duplicates and excessive attachments",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.clipboard.ClipboardRecoveryTest",
+      "name": "bulk undo preserves a separate deletion made after clear review",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.clipboard.ClipboardRecoveryTest",
+      "name": "a failed trim transaction cannot delete retained image bytes",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.clipboard.ClipboardRecoveryTest",
+      "name": "copying a pictures label as text never deduplicates image entries",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.clipboard.ClipboardRecoveryTest",
+      "name": "bulk undo cannot restore an item restored and separately deleted again",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.clipboard.ClipboardRecoveryTest",
+      "name": "migration preserves existing rows and assigns distinct stable sync ids",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.AbilitiesTest",
+      "name": "a special access says where in the settings it actually is",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.AbilitiesTest",
+      "name": "dictation is the one that is built and asks with a dialog",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.AbilitiesTest",
+      "name": "what is not built yet says so instead of looking broken",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.AbilitiesTest",
+      "name": "an unknown id is null rather than a guess",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.AbilitiesTest",
+      "name": "ids are unique, because features look abilities up by them",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.AbilitiesTest",
+      "name": "no ability is allowed to answer that the app stops working",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.AbilitiesTest",
+      "name": "a special access sends you to a screen and a permission does not",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.AbilitiesTest",
+      "name": "acting inside other apps is honest that there is no lesser way",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.AbilitiesTest",
+      "name": "every ability says what happens without it",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ActionProfilesTest",
+      "name": "hide and new instances need no new UI code",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ActionProfilesTest",
+      "name": "invalid action does not replace a working profile",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ActionProfilesTest",
+      "name": "bundled examples resolve to existing actions and routes",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ActionProfilesTest",
+      "name": "unknown schemas and duplicate ids are reported",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ActionProfilesTest",
+      "name": "an override changes one field without losing the action",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ActionStatsTest",
+      "name": "learning survives being saved",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ActionStatsTest",
+      "name": "defaults show before anything is learned, and give way to use",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ActionStatsTest",
+      "name": "what is used in an app is offered in that app",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ActionStatsTest",
+      "name": "labels read like what a person calls them",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ActionStatsTest",
+      "name": "an empty field with something copied offers paste, a terminal its keys",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ActionStatsTest",
+      "name": "typing and cursor keys are not shortcuts",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ActionStatsTest",
+      "name": "a shortcut is called up by name only after the prefix",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.AiTaskProfilesTest",
+      "name": "profile is expert application data without key or layout overrides",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.AiTaskProfilesTest",
+      "name": "invalid imported profiles fail closed and schema rejects them",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.AiTaskProfilesTest",
+      "name": "legacy writing stays small while planning has its own default",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.AiTaskProfilesTest",
+      "name": "removing a field restores inheritance without changing the other task",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.AiTaskProfilesTest",
+      "name": "task presets preserve existing limits even with a configured writing provider",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.AiTaskProfilesTest",
+      "name": "task overrides win over provider parameters and probe limit wins over task",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.AltGrTest",
+      "name": "a layout with nothing to put there has no such layer",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.AltGrTest",
+      "name": "every other key keeps doing what it did",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.AltGrTest",
+      "name": "AltGr on a layout without one falls back rather than blanking",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.AltGrTest",
+      "name": "shift and AltGr gives the capital",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.AltGrTest",
+      "name": "there is a way in from the soft keyboard",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.AltGrTest",
+      "name": "the Polish layout carries the programmer's layout everyone already knows",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.AltGrTest",
+      "name": "AltGr and shift together ask for the capitals",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.AltGrTest",
+      "name": "holding AltGr shows the AltGr level",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.AltGrTest",
+      "name": "AltGr does not turn letters into key events",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.AltGrTest",
+      "name": "the key that already switches layout keeps doing that",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ApiKeyTest",
+      "name": "a key is attributed to the provider that issues that shape",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ApiKeyTest",
+      "name": "an unrecognised key belongs to nobody in particular",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ApiKeyTest",
+      "name": "a pattern survives a round trip through the catalogue format",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ApiKeyTest",
+      "name": "every pattern in the catalogue is a regular expression that compiles",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ApiKeyTest",
+      "name": "a masked key says which one it is without being one",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ApiKeyTest",
+      "name": "whitespace around it is not a reason to refuse",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ApiKeyTest",
+      "name": "the more specific prefix wins",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ApiKeyTest",
+      "name": "a long opaque token looks like a key",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ApiKeyTest",
+      "name": "a provider without one accepts anything key-shaped",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ApiKeyTest",
+      "name": "a provider with a pattern is held to it",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ApiKeyTest",
+      "name": "ordinary clipboard contents do not",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CallSpecTest",
+      "name": "a prompt with quotes and newlines cannot break out of its string",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CallSpecTest",
+      "name": "a placeholder a template asks for can be listed",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CallSpecTest",
+      "name": "an empty path is the whole reply",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CallSpecTest",
+      "name": "nesting is substituted all the way down",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CallSpecTest",
+      "name": "a placeholder with text around it stays text",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CallSpecTest",
+      "name": "numbers and booleans come back as text when asked for text",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CallSpecTest",
+      "name": "a path that is not there is nothing, not an exception",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CallSpecTest",
+      "name": "a malformed path degrades instead of throwing",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CallSpecTest",
+      "name": "the paths the catalogue actually uses all resolve",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CallSpecTest",
+      "name": "a whole-string placeholder keeps the type of what it resolves to",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CallSpecTest",
+      "name": "a field nothing supplies is dropped rather than sent empty",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CallSpecTest",
+      "name": "placeholders are filled and unknown ones vanish",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CallSpecTest",
+      "name": "what is already a number in the template is left alone",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapabilitySetupTest",
+      "name": "fresh user finds Google Embedding 2 routes without any account and saves only embedding",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapabilitySetupTest",
+      "name": "same model through different providers survives fact discovery",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapabilitySetupTest",
+      "name": "router fact retains routing provider instead of model author",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapabilitySetupTest",
+      "name": "switching dictation route removes unrelated legacy endpoint and credential",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapabilitySetupTest",
+      "name": "chat profile temperature and token controls reach the actual config",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapabilitySetupTest",
+      "name": "embedding verification rejects incorrect dimensions and nonnumeric vectors",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapabilitySetupTest",
+      "name": "provider capability profiles and setup instructions round trip",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapabilitySetupTest",
+      "name": "declared cleared key does not fall back to legacy key",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapabilitySetupTest",
+      "name": "remote profile override is excluded from device-only recommendations",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapabilitySetupTest",
+      "name": "legacy credentials seed first profile edits but cleared profiles stay cleared",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapabilitySetupTest",
+      "name": "polling never forwards credentials to another origin",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapabilitySetupTest",
+      "name": "unknown model ids are not assumed to support embeddings",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapabilitySetupTest",
+      "name": "Gemini Embedding 2 body uses task preparation not unsupported taskType",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapabilitySetupTest",
+      "name": "numeric and boolean looking sample texts remain strings while dimensions are numeric",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapabilitySetupTest",
+      "name": "changing chat providers cannot send old provider key to new endpoint",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapabilitySetupTest",
+      "name": "unknown privacy is excluded and local rule never relaxes to cloud",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapabilitySetupTest",
+      "name": "switching capability routes preserves other capabilities and credentials",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapabilitySetupTest",
+      "name": "model discovery filters chat out of embedding operation",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapabilitySetupTest",
+      "name": "offline recognition is unavailable before Android 12 and does not become system recognition",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapitalisationTest",
+      "name": "an empty field is the start of one, but only when that is known",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapitalisationTest",
+      "name": "a colon is offered because some people and some languages want it",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapitalisationTest",
+      "name": "an empty field is capitalised at either moment",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapitalisationTest",
+      "name": "an abbreviation does not",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapitalisationTest",
+      "name": "pressing shift is preferred to rewriting what was typed",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapitalisationTest",
+      "name": "a rule written without a moment applies at both",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapitalisationTest",
+      "name": "a rule that says nothing cannot be outbid",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapitalisationTest",
+      "name": "typing freely and being tidied up afterwards is another",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapitalisationTest",
+      "name": "something unreadable falls back rather than leaving the keyboard ruleless",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapitalisationTest",
+      "name": "rules survive a round trip",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapitalisationTest",
+      "name": "mid-sentence implies nothing",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapitalisationTest",
+      "name": "capitalising leaves alone what does not need it",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapitalisationTest",
+      "name": "a line break is its own situation",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapitalisationTest",
+      "name": "Title Case is one rule",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapitalisationTest",
+      "name": "no rules means nothing happens",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapitalisationTest",
+      "name": "a finished sentence implies one",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapitalisationTest",
+      "name": "the built-in set is what blank means, and an empty list is not blank",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapitalisationTest",
+      "name": "a bullet or a number opens a list item",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapitalisationTest",
+      "name": "the start of any word is a situation, which is how Title Case is possible",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapitalisationTest",
+      "name": "the same text answers differently depending on the moment",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CapitalisationTest",
+      "name": "a full stop with nothing after it is not a boundary yet",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ClipStoreTest",
+      "name": "sweeping removes what nothing points at and keeps what does",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ClipStoreTest",
+      "name": "provider cannot publish app files outside the clipboard directory",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ClipStoreTest",
+      "name": "a composite carries a file alongside the text",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ClipStoreTest",
+      "name": "an old row still reads as the text it always was",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ClipStoreTest",
+      "name": "a type can be guessed from a name when the provider will not say",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ClipStoreTest",
+      "name": "a composite leads with a summary so a one-item app still gets something",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ClipStoreTest",
+      "name": "a composite skips a part whose bytes have gone rather than failing whole",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ClipStoreTest",
+      "name": "a captured file is named after what it actually is",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ClipStoreTest",
+      "name": "an entry whose bytes are there can be handed over",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ClipStoreTest",
+      "name": "an unknown type falls back to the name, then to something harmless",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ClipStoreTest",
+      "name": "an entry whose bytes have gone reports that, rather than pretending",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ClipStoreTest",
+      "name": "text is always handed over as text",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ClipStoreTest",
+      "name": "nothing selected is nothing to paste",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ClipStoreTest",
+      "name": "a description says what it is, how big, and where from",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CompletionGateTest",
+      "name": "too little text is not worth an inference",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CompletionGateTest",
+      "name": "a working configuration is not refused",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CompletionGateTest",
+      "name": "a sensitive field costs nothing to refuse",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CompletionGateTest",
+      "name": "a provider that cannot complete is not asked to",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CompletionGateTest",
+      "name": "the feature is off until it is turned on",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CompletionGateTest",
+      "name": "a sensitive field is refused whatever else is true",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ComposeSequencesTest",
+      "name": "a prefix of a longer sequence keeps the buffer open",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ComposeSequencesTest",
+      "name": "an unknown sequence resolves to nothing",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ComposeSequencesTest",
+      "name": "the table has no empty entries",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ComposeSequencesTest",
+      "name": "known sequences resolve",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ControlsTest",
+      "name": "a knob turns up with a drag up or right, over its whole range in one travel",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ControlsTest",
+      "name": "a position along the control is a value, and back",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ControlsTest",
+      "name": "controls survive the layout codec",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ControlsTest",
+      "name": "values snap to the step and stay in range",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ControlsTest",
+      "name": "a trembling finger inside a step is not a change",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ControlsTest",
+      "name": "where a control was left survives being saved",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ControlsTest",
+      "name": "the value goes into the action, in every form it is asked for",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ConvertTest",
+      "name": "a WAV file reads back its samples and rate",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ConvertTest",
+      "name": "a waterfall picture is read down the page",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ConvertTest",
+      "name": "overtones fold into the note they belong to",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ConvertTest",
+      "name": "a picture played as sound shows the picture again",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ConvertTest",
+      "name": "a cut off MIDI file gives what it has instead of throwing",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ConvertTest",
+      "name": "the transform finds a tone in its bin",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ConvertTest",
+      "name": "a WAV written while streaming, with no size, is read to the end",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ConvertTest",
+      "name": "words are spread over the notes they are sung to",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ConvertTest",
+      "name": "frequency and position along the axis are inverses",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ConvertTest",
+      "name": "a melody keeps the loudest note at each moment",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ConvertTest",
+      "name": "note names and numbers agree",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ConvertTest",
+      "name": "a MIDI file reads back the notes it was written with",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ConvertTest",
+      "name": "a note's frequency is where the pitch scale puts it",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ConvertTest",
+      "name": "semitones too close for the picture get no rows rather than shared ones",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ConvertTest",
+      "name": "text written from notes reads back as it was written",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ConvertTest",
+      "name": "pieces of speech join into one recording",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ConvertTest",
+      "name": "something that is not MIDI is refused plainly",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ConvertTest",
+      "name": "a played tone is found at its pitch",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ConvertTest",
+      "name": "melodies written as text are told apart from prose",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ConvertTest",
+      "name": "mostly light pictures are inverted unless told otherwise",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ConvertTest",
+      "name": "chords are written with a plus and share one length",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ConvertTest",
+      "name": "the spectrogram's area is given in percent or in fractions",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ConvertTest",
+      "name": "notes drawn as a spectrogram read back whichever way the picture runs",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ConvertTest",
+      "name": "the window is a power of two about a sixth of a second long",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ConvertTest",
+      "name": "note names are read with lengths and rests",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ConvertTest",
+      "name": "words ride along with the notes as lyric events",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ConvertTest",
+      "name": "silence makes a dark picture and no notes",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ConvertTest",
+      "name": "a crop keeps exactly the part inside the edges",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CorrectionDistanceTest",
+      "name": "a transposition counts as one, not two",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CorrectionDistanceTest",
+      "name": "empty strings behave",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CorrectionDistanceTest",
+      "name": "identical words are zero apart",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CorrectionDistanceTest",
+      "name": "one substitution, insertion or deletion is one",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CorrectionDistanceTest",
+      "name": "distance stops early rather than computing a big number",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CursorMagnetTest",
+      "name": "words keep their apostrophes and diacritics",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CursorMagnetTest",
+      "name": "already standing on the slip, nothing moves",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CursorMagnetTest",
+      "name": "a stride goes straight to the nearest typo ahead within reach",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CursorMagnetTest",
+      "name": "presses that stop far from it are left alone",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CursorMagnetTest",
+      "name": "a typo behind the run does not pull it back",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CursorMagnetTest",
+      "name": "the slip is found inside the word, whatever kind it is",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CursorMagnetTest",
+      "name": "two typos equally near is a guess, and guesses do not move the cursor",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CursorMagnetTest",
+      "name": "presses that stop near the only typo finish the trip",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.CursorMagnetTest",
+      "name": "names and acronyms are not suspects, a capital at a sentence start is",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ElementGeometryTest",
+      "name": "dragging past the docked panel stores no movement that does not show",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ElementGeometryTest",
+      "name": "a drag moves the piece by exactly the drag",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ElementGeometryTest",
+      "name": "turning the phone keeps a key's shape instead of stretching it into a bar",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ElementGeometryTest",
+      "name": "an element that may cover the panel says so after a round trip",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ElementGeometryTest",
+      "name": "resizing follows the finger and stays within bounds",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ElementGeometryTest",
+      "name": "stored poses survive a round trip and junk is ignored",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ElementGeometryTest",
+      "name": "a piece allowed over the panel is left its full size",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ElementGeometryTest",
+      "name": "in the orientation it was drawn for, a piece lands exactly where it was drawn",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ElementGeometryTest",
+      "name": "a corner stays a corner in either orientation",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ElementGeometryTest",
+      "name": "a piece dragged into a corner is still in that corner after turning the phone",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ElementGeometryTest",
+      "name": "below the smallest useful size it overlaps rather than vanishing",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ElementGeometryTest",
+      "name": "a piece that does not fit above the docked panel shrinks instead of covering it",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.EngineClosedTest",
+      "name": "every knob is a setting with a sane range, and changing one sticks",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.EngineClosedTest",
+      "name": "a single press still changes the volume when only the double is wired",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.EngineClosedTest",
+      "name": "a wire fires only in its scope",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.EngineClosedTest",
+      "name": "a wire limited to an app switches nothing on elsewhere",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.EngineClosedTest",
+      "name": "scope and exclusions survive the round trip",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.EngineClosedTest",
+      "name": "a phrase is heard inside other words, without diacritics, with a slip",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.EngineClosedTest",
+      "name": "an unwired key is not ours at all",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.EngineClosedTest",
+      "name": "two quick presses are the double, and nothing else",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.EngineClosedTest",
+      "name": "held long enough is the long press, and releasing it does not step the volume",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.EngineClosedTest",
+      "name": "the microphone is wanted only while a voice wire is live",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.EngineTest",
+      "name": "every input id is known to the catalogue exactly once",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.EngineTest",
+      "name": "nothing is listened to that no wire needs",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.EngineTest",
+      "name": "a hand over the sensor is a cover and taking it away an uncover",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.EngineTest",
+      "name": "junk wires are none rather than a guess",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.EngineTest",
+      "name": "held upright and still, nothing happens",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.EngineTest",
+      "name": "a firm shake is one shake",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.EngineTest",
+      "name": "a roll to the left held briefly is one tilt",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.EngineTest",
+      "name": "wires read the way a person writes them",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.EngineTest",
+      "name": "lying flat and still, nothing happens either",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.EngineTest",
+      "name": "a wire limited to an app fires only there, and a disabled one nowhere",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.EngineTest",
+      "name": "turned face down and left there, then picked up",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.IoCommandTest",
+      "name": "ticking leaves ticked boxes alone",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.IoCommandTest",
+      "name": "no listed action falls through to the unwired branch",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.IoCommandTest",
+      "name": "without accessibility every action that needs it still answers",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.IoCommandTest",
+      "name": "a key bound to an action survives the layout file",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.IoCommandTest",
+      "name": "the catalogue is well formed",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.IoCommandTest",
+      "name": "a sweep starts a selection once and then taps",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.IoCommandTest",
+      "name": "an empty query matches nothing rather than everything",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.IoCommandTest",
+      "name": "picture-only rows on one screen are still told apart",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.IoCommandTest",
+      "name": "a named argument wins and the rest keep their positions",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.IoCommandTest",
+      "name": "an unknown verb says so",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.IoCommandTest",
+      "name": "writing and reading back gives the same command, whatever is in it",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.IoCommandTest",
+      "name": "back without accessibility is still the Back key",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.IoCommandTest",
+      "name": "a comma decimal is read the way it was meant",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.IoCommandTest",
+      "name": "an item scrolled back into view is not done twice, which would undo it",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.IoCommandTest",
+      "name": "a quoted label stays one argument",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.IoCommandTest",
+      "name": "a line reads as a verb and its arguments in the verb's own order",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.IoCommandTest",
+      "name": "a link with an equals sign in it is a link, not a named argument",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.IoCommandTest",
+      "name": "a blank line is no command, and verbs are case blind",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.IoCommandTest",
+      "name": "a query matches by text, description and the tail of an id",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.KeyPlacementTest",
+      "name": "the probabilistic model still picks the key that was pressed squarely",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.KeyPlacementTest",
+      "name": "rows split the height and keys split the width by weight",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.KeyPlacementTest",
+      "name": "uppercasing a layer rewrites labels and tap actions together",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.KeyPlacementTest",
+      "name": "hit test returns the key under the finger",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.KeyPlacementTest",
+      "name": "a zero touch weight key is never chosen by the probabilistic model",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.KeyPlacementTest",
+      "name": "split inserts a gap that hit testing then sees",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.KeyPlacementTest",
+      "name": "a touch just outside the surface still finds the nearest key",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.KeyPlacementTest",
+      "name": "swipe direction is eight-way and ignores short movements",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.KeyPlacementTest",
+      "name": "absolutely placed keys land where their bounds say",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.KeyPlacementTest",
+      "name": "placement of an empty layer is empty rather than a crash",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.KeyboardViewportBudgetTest",
+      "name": "ample space retains requested metrics and tiny constraints remain bounded",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.KeyboardViewportBudgetTest",
+      "name": "four toolbar rows plus completion reserve key area inside a resized floating body",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LanguageKeysTest",
+      "name": "a locale is read down to its language",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LanguageKeysTest",
+      "name": "a language without an AltGr level gets no transform at all",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LanguageKeysTest",
+      "name": "it works on the plain board too, not only the scientific one",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LanguageKeysTest",
+      "name": "the language's own letter is the one a hold-and-release gives",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LanguageKeysTest",
+      "name": "only single letters are matched, not whole words",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LanguageKeysTest",
+      "name": "a key whose accents are behind a board gets a strip for them",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LanguageKeysTest",
+      "name": "AltGr types the programmer's layout on any board",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LanguageKeysTest",
+      "name": "keys AltGr says nothing about are untouched",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LanguageKeysTest",
+      "name": "a language with nothing to say leaves the board alone",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LanguageKeysTest",
+      "name": "z keeps \u017c and x gains \u017a, as on a Polish keyboard",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LanguageKeysTest",
+      "name": "AltGr and shift gives the capital",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LanguageKeysTest",
+      "name": "a board key with nothing of this language keeps having no strip",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LanguageKeysTest",
+      "name": "nothing is taken away, only reordered",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutDoctorTest",
+      "name": "two popup tabs with one id keep the first",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutDoctorTest",
+      "name": "an element pointing at a missing layer is caught and redirected",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutDoctorTest",
+      "name": "an empty popup tab is reported and removed",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutDoctorTest",
+      "name": "a sound layout has nothing to report",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutDoctorTest",
+      "name": "a key that draws but does nothing is called out",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutDoctorTest",
+      "name": "a floating element with no bounds is given somewhere visible",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutDoctorTest",
+      "name": "a key switching to a layer that does not exist is reported but not guessed at",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutDoctorTest",
+      "name": "an element placed off screen is brought back",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutDoctorTest",
+      "name": "two keys with one id are renamed rather than dropped",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutDoctorTest",
+      "name": "a zero-sized element is caught",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutDoctorTest",
+      "name": "every built-in layout is healthy",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutDoctorTest",
+      "name": "repair is idempotent",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutDoctorTest",
+      "name": "a duplicated element is reported and collapsed",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutDoctorTest",
+      "name": "renaming does not collide with an id that already exists",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutDoctorTest",
+      "name": "a layout with no layers is reported and left alone",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutDoctorTest",
+      "name": "the same id on two different layers is fine",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutDoctorTest",
+      "name": "repairing a healthy layout changes nothing",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutDoctorTest",
+      "name": "a missing default layer falls back rather than opening on nothing",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutGeometryTest",
+      "name": "alignment preserves size and distribution uses equal clear gaps",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutGeometryTest",
+      "name": "row drag within same row excludes its old slot",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutGeometryTest",
+      "name": "group movement clamps at edges without compressing spacing or changing size",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutGeometryTest",
+      "name": "ambiguous ids and impossible spacing are refused without changing data",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutGeometryTest",
+      "name": "free conversion freezes weighted staggered geometry and preserves all bindings",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutGeometryTest",
+      "name": "row drag crosses rows without changing key actions or layer identity",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutInvariantsTest",
+      "name": "popup groups survive the codec",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutInvariantsTest",
+      "name": "the science layout carries the symbols it promises, where it promises them",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutInvariantsTest",
+      "name": "non-docked elements are given bounds, because nothing else can place them",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutInvariantsTest",
+      "name": "a layer that any key switches to exists",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutInvariantsTest",
+      "name": "the default layer exists",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutInvariantsTest",
+      "name": "popup groups are non-empty and uniquely tabbed",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutInvariantsTest",
+      "name": "elements survive the codec, or the workbench layout cannot be exported",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutInvariantsTest",
+      "name": "every element names a layer the layout actually has",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutInvariantsTest",
+      "name": "the editing keys a science layout exists for are all present",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutInvariantsTest",
+      "name": "key ids are unique within a layer",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutInvariantsTest",
+      "name": "element ids are unique within a layout",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutJsonTest",
+      "name": "a labelled key with no explicit tap still types its label",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutJsonTest",
+      "name": "a model's fenced reply is unwrapped before parsing",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutJsonTest",
+      "name": "a top-level rows array is accepted as the base layer",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutJsonTest",
+      "name": "settings survive a round trip and unknown keys are ignored",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutJsonTest",
+      "name": "a layout with no layers is rejected",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutJsonTest",
+      "name": "bare strings are keys that type themselves",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutJsonTest",
+      "name": "every built-in layout survives a round trip",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutJsonTest",
+      "name": "absolute bounds and background survive a round trip",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutJsonTest",
+      "name": "colours parse in the forms people write them",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutJsonTest",
+      "name": "missing settings fall back to defaults rather than to zero",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutJsonTest",
+      "name": "every trigger and a representative action parse",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutJsonTest",
+      "name": "a nested macro round trips",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LayoutJsonTest",
+      "name": "unreadable json reports why rather than throwing something opaque",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LongPressTunerTest",
+      "name": "nothing is concluded from a handful of taps",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LongPressTunerTest",
+      "name": "wanting the strip sooner shortens it, but never into the taps",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LongPressTunerTest",
+      "name": "an alternate deleted at once makes it a little longer",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LongPressTunerTest",
+      "name": "taps crowding the threshold push it up gently, not all at once",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.LongPressTunerTest",
+      "name": "the bounds hold whatever happens",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MacroTest",
+      "name": "typing is replayed as fast as it likes",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MacroTest",
+      "name": "recording and playing are not part of what is recorded",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MacroTest",
+      "name": "macros survive being saved",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MacroTest",
+      "name": "only a wait says how long to wait",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MacroTest",
+      "name": "a pause around an action on another app is kept, and capped",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MatrixTest",
+      "name": "a video gives up its sound for words",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MatrixTest",
+      "name": "a format is never a type",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MatrixTest",
+      "name": "a PNG keeps a note of where it came from",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MatrixTest",
+      "name": "the phone's voice comes first and a provider's is there to be chosen",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MatrixTest",
+      "name": "note names are played as a melody, and prose is spoken",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MatrixTest",
+      "name": "a layout survives being written down and read back",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MatrixTest",
+      "name": "text hidden in sound is asked for, and then reading a picture of text is the point",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MatrixTest",
+      "name": "a parameter given beats one carried, and only defaults are assumptions",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MatrixTest",
+      "name": "note names into MIDI is a change of form, not a conversion",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MatrixTest",
+      "name": "every transform connects known types and can be carried out somehow",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MatrixTest",
+      "name": "a WAV keeps a note and its sound",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MatrixTest",
+      "name": "made-up content is never a hidden default",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MatrixTest",
+      "name": "choosing a provider route never overrides local only privacy",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MatrixTest",
+      "name": "the same text can be two things, and the specific reading comes first",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MatrixTest",
+      "name": "what to convert to is a type, sometimes with a form and a way",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MatrixTest",
+      "name": "text out of a recording is what was said, never a detour through a picture",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MatrixTest",
+      "name": "a luma picture reads back as brightness",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MatrixTest",
+      "name": "a spectrogram and a scalogram are two ways to the same kind of picture",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MatrixTest",
+      "name": "a spectrogram this app drew is never read for text",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MatrixTest",
+      "name": "the inverse transform undoes the transform",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MatrixTest",
+      "name": "a picture is not text until something reads it, and that needs a reader",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MatrixTest",
+      "name": "drawing a field and reading the drawing gives the field back, whichever way it runs",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MatrixTest",
+      "name": "on the phone only, what needs a provider says so",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MatrixTest",
+      "name": "a MIDI file keeps a note that is never taken for words",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MatrixTest",
+      "name": "a spectrogram picture becomes notes by being read as a field first",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MatrixTest",
+      "name": "a picture heard is the field played, not rounded to notes",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MatrixTest",
+      "name": "the words of a song are there only when the song has words",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MatrixTest",
+      "name": "a waterfall is redrawn in another layout by way of its field",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MatrixTest",
+      "name": "wavelets find a tone at its pitch",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MediaHubRepositoryTest",
+      "name": "persisting a picker source retains its name and survives repository recreation",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MediaHubRepositoryTest",
+      "name": "noncontent selections cannot be stored as authorized files",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MediaHubRepositoryTest",
+      "name": "provider result limits report truncation rather than claiming complete search",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MediaHubRepositoryTest",
+      "name": "provider metadata and null sizes survive the shared adapter",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MediaHubRepositoryTest",
+      "name": "a saved profile alone cannot authorize a different tree",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MediaHubRepositoryTest",
+      "name": "removing a source revokes its grant without deleting remote content",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MediaHubRepositoryTest",
+      "name": "built in views are loadable provider independent profile data",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MediaHubRepositoryTest",
+      "name": "missing grants are visible failures without querying private content",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MediaProfilesTest",
+      "name": "source data cannot invent a filesystem grant or duplicate the same URI",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MediaProfilesTest",
+      "name": "picker requests only read access and allows virtual documents",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MediaProfilesTest",
+      "name": "file types are patterns and folders remain navigable under a media filter",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MediaProfilesTest",
+      "name": "sharing carries the actual URI and a read-only grant",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MediaProfilesTest",
+      "name": "virtual files use provider viewing and refuse invalid raw-byte sharing",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MediaProfilesTest",
+      "name": "search matches the loaded metadata and every query term",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MediaProfilesTest",
+      "name": "missing sizes sort last and zero bytes remains a known size",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MediaProfilesTest",
+      "name": "hidden files and folders follow explicit view choices",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.MediaProfilesTest",
+      "name": "saved source and view profiles preserve user choices",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ModelFactsTest",
+      "name": "a model list is read into facts",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ModelFactsTest",
+      "name": "a field the source does not publish reads as absent, not as everything",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ModelFactsTest",
+      "name": "free is distinguished from unknown",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ModelFactsTest",
+      "name": "a parked source stays described rather than deleted",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ModelFactsTest",
+      "name": "a source that changed shape reads as nothing, not as nonsense",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ModelFactsTest",
+      "name": "a description is readable without knowing the numbers",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ModelFactsTest",
+      "name": "the bundled sources are readable and at least one is on",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ModelFactsTest",
+      "name": "nonsense in the source list is skipped",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ModifierStateTest",
+      "name": "the caps lamp says locked and not merely on",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ModifierStateTest",
+      "name": "tapping a shift the user raised still locks on the second tap",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ModifierStateTest",
+      "name": "a shift raised for one letter comes down after it",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ModifierStateTest",
+      "name": "capitalisation is off until it is asked for",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ModifierStateTest",
+      "name": "a lock is not undone by typing",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ModifierStateTest",
+      "name": "a new field starts with nothing held",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ModifierStateTest",
+      "name": "tapping shift twice locks it, and a third tap clears it",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ModifierStateTest",
+      "name": "tapping a shift the keyboard raised cancels it rather than locking caps",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ModifierStateTest",
+      "name": "without that, it never comes down \u2014 which was the bug",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.NetLinesTest",
+      "name": "tokens are compared whole",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.NetLinesTest",
+      "name": "values on a channel get in with the right token",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.NetLinesTest",
+      "name": "commands get in only when allowed",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.NetLinesTest",
+      "name": "malformed lines are refused whole",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.NetLinesTest",
+      "name": "a wrong, missing or short token is silence",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PasteConversionTest",
+      "name": "off means off, however well configured everything else is",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PasteConversionTest",
+      "name": "on by default would be a keyboard that uploads your documents",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PasteConversionTest",
+      "name": "text is text, even when a clip carries something else too",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PasteConversionTest",
+      "name": "pasting text is never a conversion",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PasteConversionTest",
+      "name": "a named provider wins over the search",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PasteConversionTest",
+      "name": "a provider with a key is picked without being named",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PasteConversionTest",
+      "name": "converting nothing reports why rather than returning an empty string",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PasteConversionTest",
+      "name": "on, but with nothing set up, is still nothing happening",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PasteConversionTest",
+      "name": "an empty clipboard converts to nothing",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PasteConversionTest",
+      "name": "a picture with a reader set up is the one case that converts",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PasteConversionTest",
+      "name": "each kind knows which capability would do it",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PasteConversionTest",
+      "name": "a named provider that cannot do it is not used anyway",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PasteConversionTest",
+      "name": "a clipboard manager with nothing in it does not crash the classifier",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PasteConversionTest",
+      "name": "a picture is a picture and a recording is a recording",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PasteConversionTest",
+      "name": "a provider without a key is not picked, however capable",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PasteConversionTest",
+      "name": "something nobody here can read is left alone",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PocketLockPolicyTest",
+      "name": "a profile cannot trap touch input after disabling both exits",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PocketLockPolicyTest",
+      "name": "key domains are independent and no profile claims system power or home",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PocketLockPolicyTest",
+      "name": "unlocking on a key down still consumes that keys release",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PocketLockTest",
+      "name": "two still fingers held long enough unlock",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PocketLockTest",
+      "name": "plus and minus mean the volume keys",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PocketLockTest",
+      "name": "overlapping unlock prefixes are not discarded",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PocketLockTest",
+      "name": "one finger, or fingers that wander, never do",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PocketLockTest",
+      "name": "a stray press first does not spoil the sequence after it",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PocketLockTest",
+      "name": "modes are read case blind",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PocketLockTest",
+      "name": "the sequence unlocks, in order and in time",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PopupGeometryTest",
+      "name": "a finger that has not really moved stays on the first one",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PopupGeometryTest",
+      "name": "a strip wider than the screen still starts on screen",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PopupGeometryTest",
+      "name": "a strip that grew leftwards is walked leftwards",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PopupGeometryTest",
+      "name": "a single alternate is always the answer",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PopupGeometryTest",
+      "name": "sliding right walks the list one key at a time",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PopupGeometryTest",
+      "name": "sliding past the end stays on the last one",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PopupGeometryTest",
+      "name": "with room to the right it grows right, as normal",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PopupGeometryTest",
+      "name": "holding still gives the first alternate wherever the key is",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PopupGeometryTest",
+      "name": "sliding back left returns to the first rather than wrapping",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PopupGeometryTest",
+      "name": "a zero-width key does not divide by zero",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PopupGeometryTest",
+      "name": "near the right edge the strip grows the other way instead of being pushed back",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PredictTest",
+      "name": "weight scales a contribution",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PredictTest",
+      "name": "nothing is substituted across a difference in cost, at any confidence",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PredictTest",
+      "name": "a floor holds against everything below it",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PredictTest",
+      "name": "the likeliest word does not win when being wrong about it is ruinous",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PredictTest",
+      "name": "confidence is a band, because a number nobody calibrated is a lie",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PredictTest",
+      "name": "offsets commute",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PredictTest",
+      "name": "a veto cannot be outbid",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PredictTest",
+      "name": "an ordinary correction still applies when it is clear enough",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PredictTest",
+      "name": "offsets add in log space and therefore multiply in probability space",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PredictTest",
+      "name": "an ordinary correction waits when it is not clear enough",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PredictTest",
+      "name": "a learned rule is log-odds of how often it was corrected",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PredictTest",
+      "name": "provenance ranks evidence, and a keyboard's own output ranks low",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PredictTest",
+      "name": "a generative modifier may add something nobody typed",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PredictTest",
+      "name": "normalised probabilities sum to one and survive extreme scores",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PredictTest",
+      "name": "a rewrite happens before the offsets that judge it",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PredictTest",
+      "name": "a suppressive modifier can only lower",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PredictTest",
+      "name": "no opinion is not the same as zero",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PredictTest",
+      "name": "a protective modifier cannot introduce a candidate at all",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PredictTest",
+      "name": "a protective modifier cannot raise what the user did not produce",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PreferenceTransformTest",
+      "name": "turning flicks off removes the swipe and its hint, not the tap",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PreferenceTransformTest",
+      "name": "turning off backspace word-swipe leaves the character backspace alone",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PreferenceTransformTest",
+      "name": "turning flicks off does not remove a swipe bound to something else",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PreferenceTransformTest",
+      "name": "with both preferences on, nothing is touched",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PrivateInputTest",
+      "name": "external context does not read private fields and still reads ordinary selection",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PrivateInputTest",
+      "name": "private marker uses token equality",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.PrivateInputTest",
+      "name": "private form identifiers are sensitive even when visible text",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProperNounsTest",
+      "name": "written in lower case often enough, it stops being a name",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProperNounsTest",
+      "name": "acronyms are not names to learn",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProperNounsTest",
+      "name": "a capital at the start of a sentence says nothing about the word",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProperNounsTest",
+      "name": "the default rules fix a name once it is typed, and a veto still wins",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProperNounsTest",
+      "name": "the form comes back as written, not merely capitalised",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProperNounsTest",
+      "name": "what was learned survives being saved",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProperNounsTest",
+      "name": "a word capitalised mid-sentence twice becomes a name",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProvenanceTest",
+      "name": "unknown confidence stays unknown",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProvenanceTest",
+      "name": "an inference early on is never hidden by calculations after it",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProvenanceTest",
+      "name": "a step at a provider is remembered as having left the phone",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProvenanceTest",
+      "name": "the summary says what was inferred and what was assumed",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProvenanceTest",
+      "name": "external knowledge cannot hide that a result was generated or inferred",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProvenanceTest",
+      "name": "a picture's own history says it is a spectrogram and how it was drawn",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProvenanceTest",
+      "name": "anything that is not a history is not taken for one",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProvenanceTest",
+      "name": "a history survives being written into a file and read back",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProviderCatalogTest",
+      "name": "a speaking provider takes its voice as a setting, with a default",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProviderCatalogTest",
+      "name": "a plain chat provider still reports chat without saying so",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProviderCatalogTest",
+      "name": "a placeholder in a template is one the caller can actually supply",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProviderCatalogTest",
+      "name": "unwrapping an object is unchanged",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProviderCatalogTest",
+      "name": "nonsense in the catalogue is skipped rather than fatal",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProviderCatalogTest",
+      "name": "a described call survives a round trip",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProviderCatalogTest",
+      "name": "an array still survives a model wrapping it in prose and a fence",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProviderCatalogTest",
+      "name": "anything that streams says where the token is",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProviderCatalogTest",
+      "name": "defaults and choices survive the round trip",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProviderCatalogTest",
+      "name": "ids are unique",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProviderCatalogTest",
+      "name": "every capability the app knows about has somewhere to send it",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProviderCatalogTest",
+      "name": "every provider is usable as written",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProviderCatalogTest",
+      "name": "the phone itself is offered as a dictation provider",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProviderCatalogTest",
+      "name": "a provider survives a round trip through its own json",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProviderCatalogTest",
+      "name": "a body written as an object becomes the template",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProviderCatalogTest",
+      "name": "a capability a provider does not have is absent, not empty",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProviderCatalogTest",
+      "name": "finishing a sentence is offered by something, and by something free",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProviderCatalogTest",
+      "name": "the catalogue holds what the user asked it to hold",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProviderCatalogTest",
+      "name": "a provider that only makes pictures is not offered as a chat provider",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProviderCatalogTest",
+      "name": "an array survives being unwrapped, which it did not before",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProviderCatalogTest",
+      "name": "every dictation provider is one the code can actually reach",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProviderCatalogTest",
+      "name": "every declared capability says how to reach it",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProviderProfileTest",
+      "name": "nothing stored reads as nothing rather than throwing",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProviderProfileTest",
+      "name": "base URL and model follow the provider too",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProviderProfileTest",
+      "name": "a profile of its own wins over the loose key",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProviderProfileTest",
+      "name": "a key set before profiles existed still works, for its own provider only",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProviderProfileTest",
+      "name": "the set-up list is the ones with a key",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProviderProfileTest",
+      "name": "a provider with no key of its own gets nothing, not somebody else's",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProviderProfileTest",
+      "name": "profiles survive a round trip, keys and parameters and all",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProviderProfileTest",
+      "name": "an unset base URL falls back to what the catalogue says",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ProviderProfileTest",
+      "name": "each provider answers with its own key",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ScienceLayoutBehaviorTest",
+      "name": "local capitalization can decline automatic Shift while preserving manual Shift and authored capitals",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ScienceLayoutBehaviorTest",
+      "name": "quick hold release offers standard shifted punctuation first without losing mathematics",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ScopedSettingsCacheTest",
+      "name": "replacingDefaultsOrLayoutInvalidatesTheEffectivePolicy",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ScopedSettingsCacheTest",
+      "name": "transformedDisplayKeyCannotReplaceTheStoredPolicyOrCrossLayers",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ScopedSettingsTest",
+      "name": "viewport thresholds cascade through the canonical codec and honor ignore policies",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ScopedSettingsTest",
+      "name": "default policy can suppress local overrides without deleting them",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ScopedSettingsTest",
+      "name": "profile applies only to target and rejects a mixed global patch as a whole",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ScopedSettingsTest",
+      "name": "new codec retains sparse typed overrides and old layouts inherit all values",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ScopedSettingsTest",
+      "name": "viewport thresholds are validated Expert defaults with layout and main panel scopes",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ScopedSettingsTest",
+      "name": "main docked panel follows authored shift layer while spare panel remains exact",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ScopedSettingsTest",
+      "name": "cascade has exact provenance and removing a value restores its parent",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ScopedSettingsTest",
+      "name": "explicit empty container is inheritance not copied defaults",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ScopedSettingsTest",
+      "name": "same key id in another layer and another layout stays isolated",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ScopedSettingsTest",
+      "name": "toolbar overrides belong only to the shared main docked panel",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ScopedSettingsTest",
+      "name": "dormant imported viewport values are retained until removal or a real owner change",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ScopedSettingsTest",
+      "name": "credentials permissions invalid types and nonapplicable scope are rejected before mutation",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ScopedSettingsTest",
+      "name": "visibility level cannot change effective value or source",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ScopedSettingsTest",
+      "name": "structured key editing preserves siblings layers and local settings",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ScopedSettingsTest",
+      "name": "overrides cannot be mutated through exposed collections or serialized copies",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SelectionTest",
+      "name": "an editor that declares nothing leaves the position unknown",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SelectionTest",
+      "name": "a move without shift ends the run",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SelectionTest",
+      "name": "the caret turns round without dragging the anchor with it",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SelectionTest",
+      "name": "coming back past the start collapses rather than selecting backwards",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SelectionTest",
+      "name": "extending left twice selects two characters, not one",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SelectionTest",
+      "name": "extending right twice selects two characters",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SelectionTest",
+      "name": "the cursor position is taken from what the editor declared",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SelectionTest",
+      "name": "extending by word grows word by word",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SelectionTest",
+      "name": "only a field that is really empty counts as empty",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SelectionTest",
+      "name": "a selection the keyboard did not make ends the run",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SettingsHierarchyTest",
+      "name": "canonical serialization keeps directly constructed legacy expert mode on restart",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SettingsHierarchyTest",
+      "name": "search reveals that a matching option is hidden without silently raising level",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SettingsHierarchyTest",
+      "name": "ownership filters and reviewed reset cannot alter another owner",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SettingsHierarchyTest",
+      "name": "explicit persisted level is authoritative over contradictory compatibility flag",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SettingsHierarchyTest",
+      "name": "fresh defaults and old saved levels have distinct safe migrations",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SettingsHierarchyTest",
+      "name": "level roundtrip and visibility never reset values",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SettingsHierarchyTest",
+      "name": "every canonical setting has an owner a level and applicable default scope",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SettingsProfilesTest",
+      "name": "profile import rejects credentials unknown settings invalid ranges and types atomically",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SettingsProfilesTest",
+      "name": "local polish context search finds persistence without a model or account",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SettingsProfilesTest",
+      "name": "profile merge preserves credentials and arbitrary unlisted values",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SettingsProfilesTest",
+      "name": "saving only selected keys creates a partial reusable profile",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SettingsProfilesTest",
+      "name": "every bundled profile validates and applies without changing unrelated settings",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SettingsProfilesTest",
+      "name": "invalid single edits leave settings intact and complete json is required",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SettingsProfilesTest",
+      "name": "legacy unlocked hardware policy stays unlocked after migration",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SettingsProfilesTest",
+      "name": "exports exclude flat credentials nested credentials and opaque action data",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SettingsProfilesTest",
+      "name": "unsupported profile version is refused without silent migration",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SettingsSchemaTest",
+      "name": "search finds a setting by key, by label and by group",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SettingsSchemaTest",
+      "name": "a value typed as text still lands in the right type",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SettingsSchemaTest",
+      "name": "coverage settings are grouped together, because they are one decision",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SettingsSchemaTest",
+      "name": "moving a key keeps its size",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SettingsSchemaTest",
+      "name": "the schema covers every setting the codec persists",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SettingsSchemaTest",
+      "name": "a key can never be dragged entirely off the screen",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SettingsSchemaTest",
+      "name": "every Settings property is persisted and exposed including flattened knobs",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SettingsSchemaTest",
+      "name": "a slider range that excludes its own default would be unusable",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SettingsSchemaTest",
+      "name": "moving one key leaves the others alone",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SettingsSchemaTest",
+      "name": "every cursor-avoid strategy and insets mode has a name the codec accepts",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SettingsSchemaTest",
+      "name": "no metadata entry describes a setting that does not exist",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SettingsSchemaTest",
+      "name": "writing a value through the schema is the same as writing the field",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SettingsSchemaTest",
+      "name": "api keys are marked secret without anyone listing them",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SettingsSchemaTest",
+      "name": "pins survive a round trip",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SettingsSchemaTest",
+      "name": "a second move continues from where the first left off",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SettingsSchemaTest",
+      "name": "every enum setting offers its own default as one of the options",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SettingsSchemaTest",
+      "name": "enum values are accepted in any casing and refused when unknown",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SettingsSchemaTest",
+      "name": "unreadable pins are no pins rather than a crash",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SettingsSchemaTest",
+      "name": "reading back a written value gives what was written",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SettingsSchemaTest",
+      "name": "every setting has a label and lands in a named group",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SettingsSchemaTest",
+      "name": "an unknown key and a nonsense value both change nothing",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SetupAdvisorTest",
+      "name": "somebody who will not pay is still given something that works",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SetupAdvisorTest",
+      "name": "what the user typed is matched against what providers are good at",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SetupAdvisorTest",
+      "name": "every recommendation says why, in words",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SetupAdvisorTest",
+      "name": "a strength is matched both ways round",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SetupAdvisorTest",
+      "name": "what is not established is said, not guessed",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SetupAdvisorTest",
+      "name": "impossible local wants never relax the device boundary or replace the operation",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SetupAdvisorTest",
+      "name": "the phone itself wins when the user wants privacy and no account",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SetupAdvisorTest",
+      "name": "the generic escape hatch is never recommended",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SetupAdvisorTest",
+      "name": "asking for several things favours a provider that does all of them",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SetupAdvisorTest",
+      "name": "nothing may leave the device means nothing may leave the device",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SetupAdvisorTest",
+      "name": "a provider the app has never heard of is ranked on its own entry",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SetupAdvisorTest",
+      "name": "a router is preferred by somebody who wants one account",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SetupJourneyTest",
+      "name": "local label never admits LAN or remote endpoint to phone only setup",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SetupJourneyTest",
+      "name": "stale hosted target is rejected when policy becomes on device only",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SetupJourneyTest",
+      "name": "navigation codec rejects malformed unknown oversized and mistyped state",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SetupJourneyTest",
+      "name": "routes and recommendations apply the same hard policy filters",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SetupJourneyTest",
+      "name": "a displayed compromise cannot be selected until user changes its constraint",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SetupJourneyTest",
+      "name": "embedding recommendation survives navigation without changing writing provider",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SetupJourneyTest",
+      "name": "navigation codec retains policy but no credentials or free text",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ShortcutSessionTest",
+      "name": "turning persistence off applies to the running session without opening a keyboard",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ShortcutSessionTest",
+      "name": "pin never brings keyboard over settings keyguard or pocket lock",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ShortcutSessionTest",
+      "name": "explicit hide stops persistence and a future focus change cannot resurrect it",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ShortcutSessionTest",
+      "name": "ordinary keyboard hides normally but a pin survives transient focus loss",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SlicerTest",
+      "name": "a closer with nothing open is unbalanced, not ignored",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SlicerTest",
+      "name": "a surprise budget survives one bad token and still catches drift",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SlicerTest",
+      "name": "a continuation with no terminator is offered whole",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SlicerTest",
+      "name": "stop conditions survive a round trip, because they are data",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SlicerTest",
+      "name": "one generation yields several offers, each a prefix of the last",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SlicerTest",
+      "name": "balance does not fire before anything has opened",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SlicerTest",
+      "name": "a stop string is cut out, not included",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SlicerTest",
+      "name": "a bracket inside a string does not count",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SlicerTest",
+      "name": "a single uncertain token cuts when a floor is set",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SlicerTest",
+      "name": "generating until the brackets close stops there",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SlicerTest",
+      "name": "waiting is a stopping condition",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SlicerTest",
+      "name": "a stopped generation stays stopped",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SlicerTest",
+      "name": "two scopes landing on the same text are one offer",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SlicerTest",
+      "name": "the leading space survives",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SlicerTest",
+      "name": "a continuation that opens with punctuation is not cut back to it",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SlicerTest",
+      "name": "the hard cap fires even when nothing else would",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SlicerTest",
+      "name": "nothing to cut is nothing, not a crash",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SlicerTest",
+      "name": "balance is what closes a generated function",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SlicerTest",
+      "name": "each scope cuts where it says it does",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SlicerTest",
+      "name": "a paragraph ends at a blank line",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SpeechTextTest",
+      "name": "a page scrolled under the reader is not read twice",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SpeechTextTest",
+      "name": "short text is one piece",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SpeechTextTest",
+      "name": "a sentence with no end is cut at a space, never mid-word",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SpeechTextTest",
+      "name": "the last sentence and the last word are what was just written",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SpeechTextTest",
+      "name": "resuming starts at the beginning of the word",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SpeechTextTest",
+      "name": "echo modes are read case blind",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SpeechTextTest",
+      "name": "long text is cut at sentence ends and every piece knows where it starts",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SseReaderTest",
+      "name": "the opening event carries a role and no text, and is not the end",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SseReaderTest",
+      "name": "a stream is cut where the stopping rule says, not where it ends",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SseReaderTest",
+      "name": "a carriage return does not become part of the text",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SseReaderTest",
+      "name": "a stream with no probabilities still stops on everything else",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SseReaderTest",
+      "name": "the space after the colon is optional",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SseReaderTest",
+      "name": "the done marker ends it",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SseReaderTest",
+      "name": "something that is not json is skipped rather than thrown",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SseReaderTest",
+      "name": "streaming fields survive a round trip, because they are data",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SseReaderTest",
+      "name": "no log-probability is null, not zero",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SseReaderTest",
+      "name": "a provider that puts the token somewhere else is a different path, not a branch",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SseReaderTest",
+      "name": "a reader built from a call spec uses what the spec says",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SseReaderTest",
+      "name": "a failure mid-stream is reported rather than read as text",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SseReaderTest",
+      "name": "a keep-alive comment is not text",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SseReaderTest",
+      "name": "a token arrives as a token",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SseReaderTest",
+      "name": "a log-probability comes with it when the provider reports one",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.SseReaderTest",
+      "name": "the other event fields are ignored",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.StreamsTest",
+      "name": "a stream is live where and when it says",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.StreamsTest",
+      "name": "range, dead zone and curve shape an axis without jumps",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.StreamsTest",
+      "name": "tilting a phone lying flat reads as roll and pitch",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.StreamsTest",
+      "name": "sinks are read from plain lines and refuse what they cannot use",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.StreamsTest",
+      "name": "smoothing steadies a jittering hand and follows a real move",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.StreamsTest",
+      "name": "turning the phone like a wheel reads as the angle turned, right positive",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.StreamsTest",
+      "name": "calibration makes where it started zero, and angles wrap round",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.StreamsTest",
+      "name": "streams are written down and read back, and a bad one is refused whole",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.StreamsTest",
+      "name": "nothing is a tilt without three axes, and free fall is no angle",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.StreamsTest",
+      "name": "a whole steering stream, from gravity to an axis",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.StreamsTest",
+      "name": "values go into lines and actions the way they are written",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.StreamsTest",
+      "name": "a rate limit keeps the newest reading per slot",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.StreamsTest",
+      "name": "crossing a level is an event, once, and the line does not chatter",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.TextOpsTest",
+      "name": "backspace removes a flag in one press",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.TextOpsTest",
+      "name": "double space becomes a full stop only after something to end",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.TextOpsTest",
+      "name": "word delete takes the word and the space before it",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.TextOpsTest",
+      "name": "forward delete matches backspace on the same cluster",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.TextOpsTest",
+      "name": "backspace removes a keycap in one press",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.TextOpsTest",
+      "name": "hex unicode entry accepts the usual prefixes",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.TextOpsTest",
+      "name": "line boundaries ignore text on other lines",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.TextOpsTest",
+      "name": "current word stops at punctuation",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.TextOpsTest",
+      "name": "dead keys produce a precomposed character",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.TextOpsTest",
+      "name": "words splits on punctuation but keeps apostrophes",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.TextOpsTest",
+      "name": "forward word delete takes leading space and the word",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.TextOpsTest",
+      "name": "backspace removes a joined emoji sequence in one press",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.TextOpsTest",
+      "name": "backspace removes a whole emoji, not half of one",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.TextOpsTest",
+      "name": "smart quotes open and close by position",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.TextOpsTest",
+      "name": "stroke is handled where there is no combining form",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.TextOpsTest",
+      "name": "backspace removes a combining accent together with its letter",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.TextOpsTest",
+      "name": "backspace removes an emoji with a skin tone modifier in one press",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.TextOpsTest",
+      "name": "backspace on plain text removes one character",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ToolbarRowsTest",
+      "name": "profiles roundtrip as data and rows may repeat the same roles",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ToolbarRowsTest",
+      "name": "blank retains legacy visibility while explicit zero rows remains zero",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ToolbarRowsTest",
+      "name": "reserved context rows do not jump as content changes but explicit unreserved rows do",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ToolbarRowsTest",
+      "name": "invalid rows fail validation and renderer has safe compatibility fallback",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.UndoTest",
+      "name": "typing again makes the redo path unreachable",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.UndoTest",
+      "name": "a run of letters undoes as one word, not one keystroke at a time",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.UndoTest",
+      "name": "a new field starts a new history",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.UndoTest",
+      "name": "redo puts it back again",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.UndoTest",
+      "name": "undo restores a backspace",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.UndoTest",
+      "name": "a history that went stale is dropped rather than half-trusted",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.UndoTest",
+      "name": "text changed by somebody else is never rewritten",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.UndoTest",
+      "name": "undo restores a forward delete without moving the cursor past it",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.UndoTest",
+      "name": "a batched rewrite is one edit, because a correction is one thing",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.UndoTest",
+      "name": "undo puts back what the keyboard typed",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.UndoTest",
+      "name": "undoing back to the start leaves redo working",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.UndoTest",
+      "name": "an accepted suggestion undoes in one press",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.UndoTest",
+      "name": "nothing to undo reports that it did nothing",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.UndoTest",
+      "name": "undo restores a deleted word",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.VaultBackupTest",
+      "name": "boundsFilesPasswordsAndEntryIds",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.VaultBackupTest",
+      "name": "mergeRejectsInvalidOrOversizedInputBeforeMutatingExistingData",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.VaultBackupTest",
+      "name": "wrongPasswordOrTamperedCiphertextNeverReturnsEntries",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.VaultBackupTest",
+      "name": "mergeModesAreExplicitAndDoNotOverwriteByLabel",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.VaultBackupTest",
+      "name": "backupRestoresLoginsAndCardsWithoutTrustBindings",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.VaultBackupTest",
+      "name": "rejectsHostileWorkFactorsCompressionAndAlgorithmsBeforeKeyDerivation",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.VaultBackupTest",
+      "name": "freshSaltAndEncryptionDoNotRepeatTheSameArchive",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.VaultCodecTest",
+      "name": "entryRoundTripPreservesSecretsAndPinnedIdentity",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.VaultCodecTest",
+      "name": "unsupportedVersionAndDuplicateIdsFailClosed",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.VaultPolicyTest",
+      "name": "cardValidationRejectsInvalidNumbersAndDoesNotMixCredentialKinds",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.VaultPolicyTest",
+      "name": "bitwardenAndFirefoxHeadersSupportedButUnsafeUrlsRemainUnbound",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.VaultPolicyTest",
+      "name": "csvImportsQuotedPasswordsWithoutBindingAnyTarget",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.VaultPolicyTest",
+      "name": "bindingCannotDisagreeWithDisplayedWebsite",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.VaultPolicyTest",
+      "name": "exactHttpsNormalizationRejectsAmbiguousOrUnsafeOrigins",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.VaultPolicyTest",
+      "name": "malformedCsvAndMissingSecretsFailEntireImport",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.VaultPolicyTest",
+      "name": "originsRequireExactPackageSignerSetAndHost",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.VaultPolicyTest",
+      "name": "multilineCsvAndBomAreHandledWithoutDroppingSecretCharacters",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ViewportExpertSettingsTest",
+      "name": "resolved layout and main panel policies drive the measured viewport and obey suppression",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.ViewportExpertSettingsTest",
+      "name": "viewport policies have native bounded Expert controls and survive canonical persistence",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.WordListTest",
+      "name": "a second column is a frequency count, not part of the word",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.WordListTest",
+      "name": "sources survive a round trip",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.WordListTest",
+      "name": "the first of two identical words wins, keeping the better rank",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.WordListTest",
+      "name": "a language with no list says nothing rather than guessing",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.WordListTest",
+      "name": "a source missing what it needs is dropped rather than half-built",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.WordListTest",
+      "name": "one word per line works too, and the line number is the rank",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.WordListTest",
+      "name": "both bundled languages are a dictionary rather than a word list",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.WordListTest",
+      "name": "the bundled sources parse and point somewhere plausible",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.WordListTest",
+      "name": "a source the user added wins over one with the same id",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.WordListTest",
+      "name": "held back words are known, spelled correctly, and never offered",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.WordListTest",
+      "name": "the commonest words are there and come out first",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.WordListTest",
+      "name": "comments and blank lines are not words",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.WordListTest",
+      "name": "a completion is longer than what was typed",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.WordListTest",
+      "name": "a leading bang means known but not offered",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalAgentTest",
+      "name": "replacingVoiceInputRevokesAnExecutingTicketAndDoesNotClaimRollback",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalAgentTest",
+      "name": "speechSourceAndImportedPlansCannotBypassFreshPermissionsOrMissingAdapters",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalAgentTest",
+      "name": "cancelAndPauseDiscardPlannerResultsAndDoNotRestartThemOnResume",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalAgentTest",
+      "name": "pauseRevokesStepApprovalButRetainsTheSelectedPlanForFreshReview",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalAgentTest",
+      "name": "invalidOrWrongGoalProposalsCannotReplaceTheExistingRoute",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalAgentTest",
+      "name": "voiceAndTextShareTheSameReviewedExecutionAndVerificationLifecycle",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalAgentTest",
+      "name": "unverifiedEffectsRemainBlockedUntilExplicitObservationAndCancellationRetainsHistory",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalAgentTest",
+      "name": "returnedProposalsAndImportedDefinitionsCannotTransferOrMutateApproval",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalAgentTest",
+      "name": "typingAfterSpeechInvalidatesThePendingVoicePlanAndItsLateFailure",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalAgentTest",
+      "name": "aNewPlannerTurnAndAnotherAgentCannotAcceptAnOldResponse",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "emptyAlternativesAreNotPermission",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "integerArgumentsMatchTheCanonicalPerformerParser",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "staleAndFutureEvidenceFailClosed",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "invalidIdentifiersAndResourceLimitsAreRejected",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "readinessCategoriesStayDistinct",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "webAndPackageTargetsAreAcceptedAsOpenActionsOnly",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "humanObservationIsLabelledAndUnblocksDependencies",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "missingAdapterIsNotCalledImpossible",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "oneApprovalAllowsOneDispatchOnly",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "revokedGrantInvalidatesApproval",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "stopPreventsLateCallbacksAndFutureEffects",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "validDagCanBeListedInAnyOrder",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "numericArgumentsRejectNonfiniteAndOutOfRange",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "jsonBudgetIgnoresBracketsInsideStrings",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "promptContainsTheActualCatalogueAndNoInventedReadiness",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "currentEvidenceIsRequiredAtDispatch",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "textInputHasABudgetAndNoNul",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "alternativesDoNotBecomeConjunctions",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "failedEffectsNeverUnblockDependentTasks",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "oldConfirmationExpiresEvenWithFreshEvidence",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "onlyKnownInternalConsentLinksAreAccepted",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "duplicateAndSelfDependentStepsAreRejected",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "failedNonIdempotentEffectIsNotAutomaticallyRetried",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "twoUnrelatedStepsCannotRunConcurrently",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "dependenciesWaitForActualVerification",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "rejectsUnknownOrMissingArguments",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "integersAreNotSilentlyRounded",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "jsonBudgetRejectsDeepOrUnfinishedDocuments",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "platformReadbackIsDistinctFromHumanObservation",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "stopCancelsPendingStepsButDoesNotClaimRollbackOfDispatchedOnes",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "explicitChoicesAreExact",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "planningAndReviewDoNotRunAnything",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "deniedGrantPreventsBeginning",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "fingerprintBindsEveryEffectAndReason",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "cataloguePresenceDoesNotEstablishHostImplementation",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "aReceiptCannotBeReplayed",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "cyclesAndUnknownDependenciesAreRejected",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "callerCannotMutateTheStoredPlan",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "openTargetsRejectPrivilegedSchemesAndCredentials",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "pauseDuringDispatchPreservesUncertainty",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "pauseInvalidatesApprovalWithoutLosingThePlan",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "allRequirementsNeedAllEvidence",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "noRequirementReallyNeedsNothing",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "failedAlternativesRemainVisible",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "unknownCapabilityCannotBeInventedByModel",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalPlanTest",
+      "name": "nestedConjunctionsKeepTheirAlternativeEvidence",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalSessionTest",
+      "name": "mutatingAPublicReviewOrTicketStepCannotChangeApprovedDispatchArguments",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalSessionTest",
+      "name": "aDefinitiveCancelledReceiptStopsRemainingIndependentSteps",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalSessionTest",
+      "name": "replacingCallerCatalogueDoesNotChangeExistingSessionReviewMetadata",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalSessionTest",
+      "name": "mutableChoiceSetsCannotAddUnreviewedValuesToAnExistingSession",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalSessionTest",
+      "name": "mutatingCrossArgumentListsCannotRelaxAnExistingSession",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalSessionTest",
+      "name": "unverifiedDispatchRemainsPartialAndCannotUnlockADependentStep",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalSessionTest",
+      "name": "mutatingNestedRequirementsCannotRemoveTheOriginalAccessCondition",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalSessionTest",
+      "name": "longDiagnosticNotesCarryAnExplicitMarkerWithinTheBound",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalSessionTest",
+      "name": "conditionalArgumentRequirementsAreFrozenRecursively",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalSessionTest",
+      "name": "definitiveFailureStopsTheRemainingRouteAndRetainsAlreadyVerifiedEffects",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalSessionTest",
+      "name": "mutatingArgumentRulesCannotRelaxAnExistingSession",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalSessionTest",
+      "name": "equalStepsAndEpochsDoNotTransferReceiptsToAnotherSession",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.assistant.GoalSessionTest",
+      "name": "equalPlansAndEvidenceDoNotTransferReviewsToAnotherSession",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.ConversationCaptureTest",
+      "name": "manualModeDoesNotScrollAndRetainsNewFrames",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.ConversationCaptureTest",
+      "name": "continuousStreamingIsCapturedWithoutActions",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.ConversationCaptureTest",
+      "name": "repetitionsAreNotGloballyRemoved",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.ConversationCaptureTest",
+      "name": "clippedSourceCannotBeCalledComplete",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.ConversationCaptureTest",
+      "name": "polishAndDutchLabelsAreProfiles",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.ConversationCaptureTest",
+      "name": "optionsValidateResourceLimits",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.ConversationCaptureTest",
+      "name": "hierarchyAndRevisionsSurvive",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.ConversationCaptureTest",
+      "name": "stopCancelsEveryFutureOperation",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.ConversationCaptureTest",
+      "name": "timeoutRetainsLastSafeObservation",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.ConversationCaptureTest",
+      "name": "adjacentLongOverlapIsOnlyAView",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.ConversationCaptureTest",
+      "name": "expansionIsOnePerStepAndNotRepeatedInSameEpoch",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.ConversationCaptureTest",
+      "name": "frameLimitDoesNotGrowBuffer",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.ConversationCaptureTest",
+      "name": "collapsedActionNeverUsedAsExpand",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.ConversationCaptureTest",
+      "name": "jsonEscapesControlsAndSurrogates",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.ConversationCaptureTest",
+      "name": "toggleRequiresExplicitCollapsedState",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.ConversationCaptureTest",
+      "name": "characterLimitIsExplicit",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.ConversationCaptureTest",
+      "name": "noProgressIsBoundedEvenWhenAppAcceptsScroll",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.ConversationCaptureTest",
+      "name": "targetFailureStopsWithoutLeakingExceptionText",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.ConversationCaptureTest",
+      "name": "semanticExpandDoesNotRequireToggleGuessing",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.ConversationCaptureTest",
+      "name": "privateInputsAndLinksRejected",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.ConversationCaptureTest",
+      "name": "actionsWaitForStableObservation",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.ConversationCaptureTest",
+      "name": "unknownAndDestructiveControlsNeverClicked",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.ConversationCaptureTest",
+      "name": "reachingLocalBoundaryIsNotCompletenessClaim",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.ConversationCaptureTest",
+      "name": "shortOverlapIsNotTrusted",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.TreeObservationTest",
+      "name": "semanticExpandDoesNotNeedEnglishOrKnownLabels",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.TreeObservationTest",
+      "name": "advertisedClickIsRequiredForToggleFallback",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.TreeObservationTest",
+      "name": "nullChildrenAreReportedAndAggregateTextIsOmitted",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.TreeObservationTest",
+      "name": "treeNodeLimitIsExplicit",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.TreeObservationTest",
+      "name": "sessionCountsRevealAndInnerScrollSeparatelyFromExpansion",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.TreeObservationTest",
+      "name": "treeTimeLimitIsExplicit",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.TreeObservationTest",
+      "name": "structuredFactsAreDetachedAndCountTowardArchiveBudget",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.TreeObservationTest",
+      "name": "offscreenExposedTextIsNotDiscarded",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.TreeObservationTest",
+      "name": "expandedSnapshotRetainsNewProviderChildren",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.TreeObservationTest",
+      "name": "visibleOnlyStillVisitsVisibleChildrenOfInvisibleContainers",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.TreeObservationTest",
+      "name": "visibleDisclosuresTakePriorityOverOutsideNodes",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.TreeObservationTest",
+      "name": "explicitExpandedStateOverridesMisleadingCaption",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.TreeObservationTest",
+      "name": "visibleOnlyDisablesOffscreenActions",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.TreeObservationTest",
+      "name": "nestedContainersAreVisitedDeepestFirstAndNotTheMainRoot",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.TreeObservationTest",
+      "name": "invisibleParentCannotLeakFilteredChildAggregate",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.TreeObservationTest",
+      "name": "collapsedProviderDoesNotInventAbsentChildren",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.TreeObservationTest",
+      "name": "everyAcquiredChildIsClosedEvenOnFailure",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.TreeObservationTest",
+      "name": "manualModeRequestsNeitherRevealNorNestedScroll",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.TreeObservationTest",
+      "name": "actionMetadataIsBoundedAndUnicodeJsonIsValid",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.TreeObservationTest",
+      "name": "unavailableBackwardActionDoesNotLoseInnerForwardPass",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.TreeObservationTest",
+      "name": "disabledLinkAndRedactedNodesAreNotActuated",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.TreeObservationTest",
+      "name": "recycledPathsGetANewEpochRatherThanGlobalTextDedup",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.TreeObservationTest",
+      "name": "disablingExpansionDoesNotDisableInnerScrolling",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.TreeObservationTest",
+      "name": "innerScrollNoProgressTerminatesAndAllowsForwardAfterSeek",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.TreeObservationTest",
+      "name": "outsideNativeExpandPrecedesShowRequestAndNeverClicksOffscreen",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.TreeObservationTest",
+      "name": "treeDepthLimitIsExplicit",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.capture.TreeObservationTest",
+      "name": "privateOffscreenSubtreeAndAncestorLabelsAreRedacted",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.debug.RuntimeVariablesTest",
+      "name": "sensitiveReadersAreNeverCalled",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.debug.RuntimeVariablesTest",
+      "name": "descriptorMutationCannotExpandChoiceDomain",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.debug.RuntimeVariablesTest",
+      "name": "invalidationAndPermissionGateRejectWritesBeforeCallingHost",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.debug.RuntimeVariablesTest",
+      "name": "replacedContextRejectsOldEditsAndOldLeaseCannotDetachNewHost",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.devices.ReactiveLightTest",
+      "name": "mailboxEnforcesRateWithoutDroppingNewestPending",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.devices.ReactiveLightTest",
+      "name": "mailboxCoalescesRatherThanQueues",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.devices.ReactiveLightTest",
+      "name": "boundedFrameReaderReturnsOneResponseNotTheNext",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.devices.ReactiveLightTest",
+      "name": "levelMappingIsBoundedByUserPolicy",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.devices.ReactiveLightTest",
+      "name": "unsupportedMusicOrColourIsExplicitlyRejected",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.devices.ReactiveLightTest",
+      "name": "truncatedOversizedOrDeepRepliesAreRejectedBeforeJsonParsing",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.devices.ReactiveLightTest",
+      "name": "deviceCannotRedirectToAnotherTargetOrPort",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.devices.ReactiveLightTest",
+      "name": "invalidPolicyDoesNotCreateARun",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.devices.ReactiveLightTest",
+      "name": "callbackArgumentsCannotInjectProtocolText",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.devices.ReactiveLightTest",
+      "name": "rawFramePreflightDoesNotPretendToBeJsonParser",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.devices.ReactiveLightTest",
+      "name": "duplicateDiscoveryHeadersAreRejected",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.devices.ReactiveLightTest",
+      "name": "permittedPrivateIpv4IsNumericAndExact",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.devices.ReactiveLightTest",
+      "name": "invalidPcmFramesAreRejected",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.devices.ReactiveLightTest",
+      "name": "backwardsSourceTimeIsRejected",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.devices.ReactiveLightTest",
+      "name": "connectionWithoutHandshakeCannotSend",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.devices.ReactiveLightTest",
+      "name": "publicLoopbackHostnamesIpv6AndAmbiguousAddressesAreRejected",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.devices.ReactiveLightTest",
+      "name": "invalidLightEffectsAreRejected",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.devices.ReactiveLightTest",
+      "name": "closedConnectionCannotDiscoverOrSend",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.devices.ReactiveLightTest",
+      "name": "constantPcmRmsIsNormalized",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.devices.ReactiveLightTest",
+      "name": "discoveryCannotCarryCredentialsPathsOrMalformedIdentity",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.devices.ReactiveLightTest",
+      "name": "silenceDoesNotClaimAnOffCommand",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.devices.ReactiveLightTest",
+      "name": "mailboxDropsStaleAndFutureSamples",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.devices.ReactiveLightTest",
+      "name": "mailboxDoesNotResendIdenticalValues",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.devices.ReactiveLightTest",
+      "name": "bracesInsideStringsDoNotConfuseResourceBounds",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.devices.ReactiveLightTest",
+      "name": "fullScaleNegativePcmDoesNotOverflow",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.devices.ReactiveLightTest",
+      "name": "stopDropsEveryPendingFrameAndRefusesNewOnes",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.devices.ReactiveLightTest",
+      "name": "invalidLevelsDoNotReachTheDevice",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.devices.ReactiveLightTest",
+      "name": "discoveryChecksIdentityAndCapabilities",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.devices.ReactiveLightTest",
+      "name": "strongLevelSaturatesAtConfiguredMaximum",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.devices.ReactiveLightTest",
+      "name": "silentPcmIsZeroNotANonFiniteLevel",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.devices.ReactiveLightTest",
+      "name": "outgoingProtocolIsFixedTypedAndCrLfFramed",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.devices.ReactiveLightTest",
+      "name": "onlyReadSamplesAreUsed",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.phone.PhoneCatalogueTest",
+      "name": "appOperationsAcceptOnlyPackageIdentifiers",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.phone.PhoneCatalogueTest",
+      "name": "monitorBoundsAndInventoryKeysAreStrict",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.phone.PhoneCatalogueTest",
+      "name": "defaultsNeverStartCaptureOrRequestPermission",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.phone.PhoneCatalogueTest",
+      "name": "plannedSensitiveAdaptersRemainClearlyDescribedAsAbsent",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.phone.PhoneCatalogueTest",
+      "name": "everyPhoneBindingIsInTheCanonicalVerbCatalogueExactlyOnce",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.phone.PhoneCatalogueTest",
+      "name": "unexpectedArgumentsAndArbitraryIntentsAreRejected",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.phone.PhoneCatalogueTest",
+      "name": "rotationAndTimeoutHaveTypedRanges",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.phone.PhoneRuntimeTest",
+      "name": "canonicalPerformerDeliversTheSameInvocationReceiptWithoutASecondExecution",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.phone.PhoneRuntimeTest",
+      "name": "invalidRequestCannotOpenAnActivity",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.phone.PhoneRuntimeTest",
+      "name": "oldApiCannotDispatchNewerSpecialAccessPages",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.phone.PhoneRuntimeTest",
+      "name": "missingWriteAccessDoesNotProduceASuccessfulReceipt",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.phone.PhoneRuntimeTest",
+      "name": "navigationNamesRemainSeparateFromSpecialAccessGrants",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.phone.PhoneRuntimeTest",
+      "name": "openedDeveloperPageDoesNotClaimDeveloperModeWasChanged",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.phone.RotationMappingTest",
+      "name": "naturallyPortraitDisplayStaysPortraitAfterAQuarterTurn",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.phone.RotationMappingTest",
+      "name": "ambiguousPartitionedOrEmulatedDisplayShapeCannotProduceAGuessedOrientation",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.phone.RotationMappingTest",
+      "name": "naturallyLandscapeDisplayUsesItsOwnAxisForPortrait",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.phone.SensorSessionPolicyTest",
+      "name": "physiologicalPrivateHeadTrackerAndUnknownSensorTypesAreNotAuthorizedByInventory",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.phone.SensorSessionPolicyTest",
+      "name": "aQueuedSampleFromAnOldSessionCannotBeAttributedToARearmedSession",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.phone.SensorSessionPolicyTest",
+      "name": "invalidSessionLimitsFailBeforeRegistration",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.phone.SensorSessionPolicyTest",
+      "name": "readingsAreCopiedAndBoundedBeforeDelivery",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.phone.SensorSessionPolicyTest",
+      "name": "invalidClockAndValuesDoNotBecomeMeasurements",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.phone.SensorSessionPolicyTest",
+      "name": "uiRateIsBoundedEvenIfTheHardwareReportsFaster",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.sync.SyncMergeTest",
+      "name": "concurrent merge is commutative associative and idempotent",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.sync.SyncMergeTest",
+      "name": "new phone defaults do not defeat configured settings on the existing phone",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.sync.SyncMergeTest",
+      "name": "portable settings and serialized input reject credential fields",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.sync.SyncMergeTest",
+      "name": "encrypted device snapshot round trips and cannot be opened as a vault backup",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.sync.SyncMergeTest",
+      "name": "same revision with different data is rejected rather than silently lost",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.sync.SyncMergeTest",
+      "name": "remote data cannot name a local file or counterfeit duplicate identity",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.sync.SyncMergeTest",
+      "name": "automatic pruning is local unless explicitly selected and disabled clipboard never emits it",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.sync.SyncMergeTest",
+      "name": "old offline snapshot cannot resurrect a tombstone but explicit restore can",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.sync.SyncRepositoryTest",
+      "name": "manual deletion is shared after trash bytes have expired",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.sync.SyncRepositoryTest",
+      "name": "a pin made after preview is preserved and requires a fresh review",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.sync.SyncRepositoryTest",
+      "name": "syncing an image pin preserves the existing bytes and file grant path",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.sync.SyncRepositoryTest",
+      "name": "remote delete uses local trash and stale transfer does not restore it",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.sync.SyncRepositoryTest",
+      "name": "wrong passphrase leaves local state and clipboard untouched",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.sync.SyncRepositoryTest",
+      "name": "preview cannot mutate and repeat import cannot duplicate clipboard entries",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.core.sync.SyncRepositoryTest",
+      "name": "local capacity cleanup never silently deletes another phones history",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.engine.NetListenerRevocationTest",
+      "name": "restoringIdenticalSettingsCannotResurrectQueuedCommandsFromOldSession",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.engine.NetListenerRevocationTest",
+      "name": "stopClosesAcceptedConnectionsAndDropsAlreadyQueuedCommand",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.ime.CursorWorkspaceTest",
+      "name": "floating panel clears the whole field and never goes under navigation bars",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.ime.CursorWorkspaceTest",
+      "name": "can move below a field and reports impossible placement without pushing offscreen",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.ime.CursorWorkspaceTest",
+      "name": "a cursor escape cannot cover another keyboard element",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.ime.CursorWorkspaceTest",
+      "name": "editor local position must be transformed into screen coordinates",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.ime.RichClipboardPasteTest",
+      "name": "native file paste fallback is an explicit expert policy",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.ime.RichClipboardPasteTest",
+      "name": "image goes to an advertised rich editor with a temporary read grant",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.ime.RichClipboardPasteTest",
+      "name": "unsupported mime and rejected rich content cannot turn an image into URI text",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.ime.RichClipboardPasteTest",
+      "name": "text and summary first multi item clips never become an arbitrary image",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.io.AccessibilityNodeDataTest",
+      "name": "Android sensitive metadata also suppresses nonpassword text",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.io.AccessibilityNodeDataTest",
+      "name": "password values are absent from screen context and automation facts",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.io.AccessibilityNodeDataTest",
+      "name": "ordinary text remains usable for screen actions",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.io.ImageReencoderTest",
+      "name": "JPEG to PNG preserves decoded colors and dimensions",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.io.ImageReencoderTest",
+      "name": "lossless WebP records no lossy encoding and retains transparency",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.io.ImageReencoderTest",
+      "name": "PNG alpha stays present in PNG but JPEG records its loss",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.io.ImageReencoderTest",
+      "name": "oversized pictures are refused instead of silently resized",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.ui.KeySurfaceGestureTest",
+      "name": "Shift recomposition does not eat the held bottom row Ctrl release",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.ui.KeySurfaceGestureTest",
+      "name": "a held character retains original binding and policy when layer and settings change",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.ui.KeySurfaceGestureTest",
+      "name": "real definition replacement releases a momentary modifier and cancels its old finger",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.ui.KeyboardViewportTest",
+      "name": "actual floating constraints reproduce vanished keys then retain keys through resize",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.ui.SettingsSurfaceSmokeTest",
+      "name": "provider without an account exposes its setup steps without enabling sending",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.ui.SettingsSurfaceSmokeTest",
+      "name": "pocket query renders independent controls and changes the selected policy",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.ui.SettingsSurfaceSmokeTest",
+      "name": "empty media hub exposes both source routes and view controls",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.ui.SettingsSurfaceSmokeTest",
+      "name": "embedding target opens account steps and closes stale hosted route when device rule changes",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.vault.VaultFormParserTest",
+      "name": "exactHttpsWebOriginIsInheritedByFields",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.vault.VaultFormParserTest",
+      "name": "mixedOriginsAndMixedNativeWebCandidatesAreRejected",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.vault.VaultFormParserTest",
+      "name": "cardHintsNeverIncludeSecurityCode",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.vault.VaultFormParserTest",
+      "name": "httpMissingSchemeNewPasswordDuplicateRolesAndMixedKindsAreRejected",
+      "status": "PASS"
+    },
+    {
+      "classname": "com.example.vault.VaultFormParserTest",
+      "name": "nativeLoginHintsProduceOnlyLoginFields",
+      "status": "PASS"
+    }
+  ]
+}

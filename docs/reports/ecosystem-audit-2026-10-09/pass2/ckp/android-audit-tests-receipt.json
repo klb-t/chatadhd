@@ -1,0 +1,50 @@
+{
+  "repo": "klb-t/Custom-Keyboard-Pro",
+  "sha": "192f820f2d8c653768237e1bff3a1a6d950d69c0",
+  "gate": "external independent audit JUnit; actual product Android-build classes with Robolectric sdk34",
+  "level": "Android JVM/Robolectric, no hardware and no process restart; profile AtomicFile save and reopen executed",
+  "exit_code": 1,
+  "counts": {
+    "PASS": 4,
+    "FAIL": 2,
+    "SKIP": 0
+  },
+  "tests": [
+    {
+      "classname": "com.example.audit.EcosystemAuditConsumerTest",
+      "name": "profileRoundtripKeepsDisabledAndRejectsCredentialImport",
+      "status": "PASS",
+      "failure_type": null
+    },
+    {
+      "classname": "com.example.audit.EcosystemAuditConsumerTest",
+      "name": "unsupportedGenericSettingAcceptance",
+      "status": "FAIL",
+      "failure_type": "java.lang.AssertionError"
+    },
+    {
+      "classname": "com.example.audit.EcosystemAuditConsumerTest",
+      "name": "profileRejectsUnknownValueAndVersion",
+      "status": "PASS",
+      "failure_type": null
+    },
+    {
+      "classname": "com.example.audit.EcosystemAuditConsumerTest",
+      "name": "taskCollisionAcceptance",
+      "status": "FAIL",
+      "failure_type": "org.junit.ComparisonFailure"
+    },
+    {
+      "classname": "com.example.audit.EcosystemAuditConsumerTest",
+      "name": "levelsShareSameState",
+      "status": "PASS",
+      "failure_type": null
+    },
+    {
+      "classname": "com.example.audit.EcosystemAuditConsumerTest",
+      "name": "profileStorageReopenKeepsDisabled",
+      "status": "PASS",
+      "failure_type": null
+    }
+  ]
+}

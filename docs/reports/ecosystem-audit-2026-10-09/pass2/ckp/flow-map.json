@@ -1,0 +1,81 @@
+[
+  {
+    "id": "ckp-task-apply",
+    "entry": "AI key/AiPanel calls runAiTask(taskId)",
+    "configuration": "Settings snapshot aiEnabled/aiCustomTasksJson → AiTasks.byId; built-in precedes user collision",
+    "decision": "sensitive checked before await; task replaceInPlace chooses replace/commit",
+    "execution": "AiClient.complete captured at suspended boundary; real transport disabled",
+    "save": "editor current target mutation, not graph record",
+    "restore": "not covered for task recipe history; no target/revision binding in this path",
+    "presentation": "busy flag clears; error opens AI panel",
+    "verified": "exact method slice host; target drift confirmed",
+    "untraced": [
+      "AiConfig request serialization",
+      "actual Android target lifecycle",
+      "per-result evidence graph"
+    ]
+  },
+  {
+    "id": "ckp-convert-policy",
+    "entry": "Command.parse named use/avoid → ConvertRunner",
+    "configuration": "Settings.convertLocalOnly + names(use/avoid) + goal.through",
+    "decision": "actual Planner + plan.best; unknown required name silently lost",
+    "execution": "executor records real selected implementation; media effects stubbed",
+    "save": "untraced Provenance/encode output",
+    "restore": "untraced carried history",
+    "presentation": "actual notice string capture; alternatives truncated by UI branch",
+    "verified": "actual method and Planner host",
+    "untraced": [
+      "final media effects and encoders",
+      "UI profile binding for weights/maxSteps",
+      "full graph receipt roundtrip"
+    ]
+  },
+  {
+    "id": "ckp-settings-profile",
+    "entry": "Profile import or generic setByKey",
+    "configuration": "actual codec/SettingsSchema validator; format/version checks in profile path",
+    "decision": "profile invalid values reject; generic setByKey invalid failure swallowed",
+    "execution": "actual built Settings/Profiles classes",
+    "save": "Actual profile AtomicFile save/reopen under Robolectric PASS; encrypted SettingsStore persistence not tested",
+    "restore": "Profile store reopened in same process; disabled preserved. No OS process restart or pack refresh.",
+    "presentation": "Basic/Advanced/Expert selectors preserve disabled state; actual UI interaction not executed",
+    "verified": "10 Java→actual Kotlin bytecode cases",
+    "untraced": [
+      "device Keystore",
+      "process-death boundary",
+      "pack refresh exclusions"
+    ]
+  },
+  {
+    "id": "ckp-clipboard-delete",
+    "entry": "Clear UI opens reviewed snapshot",
+    "configuration": "ClearPlan ids + current pins + retention settings",
+    "decision": "DAO trash ids and pinned condition; unique deletion batch",
+    "execution": "actual SQL in SQLite; Room transaction coordination source-only",
+    "save": "deletion tombstone and row persisted to SQLite file",
+    "restore": "wrong undo batch rejected; correct restores; reopen row preserved",
+    "presentation": "Trash/Undo UI source traced, not browser/device E2E",
+    "verified": "6 SQL checks",
+    "untraced": [
+      "Room/KSP runtime",
+      "FileProvider grants",
+      "byte cleanup after rollback"
+    ]
+  },
+  {
+    "id": "ckp-network-revocation",
+    "entry": "NetListener TCP/UDP line",
+    "configuration": "token + allowCommands + session identity",
+    "decision": "parse then current-session check on queued delivery",
+    "execution": "real NetListener deliver with controlled Handler queue; stop blocks queued callback",
+    "save": "not applicable to tested dispatch",
+    "restore": "new session identity, source-confirmed",
+    "presentation": "error report callback not exercised",
+    "verified": "whole source JVM with no sockets",
+    "untraced": [
+      "actual network bindings",
+      "Android Looper/service shutdown"
+    ]
+  }
+]
