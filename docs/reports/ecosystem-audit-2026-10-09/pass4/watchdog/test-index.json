@@ -1,0 +1,106 @@
+{
+  "command": "python tools/ecosystem-audit-2026-10-09/pass4/watchdog/run.py --repo CHECKOUT --sha SHA --out RECEIPT.json",
+  "receipt": "receipt.json",
+  "cases": [
+    {
+      "id": "A4-WD-001.A.schema-drops-method-pin",
+      "category": "reproduction",
+      "status": "PASS",
+      "evidence": {
+        "rejectedAtSchema": false,
+        "stripped": [
+          "method_spec_id",
+          "method_spec_hash",
+          "personal_credentials",
+          "plan"
+        ],
+        "apiPathStatus": "COMPLETED",
+        "directPathStatus": "FAILED",
+        "apiResultCount": 2
+      }
+    },
+    {
+      "id": "A4-WD-001.B.reject-or-preserve-unsupported-setting",
+      "category": "acceptance",
+      "status": "FAIL",
+      "error": "RunSubmissionSchema silently removes requested method identity before actual executor"
+    },
+    {
+      "id": "A4-WD-002.A.reused-source-disclosures-lost",
+      "category": "reproduction",
+      "status": "PASS",
+      "evidence": {
+        "sourceMissing": 1,
+        "manifestMissing": 0,
+        "manifestFlags": [],
+        "manifestInputHashes": [
+          []
+        ],
+        "exportMissing": 0,
+        "sourceReferencePresent": true,
+        "resultMissing": 1
+      }
+    },
+    {
+      "id": "A4-WD-002.B.manifest-retains-reused-input-missingness",
+      "category": "acceptance",
+      "status": "FAIL",
+      "error": "The expression evaluated to a falsy value:\n\n  assert.ok(manifest.missing_observations.some((x:any)=>x.missing_reason==='RATE_LIMITED'))\n"
+    },
+    {
+      "id": "A4-WD-M01.object-key-order",
+      "category": "contract",
+      "status": "PASS",
+      "evidence": {
+        "invariant": "effective configuration hash and domain results; run IDs and timestamps are intentionally excluded"
+      }
+    },
+    {
+      "id": "A4-WD-M02.unique-observation-order",
+      "category": "contract",
+      "status": "PASS",
+      "evidence": {
+        "invariant": "set of unique entity/role observations, including missingness; not message/list chronology"
+      }
+    },
+    {
+      "id": "A4-WD-003.A.ambiguous-input-silent-last-wins",
+      "category": "reproduction",
+      "status": "PASS",
+      "evidence": {
+        "forwardHi": 25,
+        "reverseHi": 50
+      }
+    },
+    {
+      "id": "A4-WD-003.B.ambiguity-explicit-or-policy",
+      "category": "acceptance",
+      "status": "FAIL",
+      "error": "Missing expected exception: Missing explicit duplicate-resolution policy must not silently select last observation"
+    },
+    {
+      "id": "A4-WD-M03.failed-fetch-not-completed",
+      "category": "contract",
+      "status": "PASS",
+      "evidence": {
+        "boundary": "controlled SourceAdapter transport seam; actual orchestrator/archive/SQLite; no real supplier request"
+      }
+    },
+    {
+      "id": "A4-WD-M04.completed-run-restart",
+      "category": "integration",
+      "status": "PASS",
+      "evidence": {
+        "boundary": "actual SQLite close/reopen and new store instance read of filesystem manifest; not OS crash"
+      }
+    },
+    {
+      "id": "A4-WD-M05.network-denied",
+      "category": "contract",
+      "status": "PASS",
+      "evidence": {
+        "attemptedExternalConnections": 0
+      }
+    }
+  ]
+}

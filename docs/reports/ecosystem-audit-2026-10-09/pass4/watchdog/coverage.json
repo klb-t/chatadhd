@@ -1,0 +1,300 @@
+{
+  "ranges": [
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "file": "backend/watchdog_api/api/schemas.ts",
+      "ranges": [
+        [
+          3,
+          20
+        ]
+      ],
+      "functions": [
+        "RunSubmissionSchema"
+      ],
+      "scope": "named actual consumer path, not whole-file behavioral proof",
+      "untraced": [
+        "live external provider",
+        "HTTP authentication/browser",
+        "all alternative adapters"
+      ]
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "file": "backend/watchdog_api/api/routes.ts",
+      "ranges": [
+        [
+          30,
+          113
+        ],
+        [
+          205,
+          235
+        ]
+      ],
+      "functions": [
+        "buildApiRouter ownership/submission/results/export routes"
+      ],
+      "scope": "named actual consumer path, not whole-file behavioral proof",
+      "untraced": [
+        "live external provider",
+        "HTTP authentication/browser",
+        "all alternative adapters"
+      ]
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "file": "backend/watchdog_api/services/run_orchestrator.ts",
+      "ranges": [
+        [
+          48,
+          236
+        ],
+        [
+          243,
+          349
+        ]
+      ],
+      "functions": [
+        "buildPlan",
+        "executeRun",
+        "finalizeManifest",
+        "requirePinnedSpec",
+        "submitJob"
+      ],
+      "scope": "named actual consumer path, not whole-file behavioral proof",
+      "untraced": [
+        "live external provider",
+        "HTTP authentication/browser",
+        "all alternative adapters"
+      ]
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "file": "backend/watchdog_api/db/repositories/runs.ts",
+      "ranges": [
+        [
+          29,
+          115
+        ]
+      ],
+      "functions": [
+        "createRun",
+        "updateStatus",
+        "getRun",
+        "getOwnedRun"
+      ],
+      "scope": "named actual consumer path, not whole-file behavioral proof",
+      "untraced": [
+        "live external provider",
+        "HTTP authentication/browser",
+        "all alternative adapters"
+      ]
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "file": "backend/watchdog_api/db/repositories/data.ts",
+      "ranges": [
+        [
+          22,
+          190
+        ]
+      ],
+      "functions": [
+        "ObservationRepository.ensureSeries/insertMany/getByRunId",
+        "AnalysisResultRepository.createAnalysisRun/insertMany/getByRunId"
+      ],
+      "scope": "named actual consumer path, not whole-file behavioral proof",
+      "untraced": [
+        "live external provider",
+        "HTTP authentication/browser",
+        "all alternative adapters"
+      ]
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "file": "backend/watchdog_api/db/repositories/artifacts.ts",
+      "ranges": [
+        [
+          20,
+          70
+        ]
+      ],
+      "functions": [
+        "finalizeManifest",
+        "getManifest",
+        "recordArtifact",
+        "getArtifacts"
+      ],
+      "scope": "named actual consumer path, not whole-file behavioral proof",
+      "untraced": [
+        "live external provider",
+        "HTTP authentication/browser",
+        "all alternative adapters"
+      ]
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "file": "backend/watchdog_api/analytics/jh16.ts",
+      "ranges": [
+        [
+          13,
+          103
+        ]
+      ],
+      "functions": [
+        "validate_inputs",
+        "analyze"
+      ],
+      "scope": "named actual consumer path, not whole-file behavioral proof",
+      "untraced": [
+        "live external provider",
+        "HTTP authentication/browser",
+        "all alternative adapters"
+      ]
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "file": "backend/watchdog_api/analytics/registry.ts",
+      "ranges": [
+        [
+          4,
+          28
+        ]
+      ],
+      "functions": [
+        "register",
+        "get",
+        "listAnalyzers"
+      ],
+      "scope": "named actual consumer path, not whole-file behavioral proof",
+      "untraced": [
+        "live external provider",
+        "HTTP authentication/browser",
+        "all alternative adapters"
+      ]
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "file": "backend/watchdog_api/services/manifest.ts",
+      "ranges": [
+        [
+          119,
+          207
+        ]
+      ],
+      "functions": [
+        "assertManifestComplete",
+        "buildManifest",
+        "serializeManifest"
+      ],
+      "scope": "named actual consumer path, not whole-file behavioral proof",
+      "untraced": [
+        "live external provider",
+        "HTTP authentication/browser",
+        "all alternative adapters"
+      ]
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "file": "backend/watchdog_api/services/export.ts",
+      "ranges": [
+        [
+          43,
+          124
+        ]
+      ],
+      "functions": [
+        "assertExportable",
+        "exportCsv",
+        "exportJson",
+        "exportAll"
+      ],
+      "scope": "named actual consumer path, not whole-file behavioral proof",
+      "untraced": [
+        "live external provider",
+        "HTTP authentication/browser",
+        "all alternative adapters"
+      ]
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "file": "backend/watchdog_api/domain/run_state.ts",
+      "ranges": [
+        [
+          15,
+          73
+        ]
+      ],
+      "functions": [
+        "isTerminal",
+        "canTransition",
+        "assertTransition"
+      ],
+      "scope": "named actual consumer path, not whole-file behavioral proof",
+      "untraced": [
+        "live external provider",
+        "HTTP authentication/browser",
+        "all alternative adapters"
+      ]
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "file": "backend/watchdog_api/storage/object_store/index.ts",
+      "ranges": [
+        [
+          23,
+          58
+        ]
+      ],
+      "functions": [
+        "LocalFileSystemStore.put/get"
+      ],
+      "scope": "named actual consumer path, not whole-file behavioral proof",
+      "untraced": [
+        "live external provider",
+        "HTTP authentication/browser",
+        "all alternative adapters"
+      ]
+    },
+    {
+      "repo": "klb-t/Watchdog-JH16",
+      "sha": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+      "file": "backend/watchdog_api/domain/observation.ts",
+      "ranges": [
+        [
+          107,
+          113
+        ]
+      ],
+      "functions": [
+        "numericOrNull",
+        "requireNumeric"
+      ],
+      "scope": "named actual consumer path, not whole-file behavioral proof",
+      "untraced": [
+        "live external provider",
+        "HTTP authentication/browser",
+        "all alternative adapters"
+      ]
+    }
+  ],
+  "excluded_read_only_navigation": [
+    "secrets/user_vault.ts",
+    "identity/account_sessions.ts",
+    "sources/provider_registry.ts"
+  ],
+  "meaning": "Only named ranges above counted; navigation reads are not coverage."
+}
