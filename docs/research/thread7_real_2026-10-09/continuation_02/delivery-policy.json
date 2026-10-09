@@ -1,0 +1,140 @@
+{
+  "schema": "loom.thread7_delivery_policy/1",
+  "projected_at": "2026-10-09T08:10:25.209237+00:00",
+  "inputs": [
+    {
+      "path": "../continuation_01/handoff-final-contract-v2.json",
+      "role": "previous_contract",
+      "sha256": "c7fbbec85e3f04026d2f6cf7bb36f25121b8aaf94bb6e5bc514f7d8ee204f9f4"
+    },
+    {
+      "path": "../continuation_01/handoff-final-example-v2.json",
+      "role": "previous_presentation",
+      "sha256": "2610fd6f7a706670df83f41a19411fd3a0f63f2ea6646a2d486d3c238ce69321"
+    },
+    {
+      "path": "../continuation_01/evaluation-protocol.json",
+      "role": "model_evaluation_protocol",
+      "sha256": "437240e208e2e1cf6b1711142cddcc4b617717de177150d098c8af7de2d4b6ff"
+    },
+    {
+      "path": "../continuation_01/handoff-projection.json",
+      "role": "previous_projection",
+      "sha256": "894f3c7d7edc8b260b91dafaa4712c328938faa6abffc10e6cb0b390ae0e3998"
+    },
+    {
+      "path": "preferences-receipt.json",
+      "role": "source_review_and_preparation",
+      "sha256": "5bd6cfa301dfd662b21f3534821d86fb8df98f246ab589c0f9cfedc0046f89bc"
+    },
+    {
+      "path": "retrieval-results-native-reciprocal-v2.json",
+      "role": "retrieval_results",
+      "sha256": "1a26690c267c5125d506c9e0fdcb2ab6679dbac8629e393ca859261ee1ac66a2"
+    },
+    {
+      "path": "retrieval-results-native-reciprocal-receipt.json",
+      "role": "retrieval_correction_receipt",
+      "sha256": "3efaf683a0d9f68f18230f01c03f4dec91a5640f97e4d201fe1887e48b57aa3e"
+    },
+    {
+      "path": "retrieval-task-protocol.json",
+      "role": "retrieval_tasks_protocol",
+      "sha256": "925e6a128bf0c2f8255640d144f04084112d8a11c7c966b260b5d02a947b8df6"
+    },
+    {
+      "path": "retrieval-evaluation-v3.json",
+      "role": "retrieval_metric_protocol",
+      "sha256": "1caf124c85f25fe7e3e1a9bf44f97da3d193659c53031fcbcbb61e6b2da429e1"
+    },
+    {
+      "path": "retrieval-task-protocol-erratum-v1.json",
+      "role": "retrieval_protocol_erratum",
+      "sha256": "30ca03e94ae0ed3f89d5efdbc7d91d1d3545e5677d99f1945bab8b2536195b99"
+    },
+    {
+      "path": "representation-results.json",
+      "role": "representation_results",
+      "sha256": "17dcc0acc0ca6b54972053d992181588e14783ba3176276b97f79d95c765217d"
+    },
+    {
+      "path": "recovery-tests.json",
+      "role": "recovery_mechanics",
+      "sha256": "d5e9c4f7280f35f24b48f0250f4bf53b5bb122a6ad034b036a2858510f602b50"
+    },
+    {
+      "path": "retrieval-presets-v3.json",
+      "role": "candidate_presets",
+      "sha256": "d3f78f78408c63dee8cd357b78800e956d5247f3e38249c8e3b66d788ee51cc8"
+    },
+    {
+      "path": "representation-candidates.json",
+      "role": "candidate_presets",
+      "sha256": "7bda9525ad07abcc7020717711904013bf4d98cecc5d456050e411d9d937fc58"
+    },
+    {
+      "path": "START.json",
+      "role": "continuation_start_provenance",
+      "sha256": "e9dbc06226f1b909093ef11ab54616b32fbba393c7c86e85213d19ea89f69b7a"
+    }
+  ],
+  "basic": {
+    "summary_pl": "Porównano lokalny dobór kontekstu: 48 zadań w 12 rodzinach rozmów OpenAI i Anthropic (2079 wiadomości, 23.01–09.09.2026). Zmierzono zachowanie dowodów i koszty reprezentacji; wyniki są eksploracyjne. Koszt API nowego pakietu: 0 USD. Nie zmierzono jakości odpowiedzi modeli ani nie zmieniono ustawień użytkownika.",
+    "details_ref": "docs/research/thread7_real_2026-10-09/continuation_02/delivery-B.md"
+  },
+  "limitations": [
+    "no_new_real_export_model_inference",
+    "no_independent_adjudication",
+    "provider_state_unknown",
+    "no_independent_holdout",
+    "researcher_exposed_provisional_gold",
+    "post_measurement_native_edge_adapter_correction",
+    "no_global_or_active_user_profile_inferred",
+    "historical_scoped_preferences_only",
+    "tokenizer_unavailable_tokens_null",
+    "attachments_incomplete",
+    "unresolved_native_parent_references_6",
+    "selected_attachment_references_unresolved_75",
+    "prepared_body_is_not_provider_admission",
+    "native_method_registry_gap_a3_disc_001",
+    "recovery_external_capture_attribution_is_trust_boundary",
+    "unknown_accounting_remains_blocked"
+  ],
+  "pipeline": {
+    "sources": "immutable_previous_panel_reused",
+    "views": "literal_preference_evidence_updated_source_preservation_measured",
+    "spec": "retrieval_tasks_frozen_before_rankings",
+    "variants": "offline_measured_model_primary_ready_extraction_pending",
+    "queue": "new_model_preparation_requires_new_frozen_queue",
+    "payer": "recovery_verified_with_controlled_transport_live_preflight_unknown",
+    "results": "offline_measurements_no_new_model_responses",
+    "evaluations": "mechanical_metrics_provisional_source_annotations",
+    "candidate_presets": "component_proposals_no_automatic_adoption"
+  },
+  "retrieval_metrics": [
+    "context_evidence_recall",
+    "context_precision",
+    "context_all_required_evidence",
+    "ndcg_at_10",
+    "context_bytes",
+    "context_records",
+    "method_total_seconds",
+    "python_peak_allocated_bytes"
+  ],
+  "representation_fields": [
+    "representation",
+    "resolution",
+    "families",
+    "view_canonical_bytes",
+    "selected_nodes",
+    "literal_text_field_coverage_selected_micro",
+    "native_message_leaf_coverage_selected_micro",
+    "parent_link_coverage_selected_children_micro",
+    "normalized_nodes_reconstructed",
+    "token_count",
+    "all_rebuilt_views_match_frozen"
+  ],
+  "inherited_evidence_role_overrides": {
+    "previous_private_checkpoint": "historical_initial_checkpoint"
+  }
+}

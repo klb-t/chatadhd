@@ -1,0 +1,110 @@
+{
+  "schema": "loom.thread7_final_tests/2",
+  "tested_code_commit": "c525d0e942be95c8b3a79b670e621d50e0b31a1a",
+  "structure": {
+    "entries": [
+      {
+        "cases": 1554,
+        "classification": "executed",
+        "discovered_cases": 1554,
+        "name": "research.structure",
+        "skipped_cases": 0
+      }
+    ],
+    "errors": [],
+    "executed_entries": 1,
+    "executed_native_assertions": 0,
+    "executed_native_cases": 0,
+    "executed_python_cases": 1554,
+    "input_sha256": {
+      "junit": "943526d1389438fbf761de4bac78cd1053b783444c2395a9d8169624b14e8f9c",
+      "manifest": "5e7cc31bfaf68fdf08dde015815346bb2e0d219797bcc10f14c7620c1f7f6fa9"
+    },
+    "junit_entries": 1,
+    "manifest_entries": 1,
+    "policy_provenance": {
+      "path": "/workspace/scratch/b258b858b122/chatadhd/.github/ctest-evidence-policy.json",
+      "revision": 1,
+      "schema": "loom.ctest_evidence_policy/1",
+      "schema_sha256": "29ff3cd357e02cd0fc8139cacb86293fcfab5803c9f0001eb8aec53b4f4be6e0",
+      "sha256": "1dc457125c40c0e225365e20c8839d9726d71dfa5872a8be1d890707666526a4"
+    },
+    "preset": "dev",
+    "schema": "loom.ctest_evidence/1",
+    "skipped_python_cases": 0,
+    "unexecuted_entries": [],
+    "valid": true
+  },
+  "ctest_elapsed_seconds": 45.97,
+  "scope": "isolated registration of research.structure, not all B CTest suites",
+  "native_binary": {
+    "sha256": "5224c932eb4f0dc00b9bfa1c0cf10127c9202d704b7bf7050111238a9d432047",
+    "source_head": "254343acc8f20ed3c76e8df77bb42ef54fb467e9",
+    "source_main_equivalence_checked": true,
+    "reused_existing_binary": true,
+    "new_native_build": false,
+    "source_main_commit": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+    "audit_head_native_diff_to_main": "empty"
+  },
+  "prior_failed_gate": {
+    "code_commit": "f37750f33b3d64bf25df8c1b6649adf733b25f13",
+    "tests_attempted": 1554,
+    "errors": 1,
+    "verifier_accepted": false,
+    "cause_and_targeted_fix_receipt": "integration-fix-receipt.json"
+  },
+  "extra_research_directory_suites": [
+    {
+      "id": "retrieval_task_validator",
+      "tests": 10,
+      "passed": 10,
+      "skipped": 0,
+      "receipt": "retrieval-task-stage.json"
+    },
+    {
+      "id": "delivery_contract",
+      "tests": 7,
+      "passed": 7,
+      "skipped": 0,
+      "receipt": "delivery-tests.json"
+    }
+  ],
+  "targeted_suites_are_overlapping_not_additive": [
+    {
+      "id": "preferences",
+      "tests": 59
+    },
+    {
+      "id": "recovery",
+      "tests": 185
+    },
+    {
+      "id": "retrieval",
+      "tests": 32
+    },
+    {
+      "id": "representations",
+      "tests": 13
+    },
+    {
+      "id": "integration_fix",
+      "tests": 45
+    },
+    {
+      "id": "session_review",
+      "tests": 70
+    },
+    {
+      "id": "reciprocal_review",
+      "tests": 9
+    }
+  ],
+  "new_model_calls": 0,
+  "new_api_cost_usd": "0",
+  "gate_evidence_zip_sha256": "8f419ae7c471ba43a336d510ca283b82f2890ebfd48c198c65d39e8fa5e44ef9",
+  "gate_log_payloads": 21,
+  "stdout_capture_limit": 10485760,
+  "truncated_stdout": false,
+  "large_matrix_rerun": false,
+  "measured_model_quality": false
+}

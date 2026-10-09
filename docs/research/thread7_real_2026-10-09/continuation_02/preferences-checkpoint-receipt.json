@@ -1,0 +1,16 @@
+{
+  "bytes": 91193352,
+  "manifest_sha256": "c0836384f5cd6149650e34dd91eddded52c52cce1fc49e938f703265cb3b789f",
+  "new_paid_calls": 0,
+  "new_paid_cost_usd": "0",
+  "payloads_verified": 899,
+  "schema": "loom.thread7_checkpoint_receipt/1",
+  "sha256": "69375fd9e1b9f6805e5db61b789c014137f32b38579a69d0e3a2dccc54842481",
+  "checkpoint_filename": "PRIVATE_Thread7_continuation02_preferences_2026-10-09.zip",
+  "code_commit": "68921add97c41f12651d030ddcb6321892cd1651",
+  "previous_checkpoint_sha256": "fca71d513aa44ddcf1960c325c9f38f89a458ef5feedb3de3b9c114b4f1ddf50",
+  "durable_save": "succeeded",
+  "credential_added": false,
+  "provider_preflight": "unknown",
+  "purpose": "intermediate durable annotations/preparations checkpoint; final package retains the same bytes"
+}

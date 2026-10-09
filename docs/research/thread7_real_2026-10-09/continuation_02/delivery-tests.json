@@ -1,0 +1,13 @@
+{
+  "schema": "loom.thread7_delivery_tests/1",
+  "tests": 7,
+  "passed": 7,
+  "failed": 0,
+  "skipped": 0,
+  "full_log_sha256": "be9b362c7d6ac1108e9cb78dd3800696007ea37463029764947a778fa8e3167c",
+  "compressed_log_sha256": "72e45336a9ef02cf2c2b3597eb820d58e0575b6148dba2b068d6b5ce19bc73a0",
+  "test_code_sha256": "614641c4d46bd7a33a8a1c417470d0f35cccb1d0ef9da370b639e4988e710b23",
+  "independent_native_execution": false,
+  "new_model_calls": 0,
+  "new_cost_usd": "0"
+}

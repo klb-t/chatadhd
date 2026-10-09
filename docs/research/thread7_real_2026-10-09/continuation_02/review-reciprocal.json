@@ -1,0 +1,76 @@
+{
+  "schema": "loom.thread7_reciprocal_same_session_review/1",
+  "date": "2026-10-09",
+  "independent_adjudication": false,
+  "review_after_first_results_exposure": true,
+  "status": "no_open_blocking_findings",
+  "earlier_review_receipts_unchanged": true,
+  "verified_saved_outputs": {
+    "schema": "loom.thread7_reciprocal_review_check/1",
+    "manifests_verified": 3,
+    "task_gold_bytes_unchanged": true,
+    "protocol_bytes_unchanged": true,
+    "budgets_weights_seeds_hops_unchanged": true,
+    "reused_rankings_identical": 144,
+    "reused_operator_measurements_identical": 144,
+    "reused_selected_contexts_identical": 288,
+    "new_operator_measurements": 144,
+    "preset_candidates_checked": 12,
+    "freeze_sha256": "534f4b5182cf370cabafe5c46d845a0b5558a7230f696329e1b3b5c697835a81",
+    "old_manifest_sha256": "5df908a5f86a6933f3cce02ad8cd957d8ab1ae7f79ee52036eea477a97c40910",
+    "new_manifest_sha256": "7ef4bcd839473d784ea71c135adb0bd875ef11bb30e941459d526ef83472c21f",
+    "measured_implementation_sha256": "89f85da0401042b7dd70b23b619fe05114ad3b63c9c0ca1d5a5b06c4eedbdf0a",
+    "new_rankings_by_this_review": 0,
+    "new_model_calls": 0,
+    "usd_cost": "0"
+  },
+  "adapter_scope": "Reverse navigation of observed parent edges whose endpoints are both in the same frozen candidate pool; no semantic edges or synthetic external nodes.",
+  "gold_separation": "Read code and ran controlled task object that rejects every access to gold fields by the six ranking operators. Gold remains used only by validation and evaluation.",
+  "configuration_review": {
+    "weights_unchanged": true,
+    "seed_count_unchanged": true,
+    "hop_limit_unchanged": true,
+    "budgets_unchanged": true,
+    "only_two_operator_descriptors_changed": "adjacency_policy in graph_distance methods",
+    "dependent_rrf_recomputed": true
+  },
+  "postmeasurement_guard": {
+    "finding": "A reused composite could have an unchanged own descriptor while its upstream operator changed. The actual frozen correction used the correct partition; its 144 replays were unaffected.",
+    "resolution": "run now rejects any reused method whose seed_method/components dependency closure is not entirely reused; unknown dependencies and cycles fail closed.",
+    "measured_producer_sha256": "89f85da0401042b7dd70b23b619fe05114ad3b63c9c0ca1d5a5b06c4eedbdf0a",
+    "guarded_code_sha256": "5431b0a88f50bb9c0a3b7033f51a8c16253b3140ca93c5ebf299462b022c57cc",
+    "receipt": "retrieval-results-postmeasurement-guard.json",
+    "receipt_sha256": "bc1ab919a8e8746dd51225f32d1f2f379dbdcaa360cadf1d1f01780d5de85565",
+    "benchmark_rerun_required": false
+  },
+  "tests": {
+    "passed": 9,
+    "failed": 0,
+    "skipped": 0,
+    "controlled_fixtures_only": true,
+    "existing_regression_cases_repeated": 7,
+    "review_specific_cases": 2,
+    "command": "TMPDIR=/var/tmp python /var/tmp/thread7-continuation02-2026-10-09/review/reciprocal_targeted_tests.py",
+    "full_log": "review-reciprocal-tests.log.gz",
+    "full_log_uncompressed_sha256": "56da14ee513b52d4a3b82b10202fe635e9b28b2c1e99652b76f91b5b46850edc",
+    "script_sha256": "055e14c55397ee51a0186fdde245c6b399599ac7e183e417dcc3723fc0a5550f",
+    "do_not_add_reruns_to_unique_project_test_count": true
+  },
+  "evidence_check_script_sha256": "bb00b248cbab10be5043cac3f03bd410c87a53766a1746333032daa6fa535381",
+  "evidence_check_receipt_sha256": "a8431874647c5b111998047617b84255f094ff650ad132c13b7028d08beb88f0",
+  "report_review": {
+    "negative_fusion_results_retained": true,
+    "mixed_saved_and_new_operator_timing_disclosed": true,
+    "candidates_have_no_automatic_adoption": true,
+    "model_answer_quality_is_null": true,
+    "native_runtime_execution_not_claimed": true
+  },
+  "new_rankings_by_reviewer": 0,
+  "new_model_calls": 0,
+  "new_cost_usd": "0",
+  "limits": [
+    "Same-session exposed review, not independent gold or holdout.",
+    "Correction after observing initial results is explicitly exploratory, not preregistration of the whole study.",
+    "Finite code and controlled-fixture checks are not a proof against all possible bugs."
+  ]
+}

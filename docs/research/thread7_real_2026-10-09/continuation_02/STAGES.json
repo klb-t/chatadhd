@@ -1,0 +1,58 @@
+{
+  "schema": "loom.thread7_increment_chain/1",
+  "previous_head": "5e346c7161028ded976c40a0251fe8f9547bd233",
+  "previous_checkpoint_sha256": "fca71d513aa44ddcf1960c325c9f38f89a458ef5feedb3de3b9c114b4f1ddf50",
+  "stages": [
+    {
+      "id": "tmpdir_fix",
+      "commit": "a6481d11a05158977a87dd55f3a4d6896a190dad",
+      "receipt": "priority0-receipt.json"
+    },
+    {
+      "id": "tmpdir_gate_handoff",
+      "commit": "4e46ae87c5cd31967269f5fb28d1bb9400429019",
+      "receipt": "priority0-receipt.json"
+    },
+    {
+      "id": "retrieval_task_freeze",
+      "commit": "21ffc5e0769d53e4dbc507a2c57d8385e638b3f1",
+      "receipt": "retrieval-task-stage.json"
+    },
+    {
+      "id": "source_annotations",
+      "commit": "68921add97c41f12651d030ddcb6321892cd1651",
+      "receipt": "preferences-receipt.json"
+    },
+    {
+      "id": "payer_recovery",
+      "commit": "e68101196d4fbc907dede8f98a2f3ca25566674f",
+      "receipt": "recovery-tests.json"
+    },
+    {
+      "id": "retrieval_measurements",
+      "commit": "8239ce5113b421c83436ab9af18476bc78851f24",
+      "receipt": "retrieval-results-native-reciprocal-receipt.json"
+    },
+    {
+      "id": "representation_measurements",
+      "commit": "f37750f33b3d64bf25df8c1b6649adf733b25f13",
+      "receipt": "representation-receipt.json"
+    },
+    {
+      "id": "integration_fixture_contract",
+      "commit": "c525d0e942be95c8b3a79b670e621d50e0b31a1a",
+      "receipt": "integration-fix-receipt.json"
+    }
+  ],
+  "new_provider_calls": 0,
+  "new_cost_usd": "0",
+  "historical_attempts": 720,
+  "historical_cost_usd": "0.873216500",
+  "archival_remaining_usd": "4.126783500",
+  "current_campaign_identity": null,
+  "current_provider_usage_usd": null,
+  "current_reservations_usd": null,
+  "current_price_verified": false,
+  "paid_dispatch_allowed": false,
+  "no_automatic_adoption": true
+}

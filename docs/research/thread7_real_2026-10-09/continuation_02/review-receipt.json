@@ -1,0 +1,116 @@
+{
+  "schema": "loom.thread7_same_session_review/1",
+  "date": "2026-10-09",
+  "scope": "continuation_02; source interpretation and execution boundaries",
+  "reviewer": "reviewer02_same_session_assistant",
+  "independent_adjudication": false,
+  "owner_approval_of_judgments": false,
+  "task_gold_review_completed_before_retrieval_rankings": true,
+  "later_review_exposure": "Retrieval summary observed after task freeze; no post-result gold changes performed by this reviewer.",
+  "preference_review": {
+    "pass1_manual_candidates": 143,
+    "other_author_candidates_second_pass": 115,
+    "second_pass_amendments_to_other_author": 12,
+    "raw_candidate_review_count_not_new_independent_observations": 258,
+    "coverage_limitation": "One long externally quoted timestamped transcript was excluded after attribution/boundary review, not semantically adjudicated internally. Remaining own user text of the two assigned families was read; all other candidate excerpts were checked in source context.",
+    "normalized_relation_review": {
+      "relations": 61,
+      "missing_targets": 0,
+      "cross_family_automatic_promotion": 0,
+      "same_node_qualifying_fragments": "distinct evidence IDs; not an evidence self-loop",
+      "accepted_meaning": "historical scoped declaration; not necessarily currently active after later revisions"
+    }
+  },
+  "retrieval_task_review": {
+    "tasks": 48,
+    "families": 12,
+    "literal_spans_verified": 67,
+    "source_hashes_verified": 12,
+    "full_text_absence_checks": 2,
+    "native_sibling_relation_checks": 1,
+    "judgments": "provisional; researcher exposed; not independent holdout"
+  },
+  "findings": [
+    {
+      "id": "equivalent_checkpoint_evidence",
+      "status": "fixed_before_run",
+      "summary": "An equally valid earlier checkpoint statement was originally marked distractor; three alternative sufficient evidence sets now accepted."
+    },
+    {
+      "id": "native_branch_claim",
+      "status": "fixed_before_run",
+      "summary": "Verbal request to transfer a side topic distinguished from observed native sibling navigation."
+    },
+    {
+      "id": "scoped_preferences",
+      "status": "fixed_before_preparation",
+      "summary": "Local drafting requirements stay historical scoped evidence; quoted text, tentative proposals, factual corrections and global profile adoption are separated."
+    },
+    {
+      "id": "recovery_capture_chronology",
+      "status": "fixed_and_tested",
+      "summary": "External captures before attempt start or after review time now retain unknown; no metadata GET is sent."
+    },
+    {
+      "id": "recovery_exception_privacy",
+      "status": "fixed_and_tested",
+      "summary": "An arbitrary lowercase exception message previously passed regex sanitization; exact diagnostic code registry now prevents propagation."
+    },
+    {
+      "id": "retrieval_metric_contract",
+      "status": "fixed_by_analysis_replay",
+      "summary": "Alternative sufficient quotes use best-set retention; unknown labels are rejected; empty selected-context precision is null. First rankings/timings retained."
+    },
+    {
+      "id": "ranking_protocol_wording",
+      "status": "closed_by_append_only_erratum",
+      "summary": "Precision at k describes pre-budget ranking; byte-constrained selected context has separate metrics.",
+      "erratum_path": "retrieval-task-protocol-erratum-v1.json",
+      "erratum_sha256": "30ca03e94ae0ed3f89d5efdbc7d91d1d3545e5677d99f1945bab8b2536195b99"
+    }
+  ],
+  "tests": {
+    "command": "TMPDIR=/var/tmp PYTHONPATH=/tmp/thread7-python-deps:loom/tools/structure:. python -m unittest -v test_research_programme_recovery_v1 test_research_retrieval_v1 test_experiment_preference_annotations_v1",
+    "passed": 70,
+    "failed": 0,
+    "skipped": 0,
+    "modules": {
+      "test_research_programme_recovery_v1": 26,
+      "test_research_retrieval_v1": 23,
+      "test_experiment_preference_annotations_v1": 21
+    },
+    "full_log_sha256": "33ea82b0fe0e0d3799cd0d370a3617ed069e0c15e86336be2fba53eca8c1b8be",
+    "do_not_add_to_unique_test_total": true,
+    "full_log_file": "review-focused-tests.log.gz",
+    "code_snapshot_note": "This focused rerun preceded later additional test cases and final method policy parameterization. Later author/full-gate receipts supersede final test totals; the original 70-test log is preserved."
+  },
+  "reviewed_code_sha256": {
+    "loom/tools/structure/research_programme_recovery_v1.py": "b3b33b70e8994aef2ebd2e84ff5d96693c24a3dd9b44f19197649edfbb838c0f",
+    "loom/tools/structure/research_retrieval_v1.py": "6dd4e1fa1e7fcd8dc190460a470fe26a8755ffe80a579c730b082c4650c23d26",
+    "loom/tools/structure/experiment_preference_annotations_v1.py": "fd56503a9cc2dab8d846d8afd7a0122ecaf64468e616290b1bf7daedeb572454"
+  },
+  "private_review_receipts_sha256": {
+    "manual-preferences-05-08-v1.json": "6e97fc5b2fa88a807d8725b3bc2e64da81b253b92b936887903312d80b771859",
+    "review-main-v1.json": "7fdc820b3689c56c5069e014334d72b19ede242634432869b4e46e8460a22bde",
+    "review-retrieval-tasks-v1.json": "d87de088af940ff1febc7382fb8c9d7c318105d40d9cb6f071e0da1a44c31c43"
+  },
+  "new_model_calls": 0,
+  "new_cost_usd": "0",
+  "limits": [
+    "Capture provenance remains an explicit reviewed trust boundary; hashes are not provider signatures.",
+    "No proof of exactly-once inference, disk/power-loss durability or external provider availability.",
+    "No adjudication of the truth of private source claims or assistant advice.",
+    "Native export traversal does not establish semantic understanding.",
+    "Finite review and canary checks do not prove absence of all defects."
+  ],
+  "followup_code_review": {
+    "scope": "normalized annotation projection and recovery response-cache conflict handling",
+    "new_paid_calls": 0,
+    "new_blocking_findings": 0,
+    "code_sha256": {
+      "loom/tools/structure/experiment_context_preparation_v1.py": "f362cc48842c1d77087b0764cf5fb86ba2a36ce4c5bbe8b1a3cab802a70d0896",
+      "loom/tools/structure/experiment_payer_boundary_v1.py": "33cb290558f81d0c16bd49e05d16e419c84feb538493544cb98ffed7bc672c32",
+      "loom/tools/structure/research_programme_recovery_v1.py": "b527950e420bf5c415e847fc4d34d2220f99158c8211d9f2f4e5f6193c549517"
+    }
+  }
+}
