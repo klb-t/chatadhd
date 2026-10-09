@@ -34,5 +34,7 @@
   "total": 257,
   "new_paid_calls": 0,
   "native_cpp_test_run": false,
-  "negative_log": "runner-tests-missing-dependency.log"
+  "negative_log": "runner-tests-missing-dependency.log",
+  "logs_archive": "test-logs.zip",
+  "logs_archive_sha256": "e14b3cd9c6dd0aba5789de158518243f3f3ad7cccf1cf874b957ef1dd9e1724a"
 }

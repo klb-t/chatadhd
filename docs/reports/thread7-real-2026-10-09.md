@@ -106,7 +106,9 @@ Etap 1 opublikowany: **`c176c523c706e8e02ef2405df4feebff2dc67781`**;
 lokalny początkowy `dc23efc` miał identyczne drzewo
 `9b22a9d1580d43bb8c6605433a0fa1d1adab30c0`. Shell push nie miał credential;
 publikacja odbyła się połączonym GitHub, bez force i zmian cudzych gałęzi.
-Etap 2 jest kolejnym liniowym commitem tej samej gałęzi; exact tip to HEAD.
+Etap 2 opublikowany: **`18eae5f66d95e1bbfde7c2034af4346c02802672`**.
+Pełne logi testów zachowano w `test-logs.zip` (hashe w TESTS.json).
+Ostatni commit dokumentacyjny domyka manifest i prywatny checkpoint; exact tip to HEAD.
 
 Prywatny checkpoint `PRIVATE_Thread7_real_workflow_2026-10-09.zip` zawiera
 źródłowe kapsuły, pełne preparacje, nowe spec/kolejki/freeze, wersje narzędzi
@@ -122,3 +124,5 @@ rozpocząć od małej alternatywy i raportować zależność 8 pytań od 3 rodzi
 Nie powtarzać 720 opłaconych prób; wszystkie nowe quality inference wyłącznie
 na rzeczywistych źródłach. Potem analogiczny mały protocol dla kontekstu,
 graph-vs-text i stability; niezależny split wymaga nowych rodzin.
+
+Checkpoint prywatny zapisany i sprawdzony: **137c49ab13681d036b955039a580aff3cb86bc342b62981c484abcfe9363c28e**, 291 payloadów, CRC/SHA PASS. Nowy koszt nadal 0 USD.
