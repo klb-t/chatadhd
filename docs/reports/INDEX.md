@@ -129,3 +129,7 @@ Claude integruje: świeży fetch, rebase na `main`, pełny build GCC Debug
 (`-DLOOM_USE_SYSTEM_SQLITE=OFF -DLOOM_BUILD_SERVER=ON`), pełny CTest ze
 strażnikiem wykonanych przypadków (`verify_ctest.py`), build web, `main`
 tylko fast-forward. Nie czytamy `eval/real-holdout-key`; blind użyty raz.
+
+## Zadanie B — 2026-10-09, osobna gałąź produktu
+
+[Raport DATA / GRAPH / ENGINE](data-graph-engine-2026-10-09.md): d92d7cc / ddcaeaf / 24c9fc3, testy zakresowe i E2E; pełna bramka dev z jawną blokadą research.structure. Nie zmienia statusu historycznej integracji Claude’a ani main.
