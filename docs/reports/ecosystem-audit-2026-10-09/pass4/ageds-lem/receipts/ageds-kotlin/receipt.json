@@ -1,0 +1,82 @@
+{
+  "schema": "klbt.audit.pass4.host/1",
+  "suite": "ageds-kotlin",
+  "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+  "sources": [
+    {
+      "path": "core/src/commonMain/kotlin/dev/klbt/ageds/core/Models.kt",
+      "sha256": "2fac2ffd52d17a6706aa47d38e9efb105a2a6c416a8a15f885a91af2926f90a5"
+    },
+    {
+      "path": "core/src/commonMain/kotlin/dev/klbt/ageds/core/CitationSelection.kt",
+      "sha256": "ea2e5af363f3d933d28391db0e75c837e78dc9be87f2f03e1b432ae46c17e7bf"
+    },
+    {
+      "path": "androidApp/src/main/java/dev/klbt/ageds/CitationDisplayProjection.kt",
+      "sha256": "12e88bfcf6d71e5179e80a539ad736c4b1d568fd873e676c460c63ca7af8393e"
+    },
+    {
+      "path": "androidApp/src/main/java/dev/klbt/ageds/RangePlaybackController.kt",
+      "sha256": "ae3bb7ac2a5ded6b4a89a28bacdc512b51ce8a7158f58c1c9705b7a16804239a"
+    }
+  ],
+  "compile_exit_code": 0,
+  "dependencies": [
+    {
+      "name": "kotlinx-serialization-core-jvm-1.8.0.jar",
+      "sha256": "d3c94e9d829bba6e0c4cd3ae478a40846dd49d5475d6707877be853976afe416"
+    },
+    {
+      "name": "kotlinx-serialization-json-jvm-1.8.0.jar",
+      "sha256": "7b7c445880cef94dc464f4733da1b33b94bee78805041ea08ae06e8507e4620e"
+    },
+    {
+      "name": "kotlin-stdlib-2.2.10.jar",
+      "sha256": "9c67cc79efd6b9215b49d2a4308f5f3433537376c7c88e89bdd6729bd096e61a"
+    },
+    {
+      "name": "annotations-13.0.jar",
+      "sha256": "ace2a10dc8e2d5fd34925ecac03e4988b2c0f851650c94b8cef49ba1bd111478"
+    }
+  ],
+  "compiler": [
+    {
+      "name": "annotations-13.0.jar",
+      "sha256": "ace2a10dc8e2d5fd34925ecac03e4988b2c0f851650c94b8cef49ba1bd111478"
+    },
+    {
+      "name": "kotlin-compiler-embeddable-2.2.10.jar",
+      "sha256": "79628fd5d64b4692a62f98962baab00e9076a37e2cffd6ace33cd0b7be7d1cdf"
+    },
+    {
+      "name": "kotlin-daemon-embeddable-2.2.10.jar",
+      "sha256": "b31573d418961fa080760fedcfc90d68ad67a85eafa245c73fe3d551476777ba"
+    },
+    {
+      "name": "kotlin-reflect-1.6.10.jar",
+      "sha256": "3277ac102ae17aad10a55abec75ff5696c8d109790396434b496e75087854203"
+    },
+    {
+      "name": "kotlin-script-runtime-2.2.10.jar",
+      "sha256": "c304a67dba6a61dde560e6310920bed746307c3854f6675c29ac29114731b6b0"
+    },
+    {
+      "name": "kotlin-stdlib-2.2.10.jar",
+      "sha256": "9c67cc79efd6b9215b49d2a4308f5f3433537376c7c88e89bdd6729bd096e61a"
+    },
+    {
+      "name": "kotlinx-coroutines-core-jvm-1.8.0.jar",
+      "sha256": "9860906a1937490bf5f3b06d2f0e10ef451e65b95b269f22daf68a3d1f5065c5"
+    }
+  ],
+  "run_exit_code": 0,
+  "counts": {
+    "A": {},
+    "B": {},
+    "contract": {
+      "PASS": 12
+    },
+    "control": {}
+  },
+  "status": "EXECUTED"
+}

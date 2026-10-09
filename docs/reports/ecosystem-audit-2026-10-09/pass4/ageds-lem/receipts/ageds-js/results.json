@@ -1,0 +1,88 @@
+{
+  "schema": "klbt.audit.pass4.ageds-js/1",
+  "tests": [
+    {
+      "id": "A4-AG-WEB-SNAPSHOT",
+      "phase": "contract",
+      "status": "PASS",
+      "observed": "Frozen quote/ordered references survive caller mutation"
+    },
+    {
+      "id": "A4-AG-WEB-OBJECT-ORDER",
+      "phase": "contract",
+      "status": "PASS",
+      "observed": "Equivalent object key order is accepted"
+    },
+    {
+      "id": "A4-AG-WEB-LIST-ORDER",
+      "phase": "contract",
+      "status": "PASS",
+      "observed": "List order changes occurrence and is rejected"
+    },
+    {
+      "id": "A4-AG-WEB-WRONG-VERSION",
+      "phase": "contract",
+      "status": "PASS",
+      "observed": "Identical quote with changed pinned version rejected"
+    },
+    {
+      "id": "A4-AG-WEB-EXACT-ID",
+      "phase": "contract",
+      "status": "PASS",
+      "observed": "Unsafe IDs rejected before conversion; source ID not rounded"
+    },
+    {
+      "id": "A4-AG-HISTORY-RESUME",
+      "phase": "contract",
+      "status": "PASS",
+      "observed": "Failure retains cursor/snapshot; retry owns a new token"
+    },
+    {
+      "id": "A4-AG-HISTORY-STALE",
+      "phase": "contract",
+      "status": "PASS",
+      "observed": "Late interrupted request cannot mutate pager"
+    },
+    {
+      "id": "A4-AG-HISTORY-ATOMIC-INVALID",
+      "phase": "contract",
+      "status": "PASS",
+      "observed": "All rows validate before mutation; UI must call fail to release active token"
+    },
+    {
+      "id": "A4-AG-HISTORY-RETRY",
+      "phase": "contract",
+      "status": "PASS",
+      "observed": "Valid retry keeps original order and exact next cursor"
+    },
+    {
+      "id": "A4-AG-HISTORY-CLOSED",
+      "phase": "contract",
+      "status": "PASS",
+      "observed": "Closed view cannot resume work"
+    },
+    {
+      "id": "A4-AG-HISTORY-PARTIAL",
+      "phase": "contract",
+      "status": "PASS",
+      "observed": "Payload cap exposes partial history and does not claim complete empty remainder"
+    },
+    {
+      "id": "A4-AG-WEB-AUDIO-EPOCH",
+      "phase": "contract",
+      "status": "PASS",
+      "observed": "Second play cancels first metadata wait before any first playback"
+    },
+    {
+      "id": "A4-AG-WEB-AUDIO-END",
+      "phase": "contract",
+      "status": "PASS",
+      "observed": "Saved end pauses; no alignment claim"
+    }
+  ],
+  "boundaries": [
+    "Actual ES modules, no copied selection/pager implementation",
+    "EventTarget/audio fake is infrastructure; no Chromium, MediaPlayer, HTTP or audio accuracy claim",
+    "Synthetic transcript and version rows, no private source"
+  ]
+}

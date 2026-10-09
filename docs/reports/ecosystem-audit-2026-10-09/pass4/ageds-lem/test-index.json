@@ -1,0 +1,74 @@
+{
+  "schema": "klbt.audit.pass4.test-index/1",
+  "runner": "tools/ecosystem-audit-2026-10-09/pass4/ageds-lem/run.py",
+  "suites": [
+    {
+      "id": "pass4-ageds-js",
+      "repo": "klb-t/AGEDS",
+      "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+      "args": [
+        "--suite",
+        "ageds-js",
+        "--repo",
+        "CHECKOUT",
+        "--sha",
+        "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+        "--out",
+        "NEW_OUTPUT_DIR"
+      ],
+      "expected_baseline_exit_code": 0,
+      "phase": "all; --phase acceptance excludes reproductions from outcome",
+      "baseline": "13 contract PASS",
+      "receipt": "receipts/ageds-js/receipt.json",
+      "scope": "actual-consumer host; mocked transport/OS boundary explicitly separate from device E2E"
+    },
+    {
+      "id": "pass4-ageds-kotlin",
+      "repo": "klb-t/AGEDS",
+      "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+      "args": [
+        "--suite",
+        "ageds-kotlin",
+        "--repo",
+        "CHECKOUT",
+        "--sha",
+        "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+        "--out",
+        "NEW_OUTPUT_DIR",
+        "--compiler-dir",
+        "KOTLIN_COMPILER_DIR",
+        "--deps-dir",
+        "KOTLINX_SERIALIZATION_DIR"
+      ],
+      "expected_baseline_exit_code": 0,
+      "phase": "all; --phase acceptance excludes reproductions from outcome",
+      "baseline": "12 contract PASS",
+      "receipt": "receipts/ageds-kotlin/receipt.json",
+      "scope": "actual-consumer host; mocked transport/OS boundary explicitly separate from device E2E"
+    },
+    {
+      "id": "pass4-lem",
+      "repo": "klb-t/LEM-Workbench",
+      "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+      "args": [
+        "--suite",
+        "lem",
+        "--repo",
+        "CHECKOUT",
+        "--sha",
+        "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+        "--out",
+        "NEW_OUTPUT_DIR",
+        "--compiler-dir",
+        "KOTLIN_COMPILER_DIR",
+        "--deps-dir",
+        "LEM_RUNTIME_DEPS_DIR"
+      ],
+      "expected_baseline_exit_code": 1,
+      "phase": "all; --phase acceptance excludes reproductions from outcome",
+      "baseline": "3 reproduction PASS; 3 acceptance FAIL; 2 contract PASS; 1 network control PASS",
+      "receipt": "receipts/lem/receipt.json",
+      "scope": "actual-consumer host; mocked transport/OS boundary explicitly separate from device E2E"
+    }
+  ]
+}

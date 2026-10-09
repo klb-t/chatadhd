@@ -1,0 +1,165 @@
+{
+  "schema": "klbt.audit.pass4.lem/1",
+  "tests": [
+    {
+      "id": "A4-LEM-NETWORK-DENY",
+      "phase": "control",
+      "status": "PASS",
+      "observed": {}
+    },
+    {
+      "id": "A4-LEM-CREDENTIAL-STABLE",
+      "phase": "contract",
+      "status": "PASS",
+      "observed": {
+        "requests": [
+          {
+            "method": "POST",
+            "path": "/v1beta/models/synthetic-embedding:embedContent",
+            "credentialLabel": "SYNTHETIC_ACCOUNT_A",
+            "body": {
+              "model": "models/synthetic-embedding",
+              "content": {
+                "parts": [
+                  {
+                    "text": "Safety matters because it protects people from preventable harm."
+                  }
+                ]
+              },
+              "outputDimensionality": 768.0
+            }
+          },
+          {
+            "method": "POST",
+            "path": "/v1beta/models/synthetic-embedding:embedContent",
+            "credentialLabel": "SYNTHETIC_ACCOUNT_A",
+            "body": {
+              "model": "models/synthetic-embedding",
+              "content": {
+                "parts": [
+                  {
+                    "text": "Preventing avoidable harm is an important reason to protect human safety."
+                  }
+                ]
+              },
+              "outputDimensionality": 768.0
+            }
+          }
+        ],
+        "status": "INSTRUMENT_OK"
+      }
+    },
+    {
+      "id": "A4-LEM-001",
+      "phase": "A",
+      "status": "PASS",
+      "observed": {
+        "requests": [
+          {
+            "method": "POST",
+            "path": "/v1beta/models/synthetic-embedding:embedContent",
+            "credentialLabel": "SYNTHETIC_ACCOUNT_A",
+            "body": {
+              "model": "models/synthetic-embedding",
+              "content": {
+                "parts": [
+                  {
+                    "text": "Safety matters because it protects people from preventable harm."
+                  }
+                ]
+              },
+              "outputDimensionality": 768.0
+            }
+          },
+          {
+            "method": "POST",
+            "path": "/v1beta/models/synthetic-embedding:embedContent",
+            "credentialLabel": "SYNTHETIC_ACCOUNT_B",
+            "body": {
+              "model": "models/synthetic-embedding",
+              "content": {
+                "parts": [
+                  {
+                    "text": "Preventing avoidable harm is an important reason to protect human safety."
+                  }
+                ]
+              },
+              "outputDimensionality": 768.0
+            }
+          }
+        ],
+        "status": "INSTRUMENT_OK",
+        "provenance": "[]"
+      }
+    },
+    {
+      "id": "A4-LEM-001",
+      "phase": "B",
+      "status": "FAIL",
+      "observed": {
+        "criterion": "A running two-call experiment must not silently switch credential authority; snapshot or explicitly abort at change."
+      }
+    },
+    {
+      "id": "A4-LEM-REVOCATION",
+      "phase": "contract",
+      "status": "PASS",
+      "observed": {
+        "calls": 1,
+        "status": "INSTRUMENT_FAILED"
+      }
+    },
+    {
+      "id": "A4-LEM-002-CLEAR",
+      "phase": "A",
+      "status": "PASS",
+      "observed": {
+        "models": [
+          "models/page-1"
+        ],
+        "requestCredentials": [
+          "SYNTHETIC_ACCOUNT_A"
+        ],
+        "configured": false,
+        "message": "Live registry: 1 models discovered."
+      }
+    },
+    {
+      "id": "A4-LEM-002-CLEAR",
+      "phase": "B",
+      "status": "FAIL",
+      "observed": {
+        "criterion": "Response for superseded credential epoch cannot repopulate current registry; rekey requires current reply or explicit unavailable state."
+      }
+    },
+    {
+      "id": "A4-LEM-002-REKEY",
+      "phase": "A",
+      "status": "PASS",
+      "observed": {
+        "models": [
+          "models/page-1"
+        ],
+        "requestCredentials": [
+          "SYNTHETIC_ACCOUNT_A"
+        ],
+        "configured": true,
+        "message": "Live registry: 1 models discovered."
+      }
+    },
+    {
+      "id": "A4-LEM-002-REKEY",
+      "phase": "B",
+      "status": "FAIL",
+      "observed": {
+        "criterion": "Response for superseded credential epoch cannot repopulate current registry; rekey requires current reply or explicit unavailable state."
+      }
+    }
+  ],
+  "boundaries": [
+    "Production Kotlin methods, Retrofit/Moshi/OkHttp execute unchanged",
+    "Application interceptor captures all requests and never proceeds; JVM denies sockets",
+    "Android preferences/lifecycle and DAO are host fixtures, no Room/device persistence claim",
+    "Synthetic payloads are mechanics fixtures, not scientific measurements"
+  ]
+}

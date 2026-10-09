@@ -1,0 +1,29 @@
+{
+  "artifact_json_validated": true,
+  "audit_output_guard": {
+    "id": "A4-TOOLS-IMMUTABLE-OUTPUT",
+    "exit_code": 2,
+    "status": "PASS",
+    "reason": "run.py: error: --out must be a new or empty directory; historical receipts are immutable"
+  },
+  "product_worktrees": {
+    "AGEDS": "",
+    "LEM-Workbench": ""
+  },
+  "range_validation": "All ranges <= source lines; each coverage interval carries SHA256",
+  "tests": {
+    "ageds-kotlin": {
+      "contract_pass": 12
+    },
+    "ageds-js": {
+      "contract_pass": 13
+    },
+    "lem": {
+      "reproduction_pass": 3,
+      "acceptance_fail": 3,
+      "contract_pass": 2,
+      "network_control_pass": 1
+    }
+  },
+  "deduplication": "Preliminary runner-only LEM and intermediate pipeline executions not added to final test totals. They are superseded by final pipeline; scratch logs retained. pass1\u20133 untouched."
+}

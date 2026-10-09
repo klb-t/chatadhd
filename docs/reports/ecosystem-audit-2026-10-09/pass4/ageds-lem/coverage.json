@@ -1,0 +1,372 @@
+{
+  "schema": "klbt.audit.pass4.coverage/1",
+  "count_definition": "Named semantic function/ranges, not wholly verified files. Main SHAs unchanged; no denominator refresh. Tests/fixtures/generated/vendor excluded.",
+  "repos": [
+    {
+      "repo": "klb-t/AGEDS",
+      "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+      "product_denominator": 63,
+      "before_ranged_files": 39,
+      "new_ranged_files": 6,
+      "after_ranged_files": 45,
+      "still_without_semantic_ranges": [
+        "androidApp/src/main/AndroidManifest.xml",
+        "androidApp/src/main/java/dev/klbt/ageds/AndroidRangeAudio.kt",
+        "androidApp/src/main/java/dev/klbt/ageds/CorpusActivity.kt",
+        "androidApp/src/main/java/dev/klbt/ageds/CorpusUi.kt",
+        "androidApp/src/main/java/dev/klbt/ageds/SourceAudioDisplay.kt",
+        "androidApp/src/main/java/dev/klbt/ageds/SourceScanUi.kt",
+        "androidApp/src/main/java/dev/klbt/ageds/SourceWavReader.kt",
+        "androidApp/src/main/java/dev/klbt/ageds/SourceWorkbookParser.kt",
+        "androidApp/src/main/java/dev/klbt/ageds/SourceXlsParser.kt",
+        "androidApp/src/main/res/values/styles.xml",
+        "core/src/commonMain/kotlin/dev/klbt/ageds/core/WavHeaderObservation.kt",
+        "core/src/commonMain/kotlin/dev/klbt/ageds/core/WavHeaderProbe.kt",
+        "server/__init__.py",
+        "server/app/__init__.py",
+        "server/app/static/app.css",
+        "server/app/templates/artifact.html",
+        "server/app/templates/index.html",
+        "server/app/wav_header.py"
+      ],
+      "reviewed_ranges": [
+        {
+          "file": "core/src/commonMain/kotlin/dev/klbt/ageds/core/CitationSelection.kt",
+          "ranges": [
+            [
+              12,
+              71
+            ],
+            [
+              133,
+              139
+            ],
+            [
+              156,
+              214
+            ]
+          ],
+          "functions": [
+            "SelectedCitation.request/requireMatchingCreated",
+            "CitationSelection.milliseconds/segments",
+            "checkIdentity/validateSegment",
+            "jsonSemanticallyEqual/primitiveSemanticallyEqual/canonicalJsonNumber"
+          ],
+          "verification": "Kotlin actual consumer; synthetic transcript",
+          "untraced": "Word route and exhaustive numeric boundaries",
+          "sha256": "ea2e5af363f3d933d28391db0e75c837e78dc9be87f2f03e1b432ae46c17e7bf",
+          "range_sha256": [
+            "c49e212c6be85ce3e1e94b09c8fd059f5a9bc2298a79f51ba923500da1c26cc6",
+            "5973c0662fb679377ec330a190c356721fb97df7139eb0cd8ca51378f65c306a",
+            "755cb6fb2b0e6949490b9912a1906ef688a1d2c5a493a8bbec5413f540052e10"
+          ]
+        },
+        {
+          "file": "androidApp/src/main/java/dev/klbt/ageds/CitationDisplayProjection.kt",
+          "ranges": [
+            [
+              7,
+              17
+            ]
+          ],
+          "functions": [
+            "CitationDisplayProjection.words"
+          ],
+          "verification": "Kotlin 10001 source words/10000 visible/exact refs",
+          "untraced": "Compose render/other sizes",
+          "sha256": "12e88bfcf6d71e5179e80a539ad736c4b1d568fd873e676c460c63ca7af8393e",
+          "range_sha256": [
+            "4051c1972b8b4fffb179768bb4043f4cb8cc6b540db3f1d0f0693244ab7feda6"
+          ]
+        },
+        {
+          "file": "androidApp/src/main/java/dev/klbt/ageds/RangePlaybackController.kt",
+          "ranges": [
+            [
+              4,
+              88
+            ]
+          ],
+          "functions": [
+            "RequestEpoch.invalidate/current/accepts",
+            "RangePlaybackController.play/fail/tick/stop"
+          ],
+          "verification": "Kotlin controller with fake audio backend/clock",
+          "untraced": "MediaPlayer/OS lifecycle; timeout values are not approved policy",
+          "sha256": "ae3bb7ac2a5ded6b4a89a28bacdc512b51ce8a7158f58c1c9705b7a16804239a",
+          "range_sha256": [
+            "0b6d582e013e0900dab6c8cd826e05505186dc65c146f6fc2a5185135df95ece"
+          ]
+        },
+        {
+          "file": "androidApp/src/main/java/dev/klbt/ageds/CitationUi.kt",
+          "ranges": [
+            [
+              21,
+              50
+            ],
+            [
+              65,
+              104
+            ],
+            [
+              114,
+              118
+            ]
+          ],
+          "functions": [
+            "CitationPane selection",
+            "CitationDisplayProjection consumer",
+            "saved citation playback"
+          ],
+          "verification": "Source-to-consumer semantic trace",
+          "untraced": "Compose runtime/events/lifecycle",
+          "sha256": "4dadf7e6b9da7e205db66b1ef367bbe34ef114ba3dc86ececc1c826e70c028a5",
+          "range_sha256": [
+            "52c4d4abea2b8b73d3765212673e74deed508142148af3add524bf1af17e2564",
+            "d75a52e29c606a95d1a163918f7af41c719cb2276ef786fe5249b334f9467eab",
+            "c957f2e44f905e2bebcd080785c6ab173e939657f8d970e93442f459bdc501a3"
+          ]
+        },
+        {
+          "file": "server/app/static/citations.mjs",
+          "ranges": [
+            [
+              5,
+              110
+            ],
+            [
+              128,
+              223
+            ],
+            [
+              233,
+              235
+            ]
+          ],
+          "functions": [
+            "parseDomId/requireApiId",
+            "snapshotCitationSelection/validateCreatedCitation/matchesSelection",
+            "validateHistoryPage",
+            "createHistoryPager.begin/accept/fail/close"
+          ],
+          "verification": "Actual ES module headless execution",
+          "untraced": "DOM handlers/rendering and addNew not newly executed",
+          "sha256": "190d34fd5979e2f7273edd2162c92a490892e3af197e7b10aede15e4173a6885",
+          "range_sha256": [
+            "7716060b4d21f3194eaaa950860aa748e2b8a251d614c994b006ba00b66dbf7c",
+            "4ca00d64b98c3f11770ce0244f1015080e635b1b322225fb990626dcb64123a6",
+            "b6f9138237230e5013ec909accd33a16eed650de652653c2be26292c9a7057ec"
+          ]
+        },
+        {
+          "file": "server/app/static/range-player.mjs",
+          "ranges": [
+            [
+              2,
+              81
+            ]
+          ],
+          "functions": [
+            "validRange/createRangePlayer",
+            "metadata/play/stop/check/destroy"
+          ],
+          "verification": "Actual controller with fake EventTarget audio",
+          "untraced": "Browser codec/HTTP/real playback/timeout branch",
+          "sha256": "f451e2f333cf480100d29dafa9181c8c6ebae748dda03092c0bc03c0664b901c",
+          "range_sha256": [
+            "4e507e3ed8e357f9fd7c246766b000da98c1f2734e689e0a7bb37532afd90f81"
+          ]
+        }
+      ]
+    },
+    {
+      "repo": "klb-t/LEM-Workbench",
+      "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+      "product_denominator": 24,
+      "before_ranged_files": 24,
+      "new_ranged_files": 0,
+      "after_ranged_files": 24,
+      "still_without_semantic_ranges": [],
+      "reviewed_ranges": [
+        {
+          "file": "app/src/main/java/com/example/api/ApiKeyStore.kt",
+          "ranges": [
+            [
+              12,
+              38
+            ]
+          ],
+          "functions": [
+            "init/setGeminiApiKey/clearGeminiApiKey/getGeminiApiKey"
+          ],
+          "verification": "Actual source, in-memory preferences seam",
+          "untraced": "Disk/process storage",
+          "sha256": "0de81eafcec1448359d71f409d2434740dd7e34f7b292e33f7c3483bae80475b",
+          "range_sha256": [
+            "635896bd4825ead7834dbafbcf924e2607d8c5fa9c05740ea39a19b66b458b14"
+          ]
+        },
+        {
+          "file": "app/src/main/java/com/example/api/ResearchAgent.kt",
+          "ranges": [
+            [
+              10,
+              12
+            ],
+            [
+              39,
+              58
+            ]
+          ],
+          "functions": [
+            "requireApiKey/getEmbedding/listModels"
+          ],
+          "verification": "Actual source through intercepted real Retrofit",
+          "untraced": "External auth/billing",
+          "sha256": "e2a6d8ce5ce91152ed1feb0d16c496882fd0145b2e7a9cbc62c0b038505ac8dc",
+          "range_sha256": [
+            "07e45007bd8d46af190e16440414891a7ea0e6a93e2d34c1f5f1b9584e9eab55",
+            "a10026045d7768b3a7e693403a591e35c27e5ced7aa44c31c9ee8ac896e23113"
+          ]
+        },
+        {
+          "file": "app/src/main/java/com/example/api/GeminiApiService.kt",
+          "ranges": [
+            [
+              48,
+              92
+            ]
+          ],
+          "functions": [
+            "Embedding/ListModels DTOs",
+            "GeminiApiService.listModels/embedContent"
+          ],
+          "verification": "Real DTO serialization/request query",
+          "untraced": "Production HTTP timeouts/pagination unchanged",
+          "sha256": "6883571883743bcb8a92397430f6fee06c026298d51160a008d3ce83a632ed36",
+          "range_sha256": [
+            "f31313791a9ef943018da15d7bacdd7eb843cd43c9635bd1066e835c5d0362d7"
+          ]
+        },
+        {
+          "file": "app/src/main/java/com/example/research/ExperimentRunner.kt",
+          "ranges": [
+            [
+              13,
+              68
+            ]
+          ],
+          "functions": [
+            "runEncoderSmokeTest"
+          ],
+          "verification": "Real two-call execution; stable/replacement/clear",
+          "untraced": "Other runners/raw resolver",
+          "sha256": "b2470fd5d3ede1e1a01167c7111ea728dc4555152cc64953aae04dd78d9c510e",
+          "range_sha256": [
+            "9ecc76735ee7c8eea4630e3352b7ad3822fe2a8aa922b2a8d96f8ca50d3bcbfa"
+          ]
+        },
+        {
+          "file": "app/src/main/java/com/example/viewmodel/ResearchViewModel.kt",
+          "ranges": [
+            [
+              35,
+              85
+            ]
+          ],
+          "functions": [
+            "saveApiKey/clearApiKey/refreshModels/runEmbeddingInstrument"
+          ],
+          "verification": "Actual methods/StateFlow; controlled in-flight response; host lifecycle",
+          "untraced": "Android Main dispatcher/Compose",
+          "sha256": "18811b6a1c70339936938b03f76208da10af8a9b5061f096c32d5a1ea29d0f4d",
+          "range_sha256": [
+            "3cf8560b5bee9cee60dafc43e5b7e578a588f9b1993889f4ae7fafeb9b50859a"
+          ]
+        },
+        {
+          "file": "app/src/main/java/com/example/data/repository/ResearchRepository.kt",
+          "ranges": [
+            [
+              16,
+              23
+            ]
+          ],
+          "functions": [
+            "allExperiments/insertExperiment"
+          ],
+          "verification": "Actual result insertion into DAO fixture",
+          "untraced": "Real Room unchanged, no new durable test",
+          "sha256": "cf66d8603a05768fbfc511a49640f362b76a80570d495632ff8b920c781d110f",
+          "range_sha256": [
+            "612cef381597392d31d842a9cf9aa94b2468d497de5666d9b06b1ff96a2dbb57"
+          ]
+        },
+        {
+          "file": "app/src/main/java/com/example/ui/screens/SettingsScreen.kt",
+          "ranges": [
+            [
+              17,
+              20
+            ],
+            [
+              54,
+              84
+            ]
+          ],
+          "functions": [
+            "SettingsScreen key fields/callbacks"
+          ],
+          "verification": "Source trace actual tested ViewModel entrypoints",
+          "untraced": "Compose interaction",
+          "sha256": "4f414c99b07d9dd53897ffcc10f82813d73ae4ce58b6b6030e34e90a7855063f",
+          "range_sha256": [
+            "cb0362847d29e5f735d7e19221a015e1857314dbd49c8d88ebb9e5650fc5a0d9",
+            "cf700dd873a126a60c25a24c011ec1044345e5f78bcee8591da57849254fad49"
+          ]
+        },
+        {
+          "file": "app/src/main/java/com/example/ui/screens/ModelsScreen.kt",
+          "ranges": [
+            [
+              19,
+              31
+            ],
+            [
+              40,
+              57
+            ],
+            [
+              74,
+              101
+            ],
+            [
+              178,
+              192
+            ]
+          ],
+          "functions": [
+            "ModelsScreen state/refresh",
+            "ModelCard run buttons"
+          ],
+          "verification": "Source trace current-account claim and stale state consumer",
+          "untraced": "Compose rendering",
+          "sha256": "d4471672601a40409c038958d06305340a86695a62a28c9bbe944d481469d08b",
+          "range_sha256": [
+            "963a9b9a857787431e154d5d88190b1a5567c35689afda41421d14ccde1c7078",
+            "a4b686a08f416d1ba44435cb4292df6c030e9777dda180ab869c3cfae9d2d999",
+            "758467cd45537d20502038461f7c276d4ea0fec3ebfd17e277a8ea654b2e1a15",
+            "56237f54d609f100c371f750a030840b743046364121d534618d9f895edc2b1c"
+          ]
+        }
+      ]
+    }
+  ],
+  "execution_limits": [
+    "No Android/Compose/device/SAF",
+    "No new Room migration run/paid model/CI",
+    "AGEDS typed selection/pager does not prove full shared graph",
+    "No format-certification or scientific-quality claim"
+  ]
+}

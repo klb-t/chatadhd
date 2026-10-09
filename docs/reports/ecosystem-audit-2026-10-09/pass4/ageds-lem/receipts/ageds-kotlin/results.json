@@ -1,0 +1,78 @@
+{
+  "schema": "klbt.audit.pass4.ageds-kotlin/1",
+  "tests": [
+    {
+      "id": "A4-AG-CIT-FROZEN",
+      "phase": "contract",
+      "status": "PASS",
+      "observed": "Mutable caller list cannot change frozen request"
+    },
+    {
+      "id": "A4-AG-CIT-OBJECT-ORDER",
+      "phase": "contract",
+      "status": "PASS",
+      "observed": "Object key order does not change accepted occurrence"
+    },
+    {
+      "id": "A4-AG-CIT-NUMERIC",
+      "phase": "contract",
+      "status": "PASS",
+      "observed": "For numeric selector index only, exact decimal equality 0 == 0.0; not a global coercion rule"
+    },
+    {
+      "id": "A4-AG-CIT-WRONG-OCCURRENCE",
+      "phase": "contract",
+      "status": "PASS",
+      "observed": "Same quote and timestamps cannot authorize different stored occurrence"
+    },
+    {
+      "id": "A4-AG-CIT-WRONG-VERSION",
+      "phase": "contract",
+      "status": "PASS",
+      "observed": "Changed transcript ID rejected"
+    },
+    {
+      "id": "A4-AG-CIT-LIST-ORDER",
+      "phase": "contract",
+      "status": "PASS",
+      "observed": "Message/segment order is meaningful, reversed list rejected"
+    },
+    {
+      "id": "A4-AG-CIT-UNSUPPORTED-SELECTOR",
+      "phase": "contract",
+      "status": "PASS",
+      "observed": "Closed create-response selector contract rejects unknown operative fields explicitly"
+    },
+    {
+      "id": "A4-AG-DISPLAY-PARTIAL",
+      "phase": "contract",
+      "status": "PASS",
+      "observed": "Display is capped with explicit partial flag; original indices and 10001 canonical words retained"
+    },
+    {
+      "id": "A4-AG-DISPLAY-EMPTY",
+      "phase": "contract",
+      "status": "PASS",
+      "observed": "Null view projection tested only; no claim unavailable source means empty graph"
+    },
+    {
+      "id": "A4-AG-AUDIO-EPOCH",
+      "phase": "contract",
+      "status": "PASS",
+      "observed": "Late callbacks of A do not start or stop B"
+    },
+    {
+      "id": "A4-AG-AUDIO-END",
+      "phase": "contract",
+      "status": "PASS",
+      "observed": "Saved end releases actual controller backend"
+    },
+    {
+      "id": "A4-AG-AUDIO-TIMEOUT",
+      "phase": "contract",
+      "status": "PASS",
+      "observed": "Timeout stays an error; stale ready cannot resurrect playback"
+    }
+  ],
+  "boundaries": "Actual production Kotlin; fake audio decoder backend and virtual clock only. No Android MediaPlayer/SAF/device, acoustic accuracy or network claim."
+}

@@ -1,0 +1,148 @@
+{
+  "schema": "klbt.audit.pass4.host/1",
+  "suite": "lem",
+  "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+  "sources": [
+    {
+      "path": "app/src/main/java/com/example/api/GeminiApiService.kt",
+      "sha256": "6883571883743bcb8a92397430f6fee06c026298d51160a008d3ce83a632ed36"
+    },
+    {
+      "path": "app/src/main/java/com/example/api/ResearchAgent.kt",
+      "sha256": "e2a6d8ce5ce91152ed1feb0d16c496882fd0145b2e7a9cbc62c0b038505ac8dc"
+    },
+    {
+      "path": "app/src/main/java/com/example/api/ApiKeyStore.kt",
+      "sha256": "0de81eafcec1448359d71f409d2434740dd7e34f7b292e33f7c3483bae80475b"
+    },
+    {
+      "path": "app/src/main/java/com/example/research/ExperimentRunner.kt",
+      "sha256": "b2470fd5d3ede1e1a01167c7111ea728dc4555152cc64953aae04dd78d9c510e"
+    },
+    {
+      "path": "app/src/main/java/com/example/viewmodel/ResearchViewModel.kt",
+      "sha256": "18811b6a1c70339936938b03f76208da10af8a9b5061f096c32d5a1ea29d0f4d"
+    },
+    {
+      "path": "app/src/main/java/com/example/data/repository/ResearchRepository.kt",
+      "sha256": "cf66d8603a05768fbfc511a49640f362b76a80570d495632ff8b920c781d110f"
+    },
+    {
+      "path": "app/src/main/java/com/example/data/local/AppDatabase.kt",
+      "sha256": "69bf1888e4fe997875aa6343f9cc2f8559cc45710daec5b0b2f0a4180841d42f"
+    },
+    {
+      "path": "app/src/main/java/com/example/data/local/ConfigDao.kt",
+      "sha256": "90b6a76cb2914aedfccb764430fcb896e8d7e5929d93297407f1e28a7dc213c0"
+    },
+    {
+      "path": "app/src/main/java/com/example/data/local/ExperimentDao.kt",
+      "sha256": "ff97c32db927f499567bfd4ac72a95c230995efa023eff004e7c2f5b89114bcc"
+    },
+    {
+      "path": "app/src/main/java/com/example/data/local/LedgerDao.kt",
+      "sha256": "6e9030f77852c4150ab93c4015318a1d5c167a72bfcb22b793b0b021c1bc0c81"
+    },
+    {
+      "path": "app/src/main/java/com/example/data/model/ExperimentConfig.kt",
+      "sha256": "b4b5211421f7099df3638b0fd16ddd41debb3927250db8975d19b79a320cad0d"
+    },
+    {
+      "path": "app/src/main/java/com/example/data/model/ExperimentResult.kt",
+      "sha256": "c960abc8abec8ea5c7a417f21edc4dc8a68d02288c957a942779deea157c0d2f"
+    },
+    {
+      "path": "app/src/main/java/com/example/data/model/LedgerEntry.kt",
+      "sha256": "12ec3ad908d69b4e6a5f09a5ae0c29ae5a10c4c29c67ad1f32abef8b71f7bf4d"
+    }
+  ],
+  "compile_exit_code": 0,
+  "dependencies": [
+    {
+      "name": "converter-moshi-2.12.0.jar",
+      "sha256": "19b7a35fa164093607f9a63ed810b4b1c1fbe9c7d45e3196277c1e6be1317f2e"
+    },
+    {
+      "name": "kotlin-reflect-2.1.20.jar",
+      "sha256": "419778f2b7a826bad6ee2ca1e4bdebe639ab306d2904fa3ef2a308ecfaab3811"
+    },
+    {
+      "name": "kotlinx-coroutines-core-jvm-1.10.2.jar",
+      "sha256": "5ca175b38df331fd64155b35cd8cae1251fa9ee369709b36d42e0a288ccce3fd"
+    },
+    {
+      "name": "moshi-1.15.2.jar",
+      "sha256": "767f7592c6c61eb693549a26d333c121f5383826bd287b899867aa326dae55e4"
+    },
+    {
+      "name": "moshi-kotlin-1.15.2.jar",
+      "sha256": "5c39cd77e83b111af9c54708173af96a89fd3b09d15019a11da355e83e97d75a"
+    },
+    {
+      "name": "okhttp-4.10.0.jar",
+      "sha256": "7580f14fa1691206e37081ad3f92063b1603b328da0bb316f2fef02e0562e7ec"
+    },
+    {
+      "name": "okio-jvm-3.7.0.jar",
+      "sha256": "d8b35adc28768f43ae5afe6a7d1aa2a878ba51e0b96a4f308811f3b1f5b13e55"
+    },
+    {
+      "name": "retrofit-2.12.0.jar",
+      "sha256": "3b2dfb82bb99cd33df95d92ad6fcd78ba7f17ac81e67904eb991fe404015d1d8"
+    },
+    {
+      "name": "kotlin-stdlib-2.2.10.jar",
+      "sha256": "9c67cc79efd6b9215b49d2a4308f5f3433537376c7c88e89bdd6729bd096e61a"
+    },
+    {
+      "name": "annotations-13.0.jar",
+      "sha256": "ace2a10dc8e2d5fd34925ecac03e4988b2c0f851650c94b8cef49ba1bd111478"
+    }
+  ],
+  "compiler": [
+    {
+      "name": "annotations-13.0.jar",
+      "sha256": "ace2a10dc8e2d5fd34925ecac03e4988b2c0f851650c94b8cef49ba1bd111478"
+    },
+    {
+      "name": "kotlin-compiler-embeddable-2.2.10.jar",
+      "sha256": "79628fd5d64b4692a62f98962baab00e9076a37e2cffd6ace33cd0b7be7d1cdf"
+    },
+    {
+      "name": "kotlin-daemon-embeddable-2.2.10.jar",
+      "sha256": "b31573d418961fa080760fedcfc90d68ad67a85eafa245c73fe3d551476777ba"
+    },
+    {
+      "name": "kotlin-reflect-1.6.10.jar",
+      "sha256": "3277ac102ae17aad10a55abec75ff5696c8d109790396434b496e75087854203"
+    },
+    {
+      "name": "kotlin-script-runtime-2.2.10.jar",
+      "sha256": "c304a67dba6a61dde560e6310920bed746307c3854f6675c29ac29114731b6b0"
+    },
+    {
+      "name": "kotlin-stdlib-2.2.10.jar",
+      "sha256": "9c67cc79efd6b9215b49d2a4308f5f3433537376c7c88e89bdd6729bd096e61a"
+    },
+    {
+      "name": "kotlinx-coroutines-core-jvm-1.8.0.jar",
+      "sha256": "9860906a1937490bf5f3b06d2f0e10ef451e65b95b269f22daf68a3d1f5065c5"
+    }
+  ],
+  "run_exit_code": 0,
+  "counts": {
+    "A": {
+      "PASS": 3
+    },
+    "B": {
+      "FAIL": 3
+    },
+    "contract": {
+      "PASS": 2
+    },
+    "control": {
+      "PASS": 1
+    }
+  },
+  "status": "EXECUTED"
+}

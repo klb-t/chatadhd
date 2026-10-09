@@ -1,0 +1,25 @@
+{
+  "schema": "klbt.audit.pass4.host/1",
+  "suite": "ageds-js",
+  "sha": "9c1d513bc19d177bd324d7506a21fbab98c2e268",
+  "sources": [
+    {
+      "path": "server/app/static/citations.mjs",
+      "sha256": "190d34fd5979e2f7273edd2162c92a490892e3af197e7b10aede15e4173a6885"
+    },
+    {
+      "path": "server/app/static/range-player.mjs",
+      "sha256": "f451e2f333cf480100d29dafa9181c8c6ebae748dda03092c0bc03c0664b901c"
+    }
+  ],
+  "run_exit_code": 0,
+  "counts": {
+    "A": {},
+    "B": {},
+    "contract": {
+      "PASS": 13
+    },
+    "control": {}
+  },
+  "status": "EXECUTED"
+}

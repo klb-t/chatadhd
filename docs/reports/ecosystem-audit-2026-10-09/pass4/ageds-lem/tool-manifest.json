@@ -1,0 +1,30 @@
+{
+  "schema": "klbt.audit.pass4.tools/1",
+  "files": [
+    {
+      "path": "AgedsHarness.kt",
+      "sha256": "ccfdbe392f9329a997cb639b32af31813224f73d4c131b6c512606da74fb6343"
+    },
+    {
+      "path": "LemHarness.kt",
+      "sha256": "9f030f68448c854a6a9c65fca22bc16f35b6f9dd1d4c710a834eef0b4502c18c"
+    },
+    {
+      "path": "README.md",
+      "sha256": "3130b9392a3a0f542a2bb1140987f28f5aeb33c092bd2a17d7aeb25705ff3d7b"
+    },
+    {
+      "path": "ageds.mjs",
+      "sha256": "dd980bac585f5919c5ba4f86b51b40f19dc396ddbe3489f788e2e3306d3e659a"
+    },
+    {
+      "path": "run.py",
+      "sha256": "3a2aec9d5a31308feff8f349cf5420c1e1e0b53e075c84299f09465ffb45ce06"
+    },
+    {
+      "path": "test-index.json",
+      "sha256": "376b454635dbde464609dee61478cbf81c326a17f86d71428adb303c119ba286"
+    }
+  ],
+  "historical_dependency": "pass2/lem/fixtures/*.kt reused unchanged; source hashes are per receipt"
+}

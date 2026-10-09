@@ -1,0 +1,75 @@
+{
+  "package": "pass4-ageds-lem",
+  "repo": "klb-t/LEM-Workbench",
+  "sha": "1755e1dfaa69fcaac6fbdd12aa95ea1a593ec456",
+  "status": "published_file_only_not_a_message_to_B",
+  "items": [
+    {
+      "id": "A4-LEM-001",
+      "title": "Dwa wywołania jednego eksperymentu mogą użyć różnych poświadczeń",
+      "evidence": {
+        "test": "A4-LEM-001",
+        "receipt": "receipts/lem/results.json",
+        "observed": "Request1 uses synthetic A; public ApiKeyStore mutation between requests; request2 uses synthetic B. Real ViewModel → Runner → Agent → Retrofit returns INSTRUMENT_OK and real ResearchRepository inserts that record into the test DAO. sourceProvenanceProbes is [].",
+        "reproduction": "PASS",
+        "acceptance": "FAIL",
+        "scope": "Actual consumers and serialization, in-memory Android preferences/lifecycle/DAO; no actual billing or Android persistence claim."
+      },
+      "acceptance_test": "Run same host probe. Unchanged credentials produce two A requests and INSTRUMENT_OK; replace credentials after first capture: preserve operation authority with two A requests or explicitly stop after one and record failure/cancellation, never A+B. Clear still forbids second request.",
+      "consumers": [
+        "SettingsScreen.saveApiKey",
+        "ApiKeyStore.setGeminiApiKey",
+        "ResearchViewModel.runEmbeddingInstrument",
+        "ExperimentRunner.runEncoderSmokeTest",
+        "ResearchAgent.getEmbedding",
+        "GeminiApiService.embedContent",
+        "ResearchRepository.insertExperiment"
+      ],
+      "target_data_graph": "MethodRun → execution authorization reference + revision + effective request/recipe reference; secret material stays outside public graph payload.",
+      "migration_risk": "Do not backfill old results with invented account provenance. Snapshot must not turn revocation into continued sending; use opaque handles/epochs, not raw API keys in evidence.",
+      "dependencies": [
+        "Execution context shared across runner and agent",
+        "Explicit credential replacement/revocation policy",
+        "Result provenance without secret material"
+      ],
+      "priority": "P1"
+    },
+    {
+      "id": "A4-LEM-002",
+      "title": "Spóźniony rejestr konta A odtwarza stan po clear/rekey",
+      "evidence": {
+        "tests": [
+          "A4-LEM-002-CLEAR",
+          "A4-LEM-002-REKEY"
+        ],
+        "receipt": "receipts/lem/results.json",
+        "observed": "Hold real Retrofit listModels response for synthetic A in interceptor, call real clearApiKey/saveApiKey(B), then release response. Models become [models/page-1], message Live registry: 1 models discovered; rekey case captured only A, no B refresh.",
+        "reproduction": "2 PASS",
+        "acceptance": "2 FAIL",
+        "scope": "Actual ViewModel StateFlow methods; Compose consumers inspected, not rendered."
+      },
+      "acceptance_test": "Delay response for A, clear: no old models or live-success status restored. Delay A, save B: old response cannot become B registry; new B response or explicit unavailable state. Same unchanged A refresh remains usable.",
+      "consumers": [
+        "ResearchViewModel.saveApiKey",
+        "ResearchViewModel.clearApiKey",
+        "ResearchViewModel.refreshModels",
+        "ResearchAgent.listModels",
+        "ModelsScreen.models/LaunchedEffect",
+        "SettingsScreen.instrumentMessage"
+      ],
+      "target_data_graph": "ModelRegistrySnapshot → provider/authorization nonsecret revision + acquisition status; selected current snapshot distinct from historical snapshot.",
+      "migration_risk": "In-memory registry state can be invalidated without schema migration. Never label old account snapshots as current; keep historical provenance only if deliberately supported.",
+      "dependencies": [
+        "Shared credential epoch/context",
+        "Refresh cancellation/fencing and current-state publication rule"
+      ],
+      "priority": "P1"
+    }
+  ],
+  "preserve_controls": [
+    "A4-LEM-CREDENTIAL-STABLE",
+    "A4-LEM-REVOCATION",
+    "A4-LEM-NETWORK-DENY"
+  ],
+  "ageds": "No new product fix from passing reviewed mechanisms. Prior findings remain independently open."
+}
