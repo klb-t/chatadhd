@@ -1,0 +1,70 @@
+{
+  "schema": "loom.thread7_live_unblock_binding_receipt/1",
+  "base_sha": "cb16b336ee0c59a1ff80b4899dadebce33aa7610",
+  "audit_sha": "9f931da3bb1d1001f9b7d865914ae195d9255b7e",
+  "producer_version": "loom.thread7_prepared_connector/2",
+  "before_producer_sha256": "13d8d29c8e02a280c333dfb24726e34f58a5df9dadee7e0436c08db1fe5b8074",
+  "after_producer_sha256": "cec5281f4de667888af0bdceb65d08acae6d8eb2fd6faa48e56752bef150bb96",
+  "tests_sha256": "b92b38de69a0b368930100ff95affb87589d7a825e9d06d1abd570753cb27759",
+  "new_tests": {
+    "run": 13,
+    "pass": 13,
+    "skip": 0
+  },
+  "existing_tests": {
+    "run": 7,
+    "pass": 7,
+    "skip": 0
+  },
+  "audit_before": {
+    "positive_contracts": 5,
+    "acceptance_pass": 0,
+    "acceptance_fail": 2,
+    "bug_reproductions": 2
+  },
+  "audit_after": {
+    "positive_contracts": 5,
+    "acceptance_pass": 2,
+    "acceptance_fail": 0,
+    "bugs_still_reproduced": 0
+  },
+  "real_readonly_check": {
+    "schema": "loom.thread7_source_binding_readonly_check/1",
+    "preparation_manifest_sha256": "5ee93a5b92bd94cf6951474e1ae7c5f7250481f4c258347fa7a0b4e140377f64",
+    "corpus_panel_sha256": "3c6530189ec1917e0a4019e5ad834bab3f062ceeb5046c053667e203c1dc0835",
+    "producer_sha256": "cec5281f4de667888af0bdceb65d08acae6d8eb2fd6faa48e56752bef150bb96",
+    "source_families_verified": 12,
+    "indexed_rows_source_identity_verified": 1197,
+    "native_hash_domain": "sha256(canonical native_conversation JSON)",
+    "prepared_hash_domain": "sha256(canonical prepared context source JSON)",
+    "normalized_hash_domain": "sha256(exact normalized conversation file bytes)",
+    "no_source_or_preparation_writes": true,
+    "new_queue_jobs": 0,
+    "new_preparations": 0,
+    "new_rankings": 0,
+    "new_calls": 0,
+    "new_cost_usd": "0"
+  },
+  "real_readonly_private_receipt_sha256": "0a2fa5fbc10252207ae68a3421846b5e4bcc9047448071bd14f95e0480ec0b47",
+  "evidence_zip_sha256": "8ad7f59ca9de5ce44334e30e4ec90b4e414efe50b7cb9067330b4168046970df",
+  "evidence_files": {
+    "audit_run.pinned.py": "f4a06bf988ee55bd65845f0d768f683f40d94c7d3e4e21e538ad33f4df386337",
+    "replay_connections.py": "612229956cdcbe0aa62874ea94b851d74c6fa5296c0dafa560a4b606049b1aea",
+    "before.json": "81daca14a673c68ba21b9df09449753486ab76417c8396798a4409a37cfd3880",
+    "before.log": "b505d9e42acee9d85b0f8ae21b2b6d54fd2c1200592a7e2fe3b3847a99f9c32a",
+    "after-final.json": "7daa42013e1e4177115447d675aebaa8d5ecef4834e72fbc3533c88f4181ce38",
+    "after-final.log": "32f841d84e315c54497fa4b1a1db424f3cd94d10dd8ecef9d08226e6a65045c1",
+    "unit-tests-final.log": "0d10be52fd09e363530e40cbcb100640db4a142812407bcbeeab5dcf814186a2",
+    "legacy-tests.log": "2a765bf848099bc49db4fced27b429544e49ad86e9d5751395be2da5b7cc6eae"
+  },
+  "new_provider_requests": 0,
+  "new_model_calls": 0,
+  "new_cost_usd": "0",
+  "source_content_verified_required_for_live": true,
+  "old_evidence_overwritten": false,
+  "limitations": [
+    "A exact source witness checks cover the existing panel and connector protocol, not arbitrary transformation correctness.",
+    "Legacy direct-hash fixture records remain explicitly unverified.",
+    "Historical generated queue/spec identities must not be replaced by v2 regeneration."
+  ]
+}

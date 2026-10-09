@@ -1,0 +1,40 @@
+{
+  "schema": "loom.research_test_receipt/1",
+  "finding": "A2-C-003",
+  "base_sha": "cb16b336ee0c59a1ff80b4899dadebce33aa7610",
+  "audit_sha": "9f931da3bb1d1001f9b7d865914ae195d9255b7e",
+  "source_before": {
+    "head": "cb16b336ee0c59a1ff80b4899dadebce33aa7610",
+    "code_sha256": "33cb290558f81d0c16bd49e05d16e419c84feb538493544cb98ffed7bc672c32",
+    "finding": "A2-C-003",
+    "paid_calls": 0
+  },
+  "files": {
+    "loom/tools/structure/experiment_payer_boundary_v1.py": "3a89eed4fcad429d3c21197e105f238cbee080ca9c2a0bd161e3cdc63ed0e8c1",
+    "loom/tools/structure/test_experiment_payer_binding_v2.py": "05560d1e2ed293968f742b9183cbc8a9535d0e10e2f219c0567c08929c0f970e",
+    "loom/tools/structure/test_experiment_payer_boundary_v1.py": "dd9e460957cc4132d5119f85940988e50a461e75ac335efdb37c2b0d0885edfb",
+    "loom/tools/structure/test_research_programme_recovery_v1.py": "f2a1b84a444ea367af837d01fe0efe15f02f3aa4efbcb508d5c766a9a5851a17"
+  },
+  "tests": {
+    "passed": 91,
+    "failed": 0,
+    "skipped": 0,
+    "new_test_methods": 12,
+    "command": "TMPDIR=/var/tmp PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/tmp/thread7-python-deps:loom/tools/structure:. python3 -m unittest -v loom.tools.structure.test_experiment_payer_binding_v2 loom.tools.structure.test_experiment_payer_boundary_v1 loom.tools.structure.test_research_programme_recovery_v1 loom.tools.structure.test_research_programme_runner",
+    "full_log_sha256": "08c6dfd61752cbd25a17644078f5df51da6ff061e6123f1e4299317ea084c7cf"
+  },
+  "fixture_setup_corrections": {
+    "test_experiment_payer_boundary_v1.py": "Supply actual parsed request/model/provider including allow_fallbacks; all previous assertions unchanged.",
+    "test_research_programme_recovery_v1.py": "Two queue fixtures supplied actual requested model/provider instead of stale fixture/a metadata; all assertions unchanged."
+  },
+  "cost": {
+    "provider_calls": 0,
+    "new_spend_usd": "0",
+    "transport": "controlled fixture only"
+  },
+  "boundaries": [
+    "Historical payer receipt has no authenticated endpoint URL; queue endpoint_identity remains requested metadata.",
+    "Source/view attribution is enforced by preparation connector, not invented from payer request bytes.",
+    "Existing mismatched captured first evidence remains immutable and rejected; operator must quarantine such a queue, not retry a paid request."
+  ]
+}

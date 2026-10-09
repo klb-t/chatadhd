@@ -1,0 +1,13 @@
+{
+  "archive_only": true,
+  "source_sqlite_sha256": "0cd84a23ede317ed4bc7011d0e42f1303fcf67d3f3285aa7acf04c70d2fab078",
+  "attempts": 720,
+  "append_resolution_rows": 714,
+  "effective_states": {
+    "completed": 720
+  },
+  "known_actual_usd": "0.873216500",
+  "unknown_actual_cost_rows": 0,
+  "current_provider_usage": null,
+  "source_unmodified": true
+}

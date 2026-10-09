@@ -1,0 +1,20 @@
+{
+  "schema": "loom.thread7_live_unblock_start/1",
+  "date": "2026-10-09",
+  "base_sha": "cb16b336ee0c59a1ff80b4899dadebce33aa7610",
+  "audit_sha": "9f931da3bb1d1001f9b7d865914ae195d9255b7e",
+  "runtime_sha": "949a86efefe899c961daad835f5fed86abebd114",
+  "previous_report": "docs/reports/thread7-real-offline-2026-10-09.md",
+  "previous_report_sha256": "6da6bbd8a51b97340d611bb7b3e9aaa16f0d23f7532c6fec44ef91e236062650",
+  "scope": "credential channel and reproduced live audit blockers only",
+  "historical_attempts": 720,
+  "historical_cost_usd": "0.873216500",
+  "historical_remaining_usd": "4.126783500",
+  "nonrenewing_campaign_cap_usd": "5",
+  "current_provider_usage_usd": null,
+  "current_reservations_usd": null,
+  "credential_received": false,
+  "new_paid_calls": 0,
+  "new_cost_usd": "0",
+  "previous_freezes_unchanged": true
+}

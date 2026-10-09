@@ -304,7 +304,8 @@ class ExternalRecoveryTests(unittest.TestCase):
         queue = workflow.Queue(self.f.root / 'queue.sqlite')
         self.addCleanup(queue.db.close)
         job = next(workflow.ordered_jobs(spec()))
-        job.update(operation_id='one', request_sha256=payer.sha(self.f.body), request=json.loads(self.f.body))
+        job.update(operation_id='one', request_sha256=payer.sha(self.f.body), request=json.loads(self.f.body),
+                   requested_model='fake/model', requested_provider=json.loads(self.f.body)['provider'])
         queue.add([job])
         # Captures source-free fixture data, not a task-quality claim.
         adapter = boundary.PayerBoundary(queue, self.f.private, self.f.repo, self.f.policy['programme_id'],
@@ -406,7 +407,8 @@ class ExternalRecoveryTests(unittest.TestCase):
         queue = workflow.Queue(self.f.root / 'cache-queue.sqlite')
         self.addCleanup(queue.db.close)
         job = next(workflow.ordered_jobs(spec()))
-        job.update(operation_id='one', request_sha256=payer.sha(self.f.body), request=json.loads(self.f.body))
+        job.update(operation_id='one', request_sha256=payer.sha(self.f.body), request=json.loads(self.f.body),
+                   requested_model='fake/model', requested_provider=json.loads(self.f.body)['provider'])
         queue.add([job]); queue.mark_dispatched('one', 'fixture-ref')
         # Even a conflicting earlier queue observation cannot hide a saved HIT.
         queue.append_evidence('one', 'transport_response_metadata', {'response_cache_status': 'MISS'})

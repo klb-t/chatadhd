@@ -1,0 +1,160 @@
+{
+  "schema": "loom.thread7_public_live_price_probe/1",
+  "checked_date_utc": "2026-10-09",
+  "api_url": "https://openrouter.ai/api/v1/models/openai/gpt-4.1-mini/endpoints",
+  "raw_sha256": "a4d959e949a3fe2bf99821dd045f471b7ae738f898cd95491745ecb5e578e5a2",
+  "authenticated": false,
+  "proxy_mode": "environment",
+  "http_status": 200,
+  "historical_scope": "thread7-cont01-context-small3-v2",
+  "historical_manifest_sha256": "2cf6cf590ae41d4dddf842a673be15397d69100541260735cdea2383df0b189c",
+  "currency": "USD",
+  "pricing": {
+    "prompt": "0.0000004",
+    "completion": "0.0000016",
+    "web_search": "0.01",
+    "input_cache_read": "0.0000001",
+    "discount": 0
+  },
+  "context_length": 1047576,
+  "max_completion_tokens": 32768,
+  "supported_parameters": [
+    "seed",
+    "max_tokens",
+    "response_format",
+    "structured_outputs",
+    "tools",
+    "tool_choice",
+    "temperature",
+    "top_p"
+  ],
+  "request_size_upper_bounds": [
+    {
+      "prompt_unit_upper": 984692,
+      "completion_unit_upper": 768,
+      "request_bytes": 983668,
+      "estimate_usd": "0.3951056",
+      "requested_model": "openai/gpt-4.1-mini",
+      "requested_provider": {
+        "allow_fallbacks": false,
+        "only": [
+          "openai"
+        ],
+        "require_parameters": true
+      },
+      "non_content_parameters": {
+        "max_tokens": 768,
+        "temperature": 0
+      },
+      "within_advertised_context": true
+    },
+    {
+      "prompt_unit_upper": 183238,
+      "completion_unit_upper": 768,
+      "request_bytes": 182214,
+      "estimate_usd": "0.0745240",
+      "requested_model": "openai/gpt-4.1-mini",
+      "requested_provider": {
+        "allow_fallbacks": false,
+        "only": [
+          "openai"
+        ],
+        "require_parameters": true
+      },
+      "non_content_parameters": {
+        "max_tokens": 768,
+        "temperature": 0
+      },
+      "within_advertised_context": true
+    },
+    {
+      "prompt_unit_upper": 478054,
+      "completion_unit_upper": 768,
+      "request_bytes": 477030,
+      "estimate_usd": "0.1924504",
+      "requested_model": "openai/gpt-4.1-mini",
+      "requested_provider": {
+        "allow_fallbacks": false,
+        "only": [
+          "openai"
+        ],
+        "require_parameters": true
+      },
+      "non_content_parameters": {
+        "max_tokens": 768,
+        "temperature": 0
+      },
+      "within_advertised_context": true
+    },
+    {
+      "prompt_unit_upper": 66497,
+      "completion_unit_upper": 768,
+      "request_bytes": 65473,
+      "estimate_usd": "0.0278276",
+      "requested_model": "openai/gpt-4.1-mini",
+      "requested_provider": {
+        "allow_fallbacks": false,
+        "only": [
+          "openai"
+        ],
+        "require_parameters": true
+      },
+      "non_content_parameters": {
+        "max_tokens": 768,
+        "temperature": 0
+      },
+      "within_advertised_context": true
+    },
+    {
+      "prompt_unit_upper": 225976,
+      "completion_unit_upper": 768,
+      "request_bytes": 224952,
+      "estimate_usd": "0.0916192",
+      "requested_model": "openai/gpt-4.1-mini",
+      "requested_provider": {
+        "allow_fallbacks": false,
+        "only": [
+          "openai"
+        ],
+        "require_parameters": true
+      },
+      "non_content_parameters": {
+        "max_tokens": 768,
+        "temperature": 0
+      },
+      "within_advertised_context": true
+    },
+    {
+      "prompt_unit_upper": 446996,
+      "completion_unit_upper": 768,
+      "request_bytes": 445972,
+      "estimate_usd": "0.1800272",
+      "requested_model": "openai/gpt-4.1-mini",
+      "requested_provider": {
+        "allow_fallbacks": false,
+        "only": [
+          "openai"
+        ],
+        "require_parameters": true
+      },
+      "non_content_parameters": {
+        "max_tokens": 768,
+        "temperature": 0
+      },
+      "within_advertised_context": true
+    }
+  ],
+  "quote_only_upper_usd": "0.9615540",
+  "current_key_usage_usd": null,
+  "current_key_remaining_usd": null,
+  "current_reservations_usd": null,
+  "dispatch_authorized_now": false,
+  "new_paid_calls": 0,
+  "limitations": [
+    "Unauthenticated live quote is not key/campaign preflight.",
+    "Historical six-job scope is inventory, not a newly frozen or scheduled phase.",
+    "Before dispatch rebind existing prepared byte-identical requests with connector v2 and new scoped spec identity; verify content source bindings.",
+    "Refresh prices and provider parameter support at the existing payer phase boundary.",
+    "No cache discount assumed; no response reuse; requests are not independent families."
+  ]
+}

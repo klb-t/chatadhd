@@ -1,0 +1,22 @@
+{
+  "cases": [
+    {
+      "wrong_request": false,
+      "state": "captured",
+      "billing_verified": true,
+      "evidence_count": 1,
+      "sync_transport_calls": 0,
+      "error": null
+    },
+    {
+      "wrong_request": true,
+      "state": "pending",
+      "billing_verified": false,
+      "evidence_count": 0,
+      "sync_transport_calls": 0,
+      "error": "payer_queue_request_hash_mismatch"
+    }
+  ],
+  "fixture_post_calls": 1,
+  "actual_provider_calls": 0
+}

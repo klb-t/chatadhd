@@ -35,7 +35,8 @@ class BoundaryTests(unittest.TestCase):
         self.q=w.Queue(self.path);self.addCleanup(self.q.db.close)
         job=next(w.ordered_jobs(spec()))
         job.update(operation_id='one',request_sha256=hashlib.sha256(self.f.body).hexdigest(),
-                   request=json.loads(self.f.body),requested_model='fake/model',requested_provider={'only':['fake']})
+                   request=json.loads(self.f.body),requested_model='fake/model',
+                   requested_provider=json.loads(self.f.body)['provider'])
         self.q.add([job]);self.q.claim('worker','one')
         self.adapter=boundary.PayerBoundary(self.q,self.f.private,self.f.repo,self.f.policy['programme_id'],
             payer.transport.key_fingerprint('fixture-credential-not-a-real-key'),payer.sha(self.f.manifest.read_bytes()))
@@ -96,7 +97,9 @@ class BoundaryTests(unittest.TestCase):
                     self.f.private=self.f.root/('private'+str(index));self.base.usage=0
                     self.q.db.close();self.q=w.Queue(self.f.root/('q'+str(index)))
                     self.addCleanup(self.q.db.close)
-                    job=next(w.jobs(spec()));job.update(operation_id='one',request_sha256=payer.sha(self.f.body))
+                    job=next(w.jobs(spec()));job.update(operation_id='one',request_sha256=payer.sha(self.f.body),
+                        request=json.loads(self.f.body),requested_model='fake/model',
+                        requested_provider=json.loads(self.f.body)['provider'])
                     self.q.add([job]);self.q.claim('worker')
                     self.adapter=boundary.PayerBoundary(self.q,self.f.private,self.f.repo,self.f.policy['programme_id'],
                         payer.transport.key_fingerprint('fixture-credential-not-a-real-key'),payer.sha(self.f.manifest.read_bytes()))

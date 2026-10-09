@@ -97,6 +97,45 @@ class PayerBoundary:
             return [{**row, **proofs[row['operation_id']]['projection']} if row['operation_id'] in proofs else row
                     for row in rows]
 
+    def _bound_job(self, row):
+        """Bind queue claims to the payer's exact-byte request witness.
+
+        The queue stores a parsed body, while the payer deliberately preserves
+        original serialization. Match the byte hash first, then compare parsed
+        values without substituting a reserialized hash for the original one.
+        Source/view attribution is checked by the preparation connector. These
+        historical payer receipts do not attest an endpoint URL; the queue's
+        endpoint identity remains requested metadata, not provider observation.
+        """
+        queued = self.queue.db.execute('SELECT payload FROM jobs WHERE id=?',
+                                       (row['operation_id'],)).fetchone()
+        require(queued is not None, 'payer_queue_operation_missing')
+        job = strict_json(queued[0])
+        require(job.get('operation_id') == row['operation_id'], 'payer_queue_operation_mismatch')
+        require(row.get('manifest_sha256') == self.manifest
+                and row.get('programme_id') == self.programme_id
+                and row.get('key_fingerprint_sha256') == self.fingerprint,
+                'reservation_manifest_or_campaign_mismatch')
+        require(job.get('request_sha256') == row.get('request_sha256'),
+                'payer_queue_request_hash_mismatch')
+        token = _sha(row['operation_id'].encode())
+        path = payer.private_path(self.directory / 'records' / (token + '.request.bin'), self.repo_root)
+        raw = path.read_bytes()
+        require(_sha(raw) == row['request_sha256'], 'frozen_payer_request_changed')
+        body = strict_json(raw)
+        require(isinstance(body, dict) and isinstance(job.get('request'), dict)
+                and canonical(body) == canonical(job['request']), 'payer_queue_request_body_mismatch')
+        operation = row['receipt_operation']
+        require(job.get('route_id') == operation['route_id'], 'payer_queue_route_mismatch')
+        require(job.get('requested_model') == body.get('model') == operation['model_id'],
+                'payer_queue_model_mismatch')
+        provider = body.get('provider')
+        require(isinstance(provider, dict) and isinstance(job.get('requested_provider'), dict)
+                and canonical(job['requested_provider']) == canonical(provider)
+                and provider.get('only') == [operation['provider_id']]
+                and provider.get('allow_fallbacks') is False, 'payer_queue_provider_mismatch')
+        return job
+
     def verify(self, operation_id, reference):
         require(reference == {'programme_id':self.programme_id,'operation_id':operation_id,
                 'manifest_sha256':self.manifest,'key_fingerprint_sha256':self.fingerprint},
@@ -115,6 +154,7 @@ class PayerBoundary:
         started = strict_json(started_path.read_bytes())
         require(started == row,'durable_reservation_witness_changed')
         require(_sha(request_path.read_bytes())==row['request_sha256'],'frozen_payer_request_changed')
+        self._bound_job(row)
         return {'verified':True,'operation_id':operation_id,'request_sha256':row['request_sha256'],
                 'manifest_sha256':self.manifest,'started_sha256':_sha(started_path.read_bytes()),
                 'authority':'research_programme_runner.PrivateLedger','reservation_state':'reserved'}
@@ -168,12 +208,13 @@ class PayerBoundary:
         """
         ledger = payer.PrivateLedger(self.directory,self.repo_root,self.programme_id,self.fingerprint)
         with ledger.locked():
+            verified = []
             for row in ledger.rows():
                 queued = self.queue.db.execute('SELECT payload FROM jobs WHERE id=?',(row['operation_id'],)).fetchone()
                 if not queued:
                     continue
                 require(row['manifest_sha256']==self.manifest,'sync_manifest_mismatch')
-                job = strict_json(queued[0])
+                job = self._bound_job(row)
                 raw = ledger.response_bytes(row)
                 # Receipt state/cost is reconstructed by PrivateLedger.validate.
                 observations=[x['payload'] for x in self.queue.evidence(row['operation_id'])
@@ -188,6 +229,10 @@ class PayerBoundary:
                     'generation_id':row.get('generation_id'),'http_status':row.get('http_status'),
                     'latency_seconds':row.get('latency_seconds'),'billing_verified':True,
                     'payer_response_reference':_sha(row['operation_id'].encode())+'.response.bin'})
+                verified.append((row, record))
+            # Validate every association before writing any result/evidence. A
+            # later mismatched imported job cannot partially settle this batch.
+            for row, record in verified:
                 self.queue.capture_first(row['operation_id'],record)
                 self.queue.append_evidence(row['operation_id'],'payer_verified_settlement',
                     {'attempt_sha256':digest(row),'state':row['state'],

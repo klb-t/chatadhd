@@ -1,0 +1,17 @@
+{
+  "schema": "loom.thread7_credential_channel_receipt/1",
+  "status": "awaiting_encrypted_envelope",
+  "code_commit": "cb16b336ee0c59a1ff80b4899dadebce33aa7610",
+  "programme_id": "thread7-new-key-2026-10-04-eur5",
+  "session_id": "9b1412a5dfcbd2d51c61566145dc8e80",
+  "html_sha256": "43c82a44cd9568a19d5b9597f14ab652c5bb311c57a47bb12d3179c061475859",
+  "private_receiver_retained": true,
+  "private_directory_mode": "0o700",
+  "private_key_mode": "0o600",
+  "public_private_match": true,
+  "crypto_script_unchanged": true,
+  "template_labels": "continuation_existing_nonrenewing_USD5_campaign",
+  "expires_at": null,
+  "credential_received": false,
+  "new_provider_calls": 0
+}
