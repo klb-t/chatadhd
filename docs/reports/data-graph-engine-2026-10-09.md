@@ -20,7 +20,7 @@ Przeczytane instrukcje AGENTS/CLAUDE, STATE, INDEX i kontrakty R39–R42. Integr
 
 ## Kolejny konkretny krok
 
-Dokończyć pełną bramkę dev z pełnym stdout i ASan dla drzewa 24c9fc3, zapisać wynik guard oraz blokady C. Następny przyrost produktu: WD-003 — walidowane parametry generacji i ich provenance, bez obchodzenia zarezerwowanego modelu, limitu kosztów ani prywatności. Rozpoznano ignorowanie request.params; implementacja jeszcze nie rozpoczęta.
+Następny przyrost B: EA-AGEDS-002 — versioned request w payload kolejki, deduplikacja po intent/hash i rzeczywisty worker czytający przypięte dane. Przed implementacją rozdzielić jawnie requested model/decoder od placement/device workera, aby nie zastąpić jego istniejących ustawień zasobów defaultem serwera. Zachować puste legacy payloads jako unknown. WD-003 pozostaje następną niezależną grupą: capability-validated params, chronione model/messages/output bound, pełne provenance bez sekretów. Pełny nowy guard ChatADHD wymaga również kontraktu C o TMPDIR; poprzednie negatywy zachowane.
 
 ## Gotowe przyrosty
 
@@ -152,3 +152,20 @@ data-graph-owner-discovery.json; nie jest pełnym spisem prywatnych repo.
 Aktualny backlog A ma 12 pozycji: CH-001–011-B oraz CH-015-B. Nie dodajemy
 ponownie CH-012–014 sklasyfikowanych poza tym backlogiem. CH-003-B zamknięty
 w opisanych ścieżkach native; W12-DIC-0013 zmniejsza CH-008-B. Pozostałe otwarte.
+
+## Końcowy checkpoint publikacji
+
+B-SAN-001 produkt/test commit `600cef90` push PASS. Current focused dev i ASan:
+18/18 przypadków, 234/234 asercje; wartości oczekiwane zachowane, bez pominięcia
+przypadków tej grupy (909 innych z tego binary nie wybrano przez filtr CTest).
+AGEDS najnowszy 3878b53: dodatkowy production bootstrap test, finalny Python
+433/433 + 588 subtests PASS. Watchdog najnowszy 61ae246 (produkt 666775a).
+Remote branch SHA każdego z trzech repo potwierdzono przez ls-remote; drzewa
+czyste, main bez zmian. Nie ma aktywnych procesów bramek ani podagentów B.
+
+Archiwum lokalnych dowodów, 69 plików sukcesów/negatywów z manifestem/hashami:
+/workspace/data-graph-engine-2026-10-09-evidence.zip (210513 bytes), SHA-256
+5bdf7a5c0069fcdc6b0d839deda17fa8c32e79ffa1fa4a6dbfee1fc3bedef577.
+Manifest osobno: /workspace/data-graph-engine-2026-10-09-manifest.json. Zawiera
+piny kodu wykonanych testów, nie ten późniejszy commit raportu. Pełnego wyniku
+PASS całego zadania B, Basic→Advanced workflow ani ExperimentSpec nie deklarujemy.
