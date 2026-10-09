@@ -6,11 +6,32 @@
 #include "loom/catalog.h"
 
 #include "loom/knowledge.h"
+#include "loom/db.h"
 #include "loom/runtime.h"
 #include "loom/util/sha256.h"
 #include "loom/util/time.h"
 
 namespace loom::catalog {
+
+NewMessage make_link_placeholder(const CatalogUnit& unit, std::string_view conversation_id) {
+  NewMessage message;
+  message.conv_id = conversation_id;
+  message.role = "document";
+  message.text = "[linked to catalog unit " + unit.unit.id + ", " + std::to_string(unit.n_msgs) + " message(s)] " + unit.head;
+  message.metadata = Json{{"catalog_unit", unit.unit.id}, {"locator", unit.unit.locator.to_json()},
+                          {"content_hash", unit.content_hash}, {"store_mode", "link"}};
+  return message;
+}
+
+Json link_placeholder_identity(const NewMessage& message) {
+  Json metadata = Json::object();
+  for (const char* key : {"catalog_unit", "locator", "content_hash", "store_mode"})
+    metadata[key] = message.metadata.value(key, Json(nullptr));
+  return Json{{"conv_id", message.conv_id}, {"role", message.role}, {"text", message.text},
+              {"model", message.model ? Json(*message.model) : Json(nullptr)},
+              {"parent_id", message.parent_id ? Json(*message.parent_id) : Json(nullptr)},
+              {"weight", message.weight}, {"attachments", message.attachments}, {"metadata", metadata}};
+}
 
 // ── SketchParams ────────────────────────────────────────────────────
 SketchParams SketchParams::mobile() {

@@ -255,6 +255,19 @@ LOOM_API const char* loom_get_messages_ex(LoomContext* ctx, const char* conv_id,
   });
 }
 
+LOOM_API const char* loom_read_conversation_view(LoomContext* ctx, const char* conv_id,
+                                                const char* options_json, int read_authorized) {
+  return guard_json("loom_read_conversation_view", [&] {
+    LOOM_CAPI_REQUIRE_CTX_JSON(ctx);
+    if (!conv_id || !*conv_id) return out_error(missing("conv_id"));
+    auto options = parse_arg(options_json, Json::object());
+    if (!options) return out_error(options.error());
+    auto result = ctx->rt->read_conversation_view(conv_id, *options, read_authorized != 0);
+    if (!result) return out_error(result.error());
+    return out(*result);
+  });
+}
+
 LOOM_API const char* loom_get_message(LoomContext* ctx, const char* msg_id) {
   return guard_json("loom_get_message", [&] {
     LOOM_CAPI_REQUIRE_CTX_JSON(ctx);

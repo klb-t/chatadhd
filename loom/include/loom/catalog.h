@@ -59,6 +59,7 @@
 namespace loom {
 
 class Database;
+struct NewMessage;
 class Runtime;
 namespace knowledge {
 struct StageContext;
@@ -238,6 +239,11 @@ struct ImportOptions {
 using ProgressFn =
     std::function<void(std::string_view step, std::int64_t current, std::int64_t total, std::string_view message)>;
 
+// Shared existing link writer contract; used to recognize unchanged historical
+// placeholders, never as authority without the import journal and provenance.
+NewMessage make_link_placeholder(const CatalogUnit& unit, std::string_view conversation_id);
+Json link_placeholder_identity(const NewMessage& message);
+
 class Catalog {
  public:
   Catalog(Runtime& rt, std::shared_ptr<const kb::Pack> pack);
@@ -264,6 +270,9 @@ class Catalog {
   // parsers as import. A failed refresh reports its error and retains the last
   // successful projection; retained data is never presented as current.
   Result<Json> read_resource(std::string_view unit_id, const Json& read_options = Json::object());
+  // Resolve the same method and resource_read recipe without dispatch, source
+  // access or receipt writes. Used to present actual available read options.
+  Result<Json> resource_read_configuration(const Json& read_options = Json::object());
   // Trusted caller grant is separate from source/adapter metadata. The trace
   // uses the existing method registry and GraphPacket store, never a second engine.
   Result<Json> execute_resource(std::string_view unit_id, const Json& read_options, bool read_authorized);

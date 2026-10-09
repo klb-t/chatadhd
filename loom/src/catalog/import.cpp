@@ -17,6 +17,7 @@
 #include "loom/runtime.h"
 #include "loom/sqlite.h"
 #include "loom/util/time.h"
+#include "loom/util/sha256.h"
 
 namespace loom::catalog {
 
@@ -352,21 +353,17 @@ Result<Json> Catalog::import_selected(const ImportOptions& opts, const ProgressF
       auto conv = rt_.db().create_conv(title);
       if (!conv) return conv.error();
       conv_id = conv->id;
-      NewMessage nm;
-      nm.conv_id = conv_id;
-      nm.role = "document";
-      nm.text = "[linked to catalog unit " + uid + ", " + std::to_string(cu.n_msgs) + " message(s)] " + cu.head;
-      nm.metadata = Json{{"catalog_unit", uid},
-                         {"locator", cu.unit.locator.to_json()},
-                         {"content_hash", cu.content_hash},
-                         {"store_mode", "link"}};
+      NewMessage nm = make_link_placeholder(cu, conv_id);
       auto mid = rt_.db().create_msg(nm);
+      Json binding_locator = cu.unit.locator.to_json();
+      if (mid) binding_locator["catalog_link_binding"] = Json{{"schema", "loom.catalog_link_binding/1"},
+          {"placeholder_id", *mid}, {"identity_sha256", Sha256::hex(json::canonical(link_placeholder_identity(nm)))}};
       if (mid) {
         ProvenanceRecord pr;
         pr.subject_id = *mid;
         pr.subject_kind = "message";
         pr.source_id = source_id;
-        pr.locator = cu.unit.locator.to_json();
+        pr.locator = binding_locator;
         pr.transform = "catalog.import.link@1";
         LOOM_TRY(rt_.provenance().add(pr));
       }
@@ -375,7 +372,7 @@ Result<Json> Catalog::import_selected(const ImportOptions& opts, const ProgressF
       conv_pr.subject_kind = "conversation";
       if (!mid) return mid.error();
       conv_pr.source_id = source_id;
-      conv_pr.locator = cu.unit.locator.to_json();
+      conv_pr.locator = binding_locator;
       conv_pr.transform = "catalog.import.link@1";
       LOOM_TRY(rt_.provenance().add(conv_pr));
       conversations.push_back(conv_id);

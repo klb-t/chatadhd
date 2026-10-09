@@ -118,6 +118,12 @@ class Runtime {
   archive::ArchiveIntelligence& archive();  // Project Compiler (archive.h)
   knowledge::KnowledgeEngine& knowledge();  // knowledge pipeline (knowledge.h)
 
+  // Explicit source I/O boundary. Existing get_msgs/get_messages remain storage
+  // reads. options = {read_options?: resource_read overrides}; grant belongs to
+  // the native host, never to source/descriptor/message data. Always all-status.
+  Result<Json> read_conversation_view(std::string_view conversation_id, const Json& options,
+                                      bool host_local_read_authorized);
+
   // Swap the HTTP stack at runtime (platform injection). nullptr restores
   // the default transport. In-flight requests finish on the old transport.
   void set_http_transport(std::shared_ptr<net::HttpTransport> transport);

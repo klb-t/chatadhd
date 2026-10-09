@@ -317,7 +317,7 @@ Result<Json> Catalog::read_resource(std::string_view unit_id, const Json& read_o
     };
     LOOM_TRY(fields(profile ? profile->values() : *parsed, "", profile_id));
   }
-  Json snapshot{{"source", cu.unit.source}, {"selector", cu.unit.locator.to_json()},
+  Json snapshot{{"schema", "loom.resource_snapshot/2"}, {"source", cu.unit.source}, {"selector", cu.unit.locator.to_json()},
                 {"content_hash", cu.content_hash}, {"projection_profile", projection.inspection()},
                 {"read_configuration", read_profile.inspection()},
                 {"read_scope", {{"unit_bytes", raw->size()}, {"projection", "complete_unit"},
@@ -331,7 +331,12 @@ Result<Json> Catalog::read_resource(std::string_view unit_id, const Json& read_o
                 {"permission", "readonly"}, {"activation", "not_requested"}};
   // Unknown domains may contain credentials. Keep their verified source
   // reference, not unclassified values in an exportable graph snapshot.
-  if (recognized) snapshot["raw"] = *parsed;
+  if (recognized) {
+    snapshot["raw"] = *parsed;
+    // Full mapper output remains inside the transient payload boundary used
+    // by TaskEngine; never copy this to outer result/method metadata.
+    snapshot["mapping"] = model;
+  }
   if (mapping_error) snapshot["mapping_error"] = Json{{"code", errc_name(mapping_error->code)}, {"message", mapping_error->message}};
   NodeOptions root;
   root.node_id = root_id;

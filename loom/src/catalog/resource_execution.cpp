@@ -34,17 +34,16 @@ Result<Json> accept_result(context::MethodRegistry& registry, const Json& packet
   return registry.accept(Json{{"operation", "accept"}, {"packet", packet}, {"target", target},
       {"selection", selected}, {"expected_rows", expected}, {"explicitly_accepted", true}});
 }
-}
-
-Result<Json> Catalog::execute_resource(std::string_view unit_id, const Json& read_options, bool read_authorized) {
-  // This argument belongs to the authenticated/native host. Neither source
-  // contents, selection, a discovered descriptor nor a graph receipt grants it.
-  if (!read_authorized) return Error(Errc::Auth, "catalog.read_resource: source read was not authorized");
-  if (unit_id.empty()) return invalid("nonempty unit_id required");
-  try {
-    LOOM_TRY_ASSIGN(auto descriptor, RuntimeProfile::load("resource_method", rt_.paths().root));
+struct ResourceReadPlan {
+  RuntimeProfile descriptor;
+  RuntimeProfile read_profile;
+  Json snapshot;
+  Json leaf;
+};
+Result<ResourceReadPlan> resolve_resource_read(Runtime& runtime, context::MethodRegistry& registry,
+                                              const Json& read_options) {
+    LOOM_TRY_ASSIGN(auto descriptor, RuntimeProfile::load("resource_method", runtime.paths().root));
     const auto& method = descriptor.values();
-    context::MethodRegistry registry(rt_.db());
     LOOM_TRY_ASSIGN(auto snapshot, registry.load(method.at("profile")));
     const Json host{{"execution", Json{{"catalog.read_resource", Json{{"available", true},
         {"authorization", "host_argument"}, {"transport", "local_source"}}}}}};
@@ -59,10 +58,39 @@ Result<Json> Catalog::execute_resource(std::string_view unit_id, const Json& rea
     const auto& parameters = leaf["effective_parameters"];
     if (!parameters.is_object() || parameters.size() != 1 || !parameters.contains("read_options") ||
         !parameters["read_options"].is_object()) return invalid("method parameters require only read_options");
-    LOOM_TRY_ASSIGN(auto read_profile, RuntimeProfile::load("resource_read", rt_.paths().root, parameters["read_options"]));
+    LOOM_TRY_ASSIGN(auto read_profile, RuntimeProfile::load("resource_read", runtime.paths().root, parameters["read_options"]));
     LOOM_TRY_ASSIGN(read_profile, read_profile.with_overrides(read_options));
     if (!method.contains("result_kind") || !method["result_kind"].is_string() || method["result_kind"].get_ref<const std::string&>().empty())
       return invalid("result_kind is missing from descriptor data");
+
+    return ResourceReadPlan{std::move(descriptor), std::move(read_profile), std::move(snapshot), leaf};
+}
+
+}
+
+Result<Json> Catalog::resource_read_configuration(const Json& read_options) {
+  try {
+    context::MethodRegistry registry(rt_.db());
+    LOOM_TRY_ASSIGN(auto resolved, resolve_resource_read(rt_, registry, read_options));
+    return resolved.read_profile.inspection();
+  } catch (const std::exception& error) {
+    return invalid(error.what());
+  }
+}
+
+Result<Json> Catalog::execute_resource(std::string_view unit_id, const Json& read_options, bool read_authorized) {
+  // This argument belongs to the authenticated/native host. Neither source
+  // contents, selection, a discovered descriptor nor a graph receipt grants it.
+  if (!read_authorized) return Error(Errc::Auth, "catalog.read_resource: source read was not authorized");
+  if (unit_id.empty()) return invalid("nonempty unit_id required");
+  try {
+    context::MethodRegistry registry(rt_.db());
+    LOOM_TRY_ASSIGN(auto resolved, resolve_resource_read(rt_, registry, read_options));
+    const auto& descriptor = resolved.descriptor;
+    const auto& method = descriptor.values();
+    const auto& read_profile = resolved.read_profile;
+    const auto& snapshot = resolved.snapshot;
+    const auto& leaf = resolved.leaf;
 
     // Point-read catalog metadata only after permission and implementation
     // checks. No source bytes or catalog sketches enter the method packet.

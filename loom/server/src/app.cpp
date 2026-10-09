@@ -343,6 +343,18 @@ void App::route_conversations() {
 // ── Messages ───────────────────────────────────────────────────────────
 
 void App::route_messages() {
+  svr_.Get(R"(/api/conversations/([^/]+)/view)", [this](const httplib::Request& req, httplib::Response& res) {
+    res.set_header("Cache-Control", "no-store");
+    send_loom(res, loom_read_conversation_view(ctx_, req.matches[1].str().c_str(), "{}", 0));
+  });
+  svr_.Post(R"(/api/conversations/([^/]+)/view)", [this](const httplib::Request& req, httplib::Response& res) {
+    res.set_header("Cache-Control", "no-store");
+    json body;
+    if (!object_body(req, res, body)) return;
+    // Existing host auth middleware admits this explicit local-read request.
+    // Neither JSON nor source metadata supplies the grant; no egress is granted.
+    send_loom(res, loom_read_conversation_view(ctx_, req.matches[1].str().c_str(), body.dump().c_str(), 1));
+  });
   svr_.Get(R"(/api/conversations/([^/]+)/messages)", [this](const httplib::Request& req, httplib::Response& res) {
     std::string conv_id = req.matches[1].str();
     bool all = req.has_param("all") && req.get_param_value("all") != "0" && req.get_param_value("all") != "false";

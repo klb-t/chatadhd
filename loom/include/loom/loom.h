@@ -160,6 +160,13 @@ LOOM_API int loom_delete_conversation(LoomContext* ctx, const char* conv_id);
 LOOM_API const char* loom_get_messages(LoomContext* ctx, const char* conv_id);
 /* include_all != 0: every status (versions, excluded, deleted). */
 LOOM_API const char* loom_get_messages_ex(LoomContext* ctx, const char* conv_id, int include_all);
+/* Explicit all-status read view; may access linked sources only when the native
+ * host grants local read. options_json: {"read_options"?: resource_read overrides}.
+ * False grant returns reference status/metadata without dispatch. Local read is
+ * not permission to send content to a model. Result: loom.conversation_view/1.
+ * Reference rows are ephemeral and expose false mutation/native-lookup caps. */
+LOOM_API const char* loom_read_conversation_view(LoomContext* ctx, const char* conv_id,
+                                                const char* options_json, int read_authorized);
 LOOM_API const char* loom_get_message(LoomContext* ctx, const char* msg_id);
 /* Creates a new version of msg_id with new_text (old version kept as
  * "version"); returns the new message. */

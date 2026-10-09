@@ -261,6 +261,11 @@ if(LOOM_BUILD_TESTS)
     set_tests_properties(server.smoke PROPERTIES
       ENVIRONMENT "LOOM_SERVER_BIN=$<TARGET_FILE:loom-server>"
       TIMEOUT 60)
+    add_test(NAME server.conversation_view
+      COMMAND ${Python3_EXECUTABLE} ${LOOM_ROOT}/server/tests/test_conversation_view_server.py)
+    set_tests_properties(server.conversation_view PROPERTIES
+      ENVIRONMENT "LOOM_SERVER_BIN=$<TARGET_FILE:loom-server>;PYTHONDONTWRITEBYTECODE=1"
+      TIMEOUT 90)
     add_test(NAME server.chat_active_task
       COMMAND ${Python3_EXECUTABLE} ${LOOM_ROOT}/server/tests/test_chat_active_task_server.py)
     set_tests_properties(server.chat_active_task PROPERTIES

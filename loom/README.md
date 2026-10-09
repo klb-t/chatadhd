@@ -148,6 +148,7 @@ replace) or **platform detail** (an adapter).
 | Task and event history is append-only (`loom_events`); tasks carry input/output hashes and checkpoints and resume after a crash | invariant |
 | Errors are values (`Result`/`Status`); nothing throws across the C ABI | invariant |
 | C ABI: opaque context, caller-freed JSON strings, error object, negative codes | invariant (versioned by `LOOM_ABI_VERSION`) |
+| `loom.conversation_view/1` is an explicit local-read projection; storage-only message getters never read sources. Reference rows are immutable/version-pinned, local rows retain their capabilities; local read grants no model egress | invariant; retention/index choices are existing `resource_read` data |
 | FTS is derived, rebuildable state with a LIKE fallback | invariant; whether FTS5 is available is a platform detail |
 | Relation vocabulary (inverse, symmetry, category); unknown types auto-registered | policy/default (seeded JSON) |
 | Analyzer rules (regexes, topic keywords), generated from `core/semantic.py` | policy/default (data) |

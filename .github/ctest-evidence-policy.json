@@ -1,6 +1,6 @@
 {
   "schema": "loom.ctest_evidence_policy/1",
-  "revision": 2,
+  "revision": 3,
   "default_runner": "script",
   "runner_bindings": [
     {"match": {"prefix": "unit."}, "runner": "doctest"},
@@ -8,6 +8,7 @@
     {"match": {"prefix": "research."}, "runner": "unittest"},
     {"match": {"name": "resource_graph.contract"}, "runner": "unittest"},
     {"match": {"name": "server.chat_active_task"}, "runner": "unittest"},
+    {"match": {"name": "server.conversation_view"}, "runner": "unittest"},
     {"match": {"name": "eval.harness"}, "runner": "unittest"}
   ],
   "opt_in_entries": [

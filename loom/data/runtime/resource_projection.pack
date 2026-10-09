@@ -1,8 +1,8 @@
 {
   "schema": "loom.runtime_profile/1",
   "domain": "resource_projection",
-  "revision": 2,
-  "description": "Native resource graph kinds and predicates. A profile changes projection vocabulary, never source retention, transport, runtime activation, privacy or domain parser selection. Missing fields are errors; this is the canonical source for generated embedding. Revision 2 preserves observed source array indices; legacy byte-only units remain explicitly unit-relative. Prior graph identities remain immutable.",
+  "revision": 3,
+  "description": "Native resource graph kinds and predicates. A profile changes projection vocabulary, never source retention, transport, runtime activation, privacy or domain parser selection. Missing fields are errors; this is the canonical source for generated embedding. Revision 2 preserves observed source array indices; legacy byte-only units remain explicitly unit-relative. Prior graph identities remain immutable. Revision 3 snapshots retain the existing full export-mapping DTO inside last_successful; prior graph/snapshot interpretations remain identifiable.",
   "defaults": {
     "kinds": {
       "resource": "external:resource",
