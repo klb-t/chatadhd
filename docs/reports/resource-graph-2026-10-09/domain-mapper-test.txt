@@ -1,0 +1,20 @@
+patch applies: 9e20f99ab27e7cd45e1892f83bf60fbe60db3de9
+patch applies: b20c0d8ac37934e1600c3b9216492fd524220941
+{
+  "base": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "patch_applies_to": [
+    "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+    "b20c0d8ac37934e1600c3b9216492fd524220941"
+  ],
+  "binary_sha256": "cf835eb08d6360abc6bc612c8bcd3fcb81bb19bd993416973a946925a803403c",
+  "regression": {
+    "regression": "passed",
+    "providers": 2,
+    "database_constructed": false,
+    "asset_resolution": "not_evaluated"
+  },
+  "stdin_stdout_probe": "passed",
+  "no_database_or_files_created": true,
+  "full_rebuild": false,
+  "patch_active_in_repository": false
+}

@@ -1,0 +1,281 @@
+{
+  "base_sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "ready_implementation_sha": "3b44a98298edb3d395d126a1a519eccd40cb5866",
+  "extension_tests": {
+    "passed": 133,
+    "skipped": 0
+  },
+  "native_library_sha256": "3d82f67e43bd426d2f7e2faf91a9d957793ce8ed14b0b3a756ed0e54a5fee148",
+  "files": [
+    {
+      "path": "loom/tools/resource_graph/README.md",
+      "bytes": 6716,
+      "sha256": "f363f0b78a2200e13a26e460fa2e73ddc0d6a9a09e259f554bea162d885e7864"
+    },
+    {
+      "path": "loom/tools/resource_graph/__init__.py",
+      "bytes": 177,
+      "sha256": "d613ec73e8725a1b9f18d8c9848fe72856a4b99433852dea8f57802516d49c70"
+    },
+    {
+      "path": "loom/tools/resource_graph/__main__.py",
+      "bytes": 1955,
+      "sha256": "c8ffee3bdf914b0a9364e09af03035ac860b9e87b077d1be69a888f3b80805a9"
+    },
+    {
+      "path": "loom/tools/resource_graph/access.py",
+      "bytes": 24495,
+      "sha256": "a7b5aae4e806677ef67a9d9d983ede0218d9b9221c3ea50910a89d290c0c7c5e"
+    },
+    {
+      "path": "loom/tools/resource_graph/conversations.py",
+      "bytes": 9712,
+      "sha256": "559bd8a638f5938d856fd1110b66dbae85136f94df8e6301acc96e8041d4c0c4"
+    },
+    {
+      "path": "loom/tools/resource_graph/core.py",
+      "bytes": 27998,
+      "sha256": "b07d17729dd56deb532d85166d98ca3ee8b6fd18e7e567a97f026420b26db96a"
+    },
+    {
+      "path": "loom/tools/resource_graph/discovery.py",
+      "bytes": 29788,
+      "sha256": "c5698f321db969c28d482585393857ba3e95c2fcbeffc10b7fa3bf3a79f4bf5e"
+    },
+    {
+      "path": "loom/tools/resource_graph/line_adapter.py",
+      "bytes": 18915,
+      "sha256": "4f6cca01f127bb970f8ed279b89a6675f01df304443e1cb4c3ac97946736c43a"
+    },
+    {
+      "path": "loom/tools/resource_graph/mapping_adapter.py",
+      "bytes": 1502,
+      "sha256": "002f43db1c606c86fd739a85f7a4ace4a9703d0d7d7f8ee16ae9018901381d8a"
+    },
+    {
+      "path": "loom/tools/resource_graph/native.py",
+      "bytes": 3038,
+      "sha256": "d2630521f2100d745e646518803eaa035b9aab0126d3e536c1330332209f367f"
+    },
+    {
+      "path": "loom/tools/resource_graph/parsers.py",
+      "bytes": 10431,
+      "sha256": "9147dd9ce7924cae19974a36fb3aec9c7983d3e2aadbafb24c699f658d3e3df3"
+    },
+    {
+      "path": "loom/tools/resource_graph/projection.py",
+      "bytes": 3136,
+      "sha256": "961d4de16293b1158b15fe210f04912c75249763ddb8ffe5be9d1b5bc0b8a3e1"
+    },
+    {
+      "path": "loom/tools/resource_graph/requirements.txt",
+      "bytes": 126,
+      "sha256": "2de553a7e05936b17db4e1ed3b4c94ee2822337500ab126a7bc3ec11ea4586f6"
+    },
+    {
+      "path": "loom/tools/resource_graph/scenario.py",
+      "bytes": 4103,
+      "sha256": "fa0e705a15d80317344e12a50926cb4002d2283158c77230a25082b5e51cf7f3"
+    },
+    {
+      "path": "loom/data/resource_graph/access.json",
+      "bytes": 716,
+      "sha256": "c6595cc214b9974fbabc247e5ad4b07f9c88a0ecea03dafe3acf07c08ded2643"
+    },
+    {
+      "path": "loom/data/resource_graph/discovery.json",
+      "bytes": 1184,
+      "sha256": "6494aa966971fe4e1c823f348249bae4f04f1c46e4fa4ef873506c8edd3bd523"
+    },
+    {
+      "path": "loom/data/resource_graph/line_adapter.json",
+      "bytes": 971,
+      "sha256": "39345035e7c84d230fcb16cdc5bacda1705bdd38636df89e579b894720543da2"
+    },
+    {
+      "path": "loom/data/resource_graph/parsers.json",
+      "bytes": 1706,
+      "sha256": "aae178e8200692ee8025aaabdd8babc3eedce98cc215fcd9390c74581d6a3960"
+    },
+    {
+      "path": "loom/data/resource_graph/projection.json",
+      "bytes": 963,
+      "sha256": "f69d861d497cdcf4efc3dee0fd4491c429b941b853657da0c8a756a6b22831d9"
+    },
+    {
+      "path": "loom/tests/resource_graph/test_access.py",
+      "bytes": 14794,
+      "sha256": "52e50fc374c3787d4d83ebfc31d6f01565687c8553434d1f3a3dc0a79cf2ccdc"
+    },
+    {
+      "path": "loom/tests/resource_graph/test_conversations.py",
+      "bytes": 6262,
+      "sha256": "c2b51bde103b167fd53b2b47eb051359f3ece03c54748e0716dcb601b0bb630a"
+    },
+    {
+      "path": "loom/tests/resource_graph/test_core.py",
+      "bytes": 7566,
+      "sha256": "745a47d5e38308d45b568aa4b84b6d11e26f2487fee98af954b0348823de976d"
+    },
+    {
+      "path": "loom/tests/resource_graph/test_discovery.py",
+      "bytes": 15000,
+      "sha256": "7524ec40c03531ebd7a335aa61f4530c23a6cc67374b9cec3c20b826b04ce501"
+    },
+    {
+      "path": "loom/tests/resource_graph/test_line_adapter.py",
+      "bytes": 14275,
+      "sha256": "5e02726f330548d575b10fd3dd1fef2006e93d7d3986c32b7cccbf08f391476f"
+    },
+    {
+      "path": "loom/tests/resource_graph/test_native.py",
+      "bytes": 5451,
+      "sha256": "bc3ab87886cbac0ca25896fd6b838fa6b4ad83275213815e0c994e3b4e8b819d"
+    },
+    {
+      "path": "loom/tests/resource_graph/test_parsers.py",
+      "bytes": 6067,
+      "sha256": "dd2cffe715679364a24ee8af3dde88264150cc36715dc7c82d2291238fdbda5c"
+    },
+    {
+      "path": "loom/tests/resource_graph/test_pipeline.py",
+      "bytes": 5625,
+      "sha256": "b0226f0bb4875d0c7b20c187d845e367bbd054709d5e8e031331d33e2a10113e"
+    },
+    {
+      "path": "loom/tests/resource_graph/test_reference_checkpoint.py",
+      "bytes": 2244,
+      "sha256": "dc290764185d525280e2eb34f0c9588a962ecf479e3249636b47a4b17d73746c"
+    },
+    {
+      "path": "loom/tests/resource_graph/test_review_regressions.py",
+      "bytes": 9672,
+      "sha256": "11ed6a7c23dab7b2e9b8893d44dbcfcde95ac181a3179632e91ec689ba7f7148"
+    },
+    {
+      "path": "loom/tests/resource_graph/test_search.py",
+      "bytes": 2930,
+      "sha256": "ddab66d92f1d50db445299de3d56cd8335637a4d42f3e279fd1002dd20cf836b"
+    },
+    {
+      "path": "docs/reports/resource-graph-2026-10-09/CAPABILITIES.md",
+      "bytes": 3077,
+      "sha256": "dc70386bc914dbc6e031ecb4303341a073b06797f01a60d87d68871eceaeb34e"
+    },
+    {
+      "path": "docs/reports/resource-graph-2026-10-09/STATE.md",
+      "bytes": 3933,
+      "sha256": "93ea6ed0eb874e959e226e07c29f35302c00b95ea7242a296885148dce088a9a"
+    },
+    {
+      "path": "docs/reports/resource-graph-2026-10-09/access.md",
+      "bytes": 5234,
+      "sha256": "f9e485f91997e27cd454e3713d6e82fa38031d32d96db2172520f690b0f75037"
+    },
+    {
+      "path": "docs/reports/resource-graph-2026-10-09/composed-test.txt",
+      "bytes": 32237,
+      "sha256": "9150e7234ed08761939b875d3194ba6d037547af98bbfd2fe1f17ab29ceb83f6"
+    },
+    {
+      "path": "docs/reports/resource-graph-2026-10-09/discovery.md",
+      "bytes": 6916,
+      "sha256": "ceecce4381cd7282d40222899f684c1aa4c723f0325d95644cc243af01dc999b"
+    },
+    {
+      "path": "docs/reports/resource-graph-2026-10-09/domain-mapper-receipt.json",
+      "bytes": 552,
+      "sha256": "5f124828c13b9035808ce930909ba0ddffa5cda42a3494e0dc2ee257935c54b8"
+    },
+    {
+      "path": "docs/reports/resource-graph-2026-10-09/domain-mapper-test.txt",
+      "bytes": 664,
+      "sha256": "bbfb20326c146ee68aa830f3b941097e487e15eb5e29ed6715f2adad7ac44e75"
+    },
+    {
+      "path": "docs/reports/resource-graph-2026-10-09/domain_mapper.md",
+      "bytes": 5460,
+      "sha256": "d9e759cba165afca46bbcf36a1551ba1d5f682ee12fb84a12b926403c576f508"
+    },
+    {
+      "path": "docs/reports/resource-graph-2026-10-09/domain_mapper.patch",
+      "bytes": 5473,
+      "sha256": "9f363eb9a1fc2a1d826d937911371c21b7df582289dfb60bbc94a59d5b804c3f"
+    },
+    {
+      "path": "docs/reports/resource-graph-2026-10-09/domain_mapper_test.cpp",
+      "bytes": 4840,
+      "sha256": "ca63ee1eba733bfba23d10b28820f0ea9fd7b6edb0b55c74e1a4b26491306ea6"
+    },
+    {
+      "path": "docs/reports/resource-graph-2026-10-09/domain_mapper_test.py",
+      "bytes": 4266,
+      "sha256": "8ab2598f61a533a6a8d9868d5718cddecf92f59b3cf09b6410fe59e76759e277"
+    },
+    {
+      "path": "docs/reports/resource-graph-2026-10-09/example-packet-for-E.json",
+      "bytes": 63670,
+      "sha256": "2084e9ae3c06d366857ae558bf17c1378f6d5f5513acda2154578d0e0ac857d5"
+    },
+    {
+      "path": "docs/reports/resource-graph-2026-10-09/final-integration-test.txt",
+      "bytes": 492,
+      "sha256": "325f5b4477be8e537ea352694bc5fdc6de15f3026bfd8f918366bf62c38329d0"
+    },
+    {
+      "path": "docs/reports/resource-graph-2026-10-09/final-test.txt",
+      "bytes": 32869,
+      "sha256": "5b577085a7290cbffba65feff3cfa0a0d590adf6b6d99b6408353eeb9c408125"
+    },
+    {
+      "path": "docs/reports/resource-graph-2026-10-09/first-composition-negative.txt",
+      "bytes": 23758,
+      "sha256": "ba8a39eda991e50ff4b26920e7583b38dfac430b1251c00f975aba1e4f220203"
+    },
+    {
+      "path": "docs/reports/resource-graph-2026-10-09/foundation-test.log",
+      "bytes": 17658,
+      "sha256": "61357d0a466a00163ed3a2be899a12fdbf864951ed47fe69168e2b0da6a8f0b4"
+    },
+    {
+      "path": "docs/reports/resource-graph-2026-10-09/foundation-test.txt",
+      "bytes": 17658,
+      "sha256": "56b197b0ee853c485c9b7cbcd3e15714d7f02ce0c2ea21334bcb874b3e624219"
+    },
+    {
+      "path": "docs/reports/resource-graph-2026-10-09/integration-test.txt",
+      "bytes": 492,
+      "sha256": "683a1e664115a63bff57ffdacc779106161ed607b18da8056328d184161e54ef"
+    },
+    {
+      "path": "docs/reports/resource-graph-2026-10-09/integration.patch",
+      "bytes": 907,
+      "sha256": "3e384155065dbbb41d7ac48444a31477f71c17f10f00bf1eee20a5fbf981af0b"
+    },
+    {
+      "path": "docs/reports/resource-graph-2026-10-09/integration_test.py",
+      "bytes": 3244,
+      "sha256": "cb2c5373f7ba1bfcb1143dea79ffbaf06989d1712d2672d8bed855f1c0ca936f"
+    },
+    {
+      "path": "docs/reports/resource-graph-2026-10-09/line_adapter.md",
+      "bytes": 6427,
+      "sha256": "b687dcfb8fcb3d7e2af90fe099f227b4481ed4b15954ecc20c236b8f3f65b78c"
+    },
+    {
+      "path": "docs/reports/resource-graph-2026-10-09/native.md",
+      "bytes": 6469,
+      "sha256": "413eb2bf08ea7e9f7a8453da6ac3e63d81105ccf2ea05284ce5ec334caea138a"
+    },
+    {
+      "path": "docs/reports/resource-graph-2026-10-09/parsers.md",
+      "bytes": 7085,
+      "sha256": "cf2dff09034590550579f5d5569f51bc17be6739112f87b23b9103b33c9aa9d9"
+    },
+    {
+      "path": "docs/reports/resource-graph-2026-10-09/scenario-result.json",
+      "bytes": 732,
+      "sha256": "d1169a2963638918f695d4cc4d3eaa6eb4bff9e304f1bd1872422c26669f5c51"
+    }
+  ]
+}

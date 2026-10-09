@@ -9,13 +9,14 @@ from .access import Access
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest='command', required=True)
-    for name in ('describe','select','project','discover','recognize'):
+    for name in ('describe','select','project','discover','recognize','search'):
         command = sub.add_parser(name)
         command.add_argument('source')
         command.add_argument('--id', default='cli-resource')
         command.add_argument('--member', action='append', default=[])
         command.add_argument('--format')
         command.add_argument('--selector', default='')
+        command.add_argument('--query', default='')
         command.add_argument('--depth', type=int)
         command.add_argument('--allow-origin', action='append', default=[])
     demo = sub.add_parser('demo')
@@ -32,6 +33,7 @@ def main():
         elif args.command == 'select': result = graph.select(args.id,args.selector)
         elif args.command == 'project': result = graph.project(args.id,args.selector,depth=args.depth)
         elif args.command == 'recognize': result = graph.recognize(args.id)
+        elif args.command == 'search': result = graph.search(args.id,args.query,pointer=args.selector)
         else: result = graph.discover(args.id)
     print(json.dumps(result, ensure_ascii=False, indent=2, allow_nan=False))
 

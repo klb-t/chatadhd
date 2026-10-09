@@ -11,6 +11,7 @@ Source fixtures are generated and nonprivate. No LLM-quality claim is made.
 | JSON / YAML / XML / CSV | Existing parsers, unknown fields retained | Syntax only; lexical losses explicit, source bytes authoritative |
 | Reference / inline / snapshot / cache / index | Independent combinations and changes tested | Parsed TTL cache may intentionally serve captured revision; no persistent autonomous watcher |
 | Demand / eager structure | Same field values; selected-only packet materialization | Standard syntax parser reads a complete bounded document |
+| Search archive/source content | Nested ZIP and seekable JSONL search without import or graph-node materialization | Explicit inspected-field budget and partial coverage |
 | Truly partial source read | JSONL: 33,184,000 byte source, 8,192 bytes read for 2 rows | Local POSIX; row-bounded parse; distant rows need bounded scan or offsets |
 | Unknown structure adaptation | Automatically generated schema/sample map + registration + packet | No fixture-specific branch; structural validation, domain semantics unknown |
 | Online documentation | Injected controlled fetch, dated provenance, schema used as data | Explicit URL/schema; no autonomous web search or model call |
