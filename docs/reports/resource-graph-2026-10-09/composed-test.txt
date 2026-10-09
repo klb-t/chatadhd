@@ -1,0 +1,322 @@
+test_archive_count_is_checked_before_zipinfo_allocation (test_access.AccessTests.test_archive_count_is_checked_before_zipinfo_allocation) ... ok
+test_authorize_local_does_not_read_file (test_access.AccessTests.test_authorize_local_does_not_read_file) ... ok
+test_corrupt_crc_does_not_return_usable_data (test_access.AccessTests.test_corrupt_crc_does_not_return_usable_data) ... ok
+test_decompression_budget_and_ratio_checked_before_expansion (test_access.AccessTests.test_decompression_budget_and_ratio_checked_before_expansion) ... ok
+test_empty_archive_missing_member_and_corrupt_are_distinct (test_access.AccessTests.test_empty_archive_missing_member_and_corrupt_are_distinct) ... ok
+test_forged_directory_count_does_not_bypass_allocation_budget (test_access.AccessTests.test_forged_directory_count_does_not_bypass_allocation_budget) ... ok
+test_http_denied_before_transport_and_credential_query_not_in_evidence (test_access.AccessTests.test_http_denied_before_transport_and_credential_query_not_in_evidence) ... ok
+test_injected_remote_equivalent_to_local_with_independent_source_version (test_access.AccessTests.test_injected_remote_equivalent_to_local_with_independent_source_version) ... ok
+test_injected_transport_errors_are_credential_free (test_access.AccessTests.test_injected_transport_errors_are_credential_free) ... ok
+test_local_file_and_uri_are_identical_and_have_separate_version_hash (test_access.AccessTests.test_local_file_and_uri_are_identical_and_have_separate_version_hash) ... ok
+test_local_roots_and_nonregular_sources (test_access.AccessTests.test_local_roots_and_nonregular_sources) ... ok
+test_nested_cumulative_limit_and_depth (test_access.AccessTests.test_nested_cumulative_limit_and_depth) ... ok
+test_real_loopback_http_reads_and_stops_redirect_before_target (test_access.AccessTests.test_real_loopback_http_reads_and_stops_redirect_before_target) ... ok
+test_recursive_eager_preflight_reuses_lazy_guard_and_aggregate_budget (test_access.AccessTests.test_recursive_eager_preflight_reuses_lazy_guard_and_aggregate_budget) ... ok
+test_redirect_requires_both_permission_and_independent_target_authorization (test_access.AccessTests.test_redirect_requires_both_permission_and_independent_target_authorization) ... ok
+test_regular_zip_nested_zip_and_no_unrelated_expansion (test_access.AccessTests.test_regular_zip_nested_zip_and_no_unrelated_expansion) ... ok
+test_resource_policy_and_environment_bound_are_reported_separately (test_access.AccessTests.test_resource_policy_and_environment_bound_are_reported_separately) ... ok
+test_source_change_and_disappearance_are_not_empty (test_access.AccessTests.test_source_change_and_disappearance_are_not_empty) ... ok
+test_symlinks_and_duplicate_names_are_not_silently_followed (test_access.AccessTests.test_symlinks_and_duplicate_names_are_not_silently_followed) ... ok
+test_unchanged_read_has_stable_version_and_separate_observation_time (test_access.AccessTests.test_unchanged_read_has_stable_version_and_separate_observation_time) ... ok
+test_unsafe_zip_paths_never_escape_and_inventory_keeps_unknown_rows (test_access.AccessTests.test_unsafe_zip_paths_never_escape_and_inventory_keeps_unknown_rows) ... ok
+test_source_conversation_structures_are_readable_without_native (test_conversations.ConversationReferences.test_source_conversation_structures_are_readable_without_native) ... ok
+test_anthropic_unknown_fields_and_unresolved_attachments (test_conversations.NativeConversationParity.test_anthropic_unknown_fields_and_unresolved_attachments) ... 15:58:05 [INFO ] loom.config: config.json not found - using defaults
+15:58:05 [INFO ] loom.config: secrets.json not found - using defaults
+15:58:05 [INFO ] loom.db: Schema upgraded: v0 -> v4
+15:58:05 [INFO ] loom.db: Database opened: /tmp/loom-resource-conversation-aakrgjr5/native/chatadhd.db
+15:58:05 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+15:58:05 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom-resource-conversation-aakrgjr5/native)
+15:58:06 [INFO ] loom.db: Database closed
+15:58:06 [INFO ] loom.runtime: Loom runtime shut down
+15:58:06 [INFO ] loom.config: config.json not found - using defaults
+15:58:06 [INFO ] loom.config: secrets.json not found - using defaults
+15:58:06 [INFO ] loom.db: Schema upgraded: v0 -> v4
+15:58:06 [INFO ] loom.db: Database opened: /tmp/resource-native-parity-6a4jz9qh/anthropic_2026_full.zip/chatadhd.db
+15:58:06 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+15:58:06 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/resource-native-parity-6a4jz9qh/anthropic_2026_full.zip)
+15:58:06 [INFO ] loom.db: Database closed
+15:58:06 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_bad_archive_refused_before_native_database (test_conversations.NativeConversationParity.test_bad_archive_refused_before_native_database) ... ok
+test_controlled_remote_reference_matches_local (test_conversations.NativeConversationParity.test_controlled_remote_reference_matches_local) ... 15:58:07 [INFO ] loom.config: config.json not found - using defaults
+15:58:07 [INFO ] loom.config: secrets.json not found - using defaults
+15:58:07 [INFO ] loom.db: Schema upgraded: v0 -> v4
+15:58:07 [INFO ] loom.db: Database opened: /tmp/loom-resource-conversation-pb5ngw7n/native/chatadhd.db
+15:58:07 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+15:58:07 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom-resource-conversation-pb5ngw7n/native)
+15:58:07 [INFO ] loom.db: Database closed
+15:58:07 [INFO ] loom.runtime: Loom runtime shut down
+15:58:07 [INFO ] loom.config: config.json not found - using defaults
+15:58:07 [INFO ] loom.config: secrets.json not found - using defaults
+15:58:07 [INFO ] loom.db: Schema upgraded: v0 -> v4
+15:58:07 [INFO ] loom.db: Database opened: /tmp/loom-resource-conversation-umtxpbwc/native/chatadhd.db
+15:58:07 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+15:58:07 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom-resource-conversation-umtxpbwc/native)
+15:58:08 [INFO ] loom.db: Database closed
+15:58:08 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_nested_archive_parity (test_conversations.NativeConversationParity.test_nested_archive_parity) ... 15:58:08 [INFO ] loom.config: config.json not found - using defaults
+15:58:08 [INFO ] loom.config: secrets.json not found - using defaults
+15:58:08 [INFO ] loom.db: Schema upgraded: v0 -> v4
+15:58:08 [INFO ] loom.db: Database opened: /tmp/loom-resource-conversation-kpb0m39w/native/chatadhd.db
+15:58:08 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+15:58:08 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom-resource-conversation-kpb0m39w/native)
+15:58:08 [INFO ] loom.db: Database closed
+15:58:08 [INFO ] loom.runtime: Loom runtime shut down
+15:58:09 [INFO ] loom.config: config.json not found - using defaults
+15:58:09 [INFO ] loom.config: secrets.json not found - using defaults
+15:58:09 [INFO ] loom.db: Schema upgraded: v0 -> v4
+15:58:09 [INFO ] loom.db: Database opened: /tmp/resource-native-parity-p0ch3n5x/nested_container.zip/chatadhd.db
+15:58:09 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+15:58:09 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/resource-native-parity-p0ch3n5x/nested_container.zip)
+15:58:09 [INFO ] loom.db: Database closed
+15:58:09 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_openai_branches_authors_available_assets_and_unresolved_references (test_conversations.NativeConversationParity.test_openai_branches_authors_available_assets_and_unresolved_references) ... 15:58:09 [INFO ] loom.config: config.json not found - using defaults
+15:58:09 [INFO ] loom.config: secrets.json not found - using defaults
+15:58:09 [INFO ] loom.db: Schema upgraded: v0 -> v4
+15:58:09 [INFO ] loom.db: Database opened: /tmp/loom-resource-conversation-iijrpq9n/native/chatadhd.db
+15:58:09 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+15:58:09 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/loom-resource-conversation-iijrpq9n/native)
+15:58:10 [INFO ] loom.db: Database closed
+15:58:10 [INFO ] loom.runtime: Loom runtime shut down
+15:58:10 [INFO ] loom.config: config.json not found - using defaults
+15:58:10 [INFO ] loom.config: secrets.json not found - using defaults
+15:58:10 [INFO ] loom.db: Schema upgraded: v0 -> v4
+15:58:10 [INFO ] loom.db: Database opened: /tmp/resource-native-parity-6xhfyuxv/openai_2026_sharded.zip/chatadhd.db
+15:58:10 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+15:58:10 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/resource-native-parity-6xhfyuxv/openai_2026_sharded.zip)
+15:58:11 [INFO ] loom.db: Database closed
+15:58:11 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_adapter_registration_extends_structure_without_core_change (test_core.CoreTests.test_adapter_registration_extends_structure_without_core_change) ... ok
+test_cache_retention_is_explicit_and_expired_unavailable_is_not_empty (test_core.CoreTests.test_cache_retention_is_explicit_and_expired_unavailable_is_not_empty) ... ok
+test_embedding_independent_of_snapshot_cache_and_index (test_core.CoreTests.test_embedding_independent_of_snapshot_cache_and_index) ... ok
+test_empty_corrupt_unsupported_remain_distinct (test_core.CoreTests.test_empty_corrupt_unsupported_remain_distinct) ... ok
+test_inline_and_reference_recognize_same_values (test_core.CoreTests.test_inline_and_reference_recognize_same_values) ... ok
+test_live_changed_source_and_snapshot_reference_detects_drift (test_core.CoreTests.test_live_changed_source_and_snapshot_reference_detects_drift) ... ok
+test_new_config_consumer_reads_selected_source_without_activation (test_core.CoreTests.test_new_config_consumer_reads_selected_source_without_activation) ... ok
+test_partial_index_and_budget_are_explicit (test_core.CoreTests.test_partial_index_and_budget_are_explicit) ... ok
+test_permissions_and_credential_locator (test_core.CoreTests.test_permissions_and_credential_locator) ... ok
+test_project_fragment_preserves_unknown_and_null_with_existing_codec (test_core.CoreTests.test_project_fragment_preserves_unknown_and_null_with_existing_codec) ... ok
+test_reference_is_addressable_without_io_or_native (test_core.CoreTests.test_reference_is_addressable_without_io_or_native) ... ok
+test_absent_required_field_is_not_empty_value (test_discovery.DiscoveryTests.test_absent_required_field_is_not_empty_value) ... ok
+test_documentation_credentials_rejected_without_echo (test_discovery.DiscoveryTests.test_documentation_credentials_rejected_without_echo) ... ok
+test_existing_graph_packet_export_and_codec_roundtrip (test_discovery.DiscoveryTests.test_existing_graph_packet_export_and_codec_roundtrip) ... ok
+test_explicit_inspection_budget_reports_partial (test_discovery.DiscoveryTests.test_explicit_inspection_budget_reports_partial) ... ok
+test_failed_schema_does_not_claim_semantic_success (test_discovery.DiscoveryTests.test_failed_schema_does_not_claim_semantic_success) ... ok
+test_invalid_schema_is_reported_without_projection_crash (test_discovery.DiscoveryTests.test_invalid_schema_is_reported_without_projection_crash) ... ok
+test_literal_wildcard_and_json_pointer_escapes_are_not_operators (test_discovery.DiscoveryTests.test_literal_wildcard_and_json_pointer_escapes_are_not_operators) ... ok
+test_local_registry_adapter_and_custom_strategy_are_data_extensible (test_discovery.DiscoveryTests.test_local_registry_adapter_and_custom_strategy_are_data_extensible) ... ok
+test_mapping_invalid_rule_rejected (test_discovery.DiscoveryTests.test_mapping_invalid_rule_rejected) ... ok
+test_new_fields_survive_reusable_mapping (test_discovery.DiscoveryTests.test_new_fields_survive_reusable_mapping) ... ok
+test_online_documentation_injected_transport_no_sample_transmission (test_discovery.DiscoveryTests.test_online_documentation_injected_transport_no_sample_transmission) ... ok
+test_recognition_availability_validation_permission_independent (test_discovery.DiscoveryTests.test_recognition_availability_validation_permission_independent) ... ok
+test_reference_lazy_projection_does_not_copy_values (test_discovery.DiscoveryTests.test_reference_lazy_projection_does_not_copy_values) ... ok
+test_remote_schema_references_never_fetched (test_discovery.DiscoveryTests.test_remote_schema_references_never_fetched) ... ok
+test_same_algorithm_handles_renamed_structure_without_provider_switch (test_discovery.DiscoveryTests.test_same_algorithm_handles_renamed_structure_without_provider_switch) ... ok
+test_scalar_and_heterogeneous_arrays_remain_addressable (test_discovery.DiscoveryTests.test_scalar_and_heterogeneous_arrays_remain_addressable) ... ok
+test_schema_and_sample_remain_alternatives_unknown_fields_preserved (test_discovery.DiscoveryTests.test_schema_and_sample_remain_alternatives_unknown_fields_preserved) ... ok
+test_strategy_composition_and_cycle_detection (test_discovery.DiscoveryTests.test_strategy_composition_and_cycle_detection) ... ok
+test_unconfigured_model_is_explicit_no_paid_calls (test_discovery.DiscoveryTests.test_unconfigured_model_is_explicit_no_paid_calls) ... ok
+test_unknown_structure_compiles_valid_declarative_mapping (test_discovery.DiscoveryTests.test_unknown_structure_compiles_valid_declarative_mapping) ... ok
+test_found_executable_never_runs_without_exact_digest_policy (test_discovery.ExecutableAdapterTests.test_found_executable_never_runs_without_exact_digest_policy) ... ok
+test_trusted_executable_process_validation_then_separate_activation (test_discovery.ExecutableAdapterTests.test_trusted_executable_process_validation_then_separate_activation) ... ok
+test_trusted_process_does_not_inherit_credentials (test_discovery.ExecutableAdapterTests.test_trusted_process_does_not_inherit_credentials) ... ok
+test_trusted_process_timeout_is_not_validated_adapter (test_discovery.ExecutableAdapterTests.test_trusted_process_timeout_is_not_validated_adapter) ... ok
+test_authority_is_checked_again_after_permission_revocation (test_line_adapter.JsonLinesTests.test_authority_is_checked_again_after_permission_revocation) ... ok
+test_bad_line_not_touched_by_earlier_selection (test_line_adapter.JsonLinesTests.test_bad_line_not_touched_by_earlier_selection) ... ok
+test_cache_disabled_does_not_accumulate_offsets (test_line_adapter.JsonLinesTests.test_cache_disabled_does_not_accumulate_offsets) ... ok
+test_common_access_authorizer_enforced_without_adapter_root_override (test_line_adapter.JsonLinesTests.test_common_access_authorizer_enforced_without_adapter_root_override) ... ok
+test_empty_and_unavailable_are_distinct (test_line_adapter.JsonLinesTests.test_empty_and_unavailable_are_distinct) ... ok
+test_environment_ceiling_separate_from_policy (test_line_adapter.JsonLinesTests.test_environment_ceiling_separate_from_policy) ... ok
+test_extension_registered_without_graph_format_switch (test_line_adapter.JsonLinesTests.test_extension_registered_without_graph_format_switch) ... ok
+test_invalid_pointers_do_not_alias_other_values (test_line_adapter.JsonLinesTests.test_invalid_pointers_do_not_alias_other_values) ... ok
+test_large_source_page_reads_bounded_bytes (test_line_adapter.JsonLinesTests.test_large_source_page_reads_bounded_bytes) ... ok
+test_last_line_without_newline_is_valid (test_line_adapter.JsonLinesTests.test_last_line_without_newline_is_valid) ... ok
+test_line_size_bound_is_explicit_partial (test_line_adapter.JsonLinesTests.test_line_size_bound_is_explicit_partial) ... ok
+test_live_change_invalidates_offset_cache (test_line_adapter.JsonLinesTests.test_live_change_invalidates_offset_cache) ... ok
+test_metadata_does_not_silently_adopt_new_source_revision (test_line_adapter.JsonLinesTests.test_metadata_does_not_silently_adopt_new_source_revision) ... ok
+test_missing_fragment_is_not_empty_source (test_line_adapter.JsonLinesTests.test_missing_fragment_is_not_empty_source) ... ok
+test_nested_pointer_and_unknown_fields_survive (test_line_adapter.JsonLinesTests.test_nested_pointer_and_unknown_fields_survive) ... ok
+test_no_read_without_authorization (test_line_adapter.JsonLinesTests.test_no_read_without_authorization) ... ok
+test_no_source_modification_or_additional_files (test_line_adapter.JsonLinesTests.test_no_source_modification_or_additional_files) ... ok
+test_open_and_describe_do_not_read_content (test_line_adapter.JsonLinesTests.test_open_and_describe_do_not_read_content) ... ok
+test_optional_sparse_offsets_reduce_later_scan (test_line_adapter.JsonLinesTests.test_optional_sparse_offsets_reduce_later_scan) ... ok
+test_out_of_range_number_never_becomes_infinity (test_line_adapter.JsonLinesTests.test_out_of_range_number_never_becomes_infinity) ... ok
+test_page_limit_enforced_without_read (test_line_adapter.JsonLinesTests.test_page_limit_enforced_without_read) ... ok
+test_parser_independent_of_access_and_projection (test_line_adapter.JsonLinesTests.test_parser_independent_of_access_and_projection) ... ok
+test_remote_and_container_are_not_implicitly_fetched (test_line_adapter.JsonLinesTests.test_remote_and_container_are_not_implicitly_fetched) ... ok
+test_request_scan_bound_is_explicit_partial (test_line_adapter.JsonLinesTests.test_request_scan_bound_is_explicit_partial) ... ok
+test_snapshot_rejects_source_change_without_storing_copy (test_line_adapter.JsonLinesTests.test_snapshot_rejects_source_change_without_storing_copy) ... ok
+test_strict_json_rejects_silent_loss_and_non_json_values (test_line_adapter.JsonLinesTests.test_strict_json_rejects_silent_loss_and_non_json_values) ... ok
+test_symlink_cannot_escape_authorized_root (test_line_adapter.JsonLinesTests.test_symlink_cannot_escape_authorized_root) ... ok
+test_syntax_recognition_is_not_domain_recognition (test_line_adapter.JsonLinesTests.test_syntax_recognition_is_not_domain_recognition) ... ok
+test_virtual_root_projects_without_whole_source_values (test_line_adapter.JsonLinesTests.test_virtual_root_projects_without_whole_source_values) ... ok
+test_invalid_packet_is_rejected_before_loading_native_library (test_native.NativeBoundaryValidationTests.test_invalid_packet_is_rejected_before_loading_native_library) ... ok
+test_missing_native_library_is_not_reported_as_native_success (test_native.NativeBoundaryValidationTests.test_missing_native_library_is_not_reported_as_native_success) ... ok
+test_changed_packet_version_preserves_original_receipt_and_rows (test_native.NativeRoundtripTests.test_changed_packet_version_preserves_original_receipt_and_rows) ... 15:58:11 [INFO ] loom.config: config.json not found - using defaults
+15:58:11 [INFO ] loom.config: secrets.json not found - using defaults
+15:58:11 [INFO ] loom.db: Schema upgraded: v0 -> v4
+15:58:11 [INFO ] loom.db: Database opened: /tmp/tmp31s92_3g/native/chatadhd.db
+15:58:11 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+15:58:11 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/tmp31s92_3g/native)
+15:58:12 [INFO ] loom.db: Database closed
+15:58:12 [INFO ] loom.runtime: Loom runtime shut down
+15:58:12 [INFO ] loom.config: config.json not found - using defaults
+15:58:12 [INFO ] loom.config: secrets.json not found - using defaults
+15:58:12 [INFO ] loom.db: Database opened: /tmp/tmp31s92_3g/native/chatadhd.db
+15:58:12 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+15:58:12 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/tmp31s92_3g/native)
+15:58:12 [INFO ] loom.db: Database closed
+15:58:12 [INFO ] loom.runtime: Loom runtime shut down
+15:58:12 [INFO ] loom.config: config.json not found - using defaults
+15:58:12 [INFO ] loom.config: secrets.json not found - using defaults
+15:58:12 [INFO ] loom.db: Database opened: /tmp/tmp31s92_3g/native/chatadhd.db
+15:58:12 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+15:58:12 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/tmp31s92_3g/native)
+15:58:13 [INFO ] loom.db: Database closed
+15:58:13 [INFO ] loom.runtime: Loom runtime shut down
+15:58:13 [INFO ] loom.config: config.json not found - using defaults
+15:58:13 [INFO ] loom.config: secrets.json not found - using defaults
+15:58:13 [INFO ] loom.db: Database opened: /tmp/tmp31s92_3g/native/chatadhd.db
+15:58:13 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+15:58:13 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/tmp31s92_3g/native)
+15:58:13 [INFO ] loom.db: Database closed
+15:58:13 [INFO ] loom.runtime: Loom runtime shut down
+15:58:13 [INFO ] loom.config: config.json not found - using defaults
+15:58:13 [INFO ] loom.config: secrets.json not found - using defaults
+15:58:13 [INFO ] loom.db: Database opened: /tmp/tmp31s92_3g/native/chatadhd.db
+15:58:13 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+15:58:13 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/tmp31s92_3g/native)
+15:58:13 [INFO ] loom.db: Database closed
+15:58:13 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_exact_acceptance_is_idempotent_in_existing_native_store (test_native.NativeRoundtripTests.test_exact_acceptance_is_idempotent_in_existing_native_store) ... 15:58:13 [INFO ] loom.config: config.json not found - using defaults
+15:58:13 [INFO ] loom.config: secrets.json not found - using defaults
+15:58:13 [INFO ] loom.db: Schema upgraded: v0 -> v4
+15:58:13 [INFO ] loom.db: Database opened: /tmp/tmpzzab9f_6/native/chatadhd.db
+15:58:13 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+15:58:13 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/tmpzzab9f_6/native)
+15:58:14 [INFO ] loom.db: Database closed
+15:58:14 [INFO ] loom.runtime: Loom runtime shut down
+15:58:14 [INFO ] loom.config: config.json not found - using defaults
+15:58:14 [INFO ] loom.config: secrets.json not found - using defaults
+15:58:14 [INFO ] loom.db: Database opened: /tmp/tmpzzab9f_6/native/chatadhd.db
+15:58:14 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+15:58:14 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/tmpzzab9f_6/native)
+15:58:14 [INFO ] loom.db: Database closed
+15:58:14 [INFO ] loom.runtime: Loom runtime shut down
+15:58:14 [INFO ] loom.config: config.json not found - using defaults
+15:58:14 [INFO ] loom.config: secrets.json not found - using defaults
+15:58:14 [INFO ] loom.db: Database opened: /tmp/tmpzzab9f_6/native/chatadhd.db
+15:58:14 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+15:58:14 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/tmpzzab9f_6/native)
+15:58:15 [INFO ] loom.db: Database closed
+15:58:15 [INFO ] loom.runtime: Loom runtime shut down
+15:58:15 [INFO ] loom.config: config.json not found - using defaults
+15:58:15 [INFO ] loom.config: secrets.json not found - using defaults
+15:58:15 [INFO ] loom.db: Database opened: /tmp/tmpzzab9f_6/native/chatadhd.db
+15:58:15 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+15:58:15 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/tmpzzab9f_6/native)
+15:58:15 [INFO ] loom.db: Database closed
+15:58:15 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_existing_packet_preserves_records_unknown_attributes_and_utf8 (test_native.NativeRoundtripTests.test_existing_packet_preserves_records_unknown_attributes_and_utf8) ... 15:58:15 [INFO ] loom.config: config.json not found - using defaults
+15:58:15 [INFO ] loom.config: secrets.json not found - using defaults
+15:58:15 [INFO ] loom.db: Schema upgraded: v0 -> v4
+15:58:15 [INFO ] loom.db: Database opened: /tmp/tmp0m10ofco/native/chatadhd.db
+15:58:15 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+15:58:15 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/tmp0m10ofco/native)
+15:58:16 [INFO ] loom.db: Database closed
+15:58:16 [INFO ] loom.runtime: Loom runtime shut down
+15:58:16 [INFO ] loom.config: config.json not found - using defaults
+15:58:16 [INFO ] loom.config: secrets.json not found - using defaults
+15:58:16 [INFO ] loom.db: Database opened: /tmp/tmp0m10ofco/native/chatadhd.db
+15:58:16 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+15:58:16 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/tmp0m10ofco/native)
+15:58:16 [INFO ] loom.db: Database closed
+15:58:16 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_native_replay_reports_deleted_row_as_drift_without_repair (test_native.NativeRoundtripTests.test_native_replay_reports_deleted_row_as_drift_without_repair) ... 15:58:16 [INFO ] loom.config: config.json not found - using defaults
+15:58:16 [INFO ] loom.config: secrets.json not found - using defaults
+15:58:16 [INFO ] loom.db: Schema upgraded: v0 -> v4
+15:58:16 [INFO ] loom.db: Database opened: /tmp/tmplqrhdubk/native/chatadhd.db
+15:58:16 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+15:58:16 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/tmplqrhdubk/native)
+15:58:16 [INFO ] loom.db: Database closed
+15:58:16 [INFO ] loom.runtime: Loom runtime shut down
+15:58:16 [INFO ] loom.config: config.json not found - using defaults
+15:58:16 [INFO ] loom.config: secrets.json not found - using defaults
+15:58:16 [INFO ] loom.db: Database opened: /tmp/tmplqrhdubk/native/chatadhd.db
+15:58:16 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+15:58:16 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/tmplqrhdubk/native)
+15:58:17 [INFO ] loom.db: Database closed
+15:58:17 [INFO ] loom.runtime: Loom runtime shut down
+15:58:17 [INFO ] loom.config: config.json not found - using defaults
+15:58:17 [INFO ] loom.config: secrets.json not found - using defaults
+15:58:17 [INFO ] loom.db: Database opened: /tmp/tmplqrhdubk/native/chatadhd.db
+15:58:17 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+15:58:17 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/tmplqrhdubk/native)
+15:58:17 [INFO ] loom.db: Database closed
+15:58:17 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_on_demand_external_fields_replay_without_reading_original (test_native.NativeRoundtripTests.test_on_demand_external_fields_replay_without_reading_original) ... 15:58:17 [INFO ] loom.config: config.json not found - using defaults
+15:58:17 [INFO ] loom.config: secrets.json not found - using defaults
+15:58:17 [INFO ] loom.db: Schema upgraded: v0 -> v4
+15:58:17 [INFO ] loom.db: Database opened: /tmp/tmpknj43q3f/native/chatadhd.db
+15:58:17 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+15:58:17 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/tmpknj43q3f/native)
+15:58:18 [INFO ] loom.db: Database closed
+15:58:18 [INFO ] loom.runtime: Loom runtime shut down
+15:58:18 [INFO ] loom.config: config.json not found - using defaults
+15:58:18 [INFO ] loom.config: secrets.json not found - using defaults
+15:58:18 [INFO ] loom.db: Database opened: /tmp/tmpknj43q3f/native/chatadhd.db
+15:58:18 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+15:58:18 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/tmpknj43q3f/native)
+15:58:18 [INFO ] loom.db: Database closed
+15:58:18 [INFO ] loom.runtime: Loom runtime shut down
+15:58:18 [INFO ] loom.config: config.json not found - using defaults
+15:58:18 [INFO ] loom.config: secrets.json not found - using defaults
+15:58:18 [INFO ] loom.db: Database opened: /tmp/tmpknj43q3f/native/chatadhd.db
+15:58:18 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+15:58:18 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/tmpknj43q3f/native)
+15:58:18 [INFO ] loom.db: Database closed
+15:58:18 [INFO ] loom.runtime: Loom runtime shut down
+ok
+test_budget_is_caller_policy (test_parsers.SyntaxParsers.test_budget_is_caller_policy) ... ok
+test_csv_keeps_empty_cells_duplicate_headers_and_embedded_newlines (test_parsers.SyntaxParsers.test_csv_keeps_empty_cells_duplicate_headers_and_embedded_newlines) ... ok
+test_json_rejects_ambiguous_or_nonstandard_values (test_parsers.SyntaxParsers.test_json_rejects_ambiguous_or_nonstandard_values) ... ok
+test_json_unknown_fields_and_types_survive (test_parsers.SyntaxParsers.test_json_unknown_fields_and_types_survive) ... ok
+test_recognition_retains_ambiguous_syntax_alternatives (test_parsers.SyntaxParsers.test_recognition_retains_ambiguous_syntax_alternatives) ... ok
+test_recognition_uses_new_registration_without_provider_switch (test_parsers.SyntaxParsers.test_recognition_uses_new_registration_without_provider_switch) ... ok
+test_unrecognized_format_and_custom_registration (test_parsers.SyntaxParsers.test_unrecognized_format_and_custom_registration) ... ok
+test_xml_attributes_mixed_content_comments_and_namespaces (test_parsers.SyntaxParsers.test_xml_attributes_mixed_content_comments_and_namespaces) ... ok
+test_xml_external_entities_and_dtd_are_forbidden (test_parsers.SyntaxParsers.test_xml_external_entities_and_dtd_are_forbidden) ... ok
+test_xml_xinclude_is_data_only (test_parsers.SyntaxParsers.test_xml_xinclude_is_data_only) ... ok
+test_yaml_alias_and_depth_budgets_precede_construction (test_parsers.SyntaxParsers.test_yaml_alias_and_depth_budgets_precede_construction) ... ok
+test_yaml_nonstring_keys_and_date_keep_types_and_values (test_parsers.SyntaxParsers.test_yaml_nonstring_keys_and_date_keep_types_and_values) ... ok
+test_yaml_self_alias_and_merge_remain_addressable_syntax (test_parsers.SyntaxParsers.test_yaml_self_alias_and_merge_remain_addressable_syntax) ... ok
+test_yaml_tagged_container_alias_pointer_uses_actual_representation (test_parsers.SyntaxParsers.test_yaml_tagged_container_alias_pointer_uses_actual_representation) ... ok
+test_yaml_unknown_tags_and_alias_are_preserved_without_execution (test_parsers.SyntaxParsers.test_yaml_unknown_tags_and_alias_are_preserved_without_execution) ... ok
+test_all_compositions_local_remote_inline_nested_and_eager_lazy (test_pipeline.PipelineTests.test_all_compositions_local_remote_inline_nested_and_eager_lazy) ... ok
+test_parser_options_are_caller_data (test_pipeline.PipelineTests.test_parser_options_are_caller_data) ... ok
+test_snapshot_unchanged_and_config_read_leave_source_bytes_untouched (test_pipeline.PipelineTests.test_snapshot_unchanged_and_config_read_leave_source_bytes_untouched) ... ok
+test_unknown_extension_recognition_mapping_registration_and_packet (test_pipeline.PipelineTests.test_unknown_extension_recognition_mapping_registration_and_packet) ... ok
+test_embedded_checkpoint_survives_source_removal_and_detects_tampering (test_reference_checkpoint.ReferenceCheckpointTests.test_embedded_checkpoint_survives_source_removal_and_detects_tampering) ... ok
+test_native_packet_descriptor_is_a_reopenable_source_reference (test_reference_checkpoint.ReferenceCheckpointTests.test_native_packet_descriptor_is_a_reopenable_source_reference) ... ok
+test_restore_reference_without_io_and_without_native_store (test_reference_checkpoint.ReferenceCheckpointTests.test_restore_reference_without_io_and_without_native_store) ... ok
+test_cached_snapshot_releases_handle_when_its_hash_changes (test_review_regressions.ReviewedResourceRegressions.test_cached_snapshot_releases_handle_when_its_hash_changes) ... ok
+test_hash_change_during_projection_does_not_return_mixed_packet (test_review_regressions.ReviewedResourceRegressions.test_hash_change_during_projection_does_not_return_mixed_packet) ... ok
+test_index_retains_same_revision_fragments_without_handle_cache (test_review_regressions.ReviewedResourceRegressions.test_index_retains_same_revision_fragments_without_handle_cache) ... ok
+test_live_embedding_tracks_new_source_and_export_hash_stays_bound (test_review_regressions.ReviewedResourceRegressions.test_live_embedding_tracks_new_source_and_export_hash_stays_bound) ... ok
+test_mapping_adapter_releases_underlying_source_handle (test_review_regressions.ReviewedResourceRegressions.test_mapping_adapter_releases_underlying_source_handle) ... ok
+test_mapping_change_does_not_reuse_changed_field_identity (test_review_regressions.ReviewedResourceRegressions.test_mapping_change_does_not_reuse_changed_field_identity) ... ok
+test_mapping_projection_does_not_fabricate_original_source_observations (test_review_regressions.ReviewedResourceRegressions.test_mapping_projection_does_not_fabricate_original_source_observations) ... ok
+test_noncached_handle_closes_on_success_and_selector_failure (test_review_regressions.ReviewedResourceRegressions.test_noncached_handle_closes_on_success_and_selector_failure) ... ok
+test_snapshot_detects_changed_hash_without_service_version (test_review_regressions.ReviewedResourceRegressions.test_snapshot_detects_changed_hash_without_service_version) ... ok
+
+----------------------------------------------------------------------
+Ran 129 tests in 14.102s
+
+OK

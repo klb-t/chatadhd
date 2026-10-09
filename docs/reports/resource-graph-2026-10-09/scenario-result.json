@@ -1,0 +1,25 @@
+{
+  "fixture": "generated_synthetic",
+  "user_data": false,
+  "source_unchanged": true,
+  "reference_without_io": true,
+  "nested_zip_equal": true,
+  "profile_consumer_read": 0.25,
+  "runtime_hook_connected": false,
+  "new_mapping_adapter_projected": true,
+  "native": {
+    "native_executed": true,
+    "reopened": true,
+    "packet_id": "1f81dd32228c72e580d9a2501c1e8a57069a8cd3b2c93362b0e537df852f1f1a",
+    "receipt_id": "gpr_2563eb26fd5ad3c2998481783badcf7052edc4e5cdc93dc3be8bae56eafeac1f",
+    "packet_equal": true,
+    "row_drift_matches": true,
+    "selected_counts": {
+      "entities": 12,
+      "claims": 20,
+      "sources": 4
+    },
+    "acceptance_establishes_content_truth": false
+  },
+  "materialized_fields": 10
+}

@@ -86,3 +86,27 @@ hydrates every resource reference. Passing the existing packet to the unchanged
 native API is the demonstrated seam. Automatic B catalog-to-D adapter dispatch,
 UI activation, ASan and a full repository matrix remain outside this measured
 native slice.
+
+## Independent composition review
+
+Read-only review of D's core/projection/mapping/scenario found and reproduced
+index/cache coupling, reused field identity across mapping revisions and
+fabricated original-source observation selectors for transformed mapping rows.
+Further concrete regressions covered closeable adapter lifecycle, hash-only
+snapshot drift, cached snapshot invalidation, a content change during projection
+and independent live/embedded operation. The D integrator fixed the production
+code; this reviewer added only `test_review_regressions.py`.
+
+One intermediate nine-test run failed: a valid→corrupt live source replaced
+captured bytes before parsing, leaving the exported hash bound to preceding
+bytes. Moving the retained-byte assignment after successful parsing fixed that
+counterexample. Final independent review regressions: **9/9 PASS, 0.252 s**.
+No reported blocker from this review remains open.
+
+The actual CLI scenario also completed with the built shared library:
+`python -m loom.tools.resource_graph demo --output <temporary-directory>
+--library <libloom.so>`. It verified nested ZIP equality, unchanged synthetic
+source, selected external field read through existing `engine.config.Config`
+(temperature 0.25), and native reopen/replay equality. The scenario explicitly
+reports `runtime_hook_connected=false`; the Config read does not activate a
+native runtime profile. Its generated fixture is not user data or LLM evidence.

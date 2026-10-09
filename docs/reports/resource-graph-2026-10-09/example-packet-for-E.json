@@ -1,0 +1,2096 @@
+{
+  "schema": "loom.graph_packet/1",
+  "definitions": [],
+  "entities": [
+    {
+      "id": "rg_7ff15a59166a328d387ddceaa29601babf1ca7a8d901553c19be2cf3ce5dfaa0",
+      "kind": "resource",
+      "canonical_key": "rg_7ff15a59166a328d387ddceaa29601babf1ca7a8d901553c19be2cf3ce5dfaa0",
+      "label": "demo-profile",
+      "labels": {},
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "derived",
+      "origin": "system",
+      "confidence": 1.0,
+      "status": "active",
+      "attrs": {
+        "logical_id": "demo-profile",
+        "locator": "/workspace/scratch/7d1c36ce781a/demo-final/synthetic-profile.json",
+        "members": [],
+        "format": "json",
+        "adapter": "syntax",
+        "policy": {
+          "mode": "live",
+          "embedding": false,
+          "cache": false,
+          "retention_seconds": 0,
+          "index": false,
+          "max_projection_nodes": 1000,
+          "max_projection_depth": 16,
+          "page_size": 50,
+          "projection_depth": 1
+        },
+        "parser_options": {},
+        "permissions": {
+          "read": true,
+          "export_values": true,
+          "write_back": false
+        },
+        "status": "available",
+        "source_version": {
+          "kind": "local_stat",
+          "st_dev": 27,
+          "st_ino": 1719753,
+          "st_size": 255,
+          "st_mtime_ns": 1791532705268434839,
+          "st_ctime_ns": 1791532705268434839
+        },
+        "content_sha256": "be4afdfd30bbb7c2b210d87546bb9d3199e81d4aac7633e73d747f1b93292922",
+        "selector": "",
+        "parser_version": "python-json/1",
+        "mapping_version": null,
+        "history": [
+          {
+            "source_version": {
+              "kind": "local_stat",
+              "st_dev": 27,
+              "st_ino": 1719753,
+              "st_size": 255,
+              "st_mtime_ns": 1791532705268434839,
+              "st_ctime_ns": 1791532705268434839
+            },
+            "content_sha256": "be4afdfd30bbb7c2b210d87546bb9d3199e81d4aac7633e73d747f1b93292922",
+            "origin": "own_observation",
+            "observed_at": 1791532705.272176
+          }
+        ],
+        "recognition": "syntax_only",
+        "embedded_bytes": false,
+        "capabilities": {
+          "read": true,
+          "select": true,
+          "project": true,
+          "write_back": false,
+          "overlay": true,
+          "native_persistence_required": false,
+          "renderer_required": false
+        }
+      }
+    },
+    {
+      "id": "rg_b9fb1ac43adf431fb508033e7f8672f0a341cf4f9ca65441b039c0b0dd575aac",
+      "kind": "analysis_method",
+      "canonical_key": "rg_b9fb1ac43adf431fb508033e7f8672f0a341cf4f9ca65441b039c0b0dd575aac",
+      "label": "syntax",
+      "labels": {},
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "derived",
+      "origin": "system",
+      "confidence": 1.0,
+      "status": "active",
+      "attrs": {
+        "parser": {
+          "source_version": {
+            "kind": "local_stat",
+            "st_dev": 27,
+            "st_ino": 1719753,
+            "st_size": 255,
+            "st_mtime_ns": 1791532705268434839,
+            "st_ctime_ns": 1791532705268434839
+          },
+          "content_sha256": "be4afdfd30bbb7c2b210d87546bb9d3199e81d4aac7633e73d747f1b93292922",
+          "parser_id": "json",
+          "parser_version": "python-json/1",
+          "parser_descriptor": {
+            "id": "json",
+            "version": "python-json/1",
+            "syntax": "json",
+            "semantics": "unrecognized",
+            "addressing": "json_pointer",
+            "loss": [
+              "lexical formatting; original bytes remain at source"
+            ],
+            "media_types": [
+              "application/json"
+            ],
+            "extensions": [
+              ".json"
+            ]
+          },
+          "status": "available",
+          "recognition": "syntax_only",
+          "read_scope": "selected_container_member"
+        },
+        "projection_version": "1"
+      }
+    },
+    {
+      "id": "rg_340bc0964db32bdecf1a9927d156ef8c6f6a544c252d2ec6ca397e83d04eac5d",
+      "kind": "resource_field",
+      "canonical_key": "rg_340bc0964db32bdecf1a9927d156ef8c6f6a544c252d2ec6ca397e83d04eac5d",
+      "label": "/future",
+      "labels": {},
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "derived",
+      "origin": "system",
+      "confidence": 1.0,
+      "status": "active",
+      "attrs": {
+        "logical_resource": "demo-profile",
+        "selector": "/future",
+        "source_version": {
+          "kind": "local_stat",
+          "st_dev": 27,
+          "st_ino": 1719753,
+          "st_size": 255,
+          "st_mtime_ns": 1791532705268434839,
+          "st_ctime_ns": 1791532705268434839
+        },
+        "content_sha256": "be4afdfd30bbb7c2b210d87546bb9d3199e81d4aac7633e73d747f1b93292922",
+        "parser_version": "python-json/1",
+        "mapping_version": null,
+        "mapping_id": null,
+        "value_type": "dict",
+        "size": 1
+      }
+    },
+    {
+      "id": "rg_293cda8719eb0f0fb391fb620a808160830e0dc5d64571e06fa1cb7c66b3e89e",
+      "kind": "resource_field",
+      "canonical_key": "rg_293cda8719eb0f0fb391fb620a808160830e0dc5d64571e06fa1cb7c66b3e89e",
+      "label": "/future/records",
+      "labels": {},
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "derived",
+      "origin": "system",
+      "confidence": 1.0,
+      "status": "active",
+      "attrs": {
+        "logical_resource": "demo-profile",
+        "selector": "/future/records",
+        "source_version": {
+          "kind": "local_stat",
+          "st_dev": 27,
+          "st_ino": 1719753,
+          "st_size": 255,
+          "st_mtime_ns": 1791532705268434839,
+          "st_ctime_ns": 1791532705268434839
+        },
+        "content_sha256": "be4afdfd30bbb7c2b210d87546bb9d3199e81d4aac7633e73d747f1b93292922",
+        "parser_version": "python-json/1",
+        "mapping_version": null,
+        "mapping_id": null,
+        "value_type": "list",
+        "size": 2
+      }
+    },
+    {
+      "id": "rg_a466712e5fe5edeaacaf0ba57f5267058d10ee7cec0fcfba89979eb652de5ef0",
+      "kind": "resource_field",
+      "canonical_key": "rg_a466712e5fe5edeaacaf0ba57f5267058d10ee7cec0fcfba89979eb652de5ef0",
+      "label": "/future/records/0",
+      "labels": {},
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "derived",
+      "origin": "system",
+      "confidence": 1.0,
+      "status": "active",
+      "attrs": {
+        "logical_resource": "demo-profile",
+        "selector": "/future/records/0",
+        "source_version": {
+          "kind": "local_stat",
+          "st_dev": 27,
+          "st_ino": 1719753,
+          "st_size": 255,
+          "st_mtime_ns": 1791532705268434839,
+          "st_ctime_ns": 1791532705268434839
+        },
+        "content_sha256": "be4afdfd30bbb7c2b210d87546bb9d3199e81d4aac7633e73d747f1b93292922",
+        "parser_version": "python-json/1",
+        "mapping_version": null,
+        "mapping_id": null,
+        "value_type": "dict",
+        "size": 2
+      }
+    },
+    {
+      "id": "rg_06cd7faa2a60cefcd9a0ce99d74b487706490794c802683b49f69eb40bb4e2ff",
+      "kind": "resource_field",
+      "canonical_key": "rg_06cd7faa2a60cefcd9a0ce99d74b487706490794c802683b49f69eb40bb4e2ff",
+      "label": "/future/records/1",
+      "labels": {},
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "derived",
+      "origin": "system",
+      "confidence": 1.0,
+      "status": "active",
+      "attrs": {
+        "logical_resource": "demo-profile",
+        "selector": "/future/records/1",
+        "source_version": {
+          "kind": "local_stat",
+          "st_dev": 27,
+          "st_ino": 1719753,
+          "st_size": 255,
+          "st_mtime_ns": 1791532705268434839,
+          "st_ctime_ns": 1791532705268434839
+        },
+        "content_sha256": "be4afdfd30bbb7c2b210d87546bb9d3199e81d4aac7633e73d747f1b93292922",
+        "parser_version": "python-json/1",
+        "mapping_version": null,
+        "mapping_id": null,
+        "value_type": "dict",
+        "size": 2
+      }
+    },
+    {
+      "id": "rg_80a5ef1abe54c8033b0dabfa3e2e6ee16825b731e4f37cdfee39b7618c5ec7c5",
+      "kind": "resource_field",
+      "canonical_key": "rg_80a5ef1abe54c8033b0dabfa3e2e6ee16825b731e4f37cdfee39b7618c5ec7c5",
+      "label": "/future/records/0/ticket",
+      "labels": {},
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "derived",
+      "origin": "system",
+      "confidence": 1.0,
+      "status": "active",
+      "attrs": {
+        "logical_resource": "demo-profile",
+        "selector": "/future/records/0/ticket",
+        "source_version": {
+          "kind": "local_stat",
+          "st_dev": 27,
+          "st_ino": 1719753,
+          "st_size": 255,
+          "st_mtime_ns": 1791532705268434839,
+          "st_ctime_ns": 1791532705268434839
+        },
+        "content_sha256": "be4afdfd30bbb7c2b210d87546bb9d3199e81d4aac7633e73d747f1b93292922",
+        "parser_version": "python-json/1",
+        "mapping_version": null,
+        "mapping_id": null,
+        "value_type": "str",
+        "value": "a"
+      }
+    },
+    {
+      "id": "rg_eb7d25ab430f7aac0dc25435a4c9ac05d98f720187c9a43d57f1cab4a144d67c",
+      "kind": "resource_field",
+      "canonical_key": "rg_eb7d25ab430f7aac0dc25435a4c9ac05d98f720187c9a43d57f1cab4a144d67c",
+      "label": "/future/records/0/payload",
+      "labels": {},
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "derived",
+      "origin": "system",
+      "confidence": 1.0,
+      "status": "active",
+      "attrs": {
+        "logical_resource": "demo-profile",
+        "selector": "/future/records/0/payload",
+        "source_version": {
+          "kind": "local_stat",
+          "st_dev": 27,
+          "st_ino": 1719753,
+          "st_size": 255,
+          "st_mtime_ns": 1791532705268434839,
+          "st_ctime_ns": 1791532705268434839
+        },
+        "content_sha256": "be4afdfd30bbb7c2b210d87546bb9d3199e81d4aac7633e73d747f1b93292922",
+        "parser_version": "python-json/1",
+        "mapping_version": null,
+        "mapping_id": null,
+        "value_type": "dict",
+        "size": 1
+      }
+    },
+    {
+      "id": "rg_2320e4d0e514faaa3d8388367e9e234dad8d3225ad10a77637fd999c252b2259",
+      "kind": "resource_field",
+      "canonical_key": "rg_2320e4d0e514faaa3d8388367e9e234dad8d3225ad10a77637fd999c252b2259",
+      "label": "/future/records/1/ticket",
+      "labels": {},
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "derived",
+      "origin": "system",
+      "confidence": 1.0,
+      "status": "active",
+      "attrs": {
+        "logical_resource": "demo-profile",
+        "selector": "/future/records/1/ticket",
+        "source_version": {
+          "kind": "local_stat",
+          "st_dev": 27,
+          "st_ino": 1719753,
+          "st_size": 255,
+          "st_mtime_ns": 1791532705268434839,
+          "st_ctime_ns": 1791532705268434839
+        },
+        "content_sha256": "be4afdfd30bbb7c2b210d87546bb9d3199e81d4aac7633e73d747f1b93292922",
+        "parser_version": "python-json/1",
+        "mapping_version": null,
+        "mapping_id": null,
+        "value_type": "str",
+        "value": "b"
+      }
+    },
+    {
+      "id": "rg_b0082d000be7d7045cad897af2357286d00c5ea41e2ea5a03d51c8bb0abaa148",
+      "kind": "resource_field",
+      "canonical_key": "rg_b0082d000be7d7045cad897af2357286d00c5ea41e2ea5a03d51c8bb0abaa148",
+      "label": "/future/records/1/payload",
+      "labels": {},
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "derived",
+      "origin": "system",
+      "confidence": 1.0,
+      "status": "active",
+      "attrs": {
+        "logical_resource": "demo-profile",
+        "selector": "/future/records/1/payload",
+        "source_version": {
+          "kind": "local_stat",
+          "st_dev": 27,
+          "st_ino": 1719753,
+          "st_size": 255,
+          "st_mtime_ns": 1791532705268434839,
+          "st_ctime_ns": 1791532705268434839
+        },
+        "content_sha256": "be4afdfd30bbb7c2b210d87546bb9d3199e81d4aac7633e73d747f1b93292922",
+        "parser_version": "python-json/1",
+        "mapping_version": null,
+        "mapping_id": null,
+        "value_type": "dict",
+        "size": 1
+      }
+    },
+    {
+      "id": "rg_162473624659508cb261d445486ca805064063961af66fc1c05ce71668ca5674",
+      "kind": "resource_field",
+      "canonical_key": "rg_162473624659508cb261d445486ca805064063961af66fc1c05ce71668ca5674",
+      "label": "/future/records/0/payload/answer",
+      "labels": {},
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "derived",
+      "origin": "system",
+      "confidence": 1.0,
+      "status": "active",
+      "attrs": {
+        "logical_resource": "demo-profile",
+        "selector": "/future/records/0/payload/answer",
+        "source_version": {
+          "kind": "local_stat",
+          "st_dev": 27,
+          "st_ino": 1719753,
+          "st_size": 255,
+          "st_mtime_ns": 1791532705268434839,
+          "st_ctime_ns": 1791532705268434839
+        },
+        "content_sha256": "be4afdfd30bbb7c2b210d87546bb9d3199e81d4aac7633e73d747f1b93292922",
+        "parser_version": "python-json/1",
+        "mapping_version": null,
+        "mapping_id": null,
+        "value_type": "int",
+        "value": 42
+      }
+    },
+    {
+      "id": "rg_ab104bed633bfa2d54c0537e60e0c0c2f338f5ad31bb2172f51fa085a89efe44",
+      "kind": "resource_field",
+      "canonical_key": "rg_ab104bed633bfa2d54c0537e60e0c0c2f338f5ad31bb2172f51fa085a89efe44",
+      "label": "/future/records/1/payload/answer",
+      "labels": {},
+      "aliases": [],
+      "parent": "",
+      "first_seen": "",
+      "last_seen": "",
+      "evidence_class": "derived",
+      "origin": "system",
+      "confidence": 1.0,
+      "status": "active",
+      "attrs": {
+        "logical_resource": "demo-profile",
+        "selector": "/future/records/1/payload/answer",
+        "source_version": {
+          "kind": "local_stat",
+          "st_dev": 27,
+          "st_ino": 1719753,
+          "st_size": 255,
+          "st_mtime_ns": 1791532705268434839,
+          "st_ctime_ns": 1791532705268434839
+        },
+        "content_sha256": "be4afdfd30bbb7c2b210d87546bb9d3199e81d4aac7633e73d747f1b93292922",
+        "parser_version": "python-json/1",
+        "mapping_version": null,
+        "mapping_id": null,
+        "value_type": "int",
+        "value": 43
+      }
+    }
+  ],
+  "claims": [
+    {
+      "id": "rg_1961dd810e495dbb78b3c99d6bbc318407a0c5eff74fe117b03d209a9e714afa",
+      "subject": "rg_7ff15a59166a328d387ddceaa29601babf1ca7a8d901553c19be2cf3ce5dfaa0",
+      "predicate": "contains",
+      "object": "rg_340bc0964db32bdecf1a9927d156ef8c6f6a544c252d2ec6ca397e83d04eac5d",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "rg_4f6c91960be870e4bcfc1bb1d0c60bb011ab9ab21801e6d262c9276cabbd97e6",
+        "branch": "",
+        "scope": "",
+        "lang": "",
+        "extra": {}
+      },
+      "assessment": {
+        "basis": {
+          "support": [],
+          "derivation": {
+            "operator": "resource_projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "rg_5edd84a63fc248e459ad83220acddc5f294ea37a84d8942135fd930b0366fecf",
+      "subject": "rg_340bc0964db32bdecf1a9927d156ef8c6f6a544c252d2ec6ca397e83d04eac5d",
+      "predicate": "produced_by",
+      "object": "rg_b9fb1ac43adf431fb508033e7f8672f0a341cf4f9ca65441b039c0b0dd575aac",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "rg_4f6c91960be870e4bcfc1bb1d0c60bb011ab9ab21801e6d262c9276cabbd97e6",
+        "branch": "",
+        "scope": "",
+        "lang": "",
+        "extra": {}
+      },
+      "assessment": {
+        "basis": {
+          "support": [],
+          "derivation": {
+            "operator": "resource_projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "rg_b55b92cd96b18a82802a44c259a2ae8d6680590cde3e3513a6dcc086909c0fe7",
+      "subject": "rg_340bc0964db32bdecf1a9927d156ef8c6f6a544c252d2ec6ca397e83d04eac5d",
+      "predicate": "contains",
+      "object": "rg_293cda8719eb0f0fb391fb620a808160830e0dc5d64571e06fa1cb7c66b3e89e",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "rg_4f6c91960be870e4bcfc1bb1d0c60bb011ab9ab21801e6d262c9276cabbd97e6",
+        "branch": "",
+        "scope": "",
+        "lang": "",
+        "extra": {}
+      },
+      "assessment": {
+        "basis": {
+          "support": [],
+          "derivation": {
+            "operator": "resource_projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "rg_815fa3d71c8f605ec55d35d4d454f9858a264eb1640f20edefa822b654042ad4",
+      "subject": "rg_293cda8719eb0f0fb391fb620a808160830e0dc5d64571e06fa1cb7c66b3e89e",
+      "predicate": "produced_by",
+      "object": "rg_b9fb1ac43adf431fb508033e7f8672f0a341cf4f9ca65441b039c0b0dd575aac",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "rg_4f6c91960be870e4bcfc1bb1d0c60bb011ab9ab21801e6d262c9276cabbd97e6",
+        "branch": "",
+        "scope": "",
+        "lang": "",
+        "extra": {}
+      },
+      "assessment": {
+        "basis": {
+          "support": [],
+          "derivation": {
+            "operator": "resource_projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "rg_7b39dd9c64da54ddafaeebfbe6eac11c96ef2c6bf4e36e7683660d877498d692",
+      "subject": "rg_293cda8719eb0f0fb391fb620a808160830e0dc5d64571e06fa1cb7c66b3e89e",
+      "predicate": "contains",
+      "object": "rg_a466712e5fe5edeaacaf0ba57f5267058d10ee7cec0fcfba89979eb652de5ef0",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "rg_4f6c91960be870e4bcfc1bb1d0c60bb011ab9ab21801e6d262c9276cabbd97e6",
+        "branch": "",
+        "scope": "",
+        "lang": "",
+        "extra": {}
+      },
+      "assessment": {
+        "basis": {
+          "support": [],
+          "derivation": {
+            "operator": "resource_projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "rg_030ed246e2335c1915452cccfb5229c41fbf644ec8b276612a05365b51610f28",
+      "subject": "rg_a466712e5fe5edeaacaf0ba57f5267058d10ee7cec0fcfba89979eb652de5ef0",
+      "predicate": "produced_by",
+      "object": "rg_b9fb1ac43adf431fb508033e7f8672f0a341cf4f9ca65441b039c0b0dd575aac",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "rg_4f6c91960be870e4bcfc1bb1d0c60bb011ab9ab21801e6d262c9276cabbd97e6",
+        "branch": "",
+        "scope": "",
+        "lang": "",
+        "extra": {}
+      },
+      "assessment": {
+        "basis": {
+          "support": [],
+          "derivation": {
+            "operator": "resource_projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "rg_07b40c49719f76ab4aa1d93a9d1fb4b97f004700a7a6e6967fad7d661837ffa1",
+      "subject": "rg_293cda8719eb0f0fb391fb620a808160830e0dc5d64571e06fa1cb7c66b3e89e",
+      "predicate": "contains",
+      "object": "rg_06cd7faa2a60cefcd9a0ce99d74b487706490794c802683b49f69eb40bb4e2ff",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "rg_4f6c91960be870e4bcfc1bb1d0c60bb011ab9ab21801e6d262c9276cabbd97e6",
+        "branch": "",
+        "scope": "",
+        "lang": "",
+        "extra": {}
+      },
+      "assessment": {
+        "basis": {
+          "support": [],
+          "derivation": {
+            "operator": "resource_projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "rg_cb18ea72956e5156c99c3f88c7f48a76a1bc19a7f33170db35ef70f219b55a2a",
+      "subject": "rg_06cd7faa2a60cefcd9a0ce99d74b487706490794c802683b49f69eb40bb4e2ff",
+      "predicate": "produced_by",
+      "object": "rg_b9fb1ac43adf431fb508033e7f8672f0a341cf4f9ca65441b039c0b0dd575aac",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "rg_4f6c91960be870e4bcfc1bb1d0c60bb011ab9ab21801e6d262c9276cabbd97e6",
+        "branch": "",
+        "scope": "",
+        "lang": "",
+        "extra": {}
+      },
+      "assessment": {
+        "basis": {
+          "support": [],
+          "derivation": {
+            "operator": "resource_projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "rg_758c65ff0a5d48ef22b898162701d2b2a7869f89473d10c6a61926ff975e75ff",
+      "subject": "rg_a466712e5fe5edeaacaf0ba57f5267058d10ee7cec0fcfba89979eb652de5ef0",
+      "predicate": "contains",
+      "object": "rg_80a5ef1abe54c8033b0dabfa3e2e6ee16825b731e4f37cdfee39b7618c5ec7c5",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "rg_4f6c91960be870e4bcfc1bb1d0c60bb011ab9ab21801e6d262c9276cabbd97e6",
+        "branch": "",
+        "scope": "",
+        "lang": "",
+        "extra": {}
+      },
+      "assessment": {
+        "basis": {
+          "support": [],
+          "derivation": {
+            "operator": "resource_projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "rg_11b37a3960fe3a742650c74e7d178f8962a554a82de3f2a25641ffb08b1eed1f",
+      "subject": "rg_80a5ef1abe54c8033b0dabfa3e2e6ee16825b731e4f37cdfee39b7618c5ec7c5",
+      "predicate": "produced_by",
+      "object": "rg_b9fb1ac43adf431fb508033e7f8672f0a341cf4f9ca65441b039c0b0dd575aac",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "rg_4f6c91960be870e4bcfc1bb1d0c60bb011ab9ab21801e6d262c9276cabbd97e6",
+        "branch": "",
+        "scope": "",
+        "lang": "",
+        "extra": {}
+      },
+      "assessment": {
+        "basis": {
+          "support": [],
+          "derivation": {
+            "operator": "resource_projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "rg_d7ec6e646fab2088a193015f7d337c9e7dc4bd00eab672cc8985ae5688ab5dd8",
+      "subject": "rg_a466712e5fe5edeaacaf0ba57f5267058d10ee7cec0fcfba89979eb652de5ef0",
+      "predicate": "contains",
+      "object": "rg_eb7d25ab430f7aac0dc25435a4c9ac05d98f720187c9a43d57f1cab4a144d67c",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "rg_4f6c91960be870e4bcfc1bb1d0c60bb011ab9ab21801e6d262c9276cabbd97e6",
+        "branch": "",
+        "scope": "",
+        "lang": "",
+        "extra": {}
+      },
+      "assessment": {
+        "basis": {
+          "support": [],
+          "derivation": {
+            "operator": "resource_projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "rg_ca657a33979474b45f38bf9571cdad24603cfa2d15a5fc77ec124fbb3b95b594",
+      "subject": "rg_eb7d25ab430f7aac0dc25435a4c9ac05d98f720187c9a43d57f1cab4a144d67c",
+      "predicate": "produced_by",
+      "object": "rg_b9fb1ac43adf431fb508033e7f8672f0a341cf4f9ca65441b039c0b0dd575aac",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "rg_4f6c91960be870e4bcfc1bb1d0c60bb011ab9ab21801e6d262c9276cabbd97e6",
+        "branch": "",
+        "scope": "",
+        "lang": "",
+        "extra": {}
+      },
+      "assessment": {
+        "basis": {
+          "support": [],
+          "derivation": {
+            "operator": "resource_projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "rg_51aa1b343f2f83f75476dd8e9303659807bcb8d720092f6d4dc25ab99e1e9b34",
+      "subject": "rg_06cd7faa2a60cefcd9a0ce99d74b487706490794c802683b49f69eb40bb4e2ff",
+      "predicate": "contains",
+      "object": "rg_2320e4d0e514faaa3d8388367e9e234dad8d3225ad10a77637fd999c252b2259",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "rg_4f6c91960be870e4bcfc1bb1d0c60bb011ab9ab21801e6d262c9276cabbd97e6",
+        "branch": "",
+        "scope": "",
+        "lang": "",
+        "extra": {}
+      },
+      "assessment": {
+        "basis": {
+          "support": [],
+          "derivation": {
+            "operator": "resource_projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "rg_233c3db72787434adce7ed4f9563591c4a851a22f9e58cb2d7a989c7075f7a96",
+      "subject": "rg_2320e4d0e514faaa3d8388367e9e234dad8d3225ad10a77637fd999c252b2259",
+      "predicate": "produced_by",
+      "object": "rg_b9fb1ac43adf431fb508033e7f8672f0a341cf4f9ca65441b039c0b0dd575aac",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "rg_4f6c91960be870e4bcfc1bb1d0c60bb011ab9ab21801e6d262c9276cabbd97e6",
+        "branch": "",
+        "scope": "",
+        "lang": "",
+        "extra": {}
+      },
+      "assessment": {
+        "basis": {
+          "support": [],
+          "derivation": {
+            "operator": "resource_projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "rg_e3de0198dc2611334c343b857bcc65b8f967b445921c0080365c2be6ea3a0a4f",
+      "subject": "rg_06cd7faa2a60cefcd9a0ce99d74b487706490794c802683b49f69eb40bb4e2ff",
+      "predicate": "contains",
+      "object": "rg_b0082d000be7d7045cad897af2357286d00c5ea41e2ea5a03d51c8bb0abaa148",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "rg_4f6c91960be870e4bcfc1bb1d0c60bb011ab9ab21801e6d262c9276cabbd97e6",
+        "branch": "",
+        "scope": "",
+        "lang": "",
+        "extra": {}
+      },
+      "assessment": {
+        "basis": {
+          "support": [],
+          "derivation": {
+            "operator": "resource_projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "rg_76cc77886e63064f521c8a7ba2a7b9c191d69d536e952aa5f407ab55b197a4bf",
+      "subject": "rg_b0082d000be7d7045cad897af2357286d00c5ea41e2ea5a03d51c8bb0abaa148",
+      "predicate": "produced_by",
+      "object": "rg_b9fb1ac43adf431fb508033e7f8672f0a341cf4f9ca65441b039c0b0dd575aac",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "rg_4f6c91960be870e4bcfc1bb1d0c60bb011ab9ab21801e6d262c9276cabbd97e6",
+        "branch": "",
+        "scope": "",
+        "lang": "",
+        "extra": {}
+      },
+      "assessment": {
+        "basis": {
+          "support": [],
+          "derivation": {
+            "operator": "resource_projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "rg_f1785e78b090c362670e4d4eef9b8854accea0117c8ae63f7ffa359c15d39955",
+      "subject": "rg_eb7d25ab430f7aac0dc25435a4c9ac05d98f720187c9a43d57f1cab4a144d67c",
+      "predicate": "contains",
+      "object": "rg_162473624659508cb261d445486ca805064063961af66fc1c05ce71668ca5674",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "rg_4f6c91960be870e4bcfc1bb1d0c60bb011ab9ab21801e6d262c9276cabbd97e6",
+        "branch": "",
+        "scope": "",
+        "lang": "",
+        "extra": {}
+      },
+      "assessment": {
+        "basis": {
+          "support": [],
+          "derivation": {
+            "operator": "resource_projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "rg_2246b811ec18ecf1bb50c685b44b99543c4a3f77ae3ce91dee6d1c315ea6a7f9",
+      "subject": "rg_162473624659508cb261d445486ca805064063961af66fc1c05ce71668ca5674",
+      "predicate": "produced_by",
+      "object": "rg_b9fb1ac43adf431fb508033e7f8672f0a341cf4f9ca65441b039c0b0dd575aac",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "rg_4f6c91960be870e4bcfc1bb1d0c60bb011ab9ab21801e6d262c9276cabbd97e6",
+        "branch": "",
+        "scope": "",
+        "lang": "",
+        "extra": {}
+      },
+      "assessment": {
+        "basis": {
+          "support": [],
+          "derivation": {
+            "operator": "resource_projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "rg_512aa2cdd282f780d7fad08852d0e53aad65079881d27e1a9dede71afd618c00",
+      "subject": "rg_b0082d000be7d7045cad897af2357286d00c5ea41e2ea5a03d51c8bb0abaa148",
+      "predicate": "contains",
+      "object": "rg_ab104bed633bfa2d54c0537e60e0c0c2f338f5ad31bb2172f51fa085a89efe44",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "rg_4f6c91960be870e4bcfc1bb1d0c60bb011ab9ab21801e6d262c9276cabbd97e6",
+        "branch": "",
+        "scope": "",
+        "lang": "",
+        "extra": {}
+      },
+      "assessment": {
+        "basis": {
+          "support": [],
+          "derivation": {
+            "operator": "resource_projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "rg_3ee125c66d15e184a559205f8239cb7658a352e36992bf80186ff8df73d17eee",
+      "subject": "rg_ab104bed633bfa2d54c0537e60e0c0c2f338f5ad31bb2172f51fa085a89efe44",
+      "predicate": "produced_by",
+      "object": "rg_b9fb1ac43adf431fb508033e7f8672f0a341cf4f9ca65441b039c0b0dd575aac",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "rg_4f6c91960be870e4bcfc1bb1d0c60bb011ab9ab21801e6d262c9276cabbd97e6",
+        "branch": "",
+        "scope": "",
+        "lang": "",
+        "extra": {}
+      },
+      "assessment": {
+        "basis": {
+          "support": [],
+          "derivation": {
+            "operator": "resource_projection",
+            "operator_version": 1,
+            "morphism": "",
+            "depth": 0
+          }
+        },
+        "evidence_class": "derived",
+        "origin": "system",
+        "confidence": 1.0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    }
+  ],
+  "sources": [
+    {
+      "observation": {
+        "id": "rg_ff4964b35377946186d5c0e419c251b580fed9d59866511f9d55e42686dc8fc0",
+        "unit": "demo-profile",
+        "kind": "field",
+        "text": "\"a\"",
+        "locator": {
+          "source": "demo-profile",
+          "member": "",
+          "json_pointer": "/future/records/0/ticket",
+          "byte_start": null,
+          "byte_len": null,
+          "time_start": null,
+          "time_end": null,
+          "line": null
+        },
+        "lang": "",
+        "date": "",
+        "ordinal": 4,
+        "artifact_type": "resource",
+        "speaker": "",
+        "attrs": {
+          "serialized_value": true,
+          "source_version": {
+            "kind": "local_stat",
+            "st_dev": 27,
+            "st_ino": 1719753,
+            "st_size": 255,
+            "st_mtime_ns": 1791532705268434839,
+            "st_ctime_ns": 1791532705268434839
+          },
+          "content_sha256": "be4afdfd30bbb7c2b210d87546bb9d3199e81d4aac7633e73d747f1b93292922"
+        }
+      },
+      "known_at": null,
+      "text_sha256": "ac8d8342bbb2362d13f0a559a3621bb407011368895164b628a54f7fc33fc43c"
+    },
+    {
+      "observation": {
+        "id": "rg_98430e27579bd65c1762cf0713983773f076f42d807d683a935bf7574e3b530c",
+        "unit": "demo-profile",
+        "kind": "field",
+        "text": "\"b\"",
+        "locator": {
+          "source": "demo-profile",
+          "member": "",
+          "json_pointer": "/future/records/1/ticket",
+          "byte_start": null,
+          "byte_len": null,
+          "time_start": null,
+          "time_end": null,
+          "line": null
+        },
+        "lang": "",
+        "date": "",
+        "ordinal": 6,
+        "artifact_type": "resource",
+        "speaker": "",
+        "attrs": {
+          "serialized_value": true,
+          "source_version": {
+            "kind": "local_stat",
+            "st_dev": 27,
+            "st_ino": 1719753,
+            "st_size": 255,
+            "st_mtime_ns": 1791532705268434839,
+            "st_ctime_ns": 1791532705268434839
+          },
+          "content_sha256": "be4afdfd30bbb7c2b210d87546bb9d3199e81d4aac7633e73d747f1b93292922"
+        }
+      },
+      "known_at": null,
+      "text_sha256": "c100f95c1913f9c72fc1f4ef0847e1e723ffe0bde0b36e5f36c13f81fe8c26ed"
+    },
+    {
+      "observation": {
+        "id": "rg_701395ffdf65e364bba8fe9e5bd84af74ce0aa78f5d44907752d2851c1a79723",
+        "unit": "demo-profile",
+        "kind": "field",
+        "text": "42",
+        "locator": {
+          "source": "demo-profile",
+          "member": "",
+          "json_pointer": "/future/records/0/payload/answer",
+          "byte_start": null,
+          "byte_len": null,
+          "time_start": null,
+          "time_end": null,
+          "line": null
+        },
+        "lang": "",
+        "date": "",
+        "ordinal": 8,
+        "artifact_type": "resource",
+        "speaker": "",
+        "attrs": {
+          "serialized_value": true,
+          "source_version": {
+            "kind": "local_stat",
+            "st_dev": 27,
+            "st_ino": 1719753,
+            "st_size": 255,
+            "st_mtime_ns": 1791532705268434839,
+            "st_ctime_ns": 1791532705268434839
+          },
+          "content_sha256": "be4afdfd30bbb7c2b210d87546bb9d3199e81d4aac7633e73d747f1b93292922"
+        }
+      },
+      "known_at": null,
+      "text_sha256": "73475cb40a568e8da8a045ced110137e159f890ac4da883b6b17dc651b3a8049"
+    },
+    {
+      "observation": {
+        "id": "rg_2859b307c8ecff95430b2c06b921a5bcc746787d0c8730d2c18311c85aec485f",
+        "unit": "demo-profile",
+        "kind": "field",
+        "text": "43",
+        "locator": {
+          "source": "demo-profile",
+          "member": "",
+          "json_pointer": "/future/records/1/payload/answer",
+          "byte_start": null,
+          "byte_len": null,
+          "time_start": null,
+          "time_end": null,
+          "line": null
+        },
+        "lang": "",
+        "date": "",
+        "ordinal": 9,
+        "artifact_type": "resource",
+        "speaker": "",
+        "attrs": {
+          "serialized_value": true,
+          "source_version": {
+            "kind": "local_stat",
+            "st_dev": 27,
+            "st_ino": 1719753,
+            "st_size": 255,
+            "st_mtime_ns": 1791532705268434839,
+            "st_ctime_ns": 1791532705268434839
+          },
+          "content_sha256": "be4afdfd30bbb7c2b210d87546bb9d3199e81d4aac7633e73d747f1b93292922"
+        }
+      },
+      "known_at": null,
+      "text_sha256": "44cb730c420480a0477b505ae68af508fb90f96cf0ec54c6ad16949dd427f13a"
+    }
+  ],
+  "task": {
+    "operation": "resource_projection",
+    "status": "available",
+    "selector": "/future",
+    "source_revision": "rg_4f6c91960be870e4bcfc1bb1d0c60bb011ab9ab21801e6d262c9276cabbd97e6",
+    "materialized_fields": 10,
+    "coverage": {
+      "depth": 4,
+      "offset": 0,
+      "limit": 1000
+    },
+    "native_store": false
+  },
+  "provenance": {
+    "definitions": {},
+    "entities": {
+      "rg_7ff15a59166a328d387ddceaa29601babf1ca7a8d901553c19be2cf3ce5dfaa0": {
+        "known_at": null,
+        "origin": {
+          "kind": "system",
+          "actor": "resource_graph",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "1e201a0b07adb049cdda68c2c2a681c46d7b901958c0b15f89dc3f8d6b425803"
+      },
+      "rg_b9fb1ac43adf431fb508033e7f8672f0a341cf4f9ca65441b039c0b0dd575aac": {
+        "known_at": null,
+        "origin": {
+          "kind": "system",
+          "actor": "resource_graph",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "261788ee81e19a7f9f8acbf3501ca93df41140bd8871598c731cd521566225a8"
+      },
+      "rg_340bc0964db32bdecf1a9927d156ef8c6f6a544c252d2ec6ca397e83d04eac5d": {
+        "known_at": null,
+        "origin": {
+          "kind": "system",
+          "actor": "resource_graph",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "73614fc61b1ac7ce09560f8956358ae1fddf23f1b974980a6feaf35623386904"
+      },
+      "rg_293cda8719eb0f0fb391fb620a808160830e0dc5d64571e06fa1cb7c66b3e89e": {
+        "known_at": null,
+        "origin": {
+          "kind": "system",
+          "actor": "resource_graph",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "b9502b48eb9a32380dfc9b9827d1598bc28f652128abcc465e551285a0f94513"
+      },
+      "rg_a466712e5fe5edeaacaf0ba57f5267058d10ee7cec0fcfba89979eb652de5ef0": {
+        "known_at": null,
+        "origin": {
+          "kind": "system",
+          "actor": "resource_graph",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "9ee369ea118f4f9dae429da5a90c3a7e091bf1add9e9c78a21ce9f30947528eb"
+      },
+      "rg_06cd7faa2a60cefcd9a0ce99d74b487706490794c802683b49f69eb40bb4e2ff": {
+        "known_at": null,
+        "origin": {
+          "kind": "system",
+          "actor": "resource_graph",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "294f83a80df4154ee4bda7bc30ab2d9f5cec29bbec133f01a2b5450553297dd7"
+      },
+      "rg_80a5ef1abe54c8033b0dabfa3e2e6ee16825b731e4f37cdfee39b7618c5ec7c5": {
+        "known_at": null,
+        "origin": {
+          "kind": "system",
+          "actor": "resource_graph",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "4aa24f365b9be5e3fc677994e6915ece5a52adfe7ef3bb5ba2cac338f7e847f8"
+      },
+      "rg_eb7d25ab430f7aac0dc25435a4c9ac05d98f720187c9a43d57f1cab4a144d67c": {
+        "known_at": null,
+        "origin": {
+          "kind": "system",
+          "actor": "resource_graph",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "03dceaf1698957521c85da8f7b407d844d9f0f84fecdef067380c81cf179aca3"
+      },
+      "rg_2320e4d0e514faaa3d8388367e9e234dad8d3225ad10a77637fd999c252b2259": {
+        "known_at": null,
+        "origin": {
+          "kind": "system",
+          "actor": "resource_graph",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "6183712fa9e8a2e03ba71a0a835f2e4ad0cdf478006e642d3b5615fb233dc0b5"
+      },
+      "rg_b0082d000be7d7045cad897af2357286d00c5ea41e2ea5a03d51c8bb0abaa148": {
+        "known_at": null,
+        "origin": {
+          "kind": "system",
+          "actor": "resource_graph",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "5f9d252c1ddd7c48750642309108438b6ac266274a6957079d278f320ec6b8b6"
+      },
+      "rg_162473624659508cb261d445486ca805064063961af66fc1c05ce71668ca5674": {
+        "known_at": null,
+        "origin": {
+          "kind": "system",
+          "actor": "resource_graph",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "3a257408f9c05be3bf4dc45aeaa995fcb1168412b5b992cd304fbc847cb98813"
+      },
+      "rg_ab104bed633bfa2d54c0537e60e0c0c2f338f5ad31bb2172f51fa085a89efe44": {
+        "known_at": null,
+        "origin": {
+          "kind": "system",
+          "actor": "resource_graph",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "39f47cbed3d3eadc2d3fb3df3458c0f44b59428140e9b4b7ec99b752beb38522"
+      }
+    },
+    "claims": {
+      "rg_1961dd810e495dbb78b3c99d6bbc318407a0c5eff74fe117b03d209a9e714afa": {
+        "known_at": null,
+        "origin": {
+          "kind": "system",
+          "actor": "resource_graph",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "893b637c833c7003229cc430473d50a614ec33b9ee6948458a40fe3d4653f4c4"
+      },
+      "rg_5edd84a63fc248e459ad83220acddc5f294ea37a84d8942135fd930b0366fecf": {
+        "known_at": null,
+        "origin": {
+          "kind": "system",
+          "actor": "resource_graph",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "4a4ee6ae37d2be2ce45a86a87c21ef750ad160ef428e1a763092a4a673b38e75"
+      },
+      "rg_b55b92cd96b18a82802a44c259a2ae8d6680590cde3e3513a6dcc086909c0fe7": {
+        "known_at": null,
+        "origin": {
+          "kind": "system",
+          "actor": "resource_graph",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "1bb90c1e9e3871d01e3793b21ae70af8ed8823ffacb9f56dd9fc70cc33b82be0"
+      },
+      "rg_815fa3d71c8f605ec55d35d4d454f9858a264eb1640f20edefa822b654042ad4": {
+        "known_at": null,
+        "origin": {
+          "kind": "system",
+          "actor": "resource_graph",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "77840af93547518151a45b833984e6dd0abd2e3b72b72a872613ef973d91844c"
+      },
+      "rg_7b39dd9c64da54ddafaeebfbe6eac11c96ef2c6bf4e36e7683660d877498d692": {
+        "known_at": null,
+        "origin": {
+          "kind": "system",
+          "actor": "resource_graph",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "24e4d61bdbc439a4ecf3ec74e946548607c0da6cdc17eaaf039be59acc5d7023"
+      },
+      "rg_030ed246e2335c1915452cccfb5229c41fbf644ec8b276612a05365b51610f28": {
+        "known_at": null,
+        "origin": {
+          "kind": "system",
+          "actor": "resource_graph",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "daf1da770b53c936d6a03f05f17b2d97d626c8c75e990250708acbde86cf335c"
+      },
+      "rg_07b40c49719f76ab4aa1d93a9d1fb4b97f004700a7a6e6967fad7d661837ffa1": {
+        "known_at": null,
+        "origin": {
+          "kind": "system",
+          "actor": "resource_graph",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "c8cf7abda44fa71f62bcfb42361b142da9fb8f314d8c8498f41921fca2e4495c"
+      },
+      "rg_cb18ea72956e5156c99c3f88c7f48a76a1bc19a7f33170db35ef70f219b55a2a": {
+        "known_at": null,
+        "origin": {
+          "kind": "system",
+          "actor": "resource_graph",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "f5aaf6ef82638db0f72a53815a8c9c2b8be4449c70f917238d8cb1431b3d9c61"
+      },
+      "rg_758c65ff0a5d48ef22b898162701d2b2a7869f89473d10c6a61926ff975e75ff": {
+        "known_at": null,
+        "origin": {
+          "kind": "system",
+          "actor": "resource_graph",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "6c9165e78b9d1e9d53f46a2d7a827502de6330703a665a490a1bc6df79e4b299"
+      },
+      "rg_11b37a3960fe3a742650c74e7d178f8962a554a82de3f2a25641ffb08b1eed1f": {
+        "known_at": null,
+        "origin": {
+          "kind": "system",
+          "actor": "resource_graph",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "b3e1d91879861c5a71c37ac4572f5f927c2cdf5282be69bef091a7e5293186fd"
+      },
+      "rg_d7ec6e646fab2088a193015f7d337c9e7dc4bd00eab672cc8985ae5688ab5dd8": {
+        "known_at": null,
+        "origin": {
+          "kind": "system",
+          "actor": "resource_graph",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "b32a3f2208d809e753dcd2b9d0ea8089340b6d65eb6ff6658cf7d616ec79461e"
+      },
+      "rg_ca657a33979474b45f38bf9571cdad24603cfa2d15a5fc77ec124fbb3b95b594": {
+        "known_at": null,
+        "origin": {
+          "kind": "system",
+          "actor": "resource_graph",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "00fd68dd6f8b23d70e5b45cc29f2968f9060dc31a21e07268c33a593dfc87ec5"
+      },
+      "rg_51aa1b343f2f83f75476dd8e9303659807bcb8d720092f6d4dc25ab99e1e9b34": {
+        "known_at": null,
+        "origin": {
+          "kind": "system",
+          "actor": "resource_graph",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "95d6b71fbda44fc72743c8d660c85b7731268588253e3b8f8ceefaf55e2e2c78"
+      },
+      "rg_233c3db72787434adce7ed4f9563591c4a851a22f9e58cb2d7a989c7075f7a96": {
+        "known_at": null,
+        "origin": {
+          "kind": "system",
+          "actor": "resource_graph",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "f82de746c12946104ba5e75eba4e0526d58535e07da66ba34ebdc99ca6ded9cb"
+      },
+      "rg_e3de0198dc2611334c343b857bcc65b8f967b445921c0080365c2be6ea3a0a4f": {
+        "known_at": null,
+        "origin": {
+          "kind": "system",
+          "actor": "resource_graph",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "210e9c6564b8a3dfe0b004f042c023abdce79af733e90dd32c1325dc99094f9f"
+      },
+      "rg_76cc77886e63064f521c8a7ba2a7b9c191d69d536e952aa5f407ab55b197a4bf": {
+        "known_at": null,
+        "origin": {
+          "kind": "system",
+          "actor": "resource_graph",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "f2420fb7d887fe9ff584f519de531a6487ce594fe538573106e1d1e7ccdd757e"
+      },
+      "rg_f1785e78b090c362670e4d4eef9b8854accea0117c8ae63f7ffa359c15d39955": {
+        "known_at": null,
+        "origin": {
+          "kind": "system",
+          "actor": "resource_graph",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "da73a8efee20e1de603107ab22c21af8865590bec83de33a6689e8f1b3a0c6d8"
+      },
+      "rg_2246b811ec18ecf1bb50c685b44b99543c4a3f77ae3ce91dee6d1c315ea6a7f9": {
+        "known_at": null,
+        "origin": {
+          "kind": "system",
+          "actor": "resource_graph",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "1876fe9caae6fa71980b8180fb9a8d74db45e0bf95a6aaa9f6c191a8c1f72c19"
+      },
+      "rg_512aa2cdd282f780d7fad08852d0e53aad65079881d27e1a9dede71afd618c00": {
+        "known_at": null,
+        "origin": {
+          "kind": "system",
+          "actor": "resource_graph",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "d987c9aa67d59f0b7d9323c61e275633a23d768215c12d9b0ba4bb9ef83078be"
+      },
+      "rg_3ee125c66d15e184a559205f8239cb7658a352e36992bf80186ff8df73d17eee": {
+        "known_at": null,
+        "origin": {
+          "kind": "system",
+          "actor": "resource_graph",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "3e0c5967597c960af066f2f927ece4720e320a22aa6854682a6b3f5cbcc8aa1b"
+      }
+    },
+    "sources": {
+      "rg_ff4964b35377946186d5c0e419c251b580fed9d59866511f9d55e42686dc8fc0": {
+        "known_at": null,
+        "origin": {
+          "kind": "system",
+          "actor": "resource_graph",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "c6b2844b2cfbb6f448d6952149e70756becec37cc8d58becdee962019318c847"
+      },
+      "rg_98430e27579bd65c1762cf0713983773f076f42d807d683a935bf7574e3b530c": {
+        "known_at": null,
+        "origin": {
+          "kind": "system",
+          "actor": "resource_graph",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "93c89a59b7ac8b12f6e8785fab6d1a168cdd5a14765add2b520803cf95bc6e6a"
+      },
+      "rg_701395ffdf65e364bba8fe9e5bd84af74ce0aa78f5d44907752d2851c1a79723": {
+        "known_at": null,
+        "origin": {
+          "kind": "system",
+          "actor": "resource_graph",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "f93ccd897f2032d26e02fad3e80e62148496173910461d7c79adbc4201a6c643"
+      },
+      "rg_2859b307c8ecff95430b2c06b921a5bcc746787d0c8730d2c18311c85aec485f": {
+        "known_at": null,
+        "origin": {
+          "kind": "system",
+          "actor": "resource_graph",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "4cb4c72d126767e0b5fec8ee68da3d0647c8c87cba7128e1a702dde7aef5efef"
+      }
+    }
+  },
+  "history": [],
+  "packet_id": "1f81dd32228c72e580d9a2501c1e8a57069a8cd3b2c93362b0e537df852f1f1a"
+}

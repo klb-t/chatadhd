@@ -87,8 +87,6 @@ class SyntaxAdapter:
             result = access.read(resource['locator'], tuple(resource['members']))
         if result['status'] not in {'available', 'ready', 'loaded', 'empty'}:
             raise ResourceError(result['status'], result.get('reason', result.get('code', 'resource_read_failed')))
-        if resource['policy']['embedding']:
-            resource['_embedded'] = result['data']
         format_id = resource['format']
         if not format_id:
             raise ResourceError('unsupported', 'parser_not_recognized')
@@ -102,6 +100,8 @@ class SyntaxAdapter:
             raise ResourceError(status, 'syntax_parse_failed') from exc
         except (ValueError, TypeError, RecursionError) as exc:
             raise ResourceError('corrupt', 'syntax_parse_failed') from exc
+        if resource['policy']['embedding']:
+            resource['_embedded'] = result['data']
         return _SyntaxHandle(value, {'source_version': result.get('source_version'),
             'content_sha256': result.get('content_sha256'), 'parser_id': format_id,
             'parser_version': descriptor.get('version', 'unknown'), 'parser_descriptor': descriptor, 'status': 'empty' if value in ({}, [], '') else 'available',
@@ -271,7 +271,8 @@ class ResourceGraph:
             self._record_index(logical_id, pointer, value)
             return value
 
-    def children(self, logical_id, pointer='', *, offset=0, limit=50):
+    def children(self, logical_id, pointer='', *, offset=0, limit=None):
+        limit = self.resources[logical_id]['policy']['page_size'] if limit is None else limit
         if type(offset) is not int or offset < 0 or type(limit) is not int or limit < 1:
             raise ValueError('invalid_page')
         if limit > self.resources[logical_id]['policy']['max_projection_nodes']:
@@ -319,11 +320,38 @@ class ResourceGraph:
             descriptor['content_base64'] = base64.b64encode(raw).decode('ascii')
         return descriptor
 
-    def project(self, logical_id, pointer='', *, depth=1, offset=0, limit=None):
+    def restore_reference(self, descriptor):
+        """Reopen a saved descriptor without accessing the source or native store."""
+        if not isinstance(descriptor, dict):
+            raise ValueError('resource_reference_object_required')
+        raw = None
+        if 'content_base64' in descriptor:
+            try:
+                raw = base64.b64decode(descriptor['content_base64'], validate=True)
+            except (ValueError, TypeError):
+                raise ValueError('resource_embedded_encoding_invalid') from None
+            if hashlib.sha256(raw).hexdigest() != descriptor.get('content_sha256'):
+                raise ValueError('resource_embedded_hash_mismatch')
+            self.access._check('max_source_bytes', len(raw))
+        logical_id = descriptor['logical_id']
+        self.attach(descriptor['locator'], logical_id=logical_id, members=descriptor['members'],
+                    format=descriptor['format'], adapter=descriptor['adapter'],
+                    permissions=descriptor['permissions'], policy=descriptor['policy'],
+                    parser_options=descriptor.get('parser_options'))
+        resource = self.resources[logical_id]
+        for key in ('source_version', 'content_sha256', 'parser_version', 'mapping_version', 'history', 'recognition'):
+            if key in descriptor:
+                resource[key] = deepcopy(descriptor[key])
+        resource['_embedded'] = raw
+        resource['_inline'] = descriptor['locator'].startswith('inline:')
+        return self.describe(logical_id)
+
+    def project(self, logical_id, pointer='', *, depth=None, offset=0, limit=None):
         resource = self.resources[logical_id]
         if not resource['permissions']['export_values']:
             raise ResourceError('unavailable', 'export_permission_denied')
         policy = resource['policy']
+        depth = policy['projection_depth'] if depth is None else depth
         limit = policy['max_projection_nodes'] if limit is None else limit
         if type(depth) is not int or depth < 0 or depth > policy['max_projection_depth'] or type(limit) is not int or limit < 1 or limit > policy['max_projection_nodes'] or offset < 0:
             raise ValueError('projection_policy_boundary')
