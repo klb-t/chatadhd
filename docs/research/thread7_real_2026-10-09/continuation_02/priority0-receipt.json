@@ -1,0 +1,75 @@
+{
+  "controlled_git_temp_reproduction": {
+    "errors": 8,
+    "platform_marker_changed": false,
+    "real_protection_enabled": true,
+    "tests": 8
+  },
+  "evidence_sha256": "fd75d2569eae70400943199a83e4a3ac58077d67d1e83b59d579ea510e664c9e",
+  "files": {
+    "after.log": "03356edccb772c6f4e5851d7ef40b326cc003738598328b0ea8ffc8d8cb5fe46",
+    "before.log": "873edb3df59629c4ea5e54f7290b7b8fc6b1aac3100e1d38b18a766096fa2626",
+    "bootstrap-unavailable-ctest-manifest.json": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bootstrap-unavailable-ctest.log": "8f877f5003e61ff5fac237ff0fcf17201005bdff895e7eaa872701325fcdd31f",
+    "controlled-before.log": "59b2f33b2fd60f065b855a753fdfec032c41364391b6d0b1c365a1a2a1b6e22f",
+    "ctest-manifest.json": "e0288dca87d6dfd4e7a6cb9ef25c3dd3ffc07ea54ef8117ae4f319ed594deef2",
+    "ctest.log": "88c79af8ba82683dc9d8c5235d3fe6d39eb88c42181466eb20c9360587363e86",
+    "ctest.xml": "3d312e6f80b0556f09aa8b01dfd398e5f8c6340928f2d4299690afc47a771b9f",
+    "ctest/CTestTestfile.cmake": "678009c796ddbc11bccb454efe9722256363b0c4d78432cfcc2d5c3282ebf192",
+    "ctest/Testing/Temporary/LastTest.log": "9148c2e82edf5684994df7b8ad293153febe50f890aacbe88991c0fb15afe7dc",
+    "executed-cases.json": "994821afd35c95c71f62ee9e82ace97725d92f44940fd579a183398aa6a3c500",
+    "fix.patch": "794d7e2d255c47993a282ec45b6331c8dd9ad0aaae54e03407518f8b654b0d3d",
+    "guard.log": "8741435dc27252ee07e4bf53316731e177d7617715319733735756fa220eb515",
+    "pre-gate-checkpoint-v2.json": "6ea20fa19cde089ad7c179a8fe9744950a9b821c6b36f4a1df88926cbf0895f1",
+    "pre-gate-checkpoint.json": "9983f9c309f75dcfb3b9350a14111ff829b442330093340d2ea54d426abba6f2"
+  },
+  "fix_commit": "a6481d11a05158977a87dd55f3a4d6896a190dad",
+  "fixed_targeted_tests": {
+    "errors": 0,
+    "negative_git_path_rejected": true,
+    "passed": 10
+  },
+  "full_B_gate": false,
+  "native_build": "reused pinned existing main binary; no native source changes",
+  "new_calls": 0,
+  "new_cost_usd": "0",
+  "old_tests_actual_environment": {
+    "errors": 0,
+    "passed": 8
+  },
+  "schema": "loom.thread7_priority0_receipt/1",
+  "structure_gate": {
+    "entries": [
+      {
+        "cases": 1458,
+        "classification": "executed",
+        "discovered_cases": 1458,
+        "name": "research.structure",
+        "skipped_cases": 0
+      }
+    ],
+    "errors": [],
+    "executed_entries": 1,
+    "executed_native_assertions": 0,
+    "executed_native_cases": 0,
+    "executed_python_cases": 1458,
+    "input_sha256": {
+      "junit": "3d312e6f80b0556f09aa8b01dfd398e5f8c6340928f2d4299690afc47a771b9f",
+      "manifest": "e0288dca87d6dfd4e7a6cb9ef25c3dd3ffc07ea54ef8117ae4f319ed594deef2"
+    },
+    "junit_entries": 1,
+    "manifest_entries": 1,
+    "policy_provenance": {
+      "path": "/workspace/scratch/b258b858b122/chatadhd/.github/ctest-evidence-policy.json",
+      "revision": 1,
+      "schema": "loom.ctest_evidence_policy/1",
+      "schema_sha256": "29ff3cd357e02cd0fc8139cacb86293fcfab5803c9f0001eb8aec53b4f4be6e0",
+      "sha256": "1dc457125c40c0e225365e20c8839d9726d71dfa5872a8be1d890707666526a4"
+    },
+    "preset": "dev",
+    "schema": "loom.ctest_evidence/1",
+    "skipped_python_cases": 0,
+    "unexecuted_entries": [],
+    "valid": true
+  }
+}

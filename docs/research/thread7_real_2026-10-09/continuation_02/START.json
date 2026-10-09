@@ -1,0 +1,48 @@
+{
+  "branch": "gpt/thread7-real-2026-10-09",
+  "credential_search": "no_new_concrete_authorized_reference; old_credential_free_checkpoints_not_searched",
+  "current_key_identity": null,
+  "current_provider_usage": null,
+  "current_reservations": null,
+  "date": "2026-10-09",
+  "dependencies": {
+    "A": "e29109852e456dd66493b75193bc5882df65ffe2",
+    "B": "b20c0d8ac37934e1600c3b9216492fd524220941",
+    "C": "5e346c7161028ded976c40a0251fe8f9547bd233",
+    "C_remote": "5e346c7161028ded976c40a0251fe8f9547bd233",
+    "main": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9"
+  },
+  "historical_calls": 720,
+  "historical_cost_usd": "0.873216500",
+  "historical_remaining_usd": "4.126783500",
+  "history_immutable": true,
+  "instructions_sha256": {
+    ".github/scripts/README.md": "696fe742d30a64a795d5a960a0c4d93168ecf880e865d8596969d3287cc7fccc",
+    "AGENTS.md": "1f51965b01c2d267a3714e28dd52ad2439cae85ec7e7059321cd2f31769b28e8",
+    "CLAUDE.md": "abcfe797520d136644e7515aa84cc8e589454c4bcfed5f8ed7be9432d8469101",
+    "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md": "851f6d2000f7d013ec000c6e7694713ef7079b76c3db386111f989871775bed3",
+    "docs/reports/thread7-real-2026-10-09.md": "5191488371601a9b8a48e356678c844f4b1cbc8d654478329ece4ebd72b515fa",
+    "docs/reports/thread7-real-continuation-2026-10-09.md": "cef2b56481d68cbf9bfeae477e89b5bdb50baad689e2f0d82433498531cb813c"
+  },
+  "new_cost_usd": "0",
+  "new_live_calls": 0,
+  "nonrenewing_cap_usd": "5",
+  "previous_checkpoint": {
+    "filename": "PRIVATE_Thread7_continuation01_2026-10-09.zip",
+    "public_receipt": "../continuation_01/PUBLICATION.json",
+    "sha256": "fca71d513aa44ddcf1960c325c9f38f89a458ef5feedb3de3b9c114b4f1ddf50"
+  },
+  "priorities": [
+    "temp_fixture_gate",
+    "source_preference_annotations",
+    "offline_retrieval",
+    "representation_measurement",
+    "payer_recovery"
+  ],
+  "schema": "loom.thread7_continuation/2",
+  "scope": [
+    "loom/tools/structure",
+    "own_research_and_tests"
+  ],
+  "stage_id": "thread7-real-continuation02-2026-10-09"
+}
