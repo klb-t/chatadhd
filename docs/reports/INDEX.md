@@ -133,3 +133,7 @@ tylko fast-forward. Nie czytamy `eval/real-holdout-key`; blind użyty raz.
 ## Zadanie B — 2026-10-09, osobna gałąź produktu
 
 [Raport DATA / GRAPH / ENGINE](data-graph-engine-2026-10-09.md): d92d7cc / ddcaeaf / 24c9fc3, testy zakresowe i E2E; pełna bramka dev z jawną blokadą research.structure. Nie zmienia statusu historycznej integracji Claude’a ani main.
+
+### B: external resources — 2026-10-09
+
+[Raport B](data-graph-engine-2026-10-09.md): ad6269a5/b20c0d8a na gałęzi produktu; ZIP resource graph wspólne dla widoku i zadania, external profile w real runtime, uncertain syntax/value_ref. Aktualne scoped ASan7/7 i E2E16/16; full dev145/146, guard REJECT przez 8 fixture errors C. R42 inventory checkoutu pozostaje otwarte; generator proof dokładny, allowlist unchanged. Nie jest to przyjęcie na main ani zakończenie całego R15/R20/R21.

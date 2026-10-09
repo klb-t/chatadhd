@@ -1,6 +1,6 @@
 {
   "schema": "loom.product_literals/1",
-  "revision": 1,
+  "revision": 2,
   "requirement": {
     "id": "R42",
     "source_commit": "3cd5848e7484d50d00f19f0855bc2cd228ad7f3b",
@@ -484,12 +484,20 @@
           "sha256": "c1d34a47b5f6a5a57bf2d969338bccf7a0065e45df268d896de6e85f49489c67"
         },
         {
+          "path": "loom/data/runtime/chat_reasoning.pack",
+          "sha256": "3d4fa820e87225e5c0fd5e7221c7bfa64adcdb23b43b6d4ac8bf69b4a5296b6e"
+        },
+        {
           "path": "loom/data/runtime/cli.pack",
           "sha256": "b94f7b94c186d3466af61fae70986fac17e77d26eeae3ea3cb7e5d92e867589b"
         },
         {
           "path": "loom/data/runtime/config.pack",
           "sha256": "6f7c11c5ad857e3e3936df7667fcc0c673ddf2e2f652ae5aef8c3d3f4d1c20cd"
+        },
+        {
+          "path": "loom/data/runtime/context_goal_cues.pack",
+          "sha256": "a53f6e3a046459bd81d447fb551db68319afe38679ad0c7f5b3fa658ebd4ae1b"
         },
         {
           "path": "loom/data/runtime/github.pack",
@@ -544,6 +552,10 @@
           "sha256": "ed6152fd54a830cf20b831e9bb471bf9e52daf89a33c9a23a4d206bd427df508"
         },
         {
+          "path": "loom/data/runtime/resource_projection.pack",
+          "sha256": "1fa8627e42482e45bae5dd9d1b839bd4e7bd4c661171020ee8e7a4729f0c5a2f"
+        },
+        {
           "path": "loom/data/runtime/runtime_paths.pack",
           "sha256": "b796635d5661d960212045a8981c16b66e5e74e6c688e0eb5cdbc90faf2f3f22"
         },
@@ -568,7 +580,7 @@
           "sha256": "781279229d42b12141dd19bdb6fe55de5142657a1c870e7517dc997964a42099"
         }
       ],
-      "output_sha256": "c87ff0c575c5bd191ef2eebb5df01b0f626183fe5c0ce7329b693de46a64fef8",
+      "output_sha256": "208492973d050f48b8cee5412a18a2d9be448d8b80ea0544e6984cd185bc15b2",
       "reason": "Only the exact current trusted in-memory generator result is non-literal product data. Generator bytes, every canonical input and complete output must match; no whole-file review waiver."
     }
   ],
