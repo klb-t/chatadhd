@@ -66,6 +66,8 @@ export interface ReadContext {
   signal?: AbortSignal;
   /** Explicit caller authorization; changing a perspective never changes this. */
   permission: PermissionContext;
+  /** Effective capability values, including adapter-defined extensions. */
+  parameters?: Record<string, unknown>;
 }
 export interface NeighborRequest {
   structure: string;
@@ -135,6 +137,11 @@ export interface VisualRule {
   explanation: string;
   [key: string]: unknown;
 }
+export interface ResolutionPresentation {
+  id: string;
+  fields: { id: string; label: string; path: string; [key: string]: unknown }[];
+  [key: string]: unknown;
+}
 export interface QueryPlan {
   schema: "loom.graph_perspective_plan/1";
   perspectiveId: string;
@@ -149,9 +156,12 @@ export interface QueryPlan {
   compareSnapshots: string[];
   evidence: string[];
   queryBudget: number;
+  /** Maximum neighbor-page reads; older plans explicitly alias this to queryBudget. */
+  neighborBudget?: number;
   renderBudget: number;
   pageSize: number;
   visual: VisualRule[];
+  presentation?: ResolutionPresentation[];
   values: Record<string, unknown>;
   explanation: EffectiveComponent[];
   unsupported: { id: string; reason: string; value?: unknown }[];
@@ -166,6 +176,11 @@ export interface ProjectedObject extends SourceObject {
   visual: { opacity: number; blur: number; color?: string; group?: string; label?: string };
   visualReasons: { dimension: string; rule: string; explanation: string }[];
   aggregateMembers?: ObjectRef[];
+  presentation?: {
+    status: "supported" | "unsupported";
+    fields: { id: string; label: string; path: string; value: unknown }[];
+    missing: string[];
+  };
 }
 export interface Omission {
   ref?: ObjectRef;

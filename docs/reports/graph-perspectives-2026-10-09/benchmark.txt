@@ -1,0 +1,1 @@
+[graph-perspectives-benchmark] 12 sparse focus changes passed; 10000/chain/0=0.56ms, 10000/chain/5000=0.68ms, 10000/chain/9999=0.41ms, 10000/star/0=6.89ms, 10000/star/5000=5.67ms, 10000/star/9999=4.15ms, 100000/chain/0=0.35ms, 100000/chain/50000=0.52ms, 100000/chain/99999=0.33ms, 100000/star/0=6.12ms, 100000/star/50000=4.36ms, 100000/star/99999=5.15ms

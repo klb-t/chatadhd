@@ -1,0 +1,22 @@
+✔ actual native DefaultLayers resolves all pack entries with native provenance (527.066963ms)
+✔ override preserves exact caller source metadata and native history (15.722887ms)
+✔ disable suppresses value even after a later override and roundtrip (35.00301ms)
+✔ exclusion cannot be bypassed by override; explicit reenable required (52.860402ms)
+✔ permanent exclusion survives pack replacement and unknown state fields (46.058409ms)
+✔ new capabilities in excluded area become proposals, never silently effective (47.071835ms)
+✔ unknown component can remain as user data and missing lookup is explicit (16.350242ms)
+✔ null is an ordinary overridden value, not a fallback trigger (16.29678ms)
+✔ source pack and original caller state stay immutable (20.381362ms)
+✔ native build is pinned to current source hashes and actual binary hash (0.69714ms)
+✔ headless facade consumes existing OnboardingAdapter without a second resolver (183.878781ms)
+✔ live native source changes effective value while preserving identity and exact override provenance (92.411ms)
+✔ live native projection retains exclusion, explicit unavailable snapshots, permissions and unloaded source (76.278375ms)
+✔ live native keys containing pointer metacharacters remain addressable with stable identity (61.423787ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1200.057258

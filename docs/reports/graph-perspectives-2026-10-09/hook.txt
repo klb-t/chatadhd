@@ -1,0 +1,2 @@
+PASS exact pinned B hook, drift rejection, patch applies, harness equality, original unchanged
+PASS exact patched renderer TypeScript with current application and headless contracts

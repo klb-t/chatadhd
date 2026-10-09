@@ -31,6 +31,7 @@ assert.ok(relation, 'actual exporter must supply produced_by');
 const reference = { source: descriptor.id, selector: relation.subject };
 const object = await adapter.resolve(reference, { permission });
 assert.equal(object.status, 'available');
+assert.equal(object.confidence, undefined, 'native exporter structural confidence must not become calibrated presentation confidence');
 const neighbors = await adapter.neighbors(reference, { structure: 'research', relations: ['produced_by'], direction: 'outgoing', limit: 100 }, { permission });
 assert.ok(neighbors.relations.some(row => row.id === relation.id));
 assert.equal(JSON.stringify(packet), original, 'reading real exported packet must not alter canonical records');

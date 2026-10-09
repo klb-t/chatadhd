@@ -1,0 +1,28 @@
+/** Exact in-memory application of B's reviewable integration hook.
+ * The renderer remains KnowledgeWorkbench's implementation, including its layout.
+ * Every edit checks its anchor so source drift fails loudly instead of serving a copy.
+ */
+export function transformRenderer(source) {
+  const replace = (before, after) => {
+    if (source.split(before).length !== 2) throw new Error(`renderer hook anchor missing or ambiguous: ${before.slice(0, 100)}`);
+    source = source.replace(before, after);
+  };
+  replace('type Selection =', 'import type { KnowledgeGraphProjection } from "../graph-perspectives/renderer-bridge";\ntype Selection =');
+  replace('function KnowledgeGraph({ data, focus, onSelect, parameters, change }: { data: Dataset; focus: string; onSelect: (kind: string, row: KnowledgeRecord) => void; parameters: Parameters; change: Change }) {',
+    'export function KnowledgeGraph({ data, focus, onSelect, parameters, change, projection }: { data: Dataset; focus: string; onSelect: (kind: string, row: KnowledgeRecord) => void; parameters: Parameters; change: Change; projection?: KnowledgeGraphProjection }) {');
+  replace('  const nodes = [...matching].sort((a, b) => Number(neighborhood.has(idOf(b))) - Number(neighborhood.has(idOf(a))) || idOf(a).localeCompare(idOf(b))).slice(0, maxNodes);\n  const height = Math.max(320, Math.ceil(nodes.length / 5) * 76 + 40);\n  const positions = new Map(nodes.map((row, index) => [idOf(row), { x: 68 + (index % 5) * 132, y: 44 + Math.floor(index / 5) * 76 }]));\n  const edges = claims.filter((claim) => positions.has(displayText(claim.subject)) && positions.has(displayText(claim.object)));',
+    '  const layoutStarted = performance.now();\n  const nodes = projection?.nodes ?? [...matching].sort((a, b) => Number(neighborhood.has(idOf(b))) - Number(neighborhood.has(idOf(a))) || idOf(a).localeCompare(idOf(b))).slice(0, maxNodes);\n  const stablePositions = useRef(new Map<string, { x: number; y: number }>());\n  const slots = projection ? stablePositions.current : new Map<string, { x: number; y: number }>();\n  const positions = new Map<string, { x: number; y: number }>();\n  const occurrences = new Map<string, number>();\n  for (const row of nodes) {\n    const id = idOf(row), identity = projection?.identity[id] ?? id;\n    if (!slots.has(identity)) {\n      const index = slots.size;\n      slots.set(identity, { x: 68 + (index % 5) * 132, y: 44 + Math.floor(index / 5) * 76 });\n    }\n    const base = slots.get(identity)!, duplicate = occurrences.get(identity) ?? 0;\n    occurrences.set(identity, duplicate + 1);\n    positions.set(id, { x: base.x + duplicate * 38, y: base.y + duplicate * 38 });\n  }\n  const height = projection ? Math.max(320, ...nodes.map((row) => positions.get(idOf(row))!.y + 64)) : Math.max(320, Math.ceil(nodes.length / 5) * 76 + 40);\n  const edges = projection?.edges ?? claims.filter((claim) => positions.has(displayText(claim.subject)) && positions.has(displayText(claim.object)));\n  projection?.onLayoutMeasured?.(performance.now() - layoutStarted);');
+  replace('    <div className="kb-pane-controls">\n      <input type="search" aria-label="Filter graph entities"', '    {!projection && <div className="kb-pane-controls">\n      <input type="search" aria-label="Filter graph entities"');
+  replace('    <div className="kb-count">{nodes.length} / {matching.length} matching entities · {edges.length} relations · select a node to focus linked views</div>', '    <div className="kb-count">{nodes.length} / {matching.length} matching entities · {edges.length} relations · select a node to focus linked views</div>}');
+  // Close the conditional fragment around legacy controls and legacy count.
+  replace('    {!projection && <div className="kb-pane-controls">', '    {!projection && <><div className="kb-pane-controls">');
+  replace(' · select a node to focus linked views</div>}', ' · select a node to focus linked views</div></>}');
+  replace('aria-label="Knowledge entities and claim relations"', 'aria-label={projection?.labels.graph ?? "Knowledge entities and claim relations"}');
+  replace('className="kb-edge-target" role="button"', 'className="kb-edge-target" data-relation-id={idOf(claim)} role="button"');
+  replace('aria-label={`Inspect relation ${displayText(claim.predicate)}`}', 'aria-label={`${projection?.labels.inspectRelation ?? "Inspect relation"} ${displayText(claim.predicate)}`}');
+  replace('opacity={!focus || (neighborhood.has(displayText(claim.subject)) && neighborhood.has(displayText(claim.object))) ? 0.65 : fade / 100}', 'opacity={projection ? undefined : !focus || (neighborhood.has(displayText(claim.subject)) && neighborhood.has(displayText(claim.object))) ? 0.65 : fade / 100}');
+  replace('opacity={!focus || neighborhood.has(id) ? 1 : fade / 100} tabIndex={0}', 'opacity={projection ? undefined : !focus || neighborhood.has(id) ? 1 : fade / 100} style={projection?.styles[id]} data-object-key={id} data-canonical-key={projection?.identity[id]} data-group={projection ? displayText(row.perspective_group) : undefined} tabIndex={0}');
+  replace('aria-label={`Focus ${label}`}', 'aria-label={`${projection?.labels.focus ?? "Focus"} ${label}`}');
+  replace('<title>{label} · {displayText(row.kind)} · {evidence} · {displayText(row.origin)} · {typeof row.confidence === "number" ? `${Math.round(row.confidence * 100)}% confidence` : "confidence unavailable"}</title>', '<title>{projection?.explanations[id] ?? `${label} · ${displayText(row.kind)} · ${evidence} · ${displayText(row.origin)} · ${typeof row.confidence === "number" ? `${Math.round(row.confidence * 100)}% confidence` : "confidence unavailable"}`}</title>');
+  return source;
+}

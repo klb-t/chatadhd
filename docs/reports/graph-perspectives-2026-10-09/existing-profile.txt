@@ -1,0 +1,35 @@
+
+> loom-web@0.1.0 test:application-profiles
+> node e2e/application-profile-state.mjs && node e2e/application-profile-adapter.mjs
+
+PASS arbitrary application and original versions are data, distinct from profile revisions
+PASS missing optional capabilities are explicit and required capabilities block activation
+PASS capability labels cannot stand in for a matching operation adapter
+PASS unknown schema, operation, renderer and executable fields fail visibly
+PASS extensions are installed by code while new targets and versions remain declarative
+PASS workflow order is enforced and state advances only after adapter success
+PASS rejected adapters leave workflow and history intact and can be retried
+PASS capability guards run before native side effects
+PASS invalid finite-state declarations are rejected at registration
+PASS profile revision cannot silently mutate target identity or same-revision data
+PASS restoration replays workflow order and rejects revision, target, history or state mismatch
+PASS null version and uncertain evidence cannot claim verified original parity
+PASS changing profile views preserves canonical data, context and model configuration
+PASS submit shortcuts preserve multiline input and IME composition
+PASS declarative payloads bind inputs/context and selected result variables across workflow steps
+PASS missing and unsafe bindings fail before adapter effects and payload overrides are explicit errors
+PASS selected unsafe outputs reject state advancement after native success; unrelated unsafe outputs stay unpersisted
+PASS selected variable receipts replay exactly; forged extras or cross-workflow values are rejected
+PASS payload and non-result saved inputs are captured before asynchronous effects
+[application-profile-state] 19/19 groups passed; offline, zero model calls
+PASS native conversation/message operations preserve exact API arguments
+PASS chat request identity, all context fields and streaming handlers survive the adapter
+PASS native error, network failure and truncated stream never advance a workflow
+PASS request-ID cancellation settles the active send and stops the transport
+PASS pre-start cancellation uses the returned subscription without inventing an ID
+PASS failed backend cancellation preserves a live send unless explicitly unsubscribed
+PASS synchronous transport/callback failures and immediate unsubscribe all settle
+PASS UI capabilities come from installed host adapters and knowledge backend
+PASS invalid operation payloads cannot call native APIs or invent cancelled requests
+[application-profile-adapter] 9/9 groups passed (offline; no model/provider calls)
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.

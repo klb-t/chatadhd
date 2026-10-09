@@ -1,0 +1,14 @@
+PASS native packet lazy object projection preserves canonical bytes and unknown fields
+PASS same object addresses physical and logical structures without renderer state
+PASS permission denied, unloaded, unavailable and unrecognized are separate addressable states
+PASS snapshots retain one canonical identity and exact representation
+PASS pagination is explicit and no canonical row is lost
+PASS unopened source invokes supplied demand loader only after permission allows access
+PASS a third previously unseen sensor structure joins unchanged mechanism via adapter data
+PASS existing registerProfile loader and source selector access unrendered profile field
+PASS packet accepts unknown metadata, maps native evidence only by descriptor, rejects malformed rows
+  packet-hub sample: 10001 entities/10000 claims, query+lazy-index 70.28ms, projected relations 3
+PASS large sparse packet hub materializes only the requested page and exposes denied filtering
+  D producer 1d3d133154f213733b7a69af863613cec2dd8ca2: 9 entities/14 claims, opens=2, no native import/embedding/cache
+PASS actual pinned D resource packet resolves requested source pointer with descriptor mapping
+adapter contract: 11/11 groups passed

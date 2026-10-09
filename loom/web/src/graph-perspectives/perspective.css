@@ -1,0 +1,54 @@
+.gp-view { --bg:#10171d; --panel:#172229; --text:#edf4f5; --dim:#9cadb7; --accent:#8fcdbd; --ai:#213d40; color:var(--text); background:var(--bg); min-height:100vh; padding:clamp(16px,3vw,40px); font:15px/1.5 system-ui,sans-serif; box-sizing:border-box; }
+.gp-view * { box-sizing:border-box; }
+.gp-view h1 { font-size:clamp(24px,4vw,36px); font-weight:600; letter-spacing:-.03em; margin:0; }
+.gp-view h2 { font-size:19px; font-weight:550; }
+.gp-view h3 { font-size:16px; font-weight:550; }
+.gp-header { display:flex; justify-content:space-between; gap:24px; align-items:center; border-bottom:1px solid #39515a; padding-bottom:24px; }
+.gp-kicker { color:var(--accent); text-transform:uppercase; letter-spacing:.12em; font-size:11px; }
+.gp-local,.gp-policy,.gp-preset-description { color:var(--dim); max-width:95ch; }
+.gp-toolbar { display:flex; align-items:end; flex-wrap:wrap; gap:10px; }
+.gp-view label { display:flex; gap:6px; flex-direction:column; color:var(--dim); font-size:13px; }
+.gp-view input,.gp-view select,.gp-view textarea,.gp-view button { font:inherit; color:var(--text); background:#1d2b32; border:1px solid #466069; border-radius:6px; }
+.gp-view select,.gp-view button,.gp-view input { min-height:44px; padding:9px 12px; }
+.gp-view button { cursor:pointer; touch-action:manipulation; }
+.gp-view button:disabled { opacity:.45; cursor:default; }
+.gp-view button:hover { background:#28434a; }
+.gp-view :focus-visible { outline:3px solid #dfc28a; outline-offset:3px; }
+.gp-view textarea { width:100%; min-height:140px; padding:12px; font-family:ui-monospace,monospace; font-size:12px; }
+.gp-view pre { white-space:pre-wrap; overflow-wrap:anywhere; font:12px/1.6 ui-monospace,monospace; max-height:400px; overflow:auto; }
+.gp-view code { overflow-wrap:anywhere; font-size:12px; }
+.gp-status { min-height:24px; color:var(--accent); }
+.gp-view [role=alert] { padding:14px; border:1px solid #d29985; color:#ffcec4; overflow-wrap:anywhere; }
+.gp-metrics { display:flex; flex-wrap:wrap; gap:14px; padding:12px 0; border-block:1px solid #344952; font-size:13px; }
+.gp-content { display:grid; grid-template-columns:minmax(0,1fr) minmax(230px,310px); gap:22px; margin-top:18px; }
+.gp-graph-panel { min-width:0; background:var(--panel); border-radius:8px; padding:12px; border:1px solid #344952; }
+.gp-view .kb-graph-scroll { max-height:560px; }
+.gp-view .kb-graph { min-width:500px; }
+.gp-view .kb-node circle { r:15px; }
+.gp-view .kb-node.focused circle { r:19px; }
+.gp-view .kb-node text { font-size:11px; }
+.gp-view .kb-node text.kb-node-evidence { font-size:9px; }
+.gp-object-list { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:7px; margin-top:15px; }
+.gp-object-list button { text-align:left; padding:10px; overflow-wrap:anywhere; }
+.gp-object-list button[aria-current=true] { border-color:var(--accent); background:#264346; }
+.gp-object-list span { display:block; color:var(--dim); font-size:11px; }
+.gp-object-list strong { font-size:13px; font-weight:500; }
+.gp-inspector { min-width:0; padding:4px 0; }
+.gp-inspector h2 { margin-top:0; }
+.gp-inspector dt { font-size:11px; color:var(--dim); text-transform:uppercase; letter-spacing:.06em; margin-top:12px; }
+.gp-inspector dd { margin:4px 0; font-size:12px; overflow-wrap:anywhere; }
+.gp-inspector ul { padding-left:20px; font-size:12px; }
+.gp-relations { display:grid; gap:6px; max-height:380px; overflow:auto; }
+.gp-relations button { text-align:left; font-size:12px; }
+.gp-relations span,.gp-relations small { display:block; color:var(--dim); overflow-wrap:anywhere; }
+.gp-view details { padding:12px 0; border-top:1px solid #344952; margin-top:12px; }
+.gp-view summary { cursor:pointer; min-height:34px; font-size:13px; }
+.gp-components { margin-top:25px; }
+.gp-component textarea { min-height:90px; }
+.gp-transfer textarea { min-height:250px; }
+@media(max-width:760px) { .gp-content { grid-template-columns:1fr; } .gp-header { align-items:start; flex-direction:column; gap:14px; } .gp-view { padding:16px; } .gp-view .kb-graph { min-width:640px; } .gp-inspector { padding-top:12px; } .gp-object-list { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+
+.gp-table-scroll { overflow:auto; }
+.gp-view table { border-collapse:collapse; width:100%; font-size:12px; }
+.gp-view th,.gp-view td { border:1px solid #344952; padding:8px; text-align:left; overflow-wrap:anywhere; max-width:400px; }
+.gp-view th { color:var(--dim); font-weight:500; }

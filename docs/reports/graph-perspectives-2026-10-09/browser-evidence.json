@@ -1,0 +1,745 @@
+{
+  "schema": "loom.graph_perspectives_browser_evidence/1",
+  "generatedAt": "2026-10-09T08:16:46.288Z",
+  "browser": "141.0.7390.37",
+  "expectedGroups": 13,
+  "groups": [
+    "native resolved data and identical headless/UI projection",
+    "mouse keyboard and reversible object navigation",
+    "physical and logical projection preserve focus identity and placement",
+    "equal resolution selects distinct computation and historical structures",
+    "two snapshots retain canonical object and historical center",
+    "external profile field effective value and override provenance",
+    "live native effective values and override provenance change through the UI",
+    "conversation source correction and current instruction",
+    "unrendered unloaded unavailable and unknown references remain addressable",
+    "unknown fields mode switches and save restore preserve perspective intent",
+    "explicit render omissions analysis separation and canonical immutability",
+    "comparison visibility query plan export and workflow preparation are explicit",
+    "touch interaction and accessible object details work without hover"
+  ],
+  "timings": [
+    {
+      "name": "native resolved data and identical headless/UI projection",
+      "wallMs": 195.26690099999996
+    },
+    {
+      "name": "mouse keyboard and reversible object navigation",
+      "wallMs": 480.159302
+    },
+    {
+      "name": "physical and logical projection preserve focus identity and placement",
+      "wallMs": 595.608553
+    },
+    {
+      "name": "equal resolution selects distinct computation and historical structures",
+      "wallMs": 460.912112
+    },
+    {
+      "name": "two snapshots retain canonical object and historical center",
+      "wallMs": 668.5523410000005
+    },
+    {
+      "name": "external profile field effective value and override provenance",
+      "wallMs": 303.5866820000001
+    },
+    {
+      "name": "live native effective values and override provenance change through the UI",
+      "wallMs": 968.4575279999999
+    },
+    {
+      "name": "conversation source correction and current instruction",
+      "wallMs": 649.384838
+    },
+    {
+      "name": "unrendered unloaded unavailable and unknown references remain addressable",
+      "wallMs": 818.0403190000006
+    },
+    {
+      "name": "unknown fields mode switches and save restore preserve perspective intent",
+      "wallMs": 1367.3813519999994
+    },
+    {
+      "name": "explicit render omissions analysis separation and canonical immutability",
+      "wallMs": 584.8189660000007
+    },
+    {
+      "name": "comparison visibility query plan export and workflow preparation are explicit",
+      "wallMs": 319.96564099999887
+    },
+    {
+      "name": "touch interaction and accessible object details work without hover",
+      "wallMs": 646.4982049999999
+    }
+  ],
+  "failures": [],
+  "presentationTimings": {
+    "renderMs": 0.19999999925494194,
+    "layoutMs": 0
+  },
+  "sparsePresentationBenchmark": {
+    "schema": "loom.graph_perspectives_benchmark/1",
+    "generatedAt": "2026-10-09T08:16:46.266Z",
+    "provenance": "Synthetic sparse address spaces, generated lazily by an adapter; measured production selectPerspective implementation.",
+    "runtime": {
+      "node": "v24.19.0",
+      "platform": "linux",
+      "arch": "x64",
+      "exposedGc": false
+    },
+    "budgets": {
+      "queryBudget": 256,
+      "renderBudget": 80,
+      "pageSize": 32
+    },
+    "rows": [
+      {
+        "size": 10000,
+        "topology": "chain",
+        "focusIndex": 0,
+        "theoreticalEdges": 9999,
+        "wallMs": 0.4176690000003873,
+        "selectionMs": 0.40258600000015576,
+        "resolvedObjects": 9,
+        "neighborCalls": 8,
+        "discoveredObjects": 9,
+        "renderedObjects": 9,
+        "adapterResolvedObjects": 9,
+        "adapterRelationObjects": 15,
+        "adapterNeighborCalls": 8,
+        "graphNodes": 9,
+        "graphEdges": 8,
+        "heapDeltaBytes": 156224,
+        "rssDeltaBytes": 0,
+        "omissions": {},
+        "continuations": 0,
+        "complete": true,
+        "presentation": {
+          "phase": "mount",
+          "layoutMs": 0.19999999925494194,
+          "reactRenderMs": 5.599999997764826,
+          "renderExcludingMeasuredLayoutMs": 5.399999998509884,
+          "updateThroughTwoAnimationFramesMs": 25.800000000745058,
+          "renderedObjectCount": 9
+        }
+      },
+      {
+        "size": 10000,
+        "topology": "chain",
+        "focusIndex": 5000,
+        "theoreticalEdges": 9999,
+        "wallMs": 0.7898499999992055,
+        "selectionMs": 0.7351070000004256,
+        "resolvedObjects": 17,
+        "neighborCalls": 15,
+        "discoveredObjects": 17,
+        "renderedObjects": 17,
+        "adapterResolvedObjects": 17,
+        "adapterRelationObjects": 30,
+        "adapterNeighborCalls": 15,
+        "graphNodes": 17,
+        "graphEdges": 16,
+        "heapDeltaBytes": -105296,
+        "rssDeltaBytes": 0,
+        "omissions": {},
+        "continuations": 0,
+        "complete": true,
+        "presentation": {
+          "phase": "update",
+          "layoutMs": 0.10000000149011612,
+          "reactRenderMs": 3.899999998509884,
+          "renderExcludingMeasuredLayoutMs": 3.7999999970197678,
+          "updateThroughTwoAnimationFramesMs": 15.600000001490116,
+          "renderedObjectCount": 17
+        }
+      },
+      {
+        "size": 10000,
+        "topology": "chain",
+        "focusIndex": 9999,
+        "theoreticalEdges": 9999,
+        "wallMs": 0.30015199999979814,
+        "selectionMs": 0.2807919999995647,
+        "resolvedObjects": 9,
+        "neighborCalls": 8,
+        "discoveredObjects": 9,
+        "renderedObjects": 9,
+        "adapterResolvedObjects": 9,
+        "adapterRelationObjects": 15,
+        "adapterNeighborCalls": 8,
+        "graphNodes": 9,
+        "graphEdges": 8,
+        "heapDeltaBytes": 153448,
+        "rssDeltaBytes": 0,
+        "omissions": {},
+        "continuations": 0,
+        "complete": true,
+        "presentation": {
+          "phase": "update",
+          "layoutMs": 0.10000000149011612,
+          "reactRenderMs": 2.099999997764826,
+          "renderExcludingMeasuredLayoutMs": 1.9999999962747097,
+          "updateThroughTwoAnimationFramesMs": 22.600000001490116,
+          "renderedObjectCount": 9
+        }
+      },
+      {
+        "size": 10000,
+        "topology": "star",
+        "focusIndex": 0,
+        "theoreticalEdges": 9999,
+        "wallMs": 6.881874000000607,
+        "selectionMs": 6.8592700000008335,
+        "resolvedObjects": 256,
+        "neighborCalls": 256,
+        "discoveredObjects": 256,
+        "renderedObjects": 80,
+        "adapterResolvedObjects": 256,
+        "adapterRelationObjects": 503,
+        "adapterNeighborCalls": 256,
+        "graphNodes": 80,
+        "graphEdges": 79,
+        "heapDeltaBytes": 4177536,
+        "rssDeltaBytes": 0,
+        "omissions": {
+          "query_budget": 8,
+          "render_budget": 176
+        },
+        "continuations": 8,
+        "complete": false,
+        "presentation": {
+          "phase": "update",
+          "layoutMs": 0.19999999925494194,
+          "reactRenderMs": 14.100000001490116,
+          "renderExcludingMeasuredLayoutMs": 13.900000002235174,
+          "updateThroughTwoAnimationFramesMs": 35.5,
+          "renderedObjectCount": 80
+        }
+      },
+      {
+        "size": 10000,
+        "topology": "star",
+        "focusIndex": 5000,
+        "theoreticalEdges": 9999,
+        "wallMs": 5.329124999998385,
+        "selectionMs": 5.293721000000005,
+        "resolvedObjects": 256,
+        "neighborCalls": 9,
+        "discoveredObjects": 256,
+        "renderedObjects": 80,
+        "adapterResolvedObjects": 256,
+        "adapterRelationObjects": 255,
+        "adapterNeighborCalls": 9,
+        "graphNodes": 80,
+        "graphEdges": 79,
+        "heapDeltaBytes": 2817352,
+        "rssDeltaBytes": 0,
+        "omissions": {
+          "query_budget": 1,
+          "render_budget": 176
+        },
+        "continuations": 1,
+        "complete": false,
+        "presentation": {
+          "phase": "update",
+          "layoutMs": 0,
+          "reactRenderMs": 6.49999999627471,
+          "renderExcludingMeasuredLayoutMs": 6.49999999627471,
+          "updateThroughTwoAnimationFramesMs": 28.600000001490116,
+          "renderedObjectCount": 80
+        }
+      },
+      {
+        "size": 10000,
+        "topology": "star",
+        "focusIndex": 9999,
+        "theoreticalEdges": 9999,
+        "wallMs": 4.31767199999922,
+        "selectionMs": 4.282208999999057,
+        "resolvedObjects": 256,
+        "neighborCalls": 9,
+        "discoveredObjects": 256,
+        "renderedObjects": 80,
+        "adapterResolvedObjects": 256,
+        "adapterRelationObjects": 255,
+        "adapterNeighborCalls": 9,
+        "graphNodes": 80,
+        "graphEdges": 79,
+        "heapDeltaBytes": 2745704,
+        "rssDeltaBytes": 0,
+        "omissions": {
+          "query_budget": 1,
+          "render_budget": 176
+        },
+        "continuations": 1,
+        "complete": false,
+        "presentation": {
+          "phase": "update",
+          "layoutMs": 0.10000000149011612,
+          "reactRenderMs": 6.299999997019768,
+          "renderExcludingMeasuredLayoutMs": 6.199999995529652,
+          "updateThroughTwoAnimationFramesMs": 19.899999998509884,
+          "renderedObjectCount": 80
+        }
+      },
+      {
+        "size": 100000,
+        "topology": "chain",
+        "focusIndex": 0,
+        "theoreticalEdges": 99999,
+        "wallMs": 0.3321600000017497,
+        "selectionMs": 0.30904499999996915,
+        "resolvedObjects": 9,
+        "neighborCalls": 8,
+        "discoveredObjects": 9,
+        "renderedObjects": 9,
+        "adapterResolvedObjects": 9,
+        "adapterRelationObjects": 15,
+        "adapterNeighborCalls": 8,
+        "graphNodes": 9,
+        "graphEdges": 8,
+        "heapDeltaBytes": 146872,
+        "rssDeltaBytes": 0,
+        "omissions": {},
+        "continuations": 0,
+        "complete": true,
+        "presentation": {
+          "phase": "update",
+          "layoutMs": 0,
+          "reactRenderMs": 1,
+          "renderExcludingMeasuredLayoutMs": 1,
+          "updateThroughTwoAnimationFramesMs": 27.5,
+          "renderedObjectCount": 9
+        }
+      },
+      {
+        "size": 100000,
+        "topology": "chain",
+        "focusIndex": 50000,
+        "theoreticalEdges": 99999,
+        "wallMs": 0.8246819999985746,
+        "selectionMs": 0.747654999999213,
+        "resolvedObjects": 17,
+        "neighborCalls": 15,
+        "discoveredObjects": 17,
+        "renderedObjects": 17,
+        "adapterResolvedObjects": 17,
+        "adapterRelationObjects": 30,
+        "adapterNeighborCalls": 15,
+        "graphNodes": 17,
+        "graphEdges": 16,
+        "heapDeltaBytes": 292112,
+        "rssDeltaBytes": 0,
+        "omissions": {},
+        "continuations": 0,
+        "complete": true,
+        "presentation": {
+          "phase": "update",
+          "layoutMs": 0,
+          "reactRenderMs": 1.5,
+          "renderExcludingMeasuredLayoutMs": 1.5,
+          "updateThroughTwoAnimationFramesMs": 22.800000000745058,
+          "renderedObjectCount": 17
+        }
+      },
+      {
+        "size": 100000,
+        "topology": "chain",
+        "focusIndex": 99999,
+        "theoreticalEdges": 99999,
+        "wallMs": 0.5843700000004901,
+        "selectionMs": 0.5357059999987541,
+        "resolvedObjects": 9,
+        "neighborCalls": 8,
+        "discoveredObjects": 9,
+        "renderedObjects": 9,
+        "adapterResolvedObjects": 9,
+        "adapterRelationObjects": 15,
+        "adapterNeighborCalls": 8,
+        "graphNodes": 9,
+        "graphEdges": 8,
+        "heapDeltaBytes": 151424,
+        "rssDeltaBytes": 0,
+        "omissions": {},
+        "continuations": 0,
+        "complete": true,
+        "presentation": {
+          "phase": "update",
+          "layoutMs": 0,
+          "reactRenderMs": 1.199999999254942,
+          "renderExcludingMeasuredLayoutMs": 1.199999999254942,
+          "updateThroughTwoAnimationFramesMs": 26.400000002235174,
+          "renderedObjectCount": 9
+        }
+      },
+      {
+        "size": 100000,
+        "topology": "star",
+        "focusIndex": 0,
+        "theoreticalEdges": 99999,
+        "wallMs": 5.612272000000303,
+        "selectionMs": 5.591459999999643,
+        "resolvedObjects": 256,
+        "neighborCalls": 256,
+        "discoveredObjects": 256,
+        "renderedObjects": 80,
+        "adapterResolvedObjects": 256,
+        "adapterRelationObjects": 503,
+        "adapterNeighborCalls": 256,
+        "graphNodes": 80,
+        "graphEdges": 79,
+        "heapDeltaBytes": 4070272,
+        "rssDeltaBytes": 1310720,
+        "omissions": {
+          "query_budget": 8,
+          "render_budget": 176
+        },
+        "continuations": 8,
+        "complete": false,
+        "presentation": {
+          "phase": "update",
+          "layoutMs": 0.09999999776482582,
+          "reactRenderMs": 5.699999999254942,
+          "renderExcludingMeasuredLayoutMs": 5.600000001490116,
+          "updateThroughTwoAnimationFramesMs": 18.200000002980232,
+          "renderedObjectCount": 80
+        }
+      },
+      {
+        "size": 100000,
+        "topology": "star",
+        "focusIndex": 50000,
+        "theoreticalEdges": 99999,
+        "wallMs": 3.7294369999999617,
+        "selectionMs": 3.705970000000889,
+        "resolvedObjects": 256,
+        "neighborCalls": 9,
+        "discoveredObjects": 256,
+        "renderedObjects": 80,
+        "adapterResolvedObjects": 256,
+        "adapterRelationObjects": 255,
+        "adapterNeighborCalls": 9,
+        "graphNodes": 80,
+        "graphEdges": 79,
+        "heapDeltaBytes": 2730336,
+        "rssDeltaBytes": 0,
+        "omissions": {
+          "query_budget": 1,
+          "render_budget": 176
+        },
+        "continuations": 1,
+        "complete": false,
+        "presentation": {
+          "phase": "update",
+          "layoutMs": 0.10000000149011612,
+          "reactRenderMs": 5.00000000372529,
+          "renderExcludingMeasuredLayoutMs": 4.900000002235174,
+          "updateThroughTwoAnimationFramesMs": 19.399999998509884,
+          "renderedObjectCount": 80
+        }
+      },
+      {
+        "size": 100000,
+        "topology": "star",
+        "focusIndex": 99999,
+        "theoreticalEdges": 99999,
+        "wallMs": 3.448813999999402,
+        "selectionMs": 3.425748999999996,
+        "resolvedObjects": 256,
+        "neighborCalls": 9,
+        "discoveredObjects": 256,
+        "renderedObjects": 80,
+        "adapterResolvedObjects": 256,
+        "adapterRelationObjects": 255,
+        "adapterNeighborCalls": 9,
+        "graphNodes": 80,
+        "graphEdges": 79,
+        "heapDeltaBytes": 2974888,
+        "rssDeltaBytes": 0,
+        "omissions": {
+          "query_budget": 1,
+          "render_budget": 176
+        },
+        "continuations": 1,
+        "complete": false,
+        "presentation": {
+          "phase": "update",
+          "layoutMs": 0.10000000149011612,
+          "reactRenderMs": 6.00000000372529,
+          "renderExcludingMeasuredLayoutMs": 5.900000002235174,
+          "updateThroughTwoAnimationFramesMs": 23.099999997764826,
+          "renderedObjectCount": 80
+        }
+      }
+    ],
+    "measurement": {
+      "selection": "SelectionResult.metrics.selectionMs; wallMs adds the async caller boundary. Includes projection, excludes renderer and layout.",
+      "materialization": "resolve calls counted independently by the adapter; no up-front node list or index is built.",
+      "memory": "Process heap/RSS deltas per query; GC/JIT/allocator effects make signed values non-comparable as exact retained bytes.",
+      "layout": "Measured separately by browser presentation callback.",
+      "render": "Measured separately by browser presentation callback."
+    }
+  },
+  "presentationMeasurement": "Existing KnowledgeGraph layout timer; React Profiler actualDuration includes that layout, so the exclusive estimate subtracts it. Update wall time includes two animation frames and scheduler/paint opportunity; no claim that this isolates GPU paint.",
+  "pageErrors": [],
+  "requests": [
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:38375/src/api/index.ts"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:38375/src/api/knowledge.ts"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:38375/src/api/loom-http.ts"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:38375/src/api/loom-jni.ts"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:38375/src/api/loom-api.ts"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:38375/src/api/types.ts"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:38375/src/api/graph-packets.ts"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:38375/src/api/operations.ts"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:38375/api/graph-perspectives/bootstrap"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:38375/src/api/index.ts"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:38375/src/api/knowledge.ts"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:38375/src/api/loom-http.ts"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:38375/src/api/loom-jni.ts"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:38375/src/api/loom-api.ts"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:38375/src/api/types.ts"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:38375/src/api/graph-packets.ts"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:38375/src/api/operations.ts"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:38375/api/graph-perspectives/bootstrap"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38375/api/native-layers"
+    }
+  ],
+  "canonicalGraphUnchanged": true,
+  "integration": "Production module, native R40 resolver, local fixtures and existing KnowledgeGraph renderer transformed in memory by the exact B hook; application integration requires B applying that patch.",
+  "screenshots": [
+    "01-computational-desktop.png",
+    "02-history-desktop.png",
+    "03-snapshot-comparison.png",
+    "04-unknown-source.png",
+    "05-touch-mobile.png",
+    "06-live-native-provenance.png"
+  ]
+}

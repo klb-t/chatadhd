@@ -953,7 +953,7 @@
                 "member": "demo.source.json",
                 "json_pointer": "",
                 "byte_start": 0,
-                "byte_len": 11116,
+                "byte_len": 11474,
                 "time_start": null,
                 "time_end": null,
                 "line": null
@@ -1027,7 +1027,7 @@
                 "member": "demo.source.json",
                 "json_pointer": "",
                 "byte_start": 0,
-                "byte_len": 11116,
+                "byte_len": 11474,
                 "time_start": null,
                 "time_end": null,
                 "line": null
@@ -1101,7 +1101,7 @@
                 "member": "demo.source.json",
                 "json_pointer": "",
                 "byte_start": 0,
-                "byte_len": 11116,
+                "byte_len": 11474,
                 "time_start": null,
                 "time_end": null,
                 "line": null
@@ -1175,7 +1175,7 @@
                 "member": "demo.source.json",
                 "json_pointer": "",
                 "byte_start": 0,
-                "byte_len": 11116,
+                "byte_len": 11474,
                 "time_start": null,
                 "time_end": null,
                 "line": null
@@ -1249,7 +1249,7 @@
                 "member": "demo.source.json",
                 "json_pointer": "",
                 "byte_start": 0,
-                "byte_len": 11116,
+                "byte_len": 11474,
                 "time_start": null,
                 "time_end": null,
                 "line": null
@@ -1323,7 +1323,7 @@
                 "member": "demo.source.json",
                 "json_pointer": "",
                 "byte_start": 0,
-                "byte_len": 11116,
+                "byte_len": 11474,
                 "time_start": null,
                 "time_end": null,
                 "line": null
@@ -1398,7 +1398,7 @@
                 "member": "demo.source.json",
                 "json_pointer": "",
                 "byte_start": 0,
-                "byte_len": 11116,
+                "byte_len": 11474,
                 "time_start": null,
                 "time_end": null,
                 "line": null
@@ -1472,7 +1472,7 @@
                 "member": "demo.source.json",
                 "json_pointer": "",
                 "byte_start": 0,
-                "byte_len": 11116,
+                "byte_len": 11474,
                 "time_start": null,
                 "time_end": null,
                 "line": null
@@ -1546,7 +1546,7 @@
                 "member": "demo.source.json",
                 "json_pointer": "",
                 "byte_start": 0,
-                "byte_len": 11116,
+                "byte_len": 11474,
                 "time_start": null,
                 "time_end": null,
                 "line": null
@@ -1620,7 +1620,7 @@
                 "member": "demo.source.json",
                 "json_pointer": "",
                 "byte_start": 0,
-                "byte_len": 11116,
+                "byte_len": 11474,
                 "time_start": null,
                 "time_end": null,
                 "line": null
@@ -1695,7 +1695,7 @@
                 "member": "demo.source.json",
                 "json_pointer": "",
                 "byte_start": 0,
-                "byte_len": 11116,
+                "byte_len": 11474,
                 "time_start": null,
                 "time_end": null,
                 "line": null
@@ -1769,7 +1769,7 @@
                 "member": "demo.source.json",
                 "json_pointer": "",
                 "byte_start": 0,
-                "byte_len": 11116,
+                "byte_len": 11474,
                 "time_start": null,
                 "time_end": null,
                 "line": null
@@ -1843,7 +1843,7 @@
                 "member": "demo.source.json",
                 "json_pointer": "",
                 "byte_start": 0,
-                "byte_len": 11116,
+                "byte_len": 11474,
                 "time_start": null,
                 "time_end": null,
                 "line": null
@@ -1917,7 +1917,7 @@
                 "member": "demo.source.json",
                 "json_pointer": "",
                 "byte_start": 0,
-                "byte_len": 11116,
+                "byte_len": 11474,
                 "time_start": null,
                 "time_end": null,
                 "line": null
@@ -1991,7 +1991,7 @@
                 "member": "demo.source.json",
                 "json_pointer": "",
                 "byte_start": 0,
-                "byte_len": 11116,
+                "byte_len": 11474,
                 "time_start": null,
                 "time_end": null,
                 "line": null
@@ -2065,7 +2065,7 @@
                 "member": "demo.source.json",
                 "json_pointer": "",
                 "byte_start": 0,
-                "byte_len": 11116,
+                "byte_len": 11474,
                 "time_start": null,
                 "time_end": null,
                 "line": null
@@ -2139,7 +2139,7 @@
                 "member": "demo.source.json",
                 "json_pointer": "",
                 "byte_start": 0,
-                "byte_len": 11116,
+                "byte_len": 11474,
                 "time_start": null,
                 "time_end": null,
                 "line": null
@@ -2195,7 +2195,8 @@
         "extra": {
           "perspective": {
             "structures": [
-              "physical"
+              "physical",
+              "provenance"
             ],
             "evidence": "source",
             "confidence": null,
@@ -2213,12 +2214,12 @@
                 "member": "demo.source.json",
                 "json_pointer": "",
                 "byte_start": 0,
-                "byte_len": 11116,
+                "byte_len": 11474,
                 "time_start": null,
                 "time_end": null,
                 "line": null
               },
-              "quote": "{\"from\":\"e_profile\",\"kind\":\"parts\",\"structures\":[\"physical\"],\"to\":\"e_profile_field\"}",
+              "quote": "{\"from\":\"e_profile\",\"kind\":\"parts\",\"structures\":[\"physical\",\"provenance\"],\"to\":\"e_profile_field\"}",
               "extractor": "safe-fixture-projection/1",
               "quality": 0
             }
@@ -2287,7 +2288,7 @@
                 "member": "demo.source.json",
                 "json_pointer": "",
                 "byte_start": 0,
-                "byte_len": 11116,
+                "byte_len": 11474,
                 "time_start": null,
                 "time_end": null,
                 "line": null
@@ -2361,7 +2362,7 @@
                 "member": "demo.source.json",
                 "json_pointer": "",
                 "byte_start": 0,
-                "byte_len": 11116,
+                "byte_len": 11474,
                 "time_start": null,
                 "time_end": null,
                 "line": null
@@ -2435,7 +2436,7 @@
                 "member": "demo.source.json",
                 "json_pointer": "",
                 "byte_start": 0,
-                "byte_len": 11116,
+                "byte_len": 11474,
                 "time_start": null,
                 "time_end": null,
                 "line": null
@@ -2510,7 +2511,7 @@
                 "member": "demo.source.json",
                 "json_pointer": "",
                 "byte_start": 0,
-                "byte_len": 11116,
+                "byte_len": 11474,
                 "time_start": null,
                 "time_end": null,
                 "line": null
@@ -2585,7 +2586,7 @@
                 "member": "demo.source.json",
                 "json_pointer": "",
                 "byte_start": 0,
-                "byte_len": 11116,
+                "byte_len": 11474,
                 "time_start": null,
                 "time_end": null,
                 "line": null
@@ -2660,7 +2661,7 @@
                 "member": "demo.source.json",
                 "json_pointer": "",
                 "byte_start": 0,
-                "byte_len": 11116,
+                "byte_len": 11474,
                 "time_start": null,
                 "time_end": null,
                 "line": null
@@ -2734,7 +2735,7 @@
                 "member": "demo.source.json",
                 "json_pointer": "",
                 "byte_start": 0,
-                "byte_len": 11116,
+                "byte_len": 11474,
                 "time_start": null,
                 "time_end": null,
                 "line": null
@@ -2808,12 +2809,308 @@
                 "member": "demo.source.json",
                 "json_pointer": "",
                 "byte_start": 0,
-                "byte_len": 11116,
+                "byte_len": 11474,
                 "time_start": null,
                 "time_end": null,
                 "line": null
               },
               "quote": "{\"from\":\"e_table\",\"kind\":\"parts\",\"structures\":[\"physical\"],\"to\":\"e_record_other2\"}",
+              "extractor": "safe-fixture-projection/1",
+              "quality": 0
+            }
+          ],
+          "derivation": null
+        },
+        "evidence_class": "observed",
+        "origin": "user",
+        "confidence": 0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "cl_demo_26",
+      "subject": "e_formula",
+      "predicate": "context",
+      "object": "e_table",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "safe-authored-example",
+        "lang": "pl",
+        "extra": {
+          "perspective": {
+            "structures": [
+              "computational"
+            ],
+            "evidence": "source",
+            "confidence": null,
+            "evidence_status": "explicit_source_relation"
+          }
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "ob_demo_source",
+              "locator": {
+                "source": "demo-source",
+                "member": "demo.source.json",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 11474,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"from\":\"e_formula\",\"kind\":\"context\",\"structures\":[\"computational\"],\"to\":\"e_table\"}",
+              "extractor": "safe-fixture-projection/1",
+              "quality": 0
+            }
+          ],
+          "derivation": null
+        },
+        "evidence_class": "observed",
+        "origin": "user",
+        "confidence": 0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "cl_demo_27",
+      "subject": "e_table",
+      "predicate": "context",
+      "object": "e_record_other",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "safe-authored-example",
+        "lang": "pl",
+        "extra": {
+          "perspective": {
+            "structures": [
+              "computational"
+            ],
+            "evidence": "source",
+            "confidence": null,
+            "evidence_status": "explicit_source_relation"
+          }
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "ob_demo_source",
+              "locator": {
+                "source": "demo-source",
+                "member": "demo.source.json",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 11474,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"from\":\"e_table\",\"kind\":\"context\",\"structures\":[\"computational\"],\"to\":\"e_record_other\"}",
+              "extractor": "safe-fixture-projection/1",
+              "quality": 0
+            }
+          ],
+          "derivation": null
+        },
+        "evidence_class": "observed",
+        "origin": "user",
+        "confidence": 0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "cl_demo_28",
+      "subject": "e_table",
+      "predicate": "context",
+      "object": "e_record_other2",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "safe-authored-example",
+        "lang": "pl",
+        "extra": {
+          "perspective": {
+            "structures": [
+              "computational"
+            ],
+            "evidence": "source",
+            "confidence": null,
+            "evidence_status": "explicit_source_relation"
+          }
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "ob_demo_source",
+              "locator": {
+                "source": "demo-source",
+                "member": "demo.source.json",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 11474,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"from\":\"e_table\",\"kind\":\"context\",\"structures\":[\"computational\"],\"to\":\"e_record_other2\"}",
+              "extractor": "safe-fixture-projection/1",
+              "quality": 0
+            }
+          ],
+          "derivation": null
+        },
+        "evidence_class": "observed",
+        "origin": "user",
+        "confidence": 0,
+        "premises": {
+          "claims": [],
+          "principles": [],
+          "assumptions": []
+        },
+        "counter": {
+          "observations": [],
+          "claims": []
+        },
+        "status": "active",
+        "consequences": {
+          "claims": [],
+          "predictions": [],
+          "checks": []
+        },
+        "open": {
+          "slots": [],
+          "questions": [],
+          "fill_query": null
+        },
+        "expected_property": null,
+        "check_state": "n/a",
+        "alternatives": []
+      }
+    },
+    {
+      "id": "cl_demo_29",
+      "subject": "e_table",
+      "predicate": "context",
+      "object": "e_other",
+      "value": null,
+      "qualifiers": {
+        "valid_from": "",
+        "valid_to": "",
+        "version": "",
+        "branch": "",
+        "scope": "safe-authored-example",
+        "lang": "pl",
+        "extra": {
+          "perspective": {
+            "structures": [
+              "computational"
+            ],
+            "evidence": "source",
+            "confidence": null,
+            "evidence_status": "explicit_source_relation"
+          }
+        }
+      },
+      "assessment": {
+        "basis": {
+          "support": [
+            {
+              "observation": "ob_demo_source",
+              "locator": {
+                "source": "demo-source",
+                "member": "demo.source.json",
+                "json_pointer": "",
+                "byte_start": 0,
+                "byte_len": 11474,
+                "time_start": null,
+                "time_end": null,
+                "line": null
+              },
+              "quote": "{\"from\":\"e_table\",\"kind\":\"context\",\"structures\":[\"computational\"],\"to\":\"e_other\"}",
               "extractor": "safe-fixture-projection/1",
               "quality": 0
             }
@@ -2855,13 +3152,13 @@
         "id": "ob_demo_source",
         "unit": "unit_demo_source",
         "kind": "code_block",
-        "text": "{\"notice\":\"Fictional safe data; no private source exports. Domain labels are replaceable by another adapter.\",\"objects\":{\"e_cell\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"field\",\"label\":\"Wartość: 7\",\"ref\":{\"canonicalId\":\"e_cell\",\"representation\":\"e_cell\",\"selector\":\"/objects/e_cell\",\"snapshot\":\"v2\",\"source\":\"demo-source\"},\"status\":\"available\",\"value\":7},\"e_cell_logic\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"field\",\"label\":\"Pole rekordu: 7\",\"ref\":{\"canonicalId\":\"e_cell\",\"representation\":\"e_cell_logic\",\"selector\":\"/objects/e_cell_logic\",\"snapshot\":\"v2\",\"source\":\"demo-source\"},\"status\":\"available\",\"value\":7},\"e_comment\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"comment\",\"label\":\"Komentarz: sprawdź źródło wejść\",\"ref\":{\"canonicalId\":\"e_comment\",\"representation\":\"e_comment\",\"selector\":\"/objects/e_comment\",\"source\":\"demo-source\"},\"status\":\"available\"},\"e_conversation\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"conversation\",\"label\":\"Rozmowa demonstracyjna\",\"ref\":{\"canonicalId\":\"e_conversation\",\"representation\":\"e_conversation\",\"selector\":\"/objects/e_conversation\",\"source\":\"demo-source\"},\"status\":\"available\"},\"e_correction\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"message\",\"label\":\"Korekta: objaśniaj symbole\",\"ref\":{\"canonicalId\":\"e_correction\",\"representation\":\"e_correction\",\"selector\":\"/objects/e_correction\",\"source\":\"demo-source\"},\"status\":\"available\",\"text\":\"Korekta: objaśniaj symbole, zachowując zwięzłość.\"},\"e_decision\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"decision\",\"label\":\"Zapisana decyzja demonstracyjna\",\"ref\":{\"canonicalId\":\"e_decision\",\"representation\":\"e_decision\",\"selector\":\"/objects/e_decision\",\"source\":\"demo-source\"},\"status\":\"available\",\"text\":\"Przyjęto wynik 7 w tym autorskim przykładzie; relacja jest zapisana w źródle.\"},\"e_effective\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"computed\",\"kind\":\"setting\",\"label\":\"Efektywny budżet prezentacji: 24\",\"ref\":{\"canonicalId\":\"e_effective\",\"representation\":\"e_effective\",\"selector\":\"/objects/e_effective\",\"source\":\"demo-source\"},\"status\":\"available\",\"value\":24},\"e_file\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"container\",\"label\":\"Pakiet źródłowy\",\"ref\":{\"canonicalId\":\"e_file\",\"representation\":\"e_file\",\"selector\":\"/objects/e_file\",\"source\":\"demo-source\"},\"status\":\"available\"},\"e_formula\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"computed\",\"expression\":\"sum(inputs)\",\"kind\":\"operation\",\"label\":\"Suma: 3 + 4\",\"ref\":{\"canonicalId\":\"e_formula\",\"representation\":\"e_formula\",\"selector\":\"/objects/e_formula\",\"source\":\"demo-source\"},\"status\":\"available\"},\"e_input_a\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"input\",\"label\":\"Wejście A: 3\",\"ref\":{\"canonicalId\":\"e_input_a\",\"representation\":\"e_input_a\",\"selector\":\"/objects/e_input_a\",\"source\":\"demo-source\"},\"status\":\"available\",\"value\":3},\"e_input_b\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"input\",\"label\":\"Wejście B: 4\",\"ref\":{\"canonicalId\":\"e_input_b\",\"representation\":\"e_input_b\",\"selector\":\"/objects/e_input_b\",\"source\":\"demo-source\"},\"status\":\"available\",\"value\":4},\"e_instruction\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"instruction\",\"label\":\"Aktualna instrukcja: objaśniaj symbole zwięźle\",\"ref\":{\"canonicalId\":\"e_instruction\",\"representation\":\"e_instruction\",\"selector\":\"/objects/e_instruction\",\"source\":\"demo-source\"},\"status\":\"available\",\"text\":\"Objaśniaj symbole zwięźle.\"},\"e_justification\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"rationale\",\"label\":\"Zapisane uzasadnienie: suma wejść\",\"ref\":{\"canonicalId\":\"e_justification\",\"representation\":\"e_justification\",\"selector\":\"/objects/e_justification\",\"source\":\"demo-source\"},\"status\":\"available\",\"text\":\"W demonstracji wybrano sumę dwóch jawnych wartości wejściowych.\"},\"e_message\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"message\",\"label\":\"Wiadomość źródłowa: użyj skrótów\",\"ref\":{\"canonicalId\":\"e_message\",\"representation\":\"e_message\",\"selector\":\"/objects/e_message\",\"source\":\"demo-source\"},\"status\":\"available\",\"text\":\"Używaj skróconych objaśnień.\"},\"e_other\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"container\",\"label\":\"Inny kontener jako węzeł zbiorczy\",\"ref\":{\"canonicalId\":\"e_other\",\"representation\":\"e_other\",\"selector\":\"/objects/e_other\",\"source\":\"demo-source\"},\"status\":\"available\"},\"e_override\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"override\",\"label\":\"Jawne nadpisanie użytkownika: 24\",\"ref\":{\"canonicalId\":\"e_override\",\"representation\":\"e_override\",\"selector\":\"/objects/e_override\",\"source\":\"demo-source\"},\"source_refs\":[\"demo-source#/profile/overrides/budget\"],\"status\":\"available\",\"value\":24},\"e_profile\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"profile\",\"label\":\"Zewnętrzny profil\",\"ref\":{\"canonicalId\":\"e_profile\",\"representation\":\"e_profile\",\"selector\":\"/objects/e_profile\",\"source\":\"demo-source\"},\"status\":\"available\"},\"e_profile_field\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"setting\",\"label\":\"Pole budżetu prezentacji: 80\",\"ref\":{\"canonicalId\":\"e_profile_field\",\"representation\":\"e_profile_field\",\"selector\":\"/objects/e_profile_field\",\"source\":\"demo-source\"},\"status\":\"available\",\"value\":80},\"e_record\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"record\",\"label\":\"Rekord logiczny\",\"ref\":{\"canonicalId\":\"e_record\",\"representation\":\"e_record\",\"selector\":\"/objects/e_record\",\"source\":\"demo-source\"},\"status\":\"available\"},\"e_record_other\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"record\",\"label\":\"Pozostały rekord A\",\"ref\":{\"canonicalId\":\"e_record_other\",\"representation\":\"e_record_other\",\"selector\":\"/objects/e_record_other\",\"source\":\"demo-source\"},\"status\":\"available\",\"value\":12},\"e_record_other2\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"record\",\"label\":\"Pozostały rekord B\",\"ref\":{\"canonicalId\":\"e_record_other2\",\"representation\":\"e_record_other2\",\"selector\":\"/objects/e_record_other2\",\"source\":\"demo-source\"},\"status\":\"available\",\"value\":16},\"e_result\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"computed\",\"kind\":\"result\",\"label\":\"Wynik: 7\",\"ref\":{\"canonicalId\":\"e_result\",\"representation\":\"e_result\",\"selector\":\"/objects/e_result\",\"source\":\"demo-source\"},\"status\":\"available\",\"value\":7},\"e_table\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"table\",\"label\":\"Zbiór rekordów\",\"ref\":{\"canonicalId\":\"e_table\",\"representation\":\"e_table\",\"selector\":\"/objects/e_table\",\"source\":\"demo-source\"},\"status\":\"available\"},\"e_unavailable\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"resource\",\"label\":\"Źródło czasowo niedostępne\",\"reason\":\"Demonstracyjny adapter zgłasza niedostępność transportu.\",\"ref\":{\"canonicalId\":\"e_unavailable\",\"representation\":\"e_unavailable\",\"selector\":\"/objects/e_unavailable\",\"source\":\"demo-source\"},\"status\":\"unavailable\"},\"e_unknown\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"unknown\",\"kind\":\"extension\",\"label\":\"Nieznana struktura: retained-extension\",\"payload\":{\"retained-extension\":{\"sequence\":[2,3,5]}},\"recognition\":{\"alternatives\":[{\"interpretation\":\"candidate-A\",\"status\":\"unverified\"},{\"interpretation\":\"candidate-B\",\"status\":\"unverified\"}],\"known_paths\":[],\"status\":\"unknown\",\"unknown_paths\":[\"/objects/e_unknown/payload\"]},\"ref\":{\"canonicalId\":\"e_unknown\",\"representation\":\"e_unknown\",\"selector\":\"/objects/e_unknown\",\"source\":\"demo-source\"},\"status\":\"unknown\"},\"e_unloaded\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"resource\",\"label\":\"Dołączone źródło, jeszcze nieotwarte\",\"reason\":\"Referencja zachowana; projektowanie wnętrza wymaga resolvera źródła.\",\"ref\":{\"canonicalId\":\"e_unloaded\",\"representation\":\"e_unloaded\",\"selector\":\"/objects/e_unloaded\",\"source\":\"demo-source\"},\"status\":\"unloaded\"},\"e_version_v1\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"field\",\"label\":\"Wersja v1: 5\",\"ref\":{\"canonicalId\":\"e_cell\",\"representation\":\"e_version_v1\",\"selector\":\"/objects/e_version_v1\",\"snapshot\":\"v1\",\"source\":\"demo-source\"},\"status\":\"available\",\"value\":5}},\"relationships\":[{\"from\":\"e_file\",\"kind\":\"parts\",\"structures\":[\"physical\"],\"to\":\"e_table\"},{\"from\":\"e_table\",\"kind\":\"parts\",\"structures\":[\"physical\"],\"to\":\"e_cell\"},{\"from\":\"e_table\",\"kind\":\"parts\",\"structures\":[\"physical\"],\"to\":\"e_other\"},{\"from\":\"e_table\",\"kind\":\"logical\",\"structures\":[\"logical\"],\"to\":\"e_record\"},{\"from\":\"e_record\",\"kind\":\"logical\",\"structures\":[\"logical\"],\"to\":\"e_cell_logic\"},{\"from\":\"e_cell\",\"kind\":\"represents\",\"structures\":[\"logical\"],\"to\":\"e_cell_logic\"},{\"from\":\"e_cell\",\"kind\":\"has_formula\",\"structures\":[\"physical\",\"computational\"],\"to\":\"e_formula\"},{\"from\":\"e_formula\",\"kind\":\"uses\",\"structures\":[\"computational\"],\"to\":\"e_input_a\"},{\"from\":\"e_formula\",\"kind\":\"uses\",\"structures\":[\"computational\"],\"to\":\"e_input_b\"},{\"from\":\"e_formula\",\"kind\":\"produces\",\"structures\":[\"computational\"],\"to\":\"e_result\"},{\"from\":\"e_result\",\"kind\":\"justified_by\",\"structures\":[\"computational\",\"provenance\"],\"to\":\"e_justification\"},{\"from\":\"e_justification\",\"kind\":\"informs\",\"structures\":[\"computational\"],\"to\":\"e_decision\"},{\"from\":\"e_cell\",\"kind\":\"comments\",\"structures\":[\"history\"],\"to\":\"e_comment\"},{\"from\":\"e_cell\",\"kind\":\"versions\",\"structures\":[\"history\"],\"to\":\"e_version_v1\"},{\"from\":\"e_file\",\"kind\":\"parts\",\"structures\":[\"physical\"],\"to\":\"e_unloaded\"},{\"from\":\"e_file\",\"kind\":\"parts\",\"structures\":[\"physical\"],\"to\":\"e_unavailable\"},{\"from\":\"e_file\",\"kind\":\"parts\",\"structures\":[\"physical\"],\"to\":\"e_unknown\"},{\"from\":\"e_profile\",\"kind\":\"parts\",\"structures\":[\"physical\"],\"to\":\"e_profile_field\"},{\"from\":\"e_effective\",\"kind\":\"derived_from\",\"structures\":[\"provenance\"],\"to\":\"e_profile_field\"},{\"from\":\"e_effective\",\"kind\":\"overridden_by\",\"structures\":[\"provenance\"],\"to\":\"e_override\"},{\"from\":\"e_conversation\",\"kind\":\"parts\",\"structures\":[\"conversation\"],\"to\":\"e_message\"},{\"from\":\"e_correction\",\"kind\":\"corrects\",\"structures\":[\"conversation\",\"history\"],\"to\":\"e_message\"},{\"from\":\"e_instruction\",\"kind\":\"supersedes\",\"structures\":[\"conversation\",\"history\"],\"to\":\"e_message\"},{\"from\":\"e_instruction\",\"kind\":\"derived_from\",\"structures\":[\"conversation\",\"provenance\"],\"to\":\"e_correction\"},{\"from\":\"e_table\",\"kind\":\"parts\",\"structures\":[\"physical\"],\"to\":\"e_record_other\"},{\"from\":\"e_table\",\"kind\":\"parts\",\"structures\":[\"physical\"],\"to\":\"e_record_other2\"}],\"schema\":\"loom.graph-perspectives.authored-example/1\"}",
+        "text": "{\"notice\":\"Fictional safe data; no private source exports. Domain labels are replaceable by another adapter.\",\"objects\":{\"e_cell\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"field\",\"label\":\"Wartość: 7\",\"ref\":{\"canonicalId\":\"e_cell\",\"representation\":\"e_cell\",\"selector\":\"/objects/e_cell\",\"snapshot\":\"v2\",\"source\":\"demo-source\"},\"status\":\"available\",\"value\":7},\"e_cell_logic\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"field\",\"label\":\"Pole rekordu: 7\",\"ref\":{\"canonicalId\":\"e_cell\",\"representation\":\"e_cell_logic\",\"selector\":\"/objects/e_cell_logic\",\"snapshot\":\"v2\",\"source\":\"demo-source\"},\"status\":\"available\",\"value\":7},\"e_comment\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"comment\",\"label\":\"Komentarz: sprawdź źródło wejść\",\"ref\":{\"canonicalId\":\"e_comment\",\"representation\":\"e_comment\",\"selector\":\"/objects/e_comment\",\"source\":\"demo-source\"},\"status\":\"available\"},\"e_conversation\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"conversation\",\"label\":\"Rozmowa demonstracyjna\",\"ref\":{\"canonicalId\":\"e_conversation\",\"representation\":\"e_conversation\",\"selector\":\"/objects/e_conversation\",\"source\":\"demo-source\"},\"status\":\"available\"},\"e_correction\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"message\",\"label\":\"Korekta: objaśniaj symbole\",\"ref\":{\"canonicalId\":\"e_correction\",\"representation\":\"e_correction\",\"selector\":\"/objects/e_correction\",\"source\":\"demo-source\"},\"status\":\"available\",\"text\":\"Korekta: objaśniaj symbole, zachowując zwięzłość.\"},\"e_decision\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"decision\",\"label\":\"Zapisana decyzja demonstracyjna\",\"ref\":{\"canonicalId\":\"e_decision\",\"representation\":\"e_decision\",\"selector\":\"/objects/e_decision\",\"source\":\"demo-source\"},\"status\":\"available\",\"text\":\"Przyjęto wynik 7 w tym autorskim przykładzie; relacja jest zapisana w źródle.\"},\"e_effective\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"computed\",\"kind\":\"setting\",\"label\":\"Efektywny budżet prezentacji: 24\",\"ref\":{\"canonicalId\":\"e_effective\",\"representation\":\"e_effective\",\"selector\":\"/objects/e_effective\",\"source\":\"demo-source\"},\"status\":\"available\",\"value\":24},\"e_file\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"container\",\"label\":\"Pakiet źródłowy\",\"ref\":{\"canonicalId\":\"e_file\",\"representation\":\"e_file\",\"selector\":\"/objects/e_file\",\"source\":\"demo-source\"},\"status\":\"available\"},\"e_formula\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"computed\",\"expression\":\"sum(inputs)\",\"kind\":\"operation\",\"label\":\"Suma: 3 + 4\",\"ref\":{\"canonicalId\":\"e_formula\",\"representation\":\"e_formula\",\"selector\":\"/objects/e_formula\",\"source\":\"demo-source\"},\"status\":\"available\"},\"e_input_a\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"input\",\"label\":\"Wejście A: 3\",\"ref\":{\"canonicalId\":\"e_input_a\",\"representation\":\"e_input_a\",\"selector\":\"/objects/e_input_a\",\"source\":\"demo-source\"},\"status\":\"available\",\"value\":3},\"e_input_b\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"input\",\"label\":\"Wejście B: 4\",\"ref\":{\"canonicalId\":\"e_input_b\",\"representation\":\"e_input_b\",\"selector\":\"/objects/e_input_b\",\"source\":\"demo-source\"},\"status\":\"available\",\"value\":4},\"e_instruction\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"instruction\",\"label\":\"Aktualna instrukcja: objaśniaj symbole zwięźle\",\"ref\":{\"canonicalId\":\"e_instruction\",\"representation\":\"e_instruction\",\"selector\":\"/objects/e_instruction\",\"source\":\"demo-source\"},\"status\":\"available\",\"text\":\"Objaśniaj symbole zwięźle.\"},\"e_justification\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"rationale\",\"label\":\"Zapisane uzasadnienie: suma wejść\",\"ref\":{\"canonicalId\":\"e_justification\",\"representation\":\"e_justification\",\"selector\":\"/objects/e_justification\",\"source\":\"demo-source\"},\"status\":\"available\",\"text\":\"W demonstracji wybrano sumę dwóch jawnych wartości wejściowych.\"},\"e_message\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"message\",\"label\":\"Wiadomość źródłowa: użyj skrótów\",\"ref\":{\"canonicalId\":\"e_message\",\"representation\":\"e_message\",\"selector\":\"/objects/e_message\",\"source\":\"demo-source\"},\"status\":\"available\",\"text\":\"Używaj skróconych objaśnień.\"},\"e_other\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"container\",\"label\":\"Inny kontener jako węzeł zbiorczy\",\"ref\":{\"canonicalId\":\"e_other\",\"representation\":\"e_other\",\"selector\":\"/objects/e_other\",\"source\":\"demo-source\"},\"status\":\"available\"},\"e_override\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"override\",\"label\":\"Jawne nadpisanie użytkownika: 24\",\"ref\":{\"canonicalId\":\"e_override\",\"representation\":\"e_override\",\"selector\":\"/objects/e_override\",\"source\":\"demo-source\"},\"source_refs\":[\"demo-source#/profile/overrides/budget\"],\"status\":\"available\",\"value\":24},\"e_profile\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"profile\",\"label\":\"Zewnętrzny profil\",\"ref\":{\"canonicalId\":\"e_profile\",\"representation\":\"e_profile\",\"selector\":\"/objects/e_profile\",\"source\":\"demo-source\"},\"status\":\"available\"},\"e_profile_field\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"setting\",\"label\":\"Pole budżetu prezentacji: 80\",\"ref\":{\"canonicalId\":\"e_profile_field\",\"representation\":\"e_profile_field\",\"selector\":\"/objects/e_profile_field\",\"source\":\"demo-source\"},\"status\":\"available\",\"value\":80},\"e_record\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"record\",\"label\":\"Rekord logiczny\",\"ref\":{\"canonicalId\":\"e_record\",\"representation\":\"e_record\",\"selector\":\"/objects/e_record\",\"source\":\"demo-source\"},\"status\":\"available\"},\"e_record_other\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"record\",\"label\":\"Pozostały rekord A\",\"ref\":{\"canonicalId\":\"e_record_other\",\"representation\":\"e_record_other\",\"selector\":\"/objects/e_record_other\",\"source\":\"demo-source\"},\"status\":\"available\",\"value\":12},\"e_record_other2\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"record\",\"label\":\"Pozostały rekord B\",\"ref\":{\"canonicalId\":\"e_record_other2\",\"representation\":\"e_record_other2\",\"selector\":\"/objects/e_record_other2\",\"source\":\"demo-source\"},\"status\":\"available\",\"value\":16},\"e_result\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"computed\",\"kind\":\"result\",\"label\":\"Wynik: 7\",\"ref\":{\"canonicalId\":\"e_result\",\"representation\":\"e_result\",\"selector\":\"/objects/e_result\",\"source\":\"demo-source\"},\"status\":\"available\",\"value\":7},\"e_table\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"table\",\"label\":\"Zbiór rekordów\",\"ref\":{\"canonicalId\":\"e_table\",\"representation\":\"e_table\",\"selector\":\"/objects/e_table\",\"source\":\"demo-source\"},\"status\":\"available\"},\"e_unavailable\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"resource\",\"label\":\"Źródło czasowo niedostępne\",\"reason\":\"Demonstracyjny adapter zgłasza niedostępność transportu.\",\"ref\":{\"canonicalId\":\"e_unavailable\",\"representation\":\"e_unavailable\",\"selector\":\"/objects/e_unavailable\",\"source\":\"demo-source\"},\"status\":\"unavailable\"},\"e_unknown\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"unknown\",\"kind\":\"extension\",\"label\":\"Nieznana struktura: retained-extension\",\"payload\":{\"retained-extension\":{\"sequence\":[2,3,5]}},\"recognition\":{\"alternatives\":[{\"interpretation\":\"candidate-A\",\"status\":\"unverified\"},{\"interpretation\":\"candidate-B\",\"status\":\"unverified\"}],\"known_paths\":[],\"status\":\"unknown\",\"unknown_paths\":[\"/objects/e_unknown/payload\"]},\"ref\":{\"canonicalId\":\"e_unknown\",\"representation\":\"e_unknown\",\"selector\":\"/objects/e_unknown\",\"source\":\"demo-source\"},\"status\":\"unknown\"},\"e_unloaded\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"resource\",\"label\":\"Dołączone źródło, jeszcze nieotwarte\",\"reason\":\"Referencja zachowana; projektowanie wnętrza wymaga resolvera źródła.\",\"ref\":{\"canonicalId\":\"e_unloaded\",\"representation\":\"e_unloaded\",\"selector\":\"/objects/e_unloaded\",\"source\":\"demo-source\"},\"status\":\"unloaded\"},\"e_version_v1\":{\"confidence\":null,\"confidence_status\":\"uncalibrated\",\"evidence\":\"source\",\"kind\":\"field\",\"label\":\"Wersja v1: 5\",\"ref\":{\"canonicalId\":\"e_cell\",\"representation\":\"e_version_v1\",\"selector\":\"/objects/e_version_v1\",\"snapshot\":\"v1\",\"source\":\"demo-source\"},\"status\":\"available\",\"value\":5}},\"relationships\":[{\"from\":\"e_file\",\"kind\":\"parts\",\"structures\":[\"physical\"],\"to\":\"e_table\"},{\"from\":\"e_table\",\"kind\":\"parts\",\"structures\":[\"physical\"],\"to\":\"e_cell\"},{\"from\":\"e_table\",\"kind\":\"parts\",\"structures\":[\"physical\"],\"to\":\"e_other\"},{\"from\":\"e_table\",\"kind\":\"logical\",\"structures\":[\"logical\"],\"to\":\"e_record\"},{\"from\":\"e_record\",\"kind\":\"logical\",\"structures\":[\"logical\"],\"to\":\"e_cell_logic\"},{\"from\":\"e_cell\",\"kind\":\"represents\",\"structures\":[\"logical\"],\"to\":\"e_cell_logic\"},{\"from\":\"e_cell\",\"kind\":\"has_formula\",\"structures\":[\"physical\",\"computational\"],\"to\":\"e_formula\"},{\"from\":\"e_formula\",\"kind\":\"uses\",\"structures\":[\"computational\"],\"to\":\"e_input_a\"},{\"from\":\"e_formula\",\"kind\":\"uses\",\"structures\":[\"computational\"],\"to\":\"e_input_b\"},{\"from\":\"e_formula\",\"kind\":\"produces\",\"structures\":[\"computational\"],\"to\":\"e_result\"},{\"from\":\"e_result\",\"kind\":\"justified_by\",\"structures\":[\"computational\",\"provenance\"],\"to\":\"e_justification\"},{\"from\":\"e_justification\",\"kind\":\"informs\",\"structures\":[\"computational\"],\"to\":\"e_decision\"},{\"from\":\"e_cell\",\"kind\":\"comments\",\"structures\":[\"history\"],\"to\":\"e_comment\"},{\"from\":\"e_cell\",\"kind\":\"versions\",\"structures\":[\"history\"],\"to\":\"e_version_v1\"},{\"from\":\"e_file\",\"kind\":\"parts\",\"structures\":[\"physical\"],\"to\":\"e_unloaded\"},{\"from\":\"e_file\",\"kind\":\"parts\",\"structures\":[\"physical\"],\"to\":\"e_unavailable\"},{\"from\":\"e_file\",\"kind\":\"parts\",\"structures\":[\"physical\"],\"to\":\"e_unknown\"},{\"from\":\"e_profile\",\"kind\":\"parts\",\"structures\":[\"physical\",\"provenance\"],\"to\":\"e_profile_field\"},{\"from\":\"e_effective\",\"kind\":\"derived_from\",\"structures\":[\"provenance\"],\"to\":\"e_profile_field\"},{\"from\":\"e_effective\",\"kind\":\"overridden_by\",\"structures\":[\"provenance\"],\"to\":\"e_override\"},{\"from\":\"e_conversation\",\"kind\":\"parts\",\"structures\":[\"conversation\"],\"to\":\"e_message\"},{\"from\":\"e_correction\",\"kind\":\"corrects\",\"structures\":[\"conversation\",\"history\"],\"to\":\"e_message\"},{\"from\":\"e_instruction\",\"kind\":\"supersedes\",\"structures\":[\"conversation\",\"history\"],\"to\":\"e_message\"},{\"from\":\"e_instruction\",\"kind\":\"derived_from\",\"structures\":[\"conversation\",\"provenance\"],\"to\":\"e_correction\"},{\"from\":\"e_table\",\"kind\":\"parts\",\"structures\":[\"physical\"],\"to\":\"e_record_other\"},{\"from\":\"e_table\",\"kind\":\"parts\",\"structures\":[\"physical\"],\"to\":\"e_record_other2\"},{\"from\":\"e_formula\",\"kind\":\"context\",\"structures\":[\"computational\"],\"to\":\"e_table\"},{\"from\":\"e_table\",\"kind\":\"context\",\"structures\":[\"computational\"],\"to\":\"e_record_other\"},{\"from\":\"e_table\",\"kind\":\"context\",\"structures\":[\"computational\"],\"to\":\"e_record_other2\"},{\"from\":\"e_table\",\"kind\":\"context\",\"structures\":[\"computational\"],\"to\":\"e_other\"}],\"schema\":\"loom.graph-perspectives.authored-example/1\"}",
         "locator": {
           "source": "demo-source",
           "member": "demo.source.json",
           "json_pointer": "",
           "byte_start": 0,
-          "byte_len": 11116,
+          "byte_len": 11474,
           "time_start": null,
           "time_end": null,
           "line": null
@@ -2872,11 +3169,11 @@
         "artifact_type": "authored_safe_json",
         "speaker": "fixture-author",
         "attrs": {
-          "raw_sha256": "2ef74bfb622c7dd5398084ed8511aa92975e4dda59d66464a60773e08eb25a31"
+          "raw_sha256": "1531f162c68f7fd31cc2d5f65fbf9c5009f5433a0aeb3da64faf937422e7d11b"
         }
       },
       "known_at": "2026-10-09T07:00:00Z",
-      "text_sha256": "2ef74bfb622c7dd5398084ed8511aa92975e4dda59d66464a60773e08eb25a31"
+      "text_sha256": "1531f162c68f7fd31cc2d5f65fbf9c5009f5433a0aeb3da64faf937422e7d11b"
     }
   ],
   "task": {
@@ -2911,7 +3208,8 @@
             "uses",
             "produces",
             "justified_by",
-            "informs"
+            "informs",
+            "context"
           ],
           "description": "Wejścia, operacja, wynik i zapisane uzasadnienie."
         },
@@ -2930,6 +3228,7 @@
           "id": "provenance",
           "label": "Pochodzenie i nadpisania",
           "relations": [
+            "parts",
             "derived_from",
             "overridden_by",
             "justified_by"
@@ -3262,7 +3561,7 @@
           "recipe_sha256": null,
           "response_sha256": null
         },
-        "record_sha256": "c3a06bd3455757675783921a82cfcab36a0c516fcccbf8cae7ed0cc30832d1bf"
+        "record_sha256": "55f25edfb72fec696941922752bb7c6f35fcefd130fc83029851b5c698fc5685"
       },
       "cl_demo_1": {
         "known_at": "2026-10-09T07:00:00Z",
@@ -3273,7 +3572,7 @@
           "recipe_sha256": null,
           "response_sha256": null
         },
-        "record_sha256": "7661e643e41dc6de400e56378c871432932e29c7ee6389c6eb7514c303474897"
+        "record_sha256": "ed40a890f9763f4873cfa10d5424fed57dba4d547ffe88f34a2455ece199f82a"
       },
       "cl_demo_2": {
         "known_at": "2026-10-09T07:00:00Z",
@@ -3284,7 +3583,7 @@
           "recipe_sha256": null,
           "response_sha256": null
         },
-        "record_sha256": "ba72b7c074074db5160cf5760b7391f09e5a32f04de4598882e540b7cdf1bf88"
+        "record_sha256": "8d5277e4fbcdaeeae7fea71ebc8f4a129ed1dcf1b98d47deb68f42d74ea9bfed"
       },
       "cl_demo_3": {
         "known_at": "2026-10-09T07:00:00Z",
@@ -3295,7 +3594,7 @@
           "recipe_sha256": null,
           "response_sha256": null
         },
-        "record_sha256": "25086e1e98aecf54630dd4d1df39c60c246283fdf334cef7d9d7935fa04e9df0"
+        "record_sha256": "0e280f4c62248a15e348a1501354b3bdd15ef7671fe0cc916ff2409c994d3d10"
       },
       "cl_demo_4": {
         "known_at": "2026-10-09T07:00:00Z",
@@ -3306,7 +3605,7 @@
           "recipe_sha256": null,
           "response_sha256": null
         },
-        "record_sha256": "427afdd1ed9993b0c887e01cdbdaea734537b851f685d8e83f2a0561cb270031"
+        "record_sha256": "302daa20bffbabb5fa67de631ca9236907a7100cd99056419a6a8469f53ca3de"
       },
       "cl_demo_5": {
         "known_at": "2026-10-09T07:00:00Z",
@@ -3317,7 +3616,7 @@
           "recipe_sha256": null,
           "response_sha256": null
         },
-        "record_sha256": "9f9ea6b2ecfee6dfb1a76f065f79f79a99ec1af09a271bc01c337031bf769375"
+        "record_sha256": "a4fb45fe2948ef3ed897054667d517fd3683752abd43099bf558271eafc0fc81"
       },
       "cl_demo_6": {
         "known_at": "2026-10-09T07:00:00Z",
@@ -3328,7 +3627,7 @@
           "recipe_sha256": null,
           "response_sha256": null
         },
-        "record_sha256": "4da4d1e6281242331064a00f8b7fd22ea933da92a6dc7f6b1e4c388ebe4acc95"
+        "record_sha256": "05cd492d79b38d84b9470b931bf700a1d4289a37b8d7771190e84d4a0d07d9eb"
       },
       "cl_demo_7": {
         "known_at": "2026-10-09T07:00:00Z",
@@ -3339,7 +3638,7 @@
           "recipe_sha256": null,
           "response_sha256": null
         },
-        "record_sha256": "716094f1024a60308b1f5f895ea58bfc28fd6b6aee3a8aa60190456cb1eb1af8"
+        "record_sha256": "cf0d3d1c2b20bce20489d43fb30de2b1f1eb6135961b62cfed5ed716b60aa2a4"
       },
       "cl_demo_8": {
         "known_at": "2026-10-09T07:00:00Z",
@@ -3350,7 +3649,7 @@
           "recipe_sha256": null,
           "response_sha256": null
         },
-        "record_sha256": "8d1df1f2e74ca036e277a43cc3cdec5e63872fb439ba039e5e850a5def71cabf"
+        "record_sha256": "da9bbd4f360fbf317022c3c5d9c2d13c88e446fb9e8286ed2824eb13ea6172f9"
       },
       "cl_demo_9": {
         "known_at": "2026-10-09T07:00:00Z",
@@ -3361,7 +3660,7 @@
           "recipe_sha256": null,
           "response_sha256": null
         },
-        "record_sha256": "9070906a43b49adc11bea4c299c8a0f8d6d1a423999e0e80dd49b3d16fd0bd9a"
+        "record_sha256": "0a7fff0db6448bc61b0c8b071bcfd129e2b8a9837ffd065b0e5f1284ad0c7505"
       },
       "cl_demo_10": {
         "known_at": "2026-10-09T07:00:00Z",
@@ -3372,7 +3671,7 @@
           "recipe_sha256": null,
           "response_sha256": null
         },
-        "record_sha256": "a20ed7f4339a06c8ccbe461391eab40145fe2b46142290a37bfe1e2cd59731c2"
+        "record_sha256": "d410e294389ff5b16a23c58505acd978ef882a0411db82b47c9fc4f35597e805"
       },
       "cl_demo_11": {
         "known_at": "2026-10-09T07:00:00Z",
@@ -3383,7 +3682,7 @@
           "recipe_sha256": null,
           "response_sha256": null
         },
-        "record_sha256": "0b6893f40b51da6bd87706d0cabb0fe1445d8363bee41b4454b455ba6cb4050d"
+        "record_sha256": "f2bb0626e5e5df7c1c37979916503ac506deaf635da6d812413999c3396a849e"
       },
       "cl_demo_12": {
         "known_at": "2026-10-09T07:00:00Z",
@@ -3394,7 +3693,7 @@
           "recipe_sha256": null,
           "response_sha256": null
         },
-        "record_sha256": "6e31830741d2a923468990331bcf375d4e20e5d0d3eb094ba889287e30367745"
+        "record_sha256": "9d5d37c4dab40e589acd32529113788034f9f3ef554422b52d93c6558d21f4d3"
       },
       "cl_demo_13": {
         "known_at": "2026-10-09T07:00:00Z",
@@ -3405,7 +3704,7 @@
           "recipe_sha256": null,
           "response_sha256": null
         },
-        "record_sha256": "42f2845dde2f7e57ea9ba17159a73c0451a51df527a734e1bf7f0ba3f9424e1c"
+        "record_sha256": "d2646ffcff6adb734534a45276c790dd983a144c8c360622911b1e4a0d10349c"
       },
       "cl_demo_14": {
         "known_at": "2026-10-09T07:00:00Z",
@@ -3416,7 +3715,7 @@
           "recipe_sha256": null,
           "response_sha256": null
         },
-        "record_sha256": "1f926317eec6d48487df41d6a66776313c149e6aed20767697697ee6e42063ed"
+        "record_sha256": "0f51360c719f73deb764ed497705b66e6dbe8ad0298454b9c5ac7abd45630462"
       },
       "cl_demo_15": {
         "known_at": "2026-10-09T07:00:00Z",
@@ -3427,7 +3726,7 @@
           "recipe_sha256": null,
           "response_sha256": null
         },
-        "record_sha256": "31759e77eed0236765f611a8df8bb057ccf9638ce0888c3d8d915bec104d489d"
+        "record_sha256": "ff9ccbc3ff8377bd5debb236d69e22a15f30521c9364308277e7247cca8d117a"
       },
       "cl_demo_16": {
         "known_at": "2026-10-09T07:00:00Z",
@@ -3438,7 +3737,7 @@
           "recipe_sha256": null,
           "response_sha256": null
         },
-        "record_sha256": "363288f439a8ec546d1ba9001360f7667bd99b529a73faa9966f3e78f2f579f7"
+        "record_sha256": "9cfaed6375ec5389db2199f88a4cbe55561827e75f0473954608a2ffac4a6bf8"
       },
       "cl_demo_17": {
         "known_at": "2026-10-09T07:00:00Z",
@@ -3449,7 +3748,7 @@
           "recipe_sha256": null,
           "response_sha256": null
         },
-        "record_sha256": "150774998829638121237e1112c92185b3c458be77746ac1739539808b25da69"
+        "record_sha256": "e8d02e4b90b0b82247ea6a3bea820049945270cf58c31160e9d1959f8e2594dc"
       },
       "cl_demo_18": {
         "known_at": "2026-10-09T07:00:00Z",
@@ -3460,7 +3759,7 @@
           "recipe_sha256": null,
           "response_sha256": null
         },
-        "record_sha256": "fc96a4de1527e19ca0a6811b97b8c1b55334d12793368ebb86f63bec92aef3dd"
+        "record_sha256": "c27717524028fbc05936b6a15f5cc27212cab1e69eb46fcc8cc770c2da635e20"
       },
       "cl_demo_19": {
         "known_at": "2026-10-09T07:00:00Z",
@@ -3471,7 +3770,7 @@
           "recipe_sha256": null,
           "response_sha256": null
         },
-        "record_sha256": "db02a337ad3e88a0414df68dea06a8d96073bca5f7e68002fffde50170d24009"
+        "record_sha256": "a6a5bec8ff67aa65c69a6be39766af00358d5445e7b1a31c50d1d5a445a33d86"
       },
       "cl_demo_20": {
         "known_at": "2026-10-09T07:00:00Z",
@@ -3482,7 +3781,7 @@
           "recipe_sha256": null,
           "response_sha256": null
         },
-        "record_sha256": "0d799dc0f0176b5429e1000708ba10b5f7059c7be7cfe21a65a67eb9c36718e3"
+        "record_sha256": "4ffff7f9a5d4808f8191410a236e1b596005524c146970083810c8d7e95c08de"
       },
       "cl_demo_21": {
         "known_at": "2026-10-09T07:00:00Z",
@@ -3493,7 +3792,7 @@
           "recipe_sha256": null,
           "response_sha256": null
         },
-        "record_sha256": "34ed45c56cd24ea87a48ef629647c2fb45e6050da88cff788baf7b408bdc46f3"
+        "record_sha256": "30bde1060cf1e080cf3f9159ee8b3b2cce8a5790a535b3ec284a665276e8c45c"
       },
       "cl_demo_22": {
         "known_at": "2026-10-09T07:00:00Z",
@@ -3504,7 +3803,7 @@
           "recipe_sha256": null,
           "response_sha256": null
         },
-        "record_sha256": "023dc61df6d17e964b44e80462248e70ead00e2fc74c96cc9d8e40587eeaa522"
+        "record_sha256": "b073b6e3ad538718bedfe563826ab98afe1b7d9e3b0daa11a3b5af6878ce707c"
       },
       "cl_demo_23": {
         "known_at": "2026-10-09T07:00:00Z",
@@ -3515,7 +3814,7 @@
           "recipe_sha256": null,
           "response_sha256": null
         },
-        "record_sha256": "15a521a28a4b5e791b67ec3c612e930826fa0c8545251ef3701e5e126c37ddbb"
+        "record_sha256": "de4275aba6ee8dc5b379d280f3f89b10eed7e163a4bda39eb137cbb8983dab20"
       },
       "cl_demo_24": {
         "known_at": "2026-10-09T07:00:00Z",
@@ -3526,7 +3825,7 @@
           "recipe_sha256": null,
           "response_sha256": null
         },
-        "record_sha256": "4eb43a6901c2bc074d3b777c5b7137d25e03143dcdab62d235bef35b2271dd25"
+        "record_sha256": "1fd563211a8b8b58ced1f874fbc0f215facfb27f0f286dd6fb182c8461dec095"
       },
       "cl_demo_25": {
         "known_at": "2026-10-09T07:00:00Z",
@@ -3537,7 +3836,51 @@
           "recipe_sha256": null,
           "response_sha256": null
         },
-        "record_sha256": "fbb1e200639a888d1293fa90d37b022997a6a950258f5a7bed621a1a88eb6a03"
+        "record_sha256": "7b536dea2137462766557e738cef0edd7d81d70567f34a2ee21904c742bedf58"
+      },
+      "cl_demo_26": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "894fdb9300772722a0e67ef658ecc6a4a96cf2803c41d37d08185735328d4957"
+      },
+      "cl_demo_27": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "038f6af90e01515e1161c4f1d182a2a3f735cd4f2279b34108413643a6402a0e"
+      },
+      "cl_demo_28": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "d243d116c1b6676240cc66183fac4b32f1e0aa3f5a8b7eb174efe6085906e0f6"
+      },
+      "cl_demo_29": {
+        "known_at": "2026-10-09T07:00:00Z",
+        "origin": {
+          "kind": "recorded",
+          "actor": "safe-fixture-author",
+          "model": null,
+          "recipe_sha256": null,
+          "response_sha256": null
+        },
+        "record_sha256": "f099297ab895872ce58104bd16d0e10036e29deaba5059eafb6e38b3271e9d74"
       }
     },
     "sources": {
@@ -3550,10 +3893,10 @@
           "recipe_sha256": null,
           "response_sha256": null
         },
-        "record_sha256": "a5357e27bae28154b5fd9777127fafe8ba55e008405b78f3911c1a06773f1cf0"
+        "record_sha256": "c3c304f8c427758d3eed52a52ebff1354749b4b761acee08f59b47db0dc601d7"
       }
     }
   },
   "history": [],
-  "packet_id": "2a08c08e06ff6651b46bb040932c72f6aac8debd088306706bcec9cf9b45c34c"
+  "packet_id": "5a95f2abc1d4caa8febfd167cf602ead0d52d6e8bf369db44030cf6fefae4cce"
 }

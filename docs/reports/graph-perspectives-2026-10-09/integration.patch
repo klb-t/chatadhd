@@ -1,0 +1,77 @@
+--- a/loom/web/src/components/KnowledgeWorkbench.tsx
++++ b/loom/web/src/components/KnowledgeWorkbench.tsx
+@@ -11,6 +11,7 @@
+ 
+ import { VIEWS, STORAGE_KEY, SAVED_KEY, loadWorkspace, parseWorkspace, addPane, changeParameter, connect, unlink, duplicatePane, setWorkspaceRun,
+   type ViewKind, type Pane, type Parameters, type Parameter, type Workspace } from "../workspace/state";
++import type { KnowledgeGraphProjection } from "../graph-perspectives/renderer-bridge";
+ type Selection = { kind: string; record: KnowledgeRecord };
+ type Dataset = Partial<Record<KnowledgeCollection, KnowledgeRecord[]>>;
+ const COLLECTIONS: KnowledgeCollection[] = ["entities", "claims", "principles", "operators", "instances", "products"];
+@@ -377,7 +378,7 @@
+   </>;
+ }
+ 
+-function KnowledgeGraph({ data, focus, onSelect, parameters, change }: { data: Dataset; focus: string; onSelect: (kind: string, row: KnowledgeRecord) => void; parameters: Parameters; change: Change }) {
++export function KnowledgeGraph({ data, focus, onSelect, parameters, change, projection }: { data: Dataset; focus: string; onSelect: (kind: string, row: KnowledgeRecord) => void; parameters: Parameters; change: Change; projection?: KnowledgeGraphProjection }) {
+   const marker = useId().replace(/:/g, "");
+   const filter = parameters.filter;
+   const setFilter = (value: string) => change("filter", value);
+@@ -404,32 +405,47 @@
+     return visited;
+   }, [claims, focus, depth]);
+   const matching = entities.filter((row) => (!filter || labelOf(row, new Map()).toLocaleLowerCase().includes(filter.toLocaleLowerCase())) && (confidence === 0 || Number(row.confidence ?? 0) >= confidence / 100));
+-  const nodes = [...matching].sort((a, b) => Number(neighborhood.has(idOf(b))) - Number(neighborhood.has(idOf(a))) || idOf(a).localeCompare(idOf(b))).slice(0, maxNodes);
+-  const height = Math.max(320, Math.ceil(nodes.length / 5) * 76 + 40);
+-  const positions = new Map(nodes.map((row, index) => [idOf(row), { x: 68 + (index % 5) * 132, y: 44 + Math.floor(index / 5) * 76 }]));
+-  const edges = claims.filter((claim) => positions.has(displayText(claim.subject)) && positions.has(displayText(claim.object)));
++  const layoutStarted = performance.now();
++  const nodes = projection?.nodes ?? [...matching].sort((a, b) => Number(neighborhood.has(idOf(b))) - Number(neighborhood.has(idOf(a))) || idOf(a).localeCompare(idOf(b))).slice(0, maxNodes);
++  const stablePositions = useRef(new Map<string, { x: number; y: number }>());
++  const slots = projection ? stablePositions.current : new Map<string, { x: number; y: number }>();
++  const positions = new Map<string, { x: number; y: number }>();
++  const occurrences = new Map<string, number>();
++  for (const row of nodes) {
++    const id = idOf(row), identity = projection?.identity[id] ?? id;
++    if (!slots.has(identity)) {
++      const index = slots.size;
++      slots.set(identity, { x: 68 + (index % 5) * 132, y: 44 + Math.floor(index / 5) * 76 });
++    }
++    const base = slots.get(identity)!, duplicate = occurrences.get(identity) ?? 0;
++    occurrences.set(identity, duplicate + 1);
++    positions.set(id, { x: base.x + duplicate * 38, y: base.y + duplicate * 38 });
++  }
++  const height = projection ? Math.max(320, ...nodes.map((row) => positions.get(idOf(row))!.y + 64)) : Math.max(320, Math.ceil(nodes.length / 5) * 76 + 40);
++  const edges = projection?.edges ?? claims.filter((claim) => positions.has(displayText(claim.subject)) && positions.has(displayText(claim.object)));
++  projection?.onLayoutMeasured?.(performance.now() - layoutStarted);
+   return <>
+-    <div className="kb-pane-controls">
++    {!projection && <><div className="kb-pane-controls">
+       <input type="search" aria-label="Filter graph entities" placeholder="Filter graph entities…" value={filter} onChange={(event) => setFilter(event.target.value)} />
+       <label>Focus depth: {depth}<input aria-label="Graph focus depth" type="range" min={0} max={5} value={depth} onChange={(event) => setDepth(Number(event.target.value))} /></label>
+       <label>Background opacity: {fade}%<input aria-label="Graph background opacity" type="range" min={5} max={100} value={fade} onChange={(event) => setFade(Number(event.target.value))} /></label>
+       <label>Minimum confidence: {confidence}%<input aria-label="Graph minimum confidence" type="range" min={0} max={100} value={confidence} onChange={(event) => setConfidence(Number(event.target.value))} /></label>
+       <label>Node limit<select aria-label="Graph node limit" value={maxNodes} onChange={(event) => setMaxNodes(Number(event.target.value))}>{[30, 60, 120, 300].map((count) => <option key={count}>{count}</option>)}</select></label>
+     </div>
+-    <div className="kb-count">{nodes.length} / {matching.length} matching entities · {edges.length} relations · select a node to focus linked views</div>
++    <div className="kb-count">{nodes.length} / {matching.length} matching entities · {edges.length} relations · select a node to focus linked views</div></>}
+     <div className="kb-graph-scroll">
+-      {!nodes.length ? <p className="empty-state">Analyze sources to build a knowledge graph.</p> : <svg className="kb-graph" viewBox={`0 0 680 ${height}`} role="group" aria-label="Knowledge entities and claim relations">
++      {!nodes.length ? <p className="empty-state">Analyze sources to build a knowledge graph.</p> : <svg className="kb-graph" viewBox={`0 0 680 ${height}`} role="group" aria-label={projection?.labels.graph ?? "Knowledge entities and claim relations"}>
+         <defs><marker id={marker} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--dim)" /></marker></defs>
+         {edges.map((claim) => { const a = positions.get(displayText(claim.subject))!; const b = positions.get(displayText(claim.object))!; const length = Math.hypot(b.x - a.x, b.y - a.y) || 1; const end = { x: b.x - (b.x - a.x) / length * 15, y: b.y - (b.y - a.y) / length * 15 };
+-          return <g key={idOf(claim)} opacity={!focus || (neighborhood.has(displayText(claim.subject)) && neighborhood.has(displayText(claim.object))) ? 0.65 : fade / 100} className="kb-edge-target" role="button" tabIndex={0} aria-label={`Inspect relation ${displayText(claim.predicate)}`} onClick={() => onSelect("claims", claim)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); onSelect("claims", claim); } }}>
++          return <g key={idOf(claim)} opacity={projection ? undefined : !focus || (neighborhood.has(displayText(claim.subject)) && neighborhood.has(displayText(claim.object))) ? 0.65 : fade / 100} className="kb-edge-target" data-relation-id={idOf(claim)} role="button" tabIndex={0} aria-label={`${projection?.labels.inspectRelation ?? "Inspect relation"} ${displayText(claim.predicate)}`} onClick={() => onSelect("claims", claim)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); onSelect("claims", claim); } }}>
+             <title>{displayText(claim.predicate)} · {displayText(asRecord(claim.assessment).evidence_class)}</title>
+             <line x1={a.x} y1={a.y} x2={end.x} y2={end.y} stroke="transparent" strokeWidth="10" />
+             <line x1={a.x} y1={a.y} x2={end.x} y2={end.y} className="kb-edge" markerEnd={`url(#${marker})`} />
+           </g>;
+         })}
+         {nodes.map((row) => { const id = idOf(row); const position = positions.get(id)!; const label = displayText(row.label || id); const evidence = displayText(row.evidence_class);
+-          return <g key={id} className={`kb-node${id === focus ? " focused" : ""}`} transform={`translate(${position.x},${position.y})`} opacity={!focus || neighborhood.has(id) ? 1 : fade / 100} tabIndex={0} role="button" aria-label={`Focus ${label}`} onClick={() => onSelect("entities", row)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); onSelect("entities", row); } }}>
+-            <title>{label} · {displayText(row.kind)} · {evidence} · {displayText(row.origin)} · {typeof row.confidence === "number" ? `${Math.round(row.confidence * 100)}% confidence` : "confidence unavailable"}</title>
++          return <g key={id} className={`kb-node${id === focus ? " focused" : ""}`} transform={`translate(${position.x},${position.y})`} opacity={projection ? undefined : !focus || neighborhood.has(id) ? 1 : fade / 100} style={projection?.styles[id]} data-object-key={id} data-canonical-key={projection?.identity[id]} data-group={projection ? displayText(row.perspective_group) : undefined} tabIndex={0} role="button" aria-label={`${projection?.labels.focus ?? "Focus"} ${label}`} onClick={() => onSelect("entities", row)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); onSelect("entities", row); } }}>
++            <title>{projection?.explanations[id] ?? `${label} · ${displayText(row.kind)} · ${evidence} · ${displayText(row.origin)} · ${typeof row.confidence === "number" ? `${Math.round(row.confidence * 100)}% confidence` : "confidence unavailable"}`}</title>
+             <circle r={id === focus ? 14 : 10} strokeDasharray={evidence === "inferred" || evidence === "extrapolated" ? "3 2" : undefined} />
+             <text y={27} textAnchor="middle">{label.length > 19 ? `${label.slice(0, 18)}…` : label}</text>
+             <text y={41} textAnchor="middle" className="kb-node-evidence">{evidence || "unclassified"}</text>

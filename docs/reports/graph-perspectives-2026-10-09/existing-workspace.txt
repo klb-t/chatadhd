@@ -1,0 +1,14 @@
+
+> loom-web@0.1.0 test:workspace-state
+> node e2e/workspace-state.mjs
+
+PASS identity cycles converge and unrelated parameters remain independent
+PASS unlink removes ingress and egress, duplicate retains settings independently
+PASS adding views never reconnects a detached reference
+PASS pagination survives reload and refresh but resets when the data run changes
+PASS round trip preserves stable IDs, empty layout, run, query, links and selection
+PASS no panel count limit and whitelist rejects execution profile fields
+PASS invalid snapshots are rejected, never substituted with valid-looking defaults
+PASS legacy layout is migrated without altering its source; corrupt v2 preserved
+[workspace-state] 8/8 groups passed
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.

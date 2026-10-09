@@ -1,0 +1,19 @@
+
+> loom-web@0.1.0 build
+> tsc -b && vite build
+
+vite v5.4.21 building for production...
+transforming...
+✓ 127 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.58 kB │ gzip:   0.35 kB
+dist/assets/index-CC3GIvuJ.css   29.61 kB │ gzip:   6.29 kB
+dist/assets/index-22qkp5Bd.js   661.79 kB │ gzip: 182.94 kB │ map: 1,699.30 kB
+✓ built in 1.95s
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.

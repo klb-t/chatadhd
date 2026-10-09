@@ -75,6 +75,13 @@ export function createPacketAdapter(input: unknown, descriptor: SourceDescriptor
   if (packet.entities.some(entity => !entity || typeof entity !== "object" || Array.isArray(entity) || typeof entity.id !== "string") ||
       packet.claims.some(claim => !claim || typeof claim !== "object" || Array.isArray(claim) || typeof claim.id !== "string" || typeof claim.subject !== "string" || typeof claim.predicate !== "string" || typeof claim.object !== "string")) throw new Error("malformed_graph_packet_rows");
   const evidenceMap = row(descriptor.evidenceMap);
+  const availabilityMap = row(descriptor.availabilityMap);
+  const mapping = row(descriptor.objectMapping);
+  const mapped = (entity: Row, field: string): unknown => typeof mapping[field] === "string" ? importedPointer(entity, mapping[field] as string).value : undefined;
+  const entityStatus = (entity: Row): Availability => {
+    const meta = metadata(entity); const value = meta.status ?? meta.availability ?? mapped(entity, "status");
+    return status(typeof value === "string" && own(availabilityMap, value) ? availabilityMap[value] : value, value === undefined ? "available" : "unknown");
+  };
   const evidence = (explicit: unknown, native: unknown) => text(explicit) ?? (typeof native === "string" ? text(evidenceMap[native]) : undefined) ?? "unknown";
   const metrics: AdapterMetrics = { resolveCalls: 0, neighborCalls: 0, materializedObjects: 0, materializedRelations: 0, indexedEntities: 0, indexedClaims: 0 };
   let byId: Map<string, Row> | undefined;
@@ -83,30 +90,34 @@ export function createPacketAdapter(input: unknown, descriptor: SourceDescriptor
   let adjacent: Map<string, Row[]> | undefined;
   function refFor(entity: Row): ObjectRef {
     const meta = metadata(entity); const supplied = row(meta.ref);
-    const selector = text(supplied.selector) ?? text(meta.selector) ?? text(entity.id) ?? "";
-    const source = text(supplied.source) ?? text(meta.source_id) ?? descriptor.id;
-    const canonicalId = text(supplied.canonicalId) ?? text(meta.object_id) ?? text(entity.canonical_key) ?? text(entity.id);
-    const representation = text(supplied.representation) ?? text(meta.representation_id);
-    const snapshot = text(supplied.snapshot) ?? text(meta.snapshot);
+    const selector = text(supplied.selector) ?? text(meta.selector) ?? text(mapped(entity, "selector")) ?? text(entity.id) ?? "";
+    const source = text(supplied.source) ?? text(meta.source_id) ?? text(mapped(entity, "source")) ?? descriptor.id;
+    const canonicalId = text(supplied.canonicalId) ?? text(meta.object_id) ?? text(mapped(entity, "canonicalId")) ?? text(entity.canonical_key) ?? text(entity.id);
+    const representation = text(supplied.representation) ?? text(meta.representation_id) ?? text(mapped(entity, "representation"));
+    const snapshot = text(supplied.snapshot) ?? text(meta.snapshot) ?? text(mapped(entity, "snapshot"));
     return { ...clone(supplied), source, selector, ...(canonicalId ? { canonicalId } : {}),
       ...(representation ? { representation } : {}), ...(snapshot ? { snapshot } : {}) };
   }
   const selectorKey = (source: string, selector: string) => JSON.stringify([source, selector]);
   function index() {
     if (byId) return;
-    byId = new Map(); bySelector = new Map(); byCanonical = new Map(); adjacent = new Map();
+    const entityIds = new Map<string, Row>(), selectors = new Map<string, Row[]>(), identities = new Map<string, Row[]>(), edges = new Map<string, Row[]>();
     const append = (map: Map<string, Row[]>, key: string, entity: Row) => { const existing = map.get(key); if (existing) existing.push(entity); else map.set(key, [entity]); };
     for (const entity of packet.entities) {
-      if (typeof entity.id !== "string" || byId.has(entity.id)) throw new Error("invalid_or_duplicate_packet_entity_id");
-      const ref = refFor(entity); byId.set(entity.id, entity);
-      append(bySelector, selectorKey(ref.source, ref.selector), entity);
-      if (ref.canonicalId) append(byCanonical, selectorKey(ref.source, ref.canonicalId), entity);
+      if (typeof entity.id !== "string" || entityIds.has(entity.id)) throw new Error("invalid_or_duplicate_packet_entity_id");
+      const ref = refFor(entity); entityIds.set(entity.id, entity);
+      append(selectors, selectorKey(ref.source, ref.selector), entity);
+      if (ref.canonicalId) append(identities, selectorKey(ref.source, ref.canonicalId), entity);
     }
+    const claimIds = new Set<string>();
     for (const claim of packet.claims) {
+      if (claimIds.has(claim.id as string)) throw new Error("duplicate_packet_claim_id");
+      claimIds.add(claim.id as string);
       const subject = text(claim.subject), object = text(claim.object);
-      if (subject) append(adjacent, subject, claim);
-      if (object && object !== subject) append(adjacent, object, claim);
+      if (subject) append(edges, subject, claim);
+      if (object && object !== subject) append(edges, object, claim);
     }
+    byId = entityIds; bySelector = selectors; byCanonical = identities; adjacent = edges;
     metrics.indexedEntities = packet.entities.length; metrics.indexedClaims = packet.claims.length;
   }
   function find(ref: ObjectRef): { entity?: Row; reason?: string } {
@@ -127,12 +138,12 @@ export function createPacketAdapter(input: unknown, descriptor: SourceDescriptor
   function objectFor(entity: Row): SourceObject {
     metrics.materializedObjects++;
     const meta = metadata(entity), ref = refFor(entity);
-    const confidence = own(meta, "confidence") ? meta.confidence : undefined;
+    const confidence = own(meta, "confidence") ? meta.confidence : mapped(entity, "confidence");
     // Native confidence stays in raw metadata. Parser presence does not certify calibration.
     return { ref, label: text(entity.label) ?? ref.selector, kind: text(entity.kind) ?? "unknown",
-      status: status(meta.status ?? meta.availability, "available"), evidence: evidence(meta.evidence, entity.evidence_class),
+      status: entityStatus(entity), evidence: evidence(meta.evidence, mapped(entity, "evidence") ?? entity.evidence_class),
       ...(typeof confidence === "number" && Number.isFinite(confidence) && confidence >= 0 && confidence <= 1 ? { confidence } : {}),
-      properties: { ...clone(row(meta.properties)), raw: clone(entity), recognition: clone(meta.recognition ?? null) },
+      properties: { ...clone(row(meta.properties)), raw: clone(entity), recognition: clone(meta.recognition ?? mapped(entity, "recognition") ?? null) },
       ...(text(meta.reason) ? { reason: text(meta.reason) } : {}) };
   }
   return {
@@ -154,7 +165,7 @@ export function createPacketAdapter(input: unknown, descriptor: SourceDescriptor
       if (!allowed) return { relations: [], status: "unknown", reason: "structure_unsupported" };
       const requested = request.snapshot === undefined ? ref : { ...ref, snapshot: request.snapshot };
       const found = find(requested); if (!found.entity) return { relations: [], status: "unknown", reason: found.reason };
-      const foundStatus = status(metadata(found.entity).status ?? metadata(found.entity).availability, "available");
+      const foundStatus = entityStatus(found.entity);
       if (foundStatus !== "available") return { relations: [], status: foundStatus, reason: text(metadata(found.entity).reason) ?? "object_unavailable" };
       const entityId = found.entity.id;
       const candidates: { claim: Row; meta: Row; fromRef: ObjectRef; toRef: ObjectRef; kind: string }[] = [];

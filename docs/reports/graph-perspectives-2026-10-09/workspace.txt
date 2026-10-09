@@ -1,0 +1,19 @@
+✔ selective depth linking delegates propagation and leaves structure, focus and unrelated panel unchanged (141.735092ms)
+✔ cycles terminate through existing workspace and snapshot changes retain focus and selection (1.043902ms)
+✔ unknown fields and suppressed component records roundtrip without a fallback resolver (0.713414ms)
+✔ unsupported future binding and conflicting mappings remain explicit without changing workspace (1.127508ms)
+✔ bound composite depth becomes a native override and compiled query; exclusion stays authoritative (699.397754ms)
+✔ composite binding uses native effective values after override and clear_override, never stale authored components (71.149799ms)
+✔ analysis export uses explicit membership, native verified anchor mapping, permissions and existing plan compiler (1.265766ms)
+✔ empty explicit analysis selection cannot become implicit ambient retrieval (0.35883ms)
+✔ native nonexclusive anchors require explicit choice; exact analysis membership is blocked (0.406442ms)
+✔ comparison retains unknown differences and RFC6901 escapes (0.460894ms)
+✔ visibility distinguishes exact reference, another snapshot, omissions and incomplete absence (0.314864ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 938.91553

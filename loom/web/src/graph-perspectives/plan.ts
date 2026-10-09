@@ -1,8 +1,19 @@
-import type { CapabilityDescriptor, EffectiveComponent, LocalResolutionRule, NativeResolution, ObjectRef, Perspective, QueryPlan, VisualRule } from "./types";
+import type { CapabilityDescriptor, EffectiveComponent, LocalResolutionRule, NativeResolution, ObjectRef, Perspective, QueryPlan, ResolutionPresentation, VisualRule } from "./types";
 
 const object = (value: unknown): value is Record<string, unknown> => !!value && typeof value === "object" && !Array.isArray(value);
 const strings = (value: unknown): value is string[] => Array.isArray(value) && value.every(item => typeof item === "string");
 const integer = (value: unknown, min: number): value is number => Number.isSafeInteger(value) && Number(value) >= min;
+/** Restrict a color value to self-contained CSS color syntax; never a paint-server URL or variable. */
+export function isSupportedColor(value: unknown): value is string {
+  if (typeof value !== "string") return false;
+  const color = value.trim();
+  if (/^#[0-9a-f]{3}(?:[0-9a-f]|[0-9a-f]{3}|[0-9a-f]{5})?$/i.test(color) || /^[a-z]+$/i.test(color)) return true;
+  const number = "[-+]?(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)(?:e[-+]?[0-9]+)?";
+  const component = `${number}%?`, percent = `${number}%`, hue = `${number}(?:deg|grad|rad|turn)?`;
+  const comma = (first: string, rest: string) => `${first}\\s*,\\s*${rest}\\s*,\\s*${rest}(?:\\s*,\\s*${component})?`;
+  const space = (first: string, rest: string) => `${first}\\s+${rest}\\s+${rest}(?:\\s*/\\s*${component})?`;
+  return new RegExp(`^(?:rgba?\\(\\s*(?:${comma(component, component)}|${space(component, component)})\\s*\\)|hsla?\\(\\s*(?:${comma(hue, percent)}|${space(hue, percent)})\\s*\\))$`, "i").test(color);
+}
 export function isObjectRef(value: unknown): value is ObjectRef {
   return object(value) && typeof value.source === "string" && !!value.source && typeof value.selector === "string" &&
     ["canonicalId", "representation", "snapshot"].every(key => value[key] === undefined || typeof value[key] === "string");
@@ -11,7 +22,7 @@ export function isObjectRef(value: unknown): value is ObjectRef {
 export function compilePerspective(perspective: Perspective, resolution: NativeResolution, capabilities: CapabilityDescriptor[]): QueryPlan {
   const values: Record<string, unknown> = Object.create(null), errors: string[] = [], unsupported: QueryPlan["unsupported"] = [];
   const descriptors = new Map(capabilities.map(item => [item.id, item]));
-  const engineTargets = new Set(["structure", "resolution", "traversal", "temporal", "evidence", "visual", "budget", "localResolution", "goal", "focus"]);
+  const engineTargets = new Set(["structure", "resolution", "traversal", "temporal", "evidence", "visual", "budget", "localResolution", "goal", "focus", "presentation"]);
   const seen = new Set<string>();
   const explanation: EffectiveComponent[] = structuredClone(resolution.components);
   for (const row of resolution.components) {
@@ -38,6 +49,8 @@ export function compilePerspective(perspective: Perspective, resolution: NativeR
   if (!["incoming", "outgoing", "both"].includes(String(traversal.direction))) errors.push("traversal_direction_invalid");
   if (!integer(traversal.hops, 0)) errors.push("traversal_hops_invalid");
   for (const field of ["query", "render", "page"]) if (!integer(budget[field], 1)) errors.push(`budget_${field}_invalid`);
+  if (budget.neighborPages !== undefined && !integer(budget.neighborPages, 1)) errors.push("budget_neighbor_pages_invalid");
+  if (budget.neighborPages === undefined && integer(budget.query, 1)) explanation.push({ id: "budget.neighborPages", value: budget.query, status: "effective", origin: { kind: "plan_alias", target: "budget.query" }, reason: "legacy_neighbor_budget_equals_query_budget" });
   if (temporal.snapshot !== undefined && typeof temporal.snapshot !== "string") errors.push("snapshot_invalid");
   if (temporal.compareSnapshots !== undefined && !strings(temporal.compareSnapshots)) errors.push("compare_snapshots_invalid");
   if (values.evidence !== undefined && !strings(values.evidence)) errors.push("evidence_invalid");
@@ -48,6 +61,18 @@ export function compilePerspective(perspective: Perspective, resolution: NativeR
   if (!Array.isArray(visual) || visual.some(rule => !object(rule) || typeof rule.id !== "string" || typeof rule.dimension !== "string" || typeof rule.explanation !== "string" || !object(rule.match) || !object(rule.style) ||
       (rule.style.opacity !== undefined && (typeof rule.style.opacity !== "number" || !Number.isFinite(rule.style.opacity) || rule.style.opacity < 0 || rule.style.opacity > 1)) ||
       (rule.style.blur !== undefined && (typeof rule.style.blur !== "number" || !Number.isFinite(rule.style.blur) || rule.style.blur < 0)))) errors.push("visual_mapping_invalid");
+  const presentation = values.presentation ?? [];
+  if (!Array.isArray(presentation) || presentation.some(descriptor => !object(descriptor) || typeof descriptor.id !== "string" || !Array.isArray(descriptor.fields) ||
+    descriptor.fields.some(field => !object(field) || typeof field.id !== "string" || typeof field.label !== "string" || typeof field.path !== "string" ||
+      (field.path !== "" && !field.path.startsWith("/")) || /~(?:[^01]|$)/.test(field.path)))) errors.push("presentation_fields_invalid");
+  if (Array.isArray(presentation)) {
+    const ids = presentation.filter(object).map(item => item.id);
+    if (new Set(ids).size !== ids.length) errors.push("presentation_resolution_duplicate");
+    for (const descriptor of presentation) if (object(descriptor) && Array.isArray(descriptor.fields)) {
+      const fields = descriptor.fields.filter(object).map(item => item.id);
+      if (new Set(fields).size !== fields.length) errors.push("presentation_field_duplicate");
+    }
+  }
   const localMatchKeys = new Set(["focus", "distance", "kind", "source", "selectors"]);
   const visualMatchKeys = new Set(["focus", "distance", "kind", "snapshot", "evidence", "status"]);
   for (const [group, rules, keys] of [["localResolution", local, localMatchKeys], ["visual", visual, visualMatchKeys]] as const) {
@@ -61,6 +86,7 @@ export function compilePerspective(perspective: Perspective, resolution: NativeR
       }
       if (group === "visual" && object(rule.style)) for (const [key, value] of Object.entries(rule.style)) {
         if (!["opacity", "blur", "color", "group", "label"].includes(key)) unsupported.push({ id: `${group}.${String(rule.id)}.style.${key}`, reason: "style_field_unsupported", value });
+        else if (key === "color" && !isSupportedColor(value)) errors.push(`visual_color_unsupported:${String(rule.id)}`);
         else if (["color", "group", "label"].includes(key) && typeof value !== "string") errors.push(`visual_style_invalid:${String(rule.id)}:${key}`);
       }
     }
@@ -76,8 +102,9 @@ export function compilePerspective(perspective: Perspective, resolution: NativeR
     resolution: typeof values.resolution === "string" ? values.resolution : "", localResolution: Array.isArray(local) ? structuredClone(local) as LocalResolutionRule[] : [],
     ...(typeof temporal.snapshot === "string" ? { snapshot: temporal.snapshot } : {}),
     compareSnapshots: strings(temporal.compareSnapshots) ? [...temporal.compareSnapshots] : [], evidence: strings(values.evidence) ? [...values.evidence] : [],
-    queryBudget: integer(budget.query, 1) ? budget.query : 0, renderBudget: integer(budget.render, 1) ? budget.render : 0,
+    queryBudget: integer(budget.query, 1) ? budget.query : 0, neighborBudget: integer(budget.neighborPages, 1) ? budget.neighborPages : integer(budget.query, 1) ? budget.query : 0, renderBudget: integer(budget.render, 1) ? budget.render : 0,
     pageSize: integer(budget.page, 1) ? budget.page : 0, visual: Array.isArray(visual) ? structuredClone(visual) as VisualRule[] : [],
+    presentation: Array.isArray(presentation) ? structuredClone(presentation) as ResolutionPresentation[] : [],
     values, explanation, unsupported, errors, sourcePerspective: structuredClone(perspective),
   };
 }

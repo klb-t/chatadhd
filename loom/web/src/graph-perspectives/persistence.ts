@@ -30,7 +30,19 @@ export function importPerspective(raw: string): { perspective: Perspective; warn
   if (value.analysis !== undefined && (!record(value.analysis) || !Array.isArray(value.analysis.selected) || !value.analysis.selected.every(isObjectRef) ||
       (value.analysis.policyRef !== undefined && typeof value.analysis.policyRef !== "string") ||
       (value.analysis.linkedToPerspective !== undefined && typeof value.analysis.linkedToPerspective !== "boolean"))) throw new Error("perspective_analysis_invalid");
+  const actionWarnings: string[] = [];
+  if (value.layerActions !== undefined) {
+    if (!Array.isArray(value.layerActions)) throw new Error("perspective_layer_actions_invalid");
+    for (const action of value.layerActions) {
+      if (!record(action) || typeof action.op !== "string") throw new Error("perspective_layer_action_invalid");
+      if (["override", "disable", "exclude", "reenable", "clear_override", "accept_proposal"].includes(action.op)) {
+        if (typeof action.key !== "string" || !action.key || (action.op === "override" && !Object.prototype.hasOwnProperty.call(action, "value"))) throw new Error("perspective_layer_action_invalid");
+      } else if (action.op === "set_area_mode") {
+        if (typeof action.area !== "string" || !action.area || !["proposal", "direct"].includes(String(action.mode))) throw new Error("perspective_layer_action_invalid");
+      } else actionWarnings.push(`unsupported_layer_action_preserved:${action.op}`);
+    }
+  }
   const supported = new Set(["schema", "id", "label", "components", "focus", "workspace", "analysis", "layerActions"]);
-  const warnings = Object.keys(value).filter(key => !supported.has(key)).map(key => `unknown_field_preserved:${key}`);
+  const warnings = [...actionWarnings, ...Object.keys(value).filter(key => !supported.has(key)).map(key => `unknown_field_preserved:${key}`)];
   return { perspective: structuredClone(value) as unknown as Perspective, warnings };
 }

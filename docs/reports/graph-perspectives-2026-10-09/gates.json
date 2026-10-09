@@ -1,0 +1,162 @@
+{
+  "sourceHashes": {
+    "loom/data/graph_perspectives/catalog.json": "b4a9d838a380dbcc723b6d2d1244c5b67bfa3e49d471964f5d1e564bd169d498",
+    "loom/data/graph_perspectives/demo.packet.json": "470b12ec39ec74ce54a3f95f7c23d3af20570a3ebc9e8156c73bf45f776d9522",
+    "loom/data/graph_perspectives/demo.source.json": "1531f162c68f7fd31cc2d5f65fbf9c5009f5433a0aeb3da64faf937422e7d11b",
+    "loom/data/graph_perspectives/external-profile.json": "580130aff3b608cea227bd9c02c9589b9ec9fee501a18f7374c67ee06a7d4ff1",
+    "loom/data/graph_perspectives/graph-perspectives.pack.json": "18fe3b433b7aeea70e4c2762b3dce828e953b8c6391fede69e34ef17c98098e2",
+    "loom/web/src/graph-perspectives/PerspectiveView.tsx": "885d4be43b642b9bb9191d9f4d851d67c97d95c645556ae8a626f1a4da76864f",
+    "loom/web/src/graph-perspectives/adapters.ts": "4f7141e22dbc26d756106e417a5e6e5ba0f1bdf0896404e43e3e496022ab529a",
+    "loom/web/src/graph-perspectives/comparison.ts": "ba0a68c807329178a61b15d97274668900141b634765b2e385daafec7f535ef9",
+    "loom/web/src/graph-perspectives/harness.html": "54927b262b02245d1e920a7ab275424bcccde6d4b41cbd57f47d48378aaed30b",
+    "loom/web/src/graph-perspectives/harness.tsx": "5d53ac6e32f76fe2ad6261ebb54df8b2da4836113d1ac5453aea8f6df8bf55fe",
+    "loom/web/src/graph-perspectives/index.ts": "db5c456229f2ea9aca5110b9081b025721c665a97e907ae1e85e462d8af0e1dc",
+    "loom/web/src/graph-perspectives/native-layers.ts": "371be34173a323dd6a3d23be9644f27e3834f3177d276a059c9a51f1f0da5096",
+    "loom/web/src/graph-perspectives/native-projection.ts": "f6b423131681a662a04008c13c052bb19a0949e05c3a614e7e60f71ad5deb177",
+    "loom/web/src/graph-perspectives/navigation.ts": "4d4b653751c22f12b3d31f06d1313f188c0a9b9be85a4f0900bb35b32083aaed",
+    "loom/web/src/graph-perspectives/persistence.ts": "6a06104e7af32a5d4d3af30588289e95d6ff3f9fb4ef38617d4f6327cc99add8",
+    "loom/web/src/graph-perspectives/perspective.css": "a93f2bed7a8aec3bd9884018371169742401b90da67929fa911fad3a9432cbbd",
+    "loom/web/src/graph-perspectives/plan.ts": "375b4e824764dba44f70e34cd006b4f92dd74b31dfab92c3d583d9f6b60fdb78",
+    "loom/web/src/graph-perspectives/renderer-bridge.tsx": "e6c00f2e0883e38b5bb93f2b1104d893981ac9f8ee6d3da59bf7d5386ef1628e",
+    "loom/web/src/graph-perspectives/select.ts": "d3e698fb536e889020aae36f070375c984d8692861e4c37d28d866d8f978ccd9",
+    "loom/web/src/graph-perspectives/types.ts": "cd05d73a82e487bed7d7a854ccf426c41bd18276a49e7dd7c94f8e853870bf74",
+    "loom/web/src/graph-perspectives/versions.ts": "1a7e66c2e8a6abfc16f96399b9e20b5b6eb44f7961cc4f1ab8cdbaefad0a30a3",
+    "loom/web/src/graph-perspectives/workflow.ts": "21b292187bb1368e8ae049a48b3206843aa25ead4058cb6bf295decd3c03a745",
+    "loom/web/src/graph-perspectives/workspace.ts": "c37dc6cc39e6e2054e97ba339fb7f8f7f1bfc7fef66b98470c199581fed9e3bc",
+    "loom/web/tests/graph-perspectives/adapters.test.mjs": "fa2dd5e5f537192839933e86b07b020ff5f01c16ac913712a8f8f33e39297afa",
+    "loom/web/tests/graph-perspectives/benchmark.mjs": "ea2db124664d3cf8f3be9ad7c32fe0e4b4b46370745bb581a7e1dd530fe993f4",
+    "loom/web/tests/graph-perspectives/browser.test.mjs": "7d51ac0569c1fa069cdbc7489c529d5eb78647e83781901a8834bc78a135deb7",
+    "loom/web/tests/graph-perspectives/compatibility.test.mjs": "e55a80771b617bb89b5583e2856c3774727108af002bd1444ff54aff662cd992",
+    "loom/web/tests/graph-perspectives/harness-server.mjs": "9ded47f5a49d17b384111f6211e902a763151f8b3c3b55bf5c1b48d22171a47c",
+    "loom/web/tests/graph-perspectives/headless.test.mjs": "7dce46339cb3206d21e023501230fc85b72b468d7304357983ca96bf64b08992",
+    "loom/web/tests/graph-perspectives/hook.test.mjs": "6265e23335f27f2a33b05f43602a6b483e80bc23720ee021f350620214f7da1a",
+    "loom/web/tests/graph-perspectives/native-fixtures.py": "326cd82cd419c508fd644b009ec068a7cbd245e79ecb1da1b278a62f18281c30",
+    "loom/web/tests/graph-perspectives/native-layers-bridge.cpp": "4e8484d65379d409578d8984dc654a80536f99c5095f0e139d28bd24f02295fe",
+    "loom/web/tests/graph-perspectives/native-layers-runner.mjs": "dd8b1ea3b8d7f168774b5ec19be55afcd18da16d98a5b9a8a81a5964b41dd567",
+    "loom/web/tests/graph-perspectives/native-layers.test.mjs": "1a8aabbb00040c6c4ebc389f91528f2acf3dfe6f0f3be7510877dffaed211234",
+    "loom/web/tests/graph-perspectives/renderer-transform.mjs": "b319ddfd29f30a1c4a3fa15342c04c140a7f0a1c0c535b43ae57ed0d404f4450",
+    "loom/web/tests/graph-perspectives/run-all.mjs": "53aef1b590e060bcb3d88e65b0339090b97d131e4b9a4a9f2778352f9c37f85c",
+    "loom/web/tests/graph-perspectives/test-loader.mjs": "58221c2ba0e8603e93aaa59fea3a09d053ec6b52da846c55581ec5298231ae86",
+    "loom/web/tests/graph-perspectives/workspace.test.mjs": "ba4644e51a51b9642a80a9f70c6c0cb595b77b9255cfabab7d4e8055d549198d"
+  },
+  "measuredAt": "2026-10-09T08:16:46.763Z",
+  "base": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "head": "3eaac2953c3ee0d01d085e595d68edc091c284f2",
+  "workingTreeStatus": "M loom/data/graph_perspectives/catalog.json\n M loom/data/graph_perspectives/demo.packet.json\n M loom/data/graph_perspectives/demo.source.json\n M loom/data/graph_perspectives/graph-perspectives.pack.json\n M loom/web/src/graph-perspectives/adapters.ts\n M loom/web/src/graph-perspectives/index.ts\n M loom/web/src/graph-perspectives/persistence.ts\n M loom/web/src/graph-perspectives/plan.ts\n M loom/web/src/graph-perspectives/select.ts\n M loom/web/src/graph-perspectives/types.ts\n M loom/web/tests/graph-perspectives/adapters.test.mjs\n M loom/web/tests/graph-perspectives/compatibility.test.mjs\n M loom/web/tests/graph-perspectives/headless.test.mjs\n M loom/web/tests/graph-perspectives/native-fixtures.py\n M loom/web/tests/graph-perspectives/native-layers.test.mjs\n?? loom/web/src/graph-perspectives/PerspectiveView.tsx\n?? loom/web/src/graph-perspectives/comparison.ts\n?? loom/web/src/graph-perspectives/harness.html\n?? loom/web/src/graph-perspectives/harness.tsx\n?? loom/web/src/graph-perspectives/native-projection.ts\n?? loom/web/src/graph-perspectives/perspective.css\n?? loom/web/src/graph-perspectives/renderer-bridge.tsx\n?? loom/web/src/graph-perspectives/versions.ts\n?? loom/web/src/graph-perspectives/workflow.ts\n?? loom/web/src/graph-perspectives/workspace.ts\n?? loom/web/tests/graph-perspectives/benchmark.mjs\n?? loom/web/tests/graph-perspectives/browser.test.mjs\n?? loom/web/tests/graph-perspectives/harness-server.mjs\n?? loom/web/tests/graph-perspectives/hook.test.mjs\n?? loom/web/tests/graph-perspectives/renderer-transform.mjs\n?? loom/web/tests/graph-perspectives/run-all.mjs\n?? loom/web/tests/graph-perspectives/workspace.test.mjs",
+  "outcomes": [
+    {
+      "id": "native",
+      "command": [
+        "node",
+        "tests/graph-perspectives/native-layers.test.mjs"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "elapsedMs": 1284.154609
+    },
+    {
+      "id": "headless",
+      "command": [
+        "node",
+        "tests/graph-perspectives/headless.test.mjs"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "elapsedMs": 457.936725
+    },
+    {
+      "id": "adapters",
+      "command": [
+        "node",
+        "tests/graph-perspectives/adapters.test.mjs"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "elapsedMs": 626.0792630000001
+    },
+    {
+      "id": "workspace",
+      "command": [
+        "node",
+        "tests/graph-perspectives/workspace.test.mjs"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "elapsedMs": 1075.5246229999998
+    },
+    {
+      "id": "compatibility",
+      "command": [
+        "node",
+        "tests/graph-perspectives/compatibility.test.mjs"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "elapsedMs": 601.9495180000004
+    },
+    {
+      "id": "hook",
+      "command": [
+        "node",
+        "tests/graph-perspectives/hook.test.mjs"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "elapsedMs": 4905.549729999999
+    },
+    {
+      "id": "existing-workspace",
+      "command": [
+        "npm",
+        "run",
+        "test:workspace-state"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "elapsedMs": 466.8698519999998
+    },
+    {
+      "id": "existing-profile",
+      "command": [
+        "npm",
+        "run",
+        "test:application-profiles"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "elapsedMs": 992.9071899999999
+    },
+    {
+      "id": "web-build",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "elapsedMs": 6997.729026999998
+    },
+    {
+      "id": "browser",
+      "command": [
+        "node",
+        "tests/graph-perspectives/browser.test.mjs"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "elapsedMs": 11095.793245
+    },
+    {
+      "id": "benchmark",
+      "command": [
+        "node",
+        "--expose-gc",
+        "tests/graph-perspectives/benchmark.mjs"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "elapsedMs": 408.4479510000019
+    }
+  ]
+}

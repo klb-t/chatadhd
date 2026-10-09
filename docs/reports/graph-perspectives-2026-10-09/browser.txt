@@ -1,0 +1,14 @@
+[graph-perspectives-browser] PASS native resolved data and identical headless/UI projection
+[graph-perspectives-browser] PASS mouse keyboard and reversible object navigation
+[graph-perspectives-browser] PASS physical and logical projection preserve focus identity and placement
+[graph-perspectives-browser] PASS equal resolution selects distinct computation and historical structures
+[graph-perspectives-browser] PASS two snapshots retain canonical object and historical center
+[graph-perspectives-browser] PASS external profile field effective value and override provenance
+[graph-perspectives-browser] PASS live native effective values and override provenance change through the UI
+[graph-perspectives-browser] PASS conversation source correction and current instruction
+[graph-perspectives-browser] PASS unrendered unloaded unavailable and unknown references remain addressable
+[graph-perspectives-browser] PASS unknown fields mode switches and save restore preserve perspective intent
+[graph-perspectives-browser] PASS explicit render omissions analysis separation and canonical immutability
+[graph-perspectives-browser] PASS comparison visibility query plan export and workflow preparation are explicit
+[graph-perspectives-browser] PASS touch interaction and accessible object details work without hover
+[graph-perspectives-browser] 13/13 groups passed

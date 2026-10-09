@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
+import { spawnSync } from 'node:child_process';
 import { loadModule, repoRoot } from './test-loader.mjs';
 const { createPacketAdapter, createDemandAdapter, createApplicationProfileAdapter } = await loadModule('src/graph-perspectives/adapters.ts');
 const fixturePath = path.join(repoRoot, 'loom/data/graph_perspectives');
@@ -131,6 +132,14 @@ await check('packet accepts unknown metadata, maps native evidence only by descr
   const adapter = createPacketAdapter(unknown, { ...descriptor, evidenceMap: { [unknown.entities[0].evidence_class]: 'source' } });
   const object = await adapter.resolve({ source: descriptor.id, selector: unknown.entities[0].id }, context);
   assert.equal(object.evidence, 'source'); assert.deepEqual(object.properties.raw.attrs.future_vendor, { format: 'unrecognized', bytes: [8, 13] });
+  const futureStatus = structuredClone(packet);
+  futureStatus.entities[0].attrs.perspective.status = 'future-availability';
+  const futureAdapter = createPacketAdapter(futureStatus, descriptor);
+  assert.equal((await futureAdapter.resolve(futureStatus.entities[0].attrs.perspective.ref, context)).status, 'unknown');
+  const duplicateClaim = structuredClone(packet); duplicateClaim.claims.push(duplicateClaim.claims[0]);
+  const invalidAdapter = createPacketAdapter(duplicateClaim, descriptor);
+  await assert.rejects(invalidAdapter.resolve(ref('e_cell'), context), /duplicate_packet_claim_id/);
+  await assert.rejects(invalidAdapter.resolve(ref('e_cell'), context), /duplicate_packet_claim_id/);
   assert.throws(() => createPacketAdapter({ schema: 'other' }, descriptor), /invalid_graph_packet_view/);
   assert.throws(() => createPacketAdapter({ schema: 'loom.graph_packet/1', entities: [null], claims: [], sources: [] }, descriptor), /malformed_graph_packet_rows/);
 });
@@ -149,6 +158,56 @@ await check('large sparse packet hub materializes only the requested page and ex
   assert.equal(guarded.reason, 'permission_filtered'); assert.equal(guarded.status, 'denied'); assert.equal(guarded.total, size - 1);
   assert.ok(!guarded.relations.some(edge => edge.to.selector === 'n1'));
   console.log(`  packet-hub sample: ${size + 1} entities/${size} claims, query+lazy-index ${elapsed.toFixed(2)}ms, projected relations 3`);
+});
+
+await check('actual pinned D resource packet resolves requested source pointer with descriptor mapping', async () => {
+  const producerSha = '1d3d133154f213733b7a69af863613cec2dd8ca2';
+  const python = String.raw`
+import importlib.util, io, json, subprocess, sys, tarfile, tempfile
+from pathlib import Path
+from loom.tools.structure.agentic_graph_v1.packet import validate_packet
+sha = sys.argv[1]
+with tempfile.TemporaryDirectory() as folder:
+    root = Path(folder)
+    archive = subprocess.check_output(['git', 'archive', sha, 'loom/tools/resource_graph', 'loom/data/resource_graph'])
+    with tarfile.open(fileobj=io.BytesIO(archive)) as tree:
+        tree.extractall(root, filter='data')
+    location = root / 'loom/tools/resource_graph/__init__.py'
+    spec = importlib.util.spec_from_file_location('pinned_resource_graph', location, submodule_search_locations=[str(location.parent)])
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    graph = module.ResourceGraph()
+    resource = root / 'measurements.json'
+    resource.write_text(json.dumps({'instrument': {'samples': [4, 8, 12], 'unrecognized_extension': {'preserve': True}}}))
+    graph.attach(str(resource), logical_id='actual-d-resource', format='json')
+    assert graph.metrics['opens'] == 0
+    assert graph.select('actual-d-resource', '/instrument/samples/1') == 8
+    packet = graph.project('actual-d-resource', '/instrument', depth=2, limit=20)
+    validate_packet(packet)
+    assert graph.describe('actual-d-resource')['embedded_bytes'] is False
+    print(json.dumps({'packet': packet, 'metrics': graph.metrics, 'source': graph.describe('actual-d-resource')}))
+`;
+  const generated = spawnSync('python3', ['-c', python, producerSha], { cwd: repoRoot, encoding: 'utf8', maxBuffer: 4 * 1024 * 1024 });
+  assert.equal(generated.status, 0, generated.stderr);
+  const result = JSON.parse(generated.stdout);
+  const frozen = JSON.stringify(result.packet);
+  const adapter = createPacketAdapter(result.packet, {
+    id: 'actual-d-resource', label: 'Actual D source',
+    structures: [{ id: 'source-tree', label: 'Source tree', relations: [...new Set(result.packet.claims.map(claim => claim.predicate))] }],
+    objectMapping: { selector: '/attrs/selector', canonicalId: '/attrs/selector', snapshot: '/attrs/content_sha256', status: '/attrs/status', recognition: '/attrs/recognition' },
+    availabilityMap: { unsupported: 'unknown', corrupt: 'unavailable', partial: 'available' },
+    evidenceMap: { derived: 'computed', observed: 'source' },
+  });
+  const object = await adapter.resolve({ source: 'actual-d-resource', selector: '/instrument/samples/1' }, context);
+  assert.equal(object.status, 'available'); assert.equal(object.properties.raw.attrs.value, 8);
+  assert.equal(object.confidence, undefined, 'D parser confidence 1 is not an E calibration claim');
+  assert.equal(object.ref.canonicalId, '/instrument/samples/1');
+  const parent = await adapter.neighbors(object.ref, { structure: 'source-tree', relations: [], direction: 'incoming', limit: 10 }, context);
+  assert.ok(parent.relations.some(edge => edge.to.selector === '/instrument/samples/1'));
+  assert.equal(result.source.embedded_bytes, false); assert.equal(result.source.policy.cache, false);
+  assert.equal(JSON.stringify(result.packet), frozen);
+  console.log(`  D producer ${producerSha}: ${result.packet.entities.length} entities/${result.packet.claims.length} claims, opens=${result.metrics.opens}, no native import/embedding/cache`);
 });
 
 console.log(`adapter contract: ${count}/${count} groups passed`);

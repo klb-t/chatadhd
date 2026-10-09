@@ -3,14 +3,16 @@ import assert from 'node:assert/strict';
 import { createModuleLoader } from './test-loader.mjs';
 
 const loader = await createModuleLoader();
-const {compilePerspective} = await loader.load('src/graph-perspectives/plan.ts');
+const {compilePerspective,isSupportedColor} = await loader.load('src/graph-perspectives/plan.ts');
 const {selectPerspective} = await loader.load('src/graph-perspectives/select.ts');
 const {createNavigation,navigate,goBack,goForward,changeNavigationStructure,referenceKey,objectKey} = await loader.load('src/graph-perspectives/navigation.ts');
 const {exportPerspective,importPerspective} = await loader.load('src/graph-perspectives/persistence.ts');
 const {initialWorkspace} = await loader.load('src/workspace/state.ts');
+const {compareObjectVersions} = await loader.load('src/graph-perspectives/versions.ts');
+const {createPacketAdapter} = await loader.load('src/graph-perspectives/adapters.ts');
 test.after(() => loader.close());
 const ref = (selector, snapshot) => ({source:'fixture',selector,...(snapshot === undefined ? {} : {snapshot})});
-const capabilities = ['structure','resolution','traversal','temporal','evidence','visual','budget','localResolution'].map(target => ({id:target,label:target,target,status:'supported'}));
+const capabilities = ['structure','resolution','traversal','temporal','evidence','visual','budget','localResolution','presentation'].map(target => ({id:target,label:target,target,status:'supported'}));
 function compile(values = {}, changes = {}) {
  const defaults = {structure:'dependencies',resolution:'summary',traversal:{relations:['input'],direction:'both',hops:3},temporal:{compareSnapshots:[]},evidence:[],visual:[],budget:{query:100,render:100,page:3},localResolution:[]};
  const effective = {...defaults,...values};
@@ -40,7 +42,7 @@ function source({edges=[['root','a','input'],['a','b','input'],['root','comment'
 test('native suppression is permanent input to compiler, not a fallback request',()=>{
  const p=compile();
  for(const status of ['disabled','excluded','proposal','missing']){
-  const rows=p.explanation.filter(x=>x.id!=='navigation.focus').map(x=>x.id==='structure'?{...x,status}:x);
+  const rows=p.explanation.filter(x=>capabilities.some(d=>d.id===x.id)).map(x=>x.id==='structure'?{...x,status}:x);
   const output=compilePerspective(p.sourcePerspective,{components:rows},capabilities);
   assert.ok(output.errors.includes('structure_not_effective'));
   assert.equal(output.values.structure,undefined);
@@ -50,7 +52,7 @@ test('native suppression is permanent input to compiler, not a fallback request'
 test('compile explains explicit navigation and validates budgets independently',()=>{
  const p=compile({budget:{query:4,render:2,page:1}});
  assert.deepEqual([p.queryBudget,p.renderBudget,p.pageSize],[4,2,1]);
- assert.equal(p.explanation.at(-1).reason,'explicit_navigation_focus');
+ assert.ok(p.explanation.some(x=>x.reason==='explicit_navigation_focus'));
  assert.ok(compile({budget:{query:4,render:0,page:1}}).errors.includes('budget_render_invalid'));
 });
 test('malformed match/style fields fail while unknown predicates stay preserved and unsupported',()=>{
@@ -171,10 +173,103 @@ test('new adapter structure needs descriptors and mapping only, not core recompi
 test('custom capability is forwarded and remains unsupported unless adapter declares it',async()=>{
  const descriptor={id:'custom',label:'Custom',target:'spectralFilter',status:'supported'};
  const p=compile();
- const plan=compilePerspective(p.sourcePerspective,{components:[...p.explanation.filter(x=>x.id!=='navigation.focus'),{id:'custom',value:{band:5},status:'effective'}]},[...capabilities,descriptor]);
+ const plan=compilePerspective(p.sourcePerspective,{components:[...p.explanation.filter(x=>capabilities.some(d=>d.id===x.id)),{id:'custom',value:{band:5},status:'effective'}]},[...capabilities,descriptor]);
  assert.equal(plan.unsupported[0].reason,'adapter_capability_pending');
  const s=source({capabilities:[descriptor]});
  const out=await selectPerspective(plan,[s.adapter],allow);
  assert.deepEqual(s.queries[0].parameters.spectralFilter,{band:5});
  assert.equal(out.plan.unsupported.length,0);
+});
+
+test('resolved canonical identity is rechecked against permissions before exposing contents',async()=>{
+ const s=source({transform:x=>({...x,ref:{...x.ref,canonicalId:'restricted'}})});
+ const out=await selectPerspective(compile(),[s.adapter],{id:'canonical-policy',canRead:r=>r.canonicalId!=='restricted'});
+ assert.equal(out.objects[0].status,'denied'); assert.equal(out.objects[0].properties,undefined); assert.equal(s.queries.length,0);
+});
+test('unavailable context cannot be disguised as an available aggregate',async()=>{
+ const s=source({statuses:{a:'unavailable',b:'unloaded'}});
+ const out=await selectPerspective(compile({localResolution:[{id:'all',match:{kind:'record'},resolution:'aggregate',aggregate:{id:'rest',label:'Rest'}}]}),[s.adapter],allow);
+ assert.equal(out.objects.find(x=>x.ref.selector==='a').status,'unavailable');
+ assert.equal(out.objects.some(x=>x.aggregateMembers?.some(r=>r.selector==='a')),false);
+});
+
+test('adapter-normalized representations do not duplicate objects reached through comparison and edges',async()=>{
+ const s=source({edges:[['root','root','input']],transform:x=>({...x,ref:{...x.ref,representation:'record'}})});
+ const original=s.adapter.neighbors;
+ s.adapter.neighbors=async(address,request,context)=>{
+  const page=await original(address,request,context);
+  page.relations=page.relations.map(e=>({...e,from:{...e.from,representation:'record'},to:{...e.to,representation:'record'}}));
+  if(address.snapshot==='old') page.relations.push({id:'version',from:{...address},to:{...address,snapshot:'new',representation:'record'},kind:'input',evidence:'source'});
+  return page;
+ };
+ const out=await selectPerspective(compile({temporal:{snapshot:'old',compareSnapshots:['new']}}),[s.adapter],allow);
+ assert.equal(out.objects.length,2);
+ assert.equal(new Set(out.objects.map(x=>x.key)).size,out.objects.length);
+ assert.equal(out.graph.nodes.length,2);
+});
+
+test('denied relation endpoints never expose adapter relation metadata',async()=>{
+ const s=source({edges:[['root','secret','input']]});
+ const original=s.adapter.neighbors;
+ s.adapter.neighbors=async(...args)=>{ const page=await original(...args); page.relations.forEach(e=>e.basis={hidden:'must-never-appear'}); return page; };
+ const out=await selectPerspective(compile(),[s.adapter],{id:'limited',canRead:r=>r.selector!=='secret'});
+ assert.equal(out.objects.find(x=>x.ref.selector==='secret').status,'denied');
+ assert.equal(out.relations.length,0); assert.equal(out.graph.edges.length,0);
+ assert.equal(JSON.stringify(out).includes('must-never-appear'),false);
+});
+test('advancing empty pages obey explicit neighbor read budget and provide continuation',async()=>{
+ const s=source(); let calls=0;
+ s.adapter.neighbors=async()=>({relations:[],nextCursor:String(++calls)});
+ const out=await selectPerspective(compile({budget:{query:20,render:10,page:1,neighborPages:3}}),[s.adapter],allow);
+ assert.equal(calls,3); assert.equal(out.metrics.neighborCalls,3); assert.equal(out.complete,false);
+ assert.equal(out.continuation[0].cursor,'3');
+ assert.ok(out.omissions.some(x=>x.detail==='neighbor_page_budget'));
+});
+test('malformed suppression containers cannot be silently discarded on import',()=>{
+ const p=compile().sourcePerspective;
+ assert.throws(()=>importPerspective(JSON.stringify({...p,layerActions:{op:'exclude',key:'structure'}})),/layer_actions_invalid/);
+ assert.throws(()=>importPerspective(JSON.stringify({...p,layerActions:[{op:'exclude'}]})),/layer_action_invalid/);
+ const future={...p,layerActions:[{op:'future_suppression',key:'structure'}]};
+ const result=importPerspective(JSON.stringify(future));
+ assert.deepEqual(result.perspective.layerActions,future.layerActions);
+ assert.ok(result.warnings.includes('unsupported_layer_action_preserved:future_suppression'));
+});
+
+test('asserted canonical identity plus representation and snapshot deduplicates physical selector aliases',async()=>{
+ const packet={schema:'loom.graph_packet/1',sources:[],entities:[0,1].map(i=>({id:`e${i}`,label:`Object ${i}`,attrs:{perspective:{ref:{source:'fixture',selector:`real${i}`,canonicalId:`canon${i}`,representation:`r${i}`,snapshot:'v1'},status:'available',evidence:'source'}}})),claims:[{id:'edge',subject:'e0',object:'e1',predicate:'input'}]};
+ const adapter=createPacketAdapter(packet,{id:'fixture',label:'Aliased fixture',structures:[{id:'dependencies',label:'Dependencies',relations:['input']}]});
+ const focus={source:'fixture',selector:'alias0',canonicalId:'canon0',representation:'r0',snapshot:'v1'};
+ const out=await selectPerspective(compile({}, {focus}),[adapter],allow);
+ assert.equal(out.objects.filter(x=>x.ref.canonicalId==='canon0').length,1);
+ assert.equal(out.objects.length,2);
+});
+
+test('local resolution executes data-selected field projection while preserving source properties',async()=>{
+ const s=source({edges:[['root','a','input']],transform:x=>({...x,properties:{value:7,expression:'sum(inputs)',text:'detail'}})});
+ const presentation=[{id:'summary',fields:[{id:'value',label:'Value',path:'/properties/value'}]},{id:'full',fields:[{id:'expression',label:'Expression',path:'/properties/expression'},{id:'text',label:'Text',path:'/properties/text'}]}];
+ const out=await selectPerspective(compile({presentation,localResolution:[{id:'focused',match:{focus:true},resolution:'full'}]}),[s.adapter],allow);
+ assert.deepEqual(out.objects[0].presentation.fields.map(f=>f.value),['sum(inputs)','detail']);
+ assert.deepEqual(out.objects[1].presentation.fields.map(f=>f.value),[7]);
+ assert.equal(out.objects[1].properties.expression,'sum(inputs)');
+ assert.equal(out.objects[0].presentation.status,'supported');
+});
+test('snapshot differences use canonical identity and exact property paths without semantic or chronology claims',async()=>{
+ const out=await selectPerspective(compile({temporal:{snapshot:'new',compareSnapshots:['old']}}),[source().adapter],allow);
+ const groups=compareObjectVersions(out.objects);
+ const root=groups.find(g=>g.canonicalKey===objectKey(ref('root')));
+ assert.equal(root.method,'structural_properties'); assert.equal(root.left.snapshot,'new'); assert.equal(root.right.snapshot,'old');
+ assert.deepEqual(root.changes,[{path:'/properties/value',kind:'changed',left:2,right:1}]);
+ const unavailable=compareObjectVersions([{...out.objects[0],status:'unavailable'},...out.objects.slice(1)]);
+ assert.equal(unavailable.find(g=>g.canonicalKey===objectKey(ref('root'))).status,'unavailable');
+});
+
+test('visual colors accept self-contained CSS only and cannot send requests through SVG paint URLs',async()=>{
+ for(const value of ['#abc','#abcd','#abcdef','#abcdef12','red','transparent','rgb(1, 2, 3)','rgba(1,2,3,0.2)','rgb(10% 20% 30% / 40%)','hsl(120deg 50% 50%)','hsla(120,50%,50%,0.5)']) assert.equal(isSupportedColor(value),true,value);
+ for(const value of ['url(https://example.invalid/pixel)','var(--url)','red; background:url(x)','#abcde','rgb(var(--a),1,2)','hsl(10 20 30)','red/**/','calc(1)']) {
+  assert.equal(isSupportedColor(value),false,value);
+  const visual=[{id:'color',dimension:'relevance',match:{},style:{color:value},explanation:'Imported color'}];
+  const p=compile({visual}); assert.ok(p.errors.some(e=>e.startsWith('visual_color_unsupported')));
+  assert.equal(p.sourcePerspective.components && p.visual[0].style.color,value);
+  await assert.rejects(selectPerspective({...compile(),visual},[source().adapter],allow),/visual_color_unsupported/);
+ }
 });

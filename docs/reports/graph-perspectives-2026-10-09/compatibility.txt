@@ -1,0 +1,1 @@
+PASS actual existing method exporter (8 entities/10 claims), generic projection, immutable packet and native fixture validation

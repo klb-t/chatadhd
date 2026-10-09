@@ -50,6 +50,12 @@
       "status": "supported"
     },
     {
+      "id": "graph.perspective.presentation",
+      "label": "Pola szczegółów prezentacji",
+      "target": "presentation",
+      "status": "supported"
+    },
+    {
       "id": "graph.perspective.goal",
       "label": "Cel",
       "target": "goal",
@@ -90,7 +96,8 @@
         "uses",
         "produces",
         "justified_by",
-        "informs"
+        "informs",
+        "context"
       ],
       "description": "Wejścia, operacja, wynik i zapisane uzasadnienie."
     },
@@ -109,6 +116,7 @@
       "id": "provenance",
       "label": "Pochodzenie i nadpisania",
       "relations": [
+        "parts",
         "derived_from",
         "overridden_by",
         "justified_by"
@@ -216,7 +224,8 @@
               "uses",
               "produces",
               "justified_by",
-              "informs"
+              "informs",
+              "context"
             ],
             "direction": "both",
             "hops": 4
@@ -278,6 +287,7 @@
           "key": "graph.perspective.traversal",
           "value": {
             "relations": [
+              "parts",
               "derived_from",
               "overridden_by",
               "justified_by"
@@ -316,6 +326,47 @@
             ],
             "direction": "both",
             "hops": 4
+          }
+        }
+      ]
+    },
+    {
+      "id": "live-provenance",
+      "label": "Żywe ustawienie i źródło nadpisania",
+      "description": "Dokładny wynik natywnego DefaultLayers: pole, wartość i źródło jej nadpisania. Odczyt bez drugiego magazynu.",
+      "focus": {
+        "source": "native-defaults",
+        "selector": "/components/graph.perspective.budget",
+        "canonicalId": "native-defaults:/components/graph.perspective.budget"
+      },
+      "actions": [
+        {
+          "op": "override",
+          "key": "graph.perspective.structure",
+          "value": "native-provenance"
+        },
+        {
+          "op": "override",
+          "key": "graph.perspective.traversal",
+          "value": {
+            "relations": [
+              "contains",
+              "effective_value",
+              "resolved_from",
+              "recorded_in"
+            ],
+            "direction": "both",
+            "hops": 3
+          }
+        },
+        {
+          "op": "override",
+          "key": "graph.perspective.budget",
+          "value": {
+            "query": 600,
+            "render": 80,
+            "page": 64,
+            "neighborPages": 600
           }
         }
       ]
@@ -392,6 +443,19 @@
     "incoming": "Przychodzące",
     "outgoing": "Wychodzące",
     "both": "Oba kierunki",
+    "queryPlanExport": "Eksport planu zapytania",
+    "visibilityQuery": "Zapytanie widoku",
+    "analysisMode": "Tryb selekcji analizy",
+    "anchors": "Punkty startowe",
+    "exact": "Dokładny zbiór",
+    "versionDiff": "Różnice wersji",
+    "before": "Przed",
+    "after": "Po",
+    "target": "Obiekt docelowy",
+    "analysisAdd": "Dodaj do analizy",
+    "analysisRemove": "Usuń z analizy",
+    "analysisClear": "Wyczyść wybór analizy",
+    "derivedSelection": "Wybór z perspektywy",
     "component": "Składnik",
     "applyComponent": "Zastosuj składnik",
     "scenario": "Scenariusz",
@@ -508,6 +572,145 @@
       }
     }
   ],
+  "analysisExport": {
+    "id": "perspective-review",
+    "thesisId": "perspective-thesis",
+    "text": "Przeanalizuj jawnie wybrane referencje i zachowaj dowody przeciwne.",
+    "selectionMode": "exact",
+    "requireCounterEvidence": true,
+    "budgetWeight": 1
+  },
+  "nativeSourceDescriptor": {
+    "id": "native-defaults",
+    "label": "Żywy profil: natywne warstwy R40",
+    "status": "available",
+    "structures": [
+      {
+        "id": "native-provenance",
+        "label": "Rzeczywiste wartości i pochodzenie",
+        "relations": [
+          "contains",
+          "effective_value",
+          "resolved_from",
+          "recorded_in"
+        ]
+      }
+    ],
+    "capabilities": [
+      {
+        "id": "graph.perspective.structure",
+        "label": "Struktura",
+        "target": "structure",
+        "status": "supported"
+      },
+      {
+        "id": "graph.perspective.resolution",
+        "label": "Rozdzielczość",
+        "target": "resolution",
+        "status": "supported"
+      },
+      {
+        "id": "graph.perspective.traversal",
+        "label": "Relacje i zasięg",
+        "target": "traversal",
+        "status": "supported"
+      },
+      {
+        "id": "graph.perspective.temporal",
+        "label": "Czas i wersje",
+        "target": "temporal",
+        "status": "supported"
+      },
+      {
+        "id": "graph.perspective.evidence",
+        "label": "Status epistemiczny",
+        "target": "evidence",
+        "status": "supported"
+      },
+      {
+        "id": "graph.perspective.visual",
+        "label": "Mapowania prezentacji",
+        "target": "visual",
+        "status": "supported"
+      },
+      {
+        "id": "graph.perspective.budget",
+        "label": "Budżet widoku",
+        "target": "budget",
+        "status": "supported"
+      },
+      {
+        "id": "graph.perspective.localResolution",
+        "label": "Lokalne wyjątki rozdzielczości",
+        "target": "localResolution",
+        "status": "supported"
+      },
+      {
+        "id": "graph.perspective.presentation",
+        "label": "Pola szczegółów prezentacji",
+        "target": "presentation",
+        "status": "supported"
+      },
+      {
+        "id": "graph.perspective.goal",
+        "label": "Cel",
+        "target": "goal",
+        "status": "supported"
+      },
+      {
+        "id": "graph.perspective.futureTexture",
+        "label": "Przyszły renderer tekstury",
+        "target": "futureTexture",
+        "status": "unsupported",
+        "reason": "Bieżący renderer nie implementuje tej możliwości. Dane pozostają zachowane."
+      }
+    ],
+    "nativeProjection": {
+      "childRelation": "contains",
+      "relationByField": {
+        "value": "effective_value",
+        "source": "resolved_from"
+      },
+      "kinds": {
+        "root": "profile",
+        "collection": "collection",
+        "component": "setting",
+        "value": "effective_setting",
+        "source": "source_reference",
+        "field": "field",
+        "reference": "reference"
+      },
+      "labels": {
+        "profile": "Stan profilu",
+        "components": "Parametry profilu",
+        "value": "Wartość efektywna",
+        "source": "Źródło wartości",
+        "overrides": "Jawne nadpisania",
+        "exclusions": "Trwałe wykluczenia",
+        "disabled": "Wyłączone wartości",
+        "catalog": "Katalog domyślnych"
+      },
+      "layerPaths": {
+        "user": "/profile/overrides/{key}",
+        "user_disabled": "/profile/disabled/{id}",
+        "user_exclusion": "/profile/exclusions/{id}",
+        "builtin": "/profile/catalog/{id}/entry",
+        "pack_proposal": "/profile/proposals/{id}"
+      },
+      "links": [
+        {
+          "from": "value",
+          "to": "source",
+          "relation": "resolved_from"
+        },
+        {
+          "from": "source",
+          "to": "layer",
+          "relation": "recorded_in"
+        }
+      ]
+    }
+  },
   "sourceDescriptor": {
     "id": "demo-source",
     "label": "Bezpieczny pakiet demonstracyjny",
@@ -538,7 +741,8 @@
           "uses",
           "produces",
           "justified_by",
-          "informs"
+          "informs",
+          "context"
         ],
         "description": "Wejścia, operacja, wynik i zapisane uzasadnienie."
       },
@@ -557,6 +761,7 @@
         "id": "provenance",
         "label": "Pochodzenie i nadpisania",
         "relations": [
+          "parts",
           "derived_from",
           "overridden_by",
           "justified_by"
@@ -625,6 +830,12 @@
         "status": "supported"
       },
       {
+        "id": "graph.perspective.presentation",
+        "label": "Pola szczegółów prezentacji",
+        "target": "presentation",
+        "status": "supported"
+      },
+      {
         "id": "graph.perspective.goal",
         "label": "Cel",
         "target": "goal",
@@ -668,7 +879,8 @@
         "uses",
         "produces",
         "justified_by",
-        "informs"
+        "informs",
+        "context"
       ]
     },
     {
@@ -687,6 +899,7 @@
       "label": "Pochodzenie i nadpisania",
       "structure": "provenance",
       "relations": [
+        "parts",
         "derived_from",
         "overridden_by",
         "justified_by"

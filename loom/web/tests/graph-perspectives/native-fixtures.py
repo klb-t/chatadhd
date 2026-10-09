@@ -21,9 +21,9 @@ def ref(ident, *, snapshot=None, canonical=None, representation=None):
 structures = [
     {'id':'physical','label':'Części źródła','relations':['parts','has_formula'], 'description':'Kontener i jego adresowalne części.'},
     {'id':'logical','label':'Struktura logiczna','relations':['logical','represents'], 'description':'Rekordy, pola i alternatywne reprezentacje tej samej tożsamości.'},
-    {'id':'computational','label':'Zależności obliczeniowe','relations':['has_formula','uses','produces','justified_by','informs'], 'description':'Wejścia, operacja, wynik i zapisane uzasadnienie.'},
+    {'id':'computational','label':'Zależności obliczeniowe','relations':['has_formula','uses','produces','justified_by','informs','context'], 'description':'Wejścia, operacja, wynik i zapisane uzasadnienie.'},
     {'id':'history','label':'Komentarze i wersje','relations':['comments','versions','corrects','supersedes'], 'description':'Odrębne wersje i komentarze; bez zmiany rozdzielczości.'},
-    {'id':'provenance','label':'Pochodzenie i nadpisania','relations':['derived_from','overridden_by','justified_by'], 'description':'Ślad pochodzenia i jawne źródło zmiany.'},
+    {'id':'provenance','label':'Pochodzenie i nadpisania','relations':['parts','derived_from','overridden_by','justified_by'], 'description':'Ślad pochodzenia i jawne źródło zmiany.'},
     {'id':'conversation','label':'Rozmowa i instrukcje','relations':['parts','corrects','supersedes','derived_from'], 'description':'Wiadomość źródłowa, korekta i aktualna instrukcja.'},
 ]
 values = {
@@ -31,26 +31,34 @@ values = {
  'traversal':{'relations':structures[2]['relations'],'direction':'both','hops':4},
  'temporal':{'compareSnapshots':[]}, 'evidence':['source','computed','inferred','unknown'],
  'visual':[
-   {'id':'peripheral','dimension':'relevance','match':{'distance':3},'style':{'opacity':0.6},'explanation':'Relacja poboczna: odległość grafowa co najmniej 3.'},
+   {'id':'peripheral','dimension':'relevance','match':{'distance':3},'style':{'opacity':0.6},'explanation':'Relacja poboczna: odległość grafowa równa 3.'},
    {'id':'past-version','dimension':'time','match':{'snapshot':'v1'},'style':{'opacity':0.45},'explanation':'Wersja historyczna v1 według wybranego profilu czasu.'},
    {'id':'unmeasured','dimension':'uncertainty','match':{'evidence':'unknown'},'style':{'blur':0.35},'explanation':'Status rozpoznania nieznany; pewność nie została zmierzona.'},
    {'id':'active','dimension':'relevance','match':{'focus':True},'style':{'color':'#89e2cc'},'explanation':'Aktualny punkt skupienia.'},
  ],
- 'budget':{'query':600,'render':80,'page':64},
+ 'budget':{'query':600,'render':80,'page':64,'neighborPages':600},
  'localResolution':[
    {'id':'active-detail','match':{'focus':True},'resolution':'full'},
+   {'id':'operation-detail','match':{'kind':'operation'},'resolution':'full'},
    {'id':'inputs','match':{'kind':'input'},'resolution':'summary'},
    {'id':'table-context','match':{'kind':'record'},'resolution':'aggregate','aggregate':{'id':'table-context','label':'Pozostałe rekordy'}},
    {'id':'other-containers','match':{'kind':'container'},'resolution':'label'},
  ],
+ 'presentation':[
+   {'id':'label','fields':[]},
+   {'id':'summary','fields':[{'id':'value','label':'Wartość','path':'/properties/raw/attrs/perspective/value'},{'id':'nativeValue','label':'Wartość natywna','path':'/properties/value'}]},
+   {'id':'full','fields':[{'id':'expression','label':'Wyrażenie','path':'/properties/raw/attrs/perspective/expression'},{'id':'value','label':'Wartość','path':'/properties/raw/attrs/perspective/value'},{'id':'text','label':'Treść','path':'/properties/raw/attrs/perspective/text'},{'id':'sources','label':'Źródła','path':'/properties/raw/attrs/perspective/source_refs'},{'id':'nativeValue','label':'Dokładna wartość natywna','path':'/properties/value'}]},
+   {'id':'raw','fields':[{'id':'raw','label':'Dane źródłowe','path':'/properties/raw'},{'id':'nativeValue','label':'Dokładny wynik resolvera','path':'/properties/value'}]},
+   {'id':'aggregate','fields':[{'id':'members','label':'Skład agregatu','path':'/aggregateMembers'}]},
+ ],
  'goal':{'id':'inspect','description':'Przejrzyj źródło i zapisane zależności bez uruchamiania analizy.'},
 }
-labels = {'structure':'Struktura','resolution':'Rozdzielczość','traversal':'Relacje i zasięg','temporal':'Czas i wersje','evidence':'Status epistemiczny','visual':'Mapowania prezentacji','budget':'Budżet widoku','localResolution':'Lokalne wyjątki rozdzielczości','goal':'Cel'}
+labels = {'structure':'Struktura','resolution':'Rozdzielczość','traversal':'Relacje i zasięg','temporal':'Czas i wersje','evidence':'Status epistemiczny','visual':'Mapowania prezentacji','budget':'Budżet widoku','localResolution':'Lokalne wyjątki rozdzielczości','goal':'Cel','presentation':'Pola szczegółów prezentacji'}
 capabilities = [{'id':'graph.perspective.'+key,'label':labels[key],'target':key,'status':'supported'} for key in values]
 capabilities.append({'id':'graph.perspective.futureTexture','label':'Przyszły renderer tekstury','target':'futureTexture','status':'unsupported','reason':'Bieżący renderer nie implementuje tej możliwości. Dane pozostają zachowane.'})
-pack = {'schema':'loom.default_layers_pack/1','pack_id':'loom.graph-perspectives.demo','revision':1,
+pack = {'schema':'loom.default_layers_pack/1','pack_id':'loom.graph-perspectives.demo','revision':2,
  'policy':{'excluded_area_new_defaults':'proposal'},
- 'entries':[{'id':'gp.'+key,'key':'graph.perspective.'+key,'area':'graph.perspectives','revision':1,'label':labels[key], 'value':value} for key,value in values.items()]}
+ 'entries':[{'id':'gp.'+key,'key':'graph.perspective.'+key,'area':'graph.perspectives','revision':1 if key=='presentation' else 2,'label':labels[key], 'value':value} for key,value in values.items()]}
 save('graph-perspectives.pack.json',pack)
 
 presets=[]
@@ -61,6 +69,19 @@ for st in structures:
     presets.append({'id':st['id'],'label':st['label'],'description':st['description'],'focus':focus,
       'actions':[{'op':'override','key':'graph.perspective.structure','value':st['id']},
                  {'op':'override','key':'graph.perspective.traversal','value':{'relations':st['relations'],'direction':'both','hops':4}}]})
+native_descriptor = {'id':'native-defaults','label':'Żywy profil: natywne warstwy R40','status':'available',
+ 'structures':[{'id':'native-provenance','label':'Rzeczywiste wartości i pochodzenie','relations':['contains','effective_value','resolved_from','recorded_in']}],
+ 'capabilities':capabilities,
+ 'nativeProjection':{'childRelation':'contains','relationByField':{'value':'effective_value','source':'resolved_from'},
+   'kinds':{'root':'profile','collection':'collection','component':'setting','value':'effective_setting','source':'source_reference','field':'field','reference':'reference'},
+   'labels':{'profile':'Stan profilu','components':'Parametry profilu','value':'Wartość efektywna','source':'Źródło wartości','overrides':'Jawne nadpisania','exclusions':'Trwałe wykluczenia','disabled':'Wyłączone wartości','catalog':'Katalog domyślnych'},
+   'layerPaths':{'user':'/profile/overrides/{key}','user_disabled':'/profile/disabled/{id}','user_exclusion':'/profile/exclusions/{id}','builtin':'/profile/catalog/{id}/entry','pack_proposal':'/profile/proposals/{id}'},
+   'links':[{'from':'value','to':'source','relation':'resolved_from'},{'from':'source','to':'layer','relation':'recorded_in'}]}}
+presets.append({'id':'live-provenance','label':'Żywe ustawienie i źródło nadpisania','description':'Dokładny wynik natywnego DefaultLayers: pole, wartość i źródło jej nadpisania. Odczyt bez drugiego magazynu.',
+ 'focus':{'source':'native-defaults','selector':'/components/graph.perspective.budget','canonicalId':'native-defaults:/components/graph.perspective.budget'},
+ 'actions':[{'op':'override','key':'graph.perspective.structure','value':'native-provenance'},
+            {'op':'override','key':'graph.perspective.traversal','value':{'relations':['contains','effective_value','resolved_from','recorded_in'],'direction':'both','hops':3}},
+            {'op':'override','key':'graph.perspective.budget','value':{'query':600,'render':80,'page':64,'neighborPages':600}}]})
 ui_words = {
  'title':'Perspektywy grafu','subtitle':'Jedno źródło, przecinające się struktury i jawny plan przejścia.',
  'preset':'Perspektywa','interfaceLevel':'Poziom interfejsu','basic':'Basic','advanced':'Advanced','expert':'Expert',
@@ -76,6 +97,8 @@ ui_words = {
  'disable':'Wyłącz','exclude':'Wyklucz trwale','reenable':'Włącz ponownie','override':'Nadpisz','clearOverride':'Usuń nadpisanie',
  'effective':'Efektywne','disabled':'Wyłączone','excluded':'Wykluczone','proposal':'Propozycja','missing':'Brak wartości','source':'Źródłowe','computed':'Obliczone','inferred':'Wywnioskowane','unknown':'Nieznane',
  'available':'Dostępne','unloaded':'Niezaładowane','denied':'Brak uprawnień','incoming':'Przychodzące','outgoing':'Wychodzące','both':'Oba kierunki',
+ 'queryPlanExport':'Eksport planu zapytania','visibilityQuery':'Zapytanie widoku','analysisMode':'Tryb selekcji analizy','anchors':'Punkty startowe','exact':'Dokładny zbiór','versionDiff':'Różnice wersji','before':'Przed','after':'Po',
+ 'target':'Obiekt docelowy','analysisAdd':'Dodaj do analizy','analysisRemove':'Usuń z analizy','analysisClear':'Wyczyść wybór analizy','derivedSelection':'Wybór z perspektywy',
  'component':'Składnik','applyComponent':'Zastosuj składnik','scenario':'Scenariusz','graph':'Graf','inspectRelation':'Sprawdź relację','partial':'Częściowy wynik','complete':'Pełny wynik','permissionsNotice':'Uprawnienia pochodzą z hosta; perspektywa ich nie zmienia.','selected':'Wybrane','restoreError':'Nie można odtworzyć zapisu','download':'Pobierz','importFile':'Importuj plik',
  'label':'Etykieta','summary':'Podsumowanie','full':'Pełna treść','aggregate':'Agregat','native':'Natywny resolver R40',
 }
@@ -83,6 +106,8 @@ save('catalog.json',{'schema':'loom.graph_perspectives_catalog/1','capabilities'
  'ui':ui_words,'controls':{'level':'basic','storageKey':'loom.graph-perspectives.demo.v1','defaultPreset':'computational'},
  'snapshots':[{'id':'v1','label':'v1: wartość 5'},{'id':'v2','label':'v2: wartość 7'}],
  'targets':[{'id':i,'label':l,'ref':ref(i,**extra)} for i,l,extra in [('e_cell','Komórka/pole',{'snapshot':'v2'}),('e_formula','Operacja',{}),('e_result','Wynik',{}),('e_effective','Efektywne ustawienie',{}),('e_conversation','Rozmowa',{}),('e_unloaded','Nieotwarte źródło',{}),('e_unavailable','Niedostępne źródło',{}),('e_unknown','Nieznana struktura',{})]],
+ 'analysisExport':{'id':'perspective-review','thesisId':'perspective-thesis','text':'Przeanalizuj jawnie wybrane referencje i zachowaj dowody przeciwne.','selectionMode':'exact','requireCounterEvidence':True,'budgetWeight':1},
+ 'nativeSourceDescriptor':native_descriptor,
  'sourceDescriptor':{'id':'demo-source','label':'Bezpieczny pakiet demonstracyjny','structures':structures,'capabilities':capabilities,'status':'available'},
  'navigation':[{'id':s['id'],'label':s['label'],'structure':s['id'],'relations':s['relations']} for s in structures],
  'evidenceNotes':{'confidence':'Brak skalibrowanej oceny. Wymagane numeryczne pole native confidence=0 jest wyłącznie wartością transportową; publiczna pewność pozostaje null.'}})
@@ -123,9 +148,10 @@ relationships=[
  ('e_cell','has_formula','e_formula',['physical','computational']),('e_formula','uses','e_input_a',['computational']),('e_formula','uses','e_input_b',['computational']),
  ('e_formula','produces','e_result',['computational']),('e_result','justified_by','e_justification',['computational','provenance']),('e_justification','informs','e_decision',['computational']),
  ('e_cell','comments','e_comment',['history']),('e_cell','versions','e_version_v1',['history']),('e_file','parts','e_unloaded',['physical']),('e_file','parts','e_unavailable',['physical']),('e_file','parts','e_unknown',['physical']),
- ('e_profile','parts','e_profile_field',['physical']),('e_effective','derived_from','e_profile_field',['provenance']),('e_effective','overridden_by','e_override',['provenance']),
+ ('e_profile','parts','e_profile_field',['physical','provenance']),('e_effective','derived_from','e_profile_field',['provenance']),('e_effective','overridden_by','e_override',['provenance']),
  ('e_conversation','parts','e_message',['conversation']),('e_correction','corrects','e_message',['conversation','history']),('e_instruction','supersedes','e_message',['conversation','history']),('e_instruction','derived_from','e_correction',['conversation','provenance']),
  ('e_table','parts','e_record_other',['physical']),('e_table','parts','e_record_other2',['physical']),
+ ('e_formula','context','e_table',['computational']),('e_table','context','e_record_other',['computational']),('e_table','context','e_record_other2',['computational']),('e_table','context','e_other',['computational']),
 ]
 source_data={'schema':'loom.graph-perspectives.authored-example/1','notice':'Fictional safe data; no private source exports. Domain labels are replaceable by another adapter.', 'objects':objects,
  'relationships':[{'from':a,'kind':p,'to':b,'structures':s} for a,p,b,s in relationships]}

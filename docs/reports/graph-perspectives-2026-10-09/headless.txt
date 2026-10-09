@@ -1,0 +1,36 @@
+✔ native suppression is permanent input to compiler, not a fallback request (2.318892ms)
+✔ compile explains explicit navigation and validates budgets independently (0.988148ms)
+✔ malformed match/style fields fail while unknown predicates stay preserved and unsupported (0.502767ms)
+✔ on-demand address resolves before source rendering and bounded traversal is canonical-data immutable (7.719344ms)
+✔ same resolution gives distinct dependency vs comment/version structures (1.397013ms)
+✔ local detail and aggregation are independent of chosen relation structure (1.013046ms)
+✔ unknown local predicate never silently broadens a rule (0.454344ms)
+✔ visual relevance, time and uncertainty remain separately explained; parser does not gain confidence (0.695477ms)
+✔ render and query budgets disclose omitted data and pending adapter cursors (0.675407ms)
+✔ denied, unloaded, unavailable and unknown objects remain references without pretend empty data (0.852274ms)
+✔ analysis membership is independent of view filtering and access permission (0.499773ms)
+✔ snapshot comparison preserves identity and active focus with render budget one (0.98917ms)
+✔ adapter cannot silently return another snapshot (0.425501ms)
+✔ navigation history distinguishes representation, identity and related objects reversibly (0.339201ms)
+✔ unknown options and native disable/exclusion actions survive roundtrip unchanged (0.43841ms)
+✔ legacy workspace is validated and preserved for native resolution, not silently assigned defaults (0.469527ms)
+✔ new adapter structure needs descriptors and mapping only, not core recompilation (0.309466ms)
+✔ custom capability is forwarded and remains unsupported unless adapter declares it (0.481155ms)
+✔ resolved canonical identity is rechecked against permissions before exposing contents (0.284999ms)
+✔ unavailable context cannot be disguised as an available aggregate (0.43161ms)
+✔ adapter-normalized representations do not duplicate objects reached through comparison and edges (0.460513ms)
+✔ denied relation endpoints never expose adapter relation metadata (0.350037ms)
+✔ advancing empty pages obey explicit neighbor read budget and provide continuation (0.253362ms)
+✔ malformed suppression containers cannot be silently discarded on import (0.51089ms)
+✔ asserted canonical identity plus representation and snapshot deduplicates physical selector aliases (1.390384ms)
+✔ local resolution executes data-selected field projection while preserving source properties (0.718792ms)
+✔ snapshot differences use canonical identity and exact property paths without semantic or chronology claims (0.80365ms)
+✔ visual colors accept self-contained CSS only and cannot send requests through SVG paint URLs (2.986187ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 48.837484
