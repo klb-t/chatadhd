@@ -1,0 +1,98 @@
+{
+  "schema": "klb.audit.artifact-manifest/1",
+  "sha": "b9b503f62bb8e8e00c94ab7401e1cd9579129af3",
+  "files": [
+    {
+      "scope": "reports",
+      "file": "REPORT.md",
+      "bytes": 7928,
+      "sha256": "edba5aac5fcc12d58c7cb03208b53962f04b0f1e0a8a688cf62a42ea1a59b5cf"
+    },
+    {
+      "scope": "reports",
+      "file": "backlog.json",
+      "bytes": 5482,
+      "sha256": "df02ebbbc49d1bcaa371223745a7d78817c39525d90ed380b2ebf718b77a58f9"
+    },
+    {
+      "scope": "reports",
+      "file": "coverage.json",
+      "bytes": 23811,
+      "sha256": "e82f066923c9a5325aa9cb032356e58f46badf6457da8bfa371a2ec488ca6c7f"
+    },
+    {
+      "scope": "reports",
+      "file": "data-graph-runtime-map.json",
+      "bytes": 1213,
+      "sha256": "977a12ead8ef11fd3a66812b703252502e0dfc4115898eae21a9b6f0b9adf362"
+    },
+    {
+      "scope": "reports",
+      "file": "decision-register.json",
+      "bytes": 1414,
+      "sha256": "8b388b245a629614d6b9f0df4188420239a0851a3e3861eaa7bb1297e9b3f8e4"
+    },
+    {
+      "scope": "reports",
+      "file": "delta-initial-receipt.json",
+      "bytes": 6214,
+      "sha256": "ccc4346e3c1f98d63b7d4123d08394a91b6adfffae22f18dcc629cb457cecf15"
+    },
+    {
+      "scope": "reports",
+      "file": "delta-receipt.json",
+      "bytes": 7265,
+      "sha256": "ac2efc91d136bc7fa735bca405d8657192473d621fb79900bb38f756a775453c"
+    },
+    {
+      "scope": "reports",
+      "file": "delta-run.log",
+      "bytes": 2172,
+      "sha256": "5fce429a1e2889e7bfd4c496b4ef7c33f0562ddf9ea0a5bbeb829df0eabf356c"
+    },
+    {
+      "scope": "reports",
+      "file": "existing-native-receipt.json",
+      "bytes": 5942,
+      "sha256": "84b3581dc3b65b875b7d38daa56ba26851a138616be6e9586293c55cebe60f8c"
+    },
+    {
+      "scope": "reports",
+      "file": "existing-projection-receipt.json",
+      "bytes": 5533,
+      "sha256": "9cec36a6f0519e236da36153d46b626ddff8add2c7a01de0554f749a6305167d"
+    },
+    {
+      "scope": "reports",
+      "file": "findings.jsonl",
+      "bytes": 9930,
+      "sha256": "32c42d563aeca564aa9bfbc10ac50360f1f66833261da0551b62724ddd20c890"
+    },
+    {
+      "scope": "reports",
+      "file": "increment-review.json",
+      "bytes": 2178,
+      "sha256": "98a175f8ff7630ec2a0a89d4d1066b8f1b86bde93bea72cc25f34dc3f0841b25"
+    },
+    {
+      "scope": "reports",
+      "file": "test-index.json",
+      "bytes": 2401,
+      "sha256": "4212886702e23b70404353d6ff1f647a63a6295a683d1057bf1e196e9626414b"
+    },
+    {
+      "scope": "tools",
+      "file": "README.md",
+      "bytes": 2322,
+      "sha256": "f7ef245ba660adec5df4801ff535c36b6a17c4f6d211f05d1441f9191b3193a8"
+    },
+    {
+      "scope": "tools",
+      "file": "run.py",
+      "bytes": 18077,
+      "sha256": "1778f33569c33a4e0e1d1e4efd924288897e3c57165677595ad036004ae5cf99"
+    }
+  ],
+  "old_receipts_preserved": true,
+  "publication": "Root publishes this disjoint package on A branch; this subagent made no git mutations."
+}

@@ -1,0 +1,41 @@
+{
+  "schema": "klb.audit.executable-index/1",
+  "sha": "b9b503f62bb8e8e00c94ab7401e1cd9579129af3",
+  "commands": [
+    {
+      "id": "existing-projection",
+      "command": "PYTHONPATH=audit-work/continuation/scratch/c-review/deps:audit-work/deps python3 audit-work/continuation/artifacts/tools/ecosystem-audit-2026-10-09/pass2/c-review/run.py --repo audit-work/continuation/checkouts/C2 --sha b9b503f62bb8e8e00c94ab7401e1cd9579129af3 --phase projection --output /tmp/C2-existing-projection.json",
+      "receipt": "existing-projection-receipt.json",
+      "observed_exit": 1,
+      "counts": {
+        "PASS": 3,
+        "FAIL": 6
+      },
+      "caveat": "C-PUBLIC-00 is obsolete current-program equality; C2-HISTORY-01 resolves actual historical provenance."
+    },
+    {
+      "id": "existing-native",
+      "command": "PYTHONPATH=audit-work/continuation/scratch/c-review/deps:audit-work/deps python3 audit-work/continuation/artifacts/tools/ecosystem-audit-2026-10-09/pass2/c-review/run.py --repo audit-work/continuation/checkouts/C2 --sha b9b503f62bb8e8e00c94ab7401e1cd9579129af3 --native-lib /workspace/scratch/1112e9e8a3c6/audit-work/continuation/scratch/native/main-build/libloom.so.0.1.0 --native-sha 9e20f99ab27e7cd45e1892f83bf60fbe60db3de9 --phase native --output /tmp/C2-existing-native.json",
+      "receipt": "existing-native-receipt.json",
+      "observed_exit": 0,
+      "counts": {
+        "PASS": 9,
+        "FAIL": 0
+      }
+    },
+    {
+      "id": "C2-delta",
+      "command": "PYTHONPATH=audit-work/continuation/scratch/c-review/deps:audit-work/deps python3 audit-work/continuation/artifacts/tools/ecosystem-audit-2026-10-09/pass2/c-review/C2/run.py --repo audit-work/continuation/checkouts/C2 --sha b9b503f62bb8e8e00c94ab7401e1cd9579129af3 --native-lib /workspace/scratch/1112e9e8a3c6/audit-work/continuation/scratch/native/main-build/libloom.so.0.1.0 --native-sha 9e20f99ab27e7cd45e1892f83bf60fbe60db3de9 --output /tmp/C2-delta.json",
+      "receipt": "delta-receipt.json",
+      "observed_exit": 1,
+      "counts": {
+        "PASS": 7,
+        "FAIL": 4
+      }
+    }
+  ],
+  "reproduction_does_not_imply_acceptance": true,
+  "transport": "intercepted and socket connect blocked",
+  "paid_calls": 0,
+  "history": "delta-initial-receipt.json preserved before adding a full verified bridge native roundtrip and standard Python exception rendering; initial gates not weakened."
+}

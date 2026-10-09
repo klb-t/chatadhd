@@ -1,0 +1,215 @@
+{
+  "schema": "klb.audit.c2-boundaries/1",
+  "repo": "klb-t/chatadhd",
+  "sha": "b9b503f62bb8e8e00c94ab7401e1cd9579129af3",
+  "prior_sha": "69880859802267f1b38b82eeaecd6fdc5522a47a",
+  "native_sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+  "native_library_sha256": "4ce4d06f2348c82f063893882a85ebc1c2efdec584e28f52dd90d87f64842771",
+  "test_source_sha256": "1778f33569c33a4e0e1d1e4efd924288897e3c57165677595ad036004ae5cf99",
+  "tests": [
+    {
+      "id": "C2-HISTORY-01",
+      "acceptance": "PASS",
+      "reproduction": null,
+      "evidence": {
+        "artifact_unchanged": true,
+        "embedded_program_matches_prior_sha": true,
+        "embedded_program_sha256": "be62bc13b2c57e3215774574a2537189ca67ba016e1d4a1ef1636784bbf3c516",
+        "prior_sha": "69880859802267f1b38b82eeaecd6fdc5522a47a",
+        "interpretation": "Existing C-PUBLIC-00 current-source equality FAIL is an obsolete latest-source assumption for an intentionally preserved historical packet, not a product regression."
+      }
+    },
+    {
+      "id": "C2-PUBLIC-01",
+      "acceptance": "PASS",
+      "reproduction": null,
+      "evidence": {
+        "input_kind": null,
+        "artifact_emitted": true,
+        "rejection": null,
+        "log_canary_hit": false,
+        "canary_sha256": "56340b2f45938bbcc85a97df37aa83613b1ed9f54a1ce72754ce60bdc895cf54",
+        "raw_json_hit": false,
+        "source_roles_hit": []
+      }
+    },
+    {
+      "id": "C2-PUBLIC-02",
+      "acceptance": "FAIL",
+      "reproduction": "PASS",
+      "evidence": {
+        "input_kind": "handoff-example.json",
+        "artifact_emitted": false,
+        "rejection": {
+          "class": "ValidationError",
+          "sha256": "fe96664521eb9f4e1de1bee790df47280f5e02c838cc531c218738ac921c0ac5",
+          "contains_canary": true
+        },
+        "log_canary_hit": true,
+        "canary_sha256": "7086b0930483b0b4a9d54dda901f02f3c41cc306127df9f608eb5a4d468a42aa",
+        "source_roles_hit": [],
+        "raw_json_hit": false
+      }
+    },
+    {
+      "id": "C2-PUBLIC-03",
+      "acceptance": "FAIL",
+      "reproduction": "PASS",
+      "evidence": {
+        "input_kind": "evaluation-protocol.json",
+        "artifact_emitted": true,
+        "rejection": null,
+        "log_canary_hit": false,
+        "canary_sha256": "d3fb98b244dc5586977b5ef06558968a4edbe9717ef8a9ea2a72dc40d88b0eec",
+        "raw_json_hit": true,
+        "source_roles_hit": [
+          "policy"
+        ]
+      }
+    },
+    {
+      "id": "C2-PUBLIC-04",
+      "acceptance": "FAIL",
+      "reproduction": "PASS",
+      "evidence": {
+        "input_kind": "handoff-projection.json",
+        "artifact_emitted": true,
+        "rejection": null,
+        "log_canary_hit": false,
+        "canary_sha256": "4f058b5a021be0c4d35f08645bbb9f25f6af756f76e476189637eacb91dfd6cb",
+        "raw_json_hit": true,
+        "source_roles_hit": [
+          "projection-profile-bytes"
+        ]
+      }
+    },
+    {
+      "id": "C2-PAYER-01",
+      "acceptance": "PASS",
+      "reproduction": null,
+      "evidence": {
+        "terminal_ledger_validated": true,
+        "synthetic_payer_post_calls": 1,
+        "external_calls": 0,
+        "queue_ledger_request_match": true,
+        "queue_request_sha256": "1b50963799208574f4bb50c0a1298f662368b4dfb4ef59c84cbecb3522f050da",
+        "ledger_request_sha256": "1b50963799208574f4bb50c0a1298f662368b4dfb4ef59c84cbecb3522f050da",
+        "resulting_state": "captured",
+        "billing_verified": true,
+        "settlement_evidence_written": true,
+        "result_uses_queued_hash": true,
+        "rejection": null,
+        "sync_transport_calls": 0,
+        "prior_verified_dispatch_evidence": false,
+        "boundary": "Legacy/offline pending queue imported against a real fully validated fixture ledger; no database tampering."
+      }
+    },
+    {
+      "id": "C2-PAYER-02",
+      "acceptance": "FAIL",
+      "reproduction": "PASS",
+      "evidence": {
+        "terminal_ledger_validated": true,
+        "synthetic_payer_post_calls": 1,
+        "external_calls": 0,
+        "queue_ledger_request_match": false,
+        "queue_request_sha256": "fc434f7b4c2c99a070c6f9844a60ab26e3a5dd1f386939cb7c95b0ca3c5bbb4d",
+        "ledger_request_sha256": "1b50963799208574f4bb50c0a1298f662368b4dfb4ef59c84cbecb3522f050da",
+        "resulting_state": "captured",
+        "billing_verified": true,
+        "settlement_evidence_written": true,
+        "result_uses_queued_hash": true,
+        "rejection": null,
+        "sync_transport_calls": 0,
+        "prior_verified_dispatch_evidence": false,
+        "boundary": "Legacy/offline pending queue imported against a real fully validated fixture ledger; no database tampering."
+      }
+    },
+    {
+      "id": "C2-WIRE-01",
+      "acceptance": "PASS",
+      "reproduction": null,
+      "evidence": {
+        "effective_cache_request": "false",
+        "observed_cache_status": "HIT",
+        "unrelated_header_omitted": true,
+        "external_calls": 0
+      }
+    },
+    {
+      "id": "C2-PUBLIC-05",
+      "acceptance": "PASS",
+      "reproduction": null,
+      "evidence": {
+        "bindings": {
+          "policy": true,
+          "program": true
+        },
+        "result_count": 4,
+        "source_roles": 9,
+        "packet_sha256": "1e3d9d44e7158b18a4ab757e20be8541d0ea6cb3b7c0727b2d9530234d75c119"
+      }
+    },
+    {
+      "id": "C2-NATIVE-01",
+      "acceptance": "PASS",
+      "reproduction": null,
+      "evidence": {
+        "checks": {
+          "packet_exact_after_restart": true,
+          "receipt_immutable": true,
+          "materialized_rows_match": true,
+          "all_source_bytes_recovered": true,
+          "all_results_recovered": true,
+          "acceptance_does_not_establish_truth": true
+        },
+        "counts": {
+          "entities": 13,
+          "claims": 22,
+          "sources": 12
+        },
+        "result_count": 4,
+        "native_sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9"
+      }
+    },
+    {
+      "id": "C2-NATIVE-02",
+      "acceptance": "PASS",
+      "reproduction": null,
+      "evidence": {
+        "checks": {
+          "payer_completed": true,
+          "queue_captured": true,
+          "billing_verified_from_fixture_ledger": true,
+          "verified_reservation_evidence": true,
+          "dispatch_order_recorded": true,
+          "packet_exact_after_restart": true,
+          "rows_match": true,
+          "results_exact": true,
+          "source_files_exact": true
+        },
+        "counts": {
+          "entities": 11,
+          "claims": 16,
+          "sources": 12
+        },
+        "result_count": 2,
+        "controlled_transport_post_calls": 1,
+        "real_provider_calls": 0,
+        "real_spend_usd": "0",
+        "native_sha": "9e20f99ab27e7cd45e1892f83bf60fbe60db3de9",
+        "boundary": "Harness composes existing APIs; no product dispatcher or UI integration claimed. Synthetic fixture ledger only."
+      }
+    }
+  ],
+  "counts": {
+    "PASS": 7,
+    "FAIL": 4
+  },
+  "private_inputs_read": false,
+  "paid_calls": 0,
+  "real_network_calls": 0,
+  "environment": "Python socket connect/create_connection denied; intercepted payer fixture transport; native background workers disabled",
+  "synthetic_credentials_only": true,
+  "fixtures_not_author_tests": true
+}

@@ -1,0 +1,564 @@
+{
+  "schema": "klb.audit.delta-coverage/1",
+  "repo": "klb-t/chatadhd",
+  "prior_sha": "69880859802267f1b38b82eeaecd6fdc5522a47a",
+  "sha": "b9b503f62bb8e8e00c94ab7401e1cd9579129af3",
+  "denominator": {
+    "changed_files": 64,
+    "changed_non_test_executable_python": 11,
+    "author_test_python": 5,
+    "files_with_selected_functions_reviewed": 4
+  },
+  "files": [
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/START.json",
+      "category": "public_research_data_or_report",
+      "source_sha256": "e31ff9c4972b844fd4df265ec2640096d44bc078f872de6e7a7b32edab5daf4e",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/candidate-presets-v1.json",
+      "category": "public_research_data_or_report",
+      "source_sha256": "0eae8cd1df41d58422b3d821660a7722ab0e6644b98057b9d96b1c6a090be712",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/context-README.md",
+      "category": "public_research_data_or_report",
+      "source_sha256": "ff08ed0e41932db243ff41a13f5a329d501e9e54ae64af6cdc31edf9490ff8ed",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/context-build-release.py",
+      "category": "executable_research_code",
+      "source_sha256": "705c52fe1bb7a7b4333c95e8f46337ff7f2fafbab914e57491c9f874041084b1",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/context-expanded-v1-receipt.json",
+      "category": "public_research_data_or_report",
+      "source_sha256": "39702bf08f12b3412b68d1e169709f49da6f5849464cc2b66f2bbfcd9d9edfc5",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/context-expanded-v2-receipt.json",
+      "category": "public_research_data_or_report",
+      "source_sha256": "49a50374495e8fe21705740cf5a800dfb2586b3a2bb4977cb2a2ddf9ec3bcdb8",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/context-plan.json",
+      "category": "public_research_data_or_report",
+      "source_sha256": "6aa27a82f642285834c8dc87f88fd7d5b20ac505575e9e5b74010ce16311a403",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/context-profiles.json",
+      "category": "public_research_data_or_report",
+      "source_sha256": "9dec535332e8e2565cf2c5b51a8a9386298915d8f0562445e8f63ac1acd96428",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/context-task-policy.json",
+      "category": "public_research_data_or_report",
+      "source_sha256": "a422c9829d787abc3e6679921b45bcaaf541476ac782153b738547909b858f8f",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/context-verification.json",
+      "category": "public_research_data_or_report",
+      "source_sha256": "01b5f94d18ec2221df643e34c9c4ecfa236cee31a9a92a875c326afeb42ee5c0",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/corpus-actual-qa.json",
+      "category": "public_research_data_or_report",
+      "source_sha256": "6db2a078bf18a6c713e6c749cc75a904dfb0109d8658c61d479444b7542590f6",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/corpus-guard-test-output.txt",
+      "category": "public_research_data_or_report",
+      "source_sha256": "ea5b8f648c12648fc225d58c0cd72b9908b3cee73384c92a6029870a86bcc3b7",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/corpus-guard-tests.json",
+      "category": "public_research_data_or_report",
+      "source_sha256": "a971dc5aab818daa960b4be8dfc874b265717ff639740cc1d9697b6a02974f83",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/corpus-guard-v1_1.md",
+      "category": "public_research_data_or_report",
+      "source_sha256": "c531b3cebee2b67952422f1f87d5c0cbb10b0bc497522f202d0cfd98cd373255",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/corpus-historical-guard-receipt.json",
+      "category": "public_research_data_or_report",
+      "source_sha256": "5de3db254ba9b7f3c5d4d2221b5cf09b9449bbec0eb1f1095f1a270ca0aa8817",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/corpus-methodology.md",
+      "category": "public_research_data_or_report",
+      "source_sha256": "9556e5473e3c6b6e6cdf2ee4c737ce22774626047b9d200e94f92b76d4492746",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/corpus-policy-v1_1.json",
+      "category": "public_research_data_or_report",
+      "source_sha256": "f3349ce8e765809fc94c9c004e192203c60737a372e60830242a4daabcfca40d",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/corpus-policy.json",
+      "category": "public_research_data_or_report",
+      "source_sha256": "3cc34abab065bd1bc45e0b72a248e85efc4a6e1dfb27b0b7b6f7db5b529fa180",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/corpus-receipt.json",
+      "category": "public_research_data_or_report",
+      "source_sha256": "4e1e8f9c9a0eb696c454f6fddc9d6e93ecda8c3d205472f3ab6010b7ea52ef96",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/corpus-test-output.txt",
+      "category": "public_research_data_or_report",
+      "source_sha256": "16f64fde08662efd4af13eae47bca23b55524f4fc2df3ec04fb64c0adc2d37f6",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/corpus-tests.json",
+      "category": "public_research_data_or_report",
+      "source_sha256": "7c4588edea48f7a6e1d4c059da1be580fa3b18b4c8963d24c3431ff61549ad1e",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/corpus-verify.py",
+      "category": "executable_research_code",
+      "source_sha256": "67db89bbf2770f258fe59f9ffa616b5f7cbd1ccdf63b0d4ac64deedf6ce26c31",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/evaluation-MANIFEST-v1.json",
+      "category": "public_research_data_or_report",
+      "source_sha256": "a0e56aef6f8db000b810d5b1906e7a59b6535638bf3fb61eae0c02172dd55d96",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/evaluation-build.py",
+      "category": "executable_research_code",
+      "source_sha256": "9f336070c4f86c56998a204c5e87c551e764a6f3478fe4e964c834c6abc50866",
+      "coverage": "selected_functions_not_whole_file",
+      "ranges": [
+        [
+          1,
+          48
+        ]
+      ],
+      "functions": [
+        "main",
+        "__main__ exception boundary"
+      ],
+      "runtime_exercised": [
+        "valid build",
+        "unknown presentation schema rejection + real exception renderer",
+        "protocol/projection auxiliary canaries"
+      ],
+      "not_exercised": [
+        "filesystem permission failure",
+        "all malformed JSON/path failures"
+      ]
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/evaluation-missing-receipt.json",
+      "category": "public_research_data_or_report",
+      "source_sha256": "72d1b4e7d183b9e0d101f7f531f4f112d1042700e3f4ed31de7cdf9320d8f0dd",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/evaluation-protocol.json",
+      "category": "public_research_data_or_report",
+      "source_sha256": "437240e208e2e1cf6b1711142cddcc4b617717de177150d098c8af7de2d4b6ff",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/evaluation-response-forms.json",
+      "category": "public_research_data_or_report",
+      "source_sha256": "2a7be898c39599364f89b19d449187e41930890074a466f374b1256ec5c3faa6",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/evaluation-run-missing.py",
+      "category": "executable_research_code",
+      "source_sha256": "d2aed4163247d17ee687441d42bcecb4360ef03a9115baecc9c5320b8408ce94",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/evaluation-test-output.txt",
+      "category": "public_research_data_or_report",
+      "source_sha256": "90d08b0923155122a279254628b0e9a36c710a6ccdf40192710ec05840c9566b",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/evaluation-tests.json",
+      "category": "public_research_data_or_report",
+      "source_sha256": "741894152b57d6eed7d3904b0683df5f4ce446c5337f972317baac53ade9a567",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/handoff-B.md",
+      "category": "public_research_data_or_report",
+      "source_sha256": "4eb0df152b5dc3704f61acf32e3e1e3c64571a15c75a4af8f4b7ca6e4e51f807",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/handoff-artifact-v2.json.gz",
+      "category": "public_research_data_or_report",
+      "source_sha256": "ca53c593b0cc193c707dc9fbd39070ec72b698c82fc6e82b3c6b273fbab5349c",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/handoff-artifact-v2.json.receipt.json",
+      "category": "public_research_data_or_report",
+      "source_sha256": "8b43c90a274b83ae1639cac047b894a3177e9eaff51e042aa46552808205d17e",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/handoff-contract.json",
+      "category": "public_research_data_or_report",
+      "source_sha256": "a213580db43e6da51f1aafa7a7a0fac09b0493fdbff736f6ab90af4c787e4f3f",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/handoff-example.json",
+      "category": "public_research_data_or_report",
+      "source_sha256": "de13e7277474df39329c7945a6f04e3aa5192bee08be8b7a8fd2e3341da51bb7",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/handoff-projection.json",
+      "category": "public_research_data_or_report",
+      "source_sha256": "894f3c7d7edc8b260b91dafaa4712c328938faa6abffc10e6cb0b390ae0e3998",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/jev-admission-receipt-v2.json",
+      "category": "public_research_data_or_report",
+      "source_sha256": "f30613c68c1d2f1237866f38be6256fe0dd7f594c5fc15d7e83243a51af2bab7",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/jev-admission-v2.md",
+      "category": "public_research_data_or_report",
+      "source_sha256": "fdcc4d4cafc5a512355b840394a01654395a546e287b7e37d9fdb39457540e0c",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/jev-plan-v2.json",
+      "category": "public_research_data_or_report",
+      "source_sha256": "419a2a322dae4d4172725743c45c159f0b4e9cdca9f0a9dd95e9bed2c3cb10bd",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/jev-tests-v2.json",
+      "category": "public_research_data_or_report",
+      "source_sha256": "77e3f8f752d7587e8ae3700023d8ece034cb0e51781fb0216f175f75b479900d",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/jev-tests-v2.txt",
+      "category": "public_research_data_or_report",
+      "source_sha256": "0773cc2c78681c8ee7602ba9a8a64f43c92e07a3647aa9b2595bb7ed04a43812",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/payer-boundary.md",
+      "category": "public_research_data_or_report",
+      "source_sha256": "15d0a0b6763adf565704365c566e3819e8110960bfd3bf8505c24edcb7d5a242",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/payer-manifest.json",
+      "category": "public_research_data_or_report",
+      "source_sha256": "4f67c2f0b7034f70d1ca01a7e5fdfad9fcef17a8028b45650a7ab77b39173445",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/payer-test-logs.zip",
+      "category": "public_research_data_or_report",
+      "source_sha256": "f7070498f2a5bd4e25d3971388777cf1fffe081b4e1bc16f16970a2230c5ae53",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/provider-documentation.json",
+      "category": "public_research_data_or_report",
+      "source_sha256": "320892ee6059e5ea32577bbe8f483586048dfd5d76aac4262ea3b064814e93c0",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/queue-benchmark.json",
+      "category": "public_research_data_or_report",
+      "source_sha256": "c14a7faa8a7ba945ab51771b0e7defbb0a1e872ade7560951c74b82fd2dd1f04",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/queue-benchmark.py",
+      "category": "executable_research_code",
+      "source_sha256": "44bb5884f7ec29a2165bb2b2fa3c172010233bf25f25892a51aaae9229bd54ba",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/stage-01-guard.json",
+      "category": "public_research_data_or_report",
+      "source_sha256": "716bde6d9bd379b4bfccacadcd741e0786e22115a8bb552f23a437931f0dde8d",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/stage-01.json",
+      "category": "public_research_data_or_report",
+      "source_sha256": "8e3f1e314056b5f00cab630776f0890338800de31677a8796546432b1957f63f",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/stage-02.json",
+      "category": "public_research_data_or_report",
+      "source_sha256": "6e554087960db79e45b698b9604482af82ec4b1fd67ffdca62bc537d9be4cb32",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/stage-03.json",
+      "category": "public_research_data_or_report",
+      "source_sha256": "2aaf84e74d084ad30b03f724b55e19a2794d47072d093d4f453ef3fbbfa48dc9",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/stage-04.json",
+      "category": "public_research_data_or_report",
+      "source_sha256": "1b03a6a26ac6289b14107eb2ea40b6a250f907ce8a11287e8928a9e795f10317",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "docs/research/thread7_real_2026-10-09/continuation_01/stage-05.json",
+      "category": "public_research_data_or_report",
+      "source_sha256": "d409e2f624b0271df9677d66b3cec516f9d50159358e9414ffca686b6a7a06e8",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "loom/tools/structure/experiment_analysis_v1.py",
+      "category": "executable_research_code",
+      "source_sha256": "375f38d595b61efc3614f604caee4b1082548043664ab65b21d502de52e35fca",
+      "coverage": "selected_functions_not_whole_file",
+      "ranges": [
+        [
+          1,
+          95
+        ],
+        [
+          415,
+          555
+        ]
+      ],
+      "functions": [
+        "validate_protocol",
+        "build_handoff_artifact"
+      ],
+      "runtime_exercised": [
+        "build_handoff_artifact via actual public entrypoint"
+      ],
+      "not_exercised": [
+        "semantic evaluation correctness",
+        "paired comparison/stability/tradeoff",
+        "full corpus and context consumers"
+      ]
+    },
+    {
+      "path": "loom/tools/structure/experiment_context_preparation_v1.py",
+      "category": "executable_research_code",
+      "source_sha256": "575d701e071528571d2692360288110601a81b6c5bc72c035642b21db82c095b",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "loom/tools/structure/experiment_corpus_v1.py",
+      "category": "executable_research_code",
+      "source_sha256": "b1e62fb871479a89d9258c77c1754d28ba5752f54f0eed221105d9abe1dd702e",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "loom/tools/structure/experiment_payer_boundary_v1.py",
+      "category": "executable_research_code",
+      "source_sha256": "da04d31bdf118a8fbd0d91bf61fde0b01fc2d82349d511ed3dac7544cc4e0970",
+      "coverage": "selected_functions_not_whole_file",
+      "ranges": [
+        [
+          25,
+          66
+        ],
+        [
+          69,
+          188
+        ],
+        [
+          190,
+          209
+        ]
+      ],
+      "functions": [
+        "CacheObservedTransport",
+        "PayerBoundary.verify",
+        "transport",
+        "sync_verified",
+        "release_unreserved_claim"
+      ],
+      "runtime_exercised": [
+        "CacheObservedTransport.request",
+        "verify",
+        "transport happy path",
+        "sync_verified control/mismatched-request recovery",
+        "actual payer -> native graph roundtrip"
+      ],
+      "not_exercised": [
+        "release_unreserved_claim; reviewed source only",
+        "live HTTP backend",
+        "pending resolution/fault matrix from author suite"
+      ]
+    },
+    {
+      "path": "loom/tools/structure/experiment_workflow_v1.py",
+      "category": "executable_research_code",
+      "source_sha256": "9d67e21da33733aefb5a410e6da65d92cd6a81341cd7c87466fce47b64ba287b",
+      "coverage": "selected_functions_not_whole_file",
+      "ranges": [
+        [
+          105,
+          138
+        ],
+        [
+          174,
+          235
+        ],
+        [
+          238,
+          294
+        ],
+        [
+          324,
+          413
+        ],
+        [
+          428,
+          445
+        ]
+      ],
+      "functions": [
+        "jobs",
+        "ordered_jobs",
+        "Queue.__init__",
+        "add",
+        "claim",
+        "mark_verified_dispatched",
+        "mark_dispatched",
+        "capture_first",
+        "snapshot",
+        "result_record"
+      ],
+      "runtime_exercised": [
+        "blocked ordering for fixtures",
+        "actual queue persistence and result association"
+      ],
+      "not_exercised": [
+        "controlled_random distribution",
+        "cache_aware full scheduling",
+        "legacy trigger migration full matrix",
+        "all cancellation/crash branches"
+      ]
+    },
+    {
+      "path": "loom/tools/structure/jev_admission_v2.py",
+      "category": "executable_research_code",
+      "source_sha256": "0917ec7e817e147dff6d43a4de073476aacdb2eabf8c25648631c78470fba5f5",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "loom/tools/structure/test_experiment_analysis_v1.py",
+      "category": "author_test",
+      "source_sha256": "2622c6d6e06ff6be59644c200ada428fb430f155ff4d16e003657aacc10b24e9",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "loom/tools/structure/test_experiment_context_preparation_v1.py",
+      "category": "author_test",
+      "source_sha256": "6545752e9e67ae645cba7f4d9cff49c9b246fc402d4ce327455a690c889aa1ab",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "loom/tools/structure/test_experiment_corpus_v1.py",
+      "category": "author_test",
+      "source_sha256": "1f3fbfde5e3402f2fc10c48325743a84a81a76ea8ea744d634fa21cc7c93d439",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "loom/tools/structure/test_experiment_payer_boundary_v1.py",
+      "category": "author_test",
+      "source_sha256": "4e1c9f9af3eb626d58ce667cdf6bcb750cc725f29c8909319abc5c682167b300",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    },
+    {
+      "path": "loom/tools/structure/test_jev_admission_v2.py",
+      "category": "author_test",
+      "source_sha256": "5ab7c9f9b21cadbebd8e7677a0c07155873585614e194bc9d916ba55fc4c15d2",
+      "coverage": "not_semantically_traced_in_this_delta_package"
+    }
+  ],
+  "shared_existing_consumers": [
+    {
+      "file": "loom/tools/seeding/method_graph.py",
+      "ranges": [
+        [
+          102,
+          164
+        ],
+        [
+          164,
+          265
+        ],
+        [
+          266,
+          431
+        ]
+      ],
+      "status": "actual imports/consumer execution; prior audit coverage retained, not newly counted"
+    },
+    {
+      "file": "loom/tools/coordination/graph_store.py",
+      "ranges": [
+        [
+          21,
+          84
+        ]
+      ],
+      "status": "actual native write/restart/read/replay"
+    },
+    {
+      "file": "loom/tools/structure/research_programme_runner.py",
+      "ranges": [
+        [
+          207,
+          259
+        ],
+        [
+          329,
+          350
+        ]
+      ],
+      "status": "source traced; full run_stage and validate executed against synthetic setup, no whole-file semantic claim"
+    }
+  ],
+  "environment_scope": "Host native shared engine and Python; not device/browser E2E. Native store acceptance is not method execution.",
+  "read_only_checkout": true,
+  "product_code_modified": false,
+  "private_artifacts_read": false
+}

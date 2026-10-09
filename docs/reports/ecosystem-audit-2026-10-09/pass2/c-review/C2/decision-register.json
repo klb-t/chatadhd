@@ -1,0 +1,40 @@
+{
+  "sha": "b9b503f62bb8e8e00c94ab7401e1cd9579129af3",
+  "decisions": [
+    {
+      "id": "C2-DEC-01",
+      "kind": "implicit",
+      "decision": "Settlement sync treats same operation ID + manifest as sufficient queue/ledger association",
+      "status": "naruszenie",
+      "finding": "A2-C-003"
+    },
+    {
+      "id": "C2-DEC-02",
+      "kind": "explicit",
+      "decision": "Generic graph exporter retains exact source bytes and does not act as a privacy scrubber",
+      "status": "dopuszczalny mechanizm",
+      "r42": "Contract/mechanism; privacy caller remains responsible"
+    },
+    {
+      "id": "C2-DEC-03",
+      "kind": "implicit",
+      "decision": "Unhandled schema error may expose input through normal CLI stderr",
+      "status": "naruszenie",
+      "finding": "A2-C-004"
+    },
+    {
+      "id": "C2-DEC-04",
+      "kind": "explicit",
+      "decision": "Independent-trial transport forces no response cache and retains unknown cache observation as unknown",
+      "status": "confirmed consumer wiring for this method",
+      "limits": "No general assertion restricting other profiles or changing owner preferences"
+    },
+    {
+      "id": "C2-DEC-05",
+      "kind": "explicit",
+      "decision": "Historical public packet retains the old method source after producer updates",
+      "status": "dopuszczalny mechanizm",
+      "requirement": "R41 exact method version per result"
+    }
+  ]
+}

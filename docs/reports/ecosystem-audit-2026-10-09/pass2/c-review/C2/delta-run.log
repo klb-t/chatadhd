@@ -1,0 +1,31 @@
+14:41:43 [INFO ] loom.config: config.json not found - using defaults
+14:41:43 [INFO ] loom.config: secrets.json not found - using defaults
+14:41:43 [INFO ] loom.db: Schema upgraded: v0 -> v4
+14:41:43 [INFO ] loom.db: Database opened: /tmp/audit-c2-native-rko611xx/store/chatadhd.db
+14:41:43 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+14:41:43 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/audit-c2-native-rko611xx/store)
+14:41:44 [INFO ] loom.db: Database closed
+14:41:44 [INFO ] loom.runtime: Loom runtime shut down
+14:41:44 [INFO ] loom.config: config.json not found - using defaults
+14:41:44 [INFO ] loom.config: secrets.json not found - using defaults
+14:41:44 [INFO ] loom.db: Database opened: /tmp/audit-c2-native-rko611xx/store/chatadhd.db
+14:41:44 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+14:41:44 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/audit-c2-native-rko611xx/store)
+14:41:45 [INFO ] loom.db: Database closed
+14:41:45 [INFO ] loom.runtime: Loom runtime shut down
+14:41:45 [INFO ] loom.config: config.json not found - using defaults
+14:41:45 [INFO ] loom.config: secrets.json not found - using defaults
+14:41:45 [INFO ] loom.db: Schema upgraded: v0 -> v4
+14:41:45 [INFO ] loom.db: Database opened: /tmp/tmpjeldfm_d/native/chatadhd.db
+14:41:45 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+14:41:45 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/tmpjeldfm_d/native)
+14:41:45 [INFO ] loom.db: Database closed
+14:41:45 [INFO ] loom.runtime: Loom runtime shut down
+14:41:45 [INFO ] loom.config: config.json not found - using defaults
+14:41:45 [INFO ] loom.config: secrets.json not found - using defaults
+14:41:45 [INFO ] loom.db: Database opened: /tmp/tmpjeldfm_d/native/chatadhd.db
+14:41:45 [INFO ] loom.graph: GraphEngine started (LLM=yes)
+14:41:45 [INFO ] loom.runtime: Loom 0.1.0 runtime ready (data: /tmp/tmpjeldfm_d/native)
+14:41:46 [INFO ] loom.db: Database closed
+14:41:46 [INFO ] loom.runtime: Loom runtime shut down
+{"output": "audit-work/continuation/artifacts/docs/reports/ecosystem-audit-2026-10-09/pass2/c-review/C2/delta-receipt.json", "counts": {"PASS": 7, "FAIL": 4}, "paid_calls": 0}

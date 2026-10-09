@@ -1,0 +1,28 @@
+{
+  "sha": "b9b503f62bb8e8e00c94ab7401e1cd9579129af3",
+  "paths": [
+    {
+      "data": "Frozen fixture spec/job + exact manifest/body SHA",
+      "decision": "claim -> PrivateLedger reservation -> PayerBoundary.verify -> mark_verified_dispatched",
+      "runtime": "actual run_stage with intercepted transport -> receipt validation -> sync_verified -> result_record",
+      "graph": "capture_run/build_artifact -> GraphPacket -> NativeGraphStore.accept",
+      "restore": "fresh Runtime read/replay, source/result recovery exact",
+      "UI": "Not integrated or claimed",
+      "evidence": "C2-NATIVE-02"
+    },
+    {
+      "data": "Public handoff example + protocol + projection",
+      "decision": "presentation schema only; protocol/projection validators allow unknown auxiliary fields",
+      "runtime": "evaluation-build.main -> build_handoff_artifact",
+      "graph": "packet sources preserve whole protocol/projection bytes",
+      "restore": "new handoff v2 native roundtrip PASS",
+      "UI": "Basic/Expert are public presentation data, not tested application views",
+      "evidence": [
+        "C2-PUBLIC-02",
+        "C2-PUBLIC-03",
+        "C2-PUBLIC-04",
+        "C2-NATIVE-01"
+      ]
+    }
+  ]
+}

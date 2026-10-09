@@ -1,0 +1,73 @@
+{
+  "sha": "b9b503f62bb8e8e00c94ab7401e1cd9579129af3",
+  "reviewed_against": "69880859802267f1b38b82eeaecd6fdc5522a47a",
+  "classifications": [
+    {
+      "area": "Verified dispatch reservation + cache consumer",
+      "classification": "naprawa",
+      "evidence": [
+        "C2-WIRE-01",
+        "C2-NATIVE-02"
+      ],
+      "limits": "Only controlled real-consumer boundary, no production dispatcher/UI or live service claim"
+    },
+    {
+      "area": "Settlement sync result identity",
+      "classification": "częściowa naprawa",
+      "finding": "A2-C-003",
+      "evidence": [
+        "C2-PAYER-01",
+        "C2-PAYER-02"
+      ]
+    },
+    {
+      "area": "Public projection",
+      "classification": "częściowa naprawa",
+      "findings": [
+        "A2-C-001",
+        "A2-C-004"
+      ],
+      "evidence": [
+        "C2-PUBLIC-01",
+        "C2-PUBLIC-02",
+        "C2-PUBLIC-03",
+        "C2-PUBLIC-04"
+      ],
+      "limits": "Presentation extra fields rejected but diagnostic exposes input; two auxiliary source contracts remain unrestricted"
+    },
+    {
+      "area": "New handoff native persistence",
+      "classification": "naprawa",
+      "evidence": [
+        "C2-PUBLIC-05",
+        "C2-NATIVE-01"
+      ],
+      "limits": "Closes prior Python-only compatibility gap; native method execution and application UI still not verified"
+    },
+    {
+      "area": "Historical packet latest-source mismatch",
+      "classification": "dopuszczalny mechanizm",
+      "evidence": [
+        "C2-HISTORY-01"
+      ],
+      "limits": "Not a regression; old exact method source deliberately preserved"
+    },
+    {
+      "area": "Old Queue.capture_first operation ID mismatch",
+      "classification": "nadal niezweryfikowana naprawa — stary błąd reprodukuje się",
+      "finding": "A2-C-002",
+      "evidence": [
+        "existing-projection-receipt.json"
+      ]
+    },
+    {
+      "area": "Seven other executable files in delta and full scientific analysis correctness",
+      "classification": "nadal niezweryfikowane",
+      "evidence": [
+        "coverage.json"
+      ]
+    }
+  ],
+  "regression_assertions": [],
+  "unjustified_masking_assertions": []
+}

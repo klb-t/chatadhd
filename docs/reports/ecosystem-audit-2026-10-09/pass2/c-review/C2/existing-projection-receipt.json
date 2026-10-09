@@ -1,0 +1,183 @@
+{
+  "schema": "klb.audit.c-review/1",
+  "repo": "klb-t/chatadhd",
+  "sha": "b9b503f62bb8e8e00c94ab7401e1cd9579129af3",
+  "native_sha": null,
+  "native_library_sha256": null,
+  "phase": "projection",
+  "test_source_sha256": "6db7f0c227784d555e41925532a4892c453f19d2fb3e6b680340ed5b91fac1db",
+  "network_policy": "Python socket connect/create_connection denied; intercepted payer transport; native workers disabled",
+  "private_inputs_read": false,
+  "paid_calls": 0,
+  "tests": [
+    {
+      "id": "C-PUBLIC-00",
+      "category": "committed-public-artifact",
+      "reproduction": null,
+      "acceptance": "FAIL",
+      "evidence": {
+        "exact_committed_source_bindings": {
+          "policy": true,
+          "program": false,
+          "protocol": true
+        },
+        "source_roles": 9,
+        "result_records": 6,
+        "packet_sha256": "c5c9eb0fe73530e74192bf39f5d8add2f1f83e66de4840bd04adbb84b74941be",
+        "boundary": "Confirms recovered public bytes, not privacy equivalence to unread private inputs."
+      }
+    },
+    {
+      "id": "C-PUBLIC-01",
+      "category": "public-projection-boundary",
+      "reproduction": null,
+      "acceptance": "PASS",
+      "evidence": {
+        "generated_canary_sha256": "c3a00b0ba3b899f057b0844e97822151dd38c210c926b4e000c925421c9c6969",
+        "artifact_emitted": false,
+        "raw_json_hit": false,
+        "decoded_source_roles_hit": [],
+        "log_canary_hit": false,
+        "rejection": {
+          "class": "ValueError",
+          "sha256": "461d50eda13ab7029799c2499f31131ac9db536481a8b87cff86fc694487cf17",
+          "contains_canary": false
+        }
+      }
+    },
+    {
+      "id": "C-PUBLIC-02",
+      "category": "public-projection-boundary",
+      "reproduction": "PASS",
+      "acceptance": "FAIL",
+      "evidence": {
+        "generated_canary_sha256": "43adb0055ccd37bc2057e16726d2018681eb729e39ba1ead8a271cd3d325ad44",
+        "artifact_emitted": true,
+        "raw_json_hit": false,
+        "decoded_source_roles_hit": [
+          "predictions"
+        ],
+        "log_canary_hit": false,
+        "rejection": null
+      }
+    },
+    {
+      "id": "C-PUBLIC-03",
+      "category": "public-projection-boundary",
+      "reproduction": "PASS",
+      "acceptance": "FAIL",
+      "evidence": {
+        "generated_canary_sha256": "b689db0ee981ca8ed1e231f9456e502ba55d39bd001eb4bc98a69946897f842c",
+        "artifact_emitted": true,
+        "raw_json_hit": true,
+        "decoded_source_roles_hit": [
+          "policy"
+        ],
+        "log_canary_hit": false,
+        "rejection": null
+      }
+    },
+    {
+      "id": "C-PUBLIC-04",
+      "category": "public-projection-boundary",
+      "reproduction": "PASS",
+      "acceptance": "FAIL",
+      "evidence": {
+        "generated_canary_sha256": "ca6a7c98c312eb7b8c2cbbedc0407dea0233df5673453516b11a1dc12b65fafd",
+        "artifact_emitted": true,
+        "raw_json_hit": true,
+        "decoded_source_roles_hit": [
+          "projection-profile-bytes"
+        ],
+        "log_canary_hit": false,
+        "rejection": null
+      }
+    },
+    {
+      "id": "C-PUBLIC-05",
+      "category": "public-projection-boundary",
+      "reproduction": "PASS",
+      "acceptance": "FAIL",
+      "evidence": {
+        "generated_canary_sha256": "f095d335454e2efd10ee226211ba596ece906d2ca7656fa4274ec2f5ccd884d9",
+        "artifact_emitted": true,
+        "raw_json_hit": false,
+        "decoded_source_roles_hit": [
+          "predictions"
+        ],
+        "log_canary_hit": false,
+        "rejection": null
+      }
+    },
+    {
+      "id": "C-WIRE-01",
+      "category": "real-transport-with-intercept",
+      "reproduction": null,
+      "acceptance": "PASS",
+      "evidence": {
+        "profiles_change_actual_body": true,
+        "observations": [
+          {
+            "explicit_policy": false,
+            "requested_cache_header": "false",
+            "actual_cache_header": null,
+            "models": [
+              "fixture/model-a",
+              "fixture/model-b"
+            ],
+            "temperatures": [
+              0.0,
+              0.7
+            ]
+          },
+          {
+            "explicit_policy": true,
+            "requested_cache_header": "false",
+            "actual_cache_header": "false",
+            "models": [
+              "fixture/model-a",
+              "fixture/model-b"
+            ],
+            "temperatures": [
+              0.0,
+              0.7
+            ]
+          }
+        ],
+        "external_calls": 0,
+        "boundary": "Explicit transport headers_by_method works; the workflow row alone is not a payer dispatcher."
+      }
+    },
+    {
+      "id": "C-WIRE-02",
+      "category": "real-transport-error-firewall",
+      "reproduction": null,
+      "acceptance": "PASS",
+      "evidence": {
+        "raw_exception_hidden": true,
+        "canary_sha256": "4b4371e81c2281c800adacf61d44e3feb65732ff7ca5e0692d6d8159fb9f376c",
+        "external_calls": 0
+      }
+    },
+    {
+      "id": "C-BIND-01",
+      "category": "occurrence-payer-result-binding",
+      "reproduction": "PASS",
+      "acceptance": "FAIL",
+      "evidence": {
+        "equal_request_sha256": true,
+        "distinct_operation_ids": true,
+        "wrong_occurrence_captured": true,
+        "actual_state": "captured",
+        "rejection_sha256": null,
+        "synthetic_only": true,
+        "boundary": "Same body is expected for repeated trials; request hash alone cannot bind an occurrence."
+      }
+    }
+  ],
+  "counts": {
+    "PASS": 3,
+    "FAIL": 6,
+    "BLOCKED": 0
+  }
+}

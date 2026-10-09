@@ -1,0 +1,107 @@
+{
+  "schema": "klb.audit.handoff/1",
+  "sha": "b9b503f62bb8e8e00c94ab7401e1cd9579129af3",
+  "ordered_packages": [
+    {
+      "finding_id": "A2-C-003",
+      "priority": "P1",
+      "reproduction": {
+        "receipt": "delta-receipt.json",
+        "tests": [
+          "C2-PAYER-01",
+          "C2-PAYER-02"
+        ],
+        "reproduction": "PASS",
+        "acceptance": "FAIL",
+        "observed": "A real fully validated fixture PrivateLedger is matched to a supported offline pending Queue by operation_id only. Different request hashes still yield captured + billing_verified true, with the queue hash stamped onto the ledger response. Correct-hash control passes. No database tampering.",
+        "scope": "Settlement/import/recovery boundary. Normal verified dispatch separately checks request hash; no proof that it can dispatch the wrong request."
+      },
+      "expected_and_test": {
+        "runner": "tools/ecosystem-audit-2026-10-09/pass2/c-review/C2/run.py",
+        "case": "C2-PAYER-02",
+        "expected": "Reject request mismatch, remain pending, retain no result or settlement evidence, never resend. Preserve the valid control C2-PAYER-01 and verified bridge native roundtrip C2-NATIVE-02."
+      },
+      "consumers": [
+        "PayerBoundary.sync_verified",
+        "result_record",
+        "Queue.capture_first",
+        "graph.capture_run/build_artifact; downstream source/result consumers"
+      ],
+      "migration": "Preserve original payer receipts. Quarantine legacy queues lacking exact request association; require explicit checked mapping instead of relabeling results or retrying transport.",
+      "risk": "Historical captured results may already contain the queue hash rather than payer hash; blindly trusting those records preserves false attribution.",
+      "dependencies": [
+        "C owns research boundary; B owns product integration",
+        "Resolve before using recovered research results as production profile evidence"
+      ]
+    },
+    {
+      "finding_id": "A2-C-001",
+      "priority": "P1",
+      "reproduction": {
+        "receipt": "delta-receipt.json",
+        "tests": [
+          "C2-PUBLIC-03",
+          "C2-PUBLIC-04"
+        ],
+        "reproduction": "PASS",
+        "acceptance": "FAIL",
+        "observed": "Synthetic unknown auxiliary object in protocol or projection is emitted and recoverable as policy or projection-profile-bytes. Presentation-only schema validation does not cover these auxiliary sources. Existing frozen public artifact has not been shown to contain private content."
+      },
+      "expected_and_test": {
+        "runner": "tools/ecosystem-audit-2026-10-09/pass2/c-review/C2/run.py",
+        "cases": [
+          "C2-PUBLIC-03",
+          "C2-PUBLIC-04"
+        ],
+        "expected": "Unexpected auxiliary data is rejected with a safe diagnostic or excluded by an explicit public projection before any packet/source emission; preserve legitimate exact recovery of approved public bytes."
+      },
+      "consumers": [
+        "evaluation-build.main",
+        "analysis.build_handoff_artifact",
+        "method_graph.capture_run",
+        "method_graph.build_artifact",
+        "method_graph.recover_files"
+      ],
+      "migration": "Do not rewrite historical seals. Introduce a reviewed public wrapper/schema version and explicitly classify all captured sources. Generic graph exporter remains a byte-preserving mechanism.",
+      "risk": "Overly broad stripping loses provenance; only the public projection should select visibility, while reviewed private artifacts retain full data.",
+      "dependencies": [
+        "A2-C-004 safe diagnostic boundary",
+        "C public preparation wrapper; B must not treat generic GraphPacket validation as privacy validation"
+      ]
+    },
+    {
+      "finding_id": "A2-C-004",
+      "priority": "P1",
+      "reproduction": {
+        "receipt": "delta-receipt.json",
+        "tests": [
+          "C2-PUBLIC-02"
+        ],
+        "reproduction": "PASS",
+        "acceptance": "FAIL",
+        "observed": "Schema rejects an unknown presentation field and emits no artifact, but ValidationError string and standard Python sys.excepthook output contain the synthetic input canary. Runner captures this only in memory and publishes hashes/status."
+      },
+      "expected_and_test": {
+        "runner": "tools/ecosystem-audit-2026-10-09/pass2/c-review/C2/run.py",
+        "case": "C2-PUBLIC-02",
+        "expected": "Reject malformed presentation before output; no canary in public exception, stdout, stderr, or artifact; maintain valid-build C2-PUBLIC-01."
+      },
+      "consumers": [
+        "evaluation-build.main",
+        "jsonschema.Draft202012Validator.validate",
+        "Python uncaught exception handler"
+      ],
+      "migration": "No data migration; keep original private diagnostics private and avoid attaching historical raw exception logs to public reports.",
+      "risk": "Suppressing every error would impair debugging; preserve stable error code and safe path while withholding input values.",
+      "dependencies": [
+        "C public CLI or B wrapper error handler",
+        "R42 exception 6 permits diagnostics, not disclosure of private inputs"
+      ]
+    }
+  ],
+  "not_a_new_backlog": [
+    "Standalone loom archival kernel",
+    "New architecture alongside R15/R33/R40/R41"
+  ],
+  "next_action": "Run identical C2 acceptance runner against correction SHA; do not relabel successful reproductions as acceptance PASS."
+}
