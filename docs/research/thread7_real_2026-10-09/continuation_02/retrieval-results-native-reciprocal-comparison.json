@@ -1,0 +1,133 @@
+{
+  "comparisons": [
+    {
+      "budget_id": "32KiB",
+      "corrected_family_macro_recall": 0.6041666666666666,
+      "families": 4,
+      "method": "bm25_native_expansion",
+      "original_family_macro_recall": 0.6041666666666666,
+      "paired_family_macro_delta": 0.0,
+      "split": "provisional_validation",
+      "tasks": 16
+    },
+    {
+      "budget_id": "8KiB",
+      "corrected_family_macro_recall": 0.5833333333333333,
+      "families": 4,
+      "method": "bm25_native_expansion",
+      "original_family_macro_recall": 0.5,
+      "paired_family_macro_delta": 0.08333333333333326,
+      "split": "provisional_validation",
+      "tasks": 16
+    },
+    {
+      "budget_id": "32KiB",
+      "corrected_family_macro_recall": 0.4583333333333333,
+      "families": 4,
+      "method": "lexical_bm25_character_graph_rrf",
+      "original_family_macro_recall": 0.4583333333333333,
+      "paired_family_macro_delta": 0.0,
+      "split": "provisional_validation",
+      "tasks": 16
+    },
+    {
+      "budget_id": "8KiB",
+      "corrected_family_macro_recall": 0.5208333333333334,
+      "families": 4,
+      "method": "lexical_bm25_character_graph_rrf",
+      "original_family_macro_recall": 0.5208333333333334,
+      "paired_family_macro_delta": 0.0,
+      "split": "provisional_validation",
+      "tasks": 16
+    },
+    {
+      "budget_id": "32KiB",
+      "corrected_family_macro_recall": 0.3125,
+      "families": 4,
+      "method": "native_graph_distance",
+      "original_family_macro_recall": 0.3125,
+      "paired_family_macro_delta": 0.0,
+      "split": "provisional_validation",
+      "tasks": 16
+    },
+    {
+      "budget_id": "8KiB",
+      "corrected_family_macro_recall": 0.22916666666666666,
+      "families": 4,
+      "method": "native_graph_distance",
+      "original_family_macro_recall": 0.22916666666666666,
+      "paired_family_macro_delta": 0.0,
+      "split": "provisional_validation",
+      "tasks": 16
+    },
+    {
+      "budget_id": "32KiB",
+      "corrected_family_macro_recall": 0.4895833333333333,
+      "families": 8,
+      "method": "bm25_native_expansion",
+      "original_family_macro_recall": 0.43229166666666663,
+      "paired_family_macro_delta": 0.057291666666666685,
+      "split": "tuning",
+      "tasks": 32
+    },
+    {
+      "budget_id": "8KiB",
+      "corrected_family_macro_recall": 0.4505208333333333,
+      "families": 8,
+      "method": "bm25_native_expansion",
+      "original_family_macro_recall": 0.40104166666666663,
+      "paired_family_macro_delta": 0.049479166666666685,
+      "split": "tuning",
+      "tasks": 32
+    },
+    {
+      "budget_id": "32KiB",
+      "corrected_family_macro_recall": 0.4973958333333333,
+      "families": 8,
+      "method": "lexical_bm25_character_graph_rrf",
+      "original_family_macro_recall": 0.5494791666666666,
+      "paired_family_macro_delta": -0.052083333333333315,
+      "split": "tuning",
+      "tasks": 32
+    },
+    {
+      "budget_id": "8KiB",
+      "corrected_family_macro_recall": 0.5052083333333334,
+      "families": 8,
+      "method": "lexical_bm25_character_graph_rrf",
+      "original_family_macro_recall": 0.5885416666666666,
+      "paired_family_macro_delta": -0.08333333333333326,
+      "split": "tuning",
+      "tasks": 32
+    },
+    {
+      "budget_id": "32KiB",
+      "corrected_family_macro_recall": 0.11979166666666667,
+      "families": 8,
+      "method": "native_graph_distance",
+      "original_family_macro_recall": 0.11979166666666667,
+      "paired_family_macro_delta": 0.0,
+      "split": "tuning",
+      "tasks": 32
+    },
+    {
+      "budget_id": "8KiB",
+      "corrected_family_macro_recall": 0.11979166666666667,
+      "families": 8,
+      "method": "native_graph_distance",
+      "original_family_macro_recall": 0.11979166666666667,
+      "paired_family_macro_delta": 0.0,
+      "split": "tuning",
+      "tasks": 32
+    }
+  ],
+  "gold_and_queries_unchanged": true,
+  "independent_validation": false,
+  "new_corrected_context_evaluations": 288,
+  "new_corrected_method_executions": 144,
+  "post_first_results_adapter_correction": true,
+  "schema": "loom.retrieval_instrument_correction_results/1",
+  "unchanged_rankings_verified": 144,
+  "usd_cost": 0,
+  "weights_unchanged": true
+}

@@ -1,0 +1,16 @@
+{
+  "corrected_method_context_evaluations": 288,
+  "corrected_run_manifest_sha256": "7ef4bcd839473d784ea71c135adb0bd875ef11bb30e941459d526ef83472c21f",
+  "correction_freeze_sha256": "534f4b5182cf370cabafe5c46d845a0b5558a7230f696329e1b3b5c697835a81",
+  "first_rankings": 288,
+  "implementation_sha256": "89f85da0401042b7dd70b23b619fe05114ad3b63c9c0ca1d5a5b06c4eedbdf0a",
+  "new_api_calls": 0,
+  "new_corrected_rankings": 144,
+  "prior_manifest_sha256": "5df908a5f86a6933f3cce02ad8cd957d8ab1ae7f79ee52036eea477a97c40910",
+  "schema": "loom.retrieval_instrument_correction_receipt/1",
+  "test_log_sha256": "379b3562714b79041439fe1bc33a5203c766f6fa38d360915ae182c803e561a4",
+  "tests": 28,
+  "total_new_method_rankings_this_package": 432,
+  "unchanged_rankings_replayed": 144,
+  "usd_cost": 0
+}

@@ -1,0 +1,19 @@
+{
+  "changed_methods": [
+    "native_graph_distance",
+    "bm25_native_expansion",
+    "lexical_bm25_character_graph_rrf"
+  ],
+  "first_rankings_already_observed": true,
+  "method_file_sha256": "1938e2db864c1bea5c7c860d31778ab25a5f11ca792242c79271007cce2dec67",
+  "new_api_calls": 0,
+  "private_freeze_sha256": "534f4b5182cf370cabafe5c46d845a0b5558a7230f696329e1b3b5c697835a81",
+  "schema": "loom.retrieval_instrument_correction_freeze/1",
+  "task_file_sha256": "9c596a7f4feca7ebd65d7deb0008631cf986a55bc34a2b4763b2cae8f64b2985",
+  "unchanged_methods_replayed": [
+    "lexical_token_cosine",
+    "bm25",
+    "character_3_5_cosine"
+  ],
+  "weights_unchanged": true
+}

@@ -1,0 +1,271 @@
+{
+  "automatic_preference_change": false,
+  "candidates": [
+    {
+      "automatic_adoption": false,
+      "budget": {
+        "id": "8KiB",
+        "max_bytes": 8192,
+        "max_records": 10
+      },
+      "evaluation_data_sha256": "1caf124c85f25fe7e3e1a9bf44f97da3d193659c53031fcbcbb61e6b2da429e1",
+      "evidence_report_sha256": "63cbf0ac6a42559087ea4050727ed11ccb6d1b700fcc750f72ffeb771b531eaf",
+      "id": "thread7-offline-lexical_token_cosine-8KiB",
+      "method_config_sha256": "d392081aec7dbbd68b88f3adfc098a32f9f025df6cd47b554c88d21f69556ac6",
+      "method_ref": "lexical_token_cosine",
+      "model_answer_quality": null,
+      "native_runtime_compatibility": "not_executed_known_integration_gap_A3_DISC_001",
+      "new_api_calls": 0,
+      "new_api_cost_usd": 0,
+      "preset_kind": "retrieval_component_not_complete_LLM_workflow",
+      "source_families": 12,
+      "status": "offline_exploratory_retrieval_measured",
+      "tasks": 48,
+      "validation_status": "source_annotations_provisional_researcher_exposed"
+    },
+    {
+      "automatic_adoption": false,
+      "budget": {
+        "id": "32KiB",
+        "max_bytes": 32768,
+        "max_records": 10
+      },
+      "evaluation_data_sha256": "1caf124c85f25fe7e3e1a9bf44f97da3d193659c53031fcbcbb61e6b2da429e1",
+      "evidence_report_sha256": "63cbf0ac6a42559087ea4050727ed11ccb6d1b700fcc750f72ffeb771b531eaf",
+      "id": "thread7-offline-lexical_token_cosine-32KiB",
+      "method_config_sha256": "d392081aec7dbbd68b88f3adfc098a32f9f025df6cd47b554c88d21f69556ac6",
+      "method_ref": "lexical_token_cosine",
+      "model_answer_quality": null,
+      "native_runtime_compatibility": "not_executed_known_integration_gap_A3_DISC_001",
+      "new_api_calls": 0,
+      "new_api_cost_usd": 0,
+      "preset_kind": "retrieval_component_not_complete_LLM_workflow",
+      "source_families": 12,
+      "status": "offline_exploratory_retrieval_measured",
+      "tasks": 48,
+      "validation_status": "source_annotations_provisional_researcher_exposed"
+    },
+    {
+      "automatic_adoption": false,
+      "budget": {
+        "id": "8KiB",
+        "max_bytes": 8192,
+        "max_records": 10
+      },
+      "evaluation_data_sha256": "1caf124c85f25fe7e3e1a9bf44f97da3d193659c53031fcbcbb61e6b2da429e1",
+      "evidence_report_sha256": "63cbf0ac6a42559087ea4050727ed11ccb6d1b700fcc750f72ffeb771b531eaf",
+      "id": "thread7-offline-bm25-8KiB",
+      "method_config_sha256": "d392081aec7dbbd68b88f3adfc098a32f9f025df6cd47b554c88d21f69556ac6",
+      "method_ref": "bm25",
+      "model_answer_quality": null,
+      "native_runtime_compatibility": "not_executed_known_integration_gap_A3_DISC_001",
+      "new_api_calls": 0,
+      "new_api_cost_usd": 0,
+      "preset_kind": "retrieval_component_not_complete_LLM_workflow",
+      "source_families": 12,
+      "status": "offline_exploratory_retrieval_measured",
+      "tasks": 48,
+      "validation_status": "source_annotations_provisional_researcher_exposed"
+    },
+    {
+      "automatic_adoption": false,
+      "budget": {
+        "id": "32KiB",
+        "max_bytes": 32768,
+        "max_records": 10
+      },
+      "evaluation_data_sha256": "1caf124c85f25fe7e3e1a9bf44f97da3d193659c53031fcbcbb61e6b2da429e1",
+      "evidence_report_sha256": "63cbf0ac6a42559087ea4050727ed11ccb6d1b700fcc750f72ffeb771b531eaf",
+      "id": "thread7-offline-bm25-32KiB",
+      "method_config_sha256": "d392081aec7dbbd68b88f3adfc098a32f9f025df6cd47b554c88d21f69556ac6",
+      "method_ref": "bm25",
+      "model_answer_quality": null,
+      "native_runtime_compatibility": "not_executed_known_integration_gap_A3_DISC_001",
+      "new_api_calls": 0,
+      "new_api_cost_usd": 0,
+      "preset_kind": "retrieval_component_not_complete_LLM_workflow",
+      "source_families": 12,
+      "status": "offline_exploratory_retrieval_measured",
+      "tasks": 48,
+      "validation_status": "source_annotations_provisional_researcher_exposed"
+    },
+    {
+      "automatic_adoption": false,
+      "budget": {
+        "id": "8KiB",
+        "max_bytes": 8192,
+        "max_records": 10
+      },
+      "evaluation_data_sha256": "1caf124c85f25fe7e3e1a9bf44f97da3d193659c53031fcbcbb61e6b2da429e1",
+      "evidence_report_sha256": "63cbf0ac6a42559087ea4050727ed11ccb6d1b700fcc750f72ffeb771b531eaf",
+      "id": "thread7-offline-character_3_5_cosine-8KiB",
+      "method_config_sha256": "d392081aec7dbbd68b88f3adfc098a32f9f025df6cd47b554c88d21f69556ac6",
+      "method_ref": "character_3_5_cosine",
+      "model_answer_quality": null,
+      "native_runtime_compatibility": "not_executed_known_integration_gap_A3_DISC_001",
+      "new_api_calls": 0,
+      "new_api_cost_usd": 0,
+      "preset_kind": "retrieval_component_not_complete_LLM_workflow",
+      "source_families": 12,
+      "status": "offline_exploratory_retrieval_measured",
+      "tasks": 48,
+      "validation_status": "source_annotations_provisional_researcher_exposed"
+    },
+    {
+      "automatic_adoption": false,
+      "budget": {
+        "id": "32KiB",
+        "max_bytes": 32768,
+        "max_records": 10
+      },
+      "evaluation_data_sha256": "1caf124c85f25fe7e3e1a9bf44f97da3d193659c53031fcbcbb61e6b2da429e1",
+      "evidence_report_sha256": "63cbf0ac6a42559087ea4050727ed11ccb6d1b700fcc750f72ffeb771b531eaf",
+      "id": "thread7-offline-character_3_5_cosine-32KiB",
+      "method_config_sha256": "d392081aec7dbbd68b88f3adfc098a32f9f025df6cd47b554c88d21f69556ac6",
+      "method_ref": "character_3_5_cosine",
+      "model_answer_quality": null,
+      "native_runtime_compatibility": "not_executed_known_integration_gap_A3_DISC_001",
+      "new_api_calls": 0,
+      "new_api_cost_usd": 0,
+      "preset_kind": "retrieval_component_not_complete_LLM_workflow",
+      "source_families": 12,
+      "status": "offline_exploratory_retrieval_measured",
+      "tasks": 48,
+      "validation_status": "source_annotations_provisional_researcher_exposed"
+    },
+    {
+      "automatic_adoption": false,
+      "budget": {
+        "id": "8KiB",
+        "max_bytes": 8192,
+        "max_records": 10
+      },
+      "evaluation_data_sha256": "1caf124c85f25fe7e3e1a9bf44f97da3d193659c53031fcbcbb61e6b2da429e1",
+      "evidence_report_sha256": "63cbf0ac6a42559087ea4050727ed11ccb6d1b700fcc750f72ffeb771b531eaf",
+      "id": "thread7-offline-native_graph_distance-8KiB",
+      "method_config_sha256": "d392081aec7dbbd68b88f3adfc098a32f9f025df6cd47b554c88d21f69556ac6",
+      "method_ref": "native_graph_distance",
+      "model_answer_quality": null,
+      "native_runtime_compatibility": "not_executed_known_integration_gap_A3_DISC_001",
+      "new_api_calls": 0,
+      "new_api_cost_usd": 0,
+      "preset_kind": "retrieval_component_not_complete_LLM_workflow",
+      "source_families": 12,
+      "status": "offline_exploratory_retrieval_measured",
+      "tasks": 48,
+      "validation_status": "source_annotations_provisional_researcher_exposed"
+    },
+    {
+      "automatic_adoption": false,
+      "budget": {
+        "id": "32KiB",
+        "max_bytes": 32768,
+        "max_records": 10
+      },
+      "evaluation_data_sha256": "1caf124c85f25fe7e3e1a9bf44f97da3d193659c53031fcbcbb61e6b2da429e1",
+      "evidence_report_sha256": "63cbf0ac6a42559087ea4050727ed11ccb6d1b700fcc750f72ffeb771b531eaf",
+      "id": "thread7-offline-native_graph_distance-32KiB",
+      "method_config_sha256": "d392081aec7dbbd68b88f3adfc098a32f9f025df6cd47b554c88d21f69556ac6",
+      "method_ref": "native_graph_distance",
+      "model_answer_quality": null,
+      "native_runtime_compatibility": "not_executed_known_integration_gap_A3_DISC_001",
+      "new_api_calls": 0,
+      "new_api_cost_usd": 0,
+      "preset_kind": "retrieval_component_not_complete_LLM_workflow",
+      "source_families": 12,
+      "status": "offline_exploratory_retrieval_measured",
+      "tasks": 48,
+      "validation_status": "source_annotations_provisional_researcher_exposed"
+    },
+    {
+      "automatic_adoption": false,
+      "budget": {
+        "id": "8KiB",
+        "max_bytes": 8192,
+        "max_records": 10
+      },
+      "evaluation_data_sha256": "1caf124c85f25fe7e3e1a9bf44f97da3d193659c53031fcbcbb61e6b2da429e1",
+      "evidence_report_sha256": "63cbf0ac6a42559087ea4050727ed11ccb6d1b700fcc750f72ffeb771b531eaf",
+      "id": "thread7-offline-bm25_native_expansion-8KiB",
+      "method_config_sha256": "d392081aec7dbbd68b88f3adfc098a32f9f025df6cd47b554c88d21f69556ac6",
+      "method_ref": "bm25_native_expansion",
+      "model_answer_quality": null,
+      "native_runtime_compatibility": "not_executed_known_integration_gap_A3_DISC_001",
+      "new_api_calls": 0,
+      "new_api_cost_usd": 0,
+      "preset_kind": "retrieval_component_not_complete_LLM_workflow",
+      "source_families": 12,
+      "status": "offline_exploratory_retrieval_measured",
+      "tasks": 48,
+      "validation_status": "source_annotations_provisional_researcher_exposed"
+    },
+    {
+      "automatic_adoption": false,
+      "budget": {
+        "id": "32KiB",
+        "max_bytes": 32768,
+        "max_records": 10
+      },
+      "evaluation_data_sha256": "1caf124c85f25fe7e3e1a9bf44f97da3d193659c53031fcbcbb61e6b2da429e1",
+      "evidence_report_sha256": "63cbf0ac6a42559087ea4050727ed11ccb6d1b700fcc750f72ffeb771b531eaf",
+      "id": "thread7-offline-bm25_native_expansion-32KiB",
+      "method_config_sha256": "d392081aec7dbbd68b88f3adfc098a32f9f025df6cd47b554c88d21f69556ac6",
+      "method_ref": "bm25_native_expansion",
+      "model_answer_quality": null,
+      "native_runtime_compatibility": "not_executed_known_integration_gap_A3_DISC_001",
+      "new_api_calls": 0,
+      "new_api_cost_usd": 0,
+      "preset_kind": "retrieval_component_not_complete_LLM_workflow",
+      "source_families": 12,
+      "status": "offline_exploratory_retrieval_measured",
+      "tasks": 48,
+      "validation_status": "source_annotations_provisional_researcher_exposed"
+    },
+    {
+      "automatic_adoption": false,
+      "budget": {
+        "id": "8KiB",
+        "max_bytes": 8192,
+        "max_records": 10
+      },
+      "evaluation_data_sha256": "1caf124c85f25fe7e3e1a9bf44f97da3d193659c53031fcbcbb61e6b2da429e1",
+      "evidence_report_sha256": "63cbf0ac6a42559087ea4050727ed11ccb6d1b700fcc750f72ffeb771b531eaf",
+      "id": "thread7-offline-lexical_bm25_character_graph_rrf-8KiB",
+      "method_config_sha256": "d392081aec7dbbd68b88f3adfc098a32f9f025df6cd47b554c88d21f69556ac6",
+      "method_ref": "lexical_bm25_character_graph_rrf",
+      "model_answer_quality": null,
+      "native_runtime_compatibility": "not_executed_known_integration_gap_A3_DISC_001",
+      "new_api_calls": 0,
+      "new_api_cost_usd": 0,
+      "preset_kind": "retrieval_component_not_complete_LLM_workflow",
+      "source_families": 12,
+      "status": "offline_exploratory_retrieval_measured",
+      "tasks": 48,
+      "validation_status": "source_annotations_provisional_researcher_exposed"
+    },
+    {
+      "automatic_adoption": false,
+      "budget": {
+        "id": "32KiB",
+        "max_bytes": 32768,
+        "max_records": 10
+      },
+      "evaluation_data_sha256": "1caf124c85f25fe7e3e1a9bf44f97da3d193659c53031fcbcbb61e6b2da429e1",
+      "evidence_report_sha256": "63cbf0ac6a42559087ea4050727ed11ccb6d1b700fcc750f72ffeb771b531eaf",
+      "id": "thread7-offline-lexical_bm25_character_graph_rrf-32KiB",
+      "method_config_sha256": "d392081aec7dbbd68b88f3adfc098a32f9f025df6cd47b554c88d21f69556ac6",
+      "method_ref": "lexical_bm25_character_graph_rrf",
+      "model_answer_quality": null,
+      "native_runtime_compatibility": "not_executed_known_integration_gap_A3_DISC_001",
+      "new_api_calls": 0,
+      "new_api_cost_usd": 0,
+      "preset_kind": "retrieval_component_not_complete_LLM_workflow",
+      "source_families": 12,
+      "status": "offline_exploratory_retrieval_measured",
+      "tasks": 48,
+      "validation_status": "source_annotations_provisional_researcher_exposed"
+    }
+  ],
+  "schema": "loom.research_retrieval_preset_candidates/2",
+  "universal_winner": null
+}

@@ -1,0 +1,150 @@
+{
+  "budgets": [
+    {
+      "id": "8KiB",
+      "max_bytes": 8192,
+      "max_records": 10
+    },
+    {
+      "id": "32KiB",
+      "max_bytes": 32768,
+      "max_records": 10
+    }
+  ],
+  "candidate_pool": "same_frozen_task_scope_whole_messages_for_every_method",
+  "changed_method_ids": [
+    "native_graph_distance",
+    "bm25_native_expansion",
+    "lexical_bm25_character_graph_rrf"
+  ],
+  "embedding_status": {
+    "network_downloads": 0,
+    "reason": "previous_pinned_model_manifest_available_but_model_bytes_and_local_runtime_unavailable",
+    "status": "not_executed"
+  },
+  "graph_interpretation": "native_export_topology_only_not_semantic_understanding",
+  "methods": [
+    {
+      "id": "lexical_token_cosine",
+      "operator": "token_cosine",
+      "parameters": {},
+      "selection": {
+        "min_score": 0.0
+      }
+    },
+    {
+      "id": "bm25",
+      "operator": "bm25",
+      "parameters": {
+        "b": 0.75,
+        "k1": 1.2
+      },
+      "selection": {
+        "min_score": 0.0
+      }
+    },
+    {
+      "id": "character_3_5_cosine",
+      "operator": "character_cosine",
+      "parameters": {
+        "ngram_range": [
+          3,
+          5
+        ]
+      },
+      "selection": {
+        "min_score": 0.0
+      }
+    },
+    {
+      "id": "native_graph_distance",
+      "operator": "graph_distance",
+      "parameters": {
+        "adjacency_policy": "observed_parent_reciprocal",
+        "decay": 0.5,
+        "directions": [
+          "parent_ids",
+          "child_ids"
+        ],
+        "max_hops": 4,
+        "unanchored": "latest_observed_message"
+      },
+      "selection": {
+        "min_score": 0.0
+      }
+    },
+    {
+      "id": "bm25_native_expansion",
+      "operator": "graph_distance",
+      "parameters": {
+        "adjacency_policy": "observed_parent_reciprocal",
+        "decay": 0.5,
+        "directions": [
+          "parent_ids",
+          "child_ids"
+        ],
+        "max_hops": 4,
+        "seed_count": 3,
+        "seed_method": "bm25",
+        "seed_min_score": 0.0,
+        "unanchored": "latest_observed_message"
+      },
+      "selection": {
+        "min_score": 0.0
+      }
+    },
+    {
+      "id": "lexical_bm25_character_graph_rrf",
+      "operator": "weighted_rrf",
+      "parameters": {
+        "components": [
+          {
+            "method": "lexical_token_cosine",
+            "min_score": 0.0,
+            "weight": 1.0
+          },
+          {
+            "method": "bm25",
+            "min_score": 0.0,
+            "weight": 1.0
+          },
+          {
+            "method": "character_3_5_cosine",
+            "min_score": 0.0,
+            "weight": 1.0
+          },
+          {
+            "method": "bm25_native_expansion",
+            "min_score": 0.0,
+            "weight": 1.0
+          }
+        ],
+        "rank_constant": 60
+      },
+      "selection": {
+        "min_score": 0.0
+      }
+    }
+  ],
+  "parameters_chosen_before_rankings": true,
+  "post_results_exposure": true,
+  "reuse_method_ids": [
+    "lexical_token_cosine",
+    "bm25",
+    "character_3_5_cosine"
+  ],
+  "revision_reason": "postmeasurement_adapter_correction_reverse_known_parent_edges_no_semantic_inference",
+  "schema": "loom.research_retrieval_config/2",
+  "selection": "greedy_ranked_whole_messages_skip_nonfitting_no_truncation",
+  "study": "retrieval_and_source_evidence_retention_not_LLM_answers",
+  "tie_break": "message_id_ascending",
+  "tokenizer": null,
+  "tuning_performed": false,
+  "weights_unchanged": true,
+  "word_unit_definition": {
+    "id": "python_unicode_regex_word/1",
+    "is_model_tokenizer": false,
+    "normalization": "casefold",
+    "regex": "\\w+"
+  }
+}

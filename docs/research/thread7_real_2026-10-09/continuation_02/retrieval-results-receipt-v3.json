@@ -1,0 +1,21 @@
+{
+  "analysis_v2_manifest_sha256": "921c28486704467a5995a98f65a31056f91bb652ad3bb59315ced2e8169129f9",
+  "analysis_v2_producer_sha256": "6dd4e1fa1e7fcd8dc190460a470fe26a8755ffe80a579c730b082c4650c23d26",
+  "analysis_v3_manifest_sha256": "1cbd2ff07210d955d0339ed23f6b41079122c01fef7bdadc9b94409d915b283d",
+  "analysis_v3_producer_sha256": "015d51502f2e23f25216d7f41aaaceedbfc09043958386838dcb46538331ad57",
+  "evaluation_data_sha256": "1caf124c85f25fe7e3e1a9bf44f97da3d193659c53031fcbcbb61e6b2da429e1",
+  "families": 12,
+  "measurements": 576,
+  "mechanics_log_sha256": "5575882f88175d6d0de413cfd97b5412a006f5910ddcece524eaff5bb64d4017",
+  "mechanics_tests": 25,
+  "new_rankings_in_analysis_replays": 0,
+  "new_timing_measurements_in_analysis_replays": 0,
+  "paid_calls": 0,
+  "replay_context_hash_checks_each_revision": 576,
+  "run_v1_manifest_sha256": "5df908a5f86a6933f3cce02ad8cd957d8ab1ae7f79ee52036eea477a97c40910",
+  "run_v1_producer_sha256": "bf7f80ba1567792e8ca1f2bfe83ab5d1d58693c52c630d5f2c77385984edf857",
+  "schema": "loom.research_retrieval_receipt/1",
+  "tasks": 48,
+  "usd_cost": 0,
+  "v2_and_v3_rows_exactly_identical": true
+}

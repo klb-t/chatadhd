@@ -1,0 +1,22 @@
+{
+  "covers": [
+    "seed_method",
+    "components",
+    "transitive_dependencies",
+    "dependency_cycles"
+  ],
+  "frozen_config_sha256": "1938e2db864c1bea5c7c860d31778ab25a5f11ca792242c79271007cce2dec67",
+  "frozen_corrected_config_dependency_guard_passed": true,
+  "guard": "reused_method_dependency_closure_must_be_entirely_reused",
+  "guarded_code_sha256": "5431b0a88f50bb9c0a3b7033f51a8c16253b3140ca93c5ebf299462b022c57cc",
+  "measured_producer_unchanged": true,
+  "new_api_calls": 0,
+  "new_benchmark_rankings": 0,
+  "original_corrected_run_producer_sha256": "89f85da0401042b7dd70b23b619fe05114ad3b63c9c0ca1d5a5b06c4eedbdf0a",
+  "results_unchanged": true,
+  "schema": "loom.retrieval_post_measurement_guard/1",
+  "test_count": 32,
+  "test_log_sha256": "0cfdb6f29dde18a8792d357971a2ace6d7a37f7dce090c21de7600e162ed4ca4",
+  "tests_file_sha256": "558ba14489a9e21edb61f618b437ac7f522613a1212b8dd4aa79ddfbc95a6d85",
+  "usd_cost": 0
+}

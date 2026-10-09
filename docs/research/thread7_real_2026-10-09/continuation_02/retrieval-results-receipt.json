@@ -1,0 +1,20 @@
+{
+  "analysis_producer_sha256": "6dd4e1fa1e7fcd8dc190460a470fe26a8755ffe80a579c730b082c4650c23d26",
+  "analysis_v2_manifest_sha256": "921c28486704467a5995a98f65a31056f91bb652ad3bb59315ced2e8169129f9",
+  "families": 12,
+  "first_evidence_preserved": true,
+  "independent_validation": false,
+  "initial_producer_sha256": "bf7f80ba1567792e8ca1f2bfe83ab5d1d58693c52c630d5f2c77385984edf857",
+  "measurements": 576,
+  "mechanics_test_log_sha256": "4a8135a41eb19f06a871fd186c77e90ca0c5bb93a7c6b82b25849dc1522d9dad",
+  "mechanics_tests": 23,
+  "paid_calls": 0,
+  "provisional_validation_families": 4,
+  "rankings": 288,
+  "replay_context_hash_checks": 576,
+  "run_v1_manifest_sha256": "5df908a5f86a6933f3cce02ad8cd957d8ab1ae7f79ee52036eea477a97c40910",
+  "schema": "loom.research_retrieval_receipt/1",
+  "tasks": 48,
+  "tuning_families": 8,
+  "usd_cost": 0
+}

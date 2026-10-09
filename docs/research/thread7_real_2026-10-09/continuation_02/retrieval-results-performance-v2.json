@@ -1,0 +1,451 @@
+{
+  "budget_feasibility": [
+    {
+      "answerable_tasks": 32,
+      "budget_id": "8KiB",
+      "complete_gold_fits_tasks": 31,
+      "impossible_task_ids": [
+        "retrieval-04-01"
+      ],
+      "split": "tuning"
+    },
+    {
+      "answerable_tasks": 32,
+      "budget_id": "32KiB",
+      "complete_gold_fits_tasks": 31,
+      "impossible_task_ids": [
+        "retrieval-04-01"
+      ],
+      "split": "tuning"
+    },
+    {
+      "answerable_tasks": 14,
+      "budget_id": "8KiB",
+      "complete_gold_fits_tasks": 14,
+      "impossible_task_ids": [],
+      "split": "provisional_validation"
+    },
+    {
+      "answerable_tasks": 14,
+      "budget_id": "32KiB",
+      "complete_gold_fits_tasks": 14,
+      "impossible_task_ids": [],
+      "split": "provisional_validation"
+    }
+  ],
+  "cache": "family_word_counters_reused; character_counters_built_lazily_and_reused_across_same_scope_tasks",
+  "limitations": [
+    "one_run_with_tracemalloc_not_latency_benchmark_replicates",
+    "warm_and_cold_query_costs_mixed",
+    "total_dependency_time_sums_observed_unique_operators",
+    "memory_is_python_allocations_per_operator_not_peak_process_RSS_or_composed_method_total"
+  ],
+  "method_order": "frozen_DAG_order",
+  "rows": [
+    {
+      "includes_tracemalloc_overhead": true,
+      "maximum_measured_dependency_seconds": 0.010677488000510493,
+      "maximum_python_allocations_during_any_dependency_bytes": 16400,
+      "maximum_python_allocations_during_own_operator_bytes": 16400,
+      "median_measured_dependency_seconds": 0.0015574150002066744,
+      "method": "lexical_token_cosine",
+      "process_RSS": null,
+      "tasks": 48,
+      "whole_composed_method_retained_memory": null
+    },
+    {
+      "includes_tracemalloc_overhead": true,
+      "maximum_measured_dependency_seconds": 0.16568587700021453,
+      "maximum_python_allocations_during_any_dependency_bytes": 3113955,
+      "maximum_python_allocations_during_own_operator_bytes": 3113955,
+      "median_measured_dependency_seconds": 0.02386194500104466,
+      "method": "bm25",
+      "process_RSS": null,
+      "tasks": 48,
+      "whole_composed_method_retained_memory": null
+    },
+    {
+      "includes_tracemalloc_overhead": true,
+      "maximum_measured_dependency_seconds": 2.245900404999702,
+      "maximum_python_allocations_during_any_dependency_bytes": 120436077,
+      "maximum_python_allocations_during_own_operator_bytes": 120436077,
+      "median_measured_dependency_seconds": 0.022434892000092077,
+      "method": "character_3_5_cosine",
+      "process_RSS": null,
+      "tasks": 48,
+      "whole_composed_method_retained_memory": null
+    },
+    {
+      "includes_tracemalloc_overhead": true,
+      "maximum_measured_dependency_seconds": 0.019946428001276217,
+      "maximum_python_allocations_during_any_dependency_bytes": 165744,
+      "maximum_python_allocations_during_own_operator_bytes": 165744,
+      "median_measured_dependency_seconds": 0.0006193824992806185,
+      "method": "native_graph_distance",
+      "process_RSS": null,
+      "tasks": 48,
+      "whole_composed_method_retained_memory": null
+    },
+    {
+      "includes_tracemalloc_overhead": true,
+      "maximum_measured_dependency_seconds": 0.16801010700146435,
+      "maximum_python_allocations_during_any_dependency_bytes": 3113955,
+      "maximum_python_allocations_during_own_operator_bytes": 184416,
+      "median_measured_dependency_seconds": 0.024806261499179527,
+      "method": "bm25_native_expansion",
+      "process_RSS": null,
+      "tasks": 48,
+      "whole_composed_method_retained_memory": null
+    },
+    {
+      "includes_tracemalloc_overhead": true,
+      "maximum_measured_dependency_seconds": 2.4276004200037278,
+      "maximum_python_allocations_during_any_dependency_bytes": 120436077,
+      "maximum_python_allocations_during_own_operator_bytes": 54364,
+      "median_measured_dependency_seconds": 0.06660147849470377,
+      "method": "lexical_bm25_character_graph_rrf",
+      "process_RSS": null,
+      "tasks": 48,
+      "whole_composed_method_retained_memory": null
+    }
+  ],
+  "schema": "loom.research_retrieval_performance/1",
+  "source_provider_strata": [
+    {
+      "answerable_tasks": 22,
+      "budget_id": "8KiB",
+      "family_count": 6,
+      "family_macro_evidence_recall": 0.5555555555555556,
+      "family_mean_range": [
+        0.0,
+        1.0
+      ],
+      "method": "lexical_token_cosine",
+      "mixes_tuning_and_exposed_validation_for_description_only": true,
+      "source_provider": "openai",
+      "task_count": 24
+    },
+    {
+      "answerable_tasks": 22,
+      "budget_id": "32KiB",
+      "family_count": 6,
+      "family_macro_evidence_recall": 0.5034722222222222,
+      "family_mean_range": [
+        0.0,
+        1.0
+      ],
+      "method": "lexical_token_cosine",
+      "mixes_tuning_and_exposed_validation_for_description_only": true,
+      "source_provider": "openai",
+      "task_count": 24
+    },
+    {
+      "answerable_tasks": 22,
+      "budget_id": "8KiB",
+      "family_count": 6,
+      "family_macro_evidence_recall": 0.5902777777777778,
+      "family_mean_range": [
+        0.3333333333333333,
+        1.0
+      ],
+      "method": "bm25",
+      "mixes_tuning_and_exposed_validation_for_description_only": true,
+      "source_provider": "openai",
+      "task_count": 24
+    },
+    {
+      "answerable_tasks": 22,
+      "budget_id": "32KiB",
+      "family_count": 6,
+      "family_macro_evidence_recall": 0.5902777777777778,
+      "family_mean_range": [
+        0.3333333333333333,
+        1.0
+      ],
+      "method": "bm25",
+      "mixes_tuning_and_exposed_validation_for_description_only": true,
+      "source_provider": "openai",
+      "task_count": 24
+    },
+    {
+      "answerable_tasks": 22,
+      "budget_id": "8KiB",
+      "family_count": 6,
+      "family_macro_evidence_recall": 0.7395833333333334,
+      "family_mean_range": [
+        0.5625,
+        1.0
+      ],
+      "method": "character_3_5_cosine",
+      "mixes_tuning_and_exposed_validation_for_description_only": true,
+      "source_provider": "openai",
+      "task_count": 24
+    },
+    {
+      "answerable_tasks": 22,
+      "budget_id": "32KiB",
+      "family_count": 6,
+      "family_macro_evidence_recall": 0.6944444444444444,
+      "family_mean_range": [
+        0.5,
+        1.0
+      ],
+      "method": "character_3_5_cosine",
+      "mixes_tuning_and_exposed_validation_for_description_only": true,
+      "source_provider": "openai",
+      "task_count": 24
+    },
+    {
+      "answerable_tasks": 22,
+      "budget_id": "8KiB",
+      "family_count": 6,
+      "family_macro_evidence_recall": 0.21527777777777776,
+      "family_mean_range": [
+        0.0,
+        0.6666666666666666
+      ],
+      "method": "native_graph_distance",
+      "mixes_tuning_and_exposed_validation_for_description_only": true,
+      "source_provider": "openai",
+      "task_count": 24
+    },
+    {
+      "answerable_tasks": 22,
+      "budget_id": "32KiB",
+      "family_count": 6,
+      "family_macro_evidence_recall": 0.2708333333333333,
+      "family_mean_range": [
+        0.0,
+        1.0
+      ],
+      "method": "native_graph_distance",
+      "mixes_tuning_and_exposed_validation_for_description_only": true,
+      "source_provider": "openai",
+      "task_count": 24
+    },
+    {
+      "answerable_tasks": 22,
+      "budget_id": "8KiB",
+      "family_count": 6,
+      "family_macro_evidence_recall": 0.4652777777777778,
+      "family_mean_range": [
+        0.25,
+        0.75
+      ],
+      "method": "bm25_native_expansion",
+      "mixes_tuning_and_exposed_validation_for_description_only": true,
+      "source_provider": "openai",
+      "task_count": 24
+    },
+    {
+      "answerable_tasks": 22,
+      "budget_id": "32KiB",
+      "family_count": 6,
+      "family_macro_evidence_recall": 0.5763888888888888,
+      "family_mean_range": [
+        0.25,
+        1.0
+      ],
+      "method": "bm25_native_expansion",
+      "mixes_tuning_and_exposed_validation_for_description_only": true,
+      "source_provider": "openai",
+      "task_count": 24
+    },
+    {
+      "answerable_tasks": 22,
+      "budget_id": "8KiB",
+      "family_count": 6,
+      "family_macro_evidence_recall": 0.6666666666666666,
+      "family_mean_range": [
+        0.3333333333333333,
+        1.0
+      ],
+      "method": "lexical_bm25_character_graph_rrf",
+      "mixes_tuning_and_exposed_validation_for_description_only": true,
+      "source_provider": "openai",
+      "task_count": 24
+    },
+    {
+      "answerable_tasks": 22,
+      "budget_id": "32KiB",
+      "family_count": 6,
+      "family_macro_evidence_recall": 0.6145833333333334,
+      "family_mean_range": [
+        0.3333333333333333,
+        1.0
+      ],
+      "method": "lexical_bm25_character_graph_rrf",
+      "mixes_tuning_and_exposed_validation_for_description_only": true,
+      "source_provider": "openai",
+      "task_count": 24
+    },
+    {
+      "answerable_tasks": 24,
+      "budget_id": "8KiB",
+      "family_count": 6,
+      "family_macro_evidence_recall": 0.3680555555555556,
+      "family_mean_range": [
+        0.25,
+        0.5
+      ],
+      "method": "lexical_token_cosine",
+      "mixes_tuning_and_exposed_validation_for_description_only": true,
+      "source_provider": "anthropic",
+      "task_count": 24
+    },
+    {
+      "answerable_tasks": 24,
+      "budget_id": "32KiB",
+      "family_count": 6,
+      "family_macro_evidence_recall": 0.3680555555555556,
+      "family_mean_range": [
+        0.25,
+        0.5
+      ],
+      "method": "lexical_token_cosine",
+      "mixes_tuning_and_exposed_validation_for_description_only": true,
+      "source_provider": "anthropic",
+      "task_count": 24
+    },
+    {
+      "answerable_tasks": 24,
+      "budget_id": "8KiB",
+      "family_count": 6,
+      "family_macro_evidence_recall": 0.2569444444444444,
+      "family_mean_range": [
+        0.0,
+        0.375
+      ],
+      "method": "bm25",
+      "mixes_tuning_and_exposed_validation_for_description_only": true,
+      "source_provider": "anthropic",
+      "task_count": 24
+    },
+    {
+      "answerable_tasks": 24,
+      "budget_id": "32KiB",
+      "family_count": 6,
+      "family_macro_evidence_recall": 0.3125,
+      "family_mean_range": [
+        0.0,
+        0.5
+      ],
+      "method": "bm25",
+      "mixes_tuning_and_exposed_validation_for_description_only": true,
+      "source_provider": "anthropic",
+      "task_count": 24
+    },
+    {
+      "answerable_tasks": 24,
+      "budget_id": "8KiB",
+      "family_count": 6,
+      "family_macro_evidence_recall": 0.5208333333333334,
+      "family_mean_range": [
+        0.25,
+        0.75
+      ],
+      "method": "character_3_5_cosine",
+      "mixes_tuning_and_exposed_validation_for_description_only": true,
+      "source_provider": "anthropic",
+      "task_count": 24
+    },
+    {
+      "answerable_tasks": 24,
+      "budget_id": "32KiB",
+      "family_count": 6,
+      "family_macro_evidence_recall": 0.5763888888888888,
+      "family_mean_range": [
+        0.25,
+        0.75
+      ],
+      "method": "character_3_5_cosine",
+      "mixes_tuning_and_exposed_validation_for_description_only": true,
+      "source_provider": "anthropic",
+      "task_count": 24
+    },
+    {
+      "answerable_tasks": 24,
+      "budget_id": "8KiB",
+      "family_count": 6,
+      "family_macro_evidence_recall": 0.09722222222222222,
+      "family_mean_range": [
+        0.0,
+        0.25
+      ],
+      "method": "native_graph_distance",
+      "mixes_tuning_and_exposed_validation_for_description_only": true,
+      "source_provider": "anthropic",
+      "task_count": 24
+    },
+    {
+      "answerable_tasks": 24,
+      "budget_id": "32KiB",
+      "family_count": 6,
+      "family_macro_evidence_recall": 0.09722222222222222,
+      "family_mean_range": [
+        0.0,
+        0.25
+      ],
+      "method": "native_graph_distance",
+      "mixes_tuning_and_exposed_validation_for_description_only": true,
+      "source_provider": "anthropic",
+      "task_count": 24
+    },
+    {
+      "answerable_tasks": 24,
+      "budget_id": "8KiB",
+      "family_count": 6,
+      "family_macro_evidence_recall": 0.4027777777777778,
+      "family_mean_range": [
+        0.25,
+        0.75
+      ],
+      "method": "bm25_native_expansion",
+      "mixes_tuning_and_exposed_validation_for_description_only": true,
+      "source_provider": "anthropic",
+      "task_count": 24
+    },
+    {
+      "answerable_tasks": 24,
+      "budget_id": "32KiB",
+      "family_count": 6,
+      "family_macro_evidence_recall": 0.4027777777777778,
+      "family_mean_range": [
+        0.25,
+        0.5
+      ],
+      "method": "bm25_native_expansion",
+      "mixes_tuning_and_exposed_validation_for_description_only": true,
+      "source_provider": "anthropic",
+      "task_count": 24
+    },
+    {
+      "answerable_tasks": 24,
+      "budget_id": "8KiB",
+      "family_count": 6,
+      "family_macro_evidence_recall": 0.4652777777777778,
+      "family_mean_range": [
+        0.25,
+        0.75
+      ],
+      "method": "lexical_bm25_character_graph_rrf",
+      "mixes_tuning_and_exposed_validation_for_description_only": true,
+      "source_provider": "anthropic",
+      "task_count": 24
+    },
+    {
+      "answerable_tasks": 24,
+      "budget_id": "32KiB",
+      "family_count": 6,
+      "family_macro_evidence_recall": 0.4236111111111111,
+      "family_mean_range": [
+        0.25,
+        0.6666666666666666
+      ],
+      "method": "lexical_bm25_character_graph_rrf",
+      "mixes_tuning_and_exposed_validation_for_description_only": true,
+      "source_provider": "anthropic",
+      "task_count": 24
+    }
+  ]
+}

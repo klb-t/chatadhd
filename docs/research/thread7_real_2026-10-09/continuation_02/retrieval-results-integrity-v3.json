@@ -1,0 +1,11 @@
+{
+  "budget_violations": 0,
+  "cost_usd": 0,
+  "distinct_task_method_budget_keys": 576,
+  "no_answer_rows": 24,
+  "no_answer_rows_with_fabricated_positive_recall": 0,
+  "rows": 576,
+  "schema": "loom.research_retrieval_integrity/1",
+  "tasks_with_same_pool_all_methods": 48,
+  "v2_and_v3_canonical_rows_identical": true
+}

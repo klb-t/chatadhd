@@ -1,0 +1,45 @@
+{
+  "schema": "loom.retrieval_protocol_erratum/1",
+  "revision": "thread7-continuation02-metric-semantics-v1",
+  "created_at_utc": "2026-10-09T08:01:00.593651+00:00",
+  "applies_to_protocol_sha256": "925e6a128bf0c2f8255640d144f04084112d8a11c7c966b260b5d02a947b8df6",
+  "applies_to_task_freeze_sha256": "867526d7269646c561858473dd1aabac850d04c4f7a6fa0127b223b057f5b0ec",
+  "original_protocol_bytes_unchanged": true,
+  "original_tasks_bytes_unchanged": true,
+  "original_method_configuration_bytes_unchanged": true,
+  "classification": "post_run_documentation_correction_not_preregistration",
+  "correction": {
+    "original_field": "evaluation.precision_denominators.precision_at_k",
+    "incorrect_claim": "shorter byte-constrained returns incur empty ranks",
+    "replacement": "P@1/5/10, recall@k, MRR and nDCG evaluate the positive-score ranked list before context-budget selection. P@k divides relevant results by fixed k; a ranked list shorter than k has empty ranks. Context byte constraints do not alter this ranking metric.",
+    "separate_context_metrics": {
+      "context_precision": "Relevant selected records divided by the count of actually selected records after whole-message byte-budget selection; null for an empty selection.",
+      "context_evidence_recall": "Largest fraction of required evidence present among acceptable evidence sets after context selection; zero for a positive gold set with no selected evidence.",
+      "bounded_absence": "Positive-evidence recall/ranking remain undefined when no positive evidence exists; abstention is reported separately and is not proof of semantic absence."
+    }
+  },
+  "evaluation_configuration": {
+    "path": "retrieval-evaluation-v3.json",
+    "sha256": "1caf124c85f25fe7e3e1a9bf44f97da3d193659c53031fcbcbb61e6b2da429e1",
+    "declared_after_first_run": true,
+    "classification": "existing_evaluation_parameters_externalized_as_data_without_changing_values",
+    "ranking_cutoffs": [
+      1,
+      5,
+      10
+    ],
+    "ndcg_cutoffs": [
+      10
+    ],
+    "paired_reference_method": "bm25"
+  },
+  "result_provenance": {
+    "first_ranking_and_timing_capture": "run-v1",
+    "current_analysis": "analysis-v3",
+    "analysis_process": "replay_existing_saved_rankings_without_reranking_or_new_timing",
+    "new_model_calls": 0,
+    "new_cost_usd": "0",
+    "task_judgments_changed": false,
+    "independent_adjudication": false
+  }
+}

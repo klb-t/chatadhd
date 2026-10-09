@@ -1,0 +1,4551 @@
+{
+  "budgets": [
+    {
+      "id": "8KiB",
+      "max_bytes": 8192,
+      "max_records": 10
+    },
+    {
+      "id": "32KiB",
+      "max_bytes": 32768,
+      "max_records": 10
+    }
+  ],
+  "families": 12,
+  "freeze_sha256": "534f4b5182cf370cabafe5c46d845a0b5558a7230f696329e1b3b5c697835a81",
+  "independent_holdout": false,
+  "llm_calls": 0,
+  "methods": 6,
+  "methods_sha256": "1938e2db864c1bea5c7c860d31778ab25a5f11ca792242c79271007cce2dec67",
+  "new_method_executions": 144,
+  "paired_comparisons": [
+    {
+      "budget_id": "32KiB",
+      "confidence_interval": null,
+      "families": 4,
+      "family_macro_paired_delta": 0.14583333333333331,
+      "method": "bm25_native_expansion",
+      "metric": "context_evidence_recall",
+      "paired_tasks": 14,
+      "reference": "bm25",
+      "split": "provisional_validation"
+    },
+    {
+      "budget_id": "32KiB",
+      "confidence_interval": null,
+      "families": 4,
+      "family_macro_paired_delta": 0.14583333333333331,
+      "method": "character_3_5_cosine",
+      "metric": "context_evidence_recall",
+      "paired_tasks": 14,
+      "reference": "bm25",
+      "split": "provisional_validation"
+    },
+    {
+      "budget_id": "32KiB",
+      "confidence_interval": null,
+      "families": 4,
+      "family_macro_paired_delta": 0.0,
+      "method": "lexical_bm25_character_graph_rrf",
+      "metric": "context_evidence_recall",
+      "paired_tasks": 14,
+      "reference": "bm25",
+      "split": "provisional_validation"
+    },
+    {
+      "budget_id": "32KiB",
+      "confidence_interval": null,
+      "families": 4,
+      "family_macro_paired_delta": -0.02083333333333333,
+      "method": "lexical_token_cosine",
+      "metric": "context_evidence_recall",
+      "paired_tasks": 14,
+      "reference": "bm25",
+      "split": "provisional_validation"
+    },
+    {
+      "budget_id": "32KiB",
+      "confidence_interval": null,
+      "families": 4,
+      "family_macro_paired_delta": -0.14583333333333331,
+      "method": "native_graph_distance",
+      "metric": "context_evidence_recall",
+      "paired_tasks": 14,
+      "reference": "bm25",
+      "split": "provisional_validation"
+    },
+    {
+      "budget_id": "8KiB",
+      "confidence_interval": null,
+      "families": 4,
+      "family_macro_paired_delta": 0.1875,
+      "method": "bm25_native_expansion",
+      "metric": "context_evidence_recall",
+      "paired_tasks": 14,
+      "reference": "bm25",
+      "split": "provisional_validation"
+    },
+    {
+      "budget_id": "8KiB",
+      "confidence_interval": null,
+      "families": 4,
+      "family_macro_paired_delta": 0.20833333333333331,
+      "method": "character_3_5_cosine",
+      "metric": "context_evidence_recall",
+      "paired_tasks": 14,
+      "reference": "bm25",
+      "split": "provisional_validation"
+    },
+    {
+      "budget_id": "8KiB",
+      "confidence_interval": null,
+      "families": 4,
+      "family_macro_paired_delta": 0.125,
+      "method": "lexical_bm25_character_graph_rrf",
+      "metric": "context_evidence_recall",
+      "paired_tasks": 14,
+      "reference": "bm25",
+      "split": "provisional_validation"
+    },
+    {
+      "budget_id": "8KiB",
+      "confidence_interval": null,
+      "families": 4,
+      "family_macro_paired_delta": 0.04166666666666667,
+      "method": "lexical_token_cosine",
+      "metric": "context_evidence_recall",
+      "paired_tasks": 14,
+      "reference": "bm25",
+      "split": "provisional_validation"
+    },
+    {
+      "budget_id": "8KiB",
+      "confidence_interval": null,
+      "families": 4,
+      "family_macro_paired_delta": -0.16666666666666666,
+      "method": "native_graph_distance",
+      "metric": "context_evidence_recall",
+      "paired_tasks": 14,
+      "reference": "bm25",
+      "split": "provisional_validation"
+    },
+    {
+      "budget_id": "32KiB",
+      "confidence_interval": null,
+      "families": 8,
+      "family_macro_paired_delta": 0.04166666666666667,
+      "method": "bm25_native_expansion",
+      "metric": "context_evidence_recall",
+      "paired_tasks": 32,
+      "reference": "bm25",
+      "split": "tuning"
+    },
+    {
+      "budget_id": "32KiB",
+      "confidence_interval": null,
+      "families": 8,
+      "family_macro_paired_delta": 0.203125,
+      "method": "character_3_5_cosine",
+      "metric": "context_evidence_recall",
+      "paired_tasks": 32,
+      "reference": "bm25",
+      "split": "tuning"
+    },
+    {
+      "budget_id": "32KiB",
+      "confidence_interval": null,
+      "families": 8,
+      "family_macro_paired_delta": 0.04947916666666667,
+      "method": "lexical_bm25_character_graph_rrf",
+      "metric": "context_evidence_recall",
+      "paired_tasks": 32,
+      "reference": "bm25",
+      "split": "tuning"
+    },
+    {
+      "budget_id": "32KiB",
+      "confidence_interval": null,
+      "families": 8,
+      "family_macro_paired_delta": -0.013020833333333332,
+      "method": "lexical_token_cosine",
+      "metric": "context_evidence_recall",
+      "paired_tasks": 32,
+      "reference": "bm25",
+      "split": "tuning"
+    },
+    {
+      "budget_id": "32KiB",
+      "confidence_interval": null,
+      "families": 8,
+      "family_macro_paired_delta": -0.328125,
+      "method": "native_graph_distance",
+      "metric": "context_evidence_recall",
+      "paired_tasks": 32,
+      "reference": "bm25",
+      "split": "tuning"
+    },
+    {
+      "budget_id": "8KiB",
+      "confidence_interval": null,
+      "families": 8,
+      "family_macro_paired_delta": 0.013020833333333336,
+      "method": "bm25_native_expansion",
+      "metric": "context_evidence_recall",
+      "paired_tasks": 32,
+      "reference": "bm25",
+      "split": "tuning"
+    },
+    {
+      "budget_id": "8KiB",
+      "confidence_interval": null,
+      "families": 8,
+      "family_macro_paired_delta": 0.20572916666666666,
+      "method": "character_3_5_cosine",
+      "metric": "context_evidence_recall",
+      "paired_tasks": 32,
+      "reference": "bm25",
+      "split": "tuning"
+    },
+    {
+      "budget_id": "8KiB",
+      "confidence_interval": null,
+      "families": 8,
+      "family_macro_paired_delta": 0.06770833333333333,
+      "method": "lexical_bm25_character_graph_rrf",
+      "metric": "context_evidence_recall",
+      "paired_tasks": 32,
+      "reference": "bm25",
+      "split": "tuning"
+    },
+    {
+      "budget_id": "8KiB",
+      "confidence_interval": null,
+      "families": 8,
+      "family_macro_paired_delta": 0.036458333333333336,
+      "method": "lexical_token_cosine",
+      "metric": "context_evidence_recall",
+      "paired_tasks": 32,
+      "reference": "bm25",
+      "split": "tuning"
+    },
+    {
+      "budget_id": "8KiB",
+      "confidence_interval": null,
+      "families": 8,
+      "family_macro_paired_delta": -0.3177083333333333,
+      "method": "native_graph_distance",
+      "metric": "context_evidence_recall",
+      "paired_tasks": 32,
+      "reference": "bm25",
+      "split": "tuning"
+    }
+  ],
+  "raw_rows_sha256": "e806b79d1e3a4465d12a9b78e6a86e257b7dd300aa92359baf37b7847b452f26",
+  "replayed_method_rankings": 144,
+  "rows": 576,
+  "schema": "loom.research_retrieval/1",
+  "semantic_answer_quality_measured": false,
+  "summaries": [
+    {
+      "budget_id": "32KiB",
+      "family_count": 4,
+      "method": "bm25",
+      "metrics": {
+        "annotated_branch_distractor_ranked_first": {
+          "families_observed": 1,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 1
+        },
+        "annotated_branch_distractors_selected": {
+          "families_observed": 1,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 1
+        },
+        "annotated_distractors_selected": {
+          "families_observed": 3,
+          "family_macro_mean": 0.7222222222222222,
+          "tasks_observed": 7
+        },
+        "annotated_version_distractor_ranked_first": {
+          "families_observed": 3,
+          "family_macro_mean": 0.16666666666666666,
+          "tasks_observed": 6
+        },
+        "annotated_version_distractors_selected": {
+          "families_observed": 3,
+          "family_macro_mean": 0.6666666666666666,
+          "tasks_observed": 6
+        },
+        "answer_correctness": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "context_all_required_evidence": {
+          "families_observed": 4,
+          "family_macro_mean": 0.4583333333333333,
+          "tasks_observed": 14
+        },
+        "context_bytes": {
+          "families_observed": 4,
+          "family_macro_mean": 18242.625,
+          "tasks_observed": 16
+        },
+        "context_evidence_recall": {
+          "families_observed": 4,
+          "family_macro_mean": 0.4583333333333333,
+          "tasks_observed": 14
+        },
+        "context_precision": {
+          "families_observed": 4,
+          "family_macro_mean": 0.07916666666666666,
+          "tasks_observed": 14
+        },
+        "context_records": {
+          "families_observed": 4,
+          "family_macro_mean": 8.5625,
+          "tasks_observed": 16
+        },
+        "dependency_operator_count": {
+          "families_observed": 4,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 16
+        },
+        "family_index_python_peak_bytes_shared": {
+          "families_observed": 4,
+          "family_macro_mean": 480292.75,
+          "tasks_observed": 16
+        },
+        "family_index_seconds_shared": {
+          "families_observed": 4,
+          "family_macro_mean": 0.010330929250812915,
+          "tasks_observed": 16
+        },
+        "gold_complete_evidence_fits_budget": {
+          "families_observed": 4,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 14
+        },
+        "memory_kind": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "method_total_seconds": {
+          "families_observed": 4,
+          "family_macro_mean": 0.02093787856210838,
+          "tasks_observed": 16
+        },
+        "model_tokens": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "ndcg_at_10": {
+          "families_observed": 4,
+          "family_macro_mean": 0.3272499260474018,
+          "tasks_observed": 14
+        },
+        "no_answer_retrieval_abstained": {
+          "families_observed": 2,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 2
+        },
+        "operator_replayed_not_executed": {
+          "families_observed": 4,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 16
+        },
+        "operator_seconds": {
+          "families_observed": 4,
+          "family_macro_mean": 0.02093787856210838,
+          "tasks_observed": 16
+        },
+        "oracle_context_evidence_recall_ceiling": {
+          "families_observed": 4,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 14
+        },
+        "precision_at_1": {
+          "families_observed": 4,
+          "family_macro_mean": 0.16666666666666666,
+          "tasks_observed": 14
+        },
+        "precision_at_10": {
+          "families_observed": 4,
+          "family_macro_mean": 0.04583333333333334,
+          "tasks_observed": 14
+        },
+        "precision_at_5": {
+          "families_observed": 4,
+          "family_macro_mean": 0.09166666666666667,
+          "tasks_observed": 14
+        },
+        "python_peak_allocated_bytes": {
+          "families_observed": 4,
+          "family_macro_mean": 478719.0,
+          "tasks_observed": 16
+        },
+        "recall_at_1": {
+          "families_observed": 4,
+          "family_macro_mean": 0.16666666666666666,
+          "tasks_observed": 14
+        },
+        "recall_at_10": {
+          "families_observed": 4,
+          "family_macro_mean": 0.4583333333333333,
+          "tasks_observed": 14
+        },
+        "recall_at_5": {
+          "families_observed": 4,
+          "family_macro_mean": 0.4583333333333333,
+          "tasks_observed": 14
+        },
+        "reciprocal_rank": {
+          "families_observed": 4,
+          "family_macro_mean": 0.29730946416934323,
+          "tasks_observed": 14
+        },
+        "regex_word_units": {
+          "families_observed": 4,
+          "family_macro_mean": 2287.6875,
+          "tasks_observed": 16
+        },
+        "required_quote_retention": {
+          "families_observed": 4,
+          "family_macro_mean": 0.4583333333333333,
+          "tasks_observed": 14
+        },
+        "selection_seconds": {
+          "families_observed": 4,
+          "family_macro_mean": 0.0010678629996618838,
+          "tasks_observed": 16
+        }
+      },
+      "split": "provisional_validation",
+      "task_count": 16
+    },
+    {
+      "budget_id": "8KiB",
+      "family_count": 4,
+      "method": "bm25",
+      "metrics": {
+        "annotated_branch_distractor_ranked_first": {
+          "families_observed": 1,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 1
+        },
+        "annotated_branch_distractors_selected": {
+          "families_observed": 1,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 1
+        },
+        "annotated_distractors_selected": {
+          "families_observed": 3,
+          "family_macro_mean": 0.5,
+          "tasks_observed": 7
+        },
+        "annotated_version_distractor_ranked_first": {
+          "families_observed": 3,
+          "family_macro_mean": 0.16666666666666666,
+          "tasks_observed": 6
+        },
+        "annotated_version_distractors_selected": {
+          "families_observed": 3,
+          "family_macro_mean": 0.5,
+          "tasks_observed": 6
+        },
+        "answer_correctness": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "context_all_required_evidence": {
+          "families_observed": 4,
+          "family_macro_mean": 0.3958333333333333,
+          "tasks_observed": 14
+        },
+        "context_bytes": {
+          "families_observed": 4,
+          "family_macro_mean": 7845.125,
+          "tasks_observed": 16
+        },
+        "context_evidence_recall": {
+          "families_observed": 4,
+          "family_macro_mean": 0.3958333333333333,
+          "tasks_observed": 14
+        },
+        "context_precision": {
+          "families_observed": 4,
+          "family_macro_mean": 0.10127314814814814,
+          "tasks_observed": 14
+        },
+        "context_records": {
+          "families_observed": 4,
+          "family_macro_mean": 5.5625,
+          "tasks_observed": 16
+        },
+        "dependency_operator_count": {
+          "families_observed": 4,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 16
+        },
+        "family_index_python_peak_bytes_shared": {
+          "families_observed": 4,
+          "family_macro_mean": 480292.75,
+          "tasks_observed": 16
+        },
+        "family_index_seconds_shared": {
+          "families_observed": 4,
+          "family_macro_mean": 0.010330929250812915,
+          "tasks_observed": 16
+        },
+        "gold_complete_evidence_fits_budget": {
+          "families_observed": 4,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 14
+        },
+        "memory_kind": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "method_total_seconds": {
+          "families_observed": 4,
+          "family_macro_mean": 0.02093787856210838,
+          "tasks_observed": 16
+        },
+        "model_tokens": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "ndcg_at_10": {
+          "families_observed": 4,
+          "family_macro_mean": 0.3272499260474018,
+          "tasks_observed": 14
+        },
+        "no_answer_retrieval_abstained": {
+          "families_observed": 2,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 2
+        },
+        "operator_replayed_not_executed": {
+          "families_observed": 4,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 16
+        },
+        "operator_seconds": {
+          "families_observed": 4,
+          "family_macro_mean": 0.02093787856210838,
+          "tasks_observed": 16
+        },
+        "oracle_context_evidence_recall_ceiling": {
+          "families_observed": 4,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 14
+        },
+        "precision_at_1": {
+          "families_observed": 4,
+          "family_macro_mean": 0.16666666666666666,
+          "tasks_observed": 14
+        },
+        "precision_at_10": {
+          "families_observed": 4,
+          "family_macro_mean": 0.04583333333333334,
+          "tasks_observed": 14
+        },
+        "precision_at_5": {
+          "families_observed": 4,
+          "family_macro_mean": 0.09166666666666667,
+          "tasks_observed": 14
+        },
+        "python_peak_allocated_bytes": {
+          "families_observed": 4,
+          "family_macro_mean": 478719.0,
+          "tasks_observed": 16
+        },
+        "recall_at_1": {
+          "families_observed": 4,
+          "family_macro_mean": 0.16666666666666666,
+          "tasks_observed": 14
+        },
+        "recall_at_10": {
+          "families_observed": 4,
+          "family_macro_mean": 0.4583333333333333,
+          "tasks_observed": 14
+        },
+        "recall_at_5": {
+          "families_observed": 4,
+          "family_macro_mean": 0.4583333333333333,
+          "tasks_observed": 14
+        },
+        "reciprocal_rank": {
+          "families_observed": 4,
+          "family_macro_mean": 0.29730946416934323,
+          "tasks_observed": 14
+        },
+        "regex_word_units": {
+          "families_observed": 4,
+          "family_macro_mean": 961.4375,
+          "tasks_observed": 16
+        },
+        "required_quote_retention": {
+          "families_observed": 4,
+          "family_macro_mean": 0.3958333333333333,
+          "tasks_observed": 14
+        },
+        "selection_seconds": {
+          "families_observed": 4,
+          "family_macro_mean": 0.0006992826247369521,
+          "tasks_observed": 16
+        }
+      },
+      "split": "provisional_validation",
+      "task_count": 16
+    },
+    {
+      "budget_id": "32KiB",
+      "family_count": 4,
+      "method": "bm25_native_expansion",
+      "metrics": {
+        "annotated_branch_distractor_ranked_first": {
+          "families_observed": 1,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 1
+        },
+        "annotated_branch_distractors_selected": {
+          "families_observed": 1,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 1
+        },
+        "annotated_distractors_selected": {
+          "families_observed": 3,
+          "family_macro_mean": 0.6111111111111112,
+          "tasks_observed": 7
+        },
+        "annotated_version_distractor_ranked_first": {
+          "families_observed": 3,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 6
+        },
+        "annotated_version_distractors_selected": {
+          "families_observed": 3,
+          "family_macro_mean": 0.6666666666666666,
+          "tasks_observed": 6
+        },
+        "answer_correctness": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "context_all_required_evidence": {
+          "families_observed": 4,
+          "family_macro_mean": 0.6041666666666666,
+          "tasks_observed": 14
+        },
+        "context_bytes": {
+          "families_observed": 4,
+          "family_macro_mean": 13512.0,
+          "tasks_observed": 16
+        },
+        "context_evidence_recall": {
+          "families_observed": 4,
+          "family_macro_mean": 0.6041666666666666,
+          "tasks_observed": 14
+        },
+        "context_precision": {
+          "families_observed": 4,
+          "family_macro_mean": 0.07708333333333334,
+          "tasks_observed": 14
+        },
+        "context_records": {
+          "families_observed": 4,
+          "family_macro_mean": 9.0,
+          "tasks_observed": 16
+        },
+        "dependency_operator_count": {
+          "families_observed": 4,
+          "family_macro_mean": 2.0,
+          "tasks_observed": 16
+        },
+        "family_index_python_peak_bytes_shared": {
+          "families_observed": 4,
+          "family_macro_mean": 480292.75,
+          "tasks_observed": 16
+        },
+        "family_index_seconds_shared": {
+          "families_observed": 4,
+          "family_macro_mean": 0.010330929250812915,
+          "tasks_observed": 16
+        },
+        "gold_complete_evidence_fits_budget": {
+          "families_observed": 4,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 14
+        },
+        "memory_kind": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "method_total_seconds": {
+          "families_observed": 4,
+          "family_macro_mean": 0.02139625074983087,
+          "tasks_observed": 16
+        },
+        "model_tokens": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "ndcg_at_10": {
+          "families_observed": 4,
+          "family_macro_mean": 0.3609826248387954,
+          "tasks_observed": 14
+        },
+        "no_answer_retrieval_abstained": {
+          "families_observed": 2,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 2
+        },
+        "operator_replayed_not_executed": {
+          "families_observed": 4,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 16
+        },
+        "operator_seconds": {
+          "families_observed": 4,
+          "family_macro_mean": 0.0004583721877224889,
+          "tasks_observed": 16
+        },
+        "oracle_context_evidence_recall_ceiling": {
+          "families_observed": 4,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 14
+        },
+        "precision_at_1": {
+          "families_observed": 4,
+          "family_macro_mean": 0.14583333333333331,
+          "tasks_observed": 14
+        },
+        "precision_at_10": {
+          "families_observed": 4,
+          "family_macro_mean": 0.06041666666666667,
+          "tasks_observed": 14
+        },
+        "precision_at_5": {
+          "families_observed": 4,
+          "family_macro_mean": 0.07916666666666666,
+          "tasks_observed": 14
+        },
+        "python_peak_allocated_bytes": {
+          "families_observed": 4,
+          "family_macro_mean": 22827.0,
+          "tasks_observed": 16
+        },
+        "recall_at_1": {
+          "families_observed": 4,
+          "family_macro_mean": 0.14583333333333331,
+          "tasks_observed": 14
+        },
+        "recall_at_10": {
+          "families_observed": 4,
+          "family_macro_mean": 0.6041666666666666,
+          "tasks_observed": 14
+        },
+        "recall_at_5": {
+          "families_observed": 4,
+          "family_macro_mean": 0.3958333333333333,
+          "tasks_observed": 14
+        },
+        "reciprocal_rank": {
+          "families_observed": 4,
+          "family_macro_mean": 0.2967667483660131,
+          "tasks_observed": 14
+        },
+        "regex_word_units": {
+          "families_observed": 4,
+          "family_macro_mean": 1644.6875,
+          "tasks_observed": 16
+        },
+        "required_quote_retention": {
+          "families_observed": 4,
+          "family_macro_mean": 0.6041666666666666,
+          "tasks_observed": 14
+        },
+        "selection_seconds": {
+          "families_observed": 4,
+          "family_macro_mean": 0.0006631803748859966,
+          "tasks_observed": 16
+        }
+      },
+      "split": "provisional_validation",
+      "task_count": 16
+    },
+    {
+      "budget_id": "8KiB",
+      "family_count": 4,
+      "method": "bm25_native_expansion",
+      "metrics": {
+        "annotated_branch_distractor_ranked_first": {
+          "families_observed": 1,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 1
+        },
+        "annotated_branch_distractors_selected": {
+          "families_observed": 1,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 1
+        },
+        "annotated_distractors_selected": {
+          "families_observed": 3,
+          "family_macro_mean": 0.3333333333333333,
+          "tasks_observed": 7
+        },
+        "annotated_version_distractor_ranked_first": {
+          "families_observed": 3,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 6
+        },
+        "annotated_version_distractors_selected": {
+          "families_observed": 3,
+          "family_macro_mean": 0.3333333333333333,
+          "tasks_observed": 6
+        },
+        "answer_correctness": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "context_all_required_evidence": {
+          "families_observed": 4,
+          "family_macro_mean": 0.5833333333333333,
+          "tasks_observed": 14
+        },
+        "context_bytes": {
+          "families_observed": 4,
+          "family_macro_mean": 7885.4375,
+          "tasks_observed": 16
+        },
+        "context_evidence_recall": {
+          "families_observed": 4,
+          "family_macro_mean": 0.5833333333333333,
+          "tasks_observed": 14
+        },
+        "context_precision": {
+          "families_observed": 4,
+          "family_macro_mean": 0.08958333333333333,
+          "tasks_observed": 14
+        },
+        "context_records": {
+          "families_observed": 4,
+          "family_macro_mean": 7.0625,
+          "tasks_observed": 16
+        },
+        "dependency_operator_count": {
+          "families_observed": 4,
+          "family_macro_mean": 2.0,
+          "tasks_observed": 16
+        },
+        "family_index_python_peak_bytes_shared": {
+          "families_observed": 4,
+          "family_macro_mean": 480292.75,
+          "tasks_observed": 16
+        },
+        "family_index_seconds_shared": {
+          "families_observed": 4,
+          "family_macro_mean": 0.010330929250812915,
+          "tasks_observed": 16
+        },
+        "gold_complete_evidence_fits_budget": {
+          "families_observed": 4,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 14
+        },
+        "memory_kind": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "method_total_seconds": {
+          "families_observed": 4,
+          "family_macro_mean": 0.02139625074983087,
+          "tasks_observed": 16
+        },
+        "model_tokens": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "ndcg_at_10": {
+          "families_observed": 4,
+          "family_macro_mean": 0.3609826248387954,
+          "tasks_observed": 14
+        },
+        "no_answer_retrieval_abstained": {
+          "families_observed": 2,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 2
+        },
+        "operator_replayed_not_executed": {
+          "families_observed": 4,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 16
+        },
+        "operator_seconds": {
+          "families_observed": 4,
+          "family_macro_mean": 0.0004583721877224889,
+          "tasks_observed": 16
+        },
+        "oracle_context_evidence_recall_ceiling": {
+          "families_observed": 4,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 14
+        },
+        "precision_at_1": {
+          "families_observed": 4,
+          "family_macro_mean": 0.14583333333333331,
+          "tasks_observed": 14
+        },
+        "precision_at_10": {
+          "families_observed": 4,
+          "family_macro_mean": 0.06041666666666667,
+          "tasks_observed": 14
+        },
+        "precision_at_5": {
+          "families_observed": 4,
+          "family_macro_mean": 0.07916666666666666,
+          "tasks_observed": 14
+        },
+        "python_peak_allocated_bytes": {
+          "families_observed": 4,
+          "family_macro_mean": 22827.0,
+          "tasks_observed": 16
+        },
+        "recall_at_1": {
+          "families_observed": 4,
+          "family_macro_mean": 0.14583333333333331,
+          "tasks_observed": 14
+        },
+        "recall_at_10": {
+          "families_observed": 4,
+          "family_macro_mean": 0.6041666666666666,
+          "tasks_observed": 14
+        },
+        "recall_at_5": {
+          "families_observed": 4,
+          "family_macro_mean": 0.3958333333333333,
+          "tasks_observed": 14
+        },
+        "reciprocal_rank": {
+          "families_observed": 4,
+          "family_macro_mean": 0.2967667483660131,
+          "tasks_observed": 14
+        },
+        "regex_word_units": {
+          "families_observed": 4,
+          "family_macro_mean": 946.5,
+          "tasks_observed": 16
+        },
+        "required_quote_retention": {
+          "families_observed": 4,
+          "family_macro_mean": 0.5833333333333333,
+          "tasks_observed": 14
+        },
+        "selection_seconds": {
+          "families_observed": 4,
+          "family_macro_mean": 0.00044683918758892105,
+          "tasks_observed": 16
+        }
+      },
+      "split": "provisional_validation",
+      "task_count": 16
+    },
+    {
+      "budget_id": "32KiB",
+      "family_count": 4,
+      "method": "character_3_5_cosine",
+      "metrics": {
+        "annotated_branch_distractor_ranked_first": {
+          "families_observed": 1,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 1
+        },
+        "annotated_branch_distractors_selected": {
+          "families_observed": 1,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 1
+        },
+        "annotated_distractors_selected": {
+          "families_observed": 3,
+          "family_macro_mean": 0.611111111111111,
+          "tasks_observed": 7
+        },
+        "annotated_version_distractor_ranked_first": {
+          "families_observed": 3,
+          "family_macro_mean": 0.16666666666666666,
+          "tasks_observed": 6
+        },
+        "annotated_version_distractors_selected": {
+          "families_observed": 3,
+          "family_macro_mean": 0.6666666666666666,
+          "tasks_observed": 6
+        },
+        "answer_correctness": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "context_all_required_evidence": {
+          "families_observed": 4,
+          "family_macro_mean": 0.6041666666666666,
+          "tasks_observed": 14
+        },
+        "context_bytes": {
+          "families_observed": 4,
+          "family_macro_mean": 20352.25,
+          "tasks_observed": 16
+        },
+        "context_evidence_recall": {
+          "families_observed": 4,
+          "family_macro_mean": 0.6041666666666666,
+          "tasks_observed": 14
+        },
+        "context_precision": {
+          "families_observed": 4,
+          "family_macro_mean": 0.07708333333333334,
+          "tasks_observed": 14
+        },
+        "context_records": {
+          "families_observed": 4,
+          "family_macro_mean": 9.0,
+          "tasks_observed": 16
+        },
+        "dependency_operator_count": {
+          "families_observed": 4,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 16
+        },
+        "family_index_python_peak_bytes_shared": {
+          "families_observed": 4,
+          "family_macro_mean": 480292.75,
+          "tasks_observed": 16
+        },
+        "family_index_seconds_shared": {
+          "families_observed": 4,
+          "family_macro_mean": 0.010330929250812915,
+          "tasks_observed": 16
+        },
+        "gold_complete_evidence_fits_budget": {
+          "families_observed": 4,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 14
+        },
+        "memory_kind": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "method_total_seconds": {
+          "families_observed": 4,
+          "family_macro_mean": 0.10895830993740674,
+          "tasks_observed": 16
+        },
+        "model_tokens": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "ndcg_at_10": {
+          "families_observed": 4,
+          "family_macro_mean": 0.4376725990358816,
+          "tasks_observed": 14
+        },
+        "no_answer_retrieval_abstained": {
+          "families_observed": 2,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 2
+        },
+        "operator_replayed_not_executed": {
+          "families_observed": 4,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 16
+        },
+        "operator_seconds": {
+          "families_observed": 4,
+          "family_macro_mean": 0.10895830993740674,
+          "tasks_observed": 16
+        },
+        "oracle_context_evidence_recall_ceiling": {
+          "families_observed": 4,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 14
+        },
+        "precision_at_1": {
+          "families_observed": 4,
+          "family_macro_mean": 0.29166666666666663,
+          "tasks_observed": 14
+        },
+        "precision_at_10": {
+          "families_observed": 4,
+          "family_macro_mean": 0.06041666666666667,
+          "tasks_observed": 14
+        },
+        "precision_at_5": {
+          "families_observed": 4,
+          "family_macro_mean": 0.10416666666666667,
+          "tasks_observed": 14
+        },
+        "python_peak_allocated_bytes": {
+          "families_observed": 4,
+          "family_macro_mean": 4213827.625,
+          "tasks_observed": 16
+        },
+        "recall_at_1": {
+          "families_observed": 4,
+          "family_macro_mean": 0.29166666666666663,
+          "tasks_observed": 14
+        },
+        "recall_at_10": {
+          "families_observed": 4,
+          "family_macro_mean": 0.6041666666666666,
+          "tasks_observed": 14
+        },
+        "recall_at_5": {
+          "families_observed": 4,
+          "family_macro_mean": 0.5208333333333334,
+          "tasks_observed": 14
+        },
+        "reciprocal_rank": {
+          "families_observed": 4,
+          "family_macro_mean": 0.39987313499777416,
+          "tasks_observed": 14
+        },
+        "regex_word_units": {
+          "families_observed": 4,
+          "family_macro_mean": 2524.875,
+          "tasks_observed": 16
+        },
+        "required_quote_retention": {
+          "families_observed": 4,
+          "family_macro_mean": 0.6041666666666666,
+          "tasks_observed": 14
+        },
+        "selection_seconds": {
+          "families_observed": 4,
+          "family_macro_mean": 0.0012443364375940291,
+          "tasks_observed": 16
+        }
+      },
+      "split": "provisional_validation",
+      "task_count": 16
+    },
+    {
+      "budget_id": "8KiB",
+      "family_count": 4,
+      "method": "character_3_5_cosine",
+      "metrics": {
+        "annotated_branch_distractor_ranked_first": {
+          "families_observed": 1,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 1
+        },
+        "annotated_branch_distractors_selected": {
+          "families_observed": 1,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 1
+        },
+        "annotated_distractors_selected": {
+          "families_observed": 3,
+          "family_macro_mean": 0.4444444444444444,
+          "tasks_observed": 7
+        },
+        "annotated_version_distractor_ranked_first": {
+          "families_observed": 3,
+          "family_macro_mean": 0.16666666666666666,
+          "tasks_observed": 6
+        },
+        "annotated_version_distractors_selected": {
+          "families_observed": 3,
+          "family_macro_mean": 0.3333333333333333,
+          "tasks_observed": 6
+        },
+        "answer_correctness": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "context_all_required_evidence": {
+          "families_observed": 4,
+          "family_macro_mean": 0.6041666666666666,
+          "tasks_observed": 14
+        },
+        "context_bytes": {
+          "families_observed": 4,
+          "family_macro_mean": 7977.125,
+          "tasks_observed": 16
+        },
+        "context_evidence_recall": {
+          "families_observed": 4,
+          "family_macro_mean": 0.6041666666666666,
+          "tasks_observed": 14
+        },
+        "context_precision": {
+          "families_observed": 4,
+          "family_macro_mean": 0.12316468253968255,
+          "tasks_observed": 14
+        },
+        "context_records": {
+          "families_observed": 4,
+          "family_macro_mean": 5.4375,
+          "tasks_observed": 16
+        },
+        "dependency_operator_count": {
+          "families_observed": 4,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 16
+        },
+        "family_index_python_peak_bytes_shared": {
+          "families_observed": 4,
+          "family_macro_mean": 480292.75,
+          "tasks_observed": 16
+        },
+        "family_index_seconds_shared": {
+          "families_observed": 4,
+          "family_macro_mean": 0.010330929250812915,
+          "tasks_observed": 16
+        },
+        "gold_complete_evidence_fits_budget": {
+          "families_observed": 4,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 14
+        },
+        "memory_kind": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "method_total_seconds": {
+          "families_observed": 4,
+          "family_macro_mean": 0.10895830993740674,
+          "tasks_observed": 16
+        },
+        "model_tokens": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "ndcg_at_10": {
+          "families_observed": 4,
+          "family_macro_mean": 0.4376725990358816,
+          "tasks_observed": 14
+        },
+        "no_answer_retrieval_abstained": {
+          "families_observed": 2,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 2
+        },
+        "operator_replayed_not_executed": {
+          "families_observed": 4,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 16
+        },
+        "operator_seconds": {
+          "families_observed": 4,
+          "family_macro_mean": 0.10895830993740674,
+          "tasks_observed": 16
+        },
+        "oracle_context_evidence_recall_ceiling": {
+          "families_observed": 4,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 14
+        },
+        "precision_at_1": {
+          "families_observed": 4,
+          "family_macro_mean": 0.29166666666666663,
+          "tasks_observed": 14
+        },
+        "precision_at_10": {
+          "families_observed": 4,
+          "family_macro_mean": 0.06041666666666667,
+          "tasks_observed": 14
+        },
+        "precision_at_5": {
+          "families_observed": 4,
+          "family_macro_mean": 0.10416666666666667,
+          "tasks_observed": 14
+        },
+        "python_peak_allocated_bytes": {
+          "families_observed": 4,
+          "family_macro_mean": 4213827.625,
+          "tasks_observed": 16
+        },
+        "recall_at_1": {
+          "families_observed": 4,
+          "family_macro_mean": 0.29166666666666663,
+          "tasks_observed": 14
+        },
+        "recall_at_10": {
+          "families_observed": 4,
+          "family_macro_mean": 0.6041666666666666,
+          "tasks_observed": 14
+        },
+        "recall_at_5": {
+          "families_observed": 4,
+          "family_macro_mean": 0.5208333333333334,
+          "tasks_observed": 14
+        },
+        "reciprocal_rank": {
+          "families_observed": 4,
+          "family_macro_mean": 0.39987313499777416,
+          "tasks_observed": 14
+        },
+        "regex_word_units": {
+          "families_observed": 4,
+          "family_macro_mean": 962.25,
+          "tasks_observed": 16
+        },
+        "required_quote_retention": {
+          "families_observed": 4,
+          "family_macro_mean": 0.6041666666666666,
+          "tasks_observed": 14
+        },
+        "selection_seconds": {
+          "families_observed": 4,
+          "family_macro_mean": 0.0007761712513456587,
+          "tasks_observed": 16
+        }
+      },
+      "split": "provisional_validation",
+      "task_count": 16
+    },
+    {
+      "budget_id": "32KiB",
+      "family_count": 4,
+      "method": "lexical_bm25_character_graph_rrf",
+      "metrics": {
+        "annotated_branch_distractor_ranked_first": {
+          "families_observed": 1,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 1
+        },
+        "annotated_branch_distractors_selected": {
+          "families_observed": 1,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 1
+        },
+        "annotated_distractors_selected": {
+          "families_observed": 3,
+          "family_macro_mean": 0.8333333333333334,
+          "tasks_observed": 7
+        },
+        "annotated_version_distractor_ranked_first": {
+          "families_observed": 3,
+          "family_macro_mean": 0.16666666666666666,
+          "tasks_observed": 6
+        },
+        "annotated_version_distractors_selected": {
+          "families_observed": 3,
+          "family_macro_mean": 0.8333333333333334,
+          "tasks_observed": 6
+        },
+        "answer_correctness": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "context_all_required_evidence": {
+          "families_observed": 4,
+          "family_macro_mean": 0.4583333333333333,
+          "tasks_observed": 14
+        },
+        "context_bytes": {
+          "families_observed": 4,
+          "family_macro_mean": 17601.5,
+          "tasks_observed": 16
+        },
+        "context_evidence_recall": {
+          "families_observed": 4,
+          "family_macro_mean": 0.4583333333333333,
+          "tasks_observed": 14
+        },
+        "context_precision": {
+          "families_observed": 4,
+          "family_macro_mean": 0.0625,
+          "tasks_observed": 14
+        },
+        "context_records": {
+          "families_observed": 4,
+          "family_macro_mean": 9.0,
+          "tasks_observed": 16
+        },
+        "dependency_operator_count": {
+          "families_observed": 4,
+          "family_macro_mean": 5.0,
+          "tasks_observed": 16
+        },
+        "family_index_python_peak_bytes_shared": {
+          "families_observed": 4,
+          "family_macro_mean": 480292.75,
+          "tasks_observed": 16
+        },
+        "family_index_seconds_shared": {
+          "families_observed": 4,
+          "family_macro_mean": 0.010330929250812915,
+          "tasks_observed": 16
+        },
+        "gold_complete_evidence_fits_budget": {
+          "families_observed": 4,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 14
+        },
+        "memory_kind": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "method_total_seconds": {
+          "families_observed": 4,
+          "family_macro_mean": 0.13159739406228255,
+          "tasks_observed": 16
+        },
+        "model_tokens": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "ndcg_at_10": {
+          "families_observed": 4,
+          "family_macro_mean": 0.3398968084979889,
+          "tasks_observed": 14
+        },
+        "no_answer_retrieval_abstained": {
+          "families_observed": 2,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 2
+        },
+        "operator_replayed_not_executed": {
+          "families_observed": 4,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 16
+        },
+        "operator_seconds": {
+          "families_observed": 4,
+          "family_macro_mean": 0.0002198744375618844,
+          "tasks_observed": 16
+        },
+        "oracle_context_evidence_recall_ceiling": {
+          "families_observed": 4,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 14
+        },
+        "precision_at_1": {
+          "families_observed": 4,
+          "family_macro_mean": 0.22916666666666666,
+          "tasks_observed": 14
+        },
+        "precision_at_10": {
+          "families_observed": 4,
+          "family_macro_mean": 0.04583333333333334,
+          "tasks_observed": 14
+        },
+        "precision_at_5": {
+          "families_observed": 4,
+          "family_macro_mean": 0.07916666666666666,
+          "tasks_observed": 14
+        },
+        "python_peak_allocated_bytes": {
+          "families_observed": 4,
+          "family_macro_mean": 6080.0,
+          "tasks_observed": 16
+        },
+        "recall_at_1": {
+          "families_observed": 4,
+          "family_macro_mean": 0.22916666666666666,
+          "tasks_observed": 14
+        },
+        "recall_at_10": {
+          "families_observed": 4,
+          "family_macro_mean": 0.4583333333333333,
+          "tasks_observed": 14
+        },
+        "recall_at_5": {
+          "families_observed": 4,
+          "family_macro_mean": 0.3958333333333333,
+          "tasks_observed": 14
+        },
+        "reciprocal_rank": {
+          "families_observed": 4,
+          "family_macro_mean": 0.32935371366679417,
+          "tasks_observed": 14
+        },
+        "regex_word_units": {
+          "families_observed": 4,
+          "family_macro_mean": 2187.375,
+          "tasks_observed": 16
+        },
+        "required_quote_retention": {
+          "families_observed": 4,
+          "family_macro_mean": 0.4583333333333333,
+          "tasks_observed": 14
+        },
+        "selection_seconds": {
+          "families_observed": 4,
+          "family_macro_mean": 0.001119834812470799,
+          "tasks_observed": 16
+        }
+      },
+      "split": "provisional_validation",
+      "task_count": 16
+    },
+    {
+      "budget_id": "8KiB",
+      "family_count": 4,
+      "method": "lexical_bm25_character_graph_rrf",
+      "metrics": {
+        "annotated_branch_distractor_ranked_first": {
+          "families_observed": 1,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 1
+        },
+        "annotated_branch_distractors_selected": {
+          "families_observed": 1,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 1
+        },
+        "annotated_distractors_selected": {
+          "families_observed": 3,
+          "family_macro_mean": 0.3333333333333333,
+          "tasks_observed": 7
+        },
+        "annotated_version_distractor_ranked_first": {
+          "families_observed": 3,
+          "family_macro_mean": 0.16666666666666666,
+          "tasks_observed": 6
+        },
+        "annotated_version_distractors_selected": {
+          "families_observed": 3,
+          "family_macro_mean": 0.3333333333333333,
+          "tasks_observed": 6
+        },
+        "answer_correctness": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "context_all_required_evidence": {
+          "families_observed": 4,
+          "family_macro_mean": 0.5208333333333334,
+          "tasks_observed": 14
+        },
+        "context_bytes": {
+          "families_observed": 4,
+          "family_macro_mean": 7930.8125,
+          "tasks_observed": 16
+        },
+        "context_evidence_recall": {
+          "families_observed": 4,
+          "family_macro_mean": 0.5208333333333334,
+          "tasks_observed": 14
+        },
+        "context_precision": {
+          "families_observed": 4,
+          "family_macro_mean": 0.09270833333333334,
+          "tasks_observed": 14
+        },
+        "context_records": {
+          "families_observed": 4,
+          "family_macro_mean": 6.5625,
+          "tasks_observed": 16
+        },
+        "dependency_operator_count": {
+          "families_observed": 4,
+          "family_macro_mean": 5.0,
+          "tasks_observed": 16
+        },
+        "family_index_python_peak_bytes_shared": {
+          "families_observed": 4,
+          "family_macro_mean": 480292.75,
+          "tasks_observed": 16
+        },
+        "family_index_seconds_shared": {
+          "families_observed": 4,
+          "family_macro_mean": 0.010330929250812915,
+          "tasks_observed": 16
+        },
+        "gold_complete_evidence_fits_budget": {
+          "families_observed": 4,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 14
+        },
+        "memory_kind": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "method_total_seconds": {
+          "families_observed": 4,
+          "family_macro_mean": 0.13159739406228255,
+          "tasks_observed": 16
+        },
+        "model_tokens": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "ndcg_at_10": {
+          "families_observed": 4,
+          "family_macro_mean": 0.3398968084979889,
+          "tasks_observed": 14
+        },
+        "no_answer_retrieval_abstained": {
+          "families_observed": 2,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 2
+        },
+        "operator_replayed_not_executed": {
+          "families_observed": 4,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 16
+        },
+        "operator_seconds": {
+          "families_observed": 4,
+          "family_macro_mean": 0.0002198744375618844,
+          "tasks_observed": 16
+        },
+        "oracle_context_evidence_recall_ceiling": {
+          "families_observed": 4,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 14
+        },
+        "precision_at_1": {
+          "families_observed": 4,
+          "family_macro_mean": 0.22916666666666666,
+          "tasks_observed": 14
+        },
+        "precision_at_10": {
+          "families_observed": 4,
+          "family_macro_mean": 0.04583333333333334,
+          "tasks_observed": 14
+        },
+        "precision_at_5": {
+          "families_observed": 4,
+          "family_macro_mean": 0.07916666666666666,
+          "tasks_observed": 14
+        },
+        "python_peak_allocated_bytes": {
+          "families_observed": 4,
+          "family_macro_mean": 6080.0,
+          "tasks_observed": 16
+        },
+        "recall_at_1": {
+          "families_observed": 4,
+          "family_macro_mean": 0.22916666666666666,
+          "tasks_observed": 14
+        },
+        "recall_at_10": {
+          "families_observed": 4,
+          "family_macro_mean": 0.4583333333333333,
+          "tasks_observed": 14
+        },
+        "recall_at_5": {
+          "families_observed": 4,
+          "family_macro_mean": 0.3958333333333333,
+          "tasks_observed": 14
+        },
+        "reciprocal_rank": {
+          "families_observed": 4,
+          "family_macro_mean": 0.32935371366679417,
+          "tasks_observed": 14
+        },
+        "regex_word_units": {
+          "families_observed": 4,
+          "family_macro_mean": 956.8125,
+          "tasks_observed": 16
+        },
+        "required_quote_retention": {
+          "families_observed": 4,
+          "family_macro_mean": 0.5208333333333334,
+          "tasks_observed": 14
+        },
+        "selection_seconds": {
+          "families_observed": 4,
+          "family_macro_mean": 0.0007960172497405438,
+          "tasks_observed": 16
+        }
+      },
+      "split": "provisional_validation",
+      "task_count": 16
+    },
+    {
+      "budget_id": "32KiB",
+      "family_count": 4,
+      "method": "lexical_token_cosine",
+      "metrics": {
+        "annotated_branch_distractor_ranked_first": {
+          "families_observed": 1,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 1
+        },
+        "annotated_branch_distractors_selected": {
+          "families_observed": 1,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 1
+        },
+        "annotated_distractors_selected": {
+          "families_observed": 3,
+          "family_macro_mean": 0.8333333333333334,
+          "tasks_observed": 7
+        },
+        "annotated_version_distractor_ranked_first": {
+          "families_observed": 3,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 6
+        },
+        "annotated_version_distractors_selected": {
+          "families_observed": 3,
+          "family_macro_mean": 0.8333333333333334,
+          "tasks_observed": 6
+        },
+        "answer_correctness": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "context_all_required_evidence": {
+          "families_observed": 4,
+          "family_macro_mean": 0.4375,
+          "tasks_observed": 14
+        },
+        "context_bytes": {
+          "families_observed": 4,
+          "family_macro_mean": 15806.8125,
+          "tasks_observed": 16
+        },
+        "context_evidence_recall": {
+          "families_observed": 4,
+          "family_macro_mean": 0.4375,
+          "tasks_observed": 14
+        },
+        "context_precision": {
+          "families_observed": 4,
+          "family_macro_mean": 0.07708333333333334,
+          "tasks_observed": 14
+        },
+        "context_records": {
+          "families_observed": 4,
+          "family_macro_mean": 8.5625,
+          "tasks_observed": 16
+        },
+        "dependency_operator_count": {
+          "families_observed": 4,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 16
+        },
+        "family_index_python_peak_bytes_shared": {
+          "families_observed": 4,
+          "family_macro_mean": 480292.75,
+          "tasks_observed": 16
+        },
+        "family_index_seconds_shared": {
+          "families_observed": 4,
+          "family_macro_mean": 0.010330929250812915,
+          "tasks_observed": 16
+        },
+        "gold_complete_evidence_fits_budget": {
+          "families_observed": 4,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 14
+        },
+        "memory_kind": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "method_total_seconds": {
+          "families_observed": 4,
+          "family_macro_mean": 0.0010229589374830539,
+          "tasks_observed": 16
+        },
+        "model_tokens": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "ndcg_at_10": {
+          "families_observed": 4,
+          "family_macro_mean": 0.3524272557291709,
+          "tasks_observed": 14
+        },
+        "no_answer_retrieval_abstained": {
+          "families_observed": 2,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 2
+        },
+        "operator_replayed_not_executed": {
+          "families_observed": 4,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 16
+        },
+        "operator_seconds": {
+          "families_observed": 4,
+          "family_macro_mean": 0.0010229589374830539,
+          "tasks_observed": 16
+        },
+        "oracle_context_evidence_recall_ceiling": {
+          "families_observed": 4,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 14
+        },
+        "precision_at_1": {
+          "families_observed": 4,
+          "family_macro_mean": 0.22916666666666666,
+          "tasks_observed": 14
+        },
+        "precision_at_10": {
+          "families_observed": 4,
+          "family_macro_mean": 0.043750000000000004,
+          "tasks_observed": 14
+        },
+        "precision_at_5": {
+          "families_observed": 4,
+          "family_macro_mean": 0.08750000000000001,
+          "tasks_observed": 14
+        },
+        "python_peak_allocated_bytes": {
+          "families_observed": 4,
+          "family_macro_mean": 3043.8125,
+          "tasks_observed": 16
+        },
+        "recall_at_1": {
+          "families_observed": 4,
+          "family_macro_mean": 0.22916666666666666,
+          "tasks_observed": 14
+        },
+        "recall_at_10": {
+          "families_observed": 4,
+          "family_macro_mean": 0.4375,
+          "tasks_observed": 14
+        },
+        "recall_at_5": {
+          "families_observed": 4,
+          "family_macro_mean": 0.4375,
+          "tasks_observed": 14
+        },
+        "reciprocal_rank": {
+          "families_observed": 4,
+          "family_macro_mean": 0.34045378616130023,
+          "tasks_observed": 14
+        },
+        "regex_word_units": {
+          "families_observed": 4,
+          "family_macro_mean": 1943.875,
+          "tasks_observed": 16
+        },
+        "required_quote_retention": {
+          "families_observed": 4,
+          "family_macro_mean": 0.4375,
+          "tasks_observed": 14
+        },
+        "selection_seconds": {
+          "families_observed": 4,
+          "family_macro_mean": 0.0009650319370848592,
+          "tasks_observed": 16
+        }
+      },
+      "split": "provisional_validation",
+      "task_count": 16
+    },
+    {
+      "budget_id": "8KiB",
+      "family_count": 4,
+      "method": "lexical_token_cosine",
+      "metrics": {
+        "annotated_branch_distractor_ranked_first": {
+          "families_observed": 1,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 1
+        },
+        "annotated_branch_distractors_selected": {
+          "families_observed": 1,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 1
+        },
+        "annotated_distractors_selected": {
+          "families_observed": 3,
+          "family_macro_mean": 0.6111111111111112,
+          "tasks_observed": 7
+        },
+        "annotated_version_distractor_ranked_first": {
+          "families_observed": 3,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 6
+        },
+        "annotated_version_distractors_selected": {
+          "families_observed": 3,
+          "family_macro_mean": 0.5,
+          "tasks_observed": 6
+        },
+        "answer_correctness": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "context_all_required_evidence": {
+          "families_observed": 4,
+          "family_macro_mean": 0.4375,
+          "tasks_observed": 14
+        },
+        "context_bytes": {
+          "families_observed": 4,
+          "family_macro_mean": 7196.25,
+          "tasks_observed": 16
+        },
+        "context_evidence_recall": {
+          "families_observed": 4,
+          "family_macro_mean": 0.4375,
+          "tasks_observed": 14
+        },
+        "context_precision": {
+          "families_observed": 4,
+          "family_macro_mean": 0.11284722222222221,
+          "tasks_observed": 14
+        },
+        "context_records": {
+          "families_observed": 4,
+          "family_macro_mean": 6.1875,
+          "tasks_observed": 16
+        },
+        "dependency_operator_count": {
+          "families_observed": 4,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 16
+        },
+        "family_index_python_peak_bytes_shared": {
+          "families_observed": 4,
+          "family_macro_mean": 480292.75,
+          "tasks_observed": 16
+        },
+        "family_index_seconds_shared": {
+          "families_observed": 4,
+          "family_macro_mean": 0.010330929250812915,
+          "tasks_observed": 16
+        },
+        "gold_complete_evidence_fits_budget": {
+          "families_observed": 4,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 14
+        },
+        "memory_kind": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "method_total_seconds": {
+          "families_observed": 4,
+          "family_macro_mean": 0.0010229589374830539,
+          "tasks_observed": 16
+        },
+        "model_tokens": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "ndcg_at_10": {
+          "families_observed": 4,
+          "family_macro_mean": 0.3524272557291709,
+          "tasks_observed": 14
+        },
+        "no_answer_retrieval_abstained": {
+          "families_observed": 2,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 2
+        },
+        "operator_replayed_not_executed": {
+          "families_observed": 4,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 16
+        },
+        "operator_seconds": {
+          "families_observed": 4,
+          "family_macro_mean": 0.0010229589374830539,
+          "tasks_observed": 16
+        },
+        "oracle_context_evidence_recall_ceiling": {
+          "families_observed": 4,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 14
+        },
+        "precision_at_1": {
+          "families_observed": 4,
+          "family_macro_mean": 0.22916666666666666,
+          "tasks_observed": 14
+        },
+        "precision_at_10": {
+          "families_observed": 4,
+          "family_macro_mean": 0.043750000000000004,
+          "tasks_observed": 14
+        },
+        "precision_at_5": {
+          "families_observed": 4,
+          "family_macro_mean": 0.08750000000000001,
+          "tasks_observed": 14
+        },
+        "python_peak_allocated_bytes": {
+          "families_observed": 4,
+          "family_macro_mean": 3043.8125,
+          "tasks_observed": 16
+        },
+        "recall_at_1": {
+          "families_observed": 4,
+          "family_macro_mean": 0.22916666666666666,
+          "tasks_observed": 14
+        },
+        "recall_at_10": {
+          "families_observed": 4,
+          "family_macro_mean": 0.4375,
+          "tasks_observed": 14
+        },
+        "recall_at_5": {
+          "families_observed": 4,
+          "family_macro_mean": 0.4375,
+          "tasks_observed": 14
+        },
+        "reciprocal_rank": {
+          "families_observed": 4,
+          "family_macro_mean": 0.34045378616130023,
+          "tasks_observed": 14
+        },
+        "regex_word_units": {
+          "families_observed": 4,
+          "family_macro_mean": 858.375,
+          "tasks_observed": 16
+        },
+        "required_quote_retention": {
+          "families_observed": 4,
+          "family_macro_mean": 0.4375,
+          "tasks_observed": 14
+        },
+        "selection_seconds": {
+          "families_observed": 4,
+          "family_macro_mean": 0.000808390938118464,
+          "tasks_observed": 16
+        }
+      },
+      "split": "provisional_validation",
+      "task_count": 16
+    },
+    {
+      "budget_id": "32KiB",
+      "family_count": 4,
+      "method": "native_graph_distance",
+      "metrics": {
+        "annotated_branch_distractor_ranked_first": {
+          "families_observed": 1,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 1
+        },
+        "annotated_branch_distractors_selected": {
+          "families_observed": 1,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 1
+        },
+        "annotated_distractors_selected": {
+          "families_observed": 3,
+          "family_macro_mean": 0.1111111111111111,
+          "tasks_observed": 7
+        },
+        "annotated_version_distractor_ranked_first": {
+          "families_observed": 3,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 6
+        },
+        "annotated_version_distractors_selected": {
+          "families_observed": 3,
+          "family_macro_mean": 0.16666666666666666,
+          "tasks_observed": 6
+        },
+        "answer_correctness": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "context_all_required_evidence": {
+          "families_observed": 4,
+          "family_macro_mean": 0.3125,
+          "tasks_observed": 14
+        },
+        "context_bytes": {
+          "families_observed": 4,
+          "family_macro_mean": 10563.75,
+          "tasks_observed": 16
+        },
+        "context_evidence_recall": {
+          "families_observed": 4,
+          "family_macro_mean": 0.3125,
+          "tasks_observed": 14
+        },
+        "context_precision": {
+          "families_observed": 4,
+          "family_macro_mean": 0.0625,
+          "tasks_observed": 14
+        },
+        "context_records": {
+          "families_observed": 4,
+          "family_macro_mean": 5.0,
+          "tasks_observed": 16
+        },
+        "dependency_operator_count": {
+          "families_observed": 4,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 16
+        },
+        "family_index_python_peak_bytes_shared": {
+          "families_observed": 4,
+          "family_macro_mean": 480292.75,
+          "tasks_observed": 16
+        },
+        "family_index_seconds_shared": {
+          "families_observed": 4,
+          "family_macro_mean": 0.010330929250812915,
+          "tasks_observed": 16
+        },
+        "gold_complete_evidence_fits_budget": {
+          "families_observed": 4,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 14
+        },
+        "memory_kind": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "method_total_seconds": {
+          "families_observed": 4,
+          "family_macro_mean": 0.00038406012458835903,
+          "tasks_observed": 16
+        },
+        "model_tokens": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "ndcg_at_10": {
+          "families_observed": 4,
+          "family_macro_mean": 0.19667084353442787,
+          "tasks_observed": 14
+        },
+        "no_answer_retrieval_abstained": {
+          "families_observed": 2,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 2
+        },
+        "operator_replayed_not_executed": {
+          "families_observed": 4,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 16
+        },
+        "operator_seconds": {
+          "families_observed": 4,
+          "family_macro_mean": 0.00038406012458835903,
+          "tasks_observed": 16
+        },
+        "oracle_context_evidence_recall_ceiling": {
+          "families_observed": 4,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 14
+        },
+        "precision_at_1": {
+          "families_observed": 4,
+          "family_macro_mean": 0.08333333333333333,
+          "tasks_observed": 14
+        },
+        "precision_at_10": {
+          "families_observed": 4,
+          "family_macro_mean": 0.03125,
+          "tasks_observed": 14
+        },
+        "precision_at_5": {
+          "families_observed": 4,
+          "family_macro_mean": 0.0625,
+          "tasks_observed": 14
+        },
+        "python_peak_allocated_bytes": {
+          "families_observed": 4,
+          "family_macro_mean": 21674.0,
+          "tasks_observed": 16
+        },
+        "recall_at_1": {
+          "families_observed": 4,
+          "family_macro_mean": 0.08333333333333333,
+          "tasks_observed": 14
+        },
+        "recall_at_10": {
+          "families_observed": 4,
+          "family_macro_mean": 0.3125,
+          "tasks_observed": 14
+        },
+        "recall_at_5": {
+          "families_observed": 4,
+          "family_macro_mean": 0.3125,
+          "tasks_observed": 14
+        },
+        "reciprocal_rank": {
+          "families_observed": 4,
+          "family_macro_mean": 0.15902777777777777,
+          "tasks_observed": 14
+        },
+        "regex_word_units": {
+          "families_observed": 4,
+          "family_macro_mean": 1309.5,
+          "tasks_observed": 16
+        },
+        "required_quote_retention": {
+          "families_observed": 4,
+          "family_macro_mean": 0.3125,
+          "tasks_observed": 14
+        },
+        "selection_seconds": {
+          "families_observed": 4,
+          "family_macro_mean": 0.0004685254382366111,
+          "tasks_observed": 16
+        }
+      },
+      "split": "provisional_validation",
+      "task_count": 16
+    },
+    {
+      "budget_id": "8KiB",
+      "family_count": 4,
+      "method": "native_graph_distance",
+      "metrics": {
+        "annotated_branch_distractor_ranked_first": {
+          "families_observed": 1,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 1
+        },
+        "annotated_branch_distractors_selected": {
+          "families_observed": 1,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 1
+        },
+        "annotated_distractors_selected": {
+          "families_observed": 3,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 7
+        },
+        "annotated_version_distractor_ranked_first": {
+          "families_observed": 3,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 6
+        },
+        "annotated_version_distractors_selected": {
+          "families_observed": 3,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 6
+        },
+        "answer_correctness": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "context_all_required_evidence": {
+          "families_observed": 4,
+          "family_macro_mean": 0.22916666666666666,
+          "tasks_observed": 14
+        },
+        "context_bytes": {
+          "families_observed": 4,
+          "family_macro_mean": 5638.25,
+          "tasks_observed": 16
+        },
+        "context_evidence_recall": {
+          "families_observed": 4,
+          "family_macro_mean": 0.22916666666666666,
+          "tasks_observed": 14
+        },
+        "context_precision": {
+          "families_observed": 4,
+          "family_macro_mean": 0.0625,
+          "tasks_observed": 14
+        },
+        "context_records": {
+          "families_observed": 4,
+          "family_macro_mean": 4.25,
+          "tasks_observed": 16
+        },
+        "dependency_operator_count": {
+          "families_observed": 4,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 16
+        },
+        "family_index_python_peak_bytes_shared": {
+          "families_observed": 4,
+          "family_macro_mean": 480292.75,
+          "tasks_observed": 16
+        },
+        "family_index_seconds_shared": {
+          "families_observed": 4,
+          "family_macro_mean": 0.010330929250812915,
+          "tasks_observed": 16
+        },
+        "gold_complete_evidence_fits_budget": {
+          "families_observed": 4,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 14
+        },
+        "memory_kind": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "method_total_seconds": {
+          "families_observed": 4,
+          "family_macro_mean": 0.00038406012458835903,
+          "tasks_observed": 16
+        },
+        "model_tokens": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "ndcg_at_10": {
+          "families_observed": 4,
+          "family_macro_mean": 0.19667084353442787,
+          "tasks_observed": 14
+        },
+        "no_answer_retrieval_abstained": {
+          "families_observed": 2,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 2
+        },
+        "operator_replayed_not_executed": {
+          "families_observed": 4,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 16
+        },
+        "operator_seconds": {
+          "families_observed": 4,
+          "family_macro_mean": 0.00038406012458835903,
+          "tasks_observed": 16
+        },
+        "oracle_context_evidence_recall_ceiling": {
+          "families_observed": 4,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 14
+        },
+        "precision_at_1": {
+          "families_observed": 4,
+          "family_macro_mean": 0.08333333333333333,
+          "tasks_observed": 14
+        },
+        "precision_at_10": {
+          "families_observed": 4,
+          "family_macro_mean": 0.03125,
+          "tasks_observed": 14
+        },
+        "precision_at_5": {
+          "families_observed": 4,
+          "family_macro_mean": 0.0625,
+          "tasks_observed": 14
+        },
+        "python_peak_allocated_bytes": {
+          "families_observed": 4,
+          "family_macro_mean": 21674.0,
+          "tasks_observed": 16
+        },
+        "recall_at_1": {
+          "families_observed": 4,
+          "family_macro_mean": 0.08333333333333333,
+          "tasks_observed": 14
+        },
+        "recall_at_10": {
+          "families_observed": 4,
+          "family_macro_mean": 0.3125,
+          "tasks_observed": 14
+        },
+        "recall_at_5": {
+          "families_observed": 4,
+          "family_macro_mean": 0.3125,
+          "tasks_observed": 14
+        },
+        "reciprocal_rank": {
+          "families_observed": 4,
+          "family_macro_mean": 0.15902777777777777,
+          "tasks_observed": 14
+        },
+        "regex_word_units": {
+          "families_observed": 4,
+          "family_macro_mean": 689.75,
+          "tasks_observed": 16
+        },
+        "required_quote_retention": {
+          "families_observed": 4,
+          "family_macro_mean": 0.22916666666666666,
+          "tasks_observed": 14
+        },
+        "selection_seconds": {
+          "families_observed": 4,
+          "family_macro_mean": 0.00031245737545759766,
+          "tasks_observed": 16
+        }
+      },
+      "split": "provisional_validation",
+      "task_count": 16
+    },
+    {
+      "budget_id": "32KiB",
+      "family_count": 8,
+      "method": "bm25",
+      "metrics": {
+        "annotated_branch_distractor_ranked_first": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "annotated_branch_distractors_selected": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "annotated_distractors_selected": {
+          "families_observed": 7,
+          "family_macro_mean": 0.5714285714285714,
+          "tasks_observed": 12
+        },
+        "annotated_version_distractor_ranked_first": {
+          "families_observed": 7,
+          "family_macro_mean": 0.07142857142857142,
+          "tasks_observed": 12
+        },
+        "annotated_version_distractors_selected": {
+          "families_observed": 7,
+          "family_macro_mean": 0.5714285714285714,
+          "tasks_observed": 12
+        },
+        "answer_correctness": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "context_all_required_evidence": {
+          "families_observed": 8,
+          "family_macro_mean": 0.375,
+          "tasks_observed": 32
+        },
+        "context_bytes": {
+          "families_observed": 8,
+          "family_macro_mean": 17892.0625,
+          "tasks_observed": 32
+        },
+        "context_evidence_recall": {
+          "families_observed": 8,
+          "family_macro_mean": 0.4479166666666667,
+          "tasks_observed": 32
+        },
+        "context_precision": {
+          "families_observed": 8,
+          "family_macro_mean": 0.0625,
+          "tasks_observed": 32
+        },
+        "context_records": {
+          "families_observed": 8,
+          "family_macro_mean": 9.96875,
+          "tasks_observed": 32
+        },
+        "dependency_operator_count": {
+          "families_observed": 8,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 32
+        },
+        "family_index_python_peak_bytes_shared": {
+          "families_observed": 8,
+          "family_macro_mean": 1449848.21875,
+          "tasks_observed": 32
+        },
+        "family_index_seconds_shared": {
+          "families_observed": 8,
+          "family_macro_mean": 0.024576266562121418,
+          "tasks_observed": 32
+        },
+        "gold_complete_evidence_fits_budget": {
+          "families_observed": 8,
+          "family_macro_mean": 0.96875,
+          "tasks_observed": 32
+        },
+        "memory_kind": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "method_total_seconds": {
+          "families_observed": 8,
+          "family_macro_mean": 0.04730056181222153,
+          "tasks_observed": 32
+        },
+        "model_tokens": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "ndcg_at_10": {
+          "families_observed": 8,
+          "family_macro_mean": 0.32768102902488405,
+          "tasks_observed": 32
+        },
+        "no_answer_retrieval_abstained": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "operator_replayed_not_executed": {
+          "families_observed": 8,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 32
+        },
+        "operator_seconds": {
+          "families_observed": 8,
+          "family_macro_mean": 0.04730056181222153,
+          "tasks_observed": 32
+        },
+        "oracle_context_evidence_recall_ceiling": {
+          "families_observed": 8,
+          "family_macro_mean": 0.96875,
+          "tasks_observed": 32
+        },
+        "precision_at_1": {
+          "families_observed": 8,
+          "family_macro_mean": 0.25,
+          "tasks_observed": 32
+        },
+        "precision_at_10": {
+          "families_observed": 8,
+          "family_macro_mean": 0.0625,
+          "tasks_observed": 32
+        },
+        "precision_at_5": {
+          "families_observed": 8,
+          "family_macro_mean": 0.09375000000000001,
+          "tasks_observed": 32
+        },
+        "python_peak_allocated_bytes": {
+          "families_observed": 8,
+          "family_macro_mean": 1451504.5625,
+          "tasks_observed": 32
+        },
+        "recall_at_1": {
+          "families_observed": 8,
+          "family_macro_mean": 0.22916666666666666,
+          "tasks_observed": 32
+        },
+        "recall_at_10": {
+          "families_observed": 8,
+          "family_macro_mean": 0.4479166666666667,
+          "tasks_observed": 32
+        },
+        "recall_at_5": {
+          "families_observed": 8,
+          "family_macro_mean": 0.3645833333333333,
+          "tasks_observed": 32
+        },
+        "reciprocal_rank": {
+          "families_observed": 8,
+          "family_macro_mean": 0.3374802303613672,
+          "tasks_observed": 32
+        },
+        "regex_word_units": {
+          "families_observed": 8,
+          "family_macro_mean": 2225.65625,
+          "tasks_observed": 32
+        },
+        "required_quote_retention": {
+          "families_observed": 8,
+          "family_macro_mean": 0.4479166666666667,
+          "tasks_observed": 32
+        },
+        "selection_seconds": {
+          "families_observed": 8,
+          "family_macro_mean": 0.0017423370624101153,
+          "tasks_observed": 32
+        }
+      },
+      "split": "tuning",
+      "task_count": 32
+    },
+    {
+      "budget_id": "8KiB",
+      "family_count": 8,
+      "method": "bm25",
+      "metrics": {
+        "annotated_branch_distractor_ranked_first": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "annotated_branch_distractors_selected": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "annotated_distractors_selected": {
+          "families_observed": 7,
+          "family_macro_mean": 0.5714285714285714,
+          "tasks_observed": 12
+        },
+        "annotated_version_distractor_ranked_first": {
+          "families_observed": 7,
+          "family_macro_mean": 0.07142857142857142,
+          "tasks_observed": 12
+        },
+        "annotated_version_distractors_selected": {
+          "families_observed": 7,
+          "family_macro_mean": 0.5714285714285714,
+          "tasks_observed": 12
+        },
+        "answer_correctness": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "context_all_required_evidence": {
+          "families_observed": 8,
+          "family_macro_mean": 0.375,
+          "tasks_observed": 32
+        },
+        "context_bytes": {
+          "families_observed": 8,
+          "family_macro_mean": 7739.375,
+          "tasks_observed": 32
+        },
+        "context_evidence_recall": {
+          "families_observed": 8,
+          "family_macro_mean": 0.4375,
+          "tasks_observed": 32
+        },
+        "context_precision": {
+          "families_observed": 8,
+          "family_macro_mean": 0.08271329365079365,
+          "tasks_observed": 32
+        },
+        "context_records": {
+          "families_observed": 8,
+          "family_macro_mean": 6.96875,
+          "tasks_observed": 32
+        },
+        "dependency_operator_count": {
+          "families_observed": 8,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 32
+        },
+        "family_index_python_peak_bytes_shared": {
+          "families_observed": 8,
+          "family_macro_mean": 1449848.21875,
+          "tasks_observed": 32
+        },
+        "family_index_seconds_shared": {
+          "families_observed": 8,
+          "family_macro_mean": 0.024576266562121418,
+          "tasks_observed": 32
+        },
+        "gold_complete_evidence_fits_budget": {
+          "families_observed": 8,
+          "family_macro_mean": 0.96875,
+          "tasks_observed": 32
+        },
+        "memory_kind": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "method_total_seconds": {
+          "families_observed": 8,
+          "family_macro_mean": 0.04730056181222153,
+          "tasks_observed": 32
+        },
+        "model_tokens": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "ndcg_at_10": {
+          "families_observed": 8,
+          "family_macro_mean": 0.32768102902488405,
+          "tasks_observed": 32
+        },
+        "no_answer_retrieval_abstained": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "operator_replayed_not_executed": {
+          "families_observed": 8,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 32
+        },
+        "operator_seconds": {
+          "families_observed": 8,
+          "family_macro_mean": 0.04730056181222153,
+          "tasks_observed": 32
+        },
+        "oracle_context_evidence_recall_ceiling": {
+          "families_observed": 8,
+          "family_macro_mean": 0.96875,
+          "tasks_observed": 32
+        },
+        "precision_at_1": {
+          "families_observed": 8,
+          "family_macro_mean": 0.25,
+          "tasks_observed": 32
+        },
+        "precision_at_10": {
+          "families_observed": 8,
+          "family_macro_mean": 0.0625,
+          "tasks_observed": 32
+        },
+        "precision_at_5": {
+          "families_observed": 8,
+          "family_macro_mean": 0.09375000000000001,
+          "tasks_observed": 32
+        },
+        "python_peak_allocated_bytes": {
+          "families_observed": 8,
+          "family_macro_mean": 1451504.5625,
+          "tasks_observed": 32
+        },
+        "recall_at_1": {
+          "families_observed": 8,
+          "family_macro_mean": 0.22916666666666666,
+          "tasks_observed": 32
+        },
+        "recall_at_10": {
+          "families_observed": 8,
+          "family_macro_mean": 0.4479166666666667,
+          "tasks_observed": 32
+        },
+        "recall_at_5": {
+          "families_observed": 8,
+          "family_macro_mean": 0.3645833333333333,
+          "tasks_observed": 32
+        },
+        "reciprocal_rank": {
+          "families_observed": 8,
+          "family_macro_mean": 0.3374802303613672,
+          "tasks_observed": 32
+        },
+        "regex_word_units": {
+          "families_observed": 8,
+          "family_macro_mean": 943.03125,
+          "tasks_observed": 32
+        },
+        "required_quote_retention": {
+          "families_observed": 8,
+          "family_macro_mean": 0.4375,
+          "tasks_observed": 32
+        },
+        "selection_seconds": {
+          "families_observed": 8,
+          "family_macro_mean": 0.0014924727187235476,
+          "tasks_observed": 32
+        }
+      },
+      "split": "tuning",
+      "task_count": 32
+    },
+    {
+      "budget_id": "32KiB",
+      "family_count": 8,
+      "method": "bm25_native_expansion",
+      "metrics": {
+        "annotated_branch_distractor_ranked_first": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "annotated_branch_distractors_selected": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "annotated_distractors_selected": {
+          "families_observed": 7,
+          "family_macro_mean": 0.6428571428571429,
+          "tasks_observed": 12
+        },
+        "annotated_version_distractor_ranked_first": {
+          "families_observed": 7,
+          "family_macro_mean": 0.07142857142857142,
+          "tasks_observed": 12
+        },
+        "annotated_version_distractors_selected": {
+          "families_observed": 7,
+          "family_macro_mean": 0.6428571428571429,
+          "tasks_observed": 12
+        },
+        "answer_correctness": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "context_all_required_evidence": {
+          "families_observed": 8,
+          "family_macro_mean": 0.46875,
+          "tasks_observed": 32
+        },
+        "context_bytes": {
+          "families_observed": 8,
+          "family_macro_mean": 13117.46875,
+          "tasks_observed": 32
+        },
+        "context_evidence_recall": {
+          "families_observed": 8,
+          "family_macro_mean": 0.4895833333333333,
+          "tasks_observed": 32
+        },
+        "context_precision": {
+          "families_observed": 8,
+          "family_macro_mean": 0.07534722222222222,
+          "tasks_observed": 32
+        },
+        "context_records": {
+          "families_observed": 8,
+          "family_macro_mean": 9.96875,
+          "tasks_observed": 32
+        },
+        "dependency_operator_count": {
+          "families_observed": 8,
+          "family_macro_mean": 2.0,
+          "tasks_observed": 32
+        },
+        "family_index_python_peak_bytes_shared": {
+          "families_observed": 8,
+          "family_macro_mean": 1449848.21875,
+          "tasks_observed": 32
+        },
+        "family_index_seconds_shared": {
+          "families_observed": 8,
+          "family_macro_mean": 0.024576266562121418,
+          "tasks_observed": 32
+        },
+        "gold_complete_evidence_fits_budget": {
+          "families_observed": 8,
+          "family_macro_mean": 0.96875,
+          "tasks_observed": 32
+        },
+        "memory_kind": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "method_total_seconds": {
+          "families_observed": 8,
+          "family_macro_mean": 0.048592907249485506,
+          "tasks_observed": 32
+        },
+        "model_tokens": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "ndcg_at_10": {
+          "families_observed": 8,
+          "family_macro_mean": 0.26400318131502704,
+          "tasks_observed": 32
+        },
+        "no_answer_retrieval_abstained": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "operator_replayed_not_executed": {
+          "families_observed": 8,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 32
+        },
+        "operator_seconds": {
+          "families_observed": 8,
+          "family_macro_mean": 0.0012923454372639753,
+          "tasks_observed": 32
+        },
+        "oracle_context_evidence_recall_ceiling": {
+          "families_observed": 8,
+          "family_macro_mean": 0.96875,
+          "tasks_observed": 32
+        },
+        "precision_at_1": {
+          "families_observed": 8,
+          "family_macro_mean": 0.03125,
+          "tasks_observed": 32
+        },
+        "precision_at_10": {
+          "families_observed": 8,
+          "family_macro_mean": 0.075,
+          "tasks_observed": 32
+        },
+        "precision_at_5": {
+          "families_observed": 8,
+          "family_macro_mean": 0.1125,
+          "tasks_observed": 32
+        },
+        "python_peak_allocated_bytes": {
+          "families_observed": 8,
+          "family_macro_mean": 72849.5,
+          "tasks_observed": 32
+        },
+        "recall_at_1": {
+          "families_observed": 8,
+          "family_macro_mean": 0.03125,
+          "tasks_observed": 32
+        },
+        "recall_at_10": {
+          "families_observed": 8,
+          "family_macro_mean": 0.4895833333333333,
+          "tasks_observed": 32
+        },
+        "recall_at_5": {
+          "families_observed": 8,
+          "family_macro_mean": 0.3880208333333333,
+          "tasks_observed": 32
+        },
+        "reciprocal_rank": {
+          "families_observed": 8,
+          "family_macro_mean": 0.20937601001939238,
+          "tasks_observed": 32
+        },
+        "regex_word_units": {
+          "families_observed": 8,
+          "family_macro_mean": 1675.15625,
+          "tasks_observed": 32
+        },
+        "required_quote_retention": {
+          "families_observed": 8,
+          "family_macro_mean": 0.4895833333333333,
+          "tasks_observed": 32
+        },
+        "selection_seconds": {
+          "families_observed": 8,
+          "family_macro_mean": 0.0007075350315517426,
+          "tasks_observed": 32
+        }
+      },
+      "split": "tuning",
+      "task_count": 32
+    },
+    {
+      "budget_id": "8KiB",
+      "family_count": 8,
+      "method": "bm25_native_expansion",
+      "metrics": {
+        "annotated_branch_distractor_ranked_first": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "annotated_branch_distractors_selected": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "annotated_distractors_selected": {
+          "families_observed": 7,
+          "family_macro_mean": 0.42857142857142855,
+          "tasks_observed": 12
+        },
+        "annotated_version_distractor_ranked_first": {
+          "families_observed": 7,
+          "family_macro_mean": 0.07142857142857142,
+          "tasks_observed": 12
+        },
+        "annotated_version_distractors_selected": {
+          "families_observed": 7,
+          "family_macro_mean": 0.42857142857142855,
+          "tasks_observed": 12
+        },
+        "answer_correctness": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "context_all_required_evidence": {
+          "families_observed": 8,
+          "family_macro_mean": 0.40625,
+          "tasks_observed": 32
+        },
+        "context_bytes": {
+          "families_observed": 8,
+          "family_macro_mean": 7275.96875,
+          "tasks_observed": 32
+        },
+        "context_evidence_recall": {
+          "families_observed": 8,
+          "family_macro_mean": 0.4505208333333333,
+          "tasks_observed": 32
+        },
+        "context_precision": {
+          "families_observed": 8,
+          "family_macro_mean": 0.08405257936507937,
+          "tasks_observed": 32
+        },
+        "context_records": {
+          "families_observed": 8,
+          "family_macro_mean": 8.53125,
+          "tasks_observed": 32
+        },
+        "dependency_operator_count": {
+          "families_observed": 8,
+          "family_macro_mean": 2.0,
+          "tasks_observed": 32
+        },
+        "family_index_python_peak_bytes_shared": {
+          "families_observed": 8,
+          "family_macro_mean": 1449848.21875,
+          "tasks_observed": 32
+        },
+        "family_index_seconds_shared": {
+          "families_observed": 8,
+          "family_macro_mean": 0.024576266562121418,
+          "tasks_observed": 32
+        },
+        "gold_complete_evidence_fits_budget": {
+          "families_observed": 8,
+          "family_macro_mean": 0.96875,
+          "tasks_observed": 32
+        },
+        "memory_kind": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "method_total_seconds": {
+          "families_observed": 8,
+          "family_macro_mean": 0.048592907249485506,
+          "tasks_observed": 32
+        },
+        "model_tokens": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "ndcg_at_10": {
+          "families_observed": 8,
+          "family_macro_mean": 0.26400318131502704,
+          "tasks_observed": 32
+        },
+        "no_answer_retrieval_abstained": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "operator_replayed_not_executed": {
+          "families_observed": 8,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 32
+        },
+        "operator_seconds": {
+          "families_observed": 8,
+          "family_macro_mean": 0.0012923454372639753,
+          "tasks_observed": 32
+        },
+        "oracle_context_evidence_recall_ceiling": {
+          "families_observed": 8,
+          "family_macro_mean": 0.96875,
+          "tasks_observed": 32
+        },
+        "precision_at_1": {
+          "families_observed": 8,
+          "family_macro_mean": 0.03125,
+          "tasks_observed": 32
+        },
+        "precision_at_10": {
+          "families_observed": 8,
+          "family_macro_mean": 0.075,
+          "tasks_observed": 32
+        },
+        "precision_at_5": {
+          "families_observed": 8,
+          "family_macro_mean": 0.1125,
+          "tasks_observed": 32
+        },
+        "python_peak_allocated_bytes": {
+          "families_observed": 8,
+          "family_macro_mean": 72849.5,
+          "tasks_observed": 32
+        },
+        "recall_at_1": {
+          "families_observed": 8,
+          "family_macro_mean": 0.03125,
+          "tasks_observed": 32
+        },
+        "recall_at_10": {
+          "families_observed": 8,
+          "family_macro_mean": 0.4895833333333333,
+          "tasks_observed": 32
+        },
+        "recall_at_5": {
+          "families_observed": 8,
+          "family_macro_mean": 0.3880208333333333,
+          "tasks_observed": 32
+        },
+        "reciprocal_rank": {
+          "families_observed": 8,
+          "family_macro_mean": 0.20937601001939238,
+          "tasks_observed": 32
+        },
+        "regex_word_units": {
+          "families_observed": 8,
+          "family_macro_mean": 873.125,
+          "tasks_observed": 32
+        },
+        "required_quote_retention": {
+          "families_observed": 8,
+          "family_macro_mean": 0.4505208333333333,
+          "tasks_observed": 32
+        },
+        "selection_seconds": {
+          "families_observed": 8,
+          "family_macro_mean": 0.0004749950001041725,
+          "tasks_observed": 32
+        }
+      },
+      "split": "tuning",
+      "task_count": 32
+    },
+    {
+      "budget_id": "32KiB",
+      "family_count": 8,
+      "method": "character_3_5_cosine",
+      "metrics": {
+        "annotated_branch_distractor_ranked_first": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "annotated_branch_distractors_selected": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "annotated_distractors_selected": {
+          "families_observed": 7,
+          "family_macro_mean": 0.42857142857142855,
+          "tasks_observed": 12
+        },
+        "annotated_version_distractor_ranked_first": {
+          "families_observed": 7,
+          "family_macro_mean": 0.14285714285714285,
+          "tasks_observed": 12
+        },
+        "annotated_version_distractors_selected": {
+          "families_observed": 7,
+          "family_macro_mean": 0.42857142857142855,
+          "tasks_observed": 12
+        },
+        "answer_correctness": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "context_all_required_evidence": {
+          "families_observed": 8,
+          "family_macro_mean": 0.59375,
+          "tasks_observed": 32
+        },
+        "context_bytes": {
+          "families_observed": 8,
+          "family_macro_mean": 20893.9375,
+          "tasks_observed": 32
+        },
+        "context_evidence_recall": {
+          "families_observed": 8,
+          "family_macro_mean": 0.6510416666666666,
+          "tasks_observed": 32
+        },
+        "context_precision": {
+          "families_observed": 8,
+          "family_macro_mean": 0.08506944444444445,
+          "tasks_observed": 32
+        },
+        "context_records": {
+          "families_observed": 8,
+          "family_macro_mean": 9.96875,
+          "tasks_observed": 32
+        },
+        "dependency_operator_count": {
+          "families_observed": 8,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 32
+        },
+        "family_index_python_peak_bytes_shared": {
+          "families_observed": 8,
+          "family_macro_mean": 1449848.21875,
+          "tasks_observed": 32
+        },
+        "family_index_seconds_shared": {
+          "families_observed": 8,
+          "family_macro_mean": 0.024576266562121418,
+          "tasks_observed": 32
+        },
+        "gold_complete_evidence_fits_budget": {
+          "families_observed": 8,
+          "family_macro_mean": 0.96875,
+          "tasks_observed": 32
+        },
+        "memory_kind": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "method_total_seconds": {
+          "families_observed": 8,
+          "family_macro_mean": 0.3535965886875374,
+          "tasks_observed": 32
+        },
+        "model_tokens": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "ndcg_at_10": {
+          "families_observed": 8,
+          "family_macro_mean": 0.4636022147558616,
+          "tasks_observed": 32
+        },
+        "no_answer_retrieval_abstained": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "operator_replayed_not_executed": {
+          "families_observed": 8,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 32
+        },
+        "operator_seconds": {
+          "families_observed": 8,
+          "family_macro_mean": 0.3535965886875374,
+          "tasks_observed": 32
+        },
+        "oracle_context_evidence_recall_ceiling": {
+          "families_observed": 8,
+          "family_macro_mean": 0.96875,
+          "tasks_observed": 32
+        },
+        "precision_at_1": {
+          "families_observed": 8,
+          "family_macro_mean": 0.3125,
+          "tasks_observed": 32
+        },
+        "precision_at_10": {
+          "families_observed": 8,
+          "family_macro_mean": 0.08125,
+          "tasks_observed": 32
+        },
+        "precision_at_5": {
+          "families_observed": 8,
+          "family_macro_mean": 0.14375000000000002,
+          "tasks_observed": 32
+        },
+        "python_peak_allocated_bytes": {
+          "families_observed": 8,
+          "family_macro_mean": 14723199.84375,
+          "tasks_observed": 32
+        },
+        "recall_at_1": {
+          "families_observed": 8,
+          "family_macro_mean": 0.2916666666666667,
+          "tasks_observed": 32
+        },
+        "recall_at_10": {
+          "families_observed": 8,
+          "family_macro_mean": 0.6354166666666666,
+          "tasks_observed": 32
+        },
+        "recall_at_5": {
+          "families_observed": 8,
+          "family_macro_mean": 0.5833333333333334,
+          "tasks_observed": 32
+        },
+        "reciprocal_rank": {
+          "families_observed": 8,
+          "family_macro_mean": 0.4604605574704517,
+          "tasks_observed": 32
+        },
+        "regex_word_units": {
+          "families_observed": 8,
+          "family_macro_mean": 2579.3125,
+          "tasks_observed": 32
+        },
+        "required_quote_retention": {
+          "families_observed": 8,
+          "family_macro_mean": 0.6510416666666666,
+          "tasks_observed": 32
+        },
+        "selection_seconds": {
+          "families_observed": 8,
+          "family_macro_mean": 0.002044404468620087,
+          "tasks_observed": 32
+        }
+      },
+      "split": "tuning",
+      "task_count": 32
+    },
+    {
+      "budget_id": "8KiB",
+      "family_count": 8,
+      "method": "character_3_5_cosine",
+      "metrics": {
+        "annotated_branch_distractor_ranked_first": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "annotated_branch_distractors_selected": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "annotated_distractors_selected": {
+          "families_observed": 7,
+          "family_macro_mean": 0.6428571428571429,
+          "tasks_observed": 12
+        },
+        "annotated_version_distractor_ranked_first": {
+          "families_observed": 7,
+          "family_macro_mean": 0.14285714285714285,
+          "tasks_observed": 12
+        },
+        "annotated_version_distractors_selected": {
+          "families_observed": 7,
+          "family_macro_mean": 0.6428571428571429,
+          "tasks_observed": 12
+        },
+        "answer_correctness": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "context_all_required_evidence": {
+          "families_observed": 8,
+          "family_macro_mean": 0.53125,
+          "tasks_observed": 32
+        },
+        "context_bytes": {
+          "families_observed": 8,
+          "family_macro_mean": 8004.8125,
+          "tasks_observed": 32
+        },
+        "context_evidence_recall": {
+          "families_observed": 8,
+          "family_macro_mean": 0.6432291666666666,
+          "tasks_observed": 32
+        },
+        "context_precision": {
+          "families_observed": 8,
+          "family_macro_mean": 0.12749255952380953,
+          "tasks_observed": 32
+        },
+        "context_records": {
+          "families_observed": 8,
+          "family_macro_mean": 6.71875,
+          "tasks_observed": 32
+        },
+        "dependency_operator_count": {
+          "families_observed": 8,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 32
+        },
+        "family_index_python_peak_bytes_shared": {
+          "families_observed": 8,
+          "family_macro_mean": 1449848.21875,
+          "tasks_observed": 32
+        },
+        "family_index_seconds_shared": {
+          "families_observed": 8,
+          "family_macro_mean": 0.024576266562121418,
+          "tasks_observed": 32
+        },
+        "gold_complete_evidence_fits_budget": {
+          "families_observed": 8,
+          "family_macro_mean": 0.96875,
+          "tasks_observed": 32
+        },
+        "memory_kind": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "method_total_seconds": {
+          "families_observed": 8,
+          "family_macro_mean": 0.3535965886875374,
+          "tasks_observed": 32
+        },
+        "model_tokens": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "ndcg_at_10": {
+          "families_observed": 8,
+          "family_macro_mean": 0.4636022147558616,
+          "tasks_observed": 32
+        },
+        "no_answer_retrieval_abstained": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "operator_replayed_not_executed": {
+          "families_observed": 8,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 32
+        },
+        "operator_seconds": {
+          "families_observed": 8,
+          "family_macro_mean": 0.3535965886875374,
+          "tasks_observed": 32
+        },
+        "oracle_context_evidence_recall_ceiling": {
+          "families_observed": 8,
+          "family_macro_mean": 0.96875,
+          "tasks_observed": 32
+        },
+        "precision_at_1": {
+          "families_observed": 8,
+          "family_macro_mean": 0.3125,
+          "tasks_observed": 32
+        },
+        "precision_at_10": {
+          "families_observed": 8,
+          "family_macro_mean": 0.08125,
+          "tasks_observed": 32
+        },
+        "precision_at_5": {
+          "families_observed": 8,
+          "family_macro_mean": 0.14375000000000002,
+          "tasks_observed": 32
+        },
+        "python_peak_allocated_bytes": {
+          "families_observed": 8,
+          "family_macro_mean": 14723199.84375,
+          "tasks_observed": 32
+        },
+        "recall_at_1": {
+          "families_observed": 8,
+          "family_macro_mean": 0.2916666666666667,
+          "tasks_observed": 32
+        },
+        "recall_at_10": {
+          "families_observed": 8,
+          "family_macro_mean": 0.6354166666666666,
+          "tasks_observed": 32
+        },
+        "recall_at_5": {
+          "families_observed": 8,
+          "family_macro_mean": 0.5833333333333334,
+          "tasks_observed": 32
+        },
+        "reciprocal_rank": {
+          "families_observed": 8,
+          "family_macro_mean": 0.4604605574704517,
+          "tasks_observed": 32
+        },
+        "regex_word_units": {
+          "families_observed": 8,
+          "family_macro_mean": 962.21875,
+          "tasks_observed": 32
+        },
+        "required_quote_retention": {
+          "families_observed": 8,
+          "family_macro_mean": 0.6432291666666666,
+          "tasks_observed": 32
+        },
+        "selection_seconds": {
+          "families_observed": 8,
+          "family_macro_mean": 0.0015376248122720426,
+          "tasks_observed": 32
+        }
+      },
+      "split": "tuning",
+      "task_count": 32
+    },
+    {
+      "budget_id": "32KiB",
+      "family_count": 8,
+      "method": "lexical_bm25_character_graph_rrf",
+      "metrics": {
+        "annotated_branch_distractor_ranked_first": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "annotated_branch_distractors_selected": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "annotated_distractors_selected": {
+          "families_observed": 7,
+          "family_macro_mean": 0.5,
+          "tasks_observed": 12
+        },
+        "annotated_version_distractor_ranked_first": {
+          "families_observed": 7,
+          "family_macro_mean": 0.07142857142857142,
+          "tasks_observed": 12
+        },
+        "annotated_version_distractors_selected": {
+          "families_observed": 7,
+          "family_macro_mean": 0.5,
+          "tasks_observed": 12
+        },
+        "answer_correctness": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "context_all_required_evidence": {
+          "families_observed": 8,
+          "family_macro_mean": 0.4375,
+          "tasks_observed": 32
+        },
+        "context_bytes": {
+          "families_observed": 8,
+          "family_macro_mean": 19061.46875,
+          "tasks_observed": 32
+        },
+        "context_evidence_recall": {
+          "families_observed": 8,
+          "family_macro_mean": 0.4973958333333333,
+          "tasks_observed": 32
+        },
+        "context_precision": {
+          "families_observed": 8,
+          "family_macro_mean": 0.06875,
+          "tasks_observed": 32
+        },
+        "context_records": {
+          "families_observed": 8,
+          "family_macro_mean": 10.0,
+          "tasks_observed": 32
+        },
+        "dependency_operator_count": {
+          "families_observed": 8,
+          "family_macro_mean": 5.0,
+          "tasks_observed": 32
+        },
+        "family_index_python_peak_bytes_shared": {
+          "families_observed": 8,
+          "family_macro_mean": 1449848.21875,
+          "tasks_observed": 32
+        },
+        "family_index_seconds_shared": {
+          "families_observed": 8,
+          "family_macro_mean": 0.024576266562121418,
+          "tasks_observed": 32
+        },
+        "gold_complete_evidence_fits_budget": {
+          "families_observed": 8,
+          "family_macro_mean": 0.96875,
+          "tasks_observed": 32
+        },
+        "memory_kind": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "method_total_seconds": {
+          "families_observed": 8,
+          "family_macro_mean": 0.40587451559349574,
+          "tasks_observed": 32
+        },
+        "model_tokens": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "ndcg_at_10": {
+          "families_observed": 8,
+          "family_macro_mean": 0.38241156503290824,
+          "tasks_observed": 32
+        },
+        "no_answer_retrieval_abstained": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "operator_replayed_not_executed": {
+          "families_observed": 8,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 32
+        },
+        "operator_seconds": {
+          "families_observed": 8,
+          "family_macro_mean": 0.0008539745626876538,
+          "tasks_observed": 32
+        },
+        "oracle_context_evidence_recall_ceiling": {
+          "families_observed": 8,
+          "family_macro_mean": 0.96875,
+          "tasks_observed": 32
+        },
+        "precision_at_1": {
+          "families_observed": 8,
+          "family_macro_mean": 0.3125,
+          "tasks_observed": 32
+        },
+        "precision_at_10": {
+          "families_observed": 8,
+          "family_macro_mean": 0.06875,
+          "tasks_observed": 32
+        },
+        "precision_at_5": {
+          "families_observed": 8,
+          "family_macro_mean": 0.10625000000000001,
+          "tasks_observed": 32
+        },
+        "python_peak_allocated_bytes": {
+          "families_observed": 8,
+          "family_macro_mean": 19237.875,
+          "tasks_observed": 32
+        },
+        "recall_at_1": {
+          "families_observed": 8,
+          "family_macro_mean": 0.2760416666666667,
+          "tasks_observed": 32
+        },
+        "recall_at_10": {
+          "families_observed": 8,
+          "family_macro_mean": 0.4973958333333333,
+          "tasks_observed": 32
+        },
+        "recall_at_5": {
+          "families_observed": 8,
+          "family_macro_mean": 0.40625,
+          "tasks_observed": 32
+        },
+        "reciprocal_rank": {
+          "families_observed": 8,
+          "family_macro_mean": 0.40414478497573786,
+          "tasks_observed": 32
+        },
+        "regex_word_units": {
+          "families_observed": 8,
+          "family_macro_mean": 2356.46875,
+          "tasks_observed": 32
+        },
+        "required_quote_retention": {
+          "families_observed": 8,
+          "family_macro_mean": 0.4973958333333333,
+          "tasks_observed": 32
+        },
+        "selection_seconds": {
+          "families_observed": 8,
+          "family_macro_mean": 0.0020687577189164585,
+          "tasks_observed": 32
+        }
+      },
+      "split": "tuning",
+      "task_count": 32
+    },
+    {
+      "budget_id": "8KiB",
+      "family_count": 8,
+      "method": "lexical_bm25_character_graph_rrf",
+      "metrics": {
+        "annotated_branch_distractor_ranked_first": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "annotated_branch_distractors_selected": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "annotated_distractors_selected": {
+          "families_observed": 7,
+          "family_macro_mean": 0.5,
+          "tasks_observed": 12
+        },
+        "annotated_version_distractor_ranked_first": {
+          "families_observed": 7,
+          "family_macro_mean": 0.07142857142857142,
+          "tasks_observed": 12
+        },
+        "annotated_version_distractors_selected": {
+          "families_observed": 7,
+          "family_macro_mean": 0.5,
+          "tasks_observed": 12
+        },
+        "answer_correctness": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "context_all_required_evidence": {
+          "families_observed": 8,
+          "family_macro_mean": 0.4375,
+          "tasks_observed": 32
+        },
+        "context_bytes": {
+          "families_observed": 8,
+          "family_macro_mean": 7974.03125,
+          "tasks_observed": 32
+        },
+        "context_evidence_recall": {
+          "families_observed": 8,
+          "family_macro_mean": 0.5052083333333334,
+          "tasks_observed": 32
+        },
+        "context_precision": {
+          "families_observed": 8,
+          "family_macro_mean": 0.08865327380952381,
+          "tasks_observed": 32
+        },
+        "context_records": {
+          "families_observed": 8,
+          "family_macro_mean": 7.59375,
+          "tasks_observed": 32
+        },
+        "dependency_operator_count": {
+          "families_observed": 8,
+          "family_macro_mean": 5.0,
+          "tasks_observed": 32
+        },
+        "family_index_python_peak_bytes_shared": {
+          "families_observed": 8,
+          "family_macro_mean": 1449848.21875,
+          "tasks_observed": 32
+        },
+        "family_index_seconds_shared": {
+          "families_observed": 8,
+          "family_macro_mean": 0.024576266562121418,
+          "tasks_observed": 32
+        },
+        "gold_complete_evidence_fits_budget": {
+          "families_observed": 8,
+          "family_macro_mean": 0.96875,
+          "tasks_observed": 32
+        },
+        "memory_kind": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "method_total_seconds": {
+          "families_observed": 8,
+          "family_macro_mean": 0.40587451559349574,
+          "tasks_observed": 32
+        },
+        "model_tokens": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "ndcg_at_10": {
+          "families_observed": 8,
+          "family_macro_mean": 0.38241156503290824,
+          "tasks_observed": 32
+        },
+        "no_answer_retrieval_abstained": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "operator_replayed_not_executed": {
+          "families_observed": 8,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 32
+        },
+        "operator_seconds": {
+          "families_observed": 8,
+          "family_macro_mean": 0.0008539745626876538,
+          "tasks_observed": 32
+        },
+        "oracle_context_evidence_recall_ceiling": {
+          "families_observed": 8,
+          "family_macro_mean": 0.96875,
+          "tasks_observed": 32
+        },
+        "precision_at_1": {
+          "families_observed": 8,
+          "family_macro_mean": 0.3125,
+          "tasks_observed": 32
+        },
+        "precision_at_10": {
+          "families_observed": 8,
+          "family_macro_mean": 0.06875,
+          "tasks_observed": 32
+        },
+        "precision_at_5": {
+          "families_observed": 8,
+          "family_macro_mean": 0.10625000000000001,
+          "tasks_observed": 32
+        },
+        "python_peak_allocated_bytes": {
+          "families_observed": 8,
+          "family_macro_mean": 19237.875,
+          "tasks_observed": 32
+        },
+        "recall_at_1": {
+          "families_observed": 8,
+          "family_macro_mean": 0.2760416666666667,
+          "tasks_observed": 32
+        },
+        "recall_at_10": {
+          "families_observed": 8,
+          "family_macro_mean": 0.4973958333333333,
+          "tasks_observed": 32
+        },
+        "recall_at_5": {
+          "families_observed": 8,
+          "family_macro_mean": 0.40625,
+          "tasks_observed": 32
+        },
+        "reciprocal_rank": {
+          "families_observed": 8,
+          "family_macro_mean": 0.40414478497573786,
+          "tasks_observed": 32
+        },
+        "regex_word_units": {
+          "families_observed": 8,
+          "family_macro_mean": 962.6875,
+          "tasks_observed": 32
+        },
+        "required_quote_retention": {
+          "families_observed": 8,
+          "family_macro_mean": 0.5052083333333334,
+          "tasks_observed": 32
+        },
+        "selection_seconds": {
+          "families_observed": 8,
+          "family_macro_mean": 0.0015321937810313102,
+          "tasks_observed": 32
+        }
+      },
+      "split": "tuning",
+      "task_count": 32
+    },
+    {
+      "budget_id": "32KiB",
+      "family_count": 8,
+      "method": "lexical_token_cosine",
+      "metrics": {
+        "annotated_branch_distractor_ranked_first": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "annotated_branch_distractors_selected": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "annotated_distractors_selected": {
+          "families_observed": 7,
+          "family_macro_mean": 0.21428571428571427,
+          "tasks_observed": 12
+        },
+        "annotated_version_distractor_ranked_first": {
+          "families_observed": 7,
+          "family_macro_mean": 0.07142857142857142,
+          "tasks_observed": 12
+        },
+        "annotated_version_distractors_selected": {
+          "families_observed": 7,
+          "family_macro_mean": 0.21428571428571427,
+          "tasks_observed": 12
+        },
+        "answer_correctness": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "context_all_required_evidence": {
+          "families_observed": 8,
+          "family_macro_mean": 0.375,
+          "tasks_observed": 32
+        },
+        "context_bytes": {
+          "families_observed": 8,
+          "family_macro_mean": 14107.875,
+          "tasks_observed": 32
+        },
+        "context_evidence_recall": {
+          "families_observed": 8,
+          "family_macro_mean": 0.4348958333333333,
+          "tasks_observed": 32
+        },
+        "context_precision": {
+          "families_observed": 8,
+          "family_macro_mean": 0.05625000000000001,
+          "tasks_observed": 32
+        },
+        "context_records": {
+          "families_observed": 8,
+          "family_macro_mean": 10.0,
+          "tasks_observed": 32
+        },
+        "dependency_operator_count": {
+          "families_observed": 8,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 32
+        },
+        "family_index_python_peak_bytes_shared": {
+          "families_observed": 8,
+          "family_macro_mean": 1449848.21875,
+          "tasks_observed": 32
+        },
+        "family_index_seconds_shared": {
+          "families_observed": 8,
+          "family_macro_mean": 0.024576266562121418,
+          "tasks_observed": 32
+        },
+        "gold_complete_evidence_fits_budget": {
+          "families_observed": 8,
+          "family_macro_mean": 0.96875,
+          "tasks_observed": 32
+        },
+        "memory_kind": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "method_total_seconds": {
+          "families_observed": 8,
+          "family_macro_mean": 0.0028310450937851783,
+          "tasks_observed": 32
+        },
+        "model_tokens": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "ndcg_at_10": {
+          "families_observed": 8,
+          "family_macro_mean": 0.29797207578657636,
+          "tasks_observed": 32
+        },
+        "no_answer_retrieval_abstained": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "operator_replayed_not_executed": {
+          "families_observed": 8,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 32
+        },
+        "operator_seconds": {
+          "families_observed": 8,
+          "family_macro_mean": 0.0028310450937851783,
+          "tasks_observed": 32
+        },
+        "oracle_context_evidence_recall_ceiling": {
+          "families_observed": 8,
+          "family_macro_mean": 0.96875,
+          "tasks_observed": 32
+        },
+        "precision_at_1": {
+          "families_observed": 8,
+          "family_macro_mean": 0.1875,
+          "tasks_observed": 32
+        },
+        "precision_at_10": {
+          "families_observed": 8,
+          "family_macro_mean": 0.05625000000000001,
+          "tasks_observed": 32
+        },
+        "precision_at_5": {
+          "families_observed": 8,
+          "family_macro_mean": 0.09375,
+          "tasks_observed": 32
+        },
+        "python_peak_allocated_bytes": {
+          "families_observed": 8,
+          "family_macro_mean": 5201.03125,
+          "tasks_observed": 32
+        },
+        "recall_at_1": {
+          "families_observed": 8,
+          "family_macro_mean": 0.171875,
+          "tasks_observed": 32
+        },
+        "recall_at_10": {
+          "families_observed": 8,
+          "family_macro_mean": 0.4348958333333333,
+          "tasks_observed": 32
+        },
+        "recall_at_5": {
+          "families_observed": 8,
+          "family_macro_mean": 0.3958333333333333,
+          "tasks_observed": 32
+        },
+        "reciprocal_rank": {
+          "families_observed": 8,
+          "family_macro_mean": 0.302476318126326,
+          "tasks_observed": 32
+        },
+        "regex_word_units": {
+          "families_observed": 8,
+          "family_macro_mean": 1719.875,
+          "tasks_observed": 32
+        },
+        "required_quote_retention": {
+          "families_observed": 8,
+          "family_macro_mean": 0.4348958333333333,
+          "tasks_observed": 32
+        },
+        "selection_seconds": {
+          "families_observed": 8,
+          "family_macro_mean": 0.0016466700934643086,
+          "tasks_observed": 32
+        }
+      },
+      "split": "tuning",
+      "task_count": 32
+    },
+    {
+      "budget_id": "8KiB",
+      "family_count": 8,
+      "method": "lexical_token_cosine",
+      "metrics": {
+        "annotated_branch_distractor_ranked_first": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "annotated_branch_distractors_selected": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "annotated_distractors_selected": {
+          "families_observed": 7,
+          "family_macro_mean": 0.21428571428571427,
+          "tasks_observed": 12
+        },
+        "annotated_version_distractor_ranked_first": {
+          "families_observed": 7,
+          "family_macro_mean": 0.07142857142857142,
+          "tasks_observed": 12
+        },
+        "annotated_version_distractors_selected": {
+          "families_observed": 7,
+          "family_macro_mean": 0.21428571428571427,
+          "tasks_observed": 12
+        },
+        "answer_correctness": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "context_all_required_evidence": {
+          "families_observed": 8,
+          "family_macro_mean": 0.40625,
+          "tasks_observed": 32
+        },
+        "context_bytes": {
+          "families_observed": 8,
+          "family_macro_mean": 7495.71875,
+          "tasks_observed": 32
+        },
+        "context_evidence_recall": {
+          "families_observed": 8,
+          "family_macro_mean": 0.4739583333333333,
+          "tasks_observed": 32
+        },
+        "context_precision": {
+          "families_observed": 8,
+          "family_macro_mean": 0.07181299603174604,
+          "tasks_observed": 32
+        },
+        "context_records": {
+          "families_observed": 8,
+          "family_macro_mean": 8.75,
+          "tasks_observed": 32
+        },
+        "dependency_operator_count": {
+          "families_observed": 8,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 32
+        },
+        "family_index_python_peak_bytes_shared": {
+          "families_observed": 8,
+          "family_macro_mean": 1449848.21875,
+          "tasks_observed": 32
+        },
+        "family_index_seconds_shared": {
+          "families_observed": 8,
+          "family_macro_mean": 0.024576266562121418,
+          "tasks_observed": 32
+        },
+        "gold_complete_evidence_fits_budget": {
+          "families_observed": 8,
+          "family_macro_mean": 0.96875,
+          "tasks_observed": 32
+        },
+        "memory_kind": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "method_total_seconds": {
+          "families_observed": 8,
+          "family_macro_mean": 0.0028310450937851783,
+          "tasks_observed": 32
+        },
+        "model_tokens": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "ndcg_at_10": {
+          "families_observed": 8,
+          "family_macro_mean": 0.29797207578657636,
+          "tasks_observed": 32
+        },
+        "no_answer_retrieval_abstained": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "operator_replayed_not_executed": {
+          "families_observed": 8,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 32
+        },
+        "operator_seconds": {
+          "families_observed": 8,
+          "family_macro_mean": 0.0028310450937851783,
+          "tasks_observed": 32
+        },
+        "oracle_context_evidence_recall_ceiling": {
+          "families_observed": 8,
+          "family_macro_mean": 0.96875,
+          "tasks_observed": 32
+        },
+        "precision_at_1": {
+          "families_observed": 8,
+          "family_macro_mean": 0.1875,
+          "tasks_observed": 32
+        },
+        "precision_at_10": {
+          "families_observed": 8,
+          "family_macro_mean": 0.05625000000000001,
+          "tasks_observed": 32
+        },
+        "precision_at_5": {
+          "families_observed": 8,
+          "family_macro_mean": 0.09375,
+          "tasks_observed": 32
+        },
+        "python_peak_allocated_bytes": {
+          "families_observed": 8,
+          "family_macro_mean": 5201.03125,
+          "tasks_observed": 32
+        },
+        "recall_at_1": {
+          "families_observed": 8,
+          "family_macro_mean": 0.171875,
+          "tasks_observed": 32
+        },
+        "recall_at_10": {
+          "families_observed": 8,
+          "family_macro_mean": 0.4348958333333333,
+          "tasks_observed": 32
+        },
+        "recall_at_5": {
+          "families_observed": 8,
+          "family_macro_mean": 0.3958333333333333,
+          "tasks_observed": 32
+        },
+        "reciprocal_rank": {
+          "families_observed": 8,
+          "family_macro_mean": 0.302476318126326,
+          "tasks_observed": 32
+        },
+        "regex_word_units": {
+          "families_observed": 8,
+          "family_macro_mean": 905.28125,
+          "tasks_observed": 32
+        },
+        "required_quote_retention": {
+          "families_observed": 8,
+          "family_macro_mean": 0.4739583333333333,
+          "tasks_observed": 32
+        },
+        "selection_seconds": {
+          "families_observed": 8,
+          "family_macro_mean": 0.0014681755937999696,
+          "tasks_observed": 32
+        }
+      },
+      "split": "tuning",
+      "task_count": 32
+    },
+    {
+      "budget_id": "32KiB",
+      "family_count": 8,
+      "method": "native_graph_distance",
+      "metrics": {
+        "annotated_branch_distractor_ranked_first": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "annotated_branch_distractors_selected": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "annotated_distractors_selected": {
+          "families_observed": 7,
+          "family_macro_mean": 0.07142857142857142,
+          "tasks_observed": 12
+        },
+        "annotated_version_distractor_ranked_first": {
+          "families_observed": 7,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 12
+        },
+        "annotated_version_distractors_selected": {
+          "families_observed": 7,
+          "family_macro_mean": 0.07142857142857142,
+          "tasks_observed": 12
+        },
+        "answer_correctness": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "context_all_required_evidence": {
+          "families_observed": 8,
+          "family_macro_mean": 0.09375,
+          "tasks_observed": 32
+        },
+        "context_bytes": {
+          "families_observed": 8,
+          "family_macro_mean": 4690.9375,
+          "tasks_observed": 32
+        },
+        "context_evidence_recall": {
+          "families_observed": 8,
+          "family_macro_mean": 0.11979166666666667,
+          "tasks_observed": 32
+        },
+        "context_precision": {
+          "families_observed": 8,
+          "family_macro_mean": 0.05,
+          "tasks_observed": 32
+        },
+        "context_records": {
+          "families_observed": 8,
+          "family_macro_mean": 4.875,
+          "tasks_observed": 32
+        },
+        "dependency_operator_count": {
+          "families_observed": 8,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 32
+        },
+        "family_index_python_peak_bytes_shared": {
+          "families_observed": 8,
+          "family_macro_mean": 1449848.21875,
+          "tasks_observed": 32
+        },
+        "family_index_seconds_shared": {
+          "families_observed": 8,
+          "family_macro_mean": 0.024576266562121418,
+          "tasks_observed": 32
+        },
+        "gold_complete_evidence_fits_budget": {
+          "families_observed": 8,
+          "family_macro_mean": 0.96875,
+          "tasks_observed": 32
+        },
+        "memory_kind": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "method_total_seconds": {
+          "families_observed": 8,
+          "family_macro_mean": 0.001236274469079035,
+          "tasks_observed": 32
+        },
+        "model_tokens": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "ndcg_at_10": {
+          "families_observed": 8,
+          "family_macro_mean": 0.08709222166912783,
+          "tasks_observed": 32
+        },
+        "no_answer_retrieval_abstained": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "operator_replayed_not_executed": {
+          "families_observed": 8,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 32
+        },
+        "operator_seconds": {
+          "families_observed": 8,
+          "family_macro_mean": 0.001236274469079035,
+          "tasks_observed": 32
+        },
+        "oracle_context_evidence_recall_ceiling": {
+          "families_observed": 8,
+          "family_macro_mean": 0.96875,
+          "tasks_observed": 32
+        },
+        "precision_at_1": {
+          "families_observed": 8,
+          "family_macro_mean": 0.0625,
+          "tasks_observed": 32
+        },
+        "precision_at_10": {
+          "families_observed": 8,
+          "family_macro_mean": 0.025,
+          "tasks_observed": 32
+        },
+        "precision_at_5": {
+          "families_observed": 8,
+          "family_macro_mean": 0.05,
+          "tasks_observed": 32
+        },
+        "python_peak_allocated_bytes": {
+          "families_observed": 8,
+          "family_macro_mean": 67101.0,
+          "tasks_observed": 32
+        },
+        "recall_at_1": {
+          "families_observed": 8,
+          "family_macro_mean": 0.020833333333333332,
+          "tasks_observed": 32
+        },
+        "recall_at_10": {
+          "families_observed": 8,
+          "family_macro_mean": 0.11979166666666667,
+          "tasks_observed": 32
+        },
+        "recall_at_5": {
+          "families_observed": 8,
+          "family_macro_mean": 0.11979166666666667,
+          "tasks_observed": 32
+        },
+        "reciprocal_rank": {
+          "families_observed": 8,
+          "family_macro_mean": 0.1,
+          "tasks_observed": 32
+        },
+        "regex_word_units": {
+          "families_observed": 8,
+          "family_macro_mean": 572.34375,
+          "tasks_observed": 32
+        },
+        "required_quote_retention": {
+          "families_observed": 8,
+          "family_macro_mean": 0.11979166666666667,
+          "tasks_observed": 32
+        },
+        "selection_seconds": {
+          "families_observed": 8,
+          "family_macro_mean": 0.00026425449982525606,
+          "tasks_observed": 32
+        }
+      },
+      "split": "tuning",
+      "task_count": 32
+    },
+    {
+      "budget_id": "8KiB",
+      "family_count": 8,
+      "method": "native_graph_distance",
+      "metrics": {
+        "annotated_branch_distractor_ranked_first": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "annotated_branch_distractors_selected": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "annotated_distractors_selected": {
+          "families_observed": 7,
+          "family_macro_mean": 0.07142857142857142,
+          "tasks_observed": 12
+        },
+        "annotated_version_distractor_ranked_first": {
+          "families_observed": 7,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 12
+        },
+        "annotated_version_distractors_selected": {
+          "families_observed": 7,
+          "family_macro_mean": 0.07142857142857142,
+          "tasks_observed": 12
+        },
+        "answer_correctness": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "context_all_required_evidence": {
+          "families_observed": 8,
+          "family_macro_mean": 0.09375,
+          "tasks_observed": 32
+        },
+        "context_bytes": {
+          "families_observed": 8,
+          "family_macro_mean": 3912.53125,
+          "tasks_observed": 32
+        },
+        "context_evidence_recall": {
+          "families_observed": 8,
+          "family_macro_mean": 0.11979166666666667,
+          "tasks_observed": 32
+        },
+        "context_precision": {
+          "families_observed": 8,
+          "family_macro_mean": 0.0546875,
+          "tasks_observed": 32
+        },
+        "context_records": {
+          "families_observed": 8,
+          "family_macro_mean": 4.65625,
+          "tasks_observed": 32
+        },
+        "dependency_operator_count": {
+          "families_observed": 8,
+          "family_macro_mean": 1.0,
+          "tasks_observed": 32
+        },
+        "family_index_python_peak_bytes_shared": {
+          "families_observed": 8,
+          "family_macro_mean": 1449848.21875,
+          "tasks_observed": 32
+        },
+        "family_index_seconds_shared": {
+          "families_observed": 8,
+          "family_macro_mean": 0.024576266562121418,
+          "tasks_observed": 32
+        },
+        "gold_complete_evidence_fits_budget": {
+          "families_observed": 8,
+          "family_macro_mean": 0.96875,
+          "tasks_observed": 32
+        },
+        "memory_kind": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "method_total_seconds": {
+          "families_observed": 8,
+          "family_macro_mean": 0.001236274469079035,
+          "tasks_observed": 32
+        },
+        "model_tokens": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "ndcg_at_10": {
+          "families_observed": 8,
+          "family_macro_mean": 0.08709222166912783,
+          "tasks_observed": 32
+        },
+        "no_answer_retrieval_abstained": {
+          "families_observed": 0,
+          "family_macro_mean": null,
+          "tasks_observed": 0
+        },
+        "operator_replayed_not_executed": {
+          "families_observed": 8,
+          "family_macro_mean": 0.0,
+          "tasks_observed": 32
+        },
+        "operator_seconds": {
+          "families_observed": 8,
+          "family_macro_mean": 0.001236274469079035,
+          "tasks_observed": 32
+        },
+        "oracle_context_evidence_recall_ceiling": {
+          "families_observed": 8,
+          "family_macro_mean": 0.96875,
+          "tasks_observed": 32
+        },
+        "precision_at_1": {
+          "families_observed": 8,
+          "family_macro_mean": 0.0625,
+          "tasks_observed": 32
+        },
+        "precision_at_10": {
+          "families_observed": 8,
+          "family_macro_mean": 0.025,
+          "tasks_observed": 32
+        },
+        "precision_at_5": {
+          "families_observed": 8,
+          "family_macro_mean": 0.05,
+          "tasks_observed": 32
+        },
+        "python_peak_allocated_bytes": {
+          "families_observed": 8,
+          "family_macro_mean": 67101.0,
+          "tasks_observed": 32
+        },
+        "recall_at_1": {
+          "families_observed": 8,
+          "family_macro_mean": 0.020833333333333332,
+          "tasks_observed": 32
+        },
+        "recall_at_10": {
+          "families_observed": 8,
+          "family_macro_mean": 0.11979166666666667,
+          "tasks_observed": 32
+        },
+        "recall_at_5": {
+          "families_observed": 8,
+          "family_macro_mean": 0.11979166666666667,
+          "tasks_observed": 32
+        },
+        "reciprocal_rank": {
+          "families_observed": 8,
+          "family_macro_mean": 0.1,
+          "tasks_observed": 32
+        },
+        "regex_word_units": {
+          "families_observed": 8,
+          "family_macro_mean": 461.90625,
+          "tasks_observed": 32
+        },
+        "required_quote_retention": {
+          "families_observed": 8,
+          "family_macro_mean": 0.11979166666666667,
+          "tasks_observed": 32
+        },
+        "selection_seconds": {
+          "families_observed": 8,
+          "family_macro_mean": 0.0002537821560508746,
+          "tasks_observed": 32
+        }
+      },
+      "split": "tuning",
+      "task_count": 32
+    }
+  ],
+  "tasks": 48,
+  "tasks_sha256": "9c596a7f4feca7ebd65d7deb0008631cf986a55bc34a2b4763b2cae8f64b2985",
+  "timing_note": "dependency totals mix saved unchanged operator measurements with newly measured corrected operators",
+  "unit_of_dependence": "conversation_family",
+  "usd_cost": 0
+}

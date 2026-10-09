@@ -1,0 +1,6364 @@
+{
+  "cases": [
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 8038,
+      "context_evidence_recall": 0.0,
+      "context_records": 7,
+      "method": "lexical_token_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 13608,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 8012,
+      "context_evidence_recall": 1.0,
+      "context_records": 9,
+      "method": "bm25",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 10349,
+      "context_evidence_recall": 1.0,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 3985,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 3985,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 8166,
+      "context_evidence_recall": 1.0,
+      "context_records": 9,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 7970,
+      "context_evidence_recall": 0.0,
+      "context_records": 7,
+      "method": "lexical_token_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 13419,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8101,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "bm25",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 18021,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8171,
+      "context_evidence_recall": 0.0,
+      "context_records": 6,
+      "method": "character_3_5_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 18778,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "character_3_5_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 3985,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 3985,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 8132,
+      "context_evidence_recall": 0.0,
+      "context_records": 8,
+      "method": "bm25_native_expansion",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 11397,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25_native_expansion",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8170,
+      "context_evidence_recall": 0.0,
+      "context_records": 7,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 12674,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "earlier_requirement",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 8063,
+      "context_evidence_recall": 0.0,
+      "context_records": 6,
+      "method": "lexical_token_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "earlier_requirement",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 14303,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "earlier_requirement",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 7961,
+      "context_evidence_recall": 0.0,
+      "context_records": 7,
+      "method": "bm25",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "earlier_requirement",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 12955,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "earlier_requirement",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 3985,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "earlier_requirement",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 3985,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "earlier_requirement",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8112,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "bm25_native_expansion",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "earlier_requirement",
+      "classes": [
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 11165,
+      "context_evidence_recall": 1.0,
+      "context_records": 8,
+      "method": "bm25_native_expansion",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "earlier_requirement",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 8149,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "earlier_requirement",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 15950,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "bounded_absence",
+      "classes": [
+        "no_answer_task_nonempty_context_not_semantic_answer_error"
+      ],
+      "context_bytes": 8132,
+      "context_evidence_recall": null,
+      "context_records": 6,
+      "method": "lexical_token_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "bounded_absence",
+      "classes": [
+        "no_answer_task_nonempty_context_not_semantic_answer_error"
+      ],
+      "context_bytes": 14345,
+      "context_evidence_recall": null,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "bounded_absence",
+      "classes": [
+        "no_answer_task_nonempty_context_not_semantic_answer_error"
+      ],
+      "context_bytes": 8178,
+      "context_evidence_recall": null,
+      "context_records": 6,
+      "method": "bm25",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "bounded_absence",
+      "classes": [
+        "no_answer_task_nonempty_context_not_semantic_answer_error"
+      ],
+      "context_bytes": 14120,
+      "context_evidence_recall": null,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "bounded_absence",
+      "classes": [
+        "no_answer_task_nonempty_context_not_semantic_answer_error"
+      ],
+      "context_bytes": 8151,
+      "context_evidence_recall": null,
+      "context_records": 7,
+      "method": "character_3_5_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "bounded_absence",
+      "classes": [
+        "no_answer_task_nonempty_context_not_semantic_answer_error"
+      ],
+      "context_bytes": 17864,
+      "context_evidence_recall": null,
+      "context_records": 10,
+      "method": "character_3_5_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "bounded_absence",
+      "classes": [
+        "no_answer_task_nonempty_context_not_semantic_answer_error"
+      ],
+      "context_bytes": 3985,
+      "context_evidence_recall": null,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "bounded_absence",
+      "classes": [
+        "no_answer_task_nonempty_context_not_semantic_answer_error"
+      ],
+      "context_bytes": 3985,
+      "context_evidence_recall": null,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "bounded_absence",
+      "classes": [
+        "no_answer_task_nonempty_context_not_semantic_answer_error"
+      ],
+      "context_bytes": 8126,
+      "context_evidence_recall": null,
+      "context_records": 6,
+      "method": "bm25_native_expansion",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "bounded_absence",
+      "classes": [
+        "no_answer_task_nonempty_context_not_semantic_answer_error"
+      ],
+      "context_bytes": 13098,
+      "context_evidence_recall": null,
+      "context_records": 10,
+      "method": "bm25_native_expansion",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "bounded_absence",
+      "classes": [
+        "no_answer_task_nonempty_context_not_semantic_answer_error"
+      ],
+      "context_bytes": 8138,
+      "context_evidence_recall": null,
+      "context_records": 6,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "bounded_absence",
+      "classes": [
+        "no_answer_task_nonempty_context_not_semantic_answer_error"
+      ],
+      "context_bytes": 14428,
+      "context_evidence_recall": null,
+      "context_records": 10,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "provisional_validation",
+      "task_id": "retrieval-00-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_clarification",
+      "classes": [
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 8160,
+      "context_evidence_recall": 1.0,
+      "context_records": 5,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-01-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_clarification",
+      "classes": [
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 16461,
+      "context_evidence_recall": 1.0,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-01-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_clarification",
+      "classes": [
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 8160,
+      "context_evidence_recall": 1.0,
+      "context_records": 5,
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-01-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_clarification",
+      "classes": [
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 20401,
+      "context_evidence_recall": 1.0,
+      "context_records": 10,
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-01-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_clarification",
+      "classes": [
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 5858,
+      "context_evidence_recall": 1.0,
+      "context_records": 4,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-01-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_clarification",
+      "classes": [
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 8522,
+      "context_evidence_recall": 1.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-01-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_clarification",
+      "classes": [
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 6161,
+      "context_evidence_recall": 1.0,
+      "context_records": 6,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-01-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_clarification",
+      "classes": [
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 10926,
+      "context_evidence_recall": 1.0,
+      "context_records": 8,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-01-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_clarification",
+      "classes": [
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 8079,
+      "context_evidence_recall": 1.0,
+      "context_records": 6,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_id": "retrieval-01-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_clarification",
+      "classes": [
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 15829,
+      "context_evidence_recall": 1.0,
+      "context_records": 10,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_id": "retrieval-01-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "earlier_version",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8091,
+      "context_evidence_recall": 0.0,
+      "context_records": 4,
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-01-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "earlier_version",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 19843,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-01-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "earlier_version",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 5858,
+      "context_evidence_recall": 0.0,
+      "context_records": 4,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-01-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "earlier_version",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 8522,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-01-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "earlier_version",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 7534,
+      "context_evidence_recall": 0.0,
+      "context_records": 6,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-01-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "earlier_version",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 32247,
+      "context_evidence_recall": 0.0,
+      "context_records": 9,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-01-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 8005,
+      "context_evidence_recall": 0.5,
+      "context_records": 7,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-01-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 19200,
+      "context_evidence_recall": 0.25,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-01-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 8117,
+      "context_evidence_recall": 0.0,
+      "context_records": 6,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-01-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 24089,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-01-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8093,
+      "context_evidence_recall": 0.25,
+      "context_records": 4,
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-01-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 22449,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-01-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 5858,
+      "context_evidence_recall": 0.5,
+      "context_records": 4,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-01-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 8522,
+      "context_evidence_recall": 0.5,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-01-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 8053,
+      "context_evidence_recall": 0.5,
+      "context_records": 7,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-01-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 14398,
+      "context_evidence_recall": 0.5,
+      "context_records": 10,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-01-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8067,
+      "context_evidence_recall": 0.5,
+      "context_records": 7,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_id": "retrieval-01-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 20417,
+      "context_evidence_recall": 0.25,
+      "context_records": 10,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_id": "retrieval-01-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "topic_transition",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 17691,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-01-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "topic_transition",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8146,
+      "context_evidence_recall": 0.0,
+      "context_records": 4,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-01-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "topic_transition",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 17923,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-01-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "topic_transition",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 5858,
+      "context_evidence_recall": 0.0,
+      "context_records": 4,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-01-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "topic_transition",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 8522,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-01-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "topic_transition",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 7883,
+      "context_evidence_recall": 0.0,
+      "context_records": 8,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-01-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "topic_transition",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 14558,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-01-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "topic_transition",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 21103,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_id": "retrieval-01-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 5801,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-02-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 5801,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-02-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 8145,
+      "context_evidence_recall": 1.0,
+      "context_records": 8,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-02-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 18646,
+      "context_evidence_recall": 1.0,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-02-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 8112,
+      "context_evidence_recall": 1.0,
+      "context_records": 7,
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-02-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 507,
+      "context_evidence_recall": 0.0,
+      "context_records": 4,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-02-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 507,
+      "context_evidence_recall": 0.0,
+      "context_records": 4,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-02-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 8126,
+      "context_evidence_recall": 0.0,
+      "context_records": 6,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-02-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 8646,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-02-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 8163,
+      "context_evidence_recall": 1.0,
+      "context_records": 9,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_id": "retrieval-02-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 22790,
+      "context_evidence_recall": 1.0,
+      "context_records": 10,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_id": "retrieval-02-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "earlier_requirement",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 507,
+      "context_evidence_recall": 0.0,
+      "context_records": 4,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-02-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "earlier_requirement",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 507,
+      "context_evidence_recall": 0.0,
+      "context_records": 4,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-02-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8158,
+      "context_evidence_recall": 0.0,
+      "context_records": 8,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-02-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 32072,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-02-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 7999,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-02-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 32471,
+      "context_evidence_recall": 0.0,
+      "context_records": 9,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-02-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8160,
+      "context_evidence_recall": 0.0,
+      "context_records": 3,
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-02-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 32669,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-02-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 507,
+      "context_evidence_recall": 0.0,
+      "context_records": 4,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-02-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 507,
+      "context_evidence_recall": 0.0,
+      "context_records": 4,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-02-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 7880,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-02-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 7880,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-02-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8158,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_id": "retrieval-02-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 32745,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_id": "retrieval-02-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 8166,
+      "context_evidence_recall": 0.5,
+      "context_records": 5,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-02-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 32287,
+      "context_evidence_recall": 0.5,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-02-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 8120,
+      "context_evidence_recall": 0.5,
+      "context_records": 7,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-02-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 23211,
+      "context_evidence_recall": 0.5,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-02-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 8093,
+      "context_evidence_recall": 0.5,
+      "context_records": 4,
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-02-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 32739,
+      "context_evidence_recall": 1.0,
+      "context_records": 9,
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-02-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 507,
+      "context_evidence_recall": 0.0,
+      "context_records": 4,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-02-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 507,
+      "context_evidence_recall": 0.0,
+      "context_records": 4,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-02-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 7906,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-02-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 13688,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-02-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 8112,
+      "context_evidence_recall": 0.5,
+      "context_records": 7,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_id": "retrieval-02-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 32574,
+      "context_evidence_recall": 0.5,
+      "context_records": 10,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_id": "retrieval-02-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "source_explanation",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 7106,
+      "context_evidence_recall": 0.0,
+      "context_records": 4,
+      "method": "native_graph_distance",
+      "split": "provisional_validation",
+      "task_id": "retrieval-03-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 7841,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "bm25_native_expansion",
+      "split": "provisional_validation",
+      "task_id": "retrieval-03-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "bounded_absence",
+      "classes": [
+        "no_answer_task_nonempty_context_not_semantic_answer_error"
+      ],
+      "context_bytes": 6978,
+      "context_evidence_recall": null,
+      "context_records": 3,
+      "method": "lexical_token_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-03-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "bounded_absence",
+      "classes": [
+        "no_answer_task_nonempty_context_not_semantic_answer_error"
+      ],
+      "context_bytes": 11612,
+      "context_evidence_recall": null,
+      "context_records": 4,
+      "method": "lexical_token_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-03-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "bounded_absence",
+      "classes": [
+        "no_answer_task_nonempty_context_not_semantic_answer_error"
+      ],
+      "context_bytes": 6978,
+      "context_evidence_recall": null,
+      "context_records": 3,
+      "method": "bm25",
+      "split": "provisional_validation",
+      "task_id": "retrieval-03-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "bounded_absence",
+      "classes": [
+        "no_answer_task_nonempty_context_not_semantic_answer_error"
+      ],
+      "context_bytes": 11612,
+      "context_evidence_recall": null,
+      "context_records": 4,
+      "method": "bm25",
+      "split": "provisional_validation",
+      "task_id": "retrieval-03-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "bounded_absence",
+      "classes": [
+        "no_answer_task_nonempty_context_not_semantic_answer_error"
+      ],
+      "context_bytes": 7223,
+      "context_evidence_recall": null,
+      "context_records": 5,
+      "method": "character_3_5_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-03-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "bounded_absence",
+      "classes": [
+        "no_answer_task_nonempty_context_not_semantic_answer_error"
+      ],
+      "context_bytes": 11857,
+      "context_evidence_recall": null,
+      "context_records": 6,
+      "method": "character_3_5_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-03-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "bounded_absence",
+      "classes": [
+        "no_answer_task_nonempty_context_not_semantic_answer_error"
+      ],
+      "context_bytes": 7106,
+      "context_evidence_recall": null,
+      "context_records": 4,
+      "method": "native_graph_distance",
+      "split": "provisional_validation",
+      "task_id": "retrieval-03-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "bounded_absence",
+      "classes": [
+        "no_answer_task_nonempty_context_not_semantic_answer_error"
+      ],
+      "context_bytes": 11740,
+      "context_evidence_recall": null,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "provisional_validation",
+      "task_id": "retrieval-03-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "bounded_absence",
+      "classes": [
+        "no_answer_task_nonempty_context_not_semantic_answer_error"
+      ],
+      "context_bytes": 7223,
+      "context_evidence_recall": null,
+      "context_records": 5,
+      "method": "bm25_native_expansion",
+      "split": "provisional_validation",
+      "task_id": "retrieval-03-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "bounded_absence",
+      "classes": [
+        "no_answer_task_nonempty_context_not_semantic_answer_error"
+      ],
+      "context_bytes": 11857,
+      "context_evidence_recall": null,
+      "context_records": 6,
+      "method": "bm25_native_expansion",
+      "split": "provisional_validation",
+      "task_id": "retrieval-03-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "bounded_absence",
+      "classes": [
+        "no_answer_task_nonempty_context_not_semantic_answer_error"
+      ],
+      "context_bytes": 7223,
+      "context_evidence_recall": null,
+      "context_records": 5,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "provisional_validation",
+      "task_id": "retrieval-03-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "bounded_absence",
+      "classes": [
+        "no_answer_task_nonempty_context_not_semantic_answer_error"
+      ],
+      "context_bytes": 11857,
+      "context_evidence_recall": null,
+      "context_records": 6,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "provisional_validation",
+      "task_id": "retrieval-03-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "research_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 8077,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-04-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "research_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 8077,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-04-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "research_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 6783,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-04-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "research_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 6783,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-04-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "research_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 7650,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-04-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "research_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 7650,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-04-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "research_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 1267,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-04-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "research_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 1267,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-04-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "research_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 1946,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-04-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "research_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 1946,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-04-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "research_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 8140,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_id": "retrieval-04-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "research_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 8140,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_id": "retrieval-04-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "earlier_requirement",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 1267,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-04-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "earlier_requirement",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 1267,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-04-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_clarification",
+      "classes": [
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 5846,
+      "context_evidence_recall": 1.0,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-04-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_clarification",
+      "classes": [
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 5846,
+      "context_evidence_recall": 1.0,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-04-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 1267,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-04-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 1267,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-04-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "hypothesis_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 6631,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-04-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "hypothesis_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 6631,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-04-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "hypothesis_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 5496,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-04-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "hypothesis_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 5496,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-04-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "hypothesis_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 7479,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_id": "retrieval-04-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "hypothesis_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 7479,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_id": "retrieval-04-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 3545,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-05-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 3545,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-05-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 8152,
+      "context_evidence_recall": 0.0,
+      "context_records": 8,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-05-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 14215,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-05-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 8079,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-05-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 19818,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-05-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 8189,
+      "context_evidence_recall": 1.0,
+      "context_records": 10,
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-05-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 17171,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-05-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 3545,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-05-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 3545,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-05-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 8154,
+      "context_evidence_recall": 0.0,
+      "context_records": 7,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-05-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 11669,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-05-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8133,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_id": "retrieval-05-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 15158,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_id": "retrieval-05-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 3545,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-05-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 3545,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-05-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 8068,
+      "context_evidence_recall": 0.0,
+      "context_records": 7,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-05-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 12894,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-05-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 7857,
+      "context_evidence_recall": 0.3333333333333333,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-05-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 11297,
+      "context_evidence_recall": 0.3333333333333333,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-05-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8061,
+      "context_evidence_recall": 0.3333333333333333,
+      "context_records": 5,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-05-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 19967,
+      "context_evidence_recall": 0.3333333333333333,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-05-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8188,
+      "context_evidence_recall": 0.3333333333333333,
+      "context_records": 6,
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-05-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 22073,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-05-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 3545,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-05-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 3545,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-05-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 7168,
+      "context_evidence_recall": 0.6666666666666666,
+      "context_records": 7,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-05-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 10519,
+      "context_evidence_recall": 0.6666666666666666,
+      "context_records": 9,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-05-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8192,
+      "context_evidence_recall": 0.6666666666666666,
+      "context_records": 8,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_id": "retrieval-05-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 15120,
+      "context_evidence_recall": 0.6666666666666666,
+      "context_records": 10,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_id": "retrieval-05-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 6179,
+      "context_evidence_recall": 0.0,
+      "context_records": 7,
+      "method": "lexical_token_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-06-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 21981,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-06-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 8063,
+      "context_evidence_recall": 0.0,
+      "context_records": 6,
+      "method": "bm25",
+      "split": "provisional_validation",
+      "task_id": "retrieval-06-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 21981,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "provisional_validation",
+      "task_id": "retrieval-06-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8015,
+      "context_evidence_recall": 0.0,
+      "context_records": 6,
+      "method": "character_3_5_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-06-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 28390,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "character_3_5_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-06-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 4550,
+      "context_evidence_recall": 0.0,
+      "context_records": 3,
+      "method": "native_graph_distance",
+      "split": "provisional_validation",
+      "task_id": "retrieval-06-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 19618,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "provisional_validation",
+      "task_id": "retrieval-06-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 16751,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25_native_expansion",
+      "split": "provisional_validation",
+      "task_id": "retrieval-06-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8163,
+      "context_evidence_recall": 0.0,
+      "context_records": 8,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "provisional_validation",
+      "task_id": "retrieval-06-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 25456,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "provisional_validation",
+      "task_id": "retrieval-06-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 27472,
+      "context_evidence_recall": 1.0,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-06-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8059,
+      "context_evidence_recall": 0.0,
+      "context_records": 3,
+      "method": "bm25",
+      "split": "provisional_validation",
+      "task_id": "retrieval-06-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 31554,
+      "context_evidence_recall": 1.0,
+      "context_records": 10,
+      "method": "character_3_5_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-06-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 19618,
+      "context_evidence_recall": 1.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "provisional_validation",
+      "task_id": "retrieval-06-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 8142,
+      "context_evidence_recall": 0.0,
+      "context_records": 4,
+      "method": "bm25_native_expansion",
+      "split": "provisional_validation",
+      "task_id": "retrieval-06-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 12251,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25_native_expansion",
+      "split": "provisional_validation",
+      "task_id": "retrieval-06-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8172,
+      "context_evidence_recall": 0.0,
+      "context_records": 8,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "provisional_validation",
+      "task_id": "retrieval-06-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 23621,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "provisional_validation",
+      "task_id": "retrieval-06-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "branch_evidence",
+      "classes": [
+        "context_contains_annotated_branch_distractor"
+      ],
+      "context_bytes": 7702,
+      "context_evidence_recall": 1.0,
+      "context_records": 6,
+      "method": "lexical_token_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-06-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "branch_evidence",
+      "classes": [
+        "context_contains_annotated_branch_distractor"
+      ],
+      "context_bytes": 27662,
+      "context_evidence_recall": 1.0,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-06-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "branch_evidence",
+      "classes": [
+        "context_contains_annotated_branch_distractor"
+      ],
+      "context_bytes": 31259,
+      "context_evidence_recall": 1.0,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "provisional_validation",
+      "task_id": "retrieval-06-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "branch_evidence",
+      "classes": [
+        "context_contains_annotated_branch_distractor"
+      ],
+      "context_bytes": 8113,
+      "context_evidence_recall": 1.0,
+      "context_records": 7,
+      "method": "character_3_5_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-06-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "branch_evidence",
+      "classes": [
+        "context_contains_annotated_branch_distractor"
+      ],
+      "context_bytes": 31416,
+      "context_evidence_recall": 1.0,
+      "context_records": 10,
+      "method": "character_3_5_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-06-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "branch_evidence",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 4550,
+      "context_evidence_recall": 0.0,
+      "context_records": 3,
+      "method": "native_graph_distance",
+      "split": "provisional_validation",
+      "task_id": "retrieval-06-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "branch_evidence",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 19618,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "provisional_validation",
+      "task_id": "retrieval-06-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "branch_evidence",
+      "classes": [
+        "context_contains_annotated_branch_distractor"
+      ],
+      "context_bytes": 31259,
+      "context_evidence_recall": 1.0,
+      "context_records": 10,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "provisional_validation",
+      "task_id": "retrieval-06-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "quoted_source",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8020,
+      "context_evidence_recall": 0.0,
+      "context_records": 7,
+      "method": "lexical_token_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-06-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "quoted_source",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 29782,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-06-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "quoted_source",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8121,
+      "context_evidence_recall": 0.0,
+      "context_records": 4,
+      "method": "bm25",
+      "split": "provisional_validation",
+      "task_id": "retrieval-06-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "quoted_source",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 32083,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "provisional_validation",
+      "task_id": "retrieval-06-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "quoted_source",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8116,
+      "context_evidence_recall": 0.0,
+      "context_records": 2,
+      "method": "character_3_5_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-06-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "quoted_source",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 31292,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "character_3_5_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-06-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "quoted_source",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 4550,
+      "context_evidence_recall": 0.0,
+      "context_records": 3,
+      "method": "native_graph_distance",
+      "split": "provisional_validation",
+      "task_id": "retrieval-06-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "quoted_source",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 19618,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "provisional_validation",
+      "task_id": "retrieval-06-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "quoted_source",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8186,
+      "context_evidence_recall": 0.0,
+      "context_records": 9,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "provisional_validation",
+      "task_id": "retrieval-06-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "quoted_source",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 23264,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "provisional_validation",
+      "task_id": "retrieval-06-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8069,
+      "context_evidence_recall": 0.0,
+      "context_records": 7,
+      "method": "bm25",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 28392,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_clarification",
+      "classes": [
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 8181,
+      "context_evidence_recall": 1.0,
+      "context_records": 4,
+      "method": "character_3_5_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 6912,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 6912,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 8083,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "bm25_native_expansion",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 19720,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25_native_expansion",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 27838,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "earlier_version",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 5680,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "earlier_version",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 5680,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "earlier_version",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8125,
+      "context_evidence_recall": 0.0,
+      "context_records": 7,
+      "method": "bm25",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "earlier_version",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 17792,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "earlier_version",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8094,
+      "context_evidence_recall": 0.0,
+      "context_records": 7,
+      "method": "character_3_5_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "earlier_version",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 19442,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "character_3_5_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "earlier_version",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 6912,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "earlier_version",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 6912,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "earlier_version",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 7204,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25_native_expansion",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "earlier_version",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 7204,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25_native_expansion",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "earlier_version",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8114,
+      "context_evidence_recall": 0.0,
+      "context_records": 8,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "earlier_version",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 10893,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 2329,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 2329,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 7858,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 18314,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 8185,
+      "context_evidence_recall": 0.0,
+      "context_records": 6,
+      "method": "character_3_5_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 17481,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "character_3_5_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 6912,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 6912,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 8119,
+      "context_evidence_recall": 1.0,
+      "context_records": 10,
+      "method": "bm25_native_expansion",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 8850,
+      "context_evidence_recall": 1.0,
+      "context_records": 10,
+      "method": "bm25_native_expansion",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 7637,
+      "context_evidence_recall": 1.0,
+      "context_records": 10,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 12712,
+      "context_evidence_recall": 1.0,
+      "context_records": 10,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8185,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 12439,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8189,
+      "context_evidence_recall": 0.0,
+      "context_records": 8,
+      "method": "bm25",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 16306,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8184,
+      "context_evidence_recall": 0.0,
+      "context_records": 7,
+      "method": "character_3_5_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 20272,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "character_3_5_cosine",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 6912,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 6912,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 7432,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25_native_expansion",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 16011,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25_native_expansion",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8189,
+      "context_evidence_recall": 0.0,
+      "context_records": 6,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 23114,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "provisional_validation",
+      "task_id": "retrieval-07-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 6693,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-08-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 6693,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-08-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 8096,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-08-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 8219,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-08-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8192,
+      "context_evidence_recall": 0.0,
+      "context_records": 7,
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-08-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 17288,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-08-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 5050,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-08-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 5050,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-08-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 5871,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-08-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 5871,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-08-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8176,
+      "context_evidence_recall": 0.0,
+      "context_records": 9,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_id": "retrieval-08-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 13065,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_id": "retrieval-08-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "earlier_requirement",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8187,
+      "context_evidence_recall": 0.0,
+      "context_records": 9,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-08-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "earlier_requirement",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 11077,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-08-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "earlier_requirement",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 6215,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-08-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "earlier_requirement",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 6215,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-08-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "earlier_requirement",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 5050,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-08-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "earlier_requirement",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 5050,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-08-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "earlier_requirement",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 7748,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-08-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "earlier_requirement",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 7748,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-08-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "unresolved_conflict",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 6500,
+      "context_evidence_recall": 0.3333333333333333,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-08-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "unresolved_conflict",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 10409,
+      "context_evidence_recall": 0.3333333333333333,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-08-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "unresolved_conflict",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8181,
+      "context_evidence_recall": 0.3333333333333333,
+      "context_records": 7,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-08-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "unresolved_conflict",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 14555,
+      "context_evidence_recall": 0.6666666666666666,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-08-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "unresolved_conflict",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8148,
+      "context_evidence_recall": 0.6666666666666666,
+      "context_records": 10,
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-08-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "unresolved_conflict",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 3421,
+      "context_evidence_recall": 0.3333333333333333,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-08-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "unresolved_conflict",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 3421,
+      "context_evidence_recall": 0.3333333333333333,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-08-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "unresolved_conflict",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 8120,
+      "context_evidence_recall": 0.6666666666666666,
+      "context_records": 9,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-08-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "unresolved_conflict",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 9399,
+      "context_evidence_recall": 0.6666666666666666,
+      "context_records": 10,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-08-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "unresolved_conflict",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8110,
+      "context_evidence_recall": 0.6666666666666666,
+      "context_records": 9,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_id": "retrieval-08-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "unresolved_conflict",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 10252,
+      "context_evidence_recall": 0.6666666666666666,
+      "context_records": 10,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_id": "retrieval-08-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "checkpoint_requirement",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 5050,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-08-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "checkpoint_requirement",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 5050,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-08-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8029,
+      "context_evidence_recall": 0.0,
+      "context_records": 8,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-09-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 16972,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-09-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 7779,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-09-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 7779,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-09-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 7956,
+      "context_evidence_recall": 0.0,
+      "context_records": 7,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-09-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 11486,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-09-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 6926,
+      "context_evidence_recall": 0.5,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-09-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 13334,
+      "context_evidence_recall": 0.5,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-09-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 8174,
+      "context_evidence_recall": 0.5,
+      "context_records": 6,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-09-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 26082,
+      "context_evidence_recall": 0.5,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-09-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8183,
+      "context_evidence_recall": 0.5,
+      "context_records": 7,
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-09-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 26189,
+      "context_evidence_recall": 0.5,
+      "context_records": 10,
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-09-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 7779,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-09-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 7779,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-09-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 8010,
+      "context_evidence_recall": 0.5,
+      "context_records": 10,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_id": "retrieval-09-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "decision_rationale",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 22265,
+      "context_evidence_recall": 0.5,
+      "context_records": 10,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_id": "retrieval-09-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_clarification",
+      "classes": [
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 6547,
+      "context_evidence_recall": 1.0,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-09-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_clarification",
+      "classes": [
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 10611,
+      "context_evidence_recall": 1.0,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-09-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 8082,
+      "context_evidence_recall": 0.0,
+      "context_records": 4,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-09-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 16564,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-09-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 8082,
+      "context_evidence_recall": 0.0,
+      "context_records": 4,
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-09-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_clarification",
+      "classes": [
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 24625,
+      "context_evidence_recall": 1.0,
+      "context_records": 10,
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-09-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 7779,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-09-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 7779,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-09-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 8168,
+      "context_evidence_recall": 0.0,
+      "context_records": 4,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-09-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_clarification",
+      "classes": [
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 20185,
+      "context_evidence_recall": 1.0,
+      "context_records": 10,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-09-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 8165,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_id": "retrieval-09-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_clarification",
+      "classes": [
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 13311,
+      "context_evidence_recall": 1.0,
+      "context_records": 10,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_id": "retrieval-09-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "hypothesis_revision",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 5983,
+      "context_evidence_recall": 0.0,
+      "context_records": 9,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-09-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "hypothesis_revision",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 9465,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-09-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "hypothesis_revision",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 8082,
+      "context_evidence_recall": 0.0,
+      "context_records": 4,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-09-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "hypothesis_revision",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 22259,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-09-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "hypothesis_revision",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 8163,
+      "context_evidence_recall": 0.5,
+      "context_records": 5,
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-09-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "hypothesis_revision",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 24724,
+      "context_evidence_recall": 0.5,
+      "context_records": 10,
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-09-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "hypothesis_revision",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 7779,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-09-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "hypothesis_revision",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 7779,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-09-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "hypothesis_revision",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 8168,
+      "context_evidence_recall": 0.0,
+      "context_records": 4,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-09-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "hypothesis_revision",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget",
+        "relevant_message_has_no_positive_score",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 20185,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-09-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "hypothesis_revision",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 8165,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_id": "retrieval-09-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "hypothesis_revision",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 16878,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_id": "retrieval-09-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 4153,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-10-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 4153,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-10-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 5439,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-10-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 5439,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-10-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 8115,
+      "context_evidence_recall": 0.0,
+      "context_records": 7,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-10-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 9981,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-10-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 8066,
+      "context_evidence_recall": 0.0,
+      "context_records": 4,
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-10-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 20535,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-10-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 4153,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-10-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 4153,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-10-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8130,
+      "context_evidence_recall": 0.0,
+      "context_records": 7,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-10-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 23894,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-10-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 8163,
+      "context_evidence_recall": 0.0,
+      "context_records": 8,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_id": "retrieval-10-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_clarification",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget",
+        "context_contains_annotated_version_distractor"
+      ],
+      "context_bytes": 20276,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_id": "retrieval-10-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 8051,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-10-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 11351,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-10-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8066,
+      "context_evidence_recall": 0.0,
+      "context_records": 3,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-10-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 32704,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-10-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 4153,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-10-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 4153,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-10-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8137,
+      "context_evidence_recall": 0.0,
+      "context_records": 7,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-10-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 26154,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-10-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 27535,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_id": "retrieval-10-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "earlier_requirement",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8062,
+      "context_evidence_recall": 0.0,
+      "context_records": 6,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-10-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "earlier_requirement",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 32321,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-10-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "earlier_requirement",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 4153,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-10-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "earlier_requirement",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 4153,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-10-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8178,
+      "context_evidence_recall": 0.0,
+      "context_records": 4,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-11-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 20461,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-11-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8145,
+      "context_evidence_recall": 0.0,
+      "context_records": 7,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-11-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 28406,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-11-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8133,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-11-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 27919,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-11-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 3479,
+      "context_evidence_recall": 0.0,
+      "context_records": 4,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-11-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 8230,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-11-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 8098,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-11-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 11118,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-11-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8115,
+      "context_evidence_recall": 0.0,
+      "context_records": 6,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_id": "retrieval-11-01"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "current_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 23721,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_id": "retrieval-11-01"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "unresolved_conflict",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 8153,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-11-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "unresolved_conflict",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 18649,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-11-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "unresolved_conflict",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 8118,
+      "context_evidence_recall": 0.3333333333333333,
+      "context_records": 9,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-11-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "unresolved_conflict",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 26851,
+      "context_evidence_recall": 0.3333333333333333,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-11-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "unresolved_conflict",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8123,
+      "context_evidence_recall": 0.3333333333333333,
+      "context_records": 8,
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-11-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "unresolved_conflict",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 20225,
+      "context_evidence_recall": 0.3333333333333333,
+      "context_records": 10,
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-11-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "unresolved_conflict",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 8132,
+      "context_evidence_recall": 0.0,
+      "context_records": 9,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-11-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "unresolved_conflict",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 15294,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-11-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "unresolved_conflict",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8150,
+      "context_evidence_recall": 0.0,
+      "context_records": 3,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_id": "retrieval-11-02"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "unresolved_conflict",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 30487,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_id": "retrieval-11-02"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "branch_transfer_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 3479,
+      "context_evidence_recall": 0.0,
+      "context_records": 4,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-11-03"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "branch_transfer_instruction",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 8230,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-11-03"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 8120,
+      "context_evidence_recall": 0.0,
+      "context_records": 6,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-11-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 31554,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-11-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 8167,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-11-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 17300,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25",
+      "split": "tuning",
+      "task_id": "retrieval-11-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8144,
+      "context_evidence_recall": 0.5,
+      "context_records": 4,
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-11-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 28840,
+      "context_evidence_recall": 0.5,
+      "context_records": 10,
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_id": "retrieval-11-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 3479,
+      "context_evidence_recall": 0.0,
+      "context_records": 4,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-11-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 8230,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_id": "retrieval-11-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 8102,
+      "context_evidence_recall": 0.0,
+      "context_records": 9,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-11-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_has_no_positive_score"
+      ],
+      "context_bytes": 15231,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_id": "retrieval-11-04"
+    },
+    {
+      "budget_id": "8KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_whole_message_did_not_fit_byte_budget"
+      ],
+      "context_bytes": 8160,
+      "context_evidence_recall": 0.0,
+      "context_records": 5,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_id": "retrieval-11-04"
+    },
+    {
+      "budget_id": "32KiB",
+      "category": "continuation_context",
+      "classes": [
+        "required_evidence_incomplete",
+        "relevant_message_beyond_record_budget"
+      ],
+      "context_bytes": 29590,
+      "context_evidence_recall": 0.0,
+      "context_records": 10,
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_id": "retrieval-11-04"
+    }
+  ],
+  "counts": [
+    {
+      "budget_id": "32KiB",
+      "class": "context_contains_annotated_branch_distractor",
+      "method": "bm25",
+      "split": "provisional_validation",
+      "task_count": 1
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "context_contains_annotated_version_distractor",
+      "method": "bm25",
+      "split": "provisional_validation",
+      "task_count": 3
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "no_answer_task_nonempty_context_not_semantic_answer_error",
+      "method": "bm25",
+      "split": "provisional_validation",
+      "task_count": 2
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "relevant_message_beyond_record_budget",
+      "method": "bm25",
+      "split": "provisional_validation",
+      "task_count": 6
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "relevant_message_has_no_positive_score",
+      "method": "bm25",
+      "split": "provisional_validation",
+      "task_count": 2
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "required_evidence_incomplete",
+      "method": "bm25",
+      "split": "provisional_validation",
+      "task_count": 8
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "context_contains_annotated_version_distractor",
+      "method": "bm25",
+      "split": "provisional_validation",
+      "task_count": 2
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "no_answer_task_nonempty_context_not_semantic_answer_error",
+      "method": "bm25",
+      "split": "provisional_validation",
+      "task_count": 2
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "relevant_message_beyond_record_budget",
+      "method": "bm25",
+      "split": "provisional_validation",
+      "task_count": 1
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "relevant_message_has_no_positive_score",
+      "method": "bm25",
+      "split": "provisional_validation",
+      "task_count": 2
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "relevant_whole_message_did_not_fit_byte_budget",
+      "method": "bm25",
+      "split": "provisional_validation",
+      "task_count": 6
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "required_evidence_incomplete",
+      "method": "bm25",
+      "split": "provisional_validation",
+      "task_count": 9
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "context_contains_annotated_version_distractor",
+      "method": "bm25_native_expansion",
+      "split": "provisional_validation",
+      "task_count": 3
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "no_answer_task_nonempty_context_not_semantic_answer_error",
+      "method": "bm25_native_expansion",
+      "split": "provisional_validation",
+      "task_count": 2
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "relevant_message_beyond_record_budget",
+      "method": "bm25_native_expansion",
+      "split": "provisional_validation",
+      "task_count": 3
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "relevant_message_has_no_positive_score",
+      "method": "bm25_native_expansion",
+      "split": "provisional_validation",
+      "task_count": 4
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "required_evidence_incomplete",
+      "method": "bm25_native_expansion",
+      "split": "provisional_validation",
+      "task_count": 6
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "context_contains_annotated_version_distractor",
+      "method": "bm25_native_expansion",
+      "split": "provisional_validation",
+      "task_count": 1
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "no_answer_task_nonempty_context_not_semantic_answer_error",
+      "method": "bm25_native_expansion",
+      "split": "provisional_validation",
+      "task_count": 2
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "relevant_message_beyond_record_budget",
+      "method": "bm25_native_expansion",
+      "split": "provisional_validation",
+      "task_count": 1
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "relevant_message_has_no_positive_score",
+      "method": "bm25_native_expansion",
+      "split": "provisional_validation",
+      "task_count": 4
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "relevant_whole_message_did_not_fit_byte_budget",
+      "method": "bm25_native_expansion",
+      "split": "provisional_validation",
+      "task_count": 3
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "required_evidence_incomplete",
+      "method": "bm25_native_expansion",
+      "split": "provisional_validation",
+      "task_count": 7
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "context_contains_annotated_branch_distractor",
+      "method": "character_3_5_cosine",
+      "split": "provisional_validation",
+      "task_count": 1
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "context_contains_annotated_version_distractor",
+      "method": "character_3_5_cosine",
+      "split": "provisional_validation",
+      "task_count": 3
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "no_answer_task_nonempty_context_not_semantic_answer_error",
+      "method": "character_3_5_cosine",
+      "split": "provisional_validation",
+      "task_count": 2
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "relevant_message_beyond_record_budget",
+      "method": "character_3_5_cosine",
+      "split": "provisional_validation",
+      "task_count": 6
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "required_evidence_incomplete",
+      "method": "character_3_5_cosine",
+      "split": "provisional_validation",
+      "task_count": 6
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "context_contains_annotated_branch_distractor",
+      "method": "character_3_5_cosine",
+      "split": "provisional_validation",
+      "task_count": 1
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "context_contains_annotated_version_distractor",
+      "method": "character_3_5_cosine",
+      "split": "provisional_validation",
+      "task_count": 2
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "no_answer_task_nonempty_context_not_semantic_answer_error",
+      "method": "character_3_5_cosine",
+      "split": "provisional_validation",
+      "task_count": 2
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "relevant_whole_message_did_not_fit_byte_budget",
+      "method": "character_3_5_cosine",
+      "split": "provisional_validation",
+      "task_count": 6
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "required_evidence_incomplete",
+      "method": "character_3_5_cosine",
+      "split": "provisional_validation",
+      "task_count": 6
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "context_contains_annotated_branch_distractor",
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "provisional_validation",
+      "task_count": 1
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "context_contains_annotated_version_distractor",
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "provisional_validation",
+      "task_count": 3
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "no_answer_task_nonempty_context_not_semantic_answer_error",
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "provisional_validation",
+      "task_count": 2
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "relevant_message_beyond_record_budget",
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "provisional_validation",
+      "task_count": 8
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "required_evidence_incomplete",
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "provisional_validation",
+      "task_count": 8
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "context_contains_annotated_version_distractor",
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "provisional_validation",
+      "task_count": 3
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "no_answer_task_nonempty_context_not_semantic_answer_error",
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "provisional_validation",
+      "task_count": 2
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "relevant_whole_message_did_not_fit_byte_budget",
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "provisional_validation",
+      "task_count": 7
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "required_evidence_incomplete",
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "provisional_validation",
+      "task_count": 7
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "context_contains_annotated_branch_distractor",
+      "method": "lexical_token_cosine",
+      "split": "provisional_validation",
+      "task_count": 1
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "context_contains_annotated_version_distractor",
+      "method": "lexical_token_cosine",
+      "split": "provisional_validation",
+      "task_count": 4
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "no_answer_task_nonempty_context_not_semantic_answer_error",
+      "method": "lexical_token_cosine",
+      "split": "provisional_validation",
+      "task_count": 2
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "relevant_message_beyond_record_budget",
+      "method": "lexical_token_cosine",
+      "split": "provisional_validation",
+      "task_count": 6
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "relevant_message_has_no_positive_score",
+      "method": "lexical_token_cosine",
+      "split": "provisional_validation",
+      "task_count": 2
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "required_evidence_incomplete",
+      "method": "lexical_token_cosine",
+      "split": "provisional_validation",
+      "task_count": 8
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "context_contains_annotated_branch_distractor",
+      "method": "lexical_token_cosine",
+      "split": "provisional_validation",
+      "task_count": 1
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "context_contains_annotated_version_distractor",
+      "method": "lexical_token_cosine",
+      "split": "provisional_validation",
+      "task_count": 2
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "no_answer_task_nonempty_context_not_semantic_answer_error",
+      "method": "lexical_token_cosine",
+      "split": "provisional_validation",
+      "task_count": 2
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "relevant_message_beyond_record_budget",
+      "method": "lexical_token_cosine",
+      "split": "provisional_validation",
+      "task_count": 2
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "relevant_message_has_no_positive_score",
+      "method": "lexical_token_cosine",
+      "split": "provisional_validation",
+      "task_count": 2
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "relevant_whole_message_did_not_fit_byte_budget",
+      "method": "lexical_token_cosine",
+      "split": "provisional_validation",
+      "task_count": 4
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "required_evidence_incomplete",
+      "method": "lexical_token_cosine",
+      "split": "provisional_validation",
+      "task_count": 8
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "context_contains_annotated_version_distractor",
+      "method": "native_graph_distance",
+      "split": "provisional_validation",
+      "task_count": 1
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "no_answer_task_nonempty_context_not_semantic_answer_error",
+      "method": "native_graph_distance",
+      "split": "provisional_validation",
+      "task_count": 2
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "relevant_message_has_no_positive_score",
+      "method": "native_graph_distance",
+      "split": "provisional_validation",
+      "task_count": 10
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "required_evidence_incomplete",
+      "method": "native_graph_distance",
+      "split": "provisional_validation",
+      "task_count": 10
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "no_answer_task_nonempty_context_not_semantic_answer_error",
+      "method": "native_graph_distance",
+      "split": "provisional_validation",
+      "task_count": 2
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "relevant_message_has_no_positive_score",
+      "method": "native_graph_distance",
+      "split": "provisional_validation",
+      "task_count": 10
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "relevant_whole_message_did_not_fit_byte_budget",
+      "method": "native_graph_distance",
+      "split": "provisional_validation",
+      "task_count": 1
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "required_evidence_incomplete",
+      "method": "native_graph_distance",
+      "split": "provisional_validation",
+      "task_count": 11
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "context_contains_annotated_version_distractor",
+      "method": "bm25",
+      "split": "tuning",
+      "task_count": 7
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "relevant_message_beyond_record_budget",
+      "method": "bm25",
+      "split": "tuning",
+      "task_count": 15
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "relevant_message_has_no_positive_score",
+      "method": "bm25",
+      "split": "tuning",
+      "task_count": 7
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "relevant_whole_message_did_not_fit_byte_budget",
+      "method": "bm25",
+      "split": "tuning",
+      "task_count": 1
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "required_evidence_incomplete",
+      "method": "bm25",
+      "split": "tuning",
+      "task_count": 20
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "context_contains_annotated_version_distractor",
+      "method": "bm25",
+      "split": "tuning",
+      "task_count": 7
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "relevant_message_beyond_record_budget",
+      "method": "bm25",
+      "split": "tuning",
+      "task_count": 3
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "relevant_message_has_no_positive_score",
+      "method": "bm25",
+      "split": "tuning",
+      "task_count": 7
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "relevant_whole_message_did_not_fit_byte_budget",
+      "method": "bm25",
+      "split": "tuning",
+      "task_count": 13
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "required_evidence_incomplete",
+      "method": "bm25",
+      "split": "tuning",
+      "task_count": 20
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "context_contains_annotated_version_distractor",
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_count": 7
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "relevant_message_beyond_record_budget",
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_count": 5
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "relevant_message_has_no_positive_score",
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_count": 17
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "required_evidence_incomplete",
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_count": 20
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "context_contains_annotated_version_distractor",
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_count": 5
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "relevant_message_has_no_positive_score",
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_count": 17
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "relevant_whole_message_did_not_fit_byte_budget",
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_count": 6
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "required_evidence_incomplete",
+      "method": "bm25_native_expansion",
+      "split": "tuning",
+      "task_count": 21
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "context_contains_annotated_version_distractor",
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_count": 5
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "relevant_message_beyond_record_budget",
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_count": 13
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "required_evidence_incomplete",
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_count": 13
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "context_contains_annotated_version_distractor",
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_count": 7
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "relevant_message_beyond_record_budget",
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_count": 1
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "relevant_whole_message_did_not_fit_byte_budget",
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_count": 14
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "required_evidence_incomplete",
+      "method": "character_3_5_cosine",
+      "split": "tuning",
+      "task_count": 15
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "context_contains_annotated_version_distractor",
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_count": 6
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "relevant_message_beyond_record_budget",
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_count": 17
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "required_evidence_incomplete",
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_count": 17
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "context_contains_annotated_version_distractor",
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_count": 6
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "relevant_message_beyond_record_budget",
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_count": 3
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "relevant_whole_message_did_not_fit_byte_budget",
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_count": 13
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "required_evidence_incomplete",
+      "method": "lexical_bm25_character_graph_rrf",
+      "split": "tuning",
+      "task_count": 16
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "context_contains_annotated_version_distractor",
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_count": 3
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "relevant_message_beyond_record_budget",
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_count": 16
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "relevant_message_has_no_positive_score",
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_count": 7
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "required_evidence_incomplete",
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_count": 20
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "context_contains_annotated_version_distractor",
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_count": 3
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "relevant_message_beyond_record_budget",
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_count": 7
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "relevant_message_has_no_positive_score",
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_count": 7
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "relevant_whole_message_did_not_fit_byte_budget",
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_count": 7
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "required_evidence_incomplete",
+      "method": "lexical_token_cosine",
+      "split": "tuning",
+      "task_count": 19
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "context_contains_annotated_version_distractor",
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_count": 1
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "relevant_message_has_no_positive_score",
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_count": 29
+    },
+    {
+      "budget_id": "32KiB",
+      "class": "required_evidence_incomplete",
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_count": 29
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "context_contains_annotated_version_distractor",
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_count": 1
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "relevant_message_has_no_positive_score",
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_count": 29
+    },
+    {
+      "budget_id": "8KiB",
+      "class": "required_evidence_incomplete",
+      "method": "native_graph_distance",
+      "split": "tuning",
+      "task_count": 29
+    }
+  ],
+  "interpretation": "retrieval failures and distractor inclusion; no LLM answer was generated or judged",
+  "schema": "loom.research_retrieval/1"
+}

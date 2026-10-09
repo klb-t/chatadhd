@@ -1,0 +1,25 @@
+{
+  "answerability_metric": "retrieval_abstention_not_answer_correctness",
+  "declared_after_first_run": true,
+  "frozen_methods_unchanged": true,
+  "ndcg_cutoffs": [
+    10
+  ],
+  "paired_metric": "context_evidence_recall",
+  "paired_reference_method": "bm25",
+  "ranking_cutoffs": [
+    1,
+    5,
+    10
+  ],
+  "schema": "loom.research_retrieval_evaluation/1",
+  "semantics": {
+    "context_precision_empty": null,
+    "context_selection": "whole_message_greedy_skip_nonfitting",
+    "evidence_sets": "maximum_fraction_in_any_acceptable_set",
+    "macro_aggregation": "mean_within_family_then_equal_family_weight",
+    "precision_denominator": "fixed_k",
+    "ranking": "positive_score_pre_budget_ranking"
+  },
+  "version_classification": "records_existing_evaluation_parameters_no_retuning"
+}
