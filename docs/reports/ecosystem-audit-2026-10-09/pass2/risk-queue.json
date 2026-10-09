@@ -1,0 +1,93 @@
+{
+  "source": "Owner continuation A, 2026-10-09",
+  "policy": "Close full execution paths; read count alone is not behavioral coverage. No quota for findings. No paid transport/CI. New tests in tools pass2 only.",
+  "items": [
+    {
+      "order": 1,
+      "module": "chat",
+      "path": "zgoda/provider budget→zwykły ChatEngine i worker→ingest/store→reopen",
+      "seed_findings": [
+        "CH-004",
+        "CH-005",
+        "CH-006",
+        "CH-011"
+      ],
+      "status": "in_progress",
+      "write_scope": "tools/ecosystem-audit-2026-10-09/pass2/chat",
+      "receipts_scope": "docs/reports/ecosystem-audit-2026-10-09/pass2/chat"
+    },
+    {
+      "order": 2,
+      "module": "watchdog",
+      "path": "profile/request→routing→transport→receipt oraz source-access/export",
+      "seed_findings": [
+        "WD-001",
+        "WD-002",
+        "WD-003",
+        "WD-011"
+      ],
+      "status": "in_progress",
+      "write_scope": "tools/ecosystem-audit-2026-10-09/pass2/watchdog",
+      "receipts_scope": "docs/reports/ecosystem-audit-2026-10-09/pass2/watchdog"
+    },
+    {
+      "order": 3,
+      "module": "ckp",
+      "path": "settings/task→provider/planner→delayed editor target→result",
+      "seed_findings": [
+        "CKP-A-001",
+        "CKP-A-002",
+        "CKP-A-003",
+        "CKP-A-012"
+      ],
+      "status": "in_progress",
+      "write_scope": "tools/ecosystem-audit-2026-10-09/pass2/ckp",
+      "receipts_scope": "docs/reports/ecosystem-audit-2026-10-09/pass2/ckp"
+    },
+    {
+      "order": 4,
+      "module": "ageds",
+      "path": "scan/upload→queue pinnedrecipe→worker lease→versioned result→export",
+      "seed_findings": [
+        "EA-AGEDS-002",
+        "EA-AGEDS-003",
+        "EA-AGEDS-005"
+      ],
+      "status": "in_progress",
+      "write_scope": "tools/ecosystem-audit-2026-10-09/pass2/ageds",
+      "receipts_scope": "docs/reports/ecosystem-audit-2026-10-09/pass2/ageds"
+    },
+    {
+      "order": 5,
+      "module": "lem",
+      "path": "profile→runner→transport/pagination→raw result→Room migration",
+      "seed_findings": [
+        "LEM-001",
+        "LEM-003",
+        "LEM-004",
+        "LEM-005"
+      ],
+      "status": "in_progress",
+      "write_scope": "tools/ecosystem-audit-2026-10-09/pass2/lem",
+      "receipts_scope": "docs/reports/ecosystem-audit-2026-10-09/pass2/lem"
+    },
+    {
+      "order": 6,
+      "module": "native",
+      "path": "historyczne stemming/1→loader/2; profiles/settings/workflow→native store/restart→unknown/conflicts/exclusion",
+      "seed_findings": [],
+      "status": "in_progress",
+      "write_scope": "tools/ecosystem-audit-2026-10-09/pass2/native",
+      "receipts_scope": "docs/reports/ecosystem-audit-2026-10-09/pass2/native"
+    },
+    {
+      "order": 7,
+      "module": "c-review",
+      "path": "spec/queue→payerref→result→public projection→packet→native store",
+      "seed_findings": [],
+      "status": "in_progress",
+      "write_scope": "tools/ecosystem-audit-2026-10-09/pass2/c-review",
+      "receipts_scope": "docs/reports/ecosystem-audit-2026-10-09/pass2/c-review"
+    }
+  ]
+}
