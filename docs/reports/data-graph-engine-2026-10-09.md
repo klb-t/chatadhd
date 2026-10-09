@@ -110,3 +110,5 @@ i SHA zapisane osobno jako asan-ffi-companion-reused-dev. Receipts obu buildów
 zapisano przed tym testem. Full CTest/guard asan uruchomione skryptem
 /workspace/.onboarding/run-data-graph-asan.sh, TMPDIR=/var/tmp, stdout 10 MiB.
 Wynik jest jeszcze oczekiwany.
+
+Opis styku C: [synthetic temporary root contract](../architecture/DATA_GRAPH_ENGINE_RESEARCH_TEMP_CONTRACT_2026-10-09.md). Publikacja nie oznacza doręczenia ani akceptacji przez C; nie edytowano jego kodu.
