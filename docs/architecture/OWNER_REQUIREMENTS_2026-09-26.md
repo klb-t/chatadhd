@@ -514,6 +514,96 @@ whose every entry carries its category and reason (owner: thread 11, building on
 its data-in-code inventory). (owner's question answered by Claude and accepted
 by the owner)
 
+## Requirements from the 2026-10-10 discussion (owner to Claude, R43–R50)
+Answer to the open choices of the data-graph-engine branch, then a design
+improvisation the owner explicitly marked as one projection among many ("sprzeczności
+nie są błędem tylko projekcją ewolucji"). The generalisation and populated
+lists are in [GRAPH_ENTRY_PARTIES_ECONOMY_2026-10-10.md](GRAPH_ENTRY_PARTIES_ECONOMY_2026-10-10.md).
+
+## R43 — Every block needs an initiator (owner, 2026-10-10)
+> "Zablokowanie czegokolwiek co do zasady musi być zainicjowane przez użytkownika
+> (lub inne okoliczności z solidnym uzasadnieniem)."
+
+The engine and UI do not refuse, narrow or withhold anything on their own
+initiative. A block is either initiated by the user (a setting, a consent, an
+explicit choice at some scope) or rests on a solid, stated justification (data
+integrity, security, an external constraint, a capability that does not exist).
+Missing capability degrades the operation and says so; it does not forbid the
+rest. (paraphrase)
+
+## R44 — Unrecognised input enters the graph, annotated (owner, 2026-10-10)
+> "Jeśli coś jest nierozpoznane to w taką adnotacją wchodzi do grafu, czyli
+> korpusy wszystkich danych."
+
+Nothing is skipped silently and nothing fails a whole import because one part is
+unknown. Unrecognised data is kept verbatim in the graph with its recognition
+status and source location; the graph holds the corpus of all data. (paraphrase)
+
+## R45 — The graph's entry view: what a query without parameters returns (owner, 2026-10-10)
+> "graf to nie jest drzewo żeby był korzeń, a chodzi o to, co dostajesz odpytując
+> graf bez parametrów"
+
+The null-context view shows the main areas, among them: the graph's and the
+application's self-model (goals, philosophy, capabilities); technologies,
+adapters, profiles and interfaces; settings and profiles linked to the
+preferences that resolve them; users; methods. The list is open and evolves.
+(paraphrase)
+
+## R46 — Users are parties of many levels; the user is a node, not the centre (owner, 2026-10-10)
+> "użytkownikiem może być organizacja, pracownik, pracownik pracujący nad
+> projektem, grupa zespołów pracujących nad gałęzią projektu, rodzina analizująca
+> za i przeciw w kontekście ważnej decyzji życiowej…"
+>
+> "użytkownik jest osadzony jako node sieci, najdokładniej opisany i wysokoważony
+> przy wielu decyzjach ale formalnie obiekt typu węzeł sieci. nie będzie
+> użytkownikocentrycznie"
+>
+> "preferencje, filozofie, zainteresowania, obszary czy to geograficzne czy
+> zawodowe czy teleologiczne, to jest pakiet właściwości, klasa człowiek"
+
+The user is not a precisely defined single entity; it can be seen through several
+perspectives (hierarchy of beings, philosophies of beings and contexts). The
+owner asked how node types/classes are solved in the graph. (paraphrase;
+question answered in the design document §5)
+
+## R47 — Every setting resolves across scopes with stated conflict rules (owner, 2026-10-10)
+> "Dla każdego ustawienia masz na przykład preferencje aplikacji, użytkownika,
+> rozmowy, i określone zasady rozwiązywania konfliktów między nimi?"
+
+Extends R40 from two layers (built-in, user) to a chain of scopes, each a graph
+node, with a per-setting conflict rule that is itself data. (paraphrase)
+
+## R48 — Methods sit next to settings as research-backed presets; experiments at hand (owner, 2026-10-10)
+Methods of semantic analysis, graph building and exploring several paths at once
+(automatic, semi-automatic, manual, with full multi-criteria evaluation) are
+offered as presets optimised for concrete uses: the best models, prompts and
+approaches found in research (e.g. Jev asked for the relevance of a claim at a
+node for an edge of a given kind), with the API requests and benchmarks they were
+proposed from. When it follows from the user's profile, an experiment is at hand,
+e.g. at import: run a fragment through five prompts and let the application
+analyse the outcome. (paraphrase; extends R23, R33, R41)
+
+## R49 — Context order: stable facts first, the question last (owner, 2026-10-10)
+> "podane najpierw fakty na temat podstawowych encji, później kontekst konkretnego
+> projektu, później szczegółowy kontekst odpowiedniego rodzaju – na przykład
+> wyselekcjonowany kod do którego się odwołuje analizowana funkcja, na końcu pytanie"
+
+Proposed for saving on prompt caching and for sense. (owner's proposal,
+confirmed by Claude: stable-prefix-first ordering maximises cache reuse)
+
+## R50 — Resource economy: duplicates allowed, flagged, deduplication proposed (owner, 2026-10-10)
+> "Silnik oczywiście nie może zabraniać duplikatów ale powinien zwracać uwagę …
+> że wystąpiło duplikowanie ale proponuje przypięcie niezmiennych danych do kilku
+> węzłów"
+>
+> "każdy powtarzający się jakąś częstotliwością blok danych o jakiejś wielkości,
+> oczywiście o ile użytkownik sobie życzy, powinien być analizowany pod kątem
+> kosztów i potencjalnych korzyści deduplikacji i linkowania"
+
+We avoid easily avoidable waste. Native compression/deduplication analysis is
+opt-in, never forced. Beyond linking, a generator: a description of where to get
+the data, smaller than the data, with a known computational cost. (paraphrase)
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 
