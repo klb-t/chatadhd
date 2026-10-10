@@ -103,6 +103,15 @@ try {
     rejectKey = null;
     assert.equal(records.get("loom.chat-settings.view-one"), firstBytes); assert.equal(records.get("loom.chat-settings.view-two"), secondBytes);
   });
+  await check("the user's send-block choice persists as an explicit boolean and malformed values are not guessed", () => {
+    settings.writeChatSettings("view-gate", { model: "", blockSendWithoutSourceHistory: true });
+    assert.equal(settings.readChatSettings("view-gate").value.blockSendWithoutSourceHistory, true);
+    settings.writeChatSettings("view-gate", { model: "" });
+    assert.equal(Object.hasOwn(settings.readChatSettings("view-gate").value, "blockSendWithoutSourceHistory"), false, "no choice keeps the layered default");
+    records.set("loom.chat-settings.view-gate", envelope({ blockSendWithoutSourceHistory: "yes" }));
+    const malformed = settings.readChatSettings("view-gate");
+    assert.deepEqual(malformed.value, {}); assert.match(malformed.error, /blockSendWithoutSourceHistory/);
+  });
   if (process.env.CHAT_SETTINGS_EVIDENCE_DIR) {
     const directory = process.env.CHAT_SETTINGS_EVIDENCE_DIR; mkdirSync(directory, { recursive: true });
     const filename = path.join(directory, "chat-settings-state-results.json"); assert.ok(!existsSync(filename), "Use a fresh evidence directory.");
