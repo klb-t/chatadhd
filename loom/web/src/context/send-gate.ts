@@ -58,6 +58,8 @@ export function chatSendGate(input: SendGateInput): SendGate {
   return result(null);
 }
 
+/** Template parameters of a catalog message (an index signature keeps the file lexically scannable). */
+interface TemplateParameters { [key: string]: JsonValue }
 export interface SendGateTexts {
   /** Explanation of a refusal (also the disabled button's description). */
   blocked: string | null;
@@ -72,7 +74,7 @@ export interface SendGateTexts {
  * usable catalog (older profile, suppressed or malformed entry) the machine reason is
  * shown instead; a broken template never takes the composer down. */
 export function sendGateTexts(feature: PresentationFeature | null, gate: SendGate): SendGateTexts {
-  const text = (id: string, parameters: Record<string, JsonValue> = {}): string | null => {
+  const text = (id: string, parameters: TemplateParameters = {}): string | null => {
     if (!feature) return null;
     try { return featureMessage(feature, id, parameters); }
     catch { return null; }
@@ -82,8 +84,8 @@ export function sendGateTexts(feature: PresentationFeature | null, gate: SendGat
     ? (setting === null ? null : text("blocked_by_setting", { setting }))
     : text(gate.blocked.message)) ?? gate.blocked.reason);
   const code = gate.sourceHistory;
-  const known = code !== null && feature !== null && Object.prototype.hasOwnProperty.call(feature.catalog, `reason.${code}`);
-  const explanation = code === null ? null : text(known ? `reason.${code}` : "reason.unrecognized");
+  const known = code !== null && feature !== null && Object.prototype.hasOwnProperty.call(feature.catalog, "reason." + code);
+  const explanation = code === null ? null : text(known ? "reason." + code : "reason.unrecognized");
   return {
     blocked,
     sourceHistory: code === null ? null : text("source_history_omitted") ?? code,
