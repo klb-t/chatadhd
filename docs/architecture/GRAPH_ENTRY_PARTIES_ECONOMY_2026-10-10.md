@@ -13,6 +13,12 @@ ustawienie może mieć wartość (§6).
 
 ---
 
+> **Status (2026-10-10, po uwadze właściciela, R53):** wszystkie listy w tym
+> dokumencie są **przykładami kalibracyjnymi**, nie zamkniętymi zbiorami, a ich
+> liczebność nie jest faktem projektowym. Silnik ma generować przestrzeń z osi
+> (§11) i rozszerzać ją wybranymi modelami jako metodę (R48/R53); wynik wchodzi
+> do grafu jako propozycje.
+
 ## 1. Bramki: każda blokada ma inicjatora (R43)
 
 **Bramka** to każda operacja, która odmawia, zawęża, obcina, opóźnia albo ukrywa.
@@ -390,6 +396,48 @@ pochodny musi dać się odbudować”.
 
 ---
 
-## 10. Implementacja w tym przyroście i dalsze kroki
+## 10. Magazyn, szyfrowanie, bezpieczeństwo (R51)
+
+Osobny obszar widoku wejściowego, widoczny od razu: gdzie leżą dane (serwer
+aplikacji, chmury użytkownika, lokalnie; dowolna kombinacja, per kategoria), kto
+ma dostęp, czym zaszyfrowane, kto trzyma klucze, kiedy rotowane. Kryptografia
+odporna kwantowo: ML-KEM + ML-DSA hybrydowo z X25519, AES-256-GCM dla danych,
+Argon2id dla haseł; RSA-OAEP z `credential_handoff_v2` do wymiany. Wszystko jako
+ustawienia z zakresami (§6), preset bezpieczny i nieblokujący. Pierwszy krok:
+inwentarz, gdzie dziś są dane i klucze (DB, BlobStore, secrets.json, eksporty,
+packet store, logi).
+
+## 11. Osie zamiast list (R53)
+
+Przykłady z §3–§6 są punktami kalibracyjnymi. Generator przestrzeni:
+- **Podmioty**: skład (jeden / wielu / wielu z wielu) × trwałość (stały / doraźny)
+  × forma więzi (formalna / rodzinna / projektowa / przygodna) × natura (człowiek /
+  AI / instytucja) × kontekst działania. „Rodzina ważąca decyzję” = wielu, doraźny,
+  rodzinna, kontekst decyzji. Dodatkowo: podmiot *o którym* graf wie ≠ podmiot
+  *który działa i płaci* w tej chwili.
+- **Obszary wejścia**: o czym (aplikacja / świat / podmiot) × jaki byt (dane /
+  metoda / ustawienie / wiedza / zasób) × czas (stan / historia / plan).
+- **Pakiety właściwości**: każdy slot ma dodatkowo oś czasu (teraz / zwykle /
+  kiedyś, z historią), pewność i źródło (podane / wywnioskowane / potwierdzone /
+  odrzucone), stan podmiotu w chwili podania (istotne przy ADHD) oraz wrażliwość.
+  Cele (teleologia) to osobna oś, nie kategoria obok geografii i zawodu.
+- **Ustawienia**: dziedziczenie dotyczy klas; wartości ustawień nie dziedziczą,
+  tylko rozstrzygają się przez zakresy i reguły konfliktu (§6) — dwa mechanizmy,
+  nie jeden.
+- **Samomodel** obejmuje także modele aplikacji: co umieją, ile kosztują, gdzie
+  się mylą (R37) — spina się z metodami (§7).
+- **Decyzja jako węzeł**: kto, w jakiej roli, z jakimi wagami, na jakich
+  przesłankach; decyzja rodzinna to instancja.
+
+Rozszerzanie tej przestrzeni to metoda N-torowa (§7): ten sam zalążek do kilku
+modeli, porównanie zgodności/nowości/sprzeczności, propozycje do grafu.
+
+## 12. Zalążek zerowy (R52)
+
+Graf nie zaczyna pusty: samomodel, ontologia, metody z presetami, warstwy domyślne
+i węzeł podmiotu ze slotami `unknown`. Onboarding wypełnia; wszystko można
+wyłączyć albo usunąć.
+
+## 13. Implementacja w tym przyroście i dalsze kroki
 
 Sekcja uzupełniana przy integracji, patrz `docs/reports/INDEX.md`.

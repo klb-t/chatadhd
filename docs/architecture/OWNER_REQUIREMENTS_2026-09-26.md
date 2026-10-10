@@ -604,6 +604,51 @@ We avoid easily avoidable waste. Native compression/deduplication analysis is
 opt-in, never forced. Beyond linking, a generator: a description of where to get
 the data, smaller than the data, with a known computational cost. (paraphrase)
 
+## R51 — Storage, encryption and security are a first-class, visible area (owner, 2026-10-10)
+> "magazyn szyfrowanie bezpieczeństwo. oferujemy magazyn na serwerze na którym apka
+> webowa chodzi, wszystkie chmury użytkownika oraz jego lokalny Storage, w pełni
+> konfigurowalne do granic absurdu, zgodnie z filozofią. na przykład szyfrowanie
+> kwantowo odporne musi być"
+
+In the most basic graph view the user must see at a glance where their data lives,
+who can reach it and how it is encrypted. Storages: the server the web app runs on,
+every cloud of the user, local storage — any combination, per data category, with
+sync and conflict rules, configurable "to the point of absurdity". Post-quantum
+cryptography is required. Claude's note: AES-256-GCM (already used by the Python
+app) stays safe under Grover; what breaks is key exchange/signatures (RSA, EC), so
+ML-KEM (FIPS 203) and ML-DSA (FIPS 204), preferably hybrid with X25519, plus
+Argon2id for passwords; the RSA-OAEP in `credential_handoff_v2` is to be replaced.
+Algorithms, key custody, rotation and threat model are scoped settings (R47) with a
+safe, non-blocking preset. (paraphrase + Claude's technical note)
+
+## R52 — The graph starts seeded, never empty (owner, 2026-10-10)
+> "nie wiem czy dawać jakiś zalążek zerowy, czy po prostu pusty plik zapełniany w
+> trakcie onboardingu dopiero? o właśnie, przecież informacje o sobie będą,
+> niezależnie od użytkownika."
+
+Before onboarding the graph already holds what exists independently of the user:
+the application's self-model (goals, owner philosophy, capabilities, limits, its
+models and methods with costs), the ontology, methods with research presets,
+default layers (R40) and the party node of whoever is starting, with every slot
+`unknown` (R39). All of it is data the user can disable or remove. (paraphrase)
+
+## R53 — The engine generates the space; the owner's examples are calibration points (owner, 2026-10-10)
+> "funkcja silnika żeby wszystkie operacje które przyjdą do głowy wykonywały się
+> naturalnie intuicyjnie przezroczyste albo z pełną kontrolą użytkownika"
+>
+> "rekonstruował całą przestrzeń na podstawie podanych przeze mnie kilku
+> charakterystycznych przykładów … liczyłem na to, że … rozszerzysz i
+> uszczegółowisz. do tego chyba trzeba jakiegoś pucusia typu Gemini, albo chociaż
+> w miarę kreatywnego GPT"
+
+The lists in the design document (areas, party levels, property packages, scope
+chain, conflict rules) are examples, not closed sets, and their counts are not
+design facts. Expansion and detailing is an engine method (an N-track run per R48:
+several models given the same seed, compared for agreement, novelty and
+contradiction) whose results enter the graph as proposals, never as facts. Each
+such operation runs transparently or under full user control, as a setting.
+(paraphrase; correction of Claude's earlier closed lists)
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 
