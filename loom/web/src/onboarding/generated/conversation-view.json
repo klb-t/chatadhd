@@ -1,7 +1,7 @@
 {
   "schema": "loom.default_layers_pack/1",
   "pack_id": "loom.product.conversation_view",
-  "revision": 1,
+  "revision": 2,
   "policy": {
     "excluded_area_new_defaults": "proposal"
   },
@@ -88,6 +88,53 @@
           }
         }
       }
+    },
+    {
+      "id": "presentation.chat_send/v1",
+      "key": "presentation.chat_send",
+      "area": "presentation/chat_send",
+      "revision": 1,
+      "label": "Send notices and explanations for conversations with linked sources; texts only, they do not change what is sent",
+      "value": {
+        "schema": "loom.presentation_feature/1",
+        "feature": "chat_send",
+        "locales": {
+          "en": {
+            "source_history_omitted": "Linked source history will not be included in this message. Only the messages stored in this conversation are sent.",
+            "reason": "Reason: {{explanation}} (code: {{reason}})",
+            "reason.source_egress_not_bound": "there is no binding yet that allows source content to be sent to a model",
+            "reason.unrecognized": "the conversation view reports that this history cannot be included",
+            "view_unavailable": "The conversation view could not be loaded ({{reason}}). Sending still works: the message is sent with the messages stored in this conversation; linked source history, if any, is not included.",
+            "view_loading": "Sending waits until this conversation's view has loaded.",
+            "source_read_in_flight": "Sending waits while linked sources are read locally, so that a message is not sent while the view is changing. It resumes when the read finishes.",
+            "setting_label": "Block sending when linked source history cannot be included",
+            "setting_help": "Off: the message is sent with the stored messages only and a notice says what is missing. On: sending stays disabled in such conversations until you turn this off.",
+            "blocked_by_setting": "Sending is blocked by your setting “{{setting}}”. Turn it off to send with the stored messages only.",
+            "unblock": "Turn off this block"
+          },
+          "pl": {
+            "source_history_omitted": "Historia połączonych źródeł nie zostanie dołączona do tej wiadomości. Wysyłane są tylko wiadomości zapisane w tej rozmowie.",
+            "reason": "Powód: {{explanation}} (kod: {{reason}})",
+            "reason.source_egress_not_bound": "nie ma jeszcze powiązania, które pozwala wysłać treść źródła do modelu",
+            "reason.unrecognized": "widok rozmowy zgłasza, że tej historii nie można dołączyć",
+            "view_unavailable": "Nie udało się wczytać widoku rozmowy ({{reason}}). Wysyłanie nadal działa: wiadomość zostanie wysłana z wiadomościami zapisanymi w tej rozmowie; historia połączonych źródeł, jeśli istnieje, nie zostanie dołączona.",
+            "view_loading": "Wysyłanie czeka na wczytanie widoku tej rozmowy.",
+            "source_read_in_flight": "Wysyłanie czeka na zakończenie lokalnego odczytu połączonych źródeł, aby wiadomość nie została wysłana przy zmieniającym się widoku. Wznowi się po zakończeniu odczytu.",
+            "setting_label": "Blokuj wysyłanie, gdy nie można dołączyć historii połączonych źródeł",
+            "setting_help": "Wyłączone: wiadomość jest wysyłana tylko z zapisanymi wiadomościami, a komunikat mówi, czego brakuje. Włączone: wysyłanie pozostaje zablokowane w takich rozmowach, dopóki tego nie wyłączysz.",
+            "blocked_by_setting": "Wysyłanie blokuje Twoje ustawienie „{{setting}}”. Wyłącz je, aby wysłać wiadomość tylko z zapisanymi wiadomościami.",
+            "unblock": "Wyłącz tę blokadę"
+          }
+        }
+      }
+    },
+    {
+      "id": "chat.send.block_without_source_history/v1",
+      "key": "chat.send.block_without_source_history",
+      "area": "chat/send",
+      "revision": 1,
+      "label": "Block sending when linked source history cannot be included",
+      "value": false
     }
   ]
 }
