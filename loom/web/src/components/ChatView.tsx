@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
 import { api } from "../api";
 import type { UserProfileHost } from "../api/onboarding-host";
-import { conversationViewMessages, messageCan, sourceHistorySendUnavailable, type ConversationView } from "../api/conversation-view";
-import ConversationSourceView, { useConversationSourcePresentation } from "./ConversationSourceView";
+import { conversationViewMessages, messageCan, type ConversationView } from "../api/conversation-view";
+import ConversationSourceView, { useConversationSourcePresentation, useLayeredDefault, usePresentationFeature } from "./ConversationSourceView";
+import { chatSendGate, SEND_BLOCK_DEFAULT_KEY, SEND_GATE_FEATURE, sendGateTexts, type ViewFailure } from "../context/send-gate";
 import { featureMessage } from "../onboarding/presentation.mjs";
 import type { ChatChunk, ChatContextTrace, ChatKnowledgeContextRequest, ChatRequest, Message, ModelInfo } from "../api/types";
 import "./chat-context.css";
@@ -96,9 +97,19 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   const metadataViewRef = useRef<ConversationView | null>(null);
   const [sourceBusy, setSourceBusy] = useState(false);
   const sourceCatalog = useConversationSourcePresentation(profileHost);
-  const sourceSendBlocked = sourceHistorySendUnavailable(conversationView);
-  const viewPending = Boolean(convId && api.readConversationView && conversationView?.conversation_id !== convId);
-  const sourceDiagnostic = sourceCatalog.feature ? featureMessage(sourceCatalog.feature, "egress_unavailable") : "source_egress_not_bound";
+  const sendCatalog = usePresentationFeature(profileHost, SEND_GATE_FEATURE);
+  const blockPreset = useLayeredDefault(profileHost, SEND_BLOCK_DEFAULT_KEY);
+  // An explicit choice in this view wins; otherwise only an effective layered `true`
+  // blocks. A missing, disabled or excluded default has no initiator and never blocks (R43).
+  const [blockChoice, setBlockChoice] = useState<boolean | undefined>(() =>
+    typeof stored.value.blockSendWithoutSourceHistory === "boolean" ? stored.value.blockSendWithoutSourceHistory : undefined);
+  const blockWithoutSourceHistory = blockChoice ?? (blockPreset.status === "effective" && blockPreset.value === true);
+  const [viewFailure, setViewFailure] = useState<ViewFailure | null>(null);
+  const gate = useMemo(() => chatSendGate({ conversationId: convId, readsView: Boolean(api.readConversationView), view: conversationView,
+    failure: viewFailure, sourceReadInFlight: sourceBusy, blockWithoutSourceHistory }),
+  [convId, conversationView, viewFailure, sourceBusy, blockWithoutSourceHistory]);
+  const gateTexts = useMemo(() => sendGateTexts(sendCatalog.feature, gate), [sendCatalog.feature, gate]);
+  const gateDescriptionId = useId();
   const [channels, setChannels] = useState(() => storedString("channels", "[]"));
   const [scanLimit, setScanLimit] = useState(() => storedString("scanLimit", "10000"));
   const [counterEvidence, setCounterEvidence] = useState(() => storedBool("counterEvidence", false));
@@ -154,12 +165,13 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     try {
       writeChatSettings(settingsKey, { model, useKnowledge, contextQuery, contextProject, contextTargets,
         contextRun, contextLanguage, contextBudget, contextHops, contextDetail, includeMemory, includeGraphMemory,
-        includeHistory, traceContext, channels, scanLimit, counterEvidence, lexicalShadow, usePlan, planDraft });
+        includeHistory, traceContext, channels, scanLimit, counterEvidence, lexicalShadow, usePlan, planDraft,
+        blockSendWithoutSourceHistory: blockChoice });
       setSettingsError("");
     } catch (err) { setSettingsError(`Cannot save view settings: ${err instanceof Error ? err.message : String(err)}`); }
   }, [settingsKey, stored.error, model, useKnowledge, contextQuery, contextProject, contextTargets, contextRun,
     contextLanguage, contextBudget, contextHops, contextDetail, includeMemory, includeGraphMemory, includeHistory,
-    traceContext, channels, scanLimit, counterEvidence, lexicalShadow, usePlan, planDraft]);
+    traceContext, channels, scanLimit, counterEvidence, lexicalShadow, usePlan, planDraft, blockChoice]);
 
   useEffect(() => { setBranchLeaf(null); }, [convId, refreshKey]);
 
@@ -183,6 +195,8 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   const refreshMessages = useCallback(async (id: string) => {
     if (!mountedRef.current || selectedConvRef.current !== id) return;
     const epoch = ++fetchEpochRef.current;
+    // This request is now the one in flight; an earlier failure no longer describes it.
+    setViewFailure(current => current?.conversationId === id ? null : current);
     try {
       const view = api.readConversationView ? await api.readConversationView(id, { sourceAccess: "metadata" }) : null;
       const list = view ? view.messages : await api.getMessages(id, true);
@@ -192,11 +206,15 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
       }
     } catch (err) {
       if (mountedRef.current && selectedConvRef.current === id && epoch === fetchEpochRef.current) {
+        const reason = err instanceof Error ? err.message : String(err);
+        // A failed view degrades sending to stored messages; it does not stop it (R43).
+        if (api.readConversationView) setViewFailure({ conversationId: id, reason,
+          lastKnown: metadataViewRef.current?.conversation_id === id ? metadataViewRef.current : null });
         // Do not continue showing a successful transient read after a failed refresh.
         setMessages(current => current.filter(row => row.storage !== "reference"));
         setBranchMessages(current => current.filter(row => row.storage !== "reference"));
         setConversationView(null); setSourceBusy(false);
-        setError(err instanceof Error ? err.message : String(err));
+        setError(reason);
       }
     }
   }, []);
@@ -224,6 +242,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
 
   useEffect(() => {
     setMessages([]); setBranchMessages([]); setConversationView(null); metadataViewRef.current = null; setSourceBusy(false);
+    setViewFailure(null);
     setEditingId(null);
     setVersionsById({});
     setError(null);
@@ -241,7 +260,8 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
 
   const send = useCallback((mode: "send" | "preview" = "send") => {
     const text = input.trim();
-    if (sourceSendBlocked || viewPending || sourceBusy) { setError(sourceDiagnostic); return; }
+    // Only a user choice or a transient integrity condition refuses; the reason is shown (R43).
+    if (gate.blocked) { setError(gateTexts.blocked); return; }
     if (branchLeaf) { setError("Return to current conversation before sending from a branch projection."); return; }
     if (stream || !supports("chat.send")) return;
     if (!text && !(mode === "send" && requestOverride !== null)) return;
@@ -370,7 +390,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     }
   }, [input, stream, convId, model, onConversationCreated, refreshMessages,
     useKnowledge, contextQuery, contextProject, contextTargets, contextRun,
-    contextLanguage, contextBudget, contextHops, contextDetail, usePlan, planDraft, includeMemory, includeGraphMemory, includeHistory, traceContext, runProfileOperation, onMessagesChanged, supports, channels, scanLimit, counterEvidence, lexicalShadow, branchLeaf, requestOverride, sourceSendBlocked, viewPending, sourceBusy, sourceDiagnostic]);
+    contextLanguage, contextBudget, contextHops, contextDetail, usePlan, planDraft, includeMemory, includeGraphMemory, includeHistory, traceContext, runProfileOperation, onMessagesChanged, supports, channels, scanLimit, counterEvidence, lexicalShadow, branchLeaf, requestOverride, gate.blocked, gateTexts.blocked]);
 
   const cancelStreaming = useCallback(() => {
     const epoch = ++sendEpochRef.current;
@@ -490,7 +510,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
       {conversationView && conversationView.resources.length > 0 && <ConversationSourceView key={convId} view={conversationView}
         profileHost={profileHost} catalog={sourceCatalog} busy={sourceBusy} onRead={readSources} onReload={() => { if (convId) void refreshMessages(convId); }} />}
       <div className="chat-scroll" ref={scrollRef}>
-        {visibleMessages.length === 0 && !displayedPending && !displayedStream && !viewPending && !conversationView?.resources.length && (
+        {visibleMessages.length === 0 && !displayedPending && !displayedStream && !gate.viewLoading && gate.viewFailure === null && !conversationView?.resources.length && (
           <div className="empty-state">Say something to start the conversation.</div>
         )}
         {visibleMessages.map((m) => {
@@ -614,6 +634,9 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
             <label><input type="checkbox" checked={useKnowledge} onChange={(e) => setUseKnowledge(e.target.checked)} data-testid="use-knowledge-context" />Knowledge selection</label>
           </div>
           <p>These choices affect the next request. Saved messages and memory remain available.</p>
+          <label><input type="checkbox" checked={blockWithoutSourceHistory} onChange={(e) => setBlockChoice(e.target.checked)}
+            data-testid="block-send-without-source-history" />{gateTexts.setting ?? blockPreset.label ?? SEND_BLOCK_DEFAULT_KEY}</label>
+          {gateTexts.settingHelp !== null && <p>{gateTexts.settingHelp}</p>}
           {useKnowledge && (
             <div className="chat-context-fields">
               <label>Selection query<input type="text" value={contextQuery} onChange={(e) => setContextQuery(e.target.value)} placeholder="Use the message being sent" data-testid="context-query" /></label>
@@ -653,7 +676,8 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
 
       <details className="chat-context-controls" data-testid="expert-chat-request"><summary>Expert · inspect or edit one request</summary>
         <p>This is the client request sent to Loom. Compiled provider messages are inspected in the recorded context after execution.</p>
-        <button onClick={() => send("preview")} disabled={!!stream || !!branchLeaf || sourceSendBlocked || viewPending || sourceBusy || !input.trim()} data-testid="preview-chat-request">Prepare client request</button>
+        <button onClick={() => send("preview")} disabled={!!stream || !!branchLeaf || Boolean(gate.blocked) || !input.trim()} data-testid="preview-chat-request"
+          title={gateTexts.blocked ?? undefined} aria-describedby={gate.blocked ? gateDescriptionId : undefined}>Prepare client request</button>
         {requestOverride !== null && <>
           <textarea aria-label="One-call client request JSON" data-testid="one-call-request" rows={9} value={requestOverride} onChange={event => setRequestOverride(event.target.value)} disabled={!!stream} />
           <p>The next Send uses this exact JSON once. Profile, saved context and later calls keep their settings.</p>
@@ -661,6 +685,16 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
         </>}
       </details>
 
+      {gateTexts.viewFailure !== null && <p className="send-gate-notice" role="status" data-testid="send-notice-view-unavailable"
+        data-reason={gate.viewFailure ?? undefined}>{gateTexts.viewFailure}</p>}
+      {gateTexts.sourceHistory !== null && <div className="send-gate-notice" role="status" data-testid="send-notice-source-history"
+        data-reason={gate.sourceHistory ?? undefined} data-initiator={gate.blocked?.initiator === "user" ? "user" : undefined}>
+        <p>{gate.blocked?.initiator === "user" ? gateTexts.blocked : gateTexts.sourceHistory}</p>
+        {gateTexts.sourceReason !== null && <p data-testid="send-notice-reason">{gateTexts.sourceReason}</p>}
+        {gate.blocked?.initiator === "user" && gateTexts.unblock !== null && <button type="button" disabled={!!stream}
+          onClick={() => setBlockChoice(false)} data-testid="send-gate-unblock">{gateTexts.unblock}</button>}
+      </div>}
+      {gate.blocked && <span id={gateDescriptionId} hidden data-testid="send-gate-explanation">{gateTexts.blocked}</span>}
       <div className="composer">
         <select
           value={model}
@@ -694,7 +728,9 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
             Stop
           </button>
         ) : (
-          <button className="primary" onClick={() => send()} data-testid="send-chat" disabled={!!branchLeaf || sourceSendBlocked || viewPending || sourceBusy || (requestOverride === null && !input.trim()) || !supports("chat.send")}>
+          <button className="primary" onClick={() => send()} data-testid="send-chat" disabled={!!branchLeaf || Boolean(gate.blocked) || (requestOverride === null && !input.trim()) || !supports("chat.send")}
+            title={gateTexts.blocked ?? undefined} aria-describedby={gate.blocked ? gateDescriptionId : undefined}
+            data-gate-initiator={gate.blocked?.initiator} data-gate-reason={gate.blocked?.reason}>
             Send
           </button>
         )}

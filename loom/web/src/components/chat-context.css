@@ -56,3 +56,11 @@
 .chat-plan-thesis > button { margin: 10px 0; }
 .chat-context-plan > button { margin-top: 10px; }
 .chat-context-plan textarea { resize: vertical; min-height: 48px; }
+
+.send-gate-notice {
+  margin: 4px var(--gutter);
+  padding: 6px 10px;
+  border-left: 3px solid var(--warn);
+  color: var(--dim);
+}
+.send-gate-notice p { margin: 0 0 4px; }
