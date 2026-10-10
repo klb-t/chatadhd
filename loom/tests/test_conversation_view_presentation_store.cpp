@@ -23,7 +23,7 @@ TEST_CASE("conversation view optional catalog preserves historical packs until e
   auto db = open_db(path);
   OnboardingStore store(*db);
   auto seed = unwrap(store.open(user));
-  REQUIRE(seed.at("pack").at("revision") == 6);
+  REQUIRE(seed.at("pack").at("revision") == 7);
   seed = unwrap(store.apply(user, seed.at("revision").get<std::int64_t>(),
       Json{{"op", "answer"}, {"field", "identity.description"}, {"value", "Public migration evidence"},
            {"provenance", "form"}, {"id", "synthetic/historical-answer"},
@@ -92,4 +92,32 @@ TEST_CASE("conversation view optional catalog preserves historical packs until e
   const auto restored = unwrap(reopened.open(user));
   CHECK(resolve_view_labels(restored).at("status") == "excluded");
   CHECK(restored.at("pack").at("vendor_unknown").at("integer").get<std::uint64_t>() == 9007199254740993ULL);
+}
+
+TEST_CASE("chat send gate preset informs and sends; blocking is an explicit user-layer choice (R43)") {
+  fsutil::TempDir temp;
+  auto db = open_db(temp.path() / "chat-send-gate-defaults.db");
+  OnboardingStore store(*db);
+  constexpr const char* gate_user = "synthetic/chat-send-gate";
+  constexpr const char* block_key = "chat.send.block_without_source_history";
+  auto state = unwrap(store.open(gate_user));
+  auto layers = unwrap(DefaultLayers::create(state.at("pack"), state.at("layers")));
+  const auto preset = unwrap(layers.resolve(block_key));
+  CHECK(preset.at("status") == "effective");
+  CHECK(preset.at("layer") == "builtin");
+  CHECK(preset.at("value") == false);
+  const auto labels = unwrap(layers.resolve("presentation.chat_send"));
+  REQUIRE(labels.at("status") == "effective");
+  CHECK(labels.at("value").at("feature") == "chat_send");
+  const auto& locales = labels.at("value").at("locales");
+  REQUIRE(locales.contains("en"));
+  REQUIRE(locales.contains("pl"));
+  for (const auto& [id, text] : locales.at("en").items()) CHECK(locales.at("pl").at(id).is_string());
+  CHECK(locales.at("en").size() == locales.at("pl").size());
+  state = unwrap(store.apply(gate_user, state.at("revision").get<std::int64_t>(),
+      Json{{"target", "layers"}, {"op", "override"}, {"key", block_key}, {"value", true}}));
+  const auto chosen = unwrap(unwrap(DefaultLayers::create(state.at("pack"), state.at("layers"))).resolve(block_key));
+  CHECK(chosen.at("status") == "effective");
+  CHECK(chosen.at("layer") == "user");
+  CHECK(chosen.at("value") == true);
 }

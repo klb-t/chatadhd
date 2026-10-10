@@ -141,7 +141,7 @@ TEST_SUITE("onboarding native presentation isolation") {
     auto db = open_db(temp.path() / "presentation-isolation.db", presentation_db_options());
     OnboardingStore store(*db);
     auto state = confirm_presentation_preference(store, unwrap(store.open(kPresentationUser)));
-    REQUIRE(state.at("pack").at("revision") == 6);
+    REQUIRE(state.at("pack").at("revision") == 7);
     REQUIRE(state.at("presentation").at("available") == true);
     const auto profile = state.at("profile");
     const auto settings = presentation_resolution(state, "onboarding.settings");
@@ -191,7 +191,7 @@ TEST_SUITE("onboarding native presentation isolation") {
     const auto privacy = state.at("profile").at("privacy");
     const auto request = model_facing_request(unwrap(store.model_request(kPresentationUser, kOfflineProvider)));
     auto pack = state.at("pack");
-    REQUIRE(pack.at("revision") == 6);
+    REQUIRE(pack.at("revision") == 7);
     pack["revision"] = pack.at("revision").get<std::int64_t>() + 1;
     auto& entry = presentation_entry(pack);
     entry["revision"] = entry.at("revision").get<std::int64_t>() + 1;
