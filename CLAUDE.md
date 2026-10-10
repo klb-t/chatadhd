@@ -8,6 +8,26 @@
 
 This file is the primary reference for AI assistants working on this repository.
 
+## Working with subagents (owner, 2026-10-10)
+
+Run subagents **one at a time**, as a queue — no parallel agents and no workflow
+fan-outs unless the owner explicitly asks for them. The owner checks in roughly
+once per five hours, and Claude's usage is limited per window: progress should
+continue between check-ins systematically and without loss, not in bursts.
+Measured on 2026-10-10: five parallel agents used up the window in 8 minutes
+(57.5M cache-read and 1.34M cache-write tokens) and everything then stalled for
+4.5 hours. Every limit hit also costs re-caching each live context
+(0.2–0.46M tokens per agent and for the main session), and workflow agents
+cannot be resumed at all, so their work is lost.
+
+- Each agent works in its own git worktree and commits a checkpoint after every
+  meaningful piece (WIP commits are fine), so nothing depends on its context.
+- After a limit, resume the interrupted agent with its transcript (SendMessage)
+  instead of restarting it. A fresh agent with a precise brief (files, lines,
+  decisions already taken) is cheaper than resuming a very large context.
+- Keep contexts small: targeted reads (grep, line ranges), no dumps of large
+  files or logs; native builds serialized and run once per change.
+
 ## Project Overview
 
 **ChatADHD** (v0.07.09) is a mobile-first AI chat client built with Python and Kivy.
