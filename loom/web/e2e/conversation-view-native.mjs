@@ -22,6 +22,8 @@ const runtimeTmp=path.join(data,'runtime-tmp');mkdirSync(runtimeTmp,{recursive:t
 const source=mkdtempSync(path.join(tmpdir(),'loom-conversation-view-source-'));
 const archive=path.join(source,'public.zip');
 const canary='PUBLIC_P4_TRANSIENT_CANARY_20261009';
+const degradedText='PUBLIC_P4_DEGRADED_SEND_20261010';
+const chatSendText=JSON.parse(readFileSync(path.join(web,'src/onboarding/generated/conversation-view.json'),'utf8')).entries.find(entry=>entry.key==='presentation.chat_send').value.locales.en;
 const sourceDoc=[{id:'p4-public',title:'P4 linked public conversation',current_node:'a2',mapping:{
   u:{id:'u',parent:null,children:['a1','a2'],message:{id:'u-msg',author:{role:'user'},content:{content_type:'text',parts:[canary+' **source** ![remote](https://example.invalid/p4-canary.png)']},future_field:{keep:[1,'unknown']},future_numeric:'WIRE_NUMERIC_FIXTURE'}},
   a1:{id:'a1',parent:'u',children:[],message:{id:'a1-msg',author:{role:'assistant'},content:{content_type:'text',parts:['Historical alternative']}}},
@@ -80,7 +82,7 @@ try{
  const context=await browser.newContext({hasTouch:true,viewport:{width:1500,height:1100}});page=await context.newPage();page.on('pageerror',err=>errors.push(err.message));
  await page.route('**/*',async route=>{const req=route.request(),url=new URL(req.url());
   if(url.origin!==base){remoteRequests.push(req.url());return route.abort();}
-  if(url.pathname==='/api/chat'){sendRequests.push(req.url());return route.abort();}
+  if(url.pathname==='/api/chat'){sendRequests.push(req.postDataJSON());return route.abort();}
   if(url.pathname.includes('/messages/')&&req.method()!=='GET')mutations.push(req.url());
   if(url.pathname.endsWith('/view')&&req.method()==='POST')sourceReads.push(req.postDataJSON());
   return route.continue();});
@@ -105,17 +107,29 @@ try{
   assert.match(wire,/"future"\s*:\s*9007199254740995/);
   assert.equal(await chat().getByTestId('imported-source-raw').count(),0,'Reference raw JSON is inspected through exact native evidence');
  });
- await check('same version feeds branches and safe source renderer; mutation and model dispatch are refused',async()=>{
+ await check('same version feeds branches and safe source renderer; mutation is refused and Send degrades to stored messages',async()=>{
   const user=visibleReferences().filter({has:page.locator('.body',{hasText:canary})});await user.waitFor();
   assert.equal(await user.getByTestId('edit-message').isDisabled(),true);assert.equal(await user.getByTestId('toggle-exclude').isDisabled(),true);
   await chat().getByTestId('show-conversation-branches').check();await chat().getByTestId('conversation-branches').locator('summary').click();
   const rows=chat().locator('.conversation-branch-list li');assert.deepEqual(await rows.evaluateAll(elements=>elements.map(el=>el.dataset.messageId).sort()),headless.messages.map(row=>row.id).sort());
   await rows.last().locator('button').tap();await chat().getByTestId('return-current-branch').click();
   assert.equal(sourceReads.length,1,'Display changes never repeat source access');
-  await chat().getByTestId('chat-input').fill('This must not dispatch source history');await chat().getByTestId('chat-input').press('Enter');
+  // R43: the missing source-history capability degrades Send to stored messages; only the user's own setting blocks.
+  const notice=chat().getByTestId('send-notice-source-history');await notice.waitFor();
+  assert.equal(await notice.getAttribute('data-reason'),'source_egress_not_bound');
+  assert.equal(await notice.locator('p').first().innerText(),chatSendText.source_history_omitted);
+  await chat().getByTestId('chat-context-controls').locator('summary').click();
+  await chat().getByTestId('block-send-without-source-history').check();
+  await chat().getByTestId('chat-input').fill('This must not dispatch while the user blocks it');await chat().getByTestId('chat-input').press('Enter');
   assert.equal(await chat().getByTestId('send-chat').isDisabled(),true);
+  assert.equal(await chat().getByTestId('send-chat').getAttribute('data-gate-initiator'),'user');
   assert.equal(await chat().getByTestId('preview-chat-request').isDisabled(),true);
-  assert.deepEqual(sendRequests,[]);assert.deepEqual(mutations,[]);assert.deepEqual(remoteRequests,[]);
+  assert.deepEqual(sendRequests,[]);
+  await chat().getByTestId('send-gate-unblock').click();
+  await chat().getByTestId('chat-input').fill(degradedText);await chat().getByTestId('send-chat').click();
+  await chat().getByTestId('chat-error').waitFor();
+  assert.deepEqual(sendRequests,[{message:degradedText,conv_id:convId}],'Client request carries no source history; native history is the stored rows');
+  assert.deepEqual(mutations,[]);assert.deepEqual(remoteRequests,[]);
   assert.equal(await visibleReferences().locator('img,iframe,audio,video,object,embed').count(),0);
   assert.deepEqual(await settings(),beforeSettings);
   assert.deepEqual((await request('GET',`/api/conversations/${convId}/messages?all=1`)).result,nativeRows);
@@ -165,7 +179,7 @@ try{
   await chat().getByTestId('read-conversation-sources').tap();await visibleReferences().first().waitFor();
   const after=(await request('POST',`/api/conversations/${convId}/view`,{read_options:{projection_storage:'transient',content_index:'none'}})).result;
   assert.deepEqual(after.messages.map(row=>row.id),headless.messages.map(row=>row.id));
-  assert.deepEqual(remoteRequests,[]);assert.deepEqual(sendRequests,[]);assert.deepEqual(errors,[]);
+  assert.deepEqual(remoteRequests,[]);assert.deepEqual(sendRequests,[{message:degradedText,conv_id:convId}]);assert.deepEqual(errors,[]);
  });
  await check('locally edited placeholder stays visible and keeps native edit/status capabilities',async()=>{
   await request('POST',`/api/messages/${nativeRows[0].id}/edit`,{text:'PUBLIC_LOCAL_OVERLAY_9281'});
@@ -181,7 +195,7 @@ try{
   assert.ok(read.resources.some(resource=>resource.status==='binding_unresolved'));
   await local.getByTestId('toggle-exclude').click();await chat().getByTestId('show-all-messages').check();
   await chat().locator('[data-testid="message"][data-status="excluded"]').filter({has:page.locator('.body',{hasText:'PUBLIC_LOCAL_OVERLAY_9281'})}).waitFor();
-  assert.equal(await visibleReferences().count(),0);assert.deepEqual(sendRequests,[]);assert.deepEqual(remoteRequests,[]);
+  assert.equal(await visibleReferences().count(),0);assert.deepEqual(sendRequests,[{message:degradedText,conv_id:convId}]);assert.deepEqual(remoteRequests,[]);
  });
  await check('transient source content is absent from native store, logs and browser settings',async()=>{
   await stop();const scanned=[];
