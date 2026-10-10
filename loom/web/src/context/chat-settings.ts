@@ -45,7 +45,7 @@ export function readChatSettings(key: string): { value: Record<string, unknown>;
     for (const field of ["model", "contextQuery", "contextProject", "contextTargets", "contextRun", "contextLanguage", "contextBudget", "contextHops", "channels", "scanLimit"]) {
       if (row[field] !== undefined && typeof row[field] !== "string") throw Error(`Stored ${field} has an invalid type.`);
     }
-    for (const field of ["useKnowledge", "usePlan", "includeMemory", "includeGraphMemory", "includeHistory", "counterEvidence", "lexicalShadow"]) {
+    for (const field of ["useKnowledge", "usePlan", "includeMemory", "includeGraphMemory", "includeHistory", "counterEvidence", "lexicalShadow", "blockSendWithoutSourceHistory"]) {
       if (row[field] !== undefined && typeof row[field] !== "boolean") throw Error(`Stored ${field} has an invalid type.`);
     }
     if (row.contextDetail !== undefined && (typeof row.contextDetail !== "string" || !["auto", "label", "summary", "full", "raw"].includes(row.contextDetail))) throw Error("Stored context detail is invalid.");

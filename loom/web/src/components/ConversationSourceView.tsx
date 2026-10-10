@@ -4,30 +4,58 @@ import { conversationViewWireJson, resourceReadChoices, type ConversationView } 
 import { PresentationFailure } from "../onboarding/presentation-context";
 import { featureMessage, message, PresentationError, resolvePresentation, resolvePresentationFeature } from "../onboarding/presentation.mjs";
 import featurePack from "../onboarding/generated/conversation-view.json";
+import type { JsonValue } from "../onboarding/types";
 
 const noSubscription = () => () => undefined;
 const noIdentity = Object.freeze({ userId: null, session: null });
 const bootstrapIdentity = () => noIdentity;
 
-export function useConversationSourcePresentation(profileHost?: UserProfileHost) {
-  const identity = useSyncExternalStore<{ userId: string | null; session: unknown }>(profileHost?.subscribe ?? noSubscription,
+function useProfileIdentity(profileHost?: UserProfileHost) {
+  return useSyncExternalStore<{ userId: string | null; session: unknown }>(profileHost?.subscribe ?? noSubscription,
     profileHost?.getState ?? bootstrapIdentity, profileHost?.getState ?? bootstrapIdentity);
+}
+
+/** Optional catalog `presentation.<feature>` of this pack: the selected profile's native
+ * effective value, or the generated pack at bootstrap (no selected user). */
+export function usePresentationFeature(profileHost: UserProfileHost | undefined, feature: string) {
+  const identity = useProfileIdentity(profileHost);
   return useMemo(() => {
+    const key = `presentation.${feature}`;
     let base;
     try {
       const snapshot = profileHost?.currentSnapshot();
       if (identity.userId !== null && !snapshot?.presentation)
         throw new PresentationError("error.presentation", { reason: "profile_snapshot_unavailable" }, true);
       base = resolvePresentation(identity.userId === null ? undefined : snapshot!.presentation);
-      const entry = snapshot?.defaults?.find(row => row.key === "presentation.conversation_view") ?? null;
-      return { base, feature: resolvePresentationFeature(base, "conversation_view", identity.userId === null ? undefined : entry),
+      const entry = snapshot?.defaults?.find(row => row.key === key) ?? null;
+      return { base, feature: resolvePresentationFeature(base, feature, identity.userId === null ? undefined : entry),
         missingEntry: false, error: null };
     } catch (error) {
       const snapshot = profileHost?.currentSnapshot();
       return { base, feature: null, missingEntry: Boolean(base && identity.userId !== null && snapshot &&
-        !snapshot.defaults?.some(row => row.key === "presentation.conversation_view")), error };
+        !snapshot.defaults?.some(row => row.key === key)), error };
     }
-  }, [profileHost, identity]);
+  }, [profileHost, identity, feature]);
+}
+
+export function useConversationSourcePresentation(profileHost?: UserProfileHost) {
+  return usePresentationFeature(profileHost, "conversation_view");
+}
+
+export interface LayeredDefault { status: string; layer: string; value?: JsonValue; label?: string }
+/** Effective layered default of a key in this pack: native DefaultLayers resolution of the
+ * selected profile, or the generated pack entry at bootstrap. Missing stays missing. */
+export function useLayeredDefault(profileHost: UserProfileHost | undefined, key: string): LayeredDefault {
+  const identity = useProfileIdentity(profileHost);
+  return useMemo(() => {
+    const declared = featurePack.entries.find(entry => entry.key === key);
+    if (identity.userId === null)
+      return declared ? { status: "effective", layer: "builtin", value: declared.value as JsonValue, label: declared.label } : { status: "missing", layer: "none" };
+    const row = profileHost?.currentSnapshot()?.defaults?.find(entry => entry.key === key);
+    if (!row) return { status: "missing", layer: "none", label: declared?.label };
+    return { status: row.status ?? (row.excluded ? "excluded" : row.enabled ? "effective" : "disabled"), layer: row.layer,
+      value: row.value, label: row.label ?? declared?.label };
+  }, [profileHost, identity, key]);
 }
 
 type Catalog = ReturnType<typeof useConversationSourcePresentation>;
