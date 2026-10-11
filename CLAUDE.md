@@ -8,6 +8,16 @@
 
 This file is the primary reference for AI assistants working on this repository.
 
+## Decisions (owner, 2026-10-11)
+
+The owner supplies abstractions, philosophy and examples; **technical decisions
+are Claude's job**. Do not ask the owner technical questions or offer menus of
+options: decide according to R1–R53 (everything configurable, defaults are
+presets, no invented limits), record the decision and how to reverse it in
+`docs/reports/INDEX.md`, and move on. Ask the owner only about his money beyond
+the agreed budget, sending his private data to a new provider, or a product
+direction that contradicts the requirements — and then as a yes/no question.
+
 ## Working with subagents (owner, 2026-10-10)
 
 Run subagents **one at a time**, as a queue — no parallel agents and no workflow
