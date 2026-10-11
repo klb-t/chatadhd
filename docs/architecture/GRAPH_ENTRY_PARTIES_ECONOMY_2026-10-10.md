@@ -13,7 +13,7 @@ ustawienie może mieć wartość (§6).
 
 ---
 
-> **Status (2026-10-10, po uwadze właściciela, R53):** wszystkie listy w tym
+> **Nadrzędny jest `DUCH_GRAFU_2026-10-11.md`.** Status (2026-10-10, po uwadze właściciela, R53): wszystkie listy w tym
 > dokumencie są **przykładami kalibracyjnymi**, nie zamkniętymi zbiorami, a ich
 > liczebność nie jest faktem projektowym. Silnik ma generować przestrzeń z osi
 > (§11) i rozszerzać ją wybranymi modelami jako metodę (R48/R53); wynik wchodzi
