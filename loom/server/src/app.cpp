@@ -651,6 +651,13 @@ void App::route_graph_context() {
     send_loom(res, loom_get_graph_data(ctx_, conv_id.empty() ? nullptr : conv_id.c_str()));
   });
 
+  svr_.Get("/api/graph/entry", [this](const httplib::Request& req, httplib::Response& res) {
+    json request = json::object();
+    if (req.has_param("lang")) request["lang"] = req.get_param_value("lang");
+    if (req.has_param("include_hidden")) request["include_hidden"] = req.get_param_value("include_hidden") == "true";
+    send_loom(res, loom_graph_entry(ctx_, request.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
+  });
+
   svr_.Post("/api/graph/reindex", [this](const httplib::Request& req, httplib::Response& res) {
     json body = parse_body(req);
     std::string conv_id = body.value("conv_id", std::string());

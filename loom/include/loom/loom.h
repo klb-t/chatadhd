@@ -246,6 +246,11 @@ LOOM_API const char* loom_expand_graph(LoomContext* ctx, const char* seed_ids_js
 LOOM_API const char* loom_get_graph_data(LoomContext* ctx, const char* conv_id);
 /* Re-runs graph extraction for conv_id (NULL = every conversation) -> {"reindexed": n} */
 LOOM_API const char* loom_graph_reindex(LoomContext* ctx, const char* conv_id);
+/* The graph's entry view (R45/R52/R53); read-only, never writes. request_json (may be NULL or "{}"):
+ * {"lang"?:"en","include_hidden"?:false} -> {"schema":"loom.graph_entry/1","axes","areas":[{"id","label",
+ * "axes","origin","counts":{name:{"known":bool,"value"?,"by"?,"reason"?}},"sources","expand"}],"seed":[...],"issues":[]}.
+ * Unavailable registries report "known":false, never zero. Areas come from the graph_entry runtime profile. */
+LOOM_API const char* loom_graph_entry(LoomContext* ctx, const char* request_json);
 /* ContextSet for text: {"items":[...],"prompt_text","token_estimate","truncated"} */
 LOOM_API const char* loom_select_context(LoomContext* ctx, const char* text, int depth, int max_tokens);
 /* request_json: {"text","depth","max_tokens","conv_id","include_memory","include_graph","include_search"} */

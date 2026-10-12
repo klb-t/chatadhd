@@ -32,6 +32,7 @@
 #include "loom/chat_engine.h"
 #include "loom/config.h"
 #include "loom/crypto.h"
+#include "loom/graph_entry.h"
 #include "loom/db.h"
 #include "loom/graph_engine.h"
 #include "loom/graph_memory.h"
@@ -605,6 +606,14 @@ int cmd_graph(Runtime& rt, const Args& a) {
     std::vector<std::string> seeds(a.pos.begin() + 1, a.pos.end());
     if (seeds.empty()) throw UsageError{"graph expand needs node or message ids"};
     print_json(must(rt.graph_memory().expand(seeds, a.get_int("depth", cli_limit(rt, "graph_expansion_depth")))));
+  } else if (sub == "entry") {
+    graph_entry::Env env;
+    env.db = &rt.db();
+    env.data_dir = rt.paths().root;
+    Json request = Json::object();
+    if (!a.get("lang").empty()) request["lang"] = a.get("lang");
+    if (a.has("include-hidden")) request["include_hidden"] = true;
+    print_json(must(graph_entry::compute(env, request)));
   } else if (sub == "reindex") {
     int n = a.pos.size() > 1 ? rt.graph().reindex_conversation(a.pos[1]) : rt.graph().reindex_all();
     g_json ? print_json(Json{{"reindexed", n}}) : void(std::cout << "reindexed " << n << " messages\n");

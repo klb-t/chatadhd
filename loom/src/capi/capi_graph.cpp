@@ -5,6 +5,7 @@
 #include "context.h"
 #include "loom/db.h"
 #include "loom/graph_engine.h"
+#include "loom/graph_entry.h"
 #include "loom/graph_memory.h"
 #include "loom/memory_engine.h"
 
@@ -94,6 +95,20 @@ LOOM_API const char* loom_get_graph_data(LoomContext* ctx, const char* conv_id) 
     LOOM_CAPI_REQUIRE_CTX_JSON(ctx);
     auto r = ctx->rt->db().get_graph_data(conv_id && *conv_id ? std::optional<std::string_view>(conv_id)
                                                                 : std::nullopt);
+    if (!r) return out_error(r.error());
+    return out(*r);
+  });
+}
+
+LOOM_API const char* loom_graph_entry(LoomContext* ctx, const char* request_json) {
+  return guard_json("loom_graph_entry", [&] {
+    LOOM_CAPI_REQUIRE_CTX_JSON(ctx);
+    auto rj = parse_arg(request_json);
+    if (!rj) return out_error(rj.error());
+    graph_entry::Env env;
+    env.db = &ctx->rt->db();
+    env.data_dir = ctx->rt->paths().root;
+    auto r = graph_entry::compute(env, *rj);
     if (!r) return out_error(r.error());
     return out(*r);
   });
