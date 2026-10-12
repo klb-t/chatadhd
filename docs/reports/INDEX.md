@@ -167,5 +167,6 @@ Stan kolejki, meldunek dzienny i decyzje: [wp-queue](wp-queue-2026-10-10.md). Pl
 | T6 strażnik ×10 wszędzie | `d4542a7`…`940b070` | CTest 163/163, guard PASS (162+1 opt-in), web 17/18 (P-1) |
 | P-1 czat obok panelu wiedzy na telefonie | `3b251c6` | 7/7 dotkniętych skryptów web |
 | T1 import: nierozpoznane do grafu + duplikaty | `854868d7`…`da57134d` | CTest 164/164, guard PASS (163+1 opt-in), web 17/17 |
+| T2 worker: ponawianie, zator, historia prób, kolejność kontekstu | `8044626`, `c8203a1`, `dbeac2d` | CTest 164/164, guard PASS (163+1 opt-in), web 18/18 |
 
 Decyzje techniczne S1 są zapisywane w `wp-queue` (sekcja „Decyzje S1”).
