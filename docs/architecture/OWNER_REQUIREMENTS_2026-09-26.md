@@ -286,6 +286,31 @@ a change may not worsen any tracked test or quality metric (baseline in
 `docs/STATE.md` §4/§5); if something regresses, stop and fix or revert before
 continuing.
 
+## D3 — All real data, every available key; synthetic corpora abandoned (owner, 2026-10-12)
+> "można użyć wszystkich kluczy jakie są dostępne jak żaden nie działa to poproś o
+> następny i wszystko na danych rzeczywistych dane syntetyczne porzucamy to już było
+> gdzieś ustalone nie znalazły się dokumentacji?"
+
+Answer to the two yes/no questions of `ACCEPTANCE_TESTS_2026-10-11.md` §7
+(money, privacy) and a standing rule. (1) Sessions may use **every API key that
+is available** to them (secrets, proxy-injected credentials, the thread-7 key);
+when none works, ask the owner for the next one — do not stop and do not fall
+back to offline substitutes. (2) **Everything runs on the owner's real data**
+(real exports, real repositories, real conversations), including paid model calls
+and acceptance paths from the phone; the owner has consented to sending his real
+data to providers reachable through those keys. (3) **Synthetic corpora are
+abandoned** as a development or benchmark target (this retires
+`LOOM_CONCEPTUAL_MODEL.md` §7.3 and the "synthetic/public data only" posture of
+the 2026-10-04/05 reports); existing synthetic fixtures may remain as mechanism
+tests but no result on them counts as evidence. The owner notes this was decided
+earlier; it had not been recorded anywhere in the documentation before this entry
+(checked 2026-10-12: `OWNER_REQUIREMENTS`, `AGENTS.md`, `STATE.md`, `THREADS`,
+`LOOM_CONCEPTUAL_MODEL` — only indirect traces: T12 "on real exports", STATE "nothing
+ran on real exports"). Unchanged: the ×10 confirmation rule (`CLAUDE.md`), the
+cost estimate before and actual cost after each stage, keys never committed, and
+the real hold-out rule of `AGENTS.md` (`eval/real-holdout-key` is real data, not
+synthetic; it stays unread until the owner says otherwise).
+
 ## Requirements from the 2026-09-29 discussion (GPT note R26–R38)
 
 Source: `NOTATKA_GPT_2026-09-29_KOMPILATOR_INTERAKCJI.md` (written by GPT from the

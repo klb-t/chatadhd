@@ -47,10 +47,13 @@ To miara produktu (THREADS §7.5). Przekład na test:
   w przeglądarce telefonu** (serwer `loom/server` na osiągalnym hoście); P1 i P2
   dodatkowo na **aplikacji Python/Kivy na Androidzie**, bo właściciel używa jej
   codziennie (THREADS T7). Kolumna „Dziś” mówi, co istnieje na każdej powierzchni.
-- **Dane**: prawdziwe eksporty właściciela wolno użyć lokalnie (katalog, import,
-  widoki). Wysyłka ich fragmentów do dostawców w P2–P5 wymaga odpowiedzi na
-  pytanie Q2 (§7). Do czasu odpowiedzi ścieżki płatne idą na korpusie syntetycznym
-  z `loom/tests/fixtures` (LOOM §7.3) i na `ScriptedTransport`.
+- **Dane** (właściciel, 2026-10-12, D3 w `OWNER_REQUIREMENTS`): **wszystko na
+  prawdziwych danych właściciela**, także wysyłki do dostawców w P2–P5; korpusy
+  syntetyczne porzucone jako dowód. `ScriptedTransport` zostaje wyłącznie do
+  testów mechanizmu (MR na zamrożonych odpowiedziach), nie do zaliczania ścieżek.
+- **Klucze** (D3): sesja testowa używa każdego dostępnego klucza (secrets,
+  wstrzyknięte przez proxy, klucz wątku 7); gdy żaden nie działa, prosi właściciela
+  o następny. ×10 i wycena przed/po pozostają.
 
 ## 2. Odporność na ASR
 
@@ -333,16 +336,15 @@ ASR (§2) jest warunkiem wszystkich: leksykon jako pack i `read_as` w śladzie
 w metadanych) i jako nowy mały pakiet po T3 dla Loom (pack + test MR-4 na
 `ScriptedTransport`), bez zmiany schematu.
 
-## 7. Pytania do właściciela (tylko tak/nie, tylko z zakresu THREADS §6)
+## 7. Pytania do właściciela — odpowiedziane 2026-10-12 (D3)
 
-1. **Pieniądze.** Czy ścieżki P2–P5 na telefonie mogą zużyć łącznie do 2 USD
-   z pozostałego salda klucza OpenRouter (3,55 USD), poza budżetem wątku 7?
-2. **Prywatność.** Czy w P2, P3 i P5 wolno wysłać fragmenty Twojego prawdziwego
-   eksportu do modeli przez OpenRouter (Anthropic, OpenAI, Google), czy tylko
-   korpus syntetyczny?
+1. **Pieniądze.** Zadane: „do 2 USD z salda klucza OpenRouter?”. Odpowiedź
+   właściciela: użyć wszystkich dostępnych kluczy; gdy żaden nie działa, poprosić
+   o następny. Limit 2 USD nie obowiązuje; obowiązuje ×10 i wycena przed/po.
+2. **Prywatność.** Zadane: „prawdziwy eksport do modeli czy korpus syntetyczny?”.
+   Odpowiedź: wszystko na danych rzeczywistych; dane syntetyczne porzucamy.
 
-Do odpowiedzi: ścieżki płatne idą na korpusie syntetycznym i `ScriptedTransport`;
-reszta na prawdziwych eksportach lokalnie. Nic innego nie czeka na właściciela.
+Nic nie czeka na właściciela.
 
 ## 8. Decyzje podjęte w tym dokumencie (Claude; każda odwracalna jednym słowem)
 
@@ -355,3 +357,6 @@ reszta na prawdziwych eksportach lokalnie. Nic innego nie czeka na właściciela
 - Pytania numerowane tak/nie jako jedyna forma pytań w ścieżkach; jedyne pytania,
   których ustawienie nie wyłącza: nieodwracalne, sprzeczne z `never`, ×10.
 - Python: nierozpoznane dane raportuje, nie naprawia (T7 nie rozszerza się o T1).
+- (2026-10-12, po D3) usunięto zapasową ścieżkę „korpus syntetyczny do czasu
+  odpowiedzi”; §1 i §7 zaktualizowane. Decyzja o danych i kluczach jest właściciela,
+  nie sesji.
