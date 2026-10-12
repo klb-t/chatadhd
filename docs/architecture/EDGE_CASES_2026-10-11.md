@@ -369,3 +369,296 @@ według tej samej gramatyki.
 **Niezmiennik.** Wymiana sędziego nie zmienia odpowiedzi torów (bajtowo); zmienia tylko oceny; regres sędziego wykrywalny na zamrożonym zbiorze.
 **MR.** MR-12; MR-9.
 **Mieści się** (R37, R41).
+
+### D. Dane, import, duplikaty, skala
+
+#### EC-D01 — Dwa eksporty, częściowo te same rozmowy (`merge`)
+**Scenariusz.** „Zaimportuj eksport z OpenAI i Anthropic; to częściowo te same rozmowy; nie dubluj, ale nic nie trać.”
+**Interpretacja.** Dwa źródła, dwa lokatory; „ta sama rozmowa” to inferencja (podobieństwo treści, czas) z własnością sprawdzalną, nie identyczność bajtów; „nie dubluj” = jedna jednostka logiczna z dwoma lokatorami, „nic nie trać” = oba źródła nienaruszone, różnice (metadane, załączniki, ucięcia) zachowane.
+**W grafie.** Dwa węzły `export:member`; węzeł rozmowy logicznej z krawędziami `projection_of` do obu (R35: rzut, nie `same_as`); różnice jako twierdzenia `differs_in`.
+**Rządzi.** Preset importu `reimport_and_link` / `reuse_prior` / `reimport` (T1); próg podobieństwa jako preset; polityka przyjęcia linków (ask/candidate/auto).
+**Powiązania.** Rozmowa obecna w jednym eksporcie, a w drugim ucięta (R30: nie zmyślać brakującej części).
+**Niezmiennik.** Suma jednostek po imporcie = suma z obu źródeł (MR-8); liczba rozmów logicznych ≤ suma; każdy link ma pewność i własność; `force` tworzy kopię z adnotacją, nigdy cichą.
+**MR.** MR-3 (eksport A+B jako jeden ZIP vs dwa pliki → te same jednostki i linki); MR-2 (kolejność importu nie zmienia linków); MR-7.
+**Częściowo** (T1 w toku; `projection_of` brak — A9, A10).
+
+#### EC-D02 — Nieznany format (`withhold`)
+**Scenariusz.** „Tego formatu nie znasz — i tak go weź, pokaż mi, co z niego zrozumiałeś.”
+**Interpretacja.** R44: status `unrecognized`/`partial`; „co zrozumiałeś” = to, co rozpoznały metody ogólne (tekst, daty, adresy, struktura JSON) bez adaptera.
+**W grafie.** Węzeł źródła ze statusem rozpoznania, bajty w BlobStore, próby rozpoznania z wersją; twierdzenia ogólne z klasą `derived` (daty, liczby) albo `inferred` (role).
+**Rządzi.** Które metody ogólne uruchamiać na nierozpoznanym (preset), budżet (model na nieznanym = koszt).
+**Powiązania.** Podobieństwo struktury do znanych formatów (morfizm częściowy) → propozycja adaptera.
+**Niezmiennik.** Nic nie jest pominięte (liczba bajtów wejścia = liczba bajtów zachowanych); każde twierdzenie z nierozpoznanego ma klasę ≤ `inferred`; nowy adapter później rozpoznaje bez utraty adnotacji użytkownika (EC-D10).
+**MR.** MR-1; MR-8; MR-9 (ponowne rozpoznanie z tym samym adapterem daje identyczny wynik).
+**Częściowo** (T1; A10).
+
+#### EC-D03 — Plik 2 GB: nie czytaj, powiedz, co w nim jest (`scale` × `withhold`)
+**Scenariusz.** „Ten plik ma 2 GB; nie czytaj wszystkiego, powiedz, co w nim jest i co by kosztowało.”
+**Interpretacja.** Katalog bez importu (R1): strumieniowanie, jednostki z lokatorami i szkicami, wycena per metoda; „nie czytaj” to budżet, nie zakaz.
+**W grafie.** Źródło + jednostki katalogu (bez treści) + twierdzenia o rozmiarach/typach + wycena jako twierdzenie o koszcie z metodą.
+**Rządzi.** Budżet katalogowania (CPU/czas, lokalne), presety selekcji (R18), ×10 na wycenie modelowej.
+**Powiązania.** Jednostki podobne do już zaimportowanych (duplikaty przed importem, R50).
+**Niezmiennik.** Pamięć szczytowa niezależna od rozmiaru pliku (strumień); wycena ma rozbicie per metoda i `{known:false}` tam, gdzie brak profilu kosztu; żaden bajt treści nie trafia do dostawcy na etapie katalogu.
+**MR.** MR-7 (plik ×2 przez konkatenację → liczniki ×2, wycena ×2, pamięć stała); MR-3.
+**Mieści się** (katalog istnieje; wycena per metoda wymaga A15).
+
+#### EC-D04 — Telefon i laptop to jeden graf (`split` instalacji)
+**Scenariusz.** „Dane z telefonu i z laptopa to jeden graf; konflikt rozstrzygaj tak, jak ustawiłem.”
+**Interpretacja.** Dwie instalacje piszą niezależnie; scalanie według reguły (dane); konflikt to sprzeczność w grafie, nie nadpisanie.
+**W grafie.** Instalacja jako podmiot; zdarzenia z identyfikatorem instalacji i zegarem logicznym; scalone twierdzenia z dwoma pochodzeniami; konflikty `contested` z regułą rozstrzygnięcia jako ustawieniem.
+**Rządzi.** Reguła scalania per kategoria (ostatni wygrywa / zapytaj / obie wersje / instalacja X ma pierwszeństwo), zakres instalacji w łańcuchu.
+**Powiązania.** Ta sama rozmowa kontynuowana na dwóch urządzeniach (gałęzie, nie duplikaty).
+**Niezmiennik.** MR-18: scalenie przemienne i łączne; żadne zdarzenie nie ginie; identyfikatory treściowe (I5) dają te same węzły dla tych samych treści po obu stronach; reguła scalania jest wyjaśniona przy każdym konflikcie.
+**Łamie A18** (brak instalacji jako podmiotu i zegara logicznego; DB jednoprocesowa z RLock).
+
+#### EC-D05 — Ten sam eksport trzy razy, raz z `force` (`scale` × `merge`)
+**Scenariusz.** Właściciel importuje ten sam ZIP w poniedziałek, wtorek i (z `force`) w środę.
+**Interpretacja.** Import 2 → zwrot poprzedniego (R50, identyczny wynik); import 3 z `force` → kopia celowa; raport ekonomii proponuje link.
+**W grafie.** Jedno źródło (hash), trzy zdarzenia importu; kopia z `force` jako węzeł z krawędzią `duplicate_of` i propozycją linkowania (koszt/korzyść).
+**Niezmiennik.** MR-1 (import 2 nie zmienia grafu poza zdarzeniem); MR-7 (po `force`: bajty źródła raz, metadane ×2, raport ekonomii pokazuje dokładnie tę nadwyżkę); propozycja nie wykonuje się sama w trybie `report`.
+**Mieści się** (bramka importu + T4).
+
+#### EC-D06 — Eksport w eksporcie (`self_reference` × `merge`)
+**Scenariusz.** ZIP zawiera ZIP; rozmowa cytuje w całości inną rozmowę (wklejoną); eksport zawiera eksport ChatADHD.
+**Interpretacja.** Rekurencja źródeł z głębokością; cytat całej rozmowy to obserwacja w rozmowie A, która może być rzutem rozmowy B (R35), nie drugą rozmową.
+**W grafie.** Źródło zagnieżdżone z lokatorem złożonym (członek → członek); krawędź `quotes` A→B z zakresem bajtów; jeśli B znana: `projection_of`.
+**Rządzi.** Głębokość rekurencji importu (preset, bez sufitu, z podglądem), polityka linkowania cytatów.
+**Niezmiennik.** Lokator złożony rozwiązuje się do bajtów; rozmowa B nie jest liczona dwa razy w statystykach, ale cytat w A zostaje obserwacją A; brak nieskończonej pętli przy ZIP, który zawiera siebie (hash odwiedzony → `duplicate_of`).
+**MR.** MR-3 (ZIP w ZIP vs wypakowany obok → te same jednostki, inne lokatory); MR-7.
+**Częściowo** (lokator ma członka; zagnieżdżenie i `quotes` z zakresem — A9, A10).
+
+#### EC-D07 — Ucięta historia, usunięte wiadomości (`withhold`)
+**Scenariusz.** Eksport z dostawcy zawiera rozmowy z „[message deleted]” i wątki bez początku.
+**Interpretacja.** R30: eksport nie jest zapisem transmisji; brak to `absent`/`unknown`, nie zero i nie zmyślona treść.
+**W grafie.** Wiadomość-zaślepka z klasą `absent` i obserwacją markera; rozmowa z `provenance=reconstructed` tam, gdzie zrekonstruowano kolejność.
+**Niezmiennik.** Liczba wiadomości w widoku = liczba w źródle + liczba zaślepek, każda oznaczona; żadna analiza nie traktuje zaślepki jako treści; raport importu wymienia liczby `absent` z lokatorami.
+**MR.** MR-8; MR-3.
+**Mieści się** (`absent`, `provenance ∈ {recorded, reconstructed, unknown}`).
+
+#### EC-D08 — Pięćdziesiąt tysięcy rozmów (`scale`)
+**Scenariusz.** Import 50 000 rozmów; linkowanie katalogu O(N²) (ACCEPTANCE 2026-09-29, ustalenie 4).
+**Interpretacja.** Skala to przypadek graniczny silnika, nie użytkownika; budżet czasu lokalnego jest ustawieniem; brak zdolności degraduje (linki policzone dla próbki, reszta `{known:false}`), nie blokuje importu.
+**W grafie.** Jednostki wszystkie; linki z pokryciem (ile par sprawdzono) jako twierdzenie o przebiegu.
+**Niezmiennik.** Import kończy się niezależnie od N (linkowanie osobnym, wznawialnym przebiegiem); pokrycie linków jest zgłoszone liczbą, nie ukryte; MR-7 na liczbach jednostek.
+**Mieści się** (I9 uczciwość zdolności); wymaga kandydatów (LSH) — wątek 6, nie abstrakcja.
+
+#### EC-D09 — Plik uszkodzony w połowie (`noise` × `withhold`)
+**Scenariusz.** JSON poprawny do bajtu 900 MB, potem śmieci.
+**Interpretacja.** Prefiks `recognized`, ogon `opaque` z hashem i zakresem bajtów; nic nie przepada; import nie jest cofnięty.
+**W grafie.** Dwa zakresy jednego źródła z różnymi statusami rozpoznania.
+**Niezmiennik.** Bajty wejścia = bajty rozpoznane + bajty opaque; parser strumieniowy nie trzyma całości; ponowna próba po naprawie pliku to nowe źródło (inny hash) z krawędzią `repairs`.
+**MR.** MR-3 (plik ucięty w punkcie X vs w Y: jednostki z prefiksu wspólnego identyczne).
+**Częściowo** (T1; A10).
+
+#### EC-D10 — Nowy adapter po roku (`time_shift` × `withhold`)
+**Scenariusz.** Rok po imporcie nierozpoznanego formatu pojawia się adapter.
+**Interpretacja.** Ponowne rozpoznanie z zachowaniem adnotacji użytkownika (tagi, wykluczenia, linki ręczne) na jednostkach, które przetrwały; `known_at` nowych twierdzeń = dziś.
+**W grafie.** Druga próba rozpoznania; jednostki z nowego adaptera zmapowane na stare przez lokatory bajtowe; adnotacje przepięte; stare twierdzenia `superseded`, nie usunięte.
+**Niezmiennik.** Adnotacje użytkownika: liczba przed = liczba po (żadna nie ginie; nieprzepięte zgłoszone z lokatorem); MR-9 na nowym adapterze.
+**Łamie A10** (historia prób rozpoznania na rekordzie i mapowanie lokatorów między próbami).
+
+#### EC-D11 — Załącznik, którego nie ma (`withhold`)
+**Scenariusz.** Rozmowa odwołuje się do `file-abc.png`, którego nie ma w ZIP; inny załącznik ma 0 bajtów.
+**Interpretacja.** Odnośnik wiszący to obserwacja (tekst odnośnika) + `absent` cel; plik 0 B to źródło o hash pustym, nie błąd.
+**W grafie.** Węzeł załącznika z `absent`, lokator wskazujący odnośnik; 0 B jako `opaque` z rozmiarem 0.
+**Niezmiennik.** Liczba odnośników = liczba rozwiązanych + liczba `absent`; późniejszy import pliku o pasującej nazwie/hashu → propozycja dowiązania (nie automat, chyba że ustawienie).
+**Mieści się** (R44 §2 „nierozwiązane odnośniki”).
+
+#### EC-D12 — Import własnej bazy (`self_reference`)
+**Scenariusz.** Właściciel importuje `chatadhd.db` z telefonu (aplikacja Python) do Loom na laptopie.
+**Interpretacja.** Źródło = baza innej instalacji; rozmowy mogą już istnieć (synchronizacja przez GitHub); to EC-D04 przez plik.
+**W grafie.** Źródło SQLite; jednostki = wiersze; linki `projection_of` do istniejących rozmów po identyfikatorach (ten sam format ID) i treści.
+**Niezmiennik.** Identyczny ID + identyczna treść → jeden węzeł (MR-1); identyczny ID + inna treść → `contested` z dwoma pochodzeniami, nigdy nadpisanie; metadane grafu Python (`nodes`, `links`) wchodzą jako twierdzenia z `produced_by = python-regex@wersja`.
+**Łamie A18** częściowo (instalacja jako pochodzenie).
+
+### E. Prywatność, magazyn, bezpieczeństwo
+
+#### EC-E01 — Trzy kategorie, trzy miejsca (`split` magazynu)
+**Scenariusz.** „Zdrowie zostaje na telefonie; praca może iść do chmury firmowej; nic o rodzinie nie idzie do żadnego dostawcy.”
+**Interpretacja.** Trzy reguły: rozmieszczenie (zdrowie → lokalnie), magazyn (praca → chmura firmowa), egress (rodzina → żaden dostawca). To trzy różne osie, nie jedna.
+**W grafie.** Kategorie jako węzły; reguły jako ustawienia z zakresem osoby; każdy rekord z kategorią (per fragment, EC-E02); lokatory z magazynem.
+**Rządzi.** `placement`, `storage`, `egress` per kategoria; `intersection` gdy organizacja też ogranicza.
+**Powiązania.** Rekordy, których kategoria jest wywnioskowana (nie podana) — niska pewność → najbardziej restrykcyjna reguła (preset).
+**Niezmiennik.** MR-10: payload do dostawcy po zmianie reguły „rodzina” różni się dokładnie o rekordy tej kategorii; MR-17: po przeniesieniu „praca” do chmury każdy lokator rozwiązuje się do tego samego hasha; żaden rekord „zdrowie” nie ma lokatora poza telefonem (test grafowy).
+**Łamie A7, A8** (magazyn jako wymiar lokatora; rejestr egressu per kategoria).
+
+#### EC-E02 — Jedna wiadomość, dwie kategorie (`merge` kategorii)
+**Scenariusz.** Wiadomość: „po wizycie u lekarza zrobię deploy wersji 2.3”.
+**Interpretacja.** Kategoria to własność fragmentu (obserwacji), nie wiadomości; wysyłka pracy nie może zabrać zdrowia.
+**W grafie.** Dwie obserwacje w jednej jednostce, każda z kategorią i pewnością; wiadomość jako całość ma kategorię = suma.
+**Rządzi.** Metoda klasyfikacji prywatności (preset), próg pewności, reguła przy niepewności (restrykcyjna).
+**Niezmiennik.** Projekcja „praca” zawiera fragment o deployu i nie zawiera fragmentu o lekarzu (ani w cytatach, ani w streszczeniach); streszczenie wiadomości dla dostawcy pracy jest liczone tylko z dozwolonych fragmentów (MR-10 na poziomie obserwacji).
+**Łamie A7** (kategoria per obserwacja, nie per rekord) — częściowo mieści się w modelu obserwacji.
+
+#### EC-E03 — Podpis na 20 lat (`irreversible` × `time_shift`)
+**Scenariusz.** „Podpisz tę decyzję tak, żeby za 20 lat dało się sprawdzić, że to ja.”
+**Interpretacja.** Podpis odporny kwantowo (ML-DSA, R51), klucz w gestii użytkownika, weryfikacja bez tej aplikacji (format standardowy); „to ja” = klucz powiązany z podmiotem przez zdarzenie o znanej dacie.
+**W grafie.** Decyzja jako węzeł; podpis jako obserwacja (bajty + algorytm + identyfikator klucza); klucz jako węzeł z rotacją; krawędź `signed_by` → podmiot@czas.
+**Rządzi.** Algorytmy (preset hybrydowy), gestia klucza (lokalnie / sprzęt / escrow), rotacja; czy podpisywać automatycznie decyzje danej klasy.
+**Niezmiennik.** Weryfikacja podpisu nie wymaga grafu (standalone); rotacja klucza nie unieważnia starych podpisów (łańcuch kluczy jako dane); zmiana treści decyzji po podpisie to nowa wersja, stara zostaje podpisana.
+**MR.** MR-9 (odbudowa grafu nie zmienia bajtów podpisu); MR-19.
+**Łamie A7** (klucze i magazyn jako byty grafu; T5 projektuje).
+
+#### EC-E04 — Pokaż, gdzie leżą dane; przenieś kategorię (`split` × `scale`)
+**Scenariusz.** „Pokaż, gdzie fizycznie leżą moje dane, i przenieś tę kategorię gdzie indziej.” Kategoria ma 40 GB; w połowie przenoszenia kończy się miejsce.
+**Interpretacja.** Widok magazynu (R51) z liczbami; przeniesienie to przebieg z postępem, idempotentny, odporny na przerwanie; brak miejsca = `invariant:external` z podaniem, ile zostało.
+**W grafie.** Magazyny jako węzły; lokatory z `stored_at`; przebieg przeniesienia z pokwitowaniami per obiekt.
+**Niezmiennik.** W każdej chwili każdy obiekt ma ≥ 1 kompletną kopię (kopiuj → weryfikuj hash → dopiero usuń); po przerwaniu widok pokazuje dokładnie, co gdzie jest; MR-17 po dokończeniu.
+**Łamie A7**.
+
+#### EC-E05 — Klucz wyciekł (`irreversible`)
+**Scenariusz.** „Klucz API wyciekł; co było wysłane, komu, kiedy?”
+**Interpretacja.** Pytanie do rejestru egressu: każda wysyłka z czasem, dostawcą, kluczem (identyfikatorem, nie wartością), kategoriami danych i hashem payloadu.
+**W grafie.** Zdarzenia egressu jako węzły; krawędzie do rekordów wysłanych (albo ich hashów); klucz jako węzeł ze statusem `compromised` od T.
+**Rządzi.** Retencja rejestru egressu (zakres), co rejestr trzyma (hash / pełny payload), rotacja po wycieku jako propozycja.
+**Powiązania.** Nieprzypisane zużycie po stronie dostawcy (rejestr W2: `acknowledged_excess`) → okno wycieku.
+**Niezmiennik.** Każda wysyłka od T0 jest w rejestrze (liczba wysyłek = liczba wpisów; test na ScriptedTransport); odpowiedź na pytanie nie wymaga dostawcy; klucz oznaczony `compromised` nie jest używany przez żaden tor bez jawnego nadpisania z inicjatorem.
+**Łamie A8** (W2 rejestruje zużycie, nie treść/kategorie wysyłek).
+
+#### EC-E06 — Inferencja z danych, których nie wolno wysłać (`contradict` × `self_reference`)
+**Scenariusz.** Lokalnie wywnioskowano „użytkownik ma bezsenność” z rozmów kategorii zdrowie. Tor do dostawcy pracy chce dodać to do kontekstu „preferencje komunikacji”.
+**Interpretacja.** Pochodne dziedziczą kategorię przesłanek (najbardziej restrykcyjną); inferencja o zdrowiu jest zdrowiem.
+**W grafie.** Twierdzenie z kategorią wyprowadzoną z domknięcia przesłanek; egress sprawdza domknięcie, nie etykietę.
+**Niezmiennik.** MR-10 na domknięciu: payload do dostawcy pracy nie zawiera żadnego twierdzenia, w którego przesłankach jest rekord zdrowia (test na grafie zależności); wyjątek wymaga inicjatora `user` i jest zapisany.
+**Łamie A5, A7** (kategoria z domknięcia wymaga grafu zależności).
+
+#### EC-E07 — Trzy magazyny, jeden offline (`split` × `withhold`)
+**Scenariusz.** Kategoria „projekty” replikowana na serwer, Drive i telefon; Drive niedostępny tydzień; w tym czasie edycje na telefonie i serwerze.
+**Interpretacja.** Replikacja z regułą konfliktu jako dane; brak magazynu to degradacja, nie blokada zapisu; po powrocie: scalanie jak EC-D04.
+**W grafie.** Magazyny ze stanem dostępności (`{known:false}` gdy nie sprawdzono); zdarzenia zapisu per magazyn; różnica replik jako twierdzenie.
+**Niezmiennik.** Zapis udaje się, jeśli choć jeden magazyn kategorii przyjął (ustawienie: kworum jako preset); widok pokazuje, które repliki są w tyle i o ile; MR-18 po powrocie.
+**Łamie A7, A18**.
+
+#### EC-E08 — Tryb paranoiczny (`absurd_setting`)
+**Scenariusz.** „Załóż, że telefon ma Pegasusa; co i tak jest bezpieczne, a co nie?”
+**Interpretacja.** R19: model zagrożeń jako dane; mapa ryzyka dla bieżącej konfiguracji; silnik nie udaje, że wie więcej niż wie (`{known:false}` dla kanałów bocznych).
+**W grafie.** Modele atakującego jako węzły; ścieżki danych z oceną wysiłku; konfiguracja → mapa jako przebieg.
+**Niezmiennik.** Mapa wymienia każdą ścieżkę danych z jedną z trzech etykiet: kontrolujemy / nie kontrolujemy / nie wiemy; zmiana jednego ustawienia zmienia mapę tylko na ścieżkach, które przez nie przechodzą (MR-6).
+**Mieści się** jako dane (R19); brak packa.
+
+#### EC-E09 — Zgubione hasło (`irreversible` × `absurd_setting`)
+**Scenariusz.** Użytkownik włączył szyfrowanie bez odzyskiwania i zgubił hasło.
+**Interpretacja.** Zasada właściciela: nie decydujemy za użytkownika → tryb „bez odzyskiwania” jest dozwolony, ale jego wybór musiał mieć jawne ostrzeżenie zapisane jako zdarzenie; po utracie: `invariant:security` (nie da się), z inicjatorem = decyzja użytkownika z datą.
+**W grafie.** Ustawienie z historią wyboru; dane jako `opaque` z hashem; graf metadanych (co istniało, ile) zostaje, jeśli metadane nie były szyfrowane (osobne ustawienie).
+**Niezmiennik.** Komunikat podaje datę i treść ostrzeżenia, które użytkownik zaakceptował; żadna „tylna furtka” nie istnieje (test: brak ścieżki kodu odszyfrowującej bez klucza); metadane dostępne zgodnie z ustawieniem ich szyfrowania.
+**Mieści się** (R43 inicjator + historia ustawień).
+
+#### EC-E10 — Osoba trzecia prosi o zapomnienie (`negate` × `irreversible` × `collectivize`)
+**Scenariusz.** Były członek rodziny: „usuń wszystko o mnie”. Archiwa są niezmienne (I1).
+**Interpretacja.** Konflikt niezmiennika I1 z prawem osoby; rozwiązanie jako ustawienie: wykluczenie trwałe + crypto-shredding kopii (klucz kategorii zniszczony) + zachowanie hashy, żeby odbudowa nie przywróciła.
+**W grafie.** Podmiot ze stanem `never` ustawionym przez inny podmiot (uprawnienie `has_authority_over` własne dane); rekordy `excluded_by_user` z kluczem zniszczonym; zdarzenie z inicjatorem.
+**Niezmiennik.** Po operacji żadna projekcja ani eksport nie zawiera treści podmiotu; hashe zostają (I1 na poziomie hasha); twierdzenia innych podmiotów, które go wspominają, zostają z zaślepką `redacted` i wyjaśnieniem; operacja nieodwracalna jest oznaczona i potwierdzona raz.
+**MR.** MR-15; MR-10 (projekcja pełna vs po usunięciu = dokładnie rekordy podmiotu).
+**Łamie A2, A13** (never dla cudzego podmiotu; wykluczenie z zasięgiem do bajtów).
+
+### F. Ekonomia i sterowanie
+
+#### EC-F01 — Ile kosztowało myślenie w tym tygodniu (`self_reference` × `scale`)
+**Scenariusz.** „Ile kosztowało myślenie w tym tygodniu, o czym, i co z tego było warte?”
+**Interpretacja.** Agregacja zużycia po osi czasu × temat × metoda; „warte” = wynik użyty później (cytowany w decyzji, przyjęty preset, odczytany) — metryka pochodna, nie osąd modelu.
+**W grafie.** Pokwitowania zużycia z osiami (metoda, podmiot, projekt, temat, dostawca, okres); krawędzie `used_in` od wyników do późniejszych zdarzeń.
+**Rządzi.** Definicja „warte” jako preset (ustawienie); waluta i cennik jako dane z datą.
+**Niezmiennik.** Suma po dowolnej osi = suma całkowita (MR-13 agregacja); koszt z `provenance=declared` oznaczony osobno od `measured`; „warte” ma wyjaśnienie (które zdarzenia użycia).
+**Łamie A15** (osie pokwitowań; W2 ma operację i rezerwację).
+
+#### EC-F02 — Przepal tysiąc dolarów, pytaj przy ×10 (`absurd_setting`)
+**Scenariusz.** „Przepal na to tysiąc dolarów, ale pytaj przy każdym skoku ×10.”
+**Interpretacja.** Budżet 1000 na zakresie zadania + strażnik ×10 względem bazy kroczącej; pierwszy skok od 0 → baza nieistniejąca: pytanie raz przy pierwszym wydatku (preset), potem przy każdym ×10.
+**W grafie.** Budżet jako ustawienie z zakresem i inicjatorem; pokwitowania; potwierdzenia jako zdarzenia.
+**Niezmiennik.** Liczba pytań = liczba skoków ×10 + 1 (lub 0, jeśli preset „pierwszy bez pytania”); żadne pytanie poza skokiem; wydatek nigdy nie przekracza 1000 bez potwierdzenia; suma pokwitowań ≤ 1000 + ostatnia operacja w toku.
+**MR.** MR-13 (sekwencja operacji o kosztach c_i: stan `requires_confirmation` dokładnie przy c_i ≥ 10·baza_i, niezależnie od ścieżki: czat, wsad, graf, eksperyment).
+**Częściowo** (usage_policy ma bazę kroczącą; brak na wszystkich ścieżkach — T6; A14).
+
+#### EC-F03 — Wszystko automatyczne, ale widzę każdą decyzję po fakcie (`absurd_setting` × `self_reference`)
+**Scenariusz.** „Ustaw, żeby wszystko było automatyczne, ale żebym widział każdą decyzję po fakcie.”
+**Interpretacja.** Polityka przyjęcia = `auto` na wszystkich zakresach + dziennik decyzji systemu jako widok (samomodel wykonywalny).
+**W grafie.** Każda operacja systemu jako węzeł z metodą, parametrami, wynikiem, kosztem (DUCH §0: „wyprodukowane przez”); widok „decyzje od ostatniego razu”.
+**Niezmiennik.** Liczba operacji wykonanych = liczba wpisów widoku; każdy wpis ma „cofnij” albo wyjaśnienie, dlaczego nieodwracalne; brak wpisów bez metody.
+**MR.** MR-9 (odtworzenie dziennika z grafu); MR-16.
+**Łamie A23** (operacje systemu jako węzły; dziś ślady przebiegów istnieją dla metod, nie dla wszystkich operacji).
+
+#### EC-F04 — Dlaczego ta wartość (`self_reference`)
+**Scenariusz.** „Dlaczego ta wartość ustawienia jest taka? Kto ją ustawił i jak ją zmienić?”
+**Interpretacja.** Wyjaśnienie wartości efektywnej: zakresy, reguła, inicjator, data, i akcja „zmień na zakresie X”.
+**Niezmiennik.** MR-16: z wyjaśnienia da się odtworzyć wartość; wyjaśnienie wymienia każdy zakres, który miał wartość (także przegrane); „jak zmienić” wskazuje najwęższy zakres, na którym użytkownik ma uprawnienie.
+**Łamie A3** (wyjaśnienie dla dwóch warstw istnieje; dla łańcucha nie).
+
+#### EC-F05 — Miliard dolarów (`absurd_setting`)
+**Scenariusz.** Budżet = 1 000 000 000; model najdroższy; wszystko automatyczne.
+**Interpretacja.** Zasada właściciela: ustawienie musi to pozwolić; jedyny hamulec: ×10 względem bazy. Przy bazie 0 pierwsze wywołanie to „∞×” → pytanie raz; potem każde ×10.
+**Niezmiennik.** Żaden sufit w kodzie (test: wartość 1e9 przechodzi walidację i jest zapisana bez obcięcia; typ liczbowy nie przepełnia); strażnik działa identycznie dla 10 $ i 1e9 $ (MR-13 ze skalowaniem: przemnożenie wszystkich kosztów i budżetu przez k nie zmienia liczby pytań).
+**Mieści się** (zasada); test potrzebny na typach i serializacji.
+
+#### EC-F06 — Dedup opłacalny dziś, nie jutro (`time_shift` × `contradict`)
+**Scenariusz.** Raport ekonomii proponuje linkowanie przy cenie tokenów X; po miesiącu cena spada 5×.
+**Interpretacja.** Propozycja ma przesłanki cenowe z datą; po zmianie cen rekomendacja może się odwrócić; wykonane linki nie są cofane (koszt cofnięcia też liczony).
+**W grafie.** Propozycja jako węzeł z bilansem i cennikiem@data; decyzja użytkownika; nowa propozycja „rozlinkuj” z własnym bilansem.
+**Niezmiennik.** Bilans jest odtwarzalny z cennika@data (MR-9); nowa rekomendacja nie zmienia stanu bez przyjęcia; obie rekomendacje widoczne z datami.
+**Mieści się** (R50 + cennik jako dane z datą — A15).
+
+#### EC-F07 — Przepis droższy niż dane (`absurd_setting` × `self_reference`)
+**Scenariusz.** Indeks FTS można odtworzyć w 40 minut CPU; właściciel ma 50 GB wolnego i prąd z baterii.
+**Interpretacja.** Wolfram/MDL (GRAPH_ENTRY §9): generator ≠ zawsze taniej; decyzja z bilansu pamięć–czas–energia, zasób „bateria” jako ograniczenie podmiotu (A17).
+**Niezmiennik.** Decyzja „materializuj vs przepis” ma bilans z liczbami i `{known:false}` gdzie brak pomiaru; zmiana jednego wejścia bilansu (np. koszt energii) zmienia tylko decyzje, które od niego zależą (MR-6).
+**Łamie A17** (zasoby urządzenia jako byt).
+
+#### EC-F08 — Budżet ustawiony przez trzy podmioty (`collectivize` × `absurd_setting`)
+**Scenariusz.** Organizacja: max 100/mies.; osoba: max 1e9; projekt: min 50 (musi mieć na analizy).
+**Interpretacja.** Reguła `min`/`max` per ustawienie; `min` z projektu i `max` z organizacji mogą być sprzeczne (min 50 > max 100? nie; ale min 200 > max 100 → konflikt do `ask` z wyjaśnieniem).
+**Niezmiennik.** Wartość efektywna = f(wartości, reguła), wyjaśniona; sprzeczność nie wybiera cicho; MR-6.
+**Łamie A3**.
+
+### G. Niepewność, wejście, ASR
+
+#### EC-G01 — Nie wiem, czego chcę (`withhold` intencji)
+**Scenariusz.** „Nie wiem, czego chcę — zaproponuj.”
+**Interpretacja.** Brak celu to cel typu `propose` (goal type w danych); selektor szuka otwartych pytań, nieprzyjętych propozycji, niedokończonych rozmów, wzorców (EC-C04); odpowiedź = lista propozycji z pochodzeniem, nie wykonanie.
+**W grafie.** Zapytanie z celem `propose`; propozycje jako węzły; wybór użytkownika jako zdarzenie uczące.
+**Niezmiennik.** Nic nie zostaje wykonane ani wysłane płatnie bez wyboru (chyba że ustawienie `auto`); każda propozycja ma „skąd” (otwarte pytanie / wzorzec / stare zadanie).
+**Mieści się** (goal types są danymi).
+
+#### EC-G02 — Nie rozumiem swojego pytania; dopytaj (`withhold` × `self_reference`)
+**Scenariusz.** „Nie rozumiem swojego pytania; dopytaj mnie.”
+**Interpretacja.** Tryb wywiadu (jak onboarding R39): model zadaje numerowane pytania tak/nie albo krótkie, zapisuje odpowiedzi jako uściślenia (R34: skonsolidowana instrukcja), kończy, gdy użytkownik powie „ok”.
+**Niezmiennik.** Każda tura wywiadu zmienia aktywną specyfikację zadania z mapą do wypowiedzi; po „ok” kompilacja zawiera uściślenia, nie historię nieporozumień (MR: usunięcie z historii odrzuconych wariantów nie zmienia skompilowanej instrukcji).
+**Mieści się** (R34; `ContextEngine` nie na ścieżce czatu — ACCEPTANCE #1).
+
+#### EC-G03 — ASR: literówki, bez polskich znaków, urwane (`noise`)
+**Scenariusz.** „zaimportuj eksport z opena i i antropika nie dubluj ale nic nie” (urwane).
+**Interpretacja.** Wypowiedź z n-best i pewnością; normalizacja (diakrytyki, synonimy z leksykonu jako dane) → intencja + argumenty + brakujący argument („nic nie…” → `absent`); echo interpretacji w jednym zdaniu; pytanie tylko przy materialnej różnicy.
+**W grafie.** Wypowiedź surowa (obserwacja), interpretacja (inferencja z własnością „użytkownik potwierdzi”), krawędź `read_as`.
+**Rządzi.** Próg echa/pytania (preset: akcje nieodwracalne zawsze pytają, EC-G05); leksykon synonimów (dane, język).
+**Niezmiennik.** MR-4: warianty szumu tej samej wypowiedzi (z/bez diakrytyków, 1–2 literówki, synonim) dają tę samą intencję i te same argumenty albo jawne pytanie; nigdy inną akcję bez pytania; surowy tekst nigdy nie jest nadpisany.
+**Łamie A11**.
+
+#### EC-G04 — Zrób to, co ostatnio, ale inaczej (`self_reference` × `withhold`)
+**Scenariusz.** „Zrób to, co ostatnio, ale inaczej.”
+**Interpretacja.** „Ostatnio” = ostatni przebieg metody w tym kontekście (zakres); „inaczej” = inny tor (model/prompt/parametry) z tego samego presetu rodziny; niejednoznaczność „inaczej” → propozycja 3 wariantów, nie zgadywanie.
+**W grafie.** Nowy przebieg z krawędzią `variant_of` → poprzedni; różnica parametrów jako twierdzenie.
+**Niezmiennik.** Nowy przebieg różni się od poprzedniego co najmniej jednym jawnym parametrem i ma do niego krawędź; wejście identyczne (MR: „ostatnio” rozwiązane deterministycznie do tego samego przebiegu przy powtórzeniu pytania).
+**Mieści się** (ślady przebiegów); „inaczej” jako operator na presecie — A6.
+
+#### EC-G05 — Zgubiona negacja (`noise` × `irreversible`)
+**Scenariusz.** ASR: „wyślij zdrowie do gpt” zamiast „nie wysyłaj…”; albo „usuń wszystko z 2024” z pewnością 0,6.
+**Interpretacja.** Akcja nieodwracalna lub sprzeczna z trwałą preferencją wymaga echa i potwierdzenia tak/nie z numerem, niezależnie od pewności ASR; sprzeczność z `never` zdrowia → inicjator musi być `user` jawnie.
+**Niezmiennik.** Żadna operacja klasy `irreversible` ani sprzeczna z `never` nie wykonuje się z wejścia ASR bez potwierdzenia; potwierdzenie zapisane; MR-4: wariant z negacją i bez dają różne echa, a bez potwierdzenia ten sam skutek (żaden).
+**Łamie A11, A14**.
+
+#### EC-G06 — Dwa języki i kod w głosie (`noise` × `merge`)
+**Scenariusz.** „Dodaj do kontekstu funkcję resolve underscore lineage z resolve kropka cpp i wyjaśnij po polsku.”
+**Interpretacja.** Rozpoznanie identyfikatorów kodu w mowie (leksykon: „underscore”, „kropka”) jako dane; dwa języki → preferencja języka odpowiedzi z zakresu.
+**Niezmiennik.** Identyfikator rozwiązany do symbolu w repo (albo `absent` z propozycjami); MR-4 na wariantach („resolve lineage w resolve cpp”); język odpowiedzi z ustawienia, nie z języka pytania, chyba że ustawienie mówi „jak pytanie”.
+**Łamie A11** (leksykon rozpoznawania mowy jako dane; interpretacja jako węzeł).
+
+#### EC-G07 — Polecenie sprzeczne z preferencją trwałą (`contradict` × `negate`)
+**Scenariusz.** `never` wysyłki zdrowia; dziś: „wyślij ten wynik badania do Claude, chcę drugą opinię”.
+**Interpretacja.** Użytkownik ma prawo (R43: inicjator `user`); sprzeczność z własną regułą → pytanie tak/nie z numerem i wybór zakresu wyjątku (ta wiadomość / ta rozmowa / na stałe).
+**W grafie.** Wyjątek jako nadpisanie na wybranym zakresie z inicjatorem i datą; egress zapisany z odniesieniem do wyjątku.
+**Niezmiennik.** Reguła `never` nie zmienia się bez jawnego wyboru „na stałe”; wyjątek na zakresie tury wygasa po turze (MR-6 z wygaśnięciem); rejestr egressu wskazuje wyjątek.
+**Łamie A3, A8, A13**.
+
+#### EC-G08 — Kliknięcie w grafie jako wejście (`merge` kanałów)
+**Scenariusz.** Właściciel przeciąga krawędź w wizualizacji: „ta rozmowa należy do projektu Y”.
+**Interpretacja.** Ta sama droga co tekst (DUCH §3): wejście → interpretacja → osadzenie z pochodzeniem `user` → propozycje powiązań.
+**Niezmiennik.** Krawędź z UI ma identyczną reprezentację jak krawędź z polecenia tekstowego „połącz rozmowę z projektem Y” (MR: oba wejścia → ten sam zapis bajtowo poza kanałem wejścia); cofnięcie z obu kanałów działa tak samo.
+**Mieści się** (R29–R31); brak testu równoważności kanałów.
