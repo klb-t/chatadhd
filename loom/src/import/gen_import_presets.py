@@ -116,11 +116,15 @@ def generate_layers(spec_raw, import_raw, audit_raw):
     if not isinstance(entries, list):
         raise ValueError("import layer mapping entries must be an array")
     fields = {"id", "key", "area", "revision", "resource", "field"}
+    optional_fields = {"section"}  # "values" (default) or "policies"
     identities, keys = set(), set()
     projected = []
     for binding in entries:
-        if not isinstance(binding, dict) or set(binding) != fields:
-            raise ValueError("each layer binding must contain exactly id/key/area/revision/resource/field")
+        if not isinstance(binding, dict) or not fields <= set(binding) or set(binding) - fields - optional_fields:
+            raise ValueError("each layer binding must contain id/key/area/revision/resource/field (+ optional section)")
+        section = binding.get("section", "values")
+        if section not in ("values", "policies"):
+            raise ValueError("layer binding section must be values or policies")
         for field in ("id", "key", "area", "resource", "field"):
             _nonempty_text(binding[field], f"binding {field}")
         _positive_integer(binding["revision"], "entry revision")
@@ -129,10 +133,11 @@ def generate_layers(spec_raw, import_raw, audit_raw):
         identities.add(binding["id"])
         keys.add(binding["key"])
         resource = binding["resource"]
-        if resource not in sources or binding["field"] not in sources[resource]["values"]:
+        container = sources[resource].get(section) if resource in sources else None
+        if not isinstance(container, dict) or binding["field"] not in container:
             raise ValueError(f"unresolved import layer binding: {resource}.{binding['field']}")
         entry = {field: binding[field] for field in ("id", "key", "area", "revision")}
-        entry["value"] = sources[resource]["values"][binding["field"]]
+        entry["value"] = container[binding["field"]]
         projected.append(entry)
     result = dict(target)
     result["entries"] = projected

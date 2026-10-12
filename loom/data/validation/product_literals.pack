@@ -489,7 +489,7 @@
         },
         {
           "path": "loom/data/runtime/cli.pack",
-          "sha256": "b94f7b94c186d3466af61fae70986fac17e77d26eeae3ea3cb7e5d92e867589b"
+          "sha256": "3fc4af5381869d51fac464ff67b7d5ce7cfa0b2a8d60b3a48b7b9e732c02e446"
         },
         {
           "path": "loom/data/runtime/config.pack",
@@ -588,7 +588,7 @@
           "sha256": "781279229d42b12141dd19bdb6fe55de5142657a1c870e7517dc997964a42099"
         }
       ],
-      "output_sha256": "501f9d01293c7a906d44e48c9962596bf77973b839c2e690b4c56621f15f776b",
+      "output_sha256": "4576fda8474d5e1bfb410dc5cd3fdf5249de66126cf48ead8b7d2e161b8f7d1c",
       "reason": "Only the exact current trusted in-memory generator result is non-literal product data. Generator bytes, every canonical input and complete output must match; no whole-file review waiver."
     }
   ],

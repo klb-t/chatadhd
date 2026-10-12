@@ -446,8 +446,17 @@ int cmd_import(Runtime& rt, const Args& a) {
       throw UsageError{"invalid effective preset descriptor: " + path};
     return document["values"];
   };
-  if (a.has("import-preset"))
+  if (a.has("import-preset")) {
     must(apply_import_preset_values(o, preset_values("import-preset", "loom.import_preset/1")));
+    // Optional effective policy (R47/R50): policies.duplicate_policy of the descriptor.
+    const auto descriptor = must(json::parse(must(fsutil::read_file(a.get("import-preset")))));
+    if (const Json* policies = json::find(descriptor, "policies"); policies && policies->is_object()) {
+      const Json* policy = json::find(*policies, "duplicate_policy");
+      if (policy && (!policy->is_string() || !is_duplicate_policy(policy->get<std::string>())))
+        throw UsageError{"invalid policies.duplicate_policy in " + a.get("import-preset")};
+      if (policy) o.duplicate_policy = policy->get<std::string>();
+    }
+  }
   if (a.has("audit-preset"))
     must(apply_import_audit_preset_values(audit, preset_values("audit-preset", "loom.import_audit_preset/1")));
   auto number = [&](const std::string& key, double fallback) {

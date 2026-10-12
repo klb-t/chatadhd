@@ -42,6 +42,13 @@
       "value": 64000000
     },
     {
+      "id": "loom.default.import.duplicate_policy",
+      "key": "import.duplicate_policy",
+      "area": "import.duplicates",
+      "revision": 1,
+      "value": "reimport_and_link"
+    },
+    {
       "id": "loom.default.import.audit.chars_per_token_low",
       "key": "import.audit.chars_per_token_low",
       "area": "import.audit",

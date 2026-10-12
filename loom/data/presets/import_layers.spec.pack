@@ -50,6 +50,15 @@
       "field": "generic_inference_max_bytes"
     },
     {
+      "id": "loom.default.import.duplicate_policy",
+      "key": "import.duplicate_policy",
+      "area": "import.duplicates",
+      "revision": 1,
+      "resource": "import",
+      "section": "policies",
+      "field": "duplicate_policy"
+    },
+    {
       "id": "loom.default.import.audit.chars_per_token_low",
       "key": "import.audit.chars_per_token_low",
       "area": "import.audit",
