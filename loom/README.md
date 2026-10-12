@@ -156,6 +156,8 @@ replace) or **platform detail** (an adapter).
 | Config defaults = Python `DEFAULTS`; Loom policy keys (`loom_event_log_types`, `loom_task_workers`) are served as fallbacks and never written | policy/default |
 | Provider manifests and capabilities; `can(resource, capability, constraints)` instead of `if provider == X` | policy/default |
 | Context budget (tokens ≈ code points / 4), source order memory → graph → FTS | policy/default |
+| R44: unrecognised input enters the graph, annotated. JSON/JSONL/HTML/MHT/ZIP pieces no handler maps are stored verbatim as `import:unrecognized` nodes (`export:member` on the provider-export path) with `recognition` {status recognized\|partial\|unrecognized\|opaque, recognizer, recognizer_version, reason, attempts, sha256, size} and `source` {source_id, locator}; inline up to `json_inline_threshold_bytes`, else BlobStore (the threshold is where bytes live, never whether they are kept). The result's `recognition.counts` lists measured statuses only | invariant (status vocabulary); threshold is policy/default (import pack) |
+| R50: duplicates are never forbidden. Identical conversations (external id, roles, whitespace-normalised text) and identical fragments (sha256) are detected through `loom_import_fingerprints`, reported in the result's `duplicates` with a `pin_immutable_data` proposal, and handled by `duplicate_policy` (import pack `policies`; `reimport_and_link` default: new copy + `derived_from` link with `relation: duplicate_of`, `reuse_prior`: no new copy, this source recorded as provenance of the prior one, `reimport`: previous behaviour, only reported). An unchanged completed source is still answered from the immutable-source cache (`already_imported`) unless `force`; it is reported as a source-level duplicate | policy/default (data) |
 | System SQLite vs vendored amalgamation | platform detail |
 | HTTP stack (cpp-httplib + OpenSSL, or an injected platform transport) | platform detail |
 | Log sinks (stderr, ring buffer, logcat through the C ABI) | platform detail |
@@ -163,6 +165,8 @@ replace) or **platform detail** (an adapter).
 | Unicode tables pinned to the generating CPython (currently Unicode 14.0) | platform detail (regenerate with `tools/gen_unicode_tables.py`) |
 
 Deliberate differences from the Python behaviour (each is documented in its header):
+
+- R44/R50 (2026-10-12): a JSON document or element with no recognised conversation structure no longer fails the import (`Errc::Unsupported`); it is kept as an `unrecognized` node and the import succeeds with no conversation for it (Python still raises). Corrupt JSONL lines, stream-array elements and ZIP members become `opaque` nodes instead of being skipped. A malformed whole bare file still fails with `Errc::Parse` (its bytes stay in the source store). Duplicate conversations are linked by default (`derived_from`, `duplicate_of`).
 
 - Row ordering breaks ties by `rowid`, so batch-imported rows come back in insertion order.
 - `update_msg` enforces the status whitelist.
